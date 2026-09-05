@@ -11,27 +11,45 @@
 export const TAB_IDS = ['today', 'plan', 'library', 'progress', 'settings'] as const;
 export type TabId = (typeof TAB_IDS)[number];
 
+/**
+ * Sub-screens pushed on top of a tab, addressed as `#/<tab>/<sub>`. P1 adds
+ * the two MIDI screens under Settings; later phases add the Score screen the
+ * same way. `sub` is absent (not null) on a plain tab route so that a route
+ * object stays value-comparable with `{ tab }`.
+ */
+export const SUB_IDS = ['midi', 'diagnostics'] as const;
+export type SubId = (typeof SUB_IDS)[number];
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
   tab: TabId;
+  sub?: SubId;
 }
 
 function isTabId(value: string): value is TabId {
   return (TAB_IDS as readonly string[]).includes(value);
 }
 
+function isSubId(value: string): value is SubId {
+  return (SUB_IDS as readonly string[]).includes(value);
+}
+
 /** Pure function: hash string -> Route. Unknown/empty hashes fall back to the default tab. */
 export function parseHash(hash: string): Route {
   const cleaned = hash.replace(/^#\/?/, '').trim();
-  if (isTabId(cleaned)) {
-    return { tab: cleaned };
-  }
-  return { tab: DEFAULT_TAB };
+  if (cleaned === '') return { tab: DEFAULT_TAB };
+  const [tab = '', sub = ''] = cleaned.split('/');
+  if (!isTabId(tab)) return { tab: DEFAULT_TAB };
+  // An unknown sub-route degrades to the tab itself rather than to Today: the
+  // user asked for Settings, and dropping them somewhere else would be worse
+  // than dropping the part we could not resolve.
+  if (sub !== '' && isSubId(sub)) return { tab, sub };
+  return { tab };
 }
 
 export function routeToHash(route: Route): string {
-  return `#/${route.tab}`;
+  return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
 
 export type RouteListener = (route: Route) => void;
@@ -59,9 +77,10 @@ export class Router {
    * actually changed, so the `hashchange` listener re-deriving the same
    * route afterwards is a harmless no-op instead of a duplicate notification.
    */
-  navigate(tab: TabId): void {
-    this.win.location.hash = routeToHash({ tab });
-    this.setRoute({ tab });
+  navigate(tab: TabId, sub?: SubId): void {
+    const route: Route = sub ? { tab, sub } : { tab };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
   }
 
   subscribe(listener: RouteListener): () => void {
@@ -71,7 +90,7 @@ export class Router {
   }
 
   private setRoute(route: Route): void {
-    if (route.tab === this.current.tab) return;
+    if (route.tab === this.current.tab && route.sub === this.current.sub) return;
     this.current = route;
     this.emit();
   }

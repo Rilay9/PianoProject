@@ -176,3 +176,339 @@ body {
     max-width: 640px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Keyboard strip (docs/04-ui-spec.md §5)
+
+   Layout is entirely CSS so that a state change is a class toggle and never a
+   reflow: white keys are fixed-width flex children, black keys are absolutely
+   positioned from a `--i` custom property set once at build time. Sizes are
+   variables so the score screen can shrink the strip to ~12 % of the viewport
+   height without the component knowing.
+   --------------------------------------------------------------------------- */
+.keyboard-strip {
+  --key-w: 26px;
+  --black-w: 16px;
+  --key-h: 108px;
+  --key-white: #fbfbfc;
+  --key-white-edge: #c7cad1;
+  --key-black: #23262c;
+  --key-expected: #2f6fed;
+  --key-correct: #17915c;
+  --key-wrong: #cf3B3B;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+}
+
+[data-theme='dark'] .keyboard-strip {
+  --key-white: #e8eaee;
+  --key-white-edge: #6e747f;
+  --key-black: #14161a;
+}
+
+/* pan-x, not none: a horizontal drag scrolls the 88 keys (the strip is much
+   wider than a phone), while a tap still plays. A drag that does not scroll
+   still reaches pointermove, so sliding between keys re-triggers notes. */
+.keyboard-strip.is-interactive {
+  touch-action: pan-x;
+}
+
+.keyboard-strip__keys {
+  position: relative;
+  display: flex;
+  height: var(--key-h);
+  width: calc(var(--white-count, 52) * var(--key-w));
+}
+
+.key {
+  position: relative;
+  border-radius: 0 0 4px 4px;
+  transition: none; /* score screen has no animation budget */
+}
+
+.key--white {
+  flex: 0 0 var(--key-w);
+  height: 100%;
+  background: var(--key-white);
+  border: 1px solid var(--key-white-edge);
+  border-top: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.key--black {
+  position: absolute;
+  top: 0;
+  left: calc(var(--i) * var(--key-w) - var(--black-w) / 2);
+  width: var(--black-w);
+  height: 62%;
+  background: var(--key-black);
+  border: 1px solid #000;
+  z-index: 2;
+}
+
+.key__label {
+  font-size: 9px;
+  line-height: 1;
+  padding-bottom: 3px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* State colours. Correct/wrong also carry a glyph so the strip is readable
+   without colour vision (docs/04-ui-spec.md §9). */
+.key.is-expected {
+  background: var(--key-expected);
+}
+
+.key--black.is-expected {
+  background: color-mix(in srgb, var(--key-expected) 80%, #000);
+}
+
+.key.is-pressed {
+  background: var(--text-muted);
+}
+
+.key.is-correct {
+  background: var(--key-correct);
+}
+
+.key.is-wrong {
+  background: var(--key-wrong);
+}
+
+.key.is-correct::after,
+.key.is-wrong::after {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1;
+  color: #fff;
+  pointer-events: none;
+}
+
+.key.is-correct::after {
+  content: '✓';
+}
+
+.key.is-wrong::after {
+  content: '✗';
+}
+
+.key.is-correct .key__label,
+.key.is-wrong .key__label,
+.key.is-expected .key__label,
+.key.is-pressed .key__label {
+  color: #fff;
+}
+
+/* ---------------------------------------------------------------------------
+   Sub-screens (MIDI, Diagnostics) and their shared controls.
+   --------------------------------------------------------------------------- */
+.screen[data-screen='midi'] .card,
+.screen[data-screen='diagnostics'] .card {
+  max-width: 720px;
+}
+
+.block {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.block h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.block p {
+  margin: 0 0 10px;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.status {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  min-height: 1.2em;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.button {
+  appearance: none;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.button--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.link-button {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--accent);
+  padding: 6px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.back-link {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.notice {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.notice--error {
+  border-color: #cf3b3b;
+}
+
+.notice p {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.device-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.device-row:hover {
+  background: var(--bg);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  min-height: 48px;
+  cursor: pointer;
+}
+
+.note-log {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.kv {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.kv__k {
+  color: var(--text-muted);
+}
+
+.kv__v {
+  text-align: right;
+  word-break: break-word;
+}
+
+/* The log is wider than a phone; it scrolls inside its own box rather than
+   making the whole screen scroll sideways. */
+.log-table {
+  display: block;
+  overflow-x: auto;
+  max-height: 320px;
+  overflow-y: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.log-table th,
+.log-table td {
+  text-align: left;
+  padding: 3px 10px 3px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.log-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  color: var(--text-muted);
+}
+
+.report-area {
+  width: 100%;
+  margin-top: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+}

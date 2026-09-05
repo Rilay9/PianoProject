@@ -138,3 +138,62 @@ describe('Router', () => {
     expect(seen).toEqual(['today']);
   });
 });
+
+describe('sub-routes', () => {
+  it('parses `#/settings/midi` as a sub-screen of settings', () => {
+    expect(parseHash('#/settings/midi')).toEqual({ tab: 'settings', sub: 'midi' });
+    expect(parseHash('#/settings/diagnostics')).toEqual({
+      tab: 'settings',
+      sub: 'diagnostics',
+    });
+  });
+
+  it('omits `sub` entirely for a plain tab route', () => {
+    expect(parseHash('#/settings')).toEqual({ tab: 'settings' });
+    expect('sub' in parseHash('#/settings')).toBe(false);
+  });
+
+  it('degrades an unknown sub-route to the tab, not to the default tab', () => {
+    expect(parseHash('#/settings/nope')).toEqual({ tab: 'settings' });
+  });
+
+  it('still falls back to the default tab when the tab itself is unknown', () => {
+    expect(parseHash('#/nope/midi')).toEqual({ tab: DEFAULT_TAB });
+  });
+
+  it('round-trips through routeToHash', () => {
+    expect(routeToHash({ tab: 'settings', sub: 'midi' })).toBe('#/settings/midi');
+    expect(parseHash(routeToHash({ tab: 'settings', sub: 'diagnostics' }))).toEqual({
+      tab: 'settings',
+      sub: 'diagnostics',
+    });
+  });
+
+  it('navigate(tab, sub) updates the hash and notifies', () => {
+    const { win } = fakeWindow('#/settings');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigate('settings', 'midi');
+    expect(win.location.hash).toBe('#/settings/midi');
+    expect(seen).toEqual(['#/settings', '#/settings/midi']);
+  });
+
+  it('treats leaving a sub-screen for its own tab as a real change', () => {
+    const { win } = fakeWindow('#/settings/midi');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigate('settings');
+    expect(seen).toEqual(['#/settings/midi', '#/settings']);
+  });
+
+  it('does not re-notify when navigating to the current sub-route', () => {
+    const { win } = fakeWindow('#/settings/midi');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigate('settings', 'midi');
+    expect(seen).toEqual(['#/settings/midi']);
+  });
+});
