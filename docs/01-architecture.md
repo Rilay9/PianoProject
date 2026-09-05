@@ -38,13 +38,13 @@ app/                     – the PWA (Vite + TypeScript)
     main.ts              – bootstrap, router
     ui/                  – screens and components (see 04-ui-spec.md)
     score/               – OSMD wrapper, ScoreModel extraction, windowed renderer, cursor/overlay
-    pdf/                 – systems.ts: cuts a rendered PDF page into staff systems (P4 spike); viewer in P7
+    pdf/                 – systems.ts (page → staff systems), systemPlan.ts (fractional cut storage + corrections), PdfDocument.ts (pdfjs wrapper)
     engine/              – practice-mode state machines, matcher, scorer, clock (pure TS, no DOM)
     input/               – InputSource interface + WebMidiSource, ScreenKeyboardSource, ReplaySource, MicSource facade
     audio/               – Web Audio player (smplr piano), metronome scheduler
     audio/pitch/         – AudioWorklet + score-informed note/chord detector + calibration
-    data/                – IndexedDB (progress, settings, imports), export/import
-    curriculum/          – loaders + selectors over curriculum.json/catalog.json
+    data/                – IndexedDB (db.ts) + one store module each: progressStore, planStore, skillsStore, importStore, settingsStore/persist, backup (export/import)
+    curriculum/          – loaders + selectors over curriculum.json/catalog.json, and session.ts (today's session from the Part A §8 templates)
     util/
   tests/
     unit/                – Vitest (engine, ScoreModel, curriculum selectors)
@@ -72,7 +72,9 @@ docs/, prompts/
 | `vite` | 8.x | build/dev | MIT |
 | `vite-plugin-pwa` | 1.x | manifest + Workbox service worker (precache everything under `public/content`) | MIT |
 | `idb` | latest | tiny IndexedDB promise wrapper | ISC |
-| `pdfjs-dist` | 4.x | renders an imported PDF page to a canvas for the one-system-at-a-time viewer (P7) | Apache-2 |
+| `pdfjs-dist` | 5.4.394 | renders an imported PDF page to a canvas for the one-system-at-a-time viewer (P7). Loaded as its own chunk — a learner who imports no PDFs never parses it. Its worker is `pdf.worker.min.mjs`, so the precache globs MUST include `mjs` | Apache-2 |
+| `fflate` | 0.8.3 | unzips `.mxl` (compressed MusicXML) with no server | MIT |
+| `fake-indexeddb` (dev) | 6.x | a real IndexedDB for the unit tests; the export/import and imports-store tests cannot run without one | Apache-2 |
 | `vitest`, `@playwright/test` | latest | tests | MIT/Apache |
 | `webmidi` (optional) | 3.x | ergonomic wrapper over Web MIDI; only if the raw API proves annoying | Apache-2 |
 
@@ -231,21 +233,55 @@ IndexedDB stores (via `idb`):
 | `settings` | `'app'` | all settings (see 04-ui-spec.md §7) |
 | `progress` | itemId | `{ itemId, status:'new'|'started'|'passed'|'mastered', bestAccuracy, bestTempoPct, attempts, lastPracticedAt, minutes }` |
 | `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, timing stats, date, durationMs |
-| `imports` | id | user-imported score: name, MusicXML text (or mxl bytes) **or PDF bytes**, `kind: 'musicxml' \| 'pdf'`, tags, addedAt. A PDF item is viewable and followable but not playable or judgeable — it has no notes (`04` §5b). |
+| `imports` | id | user-imported score: name, MusicXML text (or mxl bytes) **or PDF bytes**, `kind: 'musicxml' \| 'pdf'`, tags, addedAt, and for a PDF `cuts` — the corrected system boundaries. A PDF item is viewable and followable but not playable or judgeable — it has no notes (`04` §5b). |
 | `plan` | `'current'` | current stage/unit, chosen track order, placement-test result |
 | `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
 | `micCalibration` | deviceId | per-pitch gain/inharmonicity table, latency ms, noise floor |
 | `skills` | conceptId | self-assessed / measured skill state for the Skills review screen |
 
+**`cuts` shape.** `Record<pageIndex, number[]>`, a flat sorted list of an *even* number of
+**fractions of the page height**: `[top0, bottom0, top1, bottom1, …]`. Fractions rather than
+pixels because the page is rendered at whatever width the phone asks for, and a correction
+dragged in portrait has to survive a rotation, a reload at a different device pixel ratio, and
+an export onto another phone. Pairs rather than single dividing lines because the gap *between*
+two systems is real — one list of boundaries would force each system to start where the last
+ended and drag half the next stave into view. See `app/src/pdf/systemPlan.ts`.
+
+**Settings are read synchronously.** `getSettings()` is called from inside a render pass in a
+dozen places, and IndexedDB is asynchronous. So `data/persist.ts` is a write-through cache:
+IndexedDB is the store of record (and therefore what a backup carries), localStorage is the
+synchronous read path, every write goes to both, and `hydratePersisted()` reconciles them once
+at boot — localStorage wins when it has a value, IndexedDB fills it in when it does not, which
+is what makes a restored backup and a cleared-localStorage device both come back.
+
 Export/import: one JSON file containing all stores (imports included), via the File System
-Access API when available and `<a download>`/share-sheet fallback otherwise.
+Access API when available and share-sheet/`<a download>` fallback otherwise. PDF bytes are
+base64 in the JSON: that inflates them by a third, and the alternative — a zip — would mean
+owning a container format for a file nothing else reads. **Import merges by default** (the
+device's row wins when it is further along) and only replaces on request, so restoring last
+week's backup never throws away this week's practice.
 
 ### 4.6 `curriculum/`
 
 Loads `content/curriculum.json` (built from `content/curriculum/stage-*.json`) and
-`content/catalog.json`. Provides selectors: `lessonsForUnit`, `optionsForLesson(lesson, filters)`,
-`nextRecommended(progress)`, `isUnlocked(item, progress)` (prerequisites are *advisory* by
-default; "strict mode" setting enforces them).
+`content/catalog.json`, and merges the learner's own imports into the same index so that
+search, the swap sheet, the session builder and `#/score/<id>` cannot tell a bought score from
+a bundled one (`allItems()`).
+
+Selectors: `lessonComplete`, `idsToCompleteLesson`, `alternativesFor`, `findLesson`,
+`thinLessons`, and in `session.ts` `nextRecommended(curriculum, records, activeTracks)`,
+`buildSession(input)`, `swapOptions(slot, …)`, `playInstead(item, …)`. Prerequisites are
+*advisory* by default; the "strict mode" setting enforces them.
+
+Two rules the session builder follows that are not obvious from `04` §2:
+
+- **A row it cannot fill is dropped, not shown empty.** An empty row is a hole the learner has
+  to fill by hand, which is the thing the card exists to avoid. Free play is the exception: it
+  never has an item because it is a prompt.
+- **The swap sheet has a fourth, loosest tier.** `alternativesFor`'s three tiers can genuinely
+  come up empty at Stage 0 — a handful of drills, few shared concept tags — and a swap button
+  that offers nothing is a dead button, so `swapOptions` falls back to anything playable of the
+  same type within one level.
 
 ## 5. Data model — content
 

@@ -77,7 +77,7 @@ test.describe('microphone input', () => {
     expect(await driver.stepCount()).toBe(SCALE_MIDI.length);
 
     // A real gesture, so the AudioContext starts the way it does on the phone.
-    await page.locator('.card h1').click();
+    await page.locator('.screen h1').click();
 
     const opened = await page.evaluate(async () => {
       const handle = window.__pianopathDevScore;
@@ -117,7 +117,7 @@ test.describe('microphone input', () => {
     await context.grantPermissions(['microphone']);
     const driver = await openDevScore(page);
     await driver.loadMusicXml(SCALE_XML, 'mic-scale');
-    await page.locator('.card h1').click();
+    await page.locator('.screen h1').click();
     await page.evaluate(() => window.__pianopathDevScore?.micConnect());
 
     await page.waitForFunction(() => (window.__pianopathDevScore?.micLevel()?.peak ?? 0) > 0.001, undefined, {
@@ -168,7 +168,7 @@ test.describe('microphone input', () => {
   }) => {
     await context.grantPermissions(['microphone']);
     await page.goto('/#/settings/mic');
-    await expect(page.locator('.card h1')).toHaveText('Microphone');
+    await expect(page.locator('.screen h1')).toHaveText('Microphone');
 
     await page.locator('#mic-connect').click();
     await expect(page.locator('#mic-status')).toContainText('Connected', { timeout: 15_000 });
@@ -207,7 +207,7 @@ test.describe('microphone input', () => {
   test('Diagnostics measures the analysis cost and captures a clip', async ({ page, context }) => {
     await context.grantPermissions(['microphone']);
     await page.goto('/#/settings/diagnostics');
-    await expect(page.locator('.card h1')).toHaveText('Diagnostics');
+    await expect(page.locator('.screen h1')).toHaveText('Diagnostics');
 
     await page.locator('#diag-mic-cost').click();
     await expect(page.locator('#diag-mic-cost-result')).toContainText('budget 3 ms', {

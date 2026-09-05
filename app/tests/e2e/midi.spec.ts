@@ -10,7 +10,7 @@ const key = (page: Page, midi: number) => page.locator(`.key[data-midi="${midi}"
 
 async function openMidiScreen(page: Page): Promise<void> {
   await page.goto('/#/settings/midi');
-  await expect(page.locator('.card h1')).toHaveText('MIDI');
+  await expect(page.locator('.screen h1')).toHaveText('MIDI');
 }
 
 async function connect(page: Page): Promise<void> {
@@ -167,7 +167,7 @@ test.describe('Diagnostics screen', () => {
   test.beforeEach(async ({ page }) => {
     mock = await installMidiMock(page);
     await page.goto('/#/settings/diagnostics');
-    await expect(page.locator('.card h1')).toHaveText('Diagnostics');
+    await expect(page.locator('.screen h1')).toHaveText('Diagnostics');
     await page.locator('#diag-connect').click();
     await expect(page.locator('#diag-env')).toContainText(DEFAULT_MOCK_INPUT.name);
   });
@@ -225,9 +225,9 @@ test.describe('Diagnostics screen', () => {
   test('reachable from Settings', async ({ page }) => {
     await page.goto('/#/settings');
     await page.locator('#open-diagnostics').click();
-    await expect(page.locator('.card h1')).toHaveText('Diagnostics');
+    await expect(page.locator('.screen h1')).toHaveText('Diagnostics');
     expect(new URL(page.url()).hash).toBe('#/settings/diagnostics');
     await page.locator('.back-link').click();
-    await expect(page.locator('.card h1')).toHaveText('Settings');
+    await expect(page.locator('.screen h1')).toHaveText('Settings');
   });
 });

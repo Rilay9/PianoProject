@@ -55,7 +55,11 @@ test.describe('content render check', () => {
     const catalog = (await import(`file://${join(contentDir, 'catalog.json')}`, {
       with: { type: 'json' },
     })) as { default: CatalogItem[] };
-    const items = catalog.default.filter((item) => item.file);
+    // A .pdf item is pages, not notes: it opens in the PDF viewer and OSMD
+    // could never render it (docs/04 §5b).
+    const items = catalog.default.filter(
+      (item) => item.file && !item.file.toLowerCase().endsWith('.pdf'),
+    );
     expect(items.length, 'catalog has no items with files').toBeGreaterThan(0);
 
     const driver = await openDevScore(page);

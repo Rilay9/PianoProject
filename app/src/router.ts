@@ -17,7 +17,7 @@ export type TabId = (typeof TAB_IDS)[number];
  * same way. `sub` is absent (not null) on a plain tab route so that a route
  * object stays value-comparable with `{ tab }`.
  */
-export const SUB_IDS = ['midi', 'diagnostics', 'mic', 'metronome'] as const;
+export const SUB_IDS = ['midi', 'diagnostics', 'mic', 'metronome', 'skills'] as const;
 export type SubId = (typeof SUB_IDS)[number];
 
 /**
@@ -47,6 +47,13 @@ function looksLikeCatalogId(id: string): boolean {
   return SCORE_ID_PATTERN.test(id) && !id.includes('..');
 }
 
+/** Lesson ids are `0.1`, `3.2b` and the like — digits, dots, a letter. */
+export const LESSON_ID_PATTERN = /^[0-9][0-9A-Za-z.-]{0,39}$/;
+
+function looksLikeLessonId(id: string): boolean {
+  return LESSON_ID_PATTERN.test(id) && !id.includes('..');
+}
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
@@ -55,6 +62,12 @@ export interface Route {
   dev?: DevId;
   /** Catalog id of the piece open on the Score screen. */
   score?: string;
+  /** Import id of the PDF open in the PDF viewer (docs/04 §5b). */
+  pdf?: string;
+  /** Curriculum lesson id open on the lesson page (docs/04 §3). */
+  lesson?: string;
+  /** Catalog id open in the chord-chart view (docs/04 §3b). */
+  chart?: string;
 }
 
 function isTabId(value: string): value is TabId {
@@ -84,6 +97,35 @@ export function parseHash(hash: string): Route {
     }
     return looksLikeCatalogId(id) ? { tab: DEFAULT_TAB, score: id } : { tab: DEFAULT_TAB };
   }
+  if (tab === 'pdf') {
+    // A PDF is pixels, not notes, so it gets its own route rather than a mode
+    // on the Score screen (docs/04 §5b).
+    let id: string;
+    try {
+      id = decodeURIComponent(sub);
+    } catch {
+      return { tab: DEFAULT_TAB };
+    }
+    return looksLikeCatalogId(id) ? { tab: 'library', pdf: id } : { tab: DEFAULT_TAB };
+  }
+  if (tab === 'chart') {
+    let id: string;
+    try {
+      id = decodeURIComponent(sub);
+    } catch {
+      return { tab: DEFAULT_TAB };
+    }
+    return looksLikeCatalogId(id) ? { tab: 'library', chart: id } : { tab: DEFAULT_TAB };
+  }
+  if (tab === 'lesson') {
+    let id: string;
+    try {
+      id = decodeURIComponent(sub);
+    } catch {
+      return { tab: DEFAULT_TAB };
+    }
+    return looksLikeLessonId(id) ? { tab: 'plan', lesson: id } : { tab: DEFAULT_TAB };
+  }
   if (tab === 'dev') {
     return isDevId(sub) ? { tab: DEFAULT_TAB, dev: sub } : { tab: DEFAULT_TAB };
   }
@@ -97,6 +139,9 @@ export function parseHash(hash: string): Route {
 
 export function routeToHash(route: Route): string {
   if (route.score) return `#/score/${encodeURIComponent(route.score)}`;
+  if (route.pdf) return `#/pdf/${encodeURIComponent(route.pdf)}`;
+  if (route.lesson) return `#/lesson/${encodeURIComponent(route.lesson)}`;
+  if (route.chart) return `#/chart/${encodeURIComponent(route.chart)}`;
   if (route.dev) return `#/dev/${route.dev}`;
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
@@ -139,6 +184,27 @@ export class Router {
     this.setRoute(route);
   }
 
+  /** Opens an imported PDF in the PDF viewer (`#/pdf/<importId>`). */
+  navigatePdf(importId: string): void {
+    const route: Route = { tab: 'library', pdf: importId };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
+  /** Opens a curriculum lesson page (`#/lesson/<lessonId>`). */
+  navigateLesson(lessonId: string): void {
+    const route: Route = { tab: 'plan', lesson: lessonId };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
+  /** Opens an item in the chord-chart view (`#/chart/<itemId>`). */
+  navigateChart(itemId: string): void {
+    const route: Route = { tab: 'library', chart: itemId };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
   /** Navigates to a builder-only route (`#/dev/<id>`). */
   navigateDev(dev: DevId): void {
     const route: Route = { tab: DEFAULT_TAB, dev };
@@ -157,7 +223,10 @@ export class Router {
       route.tab === this.current.tab &&
       route.sub === this.current.sub &&
       route.dev === this.current.dev &&
-      route.score === this.current.score
+      route.score === this.current.score &&
+      route.pdf === this.current.pdf &&
+      route.lesson === this.current.lesson &&
+      route.chart === this.current.chart
     ) {
       return;
     }

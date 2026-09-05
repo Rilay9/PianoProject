@@ -20,6 +20,7 @@
     "fflate": "0.8.3",
     "idb": "8.0.3",
     "opensheetmusicdisplay": "2.1.2",
+    "pdfjs-dist": "^5.4.394",
     "smplr": "1.0.0"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@types/node": "^22.10.0",
     "eslint": "10.10.0",
     "eslint-config-prettier": "^9.1.0",
+    "fake-indexeddb": "^6.2.5",
     "jsdom": "^30.0.1",
     "prettier": "3.9.6",
     "typescript": "6.0.3",

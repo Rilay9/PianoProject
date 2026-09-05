@@ -162,7 +162,7 @@ test.describe('score screen', () => {
     // keeps the current tab — covered by the router unit tests.
     await openScore(page);
     await page.locator('#score-back').click();
-    await expect(page.locator('.card h1')).toHaveText('Today');
+    await expect(page.locator('.screen h1')).toHaveText('Today');
   });
 
   test('a Tempo-mode run reaches the summary sheet with its numbers', async ({ page }) => {

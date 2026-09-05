@@ -37,6 +37,15 @@ Score screen is a full-screen route pushed on top (back gesture returns).
   names ("play Moonlight I — same texture"), taken from the item's `alternatives[]`.
 - "Shuffle options" swaps every row at once, as before.
 - "Start session" runs the rows in order with a between-item summary.
+- **A row the builder cannot fill is dropped, not shown empty** (P7). An empty row is a hole
+  the learner has to fill by hand, which is what this card exists to avoid; free play is the
+  exception, because it is a prompt and never has an item. On a fresh Stage 0 profile that is
+  the difference between a usable card and three filled rows out of nine.
+- **The swap sheet has a fourth, loosest tier** after the three above: anything playable of
+  the same type within one level. The three tiers genuinely come up empty at Stage 0 — few
+  drills, few shared concept tags — and a swap button that offers nothing is a dead button.
+  Review and repertoire fall back the same way when nothing is due and nothing is mastered,
+  which is what the first week always looks like.
 
 ## 2a. Metronome (standalone)
 
@@ -154,15 +163,21 @@ width.** See `docs/decisions/2026-09-05-p4-pdf-sheet-music.md`; the page-cutting
 - **Layout:** the current system fills the width; the next system is shown greyed below it if
   it fits, so the eye has somewhere to go. Page and system number in the corner.
 - **Follow modes offered:** *manual tap* (tap right half = next system, left = previous),
-  *timed* auto-advance at a bpm the learner sets, and *loop a system*. Tempo % and the
-  count-in behave as on the Score screen.
+  *timed* auto-advance at a bpm the learner sets, and *loop a system*. A PDF has no notes, so
+  the app cannot know how long a system lasts: timed mode asks for the bpm **and the bars per
+  system** (default 4) and advances every `bars × 4 × 60/bpm` seconds. The metronome can click
+  alongside, from the same `audio/Metronome` as §2a.
 - **Wait mode, mic-follow and MIDI-follow are hidden, not disabled**, along with note
   colouring, the keyboard strip and scoring. A PDF has no notes to match, and a greyed-out
   control invites the question "why not?" every time it is seen.
 - **Cut correction is required, not optional.** System detection assumes a clean, digitally
   typeset page; a scan or a photo will cut in the wrong place. A "adjust cuts" mode lets the
-  learner drag the horizontal cut lines on the page thumbnail, and the corrections are stored
-  with the item. Without this, one bad detection makes a file useless.
+  learner drag the horizontal cut lines on the page thumbnail, add or remove a system, or
+  re-detect one page; the corrections are stored with the item and beat detection from then on.
+  Without this, one bad detection makes a file useless. The stored shape is
+  `imports.cuts` — fractions of the page height, in `[top, bottom]` pairs; see `01` §4.5 for
+  why fractions and why pairs. A page the detector finds nothing on falls back to the whole
+  page, never to an empty viewer.
 - **No OMR.** Turning a PDF into notes is an offline desktop step (Audiveris, MuseScore); the
   result comes back through the MusicXML import.
 

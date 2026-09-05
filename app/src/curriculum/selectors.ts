@@ -39,6 +39,27 @@ export function lessonComplete(lesson: Lesson, records: PassRecord[]): boolean {
   return exercises >= exercisesRequired && songs >= songsRequired;
 }
 
+/**
+ * The items to mark passed when the learner says "I already know this" or
+ * "mark this done" (docs/04 §3).
+ *
+ * It has to satisfy `lessonComplete`, or the lesson stays open after the
+ * learner has just told the app it is finished — which is the bug that makes
+ * an honour-system button feel broken. So it follows the same rule the check
+ * does: `exercisesRequired` exercises plus `songsRequired` songs, except that
+ * a `songOptional` lesson takes exercises for both (`00` D21).
+ */
+export function idsToCompleteLesson(lesson: Lesson): string[] {
+  const { exercisesRequired, songsRequired } = lesson.mastery;
+  if (lesson.songOptional) {
+    return lesson.exerciseOptions.slice(0, exercisesRequired + songsRequired);
+  }
+  return [
+    ...lesson.exerciseOptions.slice(0, exercisesRequired),
+    ...lesson.songOptions.slice(0, songsRequired),
+  ];
+}
+
 export interface AlternativesQuery {
   /** The item the learner wants to replace. */
   itemId: string;

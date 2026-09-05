@@ -10,6 +10,20 @@
 export type ItemType = 'song' | 'exercise' | 'drill';
 export type Hands = 'both' | 'right' | 'left';
 
+export interface ItemSource {
+  name: string;
+  url?: string | null;
+  license: string;
+  pd_region?: string | null;
+  editionNotes?: string | null;
+}
+
+export interface ItemMedia {
+  kind: string;
+  label: string;
+  url: string;
+}
+
 export interface CatalogItem {
   id: string;
   type: ItemType;
@@ -25,6 +39,26 @@ export interface CatalogItem {
   alternatives?: string[];
   variantOf?: string | null;
   tags?: string[];
+  composer?: string | null;
+  arranger?: string | null;
+  genre?: string[];
+  durationSec?: number | null;
+  tempoBpm?: number | null;
+  keySig?: string | null;
+  timeSig?: string | null;
+  abrsmGradeApprox?: number | null;
+  source?: ItemSource | null;
+  media?: ItemMedia[];
+  teaching?: { lessonIds?: string[]; notes?: string | null } | null;
+  drill?: { kind: string; params?: Record<string, unknown> } | null;
+  /**
+   * Set on the items synthesised from the `imports` store (docs/04 §4). The
+   * Library and the Score screen both need to know that this one's bytes come
+   * from IndexedDB rather than from a URL under `content/`.
+   */
+  imported?: boolean;
+  /** `pdf` items open in the PDF viewer (docs/04 §5b), never the Score screen. */
+  kind?: 'musicxml' | 'pdf';
 }
 
 export interface Mastery {
@@ -67,11 +101,22 @@ export interface Stage {
   title: string;
   summary: string;
   units: Unit[];
+  approxDuration?: string;
+  abrsmGradeApprox?: number | string | null;
+}
+
+export interface Track {
+  id: string;
+  title: string;
+  description: string;
+  startsAtStage: number;
+  /** Switched on for a new learner; the Plan screen's track chips change it. */
+  defaultActive?: boolean;
 }
 
 export interface Curriculum {
   version: number;
-  tracks: { id: string; title: string; description: string; startsAtStage: number }[];
+  tracks: Track[];
   stages: Stage[];
 }
 

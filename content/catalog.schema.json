@@ -29,7 +29,7 @@
         "tempoBpm": { "type": ["number", "null"] },
         "keySig": { "type": ["string", "null"] },
         "timeSig": { "type": ["string", "null"] },
-        "file": { "type": ["string", "null"], "description": "path under content/ to .mxl/.musicxml; null for IMPORT or runtime-generated drills" },
+        "file": { "type": ["string", "null"], "pattern": "^[^\\s]+\\.(mxl|musicxml|xml|pdf)$", "description": "path under content/ to .mxl/.musicxml, or to a .pdf that opens in the page viewer (04 \u00a75b) rather than the Score screen; null for IMPORT or runtime-generated drills" },
         "variantOf": { "type": ["string", "null"], "description": "id of the parent song when this is simple/full/easy edition" },
         "variantLabel": { "type": ["string", "null"] },
         "drill": {

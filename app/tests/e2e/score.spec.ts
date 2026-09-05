@@ -270,7 +270,7 @@ test.describe('the dev route itself', () => {
       if (r.url().endsWith('.js')) scripts.push(r.url());
     });
     await page.goto('/#/today');
-    await expect(page.locator('.card h1')).toHaveText('Today');
+    await expect(page.locator('.screen h1')).toHaveText('Today');
     expect(scripts.some((s) => s.includes('DevScoreScreen'))).toBe(false);
   });
 });

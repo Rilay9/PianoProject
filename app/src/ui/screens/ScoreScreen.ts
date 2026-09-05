@@ -13,10 +13,12 @@ import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { findItem, contentUrl } from '../../curriculum/load';
+import { getImport } from '../../data/importStore';
 import type { CatalogItem } from '../../curriculum/types';
 import { getMidiSettings } from '../../data/midiSettings';
 import { getSettings, updateSettings, type FollowInput } from '../../data/settingsStore';
 import { evaluateOutcome } from '../../engine/Scoring';
+import { recordRun } from '../../data/progressStore';
 import type { Mode, SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
 import { toMusicXml } from '../../score/mxl';
@@ -534,6 +536,27 @@ export function ScoreScreen(router: Router): HTMLElement {
       masterTempoPct: 100,
     });
 
+    // Recorded before the sheet is drawn, and not awaited: the numbers are
+    // already final, and a slow write should not delay the learner seeing
+    // them. A failed write is reported on the sheet rather than swallowed —
+    // practice history is the one thing here that cannot be regenerated.
+    if (item && mode !== 'listen' && mode !== 'free') {
+      void recordRun({
+        itemId: item.id,
+        mode,
+        tempoPct: score.tempoPct,
+        accuracy: score.accuracy,
+        accuracyEstimated: score.accuracyEstimated,
+        wrongNotes: score.wrongNotesTotal,
+        missed: score.missedTotal,
+        durationMs: score.durationMs,
+        passed: outcome.passed,
+        masterEligible: outcome.masterEligible,
+      }).catch((cause: unknown) => {
+        status.textContent = `Could not save this run: ${String(cause)}`;
+      });
+    }
+
     const title = document.createElement('h2');
     title.textContent = outcome.passed ? 'Passed' : 'Run finished';
     sheet.appendChild(title);
@@ -652,15 +675,33 @@ export function ScoreScreen(router: Router): HTMLElement {
   void (async () => {
     try {
       item = await findItem(itemId);
-      if (!item?.file) {
-        status.textContent = item
-          ? `${item.title} has no notation to open. ${item.importHint ?? ''}`.trim()
-          : `Unknown item “${itemId}”.`;
+      if (!item) {
+        status.textContent = `Unknown item “${itemId}”.`;
         return;
       }
-      const response = await fetch(contentUrl(item.file));
-      if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-      const musicXml = toMusicXml(new Uint8Array(await response.arrayBuffer()));
+      if (item.kind === 'pdf') {
+        // A PDF has no notes to follow; it belongs to the page viewer.
+        status.textContent = `${item.title} is a PDF — open it from Library.`;
+        return;
+      }
+      if (!item.file && !item.imported) {
+        status.textContent = `${item.title} has no notation to open. ${item.importHint ?? ''}`.trim();
+        return;
+      }
+
+      // An imported score's bytes are in IndexedDB, not under `content/`; a
+      // bundled one is fetched from the precache. Everything after this point
+      // is the same either way (docs/04 §4).
+      let musicXml: string;
+      if (item.imported) {
+        const row = await getImport(item.id);
+        if (typeof row?.data !== 'string') throw new Error('the imported file is missing');
+        musicXml = row.data;
+      } else {
+        const response = await fetch(contentUrl(item.file as string));
+        if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+        musicXml = toMusicXml(new Uint8Array(await response.arrayBuffer()));
+      }
 
       // The model comes from an instance with no draw range: a windowed OSMD
       // clamps its cursor iterator, so extracting from the renderer's own view

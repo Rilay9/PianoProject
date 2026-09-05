@@ -1,11 +1,11 @@
 // The handful of settings P1 needs to persist.
 //
-// docs/01-architecture.md §4.5 puts settings in an IndexedDB `settings` store,
-// which docs/06-build-plan.md assigns to a later phase. Rather than build half
-// of that store here, this follows the precedent already set by ui/theme.ts: a
-// tiny get/set module over localStorage that the settings phase can re-point
-// at IndexedDB without any caller noticing. Callers MUST NOT read localStorage
-// directly. See docs/decisions/2026-09-05-p1-midi-audio-choices.md §4.
+// Persisted through data/persist: the IndexedDB `settings` store of
+// docs/01-architecture.md §4.5, mirrored to localStorage so the read stays
+// synchronous. Callers MUST NOT read either store directly. See
+// docs/decisions/2026-09-05-p1-midi-audio-choices.md §4.
+
+import { persistLocal } from './persist';
 
 const STORAGE_KEY = 'pianopath.midi';
 
@@ -76,11 +76,7 @@ export function getMidiSettings(): Readonly<MidiSettings> {
 
 export function updateMidiSettings(patch: Partial<MidiSettings>): Readonly<MidiSettings> {
   current = coerce({ ...current, ...patch });
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
-  } catch {
-    // Settings just won't survive this session.
-  }
+  persistLocal(STORAGE_KEY, JSON.stringify(current));
   for (const l of listeners) l(current);
   return current;
 }

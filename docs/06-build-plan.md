@@ -126,7 +126,9 @@ goal, session builder with 15/30/60/120 templates, "I already know this" + quick
 PDF viewer per `04` §5b on top of the P4 `pdf/systems.ts` spike**, export/import JSON, placement
 test flow, tablet breakpoint. Acceptance: e2e for each screen; data survives reload; import of a
 `.mxl` and of a `.pdf` from the phone's Downloads works (manual), and the PDF steps between
-systems.
+systems. **Done 2026-09-06** — see `docs/decisions/2026-09-06-p7-screens-storage.md`. The
+phone-side manual checks (a real share-target intent from Android, a bought PDF from Downloads,
+an APK install) are P9's, since they need the packaged app.
 
 ### P8 — Drills UI · Sonnet (+ Opus for ear/rhythm scoring) · 1 session
 Deliverables: UI for every drill kind in `05` §7 on top of the P3 framework; audio prompts

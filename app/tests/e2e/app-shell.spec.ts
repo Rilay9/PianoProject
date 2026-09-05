@@ -11,7 +11,7 @@ const TABS: { id: string; heading: string }[] = [
 test.describe('app shell', () => {
   test('lands on Today by default and shows all five tabs', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('.card h1')).toHaveText('Today');
+    await expect(page.locator('.screen h1')).toHaveText('Today');
     for (const tab of TABS) {
       await expect(page.locator(`button.tab-button[data-tab="${tab.id}"]`)).toBeVisible();
     }
@@ -22,7 +22,7 @@ test.describe('app shell', () => {
     await page.goto('/');
     for (const tab of TABS) {
       await page.locator(`button.tab-button[data-tab="${tab.id}"]`).click();
-      await expect(page.locator('.card h1')).toHaveText(tab.heading);
+      await expect(page.locator('.screen h1')).toHaveText(tab.heading);
       await expect(page.locator(`button.tab-button[data-tab="${tab.id}"]`)).toHaveClass(/active/);
       expect(new URL(page.url()).hash).toBe(`#/${tab.id}`);
     }
@@ -32,17 +32,17 @@ test.describe('app shell', () => {
     page,
   }) => {
     await page.goto('/#/library');
-    await expect(page.locator('.card h1')).toHaveText('Library');
+    await expect(page.locator('.screen h1')).toHaveText('Library');
     await page.reload();
-    await expect(page.locator('.card h1')).toHaveText('Library');
+    await expect(page.locator('.screen h1')).toHaveText('Library');
   });
 
   test('browser back navigates to the previous tab', async ({ page }) => {
     await page.goto('/');
     await page.locator('button.tab-button[data-tab="plan"]').click();
-    await expect(page.locator('.card h1')).toHaveText('Plan');
+    await expect(page.locator('.screen h1')).toHaveText('Plan');
     await page.goBack();
-    await expect(page.locator('.card h1')).toHaveText('Today');
+    await expect(page.locator('.screen h1')).toHaveText('Today');
   });
 
   test('theme selector toggles data-theme on the document', async ({ page }) => {

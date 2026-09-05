@@ -22,6 +22,42 @@ export default defineConfig({
         orientation: 'any',
         theme_color: '#0f1115',
         background_color: '#0f1115',
+        // Android's "share to app" for a bought score (docs/04 §4). The POST
+        // is answered by public/share-target.js inside the service worker.
+        share_target: {
+          action: 'share-target',
+          method: 'POST',
+          enctype: 'multipart/form-data',
+          params: {
+            title: 'title',
+            files: [
+              {
+                name: 'score',
+                accept: [
+                  'application/vnd.recordare.musicxml+xml',
+                  'application/vnd.recordare.musicxml',
+                  'application/pdf',
+                  'application/xml',
+                  'text/xml',
+                  '.musicxml',
+                  '.mxl',
+                  '.xml',
+                  '.pdf',
+                ],
+              },
+            ],
+          },
+        },
+        file_handlers: [
+          {
+            action: '.',
+            accept: {
+              'application/pdf': ['.pdf'],
+              'application/vnd.recordare.musicxml+xml': ['.musicxml'],
+              'application/vnd.recordare.musicxml': ['.mxl'],
+            },
+          },
+        ],
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
@@ -40,6 +76,10 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Loaded at the top of the generated worker, before Workbox's own
+        // routes, so the share-target POST is handled rather than falling
+        // through to the navigation fallback.
+        importScripts: ['share-target.js'],
         // Everything is precached — app shell plus every score, the catalog,
         // the curriculum, every lesson and the soundfont — so that after the
         // first launch the app never needs the network again (docs/00 D20).
@@ -49,8 +89,13 @@ export default defineConfig({
         // pattern; swapping it for an .sf2, .mp3 or .ogg would silently drop
         // it from the precache and the app would work perfectly until the
         // first time it was opened offline.
+        //
+        // `.mjs` is in the first pattern for a concrete reason: pdfjs-dist
+        // ships its worker as `pdf.worker.min.mjs`, and with `js` alone the
+        // worker was built, hashed and then silently left out of the
+        // precache — so a PDF opened offline would have hung on a fetch.
         globPatterns: [
-          '**/*.{js,css,html,svg,png,ico,woff2}',
+          '**/*.{js,mjs,css,html,svg,png,ico,woff2}',
           'content/**/*.{json,mxl,musicxml,md}',
           'content/**/*.{sf2,sf3,mp3,ogg,wav,js}',
         ],

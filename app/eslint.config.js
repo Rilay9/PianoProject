@@ -53,5 +53,22 @@ export default tseslint.config(
     files: ['eslint.config.js', 'scripts/**/*.mjs'],
     languageOptions: { sourceType: 'module', globals: nodeGlobals },
   },
+  {
+    // Service-worker source shipped as-is from public/ (the share target).
+    // It runs inside the generated Workbox worker, so its globals are the
+    // worker's, not the window's or Node's.
+    files: ['public/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        self: 'readonly',
+        caches: 'readonly',
+        URL: 'readonly',
+        Request: 'readonly',
+        Response: 'readonly',
+        fetch: 'readonly',
+      },
+    },
+  },
   prettier,
 );

@@ -71,7 +71,7 @@ test.describe('offline', () => {
 
     await context.setOffline(true);
     await page.reload();
-    await expect(page.locator('.card h1')).toHaveText('Today');
+    await expect(page.locator('.screen h1')).toHaveText('Today');
 
     // 1. The catalog and the curriculum — everything else is unusable without them.
     const data = await page.evaluate(async (base) => {
@@ -100,7 +100,7 @@ test.describe('offline', () => {
     await page.evaluate(() => {
       window.location.hash = '#/dev/score';
     });
-    await expect(page.locator('.card h1')).toHaveText('Score renderer (dev)');
+    await expect(page.locator('.screen h1')).toHaveText('Score renderer (dev)');
     await page.waitForFunction(() => window.__pianopathDevScore !== undefined, undefined, {
       timeout: 60_000,
     });

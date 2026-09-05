@@ -1,13 +1,14 @@
 // Storage for microphone calibrations (docs/01 §4.5: a `micCalibration` store
 // keyed by device id).
 //
-// Behind an interface and on localStorage for now, exactly as `midiSettings`
-// is: P7 builds the IndexedDB stores and re-points `micCalibrationStore` at
-// them without any caller noticing. Keyed by device because the correction for
+// Persisted through data/persist, exactly as `midiSettings` is: IndexedDB is
+// the store of record and localStorage the synchronous mirror. Keyed by device
+// because the correction for
 // a phone microphone across a room and for a cable from the piano's line out
 // are not remotely the same table.
 
 import type { MicCalibration } from '../audio/pitch/MicSource';
+import { persistLocal } from './persist';
 
 const STORAGE_KEY = 'pianopath.micCalibration';
 
@@ -84,7 +85,7 @@ function pairs(raw: unknown[]): [number, number][] {
 
 function write(all: Record<string, StoredCalibration>): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    persistLocal(STORAGE_KEY, JSON.stringify(all));
   } catch {
     // The calibration just won't survive this session.
   }

@@ -9,6 +9,7 @@
  */
 import type { CatalogItem, Curriculum } from './types';
 import { indexCatalog, type CatalogIndex } from './selectors';
+import { importedCatalogItems, onImportsChange } from '../data/importStore';
 
 export function contentUrl(path: string, base: string = import.meta.env.BASE_URL): string {
   const prefix = base.endsWith('/') ? base : `${base}/`;
@@ -43,11 +44,32 @@ export function loadCurriculum(): Promise<Curriculum> {
   return curriculumPromise;
 }
 
+/**
+ * The bundled catalog plus the learner's own imports.
+ *
+ * Imports are merged in here rather than at each call site so that everything
+ * downstream — search, the swap sheet, the session builder, `#/score/<id>` —
+ * treats a bought score exactly like a bundled one (docs/04 §4). They come
+ * last, so a bundled item always wins an id collision.
+ */
+export async function allItems(): Promise<CatalogItem[]> {
+  const [bundled, imported] = await Promise.all([loadCatalog(), importedCatalogItems()]);
+  const byId = new Map(imported.map((item) => [item.id, item]));
+  for (const item of bundled) byId.set(item.id, item);
+  return [...byId.values()];
+}
+
 export async function catalogIndex(): Promise<CatalogIndex> {
   if (indexCache) return indexCache;
-  indexCache = indexCatalog(await loadCatalog());
+  indexCache = indexCatalog(await allItems());
   return indexCache;
 }
+
+// An import or a delete invalidates the merged index; the bundled catalog
+// itself never changes at runtime, so only the index is dropped.
+onImportsChange(() => {
+  indexCache = null;
+});
 
 export async function findItem(id: string): Promise<CatalogItem | undefined> {
   return (await catalogIndex()).byId.get(id);

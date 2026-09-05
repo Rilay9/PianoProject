@@ -11,6 +11,9 @@ import { MidiScreen } from './screens/MidiScreen';
 import { DiagnosticsScreen } from './screens/DiagnosticsScreen';
 import { MetronomeScreen } from './screens/MetronomeScreen';
 import { ScoreScreen } from './screens/ScoreScreen';
+import { SkillsScreen } from './screens/SkillsScreen';
+import { LessonScreen } from './screens/LessonScreen';
+import { ChordChartScreen } from './screens/ChordChartScreen';
 
 const TAB_LABELS: Record<TabId, string> = {
   today: 'Today',
@@ -36,27 +39,44 @@ const SUB_SCREENS: Record<SubId, ScreenFactory> = {
   mic: MicScreen,
   diagnostics: DiagnosticsScreen,
   metronome: MetronomeScreen,
+  skills: SkillsScreen,
 };
 
 function screenFor(route: Route): ScreenFactory {
-  // The Score screen is a full-screen route pushed over whichever tab the
-  // learner came from, so the tab stays highlighted and Back returns to it.
+  // The Score screen, the lesson page and the chord chart are full-screen
+  // routes pushed over whichever tab the learner came from, so the tab stays
+  // highlighted and Back returns to it.
   if (route.score) return ScoreScreen;
+  if (route.lesson) {
+    const lessonId = route.lesson;
+    return (router) => LessonScreen(router, lessonId);
+  }
+  if (route.chart) {
+    const chartId = route.chart;
+    return (router) => ChordChartScreen(router, chartId);
+  }
   return route.sub ? SUB_SCREENS[route.sub] : SCREENS[route.tab];
 }
 
 /**
- * Builder routes are loaded on demand.
+ * Screens whose dependency is too large for the entry bundle, loaded on
+ * demand: `/dev/score` pulls in OpenSheetMusicDisplay and the PDF viewer pulls
+ * in pdfjs-dist. Both are precached, so "on demand" costs nothing offline —
+ * it only keeps them out of the first parse.
  *
  * /dev/score pulls in OpenSheetMusicDisplay, which is by far the largest
  * dependency in the app; a static import would put it in the entry bundle for
  * every learner who never opens it. The placeholder keeps the shell responsive
  * while the chunk arrives.
  */
-function mountDevScreen(main: HTMLElement, router: Router, setCurrent: (el: HTMLElement) => void): HTMLElement {
+function mountLazyScreen(
+  main: HTMLElement,
+  setCurrent: (el: HTMLElement) => void,
+  load: () => Promise<HTMLElement>,
+): HTMLElement {
   const holder = document.createElement('section');
   holder.className = 'screen';
-  holder.dataset.screen = 'dev-loading';
+  holder.dataset.screen = 'loading';
   const card = document.createElement('div');
   card.className = 'card';
   const h1 = document.createElement('h1');
@@ -64,10 +84,9 @@ function mountDevScreen(main: HTMLElement, router: Router, setCurrent: (el: HTML
   card.appendChild(h1);
   holder.appendChild(card);
 
-  void import('./screens/DevScoreScreen').then(({ DevScoreScreen }) => {
+  void load().then((real) => {
     // The route may have changed while the chunk was in flight.
     if (!holder.isConnected) return;
-    const real = DevScoreScreen(router);
     main.replaceChildren(real);
     setCurrent(real);
   });
@@ -124,11 +143,21 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
     // the page (see ui/screenLifecycle.ts).
     disposeScreen(currentScreen);
     main.innerHTML = '';
-    currentScreen = route.dev
-      ? mountDevScreen(main, router, (el) => {
-          currentScreen = el;
-        })
-      : screenFor(route)(router);
+    const setCurrent = (el: HTMLElement): void => {
+      currentScreen = el;
+    };
+    if (route.dev) {
+      currentScreen = mountLazyScreen(main, setCurrent, () =>
+        import('./screens/DevScoreScreen').then(({ DevScoreScreen }) => DevScoreScreen(router)),
+      );
+    } else if (route.pdf) {
+      const pdfId = route.pdf;
+      currentScreen = mountLazyScreen(main, setCurrent, () =>
+        import('./screens/PdfScreen').then(({ PdfScreen }) => PdfScreen(router, pdfId)),
+      );
+    } else {
+      currentScreen = screenFor(route)(router);
+    }
     main.appendChild(currentScreen);
   });
 }

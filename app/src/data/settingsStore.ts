@@ -1,10 +1,10 @@
 /**
  * The practice, display and sound settings from docs/04-ui-spec.md §7.
  *
- * Same shape as `data/midiSettings`, and for the same reason: `01` §4.5 puts
- * settings in IndexedDB, and P7 moves them there. Every caller goes through
- * this module, so that move is one file. Callers MUST NOT read localStorage
- * directly.
+ * Stored through `data/persist`, which writes IndexedDB (the store of record,
+ * per `01` §4.5) and mirrors to localStorage so that `getSettings()` can stay
+ * synchronous — it is called from inside a render pass. Callers MUST NOT touch
+ * either store directly.
  *
  * Everything here is *persisted* preference. Per-run state — which mode this
  * run is in, where the loop is — belongs to the Score screen and is
@@ -13,6 +13,7 @@
  */
 import type { ScoreLayout } from '../score/WindowRenderer';
 import type { MetronomeSound } from '../audio/Metronome';
+import { persistLocal } from './persist';
 
 const STORAGE_KEY = 'pianopath.settings';
 
@@ -173,11 +174,7 @@ export function getSettings(): Readonly<PracticeSettings> {
 
 export function updateSettings(patch: Partial<PracticeSettings>): Readonly<PracticeSettings> {
   current = coerceSettings({ ...current, ...patch });
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
-  } catch {
-    // Blocked storage: the settings hold for this session and no longer.
-  }
+  persistLocal(STORAGE_KEY, JSON.stringify(current));
   for (const listener of listeners) listener(current);
   return current;
 }
@@ -185,6 +182,16 @@ export function updateSettings(patch: Partial<PracticeSettings>): Readonly<Pract
 export function onSettingsChange(cb: (s: PracticeSettings) => void): () => void {
   listeners.add(cb);
   return () => listeners.delete(cb);
+}
+
+/**
+ * Re-reads the mirror. Called once after `hydratePersisted()` has had a chance
+ * to restore it from IndexedDB — on a device whose localStorage was cleared
+ * but whose database survived, the module-load read above saw nothing.
+ */
+export function reloadSettings(): void {
+  current = read();
+  for (const listener of listeners) listener(current);
 }
 
 /** Test hook: re-reads storage and drops listeners. */

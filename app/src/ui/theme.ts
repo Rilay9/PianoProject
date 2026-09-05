@@ -1,7 +1,9 @@
 // Theme: system (prefers-color-scheme) by default, with a manual override
-// persisted to localStorage for now. P7 moves all settings into IndexedDB
-// behind the same get/set shape, so callers should only use this module's
-// exports rather than touching localStorage directly.
+// persisted through data/persist — IndexedDB as the store of record, mirrored
+// to localStorage so the first paint can read it synchronously. Callers should
+// only use this module's exports rather than touching either store directly.
+
+import { persistLocal } from '../data/persist';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 
@@ -26,11 +28,7 @@ export function getThemePreference(): ThemePreference {
 
 export function setThemePreference(pref: ThemePreference): void {
   current = pref;
-  try {
-    localStorage.setItem(STORAGE_KEY, pref);
-  } catch {
-    // ignore — theme just won't persist this session
-  }
+  persistLocal(STORAGE_KEY, pref);
   applyTheme();
   for (const l of listeners) l(current);
 }

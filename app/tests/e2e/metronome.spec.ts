@@ -11,16 +11,16 @@ import { expect, test } from '@playwright/test';
 test.describe('metronome', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/#/today/metronome');
-    await expect(page.locator('.card h1')).toHaveText('Metronome');
+    await expect(page.locator('.screen h1')).toHaveText('Metronome');
   });
 
   test('is reachable from Today and back again', async ({ page }) => {
     await page.goto('/');
     await page.locator('#today-metronome').click();
-    await expect(page.locator('.card h1')).toHaveText('Metronome');
+    await expect(page.locator('.screen h1')).toHaveText('Metronome');
     expect(new URL(page.url()).hash).toBe('#/today/metronome');
     await page.locator('.back-link').click();
-    await expect(page.locator('.card h1')).toHaveText('Today');
+    await expect(page.locator('.screen h1')).toHaveText('Today');
   });
 
   test('shows a tempo and changes it with the nudge buttons and the slider', async ({ page }) => {
@@ -102,7 +102,7 @@ test.describe('metronome', () => {
     await page.locator('#metronome-start').click();
     await expect(page.locator('#metronome-start')).toHaveText('Stop');
     await page.locator('.back-link').click();
-    await expect(page.locator('.card h1')).toHaveText('Today');
+    await expect(page.locator('.screen h1')).toHaveText('Today');
     // Coming back gives a stopped metronome, not one that kept running unseen.
     await page.locator('#today-metronome').click();
     await expect(page.locator('#metronome-start')).toHaveText('Start');

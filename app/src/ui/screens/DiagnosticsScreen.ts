@@ -2,8 +2,14 @@
 //
 // This is the screen that answers "is the cable working?" in seconds, and the
 // one the owner exports from when something misbehaves on the phone and there
-// is no laptop attached. Four blocks: what the browser sees, what bytes are
-// arriving, how far behind the input is, and a copyable text report.
+// is no laptop attached. Its entire purpose is to be *copied into a message*,
+// which is why every block ends up in the debug report as well.
+//
+// docs/04 §7b makes it a screen in its own right with seven blocks: offline
+// and storage, MIDI, microphone, render, content, errors, and the report. The
+// offline block is the one that earns its place — Workbox skips an oversized
+// file silently, so "n of m catalog files cached" with the missing ones named
+// is the only way that failure is ever seen before a train journey.
 
 import { addButton, addParagraph, addSection, createSubScreen } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
@@ -20,6 +26,11 @@ import { concatChunks, encodeWav } from '../../util/wav';
 import { getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
 import { getMidiSettings, updateMidiSettings } from '../../data/midiSettings';
 import type { Router } from '../../router';
+import { loadCurriculum, allItems } from '../../curriculum/load';
+import { thinLessons } from '../../curriculum/selectors';
+import { errorCount, loggedErrors } from '../../util/errorLog';
+import { precacheReport, type PrecacheReport } from '../../util/offlineStatus';
+import { formatBytes, measureStorage, type StorageBreakdown } from './SettingsScreen';
 
 const LOG_ROWS_SHOWN = 100;
 const DEBUG_REPORT_MESSAGES = 100;
@@ -53,6 +64,31 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   envBody.id = 'diag-env';
   env.appendChild(envBody);
   addButton(env, 'Connect piano', () => void connect(), { id: 'diag-connect' });
+
+  // --- Offline and storage (docs/04 §7b, `00` D20) -------------------------
+  const offlineBlock = addSection(card, 'Offline and storage');
+  const offlineBody = document.createElement('div');
+  offlineBody.id = 'diag-offline';
+  offlineBody.className = 'kv-block';
+  offlineBlock.appendChild(offlineBody);
+  const missingList = document.createElement('ul');
+  missingList.id = 'diag-missing';
+  missingList.hidden = true;
+  offlineBlock.appendChild(missingList);
+  addButton(offlineBlock, 'Check the precache', () => void refreshOffline(), { id: 'diag-precache' });
+
+  // --- Content (docs/04 §7b) -----------------------------------------------
+  const contentBlock = addSection(card, 'Content');
+  const contentBody = document.createElement('div');
+  contentBody.id = 'diag-content';
+  contentBody.className = 'kv-block';
+  contentBlock.appendChild(contentBody);
+
+  // --- Errors (docs/04 §7b) ------------------------------------------------
+  const errorBlock = addSection(card, 'Errors this session');
+  const errorBody = document.createElement('div');
+  errorBody.id = 'diag-errors';
+  errorBlock.appendChild(errorBody);
 
   // --- Message log ---------------------------------------------------------
   const logBlock = addSection(card, 'MIDI messages');
@@ -521,6 +557,114 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
       : `${state.detail} · waiting for audio…`;
   }
 
+  let lastPrecache: PrecacheReport | null = null;
+  let lastStorage: StorageBreakdown | null = null;
+  let contentSummary: string[] = [];
+
+  function line(parent: HTMLElement, text: string): void {
+    const p = document.createElement('p');
+    p.className = 'muted';
+    p.textContent = text;
+    parent.appendChild(p);
+  }
+
+  async function refreshOffline(): Promise<void> {
+    offlineBody.replaceChildren();
+    line(offlineBody, 'Checking…');
+    const [report, storage] = await Promise.all([precacheReport(), measureStorage()]);
+    lastPrecache = report;
+    lastStorage = storage;
+    offlineBody.replaceChildren();
+    line(offlineBody, `Service worker: ${report.serviceWorker}`);
+    line(offlineBody, `Currently ${report.online ? 'online' : 'offline'}`);
+    line(
+      offlineBody,
+      `Precached ${String(report.cached)} of ${String(report.total)} catalog files` +
+        (report.bytes > 0 ? ` (${formatBytes(report.bytes)} reported)` : ''),
+    );
+    line(
+      offlineBody,
+      `Storage: ${formatBytes(storage.usageBytes)} used of ${formatBytes(storage.quotaBytes)} · ` +
+        `${String(storage.precached)} cache entries · ` +
+        `${String(storage.imports)} imports (${formatBytes(storage.importBytes)})`,
+    );
+    line(offlineBody, `Last update check: ${report.lastUpdateCheck ?? 'never'}`);
+
+    missingList.replaceChildren();
+    missingList.hidden = report.missing.length === 0;
+    for (const file of report.missing) {
+      const li = document.createElement('li');
+      li.textContent = file;
+      missingList.appendChild(li);
+    }
+    if (report.missing.length > 0) {
+      const li = document.createElement('li');
+      li.className = 'muted';
+      li.textContent = 'These would be missing if you opened the app with no network.';
+      missingList.appendChild(li);
+    }
+  }
+
+  async function refreshContent(): Promise<void> {
+    const [items, curriculum] = await Promise.all([allItems(), loadCurriculum()]);
+    const byType = new Map<string, number>();
+    const byTrack = new Map<string, number>();
+    for (const item of items) {
+      byType.set(item.type, (byType.get(item.type) ?? 0) + 1);
+      for (const track of item.tracks) byTrack.set(track, (byTrack.get(track) ?? 0) + 1);
+    }
+    let units = 0;
+    let lessons = 0;
+    for (const stage of curriculum.stages) {
+      units += stage.units.length;
+      for (const unit of stage.units) lessons += unit.lessons.length;
+    }
+    const thin = thinLessons(curriculum);
+
+    contentSummary = [
+      `Catalog: ${String(items.length)} items — ` +
+        [...byType.entries()].map(([type, n]) => `${String(n)} ${type}`).join(', '),
+      `By track: ${[...byTrack.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(([track, n]) => `${track} ${String(n)}`)
+        .join(', ')}`,
+      `Curriculum v${String(curriculum.version)}: ${String(curriculum.stages.length)} stages, ` +
+        `${String(units)} units, ${String(lessons)} lessons, ${String(curriculum.tracks.length)} tracks`,
+      thin.length === 0
+        ? 'Every lesson meets the three-alternative rule (docs/00 D21).'
+        : `Thin lessons (below three options): ${thin.map((l) => l.id).join(', ')}`,
+    ];
+    contentBody.replaceChildren();
+    for (const text of contentSummary) line(contentBody, text);
+  }
+
+  function refreshErrors(): void {
+    const errors = loggedErrors();
+    errorBody.replaceChildren();
+    if (errors.length === 0) {
+      line(errorBody, 'No uncaught errors or unhandled rejections this session.');
+      return;
+    }
+    line(errorBody, `${String(errorCount())} in ${String(errors.length)} distinct messages.`);
+    const list = document.createElement('ul');
+    for (const error of errors) {
+      const li = document.createElement('li');
+      li.textContent = `${error.source} ×${String(error.count)} — ${error.message}`;
+      list.appendChild(li);
+    }
+    errorBody.appendChild(list);
+  }
+
+  void refreshOffline().catch(() => {
+    offlineBody.replaceChildren();
+    line(offlineBody, 'The precache could not be inspected in this browser.');
+  });
+  void refreshContent().catch(() => {
+    contentBody.replaceChildren();
+    line(contentBody, 'The content could not be read.');
+  });
+  refreshErrors();
+
   function buildReport(): string {
     const state = webMidiSource.state;
     const settings = getMidiSettings();
@@ -548,6 +692,31 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
       `Outputs (${state.outputs.length}):`,
       ...webMidiSource.outputs.map((o) => `  - ${o.name} id=${o.id} ${o.state}/${o.connection}`),
       `Suppressed high-rate messages: activeSensing=${c.activeSensing} clock=${c.clock}`,
+      '',
+      '## Offline and storage',
+      lastPrecache
+        ? `Service worker: ${lastPrecache.serviceWorker}; ${lastPrecache.online ? 'online' : 'offline'}; ` +
+          `precached ${lastPrecache.cached}/${lastPrecache.total} catalog files; ` +
+          `last update check ${lastPrecache.lastUpdateCheck ?? 'never'}`
+        : 'not measured',
+      ...(lastPrecache && lastPrecache.missing.length > 0
+        ? [`Missing: ${lastPrecache.missing.join(', ')}`]
+        : []),
+      lastStorage
+        ? `Storage: ${formatBytes(lastStorage.usageBytes)} of ${formatBytes(lastStorage.quotaBytes)}; ` +
+          `${lastStorage.precached} cache entries; ${lastStorage.imports} imports ` +
+          `(${formatBytes(lastStorage.importBytes)})`
+        : 'Storage: not measured',
+      '',
+      '## Content',
+      ...(contentSummary.length > 0 ? contentSummary : ['not loaded']),
+      '',
+      '## Errors this session',
+      ...(loggedErrors().length === 0
+        ? ['none']
+        : loggedErrors().map(
+            (error) => `${error.source} x${error.count} ${error.firstAt} — ${error.message}`,
+          )),
       '',
       '## Audio',
       `Engine state: ${audioEngine.state}`,
