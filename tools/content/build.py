@@ -148,10 +148,12 @@ def copy_schemas(out_dir: Path) -> None:
             shutil.copy2(source, out_dir / name)
 
 
-def step_validate(out_dir: Path, strict_license: bool) -> Step:
+def step_validate(out_dir: Path, strict_license: bool, allow_nc: bool = False) -> Step:
     args = ["--dir", str(out_dir)]
     if strict_license:
         args.append("--strict-license")
+    if allow_nc:
+        args.append("--allow-nc")
     code, output = python("validate.py", *args)
     return Step("validate", ok=code == 0, detail=output if code else summary_line(output))
 
@@ -206,6 +208,11 @@ def main() -> None:
         action="store_true",
         help="fail on any licence that is not redistributable",
     )
+    parser.add_argument(
+        "--allow-nc",
+        action="store_true",
+        help="include CC BY-NC editions — a personal build only, never deployed (docs/00 D10a)",
+    )
     args = parser.parse_args()
 
     if args.if_missing and already_built(args.out):
@@ -229,11 +236,11 @@ def main() -> None:
     steps.append(copy_curriculum(args.out))
     steps.append(copy_lessons(args.out))
     copy_schemas(args.out)
-    steps.append(step_validate(args.out, args.strict_license))
+    steps.append(step_validate(args.out, args.strict_license, args.allow_nc))
     if args.render:
         steps.append(step_render(args.out, args.render_limit))
         # The render check writes measured durations back, so validate again.
-        steps.append(step_validate(args.out, args.strict_license))
+        steps.append(step_validate(args.out, args.strict_license, args.allow_nc))
 
     print("\n--- content build ---")
     for step in steps:

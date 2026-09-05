@@ -11,6 +11,11 @@ only ever reads `app/public/content/catalog.json`, `curriculum.json`, `scores/**
    whose *edition/arrangement* is public domain or CC-licensed (CC0, CC BY, CC BY-SA; **not**
    CC BY-NC/ND for redistribution inside an app we might later share). Arrangements we write
    ourselves are ours; mark them `license: "CC0"`.
+   **Amendment 2026-09-05 (owner, `00` D10a):** the app is for one person, so a *personal*
+   build may include **CC BY-NC** editions — `python3 tools/content/build.py --allow-nc`.
+   It is off by default and every NC item is tagged `nc-personal-build` in the catalog, so a
+   deploy can be checked. ND stays excluded outright: it forbids the normalisation this
+   pipeline performs. A build made with `--allow-nc` must not be published to a public URL.
 2. Every catalog item has a `source` block: `name`, `url`, `license`, `pd_region`
    (`worldwide` / `US`), `fetchedAt`, and `checksum`. `tools/content/validate.py` rejects
    items without it.

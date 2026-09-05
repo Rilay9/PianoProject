@@ -37,7 +37,7 @@ except ImportError:  # pragma: no cover
     sys.exit(2)
 
 from common import CONTENT_SRC, DEFAULT_OUT  # noqa: E402
-from licensing import Verdict, license_verdict  # noqa: E402
+from licensing import NC_PERSONAL_TAG, Verdict, license_verdict  # noqa: E402
 
 #: docs/03 §3 step 5: "duration sanity (5 s – 20 min)".
 MIN_DURATION_SEC = 5
@@ -61,7 +61,9 @@ def validate_schema(name: str, data_path: Path, schema_path: Path) -> list[str]:
     ]
 
 
-def validate_catalog(catalog: list, content_dir: Path, strict_license: bool) -> list[str]:
+def validate_catalog(
+    catalog: list, content_dir: Path, strict_license: bool, allow_nc: bool = False
+) -> list[str]:
     errors: list[str] = []
     ids = [item["id"] for item in catalog]
     duplicates = sorted({i for i in ids if ids.count(i) > 1})
@@ -86,7 +88,7 @@ def validate_catalog(catalog: list, content_dir: Path, strict_license: bool) -> 
         if not licence:
             errors.append(f"{item_id}: no licence")
         elif strict_license:
-            decision = license_verdict(licence, source=item_id)
+            decision = license_verdict(licence, source=item_id, allow_nc=allow_nc)
             if decision.verdict is not Verdict.BUNDLE:
                 errors.append(f"{item_id}: licence {licence!r} — {decision.reason}")
 
@@ -125,6 +127,11 @@ def main() -> None:
         action="store_true",
         help="also refuse licences that are not redistributable (docs/03 §1)",
     )
+    parser.add_argument(
+        "--allow-nc",
+        action="store_true",
+        help="accept CC BY-NC editions — a personal build only (docs/00 D10a)",
+    )
     args = parser.parse_args()
 
     errors: list[str] = []
@@ -139,7 +146,7 @@ def main() -> None:
         catalog = load(args.dir / "catalog.json")
         curriculum = load(args.dir / "curriculum.json")
         assert isinstance(catalog, list) and isinstance(curriculum, dict)
-        errors += validate_catalog(catalog, args.dir, args.strict_license)
+        errors += validate_catalog(catalog, args.dir, args.strict_license, args.allow_nc)
         errors += validate_curriculum(curriculum, catalog)
 
     if errors:
@@ -150,7 +157,14 @@ def main() -> None:
 
     catalog = load(args.dir / "catalog.json")
     assert isinstance(catalog, list)
+    personal = [item["id"] for item in catalog if NC_PERSONAL_TAG in (item.get("tags") or [])]
     print(f"content validation OK: {args.dir} ({len(catalog)} catalog items)")
+    if personal:
+        # Loudly, every time: this build is not for a public URL.
+        print(
+            f"NOTE: {len(personal)} item(s) are CC BY-NC and bundled for a personal build "
+            "(docs/00 D10a). Do not deploy this build publicly."
+        )
 
 
 if __name__ == "__main__":

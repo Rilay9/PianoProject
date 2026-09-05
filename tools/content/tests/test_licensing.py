@@ -88,3 +88,30 @@ class TestComposition(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestPersonalBuild(unittest.TestCase):
+    """
+    `--allow-nc`, the owner's amendment of 2026-09-05 (docs/00 D10a).
+
+    It relaxes exactly one thing. Silence still grants nothing, and ND still
+    forbids the normalisation the pipeline performs, whoever is listening.
+    """
+
+    def test_non_commercial_is_admitted_for_a_personal_build(self) -> None:
+        decision = license_verdict("CC BY-NC-SA 4.0", allow_nc=True)
+        self.assertIs(decision.verdict, Verdict.BUNDLE)
+        self.assertIn("personal build", decision.reason)
+
+    def test_it_does_not_admit_an_edition_with_no_licence(self) -> None:
+        self.assertIs(license_verdict("", allow_nc=True).verdict, Verdict.REJECT)
+        self.assertIs(
+            license_verdict("Copyright 2008. All rights reserved.", allow_nc=True).verdict,
+            Verdict.LOCAL_ONLY,
+        )
+
+    def test_it_does_not_admit_no_derivatives(self) -> None:
+        self.assertIs(license_verdict("CC BY-ND 4.0", allow_nc=True).verdict, Verdict.LOCAL_ONLY)
+
+    def test_it_is_off_by_default(self) -> None:
+        self.assertIs(license_verdict("CC BY-NC-SA 4.0").verdict, Verdict.LOCAL_ONLY)

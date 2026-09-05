@@ -49,6 +49,10 @@ class LicenseDecision:
         return self.verdict is Verdict.BUNDLE
 
 
+#: Tag put on every catalog item admitted by `allow_nc`, so a deploy can be
+#: checked for them before it goes anywhere public.
+NC_PERSONAL_TAG = "nc-personal-build"
+
 #: Licences that permit redistribution inside the app.
 REDISTRIBUTABLE = {
     "PD", "CC0", "CC BY", "CC BY-SA", "CC BY 4.0", "CC BY-SA 4.0", "CC BY 3.0", "CC BY-SA 3.0",
@@ -83,12 +87,27 @@ def normalise_license(text: str) -> str:
     return text.strip()
 
 
-def license_verdict(raw: str, *, source: str = "") -> LicenseDecision:
-    """Decides whether an *edition* licence permits bundling."""
+def license_verdict(raw: str, *, source: str = "", allow_nc: bool = False) -> LicenseDecision:
+    """
+    Decides whether an *edition* licence permits bundling.
+
+    `allow_nc` is the owner's amendment of 2026-09-05 (`docs/00` D10a): the app
+    is for one person, so a personal build may carry CC BY-NC editions — which
+    is what most scholarly encodings turn out to be. It stays off by default
+    and it does not relax anything else: an edition with **no** licence grants
+    nothing whoever is listening, and ND forbids the normalisation this
+    pipeline performs whether or not anyone else ever sees the result.
+    """
     if not raw or not raw.strip():
         return LicenseDecision(Verdict.REJECT, "", f"{source or 'file'} states no licence")
     for pattern, name, reason in NON_REDISTRIBUTABLE_PATTERNS:
         if pattern.search(raw):
+            if allow_nc and name == "CC BY-NC":
+                return LicenseDecision(
+                    Verdict.BUNDLE,
+                    name,
+                    "non-commercial, bundled for a personal build only (docs/00 D10a)",
+                )
             return LicenseDecision(Verdict.LOCAL_ONLY, name, reason)
     normalised = normalise_license(raw)
     if normalised in REDISTRIBUTABLE:
