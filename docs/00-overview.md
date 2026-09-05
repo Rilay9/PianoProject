@@ -71,7 +71,7 @@ never requires an account or a server.
 | A5 | **Answered:** phone only, landscape for reading; a **tablet layout** (more bars per window, lesson text beside the score) is implemented as a responsive breakpoint so it works if a tablet ever appears. Several phone follow options exist: MIDI-follow, mic-follow, timed, and manual scroll. | — |
 | A6 | **Answered:** public GitHub repo is OK for now → GitHub Pages hosting. | — |
 | A7 | **English UI, letter note names (C D E…)**, not solfège. | One localisation table; solfège toggle is a listed backlog item. |
-| A8 | The Roland HP-130 sends **standard MIDI 1.0** on its 5-pin DIN MIDI OUT (Note On/Off with velocity, sustain pedal CC64). It is a 1990s digital piano; there is no proprietary "old Roland protocol" involved in note data (Roland's pre-MIDI DCB bus was 1982–83 synthesizers only). The "doesn't work with Skoove" symptom is therefore almost certainly the **cable or the phone-side setup**, not the piano. | Even if some quirk exists, the fallback modes make the app fully usable, and the MIDI monitor tool (Phase 1) shows raw bytes so any quirk can be diagnosed later. |
+| A8 | ~~The Roland HP-130 sends standard MIDI 1.0…~~ **Confirmed on hardware, 2026-09-05.** MIDI now works end to end: Diagnostics debug report shows a clean connection, correct parsing (including Note On velocity-0 as Note Off), no dropped/stuck notes. Root cause of the original Skoove failure was the cable's DIN plugs being reversed — same cable, swapped orientation, works. Sustain pedal (CC64) not yet tested but nothing depends on it. Full writeup in `07-midi-hp130-notes.md`. | — |
 
 ## 5. Owner's answers so far and remaining open questions
 
@@ -80,7 +80,8 @@ navigation both ways · genres = classical + beautiful pieces, rock/metal via im
 jazz for jamming with a friend, pop/chords for himself · time = 20–30 min some weekdays, hours
 at weekends · public repo OK · phone only with a tablet mode · wants mic-based note/chord
 recognition as the MIDI backup, favouring the score's notes when ambiguous · playback both to
-phone and to the piano (toggle).
+phone and to the piano (toggle) · **MIDI confirmed working end to end on the actual HP-130 +
+S25 + cable** once the DIN plugs were flipped the right way round (see `07-midi-hp130-notes.md`).
 
 Still open (defaults in brackets; answer whenever):
 
@@ -88,12 +89,13 @@ Still open (defaults in brackets; answer whenever):
 2. ~~Target songs~~ **Answered:** Avenged Sevenfold — Seize the Day, Dear God, So Far Away,
    Fiction; Linkin Park — Final Masquerade, Waiting for the End, Shadow of the Day. Import-only;
    the rock/metal module writes a technique brief per song. Sleep Token picks still open.
-3. **A wired audio path instead of the mic?** (owner is looking into it) The HP-130 has a headphone/line output. A
+3. ~~MIDI cable checklist~~ **Resolved 2026-09-05: MIDI works.** The cable's plugs were reversed;
+   swapping them fixed it. See `07-midi-hp130-notes.md` for the confirmed device behaviour.
+4. **A wired audio path instead of the mic?** (owner is looking into it) The HP-130 has a headphone/line output. A
    class-compliant **USB audio interface** (e.g. a Behringer UCA202, ~$30) plugged into the
    S25 through the OTG adapter gives the app a clean line-level signal through the same
    microphone API — far more reliable than the phone mic in a room. Not required; mic works
    first. [Plan for both; mic is the default.]
-4. MIDI cable details remain deferred to the P1 checklist (`07-midi-hp130-notes.md`).
 
 ## 6. What is in this repository
 
