@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022"],
+    // DOM is needed even though this project runs in Node: Playwright's
+    // page.evaluate / addInitScript callbacks are authored here but execute in
+    // the browser, so they reference window, navigator and friends.
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "Bundler",
