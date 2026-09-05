@@ -1,0 +1,7226 @@
+{
+  "id": "exercise.hanon.01.both",
+  "title": "Hanon No. 1 (C major) — both",
+  "steps": [
+    {
+      "index": 0,
+      "onset": 0,
+      "notes": [
+        {
+          "id": "0:1:1:0:60",
+          "midi": 60,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:0:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 1,
+      "onset": 0.25,
+      "notes": [
+        {
+          "id": "0:1:1:240:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0.25,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:240:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 2,
+      "onset": 0.5,
+      "notes": [
+        {
+          "id": "0:1:1:480:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0.5,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:480:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 3,
+      "onset": 0.75,
+      "notes": [
+        {
+          "id": "0:1:1:720:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0.75,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:720:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 4,
+      "onset": 1,
+      "notes": [
+        {
+          "id": "0:1:1:960:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:960:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 5,
+      "onset": 1.25,
+      "notes": [
+        {
+          "id": "0:1:1:1200:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1.25,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:1200:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 6,
+      "onset": 1.5,
+      "notes": [
+        {
+          "id": "0:1:1:1440:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1.5,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:1440:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 7,
+      "onset": 1.75,
+      "notes": [
+        {
+          "id": "0:1:1:1680:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1.75,
+          "duration": 0.25
+        },
+        {
+          "id": "0:2:2:1680:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 8,
+      "onset": 2,
+      "notes": [
+        {
+          "id": "1:1:1:1920:62",
+          "midi": 62,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:1920:50",
+          "midi": 50,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 9,
+      "onset": 2.25,
+      "notes": [
+        {
+          "id": "1:1:1:2160:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2.25,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:2160:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 10,
+      "onset": 2.5,
+      "notes": [
+        {
+          "id": "1:1:1:2400:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2.5,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:2400:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 11,
+      "onset": 2.75,
+      "notes": [
+        {
+          "id": "1:1:1:2640:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2.75,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:2640:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 12,
+      "onset": 3,
+      "notes": [
+        {
+          "id": "1:1:1:2880:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:2880:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 13,
+      "onset": 3.25,
+      "notes": [
+        {
+          "id": "1:1:1:3120:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3.25,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:3120:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 14,
+      "onset": 3.5,
+      "notes": [
+        {
+          "id": "1:1:1:3360:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3.5,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:3360:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 15,
+      "onset": 3.75,
+      "notes": [
+        {
+          "id": "1:1:1:3600:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3.75,
+          "duration": 0.25
+        },
+        {
+          "id": "1:2:2:3600:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 16,
+      "onset": 4,
+      "notes": [
+        {
+          "id": "2:1:1:3840:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:3840:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 17,
+      "onset": 4.25,
+      "notes": [
+        {
+          "id": "2:1:1:4080:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4.25,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:4080:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 18,
+      "onset": 4.5,
+      "notes": [
+        {
+          "id": "2:1:1:4320:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4.5,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:4320:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 19,
+      "onset": 4.75,
+      "notes": [
+        {
+          "id": "2:1:1:4560:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4.75,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:4560:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 20,
+      "onset": 5,
+      "notes": [
+        {
+          "id": "2:1:1:4800:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:4800:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 21,
+      "onset": 5.25,
+      "notes": [
+        {
+          "id": "2:1:1:5040:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5.25,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:5040:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 22,
+      "onset": 5.5,
+      "notes": [
+        {
+          "id": "2:1:1:5280:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5.5,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:5280:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 23,
+      "onset": 5.75,
+      "notes": [
+        {
+          "id": "2:1:1:5520:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5.75,
+          "duration": 0.25
+        },
+        {
+          "id": "2:2:2:5520:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 5.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 24,
+      "onset": 6,
+      "notes": [
+        {
+          "id": "3:1:1:5760:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:5760:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 25,
+      "onset": 6.25,
+      "notes": [
+        {
+          "id": "3:1:1:6000:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6.25,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:6000:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 26,
+      "onset": 6.5,
+      "notes": [
+        {
+          "id": "3:1:1:6240:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6.5,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:6240:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 27,
+      "onset": 6.75,
+      "notes": [
+        {
+          "id": "3:1:1:6480:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6.75,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:6480:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 6.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 28,
+      "onset": 7,
+      "notes": [
+        {
+          "id": "3:1:1:6720:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:6720:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 29,
+      "onset": 7.25,
+      "notes": [
+        {
+          "id": "3:1:1:6960:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7.25,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:6960:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 30,
+      "onset": 7.5,
+      "notes": [
+        {
+          "id": "3:1:1:7200:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7.5,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:7200:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 31,
+      "onset": 7.75,
+      "notes": [
+        {
+          "id": "3:1:1:7440:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7.75,
+          "duration": 0.25
+        },
+        {
+          "id": "3:2:2:7440:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 3,
+          "sourceMeasureIndex": 3,
+          "onset": 7.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 3,
+      "sourceMeasureIndex": 3,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 32,
+      "onset": 8,
+      "notes": [
+        {
+          "id": "4:1:1:7680:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:7680:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 33,
+      "onset": 8.25,
+      "notes": [
+        {
+          "id": "4:1:1:7920:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8.25,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:7920:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 34,
+      "onset": 8.5,
+      "notes": [
+        {
+          "id": "4:1:1:8160:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8.5,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:8160:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 35,
+      "onset": 8.75,
+      "notes": [
+        {
+          "id": "4:1:1:8400:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8.75,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:8400:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 8.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 36,
+      "onset": 9,
+      "notes": [
+        {
+          "id": "4:1:1:8640:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:8640:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 37,
+      "onset": 9.25,
+      "notes": [
+        {
+          "id": "4:1:1:8880:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9.25,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:8880:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 38,
+      "onset": 9.5,
+      "notes": [
+        {
+          "id": "4:1:1:9120:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9.5,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:9120:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 39,
+      "onset": 9.75,
+      "notes": [
+        {
+          "id": "4:1:1:9360:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9.75,
+          "duration": 0.25
+        },
+        {
+          "id": "4:2:2:9360:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 4,
+          "sourceMeasureIndex": 4,
+          "onset": 9.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 4,
+      "sourceMeasureIndex": 4,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 40,
+      "onset": 10,
+      "notes": [
+        {
+          "id": "5:1:1:9600:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:9600:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 41,
+      "onset": 10.25,
+      "notes": [
+        {
+          "id": "5:1:1:9840:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10.25,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:9840:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 42,
+      "onset": 10.5,
+      "notes": [
+        {
+          "id": "5:1:1:10080:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10.5,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:10080:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 43,
+      "onset": 10.75,
+      "notes": [
+        {
+          "id": "5:1:1:10320:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10.75,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:10320:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 10.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 44,
+      "onset": 11,
+      "notes": [
+        {
+          "id": "5:1:1:10560:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:10560:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 45,
+      "onset": 11.25,
+      "notes": [
+        {
+          "id": "5:1:1:10800:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11.25,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:10800:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 46,
+      "onset": 11.5,
+      "notes": [
+        {
+          "id": "5:1:1:11040:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11.5,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:11040:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 47,
+      "onset": 11.75,
+      "notes": [
+        {
+          "id": "5:1:1:11280:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11.75,
+          "duration": 0.25
+        },
+        {
+          "id": "5:2:2:11280:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 5,
+          "sourceMeasureIndex": 5,
+          "onset": 11.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 5,
+      "sourceMeasureIndex": 5,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 48,
+      "onset": 12,
+      "notes": [
+        {
+          "id": "6:1:1:11520:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:11520:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 49,
+      "onset": 12.25,
+      "notes": [
+        {
+          "id": "6:1:1:11760:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12.25,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:11760:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 50,
+      "onset": 12.5,
+      "notes": [
+        {
+          "id": "6:1:1:12000:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12.5,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:12000:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 51,
+      "onset": 12.75,
+      "notes": [
+        {
+          "id": "6:1:1:12240:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12.75,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:12240:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 12.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 52,
+      "onset": 13,
+      "notes": [
+        {
+          "id": "6:1:1:12480:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:12480:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 53,
+      "onset": 13.25,
+      "notes": [
+        {
+          "id": "6:1:1:12720:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13.25,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:12720:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 54,
+      "onset": 13.5,
+      "notes": [
+        {
+          "id": "6:1:1:12960:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13.5,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:12960:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 55,
+      "onset": 13.75,
+      "notes": [
+        {
+          "id": "6:1:1:13200:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13.75,
+          "duration": 0.25
+        },
+        {
+          "id": "6:2:2:13200:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 6,
+          "sourceMeasureIndex": 6,
+          "onset": 13.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 6,
+      "sourceMeasureIndex": 6,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 56,
+      "onset": 14,
+      "notes": [
+        {
+          "id": "7:1:1:13440:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:13440:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 57,
+      "onset": 14.25,
+      "notes": [
+        {
+          "id": "7:1:1:13680:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14.25,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:13680:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 58,
+      "onset": 14.5,
+      "notes": [
+        {
+          "id": "7:1:1:13920:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14.5,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:13920:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 59,
+      "onset": 14.75,
+      "notes": [
+        {
+          "id": "7:1:1:14160:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14.75,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:14160:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 14.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 60,
+      "onset": 15,
+      "notes": [
+        {
+          "id": "7:1:1:14400:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:14400:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 61,
+      "onset": 15.25,
+      "notes": [
+        {
+          "id": "7:1:1:14640:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15.25,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:14640:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 62,
+      "onset": 15.5,
+      "notes": [
+        {
+          "id": "7:1:1:14880:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15.5,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:14880:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 63,
+      "onset": 15.75,
+      "notes": [
+        {
+          "id": "7:1:1:15120:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15.75,
+          "duration": 0.25
+        },
+        {
+          "id": "7:2:2:15120:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 7,
+          "sourceMeasureIndex": 7,
+          "onset": 15.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 7,
+      "sourceMeasureIndex": 7,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 64,
+      "onset": 16,
+      "notes": [
+        {
+          "id": "8:1:1:15360:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:15360:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 65,
+      "onset": 16.25,
+      "notes": [
+        {
+          "id": "8:1:1:15600:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16.25,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:15600:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 66,
+      "onset": 16.5,
+      "notes": [
+        {
+          "id": "8:1:1:15840:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16.5,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:15840:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 67,
+      "onset": 16.75,
+      "notes": [
+        {
+          "id": "8:1:1:16080:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16.75,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:16080:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 16.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 68,
+      "onset": 17,
+      "notes": [
+        {
+          "id": "8:1:1:16320:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:16320:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 69,
+      "onset": 17.25,
+      "notes": [
+        {
+          "id": "8:1:1:16560:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17.25,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:16560:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 70,
+      "onset": 17.5,
+      "notes": [
+        {
+          "id": "8:1:1:16800:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17.5,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:16800:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 71,
+      "onset": 17.75,
+      "notes": [
+        {
+          "id": "8:1:1:17040:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17.75,
+          "duration": 0.25
+        },
+        {
+          "id": "8:2:2:17040:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 8,
+          "sourceMeasureIndex": 8,
+          "onset": 17.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 8,
+      "sourceMeasureIndex": 8,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 72,
+      "onset": 18,
+      "notes": [
+        {
+          "id": "9:1:1:17280:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:17280:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 73,
+      "onset": 18.25,
+      "notes": [
+        {
+          "id": "9:1:1:17520:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18.25,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:17520:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 74,
+      "onset": 18.5,
+      "notes": [
+        {
+          "id": "9:1:1:17760:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18.5,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:17760:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 75,
+      "onset": 18.75,
+      "notes": [
+        {
+          "id": "9:1:1:18000:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18.75,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:18000:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 18.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 76,
+      "onset": 19,
+      "notes": [
+        {
+          "id": "9:1:1:18240:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:18240:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 77,
+      "onset": 19.25,
+      "notes": [
+        {
+          "id": "9:1:1:18480:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19.25,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:18480:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 78,
+      "onset": 19.5,
+      "notes": [
+        {
+          "id": "9:1:1:18720:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19.5,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:18720:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 79,
+      "onset": 19.75,
+      "notes": [
+        {
+          "id": "9:1:1:18960:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19.75,
+          "duration": 0.25
+        },
+        {
+          "id": "9:2:2:18960:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 9,
+          "sourceMeasureIndex": 9,
+          "onset": 19.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 9,
+      "sourceMeasureIndex": 9,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 80,
+      "onset": 20,
+      "notes": [
+        {
+          "id": "10:1:1:19200:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:19200:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 81,
+      "onset": 20.25,
+      "notes": [
+        {
+          "id": "10:1:1:19440:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20.25,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:19440:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 82,
+      "onset": 20.5,
+      "notes": [
+        {
+          "id": "10:1:1:19680:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20.5,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:19680:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 83,
+      "onset": 20.75,
+      "notes": [
+        {
+          "id": "10:1:1:19920:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20.75,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:19920:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 20.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 84,
+      "onset": 21,
+      "notes": [
+        {
+          "id": "10:1:1:20160:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:20160:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 85,
+      "onset": 21.25,
+      "notes": [
+        {
+          "id": "10:1:1:20400:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21.25,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:20400:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 86,
+      "onset": 21.5,
+      "notes": [
+        {
+          "id": "10:1:1:20640:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21.5,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:20640:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 87,
+      "onset": 21.75,
+      "notes": [
+        {
+          "id": "10:1:1:20880:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21.75,
+          "duration": 0.25
+        },
+        {
+          "id": "10:2:2:20880:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 10,
+          "sourceMeasureIndex": 10,
+          "onset": 21.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 10,
+      "sourceMeasureIndex": 10,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 88,
+      "onset": 22,
+      "notes": [
+        {
+          "id": "11:1:1:21120:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:21120:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 89,
+      "onset": 22.25,
+      "notes": [
+        {
+          "id": "11:1:1:21360:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22.25,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:21360:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 90,
+      "onset": 22.5,
+      "notes": [
+        {
+          "id": "11:1:1:21600:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22.5,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:21600:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 91,
+      "onset": 22.75,
+      "notes": [
+        {
+          "id": "11:1:1:21840:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22.75,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:21840:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 22.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 92,
+      "onset": 23,
+      "notes": [
+        {
+          "id": "11:1:1:22080:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:22080:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 93,
+      "onset": 23.25,
+      "notes": [
+        {
+          "id": "11:1:1:22320:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23.25,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:22320:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 94,
+      "onset": 23.5,
+      "notes": [
+        {
+          "id": "11:1:1:22560:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23.5,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:22560:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 95,
+      "onset": 23.75,
+      "notes": [
+        {
+          "id": "11:1:1:22800:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23.75,
+          "duration": 0.25
+        },
+        {
+          "id": "11:2:2:22800:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 11,
+          "sourceMeasureIndex": 11,
+          "onset": 23.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 11,
+      "sourceMeasureIndex": 11,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 96,
+      "onset": 24,
+      "notes": [
+        {
+          "id": "12:1:1:23040:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:23040:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 97,
+      "onset": 24.25,
+      "notes": [
+        {
+          "id": "12:1:1:23280:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24.25,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:23280:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 98,
+      "onset": 24.5,
+      "notes": [
+        {
+          "id": "12:1:1:23520:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24.5,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:23520:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 99,
+      "onset": 24.75,
+      "notes": [
+        {
+          "id": "12:1:1:23760:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24.75,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:23760:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 24.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 100,
+      "onset": 25,
+      "notes": [
+        {
+          "id": "12:1:1:24000:89",
+          "midi": 89,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:24000:77",
+          "midi": 77,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 101,
+      "onset": 25.25,
+      "notes": [
+        {
+          "id": "12:1:1:24240:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25.25,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:24240:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 102,
+      "onset": 25.5,
+      "notes": [
+        {
+          "id": "12:1:1:24480:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25.5,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:24480:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 103,
+      "onset": 25.75,
+      "notes": [
+        {
+          "id": "12:1:1:24720:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25.75,
+          "duration": 0.25
+        },
+        {
+          "id": "12:2:2:24720:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 12,
+          "sourceMeasureIndex": 12,
+          "onset": 25.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 12,
+      "sourceMeasureIndex": 12,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 104,
+      "onset": 26,
+      "notes": [
+        {
+          "id": "13:1:1:24960:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:24960:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 105,
+      "onset": 26.25,
+      "notes": [
+        {
+          "id": "13:1:1:25200:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26.25,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:25200:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 106,
+      "onset": 26.5,
+      "notes": [
+        {
+          "id": "13:1:1:25440:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26.5,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:25440:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 107,
+      "onset": 26.75,
+      "notes": [
+        {
+          "id": "13:1:1:25680:89",
+          "midi": 89,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26.75,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:25680:77",
+          "midi": 77,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 26.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 108,
+      "onset": 27,
+      "notes": [
+        {
+          "id": "13:1:1:25920:91",
+          "midi": 91,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:25920:79",
+          "midi": 79,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 109,
+      "onset": 27.25,
+      "notes": [
+        {
+          "id": "13:1:1:26160:89",
+          "midi": 89,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27.25,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:26160:77",
+          "midi": 77,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 110,
+      "onset": 27.5,
+      "notes": [
+        {
+          "id": "13:1:1:26400:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27.5,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:26400:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 111,
+      "onset": 27.75,
+      "notes": [
+        {
+          "id": "13:1:1:26640:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27.75,
+          "duration": 0.25
+        },
+        {
+          "id": "13:2:2:26640:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 13,
+          "sourceMeasureIndex": 13,
+          "onset": 27.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 13,
+      "sourceMeasureIndex": 13,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 112,
+      "onset": 28,
+      "notes": [
+        {
+          "id": "14:1:1:26880:91",
+          "midi": 91,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:26880:79",
+          "midi": 79,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 113,
+      "onset": 28.25,
+      "notes": [
+        {
+          "id": "14:1:1:27120:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28.25,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:27120:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 114,
+      "onset": 28.5,
+      "notes": [
+        {
+          "id": "14:1:1:27360:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28.5,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:27360:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 115,
+      "onset": 28.75,
+      "notes": [
+        {
+          "id": "14:1:1:27600:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28.75,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:27600:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 28.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 116,
+      "onset": 29,
+      "notes": [
+        {
+          "id": "14:1:1:27840:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:27840:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 117,
+      "onset": 29.25,
+      "notes": [
+        {
+          "id": "14:1:1:28080:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29.25,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:28080:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 118,
+      "onset": 29.5,
+      "notes": [
+        {
+          "id": "14:1:1:28320:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29.5,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:28320:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 119,
+      "onset": 29.75,
+      "notes": [
+        {
+          "id": "14:1:1:28560:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29.75,
+          "duration": 0.25
+        },
+        {
+          "id": "14:2:2:28560:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 14,
+          "sourceMeasureIndex": 14,
+          "onset": 29.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 14,
+      "sourceMeasureIndex": 14,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 120,
+      "onset": 30,
+      "notes": [
+        {
+          "id": "15:1:1:28800:89",
+          "midi": 89,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:28800:77",
+          "midi": 77,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 121,
+      "onset": 30.25,
+      "notes": [
+        {
+          "id": "15:1:1:29040:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30.25,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:29040:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 122,
+      "onset": 30.5,
+      "notes": [
+        {
+          "id": "15:1:1:29280:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30.5,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:29280:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 123,
+      "onset": 30.75,
+      "notes": [
+        {
+          "id": "15:1:1:29520:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30.75,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:29520:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 30.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 124,
+      "onset": 31,
+      "notes": [
+        {
+          "id": "15:1:1:29760:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:29760:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 125,
+      "onset": 31.25,
+      "notes": [
+        {
+          "id": "15:1:1:30000:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31.25,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:30000:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 126,
+      "onset": 31.5,
+      "notes": [
+        {
+          "id": "15:1:1:30240:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31.5,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:30240:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 127,
+      "onset": 31.75,
+      "notes": [
+        {
+          "id": "15:1:1:30480:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31.75,
+          "duration": 0.25
+        },
+        {
+          "id": "15:2:2:30480:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 15,
+          "sourceMeasureIndex": 15,
+          "onset": 31.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 15,
+      "sourceMeasureIndex": 15,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 128,
+      "onset": 32,
+      "notes": [
+        {
+          "id": "16:1:1:30720:88",
+          "midi": 88,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:30720:76",
+          "midi": 76,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 129,
+      "onset": 32.25,
+      "notes": [
+        {
+          "id": "16:1:1:30960:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32.25,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:30960:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 130,
+      "onset": 32.5,
+      "notes": [
+        {
+          "id": "16:1:1:31200:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32.5,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:31200:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 131,
+      "onset": 32.75,
+      "notes": [
+        {
+          "id": "16:1:1:31440:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32.75,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:31440:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 32.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 132,
+      "onset": 33,
+      "notes": [
+        {
+          "id": "16:1:1:31680:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:31680:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 133,
+      "onset": 33.25,
+      "notes": [
+        {
+          "id": "16:1:1:31920:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33.25,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:31920:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 134,
+      "onset": 33.5,
+      "notes": [
+        {
+          "id": "16:1:1:32160:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33.5,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:32160:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 135,
+      "onset": 33.75,
+      "notes": [
+        {
+          "id": "16:1:1:32400:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33.75,
+          "duration": 0.25
+        },
+        {
+          "id": "16:2:2:32400:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 16,
+          "sourceMeasureIndex": 16,
+          "onset": 33.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 16,
+      "sourceMeasureIndex": 16,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 136,
+      "onset": 34,
+      "notes": [
+        {
+          "id": "17:1:1:32640:86",
+          "midi": 86,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:32640:74",
+          "midi": 74,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 137,
+      "onset": 34.25,
+      "notes": [
+        {
+          "id": "17:1:1:32880:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34.25,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:32880:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 138,
+      "onset": 34.5,
+      "notes": [
+        {
+          "id": "17:1:1:33120:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34.5,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:33120:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 139,
+      "onset": 34.75,
+      "notes": [
+        {
+          "id": "17:1:1:33360:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34.75,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:33360:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 34.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 140,
+      "onset": 35,
+      "notes": [
+        {
+          "id": "17:1:1:33600:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:33600:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 141,
+      "onset": 35.25,
+      "notes": [
+        {
+          "id": "17:1:1:33840:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35.25,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:33840:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 142,
+      "onset": 35.5,
+      "notes": [
+        {
+          "id": "17:1:1:34080:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35.5,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:34080:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 143,
+      "onset": 35.75,
+      "notes": [
+        {
+          "id": "17:1:1:34320:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35.75,
+          "duration": 0.25
+        },
+        {
+          "id": "17:2:2:34320:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 17,
+          "sourceMeasureIndex": 17,
+          "onset": 35.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 17,
+      "sourceMeasureIndex": 17,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 144,
+      "onset": 36,
+      "notes": [
+        {
+          "id": "18:1:1:34560:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:34560:72",
+          "midi": 72,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 145,
+      "onset": 36.25,
+      "notes": [
+        {
+          "id": "18:1:1:34800:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36.25,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:34800:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 146,
+      "onset": 36.5,
+      "notes": [
+        {
+          "id": "18:1:1:35040:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36.5,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:35040:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 147,
+      "onset": 36.75,
+      "notes": [
+        {
+          "id": "18:1:1:35280:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36.75,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:35280:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 36.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 148,
+      "onset": 37,
+      "notes": [
+        {
+          "id": "18:1:1:35520:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:35520:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 149,
+      "onset": 37.25,
+      "notes": [
+        {
+          "id": "18:1:1:35760:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37.25,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:35760:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 150,
+      "onset": 37.5,
+      "notes": [
+        {
+          "id": "18:1:1:36000:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37.5,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:36000:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 151,
+      "onset": 37.75,
+      "notes": [
+        {
+          "id": "18:1:1:36240:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37.75,
+          "duration": 0.25
+        },
+        {
+          "id": "18:2:2:36240:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 18,
+          "sourceMeasureIndex": 18,
+          "onset": 37.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 18,
+      "sourceMeasureIndex": 18,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 152,
+      "onset": 38,
+      "notes": [
+        {
+          "id": "19:1:1:36480:83",
+          "midi": 83,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:36480:71",
+          "midi": 71,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 153,
+      "onset": 38.25,
+      "notes": [
+        {
+          "id": "19:1:1:36720:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38.25,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:36720:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 154,
+      "onset": 38.5,
+      "notes": [
+        {
+          "id": "19:1:1:36960:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38.5,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:36960:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 155,
+      "onset": 38.75,
+      "notes": [
+        {
+          "id": "19:1:1:37200:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38.75,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:37200:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 38.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 156,
+      "onset": 39,
+      "notes": [
+        {
+          "id": "19:1:1:37440:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:37440:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 157,
+      "onset": 39.25,
+      "notes": [
+        {
+          "id": "19:1:1:37680:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39.25,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:37680:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 158,
+      "onset": 39.5,
+      "notes": [
+        {
+          "id": "19:1:1:37920:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39.5,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:37920:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 159,
+      "onset": 39.75,
+      "notes": [
+        {
+          "id": "19:1:1:38160:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39.75,
+          "duration": 0.25
+        },
+        {
+          "id": "19:2:2:38160:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 19,
+          "sourceMeasureIndex": 19,
+          "onset": 39.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 19,
+      "sourceMeasureIndex": 19,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 160,
+      "onset": 40,
+      "notes": [
+        {
+          "id": "20:1:1:38400:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:38400:69",
+          "midi": 69,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 161,
+      "onset": 40.25,
+      "notes": [
+        {
+          "id": "20:1:1:38640:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40.25,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:38640:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 162,
+      "onset": 40.5,
+      "notes": [
+        {
+          "id": "20:1:1:38880:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40.5,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:38880:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 163,
+      "onset": 40.75,
+      "notes": [
+        {
+          "id": "20:1:1:39120:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40.75,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:39120:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 40.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 164,
+      "onset": 41,
+      "notes": [
+        {
+          "id": "20:1:1:39360:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:39360:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 165,
+      "onset": 41.25,
+      "notes": [
+        {
+          "id": "20:1:1:39600:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41.25,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:39600:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 166,
+      "onset": 41.5,
+      "notes": [
+        {
+          "id": "20:1:1:39840:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41.5,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:39840:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 167,
+      "onset": 41.75,
+      "notes": [
+        {
+          "id": "20:1:1:40080:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41.75,
+          "duration": 0.25
+        },
+        {
+          "id": "20:2:2:40080:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 20,
+          "sourceMeasureIndex": 20,
+          "onset": 41.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 20,
+      "sourceMeasureIndex": 20,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 168,
+      "onset": 42,
+      "notes": [
+        {
+          "id": "21:1:1:40320:79",
+          "midi": 79,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:40320:67",
+          "midi": 67,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 169,
+      "onset": 42.25,
+      "notes": [
+        {
+          "id": "21:1:1:40560:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42.25,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:40560:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 170,
+      "onset": 42.5,
+      "notes": [
+        {
+          "id": "21:1:1:40800:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42.5,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:40800:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 171,
+      "onset": 42.75,
+      "notes": [
+        {
+          "id": "21:1:1:41040:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42.75,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:41040:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 42.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 172,
+      "onset": 43,
+      "notes": [
+        {
+          "id": "21:1:1:41280:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:41280:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 173,
+      "onset": 43.25,
+      "notes": [
+        {
+          "id": "21:1:1:41520:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43.25,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:41520:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 174,
+      "onset": 43.5,
+      "notes": [
+        {
+          "id": "21:1:1:41760:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43.5,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:41760:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 175,
+      "onset": 43.75,
+      "notes": [
+        {
+          "id": "21:1:1:42000:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43.75,
+          "duration": 0.25
+        },
+        {
+          "id": "21:2:2:42000:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 21,
+          "sourceMeasureIndex": 21,
+          "onset": 43.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 21,
+      "sourceMeasureIndex": 21,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 176,
+      "onset": 44,
+      "notes": [
+        {
+          "id": "22:1:1:42240:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:42240:65",
+          "midi": 65,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 177,
+      "onset": 44.25,
+      "notes": [
+        {
+          "id": "22:1:1:42480:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44.25,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:42480:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 178,
+      "onset": 44.5,
+      "notes": [
+        {
+          "id": "22:1:1:42720:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44.5,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:42720:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 179,
+      "onset": 44.75,
+      "notes": [
+        {
+          "id": "22:1:1:42960:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44.75,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:42960:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 44.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 180,
+      "onset": 45,
+      "notes": [
+        {
+          "id": "22:1:1:43200:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:43200:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 181,
+      "onset": 45.25,
+      "notes": [
+        {
+          "id": "22:1:1:43440:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45.25,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:43440:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 182,
+      "onset": 45.5,
+      "notes": [
+        {
+          "id": "22:1:1:43680:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45.5,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:43680:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 183,
+      "onset": 45.75,
+      "notes": [
+        {
+          "id": "22:1:1:43920:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45.75,
+          "duration": 0.25
+        },
+        {
+          "id": "22:2:2:43920:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 22,
+          "sourceMeasureIndex": 22,
+          "onset": 45.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 22,
+      "sourceMeasureIndex": 22,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 184,
+      "onset": 46,
+      "notes": [
+        {
+          "id": "23:1:1:44160:76",
+          "midi": 76,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:44160:64",
+          "midi": 64,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 185,
+      "onset": 46.25,
+      "notes": [
+        {
+          "id": "23:1:1:44400:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46.25,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:44400:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 186,
+      "onset": 46.5,
+      "notes": [
+        {
+          "id": "23:1:1:44640:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46.5,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:44640:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 187,
+      "onset": 46.75,
+      "notes": [
+        {
+          "id": "23:1:1:44880:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46.75,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:44880:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 46.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 188,
+      "onset": 47,
+      "notes": [
+        {
+          "id": "23:1:1:45120:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:45120:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 189,
+      "onset": 47.25,
+      "notes": [
+        {
+          "id": "23:1:1:45360:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47.25,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:45360:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 190,
+      "onset": 47.5,
+      "notes": [
+        {
+          "id": "23:1:1:45600:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47.5,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:45600:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 191,
+      "onset": 47.75,
+      "notes": [
+        {
+          "id": "23:1:1:45840:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47.75,
+          "duration": 0.25
+        },
+        {
+          "id": "23:2:2:45840:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 23,
+          "sourceMeasureIndex": 23,
+          "onset": 47.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 23,
+      "sourceMeasureIndex": 23,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 192,
+      "onset": 48,
+      "notes": [
+        {
+          "id": "24:1:1:46080:74",
+          "midi": 74,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:46080:62",
+          "midi": 62,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 193,
+      "onset": 48.25,
+      "notes": [
+        {
+          "id": "24:1:1:46320:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48.25,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:46320:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 194,
+      "onset": 48.5,
+      "notes": [
+        {
+          "id": "24:1:1:46560:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48.5,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:46560:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 195,
+      "onset": 48.75,
+      "notes": [
+        {
+          "id": "24:1:1:46800:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48.75,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:46800:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 48.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 196,
+      "onset": 49,
+      "notes": [
+        {
+          "id": "24:1:1:47040:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:47040:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 197,
+      "onset": 49.25,
+      "notes": [
+        {
+          "id": "24:1:1:47280:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49.25,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:47280:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 198,
+      "onset": 49.5,
+      "notes": [
+        {
+          "id": "24:1:1:47520:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49.5,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:47520:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 199,
+      "onset": 49.75,
+      "notes": [
+        {
+          "id": "24:1:1:47760:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49.75,
+          "duration": 0.25
+        },
+        {
+          "id": "24:2:2:47760:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 24,
+          "sourceMeasureIndex": 24,
+          "onset": 49.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 24,
+      "sourceMeasureIndex": 24,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 200,
+      "onset": 50,
+      "notes": [
+        {
+          "id": "25:1:1:48000:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:48000:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 201,
+      "onset": 50.25,
+      "notes": [
+        {
+          "id": "25:1:1:48240:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50.25,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:48240:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 202,
+      "onset": 50.5,
+      "notes": [
+        {
+          "id": "25:1:1:48480:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50.5,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:48480:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 203,
+      "onset": 50.75,
+      "notes": [
+        {
+          "id": "25:1:1:48720:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50.75,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:48720:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 50.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 204,
+      "onset": 51,
+      "notes": [
+        {
+          "id": "25:1:1:48960:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:48960:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 205,
+      "onset": 51.25,
+      "notes": [
+        {
+          "id": "25:1:1:49200:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51.25,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:49200:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 206,
+      "onset": 51.5,
+      "notes": [
+        {
+          "id": "25:1:1:49440:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51.5,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:49440:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 207,
+      "onset": 51.75,
+      "notes": [
+        {
+          "id": "25:1:1:49680:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51.75,
+          "duration": 0.25
+        },
+        {
+          "id": "25:2:2:49680:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 25,
+          "sourceMeasureIndex": 25,
+          "onset": 51.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 25,
+      "sourceMeasureIndex": 25,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 208,
+      "onset": 52,
+      "notes": [
+        {
+          "id": "26:1:1:49920:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:49920:59",
+          "midi": 59,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 209,
+      "onset": 52.25,
+      "notes": [
+        {
+          "id": "26:1:1:50160:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52.25,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:50160:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 210,
+      "onset": 52.5,
+      "notes": [
+        {
+          "id": "26:1:1:50400:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52.5,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:50400:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 211,
+      "onset": 52.75,
+      "notes": [
+        {
+          "id": "26:1:1:50640:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52.75,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:50640:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 52.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 212,
+      "onset": 53,
+      "notes": [
+        {
+          "id": "26:1:1:50880:62",
+          "midi": 62,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:50880:50",
+          "midi": 50,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 213,
+      "onset": 53.25,
+      "notes": [
+        {
+          "id": "26:1:1:51120:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53.25,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:51120:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 214,
+      "onset": 53.5,
+      "notes": [
+        {
+          "id": "26:1:1:51360:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53.5,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:51360:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 215,
+      "onset": 53.75,
+      "notes": [
+        {
+          "id": "26:1:1:51600:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53.75,
+          "duration": 0.25
+        },
+        {
+          "id": "26:2:2:51600:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 26,
+          "sourceMeasureIndex": 26,
+          "onset": 53.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 26,
+      "sourceMeasureIndex": 26,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 216,
+      "onset": 54,
+      "notes": [
+        {
+          "id": "27:1:1:51840:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:51840:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 217,
+      "onset": 54.25,
+      "notes": [
+        {
+          "id": "27:1:1:52080:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54.25,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:52080:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 218,
+      "onset": 54.5,
+      "notes": [
+        {
+          "id": "27:1:1:52320:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54.5,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:52320:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 219,
+      "onset": 54.75,
+      "notes": [
+        {
+          "id": "27:1:1:52560:62",
+          "midi": 62,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54.75,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:52560:50",
+          "midi": 50,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 54.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 220,
+      "onset": 55,
+      "notes": [
+        {
+          "id": "27:1:1:52800:60",
+          "midi": 60,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:52800:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 221,
+      "onset": 55.25,
+      "notes": [
+        {
+          "id": "27:1:1:53040:62",
+          "midi": 62,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55.25,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:53040:50",
+          "midi": 50,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55.25,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 222,
+      "onset": 55.5,
+      "notes": [
+        {
+          "id": "27:1:1:53280:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55.5,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:53280:52",
+          "midi": 52,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55.5,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 223,
+      "onset": 55.75,
+      "notes": [
+        {
+          "id": "27:1:1:53520:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55.75,
+          "duration": 0.25
+        },
+        {
+          "id": "27:2:2:53520:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 27,
+          "sourceMeasureIndex": 27,
+          "onset": 55.75,
+          "duration": 0.25
+        }
+      ],
+      "measureIndex": 27,
+      "sourceMeasureIndex": 27,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 224,
+      "onset": 56,
+      "notes": [
+        {
+          "id": "28:1:1:53760:60",
+          "midi": 60,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 28,
+          "sourceMeasureIndex": 28,
+          "onset": 56,
+          "duration": 2
+        },
+        {
+          "id": "28:2:2:53760:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 28,
+          "sourceMeasureIndex": 28,
+          "onset": 56,
+          "duration": 2
+        }
+      ],
+      "measureIndex": 28,
+      "sourceMeasureIndex": 28,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    }
+  ],
+  "tempoMap": [
+    {
+      "atBeat": 0,
+      "bpm": 60
+    }
+  ],
+  "timeSigMap": [
+    {
+      "atMeasure": 0,
+      "beats": 2,
+      "beatType": 4
+    }
+  ],
+  "measureCount": 29,
+  "sourceMeasureCount": 29,
+  "keySig": "C major",
+  "handsPresent": {
+    "R": true,
+    "L": true
+  }
+}

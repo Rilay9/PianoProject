@@ -16,15 +16,19 @@
     "predev": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
+    "fflate": "0.8.3",
     "idb": "8.0.3",
+    "opensheetmusicdisplay": "2.1.2",
     "smplr": "1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.63.0",
+    "@types/jsdom": "^30.0.0",
     "@types/node": "^22.10.0",
     "eslint": "10.10.0",
     "eslint-config-prettier": "^9.1.0",
+    "jsdom": "^30.0.1",
     "prettier": "3.9.6",
     "typescript": "6.0.3",
     "typescript-eslint": "8.69.0",

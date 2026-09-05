@@ -1,0 +1,558 @@
+{
+  "id": "exercise.inversions.f-major.both",
+  "title": "F major triad inversions — both",
+  "steps": [
+    {
+      "index": 0,
+      "onset": 0,
+      "notes": [
+        {
+          "id": "0:1:1:0:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:0:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:0:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:0:41",
+          "midi": 41,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:0:45",
+          "midi": 45,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:0:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 1,
+      "onset": 1,
+      "notes": [
+        {
+          "id": "0:1:1:960:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:960:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:960:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:960:45",
+          "midi": 45,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:960:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:960:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 2,
+      "onset": 2,
+      "notes": [
+        {
+          "id": "0:1:1:1920:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:1920:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:1920:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:1920:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:1920:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:1920:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 3,
+      "onset": 3,
+      "notes": [
+        {
+          "id": "0:1:1:2880:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 3,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:2880:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 3,
+          "duration": 1
+        },
+        {
+          "id": "0:1:1:2880:84",
+          "midi": 84,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 3,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:2880:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 3,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:2880:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 3,
+          "duration": 1
+        },
+        {
+          "id": "0:2:2:2880:60",
+          "midi": 60,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 3,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 4,
+      "onset": 4,
+      "notes": [
+        {
+          "id": "1:1:1:3840:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 4,
+          "duration": 1
+        },
+        {
+          "id": "1:1:1:3840:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 4,
+          "duration": 1
+        },
+        {
+          "id": "1:1:1:3840:81",
+          "midi": 81,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 4,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:3840:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 4,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:3840:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 4,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:3840:57",
+          "midi": 57,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 4,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 5,
+      "onset": 5,
+      "notes": [
+        {
+          "id": "1:1:1:4800:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 5,
+          "duration": 1
+        },
+        {
+          "id": "1:1:1:4800:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 5,
+          "duration": 1
+        },
+        {
+          "id": "1:1:1:4800:77",
+          "midi": 77,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 5,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:4800:45",
+          "midi": 45,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 5,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:4800:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 5,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:4800:53",
+          "midi": 53,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 5,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 6,
+      "onset": 6,
+      "notes": [
+        {
+          "id": "1:1:1:5760:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 6,
+          "duration": 1
+        },
+        {
+          "id": "1:1:1:5760:69",
+          "midi": 69,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 6,
+          "duration": 1
+        },
+        {
+          "id": "1:1:1:5760:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 6,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:5760:41",
+          "midi": 41,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 6,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:5760:45",
+          "midi": 45,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 6,
+          "duration": 1
+        },
+        {
+          "id": "1:2:2:5760:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 2,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 6,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    }
+  ],
+  "tempoMap": [
+    {
+      "atBeat": 0,
+      "bpm": 60
+    }
+  ],
+  "timeSigMap": [
+    {
+      "atMeasure": 0,
+      "beats": 4,
+      "beatType": 4
+    }
+  ],
+  "measureCount": 2,
+  "sourceMeasureCount": 2,
+  "keySig": "F major",
+  "handsPresent": {
+    "R": true,
+    "L": true
+  }
+}

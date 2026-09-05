@@ -1,0 +1,133 @@
+{
+  "id": "cross-staff",
+  "title": "Cross staff",
+  "steps": [
+    {
+      "index": 0,
+      "onset": 0,
+      "notes": [
+        {
+          "id": "0:1:1:0:72",
+          "midi": 72,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 2
+        },
+        {
+          "id": "0:2:5:0:48",
+          "midi": 48,
+          "staff": 2,
+          "hand": "L",
+          "voice": 5,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 1,
+      "onset": 1,
+      "notes": [
+        {
+          "id": "0:2:5:960:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 5,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 2,
+      "onset": 2,
+      "notes": [
+        {
+          "id": "0:1:1:1920:71",
+          "midi": 71,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 2
+        },
+        {
+          "id": "0:1:5:1920:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "L",
+          "voice": 5,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 2,
+          "duration": 1,
+          "crossStaff": true
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 3,
+      "onset": 3,
+      "notes": [
+        {
+          "id": "0:2:5:2880:55",
+          "midi": 55,
+          "staff": 2,
+          "hand": "L",
+          "voice": 5,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 3,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    }
+  ],
+  "tempoMap": [
+    {
+      "atBeat": 0,
+      "bpm": 100
+    }
+  ],
+  "timeSigMap": [
+    {
+      "atMeasure": 0,
+      "beats": 4,
+      "beatType": 4
+    }
+  ],
+  "measureCount": 1,
+  "sourceMeasureCount": 1,
+  "keySig": "C major",
+  "handsPresent": {
+    "R": true,
+    "L": true
+  }
+}

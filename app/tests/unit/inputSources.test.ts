@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ScreenKeyboardSource } from '../../src/midi/ScreenKeyboardSource';
-import { ReplaySource, parseReplayScript } from '../../src/midi/ReplaySource';
+import {
+  ReplaySource,
+  parseReplayScript,
+  type TimerHandle,
+} from '../../src/midi/ReplaySource';
 import type { InputNoteEvent } from '../../src/midi/types';
 
 describe('ScreenKeyboardSource', () => {
@@ -82,17 +86,21 @@ describe('parseReplayScript', () => {
 });
 
 describe('ReplaySource', () => {
-  /** Runs scheduled callbacks in time order without any real waiting. */
+  /**
+   * Runs scheduled callbacks in time order without any real waiting. Handles
+   * are typed as `TimerHandle` (opaque) rather than `number` so the fake
+   * satisfies the same contract as the real `setTimeout`-backed default.
+   */
   function fakeTimers() {
-    const queue: { at: number; fn: () => void; handle: number }[] = [];
+    const queue: { at: number; fn: () => void; handle: TimerHandle }[] = [];
     let nextHandle = 1;
     return {
-      schedule: (fn: () => void, delayMs: number) => {
-        const handle = nextHandle++;
+      schedule: (fn: () => void, delayMs: number): TimerHandle => {
+        const handle: TimerHandle = nextHandle++;
         queue.push({ at: delayMs, fn, handle });
         return handle;
       },
-      cancel: (handle: number) => {
+      cancel: (handle: TimerHandle) => {
         const i = queue.findIndex((q) => q.handle === handle);
         if (i >= 0) queue.splice(i, 1);
       },

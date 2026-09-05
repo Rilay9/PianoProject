@@ -20,13 +20,21 @@ export interface ReplayScript {
   messages: ReplayMessage[];
 }
 
+/**
+ * Opaque timer handle. `setTimeout` returns a number in the browser and a
+ * `Timeout` object under Node's typings, and a test's fake scheduler returns
+ * whatever it likes; the only contract is that a handle goes back to the same
+ * `cancel` that produced it.
+ */
+export type TimerHandle = unknown;
+
 export interface ReplaySourceOptions {
   /**
    * Timer injection. Tests pass a fake so a 30-second script runs instantly;
    * the default is `setTimeout`/`clearTimeout`.
    */
-  schedule?: (fn: () => void, delayMs: number) => number;
-  cancel?: (handle: number) => void;
+  schedule?: (fn: () => void, delayMs: number) => TimerHandle;
+  cancel?: (handle: TimerHandle) => void;
   /** Clock for the base timestamp; defaults to `performance.now()`. */
   now?: () => number;
   /** Called after the last message has been delivered. */
@@ -62,21 +70,24 @@ export class ReplaySource implements InputSource {
   readonly kind = 'replay' as const;
 
   private readonly script: ReplayScript;
-  private readonly schedule: (fn: () => void, delayMs: number) => number;
-  private readonly cancel: (handle: number) => void;
+  private readonly schedule: (fn: () => void, delayMs: number) => TimerHandle;
+  private readonly cancel: (handle: TimerHandle) => void;
   private readonly now: () => number;
   private readonly onFinished?: () => void;
   private readonly noteListeners = new Set<(e: InputNoteEvent) => void>();
   private readonly messageListeners = new Set<(m: ParsedMidiMessage) => void>();
   private readonly stateListeners = new Set<(s: InputSourceState) => void>();
-  private handles: number[] = [];
+  private handles: TimerHandle[] = [];
   private running = false;
 
   constructor(script: ReplayScript, options: ReplaySourceOptions = {}) {
     this.script = parseReplayScript(script);
     this.schedule =
       options.schedule ?? ((fn, delayMs) => setTimeout(fn, delayMs));
-    this.cancel = options.cancel ?? ((h) => clearTimeout(h));
+    // Safe by construction: this default `cancel` only ever sees handles the
+    // default `schedule` above created.
+    this.cancel =
+      options.cancel ?? ((h) => clearTimeout(h as ReturnType<typeof setTimeout>));
     this.now =
       options.now ??
       (() => (typeof performance !== 'undefined' ? performance.now() : Date.now()));

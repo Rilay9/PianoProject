@@ -16,7 +16,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false,
-    "types": ["vite/client"]
+    // "node" is declared rather than left to leak in: tests/unit is part of
+    // this project and its fixture helpers read scores with node:fs, which
+    // pulls @types/node's globals in anyway. Declaring it keeps setTimeout and
+    // friends resolving to one known set of overloads.
+    "types": ["vite/client", "node"]
   },
   "include": ["src", "tests/unit"]
 }

@@ -1,0 +1,140 @@
+{
+  "id": "tempo-change",
+  "title": "Tempo and meter change",
+  "steps": [
+    {
+      "index": 0,
+      "onset": 0,
+      "notes": [
+        {
+          "id": "0:1:1:0:60",
+          "midi": 60,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 0,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 1,
+      "onset": 1,
+      "notes": [
+        {
+          "id": "0:1:1:960:62",
+          "midi": 62,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 0,
+          "sourceMeasureIndex": 0,
+          "onset": 1,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 0,
+      "sourceMeasureIndex": 0,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 2,
+      "onset": 2,
+      "notes": [
+        {
+          "id": "1:1:1:1920:64",
+          "midi": 64,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 2,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 3,
+      "onset": 3,
+      "notes": [
+        {
+          "id": "1:1:1:2880:65",
+          "midi": 65,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 1,
+          "sourceMeasureIndex": 1,
+          "onset": 3,
+          "duration": 1
+        }
+      ],
+      "measureIndex": 1,
+      "sourceMeasureIndex": 1,
+      "isMeasureStart": false,
+      "repetitionIteration": 1
+    },
+    {
+      "index": 4,
+      "onset": 4,
+      "notes": [
+        {
+          "id": "2:1:1:3840:67",
+          "midi": 67,
+          "staff": 1,
+          "hand": "R",
+          "voice": 1,
+          "measureIndex": 2,
+          "sourceMeasureIndex": 2,
+          "onset": 4,
+          "duration": 3
+        }
+      ],
+      "measureIndex": 2,
+      "sourceMeasureIndex": 2,
+      "isMeasureStart": true,
+      "repetitionIteration": 1
+    }
+  ],
+  "tempoMap": [
+    {
+      "atBeat": 0,
+      "bpm": 60
+    },
+    {
+      "atBeat": 2,
+      "bpm": 144
+    }
+  ],
+  "timeSigMap": [
+    {
+      "atMeasure": 0,
+      "beats": 2,
+      "beatType": 4
+    },
+    {
+      "atMeasure": 2,
+      "beats": 3,
+      "beatType": 4
+    }
+  ],
+  "measureCount": 3,
+  "sourceMeasureCount": 3,
+  "keySig": "C major",
+  "handsPresent": {
+    "R": true,
+    "L": false
+  }
+}
