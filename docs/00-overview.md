@@ -84,12 +84,11 @@ phone and to the piano (toggle).
 
 Still open (defaults in brackets; answer whenever):
 
-1. **What does your friend play** (guitar, sax, trumpet, bass, drums, voice…)? It sets the
-   keys we practise in for jamming [assume guitar → E, A, G, D; and horn keys F, B♭ as second].
-2. **Three to five specific songs** from Avenged Sevenfold / Linkin Park / Sleep Token you'd
-   like first (e.g. *Warmness on the Soul*, *Numb*, *Euclid*)? They stay import-only, but the
-   rock/metal module's technique lessons will be written around exactly those textures.
-3. **A wired audio path instead of the mic?** The HP-130 has a headphone/line output. A
+1. ~~Friend's instrument~~ **Answered: guitar** → jam keys E, A, G, D (and C).
+2. ~~Target songs~~ **Answered:** Avenged Sevenfold — Seize the Day, Dear God, So Far Away,
+   Fiction; Linkin Park — Final Masquerade, Waiting for the End, Shadow of the Day. Import-only;
+   the rock/metal module writes a technique brief per song. Sleep Token picks still open.
+3. **A wired audio path instead of the mic?** (owner is looking into it) The HP-130 has a headphone/line output. A
    class-compliant **USB audio interface** (e.g. a Behringer UCA202, ~$30) plugged into the
    S25 through the OTG adapter gives the app a clean line-level signal through the same
    microphone API — far more reliable than the phone mic in a room. Not required; mic works

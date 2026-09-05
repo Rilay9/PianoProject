@@ -32,3 +32,9 @@ generator. Run `validate.py` until clean.
 ## Acceptance
 `build.py` clean; every lesson's options resolve; counts reported (tunes, lessons, lessons per
 stage); list of tunes skipped with reasons.
+
+## Rock & metal module note
+The owner's target songs (curriculum Part D8) are copyrighted. Write one *technique brief*
+lesson per song (textures, PD practice vehicle, listening cues, how to import) and a catalog
+entry with `file: null` + `importHint`. Do **not** download, transcribe, or embed any
+transcription of these songs. Jam module keys: E, A, G, D, C (friend plays guitar).

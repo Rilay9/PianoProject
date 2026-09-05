@@ -406,7 +406,14 @@ Teachers: Bill Hilton (improvisation videos), Nahre Sol, Aimee Nolte, Open Studi
 - **Latin** `[AUTH]`: La Cucaracha, Cielito Lindo, La Paloma, El Choclo, La Cumparsita,
   Tico-Tico; concepts: clave, tumbao LH, montuno RH.
 - **Rock & metal piano** (owner's bands: Avenged Sevenfold, Linkin Park, Sleep Token; all
-  songs `[IMPORT]`, techniques taught on PD material `[AUTH]`/`[GEN]`): minor-key ostinatos
+  songs `[IMPORT]`, techniques taught on PD material `[AUTH]`/`[GEN]`). **Owner's target
+  songs, in this order:** Avenged Sevenfold — *Seize the Day*, *Dear God*, *So Far Away*,
+  *Fiction*; Linkin Park — *Final Masquerade*, *Waiting for the End*, *Shadow of the Day*.
+  These are copyrighted and are **never bundled**; the module's lesson for each song is a
+  *technique brief* (what textures the piano part needs, which PD vehicle trains them, what
+  to listen for), plus the import screen where the owner adds the MusicXML he obtains
+  himself (he has a source for the Avenged Sevenfold transcriptions). Builders must not
+  fetch or embed transcriptions of these songs from any website. Textures to cover: minor-key ostinatos
   and riffs (Linkin Park-style 8th-note piano figures over a pedal bass); octave and
   power-chord (root–5th–octave) LH; suspended and add9 chords, open voicings, "ambient" pedal
   textures with slow arpeggios (Sleep Token-style); 6/8 and half-time ballad feels; drop-tuned
@@ -418,8 +425,10 @@ Teachers: Bill Hilton (improvisation videos), Nahre Sol, Aimee Nolte, Open Studi
   bass), Grieg *In the Hall of the Mountain King* (riff build), Rachmaninoff Prelude C♯ minor
   (heaviness). Lessons also explain how to legally obtain MusicXML for specific songs.
 - **Jam with a friend** (lives inside the blues and jazz tracks; unlocks the chord-chart
-  view): what a "head" and a "chorus" are; counting off; 12-bar blues in the friend's keys
-  (guitar: E, A, G, D; horns: F, B♭, E♭ — to be confirmed); comping behind a soloist (rhythm,
+  view). **The friend plays guitar**, so the jam keys are **E, A, G, D** (and C), with blues
+  in E and A first, then G and D; jazz standards get a "guitar-friendly key" variant where the
+  original is in a flat key. Content: what a "head" and a "chorus" are; counting off; 12-bar
+  blues in those keys; comping behind a soloist (rhythm,
   leaving space, shell voicings); walking bass when there is no bass player; trading fours;
   following a lead sheet and the form tracker; endings and turnarounds; a shared set list of
   PD tunes from the jazz/blues ladders; recording a jam in Free mode.
@@ -540,6 +549,10 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | La Cucaracha; Cielito Lindo; La Paloma; El Choclo; La Cumparsita; Tico-Tico | trad./1882–1917 | var. | 5–8 (latin) | |
 | Jingle Bells; Deck the Halls; We Wish You; Joy to the World; Hark the Herald; O Holy Night; God Rest Ye; Carol of the Bells (melody) ; Ma'oz Tzur; Sevivon | trad./19th c. | var. | 2–5 (holiday) | |
 | Ode to Joy (full); Canon in D (easy); Air on G; Jesu Joy (easy); Habanera (Carmen); In the Hall of the Mountain King; Morning Mood; Blue Danube (easy); Swan Lake theme; Dance of the Sugar Plum Fairy (easy); Spring (Vivaldi, easy); William Tell (easy); Hungarian Dance 5 (easy); Eine kleine Nachtmusik (easy); Radetzky March (easy) | classical themes | var. | 2–5 | "famous themes" easy arrangements — high motivation value; several already in `[MT]` |
+
+**Owner's import list (copyright, never bundled; catalog entries with `file: null` and an
+`importHint`):** Avenged Sevenfold — Seize the Day, Dear God, So Far Away, Fiction; Linkin
+Park — Final Masquerade, Waiting for the End, Shadow of the Day; Sleep Token — owner to pick.
 
 **Explicitly excluded from bundling (copyright):** anything by living or post-1955 composers
 and any song published after 1930 (e.g. Over the Rainbow 1939, You Are My Sunshine 1940,
