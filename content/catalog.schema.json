@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pianopath/catalog.schema.json",
+  "title": "PianoPath content catalog",
+  "type": "array",
+  "items": { "$ref": "#/$defs/item" },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["id", "type", "title", "level", "hands", "tracks", "concepts", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^(song|exercise|drill)\\.[a-z0-9.-]+$" },
+        "type": { "enum": ["song", "exercise", "drill"] },
+        "title": { "type": "string", "minLength": 1 },
+        "subtitle": { "type": "string" },
+        "composer": { "type": ["string", "null"] },
+        "arranger": { "type": ["string", "null"] },
+        "genre": { "type": "array", "items": { "type": "string" } },
+        "tracks": {
+          "type": "array", "minItems": 1,
+          "items": { "enum": ["core", "classical", "chords-pop", "blues-boogie", "jazz", "ragtime", "theory-ear", "improv-compose", "hymns-gospel", "latin", "holiday", "film-game", "technique"] }
+        },
+        "level": { "type": "number", "minimum": 0, "maximum": 9.99, "description": "stage.unit difficulty, e.g. 3.4" },
+        "abrsmGradeApprox": { "type": ["integer", "null"], "minimum": 0, "maximum": 8 },
+        "concepts": { "type": "array", "items": { "type": "string" } },
+        "hands": { "enum": ["both", "right", "left"] },
+        "durationSec": { "type": ["number", "null"] },
+        "tempoBpm": { "type": ["number", "null"] },
+        "keySig": { "type": ["string", "null"] },
+        "timeSig": { "type": ["string", "null"] },
+        "file": { "type": ["string", "null"], "description": "path under content/ to .mxl/.musicxml; null for IMPORT or runtime-generated drills" },
+        "variantOf": { "type": ["string", "null"], "description": "id of the parent song when this is simple/full/easy edition" },
+        "variantLabel": { "type": ["string", "null"] },
+        "drill": {
+          "type": ["object", "null"],
+          "description": "for type=drill: runtime generator spec",
+          "properties": {
+            "kind": { "enum": ["scale", "arpeggio", "chord", "inversion", "hanon", "five-finger", "rhythm", "sight-reading", "ear-interval", "ear-chord", "ear-progression", "note-flash", "find-key", "pedal", "dynamics", "backing-track", "call-response"] },
+            "params": { "type": "object" }
+          },
+          "required": ["kind"]
+        },
+        "source": {
+          "type": "object",
+          "required": ["name", "license", "pd_region"],
+          "properties": {
+            "name": { "type": "string" },
+            "url": { "type": ["string", "null"] },
+            "license": { "type": "string" },
+            "pd_region": { "enum": ["worldwide", "US"] },
+            "fetchedAt": { "type": ["string", "null"] },
+            "checksum": { "type": ["string", "null"] },
+            "editionNotes": { "type": ["string", "null"] }
+          }
+        },
+        "importHint": { "type": ["string", "null"] },
+        "teaching": {
+          "type": "object",
+          "properties": {
+            "lessonIds": { "type": "array", "items": { "type": "string" } },
+            "notes": { "type": "string" },
+            "practiceTips": { "type": "array", "items": { "type": "string" } },
+            "sections": {
+              "type": "array",
+              "description": "named practice sections (bar ranges) for the loop feature",
+              "items": { "type": "object", "required": ["label", "fromMeasure", "toMeasure"], "properties": { "label": { "type": "string" }, "fromMeasure": { "type": "integer" }, "toMeasure": { "type": "integer" } } }
+            }
+          }
+        },
+        "media": {
+          "type": "array",
+          "items": { "type": "object", "required": ["kind", "label", "url"], "properties": { "kind": { "enum": ["video", "article", "pdf", "audio"] }, "label": { "type": "string" }, "url": { "type": "string" }, "teacher": { "type": "string" } } }
+        },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

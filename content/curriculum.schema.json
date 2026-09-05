@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pianopath/curriculum.schema.json",
+  "title": "PianoPath curriculum",
+  "type": "object",
+  "required": ["version", "stages", "tracks"],
+  "properties": {
+    "version": { "type": "integer" },
+    "tracks": {
+      "type": "array",
+      "items": { "type": "object", "required": ["id", "title", "description", "startsAtStage"], "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "description": { "type": "string" }, "startsAtStage": { "type": "integer" }, "defaultActive": { "type": "boolean" } } }
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["number", "title", "summary", "units"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 0, "maximum": 9 },
+          "title": { "type": "string" },
+          "summary": { "type": "string" },
+          "approxDuration": { "type": "string" },
+          "abrsmGradeApprox": { "type": "string" },
+          "units": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "title", "track", "lessons"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^[0-9]\\.[0-9]+$|^[a-z-]+\\.[0-9]+\\.[0-9]+$" },
+                "title": { "type": "string" },
+                "track": { "type": "string" },
+                "lessons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["id", "title", "concepts", "textFile", "exerciseOptions", "songOptions", "mastery"],
+                    "properties": {
+                      "id": { "type": "string" },
+                      "title": { "type": "string" },
+                      "concepts": { "type": "array", "items": { "type": "string" } },
+                      "textFile": { "type": "string" },
+                      "videos": { "type": "array", "items": { "type": "object", "required": ["label", "url"], "properties": { "label": { "type": "string" }, "url": { "type": "string" }, "teacher": { "type": "string" } } } },
+                      "exerciseOptions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+                      "songOptions": { "type": "array", "items": { "type": "string" } },
+                      "prerequisites": { "type": "array", "items": { "type": "string" } },
+                      "mastery": {
+                        "type": "object",
+                        "required": ["exercisesRequired", "songsRequired", "minAccuracy", "minTempoPct"],
+                        "properties": {
+                          "exercisesRequired": { "type": "integer" },
+                          "songsRequired": { "type": "integer" },
+                          "minAccuracy": { "type": "number" },
+                          "minTempoPct": { "type": "number" },
+                          "custom": { "type": "string", "description": "free text for checks the engine implements specially, e.g. 'pedal-clean>=0.9'" }
+                        }
+                      },
+                      "estimatedDays": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

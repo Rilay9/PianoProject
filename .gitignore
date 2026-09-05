@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+app/public/content/
+content/scores/generated/
+content/scores/imported/**/*.mxl
+content/scores/imported/**/*.krn
+content/scores/imported/**/*.musicxml
+!content/scores/imported/SOURCES.md
