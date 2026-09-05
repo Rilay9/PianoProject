@@ -47,9 +47,6 @@ export type FromPitchWorklet =
       noiseFloorDb: number;
       /** Most recent onset strength, for the "is it hearing you?" meter. */
       onsetStrength: number;
-      /** Mean and worst analysis cost per hop, in ms (budget: 3 ms, `01` §4.7). */
-      cpuMeanMs: number;
-      cpuMaxMs: number;
       /** AudioContext time at the end of the reporting interval, in ms. */
       tMs: number;
     }

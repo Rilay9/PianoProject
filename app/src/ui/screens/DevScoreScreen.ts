@@ -15,6 +15,11 @@ import { PracticeEngine } from '../../engine/PracticeEngine';
 import { evaluateOutcome } from '../../engine/Scoring';
 import { generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
 import { ReplaySource, noteOnBytes, noteOffBytes } from '../../midi';
+import { nextPlayableStep } from '../../engine/prepareSession';
+import { micSource } from '../../app/services';
+import type { MicLevel } from '../../audio/pitch/MicSource';
+import { measureDetectorCost, type CostReport } from '../../audio/pitch/benchmark';
+import type { InputNoteEvent } from '../../midi/types';
 import type { EngineEvent, EngineOptions, Mode, SessionScore } from '../../engine/types';
 import { toMusicXml } from '../../score/mxl';
 import { OsmdView } from '../../score/OsmdView';
@@ -110,6 +115,23 @@ export interface DevScoreHandle {
   loadSightReading(level: SightReadingLevel, seed: number, bars?: number): Promise<void>;
   noteElementCount(): number;
   currentStepNoteIds(): string[];
+
+  // --- microphone (P3b) --------------------------------------------------
+  /**
+   * Opens the microphone and wires it to the run: every detection is fed to
+   * the engine and every step change republishes the expected pitch sets, so
+   * this is the whole §11 path end to end.
+   */
+  micConnect(): Promise<{ detail: string; sampleRate: number | null }>;
+  micDisconnect(): void;
+  micState(): { connected: boolean; detail: string };
+  micLevel(): MicLevel | null;
+  /** Analysis cost per hop, measured here and now (docs/01 §4.7). */
+  micCost(hops?: number): CostReport;
+  /** Every note the microphone reported during the run. */
+  micNotes(): { midi: number; kind: string; confidence: number; tMs: number }[];
+  /** What the detector was last told to listen for. */
+  micExpectations(): { now: number[]; next: number[] };
 }
 
 declare global {
@@ -215,6 +237,9 @@ export function DevScoreScreen(router: Router): HTMLElement {
    * which is what a learner looks at to see how the bar went.
    */
   let judgements = new Map<string, 'correct' | 'wrong'>();
+  let micUnsubscribe: (() => void) | null = null;
+  let micNoteLog: InputNoteEvent[] = [];
+  let micExpected: { now: number[]; next: number[] } = { now: [], next: [] };
 
   async function loadFile(chosen: File): Promise<void> {
     const buffer = await chosen.arrayBuffer();
@@ -389,8 +414,50 @@ export function DevScoreScreen(router: Router): HTMLElement {
     window.removeEventListener('keydown', onKey);
     window.removeEventListener('resize', onResize);
     stopRun();
+    micDisconnect();
     renderer?.dispose();
   });
+
+  // --- microphone (docs/05 §11) --------------------------------------------
+
+  async function micConnect(): Promise<{ detail: string; sampleRate: number | null }> {
+    await micSource.connect();
+    micUnsubscribe?.();
+    micUnsubscribe = micSource.onNote((note) => {
+      micNoteLog.push(note);
+      engine?.feed({
+        kind: note.kind,
+        midi: note.midi,
+        velocity: note.velocity,
+        tMs: note.tMs,
+        confidence: note.confidence,
+      });
+      // A detection can complete the step, so the detector has to be told
+      // what to listen for next straight away — a step's worth of stale
+      // expectations is a step's worth of missed notes.
+      publishExpectations();
+    });
+    publishExpectations();
+    return { detail: micSource.state.detail, sampleRate: micSource.sampleRate };
+  }
+
+  function micDisconnect(): void {
+    micUnsubscribe?.();
+    micUnsubscribe = null;
+    micSource.disconnect();
+  }
+
+  /** Tells the detector which pitches the run is waiting for (docs/05 §11.1). */
+  function publishExpectations(): void {
+    if (!engine) return;
+    const steps = engine.prepared.steps;
+    const index = engine.state.step;
+    const now = steps[index]?.expected ?? [];
+    const nextIndex = nextPlayableStep(steps, index + 1, engine.prepared.lastStep);
+    const next = nextIndex === null ? [] : (steps[nextIndex]?.expected ?? []);
+    micExpected = { now: [...now], next: [...next] };
+    micSource.setExpectations(now, next);
+  }
 
   /**
    * Runs the practice engine over the loaded score, with the renderer's cursor
@@ -402,11 +469,13 @@ export function DevScoreScreen(router: Router): HTMLElement {
     stopRun();
     engineEvents = [];
     judgements = new Map();
+    micNoteLog = [];
     engine = new PracticeEngine(model, { ...engineOptions, mode });
     engine.on((event) => {
       engineEvents.push(event);
       if (event.kind === 'stepAdvanced') {
         goToStep(event.to);
+        publishExpectations();
       } else if (event.kind === 'noteJudged' || event.kind === 'missed') {
         paintJudgement(event);
       } else if (event.kind === 'finished' && !event.loop) {
@@ -417,8 +486,13 @@ export function DevScoreScreen(router: Router): HTMLElement {
     engine.start();
     goToStep(engine.state.step);
     // Tempo and Listen are clock-driven, so they need a frame loop; Wait and
-    // Free advance only on input and would spin for nothing.
-    if (mode === 'tempo' || mode === 'listen') startTicking();
+    // Free advance only on input and would spin for nothing — except that the
+    // microphone chord leniency is a timeout, so Wait needs the loop too when
+    // it is on (docs/05 §11.4).
+    if (mode === 'tempo' || mode === 'listen' || engineOptions.micChordLeniency === true) {
+      startTicking();
+    }
+    publishExpectations();
     renderHud();
   }
 
@@ -575,6 +649,20 @@ export function DevScoreScreen(router: Router): HTMLElement {
         kind: e.kind,
         ...(e.kind === 'stepAdvanced' ? { step: e.to } : {}),
       })),
+
+    micConnect: () => micConnect(),
+    micDisconnect: () => micDisconnect(),
+    micState: () => micSource.state,
+    micLevel: () => micSource.level,
+    micCost: (hops) => measureDetectorCost(hops === undefined ? {} : { hops }),
+    micNotes: () =>
+      micNoteLog.map((n) => ({
+        midi: n.midi,
+        kind: n.kind,
+        confidence: n.confidence,
+        tMs: n.tMs,
+      })),
+    micExpectations: () => micExpected,
 
     loadSightReading: async (level, seed, bars) => {
       const generated = generateSightReading({ level, seed, bars: bars ?? 4 });

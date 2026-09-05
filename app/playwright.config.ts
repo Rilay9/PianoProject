@@ -1,14 +1,11 @@
-import { existsSync } from 'node:fs';
 import { defineConfig, devices } from '@playwright/test';
+import { chromiumExecutable } from './tests/e2e/fixtures/chromium';
 
 // Prefer the Chromium already installed in this sandbox/CI image at
 // /opt/pw-browsers (see docs/01-architecture.md §10) so tests don't need a
 // fresh ~300MB browser download; fall back to Playwright's own managed
 // install (via `npx playwright install chromium`) when that path is absent,
 // which is what CI does explicitly in .github/workflows/ci.yml.
-const bundledChromium = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
-const hasBundledChromium = existsSync(bundledChromium);
-
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -17,7 +14,7 @@ export default defineConfig({
   reporter: process.env.CI ? [['github'], ['list']] : 'list',
   use: {
     ...devices['Desktop Chrome'],
-    ...(hasBundledChromium ? { launchOptions: { executablePath: bundledChromium } } : {}),
+    launchOptions: { ...chromiumExecutable },
     // Matches vite.config.ts's `base` (the app is served under the repo name
     // path, same as it will be on GitHub Pages).
     baseURL: 'http://localhost:4173/PianoProject/',

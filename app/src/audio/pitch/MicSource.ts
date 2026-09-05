@@ -35,8 +35,6 @@ export interface MicLevel {
   rmsDb: number;
   noiseFloorDb: number;
   onsetStrength: number;
-  cpuMeanMs: number;
-  cpuMaxMs: number;
 }
 
 export interface MicCalibration {
@@ -364,8 +362,6 @@ export class MicSource implements InputSource {
           rmsDb: message.rmsDb,
           noiseFloorDb: message.noiseFloorDb,
           onsetStrength: message.onsetStrength,
-          cpuMeanMs: message.cpuMeanMs,
-          cpuMaxMs: message.cpuMaxMs,
         };
         for (const l of this.levelListeners) l(this.lastLevel);
         break;

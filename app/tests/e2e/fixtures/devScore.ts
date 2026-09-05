@@ -45,6 +45,31 @@ interface DevScoreHandle {
   engineOutcome(): { passed: boolean; masterEligible: boolean } | null;
   engineEvents(): { kind: string; step?: number }[];
   loadSightReading(level: number, seed: number, bars?: number): Promise<void>;
+  micConnect(): Promise<{ detail: string; sampleRate: number | null }>;
+  micDisconnect(): void;
+  micState(): { connected: boolean; detail: string };
+  micLevel(): MicLevel | null;
+  micCost(hops?: number): MicCost;
+  micNotes(): { midi: number; kind: string; confidence: number; tMs: number }[];
+  micExpectations(): { now: number[]; next: number[] };
+}
+
+/** Mirrored from src/audio/pitch/MicSource.ts. */
+export interface MicLevel {
+  peak: number;
+  rmsDb: number;
+  noiseFloorDb: number;
+  onsetStrength: number;
+}
+
+export interface MicCost {
+  sampleRate: number;
+  hops: number;
+  meanMs: number;
+  medianMs: number;
+  p95Ms: number;
+  maxMs: number;
+  events: number;
 }
 
 /** The slice of SessionScore the e2e suite asserts on. */
@@ -58,6 +83,8 @@ export interface EngineScore {
   missedTotal: number;
   wrongNotesTotal: number;
   accuracy: number;
+  accuracyEstimated: boolean;
+  lenientChordSteps: number;
   timing: { n: number; meanMs: number; stdDevMs: number; earlyPct: number; latePct: number };
   hotSpots: { measureIndex: number; misses: number; wrongs: number }[];
   loops: number;

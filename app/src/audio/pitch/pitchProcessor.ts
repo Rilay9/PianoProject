@@ -44,9 +44,6 @@ class PitchProcessor extends AudioWorkletProcessor {
   private peak = 0;
   private sumSquares = 0;
   private sumCount = 0;
-  private cpuSum = 0;
-  private cpuMax = 0;
-  private cpuCount = 0;
   private readonly noiseHistory = new Float32Array(NOISE_HISTORY);
   private noiseCount = 0;
   private noiseIndex = 0;
@@ -129,19 +126,13 @@ class PitchProcessor extends AudioWorkletProcessor {
 
     const frameEndMs = (currentTime - this.sinceHop / sampleRate) * 1000;
 
-    // `currentTime` advances only between render quanta, so it cannot time a
-    // hop; `performance` is not exposed in every browser's
-    // AudioWorkletGlobalScope, so its absence costs the CPU readout rather than
-    // throwing. This is the number `01` §4.7 budgets at 3 ms.
-    const clock = typeof performance === 'undefined' ? null : performance;
-    const before = clock?.now() ?? 0;
+    // No timing here on purpose. `currentTime` advances only between render
+    // quanta, so it cannot measure work *inside* one, and
+    // AudioWorkletGlobalScope has no `performance` — measured, not assumed:
+    // the first version of this posted a cost of exactly 0 from Chromium.
+    // The per-hop cost `01` §4.7 budgets at 3 ms is taken from the main thread
+    // instead, via `AudioContext.renderCapacity` (see MicSource.analysisLoad).
     this.detector.process(this.frame, frameEndMs, this.events);
-    if (clock) {
-      const elapsed = clock.now() - before;
-      this.cpuSum += elapsed;
-      if (elapsed > this.cpuMax) this.cpuMax = elapsed;
-      this.cpuCount += 1;
-    }
 
     if (this.events.length > 0) {
       // `slice()` because the array is reused on the next hop.
@@ -165,16 +156,11 @@ class PitchProcessor extends AudioWorkletProcessor {
       rmsDb,
       noiseFloorDb: this.noiseFloor(),
       onsetStrength: this.detector.onsetStrength,
-      cpuMeanMs: this.cpuCount > 0 ? this.cpuSum / this.cpuCount : 0,
-      cpuMaxMs: this.cpuMax,
       tMs: currentTime * 1000,
     });
     this.peak = 0;
     this.sumSquares = 0;
     this.sumCount = 0;
-    this.cpuSum = 0;
-    this.cpuMax = 0;
-    this.cpuCount = 0;
   }
 
   private pushNoise(rmsDb: number): void {
