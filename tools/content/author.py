@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+"""
+Compiles the scores we write ourselves into the app's format.
+
+docs/03-content-pipeline.md §3 step 4 and §5. Two kinds of source live in
+content/scores/authored/:
+
+  * `*.abc` — a tune in ABC with a `%%pianopath` metadata header. ABC is
+    one to ten lines per tune, which is why the curriculum's folk, hymn and
+    holiday repertoire is authored in it rather than in MusicXML.
+  * `*.py` — a music21 module for anything ABC cannot say comfortably: a
+    twelve-bar blues built from chord symbols, a study generated over a
+    pattern. Each module declares `PIANOPATH` metadata and a `build()`
+    returning a Score.
+
+Both end up as compressed MusicXML with a catalog entry, through the same
+normalisation every other source goes through.
+
+Usage:
+    python3 tools/content/author.py --out build/content --catalog build/catalog.authored.json
+"""
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import sys
+import traceback
+from dataclasses import dataclass, field
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from abc_tools import parse_metadata  # noqa: E402
+from common import AUTHORED_DIR, SourceBlock, catalog_item, sha256_file, utc_now, write_json  # noqa: E402
+
+#: Metadata keys every authored item must declare. Everything else has a
+#: default, but these three decide where the item shows up and cannot be
+#: guessed from the notes.
+REQUIRED = ("id", "level", "tracks")
+
+
+class AuthoringError(RuntimeError):
+    pass
+
+
+@dataclass
+class AuthorReport:
+    written: list[str] = field(default_factory=list)
+    failed: list[tuple[str, str]] = field(default_factory=list)
+
+
+def validate_metadata(meta: dict) -> str:
+    """
+    Checks the `%%pianopath` header before anything is parsed or written.
+
+    Fail fast and fail cheaply: a tune with no level cannot be placed in the
+    plan, and finding that out after music21 has parsed and engraved it only
+    makes the message harder to find.
+    """
+    missing = [key for key in REQUIRED if not meta.get(key)]
+    if missing:
+        raise AuthoringError(f"missing %%pianopath {', '.join(missing)}")
+    item_id = str(meta["id"])
+    item_type = item_id.split(".", 1)[0]
+    if item_type not in {"song", "exercise", "drill"}:
+        raise AuthoringError(f"id must start with song./exercise./drill., got {item_id!r}")
+    try:
+        float(meta["level"])
+    except (TypeError, ValueError) as exc:
+        raise AuthoringError(f"level must be a number, got {meta['level']!r}") from exc
+    return item_type
+
+
+def entry_from_metadata(
+    meta: dict, *, dest: Path, out_root: Path, title: str, composer: str | None, tempo_bpm: float | None
+) -> dict:
+    item_type = validate_metadata(meta)
+    tracks = [t.strip() for t in str(meta["tracks"]).split(",") if t.strip()]
+    concepts = [c.strip() for c in str(meta.get("concepts", "")).split(",") if c.strip()]
+    item_id = str(meta["id"])
+
+    relative = dest.relative_to(out_root).as_posix()
+    return catalog_item(
+        item_id=item_id,
+        item_type=item_type,
+        title=meta.get("title") or title,
+        level=float(meta["level"]),
+        hands=str(meta.get("hands", "both")),
+        tracks=tracks,
+        concepts=concepts,
+        source=SourceBlock(
+            name=str(meta.get("sourceName", "PianoPath (authored)")),
+            url=meta.get("sourceUrl"),
+            license=str(meta.get("license", "CC0")),
+            pd_region=str(meta.get("pd_region", "worldwide")),
+            fetchedAt=utc_now(),
+            checksum=sha256_file(dest),
+            editionNotes=meta.get("editionNotes"),
+        ),
+        composer=meta.get("composer") or composer,
+        arranger=meta.get("arranger", "PianoPath"),
+        genre=[g.strip() for g in str(meta.get("genre", "")).split(",") if g.strip()] or None,
+        abrsmGradeApprox=int(meta["abrsm"]) if meta.get("abrsm") else None,
+        file=relative,
+        variantOf=meta.get("variantOf"),
+        variantLabel=meta.get("variantLabel"),
+        tempoBpm=float(meta["tempoBpm"]) if meta.get("tempoBpm") else tempo_bpm,
+        keySig=meta.get("keySig"),
+        timeSig=meta.get("timeSig"),
+        tags=["authored"],
+    )
+
+
+def compile_abc(path: Path, out_root: Path) -> dict:
+    from convert import convert_file  # late import: music21 is slow to load
+
+    text = path.read_text(encoding="utf-8")
+    meta = parse_metadata(text)
+    fields = dict(meta.fields)
+    if not fields.get("id"):
+        raise AuthoringError("no %%pianopath id=… line")
+    validate_metadata(fields)
+
+    dest = out_root / "scores" / "authored" / f"{fields['id']}.mxl"
+    keep_lyrics = str(fields.get("keepLyrics", "")).lower() in {"1", "true", "yes"}
+    result = convert_file(
+        path,
+        dest,
+        keep_lyrics=keep_lyrics,
+        tempo_bpm=float(fields["tempoBpm"]) if fields.get("tempoBpm") else None,
+        title=fields.get("title") or meta.title,
+        composer=fields.get("composer") or meta.composer,
+    )
+    entry = entry_from_metadata(
+        fields,
+        dest=dest,
+        out_root=out_root,
+        title=meta.title or path.stem,
+        composer=meta.composer,
+        tempo_bpm=result.tempo_bpm,
+    )
+    entry.setdefault("keySig", meta.key)
+    entry.setdefault("timeSig", meta.meter)
+    return entry
+
+
+def load_module(path: Path):
+    spec = importlib.util.spec_from_file_location(f"authored_{path.stem}", path)
+    if spec is None or spec.loader is None:
+        raise AuthoringError(f"cannot import {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def compile_python(path: Path, out_root: Path) -> dict:
+    from convert import normalise, write_mxl  # late import
+
+    module = load_module(path)
+    meta = getattr(module, "PIANOPATH", None)
+    build = getattr(module, "build", None)
+    if not isinstance(meta, dict) or not callable(build):
+        raise AuthoringError("module must define PIANOPATH (dict) and build() -> Score")
+
+    validate_metadata(meta)
+    score = build()
+    normalised, result = normalise(
+        score,
+        keep_lyrics=bool(meta.get("keepLyrics")),
+        tempo_bpm=float(meta["tempoBpm"]) if meta.get("tempoBpm") else None,
+    )
+    dest = out_root / "scores" / "authored" / f"{meta['id']}.mxl"
+    write_mxl(normalised, dest)
+    return entry_from_metadata(
+        meta,
+        dest=dest,
+        out_root=out_root,
+        title=result.title,
+        composer=result.composer,
+        tempo_bpm=result.tempo_bpm,
+    )
+
+
+def author_all(out_root: Path, catalog_path: Path, source_dir: Path = AUTHORED_DIR) -> AuthorReport:
+    report = AuthorReport()
+    entries: list[dict] = []
+    sources = sorted(
+        [p for p in source_dir.glob("*.abc")] + [p for p in source_dir.glob("*.py") if p.name != "__init__.py"]
+    )
+    for path in sources:
+        try:
+            entry = compile_abc(path, out_root) if path.suffix == ".abc" else compile_python(path, out_root)
+        except Exception as exc:  # noqa: BLE001 - one bad tune must not stop the rest
+            report.failed.append((path.name, f"{type(exc).__name__}: {exc}"))
+            if "--traceback" in sys.argv:
+                traceback.print_exc()
+            continue
+        entries.append(entry)
+        report.written.append(entry["id"])
+    write_json(catalog_path, entries)
+    return report
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--out", type=Path, required=True, help="content output directory")
+    parser.add_argument("--catalog", type=Path, required=True)
+    parser.add_argument("--dir", type=Path, default=AUTHORED_DIR)
+    parser.add_argument("--traceback", action="store_true")
+    args = parser.parse_args()
+
+    report = author_all(args.out, args.catalog, args.dir)
+    print(f"authored {len(report.written)} item(s)")
+    for name, why in report.failed:
+        print(f"FAIL {name}: {why}", file=sys.stderr)
+    sys.exit(1 if report.failed else 0)
+
+
+if __name__ == "__main__":
+    main()
