@@ -23,8 +23,10 @@ app/test-results/
 app/tsconfig.tsbuildinfo
 app/*.tsbuildinfo
 content/scores/generated/
-content/scores/imported/**/*.mxl
-content/scores/imported/**/*.krn
-content/scores/imported/**/*.musicxml
+# Fetched sources are clones, not repository content: `fetch.py` re-creates
+# them and `SOURCES.md` records what was fetched. Excluding the whole tree
+# (rather than the file types) keeps a cloned source from being committed as a
+# gitlink, which is what happened the first time.
+content/scores/imported/*
 !content/scores/imported/SOURCES.md
 app/.probe/
