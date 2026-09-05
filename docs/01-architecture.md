@@ -33,8 +33,9 @@ app/                     – the PWA (Vite + TypeScript)
     ui/                  – screens and components (see 04-ui-spec.md)
     score/               – OSMD wrapper, ScoreModel extraction, windowed renderer, cursor/overlay
     engine/              – practice-mode state machines, matcher, scorer, clock (pure TS, no DOM)
-    midi/                – MidiSource interface + WebMidiSource, ScreenKeyboardSource, ReplaySource
+    input/               – InputSource interface + WebMidiSource, ScreenKeyboardSource, ReplaySource, MicSource facade
     audio/               – Web Audio player (smplr piano), metronome scheduler
+    audio/pitch/         – AudioWorklet + score-informed note/chord detector + calibration
     data/                – IndexedDB (progress, settings, imports), export/import
     curriculum/          – loaders + selectors over curriculum.json/catalog.json
     util/
@@ -156,10 +157,22 @@ export class PracticeEngine {
 
 `Clock` is injectable (`performance.now` in the browser, a fake in tests).
 
-### 4.3 `midi/` — input adapters
+### 4.3 `input/` — input adapters (MIDI, microphone, screen keyboard, replay)
+
+All note input reaches the engine through one interface. `MidiSource` below is the MIDI
+flavour; `MicSource` (see `audio/pitch/`, §4.7) and `ScreenKeyboardSource` implement the same
+`InputSource` shape. Every emitted note event carries `source` and `confidence` (MIDI = 1.0).
 
 ```ts
-export interface MidiSource {
+export interface InputSource {
+  readonly kind: 'midi' | 'mic' | 'screen' | 'replay';
+  readonly name: string;
+  connect(): Promise<void>;
+  disconnect(): void;
+  onNote(cb: (e: { kind:'noteOn'|'noteOff'; midi: number; velocity: number; tMs: number; confidence: number; source: InputSource['kind'] }) => void): () => void;
+  onStateChange(cb: (s: { connected: boolean; detail: string }) => void): () => void;
+}
+export interface MidiSource extends InputSource {
   readonly name: string;
   connect(): Promise<void>;         // may trigger the browser permission prompt
   disconnect(): void;
@@ -186,6 +199,21 @@ export interface MidiSource {
   look-ahead) so ticks are sample-accurate; count-in support.
 - AudioContext MUST be created/resumed on a user gesture (Android autoplay policy).
 
+### 4.7 `audio/pitch/` — microphone note detection (`MicSource`)
+
+Score-informed detector, fully specified in `05-score-follow-engine.md` §11. Summary of the
+contract: `MicSource` opens `getUserMedia` with `{ echoCancellation:false, noiseSuppression:false,
+autoGainControl:false, channelCount:1 }`, runs an `AudioWorklet` that frames audio (2048–4096
+samples, hop 512), computes a magnitude spectrum, and — given the **expected pitch sets** the
+engine publishes for the current and next step (`setExpectations(steps)`) — scores each
+expected pitch by harmonic-template energy and reports onsets with a confidence. It also
+reports "unexpected salient pitch" events at lower confidence so the engine can mark probable
+wrong notes. The worklet must never allocate per frame; analysis budget ≤ 3 ms per hop on the
+S25. A `MicCalibration` routine records the learner playing a chromatic scale and stores
+per-pitch gain/inharmonicity corrections and the input latency. A wired **USB audio
+interface** (line-out of the HP-130 → OTG → phone) appears as just another microphone device
+and uses the same code with a "line input" preset (lower thresholds, no room-noise gate).
+
 ### 4.5 `data/`
 
 IndexedDB stores (via `idb`):
@@ -197,7 +225,9 @@ IndexedDB stores (via `idb`):
 | `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, timing stats, date, durationMs |
 | `imports` | id | user-imported score: name, MusicXML text (or mxl bytes), tags, addedAt |
 | `plan` | `'current'` | current stage/unit, chosen track order, placement-test result |
-| `streak` | `'streak'` | daily practice streak data |
+| `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
+| `micCalibration` | deviceId | per-pitch gain/inharmonicity table, latency ms, noise floor |
+| `skills` | conceptId | self-assessed / measured skill state for the Skills review screen |
 
 Export/import: one JSON file containing all stores (imports included), via the File System
 Access API when available and `<a download>`/share-sheet fallback otherwise.
@@ -261,6 +291,13 @@ toast when a new service worker is waiting.
 - `manifest.webmanifest`: `display: "standalone"`, `orientation: "any"`; the score screen
   requests landscape via `screen.orientation.lock('landscape')` if the user's setting says so
   (works in installed PWAs; ignore failures).
+
+## 8a. Tablet / large-screen layout
+
+A responsive breakpoint at ≥ 900 CSS px shortest side switches to the **tablet layout**:
+default bars-per-window 4, lesson text or chord chart in a collapsible side panel beside the
+score, two-column Plan/Library. No separate build; phone is the primary target and the only
+one the owner tests.
 
 ## 9. Deployment
 

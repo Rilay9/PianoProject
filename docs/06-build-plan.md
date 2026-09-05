@@ -64,6 +64,16 @@ framework (§7) and the runtime sight-reading generator (§8, levels 1–4 minim
 Acceptance: all §10 tests; e2e: scripted perfect run in Wait mode reaches `finished`; scripted
 late run in Tempo mode reports the expected timing stats.
 
+### P3b — Microphone note/chord detection · Opus · 1–2 sessions
+Deliverables per `05` §11 and `01` §4.7: `AudioWorklet` DSP (FFT, spectral flux, harmonic
+templates with inharmonicity, octave guard) as pure functions + worklet wrapper; `MicSource`
+implementing `InputSource` with `setExpectations()`; calibration routine and storage; device
+picker with the line-input preset; synthesised-audio test suite (offline soundfont rendering →
+detector → recall/precision/onset-timing assertions); Diagnostics: mic level, noise floor,
+latency, 20-s WAV capture for owner recordings. Acceptance: the §11.6 thresholds on synthetic
+fixtures; e2e: a synthetic recording drives a Wait-mode run to `finished` through the mic path
+(Playwright with a fake `getUserMedia` fed from a WAV); CPU per hop measured and reported.
+
 ### P4 — Content pipeline · Sonnet (convert edge cases → Opus) · 1–2 sessions
 Deliverables per `03`: `fetch.py` (GitHub sources first; graceful offline), `convert.py`
 (kern/ABC/LilyPond/MusicXML → normalised 2-staff MXL), `author.py`, `validate.py`,
@@ -84,14 +94,17 @@ Acceptance: `validate.py` passes; every lesson has ≥ 2 exercise and ≥ 3 song
 exist; spot-check 10 random tunes by rendering and by listening (Listen mode) for wrong notes.
 
 ### P6 — Score screen · Sonnet (Opus review) · 1–2 sessions
-Deliverables per `04` §5: full Score screen on top of P2+P3, control bar, gestures, summary
-sheet, settings persistence, landscape lock, wake lock. Acceptance: e2e covers every control;
+Deliverables per `04` §5: full Score screen on top of P2+P3(+P3b), control bar with the input
+selector (MIDI / Mic / Screen / None) and the four follow options, amber mic feedback and level
+meter, gestures, manual tap-to-advance, summary sheet, settings persistence, landscape lock,
+wake lock, playback destination (phone / piano / both). Acceptance: e2e covers every control;
 manual checklist in the prompt; Opus reviews the diff for rendering/engine misuse.
 
 ### P7 — Today / Plan / Library / Progress / Settings + storage · Sonnet · 1–2 sessions
-Deliverables per `04` §2–4, §6–7 and `01` §4.5–4.6: IndexedDB stores, review queue (spaced
-intervals from curriculum Part G), streaks, session builder, import of MusicXML/MXL (+ share
-target), export/import JSON, placement test flow. Acceptance: e2e for each screen; data
+Deliverables per `04` §2–4 (incl. 3a Skills review and 3b Chord-chart view), §6–7 and `01`
+§4.5–4.6: IndexedDB stores, review queue (spaced intervals from curriculum Part G), weekly
+goal, session builder with 15/30/60/120 templates, "I already know this" + quick checks, import
+of MusicXML/MXL (+ share target), export/import JSON, placement test flow, tablet breakpoint. Acceptance: e2e for each screen; data
 survives reload; import of a `.mxl` from the phone's Downloads works (manual).
 
 ### P8 — Drills UI · Sonnet (+ Opus for ear/rhythm scoring) · 1 session
@@ -114,7 +127,7 @@ selections authored; theory lessons from Open Music Theory outlines with attribu
 
 - Owner can install the PWA, open Today, complete a full Stage 1 lesson with the on-screen
   keyboard *and* (if the cable works) with the HP-130, see progress recorded, and go offline.
-- Stages 0–4 fully populated; tracks populated to Stage 5; library ≥ 250 items.
+- Stages 0–4 fully populated; tracks populated to Stage 5 including the Rock & metal, Jam, and Beautiful-pieces modules; library ≥ 250 items; mic follow works on the owner's HP-130 + S25 in a quiet room (measured on his recordings).
 - CI green; all budgets met on device; no console errors in a 30-minute session.
 
 ## 4. Test strategy summary

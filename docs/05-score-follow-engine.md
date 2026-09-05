@@ -1,7 +1,8 @@
 # 05 — Score-follow engine and MIDI
 
 Pure TypeScript, no DOM. Consumes a `ScoreModel` (see `01-architecture.md` §4.1) and a stream
-of `EngineInput` events; emits `EngineEvent`s that the Score screen turns into cursor moves,
+of `EngineInput` events (from MIDI, microphone, screen keyboard, or replay — each with a
+`confidence`, MIDI = 1.0); emits `EngineEvent`s that the Score screen turns into cursor moves,
 note colours, and sounds. **All timing uses an injected `Clock`** so tests are deterministic.
 
 ## 1. Preprocessing the ScoreModel for a session
@@ -154,3 +155,90 @@ inputs through a fake clock:
   200 ms late with tolerance 150 ⇒ misses; extra notes ⇒ wrongs; count-in delays step 0.
 - Drills: pedal clean-change scoring; ear-interval accepts octave-equivalent answers when set.
 - Property test: for any fixture, sum of `durStep` == `beatToMs(lastOnset)`.
+
+
+## 11. Microphone note and chord detection (the MIDI backup) — score-informed design
+
+### 11.1 Why this is tractable
+
+General polyphonic piano transcription is unsolved in real time on a phone. **We do not need
+it.** At every moment the engine knows the small set of pitches expected now (`expected[k]`)
+and next (`expected[k+1]`). The detector's job reduces to two questions per audio frame:
+
+1. Did a **note onset** just happen? (energy/spectral-flux rise)
+2. For each expected pitch, is its **harmonic template** present with energy above the local
+   background? (and, weakly: is some *other* pitch salient instead?)
+
+Because we test only a handful of hypotheses against the spectrum and "favour the score"
+(owner's requirement), ambiguous frames resolve towards the expected notes. Wrong notes are
+detected only when the evidence is strong (loud onset, expected pitches absent, a different
+pitch salient); those are shown **amber "probably wrong"**, never red, and never counted
+against a *pass* unless the setting "strict mic scoring" is on.
+
+### 11.2 Signal chain
+
+- `getUserMedia` mono, 44.1/48 kHz, all browser processing **off** (`echoCancellation`,
+  `noiseSuppression`, `autoGainControl` = false — they destroy piano transients and harmonics).
+  Device picker lists all inputs (phone mic, USB audio interface, Bluetooth headset mic).
+- `AudioWorkletProcessor` (runs off the main thread): ring buffer; every hop of 512 samples
+  (~11 ms) compute a Hann-windowed FFT of 4096 samples (frequency resolution ~11 Hz, enough
+  to separate semitones down to ~C3; for C2–B2 use a 8192 window on the same hop — the low
+  range matters for the bass staff). Precompute FFT twiddles; no per-frame allocation.
+- Features per frame: log-magnitude spectrum `S[f]`; **spectral flux** `Σ max(0, S_t[f] − S_{t−1}[f])`
+  for onsets; per-candidate-pitch **harmonic template score**
+  `H(p) = Σ_{h=1..6} w_h · max(S[f near h·f0(p)·(1+β·h²)]) − background(p)` with harmonic
+  weights `w = [1, .8, .6, .5, .4, .3]`, inharmonicity `β` per pitch from calibration (default
+  0.0004 mid-range, larger in the bass), `background` = median of `S` in a ±2-semitone band
+  excluding harmonic bins. Normalise `H` to the frame's loudest expected candidate.
+- **Octave/partial confusion guard:** a pitch one octave below an expected pitch shares its
+  even harmonics; require energy at the *odd* harmonics (h = 1, 3, 5) of the lower pitch before
+  believing it. Same for a fifth above (3rd harmonic coincidence).
+
+### 11.3 Decision logic (in the worklet's companion `MicSource`, main thread)
+
+State per expected pitch: `present`, `presentSince`. Emit `noteOn(p, confidence)` when:
+onset detected within the last 60 ms **and** `H(p)` rises above `θ_on` (calibrated, ≈ 6 dB
+above background) **and** was below it in the previous 3 frames. Confidence = clamp of the
+margin above `θ_on`, scaled by onset strength. Emit `noteOff(p)` when `H(p)` falls below
+`θ_off` for 4 consecutive frames (release is unreliable with pedal; the engine already
+ignores releases for matching). **Chords:** the same test per pitch; the engine's chord window
+(80 ms) absorbs stagger. **Repeated notes:** each onset re-arms detection even if `H(p)` never
+dropped (pedal held) — onset + re-rise of `H(p)` by ≥ 3 dB counts.
+
+Unexpected notes: keep a coarse chroma-like scan (the 88 templates evaluated every 4th hop)
+and, on a strong onset with no expected pitch rising, report the most salient pitch with
+`confidence ≤ 0.5` and `source:'mic'`; the engine colours amber.
+
+### 11.4 Engine adaptations for mic input
+
+- Wait mode: an expected pitch is satisfied at `confidence ≥ 0.5`; the whole step completes
+  when all expected pitches are satisfied **or** when ≥ 70 % are satisfied *and* the loudest
+  onset in the window was strong (chord with one masked note) — setting `micChordLeniency`.
+- Tempo mode: onsets are time-stamped in the worklet (sample-accurate) and shifted by the
+  calibrated input latency; tolerance defaults to ±200 ms for mic (vs ±150 for MIDI).
+- Accuracy from mic is labelled "estimated"; the summary sheet says so.
+- The app playing back the *other* hand through the phone speaker while listening through the
+  same phone's mic will contaminate detection. Rules: when mic input is active, playback of
+  expected pitches is muted; metronome uses a short high click (≥ 4 kHz) that the detector
+  notches out; playback is best sent to the piano over MIDI (D16) or to headphones.
+
+### 11.5 Calibration screen (`MicCalibration`)
+
+Guided 60-second routine: silence (noise floor) → play each C across the keyboard
+(gain per octave, inharmonicity fit from partial positions) → play a chromatic scale C3–C5
+slowly with the metronome (per-pitch thresholds; latency = onset time − click time) →
+play three chords (C, F, G) (chord leniency check). Stores to `micCalibration`. Offers a
+"line input" preset when the selected device is not the built-in mic.
+
+### 11.6 Testing without a piano
+
+- **Synthesised fixtures:** render the soundfont piano offline (`OfflineAudioContext`) for
+  scripted note lists (single notes across the range, chords, repeated notes with pedal,
+  fast scales at 120 bpm 16ths), optionally mix in recorded room noise and apply a mild
+  reverb; run the worklet's DSP as plain functions in Vitest (pure TS, `Float32Array` in/out) and
+  assert onset timing error < 30 ms and pitch-set recall ≥ 95 % / precision ≥ 90 % for
+  monophonic, recall ≥ 85 % for 3-note chords, with the score-informed prior.
+- **Owner recordings:** the Diagnostics screen can record 20 s of raw mic audio to a WAV the
+  owner shares back; these become regression fixtures for the HP-130 + S25 combination.
+- **Optional tier 2 (later):** Spotify's Basic Pitch model via TensorFlow.js for Free-mode
+  transcription and for turning a recorded improvisation into notation; not needed for follow.

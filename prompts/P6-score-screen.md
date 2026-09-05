@@ -5,7 +5,9 @@
 Read: `docs/04-ui-spec.md` §5, §7, §8, §9; `docs/05-score-follow-engine.md` §2–§6; `docs/01-architecture.md` §8.
 
 ## Build
-The full Score screen on top of P1–P3: control bar (every control listed in `04` §5, auto-hide),
+The full Score screen on top of P1–P3 (+P3b if merged; otherwise stub `MicSource`): control bar
+(every control listed in `04` §5 incl. the input selector and the four follow options, auto-hide),
+amber mic feedback + level meter, manual tap-to-advance, playback destination toggle,
 Window/Scroll layouts, cursor + note colouring driven by engine events, keyboard strip, hand
 focus dimming, loop by double-tap and by named sections, tempo % slider with bpm entry,
 metronome/count-in, mode switch at runtime, end-of-run summary sheet with the four action

@@ -31,6 +31,11 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
 
 ## Part A — Principles the app enforces (and why)
 
+0. **No assumptions about level; free movement both ways.** Nothing is locked. The learner can
+   open any lesson, mark it "I already know this", take a 2–3-minute quick check, or come back
+   to any earlier concept from the Skills review screen. The plan is a map, not a corridor.
+   (The owner already reads basic notation and plays some chords; Stages 1–2 are a fast review
+   for him and a real start for anyone else.)
 1. **Read from day one, but play before you read.** Each new concept is first played by
    imitation (the app plays it, the learner copies with the on-screen keys highlighted), then
    read from notation. Rote-only apps produce players who cannot read; notation-only apps
@@ -50,9 +55,15 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    3 weeks). Mastered items appear in "Repertoire" for occasional replay.
 7. **Ear before theory before name.** Every theory concept has an ear-training drill the
    learner answers *on the keyboard* (MIDI or screen keys), then a short text explanation.
-8. **Session template (30 min):** Warm-up technique 5 · Review queue 5 · New lesson material
-   10 · Repertoire/song 8 · Free play / improv prompt 2. The app's "Today" screen builds this
-   automatically; the learner can override.
+8. **Session templates.** The owner practises 20–30 min on some weekdays and for hours at
+   weekends, so the app builds sessions by length:
+   - **15 min:** technique 4 · review 4 · one new item 7.
+   - **30 min:** technique 5 · review 5 · new material 10 · repertoire 8 · free play 2.
+   - **60 min:** technique 8 · review 8 · new material 20 · repertoire 12 · jam/chord-chart or
+     improv 8 · free play 4.
+   - **120 min (weekend):** two 60-min halves with a break reminder; the second half is
+     repertoire-heavy (a "beautiful piece" project), jam practice, and a sight-reading set.
+   Goals are weekly minutes; missing weekdays never breaks anything.
 
 ## Part B — Stage map
 
@@ -394,6 +405,35 @@ Teachers: Bill Hilton (improvisation videos), Nahre Sol, Aimee Nolte, Open Studi
   lyrics are copyrighted), Auld Lang Syne, Hanukkah: Ma'oz Tzur, Sevivon, Hanerot Halalu.
 - **Latin** `[AUTH]`: La Cucaracha, Cielito Lindo, La Paloma, El Choclo, La Cumparsita,
   Tico-Tico; concepts: clave, tumbao LH, montuno RH.
+- **Rock & metal piano** (owner's bands: Avenged Sevenfold, Linkin Park, Sleep Token; all
+  songs `[IMPORT]`, techniques taught on PD material `[AUTH]`/`[GEN]`): minor-key ostinatos
+  and riffs (Linkin Park-style 8th-note piano figures over a pedal bass); octave and
+  power-chord (root–5th–octave) LH; suspended and add9 chords, open voicings, "ambient" pedal
+  textures with slow arpeggios (Sleep Token-style); 6/8 and half-time ballad feels; drop-tuned
+  heaviness via low-register doublings; building intensity by register and density; reducing
+  a band arrangement to a piano part (melody + bass + one texture); playing with a click and
+  with a recording (Free mode + imported audio playback later). Practice vehicles: Chopin
+  Prelude 20 (power-chord voicings), Bach Prelude C minor BWV 999 (ostinato), Satie
+  Gnossienne 1 (dark modal ambience), Beethoven Moonlight I (arpeggio texture over pedal
+  bass), Grieg *In the Hall of the Mountain King* (riff build), Rachmaninoff Prelude C♯ minor
+  (heaviness). Lessons also explain how to legally obtain MusicXML for specific songs.
+- **Jam with a friend** (lives inside the blues and jazz tracks; unlocks the chord-chart
+  view): what a "head" and a "chorus" are; counting off; 12-bar blues in the friend's keys
+  (guitar: E, A, G, D; horns: F, B♭, E♭ — to be confirmed); comping behind a soloist (rhythm,
+  leaving space, shell voicings); walking bass when there is no bass player; trading fours;
+  following a lead sheet and the form tracker; endings and turnarounds; a shared set list of
+  PD tunes from the jazz/blues ladders; recording a jam in Free mode.
+- **Beautiful pieces** (a curated collection tag across stages, the owner's "all beautiful
+  songs"): PD bundled — Satie Gymnopédie 1 & Gnossienne 1, Pachelbel Canon, Bach Air on G and
+  Prelude in C, Chopin Preludes 4/7/20, Nocturne op.9/2, Waltz A minor, Beethoven Moonlight I
+  and Für Elise, Debussy Clair de Lune, Arabesque 1 and Rêverie, Schumann Träumerei, Grieg
+  Arietta and Morning Mood, Liszt Liebestraum 3 and Consolation 3, Schubert Ave Maria and
+  Serenade, Mendelssohn Venetian Boat Song, Rachmaninoff Prelude C♯ minor, Mascagni
+  Intermezzo (Cavalleria), Massenet Méditation (arr.), Elgar Salut d'amour, Dvořák Largo
+  (arr.), Tchaikovsky Sweet Dream; and import suggestions — Einaudi (Nuvole Bianche,
+  Experience), Yiruma (River Flows in You), Tiersen (Comptine d'un autre été), Zimmer
+  (Interstellar), Sakamoto (Merry Christmas Mr. Lawrence), Joe Hisaishi (One Summer's Day) —
+  all copyrighted, obtain MusicXML yourself.
 - **Film / game / modern pop** `[IMPORT]`: the app's import screen + a guide on where to
   legally obtain MusicXML (purchase from sheet-music retailers that export MusicXML, or your own
   transcriptions in MuseScore). Nothing bundled.

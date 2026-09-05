@@ -9,8 +9,11 @@ Read: `docs/04-ui-spec.md` §2–§4, §6–§8; `docs/01-architecture.md` §4.5
    localStorage; export/import JSON (File System Access API with download fallback; share-sheet
    on Android when available).
 2. `curriculum/` selectors incl. `nextRecommended`, review queue (intervals 1/3/7/21 days),
-   streaks, session builder (template in Part A §8).
-3. Screens per `04`: Today (session card, shuffle, start session flow), Plan (stages → units →
+   weekly-minutes goal (no daily streak), "I already know this" self-pass + quick checks,
+   session builder for the four templates in curriculum Part A §8.
+3. Screens per `04`: Today (weekly goal header, input chip, session-length picker with 15/30/60/120
+   templates, Jump to…, Review a skill, session card, shuffle, start session flow), Skills review
+   (§3a), Chord-chart view with form tracker (§3b), tablet breakpoint (§7a), Plan (stages → units →
    lessons, lesson page with options, track toggles/ordering, manual "mark done", placement
    test flow from `02` Stage 0.4 using existing drills/scores), Library (search/filter/sort,
    imports with `.musicxml/.mxl` file picker + PWA share target, edit/delete), Progress

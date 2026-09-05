@@ -31,7 +31,7 @@ Claude Code sessions (Opus 5 / Sonnet 5) using the prompts in `prompts/`.
 | `docs/05-score-follow-engine.md` | ScoreModel, Wait/Tempo/Listen/Free modes, matching and scoring, drills, sight-reading generator, MIDI adapter |
 | `docs/06-build-plan.md` | phases P0–P10, model assignment, acceptance criteria, test strategy |
 | `docs/07-midi-hp130-notes.md` | short MIDI notes and the deferred checklist |
-| `prompts/` | paste-ready prompts per phase |
+| `prompts/` | paste-ready prompts per phase (P0–P10, P3b microphone detection, PR-review) |
 | `content/*.schema.json` | JSON schemas for the catalog and curriculum data |
 | `tools/content/generate_exercises.py` | working music21 generator for scales, arpeggios, inversions, five-finger patterns, Hanon No. 1 |
 

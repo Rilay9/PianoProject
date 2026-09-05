@@ -54,31 +54,47 @@ never requires an account or a server.
 | D11 | **One canonical internal "ScoreModel"** (notes with onset/duration in beats, MIDI pitch, staff/hand, measure index, cursor step) extracted from OSMD's parsed sheet after `load()`. The follow engine works on ScoreModel only. | Decouples matching/scoring logic from rendering; unit-testable in Node. |
 | D12 | **Practice modes: Wait, Tempo, Listen, Free** (see `05-score-follow-engine.md`). Wait mode is the default when MIDI is present; Tempo mode (auto-advance on a clock) is the default when it is not. | Matches the owner's requirement for "moves as I play, or as the timing requires if MIDI doesn't work". |
 | D13 | **Curriculum as data** (`content/curriculum/*.json`), not code. Lessons, options, and prerequisites are JSON validated by a schema. | Lets Sonnet sessions add content without touching the engine; lets the owner edit the plan by hand. |
+| D15 | **Three follow inputs, one engine.** The score can be driven by (a) **MIDI** from the piano, (b) the **microphone** (score-informed pitch/chord detection — see `05` §11), or (c) **the clock** (timed) / **manual scrolling**. All three feed the same `PracticeEngine` through a common `InputSource` interface with a per-event confidence. The learner picks the input on the Score screen; the app auto-picks MIDI when present, else microphone if permission was granted, else timed. | The owner wants the best possible use of a small screen: the sheet must move with the playing even when MIDI fails. Mic detection is *not* general polyphonic transcription — because we always know which notes are expected next, we only ask the mic "did these notes just start?", which is tractable in real time on a phone. Ambiguity is resolved in favour of the score. |
+| D16 | **Playback goes to the phone speaker/Bluetooth by default; a toggle sends it to the piano over MIDI OUT instead (or both).** | Owner asked for both. |
+| D17 | **No gating by default.** Every lesson, item, and drill is openable at any time; "I already know this" marks a lesson as self-passed; the placement test is optional; a **Skills review** screen lets the learner drill any earlier concept. Strict prerequisite mode exists as an opt-in. | The owner reads basic notation and plays some chords already, plateaued after a few lessons, and asked that the app never assume a level — just make moving forward and backward easy. |
+| D18 | **Copyrighted band repertoire (Avenged Sevenfold, Linkin Park, Sleep Token, film/game/modern pop) is taught as *technique* on public-domain material plus an import path for the actual songs.** A "Rock & metal piano" module and a "Beautiful pieces" collection are part of the curriculum. | Legal; and the techniques (minor ostinatos, octave bass, sus chords, ambient pedal textures, reductions of band arrangements) are exactly what those songs need. |
 | D14 | **Model assignment:** Opus 5 for architecture/algorithms/debugging-on-device; Sonnet 5 for well-specified UI, data entry, tests, docs, and content authoring from templates. | Spelled out per task in `06-build-plan.md`. |
 
 ## 4. Assumptions (stated because the owner could not be asked mid-task)
 
 | # | Assumption | If wrong… |
 |---|-----------|-----------|
-| A1 | The owner is an **absolute beginner** who does not yet read music. | The plan has a placement test (Stage 0) so a learner can skip ahead; nothing is lost. |
-| A2 | Genre priority order: **classical foundations + chord/pop playing first** (both are needed for everything else), then blues/boogie, then jazz, ragtime, theory/ear as parallel tracks. | Tracks are parallel from Stage 3; the owner can re-order in the app. |
-| A3 | About **30 minutes of practice on most days**. Pacing estimates in the curriculum assume this. | Pacing is advisory only; nothing in the app is time-gated. |
+| A1 | ~~Absolute beginner~~ **Answered:** reads basic sheet music, plays a couple of chords, had a few lessons, plateaued early. The app makes **no level assumption**: everything is open, moving on or going back is one tap (D17). The Stage 1–2 material stays in the plan as a quick review the owner can skim or self-pass. | — |
+| A2 | ~~Classical + chords first~~ **Answered:** classical first and "all beautiful songs"; rock/metal piano (Avenged Sevenfold, Linkin Park, Sleep Token) via import + a technique module; **blues and jazz to play with a friend**; pop/chords to play along for himself. Default active tracks: `classical`, `blues-boogie`, `jazz`, `chords-pop`, plus the `rock-metal` and `jam` modules. | — |
+| A3 | ~~30 min/day~~ **Answered:** 20–30 min every couple of weekdays, hours at weekends. The session builder has **15/30/60/120-minute templates**; weekdays default to short (technique + review), weekends to long (new material + repertoire + jam practice). Goals are **weekly minutes**, not daily streaks. | — |
 | A4 | The owner is in the **United States**, so "public domain" means US public domain (works published ≤ 1930 as of 2026, plus later works whose copyright was not renewed/registered). | For other countries the "life + 70" rule applies; a `pd_region` field in the catalog flags US-only items so they can be excluded. |
-| A5 | **Landscape orientation** is the primary score-reading orientation on the phone (more bars per line at readable size); portrait is supported for menus and short windows. | Both are implemented; it's a setting and a rotation. |
-| A6 | The GitHub repository can be **public** (needed for free GitHub Pages) — all bundled content is PD/CC so that is fine. | Use Cloudflare Pages / Netlify, or build an APK via Bubblewrap (TWA) and sideload; documented in `01-architecture.md` §9. |
+| A5 | **Answered:** phone only, landscape for reading; a **tablet layout** (more bars per window, lesson text beside the score) is implemented as a responsive breakpoint so it works if a tablet ever appears. Several phone follow options exist: MIDI-follow, mic-follow, timed, and manual scroll. | — |
+| A6 | **Answered:** public GitHub repo is OK for now → GitHub Pages hosting. | — |
 | A7 | **English UI, letter note names (C D E…)**, not solfège. | One localisation table; solfège toggle is a listed backlog item. |
 | A8 | The Roland HP-130 sends **standard MIDI 1.0** on its 5-pin DIN MIDI OUT (Note On/Off with velocity, sustain pedal CC64). It is a 1990s digital piano; there is no proprietary "old Roland protocol" involved in note data (Roland's pre-MIDI DCB bus was 1982–83 synthesizers only). The "doesn't work with Skoove" symptom is therefore almost certainly the **cable or the phone-side setup**, not the piano. | Even if some quirk exists, the fallback modes make the app fully usable, and the MIDI monitor tool (Phase 1) shows raw bytes so any quirk can be diagnosed later. |
 
-## 5. Open questions for the owner (answer whenever convenient; defaults are the assumptions above)
+## 5. Owner's answers so far and remaining open questions
 
-1. **Level:** Can you read any sheet music today? Have you ever played another instrument? (A1)
-2. **Genres:** Rank these: classical, pop/singer-songwriter (chords), blues/boogie, jazz, ragtime, film/game, worship/gospel, latin. (A2)
-3. **Time:** Realistic practice minutes per day and days per week? (A3)
-4. **Hosting:** Is a public GitHub repo OK (free GitHub Pages)? If not, do you have a preference for Cloudflare Pages / Netlify, or would you rather sideload an APK? (A6)
-5. **Screen:** Phone only, or do you also have a tablet/laptop you'd put on the music stand? (Affects default bars-per-window.)
-6. **Copyright stance:** OK that modern copyrighted songs are only available by importing MusicXML you obtain yourself (e.g. purchased from a sheet-music site, or exported from MuseScore)? (D10)
-7. **Piano sound:** When the app plays a piece back, should it use the phone speaker/Bluetooth, or would you rather the app send MIDI *to* the piano so the HP-130 plays it (only possible once the cable works in both directions)?
-8. **MIDI (deferred, low priority for now):** cable brand/model, whether it has status LEDs, which plug you put in the piano's MIDI OUT, and whether you use a USB-C OTG adapter. We will handle this in Phase 1's MIDI monitor.
+Answered (2026-09-05): level = reads basic notation, some chords, plateaued early, wants free
+navigation both ways · genres = classical + beautiful pieces, rock/metal via import, blues &
+jazz for jamming with a friend, pop/chords for himself · time = 20–30 min some weekdays, hours
+at weekends · public repo OK · phone only with a tablet mode · wants mic-based note/chord
+recognition as the MIDI backup, favouring the score's notes when ambiguous · playback both to
+phone and to the piano (toggle).
+
+Still open (defaults in brackets; answer whenever):
+
+1. **What does your friend play** (guitar, sax, trumpet, bass, drums, voice…)? It sets the
+   keys we practise in for jamming [assume guitar → E, A, G, D; and horn keys F, B♭ as second].
+2. **Three to five specific songs** from Avenged Sevenfold / Linkin Park / Sleep Token you'd
+   like first (e.g. *Warmness on the Soul*, *Numb*, *Euclid*)? They stay import-only, but the
+   rock/metal module's technique lessons will be written around exactly those textures.
+3. **A wired audio path instead of the mic?** The HP-130 has a headphone/line output. A
+   class-compliant **USB audio interface** (e.g. a Behringer UCA202, ~$30) plugged into the
+   S25 through the OTG adapter gives the app a clean line-level signal through the same
+   microphone API — far more reliable than the phone mic in a room. Not required; mic works
+   first. [Plan for both; mic is the default.]
+4. MIDI cable details remain deferred to the P1 checklist (`07-midi-hp130-notes.md`).
 
 ## 6. What is in this repository
 

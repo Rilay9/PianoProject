@@ -25,7 +25,7 @@ playlist, Hoffman Academy, Lypur, Josh Wright, Aimee Nolte, Open Studio, Piano W
 record `label`, `teacher`, `url`. Do not copy their text.
 
 ## Pass 3 — Curriculum JSON (`content/curriculum/*.json`)
-Encode Stages 0–4 (all units/lessons with ≥ 2 exercise options and ≥ 3 song options each,
+Encode Stages 0–4 (all units/lessons; include the Rock & metal, Jam-with-a-friend and Beautiful-pieces modules from Part D8 with ≥ 2 exercise options and ≥ 3 song options each,
 mastery per Part G) and tracks to Stage 5, referencing catalog ids from P4 + Pass 1 + the
 generator. Run `validate.py` until clean.
 
