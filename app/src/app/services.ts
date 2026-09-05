@@ -7,12 +7,16 @@
 // of inside a screen.
 
 import { audioEngine } from '../audio/AudioEngine';
+import { MicSource } from '../audio/pitch/MicSource';
 import { Piano } from '../audio/Piano';
 import { ScreenKeyboardSource } from '../midi/ScreenKeyboardSource';
 import { WebMidiSource } from '../midi/WebMidiSource';
 import { getMidiSettings, onMidiSettingsChange } from '../data/midiSettings';
 
 export const webMidiSource = new WebMidiSource();
+// The mic detector shares the one AudioContext: a second one would cost
+// another hardware stream and its own output latency (see AudioEngine).
+export const micSource = new MicSource({ audioContext: () => audioEngine.ensureStarted() });
 export const screenKeyboardSource = new ScreenKeyboardSource();
 export { audioEngine };
 

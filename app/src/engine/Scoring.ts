@@ -93,6 +93,9 @@ export interface ScoreInput {
   loops: number;
   rolledChordSteps: number;
   notes: readonly RecordedNote[];
+  /** docs/05 §11.4: microphone accuracy is an estimate and is labelled so. */
+  accuracyEstimated: boolean;
+  lenientChordSteps: number;
 }
 
 export function buildScore(input: ScoreInput): SessionScore {
@@ -131,6 +134,8 @@ export function buildScore(input: ScoreInput): SessionScore {
     durationMs: input.durationMs,
     loops: input.loops,
     rolledChordSteps: input.rolledChordSteps,
+    accuracyEstimated: input.accuracyEstimated,
+    lenientChordSteps: input.lenientChordSteps,
     notes: [...input.notes],
   };
 }

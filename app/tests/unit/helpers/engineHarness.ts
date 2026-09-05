@@ -104,7 +104,7 @@ export interface Harness {
   /** Events of one kind, in order. */
   of<K extends EngineEvent['kind']>(kind: K): Extract<EngineEvent, { kind: K }>[];
   /** Note-On at the current clock time (or an explicit one). */
-  play(midi: number, options?: { velocity?: number; atMs?: number }): void;
+  play(midi: number, options?: { velocity?: number; atMs?: number; confidence?: number }): void;
   release(midi: number, options?: { atMs?: number }): void;
   cc(cc: number, value: number): void;
   /** Moves the clock forward, ticking the engine every `stepMs` as rAF would. */
@@ -132,6 +132,7 @@ export function harness(
         midi,
         velocity: o.velocity ?? 90,
         tMs: o.atMs ?? clock.now(),
+        ...(o.confidence === undefined ? {} : { confidence: o.confidence }),
       }),
     release: (midi, o = {}) =>
       engine.feed({ kind: 'noteOff', midi, velocity: 0, tMs: o.atMs ?? clock.now() }),

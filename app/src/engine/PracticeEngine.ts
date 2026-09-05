@@ -48,7 +48,20 @@ interface StepProgress {
   retries: number;
   /** Timestamps of the satisfying strikes, for the chord-spread stat. */
   strikeTimes: number[];
+  /** Highest confidence among the satisfying strikes (microphone leniency). */
+  bestConfidence: number;
+  /** When the step's first correct note landed, or null if none has. */
+  firstStrikeMs: number | null;
 }
+
+/**
+ * Confidence that counts as "a strong onset" for the chord leniency.
+ *
+ * The detector's confidence is the evidence margin scaled by onset strength
+ * (see `confidenceFor` in audio/pitch/detector.ts), so a value this high can
+ * only come from a clear strike, which is what docs/05 §11.4 asks for.
+ */
+const MIC_STRONG_CONFIDENCE = 0.75;
 
 export interface EngineState {
   step: number;
@@ -103,6 +116,7 @@ export class PracticeEngine {
   private missedTotal = 0;
   private hits = 0;
   private rolledChordSteps = 0;
+  private lenientChordSteps = 0;
   private readonly deltas: number[] = [];
   private readonly missesByMeasure = new Map<number, number>();
   private readonly wrongsByMeasure = new Map<number, number>();
@@ -203,6 +217,10 @@ export class PracticeEngine {
    */
   tick(): void {
     if (!this.running || this.paused || this.finished) return;
+    if (this.mode === 'wait') {
+      this.maybeCompletePartialChord();
+      return;
+    }
     if (this.mode !== 'tempo' && this.mode !== 'listen') return;
     const music = this.musicMs;
     // Open before closing: a very short step could do both within one frame.
@@ -224,18 +242,23 @@ export class PracticeEngine {
     }
     this.pressed.add(input.midi);
     if (!this.running || this.paused || this.finished) return;
+    // Below this the source is telling us it does not know (docs/05 §11.4).
+    // Dropping the event is the only safe reading: counting it right would
+    // advance the score on a guess, counting it wrong would punish the room.
+    const confidence = input.confidence ?? 1;
+    if (confidence < this.session.options.minConfidence) return;
     if (this.mode === 'listen') return;
     if (this.mode === 'free') {
       this.recorded.push({ midi: input.midi, velocity: input.velocity, tMs: input.tMs, stepIndex: null, ok: true });
       return;
     }
-    if (this.mode === 'wait') this.feedWait(input.midi, input.velocity, input.tMs);
-    else this.feedTempo(input.midi, input.velocity, input.tMs);
+    if (this.mode === 'wait') this.feedWait(input.midi, input.velocity, input.tMs, confidence);
+    else this.feedTempo(input.midi, input.velocity, input.tMs, confidence);
   }
 
   // --- Wait mode (docs/05 §2) ----------------------------------------------
 
-  private feedWait(midi: number, velocity: number, tMs: number): void {
+  private feedWait(midi: number, velocity: number, tMs: number, confidence: number): void {
     const current = this.session.steps[this.step];
     if (!current) return;
 
@@ -247,6 +270,8 @@ export class PracticeEngine {
       if (this.progress.satisfied.has(midi)) return;
       this.progress.satisfied.add(midi);
       this.progress.strikeTimes.push(tMs);
+      if (confidence > this.progress.bestConfidence) this.progress.bestConfidence = confidence;
+      if (this.progress.firstStrikeMs === null) this.progress.firstStrikeMs = tMs;
       this.record(midi, velocity, tMs, this.step, true);
       this.emit({
         kind: 'noteJudged',
@@ -271,11 +296,23 @@ export class PracticeEngine {
       }
     }
 
+    // A wrong note only counts when the source was sure of it: a microphone
+    // guess is shown amber and left out of the score (docs/05 §11.1).
+    const certain = confidence >= this.session.options.wrongNoteConfidence;
+    this.record(midi, velocity, tMs, this.step, false);
+    this.emit({
+      kind: 'noteJudged',
+      ok: false,
+      midi,
+      noteIds: [],
+      stepIndex: this.step,
+      tMs,
+      ...(certain ? {} : { uncertain: true }),
+    });
+    if (!certain) return;
     this.progress.wrongCount += 1;
     this.wrongNotesTotal += 1;
     this.bump(this.wrongsByMeasure, current.measureIndex);
-    this.record(midi, velocity, tMs, this.step, false);
-    this.emit({ kind: 'noteJudged', ok: false, midi, noteIds: [], stepIndex: this.step, tMs });
     if (this.session.options.strict) {
       this.progress.satisfied.clear();
       this.progress.strikeTimes.length = 0;
@@ -323,6 +360,42 @@ export class PracticeEngine {
     this.maybeAdvanceWait(tMs);
   }
 
+  /**
+   * Microphone chord leniency (docs/05 §11.4).
+   *
+   * A chord with one note masked by the others is the ordinary failure of
+   * listening through a microphone, and in Wait mode the consequence is that
+   * the run stops dead on a chord the learner played correctly. So once most
+   * of the chord has been heard *confidently*, and the rest has had its grace
+   * period to arrive, the step completes.
+   *
+   * The missing pitches are not marked satisfied: the step is completed, but
+   * it does not count as a clean step, so the leniency can never inflate the
+   * accuracy figure — which is already labelled an estimate.
+   */
+  private maybeCompletePartialChord(): void {
+    if (!this.session.options.micChordLeniency) return;
+    const { satisfied, firstStrikeMs, bestConfidence } = this.progress;
+    if (firstStrikeMs === null || satisfied.size === 0) return;
+    const current = this.session.steps[this.step];
+    if (!current || current.expected.length < 2) return;
+    if (satisfied.size >= current.expected.length) return;
+    if (satisfied.size / current.expected.length < this.session.options.micChordFraction) return;
+    // "The loudest onset in the window was strong" (§11.4). Onset strength is
+    // already folded into the detector's confidence, so that is what is read
+    // here rather than plumbing a second signal through the input contract.
+    if (bestConfidence < MIC_STRONG_CONFIDENCE) return;
+    const now = this.clock.now();
+    if (now - firstStrikeMs < this.session.options.micChordGraceMs) return;
+
+    this.lenientChordSteps += 1;
+    for (const midi of current.expected) satisfied.add(midi);
+    // Not a clean step: leave `wrongCount` alone but make sure this one is not
+    // counted as correct by `maybeAdvanceWait`.
+    this.progress.retries = 2;
+    this.maybeAdvanceWait(now);
+  }
+
   /** The next step with something to play, or null at the end of the run. */
   private nextWaitStep(from: number): number | null {
     return nextPlayableStep(this.session.steps, from + 1, this.session.lastStep);
@@ -330,7 +403,7 @@ export class PracticeEngine {
 
   // --- Tempo mode (docs/05 §3) ---------------------------------------------
 
-  private feedTempo(midi: number, velocity: number, rawTMs: number): void {
+  private feedTempo(midi: number, velocity: number, rawTMs: number, confidence: number): void {
     // The input path has a fixed delay (cable, USB stack, browser); the
     // diagnostics latency test measures it and it is removed here so a
     // learner is not marked late for their equipment.
@@ -345,11 +418,21 @@ export class PracticeEngine {
 
     const match = this.findSlot(midi, at);
     if (match === null) {
+      const certain = confidence >= this.session.options.wrongNoteConfidence;
+      this.record(midi, velocity, rawTMs, null, false);
+      this.emit({
+        kind: 'noteJudged',
+        ok: false,
+        midi,
+        noteIds: [],
+        stepIndex: this.step,
+        tMs: rawTMs,
+        ...(certain ? {} : { uncertain: true }),
+      });
+      if (!certain) return;
       this.wrongNotesTotal += 1;
       const measure = this.session.steps[this.step]?.measureIndex ?? 0;
       this.bump(this.wrongsByMeasure, measure);
-      this.record(midi, velocity, rawTMs, null, false);
-      this.emit({ kind: 'noteJudged', ok: false, midi, noteIds: [], stepIndex: this.step, tMs: rawTMs });
       return;
     }
 
@@ -591,6 +674,8 @@ export class PracticeEngine {
       durationMs: this.running || this.finished ? this.elapsedMs : 0,
       loops: this.loopsCompleted,
       rolledChordSteps: this.rolledChordSteps,
+      accuracyEstimated: this.session.options.accuracyEstimated,
+      lenientChordSteps: this.lenientChordSteps,
       notes: this.recorded,
     });
   }
@@ -601,7 +686,14 @@ export class PracticeEngine {
 }
 
 function freshProgress(): StepProgress {
-  return { satisfied: new Set(), wrongCount: 0, retries: 0, strikeTimes: [] };
+  return {
+    satisfied: new Set(),
+    wrongCount: 0,
+    retries: 0,
+    strikeTimes: [],
+    bestConfidence: 0,
+    firstStrikeMs: null,
+  };
 }
 
 export { ENGINE_DEFAULTS };

@@ -25,6 +25,8 @@ function scoreWith(partial: Partial<SessionScore>): SessionScore {
     missedTotal: 0,
     wrongNotesTotal: 0,
     accuracy: 1,
+    accuracyEstimated: false,
+    lenientChordSteps: 0,
     timing: timingStats([]),
     hotSpots: [],
     durationMs: 1000,

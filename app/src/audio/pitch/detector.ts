@@ -284,6 +284,30 @@ export class PitchDetector {
     }
   }
 
+  /**
+   * Applies what the calibration routine measured (docs/05 §11.5): per-pitch
+   * gain and inharmonicity corrections, and any threshold overrides (the
+   * line-input preset lowers them, since a cable has no room noise in it).
+   *
+   * Mutates the existing maps rather than replacing them, so the worklet can
+   * be recalibrated mid-session without reallocating.
+   */
+  calibrate(calibration: {
+    gainDb?: ReadonlyMap<number, number>;
+    inharmonicity?: ReadonlyMap<number, number>;
+    thresholds?: Partial<DetectorThresholds>;
+  }): void {
+    if (calibration.gainDb) {
+      this.gainDb.clear();
+      for (const [midi, db] of calibration.gainDb) this.gainDb.set(midi, db);
+    }
+    if (calibration.inharmonicity) {
+      this.inharmonicity.clear();
+      for (const [midi, beta] of calibration.inharmonicity) this.inharmonicity.set(midi, beta);
+    }
+    if (calibration.thresholds) Object.assign(this.thresholds, calibration.thresholds);
+  }
+
   get expectations(): { now: number[]; next: number[] } {
     return { now: [...this.expectedNow], next: [...this.expectedNext] };
   }
@@ -310,14 +334,19 @@ export class PitchDetector {
    * position — the caller's ring buffer provides the history. `frameEndMs` is
    * the time of the newest sample in it.
    *
+   * Pass `out` to reuse an array across hops: the worklet runs this ~86 times
+   * a second and a garbage collection on the audio thread is an audible click.
+   * It is cleared on entry and returned.
+   *
    * Events are timestamped at the **centre** of the analysis window, not its
    * trailing edge. A Hann window weights its edges to nothing, so a note is
    * only fully visible once it reaches the middle: reporting at the edge put
    * every onset a consistent ~46 ms late, which is most of the 30 ms budget
    * in docs/05 §11.6 spent on an avoidable bookkeeping error.
    */
-  process(frame: Float32Array, frameEndMs: number): DetectedNote[] {
-    const events: DetectedNote[] = [];
+  process(frame: Float32Array, frameEndMs: number, out: DetectedNote[] = []): DetectedNote[] {
+    const events = out;
+    events.length = 0;
     const tMs = frameEndMs - ((WINDOW_SIZE / 2) / this.sampleRate) * 1000;
 
     // The main window is the most recent WINDOW_SIZE samples of the frame.
