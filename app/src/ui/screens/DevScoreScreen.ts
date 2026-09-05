@@ -11,6 +11,11 @@
 import { addButton, createSubScreen } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
 import { WindowRenderer, type HandsFocus, type ScoreLayout } from '../../score/WindowRenderer';
+import { PracticeEngine } from '../../engine/PracticeEngine';
+import { evaluateOutcome } from '../../engine/Scoring';
+import { generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
+import { ReplaySource, noteOnBytes, noteOffBytes } from '../../midi';
+import type { EngineEvent, EngineOptions, Mode, SessionScore } from '../../engine/types';
 import { toMusicXml } from '../../score/mxl';
 import { OsmdView } from '../../score/OsmdView';
 import { getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
@@ -82,6 +87,27 @@ export interface DevScoreHandle {
   timeWindowRender(): number;
   /** Milliseconds to move to `index`, whose window should be pre-rendered. */
   timeShowStep(index: number): number;
+
+  // --- practice engine (P3) ---------------------------------------------
+  /** Starts a run over the loaded score; the cursor then follows the engine. */
+  startRun(mode: Mode, options?: Omit<Partial<EngineOptions>, 'mode'>): void;
+  stopRun(): void;
+  /** Feeds one Note-On, as a MIDI source would. */
+  playNote(midi: number, velocity?: number): void;
+  releaseNote(midi: number): void;
+  /**
+   * Replays a scripted performance through a ReplaySource and resolves when it
+   * has finished. Offsets are milliseconds from the start of the run.
+   */
+  replay(script: { atMs: number; midi: number; velocity?: number; off?: boolean }[]): Promise<void>;
+  /** Plays the loaded score perfectly, one step at a time (Wait mode). */
+  playPerfectly(): void;
+  engineState(): { step: number; finished: boolean; running: boolean } | null;
+  engineScore(): SessionScore | null;
+  engineOutcome(): { passed: boolean; masterEligible: boolean } | null;
+  engineEvents(): { kind: string; step?: number }[];
+  /** Loads a generated sight-reading exercise at the given level. */
+  loadSightReading(level: SightReadingLevel, seed: number, bars?: number): Promise<void>;
   noteElementCount(): number;
   currentStepNoteIds(): string[];
 }
@@ -180,6 +206,15 @@ export function DevScoreScreen(router: Router): HTMLElement {
   let lastLoadMs = 0;
   let lastError = '';
   let currentXml = '';
+  let engine: PracticeEngine | null = null;
+  let engineEvents: EngineEvent[] = [];
+  let rafHandle: number | null = null;
+  /**
+   * What the engine has judged so far, by note id. Kept across step changes:
+   * advancing the cursor must not wipe the colours of the notes just played,
+   * which is what a learner looks at to see how the bar went.
+   */
+  let judgements = new Map<string, 'correct' | 'wrong'>();
 
   async function loadFile(chosen: File): Promise<void> {
     const buffer = await chosen.arrayBuffer();
@@ -218,6 +253,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
       probe.dispose();
 
       currentXml = musicXml;
+      judgements = new Map();
       renderer = await WindowRenderer.create({
         container: stage,
         model,
@@ -244,11 +280,21 @@ export function DevScoreScreen(router: Router): HTMLElement {
     if (!renderer || !model) return;
     stepIndex = Math.min(model.steps.length - 1, Math.max(0, index));
     renderer.showStep(stepIndex);
-    // Paint the current step, which exercises the note→element map for real.
-    const states = new Map<string, 'current'>();
-    for (const id of renderer.noteElements(stepIndex).keys()) states.set(id, 'current');
-    renderer.setNoteStates(states);
+    applyNoteStates();
     renderHud();
+  }
+
+  /**
+   * Paints the score: everything judged so far keeps its colour, and the
+   * current step is highlighted where it has not already been judged.
+   */
+  function applyNoteStates(): void {
+    if (!renderer) return;
+    const states = new Map<string, 'correct' | 'wrong' | 'current'>(judgements);
+    for (const id of renderer.noteElements(stepIndex).keys()) {
+      if (!states.has(id)) states.set(id, 'current');
+    }
+    renderer.setNoteStates(states);
   }
 
   function step(delta: number): void {
@@ -287,6 +333,10 @@ export function DevScoreScreen(router: Router): HTMLElement {
     hud.textContent = [
       lastError ? `ERROR: ${lastError}` : `load ${lastLoadMs.toFixed(0)} ms`,
       model ? `steps ${stepIndex + 1}/${model.steps.length}` : 'no score',
+      engine
+        ? `engine ${engine.mode} ${engine.state.finished ? 'finished' : 'running'} ` +
+          `acc ${(engine.state.score.accuracy * 100).toFixed(0)}%`
+        : '',
       step_
         ? `beat ${step_.onset} · bar ${step_.measureIndex}(src ${step_.sourceMeasureIndex})`
         : '',
@@ -338,8 +388,65 @@ export function DevScoreScreen(router: Router): HTMLElement {
   onScreenDispose(section, () => {
     window.removeEventListener('keydown', onKey);
     window.removeEventListener('resize', onResize);
+    stopRun();
     renderer?.dispose();
   });
+
+  /**
+   * Runs the practice engine over the loaded score, with the renderer's cursor
+   * following it. This is the P2 renderer and the P3 engine joined up — the
+   * first place the app does the thing it exists to do.
+   */
+  function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'> = {}): void {
+    if (!model) return;
+    stopRun();
+    engineEvents = [];
+    judgements = new Map();
+    engine = new PracticeEngine(model, { ...engineOptions, mode });
+    engine.on((event) => {
+      engineEvents.push(event);
+      if (event.kind === 'stepAdvanced') {
+        goToStep(event.to);
+      } else if (event.kind === 'noteJudged' || event.kind === 'missed') {
+        paintJudgement(event);
+      } else if (event.kind === 'finished' && !event.loop) {
+        stopTicking();
+        renderHud();
+      }
+    });
+    engine.start();
+    goToStep(engine.state.step);
+    // Tempo and Listen are clock-driven, so they need a frame loop; Wait and
+    // Free advance only on input and would spin for nothing.
+    if (mode === 'tempo' || mode === 'listen') startTicking();
+    renderHud();
+  }
+
+  function startTicking(): void {
+    const loop = () => {
+      engine?.tick();
+      rafHandle = requestAnimationFrame(loop);
+    };
+    rafHandle = requestAnimationFrame(loop);
+  }
+
+  function stopTicking(): void {
+    if (rafHandle !== null) cancelAnimationFrame(rafHandle);
+    rafHandle = null;
+  }
+
+  function stopRun(): void {
+    stopTicking();
+    engine?.stop();
+    engine = null;
+  }
+
+  /** Records a judgement and repaints, without re-rendering the notation. */
+  function paintJudgement(event: Extract<EngineEvent, { kind: 'noteJudged' | 'missed' }>): void {
+    const painted = event.kind === 'missed' ? 'wrong' : event.ok ? 'correct' : 'wrong';
+    for (const id of event.noteIds) judgements.set(id, painted);
+    applyNoteStates();
+  }
 
   window.__pianopathDevScore = {
     fixtures: FIXTURES.map((f) => f.name),
@@ -389,6 +496,90 @@ export function DevScoreScreen(router: Router): HTMLElement {
     },
     noteElementCount: () => renderer?.visibleNoteElements().size ?? 0,
     currentStepNoteIds: () => [...(renderer?.noteElements(stepIndex).keys() ?? [])],
+
+    startRun: (mode, engineOptions) => startRun(mode, engineOptions ?? {}),
+    stopRun: () => stopRun(),
+    playNote: (midi, velocity = 90) =>
+      engine?.feed({ kind: 'noteOn', midi, velocity, tMs: performance.now() }),
+    releaseNote: (midi) =>
+      engine?.feed({ kind: 'noteOff', midi, velocity: 0, tMs: performance.now() }),
+
+    replay: async (script) => {
+      if (!engine) throw new Error('no run in progress');
+      const running = engine;
+      // Driven through a real ReplaySource, so the path under test is the one
+      // a MIDI cable uses: bytes -> parseMidiMessage -> InputSource -> engine.
+      const source = new ReplaySource({
+        name: 'dev harness',
+        messages: script.map((entry) => ({
+          atMs: entry.atMs,
+          bytes: [
+            ...(entry.off
+              ? noteOffBytes(entry.midi)
+              : noteOnBytes(entry.midi, entry.velocity ?? 90)),
+          ],
+        })),
+      });
+      await new Promise<void>((resolve) => {
+        const off = source.onNote((note) => {
+          running.feed({
+            kind: note.kind,
+            midi: note.midi,
+            velocity: note.velocity,
+            tMs: note.tMs,
+          });
+        });
+        const finished = () => {
+          off();
+          resolve();
+        };
+        // A script's last message may be a Note-Off, so wait for the source
+        // rather than for the engine.
+        const last = script.reduce((max, e) => Math.max(max, e.atMs), 0);
+        void source.connect();
+        setTimeout(finished, last + 250);
+      });
+    },
+
+    playPerfectly: () => {
+      if (!engine) return;
+      const steps = engine.prepared.steps;
+      let guard = 0;
+      while (!engine.state.finished && guard < 5000) {
+        const step = steps[engine.state.step];
+        if (!step || step.isEmpty) break;
+        for (const midi of step.expected) {
+          engine.feed({ kind: 'noteOn', midi, velocity: 90, tMs: performance.now() });
+        }
+        guard += 1;
+      }
+    },
+
+    engineState: () =>
+      engine
+        ? {
+            step: engine.state.step,
+            finished: engine.state.finished,
+            running: engine.state.running,
+          }
+        : null,
+    engineScore: () => engine?.state.score ?? null,
+    engineOutcome: () => {
+      const score = engine?.state.score;
+      if (!score) return null;
+      const outcome = evaluateOutcome(score);
+      return { passed: outcome.passed, masterEligible: outcome.masterEligible };
+    },
+    engineEvents: () =>
+      engineEvents.map((e) => ({
+        kind: e.kind,
+        ...(e.kind === 'stepAdvanced' ? { step: e.to } : {}),
+      })),
+
+    loadSightReading: async (level, seed, bars) => {
+      const generated = generateSightReading({ level, seed, bars: bars ?? 4 });
+      await loadXml(generated.musicXml, `sight-${level}-${seed}`);
+    },
   };
   onScreenDispose(section, () => {
     delete window.__pianopathDevScore;

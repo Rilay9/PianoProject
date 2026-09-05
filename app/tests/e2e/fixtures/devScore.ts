@@ -34,6 +34,34 @@ interface DevScoreHandle {
   timeShowStep(index: number): number;
   noteElementCount(): number;
   currentStepNoteIds(): string[];
+  startRun(mode: string, options?: Record<string, unknown>): void;
+  stopRun(): void;
+  playNote(midi: number, velocity?: number): void;
+  releaseNote(midi: number): void;
+  replay(script: { atMs: number; midi: number; velocity?: number; off?: boolean }[]): Promise<void>;
+  playPerfectly(): void;
+  engineState(): { step: number; finished: boolean; running: boolean } | null;
+  engineScore(): EngineScore | null;
+  engineOutcome(): { passed: boolean; masterEligible: boolean } | null;
+  engineEvents(): { kind: string; step?: number }[];
+  loadSightReading(level: number, seed: number, bars?: number): Promise<void>;
+}
+
+/** The slice of SessionScore the e2e suite asserts on. */
+export interface EngineScore {
+  mode: string;
+  tempoPct: number;
+  totalSteps: number;
+  correctSteps: number;
+  expectedNotes: number;
+  hits: number;
+  missedTotal: number;
+  wrongNotesTotal: number;
+  accuracy: number;
+  timing: { n: number; meanMs: number; stdDevMs: number; earlyPct: number; latePct: number };
+  hotSpots: { measureIndex: number; misses: number; wrongs: number }[];
+  loops: number;
+  rolledChordSteps: number;
 }
 
 declare global {
@@ -60,6 +88,20 @@ export interface DevScoreDriver {
   timeShowStep(index: number): Promise<number>;
   noteElementCount(): Promise<number>;
   currentStepNoteIds(): Promise<string[]>;
+
+  // --- practice engine ---------------------------------------------------
+  startRun(mode: string, options?: Record<string, unknown>): Promise<void>;
+  stopRun(): Promise<void>;
+  playNote(midi: number, velocity?: number): Promise<void>;
+  releaseNote(midi: number): Promise<void>;
+  /** Drives a scripted performance through a real ReplaySource. */
+  replay(script: { atMs: number; midi: number; velocity?: number; off?: boolean }[]): Promise<void>;
+  playPerfectly(): Promise<void>;
+  engineState(): Promise<{ step: number; finished: boolean; running: boolean } | null>;
+  engineScore(): Promise<EngineScore | null>;
+  engineOutcome(): Promise<{ passed: boolean; masterEligible: boolean } | null>;
+  engineEvents(): Promise<{ kind: string; step?: number }[]>;
+  loadSightReading(level: number, seed: number, bars?: number): Promise<void>;
 }
 
 /** Opens /dev/score and waits for the harness and its first fixture. */
@@ -203,5 +245,93 @@ function makeDriver(page: Page): DevScoreDriver {
         if (!h) throw new Error('dev score harness is not attached');
         return h.currentStepNoteIds();
       }),
+
+    startRun: (mode: string, options?: Record<string, unknown>) =>
+      page.evaluate(
+        ([m, o]) => {
+          const h = window.__pianopathDevScore;
+          if (!h) throw new Error('dev score harness is not attached');
+          h.startRun(m, o);
+        },
+        [mode, options ?? {}] as [string, Record<string, unknown>],
+      ),
+
+    stopRun: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        h.stopRun();
+      }),
+
+    playNote: (midi: number, velocity?: number) =>
+      page.evaluate(
+        ([m, v]) => {
+          const h = window.__pianopathDevScore;
+          if (!h) throw new Error('dev score harness is not attached');
+          h.playNote(m, v);
+        },
+        [midi, velocity ?? 90] as [number, number],
+      ),
+
+    releaseNote: (midi: number) =>
+      page.evaluate((m) => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        h.releaseNote(m);
+      }, midi),
+
+    replay: (script) =>
+      page.evaluate(async (s) => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        await h.replay(s);
+      }, script),
+
+    playPerfectly: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        h.playPerfectly();
+      }),
+
+    engineState: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        return h.engineState();
+      }),
+
+    engineScore: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        return h.engineScore();
+      }),
+
+    engineOutcome: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        return h.engineOutcome();
+      }),
+
+    engineEvents: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        return h.engineEvents();
+      }),
+
+    loadSightReading: async (level: number, seed: number, bars?: number) => {
+      await page.evaluate(
+        async ([l, s, b]) => {
+          const h = window.__pianopathDevScore;
+          if (!h) throw new Error('dev score harness is not attached');
+          await h.loadSightReading(l, s, b);
+        },
+        [level, seed, bars ?? 4] as [number, number, number],
+      );
+      await settled();
+    },
   };
 }
