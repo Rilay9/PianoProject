@@ -40,15 +40,27 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Content (scores, catalog/curriculum JSON, lesson markdown, the
-        // bundled soundfont) is precached alongside the app shell so the
-        // whole app works fully offline once installed. The soundfont in
-        // particular can be tens of MB, hence the raised size cap.
+        // Everything is precached — app shell plus every score, the catalog,
+        // the curriculum, every lesson and the soundfont — so that after the
+        // first launch the app never needs the network again (docs/00 D20).
+        //
+        // The audio pattern is deliberately wide. The bundled soundfont is
+        // currently a .js file, so it happens to be caught by the first
+        // pattern; swapping it for an .sf2, .mp3 or .ogg would silently drop
+        // it from the precache and the app would work perfectly until the
+        // first time it was opened offline.
         globPatterns: [
           '**/*.{js,css,html,svg,png,ico,woff2}',
-          'content/**/*.{json,mxl,musicxml,md,sf2}',
+          'content/**/*.{json,mxl,musicxml,md}',
+          'content/**/*.{sf2,sf3,mp3,ogg,wav,js}',
         ],
+        // Workbox's default is 2 MB and it skips larger files *silently*.
         maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
+        // Take control of the page that installed us, so the very first visit
+        // is offline-capable rather than the second (docs/00 D20). Safe
+        // without skipWaiting: this only claims clients that no worker is
+        // controlling yet, so it never swaps assets under a running page.
+        clientsClaim: true,
         navigateFallbackDenylist: [/^\/content\//],
       },
       devOptions: {

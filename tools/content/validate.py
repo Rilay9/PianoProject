@@ -7,6 +7,8 @@ right shape?"; the checks after them answer the questions a schema cannot:
 
   * does every file a catalog item points at actually exist?
   * does every curriculum option point at an item that exists?
+  * does every rung offer the three alternatives docs/00 D21 promises?
+  * does every `alternatives[]` reference resolve?
   * is every item's licence stated, and is it one we may redistribute?
   * is the duration plausible — between five seconds and twenty minutes?
   * are ids unique, and does every `variantOf` name a real parent?
@@ -42,6 +44,12 @@ from licensing import NC_PERSONAL_TAG, Verdict, license_verdict  # noqa: E402
 #: docs/03 §3 step 5: "duration sanity (5 s – 20 min)".
 MIN_DURATION_SEC = 5
 MAX_DURATION_SEC = 20 * 60
+
+#: docs/00 D21 / docs/02 Part G: every rung offers at least this many alternatives, so a
+#: learner who does not want today's suggestion has somewhere to go. Counted per field
+#: normally; on a `songOptional` unit the songs are not required and the two lists are
+#: counted together, because there the second pass may be another exercise.
+MIN_OPTIONS = 3
 
 
 def load(path: Path) -> object:
@@ -84,6 +92,12 @@ def validate_catalog(
         if parent and parent not in known:
             errors.append(f"{item_id}: variantOf {parent} is not in the catalog")
 
+        for alternative in item.get("alternatives") or []:
+            if alternative not in known:
+                errors.append(f"{item_id}: alternatives names {alternative}, which is not in the catalog")
+            elif alternative == item_id:
+                errors.append(f"{item_id}: alternatives lists the item itself")
+
         licence = (item.get("source") or {}).get("license", "")
         if not licence:
             errors.append(f"{item_id}: no licence")
@@ -105,7 +119,7 @@ def validate_catalog(
     return errors
 
 
-def validate_curriculum(curriculum: dict, catalog: list) -> list[str]:
+def validate_curriculum(curriculum: dict, catalog: list, min_options: int = MIN_OPTIONS) -> list[str]:
     errors: list[str] = []
     known = {item["id"] for item in catalog}
     tracks = {track["id"] for track in curriculum.get("tracks", [])}
@@ -114,13 +128,52 @@ def validate_curriculum(curriculum: dict, catalog: list) -> list[str]:
             if unit.get("track") and unit["track"] not in tracks:
                 errors.append(f"unit {unit['id']}: unknown track {unit['track']}")
             for lesson in unit.get("lessons", []):
-                for field in ("exerciseOptions", "songOptions"):
-                    for option in lesson.get(field, []):
+                exercises = lesson.get("exerciseOptions", [])
+                songs = lesson.get("songOptions", [])
+                for field, options in (("exerciseOptions", exercises), ("songOptions", songs)):
+                    for option in options:
                         if option not in known:
                             errors.append(
                                 f"lesson {lesson['id']}: {field} references unknown item {option}"
                             )
+                    if len(options) != len(set(options)):
+                        errors.append(f"lesson {lesson['id']}: {field} repeats an item")
+                errors += thin_lesson_errors(lesson, exercises, songs, min_options)
     return errors
+
+
+def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: int) -> list[str]:
+    """
+    docs/00 D21: three alternatives per rung, checked rather than trusted.
+
+    A lesson that requires no songs at all — Stage 0's checklists, the theory and
+    improvisation rungs — is exempt from the song count but not from the exercise one.
+    """
+    lesson_id = lesson.get("id", "?")
+    if lesson.get("optionsExempt"):
+        # Orientation lessons: there is one placement test and one guided tour, and
+        # inventing two more to satisfy a counter would be worse than the counter.
+        return []
+    required_songs = (lesson.get("mastery") or {}).get("songsRequired", 1)
+    out: list[str] = []
+    if len(exercises) < min_options:
+        out.append(
+            f"lesson {lesson_id}: {len(exercises)} exercise option(s), needs {min_options} "
+            f"(docs/00 D21)"
+        )
+    if lesson.get("songOptional"):
+        total = len(exercises) + len(songs)
+        if total < min_options:
+            out.append(
+                f"lesson {lesson_id}: song-optional but only {total} option(s) in total, "
+                f"needs {min_options} (docs/00 D21)"
+            )
+    elif required_songs and len(songs) < min_options:
+        out.append(
+            f"lesson {lesson_id}: {len(songs)} song option(s), needs {min_options} — or set "
+            f"songOptional if no song tests this skill (docs/00 D21)"
+        )
+    return out
 
 
 def main() -> None:
@@ -135,6 +188,12 @@ def main() -> None:
         "--allow-nc",
         action="store_true",
         help="accept CC BY-NC editions — a personal build only (docs/00 D10a)",
+    )
+    parser.add_argument(
+        "--min-options",
+        type=int,
+        default=MIN_OPTIONS,
+        help=f"alternatives required per rung (docs/00 D21; default {MIN_OPTIONS}, 0 disables)",
     )
     args = parser.parse_args()
 
@@ -151,7 +210,7 @@ def main() -> None:
         curriculum = load(args.dir / "curriculum.json")
         assert isinstance(catalog, list) and isinstance(curriculum, dict)
         errors += validate_catalog(catalog, args.dir, args.strict_license, args.allow_nc)
-        errors += validate_curriculum(curriculum, catalog)
+        errors += validate_curriculum(curriculum, catalog, args.min_options)
 
     if errors:
         print(f"content validation FAILED ({len(errors)} error(s)):", file=sys.stderr)
@@ -163,6 +222,24 @@ def main() -> None:
     assert isinstance(catalog, list)
     personal = [item["id"] for item in catalog if NC_PERSONAL_TAG in (item.get("tags") or [])]
     print(f"content validation OK: {args.dir} ({len(catalog)} catalog items)")
+    curriculum = load(args.dir / "curriculum.json")
+    assert isinstance(curriculum, dict)
+    lessons = [
+        lesson
+        for stage in curriculum.get("stages", [])
+        for unit in stage.get("units", [])
+        for lesson in unit.get("lessons", [])
+    ]
+    exempt = [l["id"] for l in lessons if l.get("optionsExempt")]
+    optional = [l["id"] for l in lessons if l.get("songOptional")]
+    # Both flags relax docs/00 D21, so both are counted out loud every run: a rule that
+    # can be switched off quietly is not a rule.
+    print(
+        f"  {len(lessons)} lesson(s): {len(optional)} song-optional, {len(exempt)} exempt "
+        f"from the {args.min_options}-alternative rule"
+    )
+    if exempt:
+        print(f"  exempt: {', '.join(sorted(exempt))}")
     if personal:
         # Loudly, every time: this build is not for a public URL.
         print(

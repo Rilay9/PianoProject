@@ -27,7 +27,8 @@
                 "exercise.scale.g-major.2oct.similar.both.2",
                 "exercise.scale.d-major.2oct.similar.both.2",
                 "exercise.scale.a-major.2oct.similar.both.2",
-                "exercise.scale.c-major.1oct.contrary.both.2"
+                "exercise.scale.c-major.1oct.contrary.both.2",
+                "exercise.scale.c-major.2oct.contrary.both.2"
               ],
               "songOptions": [
                 "song.classical.beethoven-fur-elise.easy",
@@ -70,7 +71,8 @@
                 "exercise.scale.e-flat-major.2oct.similar.both.2",
                 "exercise.scale.a-harmonic-minor.1oct.similar.both.2",
                 "exercise.scale.e-harmonic-minor.1oct.similar.both.2",
-                "exercise.scale.d-melodic-minor.1oct.similar.both.2"
+                "exercise.scale.d-melodic-minor.1oct.similar.both.2",
+                "exercise.scale.a-harmonic-minor.1oct.contrary.both.2"
               ],
               "songOptions": [
                 "song.folk.bella-ciao",
@@ -153,7 +155,8 @@
               ],
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
-                "song.classical.petzold-minuet-g-bwv-anh114.alt"
+                "song.classical.petzold-minuet-g-bwv-anh114.alt",
+                "song.classical.beethoven-ode-to-joy.easy"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -188,11 +191,15 @@
                 "drill.rhythm.six-eight",
                 "drill.reading.sight-reading-3",
                 "exercise.rhythm.syncopated.4bar",
-                "exercise.rhythm.triplet-quarters.4bar"
+                "exercise.rhythm.triplet-quarters.4bar",
+                "exercise.rhythm.six-eight-eighths.4bar",
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "exercise.rhythm.six-eight-dotted-quarters.4bar"
               ],
               "songOptions": [
                 "song.folk.row-row-row-your-boat",
-                "song.folk.greensleeves.68"
+                "song.folk.greensleeves.68",
+                "song.folk.london-bridge"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -223,7 +230,9 @@
               "textFile": "lessons/4.6.md",
               "exerciseOptions": [
                 "drill.reading.sight-reading-3",
-                "exercise.hanon.05.both"
+                "exercise.hanon.05.both",
+                "exercise.interval-reading.c-position.right.07",
+                "exercise.interval-reading.c-position.left.07"
               ],
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
@@ -263,7 +272,8 @@
               "textFile": "lessons/classical.4.md",
               "exerciseOptions": [
                 "exercise.hanon.01.both",
-                "drill.chord.inversions"
+                "drill.chord.inversions",
+                "exercise.hanon.02.both"
               ],
               "songOptions": [
                 "song.classical.beethoven-fur-elise.easy",
@@ -301,7 +311,8 @@
               "exerciseOptions": [
                 "drill.chord.inversions",
                 "exercise.inversions.c-major.both",
-                "exercise.inversions.a-minor.both"
+                "exercise.inversions.a-minor.both",
+                "exercise.cadence.d.voice-led"
               ],
               "songOptions": [
                 "song.folk.greensleeves.chords",
@@ -340,7 +351,8 @@
               "exerciseOptions": [
                 "drill.blues.lh-patterns",
                 "exercise.rhythm.syncopated.4bar",
-                "exercise.arpeggio7.c-dominant7.2oct.both"
+                "exercise.arpeggio7.c-dominant7.2oct.both",
+                "exercise.rhythm.shuffle-eighths.4bar"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
@@ -390,7 +402,8 @@
               "prerequisites": [
                 "theory.3"
               ],
-              "estimatedDays": 45
+              "estimatedDays": 45,
+              "songOptional": true
             }
           ]
         },
@@ -410,11 +423,12 @@
               "textFile": "lessons/improv.4.md",
               "exerciseOptions": [
                 "drill.improv.call-response",
-                "drill.improv.loop-i-iv-v"
+                "drill.improv.loop-i-iv-v",
+                "exercise.accompaniment.broken.c-major.left"
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 1,
+                "exercisesRequired": 2,
                 "songsRequired": 0,
                 "minAccuracy": 0.0,
                 "minTempoPct": 0.0,
@@ -423,7 +437,8 @@
               "prerequisites": [
                 "improv.3"
               ],
-              "estimatedDays": 45
+              "estimatedDays": 45,
+              "songOptional": true
             }
           ]
         },
@@ -444,7 +459,8 @@
               "textFile": "lessons/jam.md",
               "exerciseOptions": [
                 "drill.jam.form-tracker",
-                "drill.blues.lh-patterns"
+                "drill.blues.lh-patterns",
+                "exercise.rhythm.shuffle-eighths.4bar"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
@@ -480,7 +496,8 @@
               "textFile": "lessons/beautiful.md",
               "exerciseOptions": [
                 "drill.pedal.changes",
-                "drill.chord.inversions"
+                "drill.chord.inversions",
+                "exercise.pedal.c"
               ],
               "songOptions": [
                 "song.classical.pachelbel-canon-d.easy",
@@ -519,7 +536,8 @@
               "textFile": "lessons/rock.seize-the-day.md",
               "exerciseOptions": [
                 "drill.pedal.changes",
-                "exercise.arpeggio.a-minor.2oct.both"
+                "exercise.arpeggio.a-minor.2oct.both",
+                "exercise.pedal.a"
               ],
               "songOptions": [
                 "song.rock.a7x-seize-the-day",
@@ -555,7 +573,8 @@
               "textFile": "lessons/rock.dear-god.md",
               "exerciseOptions": [
                 "drill.pattern.lh-accompaniment",
-                "drill.chord.symbol-flash"
+                "drill.chord.symbol-flash",
+                "exercise.accompaniment.broken.g-major.both"
               ],
               "songOptions": [
                 "song.rock.a7x-dear-god",
@@ -592,7 +611,8 @@
               "textFile": "lessons/rock.final-masquerade.md",
               "exerciseOptions": [
                 "drill.pattern.lh-accompaniment",
-                "drill.rhythm.eighths"
+                "drill.rhythm.eighths",
+                "exercise.accompaniment.broken.a-minor.left"
               ],
               "songOptions": [
                 "song.rock.lp-final-masquerade",
@@ -629,7 +649,8 @@
               "textFile": "lessons/rock.shadow-of-the-day.md",
               "exerciseOptions": [
                 "drill.chord.inversions",
-                "drill.pattern.lh-accompaniment"
+                "drill.pattern.lh-accompaniment",
+                "exercise.accompaniment.broken.c-major.both"
               ],
               "songOptions": [
                 "song.rock.lp-shadow-of-the-day",

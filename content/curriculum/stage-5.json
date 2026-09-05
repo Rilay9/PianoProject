@@ -26,7 +26,8 @@
               "exerciseOptions": [
                 "exercise.hanon.06.both",
                 "exercise.hanon.07.both",
-                "exercise.arpeggio.g-major.2oct.both"
+                "exercise.arpeggio.g-major.2oct.both",
+                "exercise.accompaniment.alberti.g-major.both"
               ],
               "songOptions": [
                 "song.folk.greensleeves",
@@ -103,7 +104,8 @@
               "exerciseOptions": [
                 "drill.improv.blues-backing",
                 "drill.blues.lh-patterns",
-                "exercise.arpeggio7.f-dominant7.2oct.both"
+                "exercise.arpeggio7.f-dominant7.2oct.both",
+                "exercise.rhythm.shuffle-quarter-eighths.4bar"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.f",
@@ -141,7 +143,8 @@
               "exerciseOptions": [
                 "drill.jazz.ii-v-i-shells",
                 "drill.ear.seventh-qualities",
-                "exercise.arpeggio7.c-dominant7.2oct.both"
+                "exercise.arpeggio7.c-dominant7.2oct.both",
+                "exercise.rhythm.shuffle-eighths.4bar"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.f",
@@ -228,7 +231,8 @@
               "prerequisites": [
                 "theory.4"
               ],
-              "estimatedDays": 90
+              "estimatedDays": 90,
+              "songOptional": true
             }
           ]
         },
@@ -248,7 +252,8 @@
               "textFile": "lessons/improv.5.md",
               "exerciseOptions": [
                 "drill.improv.blues-backing",
-                "drill.improv.call-response"
+                "drill.improv.call-response",
+                "exercise.rhythm.shuffle-eighths.4bar"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
@@ -256,7 +261,7 @@
                 "exercise.blues.twelve-bar-shuffle.g"
               ],
               "mastery": {
-                "exercisesRequired": 1,
+                "exercisesRequired": 2,
                 "songsRequired": 0,
                 "minAccuracy": 0.0,
                 "minTempoPct": 0.0,
@@ -265,7 +270,8 @@
               "prerequisites": [
                 "improv.4"
               ],
-              "estimatedDays": 90
+              "estimatedDays": 90,
+              "songOptional": true
             }
           ]
         },
@@ -286,7 +292,8 @@
               "textFile": "lessons/latin.md",
               "exerciseOptions": [
                 "exercise.rhythm.syncopated.4bar",
-                "drill.pattern.lh-accompaniment"
+                "drill.pattern.lh-accompaniment",
+                "exercise.rhythm.shuffle-eighths.4bar"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
@@ -322,7 +329,8 @@
               "textFile": "lessons/rock.so-far-away.md",
               "exerciseOptions": [
                 "drill.chord.inversions",
-                "exercise.inversions.c-major.both"
+                "exercise.inversions.c-major.both",
+                "exercise.cadence.c.voice-led"
               ],
               "songOptions": [
                 "song.rock.a7x-so-far-away",
@@ -359,7 +367,8 @@
               "textFile": "lessons/rock.fiction.md",
               "exerciseOptions": [
                 "drill.pattern.lh-accompaniment",
-                "exercise.arpeggio.c-minor.2oct.both"
+                "exercise.arpeggio.c-minor.2oct.both",
+                "exercise.accompaniment.alberti.a-minor.left"
               ],
               "songOptions": [
                 "song.rock.a7x-fiction",
@@ -396,7 +405,8 @@
               "textFile": "lessons/rock.waiting-for-the-end.md",
               "exerciseOptions": [
                 "exercise.rhythm.syncopated.4bar",
-                "drill.rhythm.six-eight"
+                "drill.rhythm.six-eight",
+                "exercise.rhythm.shuffle-quarter-eighths.4bar"
               ],
               "songOptions": [
                 "song.rock.lp-waiting-for-the-end",

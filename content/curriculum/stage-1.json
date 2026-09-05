@@ -27,7 +27,9 @@
                 "drill.technique.five-finger-rh",
                 "drill.reading.note-flash-treble-c4-g4",
                 "drill.rhythm.quarters-rests",
-                "exercise.five-finger.c-major.both"
+                "exercise.five-finger.c-major.both",
+                "exercise.five-finger.c-major.right",
+                "exercise.five-finger.g-major.right"
               ],
               "songOptions": [
                 "song.folk.hot-cross-buns",
@@ -64,7 +66,8 @@
               "exerciseOptions": [
                 "drill.rhythm.mixed-values",
                 "exercise.rhythm.half-and-quarters.4bar",
-                "exercise.rhythm.quarters.4bar"
+                "exercise.rhythm.quarters.4bar",
+                "exercise.rhythm.waltz-quarters.4bar"
               ],
               "songOptions": [
                 "song.folk.lightly-row",
@@ -102,7 +105,9 @@
               "exerciseOptions": [
                 "drill.technique.five-finger-lh",
                 "drill.reading.note-flash-bass-f2-c4",
-                "exercise.five-finger.c-major.both"
+                "exercise.five-finger.c-major.both",
+                "exercise.five-finger.c-major.left",
+                "exercise.five-finger.g-major.left"
               ],
               "songOptions": [
                 "song.folk.hot-cross-buns.lh",
@@ -139,11 +144,15 @@
               "textFile": "lessons/1.4.md",
               "exerciseOptions": [
                 "drill.reading.grand-staff-flash",
-                "drill.rhythm.three-four"
+                "drill.rhythm.three-four",
+                "exercise.rhythm.waltz-quarters.4bar",
+                "exercise.rhythm.waltz-half-quarter.4bar",
+                "exercise.rhythm.waltz-dotted-half.4bar"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.alternating",
-                "song.folk.when-the-saints.alternating"
+                "song.folk.when-the-saints.alternating",
+                "song.folk.lightly-row"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -177,7 +186,10 @@
               "exerciseOptions": [
                 "drill.reading.sight-reading-1",
                 "drill.ear.interval-2nd-3rd",
-                "exercise.reading.steps-and-skips-c"
+                "exercise.reading.steps-and-skips-c",
+                "exercise.interval-reading.c-position.right.01",
+                "exercise.interval-reading.c-position.right.02",
+                "exercise.interval-reading.c-position.right.03"
               ],
               "songOptions": [
                 "song.folk.old-macdonald",
@@ -185,8 +197,8 @@
                 "song.classical.ode-to-joy.rh"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
+                "exercisesRequired": 2,
+                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8,
                 "custom": "sight-read-5-first-attempt>=0.9"
@@ -194,7 +206,8 @@
               "prerequisites": [
                 "1.4"
               ],
-              "estimatedDays": 14
+              "estimatedDays": 14,
+              "songOptional": true
             }
           ]
         }

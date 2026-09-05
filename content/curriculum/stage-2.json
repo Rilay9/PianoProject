@@ -24,7 +24,10 @@
               "textFile": "lessons/2.1.md",
               "exerciseOptions": [
                 "drill.technique.ht-holds",
-                "exercise.five-finger.c-major.both"
+                "exercise.five-finger.c-major.both",
+                "exercise.coordination.c.hold",
+                "exercise.coordination.c.change",
+                "exercise.coordination.g.hold"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.ht",
@@ -62,11 +65,13 @@
               "exerciseOptions": [
                 "drill.rhythm.eighths",
                 "exercise.rhythm.eighths.4bar",
-                "exercise.rhythm.quarter-eighths.4bar"
+                "exercise.rhythm.quarter-eighths.4bar",
+                "exercise.rhythm.waltz-quarter-eighths.4bar"
               ],
               "songOptions": [
                 "song.folk.london-bridge",
-                "song.folk.old-macdonald"
+                "song.folk.old-macdonald",
+                "song.folk.merrily-we-roll-along"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -98,7 +103,9 @@
               "textFile": "lessons/2.3.md",
               "exerciseOptions": [
                 "drill.chord.c-f-g",
-                "exercise.inversions.c-major.both"
+                "exercise.inversions.c-major.both",
+                "exercise.cadence.c.root",
+                "exercise.cadence.c.voice-led"
               ],
               "songOptions": [
                 "song.folk.happy-birthday.simple",
@@ -138,11 +145,13 @@
               "exerciseOptions": [
                 "drill.rhythm.dotted",
                 "drill.dynamics.p-f",
-                "exercise.rhythm.dotted-quarter-eighth.4bar"
+                "exercise.rhythm.dotted-quarter-eighth.4bar",
+                "exercise.rhythm.six-eight-long-short.4bar"
               ],
               "songOptions": [
                 "song.folk.greensleeves.simple",
-                "song.folk.greensleeves"
+                "song.folk.greensleeves",
+                "song.folk.greensleeves.chords"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -175,15 +184,18 @@
               "exerciseOptions": [
                 "drill.technique.position-shifts",
                 "exercise.scale.c-major.1oct.similar.right.2",
-                "exercise.scale.c-major.1oct.similar.left.2"
+                "exercise.scale.c-major.1oct.similar.left.2",
+                "exercise.position-shift.c.right",
+                "exercise.position-shift.c.left",
+                "exercise.position-shift.g.right"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.full",
                 "song.classical.beethoven-ode-to-joy.easy"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
+                "exercisesRequired": 2,
+                "songsRequired": 0,
                 "minAccuracy": 0.95,
                 "minTempoPct": 0.8,
                 "custom": "c-major-scale-HS-60bpm>=0.95"
@@ -192,7 +204,8 @@
                 "2.3",
                 "2.4"
               ],
-              "estimatedDays": 16
+              "estimatedDays": 16,
+              "songOptional": true
             }
           ]
         },
@@ -212,7 +225,8 @@
               "textFile": "lessons/holiday.md",
               "exerciseOptions": [
                 "drill.chord.c-f-g",
-                "drill.chord.symbol-flash"
+                "drill.chord.symbol-flash",
+                "exercise.cadence.c.root"
               ],
               "songOptions": [
                 "song.holiday.jingle-bells.rh",

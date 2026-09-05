@@ -36,7 +36,7 @@
           "type": ["object", "null"],
           "description": "for type=drill: runtime generator spec",
           "properties": {
-            "kind": { "enum": ["scale", "arpeggio", "chord", "inversion", "hanon", "five-finger", "rhythm", "sight-reading", "ear-interval", "ear-chord", "ear-progression", "note-flash", "find-key", "pedal", "dynamics", "backing-track", "call-response"] },
+            "kind": { "enum": ["scale", "arpeggio", "chord", "inversion", "hanon", "five-finger", "rhythm", "sight-reading", "ear-interval", "ear-chord", "ear-progression", "note-flash", "find-key", "pedal", "dynamics", "backing-track", "call-response", "coordination", "cadence", "accompaniment", "interval-reading", "position-shift"], "description": "on a type=drill item this selects the runtime screen; on a type=exercise item it records what generated the notation and needs no screen (docs/05 \u00a77)" },
             "params": { "type": "object" }
           },
           "required": ["kind"]
@@ -55,6 +55,11 @@
           }
         },
         "importHint": { "type": ["string", "null"] },
+        "alternatives": {
+          "type": "array",
+          "description": "ids of other catalog items that train the same thing — what the app offers for \"swap this\", and what an import-only item points at so it is never a dead row (docs/00 D21, docs/04 \u00a72). Every id must resolve; validate.py checks it.",
+          "items": { "type": "string" }
+        },
         "teaching": {
           "type": "object",
           "properties": {

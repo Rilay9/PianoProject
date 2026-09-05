@@ -43,6 +43,8 @@
                       "videos": { "type": "array", "items": { "type": "object", "required": ["label", "url"], "properties": { "label": { "type": "string" }, "url": { "type": "string" }, "teacher": { "type": "string" } } } },
                       "exerciseOptions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
                       "songOptions": { "type": "array", "items": { "type": "string" } },
+                      "optionsExempt": { "type": "boolean", "description": "the lesson is a single thing by nature and has no alternatives to offer \u2014 the guided tour, the placement test, the posture checklist. Exempts it from the three-alternatives rule (docs/00 D21). Orientation only; it is not a way to ship a thin practice rung, and validate.py reports how many lessons use it." },
+                      "songOptional": { "type": "boolean", "description": "true when no song tests this unit\u2019s skill (reading by interval, the first scale, accompaniment patterns, the theory and improvisation tracks). The lesson then completes on two exercises, and validate.py checks the three-alternatives rule against the combined option count instead of the songs alone (docs/00 D21, docs/02 Part G)." },
                       "prerequisites": { "type": "array", "items": { "type": "string" } },
                       "mastery": {
                         "type": "object",

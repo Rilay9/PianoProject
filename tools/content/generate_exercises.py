@@ -153,6 +153,23 @@ def add_notes(part: stream.PartStaff, pitches: Iterable[pitch.Pitch], fingers: I
         part.append(n)
 
 
+def fingered_chord(pitches: Iterable[pitch.Pitch], fingers: Iterable[int], ql: float) -> chord.Chord:
+    """
+    A chord whose fingering survives the MusicXML export.
+
+    Fingering attached to the Note objects *inside* a chord is silently dropped by
+    music21 10.5 — it exports nothing at all. Attached to the chord itself, several
+    Fingering articulations are mapped onto its notes in pitch order, low to high, which is
+    what MusicXML wants. Measured, not assumed: every chord-shaped exercise written before
+    this helper existed shipped with no fingering on it.
+    """
+    tones = sorted(pitches, key=lambda p: p.ps)
+    c = chord.Chord(tones, quarterLength=ql)
+    for finger in fingers:
+        c.articulations.append(articulations.Fingering(finger))
+    return c
+
+
 def finalize(sc: stream.Score) -> stream.Score:
     for p in sc.parts:
         p.makeMeasures(inPlace=True)
@@ -335,13 +352,28 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(root if quality == "major" else root.lower()))
     shapes = [base, [base[1], base[2], 12], [base[2], 12, 12 + third], [12, 12 + third, 19]]
     seq = shapes + list(reversed(shapes))[1:]
-    for part_, oct_ in ((rh, 4), (lh, 2)):
+    # The conventional inversion fingerings, low to high. These are the shapes every method
+    # book prints — the finger that changes is the one next to the wide gap — and unlike the
+    # scale tables above they are convention rather than an extraction from the Clementi
+    # chart, which covers scales only.
+    inversion_fingers = {
+        "right": ([1, 3, 5], [1, 2, 5], [1, 3, 5], [1, 3, 5]),
+        "left": ([5, 3, 1], [5, 3, 1], [5, 2, 1], [5, 3, 1]),
+    }
+    for part_, oct_, side in ((rh, 4, "right"), (lh, 2, "left")):
         if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
             part_.append(note.Rest(quarterLength=len(seq)))
             continue
-        for shp in seq:
-            c = chord.Chord([pitch.Pitch(root + str(oct_)).transpose(i) for i in shp], quarterLength=1.0)
-            part_.append(c)
+        fingers = inversion_fingers[side]
+        order = list(range(len(shapes))) + list(reversed(range(len(shapes))))[1:]
+        for position, shp in zip(order, seq):
+            part_.append(
+                fingered_chord(
+                    [pitch.Pitch(root + str(oct_)).transpose(i) for i in shp],
+                    fingers[position],
+                    1.0,
+                )
+            )
     finalize(sc)
     item_id = f"exercise.inversions.{key_slug(root)}-{quality}.{hands}"
     entry = catalog_entry(item_id, title, level, ["triad", "inversions", f"{root}-{quality}"], hands, bpm, "inversion",
@@ -577,6 +609,35 @@ RHYTHM_PATTERNS: list[tuple[str, list[float], float]] = [
 ]
 
 
+#: The meters `make_rhythm` did not have. Unit 1.4 teaches 3/4 and unit 4.5 teaches 6/8, and
+#: neither had a rhythm exercise because `make_rhythm` hardcoded 4/4. The last two are the
+#: swing feel: straight eighths on the page with the instruction above them, which is how a
+#: real chart writes it — notating triplets would teach the wrong thing.
+#:
+#: (label, note lengths in quarters, level, time signature, printed direction)
+RHYTHM_PATTERNS_EXTRA: list[tuple[str, list[float], float, str, str | None]] = [
+    ("waltz-quarters", [1, 1, 1], 1.4, "3/4", None),
+    ("waltz-dotted-half", [3], 1.4, "3/4", None),
+    ("waltz-half-quarter", [2, 1], 1.4, "3/4", None),
+    ("waltz-quarter-eighths", [1, 0.5, 0.5, 1], 2.2, "3/4", None),
+    ("six-eight-eighths", [0.5] * 6, 4.5, "6/8", None),
+    ("six-eight-dotted-quarters", [1.5, 1.5], 4.5, "6/8", None),
+    ("six-eight-long-short", [1.0, 0.5, 1.0, 0.5], 4.5, "6/8", None),
+    ("six-eight-mixed", [1.5, 0.5, 0.5, 0.5], 4.5, "6/8", None),
+    ("shuffle-eighths", [0.5] * 8, 4.5, "4/4", "Shuffle — play the eighths long-short"),
+    ("shuffle-quarter-eighths", [1, 0.5, 0.5, 1, 1], 4.5, "4/4",
+     "Shuffle — play the eighths long-short"),
+]
+
+
+def rhythm_spec(pattern: str) -> tuple[str, list[float], float, str, str | None]:
+    """Looks a pattern up in either table. 4/4 patterns keep their original ids."""
+    for label, lengths, level in RHYTHM_PATTERNS:
+        if label == pattern:
+            return label, lengths, level, "4/4", None
+    return next(spec for spec in RHYTHM_PATTERNS_EXTRA if spec[0] == pattern)
+
+
 def make_rhythm(pattern: str, bars: int = 4, bpm: int = 80) -> tuple[stream.Score, dict]:
     """
     A rhythm drill on a one-line staff.
@@ -585,7 +646,7 @@ def make_rhythm(pattern: str, bars: int = 4, bpm: int = 80) -> tuple[stream.Scor
     the learner to read pitches that are not there. MusicXML expresses it as a
     percussion-style staff with a single line, which OSMD renders as such.
     """
-    label, lengths, level = next(p for p in RHYTHM_PATTERNS if p[0] == pattern)
+    label, lengths, level, time_sig, direction = rhythm_spec(pattern)
     title = f"Rhythm: {label.replace('-', ' ')} — {bars} bars"
     sc = stream.Score()
     sc.metadata = metadata.Metadata()
@@ -595,10 +656,14 @@ def make_rhythm(pattern: str, bars: int = 4, bpm: int = 80) -> tuple[stream.Scor
     part = stream.PartStaff(id="Rhythm")
     part.insert(0, instrument.Piano())
     part.insert(0, clef.PercussionClef())
-    part.insert(0, meter.TimeSignature("4/4"))
+    part.insert(0, meter.TimeSignature(time_sig))
     part.insert(0, tempo.MetronomeMark(number=bpm))
     layout_staff = layout.StaffLayout(staffLines=1)
     part.insert(0, layout_staff)
+    if direction is not None:
+        from music21 import expressions
+
+        part.insert(0, expressions.TextExpression(direction))
     for _ in range(bars):
         for length in lengths:
             part.append(note.Note("B4", quarterLength=length))
@@ -606,10 +671,333 @@ def make_rhythm(pattern: str, bars: int = 4, bpm: int = 80) -> tuple[stream.Scor
     sc.insert(0, part)
 
     item_id = f"exercise.rhythm.{slug(label)}.{bars}bar"
+    concepts = ["rhythm", label, "counting", f"meter:{time_sig}"]
+    if direction:
+        concepts.append("swing")
     entry = catalog_entry(
-        item_id, title, level, ["rhythm", label, "counting"], "right", bpm, "rhythm",
-        {"pattern": label, "bars": bars, "timeSig": "4/4"}, f"scores/generated/{item_id}.mxl",
+        item_id, title, level, concepts, "right", bpm, "rhythm",
+        {"pattern": label, "bars": bars, "timeSig": time_sig,
+         **({"feel": "shuffle"} if direction else {})},
+        f"scores/generated/{item_id}.mxl",
         tracks=["technique", "core", "theory-ear"],
+    )
+    return sc, entry
+
+
+# --------------------------------------------------------------------------------------
+# P5b families (docs/02 Part E2)
+#
+# The families above are a technique syllabus: scales, arpeggios, inversions, Hanon. The
+# ones below are the skills the *lessons* are made of, which had no generated material at
+# all — unit 3.6 is about accompaniment patterns and had none, 2.1 is about hands-together
+# coordination and had none, and rhythm existed only in 4/4 while 1.4 needs 3/4 and 4.5
+# needs 6/8.
+# --------------------------------------------------------------------------------------
+
+
+def scale_pitches(k: key.Key, octave: int, degrees: Iterable[int]) -> list[pitch.Pitch]:
+    """
+    Degrees of a key as pitches, spelled by the key rather than by semitone count.
+
+    Degree 1 is the tonic in `octave`; degrees above 7 continue into the next octave and
+    degree 0 is the leading tone below the tonic. Spelling matters: transposing by a
+    semitone count lets music21 respell, and the seventh of B flat 7 comes back as G sharp.
+    """
+    sc_obj = scale.MajorScale(k.tonic) if k.mode == "major" else scale.MinorScale(k.tonic)
+    tonic = pitch.Pitch(f"{k.tonic.name}{octave}")
+    out: list[pitch.Pitch] = []
+    for degree in degrees:
+        steps = degree - 1
+        if steps == 0:
+            out.append(pitch.Pitch(tonic.nameWithOctave))
+            continue
+        direction = Direction.ASCENDING if steps > 0 else Direction.DESCENDING
+        out.append(sc_obj.nextPitch(tonic, direction=direction, stepSize=abs(steps)))
+    return out
+
+
+def silent(part: stream.PartStaff, quarters: float) -> None:
+    """Fills a staff with rest so a hands-separate item still prints a grand staff."""
+    part.append(note.Rest(quarterLength=quarters))
+
+
+#: Unit 2.1 is "the left hand holds, the right hand moves", and it is the first genuinely
+#: hard thing in the course. Two variants: a left hand that never moves, and one that
+#: changes chord every bar, which is the step that actually breaks people.
+COORDINATION_VARIANTS = ("hold", "change")
+
+
+def make_coordination(root: str, variant: str = "hold", bpm: int = 60, level: float = 2.1):
+    """RH five-finger walk over a LH that holds (or changes I/V every bar)."""
+    k = key.Key(root)
+    title = f"Hands together in {root} — left hand {'holds' if variant == 'hold' else 'changes'}"
+    sc, rh, lh = grand_staff(title, bpm, ks=k)
+
+    walk = [1, 2, 3, 4, 5, 4, 3, 2]          # C D E F G F E D, then a whole-note tonic
+    rh_fingers = [1, 2, 3, 4, 5, 4, 3, 2]
+    pitches = scale_pitches(k, 4, walk)
+    add_notes(rh, pitches, rh_fingers, 1.0)
+    add_notes(rh, scale_pitches(k, 4, [1]), [1], 4.0)
+
+    # Left hand: whole notes only. Tonic every bar, or tonic/dominant alternating.
+    lh_degrees = [1, 1, 1] if variant == "hold" else [1, 5, 1]
+    lh_fingers = [5] if variant == "hold" else [5, 1, 5]
+    for degree, finger in zip(lh_degrees, lh_fingers * 3):
+        n = note.Note(scale_pitches(k, 3, [degree])[0], quarterLength=4.0)
+        n.articulations.append(articulations.Fingering(finger))
+        lh.append(n)
+
+    finalize(sc)
+    item_id = f"exercise.coordination.{key_slug(root)}.{variant}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["hands-together", "held-LH", "vertical-alignment", f"{root}-major"], "both", bpm,
+        "coordination", {"key": root, "variant": variant, "leftHand": variant},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+#: Bar rhythms for the interval-reading melodies. Quarters and halves only: unit 1.5 is
+#: about reading the *distance* between notes, and an unfamiliar rhythm on top of that is
+#: two new things at once.
+INTERVAL_BAR_RHYTHMS = ([1, 1, 1, 1], [2, 1, 1], [1, 1, 2], [2, 2])
+
+
+def make_interval_reading(seed: int, hands: str = "right", bpm: int = 66, level: float = 1.5):
+    """
+    A four-bar melody in one five-finger position, using only 2nds and 3rds.
+
+    Deterministic from `seed` so a lesson can name a specific one and the review queue can
+    bring the same one back — which is the difference between this and the runtime
+    sight-reading generator (`05` §8), whose whole point is never repeating.
+    """
+    import random
+
+    rng = random.Random(seed)
+    k = key.Key("C")
+    title = f"Steps and skips in C position — no. {seed}"
+    sc, rh, lh = grand_staff(title, bpm, ks=k)
+
+    degree = 1                                    # index into the five-finger position 1..5
+    events: list[tuple[int, float]] = []
+    for _ in range(4):
+        for length in rng.choice(INTERVAL_BAR_RHYTHMS):
+            move = rng.choice([-2, -1, 1, 2])      # a 3rd or a 2nd, either direction
+            candidate = degree + move
+            if not 1 <= candidate <= 5:
+                candidate = degree - move          # bounce off the edge of the position
+            degree = max(1, min(5, candidate))
+            events.append((degree, float(length)))
+    # End on the tonic — but by walking to it, not by teleporting. Overwriting the last
+    # degree on its own left a leap of a fifth in some seeds, in an exercise whose entire
+    # premise is that nothing is wider than a third.
+    if len(events) >= 2:
+        third_last = events[-3][0] if len(events) >= 3 else 2
+        approach = min((2, 3), key=lambda candidate: abs(candidate - third_last))
+        events[-2] = (approach, events[-2][1])
+    events[-1] = (1, events[-1][1])
+
+    target, other = (rh, lh) if hands == "right" else (lh, rh)
+    octave = 4 if hands == "right" else 3
+    for index, (deg, length) in enumerate(events):
+        n = note.Note(scale_pitches(k, octave, [deg])[0], quarterLength=length)
+        # Fingering on the first note only: the hand never moves, so a number over every
+        # note would teach the learner to read numbers instead of intervals.
+        if index == 0:
+            n.articulations.append(articulations.Fingering(deg if hands == "right" else 6 - deg))
+        target.append(n)
+    silent(other, sum(length for _, length in events))
+
+    finalize(sc)
+    item_id = f"exercise.interval-reading.c-position.{hands}.{seed:02d}"
+    entry = catalog_entry(
+        item_id, title, level, ["steps", "skips", "interval-reading", "C-position"], hands, bpm,
+        "interval-reading", {"key": "C", "seed": seed, "maxInterval": 3},
+        f"scores/generated/{item_id}.mxl", tracks=["core", "technique", "theory-ear"],
+    )
+    return sc, entry
+
+
+def make_position_shift(root: str, hands: str = "right", bpm: int = 66, level: float = 2.5):
+    """
+    Four bars with one hand shift in the middle, marked by the fingering.
+
+    Bars 1-2 sit with the thumb on the tonic; bars 3-4 move the hand up a fifth. The only
+    fingering printed is on the two notes that start a position, because that is what a
+    fingering number is *for* and printing them all hides the one that matters.
+    """
+    k = key.Key(root)
+    title = f"Position shift in {root} — {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=k)
+
+    lower = [1, 2, 3, 4, 5, 4, 3, 2]      # tonic position
+    upper = [5, 6, 7, 8, 9, 8, 7, 5]      # the same shape from the dominant
+    target, other = (rh, lh) if hands == "right" else (lh, rh)
+    octave = 4 if hands == "right" else 3
+
+    for index, degree in enumerate(lower + upper):
+        n = note.Note(scale_pitches(k, octave, [degree])[0], quarterLength=1.0)
+        if index in (0, len(lower)):
+            n.articulations.append(articulations.Fingering(1 if hands == "right" else 5))
+        target.append(n)
+    silent(other, float(len(lower) + len(upper)))
+
+    finalize(sc)
+    item_id = f"exercise.position-shift.{key_slug(root)}.{hands}"
+    entry = catalog_entry(
+        item_id, title, level, ["position-shift", "hand-position", f"{root}-major"], hands, bpm,
+        "position-shift", {"key": root, "shift": "fifth"}, f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+#: The two ways a beginner is taught I-IV-V7-I. Root position names the chords; the
+#: voice-led version is the one that is actually playable at speed, because only one or two
+#: fingers move between chords. Both are generated so a lesson can put them side by side.
+#:
+#: Degrees are counted in the key, not in semitones, so the notes are spelled correctly in
+#: every key — `scale_pitches` explains why that matters.
+CADENCE_VOICINGS: dict[str, list[tuple[list[int], list[int]]]] = {
+    # (degrees, fingering) per chord, low to high
+    "root": [
+        ([1, 3, 5], [5, 3, 1]),          # I
+        ([4, 6, 8], [5, 3, 1]),          # IV
+        ([5, 7, 9, 11], [5, 4, 2, 1]),   # V7
+        ([1, 3, 5], [5, 3, 1]),          # I
+    ],
+    "voice-led": [
+        ([1, 3, 5], [5, 3, 1]),          # I
+        ([1, 4, 6], [5, 2, 1]),          # IV, second inversion — the tonic stays put
+        ([0, 4, 5], [5, 2, 1]),          # V7 without its fifth: leading tone, 4th, 5th
+        ([1, 3, 5], [5, 3, 1]),          # I
+    ],
+}
+
+
+def make_cadence(root: str, voicing: str = "root", bpm: int = 60, level: float = 3.2):
+    """I-IV-V7-I as whole-note left-hand chords, in one of the two standard voicings."""
+    k = key.Key(root)
+    label = "root position" if voicing == "root" else "smooth voicing"
+    title = f"I-IV-V7-I in {root} — {label}"
+    sc, rh, lh = grand_staff(title, bpm, ks=k)
+
+    for degrees, fingers in CADENCE_VOICINGS[voicing]:
+        lh.append(fingered_chord(scale_pitches(k, 3, degrees), fingers, 4.0))
+    silent(rh, 16.0)
+
+    finalize(sc)
+    item_id = f"exercise.cadence.{key_slug(root)}.{voicing}"
+    entry = catalog_entry(
+        item_id, title, level, ["I-IV-V7", "cadence", "voice-leading", f"{root}-major"], "left", bpm,
+        "cadence", {"key": root, "voicing": voicing, "progression": ["I", "IV", "V7", "I"]},
+        f"scores/generated/{item_id}.mxl", tracks=["technique", "core", "chords-pop"],
+    )
+    return sc, entry
+
+
+#: Unit 3.6's three accompaniment patterns, as offsets into the chord being played:
+#: index 0 is the lowest note of the triad, 2 the highest. Written as indices rather than
+#: intervals so the same table works for a minor chord.
+ACCOMPANIMENT_PATTERNS: dict[str, tuple[str, list[tuple[int, float]], str]] = {
+    "broken":  ("Broken chord", [(0, 1.0), (2, 1.0), (1, 1.0), (2, 1.0)], "4/4"),
+    "alberti": ("Alberti bass",
+                [(0, 0.5), (2, 0.5), (1, 0.5), (2, 0.5)] * 2, "4/4"),
+    "waltz":   ("Waltz bass", [(0, 1.0), (-1, 1.0), (-1, 1.0)], "3/4"),
+}
+
+#: I-IV-V-I, the sequence every one of the patterns is practised over.
+ACCOMPANIMENT_CHORDS = ([1, 3, 5], [4, 6, 8], [5, 7, 9], [1, 3, 5])
+
+
+def make_accompaniment(root: str, mode: str, pattern: str, hands: str = "left",
+                       bpm: int = 72, level: float = 3.6):
+    """
+    A left-hand accompaniment pattern over I-IV-V-I, alone or under a right-hand scale.
+
+    `-1` in the pattern table means "the rest of the chord together", which is the second
+    and third beats of a waltz bass.
+    """
+    k = key.Key(root if mode == "major" else root.lower())
+    label, steps, time_sig = ACCOMPANIMENT_PATTERNS[pattern]
+    hands_label = "left hand" if hands == "left" else "hands together"
+    title = f"{label} in {root} {mode} — {hands_label}"
+    sc, rh, lh = grand_staff(title, bpm, ts=time_sig, ks=k)
+    beats_per_bar = 4.0 if time_sig == "4/4" else 3.0
+
+    for degrees in ACCOMPANIMENT_CHORDS:
+        tones = scale_pitches(k, 3, degrees)
+        for index, length in steps:
+            if index == -1:
+                lh.append(chord.Chord([pitch.Pitch(t.nameWithOctave) for t in tones[1:]],
+                                      quarterLength=length))
+                continue
+            n = note.Note(pitch.Pitch(tones[index].nameWithOctave), quarterLength=length)
+            if index == 0:
+                # Only the bass note is fingered: the pattern's shape is the lesson, and
+                # the little finger is the one that has to find the new root.
+                n.articulations.append(articulations.Fingering(5))
+            lh.append(n)
+
+    if hands == "both":
+        # A scale over the top, because independence is the skill this trains — the
+        # pattern alone is a left-hand exercise, and the two together are a piano one.
+        degrees = [1, 2, 3, 4, 5, 6, 7, 8]
+        length = beats_per_bar * 4 / len(degrees) / 2
+        for repeat in range(2):
+            order = degrees if repeat == 0 else list(reversed(degrees))
+            add_notes(rh, scale_pitches(k, 4, order), None, length)
+    else:
+        silent(rh, beats_per_bar * len(ACCOMPANIMENT_CHORDS))
+
+    finalize(sc)
+    item_id = f"exercise.accompaniment.{pattern}.{key_slug(root)}-{mode}.{hands}"
+    entry = catalog_entry(
+        item_id, title, level,
+        [pattern, "accompaniment-pattern", "broken-chords", f"{root}-{mode}"], hands, bpm,
+        "accompaniment",
+        {"key": root, "quality": mode, "pattern": pattern, "timeSig": time_sig,
+         "progression": ["I", "IV", "V", "I"]},
+        f"scores/generated/{item_id}.mxl", tracks=["technique", "core", "chords-pop"],
+    )
+    return sc, entry
+
+
+def make_pedal(root: str, bpm: int = 54, level: float = 3.5):
+    """
+    A chord sequence with pedal marks, for the CC64 change-timing drill.
+
+    The chords are the smooth I-IV-V7-I; the pedal spans each chord and lifts on the next,
+    which is the change the `pedal` drill in `05` §7 scores between 0 and 120 ms after the
+    new chord's first Note-On.
+    """
+    from music21 import expressions
+
+    k = key.Key(root)
+    title = f"Pedal changes on I-IV-V7-I in {root}"
+    sc, rh, lh = grand_staff(title, bpm, ks=k)
+
+    chords = []
+    for degrees, fingers in CADENCE_VOICINGS["voice-led"]:
+        c = fingered_chord(scale_pitches(k, 3, degrees), fingers, 4.0)
+        lh.append(c)
+        chords.append(c)
+    # A held melody note over each chord, so there is something to listen to the pedal
+    # blurring — a pedal exercise on bare chords teaches nothing about when it goes wrong.
+    for degrees in ([5], [6], [5], [5]):
+        add_notes(rh, scale_pitches(k, 4, degrees), None, 4.0)
+
+    for c in chords:
+        mark = expressions.PedalMark()
+        mark.addSpannedElements([c])
+        lh.insert(0, mark)
+
+    finalize(sc)
+    item_id = f"exercise.pedal.{key_slug(root)}"
+    entry = catalog_entry(
+        item_id, title, level, ["sustain-pedal", "legato-pedalling", "CC64"], "both", bpm,
+        "pedal", {"key": root, "progression": ["I", "IV", "V7", "I"], "maxOverlapMs": 120},
+        f"scores/generated/{item_id}.mxl",
     )
     return sc, entry
 
@@ -635,22 +1023,32 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
             items.append(make_scale(ScaleSpec(k, "major", hands, 1, "similar", 0.5, 60, 2.5 if hands != "both" else 4.1)))
         items.append(make_scale(ScaleSpec(k, "major", "both", 2, "similar", 0.5, 72, 4.1)))
         items.append(make_scale(ScaleSpec(k, "major", "both", 1, "contrary", 0.5, 60, 4.1)))
+        # Contrary motion at two octaves: `02` Part E lists it from stage 4 and only the
+        # one-octave form existed.
+        items.append(make_scale(ScaleSpec(k, "major", "both", 2, "contrary", 0.5, 72, 4.1)))
         items.append(make_arpeggio(k, "major", "both", 2))
         items.append(make_triad_inversions(k, "major", "both"))
         items.append(make_seventh_arpeggio(k, "dominant7", "both", 2))
     for k in minors:
         for mode in ("harmonic", "melodic", "natural"):
             items.append(make_scale(ScaleSpec(k, mode, "both", 1, "similar", 0.5, 60, 4.2)))
+        # Contrary motion in the minors too — 4.2 asks for the same work in the new keys.
+        items.append(make_scale(ScaleSpec(k, "harmonic", "both", 1, "contrary", 0.5, 60, 4.2)))
         items.append(make_arpeggio(k, "minor", "both", 2))
         items.append(make_triad_inversions(k, "minor", "both"))
         items.append(make_seventh_arpeggio(k, "diminished7", "both", 2))
 
     # Five-finger patterns in all twelve keys, major and minor: these are the
     # first thing a beginner plays and the last thing to be dropped.
+    #
+    # Hands separately as well as together: units 1.1 and 1.3 are explicitly right hand
+    # alone and left hand alone, and `make_five_finger` has always taken a `hands`
+    # argument — it was simply never called with anything but "both".
     for k in all_twelve_major:
-        items.append(make_five_finger(k, "major", "both"))
+        for hands in ("right", "left", "both"):
+            items.append(make_five_finger(k, "major", hands, level=1.1 if hands != "both" else 2.1))
     for k in all_twelve_minor:
-        items.append(make_five_finger(k, "minor", "both"))
+        items.append(make_five_finger(k, "minor", "both", level=2.1))
 
     # The chromatic scale from each of the four starting points that use a
     # different fingering shape.
@@ -660,10 +1058,44 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
 
     for pattern, _, _ in (RHYTHM_PATTERNS[:2] if quick else RHYTHM_PATTERNS):
         items.append(make_rhythm(pattern))
+    extra_rhythms = RHYTHM_PATTERNS_EXTRA[:2] if quick else RHYTHM_PATTERNS_EXTRA
+    for spec in extra_rhythms:
+        items.append(make_rhythm(spec[0]))
 
     for number in hanon_numbers:
         for hands in ("right", "left", "both"):
             items.append(make_hanon(number, hands, data=hanon))
+
+    # ---- docs/02 Part E2: the skills the lessons are made of -------------------------
+    #
+    # Kept to the keys each unit actually teaches rather than all twelve. A beginner
+    # meeting unit 2.1 does not need hands-together coordination in G flat, and 288
+    # exercises nobody opens is not breadth.
+    beginner_keys = ["C"] if quick else ["C", "G", "F", "D", "A"]
+    for k in beginner_keys:
+        for variant in COORDINATION_VARIANTS:
+            items.append(make_coordination(k, variant))
+        for hands in ("right", "left"):
+            items.append(make_position_shift(k, hands))
+
+    for seed in (range(1, 3) if quick else range(1, 9)):
+        for hands in ("right", "left"):
+            items.append(make_interval_reading(seed, hands))
+
+    for k in (["C"] if quick else list(MAJOR_KEYS)):
+        for voicing in ("root", "voice-led"):
+            items.append(make_cadence(k, voicing))
+
+    accompaniment_keys = [("C", "major")] if quick else [
+        ("C", "major"), ("G", "major"), ("F", "major"), ("A", "minor"), ("D", "minor"),
+    ]
+    for root, mode in accompaniment_keys:
+        for pattern in ACCOMPANIMENT_PATTERNS:
+            for hands in ("left", "both"):
+                items.append(make_accompaniment(root, mode, pattern, hands))
+
+    for k in (["C"] if quick else ["C", "G", "F", "D", "A", "B-"]):
+        items.append(make_pedal(k))
     return items
 
 

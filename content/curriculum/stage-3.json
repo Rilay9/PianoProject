@@ -27,11 +27,14 @@
                 "exercise.scale.g-major.1oct.similar.right.2",
                 "exercise.scale.f-major.1oct.similar.right.2",
                 "drill.reading.note-flash-accidentals",
-                "drill.theory.build-major-scale"
+                "drill.theory.build-major-scale",
+                "exercise.five-finger.g-major.right",
+                "exercise.five-finger.f-major.right"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.g",
-                "song.folk.twinkle.f"
+                "song.folk.twinkle.f",
+                "song.folk.when-the-saints.f"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -62,7 +65,11 @@
               "textFile": "lessons/3.2.md",
               "exerciseOptions": [
                 "drill.chord.primary-c-g-f",
-                "drill.chord.symbol-flash"
+                "drill.chord.symbol-flash",
+                "exercise.cadence.g.voice-led",
+                "exercise.cadence.f.voice-led",
+                "exercise.cadence.c.voice-led",
+                "exercise.cadence.g.root"
               ],
               "songOptions": [
                 "song.holiday.jingle-bells.g",
@@ -100,7 +107,8 @@
               "exerciseOptions": [
                 "exercise.scale.a-harmonic-minor.1oct.similar.both.2",
                 "drill.chord.minor-changes",
-                "drill.ear.major-minor"
+                "drill.ear.major-minor",
+                "exercise.arpeggio.a-minor.2oct.both"
               ],
               "songOptions": [
                 "song.folk.greensleeves.chords",
@@ -136,7 +144,9 @@
               "textFile": "lessons/3.4.md",
               "exerciseOptions": [
                 "drill.reading.note-flash-extended",
-                "drill.reading.sight-reading-2"
+                "drill.reading.sight-reading-2",
+                "exercise.interval-reading.c-position.right.05",
+                "exercise.interval-reading.c-position.left.05"
               ],
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
@@ -173,11 +183,15 @@
               "textFile": "lessons/3.5.md",
               "exerciseOptions": [
                 "drill.pedal.changes",
-                "drill.pattern.lh-accompaniment"
+                "drill.pattern.lh-accompaniment",
+                "exercise.pedal.c",
+                "exercise.pedal.g",
+                "exercise.pedal.f"
               ],
               "songOptions": [
                 "song.classical.pachelbel-canon-d.easy",
-                "song.folk.greensleeves.waltz"
+                "song.folk.greensleeves.waltz",
+                "song.classical.ode-to-joy.full"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -210,22 +224,27 @@
               "exerciseOptions": [
                 "drill.pattern.lh-accompaniment",
                 "exercise.arpeggio.c-major.2oct.both",
-                "exercise.arpeggio.a-minor.2oct.both"
+                "exercise.arpeggio.a-minor.2oct.both",
+                "exercise.accompaniment.broken.c-major.left",
+                "exercise.accompaniment.alberti.c-major.left",
+                "exercise.accompaniment.waltz.c-major.left",
+                "exercise.accompaniment.broken.a-minor.both"
               ],
               "songOptions": [
                 "song.folk.greensleeves.waltz",
                 "song.classical.pachelbel-canon-d.easy"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
+                "exercisesRequired": 2,
+                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.9
               },
               "prerequisites": [
                 "3.5"
               ],
-              "estimatedDays": 16
+              "estimatedDays": 16,
+              "songOptional": true
             }
           ]
         },
@@ -245,7 +264,8 @@
               "textFile": "lessons/classical.3.md",
               "exerciseOptions": [
                 "exercise.scale.g-major.1oct.similar.both.2",
-                "drill.reading.sight-reading-2"
+                "drill.reading.sight-reading-2",
+                "exercise.accompaniment.alberti.c-major.both"
               ],
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
@@ -281,7 +301,10 @@
               "textFile": "lessons/chords-pop.3.md",
               "exerciseOptions": [
                 "drill.chord.primary-c-g-f",
-                "drill.chord.symbol-flash"
+                "drill.chord.symbol-flash",
+                "exercise.cadence.c.voice-led",
+                "exercise.cadence.g.voice-led",
+                "exercise.cadence.f.voice-led"
               ],
               "songOptions": [
                 "song.folk.when-the-saints.f",
@@ -329,7 +352,8 @@
                 "minTempoPct": 0.0,
                 "custom": "intervals-by-ear>=0.8"
               },
-              "estimatedDays": 30
+              "estimatedDays": 30,
+              "songOptional": true
             }
           ]
         },
@@ -348,17 +372,20 @@
               ],
               "textFile": "lessons/improv.3.md",
               "exerciseOptions": [
-                "drill.improv.loop-i-iv-v"
+                "drill.improv.loop-i-iv-v",
+                "exercise.cadence.c.root",
+                "exercise.cadence.c.voice-led"
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 1,
+                "exercisesRequired": 2,
                 "songsRequired": 0,
                 "minAccuracy": 0.0,
                 "minTempoPct": 0.0,
                 "custom": "three-choruses-recorded"
               },
-              "estimatedDays": 30
+              "estimatedDays": 30,
+              "songOptional": true
             }
           ]
         },
@@ -378,7 +405,8 @@
               "textFile": "lessons/hymns.md",
               "exerciseOptions": [
                 "drill.chord.primary-c-g-f",
-                "drill.pattern.lh-accompaniment"
+                "drill.pattern.lh-accompaniment",
+                "exercise.cadence.c.voice-led"
               ],
               "songOptions": [
                 "song.folk.when-the-saints.f",
@@ -414,7 +442,8 @@
               "textFile": "lessons/rock.overview.md",
               "exerciseOptions": [
                 "drill.pattern.lh-accompaniment",
-                "drill.chord.symbol-flash"
+                "drill.chord.symbol-flash",
+                "exercise.accompaniment.broken.a-minor.left"
               ],
               "songOptions": [
                 "song.classical.pachelbel-canon-d.easy",

@@ -2188,6 +2188,11 @@
     "tags": [
       "import-only",
       "rock-metal-module"
+    ],
+    "alternatives": [
+      "song.classical.beethoven-moonlight-i",
+      "song.classical.chopin-prelude-op28-4",
+      "exercise.pedal.a"
     ]
   },
   {
@@ -2234,6 +2239,11 @@
     "tags": [
       "import-only",
       "rock-metal-module"
+    ],
+    "alternatives": [
+      "song.folk.greensleeves.waltz",
+      "song.folk.row-row-row-your-boat",
+      "exercise.accompaniment.broken.g-major.both"
     ]
   },
   {
@@ -2280,6 +2290,11 @@
     "tags": [
       "import-only",
       "rock-metal-module"
+    ],
+    "alternatives": [
+      "song.folk.greensleeves.chords",
+      "song.classical.chopin-prelude-op28-4",
+      "exercise.inversions.c-major.both"
     ]
   },
   {
@@ -2326,6 +2341,11 @@
     "tags": [
       "import-only",
       "rock-metal-module"
+    ],
+    "alternatives": [
+      "song.classical.satie-gnossienne-1",
+      "song.folk.greensleeves.68",
+      "exercise.accompaniment.alberti.a-minor.left"
     ]
   },
   {
@@ -2372,6 +2392,11 @@
     "tags": [
       "import-only",
       "rock-metal-module"
+    ],
+    "alternatives": [
+      "song.classical.chopin-prelude-op28-4",
+      "song.classical.satie-gnossienne-1",
+      "exercise.accompaniment.broken.a-minor.left"
     ]
   },
   {
@@ -2418,6 +2443,11 @@
     "tags": [
       "import-only",
       "rock-metal-module"
+    ],
+    "alternatives": [
+      "song.classical.satie-gymnopedie-1",
+      "exercise.rhythm.syncopated.4bar",
+      "exercise.rhythm.shuffle-quarter-eighths.4bar"
     ]
   },
   {
@@ -2464,6 +2494,11 @@
     "tags": [
       "import-only",
       "rock-metal-module"
+    ],
+    "alternatives": [
+      "song.classical.beethoven-moonlight-i",
+      "song.folk.greensleeves.waltz",
+      "exercise.accompaniment.broken.c-major.both"
     ]
   }
 ]

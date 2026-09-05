@@ -34,7 +34,8 @@
                 "minTempoPct": 0.0,
                 "custom": "checklist-complete"
               },
-              "estimatedDays": 2
+              "estimatedDays": 2,
+              "optionsExempt": true
             }
           ]
         },
@@ -65,7 +66,8 @@
                 "minTempoPct": 0.0,
                 "custom": "20-keys-in-40s>=0.95"
               },
-              "estimatedDays": 3
+              "estimatedDays": 3,
+              "optionsExempt": true
             }
           ]
         },
@@ -96,7 +98,8 @@
                 "minTempoPct": 0.0,
                 "custom": "tour-complete"
               },
-              "estimatedDays": 1
+              "estimatedDays": 1,
+              "optionsExempt": true
             }
           ]
         },
@@ -124,7 +127,8 @@
                 "minTempoPct": 0.0,
                 "custom": "placement-complete"
               },
-              "estimatedDays": 1
+              "estimatedDays": 1,
+              "optionsExempt": true
             }
           ]
         }

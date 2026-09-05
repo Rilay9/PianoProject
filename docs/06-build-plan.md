@@ -146,7 +146,7 @@ selections authored; theory lessons from Open Music Theory outlines with attribu
   turn the network off for good and lose nothing but the video links (`00` D20).
 - **Every skill the curriculum names has a generated exercise, and every rung offers at least
   three alternatives** (`00` D21), checked by `validate.py` rather than by eye.
-- Stages 0–4 fully populated; tracks populated to Stage 5 including the Rock & metal, Jam, and Beautiful-pieces modules; library ≥ 250 items; mic follow works on the owner's HP-130 + S25 in a quiet room (measured on his recordings).
+- Stages 0–4 fully populated; tracks populated to Stage 5 including the Rock & metal, Jam, and Beautiful-pieces modules; library ≥ 250 items (573 after P5b); mic follow works on the owner's HP-130 + S25 in a quiet room (measured on his recordings).
 - CI green; all budgets met on device; no console errors in a 30-minute session.
 
 ## 4. Test strategy summary

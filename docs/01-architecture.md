@@ -305,6 +305,12 @@ criteria. Schema at `content/curriculum.schema.json`.
 - **The precache must be verifiable, not assumed.** The service worker reports how many of
   the catalog's files are cached; Diagnostics shows it (`04` §7b) and a **"Download
   everything now"** action in Settings → Content re-runs it and reports the total size.
+  `app/tests/e2e/offline.spec.ts` checks both halves of the claim on every run: that every
+  file the catalog names appears in the generated precache manifest, and that with the
+  network off the app loads, reads the catalog, curriculum and a lesson, opens an authored
+  score and a generated exercise through its own loader, and still has the soundfont.
+- **`clientsClaim` is on**, so the *first* visit is offline-capable rather than the second.
+  Safe without `skipWaiting`: it only claims clients no worker is controlling yet.
 - **Update checks are optional and silent.** An "update available — reload" toast when a new
   service worker is waiting; a setting turns the check off entirely, and a failed check when
   offline is not an error and is never shown.

@@ -467,7 +467,7 @@ Every scale/arpeggio drill is generated per key, hands (R/L/both), octaves (1–
 fingerings encoded in the MusicXML `<fingering>` elements. Hanon 1–20 are generated from
 their pattern definitions (each is a 8-note cell transposed stepwise up two octaves and back).
 
-### Part E2 — the non-scale exercise families (`00` D21, built in P5b)
+### Part E2 — the non-scale exercise families (`00` D21; **built in P5b**)
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or
@@ -486,6 +486,12 @@ key and per hand where that means anything, with fingering:
 | `rhythm` in other meters | 1.4 (3/4), 4.5 (6/8) | 1–4 | `make_rhythm` currently hardcodes 4/4; the meter becomes a parameter. |
 | `shuffle` | 4.5, blues track | 4 | Straight eighths written, swung played; the notation carries the "shuffle" instruction. |
 | `contrary` 2-octave, minors | 4.1, 4.2 | 4 | Contrary motion exists at one octave in majors only. |
+
+**Built 2026-09-05 (P5b), 154 new items:** coordination 10, position-shift 10,
+interval-reading 16, cadence 24, accompaniment 30, pedal 6, rhythm in 3/4, 6/8 and shuffle
+10, five-finger hands-separately 24, two-octave and minor contrary motion 24. The keys are
+the ones each unit teaches rather than all twelve: 288 exercises nobody opens is not
+breadth.
 
 ---
 
