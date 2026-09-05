@@ -1,0 +1,20 @@
+X:1
+T:Mary Had a Little Lamb (hands together)
+C:Traditional (Lowell Mason, 1830)
+%%pianopath id=song.folk.mary-had-a-little-lamb.ht level=2.1 hands=both abrsm=1
+%%pianopath tracks=core concepts=hands-together,held-LH,I-V,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=folk publishedYear=1830
+%%pianopath sourceName="Mary's Lamb, Lowell Mason (1830); words Sarah Josepha Hale (1830)"
+%%pianopath variantOf=song.folk.mary-had-a-little-lamb variantLabel="hands together"
+%%pianopath editionNotes="Left hand stays in the C position throughout: 5 on C3, 1 on G3."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=72
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "C"!3!E !2!D !1!C !2!D | "C"!3!E !3!E !3!E2 | "G"!2!D !2!D !2!D2 | "C"!3!E !5!G !5!G2 |
+[V:1] "C"!3!E !2!D !1!C !2!D | "C"!3!E !3!E !3!E !3!E | "G"!2!D !2!D !3!E !2!D | "C"!1!C4 |]
+[V:2] !5!C,4 | !5!C,4 | !1!G,4 | !5!C,4 |
+[V:2] !5!C,4 | !5!C,4 | !1!G,4 | !5!C,4 |]

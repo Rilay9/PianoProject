@@ -1,0 +1,26 @@
+X:1
+T:Ode to Joy (full theme)
+C:Ludwig van Beethoven, 1824
+%%pianopath id=song.classical.ode-to-joy.full level=2.5 hands=both abrsm=1
+%%pianopath tracks=core,classical concepts=position-shift,dotted-quarter,eighth-notes,octave-leap,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=classical publishedYear=1824
+%%pianopath sourceName="Symphony No. 9, fourth movement (1824)" composer="Ludwig van Beethoven"
+%%pianopath variantOf=song.classical.ode-to-joy.rh variantLabel="full theme, hands together"
+%%pianopath editionNotes="All sixteen bars including the B section. Pitches and rhythms checked against the MuseTrainer easy edition in the library, transposed from G to C. Bar 12 drops to G3: the right hand moves down so finger 5 takes it, and comes back to the C position for bar 13."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=88
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "C"!3!E E !4!F !5!G | "G"!5!G !4!F !3!E !2!D | "C"!1!C C !2!D !3!E | "C"!3!E3/2 !2!D/ "G"!2!D2 |
+[V:1] "C"!3!E E !4!F !5!G | "G"!5!G !4!F !3!E !2!D | "C"!1!C C !2!D !3!E | "G"!2!D3/2 !1!C/ "C"!1!C2 |
+[V:1] "G"!2!D D !3!E !1!C | "G"!2!D !3!E/!4!F/ !3!E !1!C | "G"!2!D !3!E/!4!F/ !3!E !2!D | "G"!1!C !2!D !5!G,2 |
+[V:1] "C"!3!E E !4!F !5!G | "G"!5!G !4!F !3!E !2!D | "C"!1!C C !2!D !3!E | "G"!2!D3/2 !1!C/ "C"!1!C2 |
+[V:1] "C"!1!C4 |]
+[V:2] !5!C,4 | !1!G,4 | !5!C,4 | !5!C,2 !1!G,2 |
+[V:2] !5!C,4 | !1!G,4 | !5!C,4 | !1!G,2 !5!C,2 |
+[V:2] !1!G,4 | !1!G,4 | !1!G,4 | !5!G,,4 |
+[V:2] !5!C,4 | !1!G,4 | !5!C,4 | !1!G,2 !5!C,2 |
+[V:2] !5!C,4 |]

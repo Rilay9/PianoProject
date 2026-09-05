@@ -1,0 +1,19 @@
+X:1
+T:London Bridge Is Falling Down
+C:Traditional (English)
+%%pianopath id=song.folk.london-bridge level=2.2 hands=both abrsm=1
+%%pianopath tracks=core concepts=eighth-notes,position-shift,held-LH,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Traditional (English nursery rhyme; tune printed in Tommy Thumb's Pretty Song Book, c. 1744)"
+%%pianopath editionNotes="Right hand starts with the thumb on D4 so the A is under finger 5, then moves back to the C position for the last two bars; the fingering is marked at the move."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=88
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "C"!4!G !5!A/!4!G/ !3!F !2!E | "G"!3!F !4!G2 z | "G"!1!D !2!E !3!F2 | "C"!2!E !3!F !4!G2 |
+[V:1] "C"!4!G !5!A/!4!G/ !3!F !2!E | "G"!3!F !4!G2 z | "G"!2!D2 !5!G2 | "C"!3!E2 !1!C2 |]
+[V:2] !5!C,4 | !1!G,4 | !1!G,4 | !5!C,4 |
+[V:2] !5!C,4 | !1!G,4 | !1!G,4 | !5!C,4 |]

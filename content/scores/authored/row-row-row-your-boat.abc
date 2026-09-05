@@ -1,0 +1,19 @@
+X:1
+T:Row, Row, Row Your Boat
+C:Traditional (US, printed 1852)
+%%pianopath id=song.folk.row-row-row-your-boat level=4.5 hands=both abrsm=1
+%%pianopath tracks=core concepts=6/8,compound-time,position-shift,waltz-bass
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Traditional (US); tune first printed 1852"
+%%pianopath editionNotes="6/8, two dotted-quarter beats to the bar. The right hand moves up to put the thumb on G4 for the first 'merrily' and comes back to the C position a bar later; the fingering is marked at both moves."
+%%score {1 2}
+L:1/8
+M:6/8
+Q:3/8=54
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "C"!1!C3 !1!C3 | "C"!1!C2 !2!D !3!E3 | "C"!3!E2 !2!D !3!E2 !4!F | "C"!5!G6 |
+[V:1] "C"!4!c !4!c !4!c !1!G !1!G !1!G | "C"!3!E !3!E !3!E !1!C !1!C !1!C | "G"!5!G2 !4!F !3!E2 !2!D | "C"!1!C6 |]
+[V:2] !5!C,3 [!3!E,!1!G,]3 | !5!C,3 [!3!E,!1!G,]3 | !5!C,3 [!3!E,!1!G,]3 | !5!C,3 [!3!E,!1!G,]3 |
+[V:2] !5!C,3 [!3!E,!1!G,]3 | !5!C,3 [!3!E,!1!G,]3 | !5!G,,3 [!3!B,,!1!D,]3 | !5!C,3 [!3!E,!1!G,]3 |]

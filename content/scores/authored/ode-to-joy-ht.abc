@@ -1,0 +1,20 @@
+X:1
+T:Ode to Joy (hands together)
+C:Ludwig van Beethoven, 1824
+%%pianopath id=song.classical.ode-to-joy.ht level=2.1 hands=both abrsm=1
+%%pianopath tracks=core,classical concepts=hands-together,held-LH,I-V,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=classical publishedYear=1824
+%%pianopath sourceName="Symphony No. 9, fourth movement (1824)" composer="Ludwig van Beethoven"
+%%pianopath variantOf=song.classical.ode-to-joy.rh variantLabel="hands together"
+%%pianopath editionNotes="The first eight bars only, with the dotted rhythm of bars 4 and 8 written as two half notes. Left hand stays in the C position: 5 on C3, 1 on G3."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=88
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "C"!3!E E !4!F !5!G | "G"!5!G !4!F !3!E !2!D | "C"!1!C C !2!D !3!E | "C"!3!E2 "G"!2!D2 |
+[V:1] "C"!3!E E !4!F !5!G | "G"!5!G !4!F !3!E !2!D | "C"!1!C C !2!D !3!E | "G"!2!D2 "C"!1!C2 |]
+[V:2] !5!C,4 | !1!G,4 | !5!C,4 | !5!C,2 !1!G,2 |
+[V:2] !5!C,4 | !1!G,4 | !5!C,4 | !1!G,2 !5!C,2 |]

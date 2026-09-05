@@ -1,0 +1,17 @@
+X:1
+T:Steps and Skips in C (study)
+C:PianoPath
+%%pianopath id=exercise.reading.steps-and-skips-c level=1.5 hands=right abrsm=0
+%%pianopath tracks=core concepts=C-position,steps,skips,reading-by-interval,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=study
+%%pianopath editionNotes="Written for PianoPath. Every interval is a 2nd or a 3rd and the hand never leaves the five-finger C position, so it can be read by shape rather than by note name."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=72
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] !1!C !3!E !5!G !3!E | !4!F !2!D !1!C2 | !2!D !4!F !3!E !5!G | !4!F !2!D !3!E2 |
+[V:1] !1!C !3!E !2!D !4!F | !3!E !5!G !4!F !2!D | !3!E !5!G !4!F !3!E | !2!D2 !1!C2 |]
+[V:2] z4 | z4 | z4 | z4 | z4 | z4 | z4 | z4 |]

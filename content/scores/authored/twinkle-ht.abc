@@ -1,0 +1,22 @@
+X:1
+T:Twinkle, Twinkle, Little Star (hands together)
+C:Traditional (Ah! vous dirai-je, maman, 1761)
+%%pianopath id=song.folk.twinkle.ht level=2.1 hands=both abrsm=1
+%%pianopath tracks=core,classical concepts=hands-together,held-LH,position-stretch,I-IV-V,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Ah! vous dirai-je, maman (French, 1761)"
+%%pianopath variantOf=song.folk.twinkle.rh variantLabel="hands together"
+%%pianopath editionNotes="Left hand stays in the C position: 5 on C3, 2 on F3, 1 on G3. The right hand moves up one step for the A and back again, as in the right-hand version."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=84
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "C"!1!C C !5!G G | "F"!5!A A "C"!4!G2 | "F"!4!F F "C"!3!E E | "G"!2!D D "C"!1!C2 |
+[V:1] "C"!5!G G "G"!4!F F | "C"!3!E E "G"!2!D2 | "C"!5!G G "G"!4!F F | "C"!3!E E "G"!2!D2 |
+[V:1] "C"!1!C C !5!G G | "F"!5!A A "C"!4!G2 | "F"!4!F F "C"!3!E E | "G"!2!D D "C"!1!C2 |]
+[V:2] !5!C,4 | !2!F,2 !5!C,2 | !2!F,2 !5!C,2 | !1!G,2 !5!C,2 |
+[V:2] !5!C,2 !1!G,2 | !5!C,2 !1!G,2 | !5!C,2 !1!G,2 | !5!C,2 !1!G,2 |
+[V:2] !5!C,4 | !2!F,2 !5!C,2 | !2!F,2 !5!C,2 | !1!G,2 !5!C,2 |]

@@ -1,0 +1,24 @@
+X:1
+T:Greensleeves (simple)
+C:Traditional (English, 16th century)
+%%pianopath id=song.folk.greensleeves.simple level=2.4 hands=both abrsm=1
+%%pianopath tracks=core,classical concepts=3/4,dotted-quarter,minor-key,raised-7th,held-LH
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Traditional (English); tune registered 1580, melody as in the standard modern setting"
+%%pianopath variantOf=song.folk.greensleeves variantLabel="simple, one note in the left hand"
+%%pianopath editionNotes="First strain only. Melody checked note for note against the MuseTrainer edition in the library. The right hand uses two positions, thumb on E4 for the low phrases and thumb on C5 for the high ones; the fingering is marked at every move. The G sharps and the F sharp are the raised 7th and 6th of A minor."
+%%score {1 2}
+L:1/4
+M:3/4
+Q:1/4=100
+K:Am
+V:1 clef=treble
+V:2 clef=bass
+[V:1] !4!A | "Am"!1!c2 !2!d | "Am"!3!e3/2 !4!f/ !3!e | "G"!2!d2 !5!B | "G"!3!G3/2 !4!A/ !5!B |
+[V:1] "Am"!1!c2 !4!A | "E"!4!A3/2 !3!^G/ !4!A | "E"!5!B2 !3!^G | "Am"!1!E2 !4!A |
+[V:1] "Am"!1!c2 !2!d | "Am"!3!e3/2 !4!f/ !3!e | "G"!2!d2 !5!B | "G"!3!G3/2 !4!A/ !5!B |
+[V:1] "Am"!1!c3/2 !5!B/ !4!A | "E"!3!^G3/2 !2!^F/ !3!^G | "Am"!4!A3 |]
+[V:2] z | !2!A,3 | !2!A,3 | !3!G,3 | !3!G,3 |
+[V:2] !2!A,3 | !5!E,3 | !5!E,3 | !2!A,3 |
+[V:2] !2!A,3 | !2!A,3 | !3!G,3 | !3!G,3 |
+[V:2] !2!A,3 | !5!E,3 | !2!A,3 |]
