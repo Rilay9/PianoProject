@@ -728,3 +728,157 @@ body {
     transition: none;
   }
 }
+
+/* --- Score screen (docs/04 §5) ------------------------------------------ */
+
+.screen--score {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg, #0f1115);
+  z-index: 20;
+}
+
+.score-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Top *right*: OSMD draws the piece's own title and tempo mark at the top
+   left, and two titles on top of each other is worse than none. This line is
+   for the app's messages — the loop prompt, an import hint, an error. */
+.score-status {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.75rem;
+  max-width: 45%;
+  margin: 0;
+  text-align: right;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* A *thin* bar floating over the notation, not a row in the column (docs/04
+   §5). Two consequences, both deliberate:
+     - it overlays, so the notation keeps the full height and does not reflow
+       when the bar hides — a score that jumps on every tap is unreadable;
+     - it scrolls sideways instead of wrapping. On a phone in landscape a
+       wrapped bar of twenty controls took half the screen, which a layout
+       test caught. */
+.score-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.6rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  background: color-mix(in srgb, var(--bg, #0f1115) 92%, transparent);
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  transition: opacity 160ms ease-out;
+}
+
+.score-bar > * {
+  flex: 0 0 auto;
+}
+
+/* The strip sits below the bar, so the bar floats just above it. */
+.screen--score:has(.score-strip:not([hidden])) .score-bar {
+  bottom: var(--strip-height, 4.5rem);
+}
+
+.score-bar[data-visible='false'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.score-button,
+.score-select {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.16));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  min-height: 2.25rem;
+}
+
+.score-button.is-selected {
+  border-color: var(--accent, #4c8bf5);
+  color: var(--accent, #4c8bf5);
+}
+
+.score-group {
+  display: inline-flex;
+  gap: 0.15rem;
+}
+
+.score-tempo-label,
+.score-bars {
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.score-mic {
+  width: 4rem;
+  margin: 0;
+}
+
+.score-strip {
+  flex: 0 0 auto;
+  max-height: var(--strip-height, 4.5rem);
+}
+
+.score-strip[hidden] {
+  display: none;
+}
+
+/* The summary sheet covers the score; there is nothing to read behind it and
+   a translucent sheet over notation is illegible. */
+.summary-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: var(--bg, #0f1115);
+  padding: 1.25rem;
+  overflow-y: auto;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.summary-stats dt {
+  opacity: 0.7;
+}
+
+.summary-stats dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-actions,
+.summary-selfreport {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.summary-selfreport {
+  margin-top: 1.5rem;
+  align-items: center;
+}

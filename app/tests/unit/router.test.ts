@@ -197,3 +197,44 @@ describe('sub-routes', () => {
     expect(seen).toEqual(['#/settings/midi']);
   });
 });
+
+describe('score routes', () => {
+  it('parses #/score/<id> into a score route', () => {
+    expect(parseHash('#/score/song.folk.hot-cross-buns')).toEqual({
+      tab: DEFAULT_TAB,
+      score: 'song.folk.hot-cross-buns',
+    });
+  });
+
+  it('round-trips through routeToHash', () => {
+    const route = { tab: DEFAULT_TAB, score: 'exercise.hanon.01.both' };
+    expect(parseHash(routeToHash(route))).toEqual(route);
+  });
+
+  it('drops an id that does not look like a catalog id', () => {
+    // A hash is user-editable and arrives from links; an id that would not be
+    // in the catalog is dropped rather than passed to a fetch.
+    expect(parseHash('#/score/../../etc/passwd')).toEqual({ tab: DEFAULT_TAB });
+    expect(parseHash('#/score/')).toEqual({ tab: DEFAULT_TAB });
+    expect(parseHash(`#/score/${'x'.repeat(200)}`)).toEqual({ tab: DEFAULT_TAB });
+  });
+
+  it('keeps the tab the learner opened it from', () => {
+    // Opening a piece from Library and pressing Back should return to Library,
+    // which is what carrying the tab on the route is for.
+    const { win } = fakeWindow('#/library');
+    const router = new Router(win as unknown as Window);
+    router.navigateScore('song.folk.twinkle.rh');
+    expect(router.route).toEqual({ tab: 'library', score: 'song.folk.twinkle.rh' });
+  });
+
+  it('notifies subscribers when the open piece changes', () => {
+    const { win } = fakeWindow('#/today');
+    const router = new Router(win as unknown as Window);
+    const seen: (string | undefined)[] = [];
+    router.subscribe((route) => seen.push(route.score));
+    router.navigateScore('a.b');
+    router.navigateScore('c.d');
+    expect(seen).toEqual([undefined, 'a.b', 'c.d']);
+  });
+});

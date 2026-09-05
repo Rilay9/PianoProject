@@ -10,6 +10,7 @@ import { MicScreen } from './screens/MicScreen';
 import { MidiScreen } from './screens/MidiScreen';
 import { DiagnosticsScreen } from './screens/DiagnosticsScreen';
 import { MetronomeScreen } from './screens/MetronomeScreen';
+import { ScoreScreen } from './screens/ScoreScreen';
 
 const TAB_LABELS: Record<TabId, string> = {
   today: 'Today',
@@ -38,6 +39,9 @@ const SUB_SCREENS: Record<SubId, ScreenFactory> = {
 };
 
 function screenFor(route: Route): ScreenFactory {
+  // The Score screen is a full-screen route pushed over whichever tab the
+  // learner came from, so the tab stays highlighted and Back returns to it.
+  if (route.score) return ScoreScreen;
   return route.sub ? SUB_SCREENS[route.sub] : SCREENS[route.tab];
 }
 

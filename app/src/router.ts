@@ -30,12 +30,31 @@ export type SubId = (typeof SUB_IDS)[number];
 export const DEV_IDS = ['score'] as const;
 export type DevId = (typeof DEV_IDS)[number];
 
+/**
+ * The Score screen, addressed as `#/score/<itemId>` (docs/04 §1: "a
+ * full-screen route pushed on top; the back gesture returns").
+ *
+ * It carries a payload, unlike every other route, because the screen is
+ * meaningless without knowing which piece — and putting the id in the hash is
+ * what makes reload, back and "add to home screen on this piece" all work
+ * without any extra state. Ids are `[a-z0-9.-]` by the catalog schema, so the
+ * hash needs no escaping, but an unexpected one is dropped rather than trusted.
+ */
+export const SCORE_ID_PATTERN = /^[A-Za-z][A-Za-z0-9._-]{0,119}$/;
+
+/** `..` never appears in a catalog id and is the one sequence worth naming. */
+function looksLikeCatalogId(id: string): boolean {
+  return SCORE_ID_PATTERN.test(id) && !id.includes('..');
+}
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
   tab: TabId;
   sub?: SubId;
   dev?: DevId;
+  /** Catalog id of the piece open on the Score screen. */
+  score?: string;
 }
 
 function isTabId(value: string): value is TabId {
@@ -55,6 +74,16 @@ export function parseHash(hash: string): Route {
   const cleaned = hash.replace(/^#\/?/, '').trim();
   if (cleaned === '') return { tab: DEFAULT_TAB };
   const [tab = '', sub = ''] = cleaned.split('/');
+  if (tab === 'score') {
+    let id: string;
+    try {
+      id = decodeURIComponent(sub);
+    } catch {
+      // A malformed escape in the hash is not an id.
+      return { tab: DEFAULT_TAB };
+    }
+    return looksLikeCatalogId(id) ? { tab: DEFAULT_TAB, score: id } : { tab: DEFAULT_TAB };
+  }
   if (tab === 'dev') {
     return isDevId(sub) ? { tab: DEFAULT_TAB, dev: sub } : { tab: DEFAULT_TAB };
   }
@@ -67,6 +96,7 @@ export function parseHash(hash: string): Route {
 }
 
 export function routeToHash(route: Route): string {
+  if (route.score) return `#/score/${encodeURIComponent(route.score)}`;
   if (route.dev) return `#/dev/${route.dev}`;
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
@@ -102,6 +132,13 @@ export class Router {
     this.setRoute(route);
   }
 
+  /** Opens the Score screen on a catalog item (`#/score/<itemId>`). */
+  navigateScore(itemId: string): void {
+    const route: Route = { tab: this.current.tab, score: itemId };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
   /** Navigates to a builder-only route (`#/dev/<id>`). */
   navigateDev(dev: DevId): void {
     const route: Route = { tab: DEFAULT_TAB, dev };
@@ -119,7 +156,8 @@ export class Router {
     if (
       route.tab === this.current.tab &&
       route.sub === this.current.sub &&
-      route.dev === this.current.dev
+      route.dev === this.current.dev &&
+      route.score === this.current.score
     ) {
       return;
     }
