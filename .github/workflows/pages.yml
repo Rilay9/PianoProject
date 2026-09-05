@@ -1,0 +1,65 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [claude/piano-teaching-app-bo19td]
+  workflow_dispatch: {}
+
+# NOTE: deploys on push to `claude/piano-teaching-app-bo19td`, this repo's
+# actual default branch (there is no `main` — see
+# docs/decisions/2026-09-05-default-branch.md). Rename here if the default
+# branch changes.
+#
+# One-time owner step: repository Settings -> Pages -> Source: GitHub Actions.
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python content-pipeline dependencies
+        run: pip install -r tools/content/requirements.txt
+
+      - name: Install app dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Build (includes content build + icon generation via prebuild)
+        working-directory: app
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

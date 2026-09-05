@@ -1,0 +1,178 @@
+:root {
+  --bg: #f7f7f9;
+  --surface: #ffffff;
+  --text: #14161a;
+  --text-muted: #5b6068;
+  --border: #e2e3e8;
+  --accent: #2f6fed;
+  --accent-contrast: #ffffff;
+  --tab-bar-bg: #ffffff;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+[data-theme='dark'] {
+  --bg: #0f1115;
+  --surface: #181b20;
+  --text: #eef0f3;
+  --text-muted: #9aa0aa;
+  --border: #2a2e35;
+  --accent: #5b8dfb;
+  --accent-contrast: #0f1115;
+  --tab-bar-bg: #14161a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  height: 100%;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.screen-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: max(16px, var(--safe-top)) 16px 16px;
+}
+
+.screen {
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 480px;
+  width: 100%;
+}
+
+.card h1 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.setting-row select {
+  min-height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  padding: 4px 8px;
+}
+
+/* Bottom tab bar (default / portrait) */
+.tab-nav {
+  order: 2;
+  display: flex;
+  justify-content: space-around;
+  background: var(--tab-bar-bg);
+  border-top: 1px solid var(--border);
+  padding: 6px 4px calc(6px + var(--safe-bottom));
+}
+
+.tab-button {
+  appearance: none;
+  border: none;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 4px 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.tab-button:hover {
+  background: var(--border);
+}
+
+.tab-button.active {
+  color: var(--accent);
+}
+
+.tab-icon {
+  display: flex;
+}
+
+.tab-label {
+  font-size: 0.7rem;
+}
+
+/* Left rail (landscape — matches the score screen's orientation) */
+@media (orientation: landscape) {
+  .app-shell {
+    flex-direction: row;
+  }
+
+  .tab-nav {
+    order: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 88px;
+    border-top: none;
+    border-right: 1px solid var(--border);
+    padding: max(12px, var(--safe-top)) 4px 12px;
+  }
+
+  .screen-container {
+    padding: max(16px, var(--safe-top)) 24px 16px;
+  }
+}
+
+/* Tablet / large-screen layout hook (docs/01-architecture.md §8a).
+   Later phases add a side panel and multi-column screens under this
+   breakpoint; nothing to widen yet beyond the card's max-width. */
+@media (min-width: 900px) {
+  .card {
+    max-width: 640px;
+  }
+}

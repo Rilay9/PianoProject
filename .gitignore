@@ -7,6 +7,13 @@ __pycache__/
 *.pyc
 .DS_Store
 app/public/content/
+app/public/icons/
+app/dev-dist/
+app/dist/
+app/playwright-report/
+app/test-results/
+app/tsconfig.tsbuildinfo
+app/*.tsbuildinfo
 content/scores/generated/
 content/scores/imported/**/*.mxl
 content/scores/imported/**/*.krn

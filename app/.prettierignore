@@ -1,0 +1,6 @@
+dist
+dev-dist
+node_modules
+public/content
+playwright-report
+test-results
