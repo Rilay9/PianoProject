@@ -340,14 +340,16 @@ def convert_file(
     score = parse_source(src)
     normalised, result = normalise(score, keep_lyrics=keep_lyrics, tempo_bpm=tempo_bpm)
     if title or composer:
-        meta = normalised.metadata or metadata.Metadata()
+        meta = normalised.metadata
+        if meta is None:
+            meta = metadata.Metadata()
+            normalised.insert(0, meta)
         if title:
             meta.title = title
             result.title = title
         if composer:
             meta.composer = composer
             result.composer = composer
-        normalised.insert(0, meta)
     write_mxl(normalised, dest)
     result.path = dest
     return result

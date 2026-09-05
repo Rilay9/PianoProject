@@ -1,0 +1,1057 @@
+{
+ "_comment": [
+  "Per-file decisions for the [MT] library (github.com/musetrainer/library).",
+  "The repository makes a single blanket 'Public Domain' claim with no LICENSE",
+  "file and no per-file terms, so each file is judged here on its own:",
+  "docs/03-content-pipeline.md §1 requires the *composition* to be US public",
+  "domain and the *edition* to be redistributable, and a blanket claim can only",
+  "answer the second question. 'exclude' entries state why, and are reported by",
+  "tools/content/import_musetrainer.py.",
+  "Levels are stage.unit (docs/02): stage 4 ~ ABRSM 1, 5 ~ 2-3, 6 ~ 4-5, 7 ~ 6,",
+  "8 ~ 7-8, 9 = beyond grades. Edit this file to re-level a piece; nothing here",
+  "is derived from the audio or the notation."
+ ],
+ "items": {
+  "12_Variations_of_Twinkle_Twinkle_Little_Star.mxl": {
+   "id": "song.classical.mozart-twinkle-variations-k265",
+   "title": "Twelve Variations on “Ah vous dirai-je, Maman”, K. 265",
+   "composer": "Wolfgang Amadeus Mozart",
+   "publishedYear": 1785,
+   "level": 7.2,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "theme-and-variations",
+    "alberti-bass",
+    "scale-runs"
+   ]
+  },
+  "Arabesque_L._66_No._1_in_E_Major.mxl": {
+   "id": "song.classical.debussy-arabesque-1",
+   "title": "Arabesque No. 1, L. 66",
+   "composer": "Claude Debussy",
+   "publishedYear": 1891,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "cross-rhythm",
+    "2-against-3",
+    "pedalling",
+    "impressionism"
+   ]
+  },
+  "Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg..mxl": {
+   "id": "song.classical.schubert-ave-maria",
+   "title": "Ave Maria, D. 839 (solo piano arrangement)",
+   "composer": "Franz Schubert",
+   "publishedYear": 1825,
+   "level": 5.2,
+   "abrsmGradeApprox": 3,
+   "tracks": [
+    "classical",
+    "hymns-gospel"
+   ],
+   "concepts": [
+    "broken-chord-accompaniment",
+    "cantabile",
+    "6/8"
+   ]
+  },
+  "Bach_Minuet_in_G_Major_BWV_Anh._114.mxl": {
+   "id": "song.classical.petzold-minuet-g-bwv-anh114",
+   "title": "Minuet in G major, BWV Anh. 114",
+   "composer": "Christian Petzold (long attributed to J. S. Bach)",
+   "publishedYear": 1725,
+   "level": 5.1,
+   "abrsmGradeApprox": 2,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "3/4",
+    "binary-form",
+    "hands-together",
+    "baroque-ornament"
+   ]
+  },
+  "Bach_Toccata_and_Fugue_in_D_Minor_Piano_solo.mxl": {
+   "id": "song.classical.bach-toccata-fugue-bwv565",
+   "title": "Toccata and Fugue in D minor, BWV 565 (piano solo)",
+   "composer": "Johann Sebastian Bach",
+   "publishedYear": 1833,
+   "level": 8.4,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "fugue",
+    "octaves",
+    "virtuoso"
+   ]
+  },
+  "Beethoven_Symphony_No._5_1st_movement_Piano_solo.mxl": {
+   "id": "song.classical.beethoven-symphony-5-i-piano",
+   "title": "Symphony No. 5, 1st movement (piano solo)",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1808,
+   "level": 8.2,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "motivic-development",
+    "tremolo",
+    "orchestral-reduction"
+   ]
+  },
+  "Bella_Ciao.mxl": {
+   "id": "song.folk.bella-ciao",
+   "title": "Bella Ciao",
+   "composer": "Traditional (Italian)",
+   "publishedYear": null,
+   "level": 4.2,
+   "abrsmGradeApprox": 1,
+   "tracks": [
+    "chords-pop",
+    "core"
+   ],
+   "concepts": [
+    "minor-key",
+    "melody-with-chords",
+    "3/4"
+   ],
+   "traditional": true
+  },
+  "Bella_Ciao_-_La_Casa_de_Papel.mxl": {
+   "exclude": "edition: the file's rights field names a commercial site (guestinpiano.fr) with no licence grant — unclear (docs/03 §1 rule 1)"
+  },
+  "Canon_in_D.mxl": {
+   "id": "song.classical.pachelbel-canon-d",
+   "title": "Canon in D",
+   "composer": "Johann Pachelbel",
+   "publishedYear": 1919,
+   "level": 6.3,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "ostinato-bass",
+    "sequence",
+    "arpeggios"
+   ]
+  },
+  "Canon_in_D_3.mxl": {
+   "exclude": "edition: arrangement credited to Jacob Danao with a bare “2016” rights line and no licence — unclear"
+  },
+  "Canon_in_D_easy.mxl": {
+   "id": "song.classical.pachelbel-canon-d.easy",
+   "title": "Canon in D (easy)",
+   "composer": "Johann Pachelbel",
+   "publishedYear": 1919,
+   "level": 5.1,
+   "abrsmGradeApprox": 2,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "ostinato-bass",
+    "block-chords"
+   ],
+   "variantOf": "song.classical.pachelbel-canon-d",
+   "variantLabel": "easy"
+  },
+  "Carol_of_the_Bells.mxl": {
+   "id": "song.holiday.carol-of-the-bells",
+   "title": "Carol of the Bells (Shchedryk)",
+   "composer": "Mykola Leontovych",
+   "publishedYear": 1919,
+   "level": 6.1,
+   "abrsmGradeApprox": 4,
+   "tracks": [
+    "holiday",
+    "classical"
+   ],
+   "concepts": [
+    "ostinato",
+    "3/4",
+    "dynamics"
+   ]
+  },
+  "Carol_of_the_Bells_easy_piano.mxl": {
+   "id": "song.holiday.carol-of-the-bells.easy",
+   "title": "Carol of the Bells (easy)",
+   "composer": "Mykola Leontovych",
+   "publishedYear": 1919,
+   "level": 5.1,
+   "abrsmGradeApprox": 2,
+   "tracks": [
+    "holiday",
+    "core"
+   ],
+   "concepts": [
+    "ostinato",
+    "3/4"
+   ],
+   "variantOf": "song.holiday.carol-of-the-bells",
+   "variantLabel": "easy"
+  },
+  "Chopin_-_Ballade_no._1_in_G_minor_Op._23.mxl": {
+   "id": "song.classical.chopin-ballade-1",
+   "title": "Ballade No. 1 in G minor, Op. 23",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1836,
+   "level": 9.1,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rubato",
+    "large-leaps",
+    "virtuoso",
+    "narrative-form"
+   ]
+  },
+  "Chopin_-_Nocturne_Op._9_No._1.mxl": {
+   "id": "song.classical.chopin-nocturne-op9-1",
+   "title": "Nocturne in B-flat minor, Op. 9 No. 1",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1832,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "nocturne",
+    "rubato",
+    "wide-lh-arpeggios",
+    "ornamentation"
+   ]
+  },
+  "Chopin_-_Nocturne_Op_9_No_2_E_Flat_Major.mxl": {
+   "id": "song.classical.chopin-nocturne-op9-2",
+   "title": "Nocturne in E-flat major, Op. 9 No. 2",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1832,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "nocturne",
+    "12/8",
+    "ornamentation",
+    "pedalling"
+   ]
+  },
+  "Chopin_-_Spring_Waltz.mxl": {
+   "exclude": "composition: this is Mariage d'Amour by Paul de Senneville (1979), mislabelled as Chopin — in copyright"
+  },
+  "Clair_de_Lune__Debussy.mxl": {
+   "id": "song.classical.debussy-clair-de-lune",
+   "title": "Clair de Lune (Suite bergamasque, L. 75 No. 3)",
+   "composer": "Claude Debussy",
+   "publishedYear": 1905,
+   "level": 8.3,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "impressionism",
+    "voicing",
+    "pedalling",
+    "cross-rhythm"
+   ]
+  },
+  "Clair_de_lune_-_Claude_Debussy.mxl": {
+   "id": "song.classical.debussy-clair-de-lune.alt",
+   "title": "Clair de Lune (alternative edition)",
+   "composer": "Claude Debussy",
+   "publishedYear": 1905,
+   "level": 8.3,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "impressionism",
+    "voicing",
+    "pedalling"
+   ],
+   "variantOf": "song.classical.debussy-clair-de-lune",
+   "variantLabel": "alternative edition"
+  },
+  "DANSE_VILLAGEOISE_Beethoven.mxl": {
+   "exclude": "edition: rights field is a bare © with no holder or licence, and the attribution to Beethoven is unverified — unclear"
+  },
+  "Dance_of_the_sugar_plum_fairy.mxl": {
+   "id": "song.classical.tchaikovsky-sugar-plum",
+   "title": "Dance of the Sugar Plum Fairy (The Nutcracker)",
+   "composer": "Pyotr Ilyich Tchaikovsky",
+   "publishedYear": 1892,
+   "level": 6.3,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical",
+    "holiday"
+   ],
+   "concepts": [
+    "staccato",
+    "celesta-texture",
+    "2/4"
+   ]
+  },
+  "Erik_Satie_-_Gymnopedie_No.1.mxl": {
+   "id": "song.classical.satie-gymnopedie-1",
+   "title": "Gymnopédie No. 1",
+   "composer": "Erik Satie",
+   "publishedYear": 1888,
+   "level": 6.2,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "3/4",
+    "waltz-accompaniment",
+    "voicing",
+    "pedalling"
+   ]
+  },
+  "Flight_of_the_Bumblebee.mxl": {
+   "id": "song.classical.rimsky-flight-bumblebee",
+   "title": "Flight of the Bumblebee",
+   "composer": "Nikolai Rimsky-Korsakov",
+   "publishedYear": 1900,
+   "level": 8.4,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "chromatic-runs",
+    "velocity",
+    "evenness"
+   ]
+  },
+  "Fur_Elise.mxl": {
+   "id": "song.classical.beethoven-fur-elise",
+   "title": "Für Elise, WoO 59",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1867,
+   "level": 6.4,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rondo",
+    "arpeggios",
+    "pedalling",
+    "3/8"
+   ]
+  },
+  "Fur_Elise_-_Beethoven_-_for_beginner_piano.mxl": {
+   "id": "song.classical.beethoven-fur-elise.beginner",
+   "title": "Für Elise (beginner)",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1867,
+   "level": 4.1,
+   "abrsmGradeApprox": 1,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "melody-with-simple-lh",
+    "3/8"
+   ],
+   "variantOf": "song.classical.beethoven-fur-elise",
+   "variantLabel": "beginner"
+  },
+  "Fur_Elise_Easy_Piano.mxl": {
+   "id": "song.classical.beethoven-fur-elise.easy",
+   "title": "Für Elise (easy)",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1867,
+   "level": 4.1,
+   "abrsmGradeApprox": 1,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "melody-with-simple-lh",
+    "3/8"
+   ],
+   "variantOf": "song.classical.beethoven-fur-elise",
+   "variantLabel": "easy"
+  },
+  "Fur_Elise_fingered.mxl": {
+   "exclude": "edition: rights field points at a commercial sheet-music site (pianolessenassen.nl/bladmuziek) with no licence grant — unclear"
+  },
+  "G_Minor_Bach.mxl": {
+   "exclude": "composition: the “G Minor Bach” arrangement by Luo Ni (2015), not Bach's BWV 578 as printed — in copyright"
+  },
+  "G_Minor_Bach_Original.mxl": {
+   "exclude": "composition: credited to “Lyo Ni” — the same modern arrangement, in copyright"
+  },
+  "Gnossienne_No._1.mxl": {
+   "id": "song.classical.satie-gnossienne-1",
+   "title": "Gnossienne No. 1",
+   "composer": "Erik Satie",
+   "publishedYear": 1893,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "free-rhythm",
+    "no-barlines",
+    "voicing",
+    "modal"
+   ]
+  },
+  "Greensleeves_for_Piano_easy_and_beautiful.mxl": {
+   "id": "song.folk.greensleeves",
+   "title": "Greensleeves",
+   "composer": "Traditional (English)",
+   "publishedYear": null,
+   "level": 5.1,
+   "abrsmGradeApprox": 2,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "6/8",
+    "minor-key",
+    "melody-with-chords"
+   ],
+   "traditional": true
+  },
+  "Gymnopdie_No._1__Satie.mxl": {
+   "id": "song.classical.satie-gymnopedie-1.alt",
+   "title": "Gymnopédie No. 1 (alternative edition)",
+   "composer": "Erik Satie",
+   "publishedYear": 1888,
+   "level": 6.2,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "3/4",
+    "waltz-accompaniment",
+    "voicing"
+   ],
+   "variantOf": "song.classical.satie-gymnopedie-1",
+   "variantLabel": "alternative edition"
+  },
+  "Happy_Birthday_To_You_C_Major.mxl": {
+   "id": "song.folk.happy-birthday",
+   "title": "Happy Birthday to You",
+   "composer": "Patty and Mildred Hill (“Good Morning to All”)",
+   "publishedYear": 1893,
+   "level": 4.1,
+   "abrsmGradeApprox": 1,
+   "tracks": [
+    "core",
+    "chords-pop"
+   ],
+   "concepts": [
+    "3/4",
+    "anacrusis",
+    "melody-with-chords"
+   ],
+   "pd_region": "US",
+   "editionNotes": "US public domain since the 2016 Warner/Chappell settlement; the melody is “Good Morning to All” (1893)."
+  },
+  "Happy_Birthday_To_You_Piano.mxl": {
+   "id": "song.folk.happy-birthday.alt",
+   "title": "Happy Birthday to You (alternative arrangement)",
+   "composer": "Patty and Mildred Hill",
+   "publishedYear": 1893,
+   "level": 4.1,
+   "abrsmGradeApprox": 1,
+   "tracks": [
+    "core",
+    "chords-pop"
+   ],
+   "concepts": [
+    "3/4",
+    "anacrusis"
+   ],
+   "pd_region": "US",
+   "variantOf": "song.folk.happy-birthday",
+   "variantLabel": "alternative arrangement"
+  },
+  "Hungarian_Dance_No_5_in_G_Minor.mxl": {
+   "id": "song.classical.brahms-hungarian-dance-5",
+   "title": "Hungarian Dance No. 5 in G minor",
+   "composer": "Johannes Brahms",
+   "publishedYear": 1869,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rubato",
+    "tempo-change",
+    "octaves",
+    "minor-key"
+   ]
+  },
+  "Hungarian_Sonata.mxl": {
+   "exclude": "composition: credited to Richard Clayderman — a 20th-century piece, in copyright"
+  },
+  "J._S._Bach_-_Air_on_the_G_String_Piano_arrangement.mxl": {
+   "id": "song.classical.bach-air-on-g-string",
+   "title": "Air on the G String (from BWV 1068)",
+   "composer": "Johann Sebastian Bach",
+   "publishedYear": 1871,
+   "level": 6.1,
+   "abrsmGradeApprox": 4,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "cantabile",
+    "walking-bass",
+    "voicing"
+   ]
+  },
+  "La_Campanella_-_Grandes_Etudes_de_Paganini_No._3_-_Franz_Liszt.mxl": {
+   "id": "song.classical.liszt-la-campanella",
+   "title": "La Campanella (Grandes études de Paganini No. 3)",
+   "composer": "Franz Liszt",
+   "publishedYear": 1851,
+   "level": 9.2,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "large-leaps",
+    "trills",
+    "virtuoso",
+    "repeated-notes"
+   ]
+  },
+  "Lacrimosa_-_Requiem.mxl": {
+   "id": "song.classical.mozart-lacrimosa",
+   "title": "Lacrimosa (Requiem, K. 626)",
+   "composer": "Wolfgang Amadeus Mozart",
+   "publishedYear": 1791,
+   "level": 6.2,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "12/8",
+    "choral-reduction",
+    "dynamics"
+   ]
+  },
+  "Liebestraum_No._3_in_A_Major.mxl": {
+   "id": "song.classical.liszt-liebestraum-3",
+   "title": "Liebestraum No. 3 in A-flat major",
+   "composer": "Franz Liszt",
+   "publishedYear": 1850,
+   "level": 8.4,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "hand-crossing",
+    "cadenza",
+    "cantabile",
+    "romantic"
+   ]
+  },
+  "Maple_Leaf_Rag_Scott_Joplin.mxl": {
+   "id": "song.ragtime.joplin-maple-leaf-rag",
+   "title": "Maple Leaf Rag",
+   "composer": "Scott Joplin",
+   "publishedYear": 1899,
+   "level": 7.2,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "ragtime",
+    "classical"
+   ],
+   "concepts": [
+    "syncopation",
+    "stride-bass",
+    "ragtime"
+   ]
+  },
+  "Mariage_dAmour.mxl": {
+   "exclude": "composition: Paul de Senneville (1979) — in copyright"
+  },
+  "Minuet_in_G_Major_Bach.mxl": {
+   "id": "song.classical.petzold-minuet-g-bwv-anh114.alt",
+   "title": "Minuet in G major, BWV Anh. 114 (alternative edition)",
+   "composer": "Christian Petzold (long attributed to J. S. Bach)",
+   "publishedYear": 1725,
+   "level": 5.1,
+   "abrsmGradeApprox": 2,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "3/4",
+    "binary-form",
+    "hands-together"
+   ],
+   "variantOf": "song.classical.petzold-minuet-g-bwv-anh114",
+   "variantLabel": "alternative edition"
+  },
+  "Mozart_-_Piano_Sonata_No._16_-_Allegro.mxl": {
+   "id": "song.classical.mozart-k545-i.alt",
+   "title": "Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)",
+   "composer": "Wolfgang Amadeus Mozart",
+   "publishedYear": 1805,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "alberti-bass",
+    "scale-runs",
+    "sonata-form"
+   ],
+   "variantOf": "song.classical.mozart-k545-i",
+   "variantLabel": "alternative edition"
+  },
+  "Nocturne_No._20_in_C_Minor.mxl": {
+   "id": "song.classical.chopin-nocturne-20",
+   "title": "Nocturne No. 20 in C-sharp minor, Op. posth.",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1875,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rubato",
+    "cantabile",
+    "ornamentation"
+   ]
+  },
+  "Nocturne_in_C_sharp_Minor.mxl": {
+   "id": "song.classical.chopin-nocturne-20.alt",
+   "title": "Nocturne No. 20 in C-sharp minor (alternative edition)",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1875,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rubato",
+    "cantabile"
+   ],
+   "variantOf": "song.classical.chopin-nocturne-20",
+   "variantLabel": "alternative edition"
+  },
+  "Nocturne_in_E-flat_Major_Op._9_No._2_Easy.mxl": {
+   "id": "song.classical.chopin-nocturne-op9-2.easy",
+   "title": "Nocturne in E-flat major, Op. 9 No. 2 (easy)",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1832,
+   "level": 6.1,
+   "abrsmGradeApprox": 4,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "12/8",
+    "cantabile",
+    "simplified"
+   ],
+   "variantOf": "song.classical.chopin-nocturne-op9-2",
+   "variantLabel": "easy",
+   "arranger": "Murilo Pedroza"
+  },
+  "Ode_to_Joy_Easy_variation.mxl": {
+   "id": "song.classical.beethoven-ode-to-joy.easy",
+   "title": "Ode to Joy (easy variation)",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1824,
+   "level": 4.1,
+   "abrsmGradeApprox": 1,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "stepwise-melody",
+    "4/4",
+    "five-finger-position"
+   ]
+  },
+  "Passacaglia.mxl": {
+   "id": "song.classical.handel-halvorsen-passacaglia",
+   "title": "Passacaglia (Handel–Halvorsen)",
+   "composer": "George Frideric Handel, arr. Johan Halvorsen",
+   "publishedYear": 1894,
+   "level": 7.2,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "variation-form",
+    "minor-key",
+    "arpeggios"
+   ]
+  },
+  "Passacaglia2.mxl": {
+   "id": "song.classical.handel-halvorsen-passacaglia.alt",
+   "title": "Passacaglia (alternative edition)",
+   "composer": "George Frideric Handel, arr. Johan Halvorsen",
+   "publishedYear": 1894,
+   "level": 7.2,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "variation-form",
+    "minor-key"
+   ],
+   "variantOf": "song.classical.handel-halvorsen-passacaglia",
+   "variantLabel": "alternative edition"
+  },
+  "Piano_Sonata_No._11_K._331_3rd_Movement_Rondo_alla_Turca.mxl": {
+   "id": "song.classical.mozart-rondo-alla-turca",
+   "title": "Piano Sonata No. 11, K. 331, III. Rondo alla Turca",
+   "composer": "Wolfgang Amadeus Mozart",
+   "publishedYear": 1784,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rondo",
+    "ornamentation",
+    "octaves",
+    "2/4"
+   ]
+  },
+  "Prelude_I_in_C_major_BWV_846_-_Well_Tempered_Clavier_First_Book.mxl": {
+   "id": "song.classical.bach-wtc1-prelude-1",
+   "title": "Prelude No. 1 in C major, BWV 846",
+   "composer": "Johann Sebastian Bach",
+   "publishedYear": 1801,
+   "level": 6.1,
+   "abrsmGradeApprox": 4,
+   "tracks": [
+    "classical",
+    "core"
+   ],
+   "concepts": [
+    "broken-chords",
+    "evenness",
+    "harmonic-progression"
+   ]
+  },
+  "Prelude_No._2_BWV_847_in_C_Minor.mxl": {
+   "id": "song.classical.bach-wtc1-prelude-2",
+   "title": "Prelude No. 2 in C minor, BWV 847",
+   "composer": "Johann Sebastian Bach",
+   "publishedYear": 1801,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "evenness",
+    "toccata-figuration",
+    "velocity"
+   ]
+  },
+  "Prlude_No._4_in_E_Minor_Op._28_-_Frdric_Chopin.mxl": {
+   "id": "song.classical.chopin-prelude-op28-4",
+   "title": "Prélude in E minor, Op. 28 No. 4",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1839,
+   "level": 6.1,
+   "abrsmGradeApprox": 4,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "chromatic-harmony",
+    "legato-chords",
+    "voicing"
+   ]
+  },
+  "Prlude_Opus_28_No._4_in_E_Minor__Chopin.mxl": {
+   "id": "song.classical.chopin-prelude-op28-4.alt",
+   "title": "Prélude in E minor, Op. 28 No. 4 (alternative edition)",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1839,
+   "level": 6.1,
+   "abrsmGradeApprox": 4,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "chromatic-harmony",
+    "legato-chords"
+   ],
+   "variantOf": "song.classical.chopin-prelude-op28-4",
+   "variantLabel": "alternative edition"
+  },
+  "Schubert_Serenade_-_Standchen_-_By_Lizst.mxl": {
+   "id": "song.classical.schubert-liszt-standchen",
+   "title": "Ständchen (Serenade), D. 957 No. 4, arr. Liszt",
+   "composer": "Franz Schubert, arr. Franz Liszt",
+   "publishedYear": 1838,
+   "level": 8.2,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "cantabile",
+    "voicing",
+    "romantic-transcription"
+   ]
+  },
+  "Sonata_No._16_1st_Movement_K._545.mxl": {
+   "id": "song.classical.mozart-k545-i",
+   "title": "Piano Sonata No. 16 in C, K. 545, I. Allegro",
+   "composer": "Wolfgang Amadeus Mozart",
+   "publishedYear": 1805,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "alberti-bass",
+    "scale-runs",
+    "sonata-form"
+   ]
+  },
+  "Sonate_No._14_Moonlight_1st_Movement.mxl": {
+   "id": "song.classical.beethoven-moonlight-i",
+   "title": "Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1802,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "triplets",
+    "voicing",
+    "pedalling",
+    "cut-common"
+   ]
+  },
+  "Sonate_No._14_Moonlight_3rd_Movement.mxl": {
+   "id": "song.classical.beethoven-moonlight-iii",
+   "title": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1802,
+   "level": 8.4,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "arpeggios",
+    "velocity",
+    "sforzando",
+    "sonata-form"
+   ]
+  },
+  "Sonate_No._8_Pathetique_2nd_Movement.mxl": {
+   "id": "song.classical.beethoven-pathetique-ii",
+   "title": "Piano Sonata No. 8 “Pathétique”, II. Adagio cantabile",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1799,
+   "level": 7.2,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "cantabile",
+    "voicing",
+    "rondo",
+    "2/4"
+   ]
+  },
+  "Spring_Waltz_Mariage_dAmour_-_Chopin.mxl": {
+   "exclude": "composition: Mariage d'Amour by Paul de Senneville (1979), filed under Chopin — in copyright"
+  },
+  "Swan_Lake.mxl": {
+   "id": "song.classical.tchaikovsky-swan-lake",
+   "title": "Swan Lake (theme)",
+   "composer": "Pyotr Ilyich Tchaikovsky",
+   "publishedYear": 1877,
+   "level": 6.1,
+   "abrsmGradeApprox": 4,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "minor-key",
+    "melody-with-arpeggios",
+    "dynamics"
+   ]
+  },
+  "The_Entertainer_-_Scott_Joplin.mxl": {
+   "id": "song.ragtime.joplin-entertainer",
+   "title": "The Entertainer",
+   "composer": "Scott Joplin",
+   "publishedYear": 1902,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "ragtime",
+    "classical"
+   ],
+   "concepts": [
+    "syncopation",
+    "stride-bass",
+    "ragtime"
+   ]
+  },
+  "The_Entertainer_-_Scott_Joplin_-_1902.mxl": {
+   "id": "song.ragtime.joplin-entertainer.alt",
+   "title": "The Entertainer (alternative edition)",
+   "composer": "Scott Joplin",
+   "publishedYear": 1902,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "ragtime",
+    "classical"
+   ],
+   "concepts": [
+    "syncopation",
+    "stride-bass"
+   ],
+   "variantOf": "song.ragtime.joplin-entertainer",
+   "variantLabel": "alternative edition"
+  },
+  "WA_Mozart_Marche_Turque_Turkish_March_fingered.mxl": {
+   "id": "song.classical.mozart-rondo-alla-turca.fingered",
+   "title": "Rondo alla Turca (with fingering)",
+   "composer": "Wolfgang Amadeus Mozart",
+   "publishedYear": 1784,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rondo",
+    "ornamentation",
+    "fingering"
+   ],
+   "variantOf": "song.classical.mozart-rondo-alla-turca",
+   "variantLabel": "fingered"
+  },
+  "Waltz_Opus_64_No._2_in_C_Minor.mxl": {
+   "id": "song.classical.chopin-waltz-op64-2",
+   "title": "Waltz in C-sharp minor, Op. 64 No. 2",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1847,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "waltz",
+    "rubato",
+    "3/4",
+    "ornamentation"
+   ]
+  },
+  "Waltz_in_A_MinorChopin.mxl": {
+   "id": "song.classical.chopin-waltz-a-minor",
+   "title": "Waltz in A minor, B. 150",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1860,
+   "level": 6.4,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "waltz",
+    "3/4",
+    "minor-key",
+    "melody-with-chords"
+   ]
+  },
+  "Waltz_of_the_Flowers.mxl": {
+   "id": "song.classical.tchaikovsky-waltz-flowers",
+   "title": "Waltz of the Flowers (The Nutcracker)",
+   "composer": "Pyotr Ilyich Tchaikovsky",
+   "publishedYear": 1892,
+   "level": 6.3,
+   "abrsmGradeApprox": 5,
+   "tracks": [
+    "classical",
+    "holiday"
+   ],
+   "concepts": [
+    "waltz",
+    "3/4",
+    "arpeggios"
+   ]
+  },
+  "moonlight_sonata_3rd_movement.mxl": {
+   "id": "song.classical.beethoven-moonlight-iii.alt",
+   "title": "Moonlight Sonata, III. Presto agitato (alternative edition)",
+   "composer": "Ludwig van Beethoven",
+   "publishedYear": 1802,
+   "level": 8.4,
+   "abrsmGradeApprox": 8,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "arpeggios",
+    "velocity",
+    "sonata-form"
+   ],
+   "variantOf": "song.classical.beethoven-moonlight-iii",
+   "variantLabel": "alternative edition"
+  }
+ }
+}
