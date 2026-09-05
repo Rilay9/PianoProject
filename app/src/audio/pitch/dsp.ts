@@ -72,6 +72,8 @@ export interface SpectrumContext {
   /** Hz per bin. */
   readonly binHz: number;
   hasPrevious: boolean;
+  /** Loudest bin of the current frame, in dB. */
+  peakDb: number;
 }
 
 export function createSpectrumContext(size: number, sampleRate: number): SpectrumContext {
@@ -86,6 +88,7 @@ export function createSpectrumContext(size: number, sampleRate: number): Spectru
     previous: new Float32Array(size / 2),
     binHz: sampleRate / size,
     hasPrevious: false,
+    peakDb: DB_FLOOR,
   };
 }
 
@@ -112,14 +115,31 @@ export function computeSpectrum(
   }
   fftInPlace(ctx.fft, real, imag);
   const bins = size / 2;
+  let peak = DB_FLOOR;
   for (let i = 0; i < bins; i += 1) {
     const re = real[i] as number;
     const im = imag[i] as number;
     const power = re * re + im * im;
     // 10·log10(power) with a floor; +1e-12 keeps log10(0) finite.
-    ctx.magnitude[i] = Math.max(DB_FLOOR, 10 * Math.log10(power + 1e-12));
+    const db = Math.max(DB_FLOOR, 10 * Math.log10(power + 1e-12));
+    ctx.magnitude[i] = db;
+    if (db > peak) peak = db;
   }
+  ctx.peakDb = peak;
 }
+
+/**
+ * Bins quieter than this far below the frame's loudest bin contribute nothing
+ * to the flux.
+ *
+ * Flux is summed in decibels, and a decibel is a *ratio*: a bin sitting near
+ * silence jumping from −100 dB to −90 contributes exactly as much as a real
+ * partial going from −20 to −10. Broadband noise makes thousands of quiet bins
+ * do precisely that, and the sum drowns every real attack — measured, the
+ * onset count went from 9 to 0 at 17 dB SNR while the harmonic scores barely
+ * moved. Ignoring bins with no meaningful energy in them fixes it.
+ */
+const FLUX_DYNAMIC_RANGE_DB = 60;
 
 /**
  * Spectral flux: the total *rise* in the spectrum since the last frame.
@@ -129,9 +149,17 @@ export function computeSpectrum(
  */
 export function spectralFlux(ctx: SpectrumContext): number {
   if (!ctx.hasPrevious) return 0;
+  let peak = DB_FLOOR;
+  for (let i = 0; i < ctx.magnitude.length; i += 1) {
+    const value = ctx.magnitude[i] as number;
+    if (value > peak) peak = value;
+  }
+  const floor = peak - FLUX_DYNAMIC_RANGE_DB;
   let flux = 0;
   for (let i = 0; i < ctx.magnitude.length; i += 1) {
-    const rise = (ctx.magnitude[i] as number) - (ctx.previous[i] as number);
+    const current = ctx.magnitude[i] as number;
+    if (current < floor) continue;
+    const rise = current - (ctx.previous[i] as number);
     if (rise > 0) flux += rise;
   }
   return flux;
@@ -142,10 +170,27 @@ export function spectralFlux(ctx: SpectrumContext): number {
 export interface OnsetDetectorOptions {
   /** Frames kept for the running median. ~0.5 s at an 11 ms hop. */
   historySize?: number;
-  /** Flux must exceed median + this many dB-units to count. */
+  /**
+   * Flux must exceed the running median by this much, **per bin**. Expressed
+   * per bin so it means the same thing whatever the FFT size — as a flat
+   * addition to a 2048-bin sum it was numerically negligible.
+   */
   thresholdDelta?: number;
   /** Minimum gap between onsets; a piano cannot repeat faster than this. */
   minIntervalMs?: number;
+  /**
+   * Absolute floor for the threshold, in mean dB rise per bin.
+   *
+   * The adaptive median alone adapts *downwards* during a quiet decay and then
+   * fires on noise — which is where most of the detector's false positives
+   * came from. Flux is a sum of dB differences, so it does not scale with
+   * input gain and an absolute floor is meaningful: measured on rendered
+   * piano, the gaps between notes peak at 1.8 dB/bin while an attack reaches
+   * 21, so 2 separates them with room on both sides.
+   */
+  minFluxPerBin?: number;
+  /** Bins in the spectrum, so the floor can be expressed per bin. */
+  bins?: number;
 }
 
 export interface OnsetResult {
@@ -171,13 +216,15 @@ export class OnsetDetector {
   private lastOnsetMs = Number.NEGATIVE_INFINITY;
   private readonly thresholdDelta: number;
   private readonly minIntervalMs: number;
+  private readonly minFlux: number;
 
   constructor(options: OnsetDetectorOptions = {}) {
     const historySize = options.historySize ?? 43;
     this.history = new Float32Array(historySize);
     this.sorted = new Float32Array(historySize);
-    this.thresholdDelta = options.thresholdDelta ?? 12;
+    this.thresholdDelta = (options.thresholdDelta ?? 1) * (options.bins ?? 1);
     this.minIntervalMs = options.minIntervalMs ?? 50;
+    this.minFlux = (options.minFluxPerBin ?? 2) * (options.bins ?? 0);
   }
 
   reset(): void {
@@ -189,7 +236,7 @@ export class OnsetDetector {
 
   /** Feeds one frame's flux; returns whether it was an onset. */
   push(flux: number, tMs: number): OnsetResult {
-    const threshold = this.median() + this.thresholdDelta;
+    const threshold = Math.max(this.median() + this.thresholdDelta, this.minFlux);
     const isOnset =
       this.historyCount >= 4 &&
       flux > threshold &&
@@ -342,6 +389,18 @@ function isNearAnyPartial(
   return false;
 }
 
+/**
+ * A pitch whose loudest partial is more than this far below the frame's
+ * loudest bin is not audibly being played.
+ *
+ * Without it, a pitch at the very bottom of the keyboard scores well on
+ * nothing at all: there is almost no energy down at 35 Hz, so the local
+ * background is near the noise floor and any window leakage from the real
+ * music reads as a large margin above it. C#1 and D1 were being reported
+ * throughout a recording that contained neither.
+ */
+const PRESENCE_RANGE_DB = 55;
+
 export interface HarmonicScoreOptions {
   inharmonicity?: number;
   /** Scratch buffer for the background median; sized ≥ the band's bin count. */
@@ -370,15 +429,20 @@ export function harmonicScore(
 
   let score = 0;
   let weightUsed = 0;
+  let loudestPartial = DB_FLOOR;
   for (let h = 1; h <= HARMONIC_WEIGHTS.length; h += 1) {
     const hz = partialHz(f0, h, inharmonicity);
     if (hz >= nyquist) break;
     const weight = HARMONIC_WEIGHTS[h - 1] as number;
     const peak = peakNear(ctx, hz, PARTIAL_SEARCH_SEMITONES);
+    if (peak > loudestPartial) loudestPartial = peak;
     score += weight * (peak - background);
     weightUsed += weight;
   }
   if (weightUsed === 0) return 0;
+  // Audibility gate: a big margin over a near-silent background still means
+  // silence.
+  if (loudestPartial < ctx.peakDb - PRESENCE_RANGE_DB) return 0;
   return score / weightUsed + (options.gainDb ?? 0);
 }
 
@@ -413,11 +477,57 @@ export function oddHarmonicScore(
 }
 
 /**
- * Applies the octave and fifth guards to a set of candidate scores.
+ * Intervals (in semitones) whose partials coincide within the first six.
  *
- * Returns a copy of `scores` with confusable candidates knocked down. Two
- * coincidences matter for piano: an octave below (shares every even partial)
- * and a fifth above (its 2nd partial sits on the lower note's 3rd).
+ * The doc names the octave and the fifth (docs/05 §11.2), but the same trap is
+ * set by every small-integer frequency ratio: a ringing G3 puts its 4th partial
+ * exactly on C4's 3rd, and a phantom C4 was being reported a second before the
+ * real one arrived. Major third 5:4, fourth 4:3, fifth 3:2, sixth 5:3, octave
+ * 2:1, and the compounds up to two octaves.
+ */
+const CONFUSABLE_INTERVALS = [4, 5, 7, 9, 12, 16, 19, 24];
+
+/**
+ * When a louder related candidate is sounding, a pitch is believed only as far
+ * as its **own fundamental** supports — no other note can put energy exactly
+ * there. Capping at the fundamental rather than merely requiring a few dB of
+ * it is what finally killed the phantom C4 that a ringing G3 produced through
+ * their coincident partials (G3's 4th sits on C4's 3rd).
+ */
+const FUNDAMENTAL_MIN_DB = 3;
+
+/**
+ * Energy at a pitch's own fundamental, in dB above the local background.
+ *
+ * The one measurement no other note can fake: partials land on pitches above
+ * their fundamental, never below it, so a peak at f0 is evidence for *this*
+ * pitch rather than for something an octave or a twelfth down.
+ */
+export function fundamentalStrength(
+  ctx: SpectrumContext,
+  midi: number,
+  options: HarmonicScoreOptions,
+): number {
+  const f0 = midiToHz(midi);
+  const inharmonicity = options.inharmonicity ?? defaultInharmonicityFor(midi);
+  const background = backgroundNear(ctx, f0, inharmonicity, options.scratch);
+  return peakNear(ctx, f0, PARTIAL_SEARCH_SEMITONES) - background;
+}
+
+/** The bar `fundamentalStrength` has to clear for a pitch to be believed. */
+export const FUNDAMENTAL_PRESENT_DB = FUNDAMENTAL_MIN_DB;
+
+/**
+ * Knocks down candidates that a louder, harmonically related candidate could
+ * be producing on its own.
+ *
+ * The rule: if some other expected pitch is both louder and harmonically
+ * related, the quieter one is only believed when its **own fundamental** is
+ * present — no other note can put energy exactly there. For the octave-below
+ * case the stronger test from docs/05 §11.2 is used instead, since a lower
+ * octave shares every even partial and its odd ones are the giveaway.
+ *
+ * Writes into `out`; `scores` is left untouched.
  */
 export function applyConfusionGuards(
   ctx: SpectrumContext,
@@ -427,25 +537,35 @@ export function applyConfusionGuards(
   out: Float32Array,
 ): void {
   out.set(scores.subarray(0, candidates.length));
+
   for (let i = 0; i < candidates.length; i += 1) {
     const midi = candidates[i] as number;
-    const octaveAbove = candidates.indexOf(midi + 12);
-    const fifthBelow = candidates.indexOf(midi - 7);
+    const score = scores[i] as number;
 
-    if (octaveAbove >= 0 && (scores[octaveAbove] as number) > (scores[i] as number)) {
-      // The upper octave is the louder hypothesis; believe the lower one only
-      // if its odd partials are genuinely there.
+    let louderRelated = -1;
+    for (let j = 0; j < candidates.length; j += 1) {
+      if (i === j) continue;
+      if ((scores[j] as number) <= score) continue;
+      const interval = Math.abs((candidates[j] as number) - midi);
+      if (CONFUSABLE_INTERVALS.includes(interval)) {
+        louderRelated = j;
+        break;
+      }
+    }
+    if (louderRelated < 0) continue;
+
+    // An octave above is the classic case and has a sharper test: only the
+    // lower note has energy at its own odd partials.
+    if ((candidates[louderRelated] as number) === midi + 12) {
       const odd = oddHarmonicScore(ctx, midi, options);
-      if (odd < (scores[i] as number) * 0.5) out[i] = odd;
+      if (odd < score * 0.5) out[i] = odd;
+      continue;
     }
-    if (fifthBelow >= 0 && (scores[fifthBelow] as number) > (scores[i] as number)) {
-      // This pitch's 2nd partial coincides with the lower note's 3rd; require
-      // its own fundamental to be present.
-      const f0 = midiToHz(midi);
-      const inharmonicity = options.inharmonicity ?? defaultInharmonicityFor(midi);
-      const background = backgroundNear(ctx, f0, inharmonicity, options.scratch);
-      const fundamental = peakNear(ctx, f0, PARTIAL_SEARCH_SEMITONES) - background;
-      if (fundamental < 3) out[i] = Math.min(out[i] as number, fundamental);
-    }
+
+    const f0 = midiToHz(midi);
+    const inharmonicity = options.inharmonicity ?? defaultInharmonicityFor(midi);
+    const background = backgroundNear(ctx, f0, inharmonicity, options.scratch);
+    const fundamental = peakNear(ctx, f0, PARTIAL_SEARCH_SEMITONES) - background;
+    out[i] = Math.min(out[i] as number, Math.max(fundamental, FUNDAMENTAL_MIN_DB - 1));
   }
 }

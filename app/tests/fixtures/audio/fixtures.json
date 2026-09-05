@@ -1,0 +1,188 @@
+{
+  "sampleRate": 44100,
+  "fixtures": [
+    {
+      "name": "single-notes",
+      "description": "One note at a time across the range, 1.2 s apart.",
+      "lengthSec": 11,
+      "notes": [
+        {
+          "midi": 36,
+          "atSec": 0.3,
+          "durationSec": 1
+        },
+        {
+          "midi": 43,
+          "atSec": 1.5,
+          "durationSec": 1
+        },
+        {
+          "midi": 48,
+          "atSec": 2.6999999999999997,
+          "durationSec": 1
+        },
+        {
+          "midi": 55,
+          "atSec": 3.8999999999999995,
+          "durationSec": 1
+        },
+        {
+          "midi": 60,
+          "atSec": 5.1,
+          "durationSec": 1
+        },
+        {
+          "midi": 64,
+          "atSec": 6.3,
+          "durationSec": 1
+        },
+        {
+          "midi": 67,
+          "atSec": 7.499999999999999,
+          "durationSec": 1
+        },
+        {
+          "midi": 72,
+          "atSec": 8.700000000000001,
+          "durationSec": 1
+        },
+        {
+          "midi": 84,
+          "atSec": 9.9,
+          "durationSec": 1
+        }
+      ]
+    },
+    {
+      "name": "chords",
+      "description": "C, F and G triads, 1.5 s apart.",
+      "lengthSec": 6,
+      "notes": [
+        {
+          "midi": 60,
+          "atSec": 0.3,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 64,
+          "atSec": 0.3,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 67,
+          "atSec": 0.3,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 65,
+          "atSec": 1.9000000000000001,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 69,
+          "atSec": 1.9000000000000001,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 72,
+          "atSec": 1.9000000000000001,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 67,
+          "atSec": 3.5,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 71,
+          "atSec": 3.5,
+          "durationSec": 1.4
+        },
+        {
+          "midi": 74,
+          "atSec": 3.5,
+          "durationSec": 1.4
+        }
+      ]
+    },
+    {
+      "name": "repeated-pedal",
+      "description": "The same note struck five times while it is still ringing.",
+      "lengthSec": 5,
+      "notes": [
+        {
+          "midi": 60,
+          "atSec": 0.3,
+          "durationSec": 2.5
+        },
+        {
+          "midi": 60,
+          "atSec": 1.1,
+          "durationSec": 2.5
+        },
+        {
+          "midi": 60,
+          "atSec": 1.9000000000000001,
+          "durationSec": 2.5
+        },
+        {
+          "midi": 60,
+          "atSec": 2.7,
+          "durationSec": 2.5
+        },
+        {
+          "midi": 60,
+          "atSec": 3.5,
+          "durationSec": 2.5
+        }
+      ]
+    },
+    {
+      "name": "scale-fast",
+      "description": "C major scale, sixteenths at 120 bpm (125 ms per note).",
+      "lengthSec": 2,
+      "notes": [
+        {
+          "midi": 60,
+          "atSec": 0.3,
+          "durationSec": 0.3
+        },
+        {
+          "midi": 62,
+          "atSec": 0.425,
+          "durationSec": 0.3
+        },
+        {
+          "midi": 64,
+          "atSec": 0.55,
+          "durationSec": 0.3
+        },
+        {
+          "midi": 65,
+          "atSec": 0.675,
+          "durationSec": 0.3
+        },
+        {
+          "midi": 67,
+          "atSec": 0.8,
+          "durationSec": 0.3
+        },
+        {
+          "midi": 69,
+          "atSec": 0.925,
+          "durationSec": 0.3
+        },
+        {
+          "midi": 71,
+          "atSec": 1.05,
+          "durationSec": 0.3
+        },
+        {
+          "midi": 72,
+          "atSec": 1.175,
+          "durationSec": 0.3
+        }
+      ]
+    }
+  ]
+}
