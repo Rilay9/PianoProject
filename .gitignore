@@ -6,7 +6,15 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store
-app/public/content/
+# Content build output. Note the trailing `/*`: git cannot re-include a path
+# inside an excluded *directory*, so excluding the children instead is what
+# lets the audio/ negation below work.
+app/public/content/*
+# The bundled piano soundfont is a committed source asset, not pipeline output.
+# tools/content/build.py only writes catalog.json/curriculum.json/schemas into
+# this directory, so keeping the samples here costs the build nothing and makes
+# `npm run dev` work without running the Python pipeline first.
+!app/public/content/audio/
 app/public/icons/
 app/dev-dist/
 app/dist/
