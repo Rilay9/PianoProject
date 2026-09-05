@@ -43,6 +43,13 @@ export interface ScoreNote {
   sourceMeasureIndex: number;
   /** Quarter-note beats from the start of the unrolled piece. */
   onset: number;
+  /**
+   * Quarter-note beats on the *printed* timeline. Identical to `onset` until a
+   * repeat is taken. The renderer needs it: a drawn note exists once on screen
+   * however many passes the player makes over it, so this is what identifies
+   * an element (see `printedNoteKey`).
+   */
+  sourceOnset: number;
   /** Beats. Tie chains are merged into the first note; continuations are dropped. */
   duration: number;
   /** From dynamics, for playback only. 1..127. */
@@ -74,6 +81,8 @@ export interface ScoreStep {
   index: number;
   /** Quarter-note beats from the start of the unrolled piece. */
   onset: number;
+  /** Quarter-note beats on the printed timeline (see ScoreNote.sourceOnset). */
+  sourceOnset: number;
   notes: ScoreNote[];
   /** Unrolled measure index. */
   measureIndex: number;
@@ -142,6 +151,27 @@ export function makeNoteId(note: {
     note.staff,
     note.voice,
     beatsToTicks(note.onset),
+    note.midi,
+  ].join(':');
+}
+
+/**
+ * Identifies a *drawn* note: printed measure, staff, voice, printed onset and
+ * pitch. Unlike `ScoreNote.id` this is deliberately the same on every repeat
+ * pass, because the element on screen is the same one.
+ */
+export function printedNoteKey(note: {
+  sourceMeasureIndex: number;
+  staff: number;
+  voice: number;
+  sourceOnset: number;
+  midi: number;
+}): string {
+  return [
+    note.sourceMeasureIndex,
+    note.staff >= 2 ? 2 : 1,
+    note.voice,
+    beatsToTicks(note.sourceOnset),
     note.midi,
   ].join(':');
 }

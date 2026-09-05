@@ -38,6 +38,35 @@ function screenFor(route: Route): ScreenFactory {
 }
 
 /**
+ * Builder routes are loaded on demand.
+ *
+ * /dev/score pulls in OpenSheetMusicDisplay, which is by far the largest
+ * dependency in the app; a static import would put it in the entry bundle for
+ * every learner who never opens it. The placeholder keeps the shell responsive
+ * while the chunk arrives.
+ */
+function mountDevScreen(main: HTMLElement, router: Router, setCurrent: (el: HTMLElement) => void): HTMLElement {
+  const holder = document.createElement('section');
+  holder.className = 'screen';
+  holder.dataset.screen = 'dev-loading';
+  const card = document.createElement('div');
+  card.className = 'card';
+  const h1 = document.createElement('h1');
+  h1.textContent = 'Loading…';
+  card.appendChild(h1);
+  holder.appendChild(card);
+
+  void import('./screens/DevScoreScreen').then(({ DevScoreScreen }) => {
+    // The route may have changed while the chunk was in flight.
+    if (!holder.isConnected) return;
+    const real = DevScoreScreen(router);
+    main.replaceChildren(real);
+    setCurrent(real);
+  });
+  return holder;
+}
+
+/**
  * Renders the app shell (nav + content area) into `root` and wires it to the
  * router. CSS alone switches the nav between a bottom tab bar (portrait) and
  * a left rail (landscape) — see style.css — so this only needs to build one
@@ -77,7 +106,8 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
 
   router.subscribe((route) => {
     for (const [tab, button] of buttons) {
-      const active = tab === route.tab;
+      // A dev route belongs to no tab, so nothing is highlighted.
+      const active = !route.dev && tab === route.tab;
       button.classList.toggle('active', active);
       button.setAttribute('aria-current', active ? 'page' : 'false');
     }
@@ -86,7 +116,11 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
     // the page (see ui/screenLifecycle.ts).
     disposeScreen(currentScreen);
     main.innerHTML = '';
-    currentScreen = screenFor(route)(router);
+    currentScreen = route.dev
+      ? mountDevScreen(main, router, (el) => {
+          currentScreen = el;
+        })
+      : screenFor(route)(router);
     main.appendChild(currentScreen);
   });
 }

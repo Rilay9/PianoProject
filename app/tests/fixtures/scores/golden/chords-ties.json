@@ -5,6 +5,7 @@
     {
       "index": 0,
       "onset": 0,
+      "sourceOnset": 0,
       "notes": [
         {
           "id": "0:1:1:0:60",
@@ -15,6 +16,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 0,
+          "sourceOnset": 0,
           "duration": 1
         },
         {
@@ -26,6 +28,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 0,
+          "sourceOnset": 0,
           "duration": 1
         },
         {
@@ -37,6 +40,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 0,
+          "sourceOnset": 0,
           "duration": 1
         },
         {
@@ -48,6 +52,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 0,
+          "sourceOnset": 0,
           "duration": 4
         }
       ],
@@ -59,6 +64,7 @@
     {
       "index": 1,
       "onset": 1,
+      "sourceOnset": 1,
       "notes": [
         {
           "id": "0:1:1:960:65",
@@ -69,6 +75,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 1,
+          "sourceOnset": 1,
           "duration": 4,
           "tieLength": 3
         }
@@ -81,6 +88,7 @@
     {
       "index": 2,
       "onset": 2,
+      "sourceOnset": 2,
       "notes": [],
       "measureIndex": 0,
       "sourceMeasureIndex": 0,
@@ -90,6 +98,7 @@
     {
       "index": 3,
       "onset": 4,
+      "sourceOnset": 4,
       "notes": [
         {
           "id": "1:2:5:3840:43",
@@ -100,6 +109,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 4,
+          "sourceOnset": 4,
           "duration": 2
         }
       ],
@@ -111,6 +121,7 @@
     {
       "index": 4,
       "onset": 5,
+      "sourceOnset": 5,
       "notes": [
         {
           "id": "1:1:1:4800:64",
@@ -121,6 +132,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 5,
+          "sourceOnset": 5,
           "duration": 3
         }
       ],
@@ -132,6 +144,7 @@
     {
       "index": 5,
       "onset": 6,
+      "sourceOnset": 6,
       "notes": [
         {
           "id": "1:2:5:5760:48",
@@ -142,6 +155,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 6,
+          "sourceOnset": 6,
           "duration": 2
         }
       ],

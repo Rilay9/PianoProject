@@ -256,6 +256,7 @@ export function extractScoreModelFromSheet(
     }
     const sourceMeasureIndex = it.CurrentMeasureIndex;
     const onset = roundBeats(wholeNotesToBeats(it.CurrentEnrolledTimestamp.RealValue));
+    const sourceOnset = roundBeats(wholeNotesToBeats(it.CurrentSourceTimestamp.RealValue));
 
     // The unrolled measure counter advances whenever the printed measure
     // changes, which includes going *backwards* on a repeat — that back jump
@@ -311,6 +312,7 @@ export function extractScoreModelFromSheet(
           measureIndex,
           sourceMeasureIndex,
           onset,
+          sourceOnset,
           duration,
           ...(fingering === undefined ? {} : { fingering }),
           ...(isGrace ? { graceNote: true } : {}),
@@ -324,6 +326,7 @@ export function extractScoreModelFromSheet(
     steps.push({
       index,
       onset,
+      sourceOnset,
       notes,
       measureIndex,
       sourceMeasureIndex,

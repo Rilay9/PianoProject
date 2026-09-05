@@ -71,5 +71,26 @@ export function SettingsScreen(router: Router): HTMLElement {
     card?.appendChild(row);
   }
 
+  // Builder tool, deliberately last and plainly labelled: it is reachable from
+  // the app so the owner can run it on the phone, not because a learner needs it.
+  const devRow = document.createElement('div');
+  devRow.className = 'setting-row';
+  const devText = document.createElement('div');
+  const devTitle = document.createElement('div');
+  devTitle.textContent = 'Score renderer (dev)';
+  const devHint = document.createElement('div');
+  devHint.className = 'muted';
+  devHint.textContent = 'Step through a fixture and read render timings';
+  devText.append(devTitle, devHint);
+  devRow.appendChild(devText);
+  const devOpen = document.createElement('button');
+  devOpen.type = 'button';
+  devOpen.className = 'button button--secondary';
+  devOpen.id = 'open-dev-score';
+  devOpen.textContent = 'Open';
+  devOpen.addEventListener('click', () => router.navigateDev('score'));
+  devRow.appendChild(devOpen);
+  card?.appendChild(devRow);
+
   return section;
 }

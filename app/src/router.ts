@@ -20,11 +20,22 @@ export type TabId = (typeof TAB_IDS)[number];
 export const SUB_IDS = ['midi', 'diagnostics'] as const;
 export type SubId = (typeof SUB_IDS)[number];
 
+/**
+ * Builder-only routes, addressed as `#/dev/<id>`. They are not tabs and never
+ * appear in the navigation; they exist so a builder can drive a subsystem
+ * directly (docs/06-build-plan.md P2: "a dev route /dev/score"). A dev route
+ * still carries a `tab` so the shell has something to highlight, but the nav
+ * shows nothing as current.
+ */
+export const DEV_IDS = ['score'] as const;
+export type DevId = (typeof DEV_IDS)[number];
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
   tab: TabId;
   sub?: SubId;
+  dev?: DevId;
 }
 
 function isTabId(value: string): value is TabId {
@@ -35,11 +46,18 @@ function isSubId(value: string): value is SubId {
   return (SUB_IDS as readonly string[]).includes(value);
 }
 
+function isDevId(value: string): value is DevId {
+  return (DEV_IDS as readonly string[]).includes(value);
+}
+
 /** Pure function: hash string -> Route. Unknown/empty hashes fall back to the default tab. */
 export function parseHash(hash: string): Route {
   const cleaned = hash.replace(/^#\/?/, '').trim();
   if (cleaned === '') return { tab: DEFAULT_TAB };
   const [tab = '', sub = ''] = cleaned.split('/');
+  if (tab === 'dev') {
+    return isDevId(sub) ? { tab: DEFAULT_TAB, dev: sub } : { tab: DEFAULT_TAB };
+  }
   if (!isTabId(tab)) return { tab: DEFAULT_TAB };
   // An unknown sub-route degrades to the tab itself rather than to Today: the
   // user asked for Settings, and dropping them somewhere else would be worse
@@ -49,6 +67,7 @@ export function parseHash(hash: string): Route {
 }
 
 export function routeToHash(route: Route): string {
+  if (route.dev) return `#/dev/${route.dev}`;
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
 
@@ -83,6 +102,13 @@ export class Router {
     this.setRoute(route);
   }
 
+  /** Navigates to a builder-only route (`#/dev/<id>`). */
+  navigateDev(dev: DevId): void {
+    const route: Route = { tab: DEFAULT_TAB, dev };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
   subscribe(listener: RouteListener): () => void {
     this.listeners.add(listener);
     listener(this.current);
@@ -90,7 +116,13 @@ export class Router {
   }
 
   private setRoute(route: Route): void {
-    if (route.tab === this.current.tab && route.sub === this.current.sub) return;
+    if (
+      route.tab === this.current.tab &&
+      route.sub === this.current.sub &&
+      route.dev === this.current.dev
+    ) {
+      return;
+    }
     this.current = route;
     this.emit();
   }

@@ -512,3 +512,149 @@ body {
   border-radius: 8px;
   padding: 8px;
 }
+
+/* ---------------------------------------------------------------------------
+   Score view (docs/04-ui-spec.md §5)
+
+   Every state below is a class or data attribute, never a re-render: OSMD
+   redraws cost tens of milliseconds and the window-swap budget is one frame.
+   --------------------------------------------------------------------------- */
+.score-view {
+  position: relative;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-height: 200px;
+}
+
+/* Both buffers are stacked; only the front one is visible. Swapping windows is
+   this class moving from one wrapper to the other. */
+.score-buffer {
+  position: absolute;
+  inset: 0;
+  transform-origin: top left;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.score-buffer.is-front {
+  position: relative;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Scroll layout lets the page grow; Window layout clips to the viewport. */
+.score-view[data-layout='scroll'] .score-buffer.is-front {
+  position: relative;
+}
+
+/* OSMD draws black on transparent; in dark mode the whole sheet is inverted
+   rather than restyled, because VexFlow paints hundreds of primitives and a
+   per-element theme would be both slow and fragile. */
+[data-theme='dark'] .score-buffer svg {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* The cursor band: a translucent stripe over the current step, spanning both
+   staves (docs §5). */
+.score-cursor {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-left: 2px solid var(--accent);
+  border-radius: 2px;
+}
+
+/* Note colouring. `score-note` is added to each drawn note group after render
+   along with data-note-id / data-hand / data-midi. */
+.score-note.is-current :is(path, rect, ellipse, text) {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.score-note.is-correct :is(path, rect, ellipse, text) {
+  fill: #17915c;
+  stroke: #17915c;
+}
+
+.score-note.is-wrong :is(path, rect, ellipse, text) {
+  fill: #cf3b3b;
+  stroke: #cf3b3b;
+}
+
+/* Hand focus dims the other hand to 35 % (docs §5). Driven by data-hand on the
+   note groups, which the model knows exactly — including cross-staff notes,
+   where the printed staff would give the wrong answer. */
+.score-view[data-hands='R'] .score-note[data-hand='L'],
+.score-view[data-hands='L'] .score-note[data-hand='R'] {
+  opacity: 0.35;
+}
+
+/* ---------------------------------------------------------------------------
+   Dev score route (/dev/score) — a builder tool, not a learner screen.
+   --------------------------------------------------------------------------- */
+.dev-score {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+.dev-score__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.dev-score__bar select,
+.dev-score__bar input[type='file'] {
+  min-height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  padding: 4px 8px;
+  max-width: 100%;
+}
+
+.dev-score__stage {
+  flex: 1;
+  min-height: 260px;
+}
+
+.dev-score__hud {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 10;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  white-space: pre;
+  pointer-events: none;
+}
+
+.dev-score__hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.dev-score__drop {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.dev-score__drop.is-over {
+  border-color: var(--accent);
+  color: var(--text);
+}

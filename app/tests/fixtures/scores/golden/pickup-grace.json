@@ -5,6 +5,7 @@
     {
       "index": 0,
       "onset": 0,
+      "sourceOnset": 0,
       "notes": [
         {
           "id": "0:1:1:0:67",
@@ -15,6 +16,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 0,
+          "sourceOnset": 0,
           "duration": 1
         }
       ],
@@ -26,6 +28,7 @@
     {
       "index": 1,
       "onset": 1,
+      "sourceOnset": 1,
       "notes": [
         {
           "id": "1:1:1:960:59",
@@ -36,6 +39,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 1,
+          "sourceOnset": 1,
           "duration": 0.5,
           "graceNote": true
         },
@@ -48,6 +52,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 1,
+          "sourceOnset": 1,
           "duration": 1
         }
       ],
@@ -59,6 +64,7 @@
     {
       "index": 2,
       "onset": 2,
+      "sourceOnset": 2,
       "notes": [
         {
           "id": "1:1:1:1920:74",
@@ -69,6 +75,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 2,
+          "sourceOnset": 2,
           "duration": 0.5,
           "graceNote": true
         },
@@ -81,6 +88,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 2,
+          "sourceOnset": 2,
           "duration": 0.5,
           "graceNote": true
         },
@@ -93,6 +101,7 @@
           "measureIndex": 1,
           "sourceMeasureIndex": 1,
           "onset": 2,
+          "sourceOnset": 2,
           "duration": 1
         }
       ],
@@ -104,6 +113,7 @@
     {
       "index": 3,
       "onset": 3,
+      "sourceOnset": 3,
       "notes": [],
       "measureIndex": 1,
       "sourceMeasureIndex": 1,

@@ -5,6 +5,7 @@
     {
       "index": 0,
       "onset": 0,
+      "sourceOnset": 0,
       "notes": [
         {
           "id": "0:1:1:0:72",
@@ -15,6 +16,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 0,
+          "sourceOnset": 0,
           "duration": 2
         },
         {
@@ -26,6 +28,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 0,
+          "sourceOnset": 0,
           "duration": 1
         }
       ],
@@ -37,6 +40,7 @@
     {
       "index": 1,
       "onset": 1,
+      "sourceOnset": 1,
       "notes": [
         {
           "id": "0:2:5:960:55",
@@ -47,6 +51,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 1,
+          "sourceOnset": 1,
           "duration": 1
         }
       ],
@@ -58,6 +63,7 @@
     {
       "index": 2,
       "onset": 2,
+      "sourceOnset": 2,
       "notes": [
         {
           "id": "0:1:1:1920:71",
@@ -68,6 +74,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 2,
+          "sourceOnset": 2,
           "duration": 2
         },
         {
@@ -79,6 +86,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 2,
+          "sourceOnset": 2,
           "duration": 1,
           "crossStaff": true
         }
@@ -91,6 +99,7 @@
     {
       "index": 3,
       "onset": 3,
+      "sourceOnset": 3,
       "notes": [
         {
           "id": "0:2:5:2880:55",
@@ -101,6 +110,7 @@
           "measureIndex": 0,
           "sourceMeasureIndex": 0,
           "onset": 3,
+          "sourceOnset": 3,
           "duration": 1
         }
       ],
