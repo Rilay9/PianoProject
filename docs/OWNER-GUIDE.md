@@ -80,6 +80,32 @@ Either way the app should be served at the **root** of its host (`/`), not a
 sub-path — the assetlinks file has to be at the origin root regardless, and
 having both at `/` avoids a class of confusion.
 
+### The scores only your own build has
+
+Some of the best editions of public-domain music — Craig Sapp's Humdrum
+editions of Joplin, Mozart, Haydn, Scarlatti and the Bach chorales — are
+licensed CC BY-NC-SA. The music is out of copyright; the *typesetting* is not
+free to redistribute. Since PianoPath is for you alone, your own build may
+include them, and a build that goes anywhere public may not.
+
+That is one flag:
+
+```bash
+# Your build, before ./packaging/build-apk.sh
+python3 tools/content/build.py --allow-nc
+```
+
+Without it the same rags and sonatas still appear in the library, but as rows
+that say where to get the score instead of carrying it. With it they are real
+scores you can open and play.
+
+Two things this flag deliberately does **not** do. It does not touch the GitHub
+Pages deploy, which builds with `--strict-license` and ships none of them. And
+it does not open the three `craigsapp` repositories — the Beethoven sonatas and
+both Chopin sets — that state no licence at all: a missing licence grants
+nothing, so those stay out whatever you pass. If you want that music, import
+your own copy through **Library → Add score**.
+
 ---
 
 ## 2. Connecting the piano

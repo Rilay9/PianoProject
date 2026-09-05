@@ -321,9 +321,10 @@ criteria. Schema at `content/curriculum.schema.json`.
 - MIDI-in to note-coloured: < 30 ms.
 - Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
 - Bundle: app JS < 1.5 MB gzipped; content precache < 60 MB total (scores are tiny; the
-  soundfont dominates — pick a ≤ 20 MB piano). **Re-measured 2026-09-06 after P5b/P6/P7:
-  content 6.8 MB (3.3 scores / 2.6 soundfont / 0.7 catalog / 0.2 lessons / 0.07 curriculum),
-  `app/dist` 9.9 MB, precache 608 entries / 8.7 MB.** Re-measure
+  soundfont dominates — pick a ≤ 20 MB piano). **Re-measured 2026-09-06 after P10 run 1
+  (the `[KERN]` ragtime tier, built with `--allow-nc`): content 6.9 MB (3.4 scores / 2.6
+  soundfont / 0.7 catalog / 0.23 lessons / 0.07 curriculum), `app/dist` 11 MB, precache 619
+  entries / 8875 KiB. The eight Joplin rags account for 113 KiB of that.** Re-measure
   and record it after every content phase; the whole library is precached (`00` D20, §7), so
   this number is what the owner downloads.
 
@@ -351,8 +352,10 @@ criteria. Schema at `content/curriculum.schema.json`.
 - **Update checks are optional and silent.** An "update available — reload" toast when a new
   service worker is waiting; a setting turns the check off entirely, and a failed check when
   offline is not an error and is never shown.
-- **Budget check (re-measured 2026-09-06):** content 6.8 MB, built app 9.9 MB, precache
-  608 entries / 8.7 MB, against the 60 MB budget in §6. There is room for the whole of P10.
+- **Budget check (re-measured 2026-09-06, after P10 run 1):** content 6.9 MB, built app
+  11 MB, precache 619 entries / 8875 KiB, against the 60 MB budget in §6. The whole `[KERN]`
+  ragtime tier cost 113 KiB and 8 entries; scores really are tiny, and the soundfont still
+  dominates. There is room for the rest of P10 several times over.
 - **The globs are the failure point, twice over now.** Workbox skips what a glob misses and
   what exceeds the size limit, and it says nothing either way. `maximumFileSizeToCacheInBytes`
   was raised for the soundfont in P5b; in P7 `.mjs` had to be added because `pdfjs-dist` ships

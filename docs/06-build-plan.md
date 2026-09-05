@@ -159,6 +159,11 @@ Deliverables: repertoire from Part D ladders imported/authored and slotted into 
 JSON for stages 5–9 and all tracks; more sight-reading levels; Hanon 21–60; Czerny op. 599
 selections authored; theory lessons from Open Music Theory outlines with attribution.
 
+Run 1 (`feat/p10-content-1`): the `[KERN]` tier opened under `--allow-nc` — `import_kern.py`
+plus `content/sources/kern.json` — and D5 Ragtime Stage 6 written (`ragtime.6`, three Joplin
+rags). The three unlicensed `craigsapp` repositories stay excluded and a build-time guard
+proves it. See `docs/decisions/2026-09-06-p10-kern-import.md`.
+
 ## 3. Definition of done for the whole project (v1.0)
 
 - Owner installs the **APK**, opens Today, completes a full Stage 1 lesson with the on-screen
