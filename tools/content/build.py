@@ -6,7 +6,7 @@ docs/03-content-pipeline.md §3. The order matters and the failure modes differ
 at each step, so each is reported separately:
 
   1. fetch     — clone what is reachable; skipping a source is not a failure
-  2. import    — the [MT] library, per-file licence decisions
+  2. import    — the [MT] library and the [KERN] tier, per-file licence decisions
   3. generate  — scales, arpeggios, Hanon, rhythm drills
   4. author    — our own ABC and music21 sources
   5. curriculum/lessons — copied through from content/
@@ -44,7 +44,7 @@ from common import (  # noqa: E402
     write_json,
 )
 
-FRAGMENTS = ("catalog.mt.json", "catalog.generated.json", "catalog.authored.json")
+FRAGMENTS = ("catalog.mt.json", "catalog.kern.json", "catalog.generated.json", "catalog.authored.json")
 
 
 def python(script: str, *args: str) -> tuple[int, str]:
@@ -66,6 +66,16 @@ def step_import(out_dir: Path) -> Step:
         "import_musetrainer.py", "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.mt.json")
     )
     return Step("import [MT]", ok=code == 0, detail=summary_line(output))
+
+
+def step_import_kern(out_dir: Path, allow_nc: bool) -> Step:
+    args = [
+        "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.kern.json"),
+    ]
+    if allow_nc:
+        args.append("--allow-nc")
+    code, output = python("import_kern.py", *args)
+    return Step("import [KERN]", ok=code == 0, detail=summary_line(output))
 
 
 def step_generate(out_dir: Path, quick: bool) -> Step:
@@ -247,6 +257,7 @@ def main() -> None:
     if not args.skip_fetch:
         steps.append(step_fetch(args.offline))
     steps.append(step_import(args.out))
+    steps.append(step_import_kern(args.out, args.allow_nc))
     steps.append(step_generate(args.out, args.quick))
     steps.append(step_author(args.out))
     steps.append(merge_catalog(args.out))

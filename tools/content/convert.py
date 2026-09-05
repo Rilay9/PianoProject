@@ -209,6 +209,39 @@ def to_part_staff(part: stream.Part, staff_clef: clef.Clef | None) -> stream.Par
     return staff
 
 
+def align_voice_offsets(score: stream.Score) -> int:
+    """
+    Moves every voice to the start of its measure, padding with a rest.
+
+    music21's MusicXML writer assumes a voice begins where its measure does: it
+    emits `<backup>` all the way to the barline and then writes the voice's
+    notes from there. A `stream.Voice` sitting at a later offset — which is
+    exactly what a `**kern` spine that splits mid-bar produces — is therefore
+    written a beat or more early, and the file no longer says what the edition
+    says.
+
+    Measured on craigsapp's Joplin edition: four of the eight rags came out
+    with displaced voices, up to 50 notes in *Pine Apple Rag*. Padding the
+    voice with a leading rest states the same music in the one shape the
+    writer can express. The rest is marked invisible, so the engraving is
+    unchanged; the timing is what this is for.
+
+    Returns the number of voices moved.
+    """
+    moved = 0
+    for measure in score.recurse().getElementsByClass(stream.Measure):
+        for voice in list(measure.getElementsByClass(stream.Voice)):
+            offset = float(measure.elementOffset(voice))
+            if offset <= 0:
+                continue
+            padding = note.Rest(quarterLength=offset)
+            padding.style.hideObjectOnPrint = True
+            voice.insertAndShift(0.0, padding)
+            measure.setElementOffset(voice, 0.0)
+            moved += 1
+    return moved
+
+
 def insert_tempo(staff: stream.PartStaff, bpm: float) -> None:
     """
     Puts a metronome mark where MusicXML export will actually find it.
@@ -254,6 +287,10 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         out.insert(0, staff)
     if len(staves) > 1:
         out.insert(0, layout.StaffGroup(staves, name="Piano", abbreviation="Pno.", symbol="brace", barTogether=True))
+
+    displaced = align_voice_offsets(out)
+    if displaced:
+        notes.append(f"moved {displaced} mid-bar voice(s) to the barline with a hidden rest")
 
     stripped = 0
     if not keep_lyrics:

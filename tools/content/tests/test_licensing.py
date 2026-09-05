@@ -8,6 +8,7 @@ composition with no known publication date never bundles.
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from licensing import (  # noqa: E402
     PD_CUTOFF_YEAR,
     Verdict,
     composition_verdict,
+    kern_reference_records,
     license_verdict,
     normalise_license,
 )
@@ -86,10 +88,6 @@ class TestComposition(unittest.TestCase):
         )
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class TestPersonalBuild(unittest.TestCase):
     """
     `--allow-nc`, the owner's amendment of 2026-09-05 (docs/00 D10a).
@@ -115,3 +113,47 @@ class TestPersonalBuild(unittest.TestCase):
 
     def test_it_is_off_by_default(self) -> None:
         self.assertIs(license_verdict("CC BY-NC-SA 4.0").verdict, Verdict.LOCAL_ONLY)
+
+
+class TestHumdrumReferenceRecords(unittest.TestCase):
+    """
+    craigsapp's editions put the rights records *after* the music.
+
+    A header-only reader gets the title and the composer and misses the licence
+    entirely — which is the one record this function exists to find, so it is
+    worth a test of its own.
+    """
+
+    SOURCE = (
+        "!!!COM: Joplin, Scott\n"
+        "!!!OTL: The Entertainer\n"
+        "!!!ODT: 1902\n"
+        "**kern\t**kern\n"
+        "*-\t*-\n"
+        "!!!YEC: Copyright 2001 by Craig Stuart Sapp\n"
+        "!!!YEC: 2021 Craig Stuart Sapp\n"
+        "!!!YEM: Licence: (CC BY-NC-SA 4.0) https://creativecommons.org/licenses/by-nc-sa/4.0\n"
+    )
+
+    def records(self) -> dict:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "rag.krn"
+            path.write_text(self.SOURCE, encoding="utf-8")
+            return kern_reference_records(path)
+
+    def test_it_reads_records_after_the_last_data_line(self) -> None:
+        records = self.records()
+        self.assertEqual(records["OTL"], "The Entertainer")
+        self.assertIn("CC BY-NC-SA 4.0", records["YEM"])
+
+    def test_the_first_of_a_repeated_record_wins(self) -> None:
+        self.assertEqual(self.records()["YEC"], "Copyright 2001 by Craig Stuart Sapp")
+
+    def test_the_licence_it_finds_is_the_one_the_gate_rules_on(self) -> None:
+        decision = license_verdict(self.records()["YEM"], allow_nc=True)
+        self.assertIs(decision.verdict, Verdict.BUNDLE)
+        self.assertIs(license_verdict(self.records()["YEM"]).verdict, Verdict.LOCAL_ONLY)
+
+
+if __name__ == "__main__":
+    unittest.main()

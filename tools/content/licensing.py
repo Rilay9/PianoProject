@@ -151,12 +151,21 @@ def repo_license_text(repo: Path) -> str:
 
 
 def kern_reference_records(krn: Path) -> dict[str, str]:
-    """Humdrum `!!!XXX:` reference records, which carry the copyright claim."""
+    """
+    Humdrum `!!!XXX:` reference records, which carry the copyright claim.
+
+    The whole file is scanned, not just its header. Humdrum allows reference
+    records anywhere, and craigsapp's editions put the bibliographic ones
+    (`OTL`, `COM`, `ODT`) on top but the *rights* ones (`YEC`, `YEM`, `EED`)
+    after the last data line — so a header-only reader sees everything except
+    the licence, which is the one thing this function exists to find.
+
+    First occurrence wins: several files carry both the original `!!!YEC` from
+    when the edition was encoded and a later one from a re-release.
+    """
     records: dict[str, str] = {}
     for line in krn.read_text(encoding="utf-8", errors="replace").splitlines():
         if not line.startswith("!!!"):
-            if not line.startswith("!"):
-                break
             continue
         match = re.match(r"^!!!+([A-Za-z0-9-]+)\s*:\s*(.*)$", line)
         if match:

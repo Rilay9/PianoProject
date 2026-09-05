@@ -1,0 +1,55 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 6,
+      "title": "Intermediate",
+      "summary": "Roughly ABRSM Grade 4-5. Longer forms, a melody voiced over its own accompaniment, and repertoire that has to be learned in sections rather than read through.",
+      "approxDuration": "6-9 months",
+      "abrsmGradeApprox": "grade 4-5",
+      "units": [
+        {
+          "id": "ragtime.6.1",
+          "title": "Ragtime: the rags as Joplin wrote them",
+          "track": "ragtime",
+          "lessons": [
+            {
+              "id": "ragtime.6",
+              "title": "Multi-strain form and the leaping left hand",
+              "concepts": [
+                "oom-pah-bass",
+                "syncopation",
+                "multi-strain-form",
+                "trio-key-change",
+                "not-fast"
+              ],
+              "textFile": "lessons/ragtime.6.md",
+              "exerciseOptions": [
+                "drill.pattern.lh-accompaniment",
+                "exercise.rhythm.sixteenths.4bar",
+                "exercise.scale.a-flat-major.2oct.similar.both.2",
+                "exercise.scale.e-flat-major.2oct.similar.both.2",
+                "exercise.hanon.11.both"
+              ],
+              "songOptions": [
+                "song.ragtime.joplin-entertainer.kern",
+                "song.ragtime.joplin-peacherine-rag",
+                "song.ragtime.joplin-easy-winners"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "ragtime.5"
+              ],
+              "estimatedDays": 120
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

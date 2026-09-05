@@ -44,7 +44,14 @@ jobs:
         working-directory: app
         run: npm ci
 
-      - name: Build (includes content build + icon generation via prebuild)
+      - name: Build content (strict licence — this deploy is public)
+        # docs/03 §1 and docs/00 D10a: --allow-nc bundles CC BY-NC editions and
+        # is for the owner's own build only. This job publishes to the open
+        # internet, so it builds the catalog strictly and up front; `npm run
+        # build`'s prebuild step then finds a catalog already built and skips.
+        run: python3 tools/content/build.py --strict-license
+
+      - name: Build (icon generation via prebuild; content is already built)
         working-directory: app
         run: npm run build
 

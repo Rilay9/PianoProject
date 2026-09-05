@@ -1,0 +1,180 @@
+{
+  "_comment": [
+    "The per-file table for the [KERN] tier (docs/03-content-pipeline.md §2, docs/02 Part D5).",
+    "Rows are keyed by <repository>/<path inside it>. Everything here is data a human edited,",
+    "so tools/content/import_kern.py trusts none of it: it re-reads the repository licence, the",
+    "file's own Humdrum !!!YEM / !!!YEC rights records and the !!!ODT / !!!PDT publication year,",
+    "and excludes a row whose stated publishedYear disagrees with the file.",
+    "",
+    "First run (P10, 2026-09-05): the ragtime tier, docs/02 D5 Stages 6-8, all from",
+    "craigsapp/joplin. The other four licensed repositories (Mozart, Haydn, Scarlatti and the",
+    "Bach chorales) get rows in later runs; the three with no licence at all never do."
+  ],
+
+  "repos": {
+    "joplin": {
+      "name": "A Digital Edition of Scott Joplin's Music (craigsapp/joplin)",
+      "url": "https://github.com/craigsapp/joplin",
+      "editor": "Craig Stuart Sapp",
+      "editionNotes": "Humdrum **kern edition by Craig Stuart Sapp, referenced against the first editions; converted to MusicXML here by tools/content/convert.py. CC BY-NC-SA 4.0: bundled only in the owner's personal build (docs/00 D10a)."
+    }
+  },
+
+  "mustStayExcluded": {
+    "beethoven-piano-sonatas": "no LICENSE file and no licence statement anywhere in the repository — a bare edition, nothing granted. --allow-nc relaxes non-commercial, not silence.",
+    "chopin-mazurkas": "no LICENSE file and no licence statement anywhere in the repository.",
+    "chopin-preludes": "no LICENSE file; the .krn files carry a bare '!!!YEC: Copyright <year> by Craig Stuart Sapp' with no !!!YEM licence record — a copyright claim is the opposite of a grant."
+  },
+
+  "absentFromSource": {
+    "joplin/euphonic": "docs/02 D5 Stage 8 names Euphonic Sounds (1909). craigsapp/joplin holds 47 rags and that is not one of them (checked 2026-09-05). Needs another source or another Stage 8 option.",
+    "joplin/frog-legs": "docs/02 D5 Stage 8 names James Scott's Frog Legs Rag. craigsapp/joplin is Joplin only.",
+    "joplin/ragtime-nightingale": "docs/02 D5 Stage 8 names Joseph Lamb's Ragtime Nightingale. craigsapp/joplin is Joplin only."
+  },
+
+  "items": {
+    "joplin/kern/entertainer.krn": {
+      "id": "song.ragtime.joplin-entertainer.kern",
+      "title": "The Entertainer",
+      "subtitle": "A Rag Time Two Step",
+      "composer": "Scott Joplin",
+      "publishedYear": 1902,
+      "level": 7.1,
+      "abrsmGradeApprox": 6,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["syncopation", "oom-pah-bass", "not-fast", "multi-strain-form"],
+      "variantOf": "song.ragtime.joplin-entertainer",
+      "variantLabel": "Sapp critical edition",
+      "alternatives": [
+        "song.ragtime.joplin-peacherine-rag",
+        "song.ragtime.joplin-easy-winners",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "The complete original, marked 'Not fast.' — the docs/02 D5 Stage 6 option. The MuseTrainer edition of the same piece is song.ragtime.joplin-entertainer."
+    },
+
+    "joplin/kern/peacherine.krn": {
+      "id": "song.ragtime.joplin-peacherine-rag",
+      "title": "Peacherine Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1901,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["syncopation", "oom-pah-bass", "not-fast", "multi-strain-form"],
+      "alternatives": [
+        "song.ragtime.joplin-entertainer.kern",
+        "song.ragtime.joplin-easy-winners",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "Marked 'Not too fast.'; published by John Stark & Son, St. Louis."
+    },
+
+    "joplin/kern/easywinners.krn": {
+      "id": "song.ragtime.joplin-easy-winners",
+      "title": "The Easy Winners",
+      "subtitle": "A Rag Time Two Step",
+      "composer": "Scott Joplin",
+      "publishedYear": 1901,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["syncopation", "oom-pah-bass", "not-fast", "trio-key-change"],
+      "alternatives": [
+        "song.ragtime.joplin-entertainer.kern",
+        "song.ragtime.joplin-peacherine-rag",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "Marked 'Not fast.'; four strains in A flat with a trio."
+    },
+
+    "joplin/kern/mapleleaf.krn": {
+      "id": "song.ragtime.joplin-maple-leaf-rag.kern",
+      "title": "Maple Leaf Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1899,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["syncopation", "oom-pah-bass", "stride-bass", "trio-key-change"],
+      "variantOf": "song.ragtime.joplin-maple-leaf-rag",
+      "variantLabel": "Sapp critical edition",
+      "alternatives": [
+        "song.ragtime.joplin-elite-syncopations",
+        "song.ragtime.joplin-pine-apple-rag",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "Marked 'Tempo di marcia'; the rag that made Joplin's name. The MuseTrainer edition of the same piece is song.ragtime.joplin-maple-leaf-rag."
+    },
+
+    "joplin/kern/solace.krn": {
+      "id": "song.ragtime.joplin-solace",
+      "title": "Solace",
+      "subtitle": "A Mexican Serenade",
+      "composer": "Scott Joplin",
+      "publishedYear": 1909,
+      "level": 6.8,
+      "abrsmGradeApprox": 5,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["habanera-rhythm", "cantabile", "oom-pah-bass", "not-fast"],
+      "alternatives": [
+        "song.ragtime.joplin-bethena",
+        "song.ragtime.joplin-entertainer.kern",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "Marked 'Very slow march time'; a habanera rather than a rag, and the gentlest thing in this set — the easiest way into the style if the leaps of Maple Leaf are still too much."
+    },
+
+    "joplin/kern/bethena.krn": {
+      "id": "song.ragtime.joplin-bethena",
+      "title": "Bethena",
+      "subtitle": "A Concert Waltz",
+      "composer": "Scott Joplin",
+      "publishedYear": 1905,
+      "level": 7.3,
+      "abrsmGradeApprox": 6,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["ragtime-waltz", "syncopation", "trio-key-change", "3/4"],
+      "alternatives": [
+        "song.ragtime.joplin-solace",
+        "song.ragtime.joplin-elite-syncopations",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "Marked 'Valse Tempo'; five strains in 3/4 with a key change at each — long (164 bars), but no faster than the two-steps."
+    },
+
+    "joplin/kern/elite.krn": {
+      "id": "song.ragtime.joplin-elite-syncopations",
+      "title": "Elite Syncopations",
+      "composer": "Scott Joplin",
+      "publishedYear": 1902,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["syncopation", "oom-pah-bass", "secondary-rag", "trio-key-change"],
+      "alternatives": [
+        "song.ragtime.joplin-maple-leaf-rag.kern",
+        "song.ragtime.joplin-pine-apple-rag",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "Secondary rag (a three-note figure against the four-note beat) in the third strain."
+    },
+
+    "joplin/kern/pineapple.krn": {
+      "id": "song.ragtime.joplin-pine-apple-rag",
+      "title": "Pine Apple Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1908,
+      "level": 7.4,
+      "abrsmGradeApprox": 7,
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["syncopation", "stride-bass", "secondary-rag", "trio-key-change"],
+      "alternatives": [
+        "song.ragtime.joplin-maple-leaf-rag.kern",
+        "song.ragtime.joplin-elite-syncopations",
+        "song.ragtime.joplin-entertainer"
+      ],
+      "editionNotes": "Marked 'Slow March tempo. [quarter]=100'; the tempo is Joplin's own, printed on the first edition."
+    }
+  }
+}

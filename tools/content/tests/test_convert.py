@@ -60,6 +60,47 @@ class TestKern(ConvertCase):
         self.assertIn("Test", result.composer or "")
 
 
+class TestMidBarVoices(ConvertCase):
+    """
+    A `**kern` spine that splits mid-bar (docs/03 §3 step 2).
+
+    music21's MusicXML writer backs every voice up to the barline, so a voice
+    that starts on beat 3 is written on beat 1 and the file stops saying what
+    the edition says. Four of the eight Joplin rags in content/sources/kern.json
+    are shaped like this fixture, so the assertion is on where the notes land,
+    not on whether the file merely parses.
+    """
+
+    def offsets_in_first_measure(self, dest: Path) -> dict[str, float]:
+        from music21 import converter as m21converter
+
+        score = m21converter.parse(str(dest))
+        measure = score.parts[0].getElementsByClass("Measure")[0]
+        return {
+            pitch.nameWithOctave: round(float(n.getOffsetInHierarchy(measure)), 4)
+            for n in measure.recurse().notes
+            for pitch in n.pitches
+        }
+
+    def test_a_voice_that_starts_on_beat_three_still_starts_on_beat_three(self) -> None:
+        result, _ = self.convert("mid-bar-voice.krn")
+        offsets = self.offsets_in_first_measure(self.out / "mid-bar-voice.mxl")
+        self.assertEqual(offsets["C5"], 0.0)
+        self.assertEqual(offsets["E5"], 2.0)
+        self.assertEqual(offsets["G5"], 2.0)
+        self.assertTrue(any("mid-bar voice" in w for w in result.warnings), result.warnings)
+
+    def test_the_padding_rest_is_not_printed(self) -> None:
+        # The timing is stated with a rest the engraving never shows, so the
+        # page looks like the edition it came from.
+        _, written = self.convert("mid-bar-voice.krn")
+        self.assertIn('print-object="no"', written.xml)
+
+    def test_a_score_with_no_split_is_left_alone(self) -> None:
+        result, _ = self.convert("two-spines.krn")
+        self.assertEqual([w for w in result.warnings if "mid-bar voice" in w], [])
+
+
 class TestAbc(ConvertCase):
     def test_two_voices_become_two_staves(self) -> None:
         result, written = self.convert("two-voices.abc")
