@@ -57,6 +57,10 @@ step and window, and the render timings that also feed the Diagnostics screen.
 | `H` | Hand focus: both / R / L |
 | `R` | Back to the first step |
 
+The route also hosts the practice engine for e2e: `window.__pianopathDevScore`
+can start a Wait or Tempo run, feed a scripted performance through a real
+`ReplaySource`, and read back the score. See `tests/e2e/engine.spec.ts`.
+
 The route is dynamically imported, so OpenSheetMusicDisplay (~1.4 MB, the
 largest dependency by far) stays out of the entry bundle. An e2e test asserts
 that.
