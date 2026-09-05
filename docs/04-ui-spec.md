@@ -63,8 +63,13 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
 
 - Search + filters: type, track, level range, hands, key, time signature, concept tag, status,
   source. Sorting by level/title/recent.
-- Imports section: "Import MusicXML/MXL" (file picker; also accepts share-target intents
-  when installed), list of imported items with edit (title, level, tags) and delete.
+- Imports section: **"Import a score"** — a file picker taking `.musicxml`, `.mxl` **and
+  `.pdf`**, plus share-target intents when installed and drag-and-drop on desktop. The list of
+  imported items shows the kind, and offers edit (title, level, tags) and delete. A bad file
+  fails with one sentence from the parser, not a stack trace (§9).
+- **A PDF item is a second-class score on purpose**: it opens in the PDF viewer (§5b), not the
+  Score screen, and its card says "pages, not notes" so it is obvious why Wait mode is not
+  offered. Anything you want judged has to arrive as MusicXML.
 - Item detail sheet: metadata, sections, practice tips, media, "Open".
 
 ## 5. Score screen (the core)
@@ -109,6 +114,28 @@ Notation area:
 
 Gestures: single tap toggles control bar; double-tap a bar sets loop start/end; long-press a
 bar plays it (Listen) ; pinch = zoom; two-finger tap = toggle hands focus.
+
+## 5b. PDF viewer (imported PDFs)
+
+The owner buys sheet music as PDF, and a PDF on a phone screen is unreadable at page scale.
+This viewer solves exactly that and nothing more: **it shows one system at a time, full
+width.** See `docs/decisions/2026-09-05-p4-pdf-sheet-music.md`; the page-cutting is
+`app/src/pdf/systems.ts`, written and tested in P4, and the renderer is `pdfjs-dist`.
+
+- **Layout:** the current system fills the width; the next system is shown greyed below it if
+  it fits, so the eye has somewhere to go. Page and system number in the corner.
+- **Follow modes offered:** *manual tap* (tap right half = next system, left = previous),
+  *timed* auto-advance at a bpm the learner sets, and *loop a system*. Tempo % and the
+  count-in behave as on the Score screen.
+- **Wait mode, mic-follow and MIDI-follow are hidden, not disabled**, along with note
+  colouring, the keyboard strip and scoring. A PDF has no notes to match, and a greyed-out
+  control invites the question "why not?" every time it is seen.
+- **Cut correction is required, not optional.** System detection assumes a clean, digitally
+  typeset page; a scan or a photo will cut in the wrong place. A "adjust cuts" mode lets the
+  learner drag the horizontal cut lines on the page thumbnail, and the corrections are stored
+  with the item. Without this, one bad detection makes a file useless.
+- **No OMR.** Turning a PDF into notes is an offline desktop step (Audiveris, MuseScore); the
+  result comes back through the MusicXML import.
 
 ## 6. Progress
 

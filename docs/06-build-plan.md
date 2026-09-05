@@ -103,9 +103,12 @@ manual checklist in the prompt; Opus reviews the diff for rendering/engine misus
 ### P7 — Today / Plan / Library / Progress / Settings + storage · Sonnet · 1–2 sessions
 Deliverables per `04` §2–4 (incl. 3a Skills review and 3b Chord-chart view), §6–7 and `01`
 §4.5–4.6: IndexedDB stores, review queue (spaced intervals from curriculum Part G), weekly
-goal, session builder with 15/30/60/120 templates, "I already know this" + quick checks, import
-of MusicXML/MXL (+ share target), export/import JSON, placement test flow, tablet breakpoint. Acceptance: e2e for each screen; data
-survives reload; import of a `.mxl` from the phone's Downloads works (manual).
+goal, session builder with 15/30/60/120 templates, "I already know this" + quick checks,
+**first-class score import (MusicXML/MXL *and* PDF, + share target) and the one-system-at-a-time
+PDF viewer per `04` §5b on top of the P4 `pdf/systems.ts` spike**, export/import JSON, placement
+test flow, tablet breakpoint. Acceptance: e2e for each screen; data survives reload; import of a
+`.mxl` and of a `.pdf` from the phone's Downloads works (manual), and the PDF steps between
+systems.
 
 ### P8 — Drills UI · Sonnet (+ Opus for ear/rhythm scoring) · 1 session
 Deliverables: UI for every drill kind in `05` §7 on top of the P3 framework; audio prompts
@@ -114,9 +117,10 @@ for ear drills; result sheets. Acceptance: e2e per drill with scripted input.
 ### P9 — On-device QA, performance, offline, packaging · Opus · 1–2 sessions
 Deliverables: performance pass to hit `01` §6 budgets on the S25 (measure via the
 Diagnostics timing log the owner pastes back), service-worker precache verified offline,
-"update available" toast, error boundary + report copy, optional Bubblewrap TWA config,
-final README for the owner. Acceptance: owner runs the checklist in the prompt on the phone and
-everything passes; Lighthouse PWA audit passes.
+"update available" toast, error boundary + report copy, **the Bubblewrap TWA APK and the
+private-repo move (`00` D19) — no longer optional**, final README for the owner. Acceptance:
+owner runs the checklist in the prompt on the phone and everything passes; Lighthouse PWA audit
+passes; **the signed APK installs on the S25 and Web MIDI still works inside it**.
 
 ### P10 — Stages 5–9 content expansion · Sonnet · ongoing
 Deliverables: repertoire from Part D ladders imported/authored and slotted into curriculum

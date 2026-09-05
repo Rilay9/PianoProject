@@ -12,12 +12,16 @@ SHOULD, deviate only with a written note in `docs/decisions/` explaining why.
   `navigator.requestMIDIAccess()`. The app MUST call it only from a user gesture (tap on
   "Connect piano") and MUST explain the prompt beforehand.
 - **Secure context:** Web MIDI, service workers, Screen Wake Lock, and file pickers require
-  HTTPS (or `localhost`). Production is HTTPS via GitHub Pages; dev is `localhost`.
+  HTTPS (or `localhost`). Dev is `localhost`; the Pages deploy is HTTPS. Inside a TWA the
+  origin is the one the APK is signed against, and Digital Asset Links make it a secure
+  first-party context, so all four keep working (`00` D19).
 - **Samsung Internet** also supports Web MIDI; treat as a bonus, test only Chrome.
 - **Not supported by design:** iOS Safari (no Web MIDI), Firefox Android.
-- **Packaging fallback (optional, later):** a Trusted Web Activity (TWA) APK via Bubblewrap
-  wraps the *real Chrome*, so Web MIDI keeps working. A Capacitor/WebView wrap would NOT be
-  guaranteed to expose Web MIDI — do not use it.
+- **Packaging: a Trusted Web Activity (TWA) APK via Bubblewrap** — decided 2026-09-05
+  (`00` D19), no longer optional. A TWA wraps the *real Chrome*, so Web MIDI keeps working.
+  A Capacitor/WebView wrap would NOT be guaranteed to expose Web MIDI — do not use it. The
+  TWA still loads its content over HTTPS from the deployed origin, so a host is needed even
+  for the APK unless the build is fully offline-precached at first run; see §9.
 
 ## 2. Repository layout (monorepo, npm workspaces not required)
 
@@ -32,6 +36,7 @@ app/                     – the PWA (Vite + TypeScript)
     main.ts              – bootstrap, router
     ui/                  – screens and components (see 04-ui-spec.md)
     score/               – OSMD wrapper, ScoreModel extraction, windowed renderer, cursor/overlay
+    pdf/                 – systems.ts: cuts a rendered PDF page into staff systems (P4 spike); viewer in P7
     engine/              – practice-mode state machines, matcher, scorer, clock (pure TS, no DOM)
     input/               – InputSource interface + WebMidiSource, ScreenKeyboardSource, ReplaySource, MicSource facade
     audio/               – Web Audio player (smplr piano), metronome scheduler
@@ -65,6 +70,7 @@ docs/, prompts/
 | `vite` | 8.x | build/dev | MIT |
 | `vite-plugin-pwa` | 1.x | manifest + Workbox service worker (precache everything under `public/content`) | MIT |
 | `idb` | latest | tiny IndexedDB promise wrapper | ISC |
+| `pdfjs-dist` | 4.x | renders an imported PDF page to a canvas for the one-system-at-a-time viewer (P7) | Apache-2 |
 | `vitest`, `@playwright/test` | latest | tests | MIT/Apache |
 | `webmidi` (optional) | 3.x | ergonomic wrapper over Web MIDI; only if the raw API proves annoying | Apache-2 |
 
@@ -223,7 +229,7 @@ IndexedDB stores (via `idb`):
 | `settings` | `'app'` | all settings (see 04-ui-spec.md §7) |
 | `progress` | itemId | `{ itemId, status:'new'|'started'|'passed'|'mastered', bestAccuracy, bestTempoPct, attempts, lastPracticedAt, minutes }` |
 | `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, timing stats, date, durationMs |
-| `imports` | id | user-imported score: name, MusicXML text (or mxl bytes), tags, addedAt |
+| `imports` | id | user-imported score: name, MusicXML text (or mxl bytes) **or PDF bytes**, `kind: 'musicxml' \| 'pdf'`, tags, addedAt. A PDF item is viewable and followable but not playable or judgeable — it has no notes (`04` §5b). |
 | `plan` | `'current'` | current stage/unit, chosen track order, placement-test result |
 | `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
 | `micCalibration` | deviceId | per-pitch gain/inharmonicity table, latency ms, noise floor |
@@ -301,14 +307,31 @@ one the owner tests.
 
 ## 9. Deployment
 
+The delivery artifact is a **TWA APK** (`00` D19). Pages is the testing deploy and only while
+the repo is public.
+
+**Now, while the repo is public:**
 - `.github/workflows/pages.yml`: on push to `main` — set up Python + Node, run
   `tools/content/build.py` (produces `app/public/content/…`), `npm ci && npm run build`, upload
   `app/dist` with `actions/upload-pages-artifact`, deploy with `actions/deploy-pages`.
 - Owner one-time step: repository **Settings → Pages → Source: GitHub Actions**.
 - `vite.config.ts` `base` MUST be `/PianoProject/` (repo name) for Pages, overridable by env.
-- Private-repo fallback: same build, publish `app/dist` to Cloudflare Pages/Netlify (free,
-  HTTPS) — or run `npx serve app/dist` on a laptop on the same Wi-Fi with a self-signed cert
-  (Web MIDI needs HTTPS; `localhost` only counts on the phone itself).
+- The Pages build MUST be the default, NC-free content build (`00` D10a). It is a public URL.
+
+**At v1.0, when the repo goes private (P9):**
+- The content build may drop the licence gate for the APK; see `03` §1.
+- A TWA loads its start URL over HTTPS, so the app still needs an origin. Two options, decided
+  in P9: (a) keep a static host — Cloudflare Pages or Netlify free tier serves a private repo's
+  build over HTTPS and is the smaller change; or (b) make the APK fully self-contained by
+  precaching every route and asset on first run, which needs one online first launch anyway.
+  Option (a) is the recommendation: it keeps updates a push away.
+- Bubblewrap needs a signing keystore and a `assetlinks.json` served from the origin's
+  `/.well-known/`. **The keystore is the owner's and is never committed**; P9 documents where
+  it lives and how to reproduce a build without it.
+- `base` must match wherever the origin serves from; a custom domain or a site root makes the
+  TWA config simpler than a `/PianoProject/` subpath.
+- Laptop fallback for a quick test without a host: `npx serve app/dist` on the same Wi-Fi with
+  a self-signed cert (Web MIDI needs HTTPS; `localhost` only counts on the phone itself).
 
 ## 10. Development loop the builders MUST use
 

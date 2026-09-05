@@ -16,6 +16,15 @@ only ever reads `app/public/content/catalog.json`, `curriculum.json`, `scores/**
    It is off by default and every NC item is tagged `nc-personal-build` in the catalog, so a
    deploy can be checked. ND stays excluded outright: it forbids the normalisation this
    pipeline performs. A build made with `--allow-nc` must not be published to a public URL.
+   **Second amendment 2026-09-05 (owner, `00` D19):** the repo goes private and the app ships
+   as an APK on the owner's own phone, so the finished build is not published anywhere and the
+   *edition* licence stops constraining it. When that happens, `--allow-nc` becomes the
+   default and ND may be admitted too. **Until the repo is private, nothing changes**: CI
+   deploys to a public Pages URL and that deploy is a publication. Whoever flips the default
+   must flip the Pages workflow to `--strict-license` in the same commit, or delete it.
+   Two things are *not* relaxed by any of this, because neither is about redistribution:
+   a source that states **no licence at all** still gets recorded as such in the ledger, and
+   **transcriptions of copyrighted songs are never downloaded** (rule 3 below, `00` D18).
 2. Every catalog item has a `source` block: `name`, `url`, `license`, `pd_region`
    (`worldwide` / `US`), `fetchedAt`, and `checksum`. `tools/content/validate.py` rejects
    items without it.
