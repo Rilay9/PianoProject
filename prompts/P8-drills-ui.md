@@ -2,7 +2,9 @@
 
 (Include `_COMMON-HEADER.md`.)
 
-Read: `docs/05-score-follow-engine.md` §7–§8; `docs/04-ui-spec.md` §5 (visual language), §7.
+Read: `docs/05-score-follow-engine.md` §7–§8 (**note the distinction at the top of §7**:
+generated *exercises* are notation and open in the Score screen; only *drills* need a screen
+here); `docs/04-ui-spec.md` §5 (visual language), §7.
 
 ## Build
 Screens for every drill kind on top of the P3 framework: staff flash card (uses OSMD or a

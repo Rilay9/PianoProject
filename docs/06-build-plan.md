@@ -93,6 +93,16 @@ curriculum/stage-0..4.json` + track files, all validated. Videos: find the actua
 Acceptance: `validate.py` passes; every lesson has ≥ 2 exercise and ≥ 3 song options that
 exist; spot-check 10 random tunes by rendering and by listening (Listen mode) for wrong notes.
 
+### P5b — Exercise breadth, alternatives, offline-first content · Sonnet (Opus for fingering) · 1 session
+Deliverables: the `02` Part E2 generator families (coordination, cadence, accompaniment
+patterns, interval reading, position shift, pedal, shuffle, rhythm in 3/4 and 6/8, five-finger
+hands-separately, 2-octave contrary); `alternatives[]` in the catalog schema and `songOptional`
+in the curriculum schema, both validated; the three-alternatives rule enforced by `validate.py`
+and the eleven thin units backfilled; a unit test per family; the curriculum selectors taught
+`songOptional`; the precache re-measured against `01` §6. Acceptance: content build with
+`--render` clean, `validate.py` green with the rule on, app tests green, and an offline e2e that
+opens a score, a generated exercise and a lesson with the network off.
+
 ### P6 — Score screen · Sonnet (Opus review) · 1–2 sessions
 Deliverables per `04` §5: full Score screen on top of P2+P3(+P3b), control bar with the input
 selector (MIDI / Mic / Screen / None) and the four follow options, amber mic feedback and level
@@ -117,7 +127,9 @@ for ear drills; result sheets. Acceptance: e2e per drill with scripted input.
 ### P9 — On-device QA, performance, offline, packaging · Opus · 1–2 sessions
 Deliverables: performance pass to hit `01` §6 budgets on the S25 (measure via the
 Diagnostics timing log the owner pastes back), service-worker precache verified offline,
-"update available" toast, error boundary + report copy, **the Bubblewrap TWA APK and the
+"update available" toast, **full-library precache verified item by item (`00` D20) and an
+airplane-mode session from the second launch onwards**, error boundary + report copy,
+**the Bubblewrap TWA APK and the
 private-repo move (`00` D19) — no longer optional**, final README for the owner. Acceptance:
 owner runs the checklist in the prompt on the phone and everything passes; Lighthouse PWA audit
 passes; **the signed APK installs on the S25 and Web MIDI still works inside it**.
@@ -129,8 +141,11 @@ selections authored; theory lessons from Open Music Theory outlines with attribu
 
 ## 3. Definition of done for the whole project (v1.0)
 
-- Owner can install the PWA, open Today, complete a full Stage 1 lesson with the on-screen
-  keyboard *and* (if the cable works) with the HP-130, see progress recorded, and go offline.
+- Owner installs the **APK**, opens Today, completes a full Stage 1 lesson with the on-screen
+  keyboard *and* (if the cable works) with the HP-130, sees progress recorded — and can then
+  turn the network off for good and lose nothing but the video links (`00` D20).
+- **Every skill the curriculum names has a generated exercise, and every rung offers at least
+  three alternatives** (`00` D21), checked by `validate.py` rather than by eye.
 - Stages 0–4 fully populated; tracks populated to Stage 5 including the Rock & metal, Jam, and Beautiful-pieces modules; library ≥ 250 items; mic follow works on the owner's HP-130 + S25 in a quiet room (measured on his recordings).
 - CI green; all budgets met on device; no console errors in a 30-minute session.
 
@@ -139,5 +154,9 @@ selections authored; theory lessons from Open Music Theory outlines with attribu
 Unit (Vitest): engine, ScoreModel, curriculum selectors, MIDI parser, storage. E2E (Playwright,
 headless Chromium, mocked Web MIDI + fake AudioContext where needed): every screen, every
 control, three fixture scores, all drills. Content: schema + render-check + preview review.
+Content: also a **unit test per generator family** (fingering at position changes, meter, bar
+count, hand) and validator tests for the three-alternatives rule and unresolved
+`alternatives[]` references. Offline: an e2e that goes offline after first load and opens a
+score, a generated exercise and a lesson (P5b), widened in P9 to a whole session.
 Device: owner checklists in P1/P6/P9 with the Diagnostics "copy debug report" as the feedback
 channel. Never mark a phase done on a red CI.

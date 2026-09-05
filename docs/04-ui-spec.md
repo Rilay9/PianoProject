@@ -27,7 +27,15 @@ Score screen is a full-screen route pushed on top (back gesture returns).
   technique drills in the current keys) · Review (due items) · New (current lesson's chosen
   exercise + song) · Repertoire (a mastered piece) · Free play prompt. Each row: title, level,
   hands, est. minutes, ▶ button. Tapping ▶ opens the Score screen for that item.
-- "Shuffle options" swaps the exercise/song for another option from the same lesson.
+- **"Swap this"** on every row — not just the whole-card "shuffle" — offers the alternatives
+  for that slot (`00` D21): the other options in the same lesson first, then any catalog item
+  at the same level sharing a concept tag, and then the item's own `alternatives[]` if it has
+  them. A **"not a song"** filter is on the sheet, because half the point of the exercise
+  breadth is that a skill can be practised without a tune attached.
+- **An import-only item always shows what to play instead.** A rock-module song you have not
+  imported yet is not a dead row: it offers the public-domain vehicle its technique brief
+  names ("play Moonlight I — same texture"), taken from the item's `alternatives[]`.
+- "Shuffle options" swaps every row at once, as before.
 - "Start session" runs the rows in order with a between-item summary.
 
 ## 3. Plan (curriculum browser)
@@ -171,7 +179,29 @@ leniency [70 %], strict mic scoring [off], mute playback of expected notes while
 diagnostics: raw log, latency test (tap a key, see ms), "connected devices".
 
 **Content** — active tracks; show US-only PD items [on]; language [en]; note naming
-[letters]; reset progress (double confirm).
+[letters]; **"Download everything now"** (re-runs the precache and reports total size and
+item count); **offline only** [off] (stops the app checking for updates at all — `00` D20);
+storage used, with a breakdown by scores / audio / lessons / your imports; reset progress
+(double confirm).
+
+## 7b. Diagnostics
+
+One screen, reachable from Settings and from the score screen's ⋯ menu, whose entire purpose
+is to be *copied into a message* when something misbehaves. "Copy debug report" puts all of
+it on the clipboard as text.
+
+- **Offline and storage** (`00` D20): service-worker state, **precached n of m catalog files**,
+  total bytes cached, last successful update check, whether the app is currently online. A
+  missing-files list if n < m, because a silently skipped precache (the soundfont exceeding
+  Workbox's 2 MB default) is the failure mode this screen exists to catch.
+- **MIDI**: connected devices, raw message log (last 200), latency test (tap a key, see ms).
+- **Microphone**: level, noise floor, detector confidence histogram, calibration values.
+- **Render**: window-swap ms, cursor-update ms, MIDI→colour latency, frame drops — the
+  numbers `01` §6 sets budgets for.
+- **Content**: catalog item count by type and by track, curriculum stage/unit/lesson counts,
+  content build id, and **any lesson whose options fall below the three-alternative rule**
+  (`00` D21) — so a thin unit is visible here rather than discovered mid-practice.
+- **Errors**: uncaught errors and unhandled rejections this session, with counts.
 
 ## 7a. Tablet layout
 
@@ -185,9 +215,13 @@ Mic permission denied: explain Chrome site settings; fall back to Timed. Mic too
 floor above threshold): suggest the USB audio interface path or headphones for playback.
 No MIDI: the app never nags; "Connect piano" chip stays grey; Tempo/Listen/Free modes work
 fully; Wait mode uses the on-screen keyboard. Permission denied: explain how to re-enable in
-Chrome site settings (Chrome ⋮ → Settings → Site settings → MIDI devices). Offline: everything
-works; the video links show "needs internet". Import failure: show the parser's message and a
-"Copy details" button.
+Chrome site settings (Chrome ⋮ → Settings → Site settings → MIDI devices). **Offline
+(`00` D20): everything works** — scores, drills, playback, progress, import of a file already
+on the phone — because the whole library is on the device. Only the teaching-video links show
+"needs internet", and they say so before you tap them rather than after. A failed update check
+is silent. **First launch is the one moment that needs the network**, and the app says so with
+a progress bar for the download rather than appearing to hang. Import failure: show the
+parser's message and a "Copy details" button.
 
 ## 9. Accessibility
 

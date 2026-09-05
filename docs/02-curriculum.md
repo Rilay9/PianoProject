@@ -467,6 +467,26 @@ Every scale/arpeggio drill is generated per key, hands (R/L/both), octaves (1–
 fingerings encoded in the MusicXML `<fingering>` elements. Hanon 1–20 are generated from
 their pattern definitions (each is a 8-note cell transposed stepwise up two octaves and back).
 
+### Part E2 — the non-scale exercise families (`00` D21, built in P5b)
+
+The table above is a technique syllabus in the conservatoire sense. It is not the whole of
+what a learner practises, and a skill with no generated exercise ends up either untested or
+propped up by a song that only half tests it. Every family below is generated notation, per
+key and per hand where that means anything, with fingering:
+
+| Family | Trains | Stage | Notes |
+|--------|--------|------:|-------|
+| `five-finger` **hands separately** | 1.1 RH position, 1.3 LH position | 1 | The generator already takes a `hands` argument; the build plan only ever asked for `both`. |
+| `coordination` | 2.1 "LH holds, RH moves" | 2 | LH whole/half note under an RH five-finger walk; a variant where the LH changes C→G each bar. |
+| `interval-reading` | 1.5 steps and skips | 1 | Four bars, fixed hand position, intervals restricted to 2nds and 3rds. Deterministic per seed so a lesson can name one. |
+| `position-shift` | 2.5 leaving C position | 2 | A melody with one marked shift per line, fingering printed at the move. |
+| `cadence` | 3.2 I–IV–V7, voice leading | 3 | Per key, twice: root position, then the smooth voicing keeping common tones. The most useful chord exercise there is. |
+| `accompaniment` | **3.6, which currently has no generated exercise at all** | 3 | Broken chord, Alberti, waltz bass over a chord sequence; LH alone and hands-together with an RH scale over the top. |
+| `pedal` | 3.5 legato pedalling | 3 | A chord sequence with pedal marks, for the CC64 change-timing score. |
+| `rhythm` in other meters | 1.4 (3/4), 4.5 (6/8) | 1–4 | `make_rhythm` currently hardcodes 4/4; the meter becomes a parameter. |
+| `shuffle` | 4.5, blues track | 4 | Straight eighths written, swung played; the notation carries the "shuffle" instruction. |
+| `contrary` 2-octave, minors | 4.1, 4.2 | 4 | Contrary motion exists at one octave in majors only. |
+
 ---
 
 ## Part F — Master song list for `[AUTH]` authoring (public-domain melodies)
@@ -566,7 +586,15 @@ suggestions** with a note on where to buy/obtain MusicXML.
   the learner self-reports after a Tempo-mode run — the app shows a "How did it go?" 3-button
   prompt and records it as self-assessed).
 - `master` = accuracy ≥ 97 % at 100 % tempo, twice on different days.
-- Lesson complete = 1 exercise passed + 1 song passed (setting: "require 2 songs").
+- Lesson complete = **1 exercise passed + 1 item passed**, where the second item may be a song
+  *or* another exercise (`00` D21). A unit whose skill no song tests — 1.5 reading by
+  interval, 2.5 the first scale, 3.6 accompaniment patterns, the whole theory-and-ear track —
+  sets `songOptional: true` in its lesson and is complete on two exercises. Setting: "require
+  2 songs" for anyone who wants the stricter rule.
+- **Every rung offers at least three alternatives** for each of `exerciseOptions` and
+  `songOptions` (`00` D21). Where three songs do not exist, exercises make up the number and
+  the lesson text says which skill they stand in for. `tools/content/validate.py` enforces
+  the count; it is not left to the author's judgement.
 - Unit complete = all lessons complete. Stage complete = all core units + the capstone.
 - Review queue intervals: 1, 3, 7, 21 days after `pass`; an item drops out of review after
   `master`, but reappears in "Repertoire" every ~30 days.

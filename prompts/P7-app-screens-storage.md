@@ -7,10 +7,13 @@ Read: `docs/04-ui-spec.md` §2–§4, §6–§8; `docs/01-architecture.md` §4.5
 ## Build
 1. `data/`: IndexedDB stores via `idb` per `01` §4.5; `SettingsStore` migration from
    localStorage; export/import JSON (File System Access API with download fallback; share-sheet
-   on Android when available).
+   on Android when available). Settings → Content gains **"Download everything now"**, the
+   **offline-only** toggle and the storage breakdown (`04` §7, `00` D20).
 2. `curriculum/` selectors incl. `nextRecommended`, review queue (intervals 1/3/7/21 days),
    weekly-minutes goal (no daily streak), "I already know this" self-pass + quick checks,
-   session builder for the four templates in curriculum Part A §8.
+   session builder for the four templates in curriculum Part A §8. **Honour `00` D21**: a
+   lesson completes on 1 exercise + 1 item, and a `songOptional` unit completes on two
+   exercises — P5b adds the flag and the `alternativesFor()` selector; this phase uses them.
 3. **Own-score import and PDF viewing (owner request, 2026-09-05).** The owner buys
    MusicXML and has PDFs, so both have to be first-class rather than a corner of Library:
    - **MusicXML/MXL import**: file picker, PWA share target, drag-and-drop; the imported item
@@ -34,7 +37,12 @@ Read: `docs/04-ui-spec.md` §2–§4, §6–§8; `docs/01-architecture.md` §4.5
    No OMR: scanning a PDF into notes is an offline desktop step (Audiveris/MuseScore), and the
    result comes back in through the MusicXML import above.
 4. Screens per `04`: Today (weekly goal header, input chip, session-length picker with 15/30/60/120
-   templates, Jump to…, Review a skill, session card, shuffle, start session flow), Skills review
+   templates, Jump to…, Review a skill, session card, shuffle, start session flow, and
+   **"Swap this" per row** with the "not a song" filter and the "play this instead" pointer
+   for un-imported items — `04` §2), **Diagnostics (`04` §7b — a screen in its own right now:
+   precache state as n of m files cached with the missing list, storage breakdown,
+   MIDI/mic/render numbers, content counts, the thin-unit list, error counts, "copy debug
+   report")**, Skills review
    (§3a), Chord-chart view with form tracker (§3b), tablet breakpoint (§7a), Plan (stages → units →
    lessons, lesson page with options, track toggles/ordering, manual "mark done", placement
    test flow from `02` Stage 0.4 using existing drills/scores), Library (search/filter/sort,

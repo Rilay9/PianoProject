@@ -19,9 +19,11 @@ SHOULD, deviate only with a written note in `docs/decisions/` explaining why.
 - **Not supported by design:** iOS Safari (no Web MIDI), Firefox Android.
 - **Packaging: a Trusted Web Activity (TWA) APK via Bubblewrap** — decided 2026-09-05
   (`00` D19), no longer optional. A TWA wraps the *real Chrome*, so Web MIDI keeps working.
-  A Capacitor/WebView wrap would NOT be guaranteed to expose Web MIDI — do not use it. The
-  TWA still loads its content over HTTPS from the deployed origin, so a host is needed even
-  for the APK unless the build is fully offline-precached at first run; see §9.
+  A Capacitor/WebView wrap would NOT be guaranteed to expose Web MIDI — do not use it.
+- **Offline-first (`00` D20):** a TWA loads its start URL over HTTPS, so an origin has to
+  exist — but only at install and update time. The service worker precaches the shell and the
+  whole content library on first launch, and every launch after that is served from the cache
+  with the network unreachable. See §7 and §9.
 
 ## 2. Repository layout (monorepo, npm workspaces not required)
 
@@ -283,13 +285,31 @@ criteria. Schema at `content/curriculum.schema.json`.
 - MIDI-in to note-coloured: < 30 ms.
 - Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
 - Bundle: app JS < 1.5 MB gzipped; content precache < 60 MB total (scores are tiny; the
-  soundfont dominates — pick a ≤ 20 MB piano).
+  soundfont dominates — pick a ≤ 20 MB piano). **Measured 2026-09-05: content 6.0 MB
+  (2.7 scores / 2.6 soundfont / 0.5 catalog / 0.2 lessons), `app/dist` 7.6 MB.** Re-measure
+  and record it after every content phase; the whole library is precached (`00` D20, §7), so
+  this number is what the owner downloads.
 
 ## 7. Offline
 
-`vite-plugin-pwa` with Workbox `generateSW`: precache app shell + `content/**`; runtime cache
-nothing external (there is nothing external). Show an in-app "update available — reload"
-toast when a new service worker is waiting.
+**Everything runs locally (`00` D20).** `vite-plugin-pwa` with Workbox `generateSW`:
+
+- **Precache the app shell and all of `content/**`** — every score, the catalog, the
+  curriculum, every lesson markdown file, and the soundfont. Not a runtime cache, not
+  lazy: the whole library is on the device after the first launch. Workbox's default
+  `maximumFileSizeToCacheInBytes` (2 MB) MUST be raised or the soundfont is silently skipped;
+  this is the classic way this goes wrong.
+- **Runtime cache nothing external**, because nothing external is fetched. The one exception
+  is the teaching-video links, which open the browser and are labelled "needs internet"
+  (`04` §8).
+- **The precache must be verifiable, not assumed.** The service worker reports how many of
+  the catalog's files are cached; Diagnostics shows it (`04` §7b) and a **"Download
+  everything now"** action in Settings → Content re-runs it and reports the total size.
+- **Update checks are optional and silent.** An "update available — reload" toast when a new
+  service worker is waiting; a setting turns the check off entirely, and a failed check when
+  offline is not an error and is never shown.
+- **Budget check (measured 2026-09-05):** content 6.0 MB, built app 7.6 MB, against the
+  60 MB budget in §6. There is room for the whole of P5b and P10.
 
 ## 8. Screen wake lock, orientation, full-screen
 
@@ -320,11 +340,13 @@ the repo is public.
 
 **At v1.0, when the repo goes private (P9):**
 - The content build may drop the licence gate for the APK; see `03` §1.
-- A TWA loads its start URL over HTTPS, so the app still needs an origin. Two options, decided
-  in P9: (a) keep a static host — Cloudflare Pages or Netlify free tier serves a private repo's
-  build over HTTPS and is the smaller change; or (b) make the APK fully self-contained by
-  precaching every route and asset on first run, which needs one online first launch anyway.
-  Option (a) is the recommendation: it keeps updates a push away.
+- **Offline-first is decided (`00` D20).** The origin exists only so the TWA has a start URL
+  to install from and to check for updates against; after the first launch the service worker
+  serves everything and the app works with the network off permanently. Any static host will
+  do — Cloudflare Pages or Netlify free tier both build a private repo — precisely because it
+  is barely used. A laptop serving `app/dist` over HTTPS on the LAN is enough for an install.
+- Consequence for P9's acceptance: **airplane mode from the second launch onwards must be a
+  fully working app**, not a degraded one. That is a test, not an aspiration.
 - Bubblewrap needs a signing keystore and a `assetlinks.json` served from the origin's
   `/.well-known/`. **The keystore is the owner's and is never committed**; P9 documents where
   it lives and how to reproduce a build without it.

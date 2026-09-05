@@ -87,7 +87,21 @@ the bars with the most misses in the last run.
 
 ## 7. Drills that are not scores (`type: 'drill'`)
 
-Implemented as small engine plugins sharing the input pipeline:
+Two different things are easy to confuse and are not the same:
+
+- A **generated exercise** (`type: 'exercise'`) is real notation built at content-build time
+  by `tools/content/generate_exercises.py`. It has a `.mxl` file, it opens in the Score
+  screen, and every practice mode works on it. Scales, arpeggios, Hanon, and — from P5b —
+  coordination, cadences, accompaniment patterns, interval reading and the rest of `02`
+  Part E2.
+- A **drill** (`type: 'drill'`) has no notation and no file. It is a prompt-and-answer loop
+  built at runtime from the `drill.kind` below.
+
+When both could express a skill, prefer the exercise: it is inspectable, it can be practised
+slowly in Wait mode, and it renders in the previews so a mistake in it is visible before a
+learner meets it.
+
+Drills are implemented as small engine plugins sharing the input pipeline:
 
 | kind | behaviour | scoring |
 |------|-----------|---------|
