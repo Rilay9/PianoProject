@@ -27,8 +27,24 @@ from music21 import (chord, clef, instrument, key, layout, meter, metadata, note
 from music21.scale import Direction
 
 # --------------------------------------------------------------------------------------
-# Fingering tables (standard editions; entries marked VERIFY should be checked against a
-# published scale book before the catalog goes live — they are the less common keys).
+# Fingering tables, verified against a published chart.
+#
+# The chart is Muzio Clementi, *Introduction to the Art of Playing on the Piano Forte*,
+# Op. 42 (1801), in the Mutopia Project's CC BY-SA 4.0 typeset; it is extracted by
+# tools/content/extract_fingering.py into content/sources/clementi-op42-fingering.json and
+# compared against these tables by tools/content/tests/test_fingering.py.
+#
+# What the comparison checks is the **thumb positions**, because that is what a fingering
+# is: the rest of the fingers follow by stepping. Three of the entries that were marked
+# VERIFY disagreed with the chart and now follow it: the F# minor and C# minor right hands
+# (Clementi turns the thumb under on the 7th degree, these had it on the 6th) and the
+# G# minor left hand.
+#
+# Where our tables differ from Clementi in the *first* or *last* note only, that is
+# deliberate and not a discrepancy: Clementi prints two-octave runs, so his first note is
+# fingered for a hand that will keep going, while these are one-octave tables whose last
+# entry is the finger you stop on.
+#
 # Each list is one octave ascending, 8 entries (tonic to tonic).
 # --------------------------------------------------------------------------------------
 MAJOR_FINGERING: dict[str, tuple[list[int], list[int]]] = {
@@ -54,22 +70,31 @@ HARMONIC_MINOR_FINGERING: dict[str, tuple[list[int], list[int]]] = {
     "C":  ([1, 2, 3, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 3, 2, 1]),
     "B":  ([1, 2, 3, 1, 2, 3, 4, 5], [4, 3, 2, 1, 4, 3, 2, 1]),
     "F":  ([1, 2, 3, 4, 1, 2, 3, 4], [5, 4, 3, 2, 1, 3, 2, 1]),
-    "F#": ([3, 4, 1, 2, 3, 1, 2, 3], [4, 3, 2, 1, 3, 2, 1, 4]),   # VERIFY
-    "C#": ([3, 4, 1, 2, 3, 1, 2, 3], [3, 2, 1, 4, 3, 2, 1, 3]),   # VERIFY
-    "G#": ([3, 4, 1, 2, 3, 1, 2, 3], [3, 2, 1, 3, 2, 1, 4, 3]),   # VERIFY
-    "B-": ([2, 1, 2, 3, 1, 2, 3, 4], [2, 1, 3, 2, 1, 4, 3, 2]),   # VERIFY
-    "E-": ([3, 1, 2, 3, 4, 1, 2, 3], [2, 1, 4, 3, 2, 1, 3, 2]),   # VERIFY
+    # Clementi Op. 42: thumb on the 3rd and the 7th degree, not on the 6th.
+    "F#": ([2, 3, 1, 2, 3, 4, 1, 2], [4, 3, 2, 1, 3, 2, 1, 4]),
+    "C#": ([2, 3, 1, 2, 3, 4, 1, 2], [3, 2, 1, 4, 3, 2, 1, 3]),
+    # …and the left hand here had its second thumb a degree early.
+    "G#": ([3, 4, 1, 2, 3, 1, 2, 3], [3, 2, 1, 4, 3, 2, 1, 3]),
+    "B-": ([2, 1, 2, 3, 1, 2, 3, 4], [2, 1, 3, 2, 1, 4, 3, 2]),
+    "E-": ([3, 1, 2, 3, 4, 1, 2, 3], [2, 1, 4, 3, 2, 1, 3, 2]),
 }
 ARPEGGIO_FINGERING_RH = [1, 2, 3, 5]   # root-position major/minor triad, white-key roots
 ARPEGGIO_FINGERING_LH = [5, 3, 2, 1]
 
-# Hanon exercises encoded as diatonic-step offsets inside each 8-note cell.
-# Ascending cells start on C4, D4, ... B5 (14 cells); descending cells start on G6 down to A4.
-# Only No. 1 is encoded here with confidence; builders add 2–20 from a public-domain edition
-# (IMSLP: Hanon, "The Virtuoso Pianist", 1873) and unit-test each against the printed score.
-HANON: dict[int, tuple[list[int], list[int]]] = {
-    1: ([0, 2, 3, 4, 5, 4, 3, 2], [0, -2, -3, -4, -5, -4, -3, -2]),
-}
+# Hanon 1–20 come from content/sources/hanon-mutopia.json, encoded by
+# tools/content/extract_hanon.py from the Mutopia Project's public-domain edition of
+# *The Virtuoso Pianist* (1873). Encoding twenty exercises from memory would have been
+# twenty chances to teach the owner a wrong note; reading them from a published edition is
+# not.
+HANON_DATA_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    "content", "sources", "hanon-mutopia.json",
+)
+
+
+def load_hanon() -> dict:
+    with open(HANON_DATA_PATH, encoding="utf-8") as handle:
+        return json.load(handle)["exercises"]
 
 
 # --------------------------------------------------------------------------------------
@@ -325,45 +350,241 @@ def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm
     return sc, entry
 
 
-def make_hanon(number: int, hands: str = "both", bpm: int = 60, level: float = 4.4) -> tuple[stream.Score, dict]:
-    asc_cell, desc_cell = HANON[number]
+def make_hanon(
+    number: int,
+    hands: str = "both",
+    bpm: int = 60,
+    level: float = 4.4,
+    data: dict | None = None,
+) -> tuple[stream.Score, dict]:
+    """
+    One Hanon exercise, note for note as the Mutopia edition prints it.
+
+    The data is a list of diatonic scale degrees per hand, counted from the
+    hand's starting note, so building the score is a walk up the C major scale
+    rather than a reconstruction of the pattern.
+    """
+    exercises = data if data is not None else load_hanon()
+    spec = exercises[str(number)]
     cmaj = scale.MajorScale("C")
     title = f"Hanon No. {number} (C major) — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ts="2/4", ks=key.Key("C"))
 
-    def step(p: pitch.Pitch, n: int) -> pitch.Pitch:
-        if n == 0:
-            return p
-        return cmaj.nextPitch(p, direction=Direction.ASCENDING if n > 0 else Direction.DESCENDING, stepSize=abs(n))
-
-    def build(start_pitch: str) -> list[pitch.Pitch]:
-        out: list[pitch.Pitch] = []
-        start = pitch.Pitch(start_pitch)
-        # 14 ascending cells starting on C, D, E ... (stepwise up two octaves)
-        for i in range(14):
-            cell_start = step(start, i)
-            out += [step(cell_start, s) for s in asc_cell]
-        # 14 descending cells: the first starts on the peak of the last ascending cell
-        top = step(step(start, 13), max(asc_cell))
-        for i in range(14):
-            cell_start = step(top, -i)
-            out += [step(cell_start, s) for s in desc_cell]
-        out.append(start)  # final tonic
+    def degrees_to_pitches(start_name: str, degrees: list[int]) -> list[pitch.Pitch]:
+        start = pitch.Pitch(start_name)
+        out = []
+        for degree in degrees:
+            if degree == 0:
+                out.append(pitch.Pitch(start.nameWithOctave))
+                continue
+            direction = Direction.ASCENDING if degree > 0 else Direction.DESCENDING
+            out.append(cmaj.nextPitch(start, direction=direction, stepSize=abs(degree)))
         return out
 
-    rh_p, lh_p = build("C4"), build("C3")
-    ql = 0.25  # sixteenths in 2/4 → 8 notes per bar, as printed
-    for part_, pitches in ((rh, rh_p), (lh, lh_p)):
-        if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
-            part_.append(note.Rest(quarterLength=ql * (len(pitches) - 1) + 2))
+    ql = 0.25  # sixteenths in 2/4: eight notes to the bar, as printed
+    for part_, side in ((rh, "rh"), (lh, "lh")):
+        wanted = not ((part_ is rh and hands == "left") or (part_ is lh and hands == "right"))
+        pitches = degrees_to_pitches(spec[side]["start"], spec[side]["steps"])
+        fingers = spec[side]["fingers"]
+        if not wanted:
+            part_.append(
+                note.Rest(quarterLength=ql * (len(pitches) - spec.get("finalChordNotes", 1)) + 2)
+            )
             continue
-        for i, p in enumerate(pitches[:-1]):
-            part_.append(note.Note(p, quarterLength=ql))
-        part_.append(note.Note(pitches[-1], quarterLength=2.0))
+        # The closing note is long, and in No. 20 it is a two-note chord.
+        final = spec.get("finalChordNotes", 1)
+        for index, p in enumerate(pitches[:-final]):
+            n = note.Note(p, quarterLength=ql)
+            finger = fingers[index] if index < len(fingers) else None
+            if finger:
+                n.articulations.append(articulations.Fingering(finger))
+            part_.append(n)
+        closing = pitches[-final:]
+        part_.append(
+            note.Note(closing[0], quarterLength=2.0)
+            if len(closing) == 1
+            else chord.Chord(closing, quarterLength=2.0)
+        )
     finalize(sc)
     item_id = f"exercise.hanon.{number:02d}.{hands}"
-    entry = catalog_entry(item_id, title, level, ["hanon", "finger-independence", f"hands:{hands}"], hands, bpm, "hanon",
-                          {"number": number, "key": "C", "timeSig": "2/4"}, f"scores/generated/{item_id}.mxl")
+    entry = catalog_entry(
+        item_id, title, level, ["hanon", "finger-independence", f"hands:{hands}"], hands, bpm, "hanon",
+        {"number": number, "key": "C", "timeSig": "2/4"}, f"scores/generated/{item_id}.mxl",
+    )
+    # The note data was read from a CC BY-SA edition, so it is credited even
+    # though the composition itself is public domain (docs/03 §1 rule 2).
+    entry["source"] = {
+        "name": "Hanon, The Virtuoso Pianist (1873); note data from the Mutopia Project edition",
+        "url": "https://github.com/MutopiaProject/MutopiaProject",
+        "license": "PD (composition); edition CC BY-SA 4.0",
+        "pd_region": "worldwide",
+        "fetchedAt": None,
+        "checksum": None,
+        "editionNotes": "Typeset by Steve Taylor and Javier Ruiz-Alma for the Mutopia Project.",
+    }
+    entry["composer"] = "Charles-Louis Hanon"
+    return sc, entry
+
+
+#: Black keys, where the chromatic scale puts the third finger.
+BLACK_PITCH_CLASSES = {1, 3, 6, 8, 10}
+
+
+def chromatic_finger(midi: int, first: bool) -> int:
+    """
+    The modern chromatic fingering: 3 on every black key, 1 on every white,
+    and 2 on the white that follows a white (F after E, C after B).
+
+    Both hands use this shape. It is *not* what Clementi Op. 42 prints — his
+    1801 chromatic runs 1-2-3-4 across the keys — and that is a deliberate
+    departure from the chart the scale fingerings were verified against: the
+    1-3 shape is what every modern method teaches and what the learner will
+    see everywhere else.
+    """
+    pitch_class = midi % 12
+    if pitch_class in BLACK_PITCH_CLASSES:
+        return 3
+    if pitch_class == 5:  # F, which follows E
+        return 2
+    if pitch_class == 0:  # C, which follows B — except at the very start
+        return 1 if first else 2
+    return 1
+
+
+def make_chromatic(
+    start: str = "C", hands: str = "both", octaves: int = 1, bpm: int = 60, level: float = 4.4
+) -> tuple[stream.Score, dict]:
+    """
+    The chromatic scale, with the standard 1-3 fingering.
+
+    Both hands use the same shape ascending: thumb on every white key that has
+    no black key above it, third finger on the black keys. It is written out
+    rather than generated from a scale object so the fingering can be attached
+    to the right notes.
+    """
+    title = f"Chromatic scale from {start} — {octaves} oct, {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
+
+    def run(base: str) -> list[pitch.Pitch]:
+        first = pitch.Pitch(base)
+        up = [first.transpose(i) for i in range(12 * octaves + 1)]
+        return up + list(reversed(up))[1:]
+
+    def fingers_for(pitches: list[pitch.Pitch]) -> list[int]:
+        return [chromatic_finger(int(p.midi), index == 0) for index, p in enumerate(pitches)]
+
+    for part_, base in ((rh, f"{start}4"), (lh, f"{start}3")):
+        if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
+            part_.append(note.Rest(quarterLength=0.5 * (2 * (12 * octaves + 1) - 1)))
+            continue
+        pitches = run(base)
+        add_notes(part_, pitches, fingers_for(pitches), 0.5)
+    finalize(sc)
+    item_id = f"exercise.chromatic.{slug(start)}.{octaves}oct.{hands}"
+    entry = catalog_entry(
+        item_id, title, level, ["chromatic", "semitones", f"hands:{hands}"], hands, bpm, "scale",
+        {"key": start, "mode": "chromatic", "octaves": octaves}, f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+#: Seventh-chord shapes as semitones above the root.
+SEVENTH_SHAPES = {
+    "dominant7": [0, 4, 7, 10],
+    "diminished7": [0, 3, 6, 9],
+}
+
+
+def make_seventh_arpeggio(
+    root: str, quality: str = "dominant7", hands: str = "both", octaves: int = 1,
+    bpm: int = 60, level: float = 5.2,
+) -> tuple[stream.Score, dict]:
+    """
+    A four-note seventh arpeggio, up and back.
+
+    Fingered 1-2-3-5 in the right hand and 5-3-2-1 in the left, which is the
+    standard shape for a four-note arpeggio and the reason these are taught
+    after the triads: the hand has to stretch a seventh rather than a fifth.
+    """
+    shape = SEVENTH_SHAPES[quality]
+    label = "dominant 7th" if quality == "dominant7" else "diminished 7th"
+    title = f"{root} {label} arpeggio — {octaves} oct, {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
+
+    def run(start: pitch.Pitch) -> list[pitch.Pitch]:
+        up = [start.transpose(12 * o + i) for o in range(octaves) for i in shape] + [
+            start.transpose(12 * octaves)
+        ]
+        return up + list(reversed(up))[1:]
+
+    rh_pitches, lh_pitches = run(pitch.Pitch(root + "4")), run(pitch.Pitch(root + "3"))
+    rh_fingers = [1, 2, 3, 5] * octaves + [1]
+    rh_fingers = rh_fingers + list(reversed(rh_fingers))[1:]
+    lh_fingers = [5, 3, 2, 1] * octaves + [5]
+    lh_fingers = lh_fingers + list(reversed(lh_fingers))[1:]
+
+    for part_, pitches, fingers in ((rh, rh_pitches, rh_fingers), (lh, lh_pitches, lh_fingers)):
+        if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
+            part_.append(note.Rest(quarterLength=0.5 * len(pitches)))
+            continue
+        add_notes(part_, pitches, fingers, 0.5)
+    finalize(sc)
+    item_id = f"exercise.arpeggio7.{slug(root)}-{quality}.{octaves}oct.{hands}"
+    entry = catalog_entry(
+        item_id, title, level, ["arpeggio", "seventh-chord", f"{root}-{label}", f"hands:{hands}"],
+        hands, bpm, "arpeggio", {"key": root, "quality": quality, "octaves": octaves},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+#: Rhythm patterns as (label, [quarterLengths]) for one 4/4 bar.
+RHYTHM_PATTERNS: list[tuple[str, list[float], float]] = [
+    ("quarters", [1, 1, 1, 1], 1.1),
+    ("half-and-quarters", [2, 1, 1], 1.2),
+    ("eighths", [0.5] * 8, 1.3),
+    ("quarter-eighths", [1, 0.5, 0.5, 1, 1], 1.4),
+    ("dotted-quarter-eighth", [1.5, 0.5, 1, 1], 2.2),
+    ("syncopated", [0.5, 1, 1, 1, 0.5], 3.2),
+    ("sixteenths", [0.25] * 8 + [1, 1], 3.3),
+    ("triplet-quarters", [2 / 3] * 3 + [1, 1, 1], 4.2),
+]
+
+
+def make_rhythm(pattern: str, bars: int = 4, bpm: int = 80) -> tuple[stream.Score, dict]:
+    """
+    A rhythm drill on a one-line staff.
+
+    One line, one pitch: the point is the timing, and a five-line staff invites
+    the learner to read pitches that are not there. MusicXML expresses it as a
+    percussion-style staff with a single line, which OSMD renders as such.
+    """
+    label, lengths, level = next(p for p in RHYTHM_PATTERNS if p[0] == pattern)
+    title = f"Rhythm: {label.replace('-', ' ')} — {bars} bars"
+    sc = stream.Score()
+    sc.metadata = metadata.Metadata()
+    sc.metadata.title = title
+    sc.metadata.composer = "PianoPath (generated)"
+
+    part = stream.PartStaff(id="Rhythm")
+    part.insert(0, instrument.Piano())
+    part.insert(0, clef.PercussionClef())
+    part.insert(0, meter.TimeSignature("4/4"))
+    part.insert(0, tempo.MetronomeMark(number=bpm))
+    layout_staff = layout.StaffLayout(staffLines=1)
+    part.insert(0, layout_staff)
+    for _ in range(bars):
+        for length in lengths:
+            part.append(note.Note("B4", quarterLength=length))
+    part.makeMeasures(inPlace=True)
+    sc.insert(0, part)
+
+    item_id = f"exercise.rhythm.{slug(label)}.{bars}bar"
+    entry = catalog_entry(
+        item_id, title, level, ["rhythm", label, "counting"], "right", bpm, "rhythm",
+        {"pattern": label, "bars": bars, "timeSig": "4/4"}, f"scores/generated/{item_id}.mxl",
+        tracks=["technique", "core", "theory-ear"],
+    )
     return sc, entry
 
 
@@ -374,8 +595,16 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
     items: list[tuple[stream.Score, dict]] = []
     majors = ["C", "G", "D", "A", "E", "B", "F", "B-", "E-", "A-", "D-", "G-"]
     minors = ["A", "E", "D", "G", "C", "B", "F", "F#", "C#", "G#", "B-", "E-"]
+    #: The twelve keys as the learner meets them, for five-finger patterns —
+    #: those are position exercises, so the sharp spelling is the useful one.
+    all_twelve = ["C", "D-", "D", "E-", "E", "F", "G-", "G", "A-", "A", "B-", "B"]
+    hanon = load_hanon()
+    hanon_numbers = sorted(int(n) for n in hanon)
     if quick:
         majors, minors = ["C", "G", "F"], ["A"]
+        all_twelve = ["C", "F"]
+        hanon_numbers = hanon_numbers[:2]
+
     for k in majors:
         for hands in ("right", "left", "both"):
             items.append(make_scale(ScaleSpec(k, "major", hands, 1, "similar", 0.5, 60, 2.5 if hands != "both" else 4.1)))
@@ -383,16 +612,32 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
         items.append(make_scale(ScaleSpec(k, "major", "both", 1, "contrary", 0.5, 60, 4.1)))
         items.append(make_arpeggio(k, "major", "both", 2))
         items.append(make_triad_inversions(k, "major", "both"))
-        items.append(make_five_finger(k, "major", "both"))
+        items.append(make_seventh_arpeggio(k, "dominant7", "both", 1))
     for k in minors:
         for mode in ("harmonic", "melodic", "natural"):
             items.append(make_scale(ScaleSpec(k, mode, "both", 1, "similar", 0.5, 60, 4.2)))
         items.append(make_arpeggio(k, "minor", "both", 2))
         items.append(make_triad_inversions(k, "minor", "both"))
-        items.append(make_five_finger(k, "minor", "both"))
-    for n in HANON:
+        items.append(make_seventh_arpeggio(k, "diminished7", "both", 1))
+
+    # Five-finger patterns in all twelve keys, major and minor: these are the
+    # first thing a beginner plays and the last thing to be dropped.
+    for k in all_twelve:
+        for quality in ("major", "minor"):
+            items.append(make_five_finger(k, quality, "both"))
+
+    # The chromatic scale from each of the four starting points that use a
+    # different fingering shape.
+    for start in (["C"] if quick else ["C", "D", "E", "G"]):
         for hands in ("right", "left", "both"):
-            items.append(make_hanon(n, hands))
+            items.append(make_chromatic(start, hands, 1))
+
+    for pattern, _, _ in (RHYTHM_PATTERNS[:2] if quick else RHYTHM_PATTERNS):
+        items.append(make_rhythm(pattern))
+
+    for number in hanon_numbers:
+        for hands in ("right", "left", "both"):
+            items.append(make_hanon(number, hands, data=hanon))
     return items
 
 
