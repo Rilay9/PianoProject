@@ -85,7 +85,10 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
 
   function onBeat(beat: MetronomeBeat): void {
     if (disposed || beat.isCountIn) return;
-    const nextBar = ((beat.bar - 1) % Math.max(1, bars.length) + Math.max(1, bars.length)) % Math.max(1, bars.length);
+    // `beat.bar` is 1-based and counts up for ever; the chart wraps, which is
+    // what makes the chorus counter mean anything.
+    const length = Math.max(1, bars.length);
+    const nextBar = (beat.bar - 1) % length;
     if (nextBar !== bar) {
       bar = nextBar;
       if (bar === 0 && beat.bar > 1) chorus += 1;

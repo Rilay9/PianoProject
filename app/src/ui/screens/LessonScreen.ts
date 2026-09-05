@@ -16,6 +16,7 @@ import { allItems, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { findLesson, idsToCompleteLesson, lessonComplete } from '../../curriculum/selectors';
 import type { CatalogItem, Curriculum, Lesson, PassRecord } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
+import { getSettings } from '../../data/settingsStore';
 import { markSkill } from '../../data/skillsStore';
 import { recordPlacement } from '../../data/planStore';
 import type { ProgressRow } from '../../data/db';
@@ -119,7 +120,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
           ]),
     );
 
-    const done = lessonComplete(lesson, records());
+    const done = lessonComplete(lesson, records(), { requireTwoSongs: getSettings().requireTwoSongs });
     actions.replaceChildren(
       el('span', { id: 'lesson-state' }, done ? badge('complete', 'passed') : badge('in progress')),
       button(
@@ -128,7 +129,8 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
           // Marks every option of the lesson self-passed in one go: the claim
           // is about the *skill*, not about one particular tune.
           void (async () => {
-            for (const id of lesson ? idsToCompleteLesson(lesson) : []) await selfPass(id);
+            const strict = { requireTwoSongs: getSettings().requireTwoSongs };
+            for (const id of lesson ? idsToCompleteLesson(lesson, strict) : []) await selfPass(id);
             for (const concept of lesson?.concepts ?? []) await markSkill(concept, 'known');
             progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
             draw();
@@ -155,7 +157,8 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         () => {
           if (!confirm('Mark this lesson done without a measured run?')) return;
           void (async () => {
-            for (const id of lesson ? idsToCompleteLesson(lesson) : []) await selfPass(id);
+            const strict = { requireTwoSongs: getSettings().requireTwoSongs };
+            for (const id of lesson ? idsToCompleteLesson(lesson, strict) : []) await selfPass(id);
             progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
             draw();
             status.textContent = 'Marked done by hand.';

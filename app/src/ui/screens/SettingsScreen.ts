@@ -21,9 +21,15 @@ import {
   type PracticeSettings,
 } from '../../data/settingsStore';
 import { getPlan, updatePlan } from '../../data/planStore';
-import { allImports } from '../../data/importStore';
 import { openDatabase } from '../../data/db';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
+import {
+  formatBytes,
+  isOfflineOnly,
+  measureStorage,
+  setOfflineOnly,
+  type StorageBreakdown,
+} from '../../util/storageReport';
 import {
   button,
   el,
@@ -34,66 +40,10 @@ import {
 } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 
-/** docs/04 §7 "offline only [off]" — stops the app checking for updates. */
-export const OFFLINE_ONLY_KEY = 'pianopath.offlineOnly';
-
-export function isOfflineOnly(): boolean {
-  try {
-    return localStorage.getItem(OFFLINE_ONLY_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-export function setOfflineOnly(value: boolean): void {
-  try {
-    localStorage.setItem(OFFLINE_ONLY_KEY, value ? '1' : '0');
-  } catch {
-    // Blocked storage: the app checks for updates, which is the safe default.
-  }
-}
-
-export interface StorageBreakdown {
-  usageBytes: number;
-  quotaBytes: number;
-  precached: number;
-  imports: number;
-  importBytes: number;
-}
-
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${String(bytes)} B`;
-  if (bytes < 1048576) return `${(bytes / 1024).toFixed(0)} kB`;
-  if (bytes < 1073741824) return `${(bytes / 1048576).toFixed(1)} MB`;
-  return `${(bytes / 1073741824).toFixed(2)} GB`;
-}
-
-/** What the Content block reports, and what Diagnostics reuses (docs/04 §7b). */
-export async function measureStorage(): Promise<StorageBreakdown> {
-  const estimate = (await navigator.storage?.estimate?.()) ?? {};
-  let precached = 0;
-  if (typeof caches !== 'undefined') {
-    try {
-      for (const name of await caches.keys()) {
-        precached += (await (await caches.open(name)).keys()).length;
-      }
-    } catch {
-      // Cache Storage can be unavailable; the number is then simply unknown.
-    }
-  }
-  const rows = await allImports();
-  const importBytes = rows.reduce(
-    (sum, row) => sum + (typeof row.data === 'string' ? row.data.length : row.data.byteLength),
-    0,
-  );
-  return {
-    usageBytes: estimate.usage ?? 0,
-    quotaBytes: estimate.quota ?? 0,
-    precached,
-    imports: rows.length,
-    importBytes,
-  };
-}
+const SESSION_LENGTHS = [15, 30, 60, 120].map((minutes) => ({
+  value: String(minutes),
+  label: `${String(minutes)} min`,
+}));
 
 export function SettingsScreen(router: Router): HTMLElement {
   const { section, body } = screenFrame('settings', 'Settings');
@@ -174,6 +124,29 @@ export function SettingsScreen(router: Router): HTMLElement {
     field('Tempo-mode tolerance (ms)', numberControl('set-tolerance', s.toleranceMs, (v) => set({ toleranceMs: v }), { min: 30, max: 500, step: 10 })),
     field('Pass accuracy %', numberControl('set-pass-accuracy', s.passAccuracyPct, (v) => set({ passAccuracyPct: v }), { min: 50, max: 100 })),
     field('Pass tempo %', numberControl('set-pass-tempo', s.passTempoPct, (v) => set({ passTempoPct: v }), { min: 30, max: 130, step: 5 })),
+    field(
+      'Require 2 songs per lesson',
+      toggleControl('set-two-songs', s.requireTwoSongs, (v) => set({ requireTwoSongs: v })),
+      'The stricter completion rule. It never applies to a unit whose skill no song tests.',
+    ),
+    field(
+      'Weekday session (minutes)',
+      selectControl(
+        'set-weekday-minutes',
+        SESSION_LENGTHS,
+        String(s.weekdaySessionMinutes),
+        (value) => set({ weekdaySessionMinutes: Number(value) }),
+      ),
+    ),
+    field(
+      'Weekend session (minutes)',
+      selectControl(
+        'set-weekend-minutes',
+        SESSION_LENGTHS,
+        String(s.weekendSessionMinutes),
+        (value) => set({ weekendSessionMinutes: Number(value) }),
+      ),
+    ),
   );
 
   // --- Display -------------------------------------------------------------
@@ -354,6 +327,11 @@ export function SettingsScreen(router: Router): HTMLElement {
       button('Refresh the numbers', () => void measureStorage().then(showStorage), { id: 'settings-measure' }),
     ),
     field(
+      'Show US-only public-domain items',
+      toggleControl('set-us-only', s.showUsOnlyPd, (v) => set({ showUsOnlyPd: v })),
+      'Nine bundled items are public domain in the United States but not everywhere.',
+    ),
+    field(
       'Offline only',
       toggleControl('set-offline-only', isOfflineOnly(), (value) => {
         setOfflineOnly(value);
@@ -382,10 +360,18 @@ export function SettingsScreen(router: Router): HTMLElement {
         },
         { id: 'settings-reset' },
       ),
-      button('Restore defaults', () => {
-        updateSettings({ ...DEFAULT_SETTINGS });
-        status.textContent = 'Settings restored to their defaults. Reopen this screen to see them.';
-      }, { id: 'settings-defaults' }),
+      button(
+        'Restore defaults',
+        () => {
+          if (!confirm('Put every setting back to its default? Progress and imports are kept.')) return;
+          updateSettings({ ...DEFAULT_SETTINGS });
+          // Every control on this screen was built from the old values, so
+          // reload rather than leave thirty stale inputs on screen. This is
+          // the one action in the app where that is the honest response.
+          window.location.reload();
+        },
+        { id: 'settings-defaults' },
+      ),
     ),
   );
 

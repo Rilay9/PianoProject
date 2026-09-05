@@ -99,9 +99,11 @@ export function ProgressScreen(router: Router): HTMLElement {
       el('h2', { text: 'This week' }),
       el('p.today-goal', {
         id: 'progress-week',
-        text: `${minutesLabel(week.minutes)} of ${String(goal)} minutes · ${String(week.days)} day${
-          week.days === 1 ? '' : 's'
-        } practised`,
+        // Same wording as Today's header, deliberately: it is the same number,
+        // and two phrasings for one figure reads as two different figures.
+        text: `${String(Math.round(week.minutes))} of ${String(goal)} minutes this week · ${String(
+          week.days,
+        )} day${week.days === 1 ? '' : 's'} practised`,
       }),
       el('p.muted', {
         id: 'progress-totals',

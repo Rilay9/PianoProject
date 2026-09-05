@@ -49,33 +49,28 @@ const SLOT_LABELS: Record<SessionSlot['kind'], string> = {
   sightreading: 'Sight-reading',
 };
 
-/** The chosen session length, remembered per weekday/weekend (docs/04 §2). */
-const LENGTH_KEY = 'pianopath.sessionLength';
-
 function isWeekend(now = new Date()): boolean {
   const day = now.getDay();
   return day === 0 || day === 6;
 }
 
+/**
+ * The session length for today (docs/04 §2: "remembers weekday vs weekend
+ * choice").
+ *
+ * Stored in `PracticeSettings` rather than in a key of its own, so the picker
+ * here and the two controls in Settings → Practice are the same value and not
+ * two that drift apart.
+ */
 export function readSessionLength(now = new Date()): number {
-  try {
-    const raw = JSON.parse(localStorage.getItem(LENGTH_KEY) ?? '{}') as Record<string, unknown>;
-    const value = raw[isWeekend(now) ? 'weekend' : 'weekday'];
-    if (typeof value === 'number' && SESSION_TEMPLATES.some((t) => t.minutes === value)) return value;
-  } catch {
-    // Blocked storage: the default is fine.
-  }
-  return isWeekend(now) ? 60 : 30;
+  const settings = getSettings();
+  return isWeekend(now) ? settings.weekendSessionMinutes : settings.weekdaySessionMinutes;
 }
 
 function writeSessionLength(minutes: number, now = new Date()): void {
-  try {
-    const raw = JSON.parse(localStorage.getItem(LENGTH_KEY) ?? '{}') as Record<string, unknown>;
-    raw[isWeekend(now) ? 'weekend' : 'weekday'] = minutes;
-    localStorage.setItem(LENGTH_KEY, JSON.stringify(raw));
-  } catch {
-    // Same.
-  }
+  updateSettings(
+    isWeekend(now) ? { weekendSessionMinutes: minutes } : { weekdaySessionMinutes: minutes },
+  );
 }
 
 /** The follow input the app would use right now, for the chip (docs/04 §2). */
@@ -289,13 +284,16 @@ export function TodayScreen(router: Router): HTMLElement {
         activeTracks: plan.trackOrder,
         minutes,
         seed,
+        requireTwoSongs: getSettings().requireTwoSongs,
       });
       slots = built.slots;
       breakAfter = built.template.breakAfterSlot;
       drawCard();
       drawActions();
 
-      const position = nextRecommended(curriculum as Curriculum, records, plan.trackOrder);
+      const position = nextRecommended(curriculum as Curriculum, records, plan.trackOrder, {
+        requireTwoSongs: getSettings().requireTwoSongs,
+      });
       status.textContent = position
         ? `Working on Stage ${String(position.stageNumber)} · ${position.unit.title} · lesson ${
             position.lesson.id
@@ -337,11 +335,6 @@ export function TodayScreen(router: Router): HTMLElement {
     });
   });
   onScreenDispose(section, stopWatchingProgress);
-
-  // The default tempo % is a Practice setting; touching it here would be a
-  // surprise, so Today only reads settings and never writes them.
-  void getSettings();
-  void updateSettings;
 
   return section;
 }

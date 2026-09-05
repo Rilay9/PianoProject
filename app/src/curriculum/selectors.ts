@@ -26,11 +26,22 @@ function passedIds(records: PassRecord[]): Set<string> {
  * another exercise. Forcing a song there was making the rule lie: unit 3.6 is about
  * accompaniment patterns and no song in the library tests one.
  */
-export function lessonComplete(lesson: Lesson, records: PassRecord[]): boolean {
+export function lessonComplete(
+  lesson: Lesson,
+  records: PassRecord[],
+  options: { requireTwoSongs?: boolean } = {},
+): boolean {
   const passed = passedIds(records);
   const exercises = lesson.exerciseOptions.filter((id) => passed.has(id)).length;
   const songs = lesson.songOptions.filter((id) => passed.has(id)).length;
-  const { exercisesRequired, songsRequired } = lesson.mastery;
+  const { exercisesRequired } = lesson.mastery;
+  // docs/04 §7 "require 2 songs per lesson [off]": the stricter rule for
+  // anyone who wants it. It cannot apply to a lesson with no song that tests
+  // its skill — that is what `songOptional` means.
+  const songsRequired =
+    options.requireTwoSongs && !lesson.songOptional && lesson.songOptions.length >= 2
+      ? 2
+      : lesson.mastery.songsRequired;
 
   if (lesson.songOptional) {
     // Any mix, as long as there are enough passes in total and the exercise floor is met.
@@ -49,8 +60,15 @@ export function lessonComplete(lesson: Lesson, records: PassRecord[]): boolean {
  * does: `exercisesRequired` exercises plus `songsRequired` songs, except that
  * a `songOptional` lesson takes exercises for both (`00` D21).
  */
-export function idsToCompleteLesson(lesson: Lesson): string[] {
-  const { exercisesRequired, songsRequired } = lesson.mastery;
+export function idsToCompleteLesson(
+  lesson: Lesson,
+  options: { requireTwoSongs?: boolean } = {},
+): string[] {
+  const { exercisesRequired } = lesson.mastery;
+  const songsRequired =
+    options.requireTwoSongs && !lesson.songOptional && lesson.songOptions.length >= 2
+      ? 2
+      : lesson.mastery.songsRequired;
   if (lesson.songOptional) {
     return lesson.exerciseOptions.slice(0, exercisesRequired + songsRequired);
   }

@@ -38,6 +38,11 @@ export interface PracticeSettings {
   toleranceMs: number;
   passAccuracyPct: number;
   passTempoPct: number;
+  /** docs/04 §7: the stricter completion rule — a lesson needs two songs. */
+  requireTwoSongs: boolean;
+  /** Remembered per kind of day (docs/04 §2 session-length picker). */
+  weekdaySessionMinutes: number;
+  weekendSessionMinutes: number;
 
   // --- Display ---
   landscapeLock: boolean;
@@ -55,6 +60,10 @@ export interface PracticeSettings {
   // --- Input ---
   /** Order the app tries follow inputs in when one is not pinned. */
   inputPriority: FollowInput[];
+  // --- Content ---
+  /** docs/04 §7: hide items that are public domain only in the United States. */
+  showUsOnlyPd: boolean;
+
   /** Fraction of a chord the microphone must hear before the step completes. */
   micChordLeniencyPct: number;
   strictMicScoring: boolean;
@@ -74,6 +83,9 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   toleranceMs: 150,
   passAccuracyPct: 90,
   passTempoPct: 80,
+  requireTwoSongs: false,
+  weekdaySessionMinutes: 30,
+  weekendSessionMinutes: 60,
 
   landscapeLock: true,
   zoom: 1,
@@ -87,6 +99,7 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   playbackHands: 'non-focused',
 
   inputPriority: ['midi', 'mic', 'none'],
+  showUsOnlyPd: true,
   micChordLeniencyPct: 70,
   strictMicScoring: false,
   muteExpectedWhileMic: true,
@@ -131,6 +144,9 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   out.toleranceMs = Math.round(num(v.toleranceMs, out.toleranceMs, 30, 500));
   out.passAccuracyPct = Math.round(num(v.passAccuracyPct, out.passAccuracyPct, 50, 100));
   out.passTempoPct = Math.round(num(v.passTempoPct, out.passTempoPct, 30, 130));
+  out.requireTwoSongs = bool(v.requireTwoSongs, out.requireTwoSongs);
+  out.weekdaySessionMinutes = Math.round(num(v.weekdaySessionMinutes, out.weekdaySessionMinutes, 15, 120));
+  out.weekendSessionMinutes = Math.round(num(v.weekendSessionMinutes, out.weekendSessionMinutes, 15, 120));
 
   out.landscapeLock = bool(v.landscapeLock, out.landscapeLock);
   out.zoom = num(v.zoom, out.zoom, 0.5, 2.5);
@@ -150,6 +166,7 @@ export function coerceSettings(raw: unknown): PracticeSettings {
     );
     if (cleaned.length > 0) out.inputPriority = [...new Set(cleaned)];
   }
+  out.showUsOnlyPd = bool(v.showUsOnlyPd, out.showUsOnlyPd);
   out.micChordLeniencyPct = Math.round(num(v.micChordLeniencyPct, out.micChordLeniencyPct, 30, 100));
   out.strictMicScoring = bool(v.strictMicScoring, out.strictMicScoring);
   out.muteExpectedWhileMic = bool(v.muteExpectedWhileMic, out.muteExpectedWhileMic);

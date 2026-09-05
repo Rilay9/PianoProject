@@ -13,8 +13,10 @@
  *     browser that cleared localStorage but kept IndexedDB, come back;
  *   - export/import reads and writes IndexedDB, so a backup carries settings.
  *
- * `hydratePersisted` is awaited by `main.ts` before the shell mounts, so no
- * screen ever sees a half-migrated value.
+ * `main.ts` awaits `hydratePersisted()` before mounting the shell *when it
+ * needs to* — see `needsHydration()`. A normal launch has the mirror already
+ * populated and pays nothing; the launch that needs the database is the one
+ * that waits for it.
  */
 import { openDatabase } from './db';
 
@@ -57,6 +59,19 @@ export function persistLocal(key: MirroredKey, value: string): void {
   void openDatabase()
     .then((db) => db?.put('settings', value, key))
     .catch(() => undefined);
+}
+
+/**
+ * Is any mirrored key missing from localStorage?
+ *
+ * Synchronous and cheap, and it decides whether the shell waits for
+ * `hydratePersisted()` or lets it run in the background. Screens read their
+ * settings once when they are built, so a value that arrives after the mount
+ * shows up as a default in the controls — which is what a cleared
+ * localStorage looked like before this check existed.
+ */
+export function needsHydration(): boolean {
+  return MIRRORED_KEYS.some((key) => localGet(key) === null);
 }
 
 /**

@@ -104,6 +104,8 @@ export interface BuildInput {
   minutes: number;
   /** Rotates the choice within a slot so "Shuffle" gives something different. */
   seed?: number;
+  /** docs/04 §7 "require 2 songs per lesson"; changes what counts as complete. */
+  requireTwoSongs?: boolean;
 }
 
 export interface LessonPosition {
@@ -117,6 +119,7 @@ export function nextRecommended(
   curriculum: Curriculum,
   records: PassRecord[],
   activeTracks: string[] = [],
+  options: { requireTwoSongs?: boolean } = {},
 ): LessonPosition | undefined {
   const tracks = new Set(activeTracks);
   for (const stage of curriculum.stages) {
@@ -125,7 +128,7 @@ export function nextRecommended(
       // is never optional — it is the spine the stages are built on.
       if (tracks.size > 0 && unit.track !== 'core' && !tracks.has(unit.track)) continue;
       for (const lesson of unit.lessons) {
-        if (!lessonComplete(lesson, records)) {
+        if (!lessonComplete(lesson, records, options)) {
           return { lesson, unit, stageNumber: stage.number };
         }
       }
@@ -305,7 +308,9 @@ function fillSlot(
  */
 export function buildSession(input: BuildInput): { template: SessionTemplate; slots: SessionSlot[] } {
   const template = templateFor(input.minutes);
-  const position = nextRecommended(input.curriculum, input.records, input.activeTracks);
+  const position = nextRecommended(input.curriculum, input.records, input.activeTracks, {
+    ...(input.requireTwoSongs === undefined ? {} : { requireTwoSongs: input.requireTwoSongs }),
+  });
   const used = new Set<string>();
   const seed = input.seed ?? 0;
 

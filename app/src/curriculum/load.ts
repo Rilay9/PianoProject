@@ -10,6 +10,7 @@
 import type { CatalogItem, Curriculum } from './types';
 import { indexCatalog, type CatalogIndex } from './selectors';
 import { importedCatalogItems, onImportsChange } from '../data/importStore';
+import { getSettings, onSettingsChange } from '../data/settingsStore';
 
 export function contentUrl(path: string, base: string = import.meta.env.BASE_URL): string {
   const prefix = base.endsWith('/') ? base : `${base}/`;
@@ -56,7 +57,13 @@ export async function allItems(): Promise<CatalogItem[]> {
   const [bundled, imported] = await Promise.all([loadCatalog(), importedCatalogItems()]);
   const byId = new Map(imported.map((item) => [item.id, item]));
   for (const item of bundled) byId.set(item.id, item);
-  return [...byId.values()];
+  // docs/04 §7: nine bundled items are public domain in the United States only
+  // (A4). The owner is in the US so the default is to show them; the switch is
+  // here so the answer changes in one place if that stops being true.
+  const showUsOnly = getSettings().showUsOnlyPd;
+  return [...byId.values()].filter(
+    (item) => showUsOnly || item.source?.pd_region !== 'US',
+  );
 }
 
 export async function catalogIndex(): Promise<CatalogIndex> {
@@ -68,6 +75,17 @@ export async function catalogIndex(): Promise<CatalogIndex> {
 // An import or a delete invalidates the merged index; the bundled catalog
 // itself never changes at runtime, so only the index is dropped.
 onImportsChange(() => {
+  indexCache = null;
+});
+
+// The US-only filter changes what `allItems` returns, so the merged index has
+// to be rebuilt when it is toggled — but only then. Settings are written on
+// every control change, and dropping a 573-item index on each one would make
+// the Settings screen quietly expensive.
+let lastShowUsOnlyPd = getSettings().showUsOnlyPd;
+onSettingsChange((settings) => {
+  if (settings.showUsOnlyPd === lastShowUsOnlyPd) return;
+  lastShowUsOnlyPd = settings.showUsOnlyPd;
   indexCache = null;
 });
 

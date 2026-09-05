@@ -42,6 +42,9 @@ export type FollowMode = 'manual' | 'timed' | 'loop';
 /** Width the page is rendered at for display; enough for a phone at 3× DPR. */
 const DISPLAY_WIDTH = 1400;
 
+/** Rendered pages kept in memory at once: the one being read, plus neighbours. */
+const PAGE_CACHE_SIZE = 3;
+
 /** docs/04 §5b: timed advance is set in bpm, so a system needs a bar count. */
 export const DEFAULT_BARS_PER_SYSTEM = 4;
 const BEATS_PER_BAR = 4;
@@ -61,7 +64,18 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
   const adjustHost = el('div.pdf-adjust', { id: 'pdf-adjust', hidden: true });
 
   let doc: PdfDocument | null = null;
-  let pageCanvases: (HTMLCanvasElement | null)[] = [];
+  let pageCount = 0;
+  /**
+   * Rendered pages, most recently used last.
+   *
+   * Rendering every page up front is what the first draft did, and it does not
+   * survive a real score: a 30-page sonata at display width is roughly 10 MB
+   * of canvas per page, which is 300 MB of bitmap on a phone. Only the page
+   * being read and its neighbours are kept.
+   */
+  const pageCache = new Map<number, HTMLCanvasElement>();
+  /** Renders in progress, so two draws never rasterise the same page twice. */
+  const inFlight = new Map<number, Promise<void>>();
   let cuts: CutMap = {};
   let systems: PlannedSystem[] = [];
   let index = 0;
@@ -78,7 +92,7 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
   function drawInto(canvas: HTMLCanvasElement, system: PlannedSystem | undefined): void {
     const context = canvas.getContext('2d');
     if (!context) return;
-    const page = system ? pageCanvases[system.page] : null;
+    const page = system ? pageCache.get(system.page) : undefined;
     if (!system || !page) {
       canvas.width = 1;
       canvas.height = 1;
@@ -95,8 +109,49 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
     context.drawImage(page, 0, top, page.width, height, 0, 0, page.width, height);
   }
 
+  /** Renders a page into the cache if it is not there, evicting the oldest. */
+  async function ensurePage(page: number): Promise<void> {
+    if (!doc || page < 0 || page >= pageCount || pageCache.has(page)) return;
+    // Two draws can want the same page at once — the current system and the
+    // greyed next one, when both are on it. Sharing the render keeps a phone
+    // from rasterising a full page twice for one repaint.
+    const existing = inFlight.get(page);
+    if (existing) {
+      await existing;
+      return;
+    }
+    const render = doc.renderPage(page, DISPLAY_WIDTH);
+    inFlight.set(page, render.then(() => undefined));
+    try {
+      const rendered = await render;
+      if (disposed) return;
+      pageCache.set(page, rendered.canvas);
+      while (pageCache.size > PAGE_CACHE_SIZE) {
+        const oldest = pageCache.keys().next().value;
+        if (oldest === undefined) break;
+        pageCache.delete(oldest);
+      }
+    } finally {
+      inFlight.delete(page);
+    }
+  }
+
+  /** The pages the current position needs, then repaint once they are in. */
+  function ensureVisiblePages(): void {
+    const wanted = [systems[index]?.page, systems[index + 1]?.page].filter(
+      (page): page is number => page !== undefined,
+    );
+    const missing = wanted.filter((page) => !pageCache.has(page));
+    if (missing.length === 0) return;
+    void (async () => {
+      for (const page of missing) await ensurePage(page);
+      if (!disposed && !adjusting) draw();
+    })();
+  }
+
   function draw(): void {
     const current = systems[index];
+    ensureVisiblePages();
     drawInto(mainCanvas, current);
     drawInto(nextCanvas, systems[index + 1]);
     label.textContent = current
@@ -175,8 +230,14 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
 
   function drawAdjust(): void {
     adjustHost.replaceChildren();
-    const page = pageCanvases[adjustPage];
-    if (!page) return;
+    const page = pageCache.get(adjustPage);
+    if (!page) {
+      adjustHost.append(el('p.muted', { text: 'Rendering the page…' }));
+      void ensurePage(adjustPage).then(() => {
+        if (!disposed && adjusting) drawAdjust();
+      });
+      return;
+    }
 
     const image = el('img.pdf-adjust__page', { src: page.toDataURL(), alt: `Page ${String(adjustPage + 1)}` });
     const lines = el('div.pdf-adjust__lines');
@@ -217,9 +278,9 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
           adjustPage = Math.max(0, adjustPage - 1);
           drawAdjust();
         }, { id: 'pdf-adjust-prev' }),
-        el('span', { id: 'pdf-adjust-label', text: `Page ${String(adjustPage + 1)} of ${String(pageCanvases.length)} · ${String(count)} systems` }),
+        el('span', { id: 'pdf-adjust-label', text: `Page ${String(adjustPage + 1)} of ${String(pageCount)} · ${String(count)} systems` }),
         button('Page ▶', () => {
-          adjustPage = Math.min(pageCanvases.length - 1, adjustPage + 1);
+          adjustPage = Math.min(pageCount - 1, adjustPage + 1);
           drawAdjust();
         }, { id: 'pdf-adjust-next' }),
       ),
@@ -269,7 +330,7 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
 
   function rebuildSystems(): void {
     const rebuilt: PlannedSystem[] = [];
-    for (let page = 0; page < pageCanvases.length; page += 1) {
+    for (let page = 0; page < pageCount; page += 1) {
       rebuilt.push(...cutsToSystems(cuts[page] ?? wholePageCuts(), page));
     }
     systems = rebuilt;
@@ -374,27 +435,27 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
       doc = await PdfDocument.open(row.data);
       if (disposed) return;
 
-      pageCanvases = new Array<HTMLCanvasElement | null>(doc.pageCount).fill(null);
-      for (let page = 0; page < doc.pageCount; page += 1) {
-        const rendered = await doc.renderPage(page, DISPLAY_WIDTH);
-        if (disposed) return;
-        pageCanvases[page] = rendered.canvas;
-      }
+      pageCount = doc.pageCount;
 
       // Stored corrections win over detection, always: the learner has already
-      // told us this page is not what the profile thought it was.
+      // told us this page is not what the profile thought it was. Detection
+      // runs a page at a time at a small width and keeps no canvas, so a long
+      // score costs seconds rather than hundreds of megabytes.
       cuts = { ...(row.cuts ?? {}) };
-      for (let page = 0; page < pageCanvases.length; page += 1) {
+      for (let page = 0; page < pageCount; page += 1) {
         if (cuts[page]) continue;
+        status.textContent = `Finding the systems on page ${String(page + 1)} of ${String(pageCount)}…`;
         await redetect(page);
         if (disposed) return;
       }
       rebuildSystems();
+      await ensurePage(systems[0]?.page ?? 0);
+      if (disposed) return;
+      draw();
       status.textContent =
         systems.length > 0
           ? ''
           : 'No systems were found on these pages — use “Adjust cuts” to place them by hand.';
-      document.title = row.title;
     } catch (cause) {
       status.textContent = `That PDF could not be opened: ${
         cause instanceof Error ? cause.message : String(cause)
@@ -405,6 +466,8 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
 
   onScreenDispose(section, () => {
     disposed = true;
+    pageCache.clear();
+    inFlight.clear();
     disarm();
     metronome?.dispose();
     doc?.dispose();

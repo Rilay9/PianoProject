@@ -2,10 +2,9 @@
  * The frame every full tab screen in P7 shares: a heading, an optional
  * sub-line, and a body that scrolls.
  *
- * Separate from `placeholder.ts` (which the pre-P7 stubs used) because these
- * screens are lists rather than cards — the body has to be the scroll
- * container, or a 570-row Library scrolls the whole shell and loses the tab
- * bar on the way.
+ * Separate from the `.card` shape the sub-screens use, because these screens
+ * are lists rather than cards — the body has to be the scroll container, or a
+ * 570-row Library scrolls the whole shell and loses the tab bar on the way.
  */
 import { el } from '../widgets';
 

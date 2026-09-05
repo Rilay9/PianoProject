@@ -62,18 +62,29 @@ test.describe('metronome', () => {
 
   test('tap tempo sets the bpm from the gaps between taps', async ({ page }) => {
     const tap = page.locator('#metronome-tap');
-    // Four taps 500 ms apart is 120 bpm. Timing through a real browser is not
-    // exact, so the assertion is a band — a tap tempo that lands within a few
-    // bpm is doing its job, and the arithmetic itself is unit-tested.
+    // Four taps, nominally 500 ms apart. The arithmetic is unit-tested in
+    // tapTempo.test.ts; what this proves is the *wiring* — that the button
+    // feeds the averager and the readout follows.
+    //
+    // The expected bpm is computed from the time the taps actually took, not
+    // from the 500 ms that were asked for. A loaded machine turns four 500 ms
+    // waits into four 570 ms ones, and a test written against the nominal
+    // figure fails on a busy CI runner while the app is behaving perfectly.
+    const started = Date.now();
     await tap.click();
     for (let i = 0; i < 3; i += 1) {
       await page.waitForTimeout(500);
       await tap.click();
     }
+    const elapsed = Date.now() - started;
+    const expected = 60_000 / (elapsed / 3);
+
     const text = (await page.locator('#metronome-bpm').textContent()) ?? '';
     const bpm = Number(text.replace(' bpm', ''));
-    expect(bpm).toBeGreaterThan(105);
-    expect(bpm).toBeLessThan(135);
+    // Node's clock and the page's differ by the click round-trip, so a few bpm
+    // of slack remains — but it no longer scales with how busy the machine is.
+    expect(Math.abs(bpm - expected)).toBeLessThan(12);
+    expect(bpm).toBeGreaterThan(60);
   });
 
   test('starts and stops, and the beat dots follow the click', async ({ page }) => {

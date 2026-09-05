@@ -32,3 +32,18 @@ Read: `docs/01-architecture.md` §6–§9; `docs/06-build-plan.md` P9 and §3.
 Owner checklist to include in the report: install the APK; rotate; 30-minute session without a
 console error (Diagnostics shows errors count); MIDI connect; offline airplane mode; export/
 import; battery/thermal note.
+
+**Carried over from P7 — three things that can only be checked on the phone** (see
+`docs/decisions/2026-09-06-p7-screens-storage.md` §5 and "What is not done"):
+
+- **Share a score into the app from Android.** Long-press a `.mxl` or a `.pdf` in Files or
+  Drive, choose PianoPath, and check it lands in Library. The manifest declares the share
+  target and the service worker answers the POST, but a real intent has never been fired at
+  it — Playwright cannot. The same tap also exercises `file_handlers` (opening a `.pdf`
+  straight from Downloads).
+- **A real bought PDF in the viewer.** The fixture is a synthetic two-system page. Open an
+  actual purchased score, check the system detection on several pages, and correct one with
+  "adjust cuts" — that is the feature the owner asked for by name, and a typeset page from a
+  real publisher is the only honest test of it.
+- **Memory on a long PDF.** The viewer keeps three rendered pages at a time (P7 changed this
+  after the first draft held all of them); check a 20+ page score does not make the app die.

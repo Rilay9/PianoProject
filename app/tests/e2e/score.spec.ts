@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { openDevScore } from './fixtures/devScore';
+import { openDevScore, waitForStableLayout } from './fixtures/devScore';
 
 // docs/01-architecture.md §6: a 2-bar window must render in under 150 ms.
 // Measured on desktop Chromium here; the phone number comes from the owner
@@ -348,6 +348,8 @@ test.describe('screenshots', () => {
           await dev.setBars(bars);
           await dev.showStep(0);
           await expect(page.locator('.score-buffer.is-front svg')).toBeVisible();
+          // Visible is not final: see waitForStableLayout.
+          await waitForStableLayout(page, '.score-buffer.is-front svg');
           await expect(page.locator('.dev-score__stage')).toHaveScreenshot(
             `${fixture}-${bars}bar-${orientation}.png`,
             {

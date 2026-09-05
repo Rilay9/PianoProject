@@ -30,7 +30,7 @@ import { loadCurriculum, allItems } from '../../curriculum/load';
 import { thinLessons } from '../../curriculum/selectors';
 import { errorCount, loggedErrors } from '../../util/errorLog';
 import { precacheReport, type PrecacheReport } from '../../util/offlineStatus';
-import { formatBytes, measureStorage, type StorageBreakdown } from './SettingsScreen';
+import { formatBytes, measureStorage, type StorageBreakdown } from '../../util/storageReport';
 
 const LOG_ROWS_SHOWN = 100;
 const DEBUG_REPORT_MESSAGES = 100;

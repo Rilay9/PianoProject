@@ -144,5 +144,15 @@ test.describe('offline', () => {
     ]) {
       expect(urls.has(essential), `${essential} is not precached`).toBe(true);
     }
+
+    // Hashed build artefacts that are loaded at runtime rather than imported
+    // by the entry chunk, so a glob that misses them fails silently. The PDF
+    // worker is the one that has actually gone wrong: pdfjs ships it as
+    // `.mjs`, the globs matched `js` only, and a PDF opened offline would have
+    // hung on a fetch that never resolved.
+    for (const pattern of [/assets\/pdf\.worker[^"]*\.mjs$/, /assets\/index[^"]*\.js$/]) {
+      const found = [...urls].some((url) => pattern.test(url ?? ''));
+      expect(found, `nothing matching ${String(pattern)} is precached`).toBe(true);
+    }
   });
 });

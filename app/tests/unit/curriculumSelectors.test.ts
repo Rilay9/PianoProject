@@ -4,6 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   alternativesFor,
+  idsToCompleteLesson,
   indexCatalog,
   lessonComplete,
   thinLessons,
@@ -186,5 +187,66 @@ describe('thinLessons', () => {
   it('counts both lists for a song-optional lesson', () => {
     const l = lesson({ songOptional: true, songOptions: [] });
     expect(thinLessons(curriculumOf(l))).toEqual([]);
+  });
+});
+
+describe('require 2 songs per lesson (docs/04 §7)', () => {
+  const strict = { requireTwoSongs: true };
+
+  it('is off by default: one exercise and one song complete a lesson', () => {
+    const unit = lesson({
+      exerciseOptions: ['ex.1', 'ex.2', 'ex.3'],
+      songOptions: ['song.1', 'song.2', 'song.3'],
+      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    });
+    const records = [
+      { itemId: 'ex.1', passed: true },
+      { itemId: 'song.1', passed: true },
+    ];
+    expect(lessonComplete(unit, records)).toBe(true);
+    expect(lessonComplete(unit, records, strict)).toBe(false);
+    expect(lessonComplete(unit, [...records, { itemId: 'song.2', passed: true }], strict)).toBe(
+      true,
+    );
+  });
+
+  it('never applies to a lesson whose skill no song tests', () => {
+    const unit = lesson({
+      songOptional: true,
+      exerciseOptions: ['ex.1', 'ex.2', 'ex.3'],
+      songOptions: [],
+      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    });
+    const records = [
+      { itemId: 'ex.1', passed: true },
+      { itemId: 'ex.2', passed: true },
+    ];
+    expect(lessonComplete(unit, records, strict)).toBe(true);
+  });
+
+  it('does not demand a second song a lesson does not have', () => {
+    const unit = lesson({
+      exerciseOptions: ['ex.1'],
+      songOptions: ['song.1'],
+      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    });
+    const records = [
+      { itemId: 'ex.1', passed: true },
+      { itemId: 'song.1', passed: true },
+    ];
+    expect(lessonComplete(unit, records, strict)).toBe(true);
+  });
+
+  it('idsToCompleteLesson returns exactly what lessonComplete checks for', () => {
+    const unit = lesson({
+      exerciseOptions: ['ex.1', 'ex.2'],
+      songOptions: ['song.1', 'song.2'],
+      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    });
+    for (const options of [{}, strict]) {
+      const ids = idsToCompleteLesson(unit, options);
+      const records = ids.map((itemId) => ({ itemId, passed: true }));
+      expect(lessonComplete(unit, records, options)).toBe(true);
+    }
   });
 });

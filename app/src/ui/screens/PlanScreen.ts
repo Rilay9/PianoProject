@@ -9,6 +9,7 @@
 import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
 import { lessonComplete } from '../../curriculum/selectors';
+import { getSettings } from '../../data/settingsStore';
 import { nextRecommended } from '../../curriculum/session';
 import type { Curriculum, Lesson, PassRecord, Stage } from '../../curriculum/types';
 import { allProgress } from '../../data/progressStore';
@@ -17,16 +18,26 @@ import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, listRow } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 
-/** Stages the learner has expanded, kept across a redraw within one visit. */
+/**
+ * Stages the learner has expanded.
+ *
+ * Module-level, so it survives leaving the tab and coming back — which is what
+ * you want: you open Stage 3, tap into a lesson, come back, and Stage 3 is
+ * still open. It is reset only by a reload.
+ */
 const expanded = new Set<number>();
 
-function completion(stage: Stage, records: PassRecord[]): { done: number; total: number } {
+function completion(
+  stage: Stage,
+  records: PassRecord[],
+  options: { requireTwoSongs?: boolean },
+): { done: number; total: number } {
   let done = 0;
   let total = 0;
   for (const unit of stage.units) {
     for (const lesson of unit.lessons) {
       total += 1;
-      if (lessonComplete(lesson, records)) done += 1;
+      if (lessonComplete(lesson, records, options)) done += 1;
     }
   }
   return { done, total };
@@ -46,7 +57,7 @@ export function PlanScreen(router: Router): HTMLElement {
   body.append(list, status);
 
   function lessonRow(lesson: Lesson, unitTitle: string): HTMLElement {
-    const done = lessonComplete(lesson, records);
+    const done = lessonComplete(lesson, records, { requireTwoSongs: getSettings().requireTwoSongs });
     const badges: HTMLElement[] = [];
     if (done) badges.push(badge('complete', 'passed'));
     if (lesson.songOptional) badges.push(badge('no song needed'));
@@ -64,11 +75,15 @@ export function PlanScreen(router: Router): HTMLElement {
 
   function draw(): void {
     if (!curriculum) return;
-    const recommended = nextRecommended(curriculum, records, activeTracks);
+    const recommended = nextRecommended(curriculum, records, activeTracks, {
+      requireTwoSongs: getSettings().requireTwoSongs,
+    });
     list.replaceChildren();
 
     for (const stage of curriculum.stages) {
-      const { done, total } = completion(stage, records);
+      const { done, total } = completion(stage, records, {
+        requireTwoSongs: getSettings().requireTwoSongs,
+      });
       const open = expanded.has(stage.number);
       const head = listRow({
         title: `Stage ${String(stage.number)} · ${stage.title}`,
@@ -149,7 +164,9 @@ export function PlanScreen(router: Router): HTMLElement {
         ? plan.trackOrder
         : loaded.tracks.filter((track) => track.defaultActive !== false).map((track) => track.id);
     // Expand the stage being worked on, so the screen opens where the learner is.
-    const recommended = nextRecommended(loaded, records, activeTracks);
+    const recommended = nextRecommended(loaded, records, activeTracks, {
+      requireTwoSongs: getSettings().requireTwoSongs,
+    });
     if (recommended) expanded.add(recommended.stageNumber);
     drawTracks();
     draw();

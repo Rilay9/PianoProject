@@ -174,3 +174,25 @@ test.describe('Diagnostics', () => {
     expect(text).toContain('## Errors this session');
   });
 });
+
+test.describe('the settings mirror (docs/01 §4.5)', () => {
+  test('a setting survives localStorage being cleared, because IndexedDB has it', async ({
+    page,
+  }) => {
+    await page.goto('/#/settings');
+    await page.locator('#set-zoom').fill('1.6');
+    await page.locator('#set-zoom').blur();
+    await expect(page.locator('#settings-status')).toHaveText('Saved.');
+
+    // The write to IndexedDB is fire-and-forget; give it a tick to land.
+    await page.waitForTimeout(500);
+    // Exactly what a browser clearing site data but keeping app storage does,
+    // and what a restored backup looks like on a fresh install.
+    await page.evaluate(() => {
+      localStorage.clear();
+    });
+    await page.reload();
+
+    await expect(page.locator('#set-zoom')).toHaveValue('1.6');
+  });
+});

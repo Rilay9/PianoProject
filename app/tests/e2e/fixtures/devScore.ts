@@ -142,6 +142,36 @@ export interface DevScoreDriver {
   loadSightReading(level: number, seed: number, bars?: number): Promise<void>;
 }
 
+/**
+ * Waits until the rendered notation has stopped moving.
+ *
+ * OSMD lays a score out, then re-lays it once the music font's real metrics
+ * are known. `svg` being visible is therefore not the same as `svg` being
+ * final, and on a loaded machine the second pass can land after the
+ * screenshot — which shows up as a 3 % pixel difference in note spacing and
+ * looks exactly like a regression. Polling the box until it repeats removes
+ * the guess.
+ */
+export async function waitForStableLayout(page: Page, selector: string): Promise<void> {
+  await page.waitForFunction(
+    (target) => {
+      const svg = document.querySelector(target);
+      if (!svg) return false;
+      const box = svg.getBoundingClientRect();
+      const key = `${String(Math.round(box.width))}x${String(Math.round(box.height))}`;
+      const holder = window as unknown as { __layoutKey?: string; __layoutRepeats?: number };
+      if (holder.__layoutKey === key) holder.__layoutRepeats = (holder.__layoutRepeats ?? 0) + 1;
+      else {
+        holder.__layoutKey = key;
+        holder.__layoutRepeats = 0;
+      }
+      return (holder.__layoutRepeats ?? 0) >= 3;
+    },
+    selector,
+    { timeout: 30_000, polling: 100 },
+  );
+}
+
 /** Opens /dev/score and waits for the harness and its first fixture. */
 export async function openDevScore(page: Page): Promise<DevScoreDriver> {
   await page.goto('/#/dev/score');

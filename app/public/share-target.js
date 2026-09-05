@@ -40,7 +40,10 @@ self.addEventListener('fetch', (event) => {
         // with a message, rather than on an error page in a WebView with no
         // back button.
       }
-      return Response.redirect(`${home}#/library`, 303);
+      // `Response.redirect` needs an absolute URL — a path throws a TypeError,
+      // which inside a `respondWith` means the share lands on a WebView error
+      // page with no back button.
+      return Response.redirect(new URL(`${home}#/library`, url).toString(), 303);
     })(),
   );
 });

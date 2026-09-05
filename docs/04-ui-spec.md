@@ -220,6 +220,30 @@ item count); **offline only** [off] (stops the app checking for updates at all �
 storage used, with a breakdown by scores / audio / lessons / your imports; reset progress
 (double confirm).
 
+### 7c. What §7 actually ships (as of P7, 2026-09-06)
+
+The list above is the target. This is the state, so nobody has to read the code to find out:
+
+**Built and wired to real behaviour** — every Practice setting except the two below; every
+Display setting except left-handed layout; every Sound setting; follow-input priority, the four
+microphone settings and MIDI input transpose; and in Content: active tracks, show US-only PD
+items, "Download everything now", offline only, the storage breakdown and reset progress.
+Weekday/weekend session length lives here *and* on Today's picker — one value, two places to
+set it.
+
+**Not built, and why:**
+
+| Setting | Status |
+|---|---|
+| strict prerequisites | Nothing enforces prerequisites anywhere yet, so the toggle would be a lie. Needs the advisory-lock UI on lesson options first (`00` D17 says prerequisites are advisory by default, so this is opt-in strictness with no default behaviour behind it). |
+| auto-advance to next window lead | The renderer's rule is fixed; making it a setting is engine work, not a control. |
+| **daily goal minutes** | **Deliberately dropped.** It contradicts the weekly-minutes decision this spec makes twice over (§2 "no daily-streak guilt", `02` Part A §8 "goals are weekly minutes"). Treat the line in §7 as a leftover; the weekly goal is on Progress. |
+| left-handed layout | Mirroring the score screen's chrome; low value for one right-handed owner, not free to build. |
+| velocity curve · sustain pedal CC · ignore channels · Note-On velocity 0 as Note-Off | The parser already does the right thing with velocity-0; the other three are unexercised on the one piano this app talks to. They belong on the MIDI screen when there is a second device to need them. |
+| language · note naming | One user, English, letter names (`00` A7). A localisation table with one locale in it is not a setting. |
+| show US-only PD items | **Built** (P7) — nine bundled items are US-only (`00` A4). |
+| require 2 songs per lesson | **Built** (P7) — honoured by `lessonComplete`, and never applied to a `songOptional` unit. |
+
 ## 7b. Diagnostics
 
 One screen, reachable from Settings and from the score screen's ⋯ menu, whose entire purpose
@@ -245,6 +269,12 @@ Breakpoint ≥ 900 CSS px shortest side: bars-per-window default 4; a side panel
 shows the lesson text, the chord chart, or the keyboard strip enlarged; Plan/Library become
 two-column. Everything else identical.
 
+**Ships as of P7:** the two-column breakpoint, with an e2e test at 1024×1000 that checks it and
+one at 412×915 that checks the phone stays one column and never scrolls sideways. The
+bars-per-window default and the side panel are **not built** — both are score-screen work
+rather than CSS, and the owner has a phone, not a tablet (`00` A5: this exists so it works *if*
+a tablet ever appears).
+
 ## 8. Empty/edge states
 
 Mic permission denied: explain Chrome site settings; fall back to Timed. Mic too noisy (noise
@@ -264,3 +294,10 @@ parser's message and a "Copy details" button.
 All controls labelled; score screen has a "large cursor" option; colour choices pass WCAG AA
 and correct/wrong also differ by shape (✓ / ✗ glyph on the keyboard strip) for colour-blind
 users; font scaling respected outside the notation.
+
+**Ships as of P7:** every control has a label or an `aria-label`; list rows that act as buttons
+carry `role="button"` and respond to Enter and Space; status regions are `aria-live="polite"`;
+and the state badges differ by shape as well as colour (✓ passed, ★ mastered, ! needs
+importing, ✓/✗ on the chord-chart cells). **Not verified:** the WCAG AA contrast ratios have
+not been measured, and the "large cursor" option is not built. Both belong to P9's on-device
+pass, where the colours can be checked on the actual screen.

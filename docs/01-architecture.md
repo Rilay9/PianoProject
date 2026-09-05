@@ -321,8 +321,9 @@ criteria. Schema at `content/curriculum.schema.json`.
 - MIDI-in to note-coloured: < 30 ms.
 - Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
 - Bundle: app JS < 1.5 MB gzipped; content precache < 60 MB total (scores are tiny; the
-  soundfont dominates — pick a ≤ 20 MB piano). **Measured 2026-09-05: content 6.0 MB
-  (2.7 scores / 2.6 soundfont / 0.5 catalog / 0.2 lessons), `app/dist` 7.6 MB.** Re-measure
+  soundfont dominates — pick a ≤ 20 MB piano). **Re-measured 2026-09-06 after P5b/P6/P7:
+  content 6.8 MB (3.3 scores / 2.6 soundfont / 0.7 catalog / 0.2 lessons / 0.07 curriculum),
+  `app/dist` 9.9 MB, precache 608 entries / 8.7 MB.** Re-measure
   and record it after every content phase; the whole library is precached (`00` D20, §7), so
   this number is what the owner downloads.
 
@@ -350,8 +351,14 @@ criteria. Schema at `content/curriculum.schema.json`.
 - **Update checks are optional and silent.** An "update available — reload" toast when a new
   service worker is waiting; a setting turns the check off entirely, and a failed check when
   offline is not an error and is never shown.
-- **Budget check (measured 2026-09-05):** content 6.0 MB, built app 7.6 MB, against the
-  60 MB budget in §6. There is room for the whole of P5b and P10.
+- **Budget check (re-measured 2026-09-06):** content 6.8 MB, built app 9.9 MB, precache
+  608 entries / 8.7 MB, against the 60 MB budget in §6. There is room for the whole of P10.
+- **The globs are the failure point, twice over now.** Workbox skips what a glob misses and
+  what exceeds the size limit, and it says nothing either way. `maximumFileSizeToCacheInBytes`
+  was raised for the soundfont in P5b; in P7 `.mjs` had to be added because `pdfjs-dist` ships
+  its worker as `pdf.worker.min.mjs` and it was being built, hashed and then dropped. Any new
+  dependency with a non-`.js` runtime asset needs the same check — Diagnostics' "precached
+  n of m" block (`04` §7b) is what makes it visible.
 
 ## 8. Screen wake lock, orientation, full-screen
 
