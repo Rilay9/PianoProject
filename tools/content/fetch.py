@@ -87,6 +87,21 @@ SOURCES: tuple[GitSource, ...] = (
         )
     ),
     GitSource(
+        id="pdmx",
+        group="PDMX",
+        url="https://github.com/pnlong/PDMX.git",
+        dest="pdmx",
+        license="per-file: CC0 / CC BY / PD, recorded in the dataset's metadata CSV",
+        pd_region="worldwide",
+        pattern="**/*.csv",
+        notes=(
+            "The repository holds the code and the metadata; the 250k scores live on "
+            "Zenodo, which this environment cannot reach (the proxy refuses the CONNECT "
+            "tunnel). Cloning it is still worth it: the metadata says which titles and "
+            "licences exist, which is what an import would filter on."
+        ),
+    ),
+    GitSource(
         id="mutopia",
         group="MUTO",
         url="https://github.com/MutopiaProject/MutopiaProject.git",
@@ -99,7 +114,7 @@ SOURCES: tuple[GitSource, ...] = (
 )
 
 #: Sources that are not cloned unless named explicitly, because they are big.
-OPT_IN = {"mutopia"}
+OPT_IN = {"mutopia", "pdmx"}
 
 
 def reachable(url: str, timeout: int = 30) -> bool:
@@ -196,7 +211,9 @@ def ledger_row(source: GitSource, dest: Path) -> LedgerRow:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--offline", action="store_true", help="never touch the network")
-    parser.add_argument("--only", help="comma-separated source ids or groups (mt, kern, muto)")
+    parser.add_argument(
+        "--only", help="comma-separated source ids or groups (mt, kern, muto, pdmx)"
+    )
     parser.add_argument("--force", action="store_true", help="re-clone even if present")
     parser.add_argument("--list", action="store_true", help="print the source table and exit")
     args = parser.parse_args()
