@@ -78,6 +78,15 @@ HARMONIC_MINOR_FINGERING: dict[str, tuple[list[int], list[int]]] = {
     "B-": ([2, 1, 2, 3, 1, 2, 3, 4], [2, 1, 3, 2, 1, 4, 3, 2]),
     "E-": ([3, 1, 2, 3, 4, 1, 2, 3], [2, 1, 4, 3, 2, 1, 3, 2]),
 }
+#: The twelve major and twelve minor keys, spelled the way they are played.
+#:
+#: The spellings are not interchangeable: D-flat minor needs eight flats and
+#: G-flat minor nine, which MusicXML cannot express (its key signature runs
+#: -7..+7) and OSMD will not draw. Generating them produced two scores that
+#: parsed, counted their steps, and rendered nothing at all.
+MAJOR_KEYS = ("C", "G", "D", "A", "E", "B", "F", "B-", "E-", "A-", "D-", "G-")
+MINOR_KEYS = ("A", "E", "D", "G", "C", "B", "F", "F#", "C#", "G#", "B-", "E-")
+
 ARPEGGIO_FINGERING_RH = [1, 2, 3, 5]   # root-position major/minor triad, white-key roots
 ARPEGGIO_FINGERING_LH = [5, 3, 2, 1]
 
@@ -610,16 +619,15 @@ def make_rhythm(pattern: str, bars: int = 4, bpm: int = 80) -> tuple[stream.Scor
 # --------------------------------------------------------------------------------------
 def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
     items: list[tuple[stream.Score, dict]] = []
-    majors = ["C", "G", "D", "A", "E", "B", "F", "B-", "E-", "A-", "D-", "G-"]
-    minors = ["A", "E", "D", "G", "C", "B", "F", "F#", "C#", "G#", "B-", "E-"]
-    #: The twelve keys as the learner meets them, for five-finger patterns —
-    #: those are position exercises, so the sharp spelling is the useful one.
-    all_twelve = ["C", "D-", "D", "E-", "E", "F", "G-", "G", "A-", "A", "B-", "B"]
+    majors = list(MAJOR_KEYS)
+    minors = list(MINOR_KEYS)
+    all_twelve_major = list(MAJOR_KEYS)
+    all_twelve_minor = list(MINOR_KEYS)
     hanon = load_hanon()
     hanon_numbers = sorted(int(n) for n in hanon)
     if quick:
         majors, minors = ["C", "G", "F"], ["A"]
-        all_twelve = ["C", "F"]
+        all_twelve_major, all_twelve_minor = ["C", "F"], ["A"]
         hanon_numbers = hanon_numbers[:2]
 
     for k in majors:
@@ -639,9 +647,10 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
 
     # Five-finger patterns in all twelve keys, major and minor: these are the
     # first thing a beginner plays and the last thing to be dropped.
-    for k in all_twelve:
-        for quality in ("major", "minor"):
-            items.append(make_five_finger(k, quality, "both"))
+    for k in all_twelve_major:
+        items.append(make_five_finger(k, "major", "both"))
+    for k in all_twelve_minor:
+        items.append(make_five_finger(k, "minor", "both"))
 
     # The chromatic scale from each of the four starting points that use a
     # different fingering shape.

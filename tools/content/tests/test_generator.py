@@ -103,3 +103,33 @@ class TestRhythm(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestKeySignatures(unittest.TestCase):
+    """
+    Every key we generate has to be one MusicXML can write down.
+
+    D-flat minor is eight flats and G-flat minor is nine; the format's key
+    signature runs -7..+7, so those two produced scores that parsed, reported
+    their steps and rendered a blank page.
+    """
+
+    def test_every_key_fits_a_key_signature(self) -> None:
+        from music21 import key
+
+        from generate_exercises import MAJOR_KEYS, MINOR_KEYS
+
+        for tonic in MAJOR_KEYS:
+            with self.subTest(key=f"{tonic} major"):
+                self.assertLessEqual(abs(key.Key(tonic, "major").sharps), 7)
+        for tonic in MINOR_KEYS:
+            with self.subTest(key=f"{tonic} minor"):
+                self.assertLessEqual(abs(key.Key(tonic.lower(), "minor").sharps), 7)
+
+    def test_there_are_twelve_of_each(self) -> None:
+        from generate_exercises import MAJOR_KEYS, MINOR_KEYS
+
+        self.assertEqual(len(MAJOR_KEYS), 12)
+        self.assertEqual(len(MINOR_KEYS), 12)
+        self.assertEqual(len(set(MAJOR_KEYS)), 12)
+        self.assertEqual(len(set(MINOR_KEYS)), 12)
