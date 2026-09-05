@@ -1,0 +1,26 @@
+X:1
+T:Ode to Joy (in G major)
+C:Ludwig van Beethoven, 1824
+%%pianopath id=song.classical.ode-to-joy.g level=3.1 hands=both abrsm=1
+%%pianopath tracks=core,classical concepts=G-major,F-sharp,key-signature,dotted-quarter,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=classical publishedYear=1824
+%%pianopath sourceName="Symphony No. 9, fourth movement (1824)" composer="Ludwig van Beethoven"
+%%pianopath variantOf=song.classical.ode-to-joy.full variantLabel="in G major"
+%%pianopath editionNotes="The full theme in G, the key Beethoven's own hymn setting uses. Only one black key appears, the F sharp in the key signature; bar 12 is the only place the tune touches it, in the run down to the low D."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=88
+K:G
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "G"!3!B B !4!c !5!d | "D7"!5!d !4!c !3!B !2!A | "G"!1!G G !2!A !3!B | "G"!3!B3/2 !2!A/ "D7"!2!A2 |
+[V:1] "G"!3!B B !4!c !5!d | "D7"!5!d !4!c !3!B !2!A | "G"!1!G G !2!A !3!B | "D7"!2!A3/2 !1!G/ "G"!1!G2 |
+[V:1] "D7"!2!A A !3!B !1!G | "D7"!2!A !3!B/!4!c/ !3!B !1!G | "D7"!2!A !3!B/!4!c/ !3!B !2!A | "D7"!1!G !2!A !5!D2 |
+[V:1] "G"!3!B B !4!c !5!d | "D7"!5!d !4!c !3!B !2!A | "G"!1!G G !2!A !3!B | "D7"!2!A3/2 !1!G/ "G"!1!G2 |
+[V:1] "G"!1!G4 |]
+[V:2] !2!G,4 | !5!D,4 | !2!G,4 | !2!G,2 !5!D,2 |
+[V:2] !2!G,4 | !5!D,4 | !2!G,4 | !5!D,2 !2!G,2 |
+[V:2] !5!D,4 | !5!D,4 | !5!D,4 | !5!D,4 |
+[V:2] !2!G,4 | !5!D,4 | !2!G,4 | !5!D,2 !2!G,2 |
+[V:2] !2!G,4 |]

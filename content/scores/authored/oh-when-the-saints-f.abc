@@ -1,0 +1,20 @@
+X:1
+T:Oh When the Saints Go Marching In (in F major)
+C:Traditional (US spiritual)
+%%pianopath id=song.folk.when-the-saints.f level=3.2 hands=both abrsm=1
+%%pianopath tracks=core,chords-pop,hymns-gospel concepts=F-major,B-flat,I-IV-V7,anacrusis,block-chords
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Traditional (US spiritual, published 1896 as a hymn)"
+%%pianopath variantOf=song.folk.when-the-saints.alternating variantLabel="in F major with chords"
+%%pianopath editionNotes="Three-beat upbeat: the tune starts on the second beat of the bar and the long notes fall on beat one, which is why bars 2 and 4 open with a rest. Chords are F, B flat and C7 in root position."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=100
+K:F
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "F"!1!F !3!A !4!B | "F"!5!c4 | "Bb"z !1!F !3!A !4!B | "F"!5!c4 |
+[V:1] "Bb"z !1!F !3!A !4!B | "F"!5!c2 !3!A2 | "F"!1!F2 !3!A2 | "C7"!2!G4 | "F"!1!F4 |]
+[V:2] z3 | [!5!F,!3!A,!1!C]4 | [!5!B,,!3!D,!1!F,]4 | [!5!F,!3!A,!1!C]4 |
+[V:2] [!5!B,,!3!D,!1!F,]4 | [!5!F,!3!A,!1!C]4 | [!5!F,!3!A,!1!C]4 | [!5!C,!2!E,!1!B,]4 | [!5!F,!3!A,!1!C]4 |]

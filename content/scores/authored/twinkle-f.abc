@@ -1,0 +1,22 @@
+X:1
+T:Twinkle, Twinkle, Little Star (in F major)
+C:Traditional (Ah! vous dirai-je, maman, 1761)
+%%pianopath id=song.folk.twinkle.f level=3.1 hands=both abrsm=1
+%%pianopath tracks=core,classical concepts=F-major,B-flat,key-signature,I-IV-V,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Ah! vous dirai-je, maman (French, 1761)"
+%%pianopath variantOf=song.folk.twinkle.ht variantLabel="in F major"
+%%pianopath editionNotes="The same tune a fourth higher, so every B is a B flat. Right hand: thumb on F4, and the hand moves up one step for the D as it did for the A in C major. Left hand: 5 on F3, 2 on B flat 3, 1 on C4."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=84
+K:F
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "F"!1!F F !5!c c | "Bb"!5!d d "F"!4!c2 | "Bb"!4!B B "F"!3!A A | "C7"!2!G G "F"!1!F2 |
+[V:1] "F"!5!c c "C7"!4!B B | "F"!3!A A "C7"!2!G2 | "F"!5!c c "C7"!4!B B | "F"!3!A A "C7"!2!G2 |
+[V:1] "F"!1!F F !5!c c | "Bb"!5!d d "F"!4!c2 | "Bb"!4!B B "F"!3!A A | "C7"!2!G G "F"!1!F2 |]
+[V:2] !5!F,4 | !2!B,2 !5!F,2 | !2!B,2 !5!F,2 | !1!C2 !5!F,2 |
+[V:2] !5!F,2 !1!C2 | !5!F,2 !1!C2 | !5!F,2 !1!C2 | !5!F,2 !1!C2 |
+[V:2] !5!F,4 | !2!B,2 !5!F,2 | !2!B,2 !5!F,2 | !1!C2 !5!F,2 |]

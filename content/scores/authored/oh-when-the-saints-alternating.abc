@@ -5,6 +5,7 @@ C:Traditional (US spiritual)
 %%pianopath tracks=core concepts=grand-staff,alternating-hands,anacrusis,4/4
 %%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
 %%pianopath sourceName="Traditional (US spiritual, published 1896 as a hymn)"
+%%pianopath editionNotes="Call and response: the right hand asks the question in bars 1-4, the left hand answers in bars 5-9. Three-beat upbeat, so the long notes land on beat one and bars 3 and 5 open with a rest."
 %%score {1 2}
 L:1/4
 M:4/4
@@ -12,7 +13,7 @@ Q:1/4=96
 K:C
 V:1 clef=treble
 V:2 clef=bass
-[V:1] !1!C !3!E !4!F | !5!G4 | !1!C !3!E !4!F | !5!G4 |
-[V:1] z4 | z4 | z4 | z4 |]
-[V:2] z3 | z4 | z3 | z4 |
-[V:2] !5!C, !3!E, !2!F, | !1!G,4 | !3!E, !5!C, !3!E, !4!D, | !5!C,4 |]
+[V:1] !1!C !3!E !4!F | !5!G4 | z !1!C !3!E !4!F | !5!G4 |
+[V:1] z4 | z4 | z4 | z4 | z4 |]
+[V:2] z3 | z4 | z4 | z4 |
+[V:2] z !5!C, !3!E, !2!F, | !1!G,2 !3!E,2 | !5!C,2 !3!E,2 | !4!D,4 | !5!C,4 |]

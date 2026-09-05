@@ -1,0 +1,20 @@
+X:1
+T:Jingle Bells (chorus, in G major with block chords)
+C:James Lord Pierpont, 1857
+%%pianopath id=song.holiday.jingle-bells.g level=3.2 hands=both abrsm=1
+%%pianopath tracks=core,holiday,chords-pop concepts=G-major,I-IV-V7,block-chords,chord-symbols,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=holiday publishedYear=1857
+%%pianopath sourceName="One Horse Open Sleigh, James Lord Pierpont (1857)" composer="James Lord Pierpont"
+%%pianopath variantOf=song.holiday.jingle-bells.ht variantLabel="in G major, block chords"
+%%pianopath editionNotes="The three primary chords of G: G, C and D7, all in root position under the little finger, third and thumb. The hand moves down a fourth for C and a fifth for D7; both moves fall on a whole note, so there is time."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=104
+K:G
+V:1 clef=treble
+V:2 clef=bass
+[V:1] "G"!3!B !3!B !3!B2 | "G"!3!B !3!B !3!B2 | "G"!3!B !5!d !1!G !2!A | "G"!3!B4 |
+[V:1] "C"!4!c !4!c !4!c !4!c | "C"!4!c !3!B "G"!3!B !3!B | "G"!3!B !2!A "D7"!2!A !3!B | "D7"!2!A2 "G"!5!d2 |]
+[V:2] [!5!G,!3!B,!1!D]4 | [!5!G,!3!B,!1!D]4 | [!5!G,!3!B,!1!D]4 | [!5!G,!3!B,!1!D]4 |
+[V:2] [!5!C,!3!E,!1!G,]4 | [!5!C,!3!E,!1!G,]2 [!5!G,!3!B,!1!D]2 | [!5!G,!3!B,!1!D]2 [!5!D,!2!^F,!1!C]2 | [!5!D,!2!^F,!1!C]2 [!5!G,!3!B,!1!D]2 |]

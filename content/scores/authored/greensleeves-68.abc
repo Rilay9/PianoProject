@@ -1,0 +1,24 @@
+X:1
+T:Greensleeves (in 6/8)
+C:Traditional (English, 16th century)
+%%pianopath id=song.folk.greensleeves.68 level=4.5 hands=both abrsm=2
+%%pianopath tracks=core,classical concepts=6/8,compound-time,A-minor,raised-7th,waltz-bass
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Traditional (English); tune registered 1580, melody as in the standard modern setting"
+%%pianopath variantOf=song.folk.greensleeves.simple variantLabel="6/8"
+%%pianopath editionNotes="The same tune barred in 6/8, which is how most editions print it: two dotted-quarter beats a bar, each divided into three eighths. Every note that was a half note in the 3/4 version is now four eighths, which is what gives the tune its lilt."
+%%score {1 2}
+L:1/8
+M:6/8
+Q:3/8=58
+K:Am
+V:1 clef=treble
+V:2 clef=bass
+[V:1] !4!A2 | "Am"!1!c4 !2!d2 | "Am"!3!e3 !4!f !3!e2 | "G"!2!d4 !5!B2 | "G"!3!G3 !4!A !5!B2 |
+[V:1] "Am"!1!c4 !4!A2 | "E7"!4!A3 !3!^G !4!A2 | "E7"!5!B4 !3!^G2 | "Am"!1!E4 !4!A2 |
+[V:1] "Am"!1!c4 !2!d2 | "Am"!3!e3 !4!f !3!e2 | "G"!2!d4 !5!B2 | "G"!3!G3 !4!A !5!B2 |
+[V:1] "Am"!1!c3 !5!B !4!A2 | "E7"!3!^G3 !2!^F !3!^G2 | "Am"!4!A6 |]
+[V:2] z2 | !5!A,,3 [!2!C,!1!E,]3 | !5!A,,3 [!2!C,!1!E,]3 | !5!G,,3 [!2!B,,!1!D,]3 | !5!G,,3 [!2!B,,!1!D,]3 |
+[V:2] !5!A,,3 [!2!C,!1!E,]3 | !5!E,,3 [!2!^G,,!1!D,]3 | !5!E,,3 [!2!^G,,!1!D,]3 | !5!A,,3 [!2!C,!1!E,]3 |
+[V:2] !5!A,,3 [!2!C,!1!E,]3 | !5!A,,3 [!2!C,!1!E,]3 | !5!G,,3 [!2!B,,!1!D,]3 | !5!G,,3 [!2!B,,!1!D,]3 |
+[V:2] !5!A,,3 [!2!C,!1!E,]3 | !5!E,,3 [!2!^G,,!1!D,]3 | !5!A,,6 |]

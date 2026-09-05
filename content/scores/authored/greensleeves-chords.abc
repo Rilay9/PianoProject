@@ -1,0 +1,24 @@
+X:1
+T:Greensleeves (with chords)
+C:Traditional (English, 16th century)
+%%pianopath id=song.folk.greensleeves.chords level=3.3 hands=both abrsm=2
+%%pianopath tracks=core,classical,chords-pop concepts=A-minor,raised-7th,E7,minor-chords,block-chords,3/4
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Traditional (English); tune registered 1580, melody as in the standard modern setting"
+%%pianopath variantOf=song.folk.greensleeves.simple variantLabel="block chords"
+%%pianopath editionNotes="Am, G and E7 as block triads. E7 is the chord that makes A minor sound like a key rather than a mode: its G sharp is the raised seventh degree, a semitone below the tonic A."
+%%score {1 2}
+L:1/4
+M:3/4
+Q:1/4=104
+K:Am
+V:1 clef=treble
+V:2 clef=bass
+[V:1] !4!A | "Am"!1!c2 !2!d | "Am"!3!e3/2 !4!f/ !3!e | "G"!2!d2 !5!B | "G"!3!G3/2 !4!A/ !5!B |
+[V:1] "Am"!1!c2 !4!A | "E7"!4!A3/2 !3!^G/ !4!A | "E7"!5!B2 !3!^G | "Am"!1!E2 !4!A |
+[V:1] "Am"!1!c2 !2!d | "Am"!3!e3/2 !4!f/ !3!e | "G"!2!d2 !5!B | "G"!3!G3/2 !4!A/ !5!B |
+[V:1] "Am"!1!c3/2 !5!B/ !4!A | "E7"!3!^G3/2 !2!^F/ !3!^G | "Am"!4!A3 |]
+[V:2] z | [!5!A,,!3!C,!1!E,]3 | [!5!A,,!3!C,!1!E,]3 | [!5!G,,!3!B,,!1!D,]3 | [!5!G,,!3!B,,!1!D,]3 |
+[V:2] [!5!A,,!3!C,!1!E,]3 | [!5!E,!2!^G,!1!D]3 | [!5!E,!2!^G,!1!D]3 | [!5!A,,!3!C,!1!E,]3 |
+[V:2] [!5!A,,!3!C,!1!E,]3 | [!5!A,,!3!C,!1!E,]3 | [!5!G,,!3!B,,!1!D,]3 | [!5!G,,!3!B,,!1!D,]3 |
+[V:2] [!5!A,,!3!C,!1!E,]3 | [!5!E,!2!^G,!1!D]3 | [!5!A,,!3!C,!1!E,]3 |]
