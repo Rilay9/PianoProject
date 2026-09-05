@@ -133,6 +133,9 @@ an APK install) are P9's, since they need the packaged app.
 ### P8 — Drills UI · Sonnet (+ Opus for ear/rhythm scoring) · 1 session
 Deliverables: UI for every drill kind in `05` §7 on top of the P3 framework; audio prompts
 for ear drills; result sheets. Acceptance: e2e per drill with scripted input.
+**Done 2026-09-06** — see `docs/decisions/2026-09-06-p8-drills-ui.md`. All 43 runtime drills in
+the catalog build and honour their parameters, checked by a unit test that reads the shipped
+`catalog.json` so a new drill item with an unimplemented parameter fails at build time.
 
 ### P9 — On-device QA, performance, offline, packaging · Opus · 1–2 sessions
 Deliverables: performance pass to hit `01` §6 budgets on the S25 (measure via the

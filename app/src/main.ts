@@ -3,6 +3,7 @@ import { Router } from './router';
 import { initTheme } from './ui/theme';
 import { mountAppShell } from './ui/AppShell';
 import { audioEngine } from './audio/AudioEngine';
+import { autoConnectMidi } from './app/services';
 import { hydratePersisted, needsHydration } from './data/persist';
 import { reloadSettings } from './data/settingsStore';
 import { installErrorLog } from './util/errorLog';
@@ -22,6 +23,10 @@ initTheme();
 // the very first tap anywhere in the app — a tab, a button — gets audio
 // running before it is needed (docs/01-architecture.md §4.4).
 audioEngine.startOnFirstGesture(window);
+
+// Reconnect the piano if permission was granted on an earlier visit — silent
+// when it was, and a no-op when it was not (see app/services).
+void autoConnectMidi();
 
 const rootElement = document.getElementById('app');
 if (!rootElement) {

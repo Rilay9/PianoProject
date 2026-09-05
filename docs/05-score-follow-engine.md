@@ -101,7 +101,12 @@ When both could express a skill, prefer the exercise: it is inspectable, it can 
 slowly in Wait mode, and it renders in the previews so a mistake in it is visible before a
 learner meets it.
 
-Drills are implemented as small engine plugins sharing the input pipeline:
+Drills are implemented as small engine plugins sharing the input pipeline. The engine side is
+P3; **P8 adds the screens (`04` §5c) and `engine/drills/fromCatalog.ts`**, which turns a
+catalog item's `drill.params` — chord symbols, roman numerals, interval names, note names,
+rhythm values — into the MIDI numbers the plugins want. That translation is the reason a new
+drill is a content change and not a code change; `theory.ts` beside it does the parsing and
+returns null rather than guessing, so an unreadable parameter is a visible failure.
 
 | kind | behaviour | scoring |
 |------|-----------|---------|

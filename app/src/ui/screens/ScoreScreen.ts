@@ -14,6 +14,8 @@ import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { findItem, contentUrl } from '../../curriculum/load';
 import { getImport } from '../../data/importStore';
+import { isSightReading } from '../../engine/drills/fromCatalog';
+import { generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
 import type { CatalogItem } from '../../curriculum/types';
 import { getMidiSettings } from '../../data/midiSettings';
 import { getSettings, updateSettings, type FollowInput } from '../../data/settingsStore';
@@ -59,6 +61,27 @@ const HANDS: { id: HandsFocus; label: string }[] = [
 /** The control bar hides after this long without a tap (docs/04 §5). */
 export const CONTROL_BAR_HIDE_MS = 3_000;
 
+/**
+ * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
+ * opens here rather than on the drill screen. Its parameters come from the
+ * catalog item, exactly as the runtime drills' do.
+ *
+ * A fresh exercise is generated each time the screen is opened, because the
+ * whole point is material the learner has not seen. "Again" on the summary
+ * sheet re-runs the *loaded* score rather than regenerating, which is what
+ * docs/05 §8 means by retrying a failed sight-read identically.
+ */
+function generateSightReadingFor(item: CatalogItem): string {
+  const params = item.drill?.params ?? {};
+  const hands = params.hands === 'left' ? 'L' : params.hands === 'both' ? 'both' : 'R';
+  const level = (typeof params.level === 'number' ? params.level : 1) as SightReadingLevel;
+  return generateSightReading({
+    level,
+    hands,
+    ...(typeof params.bars === 'number' ? { bars: params.bars } : {}),
+  }).musicXml;
+}
+
 export function ScoreScreen(router: Router): HTMLElement {
   const section = document.createElement('section');
   section.className = 'screen screen--score';
@@ -74,6 +97,8 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   const settings = { ...getSettings() };
   let mode: Mode = 'wait';
+  /** Runs finished since this exercise was generated (see the summary sheet). */
+  let sightReadAttempts = 0;
   let input: FollowInput = 'none';
   let hands: HandsFocus = 'both';
   let tempoPct = settings.defaultTempoPct;
@@ -540,7 +565,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     // already final, and a slow write should not delay the learner seeing
     // them. A failed write is reported on the sheet rather than swallowed —
     // practice history is the one thing here that cannot be regenerated.
-    if (item && mode !== 'listen' && mode !== 'free') {
+    // docs/05 §7: a sight-reading drill is scored on the first attempt only.
+    // After that the material has been seen, and a second run measures
+    // something else entirely.
+    const sightReadRepeat = item !== undefined && isSightReading(item) && sightReadAttempts > 0;
+    if (sightReadRepeat) {
+      status.textContent = 'Sight-reading counts on the first attempt only — this run is not recorded.';
+    }
+    if (item !== undefined) sightReadAttempts += 1;
+
+    if (item && !sightReadRepeat && mode !== 'listen' && mode !== 'free') {
       void recordRun({
         itemId: item.id,
         mode,
@@ -684,16 +718,20 @@ export function ScoreScreen(router: Router): HTMLElement {
         status.textContent = `${item.title} is a PDF — open it from Library.`;
         return;
       }
-      if (!item.file && !item.imported) {
+      const sightReading = isSightReading(item);
+      if (!item.file && !item.imported && !sightReading) {
         status.textContent = `${item.title} has no notation to open. ${item.importHint ?? ''}`.trim();
         return;
       }
 
-      // An imported score's bytes are in IndexedDB, not under `content/`; a
-      // bundled one is fetched from the precache. Everything after this point
-      // is the same either way (docs/04 §4).
+      // Three sources, one renderer: a bundled score comes from the precache,
+      // an imported one from IndexedDB (docs/04 §4), and a sight-reading drill
+      // is generated here and now (docs/05 §8) — because the whole point is
+      // that the learner has not seen it before.
       let musicXml: string;
-      if (item.imported) {
+      if (sightReading) {
+        musicXml = generateSightReadingFor(item);
+      } else if (item.imported) {
         const row = await getImport(item.id);
         if (typeof row?.data !== 'string') throw new Error('the imported file is missing');
         musicXml = row.data;
@@ -728,6 +766,14 @@ export function ScoreScreen(router: Router): HTMLElement {
       // does not commit to a position: the first `showStep` is what puts notes
       // on the screen, and without it the stage is two empty divs.
       renderer.showStep(0);
+
+      if (sightReading) {
+        // Tempo mode, always: waiting for each note is not sight-reading, it
+        // is decoding (docs/05 §8).
+        mode = 'tempo';
+        const modeSelect = document.getElementById('score-mode');
+        if (modeSelect instanceof HTMLSelectElement) modeSelect.value = 'tempo';
+      }
 
       if (settings.keyboardStrip) {
         // Tappable, because for a learner with no MIDI cable this strip *is*

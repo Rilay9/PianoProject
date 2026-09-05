@@ -94,11 +94,13 @@ test.describe('Skills review', () => {
     await expect(page.locator('#skills-status')).not.toHaveText(all ?? '');
   });
 
-  test('drilling a concept opens a score', async ({ page }) => {
+  test('drilling a concept opens whichever screen the item belongs on', async ({ page }) => {
+    // Since P8 a runtime drill goes to the drill screen and generated notation
+    // to the Score screen; `ui/openItem` decides, and this is the seam.
     await page.goto('/#/plan/skills');
     await page.locator('#skills-list .list-row').filter({ hasText: 'Drill it' }).first()
       .getByRole('button', { name: 'Drill it' })
       .click();
-    await expect(page).toHaveURL(/#\/score\//);
+    await expect(page).toHaveURL(/#\/(score|drill)\//);
   });
 });

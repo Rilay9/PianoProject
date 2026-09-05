@@ -181,6 +181,36 @@ width.** See `docs/decisions/2026-09-05-p4-pdf-sheet-music.md`; the page-cutting
 - **No OMR.** Turning a PDF into notes is an offline desktop step (Audiveris, MuseScore); the
   result comes back through the MusicXML import.
 
+## 5c. Drill screen (P8)
+
+Drills are not scores (`05` §7), so they get their own screen rather than a mode on §5. One
+screen with twelve faces: the chrome — prompt counter, keyboard strip, right/wrong feedback,
+result sheet, progress recording — is written once, and each kind supplies only the thing the
+learner looks at.
+
+- **Layout:** counter, the card, one line saying what to do, the controls, and the keyboard
+  strip pinned to the bottom. The strip is always there: for a learner with no cable it *is*
+  the instrument, and a drill you cannot answer is not a drill.
+- **The cards.** *note-flash*: one note on a hand-drawn SVG staff (five lines, a Unicode clef,
+  ledger lines, and the accidental the drill's own name uses — E♭ on the E line, never D♯).
+  *find-key* and *chord/inversion*: the symbol, as large as the screen allows and nothing
+  else. *ear drills*: a headphone glyph and **nothing that names the answer**, with "Play
+  again". *rhythm*: a one-line staff of tap heads, filling in as they are caught. *pedal*: a
+  lamp that follows CC64 and a line saying how many ms after the chord the lift came. *dynamics*:
+  two velocity meters and the ratio against the 1.6× target. *backing-track*: the bar count.
+- **It advances itself.** An answer settles the moment it is complete, feedback shows for
+  450 ms, and the next card appears — no button between cards, which is the point of a flash
+  card. The kinds with no per-answer settle (rhythm, pedal, dynamics, backing-track) get an
+  explicit Next/Done.
+- **Right and wrong differ by shape, not only colour** (§9): the card's outline goes solid on
+  a right answer and dashed on a wrong one.
+- **Result sheet:** pass/master against the same accuracy setting a piece uses (§7), the
+  kind's own numbers (mean reaction, clean changes, velocity ratio), "Again" for a fresh set,
+  and the run recorded through the P7 stores.
+- **Sight-reading is not here.** It is generated notation and opens on the Score screen in
+  Tempo mode (`05` §8), scored on the first attempt only — after that the material has been
+  seen and a second run measures something else.
+
 ## 6. Progress
 
 - Calendar heat-map of practice minutes; streak; weekly minutes vs goal.

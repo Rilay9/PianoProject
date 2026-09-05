@@ -22,6 +22,7 @@ import { recordPlacement } from '../../data/planStore';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { badge, button, el, handsLabel, levelLabel, listRow } from '../widgets';
+import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 
 interface VideoLink {
@@ -64,10 +65,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     }));
   }
 
-  function openItem(item: CatalogItem): void {
-    if (item.kind === 'pdf') router.navigatePdf(item.id);
-    else router.navigateScore(item.id);
-  }
+  const open = (target: CatalogItem): void => void openItem(router, target);
 
   function optionRow(id: string): HTMLElement {
     const item = items.get(id);
@@ -79,7 +77,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     if (row && row.status !== 'new') {
       badges.push(badge(row.selfPassed && row.status === 'passed' ? 'you said you know it' : row.status, row.status));
     }
-    const importNeeded = !item.file && !item.imported && !item.drill;
+    const importNeeded = !isPlayable(item);
     if (importNeeded) badges.push(badge('import needed', 'warn'));
 
     return listRow({
@@ -90,10 +88,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       actions: importNeeded
         ? []
         : [
-            button('▶', () => openItem(item), { variant: 'primary' }),
+            button('▶', () => open(item), { variant: 'primary' }),
             button('Know it', () => void markKnown(item.id), { variant: 'quiet' }),
           ],
-      onClick: importNeeded ? undefined : () => openItem(item),
+      onClick: importNeeded ? undefined : () => open(item),
       dataset: { 'data-item': item.id },
     });
   }
@@ -147,7 +145,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
           const drill = (lesson?.exerciseOptions ?? [])
             .map((id) => items.get(id))
             .find((item) => item && (item.drill || item.file));
-          if (drill) openItem(drill);
+          if (drill) open(drill);
           else status.textContent = 'This lesson has no drill to check against yet.';
         },
         { id: 'lesson-check' },

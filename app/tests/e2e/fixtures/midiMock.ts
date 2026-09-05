@@ -29,6 +29,15 @@ export interface MidiMockOptions {
   behaviour?: MidiMockBehaviour;
   inputs?: MockPortSpec[];
   outputs?: MockPortSpec[];
+  /**
+   * What `navigator.permissions.query({ name: 'midi' })` answers.
+   *
+   * Defaults to `'prompt'`, which is a first visit: the app does not connect
+   * on its own, exactly as in a real browser. `'granted'` is the second visit
+   * onwards, where `app/services.autoConnectMidi` reconnects silently — which
+   * is what the drill screen relies on.
+   */
+  permission?: 'granted' | 'prompt' | 'denied';
 }
 
 export const DEFAULT_MOCK_INPUT: MockPortSpec = {
@@ -80,6 +89,10 @@ export async function installMidiMock(
     behaviour: options.behaviour ?? 'granted',
     inputs: options.inputs ?? [DEFAULT_MOCK_INPUT],
     outputs: options.outputs ?? [],
+    // 'prompt' by default, so the mock's presence alone never makes the app
+    // connect: an existing test that expects a disconnected screen keeps
+    // expecting one.
+    permission: options.permission ?? 'prompt',
   };
 
   await page.addInitScript((config: Required<MidiMockOptions>) => {
@@ -186,6 +199,21 @@ export async function installMidiMock(
       });
       return;
     }
+
+    // `app/services.autoConnectMidi` asks this before it calls
+    // `requestMIDIAccess`, so the mock has to answer it or the auto-connect
+    // path is never exercised.
+    Object.defineProperty(navigator, 'permissions', {
+      configurable: true,
+      writable: true,
+      value: {
+        query: (descriptor: { name: string }) =>
+          Promise.resolve({
+            state: descriptor.name === 'midi' ? config.permission : 'prompt',
+            onchange: null,
+          }),
+      },
+    });
 
     Object.defineProperty(navigator, 'requestMIDIAccess', {
       configurable: true,

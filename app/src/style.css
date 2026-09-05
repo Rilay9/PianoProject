@@ -1429,3 +1429,199 @@ body {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
+
+/* --- Drills (docs/05 §7, docs/04 §5) --------------------------------------
+   A flash card wants the whole screen and one thing on it. The keyboard strip
+   is pinned to the bottom, as on the Score screen, because for a learner with
+   no cable it is the instrument. */
+
+.screen[data-screen='drill'] {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.drill-counter {
+  margin: 0 0 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.drill-stage {
+  flex: 1;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.drill-prompt {
+  text-align: center;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  min-height: 1.4em;
+}
+
+.drill-strip {
+  flex: none;
+  margin-top: auto;
+}
+
+/* Right and wrong differ by more than colour — the whole card shifts, which
+   is legible at a glance and to a colour-blind reader (docs/04 §9). */
+.screen[data-feedback='correct'] .drill-stage {
+  outline: 3px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+.screen[data-feedback='wrong'] .drill-stage {
+  outline: 3px dashed #cf3b3b;
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+.staff-card {
+  width: min(260px, 70vw);
+  height: auto;
+}
+
+.staff-line {
+  stroke: var(--text);
+  stroke-width: 1.2;
+}
+
+.staff-ledger {
+  stroke-width: 1.4;
+}
+
+.staff-clef,
+.staff-accidental,
+.staff-name {
+  fill: var(--text);
+  font-size: 22px;
+}
+
+.staff-name {
+  text-anchor: middle;
+  font-size: 15px;
+  fill: var(--text-muted);
+}
+
+.staff-note {
+  fill: var(--text);
+}
+
+.staff-stem {
+  stroke: var(--text);
+  stroke-width: 1.6;
+}
+
+.rhythm-row {
+  width: min(340px, 92vw);
+  height: auto;
+}
+
+.rhythm-barline {
+  stroke: var(--text-muted);
+  stroke-width: 1.2;
+}
+
+.rhythm-tap {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.6;
+}
+
+.rhythm-tap[data-state='hit'] {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.rhythm-tap[data-state='next'] {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+/* A chord symbol is the whole card: big, centred, nothing else. */
+.symbol-card {
+  font-size: clamp(2.5rem, 14vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.ear-card {
+  font-size: clamp(3rem, 18vw, 6rem);
+  text-align: center;
+}
+
+.pedal-lamp {
+  padding: 18px 28px;
+  border-radius: 14px;
+  border: 3px solid var(--border);
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+.pedal-lamp[data-down='true'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text);
+}
+
+.drill-readout {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.velocity-meter {
+  width: min(380px, 92vw);
+}
+
+.meter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.meter-label {
+  width: 4.5em;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.meter-track {
+  flex: 1;
+  height: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  background: var(--accent);
+}
+
+.meter-value {
+  width: 2.5em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+}
+
+.drill-summary {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.drill-summary h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}

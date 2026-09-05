@@ -14,6 +14,7 @@ import { ScoreScreen } from './screens/ScoreScreen';
 import { SkillsScreen } from './screens/SkillsScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ChordChartScreen } from './screens/ChordChartScreen';
+import { DrillScreen } from './screens/DrillScreen';
 
 const TAB_LABELS: Record<TabId, string> = {
   today: 'Today',
@@ -54,6 +55,10 @@ function screenFor(route: Route): ScreenFactory {
   if (route.chart) {
     const chartId = route.chart;
     return (router) => ChordChartScreen(router, chartId);
+  }
+  if (route.drill) {
+    const drillId = route.drill;
+    return (router) => DrillScreen(router, drillId);
   }
   return route.sub ? SUB_SCREENS[route.sub] : SCREENS[route.tab];
 }

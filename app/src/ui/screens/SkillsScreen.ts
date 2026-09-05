@@ -14,6 +14,7 @@ import { allSkills, displayState, type SkillState } from '../../data/skillsStore
 import type { SkillRow } from '../../data/db';
 import { createSubScreen } from './subScreen';
 import { badge, button, chip, el, listRow } from '../widgets';
+import { openItem } from '../openItem';
 
 const STATE_LABEL: Record<SkillState, string> = {
   unseen: 'never',
@@ -114,7 +115,7 @@ export function SkillsScreen(router: Router): HTMLElement {
           meta: `Stage ${entry.stages.join(', ')} · ${entry.tracks.join(', ')}`,
           badges: [badge(STATE_LABEL[entry.state], entry.state === 'rusty' ? 'warn' : entry.state)],
           actions: entry.drill
-            ? [button('Drill it', () => router.navigateScore((entry.drill as CatalogItem).id), { variant: 'primary' })]
+            ? [button('Drill it', () => void openItem(router, entry.drill as CatalogItem), { variant: 'primary' })]
             : [],
           dataset: { 'data-concept': entry.concept, 'data-state': entry.state },
         }),

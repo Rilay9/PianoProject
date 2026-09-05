@@ -37,6 +37,7 @@ import {
   listRow,
   openSheet,
 } from '../widgets';
+import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 
 type SortKey = 'level' | 'title' | 'recent';
@@ -301,12 +302,10 @@ export function LibraryScreen(router: Router): HTMLElement {
   body.append(importBlock, count, list);
 
   // --- rows --------------------------------------------------------------
-  function openItem(item: CatalogItem): void {
-    // A PDF has no notes, so it goes to the page viewer and never to the Score
-    // screen (docs/04 §5b).
-    if (item.kind === 'pdf') router.navigatePdf(item.id);
-    else if (item.file || item.imported || item.drill) router.navigateScore(item.id);
-    else showDetail(item);
+  function open(target: CatalogItem): void {
+    // ui/openItem decides where an item belongs; an item with nowhere to go is
+    // an import placeholder, and its detail sheet names what to play instead.
+    if (!openItem(router, target)) showDetail(target);
   }
 
   function showDetail(item: CatalogItem): void {
@@ -335,7 +334,7 @@ export function LibraryScreen(router: Router): HTMLElement {
       sheet.body.append(el('p', {}, link, el('span.muted', { text: ' — needs internet' })));
     }
 
-    if (!item.file && !item.imported && !item.drill) {
+    if (!isPlayable(item)) {
       sheet.body.append(
         el('p.notice', {
           text:
@@ -352,7 +351,7 @@ export function LibraryScreen(router: Router): HTMLElement {
             meta: `Play this instead · ${levelLabel(alt.level)}`,
             onClick: () => {
               sheet.close();
-              openItem(alt);
+              open(alt);
             },
           }),
         );
@@ -363,7 +362,7 @@ export function LibraryScreen(router: Router): HTMLElement {
           'Open',
           () => {
             sheet.close();
-            openItem(item);
+            open(item);
           },
           { variant: 'primary', id: 'library-detail-open' },
         ),
@@ -436,7 +435,7 @@ export function LibraryScreen(router: Router): HTMLElement {
     const progressBadge = statusBadge(progress.get(item.id));
     if (progressBadge) badges.push(progressBadge);
     if (item.imported) badges.push(badge(item.kind === 'pdf' ? 'PDF · pages, not notes' : 'yours', 'imported'));
-    if (!item.file && !item.imported && !item.drill) badges.push(badge('import needed', 'warn'));
+    if (!isPlayable(item)) badges.push(badge('import needed', 'warn'));
 
     const actions: HTMLElement[] = [];
     if (item.imported) {
@@ -450,7 +449,7 @@ export function LibraryScreen(router: Router): HTMLElement {
       meta: `${levelLabel(item.level)} · ${handsLabel(item.hands)} · ${item.type}`,
       badges,
       actions,
-      onClick: () => openItem(item),
+      onClick: () => open(item),
       dataset: { 'data-item': item.id, 'data-kind': item.kind ?? 'catalog' },
     });
   }

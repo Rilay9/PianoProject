@@ -24,6 +24,37 @@ export { audioEngine };
 webMidiSource.pinInput(getMidiSettings().pinnedInputId);
 onMidiSettingsChange((s) => webMidiSource.pinInput(s.pinnedInputId));
 
+/**
+ * Reconnects the piano on launch, when — and only when — that costs no prompt.
+ *
+ * Every screen that reads MIDI (the Score screen, the drill screen) assumes
+ * the connection already exists, and nothing was making it: with the cable
+ * plugged in and permission granted months ago, a learner opening a drill got
+ * silence until they went hunting in Settings.
+ *
+ * The gate is the Permissions API. In Chrome *every* `requestMIDIAccess()`
+ * raises a prompt, not just a SysEx one, so calling it unasked would nag on
+ * first launch — which docs/04 §8 says the app never does. `state: 'granted'`
+ * is the one case where the call is silent, and it is also the only case where
+ * the answer is already yes. No Permissions API means no auto-connect.
+ */
+export async function autoConnectMidi(): Promise<boolean> {
+  try {
+    const permissions = navigator.permissions as
+      | { query?: (descriptor: { name: string }) => Promise<{ state: string }> }
+      | undefined;
+    if (typeof permissions?.query !== 'function') return false;
+    const status = await permissions.query({ name: 'midi' });
+    if (status.state !== 'granted') return false;
+    await webMidiSource.connect();
+    return true;
+  } catch {
+    // An unsupported descriptor name, a rejected request, no Web MIDI at all:
+    // every one of them means "carry on without the cable".
+    return false;
+  }
+}
+
 let pianoInstance: Piano | null = null;
 let pianoLoad: Promise<Piano> | null = null;
 

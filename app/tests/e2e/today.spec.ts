@@ -95,6 +95,9 @@ test.describe('Today', () => {
   test('starting the session opens the first row', async ({ page }) => {
     await page.goto('/');
     await page.locator('#today-start').click();
-    await expect(page).toHaveURL(/#\/score\//);
+    // The warm-up row is usually a drill, which since P8 has a screen of its
+    // own; a bundled exercise is notation and opens the Score screen.
+    await expect(page).toHaveURL(/#\/(score|drill)\//);
+    await expect(page.locator('[data-screen="drill"], [data-screen="score"]')).toBeVisible();
   });
 });

@@ -68,6 +68,8 @@ export interface Route {
   lesson?: string;
   /** Catalog id open in the chord-chart view (docs/04 §3b). */
   chart?: string;
+  /** Catalog id of the drill being run (docs/05 §7). */
+  drill?: string;
 }
 
 function isTabId(value: string): value is TabId {
@@ -108,6 +110,17 @@ export function parseHash(hash: string): Route {
     }
     return looksLikeCatalogId(id) ? { tab: 'library', pdf: id } : { tab: DEFAULT_TAB };
   }
+  if (tab === 'drill') {
+    // A drill is a prompt loop, not notation, so it gets its own route rather
+    // than a mode on the Score screen (docs/05 §7).
+    let id: string;
+    try {
+      id = decodeURIComponent(sub);
+    } catch {
+      return { tab: DEFAULT_TAB };
+    }
+    return looksLikeCatalogId(id) ? { tab: DEFAULT_TAB, drill: id } : { tab: DEFAULT_TAB };
+  }
   if (tab === 'chart') {
     let id: string;
     try {
@@ -142,6 +155,7 @@ export function routeToHash(route: Route): string {
   if (route.pdf) return `#/pdf/${encodeURIComponent(route.pdf)}`;
   if (route.lesson) return `#/lesson/${encodeURIComponent(route.lesson)}`;
   if (route.chart) return `#/chart/${encodeURIComponent(route.chart)}`;
+  if (route.drill) return `#/drill/${encodeURIComponent(route.drill)}`;
   if (route.dev) return `#/dev/${route.dev}`;
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
@@ -198,6 +212,13 @@ export class Router {
     this.setRoute(route);
   }
 
+  /** Runs a drill (`#/drill/<itemId>`). */
+  navigateDrill(itemId: string): void {
+    const route: Route = { tab: this.current.tab, drill: itemId };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
   /** Opens an item in the chord-chart view (`#/chart/<itemId>`). */
   navigateChart(itemId: string): void {
     const route: Route = { tab: 'library', chart: itemId };
@@ -226,7 +247,8 @@ export class Router {
       route.score === this.current.score &&
       route.pdf === this.current.pdf &&
       route.lesson === this.current.lesson &&
-      route.chart === this.current.chart
+      route.chart === this.current.chart &&
+      route.drill === this.current.drill
     ) {
       return;
     }

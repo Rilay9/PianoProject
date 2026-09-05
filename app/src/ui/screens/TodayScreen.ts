@@ -37,6 +37,7 @@ import type { ProgressRow } from '../../data/db';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
+import { openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 
 const SLOT_LABELS: Record<SessionSlot['kind'], string> = {
@@ -124,10 +125,7 @@ export function TodayScreen(router: Router): HTMLElement {
 
   // --- rows ---------------------------------------------------------------
 
-  function openItem(item: CatalogItem): void {
-    if (item.kind === 'pdf') router.navigatePdf(item.id);
-    else router.navigateScore(item.id);
-  }
+  const open = (target: CatalogItem): void => void openItem(router, target);
 
   function showSwapSheet(slotIndex: number): void {
     const slot = slots[slotIndex];
@@ -200,10 +198,10 @@ export function TodayScreen(router: Router): HTMLElement {
     if (substitute) {
       // Not a dead row: the item's own alternatives name what to play instead.
       actionButtons.push(
-        button(`Play ${substitute.title}`, () => openItem(substitute), { variant: 'secondary' }),
+        button(`Play ${substitute.title}`, () => open(substitute), { variant: 'secondary' }),
       );
     } else {
-      actionButtons.push(button('▶', () => openItem(item), { variant: 'primary' }));
+      actionButtons.push(button('▶', () => open(item), { variant: 'primary' }));
     }
 
     return listRow({
@@ -214,7 +212,7 @@ export function TodayScreen(router: Router): HTMLElement {
       )} · ${handsLabel(item.hands)}`,
       badges,
       actions: actionButtons,
-      onClick: substitute ? () => openItem(substitute) : () => openItem(item),
+      onClick: substitute ? () => open(substitute) : () => open(item),
       dataset: { 'data-slot': slot.kind, 'data-item': item.id },
     });
   }
@@ -240,7 +238,7 @@ export function TodayScreen(router: Router): HTMLElement {
         'Start session',
         () => {
           const first = slots.find((slot) => slot.item);
-          if (first?.item) openItem(first.item);
+          if (first?.item) open(first.item);
           else status.textContent = 'Nothing in the card to start yet.';
         },
         { id: 'today-start', variant: 'primary' },

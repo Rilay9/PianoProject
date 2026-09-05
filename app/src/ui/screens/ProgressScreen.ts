@@ -22,6 +22,7 @@ import {
   weekSoFar,
 } from '../../data/progressStore';
 import { badge, button, el, listRow, minutesLabel, numberControl } from '../widgets';
+import { openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 
 /** Days shown in the heat-map: enough to see a term, short enough to fit. */
@@ -128,7 +129,11 @@ export function ProgressScreen(router: Router): HTMLElement {
               title: item?.title ?? row.itemId,
               meta: `Last played ${last} · best ${String(Math.round(row.bestAccuracy * 100))}%`,
               badges: [badge('mastered', 'mastered')],
-              actions: [button('▶', () => router.navigateScore(row.itemId), { variant: 'primary' })],
+              // Through `openItem`, because a mastered *drill* belongs on the
+              // drill screen and the Score screen would have nothing to show.
+              actions: item
+                ? [button('▶', () => void openItem(router, item), { variant: 'primary' })]
+                : [],
               dataset: { 'data-item': row.itemId },
             });
           })

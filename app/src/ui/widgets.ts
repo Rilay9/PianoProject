@@ -19,9 +19,17 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   const node = document.createElement(tag);
   if (classes.length) node.className = classes.join(' ');
   for (const [key, value] of Object.entries(attrs)) {
-    if (value === undefined || value === false) continue;
+    // Only `undefined` means "not set". `false` is a value: `aria-pressed` and
+    // `data-*` have to be written as "false" rather than left off, or an
+    // unpressed chip has no pressed state at all — which reads as "not a
+    // toggle" to a screen reader and matches nothing in a test.
+    if (value === undefined) continue;
     if (key.startsWith('data-') || key === 'role' || key.startsWith('aria-')) {
       node.setAttribute(key, String(value));
+    } else if (value === false) {
+      // A DOM property, so `false` is simply assigned — except `class`, where
+      // an empty string is what "no class" means.
+      (node as unknown as Record<string, unknown>)[key] = false;
     } else if (key === 'text') {
       node.textContent = String(value);
     } else {
