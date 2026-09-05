@@ -1,0 +1,134 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 0,
+      "title": "Orientation & placement",
+      "summary": "Sitting, the layout of the keyboard, how the app works, and an optional placement test.",
+      "approxDuration": "1-2 weeks",
+      "abrsmGradeApprox": "pre-grade",
+      "units": [
+        {
+          "id": "0.1",
+          "title": "Your instrument and your body",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "0.1",
+              "title": "Your instrument and your body",
+              "concepts": [
+                "posture",
+                "hand-shape",
+                "finger-numbers"
+              ],
+              "textFile": "lessons/0.1.md",
+              "exerciseOptions": [
+                "drill.setup.posture-checklist",
+                "drill.technique.finger-numbers"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "checklist-complete"
+              },
+              "estimatedDays": 2
+            }
+          ]
+        },
+        {
+          "id": "0.2",
+          "title": "Keyboard geography",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "0.2",
+              "title": "Keyboard geography",
+              "concepts": [
+                "black-key-groups",
+                "middle-C",
+                "octaves",
+                "letter-names"
+              ],
+              "textFile": "lessons/0.2.md",
+              "exerciseOptions": [
+                "drill.reading.find-key",
+                "drill.reading.find-all-cs"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.95,
+                "minTempoPct": 0.0,
+                "custom": "20-keys-in-40s>=0.95"
+              },
+              "estimatedDays": 3
+            }
+          ]
+        },
+        {
+          "id": "0.3",
+          "title": "How the app works and how to practise",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "0.3",
+              "title": "How the app works and how to practise",
+              "concepts": [
+                "wait-mode",
+                "tempo-mode",
+                "review-queue"
+              ],
+              "textFile": "lessons/0.3.md",
+              "exerciseOptions": [
+                "drill.tour.app-basics"
+              ],
+              "songOptions": [
+                "song.folk.hot-cross-buns"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "tour-complete"
+              },
+              "estimatedDays": 1
+            }
+          ]
+        },
+        {
+          "id": "0.4",
+          "title": "Placement test",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "0.4",
+              "title": "Placement test",
+              "concepts": [
+                "placement",
+                "self-assessment"
+              ],
+              "textFile": "lessons/0.4.md",
+              "exerciseOptions": [
+                "drill.placement.stage-0"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "placement-complete"
+              },
+              "estimatedDays": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

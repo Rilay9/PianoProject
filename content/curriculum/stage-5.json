@@ -1,0 +1,423 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 5,
+      "title": "Tracks take over",
+      "summary": "The core path ends at Stage 4. From here the tracks carry the work: classical, chords and pop, blues, jazz, ragtime, theory, improvisation and the mini-modules.",
+      "approxDuration": "ongoing",
+      "abrsmGradeApprox": "grade 2-3",
+      "units": [
+        {
+          "id": "classical.5.1",
+          "title": "Classical: sonatina form and Romantic miniatures",
+          "track": "classical",
+          "lessons": [
+            {
+              "id": "classical.5",
+              "title": "Sonatina form and Romantic miniatures",
+              "concepts": [
+                "sonatina-form",
+                "alberti-bass-HT",
+                "trills",
+                "pedal"
+              ],
+              "textFile": "lessons/classical.5.md",
+              "exerciseOptions": [
+                "exercise.hanon.06.both",
+                "exercise.hanon.07.both",
+                "exercise.arpeggio.g-major.2oct.both"
+              ],
+              "songOptions": [
+                "song.folk.greensleeves",
+                "song.holiday.carol-of-the-bells.easy",
+                "song.classical.pachelbel-canon-d.easy",
+                "song.classical.schubert-ave-maria"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "classical.4"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "chords-pop.5.1",
+          "title": "Chords & pop: seventh chords and textures",
+          "track": "chords-pop",
+          "lessons": [
+            {
+              "id": "chords-pop.5",
+              "title": "Seventh chords and accompaniment textures",
+              "concepts": [
+                "maj7",
+                "min7",
+                "dom7",
+                "sus",
+                "add9"
+              ],
+              "textFile": "lessons/chords-pop.5.md",
+              "exerciseOptions": [
+                "exercise.arpeggio7.c-dominant7.2oct.both",
+                "exercise.arpeggio7.g-dominant7.2oct.both",
+                "drill.jazz.ii-v-i-shells"
+              ],
+              "songOptions": [
+                "song.folk.greensleeves",
+                "song.folk.row-row-row-your-boat",
+                "song.folk.greensleeves.68"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "chords-pop.4"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "blues-boogie.5.1",
+          "title": "Blues: turnarounds, blue notes and walking bass",
+          "track": "blues-boogie",
+          "lessons": [
+            {
+              "id": "blues.5",
+              "title": "Turnarounds, blue notes and walking bass",
+              "concepts": [
+                "turnaround",
+                "tremolo-thirds",
+                "walking-bass"
+              ],
+              "textFile": "lessons/blues.5.md",
+              "exerciseOptions": [
+                "drill.improv.blues-backing",
+                "drill.blues.lh-patterns",
+                "exercise.arpeggio7.f-dominant7.2oct.both"
+              ],
+              "songOptions": [
+                "exercise.blues.twelve-bar-shuffle.f",
+                "exercise.blues.twelve-bar-shuffle.g",
+                "exercise.blues.twelve-bar-shuffle.c"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "blues.4"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "jazz.5.1",
+          "title": "Jazz: swing, shell voicings and ii-V-I",
+          "track": "jazz",
+          "lessons": [
+            {
+              "id": "jazz.5",
+              "title": "Swing, shell voicings and ii-V-I",
+              "concepts": [
+                "swing-eighths",
+                "shell-voicings",
+                "ii-V-I",
+                "comping"
+              ],
+              "textFile": "lessons/jazz.5.md",
+              "exerciseOptions": [
+                "drill.jazz.ii-v-i-shells",
+                "drill.ear.seventh-qualities",
+                "exercise.arpeggio7.c-dominant7.2oct.both"
+              ],
+              "songOptions": [
+                "exercise.blues.twelve-bar-shuffle.f",
+                "exercise.blues.twelve-bar-shuffle.c",
+                "song.folk.greensleeves.68"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "chords-pop.5"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "ragtime.5.1",
+          "title": "Ragtime: oom-pah and syncopation",
+          "track": "ragtime",
+          "lessons": [
+            {
+              "id": "ragtime.5",
+              "title": "The oom-pah and the syncopated right hand",
+              "concepts": [
+                "oom-pah-bass",
+                "syncopation",
+                "not-fast"
+              ],
+              "textFile": "lessons/ragtime.5.md",
+              "exerciseOptions": [
+                "exercise.rhythm.syncopated.4bar",
+                "exercise.rhythm.sixteenths.4bar",
+                "drill.pattern.lh-accompaniment"
+              ],
+              "songOptions": [
+                "song.ragtime.joplin-entertainer",
+                "song.ragtime.joplin-entertainer.alt",
+                "song.folk.greensleeves.waltz"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "4.5"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "theory-ear.5.1",
+          "title": "Theory & ear: sevenths, progressions and modes",
+          "track": "theory-ear",
+          "lessons": [
+            {
+              "id": "theory.5",
+              "title": "Seventh qualities, progressions and modes",
+              "concepts": [
+                "seventh-qualities",
+                "progressions-by-ear",
+                "modes"
+              ],
+              "textFile": "lessons/theory.5.md",
+              "exerciseOptions": [
+                "drill.ear.seventh-qualities",
+                "drill.ear.progressions",
+                "drill.ear.melodic-dictation"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.8,
+                "minTempoPct": 0.0,
+                "custom": "sevenths-by-ear>=0.8"
+              },
+              "prerequisites": [
+                "theory.4"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "improv-compose.5.1",
+          "title": "Improvisation: the blues scale and writing eight bars",
+          "track": "improv-compose",
+          "lessons": [
+            {
+              "id": "improv.5",
+              "title": "The blues scale and writing eight bars",
+              "concepts": [
+                "blues-scale",
+                "twelve-bar-improv",
+                "melody-writing"
+              ],
+              "textFile": "lessons/improv.5.md",
+              "exerciseOptions": [
+                "drill.improv.blues-backing",
+                "drill.improv.call-response"
+              ],
+              "songOptions": [
+                "exercise.blues.twelve-bar-shuffle.c",
+                "exercise.blues.twelve-bar-shuffle.f",
+                "exercise.blues.twelve-bar-shuffle.g"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "eight-bar-melody-written"
+              },
+              "prerequisites": [
+                "improv.4"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "latin.5.1",
+          "title": "Latin: clave, tumbao and montuno",
+          "track": "latin",
+          "lessons": [
+            {
+              "id": "latin",
+              "title": "Clave, tumbao and montuno",
+              "concepts": [
+                "clave",
+                "tumbao",
+                "montuno",
+                "syncopation"
+              ],
+              "textFile": "lessons/latin.md",
+              "exerciseOptions": [
+                "exercise.rhythm.syncopated.4bar",
+                "drill.pattern.lh-accompaniment"
+              ],
+              "songOptions": [
+                "exercise.blues.twelve-bar-shuffle.c",
+                "song.folk.greensleeves.68",
+                "song.folk.row-row-row-your-boat"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "4.5"
+              ],
+              "estimatedDays": 45
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.5.1",
+          "title": "Rock & metal: So Far Away",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.so-far-away",
+              "title": "Technique brief — So Far Away",
+              "concepts": [
+                "melody-in-octaves",
+                "sustained-chords",
+                "dynamic-build"
+              ],
+              "textFile": "lessons/rock.so-far-away.md",
+              "exerciseOptions": [
+                "drill.chord.inversions",
+                "exercise.inversions.c-major.both"
+              ],
+              "songOptions": [
+                "song.rock.a7x-so-far-away",
+                "song.folk.greensleeves.chords",
+                "song.classical.chopin-prelude-op28-4"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "vehicle-passed"
+              },
+              "prerequisites": [
+                "rock.overview"
+              ],
+              "estimatedDays": 21
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.5.2",
+          "title": "Rock & metal: Fiction",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.fiction",
+              "title": "Technique brief — Fiction",
+              "concepts": [
+                "two-hand-independence",
+                "modal-minor",
+                "rubato"
+              ],
+              "textFile": "lessons/rock.fiction.md",
+              "exerciseOptions": [
+                "drill.pattern.lh-accompaniment",
+                "exercise.arpeggio.c-minor.2oct.both"
+              ],
+              "songOptions": [
+                "song.rock.a7x-fiction",
+                "song.classical.satie-gnossienne-1",
+                "song.folk.greensleeves.68"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "vehicle-passed"
+              },
+              "prerequisites": [
+                "rock.overview"
+              ],
+              "estimatedDays": 21
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.5.3",
+          "title": "Rock & metal: Waiting for the End",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.waiting-for-the-end",
+              "title": "Technique brief — Waiting for the End",
+              "concepts": [
+                "half-time-feel",
+                "syncopation",
+                "open-voicings"
+              ],
+              "textFile": "lessons/rock.waiting-for-the-end.md",
+              "exerciseOptions": [
+                "exercise.rhythm.syncopated.4bar",
+                "drill.rhythm.six-eight"
+              ],
+              "songOptions": [
+                "song.rock.lp-waiting-for-the-end",
+                "song.classical.satie-gymnopedie-1",
+                "exercise.blues.twelve-bar-shuffle.c"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "vehicle-passed"
+              },
+              "prerequisites": [
+                "rock.overview"
+              ],
+              "estimatedDays": 21
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

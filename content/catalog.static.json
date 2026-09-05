@@ -1,0 +1,2469 @@
+[
+  {
+    "id": "drill.setup.posture-checklist",
+    "type": "drill",
+    "title": "Posture and hand-shape checklist",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core"
+    ],
+    "level": 0.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "posture",
+      "hand-shape"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "A checklist the learner ticks; no notes are played."
+    }
+  },
+  {
+    "id": "drill.technique.finger-numbers",
+    "type": "drill",
+    "title": "Finger-number tap drill",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core"
+    ],
+    "level": 0.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "finger-numbers",
+      "hand-recognition"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "find-key",
+      "params": {
+        "mode": "finger-number"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "The app names a finger and hand; MIDI can only verify the hand, by pitch range, and trusts the learner for the finger."
+    }
+  },
+  {
+    "id": "drill.reading.find-key",
+    "type": "drill",
+    "title": "Find the key",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core"
+    ],
+    "level": 0.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "keyboard-geography",
+      "letter-names"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "find-key",
+      "params": {
+        "range": "A0-C8",
+        "timed": true
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.find-all-cs",
+    "type": "drill",
+    "title": "Play all the Cs, Fs and Gs",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core"
+    ],
+    "level": 0.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "keyboard-geography",
+      "octaves"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "find-key",
+      "params": {
+        "targets": [
+          "C",
+          "F",
+          "G"
+        ],
+        "allOctaves": true
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.tour.app-basics",
+    "type": "drill",
+    "title": "Guided tour of the practice modes",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core"
+    ],
+    "level": 0.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "wait-mode",
+      "tempo-mode",
+      "loops"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "A guided tour over song.folk.hot-cross-buns."
+    }
+  },
+  {
+    "id": "drill.placement.stage-0",
+    "type": "drill",
+    "title": "Placement test",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core"
+    ],
+    "level": 0.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "placement"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Eight branching items; the first failure sets the starting unit."
+    }
+  },
+  {
+    "id": "drill.technique.five-finger-rh",
+    "type": "drill",
+    "title": "Right-hand five-finger walk",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "technique"
+    ],
+    "level": 1.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "C-position",
+      "five-finger"
+    ],
+    "hands": "right",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "five-finger",
+      "params": {
+        "key": "C",
+        "hands": "right",
+        "bpm": 60
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.note-flash-treble-c4-g4",
+    "type": "drill",
+    "title": "Note flash — treble C4 to G4",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "treble-clef",
+      "note-names"
+    ],
+    "hands": "right",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "note-flash",
+      "params": {
+        "clef": "treble",
+        "low": "C4",
+        "high": "G4"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.rhythm.quarters-rests",
+    "type": "drill",
+    "title": "Rhythm clap — quarters and rests",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "quarter-notes",
+      "rests"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "rhythm",
+      "params": {
+        "values": [
+          "quarter",
+          "quarter-rest"
+        ],
+        "bars": 4
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.rhythm.mixed-values",
+    "type": "drill",
+    "title": "Rhythm reading — quarters, halves, wholes",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "half-notes",
+      "whole-notes",
+      "rests"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "rhythm",
+      "params": {
+        "values": [
+          "quarter",
+          "half",
+          "whole",
+          "rest"
+        ],
+        "bars": 4
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.technique.five-finger-lh",
+    "type": "drill",
+    "title": "Left-hand five-finger walk",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "technique"
+    ],
+    "level": 1.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "LH-C-position",
+      "five-finger"
+    ],
+    "hands": "left",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "five-finger",
+      "params": {
+        "key": "C",
+        "hands": "left",
+        "bpm": 60
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.note-flash-bass-f2-c4",
+    "type": "drill",
+    "title": "Note flash — bass F2 to C4",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "bass-clef",
+      "note-names"
+    ],
+    "hands": "left",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "note-flash",
+      "params": {
+        "clef": "bass",
+        "low": "F2",
+        "high": "C4"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.grand-staff-flash",
+    "type": "drill",
+    "title": "Note flash — grand staff",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "grand-staff",
+      "note-names"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "note-flash",
+      "params": {
+        "clef": "grand",
+        "low": "F2",
+        "high": "G5"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.rhythm.three-four",
+    "type": "drill",
+    "title": "Rhythm reading in 3/4",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "3/4",
+      "dotted-half-note"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "rhythm",
+      "params": {
+        "timeSig": "3/4",
+        "values": [
+          "quarter",
+          "half",
+          "dotted-half"
+        ],
+        "bars": 4
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.sight-reading-1",
+    "type": "drill",
+    "title": "Sight-reading generator, level 1",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.5,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "C-position",
+      "steps",
+      "skips"
+    ],
+    "hands": "right",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 1,
+        "bars": 4,
+        "hands": "right"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.interval-2nd-3rd",
+    "type": "drill",
+    "title": "Ear drill — 2nd or 3rd",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear",
+      "core"
+    ],
+    "level": 1.5,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "intervals",
+      "ear-training"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "ear-interval",
+      "params": {
+        "intervals": [
+          "m2",
+          "M2",
+          "m3",
+          "M3"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.technique.ht-holds",
+    "type": "drill",
+    "title": "Hands-together pattern drill",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "technique"
+    ],
+    "level": 2.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "hands-together",
+      "held-LH"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "five-finger",
+      "params": {
+        "key": "C",
+        "hands": "both",
+        "leftHand": "hold"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.rhythm.eighths",
+    "type": "drill",
+    "title": "Rhythm reading with eighth notes",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 2.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "eighth-notes",
+      "subdivision"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "rhythm",
+      "params": {
+        "values": [
+          "quarter",
+          "eighth",
+          "half"
+        ],
+        "bars": 4
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.chord.c-f-g",
+    "type": "drill",
+    "title": "Chord drill — C, F and G",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "chords-pop"
+    ],
+    "level": 2.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "triads",
+      "I-IV-V",
+      "block-chords"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "chord",
+      "params": {
+        "chords": [
+          "C",
+          "F",
+          "G"
+        ],
+        "position": "root"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.rhythm.dotted",
+    "type": "drill",
+    "title": "Rhythm reading — dotted quarter and eighth",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 2.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "dotted-quarter",
+      "ties"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "rhythm",
+      "params": {
+        "values": [
+          "dotted-quarter",
+          "eighth",
+          "quarter"
+        ],
+        "bars": 4
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.dynamics.p-f",
+    "type": "drill",
+    "title": "Dynamics drill — piano and forte",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core"
+    ],
+    "level": 2.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "dynamics",
+      "velocity"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "dynamics",
+      "params": {
+        "targets": [
+          "p",
+          "f"
+        ],
+        "ratio": 1.6
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.technique.position-shifts",
+    "type": "drill",
+    "title": "Position-shift drill",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "technique"
+    ],
+    "level": 2.5,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "position-shift",
+      "thumb-under"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "five-finger",
+      "params": {
+        "key": "C",
+        "shifts": true
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.note-flash-accidentals",
+    "type": "drill",
+    "title": "Note flash with sharps and flats",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 3.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sharps",
+      "flats",
+      "key-signatures"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "note-flash",
+      "params": {
+        "clef": "grand",
+        "accidentals": true
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.theory.build-major-scale",
+    "type": "drill",
+    "title": "Build a major scale from any note",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear",
+      "core"
+    ],
+    "level": 3.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "major-scale-formula",
+      "whole-and-half-steps"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "find-key",
+      "params": {
+        "mode": "build-scale",
+        "pattern": "WWHWWWH"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.chord.primary-c-g-f",
+    "type": "drill",
+    "title": "I-IV-V7 in C, G and F",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "chords-pop"
+    ],
+    "level": 3.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "I-IV-V7",
+      "voice-leading"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "chord",
+      "params": {
+        "keys": [
+          "C",
+          "G",
+          "F"
+        ],
+        "degrees": [
+          "I",
+          "IV",
+          "V7"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.chord.symbol-flash",
+    "type": "drill",
+    "title": "Chord-symbol flash",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "chords-pop",
+      "core"
+    ],
+    "level": 3.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "chord-symbols",
+      "recognition"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "chord",
+      "params": {
+        "mode": "symbol-flash"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.chord.minor-changes",
+    "type": "drill",
+    "title": "Am, Dm and E7 changes",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "chords-pop"
+    ],
+    "level": 3.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "minor-triads",
+      "E7",
+      "harmonic-minor"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "chord",
+      "params": {
+        "chords": [
+          "Am",
+          "Dm",
+          "E7"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.major-minor",
+    "type": "drill",
+    "title": "Ear drill — major or minor",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear",
+      "core"
+    ],
+    "level": 3.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "ear-training",
+      "chord-quality"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "ear-chord",
+      "params": {
+        "qualities": [
+          "major",
+          "minor"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.rhythm-dictation",
+    "type": "drill",
+    "title": "Rhythm dictation",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear"
+    ],
+    "level": 3.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "ear-training",
+      "rhythm-dictation"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "rhythm",
+      "params": {
+        "mode": "dictation",
+        "bars": 2
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.note-flash-extended",
+    "type": "drill",
+    "title": "Note flash — C2 to C6",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 3.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "ledger-lines",
+      "landmark-notes"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "note-flash",
+      "params": {
+        "clef": "grand",
+        "low": "C2",
+        "high": "C6"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.sight-reading-2",
+    "type": "drill",
+    "title": "Sight-reading generator, level 2",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 3.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "two-hands"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 2,
+        "bars": 4,
+        "hands": "both"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.pedal.changes",
+    "type": "drill",
+    "title": "Pedal-change drill on I-IV-V",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "technique"
+    ],
+    "level": 3.5,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sustain-pedal",
+      "legato-pedalling",
+      "CC64"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "pedal",
+      "params": {
+        "progression": [
+          "I",
+          "IV",
+          "V",
+          "I"
+        ],
+        "maxOverlapMs": 120
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.pattern.lh-accompaniment",
+    "type": "drill",
+    "title": "Left-hand accompaniment patterns",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "chords-pop",
+      "technique"
+    ],
+    "level": 3.6,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "broken-chords",
+      "alberti-bass",
+      "waltz-bass"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "arpeggio",
+      "params": {
+        "patterns": [
+          "broken",
+          "alberti",
+          "waltz"
+        ],
+        "keys": [
+          "C",
+          "G",
+          "F",
+          "Am"
+        ],
+        "bpm": [
+          60,
+          90
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.chord.inversions",
+    "type": "drill",
+    "title": "Inversion drill",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "chords-pop",
+      "technique"
+    ],
+    "level": 4.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "inversions",
+      "slash-chords"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "inversion",
+      "params": {
+        "qualities": [
+          "major",
+          "minor"
+        ],
+        "positions": [
+          "root",
+          "first",
+          "second"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.cadences",
+    "type": "drill",
+    "title": "Ear drill — cadences",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear"
+    ],
+    "level": 4.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "cadences",
+      "authentic",
+      "plagal",
+      "deceptive"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "ear-progression",
+      "params": {
+        "cadences": [
+          "authentic",
+          "half",
+          "plagal",
+          "deceptive"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.melodic-dictation",
+    "type": "drill",
+    "title": "Melodic dictation",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear"
+    ],
+    "level": 4.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "ear-training",
+      "melodic-dictation"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "call-response",
+      "params": {
+        "bars": 2,
+        "mode": "dictation"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.rhythm.six-eight",
+    "type": "drill",
+    "title": "Rhythm reading in 6/8",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 4.5,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "6/8",
+      "compound-time",
+      "triplets"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "rhythm",
+      "params": {
+        "timeSig": "6/8",
+        "bars": 4
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.sight-reading-3",
+    "type": "drill",
+    "title": "Sight-reading generator, level 3",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 4.5,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "syncopation",
+      "6/8"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 3,
+        "bars": 8,
+        "hands": "both"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.seventh-qualities",
+    "type": "drill",
+    "title": "Ear drill — seventh-chord qualities",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear",
+      "jazz"
+    ],
+    "level": 5.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "maj7",
+      "dom7",
+      "min7",
+      "m7b5"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "ear-chord",
+      "params": {
+        "qualities": [
+          "maj7",
+          "7",
+          "m7",
+          "m7b5"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.progressions",
+    "type": "drill",
+    "title": "Ear drill — chord progressions",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear",
+      "chords-pop"
+    ],
+    "level": 5.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "I-vi-IV-V",
+      "ii-V-I"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "ear-progression",
+      "params": {
+        "progressions": [
+          "I-vi-IV-V",
+          "ii-V-I"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.improv.loop-i-iv-v",
+    "type": "drill",
+    "title": "Improvise over a I-IV-V loop",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "improv-compose",
+      "core"
+    ],
+    "level": 3.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "improvisation",
+      "C-position",
+      "call-and-response"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "backing-track",
+      "params": {
+        "progression": [
+          "C",
+          "C",
+          "C",
+          "C",
+          "F",
+          "F",
+          "G",
+          "G"
+        ],
+        "bpm": 72,
+        "scored": false
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.improv.call-response",
+    "type": "drill",
+    "title": "Answer the phrase",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "improv-compose",
+      "theory-ear"
+    ],
+    "level": 4.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "call-and-response",
+      "pentatonic",
+      "motif"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "call-response",
+      "params": {
+        "bars": 2,
+        "scale": "pentatonic"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.improv.blues-backing",
+    "type": "drill",
+    "title": "Twelve-bar blues backing track",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "improv-compose",
+      "blues-boogie"
+    ],
+    "level": 5.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "blues-scale",
+      "twelve-bar",
+      "improvisation"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "backing-track",
+      "params": {
+        "form": "12-bar",
+        "keys": [
+          "C",
+          "F",
+          "G",
+          "E",
+          "A"
+        ],
+        "shuffle": true
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.blues.lh-patterns",
+    "type": "drill",
+    "title": "Twelve-bar left-hand patterns",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "blues-boogie",
+      "technique"
+    ],
+    "level": 4.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "boogie-bass",
+      "shuffle",
+      "dominant-7"
+    ],
+    "hands": "left",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "backing-track",
+      "params": {
+        "keys": [
+          "C",
+          "F",
+          "G"
+        ],
+        "leftHandOnly": true,
+        "shuffle": true
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.jazz.ii-v-i-shells",
+    "type": "drill",
+    "title": "ii-V-I with shell voicings",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "jazz",
+      "chords-pop"
+    ],
+    "level": 5.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "shell-voicings",
+      "ii-V-I",
+      "guide-tones"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "chord",
+      "params": {
+        "progression": "ii-V-I",
+        "keys": [
+          "C",
+          "F",
+          "B-",
+          "G"
+        ],
+        "voicing": "shell"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.jam.form-tracker",
+    "type": "drill",
+    "title": "Play the form with the chart",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "blues-boogie",
+      "jazz"
+    ],
+    "level": 4.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "form",
+      "comping",
+      "counting-in"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "backing-track",
+      "params": {
+        "form": "12-bar",
+        "keys": [
+          "E",
+          "A",
+          "G",
+          "D",
+          "C"
+        ],
+        "chartView": true
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "song.rock.a7x-seize-the-day",
+    "type": "song",
+    "title": "Seize the Day",
+    "composer": "Avenged Sevenfold",
+    "arranger": null,
+    "genre": [
+      "rock"
+    ],
+    "tracks": [
+      "film-game"
+    ],
+    "level": 5.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "import-only"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "Not bundled — obtain the MusicXML yourself",
+      "url": null,
+      "license": "copyright, not redistributable",
+      "pd_region": "US",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "In copyright. PianoPath ships no notation for this song; the entry exists so the module can point at it and so an imported score has somewhere to land."
+    },
+    "importHint": "Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the Library import screen.",
+    "teaching": {
+      "lessonIds": [
+        "rock.seize-the-day"
+      ]
+    },
+    "tags": [
+      "import-only",
+      "rock-metal-module"
+    ]
+  },
+  {
+    "id": "song.rock.a7x-dear-god",
+    "type": "song",
+    "title": "Dear God",
+    "composer": "Avenged Sevenfold",
+    "arranger": null,
+    "genre": [
+      "rock"
+    ],
+    "tracks": [
+      "film-game"
+    ],
+    "level": 4.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "import-only"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "Not bundled — obtain the MusicXML yourself",
+      "url": null,
+      "license": "copyright, not redistributable",
+      "pd_region": "US",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "In copyright. PianoPath ships no notation for this song; the entry exists so the module can point at it and so an imported score has somewhere to land."
+    },
+    "importHint": "Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the Library import screen.",
+    "teaching": {
+      "lessonIds": [
+        "rock.dear-god"
+      ]
+    },
+    "tags": [
+      "import-only",
+      "rock-metal-module"
+    ]
+  },
+  {
+    "id": "song.rock.a7x-so-far-away",
+    "type": "song",
+    "title": "So Far Away",
+    "composer": "Avenged Sevenfold",
+    "arranger": null,
+    "genre": [
+      "rock"
+    ],
+    "tracks": [
+      "film-game"
+    ],
+    "level": 5.1,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "import-only"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "Not bundled — obtain the MusicXML yourself",
+      "url": null,
+      "license": "copyright, not redistributable",
+      "pd_region": "US",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "In copyright. PianoPath ships no notation for this song; the entry exists so the module can point at it and so an imported score has somewhere to land."
+    },
+    "importHint": "Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the Library import screen.",
+    "teaching": {
+      "lessonIds": [
+        "rock.so-far-away"
+      ]
+    },
+    "tags": [
+      "import-only",
+      "rock-metal-module"
+    ]
+  },
+  {
+    "id": "song.rock.a7x-fiction",
+    "type": "song",
+    "title": "Fiction",
+    "composer": "Avenged Sevenfold",
+    "arranger": null,
+    "genre": [
+      "rock"
+    ],
+    "tracks": [
+      "film-game"
+    ],
+    "level": 5.2,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "import-only"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "Not bundled — obtain the MusicXML yourself",
+      "url": null,
+      "license": "copyright, not redistributable",
+      "pd_region": "US",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "In copyright. PianoPath ships no notation for this song; the entry exists so the module can point at it and so an imported score has somewhere to land."
+    },
+    "importHint": "Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the Library import screen.",
+    "teaching": {
+      "lessonIds": [
+        "rock.fiction"
+      ]
+    },
+    "tags": [
+      "import-only",
+      "rock-metal-module"
+    ]
+  },
+  {
+    "id": "song.rock.lp-final-masquerade",
+    "type": "song",
+    "title": "Final Masquerade",
+    "composer": "Linkin Park",
+    "arranger": null,
+    "genre": [
+      "rock"
+    ],
+    "tracks": [
+      "film-game"
+    ],
+    "level": 4.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "import-only"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "Not bundled — obtain the MusicXML yourself",
+      "url": null,
+      "license": "copyright, not redistributable",
+      "pd_region": "US",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "In copyright. PianoPath ships no notation for this song; the entry exists so the module can point at it and so an imported score has somewhere to land."
+    },
+    "importHint": "Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the Library import screen.",
+    "teaching": {
+      "lessonIds": [
+        "rock.final-masquerade"
+      ]
+    },
+    "tags": [
+      "import-only",
+      "rock-metal-module"
+    ]
+  },
+  {
+    "id": "song.rock.lp-waiting-for-the-end",
+    "type": "song",
+    "title": "Waiting for the End",
+    "composer": "Linkin Park",
+    "arranger": null,
+    "genre": [
+      "rock"
+    ],
+    "tracks": [
+      "film-game"
+    ],
+    "level": 5.3,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "import-only"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "Not bundled — obtain the MusicXML yourself",
+      "url": null,
+      "license": "copyright, not redistributable",
+      "pd_region": "US",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "In copyright. PianoPath ships no notation for this song; the entry exists so the module can point at it and so an imported score has somewhere to land."
+    },
+    "importHint": "Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the Library import screen.",
+    "teaching": {
+      "lessonIds": [
+        "rock.waiting-for-the-end"
+      ]
+    },
+    "tags": [
+      "import-only",
+      "rock-metal-module"
+    ]
+  },
+  {
+    "id": "song.rock.lp-shadow-of-the-day",
+    "type": "song",
+    "title": "Shadow of the Day",
+    "composer": "Linkin Park",
+    "arranger": null,
+    "genre": [
+      "rock"
+    ],
+    "tracks": [
+      "film-game"
+    ],
+    "level": 4.4,
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "import-only"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": null,
+    "source": {
+      "name": "Not bundled — obtain the MusicXML yourself",
+      "url": null,
+      "license": "copyright, not redistributable",
+      "pd_region": "US",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "In copyright. PianoPath ships no notation for this song; the entry exists so the module can point at it and so an imported score has somewhere to land."
+    },
+    "importHint": "Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the Library import screen.",
+    "teaching": {
+      "lessonIds": [
+        "rock.shadow-of-the-day"
+      ]
+    },
+    "tags": [
+      "import-only",
+      "rock-metal-module"
+    ]
+  }
+]

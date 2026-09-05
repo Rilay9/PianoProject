@@ -28,7 +28,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 # spines); the pipeline reports its own diagnostics instead.
 warnings.filterwarnings("ignore")
 
-from abc_tools import apply_fingerings, extract_fingerings, prepare_abc  # noqa: E402
+from abc_tools import (apply_fingerings, apply_voice_clefs, extract_fingerings,  # noqa: E402
+                       parse_voice_clefs, prepare_abc)
 from music21 import (  # noqa: E402
     chord,
     clef,
@@ -88,6 +89,7 @@ def parse_source(path: Path) -> stream.Score:
         text = path.read_text(encoding="utf-8", errors="replace")
         parsed = converter.parse(prepare_abc(text), format="abc")
         apply_fingerings(parsed, extract_fingerings(text))
+        apply_voice_clefs(parsed, parse_voice_clefs(text))
     else:
         parsed = converter.parse(str(path))
     if isinstance(parsed, stream.Opus):

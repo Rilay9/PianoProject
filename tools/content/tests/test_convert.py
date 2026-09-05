@@ -168,3 +168,43 @@ class TestSilentStaff(ConvertCase):
             written = read_mxl(dest)
         self.assertEqual(written.staves, 2)
         self.assertEqual(written.score_parts, 1)
+
+
+class TestDeclaredClefs(ConvertCase):
+    """
+    `V:1 clef=treble` has to reach the printed staff.
+
+    music21 10.5 parses the voice and then ignores the clef it declares: it
+    runs its own best-clef guess over each part's range and gives every voice
+    the same answer. A right-hand tune sitting low came back as two bass
+    staves, a right-hand-only tune as two treble ones, and sixteen of the
+    authored tunes were printed that way before this was caught.
+    """
+
+    def write_and_convert(self, abc: str):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "clefs.abc"
+            source.write_text(abc, encoding="utf-8")
+            dest = self.out / "clefs.mxl"
+            convert_file(source, dest)
+            return read_mxl(dest)
+
+    def test_a_low_melody_still_gets_a_treble_staff(self) -> None:
+        written = self.write_and_convert(
+            "X:1\nT:Low melody\nL:1/4\nM:4/4\nK:C\n"
+            "V:1 clef=treble\nV:2 clef=bass\n"
+            "[V:1] C D E C |]\n[V:2] C,4 |]\n"
+        )
+        self.assertEqual(written.clef_of_staff(1), "G")
+        self.assertEqual(written.clef_of_staff(2), "F")
+
+    def test_a_silent_bass_staff_still_gets_a_bass_clef(self) -> None:
+        written = self.write_and_convert(
+            "X:1\nT:Right hand only\nL:1/4\nM:4/4\nK:C\n"
+            "V:1 clef=treble\nV:2 clef=bass\n"
+            "[V:1] c d e f |]\n[V:2] z4 |]\n"
+        )
+        self.assertEqual(written.clef_of_staff(1), "G")
+        self.assertEqual(written.clef_of_staff(2), "F")

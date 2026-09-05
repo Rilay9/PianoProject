@@ -1,0 +1,103 @@
+{
+  "tracks": [
+    {
+      "id": "core",
+      "title": "Core path",
+      "description": "Stages 0-4: everything from sitting down to Grade 1 fluency.",
+      "startsAtStage": 0,
+      "defaultActive": true
+    },
+    {
+      "id": "classical",
+      "title": "Classical",
+      "description": "Baroque to Romantic repertoire, from dances to sonatinas and beyond.",
+      "startsAtStage": 3,
+      "defaultActive": true
+    },
+    {
+      "id": "chords-pop",
+      "title": "Chords & pop",
+      "description": "Playing from chord symbols: accompany, transpose, arrange.",
+      "startsAtStage": 3,
+      "defaultActive": true
+    },
+    {
+      "id": "blues-boogie",
+      "title": "Blues & boogie",
+      "description": "The twelve-bar form, shuffle feel and boogie left hand.",
+      "startsAtStage": 4,
+      "defaultActive": false
+    },
+    {
+      "id": "jazz",
+      "title": "Jazz",
+      "description": "Swing, seventh chords, shell voicings and the standards that are public domain.",
+      "startsAtStage": 5,
+      "defaultActive": false
+    },
+    {
+      "id": "ragtime",
+      "title": "Ragtime",
+      "description": "Oom-pah left hand under a syncopated right hand.",
+      "startsAtStage": 5,
+      "defaultActive": false
+    },
+    {
+      "id": "theory-ear",
+      "title": "Theory & ear",
+      "description": "A drill and a short text at every stage; runs the whole way.",
+      "startsAtStage": 3,
+      "defaultActive": true
+    },
+    {
+      "id": "improv-compose",
+      "title": "Improvisation & composition",
+      "description": "Making things up, then writing them down.",
+      "startsAtStage": 3,
+      "defaultActive": false
+    },
+    {
+      "id": "hymns-gospel",
+      "title": "Hymns & gospel",
+      "description": "Mini-module: four-part texture, passing chords and walk-ups.",
+      "startsAtStage": 3,
+      "defaultActive": false
+    },
+    {
+      "id": "holiday",
+      "title": "Holiday",
+      "description": "Mini-module: carols, and how to play for people who are singing.",
+      "startsAtStage": 2,
+      "defaultActive": false
+    },
+    {
+      "id": "latin",
+      "title": "Latin",
+      "description": "Mini-module: clave, tumbao and montuno.",
+      "startsAtStage": 5,
+      "defaultActive": false
+    },
+    {
+      "id": "rock-metal",
+      "title": "Rock & metal",
+      "description": "Mini-module: the textures behind the songs you want, taught on public-domain music. Songs are imported, never bundled.",
+      "startsAtStage": 3,
+      "defaultActive": false
+    },
+    {
+      "id": "jam",
+      "title": "Jam with a friend",
+      "description": "Mini-module: playing with a guitarist, in guitar keys.",
+      "startsAtStage": 4,
+      "defaultActive": false
+    },
+    {
+      "id": "beautiful",
+      "title": "Beautiful pieces",
+      "description": "Mini-module: the shelf of pieces people learn the piano for.",
+      "startsAtStage": 4,
+      "defaultActive": false
+    }
+  ],
+  "stages": []
+}

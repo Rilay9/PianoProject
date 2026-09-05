@@ -296,3 +296,50 @@ def apply_fingerings(score, mapping: dict[str, dict[int, int]]) -> int:
                 notes[index].articulations.append(articulations.Fingering(finger))
                 applied += 1
     return applied
+
+
+#: `V:1 clef=treble` in an ABC header. music21 parses the voice but not the
+#: clef: it runs its own best-clef guess over the part's range and gives every
+#: voice the same answer, so a right-hand tune that sits low comes back with
+#: two bass staves and a right-hand-only tune with two treble ones. Sixteen of
+#: the authored tunes were printed that way before this was found.
+VOICE_CLEF_RE = re.compile(r"^V:\s*(\S+)[^\n]*?\bclef\s*=\s*([A-Za-z]+)", re.M)
+
+#: The clef names ABC uses that a piano score can mean.
+CLEF_NAMES = {"treble": "TrebleClef", "bass": "BassClef", "alto": "AltoClef", "tenor": "TenorClef"}
+
+
+def parse_voice_clefs(text: str) -> dict[str, str]:
+    """The clef each `V:` header declares, keyed by voice id."""
+    return {
+        voice: CLEF_NAMES[name.lower()]
+        for voice, name in VOICE_CLEF_RE.findall(text)
+        if name.lower() in CLEF_NAMES
+    }
+
+
+def apply_voice_clefs(score, declared: dict[str, str]) -> int:
+    """
+    Forces each part's clef to the one its `V:` header declared.
+
+    Returns the number of parts changed. A part with no declaration is left
+    alone, so a source that says nothing keeps music21's guess.
+    """
+    from music21 import clef as m21clef
+
+    parts = list(score.parts)
+    changed = 0
+    for order, voice in enumerate(sorted(declared)):
+        index = int(voice) - 1 if voice.isdigit() else order
+        if not 0 <= index < len(parts):
+            continue
+        wanted = getattr(m21clef, declared[voice])()
+        part = parts[index]
+        existing = list(part.recurse().getElementsByClass(m21clef.Clef))
+        if existing and type(existing[0]) is type(wanted):
+            continue
+        for found in existing:
+            found.activeSite.remove(found)
+        part.insert(0, wanted)
+        changed += 1
+    return changed

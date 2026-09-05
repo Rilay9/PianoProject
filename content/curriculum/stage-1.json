@@ -1,0 +1,204 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 1,
+      "title": "First notes",
+      "summary": "Five fingers per hand, one clef at a time, then both staves with the hands taking turns.",
+      "approxDuration": "6-10 weeks",
+      "abrsmGradeApprox": "pre-grade",
+      "units": [
+        {
+          "id": "1.1",
+          "title": "Right hand C position",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "1.1",
+              "title": "Right hand C position",
+              "concepts": [
+                "C-position",
+                "quarter-notes",
+                "treble-clef",
+                "4/4"
+              ],
+              "textFile": "lessons/1.1.md",
+              "exerciseOptions": [
+                "drill.technique.five-finger-rh",
+                "drill.reading.note-flash-treble-c4-g4",
+                "drill.rhythm.quarters-rests",
+                "exercise.five-finger.c-major.both"
+              ],
+              "songOptions": [
+                "song.folk.hot-cross-buns",
+                "song.folk.mary-had-a-little-lamb",
+                "song.folk.merrily-we-roll-along",
+                "song.folk.au-clair-de-la-lune",
+                "song.classical.ode-to-joy.rh"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "estimatedDays": 10
+            }
+          ]
+        },
+        {
+          "id": "1.2",
+          "title": "Half notes, whole notes and rests",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "1.2",
+              "title": "Half notes, whole notes and rests",
+              "concepts": [
+                "half-notes",
+                "whole-notes",
+                "rests",
+                "phrasing"
+              ],
+              "textFile": "lessons/1.2.md",
+              "exerciseOptions": [
+                "drill.rhythm.mixed-values",
+                "exercise.rhythm.half-and-quarters.4bar",
+                "exercise.rhythm.quarters.4bar"
+              ],
+              "songOptions": [
+                "song.folk.lightly-row",
+                "song.holiday.jingle-bells.rh",
+                "song.folk.twinkle.rh",
+                "song.folk.frere-jacques"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "1.1"
+              ],
+              "estimatedDays": 10
+            }
+          ]
+        },
+        {
+          "id": "1.3",
+          "title": "Left hand C position and the bass clef",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "1.3",
+              "title": "Left hand C position and the bass clef",
+              "concepts": [
+                "bass-clef",
+                "LH-C-position",
+                "landmark-notes"
+              ],
+              "textFile": "lessons/1.3.md",
+              "exerciseOptions": [
+                "drill.technique.five-finger-lh",
+                "drill.reading.note-flash-bass-f2-c4",
+                "exercise.five-finger.c-major.both"
+              ],
+              "songOptions": [
+                "song.folk.hot-cross-buns.lh",
+                "song.folk.mary-had-a-little-lamb.lh",
+                "song.classical.ode-to-joy.lh"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "1.1"
+              ],
+              "estimatedDays": 10
+            }
+          ]
+        },
+        {
+          "id": "1.4",
+          "title": "The grand staff and hands alternating",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "1.4",
+              "title": "The grand staff and hands alternating",
+              "concepts": [
+                "grand-staff",
+                "alternating-hands",
+                "3/4",
+                "anacrusis"
+              ],
+              "textFile": "lessons/1.4.md",
+              "exerciseOptions": [
+                "drill.reading.grand-staff-flash",
+                "drill.rhythm.three-four"
+              ],
+              "songOptions": [
+                "song.classical.ode-to-joy.alternating",
+                "song.folk.when-the-saints.alternating"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "1.2",
+                "1.3"
+              ],
+              "estimatedDays": 10
+            }
+          ]
+        },
+        {
+          "id": "1.5",
+          "title": "Steps and skips, and the sight-reading habit",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "1.5",
+              "title": "Steps and skips, and the sight-reading habit",
+              "concepts": [
+                "steps",
+                "skips",
+                "interval-reading",
+                "sight-reading"
+              ],
+              "textFile": "lessons/1.5.md",
+              "exerciseOptions": [
+                "drill.reading.sight-reading-1",
+                "drill.ear.interval-2nd-3rd",
+                "exercise.reading.steps-and-skips-c"
+              ],
+              "songOptions": [
+                "song.folk.old-macdonald",
+                "song.folk.lightly-row",
+                "song.classical.ode-to-joy.rh"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8,
+                "custom": "sight-read-5-first-attempt>=0.9"
+              },
+              "prerequisites": [
+                "1.4"
+              ],
+              "estimatedDays": 14
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

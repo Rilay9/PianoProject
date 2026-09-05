@@ -61,10 +61,11 @@ class TestAuthoredSources(unittest.TestCase):
     def test_abc_fingering_reaches_the_score(self) -> None:
         # The `!n!` decorations in the authored ABC are the whole reason
         # abc_tools re-extracts them; if they stop arriving, say so here.
-        twinkle = next(i for i in self.catalog if i["id"] == "song.folk.twinkle.simple")
-        # Thumb on C, fifth on G; the A is deliberately unmarked, since the
-        # tune's range is a sixth and the hand has to leave its position.
-        self.assertEqual(read_mxl(self.out / twinkle["file"]).fingerings[:4], [1, 1, 5, 5])
+        twinkle = next(i for i in self.catalog if i["id"] == "song.folk.twinkle.rh")
+        # Thumb on C, fifth on G, then the hand moves up a step for the A and
+        # back: 5 on the A and 4 on the G that follows it. Repeated notes are
+        # left unmarked, so these four are the four position marks of bars 1-2.
+        self.assertEqual(read_mxl(self.out / twinkle["file"]).fingerings[:4], [1, 5, 5, 4])
 
     def test_chord_symbols_reach_the_score(self) -> None:
         blues = next(i for i in self.catalog if i["id"].startswith("exercise.blues"))

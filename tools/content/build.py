@@ -94,6 +94,13 @@ def summary_line(text: str) -> str:
 
 def merge_catalog(out_dir: Path) -> Step:
     entries: list[dict] = []
+    # The hand-written fragment first: runtime drills and import placeholders
+    # have no generator and no source file, so they live in the repository.
+    static = CONTENT_SRC / "catalog.static.json"
+    if static.exists():
+        fragment = read_json(static)
+        assert isinstance(fragment, list)
+        entries.extend(fragment)
     for name in FRAGMENTS:
         path = BUILD_DIR / name
         if not path.exists():
@@ -190,6 +197,16 @@ def already_built(out_dir: Path) -> bool:
     return isinstance(items, list) and len(items) > 0
 
 
+def display_path(path: Path) -> str:
+    """The output path, shortened when it sits inside the repository."""
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        # --out can point anywhere; a scratch directory outside the repo is a
+        # normal thing to ask for and must not crash the summary line.
+        return str(path)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
@@ -218,7 +235,7 @@ def main() -> None:
     if args.if_missing and already_built(args.out):
         # `npm run build` runs this through prebuild, and rebuilding 300
         # scores before every Playwright run costs more than it is worth.
-        print(f"content already built in {args.out.relative_to(REPO_ROOT)}; nothing to do")
+        print(f"content already built in {display_path(args.out)}; nothing to do")
         return
 
     started = time.time()
@@ -249,7 +266,7 @@ def main() -> None:
         for warning in step.warnings:
             for line in warning.splitlines():
                 print(f"          {line}")
-    print(f"  {time.time() - started:.1f}s → {args.out.relative_to(REPO_ROOT)}")
+    print(f"  {time.time() - started:.1f}s → {display_path(args.out)}")
 
     if any(not step.ok for step in steps):
         sys.exit(1)

@@ -18,6 +18,7 @@ from abc_tools import (  # noqa: E402
     inline_voices_to_blocks,
     parse_metadata,
     parse_tempo,
+    parse_voice_clefs,
     prepare_abc,
 )
 
@@ -165,3 +166,13 @@ class TestFingeringPlacement(unittest.TestCase):
         )
         _, applied = self.build(abc)
         self.assertEqual(applied, 4)
+
+
+class TestVoiceClefs(unittest.TestCase):
+    def test_clefs_are_read_from_the_voice_headers(self) -> None:
+        text = "X:1\nK:C\nV:1 clef=treble\nV:2 clef=bass\n[V:1] C |]\n[V:2] C, |]\n"
+        self.assertEqual(parse_voice_clefs(text), {"1": "TrebleClef", "2": "BassClef"})
+
+    def test_a_voice_with_no_clef_is_not_listed(self) -> None:
+        text = "X:1\nK:C\nV:1\nV:2 clef=bass\n"
+        self.assertEqual(parse_voice_clefs(text), {"2": "BassClef"})

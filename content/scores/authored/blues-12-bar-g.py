@@ -1,5 +1,5 @@
 """
-A twelve-bar blues in C: shuffle bass under seventh chords.
+A twelve-bar blues in G: shuffle bass under seventh chords.
 
 Written as a module rather than in ABC because the point of the exercise is the
 *pattern* -- the same shuffle figure moved onto each chord of the form -- and
@@ -16,18 +16,18 @@ from blues_forms import build_twelve_bar
 from music21 import stream
 
 PIANOPATH = {
-    "id": "exercise.blues.twelve-bar-shuffle.c",
-    "title": "Twelve-bar blues shuffle in C",
-    "level": 3.4,
+    "id": "exercise.blues.twelve-bar-shuffle.g",
+    "title": "Twelve-bar blues shuffle in G",
+    "level": 4.1,
     "hands": "both",
     "tracks": "blues-boogie,improv-compose",
     "concepts": "12-bar-blues,shuffle,dominant-7th,I-IV-V",
     "license": "CC0",
     "genre": "blues",
-    "tempoBpm": 88,
+    "tempoBpm": 92,
     "abrsm": 2,
 }
 
 
 def build() -> stream.Score:
-    return build_twelve_bar("C", PIANOPATH["tempoBpm"])
+    return build_twelve_bar("G", PIANOPATH["tempoBpm"])

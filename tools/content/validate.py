@@ -87,7 +87,11 @@ def validate_catalog(
         licence = (item.get("source") or {}).get("license", "")
         if not licence:
             errors.append(f"{item_id}: no licence")
-        elif strict_license:
+        elif strict_license and file_ref:
+            # Only what is actually shipped has to be redistributable. An item
+            # with no file ships nothing: a runtime-generated drill, or an
+            # import placeholder for a copyrighted song whose licence line
+            # exists precisely to say it may not be bundled (docs/02 Part D8).
             decision = license_verdict(licence, source=item_id, allow_nc=allow_nc)
             if decision.verdict is not Verdict.BUNDLE:
                 errors.append(f"{item_id}: licence {licence!r} — {decision.reason}")

@@ -1,0 +1,236 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 2,
+      "title": "Two hands",
+      "summary": "Both hands at once, eighth notes, the first chords, and the first step outside a five-finger position.",
+      "approxDuration": "10-14 weeks",
+      "abrsmGradeApprox": "pre-grade / initial",
+      "units": [
+        {
+          "id": "2.1",
+          "title": "Hands together: the left hand holds",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "2.1",
+              "title": "Hands together: the left hand holds",
+              "concepts": [
+                "hands-together",
+                "held-LH",
+                "vertical-alignment"
+              ],
+              "textFile": "lessons/2.1.md",
+              "exerciseOptions": [
+                "drill.technique.ht-holds",
+                "exercise.five-finger.c-major.both"
+              ],
+              "songOptions": [
+                "song.classical.ode-to-joy.ht",
+                "song.folk.twinkle.ht",
+                "song.holiday.jingle-bells.ht",
+                "song.folk.mary-had-a-little-lamb.ht"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "1.5"
+              ],
+              "estimatedDays": 14
+            }
+          ]
+        },
+        {
+          "id": "2.2",
+          "title": "Eighth notes",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "2.2",
+              "title": "Eighth notes and counting “1 and 2 and”",
+              "concepts": [
+                "eighth-notes",
+                "beams",
+                "subdivision"
+              ],
+              "textFile": "lessons/2.2.md",
+              "exerciseOptions": [
+                "drill.rhythm.eighths",
+                "exercise.rhythm.eighths.4bar",
+                "exercise.rhythm.quarter-eighths.4bar"
+              ],
+              "songOptions": [
+                "song.folk.london-bridge",
+                "song.folk.old-macdonald"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "2.1"
+              ],
+              "estimatedDays": 12
+            }
+          ]
+        },
+        {
+          "id": "2.3",
+          "title": "First chords: C, F and G",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "2.3",
+              "title": "First chords: C, F and G",
+              "concepts": [
+                "triads",
+                "chord-symbols",
+                "I-IV-V",
+                "block-chords"
+              ],
+              "textFile": "lessons/2.3.md",
+              "exerciseOptions": [
+                "drill.chord.c-f-g",
+                "exercise.inversions.c-major.both"
+              ],
+              "songOptions": [
+                "song.folk.happy-birthday.simple",
+                "song.folk.happy-birthday",
+                "song.folk.happy-birthday.alt",
+                "song.holiday.jingle-bells.g"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8,
+                "custom": "chord-drill-20-changes>=0.95"
+              },
+              "prerequisites": [
+                "2.1"
+              ],
+              "estimatedDays": 14
+            }
+          ]
+        },
+        {
+          "id": "2.4",
+          "title": "Ties, dotted rhythms and dynamics",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "2.4",
+              "title": "Ties, dotted rhythms and dynamics",
+              "concepts": [
+                "tie",
+                "slur",
+                "dotted-quarter",
+                "dynamics"
+              ],
+              "textFile": "lessons/2.4.md",
+              "exerciseOptions": [
+                "drill.rhythm.dotted",
+                "drill.dynamics.p-f",
+                "exercise.rhythm.dotted-quarter-eighth.4bar"
+              ],
+              "songOptions": [
+                "song.folk.greensleeves.simple",
+                "song.folk.greensleeves"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8,
+                "custom": "dynamics-contrast>=1.6"
+              },
+              "prerequisites": [
+                "2.2"
+              ],
+              "estimatedDays": 12
+            }
+          ]
+        },
+        {
+          "id": "2.5",
+          "title": "Leaving C position",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "2.5",
+              "title": "Leaving C position: thumb under and the first scale",
+              "concepts": [
+                "position-shift",
+                "thumb-under",
+                "C-major-scale"
+              ],
+              "textFile": "lessons/2.5.md",
+              "exerciseOptions": [
+                "drill.technique.position-shifts",
+                "exercise.scale.c-major.1oct.similar.right.2",
+                "exercise.scale.c-major.1oct.similar.left.2"
+              ],
+              "songOptions": [
+                "song.classical.ode-to-joy.full",
+                "song.classical.beethoven-ode-to-joy.easy"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.95,
+                "minTempoPct": 0.8,
+                "custom": "c-major-scale-HS-60bpm>=0.95"
+              },
+              "prerequisites": [
+                "2.3",
+                "2.4"
+              ],
+              "estimatedDays": 16
+            }
+          ]
+        },
+        {
+          "id": "holiday.2.1",
+          "title": "Holiday: carols",
+          "track": "holiday",
+          "lessons": [
+            {
+              "id": "holiday",
+              "title": "Carols and how to make them sound festive",
+              "concepts": [
+                "carols",
+                "chord-symbols",
+                "transposing-for-singers"
+              ],
+              "textFile": "lessons/holiday.md",
+              "exerciseOptions": [
+                "drill.chord.c-f-g",
+                "drill.chord.symbol-flash"
+              ],
+              "songOptions": [
+                "song.holiday.jingle-bells.rh",
+                "song.holiday.jingle-bells.ht",
+                "song.holiday.jingle-bells.g",
+                "song.holiday.carol-of-the-bells.easy"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "estimatedDays": 14
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

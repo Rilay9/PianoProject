@@ -1,0 +1,438 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 3,
+      "title": "Keys, chords, reading",
+      "summary": "New keys, primary chords with their sevenths, minor, ledger lines, the pedal and accompaniment patterns.",
+      "approxDuration": "4-6 months",
+      "abrsmGradeApprox": "initial / grade 1",
+      "units": [
+        {
+          "id": "3.1",
+          "title": "Sharps, flats and the major scale formula",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "3.1",
+              "title": "Sharps, flats and the major scale formula",
+              "concepts": [
+                "sharps",
+                "flats",
+                "major-scale-formula",
+                "key-signature"
+              ],
+              "textFile": "lessons/3.1.md",
+              "exerciseOptions": [
+                "exercise.scale.g-major.1oct.similar.right.2",
+                "exercise.scale.f-major.1oct.similar.right.2",
+                "drill.reading.note-flash-accidentals",
+                "drill.theory.build-major-scale"
+              ],
+              "songOptions": [
+                "song.classical.ode-to-joy.g",
+                "song.folk.twinkle.f"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "2.5"
+              ],
+              "estimatedDays": 16
+            }
+          ]
+        },
+        {
+          "id": "3.2",
+          "title": "Primary chords in G and F, and V7",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "3.2",
+              "title": "Primary chords in G and F, and the dominant seventh",
+              "concepts": [
+                "I-IV-V7",
+                "voice-leading",
+                "chord-charts"
+              ],
+              "textFile": "lessons/3.2.md",
+              "exerciseOptions": [
+                "drill.chord.primary-c-g-f",
+                "drill.chord.symbol-flash"
+              ],
+              "songOptions": [
+                "song.holiday.jingle-bells.g",
+                "song.folk.when-the-saints.f",
+                "song.folk.happy-birthday.simple"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.9
+              },
+              "prerequisites": [
+                "3.1"
+              ],
+              "estimatedDays": 16
+            }
+          ]
+        },
+        {
+          "id": "3.3",
+          "title": "A minor and the relative minor",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "3.3",
+              "title": "A minor, the relative minor and minor chords",
+              "concepts": [
+                "relative-minor",
+                "harmonic-minor",
+                "minor-triads",
+                "E7"
+              ],
+              "textFile": "lessons/3.3.md",
+              "exerciseOptions": [
+                "exercise.scale.a-harmonic-minor.1oct.similar.both.2",
+                "drill.chord.minor-changes",
+                "drill.ear.major-minor"
+              ],
+              "songOptions": [
+                "song.folk.greensleeves.chords",
+                "song.folk.greensleeves",
+                "song.folk.greensleeves.simple"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "3.2"
+              ],
+              "estimatedDays": 16
+            }
+          ]
+        },
+        {
+          "id": "3.4",
+          "title": "Ledger lines and wider ranges",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "3.4",
+              "title": "Ledger lines and both hands away from middle C",
+              "concepts": [
+                "ledger-lines",
+                "landmark-notes",
+                "8va"
+              ],
+              "textFile": "lessons/3.4.md",
+              "exerciseOptions": [
+                "drill.reading.note-flash-extended",
+                "drill.reading.sight-reading-2"
+              ],
+              "songOptions": [
+                "song.classical.petzold-minuet-g-bwv-anh114",
+                "song.classical.petzold-minuet-g-bwv-anh114.alt",
+                "song.classical.beethoven-fur-elise.beginner"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.85,
+                "minTempoPct": 0.8,
+                "custom": "sight-read-5>=0.85"
+              },
+              "prerequisites": [
+                "3.1"
+              ],
+              "estimatedDays": 16
+            }
+          ]
+        },
+        {
+          "id": "3.5",
+          "title": "The sustain pedal",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "3.5",
+              "title": "The sustain pedal",
+              "concepts": [
+                "damper-pedal",
+                "legato-pedalling",
+                "CC64"
+              ],
+              "textFile": "lessons/3.5.md",
+              "exerciseOptions": [
+                "drill.pedal.changes",
+                "drill.pattern.lh-accompaniment"
+              ],
+              "songOptions": [
+                "song.classical.pachelbel-canon-d.easy",
+                "song.folk.greensleeves.waltz"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8,
+                "custom": "pedal-clean>=0.9"
+              },
+              "prerequisites": [
+                "3.3"
+              ],
+              "estimatedDays": 12
+            }
+          ]
+        },
+        {
+          "id": "3.6",
+          "title": "Broken chords, Alberti and waltz bass",
+          "track": "core",
+          "lessons": [
+            {
+              "id": "3.6",
+              "title": "Broken chords, Alberti bass and waltz bass",
+              "concepts": [
+                "broken-chords",
+                "alberti-bass",
+                "waltz-bass"
+              ],
+              "textFile": "lessons/3.6.md",
+              "exerciseOptions": [
+                "drill.pattern.lh-accompaniment",
+                "exercise.arpeggio.c-major.2oct.both",
+                "exercise.arpeggio.a-minor.2oct.both"
+              ],
+              "songOptions": [
+                "song.folk.greensleeves.waltz",
+                "song.classical.pachelbel-canon-d.easy"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.9
+              },
+              "prerequisites": [
+                "3.5"
+              ],
+              "estimatedDays": 16
+            }
+          ]
+        },
+        {
+          "id": "classical.3.1",
+          "title": "Classical: Baroque and Classical dances",
+          "track": "classical",
+          "lessons": [
+            {
+              "id": "classical.3",
+              "title": "Baroque and Classical dances",
+              "concepts": [
+                "baroque-dance",
+                "articulation",
+                "two-voice-texture"
+              ],
+              "textFile": "lessons/classical.3.md",
+              "exerciseOptions": [
+                "exercise.scale.g-major.1oct.similar.both.2",
+                "drill.reading.sight-reading-2"
+              ],
+              "songOptions": [
+                "song.classical.petzold-minuet-g-bwv-anh114",
+                "song.classical.petzold-minuet-g-bwv-anh114.alt",
+                "song.classical.pachelbel-canon-d.easy"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "3.4"
+              ],
+              "estimatedDays": 30
+            }
+          ]
+        },
+        {
+          "id": "chords-pop.3.1",
+          "title": "Chords & pop: playing from chord symbols",
+          "track": "chords-pop",
+          "lessons": [
+            {
+              "id": "chords-pop.3",
+              "title": "Playing from chord symbols",
+              "concepts": [
+                "chord-symbols",
+                "I-IV-V",
+                "transposing"
+              ],
+              "textFile": "lessons/chords-pop.3.md",
+              "exerciseOptions": [
+                "drill.chord.primary-c-g-f",
+                "drill.chord.symbol-flash"
+              ],
+              "songOptions": [
+                "song.folk.when-the-saints.f",
+                "song.holiday.jingle-bells.g",
+                "song.folk.happy-birthday.simple",
+                "song.folk.greensleeves.chords"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.9
+              },
+              "prerequisites": [
+                "3.2"
+              ],
+              "estimatedDays": 30
+            }
+          ]
+        },
+        {
+          "id": "theory-ear.3.1",
+          "title": "Theory & ear: intervals and key signatures",
+          "track": "theory-ear",
+          "lessons": [
+            {
+              "id": "theory.3",
+              "title": "Intervals, key signatures and I-IV-V by ear",
+              "concepts": [
+                "intervals",
+                "key-signatures",
+                "chord-identification"
+              ],
+              "textFile": "lessons/theory.3.md",
+              "exerciseOptions": [
+                "drill.ear.interval-2nd-3rd",
+                "drill.ear.rhythm-dictation",
+                "drill.reading.note-flash-accidentals"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.8,
+                "minTempoPct": 0.0,
+                "custom": "intervals-by-ear>=0.8"
+              },
+              "estimatedDays": 30
+            }
+          ]
+        },
+        {
+          "id": "improv-compose.3.1",
+          "title": "Improvisation: playing over a loop",
+          "track": "improv-compose",
+          "lessons": [
+            {
+              "id": "improv.3",
+              "title": "Playing over a loop",
+              "concepts": [
+                "improvisation",
+                "call-and-response",
+                "motif"
+              ],
+              "textFile": "lessons/improv.3.md",
+              "exerciseOptions": [
+                "drill.improv.loop-i-iv-v"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "three-choruses-recorded"
+              },
+              "estimatedDays": 30
+            }
+          ]
+        },
+        {
+          "id": "hymns-gospel.3.1",
+          "title": "Hymns & gospel",
+          "track": "hymns-gospel",
+          "lessons": [
+            {
+              "id": "hymns",
+              "title": "Four-part texture and walk-ups",
+              "concepts": [
+                "four-part-harmony",
+                "passing-chords",
+                "plagal-cadence"
+              ],
+              "textFile": "lessons/hymns.md",
+              "exerciseOptions": [
+                "drill.chord.primary-c-g-f",
+                "drill.pattern.lh-accompaniment"
+              ],
+              "songOptions": [
+                "song.folk.when-the-saints.f",
+                "song.folk.when-the-saints.alternating",
+                "song.folk.greensleeves.chords"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "3.2"
+              ],
+              "estimatedDays": 21
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.3.1",
+          "title": "Rock & metal: how this module works",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.overview",
+              "title": "Rock and metal piano — how this module works",
+              "concepts": [
+                "reduction",
+                "ostinato",
+                "open-voicings"
+              ],
+              "textFile": "lessons/rock.overview.md",
+              "exerciseOptions": [
+                "drill.pattern.lh-accompaniment",
+                "drill.chord.symbol-flash"
+              ],
+              "songOptions": [
+                "song.classical.pachelbel-canon-d.easy",
+                "song.folk.greensleeves.chords",
+                "song.classical.ode-to-joy.full"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.0,
+                "minTempoPct": 0.0,
+                "custom": "textures-identified"
+              },
+              "estimatedDays": 7
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
