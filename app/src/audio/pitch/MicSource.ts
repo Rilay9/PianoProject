@@ -15,6 +15,7 @@
 
 import workletUrl from './pitchProcessor.ts?worker&url';
 import type { DetectorThresholds } from './detector';
+import { MIC_CLICK_HZ } from '../Metronome';
 import type { FromPitchWorklet, ToPitchWorklet } from './messages';
 import type {
   InputNoteEvent,
@@ -229,6 +230,10 @@ export class MicSource implements InputSource {
     this.sink.gain.value = 0;
     this.input.connect(node).connect(this.sink).connect(context.destination);
 
+    // The metronome switches to its high click whenever the microphone is
+    // listening; tell the detector to notch that frequency out before it can
+    // fire an onset on every beat (docs/05 §11.4).
+    node.port.postMessage({ type: 'notch', hz: MIC_CLICK_HZ } satisfies ToPitchWorklet);
     if (this.calibration) this.sendCalibration(this.calibration);
 
     this.connected = true;

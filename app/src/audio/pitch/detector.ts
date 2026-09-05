@@ -12,6 +12,7 @@
 
 import {
   applyConfusionGuards,
+  applyNotch,
   fundamentalStrength,
   computeSpectrum,
   createSpectrumContext,
@@ -71,6 +72,15 @@ const SCAN_SHORTLIST = 8;
  * octaves below it, since the intermediate E3 would have failed the test.
  */
 const SUB_PARTIAL_INTERVALS = [12, 19] as const;
+
+/**
+ * Half-width of the metronome notch, in semitones.
+ *
+ * Wide enough to cover the click's band-pass skirt and any Doppler-free room
+ * colouration of it, narrow enough that at 5 kHz it removes about 90 Hz of a
+ * spectrum that runs to 24 kHz.
+ */
+const NOTCH_SEMITONES = 0.6;
 
 /** Enough steps to walk a 4th or 5th partial back to its fundamental. */
 const SCAN_DESCENT_STEPS = 3;
@@ -194,6 +204,11 @@ export interface DetectorOptions {
   gainDb?: Map<number, number>;
   /** Per-pitch inharmonicity, from calibration. */
   inharmonicity?: Map<number, number>;
+  /**
+   * Frequency of the metronome click to notch out, or 0 for none
+   * (docs/05 §11.4). Set while the microphone is the input.
+   */
+  notchHz?: number;
 }
 
 export interface DetectedNote {
@@ -249,6 +264,8 @@ export class PitchDetector {
   private readonly scoreBuffer = new Float32Array(32);
   private readonly guardedBuffer = new Float32Array(32);
 
+  private notchHz = 0;
+
   private lastOnsetMs = Number.NEGATIVE_INFINITY;
   private lastOnsetStrength = 0;
   private lastUnexpectedMs = Number.NEGATIVE_INFINITY;
@@ -268,6 +285,7 @@ export class PitchDetector {
       minFluxPerBin: this.thresholds.minFluxPerBin,
     });
     this.scanDelayMs = ((WINDOW_SIZE / 2) / options.sampleRate) * 1000;
+    this.notchHz = options.notchHz ?? 0;
     this.gainDb = options.gainDb ?? new Map<number, number>();
     this.inharmonicity = options.inharmonicity ?? new Map<number, number>();
   }
@@ -296,6 +314,7 @@ export class PitchDetector {
     gainDb?: ReadonlyMap<number, number>;
     inharmonicity?: ReadonlyMap<number, number>;
     thresholds?: Partial<DetectorThresholds>;
+    notchHz?: number;
   }): void {
     if (calibration.gainDb) {
       this.gainDb.clear();
@@ -306,6 +325,7 @@ export class PitchDetector {
       for (const [midi, beta] of calibration.inharmonicity) this.inharmonicity.set(midi, beta);
     }
     if (calibration.thresholds) Object.assign(this.thresholds, calibration.thresholds);
+    if (calibration.notchHz !== undefined) this.notchHz = calibration.notchHz;
   }
 
   get expectations(): { now: number[]; next: number[] } {
@@ -352,6 +372,7 @@ export class PitchDetector {
     // The main window is the most recent WINDOW_SIZE samples of the frame.
     const mainOffset = Math.max(0, frame.length - WINDOW_SIZE);
     computeSpectrum(this.main, frame, mainOffset);
+    if (this.notchHz > 0) applyNotch(this.main, this.notchHz, NOTCH_SEMITONES);
     const flux = spectralFlux(this.main);
     this.main.hasPrevious = true;
     const onset = this.onsets.push(flux, tMs);
@@ -365,6 +386,7 @@ export class PitchDetector {
     );
     if (needsLowWindow && frame.length >= LOW_WINDOW_SIZE) {
       computeSpectrum(this.low, frame, frame.length - LOW_WINDOW_SIZE);
+      if (this.notchHz > 0) applyNotch(this.low, this.notchHz, NOTCH_SEMITONES);
       this.low.hasPrevious = true;
     }
 

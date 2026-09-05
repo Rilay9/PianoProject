@@ -7,7 +7,7 @@
 
 import { addButton, addParagraph, addSection, createSubScreen } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
-import { audioEngine, screenKeyboardSource, webMidiSource } from '../../app/services';
+import { audioEngine, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { isWebMidiSupported, type MidiLogEntry } from '../../midi/WebMidiSource';
 import { midiToNoteName } from '../../midi/parseMidiMessage';
 import type { InputNoteEvent } from '../../midi/types';
@@ -15,6 +15,8 @@ import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor } from '../../audio/clock';
 import { matchTapsToClicks } from '../../audio/latency';
 import { summarise } from '../../util/stats';
+import { measureDetectorCost, type CostReport } from '../../audio/pitch/benchmark';
+import { concatChunks, encodeWav } from '../../util/wav';
 import { getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
 import { getMidiSettings, updateMidiSettings } from '../../data/midiSettings';
 import type { Router } from '../../router';
@@ -32,7 +34,12 @@ function fmt(n: number, digits = 1): string {
   return Number.isFinite(n) ? n.toFixed(digits) : '—';
 }
 
+/** docs/05 §11.6: "20 s of raw mic audio the owner shares back". */
+const CAPTURE_SECONDS = 20;
+
 export function DiagnosticsScreen(router: Router): HTMLElement {
+  let capturing = false;
+  let lastCost: CostReport | null = null;
   const { section, card } = createSubScreen(router, {
     id: 'diagnostics',
     title: 'Diagnostics',
@@ -114,6 +121,47 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   const timingBody = document.createElement('div');
   timingBody.id = 'diag-timings';
   timings.appendChild(timingBody);
+
+  // --- Microphone (P3b) ----------------------------------------------------
+  const micBlock = addSection(card, 'Microphone');
+  addParagraph(
+    micBlock,
+    'What the detector hears, and what it costs. The level and the noise ' +
+      'floor answer “is it hearing anything at all?” before any question ' +
+      'about wrong notes is worth asking.',
+    'muted',
+  );
+  const micReadout = document.createElement('p');
+  micReadout.className = 'status';
+  micReadout.id = 'diag-mic-level';
+  micReadout.textContent = 'Not connected.';
+  micBlock.appendChild(micReadout);
+
+  addButton(micBlock, 'Measure analysis cost', () => measureCost(), {
+    id: 'diag-mic-cost',
+  });
+  const micCost = document.createElement('p');
+  micCost.className = 'status';
+  micCost.id = 'diag-mic-cost-result';
+  micBlock.appendChild(micCost);
+
+  addParagraph(
+    micBlock,
+    `Record ${CAPTURE_SECONDS} seconds of raw audio from the microphone and ` +
+      'share it back. Recordings of the real piano in the real room are what ' +
+      'the detector gets tuned against (docs/05 §11.6).',
+    'muted',
+  );
+  const captureButton = addButton(micBlock, `Record ${CAPTURE_SECONDS}s`, () => void capture(), {
+    id: 'diag-mic-capture',
+  });
+  const captureStatus = document.createElement('p');
+  captureStatus.className = 'status';
+  captureStatus.id = 'diag-mic-capture-status';
+  micBlock.appendChild(captureStatus);
+  const captureActions = document.createElement('div');
+  captureActions.className = 'row';
+  micBlock.appendChild(captureActions);
 
   // --- Debug report --------------------------------------------------------
   const reportBlock = addSection(card, 'Debug report');
@@ -356,6 +404,123 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   }
 
   // --- Debug report --------------------------------------------------------
+  /**
+   * Runs the detector over synthesised strikes and reports the per-hop cost.
+   *
+   * On the phone this is the number that matters: `01` §4.7 budgets 3 ms per
+   * 512-sample hop, and it cannot be measured from inside the worklet (no
+   * `performance` in AudioWorkletGlobalScope). Same class, same work, on the
+   * main thread.
+   */
+  function measureCost(): void {
+    micCost.textContent = 'Measuring…';
+    // Next frame, so the "Measuring…" actually paints before the main thread
+    // is busy for a few hundred milliseconds.
+    requestAnimationFrame(() => {
+      const report = measureDetectorCost({ hops: 300 });
+      lastCost = report;
+      micCost.textContent =
+        `${report.hops} hops at ${report.sampleRate} Hz: mean ${fmt(report.meanMs)} ms, ` +
+        `median ${fmt(report.medianMs)} ms, p95 ${fmt(report.p95Ms)} ms, max ${fmt(report.maxMs)} ms ` +
+        `(budget 3 ms)`;
+    });
+  }
+
+  /** Records a clip of raw microphone audio for the owner to send back. */
+  async function capture(): Promise<void> {
+    if (capturing) return;
+    if (!micSource.state.connected) {
+      try {
+        await micSource.connect();
+      } catch (error) {
+        captureStatus.textContent =
+          error instanceof Error ? error.message : 'Could not open the microphone.';
+        return;
+      }
+    }
+    capturing = true;
+    captureButton.disabled = true;
+    captureActions.replaceChildren();
+    const chunks: Float32Array[] = [];
+    const off = micSource.onAudio((chunk) => chunks.push(chunk));
+    micSource.startRecording();
+
+    let left = CAPTURE_SECONDS;
+    captureStatus.textContent = `Recording… ${left}s`;
+    const timer = setInterval(() => {
+      left -= 1;
+      captureStatus.textContent = `Recording… ${left}s`;
+    }, 1000);
+
+    await new Promise((resolve) => setTimeout(resolve, CAPTURE_SECONDS * 1000));
+
+    clearInterval(timer);
+    micSource.stopRecording();
+    off();
+    capturing = false;
+    captureButton.disabled = false;
+
+    const samples = concatChunks(chunks);
+    const rate = micSource.sampleRate ?? 48000;
+    if (samples.length === 0) {
+      captureStatus.textContent = 'Nothing was recorded — is the microphone connected?';
+      return;
+    }
+    const blob = encodeWav(samples, rate);
+    const name = `pianopath-${new Date().toISOString().replace(/[:.]/g, '-')}.wav`;
+    captureStatus.textContent =
+      `${(samples.length / rate).toFixed(1)}s recorded at ${rate} Hz ` +
+      `(${(blob.size / 1024).toFixed(0)} kB).`;
+    offerFile(blob, name);
+  }
+
+  /**
+   * Offers the clip through the share sheet, falling back to a download.
+   *
+   * The share sheet is the one that matters on the phone — it is how a file
+   * gets from Chrome on Android into a message — but it is not available
+   * everywhere, and `canShare` has to be asked about the actual file rather
+   * than about sharing in general.
+   */
+  function offerFile(blob: Blob, name: string): void {
+    const url = URL.createObjectURL(blob);
+    const download = document.createElement('a');
+    download.className = 'button button--secondary';
+    download.href = url;
+    download.download = name;
+    download.textContent = 'Save';
+    download.id = 'diag-mic-save';
+    captureActions.appendChild(download);
+
+    const file = new File([blob], name, { type: 'audio/wav' });
+    if (navigator.canShare?.({ files: [file] }) === true) {
+      const share = document.createElement('button');
+      share.type = 'button';
+      share.className = 'button button--primary';
+      share.id = 'diag-mic-share';
+      share.textContent = 'Share';
+      share.addEventListener('click', () => {
+        void navigator.share({ files: [file], title: name }).catch(() => {
+          captureStatus.textContent = 'Sharing was cancelled — use Save instead.';
+        });
+      });
+      captureActions.appendChild(share);
+    }
+  }
+
+  function renderMic(): void {
+    const state = micSource.state;
+    const level = micSource.level;
+    if (!state.connected) {
+      micReadout.textContent = 'Not connected.';
+      return;
+    }
+    micReadout.textContent = level
+      ? `${state.detail} · level ${fmt(level.rmsDb)} dB · noise floor ${fmt(level.noiseFloorDb)} dB · ` +
+        `peak ${(level.peak * 100).toFixed(0)}% · onset ${fmt(level.onsetStrength)}`
+      : `${state.detail} · waiting for audio…`;
+  }
+
   function buildReport(): string {
     const state = webMidiSource.state;
     const settings = getMidiSettings();
@@ -400,6 +565,25 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
           `median=${fmt(latestLatency.median)}ms min=${fmt(latestLatency.min)}ms max=${fmt(latestLatency.max)}ms`
         : 'not run',
       '',
+      '## Microphone',
+      `Connected: ${String(micSource.state.connected)} (${micSource.state.detail})`,
+      `Sample rate: ${micSource.sampleRate ?? 'n/a'}`,
+      micSource.level
+        ? `Level: ${fmt(micSource.level.rmsDb)} dB, noise floor ${fmt(micSource.level.noiseFloorDb)} dB, ` +
+          `peak ${(micSource.level.peak * 100).toFixed(0)}%`
+        : 'Level: not measured',
+      ...(micSource.appliedCalibration
+        ? [
+            `Calibration: latency ${fmt(micSource.appliedCalibration.latencyMs)} ms, ` +
+              `noise floor ${fmt(micSource.appliedCalibration.noiseFloorDb)} dB, ` +
+              `${micSource.appliedCalibration.gainDb.length} pitches`,
+          ]
+        : ['Calibration: none applied']),
+      lastCost
+        ? `Analysis cost: mean ${fmt(lastCost.meanMs)} ms/hop, p95 ${fmt(lastCost.p95Ms)} ms ` +
+          `over ${lastCost.hops} hops (budget 3 ms)`
+        : 'Analysis cost: not measured',
+      '',
       '## Render timings',
       ...(renderTimingSummary().length === 0
         ? ['none recorded']
@@ -442,6 +626,7 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   renderEnv();
   renderLog();
   renderTimings();
+  renderMic();
 
   // The log is re-rendered on an animation frame rather than per message: a
   // glissando can deliver a few hundred messages a second and rebuilding 100
@@ -459,11 +644,14 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   const unsubscribers = [
     webMidiSource.onLog(scheduleLogRender),
     webMidiSource.onStateChange(() => renderEnv()),
+    micSource.onLevel(() => renderMic()),
+    micSource.onStateChange(() => renderMic()),
   ];
   onScreenDispose(section, () => {
     for (const off of unsubscribers) off();
     stopLatency?.();
     metronome?.dispose();
+    micSource.stopRecording();
   });
 
   return section;

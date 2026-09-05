@@ -6,6 +6,7 @@ import { PlanScreen } from './screens/PlanScreen';
 import { LibraryScreen } from './screens/LibraryScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { MicScreen } from './screens/MicScreen';
 import { MidiScreen } from './screens/MidiScreen';
 import { DiagnosticsScreen } from './screens/DiagnosticsScreen';
 
@@ -30,6 +31,7 @@ const SCREENS: Record<TabId, ScreenFactory> = {
 /** Sub-screens pushed on top of a tab; the tab stays highlighted in the nav. */
 const SUB_SCREENS: Record<SubId, ScreenFactory> = {
   midi: MidiScreen,
+  mic: MicScreen,
   diagnostics: DiagnosticsScreen,
 };
 

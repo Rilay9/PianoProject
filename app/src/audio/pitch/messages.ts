@@ -22,6 +22,15 @@ export type ToPitchWorklet =
       inharmonicity: [number, number][];
       thresholds: Partial<DetectorThresholds>;
     }
+  | {
+      /**
+       * Frequency of the metronome click to notch out of the spectrum, or 0
+       * for none (docs/05 §11.4). Sent when the microphone opens, because the
+       * click is only ever played while it is listening.
+       */
+      type: 'notch';
+      hz: number;
+    }
   | { type: 'reset' }
   /** Start/stop streaming raw audio back for the Diagnostics WAV capture. */
   | { type: 'record'; on: boolean };

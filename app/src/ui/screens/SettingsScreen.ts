@@ -43,6 +43,11 @@ export function SettingsScreen(router: Router): HTMLElement {
   for (const link of [
     { sub: 'midi' as const, label: 'MIDI', hint: 'Connect your piano and pick an input' },
     {
+      sub: 'mic' as const,
+      label: 'Microphone',
+      hint: 'Listen through the mic when the cable will not do; calibrate it here',
+    },
+    {
       sub: 'diagnostics' as const,
       label: 'Diagnostics',
       hint: 'Raw message log, latency test, debug report',

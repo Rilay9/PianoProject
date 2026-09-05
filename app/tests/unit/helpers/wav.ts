@@ -18,9 +18,13 @@ export interface WavData {
 }
 
 export function readWav(path: string): WavData {
-  const buffer = readFileSync(path);
+  return parseWav(readFileSync(path), path);
+}
+
+/** The same reader over bytes, so the app's WAV writer can be tested with it. */
+export function parseWav(buffer: Buffer, label = 'buffer'): WavData {
   if (buffer.toString('ascii', 0, 4) !== 'RIFF' || buffer.toString('ascii', 8, 12) !== 'WAVE') {
-    throw new Error(`${path} is not a RIFF/WAVE file`);
+    throw new Error(`${label} is not a RIFF/WAVE file`);
   }
 
   let offset = 12;
@@ -49,7 +53,7 @@ export function readWav(path: string): WavData {
     offset = body + size + (size % 2);
   }
 
-  if (!samples) throw new Error(`${path} has no data chunk`);
+  if (!samples) throw new Error(`${label} has no data chunk`);
   return { sampleRate, channels, samples };
 }
 

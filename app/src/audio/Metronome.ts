@@ -10,7 +10,19 @@
 
 import { BeatScheduler, type MetronomeBeat } from './BeatScheduler';
 
-export type MetronomeSound = 'wood' | 'beep';
+export type MetronomeSound = 'wood' | 'beep' | 'high';
+
+/**
+ * Frequency of the "high" click, in Hz.
+ *
+ * docs/05 §11.4 asks for a click at 4 kHz or above when the microphone is the
+ * input, so it sits above every piano fundamental (C8 is 4186 Hz) and can be
+ * notched out of the spectrum before anything reads it — see `applyNotch` in
+ * audio/pitch/dsp.ts, which the detector applies at exactly this frequency.
+ * 5 kHz leaves room above C8 without going so high that a phone microphone's
+ * own rolloff makes the click inaudible.
+ */
+export const MIC_CLICK_HZ = 5000;
 
 export interface MetronomeOptions {
   bpm?: number;
@@ -134,9 +146,33 @@ export class Metronome {
   }
 
   private click(whenSec: number, accent: boolean): void {
-    return this.sound === 'wood'
-      ? this.woodClick(whenSec, accent)
-      : this.beepClick(whenSec, accent);
+    if (this.sound === 'wood') return this.woodClick(whenSec, accent);
+    if (this.sound === 'high') return this.highClick(whenSec, accent);
+    return this.beepClick(whenSec, accent);
+  }
+
+  /**
+   * The click used while the microphone is listening: a short sine burst at
+   * `MIC_CLICK_HZ`, which the detector notches out (docs/05 §11.4). A sine
+   * rather than the noise burst above, because a notch can only remove a
+   * narrow band and noise is by definition everywhere.
+   */
+  private highClick(whenSec: number, accent: boolean): void {
+    const osc = this.context.createOscillator();
+    const gain = this.context.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = MIC_CLICK_HZ;
+    gain.gain.setValueAtTime(0.0001, whenSec);
+    gain.gain.exponentialRampToValueAtTime(accent ? 0.6 : 0.35, whenSec + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, whenSec + 0.03);
+    osc.connect(gain);
+    gain.connect(this.output);
+    osc.start(whenSec);
+    osc.stop(whenSec + 0.04);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
   }
 
   /**

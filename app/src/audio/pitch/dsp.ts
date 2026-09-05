@@ -315,6 +315,69 @@ function peakNear(ctx: SpectrumContext, hz: number, semitones: number): number {
 }
 
 /**
+ * Silences a narrow band of the spectrum, in place.
+ *
+ * For the metronome (docs/05 §11.4): when the microphone is listening, the
+ * click is played high — above every piano fundamental — and notched out here.
+ * Doing it on the magnitude spectrum, before anything reads it, deals with
+ * both problems at once: the click no longer contributes to the spectral flux
+ * (it would otherwise fire the onset detector on every single beat, which is
+ * far worse than any effect on the templates) and no harmonic template can
+ * find energy there.
+ */
+export function applyNotch(ctx: SpectrumContext, hz: number, semitones: number): void {
+  const low = Math.max(0, binOf(ctx, hz * Math.pow(2, -semitones / 12)));
+  const high = Math.min(ctx.magnitude.length - 1, binOf(ctx, hz * Math.pow(2, semitones / 12)));
+  for (let i = low; i <= high; i += 1) ctx.magnitude[i] = DB_FLOOR;
+  // The previous frame is notched too, so the flux does not see the notch
+  // itself as a change on the frame the click arrives.
+  for (let i = low; i <= high; i += 1) ctx.previous[i] = DB_FLOOR;
+  let peak = DB_FLOOR;
+  for (let i = 0; i < ctx.magnitude.length; i += 1) {
+    const value = ctx.magnitude[i] as number;
+    if (value > peak) peak = value;
+  }
+  ctx.peakDb = peak;
+}
+
+/**
+ * The frequency and level of the strongest peak near `hz`, interpolated.
+ *
+ * A bin is 10.8 Hz wide at 4096 points and 44.1 kHz, which is a semitone and a
+ * half at C2 — far too coarse to measure where a partial actually sits. Fitting
+ * a parabola through the peak bin and its neighbours (in dB, where a windowed
+ * sinusoid's main lobe is very nearly parabolic) recovers the position to a
+ * fraction of a bin, which is what makes an inharmonicity fit possible at all.
+ */
+export function interpolatedPeakNear(
+  ctx: SpectrumContext,
+  hz: number,
+  semitones: number,
+): { hz: number; db: number } {
+  const low = Math.max(1, binOf(ctx, hz * Math.pow(2, -semitones / 12)));
+  const high = Math.min(ctx.magnitude.length - 2, binOf(ctx, hz * Math.pow(2, semitones / 12)));
+  let peakBin = low;
+  let peakDb = DB_FLOOR;
+  for (let i = low; i <= high; i += 1) {
+    const value = ctx.magnitude[i] as number;
+    if (value > peakDb) {
+      peakDb = value;
+      peakBin = i;
+    }
+  }
+  const left = ctx.magnitude[peakBin - 1] as number;
+  const right = ctx.magnitude[peakBin + 1] as number;
+  const denominator = left - 2 * peakDb + right;
+  // A flat or rising-at-the-edge neighbourhood has no parabola to fit; fall
+  // back to the bin centre rather than dividing by ~0 and flying off.
+  const offset = denominator === 0 ? 0 : Math.max(-0.5, Math.min(0.5, (0.5 * (left - right)) / denominator));
+  return {
+    hz: (peakBin + offset) * ctx.binHz,
+    db: peakDb - 0.25 * (left - right) * offset,
+  };
+}
+
+/**
  * Local background level around a pitch.
  *
  * The median of a band around `f0`, with every one of the pitch's own partials

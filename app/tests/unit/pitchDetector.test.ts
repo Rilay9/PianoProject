@@ -13,6 +13,7 @@ import { loadFixture } from './helpers/wav';
 import { expectationsFromFixture, runDetector, scoreDetections } from './helpers/runDetector';
 import { PitchDetector } from '../../src/audio/pitch/detector';
 import { noise } from './helpers/signals';
+import { MIC_CLICK_HZ } from '../../src/audio/Metronome';
 
 /** docs/05 §11.6. */
 const MONO_RECALL = 0.95;
@@ -191,5 +192,46 @@ describe('detector behaviour', () => {
       );
       expect(earlier.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('metronome notch (docs/05 §11.4)', () => {
+  /** The fixture with a 5 kHz click burst mixed in every 500 ms. */
+  function withClicks(name: string): { audio: ReturnType<typeof loadFixture>['audio'] } {
+    const { audio } = loadFixture(name);
+    const samples = audio.samples;
+    const period = Math.round(audio.sampleRate * 0.5);
+    const length = Math.round(audio.sampleRate * 0.03);
+    for (let start = 0; start + length < samples.length; start += period) {
+      for (let i = 0; i < length; i += 1) {
+        const t = i / audio.sampleRate;
+        // The same shape Metronome.highClick produces: a 2 ms ramp up and a
+        // 30 ms decay. A step onset instead would be broadband by definition
+        // and no narrow notch could remove it.
+        const attack = Math.min(1, t / 0.002);
+        const envelope = attack * Math.exp(-90 * t) * 0.3;
+        samples[start + i] =
+          (samples[start + i] as number) +
+          Math.sin(2 * Math.PI * MIC_CLICK_HZ * t) * envelope;
+      }
+    }
+    return { audio: { ...audio, samples } };
+  }
+
+  it('a 5 kHz click fires onsets when it is not notched out', () => {
+    const { audio } = withClicks('repeated-pedal');
+    const events = runDetector(audio, { expectationsAt: () => ({ now: [60], next: [] }) });
+    // Five strikes in the fixture; the clicks add their own.
+    expect(events.filter((e) => e.kind === 'noteOn').length).toBeGreaterThan(5);
+  });
+
+  it('…and does not once the detector notches it', () => {
+    const { audio } = withClicks('repeated-pedal');
+    const events = runDetector(audio, {
+      expectationsAt: () => ({ now: [60], next: [] }),
+      notchHz: MIC_CLICK_HZ,
+    });
+    const noteOns = events.filter((e) => e.kind === 'noteOn' && !e.unexpected);
+    expect(noteOns).toHaveLength(5);
   });
 });

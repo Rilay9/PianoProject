@@ -17,7 +17,7 @@ export type TabId = (typeof TAB_IDS)[number];
  * same way. `sub` is absent (not null) on a plain tab route so that a route
  * object stays value-comparable with `{ tab }`.
  */
-export const SUB_IDS = ['midi', 'diagnostics'] as const;
+export const SUB_IDS = ['midi', 'diagnostics', 'mic'] as const;
 export type SubId = (typeof SUB_IDS)[number];
 
 /**

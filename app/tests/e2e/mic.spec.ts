@@ -157,4 +157,73 @@ test.describe('microphone input', () => {
     expect(cost?.meanMs).toBeLessThanOrEqual(3);
     expect(cost?.p95Ms).toBeLessThanOrEqual(3);
   });
+
+  test('the calibration screen runs against the fake stream and stores a table', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['microphone']);
+    await page.goto('/#/settings/mic');
+    await expect(page.locator('.card h1')).toHaveText('Microphone');
+
+    await page.locator('#mic-connect').click();
+    await expect(page.locator('#mic-status')).toContainText('Connected', { timeout: 15_000 });
+    // The level meter is the "is it hearing anything?" answer, and the fake
+    // device is playing a piano scale on a loop.
+    await expect(page.locator('#mic-level')).toContainText('Level', { timeout: 15_000 });
+    await page.waitForFunction(
+      () => {
+        const fill = document.querySelector('#mic-meter-fill');
+        return fill instanceof HTMLElement && parseFloat(fill.style.width) > 0;
+      },
+      undefined,
+      { timeout: 15_000 },
+    );
+
+    // The quick routine, so the suite spends seconds rather than a minute on
+    // it; the analysis it runs afterwards is identical either way.
+    await page.locator('#mic-speed').selectOption('quick');
+    await page.locator('#mic-calibrate').click();
+    await expect(page.locator('#mic-stage')).toContainText('Silence', { timeout: 10_000 });
+    await expect(page.locator('#mic-stage')).toContainText('Done.', { timeout: 90_000 });
+
+    // Stored, keyed by device, and covering the whole keyboard.
+    const stored = await page.evaluate(() => {
+      const raw = localStorage.getItem('pianopath.micCalibration');
+      return raw === null ? null : (JSON.parse(raw) as Record<string, { gainDb: unknown[]; noiseFloorDb: number }>);
+    });
+    expect(stored).not.toBeNull();
+    const entry = Object.values(stored ?? {})[0];
+    expect(entry?.gainDb).toHaveLength(88);
+    expect(entry?.noiseFloorDb).toBeLessThan(0);
+
+    await expect(page.locator('#mic-stored')).toContainText('Calibrated');
+  });
+
+  test('Diagnostics measures the analysis cost and captures a clip', async ({ page, context }) => {
+    await context.grantPermissions(['microphone']);
+    await page.goto('/#/settings/diagnostics');
+    await expect(page.locator('.card h1')).toHaveText('Diagnostics');
+
+    await page.locator('#diag-mic-cost').click();
+    await expect(page.locator('#diag-mic-cost-result')).toContainText('budget 3 ms', {
+      timeout: 30_000,
+    });
+
+    // The capture is 20 s of real time; it is the one thing on this screen the
+    // owner has to be able to do on the phone with no cable attached.
+    await page.locator('#diag-mic-capture').click();
+    await expect(page.locator('#diag-mic-capture-status')).toContainText('recorded at', {
+      timeout: 60_000,
+    });
+    const save = page.locator('#diag-mic-save');
+    await expect(save).toBeVisible();
+    expect(await save.getAttribute('download')).toMatch(/^pianopath-.*\.wav$/);
+
+    // And the report carries the numbers, since that is how they reach us.
+    await page.locator('#diag-copy-report').click();
+    const report = await page.locator('#diag-report').inputValue();
+    expect(report).toContain('## Microphone');
+    expect(report).toContain('Analysis cost: mean');
+  });
 });

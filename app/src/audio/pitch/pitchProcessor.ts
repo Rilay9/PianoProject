@@ -71,6 +71,9 @@ class PitchProcessor extends AudioWorkletProcessor {
           thresholds: message.thresholds,
         });
         break;
+      case 'notch':
+        this.detector.calibrate({ notchHz: message.hz });
+        break;
       case 'reset':
         this.detector.reset();
         break;

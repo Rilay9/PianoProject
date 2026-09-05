@@ -14,12 +14,15 @@ export interface RunOptions {
    */
   expectationsAt: (tMs: number) => { now: number[]; next: number[] };
   thresholds?: ConstructorParameters<typeof PitchDetector>[0]['thresholds'];
+  /** Metronome click to notch out of the spectrum (docs/05 §11.4). */
+  notchHz?: number;
 }
 
 export function runDetector(audio: WavData, options: RunOptions): DetectedNote[] {
   const detector = new PitchDetector({
     sampleRate: audio.sampleRate,
     ...(options.thresholds ? { thresholds: options.thresholds } : {}),
+    ...(options.notchHz === undefined ? {} : { notchHz: options.notchHz }),
   });
   const events: DetectedNote[] = [];
   const frame = new Float32Array(LOW_WINDOW_SIZE);

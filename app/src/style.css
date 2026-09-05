@@ -658,3 +658,25 @@ body {
   border-color: var(--accent);
   color: var(--text);
 }
+
+/* Microphone level meter (docs/04 §5: "amber mic feedback + level meter"). */
+.mic-meter {
+  height: 0.75rem;
+  border-radius: 0.375rem;
+  background: var(--surface-2, rgba(255, 255, 255, 0.08));
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.mic-meter__fill {
+  height: 100%;
+  width: 0;
+  background: var(--amber, #d99a2b);
+  transition: width 80ms linear;
+}
+
+/* Clipping is the one thing a meter must shout about: it destroys the
+   transients the detector works from. */
+.mic-meter__fill[data-hot='true'] {
+  background: var(--danger, #c8483f);
+}
