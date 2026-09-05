@@ -168,6 +168,12 @@ def collapse_to_two(parts: list[stream.Part], notes: list[str]) -> list[stream.P
     beyond that the extra parts are merged into the nearest staff by register,
     because dropping notes silently would be worse than a crowded staff.
     """
+    if len(parts) <= 2:
+        # A part of nothing but rests is kept here: a right-hand-only beginner
+        # tune is still printed on a grand staff, with an empty bass staff the
+        # learner can see is empty.
+        return parts
+
     non_empty = [p for p in parts if len(p.recurse().notes) > 0]
     if len(non_empty) != len(parts):
         notes.append(f"dropped {len(parts) - len(non_empty)} empty part(s)")

@@ -4,6 +4,7 @@ C:Traditional (Ah! vous dirai-je, maman, 1761)
 %%pianopath id=song.folk.twinkle.simple level=1.2 hands=both abrsm=0
 %%pianopath tracks=core,classical concepts=4/4,hand-position,I-IV-V,steady-beat
 %%pianopath license=CC0 arranger=PianoPath genre=folk
+%%pianopath traditional=yes sourceName="Ah! vous dirai-je, maman (French, 1761)"
 %%score {1 2}
 L:1/4
 M:4/4

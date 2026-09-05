@@ -284,9 +284,13 @@ def apply_fingerings(score, mapping: dict[str, dict[int, int]]) -> int:
     parts = list(score.parts)
     applied = 0
     for order, (voice, fingers) in enumerate(sorted(mapping.items())):
-        if order >= len(parts):
-            break
-        notes = playable_notes(parts[order])
+        # By voice number, not by position in the mapping: a left-hand-only
+        # tune marks fingering on voice 2 alone, and enumerating would have
+        # put it on the (silent) treble staff — which is exactly what happened.
+        index = int(voice) - 1 if voice.isdigit() else order
+        if not 0 <= index < len(parts):
+            continue
+        notes = playable_notes(parts[index])
         for index, finger in fingers.items():
             if index < len(notes):
                 notes[index].articulations.append(articulations.Fingering(finger))

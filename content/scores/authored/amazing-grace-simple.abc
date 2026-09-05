@@ -4,6 +4,7 @@ C:Traditional (New Britain, 1835)
 %%pianopath id=song.hymn.amazing-grace.simple level=2.3 hands=both abrsm=1
 %%pianopath tracks=hymns-gospel,chords-pop,core concepts=3/4,anacrusis,I-IV-V,block-chords
 %%pianopath license=CC0 arranger=PianoPath genre=hymn
+%%pianopath publishedYear=1835 sourceName="New Britain (Virginia Harmony, 1831); words John Newton 1779"
 %%score {1 2}
 L:1/4
 M:3/4

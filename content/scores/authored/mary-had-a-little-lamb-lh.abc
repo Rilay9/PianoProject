@@ -1,0 +1,18 @@
+X:1
+T:Mary Had a Little Lamb (left hand)
+C:Traditional (Lowell Mason, 1830)
+%%pianopath id=song.folk.mary-had-a-little-lamb.lh level=1.3 hands=left abrsm=0
+%%pianopath tracks=core concepts=bass-clef,LH-C-position,steps,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=folk publishedYear=1830
+%%pianopath sourceName="Mary's Lamb, Lowell Mason (1830)" composer="Lowell Mason"
+%%pianopath variantOf=song.folk.mary-had-a-little-lamb variantLabel="left hand"
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=76
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] z4 | z4 | z4 | z4 | z4 | z4 | z4 | z4 |]
+[V:2] !3!E, !4!D, !5!C, !4!D, | !3!E, E, E,2 | !4!D, D, D,2 | !3!E, !1!G, G,2 |
+[V:2] !3!E, !4!D, !5!C, !4!D, | E, E, E, E, | !4!D, D, !3!E, !4!D, | !5!C,4 |]

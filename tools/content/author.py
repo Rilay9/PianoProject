@@ -49,6 +49,35 @@ class AuthorReport:
     failed: list[tuple[str, str]] = field(default_factory=list)
 
 
+#: docs/03 §1 rule 1 — US public domain as of 2026.
+PD_CUTOFF_YEAR = 1930
+
+
+def public_domain_note(meta: dict) -> str | None:
+    """
+    Turns `publishedYear=` / `traditional=` into the sentence that goes in the
+    catalog's `editionNotes`, refusing anything too recent to bundle.
+
+    The P5 prompt asks for the year to be recorded and for anything that cannot
+    be verified to be skipped, so a tune that states neither a year nor
+    `traditional=yes` fails here rather than being quietly bundled on trust.
+    """
+    if str(meta.get("traditional", "")).lower() in {"1", "true", "yes"}:
+        return "Traditional melody, no known author; public domain."
+    raw = meta.get("publishedYear")
+    if raw is None:
+        return None
+    try:
+        year = int(str(raw))
+    except ValueError as exc:
+        raise AuthoringError(f"publishedYear must be a year, got {raw!r}") from exc
+    if year > PD_CUTOFF_YEAR:
+        raise AuthoringError(
+            f"publishedYear {year} is after {PD_CUTOFF_YEAR}: not US public domain, cannot bundle"
+        )
+    return f"Composition published {year}; US public domain (published on or before {PD_CUTOFF_YEAR})."
+
+
 def validate_metadata(meta: dict) -> str:
     """
     Checks the `%%pianopath` header before anything is parsed or written.
@@ -68,6 +97,11 @@ def validate_metadata(meta: dict) -> str:
         float(meta["level"])
     except (TypeError, ValueError) as exc:
         raise AuthoringError(f"level must be a number, got {meta['level']!r}") from exc
+    if item_type == "song" and not (meta.get("publishedYear") or meta.get("traditional")):
+        # A song is somebody's composition. Either it is traditional or it has
+        # a year, and without one of the two there is nothing to check against
+        # docs/03 §1.
+        raise AuthoringError("a song needs publishedYear=<year> or traditional=yes")
     return item_type
 
 
@@ -75,6 +109,7 @@ def entry_from_metadata(
     meta: dict, *, dest: Path, out_root: Path, title: str, composer: str | None, tempo_bpm: float | None
 ) -> dict:
     item_type = validate_metadata(meta)
+    pd_note = public_domain_note(meta)
     tracks = [t.strip() for t in str(meta["tracks"]).split(",") if t.strip()]
     concepts = [c.strip() for c in str(meta.get("concepts", "")).split(",") if c.strip()]
     item_id = str(meta["id"])
@@ -95,7 +130,7 @@ def entry_from_metadata(
             pd_region=str(meta.get("pd_region", "worldwide")),
             fetchedAt=utc_now(),
             checksum=sha256_file(dest),
-            editionNotes=meta.get("editionNotes"),
+            editionNotes=meta.get("editionNotes") or pd_note,
         ),
         composer=meta.get("composer") or composer,
         arranger=meta.get("arranger", "PianoPath"),

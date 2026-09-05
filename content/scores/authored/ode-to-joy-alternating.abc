@@ -1,0 +1,20 @@
+X:1
+T:Ode to Joy (hands alternating)
+C:Ludwig van Beethoven, 1824
+%%pianopath id=song.classical.ode-to-joy.alternating level=1.4 hands=both abrsm=0
+%%pianopath tracks=core,classical concepts=grand-staff,alternating-hands,call-and-response,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=classical publishedYear=1824
+%%pianopath sourceName="Symphony No. 9, fourth movement (1824)" composer="Ludwig van Beethoven"
+%%pianopath variantOf=song.classical.ode-to-joy.rh variantLabel="hands alternating"
+%%pianopath editionNotes="The right hand plays the first phrase and the left hand answers with the second; the hands never overlap."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=84
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] !3!E !3!E !4!F !5!G | !5!G !4!F !3!E !2!D | !1!C !1!C !2!D !3!E | !3!E2 !2!D2 |
+[V:1] z4 | z4 | z4 | z4 |]
+[V:2] z4 | z4 | z4 | z4 |
+[V:2] !3!E, E, !2!F, !1!G, | G, !2!F, !3!E, !4!D, | !5!C, C, !4!D, !3!E, | !4!D,2 !5!C,2 |]

@@ -118,3 +118,50 @@ class TestFingering(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestFingeringPlacement(unittest.TestCase):
+    """
+    Which staff a fingering lands on.
+
+    A left-hand-only tune marks fingering on voice 2 and nothing on voice 1.
+    Mapping voices to parts by their position in the extracted dictionary put
+    all of it on the silent treble staff, so the printed score had none.
+    """
+
+    def build(self, abc: str):
+        from music21 import converter
+
+        from abc_tools import apply_fingerings, extract_fingerings, prepare_abc
+
+        score = converter.parse(prepare_abc(abc), format="abc")
+        applied = apply_fingerings(score, extract_fingerings(abc))
+        return score, applied
+
+    def test_a_left_hand_only_tune_is_fingered_on_the_bass_staff(self) -> None:
+        from music21 import articulations
+
+        abc = (
+            "X:1\nT:LH\nL:1/4\nM:4/4\nK:C\n"
+            "V:1 clef=treble\nV:2 clef=bass\n"
+            "[V:1] z4 |]\n[V:2] !5!C, !4!D, !3!E, !2!F, |]\n"
+        )
+        score, applied = self.build(abc)
+        self.assertEqual(applied, 4)
+        bass = list(score.parts)[1]
+        fingerings = [
+            a
+            for n in bass.recurse().notes
+            for a in n.articulations
+            if isinstance(a, articulations.Fingering)
+        ]
+        self.assertEqual([f.fingerNumber for f in fingerings], [5, 4, 3, 2])
+
+    def test_both_hands_land_on_their_own_staff(self) -> None:
+        abc = (
+            "X:1\nT:HT\nL:1/4\nM:4/4\nK:C\n"
+            "V:1 clef=treble\nV:2 clef=bass\n"
+            "[V:1] !1!C !2!D |]\n[V:2] !5!C, !4!D, |]\n"
+        )
+        _, applied = self.build(abc)
+        self.assertEqual(applied, 4)

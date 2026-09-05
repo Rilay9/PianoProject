@@ -1,0 +1,18 @@
+X:1
+T:Old MacDonald Had a Farm
+C:Traditional (English/US, printed 1917)
+%%pianopath id=song.folk.old-macdonald level=2.2 hands=right abrsm=0
+%%pianopath tracks=core concepts=position-shift,repeated-notes,skips,4/4
+%%pianopath license=CC0 arranger=PianoPath genre=folk traditional=yes
+%%pianopath sourceName="Traditional; first printed in Tommy's Tunes (1917)"
+%%pianopath editionNotes="The melody spans a sixth, so the hand shifts up a step for the A and back again; the fingering is marked at both shifts."
+%%score {1 2}
+L:1/4
+M:4/4
+Q:1/4=100
+K:C
+V:1 clef=treble
+V:2 clef=bass
+[V:1] !1!C C C !5!G | !5!A A !4!G2 | !3!E E !2!D D | !1!C4 |
+[V:1] !1!C C C !5!G | !5!A A !4!G2 | !3!E E !2!D D | !1!C4 |]
+[V:2] z4 | z4 | z4 | z4 | z4 | z4 | z4 | z4 |]

@@ -147,3 +147,24 @@ class TestTempoMarks(ConvertCase):
     def test_a_kern_source_keeps_its_single_mark(self) -> None:
         _, written = self.convert("two-spines.krn")
         self.assertEqual(written.xml.count("<metronome"), 1)
+
+
+class TestSilentStaff(ConvertCase):
+    def test_a_hand_that_only_rests_keeps_its_staff(self) -> None:
+        # A right-hand-only beginner tune is printed on a grand staff with an
+        # empty bass staff, not squeezed onto one line.
+        import tempfile
+
+        abc = (
+            "X:1\nT:Right hand only\nL:1/4\nM:4/4\nK:C\n"
+            "V:1 clef=treble\nV:2 clef=bass\n"
+            "[V:1] C D E F |]\n[V:2] z4 |]\n"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "rh.abc"
+            source.write_text(abc, encoding="utf-8")
+            dest = self.out / "rh.mxl"
+            convert_file(source, dest)
+            written = read_mxl(dest)
+        self.assertEqual(written.staves, 2)
+        self.assertEqual(written.score_parts, 1)
