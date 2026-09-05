@@ -25,6 +25,31 @@ pipeline and `scripts/generate-icons.mjs` respectively) and are gitignored. They
 regenerated automatically by `npm run dev` / `npm run build` — see the `predev`/`prebuild`
 hooks in `package.json` — and by CI before lint/typecheck/test/build.
 
+The one exception is **`public/content/audio/`**, which is committed: the bundled
+piano samples are a source asset, not pipeline output, and `npm run dev` must work
+without running the Python pipeline first. `.gitignore` un-ignores that one directory.
+
+## Routes
+
+`#/<tab>` for the five tabs, `#/<tab>/<sub>` for a screen pushed on top of one.
+P1 adds `#/settings/midi` (connect a piano, pick an input, test it) and
+`#/settings/diagnostics` (raw MIDI log, latency test, copyable debug report);
+both are also linked from the Settings screen.
+
+## Sound
+
+Playback uses [`smplr`](https://github.com/danigb/smplr) (MIT) with a soundfont
+bundled under `public/content/audio/`, so the app makes no network request for
+audio and works offline once installed.
+
+> Piano samples: **FluidR3_GM** by **Frank Wen**, licensed
+> [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/), pre-rendered by the
+> [midi-js-soundfonts](https://github.com/gleitz/midi-js-soundfonts) project.
+
+Full details and the rationale for this choice are in
+`public/content/audio/LICENSE.md` and
+`docs/decisions/2026-09-05-p1-midi-audio-choices.md`.
+
 ## Playwright / Chromium
 
 `playwright.config.ts` uses the Chromium already installed at
