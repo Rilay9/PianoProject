@@ -387,6 +387,19 @@ the repo is public.
 - `vite.config.ts` `base` MUST be `/PianoProject/` (repo name) for Pages, overridable by env.
 - The Pages build MUST be the default, NC-free content build (`00` D10a). It is a public URL.
 
+**Built in P9 (2026-09-06), host-agnostic by the owner's choice.** The origin is not decided
+yet, so nothing in the packaging hard-codes one: `packaging/build-apk.sh` takes
+`PIANOPATH_HOST` and `PIANOPATH_BASE_PATH`, fills in `twa-manifest.template.json`, builds the
+web app with a matching `VITE_BASE`, runs Bubblewrap, and writes the Digital Asset Links file
+into `app/dist/.well-known/`. Choosing a host is then an environment variable, not a rewrite.
+`packaging/twa-manifest.json`, the keystore and the built APK are all gitignored.
+
+**One trap the script warns about:** `assetlinks.json` must be at the **origin root**, never
+under the app's base path. If the app is served from `/PianoProject/`, the file still has to be
+at `https://host/.well-known/assetlinks.json`. That is the main argument for serving the app at
+`/` on whatever host the APK ends up pointing at — and the reason `PIANOPATH_BASE_PATH`
+defaults to `/` rather than to the Pages sub-path.
+
 **At v1.0, when the repo goes private (P9):**
 - The content build may drop the licence gate for the APK; see `03` §1.
 - **Offline-first is decided (`00` D20).** The origin exists only so the TWA has a start URL

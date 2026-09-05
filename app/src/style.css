@@ -625,10 +625,19 @@ body {
   min-height: 260px;
 }
 
+/* Fixed size, and the size is the point.
+   Playwright masks this box in the score screenshots, and a mask that is
+   sized by its own text moves whenever a number inside it gains a digit —
+   which is what happened when the Score screen became a lazy chunk and the
+   reported load time changed length. Six landscape snapshots then differed by
+   exactly 4559 pixels every run: not flake, a moving mask. */
 .dev-score__hud {
   position: fixed;
   right: 12px;
   bottom: 12px;
+  width: 260px;
+  min-height: 132px;
+  overflow: hidden;
   z-index: 10;
   background: color-mix(in srgb, var(--surface) 92%, transparent);
   border: 1px solid var(--border);
@@ -1624,4 +1633,62 @@ body {
 .drill-summary h2 {
   margin: 0;
   font-size: 1.2rem;
+}
+
+/* --- Error banner and update toast (docs/04 §8, P9) ------------------------
+   Both sit above everything and clear of the tab bar's safe area. The banner
+   is not a modal on purpose: the error may be in one screen while the rest of
+   the app is fine. */
+
+.error-banner,
+.update-toast {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + var(--safe-bottom));
+  z-index: 60;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px 14px;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 28%);
+}
+
+.error-banner {
+  border-color: #cf3b3b;
+}
+
+.error-banner__text {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.error-banner .row,
+.update-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+.update-toast span {
+  flex: 1;
+  min-width: 8em;
+}
+
+.error-banner .button,
+.update-toast .button {
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+/* On a tablet the banner has no business spanning a metre of screen. */
+@media (min-width: 700px) {
+  .error-banner,
+  .update-toast {
+    left: auto;
+    right: 16px;
+    max-width: 520px;
+  }
 }

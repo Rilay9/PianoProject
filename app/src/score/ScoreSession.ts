@@ -35,6 +35,7 @@ import { WindowRenderer, type HandsFocus, type NoteState, type ScoreLayout } fro
 import type { KeyboardStrip } from '../ui/KeyboardStrip';
 import type { Piano } from '../audio/Piano';
 import { Metronome, type MetronomeSound } from '../audio/Metronome';
+import { recordRenderTiming } from '../util/renderTiming';
 
 export interface ScoreSessionOptions {
   model: ScoreModel;
@@ -70,6 +71,15 @@ export class ScoreSession {
   private metronome: Metronome | null = null;
   private raf: number | null = null;
 
+  /**
+   * `performance.now()` of the input event that made the frame dirty.
+   *
+   * The budget in `01` §6 is "MIDI-in to note-coloured < 30 ms", and that is a
+   * span across two different mechanisms — the input handler and the next
+   * animation frame — so neither end can measure it alone. The input stamps
+   * this, the paint reads it and clears it.
+   */
+  private dirtiedByInputAtMs: number | null = null;
   /** Note id -> how it should be painted. Cleared when a lap restarts. */
   private judgements = new Map<string, NoteState>();
   private dirty = false;
@@ -178,6 +188,7 @@ export class ScoreSession {
 
   /** Feeds an input event. Never renders — see rule 1 in the file comment. */
   feed(midi: number, velocity: number, tMs: number, confidence = 1): void {
+    this.dirtiedByInputAtMs ??= performance.now();
     this.engine?.feed({ kind: 'noteOn', midi, velocity, tMs, confidence });
   }
 
@@ -300,14 +311,20 @@ export class ScoreSession {
   private loop = (): void => {
     const engine = this.engine;
     if (!engine) return;
+    const started = performance.now();
     engine.tick();
     this.schedulePlayback();
     if (this.dirty) this.paint();
+    // Every frame, not only the painted ones: a tick that is slow while
+    // nothing changes still eats the budget the next paint needs.
+    recordRenderTiming('session.frame', performance.now() - started);
     this.raf = requestAnimationFrame(this.loop);
   };
 
   private paint(): void {
     this.dirty = false;
+    const inputAtMs = this.dirtiedByInputAtMs;
+    this.dirtiedByInputAtMs = null;
     const renderer = this.options.renderer;
     if (this.pendingStep !== null) {
       renderer.showStep(this.pendingStep);
@@ -324,6 +341,11 @@ export class ScoreSession {
     renderer.setNoteStates(states);
     this.paintStrip();
     this.options.onChange?.();
+    if (inputAtMs !== null) {
+      // The whole span the budget is about: the note arriving, the engine
+      // judging it, and the colour landing on the screen.
+      recordRenderTiming('input.toColour', performance.now() - inputAtMs);
+    }
   }
 
   private paintStrip(): void {

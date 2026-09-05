@@ -7,6 +7,8 @@ import { autoConnectMidi } from './app/services';
 import { hydratePersisted, needsHydration } from './data/persist';
 import { reloadSettings } from './data/settingsStore';
 import { installErrorLog } from './util/errorLog';
+import { installErrorBoundary } from './ui/errorBoundary';
+import { showUpdateToast } from './ui/updateToast';
 import { noteUpdateCheck } from './util/offlineStatus';
 import { isOfflineOnly } from './util/storageReport';
 import { installTestHooks } from './app/testHooks';
@@ -14,6 +16,9 @@ import { installTestHooks } from './app/testHooks';
 // Before anything else: this phone has no console open and no crash reporter,
 // so an error nobody catches leaves no trace at all (docs/04 §7b).
 installErrorLog(window);
+// The visible half: a banner from the first error onwards, with the details
+// copyable. Without it an uncaught error is a screen that quietly stops.
+installErrorBoundary(document.body);
 
 initTheme();
 
@@ -77,10 +82,15 @@ if ('serviceWorker' in navigator) {
   // version. On a phone that is deliberately kept off the network, a periodic
   // update check is a request that can only ever fail.
   void import('virtual:pwa-register').then(({ registerSW }) => {
-    const update = registerSW({ immediate: true });
-    if (!isOfflineOnly()) {
-      noteUpdateCheck();
-      void update;
-    }
+    const updateServiceWorker = registerSW({
+      immediate: true,
+      onNeedRefresh() {
+        // Never automatic: swapping the worker in mid-practice would reload
+        // the page under a running session. The learner chooses the moment.
+        if (isOfflineOnly()) return;
+        showUpdateToast({ apply: () => void updateServiceWorker(true) });
+      },
+    });
+    if (!isOfflineOnly()) noteUpdateCheck();
   });
 }

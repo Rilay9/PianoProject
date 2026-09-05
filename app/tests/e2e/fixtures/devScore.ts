@@ -158,14 +158,21 @@ export async function waitForStableLayout(page: Page, selector: string): Promise
       const svg = document.querySelector(target);
       if (!svg) return false;
       const box = svg.getBoundingClientRect();
-      const key = `${String(Math.round(box.width))}x${String(Math.round(box.height))}`;
+      // The *contents*, not just the box. OSMD's second pass re-spaces the
+      // notes inside an SVG whose outer dimensions never change, so watching
+      // the box alone reported "settled" while the notation was still moving —
+      // which showed up as a 3 % pixel difference in the landscape
+      // screenshots, and only under load, which is the worst way to find out.
+      const key = `${String(Math.round(box.width))}x${String(Math.round(box.height))}:${String(
+        svg.outerHTML.length,
+      )}`;
       const holder = window as unknown as { __layoutKey?: string; __layoutRepeats?: number };
       if (holder.__layoutKey === key) holder.__layoutRepeats = (holder.__layoutRepeats ?? 0) + 1;
       else {
         holder.__layoutKey = key;
         holder.__layoutRepeats = 0;
       }
-      return (holder.__layoutRepeats ?? 0) >= 3;
+      return (holder.__layoutRepeats ?? 0) >= 3 && document.fonts.status === 'loaded';
     },
     selector,
     { timeout: 30_000, polling: 100 },

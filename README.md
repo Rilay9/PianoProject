@@ -8,8 +8,9 @@ across classical, chords/pop, blues/boogie, jazz, ragtime, and theory/ear traini
 **Status (2026-09-06): P0 through P7 are built.** The app runs end to end — you can open it,
 be given a practice session, play a piece with the sheet music following your hands (MIDI, the
 microphone, the on-screen keys or the clock), have the run scored and recorded, and see it come
-back for review. What is left is P8 (the drills UI), P9 (on-device QA, performance, the APK)
-and P10 (content for Stages 6–9).
+back for review, and every drill has a screen. What is left is **P10** (content for Stages 6–9)
+and the parts of P9 that can only happen on the phone — building and installing the APK, and
+the on-device checks in `docs/OWNER-GUIDE.md`.
 
 | Phase | What | State |
 |---|---|---|
@@ -20,9 +21,9 @@ and P10 (content for Stages 6–9).
 | P4 · P5 · P5b | Content pipeline · authored library · exercise breadth | built · 573 catalog items, 55 lessons, Stages 0–5 |
 | P6 | The Score screen | built |
 | P7 | Today / Plan / Library / Progress / Settings, storage, own-score import, PDF viewer | built |
-| P8 | Drills UI | next |
-| P9 | On-device QA, performance, the TWA APK, private repo | not started |
-| P10 | Stages 6–9 content | not started |
+| P8 | Drills UI | built |
+| P9 | Performance, error boundary, offline, PWA audit, APK toolchain | built; the APK itself and every on-device check are yours — see `docs/OWNER-GUIDE.md` |
+| P10 | Stages 6–9 content | next |
 
 Each phase is built by a Claude Code session (Opus 5 / Sonnet 5) from one prompt in
 `prompts/`, so progress can be staggered and the model switched between phases. Decisions taken
@@ -38,8 +39,8 @@ mid-phase are written up in `docs/decisions/`.
    URL via Chrome's "Add to Home screen" — no app-store account of any kind, and the installed
    app works fully offline (see `app/README.md`'s "Deploying" section).
 3. Start the next Claude Code session on this repo, paste `prompts/_COMMON-HEADER.md` followed
-   by the next phase prompt — **`prompts/P8-drills-ui.md`** as of 2026-09-06 — using the model
-   named in its title.
+   by the next phase prompt — **`prompts/P10-content-expansion.md`** as of 2026-09-06 — using
+   the model named in its title.
 4. Use `prompts/PR-review.md` with Opus after any Sonnet phase that touches `engine/` or
    `score/`.
 
@@ -50,7 +51,9 @@ For day-to-day app development commands (install, dev server, tests, build), see
 | Path | What |
 |------|------|
 | `docs/00-overview.md` | vision, decisions (D1–D21), assumptions (A1–A8), open questions |
+| **`docs/OWNER-GUIDE.md`** | **start here to use the app**: install it, connect the piano, import your own scores, back up your history |
 | `docs/decisions/` | one file per decision taken mid-phase, dated, with the reasoning |
+| `packaging/` | the TWA APK toolchain: Bubblewrap config, build script, Digital Asset Links |
 | `docs/01-architecture.md` | PWA stack (Vite + TS, OpenSheetMusicDisplay, Web MIDI, Web Audio), module contracts, data model, deployment |
 | `docs/02-curriculum.md` | the full study plan: Stages 0–9, lessons for the core path, genre tracks, technique syllabus, master song list with public-domain sources |
 | `docs/03-content-pipeline.md` | content sources, licensing rules, conversion/validation pipeline, authoring conventions |

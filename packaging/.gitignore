@@ -1,0 +1,5 @@
+twa-manifest.json
+*.keystore
+*.jks
+app-release-*.apk
+app-release-*.aab

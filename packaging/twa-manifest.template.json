@@ -1,0 +1,87 @@
+{
+  "_comment": [
+    "Bubblewrap configuration for the PianoPath TWA (docs/00 D19, docs/01 §9).",
+    "",
+    "This is a TEMPLATE. `packaging/build-apk.sh` fills in the host and the",
+    "package id from PIANOPATH_HOST and PIANOPATH_APP_ID and writes the real",
+    "twa-manifest.json beside it, which is gitignored — because it carries the",
+    "path to the owner's signing keystore and the SHA-256 of his key.",
+    "",
+    "Why a TWA and not Capacitor or a plain WebView: only a TWA runs the real",
+    "Chrome, and only the real Chrome has Web MIDI. That is the whole reason",
+    "for the approach and the first thing to verify on the phone."
+  ],
+  "packageId": "APP_ID",
+  "host": "HOST",
+  "name": "PianoPath",
+  "launcherName": "PianoPath",
+  "display": "standalone",
+  "orientation": "any",
+  "themeColor": "#0f1115",
+  "themeColorDark": "#0f1115",
+  "navigationColor": "#0f1115",
+  "navigationColorDark": "#0f1115",
+  "navigationDividerColor": "#0f1115",
+  "navigationDividerColorDark": "#0f1115",
+  "backgroundColor": "#0f1115",
+  "enableNotifications": false,
+  "startUrl": "START_URL",
+  "iconUrl": "ICON_URL",
+  "maskableIconUrl": "MASKABLE_ICON_URL",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "KEYSTORE_PATH",
+    "alias": "KEYSTORE_ALIAS"
+  },
+  "appVersionName": "APP_VERSION",
+  "appVersionCode": APP_VERSION_CODE,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "MANIFEST_URL",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": { "enabled": false },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "SCOPE_URL",
+  "minSdkVersion": 23,
+  "appVersion": "APP_VERSION",
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [
+    {
+      "action": "SCOPE_URL",
+      "accept": {
+        "application/pdf": [".pdf"],
+        "application/vnd.recordare.musicxml+xml": [".musicxml"],
+        "application/vnd.recordare.musicxml": [".mxl"]
+      }
+    }
+  ],
+  "shareTarget": {
+    "action": "SHARE_TARGET_URL",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "files": [
+        {
+          "name": "score",
+          "accept": [
+            "application/vnd.recordare.musicxml+xml",
+            "application/vnd.recordare.musicxml",
+            "application/pdf",
+            "application/xml",
+            "text/xml",
+            ".musicxml",
+            ".mxl",
+            ".xml",
+            ".pdf"
+          ]
+        }
+      ]
+    }
+  }
+}

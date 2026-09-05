@@ -23,6 +23,29 @@ export interface LoggedError {
 
 const MAX_DISTINCT = 50;
 const log = new Map<string, LoggedError>();
+const listeners = new Set<(entry: LoggedError) => void>();
+
+/**
+ * Called on every error, including repeats of one already logged.
+ *
+ * The error boundary (`ui/errorBoundary`) listens here rather than to
+ * `window`, so the banner and the debug report can never disagree about what
+ * happened or how many times.
+ */
+export function onErrorLogged(cb: (entry: LoggedError) => void): () => void {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
+
+function announce(entry: LoggedError): void {
+  for (const listener of listeners) {
+    try {
+      listener(entry);
+    } catch {
+      // A listener that throws must not become an error about an error.
+    }
+  }
+}
 
 export function recordError(message: string, source: LoggedError['source'], stack?: string): void {
   const key = `${source}:${message}`;
@@ -31,17 +54,20 @@ export function recordError(message: string, source: LoggedError['source'], stac
   if (existing) {
     existing.count += 1;
     existing.lastAt = now;
+    announce(existing);
     return;
   }
   if (log.size >= MAX_DISTINCT) return;
-  log.set(key, {
+  const entry: LoggedError = {
     message,
     source,
     firstAt: now,
     lastAt: now,
     count: 1,
     ...(stack ? { stack } : {}),
-  });
+  };
+  log.set(key, entry);
+  announce(entry);
 }
 
 export function loggedErrors(): LoggedError[] {
@@ -73,5 +99,6 @@ export function installErrorLog(target: Window = window): void {
 /** Test hook. */
 export function resetErrorLogForTest(): void {
   log.clear();
+  listeners.clear();
   installed = false;
 }

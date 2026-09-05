@@ -207,13 +207,23 @@ export class WindowRenderer {
 
     const wanted = this.windowFor(step.sourceMeasureIndex);
     if (!sameRange(this.frontBuffer.range, wanted)) {
-      if (sameRange(this.backBuffer.range, wanted)) {
+      const started = performance.now();
+      const prepared = sameRange(this.backBuffer.range, wanted);
+      if (prepared) {
         // The pre-rendered case: one class toggle, no layout work.
         this.swap();
       } else {
         this.drawInto(this.backBuffer, wanted);
         this.swap();
       }
+      // Two labels, because they are two different budgets (`01` §6): a
+      // pre-rendered swap must fit in a frame, a cold one only has to beat the
+      // first-render figure. Averaging them together would hide a pre-render
+      // that silently stopped happening.
+      recordRenderTiming(
+        prepared ? 'window.swap' : 'window.swapCold',
+        performance.now() - started,
+      );
     }
     this.positionBand(step);
     this.schedulePrepareNextWindow();

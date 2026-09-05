@@ -146,6 +146,13 @@ airplane-mode session from the second launch onwards**, error boundary + report 
 private-repo move (`00` D19) — no longer optional**, final README for the owner. Acceptance:
 owner runs the checklist in the prompt on the phone and everything passes; Lighthouse PWA audit
 passes; **the signed APK installs on the S25 and Web MIDI still works inside it**.
+**Partly done 2026-09-06** — see `docs/decisions/2026-09-06-p9-qa-and-packaging.md`. Done in the
+sandbox: the performance pass (all `01` §6 budgets met under ×4 CPU throttling, and the entry
+bundle cut from 1,576 kB to 227 kB by loading the Score screen on demand), the error boundary,
+the update toast, the offline verification across every route, the PWA property checks, and the
+whole packaging toolchain host-agnostically. **Not done, and not doable here:** building and
+signing the APK (needs the owner's keystore, which must never leave his machine), installing it
+on the S25, and every on-device check. Those are the checklist in `docs/OWNER-GUIDE.md` §1.
 
 ### P10 — Stages 5–9 content expansion · Sonnet · ongoing
 Deliverables: repertoire from Part D ladders imported/authored and slotted into curriculum

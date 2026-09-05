@@ -10,7 +10,6 @@ import { MicScreen } from './screens/MicScreen';
 import { MidiScreen } from './screens/MidiScreen';
 import { DiagnosticsScreen } from './screens/DiagnosticsScreen';
 import { MetronomeScreen } from './screens/MetronomeScreen';
-import { ScoreScreen } from './screens/ScoreScreen';
 import { SkillsScreen } from './screens/SkillsScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ChordChartScreen } from './screens/ChordChartScreen';
@@ -44,10 +43,10 @@ const SUB_SCREENS: Record<SubId, ScreenFactory> = {
 };
 
 function screenFor(route: Route): ScreenFactory {
-  // The Score screen, the lesson page and the chord chart are full-screen
-  // routes pushed over whichever tab the learner came from, so the tab stays
-  // highlighted and Back returns to it.
-  if (route.score) return ScoreScreen;
+  // The lesson page and the chord chart are full-screen routes pushed over
+  // whichever tab the learner came from, so the tab stays highlighted and Back
+  // returns to it. The Score screen is one too, but it is loaded on demand
+  // (see `mountAppShell`) because it carries OSMD.
   if (route.lesson) {
     const lessonId = route.lesson;
     return (router) => LessonScreen(router, lessonId);
@@ -154,6 +153,16 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
     if (route.dev) {
       currentScreen = mountLazyScreen(main, setCurrent, () =>
         import('./screens/DevScoreScreen').then(({ DevScoreScreen }) => DevScoreScreen(router)),
+      );
+    } else if (route.score) {
+      // OpenSheetMusicDisplay is about a megabyte, and it was sitting in the
+      // entry bundle because the Score screen imports it — so opening Today
+      // waited for an engraver it does not use. Lighthouse put the cost at
+      // 332 kB of unused JavaScript on first paint. Precached either way, so
+      // "on demand" costs nothing offline.
+      // ScoreScreen reads the open piece from `router.route.score` itself.
+      currentScreen = mountLazyScreen(main, setCurrent, () =>
+        import('./screens/ScoreScreen').then(({ ScoreScreen }) => ScoreScreen(router)),
       );
     } else if (route.pdf) {
       const pdfId = route.pdf;

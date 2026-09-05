@@ -121,6 +121,42 @@ test.describe('offline', () => {
     }, BASE);
     expect(soundfont.ok).toBe(true);
     expect(soundfont.bytes).toBeGreaterThan(1_000_000);
+
+    // 5. Every tab and sub-screen, offline (P9). Navigated by moving the hash
+    //    rather than by `goto`, for the same reason as the dev route above.
+    for (const [hash, heading] of [
+      ['#/today', 'Today'],
+      ['#/plan', 'Plan'],
+      ['#/library', 'Library'],
+      ['#/progress', 'Progress'],
+      ['#/settings', 'Settings'],
+      ['#/plan/skills', 'Review a skill'],
+      ['#/today/metronome', 'Metronome'],
+    ] as const) {
+      await page.evaluate((target) => {
+        window.location.hash = target;
+      }, hash);
+      await expect(page.locator('.screen h1')).toHaveText(heading, { timeout: 15_000 });
+    }
+
+    // 6. A drill, which is generated at runtime and so proves the *catalog*
+    //    is readable offline rather than one file being cached.
+    await page.evaluate(() => {
+      window.location.hash = '#/drill/drill.reading.note-flash-treble-c4-g4';
+    });
+    await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-drill', 'running', {
+      timeout: 30_000,
+    });
+    await expect(page.locator('.staff-card .staff-note')).toBeVisible();
+
+    // 7. Diagnostics agrees: it is the screen the owner would check on a train.
+    await page.evaluate(() => {
+      window.location.hash = '#/settings/diagnostics';
+    });
+    await expect(page.locator('#diag-offline')).toContainText('Currently offline', {
+      timeout: 30_000,
+    });
+    await expect(page.locator('#diag-offline')).toContainText('Precached');
   });
 
   // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
@@ -154,5 +190,61 @@ test.describe('offline', () => {
       const found = [...urls].some((url) => pattern.test(url ?? ''));
       expect(found, `nothing matching ${String(pattern)} is precached`).toBe(true);
     }
+  });
+});
+
+test.describe('the error boundary (docs/04 §8)', () => {
+  test('an uncaught error shows a banner with copyable details', async ({ page }) => {
+    await page.goto(BASE);
+    await expect(page.locator('.screen h1')).toHaveText('Today');
+    await expect(page.locator('#error-banner')).toHaveCount(0);
+
+    // A real uncaught error, thrown the way one would actually arrive: from a
+    // task, not from inside the evaluate call.
+    await page.evaluate(() => {
+      setTimeout(() => {
+        throw new Error('deliberate test failure');
+      }, 0);
+    });
+
+    const banner = page.locator('#error-banner');
+    await expect(banner).toBeVisible();
+    await expect(banner).toContainText('deliberate test failure');
+
+    await page.locator('#error-copy').click();
+    const report = page.locator('#error-report');
+    await expect(report).toBeVisible();
+    expect(await report.inputValue()).toContain('deliberate test failure');
+
+    // And Diagnostics agrees, because both read the same log.
+    await page.evaluate(() => {
+      window.location.hash = '#/settings/diagnostics';
+    });
+    await expect(page.locator('#diag-errors')).toContainText('deliberate test failure');
+  });
+
+  test('an unhandled rejection is caught too, and counted', async ({ page }) => {
+    await page.goto(BASE);
+    await expect(page.locator('.screen h1')).toHaveText('Today');
+    await page.evaluate(() => {
+      void Promise.reject(new Error('rejected on purpose'));
+      void Promise.reject(new Error('rejected on purpose'));
+    });
+    await expect(page.locator('#error-banner')).toContainText('2 times');
+  });
+
+  test('dismissing it leaves the app usable', async ({ page }) => {
+    await page.goto(BASE);
+    await expect(page.locator('.screen h1')).toHaveText('Today');
+    await page.evaluate(() => {
+      setTimeout(() => {
+        throw new Error('transient');
+      }, 0);
+    });
+    await expect(page.locator('#error-banner')).toBeVisible();
+    await page.locator('#error-dismiss').click();
+    await expect(page.locator('#error-banner')).toHaveCount(0);
+    await page.locator('button.tab-button[data-tab="library"]').click();
+    await expect(page.locator('.screen h1')).toHaveText('Library');
   });
 });

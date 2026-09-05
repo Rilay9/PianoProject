@@ -16,6 +16,10 @@ const nodeGlobals = {
   __dirname: 'readonly',
   __filename: 'readonly',
   module: 'readonly',
+  // Web APIs that modern Node also implements, and that the build scripts use.
+  URL: 'readonly',
+  fetch: 'readonly',
+  require: 'readonly',
 };
 
 export default tseslint.config(
