@@ -275,7 +275,67 @@ test.describe('the dev route itself', () => {
   });
 });
 
+/**
+ * Layout assertions that the screenshots below also cover, but in a form that
+ * cannot be broken by a font substitution. These run everywhere, including CI.
+ */
+test.describe('window layout holds its shape', () => {
+  for (const orientation of ['landscape', 'portrait'] as const) {
+    test(`the fitted score stays inside the viewport (${orientation})`, async ({ page }) => {
+      await page.setViewportSize(
+        orientation === 'landscape' ? { width: 915, height: 412 } : { width: 412, height: 915 },
+      );
+      const dev = await openDevScore(page);
+      await dev.load('chords-ties');
+      await dev.setBars(2);
+      await dev.showStep(0);
+      const fits = await page.evaluate(() => {
+        const host = document.querySelector('.score-view');
+        const svg = document.querySelector('.score-buffer.is-front svg');
+        if (!host || !svg) throw new Error('nothing rendered');
+        const h = host.getBoundingClientRect();
+        const s = svg.getBoundingClientRect();
+        // One pixel of slack for subpixel rounding in the scale transform.
+        return { widthOverflow: s.width - h.width, heightOverflow: s.height - h.height };
+      });
+      expect(fits.widthOverflow).toBeLessThanOrEqual(1);
+      // Window layout fits both axes; anything taller would clip the bass staff.
+      expect(fits.heightOverflow).toBeLessThanOrEqual(1);
+    });
+  }
+
+  test('bars per window changes how many measures are drawn', async ({ page }) => {
+    const dev = await openDevScore(page);
+    // A four-bar fixture, so 1/2/4 are all distinguishable.
+    await dev.load('exercise.five-finger.c-major.both');
+    const counts: number[] = [];
+    for (const bars of [1, 2, 4]) {
+      await dev.setBars(bars);
+      await dev.showStep(0);
+      counts.push(
+        await page.evaluate(
+          () => document.querySelectorAll('.score-buffer.is-front .vf-measure').length,
+        ),
+      );
+    }
+    // Strictly increasing: more bars per window means more measures drawn.
+    expect(counts[0]).toBeLessThan(counts[1] ?? 0);
+    expect(counts[1]).toBeLessThan(counts[2] ?? 0);
+  });
+});
+
+// Pixel baselines are tied to the exact font rendering of the machine that
+// generated them. They are Linux-specific (Playwright names them `-linux.png`)
+// but not *runner*-specific, and a CI image with different fonts would fail on
+// antialiasing rather than on a real regression — blocking a merge for noise.
+// So: on by default for a human reviewing a change, opt-in in CI via VISUAL=1.
+// The structural assertions above cover the same layout in CI unconditionally.
 test.describe('screenshots', () => {
+  test.skip(
+    !!process.env.CI && !process.env.VISUAL,
+    'pixel baselines are machine-specific; set VISUAL=1 to run them in CI',
+  );
+
   for (const fixture of SCREENSHOT_FIXTURES) {
     for (const bars of [1, 2, 4] as const) {
       for (const orientation of ['landscape', 'portrait'] as const) {
