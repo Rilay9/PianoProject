@@ -9,6 +9,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 import { MicScreen } from './screens/MicScreen';
 import { MidiScreen } from './screens/MidiScreen';
 import { DiagnosticsScreen } from './screens/DiagnosticsScreen';
+import { MetronomeScreen } from './screens/MetronomeScreen';
 
 const TAB_LABELS: Record<TabId, string> = {
   today: 'Today',
@@ -33,6 +34,7 @@ const SUB_SCREENS: Record<SubId, ScreenFactory> = {
   midi: MidiScreen,
   mic: MicScreen,
   diagnostics: DiagnosticsScreen,
+  metronome: MetronomeScreen,
 };
 
 function screenFor(route: Route): ScreenFactory {

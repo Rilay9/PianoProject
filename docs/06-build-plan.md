@@ -103,6 +103,14 @@ and the eleven thin units backfilled; a unit test per family; the curriculum sel
 `--render` clean, `validate.py` green with the rule on, app tests green, and an offline e2e that
 opens a score, a generated exercise and a lesson with the network off.
 
+### P5c — Standalone metronome · Sonnet · part of a session
+Deliverables: the metronome screen in `04` §2a on top of P1's `audio/Metronome` — bpm
+readout, slider, ±5, tap tempo, meter buttons with beat dots, sound picker, start/stop —
+reached from Today's Tools block. Acceptance: unit tests for the tap-tempo arithmetic, e2e
+for the screen including that starting it really runs the scheduler and that leaving stops
+it. **Done 2026-09-05**, out of order because the owner asked for it and the engine already
+existed.
+
 ### P6 — Score screen · Sonnet (Opus review) · 1–2 sessions
 Deliverables per `04` §5: full Score screen on top of P2+P3(+P3b), control bar with the input
 selector (MIDI / Mic / Screen / None) and the four follow options, amber mic feedback and level

@@ -38,6 +38,27 @@ Score screen is a full-screen route pushed on top (back gesture returns).
 - "Shuffle options" swaps every row at once, as before.
 - "Start session" runs the rows in order with a between-item summary.
 
+## 2a. Metronome (standalone)
+
+A metronome you can switch on without a score in front of you — for scales, for
+counting a piece you are reading from paper, for anything the app does not know about.
+Reached from Today's Tools block and, later, from the Score screen's control bar (§5),
+which drives the same `audio/Metronome`.
+
+- **Tempo:** a large tabular-numeral bpm readout, a 30–240 slider, ±5 buttons and **tap
+  tempo**. Tap tempo averages the last four intervals and restarts after 2.5 s of silence,
+  because two taps a minute apart are two attempts and not a 1 bpm tempo.
+- **Bar:** 2/4, 3/4, 4/4, 6/8 buttons, one dot per beat, the first accented. **The dot
+  lights when the click sounds, not when it is scheduled** — the scheduler runs up to
+  100 ms ahead (`01` §4.4), and a flash that early reads as wrong even when the audio is
+  exact.
+- **Sound:** wood, beep, high. The screen says why "high" exists: it is the 5 kHz click the
+  mic detector notches out (`05` §11.4), so it is the one to use when the microphone is
+  listening.
+- Volume follows the metronome setting in §7. Leaving the screen stops it.
+- No count-in here: a count-in belongs to a run of a piece, not to a metronome you are
+  using as a clock.
+
 ## 3. Plan (curriculum browser)
 
 - Stage list (0–9) with completion rings; expand → units → lessons.
