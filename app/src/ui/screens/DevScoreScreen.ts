@@ -65,6 +65,8 @@ const FIXTURES: { name: string; load: () => Promise<string> }[] = [
 export interface DevScoreHandle {
   fixtures: string[];
   load(name: string): Promise<void>;
+  /** Loads MusicXML text directly — the same path as the drop handler. */
+  loadMusicXml(xml: string, name?: string): Promise<void>;
   lastError(): string;
   stepCount(): number;
   /** Ground truth for the step-count invariant: a real, rendered cursor. */
@@ -78,6 +80,8 @@ export interface DevScoreHandle {
   measureCounts(): { unrolled: number; printed: number };
   /** Milliseconds for one uncached render of the current window. */
   timeWindowRender(): number;
+  /** Milliseconds to move to `index`, whose window should be pre-rendered. */
+  timeShowStep(index: number): number;
   noteElementCount(): number;
   currentStepNoteIds(): string[];
 }
@@ -223,7 +227,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
         handsFocus: hands,
       });
       stepIndex = 0;
-      renderer.showStep(0);
+      goToStep(0);
     } catch (cause) {
       lastError = cause instanceof Error ? cause.message : String(cause);
     }
@@ -231,28 +235,39 @@ export function DevScoreScreen(router: Router): HTMLElement {
     renderHud();
   }
 
-  function step(delta: number): void {
+  /**
+   * The single path to a step, used by the keyboard, the buttons and the test
+   * harness alike — so what an e2e test drives is exactly what a hand on the
+   * arrow keys drives.
+   */
+  function goToStep(index: number): void {
     if (!renderer || !model) return;
-    stepIndex = Math.min(model.steps.length - 1, Math.max(0, stepIndex + delta));
+    stepIndex = Math.min(model.steps.length - 1, Math.max(0, index));
     renderer.showStep(stepIndex);
-    // Paint the current step, so the note→element map is exercised for real.
+    // Paint the current step, which exercises the note→element map for real.
     const states = new Map<string, 'current'>();
     for (const id of renderer.noteElements(stepIndex).keys()) states.set(id, 'current');
     renderer.setNoteStates(states);
     renderHud();
   }
 
+  function step(delta: number): void {
+    goToStep(stepIndex + delta);
+  }
+
   function setBars(bars: number): void {
     barsInput.value = String(bars);
     renderer?.setBarsPerWindow(bars);
-    renderHud();
+    // Re-applies the note states: setBarsPerWindow redraws both buffers, so
+    // the previous classes are gone with the elements that carried them.
+    goToStep(stepIndex);
   }
 
   function toggleLayout(): void {
     layout = layout === 'window' ? 'scroll' : 'window';
     layoutButton.textContent = `Layout: ${layout === 'window' ? 'Window' : 'Scroll'}`;
     renderer?.setLayout(layout);
-    renderHud();
+    goToStep(stepIndex);
   }
 
   function cycleHands(): void {
@@ -329,6 +344,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
   window.__pianopathDevScore = {
     fixtures: FIXTURES.map((f) => f.name),
     load: (name) => loadFixture(name),
+    loadMusicXml: (xml, name) => loadXml(xml, name ?? 'inline'),
     lastError: () => lastError,
     stepCount: () => model?.steps.length ?? 0,
     cursorStepCount: async () => {
@@ -348,11 +364,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
         host.remove();
       }
     },
-    showStep: (index) => {
-      stepIndex = Math.max(0, Math.min((model?.steps.length ?? 1) - 1, index));
-      renderer?.showStep(stepIndex);
-      renderHud();
-    },
+    showStep: (index) => goToStep(index),
     currentStep: () => stepIndex,
     currentWindow: () => renderer?.currentWindow ?? null,
     setBars: (bars) => setBars(bars),
@@ -366,15 +378,14 @@ export function DevScoreScreen(router: Router): HTMLElement {
       unrolled: model?.measureCount ?? 0,
       printed: model?.sourceMeasureCount ?? 0,
     }),
-    timeWindowRender: () => {
-      if (!renderer || !model) return Number.NaN;
-      // Force an uncached draw of the current window and time just that.
-      const bars = renderer.bars;
-      renderer.setBarsPerWindow(bars === 8 ? 7 : bars + 1);
-      renderer.setBarsPerWindow(bars);
+    timeWindowRender: () => renderer?.redrawCurrentWindow() ?? Number.NaN,
+    timeShowStep: (index) => {
+      if (!renderer) return Number.NaN;
       const started = performance.now();
-      renderer.showStep(stepIndex);
-      return performance.now() - started;
+      renderer.showStep(index);
+      const elapsed = performance.now() - started;
+      goToStep(index);
+      return elapsed;
     },
     noteElementCount: () => renderer?.visibleNoteElements().size ?? 0,
     currentStepNoteIds: () => [...(renderer?.noteElements(stepIndex).keys() ?? [])],

@@ -290,16 +290,38 @@ export class OsmdView {
   }
 }
 
-/** `getSVGGElement` exists only on the VexFlow subclass. */
+/**
+ * The element to colour for one note.
+ *
+ * `getSVGGElement()` returns the group for the whole *voice entry*, so every
+ * note of a chord shares it — colouring one would colour all three, and P3
+ * has to show a chord where two notes were right and one was wrong. The
+ * per-notehead elements are available instead: `getNoteheadSVGs()` lists the
+ * group's noteheads and `vfnoteIndex` says which one is this note's.
+ *
+ * Falls back to the voice-entry group when there is no separate notehead
+ * (whole-measure rests, and any future VexFlow shape that does not emit one),
+ * because a slightly coarse highlight beats none.
+ *
+ * These are VexFlow-subclass members; the base `GraphicalNote` type does not
+ * declare them, hence the guarded access.
+ */
 function svgElementOf(graphicalNote: GraphicalNote): SVGGElement | null {
   const candidate = graphicalNote as GraphicalNote & {
     getSVGGElement?: () => SVGGElement | null;
+    getNoteheadSVGs?: () => Element[];
+    vfnoteIndex?: number;
   };
-  if (typeof candidate.getSVGGElement !== 'function') return null;
   try {
-    return candidate.getSVGGElement();
+    if (typeof candidate.getNoteheadSVGs === 'function') {
+      const heads = candidate.getNoteheadSVGs();
+      const head = heads[candidate.vfnoteIndex ?? 0];
+      if (head instanceof SVGGElement) return head;
+    }
+    if (typeof candidate.getSVGGElement === 'function') return candidate.getSVGGElement();
+    return null;
   } catch {
-    // OSMD throws when the note was not drawn (outside the range).
+    // OSMD throws when the note was not drawn (outside the draw range).
     return null;
   }
 }

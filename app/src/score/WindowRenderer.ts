@@ -79,6 +79,7 @@ export class WindowRenderer {
   private zoomLevel: number;
   private currentStep = -1;
   private manualScrollUntil = 0;
+  private prerenderHandle: number | null = null;
   private disposed = false;
 
   private constructor(options: WindowRendererOptions, buffers: [Buffer, Buffer]) {
@@ -215,7 +216,7 @@ export class WindowRenderer {
       }
     }
     this.positionBand(step);
-    this.prepareNextWindow();
+    this.schedulePrepareNextWindow();
   }
 
   /** ScoreNote.id → its drawn `<g>`, for the notes of one step. */
@@ -286,6 +287,25 @@ export class WindowRenderer {
     this.applyHandsClass();
   }
 
+  /**
+   * Forces a full redraw of the window on screen and returns how long it took
+   * in milliseconds.
+   *
+   * Exists for measurement: `showStep` deliberately does nothing when the
+   * wanted window is already drawn, so timing it would report zero and prove
+   * nothing. This is the cost the < 150 ms budget in docs/01 §6 is about —
+   * OSMD render, note annotation and fit, for the visible buffer.
+   */
+  redrawCurrentWindow(): number {
+    const buffer = this.frontBuffer;
+    const range = buffer.range;
+    if (!range) return Number.NaN;
+    buffer.range = null;
+    const started = performance.now();
+    this.drawInto(buffer, range);
+    return performance.now() - started;
+  }
+
   /** Re-fits the current window; call on resize or orientation change. */
   refit(): void {
     this.fit(this.frontBuffer);
@@ -293,6 +313,10 @@ export class WindowRenderer {
 
   dispose(): void {
     this.disposed = true;
+    if (this.prerenderHandle !== null) {
+      cancelAnimationFrame(this.prerenderHandle);
+      this.prerenderHandle = null;
+    }
     for (const buffer of this.buffers) {
       buffer.view.dispose();
       buffer.wrapper.remove();
@@ -330,6 +354,22 @@ export class WindowRenderer {
     buffer.range = range;
     this.annotate(buffer);
     this.fit(buffer);
+  }
+
+  /**
+   * Queues the pre-render for after the browser has painted.
+   *
+   * Doing it inline would put a full OSMD render (~10 ms) inside the very
+   * swap it is meant to make free, which defeats the point of the second
+   * buffer. One frame later the learner has already seen the new window.
+   */
+  private schedulePrepareNextWindow(): void {
+    if (this.prerenderHandle !== null) cancelAnimationFrame(this.prerenderHandle);
+    this.prerenderHandle = requestAnimationFrame(() => {
+      this.prerenderHandle = null;
+      if (this.disposed) return;
+      this.prepareNextWindow();
+    });
   }
 
   /**
