@@ -34,9 +34,15 @@ jobs:
         working-directory: app
         run: npm ci
 
+      - name: Content pipeline tests
+        run: python3 -m unittest discover -s tools/content/tests -t tools/content -v
+
       - name: Build content
-        working-directory: app
-        run: npm run content:build
+        # Not --offline: the runner can reach GitHub, and fetching the score
+        # library here is what proves the fetch step still works. A source that
+        # cannot be reached is skipped rather than failing the build, so this
+        # does not make CI depend on someone else's uptime.
+        run: python3 tools/content/build.py
 
       - name: Generate icons
         working-directory: app
@@ -65,3 +71,18 @@ jobs:
       - name: Build
         working-directory: app
         run: npm run build
+
+      - name: Render every catalog item
+        # The check that decides whether a score can be used at all: it loads
+        # each file through the app's own loader and asserts the ScoreModel has
+        # at least one step (docs/03 §3 steps 5-6).
+        run: python3 tools/content/render_check.py --apply
+
+      - name: Upload content previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-previews
+          path: build/previews
+          if-no-files-found: ignore
+          retention-days: 7

@@ -222,7 +222,6 @@ def main() -> None:
         sys.exit(0)
 
     report = import_library(args.out, args.catalog, limit=args.limit)
-    print(f"imported {len(report.imported)} score(s) from the MuseTrainer library")
     if report.normalised:
         print(f"normalised {len(report.normalised)}:")
         for name, why in report.normalised:
@@ -237,6 +236,12 @@ def main() -> None:
             print(f"  - {name}: {why}")
     if report.missing:
         print(f"missing {len(report.missing)} file(s) named in the table", file=sys.stderr)
+    # Last, so the build's one-line summary of this step is the count rather
+    # than whichever exclusion happened to print last.
+    print(
+        f"imported {len(report.imported)} score(s), excluded {len(report.excluded)}, "
+        f"normalised {len(report.normalised)}"
+    )
 
 
 if __name__ == "__main__":

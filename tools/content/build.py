@@ -1,82 +1,251 @@
 #!/usr/bin/env python3
 """
-PianoPath content build (P0 skeleton).
+Builds `app/public/content/` from `content/` and the fetched sources.
 
-Produces `app/public/content/` from `content/` so the app has something
-schema-valid to precache and load even before any real catalog/curriculum
-data exists (P4/P5). Later phases extend this with fetch/convert/author
-steps (see docs/03-content-pipeline.md); this skeleton only:
+docs/03-content-pipeline.md §3. The order matters and the failure modes differ
+at each step, so each is reported separately:
 
-  1. writes an empty-but-valid catalog.json ([])
-  2. writes an empty-but-valid curriculum.json ({version, tracks: [], stages: []})
-  3. copies the JSON schemas alongside them (handy for the app/tools to
-     reference, and for a human to eyeball what "valid" means)
-  4. runs validate.py against what it just wrote
+  1. fetch     — clone what is reachable; skipping a source is not a failure
+  2. import    — the [MT] library, per-file licence decisions
+  3. generate  — scales, arpeggios, Hanon, rhythm drills
+  4. author    — our own ABC and music21 sources
+  5. curriculum/lessons — copied through from content/
+  6. validate  — schema, cross-references, licences, durations
+  7. render    — optional; every item loaded in a real browser (slow)
+
+Steps 2–4 each write their own catalog fragment; the merge is one place, so a
+duplicate id between an authored tune and a generated exercise is caught by
+validation rather than by whichever wrote last.
 
 Usage:
-    python3 tools/content/build.py [--out DIR]
+    python3 tools/content/build.py                 # everything but the render check
+    python3 tools/content/build.py --offline       # no network
+    python3 tools/content/build.py --render        # …and render every item
+    python3 tools/content/build.py --quick         # a small generator subset
 """
 from __future__ import annotations
 
 import argparse
-import json
 import shutil
-import subprocess
 import sys
+import time
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-CONTENT_SRC = REPO_ROOT / "content"
-DEFAULT_OUT = REPO_ROOT / "app" / "public" / "content"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from common import (  # noqa: E402
+    BUILD_DIR,
+    CONTENT_SRC,
+    DEFAULT_OUT,
+    REPO_ROOT,
+    Step,
+    read_json,
+    run,
+    write_json,
+)
+
+FRAGMENTS = ("catalog.mt.json", "catalog.generated.json", "catalog.authored.json")
 
 
-def write_json(path: Path, data: object) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-        f.write("\n")
+def python(script: str, *args: str) -> tuple[int, str]:
+    result = run([sys.executable, str(Path(__file__).resolve().parent / script), *args], timeout=3600)
+    output = (result.stdout or "") + (result.stderr or "")
+    return result.returncode, output.strip()
 
 
-def build(out_dir: Path) -> None:
-    out_dir.mkdir(parents=True, exist_ok=True)
+def step_fetch(offline: bool) -> Step:
+    args = ["--offline"] if offline else []
+    code, output = python("fetch.py", *args)
+    detail = output.splitlines()[-1] if output else ""
+    # A source we cannot reach is a smaller build, not a broken one.
+    return Step("fetch", ok=True, detail=detail, skipped=False, warnings=[] if code == 0 else [output])
 
-    catalog: list = []
-    curriculum = {"version": 1, "tracks": [], "stages": []}
 
-    write_json(out_dir / "catalog.json", catalog)
-    write_json(out_dir / "curriculum.json", curriculum)
+def step_import(out_dir: Path) -> Step:
+    code, output = python(
+        "import_musetrainer.py", "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.mt.json")
+    )
+    return Step("import [MT]", ok=code == 0, detail=summary_line(output))
 
-    for schema_name in ("catalog.schema.json", "curriculum.schema.json"):
-        src = CONTENT_SRC / schema_name
-        if src.exists():
-            shutil.copy2(src, out_dir / schema_name)
-        else:
-            print(f"warning: {src} not found, skipping copy", file=sys.stderr)
 
-    print(f"wrote {out_dir / 'catalog.json'} ({len(catalog)} items)")
-    print(f"wrote {out_dir / 'curriculum.json'} (0 stages)")
+def step_generate(out_dir: Path, quick: bool) -> Step:
+    args = [
+        "--out", str(out_dir / "scores" / "generated"),
+        "--catalog", str(BUILD_DIR / "catalog.generated.json"),
+    ]
+    if quick:
+        args.append("--quick")
+    code, output = python("generate_exercises.py", *args)
+    return Step("generate [GEN]", ok=code == 0, detail=summary_line(output))
+
+
+def step_author(out_dir: Path) -> Step:
+    code, output = python(
+        "author.py", "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.authored.json")
+    )
+    return Step("author [AUTH]", ok=code == 0, detail=summary_line(output))
+
+
+def summary_line(text: str) -> str:
+    """Each step prints its summary last, so that is the line to show."""
+    lines = [line for line in text.splitlines() if line.strip()]
+    return lines[-1] if lines else ""
+
+
+def merge_catalog(out_dir: Path) -> Step:
+    entries: list[dict] = []
+    for name in FRAGMENTS:
+        path = BUILD_DIR / name
+        if not path.exists():
+            continue
+        fragment = read_json(path)
+        assert isinstance(fragment, list)
+        entries.extend(fragment)
+    entries.sort(key=lambda item: item["id"])
+    write_json(out_dir / "catalog.json", entries)
+    return Step("merge catalog", ok=True, detail=f"{len(entries)} items")
+
+
+def copy_curriculum(out_dir: Path) -> Step:
+    """
+    Merges `content/curriculum/*.json` into one file.
+
+    P5 writes those files; until then this produces the empty-but-valid
+    curriculum the app already knows how to load, so the build is green before
+    the content exists rather than after.
+    """
+    source_dir = CONTENT_SRC / "curriculum"
+    tracks: list[dict] = []
+    stages: list[dict] = []
+    files = sorted(source_dir.glob("*.json")) if source_dir.exists() else []
+    for path in files:
+        data = read_json(path)
+        assert isinstance(data, dict)
+        tracks.extend(data.get("tracks", []))
+        stages.extend(data.get("stages", []))
+    seen: set[str] = set()
+    unique_tracks = [t for t in tracks if not (t["id"] in seen or seen.add(t["id"]))]
+    stages.sort(key=lambda stage: stage["number"])
+    write_json(out_dir / "curriculum.json", {"version": 1, "tracks": unique_tracks, "stages": stages})
+    return Step("curriculum", ok=True, detail=f"{len(files)} file(s), {len(stages)} stage(s)")
+
+
+def copy_lessons(out_dir: Path) -> Step:
+    source_dir = CONTENT_SRC / "lessons"
+    target = out_dir / "lessons"
+    if target.exists():
+        shutil.rmtree(target)
+    if not source_dir.exists():
+        return Step("lessons", ok=True, detail="none yet", skipped=True)
+    shutil.copytree(source_dir, target)
+    return Step("lessons", ok=True, detail=f"{len(list(target.rglob('*.md')))} file(s)")
+
+
+def copy_schemas(out_dir: Path) -> None:
+    for name in ("catalog.schema.json", "curriculum.schema.json"):
+        source = CONTENT_SRC / name
+        if source.exists():
+            shutil.copy2(source, out_dir / name)
+
+
+def step_validate(out_dir: Path, strict_license: bool) -> Step:
+    args = ["--dir", str(out_dir)]
+    if strict_license:
+        args.append("--strict-license")
+    code, output = python("validate.py", *args)
+    return Step("validate", ok=code == 0, detail=output if code else summary_line(output))
+
+
+def step_render(out_dir: Path, limit: int) -> Step:
+    args = ["--content", str(out_dir), "--apply"]
+    if limit:
+        args += ["--limit", str(limit)]
+    code, output = python("render_check.py", *args)
+    return Step("render check", ok=code == 0, detail=summary_line(output), warnings=[] if code == 0 else [output])
+
+
+def clean_scores(out_dir: Path) -> None:
+    """
+    Removes previously built scores.
+
+    Without this a renamed or excluded item stays in the output directory for
+    ever and gets precached into the app, which is how a piece we decided not
+    to ship would ship anyway.
+    """
+    scores = out_dir / "scores"
+    if scores.exists():
+        shutil.rmtree(scores)
+
+
+def already_built(out_dir: Path) -> bool:
+    catalog = out_dir / "catalog.json"
+    if not catalog.exists():
+        return False
+    try:
+        items = read_json(catalog)
+    except Exception:  # noqa: BLE001 - a corrupt catalog is not "already built"
+        return False
+    return isinstance(items, list) and len(items) > 0
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--offline", action="store_true", help="never touch the network")
+    parser.add_argument("--quick", action="store_true", help="a small generator subset")
+    parser.add_argument("--render", action="store_true", help="render every item in Chromium")
+    parser.add_argument("--render-limit", type=int, default=0)
+    parser.add_argument("--skip-fetch", action="store_true")
     parser.add_argument(
-        "--skip-validate",
+        "--if-missing",
         action="store_true",
-        help="skip running validate.py after building (useful in constrained sandboxes)",
+        help="do nothing when a catalog with items is already built",
+    )
+    parser.add_argument(
+        "--strict-license",
+        action="store_true",
+        help="fail on any licence that is not redistributable",
     )
     args = parser.parse_args()
 
-    build(args.out)
+    if args.if_missing and already_built(args.out):
+        # `npm run build` runs this through prebuild, and rebuilding 300
+        # scores before every Playwright run costs more than it is worth.
+        print(f"content already built in {args.out.relative_to(REPO_ROOT)}; nothing to do")
+        return
 
-    if not args.skip_validate:
-        validate_script = Path(__file__).resolve().parent / "validate.py"
-        result = subprocess.run(
-            [sys.executable, str(validate_script), "--dir", str(args.out)],
-            check=False,
-        )
-        if result.returncode != 0:
-            sys.exit(result.returncode)
+    started = time.time()
+    args.out.mkdir(parents=True, exist_ok=True)
+    BUILD_DIR.mkdir(parents=True, exist_ok=True)
+    clean_scores(args.out)
+
+    steps: list[Step] = []
+    if not args.skip_fetch:
+        steps.append(step_fetch(args.offline))
+    steps.append(step_import(args.out))
+    steps.append(step_generate(args.out, args.quick))
+    steps.append(step_author(args.out))
+    steps.append(merge_catalog(args.out))
+    steps.append(copy_curriculum(args.out))
+    steps.append(copy_lessons(args.out))
+    copy_schemas(args.out)
+    steps.append(step_validate(args.out, args.strict_license))
+    if args.render:
+        steps.append(step_render(args.out, args.render_limit))
+        # The render check writes measured durations back, so validate again.
+        steps.append(step_validate(args.out, args.strict_license))
+
+    print("\n--- content build ---")
+    for step in steps:
+        mark = "skip" if step.skipped else ("ok  " if step.ok else "FAIL")
+        print(f"  {mark}  {step.name:16} {step.detail}")
+        for warning in step.warnings:
+            for line in warning.splitlines():
+                print(f"          {line}")
+    print(f"  {time.time() - started:.1f}s → {args.out.relative_to(REPO_ROOT)}")
+
+    if any(not step.ok for step in steps):
+        sys.exit(1)
 
 
 if __name__ == "__main__":

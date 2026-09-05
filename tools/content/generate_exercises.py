@@ -104,6 +104,17 @@ def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
+def key_slug(name: str) -> str:
+    """
+    A key name as an id fragment, keeping the accidental.
+
+    `slug("E-")` is "e", which is also `slug("E")` — so every flat key
+    collided with its natural and half the generated catalog shared ids with
+    the other half. Validation caught it; this stops it happening again.
+    """
+    return slug(name.replace("-", "-flat").replace("#", "-sharp"))
+
+
 def grand_staff(title: str, bpm: int, ts: str = "4/4", ks: key.Key | None = None) -> tuple[stream.Score, stream.PartStaff, stream.PartStaff]:
     sc = stream.Score()
     sc.metadata = metadata.Metadata()
@@ -264,7 +275,7 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
         lh.append(note.Rest(quarterLength=spec.rhythm * len(lh_p)))
     finalize(sc)
 
-    item_id = f"exercise.scale.{slug(spec.tonic)}-{slug(mode_label)}.{spec.octaves}oct.{spec.motion}.{spec.hands}.{int(spec.rhythm*4)}"
+    item_id = f"exercise.scale.{key_slug(spec.tonic)}-{slug(mode_label)}.{spec.octaves}oct.{spec.motion}.{spec.hands}.{int(spec.rhythm*4)}"
     entry = catalog_entry(item_id, title, spec.level,
                           ["scale", f"{spec.tonic}-{mode_label}", spec.motion, f"hands:{spec.hands}"],
                           spec.hands, spec.bpm, "scale",
@@ -301,7 +312,7 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
     else:
         lh.append(note.Rest(quarterLength=0.5 * len(lh_p)))
     finalize(sc)
-    item_id = f"exercise.arpeggio.{slug(root)}-{quality}.{octaves}oct.{hands}"
+    item_id = f"exercise.arpeggio.{key_slug(root)}-{quality}.{octaves}oct.{hands}"
     entry = catalog_entry(item_id, title, level, ["arpeggio", f"{root}-{quality}", f"hands:{hands}"], hands, bpm,
                           "arpeggio", {"key": root, "quality": quality, "octaves": octaves}, f"scores/generated/{item_id}.mxl")
     return sc, entry
@@ -323,7 +334,7 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
             c = chord.Chord([pitch.Pitch(root + str(oct_)).transpose(i) for i in shp], quarterLength=1.0)
             part_.append(c)
     finalize(sc)
-    item_id = f"exercise.inversions.{slug(root)}-{quality}.{hands}"
+    item_id = f"exercise.inversions.{key_slug(root)}-{quality}.{hands}"
     entry = catalog_entry(item_id, title, level, ["triad", "inversions", f"{root}-{quality}"], hands, bpm, "inversion",
                           {"key": root, "quality": quality}, f"scores/generated/{item_id}.mxl")
     return sc, entry
@@ -344,7 +355,7 @@ def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm
         add_notes(part_, [pitch.Pitch(root + str(oct_)).transpose(s) for s in seq], fing, 1.0)
         part_.append(note.Rest(quarterLength=3.0))
     finalize(sc)
-    item_id = f"exercise.five-finger.{slug(root)}-{quality}.{hands}"
+    item_id = f"exercise.five-finger.{key_slug(root)}-{quality}.{hands}"
     entry = catalog_entry(item_id, title, level, ["five-finger", f"{root}-{quality}", f"hands:{hands}"], hands, bpm,
                           "five-finger", {"key": root, "quality": quality}, f"scores/generated/{item_id}.mxl")
     return sc, entry
@@ -480,7 +491,7 @@ def make_chromatic(
         pitches = run(base)
         add_notes(part_, pitches, fingers_for(pitches), 0.5)
     finalize(sc)
-    item_id = f"exercise.chromatic.{slug(start)}.{octaves}oct.{hands}"
+    item_id = f"exercise.chromatic.{key_slug(start)}.{octaves}oct.{hands}"
     entry = catalog_entry(
         item_id, title, level, ["chromatic", "semitones", f"hands:{hands}"], hands, bpm, "scale",
         {"key": start, "mode": "chromatic", "octaves": octaves}, f"scores/generated/{item_id}.mxl",
@@ -496,11 +507,16 @@ SEVENTH_SHAPES = {
 
 
 def make_seventh_arpeggio(
-    root: str, quality: str = "dominant7", hands: str = "both", octaves: int = 1,
+    root: str, quality: str = "dominant7", hands: str = "both", octaves: int = 2,
     bpm: int = 60, level: float = 5.2,
 ) -> tuple[stream.Score, dict]:
     """
-    A four-note seventh arpeggio, up and back.
+    A four-note seventh arpeggio, up and back, over two octaves.
+
+    Two octaves rather than one because one lasts four and a half seconds,
+    which is under the five-second floor docs/03 §3 sets for an item and, more
+    to the point, is not long enough to practise anything: the stretch across
+    the keyboard is the whole exercise.
 
     Fingered 1-2-3-5 in the right hand and 5-3-2-1 in the left, which is the
     standard shape for a four-note arpeggio and the reason these are taught
@@ -529,7 +545,7 @@ def make_seventh_arpeggio(
             continue
         add_notes(part_, pitches, fingers, 0.5)
     finalize(sc)
-    item_id = f"exercise.arpeggio7.{slug(root)}-{quality}.{octaves}oct.{hands}"
+    item_id = f"exercise.arpeggio7.{key_slug(root)}-{quality}.{octaves}oct.{hands}"
     entry = catalog_entry(
         item_id, title, level, ["arpeggio", "seventh-chord", f"{root}-{label}", f"hands:{hands}"],
         hands, bpm, "arpeggio", {"key": root, "quality": quality, "octaves": octaves},
@@ -547,7 +563,8 @@ RHYTHM_PATTERNS: list[tuple[str, list[float], float]] = [
     ("dotted-quarter-eighth", [1.5, 0.5, 1, 1], 2.2),
     ("syncopated", [0.5, 1, 1, 1, 0.5], 3.2),
     ("sixteenths", [0.25] * 8 + [1, 1], 3.3),
-    ("triplet-quarters", [2 / 3] * 3 + [1, 1, 1], 4.2),
+    # Three notes in the time of two beats, then two plain beats.
+    ("triplet-quarters", [2 / 3] * 3 + [1, 1], 4.2),
 ]
 
 
@@ -612,13 +629,13 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
         items.append(make_scale(ScaleSpec(k, "major", "both", 1, "contrary", 0.5, 60, 4.1)))
         items.append(make_arpeggio(k, "major", "both", 2))
         items.append(make_triad_inversions(k, "major", "both"))
-        items.append(make_seventh_arpeggio(k, "dominant7", "both", 1))
+        items.append(make_seventh_arpeggio(k, "dominant7", "both", 2))
     for k in minors:
         for mode in ("harmonic", "melodic", "natural"):
             items.append(make_scale(ScaleSpec(k, mode, "both", 1, "similar", 0.5, 60, 4.2)))
         items.append(make_arpeggio(k, "minor", "both", 2))
         items.append(make_triad_inversions(k, "minor", "both"))
-        items.append(make_seventh_arpeggio(k, "diminished7", "both", 1))
+        items.append(make_seventh_arpeggio(k, "diminished7", "both", 2))
 
     # Five-finger patterns in all twelve keys, major and minor: these are the
     # first thing a beginner plays and the last thing to be dropped.

@@ -134,3 +134,16 @@ class TestMusicXml(ConvertCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTempoMarks(ConvertCase):
+    def test_only_one_tempo_mark_survives(self) -> None:
+        # music21's ABC reader puts a metronome mark in every voice and OSMD
+        # draws all of them, so an authored tune showed its tempo twice.
+        _, written = self.convert("two-voices.abc")
+        self.assertEqual(written.xml.count("<metronome"), 1)
+        self.assertEqual(len(written.tempos), 1)
+
+    def test_a_kern_source_keeps_its_single_mark(self) -> None:
+        _, written = self.convert("two-spines.krn")
+        self.assertEqual(written.xml.count("<metronome"), 1)

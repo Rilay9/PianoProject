@@ -264,6 +264,13 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         added_tempo = True
     elif existing_tempo:
         effective = float(existing_tempo[0].getQuarterBPM() or DEFAULT_TEMPO_BPM)
+        # One mark, on the top staff. music21's ABC reader puts a tempo in
+        # every voice, and OSMD dutifully draws all of them: an authored tune
+        # came out with "♩=84" twice, once over the staff and once beside the
+        # first note.
+        for mark in existing_tempo[1:]:
+            if mark.activeSite is not None:
+                mark.activeSite.remove(mark)
     else:
         insert_tempo(staves[0], float(DEFAULT_TEMPO_BPM))
         effective = float(DEFAULT_TEMPO_BPM)

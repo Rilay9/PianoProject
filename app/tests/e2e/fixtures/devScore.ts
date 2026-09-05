@@ -20,6 +20,17 @@ interface DevScoreHandle {
   fixtures: string[];
   load(name: string): Promise<void>;
   loadMusicXml(xml: string, name?: string): Promise<void>;
+  loadUrl(url: string): Promise<void>;
+  modelSummary(): {
+    title: string;
+    steps: number;
+    measures: number;
+    durationSec: number;
+    tempoBpm: number | null;
+    timeSig: string | null;
+    keySig: string | null;
+    hands: string;
+  } | null;
   lastError(): string;
   stepCount(): number;
   cursorStepCount(): Promise<number>;

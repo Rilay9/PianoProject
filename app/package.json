@@ -12,7 +12,8 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "content:build": "python3 ../tools/content/build.py",
-    "prebuild": "npm run content:build && node scripts/generate-icons.mjs",
+    "content:ensure": "python3 ../tools/content/build.py --if-missing",
+    "prebuild": "npm run content:ensure && node scripts/generate-icons.mjs",
     "predev": "node scripts/generate-icons.mjs"
   },
   "dependencies": {

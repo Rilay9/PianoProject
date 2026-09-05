@@ -77,6 +77,8 @@ export interface DevScoreHandle {
   load(name: string): Promise<void>;
   /** Loads MusicXML text directly — the same path as the drop handler. */
   loadMusicXml(xml: string, name?: string): Promise<void>;
+  /** Loads a `.mxl`/`.musicxml` by URL; used by the content render check. */
+  loadUrl(url: string): Promise<void>;
   lastError(): string;
   stepCount(): number;
   /** Ground truth for the step-count invariant: a real, rendered cursor. */
@@ -88,6 +90,17 @@ export interface DevScoreHandle {
   setLayout(layout: ScoreLayout): void;
   setHands(hands: HandsFocus): void;
   measureCounts(): { unrolled: number; printed: number };
+  /** Everything the content pipeline records about a rendered item. */
+  modelSummary(): {
+    title: string;
+    steps: number;
+    measures: number;
+    durationSec: number;
+    tempoBpm: number | null;
+    timeSig: string | null;
+    keySig: string | null;
+    hands: 'both' | 'right' | 'left';
+  } | null;
   /** Milliseconds for one uncached render of the current window. */
   timeWindowRender(): number;
   /** Milliseconds to move to `index`, whose window should be pre-rendered. */
@@ -244,6 +257,28 @@ export function DevScoreScreen(router: Router): HTMLElement {
   async function loadFile(chosen: File): Promise<void> {
     const buffer = await chosen.arrayBuffer();
     await loadXml(toMusicXml(new Uint8Array(buffer)), chosen.name);
+  }
+
+  /**
+   * Loads a score by URL — `.mxl` or `.musicxml`, from the built content
+   * directory or anywhere else the page can fetch.
+   *
+   * This is the path `tools/content/render_check.py` drives: checking that an
+   * item renders means checking that *this* code renders it, so the check has
+   * to go through the same loader the app uses rather than a parallel one.
+   */
+  async function loadUrl(url: string): Promise<void> {
+    lastError = '';
+    const response = await fetch(url);
+    if (!response.ok) {
+      lastError = `${response.status} ${response.statusText} for ${url}`;
+      renderHud();
+      throw new Error(lastError);
+    }
+    const name = url.split('/').pop() ?? url;
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    // `.mxl` is a zip; `toMusicXml` unwraps it and passes plain XML through.
+    await loadXml(toMusicXml(bytes), name);
   }
 
   async function loadFixture(name: string): Promise<void> {
@@ -663,6 +698,32 @@ export function DevScoreScreen(router: Router): HTMLElement {
         tMs: n.tMs,
       })),
     micExpectations: () => micExpected,
+
+    loadUrl: (url) => loadUrl(url),
+    modelSummary: () => {
+      if (!model) return null;
+      const last = model.steps[model.steps.length - 1];
+      // The end of the piece is the end of its last note, not its onset.
+      const endBeat = last
+        ? last.onset + Math.max(...last.notes.map((n) => n.duration), 0)
+        : 0;
+      const timeSig = model.timeSigMap[0];
+      const hands = model.handsPresent.R
+        ? model.handsPresent.L
+          ? 'both'
+          : 'right'
+        : 'left';
+      return {
+        title: model.title,
+        steps: model.steps.length,
+        measures: model.measureCount,
+        durationSec: Math.round(model.beatToMs(endBeat) / 100) / 10,
+        tempoBpm: model.tempoMap[0]?.bpm ?? null,
+        timeSig: timeSig ? `${timeSig.beats}/${timeSig.beatType}` : null,
+        keySig: model.keySig ?? null,
+        hands,
+      };
+    },
 
     loadSightReading: async (level, seed, bars) => {
       const generated = generateSightReading({ level, seed, bars: bars ?? 4 });
