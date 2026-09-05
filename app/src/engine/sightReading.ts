@@ -379,7 +379,9 @@ function withStaff(notes: WriterNote[], staff: 1 | 2): WriterNote[] {
   return notes.map((n) => ({ ...n, staff }));
 }
 
+/** Drops the staff number: a one-staff part must not carry `<staff>`. */
 function stripStaff(note: WriterNote): WriterNote {
-  const { staff: _staff, ...rest } = note;
+  const rest = { ...note };
+  delete rest.staff;
   return rest;
 }
