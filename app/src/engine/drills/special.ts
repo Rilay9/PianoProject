@@ -1,0 +1,374 @@
+// The three drills that do not judge pitch.
+//
+// docs/05 §7: `rhythm` judges onsets, `pedal` judges CC64 transitions,
+// `dynamics` judges velocity, and `backing-track` judges nothing at all — it
+// records. Each keeps the same next/feed/result shape as the others so the
+// P8 UI has one contract to build against.
+
+import { makeRng } from '../sightReading';
+import { systemClock, type Clock, type EngineInput } from '../types';
+import type { Drill, DrillAnswer, DrillPrompt, DrillResult } from './types';
+
+// --- rhythm ----------------------------------------------------------------
+
+export interface RhythmDrillOptions {
+  /** Onsets in milliseconds from the start, e.g. [0, 500, 1000, 1500]. */
+  pattern?: number[];
+  bpm?: number;
+  toleranceMs?: number;
+  seed?: number;
+  clock?: Clock;
+}
+
+/**
+ * Shows a rhythm on one line; the learner taps any key.
+ *
+ * Judged like Tempo mode but on onsets only — pitch is ignored entirely, which
+ * is the point: a rhythm you can only play on the right note is not a rhythm
+ * you know.
+ */
+export class RhythmDrill implements Drill {
+  readonly kind = 'rhythm' as const;
+  private readonly pattern: number[];
+  private readonly toleranceMs: number;
+  private readonly clock: Clock;
+  private startedAtMs: number | null = null;
+  private readonly matched = new Set<number>();
+  private readonly deltas: number[] = [];
+  private extras = 0;
+  private prompt: DrillPrompt | null = null;
+
+  constructor(options: RhythmDrillOptions = {}) {
+    const bpm = options.bpm ?? 80;
+    const beatMs = 60_000 / bpm;
+    const rng = makeRng(options.seed ?? 11);
+    this.pattern =
+      options.pattern ??
+      // Four beats, some of them split into eighths: enough to be a rhythm
+      // rather than a metronome.
+      [0, 1, 2, 3].flatMap((beat) => (rng() < 0.4 ? [beat, beat + 0.5] : [beat])).map((b) => b * beatMs);
+    this.toleranceMs = options.toleranceMs ?? 150;
+    this.clock = options.clock ?? systemClock;
+  }
+
+  get current(): DrillPrompt | null {
+    return this.prompt;
+  }
+
+  next(): DrillPrompt | null {
+    if (this.prompt) return null;
+    this.prompt = {
+      index: 0,
+      label: `${this.pattern.length} taps`,
+      expected: [],
+      playback: this.pattern.map((atMs) => ({ midi: [], atMs })),
+    };
+    this.startedAtMs = this.clock.now();
+    return this.prompt;
+  }
+
+  feed(input: EngineInput): void {
+    if (input.kind !== 'noteOn' || this.startedAtMs === null) return;
+    const at = input.tMs - this.startedAtMs;
+    let best = -1;
+    let bestDistance = Infinity;
+    this.pattern.forEach((onset, i) => {
+      if (this.matched.has(i)) return;
+      const distance = Math.abs(at - onset);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = i;
+      }
+    });
+    if (best < 0 || bestDistance > this.toleranceMs) {
+      this.extras += 1;
+      return;
+    }
+    this.matched.add(best);
+    this.deltas.push(at - (this.pattern[best] ?? at));
+  }
+
+  result(): DrillResult {
+    const correct = this.matched.size;
+    const answers: DrillAnswer[] = this.pattern.map((_, i) => ({
+      promptIndex: i,
+      correct: this.matched.has(i),
+      reactionMs: null,
+      played: [],
+    }));
+    const mean =
+      this.deltas.length > 0 ? this.deltas.reduce((a, b) => a + b, 0) / this.deltas.length : 0;
+    return {
+      kind: this.kind,
+      total: this.pattern.length,
+      answered: correct + this.extras,
+      correct,
+      accuracy: this.pattern.length > 0 ? correct / this.pattern.length : 0,
+      meanReactionMs: mean,
+      answers,
+      detail: { extraTaps: this.extras, meanOffsetMs: mean },
+    };
+  }
+}
+
+// --- pedal -----------------------------------------------------------------
+
+export interface PedalDrillOptions {
+  /** Chords to play, in order; each is a pitch set. */
+  chords?: number[][];
+  /** A clean lift happens in this window after the chord (docs/05 §7). */
+  liftWindowMs?: [number, number];
+  /** …and the pedal must be back down within this. */
+  downWithinMs?: number;
+}
+
+interface PedalChange {
+  chordIndex: number;
+  liftedAfterMs: number | null;
+  downAfterMs: number | null;
+  clean: boolean;
+}
+
+/**
+ * Scores legato pedalling.
+ *
+ * A "clean change" is the pedal coming up between 0 and 120 ms *after* the new
+ * chord's first Note-On and going back down within 250 ms — lift too early and
+ * the previous chord is chopped, too late and the two chords blur.
+ */
+export class PedalDrill implements Drill {
+  readonly kind = 'pedal' as const;
+  private readonly chords: number[][];
+  private readonly liftWindow: [number, number];
+  private readonly downWithin: number;
+
+  private index = -1;
+  private chordAtMs: number | null = null;
+  private liftedAtMs: number | null = null;
+  private downAtMs: number | null = null;
+  private sustainDown = false;
+  private readonly changes: PedalChange[] = [];
+
+  constructor(options: PedalDrillOptions = {}) {
+    this.chords = options.chords ?? [
+      [60, 64, 67],
+      [59, 62, 67],
+      [60, 65, 69],
+      [59, 62, 67],
+    ];
+    this.liftWindow = options.liftWindowMs ?? [0, 120];
+    this.downWithin = options.downWithinMs ?? 250;
+    // No clock: every interval here is a difference between two input
+    // timestamps, so the drill is immune to when it happens to be ticked.
+  }
+
+  get current(): DrillPrompt | null {
+    const chord = this.chords[this.index];
+    if (!chord) return null;
+    return { index: this.index, label: `Chord ${this.index + 1}`, expected: chord };
+  }
+
+  next(): DrillPrompt | null {
+    if (this.index >= 0) this.settle();
+    this.index += 1;
+    this.chordAtMs = null;
+    this.liftedAtMs = null;
+    this.downAtMs = null;
+    return this.current;
+  }
+
+  feed(input: EngineInput): void {
+    if (this.index < 0 || this.index >= this.chords.length) return;
+    if (input.kind === 'cc') {
+      if (input.cc !== 64) return;
+      const down = input.value >= 64;
+      // Only the first lift after the chord counts; a second bounce is not a
+      // second change.
+      if (this.sustainDown && !down && this.chordAtMs !== null && this.liftedAtMs === null) {
+        this.liftedAtMs = input.tMs;
+      } else if (!this.sustainDown && down && this.liftedAtMs !== null && this.downAtMs === null) {
+        this.downAtMs = input.tMs;
+      }
+      this.sustainDown = down;
+      return;
+    }
+    if (input.kind !== 'noteOn') return;
+    // The first Note-On of the chord is the reference for the whole change.
+    if (this.chordAtMs === null) this.chordAtMs = input.tMs;
+  }
+
+  /** The first chord is pedalled into; there is no change to score before it. */
+  private settle(): void {
+    const chordAt = this.chordAtMs;
+    if (chordAt === null) {
+      this.changes.push({ chordIndex: this.index, liftedAfterMs: null, downAfterMs: null, clean: false });
+      return;
+    }
+    const liftedAfterMs = this.liftedAtMs === null ? null : this.liftedAtMs - chordAt;
+    const downAfterMs = this.downAtMs === null ? null : this.downAtMs - chordAt;
+    const clean =
+      this.index > 0 &&
+      liftedAfterMs !== null &&
+      liftedAfterMs >= this.liftWindow[0] &&
+      liftedAfterMs <= this.liftWindow[1] &&
+      downAfterMs !== null &&
+      downAfterMs <= this.downWithin;
+    this.changes.push({ chordIndex: this.index, liftedAfterMs, downAfterMs, clean });
+  }
+
+  result(): DrillResult {
+    // Only changes *between* chords can be clean, so the first chord is not
+    // part of the denominator.
+    const scored = this.changes.filter((c) => c.chordIndex > 0);
+    const clean = scored.filter((c) => c.clean).length;
+    return {
+      kind: this.kind,
+      total: Math.max(0, this.chords.length - 1),
+      answered: scored.length,
+      correct: clean,
+      accuracy: scored.length > 0 ? clean / scored.length : 0,
+      meanReactionMs: 0,
+      answers: scored.map((c) => ({
+        promptIndex: c.chordIndex,
+        correct: c.clean,
+        reactionMs: c.liftedAfterMs,
+        played: [],
+      })),
+      detail: { cleanChanges: clean, scoredChanges: scored.length },
+    };
+  }
+}
+
+// --- dynamics --------------------------------------------------------------
+
+export interface DynamicsDrillOptions {
+  /** Phrase pitches to play at each dynamic. */
+  phrase?: number[];
+  /** Loud must be at least this many times louder than soft (docs/05 §7). */
+  targetRatio?: number;
+}
+
+/**
+ * Asks for a phrase piano, then the same phrase forte, and compares the mean
+ * velocities. A ratio of 1.6 or more passes.
+ */
+export class DynamicsDrill implements Drill {
+  readonly kind = 'dynamics' as const;
+  private readonly phrase: number[];
+  private readonly targetRatio: number;
+  private index = -1;
+  private readonly velocities: number[][] = [[], []];
+
+  constructor(options: DynamicsDrillOptions = {}) {
+    this.phrase = options.phrase ?? [60, 62, 64, 65];
+    this.targetRatio = options.targetRatio ?? 1.6;
+  }
+
+  get current(): DrillPrompt | null {
+    if (this.index < 0 || this.index > 1) return null;
+    return {
+      index: this.index,
+      label: this.index === 0 ? 'piano (soft)' : 'forte (loud)',
+      expected: this.phrase,
+      ordered: true,
+    };
+  }
+
+  next(): DrillPrompt | null {
+    this.index += 1;
+    return this.current;
+  }
+
+  feed(input: EngineInput): void {
+    if (input.kind !== 'noteOn') return;
+    this.velocities[this.index]?.push(input.velocity);
+  }
+
+  result(): DrillResult {
+    const mean = (values: number[]) =>
+      values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+    const soft = mean(this.velocities[0] ?? []);
+    const loud = mean(this.velocities[1] ?? []);
+    const ratio = soft > 0 ? loud / soft : 0;
+    const passed = ratio >= this.targetRatio;
+    return {
+      kind: this.kind,
+      total: 2,
+      answered: this.velocities.filter((v) => v.length > 0).length,
+      correct: passed ? 1 : 0,
+      accuracy: passed ? 1 : 0,
+      meanReactionMs: 0,
+      answers: [],
+      detail: { softVelocity: soft, loudVelocity: loud, ratio, targetRatio: this.targetRatio },
+    };
+  }
+}
+
+// --- backing track ---------------------------------------------------------
+
+export interface BackingTrackOptions {
+  /** Chord loop the accompaniment plays; the UI turns this into audio. */
+  loop?: number[][];
+  barMs?: number;
+}
+
+/**
+ * Free playing over a loop. Nothing is judged (docs/05 §7) — it records what
+ * was played so the improvisation track has something to show later.
+ */
+export class BackingTrackDrill implements Drill {
+  readonly kind = 'backing-track' as const;
+  private readonly loop: number[][];
+  private readonly barMs: number;
+  private started = false;
+  private readonly played: { midi: number; velocity: number; tMs: number }[] = [];
+
+  constructor(options: BackingTrackOptions = {}) {
+    this.loop = options.loop ?? [
+      [48, 52, 55],
+      [53, 57, 60],
+      [55, 59, 62],
+      [48, 52, 55],
+    ];
+    this.barMs = options.barMs ?? 2000;
+  }
+
+  get current(): DrillPrompt | null {
+    if (!this.started) return null;
+    return {
+      index: 0,
+      label: 'Play over the loop',
+      expected: [],
+      playback: this.loop.map((midi, i) => ({ midi, atMs: i * this.barMs })),
+    };
+  }
+
+  next(): DrillPrompt | null {
+    if (this.started) return null;
+    this.started = true;
+    return this.current;
+  }
+
+  feed(input: EngineInput): void {
+    if (input.kind !== 'noteOn' || !this.started) return;
+    this.played.push({ midi: input.midi, velocity: input.velocity, tMs: input.tMs });
+  }
+
+  result(): DrillResult {
+    return {
+      kind: this.kind,
+      total: 0,
+      answered: this.played.length,
+      correct: 0,
+      accuracy: 0,
+      meanReactionMs: 0,
+      answers: [],
+      detail: { notesPlayed: this.played.length },
+    };
+  }
+
+  /** What the learner improvised, for the sessions row. */
+  get recording(): readonly { midi: number; velocity: number; tMs: number }[] {
+    return this.played;
+  }
+}
