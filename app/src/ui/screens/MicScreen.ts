@@ -12,7 +12,8 @@
 import { createSubScreen, addSection, addParagraph, addButton } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
 import { audioEngine, micSource } from '../../app/services';
-import { Metronome, MIC_CLICK_HZ } from '../../audio/Metronome';
+import { Metronome } from '../../audio/Metronome';
+import { metronomeSoundFor } from '../../audio/inputPolicy';
 import {
   analyseCalibration,
   CALIBRATION_STAGES,
@@ -346,7 +347,9 @@ export function MicScreen(router: Router): HTMLElement {
       bpm: SCALE_BPM,
       beatsPerBar: 4,
       countInBars: 0,
-      sound: 'high',
+      // The one decision that must not be made ad hoc: with the microphone
+      // listening, the click has to be the one the detector notches out.
+      sound: metronomeSoundFor({ micActive: true, destination: 'phone' }, 'wood'),
       volume: getMidiSettings().metronomeVolume,
       ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
     });
@@ -410,9 +413,6 @@ export function MicScreen(router: Router): HTMLElement {
         : '');
     renderStored();
   }
-
-  // The click frequency is fixed, so the detector can always notch it.
-  void MIC_CLICK_HZ;
 
   renderConnection();
   renderLevel();
