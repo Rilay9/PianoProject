@@ -117,6 +117,7 @@ describe('importAll', () => {
       levelSource: 'judged',
       lessonIds: ['2.1', '3.4'],
       concepts: ['hands-together', 'held-LH'],
+      origin: { folder: 'pianopath-library', file: 'ab/Qm123.mxl' },
     });
     const file = JSON.parse(JSON.stringify(await exportAll())) as unknown;
 
@@ -129,6 +130,9 @@ describe('importAll', () => {
     expect(restored?.concepts).toEqual(['hands-together', 'held-LH']);
     expect(restored?.levelSource).toBe('judged');
     expect(restored?.level).toBe(2.5);
+    // Without the origin the folder screen would offer the same file again on
+    // a restored phone, and greying out its namesakes instead (review C4).
+    expect(restored?.origin).toEqual({ folder: 'pianopath-library', file: 'ab/Qm123.mxl' });
   });
 
   it('merges rather than overwriting practice done since the export', async () => {

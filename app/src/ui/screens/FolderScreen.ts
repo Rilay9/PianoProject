@@ -66,6 +66,36 @@ export function matchesFilters(
   return true;
 }
 
+/**
+ * Which rows of the folder are already in the library (review C4).
+ *
+ * By file for anything that came from this folder, by title for everything
+ * else. PDMX has six files called *The Entertainer* and dozens called *Minuet
+ * in G*: matching by title alone greyed out every other edition the moment one
+ * was added, so the second reading of anything could not be imported from the
+ * folder at all.
+ *
+ * The title fallback is not a leftover. An import that arrived by share or
+ * picker has no origin, and stopping the owner re-importing a piece he already
+ * has by another route is the thing this set was for in the first place.
+ */
+export function addedFiles(
+  imports: readonly { title: string; origin?: { folder: string; file: string } }[],
+  library: { id: string; scores: readonly FolderScore[] },
+): Set<string> {
+  const fromHere = new Set(
+    imports.filter((row) => row.origin?.folder === library.id).map((row) => row.origin?.file),
+  );
+  const titles = new Set(
+    imports.filter((row) => row.origin === undefined).map((row) => fold(row.title)),
+  );
+  const added = new Set<string>();
+  for (const score of library.scores) {
+    if (fromHere.has(score.file) || titles.has(fold(score.title))) added.add(score.file);
+  }
+  return added;
+}
+
 export function FolderScreen(router: Router): HTMLElement {
   const { section, card } = createSubScreen(router, {
     id: 'folder',
@@ -311,15 +341,10 @@ export function FolderScreen(router: Router): HTMLElement {
   async function restore(): Promise<void> {
     const [folders, imports] = await Promise.all([savedFolders(), allImports()]);
     alreadyAdded = new Set<string>();
-    // Titles, not paths: an import knows nothing about the folder it came
-    // from, and re-adding the same piece is the mistake worth preventing.
-    const titles = new Set(imports.map((row) => fold(row.title)));
     library = folders[0] ?? null;
     if (library) {
+      alreadyAdded = addedFiles(imports, library);
       haystacks = library.scores.map((s) => fold(`${s.title} ${s.composer}`));
-      for (const score of library.scores) {
-        if (titles.has(fold(score.title))) alreadyAdded.add(score.file);
-      }
       fillStyles(library.scores);
     }
     describe();

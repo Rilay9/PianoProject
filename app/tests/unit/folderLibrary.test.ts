@@ -24,6 +24,8 @@ import {
   titleFromFilename,
 } from '../../src/data/folderLibrary';
 import { allImports } from '../../src/data/importStore';
+import { addedFiles } from '../../src/ui/screens/FolderScreen';
+import type { FolderScore } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 
 const MUSICXML = `<?xml version="1.0"?>
@@ -232,6 +234,77 @@ describe('adding one score out of a folder', () => {
     const library = await readFolder([folderFile('Mine/fur_elise.mxl', mxlBytes())]);
     connectForTest(library.id, new Map());
     await expect(addFromFolder(library.id, library.scores[0]!)).rejects.toThrow(/not in the folder/);
+    clearFakeIndexedDb();
+  });
+});
+
+describe('which folder rows are already in the library (review C4)', () => {
+  const score = (file: string, title: string): FolderScore => ({
+    file,
+    title,
+    composer: 'Joplin',
+    level: null,
+    bars: null,
+    status: 'pd',
+    style: 'ragtime',
+    rating: 0,
+    ratings: 0,
+    views: 0,
+    lyrics: false,
+    garbled: false,
+    museScore: '',
+  });
+
+  const library = {
+    id: 'pianopath-library',
+    scores: [
+      score('a/one.mxl', 'The Entertainer'),
+      score('b/two.mxl', 'The Entertainer'),
+      score('c/three.mxl', 'Maple Leaf Rag'),
+    ],
+  };
+
+  it('greys out only the edition that was added', () => {
+    // The bug: PDMX has six files called The Entertainer, and matching on the
+    // title meant adding one made the other five unaddable.
+    const added = addedFiles(
+      [{ title: 'The Entertainer', origin: { folder: 'pianopath-library', file: 'a/one.mxl' } }],
+      library,
+    );
+    expect([...added]).toEqual(['a/one.mxl']);
+  });
+
+  it('still matches by title for an import that came from a share or the picker', () => {
+    const added = addedFiles([{ title: 'the entertainer' }], library);
+    expect([...added].sort()).toEqual(['a/one.mxl', 'b/two.mxl']);
+  });
+
+  it('ignores an origin from a different folder', () => {
+    const added = addedFiles(
+      [{ title: 'Something else', origin: { folder: 'another-folder', file: 'a/one.mxl' } }],
+      library,
+    );
+    expect([...added]).toEqual([]);
+  });
+
+  it('has nothing to say about an empty library', () => {
+    expect([...addedFiles([], library)]).toEqual([]);
+  });
+});
+
+describe('addFromFolder records where the file came from', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+  });
+
+  it('stamps the folder and the file on the import', async () => {
+    const library = await readFolder([folderFile('Mine/fur_elise.mxl', mxlBytes())]);
+    const row = await addFromFolder(library.id, library.scores[0]!);
+    expect(row.origin).toEqual({ folder: 'Mine', file: 'fur_elise.mxl' });
+    // And it survives the trip through the store, which is what the folder
+    // screen reads on its next visit.
+    const stored = (await allImports()).find((candidate) => candidate.id === row.id);
+    expect(stored?.origin).toEqual({ folder: 'Mine', file: 'fur_elise.mxl' });
     clearFakeIndexedDb();
   });
 });

@@ -106,6 +106,17 @@ export interface ImportRow {
    * he is a better source than the estimate he is overruling.
    */
   levelSource?: 'estimated' | 'judged';
+  /**
+   * The folder row this came from, when it came from one.
+   *
+   * The folder screen has to know which of its 37,261 rows are already in the
+   * library, and it used to answer by matching titles — which greys out the
+   * five other *Entertainer*s and the dozens of *Minuet in G*s the moment one
+   * is added. The file name inside the folder is the identity that actually
+   * distinguishes them. Absent on anything imported by share or picker, which
+   * is why the title fallback stays.
+   */
+  origin?: { folder: string; file: string };
 }
 
 export interface PlanRow {

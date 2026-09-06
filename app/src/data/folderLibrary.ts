@@ -367,7 +367,11 @@ export async function addFromFolder(folderId: string, score: FolderScore) {
   const named = new File([file], `${score.title || file.name}.mxl`, { type: file.type });
   const row = await addImport(named);
 
-  const patch: Parameters<typeof updateImport>[1] = {};
+  // Recorded whatever else changes: this is how the browse list knows the row
+  // is already in the library without guessing from its title.
+  const patch: Parameters<typeof updateImport>[1] = {
+    origin: { folder: folderId, file: score.file },
+  };
   // The one case where the manifest wins: the browse list showed a title, the
   // score turned out to have none of its own, and being called `Untitled` in
   // the library is worse than being called what it was called on the shelf.
@@ -382,7 +386,6 @@ export async function addFromFolder(folderId: string, score: FolderScore) {
   // what the Library screen groups and searches by.
   if (score.composer && row.tags.length === 0) patch.tags = [score.composer];
 
-  if (Object.keys(patch).length === 0) return row;
   return (await updateImport(row.id, patch)) ?? row;
 }
 
