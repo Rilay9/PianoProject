@@ -14,6 +14,7 @@
 import type { Router } from '../../router';
 import { allItems, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { findLesson, idsToCompleteLesson, lessonComplete } from '../../curriculum/selectors';
+import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, PassRecord } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
 import { getSettings } from '../../data/settingsStore';
@@ -129,21 +130,19 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   /**
    * One line saying what the rung is short of, and the way to fix it.
    *
-   * The numbers come from `needs`, written into the built curriculum by
-   * validate.py (replan §4.2) — not recounted here, because the counting rules
-   * (the floor, a song-optional rung counting both lists together) would then
-   * live in two places and drift.
+   * Counted from the lesson the app is holding — imports and shelf pieces
+   * overlaid — rather than printed from the build's `needs` block, which was
+   * written before the owner added anything (review C3). The floor is still the
+   * build's; only the counting is here. See `curriculum/needs.ts`.
    */
   function drawNeeds(current: Lesson): void {
-    const needs = current.needs;
+    const needs = lessonShortfall(current);
     const short: string[] = [];
-    if (needs) {
-      if (needs.songs > 0) short.push(needs.songs === 1 ? 'one more song' : `${String(needs.songs)} more songs`);
-      if (needs.exercises > 0) {
-        short.push(
-          needs.exercises === 1 ? 'one more exercise' : `${String(needs.exercises)} more exercises`,
-        );
-      }
+    if (needs.songs > 0) short.push(needs.songs === 1 ? 'one more song' : `${String(needs.songs)} more songs`);
+    if (needs.exercises > 0) {
+      short.push(
+        needs.exercises === 1 ? 'one more exercise' : `${String(needs.exercises)} more exercises`,
+      );
     }
     if (short.length === 0) {
       const count = current.songOptions.length + current.exerciseOptions.length;
@@ -152,7 +151,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     } else {
       needsLine.textContent =
         `This rung wants ${short.join(' and ')} to reach the floor of ` +
-        `${String(needs?.floor ?? 3)}. Find one, or play what is here.`;
+        `${String(needs.floor)}. Find one, or play what is here.`;
       needsLine.classList.add('needs--short');
     }
 
