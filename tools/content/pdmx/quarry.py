@@ -41,6 +41,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from common import ContentBusy, content_lock  # noqa: E402
 from paths import BUILD_DIR, REPO_ROOT  # noqa: E402
 
 APP_DIR = REPO_ROOT / "app"
@@ -219,6 +220,13 @@ def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> d
     else about the check — the loader, the extractor, the cursor walk, the
     console capture — is the same code the content build runs, which is the
     only way this gate means what it says.
+
+    Holds the content lock for the duration, because staging into
+    `app/public/content` and `build.py` emptying it are the same directory and
+    the same minute. Run together once and vite's `copyDir` walked a tree
+    `clean_scores` was deleting under it; the build died on an ENOENT for a
+    file that had existed a moment earlier, and the error pointed nowhere near
+    the cause.
     """
     content_dir = APP_DIR / "public" / "content"
     # Both roots. `public/` is the source vite copies from; `dist/` is what the
@@ -293,12 +301,13 @@ def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> d
     )
     npx = shutil.which("npx") or "npx"
     try:
-        subprocess.run(
-            [npx, "playwright", "test", RENDER_SPEC, "--reporter=list"],
-            cwd=APP_DIR,
-            env=environment,
-            check=False,
-        )
+        with content_lock("pdmx/quarry.py (render gate)"):
+            subprocess.run(
+                [npx, "playwright", "test", RENDER_SPEC, "--reporter=list"],
+                cwd=APP_DIR,
+                env=environment,
+                check=False,
+            )
     finally:
         # Left behind, these would be precached into the app and shipped —
         # files nobody has reviewed, in a directory nothing else knows about.

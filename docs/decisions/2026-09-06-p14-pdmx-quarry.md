@@ -236,6 +236,7 @@ calibration set is where to look.
 - **The composer table will be wrong about somebody.** It is 111 entries against an archive
   of 254,077 rows written by strangers. The unmatched list is printed on every run and is
   the instrument for it.
-- **`build.py` and the quarry must not run at once.** One run here failed because vite's
-  `copyDir` raced `build.py` clearing `app/public/content/scores`. Harmless, obvious in the
-  log, and worth knowing before it happens at two in the morning.
+- ~~**`build.py` and the quarry must not run at once.**~~ Fixed: both take a lock on
+  `build/.content-lock` and the second one is *refused*, not queued — they are long jobs a
+  person started on purpose, and silently blocking for half an hour is worse than being told.
+  A lock more than two hours old is treated as a crashed run and taken over, out loud.

@@ -95,6 +95,10 @@ because that one depends on the app build. `--no-reuse` forces everything.
 **Measured on the real archive:** 306 candidates, about 25 minutes for the
 music21 pass and the browser pass together.
 
+Do not run `build.py` at the same time: both write `app/public/content/scores`, and the
+second one is refused with a message naming the first. If you are sure nothing is running
+and it still refuses, delete `build/.content-lock`.
+
 **Stop rules** (replan §2.3):
 
 - If a band's machine rejection rate is above about half, the selector is

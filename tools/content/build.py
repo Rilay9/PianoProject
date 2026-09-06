@@ -39,7 +39,9 @@ from common import (  # noqa: E402
     CONTENT_SRC,
     DEFAULT_OUT,
     REPO_ROOT,
+    ContentBusy,
     Step,
+    content_lock,
     read_json,
     run,
     write_json,
@@ -289,12 +291,25 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
+    started = time.time()
+    try:
+        lock = content_lock("build.py")
+        lock.__enter__()
+    except ContentBusy as busy:
+        print(f"content build refused: {busy}", file=sys.stderr)
+        sys.exit(2)
+    try:
+        run_build(args, started)
+    finally:
+        lock.__exit__(None, None, None)
+
+
+def run_build(args: argparse.Namespace, started: float) -> None:
     # One flag for the owner. --allow-nc was about the edition; --personal is
     # about the edition *and* the composition, and a build that admitted one
     # but not the other would be a distinction nobody asked for.
     allow_nc = args.allow_nc or args.personal
 
-    started = time.time()
     args.out.mkdir(parents=True, exist_ok=True)
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
     clean_scores(args.out)

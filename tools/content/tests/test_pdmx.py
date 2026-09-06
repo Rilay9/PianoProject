@@ -628,3 +628,64 @@ class TestReadme(unittest.TestCase):
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
+
+
+class TestContentLock(unittest.TestCase):
+    """
+    `build.py` and the quarry write the same directory (P14).
+
+    `build.py` empties `app/public/content/scores` at the start of every run;
+    the quarry stages candidates into it so the render check's browser can
+    fetch them. Run together — which happened once — vite's `copyDir` walks a
+    tree `clean_scores` is deleting under it, and the build dies on an ENOENT
+    for a file that existed a moment earlier.
+    """
+
+    def setUp(self) -> None:
+        from common import CONTENT_LOCK
+
+        self.lock_path = CONTENT_LOCK
+        self.pre_existing = CONTENT_LOCK.exists()
+
+    def test_the_second_writer_is_refused_not_queued(self) -> None:
+        from common import ContentBusy, content_lock
+
+        if self.pre_existing:
+            self.skipTest("a real run holds the lock")
+        with content_lock("the test"):
+            with self.assertRaises(ContentBusy) as caught:
+                with content_lock("a second run"):
+                    pass
+            # The message has to name what is holding it and how to clear it:
+            # a lock nobody can explain is worse than the race it prevents.
+            message = str(caught.exception)
+            self.assertIn("the test", message)
+            self.assertIn(".content-lock", message)
+
+    def test_the_lock_is_released_even_when_the_body_raises(self) -> None:
+        from common import content_lock
+
+        if self.pre_existing:
+            self.skipTest("a real run holds the lock")
+        with self.assertRaises(ValueError):
+            with content_lock("a run that fails"):
+                raise ValueError("boom")
+        self.assertFalse(self.lock_path.exists())
+
+    def test_a_stale_lock_is_taken_over_rather_than_obeyed_for_ever(self) -> None:
+        import os
+        import time as clock
+
+        from common import LOCK_STALE_SECONDS, content_lock
+
+        if self.pre_existing:
+            self.skipTest("a real run holds the lock")
+        self.lock_path.parent.mkdir(parents=True, exist_ok=True)
+        self.lock_path.write_text("a crashed run (pid 1)", encoding="utf-8")
+        old = clock.time() - LOCK_STALE_SECONDS - 60
+        os.utime(self.lock_path, (old, old))
+        try:
+            with content_lock("the run after it"):
+                self.assertIn("the run after it", self.lock_path.read_text(encoding="utf-8"))
+        finally:
+            self.lock_path.unlink(missing_ok=True)

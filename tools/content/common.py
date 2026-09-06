@@ -7,10 +7,14 @@ the catalog writer) keep working in an environment where it failed to install.
 """
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
+import os
 import re
 import subprocess
+import sys
+import time
 import unicodedata
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -278,3 +282,74 @@ def run(
     return subprocess.run(
         cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True, check=False, env=env
     )
+
+
+# ---------------------------------------------------------------------------
+# one writer at a time
+# ---------------------------------------------------------------------------
+
+#: Held by anything that writes into `app/public/content/scores`.
+CONTENT_LOCK = BUILD_DIR / ".content-lock"
+
+#: A lock older than this is assumed to be a crashed run rather than a live one.
+#:
+#: The longest thing that holds it is `build.py --offline --render`, which is
+#: about three minutes, and the PDMX quarry, which is about half an hour. Two
+#: hours is well past both and short enough that a stale lock does not outlive
+#: the session that dropped it.
+LOCK_STALE_SECONDS = 2 * 60 * 60
+
+
+class ContentBusy(RuntimeError):
+    """Something else is writing the content directory."""
+
+
+@contextlib.contextmanager
+def content_lock(what: str):
+    """
+    Serialises the two programs that write `app/public/content/scores`.
+
+    `build.py` empties that directory at the start of every run; the PDMX
+    quarry stages candidates into it so the render check's browser can fetch
+    them. Run at the same time — which happened once, at four in the morning —
+    vite's `copyDir` walks a tree `clean_scores` is deleting under it and the
+    build dies with an ENOENT on a file that existed a moment earlier. Nothing
+    is corrupted and the log says exactly what happened, but the run is wasted
+    and the error points at the wrong place entirely.
+
+    Refuses rather than waits: both of these are long jobs a person started on
+    purpose, and a second one silently blocking for half an hour is worse than
+    being told.
+    """
+    BUILD_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        handle = os.open(CONTENT_LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        held = ""
+        age = None
+        try:
+            held = CONTENT_LOCK.read_text(encoding="utf-8").strip()
+            age = time.time() - CONTENT_LOCK.stat().st_mtime
+        except OSError:
+            pass
+        if age is not None and age > LOCK_STALE_SECONDS:
+            # A crashed run, not a live one. Say so and take it over.
+            print(
+                f"note: {CONTENT_LOCK} is {age / 3600:.1f} hours old ({held}) — "
+                "assuming a crashed run and taking it over",
+                file=sys.stderr,
+            )
+            CONTENT_LOCK.unlink(missing_ok=True)
+            handle = os.open(CONTENT_LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        else:
+            raise ContentBusy(
+                f"{held or 'another run'} is already writing app/public/content. "
+                "Wait for it to finish, or delete "
+                f"{CONTENT_LOCK.relative_to(REPO_ROOT)} if you are sure nothing is running."
+            )
+    try:
+        os.write(handle, f"{what} (pid {os.getpid()}) since {utc_now()}".encode("utf-8"))
+        os.close(handle)
+        yield
+    finally:
+        CONTENT_LOCK.unlink(missing_ok=True)
