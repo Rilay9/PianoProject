@@ -1,0 +1,33 @@
+{
+  "_comment": [
+    "The levelling model (replan §2.4). Read by tools/content/difficulty.py, and by P15's",
+    "runtime estimator, so a score the owner imports on the phone and a score the quarry found",
+    "are levelled by the same arithmetic.",
+    "",
+    "`fitted: false` means the fallback table below is in use. P14 fits the weights on the",
+    "calibration set — every *song* in the catalog whose levelSource is `judged` — and commits",
+    "them here only if the fit reaches Spearman >= 0.8 and leave-one-out median absolute error",
+    "<= 0.7 stages. Below that the table stays and the report says so.",
+    "",
+    "The fallback is deliberately crude: notes per bar against the shortest note value, which",
+    "reads as 'how much is happening, and how fast'. Its virtue is that it is written down.",
+    "Every PDMX item is levelSource: `estimated` either way (replan §1.4)."
+  ],
+  "fitted": false,
+  "bias": 4.0,
+  "weights": {},
+  "means": {},
+  "fallback": {
+    "_comment": "First row whose two conditions both hold wins; shortestValue is in quarter lengths, so a smaller number is a faster piece.",
+    "bins": [
+      { "level": 1.5, "maxNotesPerBar": 4.0, "minShortestValue": 1.0 },
+      { "level": 2.5, "maxNotesPerBar": 6.0, "minShortestValue": 0.5 },
+      { "level": 3.5, "maxNotesPerBar": 9.0, "minShortestValue": 0.5 },
+      { "level": 4.5, "maxNotesPerBar": 13.0, "minShortestValue": 0.25 },
+      { "level": 5.5, "maxNotesPerBar": 18.0, "minShortestValue": 0.25 },
+      { "level": 6.5, "maxNotesPerBar": 24.0, "minShortestValue": 0.125 },
+      { "level": 7.5, "maxNotesPerBar": 32.0, "minShortestValue": 0.125 },
+      { "level": 8.5, "maxNotesPerBar": 999.0, "minShortestValue": 0.0 }
+    ]
+  }
+}

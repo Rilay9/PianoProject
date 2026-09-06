@@ -1,0 +1,91 @@
+{
+  "_comment": [
+    "Pieces wanted by name, whatever the ranking says (replan §2.2, docs/02 Part D8).",
+    "",
+    "Two groups. The seven rock-module songs are the reason the rock track exists at all — the",
+    "owner named them — and each currently has an import placeholder in the catalog with no",
+    "file behind it. The Beautiful suggestions are the pieces the Stage-6 'beautiful piece'",
+    "project is written around.",
+    "",
+    "Every one of them is in copyright as a composition. That is exactly why they are here and",
+    "not in the quotas: docs/00 D23 says the personal build may carry what the dataset marks",
+    "public domain, and --strict-license refuses them, so a kept one replaces the placeholder",
+    "in the owner's build and leaves the placeholder standing in the public one.",
+    "",
+    "`id` is the catalog id a kept file takes over. `title` and `artist` are folded substring",
+    "patterns — PDMX titles carry the arranger, the difficulty and the word 'piano' about half",
+    "the time, so an exact match would find nothing."
+  ],
+  "wants": [
+    {
+      "id": "song.rock.seize-the-day",
+      "title": ["seize the day"],
+      "artist": ["avenged sevenfold", "a7x"]
+    },
+    {
+      "id": "song.rock.dear-god",
+      "title": ["dear god"],
+      "artist": ["avenged sevenfold", "a7x"]
+    },
+    {
+      "id": "song.rock.so-far-away",
+      "title": ["so far away"],
+      "artist": ["avenged sevenfold", "a7x"]
+    },
+    {
+      "id": "song.rock.fiction",
+      "title": ["fiction"],
+      "artist": ["avenged sevenfold", "a7x"]
+    },
+    {
+      "id": "song.rock.final-masquerade",
+      "title": ["final masquerade"],
+      "artist": ["linkin park"]
+    },
+    {
+      "id": "song.rock.waiting-for-the-end",
+      "title": ["waiting for the end"],
+      "artist": ["linkin park"]
+    },
+    {
+      "id": "song.rock.shadow-of-the-day",
+      "title": ["shadow of the day"],
+      "artist": ["linkin park"]
+    },
+    {
+      "id": "song.beautiful.nuvole-bianche",
+      "title": ["nuvole bianche"],
+      "artist": ["einaudi"]
+    },
+    {
+      "id": "song.beautiful.experience",
+      "title": ["experience"],
+      "artist": ["einaudi"]
+    },
+    {
+      "id": "song.beautiful.river-flows-in-you",
+      "title": ["river flows in you"],
+      "artist": ["yiruma"]
+    },
+    {
+      "id": "song.beautiful.comptine-dun-autre-ete",
+      "title": ["comptine d un autre ete", "comptine dun autre ete"],
+      "artist": ["tiersen"]
+    },
+    {
+      "id": "song.beautiful.interstellar",
+      "title": ["interstellar", "cornfield chase", "stay"],
+      "artist": ["zimmer"]
+    },
+    {
+      "id": "song.beautiful.merry-christmas-mr-lawrence",
+      "title": ["merry christmas mr lawrence", "forbidden colours"],
+      "artist": ["sakamoto"]
+    },
+    {
+      "id": "song.beautiful.one-summers-day",
+      "title": ["one summer s day", "one summers day", "ano natsu e"],
+      "artist": ["hisaishi"]
+    }
+  ]
+}

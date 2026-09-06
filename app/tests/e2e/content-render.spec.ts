@@ -37,6 +37,16 @@ const previewDir = process.env.CONTENT_PREVIEW_DIR ?? resolve('../build/previews
 const manifestPath =
   process.env.CONTENT_RENDER_MANIFEST ?? resolve('../build/render-manifest.json');
 const full = process.env.CONTENT_RENDER_FULL === '1';
+/**
+ * An explicit item list instead of a catalog (P13, replan §2.3 item 5).
+ *
+ * The PDMX quarry needs this same loader run over files that are not in the
+ * catalog and never will be — most of them are about to be rejected. Pointing
+ * it at a JSON array of `{id, title, file}` is the whole difference; every
+ * other line below is unchanged, which is the point of reusing the spec rather
+ * than writing a second one that drifts.
+ */
+const itemsJson = process.env.CONTENT_ITEMS_JSON ?? '';
 const limit = Number(process.env.CONTENT_RENDER_LIMIT ?? '0');
 /** Bars in a preview image — docs/03 §3 step 6 asks for the first two. */
 const PREVIEW_BARS = 2;
@@ -177,12 +187,16 @@ test.describe('content render check', () => {
   test.setTimeout(60 * 60 * 1000);
 
   test('every catalog item renders and yields at least one step', async ({ page }) => {
-    const catalog = (await import(`file://${join(contentDir, 'catalog.json')}`, {
-      with: { type: 'json' },
-    })) as { default: CatalogItem[] };
+    const source: CatalogItem[] = itemsJson
+      ? (JSON.parse(readFileSync(itemsJson, 'utf-8')) as CatalogItem[])
+      : (
+          (await import(`file://${join(contentDir, 'catalog.json')}`, {
+            with: { type: 'json' },
+          })) as { default: CatalogItem[] }
+        ).default;
     // A .pdf item is pages, not notes: it opens in the PDF viewer and OSMD
     // could never render it (docs/04 §5b).
-    const items = catalog.default.filter(
+    const items = source.filter(
       (item) => item.file && !item.file.toLowerCase().endsWith('.pdf'),
     );
     expect(items.length, 'catalog has no items with files').toBeGreaterThan(0);

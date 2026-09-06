@@ -46,6 +46,10 @@ from common import (  # noqa: E402
 )
 from licensing import Verdict, composition_verdict  # noqa: E402
 
+#: Tag on an item whose *composition* is not public domain (docs/00 D23).
+#: The same tag import_pdmx.py uses: one mechanism, every source.
+PERSONAL_BUILD_TAG = "personal-build"
+
 TABLE_PATH = CONTENT_SRC / "sources" / "musetrainer.json"
 LIBRARY_DIR = IMPORTED_DIR / "musetrainer" / "scores"
 SOURCE_URL = "https://github.com/musetrainer/library"
@@ -58,6 +62,8 @@ STATED_LICENSE = "Public Domain (blanket claim by musetrainer/library; no LICENS
 class ImportReport:
     imported: list[str] = field(default_factory=list)
     excluded: list[tuple[str, str]] = field(default_factory=list)
+    #: Admitted only because --personal was passed (docs/00 D23).
+    personal_build: list[tuple[str, str]] = field(default_factory=list)
     normalised: list[tuple[str, str]] = field(default_factory=list)
     fallback: list[tuple[str, str]] = field(default_factory=list)
     missing: list[str] = field(default_factory=list)
@@ -117,7 +123,9 @@ def key_name(fifths: int, mode: str) -> str:
     return f"{name} minor" if mode == "minor" else f"{name} major"
 
 
-def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = None) -> ImportReport:
+def import_library(
+    out_dir: Path, catalog_path: Path, *, limit: int | None = None, personal: bool = False
+) -> ImportReport:
     table = read_json(TABLE_PATH)
     assert isinstance(table, dict)
     items: dict = table["items"]
@@ -137,9 +145,23 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
         if not source_path.exists():
             report.missing.append(filename)
             continue
-        if "exclude" in spec:
-            report.excluded.append((filename, spec["exclude"]))
-            continue
+        # One mechanism, every source (replan §2.2): an exclusion that is about
+        # the *composition* is now an admission with a label. The Senneville
+        # and Clayderman files are real piano music the owner may practise on
+        # his own phone; `--strict-license` refuses them, which is what the
+        # public deploy runs. An exclusion about the *edition* stays an
+        # exclusion, because nothing granted the right to redistribute it at
+        # all and no flag can change that.
+        personal_build = False
+        excluded = spec.get("exclude")
+        if excluded:
+            if not personal and str(excluded).startswith("composition:"):
+                report.excluded.append((filename, excluded))
+                continue
+            if not str(excluded).startswith("composition:"):
+                report.excluded.append((filename, excluded))
+                continue
+            personal_build = True
 
         # The composition test, run again here rather than trusted from the
         # table: the table is data a human edits.
@@ -149,13 +171,18 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
             traditional=bool(spec.get("traditional")),
         )
         if verdict.verdict is not Verdict.BUNDLE:
-            report.excluded.append((filename, f"composition: {verdict.reason}"))
-            continue
+            if not personal:
+                report.excluded.append((filename, f"composition: {verdict.reason}"))
+                continue
+            personal_build = True
 
         xml = read_main_xml(source_path)
         reasons = normalisation_reasons(xml)
         dest = scores_out / (spec["id"] + ".mxl")
         tags = ["musetrainer"]
+        if personal_build:
+            tags.append(PERSONAL_BUILD_TAG)
+            report.personal_build.append((filename, str(spec.get("exclude") or verdict.reason)))
         if reasons:
             from convert import cached_convert  # imported late: music21 is slow to load
 
@@ -230,6 +257,15 @@ def main() -> None:
     parser.add_argument(
         "--no-cache", action="store_true", help="ignore build/cache/convert and reconvert"
     )
+    parser.add_argument(
+        "--personal",
+        action="store_true",
+        help=(
+            "the owner's build (docs/00 D23): admit the files excluded for their "
+            "*composition* — Mariage d'Amour, the Clayderman arrangements — tagged "
+            "personal-build and refused by --strict-license"
+        ),
+    )
     args = parser.parse_args()
     if args.no_cache:
         os.environ["PIANOPATH_NO_CACHE"] = "1"
@@ -242,7 +278,11 @@ def main() -> None:
         write_json(args.catalog, [])
         sys.exit(0)
 
-    report = import_library(args.out, args.catalog, limit=args.limit)
+    report = import_library(args.out, args.catalog, limit=args.limit, personal=args.personal)
+    if report.personal_build:
+        print(f"personal build only {len(report.personal_build)}:")
+        for name, why in report.personal_build:
+            print(f"  - {name}: {why}")
     if report.normalised:
         print(f"normalised {len(report.normalised)}:")
         for name, why in report.normalised:

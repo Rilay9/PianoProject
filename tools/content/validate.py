@@ -166,8 +166,14 @@ def exercises_by_level(catalog: list) -> dict[int, int]:
     return dict(sorted(counts.items()))
 
 
+#: Tag on an item whose *composition* is not public domain (docs/00 D23).
+#: The mirror of NC_PERSONAL_TAG, which is about the edition.
+PERSONAL_BUILD_TAG = "personal-build"
+
+
 def validate_catalog(
-    catalog: list, content_dir: Path, strict_license: bool, allow_nc: bool = False
+    catalog: list, content_dir: Path, strict_license: bool, allow_nc: bool = False,
+    personal: bool = False,
 ) -> list[str]:
     errors: list[str] = []
     ids = [item["id"] for item in catalog]
@@ -206,6 +212,15 @@ def validate_catalog(
             decision = license_verdict(licence, source=item_id, allow_nc=allow_nc)
             if decision.verdict is not Verdict.BUNDLE:
                 errors.append(f"{item_id}: licence {licence!r} — {decision.reason}")
+            if PERSONAL_BUILD_TAG in (item.get("tags") or []):
+                # The edition may be redistributable and the *composition* not.
+                # This is the check the Pages deploy exists to make: a quarried
+                # file whose composer died in 1987 is bundled in the owner's
+                # build and must never reach a public URL (docs/00 D23).
+                errors.append(
+                    f"{item_id}: tagged {PERSONAL_BUILD_TAG} — its composition is not public "
+                    "domain, so it cannot ship in a strict build (docs/00 D23)"
+                )
 
         duration = item.get("durationSec")
         if duration is not None and not (MIN_DURATION_SEC <= duration <= MAX_DURATION_SEC):
@@ -287,6 +302,14 @@ def main() -> None:
         help="accept CC BY-NC editions — a personal build only (docs/00 D10a)",
     )
     parser.add_argument(
+        "--personal",
+        action="store_true",
+        help=(
+            "the owner's build (docs/00 D23): implies --allow-nc and accepts items whose "
+            "composition is not public domain"
+        ),
+    )
+    parser.add_argument(
         "--min-options",
         type=int,
         default=MIN_OPTIONS,
@@ -306,7 +329,9 @@ def main() -> None:
         catalog = load(args.dir / "catalog.json")
         curriculum = load(args.dir / "curriculum.json")
         assert isinstance(catalog, list) and isinstance(curriculum, dict)
-        errors += validate_catalog(catalog, args.dir, args.strict_license, args.allow_nc)
+        errors += validate_catalog(
+            catalog, args.dir, args.strict_license, args.allow_nc or args.personal, args.personal
+        )
         errors += validate_curriculum(curriculum, catalog, args.min_options)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.
@@ -324,6 +349,9 @@ def main() -> None:
     catalog = load(args.dir / "catalog.json")
     assert isinstance(catalog, list)
     personal = [item["id"] for item in catalog if NC_PERSONAL_TAG in (item.get("tags") or [])]
+    personal_build = [
+        item["id"] for item in catalog if PERSONAL_BUILD_TAG in (item.get("tags") or [])
+    ]
     print(f"content validation of {args.dir}:")
     curriculum = load(args.dir / "curriculum.json")
     assert isinstance(curriculum, dict)
@@ -365,6 +393,14 @@ def main() -> None:
     print(f"  {scan.summary()}")
     for finding in scan.findings:
         print(f"    - {finding.describe()}")
+    if personal_build:
+        # replan §2.2: counted out loud on every build, like the NC items, so
+        # nobody has to remember that a personal build is a personal build.
+        print(
+            f"NOTE: {len(personal_build)} item(s) have a composition that is not public domain "
+            "and are bundled for a personal build only (docs/00 D23). Do not deploy this "
+            "build publicly."
+        )
     if personal:
         # Loudly, every time: this build is not for a public URL.
         print(

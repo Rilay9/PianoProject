@@ -45,7 +45,13 @@ from common import (  # noqa: E402
     write_json,
 )
 
-FRAGMENTS = ("catalog.mt.json", "catalog.kern.json", "catalog.generated.json", "catalog.authored.json")
+FRAGMENTS = (
+    "catalog.mt.json",
+    "catalog.kern.json",
+    "catalog.generated.json",
+    "catalog.authored.json",
+    "catalog.pdmx.json",
+)
 
 
 def python(script: str, *args: str) -> tuple[int, str]:
@@ -70,10 +76,12 @@ def step_fetch(offline: bool) -> Step:
     return Step("fetch", ok=True, detail=detail, skipped=False, warnings=[] if code == 0 else [output])
 
 
-def step_import(out_dir: Path, no_cache: bool = False) -> Step:
+def step_import(out_dir: Path, no_cache: bool = False, personal: bool = False) -> Step:
     args = ["--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.mt.json")]
     if no_cache:
         args.append("--no-cache")
+    if personal:
+        args.append("--personal")
     code, output = python("import_musetrainer.py", *args)
     return Step("import [MT]", ok=code == 0, detail=summary_line(output))
 
@@ -88,6 +96,26 @@ def step_import_kern(out_dir: Path, allow_nc: bool, no_cache: bool = False) -> S
         args.append("--no-cache")
     code, output = python("import_kern.py", *args)
     return Step("import [KERN]", ok=code == 0, detail=summary_line(output))
+
+
+def step_import_pdmx(out_dir: Path, personal: bool, strict_license: bool) -> Step:
+    """
+    The quarried PDMX scores, if any have been committed.
+
+    Needs nothing but the repository: the archive is on the owner's machine and
+    the quarry ran there once (replan §2.1). Before P14 there is no table and
+    this writes an empty fragment, which is a normal state and not a failure.
+    """
+    args = [
+        "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.pdmx.json"),
+    ]
+    if personal:
+        args.append("--personal")
+    if strict_license:
+        args.append("--strict-license")
+    code, output = python("import_pdmx.py", *args)
+    return Step("import [PDMX]", ok=code == 0, detail=summary_line(output),
+                warnings=[] if code == 0 else [output])
 
 
 def step_generate(out_dir: Path, quick: bool) -> Step:
@@ -178,12 +206,16 @@ def copy_schemas(out_dir: Path) -> None:
             shutil.copy2(source, out_dir / name)
 
 
-def step_validate(out_dir: Path, strict_license: bool, allow_nc: bool = False) -> Step:
+def step_validate(
+    out_dir: Path, strict_license: bool, allow_nc: bool = False, personal: bool = False
+) -> Step:
     args = ["--dir", str(out_dir)]
     if strict_license:
         args.append("--strict-license")
     if allow_nc:
         args.append("--allow-nc")
+    if personal:
+        args.append("--personal")
     code, output = python("validate.py", *args)
     return Step("validate", ok=code == 0, detail=output if code else summary_line(output))
 
@@ -247,7 +279,20 @@ def main() -> None:
         action="store_true",
         help="include CC BY-NC editions — a personal build only, never deployed (docs/00 D10a)",
     )
+    parser.add_argument(
+        "--personal",
+        action="store_true",
+        help=(
+            "the owner's build (docs/00 D23): implies --allow-nc, and also admits items whose "
+            "*composition* is not public domain. --strict-license, which the Pages deploy runs, "
+            "refuses them"
+        ),
+    )
     args = parser.parse_args()
+    # One flag for the owner. --allow-nc was about the edition; --personal is
+    # about the edition *and* the composition, and a build that admitted one
+    # but not the other would be a distinction nobody asked for.
+    allow_nc = args.allow_nc or args.personal
 
     started = time.time()
     args.out.mkdir(parents=True, exist_ok=True)
@@ -257,19 +302,20 @@ def main() -> None:
     steps: list[Step] = []
     if not args.skip_fetch:
         steps.append(step_fetch(args.offline))
-    steps.append(step_import(args.out, args.no_cache))
-    steps.append(step_import_kern(args.out, args.allow_nc, args.no_cache))
+    steps.append(step_import(args.out, args.no_cache, args.personal))
+    steps.append(step_import_kern(args.out, allow_nc, args.no_cache))
+    steps.append(step_import_pdmx(args.out, args.personal, args.strict_license))
     steps.append(step_generate(args.out, args.quick))
     steps.append(step_author(args.out, args.no_cache))
     steps.append(merge_catalog(args.out))
     steps.append(copy_curriculum(args.out))
     steps.append(copy_lessons(args.out))
     copy_schemas(args.out)
-    steps.append(step_validate(args.out, args.strict_license, args.allow_nc))
+    steps.append(step_validate(args.out, args.strict_license, allow_nc, args.personal))
     if args.render:
         steps.append(step_render(args.out, args.render_limit))
         # The render check writes measured durations back, so validate again.
-        steps.append(step_validate(args.out, args.strict_license, args.allow_nc))
+        steps.append(step_validate(args.out, args.strict_license, allow_nc, args.personal))
 
     print("\n--- content build ---")
     for step in steps:

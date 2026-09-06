@@ -257,6 +257,18 @@
    ]
   },
   "Chopin_-_Spring_Waltz.mxl": {
+   "id": "song.beautiful.mariage-damour",
+   "title": "Mariage d’Amour (“Spring Waltz”)",
+   "composer": "Paul de Senneville",
+   "level": 5.2,
+   "tracks": [
+    "beautiful"
+   ],
+   "concepts": [
+    "arpeggiated-accompaniment",
+    "pedalling",
+    "melody-projection"
+   ],
    "exclude": "composition: this is Mariage d'Amour by Paul de Senneville (1979), mislabelled as Chopin — in copyright"
   },
   "Clair_de_Lune__Debussy.mxl": {
@@ -405,9 +417,35 @@
    "exclude": "edition: rights field points at a commercial sheet-music site (pianolessenassen.nl/bladmuziek) with no licence grant — unclear"
   },
   "G_Minor_Bach.mxl": {
+   "id": "song.beautiful.g-minor-bach",
+   "title": "G Minor Bach (Luo Ni)",
+   "composer": "Luo Ni",
+   "level": 5.5,
+   "tracks": [
+    "beautiful"
+   ],
+   "concepts": [
+    "arpeggiated-accompaniment",
+    "voicing",
+    "pedalling"
+   ],
    "exclude": "composition: the “G Minor Bach” arrangement by Luo Ni (2015), not Bach's BWV 578 as printed — in copyright"
   },
   "G_Minor_Bach_Original.mxl": {
+   "id": "song.beautiful.g-minor-bach.alt",
+   "title": "G Minor Bach — second edition",
+   "composer": "Luo Ni",
+   "level": 5.5,
+   "variantOf": "song.beautiful.g-minor-bach",
+   "variantLabel": "the same arrangement, credited “Lyo Ni”",
+   "tracks": [
+    "beautiful"
+   ],
+   "concepts": [
+    "arpeggiated-accompaniment",
+    "voicing",
+    "pedalling"
+   ],
    "exclude": "composition: credited to “Lyo Ni” — the same modern arrangement, in copyright"
   },
   "Gnossienne_No._1.mxl": {
@@ -519,6 +557,18 @@
    ]
   },
   "Hungarian_Sonata.mxl": {
+   "id": "song.beautiful.hungarian-sonata",
+   "title": "Hungarian Sonata",
+   "composer": "Richard Clayderman",
+   "level": 5.0,
+   "tracks": [
+    "beautiful"
+   ],
+   "concepts": [
+    "melody-projection",
+    "pedalling",
+    "rubato"
+   ],
    "exclude": "composition: credited to Richard Clayderman — a 20th-century piece, in copyright"
   },
   "J._S._Bach_-_Air_on_the_G_String_Piano_arrangement.mxl": {
@@ -605,6 +655,20 @@
    ]
   },
   "Mariage_dAmour.mxl": {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "title": "Mariage d’Amour — third edition",
+   "composer": "Paul de Senneville",
+   "level": 5.2,
+   "variantOf": "song.beautiful.mariage-damour",
+   "variantLabel": "a third upload, correctly credited",
+   "tracks": [
+    "beautiful"
+   ],
+   "concepts": [
+    "arpeggiated-accompaniment",
+    "pedalling",
+    "melody-projection"
+   ],
    "exclude": "composition: Paul de Senneville (1979) — in copyright"
   },
   "Minuet_in_G_Major_Bach.mxl": {
@@ -913,6 +977,20 @@
    ]
   },
   "Spring_Waltz_Mariage_dAmour_-_Chopin.mxl": {
+   "id": "song.beautiful.mariage-damour.alt",
+   "title": "Mariage d’Amour (“Spring Waltz”) — second edition",
+   "composer": "Paul de Senneville",
+   "level": 5.2,
+   "variantOf": "song.beautiful.mariage-damour",
+   "variantLabel": "another MuseScore upload of the same arrangement",
+   "tracks": [
+    "beautiful"
+   ],
+   "concepts": [
+    "arpeggiated-accompaniment",
+    "pedalling",
+    "melody-projection"
+   ],
    "exclude": "composition: Mariage d'Amour by Paul de Senneville (1979), filed under Chopin — in copyright"
   },
   "Swan_Lake.mxl": {
