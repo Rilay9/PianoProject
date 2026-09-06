@@ -28,7 +28,7 @@ bytes. The Zenodo record id is recorded as **`unknown`** — the owner was aslee
 asked. The CSV's sha256 and the two byte counts identify the archive precisely enough to
 fill the id in later without re-running anything.
 
-254,077 rows in; 37,499 past the gates. What rejected the rest, largest first:
+254,077 rows in; 37,499 past the gates; 425 chosen by the quotas and the two named lists. What rejected the rest, largest first:
 
 | rejected | reason |
 |---:|---|
@@ -59,7 +59,7 @@ Nathaniel Gow (81), Carolan (58). PDMX's public-domain slice, once the gates hav
 overwhelmingly the **Scottish and Irish fiddle corpus** plus Densmore's ethnographic
 transcriptions — not the classical library the ladder was written around.
 
-Twenty-three names and fifteen traditional aliases added. Names whose dates I could not be
+Twenty-three names and twenty-five traditional aliases added. Names whose dates I could not be
 sure of — Alexander Walker, and the several collectors filed as "Hand of …" — are
 deliberately absent: `unknown` is a harmless label (the strict build refuses it anyway) and a
 wrong death year is not.
@@ -74,6 +74,38 @@ Park" is a band and not a person. Both bands are in the table as decoys.
 The archive also contains mojibake: one candidate's composer is `åæé¾ä` — 坂本龍一 encoded
 twice — with a clean `Ryuichi Sakamoto` in `artist_name`, and another spells him "Ryuichi
 Salamoto". The reviewer will see titles in that state too.
+
+## What the machine gates said, in the end
+
+425 candidates offered, **368 through every gate** — convert, round-trip,
+structure, the P2 truncation scan, render with cursor-step parity, duplicates.
+
+| band | passed | rejection rate | what rejected the rest |
+|---|---:|---:|---|
+| 1–2 | 80 / 95 | 16 % | structure 13, convert 1, render 1 |
+| 3 | 69 / 77 | 10 % | structure 4, round-trip 3, convert 1 |
+| 4 | 81 / 89 | 9 % | structure 4, round-trip 3, render 1 |
+| 5 | 79 / 85 | 7 % | round-trip 3, structure 3 |
+| 6 | 44 / 47 | 6 % | round-trip 1, structure 1, convert 1 |
+| **7–9** | **15 / 32** | **53 %** | convert 8, round-trip 6, structure 3 |
+
+Band 7–9 is above the "stop and look" line, so I looked. Eight of its sixteen
+failures are music21 refusing to *export* what it read: `Cannot convert "2048th"
+duration`, `Cannot convert inexpressible duration`, a `StreamException` on a
+measure. These are the big Romantic scores, and it is the same family of
+limitation P10 met with the thirteen Chopin files. The band is small by design
+(31 of 425) and its failures are the converter's, not the selector's, so the
+selector was not adjusted for it.
+
+Of the 368: **90 are single-line** — the Part F reference set and the
+sight-reading corpus, not repertoire — and every level came from the fitted
+model rather than the fallback table.
+
+| | |
+|---|---|
+| by bucket | classical 142, pop-film-game 125, folk-hymn-carol 85, jazz-latin 16 |
+| by composition status | unknown 216, pd 127, in-copyright 25 |
+| estimated level | L1 4, L2 49, L3 46, L4 27, L5 73, L6 59, L7 84, L8 22, L9 4 |
 
 ## Two bugs in the render gate, found by running it
 
@@ -140,10 +172,11 @@ report is the answer to "what can I actually play on this rung".
 ## The Part F skip list
 
 28 of the 34 tunes P5 skipped for want of an edition to check against **are** in the
-archive — and 25 of those were below the quota line, which is why ranking alone would never
-have surfaced them. They have a list of their own now (`verify` in `pdmx-wants.json`),
-admitted outside the quotas. They are not repertoire; they are the reference an authored ABC
-is checked against, which is the verification P5 lacked.
+archive — and every one of them was below the quota line, which is why ranking alone would
+never have surfaced them. They have a list of their own now (`verify` in `pdmx-wants.json`),
+admitted outside the quotas: 119 candidates, of which **27 tunes still have a passing
+reference** after the machine gates. They are not repertoire; they are the reference an
+authored ABC is checked against, which is the verification P5 lacked.
 
 The six with no candidate at all: Go Tell Aunt Rhody, Aura Lee, This Old Man, Beautiful
 Dreamer, Ma'oz Tzur, Sevivon.
@@ -159,7 +192,22 @@ build and the strict build keeps its placeholder.
 
 ## What no one has heard
 
-As P10 said: no ear has been near any of these files. Nothing is committed, so the list of
-ten to play first will be written when there is something committed to play. The review page
-is where that starts, and the lowest bands are where a wrong transcription does the most
-harm — a beginner cannot tell.
+As P10 said: no ear has been near any of these files, and now there are 368 of them.
+Nothing is committed, so the list of ten to play first cannot be written yet — it would be
+ten files chosen from a set that has not been reviewed. The review page is where that
+starts, and **the lowest bands are where a wrong transcription does the most harm**: 80 of
+the 368 are band 1–2 and 69 are band 3, and a learner at that level cannot tell a bad
+transcription from their own bad playing. Review those two bands first, and play each one
+before deciding.
+
+## Follow-ups
+
+- **Band 7–9's converter failures.** Eight files music21 will read and refuse to write. The
+  same limitation cost P10 thirteen Chopin scores; a `bisect_render`-style look at one of
+  them would say whether a normalisation could rescue them.
+- **The composer table will be wrong about somebody.** It is 111 entries against an archive
+  of 254,077 rows written by strangers. The unmatched list is printed on every run and is
+  the instrument for it.
+- **`build.py` and the quarry must not run at once.** One run here failed because vite's
+  `copyDir` raced `build.py` clearing `app/public/content/scores`. Harmless, obvious in the
+  log, and worth knowing before it happens at two in the morning.
