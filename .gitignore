@@ -33,3 +33,10 @@ content/scores/generated/
 content/scores/imported/*
 !content/scores/imported/SOURCES.md
 app/.probe/
+
+# Playwright writes a missing snapshot as "actual" and carries on. On Windows
+# that means fifteen screenshots nobody has looked at appear in `git status`
+# after any e2e run, and one careless `git add -A` commits them as the
+# reference. Only the CI platform's snapshots are committed (docs/06 §1).
+app/tests/**/*-win32.png
+app/tests/**/*-darwin.png
