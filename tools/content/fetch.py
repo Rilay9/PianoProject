@@ -102,6 +102,33 @@ SOURCES: tuple[GitSource, ...] = (
         ),
     ),
     GitSource(
+        id="nifc-chopin",
+        group="KERN",
+        url="https://github.com/pl-wnifc/humdrum-chopin-first-editions.git",
+        dest="kern/chopin-first-editions",
+        license="CC BY 4.0 (Fryderyk Chopin Institute; LICENSE.txt)",
+        pd_region="worldwide",
+        pattern="kern/*.krn",
+        notes=(
+            "The Chopin Heritage in Open Access project. CC BY, so unlike the craigsapp "
+            "editions it needs no --allow-nc — and it covers the Chopin the two unlicensed "
+            "craigsapp repositories cannot."
+        ),
+    ),
+    GitSource(
+        id="nifc-polish",
+        group="KERN",
+        url="https://github.com/pl-wnifc/humdrum-polish-scores.git",
+        dest="kern/polish-scores",
+        license="CC BY 4.0 (Fryderyk Chopin Institute; LICENSE.txt)",
+        pd_region="worldwide",
+        pattern="**/*.krn",
+        notes=(
+            "8,918 files of 19th-century Polish music from the same institute and under the "
+            "same licence. Opt-in: large, and nothing in docs/02 asks for it yet."
+        ),
+    ),
+    GitSource(
         id="mutopia",
         group="MUTO",
         url="https://github.com/MutopiaProject/MutopiaProject.git",
@@ -114,7 +141,7 @@ SOURCES: tuple[GitSource, ...] = (
 )
 
 #: Sources that are not cloned unless named explicitly, because they are big.
-OPT_IN = {"mutopia", "pdmx"}
+OPT_IN = {"mutopia", "pdmx", "nifc-polish"}
 
 
 def reachable(url: str, timeout: int = 30) -> bool:

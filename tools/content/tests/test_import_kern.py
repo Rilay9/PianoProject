@@ -25,7 +25,12 @@ from import_kern import (  # noqa: E402
     ExcludedRepositoryError,
     import_kern as run_import,
     kern_facts,
+    kern_pitch,
+    mode_for,
     publication_year,
+    solo_piano,
+    title_key,
+    work_key,
 )
 
 NC_LICENSE = (
@@ -208,16 +213,44 @@ class TestTheTableIsNotTrusted(KernImportCase):
         self.assertEqual(catalog, [])
         self.assertIn("composition", report.excluded[0][1])
 
-    def test_a_file_with_no_publication_date_is_excluded(self) -> None:
-        repo = self.kern_dir / "joplin"
+    def undated_repo(self, name: str = "joplin") -> None:
+        repo = self.kern_dir / name
         (repo / "kern").mkdir(parents=True)
         (repo / "LICENSE.txt").write_text(NC_LICENSE, encoding="utf-8")
         undated = kern_source().replace("!!!ODT: 1902\n", "")
         (repo / "kern" / "rag.krn").write_text(undated, encoding="utf-8")
+
+    def test_a_file_with_no_date_and_an_unknown_composer_is_excluded(self) -> None:
+        self.undated_repo()
         report, catalog = self.run_with(table_for("joplin"), allow_nc=True)
 
         self.assertEqual(catalog, [])
-        self.assertIn("publication year", report.excluded[0][1])
+        self.assertIn("is not in the table", report.excluded[0][1])
+
+    def test_a_file_with_no_date_passes_on_the_composer_the_table_knows(self) -> None:
+        # The NIFC Chopin case: no year anywhere in the file, but the composer
+        # is named in it and the table knows when that person died.
+        self.undated_repo()
+        path = self.kern_dir / "joplin" / "kern" / "rag.krn"
+        path.write_text(path.read_text(encoding="utf-8") + "!!!PPR: A Publisher, 1839\n", encoding="utf-8")
+        table = table_for("joplin")
+        table["repos"]["joplin"]["composers"] = {"Tester, Terry": {"name": "Terry Tester", "died": 1849}}
+        report, catalog = self.run_with(table, allow_nc=True)
+
+        self.assertEqual(report.excluded, [])
+        self.assertEqual(len(catalog), 1)
+
+    def test_the_composer_route_still_needs_a_named_publisher(self) -> None:
+        # A long-dead composer's work could still be a modern first publication
+        # of a manuscript; a publisher on the file is what rules that out.
+        self.undated_repo()  # no !!!PPR, and "rag.krn" carries no publisher siglum
+        table = table_for("joplin")
+        table["repos"]["joplin"]["composers"] = {"Tester, Terry": {"name": "Terry Tester", "died": 1849}}
+        table["repos"]["joplin"]["sigla"] = []
+        report, catalog = self.run_with(table, allow_nc=True)
+
+        self.assertEqual(catalog, [])
+        self.assertIn("contemporaneous", report.excluded[0][1])
 
 
 class TestFactsReadFromTheSource(unittest.TestCase):
@@ -240,6 +273,86 @@ class TestFactsReadFromTheSource(unittest.TestCase):
 
     def test_an_approximate_date_still_counts(self) -> None:
         self.assertEqual(publication_year({"ODT": "~1905"}), 1905)
+
+
+class TestReadingTheEncoding(unittest.TestCase):
+    """The file-shaped questions group expansion asks before it tables anything."""
+
+    SIGLA = ["BH", "Sm", "KI", "C", "MEIf", "Sam"]
+
+    def test_two_kern_spines_and_no_words_is_a_piano_score(self) -> None:
+        self.assertTrue(solo_piano("**kern\t**kern\n*-\t*-\n"))
+        # A dynamics spine is still a piano score…
+        self.assertTrue(solo_piano("**kern\t**kern\t**dynam\n"))
+
+    def test_a_song_and_a_trio_are_not(self) -> None:
+        self.assertFalse(solo_piano("**kern\t**kern\t**text\n"))   # voice and piano
+        self.assertFalse(solo_piano("**kern\t**kern\t**kern\n"))   # three staves
+        self.assertFalse(solo_piano("**kern\n"))                    # one staff
+
+    def test_the_publisher_and_the_opus_range_leave_the_work_key(self) -> None:
+        # These four filenames are two works, not four: the same preludes under
+        # two publishers, one of whom issued them in two volumes.
+        self.assertEqual(work_key("028-1-BH-001", self.SIGLA), ("028", "001", ""))
+        self.assertEqual(work_key("028_1-12-1a-C-001", self.SIGLA), ("028", "001", ""))
+        self.assertEqual(work_key("028-1-BH-013", self.SIGLA), ("028", "013", ""))
+        self.assertEqual(work_key("028_13-24-1a-C-013", self.SIGLA), ("028", "013", ""))
+
+    def test_a_work_number_can_come_from_the_opus_token(self) -> None:
+        # `034_2` is Op. 34 no. 2 and carries no three-digit group.
+        self.assertEqual(work_key("034_2-1-BH-002", self.SIGLA), ("034", "002", ""))
+        self.assertEqual(work_key("034_1-1-BH", self.SIGLA), ("034", "001", ""))
+
+    def test_a_descriptor_keeps_op_72s_pieces_apart(self) -> None:
+        self.assertEqual(
+            work_key("072-1-MEIf-001-nocturne", self.SIGLA), ("072", "001", "nocturne")
+        )
+        # `072sep` is the same opus issued separately.
+        self.assertEqual(
+            work_key("072sep-1e-Sam-001-ecossaise", self.SIGLA), ("072", "001", "ecossaise")
+        )
+
+    def test_kern_octaves(self) -> None:
+        self.assertEqual(kern_pitch("4c"), 60)
+        self.assertEqual(kern_pitch("4cc"), 72)
+        self.assertEqual(kern_pitch("4C"), 48)
+        self.assertEqual(kern_pitch("8FF"), 41)
+        self.assertEqual(kern_pitch("2b-"), 70)
+        self.assertIsNone(kern_pitch("8r"))
+        self.assertIsNone(kern_pitch("."))
+
+
+class TestKeyAndMode(unittest.TestCase):
+    """
+    Telling a key signature's major from its relative minor.
+
+    Five sharps is B major or G-sharp minor and the encodings do not always say
+    which. Getting it wrong puts the wrong key in the title of a third of the
+    catalog, so each source of evidence has a test.
+    """
+
+    def test_the_catalogue_key_wins(self) -> None:
+        text = "!!!rism-key: G-sharp minor\n*k[f#c#g#d#a#]\n*B:\n"
+        self.assertEqual(mode_for(text, 5), "minor")
+
+    def test_otherwise_the_last_bass_note_decides(self) -> None:
+        # Five sharps, ending on G-sharp: the minor.
+        self.assertEqual(mode_for("*k[f#c#g#d#a#]\n4G#\t4dd#\n", 5), "minor")
+        # Five sharps, ending on B: the major.
+        self.assertEqual(mode_for("*k[f#c#g#d#a#]\n4B\t4dd#\n", 5), "major")
+
+    def test_the_mode_record_is_the_last_resort(self) -> None:
+        # No catalogue key and no notes to read — then believe the record.
+        self.assertEqual(mode_for("*k[b-e-a-]\n*c:\n", -3), "minor")
+        self.assertEqual(mode_for("*k[b-e-a-]\n*E-:\n", -3), "major")
+
+    def test_nothing_at_all_falls_back_to_major(self) -> None:
+        self.assertEqual(mode_for("*k[]\n", 0), "major")
+
+    def test_titles_spell_keys_out(self) -> None:
+        self.assertEqual(title_key(-3, "major"), "E-flat major")
+        self.assertEqual(title_key(3, "minor"), "F-sharp minor")
+        self.assertEqual(title_key(0, "minor"), "A minor")
 
 
 if __name__ == "__main__":

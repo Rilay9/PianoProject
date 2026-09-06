@@ -1,37 +1,184 @@
 {
   "_comment": [
-    "The per-file table for the [KERN] tier (docs/03-content-pipeline.md §2, docs/02 Part D5).",
-    "Rows are keyed by <repository>/<path inside it>. Everything here is data a human edited,",
-    "so tools/content/import_kern.py trusts none of it: it re-reads the repository licence, the",
-    "file's own Humdrum !!!YEM / !!!YEC rights records and the !!!ODT / !!!PDT publication year,",
-    "and excludes a row whose stated publishedYear disagrees with the file.",
+    "The per-file table for the [KERN] tier (docs/03-content-pipeline.md §2, docs/02 Parts D1 and D5).",
     "",
-    "First run (P10, 2026-09-05): the ragtime tier, docs/02 D5 Stages 6-8, all from",
-    "craigsapp/joplin. The other four licensed repositories (Mozart, Haydn, Scarlatti and the",
-    "Bach chorales) get rows in later runs; the three with no licence at all never do."
+    "Two shapes. `items` names one file each, keyed by <repository>/<path inside it>, and is",
+    "right when a handful of pieces are wanted from a large repository. `groups` describes a",
+    "whole opus once — its genre, its concepts, a title pattern and a level — and lets the",
+    "importer fill in the individual pieces, because Chopin's first editions run to 191",
+    "solo-piano works and 191 hand-typed titles would be 191 chances to mistype one.",
+    "",
+    "Everything here is data a human edited, so tools/content/import_kern.py trusts none of it:",
+    "the repository licence, the file's own Humdrum !!!YEM / !!!YEC rights records, the",
+    "!!!ODT / !!!PDT publication year and the !!!COM composer are all re-read from disk, and a",
+    "row whose stated publishedYear disagrees with the file is excluded rather than believed.",
+    "A piece whose level came from its group's default rather than from a judgement about that",
+    "piece is tagged `level-banded` in the catalog, so a guess never passes for a measurement.",
+    "",
+    "Run 1 (P10, 2026-09-05): the ragtime tier, docs/02 D5 Stages 6-8, from craigsapp/joplin.",
+    "Run 2 (P10, 2026-09-06): the Chopin first editions from the Fryderyk Chopin Institute —",
+    "CC BY 4.0, so they need no --allow-nc at all, and they replace the two craigsapp Chopin",
+    "repositories that state no licence. The three unlicensed repositories never get rows."
   ],
-
   "repos": {
     "joplin": {
       "name": "A Digital Edition of Scott Joplin's Music (craigsapp/joplin)",
       "url": "https://github.com/craigsapp/joplin",
       "editor": "Craig Stuart Sapp",
       "editionNotes": "Humdrum **kern edition by Craig Stuart Sapp, referenced against the first editions; converted to MusicXML here by tools/content/convert.py. CC BY-NC-SA 4.0: bundled only in the owner's personal build (docs/00 D10a)."
+    },
+    "chopin-first-editions": {
+      "name": "First Editions of Fryderyk Chopin's Music (NIFC / chopinscores.org)",
+      "url": "https://github.com/pl-wnifc/humdrum-chopin-first-editions",
+      "editor": "Narodowy Instytut Fryderyka Chopina",
+      "composerName": "Fryderyk Chopin",
+      "editionNotes": "Humdrum encoding of the 19th-century first edition, made at the Fryderyk Chopin Institute for the Chopin Heritage in Open Access project. CC BY 4.0 — redistributable, so this needs no --allow-nc; the attribution is the source block.",
+      "_composers_comment": "Keyed on the file's own !!!COM record. The importer reads the composer out of the file and looks the death year up here, because these editions state a publisher and a plate number but never a year. Eleven spellings appear across the 512 files — the publishers were French, German, English and Polish, and one encoder typed 'Chopipn' — so every spelling is listed rather than matched loosely: a name this table does not know still stops the import.",
+      "composers": {
+        "Chopin, Fryderyk": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Chopin,Fryderyk": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Chopin Fryderyk": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Chopin, Fryderyk]": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "[Chopin, Fryderyk]": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Chopin, Frederic": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Fryderyk Chopin": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Frederic Chopin": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "F. Chopin": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Fr. Chopin": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        },
+        "Fryderyk Chopipn": {
+          "name": "Fryderyk Chopin",
+          "died": 1849
+        }
+      },
+      "_publisher_comment": "Where a work survives in several first editions, this order decides which one is imported: the German house first, which is the text most modern editions descend from, then the French and the English. An editorial choice, so it lives here.",
+      "publisherPriority": [
+        "BH",
+        "Sm",
+        "KI",
+        "Sam",
+        "W",
+        "C",
+        "BR",
+        "TR",
+        "MEIf",
+        "LW",
+        "G",
+        "LE",
+        "ME",
+        "MEIj",
+        "HAc",
+        "GE",
+        "COC",
+        "ST",
+        "HO",
+        "WS",
+        "SCHU",
+        "SCH",
+        "SC",
+        "PR",
+        "PL",
+        "PE",
+        "P",
+        "K",
+        "Hat",
+        "CY",
+        "COM",
+        "CH",
+        "BRZ",
+        "BB"
+      ],
+      "sigla": [
+        "MEIf",
+        "MEIj",
+        "SCHU",
+        "BRZ",
+        "HAc",
+        "COC",
+        "SCH",
+        "COM",
+        "BH",
+        "Sm",
+        "KI",
+        "Sam",
+        "BR",
+        "TR",
+        "LW",
+        "LE",
+        "ME",
+        "GE",
+        "ST",
+        "HO",
+        "WS",
+        "SC",
+        "PR",
+        "PL",
+        "PE",
+        "CY",
+        "BB",
+        "CH",
+        "W",
+        "C",
+        "G",
+        "K",
+        "P",
+        "Hat"
+      ],
+      "skipGenres": [
+        "Trio",
+        "Concerto",
+        "Concertant",
+        "Song"
+      ],
+      "skipOpus": {
+        "003": "Op. 3 is the Introduction and Polonaise brillante for cello and piano; the file is the piano part alone.",
+        "013": "Op. 13, Fantasy on Polish Airs, is for piano and orchestra; the file is the piano part alone.",
+        "073": "Op. 73 is the Rondo for two pianos; primo and secondo are separate files and neither stands alone."
+      },
+      "idSuffix": ".nifc",
+      "_idSuffix_comment": "The MuseTrainer library already holds amateur transcriptions of some of these pieces under the obvious ids — song.classical.chopin-prelude-op28-4, both Op. 9 nocturnes, the Op. 64 No. 2 waltz, the first Ballade. This suffix keeps the scholarly first edition beside them instead of colliding with them, and two editions of one piece is a feature: docs/00 D21 wants alternatives at every rung."
     }
   },
-
   "mustStayExcluded": {
     "beethoven-piano-sonatas": "no LICENSE file and no licence statement anywhere in the repository — a bare edition, nothing granted. --allow-nc relaxes non-commercial, not silence.",
     "chopin-mazurkas": "no LICENSE file and no licence statement anywhere in the repository.",
     "chopin-preludes": "no LICENSE file; the .krn files carry a bare '!!!YEC: Copyright <year> by Craig Stuart Sapp' with no !!!YEM licence record — a copyright claim is the opposite of a grant."
   },
-
   "absentFromSource": {
     "joplin/euphonic": "docs/02 D5 Stage 8 names Euphonic Sounds (1909). craigsapp/joplin holds 47 rags and that is not one of them (checked 2026-09-05). Needs another source or another Stage 8 option.",
     "joplin/frog-legs": "docs/02 D5 Stage 8 names James Scott's Frog Legs Rag. craigsapp/joplin is Joplin only.",
-    "joplin/ragtime-nightingale": "docs/02 D5 Stage 8 names Joseph Lamb's Ragtime Nightingale. craigsapp/joplin is Joplin only."
+    "joplin/ragtime-nightingale": "docs/02 D5 Stage 8 names Joseph Lamb's Ragtime Nightingale. craigsapp/joplin is Joplin only.",
+    "scarlatti/K32-K9-K380": "docs/02 D1 Stages 5 and 7 name Scarlatti K.32, K.9 and K.380. None of the three is among the 65 sonatas in craigsapp/scarlatti-keyboard-sonatas, and MutopiaProject holds only K.11, K.455 and K.491. The rung can be filled, but not with those numbers."
   },
-
   "items": {
     "joplin/kern/entertainer.krn": {
       "id": "song.ragtime.joplin-entertainer.kern",
@@ -41,8 +188,16 @@
       "publishedYear": 1902,
       "level": 7.1,
       "abrsmGradeApprox": 6,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["syncopation", "oom-pah-bass", "not-fast", "multi-strain-form"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
       "variantOf": "song.ragtime.joplin-entertainer",
       "variantLabel": "Sapp critical edition",
       "alternatives": [
@@ -52,7 +207,6 @@
       ],
       "editionNotes": "The complete original, marked 'Not fast.' — the docs/02 D5 Stage 6 option. The MuseTrainer edition of the same piece is song.ragtime.joplin-entertainer."
     },
-
     "joplin/kern/peacherine.krn": {
       "id": "song.ragtime.joplin-peacherine-rag",
       "title": "Peacherine Rag",
@@ -60,8 +214,16 @@
       "publishedYear": 1901,
       "level": 7.0,
       "abrsmGradeApprox": 6,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["syncopation", "oom-pah-bass", "not-fast", "multi-strain-form"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
       "alternatives": [
         "song.ragtime.joplin-entertainer.kern",
         "song.ragtime.joplin-easy-winners",
@@ -69,7 +231,6 @@
       ],
       "editionNotes": "Marked 'Not too fast.'; published by John Stark & Son, St. Louis."
     },
-
     "joplin/kern/easywinners.krn": {
       "id": "song.ragtime.joplin-easy-winners",
       "title": "The Easy Winners",
@@ -78,8 +239,16 @@
       "publishedYear": 1901,
       "level": 7.0,
       "abrsmGradeApprox": 6,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["syncopation", "oom-pah-bass", "not-fast", "trio-key-change"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "trio-key-change"
+      ],
       "alternatives": [
         "song.ragtime.joplin-entertainer.kern",
         "song.ragtime.joplin-peacherine-rag",
@@ -87,7 +256,6 @@
       ],
       "editionNotes": "Marked 'Not fast.'; four strains in A flat with a trio."
     },
-
     "joplin/kern/mapleleaf.krn": {
       "id": "song.ragtime.joplin-maple-leaf-rag.kern",
       "title": "Maple Leaf Rag",
@@ -95,8 +263,16 @@
       "publishedYear": 1899,
       "level": 7.2,
       "abrsmGradeApprox": 6,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["syncopation", "oom-pah-bass", "stride-bass", "trio-key-change"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "stride-bass",
+        "trio-key-change"
+      ],
       "variantOf": "song.ragtime.joplin-maple-leaf-rag",
       "variantLabel": "Sapp critical edition",
       "alternatives": [
@@ -106,7 +282,6 @@
       ],
       "editionNotes": "Marked 'Tempo di marcia'; the rag that made Joplin's name. The MuseTrainer edition of the same piece is song.ragtime.joplin-maple-leaf-rag."
     },
-
     "joplin/kern/solace.krn": {
       "id": "song.ragtime.joplin-solace",
       "title": "Solace",
@@ -115,8 +290,16 @@
       "publishedYear": 1909,
       "level": 6.8,
       "abrsmGradeApprox": 5,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["habanera-rhythm", "cantabile", "oom-pah-bass", "not-fast"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "habanera-rhythm",
+        "cantabile",
+        "oom-pah-bass",
+        "not-fast"
+      ],
       "alternatives": [
         "song.ragtime.joplin-bethena",
         "song.ragtime.joplin-entertainer.kern",
@@ -124,7 +307,6 @@
       ],
       "editionNotes": "Marked 'Very slow march time'; a habanera rather than a rag, and the gentlest thing in this set — the easiest way into the style if the leaps of Maple Leaf are still too much."
     },
-
     "joplin/kern/bethena.krn": {
       "id": "song.ragtime.joplin-bethena",
       "title": "Bethena",
@@ -133,8 +315,16 @@
       "publishedYear": 1905,
       "level": 7.3,
       "abrsmGradeApprox": 6,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["ragtime-waltz", "syncopation", "trio-key-change", "3/4"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "ragtime-waltz",
+        "syncopation",
+        "trio-key-change",
+        "3/4"
+      ],
       "alternatives": [
         "song.ragtime.joplin-solace",
         "song.ragtime.joplin-elite-syncopations",
@@ -142,7 +332,6 @@
       ],
       "editionNotes": "Marked 'Valse Tempo'; five strains in 3/4 with a key change at each — long (164 bars), but no faster than the two-steps."
     },
-
     "joplin/kern/elite.krn": {
       "id": "song.ragtime.joplin-elite-syncopations",
       "title": "Elite Syncopations",
@@ -150,8 +339,16 @@
       "publishedYear": 1902,
       "level": 7.2,
       "abrsmGradeApprox": 6,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["syncopation", "oom-pah-bass", "secondary-rag", "trio-key-change"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "secondary-rag",
+        "trio-key-change"
+      ],
       "alternatives": [
         "song.ragtime.joplin-maple-leaf-rag.kern",
         "song.ragtime.joplin-pine-apple-rag",
@@ -159,7 +356,6 @@
       ],
       "editionNotes": "Secondary rag (a three-note figure against the four-note beat) in the third strain."
     },
-
     "joplin/kern/pineapple.krn": {
       "id": "song.ragtime.joplin-pine-apple-rag",
       "title": "Pine Apple Rag",
@@ -167,14 +363,2709 @@
       "publishedYear": 1908,
       "level": 7.4,
       "abrsmGradeApprox": 7,
-      "tracks": ["ragtime", "classical"],
-      "concepts": ["syncopation", "stride-bass", "secondary-rag", "trio-key-change"],
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "stride-bass",
+        "secondary-rag",
+        "trio-key-change"
+      ],
       "alternatives": [
         "song.ragtime.joplin-maple-leaf-rag.kern",
         "song.ragtime.joplin-elite-syncopations",
         "song.ragtime.joplin-entertainer"
       ],
       "editionNotes": "Marked 'Slow March tempo. [quarter]=100'; the tempo is Joplin's own, printed on the first edition."
+    },
+    "joplin/kern/antoinette.krn": {
+      "id": "song.ragtime.joplin-antoinette",
+      "title": "Antoinette",
+      "composer": "Scott Joplin",
+      "publishedYear": 1906,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "march-rhythm",
+        "oom-pah-bass",
+        "multi-strain-form",
+        "dotted-rhythm"
+      ],
+      "subtitle": "March and Two-Step",
+      "alternatives": [
+        "song.ragtime.joplin-entertainer.kern",
+        "song.ragtime.joplin-peacherine-rag",
+        "song.ragtime.joplin-easy-winners"
+      ]
+    },
+    "joplin/kern/augustan.krn": {
+      "id": "song.ragtime.joplin-augustan-club-waltz",
+      "title": "Augustan Club Waltz",
+      "composer": "Scott Joplin",
+      "publishedYear": 1901,
+      "level": 6.8,
+      "abrsmGradeApprox": 5,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "syncopation",
+        "multi-strain-form",
+        "not-fast"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-peacherine-rag",
+        "song.ragtime.joplin-easy-winners",
+        "song.ragtime.joplin-maple-leaf-rag.kern"
+      ]
+    },
+    "joplin/kern/binks.krn": {
+      "id": "song.ragtime.joplin-binks-waltz",
+      "title": "Binks's Waltz",
+      "composer": "Scott Joplin",
+      "publishedYear": 1905,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "syncopation",
+        "multi-strain-form",
+        "not-fast"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-maple-leaf-rag.kern",
+        "song.ragtime.joplin-solace",
+        "song.ragtime.joplin-bethena"
+      ]
+    },
+    "joplin/kern/breeze.krn": {
+      "id": "song.ragtime.joplin-breeze-from-alabama",
+      "title": "A Breeze from Alabama",
+      "composer": "Scott Joplin",
+      "publishedYear": 1902,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "march-rhythm",
+        "oom-pah-bass",
+        "multi-strain-form",
+        "dotted-rhythm"
+      ],
+      "subtitle": "March and Two-Step",
+      "alternatives": [
+        "song.ragtime.joplin-solace",
+        "song.ragtime.joplin-bethena",
+        "song.ragtime.joplin-elite-syncopations"
+      ]
+    },
+    "joplin/kern/cascades.krn": {
+      "id": "song.ragtime.joplin-cascades",
+      "title": "The Cascades",
+      "composer": "Scott Joplin",
+      "publishedYear": 1904,
+      "level": 7.6,
+      "abrsmGradeApprox": 7,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-bethena",
+        "song.ragtime.joplin-elite-syncopations",
+        "song.ragtime.joplin-pine-apple-rag"
+      ]
+    },
+    "joplin/kern/chrysanthemum.krn": {
+      "id": "song.ragtime.joplin-chrysanthemum",
+      "title": "The Chrysanthemum",
+      "composer": "Scott Joplin",
+      "publishedYear": 1904,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "An Afro-American Intermezzo",
+      "alternatives": [
+        "song.ragtime.joplin-elite-syncopations",
+        "song.ragtime.joplin-pine-apple-rag",
+        "song.ragtime.joplin-antoinette"
+      ]
+    },
+    "joplin/kern/cleopha.krn": {
+      "id": "song.ragtime.joplin-cleopha",
+      "title": "Cleopha",
+      "composer": "Scott Joplin",
+      "publishedYear": 1902,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "march-rhythm",
+        "oom-pah-bass",
+        "multi-strain-form",
+        "dotted-rhythm"
+      ],
+      "subtitle": "March and Two-Step",
+      "alternatives": [
+        "song.ragtime.joplin-pine-apple-rag",
+        "song.ragtime.joplin-antoinette",
+        "song.ragtime.joplin-augustan-club-waltz"
+      ]
+    },
+    "joplin/kern/combination.krn": {
+      "id": "song.ragtime.joplin-combination-march",
+      "title": "Combination March",
+      "composer": "Scott Joplin",
+      "publishedYear": 1896,
+      "level": 6.8,
+      "abrsmGradeApprox": 5,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "march-rhythm",
+        "oom-pah-bass",
+        "multi-strain-form",
+        "dotted-rhythm"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-antoinette",
+        "song.ragtime.joplin-augustan-club-waltz",
+        "song.ragtime.joplin-binks-waltz"
+      ]
+    },
+    "joplin/kern/countryclub.krn": {
+      "id": "song.ragtime.joplin-country-club",
+      "title": "Country Club",
+      "composer": "Scott Joplin",
+      "publishedYear": 1909,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "Ragtime Two-Step",
+      "alternatives": [
+        "song.ragtime.joplin-augustan-club-waltz",
+        "song.ragtime.joplin-binks-waltz",
+        "song.ragtime.joplin-breeze-from-alabama"
+      ]
+    },
+    "joplin/kern/crush.krn": {
+      "id": "song.ragtime.joplin-crush-collision-march",
+      "title": "The Crush Collision March",
+      "composer": "Scott Joplin",
+      "publishedYear": 1896,
+      "level": 6.8,
+      "abrsmGradeApprox": 5,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "march-rhythm",
+        "oom-pah-bass",
+        "multi-strain-form",
+        "dotted-rhythm"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-binks-waltz",
+        "song.ragtime.joplin-breeze-from-alabama",
+        "song.ragtime.joplin-cascades"
+      ]
+    },
+    "joplin/kern/eugenia.krn": {
+      "id": "song.ragtime.joplin-eugenia",
+      "title": "Eugenia",
+      "composer": "Scott Joplin",
+      "publishedYear": 1905,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "Rag",
+      "alternatives": [
+        "song.ragtime.joplin-cleopha",
+        "song.ragtime.joplin-combination-march",
+        "song.ragtime.joplin-country-club"
+      ]
+    },
+    "joplin/kern/favorite.krn": {
+      "id": "song.ragtime.joplin-the-favorite",
+      "title": "The Favorite",
+      "composer": "Scott Joplin",
+      "publishedYear": 1902,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-combination-march",
+        "song.ragtime.joplin-country-club",
+        "song.ragtime.joplin-crush-collision-march"
+      ]
+    },
+    "joplin/kern/felicity.krn": {
+      "id": "song.ragtime.joplin-felicity-rag",
+      "title": "Felicity Rag",
+      "composer": "Scott Joplin and Scott Hayden",
+      "publishedYear": 1911,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "A Ragtime Two Step",
+      "alternatives": [
+        "song.ragtime.joplin-country-club",
+        "song.ragtime.joplin-crush-collision-march",
+        "song.ragtime.joplin-eugenia"
+      ]
+    },
+    "joplin/kern/figleaf.krn": {
+      "id": "song.ragtime.joplin-fig-leaf-rag",
+      "title": "Fig Leaf Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1908,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-crush-collision-march",
+        "song.ragtime.joplin-eugenia",
+        "song.ragtime.joplin-the-favorite"
+      ]
+    },
+    "joplin/kern/gladiolus.krn": {
+      "id": "song.ragtime.joplin-gladiolus-rag",
+      "title": "Gladiolus Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1907,
+      "level": 7.6,
+      "abrsmGradeApprox": 7,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-eugenia",
+        "song.ragtime.joplin-the-favorite",
+        "song.ragtime.joplin-felicity-rag"
+      ]
+    },
+    "joplin/kern/harmony.krn": {
+      "id": "song.ragtime.joplin-harmony-club-waltz",
+      "title": "Harmony Club Waltz",
+      "composer": "Scott Joplin",
+      "publishedYear": 1896,
+      "level": 6.8,
+      "abrsmGradeApprox": 5,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "syncopation",
+        "multi-strain-form",
+        "not-fast"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-the-favorite",
+        "song.ragtime.joplin-felicity-rag",
+        "song.ragtime.joplin-fig-leaf-rag"
+      ]
+    },
+    "joplin/kern/heliotrope.krn": {
+      "id": "song.ragtime.joplin-heliotrope-bouquet",
+      "title": "Heliotrope Bouquet",
+      "composer": "Scott Joplin and Louis Chauvin",
+      "publishedYear": 1907,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "cantabile",
+        "not-fast"
+      ],
+      "subtitle": "A Slow Drag Two Step",
+      "alternatives": [
+        "song.ragtime.joplin-felicity-rag",
+        "song.ragtime.joplin-fig-leaf-rag",
+        "song.ragtime.joplin-gladiolus-rag"
+      ]
+    },
+    "joplin/kern/leola.krn": {
+      "id": "song.ragtime.joplin-leola",
+      "title": "Leola",
+      "composer": "Scott Joplin",
+      "publishedYear": 1905,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-fig-leaf-rag",
+        "song.ragtime.joplin-gladiolus-rag",
+        "song.ragtime.joplin-harmony-club-waltz"
+      ]
+    },
+    "joplin/kern/lilyqueen.krn": {
+      "id": "song.ragtime.joplin-lily-queen",
+      "title": "Lily Queen, Ragtime Two-Step",
+      "composer": "Scott Joplin",
+      "publishedYear": 1907,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-gladiolus-rag",
+        "song.ragtime.joplin-harmony-club-waltz",
+        "song.ragtime.joplin-heliotrope-bouquet"
+      ],
+      "editionNotes": "Often catalogued as a collaboration with Arthur Marshall; this edition credits Joplin alone, so the catalog does too."
+    },
+    "joplin/kern/magnetic.krn": {
+      "id": "song.ragtime.joplin-magnetic-rag",
+      "title": "Magnetic Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1914,
+      "level": 7.6,
+      "abrsmGradeApprox": 7,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "editionNotes": "Joplin's last published rag.",
+      "alternatives": [
+        "song.ragtime.joplin-harmony-club-waltz",
+        "song.ragtime.joplin-heliotrope-bouquet",
+        "song.ragtime.joplin-leola"
+      ]
+    },
+    "joplin/kern/majestic.krn": {
+      "id": "song.ragtime.joplin-march-majestic",
+      "title": "March Majestic",
+      "composer": "Scott Joplin",
+      "publishedYear": 1902,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "march-rhythm",
+        "oom-pah-bass",
+        "multi-strain-form",
+        "dotted-rhythm"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-heliotrope-bouquet",
+        "song.ragtime.joplin-leola",
+        "song.ragtime.joplin-lily-queen"
+      ]
+    },
+    "joplin/kern/newrag.krn": {
+      "id": "song.ragtime.joplin-new-rag",
+      "title": "Scott Joplin's New Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1912,
+      "level": 7.6,
+      "abrsmGradeApprox": 7,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-lily-queen",
+        "song.ragtime.joplin-magnetic-rag",
+        "song.ragtime.joplin-march-majestic"
+      ]
+    },
+    "joplin/kern/nonpareil.krn": {
+      "id": "song.ragtime.joplin-nonpareil",
+      "title": "The Nonpareil",
+      "composer": "Scott Joplin",
+      "publishedYear": 1907,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-magnetic-rag",
+        "song.ragtime.joplin-march-majestic",
+        "song.ragtime.joplin-new-rag"
+      ]
+    },
+    "joplin/kern/original.krn": {
+      "id": "song.ragtime.joplin-original-rags",
+      "title": "Original Rags",
+      "composer": "Scott Joplin",
+      "publishedYear": 1899,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "Rag",
+      "alternatives": [
+        "song.ragtime.joplin-march-majestic",
+        "song.ragtime.joplin-new-rag",
+        "song.ragtime.joplin-nonpareil"
+      ]
+    },
+    "joplin/kern/palmleaf.krn": {
+      "id": "song.ragtime.joplin-palm-leaf-rag",
+      "title": "Palm Leaf Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1903,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-new-rag",
+        "song.ragtime.joplin-nonpareil",
+        "song.ragtime.joplin-original-rags"
+      ]
+    },
+    "joplin/kern/paragon.krn": {
+      "id": "song.ragtime.joplin-paragon-rag",
+      "title": "The Paragon Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1909,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-nonpareil",
+        "song.ragtime.joplin-original-rags",
+        "song.ragtime.joplin-palm-leaf-rag"
+      ]
+    },
+    "joplin/kern/pleasant.krn": {
+      "id": "song.ragtime.joplin-pleasant-moments",
+      "title": "Pleasant Moments",
+      "composer": "Scott Joplin",
+      "publishedYear": 1909,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "syncopation",
+        "multi-strain-form",
+        "not-fast"
+      ],
+      "subtitle": "Ragtime Waltz",
+      "alternatives": [
+        "song.ragtime.joplin-paragon-rag",
+        "song.ragtime.joplin-reflection-rag",
+        "song.ragtime.joplin-rose-bud-march"
+      ]
+    },
+    "joplin/kern/reflection.krn": {
+      "id": "song.ragtime.joplin-reflection-rag",
+      "title": "Reflection Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1917,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "Syncopated Musings",
+      "alternatives": [
+        "song.ragtime.joplin-pleasant-moments",
+        "song.ragtime.joplin-rose-bud-march",
+        "song.ragtime.joplin-rose-leaf-rag"
+      ]
+    },
+    "joplin/kern/rosebud.krn": {
+      "id": "song.ragtime.joplin-rose-bud-march",
+      "title": "The Rose-bud March",
+      "composer": "Scott Joplin",
+      "publishedYear": 1905,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "march-rhythm",
+        "oom-pah-bass",
+        "multi-strain-form",
+        "dotted-rhythm"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-reflection-rag",
+        "song.ragtime.joplin-rose-leaf-rag",
+        "song.ragtime.joplin-school-of-ragtime"
+      ]
+    },
+    "joplin/kern/roseleaf.krn": {
+      "id": "song.ragtime.joplin-rose-leaf-rag",
+      "title": "Rose Leaf Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1907,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-rose-bud-march",
+        "song.ragtime.joplin-school-of-ragtime",
+        "song.ragtime.joplin-search-light-rag"
+      ]
+    },
+    "joplin/kern/school.krn": {
+      "id": "song.ragtime.joplin-school-of-ragtime",
+      "title": "School of Ragtime",
+      "composer": "Scott Joplin",
+      "publishedYear": 1906,
+      "level": 6.4,
+      "abrsmGradeApprox": 4,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast"
+      ],
+      "subtitle": "Six Exercises for Piano",
+      "editionNotes": "Joplin's own ragtime method: six short exercises, each one syncopation figure against a steady bass. The best possible way into the style.",
+      "alternatives": [
+        "song.ragtime.joplin-rose-leaf-rag",
+        "song.ragtime.joplin-search-light-rag",
+        "song.ragtime.joplin-something-doing"
+      ]
+    },
+    "joplin/kern/searchlight.krn": {
+      "id": "song.ragtime.joplin-search-light-rag",
+      "title": "Search-Light Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1907,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-school-of-ragtime",
+        "song.ragtime.joplin-something-doing",
+        "song.ragtime.joplin-stoptime-rag"
+      ]
+    },
+    "joplin/kern/something.krn": {
+      "id": "song.ragtime.joplin-something-doing",
+      "title": "Something Doing",
+      "composer": "Scott Joplin and Scott Hayden",
+      "publishedYear": 1903,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "A Ragtime Two Step",
+      "alternatives": [
+        "song.ragtime.joplin-stoptime-rag",
+        "song.ragtime.joplin-sugar-cane",
+        "song.ragtime.joplin-sunflower-slow-drag"
+      ]
+    },
+    "joplin/kern/stoptime.krn": {
+      "id": "song.ragtime.joplin-stoptime-rag",
+      "title": "Stoptime Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1910,
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "editionNotes": "Joplin asks the player to stamp the heel on the floor through the stop-time breaks; the printed instruction is part of the piece.",
+      "alternatives": [
+        "song.ragtime.joplin-sugar-cane",
+        "song.ragtime.joplin-sunflower-slow-drag",
+        "song.ragtime.joplin-swipesy-cakewalk"
+      ]
+    },
+    "joplin/kern/sugarcane.krn": {
+      "id": "song.ragtime.joplin-sugar-cane",
+      "title": "Sugar Cane",
+      "composer": "Scott Joplin",
+      "publishedYear": 1908,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "Ragtime Two-Step",
+      "alternatives": [
+        "song.ragtime.joplin-sunflower-slow-drag",
+        "song.ragtime.joplin-swipesy-cakewalk",
+        "song.ragtime.joplin-wall-street-rag"
+      ]
+    },
+    "joplin/kern/sunflower.krn": {
+      "id": "song.ragtime.joplin-sunflower-slow-drag",
+      "title": "Sunflower Slow Drag",
+      "composer": "Scott Joplin and Scott Hayden",
+      "publishedYear": 1901,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-entertainer.kern",
+        "song.ragtime.joplin-peacherine-rag",
+        "song.ragtime.joplin-easy-winners"
+      ]
+    },
+    "joplin/kern/swipesy.krn": {
+      "id": "song.ragtime.joplin-swipesy-cakewalk",
+      "title": "Swipsey",
+      "composer": "Scott Joplin and Arthur Marshall",
+      "publishedYear": 1902,
+      "level": 6.8,
+      "abrsmGradeApprox": 5,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-peacherine-rag",
+        "song.ragtime.joplin-easy-winners",
+        "song.ragtime.joplin-maple-leaf-rag.kern"
+      ]
+    },
+    "joplin/kern/wallstreet.krn": {
+      "id": "song.ragtime.joplin-wall-street-rag",
+      "title": "Wall Street Rag",
+      "composer": "Scott Joplin",
+      "publishedYear": 1909,
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "alternatives": [
+        "song.ragtime.joplin-easy-winners",
+        "song.ragtime.joplin-maple-leaf-rag.kern",
+        "song.ragtime.joplin-solace"
+      ]
+    },
+    "joplin/kern/weepingwillow.krn": {
+      "id": "song.ragtime.joplin-weeping-willow",
+      "title": "Weeping Willow",
+      "composer": "Scott Joplin",
+      "publishedYear": 1903,
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "levelBanded": true,
+      "tracks": [
+        "ragtime",
+        "classical"
+      ],
+      "concepts": [
+        "syncopation",
+        "oom-pah-bass",
+        "not-fast",
+        "multi-strain-form"
+      ],
+      "subtitle": "Rag",
+      "alternatives": [
+        "song.ragtime.joplin-maple-leaf-rag.kern",
+        "song.ragtime.joplin-solace",
+        "song.ragtime.joplin-bethena"
+      ]
     }
+  },
+  "groups": [
+    {
+      "repo": "chopin-first-editions",
+      "opus": "028",
+      "idPrefix": "song.classical.chopin-prelude-op28",
+      "titleTemplate": "Prelude No. {n} in {key}, Op. 28",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "romantic-miniature",
+        "voicing-melody",
+        "rubato",
+        "pedalling"
+      ],
+      "level": 7.8,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 7.4,
+          "abrsmGradeApprox": 6
+        },
+        "002": {
+          "level": 6.6,
+          "abrsmGradeApprox": 5
+        },
+        "003": {
+          "level": 8.2,
+          "abrsmGradeApprox": 7
+        },
+        "004": {
+          "level": 6.2,
+          "abrsmGradeApprox": 4,
+          "tracks": [
+            "classical",
+            "beautiful"
+          ],
+          "concepts": [
+            "cantabile",
+            "chromatic-harmony",
+            "voicing-melody",
+            "pedalling"
+          ]
+        },
+        "005": {
+          "level": 8.0,
+          "abrsmGradeApprox": 7
+        },
+        "006": {
+          "level": 6.0,
+          "abrsmGradeApprox": 4,
+          "concepts": [
+            "cantabile",
+            "left-hand-melody",
+            "voicing-melody",
+            "pedalling"
+          ]
+        },
+        "007": {
+          "level": 5.4,
+          "abrsmGradeApprox": 3,
+          "concepts": [
+            "romantic-miniature",
+            "mazurka-rhythm",
+            "voicing-melody",
+            "pedalling"
+          ]
+        },
+        "008": {
+          "level": 8.6,
+          "abrsmGradeApprox": 8
+        },
+        "009": {
+          "level": 7.0,
+          "abrsmGradeApprox": 6
+        },
+        "010": {
+          "level": 7.8,
+          "abrsmGradeApprox": 7
+        },
+        "011": {
+          "level": 7.0,
+          "abrsmGradeApprox": 6
+        },
+        "012": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8
+        },
+        "013": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6
+        },
+        "014": {
+          "level": 8.2,
+          "abrsmGradeApprox": 7
+        },
+        "015": {
+          "level": 7.4,
+          "abrsmGradeApprox": 6
+        },
+        "016": {
+          "level": 9.0,
+          "abrsmGradeApprox": 8
+        },
+        "017": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6
+        },
+        "018": {
+          "level": 8.2,
+          "abrsmGradeApprox": 7
+        },
+        "019": {
+          "level": 8.6,
+          "abrsmGradeApprox": 8
+        },
+        "020": {
+          "level": 6.0,
+          "abrsmGradeApprox": 4,
+          "concepts": [
+            "chorale-texture",
+            "voicing-melody",
+            "dynamics",
+            "pedalling"
+          ]
+        },
+        "021": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6
+        },
+        "022": {
+          "level": 8.0,
+          "abrsmGradeApprox": 7
+        },
+        "023": {
+          "level": 7.8,
+          "abrsmGradeApprox": 7
+        },
+        "024": {
+          "level": 9.0,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "045",
+      "idPrefix": "song.classical.chopin-prelude-op45",
+      "titleTemplate": "Prelude in {key}, Op. 45",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "romantic-miniature",
+        "voicing-melody",
+        "rubato",
+        "pedalling"
+      ],
+      "level": 7.8,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "009",
+      "idPrefix": "song.classical.chopin-nocturne-op9",
+      "titleTemplate": "Nocturne in {key}, Op. 9 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 8.0,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 8.0,
+          "abrsmGradeApprox": 7
+        },
+        "002": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6
+        },
+        "003": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "015",
+      "idPrefix": "song.classical.chopin-nocturne-op15",
+      "titleTemplate": "Nocturne in {key}, Op. 15 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 7.8,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 7.8,
+          "abrsmGradeApprox": 7
+        },
+        "002": {
+          "level": 8.2,
+          "abrsmGradeApprox": 7
+        },
+        "003": {
+          "level": 7.4,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "027",
+      "idPrefix": "song.classical.chopin-nocturne-op27",
+      "titleTemplate": "Nocturne in {key}, Op. 27 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 8.5,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8
+        },
+        "002": {
+          "level": 8.6,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "032",
+      "idPrefix": "song.classical.chopin-nocturne-op32",
+      "titleTemplate": "Nocturne in {key}, Op. 32 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 7.6,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 7.4,
+          "abrsmGradeApprox": 6
+        },
+        "002": {
+          "level": 7.8,
+          "abrsmGradeApprox": 7
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "037",
+      "idPrefix": "song.classical.chopin-nocturne-op37",
+      "titleTemplate": "Nocturne in {key}, Op. 37 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 7.8,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6
+        },
+        "002": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "048",
+      "idPrefix": "song.classical.chopin-nocturne-op48",
+      "titleTemplate": "Nocturne in {key}, Op. 48 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 8.6,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 8.8,
+          "abrsmGradeApprox": 8
+        },
+        "002": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "055",
+      "idPrefix": "song.classical.chopin-nocturne-op55",
+      "titleTemplate": "Nocturne in {key}, Op. 55 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 7.8,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 7.4,
+          "abrsmGradeApprox": 6
+        },
+        "002": {
+          "level": 8.2,
+          "abrsmGradeApprox": 7
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "062",
+      "idPrefix": "song.classical.chopin-nocturne-op62",
+      "titleTemplate": "Nocturne in {key}, Op. 62 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "cantabile",
+        "voicing-melody",
+        "ornamented-melody",
+        "pedalling",
+        "rubato"
+      ],
+      "level": 8.4,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8
+        },
+        "002": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "006",
+      "idPrefix": "song.classical.chopin-mazurka-op6",
+      "titleTemplate": "Mazurka in {key}, Op. 6 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6
+        },
+        "002": {
+          "level": 7.0,
+          "abrsmGradeApprox": 6
+        },
+        "003": {
+          "level": 7.4
+        },
+        "004": {
+          "level": 6.8,
+          "abrsmGradeApprox": 5
+        },
+        "005": {
+          "level": 6.0,
+          "abrsmGradeApprox": 4
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "007",
+      "idPrefix": "song.classical.chopin-mazurka-op7",
+      "titleTemplate": "Mazurka in {key}, Op. 7 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.2,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "level": 7.0,
+          "abrsmGradeApprox": 6
+        },
+        "002": {
+          "level": 6.8,
+          "abrsmGradeApprox": 5
+        },
+        "003": {
+          "level": 7.6
+        },
+        "004": {
+          "level": 7.0,
+          "abrsmGradeApprox": 6
+        },
+        "005": {
+          "level": 6.0,
+          "abrsmGradeApprox": 4
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "017",
+      "idPrefix": "song.classical.chopin-mazurka-op17",
+      "titleTemplate": "Mazurka in {key}, Op. 17 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "004": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "024",
+      "idPrefix": "song.classical.chopin-mazurka-op24",
+      "titleTemplate": "Mazurka in {key}, Op. 24 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "level": 6.8,
+          "abrsmGradeApprox": 5
+        },
+        "002": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "030",
+      "idPrefix": "song.classical.chopin-mazurka-op30",
+      "titleTemplate": "Mazurka in {key}, Op. 30 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "002": {
+          "level": 6.8,
+          "abrsmGradeApprox": 5
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "033",
+      "idPrefix": "song.classical.chopin-mazurka-op33",
+      "titleTemplate": "Mazurka in {key}, Op. 33 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "002": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6
+        },
+        "004": {
+          "level": 7.8,
+          "abrsmGradeApprox": 7
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "041",
+      "idPrefix": "song.classical.chopin-mazurka-op41",
+      "titleTemplate": "Mazurka in {key}, Op. 41 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "002": {
+          "level": 7.0,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "050",
+      "idPrefix": "song.classical.chopin-mazurka-op50",
+      "titleTemplate": "Mazurka in {key}, Op. 50 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.8,
+      "abrsmGradeApprox": 6
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "056",
+      "idPrefix": "song.classical.chopin-mazurka-op56",
+      "titleTemplate": "Mazurka in {key}, Op. 56 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 8.0,
+      "abrsmGradeApprox": 6
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "059",
+      "idPrefix": "song.classical.chopin-mazurka-op59",
+      "titleTemplate": "Mazurka in {key}, Op. 59 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 8.0,
+      "abrsmGradeApprox": 6
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "063",
+      "idPrefix": "song.classical.chopin-mazurka-op63",
+      "titleTemplate": "Mazurka in {key}, Op. 63 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.6,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "003": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "067",
+      "idPrefix": "song.classical.chopin-mazurka-op67",
+      "titleTemplate": "Mazurka in {key}, Op. 67 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 7.0,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "002": {
+          "level": 6.6,
+          "abrsmGradeApprox": 5
+        },
+        "004": {
+          "level": 7.0,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "068",
+      "idPrefix": "song.classical.chopin-mazurka-op68",
+      "titleTemplate": "Mazurka in {key}, Op. 68 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "mazurka-rhythm",
+        "dance-form",
+        "rubato",
+        "chromatic-harmony"
+      ],
+      "level": 6.8,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "002": {
+          "level": 6.6,
+          "abrsmGradeApprox": 5
+        },
+        "003": {
+          "level": 6.4,
+          "abrsmGradeApprox": 5
+        },
+        "004": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "018",
+      "idPrefix": "song.classical.chopin-waltz-op18",
+      "titleTemplate": "Grande valse brillante in {key}, Op. 18",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "voicing-melody",
+        "rubato",
+        "ornamented-melody"
+      ],
+      "level": 8.0,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "034",
+      "idPrefix": "song.classical.chopin-waltz-op34",
+      "titleTemplate": "Waltz in {key}, Op. 34 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "voicing-melody",
+        "rubato",
+        "ornamented-melody"
+      ],
+      "level": 8.0,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 8.2,
+          "abrsmGradeApprox": 7
+        },
+        "002": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6,
+          "tracks": [
+            "classical",
+            "beautiful"
+          ]
+        },
+        "003": {
+          "level": 8.0,
+          "abrsmGradeApprox": 7
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "042",
+      "idPrefix": "song.classical.chopin-waltz-op42",
+      "titleTemplate": "Waltz in {key}, Op. 42",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "voicing-melody",
+        "rubato",
+        "ornamented-melody"
+      ],
+      "level": 8.6,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "064",
+      "idPrefix": "song.classical.chopin-waltz-op64",
+      "titleTemplate": "Waltz in {key}, Op. 64 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "voicing-melody",
+        "rubato",
+        "ornamented-melody"
+      ],
+      "level": 8.0,
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "level": 8.0,
+          "abrsmGradeApprox": 7
+        },
+        "002": {
+          "level": 7.8,
+          "abrsmGradeApprox": 7
+        },
+        "003": {
+          "level": 8.0,
+          "abrsmGradeApprox": 7
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "069",
+      "idPrefix": "song.classical.chopin-waltz-op69",
+      "titleTemplate": "Waltz in {key}, Op. 69 No. {n}",
+      "tracks": [
+        "classical",
+        "beautiful"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "voicing-melody",
+        "rubato",
+        "ornamented-melody"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6
+        },
+        "002": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "070",
+      "idPrefix": "song.classical.chopin-waltz-op70",
+      "titleTemplate": "Waltz in {key}, Op. 70 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "voicing-melody",
+        "rubato",
+        "ornamented-melody"
+      ],
+      "level": 7.6,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "level": 7.8,
+          "abrsmGradeApprox": 7
+        },
+        "002": {
+          "level": 7.4,
+          "abrsmGradeApprox": 6
+        },
+        "003": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "WaltzEm",
+      "idPrefix": "song.classical.chopin-waltz-e-minor",
+      "titleTemplate": "Waltz in {key}, Op. posth. (B. 56)",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "waltz-bass",
+        "voicing-melody",
+        "rubato",
+        "ornamented-melody"
+      ],
+      "level": 7.8,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "010",
+      "idPrefix": "song.classical.chopin-etude-op10",
+      "titleTemplate": "Étude in {key}, Op. 10 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "etude",
+        "velocity",
+        "finger-independence",
+        "extended-technique"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8,
+      "works": {
+        "003": {
+          "level": 8.6,
+          "abrsmGradeApprox": 8,
+          "tracks": [
+            "classical",
+            "beautiful"
+          ],
+          "concepts": [
+            "cantabile",
+            "voicing-melody",
+            "double-notes",
+            "rubato"
+          ]
+        },
+        "005": {
+          "level": 9.2,
+          "abrsmGradeApprox": 8
+        },
+        "006": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8,
+          "concepts": [
+            "cantabile",
+            "chromatic-harmony",
+            "voicing-melody"
+          ]
+        },
+        "009": {
+          "level": 9.0,
+          "abrsmGradeApprox": 8
+        },
+        "012": {
+          "level": 9.4,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "025",
+      "idPrefix": "song.classical.chopin-etude-op25",
+      "titleTemplate": "Étude in {key}, Op. 25 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "etude",
+        "velocity",
+        "finger-independence",
+        "extended-technique"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "level": 8.8,
+          "abrsmGradeApprox": 8,
+          "concepts": [
+            "arpeggiated-texture",
+            "voicing-melody",
+            "pedalling"
+          ]
+        },
+        "002": {
+          "level": 9.0,
+          "abrsmGradeApprox": 8
+        },
+        "007": {
+          "skip": "music21 cannot export it: the cadenza in bar 27 is a 29-in-24 tuplet whose base value is a 2048th note, and MusicXML stops at 1024th. Quantising it would change the music, so the piece is left out rather than altered. Import your own copy if you want it."
+        },
+        "009": {
+          "level": 8.8,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "023",
+      "idPrefix": "song.classical.chopin-ballade-1",
+      "titleTemplate": "Ballade No. 1 in {key}, Op. 23",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "038",
+      "idPrefix": "song.classical.chopin-ballade-2",
+      "titleTemplate": "Ballade No. 2 in {key}, Op. 38",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "047",
+      "idPrefix": "song.classical.chopin-ballade-3",
+      "titleTemplate": "Ballade No. 3 in {key}, Op. 47",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.2,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "052",
+      "idPrefix": "song.classical.chopin-ballade-4",
+      "titleTemplate": "Ballade No. 4 in {key}, Op. 52",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.6,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "020",
+      "idPrefix": "song.classical.chopin-scherzo-1",
+      "titleTemplate": "Scherzo No. 1 in {key}, Op. 20",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "031",
+      "idPrefix": "song.classical.chopin-scherzo-2",
+      "titleTemplate": "Scherzo No. 2 in {key}, Op. 31",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "039",
+      "idPrefix": "song.classical.chopin-scherzo-3",
+      "titleTemplate": "Scherzo No. 3 in {key}, Op. 39",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.5,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "054",
+      "idPrefix": "song.classical.chopin-scherzo-4",
+      "titleTemplate": "Scherzo No. 4 in {key}, Op. 54",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "004",
+      "idPrefix": "song.classical.chopin-sonata-1",
+      "titleTemplate": "Piano Sonata No. 1 in C minor, Op. 4 — mvt {n} ({key})",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "sonata-form",
+        "large-form",
+        "voicing-melody",
+        "dramatic-contrast"
+      ],
+      "level": 8.6,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "035",
+      "idPrefix": "song.classical.chopin-sonata-2",
+      "titleTemplate": "Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt {n} ({key})",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "sonata-form",
+        "large-form",
+        "voicing-melody",
+        "dramatic-contrast"
+      ],
+      "level": 9.2,
+      "abrsmGradeApprox": 8,
+      "works": {
+        "003": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8,
+          "title": "Piano Sonata No. 2, Op. 35 — Marche funèbre",
+          "concepts": [
+            "funeral-march",
+            "chorale-texture",
+            "voicing-melody",
+            "dynamics"
+          ]
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "058",
+      "idPrefix": "song.classical.chopin-sonata-3",
+      "titleTemplate": "Piano Sonata No. 3 in B minor, Op. 58 — mvt {n} ({key})",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "sonata-form",
+        "large-form",
+        "voicing-melody",
+        "dramatic-contrast"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "001",
+      "idPrefix": "song.classical.chopin-rondo-op1",
+      "titleTemplate": "Rondo in {key}, Op. 1",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "rondo-form",
+        "velocity",
+        "classical-style",
+        "ornamented-melody"
+      ],
+      "level": 8.2,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "005",
+      "idPrefix": "song.classical.chopin-rondo-mazur",
+      "titleTemplate": "Rondo à la mazur in {key}, Op. 5",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "rondo-form",
+        "velocity",
+        "classical-style",
+        "ornamented-melody"
+      ],
+      "level": 8.4,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "016",
+      "idPrefix": "song.classical.chopin-rondo-op16",
+      "titleTemplate": "Rondo in {key}, Op. 16",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "rondo-form",
+        "velocity",
+        "classical-style",
+        "ornamented-melody"
+      ],
+      "level": 8.8,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "012",
+      "idPrefix": "song.classical.chopin-variations-op12",
+      "titleTemplate": "Variations brillantes in {key}, Op. 12",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "theme-and-variations",
+        "velocity",
+        "ornamented-melody"
+      ],
+      "level": 8.4,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "VGNA",
+      "idPrefix": "song.classical.chopin-variations-german-air",
+      "titleTemplate": "Variations on a German National Air in {key}, Op. posth.",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "theme-and-variations",
+        "velocity",
+        "ornamented-melody"
+      ],
+      "level": 8.2,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "019",
+      "idPrefix": "song.classical.chopin-bolero",
+      "titleTemplate": "Bolero in {key}, Op. 19",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "dance-form",
+        "dotted-rhythm",
+        "dramatic-contrast"
+      ],
+      "level": 8.6,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "029",
+      "idPrefix": "song.classical.chopin-impromptu-1",
+      "titleTemplate": "Impromptu No. 1 in {key}, Op. 29",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "cross-rhythm",
+        "velocity",
+        "cantabile",
+        "rubato"
+      ],
+      "level": 8.8,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "036",
+      "idPrefix": "song.classical.chopin-impromptu-2",
+      "titleTemplate": "Impromptu No. 2 in {key}, Op. 36",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "cross-rhythm",
+        "velocity",
+        "cantabile",
+        "rubato"
+      ],
+      "level": 8.8,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "051",
+      "idPrefix": "song.classical.chopin-impromptu-3",
+      "titleTemplate": "Impromptu No. 3 in {key}, Op. 51",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "cross-rhythm",
+        "velocity",
+        "cantabile",
+        "rubato"
+      ],
+      "level": 9.0,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "066",
+      "idPrefix": "song.classical.chopin-fantaisie-impromptu",
+      "titleTemplate": "Fantaisie-impromptu in {key}, Op. 66",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "cross-rhythm",
+        "velocity",
+        "cantabile",
+        "rubato"
+      ],
+      "level": 9.0,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "043",
+      "idPrefix": "song.classical.chopin-tarantelle",
+      "titleTemplate": "Tarantelle in {key}, Op. 43",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "velocity",
+        "dance-form",
+        "cross-rhythm"
+      ],
+      "level": 8.8,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "046",
+      "idPrefix": "song.classical.chopin-allegro-de-concert",
+      "titleTemplate": "Allegro de concert in {key}, Op. 46",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "049",
+      "idPrefix": "song.classical.chopin-fantaisie",
+      "titleTemplate": "Fantaisie in {key}, Op. 49",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "057",
+      "idPrefix": "song.classical.chopin-berceuse",
+      "titleTemplate": "Berceuse in {key}, Op. 57",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "ostinato-bass",
+        "ornamented-melody",
+        "cantabile",
+        "pedalling"
+      ],
+      "level": 8.8,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "060",
+      "idPrefix": "song.classical.chopin-barcarolle",
+      "titleTemplate": "Barcarolle in {key}, Op. 60",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "barcarolle",
+        "voicing-melody",
+        "double-notes",
+        "rubato"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "061",
+      "idPrefix": "song.classical.chopin-polonaise-fantaisie",
+      "titleTemplate": "Polonaise-fantaisie in {key}, Op. 61",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "large-form",
+        "dramatic-contrast",
+        "virtuoso-technique",
+        "rubato"
+      ],
+      "level": 9.6,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "022",
+      "idPrefix": "song.classical.chopin-grande-polonaise",
+      "titleTemplate": "Grande polonaise brillante in {key}, Op. 22",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 9.2,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "044",
+      "idPrefix": "song.classical.chopin-polonaise-op44",
+      "titleTemplate": "Polonaise in {key}, Op. 44",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "053",
+      "idPrefix": "song.classical.chopin-polonaise-op53",
+      "titleTemplate": "Polonaise in {key}, Op. 53 (“Heroic”)",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 9.4,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "071",
+      "idPrefix": "song.classical.chopin-polonaise-op71",
+      "titleTemplate": "Polonaise in {key}, Op. 71 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 8.4,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "PolGm",
+      "idPrefix": "song.classical.chopin-polonaise-g-minor",
+      "titleTemplate": "Polonaise in {key}, B. 1 (Op. posth.)",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 7.6,
+      "abrsmGradeApprox": 6
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "PolGsharpm",
+      "idPrefix": "song.classical.chopin-polonaise-g-sharp-minor",
+      "titleTemplate": "Polonaise in {key}, B. 6 (Op. posth.)",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 8.2,
+      "abrsmGradeApprox": 7
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "MEG",
+      "idPrefix": "song.classical.chopin-allegretto",
+      "titleTemplate": "Allegretto in {key}, B. 128",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "romantic-miniature",
+        "mazurka-rhythm",
+        "voicing-melody"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "026",
+      "idPrefix": "song.classical.chopin-polonaise-op26",
+      "titleTemplate": "Polonaise in {key}, Op. 26 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 8.8,
+      "abrsmGradeApprox": 8
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "040",
+      "idPrefix": "song.classical.chopin-polonaise-op40",
+      "titleTemplate": "Polonaise in {key}, Op. 40 No. {n}",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "polonaise-rhythm",
+        "dotted-rhythm",
+        "octaves",
+        "dramatic-contrast"
+      ],
+      "level": 8.5,
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "level": 8.4,
+          "abrsmGradeApprox": 8,
+          "title": "Polonaise in A major, Op. 40 No. 1 (“Military”)"
+        },
+        "002": {
+          "level": 8.6,
+          "abrsmGradeApprox": 8
+        }
+      }
+    },
+    {
+      "repo": "chopin-first-editions",
+      "opus": "072",
+      "idPrefix": "song.classical.chopin-op72",
+      "titleTemplate": "Op. 72",
+      "tracks": [
+        "classical"
+      ],
+      "concepts": [
+        "romantic-miniature",
+        "voicing-melody",
+        "rubato",
+        "pedalling"
+      ],
+      "level": 7.4,
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001-nocturne": {
+          "level": 7.2,
+          "abrsmGradeApprox": 6,
+          "id": "song.classical.chopin-nocturne-op72-1.nifc",
+          "title": "Nocturne in {key}, Op. 72 No. 1",
+          "concepts": [
+            "cantabile",
+            "voicing-melody",
+            "ornamented-melody",
+            "pedalling",
+            "rubato"
+          ],
+          "tracks": [
+            "classical",
+            "beautiful"
+          ]
+        },
+        "002-marche-funebre": {
+          "level": 7.6,
+          "abrsmGradeApprox": 6,
+          "id": "song.classical.chopin-marche-funebre-op72.nifc",
+          "title": "Marche funèbre in {key}, Op. 72 No. 2",
+          "concepts": [
+            "funeral-march",
+            "chorale-texture",
+            "dotted-rhythm",
+            "dynamics"
+          ]
+        },
+        "001-ecossaise": {
+          "level": 6.4,
+          "abrsmGradeApprox": 5,
+          "id": "song.classical.chopin-ecossaise-op72-1.nifc",
+          "title": "Écossaise No. 1 in {key}, Op. 72 No. 3",
+          "concepts": [
+            "dance-form",
+            "romantic-miniature",
+            "velocity"
+          ]
+        },
+        "002-ecossaise": {
+          "level": 6.4,
+          "abrsmGradeApprox": 5,
+          "id": "song.classical.chopin-ecossaise-op72-2.nifc",
+          "title": "Écossaise No. 2 in {key}, Op. 72 No. 3",
+          "concepts": [
+            "dance-form",
+            "romantic-miniature",
+            "velocity"
+          ]
+        },
+        "003-ecossaise": {
+          "level": 6.6,
+          "abrsmGradeApprox": 5,
+          "id": "song.classical.chopin-ecossaise-op72-3.nifc",
+          "title": "Écossaise No. 3 in {key}, Op. 72 No. 3",
+          "concepts": [
+            "dance-form",
+            "romantic-miniature",
+            "velocity"
+          ]
+        },
+        "001-marche-funebre": {
+          "skip": "duplicate of Op. 72 No. 2; the Meissonnier print is the one imported."
+        },
+        "004-ecossaise": {
+          "skip": "duplicate of Écossaise No. 2; the separate Schlesinger issue is the one imported."
+        },
+        "005": {
+          "skip": "duplicate of Écossaise No. 3; the separate Schlesinger issue is the one imported."
+        }
+      }
+    }
+  ],
+  "checkedAndRefused": {
+    "_comment": "Humdrum collections looked at and turned down, with the reason, so nobody spends an afternoon rediscovering them. Found through humdrum-tools/humdrum-data, which indexes 75 collections; the piano-relevant ones are listed here.",
+    "humdrum-tools/bach-wtc": "96 files, the Well-Tempered Clavier. No LICENSE, and every file carries '!!!YEM: Rights to all derivative electronic formats reserved.' — an explicit reservation, the opposite of a grant. docs/03 §2 asked whether a WTC kern edition existed under craigsapp; it exists under humdrum-tools and cannot be used.",
+    "humdrum-tools/inventions": "30 files, the Two- and Three-Part Inventions, same David Huron encoding and the same reservation. docs/02 D1 Stage 7 wants Inventions 1, 4, 8 and 13 — they will have to come from [PDMX] or [MUTO].",
+    "craigsapp/hummel-preludes": "24 preludes, Op. 67. No LICENSE and a bare '!!!YEC: Copyright 2008 by Craig Stuart Sapp' — the chopin-preludes shape.",
+    "craigsapp/art-of-the-fugue": "20 files, no LICENSE and no rights record at all.",
+    "ccarh/essen-folksong-collection": "8,473 folk melodies — single-line, so not piano scores, and the CCARH terms speak of a licensing agreement rather than a public licence. Not read in full; would need a proper look before use."
   }
 }

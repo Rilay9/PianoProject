@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from licensing import (  # noqa: E402
+    AUTHOR_DEATH_CUTOFF_YEAR,
     PD_CUTOFF_YEAR,
     Verdict,
     composition_verdict,
@@ -153,6 +154,37 @@ class TestHumdrumReferenceRecords(unittest.TestCase):
         decision = license_verdict(self.records()["YEM"], allow_nc=True)
         self.assertIs(decision.verdict, Verdict.BUNDLE)
         self.assertIs(license_verdict(self.records()["YEM"]).verdict, Verdict.LOCAL_ONLY)
+
+
+class TestCompositionByComposerDeath(unittest.TestCase):
+    """
+    The route for editions that carry no date at all (docs/03 §1 rule 1).
+
+    The NIFC Chopin first editions name the publisher and the plate but never a
+    year, so the year has to come from the composer instead. The test that
+    matters is the one that keeps the bar at 1930 rather than at life+70.
+    """
+
+    def test_a_composer_dead_before_the_cutoff_is_public_domain(self) -> None:
+        decision = composition_verdict(composer="Chopin", composer_died=1849)
+        self.assertIs(decision.verdict, Verdict.BUNDLE)
+        self.assertEqual(decision.license, "PD")
+
+    def test_life_plus_seventy_alone_is_not_enough(self) -> None:
+        # Bartók died in 1945 — inside life+70, outside the publication cutoff.
+        # His 1940 editions are in copyright in the US, so he must not pass.
+        self.assertLess(1945, AUTHOR_DEATH_CUTOFF_YEAR)
+        self.assertGreater(1945, PD_CUTOFF_YEAR)
+        self.assertIs(composition_verdict(composer="Bartók", composer_died=1945).verdict, Verdict.REJECT)
+
+    def test_a_stated_publication_year_still_wins(self) -> None:
+        # A dated file is not overridden by the composer's dates in either
+        # direction: the date is the more direct evidence.
+        late = composition_verdict(composer="Chopin", published_year=1990, composer_died=1849)
+        self.assertIs(late.verdict, Verdict.REJECT)
+
+    def test_neither_fact_is_still_a_refusal(self) -> None:
+        self.assertIs(composition_verdict(composer="Anon").verdict, Verdict.REJECT)
 
 
 if __name__ == "__main__":

@@ -164,6 +164,8 @@ plus `content/sources/kern.json` — and D5 Ragtime Stage 6 written (`ragtime.6`
 rags). The three unlicensed `craigsapp` repositories stay excluded and a build-time guard
 proves it. See `docs/decisions/2026-09-06-p10-kern-import.md`.
 
+Run 2 (`feat/p10-content-2`): the Fryderyk Chopin Institute's first editions (`pl-wnifc/humdrum-chopin-first-editions`, **CC BY 4.0** — no `--allow-nc` needed) — 182 solo-piano works — plus the rest of `craigsapp/joplin`, and classical and ragtime rungs for Stages 6-9 with 8-23 options each rather than three. Catalog 581 → 802 items. See `docs/decisions/2026-09-06-p10-chopin-and-breadth.md`.
+
 ## 3. Definition of done for the whole project (v1.0)
 
 - Owner installs the **APK**, opens Today, completes a full Stage 1 lesson with the on-screen

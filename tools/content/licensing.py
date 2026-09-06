@@ -28,6 +28,18 @@ from pathlib import Path
 #: buried in a comparison.
 PD_CUTOFF_YEAR = 1930
 
+#: The other half of the US rule, for editions that state no publication date.
+#: An *unpublished* work enters the public domain 70 years after its author's
+#: death (17 USC §302(a)). Advances by one each January, like PD_CUTOFF_YEAR.
+#:
+#: Note which of the two constants actually binds: it is PD_CUTOFF_YEAR, and
+#: `composition_verdict` tests against that one. A composer dead by 1930 can
+#: have published nothing after 1930, so the publication rule covers every work
+#: printed in their lifetime; life+70 then covers anything left unpublished at
+#: their death. Testing against 1956 alone would be wrong — Bartók died in 1945
+#: and his 1940 publications are still in copyright in the US.
+AUTHOR_DEATH_CUTOFF_YEAR = 1956
+
 
 class Verdict(str, Enum):
     BUNDLE = "bundle"
@@ -68,16 +80,30 @@ NON_REDISTRIBUTABLE_PATTERNS = (
 )
 
 _CC_RE = re.compile(r"CC[- ]?BY(?:[- ](NC[- ]SA|NC[- ]ND|SA|NC|ND))?(?:[- ]?\d\.\d)?", re.I)
+#: The canonical machine-readable form. Many repositories never spell "CC BY"
+#: out at all and just link the deed — the NIFC Chopin editions say
+#: "License: https://creativecommons.org/licenses/by/4.0" and nothing else, and
+#: reading that as "unclear" would have cost 191 scores.
+_CC_URL_RE = re.compile(r"creativecommons\.org/licenses/(by(?:-nc)?(?:-nd)?(?:-sa)?)\b", re.I)
+_CC0_URL_RE = re.compile(r"creativecommons\.org/publicdomain/(?:zero|mark)\b", re.I)
 _CC0_RE = re.compile(r"\bCC0\b|public\s*domain\s*dedication", re.I)
 _PD_RE = re.compile(r"\bpublic\s+domain\b", re.I)
+
+#: How much of an unrecognised licence to quote back. A whole LICENSE file in
+#: an error message buries the one line that matters, once per rejected file.
+REASON_EXCERPT = 80
 
 
 def normalise_license(text: str) -> str:
     """Best-effort licence identifier from free text (a README, a rights tag)."""
     if not text:
         return ""
-    if _CC0_RE.search(text):
+    if _CC0_URL_RE.search(text) or _CC0_RE.search(text):
         return "CC0"
+    url = _CC_URL_RE.search(text)
+    if url:
+        parts = url.group(1).upper().split("-")
+        return "CC BY-" + "-".join(parts[1:]) if len(parts) > 1 else "CC BY"
     match = _CC_RE.search(text)
     if match:
         suffix = (match.group(1) or "").upper().replace(" ", "-")
@@ -112,17 +138,44 @@ def license_verdict(raw: str, *, source: str = "", allow_nc: bool = False) -> Li
     normalised = normalise_license(raw)
     if normalised in REDISTRIBUTABLE:
         return LicenseDecision(Verdict.BUNDLE, normalised, "redistributable licence")
+    excerpt = " ".join(normalised.split())[:REASON_EXCERPT]
+    if len(excerpt) < len(" ".join(normalised.split())):
+        excerpt += "…"
     return LicenseDecision(
         Verdict.REJECT,
         normalised,
-        f"unrecognised licence {normalised!r} — treated as unclear (docs/03 §1 rule 1)",
+        f"unrecognised licence {excerpt!r} — treated as unclear (docs/03 §1 rule 1)",
     )
 
 
 def composition_verdict(
-    *, composer: str | None = None, published_year: int | None = None, traditional: bool = False
+    *,
+    composer: str | None = None,
+    published_year: int | None = None,
+    composer_died: int | None = None,
+    traditional: bool = False,
 ) -> LicenseDecision:
-    """Decides whether the *composition* is in the US public domain."""
+    """
+    Decides whether the *composition* is in the US public domain.
+
+    Three routes, in decreasing order of directness. A publication year settles
+    it outright. Failing that, a **composer death year** settles it too: some
+    scholarly editions carry no date at all — the NIFC Chopin first editions
+    state the publisher and the plate but never a year — and refusing Chopin
+    for want of a record that says 1839 would be pedantry rather than caution,
+    because a composer dead since 1849 has nothing in copyright by any route.
+
+    The bar is PD_CUTOFF_YEAR, not life+70: a composer dead by 1930 published
+    nothing after 1930, and life+70 then covers whatever was still unpublished
+    when they died. Bartók, dead in 1945, does *not* pass — his 1940 editions
+    are in copyright in the US, and a life+70 test alone would have waved them
+    through.
+
+    The death year is a fact about a person, not a claim about a file, which is
+    why it is allowed to come from a table when a publication year may not: an
+    importer still has to read the composer's name out of the file itself
+    before it can look one up.
+    """
     if traditional:
         return LicenseDecision(Verdict.BUNDLE, "PD", "traditional/anonymous")
     if published_year is not None:
@@ -130,6 +183,21 @@ def composition_verdict(
             return LicenseDecision(Verdict.BUNDLE, "PD", f"published {published_year} ≤ {PD_CUTOFF_YEAR}")
         return LicenseDecision(
             Verdict.REJECT, "in copyright", f"published {published_year} > {PD_CUTOFF_YEAR}"
+        )
+    if composer_died is not None:
+        if composer_died <= PD_CUTOFF_YEAR:
+            return LicenseDecision(
+                Verdict.BUNDLE,
+                "PD",
+                f"{composer or 'the composer'} died {composer_died} ≤ {PD_CUTOFF_YEAR}, so nothing "
+                f"was published after {PD_CUTOFF_YEAR} and life+70 expired in "
+                f"{composer_died + 70}",
+            )
+        return LicenseDecision(
+            Verdict.REJECT,
+            "in copyright",
+            f"{composer or 'the composer'} died {composer_died} > {PD_CUTOFF_YEAR}, and the file "
+            "states no publication year — some of their work may still be in copyright",
         )
     return LicenseDecision(
         Verdict.REJECT, "unknown", f"no publication year for composer {composer or 'unknown'}"

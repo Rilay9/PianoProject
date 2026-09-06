@@ -1,0 +1,124 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 8,
+      "title": "Advanced",
+      "summary": "Roughly ABRSM Grade 7-8. Virtuoso Romantic writing, etudes taken as music rather than as exercises, and pieces long enough to need a plan.",
+      "approxDuration": "12-18 months",
+      "abrsmGradeApprox": "grade 7-8",
+      "units": [
+        {
+          "id": "classical.8.1",
+          "title": "Classical: virtuoso Romantic writing",
+          "track": "classical",
+          "lessons": [
+            {
+              "id": "classical.8",
+              "title": "Etude technique, and pieces that need a plan",
+              "concepts": [
+                "etude",
+                "velocity",
+                "voicing-melody",
+                "large-form",
+                "pedalling"
+              ],
+              "textFile": "lessons/classical.8.md",
+              "exerciseOptions": [
+                "exercise.hanon.19.both",
+                "exercise.hanon.17.both",
+                "exercise.scale.d-flat-major.2oct.contrary.both.2",
+                "exercise.scale.b-flat-harmonic-minor.1oct.similar.both.2",
+                "exercise.arpeggio7.c-sharp-diminished7.2oct.both",
+                "exercise.arpeggio.f-sharp-minor.2oct.both",
+                "exercise.inversions.f-sharp-minor.both",
+                "exercise.chromatic.e.1oct.both"
+              ],
+              "songOptions": [
+                "song.classical.chopin-prelude-op28-3.nifc",
+                "song.classical.chopin-prelude-op28-5.nifc",
+                "song.classical.chopin-prelude-op28-8.nifc",
+                "song.classical.chopin-prelude-op28-12.nifc",
+                "song.classical.chopin-prelude-op28-19.nifc",
+                "song.classical.chopin-nocturne-op9-2.nifc",
+                "song.classical.chopin-nocturne-op27-2.nifc",
+                "song.classical.chopin-nocturne-op48-1.nifc",
+                "song.classical.chopin-waltz-op18.nifc",
+                "song.classical.chopin-waltz-op64-1.nifc",
+                "song.classical.chopin-waltz-op64-2.nifc",
+                "song.classical.chopin-waltz-op42.nifc",
+                "song.classical.chopin-etude-op10-3.nifc",
+                "song.classical.chopin-etude-op25-1.nifc",
+                "song.classical.chopin-etude-op10-6.nifc",
+                "song.classical.chopin-berceuse.nifc",
+                "song.classical.chopin-polonaise-op40-1.nifc",
+                "song.classical.chopin-nocturne-20",
+                "song.classical.debussy-arabesque-1",
+                "song.classical.mozart-rondo-alla-turca",
+                "song.classical.debussy-clair-de-lune",
+                "song.classical.liszt-liebestraum-3",
+                "song.classical.beethoven-moonlight-iii"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "classical.7"
+              ],
+              "estimatedDays": 180
+            }
+          ]
+        },
+        {
+          "id": "ragtime.8.1",
+          "title": "Ragtime: the late rags",
+          "track": "ragtime",
+          "lessons": [
+            {
+              "id": "ragtime.8",
+              "title": "The late rags, and where ragtime was going",
+              "concepts": [
+                "syncopation",
+                "secondary-rag",
+                "stride-bass",
+                "chromatic-harmony",
+                "not-fast"
+              ],
+              "textFile": "lessons/ragtime.8.md",
+              "exerciseOptions": [
+                "drill.pattern.lh-accompaniment",
+                "exercise.rhythm.sixteenths.4bar",
+                "exercise.hanon.20.both",
+                "exercise.arpeggio7.b-flat-dominant7.2oct.both",
+                "exercise.chromatic.c.1oct.both"
+              ],
+              "songOptions": [
+                "song.ragtime.joplin-pine-apple-rag",
+                "song.ragtime.joplin-magnetic-rag",
+                "song.ragtime.joplin-gladiolus-rag",
+                "song.ragtime.joplin-cascades",
+                "song.ragtime.joplin-new-rag",
+                "song.ragtime.joplin-stoptime-rag",
+                "song.ragtime.joplin-reflection-rag",
+                "song.ragtime.joplin-wall-street-rag"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "ragtime.7"
+              ],
+              "estimatedDays": 180
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

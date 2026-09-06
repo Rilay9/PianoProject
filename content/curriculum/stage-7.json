@@ -1,0 +1,126 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 7,
+      "title": "Late intermediate",
+      "summary": "Roughly ABRSM Grade 6. Counterpoint you have to hear in two hands at once, longer sonata movements, and the first pieces where interpretation matters more than accuracy.",
+      "approxDuration": "9-12 months",
+      "abrsmGradeApprox": "grade 6",
+      "units": [
+        {
+          "id": "classical.7.1",
+          "title": "Classical: counterpoint, sonata form and the singing line",
+          "track": "classical",
+          "lessons": [
+            {
+              "id": "classical.7",
+              "title": "Two voices at once, and a line that sings",
+              "concepts": [
+                "counterpoint",
+                "sonata-form",
+                "cantabile",
+                "ornamented-melody",
+                "rubato"
+              ],
+              "textFile": "lessons/classical.7.md",
+              "exerciseOptions": [
+                "exercise.hanon.18.both",
+                "exercise.hanon.20.both",
+                "exercise.scale.b-flat-major.2oct.contrary.both.2",
+                "exercise.scale.d-flat-major.2oct.similar.both.2",
+                "exercise.arpeggio7.b-flat-dominant7.2oct.both",
+                "exercise.arpeggio.c-sharp-minor.2oct.both",
+                "exercise.inversions.a-flat-major.both",
+                "exercise.chromatic.d.1oct.both"
+              ],
+              "songOptions": [
+                "song.classical.chopin-prelude-op28-1.nifc",
+                "song.classical.chopin-prelude-op28-9.nifc",
+                "song.classical.chopin-prelude-op28-11.nifc",
+                "song.classical.chopin-prelude-op28-15.nifc",
+                "song.classical.chopin-nocturne-op37-1.nifc",
+                "song.classical.chopin-nocturne-op15-3.nifc",
+                "song.classical.chopin-nocturne-op32-1.nifc",
+                "song.classical.chopin-nocturne-op55-1.nifc",
+                "song.classical.chopin-nocturne-op72-1.nifc",
+                "song.classical.chopin-waltz-op69-2.nifc",
+                "song.classical.chopin-waltz-op34-2.nifc",
+                "song.classical.chopin-waltz-op70-2.nifc",
+                "song.classical.chopin-mazurka-op7-1.nifc",
+                "song.classical.chopin-mazurka-op6-1.nifc",
+                "song.classical.chopin-mazurka-op33-2.nifc",
+                "song.classical.chopin-allegretto.nifc",
+                "song.classical.mozart-k545-i",
+                "song.classical.bach-wtc1-prelude-2",
+                "song.classical.beethoven-moonlight-i",
+                "song.classical.beethoven-pathetique-ii",
+                "song.classical.satie-gnossienne-1",
+                "song.classical.brahms-hungarian-dance-5"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "classical.6"
+              ],
+              "estimatedDays": 150
+            }
+          ]
+        },
+        {
+          "id": "ragtime.7.1",
+          "title": "Ragtime: the classic rags",
+          "track": "ragtime",
+          "lessons": [
+            {
+              "id": "ragtime.7",
+              "title": "Stride precursors, wider leaps and the slow drag",
+              "concepts": [
+                "oom-pah-bass",
+                "stride-bass",
+                "syncopation",
+                "trio-key-change",
+                "not-fast"
+              ],
+              "textFile": "lessons/ragtime.7.md",
+              "exerciseOptions": [
+                "drill.pattern.lh-accompaniment",
+                "exercise.rhythm.syncopated.4bar",
+                "exercise.scale.d-flat-major.2oct.similar.both.2",
+                "exercise.hanon.15.both",
+                "exercise.arpeggio.a-flat-major.2oct.both"
+              ],
+              "songOptions": [
+                "song.ragtime.joplin-maple-leaf-rag.kern",
+                "song.ragtime.joplin-maple-leaf-rag",
+                "song.ragtime.joplin-solace",
+                "song.ragtime.joplin-bethena",
+                "song.ragtime.joplin-elite-syncopations",
+                "song.ragtime.joplin-original-rags",
+                "song.ragtime.joplin-heliotrope-bouquet",
+                "song.ragtime.joplin-fig-leaf-rag",
+                "song.ragtime.joplin-paragon-rag",
+                "song.ragtime.joplin-search-light-rag",
+                "song.ragtime.joplin-pleasant-moments"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "ragtime.6"
+              ],
+              "estimatedDays": 150
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

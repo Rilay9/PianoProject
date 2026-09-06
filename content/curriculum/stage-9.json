@@ -1,0 +1,69 @@
+{
+  "tracks": [],
+  "stages": [
+    {
+      "number": 9,
+      "title": "Projects",
+      "summary": "One piece at a time, for as long as it takes. Nothing here is a rung to pass; they are pieces to live with.",
+      "approxDuration": "open-ended",
+      "abrsmGradeApprox": "diploma",
+      "units": [
+        {
+          "id": "classical.9.1",
+          "title": "Classical: the long pieces",
+          "track": "classical",
+          "lessons": [
+            {
+              "id": "classical.9",
+              "title": "Choosing one piece and staying with it",
+              "concepts": [
+                "large-form",
+                "virtuoso-technique",
+                "dramatic-contrast",
+                "interpretation"
+              ],
+              "textFile": "lessons/classical.9.md",
+              "exerciseOptions": [
+                "exercise.hanon.20.both",
+                "exercise.scale.g-flat-major.2oct.contrary.both.2",
+                "exercise.arpeggio7.g-sharp-diminished7.2oct.both",
+                "exercise.arpeggio.b-flat-minor.2oct.both",
+                "exercise.inversions.b-flat-minor.both",
+                "exercise.chromatic.g.1oct.both"
+              ],
+              "songOptions": [
+                "song.classical.chopin-ballade-1.nifc",
+                "song.classical.chopin-ballade-2.nifc",
+                "song.classical.chopin-ballade-3.nifc",
+                "song.classical.chopin-ballade-4.nifc",
+                "song.classical.chopin-scherzo-1.nifc",
+                "song.classical.chopin-scherzo-2.nifc",
+                "song.classical.chopin-scherzo-3.nifc",
+                "song.classical.chopin-barcarolle.nifc",
+                "song.classical.chopin-fantaisie.nifc",
+                "song.classical.chopin-polonaise-op53.nifc",
+                "song.classical.chopin-polonaise-fantaisie.nifc",
+                "song.classical.chopin-etude-op10-12.nifc",
+                "song.classical.chopin-sonata-2-1.nifc",
+                "song.classical.chopin-sonata-2-3.nifc",
+                "song.classical.chopin-sonata-3-4.nifc",
+                "song.classical.chopin-ballade-1",
+                "song.classical.liszt-la-campanella"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "classical.8"
+              ],
+              "estimatedDays": 365
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

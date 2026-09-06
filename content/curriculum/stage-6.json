@@ -9,6 +9,68 @@
       "abrsmGradeApprox": "grade 4-5",
       "units": [
         {
+          "id": "classical.6.1",
+          "title": "Classical: voicing a melody over its own accompaniment",
+          "track": "classical",
+          "lessons": [
+            {
+              "id": "classical.6",
+              "title": "Voicing, rubato and the Romantic miniature",
+              "concepts": [
+                "voicing-melody",
+                "rubato",
+                "pedalling",
+                "romantic-miniature"
+              ],
+              "textFile": "lessons/classical.6.md",
+              "exerciseOptions": [
+                "exercise.hanon.12.both",
+                "exercise.hanon.14.both",
+                "exercise.hanon.16.both",
+                "exercise.scale.e-flat-major.2oct.similar.both.2",
+                "exercise.scale.a-flat-major.2oct.similar.both.2",
+                "exercise.arpeggio.e-flat-major.2oct.both",
+                "exercise.cadence.e-flat.voice-led",
+                "exercise.pedal.b-flat",
+                "drill.pedal.changes"
+              ],
+              "songOptions": [
+                "song.classical.chopin-prelude-op28-7.nifc",
+                "song.classical.chopin-prelude-op28-6.nifc",
+                "song.classical.chopin-prelude-op28-20.nifc",
+                "song.classical.chopin-prelude-op28-4.nifc",
+                "song.classical.chopin-prelude-op28-4",
+                "song.classical.chopin-prelude-op28-2.nifc",
+                "song.classical.chopin-mazurka-op68-3.nifc",
+                "song.classical.chopin-mazurka-op67-2.nifc",
+                "song.classical.chopin-mazurka-op68-2.nifc",
+                "song.classical.chopin-ecossaise-op72-1.nifc",
+                "song.classical.chopin-ecossaise-op72-2.nifc",
+                "song.classical.bach-air-on-g-string",
+                "song.classical.bach-wtc1-prelude-1",
+                "song.classical.chopin-nocturne-op9-2.easy",
+                "song.classical.satie-gymnopedie-1",
+                "song.classical.tchaikovsky-swan-lake",
+                "song.classical.mozart-lacrimosa",
+                "song.classical.pachelbel-canon-d",
+                "song.classical.beethoven-fur-elise",
+                "song.classical.chopin-waltz-a-minor",
+                "song.classical.tchaikovsky-sugar-plum"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "classical.5"
+              ],
+              "estimatedDays": 120
+            }
+          ]
+        },
+        {
           "id": "ragtime.6.1",
           "title": "Ragtime: the rags as Joplin wrote them",
           "track": "ragtime",
@@ -34,7 +96,14 @@
               "songOptions": [
                 "song.ragtime.joplin-entertainer.kern",
                 "song.ragtime.joplin-peacherine-rag",
-                "song.ragtime.joplin-easy-winners"
+                "song.ragtime.joplin-easy-winners",
+                "song.ragtime.joplin-school-of-ragtime",
+                "song.ragtime.joplin-swipesy-cakewalk",
+                "song.ragtime.joplin-sunflower-slow-drag",
+                "song.ragtime.joplin-weeping-willow",
+                "song.ragtime.joplin-the-favorite",
+                "song.ragtime.joplin-cleopha",
+                "song.ragtime.joplin-something-doing"
               ],
               "mastery": {
                 "exercisesRequired": 1,

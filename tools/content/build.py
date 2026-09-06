@@ -48,8 +48,16 @@ FRAGMENTS = ("catalog.mt.json", "catalog.kern.json", "catalog.generated.json", "
 
 
 def python(script: str, *args: str) -> tuple[int, str]:
+    """
+    Runs a pipeline script and returns its output, stdout last.
+
+    stdout last on purpose: every step prints its one-line summary at the end of
+    stdout and `summary_line` takes the last line, but music21 writes parser
+    warnings to stderr. Concatenating the other way round once made a build
+    report a Humdrum warning where the import count should have been.
+    """
     result = run([sys.executable, str(Path(__file__).resolve().parent / script), *args], timeout=3600)
-    output = (result.stdout or "") + (result.stderr or "")
+    output = (result.stderr or "") + (result.stdout or "")
     return result.returncode, output.strip()
 
 

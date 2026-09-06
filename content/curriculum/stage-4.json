@@ -504,7 +504,11 @@
                 "song.classical.beethoven-fur-elise.easy",
                 "song.holiday.carol-of-the-bells.easy",
                 "song.classical.satie-gymnopedie-1",
-                "song.classical.bach-air-on-g-string"
+                "song.classical.bach-air-on-g-string",
+                "song.classical.chopin-prelude-op28-7.nifc",
+                "song.classical.chopin-prelude-op28-20.nifc",
+                "song.classical.chopin-prelude-op28-6.nifc",
+                "song.classical.chopin-nocturne-op9-2.easy"
               ],
               "mastery": {
                 "exercisesRequired": 1,
