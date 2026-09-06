@@ -200,6 +200,34 @@ the 368 are band 1–2 and 69 are band 3, and a learner at that level cannot tel
 transcription from their own bad playing. Review those two bands first, and play each one
 before deciding.
 
+### The first ten to play
+
+From the two lowest bands, best-rated first — these are where a wrong
+transcription does the most damage, and they are what to open before deciding
+anything:
+
+| est. level | band | title | composition |
+|---:|---|---|---|
+| 3.9 | 3 | Song of Storms (Easy) | in-copyright |
+| 6.8 | 3 | Minecraft Calm | unknown |
+| 7.1 | 3 | Title theme from *Good Omens* | unknown |
+| 4.7 | 3 | Mozart: Minuet in F major K.2 (easy) | pd |
+| 7.3 | 3 | Minecraft Nether | unknown |
+| 6.8 | 3 | Scarborough Fair, piano solo | unknown |
+| 4.1 | 1–2 | The Skye Boat Song | unknown |
+| 6.6 | 3 | Light the World | unknown |
+| 5.2 | 3 | Катюша (Katyusha) | pd |
+| 3.5 | 3 | Twinkle Twinkle Little Star (Easy) | unknown |
+
+Notice what that table shows: **the band and the level disagree**, sometimes by
+four stages. The band comes from the CSV's notes-per-bar and orders the review
+queue; the level comes from the model reading the converted score. A "band 3"
+file estimated at 7.1 is not a contradiction to fix silently — it is the two
+measurements disagreeing, and the one to trust is the one computed from the
+notes. It is also a thing to watch while reviewing: if the model keeps calling
+easy-looking arrangements level 7, it is wrong about something and the
+calibration set is where to look.
+
 ## Follow-ups
 
 - **Band 7–9's converter failures.** Eight files music21 will read and refuse to write. The
