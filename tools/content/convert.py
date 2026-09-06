@@ -31,6 +31,7 @@ warnings.filterwarnings("ignore")
 from abc_tools import (apply_fingerings, apply_voice_clefs, extract_fingerings,  # noqa: E402
                        parse_voice_clefs, prepare_abc)
 from music21 import (  # noqa: E402
+    beam,
     chord,
     clef,
     converter,
@@ -242,6 +243,47 @@ def align_voice_offsets(score: stream.Score) -> int:
     return moved
 
 
+#: Printed note values a beam may not be attached to (VexFlow enforces it).
+UNBEAMABLE_TYPES = frozenset({"quarter", "half", "whole", "breve", "longa", "maxima"})
+
+
+def clean_beams(score: stream.Score) -> int:
+    """
+    Removes beams the engraver will refuse, keeping every note.
+
+    VexFlow — the engraver underneath OpenSheetMusicDisplay — rejects two
+    things music21's MusicXML writer emits from Humdrum sources, and it rejects
+    them by throwing, so the score does not render at all:
+
+      * a **grace note carrying a beam `end` with no `begin`**. Chopin's
+        Op. 9 no. 2 has fifteen ornamental grace notes and one of them ends a
+        beam that never started; VexFlow builds an empty note group from it and
+        reports "Invalid note initialization object: {}".
+      * a **beam on a quarter note or longer**, which is not a legal beam:
+        "Beams can only be applied to notes shorter than a quarter note."
+
+    Beams are engraving, not music: dropping them changes how a passage looks
+    and nothing about what it sounds like or when it happens. Fifteen of the
+    182 Chopin first editions would not render at all without this.
+
+    Returns the number of notes whose beams were dropped.
+    """
+    cleaned = 0
+    for element in score.recurse().notes:
+        beams = getattr(element, "beams", None)
+        if beams is None or not beams.beamsList:
+            continue
+        graceful = getattr(element.duration, "isGrace", False)
+        # The engraver reads the printed *type*, not the sounding length: a
+        # quarter note inside a tuplet lasts less than a quarter and is still
+        # spelled "quarter", and VexFlow refuses to beam it either way.
+        too_long = element.duration.type in UNBEAMABLE_TYPES
+        if graceful or too_long:
+            element.beams = beam.Beams()
+            cleaned += 1
+    return cleaned
+
+
 def insert_tempo(staff: stream.PartStaff, bpm: float) -> None:
     """
     Puts a metronome mark where MusicXML export will actually find it.
@@ -291,6 +333,10 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
     displaced = align_voice_offsets(out)
     if displaced:
         notes.append(f"moved {displaced} mid-bar voice(s) to the barline with a hidden rest")
+
+    unbeamed = clean_beams(out)
+    if unbeamed:
+        notes.append(f"dropped unrenderable beams from {unbeamed} note(s)")
 
     stripped = 0
     if not keep_lyrics:

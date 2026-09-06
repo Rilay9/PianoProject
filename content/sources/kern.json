@@ -1475,8 +1475,7 @@
           "abrsmGradeApprox": 7
         },
         "024": {
-          "level": 9.0,
-          "abrsmGradeApprox": 8
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         }
       }
     },
@@ -1517,16 +1516,13 @@
       "abrsmGradeApprox": 7,
       "works": {
         "001": {
-          "level": 8.0,
-          "abrsmGradeApprox": 7
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         },
         "002": {
-          "level": 7.6,
-          "abrsmGradeApprox": 6
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         },
         "003": {
-          "level": 8.4,
-          "abrsmGradeApprox": 8
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         }
       }
     },
@@ -1674,8 +1670,7 @@
           "abrsmGradeApprox": 8
         },
         "002": {
-          "level": 8.4,
-          "abrsmGradeApprox": 8
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         }
       }
     },
@@ -1732,8 +1727,7 @@
           "abrsmGradeApprox": 8
         },
         "002": {
-          "level": 8.4,
-          "abrsmGradeApprox": 8
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         }
       }
     },
@@ -2188,8 +2182,7 @@
       "abrsmGradeApprox": 6,
       "works": {
         "001": {
-          "level": 7.6,
-          "abrsmGradeApprox": 6
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         },
         "002": {
           "level": 7.2,
@@ -2619,7 +2612,12 @@
         "ornamented-melody"
       ],
       "level": 8.2,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2652,7 +2650,12 @@
         "rubato"
       ],
       "level": 8.8,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2669,7 +2672,12 @@
         "rubato"
       ],
       "level": 8.8,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2736,7 +2744,12 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2821,7 +2834,12 @@
         "dramatic-contrast"
       ],
       "level": 9.2,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2987,21 +3005,7 @@
       "abrsmGradeApprox": 6,
       "works": {
         "001-nocturne": {
-          "level": 7.2,
-          "abrsmGradeApprox": 6,
-          "id": "song.classical.chopin-nocturne-op72-1.nifc",
-          "title": "Nocturne in {key}, Op. 72 No. 1",
-          "concepts": [
-            "cantabile",
-            "voicing-melody",
-            "ornamented-melody",
-            "pedalling",
-            "rubato"
-          ],
-          "tracks": [
-            "classical",
-            "beautiful"
-          ]
+          "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
         },
         "002-marche-funebre": {
           "level": 7.6,

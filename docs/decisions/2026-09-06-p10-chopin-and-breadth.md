@@ -64,8 +64,8 @@ Three things the expansion has to get right, and each was got wrong first:
   in itself.
 
 **Honesty about levels.** A level that came from the group default rather than from a
-judgement about that piece is tagged **`level-banded`** in the catalog. 143 of the 183 Chopin
-items carry it, and so do the 39 Joplin rags added this run. The tag is the difference between
+judgement about that piece is tagged **`level-banded`** in the catalog: 129 items, 90 of the
+182 Chopin works and all 39 Joplin rags added this run. The tag is the difference between
 a measurement and a guess, and it is visible in the app rather than implied.
 
 ## 3. A licence gate that reads a URL, and a composition test that reads a person
@@ -118,11 +118,39 @@ tuplet whose base value is a 2048th note, and MusicXML stops at 1024th, so music
 export it. Quantising it would change the music, so the piece is excluded with that reason
 written into the table rather than silently rounded. Import your own copy if you want it.
 
+**Thirteen more are excluded because the engraver will not draw them.** They convert cleanly,
+music21 round-trips them note for note, and OSMD's VexFlow throws
+`Invalid note initialization object: {}` — an empty note struct — so the score does not render
+at all. Ruled out, by testing each in the browser: grace notes (removing all fifteen from the
+Op. 9 no. 2 nocturne changed nothing) and beams. The cause is still unknown and is the first
+thing to pick up next; the reproduction is one `loadUrl` call in `/dev/score`.
+
+The list: Nocturnes Op. 9 nos. 1, 2 and 3, Op. 48 no. 2, Op. 62 no. 2 and Op. 72 no. 1;
+Prelude Op. 28 no. 24; Waltz Op. 69 no. 1; Impromptus Op. 29 and Op. 36; the Allegro de
+concert; the Grande polonaise; and the Variations on a German National Air. **169 of the 183
+Chopin works are in the library**, and the curriculum's Stage 7 and 8 rungs swapped in
+neighbours at the same level rather than shrinking.
+
+Two of the original fifteen *were* fixable and are fixed: VexFlow refuses a beam on a note
+whose printed value is a quarter or longer, which music21 emits from these sources — including
+on notes inside tuplets, where the sounding length is shorter than a quarter but the printed
+type is not. `clean_beams()` drops those beams (engraving, not music) and the Op. 15 no. 2
+nocturne and the Op. 4 sonata finale render.
+
 Three things this exposed, all fixed:
 
 - Group expansion names sibling pieces as `alternatives` *before* anything is converted, so a
   piece that then fails to convert left its neighbours pointing at nothing. Alternatives are
   now pruned to what actually got in.
+- **The render check could not see its own failures.** `DevScoreScreen.loadXml` catches every
+  exception into `lastError` and resolves anyway, so a score OSMD could not draw looked like a
+  successful load, left the *previous* score in the model, and then timed out waiting for an
+  SVG — reporting a 20-second mystery instead of the exception, and risking one item's
+  measurements being recorded against another's id. The check now reads `lastError()` straight
+  after loading. That is how the thirteen above got names.
+- **The check was also running out of memory.** One page for 749 scores: Chromium was killed
+  after 586 and every item after that reported "Target crashed". It now reopens the page every
+  40 items.
 - `build.py` concatenated stderr after stdout, so a build reported a Humdrum parser warning
   where the `[KERN]` import count should have been — which is how a missing étude got as far
   as validation before anyone noticed. stdout goes last now.

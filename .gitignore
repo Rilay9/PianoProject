@@ -20,6 +20,9 @@ app/dev-dist/
 app/dist/
 app/playwright-report/
 app/test-results/
+# Playwright writes these relative to its cwd, which is not always app/.
+playwright-report/
+test-results/
 app/tsconfig.tsbuildinfo
 app/*.tsbuildinfo
 content/scores/generated/

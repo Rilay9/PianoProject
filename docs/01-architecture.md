@@ -321,10 +321,11 @@ criteria. Schema at `content/curriculum.schema.json`.
 - MIDI-in to note-coloured: < 30 ms.
 - Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
 - Bundle: app JS < 1.5 MB gzipped; content precache < 60 MB total (scores are tiny; the
-  soundfont dominates — pick a ≤ 20 MB piano). **Re-measured 2026-09-06 after P10 run 1
-  (the `[KERN]` ragtime tier, built with `--allow-nc`): content 6.9 MB (3.4 scores / 2.6
-  soundfont / 0.7 catalog / 0.23 lessons / 0.07 curriculum), `app/dist` 11 MB, precache 619
-  entries / 8875 KiB. The eight Joplin rags account for 113 KiB of that.** Re-measure
+  soundfont dominates — pick a ≤ 20 MB piano). **Re-measured 2026-09-06 after P10 run 2
+  (the Chopin first editions and the rest of the Joplin rags): content 12 MB (7.3 scores / 2.6
+  soundfont / 1.0 catalog / 0.26 lessons / 0.07 curriculum). 802 catalog items, 749 with a
+  file. The catalog grew from 581 items and the scores from 3.4 MB — 221 new scores for
+  3.9 MB, which is still nothing next to the soundfont.** Re-measure
   and record it after every content phase; the whole library is precached (`00` D20, §7), so
   this number is what the owner downloads.
 
@@ -352,10 +353,14 @@ criteria. Schema at `content/curriculum.schema.json`.
 - **Update checks are optional and silent.** An "update available — reload" toast when a new
   service worker is waiting; a setting turns the check off entirely, and a failed check when
   offline is not an error and is never shown.
-- **Budget check (re-measured 2026-09-06, after P10 run 1):** content 6.9 MB, built app
-  11 MB, precache 619 entries / 8875 KiB, against the 60 MB budget in §6. The whole `[KERN]`
-  ragtime tier cost 113 KiB and 8 entries; scores really are tiny, and the soundfont still
-  dominates. There is room for the rest of P10 several times over.
+- **Budget check (re-measured 2026-09-06, after P10 run 2):** content 12 MB against the 60 MB
+  budget in §6, with 749 precached scores. Adding 221 scores — every Chopin prelude, mazurka,
+  nocturne, waltz, étude, ballade and scherzo, and 47 Joplin rags — cost 3.9 MB. Scores really
+  are tiny; the soundfont still dominates and there is room for several more phases.
+- **What did grow awkwardly is the build.** The content build now takes about seven minutes
+  and the render check about ten, most of it music21 converting 230 Humdrum files and OSMD
+  engraving them. CI runs both. If it becomes a problem the fix is caching the converted
+  `.mxl` files by source checksum, not dropping the check.
 - **The globs are the failure point, twice over now.** Workbox skips what a glob misses and
   what exceeds the size limit, and it says nothing either way. `maximumFileSizeToCacheInBytes`
   was raised for the soundfont in P5b; in P7 `.mjs` had to be added because `pdfjs-dist` ships
