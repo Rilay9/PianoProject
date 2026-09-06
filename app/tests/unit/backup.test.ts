@@ -267,14 +267,25 @@ describe('a backup of a phone that has been used (P19 §C3)', () => {
       minutesByDay: { '2026-09-01': 45 },
       weeklyGoalMinutes: 150,
     });
-    await db?.put('micCalibration', { latencyMs: 42, noiseFloor: 0.01 } as never, 'device-1');
-    await db?.put('skills', { conceptId: 'scale', state: 'known' } as never);
+    await db?.put('micCalibration', { latencyMs: 42, noiseFloor: 0.01 }, 'device-1');
+    await db?.put('skills', { conceptId: 'scale', state: 'known' });
     await db?.put('levelOverrides', { itemId: 'song.a', level: 6.1 } as never);
     await db?.put('books', {
       id: 'book.mine',
+      kind: 'method' as const,
+      addedAt: '2026-09-01T00:00:00.000Z',
       title: 'My book',
-      pieces: [{ id: 'p1', title: 'Study', page: 14, lessonIds: ['4.4'] }],
-    } as never);
+      pieces: [
+        {
+          id: 'p1',
+          title: 'Study',
+          page: 14,
+          lessonIds: ['4.4'],
+          concepts: ['legato'],
+          levelSource: 'judged' as const,
+        },
+      ],
+    });
     // The one store the backup leaves out on purpose: 6 MB of listing that is
     // rebuilt by picking the folder again.
     await db?.put('folderLibraries', {
@@ -282,7 +293,7 @@ describe('a backup of a phone that has been used (P19 §C3)', () => {
       addedAt: '2026-09-01',
       source: 'PDMX',
       scores: [],
-    } as never);
+    });
   }
 
   it('round-trips every store it covers, and leaves out the one it does not', async () => {

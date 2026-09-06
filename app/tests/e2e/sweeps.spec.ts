@@ -108,14 +108,14 @@ test.describe('every kind of drill', () => {
       if (kind === 'sight-reading') continue; // notation: it opens the Score screen
       await page.goto(`/#/drill/${item.id}`);
       const screen = page.locator('[data-screen="drill"]');
-      if (!(await screen.isVisible())) {
-        broken.push(`${kind}: no drill screen`);
-        continue;
-      }
+      // A generous per-kind wait rather than the default five seconds: this
+      // sweep runs beside nine other workers, and an ear drill that waits for
+      // an AudioContext on a loaded machine is slow rather than broken.
+      await expect(screen).toBeVisible({ timeout: 30_000 });
       // Either a prompt card or the honest "nothing to run here" line, never a
       // blank screen.
       const card = page.locator('#drill-prompt');
-      await expect(card).toBeVisible();
+      await expect(card).toBeVisible({ timeout: 30_000 });
       const text = (await card.textContent())?.trim() ?? '';
       if (text.length === 0) broken.push(`${kind}: an empty card`);
     }

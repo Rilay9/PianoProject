@@ -49,7 +49,7 @@ async function seedFolder(
         level: manifest ? Math.round((1 + (i % 80) / 10) * 10) / 10 : null,
         bars: manifest ? 16 + (i % 200) : null,
         status: i % 7 === 0 ? 'in-copyright' : 'pd',
-        style: manifest ? (styles[i % styles.length] as string) : '',
+        style: manifest ? (styles[i % styles.length] ?? '') : '',
         rating: manifest ? (i % 50) / 10 : 0,
         ratings: manifest ? i % 30 : 0,
         views: manifest ? i * 3 : 0,
@@ -60,7 +60,7 @@ async function seedFolder(
       const open = indexedDB.open('pianopath');
       const db = await new Promise<IDBDatabase>((resolve, reject) => {
         open.onsuccess = () => resolve(open.result);
-        open.onerror = () => reject(open.error);
+        open.onerror = () => reject(open.error ?? new Error('could not open the database'));
       });
       await new Promise<void>((resolve, reject) => {
         const tx = db.transaction('folderLibraries', 'readwrite');
@@ -71,7 +71,7 @@ async function seedFolder(
           scores,
         });
         tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
+        tx.onerror = () => reject(tx.error ?? new Error('could not write the folder'));
       });
       db.close();
     },
