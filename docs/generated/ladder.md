@@ -205,11 +205,12 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-191 song(s) are in the catalog as placeholders: the curriculum names them and no file may be shipped. Each carries an `importHint` saying what to do instead.
+208 song(s) are in the catalog as placeholders: the curriculum names them and no file may be shipped. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
 | `song.beautiful.merry-christmas-mr-lawrence` | Merry Christmas Mr. Lawrence | 8.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.12-bar-blues.pdmx` | 12 Bar Blues | 2.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx` | Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2 | 7.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.classical.bennet-rosemary-s-waltz.pdmx` | Rosemary's Waltz | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.classical.c418-minecraft-nether.pdmx` | Minecraft Nether | 7.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
@@ -223,6 +224,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.classical.elgar-pomp-and-circumstance.pdmx` | Pomp and Circumstance | 5.4 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
 | `song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx` | Salut d'amour Edward Elgar Love's Greeting | 8.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
 | `song.classical.glass-dead-things.pdmx` | Dead Things | 7.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.het-wilhelmus.pdmx` | Het Wilhelmus | 2.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.classical.hisaishi-totoro-path-of-the-wind.pdmx` | Totoro: Path of the Wind | 3.6 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
 | `song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx` | Jupiter Theme arranged for piano - Gustav Holst | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.classical.home-on-the-range-secondary-dominants.pdmx` | Home on the Range (Secondary Dominants) | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
@@ -254,11 +256,17 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.before-you-go-lewis-capaldi.pdmx` | Before You Go - Lewis Capaldi | 4.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.bruno-major-nothing-wip.pdmx` | Bruno Major - Nothing [WIP] | 5.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.carioquinha.pdmx` | Carioquinha | 4.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.como-e-grande-meu-amor-por-voce.pdmx` | Como é grande meu amor por você | 3.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx` | Ga je mee op zoek naar het Koningskind | 3.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.hallelujah-easy.pdmx` | Hallelujah (easy) | 3.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.happy-xmas.pdmx` | Happy Xmas | 7.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.i-give-you-my-heart.pdmx` | I GIVE YOU MY HEART | 7.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.i-remember-you.pdmx` | I Remember You | 4.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.in-the-summertime.pdmx` | In the summertime | 2.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.insensatez-how-insensitive-jobim.pdmx` | Insensatez (How Insensitive) Jobim | 3.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.je-te-laisserai-des-mots-patrick-watson.pdmx` | Je te laisserai des mots - Patrick Watson | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.john-denver-annie-s-song.pdmx` | John Denver - Annie's Song | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx` | Just a Closer Walk with Thee Easy Piano | 4.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.lost-without-you-freya-ridings.pdmx` | Lost Without You - Freya Ridings | 6.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.margaritaville-keyboard-part.pdmx` | Margaritaville Keyboard Part | 6.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.muskrat-ramble.pdmx` | Muskrat Ramble | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
@@ -266,7 +274,9 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.scarborough-fair-piano-solo.pdmx` | Scarborough fair piano solo | 6.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.so-danco-samba.pdmx` | Só Danço Samba | 3.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.the-flute-tune-soulpride-remix.pdmx` | The Flute Tune Soulpride Remix | 4.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.tuyo-narcos-intro-theme.pdmx` | Tuyo Narcos intro theme | 3.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.wake-me-up-avicii.pdmx` | Wake Me Up Avicii | 7.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.folk.your-song-elton-john-easy-piano.pdmx` | Your Song - Elton John - Easy Piano | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.jazz.bart-howard-fly-me-to-the-moon.pdmx` | Fly me to the moon | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
@@ -279,15 +289,5 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx` | Linus and Lucy (Fixed) Piano only | 8.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.jazz.vince-guaraldi-skating.pdmx` | Skating | 7.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.pop.abba-dancing-queen.pdmx` | Dancing Queen | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.alexandre-desplat-the-danish-girl-theme.pdmx` | The Danish Girl (theme) | 6.1 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx` | Solanum's Theme (Outer Wilds) | 3.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx` | Welcome to Wonderland by Anson Seabra | 6.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx` | Rousseau: Billy Joel - Piano Man | 7.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx` | For the damaged coda Blonde Redhead | 6.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx` | Twinkle Twinkle Little Star (Easy) | 3.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.camille-le-festin-piano-arr-kno.pdmx` | Le Festin Piano (arr. KNO) | 7.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.chancho-en-piedra-mandinga.pdmx` | Mandinga | 5.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.coldplay-clocks-coldplay.pdmx` | Clocks Coldplay | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.coldplay-fix-you-coldplay.pdmx` | Fix You Coldplay | 6.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| … | and 111 more | | |
+| … | and 128 more | | |
 

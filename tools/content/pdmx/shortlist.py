@@ -511,6 +511,41 @@ def select(
     return chosen, rejections, summary
 
 
+#: The easiest band, and only that band, has to show that somebody has looked
+#: at the file. See `attested`.
+ATTESTATION_BANDS = frozenset({"1-2"})
+
+#: Either of these counts as attestation.
+MIN_ATTESTED_VIEWS = 100
+MIN_ATTESTED_RATINGS = 1
+
+
+def attested(candidate: "Candidate") -> bool:
+    """
+    Has anybody ever opened this file?
+
+    Only asked in band 1-2, and asked there because P14's review measured what
+    happens when it is not: 70 of that band's 80 rows came back melody-only
+    lead sheets, 40 of them with no rating and a median of 45 views, and the
+    band was dropped at 50% — over the README's 40% stop rule. Every one of
+    those 40 was junk and every one of them was unattested.
+
+    The archive's easy end is like that because a two-staff piano piece has 6-8
+    notes per bar and lands in band 3; what is left under five notes per bar is
+    mostly somebody's single-line transcription of a folk tune, uploaded once
+    and never looked at again. The CSV cannot tell a lead sheet from a piano
+    score — `n_tracks` is 1 for 261 of the 278 real piano rows too — so the
+    only honest signal before conversion is whether the file has an audience.
+
+    Deliberately weak: one rating, or a hundred views. It is a floor against
+    files nobody has ever opened, not a popularity contest, and the named wants
+    bypass the quotas entirely so nothing on the list can be lost to it.
+    """
+    if candidate.band not in ATTESTATION_BANDS:
+        return True
+    return candidate.n_ratings >= MIN_ATTESTED_RATINGS or candidate.n_views >= MIN_ATTESTED_VIEWS
+
+
 def apply_quotas(
     passed: list[Candidate], quotas: dict[str, dict[str, int]]
 ) -> list[Candidate]:
@@ -536,7 +571,7 @@ def apply_quotas(
 
     for band in BANDS:
         band_quota = quotas.get(band, {})
-        pool = [c for c in ranked if c.band == band and c.cid not in seen]
+        pool = [c for c in ranked if c.band == band and c.cid not in seen and attested(c)]
         taken: dict[str, int] = defaultdict(int)
         for bucket in GENRE_BUCKETS:
             allowance = band_quota.get(bucket, 0)

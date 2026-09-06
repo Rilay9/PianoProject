@@ -410,6 +410,72 @@
       }
     },
     {
+      "id": "song.classical.foster-oh-susanna-simple-lead-sheet.pdmx",
+      "cid": "QmcCg1Zfn95kaH8M7tD2K7Vj2Vpr4jdcDsSHR7PryiesW5",
+      "file": "QmcCg1Zfn95kaH8M7tD2K7Vj2Vpr4jdcDsSHR7PryiesW5.mxl",
+      "title": "Oh! Susanna (Simple Lead Sheet)",
+      "composer": "Stephen Foster",
+      "artist": "Stephen Foster",
+      "rawSha256": "97929f99d4bff7b75749b94bc4c888f89b49b826f649f87b2ea193d1fcc563a4",
+      "convertedSha256": "b337ab42b37a7038aa28d1807a66a89d7eb85acb3a0d31ec1b76784108cf8270",
+      "musescoreId": "6365182",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Stephen Foster died 1864 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1934",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 25,
+      "notes": 112,
+      "tempoBpm": 184.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 25.0,
+        "notesPerBar": 6.64,
+        "notesPerSecond": 5.0906666666666665,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 9.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 28.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 28.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.03614457831325301,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 3.15,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.388
+        ],
+        [
+          "notesPerBar",
+          -0.26
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.8 from 30"
+      }
+    },
+    {
       "id": "song.folk.scarborough-fair-canticle.pdmx",
       "cid": "QmTjKf6rCggXUJinMH2NfTjP2cSvMCGcimtzjWqKHzjhyG",
       "file": "QmTjKf6rCggXUJinMH2NfTjP2cSvMCGcimtzjWqKHzjhyG.mxl",
@@ -1397,6 +1463,1920 @@
       "review": {
         "decision": "keep",
         "note": "melody only (right hand), but well attested: 4.9 from 7"
+      }
+    },
+    {
+      "id": "song.folk.auld-lang-syne.pdmx",
+      "cid": "QmPYTGunZqRpM8rmbWYzUoapVd2pi9xGRASdauFdSxqw7h",
+      "file": "QmPYTGunZqRpM8rmbWYzUoapVd2pi9xGRASdauFdSxqw7h.mxl",
+      "title": "Auld Lang Syne",
+      "composer": "NA",
+      "artist": "Misc Traditional",
+      "rawSha256": "5909b13cbc004aaa0292526d339d6db941f928e8ae8fc8ca0d6ead07cf964b04",
+      "convertedSha256": "d539a26ef9749203cba9e94e2193274eafa5e470b732f520d8e8e2c24023fe4c",
+      "musescoreId": "5821867",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 17,
+      "notes": 82,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 17.0,
+        "notesPerBar": 7.9411764705882355,
+        "notesPerSecond": 3.176470588235294,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 28.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 28.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.5037037037037037,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 3.34,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.641
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.8 from 7"
+      }
+    },
+    {
+      "id": "song.pop.michael-row-the-boat-ashore.pdmx",
+      "cid": "QmUx8rFCXn5az3JyawBnRrViiXQGipktKFbj5w8r8NcWaN",
+      "file": "QmUx8rFCXn5az3JyawBnRrViiXQGipktKFbj5w8r8NcWaN.mxl",
+      "title": "Michael row the boat ashore",
+      "composer": "NA",
+      "artist": "NA",
+      "rawSha256": "e049c527acdd8c78ab16137ed47c2cd24c87b8756b777c9c7127eef62b7045fd",
+      "convertedSha256": "0f7ae6c3739a7c9784fdc442514252875f3c541932c2478608863605be49eda9",
+      "musescoreId": "5652448",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 9,
+      "notes": 32,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 9.0,
+        "notesPerBar": 5.555555555555555,
+        "notesPerSecond": 2.2222222222222223,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 7.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 21.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 21.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.0,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 1.88,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -1.046
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.3 from 15"
+      }
+    },
+    {
+      "id": "song.classical.tchaikovsky-swan-lake.pdmx",
+      "cid": "QmXw1JouGSKb7wd1ypVYQJJn15VXr3gUVHuYQ5qcZt7ne7",
+      "file": "QmXw1JouGSKb7wd1ypVYQJJn15VXr3gUVHuYQ5qcZt7ne7.mxl",
+      "title": "Swan Lake",
+      "composer": "Pyotr Ilyich Tchaikovsky",
+      "artist": "Pyotr Ilyich Tchaikovsky",
+      "rawSha256": "1ac79036564b15bcb14e11738ae3c9620efd3cf705e5f8a6e91a6a2009f45ade",
+      "convertedSha256": "b9b29cc2ed8aaa47447ed67f784c1a3f2ed3dfe3fb069b5a35b21338afbb8c15",
+      "musescoreId": "287116",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Pyotr Ilyich Tchaikovsky died 1893 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1963",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 25,
+      "notes": 156,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 25.0,
+        "notesPerBar": 8.96,
+        "notesPerSecond": 3.584,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 31.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 35.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.23660714285714285,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.47,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.388
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.8 from 9"
+      }
+    },
+    {
+      "id": "song.classical.haydn-das-deutschlandlied.pdmx",
+      "cid": "QmaXaNxhn3VGE6d7ZzMokdgyR72ysB4DzkNAFBuRdfd1ed",
+      "file": "QmaXaNxhn3VGE6d7ZzMokdgyR72ysB4DzkNAFBuRdfd1ed.mxl",
+      "title": "Das Deutschlandlied",
+      "composer": "Joseph Haydn",
+      "artist": "Joseph Haydn",
+      "rawSha256": "2807174e6b11c238655cdb8cf91e393c3a42737cd1b8a604d474732286195628",
+      "convertedSha256": "f9522f3de950ec57dfcb432ff77ddabbce23b43217b12abf60d875f74eecd803",
+      "musescoreId": "570",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Joseph Haydn died 1809 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1879",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 20,
+      "notes": 94,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 20.0,
+        "notesPerBar": 4.7,
+        "notesPerSecond": 1.88,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 17.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.425531914893617,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 3.21,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.535
+        ],
+        [
+          "notesPerBar",
+          -0.392
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.6 from 13"
+      }
+    },
+    {
+      "id": "song.classical.het-wilhelmus.pdmx",
+      "cid": "QmRH6P2VQGeyAqJPa6UWDGhg2ysFbFchEyjAB8oZqUNaq2",
+      "file": "QmRH6P2VQGeyAqJPa6UWDGhg2ysFbFchEyjAB8oZqUNaq2.mxl",
+      "title": "Het Wilhelmus",
+      "composer": "NA",
+      "artist": "Adrianus Valerius",
+      "rawSha256": "98cdd42ed1fcc81c57e694fd85b9008841cf1317f4f8402ac2e2c5d14f52f866",
+      "convertedSha256": "85c8327279b6b2ccc16417684785b8b7d9402fa87bf61d5ad8d51cb10f0ddc5f",
+      "musescoreId": "572",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 19,
+      "notes": 62,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 19.0,
+        "notesPerBar": 3.263157894736842,
+        "notesPerSecond": 1.305263157894737,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 7.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 14.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.06451612903225806,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 3.0
+      },
+      "level": 2.28,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.569
+        ],
+        [
+          "notesPerBar",
+          -0.522
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.5 from 12"
+      }
+    },
+    {
+      "id": "song.classical.debussy-clair-de-lune-beginner-version.pdmx",
+      "cid": "QmQxJ4tsA3Xdsym1ZgNNRkGpiX8cT5yaKnPVMfFVvDDsMo",
+      "file": "QmQxJ4tsA3Xdsym1ZgNNRkGpiX8cT5yaKnPVMfFVvDDsMo.mxl",
+      "title": "clair de lune beginner version",
+      "composer": "claude debussy",
+      "artist": "Claude Debussy",
+      "rawSha256": "9c3b6eb3c656236a693390977aff37b692e3f8a30f084ca1057134206cb0f696",
+      "convertedSha256": "6eb5715321a4f4e648c17c116c2603f679982737b7b1de794808140c2824b31c",
+      "musescoreId": "5921846",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Claude Debussy died 1918 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1988",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 42,
+      "notes": 120,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 42.0,
+        "notesPerBar": 3.7142857142857144,
+        "notesPerSecond": 1.980952380952381,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 9.0,
+        "maxSpanLeft": 10.0,
+        "maxLeapRight": 15.0,
+        "maxLeapLeft": 24.0,
+        "rangeRight": 22.0,
+        "rangeLeft": 32.0,
+        "blackKeyRatio": 0.04487179487179487,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.03205128205128205,
+        "distinctRhythms": 5.0
+      },
+      "level": 4.71,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          -0.477
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "notesPerSecond",
+          -0.295
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, rated 4.8 by 67"
+      }
+    },
+    {
+      "id": "song.classical.12-bar-blues.pdmx",
+      "cid": "QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h",
+      "file": "QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h.mxl",
+      "title": "12 Bar Blues",
+      "composer": "NA",
+      "artist": "Lessons - Blues",
+      "rawSha256": "232349ab938d1a905d0272eae1f50a354b8aa8c771f48b053c5905a5ac46f15f",
+      "convertedSha256": "bbcec98e8b30f472b04b3c7cdb5e424c01786caecee49ed8154a7baedb390e58",
+      "musescoreId": "1242506",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 11,
+      "notes": 51,
+      "tempoBpm": 150.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 11.0,
+        "notesPerBar": 4.818181818181818,
+        "notesPerSecond": 3.0113636363636362,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 7.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 16.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.07547169811320754,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 1.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 3.0
+      },
+      "level": 2.43,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.921
+        ],
+        [
+          "notesPerBar",
+          -0.382
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.5 from 19"
+      }
+    },
+    {
+      "id": "song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx",
+      "cid": "QmeswnMFsq7kKrfJU2KHcucQ55D1psa3djU7BiYUptXPPR",
+      "file": "QmeswnMFsq7kKrfJU2KHcucQ55D1psa3djU7BiYUptXPPR.mxl",
+      "title": "Thème du 1er mouvement de la sonate K.331",
+      "composer": "Wolfgang Amadeus Mozart",
+      "artist": "Wolfgang Amadeus Mozart",
+      "rawSha256": "30916241a6ab5fdac7af68cde74fb95853527849405d2875e0e589d65fdf51ab",
+      "convertedSha256": "641ffb7d0d21f01af595374cc49293f20f2663893f0b9bbec991f50fc0221b64",
+      "musescoreId": "5744456",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Wolfgang Amadeus Mozart died 1791 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1861",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 16,
+      "notes": 55,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 3.4375,
+        "notesPerSecond": 1.8333333333333333,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 5.0,
+        "maxLeapLeft": 7.0,
+        "rangeRight": 7.0,
+        "rangeLeft": 7.0,
+        "blackKeyRatio": 0.0,
+        "keyAccidentals": 0.0,
+        "shortestValue": 1.0,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 3.0
+      },
+      "level": 2.45,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.681
+        ],
+        [
+          "rangeLeft",
+          -0.579
+        ],
+        [
+          "shortestValue",
+          -0.573
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, rated 4.8 by 9"
+      }
+    },
+    {
+      "id": "song.classical.ah-vous-dirais-je-maman.pdmx",
+      "cid": "QmPinqY1oto3v4qQZjnQ6Rmocg9PmKgtQE7774TYcXXytJ",
+      "file": "QmPinqY1oto3v4qQZjnQ6Rmocg9PmKgtQE7774TYcXXytJ.mxl",
+      "title": "Ah! vous dirais-je Maman",
+      "composer": "NA",
+      "artist": "Anonymous",
+      "rawSha256": "c50fa260ac5965259409a3250d63873fb821bc912bda3b37423e94325f30bc49",
+      "convertedSha256": "cc01daacc386038cf48b944ff3c34abb65346ff42e7752888d67f16eddbe1ccc",
+      "musescoreId": "1295",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 16,
+      "notes": 43,
+      "tempoBpm": 132.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 4.75,
+        "notesPerSecond": 3.9583333333333335,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 21.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 26.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.0,
+        "keyAccidentals": 0.0,
+        "shortestValue": 1.0,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 2.0
+      },
+      "level": 1.93,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.681
+        ],
+        [
+          "shortestValue",
+          -0.573
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.8 from 10"
+      }
+    },
+    {
+      "id": "song.folk.hallelujah-easy.pdmx",
+      "cid": "QmViUNieMPGGYJuPCjQj5AnP8a6uUUveHbEbkbXusEaeBm",
+      "file": "QmViUNieMPGGYJuPCjQj5AnP8a6uUUveHbEbkbXusEaeBm.mxl",
+      "title": "Hallelujah (easy)",
+      "composer": "PC Chin",
+      "artist": "Leonard Cohen",
+      "rawSha256": "745eaa57ea30c609e4e3266f0cbe524f353c199a651900cd699a6fb00005d337",
+      "convertedSha256": "1d7d23dffa73fa8fc56f60f3b2d7f34c5232c2396385a763f547b1231924cd2d",
+      "musescoreId": "5918137",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 29,
+      "notes": 128,
+      "tempoBpm": 70.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 29.0,
+        "notesPerBar": 5.068965517241379,
+        "notesPerSecond": 0.985632183908046,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 5.0,
+        "maxSpanLeft": 7.0,
+        "maxLeapRight": 8.0,
+        "maxLeapLeft": 7.0,
+        "rangeRight": 16.0,
+        "rangeLeft": 11.0,
+        "blackKeyRatio": 0.006802721088435374,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 3.8,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerSecond",
+          -0.427
+        ],
+        [
+          "rangeLeft",
+          -0.377
+        ],
+        [
+          "notesPerBar",
+          -0.363
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, rated 4.7 by 114"
+      }
+    },
+    {
+      "id": "song.folk.como-e-grande-meu-amor-por-voce.pdmx",
+      "cid": "QmcXz47yKrELmgU1GCuGHMq5RiS7k1cME31Y67cWcv6YWC",
+      "file": "QmcXz47yKrELmgU1GCuGHMq5RiS7k1cME31Y67cWcv6YWC.mxl",
+      "title": "Como é grande meu amor por você",
+      "composer": "Roberto Carlos",
+      "artist": "Roberto Carlos",
+      "rawSha256": "fd448a32f900f66a3b486a8ff8095f4ab1db96b2798ed656d5dbb6a0945905d8",
+      "convertedSha256": "cc6ae976bceb05c86f0421759dd6b7526473ad25247b4807d26686ee3e48a090",
+      "musescoreId": "5267642",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 42,
+      "notes": 170,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 42.0,
+        "notesPerBar": 4.0476190476190474,
+        "notesPerSecond": 1.619047619047619,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 15.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.1411764705882353,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 2.97,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.446
+        ],
+        [
+          "notesPerSecond",
+          -0.337
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.8 from 51"
+      }
+    },
+    {
+      "id": "song.folk.dark-eyes.pdmx",
+      "cid": "QmPYit3qLZ6wyHzCwXVR2njRMCEkbZsnRaVbu2cCvACmnD",
+      "file": "QmPYit3qLZ6wyHzCwXVR2njRMCEkbZsnRaVbu2cCvACmnD.mxl",
+      "title": "Dark Eyes",
+      "composer": "-Traditional",
+      "artist": "Misc Traditional",
+      "rawSha256": "01647194932207e65eea2bef4b1c131188561f59fb907eca661352912f2bb6de",
+      "convertedSha256": "9a661c4d5d247224583a3e88509616f8cb0932a8a64deaba6a05f86ef05b6dbe",
+      "musescoreId": "67862",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 17,
+      "notes": 56,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 17.0,
+        "notesPerBar": 4.470588235294118,
+        "notesPerSecond": 1.7882352941176471,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 36.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 36.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.2236842105263158,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.3333333333333333,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 6.0
+      },
+      "level": 2.78,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.641
+        ],
+        [
+          "notesPerBar",
+          -0.41
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.8 from 8"
+      }
+    },
+    {
+      "id": "song.folk.de-brabanconne.pdmx",
+      "cid": "QmcvAqhUcxoxcGuoP42yhUDYro6m8pwX91SMepjzMY6yun",
+      "file": "QmcvAqhUcxoxcGuoP42yhUDYro6m8pwX91SMepjzMY6yun.mxl",
+      "title": "De Brabançonne",
+      "composer": "François van Campenhout",
+      "artist": "Misc Traditional",
+      "rawSha256": "921509ee9e3cb127125ad7dde5c63db3ace23968fb724d50ddeedfada4b966be",
+      "convertedSha256": "a8ee68d601520fd92fabd42973cef99ffcd581489853f5c8c0d557dea16d78f5",
+      "musescoreId": "569",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 25,
+      "notes": 121,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 25.0,
+        "notesPerBar": 4.84,
+        "notesPerSecond": 1.936,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 9.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.2809917355371901,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.13,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.388
+        ],
+        [
+          "notesPerBar",
+          -0.381
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.5 from 17"
+      }
+    },
+    {
+      "id": "song.folk.insensatez-how-insensitive-jobim.pdmx",
+      "cid": "QmemwmomPM2tq51u1sTFEAPqdzPkwrJkuKCsMThnKqpvFW",
+      "file": "QmemwmomPM2tq51u1sTFEAPqdzPkwrJkuKCsMThnKqpvFW.mxl",
+      "title": "Insensatez (How Insensitive) Jobim",
+      "composer": "Antonio Carlos Jobim",
+      "artist": "Antônio Carlos Jobim",
+      "rawSha256": "2a784e21eaa1f02c4b893b7dda51aac49b00a8b40586b686e32f0aa6f804fa02",
+      "convertedSha256": "20452c5851a06199fbc57a7bcb7605783a7104eb43d16fe17d1ebb5d9a6ee72f",
+      "musescoreId": "4690726",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 32,
+      "notes": 143,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 32.0,
+        "notesPerBar": 6.8125,
+        "notesPerSecond": 2.725,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 14.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 25.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 27.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.13302752293577982,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.03669724770642202,
+        "distinctRhythms": 6.0
+      },
+      "level": 2.98,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "notesPerBar",
+          -0.25
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.5 from 58"
+      }
+    },
+    {
+      "id": "song.folk.was-wollen-wir-trinken.pdmx",
+      "cid": "QmVEjJW9KLRWVwUgwRvwEcuiFdbZRPUGC3BAZzRftXMbcu",
+      "file": "QmVEjJW9KLRWVwUgwRvwEcuiFdbZRPUGC3BAZzRftXMbcu.mxl",
+      "title": "Was wollen wir trinken",
+      "composer": "NA",
+      "artist": "Misc Traditional",
+      "rawSha256": "f1da29cc7974caaa74eb31fc61edec625428e7c3f412e4d5edb63a138ba521fc",
+      "convertedSha256": "7a53d4f6c6e5de80a14dd76996f5c7bdf4b038b019d23eb13aee19b308dfbd23",
+      "musescoreId": "32504",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 13,
+      "notes": 74,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 13.0,
+        "notesPerBar": 8.307692307692308,
+        "notesPerSecond": 4.430769230769231,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 7.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 29.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 32.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.0,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.3333333333333333,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 2.66,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.814
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.9 from 39"
+      }
+    },
+    {
+      "id": "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
+      "cid": "QmZcJuZpeQpSGrw4gd7jcwWfbjt7L84KRjAHJ771Z8kypC",
+      "file": "QmZcJuZpeQpSGrw4gd7jcwWfbjt7L84KRjAHJ771Z8kypC.mxl",
+      "title": "Ga je mee op zoek naar het Koningskind",
+      "composer": "Composer",
+      "artist": "Elly & Rikkert",
+      "rawSha256": "528d54403cad0c2cca549b1685f6f2ce00fe42b5818aa05e7ee90401036c0227",
+      "convertedSha256": "c316193693e7fce21dc4512579bbcad00ae05a2d3f394ae191ca73ea70bcc2ce",
+      "musescoreId": "1511196",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 32,
+      "notes": 172,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 32.0,
+        "notesPerBar": 7.625,
+        "notesPerSecond": 3.05,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 30.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 40.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.19262295081967212,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.00819672131147541,
+        "distinctRhythms": 4.0
+      },
+      "level": 3.39,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "bars",
+          -0.224
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.3 from 6"
+      }
+    },
+    {
+      "id": "song.folk.petit-papa-noeil.pdmx",
+      "cid": "QmYCEjQ9UL75CiNXhwY9JwvrmanWJYcHKTQBJaLRy7sLE3",
+      "file": "QmYCEjQ9UL75CiNXhwY9JwvrmanWJYcHKTQBJaLRy7sLE3.mxl",
+      "title": "Petit Papa NoeÌl",
+      "composer": "NA",
+      "artist": "Misc Traditional",
+      "rawSha256": "4e499a6ff08597d938b9247d4e7356b22e8363cfc07adb423c87401bca448ca2",
+      "convertedSha256": "d680138c901a97ffcd72262c7de4edbfc02c0017416ed4417c86652b87794501",
+      "musescoreId": "5844911",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 33,
+      "notes": 159,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 33.0,
+        "notesPerBar": 4.818181818181818,
+        "notesPerSecond": 1.9272727272727272,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 7.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 9.0,
+        "blackKeyRatio": 0.11320754716981132,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.006289308176100629,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.76,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -0.468
+        ],
+        [
+          "notesPerBar",
+          -0.382
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, rated 4.6 by 109"
+      }
+    },
+    {
+      "id": "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
+      "cid": "Qmbnua9rYTo1vkcT79QtF68f7to28oHcgvwtWh5Vq5MLzT",
+      "file": "Qmbnua9rYTo1vkcT79QtF68f7to28oHcgvwtWh5Vq5MLzT.mxl",
+      "title": "Just a Closer Walk with Thee Easy Piano",
+      "composer": "Richard Batty (arranger)",
+      "artist": "Misc Praise Songs",
+      "rawSha256": "9f3090af0db2f30147c3fb42e6222a4a6cd8b25ca6d596056016a0ae481de96c",
+      "convertedSha256": "598552595b43984034dd315ddf2d0dbe74df8da6a46b446e9630c5210b7e03bc",
+      "musescoreId": "5953647",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 16,
+      "notes": 99,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 10.4375,
+        "notesPerSecond": 4.175,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 10.0,
+        "maxLeapRight": 35.0,
+        "maxLeapLeft": 14.0,
+        "rangeRight": 35.0,
+        "rangeLeft": 17.0,
+        "blackKeyRatio": 0.05389221556886228,
+        "keyAccidentals": 0.0,
+        "shortestValue": 1.0,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 3.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.011976047904191617,
+        "distinctRhythms": 4.0
+      },
+      "level": 3.97,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.681
+        ],
+        [
+          "shortestValue",
+          -0.573
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, rated 4.6 by 25"
+      }
+    },
+    {
+      "id": "song.folk.so-danco-samba.pdmx",
+      "cid": "QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD",
+      "file": "QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD.mxl",
+      "title": "Só Danço Samba",
+      "composer": "Antonio Carlos Jobim",
+      "artist": "Antônio Carlos Jobim",
+      "rawSha256": "fed4f72b3d1df759e5a42b3081f930d7efc088009b22b11ac3dd1eac6e3125ff",
+      "convertedSha256": "0422077c2dadd52a02be71bc384b5c1f62dd6689f810bd59abdc51d99ee4283c",
+      "musescoreId": "2143891",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 34,
+      "notes": 145,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 34.0,
+        "notesPerBar": 6.617647058823529,
+        "notesPerSecond": 2.6470588235294117,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 14.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 33.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 42.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.035555555555555556,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.03111111111111111,
+        "distinctRhythms": 7.0
+      },
+      "level": 3.03,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "notesPerBar",
+          -0.261
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.7 from 47"
+      }
+    },
+    {
+      "id": "song.folk.uti-var-hage-swedish-traditional-song.pdmx",
+      "cid": "QmY9aSk9GvJuZjFABRn1XkVJwbceabpRab92bz1amNJUUb",
+      "file": "QmY9aSk9GvJuZjFABRn1XkVJwbceabpRab92bz1amNJUUb.mxl",
+      "title": "Uti vår hage swedish traditional song",
+      "composer": "NA",
+      "artist": "Misc Traditional",
+      "rawSha256": "06671d27dc213a5b3874f839e90fe5a48d9baa49bc7355450868bf51caa89217",
+      "convertedSha256": "475570b30cba72443458e0e9b4335ce67d492a15473b459e2e391e587361d7e4",
+      "musescoreId": "283906",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 18,
+      "notes": 88,
+      "tempoBpm": 112.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 18.0,
+        "notesPerBar": 4.944444444444445,
+        "notesPerSecond": 2.746913580246914,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 10.0,
+        "maxLeapLeft": 7.0,
+        "rangeRight": 15.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.48314606741573035,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.011235955056179775,
+        "distinctRhythms": 7.0
+      },
+      "level": 5.04,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.604
+        ],
+        [
+          "notesPerBar",
+          -0.373
+        ],
+        [
+          "keyAccidentals",
+          0.27
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, unrated but 2,028 views"
+      }
+    },
+    {
+      "id": "song.folk.suo-gan-welsh-traditional-lullaby.pdmx",
+      "cid": "QmTRZKvWyRVgEGSjDN3AMULcRe1yyg3APhhypdRpqyHh4s",
+      "file": "QmTRZKvWyRVgEGSjDN3AMULcRe1yyg3APhhypdRpqyHh4s.mxl",
+      "title": "Suo Gan - Welsh Traditional Lullaby",
+      "composer": "Traditional",
+      "artist": "Misc Traditional",
+      "rawSha256": "d72910be6c7c177a3cfee8d55d32cc9880b5860cc6fa64a6dc3b5e7d74e23b2f",
+      "convertedSha256": "e69b6447e9548b4ecb9a78849031243afc453fc8f61c15a07bfedc395c022414",
+      "musescoreId": "1333696",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 16,
+      "notes": 81,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 8.0,
+        "notesPerSecond": 3.2,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 26.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 29.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.2734375,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 1.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 3.09,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.681
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.8 from 17"
+      }
+    },
+    {
+      "id": "song.folk.in-the-summertime.pdmx",
+      "cid": "QmbwEoZV3MApZkeSEgMF2nxWmQfJbDizmeDP4MCWLCCWxS",
+      "file": "QmbwEoZV3MApZkeSEgMF2nxWmQfJbDizmeDP4MCWLCCWxS.mxl",
+      "title": "In the summertime",
+      "composer": "Ray Dorset, Mungo Jerry",
+      "artist": "Mungo Jerry",
+      "rawSha256": "bb307fe6d087a709a1cf2c7efb3bb569c1277404b8c764ef9222fed5e83d0526",
+      "convertedSha256": "5cf450ea502d9e3dd67fbfd262e84191e9e244016414a1354c377e0c381446ee",
+      "musescoreId": "5644020",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 13,
+      "notes": 63,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 13.0,
+        "notesPerBar": 4.846153846153846,
+        "notesPerSecond": 1.9384615384615385,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 6.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 15.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.047619047619047616,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 3.0
+      },
+      "level": 1.99,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.814
+        ],
+        [
+          "notesPerBar",
+          -0.38
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.5 from 17"
+      }
+    },
+    {
+      "id": "song.folk.tuyo-narcos-intro-theme.pdmx",
+      "cid": "QmQkZ2NxtZvJUiLxULu6x9t1vamRFggMxxGCWui7otNcQS",
+      "file": "QmQkZ2NxtZvJUiLxULu6x9t1vamRFggMxxGCWui7otNcQS.mxl",
+      "title": "Tuyo Narcos intro theme",
+      "composer": "Composer",
+      "artist": "Rodrigo Amarante",
+      "rawSha256": "a3ad1fa27e1fd5f7baeac7c7957924fa0ddadf4a86cac8be83e7656b7d3bd5cb",
+      "convertedSha256": "ba8194ebcbb13eb0ce39f5ca986ba05921b41d039dfd98dbdf5c98e08b99a524",
+      "musescoreId": "5831861",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 37,
+      "notes": 167,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 37.0,
+        "notesPerBar": 4.513513513513513,
+        "notesPerSecond": 1.8054054054054054,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 13.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 25.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.688622754491018,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0718562874251497,
+        "distinctRhythms": 7.0
+      },
+      "level": 3.74,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.407
+        ],
+        [
+          "notesPerSecond",
+          -0.315
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.0 from 12"
+      }
+    },
+    {
+      "id": "song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx",
+      "cid": "QmZ8qaMvH2sZtWgYjMXDP91mErvbvhfFDdvr8V4jnMjUrq",
+      "file": "QmZ8qaMvH2sZtWgYjMXDP91mErvbvhfFDdvr8V4jnMjUrq.mxl",
+      "title": "The Skye boat song (Outlander theme song)",
+      "composer": "NA",
+      "artist": "Bear McCreary",
+      "rawSha256": "7ca7c8f2434379aa360c10c1f79eaf83d4fb1fe7f4f60c3360d2bf9c71938bfe",
+      "convertedSha256": "d985ab1af5754ebdb1764043f7be80b2e0550fb5d2a61f24dc730e1857aaf0c8",
+      "musescoreId": "353741",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 48,
+      "notes": 142,
+      "tempoBpm": 160.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 48.0,
+        "notesPerBar": 2.9583333333333335,
+        "notesPerSecond": 1.3148148148148149,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 7.0,
+        "maxLeapLeft": 7.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 9.0,
+        "blackKeyRatio": 0.014084507042253521,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.15492957746478872,
+        "distinctRhythms": 5.0
+      },
+      "level": 4.14,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          -0.556
+        ],
+        [
+          "rangeLeft",
+          -0.468
+        ],
+        [
+          "notesPerSecond",
+          -0.377
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, rated 4.7 by 74"
+      }
+    },
+    {
+      "id": "song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx",
+      "cid": "QmZhn2UR9E76vYHpvWcELcvx9hC1zD5y1Nr6N4iAgDWHAh",
+      "file": "QmZhn2UR9E76vYHpvWcELcvx9hC1zD5y1Nr6N4iAgDWHAh.mxl",
+      "title": "Let it Snow - Leadsheet",
+      "composer": "NA",
+      "artist": "Frank Sinatra",
+      "rawSha256": "cbe72bc113e5b084cb1f157b04611fef7a81a32e8de9b1b7ef6a1b4d7db6cfe9",
+      "convertedSha256": "a9df0ae5a8ec1cc9b1db982afc64913d33a804efd1e5910e1968637eca7526f0",
+      "musescoreId": "1448001",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 33,
+      "notes": 193,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 33.0,
+        "notesPerBar": 10.787878787878787,
+        "notesPerSecond": 4.315151515151515,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 28.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.07584269662921349,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 3.24,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.6 from 131"
+      }
+    },
+    {
+      "id": "song.pop.sammy-fain-and-irving-kahal-i-ll-be-seeing-you.pdmx",
+      "cid": "QmSamTinkgaM2sy87hLrKJcqka6A43rZ3d6QbXjxXTQoYR",
+      "file": "QmSamTinkgaM2sy87hLrKJcqka6A43rZ3d6QbXjxXTQoYR.mxl",
+      "title": "I'll Be Seeing You",
+      "composer": "Composer",
+      "artist": "Sammy Fain and Irving Kahal",
+      "rawSha256": "e409efbae7a6d8bdbf31d267cf4368ee1941659149d253e1698aa2a869c93c41",
+      "convertedSha256": "92fbdf27af89559adb6f9a3c933ba38a3c10589c19d037fd6231aa574912ec9e",
+      "musescoreId": "4312191",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 32,
+      "notes": 154,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 32.0,
+        "notesPerBar": 8.59375,
+        "notesPerSecond": 3.4375,
+        "maxSimultaneousRight": 7.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 29.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 36.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 41.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.2581818181818182,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.04727272727272727,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.54,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "bars",
+          -0.224
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.6 from 45"
+      }
+    },
+    {
+      "id": "song.pop.misc-cartoons-les-mysterieuses-cites-d-or-generique.pdmx",
+      "cid": "QmYsdwP5T3qpGFBAFSL9ipvHrvJG5KLuHGnmg8Txd8MtUb",
+      "file": "QmYsdwP5T3qpGFBAFSL9ipvHrvJG5KLuHGnmg8Txd8MtUb.mxl",
+      "title": "Les mystérieuses cités d'or (générique)",
+      "composer": "R;Boisard(arengemments)",
+      "artist": "Misc Cartoons",
+      "rawSha256": "6917282433e5158e4409ba60a6663d780f3baceaf847530c677b6c5d93a69e7f",
+      "convertedSha256": "32aa7cc4c9f9112b60cae9e78905b80f5ea2970c5752bf76bf4153913b50f2e9",
+      "musescoreId": "5059368",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 34,
+      "notes": 156,
+      "tempoBpm": 100.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 34.0,
+        "notesPerBar": 4.588235294117647,
+        "notesPerSecond": 1.911764705882353,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 19.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 24.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.23076923076923078,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 7.0
+      },
+      "level": 3.42,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.401
+        ],
+        [
+          "notesPerSecond",
+          -0.303
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.5 from 12"
+      }
+    },
+    {
+      "id": "song.pop.canciones-populares-feliz-cumpleanos-piano.pdmx",
+      "cid": "QmdfyfTYnMz4V6C8o6x86cAM5XW3Ve1y8WNjemGmShfvSd",
+      "file": "QmdfyfTYnMz4V6C8o6x86cAM5XW3Ve1y8WNjemGmShfvSd.mxl",
+      "title": "Feliz Cumpleaños (Piano)",
+      "composer": "NA",
+      "artist": "Canciones Populares",
+      "rawSha256": "391f6215433d13468add49111440e50f860274cf9b7cde051136716930a9676e",
+      "convertedSha256": "a9f0d09c9eea4863a5f2ce6f6606f188f07da1dac0204d7cfa48dfc499c98086",
+      "musescoreId": "3278706",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 9,
+      "notes": 34,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 9.0,
+        "notesPerBar": 4.777777777777778,
+        "notesPerSecond": 2.5481481481481483,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 10.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 5.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 10.0,
+        "blackKeyRatio": 0.0,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 2.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 3.35,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -1.046
+        ],
+        [
+          "rangeLeft",
+          -0.421
+        ],
+        [
+          "notesPerBar",
+          -0.386
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "grand staff, rated 4.6 by 81"
+      }
+    },
+    {
+      "id": "song.pop.misc-computer-games-a-brotherhood-of-heroes-call-of-duty-wwii-theme-song.pdmx",
+      "cid": "QmXq1BHNn6NpRVC2qwKvMzDPvYkDHCZuoY6cH3rLzcjGWw",
+      "file": "QmXq1BHNn6NpRVC2qwKvMzDPvYkDHCZuoY6cH3rLzcjGWw.mxl",
+      "title": "A Brotherhood of Heroes (Call of Duty WWII Theme Song)",
+      "composer": "NA",
+      "artist": "Misc Computer Games",
+      "rawSha256": "99c33e410a47a4c2af94fbbe073df625dfeb9b275b0fc48ab63fa2a862871fdf",
+      "convertedSha256": "09969f4bca0b83cce044000d40a7caf7547263c11597aef6b6fc050399494be3",
+      "musescoreId": "4844659",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 32,
+      "notes": 70,
+      "tempoBpm": 145.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 32.0,
+        "notesPerBar": 2.1875,
+        "notesPerSecond": 1.3216145833333333,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 8.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 17.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.45714285714285713,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.05714285714285714,
+        "distinctRhythms": 8.0
+      },
+      "level": 3.16,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.653
+        ],
+        [
+          "notesPerSecond",
+          -0.376
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "melody only (right hand), but well attested: 4.7 from 5"
       }
     },
     {

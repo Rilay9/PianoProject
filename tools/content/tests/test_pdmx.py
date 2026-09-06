@@ -23,6 +23,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
 import zipfile
 from pathlib import Path
@@ -1211,3 +1212,43 @@ class TestZenodoRecord(unittest.TestCase):
         header = json.loads(candidates.read_text(encoding="utf-8"))["header"]
         self.assertEqual(header["csvBytes"], 209_574_867)
         self.assertEqual(commit_mod.zenodo_record_for(header), "14648209")
+
+
+class TestAttestation(unittest.TestCase):
+    """
+    The floor under band 1-2 (`shortlist.attested`).
+
+    P14's review measured what happens without it: 70 of the band's 80 rows
+    came back melody-only lead sheets, 40 of them unrated with a median of 45
+    views, and the band was dropped at 50% -- over the README's 40% stop rule.
+    Every one of those 40 was junk and every one was unattested, so the floor
+    is exactly the rule the evidence supports and no wider.
+    """
+
+    def row(self, band="1-2", n_ratings=0, n_views=0):
+        candidate = types.SimpleNamespace(band=band, n_ratings=n_ratings, n_views=n_views)
+        return candidate
+
+    def test_an_unopened_file_is_refused_in_the_easy_band(self) -> None:
+        self.assertFalse(shortlist_mod.attested(self.row(n_ratings=0, n_views=45)))
+
+    def test_one_rating_is_enough(self) -> None:
+        self.assertTrue(shortlist_mod.attested(self.row(n_ratings=1, n_views=0)))
+
+    def test_a_hundred_views_is_enough(self) -> None:
+        self.assertTrue(shortlist_mod.attested(self.row(n_ratings=0, n_views=100)))
+        self.assertFalse(shortlist_mod.attested(self.row(n_ratings=0, n_views=99)))
+
+    def test_every_other_band_is_untouched(self) -> None:
+        # The floor exists because the *easy* band is full of lead sheets. The
+        # others are not, and an unrated Stage 5 piece is a different question.
+        for band in ("3", "4", "5", "6", "7-9"):
+            self.assertTrue(
+                shortlist_mod.attested(self.row(band=band, n_ratings=0, n_views=0)), band
+            )
+
+    def test_the_quotas_apply_it(self) -> None:
+        # A floor nothing calls is not a floor.
+        source = (TOOLS / "pdmx" / "shortlist.py").read_text(encoding="utf-8")
+        quotas = source[source.index("def apply_quotas("):]
+        self.assertIn("attested(c)", quotas)
