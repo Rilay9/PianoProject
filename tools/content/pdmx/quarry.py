@@ -399,6 +399,16 @@ def quarry(
                 previous.ok = False
                 previous.gate = ""
                 previous.reason = ""
+                # The level is re-estimated from the stored features. The
+                # features are a fact about the file and do not change; the
+                # model does — P14 fitted one halfway through a run — and a
+                # reviewer looking at a level from the fallback table beside
+                # one from the model is being shown two different questions.
+                if previous.features:
+                    level = difficulty.estimate(previous.features, model)
+                    previous.level = level.level
+                    previous.level_source = level.source
+                    previous.level_drivers = level.drivers
                 rows.append(previous)
                 passed_to_render.append(previous)
                 reused += 1
