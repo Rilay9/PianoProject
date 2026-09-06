@@ -161,6 +161,14 @@ disk and record it**) — over 250,000 public-domain MusicXML scores scraped fro
 He will unpack it per the dataset's instructions, which includes rewriting the relative paths
 in `PDMX.csv` and the `subset_paths/*.txt` files to absolute ones.
 
+Of the five archives in the record, this project needs **`PDMX.csv` and `mxl.tar.gz`**, and
+`subset_paths.tar.gz` if it is small. `data.tar.gz` holds MusicRender JSON, which needs the
+authors' Python package and gives nothing our music21 pipeline cannot read straight from the
+MXL; `pdf.tar.gz` holds rendered sheet music we have no use for. **Key off the `mxl` column,
+not `path`** — `path` points into `data/`, which may not be unpacked at all, and 42 songs have
+no MXL and must be skipped rather than crash a selector. Write the prompts so a partial unpack
+is the expected case and a missing archive is a clear message, not a traceback.
+
 What it gives you, per song, in `PDMX.csv`:
 
 - `mxl` — path to a compressed MusicXML file (may be `N/A`; 42 songs are corrupt).
