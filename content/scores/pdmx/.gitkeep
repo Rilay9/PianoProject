@@ -1,0 +1,4 @@
+# The PDMX quarry writes here (replan §2.1). Tracked, like `authored/`: the
+# 4 GB archive these came from is on the owner's machine and never enters the
+# repository or CI, so what is committed is the converted, normalised .mxl and
+# its checksum in content/sources/pdmx.json.

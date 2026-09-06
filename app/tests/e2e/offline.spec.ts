@@ -190,6 +190,14 @@ test.describe('offline', () => {
       const found = [...urls].some((url) => pattern.test(url ?? ''));
       expect(found, `nothing matching ${String(pattern)} is precached`).toBe(true);
     }
+
+    // The quarried scores (replan §7.7). They arrive in a directory the globs
+    // had never seen — `content/scores/pdmx/` — and a score that is in the
+    // catalog and not in the precache looks fine until the owner opens it on a
+    // train. P13 seeds one file there so this has something to find; P14
+    // replaces it with the real quarry's output.
+    const quarried = [...urls].filter((url) => url?.startsWith('content/scores/pdmx/'));
+    expect(quarried.length, 'no content/scores/pdmx/ file is precached').toBeGreaterThan(0);
   });
 });
 

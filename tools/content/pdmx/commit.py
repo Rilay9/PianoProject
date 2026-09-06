@@ -78,7 +78,10 @@ def item_id_for(row: dict, candidate: dict) -> str:
     elif bucket == "folk-hymn-carol":
         stem = title
     else:
-        artist = slug(candidate.get("artist", ""))
+        # `NA` is what PDMX writes for "there isn't one", and slugging it gives
+        # every anonymous pop upload an id beginning `na-`.
+        raw_artist = (candidate.get("artist") or "").strip()
+        artist = slug(raw_artist) if raw_artist.upper() != "NA" else ""
         stem = f"{artist}-{title}" if artist else title
     return f"{prefix}.{stem}.pdmx"
 

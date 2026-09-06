@@ -1,0 +1,125 @@
+{
+  "_comment": [
+    "What the PDMX quarry kept (replan §2.1). Written by tools/content/pdmx/commit.py;",
+    "read by tools/content/import_pdmx.py on every build, which verifies every checksum",
+    "and fails naming the file. The archive itself is never here and never in CI.",
+    "",
+    "Every item is levelSource: `estimated` — the level came from difficulty.py, not from a",
+    "person. `compositionStatus` is a label, not a gate (docs/00 D23): anything that is not",
+    "`pd` is tagged personal-build, admitted by --personal and refused by --strict-license,",
+    "which is what the public Pages deploy runs.",
+    "",
+    "P13 SEED: the single row below is not from the real archive. It is one score from",
+    "tools/content/tests/fixtures/pdmx, put through the whole chain, so that",
+    "content/scores/pdmx/ is a real directory with a real file in it and the precache test",
+    "in offline.spec.ts has something to find. P14 replaces this file wholesale."
+  ],
+  "header": {
+    "pdmxDir": "tests\\fixtures\\pdmx",
+    "layout": "mxl.tar.gz",
+    "rejectionRates": {
+      "4": {
+        "offered": 5,
+        "passed": 4,
+        "reasons": {
+          "structure": 1
+        },
+        "rejectionRate": 0.2
+      },
+      "5": {
+        "offered": 6,
+        "passed": 5,
+        "reasons": {
+          "truncation": 1
+        },
+        "rejectionRate": 0.167
+      },
+      "1-2": {
+        "offered": 5,
+        "passed": 4,
+        "reasons": {
+          "structure": 1
+        },
+        "rejectionRate": 0.2
+      },
+      "3": {
+        "offered": 3,
+        "passed": 3,
+        "reasons": {},
+        "rejectionRate": 0.0
+      },
+      "6": {
+        "offered": 1,
+        "passed": 1,
+        "reasons": {},
+        "rejectionRate": 0.0
+      }
+    },
+    "zenodoRecord": "unknown",
+    "zenodoRecordNote": "The owner was not asked. The CSV sha256 and the archive byte counts above identify which archive this was, so the record id can be filled in later without re-running anything."
+  },
+  "items": [
+    {
+      "id": "song.classical.bach-minuet-in-g.pdmx",
+      "cid": "QmFixtureBachMinuet",
+      "file": "QmFixtureBachMinuet.mxl",
+      "title": "Minuet in G",
+      "composer": "Johann Sebastian Bach",
+      "artist": "NA",
+      "rawSha256": "fac7dac097771d946588949ced8aa170ff22e5133cfaca4fddf61ed422213372",
+      "convertedSha256": "f9c39f6c685d44adf9999887007787972beaac3ef57fe594b2e2250bcbc246f5",
+      "musescoreId": "5700000",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "3",
+      "bars": 16,
+      "notes": 80,
+      "tempoBpm": 88.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 6.0,
+        "notesPerSecond": 2.2,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 7.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 12.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.020833333333333332,
+        "keyAccidentals": 0.0,
+        "shortestValue": 1.0,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.08333333333333333,
+        "distinctRhythms": 2.0
+      },
+      "level": 2.5,
+      "levelSource": "estimated",
+      "levelFrom": "fallback",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          6.0
+        ],
+        [
+          "shortestValue",
+          1.0
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "seed row for the precache test; P14 replaces it"
+      }
+    }
+  ]
+}

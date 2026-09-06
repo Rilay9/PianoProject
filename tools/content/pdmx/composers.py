@@ -86,7 +86,18 @@ def fold(text: str) -> str:
     lowered = YEARS.sub(" ", lowered)
     lowered = SINGLE_YEAR.sub(" ", lowered)
     lowered = CREDIT_NOISE.sub(" ", lowered)
-    return re.sub(r"[^a-z0-9]+", " ", lowered).strip()
+    words = re.sub(r"[^a-z0-9]+", " ", lowered).split()
+    # Initials rejoin: `J.S. Bach` becomes three words once the dots go, and
+    # `js bach` is one alias rather than two. Runs of single letters are joined
+    # back up, which is also what makes `W.A. Mozart` and `WA Mozart` the same
+    # string.
+    out: list[str] = []
+    for word in words:
+        if len(word) == 1 and out and len(out[-1]) <= 2 and out[-1].isalpha():
+            out[-1] += word
+        else:
+            out.append(word)
+    return " ".join(out)
 
 
 def years_in(text: str) -> tuple[int, int] | None:
@@ -96,9 +107,14 @@ def years_in(text: str) -> tuple[int, int] | None:
         return None
     born = int(match.group(1))
     second = match.group(2)
-    # `1685-1750` and `1685-50` are both written; the two-digit form takes the
-    # century from the first year, which is how a person reads it.
-    died = int(second) if len(second) == 4 else int(str(born)[:2] + second)
+    if len(second) == 4:
+        return born, int(second)
+    # `1685-50` is written too. The century comes from the first year, and if
+    # that lands *before* it — 1685-50 read as 1650 — the person meant the next
+    # one, which is how anybody reads it.
+    died = int(str(born)[:2] + second)
+    if died < born:
+        died += 100
     return born, died
 
 

@@ -57,6 +57,11 @@ content/                 – SOURCE content (not the build output)
     authored/            – our own arrangements: ABC / tinyNotation / MusicXML written by builders
     imported/            – raw files fetched from public-domain sources (+ SOURCES.md with provenance)
     generated/           – nothing committed; produced by tools/content at build time
+    pdmx/                – converted scores the PDMX quarry kept, one per row of
+                           content/sources/pdmx.json (replan §2.1). Tracked, like authored/:
+                           the 4 GB archive they came from is on the owner's machine and
+                           never enters the repository or CI, so what is committed is the
+                           normalised .mxl and its checksum.
   lessons/               – markdown lesson text (one file per lesson id)
 tools/content/           – Python: fetch, convert, generate, validate, build catalog.json
 docs/, prompts/

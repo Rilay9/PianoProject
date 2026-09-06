@@ -86,8 +86,11 @@ _CC_RE = re.compile(r"CC[- ]?BY(?:[- ](NC[- ]SA|NC[- ]ND|SA|NC|ND))?(?:[- ]?\d\.
 #: reading that as "unclear" would have cost 191 scores.
 _CC_URL_RE = re.compile(r"creativecommons\.org/licenses/(by(?:-nc)?(?:-nd)?(?:-sa)?)\b", re.I)
 _CC0_URL_RE = re.compile(r"creativecommons\.org/publicdomain/(?:zero|mark)\b", re.I)
-_CC0_RE = re.compile(r"\bCC0\b|public\s*domain\s*dedication", re.I)
-_PD_RE = re.compile(r"\bpublic\s+domain\b", re.I)
+#: `cc-zero` and `publicdomain` with no space are PDMX's own two licence
+#: tokens. They are not free text an uploader typed — they are the dataset's
+#: enumeration — and reading them as "unclear" would refuse every row in it.
+_CC0_RE = re.compile(r"\bCC0\b|\bcc[-_ ]?zero\b|public\s*domain\s*dedication", re.I)
+_PD_RE = re.compile(r"\bpublic[-_ ]?domain\b", re.I)
 
 #: How much of an unrecognised licence to quote back. A whole LICENSE file in
 #: an error message buries the one line that matters, once per rejected file.

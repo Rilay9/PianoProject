@@ -12,43 +12,46 @@
     "public domain, and --strict-license refuses them, so a kept one replaces the placeholder",
     "in the owner's build and leaves the placeholder standing in the public one.",
     "",
-    "`id` is the catalog id a kept file takes over. `title` and `artist` are folded substring",
+    "`id` is the catalog id a kept file takes over — the seven rock ids are the placeholders",
+    "that are in the catalog today, checked against it by a test, because a want that names an",
+    "id nothing has would quietly create a second row instead of replacing the first. The",
+    "`song.beautiful.*` ids have no placeholder yet and are new. `title` and `artist` are folded substring",
     "patterns — PDMX titles carry the arranger, the difficulty and the word 'piano' about half",
     "the time, so an exact match would find nothing."
   ],
   "wants": [
     {
-      "id": "song.rock.seize-the-day",
+      "id": "song.rock.a7x-seize-the-day",
       "title": ["seize the day"],
       "artist": ["avenged sevenfold", "a7x"]
     },
     {
-      "id": "song.rock.dear-god",
+      "id": "song.rock.a7x-dear-god",
       "title": ["dear god"],
       "artist": ["avenged sevenfold", "a7x"]
     },
     {
-      "id": "song.rock.so-far-away",
+      "id": "song.rock.a7x-so-far-away",
       "title": ["so far away"],
       "artist": ["avenged sevenfold", "a7x"]
     },
     {
-      "id": "song.rock.fiction",
+      "id": "song.rock.a7x-fiction",
       "title": ["fiction"],
       "artist": ["avenged sevenfold", "a7x"]
     },
     {
-      "id": "song.rock.final-masquerade",
+      "id": "song.rock.lp-final-masquerade",
       "title": ["final masquerade"],
       "artist": ["linkin park"]
     },
     {
-      "id": "song.rock.waiting-for-the-end",
+      "id": "song.rock.lp-waiting-for-the-end",
       "title": ["waiting for the end"],
       "artist": ["linkin park"]
     },
     {
-      "id": "song.rock.shadow-of-the-day",
+      "id": "song.rock.lp-shadow-of-the-day",
       "title": ["shadow of the day"],
       "artist": ["linkin park"]
     },
