@@ -49,7 +49,23 @@
               "levelBand": [
                 3.1,
                 4.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing scales hands together, two octaves, in the sharp keys",
+                "levelWords": "moderate, Grade 2 to 3, scales hands together, two octaves",
+                "constraints": [
+                  "scale passages hands together",
+                  "C, G, D or A major",
+                  "two octaves",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "one-octave scales",
+                  "hands separately only",
+                  "chromatic scales"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -96,7 +112,23 @@
               "levelBand": [
                 3.1,
                 4.2
-              ]
+              ],
+              "finder": {
+                "skill": "playing in flat keys and in both forms of the minor scale",
+                "levelWords": "moderate, Grade 2 to 3, flat keys, harmonic and melodic minor",
+                "constraints": [
+                  "F, B flat or E flat major",
+                  "harmonic or melodic minor passages",
+                  "two octaves",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "sharp keys",
+                  "modal scales",
+                  "one-octave only"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -140,7 +172,23 @@
               "levelBand": [
                 3.3,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing arpeggios and recognising a chord that is not in root position",
+                "levelWords": "moderate, Grade 2 to 3, arpeggios, chord inversions, slash chords",
+                "constraints": [
+                  "arpeggios across two octaves",
+                  "chords in first and second inversion",
+                  "slash chord symbols",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "root position only",
+                  "block chords only",
+                  "broken sevenths"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -184,7 +232,35 @@
               "levelBand": [
                 4.1,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing an even five-finger pattern with each finger equally strong",
+                "levelWords": "moderate, Grade 2 to 3, Hanon, finger exercises, evenness",
+                "constraints": [
+                  "repeating five-finger pattern",
+                  "sequence moving up and down the keyboard",
+                  "hands together in octaves",
+                  "transposable"
+                ],
+                "avoid": [
+                  "expressive pieces",
+                  "pedal",
+                  "changing time signatures"
+                ],
+                "examples": [
+                  {
+                    "title": "The Virtuoso Pianist",
+                    "composer": "Charles-Louis Hanon",
+                    "note": "wanted"
+                  },
+                  {
+                    "title": "Practical Method for Beginners, Op. 599",
+                    "composer": "Carl Czerny",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -230,7 +306,23 @@
               "levelBand": [
                 2.2,
                 4.5
-              ]
+              ],
+              "finder": {
+                "skill": "counting compound time, triplets and notes that land off the beat",
+                "levelWords": "moderate, Grade 2 to 3, 6/8 time, triplets, syncopation",
+                "constraints": [
+                  "6/8 or 12/8 time",
+                  "triplets against a steady beat",
+                  "syncopated melody",
+                  "24 to 64 bars"
+                ],
+                "avoid": [
+                  "straight 4/4 throughout",
+                  "rubato",
+                  "changing time signatures every bar"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -276,7 +368,23 @@
               "levelBand": [
                 1.5,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "reading a new piece straight through while shaping the phrases",
+                "levelWords": "moderate, Grade 2 to 3, sight-reading practice, phrasing",
+                "constraints": [
+                  "short unfamiliar pieces",
+                  "clear phrase marks",
+                  "one key throughout",
+                  "8 to 32 bars each"
+                ],
+                "avoid": [
+                  "famous tunes you already know by ear",
+                  "fast tempos",
+                  "frequent accidentals"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -318,7 +426,35 @@
               "levelBand": [
                 4.1,
                 4.4
-              ]
+              ],
+              "finder": {
+                "skill": "playing a Grade 1 classical piece with staccato, legato and ornaments in the right places",
+                "levelWords": "elementary to moderate, Grade 1 to 2, classical repertoire",
+                "constraints": [
+                  "classical repertoire rather than an arrangement",
+                  "staccato and legato marked",
+                  "a mordent or a trill",
+                  "urtext or a careful edition"
+                ],
+                "avoid": [
+                  "simplified pop arrangements",
+                  "unmarked articulation",
+                  "Romantic pedalling"
+                ],
+                "examples": [
+                  {
+                    "title": "Fur Elise (easy)",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Album for the Young, Op. 68",
+                    "composer": "Robert Schumann",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -361,7 +497,23 @@
               "levelBand": [
                 3.2,
                 4.3
-              ]
+              ],
+              "finder": {
+                "skill": "playing the four-chord song with inversions so the hand stops jumping",
+                "levelWords": "moderate, pop piano, four chord progression, inversions",
+                "constraints": [
+                  "I V vi IV progression",
+                  "chords played in inversion",
+                  "slash chords in the bass",
+                  "chord symbols printed"
+                ],
+                "avoid": [
+                  "root position block chords throughout",
+                  "jazz extensions",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -404,7 +556,23 @@
               "levelBand": [
                 3.2,
                 5.2
-              ]
+              ],
+              "finder": {
+                "skill": "playing the twelve-bar form with a shuffle feel and a boogie left hand",
+                "levelWords": "moderate, blues piano, twelve bar blues, shuffle, boogie woogie",
+                "constraints": [
+                  "twelve-bar blues form",
+                  "shuffle or swung eighths",
+                  "boogie bass line in the left hand",
+                  "blues scale in the right hand"
+                ],
+                "avoid": [
+                  "straight eighths",
+                  "jazz reharmonisation",
+                  "fast stride"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -443,7 +611,23 @@
               "levelBand": [
                 4.3,
                 4.4
-              ]
+              ],
+              "finder": {
+                "skill": "hearing an inversion and a cadence, and placing a key on the circle of fifths",
+                "levelWords": "moderate, ear training, cadences, inversions, circle of fifths",
+                "constraints": [
+                  "clear cadences at phrase ends",
+                  "chords in inversion",
+                  "one key throughout",
+                  "short phrases"
+                ],
+                "avoid": [
+                  "chromatic harmony",
+                  "modulation",
+                  "dense counterpoint"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -482,7 +666,23 @@
               "levelBand": [
                 3.1,
                 4.1
-              ]
+              ],
+              "finder": {
+                "skill": "improvising with the pentatonic scale and answering a phrase you just played",
+                "levelWords": "moderate, improvisation, pentatonic scale, call and response",
+                "constraints": [
+                  "pentatonic melody",
+                  "a repeating accompaniment to play over",
+                  "clear two-bar phrases",
+                  "moderate tempo"
+                ],
+                "avoid": [
+                  "through-composed pieces",
+                  "chromatic melodies",
+                  "fast changes"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -524,7 +724,23 @@
               "levelBand": [
                 3.4,
                 4.5
-              ]
+              ],
+              "finder": {
+                "skill": "comping behind a guitarist in guitar-friendly keys and trading solos",
+                "levelWords": "moderate, comping, playing with a guitarist, lead sheet",
+                "constraints": [
+                  "lead sheet with chord symbols",
+                  "keys of E, A, D or G",
+                  "head and chorus form",
+                  "space left for the guitar"
+                ],
+                "avoid": [
+                  "dense piano arrangements",
+                  "flat keys",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -572,7 +788,23 @@
               "levelBand": [
                 3.5,
                 6.2
-              ]
+              ],
+              "finder": {
+                "skill": "voicing a melody above a quiet accompaniment and pedalling it cleanly",
+                "levelWords": "moderate, calm piano, ambient, melody with accompaniment",
+                "constraints": [
+                  "singing melody above a broken-chord accompaniment",
+                  "pedal markings",
+                  "slow to moderate tempo",
+                  "one mood throughout"
+                ],
+                "avoid": [
+                  "virtuoso writing",
+                  "loud dynamics throughout",
+                  "fast passagework"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -614,7 +846,23 @@
               "levelBand": [
                 3.5,
                 7.1
-              ]
+              ],
+              "finder": {
+                "skill": "keeping an arpeggio texture even while the bass note is held under the pedal",
+                "levelWords": "moderate, rock piano, arpeggio accompaniment, pedal bass",
+                "constraints": [
+                  "arpeggiated right hand",
+                  "held bass note under the pedal",
+                  "minor key",
+                  "moderate tempo"
+                ],
+                "avoid": [
+                  "block chord accompaniment",
+                  "fast octaves",
+                  "guitar tablature"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -655,7 +903,23 @@
               "levelBand": [
                 3.2,
                 4.5
-              ]
+              ],
+              "finder": {
+                "skill": "playing a broken-chord accompaniment in open voicings that leaves room for a voice",
+                "levelWords": "moderate, rock ballad piano, broken chords, open voicings",
+                "constraints": [
+                  "broken-chord accompaniment",
+                  "open voicings spanning more than an octave",
+                  "slow to moderate tempo",
+                  "space above the accompaniment"
+                ],
+                "avoid": [
+                  "close block chords",
+                  "busy right-hand melody",
+                  "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -697,7 +961,23 @@
               "levelBand": [
                 2.2,
                 7.1
-              ]
+              ],
+              "finder": {
+                "skill": "holding a steady eighth-note ostinato while the harmony moves under it",
+                "levelWords": "moderate, rock piano, eighth note ostinato, suspended chords",
+                "constraints": [
+                  "repeating eighth-note figure",
+                  "sus2 and sus4 chords",
+                  "held bass under the pedal",
+                  "moderate tempo"
+                ],
+                "avoid": [
+                  "rubato",
+                  "constantly changing figuration",
+                  "fast passagework"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -739,7 +1019,23 @@
               "levelBand": [
                 3.6,
                 7.1
-              ]
+              ],
+              "finder": {
+                "skill": "building a four-chord loop from quiet to loud by changing register rather than notes",
+                "levelWords": "moderate, rock piano, four chord loop, building dynamics",
+                "constraints": [
+                  "a repeating four-chord loop",
+                  "the same loop in more than one register",
+                  "a printed crescendo across several bars",
+                  "minor or modal key"
+                ],
+                "avoid": [
+                  "one dynamic throughout",
+                  "constant new material",
+                  "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -793,7 +1089,30 @@
               "levelBand": [
                 4.3,
                 4.5
-              ]
+              ],
+              "finder": {
+                "skill": "playing scales and arpeggios in similar and contrary motion with a controlled touch",
+                "levelWords": "moderate, Grade 2 to 3, technical exercises, scales and arpeggios",
+                "constraints": [
+                  "scales in similar and contrary motion",
+                  "arpeggios over two octaves",
+                  "hands together",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "repertoire pieces",
+                  "pedal",
+                  "expressive markings"
+                ],
+                "examples": [
+                  {
+                    "title": "The Virtuoso Pianist",
+                    "composer": "Charles-Louis Hanon",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         }

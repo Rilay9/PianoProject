@@ -71,7 +71,35 @@
               "levelBand": [
                 4.2,
                 8.4
-              ]
+              ],
+              "finder": {
+                "skill": "holding two voices apart in one pair of hands while the upper one sings",
+                "levelWords": "advanced, Grade 5 to 6, counterpoint, sonata movement",
+                "constraints": [
+                  "two or three voice counterpoint",
+                  "a singing upper line",
+                  "ornaments written out or marked",
+                  "urtext edition"
+                ],
+                "avoid": [
+                  "arrangements",
+                  "homophonic accompaniment textures",
+                  "simplified editions"
+                ],
+                "examples": [
+                  {
+                    "title": "Two-Part Inventions",
+                    "composer": "J. S. Bach",
+                    "note": "wanted"
+                  },
+                  {
+                    "title": "Keyboard Sonatas",
+                    "composer": "Domenico Scarlatti",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -124,7 +152,30 @@
               "levelBand": [
                 3.2,
                 7.4
-              ]
+              ],
+              "finder": {
+                "skill": "stretching the left hand towards stride while the rag stays unhurried",
+                "levelWords": "advanced, Grade 5 to 6, ragtime, stride bass, wide leaps",
+                "constraints": [
+                  "stride or wide oom-pah left hand",
+                  "leaps of a tenth or more",
+                  "a trio in a new key",
+                  "marked not fast"
+                ],
+                "avoid": [
+                  "simplified arrangements",
+                  "fast tempos",
+                  "close-position left hand"
+                ],
+                "examples": [
+                  {
+                    "title": "Euphonic Sounds",
+                    "composer": "Scott Joplin",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -175,7 +226,23 @@
               "levelBand": [
                 7.1,
                 7.4
-              ]
+              ],
+              "finder": {
+                "skill": "playing two notes at once in one hand, in thirds, sixths and octaves",
+                "levelWords": "advanced, Grade 5 to 6, double notes, scales in thirds and sixths, octaves",
+                "constraints": [
+                  "scales in thirds or sixths",
+                  "octave passages",
+                  "double notes in one hand",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "single-line writing",
+                  "pedal covering the joins",
+                  "expressive rubato"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -221,7 +288,23 @@
               "levelBand": [
                 7.1,
                 7.4
-              ]
+              ],
+              "finder": {
+                "skill": "voicing chords without their roots and substituting the tritone",
+                "levelWords": "advanced, jazz piano, rootless voicings, quartal voicings, tritone substitution",
+                "constraints": [
+                  "rootless left-hand voicings",
+                  "quartal voicings",
+                  "tritone substitutions marked",
+                  "standard song form"
+                ],
+                "avoid": [
+                  "root position triads",
+                  "written-out solos",
+                  "straight eighths"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -264,7 +347,23 @@
               "levelBand": [
                 6.1,
                 7.3
-              ]
+              ],
+              "finder": {
+                "skill": "leaping the left hand into stride while the turnaround stays in place",
+                "levelWords": "advanced, blues piano, stride left hand, turnaround",
+                "constraints": [
+                  "stride left hand",
+                  "twelve-bar form with a written turnaround",
+                  "shuffle feel",
+                  "shell voicings"
+                ],
+                "avoid": [
+                  "straight eighths",
+                  "close-position left hand",
+                  "modern jazz harmony"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -307,7 +406,23 @@
               "levelBand": [
                 5.3,
                 7.3
-              ]
+              ],
+              "finder": {
+                "skill": "colouring a chord with a suspension or a ninth instead of a plain triad",
+                "levelWords": "advanced, pop piano, sus chords, add9, extended chords, open voicings",
+                "constraints": [
+                  "sus2 and sus4 chords",
+                  "add9 and ninth chords",
+                  "open voicings spread over an octave",
+                  "chord symbols printed"
+                ],
+                "avoid": [
+                  "plain triads throughout",
+                  "close block chords",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -350,7 +465,23 @@
               "levelBand": [
                 6.4,
                 7.5
-              ]
+              ],
+              "finder": {
+                "skill": "hearing a chord borrowed from another key pull towards a new tonic",
+                "levelWords": "advanced, harmony, secondary dominants, tonicisation",
+                "constraints": [
+                  "secondary dominants",
+                  "tonicisation of a chord other than the tonic",
+                  "functional harmony",
+                  "clear cadences"
+                ],
+                "avoid": [
+                  "atonal writing",
+                  "modal ambiguity",
+                  "dense textures"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -393,7 +524,23 @@
               "levelBand": [
                 7.1,
                 7.3
-              ]
+              ],
+              "finder": {
+                "skill": "improvising with quartal voicings and extensions rather than triads",
+                "levelWords": "advanced, modern jazz improvisation, quartal voicings, extensions",
+                "constraints": [
+                  "quartal voicings",
+                  "ninth and eleventh extensions",
+                  "modal harmony",
+                  "space to improvise"
+                ],
+                "avoid": [
+                  "triadic harmony",
+                  "written-out solos",
+                  "fast bebop tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         }

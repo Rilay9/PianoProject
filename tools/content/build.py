@@ -47,6 +47,12 @@ from common import (  # noqa: E402
     write_json,
 )
 
+import finder  # noqa: E402
+
+#: Sits in `content/curriculum/` but is not a stage file: the concept display
+#: names and their finders.
+CONCEPTS_FILE = "concepts.json"
+
 FRAGMENTS = (
     "catalog.mt.json",
     "catalog.kern.json",
@@ -177,7 +183,10 @@ def copy_curriculum(out_dir: Path) -> Step:
     source_dir = CONTENT_SRC / "curriculum"
     tracks: list[dict] = []
     stages: list[dict] = []
-    files = sorted(source_dir.glob("*.json")) if source_dir.exists() else []
+    # `concepts.json` sits in the same directory but is a different thing: it
+    # carries the display names and the per-concept finders, and is emitted
+    # alongside the stages rather than merged into them.
+    files = sorted(p for p in source_dir.glob("*.json") if p.name != CONCEPTS_FILE)         if source_dir.exists() else []
     for path in files:
         data = read_json(path)
         assert isinstance(data, dict)
@@ -186,8 +195,50 @@ def copy_curriculum(out_dir: Path) -> Step:
     seen: set[str] = set()
     unique_tracks = [t for t in tracks if not (t["id"] in seen or seen.add(t["id"]))]
     stages.sort(key=lambda stage: stage["number"])
-    write_json(out_dir / "curriculum.json", {"version": 1, "tracks": unique_tracks, "stages": stages})
-    return Step("curriculum", ok=True, detail=f"{len(files)} file(s), {len(stages)} stage(s)")
+
+    # The prompts are generated here, not authored (replan §4.1): one wording
+    # change fixes every rung at once, and what ships can be checked.
+    lessons_with_finders = 0
+    for stage in stages:
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                block = lesson.get("finder")
+                if not block:
+                    continue
+                lesson["finder"] = finder.generate(
+                    block, what=finder.lesson_what(stage["number"], lesson["title"])
+                )
+                lessons_with_finders += 1
+
+    concepts = []
+    concepts_path = source_dir / CONCEPTS_FILE
+    if concepts_path.exists():
+        data = read_json(concepts_path)
+        assert isinstance(data, dict)
+        for entry in data.get("concepts", []):
+            out = {"id": entry["id"], "display": entry["display"]}
+            if entry.get("appFeature"):
+                # Nothing to find: "wait mode" is a feature of this app. The
+                # Skills screen still needs the name, and saying so is better
+                # than a finder that sends the owner looking for sheet music
+                # about a button.
+                out["appFeature"] = True
+            elif entry.get("finder"):
+                out["finder"] = finder.generate(
+                    entry["finder"], what=finder.concept_what(entry["display"].lower())
+                )
+            concepts.append(out)
+
+    write_json(
+        out_dir / "curriculum.json",
+        {"version": 1, "tracks": unique_tracks, "stages": stages, "concepts": concepts},
+    )
+    return Step(
+        "curriculum",
+        ok=True,
+        detail=f"{len(files)} file(s), {len(stages)} stage(s), "
+               f"{lessons_with_finders} finder(s), {len(concepts)} concept(s)",
+    )
 
 
 def copy_lessons(out_dir: Path) -> Step:

@@ -1,0 +1,4121 @@
+{
+  "_comment": [
+    "Concept display names and finders (replan §4.1).",
+    "",
+    "The Skills screen used to derive a label from the id, which gives you 'Cc64' and",
+    "'Ii-v-i'. This is the list of what those ids are called, and — for everything that is",
+    "a musical skill rather than a feature of this app — how to go and find music that",
+    "trains it. `tools/content/finder.py` generates the search query and chat prompt from",
+    "the finder block at build time; `validate.py` checks every concept used anywhere is",
+    "in here.",
+    "",
+    "`levelWords` is derived from the stage the concept is taught at, not authored: the",
+    "stage is already the truth about where a skill sits, and 254 hand-written level",
+    "descriptions would drift the first time a lesson moved."
+  ],
+  "concepts": [
+    {
+      "id": "3/4",
+      "display": "Three-four time",
+      "finder": {
+        "skill": "counting three beats to the bar",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "3/4 time",
+          "a clear downbeat"
+        ],
+        "avoid": [
+          "4/4 throughout",
+          "changing time signatures"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "4/4",
+      "display": "Four-four time",
+      "finder": {
+        "skill": "counting four beats to the bar",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "4/4 time",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "compound time",
+          "changing time signatures"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "6/8",
+      "display": "Six-eight time",
+      "finder": {
+        "skill": "feeling two beats of three quavers each",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "6/8 time",
+          "quavers grouped in threes"
+        ],
+        "avoid": [
+          "straight 4/4",
+          "duplets"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "8va",
+      "display": "Octave signs",
+      "finder": {
+        "skill": "reading an 8va line instead of ledger lines",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "8va or 8vb markings",
+          "passages far above or below the staff"
+        ],
+        "avoid": [
+          "everything within the staff"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "B-flat-major",
+      "display": "B flat major",
+      "finder": {
+        "skill": "playing in two flats",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "key of B flat major",
+          "scale or arpeggio passages"
+        ],
+        "avoid": [
+          "sharp keys",
+          "constant accidentals"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "C-major-scale",
+      "display": "The C major scale",
+      "finder": {
+        "skill": "playing the C major scale with the thumb passing under",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "C major scale passages",
+          "fingering printed"
+        ],
+        "avoid": [
+          "black keys",
+          "chromatic runs"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "C-position",
+      "display": "C position",
+      "finder": {
+        "skill": "playing five notes under the hand without moving it",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "five-finger position on C",
+          "right hand melody"
+        ],
+        "avoid": [
+          "hand position changes",
+          "black keys"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "CC64",
+      "display": "The sustain pedal",
+      "finder": {
+        "skill": "changing the damper pedal cleanly on the beat",
+        "levelWords": "easy, elementary, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "pedal markings printed",
+          "clear harmony changes"
+        ],
+        "avoid": [
+          "unmarked pedal",
+          "fast harmonic rhythm"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "E-flat-major",
+      "display": "E flat major",
+      "finder": {
+        "skill": "playing in three flats",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "key of E flat major",
+          "scale or arpeggio passages"
+        ],
+        "avoid": [
+          "sharp keys",
+          "frequent accidentals"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "E7",
+      "display": "The E7 chord",
+      "finder": {
+        "skill": "using the dominant seventh that leads back to A minor",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "E7 resolving to A minor",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "major key harmony only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "F-major",
+      "display": "F major",
+      "finder": {
+        "skill": "playing in one flat",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "key of F major",
+          "a B flat in the signature"
+        ],
+        "avoid": [
+          "sharp keys",
+          "accidentals instead of a signature"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "I-IV-V",
+      "display": "The primary chords",
+      "finder": {
+        "skill": "moving between the three chords that harmonise a major key",
+        "levelWords": "easy, beginner, up to easy, elementary",
+        "constraints": [
+          "I IV V progression",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "seventh chords",
+          "modal harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "I-IV-V7",
+      "display": "Primary chords with the dominant seventh",
+      "finder": {
+        "skill": "adding the seventh to the chord that pulls home",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "I IV V7 progression",
+          "smooth voice leading"
+        ],
+        "avoid": [
+          "extended chords",
+          "modal harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "LH-C-position",
+      "display": "Left hand C position",
+      "finder": {
+        "skill": "reading the bass clef with the left hand in one place",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "bass clef",
+          "left hand five-finger position"
+        ],
+        "avoid": [
+          "ledger lines",
+          "hand position changes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "add9",
+      "display": "Add9 chords",
+      "finder": {
+        "skill": "colouring a triad with the ninth without adding a seventh",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "add9 chords",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "plain triads throughout",
+          "dominant sevenths"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "alberti",
+      "display": "Alberti bass",
+      "finder": {
+        "skill": "playing the low-high-middle-high broken chord under a melody",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "Alberti bass figuration",
+          "melody above it"
+        ],
+        "avoid": [
+          "block chords only",
+          "left-hand melody"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "alberti-bass",
+      "display": "Alberti bass",
+      "finder": {
+        "skill": "playing the low-high-middle-high broken chord under a melody",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "Alberti bass in the left hand",
+          "melody in the right"
+        ],
+        "avoid": [
+          "block chords only",
+          "wide left-hand leaps"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "alberti-bass-HT",
+      "display": "Alberti bass hands together",
+      "finder": {
+        "skill": "keeping an Alberti bass even while the right hand plays a melody",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "Alberti bass hands together",
+          "sustained melody above"
+        ],
+        "avoid": [
+          "hands separately",
+          "block chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "alternating-hands",
+      "display": "Hands alternating",
+      "finder": {
+        "skill": "passing a line between the hands without a gap",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "the hands taking turns",
+          "grand staff"
+        ],
+        "avoid": [
+          "hands playing together",
+          "chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "anacrusis",
+      "display": "Upbeats",
+      "finder": {
+        "skill": "starting a phrase before the first full bar",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "an upbeat before the first bar",
+          "clear phrase marks"
+        ],
+        "avoid": [
+          "every phrase starting on beat one"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "arpeggio",
+      "display": "Arpeggios",
+      "finder": {
+        "skill": "playing a chord one note at a time across the keyboard",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "arpeggios over two octaves",
+          "fingering printed"
+        ],
+        "avoid": [
+          "block chords only",
+          "five-finger patterns"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "arpeggio-fingering",
+      "display": "Arpeggio fingering",
+      "finder": {
+        "skill": "getting the thumb under in an arpeggio so it stays even",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "arpeggios with printed fingering",
+          "two octaves or more"
+        ],
+        "avoid": [
+          "unfingered editions",
+          "block chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "arpeggio-texture",
+      "display": "Arpeggio accompaniment",
+      "finder": {
+        "skill": "keeping a rolling arpeggio quiet under a melody",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "arpeggiated accompaniment",
+          "melody above it"
+        ],
+        "avoid": [
+          "block chords",
+          "loud accompaniment"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "arranging",
+      "display": "Arranging",
+      "finder": {
+        "skill": "turning a chord chart into a piano arrangement with its own shape",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "a chord chart or lead sheet",
+          "distinct sections to vary"
+        ],
+        "avoid": [
+          "fully written arrangements",
+          "one texture throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "articulation",
+      "display": "Articulation",
+      "finder": {
+        "skill": "shaping notes with staccato, legato and accents",
+        "levelWords": "easy, elementary, up to moderate, Grade 2 to 3",
+        "constraints": [
+          "staccato and legato marked",
+          "accents"
+        ],
+        "avoid": [
+          "unmarked scores",
+          "pedal covering the articulation"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "balance",
+      "display": "Balance between the hands",
+      "finder": {
+        "skill": "playing one hand louder than the other on purpose",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "melody and accompaniment on separate staves",
+          "dynamics marked per hand"
+        ],
+        "avoid": [
+          "hands in unison",
+          "one dynamic throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "baroque-dance",
+      "display": "Baroque dances",
+      "finder": {
+        "skill": "playing a minuet or gavotte with its dance rhythm intact",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a Baroque dance movement",
+          "two voices"
+        ],
+        "avoid": [
+          "Romantic pedalling",
+          "arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "bass-clef",
+      "display": "The bass clef",
+      "finder": {
+        "skill": "reading the lower staff",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "bass clef",
+          "left hand part"
+        ],
+        "avoid": [
+          "treble clef only",
+          "ledger lines above the staff"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "beams",
+      "display": "Beamed notes",
+      "finder": {
+        "skill": "reading eighth notes grouped by beat",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "beamed eighth notes",
+          "clear beat grouping"
+        ],
+        "avoid": [
+          "all flagged notes",
+          "irregular beaming"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "black-key-groups",
+      "display": "The black key groups",
+      "finder": {
+        "skill": "finding your way by the groups of two and three black keys",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "passages using the black keys",
+          "a key with sharps or flats"
+        ],
+        "avoid": [
+          "C major only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "block-chords",
+      "display": "Block chords",
+      "finder": {
+        "skill": "playing all the notes of a chord at once and in time",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "block chords in the left hand",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "broken chords only",
+          "arpeggios"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "blues-scale",
+      "display": "The blues scale",
+      "finder": {
+        "skill": "using the flattened third, fifth and seventh",
+        "levelWords": "moderate, Grade 2 to 3, up to moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "blues scale figures",
+          "twelve-bar form"
+        ],
+        "avoid": [
+          "major scale melodies",
+          "straight eighths"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "boogie",
+      "display": "Boogie woogie",
+      "finder": {
+        "skill": "driving a piece with a repeating left-hand bass figure",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "boogie woogie bass",
+          "twelve-bar form"
+        ],
+        "avoid": [
+          "straight eighths",
+          "ballads"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "boogie-bass",
+      "display": "The boogie bass line",
+      "finder": {
+        "skill": "playing eight to the bar in the left hand without slowing",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "eight-to-the-bar left hand",
+          "shuffle feel"
+        ],
+        "avoid": [
+          "block chords",
+          "straight eighths"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "broken-chord",
+      "display": "Broken chords",
+      "finder": {
+        "skill": "spreading a chord out in time instead of playing it together",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "broken-chord figuration",
+          "clear harmony"
+        ],
+        "avoid": [
+          "block chords only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "broken-chord-accompaniment",
+      "display": "Broken-chord accompaniment",
+      "finder": {
+        "skill": "keeping a broken-chord left hand under a tune",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "broken-chord left hand",
+          "melody above it"
+        ],
+        "avoid": [
+          "block chords",
+          "left-hand melody"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "broken-chords",
+      "display": "Broken chords",
+      "finder": {
+        "skill": "spreading a chord out in time instead of playing it together",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "broken-chord figuration",
+          "clear harmony"
+        ],
+        "avoid": [
+          "block chords only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "broken-octaves",
+      "display": "Broken octaves",
+      "finder": {
+        "skill": "alternating the two notes of an octave at speed",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "broken octave passages",
+          "fingering printed"
+        ],
+        "avoid": [
+          "solid octaves only",
+          "slow tempos"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "build-and-release",
+      "display": "Building and releasing",
+      "finder": {
+        "skill": "growing a passage and then letting it go",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a long crescendo and diminuendo",
+          "a clear climax"
+        ],
+        "avoid": [
+          "one dynamic throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "cadences",
+      "display": "Cadences",
+      "finder": {
+        "skill": "hearing how a phrase ends",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "clear cadences at phrase ends",
+          "functional harmony"
+        ],
+        "avoid": [
+          "through-composed writing",
+          "atonal harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "call-and-response",
+      "display": "Call and response",
+      "finder": {
+        "skill": "answering a phrase with another phrase",
+        "levelWords": "easy, elementary, up to moderate, Grade 2 to 3",
+        "constraints": [
+          "two-bar question and answer phrases",
+          "space to reply"
+        ],
+        "avoid": [
+          "continuous melody",
+          "through-composed writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "call-response",
+      "display": "Call and response",
+      "finder": {
+        "skill": "answering a phrase with another phrase",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "question and answer phrasing",
+          "space between phrases"
+        ],
+        "avoid": [
+          "continuous melody"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "cantabile",
+      "display": "Cantabile",
+      "finder": {
+        "skill": "making the piano sing a long line",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "a sustained singing melody",
+          "slow to moderate tempo"
+        ],
+        "avoid": [
+          "staccato writing",
+          "fast passagework"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "carols",
+      "display": "Carols",
+      "finder": {
+        "skill": "playing Christmas tunes in a key people can sing",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "a carol",
+          "singable key such as C, F or G"
+        ],
+        "avoid": [
+          "choral scores",
+          "orchestral arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "chord-charts",
+      "display": "Chord charts",
+      "finder": {
+        "skill": "playing from chord symbols with no notes written out",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a chord chart",
+          "chord symbols only"
+        ],
+        "avoid": [
+          "fully written arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "chord-identification",
+      "display": "Recognising chords",
+      "finder": {
+        "skill": "telling major, minor and seventh chords apart by ear",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "clear block chords",
+          "one chord at a time"
+        ],
+        "avoid": [
+          "dense textures",
+          "fast changes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "chord-progression",
+      "display": "Chord progressions",
+      "finder": {
+        "skill": "hearing where a sequence of chords is going",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "a repeating progression",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "through-composed harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "chord-scale",
+      "display": "Chord scales",
+      "finder": {
+        "skill": "choosing the scale that fits the chord of the moment",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "chord symbols above the staff",
+          "one chord per bar or two"
+        ],
+        "avoid": [
+          "fast changes",
+          "no chord symbols"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "chord-symbols",
+      "display": "Chord symbols",
+      "finder": {
+        "skill": "reading the letter names above the staff",
+        "levelWords": "easy, beginner, up to easy, elementary",
+        "constraints": [
+          "chord symbols printed above the melody"
+        ],
+        "avoid": [
+          "scores with no chord symbols"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "chromatic",
+      "display": "Chromatic movement",
+      "finder": {
+        "skill": "moving by semitones",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "chromatic passages",
+          "printed fingering"
+        ],
+        "avoid": [
+          "diatonic writing only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "chromatic-harmony",
+      "display": "Chromatic harmony",
+      "finder": {
+        "skill": "using chords from outside the key",
+        "levelWords": "advanced, Grade 6 to 7",
+        "constraints": [
+          "borrowed or altered chords",
+          "functional context"
+        ],
+        "avoid": [
+          "diatonic harmony only",
+          "atonal writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "circle-of-fifths",
+      "display": "The circle of fifths",
+      "finder": {
+        "skill": "seeing how the keys are related",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a progression moving by fifths",
+          "clear key signatures"
+        ],
+        "avoid": [
+          "one chord throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "clave",
+      "display": "Clave",
+      "finder": {
+        "skill": "keeping the two-bar Latin rhythmic pattern",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "son or rumba clave",
+          "syncopation across the bar"
+        ],
+        "avoid": [
+          "swing feel",
+          "straight quarter notes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "comping",
+      "display": "Comping",
+      "finder": {
+        "skill": "accompanying somebody else without getting in the way",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "chord symbols to comp from",
+          "space left for a soloist"
+        ],
+        "avoid": [
+          "written-out solos",
+          "dense arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "composition",
+      "display": "Composing",
+      "finder": {
+        "skill": "writing a piece of your own that finishes",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "a complete short form",
+          "a main idea that returns"
+        ],
+        "avoid": [
+          "fragments",
+          "exercises"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "contrary",
+      "display": "Contrary motion",
+      "finder": {
+        "skill": "the hands moving in opposite directions",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "contrary motion scales",
+          "hands together"
+        ],
+        "avoid": [
+          "hands in parallel",
+          "hands separately"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "contrary-motion",
+      "display": "Contrary motion",
+      "finder": {
+        "skill": "the hands moving in opposite directions",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "contrary motion passages",
+          "hands together"
+        ],
+        "avoid": [
+          "parallel motion only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "coordination",
+      "display": "Coordination",
+      "finder": {
+        "skill": "getting the hands to do different things at the same time",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "the hands playing different rhythms",
+          "hands together"
+        ],
+        "avoid": [
+          "hands in unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "counterpoint",
+      "display": "Counterpoint",
+      "finder": {
+        "skill": "keeping two independent lines apart",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "two or three voice counterpoint",
+          "urtext edition"
+        ],
+        "avoid": [
+          "homophonic accompaniment",
+          "arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "crescendo",
+      "display": "Crescendo",
+      "finder": {
+        "skill": "getting louder over several bars",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a printed crescendo across several bars"
+        ],
+        "avoid": [
+          "one dynamic throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "damper-pedal",
+      "display": "The damper pedal",
+      "finder": {
+        "skill": "using the right pedal to join the harmony",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "pedal markings printed",
+          "sustained harmony"
+        ],
+        "avoid": [
+          "unmarked pedal",
+          "dry articulated writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "diminuendo",
+      "display": "Diminuendo",
+      "finder": {
+        "skill": "getting quieter over several bars",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a printed diminuendo",
+          "a long phrase to shape"
+        ],
+        "avoid": [
+          "one dynamic throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "dom7",
+      "display": "Dominant sevenths",
+      "finder": {
+        "skill": "playing the seventh chord that wants to resolve",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "dominant seventh chords",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "triads only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "dotted-quarter",
+      "display": "Dotted quarter notes",
+      "finder": {
+        "skill": "holding a note for a beat and a half",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "dotted quarter followed by an eighth",
+          "4/4 or 3/4"
+        ],
+        "avoid": [
+          "even rhythms throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "double-notes",
+      "display": "Double notes",
+      "finder": {
+        "skill": "playing two notes at once in one hand and keeping them together",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "thirds or sixths in one hand",
+          "fingering printed"
+        ],
+        "avoid": [
+          "single-line writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "dramatic-contrast",
+      "display": "Dramatic contrast",
+      "finder": {
+        "skill": "putting very loud next to very quiet and meaning it",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "a wide dynamic range",
+          "contrasting sections"
+        ],
+        "avoid": [
+          "one mood throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "dynamic-build",
+      "display": "Building dynamics",
+      "finder": {
+        "skill": "growing from quiet to loud across a section",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a long build",
+          "the same material in more than one register"
+        ],
+        "avoid": [
+          "one dynamic throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "dynamics",
+      "display": "Dynamics",
+      "finder": {
+        "skill": "playing at the volume the music asks for",
+        "levelWords": "easy, beginner, up to moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "printed dynamic marks",
+          "contrast between phrases"
+        ],
+        "avoid": [
+          "unmarked scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "ear-training",
+      "display": "Ear training",
+      "finder": {
+        "skill": "recognising what you hear without the score",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "short clear phrases",
+          "one key throughout"
+        ],
+        "avoid": [
+          "dense textures",
+          "chromatic writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "eighth-note-ostinato",
+      "display": "An eighth-note ostinato",
+      "finder": {
+        "skill": "repeating a figure steadily while the harmony moves",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a repeating eighth-note figure",
+          "changing chords underneath"
+        ],
+        "avoid": [
+          "constantly changing figuration",
+          "rubato"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "eighth-notes",
+      "display": "Eighth notes",
+      "finder": {
+        "skill": "playing two even notes to the beat",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "eighth notes in pairs",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "triplets",
+          "syncopation"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "endurance",
+      "display": "Endurance",
+      "finder": {
+        "skill": "keeping the hand working for a long stretch without tiring",
+        "levelWords": "advanced, Grade 6 to 7",
+        "constraints": [
+          "continuous passagework",
+          "a long movement"
+        ],
+        "avoid": [
+          "short pieces",
+          "frequent rests"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "etude",
+      "display": "Etudes",
+      "finder": {
+        "skill": "practising one technical problem for a whole piece",
+        "levelWords": "advanced, Grade 6 to 7",
+        "constraints": [
+          "an etude with one figure throughout",
+          "printed fingering"
+        ],
+        "avoid": [
+          "character pieces",
+          "arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "evenness",
+      "display": "Evenness",
+      "finder": {
+        "skill": "making every finger sound the same",
+        "levelWords": "moderate, Grade 2 to 3, up to moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a repeating pattern",
+          "printed fingering"
+        ],
+        "avoid": [
+          "expressive rubato",
+          "pedal covering the touch"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "extended-chords",
+      "display": "Extended chords",
+      "finder": {
+        "skill": "adding the ninth, eleventh or thirteenth",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "ninth, eleventh or thirteenth chords",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "triads only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "finger-independence",
+      "display": "Finger independence",
+      "finder": {
+        "skill": "moving one finger without the others helping",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a pattern holding some fingers while others move",
+          "printed fingering"
+        ],
+        "avoid": [
+          "chordal writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "finger-numbers",
+      "display": "Finger numbers",
+      "finder": {
+        "skill": "reading the numbers that say which finger to use",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "printed fingering throughout"
+        ],
+        "avoid": [
+          "unfingered editions"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "five-finger",
+      "display": "Five-finger patterns",
+      "finder": {
+        "skill": "playing within one hand position",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "five-finger position",
+          "no position changes"
+        ],
+        "avoid": [
+          "scales",
+          "hand position changes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "flats",
+      "display": "Flats",
+      "finder": {
+        "skill": "reading and playing flat notes",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a key signature with flats",
+          "flat accidentals"
+        ],
+        "avoid": [
+          "sharp keys only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "forearm",
+      "display": "Forearm weight",
+      "finder": {
+        "skill": "using the arm rather than the fingers for a heavy sound",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "chordal writing needing weight",
+          "loud dynamics"
+        ],
+        "avoid": [
+          "light fast passagework"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "form",
+      "display": "Musical form",
+      "finder": {
+        "skill": "hearing the sections of a piece and how they return",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "a clear form such as ABA",
+          "distinct sections"
+        ],
+        "avoid": [
+          "through-composed writing",
+          "fragments"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "four-chord-loop",
+      "display": "The four-chord loop",
+      "finder": {
+        "skill": "playing the progression that most pop songs use",
+        "levelWords": "easy, beginner, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "I V vi IV loop",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "through-composed harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "four-chord-progression",
+      "display": "The four-chord progression",
+      "finder": {
+        "skill": "playing the progression that most pop songs use",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a repeating four-chord progression",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "through-composed harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "four-part-harmony",
+      "display": "Four-part harmony",
+      "finder": {
+        "skill": "playing soprano, alto, tenor and bass on two staves",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "four-part hymn texture on two staves"
+        ],
+        "avoid": [
+          "organ pedal parts",
+          "three-stave scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "grand-staff",
+      "display": "The grand staff",
+      "finder": {
+        "skill": "reading both clefs at once",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "grand staff",
+          "both hands notated"
+        ],
+        "avoid": [
+          "single-staff lead sheets"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "guide-tones",
+      "display": "Guide tones",
+      "finder": {
+        "skill": "following the third and seventh through a progression",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "ii V I progressions",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "one static chord"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "guitar-keys",
+      "display": "Guitar keys",
+      "finder": {
+        "skill": "playing in the keys a guitarist likes",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "keys of E, A, D or G",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "flat keys"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "half-notes",
+      "display": "Half notes",
+      "finder": {
+        "skill": "holding a note for two beats",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "half notes and whole notes",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "eighth notes",
+          "syncopation"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "half-pedal",
+      "display": "Half pedalling",
+      "finder": {
+        "skill": "changing the pedal only part of the way",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "detailed pedal markings",
+          "sustained harmony over a bass"
+        ],
+        "avoid": [
+          "unmarked pedal",
+          "dry writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "half-time-feel",
+      "display": "Half-time feel",
+      "finder": {
+        "skill": "playing as if the bar were twice as long",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "half-time feel",
+          "syncopated accompaniment"
+        ],
+        "avoid": [
+          "straight quarter-note accompaniment"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "hand-independence",
+      "display": "Hand independence",
+      "finder": {
+        "skill": "the hands doing different things at the same time",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "different rhythms in each hand",
+          "hands together"
+        ],
+        "avoid": [
+          "hands in unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "hand-shape",
+      "display": "Hand shape",
+      "finder": {
+        "skill": "keeping a rounded hand at the keyboard",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "five-finger patterns",
+          "printed fingering"
+        ],
+        "avoid": [
+          "wide stretches",
+          "octaves"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "hands-together",
+      "display": "Playing hands together",
+      "finder": {
+        "skill": "coordinating both hands at once",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "hands playing at the same time",
+          "grand staff"
+        ],
+        "avoid": [
+          "hands alternating",
+          "single-staff writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "hanon",
+      "display": "Hanon patterns",
+      "finder": {
+        "skill": "playing a sequenced five-finger pattern evenly",
+        "levelWords": "moderate, Grade 2 to 3, up to moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a repeating pattern sequenced up the keyboard",
+          "hands together in octaves"
+        ],
+        "avoid": [
+          "expressive pieces",
+          "pedal"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "harmonic-dictation",
+      "display": "Harmonic dictation",
+      "finder": {
+        "skill": "writing down the chords you hear",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "clear functional harmony",
+          "moderate harmonic rhythm"
+        ],
+        "avoid": [
+          "chromatic harmony",
+          "dense textures"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "harmonic-minor",
+      "display": "The harmonic minor scale",
+      "finder": {
+        "skill": "playing the minor scale with a raised seventh",
+        "levelWords": "easy, elementary, up to moderate, Grade 2 to 3",
+        "constraints": [
+          "harmonic minor passages",
+          "a raised seventh"
+        ],
+        "avoid": [
+          "natural minor only",
+          "major keys"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "head-and-chorus",
+      "display": "Head and chorus",
+      "finder": {
+        "skill": "playing the tune, then the solos, then the tune",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "head and chorus form",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "through-composed pieces"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "held-LH",
+      "display": "A held left hand",
+      "finder": {
+        "skill": "holding long notes in the left hand while the right moves",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "left hand whole or half notes",
+          "right hand melody"
+        ],
+        "avoid": [
+          "moving left hand",
+          "chords in both hands"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "held-melody",
+      "display": "Holding a melody note",
+      "finder": {
+        "skill": "sustaining a melody note while other notes move under it",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "a held upper voice over moving inner parts",
+          "two voices in one hand"
+        ],
+        "avoid": [
+          "single-line writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "ii-V-I",
+      "display": "The ii-V-I progression",
+      "finder": {
+        "skill": "playing the progression jazz is built on",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "ii V I progressions",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "one static chord",
+          "triads only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "improvisation",
+      "display": "Improvising",
+      "finder": {
+        "skill": "making up a line over a harmony as you play",
+        "levelWords": "easy, elementary, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "chord symbols to improvise over",
+          "space left for a solo"
+        ],
+        "avoid": [
+          "written-out solos",
+          "through-composed pieces"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "interpretation",
+      "display": "Interpretation",
+      "finder": {
+        "skill": "deciding how a piece should go and doing it consistently",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "a piece with room for choices",
+          "sparse editorial marking"
+        ],
+        "avoid": [
+          "heavily edited arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "interval-reading",
+      "display": "Reading by interval",
+      "finder": {
+        "skill": "reading the distance between notes instead of naming each",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "stepwise melodies with a few skips",
+          "unfamiliar pieces"
+        ],
+        "avoid": [
+          "famous tunes you know by ear",
+          "large leaps"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "intervals",
+      "display": "Intervals",
+      "finder": {
+        "skill": "recognising the distance between two notes",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "clear intervals between melody notes",
+          "one key throughout"
+        ],
+        "avoid": [
+          "chromatic melodies"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "inversions",
+      "display": "Chord inversions",
+      "finder": {
+        "skill": "playing a chord with a note other than the root at the bottom",
+        "levelWords": "moderate, Grade 2 to 3, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "chords in first and second inversion",
+          "slash chord symbols"
+        ],
+        "avoid": [
+          "root position throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "inversions-by-ear",
+      "display": "Hearing inversions",
+      "finder": {
+        "skill": "telling which note of a chord is in the bass",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "chords in inversion",
+          "clear bass line"
+        ],
+        "avoid": [
+          "dense textures",
+          "fast changes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "key-signature",
+      "display": "Key signatures",
+      "finder": {
+        "skill": "reading the sharps or flats at the start of the line",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a key signature rather than accidentals",
+          "one key throughout"
+        ],
+        "avoid": [
+          "constant accidentals",
+          "modulation"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "key-signatures",
+      "display": "Key signatures",
+      "finder": {
+        "skill": "reading the sharps or flats at the start of the line",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a clear key signature",
+          "one key throughout"
+        ],
+        "avoid": [
+          "frequent modulation"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "landmark-notes",
+      "display": "Landmark notes",
+      "finder": {
+        "skill": "finding your place from a few known notes",
+        "levelWords": "very easy, absolute beginner, up to easy, elementary",
+        "constraints": [
+          "notes above and below the staff",
+          "wide hand placement"
+        ],
+        "avoid": [
+          "everything in one position"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "large-form",
+      "display": "Large forms",
+      "finder": {
+        "skill": "holding a long multi-section piece together",
+        "levelWords": "advanced, Grade 6 to 7, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "a complete multi-section work",
+          "contrasting sections"
+        ],
+        "avoid": [
+          "short pieces",
+          "fragments"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "leaps",
+      "display": "Leaps",
+      "finder": {
+        "skill": "jumping accurately to a note you cannot feel for",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "leaps of an octave or more",
+          "printed fingering"
+        ],
+        "avoid": [
+          "stepwise writing only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "ledger-lines",
+      "display": "Ledger lines",
+      "finder": {
+        "skill": "reading notes written above or below the staff",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "ledger lines above and below the staff"
+        ],
+        "avoid": [
+          "everything within the staff"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "left-hand",
+      "display": "The left hand",
+      "finder": {
+        "skill": "giving the left hand something real to do",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "an active left-hand part",
+          "bass clef"
+        ],
+        "avoid": [
+          "left hand holding whole notes only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "legato",
+      "display": "Legato",
+      "finder": {
+        "skill": "joining notes with no gap between them",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a long legato line",
+          "slurs marked"
+        ],
+        "avoid": [
+          "staccato throughout",
+          "detached chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "legato-pedalling",
+      "display": "Legato pedalling",
+      "finder": {
+        "skill": "changing the pedal after the note so the line stays joined",
+        "levelWords": "easy, elementary, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "pedal markings printed",
+          "a legato melody over changing harmony"
+        ],
+        "avoid": [
+          "unmarked pedal",
+          "dry writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "letter-names",
+      "display": "Note names",
+      "finder": {
+        "skill": "naming the notes on the keyboard and the staff",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "a simple melody in one position"
+        ],
+        "avoid": [
+          "dense chordal writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "maj7",
+      "display": "Major seventh chords",
+      "finder": {
+        "skill": "playing the major chord with its seventh",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "maj7 chords",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "triads only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "major-scale-formula",
+      "display": "The major scale formula",
+      "finder": {
+        "skill": "building a major scale from tones and semitones",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "scale passages in several keys",
+          "clear key signatures"
+        ],
+        "avoid": [
+          "chromatic writing",
+          "modal scales"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "melodic-minor",
+      "display": "The melodic minor scale",
+      "finder": {
+        "skill": "raising the sixth and seventh going up and lowering them coming down",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "melodic minor passages",
+          "printed fingering"
+        ],
+        "avoid": [
+          "harmonic minor only",
+          "major keys"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "melody-in-octaves",
+      "display": "Melody in octaves",
+      "finder": {
+        "skill": "doubling the tune an octave lower to make it carry",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "melody doubled in octaves",
+          "sustained chords underneath"
+        ],
+        "avoid": [
+          "single-note melody throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "melody-projection",
+      "display": "Projecting the melody",
+      "finder": {
+        "skill": "making the tune louder than everything around it",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "melody and accompaniment in the same hand",
+          "dynamics marked per voice"
+        ],
+        "avoid": [
+          "hands in unison",
+          "one dynamic"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "melody-writing",
+      "display": "Writing a melody",
+      "finder": {
+        "skill": "making up a tune that has a shape and an ending",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "clear phrase structure",
+          "a form to write into"
+        ],
+        "avoid": [
+          "through-composed writing",
+          "fragments"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "meter-5-4",
+      "display": "Five-four time",
+      "finder": {
+        "skill": "counting five beats to the bar",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "5/4 time",
+          "a clear grouping of the five"
+        ],
+        "avoid": [
+          "4/4 throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "meter-7-8",
+      "display": "Seven-eight time",
+      "finder": {
+        "skill": "counting seven quavers to the bar",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "7/8 time",
+          "a clear grouping of the seven"
+        ],
+        "avoid": [
+          "simple time throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "middle-C",
+      "display": "Middle C",
+      "finder": {
+        "skill": "finding middle C and reading around it",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "a melody around middle C",
+          "grand staff"
+        ],
+        "avoid": [
+          "extreme registers"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "min7",
+      "display": "Minor seventh chords",
+      "finder": {
+        "skill": "playing the minor chord with its seventh",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "min7 chords",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "triads only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "minor-triads",
+      "display": "Minor chords",
+      "finder": {
+        "skill": "playing and hearing the minor triad",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "minor triads",
+          "a minor key"
+        ],
+        "avoid": [
+          "major harmony only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "modal-minor",
+      "display": "Modal minor",
+      "finder": {
+        "skill": "using a minor mode rather than functional minor harmony",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "modal minor harmony",
+          "no leading note"
+        ],
+        "avoid": [
+          "functional dominant harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "modes",
+      "display": "Modes",
+      "finder": {
+        "skill": "hearing and using the modes of the major scale",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "modal melodies or harmony",
+          "one mode per section"
+        ],
+        "avoid": [
+          "functional major-minor harmony only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "modulation",
+      "display": "Modulation",
+      "finder": {
+        "skill": "changing key in the middle of a piece",
+        "levelWords": "advanced, Grade 6 to 7, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "a modulation to a related key",
+          "a pivot chord"
+        ],
+        "avoid": [
+          "one key throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "montuno",
+      "display": "The montuno",
+      "finder": {
+        "skill": "playing the repeating Latin piano figure",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a montuno figure",
+          "clave underneath"
+        ],
+        "avoid": [
+          "swing feel",
+          "block chord accompaniment"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "mordent",
+      "display": "Mordents",
+      "finder": {
+        "skill": "flicking a note above or below and back",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "mordents written or marked",
+          "Baroque or Classical writing"
+        ],
+        "avoid": [
+          "unornamented editions"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "motif",
+      "display": "Motifs",
+      "finder": {
+        "skill": "building a phrase out of one short idea",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a short idea that repeats and develops",
+          "clear phrase structure"
+        ],
+        "avoid": [
+          "through-composed writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "motif-development",
+      "display": "Developing a motif",
+      "finder": {
+        "skill": "taking one idea somewhere rather than repeating it",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a motif that returns changed",
+          "a clear form"
+        ],
+        "avoid": [
+          "fragments",
+          "constant new material"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "multi-strain-form",
+      "display": "Multi-strain form",
+      "finder": {
+        "skill": "holding together a piece of several different strains",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "a rag or march in several strains",
+          "a trio in a new key"
+        ],
+        "avoid": [
+          "single-strain pieces"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "not-fast",
+      "display": "Not fast",
+      "finder": {
+        "skill": "playing ragtime at the tempo it is marked, which is never fast",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "a tempo marking that says not fast",
+          "ragtime or cakewalk"
+        ],
+        "avoid": [
+          "fast tempos",
+          "novelty piano"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "note-length",
+      "display": "Note lengths",
+      "finder": {
+        "skill": "giving each note its written value",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a mixture of note values",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "rubato",
+          "unmeasured writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "octave-scale",
+      "display": "Scales in octaves",
+      "finder": {
+        "skill": "playing a scale with both notes of the octave in one hand",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "octave scale passages",
+          "printed fingering"
+        ],
+        "avoid": [
+          "single-note scales"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "octaves",
+      "display": "Octaves",
+      "finder": {
+        "skill": "playing both notes of an octave together and accurately",
+        "levelWords": "very easy, absolute beginner, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "octave passages",
+          "printed fingering"
+        ],
+        "avoid": [
+          "single-line writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "odd-meter",
+      "display": "Odd meters",
+      "finder": {
+        "skill": "counting a bar that does not divide into two or three evenly",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "5/4, 7/8 or similar",
+          "a clear grouping"
+        ],
+        "avoid": [
+          "simple time throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "oom-pah-bass",
+      "display": "The oom-pah bass",
+      "finder": {
+        "skill": "alternating a bass note and a chord in the left hand",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "oom-pah left hand",
+          "ragtime or march"
+        ],
+        "avoid": [
+          "block chords",
+          "walking bass"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "open-voicing",
+      "display": "Open voicings",
+      "finder": {
+        "skill": "spreading a chord out so it is not all bunched together",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "voicings spanning more than an octave",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "close block chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "open-voicings",
+      "display": "Open voicings",
+      "finder": {
+        "skill": "spreading a chord out so it is not all bunched together",
+        "levelWords": "easy, elementary, up to moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "open voicings spread over an octave",
+          "wide left hand"
+        ],
+        "avoid": [
+          "close position chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "ornamentation",
+      "display": "Ornamentation",
+      "finder": {
+        "skill": "adding or realising the small decorative figures",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "ornaments marked or written out",
+          "Baroque or Classical writing"
+        ],
+        "avoid": [
+          "unornamented editions"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "ornamented-melody",
+      "display": "An ornamented melody",
+      "finder": {
+        "skill": "keeping the line singing through the decoration",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "a melody with written ornaments",
+          "slow to moderate tempo"
+        ],
+        "avoid": [
+          "plain melodies"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "ornaments",
+      "display": "Ornaments",
+      "finder": {
+        "skill": "playing trills, turns and mordents in time",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "ornaments marked",
+          "a careful edition"
+        ],
+        "avoid": [
+          "unmarked scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "ostinato",
+      "display": "Ostinato",
+      "finder": {
+        "skill": "repeating one figure while everything else changes",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a repeating figure held throughout",
+          "changing harmony over it"
+        ],
+        "avoid": [
+          "constantly changing figuration"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "passing-chords",
+      "display": "Passing chords",
+      "finder": {
+        "skill": "putting a chord between two others to smooth the join",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "passing chords between the primary chords",
+          "a walking bass line"
+        ],
+        "avoid": [
+          "primary chords only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "pedal",
+      "display": "The pedal",
+      "finder": {
+        "skill": "using the sustain pedal as part of the sound",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "pedal markings printed",
+          "sustained harmony"
+        ],
+        "avoid": [
+          "unmarked pedal",
+          "dry articulated writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "pedal-bass",
+      "display": "A pedal bass",
+      "finder": {
+        "skill": "holding a bass note under changing harmony",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "a held bass note under the pedal",
+          "harmony moving above it"
+        ],
+        "avoid": [
+          "a moving bass line"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "pedalling",
+      "display": "Pedalling",
+      "finder": {
+        "skill": "deciding where the pedal goes and changing it cleanly",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "detailed pedal markings",
+          "changing harmony"
+        ],
+        "avoid": [
+          "unmarked pedal"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "pentatonic-scale",
+      "display": "The pentatonic scale",
+      "finder": {
+        "skill": "improvising with the five-note scale",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "pentatonic melody",
+          "a loop to play over"
+        ],
+        "avoid": [
+          "chromatic melodies"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "performance-mode",
+      "display": "Performance mode",
+      "appFeature": true
+    },
+    {
+      "id": "phrase-shaping",
+      "display": "Shaping a phrase",
+      "finder": {
+        "skill": "giving a phrase a direction and an end",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "clear phrase marks",
+          "printed dynamics"
+        ],
+        "avoid": [
+          "unmarked scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "phrasing",
+      "display": "Phrasing",
+      "finder": {
+        "skill": "breathing between phrases instead of playing straight through",
+        "levelWords": "very easy, absolute beginner, up to moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "slurs and phrase marks",
+          "clear phrase ends"
+        ],
+        "avoid": [
+          "unmarked scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "pivot-chord",
+      "display": "Pivot chords",
+      "finder": {
+        "skill": "using a chord that belongs to both keys to change key",
+        "levelWords": "advanced, Grade 6 to 7",
+        "constraints": [
+          "a modulation through a pivot chord",
+          "functional harmony"
+        ],
+        "avoid": [
+          "abrupt key changes",
+          "one key throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "placement",
+      "display": "The placement test",
+      "appFeature": true
+    },
+    {
+      "id": "plagal-cadence",
+      "display": "The plagal cadence",
+      "finder": {
+        "skill": "the IV to I ending",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a plagal cadence at a phrase end",
+          "hymn or gospel writing"
+        ],
+        "avoid": [
+          "perfect cadences only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "playing-by-ear",
+      "display": "Playing by ear",
+      "finder": {
+        "skill": "working a tune out without the score",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "a simple well-known tune",
+          "clear harmony"
+        ],
+        "avoid": [
+          "dense arrangements",
+          "chromatic writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "polyrhythm-2:1",
+      "display": "Two against one",
+      "finder": {
+        "skill": "playing two notes in one hand against one in the other",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "two against one between the hands"
+        ],
+        "avoid": [
+          "hands in unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "polyrhythm-2:3",
+      "display": "Two against three",
+      "finder": {
+        "skill": "playing two notes against three",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "two against three between the hands"
+        ],
+        "avoid": [
+          "hands in rhythmic unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "polyrhythm-3:1",
+      "display": "Three against one",
+      "finder": {
+        "skill": "playing three notes against one",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "three against one between the hands"
+        ],
+        "avoid": [
+          "hands in unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "polyrhythm-3:2",
+      "display": "Three against two",
+      "finder": {
+        "skill": "playing three notes against two",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "three against two between the hands"
+        ],
+        "avoid": [
+          "hands in rhythmic unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "position-shift",
+      "display": "Shifting position",
+      "finder": {
+        "skill": "moving the hand to a new place without a gap in the sound",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "a hand position change mid-phrase",
+          "printed fingering"
+        ],
+        "avoid": [
+          "everything in one position"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "posture",
+      "display": "Posture",
+      "finder": {
+        "skill": "sitting at the piano so the arms work",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "five-finger patterns",
+          "slow tempos"
+        ],
+        "avoid": [
+          "fast passagework",
+          "wide stretches"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "progressions-by-ear",
+      "display": "Hearing progressions",
+      "finder": {
+        "skill": "recognising a chord sequence without the score",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a repeating progression",
+          "clear harmonic rhythm"
+        ],
+        "avoid": [
+          "chromatic harmony",
+          "fast changes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "quartal",
+      "display": "Quartal voicings",
+      "finder": {
+        "skill": "building a chord in fourths instead of thirds",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "quartal voicings",
+          "modal harmony"
+        ],
+        "avoid": [
+          "triadic harmony"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "quarter-notes",
+      "display": "Quarter notes",
+      "finder": {
+        "skill": "playing one note to the beat",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "quarter notes",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "syncopation",
+          "sixteenth notes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "reading-ahead",
+      "display": "Reading ahead",
+      "finder": {
+        "skill": "looking further along the line than the note you are playing",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "short unfamiliar pieces",
+          "one key throughout"
+        ],
+        "avoid": [
+          "famous tunes you know by ear"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "reduction",
+      "display": "Reducing a band arrangement",
+      "finder": {
+        "skill": "getting a whole band into two hands",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a piano reduction of a band arrangement",
+          "open voicings"
+        ],
+        "avoid": [
+          "note-for-note transcriptions",
+          "guitar tablature"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "register",
+      "display": "Register",
+      "finder": {
+        "skill": "using the high and low ends of the keyboard for effect",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "the same material in more than one register",
+          "a wide keyboard range"
+        ],
+        "avoid": [
+          "everything in the middle"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "reharmonisation",
+      "display": "Reharmonising",
+      "finder": {
+        "skill": "putting different chords under a melody you know",
+        "levelWords": "advanced, Grade 6 to 7",
+        "constraints": [
+          "a well-known melody with chord symbols",
+          "room to substitute"
+        ],
+        "avoid": [
+          "fixed written arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "relative-minor",
+      "display": "The relative minor",
+      "finder": {
+        "skill": "hearing the minor key that shares a key signature",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a move between a major key and its relative minor"
+        ],
+        "avoid": [
+          "one key throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "repeated-notes",
+      "display": "Repeated notes",
+      "finder": {
+        "skill": "repeating a note cleanly by changing fingers",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "repeated notes with changing fingers",
+          "printed fingering"
+        ],
+        "avoid": [
+          "pedal covering the repetition"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "rests",
+      "display": "Rests",
+      "finder": {
+        "skill": "counting silence as carefully as sound",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "rests in the middle of a phrase",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "continuous writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "review-queue",
+      "display": "The review queue",
+      "appFeature": true
+    },
+    {
+      "id": "rhythm",
+      "display": "Rhythm",
+      "finder": {
+        "skill": "putting notes in the right place in the bar",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a clear rhythmic figure",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "rubato",
+          "unmeasured writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "roman-numerals",
+      "display": "Roman numerals",
+      "finder": {
+        "skill": "labelling chords by their function rather than their letter",
+        "levelWords": "easy, beginner, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "functional harmony",
+          "a clear key"
+        ],
+        "avoid": [
+          "atonal writing",
+          "constant modulation"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "romantic-miniature",
+      "display": "Romantic miniatures",
+      "finder": {
+        "skill": "playing a short Romantic character piece",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "a short Romantic character piece",
+          "pedal markings"
+        ],
+        "avoid": [
+          "Baroque counterpoint",
+          "arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "rootless-voicings",
+      "display": "Rootless voicings",
+      "finder": {
+        "skill": "leaving the root out because the bass has it",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "rootless left-hand voicings",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "root position triads"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "rotation",
+      "display": "Wrist rotation",
+      "finder": {
+        "skill": "rocking the wrist through a broken figure instead of reaching",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "broken chord figuration",
+          "printed fingering"
+        ],
+        "avoid": [
+          "block chords",
+          "five-finger patterns"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "rubato",
+      "display": "Rubato",
+      "finder": {
+        "skill": "stretching the time and giving it back",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "rubato marked",
+          "a singing melody"
+        ],
+        "avoid": [
+          "strict tempo throughout",
+          "dance rhythms"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "scale",
+      "display": "Scales",
+      "finder": {
+        "skill": "playing a scale evenly with the thumb passing under",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "scale passages",
+          "printed fingering"
+        ],
+        "avoid": [
+          "five-finger patterns only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "scale-in-3rds",
+      "display": "Scales in thirds",
+      "finder": {
+        "skill": "playing a scale in double thirds in one hand",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "scales in thirds",
+          "printed fingering"
+        ],
+        "avoid": [
+          "single-note scales"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "scale-in-6ths",
+      "display": "Scales in sixths",
+      "finder": {
+        "skill": "playing a scale in double sixths in one hand",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "scales in sixths",
+          "printed fingering"
+        ],
+        "avoid": [
+          "single-note scales"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "scales-HT",
+      "display": "Scales hands together",
+      "finder": {
+        "skill": "playing a scale with both hands at once",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "scales hands together",
+          "two octaves or more"
+        ],
+        "avoid": [
+          "hands separately",
+          "one octave only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "secondary-dominants",
+      "display": "Secondary dominants",
+      "finder": {
+        "skill": "using the dominant of a chord that is not the tonic",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "secondary dominants",
+          "functional harmony"
+        ],
+        "avoid": [
+          "diatonic harmony only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "secondary-rag",
+      "display": "Secondary rag",
+      "finder": {
+        "skill": "the three-against-four figure of the late rags",
+        "levelWords": "advanced, Grade 6 to 7",
+        "constraints": [
+          "secondary rag figuration",
+          "late ragtime"
+        ],
+        "avoid": [
+          "early cakewalks",
+          "fast tempos"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "self-assessment",
+      "display": "Marking your own work",
+      "appFeature": true
+    },
+    {
+      "id": "semitones",
+      "display": "Semitones",
+      "finder": {
+        "skill": "hearing and playing the smallest step",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "chromatic movement",
+          "semitone steps"
+        ],
+        "avoid": [
+          "diatonic writing only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "seventh-chord",
+      "display": "Seventh chords",
+      "finder": {
+        "skill": "playing a four-note chord built in thirds",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "seventh chords",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "triads only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "seventh-qualities",
+      "display": "Seventh chord qualities",
+      "finder": {
+        "skill": "telling maj7, min7 and dom7 apart",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "seventh chords of different qualities",
+          "clear harmonic rhythm"
+        ],
+        "avoid": [
+          "triads only",
+          "fast changes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "shaping",
+      "display": "Shaping a line",
+      "finder": {
+        "skill": "giving a phrase a direction",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "clear phrase marks",
+          "printed dynamics"
+        ],
+        "avoid": [
+          "unmarked scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sharps",
+      "display": "Sharps",
+      "finder": {
+        "skill": "reading and playing sharp notes",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a key signature with sharps",
+          "sharp accidentals"
+        ],
+        "avoid": [
+          "flat keys only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "shell-voicings",
+      "display": "Shell voicings",
+      "finder": {
+        "skill": "playing just the root, third and seventh",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "shell voicings of root third seventh",
+          "ii V I progressions"
+        ],
+        "avoid": [
+          "full block chords",
+          "rootless voicings"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "shuffle",
+      "display": "The shuffle",
+      "finder": {
+        "skill": "swinging the eighths in a blues",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "shuffle feel",
+          "twelve-bar form"
+        ],
+        "avoid": [
+          "straight eighths"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sight-reading",
+      "display": "Sight-reading",
+      "finder": {
+        "skill": "playing a piece straight through the first time you see it",
+        "levelWords": "very easy, absolute beginner, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "short unfamiliar pieces",
+          "one key throughout"
+        ],
+        "avoid": [
+          "famous tunes you know by ear",
+          "fast tempos"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "similar",
+      "display": "Similar motion",
+      "finder": {
+        "skill": "the hands moving in the same direction",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "scales in similar motion",
+          "hands together"
+        ],
+        "avoid": [
+          "contrary motion only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "skips",
+      "display": "Skips",
+      "finder": {
+        "skill": "reading a jump of a third or more",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "a mixture of steps and skips",
+          "stepwise context"
+        ],
+        "avoid": [
+          "large leaps",
+          "chromatic writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "slash-chord",
+      "display": "Slash chords",
+      "finder": {
+        "skill": "putting a chosen note in the bass under a chord",
+        "levelWords": "easy, elementary, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "slash chord symbols",
+          "a stepwise bass line"
+        ],
+        "avoid": [
+          "root position throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "slash-chords",
+      "display": "Slash chords",
+      "finder": {
+        "skill": "putting a chosen note in the bass under a chord",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "slash chord symbols",
+          "inversions in the bass"
+        ],
+        "avoid": [
+          "root position throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "slur",
+      "display": "Slurs",
+      "finder": {
+        "skill": "joining the notes under one curve",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "slurs marked",
+          "a legato melody"
+        ],
+        "avoid": [
+          "staccato throughout",
+          "unmarked scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sonata-form",
+      "display": "Sonata form",
+      "finder": {
+        "skill": "hearing exposition, development and recapitulation",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "a sonata movement",
+          "urtext edition"
+        ],
+        "avoid": [
+          "character pieces",
+          "arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sonatina-form",
+      "display": "Sonatina form",
+      "finder": {
+        "skill": "playing a short sonata movement",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a sonatina movement",
+          "Alberti bass"
+        ],
+        "avoid": [
+          "arrangements",
+          "single-page fragments"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "staccato",
+      "display": "Staccato",
+      "finder": {
+        "skill": "detaching notes cleanly",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "staccato marked",
+          "articulation contrast"
+        ],
+        "avoid": [
+          "legato throughout",
+          "pedal covering it"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "steps",
+      "display": "Steps",
+      "finder": {
+        "skill": "reading movement to the next note up or down",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "stepwise melodies",
+          "C position"
+        ],
+        "avoid": [
+          "large leaps",
+          "chromatic writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "stride",
+      "display": "Stride",
+      "finder": {
+        "skill": "leaping the left hand between a bass note and a chord",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "stride left hand",
+          "leaps of a tenth or more"
+        ],
+        "avoid": [
+          "close-position left hand",
+          "block chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "stride-bass",
+      "display": "The stride bass",
+      "finder": {
+        "skill": "leaping the left hand between a bass note and a chord",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "stride bass line",
+          "wide leaps"
+        ],
+        "avoid": [
+          "close-position left hand"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "subdivision",
+      "display": "Subdivision",
+      "finder": {
+        "skill": "feeling the smaller notes inside the beat",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "eighth or sixteenth subdivision",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "rubato",
+          "unmeasured writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sus",
+      "display": "Suspended chords",
+      "finder": {
+        "skill": "replacing the third with the second or fourth",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "sus2 and sus4 chords",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "plain triads throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sus-chords",
+      "display": "Suspended chords",
+      "finder": {
+        "skill": "replacing the third with the second or fourth",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "sus2 and sus4 chords",
+          "a resolution to the triad"
+        ],
+        "avoid": [
+          "plain triads throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sustain-pedal",
+      "display": "The sustain pedal",
+      "finder": {
+        "skill": "using the right pedal to join the harmony",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "pedal markings printed",
+          "sustained harmony"
+        ],
+        "avoid": [
+          "unmarked pedal",
+          "dry writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sustained-chords",
+      "display": "Sustained chords",
+      "finder": {
+        "skill": "holding chords under a moving line",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "held chords under a melody",
+          "pedal markings"
+        ],
+        "avoid": [
+          "detached chordal writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "swing",
+      "display": "Swing",
+      "finder": {
+        "skill": "playing the eighths long-short instead of even",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "swung eighths",
+          "a jazz or blues tune"
+        ],
+        "avoid": [
+          "straight eighths",
+          "classical writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "swing-eighths",
+      "display": "Swung eighths",
+      "finder": {
+        "skill": "playing the eighths long-short instead of even",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "swung eighth notes",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "straight eighths"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "syncopation",
+      "display": "Syncopation",
+      "finder": {
+        "skill": "accenting a note that is not on the beat",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "syncopated melody",
+          "a steady accompaniment underneath"
+        ],
+        "avoid": [
+          "everything on the beat"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tempo-mode",
+      "display": "Tempo mode",
+      "appFeature": true
+    },
+    {
+      "id": "texture",
+      "display": "Texture",
+      "finder": {
+        "skill": "choosing how thick or thin the writing is",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "contrasting textures between sections",
+          "a chord chart to arrange from"
+        ],
+        "avoid": [
+          "one texture throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "thumb-under",
+      "display": "Passing the thumb under",
+      "finder": {
+        "skill": "getting the thumb under the hand so a scale stays smooth",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "scale passages",
+          "printed fingering"
+        ],
+        "avoid": [
+          "five-finger patterns only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tie",
+      "display": "Ties",
+      "finder": {
+        "skill": "holding a note across a bar line",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "ties across bar lines",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "no tied notes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tied-across-bar",
+      "display": "Ties across the bar",
+      "finder": {
+        "skill": "holding a note through the downbeat",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "notes tied across the bar line",
+          "syncopation"
+        ],
+        "avoid": [
+          "everything on the beat"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tone",
+      "display": "Tone",
+      "finder": {
+        "skill": "getting a sound out of the piano that you want to listen to",
+        "levelWords": "moderate, Grade 2 to 3, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "a slow singing melody",
+          "dynamic marking"
+        ],
+        "avoid": [
+          "fast passagework",
+          "percussive writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tonicisation",
+      "display": "Tonicisation",
+      "finder": {
+        "skill": "making a chord sound briefly like home",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "secondary dominants",
+          "functional harmony"
+        ],
+        "avoid": [
+          "diatonic harmony only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "trading-fours",
+      "display": "Trading fours",
+      "finder": {
+        "skill": "swapping four-bar solos with somebody else",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "head and chorus form",
+          "space left for a soloist"
+        ],
+        "avoid": [
+          "written-out solos"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "transposing",
+      "display": "Transposing",
+      "finder": {
+        "skill": "playing a piece in a different key from the written one",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a lead sheet with chord symbols",
+          "a simple progression"
+        ],
+        "avoid": [
+          "fully written arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "transposing-for-singers",
+      "display": "Transposing for singers",
+      "finder": {
+        "skill": "moving a song into a key somebody can sing",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "a song with chord symbols",
+          "a singable range"
+        ],
+        "avoid": [
+          "instrumental pieces",
+          "fixed arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "transposition",
+      "display": "Transposition",
+      "finder": {
+        "skill": "playing a piece in a different key from the written one",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "a clear progression",
+          "chord symbols or Roman numerals"
+        ],
+        "avoid": [
+          "fully written arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "treble-clef",
+      "display": "The treble clef",
+      "finder": {
+        "skill": "reading the upper staff",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "treble clef",
+          "right hand part"
+        ],
+        "avoid": [
+          "bass clef only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tremolo",
+      "display": "Tremolo",
+      "finder": {
+        "skill": "alternating two notes fast enough to sound held",
+        "levelWords": "advanced, Grade 5 to 6",
+        "constraints": [
+          "tremolo passages",
+          "printed fingering"
+        ],
+        "avoid": [
+          "single sustained notes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tremolo-thirds",
+      "display": "Tremolo thirds",
+      "finder": {
+        "skill": "alternating the two notes of a third in a blues",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "tremolo thirds",
+          "blues writing"
+        ],
+        "avoid": [
+          "single-note melody only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "triads",
+      "display": "Triads",
+      "finder": {
+        "skill": "playing the three-note chord",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "block triads",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "seventh chords",
+          "extended chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "trill",
+      "display": "Trills",
+      "finder": {
+        "skill": "alternating two notes quickly and evenly",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "trills marked or written out",
+          "a careful edition"
+        ],
+        "avoid": [
+          "unornamented editions"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "trills",
+      "display": "Trills",
+      "finder": {
+        "skill": "alternating two notes quickly and evenly",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "trills marked",
+          "Classical or Romantic writing"
+        ],
+        "avoid": [
+          "unmarked scores"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "trio-key-change",
+      "display": "The trio key change",
+      "finder": {
+        "skill": "hearing a rag or march move to its trio in a new key",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "a trio section in a new key",
+          "multi-strain form"
+        ],
+        "avoid": [
+          "single-strain pieces"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "triplets",
+      "display": "Triplets",
+      "finder": {
+        "skill": "fitting three notes into the space of two",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "triplets against a steady beat",
+          "4/4 time"
+        ],
+        "avoid": [
+          "compound time throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tritone-substitution",
+      "display": "Tritone substitution",
+      "finder": {
+        "skill": "replacing a dominant with the one a tritone away",
+        "levelWords": "advanced, Grade 5 to 6, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "tritone substitutions marked",
+          "ii V I progressions"
+        ],
+        "avoid": [
+          "diatonic harmony only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tumbao",
+      "display": "The tumbao",
+      "finder": {
+        "skill": "playing the Latin bass pattern that anticipates the beat",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "tumbao bass line",
+          "clave underneath"
+        ],
+        "avoid": [
+          "walking bass",
+          "swing feel"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "turnaround",
+      "display": "Turnarounds",
+      "finder": {
+        "skill": "the two bars that send the form back round",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "a written turnaround",
+          "twelve-bar form"
+        ],
+        "avoid": [
+          "through-composed pieces"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "twelve-bar",
+      "display": "The twelve-bar form",
+      "finder": {
+        "skill": "playing the blues form without losing your place",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "twelve-bar blues form",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "through-composed pieces"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "twelve-bar-blues",
+      "display": "The twelve-bar blues",
+      "finder": {
+        "skill": "playing the blues form without losing your place",
+        "levelWords": "moderate, Grade 2 to 3",
+        "constraints": [
+          "twelve-bar blues form",
+          "shuffle feel"
+        ],
+        "avoid": [
+          "straight eighths",
+          "through-composed writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "twelve-bar-improv",
+      "display": "Improvising on the twelve-bar",
+      "finder": {
+        "skill": "making up a line over the blues form",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "twelve-bar form",
+          "space for several choruses"
+        ],
+        "avoid": [
+          "written-out solos"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "two-hand-independence",
+      "display": "Two-hand independence",
+      "finder": {
+        "skill": "the hands playing different rhythms without pulling together",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "different rhythms in each hand",
+          "hands together"
+        ],
+        "avoid": [
+          "hands in rhythmic unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "two-voice-texture",
+      "display": "Two-voice texture",
+      "finder": {
+        "skill": "keeping two lines apart, one per hand",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "two independent voices",
+          "Baroque writing"
+        ],
+        "avoid": [
+          "homophonic accompaniment"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "velocity",
+      "display": "Velocity",
+      "finder": {
+        "skill": "playing fast and still evenly",
+        "levelWords": "advanced, Grade 6 to 7",
+        "constraints": [
+          "continuous fast passagework",
+          "printed fingering"
+        ],
+        "avoid": [
+          "slow expressive writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "vertical-alignment",
+      "display": "Lining the hands up",
+      "finder": {
+        "skill": "making the hands land together on the beat",
+        "levelWords": "easy, beginner",
+        "constraints": [
+          "hands playing together on the beat",
+          "grand staff"
+        ],
+        "avoid": [
+          "hands alternating"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "virtuoso-technique",
+      "display": "Virtuoso technique",
+      "finder": {
+        "skill": "the passagework a concert piece needs",
+        "levelWords": "advanced, Grade 7 to 8",
+        "constraints": [
+          "sustained virtuoso passagework",
+          "a large-scale work"
+        ],
+        "avoid": [
+          "short easy pieces",
+          "arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "voice-leading",
+      "display": "Voice leading",
+      "finder": {
+        "skill": "moving each part by as little as possible between chords",
+        "levelWords": "easy, elementary, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "smooth movement between chords",
+          "inversions"
+        ],
+        "avoid": [
+          "root position leaps"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "voicing",
+      "display": "Voicing",
+      "finder": {
+        "skill": "choosing which notes of a chord to play and where",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "chord symbols to voice yourself",
+          "open and close options"
+        ],
+        "avoid": [
+          "fully written arrangements"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "voicing-melody",
+      "display": "Voicing the melody",
+      "finder": {
+        "skill": "bringing the tune out above its own accompaniment",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "melody and accompaniment in the same hand",
+          "dynamics marked per voice"
+        ],
+        "avoid": [
+          "hands in unison"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "wait-mode",
+      "display": "Wait mode",
+      "appFeature": true
+    },
+    {
+      "id": "walking-bass",
+      "display": "The walking bass",
+      "finder": {
+        "skill": "a bass line that steps through the chords in quarter notes",
+        "levelWords": "moderate to advancing, Grade 3 to 4, up to advanced, Grade 7 to 8",
+        "constraints": [
+          "walking bass line",
+          "chord symbols printed"
+        ],
+        "avoid": [
+          "block chord bass",
+          "static bass notes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "waltz-bass",
+      "display": "The waltz bass",
+      "finder": {
+        "skill": "bass note then two chords, in three",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "waltz bass in 3/4",
+          "melody above it"
+        ],
+        "avoid": [
+          "4/4 accompaniment",
+          "block chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "whole-notes",
+      "display": "Whole notes",
+      "finder": {
+        "skill": "holding a note for a whole bar",
+        "levelWords": "very easy, absolute beginner",
+        "constraints": [
+          "whole notes and half notes",
+          "4/4 time"
+        ],
+        "avoid": [
+          "eighth notes",
+          "syncopation"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "wrist",
+      "display": "The wrist",
+      "finder": {
+        "skill": "letting the wrist move rather than holding it stiff",
+        "levelWords": "advancing, Grade 4 to 5",
+        "constraints": [
+          "broken chord figuration",
+          "printed fingering"
+        ],
+        "avoid": [
+          "block chords",
+          "sustained writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    }
+  ]
+}

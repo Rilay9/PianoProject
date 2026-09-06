@@ -63,7 +63,30 @@
               "levelBand": [
                 4.3,
                 9.6
-              ]
+              ],
+              "finder": {
+                "skill": "living with one large piece long enough to make an interpretation of it",
+                "levelWords": "advanced, Grade 7 to 8, recital piece, large form",
+                "constraints": [
+                  "a complete multi-section work",
+                  "dramatic contrast between sections",
+                  "virtuoso passagework",
+                  "urtext edition"
+                ],
+                "avoid": [
+                  "short pieces",
+                  "arrangements",
+                  "simplified editions"
+                ],
+                "examples": [
+                  {
+                    "title": "Ballade No. 1 in G minor",
+                    "composer": "Frederic Chopin",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -106,7 +129,23 @@
               "levelBand": [
                 6.3,
                 8.4
-              ]
+              ],
+              "finder": {
+                "skill": "comping, walking and soloing on the same tune in one sitting",
+                "levelWords": "advanced, jazz piano, solo piano arrangement, stride and walking bass",
+                "constraints": [
+                  "a standard with chord symbols",
+                  "room to comp, walk and solo",
+                  "stride or walking left hand",
+                  "swung eighths"
+                ],
+                "avoid": [
+                  "fully written-out arrangements",
+                  "straight eighths",
+                  "beginner lead sheets"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -149,7 +188,23 @@
               "levelBand": [
                 6.2,
                 8.4
-              ]
+              ],
+              "finder": {
+                "skill": "improvising over the whole form until it sounds like you and not like an exercise",
+                "levelWords": "advanced, blues piano, improvisation over the form",
+                "constraints": [
+                  "twelve-bar form",
+                  "space for several choruses",
+                  "call and response phrasing",
+                  "boogie or stride left hand"
+                ],
+                "avoid": [
+                  "written-out solos",
+                  "single-chorus arrangements",
+                  "straight eighths"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -192,7 +247,23 @@
               "levelBand": [
                 5.3,
                 8.4
-              ]
+              ],
+              "finder": {
+                "skill": "turning a bare chord chart into an arrangement with an intro, a texture and an ending",
+                "levelWords": "advanced, pop piano arranging, solo piano from a chord chart",
+                "constraints": [
+                  "chord chart or lead sheet only",
+                  "a song with distinct sections",
+                  "room to change texture between sections",
+                  "chord symbols printed"
+                ],
+                "avoid": [
+                  "fully written-out arrangements",
+                  "one texture throughout",
+                  "instrumental etudes"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -235,7 +306,23 @@
               "levelBand": [
                 6.5,
                 8.4
-              ]
+              ],
+              "finder": {
+                "skill": "hearing a whole form rather than a phrase, and writing it down",
+                "levelWords": "advanced, ear training, musical form, harmonic dictation",
+                "constraints": [
+                  "a complete short form such as ABA or a 32-bar song",
+                  "clear sectional contrast",
+                  "functional harmony",
+                  "moderate length"
+                ],
+                "avoid": [
+                  "fragments",
+                  "atonal writing",
+                  "through-composed pieces"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -278,7 +365,23 @@
               "levelBand": [
                 5.3,
                 8.4
-              ]
+              ],
+              "finder": {
+                "skill": "finishing a piece of your own, with a form and an ending that works",
+                "levelWords": "advanced, composition, solo piano, complete short piece",
+                "constraints": [
+                  "a complete short piece with a clear form",
+                  "a recognisable main idea that returns",
+                  "a written ending",
+                  "moderate length"
+                ],
+                "avoid": [
+                  "fragments",
+                  "exercises",
+                  "arrangements of other songs"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         }

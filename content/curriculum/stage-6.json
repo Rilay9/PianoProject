@@ -70,7 +70,30 @@
               "levelBand": [
                 3.2,
                 6.6
-              ]
+              ],
+              "finder": {
+                "skill": "bringing a melody out above its own accompaniment and stretching the time",
+                "levelWords": "advancing, Grade 4 to 5, Romantic miniature, voicing the melody",
+                "constraints": [
+                  "Romantic character piece",
+                  "melody and accompaniment in the same hand",
+                  "pedal markings",
+                  "rubato marked"
+                ],
+                "avoid": [
+                  "Baroque counterpoint",
+                  "arrangements",
+                  "virtuoso etudes"
+                ],
+                "examples": [
+                  {
+                    "title": "Songs Without Words",
+                    "composer": "Felix Mendelssohn",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -122,7 +145,35 @@
               "levelBand": [
                 3.3,
                 7.1
-              ]
+              ],
+              "finder": {
+                "skill": "holding a multi-strain rag together while the left hand leaps",
+                "levelWords": "advancing, Grade 4 to 5, classic ragtime, multi-strain, not fast",
+                "constraints": [
+                  "classic rag in several strains",
+                  "a trio in a new key",
+                  "leaping oom-pah left hand",
+                  "marked not fast"
+                ],
+                "avoid": [
+                  "simplified arrangements",
+                  "fast tempos",
+                  "novelty piano"
+                ],
+                "examples": [
+                  {
+                    "title": "Maple Leaf Rag",
+                    "composer": "Scott Joplin",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Ragtime Nightingale",
+                    "composer": "Joseph Lamb",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -178,7 +229,23 @@
               "levelBand": [
                 6.1,
                 6.4
-              ]
+              ],
+              "finder": {
+                "skill": "rotating the wrist through broken seventh shapes instead of reaching with the fingers",
+                "levelWords": "advancing, Grade 4 to 5, broken chords, wrist rotation",
+                "constraints": [
+                  "broken seventh chords",
+                  "Alberti figuration",
+                  "wide hand position",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "block chords only",
+                  "five-finger patterns",
+                  "pedal covering the texture"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -222,7 +289,30 @@
               "levelBand": [
                 6.1,
                 6.4
-              ]
+              ],
+              "finder": {
+                "skill": "comping and walking a bass line at the same time, and hearing the changes go by",
+                "levelWords": "advancing, jazz piano, comping, walking bass, shell voicings",
+                "constraints": [
+                  "walking bass in the left hand",
+                  "comped chords in the right",
+                  "swung eighths",
+                  "standard song form"
+                ],
+                "avoid": [
+                  "written-out solos",
+                  "straight eighths",
+                  "rootless voicings without a bass"
+                ],
+                "examples": [
+                  {
+                    "title": "Take Five",
+                    "composer": "Paul Desmond",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -265,7 +355,23 @@
               "levelBand": [
                 5.4,
                 6.4
-              ]
+              ],
+              "finder": {
+                "skill": "playing a boogie bass that walks while the right hand stays out of its way",
+                "levelWords": "advancing, boogie woogie, walking bass, eight to the bar",
+                "constraints": [
+                  "boogie woogie bass line",
+                  "eight-to-the-bar left hand",
+                  "twelve-bar form",
+                  "shuffle feel"
+                ],
+                "avoid": [
+                  "straight eighths",
+                  "modern jazz harmony",
+                  "arrangements without a left-hand pattern"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -308,7 +414,23 @@
               "levelBand": [
                 5.4,
                 6.2
-              ]
+              ],
+              "finder": {
+                "skill": "voicing the four-chord loop so the bass line walks between the chords",
+                "levelWords": "advancing, pop piano, four chord loop, voice leading, slash chords",
+                "constraints": [
+                  "I V vi IV loop",
+                  "slash chords making a stepwise bass",
+                  "inversions rather than root position",
+                  "chord symbols printed"
+                ],
+                "avoid": [
+                  "root position throughout",
+                  "jazz extensions",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -351,7 +473,23 @@
               "levelBand": [
                 5.5,
                 6.4
-              ]
+              ],
+              "finder": {
+                "skill": "labelling harmony with Roman numerals and writing down what you hear",
+                "levelWords": "advancing, harmonic dictation, Roman numerals, modes",
+                "constraints": [
+                  "clear functional harmony",
+                  "one key with a short excursion",
+                  "moderate harmonic rhythm",
+                  "short phrases"
+                ],
+                "avoid": [
+                  "chromatic harmony throughout",
+                  "atonal writing",
+                  "dense textures"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -394,7 +532,23 @@
               "levelBand": [
                 5.4,
                 7.2
-              ]
+              ],
+              "finder": {
+                "skill": "improvising with guide tones through a progression rather than one scale",
+                "levelWords": "advancing, jazz improvisation, guide tones, modes, ii V I",
+                "constraints": [
+                  "ii V I progressions",
+                  "changing chords to improvise over",
+                  "guide-tone lines",
+                  "moderate swing tempo"
+                ],
+                "avoid": [
+                  "one static chord",
+                  "written-out solos",
+                  "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         }

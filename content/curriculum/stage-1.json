@@ -48,7 +48,40 @@
               "levelBand": [
                 1.1,
                 2.1
-              ]
+              ],
+              "finder": {
+                "skill": "reading five notes in the right hand and playing them in time",
+                "levelWords": "very easy, absolute beginner, first pieces, C position, right hand only",
+                "constraints": [
+                  "C major",
+                  "right hand only",
+                  "five-finger position",
+                  "quarter and half notes",
+                  "8 to 16 bars"
+                ],
+                "avoid": [
+                  "black keys",
+                  "hand position changes",
+                  "chords",
+                  "anything over 24 bars"
+                ],
+                "examples": [
+                  {
+                    "title": "Hot Cross Buns",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Mary Had a Little Lamb",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Ode to Joy",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -92,7 +125,34 @@
               "levelBand": [
                 1.1,
                 1.4
-              ]
+              ],
+              "finder": {
+                "skill": "holding a note for its full value, and counting rests",
+                "levelWords": "very easy, absolute beginner, first pieces, C position",
+                "constraints": [
+                  "C major",
+                  "half notes and whole notes",
+                  "rests in the middle of a phrase",
+                  "4/4 or 3/4",
+                  "8 to 16 bars"
+                ],
+                "avoid": [
+                  "eighth notes",
+                  "black keys",
+                  "hand position changes"
+                ],
+                "examples": [
+                  {
+                    "title": "Lightly Row",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Frere Jacques",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -135,7 +195,30 @@
               "levelBand": [
                 1.1,
                 2.1
-              ]
+              ],
+              "finder": {
+                "skill": "reading the bass clef with the left hand in C position",
+                "levelWords": "very easy, absolute beginner, left hand only, bass clef",
+                "constraints": [
+                  "bass clef",
+                  "left hand only",
+                  "C position",
+                  "quarter and half notes",
+                  "8 to 16 bars"
+                ],
+                "avoid": [
+                  "treble clef melody",
+                  "ledger lines",
+                  "hand position changes"
+                ],
+                "examples": [
+                  {
+                    "title": "Hot Cross Buns (left hand)",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -180,7 +263,30 @@
               "levelBand": [
                 1.2,
                 1.4
-              ]
+              ],
+              "finder": {
+                "skill": "reading a grand staff where the hands take turns rather than play together",
+                "levelWords": "very easy, beginner, grand staff, hands alternating",
+                "constraints": [
+                  "grand staff",
+                  "hands alternate rather than play together",
+                  "3/4 or 4/4",
+                  "an upbeat",
+                  "8 to 24 bars"
+                ],
+                "avoid": [
+                  "hands playing at the same time",
+                  "chords",
+                  "black keys"
+                ],
+                "examples": [
+                  {
+                    "title": "Oh When the Saints Go Marching In",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -227,7 +333,30 @@
               "levelBand": [
                 1.1,
                 2.2
-              ]
+              ],
+              "finder": {
+                "skill": "reading by the distance between notes instead of naming every one",
+                "levelWords": "very easy, beginner, stepwise melodies, sight-reading practice",
+                "constraints": [
+                  "mostly steps with a few skips",
+                  "C position",
+                  "short unfamiliar pieces",
+                  "4 to 16 bars"
+                ],
+                "avoid": [
+                  "large leaps",
+                  "well-known tunes you can play by ear",
+                  "accidentals"
+                ],
+                "examples": [
+                  {
+                    "title": "Ode to Joy (theme)",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         }

@@ -72,7 +72,35 @@
               "levelBand": [
                 4.3,
                 8.8
-              ]
+              ],
+              "finder": {
+                "skill": "playing an etude fast and evenly, and holding a long piece together",
+                "levelWords": "advanced, Grade 6 to 7, concert etude, large form",
+                "constraints": [
+                  "etude with one technical problem throughout",
+                  "sustained fast passagework",
+                  "a piece over four pages",
+                  "pedal markings"
+                ],
+                "avoid": [
+                  "short character pieces",
+                  "arrangements",
+                  "simplified editions"
+                ],
+                "examples": [
+                  {
+                    "title": "Etudes, Op. 10",
+                    "composer": "Frederic Chopin",
+                    "note": "wanted"
+                  },
+                  {
+                    "title": "School of Velocity, Op. 299",
+                    "composer": "Carl Czerny",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -122,7 +150,30 @@
               "levelBand": [
                 3.3,
                 7.6
-              ]
+              ],
+              "finder": {
+                "skill": "playing the late rags, where the syncopation crosses the bar and the harmony turns chromatic",
+                "levelWords": "advanced, late ragtime, secondary rag, chromatic harmony",
+                "constraints": [
+                  "secondary rag figuration",
+                  "chromatic harmony",
+                  "stride bass",
+                  "marked not fast"
+                ],
+                "avoid": [
+                  "simplified arrangements",
+                  "fast tempos",
+                  "early cakewalks"
+                ],
+                "examples": [
+                  {
+                    "title": "Magnetic Rag",
+                    "composer": "Scott Joplin",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -165,7 +216,23 @@
               "levelBand": [
                 8.1,
                 8.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing four octaves of scale in sixteenths without the hand tiring",
+                "levelWords": "advanced, Grade 6 to 7, velocity, endurance, four octave scales",
+                "constraints": [
+                  "scales over four octaves",
+                  "continuous sixteenth notes",
+                  "hands together",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "short exercises",
+                  "pedal",
+                  "expressive markings"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -209,7 +276,23 @@
               "levelBand": [
                 7.1,
                 8.2
-              ]
+              ],
+              "finder": {
+                "skill": "voicing ninths, elevenths and thirteenths, and moving a tune through keys",
+                "levelWords": "advanced, jazz piano, extended chords, modulation",
+                "constraints": [
+                  "ninth, eleventh and thirteenth chords",
+                  "modulation within the tune",
+                  "rootless voicings",
+                  "standard song form"
+                ],
+                "avoid": [
+                  "triadic harmony",
+                  "one key throughout",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -252,7 +335,23 @@
               "levelBand": [
                 6.2,
                 8.3
-              ]
+              ],
+              "finder": {
+                "skill": "playing the twelve-bar form in any key and colouring it with ninths",
+                "levelWords": "advanced, blues piano, twelve bar in all keys, ninth chords",
+                "constraints": [
+                  "twelve-bar form",
+                  "ninth chords",
+                  "walking bass",
+                  "keys other than C, F and G"
+                ],
+                "avoid": [
+                  "one key only",
+                  "straight eighths",
+                  "simplified arrangements"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -295,7 +394,23 @@
               "levelBand": [
                 5.4,
                 8.3
-              ]
+              ],
+              "finder": {
+                "skill": "transposing a song on sight into the key a singer needs",
+                "levelWords": "advanced, pop piano, transposition, playing for singers",
+                "constraints": [
+                  "lead sheet with chord symbols",
+                  "Roman numeral analysis or a clear progression",
+                  "a song that works in several keys",
+                  "verse and chorus"
+                ],
+                "avoid": [
+                  "fully written-out arrangements",
+                  "one fixed key",
+                  "instrumental pieces"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -338,7 +453,23 @@
               "levelBand": [
                 6.5,
                 8.3
-              ]
+              ],
+              "finder": {
+                "skill": "hearing the moment a piece changes key, and naming the chord that turned it",
+                "levelWords": "advanced, harmony, modulation, pivot chords",
+                "constraints": [
+                  "a clear modulation to a related key",
+                  "a pivot chord",
+                  "functional harmony",
+                  "moderate length"
+                ],
+                "avoid": [
+                  "atonal writing",
+                  "constant modulation",
+                  "dense textures"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -381,7 +512,23 @@
               "levelBand": [
                 7.1,
                 8.2
-              ]
+              ],
+              "finder": {
+                "skill": "putting different chords under a melody you already know",
+                "levelWords": "advanced, reharmonisation, tritone substitution, secondary dominants",
+                "constraints": [
+                  "a well-known melody with its original changes",
+                  "room to substitute chords",
+                  "chord symbols printed",
+                  "moderate tempo"
+                ],
+                "avoid": [
+                  "through-composed pieces",
+                  "fixed written arrangements",
+                  "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         }

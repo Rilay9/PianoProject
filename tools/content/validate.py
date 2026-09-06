@@ -41,6 +41,7 @@ except ImportError:  # pragma: no cover
 from common import CONTENT_SRC, DEFAULT_OUT, load_item_labels, load_tracks  # noqa: E402
 from licensing import NC_PERSONAL_TAG, Verdict, license_verdict  # noqa: E402
 from truncation_scan import scan_dir  # noqa: E402
+import finder  # noqa: E402
 
 #: docs/03 §3 step 5: "duration sanity (5 s – 20 min)".
 MIN_DURATION_SEC = 5
@@ -342,6 +343,144 @@ def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: 
     return out
 
 
+
+#: Words that, next to a copyrighted title, would be asking somebody to fetch a
+#: transcription off a website — the one thing `docs/00` D18 forbids. The
+#: prompt is allowed to *say* that copyrighted music is fine to suggest; it is
+#: not allowed to ask for it to be downloaded.
+DOWNLOAD_WORDS = ("download", "free pdf", "torrent", "for free")
+
+
+def finder_errors(curriculum: dict) -> list[str]:
+    """
+    replan §4.1: the generated prompts have to be usable and honest.
+
+    Four rules, and each one exists because the opposite is easy to ship by
+    accident:
+
+    - **Length.** A prompt nobody can paste is a prompt nobody uses.
+    - **Every constraint survives.** The author writes `constraints`; the
+      generator builds a sentence from them. If a wording change ever drops
+      one, the rung starts asking for the wrong music and nothing would say so.
+    - **The copyright sentence is present.** `00` D18 is stated by the prompt
+      rather than broken by it, and a prompt that lost the sentence is a prompt
+      that quietly stopped saying where the owner stands.
+    - **Nothing asks for a download.** The app never fetches a copyrighted
+      transcription and never tells anyone else to.
+    """
+    errors: list[str] = []
+
+    def check(where: str, block: dict) -> None:
+        prompt = block.get("chatPrompt") or ""
+        query = block.get("searchQuery") or ""
+        if not prompt or not query:
+            errors.append(f"{where}: finder has no generated prompt — run the build")
+            return
+        if len(prompt) > finder.MAX_CHAT_PROMPT:
+            errors.append(
+                f"{where}: chat prompt is {len(prompt)} characters, over the "
+                f"{finder.MAX_CHAT_PROMPT} limit"
+            )
+        lowered = prompt.lower()
+        for constraint in block.get("constraints", []):
+            if constraint.lower() not in lowered:
+                errors.append(f"{where}: constraint {constraint!r} is missing from the chat prompt")
+        if finder.COPYRIGHT_MARKER not in lowered:
+            errors.append(f"{where}: chat prompt has lost the docs/00 D18 copyright sentence")
+        for word in DOWNLOAD_WORDS:
+            if word in lowered:
+                errors.append(
+                    f"{where}: chat prompt says {word!r} — docs/00 D18 forbids asking for a "
+                    "copyrighted transcription to be downloaded"
+                )
+
+    for stage in curriculum.get("stages", []):
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                block = lesson.get("finder")
+                if block:
+                    check(f"lesson {lesson['id']}", block)
+                elif not lesson.get("optionsExempt"):
+                    errors.append(f"lesson {lesson['id']}: no finder, and the rung is not exempt")
+
+    for concept in curriculum.get("concepts", []):
+        block = concept.get("finder")
+        if block:
+            check(f"concept {concept['id']}", block)
+        elif not concept.get("appFeature"):
+            errors.append(f"concept {concept['id']}: no finder and not marked appFeature")
+    return errors
+
+
+def unknown_concepts(curriculum: dict) -> list[str]:
+    """Every concept a lesson names has to have a display name and a finder."""
+    known = {c["id"] for c in curriculum.get("concepts", [])}
+    missing: set[str] = set()
+    for stage in curriculum.get("stages", []):
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                for concept in lesson.get("concepts", []):
+                    if concept not in known:
+                        missing.add(concept)
+    return [
+        f"concept {c!r} is used by a lesson but is not in content/curriculum/concepts.json"
+        for c in sorted(missing)
+    ]
+
+
+def write_needs(curriculum: dict, catalog: list, out_dir: Path, min_options: int) -> int:
+    """
+    replan §4.2: each built lesson gets a `needs` block.
+
+    The counting already happens — `thin_lesson_errors` does it to decide
+    whether a rung is under the floor. What was missing is that the *app* could
+    not say "this rung has two songs and wants three" without recomputing it,
+    so the number is written where the lesson page can read it.
+
+    `paper` is always 0 for now: the shelf of books the owner owns is P16, and
+    a field that is always zero is better than a field the app has to guess at
+    once the shelf exists.
+    """
+    by_id = {item["id"]: item for item in catalog}
+    written = 0
+    for stage in curriculum.get("stages", []):
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                if lesson.get("optionsExempt"):
+                    continue
+                exercises = lesson.get("exerciseOptions", [])
+                songs = lesson.get("songOptions", [])
+                band = lesson.get("levelBand")
+                inside = 0
+                if band:
+                    low, high = band
+                    for option in exercises + songs:
+                        item = by_id.get(option)
+                        level = item.get("level") if item else None
+                        if level is not None and low <= level <= high:
+                            inside += 1
+                if lesson.get("songOptional"):
+                    # The rung counts both lists together, so shortness is a
+                    # property of the pair and not of either one.
+                    together = max(0, min_options - (len(exercises) + len(songs)))
+                    need_songs, need_exercises = 0, together
+                else:
+                    need_songs = max(0, min_options - len(songs))
+                    need_exercises = max(0, min_options - len(exercises))
+                lesson["needs"] = {
+                    "songs": need_songs,
+                    "exercises": need_exercises,
+                    "paper": 0,
+                    "inBand": inside,
+                    "floor": min_options,
+                }
+                written += 1
+    (out_dir / "curriculum.json").write_text(
+        json.dumps(curriculum, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    return written
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dir", type=Path, default=DEFAULT_OUT)
@@ -387,6 +526,8 @@ def main() -> None:
             catalog, args.dir, args.strict_license, args.allow_nc or args.personal, args.personal
         )
         errors += validate_curriculum(curriculum, catalog, args.min_options)
+        errors += finder_errors(curriculum)
+        errors += unknown_concepts(curriculum)
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.
@@ -394,6 +535,14 @@ def main() -> None:
             f"{item_id}: orphan exercise — reachable from no lesson and no concept"
             for item_id in orphan_exercises(catalog, curriculum)
         ]
+
+        # replan §4.2: the lesson page has to be able to say what a rung is
+        # short of without recounting the catalog, so the number is written
+        # into the built curriculum here — after the checks above have agreed
+        # the counts mean something.
+        if not errors:
+            rungs = write_needs(curriculum, catalog, args.dir, args.min_options)
+            print(f"  wrote needs into {rungs} rung(s)")
 
     if errors:
         print(f"content validation FAILED ({len(errors)} error(s)):", file=sys.stderr)

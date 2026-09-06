@@ -3,73 +3,348 @@
   "$id": "pianopath/curriculum.schema.json",
   "title": "PianoPath curriculum",
   "type": "object",
-  "required": ["version", "stages", "tracks"],
+  "required": [
+    "version",
+    "stages",
+    "tracks"
+  ],
   "properties": {
-    "version": { "type": "integer" },
+    "version": {
+      "type": "integer"
+    },
     "tracks": {
       "type": "array",
-      "items": { "type": "object", "required": ["id", "title", "description", "startsAtStage"], "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "description": { "type": "string" }, "startsAtStage": { "type": "integer" }, "defaultActive": { "type": "boolean" } } }
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "startsAtStage"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startsAtStage": {
+            "type": "integer"
+          },
+          "defaultActive": {
+            "type": "boolean"
+          }
+        }
+      }
     },
     "stages": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["number", "title", "summary", "units"],
+        "required": [
+          "number",
+          "title",
+          "summary",
+          "units"
+        ],
         "properties": {
-          "number": { "type": "integer", "minimum": 0, "maximum": 9 },
-          "title": { "type": "string" },
-          "summary": { "type": "string" },
-          "approxDuration": { "type": "string" },
-          "abrsmGradeApprox": { "type": "string" },
+          "number": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "approxDuration": {
+            "type": "string"
+          },
+          "abrsmGradeApprox": {
+            "type": "string"
+          },
           "units": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["id", "title", "track", "lessons"],
+              "required": [
+                "id",
+                "title",
+                "track",
+                "lessons"
+              ],
               "properties": {
-                "id": { "type": "string", "pattern": "^[0-9]\\.[0-9]+$|^[a-z-]+\\.[0-9]+\\.[0-9]+$" },
-                "title": { "type": "string" },
-                "track": { "type": "string" },
+                "id": {
+                  "type": "string",
+                  "pattern": "^[0-9]\\.[0-9]+$|^[a-z-]+\\.[0-9]+\\.[0-9]+$"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "track": {
+                  "type": "string"
+                },
                 "lessons": {
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "required": ["id", "title", "concepts", "textFile", "exerciseOptions", "songOptions", "mastery"],
+                    "required": [
+                      "id",
+                      "title",
+                      "concepts",
+                      "textFile",
+                      "exerciseOptions",
+                      "songOptions",
+                      "mastery"
+                    ],
                     "properties": {
-                      "id": { "type": "string" },
-                      "title": { "type": "string" },
-                      "concepts": { "type": "array", "items": { "type": "string" } },
-                      "textFile": { "type": "string" },
-                      "videos": { "type": "array", "items": { "type": "object", "required": ["label", "url"], "properties": { "label": { "type": "string" }, "url": { "type": "string" }, "teacher": { "type": "string" } } } },
-                      "exerciseOptions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
-                      "songOptions": { "type": "array", "items": { "type": "string" } },
-                      "optionsExempt": { "type": "boolean", "description": "the lesson is a single thing by nature and has no alternatives to offer \u2014 the guided tour, the placement test, the posture checklist. Exempts it from the three-alternatives rule (docs/00 D21). Orientation only; it is not a way to ship a thin practice rung, and validate.py reports how many lessons use it." },
+                      "id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "concepts": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "textFile": {
+                        "type": "string"
+                      },
+                      "videos": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "label",
+                            "url"
+                          ],
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string"
+                            },
+                            "teacher": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "exerciseOptions": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "songOptions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "optionsExempt": {
+                        "type": "boolean",
+                        "description": "the lesson is a single thing by nature and has no alternatives to offer — the guided tour, the placement test, the posture checklist. Exempts it from the three-alternatives rule (docs/00 D21). Orientation only; it is not a way to ship a thin practice rung, and validate.py reports how many lessons use it."
+                      },
                       "levelBand": {
                         "type": "array",
                         "minItems": 2,
                         "maxItems": 2,
-                        "items": { "type": "number" },
+                        "items": {
+                          "type": "number"
+                        },
                         "description": "[min, max] level across this rung's options (replan §1.7). A rung is an order within a track; `level` is global difficulty, and the two are allowed to disagree — a Stage 6 rung can hold a level-7 piece, because the easiest complete Joplin rag is a Grade 6 piece. The lesson page prints the band so the learner is told rather than surprised. Generated by tools/content/ladder_report.py's sibling pass and checked by validate.py: every option's level must fall inside it."
                       },
-                      "songOptional": { "type": "boolean", "description": "true when no song tests this unit\u2019s skill (reading by interval, the first scale, accompaniment patterns, the theory and improvisation tracks). The lesson then completes on two exercises, and validate.py checks the three-alternatives rule against the combined option count instead of the songs alone (docs/00 D21, docs/02 Part G)." },
-                      "prerequisites": { "type": "array", "items": { "type": "string" } },
-                      "mastery": {
-                        "type": "object",
-                        "required": ["exercisesRequired", "songsRequired", "minAccuracy", "minTempoPct"],
-                        "properties": {
-                          "exercisesRequired": { "type": "integer" },
-                          "songsRequired": { "type": "integer" },
-                          "minAccuracy": { "type": "number" },
-                          "minTempoPct": { "type": "number" },
-                          "custom": { "type": "string", "description": "free text for checks the engine implements specially, e.g. 'pedal-clean>=0.9'" }
+                      "songOptional": {
+                        "type": "boolean",
+                        "description": "true when no song tests this unit’s skill (reading by interval, the first scale, accompaniment patterns, the theory and improvisation tracks). The lesson then completes on two exercises, and validate.py checks the three-alternatives rule against the combined option count instead of the songs alone (docs/00 D21, docs/02 Part G)."
+                      },
+                      "prerequisites": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
                         }
                       },
-                      "estimatedDays": { "type": "integer" }
+                      "mastery": {
+                        "type": "object",
+                        "required": [
+                          "exercisesRequired",
+                          "songsRequired",
+                          "minAccuracy",
+                          "minTempoPct"
+                        ],
+                        "properties": {
+                          "exercisesRequired": {
+                            "type": "integer"
+                          },
+                          "songsRequired": {
+                            "type": "integer"
+                          },
+                          "minAccuracy": {
+                            "type": "number"
+                          },
+                          "minTempoPct": {
+                            "type": "number"
+                          },
+                          "custom": {
+                            "type": "string",
+                            "description": "free text for checks the engine implements specially, e.g. 'pedal-clean>=0.9'"
+                          }
+                        }
+                      },
+                      "estimatedDays": {
+                        "type": "integer"
+                      },
+                      "finder": {
+                        "type": "object",
+                        "description": "How the owner is to go and find more music for this rung (replan §4.1). Data, not prose: `tools/content/finder.py` generates the search query and the chat prompt from these fields into the built curriculum, so one wording change fixes every rung at once and validate.py can check the result.",
+                        "required": [
+                          "skill",
+                          "levelWords",
+                          "constraints",
+                          "avoid",
+                          "formats"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "skill": {
+                            "type": "string",
+                            "minLength": 8,
+                            "maxLength": 120,
+                            "description": "what the rung trains, in the words a person would use"
+                          },
+                          "levelWords": {
+                            "type": "string",
+                            "minLength": 4,
+                            "maxLength": 120,
+                            "description": "the level in plain words, because 'level 3.2' means nothing to a search engine"
+                          },
+                          "constraints": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 6,
+                            "items": {
+                              "type": "string",
+                              "minLength": 3,
+                              "maxLength": 60
+                            },
+                            "description": "what the piece must have. Every one of these must appear in the generated prompt; validate.py checks."
+                          },
+                          "avoid": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 5,
+                            "items": {
+                              "type": "string",
+                              "minLength": 3,
+                              "maxLength": 60
+                            },
+                            "description": "what makes a piece wrong for this rung even at the right level"
+                          },
+                          "examples": {
+                            "type": "array",
+                            "maxItems": 6,
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "title",
+                                "note"
+                              ],
+                              "additionalProperties": false,
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "composer": {
+                                  "type": "string"
+                                },
+                                "note": {
+                                  "enum": [
+                                    "bundled",
+                                    "wanted"
+                                  ],
+                                  "description": "`bundled` is already in the catalog and names the sound wanted; `wanted` is a piece no reachable source had (replan §1.5), which is why it is in a finder and not an option."
+                                }
+                              }
+                            }
+                          },
+                          "formats": {
+                            "type": "string",
+                            "minLength": 8,
+                            "maxLength": 160,
+                            "description": "which file formats to ask for, and what the app can do with each"
+                          },
+                          "searchQuery": {
+                            "type": "string",
+                            "description": "GENERATED by tools/content/finder.py into the built curriculum. Never authored: it is written from levelWords and constraints, so editing it by hand would be overwritten on the next build."
+                          },
+                          "chatPrompt": {
+                            "type": "string",
+                            "maxLength": 900,
+                            "description": "GENERATED by tools/content/finder.py into the built curriculum. validate.py checks the length, that every constraint survived into it, and that it carries the docs/00 D18 sentence about copyright."
+                          }
+                        }
+                      }
+                    },
+                    "if": {
+                      "properties": {
+                        "optionsExempt": {
+                          "const": true
+                        }
+                      },
+                      "required": [
+                        "optionsExempt"
+                      ]
+                    },
+                    "then": {
+                      "description": "exempt rungs need no finder"
+                    },
+                    "else": {
+                      "required": [
+                        "finder"
+                      ]
                     }
                   }
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "description": "GENERATED into the built curriculum from content/curriculum/concepts.json: the display name for every concept id used anywhere, and a finder for the ones that are musical skills rather than features of this app.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "display"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "display": {
+            "type": "string",
+            "minLength": 2
+          },
+          "appFeature": {
+            "type": "boolean"
+          },
+          "finder": {
+            "type": "object"
           }
         }
       }

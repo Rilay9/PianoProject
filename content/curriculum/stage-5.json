@@ -48,7 +48,35 @@
               "levelBand": [
                 3.6,
                 5.2
-              ]
+              ],
+              "finder": {
+                "skill": "sustaining a sonatina movement with an Alberti bass under both hands",
+                "levelWords": "moderate to advancing, Grade 3 to 4, sonatina, Romantic miniature",
+                "constraints": [
+                  "sonatina or short Romantic character piece",
+                  "Alberti bass hands together",
+                  "trills or turns",
+                  "pedal markings"
+                ],
+                "avoid": [
+                  "arrangements",
+                  "single-page fragments",
+                  "virtuoso writing"
+                ],
+                "examples": [
+                  {
+                    "title": "Sonatina in G, Op. 36 No. 2",
+                    "composer": "Muzio Clementi",
+                    "note": "wanted"
+                  },
+                  {
+                    "title": "Fur Elise",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -91,7 +119,23 @@
               "levelBand": [
                 4.5,
                 5.2
-              ]
+              ],
+              "finder": {
+                "skill": "playing seventh chords and choosing an accompaniment texture that fits the song",
+                "levelWords": "moderate, pop piano, seventh chords, accompaniment patterns",
+                "constraints": [
+                  "maj7, min7 and dom7 chords",
+                  "sus and add9 colours",
+                  "chord symbols printed",
+                  "verse and chorus with different textures"
+                ],
+                "avoid": [
+                  "triads only",
+                  "rootless jazz voicings",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -133,7 +177,23 @@
               "levelBand": [
                 3.4,
                 5.2
-              ]
+              ],
+              "finder": {
+                "skill": "playing a turnaround, bending into the blue notes and walking the bass",
+                "levelWords": "moderate, blues piano, turnaround, walking bass, tremolo thirds",
+                "constraints": [
+                  "twelve-bar blues with a written turnaround",
+                  "walking bass line",
+                  "tremolo thirds or crushed notes",
+                  "shuffle feel"
+                ],
+                "avoid": [
+                  "straight eighths",
+                  "modern jazz harmony",
+                  "fast stride"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -176,7 +236,30 @@
               "levelBand": [
                 3.4,
                 5.2
-              ]
+              ],
+              "finder": {
+                "skill": "swinging the eighths and comping a ii-V-I with shell voicings",
+                "levelWords": "moderate, jazz piano, shell voicings, ii V I, swing",
+                "constraints": [
+                  "ii V I progressions",
+                  "shell voicings of root third seventh",
+                  "swung eighth notes",
+                  "lead sheet with chord symbols"
+                ],
+                "avoid": [
+                  "straight eighths",
+                  "rootless voicings",
+                  "written-out solos"
+                ],
+                "examples": [
+                  {
+                    "title": "Fly Me to the Moon",
+                    "composer": "Bart Howard",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -217,7 +300,35 @@
               "levelBand": [
                 3.2,
                 7.1
-              ]
+              ],
+              "finder": {
+                "skill": "keeping a steady oom-pah left hand under a syncopated right hand",
+                "levelWords": "moderate, ragtime, easy rag, oom pah bass, not fast",
+                "constraints": [
+                  "ragtime or cakewalk",
+                  "oom-pah left hand",
+                  "syncopated right hand",
+                  "marked not fast"
+                ],
+                "avoid": [
+                  "stride leaps over a tenth",
+                  "fast tempos",
+                  "novelty piano"
+                ],
+                "examples": [
+                  {
+                    "title": "The Entertainer",
+                    "composer": "Scott Joplin",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Frog Legs Rag",
+                    "composer": "James Scott",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -256,7 +367,23 @@
               "levelBand": [
                 4.4,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "telling seventh chord qualities apart and hearing a mode against a major scale",
+                "levelWords": "moderate, ear training, seventh chords, modes",
+                "constraints": [
+                  "seventh chords of different qualities",
+                  "modal melodies",
+                  "clear harmonic rhythm",
+                  "short phrases"
+                ],
+                "avoid": [
+                  "dense chromatic harmony",
+                  "fast changes",
+                  "atonal writing"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -299,7 +426,23 @@
               "levelBand": [
                 3.4,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "improvising with the blues scale over the twelve-bar form and writing eight bars of your own",
+                "levelWords": "moderate, blues improvisation, twelve bar, melody writing",
+                "constraints": [
+                  "twelve-bar blues form",
+                  "blues scale figures",
+                  "space to improvise",
+                  "moderate shuffle tempo"
+                ],
+                "avoid": [
+                  "through-composed pieces",
+                  "written-out solos",
+                  "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -345,7 +488,23 @@
               "levelBand": [
                 3.2,
                 6.4
-              ]
+              ],
+              "finder": {
+                "skill": "locking a montuno to the clave with a tumbao bass underneath",
+                "levelWords": "moderate, Latin piano, salsa, montuno, clave",
+                "constraints": [
+                  "son or rumba clave",
+                  "montuno figure in the right hand",
+                  "tumbao bass line",
+                  "syncopation across the bar"
+                ],
+                "avoid": [
+                  "straight eighths",
+                  "swing feel",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -387,7 +546,23 @@
               "levelBand": [
                 3.2,
                 6.1
-              ]
+              ],
+              "finder": {
+                "skill": "carrying a melody in octaves over sustained chords and building it",
+                "levelWords": "moderate to advancing, rock piano, melody in octaves, dynamic build",
+                "constraints": [
+                  "melody doubled in octaves",
+                  "sustained chords underneath",
+                  "a long crescendo",
+                  "moderate tempo"
+                ],
+                "avoid": [
+                  "single-note melody throughout",
+                  "fast passagework",
+                  "guitar tablature"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -429,7 +604,23 @@
               "levelBand": [
                 3.6,
                 7.1
-              ]
+              ],
+              "finder": {
+                "skill": "keeping two hands independent in a modal minor texture with free time",
+                "levelWords": "moderate to advancing, rock piano, two hand independence, rubato",
+                "constraints": [
+                  "the hands playing different rhythms",
+                  "modal minor harmony",
+                  "rubato marked",
+                  "slow to moderate tempo"
+                ],
+                "avoid": [
+                  "hands in rhythmic unison",
+                  "strict tempo throughout",
+                  "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -471,7 +662,23 @@
               "levelBand": [
                 3.2,
                 6.2
-              ]
+              ],
+              "finder": {
+                "skill": "playing a half-time feel with syncopation and open voicings",
+                "levelWords": "moderate to advancing, rock piano, half time feel, syncopation",
+                "constraints": [
+                  "half-time feel",
+                  "syncopated accompaniment",
+                  "open voicings",
+                  "moderate tempo"
+                ],
+                "avoid": [
+                  "straight quarter-note accompaniment",
+                  "close voicings",
+                  "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -528,7 +735,23 @@
               "levelBand": [
                 5.1,
                 5.4
-              ]
+              ],
+              "finder": {
+                "skill": "repeating a note cleanly and playing two hands at different speeds",
+                "levelWords": "moderate to advancing, Grade 3 to 4, repeated notes, two against one",
+                "constraints": [
+                  "repeated notes with changing fingers",
+                  "two notes against one between the hands",
+                  "hands at different dynamics",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "hands in unison",
+                  "pedal covering the repetition",
+                  "expressive rubato"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         }

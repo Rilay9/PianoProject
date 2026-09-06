@@ -48,7 +48,36 @@
               "levelBand": [
                 2.1,
                 2.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing hands together with the left hand holding long notes",
+                "levelWords": "very easy, beginner, first pieces hands together, C position",
+                "constraints": [
+                  "C major",
+                  "left hand whole notes or half notes",
+                  "right hand melody",
+                  "hands together",
+                  "8 to 16 bars"
+                ],
+                "avoid": [
+                  "chords in the right hand",
+                  "moving left hand",
+                  "6/8",
+                  "anything over 32 bars"
+                ],
+                "examples": [
+                  {
+                    "title": "Ode to Joy (hands together)",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Twinkle, Twinkle, Little Star",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -90,7 +119,29 @@
               "levelBand": [
                 1.1,
                 2.2
-              ]
+              ],
+              "finder": {
+                "skill": "playing eighth notes evenly and counting the off-beats",
+                "levelWords": "easy, beginner, eighth notes, counting and and",
+                "constraints": [
+                  "eighth notes in pairs",
+                  "4/4",
+                  "a steady quarter-note pulse underneath",
+                  "16 to 32 bars"
+                ],
+                "avoid": [
+                  "triplets",
+                  "syncopation",
+                  "fast tempos"
+                ],
+                "examples": [
+                  {
+                    "title": "Old MacDonald Had a Farm",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -135,7 +186,29 @@
               "levelBand": [
                 2.3,
                 4.3
-              ]
+              ],
+              "finder": {
+                "skill": "playing block triads under a melody and changing chord in time",
+                "levelWords": "easy, beginner, first chords, I IV V in C major",
+                "constraints": [
+                  "C, F and G chords",
+                  "block chords in the left hand",
+                  "chord symbols printed",
+                  "16 to 32 bars"
+                ],
+                "avoid": [
+                  "inversions",
+                  "seventh chords",
+                  "broken-chord accompaniment"
+                ],
+                "examples": [
+                  {
+                    "title": "Happy Birthday to You",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -179,7 +252,30 @@
               "levelBand": [
                 2.2,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "holding notes across a bar line and shaping a phrase with dynamics",
+                "levelWords": "easy, beginner, ties and dotted rhythms",
+                "constraints": [
+                  "ties across bar lines",
+                  "dotted quarter notes",
+                  "printed dynamics",
+                  "slurs",
+                  "16 to 32 bars"
+                ],
+                "avoid": [
+                  "sixteenth notes",
+                  "pedal",
+                  "rubato"
+                ],
+                "examples": [
+                  {
+                    "title": "Greensleeves (simple)",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -225,7 +321,30 @@
               "levelBand": [
                 2.5,
                 4.1
-              ]
+              ],
+              "finder": {
+                "skill": "moving the hand out of one position by passing the thumb under",
+                "levelWords": "easy, beginner, one octave C major scale, thumb under",
+                "constraints": [
+                  "C major scale passages",
+                  "a hand position change",
+                  "one octave range",
+                  "fingering printed"
+                ],
+                "avoid": [
+                  "two-octave scales",
+                  "black keys",
+                  "hands together scales"
+                ],
+                "examples": [
+                  {
+                    "title": "Ode to Joy (full theme)",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -268,7 +387,33 @@
               "levelBand": [
                 1.2,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing carols from chord symbols and moving them into a singable key",
+                "levelWords": "easy to moderate, carols, lead sheet with chords",
+                "constraints": [
+                  "carol or Christmas tune",
+                  "chord symbols above the melody",
+                  "singable key such as C, F or G",
+                  "16 to 48 bars"
+                ],
+                "avoid": [
+                  "orchestral arrangements",
+                  "four-stave choral scores",
+                  "keys with four or more sharps"
+                ],
+                "examples": [
+                  {
+                    "title": "Jingle Bells (chorus)",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Silent Night",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         }

@@ -49,7 +49,30 @@
               "levelBand": [
                 1.1,
                 3.2
-              ]
+              ],
+              "finder": {
+                "skill": "reading in a key that has sharps or flats in the signature",
+                "levelWords": "easy, beginner to elementary, G major and F major, one sharp or one flat",
+                "constraints": [
+                  "G major or F major",
+                  "key signature rather than accidentals",
+                  "scale passages",
+                  "16 to 32 bars"
+                ],
+                "avoid": [
+                  "keys with three or more sharps",
+                  "chromatic writing",
+                  "modulation"
+                ],
+                "examples": [
+                  {
+                    "title": "Ode to Joy (in G major)",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -93,7 +116,29 @@
               "levelBand": [
                 2.3,
                 3.2
-              ]
+              ],
+              "finder": {
+                "skill": "playing I, IV and V7 in a new key and moving between them smoothly",
+                "levelWords": "easy, elementary, primary chords in G and F, dominant seventh",
+                "constraints": [
+                  "G major or F major",
+                  "I IV V7 progression",
+                  "smooth voice leading between chords",
+                  "chord symbols printed"
+                ],
+                "avoid": [
+                  "seventh chords other than V7",
+                  "jazz voicings",
+                  "modulation"
+                ],
+                "examples": [
+                  {
+                    "title": "Oh When the Saints Go Marching In (in F major)",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -136,7 +181,29 @@
               "levelBand": [
                 2.4,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing in a minor key and hearing the raised seventh",
+                "levelWords": "easy, elementary, A minor, harmonic minor, minor chords",
+                "constraints": [
+                  "A minor",
+                  "harmonic minor with a raised seventh",
+                  "minor triads",
+                  "16 to 32 bars"
+                ],
+                "avoid": [
+                  "modal writing",
+                  "chromatic harmony",
+                  "keys with many accidentals"
+                ],
+                "examples": [
+                  {
+                    "title": "Greensleeves (with chords)",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -179,7 +246,29 @@
               "levelBand": [
                 1.5,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "reading above and below the staff, with both hands away from middle C",
+                "levelWords": "easy, elementary, ledger lines, wide hand placement",
+                "constraints": [
+                  "ledger lines above and below the staff",
+                  "hands more than an octave apart",
+                  "8va markings",
+                  "16 to 32 bars"
+                ],
+                "avoid": [
+                  "everything within a five-finger position",
+                  "hand crossings"
+                ],
+                "examples": [
+                  {
+                    "title": "Minuet in G major, BWV Anh. 114",
+                    "composer": "Petzold",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -223,7 +312,30 @@
               "levelBand": [
                 2.5,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "changing the sustain pedal on the beat so the harmony stays clean",
+                "levelWords": "easy to moderate, elementary, first pedalling, legato pedal",
+                "constraints": [
+                  "pedal markings printed",
+                  "slow to moderate tempo",
+                  "clear harmony changes",
+                  "sustained left hand"
+                ],
+                "avoid": [
+                  "fast harmonic rhythm",
+                  "half pedalling",
+                  "unmarked pedal"
+                ],
+                "examples": [
+                  {
+                    "title": "Canon in D (easy)",
+                    "composer": "Pachelbel",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -268,7 +380,29 @@
               "levelBand": [
                 3.6,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing a broken-chord left hand under a melody without it getting loud",
+                "levelWords": "easy to moderate, elementary, Alberti bass, waltz bass",
+                "constraints": [
+                  "Alberti bass or waltz bass in the left hand",
+                  "melody in the right hand",
+                  "3/4 or 4/4",
+                  "24 to 64 bars"
+                ],
+                "avoid": [
+                  "block chords only",
+                  "left-hand melody",
+                  "wide leaps in the left hand"
+                ],
+                "examples": [
+                  {
+                    "title": "Greensleeves (waltz bass)",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -309,7 +443,35 @@
               "levelBand": [
                 3.4,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "playing a Baroque or Classical dance with clear articulation and two independent voices",
+                "levelWords": "elementary, Grade 1 to 2, Baroque dance, minuet",
+                "constraints": [
+                  "minuet, gavotte or similar dance",
+                  "two voices, one per hand",
+                  "articulation marked",
+                  "Baroque or early Classical"
+                ],
+                "avoid": [
+                  "Romantic pedalling",
+                  "thick chords",
+                  "arrangements with an added accompaniment"
+                ],
+                "examples": [
+                  {
+                    "title": "Minuet in G major, BWV Anh. 114",
+                    "composer": "Petzold",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Notebook for Anna Magdalena Bach",
+                    "composer": "J. S. Bach",
+                    "note": "wanted"
+                  }
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -353,7 +515,29 @@
               "levelBand": [
                 2.3,
                 3.3
-              ]
+              ],
+              "finder": {
+                "skill": "playing a song from chord symbols rather than from written-out notes",
+                "levelWords": "easy to moderate, lead sheet, chord symbols, pop song",
+                "constraints": [
+                  "chord symbols above a single melody line",
+                  "I IV V or I V vi IV",
+                  "key of C, G or F",
+                  "verse and chorus"
+                ],
+                "avoid": [
+                  "fully written-out piano arrangements",
+                  "jazz chord extensions",
+                  "keys with many accidentals"
+                ],
+                "examples": [
+                  {
+                    "title": "Happy Birthday to You",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -389,7 +573,29 @@
               "levelBand": [
                 1.5,
                 3.3
-              ]
+              ],
+              "finder": {
+                "skill": "recognising intervals and primary chords by ear and by sight",
+                "levelWords": "elementary, ear training, intervals, key signatures",
+                "constraints": [
+                  "clear intervals between melody notes",
+                  "one key throughout",
+                  "I IV V harmony",
+                  "short and repetitive"
+                ],
+                "avoid": [
+                  "chromatic melodies",
+                  "modulation",
+                  "dense textures"
+                ],
+                "examples": [
+                  {
+                    "title": "Twinkle, Twinkle, Little Star",
+                    "note": "bundled"
+                  }
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -425,7 +631,23 @@
               "levelBand": [
                 3.1,
                 3.2
-              ]
+              ],
+              "finder": {
+                "skill": "improvising a melody over a repeating chord loop and answering your own phrase",
+                "levelWords": "elementary, improvisation, backing loop, call and response",
+                "constraints": [
+                  "a repeating two or four chord loop",
+                  "space left for a melody",
+                  "one key throughout",
+                  "slow to moderate tempo"
+                ],
+                "avoid": [
+                  "through-composed pieces",
+                  "fast changes",
+                  "written-out solos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         },
@@ -470,7 +692,23 @@
               "levelBand": [
                 1.4,
                 5.4
-              ]
+              ],
+              "finder": {
+                "skill": "playing four-part harmony with a walking bass between chords",
+                "levelWords": "moderate, hymn, four-part harmony, SATB on two staves",
+                "constraints": [
+                  "four-part hymn texture on two staves",
+                  "passing chords between the primary chords",
+                  "a plagal cadence",
+                  "singable key"
+                ],
+                "avoid": [
+                  "organ pedal parts",
+                  "three-stave scores",
+                  "gospel runs"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
             }
           ]
         },
@@ -509,7 +747,23 @@
               "levelBand": [
                 2.5,
                 5.1
-              ]
+              ],
+              "finder": {
+                "skill": "reducing a band arrangement to two hands that still sound like the song",
+                "levelWords": "moderate, rock and metal piano, band reduction, open voicings",
+                "constraints": [
+                  "piano reduction of a band arrangement",
+                  "open voicings with a wide left hand",
+                  "a repeating ostinato figure",
+                  "minor key"
+                ],
+                "avoid": [
+                  "note-for-note vocal transcriptions",
+                  "guitar tablature",
+                  "arrangements needing three hands"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         }
