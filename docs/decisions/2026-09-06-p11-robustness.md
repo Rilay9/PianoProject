@@ -158,34 +158,37 @@ could not have said:
 ever run on the 41 fixtures holds across the whole library. That is the result
 worth having — it is now checked rather than assumed, on every new file.
 
-**Three scores do not render at all**, all of them throwing inside OSMD's
-`SkyBottomLineCalculator` ("start index of line is greater than the end index")
-and drawing nothing. All three are `[MT]` files the import copies **verbatim**,
-and that is the point: `import_musetrainer`'s header says the verbatim copies
-"were already verified to render". For these three it was never true, and until
-the check could report per-item failures nothing could have said so.
+**Three scores appeared not to render, and the check was wrong — the parity
+probe was breaking them.** This is the most useful thing the phase found, and
+it is worth the space because the mistake is so easy to repeat.
 
-Two of them are **Mozart's K545 first movement**, in two editions, and lesson
-`classical.7` offers it. There is no kern edition to fall back on, so dropping
-it was not an option. A music21 round-trip fixes the primary edition — 2,006
-steps against nothing at all — so `normalisation_reasons()` gained a reason a
-file cannot state about itself, and `musetrainer.json` now says `normalise`
-with the evidence. The alternative edition is excluded: music21 refuses it too
-("incorrect accidental 9.0 for pitch F3" in bar 18), which is a corrupt edition
-rather than an unusual one, and nothing referenced it.
+`cursorStepCount()` — the §7.1 parity check — engraves each score a *second*
+time in a throwaway container, because the visible renderer is windowed and a
+draw range clamps the cursor's iterator. That container was
+`position: absolute; visibility: hidden` and therefore had **no width**. OSMD
+engraves into whatever it is given: it warned
+`SkyBottomLineCalculator: width not > 0` once per measure — 58,852 times across
+the library, which is where that number in the console capture came from — and
+on three scores it threw `start index of line is greater than the end index`
+outright. The check then reported those three as broken content.
 
-The third, `song.classical.chopin-nocturne-20.alt`, is excluded: music21 cannot
-export its bar 59 either — the same 2048th-note tuplet that keeps Op. 25 no. 7
-out — so there is no normalising it, and the primary edition of the same
-nocturne is bundled, renders, and nothing referenced the variant.
+They are not broken. The same files render with 2,006 and 2,846 steps once the
+probe has a width: Mozart's K545 first movement in both its editions, and the
+alternative Chopin nocturne. The probe now sits off-screen at 1200px and all
+687 items render.
 
-**Two things were checked before concluding any of that**, because both would
-have made the report a lie. They are *not the harness*: each was re-rendered on
-a page of its own and failed identically, and the same K545 music from a
-different source renders with 2,846 steps. And they are *not this phase's
-doing*: all three are byte-identical to their upstream files and never pass
-through `convert.py`, so the reproducibility work in §2 cannot have touched
-them.
+**Two exclusions and one forced normalisation were made on that false evidence
+and have been reverted**; `musetrainer.json` is byte-identical to the branch
+point. What it cost was an hour, and the reason it cost an hour is instructive:
+the bisector rendered *without* the parity probe and without the check's
+`setBars(2)`, so it kept reporting that the scores were fine while the check
+kept reporting that they were not, and the difference was in the tool rather
+than in either answer. The bisector now mirrors the check's window size.
+
+The lesson is the check's, not the content's: **a check that breaks the thing
+it is measuring is worse than no check.** It accused three real pieces —
+including one that lesson `classical.7` depends on — and a less suspicious
+reading of its output would have quietly deleted them.
 
 **Six durations between 22 and 40 minutes**, all Chopin, all reporting exactly
 96 bpm — `DEFAULT_TEMPO_BPM`. The NIFC first editions state no tempo, so the
@@ -208,8 +211,9 @@ enormous. The check is doing what §7.3 asked and the piece is fine.
 
 **58,852 console lines, one distinct message:** `SkyBottomLineCalculator: width
 not > 0 in measure N`, emitted once per measure by almost every item. Nothing
-had ever seen it. It is the same subsystem as the crash above, which is the
-first thing to pull on if that defect is ever chased upstream.
+had ever seen it — and it turned out to be the check's own zero-width probe
+reporting itself, which is exactly what §7.2 was for. Capturing the console is
+what made the false failures explicable instead of mysterious.
 
 ## 8. What the bisector found: the thirteen Chopin scores, explained
 
@@ -315,6 +319,11 @@ have described a different build from the one under test. The web server now run
   say nothing about it. They need real tempos in `kern.json`.
 - **Seven items claim `hands: both` where the model sees one hand**, all NIFC Chopin.
   Either the staff assignment or the extractor is wrong; the flag now says which items.
+- **The generated exercises were not byte-reproducible either**, for the same reason as
+  §2: `generate_exercises.py` called `sc.write()` directly rather than `write_mxl`, so all
+  426 changed bytes every build and the manifest re-engraved every one of them on every
+  run. Fixed here; it is the difference between an incremental check and a check that
+  redoes 62% of the library each time.
 - **The render manifest never forgets.** Entries are keyed by file hash and nothing prunes
   the ones whose file no longer exists, so it grows by one entry every time a score is
   re-converted. It is 4.4 MB today, most of that console lines written before they were
