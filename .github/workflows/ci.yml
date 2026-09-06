@@ -27,6 +27,23 @@ jobs:
         with:
           python-version: '3.11'
 
+      # The conversion cache and the render manifest (replan §1.3). Both are
+      # keyed on everything that decides their contents, so a hit can only make
+      # the build faster, never different: the pipeline scripts, the source
+      # list, and the lockfile that pins OpenSheetMusicDisplay. `restore-keys`
+      # lets a changed key start from the closest previous cache rather than
+      # cold — a partial cache is still correct, because every individual entry
+      # carries its own key inside.
+      - name: Restore content build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/cache
+            build/render-manifest.json
+          key: content-${{ hashFiles('tools/content/*.py', 'content/sources/*.json', 'app/package-lock.json') }}
+          restore-keys: |
+            content-
+
       - name: Install Python content-pipeline dependencies
         run: pip install -r tools/content/requirements.txt
 

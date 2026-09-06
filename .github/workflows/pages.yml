@@ -44,15 +44,20 @@ jobs:
         working-directory: app
         run: npm ci
 
-      - name: Build content (strict licence — this deploy is public)
+      - name: Build (content + icons via prebuild, then the app)
         # docs/03 §1 and docs/00 D10a: --allow-nc bundles CC BY-NC editions and
         # is for the owner's own build only. This job publishes to the open
-        # internet, so it builds the catalog strictly and up front; `npm run
-        # build`'s prebuild step then finds a catalog already built and skips.
-        run: python3 tools/content/build.py --strict-license
-
-      - name: Build (icon generation via prebuild; content is already built)
+        # internet, so its content build must be the strict one.
+        #
+        # It used to run `build.py --strict-license` in a step of its own and
+        # rely on `prebuild`'s `--if-missing` finding that catalog and skipping.
+        # `--if-missing` is gone (replan §7.9), so ordering no longer protects
+        # anything: the environment variable makes the single content build
+        # inside `prebuild` strict, which is the guarantee this job actually
+        # wants and does not depend on which step ran first.
         working-directory: app
+        env:
+          PIANOPATH_STRICT_LICENSE: '1'
         run: npm run build
 
       - uses: actions/configure-pages@v5

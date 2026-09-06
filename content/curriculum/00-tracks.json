@@ -99,5 +99,17 @@
       "defaultActive": false
     }
   ],
+  "itemLabels": [
+    {
+      "id": "technique",
+      "title": "Technique",
+      "description": "Scales, arpeggios, Hanon and the rest of the technique syllabus (docs/02 Part E). A label on items, not a module you follow: the session builder reads it to pick a warm-up (src/curriculum/session.ts), and the Library filters on it. 434 items carry it."
+    },
+    {
+      "id": "film-game",
+      "title": "Film & game",
+      "description": "Film and game music. A label rather than a module: docs/02 teaches this repertoire inside the classical and chords-pop ladders instead of giving it a ladder of its own."
+    }
+  ],
   "stages": []
 }

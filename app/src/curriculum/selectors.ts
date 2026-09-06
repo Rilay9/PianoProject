@@ -100,6 +100,18 @@ export interface AlternativesQuery {
  *   3. anything at the same level sharing a concept tag — a guess, but a useful one.
  * Ordered by how close the level is, so a swap does not quietly raise the difficulty.
  */
+/**
+ * 1 for a judged level, 0 for an estimated one (replan §1.4).
+ *
+ * An item with no `levelSource` at all — an import, or a catalog built before
+ * P11 — counts as judged, because the alternative is to demote every older
+ * item below every newer one for a reason that has nothing to do with the
+ * music.
+ */
+export function levelConfidence(item: CatalogItem): number {
+  return item.levelSource === 'estimated' ? 0 : 1;
+}
+
 export function alternativesFor(
   query: AlternativesQuery,
   curriculum: Curriculum,
@@ -135,7 +147,15 @@ export function alternativesFor(
           Math.abs(item.level - source.level) <= 0.5 &&
           item.concepts.some((concept) => concepts.has(concept)),
       )
-      .sort((a, b) => Math.abs(a.level - source.level) - Math.abs(b.level - source.level));
+      .sort((a, b) => {
+        const byDistance =
+          Math.abs(a.level - source.level) - Math.abs(b.level - source.level);
+        if (byDistance !== 0) return byDistance;
+        // replan §1.4: at the same distance, prefer a level someone judged over
+        // one a band or a model estimated. Two pieces that claim to be equally
+        // close are not equally likely to be — one of the claims is a guess.
+        return levelConfidence(b) - levelConfidence(a);
+      });
     for (const item of nearby) push(item.id);
   }
 

@@ -9,6 +9,8 @@
 
 export type ItemType = 'song' | 'exercise' | 'drill';
 export type Hands = 'both' | 'right' | 'left';
+/** Where an item's `level` came from — replan §1.4. */
+export type LevelSource = 'judged' | 'estimated';
 
 export interface ItemSource {
   name: string;
@@ -29,6 +31,16 @@ export interface CatalogItem {
   type: ItemType;
   title: string;
   level: number;
+  /**
+   * Whether `level` was judged for this piece or estimated (replan §1.4).
+   *
+   * `estimated` means an opus was banded to one number on import, or a model
+   * computed it from the score's features. The app prints those as `≈ 7.1`
+   * and offers "Re-level" so the owner can replace the guess; doing so makes
+   * the item `judged`. Optional in the type, required in the schema: an older
+   * catalog in a browser cache must not crash the app.
+   */
+  levelSource?: LevelSource;
   hands: Hands;
   tracks: string[];
   concepts: string[];

@@ -6,6 +6,7 @@
  * consistency — one definition of what a chip, a row and a bottom sheet are,
  * so five screens do not each invent their own.
  */
+import type { LevelSource } from '../curriculum/types';
 
 type Attrs = Record<string, string | number | boolean | undefined>;
 
@@ -217,9 +218,16 @@ export function toggleControl(id: string, value: boolean, onChange: (value: bool
   return input;
 }
 
-/** "3.2" -> "Stage 3, unit 2" is overkill; the screens just want "L3.2". */
-export function levelLabel(level: number): string {
-  return `L${level.toFixed(1)}`;
+/**
+ * "3.2" -> "Stage 3, unit 2" is overkill; the screens just want "L3.2".
+ *
+ * An *estimated* level prints as `≈ L7.1` (replan §1.4). The squiggle is the
+ * whole point: the library's levels are mostly banded per opus or computed
+ * from features, and a number shown with the same confidence as a judged one
+ * invites the owner to trust it. The item sheet says what to do about it.
+ */
+export function levelLabel(level: number, source?: LevelSource): string {
+  return `${source === 'estimated' ? '≈ ' : ''}L${level.toFixed(1)}`;
 }
 
 export function handsLabel(hands: string): string {

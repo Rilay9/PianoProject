@@ -25,13 +25,52 @@ SOURCES_MD = IMPORTED_DIR / "SOURCES.md"
 BUILD_DIR = REPO_ROOT / "build"
 DEFAULT_OUT = REPO_ROOT / "app" / "public" / "content"
 
-#: Every track id the catalog schema allows, so a typo in a data file is caught
-#: before jsonschema has to explain it.
-TRACKS = (
-    "core", "classical", "chords-pop", "blues-boogie", "jazz", "ragtime",
-    "theory-ear", "improv-compose", "hymns-gospel", "latin", "holiday",
-    "film-game", "technique",
-)
+#: The one source of truth for the track list (replan §1.8).
+TRACKS_FILE = CONTENT_SRC / "curriculum" / "00-tracks.json"
+
+
+def load_tracks(path: Path = TRACKS_FILE) -> tuple[str, ...]:
+    """
+    The followable modules: the tracks a unit can belong to and the Plan screen draws.
+
+    There used to be three lists: a tuple in this file, the `tracks` enum in
+    `catalog.schema.json`, and `00-tracks.json` itself. They drifted — the
+    schema was missing `rock-metal`, `jam` and `beautiful`, and the tuple named
+    `film-game` and `technique`, which no track file has ever defined. Adding a
+    Chopin prelude to the Beautiful-pieces module is what finally surfaced it.
+    Now the curriculum file is the list and everything else asks it.
+    """
+    if not path.exists():
+        return ()
+    data = read_json(path)
+    assert isinstance(data, dict)
+    return tuple(track["id"] for track in data.get("tracks", []))
+
+
+def load_item_labels(path: Path = TRACKS_FILE) -> tuple[str, ...]:
+    """
+    Categories an item may carry that are not modules a learner follows.
+
+    The code has always used `tracks[]` for two jobs. Fourteen of the ids are
+    curriculum modules with stages and units behind them; `technique` and
+    `film-game` are labels — `technique` is on 434 items and the session
+    builder reads it to choose a warm-up, but there is no technique ladder and
+    a Plan screen drawing an empty one would be a lie. Keeping both roles in
+    the one file keeps the single source of truth §1.8 asks for without
+    pretending the two are the same thing.
+    """
+    if not path.exists():
+        return ()
+    data = read_json(path)
+    assert isinstance(data, dict)
+    return tuple(label["id"] for label in data.get("itemLabels", []))
+
+
+    if not path.exists():
+        return ()
+    data = read_json(path)
+    assert isinstance(data, dict)
+    return tuple(track["id"] for track in data.get("tracks", []))
 
 
 def utc_now() -> str:
@@ -167,18 +206,29 @@ def catalog_item(
     item_type: str,
     title: str,
     level: float,
+    level_source: str,
     hands: str,
     tracks: list[str],
     concepts: list[str],
     source: SourceBlock,
     **optional: object,
 ) -> dict:
-    """Builds a schema-shaped catalog item; `optional` fills in the rest."""
+    """
+    Builds a schema-shaped catalog item; `optional` fills in the rest.
+
+    `level_source` has no default on purpose (replan §1.4). It is the one field
+    whose honest value depends entirely on how the caller arrived at `level`,
+    and a default would be a guess made in the wrong place — so every writer
+    has to say `judged` or `estimated` out loud.
+    """
+    if level_source not in {"judged", "estimated"}:
+        raise ValueError(f"level_source must be 'judged' or 'estimated', not {level_source!r}")
     item: dict = {
         "id": item_id,
         "type": item_type,
         "title": title,
         "level": round(float(level), 2),
+        "levelSource": level_source,
         "hands": hands,
         "tracks": tracks,
         "concepts": concepts,

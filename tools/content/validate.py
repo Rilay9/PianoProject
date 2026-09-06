@@ -38,8 +38,9 @@ except ImportError:  # pragma: no cover
     )
     sys.exit(2)
 
-from common import CONTENT_SRC, DEFAULT_OUT  # noqa: E402
+from common import CONTENT_SRC, DEFAULT_OUT, load_item_labels, load_tracks  # noqa: E402
 from licensing import NC_PERSONAL_TAG, Verdict, license_verdict  # noqa: E402
+from truncation_scan import scan_dir  # noqa: E402
 
 #: docs/03 §3 step 5: "duration sanity (5 s – 20 min)".
 MIN_DURATION_SEC = 5
@@ -67,6 +68,82 @@ def validate_schema(name: str, data_path: Path, schema_path: Path) -> list[str]:
         f"{name}: {'/'.join(str(p) for p in err.path) or '<root>'}: {err.message}"
         for err in sorted(validator.iter_errors(load(data_path)), key=lambda e: list(e.path))
     ]
+
+
+def validate_tracks(
+    catalog: list, curriculum: dict, tracks: tuple[str, ...], labels: tuple[str, ...] = ()
+) -> list[str]:
+    """
+    replan §1.8: every track id must be one `content/curriculum/00-tracks.json` defines.
+
+    This is the check that replaces the schema's `tracks` enum. An enum in the
+    schema was a second list, and a second list drifts — it did, twice.
+
+    A catalog item may carry a module id or an item label; a **unit** may only
+    carry a module id, because a unit is a rung on a ladder and a label has no
+    ladder. That asymmetry is the point of keeping the two lists apart.
+    """
+    if not tracks:
+        return ["tracks: content/curriculum/00-tracks.json defines no tracks"]
+    known = set(tracks) | set(labels)
+    errors: list[str] = []
+    for item in catalog:
+        for track in item.get("tracks") or []:
+            if track not in known:
+                errors.append(
+                    f"{item['id']}: unknown track {track!r} "
+                    f"(not in content/curriculum/00-tracks.json)"
+                )
+    for stage in curriculum.get("stages", []):
+        for unit in stage.get("units", []):
+            track = unit.get("track")
+            if track and track not in set(tracks):
+                hint = (
+                    " — that is an itemLabel, which has no units"
+                    if track in set(labels)
+                    else " (not in content/curriculum/00-tracks.json)"
+                )
+                errors.append(f"unit {unit['id']}: unknown track {track!r}{hint}")
+    return errors
+
+
+def orphan_exercises(catalog: list, curriculum: dict) -> list[str]:
+    """
+    Exercises reachable from no lesson and no concept (replan §7.5).
+
+    An orphan is not broken — it renders, it validates, it sits in the Library
+    — it is simply unreachable by anyone following the plan, which makes it
+    invisible work. Reported now; P12b turns it into a failure, once the
+    generated backbone has given every concept a home.
+    """
+    referenced: set[str] = set()
+    taught: set[str] = set()
+    for stage in curriculum.get("stages", []):
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                referenced.update(lesson.get("exerciseOptions", []))
+                referenced.update(lesson.get("songOptions", []))
+                taught.update(lesson.get("concepts", []))
+    out: list[str] = []
+    for item in catalog:
+        if item.get("type") != "exercise" or item["id"] in referenced:
+            continue
+        if any(concept in taught for concept in item.get("concepts") or []):
+            continue
+        out.append(item["id"])
+    return sorted(out)
+
+
+def estimated_by_stage(catalog: list) -> dict[int, tuple[int, int]]:
+    """`{stage: (estimated, total)}` — replan §1.4 asks for this every run."""
+    counts: dict[int, list[int]] = {}
+    for item in catalog:
+        stage = int(item.get("level", 0))
+        bucket = counts.setdefault(stage, [0, 0])
+        bucket[1] += 1
+        if item.get("levelSource") == "estimated":
+            bucket[0] += 1
+    return {stage: (values[0], values[1]) for stage, values in sorted(counts.items())}
 
 
 def validate_catalog(
@@ -211,6 +288,7 @@ def main() -> None:
         assert isinstance(catalog, list) and isinstance(curriculum, dict)
         errors += validate_catalog(catalog, args.dir, args.strict_license, args.allow_nc)
         errors += validate_curriculum(curriculum, catalog, args.min_options)
+        errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
 
     if errors:
         print(f"content validation FAILED ({len(errors)} error(s)):", file=sys.stderr)
@@ -240,6 +318,30 @@ def main() -> None:
     )
     if exempt:
         print(f"  exempt: {', '.join(sorted(exempt))}")
+
+    # replan §1.4: say how much of the library's difficulty is a guess, every
+    # run. A number nobody prints is a number nobody fixes.
+    by_stage = estimated_by_stage(catalog)
+    estimated_total = sum(estimated for estimated, _ in by_stage.values())
+    spread = ", ".join(
+        f"L{stage}: {estimated}/{total}" for stage, (estimated, total) in by_stage.items()
+    )
+    print(f"  {estimated_total} item(s) with an estimated level — {spread}")
+
+    orphans = orphan_exercises(catalog, curriculum)
+    if orphans:
+        # Reported, not failed, until P12b (replan §7.5).
+        print(f"  {len(orphans)} orphan exercise(s), reachable from no lesson and no concept:")
+        for orphan in orphans[:10]:
+            print(f"    - {orphan}")
+        if len(orphans) > 10:
+            print(f"    … and {len(orphans) - 10} more")
+
+    # The P2 grace-16th scan over everything this build converted (replan §7).
+    scan = scan_dir(args.dir / "scores")
+    print(f"  {scan.summary()}")
+    for finding in scan.findings:
+        print(f"    - {finding.describe()}")
     if personal:
         # Loudly, every time: this build is not for a public URL.
         print(

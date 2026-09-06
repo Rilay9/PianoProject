@@ -1,0 +1,97 @@
+name: Full render check
+
+# The render check CI runs is incremental: it engraves only files whose sha256
+# is not already in `build/render-manifest.json` (replan §1.3). That is what
+# makes it affordable on every push, and it has one blind spot by construction
+# — a change in OpenSheetMusicDisplay, in the ScoreModel extractor, or in the
+# browser itself would leave every remembered result standing, because the
+# score files did not move.
+#
+# This job closes it: `--full` ignores the manifest and re-engraves the whole
+# library. Weekly, so a renderer regression has at most seven days to hide, and
+# on demand, so it can be run against a branch that touches score/ or the OSMD
+# version before that branch is merged.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # 05:00 UTC on Mondays — off the back of the weekend, and nowhere near the
+    # times a push-triggered CI run is likely to want a runner.
+    - cron: '0 5 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: render-full
+  cancel-in-progress: false
+
+jobs:
+  render-full:
+    runs-on: ubuntu-latest
+    # The incremental check is minutes; this one is the ten the replan measured,
+    # plus the content build and a cold Chromium download.
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # The conversion cache only: the render manifest is deliberately *not*
+      # restored, because ignoring it is the entire point of this job.
+      - name: Restore conversion cache
+        uses: actions/cache@v4
+        with:
+          path: build/cache
+          key: content-${{ hashFiles('tools/content/*.py', 'content/sources/*.json', 'app/package-lock.json') }}
+          restore-keys: |
+            content-
+
+      - name: Install Python content-pipeline dependencies
+        run: pip install -r tools/content/requirements.txt
+
+      - name: Install app dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Build content
+        run: python3 tools/content/build.py
+
+      - name: Generate icons
+        working-directory: app
+        run: node scripts/generate-icons.mjs
+
+      - name: Install Playwright Chromium
+        working-directory: app
+        run: npx playwright install --with-deps chromium
+
+      - name: Render every catalog item, ignoring the manifest
+        run: python3 tools/content/render_check.py --full --apply
+
+      - name: Upload the render report and manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: render-full-report
+          path: |
+            build/render-report.json
+            build/render-manifest.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload content previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-previews-full
+          path: build/previews
+          if-no-files-found: ignore
+          retention-days: 14

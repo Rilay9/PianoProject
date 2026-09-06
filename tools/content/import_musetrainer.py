@@ -176,6 +176,9 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
                 item_type="song",
                 title=spec["title"],
                 level=spec["level"],
+                # Every [MT] level is a hand-entered number in
+                # content/sources/musetrainer.json, decided per piece.
+                level_source="judged",
                 hands="both",
                 tracks=spec["tracks"],
                 concepts=spec["concepts"],

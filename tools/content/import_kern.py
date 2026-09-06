@@ -484,6 +484,9 @@ def expand_groups(table: dict, report: ImportReport) -> list[tuple[str, dict]]:
                     part for part in (override.get("editionNotes"), group.get("editionNotes"), f"First edition: {publisher}.") if part
                 ),
                 "_banded": banded,
+                # Set on a work the pipeline cannot convert: it becomes a
+                # placeholder rather than a hole in the opus (replan §1.2).
+                "importHint": override.get("importHint"),
             }
             ids.append(item_id)
             pending.append((f"{repo_name}/kern/{path.name}", spec))
@@ -611,12 +614,28 @@ def build_entry(
     bundling = decision.verdict is Verdict.BUNDLE
     dest = scores_out / (spec["id"] + ".mxl")
     tags = ["kern", repo_name]
-    if spec.get("_banded") or spec.get("levelBanded"):
-        # An estimate, not a judgement about this piece. `_banded` is set by
-        # group expansion; `levelBanded` is the same admission on a hand row.
-        tags.append("level-banded")
+    # An estimate, not a judgement about this piece. `_banded` is set by group
+    # expansion; `levelBanded` is the same admission on a hand row. This used
+    # to be a `level-banded` tag, which meant the app could not act on it
+    # without knowing which tags were secretly fields; it is now the
+    # `levelSource` the schema requires (replan §1.4).
+    banded = bool(spec.get("_banded") or spec.get("levelBanded"))
+    level_source = "estimated" if banded else "judged"
 
-    if bundling:
+    # A work the pipeline cannot produce a file for, kept in the catalog rather
+    # than dropped (replan §1.2). The Op. 25 no. 7 étude is the case this
+    # exists for: music21 refuses to export a 2048th-note tuplet and quantising
+    # it would change the music, so the honest entry is the piece, the reason,
+    # and somewhere else to go — not silence in the middle of an opus.
+    stated_hint = spec.get("importHint")
+    if stated_hint:
+        file_ref: str | None = None
+        checksum: str | None = None
+        import_hint: str | None = str(stated_hint)
+        tags.append("import-only")
+        report.placeheld.append((key, str(stated_hint)))
+        bundling = False
+    elif bundling:
         from convert import cached_convert  # imported late: music21 is slow to load
 
         try:
@@ -631,9 +650,9 @@ def build_entry(
             return None
         if stated_license.upper().startswith("CC BY-NC"):
             tags.append(NC_PERSONAL_TAG)
-        file_ref: str | None = f"scores/imported/{spec['id']}.mxl"
-        checksum: str | None = sha256_file(dest)
-        import_hint: str | None = None
+        file_ref = f"scores/imported/{spec['id']}.mxl"
+        checksum = sha256_file(dest)
+        import_hint = None
     else:
         file_ref = None
         checksum = None
@@ -648,6 +667,7 @@ def build_entry(
         item_type="song",
         title=spec["title"],
         level=spec["level"],
+        level_source=level_source,
         hands="both",
         tracks=spec["tracks"],
         concepts=spec["concepts"],

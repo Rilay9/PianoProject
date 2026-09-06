@@ -121,6 +121,9 @@ def entry_from_metadata(
         item_type=item_type,
         title=meta.get("title") or title,
         level=float(meta["level"]),
+        # Authored material: the level is chosen by whoever wrote the piece,
+        # for that piece.
+        level_source="judged",
         hands=str(meta.get("hands", "both")),
         tracks=tracks,
         concepts=concepts,

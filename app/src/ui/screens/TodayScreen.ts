@@ -148,7 +148,7 @@ export function TodayScreen(router: Router): HTMLElement {
         list.append(
           listRow({
             title: option.title,
-            meta: `${levelLabel(option.level)} · ${handsLabel(option.hands)} · ${option.type}`,
+            meta: `${levelLabel(option.level, option.levelSource)} · ${handsLabel(option.hands)} · ${option.type}`,
             dataset: { 'data-swap': option.id },
             onClick: () => {
               slots[slotIndex] = { ...slot, item: option, reason: 'You chose this one' };
@@ -209,6 +209,7 @@ export function TodayScreen(router: Router): HTMLElement {
       subtitle: slot.reason,
       meta: `${SLOT_LABELS[slot.kind]} · ${String(slot.minutes)} min · ${levelLabel(
         item.level,
+        item.levelSource,
       )} · ${handsLabel(item.hands)}`,
       badges,
       actions: actionButtons,

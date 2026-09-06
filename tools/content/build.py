@@ -26,6 +26,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import sys
 import time
@@ -234,7 +235,12 @@ def main() -> None:
     parser.add_argument(
         "--strict-license",
         action="store_true",
-        help="fail on any licence that is not redistributable",
+        default=os.environ.get("PIANOPATH_STRICT_LICENSE") == "1",
+        help=(
+            "fail on any licence that is not redistributable; also settable with "
+            "PIANOPATH_STRICT_LICENSE=1, which is how the Pages deploy asks for it "
+            "when the content build runs inside `npm run build`"
+        ),
     )
     parser.add_argument(
         "--allow-nc",

@@ -195,6 +195,10 @@ def catalog_entry(item_id: str, title: str, level: float, concepts: list[str], h
         "genre": ["technique"],
         "tracks": tracks or ["technique", "core"],
         "level": level,
+        # A generated exercise's level comes from the parameters that generated
+        # it — the key, the span, the rhythm — so it is judged for that item by
+        # the table that produced it, not banded from a neighbour.
+        "levelSource": "judged",
         "abrsmGradeApprox": None,
         "concepts": concepts,
         "hands": hands,
