@@ -31,11 +31,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # `tools/content` on the path and this directory *off* it, before anything
-# else is imported. `select.py` next door has a standard library module's
-# name, and Python puts a script's own directory first on `sys.path` — from
-# which `socketserver` -> `selectors` -> `import select` finds the selector
-# and fails somewhere with nothing to do with PDMX. Removing the directory
-# fixes it for the whole process; importing as `pdmx.select` keeps working.
+# else is imported. Python puts a script's own directory first on `sys.path`,
+# so every module sitting beside this one silently outranks the standard
+# library for the rest of the process. That is how `select.py` — since
+# renamed to `shortlist.py` for the same reason — came to answer
+# `socketserver`'s `import select` and kill a server on its first connection.
+# The name is gone; the hazard is structural, so the guard stays.
 _HERE = Path(__file__).resolve().parent
 sys.path[:] = [entry for entry in sys.path if entry and Path(entry).resolve() != _HERE]
 if str(_HERE.parent) not in sys.path:
@@ -164,8 +165,8 @@ def index_songs(index: Path) -> list[dict]:
     Every indexed row that is a piece of music.
 
     The rows flagged `notASong` are left in the archive: the generator already
-    writes scales and metronome tracks, and half a gigabyte is cheap but not so
-    cheap that it is worth spending on files nobody will ever open.
+    writes scales and metronome tracks, and a quarter of a gigabyte is cheap but
+    not so cheap that it is worth spending on files nobody will ever open.
     """
     if not index.is_file():
         return []
@@ -234,7 +235,7 @@ def main(argv: list[str] | None = None) -> int:
         "--from-index",
         action="store_true",
         help="extract every song in the index — the whole local library, about "
-             "37,000 files and half a gigabyte. Rows flagged as exercises are skipped",
+             "37,000 files and about 240 MB. Rows flagged as exercises are skipped",
     )
     parser.add_argument(
         "--shard",
@@ -275,7 +276,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"note: {skipped} CID(s) were not found and are skipped", file=sys.stderr)
     else:
         if not args.candidates.is_file():
-            fail(f"{args.candidates} does not exist. Run select.py first.")
+            fail(f"{args.candidates} does not exist. Run shortlist.py first.")
             return 2
         data = json.loads(args.candidates.read_text(encoding="utf-8"))
         candidates = [

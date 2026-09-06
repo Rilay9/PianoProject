@@ -1,8 +1,8 @@
 /**
  * A folder of scores on the phone, browsable in the app (docs/04 §4b).
  *
- * The owner has 37,261 MusicXML files — half a gigabyte of them. That is far
- * too much to bundle into a PWA whose whole precache is 13 MB, and there is no
+ * The owner has 37,261 MusicXML files, 237 MB of them. That is far too much to
+ * bundle into a PWA whose whole precache is 13 MB, and there is no
  * reason to bundle it: the files are already on the phone. So the app does not
  * hold the library, it *reads* one, and adding a piece is the ordinary import
  * everything else already understands.

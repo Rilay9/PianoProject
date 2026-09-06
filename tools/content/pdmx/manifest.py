@@ -19,7 +19,7 @@ rather than merely present.
     py -3.11 tools\\content\\pdmx\\manifest.py
 
 Rows are arrays, not objects, and the field names are given once at the top.
-For 37,261 scores that is the difference between a 13 MB file and a 5 MB one,
+For 37,261 scores that is the difference between a 13 MB file and a 6 MB one,
 on a phone, parsed on every folder pick.
 """
 from __future__ import annotations
@@ -28,11 +28,12 @@ import sys
 from pathlib import Path
 
 # `tools/content` on the path and this directory *off* it, before anything
-# else is imported. `select.py` next door has a standard library module's
-# name, and Python puts a script's own directory first on `sys.path` — from
-# which `socketserver` -> `selectors` -> `import select` finds the selector
-# and fails somewhere with nothing to do with PDMX. Removing the directory
-# fixes it for the whole process; importing as `pdmx.select` keeps working.
+# else is imported. Python puts a script's own directory first on `sys.path`,
+# so every module sitting beside this one silently outranks the standard
+# library for the rest of the process. That is how `select.py` — since
+# renamed to `shortlist.py` for the same reason — came to answer
+# `socketserver`'s `import select` and kill a server on its first connection.
+# The name is gone; the hazard is structural, so the guard stays.
 _HERE = Path(__file__).resolve().parent
 sys.path[:] = [entry for entry in sys.path if entry and Path(entry).resolve() != _HERE]
 if str(_HERE.parent) not in sys.path:

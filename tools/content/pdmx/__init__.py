@@ -6,7 +6,7 @@ the owner's laptop. It can never reach CI and it will never reach the
 repository, so the quarry is deliberately two programs with a hard line between
 them:
 
-  select.py   CSV -> build/pdmx/candidates.json          needs the archive
+  shortlist.py CSV -> build/pdmx/candidates.json          needs the archive
   extract.py  candidates -> build/pdmx/raw/<cid>.mxl     needs the archive
   quarry.py   raw -> converted + features + level + render
   review.py   writes the review page; reads the decisions back

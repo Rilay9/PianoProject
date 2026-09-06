@@ -97,7 +97,7 @@ py -3.11 tools\content\pdmx\extract.py --from-index --shard --out build\pdmx\lib
 py -3.11 tools\content\pdmx\manifest.py
 ```
 
-The first unpacks the 37,261 songs the index does not flag as exercises — 499 MB, 27 seconds,
+The first unpacks the 37,261 songs the index does not flag as exercises — 237 MB, 27 seconds,
 sharded two characters deep so no directory holds forty thousand files. The second writes
 `library.json` beside them: title, composer, estimated level, bars and rating for every one,
 6 MB, which is what turns a folder of `Qm….mxl` into something you can read.
@@ -120,10 +120,10 @@ Nothing here is PDMX-specific. Point the app at a folder of your own MusicXML wi
 `library.json` in it and it lists them by filename, which is the other half of what this is
 for.
 
-## 1. Select — about two minutes
+## 1. Shortlist — about two minutes
 
 ```powershell
-py -3.11 tools\content\pdmx\select.py --pdmx-dir "C:\Users\yalir\repos\Piano Stuff"
+py -3.11 tools\content\pdmx\shortlist.py --pdmx-dir "C:\Users\yalir\repos\Piano Stuff"
 ```
 
 Reads the CSV once and writes `build/pdmx/candidates.json`. Prints how many
@@ -138,7 +138,7 @@ it falls on. Add the names, then re-run this step; it is cheap.
 To work one band at a time, which is how the run is meant to go:
 
 ```powershell
-py -3.11 tools\content\pdmx\select.py --band 1-2
+py -3.11 tools\content\pdmx\shortlist.py --band 1-2
 ```
 
 Add `--no-fingerprint` while you are iterating: hashing 209 MB takes a few
@@ -155,7 +155,7 @@ alarmed by the size of the rejection table.
 py -3.11 tools\content\pdmx\extract.py
 ```
 
-Streams `mxl.tar.gz` once, writing only the members `select.py` asked for into
+Streams `mxl.tar.gz` once, writing only the members `shortlist.py` asked for into
 `build/pdmx/raw/`. **Measured on the real archive: 306 members in 10.9 s, after
 scanning 254,974 tar entries.** It stops as soon as it has them all, so a small
 band is faster still, and files already extracted are skipped — a re-run after
@@ -196,7 +196,7 @@ and it still refuses, delete `build/.content-lock`.
   letting the wrong things through — look at the reasons before reviewing
   anything.
 - If review (step 4) then drops more than **40 %** of what the machine passed
-  in a band, stop, adjust `select.py` for that band, and re-run it. Do not
+  in a band, stop, adjust `shortlist.py` for that band, and re-run it. Do not
   commit that band first.
 
 ## 4. Review — you, with your ears
@@ -254,7 +254,7 @@ and all three are worth checking first if something looks wrong:
 
 1. **Tar member names.** The CSV writes `./mxl/1/11/<cid>.mxl`; the tarball's
    members are `mxl/1/11/<cid>.mxl`, with no leading `./`. A mismatch extracts
-   nothing at all and looks exactly like a corrupt archive. `select.member_name`
+   nothing at all and looks exactly like a corrupt archive. `shortlist.member_name`
    normalises it and a test pins it.
 2. **Encoding.** The CSV is UTF-8 and Windows' console is not. Every file here
    is opened with an explicit `encoding="utf-8"`, and `csv.field_size_limit` is

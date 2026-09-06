@@ -49,7 +49,7 @@ def find_archive(pdmx_dir: str | os.PathLike[str] | None, *, require_scores: boo
     """
     Locates the archive, or raises `ArchiveMissing` with something readable.
 
-    `require_scores` is false for `select.py`, which only reads the CSV: asking
+    `require_scores` is false for `shortlist.py`, which only reads the CSV: asking
     a 20-second CSV pass to wait for a 1.9 GB tarball to exist would be a rule
     that helps nobody.
     """

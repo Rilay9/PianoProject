@@ -27,18 +27,18 @@ import unittest
 from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parents[1]
-# `tools/content` only. Putting `tools/content/pdmx` on the path as well would
-# make its `select.py` shadow the standard library's `select`, which is exactly
-# what broke this file the first time it ran under `unittest discover`: the
-# stdlib module was already in `sys.modules`, so `from select import GATES`
-# found the wrong one.
+# `tools/content` only, never `tools/content/pdmx`. A module in there with a
+# standard library module's name outranks the real one for the whole process,
+# which is what `select.py` (now `shortlist.py`) did twice: it broke this file
+# the first time it ran under `unittest discover`, and later killed a server on
+# its first connection when `socketserver` reached for `selectors`.
 sys.path.insert(0, str(TOOLS))
 
 import difficulty  # noqa: E402
 from pdmx import commit as commit_mod  # noqa: E402
 from pdmx import extract as extract_mod  # noqa: E402
 from pdmx import review as review_mod  # noqa: E402
-from pdmx import select as select_mod  # noqa: E402
+from pdmx import shortlist as shortlist_mod  # noqa: E402
 from pdmx.composers import ComposerTable, fold, years_in  # noqa: E402
 from pdmx.paths import ArchiveMissing, find_archive  # noqa: E402
 
@@ -168,57 +168,57 @@ class TestGates(unittest.TestCase):
         return self.by_title[title]
 
     def test_gate_1_no_mxl(self) -> None:
-        self.assertEqual(select_mod.gate_has_mxl(self.row("No file here")),
+        self.assertEqual(shortlist_mod.gate_has_mxl(self.row("No file here")),
                          "no mxl file in the archive")
-        self.assertIsNone(select_mod.gate_has_mxl(self.row("Minuet in G")))
+        self.assertIsNone(shortlist_mod.gate_has_mxl(self.row("Minuet in G")))
 
     def test_gate_2_non_piano_program(self) -> None:
-        self.assertIn("24", select_mod.gate_piano_tracks(self.row("Guitar piece")) or "")
-        self.assertIn("4 tracks", select_mod.gate_piano_tracks(self.row("String quartet")) or "")
-        self.assertIsNone(select_mod.gate_piano_tracks(self.row("Sonatina Op. 36 No. 1")))
+        self.assertIn("24", shortlist_mod.gate_piano_tracks(self.row("Guitar piece")) or "")
+        self.assertIn("4 tracks", shortlist_mod.gate_piano_tracks(self.row("String quartet")) or "")
+        self.assertIsNone(shortlist_mod.gate_piano_tracks(self.row("Sonatina Op. 36 No. 1")))
 
     def test_gate_3_subsets(self) -> None:
-        self.assertIn("licence conflict", select_mod.gate_subsets(self.row("Conflicted")) or "")
-        self.assertIn("deduplicated", select_mod.gate_subsets(self.row("A duplicate upload")) or "")
+        self.assertIn("licence conflict", shortlist_mod.gate_subsets(self.row("Conflicted")) or "")
+        self.assertIn("deduplicated", shortlist_mod.gate_subsets(self.row("A duplicate upload")) or "")
 
     def test_gate_4_draft_and_paywall(self) -> None:
-        self.assertEqual(select_mod.gate_not_draft(self.row("Work in progress")), "draft")
-        self.assertEqual(select_mod.gate_not_draft(self.row("Behind a paywall")), "paywalled")
+        self.assertEqual(shortlist_mod.gate_not_draft(self.row("Work in progress")), "draft")
+        self.assertEqual(shortlist_mod.gate_not_draft(self.row("Behind a paywall")), "paywalled")
 
     def test_gate_5_size(self) -> None:
-        self.assertIn("4 bars", select_mod.gate_size(self.row("Four bars")) or "")
-        self.assertIn("900 bars", select_mod.gate_size(self.row("Nine hundred bars")) or "")
-        self.assertIn("12 notes", select_mod.gate_size(self.row("Twelve notes")) or "")
+        self.assertIn("4 bars", shortlist_mod.gate_size(self.row("Four bars")) or "")
+        self.assertIn("900 bars", shortlist_mod.gate_size(self.row("Nine hundred bars")) or "")
+        self.assertIn("12 notes", shortlist_mod.gate_size(self.row("Twelve notes")) or "")
 
     def test_the_track_column_is_dashes_not_json(self) -> None:
         # `"0-0"` is what the archive writes. Reading it as JSON gives nothing
         # and every two-staff file would be rejected as unreadable.
-        self.assertEqual(select_mod.parse_tracks("0-0"), [0, 0])
-        self.assertEqual(select_mod.parse_tracks("0"), [0])
-        self.assertEqual(select_mod.parse_tracks("40-41-42-43"), [40, 41, 42, 43])
-        self.assertEqual(select_mod.parse_tracks("nonsense"), [])
+        self.assertEqual(shortlist_mod.parse_tracks("0-0"), [0, 0])
+        self.assertEqual(shortlist_mod.parse_tracks("0"), [0])
+        self.assertEqual(shortlist_mod.parse_tracks("40-41-42-43"), [40, 41, 42, 43])
+        self.assertEqual(shortlist_mod.parse_tracks("nonsense"), [])
 
     def test_the_member_name_loses_its_leading_dot_slash(self) -> None:
         # The CSV writes `./mxl/…`; the tarball's members are `mxl/…`. A
         # mismatch extracts nothing and reads like a corrupt archive.
         self.assertEqual(
-            select_mod.member_name("./mxl/1/11/QmXYZ.mxl"), "mxl/1/11/QmXYZ.mxl"
+            shortlist_mod.member_name("./mxl/1/11/QmXYZ.mxl"), "mxl/1/11/QmXYZ.mxl"
         )
-        self.assertEqual(select_mod.member_name("mxl/1/11/QmXYZ.mxl"), "mxl/1/11/QmXYZ.mxl")
-        self.assertEqual(select_mod.cid_of("./mxl/1/11/QmXYZ.mxl"), "QmXYZ")
+        self.assertEqual(shortlist_mod.member_name("mxl/1/11/QmXYZ.mxl"), "mxl/1/11/QmXYZ.mxl")
+        self.assertEqual(shortlist_mod.cid_of("./mxl/1/11/QmXYZ.mxl"), "QmXYZ")
 
     def test_the_musescore_id_comes_from_the_metadata_path(self) -> None:
-        self.assertEqual(select_mod.musescore_id("./metadata/5/5740212.json"), "5740212")
-        self.assertIsNone(select_mod.musescore_id("./metadata/5/not-a-number.json"))
+        self.assertEqual(shortlist_mod.musescore_id("./metadata/5/5740212.json"), "5740212")
+        self.assertIsNone(shortlist_mod.musescore_id("./metadata/5/not-a-number.json"))
 
 
 class TestSelection(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         table = ComposerTable.load()
-        wants = select_mod.load_wants(WANTS)
-        cls.chosen, cls.rejections, cls.summary = select_mod.select(
-            FIXTURE / "PDMX.csv", table, wants, select_mod.DEFAULT_QUOTAS
+        wants = shortlist_mod.load_wants(WANTS)
+        cls.chosen, cls.rejections, cls.summary = shortlist_mod.select(
+            FIXTURE / "PDMX.csv", table, wants, shortlist_mod.DEFAULT_QUOTAS
         )
         cls.by_cid = {c.cid: c for c in cls.chosen}
 
@@ -258,13 +258,13 @@ class TestSelection(unittest.TestCase):
     def test_lyrics_are_flagged_and_ranked_down_but_kept(self) -> None:
         lyrical = self.by_cid["QmFixtureLyrics"]
         self.assertTrue(lyrical.lyrics)
-        plain = select_mod.score_row(4.1, 10, 2000, False, lyrics=False)
+        plain = shortlist_mod.score_row(4.1, 10, 2000, False, lyrics=False)
         self.assertLess(lyrical.score, plain)
 
     def test_the_ranking_prefers_the_better_rated_of_two_similar_rows(self) -> None:
         # A Bayesian rating, so one five-star vote does not outrank forty at 4.6.
-        one_vote = select_mod.score_row(5.0, 1, 1000, False, False)
-        forty_votes = select_mod.score_row(4.6, 40, 1000, False, False)
+        one_vote = shortlist_mod.score_row(5.0, 1, 1000, False, False)
+        forty_votes = shortlist_mod.score_row(4.6, 40, 1000, False, False)
         self.assertGreater(forty_votes, one_vote)
 
     def test_a_bucket_that_cannot_fill_its_share_hands_the_remainder_on(self) -> None:
@@ -273,7 +273,7 @@ class TestSelection(unittest.TestCase):
         quotas = {"1-2": {"classical": 1, "folk-hymn-carol": 1, "pop-film-game": 1,
                           "jazz-latin": 5}}
         table = ComposerTable.load()
-        chosen, _, summary = select_mod.select(
+        chosen, _, summary = shortlist_mod.select(
             FIXTURE / "PDMX.csv", table, [], quotas
         )
         taken = [c for c in chosen if c.band == "1-2" and not c.over_quota]
@@ -426,7 +426,7 @@ class TestWantsTable(unittest.TestCase):
         if not catalog_path.is_file():
             self.skipTest("no built catalog; run tools/content/build.py")
         ids = {item["id"] for item in json.loads(catalog_path.read_text(encoding="utf-8"))}
-        wants = select_mod.load_wants(WANTS)
+        wants = shortlist_mod.load_wants(WANTS)
         rock = [want["id"] for want in wants if want["id"].startswith("song.rock.")]
         self.assertEqual(len(rock), 7)
         for item_id in rock:
@@ -435,7 +435,7 @@ class TestWantsTable(unittest.TestCase):
 
 class TestEndToEnd(unittest.TestCase):
     """
-    select -> extract -> quarry -> review -> commit -> import, in a temp dir.
+    shortlist -> extract -> quarry -> review -> commit -> import, in a temp dir.
 
     The render gate is skipped: it needs Chromium and a built app, and the
     `content-render.spec.ts` path it uses is covered by the e2e suite. Every
@@ -449,9 +449,9 @@ class TestEndToEnd(unittest.TestCase):
         cls.run_dir.mkdir(parents=True)
 
         table = ComposerTable.load()
-        wants = select_mod.load_wants(WANTS)
-        chosen, _, _ = select_mod.select(
-            FIXTURE / "PDMX.csv", table, wants, select_mod.DEFAULT_QUOTAS
+        wants = shortlist_mod.load_wants(WANTS)
+        chosen, _, _ = shortlist_mod.select(
+            FIXTURE / "PDMX.csv", table, wants, shortlist_mod.DEFAULT_QUOTAS
         )
         from dataclasses import asdict
 
@@ -641,7 +641,7 @@ class TestReadme(unittest.TestCase):
         text = readme.read_text(encoding="utf-8")
         self.assertIn("py -3.11", text)
         self.assertIn("--pdmx-dir", text)
-        for script in ("select.py", "extract.py", "quarry.py", "review.py", "commit.py"):
+        for script in ("shortlist.py", "extract.py", "quarry.py", "review.py", "commit.py"):
             self.assertIn(script, text)
 
 
@@ -714,7 +714,7 @@ class TestArchiveIndex(unittest.TestCase):
     """
     The whole-archive index (`pdmx/index.py`).
 
-    `select.py` answers "which three hundred next"; this answers "what is in
+    `shortlist.py` answers "which three hundred next"; this answers "what is in
     there at all, at my level". Its level comes from a proxy fitted on the
     quarry's own levels, so the two agree about difficulty without the index
     having to convert 37,499 files.
@@ -772,7 +772,7 @@ class TestArchiveIndex(unittest.TestCase):
             FIXTURE / "PDMX.csv", ComposerTable.load(), self.model
         )
         self.assertEqual(summary["rowsRead"], 30)
-        # The same twenty rows select.py keeps — the gates are shared, not copied.
+        # The same twenty rows shortlist.py keeps — the gates are shared, not copied.
         self.assertEqual(summary["indexed"], 20)
         by_cid = {row["cid"]: row for row in rows}
         self.assertEqual(by_cid["QmFixtureDecoyBartok"]["status"], "in-copyright")
@@ -818,16 +818,15 @@ class TestArchiveIndex(unittest.TestCase):
 
 class TestNoStdlibShadowing(unittest.TestCase):
     """
-    `pdmx/select.py` must not shadow the standard library's `select`.
+    Nothing in `pdmx/` may shadow a standard library module.
 
-    It did, and the failure was baffling: the package worked when its own test
-    file ran alone and broke under `unittest discover`, because whichever
-    module reached `sys.modules` first won. On a platform where `subprocess`
-    reaches for `selectors`, the other direction would break things that have
-    nothing to do with this package at all.
-
-    The fix is that only `tools/content` goes on `sys.path` and the package's
-    modules import each other by package name.
+    `select.py` did, and the failure was baffling twice over: the package
+    worked when its own test file ran alone and broke under `unittest
+    discover`, and later a server here died on its first connection because
+    `socketserver` had reached for `selectors` and got the shortlist. It is
+    now `shortlist.py`, which is the real fix. The path hygiene below stays
+    because the hazard is structural: a script's own directory goes first on
+    `sys.path`, so the *next* badly named module would do it again.
     """
 
     def test_the_standard_library_select_is_the_real_one(self) -> None:
@@ -835,7 +834,7 @@ class TestNoStdlibShadowing(unittest.TestCase):
 
         self.assertFalse(
             hasattr(stdlib_select, "GATES"),
-            "pdmx/select.py has shadowed the standard library's select module",
+            "something in pdmx/ has shadowed the standard library's select module",
         )
 
     def test_the_package_does_not_put_its_own_directory_on_the_path(self) -> None:
@@ -843,8 +842,8 @@ class TestNoStdlibShadowing(unittest.TestCase):
         self.assertNotIn(pdmx_dir, sys.path)
 
     def test_the_shortlist_module_is_reachable_by_package_name(self) -> None:
-        self.assertTrue(hasattr(select_mod, "GATES"))
-        self.assertTrue(hasattr(select_mod, "DEFAULT_QUOTAS"))
+        self.assertTrue(hasattr(shortlist_mod, "GATES"))
+        self.assertTrue(hasattr(shortlist_mod, "DEFAULT_QUOTAS"))
 
 
 class TestNotASong(unittest.TestCase):
@@ -1067,13 +1066,14 @@ class TestEntryPointsRunAsScripts(unittest.TestCase):
     Every `pdmx/` file must survive being *run*, not merely imported.
 
     Python puts a script's own directory first on `sys.path`, so running
-    `pdmx/anything.py` makes `pdmx/select.py` answer `import select` for that
-    whole process. The import-side fix above does not cover it: a server
-    written here imported `http.server` -- `socketserver`, `selectors`,
-    `import select` -- and died on its first connection inside the selector,
-    with an error naming neither PDMX nor sockets. So each entry point drops
-    its own directory from `sys.path`, before the imports that would reach for
-    it, and this is the test that would have caught it.
+    `pdmx/anything.py` puts every module in here ahead of the standard library
+    for that whole process. That is how `select.py` -- now `shortlist.py` --
+    came to answer `http.server`'s `socketserver` -> `selectors` -> `import
+    select`, and kill a server on its first connection with an error naming
+    neither PDMX nor sockets. The rename removed that collision; each entry
+    point still drops its own directory from `sys.path` before the imports
+    that would reach for it, because the next badly named module would do the
+    same thing. This is the test that would have caught it.
     """
 
     def scripts(self) -> list[Path]:
