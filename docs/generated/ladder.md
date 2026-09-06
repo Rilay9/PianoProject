@@ -205,63 +205,89 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-55 song(s) are in the catalog as placeholders: the curriculum names them and no file may be shipped. Each carries an `importHint` saying what to do instead.
+191 song(s) are in the catalog as placeholders: the curriculum names them and no file may be shipped. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
+| `song.beautiful.merry-christmas-mr-lawrence` | Merry Christmas Mr. Lawrence | 8.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx` | Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2 | 7.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.bennet-rosemary-s-waltz.pdmx` | Rosemary's Waltz | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.c418-minecraft-nether.pdmx` | Minecraft Nether | 7.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
 | `song.classical.chopin-etude-op25-7.nifc` | Étude in C-sharp minor, Op. 25 No. 7 | 9.0 | MusicXML cannot express the 2048th-note tuplet in bar 27; import an edition that notates the cadenza different |
-| `song.ragtime.joplin-antoinette` | Antoinette | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-augustan-club-waltz` | Augustan Club Waltz | 6.8 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-bethena` | Bethena | 7.3 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-binks-waltz` | Binks's Waltz | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-breeze-from-alabama` | A Breeze from Alabama | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-cascades` | The Cascades | 7.6 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-chrysanthemum` | The Chrysanthemum | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-cleopha` | Cleopha | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-combination-march` | Combination March | 6.8 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-country-club` | Country Club | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-crush-collision-march` | The Crush Collision March | 6.8 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-easy-winners` | The Easy Winners | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-elite-syncopations` | Elite Syncopations | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-entertainer.kern` | The Entertainer | 7.1 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-eugenia` | Eugenia | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-felicity-rag` | Felicity Rag | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-fig-leaf-rag` | Fig Leaf Rag | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-gladiolus-rag` | Gladiolus Rag | 7.6 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-harmony-club-waltz` | Harmony Club Waltz | 6.8 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-heliotrope-bouquet` | Heliotrope Bouquet | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-leola` | Leola | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-lily-queen` | Lily Queen, Ragtime Two-Step | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-magnetic-rag` | Magnetic Rag | 7.6 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-maple-leaf-rag.kern` | Maple Leaf Rag | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-march-majestic` | March Majestic | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-new-rag` | Scott Joplin's New Rag | 7.6 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-nonpareil` | The Nonpareil | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-original-rags` | Original Rags | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-palm-leaf-rag` | Palm Leaf Rag | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-paragon-rag` | The Paragon Rag | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-peacherine-rag` | Peacherine Rag | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-pine-apple-rag` | Pine Apple Rag | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-pleasant-moments` | Pleasant Moments | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-reflection-rag` | Reflection Rag | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-rose-bud-march` | The Rose-bud March | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-rose-leaf-rag` | Rose Leaf Rag | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-school-of-ragtime` | School of Ragtime | 6.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-search-light-rag` | Search-Light Rag | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-solace` | Solace | 6.8 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-something-doing` | Something Doing | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-stoptime-rag` | Stoptime Rag | 7.4 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-sugar-cane` | Sugar Cane | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-sunflower-slow-drag` | Sunflower Slow Drag | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-swipesy-cakewalk` | Swipsey | 6.8 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-the-favorite` | The Favorite | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-wall-street-rag` | Wall Street Rag | 7.2 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.ragtime.joplin-weeping-willow` | Weeping Willow | 7.0 | Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA. Clone https://github.com/craigsapp |
-| `song.rock.a7x-dear-god` | Dear God | 4.2 | Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add  |
-| `song.rock.a7x-fiction` | Fiction | 5.2 | Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add  |
-| `song.rock.a7x-seize-the-day` | Seize the Day | 5.1 | Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add  |
-| `song.rock.a7x-so-far-away` | So Far Away | 5.1 | Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add  |
-| `song.rock.lp-final-masquerade` | Final Masquerade | 4.3 | Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add  |
-| `song.rock.lp-shadow-of-the-day` | Shadow of the Day | 4.4 | Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add  |
-| `song.rock.lp-waiting-for-the-end` | Waiting for the End | 5.3 | Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add  |
+| `song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx` | Pans Labyrinth Theme (El Laberinto del Fauno) | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.composer-rodolphe-kreutzer-etude-no-2.pdmx` | Rodolphe Kreutzer - Étude No. 2 | 3.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.crue-home-sweet-home-motley-crue.pdmx` | Home Sweet Home - Motley Crue | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.djawadi-light-of-the-seven.pdmx` | Light of the Seven | 7.3 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.einaudi-questa-notte.pdmx` | Questa Notte | 7.6 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx` | Elgar - Enigma Variations - XI. Nimrod | 7.5 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.elgar-pomp-and-circumstance.pdmx` | Pomp and Circumstance | 5.4 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx` | Salut d'amour Edward Elgar Love's Greeting | 8.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.glass-dead-things.pdmx` | Dead Things | 7.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.hisaishi-totoro-path-of-the-wind.pdmx` | Totoro: Path of the Wind | 3.6 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx` | Jupiter Theme arranged for piano - Gustav Holst | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.home-on-the-range-secondary-dominants.pdmx` | Home on the Range (Secondary Dominants) | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.hurwitz-the-armstrongs-first-man.pdmx` | The Armstrongs - First Man | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.i-got-rythm.pdmx` | I Got Rythm | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx` | Kreisler's Liebesleid - Piano Solo | 7.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx` | Mahler Symphony No. 5 (4th Movement Excerpt) Piano Solo | 6.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx` | Cavalleria Rusticana Intermezzo | 7.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.offenbach-cancan-offenbach.pdmx` | Cancan - Offenbach | 8.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.oh-canada.pdmx` | Oh Canada | 4.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.ondrus-silent-night.pdmx` | Silent night | 6.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.palmer-days-in-the-sun.pdmx` | Days In The Sun | 7.1 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.passacaglia-handel-halvorsen.pdmx` | Passacaglia Handel/Halvorsen | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx` | O Mio Babbino Caro for solo piano | 6.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx` | Rachmaninoff - Piano Concerto No. 2 | 7.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.radetzky-march-for-easy-piano.pdmx` | Radetzky March for easy piano | 6.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx` | Super Mario Land 2 Ending Theme as played by Tom Brier | 8.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.sakamoto-andata.pdmx` | andata | 6.8 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx` | Shining Boy And Little Randy - Ryuichi Sakamoto | 7.2 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.simple-gifts-2-part-round.pdmx` | Simple Gifts (2-Part Round) | 3.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.spiteri-travelling.pdmx` | Travelling | 7.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx` | Tango La Cumparsita - Piano Solo (Tutorial Parte A) | 5.1 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx` | Tango La Cumparsita - Piano Solo (Tutorial Parte B) | 5.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.classical.uematsu-at-zanarkand-ffx-hd-remaster.pdmx` | At Zanarkand (FFX HD Remaster) | 5.9 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx` | To Zanarkand (Final Fantasy X) | 7.2 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.zimmer-maestro-the-holiday.pdmx` | Maestro - The Holiday | 5.2 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.classical.zimmer-time-hans-zimmer-inception.pdmx` | Time - Hans Zimmer - Inception | 6.5 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
+| `song.folk.10000-reasons-matt-redman.pdmx` | 10000 Reasons Matt Redman | 6.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.before-you-go-lewis-capaldi.pdmx` | Before You Go - Lewis Capaldi | 4.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.bruno-major-nothing-wip.pdmx` | Bruno Major - Nothing [WIP] | 5.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.carioquinha.pdmx` | Carioquinha | 4.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.happy-xmas.pdmx` | Happy Xmas | 7.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.i-give-you-my-heart.pdmx` | I GIVE YOU MY HEART | 7.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.i-remember-you.pdmx` | I Remember You | 4.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.je-te-laisserai-des-mots-patrick-watson.pdmx` | Je te laisserai des mots - Patrick Watson | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.john-denver-annie-s-song.pdmx` | John Denver - Annie's Song | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.lost-without-you-freya-ridings.pdmx` | Lost Without You - Freya Ridings | 6.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.margaritaville-keyboard-part.pdmx` | Margaritaville Keyboard Part | 6.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.muskrat-ramble.pdmx` | Muskrat Ramble | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.octobre-francis-cabrel.pdmx` | Octobre - Francis Cabrel | 5.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.scarborough-fair-piano-solo.pdmx` | Scarborough fair piano solo | 6.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.the-flute-tune-soulpride-remix.pdmx` | The Flute Tune Soulpride Remix | 4.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.wake-me-up-avicii.pdmx` | Wake Me Up Avicii | 7.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.folk.your-song-elton-john-easy-piano.pdmx` | Your Song - Elton John - Easy Piano | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.bart-howard-fly-me-to-the-moon.pdmx` | Fly me to the moon | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.fats-waller-ain-t-misbehavin.pdmx` | Ain't Misbehavin' | 6.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.george-shearing-lullaby-of-birdland.pdmx` | Lullaby of Birdland | 6.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx` | O when the Saints Go Marching In | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx` | Harmony and Chord Progressions | 5.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.the-dave-brubeck-quartet-take-five.pdmx` | Take Five | 6.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx` | Uncle Ben's Cakewalk Tom Brier | 7.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx` | Linus and Lucy (Fixed) Piano only | 8.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.jazz.vince-guaraldi-skating.pdmx` | Skating | 7.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.abba-dancing-queen.pdmx` | Dancing Queen | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.alexandre-desplat-the-danish-girl-theme.pdmx` | The Danish Girl (theme) | 6.1 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx` | Solanum's Theme (Outer Wilds) | 3.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx` | Welcome to Wonderland by Anson Seabra | 6.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx` | Rousseau: Billy Joel - Piano Man | 7.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx` | For the damaged coda Blonde Redhead | 6.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx` | Twinkle Twinkle Little Star (Easy) | 3.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.camille-le-festin-piano-arr-kno.pdmx` | Le Festin Piano (arr. KNO) | 7.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.chancho-en-piedra-mandinga.pdmx` | Mandinga | 5.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.coldplay-clocks-coldplay.pdmx` | Clocks Coldplay | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.pop.coldplay-fix-you-coldplay.pdmx` | Fix You Coldplay | 6.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| … | and 111 more | | |
 
