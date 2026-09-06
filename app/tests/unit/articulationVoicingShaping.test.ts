@@ -230,15 +230,28 @@ describe('PedalDrill in half-pedal mode', () => {
     expect(result.detail?.partialPedalMessages).toBe(4);
   });
 
-  it('fails a pedal that is only ever fully up or fully down', () => {
+  it('reports a switch-like pedal as the instrument, not as a failure', () => {
+    // Many digital actions only ever send 0 or 127. Scoring that as "you did
+    // not half-pedal" blames the player for the piano, so it is its own state
+    // and the screen can say the exercise cannot be judged here.
     const d = drill();
     d.next();
     for (const value of [0, 127, 0, 127]) {
       d.feed({ kind: 'cc', cc: 64, value, tMs: 0 });
     }
     const result = d.result();
-    expect(result.accuracy).toBe(0);
+    expect(result.detail?.binaryPedal).toBe(1);
     expect(result.detail?.partialPedalMessages).toBe(0);
+    expect(result.accuracy).toBe(0);
+  });
+
+  it('does not call a real half pedal binary', () => {
+    const d = drill();
+    d.next();
+    for (const value of [0, 64, 127]) {
+      d.feed({ kind: 'cc', cc: 64, value, tMs: 0 });
+    }
+    expect(d.result().detail?.binaryPedal).toBe(0);
   });
 
   it('scores zero when the pedal was never touched, rather than passing by default', () => {

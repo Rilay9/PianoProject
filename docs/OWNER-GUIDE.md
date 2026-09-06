@@ -229,3 +229,46 @@ If something breaks mid-practice, a red banner appears at the bottom with
   can tell later what you actually measured.
 - **The metronome** works on its own (Today → Tools) and on top of the sheet
   music (the 🥁 button on the Score screen).
+
+## 8. Three things only you can check
+
+Three of the exercises added in P12a are scored against thresholds that were
+chosen on a laptop and have never met a real piano. Nothing is broken if they
+are wrong — the notes, the timing and the accuracy score are unaffected — but
+the *extra* judgement each one makes might not match your ear on the HP-130.
+When you get to them, five minutes each settles it.
+
+**1. Staccato and legato.** Open `Staccato phrase in C` and play it the way you
+would want it to sound. Then open the legato one and do the same. The app judges
+these on how long you hold each key: staccato wants under half the written
+value, legato at least 90% of it.
+
+*If it disagrees with you*, the numbers are `heldFractionMax` and
+`heldFractionMin` in the exercise's `drill.params`, and `STACCATO_MAX_HELD` /
+`LEGATO_MIN_HELD` in `app/src/engine/Scoring.ts`. Tell me which way it was wrong
+and by how much.
+
+**2. Voicing.** Open `Voicing the top note in C` and play each chord with the
+melody singing over the rest, as you would in a piece. The app wants the top
+note at least 1.4 times the average velocity of the notes underneath.
+
+*The likely failure is that 1.4 is too strict on a weighted action* — it is easy
+to hear a melody that is only 20% louder. If it fails chords that sound right to
+you, say so and the ratio comes down.
+
+**3. Half pedal.** Open `Half pedal — the damper part-way down`. This one has a
+prerequisite the others do not: your piano has to *send* intermediate CC64
+values. Many digital actions send only 0 and 127, and the HP-130 has not been
+tested.
+
+The app now tells the difference. If it reports a **binary pedal**, the
+instrument is sending a switch rather than a position, the exercise cannot be
+judged on it, and that is a fact about the piano rather than about your playing
+— say so and the family gets dropped rather than left failing. You can also see
+the raw values on Settings → Diagnostics while you press the pedal slowly.
+
+**One more, from P12b:** harmonic dictation decides a chord is finished when no
+new note has arrived for 120 ms. That threshold has never met a sustain pedal.
+If you play a chord with the pedal down and the app splits it into two chords,
+or waits too long, the number is `CHORD_BOUNDARY_MS` and it wants your hands
+rather than mine.

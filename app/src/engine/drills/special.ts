@@ -264,7 +264,14 @@ export class PedalDrill implements Drill {
     const [low, high] = range;
     const inRange = this.pedalValues.filter((v) => v >= low && v <= high).length;
     const total = this.pedalValues.length;
-    const accuracy = total > 0 ? inRange / total : 0;
+    const partial = this.pedalValues.filter((v) => v > 0 && v < 127).length;
+    // A pedal that only ever reports 0 or 127 is a *switch*, and many digital
+    // actions are. Scoring that as "you failed to half-pedal" would blame the
+    // player for the instrument, so it is reported as its own state and the
+    // screen can say the exercise cannot be judged on this piano rather than
+    // showing a permanent zero.
+    const binaryPedal = total > 0 && partial === 0;
+    const accuracy = total > 0 && !binaryPedal ? inRange / total : 0;
     return {
       kind: this.kind,
       total: this.chords.length,
@@ -281,7 +288,10 @@ export class PedalDrill implements Drill {
         // How often the pedal was anything but fully up or fully down, which is
         // the habit this exercise exists to build. A count rather than a flag:
         // "twice in a four-bar phrase" and "throughout" are different playing.
-        partialPedalMessages: this.pedalValues.filter((v) => v > 0 && v < 127).length,
+        partialPedalMessages: partial,
+        // 1 when the instrument sent pedal messages but never a value between
+        // the extremes. Not a score: a fact about the piano.
+        binaryPedal: binaryPedal ? 1 : 0,
       },
     };
   }
