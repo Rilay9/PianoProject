@@ -43,7 +43,8 @@ app/                     – the PWA (Vite + TypeScript)
     input/               – InputSource interface + WebMidiSource, ScreenKeyboardSource, ReplaySource, MicSource facade
     audio/               – Web Audio player (smplr piano), metronome scheduler
     audio/pitch/         – AudioWorklet + score-informed note/chord detector + calibration
-    data/                – IndexedDB (db.ts) + one store module each: progressStore, planStore, skillsStore, importStore, settingsStore/persist, backup (export/import)
+    data/                – IndexedDB (db.ts) + one store module each: progressStore, planStore, skillsStore, importStore,
+                           folderLibrary (a folder of scores on the phone, 04 §4b), settingsStore/persist, backup (export/import)
     curriculum/          – loaders + selectors over curriculum.json/catalog.json, and session.ts (today's session from the Part A §8 templates)
     util/
   tests/
@@ -243,6 +244,8 @@ IndexedDB stores (via `idb`):
 | `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
 | `micCalibration` | deviceId | per-pitch gain/inharmonicity table, latency ms, noise floor |
 | `skills` | conceptId | self-assessed / measured skill state for the Skills review screen |
+| `levelOverrides` | itemId | the owner's own difficulty number for one item, which wins over the catalog's everywhere (replan §1.4) |
+| `folderLibraries` | folder name | the listing of a folder of scores on the phone: one row per file, with the title, composer and estimated level from the folder's own `library.json` (`04` §4b). The *files* are not stored — Android lends a folder for one visit — so this is what makes browsing work with nothing plugged in. Deliberately **not** in the backup: 6 MB of listing, rebuilt by picking the folder again. |
 
 **`cuts` shape.** `Record<pageIndex, number[]>`, a flat sorted list of an *even* number of
 **fractions of the page height**: `[top0, bottom0, top1, bottom1, …]`. Fractions rather than
