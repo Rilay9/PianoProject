@@ -18,7 +18,9 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -910,3 +912,222 @@ class TestNotASong(unittest.TestCase):
         for title in ("Clair de Lune", "Nocturne Op. 9 No. 2", "The Skye Boat Song",
                       "Minuet in G", "Für Elise"):
             self.assertEqual(self.flag(title), "", title)
+
+
+class TestShardedExtraction(unittest.TestCase):
+    """
+    Unpacking the whole library (`extract.py --from-index --shard`).
+
+    37,261 files in one directory is legal everywhere and pleasant nowhere, so
+    the whole-library run shards on two characters of the CID. The sharding has
+    to agree with `manifest.py`, or every row in the manifest points at a path
+    that is not there.
+    """
+
+    def test_the_shard_is_two_characters_after_the_qm(self) -> None:
+        self.assertEqual(extract_mod.shard_of("QmbyQiyHSuzfTX"), "by")
+        # Not every CID in the wild starts `Qm`; the fallback must not crash.
+        self.assertEqual(extract_mod.shard_of("zdj7Wabc"), "zd")
+        self.assertEqual(extract_mod.shard_of(""), "00")
+
+    def test_sharding_is_off_unless_asked_for(self) -> None:
+        out = Path("out")
+        self.assertEqual(extract_mod.target_for(out, "Qmabcd", False), out / "Qmabcd.mxl")
+        self.assertEqual(extract_mod.target_for(out, "Qmabcd", True), out / "ab" / "Qmabcd.mxl")
+
+    def test_the_index_supplies_songs_and_leaves_the_exercises(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            index = Path(tmp) / "index.json"
+            index.write_text(
+                json.dumps(
+                    {
+                        "rows": [
+                            {"cid": "Qmaa1", "member": "mxl/1/1/Qmaa1.mxl", "notASong": ""},
+                            {"cid": "Qmbb2", "member": "mxl/1/2/Qmbb2.mxl",
+                             "notASong": "rhythm only"},
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            songs = extract_mod.index_songs(index)
+        self.assertEqual([row["cid"] for row in songs], ["Qmaa1"])
+
+    def test_a_missing_index_is_empty_rather_than_an_exception(self) -> None:
+        self.assertEqual(extract_mod.index_songs(Path("nowhere.json")), [])
+
+
+class TestFolderManifest(unittest.TestCase):
+    """
+    `library.json`, the file that makes a folder of CIDs browsable (`04` §4b).
+
+    The scores go on the phone and the app reads them from there, so the
+    metadata has to travel with them — a folder of 37,261 files named
+    `Qm....mxl` is unusable without it. The app reads the columns by name, so
+    what is pinned here is that the header and the rows agree, and that a row
+    is never written for a file the folder does not hold.
+    """
+
+    def setUp(self) -> None:
+        from pdmx import manifest as manifest_mod
+
+        self.manifest_mod = manifest_mod
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+        self.library = self.tmp / "library"
+        (self.library / "aa").mkdir(parents=True)
+        (self.library / "aa" / "Qmaa1.mxl").write_bytes(b"PK\x03\x04")
+        self.index = self.tmp / "index.json"
+        self.index.write_text(
+            json.dumps(
+                {
+                    "rows": [
+                        {
+                            "cid": "Qmaa1", "title": "Paddies Evermore", "composer": "O'Neill",
+                            "artist": "", "level": 3.3, "bars": 25, "status": "pd",
+                            "bucket": "folk-hymn-carol", "rating": 4.5, "ratings": 12,
+                            "views": 2100, "lyrics": False, "garbled": False,
+                            "museScore": "4702198", "notASong": "",
+                        },
+                        {
+                            "cid": "Qmbb2", "title": "Not unpacked", "composer": "",
+                            "artist": "", "level": 2.0, "bars": 8, "status": "pd",
+                            "bucket": "classical", "rating": 0, "ratings": 0, "views": 0,
+                            "lyrics": False, "garbled": False, "museScore": "", "notASong": "",
+                        },
+                        {
+                            "cid": "Qmcc3", "title": "C major scale", "composer": "",
+                            "artist": "", "level": 1.0, "bars": 4, "status": "pd",
+                            "bucket": "classical", "rating": 0, "ratings": 0, "views": 0,
+                            "lyrics": False, "garbled": False, "museScore": "",
+                            "notASong": "the title is nothing but exercise words",
+                        },
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    def test_every_row_has_one_value_per_declared_field(self) -> None:
+        built, _ = self.manifest_mod.build(self.index, self.library)
+        for row in built["scores"]:
+            self.assertEqual(len(row), len(built["fields"]))
+
+    def test_the_columns_are_where_the_header_says_they_are(self) -> None:
+        built, _ = self.manifest_mod.build(self.index, self.library)
+        at = {name: i for i, name in enumerate(built["fields"])}
+        row = built["scores"][0]
+        self.assertEqual(row[at["file"]], "aa/Qmaa1.mxl")
+        self.assertEqual(row[at["title"]], "Paddies Evermore")
+        self.assertEqual(row[at["composer"]], "O'Neill")
+        self.assertEqual(row[at["level"]], 3.3)
+        self.assertEqual(row[at["museScore"]], "4702198")
+
+    def test_a_row_is_never_written_for_a_file_that_is_not_there(self) -> None:
+        built, absent = self.manifest_mod.build(self.index, self.library)
+        self.assertEqual([row[0] for row in built["scores"]], ["aa/Qmaa1.mxl"])
+        self.assertEqual(absent, 1)
+
+    def test_exercises_are_left_in_the_archive(self) -> None:
+        built, _ = self.manifest_mod.build(self.index, self.library)
+        self.assertNotIn("C major scale", [row[1] for row in built["scores"]])
+
+    def test_the_artist_stands_in_when_there_is_no_composer(self) -> None:
+        row = self.manifest_mod.row_for({"artist": "Misc tunes"}, "aa/x.mxl")
+        self.assertEqual(row[2], "Misc tunes")
+
+    def test_it_writes_a_manifest_the_app_will_accept(self) -> None:
+        out = self.tmp / "library.json"
+        code = self.manifest_mod.main(
+            ["--library", str(self.library), "--index", str(self.index), "--out", str(out)]
+        )
+        self.assertEqual(code, 0)
+        written = json.loads(out.read_text(encoding="utf-8"))
+        self.assertEqual(written["kind"], "pianopath-score-folder")
+        self.assertEqual(written["version"], self.manifest_mod.MANIFEST_VERSION)
+        self.assertEqual(written["count"], len(written["scores"]))
+
+    def test_the_app_and_the_writer_agree_on_the_shape(self) -> None:
+        # The reader is TypeScript and cannot be imported here, so what is
+        # checked is that its three constants still match this writer's.
+        reader = (
+            REPO_ROOT / "app" / "src" / "data" / "folderLibrary.ts"
+        ).read_text(encoding="utf-8")
+        self.assertIn("const MANIFEST_KIND = 'pianopath-score-folder';", reader)
+        self.assertIn(
+            "export const MANIFEST_VERSION = %d;" % self.manifest_mod.MANIFEST_VERSION, reader
+        )
+        self.assertIn(
+            "export const MANIFEST_NAME = '%s';" % self.manifest_mod.MANIFEST_NAME, reader
+        )
+
+
+class TestEntryPointsRunAsScripts(unittest.TestCase):
+    """
+    Every `pdmx/` file must survive being *run*, not merely imported.
+
+    Python puts a script's own directory first on `sys.path`, so running
+    `pdmx/anything.py` makes `pdmx/select.py` answer `import select` for that
+    whole process. The import-side fix above does not cover it: a server
+    written here imported `http.server` -- `socketserver`, `selectors`,
+    `import select` -- and died on its first connection inside the selector,
+    with an error naming neither PDMX nor sockets. So each entry point drops
+    its own directory from `sys.path`, before the imports that would reach for
+    it, and this is the test that would have caught it.
+    """
+
+    def scripts(self) -> list[Path]:
+        return sorted(
+            path
+            for path in (TOOLS / "pdmx").glob("*.py")
+            # `paths.py` and `composers.py` are libraries, not commands: they
+            # have no argument parser and nothing to print a usage line with.
+            if path.name not in {"__init__.py", "paths.py", "composers.py"}
+        )
+
+    def test_each_script_reports_its_own_usage(self) -> None:
+        self.assertGreaterEqual(len(self.scripts()), 6)
+        for script in self.scripts():
+            with self.subTest(script=script.name):
+                done = subprocess.run(
+                    [sys.executable, str(script), "--help"],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    env={**os.environ, "PYTHONUTF8": "1"},
+                )
+                self.assertEqual(done.returncode, 0, done.stderr)
+                self.assertIn("usage:", done.stdout)
+
+    def test_a_script_leaves_the_standard_library_select_alone(self) -> None:
+        probe = self.tmp / "probe.py"
+        probe.write_text(
+            "import runpy, sys\n"
+            "sys.argv = ['manifest.py', '--help']\n"
+            "try:\n"
+            "    runpy.run_path(SCRIPT, run_name='not_main')\n"
+            "except SystemExit:\n"
+            "    pass\n"
+            "import select, selectors\n"
+            "assert not hasattr(select, 'GATES'), 'pdmx/select.py shadowed the stdlib'\n"
+            "selectors.DefaultSelector().close()\n"
+            "print('clean')\n".replace("SCRIPT", repr(str(TOOLS / "pdmx" / "manifest.py"))),
+            encoding="utf-8",
+        )
+        done = subprocess.run(
+            [sys.executable, str(probe)],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            # `pdmx/` first on the path is exactly what running a script in
+            # that directory does; the module's own fix has to undo it.
+            env={**os.environ, "PYTHONUTF8": "1", "PYTHONPATH": str(TOOLS / "pdmx")},
+        )
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn("clean", done.stdout)
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)

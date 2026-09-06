@@ -86,6 +86,40 @@ Two things the page will show you about the data, because they are true:
   It is a label, not a deletion: 0.63 % of the index, densest exactly where you
   will be browsing, and one tick away if the rule is wrong about something.
 
+## 0b. The whole library, on the phone (about a minute)
+
+Steps 1–5 pick a few hundred scores and put them in the *catalog*, levelled and reviewed.
+This does something different and much cheaper: it unpacks every real song and leaves them on
+the phone, where the app can browse them and you can pull one in whenever you want it.
+
+```powershell
+py -3.11 tools\content\pdmx\extract.py --from-index --shard --out build\pdmx\library
+py -3.11 tools\content\pdmx\manifest.py
+```
+
+The first unpacks the 37,261 songs the index does not flag as exercises — 499 MB, 27 seconds,
+sharded two characters deep so no directory holds forty thousand files. The second writes
+`library.json` beside them: title, composer, estimated level, bars and rating for every one,
+6 MB, which is what turns a folder of `Qm….mxl` into something you can read.
+
+Then copy `build\pdmx\library` to the phone — anywhere it can be reached by the file picker —
+and in the app: **Library → Browse a score folder**. Search it, filter by level or style, tap
+**Add** on anything you like. Add is the ordinary import, so an added score is a catalog item
+like every other: levelled, in your sessions, in the backup, and working with the folder
+disconnected.
+
+Two things worth knowing, because they are consequences of Android rather than choices:
+
+- **The listing is kept; the folder is not.** Android lends a web app a folder for one visit
+  (`showDirectoryPicker` does not exist there). So browsing works forever with nothing plugged
+  in, and *adding* asks you to pick the folder again. One tap, only when you want something.
+- **The levels are the CSV proxy's estimate** and the rows say `est.` Anything you want
+  properly levelled goes through steps 1–5 instead.
+
+Nothing here is PDMX-specific. Point the app at a folder of your own MusicXML with no
+`library.json` in it and it lists them by filename, which is the other half of what this is
+for.
+
 ## 1. Select — about two minutes
 
 ```powershell
