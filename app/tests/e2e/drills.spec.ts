@@ -227,6 +227,17 @@ test.describe('sight-reading (docs/05 §8)', () => {
     await page.goto('/#/score/drill.reading.sight-reading-2');
     const first = await svgText();
     await page.goto('/#/today');
+    // Wait for Today to actually be on screen before going back.
+    //
+    // `hashchange` fires on a later task, and the Router's listener reads
+    // `location.hash` when it runs rather than from the event. Two `goto`s
+    // back to back can both land before the first event is dispatched, so the
+    // listener sees the *score* hash twice, `setRoute` finds nothing changed,
+    // and the screen is never remounted — leaving the first exercise on the
+    // stage for the second read. That happened on a two-core CI runner and
+    // never on a developer machine, which is the giveaway. A person taps
+    // seconds apart; this makes the test navigate the way a person does.
+    await expect(page.locator('#today-goal')).toBeVisible();
     await page.goto('/#/score/drill.reading.sight-reading-2');
     const second = await svgText();
     expect(second).not.toBe(first);

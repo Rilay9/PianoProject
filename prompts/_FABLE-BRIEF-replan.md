@@ -147,6 +147,15 @@ say so in your decision document.
    order. Decide whether that stands, and if it does, where it gets explained.
 8. **The catalog schema's track enum and `content/curriculum/00-tracks.json` are two sources
    of truth for the same list** and had already drifted apart.
+9. **The router silently drops a route when two hash changes land in the same task.**
+   `Router`'s `hashchange` listener reads `location.hash` when it runs rather than from the
+   event, and `setRoute` returns early when the route matches the current one. Navigate
+   score → today → score fast enough and the browser coalesces the events, the listener sees
+   the score hash twice, and the screen is never remounted — the previous exercise stays on
+   the stage. It surfaced as a CI-only test failure on a two-core runner. No user taps that
+   fast, so the severity is low; the design question is whether re-entering a route should
+   ever be a no-op, given that a sight-reading rung is supposed to generate new material every
+   time it is opened.
 
 ## 6. What the owner wants, and what you have to design
 
