@@ -21,9 +21,15 @@ verifies); `content/sources/musetrainer.json` (the shape of hand-judged levels).
 ## Build / verify
 
 1. **Run the quarry** band by band in the §2.2 order (Stages 1–2 first, then 3, 4, 5, 6,
-   7–9), pasting each step's summary: rows passing each gate, top unmatched composers,
+   7–9, then the named wants), pasting each step's summary: rows passing each gate, the
+   `compositionStatus` split, the genre-bucket fill per band, top unmatched composers,
    machine rejection rate per band. Grow `composers.json` from the unmatched list where a
-   name is a real public-domain composer (with the death year), and re-run that band.
+   name is a real composer (with the death year, whichever side of 1930 it falls), and
+   re-run that band. **`00` D23 applies:** a file marked public domain by the dataset is a
+   candidate whatever its composition's status; the label is recorded, never used to reject.
+   Build and validate with `--personal`; also run `validate.py --strict-license` on the same
+   output and paste the personal-build count it refuses, because that is what the Pages
+   deploy will do.
 2. **Review** with the owner: open `build/pdmx/review/index.html`, fill `review.csv`.
    Apply the **40 % rule** (§2.3): if review drops more than 40 % of a band, adjust the
    selector and re-run that band before committing it. Record the final rates.
@@ -39,6 +45,13 @@ verifies); `content/sources/musetrainer.json` (the shape of hand-judged levels).
    Stage 1–3 tune in the table; report the ones PDMX does not have.
 6. **The easy *Entertainer*** (§1.6): take the PDMX easy arrangement if it survives review,
    else author the A-strain arrangement as specified.
+6a. **The named wants.** Search PDMX by title and artist for the seven rock-module songs
+   (`02` Part D8: Seize the Day, Dear God, So Far Away, Fiction, Final Masquerade, Waiting
+   for the End, Shadow of the Day) and the *Beautiful* suggestions (Nuvole Bianche,
+   Experience, River Flows in You, Comptine d'un autre été, Interstellar, Merry Christmas
+   Mr. Lawrence, One Summer's Day). Review each candidate for quality like any other; a
+   kept one takes over the existing placeholder id in the personal build, and the rock
+   lessons' `songOptions` need no change. Report per song: found / kept / dropped and why.
 7. **Rebuild Stage 1–5 song options** from what is now bundled, honouring `levelBand` (add
    the band to every lesson; §1.7), fixing `classical.5` with real sonatinas and Burgmüller,
    and widening every Stage 1–4 core lesson to ≥ 5 songs where the quarry allows. Stage 6
@@ -55,8 +68,9 @@ verifies); `content/sources/musetrainer.json` (the shape of hand-judged levels).
 
 - `validate.py --strict-license` green; every lesson inside its level band; the ladder
   report up to date.
-- `build.py --offline --render` clean on the owner's machine **and** the same commit builds
-  clean in CI without the archive (push the branch; paste the CI run URL).
+- `build.py --offline --render --personal` clean on the owner's machine **and** the same
+  commit builds clean in CI without the archive and with `--strict-license` (push the
+  branch; paste the CI run URL and the strict build's personal-build placeholder count).
 - Python tests green; the composer decoy test still refuses the decoys.
 - Report: files committed per band; payload before/after; the model's Spearman/MAE; the P5
   skip list with a per-tune outcome; every "wanted, absent" piece moved to a finder example.
