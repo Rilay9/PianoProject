@@ -1348,6 +1348,571 @@ def make_pedal(root: str, bpm: int = 54, level: float = 3.5):
 
 
 # --------------------------------------------------------------------------------------
+# Hanon-style cells (`02` Part E amendment: the skills of 21-60, not the text)
+# --------------------------------------------------------------------------------------
+#
+# No reachable public-domain edition of Hanon 21-60 exists, and encoding sixty
+# exercises from memory is what P4 refused to do for 1-20. What those numbers
+# train has names, so the names are what is generated: "Repeated notes
+# 4-to-a-note in C", not "Hanon 44".
+
+
+def _walk(tonic: str, bars: int, per_bar: int) -> list[pitch.Pitch]:
+    """A stepwise scale walk long enough to fill `bars`."""
+    scale_obj = scale.MajorScale(tonic)
+    start = pitch.Pitch(tonic + "4")
+    run = scale_obj.getPitches(start, start.transpose(24))
+    needed = bars * per_bar
+    out: list[pitch.Pitch] = []
+    while len(out) < needed:
+        out.extend(run)
+    return out[:needed]
+
+
+def make_repeated_notes(
+    tonic: str = "C", per_note: int = 3, hands: str = "right", bpm: int = 60,
+) -> tuple[stream.Score, dict]:
+    """
+    The same note struck three or four times, changing finger each time.
+
+    Hanon 21-30 territory and the reason a repeated note sounds even at speed:
+    the hand does not lift, the fingers take turns. 3-2-1 for three notes and
+    4-3-2-1 for four, which is the standard descending order.
+    """
+    fingers = [3, 2, 1] if per_note == 3 else [4, 3, 2, 1]
+    level = 5.3 if per_note == 3 else 6.3
+    title = f"Repeated notes {per_note}-to-a-note in {tonic.replace('-', '♭')} — {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    steps = _walk(tonic, bars=4, per_bar=2)
+    ql = 1.0 / per_note
+
+    def build(part_: stream.PartStaff, transpose: int) -> float:
+        for p in steps:
+            for finger in fingers:
+                n = note.Note(p.transpose(transpose), quarterLength=ql)
+                n.articulations.append(articulations.Fingering(finger))
+                part_.append(n)
+        return len(steps) * per_note * ql
+
+    span = 0.0
+    if hands in ("both", "right"):
+        span = build(rh, 0)
+    if hands in ("both", "left"):
+        span = build(lh, -24)
+    if hands == "left":
+        silent(rh, span)
+    if hands == "right":
+        silent(lh, span)
+    finalize(sc)
+
+    item_id = f"exercise.repeated-notes.{key_slug(tonic)}.{per_note}x.{hands}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["repeated-notes", "finger-independence", "evenness", f"hands:{hands}"],
+        hands, bpm, "repeated-notes",
+        {"key": tonic, "perNote": per_note, "fingering": fingers, "fingeringVerified": True},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_trill(
+    tonic: str = "C", notes_per_beat: int = 4, hands: str = "right", bpm: int = 60,
+    ornament: str = "trill",
+) -> tuple[stream.Score, dict]:
+    """
+    A *measured* trill or a mordent, with the count written on the score.
+
+    An unmeasured trill cannot be scored and cannot be practised evenly — "as
+    fast as you can" is not a target. Writing the number of notes per beat is
+    what turns it into an exercise, so the direction says so in words and the
+    notation matches it exactly.
+    """
+    from music21 import expressions
+
+    level = 6.3 if ornament == "trill" else 5.3
+    label = "Measured trill" if ornament == "trill" else "Mordents"
+    title = f"{label} in {tonic.replace('-', '♭')} — {notes_per_beat} per beat, {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    scale_obj = scale.MajorScale(tonic)
+    starts = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "5"))[:4]
+    ql = 1.0 / notes_per_beat
+
+    direction = expressions.TextExpression(
+        f"{notes_per_beat} notes to the beat — count them, do not hurry"
+    )
+    rh.insert(0, direction)
+
+    # The scale degrees around each main note, taken from a plain list rather
+    # than `Scale.next`: music21 10 shadows that with `Music21Object.next`, and
+    # a neighbour is an index into the scale anyway.
+    ladder = scale_obj.getPitches(pitch.Pitch(tonic + "3"), pitch.Pitch(tonic + "6"))
+
+    def neighbour(p: pitch.Pitch, step: int) -> pitch.Pitch:
+        for i, candidate in enumerate(ladder):
+            if candidate.nameWithOctave == p.nameWithOctave:
+                return ladder[min(max(i + step, 0), len(ladder) - 1)]
+        return p
+
+    def build(part_: stream.PartStaff, transpose: int) -> float:
+        total = 0.0
+        for main in starts:
+            upper = neighbour(main, 1)
+            lower = neighbour(main, -1)
+            if ornament == "trill":
+                cell = [main, upper] * (notes_per_beat * 2 // 2)
+            else:
+                # A mordent is main-lower-main, then the beat is held.
+                cell = [main, lower, main]
+            for i, p in enumerate(cell):
+                n = note.Note(p.transpose(transpose), quarterLength=ql)
+                if i == 0:
+                    n.articulations.append(articulations.Fingering(2))
+                part_.append(n)
+            total += len(cell) * ql
+            rest = note.Rest(quarterLength=max(0.0, 2.0 - len(cell) * ql))
+            if rest.quarterLength > 0:
+                part_.append(rest)
+                total += float(rest.quarterLength)
+        return total
+
+    span = 0.0
+    if hands in ("both", "right"):
+        span = build(rh, 0)
+    if hands in ("both", "left"):
+        span = build(lh, -24)
+    if hands == "left":
+        silent(rh, span)
+    if hands == "right":
+        silent(lh, span)
+    finalize(sc)
+
+    item_id = f"exercise.{ornament}.{key_slug(tonic)}.{notes_per_beat}pb.{hands}"
+    entry = catalog_entry(
+        item_id, title, level,
+        [ornament, "ornamentation", "evenness", f"hands:{hands}"],
+        hands, bpm, "trill",
+        {"key": tonic, "ornament": ornament, "notesPerBeat": notes_per_beat,
+         "direction": f"{notes_per_beat} notes to the beat"},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_tremolo_octaves(
+    tonic: str = "C", hands: str = "right", bpm: int = 60,
+) -> tuple[stream.Score, dict]:
+    """
+    An octave tremolo: the two notes of an octave alternating in sixteenths.
+
+    Hanon 51-60 territory. The exercise is the forearm, not the fingers, so the
+    fingering is the octave's (1 and 5, or 1 and 4 on a black key) and nothing
+    else is marked.
+    """
+    level = 7.2
+    title = f"Octave tremolo in {tonic.replace('-', '♭')} — {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    scale_obj = scale.MajorScale(tonic)
+    roots = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "5"))[:4]
+
+    def build(part_: stream.PartStaff, transpose: int) -> float:
+        total = 0.0
+        for root in roots:
+            low = root.transpose(transpose)
+            high = low.transpose(12)
+            top = 4 if high.pitchClass in BLACK_PITCH_CLASSES else 5
+            for i in range(8):
+                tone = low if i % 2 == 0 else high
+                n = note.Note(tone, quarterLength=0.25)
+                n.articulations.append(articulations.Fingering(1 if i % 2 == 0 else top))
+                part_.append(n)
+            total += 2.0
+        return total
+
+    span = 0.0
+    if hands in ("both", "right"):
+        span = build(rh, 0)
+    if hands in ("both", "left"):
+        span = build(lh, -24)
+    if hands == "left":
+        silent(rh, span)
+    if hands == "right":
+        silent(lh, span)
+    finalize(sc)
+
+    item_id = f"exercise.tremolo.{key_slug(tonic)}.{hands}"
+    entry = catalog_entry(
+        item_id, title, level, ["tremolo", "octaves", "forearm", f"hands:{hands}"],
+        hands, bpm, "tremolo",
+        {"key": tonic, "fingeringVerified": True},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_rotation(
+    tonic: str = "C", hands: str = "left", bpm: int = 72,
+) -> tuple[stream.Score, dict]:
+    """
+    Alberti figuration at speed — wrist rotation rather than finger work.
+
+    The same shape `make_accompaniment` writes as an accompaniment pattern, but
+    fast, in sixteenths, and named for the technique it trains, because at
+    this speed it stops being an accompaniment and starts being a rotation
+    study (Hanon 46-49 territory).
+    """
+    level = 6.3
+    title = f"Wrist rotation (Alberti at speed) in {tonic.replace('-', '♭')} — {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    k = key.Key(tonic)
+
+    def build(part_: stream.PartStaff, octave: int) -> float:
+        total = 0.0
+        for degrees in ACCOMPANIMENT_CHORDS:
+            tones = scale_pitches(k, octave, degrees)
+            order = [tones[0], tones[2], tones[1], tones[2]]
+            fingers = [5, 1, 3, 1] if part_ is lh else [1, 5, 3, 5]
+            for _ in range(2):
+                for tone, finger in zip(order, fingers):
+                    n = note.Note(tone, quarterLength=0.25)
+                    n.articulations.append(articulations.Fingering(finger))
+                    part_.append(n)
+            total += 2.0
+        return total
+
+    span = 0.0
+    if hands in ("both", "left"):
+        span = build(lh, 3)
+    if hands in ("both", "right"):
+        span = build(rh, 4)
+    if hands == "left":
+        silent(rh, span)
+    if hands == "right":
+        silent(lh, span)
+    finalize(sc)
+
+    item_id = f"exercise.rotation.{key_slug(tonic)}.{hands}"
+    entry = catalog_entry(
+        item_id, title, level, ["rotation", "alberti", "wrist", f"hands:{hands}"],
+        hands, bpm, "rotation", {"key": tonic, "pattern": "alberti"},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+# --------------------------------------------------------------------------------------
+# families the engine scores in a new way
+# --------------------------------------------------------------------------------------
+
+
+def make_articulation(
+    tonic: str = "C", articulation: str = "staccato", hands: str = "right", bpm: int = 72,
+) -> tuple[stream.Score, dict]:
+    """
+    The same four-bar phrase, written staccato and written legato.
+
+    The pair is the exercise: playing either one well is easy, and hearing the
+    difference between them is the skill. They are two items rather than one
+    eight-bar item so the engine can score each against a single target —
+    `drill.params.articulation` says which, and `ArticulationScore` in the
+    engine judges it by how long each note is actually held.
+    """
+    from music21 import expressions
+
+    level = 4.5 if articulation == "legato" else 4.4
+    label = articulation.capitalize()
+    title = f"{label} phrase in {tonic.replace('-', '♭')} — {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    steps = _walk(tonic, bars=4, per_bar=4)
+    rh.insert(0, expressions.TextExpression(
+        "Crisp and short — release each key before the next"
+        if articulation == "staccato"
+        else "Joined — hold each key until the next one sounds"
+    ))
+
+    def build(part_: stream.PartStaff, transpose: int) -> float:
+        for i, p in enumerate(steps):
+            n = note.Note(p.transpose(transpose), quarterLength=1.0)
+            if articulation == "staccato":
+                n.articulations.append(articulations.Staccato())
+            elif i == 0:
+                n.articulations.append(articulations.Tenuto())
+            part_.append(n)
+        return float(len(steps))
+
+    span = 0.0
+    if hands in ("both", "right"):
+        span = build(rh, 0)
+    if hands in ("both", "left"):
+        span = build(lh, -24)
+    if hands == "left":
+        silent(rh, span)
+    if hands == "right":
+        silent(lh, span)
+    finalize(sc)
+
+    item_id = f"exercise.articulation.{key_slug(tonic)}.{articulation}.{hands}"
+    other = "legato" if articulation == "staccato" else "staccato"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["articulation", articulation, "note-length", f"hands:{hands}"],
+        hands, bpm, "articulation",
+        {"key": tonic, "articulation": articulation,
+         # The engine's thresholds, carried with the item so a future change to
+         # either is visible as a content change (docs/05 §7).
+         "heldFractionMax": 0.5 if articulation == "staccato" else None,
+         "heldFractionMin": None if articulation == "staccato" else 0.9},
+        f"scores/generated/{item_id}.mxl",
+    )
+    entry["variantOf"] = f"exercise.articulation.{key_slug(tonic)}.{other}.{hands}" if articulation == "legato" else None
+    entry["variantLabel"] = articulation
+    return sc, entry
+
+
+#: The hand-independence ratios, as (right notes : left notes) per beat.
+INDEPENDENCE_RATIOS = (("2:1", 2, 1, 5.3), ("3:1", 3, 1, 6.2), ("2:3", 2, 3, 7.1), ("3:2", 3, 2, 7.1))
+
+
+def make_hand_independence(
+    tonic: str = "C", ratio: str = "2:1", bpm: int = 60,
+) -> tuple[stream.Score, dict]:
+    """
+    Two hands at different subdivisions of the same beat.
+
+    2:1 is eighths over quarters and is a coordination exercise; 2-against-3 in
+    either direction is a genuinely different skill, which is why both
+    directions exist as separate items — the hand that plays the three is the
+    one doing the work, and it matters which one it is.
+    """
+    right_n, left_n, level = next((r, l, lv) for name, r, l, lv in INDEPENDENCE_RATIOS if name == ratio)
+    title = f"Hand independence {ratio} in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    k = key.Key(tonic)
+    bars = 4
+
+    for degrees, part_, count, octave in (
+        ([1, 2, 3, 4, 5], rh, right_n, 4),
+        ([1, 5, 3, 1, 5], lh, left_n, 3),
+    ):
+        tones = scale_pitches(k, octave, degrees)
+        ql = 1.0 / count
+        for bar in range(bars):
+            for beat in range(4):
+                for i in range(count):
+                    tone = tones[(bar * 4 + beat + i) % len(tones)]
+                    part_.append(note.Note(tone, quarterLength=ql))
+    finalize(sc)
+
+    item_id = f"exercise.independence.{key_slug(tonic)}.{ratio.replace(':', 'v')}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["hand-independence", f"polyrhythm-{ratio}", "coordination"],
+        "both", bpm, "hand-independence",
+        {"key": tonic, "ratio": ratio, "rightPerBeat": right_n, "leftPerBeat": left_n},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_shaping(
+    tonic: str = "C", shape: str = "crescendo", bpm: int = 60,
+) -> tuple[stream.Score, dict]:
+    """
+    A scale played with a rising (or falling) dynamic, scored on the slope.
+
+    The existing `dynamics` drill compares a soft phrase with a loud one, which
+    measures whether two dynamics are different. This measures whether one line
+    *travels* — velocity rising monotonically across the run with a range of at
+    least 30, which is the difference between a crescendo and a step.
+    """
+    from music21 import dynamics as m21dynamics
+    from music21 import expressions
+
+    level = 5.2
+    title = f"{shape.capitalize()} over a scale in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    run = _diatonic_run(tonic, "major", pitch.Pitch(tonic + "4"), 2)
+    if shape == "diminuendo":
+        run = list(reversed(run))
+    rh.insert(0, m21dynamics.Dynamic("pp" if shape == "crescendo" else "ff"))
+    rh.insert(0, expressions.TextExpression(
+        "Grow evenly from the first note to the last" if shape == "crescendo"
+        else "Fade evenly from the first note to the last"
+    ))
+    add_notes(rh, run, None, 0.5)
+    rh.append(note.Note(run[-1], quarterLength=2.0))
+    silent(lh, 0.5 * len(run) + 2.0)
+    finalize(sc)
+
+    item_id = f"exercise.shaping.{key_slug(tonic)}.{shape}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["dynamics", "shaping", shape, "phrasing"],
+        "right", bpm, "shaping",
+        {"key": tonic, "shape": shape, "minVelocityRange": 30},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_voicing(tonic: str = "C", bpm: int = 54) -> tuple[stream.Score, dict]:
+    """
+    A chord sequence whose top note must sing above the rest.
+
+    The skill the *Beautiful pieces* shelf is built on and the one nothing
+    tested: a four-note chord where the melody note is the one you hear. It is
+    measurable — the top note's velocity against the mean of the others — which
+    is why it can be an exercise rather than a note in a lesson.
+    """
+    from music21 import expressions
+
+    level = 6.2
+    title = f"Voicing the top note in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    k = key.Key(tonic)
+    rh.insert(0, expressions.TextExpression("The top note sings; the rest accompany it"))
+    for degrees in ([1, 3, 5, 8], [2, 4, 6, 9], [3, 5, 7, 10], [1, 3, 5, 8]):
+        tones = scale_pitches(k, 4, degrees)
+        rh.append(fingered_chord(tones, [1, 2, 3, 5], 4.0))
+        add_notes(lh, scale_pitches(k, 2, [degrees[0]]), [5], 4.0)
+    finalize(sc)
+
+    item_id = f"exercise.voicing.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["voicing", "melody-projection", "balance", "tone"],
+        "both", bpm, "voicing",
+        {"key": tonic, "topNoteRatio": 1.4},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+# --------------------------------------------------------------------------------------
+# rhythm: ties across the bar, 16th syncopation, and the odd meters
+# --------------------------------------------------------------------------------------
+
+
+def make_syncopation(
+    variant: str = "tied-across-bar", bpm: int = 76,
+) -> tuple[stream.Score, dict]:
+    """
+    Ties over the barline, and syncopation at the sixteenth.
+
+    `make_rhythm` writes patterns inside a bar. What neither it nor anything
+    else wrote is a note that *starts* in one bar and belongs to the next,
+    which is the thing that makes a learner lose the beat.
+    """
+    from music21 import expressions
+
+    level = 5.4 if variant == "tied-across-bar" else 6.4
+    title = ("Ties across the bar line" if variant == "tied-across-bar"
+             else "Sixteenth-note syncopation")
+    sc, rh, lh = grand_staff(title, bpm)
+    rh.insert(0, expressions.TextExpression("Count out loud; the pulse does not move"))
+
+    if variant == "tied-across-bar":
+        pattern = [1.0, 1.0, 1.0, 1.5, 0.5, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    else:
+        pattern = [0.25, 0.5, 0.25, 0.5, 0.5, 0.5, 0.5, 0.25, 0.5, 0.25,
+                   0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
+    tones = _walk("C", bars=4, per_bar=len(pattern) // 4 + 1)
+    for i, ql in enumerate(pattern):
+        rh.append(note.Note(tones[i % len(tones)], quarterLength=ql))
+    beats = sum(pattern)
+    for _ in range(int(beats // 4)):
+        lh.append(chord.Chord(["C3", "E3", "G3"], quarterLength=4.0))
+    remainder = beats - 4 * int(beats // 4)
+    if remainder:
+        lh.append(note.Rest(quarterLength=remainder))
+    finalize(sc)
+
+    item_id = f"exercise.syncopation.{variant}"
+    entry = catalog_entry(
+        item_id, title, level, ["rhythm", "syncopation", variant], "both", bpm,
+        "syncopation", {"variant": variant, "timeSig": "4/4"},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+#: The odd meters `02` asks for and `make_rhythm` could not express: it writes
+#: 4/4 only, and a 7/8 bar is not a 4/4 bar with a note missing.
+ODD_METERS = (("5/4", [1.0, 1.0, 1.0, 1.0, 1.0], 5.4), ("7/8", [0.5] * 7, 6.4))
+
+
+def make_meter(signature: str = "5/4", bpm: int = 66) -> tuple[stream.Score, dict]:
+    """A four-bar phrase in an odd meter, with the grouping written above it."""
+    from music21 import expressions
+
+    pattern, level = next((p, lv) for sig, p, lv in ODD_METERS if sig == signature)
+    grouping = "3 + 2" if signature == "5/4" else "2 + 2 + 3"
+    title = f"{signature} — counting in {grouping}"
+    sc, rh, lh = grand_staff(title, bpm, ts=signature)
+    rh.insert(0, expressions.TextExpression(f"Count {grouping}"))
+    tones = _walk("C", bars=4, per_bar=len(pattern))
+    for bar in range(4):
+        for i, ql in enumerate(pattern):
+            rh.append(note.Note(tones[(bar * len(pattern) + i) % len(tones)], quarterLength=ql))
+        lh.append(chord.Chord(["C3", "G3"], quarterLength=sum(pattern)))
+    finalize(sc)
+
+    item_id = f"exercise.meter.{signature.replace('/', '-')}"
+    entry = catalog_entry(
+        item_id, title, level, ["rhythm", "odd-meter", f"meter-{signature.replace('/', '-')}"],
+        "both", bpm, "meter", {"timeSig": signature, "grouping": grouping},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_pedal_variant(
+    root: str = "C", variant: str = "held-melody", bpm: int = 54,
+) -> tuple[stream.Score, dict]:
+    """
+    The two pedal skills the clean-change drill does not reach.
+
+    `held-melody` is a melody note held while the harmony under it moves — the
+    pedal has to change without cutting the melody, which is the whole
+    difficulty. `half-pedal` asks for the damper part-way, scored on the CC64
+    *value* rather than on its timing: a pedal that is only ever 0 or 127 cannot
+    play late Romantic music.
+    """
+    from music21 import expressions
+
+    level = 6.4 if variant == "held-melody" else 7.4
+    k = key.Key(root)
+    title = ("Held melody over changing harmony" if variant == "held-melody"
+             else "Half pedal — the damper part-way down") + f" in {root.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=k)
+    rh.insert(0, expressions.TextExpression(
+        "Change the pedal under the held note — it must not break"
+        if variant == "held-melody"
+        else "Half way down: enough to blur, not enough to smear"
+    ))
+    for degrees in ([1, 3, 5], [1, 4, 6], [2, 5, 7], [1, 3, 5]):
+        lh.append(fingered_chord(scale_pitches(k, 3, degrees), [5, 3, 1], 4.0))
+    if variant == "held-melody":
+        # One note across all four bars: that is the exercise.
+        add_notes(rh, scale_pitches(k, 5, [1]), [5], 16.0)
+    else:
+        for degrees in ([5], [6], [5], [3]):
+            add_notes(rh, scale_pitches(k, 5, degrees), [5], 4.0)
+    finalize(sc)
+
+    item_id = f"exercise.pedal.{variant}.{key_slug(root)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["sustain-pedal", variant, "CC64", "tone"], "both", bpm,
+        "pedal-held" if variant == "held-melody" else "half-pedal",
+        {"key": root,
+         **({"ccRange": [32, 96]} if variant == "half-pedal" else {"holdBars": 4})},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+# --------------------------------------------------------------------------------------
 # main
 # --------------------------------------------------------------------------------------
 def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, dict]]:
@@ -1493,6 +2058,50 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
     for k in broken_keys:
         for quality in ("dominant7", "major7", "minor7"):
             items.append(make_broken_seventh(k, quality, "both"))
+
+    # ---- the Hanon 21-60 skills, as named families (`02` Part E amendment) -------------
+    #
+    # C, G and F first because that is the order the course introduces keys in;
+    # --full opens the rest. The point of these is the motion, not the key.
+    cell_keys = ["C"] if quick else (list(MAJOR_KEYS) if full else ["C", "G", "F"])
+    for k in cell_keys:
+        for per_note in (3, 4):
+            for hands in ("right", "left"):
+                items.append(make_repeated_notes(k, per_note, hands))
+        for hands in ("right", "left"):
+            items.append(make_trill(k, 4, hands, ornament="trill"))
+            items.append(make_trill(k, 2, hands, ornament="mordent"))
+            items.append(make_tremolo_octaves(k, hands))
+        for hands in ("left", "right"):
+            items.append(make_rotation(k, hands))
+
+    # ---- families the engine scores in a new way --------------------------------------
+    articulation_keys = ["C"] if quick else ["C", "G", "F", "D"]
+    for k in articulation_keys:
+        for articulation in ("staccato", "legato"):
+            items.append(make_articulation(k, articulation, "right"))
+
+    independence_keys = ["C"] if quick else ["C", "G", "F"]
+    for k in independence_keys:
+        for ratio, *_ in INDEPENDENCE_RATIOS:
+            items.append(make_hand_independence(k, ratio))
+
+    shaping_keys = ["C"] if quick else ["C", "G", "F", "D", "A"]
+    for k in shaping_keys:
+        for shape in ("crescendo", "diminuendo"):
+            items.append(make_shaping(k, shape))
+    for k in shaping_keys:
+        items.append(make_voicing(k))
+
+    # ---- rhythm the existing generator could not write --------------------------------
+    for variant in ("tied-across-bar", "sixteenth"):
+        items.append(make_syncopation(variant))
+    for signature, _, _ in ODD_METERS:
+        items.append(make_meter(signature))
+
+    for k in (["C"] if quick else ["C", "G", "F", "A"]):
+        for variant in ("held-melody", "half-pedal"):
+            items.append(make_pedal_variant(k, variant))
     return items
 
 
