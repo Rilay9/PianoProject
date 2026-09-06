@@ -81,9 +81,11 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    - **120 min (weekend):** two 60-min halves with a break reminder; the second half is
      repertoire-heavy (a "beautiful piece" project), jam practice, and a sight-reading set.
    Goals are weekly minutes; missing weekdays never breaks anything.
-   **From P12b:** the 30- and 60-minute templates gain a 3-minute sight-reading slot
-   (taken from free play in the 30, from repertoire in the 60), because sight-reading only
-   works on unseen music and a weekly slot is not a habit.
+   **From P12b:** the 30- and 60-minute templates gain a 3-minute sight-reading slot,
+   because sight-reading only works on unseen music and a weekly slot is not a habit. The
+   60 takes its three minutes from repertoire. The 30 had only two minutes of free play, so
+   it takes those and a third minute from repertoire: **30 min** is now technique 5 ·
+   review 5 · new 10 · repertoire 7 · sight-reading 3, with no free-play row.
 
 ## Part B — Stage map
 

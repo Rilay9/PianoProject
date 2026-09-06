@@ -121,6 +121,29 @@ returns null rather than guessing, so an unreadable parameter is a visible failu
 | `call-response` | plays 2 bars, expects them back (pitch + rhythm within tolerance) | accuracy |
 | `backing-track` | Free mode + loop | none (records) |
 
+**P12b adds seven more**, for the harmony and ear skills `02` Parts D2–D4 name:
+
+| kind | behaviour | scoring |
+|------|-----------|---------|
+| `mode` | names a root and a mode, waits for one octave ascending, in order | % correct |
+| `chord-scale` | shows a chord symbol, waits for the scale that fits it | same |
+| `extended-chord` | shows a 9th, 11th or 13th, waits for every note of it | same |
+| `roman-numeral` | shows a numeral and a key (`V7/vi` in F), waits for the chord | same |
+| `transposition` | prints four bars from the §8 generator, waits for them in the named key; the expectation is the printed model moved by the interval | same |
+| `ear-tune` | plays four or eight bars, then takes them back a phrase at a time; the hint names the phrase's first note | same |
+| `harmonic-dictation` | plays a progression, waits for it back **as chords** — a chord is complete when nothing new has arrived for `CHORD_BOUNDARY_MS` (120 ms) or a note belonging to the next expected chord arrives | whole progression right or wrong |
+
+The last one is the only drill whose answer is a *series* of pitch sets arriving as one
+stream of note-ons, so it is a class of its own rather than a `PromptDrill`, and the screen
+has to tick it: the final chord of a progression is followed by no note at all, so the
+silence half of the rule needs something other than the next input to notice it.
+
+Drills also listen to the microphone (§11.4). The screen offers it when the owner has put
+`mic` in the follow-input priority — never automatically, because opening it raises a
+permission prompt — publishes the current card's expected pitches to the detector (§11.1),
+ignores any answer below 0.5 confidence rather than marking it wrong, and mutes an ear
+drill's own playback while listening, since the phone would otherwise hear itself.
+
 ## 8. Runtime sight-reading generator (TypeScript, emits MusicXML)
 
 Because the whole point is *unseen* material, the app generates it on the phone:
