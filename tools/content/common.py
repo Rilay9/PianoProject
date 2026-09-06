@@ -25,13 +25,45 @@ SOURCES_MD = IMPORTED_DIR / "SOURCES.md"
 BUILD_DIR = REPO_ROOT / "build"
 DEFAULT_OUT = REPO_ROOT / "app" / "public" / "content"
 
-#: Every track id the catalog schema allows, so a typo in a data file is caught
-#: before jsonschema has to explain it.
-TRACKS = (
-    "core", "classical", "chords-pop", "blues-boogie", "jazz", "ragtime",
-    "theory-ear", "improv-compose", "hymns-gospel", "latin", "holiday",
-    "film-game", "technique",
-)
+#: The one source of truth for the track list (replan §1.8).
+TRACKS_FILE = CONTENT_SRC / "curriculum" / "00-tracks.json"
+
+
+def load_tracks(path: Path = TRACKS_FILE) -> tuple[str, ...]:
+    """
+    The followable modules: the tracks a unit can belong to and the Plan screen draws.
+
+    There used to be three lists: a tuple in this file, the `tracks` enum in
+    `catalog.schema.json`, and `00-tracks.json` itself. They drifted — the
+    schema was missing `rock-metal`, `jam` and `beautiful`, and the tuple named
+    `film-game` and `technique`, which no track file has ever defined. Adding a
+    Chopin prelude to the Beautiful-pieces module is what finally surfaced it.
+    Now the curriculum file is the list and everything else asks it.
+    """
+    if not path.exists():
+        return ()
+    data = read_json(path)
+    assert isinstance(data, dict)
+    return tuple(track["id"] for track in data.get("tracks", []))
+
+
+def load_item_labels(path: Path = TRACKS_FILE) -> tuple[str, ...]:
+    """
+    Categories an item may carry that are not modules a learner follows.
+
+    The code has always used `tracks[]` for two jobs. Fourteen of the ids are
+    curriculum modules with stages and units behind them; `technique` and
+    `film-game` are labels — `technique` is on 434 items and the session
+    builder reads it to choose a warm-up, but there is no technique ladder and
+    a Plan screen drawing an empty one would be a lie. Keeping both roles in
+    the one file keeps the single source of truth §1.8 asks for without
+    pretending the two are the same thing.
+    """
+    if not path.exists():
+        return ()
+    data = read_json(path)
+    assert isinstance(data, dict)
+    return tuple(label["id"] for label in data.get("itemLabels", []))
 
 
 def utc_now() -> str:
@@ -115,16 +147,39 @@ class LedgerRow:
         return cls(cells[0], cells[1], cells[2], cells[3], cells[4], cells[5], cells[6], files)
 
 
+def read_ledger(path: Path = SOURCES_MD) -> dict[tuple[str, str], LedgerRow]:
+    """Every row currently in SOURCES.md, keyed by (source, path)."""
+    existing: dict[tuple[str, str], LedgerRow] = {}
+    if not path.exists():
+        return existing
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("|") or line.startswith("| source") or set(line) <= set("| -"):
+            continue
+        row = LedgerRow.from_markdown(line)
+        if row is not None:
+            existing[row.key()] = row
+    return existing
+
+
+def ledger_fetched_at(source_path: str, path: Path = SOURCES_MD) -> str | None:
+    """
+    When the bytes under `source_path` were last actually fetched.
+
+    The catalog's `fetchedAt` used to be `utc_now()` at *import* time, which is
+    two things wrong: it says a source was fetched now when the clone may be
+    days old, and it changes on every build, so two builds of untouched sources
+    produce different catalogs. The ledger is the record of what happened, so
+    the catalog quotes it.
+    """
+    for (_, row_path), row in read_ledger(path).items():
+        if row_path == source_path:
+            return row.fetched
+    return None
+
+
 def update_ledger(rows: list[LedgerRow], path: Path = SOURCES_MD) -> None:
     """Merges `rows` into SOURCES.md, replacing any row with the same key."""
-    existing: dict[tuple[str, str], LedgerRow] = {}
-    if path.exists():
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if not line.startswith("|") or line.startswith("| source") or set(line) <= set("| -"):
-                continue
-            row = LedgerRow.from_markdown(line)
-            if row is not None:
-                existing[row.key()] = row
+    existing = read_ledger(path)
     for row in rows:
         existing[row.key()] = row
 
@@ -167,18 +222,29 @@ def catalog_item(
     item_type: str,
     title: str,
     level: float,
+    level_source: str,
     hands: str,
     tracks: list[str],
     concepts: list[str],
     source: SourceBlock,
     **optional: object,
 ) -> dict:
-    """Builds a schema-shaped catalog item; `optional` fills in the rest."""
+    """
+    Builds a schema-shaped catalog item; `optional` fills in the rest.
+
+    `level_source` has no default on purpose (replan §1.4). It is the one field
+    whose honest value depends entirely on how the caller arrived at `level`,
+    and a default would be a guess made in the wrong place — so every writer
+    has to say `judged` or `estimated` out loud.
+    """
+    if level_source not in {"judged", "estimated"}:
+        raise ValueError(f"level_source must be 'judged' or 'estimated', not {level_source!r}")
     item: dict = {
         "id": item_id,
         "type": item_type,
         "title": title,
         "level": round(float(level), 2),
+        "levelSource": level_source,
         "hands": hands,
         "tracks": tracks,
         "concepts": concepts,
@@ -203,7 +269,12 @@ class Step:
     warnings: list[str] = field(default_factory=list)
 
 
-def run(cmd: list[str], cwd: Path | None = None, timeout: int = 900) -> subprocess.CompletedProcess:
+def run(
+    cmd: list[str],
+    cwd: Path | None = None,
+    timeout: int = 900,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess:
     return subprocess.run(
-        cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True, check=False
+        cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True, check=False, env=env
     )

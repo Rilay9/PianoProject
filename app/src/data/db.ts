@@ -14,7 +14,8 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 
 export const DB_NAME = 'pianopath';
-export const DB_VERSION = 1;
+/** 2 adds `levelOverrides` (replan §1.4). */
+export const DB_VERSION = 2;
 
 export type ProgressStatus = 'new' | 'started' | 'passed' | 'mastered';
 
@@ -85,6 +86,22 @@ export interface SkillRow {
   lastReviewedAt?: string;
 }
 
+/**
+ * The owner's own difficulty number for one item (replan §1.4).
+ *
+ * Most levels outside the authored material are *estimated* — from the opus,
+ * or from a group of pieces banded together on import — and an estimate that
+ * feels wrong is worth one tap to fix. An override wins over the catalog
+ * everywhere a level is read, and re-levelling an item also makes it count as
+ * judged: the owner playing it is a better source than the estimate was.
+ */
+export interface LevelOverrideRow {
+  itemId: string;
+  level: number;
+  /** ISO date-time, so a later import can prefer the newer of two. */
+  at: string;
+}
+
 interface PianoPathDb extends DBSchema {
   settings: { key: string; value: unknown };
   progress: { key: string; value: ProgressRow };
@@ -94,6 +111,7 @@ interface PianoPathDb extends DBSchema {
   streak: { key: string; value: StreakRow };
   micCalibration: { key: string; value: unknown };
   skills: { key: string; value: SkillRow };
+  levelOverrides: { key: string; value: LevelOverrideRow };
 }
 
 let dbPromise: Promise<IDBPDatabase<PianoPathDb> | null> | null = null;
@@ -104,17 +122,25 @@ export function openDatabase(): Promise<IDBPDatabase<PianoPathDb> | null> {
   // browser with site data blocked — so the guard has to come first.
   if (typeof indexedDB === 'undefined') return Promise.resolve(null);
   dbPromise ??= openDB<PianoPathDb>(DB_NAME, DB_VERSION, {
-    upgrade(db) {
-      db.createObjectStore('settings');
-      db.createObjectStore('progress', { keyPath: 'itemId' });
-      const sessions = db.createObjectStore('sessions', { keyPath: 'id', autoIncrement: true });
-      sessions.createIndex('byItem', 'itemId');
-      sessions.createIndex('byDate', 'at');
-      db.createObjectStore('imports', { keyPath: 'id' });
-      db.createObjectStore('plan', { keyPath: 'id' });
-      db.createObjectStore('streak', { keyPath: 'id' });
-      db.createObjectStore('micCalibration');
-      db.createObjectStore('skills', { keyPath: 'conceptId' });
+    // `oldVersion` is 0 on a fresh database and the previous version on an
+    // upgrade, so each block runs exactly once and a phone that has been on
+    // version 1 since P7 keeps every row it has.
+    upgrade(db, oldVersion) {
+      if (oldVersion < 1) {
+        db.createObjectStore('settings');
+        db.createObjectStore('progress', { keyPath: 'itemId' });
+        const sessions = db.createObjectStore('sessions', { keyPath: 'id', autoIncrement: true });
+        sessions.createIndex('byItem', 'itemId');
+        sessions.createIndex('byDate', 'at');
+        db.createObjectStore('imports', { keyPath: 'id' });
+        db.createObjectStore('plan', { keyPath: 'id' });
+        db.createObjectStore('streak', { keyPath: 'id' });
+        db.createObjectStore('micCalibration');
+        db.createObjectStore('skills', { keyPath: 'conceptId' });
+      }
+      if (oldVersion < 2) {
+        db.createObjectStore('levelOverrides', { keyPath: 'itemId' });
+      }
     },
   }).catch(() => null);
   return dbPromise;
@@ -130,6 +156,7 @@ export const STORE_NAMES = [
   'streak',
   'micCalibration',
   'skills',
+  'levelOverrides',
 ] as const;
 
 export type StoreName = (typeof STORE_NAMES)[number];

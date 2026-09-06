@@ -21,7 +21,14 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: 'npm run build && npm run preview',
+    // `build:app`, not `build`: content is an *input* to these tests, not
+    // something they should produce. `npm run build` rebuilds it through
+    // `prebuild`, which — now that `--if-missing` is gone (replan §7.9) — meant
+    // every e2e run reconverted the whole library, and meant the render check
+    // rebuilt the very catalog it had been handed to measure. Build content
+    // first with `python3 tools/content/build.py`; CI and render_check.py both
+    // already do.
+    command: 'npm run build:app && npm run preview',
     url: 'http://localhost:4173/PianoProject/',
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

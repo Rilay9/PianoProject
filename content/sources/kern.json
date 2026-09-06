@@ -2323,7 +2323,15 @@
           "abrsmGradeApprox": 8
         },
         "007": {
-          "skip": "music21 cannot export it: the cadenza in bar 27 is a 29-in-24 tuplet whose base value is a 2048th note, and MusicXML stops at 1024th. Quantising it would change the music, so the piece is left out rather than altered. Import your own copy if you want it."
+          "level": 9.0,
+          "abrsmGradeApprox": 8,
+          "importHint": "MusicXML cannot express the 2048th-note tuplet in bar 27; import an edition that notates the cadenza differently. The cadenza is a 29-in-24 tuplet whose base value is a 2048th note and MusicXML stops at 1024th, so music21 refuses to export it — quantising it would change the music, which the pipeline does not do.",
+          "editionNotes": "Not bundled: see importHint. The other Op. 25 études are.",
+          "concepts": [
+            "cantabile",
+            "voicing-melody",
+            "left-hand-melody"
+          ]
         },
         "009": {
           "level": 8.8,

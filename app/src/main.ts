@@ -6,6 +6,7 @@ import { audioEngine } from './audio/AudioEngine';
 import { autoConnectMidi } from './app/services';
 import { hydratePersisted, needsHydration } from './data/persist';
 import { reloadSettings } from './data/settingsStore';
+import { loadLevelOverrides } from './data/levelOverrides';
 import { installErrorLog } from './util/errorLog';
 import { installErrorBoundary } from './ui/errorBoundary';
 import { showUpdateToast } from './ui/updateToast';
@@ -57,6 +58,12 @@ function mount(): void {
   const router = new Router();
   mountAppShell(root, router);
 }
+
+// The owner's own difficulty numbers (replan §1.4). Not awaited: every screen
+// works from the catalog's levels until this lands, and it tells the catalog
+// index to rebuild if it found any — so the cost of a cold read is a redraw,
+// not a delayed first paint.
+void loadLevelOverrides().catch(() => undefined);
 
 if (needsHydration()) {
   void hydratePersisted()

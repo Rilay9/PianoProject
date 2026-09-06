@@ -83,7 +83,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     return listRow({
       title: item.title,
       subtitle: item.composer ?? undefined,
-      meta: `${levelLabel(item.level)} · ${handsLabel(item.hands)} · ${item.source?.name ?? 'PianoPath'}`,
+      meta: `${levelLabel(item.level, item.levelSource)} · ${handsLabel(item.hands)} · ${item.source?.name ?? 'PianoPath'}`,
       badges,
       actions: importNeeded
         ? []

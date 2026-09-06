@@ -46,3 +46,34 @@ describe('OSMD 2.1.2: a sixteenth-note grace truncates its measure', () => {
     expect(model.steps).toHaveLength(4);
   });
 });
+
+describe('OSMD 2.1.2: a rounded tuplet duration becomes an empty note object', () => {
+  /**
+   * Thirteen Chopin first editions convert cleanly, round-trip through music21
+   * note for note, and then make OSMD throw `Invalid note initialization
+   * object: {}` before anything is drawn. P10 excluded them with the cause
+   * unknown, having ruled out grace notes and beams by hand
+   * (`docs/decisions/2026-09-06-p10-chopin-and-breadth.md` §5).
+   *
+   * `tools/content/bisect_render.py` found it. Halving the Op. 9 no. 2 nocturne
+   * by measure range narrowed the failure to **bar 16**, and that bar is this
+   * fixture: a 13-in-8 tuplet of thirty-seconds at `divisions=10080`, where
+   * music21 writes each tuplet note as **1163** divisions. Thirteen of them
+   * come to 15119, one short of the 15120 they have to fill, so the bar totals
+   * 60479 where 60480 is a full 6/8 — and OSMD builds a note out of the
+   * leftover nothing.
+   *
+   * It is a *writer* defect as much as a renderer one: 10080 is not divisible
+   * by 13, so no integer duration can express this tuplet. The fix belongs in
+   * `convert.py` — choose a `divisions` value divisible by every tuplet's
+   * `actual-notes`, or give the last note of a tuplet the remainder — and is
+   * a follow-up, because it changes the timing of every converted file by up
+   * to one division and needs the render check run over the whole library to
+   * confirm it is safe.
+   */
+  it('still throws on load (remove this test when it starts failing)', async () => {
+    await expect(
+      loadFixture(join(KNOWN_ISSUES_DIR, 'osmd-empty-note.musicxml')),
+    ).rejects.toThrow('Invalid note initialization object');
+  });
+});

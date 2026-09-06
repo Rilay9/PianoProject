@@ -568,7 +568,20 @@ export function DevScoreScreen(router: Router): HTMLElement {
       // windowed, and a draw range clamps the cursor's iterator.
       const host = document.createElement('div');
       host.style.position = 'absolute';
-      host.style.visibility = 'hidden';
+      // Off-screen, not zero-width. `visibility: hidden` alone left an
+      // absolutely positioned div with no width to lay out in, and OSMD's
+      // SkyBottomLineCalculator engraves into whatever it is given: it warned
+      // "width not > 0" once per measure — 58,852 times across the library —
+      // and on three scores it threw outright, which the content render check
+      // then reported as broken content. It was not: the same files render
+      // with 2,006 and 2,846 steps when they are engraved somewhere with a
+      // width. A check that breaks the thing it is measuring is worse than no
+      // check, so the probe gets a real width and stays out of sight by being
+      // positioned off-screen.
+      host.style.left = '-10000px';
+      host.style.top = '0';
+      host.style.width = '1200px';
+      host.setAttribute('aria-hidden', 'true');
       document.body.appendChild(host);
       const view = new OsmdView(host, { hideCursor: false });
       try {

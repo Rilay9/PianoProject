@@ -37,6 +37,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import functools
+import os
 import re
 import sys
 from dataclasses import dataclass, field
@@ -44,7 +46,17 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from common import CONTENT_SRC, IMPORTED_DIR, SourceBlock, catalog_item, read_json, sha256_file, utc_now, write_json  # noqa: E402
+from common import (  # noqa: E402
+    CONTENT_SRC,
+    IMPORTED_DIR,
+    SourceBlock,
+    catalog_item,
+    ledger_fetched_at,
+    read_json,
+    sha256_file,
+    utc_now,
+    write_json,
+)
 from licensing import (  # noqa: E402
     NC_PERSONAL_TAG,
     LicenseDecision,
@@ -58,6 +70,18 @@ from licensing import (  # noqa: E402
 
 TABLE_PATH = CONTENT_SRC / "sources" / "kern.json"
 KERN_DIR = IMPORTED_DIR / "kern"
+
+
+@functools.lru_cache(maxsize=None)
+def repo_fetched_at(repo_name: str) -> str | None:
+    """
+    When this repository's bytes actually arrived, from the provenance ledger.
+
+    Cached because it is asked once per catalog item and answered once per
+    repository. `None` when the ledger has no row — the caller falls back to
+    now, which is the old behaviour and the only honest answer available.
+    """
+    return ledger_fetched_at(f"kern/{repo_name}")
 
 #: What a placeholder tells the owner to do instead. The Sapp editions are a
 #: `git clone` away on any machine, so this is a real instruction, not a shrug.
@@ -483,6 +507,9 @@ def expand_groups(table: dict, report: ImportReport) -> list[tuple[str, dict]]:
                     part for part in (override.get("editionNotes"), group.get("editionNotes"), f"First edition: {publisher}.") if part
                 ),
                 "_banded": banded,
+                # Set on a work the pipeline cannot convert: it becomes a
+                # placeholder rather than a hole in the opus (replan §1.2).
+                "importHint": override.get("importHint"),
             }
             ids.append(item_id)
             pending.append((f"{repo_name}/kern/{path.name}", spec))
@@ -610,16 +637,32 @@ def build_entry(
     bundling = decision.verdict is Verdict.BUNDLE
     dest = scores_out / (spec["id"] + ".mxl")
     tags = ["kern", repo_name]
-    if spec.get("_banded") or spec.get("levelBanded"):
-        # An estimate, not a judgement about this piece. `_banded` is set by
-        # group expansion; `levelBanded` is the same admission on a hand row.
-        tags.append("level-banded")
+    # An estimate, not a judgement about this piece. `_banded` is set by group
+    # expansion; `levelBanded` is the same admission on a hand row. This used
+    # to be a `level-banded` tag, which meant the app could not act on it
+    # without knowing which tags were secretly fields; it is now the
+    # `levelSource` the schema requires (replan §1.4).
+    banded = bool(spec.get("_banded") or spec.get("levelBanded"))
+    level_source = "estimated" if banded else "judged"
 
-    if bundling:
-        from convert import convert_file  # imported late: music21 is slow to load
+    # A work the pipeline cannot produce a file for, kept in the catalog rather
+    # than dropped (replan §1.2). The Op. 25 no. 7 étude is the case this
+    # exists for: music21 refuses to export a 2048th-note tuplet and quantising
+    # it would change the music, so the honest entry is the piece, the reason,
+    # and somewhere else to go — not silence in the middle of an opus.
+    stated_hint = spec.get("importHint")
+    if stated_hint:
+        file_ref: str | None = None
+        checksum: str | None = None
+        import_hint: str | None = str(stated_hint)
+        tags.append("import-only")
+        report.placeheld.append((key, str(stated_hint)))
+        bundling = False
+    elif bundling:
+        from convert import cached_convert  # imported late: music21 is slow to load
 
         try:
-            convert_file(
+            cached_convert(
                 source_path,
                 dest,
                 title=spec["title"],
@@ -630,9 +673,9 @@ def build_entry(
             return None
         if stated_license.upper().startswith("CC BY-NC"):
             tags.append(NC_PERSONAL_TAG)
-        file_ref: str | None = f"scores/imported/{spec['id']}.mxl"
-        checksum: str | None = sha256_file(dest)
-        import_hint: str | None = None
+        file_ref = f"scores/imported/{spec['id']}.mxl"
+        checksum = sha256_file(dest)
+        import_hint = None
     else:
         file_ref = None
         checksum = None
@@ -647,6 +690,7 @@ def build_entry(
         item_type="song",
         title=spec["title"],
         level=spec["level"],
+        level_source=level_source,
         hands="both",
         tracks=spec["tracks"],
         concepts=spec["concepts"],
@@ -655,7 +699,7 @@ def build_entry(
             url=repo_meta.get("url"),
             license=stated_license,
             pd_region="worldwide",
-            fetchedAt=fetched_at,
+            fetchedAt=repo_fetched_at(repo_name) or fetched_at,
             checksum=checksum,
             editionNotes=" ".join(
                 part for part in (spec.get("editionNotes"), repo_meta.get("editionNotes")) if part
@@ -737,7 +781,12 @@ def main() -> None:
         action="store_true",
         help="bundle the CC BY-NC-SA editions — a personal build only (docs/00 D10a)",
     )
+    parser.add_argument(
+        "--no-cache", action="store_true", help="ignore build/cache/convert and reconvert"
+    )
     args = parser.parse_args()
+    if args.no_cache:
+        os.environ["PIANOPATH_NO_CACHE"] = "1"
 
     if not KERN_DIR.exists():
         print(
@@ -767,9 +816,11 @@ def main() -> None:
         for key in report.missing:
             print(f"  - {key}", file=sys.stderr)
     # Last, so the build's one-line summary of this step is the count.
+    from convert import CACHE_STATS  # late import: music21 is slow to load
+
     print(
         f"imported {len(report.imported)} score(s), {len(report.placeheld)} placeholder(s), "
-        f"excluded {len(report.excluded)}"
+        f"excluded {len(report.excluded)} ({CACHE_STATS.summary()})"
     )
 
 

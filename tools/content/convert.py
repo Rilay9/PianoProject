@@ -17,12 +17,21 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import functools
+import hashlib
+import json
+import os
+import re
+import shutil
 import sys
 import warnings
+import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from common import BUILD_DIR  # noqa: E402
 
 # music21 is noisy about things we do not control (missing metadata, unusual
 # spines); the pipeline reports its own diagnostics instead.
@@ -416,14 +425,261 @@ def count_fingerings(score: stream.Stream) -> int:
 # writing
 # ---------------------------------------------------------------------------
 
+#: music21 mints part and instrument ids from object identity, so they look
+#: like `P64fa5e9c10000199a0c6ce0460494465` and are different every run.
+MUSIC21_MINTED_ID = re.compile(r"^[A-Za-z][0-9a-f]{16,}$")
+
+#: A fixed timestamp for every zip entry. 1980-01-01 is the earliest a DOS zip
+#: field can express, and is what reproducible-build tooling conventionally uses.
+ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
+
+
+def deterministic_ids(xml_text: str) -> str:
+    """
+    Renames music21's minted part/instrument ids to `P1`, `I1`, `P2`, …
+
+    Without this the pipeline is not reproducible: the same source converted
+    twice produces different bytes, because music21 derives these ids from
+    Python object identity. Three consequences, all of them things this phase
+    is about — the `checksum` recorded in the catalog's provenance block says a
+    file changed when only the run did; the render manifest is keyed on the
+    output file's sha256 and would re-engrave a score nobody touched; and two
+    machines converting the same edition disagree about what they produced.
+
+    The ids are internal cross-references (`<score-part>` ↔ `<part>`,
+    `<score-instrument>` ↔ `<midi-instrument>`), so renaming them consistently
+    is invisible to a reader — and `P1`/`I1` is what MuseScore and Finale emit
+    anyway. Done as text rather than through ElementTree because parsing and
+    re-serialising would drop the XML declaration and the DOCTYPE.
+    """
+    seen: dict[str, str] = {}
+    for pattern, prefix in ((r'<score-part id="([^"]+)"', "P"), (r'<score-instrument id="([^"]+)"', "I")):
+        for found in re.findall(pattern, xml_text):
+            if found in seen or not MUSIC21_MINTED_ID.match(found):
+                continue
+            seen[found] = f"{prefix}{sum(1 for v in seen.values() if v.startswith(prefix)) + 1}"
+    for old, new in seen.items():
+        xml_text = xml_text.replace(f'"{old}"', f'"{new}"')
+    return xml_text
+
+
+def normalise_archive(path: Path) -> None:
+    """
+    Rewrites a `.mxl` so its bytes depend only on its music.
+
+    Two things in a zip are wall-clock: the per-entry modification time, and —
+    through `deterministic_ids` above — the ids music21 minted while it was
+    running. Both are pinned here. Entry order is preserved rather than sorted,
+    because the MXL container wants `META-INF/container.xml` to stay where the
+    writer put it.
+    """
+    with zipfile.ZipFile(path) as archive:
+        entries = [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
+
+    staged = path.with_suffix(path.suffix + ".tmp")
+    with zipfile.ZipFile(staged, "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, data in entries:
+            if name.lower().endswith((".xml", ".musicxml")):
+                data = deterministic_ids(data.decode("utf-8")).encode("utf-8")
+            info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o600 << 16
+            archive.writestr(info, data)
+    staged.replace(path)
+
+
 def write_mxl(score: stream.Score, out_path: Path) -> Path:
-    """Writes compressed MusicXML. music21 picks the format from the suffix."""
+    """
+    Writes MusicXML. music21 picks the format from the suffix.
+
+    The output is then normalised so that the same music always produces the
+    same bytes — see `normalise_archive`.
+    """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     written = score.write("musicxml", fp=str(out_path))
     written_path = Path(str(written))
     if written_path != out_path:
         written_path.replace(out_path)
+    if out_path.suffix.lower() == ".mxl":
+        normalise_archive(out_path)
+    else:
+        out_path.write_text(
+            deterministic_ids(out_path.read_text(encoding="utf-8")), encoding="utf-8"
+        )
     return out_path
+
+
+# ---------------------------------------------------------------------------
+# conversion cache
+# ---------------------------------------------------------------------------
+
+#: Bump to invalidate every existing entry without deleting the directory.
+CACHE_VERSION = 1
+
+CACHE_DIR = BUILD_DIR / "cache" / "convert"
+
+#: Set by `--no-cache` so a build.py flag reaches the importers, which call
+#: `cached_convert` in their own subprocesses.
+NO_CACHE_ENV = "PIANOPATH_NO_CACHE"
+
+
+@dataclass
+class CacheStats:
+    """Counted per process; each importer prints it in its summary line."""
+
+    hits: int = 0
+    misses: int = 0
+
+    def summary(self) -> str:
+        return f"{self.hits} cached, {self.misses} converted"
+
+
+CACHE_STATS = CacheStats()
+
+
+@functools.lru_cache(maxsize=1)
+def tool_fingerprint() -> str:
+    """
+    A digest of everything except the source that decides what a conversion produces.
+
+    `convert.py` and `abc_tools.py` are the two files whose text changes the
+    output; music21's version changes it without either file moving. All three
+    go in the key, which is the cache's entire correctness argument: a cache
+    that keys on every input to the answer can only change *when* the answer is
+    computed, never what it is.
+    """
+    from music21 import __version__ as music21_version
+
+    digest = hashlib.sha256()
+    here = Path(__file__).resolve().parent
+    for name in ("convert.py", "abc_tools.py"):
+        digest.update((here / name).read_bytes())
+    digest.update(music21_version.encode("utf-8"))
+    digest.update(f"v{CACHE_VERSION}".encode("ascii"))
+    return digest.hexdigest()
+
+
+def cache_key(src: Path, **options: object) -> str:
+    """
+    The key for one conversion: source bytes + the tool fingerprint + the options.
+
+    The options are in the key because they change the output as surely as the
+    source does — a forced tempo, a kept lyric line and an overridden title all
+    end up inside the written file. Keying on the source alone would hand the
+    same `.mxl` to two callers that asked for different things, which is the
+    one way a cache can be wrong.
+    """
+    digest = hashlib.sha256()
+    digest.update(src.read_bytes())
+    digest.update(tool_fingerprint().encode("ascii"))
+    digest.update(json.dumps(options, sort_keys=True, default=str).encode("utf-8"))
+    return digest.hexdigest()
+
+
+def record_from_result(result: ConversionResult) -> dict:
+    """The parts of a ConversionResult that survive a round trip through JSON."""
+    return {
+        "title": result.title,
+        "composer": result.composer,
+        "measures": result.measures,
+        "notes": result.notes,
+        "staves": result.staves,
+        "tempo_bpm": result.tempo_bpm,
+        "added_tempo": result.added_tempo,
+        "stripped_lyrics": result.stripped_lyrics,
+        "fingerings": result.fingerings,
+        "harmonies": result.harmonies,
+        "warnings": result.warnings,
+    }
+
+
+def result_from_record(record: dict, dest: Path) -> ConversionResult:
+    return ConversionResult(
+        path=dest,
+        title=record["title"],
+        composer=record["composer"],
+        measures=record["measures"],
+        notes=record["notes"],
+        staves=record["staves"],
+        tempo_bpm=record["tempo_bpm"],
+        added_tempo=record["added_tempo"],
+        stripped_lyrics=record["stripped_lyrics"],
+        fingerings=record["fingerings"],
+        harmonies=record["harmonies"],
+        warnings=list(record.get("warnings") or []),
+    )
+
+
+def cache_enabled(use_cache: bool) -> bool:
+    return use_cache and os.environ.get(NO_CACHE_ENV, "") != "1"
+
+
+def cached_convert(
+    src: Path,
+    dest: Path,
+    *,
+    use_cache: bool = True,
+    keep_lyrics: bool = False,
+    tempo_bpm: float | None = None,
+    title: str | None = None,
+    composer: str | None = None,
+) -> ConversionResult:
+    """
+    `convert_file` with its answer remembered under `build/cache/convert/`.
+
+    music21 is the pipeline's whole cost: parsing and re-exporting the 800-odd
+    imported scores is most of a seven-minute build, and almost none of it
+    changes between runs. A hit copies the `.mxl` out of the cache and rebuilds
+    the ConversionResult from a JSON sidecar, so callers cannot tell the
+    difference — `import_musetrainer` re-reads the written file either way, and
+    `author.py` reads `tempo_bpm` off the result.
+
+    A cache that cannot be written is not an error: the build is correct
+    without it, only slower, so every write is best-effort.
+    """
+    options = {
+        "keep_lyrics": keep_lyrics,
+        "tempo_bpm": tempo_bpm,
+        "title": title,
+        "composer": composer,
+    }
+    if not cache_enabled(use_cache):
+        CACHE_STATS.misses += 1
+        return convert_file(src, dest, **options)  # type: ignore[arg-type]
+
+    key = cache_key(src, **options)
+    payload = CACHE_DIR / f"{key}.mxl"
+    sidecar = CACHE_DIR / f"{key}.json"
+    if payload.is_file() and sidecar.is_file():
+        try:
+            record = json.loads(sidecar.read_text(encoding="utf-8"))
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(payload, dest)
+        except (OSError, json.JSONDecodeError, KeyError):
+            pass  # a damaged entry is a miss, not a failure
+        else:
+            CACHE_STATS.hits += 1
+            return result_from_record(record, dest)
+
+    CACHE_STATS.misses += 1
+    result = convert_file(src, dest, **options)  # type: ignore[arg-type]
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        # Written to a temporary name and renamed, so a run killed mid-write
+        # never leaves a truncated `.mxl` that the next run would trust. The
+        # payload lands before the sidecar and a hit needs both, so the
+        # half-written state reads as a miss.
+        staged = payload.with_suffix(".mxl.tmp")
+        shutil.copyfile(dest, staged)
+        staged.replace(payload)
+        staged_json = sidecar.with_suffix(".json.tmp")
+        staged_json.write_text(
+            json.dumps(record_from_result(result), indent=2), encoding="utf-8"
+        )
+        staged_json.replace(sidecar)
+    except OSError:
+        pass
+    return result
 
 
 def convert_file(
@@ -467,7 +723,14 @@ def main() -> None:
     parser.add_argument("--keep-lyrics", action="store_true")
     parser.add_argument("--tempo", type=float, help="force this tempo in bpm")
     parser.add_argument("--limit", type=int)
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="always run music21, ignoring build/cache/convert",
+    )
     args = parser.parse_args()
+    if args.no_cache:
+        os.environ[NO_CACHE_ENV] = "1"
 
     if args.batch:
         if not args.out:
@@ -479,18 +742,22 @@ def main() -> None:
         for src in sources:
             dest = args.out / (src.stem + ".mxl")
             try:
-                result = convert_file(src, dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo)
+                result = cached_convert(
+                    src, dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo
+                )
             except Exception as exc:  # noqa: BLE001 - one bad file must not stop a batch
                 failures += 1
                 print(f"FAIL {src}: {exc}", file=sys.stderr)
                 continue
             print(f"ok   {dest.name}: {result.measures} bars, {result.notes} notes, {result.staves} staves")
-        print(f"\nconverted {len(sources) - failures}/{len(sources)}")
+        print(f"\nconverted {len(sources) - failures}/{len(sources)} ({CACHE_STATS.summary()})")
         sys.exit(1 if failures and not sources else 0)
 
     if not args.source or not args.dest:
         parser.error("give SOURCE and DEST, or --batch")
-    result = convert_file(args.source, args.dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo)
+    result = cached_convert(
+        args.source, args.dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo
+    )
     print(
         f"{result.path}: {result.title!r} — {result.measures} bars, {result.notes} notes, "
         f"{result.staves} staves, {result.tempo_bpm:g} bpm"

@@ -25,6 +25,7 @@ import {
   updateImport,
 } from '../../data/importStore';
 import { allProgress } from '../../data/progressStore';
+import { clearLevelOverride, levelOverrideFor, setLevelOverride } from '../../data/levelOverrides';
 import type { ProgressRow } from '../../data/db';
 import { onScreenDispose } from '../screenLifecycle';
 import {
@@ -311,7 +312,7 @@ export function LibraryScreen(router: Router): HTMLElement {
   function showDetail(item: CatalogItem): void {
     const sheet = openSheet(item.title, { id: 'library-detail' });
     const facts: [string, string][] = [
-      ['Level', levelLabel(item.level)],
+      ['Level', levelLabel(item.level, item.levelSource)],
       ['Hands', handsLabel(item.hands)],
       ['Type', item.type],
       ['Tracks', item.tracks.join(', ') || '—'],
@@ -327,6 +328,16 @@ export function LibraryScreen(router: Router): HTMLElement {
       kv.append(el('dt', { text: term }), el('dd', { text: value }));
     }
     sheet.body.append(kv);
+
+    // replan §1.4: an estimated level says so, and says what to do about it.
+    if (item.levelSource === 'estimated') {
+      sheet.body.append(
+        el('p.muted', {
+          text: 'Level estimated from the opus or its features — move it if it feels wrong.',
+        }),
+      );
+    }
+    sheet.body.append(relevelRow(item, sheet));
 
     if (item.teaching?.notes) sheet.body.append(el('p', { text: item.teaching.notes }));
     for (const media of item.media ?? []) {
@@ -348,7 +359,7 @@ export function LibraryScreen(router: Router): HTMLElement {
         sheet.body.append(
           listRow({
             title: alt.title,
-            meta: `Play this instead · ${levelLabel(alt.level)}`,
+            meta: `Play this instead · ${levelLabel(alt.level, alt.levelSource)}`,
             onClick: () => {
               sheet.close();
               open(alt);
@@ -368,6 +379,62 @@ export function LibraryScreen(router: Router): HTMLElement {
         ),
       );
     }
+  }
+
+  /**
+   * "Re-level": the owner's own number for this piece (replan §1.4).
+   *
+   * A number input and one button rather than a slider — the levels are two
+   * significant figures and a slider on a phone cannot hit 7.1 reliably. The
+   * row also offers "Use the catalog's" once an override exists, so the
+   * decision is reversible without knowing what the original number was.
+   */
+  function relevelRow(item: CatalogItem, sheet: { close: () => void }): HTMLElement {
+    const overridden = levelOverrideFor(item.id) !== undefined;
+    const input = el('input', {
+      type: 'number',
+      id: 'library-relevel-value',
+      value: item.level.toFixed(1),
+      min: '0',
+      max: '9.9',
+      step: '0.1',
+    }) as HTMLInputElement;
+
+    const apply = button(
+      'Re-level',
+      () => {
+        const next = Number(input.value);
+        if (!Number.isFinite(next) || next < 0 || next > 9.9) return;
+        void setLevelOverride(item.id, Math.round(next * 100) / 100).then(() => {
+          sheet.close();
+          void refresh();
+        });
+      },
+      { id: 'library-relevel' },
+    );
+
+    const row = el(
+      'div.row',
+      {},
+      el('label', { htmlFor: 'library-relevel-value', text: 'Your level' }),
+      input,
+      apply,
+    );
+    if (overridden) {
+      row.append(
+        button(
+          "Use the catalog's",
+          () => {
+            void clearLevelOverride(item.id).then(() => {
+              sheet.close();
+              void refresh();
+            });
+          },
+          { id: 'library-relevel-clear' },
+        ),
+      );
+    }
+    return row;
   }
 
   function showEditor(itemId: string): void {
@@ -446,7 +513,7 @@ export function LibraryScreen(router: Router): HTMLElement {
     return listRow({
       title: item.title,
       subtitle: item.composer ?? undefined,
-      meta: `${levelLabel(item.level)} · ${handsLabel(item.hands)} · ${item.type}`,
+      meta: `${levelLabel(item.level, item.levelSource)} · ${handsLabel(item.hands)} · ${item.type}`,
       badges,
       actions,
       onClick: () => open(item),

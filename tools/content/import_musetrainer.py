@@ -23,6 +23,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import sys
@@ -32,7 +33,17 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from common import CONTENT_SRC, IMPORTED_DIR, SourceBlock, catalog_item, read_json, sha256_file, utc_now, write_json  # noqa: E402
+from common import (  # noqa: E402
+    CONTENT_SRC,
+    IMPORTED_DIR,
+    SourceBlock,
+    catalog_item,
+    ledger_fetched_at,
+    read_json,
+    sha256_file,
+    utc_now,
+    write_json,
+)
 from licensing import Verdict, composition_verdict  # noqa: E402
 
 TABLE_PATH = CONTENT_SRC / "sources" / "musetrainer.json"
@@ -112,7 +123,9 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
     items: dict = table["items"]
     report = ImportReport()
     entries: list[dict] = []
-    fetched_at = utc_now()
+    # The ledger records when the clone actually happened; `utc_now()` is only
+    # the fallback for a library that is present with no ledger row.
+    fetched_at = ledger_fetched_at("musetrainer") or utc_now()
 
     scores_out = out_dir / "scores" / "imported"
     scores_out.mkdir(parents=True, exist_ok=True)
@@ -144,10 +157,10 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
         dest = scores_out / (spec["id"] + ".mxl")
         tags = ["musetrainer"]
         if reasons:
-            from convert import convert_file  # imported late: music21 is slow to load
+            from convert import cached_convert  # imported late: music21 is slow to load
 
             try:
-                convert_file(
+                cached_convert(
                     source_path,
                     dest,
                     title=spec["title"],
@@ -175,6 +188,9 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
                 item_type="song",
                 title=spec["title"],
                 level=spec["level"],
+                # Every [MT] level is a hand-entered number in
+                # content/sources/musetrainer.json, decided per piece.
+                level_source="judged",
                 hands="both",
                 tracks=spec["tracks"],
                 concepts=spec["concepts"],
@@ -211,7 +227,12 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True, help="content output directory")
     parser.add_argument("--catalog", type=Path, required=True)
     parser.add_argument("--limit", type=int)
+    parser.add_argument(
+        "--no-cache", action="store_true", help="ignore build/cache/convert and reconvert"
+    )
     args = parser.parse_args()
+    if args.no_cache:
+        os.environ["PIANOPATH_NO_CACHE"] = "1"
 
     if not LIBRARY_DIR.exists():
         print(
@@ -238,9 +259,11 @@ def main() -> None:
         print(f"missing {len(report.missing)} file(s) named in the table", file=sys.stderr)
     # Last, so the build's one-line summary of this step is the count rather
     # than whichever exclusion happened to print last.
+    from convert import CACHE_STATS  # late import: music21 is slow to load
+
     print(
         f"imported {len(report.imported)} score(s), excluded {len(report.excluded)}, "
-        f"normalised {len(report.normalised)}"
+        f"normalised {len(report.normalised)} ({CACHE_STATS.summary()})"
     )
 
 

@@ -10,28 +10,76 @@ TypeScript. Reimplementing any of that here would test a different program.
 
 This script builds the app, serves the built content, runs that test, and
 turns its report into something the build can use — the per-item duration and
-step count, and the list of items to exclude.
+step count, the list of items to exclude, and the checks below.
+
+The spec reports facts and remembers them in `build/render-manifest.json` under
+each file's sha256, so only unseen files are engraved (replan §1.3). The
+judgements live here, because they need the catalog and are worth unit tests:
+
+  * **cursor-step parity** (§7.1) — the ScoreModel's step count against a real
+    rendered cursor's. A mismatch means the engine would walk a different score
+    from the one on the screen, so it fails the check.
+  * **pace** (§7.3) — seconds per bar outside 0.5–12 s. A score that renders
+    with a tempo of 8, or one whose 40 minutes come from a mis-parsed duration,
+    passes every other check.
+  * **hands** (§7.4) — the catalog's `hands` against the model's.
+  * **console** (§7.2) — `console.error`/`warn` captured per item, so an OSMD
+    warning about a dropped element is visible instead of silent.
+
+Pace, hands and console are reported, not failed: they describe content that
+already ships, and turning them into failures is a content decision, not a
+pipeline one.
 
 Usage:
-    python3 tools/content/render_check.py [--content app/public/content] [--limit 20]
+    python3 tools/content/render_check.py [--content app/public/content] [--full]
 """
 from __future__ import annotations
 
 import argparse
-import json
 import os
+import shutil
 import sys
+from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from common import BUILD_DIR, DEFAULT_OUT, REPO_ROOT, read_json, write_json  # noqa: E402
+# The one definition of a plausible duration, so this cannot drift from the
+# check that enforces it two steps later.
+from validate import MAX_DURATION_SEC, MIN_DURATION_SEC  # noqa: E402
 
 APP_DIR = REPO_ROOT / "app"
 SPEC = "tests/e2e/content-render.spec.ts"
 
 
-def run_check(content_dir: Path, report_path: Path, preview_dir: Path, limit: int) -> int:
+def npx() -> str:
+    """
+    The full path to `npx`.
+
+    `subprocess.run(["npx", …])` works on Linux and fails on Windows with
+    `[WinError 2] The system cannot find the file specified`: the file there is
+    `npx.cmd`, and CreateProcess does not apply PATHEXT the way a shell does.
+    `shutil.which` does, so it finds the right one on both.
+    """
+    return shutil.which("npx") or "npx"
+
+
+#: replan §7.3. A bar under half a second is a tempo the engine cannot follow;
+#: a bar over twelve seconds is almost always a mis-read duration rather than a
+#: very slow piece.
+MIN_SEC_PER_BAR = 0.5
+MAX_SEC_PER_BAR = 12.0
+
+
+def run_check(
+    content_dir: Path,
+    report_path: Path,
+    preview_dir: Path,
+    manifest_path: Path,
+    limit: int,
+    full: bool,
+) -> int:
     environment = dict(os.environ)
     environment.update(
         {
@@ -39,14 +87,17 @@ def run_check(content_dir: Path, report_path: Path, preview_dir: Path, limit: in
             "CONTENT_DIR": str(content_dir.resolve()),
             "CONTENT_RENDER_REPORT": str(report_path.resolve()),
             "CONTENT_PREVIEW_DIR": str(preview_dir.resolve()),
+            "CONTENT_RENDER_MANIFEST": str(manifest_path.resolve()),
             "CONTENT_RENDER_LIMIT": str(limit),
+            "CONTENT_RENDER_FULL": "1" if full else "0",
         }
     )
     import subprocess
 
-    print(f"rendering {content_dir}/catalog.json in Chromium (this builds the app first)…")
+    scope = "every item" if full else "items not in the manifest"
+    print(f"rendering {scope} from {content_dir}/catalog.json in Chromium (builds the app first)…")
     result = subprocess.run(
-        ["npx", "playwright", "test", SPEC, "--reporter=list"],
+        [npx(), "playwright", "test", SPEC, "--reporter=list"],
         cwd=APP_DIR,
         env=environment,
         check=False,
@@ -62,12 +113,117 @@ def summarise(report_path: Path) -> dict:
     return report
 
 
+# ---------------------------------------------------------------------------
+# the checks (pure, so tools/content/tests can drive them)
+# ---------------------------------------------------------------------------
+
+def parity_failures(items: list[dict]) -> list[str]:
+    """
+    replan §7.1: the model's step count must equal a real cursor's.
+
+    Only meaningful where the spec measured it — a cached row carries the
+    number it measured when it was fresh, and a row with no `cursorSteps` at
+    all (an older manifest, or a failed render) is not evidence of anything.
+    """
+    out: list[str] = []
+    for item in items:
+        if not item.get("ok"):
+            continue
+        cursor = item.get("cursorSteps")
+        steps = item.get("steps")
+        if cursor is None or steps is None:
+            continue
+        if cursor != steps:
+            out.append(f"{item['id']}: model {steps} steps vs cursor {cursor}")
+    return out
+
+
+def pace_flags(items: list[dict]) -> list[str]:
+    """replan §7.3: seconds per bar outside 0.5–12 s."""
+    out: list[str] = []
+    for item in items:
+        if not item.get("ok"):
+            continue
+        duration = item.get("durationSec")
+        measures = item.get("measures")
+        if not duration or not measures:
+            continue
+        per_bar = duration / measures
+        if per_bar < MIN_SEC_PER_BAR or per_bar > MAX_SEC_PER_BAR:
+            out.append(
+                f"{item['id']}: {per_bar:.2f}s per bar "
+                f"({duration:g}s over {measures} bars, tempo {item.get('tempoBpm')})"
+            )
+    return out
+
+
+def hands_flags(items: list[dict], catalog: list[dict]) -> list[str]:
+    """replan §7.4: the catalog's `hands` against what the model actually has."""
+    claimed = {entry["id"]: entry.get("hands") for entry in catalog}
+    out: list[str] = []
+    for item in items:
+        if not item.get("ok"):
+            continue
+        model_hands = item.get("hands")
+        catalog_hands = claimed.get(item["id"])
+        if model_hands and catalog_hands and model_hands != catalog_hands:
+            out.append(f"{item['id']}: catalog says {catalog_hands}, model has {model_hands}")
+    return out
+
+
+def console_flags(items: list[dict]) -> list[str]:
+    """
+    replan §7.2: whatever the browser complained about, per item.
+
+    Collapsed by message, because OSMD repeats itself: one score produced 62
+    copies of the same `SkyBottomLineCalculator` warning, one per measure, and
+    a report that prints all of them buries the one line that matters. The
+    count is kept — "×62" is itself information about how widespread it is.
+    """
+    out: list[str] = []
+    for item in items:
+        counts = Counter(item.get("consoleErrors") or [])
+        for line, times in counts.most_common():
+            out.append(f"{item['id']}: {line}" + (f" (×{times})" if times > 1 else ""))
+    return out
+
+
+def console_summary(items: list[dict]) -> list[str]:
+    """The same warnings grouped by message rather than by item."""
+    counts: Counter[str] = Counter()
+    affected: dict[str, set[str]] = {}
+    for item in items:
+        for line in set(item.get("consoleErrors") or []):
+            affected.setdefault(line, set()).add(item["id"])
+        counts.update(item.get("consoleErrors") or [])
+    return [
+        f"{line} — {times} time(s) across {len(affected[line])} item(s)"
+        for line, times in counts.most_common()
+    ]
+
+
+def report_section(title: str, lines: list[str], stream=sys.stdout, limit: int = 20) -> None:
+    if not lines:
+        return
+    print(f"\n{title} ({len(lines)}):", file=stream)
+    for line in lines[:limit]:
+        print(f"  - {line}", file=stream)
+    if len(lines) > limit:
+        print(f"  … and {len(lines) - limit} more", file=stream)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--content", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--report", type=Path, default=BUILD_DIR / "render-report.json")
     parser.add_argument("--previews", type=Path, default=BUILD_DIR / "previews")
+    parser.add_argument("--manifest", type=Path, default=BUILD_DIR / "render-manifest.json")
     parser.add_argument("--limit", type=int, default=0, help="check only the first N items")
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="ignore the manifest and render every item (the weekly workflow)",
+    )
     parser.add_argument(
         "--apply",
         action="store_true",
@@ -75,18 +231,68 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    code = run_check(args.content, args.report, args.previews, args.limit)
+    code = run_check(
+        args.content, args.report, args.previews, args.manifest, args.limit, args.full
+    )
     report = summarise(args.report)
     items = report.get("items", [])
     failed = [item for item in items if not item.get("ok")]
-    print(f"\nrendered {len(items) - len(failed)}/{len(items)} item(s)")
+    fresh = report.get("rendered", sum(1 for i in items if not i.get("cached")))
+    cached = report.get("cached", sum(1 for i in items if i.get("cached")))
+    print(f"\nrendered {len(items) - len(failed)}/{len(items)} item(s): {fresh} fresh, {cached} from the manifest")
     for item in failed:
         print(f"  FAIL {item['id']}: {item.get('error')}", file=sys.stderr)
 
-    if args.apply and items:
-        apply_durations(args.content / "catalog.json", items)
+    catalog_path = args.content / "catalog.json"
+    catalog = read_json(catalog_path) if catalog_path.exists() else []
+    assert isinstance(catalog, list)
 
-    sys.exit(code)
+    parity = parity_failures(items)
+    report_section("cursor-step parity mismatches", parity, stream=sys.stderr)
+    report_section("pace outside 0.5-12s per bar", pace_flags(items))
+    report_section("hands disagree with the model", hands_flags(items, catalog))
+    report_section("implausible durations", implausible_durations(items))
+    report_section("browser console, by message", console_summary(items))
+    report_section("browser console, by item", console_flags(items))
+
+    if args.apply and items:
+        apply_durations(catalog_path, items)
+
+    # A parity mismatch means the engine would follow a different score from
+    # the one drawn, which is the defect this check exists to catch.
+    sys.exit(code or (1 if parity else 0))
+
+
+def implausible_durations(items: list[dict]) -> list[str]:
+    """
+    Measurements `validate.py` would reject, named rather than written.
+
+    A duration is `beatToMs(end of the last note)`, so it is only as good as the
+    tempo. Six of the Chopin first editions state no tempo at all, `convert.py`
+    inserts its neutral 96 bpm (docs/03 §3 step 2), and the scherzos come out
+    between 22 and 40 minutes — a measurement of the placeholder, not of the
+    music.
+
+    Writing such a number and then failing the next validation step helps
+    nobody, and it is worse than writing nothing: `durationSec: null` already
+    means "unknown" everywhere in the app, whereas 2426 means "forty minutes"
+    to the session builder, which fits pieces into a 15- or 30-minute slot.
+    So the number is reported here and left out of the catalog.
+    """
+    out: list[str] = []
+    for item in items:
+        if not item.get("ok"):
+            continue
+        duration = item.get("durationSec")
+        if duration is None:
+            continue
+        if not (MIN_DURATION_SEC <= duration <= MAX_DURATION_SEC):
+            out.append(
+                f"{item['id']}: {duration:g}s over {item.get('measures')} bars at "
+                f"{item.get('tempoBpm')} bpm — outside {MIN_DURATION_SEC}–{MAX_DURATION_SEC}s, "
+                "not written to the catalog"
+            )
+    return out
 
 
 def apply_durations(catalog_path: Path, items: list[dict]) -> None:
@@ -95,7 +301,9 @@ def apply_durations(catalog_path: Path, items: list[dict]) -> None:
 
     These cannot be known before the score is parsed, and parsing it twice —
     once in Python to guess and once in the browser to check — would be two
-    answers to one question.
+    answers to one question. The rows merged from the manifest carry the same
+    numbers a fresh render would have produced, so an incremental run still
+    writes a complete catalog.
     """
     catalog = read_json(catalog_path)
     assert isinstance(catalog, list)
@@ -104,7 +312,11 @@ def apply_durations(catalog_path: Path, items: list[dict]) -> None:
         found = measured.get(entry["id"])
         if not found:
             continue
-        entry["durationSec"] = found.get("durationSec")
+        duration = found.get("durationSec")
+        # See `implausible_durations`: a number the validator would reject is
+        # not a number worth recording.
+        if duration is not None and MIN_DURATION_SEC <= duration <= MAX_DURATION_SEC:
+            entry["durationSec"] = duration
         if entry.get("tempoBpm") is None:
             entry["tempoBpm"] = found.get("tempoBpm")
         if entry.get("timeSig") is None:

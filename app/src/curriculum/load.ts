@@ -11,6 +11,7 @@ import type { CatalogItem, Curriculum } from './types';
 import { indexCatalog, type CatalogIndex } from './selectors';
 import { importedCatalogItems, onImportsChange } from '../data/importStore';
 import { getSettings, onSettingsChange } from '../data/settingsStore';
+import { applyLevelOverrides, onLevelOverridesChange } from '../data/levelOverrides';
 
 export function contentUrl(path: string, base: string = import.meta.env.BASE_URL): string {
   const prefix = base.endsWith('/') ? base : `${base}/`;
@@ -61,8 +62,10 @@ export async function allItems(): Promise<CatalogItem[]> {
   // (A4). The owner is in the US so the default is to show them; the switch is
   // here so the answer changes in one place if that stops being true.
   const showUsOnly = getSettings().showUsOnlyPd;
-  return [...byId.values()].filter(
-    (item) => showUsOnly || item.source?.pd_region !== 'US',
+  // Last, so every downstream reader — search, swaps, the session builder —
+  // sees the owner's own number and never the estimate it replaced.
+  return applyLevelOverrides(
+    [...byId.values()].filter((item) => showUsOnly || item.source?.pd_region !== 'US'),
   );
 }
 
@@ -75,6 +78,13 @@ export async function catalogIndex(): Promise<CatalogIndex> {
 // An import or a delete invalidates the merged index; the bundled catalog
 // itself never changes at runtime, so only the index is dropped.
 onImportsChange(() => {
+  indexCache = null;
+});
+
+// Re-levelling changes an item's level, and the index is keyed off the items
+// it was built from, so the merged index has to be rebuilt for the new number
+// to reach the swap sheet and the session builder.
+onLevelOverridesChange(() => {
   indexCache = null;
 });
 

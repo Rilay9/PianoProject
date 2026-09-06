@@ -19,13 +19,30 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import IMPORTED_DIR, LedgerRow, run, update_ledger, utc_now  # noqa: E402
+from common import (  # noqa: E402
+    IMPORTED_DIR,
+    LedgerRow,
+    read_ledger,
+    run,
+    update_ledger,
+    utc_now,
+)
+
+#: git must never stop to ask a human anything: this runs unattended, and a
+#: credential prompt on an unreachable URL is indistinguishable from a hang.
+GIT_ENV = {"GIT_TERMINAL_PROMPT": "0", "GCM_INTERACTIVE": "never"}
+
+
+def git_env() -> dict[str, str]:
+    return {**os.environ, **GIT_ENV}
 
 
 @dataclass(frozen=True)
@@ -145,8 +162,25 @@ OPT_IN = {"mutopia", "pdmx", "nifc-polish"}
 
 
 def reachable(url: str, timeout: int = 30) -> bool:
-    """`git ls-remote` rather than an API call: it is the operation we need."""
-    result = run(["git", "ls-remote", "--exit-code", url, "HEAD"], timeout=timeout)
+    """
+    `git ls-remote` rather than an API call: it is the operation we need.
+
+    A probe that times out means "not reachable", not "stop the build". Two of
+    the sources above are named in docs/03 §2 precisely so the probe can report
+    them missing, and on a machine with a credential helper installed git
+    answers a 404 by *asking for a password* instead of failing — so the probe
+    blocks for its whole timeout and then raised `TimeoutExpired` straight out
+    of the fetch. That crash happened before `nifc-chopin` was reached, which
+    silently cost the build all 21 Chopin first editions and every catalog item
+    that referenced them. `GIT_TERMINAL_PROMPT=0` stops the asking; catching
+    the timeout keeps the promise in this module's docstring either way.
+    """
+    try:
+        result = run(
+            ["git", "ls-remote", "--exit-code", url, "HEAD"], timeout=timeout, env=git_env()
+        )
+    except subprocess.TimeoutExpired:
+        return False
     return result.returncode == 0
 
 
@@ -156,17 +190,28 @@ def head_revision(repo: Path) -> str:
 
 
 def clone(source: GitSource, dest: Path, force: bool) -> tuple[bool, str]:
-    if dest.exists() and not force:
-        if (dest / ".git").exists():
-            pull = run(["git", "-C", str(dest), "pull", "--ff-only", "--depth", "1"], timeout=600)
-            if pull.returncode != 0:
-                return True, f"kept existing clone ({head_revision(dest)}); pull failed"
-            return True, f"updated to {head_revision(dest)}"
-        return True, "kept existing directory (not a git clone)"
-    if dest.exists():
-        shutil.rmtree(dest)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    result = run(["git", "clone", "--depth", "1", source.url, str(dest)], timeout=900)
+    # Every git call below is wrapped: a clone that times out is a source we do
+    # without, exactly like one the probe could not reach (see `reachable`).
+    try:
+        if dest.exists() and not force:
+            if (dest / ".git").exists():
+                pull = run(
+                    ["git", "-C", str(dest), "pull", "--ff-only", "--depth", "1"],
+                    timeout=600,
+                    env=git_env(),
+                )
+                if pull.returncode != 0:
+                    return True, f"kept existing clone ({head_revision(dest)}); pull failed"
+                return True, f"updated to {head_revision(dest)}"
+            return True, "kept existing directory (not a git clone)"
+        if dest.exists():
+            shutil.rmtree(dest)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        result = run(
+            ["git", "clone", "--depth", "1", source.url, str(dest)], timeout=900, env=git_env()
+        )
+    except subprocess.TimeoutExpired:
+        return False, "timed out"
     if result.returncode != 0:
         return False, (result.stderr.strip().splitlines() or ["clone failed"])[-1]
     return True, f"cloned {head_revision(dest)}"
@@ -176,6 +221,9 @@ def fetch(selected: set[str] | None, offline: bool, force: bool) -> int:
     rows: list[LedgerRow] = []
     skipped: list[str] = []
     fetched = 0
+    # Read once: `ledger_row` keeps a source's timestamp when its revision has
+    # not moved, so it needs to know what the ledger already says.
+    existing = read_ledger()
 
     for source in SOURCES:
         wanted = selected is None or source.id in selected or source.group.lower() in selected
@@ -190,7 +238,7 @@ def fetch(selected: set[str] | None, offline: bool, force: bool) -> int:
             if dest.exists():
                 print(f"  offline: using existing {dest.relative_to(IMPORTED_DIR.parent.parent)}")
                 fetched += 1
-                rows.append(ledger_row(source, dest))
+                rows.append(ledger_row(source, dest, existing))
             else:
                 skipped.append(f"{source.id}: offline and not present")
             continue
@@ -205,7 +253,7 @@ def fetch(selected: set[str] | None, offline: bool, force: bool) -> int:
             continue
         print(f"  {source.id}: {detail}")
         fetched += 1
-        rows.append(ledger_row(source, dest))
+        rows.append(ledger_row(source, dest, existing))
 
     if rows:
         update_ledger(rows)
@@ -221,16 +269,30 @@ def fetch(selected: set[str] | None, offline: bool, force: bool) -> int:
     return 0
 
 
-def ledger_row(source: GitSource, dest: Path) -> LedgerRow:
+def ledger_row(source: GitSource, dest: Path, existing: dict | None = None) -> LedgerRow:
     files = len([p for p in dest.glob(source.pattern) if p.is_file()])
+    relative = dest.relative_to(IMPORTED_DIR).as_posix()
+    revision = head_revision(dest) if (dest / ".git").exists() else "n/a"
+    # "Fetched" means "when these bytes arrived", not "when a build last looked".
+    # A pull that finds nothing new leaves the revision alone, so the timestamp
+    # stays alone too — otherwise the catalog's `fetchedAt`, which quotes this,
+    # would change on every build and no two builds of untouched sources could
+    # produce the same catalog.
+    was = (existing or {}).get((source.id, relative))
+    fetched = was.fetched if was is not None and was.revision == revision else utc_now()
     return LedgerRow(
         source=source.id,
-        path=str(dest.relative_to(IMPORTED_DIR)),
+        # `as_posix`, not `str`: the ledger is keyed on (source, path) so a
+        # re-fetch updates its row in place, and `str()` gives backslashes on
+        # Windows — which made every source append a second row instead,
+        # `kern\joplin` alongside the `kern/joplin` a Linux run had written.
+        # The file is the provenance record; it must not depend on who ran it.
+        path=relative,
         url=source.url,
         license=source.license,
         pd_region=source.pd_region,
-        fetched=utc_now(),
-        revision=head_revision(dest) if (dest / ".git").exists() else "n/a",
+        fetched=fetched,
+        revision=revision,
         files=files,
     )
 

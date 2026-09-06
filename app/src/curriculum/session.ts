@@ -10,7 +10,13 @@
  * goes in each slot, and every slot can be swapped (docs/04 §2, `00` D21).
  */
 import type { CatalogItem, Curriculum, Lesson, PassRecord, Unit } from './types';
-import { alternativesFor, findLesson, lessonComplete, type CatalogIndex } from './selectors';
+import {
+  alternativesFor,
+  findLesson,
+  lessonComplete,
+  levelConfidence,
+  type CatalogIndex,
+} from './selectors';
 
 export type SlotKind = 'technique' | 'review' | 'new' | 'repertoire' | 'jam' | 'free' | 'sightreading';
 
@@ -385,7 +391,12 @@ export function swapOptions(
         !(excludeSongs && item.type === 'song') &&
         Math.abs(item.level - source.level) <= 1,
     )
-    .sort((a, b) => Math.abs(a.level - source.level) - Math.abs(b.level - source.level))
+    .sort((a, b) => {
+      const byDistance = Math.abs(a.level - source.level) - Math.abs(b.level - source.level);
+      if (byDistance !== 0) return byDistance;
+      // replan §1.4: a judged level beats an estimated one at equal distance.
+      return levelConfidence(b) - levelConfidence(a);
+    })
     .slice(0, 12);
 }
 
