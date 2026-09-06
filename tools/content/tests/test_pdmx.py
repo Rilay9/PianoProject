@@ -609,6 +609,26 @@ class TestEndToEnd(unittest.TestCase):
             self.assertTrue(item.get("importHint"))
             self.assertIn(import_pdmx.PERSONAL_BUILD_TAG, item["tags"])
 
+        # `00` D23 says items are *labelled* with the composition's status.
+        # Until P19 nothing in the built catalog carried the field: it lived in
+        # a sentence inside editionNotes, which the app cannot read, and in the
+        # personal-build tag, which answers a narrower question.
+        by_id = {entry["id"]: entry for entry in table["items"]}
+        allowed = {"pd", "unknown", "in-copyright"}
+        for item in personal_items:
+            status = item.get("compositionStatus")
+            self.assertIn(status, allowed, item["id"])
+            self.assertEqual(status, by_id[item["id"]].get("compositionStatus", "unknown"))
+            # And the tag still follows from it, both ways round.
+            self.assertEqual(
+                status != "pd",
+                import_pdmx.PERSONAL_BUILD_TAG in item["tags"],
+                item["id"],
+            )
+        # A placeholder keeps the label: it is the reason it is a placeholder.
+        for item_id in strict.placeheld:
+            self.assertNotEqual(strict_items[item_id].get("compositionStatus"), "pd")
+
     def test_a_changed_file_fails_the_build_naming_it(self) -> None:
         import import_pdmx
 

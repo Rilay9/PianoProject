@@ -115,6 +115,28 @@ export interface LibraryOptions {
   importFor?: string;
 }
 
+/**
+ * What the detail sheet says about the composition's copyright (`00` D23).
+ *
+ * Empty for `pd` and for anything with no status at all — most of the catalog
+ * is authored, generated or long out of copyright, and a line saying so on
+ * every row would be noise that trains the eye to skip the line that matters.
+ */
+export function compositionStatusLine(item: {
+  compositionStatus?: string;
+  tags?: string[];
+}): string {
+  const personal = (item.tags ?? []).includes('personal-build');
+  const only = personal ? ' It is in your own build only.' : '';
+  if (item.compositionStatus === 'in-copyright') {
+    return `The music itself is still in copyright; the transcription is what was published freely.${only}`;
+  }
+  if (item.compositionStatus === 'unknown') {
+    return `Whether the music itself is out of copyright is unknown — the transcription was published as public domain, which is not the same claim.${only}`;
+  }
+  return '';
+}
+
 export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTMLElement {
   const { section, header, body } = screenFrame('library', 'Library', 'Everything you can play, and your own scores.');
   const filters: Filters = { ...DEFAULT_FILTERS };
@@ -381,6 +403,13 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       kv.append(el('dt', { text: term }), el('dd', { text: value }));
     }
     sheet.body.append(kv);
+
+    // `00` D23: the edition's licence and the song's copyright are different
+    // questions, and the licence line above answers only the first. Said out
+    // loud on the rows where it is not settled, because "public domain" on a
+    // transcription of a song from 2019 means the upload, not the song.
+    const status = compositionStatusLine(item);
+    if (status) sheet.body.append(el('p.muted', { id: 'library-composition', text: status }));
 
     // replan §1.4: an estimated level says so, and says what to do about it.
     if (item.levelSource === 'estimated') {

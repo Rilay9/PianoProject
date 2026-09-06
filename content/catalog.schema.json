@@ -79,6 +79,14 @@
           ],
           "description": "Whether `level` was decided for this piece or estimated — a whole opus banded to one number on import, or computed from features. The app prints an estimate as '≈ L7.1' and offers Re-level (replan §1.4)."
         },
+        "compositionStatus": {
+          "enum": [
+            "pd",
+            "unknown",
+            "in-copyright"
+          ],
+          "description": "Whether the *composition* is public domain, as distinct from the edition's licence in `source.license` (`00` D23). A transcription may be CC0 while the song it transcribes is not. `unknown` is the honest answer for most of PDMX: the dataset says the upload is public domain and says nothing about the work. Items that are not `pd` are tagged `personal-build` and are placeholders in a strict-licence build."
+        },
         "abrsmGradeApprox": {
           "type": [
             "integer",
