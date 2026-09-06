@@ -85,6 +85,19 @@ localStorage and from an imported backup and are untrusted input. It silently dr
 the e2e, which is the only place it *could* have been caught: the unit tests call `lockState`
 directly.
 
+## A second bug, found by a flaky test
+
+The section picker was filled and shown the moment the *catalog entry* was found, which is
+several hundred milliseconds before the score itself is parsed. Choosing a section in that
+window did nothing at all: the handler needs the session to turn printed bars into a loop and
+returns silently without one. On a loaded machine the e2e hit the gap about half the time,
+which is how it surfaced; on a phone with a long piece the window is wider than it is here.
+
+The picker now appears with the rest of the score, and the test asserts it is visible before
+using it — so the invariant is written down rather than relied on. A control that is on the
+screen and inert is worse than one that is not there yet, which is the same reason the picker
+is hidden entirely on a piece with no sections.
+
 ## What could not be checked here
 
 Both on the owner's checklist in `OWNER-GUIDE.md`:

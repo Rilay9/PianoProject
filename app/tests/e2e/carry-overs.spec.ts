@@ -41,6 +41,11 @@ test.describe('named sections', () => {
 
   test('clearing the loop clears the section too', async ({ page }) => {
     await page.goto('/#/score/song.classical.petzold-minuet-g-bwv-anh114');
+    // Visible means loadable: the picker stays hidden until the score is
+    // parsed, because until then choosing a section has nothing to turn its
+    // printed bars into. This test used to flake on a loaded machine by
+    // selecting into that gap.
+    await expect(page.locator('#score-section')).toBeVisible();
     await page.locator('#score-section').selectOption('First half (repeated)');
     await expect(page.locator('#score-loop')).toHaveText(/Loop First half/);
     await page.locator('#score-loop').click();

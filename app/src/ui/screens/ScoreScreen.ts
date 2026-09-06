@@ -910,7 +910,11 @@ export function ScoreScreen(router: Router): HTMLElement {
           option.textContent = `${entry.label} (${String(entry.fromMeasure)}–${String(entry.toMeasure)})`;
           sectionSelect.appendChild(option);
         }
-        sectionSelect.hidden = false;
+        // Filled here, shown further down — choosing a section needs the
+        // parsed score to turn printed bars into a loop, and the score is
+        // still being fetched at this point. Shown any earlier the control is
+        // live for a second or two while doing nothing, which on a slow phone
+        // with a long piece is long enough to use it and be ignored.
       }
       if (item.kind === 'pdf') {
         // A PDF has no notes to follow; it belongs to the page viewer.
@@ -1012,6 +1016,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       input = pickInput();
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;
       status.textContent = item.title;
+      if (sections.length > 0) sectionSelect.hidden = false;
       showBar();
       render();
     } catch (cause: unknown) {
