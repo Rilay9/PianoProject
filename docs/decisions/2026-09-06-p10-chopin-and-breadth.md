@@ -35,7 +35,7 @@ they are unusable. That question is now answered in writing so nobody searches a
 All of it is recorded in `content/sources/kern.json` under `checkedAndRefused`, and
 `docs/03` §2 has a `[NIFC]` row.
 
-## 2. 183 works from one table of 69 groups
+## 2. 169 works from one table of 69 groups
 
 Chopin's first editions hold 191 solo-piano works once songs, trios and concertos are
 filtered out — by reading each file's spine header, not its genre tag. Writing 191 rows by
@@ -64,8 +64,8 @@ Three things the expansion has to get right, and each was got wrong first:
   in itself.
 
 **Honesty about levels.** A level that came from the group default rather than from a
-judgement about that piece is tagged **`level-banded`** in the catalog: 129 items, 90 of the
-182 Chopin works and all 39 Joplin rags added this run. The tag is the difference between
+judgement about that piece is tagged **`level-banded`** in the catalog: 124 items, 85 of the
+169 Chopin works and all 39 Joplin rags added this run. The tag is the difference between
 a measurement and a guess, and it is visible in the app rather than implied.
 
 ## 3. A licence gate that reads a URL, and a composition test that reads a person

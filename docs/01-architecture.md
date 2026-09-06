@@ -322,10 +322,9 @@ criteria. Schema at `content/curriculum.schema.json`.
 - Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
 - Bundle: app JS < 1.5 MB gzipped; content precache < 60 MB total (scores are tiny; the
   soundfont dominates — pick a ≤ 20 MB piano). **Re-measured 2026-09-06 after P10 run 2
-  (the Chopin first editions and the rest of the Joplin rags): content 12 MB (7.3 scores / 2.6
-  soundfont / 1.0 catalog / 0.26 lessons / 0.07 curriculum). 802 catalog items, 749 with a
-  file. The catalog grew from 581 items and the scores from 3.4 MB — 221 new scores for
-  3.9 MB, which is still nothing next to the soundfont.** Re-measure
+  (the Chopin first editions and the rest of the Joplin rags): content 11 MB. **789 catalog
+  items, 736 with a file**, up from 581 and 528. 208 new scores — 169 Chopin works and the 39
+  remaining Joplin rags — for about 3 MB, which is still nothing next to the soundfont.** Re-measure
   and record it after every content phase; the whole library is precached (`00` D20, §7), so
   this number is what the owner downloads.
 
@@ -353,9 +352,9 @@ criteria. Schema at `content/curriculum.schema.json`.
 - **Update checks are optional and silent.** An "update available — reload" toast when a new
   service worker is waiting; a setting turns the check off entirely, and a failed check when
   offline is not an error and is never shown.
-- **Budget check (re-measured 2026-09-06, after P10 run 2):** content 12 MB against the 60 MB
-  budget in §6, with 749 precached scores. Adding 221 scores — every Chopin prelude, mazurka,
-  nocturne, waltz, étude, ballade and scherzo, and 47 Joplin rags — cost 3.9 MB. Scores really
+- **Budget check (re-measured 2026-09-06, after P10 run 2):** content 11 MB against the 60 MB
+  budget in §6, with 736 precached scores. Adding 208 scores — Chopin preludes, mazurkas,
+  nocturnes, waltzes, études, ballades and scherzos, and 47 Joplin rags — cost about 3 MB. Scores really
   are tiny; the soundfont still dominates and there is room for several more phases.
 - **What did grow awkwardly is the build.** The content build now takes about seven minutes
   and the render check about ten, most of it music21 converting 230 Humdrum files and OSMD

@@ -99,11 +99,11 @@ Without it the same rags and sonatas still appear in the library, but as rows
 that say where to get the score instead of carrying it. With it they are real
 scores you can open and play.
 
-What the flag covers is narrower than it was. The 182 Chopin scores — every
-prelude, mazurka, nocturne, waltz, étude, ballade, scherzo and sonata movement
-in the library — come from the Fryderyk Chopin Institute under CC BY, which is
-free to redistribute, so they are there whether you pass the flag or not. The
-flag now only affects the 47 Joplin rags.
+What the flag covers is narrower than it was. The 169 Chopin scores — the
+preludes, mazurkas, nocturnes, waltzes, études, ballades, scherzos and sonata
+movements in the library — come from the Fryderyk Chopin Institute under CC BY,
+which is free to redistribute, so they are there whether you pass the flag or
+not. The flag now only affects the 47 Joplin rags.
 
 Two things this flag deliberately does **not** do. It does not touch the GitHub
 Pages deploy, which builds with `--strict-license` and ships none of them. And
