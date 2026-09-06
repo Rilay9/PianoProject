@@ -348,5 +348,14 @@ have described a different build from the one under test. The web server now run
   hash is not in the current catalog would bound it.
 - **Failed conversions are not cached**, so the one `[MT]` file that cannot be exported is
   retried every build. Cheap, but it is the reason `[MT]` never reads "0 converted".
+- **The e2e visual snapshots are Linux-only.** Playwright names them per platform, so a
+  Windows run finds no `-win32` baseline for the 15 score-rendering screenshots and writes
+  one. They are not committed: a baseline recorded on a different font stack than CI's is
+  worse than none. `score.layout` and `score.spec`'s screenshot blocks therefore only
+  really run in CI.
+- **Two e2e tests are timing-flaky under a loaded machine**, both pre-existing and both
+  about a status line arriving after the assertion: `chart.spec`'s swing toggle and
+  `drills.spec`'s "sight-reading is different material each time". They pass 40/40 with
+  `--repeat-each=2` in isolation and failed once each in a full parallel run.
 - **Windows consoles need `PYTHONUTF8=1`.** `build.py` prints `→` in its summary and the
   default cp1252 console raises `UnicodeEncodeError` on it. CI is Linux and unaffected.
