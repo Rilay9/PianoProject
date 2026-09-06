@@ -65,7 +65,95 @@ export const CHORD_QUALITIES: Record<string, number[]> = {
   m7b5: [0, 3, 6, 10],
   'm7-5': [0, 3, 6, 10],
   '9': [0, 4, 7, 10, 14],
+  // Extended chords (P12b). Written full rather than as "the seventh plus a
+  // ninth", because the drill asks for the notes the learner must find and a
+  // 13th chord that quietly omits its 11th is a different chord.
+  maj9: [0, 4, 7, 11, 14],
+  m9: [0, 3, 7, 10, 14],
+  '11': [0, 4, 7, 10, 14, 17],
+  m11: [0, 3, 7, 10, 14, 17],
+  '13': [0, 4, 7, 10, 14, 21],
+  m13: [0, 3, 7, 10, 14, 21],
+  maj13: [0, 4, 7, 11, 14, 21],
+  '7b9': [0, 4, 7, 10, 13],
+  '7#9': [0, 4, 7, 10, 15],
+  '7#11': [0, 4, 7, 10, 18],
+  add9: [0, 4, 7, 14],
 };
+
+/**
+ * Semitones above the tonic, per mode.
+ *
+ * The seven modes of the major scale and nothing else. A "mode" drill that
+ * accepted `harmonic minor` would be a scale drill wearing the wrong name, and
+ * the generator already writes those.
+ */
+export const MODE_STEPS: Record<string, number[]> = {
+  ionian: [0, 2, 4, 5, 7, 9, 11],
+  dorian: [0, 2, 3, 5, 7, 9, 10],
+  phrygian: [0, 1, 3, 5, 7, 8, 10],
+  lydian: [0, 2, 4, 6, 7, 9, 11],
+  mixolydian: [0, 2, 4, 5, 7, 9, 10],
+  aeolian: [0, 2, 3, 5, 7, 8, 10],
+  locrian: [0, 1, 3, 5, 6, 8, 10],
+};
+
+/** `"D dorian"`, `"dorian"`, `"Mixolydian"` → the mode's name, or null. */
+export function parseModeName(text: string): string | null {
+  const word = text.trim().toLowerCase().split(/\s+/).pop() ?? '';
+  return MODE_STEPS[word] ? word : null;
+}
+
+/**
+ * The scale a chord asks for, as a mode name (`02` Part D4).
+ *
+ * Only the mappings that are not a matter of taste: a dominant seventh takes
+ * mixolydian, a minor seventh dorian, a half-diminished locrian. Where a chord
+ * has two defensible scales — maj7 is ionian or lydian depending on what it is
+ * doing in the key — the more common one is chosen and stated, rather than
+ * asking the learner to guess which the app meant.
+ */
+export const CHORD_SCALES: Record<string, string> = {
+  maj7: 'ionian',
+  M7: 'ionian',
+  maj9: 'ionian',
+  maj13: 'ionian',
+  '': 'ionian',
+  maj: 'ionian',
+  major: 'ionian',
+  '7': 'mixolydian',
+  '9': 'mixolydian',
+  '11': 'mixolydian',
+  '13': 'mixolydian',
+  sus4: 'mixolydian',
+  m7: 'dorian',
+  min7: 'dorian',
+  m9: 'dorian',
+  m11: 'dorian',
+  m13: 'dorian',
+  m: 'aeolian',
+  min: 'aeolian',
+  minor: 'aeolian',
+  m7b5: 'locrian',
+  'm7-5': 'locrian',
+};
+
+/** The mode that fits a chord symbol, or null when there is no settled answer. */
+export function chordScaleFor(symbol: string): { chord: ParsedChord; mode: string } | null {
+  const match = /^([A-Ga-g][#♯\-♭]?)(.*)$/.exec(symbol.trim());
+  if (!match) return null;
+  const chord = parseChordSymbol(symbol);
+  const mode = CHORD_SCALES[(match[2] ?? '').trim()];
+  return chord && mode ? { chord, mode } : null;
+}
+
+/** A mode from a root pitch class, one octave ascending, from `octaveRoot`. */
+export function modePitches(rootPitchClass: number, mode: string, octaveRoot = 60): number[] | null {
+  const steps = MODE_STEPS[mode];
+  if (!steps) return null;
+  const root = octaveRoot + (((rootPitchClass - (octaveRoot % 12)) % 12) + 12) % 12;
+  return [...steps.map((step) => root + step), root + 12];
+}
 
 export interface ParsedChord {
   label: string;
@@ -124,6 +212,40 @@ export function romanToChord(roman: string, keyPitchClass: number, octaveRoot = 
   const rootClass = (keyPitchClass + offset) % 12;
   const root = octaveRoot + ((rootClass - (octaveRoot % 12) + 12) % 12);
   return { label: roman.trim(), root, pitches: intervals.map((interval) => root + interval) };
+}
+
+/**
+ * `"V/V"`, `"V7/vi"`, `"vii°/V"` — a chord borrowed from another key's ladder.
+ *
+ * A secondary dominant is the dominant *of* a chord that is not the tonic, so
+ * it is built by finding that chord's root and treating it as a temporary
+ * tonic. `V/V` in C is D major, not G: the point of the drill is hearing the
+ * F sharp that says the music has left home for a bar.
+ */
+export function secondaryToChord(
+  text: string,
+  keyPitchClass: number,
+  octaveRoot = 60,
+): ParsedChord | null {
+  const parts = text.trim().split('/');
+  if (parts.length !== 2) return null;
+  const [numeral, target] = parts as [string, string];
+  const targetChord = romanToChord(target, keyPitchClass, octaveRoot);
+  if (!targetChord) return null;
+  const temporaryTonic = ((targetChord.root % 12) + 12) % 12;
+  const chord = romanToChord(numeral, temporaryTonic, octaveRoot);
+  return chord ? { ...chord, label: text.trim(), root: chord.root, pitches: chord.pitches } : null;
+}
+
+/** A roman numeral, whether or not it names another key's ladder. */
+export function anyRomanToChord(
+  text: string,
+  keyPitchClass: number,
+  octaveRoot = 60,
+): ParsedChord | null {
+  return text.includes('/')
+    ? secondaryToChord(text, keyPitchClass, octaveRoot)
+    : romanToChord(text, keyPitchClass, octaveRoot);
 }
 
 /** `"m2"`, `"M3"`, `"P5"`, `"TT"`, `"P8"` → semitones. */

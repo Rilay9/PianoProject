@@ -19,10 +19,20 @@ export interface LoggedError {
   lastAt: string;
   count: number;
   stack?: string;
+  /**
+   * How recently this was seen, as a counter rather than a clock.
+   *
+   * `lastAt` has millisecond resolution and two errors half a millisecond
+   * apart carry the same string, so ordering by it left "most recent" as
+   * whichever happened to be inserted first — which on a fast machine is the
+   * *older* one. A counter cannot tie.
+   */
+  seq: number;
 }
 
 const MAX_DISTINCT = 50;
 const log = new Map<string, LoggedError>();
+let sequence = 0;
 const listeners = new Set<(entry: LoggedError) => void>();
 
 /**
@@ -51,9 +61,11 @@ export function recordError(message: string, source: LoggedError['source'], stac
   const key = `${source}:${message}`;
   const now = new Date().toISOString();
   const existing = log.get(key);
+  sequence += 1;
   if (existing) {
     existing.count += 1;
     existing.lastAt = now;
+    existing.seq = sequence;
     announce(existing);
     return;
   }
@@ -64,6 +76,7 @@ export function recordError(message: string, source: LoggedError['source'], stac
     firstAt: now,
     lastAt: now,
     count: 1,
+    seq: sequence,
     ...(stack ? { stack } : {}),
   };
   log.set(key, entry);
@@ -71,7 +84,7 @@ export function recordError(message: string, source: LoggedError['source'], stac
 }
 
 export function loggedErrors(): LoggedError[] {
-  return [...log.values()].sort((a, b) => b.lastAt.localeCompare(a.lastAt));
+  return [...log.values()].sort((a, b) => b.seq - a.seq);
 }
 
 export function errorCount(): number {
@@ -101,4 +114,5 @@ export function resetErrorLogForTest(): void {
   log.clear();
   listeners.clear();
   installed = false;
+  sequence = 0;
 }

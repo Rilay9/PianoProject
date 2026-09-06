@@ -88,7 +88,21 @@ describe('the catalog’s runtime drills', () => {
 
   it('only claims the kinds that have a screen', () => {
     expect(RUNTIME_DRILL_KINDS).not.toContain('sight-reading');
-    expect(RUNTIME_DRILL_KINDS).toHaveLength(12);
+    // Twelve in P8, plus the seven harmony and ear kinds P12b added.
+    expect(RUNTIME_DRILL_KINDS).toHaveLength(19);
+  });
+
+  it('runs every kind the shipped catalog names', () => {
+    // The catalog is content and changes without the code changing, so a drill
+    // item whose kind nobody implemented has to fail here rather than on the
+    // phone. P12b added seven kinds and fourteen items that use them.
+    const claimed = new Set(
+      runtimeDrills.map((item) => item.drill?.kind).filter((kind): kind is string => !!kind),
+    );
+    for (const kind of ['mode', 'chord-scale', 'extended-chord', 'harmonic-dictation',
+      'transposition', 'roman-numeral', 'ear-tune']) {
+      expect(claimed, `no catalog item uses ${kind}`).toContain(kind);
+    }
   });
 });
 

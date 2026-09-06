@@ -41,6 +41,16 @@ export interface SightReadingResult {
   timeSig: { beats: number; beatType: number };
   bars: number;
   bpm: number;
+  /**
+   * The right hand's pitches in order, rests and tied continuations dropped.
+   *
+   * The transposition drill prints this music and expects it back in another
+   * key, so it needs the model as numbers as well as as notation. Reading them
+   * back out of the MusicXML would work and would be a second implementation of
+   * the same fact, which is how an answer key drifts away from the page it
+   * belongs to.
+   */
+  melody: number[];
 }
 
 /**
@@ -355,6 +365,12 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   });
 
   const title = `Sight-reading level ${level} · seed ${seed}`;
+  // A tied note is one note held, not two played, so only the tie's start
+  // counts — a learner transposing this plays the key once.
+  const melody = rightBars
+    .flat()
+    .filter((note) => note.midi !== null && note.tie !== 'stop')
+    .map((note) => note.midi as number);
   return {
     musicXml: writeMusicXml({
       title,
@@ -372,6 +388,7 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     timeSig,
     bars,
     bpm,
+    melody,
   };
 }
 

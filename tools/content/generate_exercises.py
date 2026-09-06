@@ -2251,7 +2251,9 @@ def make_walking_bass(
         offset += 4.0
     finalize(sc)
 
-    item_id = f"exercise.walking-bass.{key_slug(tonic)}.{form}"
+    # `slug`, not the form verbatim: "ii-V-I" is how the progression is written
+    # and an id may not carry a capital letter.
+    item_id = f"exercise.walking-bass.{key_slug(tonic)}.{slug(form)}"
     entry = catalog_entry(
         item_id, title, level,
         ["walking-bass", "bass-line", "swing", f"form-{form}"],

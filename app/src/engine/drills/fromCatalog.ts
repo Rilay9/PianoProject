@@ -26,6 +26,15 @@ import {
   RhythmDrill,
 } from './special';
 import {
+  ChordDictationDrill,
+  chordScaleDrill,
+  earTuneDrill,
+  extendedChordDrill,
+  modeDrill,
+  romanNumeralDrill,
+  transpositionDrill,
+} from './harmony';
+import {
   callResponseDrill,
   chordDrill,
   earChordDrill,
@@ -36,11 +45,13 @@ import {
   noteFlashDrill,
 } from './factories';
 import {
+  anyRomanToChord,
   buildRhythm,
   intervalNameToSemitones,
   noteNameToMidi,
   noteNameToPitchClass,
   parseChordSymbol,
+  parseModeName,
   parseTimeSignature,
   romanToChord,
   type ParsedChord,
@@ -61,6 +72,13 @@ export const RUNTIME_DRILL_KINDS: readonly DrillKind[] = [
   'dynamics',
   'call-response',
   'backing-track',
+  'mode',
+  'chord-scale',
+  'extended-chord',
+  'harmonic-dictation',
+  'transposition',
+  'roman-numeral',
+  'ear-tune',
 ];
 
 export interface BuildOptions {
@@ -151,6 +169,20 @@ export function drillFromCatalog(item: CatalogItem, options: BuildOptions = {}):
       return callResponseDrill({ ...base, count: Math.min(count, 6) });
     case 'backing-track':
       return buildBackingTrack(p);
+    case 'mode':
+      return buildMode(p, base);
+    case 'chord-scale':
+      return buildChordScale(p, base);
+    case 'extended-chord':
+      return buildExtendedChord(p, base);
+    case 'harmonic-dictation':
+      return buildHarmonicDictation(p, base);
+    case 'transposition':
+      return buildTransposition(p, base);
+    case 'roman-numeral':
+      return buildRomanNumeral(p, base);
+    case 'ear-tune':
+      return buildEarTune(p, base);
     default:
       // A five-finger walk or an accompaniment pattern with no file is a
       // technique pattern: demonstrate it, then play it back. See the P8
@@ -315,7 +347,9 @@ function buildEarProgression(p: Params, base: Required<BuildOptions>, rng: () =>
   const prompts: DrillPrompt[] = Array.from({ length: base.count }, (_, index) => {
     const sequence = sequences[Math.floor(rng() * sequences.length)] ?? sequences[0];
     const chords = (sequence?.degrees ?? [])
-      .map((degree) => romanToChord(degree, 0))
+      // `anyRomanToChord`, so a sequence may name a secondary dominant: the
+      // whole point of "I – V/V – V" is the chord that is not in the key.
+      .map((degree) => anyRomanToChord(degree, 0))
       .filter((chord): chord is ParsedChord => chord !== null);
     return {
       index,
@@ -326,6 +360,114 @@ function buildEarProgression(p: Params, base: Required<BuildOptions>, rng: () =>
     };
   });
   return new PromptDrill({ kind: 'ear-progression', prompts, anyOctave: true, clock: base.clock });
+}
+
+/**
+ * `["D", "G"]` → `[2, 7]`; anything unreadable is dropped rather than guessed.
+ */
+function pitchClasses(value: unknown): number[] {
+  return strings(value)
+    .map(noteNameToPitchClass)
+    .filter((pitchClass): pitchClass is number => pitchClass !== null);
+}
+
+function buildMode(p: Params, base: Required<BuildOptions>): Drill {
+  const modes = strings(p.modes)
+    .map(parseModeName)
+    .filter((mode): mode is string => mode !== null);
+  const roots = pitchClasses(p.roots);
+  return modeDrill({
+    ...base,
+    ...(modes.length > 0 ? { modes } : {}),
+    ...(roots.length > 0 ? { roots } : {}),
+  });
+}
+
+function buildChordScale(p: Params, base: Required<BuildOptions>): Drill {
+  const chords = strings(p.chords);
+  return chordScaleDrill({ ...base, ...(chords.length > 0 ? { chords } : {}) });
+}
+
+function buildExtendedChord(p: Params, base: Required<BuildOptions>): Drill {
+  const qualities = strings(p.qualities);
+  const roots = pitchClasses(p.roots);
+  return extendedChordDrill({
+    ...base,
+    ...(qualities.length > 0 ? { qualities } : {}),
+    ...(roots.length > 0 ? { roots } : {}),
+  });
+}
+
+function buildRomanNumeral(p: Params, base: Required<BuildOptions>): Drill {
+  const degrees = strings(p.degrees);
+  const keys = pitchClasses(p.keys);
+  return romanNumeralDrill({
+    ...base,
+    ...(degrees.length > 0 ? { degrees } : {}),
+    ...(keys.length > 0 ? { keys } : {}),
+  });
+}
+
+function buildEarTune(p: Params, base: Required<BuildOptions>): Drill {
+  const key = pitchClasses(p.keys)[0];
+  return earTuneDrill({
+    ...base,
+    bars: num(p.bars, 4),
+    barsPerPhrase: num(p.barsPerPhrase, 2),
+    ...(key !== undefined ? { key } : {}),
+    ...(typeof p.bpm === 'number' ? { bpm: p.bpm } : {}),
+  });
+}
+
+function buildTransposition(p: Params, base: Required<BuildOptions>): Drill {
+  const level = Math.max(1, Math.min(4, Math.round(num(p.level, 2)))) as 1 | 2 | 3 | 4;
+  // "up a tone", "to F" — the catalog names intervals, so the drill takes them
+  // as semitones and the labels are derived from them, not the other way round.
+  const targets = Array.isArray(p.targets)
+    ? p.targets.filter((value): value is number => typeof value === 'number')
+    : [];
+  return transpositionDrill({
+    ...base,
+    level,
+    bars: num(p.bars, 4),
+    ...(targets.length > 0 ? { targets } : {}),
+  });
+}
+
+/**
+ * Progressions for harmonic dictation, as `"key:numeral"` tokens.
+ *
+ * `["C:I", "C:V7/V", "G:V", "G:I"]` is a modulation written the way an analysis
+ * writes one — the key changes partway and the numerals restart. A plain
+ * numeral inherits the previous token's key, so the common case stays short.
+ */
+function dictationChords(tokens: string[]): number[][] {
+  let key = 0;
+  const chords: number[][] = [];
+  for (const token of tokens) {
+    const [left, right] = token.includes(':') ? token.split(':') : [undefined, token];
+    if (left !== undefined) {
+      const parsed = noteNameToPitchClass(left);
+      if (parsed !== null) key = parsed;
+    }
+    const chord = anyRomanToChord((right ?? '').trim(), key, 48);
+    if (chord) chords.push(chord.pitches);
+  }
+  return chords;
+}
+
+function buildHarmonicDictation(p: Params, base: Required<BuildOptions>): Drill {
+  const written = Array.isArray(p.progressions)
+    ? p.progressions
+        .map((entry) => (Array.isArray(entry) ? strings(entry) : romanSequence(entry)))
+        .map((tokens) => ({ label: tokens.join(' – '), chords: dictationChords(tokens) }))
+        .filter((entry) => entry.chords.length > 1)
+    : [];
+  return new ChordDictationDrill({
+    ...base,
+    ...(written.length > 0 ? { progressions: written } : {}),
+    ...(typeof p.boundaryMs === 'number' ? { boundaryMs: p.boundaryMs } : {}),
+  });
 }
 
 function buildRhythmDrill(p: Params, seed: number): Drill {

@@ -27,7 +27,16 @@ export type DrillKind =
   | 'pedal'
   | 'dynamics'
   | 'call-response'
-  | 'backing-track';
+  | 'backing-track'
+  // P12b. The harmony and ear kinds `02` Parts D2-D4 describe and `05` §7 left
+  // for later, now that the tracks that need them run past Stage 5.
+  | 'mode'
+  | 'chord-scale'
+  | 'extended-chord'
+  | 'harmonic-dictation'
+  | 'transposition'
+  | 'roman-numeral'
+  | 'ear-tune';
 
 /** What the UI has to show for one question. */
 export interface DrillPrompt {
@@ -45,6 +54,17 @@ export interface DrillPrompt {
   ordered?: boolean;
   /** Staff hint for note-flash: which clef the note was drawn on. */
   staff?: 1 | 2;
+  /**
+   * A second line of text under the label — the key to transpose into, the
+   * chord a scale has to fit, the bar number of an ear-tune phrase.
+   */
+  hint?: string;
+  /**
+   * Notation to show instead of a label, as MusicXML. The transposition drill
+   * prints four bars and asks for them in another key, so the prompt *is* a
+   * score; the screen renders this when it is set.
+   */
+  musicXml?: string;
 }
 
 export interface DrillAnswer {
