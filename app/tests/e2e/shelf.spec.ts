@@ -194,6 +194,10 @@ test.describe('practising against paper', () => {
     await page.locator('#paper-start').click();
     await page.locator('#paper-stop').click();
     await page.locator('#paper-report-clean').click();
+    // Wait for the write, not for luck: the button starts an async save and
+    // the screen says so when it lands. Navigating before that read the rung's
+    // progress from before the run, which is how this test flaked.
+    await expect(page.locator('#paper-status')).toContainText('Recorded as a clean run');
 
     await page.goto('/#/lesson/4.4');
     await expect(page.locator('#lesson-paper')).toContainText('you said you can play it');
