@@ -21,9 +21,11 @@ import functools
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 import warnings
+import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -423,13 +425,87 @@ def count_fingerings(score: stream.Stream) -> int:
 # writing
 # ---------------------------------------------------------------------------
 
+#: music21 mints part and instrument ids from object identity, so they look
+#: like `P64fa5e9c10000199a0c6ce0460494465` and are different every run.
+MUSIC21_MINTED_ID = re.compile(r"^[A-Za-z][0-9a-f]{16,}$")
+
+#: A fixed timestamp for every zip entry. 1980-01-01 is the earliest a DOS zip
+#: field can express, and is what reproducible-build tooling conventionally uses.
+ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
+
+
+def deterministic_ids(xml_text: str) -> str:
+    """
+    Renames music21's minted part/instrument ids to `P1`, `I1`, `P2`, …
+
+    Without this the pipeline is not reproducible: the same source converted
+    twice produces different bytes, because music21 derives these ids from
+    Python object identity. Three consequences, all of them things this phase
+    is about — the `checksum` recorded in the catalog's provenance block says a
+    file changed when only the run did; the render manifest is keyed on the
+    output file's sha256 and would re-engrave a score nobody touched; and two
+    machines converting the same edition disagree about what they produced.
+
+    The ids are internal cross-references (`<score-part>` ↔ `<part>`,
+    `<score-instrument>` ↔ `<midi-instrument>`), so renaming them consistently
+    is invisible to a reader — and `P1`/`I1` is what MuseScore and Finale emit
+    anyway. Done as text rather than through ElementTree because parsing and
+    re-serialising would drop the XML declaration and the DOCTYPE.
+    """
+    seen: dict[str, str] = {}
+    for pattern, prefix in ((r'<score-part id="([^"]+)"', "P"), (r'<score-instrument id="([^"]+)"', "I")):
+        for found in re.findall(pattern, xml_text):
+            if found in seen or not MUSIC21_MINTED_ID.match(found):
+                continue
+            seen[found] = f"{prefix}{sum(1 for v in seen.values() if v.startswith(prefix)) + 1}"
+    for old, new in seen.items():
+        xml_text = xml_text.replace(f'"{old}"', f'"{new}"')
+    return xml_text
+
+
+def normalise_archive(path: Path) -> None:
+    """
+    Rewrites a `.mxl` so its bytes depend only on its music.
+
+    Two things in a zip are wall-clock: the per-entry modification time, and —
+    through `deterministic_ids` above — the ids music21 minted while it was
+    running. Both are pinned here. Entry order is preserved rather than sorted,
+    because the MXL container wants `META-INF/container.xml` to stay where the
+    writer put it.
+    """
+    with zipfile.ZipFile(path) as archive:
+        entries = [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
+
+    staged = path.with_suffix(path.suffix + ".tmp")
+    with zipfile.ZipFile(staged, "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, data in entries:
+            if name.lower().endswith((".xml", ".musicxml")):
+                data = deterministic_ids(data.decode("utf-8")).encode("utf-8")
+            info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o600 << 16
+            archive.writestr(info, data)
+    staged.replace(path)
+
+
 def write_mxl(score: stream.Score, out_path: Path) -> Path:
-    """Writes compressed MusicXML. music21 picks the format from the suffix."""
+    """
+    Writes MusicXML. music21 picks the format from the suffix.
+
+    The output is then normalised so that the same music always produces the
+    same bytes — see `normalise_archive`.
+    """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     written = score.write("musicxml", fp=str(out_path))
     written_path = Path(str(written))
     if written_path != out_path:
         written_path.replace(out_path)
+    if out_path.suffix.lower() == ".mxl":
+        normalise_archive(out_path)
+    else:
+        out_path.write_text(
+            deterministic_ids(out_path.read_text(encoding="utf-8")), encoding="utf-8"
+        )
     return out_path
 
 

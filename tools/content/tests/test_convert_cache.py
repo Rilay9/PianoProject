@@ -107,6 +107,52 @@ class TestRoundTrip(CacheCase):
         self.assertTrue(result.measures > 0)
 
 
+class TestReproducible(CacheCase):
+    """
+    The same music must always produce the same bytes.
+
+    Not a nicety: the catalog records each file's sha256 as provenance, and the
+    render manifest is keyed on it. music21 mints part and instrument ids from
+    object identity and zips them with the wall clock, so without normalising
+    both, a file "changed" every run and on every machine — which would have
+    made the manifest re-engrave scores nobody had touched.
+    """
+
+    def test_converting_twice_gives_identical_bytes(self) -> None:
+        # Same output *name* in two directories: the zip stores each entry's
+        # filename, so `a.mxl` and `b.mxl` differ for a reason that has nothing
+        # to do with reproducibility.
+        first = self.tmp / "one" / "score.mxl"
+        second = self.tmp / "two" / "score.mxl"
+        cached_convert(SOURCE, first, use_cache=False)
+        cached_convert(SOURCE, second, use_cache=False)
+        self.assertEqual(first.read_bytes(), second.read_bytes())
+
+    def test_zip_entries_carry_a_fixed_timestamp(self) -> None:
+        import zipfile
+
+        dest = self.tmp / "stamped.mxl"
+        cached_convert(SOURCE, dest, use_cache=False)
+        with zipfile.ZipFile(dest) as archive:
+            stamps = {info.date_time for info in archive.infolist()}
+        self.assertEqual(stamps, {convert.ZIP_EPOCH})
+
+    def test_minted_ids_are_renamed_but_real_ones_are_kept(self) -> None:
+        xml = (
+            '<score-part id="P64fa5e9c10000199a0c6ce0460494465">'
+            '<score-instrument id="Iea9ee0ade06017c9eb3695e345bc8e9f"/>'
+            '<midi-instrument id="Iea9ee0ade06017c9eb3695e345bc8e9f"/>'
+            '</score-part><part id="P64fa5e9c10000199a0c6ce0460494465"/>'
+            '<score-part id="Piano"/>'
+        )
+        out = convert.deterministic_ids(xml)
+        self.assertIn('<score-part id="P1">', out)
+        self.assertIn('<part id="P1"/>', out)
+        self.assertEqual(out.count('id="I1"'), 2)
+        # A name someone chose is left alone; only the minted hex ids move.
+        self.assertIn('<score-part id="Piano"/>', out)
+
+
 class TestStats(unittest.TestCase):
     def test_summary_reads_as_a_build_line(self) -> None:
         self.assertEqual(CacheStats(hits=3, misses=4).summary(), "3 cached, 4 converted")
