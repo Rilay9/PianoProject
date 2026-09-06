@@ -222,13 +222,16 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       if (row && row.status !== 'new') {
         badges.push(badge(row.selfPassed ? 'you said you can play it' : row.status, row.status));
       }
-      if (entry.piece.itemId) badges.push(badge('has a twin', 'passed'));
+      // Only if the catalog still has it: deleting the import leaves the id
+      // on the piece, and the button would open an "Unknown item" page.
+      const twin =
+        entry.piece.itemId && items.has(entry.piece.itemId) ? entry.piece.itemId : undefined;
+      if (twin) badges.push(badge('has a twin', 'passed'));
       const actions = [
         button('Practise', () => router.navigatePaper(entry.book.id, entry.piece.id), {
           variant: 'primary',
         }),
       ];
-      const twin = entry.piece.itemId;
       if (twin) {
         actions.push(button('With the score', () => router.navigateScore(twin), { variant: 'quiet' }));
       }

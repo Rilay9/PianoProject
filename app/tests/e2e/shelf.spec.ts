@@ -6,7 +6,12 @@
  * does hide the score while still being scored. Both are properties of what is
  * on the screen, which is exactly what a unit test cannot see.
  */
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
+
+const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'imports');
+const MXL = path.join(FIXTURES, 'test-tune.mxl');
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -101,6 +106,48 @@ test.describe('the rung asking for paper', () => {
     await page.locator('#piece-title').fill('Pedal study');
     await page.locator('#piece-save').click();
     await expect(page.locator('#lesson-paper')).toContainText('Pedal study');
+  });
+});
+
+test.describe('a twin that is no longer there', () => {
+  test('the shelf stops offering a score that was deleted', async ({ page }) => {
+    // Registering a piece against an imported score and then deleting the
+    // import used to leave the id on the piece, so "With the score" stayed on
+    // the row and opened an "Unknown item" page.
+    await page.goto('/#/library');
+    await page.locator('#library-file').setInputFiles(MXL);
+    await expect(page.locator('#library-list')).toContainText('Imported Test Tune');
+
+    await page.goto('/#/library/shelf');
+    await page.locator('#shelf-add-book').click();
+    await page.locator('#book-title').fill('A book');
+    await page.locator('#book-save').click();
+    await expect(page.locator('#shelf-list')).toContainText('A book');
+    await page.locator('[id^="shelf-add-piece-"]').first().click();
+    await page.locator('#piece-title').fill('With a twin');
+    await page.locator('#piece-twin-search').fill('Imported Test');
+    await page.locator('#piece-twin-results .list-row').first().click();
+    await expect(page.locator('#piece-twin')).toContainText('Linked to');
+    await page.locator('#piece-save').click();
+    await expect(page.locator('#shelf-list')).toContainText('has a twin');
+
+    await page.goto('/#/library');
+    await page.locator('#library-search').fill('Imported Test Tune');
+    await expect(page.locator('#library-list [data-item="import.imported-test-tune"]')).toBeVisible();
+    await page
+      .locator('#library-list [data-item="import.imported-test-tune"]')
+      .getByRole('button', { name: 'Edit', exact: true })
+      .click();
+    page.once('dialog', (dialog) => void dialog.accept());
+    await page.locator('#edit-delete').click();
+    await expect(page.locator('#library-edit')).toBeHidden();
+
+    await page.goto('/#/library/shelf');
+    await expect(page.locator('#shelf-list')).toContainText('With a twin');
+    await expect(page.locator('#shelf-list')).not.toContainText('has a twin');
+    await expect(
+      page.locator('#shelf-list').getByRole('button', { name: 'With the score' }),
+    ).toHaveCount(0);
   });
 });
 
