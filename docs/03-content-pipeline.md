@@ -70,7 +70,7 @@ The ABC file's `%%pianopath` header names the edition or PDMX CID it was checked
 **Pipeline additions from P11 (2026-09-06):** conversions are cached under `build/cache/`
 by source checksum, converter version and music21 version; the render check keeps
 `build/render-manifest.json` and renders only files whose checksum it has not seen
-(`--full` renders everything; a weekly workflow runs it); `validate.py` checks catalog and
+(`--full` renders everything; run it whenever the renderer or converter moves); `validate.py` checks catalog and
 unit tracks against `content/curriculum/00-tracks.json` (the schema enum is gone), requires
 `levelSource` on every item, and reports orphan exercises. The per-item render report
 carries console errors, cursor-step parity, a duration-per-bar sanity flag, a hands check and
@@ -132,7 +132,8 @@ crashes half way through costs at most twenty rather than everything.
 The manifest has one blind spot by construction: a change in OpenSheetMusicDisplay, in the
 ScoreModel extractor or in the browser leaves every remembered result standing, because no
 score file moved. `render_check.py --full` ignores the manifest, and
-`.github/workflows/render-full.yml` runs it weekly and on demand, which is what closes it.
+`render_check.py --full` closes it, either locally or through
+`.github/workflows/render-full.yml`, which is dispatched by hand.
 
 `build.py --if-missing` used to skip the whole content build whenever a catalog already
 existed. It is gone: it made an edited source silently stale in `npm run build`, and with

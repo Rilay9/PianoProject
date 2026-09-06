@@ -8,16 +8,16 @@ name: Full render check
 # score files did not move.
 #
 # This job closes it: `--full` ignores the manifest and re-engraves the whole
-# library. Weekly, so a renderer regression has at most seven days to hide, and
-# on demand, so it can be run against a branch that touches score/ or the OSMD
-# version before that branch is merged.
+# library. Run it against a branch that touches `score/`, the converter, or the
+# OpenSheetMusicDisplay version, before that branch is merged.
+#
+# **On demand only.** P11 specified a weekly cron as well; it was dropped —
+# see docs/decisions/2026-09-06-render-full-on-demand.md. The short version is
+# that the same check is now a five-minute local command, and a schedule that
+# re-renders an unchanged library every Monday is a cost with no reader.
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # 05:00 UTC on Mondays — off the back of the weekend, and nowhere near the
-    # times a push-triggered CI run is likely to want a runner.
-    - cron: '0 5 * * 1'
 
 permissions:
   contents: read

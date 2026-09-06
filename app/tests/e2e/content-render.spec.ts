@@ -17,7 +17,7 @@
 // `build/render-manifest.json` under the sha256 of the file that produced it,
 // so a run only engraves files it has not seen. A file's bytes decide its
 // result, so the hash is the whole key — and `--full` (CONTENT_RENDER_FULL=1)
-// ignores the manifest, which is what the weekly workflow runs so an OSMD
+// ignores the manifest, which is what render_check.py --full runs so an OSMD
 // upgrade cannot hide behind the cache.
 //
 // This file reports *facts*. Deciding which facts are wrong — cursor-step

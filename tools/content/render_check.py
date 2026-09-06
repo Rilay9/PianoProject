@@ -222,7 +222,7 @@ def main() -> None:
     parser.add_argument(
         "--full",
         action="store_true",
-        help="ignore the manifest and render every item (the weekly workflow)",
+        help="ignore the manifest and render every item — run this when OSMD moves",
     )
     parser.add_argument(
         "--apply",

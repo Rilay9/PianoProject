@@ -76,8 +76,9 @@ duration, tempo, time and key signature, hands, cursor steps, render time, conso
 error. A run engraves only unseen hashes and merges the remembered numbers into the report,
 so `apply_durations` still writes a complete catalog. It is flushed every 20 fresh renders,
 so a crash costs at most twenty (§7.8). `--full` ignores it, and
-`.github/workflows/render-full.yml` runs that weekly and on demand, which is what stops a
-renderer upgrade hiding behind the cache.
+`.github/workflows/render-full.yml` runs that on demand, which is what stops a renderer
+upgrade hiding behind the cache (the weekly cron P11 asked for was dropped — see
+`2026-09-06-render-full-on-demand.md`).
 
 The division of labour is deliberate: **the spec reports facts, `render_check.py` judges
 them.** The judgements need the catalog and are worth unit tests, and a check nobody can test
@@ -279,7 +280,7 @@ had evaporated. P10's "beams ruled out" was right.
 `actual-notes`, or hand the remainder to the last note of the tuplet — and is a
 follow-up rather than this phase's work, because it changes the timing of every
 converted file by up to one division and needs a full render check to confirm
-it is safe. That check now exists and costs one weekly job.
+it is safe. That check now exists and is one command.
 
 **Upstream issue text**, for opensheetmusicdisplay:
 

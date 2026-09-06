@@ -362,8 +362,9 @@ criteria. Schema at `content/curriculum.schema.json`.
   `abc_tools.py`, the music21 version and the conversion options (`docs/03` §3a). The render
   check gained the equivalent: `build/render-manifest.json`, keyed on each output file's
   sha256, so only unseen files are engraved. Both are restored in CI by `actions/cache`, and
-  `.github/workflows/render-full.yml` re-renders everything weekly so a renderer upgrade
-  cannot hide behind the manifest.
+  `.github/workflows/render-full.yml` re-renders everything on demand so a renderer upgrade
+  cannot hide behind the manifest — run it, or `render_check.py --full` locally, whenever
+  OSMD or the converter moves.
 
   **Measured on one Windows laptop, `build.py --offline`, 790 catalog items:** a cold build
   with an empty cache is **27 min**; a warm one is **76 s** on an idle machine, with 169 of
