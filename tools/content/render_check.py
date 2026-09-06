@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -46,6 +47,19 @@ from common import BUILD_DIR, DEFAULT_OUT, REPO_ROOT, read_json, write_json  # n
 
 APP_DIR = REPO_ROOT / "app"
 SPEC = "tests/e2e/content-render.spec.ts"
+
+
+def npx() -> str:
+    """
+    The full path to `npx`.
+
+    `subprocess.run(["npx", …])` works on Linux and fails on Windows with
+    `[WinError 2] The system cannot find the file specified`: the file there is
+    `npx.cmd`, and CreateProcess does not apply PATHEXT the way a shell does.
+    `shutil.which` does, so it finds the right one on both.
+    """
+    return shutil.which("npx") or "npx"
+
 
 #: replan §7.3. A bar under half a second is a tempo the engine cannot follow;
 #: a bar over twelve seconds is almost always a mis-read duration rather than a
@@ -79,7 +93,7 @@ def run_check(
     scope = "every item" if full else "items not in the manifest"
     print(f"rendering {scope} from {content_dir}/catalog.json in Chromium (builds the app first)…")
     result = subprocess.run(
-        ["npx", "playwright", "test", SPEC, "--reporter=list"],
+        [npx(), "playwright", "test", SPEC, "--reporter=list"],
         cwd=APP_DIR,
         env=environment,
         check=False,

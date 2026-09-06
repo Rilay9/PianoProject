@@ -57,18 +57,6 @@ from common import (  # noqa: E402
     utc_now,
     write_json,
 )
-
-
-@functools.lru_cache(maxsize=None)
-def repo_fetched_at(repo_name: str) -> str | None:
-    """
-    When this repository's bytes actually arrived, from the provenance ledger.
-
-    Cached because it is asked once per catalog item and answered once per
-    repository. `None` when the ledger has no row — the caller falls back to
-    now, which is the old behaviour and the only honest answer available.
-    """
-    return ledger_fetched_at(f"kern/{repo_name}")
 from licensing import (  # noqa: E402
     NC_PERSONAL_TAG,
     LicenseDecision,
@@ -82,6 +70,18 @@ from licensing import (  # noqa: E402
 
 TABLE_PATH = CONTENT_SRC / "sources" / "kern.json"
 KERN_DIR = IMPORTED_DIR / "kern"
+
+
+@functools.lru_cache(maxsize=None)
+def repo_fetched_at(repo_name: str) -> str | None:
+    """
+    When this repository's bytes actually arrived, from the provenance ledger.
+
+    Cached because it is asked once per catalog item and answered once per
+    repository. `None` when the ledger has no row — the caller falls back to
+    now, which is the old behaviour and the only honest answer available.
+    """
+    return ledger_fetched_at(f"kern/{repo_name}")
 
 #: What a placeholder tells the owner to do instead. The Sapp editions are a
 #: `git clone` away on any machine, so this is a real instruction, not a shrug.

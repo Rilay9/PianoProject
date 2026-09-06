@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -42,6 +43,11 @@ from common import BUILD_DIR, DEFAULT_OUT, REPO_ROOT, read_json  # noqa: E402
 APP_DIR = REPO_ROOT / "app"
 SPEC = "tests/e2e/bisect-render.spec.ts"
 WORK_DIR = BUILD_DIR / "bisect"
+
+
+def npx() -> str:
+    """`npx` is `npx.cmd` on Windows and CreateProcess will not find it; which() will."""
+    return shutil.which("npx") or "npx"
 
 
 @dataclass
@@ -105,7 +111,7 @@ def render_batch(probes: list[Probe]) -> None:
         }
     )
     subprocess.run(
-        ["npx", "playwright", "test", SPEC, "--reporter=line"],
+        [npx(), "playwright", "test", SPEC, "--reporter=line"],
         cwd=APP_DIR,
         env=environment,
         check=False,
