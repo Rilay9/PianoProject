@@ -366,9 +366,11 @@ criteria. Schema at `content/curriculum.schema.json`.
   cannot hide behind the manifest.
 
   **Measured on one Windows laptop, `build.py --offline`, 790 catalog items:** a cold build
-  with an empty cache is **27 min**; a warm one is **5 min**, with 169 of 169 `[KERN]`
-  conversions and 32 of 32 `[AUTH]` conversions served from the cache. Neither number is CI's
-  — CI's runner is faster and starts from a restored cache — but the *ratio* is the point.
+  with an empty cache is **27 min**; a warm one is **76 s** on an idle machine, with 169 of
+  169 `[KERN]` conversions and 32 of 32 `[AUTH]` conversions served from the cache. A full
+  render check of all 689 playable items is about **40 min**; a second run renders **0** and
+  reuses the manifest. Neither number is CI's — its runner is faster and starts from a
+  restored cache — but the ratios are the point.
 
   Prerequisite, and worth knowing: **a conversion is now byte-reproducible.** music21 mints
   part ids from object identity and zips with the wall clock, so the same music used to
@@ -377,7 +379,9 @@ criteria. Schema at `content/curriculum.schema.json`.
 
   **What is left is the generator.** `generate_exercises.py` builds 426 exercises with
   music21 on every run and nothing caches that, so it is now most of a no-change build.
-  Making it incremental is the next worthwhile move and is out of P11's scope.
+  Making it incremental is the next worthwhile move and is out of P11's scope. It was at
+  least made *reproducible* — it wrote scores with `sc.write()` rather than `write_mxl`, so
+  all 426 changed bytes every build and the render manifest re-engraved every one of them.
 - **The globs are the failure point, twice over now.** Workbox skips what a glob misses and
   what exceeds the size limit, and it says nothing either way. `maximumFileSizeToCacheInBytes`
   was raised for the soundfont in P5b; in P7 `.mjs` had to be added because `pdfjs-dist` ships
