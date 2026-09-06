@@ -23,8 +23,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
-from music21 import (chord, clef, instrument, key, layout, meter, metadata, note,
-                     pitch, scale, stream, tempo, articulations)
+from music21 import (chord, clef, instrument, interval, key, layout, meter, metadata,
+                     note, pitch, scale, stream, tempo, articulations)
 from music21.scale import Direction
 
 # --------------------------------------------------------------------------------------
@@ -1913,6 +1913,677 @@ def make_pedal_variant(
 
 
 # --------------------------------------------------------------------------------------
+# harmony: voicings, progressions and left-hand patterns (P12b)
+# --------------------------------------------------------------------------------------
+#
+# `02` Parts D2-D4 describe the chords-pop, blues and jazz tracks and the
+# curriculum names skills — the four-chord loop in five keys, shell voicings,
+# walking bass — that had no exercise anywhere. Everything below carries
+# `<harmony>` chord symbols so the chord-chart view (`04` §3b) works on it: an
+# exercise about harmony that the chart cannot read is an exercise about
+# notation.
+
+
+def add_symbol(part: stream.PartStaff, figure: str, offset: float) -> None:
+    """
+    Writes a chord symbol above the staff at `offset`.
+
+    `writeAsChord = False` matters: without it music21 exports the symbol as a
+    sounding chord as well, and the learner gets the voicing printed twice —
+    once as the thing to play and once as a block underneath it.
+    """
+    from music21 import harmony
+
+    symbol = harmony.ChordSymbol(figure)
+    symbol.writeAsChord = False
+    part.insert(offset, symbol)
+
+
+#: The four ways a seventh chord is voiced under one hand (`02` Part D4).
+#:
+#: Semitones above the root. "Shell" is root-third-seventh, the voicing that
+#: says the most with three notes; the rootless voicings drop the root because
+#: a bass player has it, and A/B alternate so the hand stays put through a
+#: ii-V-I instead of leaping.
+SEVENTH_VOICINGS: dict[str, dict[str, list[int]]] = {
+    "close":       {"maj7": [0, 4, 7, 11], "7": [0, 4, 7, 10], "m7": [0, 3, 7, 10]},
+    "shell":       {"maj7": [0, 4, 11],    "7": [0, 4, 10],    "m7": [0, 3, 10]},
+    "rootless-a":  {"maj7": [4, 7, 11, 14], "7": [4, 7, 10, 14], "m7": [3, 7, 10, 14]},
+    "rootless-b":  {"maj7": [11, 14, 16, 19], "7": [10, 14, 16, 19], "m7": [10, 14, 15, 19]},
+}
+
+VOICING_LABELS = {
+    "close": "close position",
+    "shell": "shell (root, 3rd, 7th)",
+    "rootless-a": "rootless A",
+    "rootless-b": "rootless B",
+}
+
+#: The quality on each degree of a major-key ii-V-I.
+II_V_I = (("m7", 2, "ii"), ("7", 7, "V"), ("maj7", 0, "I"))
+
+
+def _figure(root_pc_name: str, quality: str) -> str:
+    return f"{root_pc_name}{'' if quality == 'maj' else quality}"
+
+
+#: Semitones above a root, as the interval that spells them correctly.
+#:
+#: `Pitch.transpose(4)` is not the major third: it is *some* pitch four
+#: semitones up, and music21 picks the spelling by pitch class. In A flat major
+#: that turns the tonic itself into G sharp, so a chord chart in A flat printed
+#: G#m7 where A flat's ii belongs. Transposing by a named interval keeps the
+#: letter, which is the whole difference between a key signature and a piano.
+SEMITONE_INTERVAL = {
+    0: "P1", 1: "m2", 2: "M2", 3: "m3", 4: "M3", 5: "P4", 6: "A4", 7: "P5",
+    8: "m6", 9: "M6", 10: "m7", 11: "M7", 12: "P8", 13: "m9", 14: "M9",
+    15: "m10", 16: "M10", 17: "P11", 19: "P12", 21: "M13",
+}
+
+#: Which scale degree each semitone above the tonic is, where it is diatonic.
+DEGREE_FOR_SEMITONE = {0: 1, 2: 2, 4: 3, 5: 4, 7: 5, 9: 6, 11: 7}
+
+#: Spellings that are correct and that nobody prints.
+#:
+#: Each of these is a white key wearing an accidental it does not need. They
+#: turn up as the flat II of the flat keys, where the arithmetic is right and
+#: the notation is unreadable.
+UNWRITTEN = frozenset({"C-", "F-", "B#", "E#"})
+
+#: The octave the guide tones live in, as MIDI numbers: E4 up to E5.
+#:
+#: A ii-V-I only shows its voice leading if the two notes stay put while the
+#: chords move under them. Written from each root upwards instead, the third of
+#: C major lands an octave below the seventh it just resolved from and the
+#: exercise demonstrates nothing.
+GUIDE_TONE_FLOOR, GUIDE_TONE_CEILING = 64, 76
+
+
+def in_guide_tone_window(p: pitch.Pitch) -> pitch.Pitch:
+    """`p` moved by octaves until it sits between E4 and E5."""
+    while p.ps < GUIDE_TONE_FLOOR:
+        p = p.transpose(interval.Interval("P8"))
+    while p.ps >= GUIDE_TONE_CEILING:
+        p = p.transpose(interval.Interval("-P8"))
+    return p
+
+#: The twelve keys as a chord chart spells them.
+#:
+#: `MAJOR_KEYS` ends with G flat, which is right for a scale — the fingering and
+#: the key signature are what a scale is about. A chart in G flat prints its IV
+#: chord as C flat, which no chart does; the same music written in F sharp
+#: prints B. So the harmony families use F sharp and the scale families keep
+#: G flat, because they are answering different questions.
+HARMONY_KEYS = ("C", "D-", "D", "E-", "E", "F", "F#", "G", "A-", "A", "B-", "B")
+
+
+def _readable(p: pitch.Pitch) -> pitch.Pitch:
+    """
+    Respells double accidentals, and nothing else.
+
+    A player reading E double flat has been failed by the notation, not taught
+    something — and the flat keys produce them freely: the tritone substitute in
+    B flat is spelled B double flat by interval, and the quartal stack in G flat
+    reaches both B double flat and E double flat. A reader in a flat key is not
+    confused by a flat, so the rule stays narrow: only the spellings nobody
+    writes get changed.
+    """
+    if abs(p.alter) > 1 or p.name in UNWRITTEN:
+        return p.simplifyEnharmonic(inPlace=False)
+    return p
+
+
+def up(p: pitch.Pitch, semitones: int) -> pitch.Pitch:
+    """`p` raised by `semitones`, spelled as the interval rather than the pitch class."""
+    return _readable(p.transpose(interval.Interval(SEMITONE_INTERVAL[semitones])))
+
+
+def _transpose_name(tonic: str, semitones: int) -> str:
+    """The note name `semitones` above `tonic`, spelled for the key."""
+    k = key.Key(tonic)
+    degree = DEGREE_FOR_SEMITONE.get(semitones)
+    if degree is not None:
+        return k.pitchFromDegree(degree).name
+    # Chromatic: the diatonic degree above it, lowered — which is how a flat
+    # second is spelled, and then made printable.
+    #
+    # The flat II is borrowed from outside the key, so spelling it by the key
+    # signature gives C flat in B flat and F flat in E flat, and no chart has
+    # ever printed either. `_readable` turns those into B and E and leaves
+    # D flat alone, which is what a chart in C actually says.
+    above = k.pitchFromDegree(DEGREE_FOR_SEMITONE[semitones + 1])
+    lowered = pitch.Pitch(above.nameWithOctave)
+    lowered.accidental = pitch.Accidental(above.alter - 1)
+    return _readable(lowered).name
+
+
+def make_seventh_voicing(
+    tonic: str = "C", voicing: str = "shell", bpm: int = 66,
+) -> tuple[stream.Score, dict]:
+    """
+    A ii-V-I with the sevenths voiced one way, in one key.
+
+    One exercise per voicing per key rather than a menu, because the point is
+    the *hand shape*: playing a shell voicing once teaches nothing, and playing
+    twelve of them is how the shape stops needing to be worked out.
+    """
+    shapes = SEVENTH_VOICINGS[voicing]
+    level = 6.1 if voicing in ("close", "shell") else 7.1
+    label = VOICING_LABELS[voicing]
+    title = f"ii-V-I in {tonic.replace('-', '♭')} — {label}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    for quality, degree, _roman in II_V_I:
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), offset)
+        intervals = shapes[quality]
+        base = pitch.Pitch(root_name + "4")
+        tones = [up(base, i) for i in intervals]
+        fingers = [1, 2, 3, 5][: len(tones)] if len(tones) > 3 else [1, 2, 5]
+        rh.append(fingered_chord(tones, fingers, 4.0))
+        # The bass note the voicing assumes, so the exercise sounds like the
+        # harmony it names even when the right hand has dropped the root.
+        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0)
+        offset += 4.0
+    finalize(sc)
+
+    item_id = f"exercise.voicing7.{key_slug(tonic)}.{voicing}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["seventh-chord", "voicing", f"voicing-{voicing}", "ii-V-I", "jazz-harmony"],
+        "both", bpm, "seventh-voicing",
+        {"key": tonic, "voicing": voicing, "progression": ["ii7", "V7", "Imaj7"]},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz", "chords-pop", "technique"],
+    )
+    return sc, entry
+
+
+#: The loop every pop song is made of, as scale degrees: I-V-vi-IV.
+FOUR_CHORD_LOOP = ((0, "maj"), (7, "maj"), (9, "m"), (5, "maj"))
+
+
+def make_four_chord_loop(
+    tonic: str = "C", inversions: bool = False, bpm: int = 72,
+) -> tuple[stream.Score, dict]:
+    """
+    I-V-vi-IV, root position or with the voice leading tidied by inversions.
+
+    `02` Part D2's chords-pop 4 rung asks for this in five keys and the catalog
+    offered it in none. The inverted version is the one worth practising: the
+    root-position form teaches the chords, the inverted form teaches the hand
+    to stop jumping.
+    """
+    level = 4.4 if not inversions else 5.4
+    kind_label = "with inversions" if inversions else "root position"
+    title = f"I-V-vi-IV in {tonic.replace('-', '♭')} — {kind_label}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    previous: list[pitch.Pitch] | None = None
+    for degree, quality in FOUR_CHORD_LOOP:
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), offset)
+        intervals = [0, 3, 7] if quality == "m" else [0, 4, 7]
+        base = pitch.Pitch(root_name + "4")
+        tones = [up(base, i) for i in intervals]
+        if inversions and previous is not None:
+            # Rotate the chord upwards until its lowest note is near the last
+            # chord's, which is what "voice leading" means with triads.
+            while tones[0].ps < previous[0].ps - 3:
+                tones = tones[1:] + [up(tones[0], 12)]
+            while tones[0].ps > previous[0].ps + 3:
+                tones = [tones[-1].transpose(interval.Interval("-P8"))] + tones[:-1]
+        rh.append(fingered_chord(tones, [1, 3, 5], 4.0))
+        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0)
+        previous = tones
+        offset += 4.0
+    finalize(sc)
+
+    suffix = "inversions" if inversions else "root"
+    item_id = f"exercise.loop4.{key_slug(tonic)}.{suffix}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["chord-progression", "four-chord-loop", "I-V-vi-IV",
+         "voice-leading" if inversions else "root-position"],
+        "both", bpm, "progression",
+        {"key": tonic, "progression": ["I", "V", "vi", "IV"], "inversions": inversions},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["chords-pop", "core"],
+    )
+    return sc, entry
+
+
+def make_slash_bass(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict]:
+    """
+    A stepwise bass line under held chords, written as slash chords.
+
+    The trick behind half the pop ballads there are: the chords barely move and
+    the bass walks down the scale, so each bar is the same triad over a
+    different bass note. Reading `C/B` and knowing it is still a C chord is the
+    skill.
+    """
+    level = 5.4
+    title = f"Slash chords — a walking bass under held harmony in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    # I  I/7  vi  I/5  IV  IV/3  ii  V — the descending line.
+    plan = [(0, "maj", 0), (0, "maj", 11), (9, "m", 9), (0, "maj", 7),
+            (5, "maj", 5), (5, "maj", 4), (2, "m", 2), (7, "maj", 7)]
+    offset = 0.0
+    previous_bass: float | None = None
+    for index, (degree, quality, bass_semitones) in enumerate(plan):
+        root_name = _transpose_name(tonic, degree)
+        bass_name = _transpose_name(tonic, bass_semitones)
+        figure = _figure(root_name, quality)
+        add_symbol(rh, figure if bass_name == root_name else f"{figure}/{bass_name}", offset)
+        intervals = [0, 3, 7] if quality == "m" else [0, 4, 7]
+        base = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord([up(base, i) for i in intervals], [1, 3, 5], 2.0))
+        # Octaves chosen so the line goes down. Written at a fixed octave it
+        # does not: B is above C inside one octave, so a C-B-A-G "descent"
+        # spelled that way climbs a seventh and then falls, which is a
+        # different exercise and not the one named in the title. The last bar
+        # is the dominant, where the line turns round to start again.
+        bass = pitch.Pitch(bass_name + "3")
+        if index == len(plan) - 1:
+            bass = pitch.Pitch(bass_name + "2")
+        else:
+            while previous_bass is not None and bass.ps > previous_bass:
+                bass = bass.transpose(interval.Interval("-P8"))
+            previous_bass = bass.ps
+        add_notes(lh, [bass], [5], 2.0)
+        offset += 2.0
+    finalize(sc)
+
+    item_id = f"exercise.slash-bass.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["slash-chord", "bass-line", "voice-leading", "chord-symbols"],
+        "both", bpm, "slash-bass",
+        {"key": tonic, "shape": "descending stepwise bass"},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["chords-pop", "jazz"],
+    )
+    return sc, entry
+
+
+#: The twelve-bar blues, as (scale degree, quality) per bar.
+TWELVE_BAR = ((0, "7"), (5, "7"), (0, "7"), (0, "7"),
+              (5, "7"), (5, "7"), (0, "7"), (0, "7"),
+              (7, "7"), (5, "7"), (0, "7"), (7, "7"))
+
+
+def make_walking_bass(
+    tonic: str = "C", form: str = "blues", bpm: int = 92,
+) -> tuple[stream.Score, dict]:
+    """
+    A walking bass line in quarters, over a blues or over a ii-V-I.
+
+    Four notes to the bar, root-third-fifth-approach: the approach note is a
+    semitone below the next bar's root, which is the whole trick and the reason
+    a walking line sounds inevitable rather than random.
+    """
+    level = 6.2 if form == "blues" else 6.4
+    bars = list(TWELVE_BAR) if form == "blues" else [(2, "m7"), (7, "7"), (0, "maj7"), (0, "maj7")]
+    title = (f"Walking bass over a 12-bar blues in {tonic.replace('-', '♭')}"
+             if form == "blues"
+             else f"Walking bass over ii-V-I in {tonic.replace('-', '♭')}")
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    for index, (degree, quality) in enumerate(bars):
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), offset)
+        third = 3 if quality.startswith("m") else 4
+        root = pitch.Pitch(root_name + "2")
+        next_degree = bars[(index + 1) % len(bars)][0]
+        next_root = pitch.Pitch(_transpose_name(tonic, next_degree) + "2")
+        # A semitone under the next root: the note that makes the line sound
+        # like it was going there all along.
+        approach = _readable(next_root.transpose(interval.Interval("-m2")))
+        line = [root, up(root, third), up(root, 7), approach]
+        add_notes(lh, line, [5, 3, 2, 1], 1.0)
+        # The right hand comps the shell so the line has something to walk under.
+        top = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord(
+            [top, up(top, third), up(top, 10 if quality != "maj7" else 11)], [1, 2, 5], 4.0))
+        offset += 4.0
+    finalize(sc)
+
+    item_id = f"exercise.walking-bass.{key_slug(tonic)}.{form}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["walking-bass", "bass-line", "swing", f"form-{form}"],
+        "both", bpm, "walking-bass",
+        {"key": tonic, "form": form, "notesPerBar": 4},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz", "blues-boogie"],
+    )
+    return sc, entry
+
+
+#: Comping rhythms as offsets in quarters within a 4/4 bar (`02` Part D4).
+COMPING_PATTERNS: dict[str, list[float]] = {
+    "charleston": [0.0, 1.5],
+    "off-beats": [0.5, 1.5, 2.5, 3.5],
+    "anticipated": [0.0, 2.5],
+    "four-on-the-floor": [0.0, 1.0, 2.0, 3.0],
+}
+
+
+def make_comping(
+    tonic: str = "C", pattern: str = "charleston", bpm: int = 132,
+) -> tuple[stream.Score, dict]:
+    """
+    A ii-V-I comped in one rhythm, so the rhythm is the exercise.
+
+    Chord voicings are the shell, held short: comping is a rhythmic skill and
+    practising it on a voicing you have to think about teaches neither.
+    """
+    level = 6.3
+    offsets = COMPING_PATTERNS[pattern]
+    title = f"Comping — {pattern.replace('-', ' ')} in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    bar = 0.0
+    for quality, degree, _roman in II_V_I + (("maj7", 0, "I"),):
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), bar)
+        shape = SEVENTH_VOICINGS["shell"][quality]
+        base = pitch.Pitch(root_name + "4")
+        tones = [up(base, i) for i in shape]
+        cursor = 0.0
+        for hit in offsets:
+            if hit > cursor:
+                rh.append(note.Rest(quarterLength=hit - cursor))
+                cursor = hit
+            rh.append(fingered_chord(tones, [1, 2, 5], 0.5))
+            cursor += 0.5
+        if cursor < 4.0:
+            rh.append(note.Rest(quarterLength=4.0 - cursor))
+        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0)
+        bar += 4.0
+    finalize(sc)
+
+    item_id = f"exercise.comping.{key_slug(tonic)}.{pattern}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["comping", "rhythm", f"comping-{pattern}", "swing", "jazz-harmony"],
+        "both", bpm, "comping",
+        {"key": tonic, "pattern": pattern, "offsets": offsets},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz", "chords-pop"],
+    )
+    return sc, entry
+
+
+def make_stride(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
+    """
+    Stride left hand: bass, chord, tenth, chord.
+
+    The pattern under ragtime and early jazz. The tenth on beat three is what
+    makes it stride rather than oom-pah, and it is also the reason it is hard —
+    the hand has to leap and land, twice a bar, without looking.
+    """
+    level = 7.3
+    title = f"Stride left hand in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    for degree, quality in ((0, "maj"), (7, "7"), (0, "maj"), (5, "maj")):
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), offset)
+        root = pitch.Pitch(root_name + "2")
+        third = 3 if quality == "m" else 4
+        chord_tones = [up(root, 12 + third), up(root, 19)]
+        # bass — chord — tenth — chord
+        add_notes(lh, [root], [5], 1.0)
+        lh.append(fingered_chord(chord_tones, [2, 1], 1.0))
+        add_notes(lh, [up(root, 16)], [1], 1.0)
+        lh.append(fingered_chord(chord_tones, [2, 1], 1.0))
+        top = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord([top, up(top, third), up(top, 7)], [1, 3, 5], 4.0))
+        offset += 4.0
+    finalize(sc)
+
+    item_id = f"exercise.stride.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["stride", "left-hand", "leaps", "ragtime-texture"],
+        "both", bpm, "stride",
+        {"key": tonic, "pattern": ["bass", "chord", "tenth", "chord"]},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["ragtime", "jazz", "blues-boogie"],
+    )
+    return sc, entry
+
+
+#: Turnaround shapes, as (scale degree, quality) per half-bar.
+TURNAROUNDS: dict[str, list[tuple[int, str]]] = {
+    "I-vi-ii-V": [(0, "maj7"), (9, "m7"), (2, "m7"), (7, "7")],
+    "iii-VI-ii-V": [(4, "m7"), (9, "7"), (2, "m7"), (7, "7")],
+}
+
+
+def make_turnaround(
+    tonic: str = "C", variant: str = "I-vi-ii-V", bpm: int = 88,
+) -> tuple[stream.Score, dict]:
+    """
+    The two bars that send a chorus back to the top.
+
+    `I-vi-ii-V` is the one every standard ends with; `iii-VI-ii-V` is the same
+    two bars with the tonic replaced by the chord a third above and the vi made
+    dominant, which is what a player reaches for when the tune has already sat
+    on the tonic for eight bars.
+    """
+    level = 6.4 if variant == "I-vi-ii-V" else 7.1
+    plan = TURNAROUNDS[variant]
+    title = f"Turnaround in {tonic.replace('-', '♭')} — {variant}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    for degree, quality in plan:
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), offset)
+        shape = SEVENTH_VOICINGS["shell"][quality]
+        base = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord([up(base, i) for i in shape], [1, 2, 5], 2.0))
+        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 2.0)
+        offset += 2.0
+    finalize(sc)
+
+    item_id = f"exercise.turnaround.{key_slug(tonic)}.{slug(variant)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["turnaround", "jazz-harmony", "chord-progression"],
+        "both", bpm, "turnaround",
+        {"key": tonic, "variant": variant},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz", "blues-boogie"],
+    )
+    return sc, entry
+
+
+def make_ii_v_i(tonic: str = "C", bpm: int = 60) -> tuple[stream.Score, dict]:
+    """
+    ii-V-I with the guide tones written out, in one key.
+
+    The reason a ii-V-I is *the* progression: the seventh of one chord is the
+    third of the next, a semitone lower. Dm7's C becomes G7's B; G7's F becomes
+    Cmaj7's E. Once the hand knows that, it stops looking for the chords and
+    starts hearing where they are going, which is why this is a family of its
+    own rather than a voicing study — `make_seventh_voicing` teaches the shape,
+    this teaches the motion.
+    """
+    level = 5.4
+    title = f"ii-V-I in {tonic.replace('-', '♭')} — guide tones"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    # The I lasts two bars, because the point is arriving rather than moving on.
+    for quality, degree, bars in (("m7", 2, 1), ("7", 7, 1), ("maj7", 0, 2)):
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), offset)
+        third = 3 if quality == "m7" else 4
+        seventh = 11 if quality == "maj7" else 10
+        base = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord(
+            [in_guide_tone_window(up(base, third)),
+             in_guide_tone_window(up(base, seventh))], [1, 5], 4.0 * bars))
+        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0 * bars)
+        offset += 4.0 * bars
+    finalize(sc)
+
+    item_id = f"exercise.ii-v-i.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["ii-V-I", "guide-tones", "voice-leading", "seventh-chord", "jazz-harmony"],
+        "both", bpm, "ii-V-I",
+        {"key": tonic, "progression": ["ii7", "V7", "Imaj7"]},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz", "chords-pop", "theory-ear"],
+    )
+    return sc, entry
+
+
+def make_tritone_sub(tonic: str = "C", bpm: int = 76) -> tuple[stream.Score, dict]:
+    """
+    The same ii-V-I with the dominant replaced by the chord a tritone away.
+
+    G7 and D♭7 share their third and seventh — B/F and F/C♭, the same two notes
+    spelled differently — so the substitute resolves exactly as well and the
+    bass walks down in semitones instead of leaping a fourth. Written next to
+    the plain ii-V-I on purpose: the exercise is hearing that the substitution
+    changes the bass and almost nothing else.
+    """
+    level = 7.4
+    title = f"Tritone substitution in {tonic.replace('-', '♭')} — ii-sub V-I"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    # ii7 — ♭II7 (the substitute for V7) — Imaj7 — Imaj7.
+    for quality, degree, bars in (("m7", 2, 1), ("7", 1, 1), ("maj7", 0, 2)):
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, _figure(root_name, quality), offset)
+        shape = SEVENTH_VOICINGS["shell"][quality]
+        base = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord([up(base, i) for i in shape], [1, 2, 5], 4.0 * bars))
+        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0 * bars)
+        offset += 4.0 * bars
+    finalize(sc)
+
+    item_id = f"exercise.tritone-sub.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["tritone-substitution", "reharmonisation", "guide-tones", "jazz-harmony"],
+        "both", bpm, "tritone-sub",
+        {"key": tonic, "progression": ["ii7", "subV7", "Imaj7"]},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz"],
+    )
+    return sc, entry
+
+
+def make_open_voicing(
+    tonic: str = "C", flavour: str = "quartal", bpm: int = 63,
+) -> tuple[stream.Score, dict]:
+    """
+    Voicings built on fourths, and the suspended/added-note colours.
+
+    Quartal voicings are stacked fourths — the sound of modal jazz and of a
+    great deal of film music, and the reason they are worth a family of their
+    own is that they are not spellable as triads, so a hand that only knows
+    thirds cannot find them.
+    """
+    level = 7.2 if flavour == "quartal" else 5.3
+    # Read from the root up, a stack of fourths is root, 11th, flat 7th and
+    # flat 10th — which is an m11 chord, and is what the symbol has to say if
+    # the chord chart is to be true.
+    shapes = {
+        "quartal": [0, 5, 10, 15],
+        "sus2": [0, 2, 7, 12],
+        "sus4": [0, 5, 7, 12],
+        "add9": [0, 4, 7, 14],
+    }
+    labels = {"quartal": "quartal (stacked 4ths)", "sus2": "sus2", "sus4": "sus4", "add9": "add9"}
+    intervals = shapes[flavour]
+    title = f"{labels[flavour]} voicings in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    offset = 0.0
+    for degree in (0, 5, 7, 0):
+        root_name = _transpose_name(tonic, degree)
+        figure = f"{root_name}m11" if flavour == "quartal" else f"{root_name}{flavour}"
+        add_symbol(rh, figure, offset)
+        base = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord([up(base, i) for i in intervals], [1, 2, 3, 5], 4.0))
+        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0)
+        offset += 4.0
+    finalize(sc)
+
+    item_id = f"exercise.open-voicing.{key_slug(tonic)}.{flavour}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["voicing", f"voicing-{flavour}", "open-voicing", "colour"],
+        "both", bpm, "open-voicing",
+        {"key": tonic, "flavour": flavour, "intervals": intervals},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz", "chords-pop", "improv-compose"],
+    )
+    return sc, entry
+
+
+#: Boogie left-hand figures, as semitone offsets per eighth over one bar.
+#:
+#: Named after the players the shapes are associated with, which is how every
+#: blues method refers to them and how the owner will hear them named.
+BOOGIE_PATTERNS: dict[str, list[int]] = {
+    "pinetop": [0, 4, 7, 9, 10, 9, 7, 4],
+    "yancey": [0, 7, 0, 7, 0, 7, 0, 7],
+    "walking-eighths": [0, 4, 7, 10, 12, 10, 7, 4],
+}
+
+
+def make_boogie(
+    tonic: str = "C", pattern: str = "pinetop", bpm: int = 104,
+) -> tuple[stream.Score, dict]:
+    """
+    A boogie left hand over the first four bars of a blues.
+
+    Eight eighths a bar, the same shape transposed to each chord — which is
+    exactly how it is played, and why the exercise is about stamina and the
+    shift rather than about reading.
+    """
+    level = 5.4 if pattern == "yancey" else 6.2
+    offsets = BOOGIE_PATTERNS[pattern]
+    title = f"Boogie left hand — {pattern.replace('-', ' ')} in {tonic.replace('-', '♭')}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    bar = 0.0
+    for degree in (0, 0, 5, 0):
+        root_name = _transpose_name(tonic, degree)
+        add_symbol(rh, f"{root_name}7", bar)
+        root = pitch.Pitch(root_name + "2")
+        add_notes(lh, [up(root, i) for i in offsets], [5, 4, 3, 2, 1, 2, 3, 4], 0.5)
+        top = pitch.Pitch(root_name + "4")
+        rh.append(fingered_chord([top, up(top, 4), up(top, 10)], [1, 2, 5], 4.0))
+        bar += 4.0
+    finalize(sc)
+
+    item_id = f"exercise.boogie.{key_slug(tonic)}.{pattern}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["boogie", "left-hand", "shuffle", f"boogie-{pattern}", "blues"],
+        "both", bpm, "boogie",
+        {"key": tonic, "pattern": pattern, "offsets": offsets},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["blues-boogie", "jazz"],
+    )
+    return sc, entry
+
+
+# --------------------------------------------------------------------------------------
 # main
 # --------------------------------------------------------------------------------------
 def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, dict]]:
@@ -2102,6 +2773,35 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
     for k in (["C"] if quick else ["C", "G", "F", "A"]):
         for variant in ("held-melody", "half-pedal"):
             items.append(make_pedal_variant(k, variant))
+
+    # ---- harmony: the chords-pop, blues and jazz tracks (`02` Parts D2-D4) -------------
+    #
+    # Twelve keys where the curriculum says twelve keys and a narrow set where
+    # it does not, on the Part E2 argument: the ii-V-I and the four-chord loop
+    # are explicitly "in all twelve", and a stride study in G flat that nobody
+    # reaches is payload. `--full` opens the rest.
+    harmony_keys = ["C"] if quick else list(HARMONY_KEYS)
+    narrow = ["C"] if quick else (list(HARMONY_KEYS) if full else ["C", "F", "B-", "E-"])
+    for k in harmony_keys:
+        for voicing in SEVENTH_VOICINGS:
+            items.append(make_seventh_voicing(k, voicing))
+        items.append(make_ii_v_i(k))
+        for inversions in (False, True):
+            items.append(make_four_chord_loop(k, inversions))
+    for k in narrow:
+        items.append(make_tritone_sub(k))
+        items.append(make_slash_bass(k))
+        items.append(make_stride(k))
+        for form in ("blues", "ii-V-I"):
+            items.append(make_walking_bass(k, form))
+        for variant in TURNAROUNDS:
+            items.append(make_turnaround(k, variant))
+        for pattern in COMPING_PATTERNS:
+            items.append(make_comping(k, pattern))
+        for flavour in ("quartal", "sus2", "sus4", "add9"):
+            items.append(make_open_voicing(k, flavour))
+        for pattern in BOOGIE_PATTERNS:
+            items.append(make_boogie(k, pattern))
     return items
 
 

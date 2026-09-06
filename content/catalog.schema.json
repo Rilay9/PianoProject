@@ -192,7 +192,18 @@
                 "syncopation",
                 "meter",
                 "pedal-held",
-                "half-pedal"
+                "half-pedal",
+                "seventh-voicing",
+                "ii-V-I",
+                "tritone-sub",
+                "progression",
+                "slash-bass",
+                "walking-bass",
+                "comping",
+                "stride",
+                "turnaround",
+                "open-voicing",
+                "boogie"
               ],
               "description": "on a type=drill item this selects the runtime screen; on a type=exercise item it records what generated the notation and needs no screen (docs/05 §7)"
             },
