@@ -209,12 +209,50 @@ def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> d
     only way this gate means what it says.
     """
     content_dir = APP_DIR / "public" / "content"
-    staging = content_dir / STAGING
-    if staging.exists():
-        shutil.rmtree(staging)
-    staging.mkdir(parents=True)
-    for row in rows:
-        shutil.copyfile(converted_dir / f"{row.cid}.mxl", staging / f"{row.cid}.mxl")
+    # Both roots. `public/` is the source vite copies from; `dist/` is what the
+    # preview server actually serves, and `reuseExistingServer` means a run may
+    # skip the rebuild entirely and serve a `dist/` that predates the staging.
+    # That is the second half of the same bug: staging into `public/` alone
+    # left every item reporting "Could not retrieve requested URL 0" again.
+    roots = [content_dir, APP_DIR / "dist" / "content"]
+    staged: list[Path] = []
+    for root in roots:
+        if not root.parent.is_dir():
+            continue
+        staging = root / STAGING
+        if staging.exists():
+            shutil.rmtree(staging)
+        staging.mkdir(parents=True)
+        staged.append(staging)
+        for row in rows:
+            shutil.copyfile(converted_dir / f"{row.cid}.mxl", staging / f"{row.cid}.mxl")
+
+    # The render spec keeps its own manifest, keyed on each file's sha256, and
+    # replays a remembered verdict rather than rendering again. That is right
+    # for a *pass* and wrong for a failure: a failed render is exactly what
+    # changes when the app, the staging or the renderer is fixed, and leaving
+    # one in the manifest means the next run replays it and nothing is ever
+    # re-tried. This is what made the second real quarry run reproduce the
+    # first one's 249 failures without opening a browser.
+    manifest_path = out_dir / "render-manifest.json"
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            manifest = None
+        if isinstance(manifest, dict):
+            kept = {
+                key: entry
+                for key, entry in (manifest.get("entries") or {}).items()
+                if entry.get("ok")
+            }
+            dropped = len(manifest.get("entries") or {}) - len(kept)
+            if dropped:
+                manifest["entries"] = kept
+                manifest_path.write_text(
+                    json.dumps(manifest, indent=2) + chr(10), encoding="utf-8"
+                )
+                print(f"  dropped {dropped} remembered render failure(s); they will be re-tried")
 
     items_path = out_dir / "render-items.json"
     report_path = out_dir / "render-report.json"
@@ -252,7 +290,8 @@ def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> d
     finally:
         # Left behind, these would be precached into the app and shipped —
         # files nobody has reviewed, in a directory nothing else knows about.
-        shutil.rmtree(staging, ignore_errors=True)
+        for staging in staged:
+            shutil.rmtree(staging, ignore_errors=True)
 
     if not report_path.is_file():
         return {}

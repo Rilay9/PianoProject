@@ -341,13 +341,32 @@ class TestDifficulty(unittest.TestCase):
         found = difficulty.features(converter.parse("tinyNotation: 4/4 c4 d e f"))
         self.assertEqual(set(found), set(difficulty.FEATURE_NAMES))
 
-    def test_the_shipped_model_starts_on_the_fallback_table(self) -> None:
+    def test_the_fallback_table_is_kept_whether_or_not_a_model_is_fitted(self) -> None:
+        # P14 fitted the model on 173 judged songs, so the shipped file now has
+        # weights. The table stays beside them: it is what `estimate` falls back
+        # to when a model file has none, and what P13 shipped before the fit.
         model = difficulty.load_model()
-        self.assertFalse(model["fitted"])
         self.assertTrue(model["fallback"]["bins"])
-        estimate = difficulty.estimate({"notesPerBar": 4.0, "shortestValue": 1.0}, model)
+        unfitted = {**model, "fitted": False, "weights": {}}
+        estimate = difficulty.estimate({"notesPerBar": 4.0, "shortestValue": 1.0}, unfitted)
         self.assertEqual(estimate.source, "fallback")
         self.assertEqual(estimate.level, 1.5)
+
+    def test_the_shipped_model_is_the_one_P14_fitted(self) -> None:
+        model = difficulty.load_model()
+        self.assertTrue(model["fitted"])
+        # Every weight has the sign the feature is allowed to have; the fit
+        # drops the ones that come out backwards rather than clamping them.
+        for name, weight in model["weights"].items():
+            self.assertEqual(
+                difficulty.MONOTONE_SIGNS[name] * weight >= 0, True, f"{name} {weight}"
+            )
+        estimate = difficulty.estimate(
+            {name: 0.0 for name in difficulty.FEATURE_NAMES}, model
+        )
+        self.assertEqual(estimate.source, "model")
+        self.assertGreaterEqual(estimate.level, difficulty.MIN_LEVEL)
+        self.assertLessEqual(estimate.level, difficulty.MAX_LEVEL)
 
     def test_the_fit_recovers_a_known_linear_model(self) -> None:
         import math

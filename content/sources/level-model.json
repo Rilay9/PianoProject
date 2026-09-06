@@ -13,21 +13,79 @@
     "reads as 'how much is happening, and how fast'. Its virtue is that it is written down.",
     "Every PDMX item is levelSource: `estimated` either way (replan §1.4)."
   ],
-  "fitted": false,
-  "bias": 4.0,
-  "weights": {},
-  "means": {},
+  "fitted": true,
+  "bias": 6.33121387283237,
+  "weights": {
+    "bars": 0.688964,
+    "notesPerBar": 0.449964,
+    "notesPerSecond": 0.323604,
+    "maxSpanLeft": 0.069077,
+    "maxLeapLeft": 0.008653,
+    "rangeRight": 0.194061,
+    "rangeLeft": 0.497665,
+    "blackKeyRatio": 0.488137,
+    "keyAccidentals": 0.383669,
+    "shortestValue": -0.878056,
+    "voicesPerStaff": 0.300796,
+    "ledgerRatio": 1.056521
+  },
+  "means": {
+    "bars": 3.821057,
+    "notesPerBar": 2.610785,
+    "notesPerSecond": 2.004104,
+    "maxSpanLeft": 2.100862,
+    "maxLeapLeft": 2.870807,
+    "rangeRight": 3.344011,
+    "rangeLeft": 3.243279,
+    "blackKeyRatio": 0.321166,
+    "keyAccidentals": 0.905455,
+    "shortestValue": 0.346907,
+    "voicesPerStaff": 0.761684,
+    "ledgerRatio": 0.100494
+  },
   "fallback": {
     "_comment": "First row whose two conditions both hold wins; shortestValue is in quarter lengths, so a smaller number is a faster piece.",
     "bins": [
-      { "level": 1.5, "maxNotesPerBar": 4.0, "minShortestValue": 1.0 },
-      { "level": 2.5, "maxNotesPerBar": 6.0, "minShortestValue": 0.5 },
-      { "level": 3.5, "maxNotesPerBar": 9.0, "minShortestValue": 0.5 },
-      { "level": 4.5, "maxNotesPerBar": 13.0, "minShortestValue": 0.25 },
-      { "level": 5.5, "maxNotesPerBar": 18.0, "minShortestValue": 0.25 },
-      { "level": 6.5, "maxNotesPerBar": 24.0, "minShortestValue": 0.125 },
-      { "level": 7.5, "maxNotesPerBar": 32.0, "minShortestValue": 0.125 },
-      { "level": 8.5, "maxNotesPerBar": 999.0, "minShortestValue": 0.0 }
+      {
+        "level": 1.5,
+        "maxNotesPerBar": 4.0,
+        "minShortestValue": 1.0
+      },
+      {
+        "level": 2.5,
+        "maxNotesPerBar": 6.0,
+        "minShortestValue": 0.5
+      },
+      {
+        "level": 3.5,
+        "maxNotesPerBar": 9.0,
+        "minShortestValue": 0.5
+      },
+      {
+        "level": 4.5,
+        "maxNotesPerBar": 13.0,
+        "minShortestValue": 0.25
+      },
+      {
+        "level": 5.5,
+        "maxNotesPerBar": 18.0,
+        "minShortestValue": 0.25
+      },
+      {
+        "level": 6.5,
+        "maxNotesPerBar": 24.0,
+        "minShortestValue": 0.125
+      },
+      {
+        "level": 7.5,
+        "maxNotesPerBar": 32.0,
+        "minShortestValue": 0.125
+      },
+      {
+        "level": 8.5,
+        "maxNotesPerBar": 999.0,
+        "minShortestValue": 0.0
+      }
     ]
   }
 }
