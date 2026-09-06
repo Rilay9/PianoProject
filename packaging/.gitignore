@@ -1,4 +1,7 @@
 twa-manifest.json
+# The laptop's own HTTPS certificate for serving the app on the house Wi-Fi
+# (docs/00 D25). Yours; never committed.
+lan/
 *.keystore
 *.jks
 app-release-*.apk

@@ -88,23 +88,44 @@ Node 24 locally, `pip install -r tools/content/requirements.txt`, `npm ci` in `a
 10. **Delete `.github/workflows/pages.yml`** — but only if the repository is private when you
     run (`gh repo view --json isPrivate` or the API). If it is still public, leave the file
     and say so under Not done: the owner's first step is to make it private.
+10a. **The laptop as the origin (`00` D25, added after the review).** `packaging/serve-lan.py`
+    serves `app/dist` over HTTPS with a mkcert certificate from the gitignored
+    `packaging/lan/`. Give it a test: start it on a free port with a throwaway self-signed
+    certificate made by the test (`openssl` is in Git for Windows and on Linux; skip the
+    test with a message if it is absent), fetch `/index.html`, a `.mxl`, `.webmanifest` and
+    `sw.js`, and assert the MIME types and the `Cache-Control` headers the script promises.
+    Then fix `packaging/build-apk.sh`: it runs `npm run build`, whose `prebuild` rebuilds
+    the content through `python3` — which on Windows is the Store stub, and which would
+    also rebuild *without* `--personal`. Make it run `npm run build:app` and refuse to start
+    if `app/public/content/catalog.json` is missing, telling the owner to build content with
+    `--personal` first. `app/package.json`'s `content:build` should call `py -3.11` when
+    `python3` is not a real interpreter — simplest: a tiny `tools/content/python.cjs`
+    shim that picks whichever exists, used by the script.
+10b. **A personal build must validate (review C11).** `import_musetrainer.py` excludes its
+    six composition-refused files in a strict build and admits them under `--personal`, so
+    the two catalogs differ by six ids and the committed `docs/generated/ladder.md` can only
+    match one of them. Make those six strict-build *placeholders* (no file, an `importHint`,
+    the `personal-build` tag) exactly as `import_pdmx.py` does, so both builds carry the
+    same ids. Test on the fixture: build both ways, assert equal id sets. Then
+    `build.py --offline --personal` and `build.py --offline --strict-license` must both
+    validate against the one committed report; paste both.
 
 ### Documents (edits, exactly as the review's §2 table says; quote the review's wording)
 
 11. `README.md`: rewrite the status paragraph and the phase table for P0–P18 built, 1,527
     items, 93 lessons, and "next: nothing is queued — see the once-over".
-12. `docs/OWNER-GUIDE.md` §1: rewrite "The scores only your own build has" around
-    `build.py --personal` (what it admits: CC BY-NC editions **and** the 153 PDMX and 6
-    MuseTrainer items whose compositions are not public domain); `--allow-nc` is not
-    mentioned. Rewrite "Where the app is served from" for a private repo: Cloudflare Pages or
-    Netlify at `/`, Pages gone.
+12. `docs/OWNER-GUIDE.md` §1 was **already rewritten** with D25 (the laptop as the origin,
+    mkcert, `--personal`). Read it, keep it true after your changes, and do not reintroduce
+    a third-party host anywhere.
 13. `docs/00-overview.md`: replace §1 with a shortened form of the review's §1 (ten lines);
     refresh §6; correct A2 to what `00-tracks.json` and item 1 make true; mark D9, D10, D10a
     and A6 "superseded by …" as D22 is; put today's numbers in D20 (12.2 MB, 1,256 files,
     1,527 items); make D23 say the field is on the item (item 6).
 14. `docs/01-architecture.md`: §6 and §7 to one measured figure (re-measure after your
     build and paste the command); §4.5 gains the `books` row and says `DB_VERSION` 5; §9
-    rewritten for a private repo and a static host — no `main`, no Pages.
+    rewritten for `00` D25 — the laptop over the LAN with `packaging/serve-lan.py` as the
+    origin, mkcert for the certificate, port 443 and the assetlinks file for the APK, no
+    `main`, no Pages, no third-party host.
 15. `docs/04-ui-spec.md` §4b, `docs/00` D24, `docs/01` §4.5 `folderLibraries`,
     `app/src/data/folderLibrary.ts` header, OWNER-GUIDE §4 "A whole folder of scores": the
     `showDirectoryPicker` sentence becomes "MDN lists it from Chrome for Android 132; until

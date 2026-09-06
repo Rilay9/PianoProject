@@ -8,17 +8,103 @@ needs the docs in this folder.
 
 ## 1. Getting it on the phone
 
-You have two ways in, and you can use both.
+The app is served from **your own laptop, over the house Wi-Fi**, and only while
+you are installing it or updating it. After the first launch the phone holds
+everything and the laptop can be off (`docs/00` D25). Nothing about your build
+is ever reachable from outside the house.
 
-### The quick way: install from the browser
+There are two ways onto the phone. Both start the same way. Do steps A and B
+once, ever; step C each time you want a new version on the phone.
 
-Open the app's URL in **Chrome on the phone**, tap ⋮ → **Add to Home screen**.
-That is a real install: it runs full-screen, works offline, and Web MIDI works
-because it is Chrome.
+### A. Once: make the laptop a trusted address
 
-This is the fastest way to try a new version, and it is how the app has been
-tested. The one thing it does not survive is Chrome deciding to clear site data
-for an app you have not opened in a while — which is the reason for the APK.
+Chrome only treats an address as secure — full screen, Web MIDI allowed — if it
+trusts the certificate. A self-signed one is not trusted. **mkcert** makes a
+tiny certificate authority that you install on the phone once, and then every
+certificate it issues is trusted there.
+
+1. `mkcert` is installed on this laptop (`winget install FiloSottile.mkcert`
+   if it ever goes missing). The certificate for this laptop's addresses is
+   already made, in `packaging\lan\` — `192.168.0.23` (Wi-Fi), `192.168.0.24`
+   (Ethernet), `philoceraptorii.local` and `localhost`. It is gitignored and
+   yours. If the laptop's address ever changes (see the note below), remake it:
+
+   ```bash
+   mkcert -cert-file packaging/lan/cert.pem -key-file packaging/lan/key.pem 192.168.0.23 192.168.0.24 philoceraptorii.local localhost
+   ```
+
+2. **Install the root certificate on the phone.** Find it with
+   `mkcert -CAROOT` — on this laptop that is
+   `C:\Users\yalir\AppData\Local\mkcert\rootCA.pem`. Copy that one file to the
+   phone (share it to yourself, or a cable), then on the S25:
+   **Settings → Security and privacy → More security settings → Install from
+   device storage → CA certificate**, pick `rootCA.pem`, and accept the
+   warning. Android will show "a network may be monitored" in the status bar
+   from then on; that is Android saying a user-installed CA exists, and it is
+   yours. Copy only `rootCA.pem`, never `rootCA-key.pem`.
+
+3. Optionally, trust it on the laptop too: `mkcert -install`. Only useful for
+   opening the address in a laptop browser; the phone does not need it.
+
+> **Give the laptop a fixed address.** The certificate names the laptop's IP,
+> and the router hands IPs out by lease. In the router's admin page, reserve
+> `192.168.0.23` for this laptop's Wi-Fi (a "DHCP reservation" or "static
+> lease"). If you skip this and the address changes, the phone says the
+> certificate is wrong and the fix is step 1 again with the new address — and,
+> for the APK, a rebuild with the new host.
+
+### B. Once: build your app
+
+```bash
+# From the repository folder. --personal is your build: it carries the
+# CC BY-NC editions and every quarried score, whatever its composition's status.
+py -3.11 tools/content/build.py --offline --personal
+
+# The app itself, served from the root of the laptop's address.
+cd app
+set VITE_BASE=/
+npm run build:app
+cd ..
+```
+
+`build:app`, not `build`: `npm run build` rebuilds the content first through
+`python3`, which on Windows is not Python.
+
+### C. Each time: serve, then install or update on the phone
+
+```bash
+py -3.11 packaging/serve-lan.py
+```
+
+It prints the addresses to open. Leave it running, and on the phone — on the
+same Wi-Fi — open `https://192.168.0.23/` in Chrome. The first launch
+downloads about 1,600 files (17 MB) into the phone's cache; give it a minute
+and watch the progress on Settings → Diagnostics if it seems slow.
+
+> **Windows Firewall.** The first time Python listens on the network Windows
+> asks whether to allow it; tick *both* boxes (private and public — this
+> laptop's Wi-Fi is classed as a public network). It has already been allowed
+> on this laptop, so you should not be asked. If the phone cannot connect but
+> the laptop can open its own address, that prompt was answered No: Windows
+> Security → Firewall & network protection → Allow an app through firewall →
+> Python.
+>
+> Tested 2026-09-06 from the laptop itself against `https://192.168.0.23` on
+> both ports, with the certificate chain verified against the mkcert root.
+> Not yet tried from the phone.
+
+**To install the quick way ("Add to Home screen"):** tap ⋮ → **Add to Home
+screen** → **Install**. That is a real install: full screen, works offline,
+Web MIDI works because it is Chrome. It is how the app has been tested and it is
+enough. The one thing it does not survive is Chrome deciding to clear site data
+for an app you have not opened in months — export a backup now and then (§5) and
+that costs nothing.
+
+**To update** either kind of install: rebuild (step B), run the server, open the
+app while the laptop is reachable, and accept the "update available" toast. If
+"offline only" is on in Settings → Content, turn it off for that one visit.
+
+Then stop the server with Ctrl+C. The phone does not need it again.
 
 ### The durable way: the APK
 
@@ -31,29 +117,38 @@ would go silent.
 **You build it once on your own machine.** It is not built in CI, because it
 has to be signed with a key that is yours and must never be committed.
 
+The host is the laptop's address from step A, and the server must be on
+**port 443** (the default) for this, because Android checks the app's
+ownership of the address at `https://<host>/.well-known/assetlinks.json` and
+looks only on the standard port.
+
 ```bash
 # 1. Make a signing key. Once, ever. Back it up somewhere you will still have
 #    in five years — a password manager, an external drive, both.
 keytool -genkeypair -v -keystore ~/keys/pianopath.keystore \
   -alias pianopath -keyalg RSA -keysize 2048 -validity 10000
 
-# 2. Build.
-export PIANOPATH_HOST=your-host.example         # where the app is served
+# 2. Build (in Git Bash; the script is a shell script).
+export PIANOPATH_HOST=192.168.0.23               # the laptop, from step A
 export PIANOPATH_KEYSTORE=~/keys/pianopath.keystore
 export PIANOPATH_KEY_ALIAS=pianopath
 ./packaging/build-apk.sh
 
-# 3. Publish the file it tells you to, at
-#    https://your-host.example/.well-known/assetlinks.json
-#
+# 3. The script writes app/dist/.well-known/assetlinks.json. serve-lan.py
+#    serves it from there, so there is nothing to publish: just run the server.
+py -3.11 packaging/serve-lan.py
+
 # 4. Copy build/apk/app-release-signed.apk to the phone and open it.
 #    Android will ask you to allow installing from this source; that is normal
 #    for an app that did not come from the Play Store.
 ```
 
-> **If you skip step 3** the app still runs, but inside a browser frame with a
-> URL bar instead of full screen. There is no error message — it just looks
-> wrong. That is almost always what a "my TWA isn't full screen" problem is.
+> **If the app opens inside a browser frame with a URL bar** instead of full
+> screen, Android did not accept the assetlinks file. There is no error
+> message — it just looks wrong. Two known causes: the server was not on port
+> 443, or Android would not verify against a bare IP address — which nobody
+> has tried yet (`docs/00` D25). If it is the second, the quick install above is
+> the same app without that one guarantee, and it is fine to live there.
 
 > **Do not lose the keystore.** Android refuses to update an app signed with a
 > different key. If the key is gone, the only way to install a new version is
@@ -67,50 +162,37 @@ say so — everything else can be worked around, that cannot.
 
 ### Where the app is served from
 
-The APK needs an HTTPS address to load, even though it runs offline afterwards.
-That address is not chosen yet, and the build takes it as `PIANOPATH_HOST`, so
-picking one later is a config change and not a rebuild of anything.
-
-- **GitHub Pages** is what it uses today. It works, and it needs the repository
-  to stay public (Pages from a private repo needs a paid plan).
-- **Cloudflare Pages or Netlify** are free, work from a private repository, and
-  are the natural home once you make the repo private.
-
-Either way the app should be served at the **root** of its host (`/`), not a
-sub-path — the assetlinks file has to be at the origin root regardless, and
-having both at `/` avoids a class of confusion.
+Your laptop, over the house Wi-Fi, at `https://192.168.0.23/` — see A–C above.
+There is no public address any more. The GitHub Pages deploy that existed while
+the repository was public goes away with it; the tests still run in CI on every
+push.
 
 ### The scores only your own build has
 
-Some of the best editions of public-domain music — Craig Sapp's Humdrum
-editions of Joplin, Mozart, Haydn, Scarlatti and the Bach chorales — are
-licensed CC BY-NC-SA. The music is out of copyright; the *typesetting* is not
-free to redistribute. Since PianoPath is for you alone, your own build may
-include them, and a build that goes anywhere public may not.
+`--personal` is your build, and it admits two kinds of thing a public build
+could not:
 
-That is one flag:
+- **Editions licensed CC BY-NC-SA** — Craig Sapp's Humdrum editions of Joplin,
+  Mozart, Haydn, Scarlatti and the Bach chorales. The music is out of
+  copyright; the typesetting is not free to redistribute.
+- **Scores whose composition is not public domain** — the 153 quarried from
+  PDMX under the dataset's own "public domain" label (film, game and pop
+  arrangements, and the folk tunes nobody could date), and the six MuseTrainer
+  files P4 had excluded for the same reason. This is `docs/00` D23, your
+  decision of 2026-09-06.
 
-```bash
-# Your build, before ./packaging/build-apk.sh
-python3 tools/content/build.py --allow-nc
-```
+Without the flag all of those still appear in the library, as rows that say
+where to get the score instead of carrying it. With it they are real scores.
+The 169 Chopin first editions are CC BY and are there either way.
 
-Without it the same rags and sonatas still appear in the library, but as rows
-that say where to get the score instead of carrying it. With it they are real
-scores you can open and play.
+Two things the flag does **not** do. It does not open the three `craigsapp`
+repositories — the Beethoven sonatas and both Chopin sets — that state no
+licence at all: a missing licence grants nothing, so those stay out whatever
+you pass; import your own copy through **Library → Import a score**. And it
+does not change what the tests build in CI, which stays strict.
 
-What the flag covers is narrower than it was. The 169 Chopin scores — the
-preludes, mazurkas, nocturnes, waltzes, études, ballades, scherzos and sonata
-movements in the library — come from the Fryderyk Chopin Institute under CC BY,
-which is free to redistribute, so they are there whether you pass the flag or
-not. The flag now only affects the 47 Joplin rags.
-
-Two things this flag deliberately does **not** do. It does not touch the GitHub
-Pages deploy, which builds with `--strict-license` and ships none of them. And
-it does not open the three `craigsapp` repositories — the Beethoven sonatas and
-both Chopin sets — that state no licence at all: a missing licence grants
-nothing, so those stay out whatever you pass. If you want that music, import
-your own copy through **Library → Add score**.
+(`--allow-nc` still works as an older spelling, but it admits only the first
+kind, so use `--personal`.)
 
 ---
 
