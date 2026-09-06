@@ -45,7 +45,11 @@
               "prerequisites": [
                 "3.6"
               ],
-              "estimatedDays": 30
+              "estimatedDays": 30,
+              "levelBand": [
+                3.1,
+                4.1
+              ]
             }
           ]
         },
@@ -88,7 +92,11 @@
               "prerequisites": [
                 "4.1"
               ],
-              "estimatedDays": 30
+              "estimatedDays": 30,
+              "levelBand": [
+                3.1,
+                4.2
+              ]
             }
           ]
         },
@@ -128,7 +136,11 @@
               "prerequisites": [
                 "4.1"
               ],
-              "estimatedDays": 24
+              "estimatedDays": 24,
+              "levelBand": [
+                3.3,
+                5.1
+              ]
             }
           ]
         },
@@ -168,7 +180,11 @@
               "prerequisites": [
                 "4.1"
               ],
-              "estimatedDays": 24
+              "estimatedDays": 24,
+              "levelBand": [
+                4.1,
+                5.1
+              ]
             }
           ]
         },
@@ -210,7 +226,11 @@
               "prerequisites": [
                 "4.2"
               ],
-              "estimatedDays": 24
+              "estimatedDays": 24,
+              "levelBand": [
+                2.2,
+                4.5
+              ]
             }
           ]
         },
@@ -252,7 +272,11 @@
                 "4.4",
                 "4.5"
               ],
-              "estimatedDays": 30
+              "estimatedDays": 30,
+              "levelBand": [
+                1.5,
+                5.1
+              ]
             }
           ]
         },
@@ -290,7 +314,11 @@
               "prerequisites": [
                 "classical.3"
               ],
-              "estimatedDays": 45
+              "estimatedDays": 45,
+              "levelBand": [
+                4.1,
+                4.4
+              ]
             }
           ]
         },
@@ -329,7 +357,11 @@
               "prerequisites": [
                 "chords-pop.3"
               ],
-              "estimatedDays": 45
+              "estimatedDays": 45,
+              "levelBand": [
+                3.2,
+                4.3
+              ]
             }
           ]
         },
@@ -368,7 +400,11 @@
               "prerequisites": [
                 "3.2"
               ],
-              "estimatedDays": 45
+              "estimatedDays": 45,
+              "levelBand": [
+                3.2,
+                5.2
+              ]
             }
           ]
         },
@@ -403,7 +439,11 @@
                 "theory.3"
               ],
               "estimatedDays": 45,
-              "songOptional": true
+              "songOptional": true,
+              "levelBand": [
+                4.3,
+                4.4
+              ]
             }
           ]
         },
@@ -438,7 +478,11 @@
                 "improv.3"
               ],
               "estimatedDays": 45,
-              "songOptional": true
+              "songOptional": true,
+              "levelBand": [
+                3.1,
+                4.1
+              ]
             }
           ]
         },
@@ -476,7 +520,11 @@
               "prerequisites": [
                 "blues.4"
               ],
-              "estimatedDays": 21
+              "estimatedDays": 21,
+              "levelBand": [
+                3.4,
+                4.5
+              ]
             }
           ]
         },
@@ -520,7 +568,11 @@
               "prerequisites": [
                 "3.5"
               ],
-              "estimatedDays": 60
+              "estimatedDays": 60,
+              "levelBand": [
+                3.5,
+                6.2
+              ]
             }
           ]
         },
@@ -558,7 +610,11 @@
               "prerequisites": [
                 "rock.overview"
               ],
-              "estimatedDays": 21
+              "estimatedDays": 21,
+              "levelBand": [
+                3.5,
+                7.1
+              ]
             }
           ]
         },
@@ -595,7 +651,11 @@
               "prerequisites": [
                 "rock.overview"
               ],
-              "estimatedDays": 21
+              "estimatedDays": 21,
+              "levelBand": [
+                3.2,
+                4.5
+              ]
             }
           ]
         },
@@ -633,7 +693,11 @@
               "prerequisites": [
                 "rock.overview"
               ],
-              "estimatedDays": 21
+              "estimatedDays": 21,
+              "levelBand": [
+                2.2,
+                7.1
+              ]
             }
           ]
         },
@@ -671,7 +735,11 @@
               "prerequisites": [
                 "rock.overview"
               ],
-              "estimatedDays": 21
+              "estimatedDays": 21,
+              "levelBand": [
+                3.6,
+                7.1
+              ]
             }
           ]
         },
@@ -721,7 +789,11 @@
                 "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
-              }
+              },
+              "levelBand": [
+                4.3,
+                4.5
+              ]
             }
           ]
         }

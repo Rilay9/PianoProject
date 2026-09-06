@@ -321,21 +321,27 @@ Each track lists its ladder: **Stage → focus → repertoire options** (≥ 3 p
 tagged) → free teachers. A learner advances tracks independently; the "Today" screen mixes
 the two or three tracks the learner marked active.
 
-**Status of the repertoire columns (2026-09-06).** The *focus* column is pedagogy and stays
-authored here. The *repertoire* columns below were written from what the owner hoped
-existed, and P10 measured the cost of that: *Euphonic Sounds*, *Frog Legs Rag*, *Ragtime
-Nightingale* and Scarlatti K.32/K.9/K.380 are in no reachable source, and Bach's Inventions
-and the Well-Tempered Clavier exist only in editions that reserve all rights. From P14 the
-repertoire columns are **generated from the catalog** by `tools/content/ladder_report.py`
-and a validate check fails the build when they are stale; until then treat them as targets,
-not facts. A wanted piece no source has becomes an example in that rung's finder (see the
-terminology section). The library wins every disagreement with this table. Jazz, blues,
-chords-pop, theory-ear and improv-compose currently stop at Stage 5 in the data; P12b writes
-their Stage 6–9 rungs.
+**What is on a rung is generated; what a rung is *for* is written here (P14).**
+
+- **[`docs/generated/ladder.md`](generated/ladder.md) is the repertoire.** It is written by
+  `tools/content/ladder_report.py` from the catalog, it lists every option on every rung with
+  its level and the band the rung spans, and `validate.py` fails the build when the committed
+  copy is stale. It is the answer to "what can I actually play on this rung".
+- **The *focus* column below is pedagogy** and stays authored: what the rung teaches, in what
+  order, and why.
+- **The *repertoire wanted* column below is a wish list**, not a fact. It was written from
+  what the owner hoped existed, and P10 measured the cost of that: *Euphonic Sounds*,
+  *Frog Legs Rag*, *Ragtime Nightingale* and Scarlatti K.32/K.9/K.380 are in no reachable
+  source, and Bach's Inventions and the Well-Tempered Clavier exist only in editions that
+  reserve all rights. It is kept because a piece the ladder wanted and no source has becomes
+  an example in that rung's finder (P15, see the terminology section) — a wish is worth
+  something, as long as nobody mistakes it for the library.
+
+The library wins every disagreement with this table.
 
 ### D1. Classical track
 
-| Stage | Focus | Repertoire options |
+| Stage | Focus | Repertoire wanted (a wish list; what is bundled is in `docs/generated/ladder.md`) |
 |------:|-------|-------------------|
 | 3 | Baroque/Classical dances in 5-finger + shifts | Petzold/Bach Minuet Anh 114 (easy) `[MT]`; Mozart Minuet K.2 `[AUTH]`; Haydn German Dance `[AUTH]`; Türk pieces `[AUTH]`; Beyer op.101 selections `[MUTO/AUTH]` |
 | 4 | Grade-1 pieces, articulation (staccato/legato), simple ornaments | Bach Musette Anh 126 `[MT]`; Minuet Anh 115 `[PDMX]`; Beethoven Ecossaise G `[PDMX]`; Schumann Melody `[PDMX]`; Czerny op.599 nos. 1–20 `[MUTO/AUTH]`; Attwood Sonatina G (mvt 1) |
@@ -354,7 +360,7 @@ lesson prose: Wikipedia composer/piece articles (CC BY-SA, attribute), IMSLP wor
 
 ### D2. Chords & pop track (Bill Hilton's approach: play from chord symbols, accompany, improvise)
 
-| Stage | Focus | Repertoire (all PD melodies/lead sheets `[AUTH]` unless tagged) |
+| Stage | Focus | Repertoire wanted (PD melodies and lead sheets; the bundled options are in `docs/generated/ladder.md`) |
 |------:|-------|-------------------------------------------------------------|
 | 3 | I–IV–V(7) in C/G/F/D/A; strum-like LH rhythms; melody + chords | Amazing Grace; When the Saints; Oh Susanna; Tom Dooley; Kum Ba Yah; Banks of the Ohio; You'll Never Find (no — copyrighted; example of IMPORT); Happy Birthday |
 | 4 | Inversions, vi & ii chords, the "four-chord song" (I–V–vi–IV), slash chords | House of the Rising Sun; Scarborough Fair; Danny Boy; Shenandoah; Beautiful Dreamer; Auld Lang Syne; Down by the Salley Gardens; Wild Mountain Thyme (trad. "Braes o' Balquhither" melody) |
@@ -370,7 +376,7 @@ Music Theory "Pop/Rock" chapters.
 
 ### D3. Blues & boogie-woogie track
 
-| Stage | Focus | Repertoire |
+| Stage | Focus | Repertoire wanted (see `docs/generated/ladder.md` for what is bundled) |
 |------:|-------|------------|
 | 4 | 12-bar blues form in C (I7 IV7 V7), shuffle feel, LH "boogie" bass (root-5-6-b7), simple RH riffs, blues scale | `[GEN]` 12-bar LH patterns in C/F/G; *Frankie and Johnny* `[AUTH]`; *Careless Love* `[AUTH]`; *C.C. Rider* `[AUTH]` |
 | 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, walking bass | *St. Louis Blues* (Handy 1914) `[AUTH/IMSLP]`; *Memphis Blues* (1912); *Trouble in Mind* (1924); *Hesitation Blues* (1915) |
@@ -384,7 +390,7 @@ Piano Bootcamp" (Kevin Castro), Jonny May.
 
 ### D4. Jazz track (starts Stage 5; needs D2 stage 5 chords first)
 
-| Stage | Focus | Repertoire (US public domain standards, our own lead sheets `[AUTH]`) |
+| Stage | Focus | Repertoire wanted (US public-domain standards; the bundled options are in `docs/generated/ladder.md`) |
 |------:|-------|--------------------------------------------------------------------|
 | 5 | Swing 8ths, 7th chords in all keys, shell voicings (3rd+7th), ii–V–I in C/F/Bb/G, comping rhythms | *Ja-Da* (1918); *After You've Gone* (1918); *Avalon* (1920); *Bill Bailey* (1902); *Some of These Days* (1910) |
 | 6 | Rootless A/B voicings, guide-tone lines, walking bass LH, chord-scale basics, rhythm changes intro | *Sweet Georgia Brown* (1925); *Bye Bye Blackbird* (1926); *Dinah* (1925); *Tea for Two* (1924); *Limehouse Blues* (1922); *Indiana* (1917); *Ain't She Sweet* (1927) |

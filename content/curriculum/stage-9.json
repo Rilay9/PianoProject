@@ -59,7 +59,11 @@
               "prerequisites": [
                 "classical.8"
               ],
-              "estimatedDays": 365
+              "estimatedDays": 365,
+              "levelBand": [
+                4.3,
+                9.6
+              ]
             }
           ]
         },
@@ -98,7 +102,11 @@
               "prerequisites": [
                 "jazz.8"
               ],
-              "estimatedDays": 180
+              "estimatedDays": 180,
+              "levelBand": [
+                6.3,
+                8.4
+              ]
             }
           ]
         },
@@ -137,7 +145,11 @@
               "prerequisites": [
                 "blues.8"
               ],
-              "estimatedDays": 180
+              "estimatedDays": 180,
+              "levelBand": [
+                6.2,
+                8.4
+              ]
             }
           ]
         },
@@ -176,7 +188,11 @@
               "prerequisites": [
                 "chords-pop.8"
               ],
-              "estimatedDays": 180
+              "estimatedDays": 180,
+              "levelBand": [
+                5.3,
+                8.4
+              ]
             }
           ]
         },
@@ -215,7 +231,11 @@
               "prerequisites": [
                 "theory.8"
               ],
-              "estimatedDays": 180
+              "estimatedDays": 180,
+              "levelBand": [
+                6.5,
+                8.4
+              ]
             }
           ]
         },
@@ -254,7 +274,11 @@
               "prerequisites": [
                 "improv.8"
               ],
-              "estimatedDays": 180
+              "estimatedDays": 180,
+              "levelBand": [
+                5.3,
+                8.4
+              ]
             }
           ]
         }

@@ -44,7 +44,11 @@
               "prerequisites": [
                 "1.5"
               ],
-              "estimatedDays": 14
+              "estimatedDays": 14,
+              "levelBand": [
+                2.1,
+                2.1
+              ]
             }
           ]
         },
@@ -82,7 +86,11 @@
               "prerequisites": [
                 "2.1"
               ],
-              "estimatedDays": 12
+              "estimatedDays": 12,
+              "levelBand": [
+                1.1,
+                2.2
+              ]
             }
           ]
         },
@@ -123,7 +131,11 @@
               "prerequisites": [
                 "2.1"
               ],
-              "estimatedDays": 14
+              "estimatedDays": 14,
+              "levelBand": [
+                2.3,
+                4.3
+              ]
             }
           ]
         },
@@ -163,7 +175,11 @@
               "prerequisites": [
                 "2.2"
               ],
-              "estimatedDays": 12
+              "estimatedDays": 12,
+              "levelBand": [
+                2.2,
+                5.1
+              ]
             }
           ]
         },
@@ -205,7 +221,11 @@
                 "2.4"
               ],
               "estimatedDays": 16,
-              "songOptional": true
+              "songOptional": true,
+              "levelBand": [
+                2.5,
+                4.1
+              ]
             }
           ]
         },
@@ -244,7 +264,11 @@
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
-              "estimatedDays": 14
+              "estimatedDays": 14,
+              "levelBand": [
+                1.2,
+                5.1
+              ]
             }
           ]
         }

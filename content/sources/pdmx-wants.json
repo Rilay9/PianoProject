@@ -17,78 +17,326 @@
     "id nothing has would quietly create a second row instead of replacing the first. The",
     "`song.beautiful.*` ids have no placeholder yet and are new. `title` and `artist` are folded substring",
     "patterns — PDMX titles carry the arranger, the difficulty and the word 'piano' about half",
-    "the time, so an exact match would find nothing."
+    "the time, so an exact match would find nothing.",
+    "",
+    "`verify` is a second list and a different job. These are the 34 Part F tunes P5 skipped",
+    "for want of an edition to check a melody against (docs/decisions/2026-09-05-p5-authored-",
+    "content.md §1). They are not wanted as repertoire — most are four bars of melody — they",
+    "are wanted as the *reference* an authored ABC is checked against, which is the",
+    "verification P5 lacked and the biggest single gain at this owner's level.",
+    "",
+    "Measured on the first real run: 28 of the 34 have at least one candidate in the archive,",
+    "and 25 of those were below the quota line, which is why they need a list of their own.",
+    "Admitted outside the quotas, like the wants."
   ],
   "wants": [
     {
       "id": "song.rock.a7x-seize-the-day",
-      "title": ["seize the day"],
-      "artist": ["avenged sevenfold", "a7x"]
+      "title": [
+        "seize the day"
+      ],
+      "artist": [
+        "avenged sevenfold",
+        "a7x"
+      ]
     },
     {
       "id": "song.rock.a7x-dear-god",
-      "title": ["dear god"],
-      "artist": ["avenged sevenfold", "a7x"]
+      "title": [
+        "dear god"
+      ],
+      "artist": [
+        "avenged sevenfold",
+        "a7x"
+      ]
     },
     {
       "id": "song.rock.a7x-so-far-away",
-      "title": ["so far away"],
-      "artist": ["avenged sevenfold", "a7x"]
+      "title": [
+        "so far away"
+      ],
+      "artist": [
+        "avenged sevenfold",
+        "a7x"
+      ]
     },
     {
       "id": "song.rock.a7x-fiction",
-      "title": ["fiction"],
-      "artist": ["avenged sevenfold", "a7x"]
+      "title": [
+        "fiction"
+      ],
+      "artist": [
+        "avenged sevenfold",
+        "a7x"
+      ]
     },
     {
       "id": "song.rock.lp-final-masquerade",
-      "title": ["final masquerade"],
-      "artist": ["linkin park"]
+      "title": [
+        "final masquerade"
+      ],
+      "artist": [
+        "linkin park"
+      ]
     },
     {
       "id": "song.rock.lp-waiting-for-the-end",
-      "title": ["waiting for the end"],
-      "artist": ["linkin park"]
+      "title": [
+        "waiting for the end"
+      ],
+      "artist": [
+        "linkin park"
+      ]
     },
     {
       "id": "song.rock.lp-shadow-of-the-day",
-      "title": ["shadow of the day"],
-      "artist": ["linkin park"]
+      "title": [
+        "shadow of the day"
+      ],
+      "artist": [
+        "linkin park"
+      ]
     },
     {
       "id": "song.beautiful.nuvole-bianche",
-      "title": ["nuvole bianche"],
-      "artist": ["einaudi"]
+      "title": [
+        "nuvole bianche"
+      ],
+      "artist": [
+        "einaudi"
+      ]
     },
     {
       "id": "song.beautiful.experience",
-      "title": ["experience"],
-      "artist": ["einaudi"]
+      "title": [
+        "experience"
+      ],
+      "artist": [
+        "einaudi"
+      ]
     },
     {
       "id": "song.beautiful.river-flows-in-you",
-      "title": ["river flows in you"],
-      "artist": ["yiruma"]
+      "title": [
+        "river flows in you"
+      ],
+      "artist": [
+        "yiruma"
+      ]
     },
     {
       "id": "song.beautiful.comptine-dun-autre-ete",
-      "title": ["comptine d un autre ete", "comptine dun autre ete"],
-      "artist": ["tiersen"]
+      "title": [
+        "comptine d un autre ete",
+        "comptine dun autre ete"
+      ],
+      "artist": [
+        "tiersen"
+      ]
     },
     {
       "id": "song.beautiful.interstellar",
-      "title": ["interstellar", "cornfield chase", "stay"],
-      "artist": ["zimmer"]
+      "title": [
+        "interstellar",
+        "cornfield chase",
+        "stay"
+      ],
+      "artist": [
+        "zimmer"
+      ]
     },
     {
       "id": "song.beautiful.merry-christmas-mr-lawrence",
-      "title": ["merry christmas mr lawrence", "forbidden colours"],
-      "artist": ["sakamoto"]
+      "title": [
+        "merry christmas mr lawrence",
+        "forbidden colours"
+      ],
+      "artist": [
+        "sakamoto"
+      ]
     },
     {
       "id": "song.beautiful.one-summers-day",
-      "title": ["one summer s day", "one summers day", "ano natsu e"],
-      "artist": ["hisaishi"]
+      "title": [
+        "one summer s day",
+        "one summers day",
+        "ano natsu e"
+      ],
+      "artist": [
+        "hisaishi"
+      ]
+    }
+  ],
+  "verify": [
+    {
+      "title": [
+        "Go Tell Aunt Rhody"
+      ]
+    },
+    {
+      "title": [
+        "Lavender's Blue"
+      ]
+    },
+    {
+      "title": [
+        "Kum Ba Yah"
+      ]
+    },
+    {
+      "title": [
+        "Alouette"
+      ]
+    },
+    {
+      "title": [
+        "Skip to My Lou"
+      ]
+    },
+    {
+      "title": [
+        "Aura Lee"
+      ]
+    },
+    {
+      "title": [
+        "This Old Man"
+      ]
+    },
+    {
+      "title": [
+        "Camptown Races"
+      ]
+    },
+    {
+      "title": [
+        "Banks of the Ohio"
+      ]
+    },
+    {
+      "title": [
+        "The Ash Grove"
+      ]
+    },
+    {
+      "title": [
+        "Down in the Valley"
+      ]
+    },
+    {
+      "title": [
+        "He's Got the Whole World"
+      ]
+    },
+    {
+      "title": [
+        "Michael Row the Boat"
+      ]
+    },
+    {
+      "title": [
+        "Tom Dooley"
+      ]
+    },
+    {
+      "title": [
+        "Clementine"
+      ]
+    },
+    {
+      "title": [
+        "Oh Susanna"
+      ]
+    },
+    {
+      "title": [
+        "Red River Valley"
+      ]
+    },
+    {
+      "title": [
+        "Home on the Range"
+      ]
+    },
+    {
+      "title": [
+        "Simple Gifts"
+      ]
+    },
+    {
+      "title": [
+        "Beautiful Dreamer"
+      ]
+    },
+    {
+      "title": [
+        "Streets of Laredo"
+      ]
+    },
+    {
+      "title": [
+        "Shenandoah"
+      ]
+    },
+    {
+      "title": [
+        "The Water Is Wide"
+      ]
+    },
+    {
+      "title": [
+        "Scarborough Fair"
+      ]
+    },
+    {
+      "title": [
+        "Auld Lang Syne"
+      ]
+    },
+    {
+      "title": [
+        "Silent Night"
+      ]
+    },
+    {
+      "title": [
+        "Deck the Halls"
+      ]
+    },
+    {
+      "title": [
+        "We Wish You"
+      ]
+    },
+    {
+      "title": [
+        "Joy to the World"
+      ]
+    },
+    {
+      "title": [
+        "Hark the Herald"
+      ]
+    },
+    {
+      "title": [
+        "O Holy Night"
+      ]
+    },
+    {
+      "title": [
+        "God Rest Ye"
+      ]
+    },
+    {
+      "title": [
+        "Ma'oz Tzur"
+      ]
+    },
+    {
+      "title": [
+        "Sevivon"
+      ]
     }
   ]
 }

@@ -68,7 +68,11 @@
               "prerequisites": [
                 "classical.7"
               ],
-              "estimatedDays": 180
+              "estimatedDays": 180,
+              "levelBand": [
+                4.3,
+                8.8
+              ]
             }
           ]
         },
@@ -114,7 +118,11 @@
               "prerequisites": [
                 "ragtime.7"
               ],
-              "estimatedDays": 180
+              "estimatedDays": 180,
+              "levelBand": [
+                3.3,
+                7.6
+              ]
             }
           ]
         },
@@ -153,7 +161,11 @@
                 "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
-              }
+              },
+              "levelBand": [
+                8.1,
+                8.1
+              ]
             }
           ]
         },
@@ -193,7 +205,11 @@
               "prerequisites": [
                 "jazz.7"
               ],
-              "estimatedDays": 150
+              "estimatedDays": 150,
+              "levelBand": [
+                7.1,
+                8.2
+              ]
             }
           ]
         },
@@ -232,7 +248,11 @@
               "prerequisites": [
                 "blues.7"
               ],
-              "estimatedDays": 150
+              "estimatedDays": 150,
+              "levelBand": [
+                6.2,
+                8.3
+              ]
             }
           ]
         },
@@ -271,7 +291,11 @@
               "prerequisites": [
                 "chords-pop.7"
               ],
-              "estimatedDays": 150
+              "estimatedDays": 150,
+              "levelBand": [
+                5.4,
+                8.3
+              ]
             }
           ]
         },
@@ -310,7 +334,11 @@
               "prerequisites": [
                 "theory.7"
               ],
-              "estimatedDays": 150
+              "estimatedDays": 150,
+              "levelBand": [
+                6.5,
+                8.3
+              ]
             }
           ]
         },
@@ -349,7 +377,11 @@
               "prerequisites": [
                 "improv.7"
               ],
-              "estimatedDays": 150
+              "estimatedDays": 150,
+              "levelBand": [
+                7.1,
+                8.2
+              ]
             }
           ]
         }

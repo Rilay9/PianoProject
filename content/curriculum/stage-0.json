@@ -35,7 +35,11 @@
                 "custom": "checklist-complete"
               },
               "estimatedDays": 2,
-              "optionsExempt": true
+              "optionsExempt": true,
+              "levelBand": [
+                0.1,
+                0.1
+              ]
             }
           ]
         },
@@ -67,7 +71,11 @@
                 "custom": "20-keys-in-40s>=0.95"
               },
               "estimatedDays": 3,
-              "optionsExempt": true
+              "optionsExempt": true,
+              "levelBand": [
+                0.2,
+                0.2
+              ]
             }
           ]
         },
@@ -99,7 +107,11 @@
                 "custom": "tour-complete"
               },
               "estimatedDays": 1,
-              "optionsExempt": true
+              "optionsExempt": true,
+              "levelBand": [
+                0.3,
+                1.1
+              ]
             }
           ]
         },
@@ -128,7 +140,11 @@
                 "custom": "placement-complete"
               },
               "estimatedDays": 1,
-              "optionsExempt": true
+              "optionsExempt": true,
+              "levelBand": [
+                0.4,
+                0.4
+              ]
             }
           ]
         }

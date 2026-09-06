@@ -243,6 +243,26 @@ def catalog_index(catalog_path: Path) -> dict[str, str]:
 # --- the loop -----------------------------------------------------------------
 
 
+def previous_rows(out_dir: Path) -> dict[str, dict]:
+    """
+    Last run's verdicts, keyed by cid.
+
+    A quarry run is minutes of music21 per hundred files and a browser pass on
+    top, and the usual reason to run it again is that the *selector* changed —
+    a name added to the composer table, a band re-tuned — which leaves most of
+    the previous run's files bit-for-bit identical. Reusing a verdict whose raw
+    file has the same sha256 is free and correct; anything else is re-quarried.
+    """
+    path = out_dir / "quarried.json"
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return {row["cid"]: row for row in data.get("rows", []) if row.get("cid")}
+
+
 def quarry(
     candidates: list[dict],
     raw_dir: Path,
@@ -250,6 +270,7 @@ def quarry(
     *,
     catalog_path: Path,
     skip_render: bool = False,
+    reuse: bool = True,
 ) -> list[QuarryRow]:
     from convert import convert_file, parse_source  # late: music21 is slow to import
     from truncation_scan import scan_file
@@ -263,6 +284,8 @@ def quarry(
 
     rows: list[QuarryRow] = []
     passed_to_render: list[QuarryRow] = []
+    earlier = previous_rows(out_dir) if reuse else {}
+    reused = 0
 
     for candidate in candidates:
         cid = candidate["cid"]
@@ -274,6 +297,16 @@ def quarry(
             rows.append(row)
             continue
         row.raw_sha256 = sha256(raw)
+
+        was = earlier.get(cid)
+        if (
+            was
+            and was.get("raw_sha256") == row.raw_sha256
+            and (not was.get("converted") or (out_dir / was["converted"]).is_file())
+        ):
+            rows.append(QuarryRow(**was))
+            reused += 1
+            continue
 
         # 1 — parse and normalise.
         destination = converted_dir / f"{cid}.mxl"
@@ -339,6 +372,9 @@ def quarry(
         passed_to_render.append(row)
         rows.append(row)
 
+    if reused:
+        print(f"reused {reused} verdict(s) from the previous run (same source bytes)")
+
     # 5 — render, in one browser for the whole batch.
     if passed_to_render and not skip_render:
         reports = render_batch(passed_to_render, converted_dir, out_dir)
@@ -399,6 +435,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--band", action="append", default=[])
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument(
+        "--no-reuse",
+        action="store_true",
+        help="re-quarry every candidate, ignoring the previous run's verdicts",
+    )
+    parser.add_argument(
         "--skip-render",
         action="store_true",
         help="skip gate 5 (needs Chromium and a built app); used by the fixture test",
@@ -419,7 +460,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args.out.mkdir(parents=True, exist_ok=True)
     rows = quarry(candidates, args.raw, args.out, catalog_path=args.catalog,
-                  skip_render=args.skip_render)
+                  skip_render=args.skip_render, reuse=not args.no_reuse)
     rates = rejection_rates(rows, candidates)
 
     out_path = args.out / "quarried.json"

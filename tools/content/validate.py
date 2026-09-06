@@ -251,7 +251,61 @@ def validate_curriculum(curriculum: dict, catalog: list, min_options: int = MIN_
                     if len(options) != len(set(options)):
                         errors.append(f"lesson {lesson['id']}: {field} repeats an item")
                 errors += thin_lesson_errors(lesson, exercises, songs, min_options)
+                errors += level_band_errors(lesson, exercises + songs, catalog)
     return errors
+
+
+def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
+    """
+    replan §2.6: the committed ladder report has to match the catalog.
+
+    Part D is a *report* of what is on each rung, and a generated report that
+    nobody regenerates is exactly the hand-written table it replaced. So the
+    build fails when it drifts, which is the same mechanism a formatted-file
+    check uses.
+
+    A missing report is not an error: the file is generated, and a checkout
+    that has not run the generator yet should not fail for it.
+    """
+    from ladder_report import DEFAULT_OUT, render
+
+    if not DEFAULT_OUT.is_file():
+        return []
+    if DEFAULT_OUT.read_text(encoding="utf-8") == render(catalog, curriculum):
+        return []
+    return [
+        f"{DEFAULT_OUT.relative_to(CONTENT_SRC.parent)} is stale — the catalog has changed "
+        "since it was written. Run `python3 tools/content/ladder_report.py` and commit it "
+        "(replan §2.6)."
+    ]
+
+
+def level_band_errors(lesson: dict, options: list, catalog: list) -> list[str]:
+    """
+    replan §1.7: a rung states the level range it holds, and it has to be true.
+
+    `level` is global difficulty and a rung is an order within a track, so the
+    two are allowed to disagree — a Stage 6 rung holding a level-7 piece is the
+    honest case, not a mistake. What is not allowed is the rung *claiming* a
+    band its own options fall outside, because the lesson page prints that band
+    to the learner.
+    """
+    band = lesson.get("levelBand")
+    if not band:
+        return []
+    low, high = float(band[0]), float(band[1])
+    levels = {item["id"]: float(item["level"]) for item in catalog if item.get("level") is not None}
+    out: list[str] = []
+    for option in options:
+        level = levels.get(option)
+        if level is None:
+            continue
+        if not (low - 1e-9 <= level <= high + 1e-9):
+            out.append(
+                f"lesson {lesson['id']}: {option} is level {level:g}, outside the rung's "
+                f"stated band {low:g}–{high:g} (replan §1.7)"
+            )
+    return out
 
 
 def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: int) -> list[str]:
@@ -333,6 +387,7 @@ def main() -> None:
             catalog, args.dir, args.strict_license, args.allow_nc or args.personal, args.personal
         )
         errors += validate_curriculum(curriculum, catalog, args.min_options)
+        errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.
         errors += [

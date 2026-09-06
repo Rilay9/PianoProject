@@ -191,21 +191,39 @@ def band_for(bars: int, notes_per_bar: float, complexity: float) -> str:
     This is *not* the level: `difficulty.py` computes that from the score after
     conversion, and every PDMX item is `levelSource: "estimated"` either way.
     All this has to do is put a row in a queue, because the quotas are per band
-    and a queue has to exist before anything is converted. The bins are the
-    coarse fallback table from replan §2.4.
+    and a queue has to exist before anything is converted.
+
+    The thresholds are the archive's own distribution, measured over the 37,499
+    rows that pass the gates rather than assumed: notes per bar runs 3.0 at the
+    5th percentile, 7.3 at the median, 17.6 at the 90th and 28.2 at the 99th.
+
+    `complexity` is a *secondary* signal here, and that is the correction P14
+    made. MuseScore's own number is 1 for 27,496 of those rows and never
+    exceeds 3, so a rule written as "complexity <= 5" — as the first draft was —
+    is satisfied by every row in the dataset, and the top band was unreachable.
+    It now only ever pushes a row *up*, which is what a complexity score can
+    honestly do.
     """
     density = notes_per_bar
-    if complexity <= 1 and density <= 6 and bars <= 40:
-        return "1-2"
-    if complexity <= 2 and density <= 9:
-        return "3"
-    if complexity <= 3 and density <= 13:
-        return "4"
-    if complexity <= 4 and density <= 18:
-        return "5"
-    if complexity <= 5:
-        return "6"
-    return "7-9"
+    if density <= 5 and bars <= 48:
+        band = "1-2"
+    elif density <= 8:
+        band = "3"
+    elif density <= 12:
+        band = "4"
+    elif density <= 17:
+        band = "5"
+    elif density <= 24:
+        band = "6"
+    else:
+        band = "7-9"
+    # A long piece is a harder piece at the same density: 211 bars is the 99th
+    # percentile, and nothing that long belongs in the first two stages.
+    if band == "1-2" and bars > 48:
+        band = "3"
+    if complexity >= 3 and band in ("1-2", "3", "4", "5"):
+        band = BANDS[min(len(BANDS) - 1, BANDS.index(band) + 1)]
+    return band
 
 
 def score_row(rating: float, n_ratings: int, n_views: int, official: bool, lyrics: bool) -> float:
@@ -254,6 +272,8 @@ class Candidate:
     score: float
     #: Set when the row matched `pdmx-wants.json`; admitted outside the quotas.
     want: str | None = None
+    #: Set when the row is a Part F reference tune (`verify` in the same file).
+    verifies: str | None = None
     #: Set when the row is over its bucket's quota but otherwise fine.
     over_quota: bool = False
 
@@ -328,7 +348,22 @@ def load_wants(path: Path = WANTS_FILE) -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8")).get("wants", [])
 
 
-def match_want(title: str, artist: str, wants: list[dict]) -> str | None:
+def load_verifications(path: Path = WANTS_FILE) -> list[dict]:
+    """
+    The Part F tunes P5 skipped for want of an edition to check against.
+
+    A different job from the wants: these are not repertoire, they are the
+    *reference* an authored ABC is checked against. Admitted outside the quotas
+    for the same reason — measured on the first real run, 25 of the 28 the
+    archive has were below the quota line, so ranking would never have shown
+    them.
+    """
+    if not path.is_file():
+        return []
+    return json.loads(path.read_text(encoding="utf-8")).get("verify", [])
+
+
+def match_want(title: str, artist: str, wants: list[dict]) -> str | None:  # noqa: D401
     """
     A named want (`02` Part D8 and the *Beautiful* suggestions).
 
@@ -343,7 +378,9 @@ def match_want(title: str, artist: str, wants: list[dict]) -> str | None:
         artists = want.get("artist", [])
         artist_ok = not artists or any(fold(pattern) in folded_artist for pattern in artists)
         if title_ok and artist_ok:
-            return want["id"]
+            # A verification entry has no id — the tune's own title is what
+            # identifies it, because nothing in the catalog is waiting for it.
+            return want.get("id") or want["title"][0]
     return None
 
 
@@ -353,6 +390,7 @@ def select(
     wants: list[dict],
     quotas: dict[str, dict[str, int]],
     limit: int = 0,
+    verifications: list[dict] | None = None,
 ) -> tuple[list[Candidate], Rejections, dict]:
     """Reads the CSV once and returns the ranked, quota-filled shortlist."""
     csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
@@ -422,6 +460,7 @@ def select(
                     tracks=parse_tracks(row.get("tracks")),
                     score=score_row(rating, n_ratings, n_views, official, lyrics),
                     want=match_want(title, artist, wants),
+                    verifies=match_want(title, artist, verifications or []),
                 )
             )
 
@@ -432,6 +471,10 @@ def select(
         "chosen": sum(1 for c in chosen if not c.over_quota),
         "overQuota": sum(1 for c in chosen if c.over_quota),
         "namedWants": sum(1 for c in chosen if c.want),
+        "verifications": sum(1 for c in chosen if c.verifies and not c.over_quota),
+        "verificationTunes": len(
+            {c.verifies for c in chosen if c.verifies and not c.over_quota}
+        ),
         "compositionStatus": dict(Counter(c.composition_status for c in chosen if not c.over_quota)),
         "perBand": {
             band: dict(Counter(c.bucket for c in chosen if c.band == band and not c.over_quota))
@@ -460,7 +503,7 @@ def apply_quotas(
     # Named wants first and outside the quotas: the point of the list is that
     # these pieces are wanted whatever the ranking says.
     for candidate in ranked:
-        if candidate.want and candidate.cid not in seen:
+        if (candidate.want or candidate.verifies) and candidate.cid not in seen:
             seen.add(candidate.cid)
             out.append(candidate)
 
@@ -538,7 +581,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.band:
         quotas = {band: values for band, values in quotas.items() if band in args.band}
 
-    chosen, rejections, summary = select(archive.csv, table, wants, quotas, args.limit)
+    chosen, rejections, summary = select(
+        archive.csv, table, wants, quotas, args.limit, load_verifications()
+    )
 
     header = {"pdmxDir": str(archive.root), "layout": archive.layout}
     if not args.no_fingerprint:
@@ -563,7 +608,12 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     print(f"read {summary['rowsRead']} row(s); {summary['passedGates']} passed the gates")
-    print(f"chosen {summary['chosen']}, over quota {summary['overQuota']}, named wants {summary['namedWants']}")
+    print(
+        f"chosen {summary['chosen']}, over quota {summary['overQuota']}, "
+        f"named wants {summary['namedWants']}, "
+        f"Part F references {summary['verifications']} "
+        f"covering {summary['verificationTunes']} tune(s)"
+    )
     print(f"composition status: {summary['compositionStatus']}")
     for band in BANDS:
         if band in quotas:
