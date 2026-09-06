@@ -238,6 +238,7 @@ export class PracticeEngine {
     }
     if (input.kind === 'noteOff') {
       this.pressed.delete(input.midi);
+      this.recordRelease(input.midi, input.tMs);
       return;
     }
     this.pressed.add(input.midi);
@@ -651,6 +652,24 @@ export class PracticeEngine {
       ok,
       ...(deltaMs === undefined ? {} : { deltaMs }),
     });
+  }
+
+  /**
+   * Stamps the release time on the most recent unreleased note of this pitch.
+   *
+   * Backwards, because the same key can be struck several times in a run and
+   * the one being let go is the last one pressed. Notes that were never
+   * released keep no timestamp at all, which is what `articulationScore`
+   * needs to tell "not measured" from "held for ever" (P12a).
+   */
+  private recordRelease(midi: number, tMs: number): void {
+    for (let i = this.recorded.length - 1; i >= 0; i -= 1) {
+      const note = this.recorded[i];
+      if (note && note.midi === midi && note.releasedAtMs === undefined) {
+        note.releasedAtMs = tMs;
+        return;
+      }
+    }
   }
 
   private bump(map: Map<number, number>, measureIndex: number): void {
