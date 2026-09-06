@@ -148,6 +148,11 @@ test.describe('two taps from a share to a rung', () => {
     await page.goto('/#/library');
     await page.locator('#library-file').setInputFiles(MXL);
     const sheet = page.locator('#assign-sheet');
+    // A plain Library import files the score and gets out of the way: the
+    // sheet is for the owner who arrived with a rung in mind. It is one tap
+    // from the row when he did not.
+    await expect(sheet).toBeHidden();
+    await page.locator('#library-list').getByRole('button', { name: 'Assign', exact: true }).click();
     await expect(sheet).toBeVisible();
     await expect(sheet.locator('#assign-lesson')).toHaveValue('');
     await sheet.locator('#assign-save').click();

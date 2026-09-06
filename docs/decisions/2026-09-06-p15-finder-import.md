@@ -86,6 +86,14 @@ the hash as `#/library?for=<lessonId>`; `share-target.js` carries the query thro
 redirect when one is present; Library opens the picker on arrival and the assign sheet on
 completion, with the rung selected, the level estimated and the concepts taken from the rung.
 
+**The sheet opens on those two paths only** — a share, and **Import for this rung**. It was
+briefly opening after every import, including one started from the Library screen itself, which
+is a different act: there he is filing a file, has no rung in mind, and gets a sheet over the
+list he came to read. Four existing Library tests caught it by failing to click through the
+sheet, which is the tests doing their job. The capability is not lost: an imported row carries
+an **Assign** button beside **Edit**, and that is also the only way to reach the sheet for
+something imported weeks ago.
+
 Assigning is optional — "No rung — just put it in my library" is the first choice, and is what
 an import used to be. What assignment buys is `curriculum/load.ts`'s runtime overlay, which
 appends the piece to that lesson's `songOptions`; every reader downstream — `lessonComplete`,

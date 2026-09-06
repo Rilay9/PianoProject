@@ -130,12 +130,16 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
   Score screen, and its card says "pages, not notes" so it is obvious why Wait mode is not
   offered. Anything you want judged has to arrive as MusicXML.
 - Item detail sheet: metadata, sections, practice tips, media, "Open".
-- **The assign sheet** (P15, replan §4.3). After *any* import — the picker, a drag, or an
-  Android share — a sheet opens by itself asking where the piece goes: the rung (pre-selected
-  from `?for=`), the level (the runtime estimate from §4.4, shown as `≈` and editable), and
-  the concepts (the rung's). One tap on **Save**. From a share that is **two actions in
-  total**, against the eight the old path took, and the e2e suite counts them rather than
-  taking the claim on trust.
+- **The assign sheet** (P15, replan §4.3). After an import that arrived with a rung in mind —
+  an Android share, or **Import for this rung** on a lesson page — a sheet opens by itself
+  asking where the piece goes: the rung (pre-selected from `?for=`), the level (the runtime
+  estimate from §4.4, shown as `≈` and editable), and the concepts (the rung's). One tap on
+  **Save**. From a share that is **two actions in total**, against the eight the old path
+  took, and the e2e suite counts them rather than taking the claim on trust.
+  - A plain Library import does *not* open it. Importing from the Library screen is filing,
+    not answering; a sheet over the list would be covering the list he came to look at. The
+    row carries an **Assign** button beside **Edit**, so the sheet is one tap away when he
+    does want it — and it is the way back to the sheet for anything already imported.
   - Assigning is optional: "No rung — just put it in my library" is the first choice, and is
     what an import used to be.
   - Typing over the estimate makes the level *judged* rather than *estimated*, so the app

@@ -195,6 +195,10 @@ Either way a sheet opens by itself with everything filled in — the rung, a
 level estimated from the notes, what it trains — and **Save** is the only thing
 left to do. Two taps.
 
+Importing from the Library screen instead just files the piece, with no sheet in
+the way. Tap **Assign** on its row whenever you want to put it on a rung — that
+works for anything in there, including files you imported months ago.
+
 The level is marked `≈` while it is the app's guess. Type over it and it stops
 being a guess, and stops showing the `≈`: you are a better judge than the model
 is.

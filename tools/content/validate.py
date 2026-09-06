@@ -512,19 +512,46 @@ def tip_errors(catalog: list, tips_dir: Path) -> list[str]:
 RENDER_REPORT = CONTENT_SRC.parents[0] / "build" / "render-report.json"
 
 
-def section_errors(catalog: list, report_path: Path = RENDER_REPORT) -> list[str]:
+def printed_bars(path: Path) -> int | None:
+    """
+    How many bars a score prints, counted off the file itself.
+
+    music21 keeps the written measures — it does not unroll repeats — so the
+    count matches what the page shows and what a section's bar numbers mean.
+    Verified against the render report over all 22 sectioned items: they agree
+    exactly, including the pieces with pickups and with repeats.
+    """
+    try:
+        from music21 import converter  # noqa: PLC0415 — slow import, only needed here
+    except ImportError:
+        return None
+    try:
+        score = converter.parse(str(path))
+        part = next(iter(score.parts), None)
+        if part is None:
+            return None
+        return len(list(part.getElementsByClass("Measure"))) or None
+    except Exception:  # noqa: BLE001 — an unreadable file is caught by the file check
+        return None
+
+
+def section_errors(
+    catalog: list, content_dir: Path, report_path: Path = RENDER_REPORT
+) -> list[str]:
     """
     replan/`04` §5: a named section has to name bars the piece actually has.
 
-    Bars are 1-based positions in the printed score, so the bound is
-    `sourceMeasures` from the render report — the *printed* count. Checking
-    against the unrolled count instead would pass a section that runs past the
-    last page of a piece with a repeat, which is exactly the mistake worth
-    catching: it produces a loop that silently ends early.
+    Bars are 1-based positions in the printed score, so the bound is the
+    *printed* count. Checking against the unrolled count instead would pass a
+    section that runs past the last page of a piece with a repeat, which is
+    exactly the mistake worth catching: it produces a loop that silently ends
+    early.
 
-    Without a render report the check reports what it cannot do rather than
-    passing quietly: a rule that disappears when its input is missing is a rule
-    that stops working the day somebody deletes `build/`.
+    The render report has the number when it exists, and the score file itself
+    has it otherwise. Both are consulted, in that order, because the rule has
+    to hold on a fresh checkout: an ordering between two build steps is not a
+    thing to hang a correctness check on, and the first thing a clean CI runner
+    does is prove it.
     """
     errors: list[str] = []
     with_sections = [
@@ -532,24 +559,23 @@ def section_errors(catalog: list, report_path: Path = RENDER_REPORT) -> list[str
     ]
     if not with_sections:
         return errors
-    if not report_path.is_file():
-        return [
-            f"{len(with_sections)} item(s) carry named sections but {report_path.name} is "
-            "missing, so their bar numbers cannot be checked — run the render check"
-        ]
-    report = json.loads(report_path.read_text(encoding="utf-8"))
-    printed = {
-        entry["id"]: entry.get("sourceMeasures")
-        for entry in report.get("items", [])
-        if entry.get("ok") is not False
-    }
+    printed: dict[str, int | None] = {}
+    if report_path.is_file():
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        printed = {
+            entry["id"]: entry.get("sourceMeasures")
+            for entry in report.get("items", [])
+            if entry.get("ok") is not False
+        }
     for item in with_sections:
         bars = printed.get(item["id"])
         sections = (item.get("teaching") or {})["sections"]
+        if bars is None and item.get("file"):
+            bars = printed_bars(content_dir / item["file"])
         if bars is None:
             errors.append(
-                f"{item['id']}: has named sections but the render report does not say how many "
-                "printed bars it has — re-run the render check so they can be checked"
+                f"{item['id']}: has named sections but its printed bar count could not be "
+                "established from the render report or from the file, so they cannot be checked"
             )
             continue
         for section in sections:
@@ -729,7 +755,7 @@ def main() -> None:
         errors += unknown_concepts(curriculum)
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
-        errors += section_errors(catalog)
+        errors += section_errors(catalog, args.dir)
         errors += orphan_sections(catalog, CONTENT_SRC / "sources" / "sections.json")
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())

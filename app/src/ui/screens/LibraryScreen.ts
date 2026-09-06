@@ -135,7 +135,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     className: 'visually-hidden',
   }) as HTMLInputElement;
 
-  async function takeFiles(files: FileList | File[] | null): Promise<void> {
+  async function takeFiles(
+    files: FileList | File[] | null,
+    { assign = false }: { assign?: boolean } = {},
+  ): Promise<void> {
     if (!files || files.length === 0) return;
     const added: string[] = [];
     const failed: string[] = [];
@@ -170,9 +173,13 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       shown = PAGE_SIZE;
     }
     await refresh();
-    // replan §4.3: the sheet opens by itself after any import. The old path
-    // put the file in the library and left the owner to go and find it.
-    if (lastRow) await openAssignFor(lastRow);
+    // replan §4.3, and only §4.3: the sheet opens by itself when the import
+    // came from a share or from the lesson page's "Import for this rung",
+    // because in both cases the owner is already answering the question it
+    // asks. A plain Library import is not — he is filing something, and a
+    // sheet over the list would be in the way of the list he came to see. It
+    // is one tap away on the row's Assign button when he does want it.
+    if (lastRow && assign) await openAssignFor(lastRow);
   }
 
   /**
@@ -196,7 +203,9 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   }
 
   picker.addEventListener('change', () => {
-    void takeFiles(picker.files).then(() => {
+    // The picker is opened for us when the route carries a rung, and by the
+    // owner otherwise; only the first is answering the sheet's question.
+    void takeFiles(picker.files, { assign: options.importFor !== undefined }).then(() => {
       picker.value = '';
     });
   });
@@ -551,6 +560,19 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     const actions: HTMLElement[] = [];
     if (item.imported) {
       actions.push(button('Edit', () => showEditor(item.id), { variant: 'quiet' }));
+      // The way to reach the assign sheet for a file already in the library.
+      actions.push(
+        button(
+          'Assign',
+          () => {
+            void allImports().then((rows) => {
+              const row = rows.find((candidate) => candidate.id === item.id);
+              if (row) void openAssignFor(row);
+            });
+          },
+          { variant: 'quiet' },
+        ),
+      );
     }
     actions.push(button('Details', () => showDetail(item), { variant: 'quiet' }));
 
