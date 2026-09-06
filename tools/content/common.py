@@ -203,7 +203,12 @@ class Step:
     warnings: list[str] = field(default_factory=list)
 
 
-def run(cmd: list[str], cwd: Path | None = None, timeout: int = 900) -> subprocess.CompletedProcess:
+def run(
+    cmd: list[str],
+    cwd: Path | None = None,
+    timeout: int = 900,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess:
     return subprocess.run(
-        cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True, check=False
+        cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True, check=False, env=env
     )

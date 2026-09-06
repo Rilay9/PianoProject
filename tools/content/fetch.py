@@ -19,13 +19,23 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import IMPORTED_DIR, LedgerRow, run, update_ledger, utc_now  # noqa: E402
+
+#: git must never stop to ask a human anything: this runs unattended, and a
+#: credential prompt on an unreachable URL is indistinguishable from a hang.
+GIT_ENV = {"GIT_TERMINAL_PROMPT": "0", "GCM_INTERACTIVE": "never"}
+
+
+def git_env() -> dict[str, str]:
+    return {**os.environ, **GIT_ENV}
 
 
 @dataclass(frozen=True)
@@ -145,8 +155,27 @@ OPT_IN = {"mutopia", "pdmx", "nifc-polish"}
 
 
 def reachable(url: str, timeout: int = 30) -> bool:
-    """`git ls-remote` rather than an API call: it is the operation we need."""
-    result = run(["git", "ls-remote", "--exit-code", url, "HEAD"], timeout=timeout)
+    """
+    `git ls-remote` rather than an API call: it is the operation we need.
+
+    A probe that times out means "not reachable", not "stop the build". Two of
+    the sources above are named in docs/03 §2 precisely so the probe can report
+    them missing, and on a machine with a credential helper installed git
+    answers a 404 by *asking for a password* instead of failing — so the probe
+    blocks for its whole timeout and then raised `TimeoutExpired` straight out
+    of the fetch. That crash happened before `nifc-chopin` was reached, which
+    silently cost the build all 21 Chopin first editions and every catalog item
+    that referenced them. `GIT_TERMINAL_PROMPT=0` stops the asking; catching
+    the timeout keeps the promise in this module's docstring either way.
+    """
+    try:
+        result = run(
+            ["git", "ls-remote", "--exit-code", url, "HEAD"],
+            timeout=timeout,
+            env={**os.environ, "GIT_TERMINAL_PROMPT": "0", "GCM_INTERACTIVE": "never"},
+        )
+    except subprocess.TimeoutExpired:
+        return False
     return result.returncode == 0
 
 
@@ -156,17 +185,28 @@ def head_revision(repo: Path) -> str:
 
 
 def clone(source: GitSource, dest: Path, force: bool) -> tuple[bool, str]:
-    if dest.exists() and not force:
-        if (dest / ".git").exists():
-            pull = run(["git", "-C", str(dest), "pull", "--ff-only", "--depth", "1"], timeout=600)
-            if pull.returncode != 0:
-                return True, f"kept existing clone ({head_revision(dest)}); pull failed"
-            return True, f"updated to {head_revision(dest)}"
-        return True, "kept existing directory (not a git clone)"
-    if dest.exists():
-        shutil.rmtree(dest)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    result = run(["git", "clone", "--depth", "1", source.url, str(dest)], timeout=900)
+    # Every git call below is wrapped: a clone that times out is a source we do
+    # without, exactly like one the probe could not reach (see `reachable`).
+    try:
+        if dest.exists() and not force:
+            if (dest / ".git").exists():
+                pull = run(
+                    ["git", "-C", str(dest), "pull", "--ff-only", "--depth", "1"],
+                    timeout=600,
+                    env=git_env(),
+                )
+                if pull.returncode != 0:
+                    return True, f"kept existing clone ({head_revision(dest)}); pull failed"
+                return True, f"updated to {head_revision(dest)}"
+            return True, "kept existing directory (not a git clone)"
+        if dest.exists():
+            shutil.rmtree(dest)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        result = run(
+            ["git", "clone", "--depth", "1", source.url, str(dest)], timeout=900, env=git_env()
+        )
+    except subprocess.TimeoutExpired:
+        return False, "timed out"
     if result.returncode != 0:
         return False, (result.stderr.strip().splitlines() or ["clone failed"])[-1]
     return True, f"cloned {head_revision(dest)}"
