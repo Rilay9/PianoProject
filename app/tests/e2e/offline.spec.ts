@@ -8,8 +8,8 @@
 // The service worker only registers on a built, served app, which is what the Playwright
 // webServer already provides (`npm run build && npm run preview`).
 
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join, relative, resolve, sep } from 'node:path';
 import { expect, test } from '@playwright/test';
 
 const BASE = '/PianoProject/';
@@ -207,6 +207,28 @@ test.describe('offline', () => {
     for (const essential of ['content/tips/index.json', 'content/tips/note-flash.md']) {
       expect(urls.has(essential), `${essential} is not precached`).toBe(true);
     }
+  });
+
+  // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
+  test('and nothing under content/ is served without being precached (P19)', async () => {
+    // The inverse of the test above, and the one that catches a *new kind of
+    // file* rather than a new file. Every check here so far asks "is this
+    // thing I thought of in the manifest?"; four content phases have each
+    // added a directory the globs had never seen, and each was found by
+    // somebody thinking of it. This asks the question the other way round, so
+    // the fifth directory does not need to be thought of.
+    const sw = readFileSync(resolve('dist/sw.js'), 'utf8');
+    const urls = new Set([...sw.matchAll(/url:"([^"]+)"/g)].map((match) => match[1]));
+    const root = resolve('dist');
+    const walk = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+        const full = join(dir, entry.name);
+        return entry.isDirectory() ? walk(full) : [relative(root, full).split(sep).join('/')];
+      });
+    const served = walk(join(root, 'content'));
+    expect(served.length).toBeGreaterThan(1000);
+    const uncached = served.filter((file) => !urls.has(file));
+    expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
   });
 });
 

@@ -1,0 +1,182 @@
+/**
+ * Sweeps — the checks that go over *everything* rather than over an example
+ * (P19 §C3).
+ *
+ * The rest of the suite tests one lesson page, one drill of each interesting
+ * kind, one import. These walk the shipped content: all 93 lessons, every
+ * runtime drill kind, one item of every type and every source. They are slow
+ * on purpose, and they are the tests that catch content changing under code
+ * that was written for the content of the day.
+ */
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { expect, test } from '@playwright/test';
+import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+
+const catalog = JSON.parse(
+  readFileSync(resolve('public/content/catalog.json'), 'utf8'),
+) as CatalogItem[];
+const curriculum = JSON.parse(
+  readFileSync(resolve('public/content/curriculum.json'), 'utf8'),
+) as Curriculum;
+
+const lessons: { lesson: Lesson; stage: number; track: string }[] = curriculum.stages.flatMap(
+  (stage) =>
+    stage.units.flatMap((unit) =>
+      unit.lessons.map((lesson) => ({ lesson, stage: stage.number, track: unit.track })),
+    ),
+);
+
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('e2e-fresh') === null) {
+      sessionStorage.setItem('e2e-fresh', '1');
+      indexedDB.deleteDatabase('pianopath');
+      localStorage.clear();
+    }
+  });
+});
+
+/**
+ * Console errors that are the browser's business rather than the app's.
+ *
+ * Nothing here hides an app error: the soundfont is fetched lazily and is
+ * allowed to fail on a machine with no audio device, and a favicon is a
+ * favicon.
+ */
+const IGNORED = [/favicon/i, /soundfont/i, /AudioContext/i, /user gesture/i];
+
+test.describe('every lesson page', () => {
+  test('all of them open by URL, draw their options and say what they need', async ({ page }) => {
+    test.setTimeout(300_000);
+    expect(lessons.length).toBeGreaterThanOrEqual(90);
+
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(`${page.url()}: ${error.message}`));
+    page.on('console', (message) => {
+      if (message.type() !== 'error') return;
+      const text = message.text();
+      if (IGNORED.some((pattern) => pattern.test(text))) return;
+      errors.push(`${page.url()}: ${text}`);
+    });
+
+    const empty: string[] = [];
+    for (const { lesson } of lessons) {
+      await page.goto(`/#/lesson/${lesson.id}`);
+      // The title proves the route resolved to this rung and not to the "no
+      // such lesson" state, which is the failure a wrong id pattern produces.
+      await expect(page.locator('[data-screen="lesson"] h1')).toContainText(lesson.id);
+      await expect(page.locator('#lesson-needs')).toContainText(/option\(s\)|wants/);
+      const options = await page.locator('#lesson-exercises .list-row, #lesson-songs .list-row').count();
+      if (options === 0 && lesson.optionsExempt !== true) empty.push(lesson.id);
+    }
+
+    expect(empty, 'rungs that drew no options at all').toEqual([]);
+    expect(errors, 'console errors while opening every lesson').toEqual([]);
+  });
+
+  test('every rung that has a finder can open it', async ({ page }) => {
+    test.setTimeout(300_000);
+    const withFinder = lessons.filter((entry) => entry.lesson.finder);
+    expect(withFinder.length).toBeGreaterThan(50);
+    // Opening all 89 sheets is a minute of clicking for one assertion; the
+    // claim worth proving is that the button is there on every one of them and
+    // that the sheet opens, so the sheet is opened on a sample and the button
+    // is checked on all.
+    for (const { lesson } of withFinder) {
+      await page.goto(`/#/lesson/${lesson.id}`);
+      await expect(page.locator('#lesson-find-more')).toBeVisible();
+    }
+    await page.locator('#lesson-find-more').click();
+    await expect(page.locator('#finder-sheet')).toBeVisible();
+  });
+});
+
+test.describe('every kind of drill', () => {
+  const runtime = catalog.filter((item) => item.drill && !item.file);
+  const byKind = new Map<string, CatalogItem>();
+  for (const item of runtime) {
+    const kind = item.drill?.kind;
+    if (kind && !byKind.has(kind)) byKind.set(kind, item);
+  }
+
+  test('one of each opens, draws a card and offers a way to answer', async ({ page }) => {
+    test.setTimeout(300_000);
+    expect(byKind.size).toBeGreaterThanOrEqual(15);
+    const broken: string[] = [];
+    for (const [kind, item] of byKind) {
+      if (kind === 'sight-reading') continue; // notation: it opens the Score screen
+      await page.goto(`/#/drill/${item.id}`);
+      const screen = page.locator('[data-screen="drill"]');
+      if (!(await screen.isVisible())) {
+        broken.push(`${kind}: no drill screen`);
+        continue;
+      }
+      // Either a prompt card or the honest "nothing to run here" line, never a
+      // blank screen.
+      const card = page.locator('#drill-prompt');
+      await expect(card).toBeVisible();
+      const text = (await card.textContent())?.trim() ?? '';
+      if (text.length === 0) broken.push(`${kind}: an empty card`);
+    }
+    expect(broken).toEqual([]);
+  });
+});
+
+test.describe('where an item opens', () => {
+  /** One of each shape `ui/openItem.ts` distinguishes. */
+  function example(predicate: (item: CatalogItem) => boolean): CatalogItem | undefined {
+    return catalog.find(predicate);
+  }
+
+  const bundledSong = example((i) => i.type === 'song' && Boolean(i.file) && !i.tags?.includes('pdmx'));
+  const generated = example((i) => i.type === 'exercise' && Boolean(i.file) && Boolean(i.drill));
+  const pdmx = example((i) => Boolean(i.file) && (i.tags ?? []).includes('pdmx'));
+  const placeholder = example((i) => i.type === 'song' && !i.file && Boolean(i.importHint));
+  const runtimeDrill = example((i) => i.type === 'drill' && Boolean(i.drill) && !i.file);
+
+  test('a bundled song, a generated exercise and a quarried score open on the Score screen', async ({
+    page,
+  }) => {
+    for (const item of [bundledSong, generated, pdmx]) {
+      expect(item, 'the catalog no longer has one of these shapes').toBeTruthy();
+      await page.goto(`/#/score/${item!.id}`);
+      await expect(page.locator('[data-screen="score"]')).toBeVisible();
+      await expect(page.locator('#score-status')).not.toContainText('Unknown item');
+    }
+  });
+
+  test('a runtime drill opens on the drill screen', async ({ page }) => {
+    expect(runtimeDrill).toBeTruthy();
+    await page.goto(`/#/drill/${runtimeDrill!.id}`);
+    await expect(page.locator('[data-screen="drill"]')).toBeVisible();
+  });
+
+  test('a placeholder says what to do instead of opening nothing', async ({ page }) => {
+    expect(placeholder).toBeTruthy();
+    await page.goto('/#/library');
+    await page.locator('#library-search').fill(placeholder!.title);
+    const row = page.locator(`#library-list [data-item="${placeholder!.id}"]`);
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('import needed');
+    await row.getByRole('button', { name: 'Details', exact: true }).click();
+    await expect(page.locator('#library-detail')).toContainText(/import|not bundled/i);
+  });
+});
+
+test.describe('when the level model is missing', () => {
+  test('an import says "no estimate" rather than showing a made-up number', async ({ page }) => {
+    // The fallback nobody would notice was broken: a default of 5 presented as
+    // an estimate is worse than no estimate, because there is no reason to
+    // doubt it.
+    await page.route('**/level-model.json', (route) => route.fulfill({ status: 404, body: '' }));
+    await page.goto('/#/library?for=2.1');
+    await page
+      .locator('#library-file')
+      .setInputFiles(resolve('tests/fixtures/imports/test-tune.mxl'));
+    const sheet = page.locator('#assign-sheet');
+    await expect(sheet).toBeVisible();
+    await expect(sheet.locator('#assign-level-hint')).toContainText('No estimate');
+    await expect(sheet.locator('#assign-level')).toHaveValue('');
+  });
+});

@@ -119,9 +119,10 @@ export function FolderScreen(router: Router): HTMLElement {
   const controls = el('div.filters');
   browse.append(controls);
   const countLine = addParagraph(browse, '', 'muted');
-  const list = el('div.list');
+  countLine.id = 'folder-count';
+  const list = el('div.list', { id: 'folder-list' });
   browse.append(list);
-  const more = el('div.button-row');
+  const more = el('div.button-row', { id: 'folder-more' });
   browse.append(more);
 
   let library: FolderLibrary | null = null;

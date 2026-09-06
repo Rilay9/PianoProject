@@ -16,8 +16,17 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   attrs: Attrs = {},
   ...children: (Node | string | null | undefined)[]
 ): HTMLElement {
-  const [tag = 'div', ...classes] = spec.split('.');
+  // `div.row.wide`, and `input#folder-search`. The id was *not* understood
+  // until P19: `el('input#folder-search')` created an element whose tag name
+  // was the whole string, so the folder screen's search box, style select,
+  // level boxes and rated checkbox were not form controls at all — no value,
+  // nothing to type into, and `search.value` reading undefined. It looked
+  // right on the screen because an unknown element with a placeholder
+  // attribute renders as an empty inline box.
+  const [head = 'div', ...classes] = spec.split('.');
+  const [tag = 'div', id] = head.split('#');
   const node = document.createElement(tag);
+  if (id) node.id = id;
   if (classes.length) node.className = classes.join(' ');
   for (const [key, value] of Object.entries(attrs)) {
     // Only `undefined` means "not set". `false` is a value: `aria-pressed` and
