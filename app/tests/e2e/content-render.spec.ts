@@ -79,6 +79,36 @@ const RENDER_TIMEOUT_MS = 60_000;
 /** Bumped when an entry's shape changes, so old manifests are ignored whole. */
 const MANIFEST_VERSION = 1;
 /**
+ * The engraver's version, mixed into every manifest key.
+ *
+ * The manifest remembered a measurement under the sha256 of the *score file*
+ * alone, so a new OpenSheetMusicDisplay changed what a render would produce
+ * and every entry stayed valid — the check would report last month's numbers
+ * about this month's renderer, in silence. `--full` existed for exactly this
+ * and depended on somebody remembering to pass it. CI was protected by
+ * accident, because its cache key hashes package-lock.json; a laptop was not.
+ *
+ * Read from the installed package rather than from package.json's range, so a
+ * lockfile bump that resolves differently also invalidates.
+ */
+const OSMD_VERSION: string = (() => {
+  try {
+    const meta = JSON.parse(
+      readFileSync(resolve('../app/node_modules/opensheetmusicdisplay/package.json'), 'utf-8'),
+    ) as { version?: string };
+    return meta.version ?? 'unknown';
+  } catch {
+    try {
+      const meta = JSON.parse(
+        readFileSync(resolve('./node_modules/opensheetmusicdisplay/package.json'), 'utf-8'),
+      ) as { version?: string };
+      return meta.version ?? 'unknown';
+    } catch {
+      return 'unknown';
+    }
+  }
+})();
+/**
  * Distinct console messages kept per item.
  *
  * OSMD repeats itself once per measure — 5,654 lines across the library, every
@@ -229,7 +259,9 @@ test.describe('content render check', () => {
       const filePath = join(contentDir, item.file as string);
       let hash: string;
       try {
-        hash = hashFile(filePath);
+        // The file *and* the engraver: the same bytes through a different OSMD
+        // are a different measurement.
+        hash = `${hashFile(filePath)}-osmd${OSMD_VERSION}`;
       } catch (error) {
         reports.push({
           id: item.id,
