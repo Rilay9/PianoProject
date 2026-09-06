@@ -101,6 +101,36 @@ describe('importAll', () => {
     expect(await fresh?.get('settings', 'pianopath.settings')).toBe('{"zoom":1.5}');
   });
 
+  it('carries the rungs an import was assigned to (replan §4.3)', async () => {
+    // The assignment is the only thing that makes an imported piece an option
+    // of a rung. A backup that dropped it would restore the file and quietly
+    // lose which lesson it belonged to, which is the whole feature.
+    const db = await openDatabase();
+    await db?.put('imports', {
+      id: 'import.assigned',
+      kind: 'musicxml',
+      title: 'Assigned',
+      data: '<score-partwise/>',
+      tags: ['Beethoven'],
+      addedAt: '2026-09-06T00:00:00.000Z',
+      level: 2.5,
+      levelSource: 'judged',
+      lessonIds: ['2.1', '3.4'],
+      concepts: ['hands-together', 'held-LH'],
+    });
+    const file = JSON.parse(JSON.stringify(await exportAll())) as unknown;
+
+    useFakeIndexedDb();
+    await importAll(file);
+
+    const fresh = await openDatabase();
+    const restored = await fresh?.get('imports', 'import.assigned');
+    expect(restored?.lessonIds).toEqual(['2.1', '3.4']);
+    expect(restored?.concepts).toEqual(['hands-together', 'held-LH']);
+    expect(restored?.levelSource).toBe('judged');
+    expect(restored?.level).toBe(2.5);
+  });
+
   it('merges rather than overwriting practice done since the export', async () => {
     const db = await openDatabase();
     await db?.put('progress', progress('song.a', { status: 'mastered', attempts: 9 }));

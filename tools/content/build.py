@@ -259,6 +259,20 @@ def copy_schemas(out_dir: Path) -> None:
             shutil.copy2(source, out_dir / name)
 
 
+def copy_level_model(out_dir: Path) -> None:
+    """
+    The levelling coefficients, where the app can fetch them (replan §4.4).
+
+    The app levels a score the owner imports, and it must reach the same number
+    the quarry did. Copying the fitted model into the served content rather
+    than compiling it into TypeScript means refitting is a content change, not
+    a code change — and there is exactly one file to be wrong about.
+    """
+    source = REPO_ROOT / "content" / "sources" / "level-model.json"
+    if source.exists():
+        shutil.copy2(source, out_dir / "level-model.json")
+
+
 def step_validate(
     out_dir: Path, strict_license: bool, allow_nc: bool = False, personal: bool = False
 ) -> Step:
@@ -377,6 +391,7 @@ def run_build(args: argparse.Namespace, started: float) -> None:
     steps.append(copy_curriculum(args.out))
     steps.append(copy_lessons(args.out))
     copy_schemas(args.out)
+    copy_level_model(args.out)
     steps.append(step_validate(args.out, args.strict_license, allow_nc, args.personal))
     if args.render:
         steps.append(step_render(args.out, args.render_limit))

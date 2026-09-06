@@ -222,7 +222,9 @@ export async function takeSharedFiles(now = new Date()): Promise<{ added: Import
 
 export async function updateImport(
   id: string,
-  patch: Partial<Pick<ImportRow, 'title' | 'tags' | 'level' | 'cuts'>>,
+  patch: Partial<
+    Pick<ImportRow, 'title' | 'tags' | 'level' | 'cuts' | 'lessonIds' | 'concepts' | 'levelSource'>
+  >,
 ): Promise<ImportRow | undefined> {
   const db = await openDatabase();
   const row = await db?.get('imports', id);
@@ -253,14 +255,21 @@ export function importToCatalogItem(row: ImportRow): CatalogItem {
     type: 'song',
     title: row.title,
     level: row.level ?? 5,
+    // An estimate is printed as `≈` and says so; a number the owner typed is
+    // not an estimate. An import with no level at all is neither, and the
+    // default of 5 is a placeholder rather than a judgement — so it is marked
+    // estimated, which is the honest of the two.
+    levelSource: row.levelSource ?? 'estimated',
     hands: 'both',
     tracks: ['imported'],
-    concepts: [],
+    concepts: row.concepts ?? [],
     file: null,
     tags: row.tags,
     composer: row.tags[0] ?? null,
     imported: true,
     kind: row.kind,
+    /** The rungs this piece was assigned to (replan §4.3). */
+    lessonIds: row.lessonIds ?? [],
     source: { name: 'Imported by you', license: 'user-imported', url: null },
   };
 }

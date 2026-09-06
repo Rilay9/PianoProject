@@ -38,12 +38,64 @@ export function loadCatalog(): Promise<CatalogItem[]> {
   return catalogPromise;
 }
 
-export function loadCurriculum(): Promise<Curriculum> {
+/** The file as built, with no imports overlaid. Cached; never handed out directly. */
+function fetchCurriculum(): Promise<Curriculum> {
   curriculumPromise ??= fetchJson<Curriculum>('curriculum.json').catch((cause: unknown) => {
     curriculumPromise = null;
     throw cause;
   });
   return curriculumPromise;
+}
+
+/**
+ * Appends the owner's imports to the rungs he assigned them to (replan §4.3).
+ *
+ * This is the whole point of `lessonIds`. Without it an imported piece is a
+ * Library row that "sits outside the curriculum": it cannot complete a rung,
+ * it never appears in a swap, and the session builder cannot pick it. With it
+ * the piece is an *option of the rung*, and every reader downstream —
+ * `lessonComplete`, `alternativesFor`, `buildSession`, the lesson page — needs
+ * no change at all, because they all read `songOptions`.
+ *
+ * The built curriculum is never mutated: it is cached and shared, and an
+ * overlay that wrote into it would accumulate the same import twice on the
+ * second call. Only the lessons that gain something are copied.
+ */
+export function overlayImports(curriculum: Curriculum, imports: CatalogItem[]): Curriculum {
+  const byLesson = new Map<string, string[]>();
+  for (const item of imports) {
+    for (const lessonId of item.lessonIds ?? []) {
+      const list = byLesson.get(lessonId);
+      if (list) list.push(item.id);
+      else byLesson.set(lessonId, [item.id]);
+    }
+  }
+  if (byLesson.size === 0) return curriculum;
+
+  return {
+    ...curriculum,
+    stages: curriculum.stages.map((stage) => ({
+      ...stage,
+      units: stage.units.map((unit) => ({
+        ...unit,
+        lessons: unit.lessons.map((lesson) => {
+          const extra = byLesson.get(lesson.id);
+          if (!extra) return lesson;
+          // An id already in the list wins: assigning an import to a rung that
+          // happens to bundle the same id should not list it twice.
+          const existing = new Set(lesson.songOptions);
+          const added = extra.filter((id) => !existing.has(id));
+          if (added.length === 0) return lesson;
+          return { ...lesson, songOptions: [...lesson.songOptions, ...added] };
+        }),
+      })),
+    })),
+  };
+}
+
+export async function loadCurriculum(): Promise<Curriculum> {
+  const [curriculum, imported] = await Promise.all([fetchCurriculum(), importedCatalogItems()]);
+  return overlayImports(curriculum, imported);
 }
 
 /**

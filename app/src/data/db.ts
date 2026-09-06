@@ -14,8 +14,11 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 
 export const DB_NAME = 'pianopath';
-/** 2 adds `levelOverrides` (replan §1.4); 3 adds `folderLibraries` (docs/04 §4b). */
-export const DB_VERSION = 3;
+/**
+ * 2 adds `levelOverrides` (replan §1.4); 3 adds `folderLibraries` (`04` §4b);
+ * 4 gives an import the rungs it belongs to (replan §4.3).
+ */
+export const DB_VERSION = 4;
 
 export type ProgressStatus = 'new' | 'started' | 'passed' | 'mastered';
 
@@ -63,6 +66,23 @@ export interface ImportRow {
   addedAt: string;
   /** PDF only: corrected system cut lines per page, in page coordinates. */
   cuts?: Record<number, number[]>;
+  /**
+   * The rungs this piece is an option of (replan §4.3).
+   *
+   * This is what stops an imported score "sitting outside the curriculum":
+   * `curriculum/load.ts` appends it to each named lesson's `songOptions` at
+   * runtime, so it counts toward completion, appears in swaps and can be
+   * picked by the session builder like anything bundled.
+   */
+  lessonIds?: string[];
+  /** Concepts it trains — the rung's, unless the owner edited them. */
+  concepts?: string[];
+  /**
+   * Where the level came from. `estimated` is the runtime model's guess
+   * (§4.4); it becomes `judged` the moment the owner types a number, because
+   * he is a better source than the estimate he is overruling.
+   */
+  levelSource?: 'estimated' | 'judged';
 }
 
 export interface PlanRow {
@@ -163,7 +183,7 @@ export function openDatabase(): Promise<IDBPDatabase<PianoPathDb> | null> {
     // `oldVersion` is 0 on a fresh database and the previous version on an
     // upgrade, so each block runs exactly once and a phone that has been on
     // version 1 since P7 keeps every row it has.
-    upgrade(db, oldVersion) {
+    upgrade(db, oldVersion, _newVersion, tx) {
       if (oldVersion < 1) {
         db.createObjectStore('settings');
         db.createObjectStore('progress', { keyPath: 'itemId' });
@@ -181,6 +201,26 @@ export function openDatabase(): Promise<IDBPDatabase<PianoPathDb> | null> {
       }
       if (oldVersion < 3) {
         db.createObjectStore('folderLibraries', { keyPath: 'id' });
+      }
+      if (oldVersion < 4) {
+        // `imports` gains three optional fields, so no store is created and
+        // nothing has to be rewritten to be readable. One thing is worth
+        // saying explicitly, though: a level on an import that predates P15
+        // was typed by the owner in the edit sheet, so it is judged, not
+        // estimated. Left unset it would later be printed as `≈`, which would
+        // be the app telling him his own number was a guess.
+        if (oldVersion >= 1) {
+          void (async () => {
+            let cursor = await tx.objectStore('imports').openCursor();
+            while (cursor) {
+              const row = cursor.value;
+              if (row.level !== undefined && row.levelSource === undefined) {
+                await cursor.update({ ...row, levelSource: 'judged' });
+              }
+              cursor = await cursor.continue();
+            }
+          })();
+        }
       }
     },
   }).catch(() => null);

@@ -71,6 +71,15 @@ export interface CatalogItem {
   imported?: boolean;
   /** `pdf` items open in the PDF viewer (docs/04 §5b), never the Score screen. */
   kind?: 'musicxml' | 'pdf';
+  /**
+   * Rungs an *imported* item was assigned to (replan §4.3).
+   *
+   * Distinct from `teaching.lessonIds`, which is what a bundled item's author
+   * said it teaches. This one is what the owner said when he saved it, and it
+   * is why `curriculum/load.ts` can append the piece to those rungs' song
+   * options at runtime.
+   */
+  lessonIds?: string[];
 }
 
 export interface Mastery {
