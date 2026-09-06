@@ -33,10 +33,15 @@ from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# `tools/content` on the path, not this directory. A module called
+# `select` sitting on `sys.path` shadows the standard library's — which
+# broke the test suite the first time it ran under discovery, and on a
+# platform where `subprocess` reaches for `selectors` it would break far
+# more than that. Importing through the package name cannot collide.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from composers import ComposerTable, fold  # noqa: E402
-from paths import BUILD_DIR, ArchiveMissing, fail, find_archive  # noqa: E402
+from pdmx.composers import ComposerTable, fold  # noqa: E402
+from pdmx.paths import BUILD_DIR, ArchiveMissing, fail, find_archive  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 WANTS_FILE = REPO_ROOT / "content" / "sources" / "pdmx-wants.json"

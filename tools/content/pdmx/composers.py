@@ -26,6 +26,11 @@ import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
+# `tools/content` on the path, not this directory. A module called
+# `select` sitting on `sys.path` shadows the standard library's — which
+# broke the test suite the first time it ran under discovery, and on a
+# platform where `subprocess` reaches for `selectors` it would break far
+# more than that. Importing through the package name cannot collide.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from licensing import PD_CUTOFF_YEAR, composition_verdict  # noqa: E402
@@ -45,6 +50,9 @@ YEARS = re.compile(r"[\(\[]?\s*(1\d{3})\s*[-–—]\s*(1\d{3}|\d{2})\s*[\)\]]?")
 
 #: A single year in brackets: `(1849)`.
 SINGLE_YEAR = re.compile(r"[\(\[]\s*(1\d{3}|20\d{2})\s*[\)\]]")
+
+#: How long a traditional alias must be before a bare prefix match counts.
+TRADITIONAL_PREFIX_MIN = 12
 
 #: Values PDMX uses for "there isn't one".
 EMPTY = {"", "na", "n/a", "none", "null", "-", "unknown"}
@@ -154,8 +162,20 @@ class ComposerTable:
         # Traditional first: `Traditional (English, 16th century)` folds to a
         # string starting with the alias, and a folk tune has no composer to
         # look up by design.
+        #
+        # A long alias also matches as a bare prefix, because the CSV runs
+        # fields together: `after Chief F. O'Neillwith spirit` is the collector
+        # and a tempo marking with the space lost between them, and there are
+        # hundreds of those. Long, because "folk" as a bare prefix would claim
+        # Folkert Smit and "anon" would claim anyone called Anona.
         for alias in self.traditional:
-            if folded == alias or folded.startswith(f"{alias} ") or f" {alias} " in f" {folded} ":
+            long_enough = len(alias) >= TRADITIONAL_PREFIX_MIN
+            if (
+                folded == alias
+                or folded.startswith(f"{alias} ")
+                or f" {alias} " in f" {folded} "
+                or (long_enough and folded.startswith(alias))
+            ):
                 return ComposerMatch(
                     raw=text, canonical=None, died=None, born=None, traditional=True,
                     status="pd", reason="traditional or anonymous",

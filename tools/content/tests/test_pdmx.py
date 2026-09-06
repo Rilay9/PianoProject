@@ -25,8 +25,12 @@ import unittest
 from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parents[1]
+# `tools/content` only. Putting `tools/content/pdmx` on the path as well would
+# make its `select.py` shadow the standard library's `select`, which is exactly
+# what broke this file the first time it ran under `unittest discover`: the
+# stdlib module was already in `sys.modules`, so `from select import GATES`
+# found the wrong one.
 sys.path.insert(0, str(TOOLS))
-sys.path.insert(0, str(TOOLS / "pdmx"))
 
 import difficulty  # noqa: E402
 from pdmx import commit as commit_mod  # noqa: E402
@@ -90,6 +94,19 @@ class TestComposerTable(unittest.TestCase):
             match = self.table.match(name)
             self.assertTrue(match.traditional, name)
             self.assertEqual(match.status, "pd", name)
+
+    def test_a_long_alias_matches_even_when_the_csv_ran_two_fields_together(self) -> None:
+        # Real strings: the collector and a tempo marking with the space lost
+        # between them. Hundreds of rows look like this.
+        for name in ("after Chief F. O'Neillwith spirit", "after Sg't. J. O'Neillmoderate",
+                     "Unattributedmoderate", "Urheber unbekanntDatum 1767"):
+            self.assertTrue(self.table.match(name).traditional, name)
+
+    def test_a_short_alias_does_not_claim_a_real_name(self) -> None:
+        # "folk" as a bare prefix would claim Folkert Smit and "anon" would
+        # claim Anona Winn, which is why the prefix rule has a length bar.
+        for name in ("Folkert Smit", "Anona Winn", "Tradd Robinson"):
+            self.assertFalse(self.table.match(name).traditional, name)
 
     def test_an_unmatched_name_is_unknown_and_not_a_rejection(self) -> None:
         match = self.table.match("Jane Q. Uploader")
@@ -689,3 +706,140 @@ class TestContentLock(unittest.TestCase):
                 self.assertIn("the run after it", self.lock_path.read_text(encoding="utf-8"))
         finally:
             self.lock_path.unlink(missing_ok=True)
+
+
+class TestArchiveIndex(unittest.TestCase):
+    """
+    The whole-archive index (`pdmx/index.py`).
+
+    `select.py` answers "which three hundred next"; this answers "what is in
+    there at all, at my level". Its level comes from a proxy fitted on the
+    quarry's own levels, so the two agree about difficulty without the index
+    having to convert 37,499 files.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        from pdmx import index as index_mod
+
+        cls.index_mod = index_mod
+        cls.model = index_mod.load_model()
+
+    def test_the_proxy_recovers_a_level_it_was_fitted_on(self) -> None:
+        # A straight line through log(notes), chosen to stay inside 1-9 so the
+        # clamp never fires: a fit that cannot reproduce a line it was handed
+        # cannot be trusted with real data.
+        import math
+
+        samples = [
+            ({"notes": n, "notesPerBar": 8.0, "bars": 32, "complexity": 1},
+             1.0 + 0.9 * math.log1p(n))
+            for n in range(40, 2000, 25)
+        ]
+        model = self.index_mod.fit_proxy(samples)
+        worst = max(abs(self.index_mod.proxy_level(row, model) - level) for row, level in samples)
+        self.assertLess(worst, 0.15, "the proxy cannot reproduce a line it was given")
+
+    def test_a_level_is_always_inside_the_stage_range(self) -> None:
+        for notes in (0, 30, 500, 50_000):
+            level = self.index_mod.proxy_level(
+                {"notes": notes, "notesPerBar": 40.0, "bars": 400, "complexity": 3}, self.model
+            )
+            self.assertGreaterEqual(level, 1.0)
+            self.assertLessEqual(level, 9.0)
+
+    def test_without_a_fitted_model_it_says_so_rather_than_guessing_wildly(self) -> None:
+        level = self.index_mod.proxy_level(
+            {"notes": 500, "notesPerBar": 9.0, "bars": 40, "complexity": 1}, {"fitted": False}
+        )
+        self.assertEqual(level, 4.5)
+
+    def test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model(self) -> None:
+        # Fitted against difficulty.py's output on the quarried files, so the
+        # index sorts a shelf the way the catalog would sort it. The bar is
+        # loose on purpose: this is a proxy for browsing, not a catalog level.
+        if not self.model.get("fitted"):
+            self.skipTest("no fitted proxy committed")
+        self.assertGreaterEqual(self.model.get("fittedOn", 0), 100)
+        self.assertIn("Spearman", self.model.get("report", ""))
+        for field in self.index_mod.PROXY_FIELDS:
+            self.assertIn(field, self.model["weights"])
+
+    def test_the_index_reads_the_fixture_and_keeps_what_passes_the_gates(self) -> None:
+        rows, summary = self.index_mod.build_index(
+            FIXTURE / "PDMX.csv", ComposerTable.load(), self.model
+        )
+        self.assertEqual(summary["rowsRead"], 30)
+        # The same twenty rows select.py keeps — the gates are shared, not copied.
+        self.assertEqual(summary["indexed"], 20)
+        by_cid = {row["cid"]: row for row in rows}
+        self.assertEqual(by_cid["QmFixtureDecoyBartok"]["status"], "in-copyright")
+        self.assertEqual(by_cid["QmFixtureWantRiverFlows"]["want"],
+                         "song.beautiful.river-flows-in-you")
+        for row in rows:
+            self.assertGreaterEqual(row["level"], 1.0)
+            self.assertLessEqual(row["level"], 9.0)
+            self.assertTrue(row["member"].startswith("mxl/"))
+
+    def test_the_page_is_one_self_contained_file(self) -> None:
+        rows, summary = self.index_mod.build_index(
+            FIXTURE / "PDMX.csv", ComposerTable.load(), self.model
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            page = Path(tmp) / "index.html"
+            self.index_mod.write_page(rows, summary, self.model, page)
+            text = page.read_text(encoding="utf-8")
+            # No server, no CDN, no build step: it is opened from a laptop's
+            # file system while the tarball is still on it.
+            self.assertNotIn("http://localhost", text)
+            self.assertNotIn("<script src=", text)
+            for row in rows:
+                self.assertIn(row["cid"], text)
+
+    def test_extract_can_be_pointed_at_hand_picked_cids(self) -> None:
+        # What the page's "copy picked CIDs" button feeds.
+        with tempfile.TemporaryDirectory() as tmp:
+            index_path = Path(tmp) / "index.json"
+            rows, summary = self.index_mod.build_index(
+                FIXTURE / "PDMX.csv", ComposerTable.load(), self.model
+            )
+            index_path.write_text(json.dumps({"summary": summary, "rows": rows}), encoding="utf-8")
+            found = extract_mod.named_candidates(
+                ["QmFixtureJoplin", "QmNotInTheArchive", "QmFixtureJoplin"],
+                Path(tmp) / "no-candidates.json",
+                index_path,
+            )
+            # Deduplicated, and an unknown CID is dropped rather than invented.
+            self.assertEqual([row["cid"] for row in found], ["QmFixtureJoplin"])
+            self.assertTrue(found[0]["member"].endswith("QmFixtureJoplin.mxl"))
+
+
+class TestNoStdlibShadowing(unittest.TestCase):
+    """
+    `pdmx/select.py` must not shadow the standard library's `select`.
+
+    It did, and the failure was baffling: the package worked when its own test
+    file ran alone and broke under `unittest discover`, because whichever
+    module reached `sys.modules` first won. On a platform where `subprocess`
+    reaches for `selectors`, the other direction would break things that have
+    nothing to do with this package at all.
+
+    The fix is that only `tools/content` goes on `sys.path` and the package's
+    modules import each other by package name.
+    """
+
+    def test_the_standard_library_select_is_the_real_one(self) -> None:
+        import select as stdlib_select
+
+        self.assertFalse(
+            hasattr(stdlib_select, "GATES"),
+            "pdmx/select.py has shadowed the standard library's select module",
+        )
+
+    def test_the_package_does_not_put_its_own_directory_on_the_path(self) -> None:
+        pdmx_dir = str(TOOLS / "pdmx")
+        self.assertNotIn(pdmx_dir, sys.path)
+
+    def test_the_shortlist_module_is_reachable_by_package_name(self) -> None:
+        self.assertTrue(hasattr(select_mod, "GATES"))
+        self.assertTrue(hasattr(select_mod, "DEFAULT_QUOTAS"))

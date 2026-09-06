@@ -29,6 +29,52 @@ $env:PIANOPATH_PDMX_DIR = "C:\Users\yalir\repos\Piano Stuff"
 
 …or pass `--pdmx-dir "C:\Users\yalir\repos\Piano Stuff"` to each command.
 
+## 0. Index — browse the whole thing (about two and a half minutes)
+
+```powershell
+py -3.11 tools\content\pdmx\index.py --pdmx-dir "C:\Users\yalir\repos\Piano Stuff"
+start build\pdmx\index\index.html
+```
+
+Steps 1–5 below answer "which three hundred should I review next". This answers
+a different question: **what is in there at all, at my level, in the style I
+feel like today.** It applies the same gates and keeps *everything* that passes
+— 37,499 rows — writes one self-contained HTML page, and filters them in about
+30 ms as you type.
+
+Search title, artist or composer; filter by stage band, style, composition
+status and level range; hide anything with lyrics; show only what five or more
+people rated at 4+. Tick the rows you want and press **copy picked CIDs**, then:
+
+```powershell
+py -3.11 tools\content\pdmx\extract.py --cid <paste the CIDs here>
+py -3.11 tools\content\pdmx\quarry.py
+py -3.11 tools\content\pdmx\review.py
+```
+
+— which is steps 2 to 4 with your own shortlist instead of the quotas'.
+
+**The levels on that page are estimates from the CSV alone**, from a proxy
+fitted on the levels the quarry computed properly (leave-one-out Spearman 0.93,
+median error 0.46 stages). Good enough to sort a shelf; not good enough for the
+catalog, which is why anything you pick still goes through the same gates and
+the same review. Refit it whenever the quarry has levelled more files:
+
+```powershell
+py -3.11 tools\content\pdmx\index.py --fit
+```
+
+Two things the page will show you about the data, because they are true:
+
+- **`title garbled`** — the CSV mangled that title on the way in, and the damage
+  is lossy: each three-byte character was reduced to one. Use the MuseScore
+  link; it is the only place the real title still exists. This is also why
+  searching for a Japanese or Cyrillic title finds nothing.
+- **Junk at the low levels.** Metronome tracks, scale exercises, single chords,
+  files called `cmaj21x4745x…`. PDMX is what people uploaded, and a lot of what
+  people upload at the easy end is practice scraps. Nothing filters them out,
+  because a rule that did would throw away real beginner pieces too.
+
 ## 1. Select — about two minutes
 
 ```powershell

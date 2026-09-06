@@ -1,0 +1,24 @@
+{
+  "fitted": true,
+  "bias": 5.556739130434781,
+  "fields": [
+    "notes",
+    "notesPerBar",
+    "bars",
+    "complexity"
+  ],
+  "weights": {
+    "notes": 1.215062,
+    "notesPerBar": 0.486556,
+    "bars": -0.107603,
+    "complexity": 0.461866
+  },
+  "means": {
+    "notes": 6.04211,
+    "notesPerBar": 2.308612,
+    "bars": 3.886339,
+    "complexity": 0.758159
+  },
+  "fittedOn": 368,
+  "report": "368 sample(s): leave-one-out Spearman 0.929, median |error| 0.480, p90 1.110 stages"
+}

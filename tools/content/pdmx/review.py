@@ -28,9 +28,14 @@ from pathlib import Path
 
 import sys
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# `tools/content` on the path, not this directory. A module called
+# `select` sitting on `sys.path` shadows the standard library's — which
+# broke the test suite the first time it ran under discovery, and on a
+# platform where `subprocess` reaches for `selectors` it would break far
+# more than that. Importing through the package name cannot collide.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from paths import BUILD_DIR  # noqa: E402
+from pdmx.paths import BUILD_DIR  # noqa: E402
 
 DECISIONS = ("keep", "drop", "later")
 CSV_COLUMNS = ("cid", "decision", "level_override", "note")

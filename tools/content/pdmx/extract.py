@@ -30,9 +30,14 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# `tools/content` on the path, not this directory. A module called
+# `select` sitting on `sys.path` shadows the standard library's — which
+# broke the test suite the first time it ran under discovery, and on a
+# platform where `subprocess` reaches for `selectors` it would break far
+# more than that. Importing through the package name cannot collide.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from paths import BUILD_DIR, ArchiveMissing, fail, find_archive  # noqa: E402
+from pdmx.paths import BUILD_DIR, ArchiveMissing, fail, find_archive  # noqa: E402
 
 #: How often the progress line is rewritten while streaming. The tarball has
 #: 254,077 members and a silent twenty minutes looks like a hang.
@@ -134,6 +139,33 @@ def extract_from_dir(root: Path, wanted: dict[str, Path]) -> ExtractResult:
     )
 
 
+def named_candidates(cids: list[str], candidates: Path, index: Path) -> list[dict]:
+    """
+    Rows for a hand-picked set of CIDs.
+
+    Looked up in `candidates.json` first and the index second, because a CID
+    picked off the index page is usually one the quotas did *not* choose —
+    which is the whole point of browsing the archive rather than the shortlist.
+    Both files carry the `member` name, which is all the extractor needs.
+    """
+    known: dict[str, dict] = {}
+    for path, key in ((candidates, "candidates"), (index, "rows")):
+        if not path.is_file():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for row in data.get(key, []):
+            known.setdefault(row["cid"], row)
+    seen: set[str] = set()
+    out: list[dict] = []
+    for cid in cids:
+        cid = cid.strip()
+        row = known.get(cid)
+        if row and cid not in seen:
+            seen.add(cid)
+            out.append(row)
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pdmx-dir", default=None)
@@ -145,24 +177,62 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="also extract the ranked remainder, for a second pass without re-selecting",
     )
+    parser.add_argument(
+        "--cid",
+        nargs="+",
+        default=[],
+        help="extract these CIDs instead of the shortlist — what the index page's "
+             "‘copy picked CIDs’ button gives you",
+    )
+    parser.add_argument(
+        "--cids-file",
+        type=Path,
+        default=None,
+        help="a file of CIDs, one per line or whitespace-separated",
+    )
+    parser.add_argument(
+        "--index",
+        type=Path,
+        default=BUILD_DIR / "index" / "index.json",
+        help="where to look CIDs up when they are not in candidates.json",
+    )
     args = parser.parse_args(argv)
 
-    if not args.candidates.is_file():
-        fail(f"{args.candidates} does not exist. Run select.py first.")
-        return 2
+    wanted_cids = list(args.cid)
+    if args.cids_file:
+        if not args.cids_file.is_file():
+            fail(f"{args.cids_file} does not exist.")
+            return 2
+        wanted_cids += args.cids_file.read_text(encoding="utf-8").split()
+
     try:
         archive = find_archive(args.pdmx_dir)
     except ArchiveMissing as missing:
         fail(str(missing))
         return 2
 
-    data = json.loads(args.candidates.read_text(encoding="utf-8"))
-    candidates = [
-        c
-        for c in data["candidates"]
-        if (args.include_over_quota or not c.get("over_quota"))
-        and (not args.band or c["band"] in args.band)
-    ]
+    if wanted_cids:
+        candidates = named_candidates(wanted_cids, args.candidates, args.index)
+        if not candidates:
+            fail(
+                f"none of the {len(wanted_cids)} CID(s) are in {args.candidates.name} or "
+                f"{args.index.name}. Build the index first, or check what you pasted."
+            )
+            return 2
+        skipped = len(set(wanted_cids)) - len(candidates)
+        if skipped:
+            print(f"note: {skipped} CID(s) were not found and are skipped", file=sys.stderr)
+    else:
+        if not args.candidates.is_file():
+            fail(f"{args.candidates} does not exist. Run select.py first.")
+            return 2
+        data = json.loads(args.candidates.read_text(encoding="utf-8"))
+        candidates = [
+            c
+            for c in data["candidates"]
+            if (args.include_over_quota or not c.get("over_quota"))
+            and (not args.band or c["band"] in args.band)
+        ]
     args.out.mkdir(parents=True, exist_ok=True)
     wanted = {c["member"]: args.out / f"{c['cid']}.mxl" for c in candidates}
     # Already extracted is already extracted: a re-run after a crash should
