@@ -39,6 +39,7 @@ import argparse
 import os
 import shutil
 import sys
+from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -168,12 +169,34 @@ def hands_flags(items: list[dict], catalog: list[dict]) -> list[str]:
 
 
 def console_flags(items: list[dict]) -> list[str]:
-    """replan §7.2: whatever the browser complained about, per item."""
+    """
+    replan §7.2: whatever the browser complained about, per item.
+
+    Collapsed by message, because OSMD repeats itself: one score produced 62
+    copies of the same `SkyBottomLineCalculator` warning, one per measure, and
+    a report that prints all of them buries the one line that matters. The
+    count is kept — "×62" is itself information about how widespread it is.
+    """
     out: list[str] = []
     for item in items:
-        for line in item.get("consoleErrors") or []:
-            out.append(f"{item['id']}: {line}")
+        counts = Counter(item.get("consoleErrors") or [])
+        for line, times in counts.most_common():
+            out.append(f"{item['id']}: {line}" + (f" (×{times})" if times > 1 else ""))
     return out
+
+
+def console_summary(items: list[dict]) -> list[str]:
+    """The same warnings grouped by message rather than by item."""
+    counts: Counter[str] = Counter()
+    affected: dict[str, set[str]] = {}
+    for item in items:
+        for line in set(item.get("consoleErrors") or []):
+            affected.setdefault(line, set()).add(item["id"])
+        counts.update(item.get("consoleErrors") or [])
+    return [
+        f"{line} — {times} time(s) across {len(affected[line])} item(s)"
+        for line, times in counts.most_common()
+    ]
 
 
 def report_section(title: str, lines: list[str], stream=sys.stdout, limit: int = 20) -> None:
@@ -225,7 +248,8 @@ def main() -> None:
     report_section("cursor-step parity mismatches", parity, stream=sys.stderr)
     report_section("pace outside 0.5-12s per bar", pace_flags(items))
     report_section("hands disagree with the model", hands_flags(items, catalog))
-    report_section("browser console", console_flags(items))
+    report_section("browser console, by message", console_summary(items))
+    report_section("browser console, by item", console_flags(items))
 
     if args.apply and items:
         apply_durations(catalog_path, items)

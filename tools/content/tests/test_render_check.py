@@ -18,6 +18,7 @@ from common import write_json  # noqa: E402
 from render_check import (  # noqa: E402
     apply_durations,
     console_flags,
+    console_summary,
     hands_flags,
     pace_flags,
     parity_failures,
@@ -102,6 +103,21 @@ class TestConsole(unittest.TestCase):
 
     def test_a_quiet_item_says_nothing(self) -> None:
         self.assertEqual(console_flags([item()]), [])
+
+    def test_repeats_collapse_with_a_count(self) -> None:
+        # OSMD emits one SkyBottomLineCalculator warning per measure; printing
+        # 62 identical lines buries the one that matters.
+        flags = console_flags([item(consoleErrors=["warning: width not > 0"] * 3)])
+        self.assertEqual(flags, ["song.test.one: warning: width not > 0 (×3)"])
+
+    def test_the_summary_groups_by_message_across_items(self) -> None:
+        rows = [
+            item(id="song.a", consoleErrors=["warning: w"] * 2),
+            item(id="song.b", consoleErrors=["warning: w", "error: e"]),
+        ]
+        summary = console_summary(rows)
+        self.assertIn("warning: w — 3 time(s) across 2 item(s)", summary)
+        self.assertIn("error: e — 1 time(s) across 1 item(s)", summary)
 
 
 class TestApplyDurations(unittest.TestCase):

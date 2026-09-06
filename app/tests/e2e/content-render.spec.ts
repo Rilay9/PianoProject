@@ -68,6 +68,26 @@ const MANIFEST_FLUSH_EVERY = 20;
 const RENDER_TIMEOUT_MS = 60_000;
 /** Bumped when an entry's shape changes, so old manifests are ignored whole. */
 const MANIFEST_VERSION = 1;
+/**
+ * Distinct console messages kept per item.
+ *
+ * OSMD repeats itself once per measure — 5,654 lines across the library, every
+ * one of them the same `SkyBottomLineCalculator` warning. The manifest is
+ * restored from the CI cache on every run, so storing all of them costs a
+ * megabyte to say one thing. Distinct messages carry the information; the
+ * repetition does not.
+ */
+const CONSOLE_LINES_PER_ITEM = 8;
+
+/** Distinct messages, in first-seen order, capped. */
+function distinctConsole(lines: string[]): string[] {
+  const seen = [...new Set(lines)];
+  if (seen.length <= CONSOLE_LINES_PER_ITEM) return seen;
+  return [
+    ...seen.slice(0, CONSOLE_LINES_PER_ITEM),
+    `… and ${String(seen.length - CONSOLE_LINES_PER_ITEM)} more distinct message(s)`,
+  ];
+}
 
 interface CatalogItem {
   id: string;
@@ -237,14 +257,14 @@ test.describe('content render check', () => {
         // measurements could be recorded against another's id.
         const loadError = await page.evaluate(() => window.__pianopathDevScore?.lastError());
         if (loadError) {
-          entry = { ok: false, error: loadError, consoleErrors: [...consoleLines] };
+          entry = { ok: false, error: loadError, consoleErrors: distinctConsole(consoleLines) };
         } else {
           const summary = await page.evaluate(() => window.__pianopathDevScore?.modelSummary());
           if (!summary || summary.steps < 1) {
             entry = {
               ok: false,
               error: 'rendered but produced no steps',
-              consoleErrors: [...consoleLines],
+              consoleErrors: distinctConsole(consoleLines),
             };
           } else {
             // The renderer pre-renders into an off-screen buffer and swaps it
@@ -269,7 +289,7 @@ test.describe('content render check', () => {
               ...summary,
               cursorSteps,
               renderMs: Date.now() - startedAt,
-              consoleErrors: [...consoleLines],
+              consoleErrors: distinctConsole(consoleLines),
             };
           }
         }
@@ -277,7 +297,7 @@ test.describe('content render check', () => {
         entry = {
           ok: false,
           error: error instanceof Error ? error.message : String(error),
-          consoleErrors: [...consoleLines],
+          consoleErrors: distinctConsole(consoleLines),
         };
       }
 
