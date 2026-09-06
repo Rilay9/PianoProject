@@ -94,16 +94,21 @@ the phone, where the app can browse them and you can pull one in whenever you wa
 
 ```powershell
 py -3.11 tools\content\pdmx\extract.py --from-index --shard --out build\pdmx\library
-py -3.11 tools\content\pdmx\manifest.py
+py -3.11 tools\content\pdmx\manifest.py --zip
 ```
 
 The first unpacks the 37,261 songs the index does not flag as exercises — 237 MB, 27 seconds,
 sharded two characters deep so no directory holds forty thousand files. The second writes
-`library.json` beside them: title, composer, estimated level, bars and rating for every one,
-6 MB, which is what turns a folder of `Qm….mxl` into something you can read.
+`library.json` beside them — title, composer, estimated level, bars and rating for every one,
+6 MB, which is what turns a folder of `Qm….mxl` into something you can read — and then packs
+the lot into `build\pdmx\pianopath-library.zip`, 248 MB, in about seven seconds.
 
-Then copy `build\pdmx\library` to the phone — anywhere it can be reached by the file picker —
-and in the app: **Library → Browse a score folder**. Search it, filter by level or style, tap
+**Copy the zip, not the folder.** 37,261 files over a USB cable is hours; one file is minutes.
+Unzip it on the phone and you get a `pianopath-library` folder, which is the one to pick. (The
+`.mxl` files are stored rather than deflated inside the archive — they are already compressed
+zip containers, so squeezing them again would buy nothing and cost the whole run.)
+
+Then, in the app: **Library → Browse a score folder**. Search it, filter by level or style, tap
 **Add** on anything you like. Add is the ordinary import, so an added score is a catalog item
 like every other: levelled, in your sessions, in the backup, and working with the folder
 disconnected.

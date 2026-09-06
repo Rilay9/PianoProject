@@ -24,6 +24,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parents[1]
@@ -1045,6 +1046,42 @@ class TestFolderManifest(unittest.TestCase):
         self.assertEqual(written["kind"], "pianopath-score-folder")
         self.assertEqual(written["version"], self.manifest_mod.MANIFEST_VERSION)
         self.assertEqual(written["count"], len(written["scores"]))
+
+    def test_it_packs_the_folder_under_one_top_level_directory(self) -> None:
+        # A zip of loose entries unpacks into 619 shard directories wherever it
+        # was opened, and the app identifies a folder by its name.
+        out = self.tmp / "library.zip"
+        self.manifest_mod.main(
+            [
+                "--library", str(self.library),
+                "--index", str(self.index),
+                "--zip", str(out),
+                "--folder-name", "pianopath-library",
+            ]
+        )
+        with zipfile.ZipFile(out) as archive:
+            names = archive.namelist()
+            self.assertIsNone(archive.testzip())
+            self.assertEqual({name.split("/")[0] for name in names}, {"pianopath-library"})
+            self.assertIn("pianopath-library/library.json", names)
+            self.assertIn("pianopath-library/aa/Qmaa1.mxl", names)
+            manifest = json.loads(archive.read("pianopath-library/library.json"))
+            # Every row's path must resolve inside the archive, or the folder
+            # lists scores it cannot then add.
+            for row in manifest["scores"]:
+                self.assertIn(f"pianopath-library/{row[0]}", names)
+
+    def test_the_scores_are_stored_and_the_manifest_deflated(self) -> None:
+        # A .mxl is already a compressed zip container. Re-compressing 37,261
+        # of them costs the whole run and saves nothing.
+        out = self.tmp / "library.zip"
+        self.manifest_mod.main(
+            ["--library", str(self.library), "--index", str(self.index), "--zip", str(out)]
+        )
+        with zipfile.ZipFile(out) as archive:
+            by_name = {info.filename: info.compress_type for info in archive.infolist()}
+        self.assertEqual(by_name["pianopath-library/aa/Qmaa1.mxl"], zipfile.ZIP_STORED)
+        self.assertEqual(by_name["pianopath-library/library.json"], zipfile.ZIP_DEFLATED)
 
     def test_the_app_and_the_writer_agree_on_the_shape(self) -> None:
         # The reader is TypeScript and cannot be imported here, so what is

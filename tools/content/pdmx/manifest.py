@@ -41,6 +41,7 @@ if str(_HERE.parent) not in sys.path:
 
 import argparse  # noqa: E402
 import json  # noqa: E402
+import zipfile  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 
 from pdmx.extract import shard_of  # noqa: E402
@@ -128,11 +129,53 @@ def build(index: Path, library: Path) -> tuple[dict, int]:
     return manifest, absent
 
 
+def pack(library: Path, out: Path, folder: str) -> tuple[int, int]:
+    """
+    Zips the folder for the trip to the phone.
+
+    37,261 files over MTP is hours; one archive is minutes. Two details that
+    are not incidental:
+
+    - **Everything goes under one top-level folder.** An archive of loose
+      entries unpacks into 619 shard directories wherever it was opened, and
+      the app identifies a folder by its name.
+    - **The `.mxl` files are STORED, not deflated.** A `.mxl` is already a
+      compressed zip container; re-compressing it buys about nothing and costs
+      the whole run. `library.json` is 6 MB of JSON and does compress, so that
+      one is deflated. The result is 7 seconds instead of several minutes.
+    """
+    files = sorted(path for path in library.rglob("*") if path.is_file())
+    total = 0
+    with zipfile.ZipFile(out, "w", allowZip64=True) as archive:
+        for path in files:
+            how = zipfile.ZIP_DEFLATED if path.suffix == ".json" else zipfile.ZIP_STORED
+            archive.write(
+                path,
+                arcname=f"{folder}/{path.relative_to(library).as_posix()}",
+                compress_type=how,
+            )
+            total += path.stat().st_size
+    return len(files), total
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--library", type=Path, default=BUILD_DIR / "library")
     parser.add_argument("--index", type=Path, default=BUILD_DIR / "index" / "index.json")
     parser.add_argument("--out", type=Path, default=None, help="defaults to <library>/library.json")
+    parser.add_argument(
+        "--zip",
+        nargs="?",
+        type=Path,
+        const=BUILD_DIR / "pianopath-library.zip",
+        default=None,
+        help="also pack the folder into one archive for copying to the phone",
+    )
+    parser.add_argument(
+        "--folder-name",
+        default="pianopath-library",
+        help="the top-level folder inside the archive, which is what the app calls it",
+    )
     args = parser.parse_args(argv)
 
     if not args.index.is_file():
@@ -156,7 +199,19 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{manifest['count']} score(s) -> {out} ({out.stat().st_size / 1e6:.1f} MB)")
     if absent:
         print(f"note: {absent} indexed song(s) are not unpacked and are left out")
-    print("Copy the whole folder to the phone, then: Library -> Score folder -> pick it.")
+
+    if args.zip is None:
+        print("Copy the whole folder to the phone, then: Library -> Score folder -> pick it.")
+        return 0
+
+    args.zip.parent.mkdir(parents=True, exist_ok=True)
+    count, total = pack(args.library, args.zip, args.folder_name)
+    packed = args.zip.stat().st_size
+    print(f"{count} file(s), {total / 1e6:.0f} MB -> {args.zip} ({packed / 1e6:.0f} MB)")
+    print(
+        f"Copy that one file to the phone and unzip it. Then: Library -> Browse a score "
+        f"folder -> pick {args.folder_name}."
+    )
     return 0
 
 
