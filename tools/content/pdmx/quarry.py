@@ -38,12 +38,16 @@ import unicodedata
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-# `tools/content` on the path, not this directory. A module called
-# `select` sitting on `sys.path` shadows the standard library's — which
-# broke the test suite the first time it ran under discovery, and on a
-# platform where `subprocess` reaches for `selectors` it would break far
-# more than that. Importing through the package name cannot collide.
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+# `tools/content` on the path and this directory *off* it, before anything
+# else is imported. `select.py` next door has a standard library module's
+# name, and Python puts a script's own directory first on `sys.path` — from
+# which `socketserver` -> `selectors` -> `import select` finds the selector
+# and fails somewhere with nothing to do with PDMX. Removing the directory
+# fixes it for the whole process; importing as `pdmx.select` keeps working.
+_HERE = Path(__file__).resolve().parent
+sys.path[:] = [entry for entry in sys.path if entry and Path(entry).resolve() != _HERE]
+if str(_HERE.parent) not in sys.path:
+    sys.path.insert(0, str(_HERE.parent))
 
 from common import ContentBusy, content_lock  # noqa: E402
 from pdmx.paths import BUILD_DIR, REPO_ROOT  # noqa: E402

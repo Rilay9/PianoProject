@@ -30,12 +30,16 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-# `tools/content` on the path, not this directory. A module called
-# `select` sitting on `sys.path` shadows the standard library's — which
-# broke the test suite the first time it ran under discovery, and on a
-# platform where `subprocess` reaches for `selectors` it would break far
-# more than that. Importing through the package name cannot collide.
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+# `tools/content` on the path and this directory *off* it, before anything
+# else is imported. `select.py` next door has a standard library module's
+# name, and Python puts a script's own directory first on `sys.path` — from
+# which `socketserver` -> `selectors` -> `import select` finds the selector
+# and fails somewhere with nothing to do with PDMX. Removing the directory
+# fixes it for the whole process; importing as `pdmx.select` keeps working.
+_HERE = Path(__file__).resolve().parent
+sys.path[:] = [entry for entry in sys.path if entry and Path(entry).resolve() != _HERE]
+if str(_HERE.parent) not in sys.path:
+    sys.path.insert(0, str(_HERE.parent))
 
 from pdmx.paths import BUILD_DIR, ArchiveMissing, fail, find_archive  # noqa: E402
 
@@ -139,6 +143,36 @@ def extract_from_dir(root: Path, wanted: dict[str, Path]) -> ExtractResult:
     )
 
 
+def shard_of(cid: str) -> str:
+    """
+    Two characters of the CID, as a directory.
+
+    37,000 files in one folder is legal everywhere and pleasant nowhere: it
+    makes `ls` slow, Explorer slower, and every tool that globs the directory
+    read the whole thing. The archive shards for the same reason.
+    """
+    body = cid[2:] if cid.startswith("Qm") else cid
+    return (body[:2] or "00").lower()
+
+
+def target_for(out: Path, cid: str, shard: bool) -> Path:
+    return (out / shard_of(cid) / f"{cid}.mxl") if shard else (out / f"{cid}.mxl")
+
+
+def index_songs(index: Path) -> list[dict]:
+    """
+    Every indexed row that is a piece of music.
+
+    The rows flagged `notASong` are left in the archive: the generator already
+    writes scales and metronome tracks, and half a gigabyte is cheap but not so
+    cheap that it is worth spending on files nobody will ever open.
+    """
+    if not index.is_file():
+        return []
+    data = json.loads(index.read_text(encoding="utf-8"))
+    return [row for row in data.get("rows", []) if not row.get("notASong")]
+
+
 def named_candidates(cids: list[str], candidates: Path, index: Path) -> list[dict]:
     """
     Rows for a hand-picked set of CIDs.
@@ -196,6 +230,18 @@ def main(argv: list[str] | None = None) -> int:
         default=BUILD_DIR / "index" / "index.json",
         help="where to look CIDs up when they are not in candidates.json",
     )
+    parser.add_argument(
+        "--from-index",
+        action="store_true",
+        help="extract every song in the index — the whole local library, about "
+             "37,000 files and half a gigabyte. Rows flagged as exercises are skipped",
+    )
+    parser.add_argument(
+        "--shard",
+        action="store_true",
+        help="write into <out>/<aa>/<cid>.mxl rather than one flat directory; "
+             "sensible above a few thousand files",
+    )
     args = parser.parse_args(argv)
 
     wanted_cids = list(args.cid)
@@ -211,7 +257,12 @@ def main(argv: list[str] | None = None) -> int:
         fail(str(missing))
         return 2
 
-    if wanted_cids:
+    if args.from_index:
+        candidates = index_songs(args.index)
+        if not candidates:
+            fail(f"{args.index} has no songs in it. Run index.py first.")
+            return 2
+    elif wanted_cids:
         candidates = named_candidates(wanted_cids, args.candidates, args.index)
         if not candidates:
             fail(
@@ -234,7 +285,7 @@ def main(argv: list[str] | None = None) -> int:
             and (not args.band or c["band"] in args.band)
         ]
     args.out.mkdir(parents=True, exist_ok=True)
-    wanted = {c["member"]: args.out / f"{c['cid']}.mxl" for c in candidates}
+    wanted = {c["member"]: target_for(args.out, c["cid"], args.shard) for c in candidates}
     # Already extracted is already extracted: a re-run after a crash should
     # cost the members it still needs and nothing else.
     wanted = {member: path for member, path in wanted.items() if not path.is_file()}
