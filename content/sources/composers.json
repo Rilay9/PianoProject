@@ -1202,6 +1202,25 @@
         "kondo koji"
       ],
       "decoy": "living"
+    },
+    {
+      "canonical": "Linkin Park",
+      "born": 1996,
+      "died": 9999,
+      "aliases": [
+        "linkin park"
+      ],
+      "decoy": "a band, not a person; three of the rock module's named wants are theirs"
+    },
+    {
+      "canonical": "Avenged Sevenfold",
+      "born": 1999,
+      "died": 9999,
+      "aliases": [
+        "avenged sevenfold",
+        "a7x"
+      ],
+      "decoy": "a band; four of the rock module's named wants are theirs"
     }
   ]
 }

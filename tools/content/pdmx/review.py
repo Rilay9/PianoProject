@@ -124,6 +124,12 @@ def write_sheet(rows: list[dict], path: Path) -> None:
     Re-running review.py after growing the composer table and re-quarrying a
     band must not throw away the decisions already made — that is most of the
     work, and losing it would make anyone reluctant to re-run.
+
+    The `note` column is pre-filled with what the machine noticed — a duplicate,
+    a defaulted tempo, a single line, a level that came from the fallback table
+    — and nothing else. Those are facts, not opinions: pre-filling a *decision*
+    would defeat the one rule this whole design rests on, which is that nothing
+    is bundled that a person has not looked at.
     """
     existing: dict[str, dict[str, str]] = {}
     if path.is_file():
@@ -135,12 +141,13 @@ def write_sheet(rows: list[dict], path: Path) -> None:
         writer.writeheader()
         for row in rows:
             was = existing.get(row["cid"], {})
+            flags = "; ".join(flags_for(row))
             writer.writerow(
                 {
                     "cid": row["cid"],
                     "decision": was.get("decision", ""),
                     "level_override": was.get("level_override", ""),
-                    "note": was.get("note", ""),
+                    "note": was.get("note") or flags,
                 }
             )
 

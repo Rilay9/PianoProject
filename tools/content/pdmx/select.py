@@ -251,6 +251,8 @@ class Candidate:
     composer: str | None
     composition_status: str
     composition_reason: str
+    #: Which CSV column the status was decided from.
+    composition_from: str
     traditional: bool
     year_conflict: str | None
     musescore_id: str | None
@@ -413,14 +415,28 @@ def select(
             if failure:
                 continue
 
+            title = (row.get("title") or row.get("song_name") or "").strip()
+            artist = (row.get("artist_name") or "").strip()
+
             match = table.match(row.get("composer_name", ""))
+            label_from = "composer_name"
+            if not match.matched and artist:
+                # `composer_name` is `NA` for 59 of the 306 rows this run chose,
+                # and every one of them has an `artist_name`. On a pop or film
+                # row the artist *is* the composition's author as far as the
+                # licence question goes, so it is worth asking — and the field
+                # the answer came from is recorded, because "Linkin Park" is a
+                # band and not a person.
+                from_artist = table.match(artist)
+                if from_artist.matched:
+                    match = from_artist
+                    label_from = "artist_name"
             if not match.matched:
                 raw = (row.get("composer_name") or "").strip()
                 if raw and raw.upper() != "NA":
                     rejections.unmatched_composers[raw] += 1
-
-            title = (row.get("title") or row.get("song_name") or "").strip()
-            artist = (row.get("artist_name") or "").strip()
+                elif artist and artist.upper() != "NA":
+                    rejections.unmatched_composers[f"(artist) {artist}"] += 1
             lyrics = truthy(row.get("has_lyrics"))
             official = truthy(row.get("is_official"))
             rating = number(row.get("rating"))
@@ -440,6 +456,7 @@ def select(
                     composer=match.canonical,
                     composition_status=match.status,
                     composition_reason=match.reason,
+                    composition_from=label_from,
                     traditional=match.traditional,
                     year_conflict=match.year_conflict,
                     musescore_id=musescore_id(row.get("metadata", "")),

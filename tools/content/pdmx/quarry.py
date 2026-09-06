@@ -46,6 +46,13 @@ from paths import BUILD_DIR, REPO_ROOT  # noqa: E402
 APP_DIR = REPO_ROOT / "app"
 RENDER_SPEC = "tests/e2e/content-render.spec.ts"
 
+#: Gates whose verdict is a property of the file, so it can be carried over.
+#:
+#: `render` is not one of them: it depends on the browser and on the app build,
+#: both of which change between runs, and reusing a render failure would make a
+#: fixed renderer look like broken content for ever.
+FINAL_GATES = frozenset({"convert", "round-trip", "structure", "truncation", "extract"})
+
 #: Structure gate bounds (replan §2.3 item 3).
 MIN_BARS = 8
 MIN_TEMPO, MAX_TEMPO = 30, 220
@@ -180,6 +187,17 @@ def structure_failure(score, result) -> tuple[str | None, dict]:  # noqa: ANN001
 # --- gate 5: render -----------------------------------------------------------
 
 
+#: Where the candidates are staged so the browser can fetch them.
+#:
+#: The spec loads each item from `/PianoProject/content/<file>` — a URL, not a
+#: path — so a file outside the served content root is simply not reachable and
+#: every item comes back "Could not retrieve requested URL 0". Pointing
+#: `CONTENT_DIR` at `build/pdmx/converted` is enough for the on-disk hashing
+#: and not enough for the fetch, which is exactly the mistake the first real
+#: run made. Staged under the served root instead, and removed afterwards.
+STAGING = "scores/pdmx-quarry"
+
+
 def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> dict[str, dict]:
     """
     Runs the app's own render spec over the converted files.
@@ -190,11 +208,22 @@ def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> d
     console capture — is the same code the content build runs, which is the
     only way this gate means what it says.
     """
+    content_dir = APP_DIR / "public" / "content"
+    staging = content_dir / STAGING
+    if staging.exists():
+        shutil.rmtree(staging)
+    staging.mkdir(parents=True)
+    for row in rows:
+        shutil.copyfile(converted_dir / f"{row.cid}.mxl", staging / f"{row.cid}.mxl")
+
     items_path = out_dir / "render-items.json"
     report_path = out_dir / "render-report.json"
     items_path.write_text(
         json.dumps(
-            [{"id": row.cid, "title": row.title or row.cid, "file": f"{row.cid}.mxl"} for row in rows],
+            [
+                {"id": row.cid, "title": row.title or row.cid, "file": f"{STAGING}/{row.cid}.mxl"}
+                for row in rows
+            ],
             indent=2,
         ),
         encoding="utf-8",
@@ -204,7 +233,7 @@ def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> d
         {
             "CONTENT_RENDER_CHECK": "1",
             "CONTENT_ITEMS_JSON": str(items_path.resolve()),
-            "CONTENT_DIR": str(converted_dir.resolve()),
+            "CONTENT_DIR": str(content_dir.resolve()),
             "CONTENT_RENDER_REPORT": str(report_path.resolve()),
             "CONTENT_PREVIEW_DIR": str((out_dir / "previews").resolve()),
             "CONTENT_RENDER_MANIFEST": str((out_dir / "render-manifest.json").resolve()),
@@ -213,12 +242,18 @@ def render_batch(rows: list[QuarryRow], converted_dir: Path, out_dir: Path) -> d
         }
     )
     npx = shutil.which("npx") or "npx"
-    subprocess.run(
-        [npx, "playwright", "test", RENDER_SPEC, "--reporter=list"],
-        cwd=APP_DIR,
-        env=environment,
-        check=False,
-    )
+    try:
+        subprocess.run(
+            [npx, "playwright", "test", RENDER_SPEC, "--reporter=list"],
+            cwd=APP_DIR,
+            env=environment,
+            check=False,
+        )
+    finally:
+        # Left behind, these would be precached into the app and shipped —
+        # files nobody has reviewed, in a directory nothing else knows about.
+        shutil.rmtree(staging, ignore_errors=True)
+
     if not report_path.is_file():
         return {}
     report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -299,14 +334,24 @@ def quarry(
         row.raw_sha256 = sha256(raw)
 
         was = earlier.get(cid)
-        if (
-            was
-            and was.get("raw_sha256") == row.raw_sha256
-            and (not was.get("converted") or (out_dir / was["converted"]).is_file())
-        ):
-            rows.append(QuarryRow(**was))
-            reused += 1
-            continue
+        if was and was.get("raw_sha256") == row.raw_sha256:
+            previous = QuarryRow(**was)
+            if previous.gate in FINAL_GATES:
+                # Rejected by something about the file itself. Settled.
+                rows.append(previous)
+                reused += 1
+                continue
+            if previous.converted and (out_dir / previous.converted).is_file():
+                # Converted, round-tripped, structured and scanned already —
+                # which is the minutes of music21 — and only the browser's
+                # verdict is in question. Keep the work, redo the render.
+                previous.ok = False
+                previous.gate = ""
+                previous.reason = ""
+                rows.append(previous)
+                passed_to_render.append(previous)
+                reused += 1
+                continue
 
         # 1 — parse and normalise.
         destination = converted_dir / f"{cid}.mxl"
