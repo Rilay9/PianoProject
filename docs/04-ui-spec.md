@@ -400,7 +400,7 @@ item count); **offline only** [off] (stops the app checking for updates at all �
 storage used, with a breakdown by scores / audio / lessons / your imports; reset progress
 (double confirm).
 
-### 7c. What §7 actually ships (as of P7, 2026-09-06)
+### 7c. What §7 actually ships (as of P18, 2026-09-06)
 
 The list above is the target. This is the state, so nobody has to read the code to find out:
 
@@ -415,7 +415,7 @@ set it.
 
 | Setting | Status |
 |---|---|
-| strict prerequisites | Nothing enforces prerequisites anywhere yet, so the toggle would be a lie. Needs the advisory-lock UI on lesson options first (`00` D17 says prerequisites are advisory by default, so this is opt-in strictness with no default behaviour behind it). |
+| strict prerequisites | **Built (P18)**, off by default. On, a rung whose prerequisites are unfinished shows a badge and a one-line reason naming what would unlock it, `nextRecommended` prefers a rung he can start, and the option cards open behind a confirmation. **Never a disabled card**: `00` D17 promises that moving on is always one tap, and a disabled card tells the learner no and gives him nothing to do about it. "I already know this" on the prerequisite unlocks it. |
 | auto-advance to next window lead | The renderer's rule is fixed; making it a setting is engine work, not a control. |
 | **daily goal minutes** | **Deliberately dropped.** It contradicts the weekly-minutes decision this spec makes twice over (§2 "no daily-streak guilt", `02` Part A §8 "goals are weekly minutes"). Treat the line in §7 as a leftover; the weekly goal is on Progress. |
 | left-handed layout | Mirroring the score screen's chrome; low value for one right-handed owner, not free to build. |
@@ -423,6 +423,10 @@ set it.
 | language · note naming | One user, English, letter names (`00` A7). A localisation table with one locale in it is not a setting. |
 | show US-only PD items | **Built** (P7) — nine bundled items are US-only (`00` A4). |
 | require 2 songs per lesson | **Built** (P7) — honoured by `lessonComplete`, and never applied to a `songOptional` unit. |
+
+**Built since, in P18** (`docs/decisions/2026-09-06-p18-carry-overs.md`): the mic's amber
+state (§5), named sections and their loop picker (§5), drag-to-reorder tracks (§3), the chord
+chart's bass-and-drums loop (§3b), and the tablet side panel with its four-bar default (§7a).
 
 ## 7b. Diagnostics
 
@@ -449,11 +453,17 @@ Breakpoint ≥ 900 CSS px shortest side: bars-per-window default 4; a side panel
 shows the lesson text, the chord chart, or the keyboard strip enlarged; Plan/Library become
 two-column. Everything else identical.
 
-**Ships as of P7:** the two-column breakpoint, with an e2e test at 1024×1000 that checks it and
-one at 412×915 that checks the phone stays one column and never scrolls sideways. The
-bars-per-window default and the side panel are **not built** — both are score-screen work
-rather than CSS, and the owner has a phone, not a tablet (`00` A5: this exists so it works *if*
-a tablet ever appears).
+**Ships as of P18:** all of it. The two-column breakpoint (P7), and now the bars-per-window
+default of 4 and a collapsible side panel on the Score screen carrying the lesson text of the
+rung the piece belongs to.
+
+Two details worth stating. The test is on the **shortest side**, both dimensions: a phone in
+landscape is 915 × 412 and would pass a width-only check while having 412 px of height to put a
+panel in. And the four-bar default never overrides a number the owner has set — it is a default
+for a screen with room for it, not an opinion about what he wants.
+
+E2E at 1024×1000 for the panel and the default, and at 412×915 for the phone, which gets
+neither.
 
 ## 8. Empty/edge states
 

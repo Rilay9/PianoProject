@@ -1832,3 +1832,49 @@ body {
   touch-action: none;
   user-select: none;
 }
+
+/* --- Tablet side panel (docs/04 §7a, P18) ------------------------------- */
+
+/* Only on a tablet: the panel is built only when `isTablet()` is true, and
+   this keeps it out of the way if it ever is not. */
+.score-side {
+  display: none;
+}
+
+@media (min-width: 900px) and (min-height: 900px) {
+  .score-screen[data-tablet='true'] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-rows: 1fr auto auto;
+    column-gap: 12px;
+  }
+
+  .score-screen[data-tablet='true'] .score-stage {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  /* Spans the full height beside the score, so the reading is beside the
+     playing rather than under it. */
+  .score-side {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    overflow-y: auto;
+    padding: 8px 12px;
+    border-left: 1px solid var(--border);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .score-side summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 4px 0;
+  }
+
+  .score-screen[data-tablet='true'] .score-status,
+  .score-screen[data-tablet='true'] .score-bar {
+    grid-column: 1 / -1;
+  }
+}

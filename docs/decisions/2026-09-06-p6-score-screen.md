@@ -65,6 +65,12 @@ agree, and a click that starts half a bar late is worse than a restart.
 
 ## Not built here
 
+**All three were built in P18** (`docs/decisions/2026-09-06-p18-carry-overs.md`): the amber
+state is a fourth `NoteState` and now also paints the keyboard strip, which showed no
+judgements at all before; 60 named sections across 22 pieces at Stages 1–5 feed a section
+picker on the loop control; and the tablet side panel arrived with the bars-per-window default.
+The original entries follow, unchanged.
+
 - The mic **amber** colour for an uncertain note: `ScoreSession` deliberately does not paint
   uncertain judgements at all rather than painting them red, which is the safe half of
   `05` §11.1. A third `NoteState` is a `WindowRenderer` change and belongs with the CSS for it.

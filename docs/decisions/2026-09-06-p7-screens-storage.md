@@ -162,6 +162,11 @@ or multi-user, both hooks should go behind a build flag.
 
 ## What is not done
 
+**Two of these were done in P18** (`docs/decisions/2026-09-06-p18-carry-overs.md`):
+drag-to-reorder is a pointer-event drag with move buttons as the fallback, and the chord
+chart's loop gained bass and drums. The share intent still needs a real phone, and Quick check
+is unchanged. The original entries follow.
+
 - The Android **share-target intent and file handler** are declared and implemented but have
   only been tested through the cache-draining code path, not a real intent (see §5).
 - The **chord chart's backing loop** is the metronome plus a block-chord comp on each bar. A

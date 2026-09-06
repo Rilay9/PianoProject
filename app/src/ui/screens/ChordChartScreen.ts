@@ -19,6 +19,7 @@ import { getMidiSettings } from '../../data/midiSettings';
 import { getSettings } from '../../data/settingsStore';
 import { audioEngine, getPiano, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
+import { DrumKit, barSchedule } from '../../audio/backingLoop';
 import { toMusicXml } from '../../score/mxl';
 import { chartBars, chordMatch, parseHarmony, type ChordSymbol } from '../../score/harmony';
 import { onScreenDispose } from '../screenLifecycle';
@@ -44,7 +45,10 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   let bpm = 100;
   let swing = false;
   let comping = false;
+  /** Bass and drums under the comp (`04` §3b, P18). */
+  let backing = false;
   let metronome: Metronome | null = null;
+  let kit: DrumKit | null = null;
   let running = false;
   const held = new Set<number>();
   let disposed = false;
@@ -102,11 +106,32 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     const symbol = bars[bar];
     if (!symbol) return;
     // A plain block voicing in the middle of the keyboard: enough to hear the
-    // harmony, quiet enough to play over. This is the "optional backing loop".
+    // harmony, quiet enough to play over.
     const midis = symbol.pitchClasses.map((pitchClass) => 48 + pitchClass);
     void getPiano().then((piano) => {
       if (!disposed) piano.playChord(midis, (60 / bpm) * 3);
     });
+    scheduleBacking(symbol.pitchClasses);
+  }
+
+  /**
+   * The bar's bass and drums, scheduled on the audio clock (`04` §3b).
+   *
+   * Scheduled from the beat callback rather than being its own loop: the
+   * metronome already owns the clock, and a second scheduler would drift
+   * against it — which on a backing track is the one fault nobody can play
+   * through.
+   */
+  function scheduleBacking(pitchClasses: readonly number[]): void {
+    const context = audioEngine.contextOrNull;
+    if (!backing || !kit || !context) return;
+    const secondsPerBeat = 60 / bpm;
+    // A hair ahead, so the first event of the bar is scheduled rather than
+    // being already in the past by the time this runs.
+    const barStart = context.currentTime + 0.02;
+    for (const event of barSchedule({ pitchClasses, beatsPerBar: 4, swing })) {
+      kit.play(event, barStart + event.atBeat * secondsPerBeat);
+    }
   }
 
   async function start(): Promise<void> {
@@ -120,6 +145,10 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     metronome.setVolume(getMidiSettings().metronomeVolume);
     metronome.setSound(getSettings().metronomeSound);
     metronome.onTick(onBeat);
+    // Under the metronome's own volume setting: the loop is accompaniment,
+    // and accompaniment that drowns the piano is worse than none.
+    kit ??= new DrumKit(context, audioEngine.masterGain ?? undefined);
+    kit.setVolume(getMidiSettings().metronomeVolume);
     metronome.start();
     running = true;
     bar = 0;
@@ -131,6 +160,11 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
 
   function stop(): void {
     metronome?.stop();
+    // Scheduled drum hits outlive the transport otherwise: everything is
+    // queued a bar ahead on the audio clock, so leaving the screen with the
+    // loop running would keep playing into whatever came next.
+    kit?.dispose();
+    kit = null;
     running = false;
     section.dataset.running = 'false';
   }
@@ -172,6 +206,21 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     },
   });
 
+  const backingChip = chip('Bass + drums', {
+    id: 'chart-backing',
+    onClick: () => {
+      backing = !backing;
+      backingChip.setAttribute('aria-pressed', String(backing));
+      section.dataset.backing = String(backing);
+      // The chord is what the bass follows, so the comp has to be running for
+      // the loop to know what to play.
+      if (backing && !comping) {
+        comping = true;
+        compChip.setAttribute('aria-pressed', 'true');
+      }
+    },
+  });
+
   controls.append(
     button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' }),
     button('Stop', stop, { id: 'chart-stop' }),
@@ -179,6 +228,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     bpmInput,
     swingChip,
     compChip,
+    backingChip,
   );
 
   // --- input --------------------------------------------------------------

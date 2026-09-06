@@ -446,3 +446,22 @@ a pass in your name. Nobody can test whether that is a question you will answer
 truthfully at eleven at night having half-learned a Czerny study. If you find
 yourself tapping Clean to make the rung go green, say so — the fix is probably
 to stop letting it complete a rung at all, not to change the wording.
+
+**And two from P18.**
+
+*The amber note colour.* When the microphone is not confident, a note now turns
+amber rather than staying uncoloured — "this may be wrong, or I may not have
+heard it". It never counts against your score. What nobody here could check is
+whether it fires at the right moments in a real room with the HP-130: too often
+and it is noise, never and the feature is pointless. Play something you know
+well with the mic as the input and see whether the amber notes are the ones you
+actually fluffed. The keys carry a `?` as well as the colour, so tell me if the
+mark is more useful than the hue or the other way round.
+
+*The chord chart's bass and drums.* There is a **Bass + drums** chip beside
+Comp. Root and fifth on beats 1 and 3, kick on 1 and 3, snare on the backbeat,
+hat on every off-beat and swung when Swing is on. The pattern is right; whether
+it *feels* like something to play against is not something a test can tell you.
+Put it on at a tempo you would actually jam at and see whether you can sit in
+with it or whether it fights you. If the hat is too loud or the bass too quiet,
+those are two numbers in `app/src/audio/backingLoop.ts`.

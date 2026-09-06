@@ -12,13 +12,20 @@
 import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
-import { findItem, contentUrl } from '../../curriculum/load';
+import { findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
+import { parseFrontMatter, renderMarkdown } from '../markdown';
+import { barsPerWindowFor, isTablet } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
 import type { CatalogItem } from '../../curriculum/types';
 import { getMidiSettings } from '../../data/midiSettings';
-import { getSettings, updateSettings, type FollowInput } from '../../data/settingsStore';
+import {
+  DEFAULT_SETTINGS,
+  getSettings,
+  updateSettings,
+  type FollowInput,
+} from '../../data/settingsStore';
 import { evaluateOutcome } from '../../engine/Scoring';
 import { recordRun } from '../../data/progressStore';
 import type { Mode, SessionScore } from '../../engine/types';
@@ -124,6 +131,18 @@ export function ScoreScreen(router: Router): HTMLElement {
   const unsubscribers: (() => void)[] = [];
 
   // --- chrome --------------------------------------------------------------
+  // docs/04 §7a: a tablet gets four bars in the window by default and a side
+  // panel. The phone is untouched — `isTablet` wants 900 px on the *shortest*
+  // side, so a phone in landscape does not qualify.
+  const tablet = isTablet();
+  if (tablet) {
+    section.dataset.tablet = 'true';
+    settings.barsPerWindow = barsPerWindowFor(settings.barsPerWindow, {
+      tablet: true,
+      storedIsDefault: settings.barsPerWindow === DEFAULT_SETTINGS.barsPerWindow,
+    });
+  }
+
   const stage = document.createElement('div');
   stage.className = 'score-stage';
   stage.id = 'score-stage';
@@ -137,6 +156,32 @@ export function ScoreScreen(router: Router): HTMLElement {
     section.dataset.blind = 'true';
   }
   section.appendChild(stage);
+
+  /**
+   * The tablet side panel (`04` §7a).
+   *
+   * A `<details>` rather than a bespoke drawer: it collapses, it remembers
+   * nothing, and it is keyboard- and screen-reader-operable without a line of
+   * code. What goes in it is the lesson text — the thing you would otherwise
+   * have to leave the score to read.
+   *
+   * Only built on a tablet. On a phone it would be a panel with nowhere to go.
+   */
+  const sidePanel = document.createElement('details');
+  sidePanel.className = 'score-side';
+  sidePanel.id = 'score-side';
+  sidePanel.open = true;
+  if (tablet) {
+    const summary = document.createElement('summary');
+    summary.textContent = 'Lesson notes';
+    summary.id = 'score-side-summary';
+    sidePanel.appendChild(summary);
+    const body = document.createElement('div');
+    body.className = 'score-side__body';
+    body.id = 'score-side-body';
+    sidePanel.appendChild(body);
+    section.appendChild(sidePanel);
+  }
 
   const status = document.createElement('p');
   status.className = 'score-status';
@@ -580,6 +625,48 @@ export function ScoreScreen(router: Router): HTMLElement {
     render();
   });
 
+  /**
+   * Fills the side panel with the lesson text this piece belongs to.
+   *
+   * The first lesson that lists the piece as an option — a piece is usually an
+   * option of one rung, and where it is an option of several the first is the
+   * one the ladder reaches first. Failure is silent and leaves the panel out:
+   * a score screen must open with or without its prose.
+   */
+  async function fillSidePanel(target: CatalogItem): Promise<void> {
+    const body = document.getElementById('score-side-body');
+    if (!body) return;
+    try {
+      const curriculum = await loadCurriculum();
+      let found: { id: string; title: string; textFile: string } | null = null;
+      for (const stage of curriculum.stages) {
+        for (const unit of stage.units) {
+          for (const lesson of unit.lessons) {
+            if (found) break;
+            if (
+              lesson.songOptions.includes(target.id) ||
+              lesson.exerciseOptions.includes(target.id)
+            ) {
+              found = { id: lesson.id, title: lesson.title, textFile: lesson.textFile };
+            }
+          }
+        }
+      }
+      if (!found) {
+        sidePanel.hidden = true;
+        return;
+      }
+      const summary = document.getElementById('score-side-summary');
+      if (summary) summary.textContent = `${found.id} · ${found.title}`;
+      const response = await fetch(contentUrl(found.textFile));
+      if (!response.ok) throw new Error(String(response.status));
+      const { body: markdown } = parseFrontMatter(await response.text());
+      body.replaceChildren(renderMarkdown(markdown));
+    } catch {
+      sidePanel.hidden = true;
+    }
+  }
+
   function measureAt(target: EventTarget | null): number | null {
     if (!(target instanceof Element)) return null;
     const holder = target.closest('[data-measure]');
@@ -809,6 +896,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         status.textContent = `Unknown item “${itemId}”.`;
         return;
       }
+      if (tablet) void fillSidePanel(item);
       sections = item.teaching?.sections ?? [];
       if (sections.length > 0) {
         sectionSelect.replaceChildren();

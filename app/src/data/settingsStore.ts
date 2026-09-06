@@ -154,6 +154,7 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   out.passAccuracyPct = Math.round(num(v.passAccuracyPct, out.passAccuracyPct, 50, 100));
   out.passTempoPct = Math.round(num(v.passTempoPct, out.passTempoPct, 30, 130));
   out.requireTwoSongs = bool(v.requireTwoSongs, out.requireTwoSongs);
+  out.strictPrerequisites = bool(v.strictPrerequisites, out.strictPrerequisites);
   out.weekdaySessionMinutes = Math.round(num(v.weekdaySessionMinutes, out.weekdaySessionMinutes, 15, 120));
   out.weekendSessionMinutes = Math.round(num(v.weekendSessionMinutes, out.weekendSessionMinutes, 15, 120));
 
