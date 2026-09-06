@@ -50,6 +50,19 @@ Runs in the container. Needs no PDMX.
    options so each has ≥ 5.
 6. **Validate:** orphans are errors (if P12a did not already); the estimated-per-stage and
    exercises-per-level lines are printed; no lesson thin.
+7. **Two carry-overs from the P8 decision note, because the drills built here need them:**
+   - **A count-in and a metronome for the rhythm drill.** `RhythmDrill` currently starts its
+     clock when the card appears, so the learner has to guess the downbeat. Give the drill
+     screen a one-bar count-in on the shared `audio/Metronome`, start the drill's clock on
+     the first real beat, and keep the click running through the pattern. The drill's clock
+     and the metronome's must be the same clock (`AudioContext` time mapped to the injected
+     `Clock`); unit test that a tap exactly on click *n* scores an offset of 0 ms.
+   - **Drills listen to the microphone.** The drill screen subscribes to `webMidiSource` and
+     the screen keys only; `MicSource` implements the same `InputSource` and is ignored.
+     Subscribe to it when the follow-input priority selects it, publish the current prompt's
+     `expected` pitches as the mic's expectations, and treat a mic answer at confidence
+     ≥ 0.5 as a strike. The ear drills mute their own playback while the mic is live
+     (`05` §11.4). E2E with the fake-`getUserMedia` fixture from P3b driving a chord drill.
 
 ## Acceptance
 

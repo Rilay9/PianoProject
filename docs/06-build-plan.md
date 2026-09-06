@@ -185,6 +185,7 @@ the bottom of the ladder. The replan and every ruling behind the phases below is
 | P15 — finders on every rung and concept; the two-tap import | `prompts/P15-finder-and-import.md` | no | container |
 | P16 — the shelf: books, paper practice, blind mode | `prompts/P16-shelf-and-paper.md` | no | container |
 | P17 — drill tips, coaching rules, the practice-method module | `prompts/P17-drill-tips-and-practice.md` | no | container |
+| P18 — carry-overs from P6–P8: named loop sections, the mic's amber state, drag-to-reorder tracks, the chord chart's backing loop, strict prerequisites, the tablet side panel | `prompts/P18-carry-overs.md` | no | container, any time |
 
 **Order.** P11 first — everything after it ships content through the checks P11 fixes. Then
 P12a, P12b and P13 in any order (they touch different files; P13 is the natural one to run
@@ -192,8 +193,9 @@ while the owner is not available). P14 needs P13 merged and the archive on disk;
 only phase that must run on the owner's Windows machine (Python 3.11, Node 24, the pipeline
 requirements and Playwright Chromium are installed there; CI pins Node 22 and the difference
 is harmless). P15 needs nothing from P14 but is better after it, because the finders' "wanted"
-lists come from what the quarry could not find. P16 builds on P15's overlay. P17 is
-independent and can fill any gap. Each is sized to one session; if one is not, split it at
+lists come from what the quarry could not find. P16 builds on P15's overlay. P17 and P18 are
+independent and can fill any gap; P12b also carries two P8 leftovers (a count-in for the
+rhythm drill, drills listening to the microphone) because the drills it adds need them. Each is sized to one session; if one is not, split it at
 the numbered item and record the split in its decision note, as P7 should have.
 
 **What each phase must arrive with** (from the replan §7): its `validate.py` rule, its unit
