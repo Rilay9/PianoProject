@@ -356,10 +356,28 @@ criteria. Schema at `content/curriculum.schema.json`.
   budget in §6, with 736 precached scores. Adding 208 scores — Chopin preludes, mazurkas,
   nocturnes, waltzes, études, ballades and scherzos, and 47 Joplin rags — cost about 3 MB. Scores really
   are tiny; the soundfont still dominates and there is room for several more phases.
-- **What did grow awkwardly is the build.** The content build now takes about seven minutes
-  and the render check about ten, most of it music21 converting 230 Humdrum files and OSMD
-  engraving them. CI runs both. If it becomes a problem the fix is caching the converted
-  `.mxl` files by source checksum, not dropping the check.
+- **The build grew awkwardly, and P11 fixed the half of it that was conversion.** That fix
+  was the one predicted here — cache the converted `.mxl` files by source checksum — and it
+  is in `build/cache/convert/`, keyed on the source bytes, a digest of `convert.py` +
+  `abc_tools.py`, the music21 version and the conversion options (`docs/03` §3a). The render
+  check gained the equivalent: `build/render-manifest.json`, keyed on each output file's
+  sha256, so only unseen files are engraved. Both are restored in CI by `actions/cache`, and
+  `.github/workflows/render-full.yml` re-renders everything weekly so a renderer upgrade
+  cannot hide behind the manifest.
+
+  **Measured on one Windows laptop, `build.py --offline`, 790 catalog items:** a cold build
+  with an empty cache is **27 min**; a warm one is **5 min**, with 169 of 169 `[KERN]`
+  conversions and 32 of 32 `[AUTH]` conversions served from the cache. Neither number is CI's
+  — CI's runner is faster and starts from a restored cache — but the *ratio* is the point.
+
+  Prerequisite, and worth knowing: **a conversion is now byte-reproducible.** music21 mints
+  part ids from object identity and zips with the wall clock, so the same music used to
+  produce a different sha256 every run and on every machine — which would have made a
+  manifest keyed on that sha256 useless. `write_mxl` pins both.
+
+  **What is left is the generator.** `generate_exercises.py` builds 426 exercises with
+  music21 on every run and nothing caches that, so it is now most of a no-change build.
+  Making it incremental is the next worthwhile move and is out of P11's scope.
 - **The globs are the failure point, twice over now.** Workbox skips what a glob misses and
   what exceeds the size limit, and it says nothing either way. `maximumFileSizeToCacheInBytes`
   was raised for the soundfont in P5b; in P7 `.mjs` had to be added because `pdfjs-dist` ships
