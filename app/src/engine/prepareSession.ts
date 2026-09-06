@@ -60,6 +60,37 @@ export function loopFromMeasures(
 }
 
 /**
+ * A loop from **printed** bar numbers, 1-based (docs/04 §5, P18).
+ *
+ * A named section says "bars 17 to 32", meaning what is engraved on the page.
+ * `loopFromMeasures` works in the model's unrolled index, where a piece with a
+ * repeat has twice as many bars as the page shows — so a section fed to it
+ * would loop the wrong music the moment a repeat existed.
+ *
+ * On a repeated section this loops the *first* pass, which is the predictable
+ * reading: the player asked for bars 17-32 and gets bars 17-32.
+ */
+export function loopFromPrintedBars(
+  model: ScoreModel,
+  fromBar: number,
+  toBar: number,
+): { fromStep: number; toStep: number } | undefined {
+  const first = model.steps.find((step) => step.sourceMeasureIndex === fromBar - 1);
+  if (!first) return undefined;
+  let last: ScoreStep | undefined;
+  for (const step of model.steps) {
+    if (step.index < first.index) continue;
+    // Stop at the first step past the section rather than taking the last one
+    // anywhere in the piece: on a repeat the same printed bar occurs twice,
+    // and the second occurrence is a different pass.
+    if (step.sourceMeasureIndex > toBar - 1) break;
+    last = step;
+  }
+  if (!last || last.index < first.index) return undefined;
+  return { fromStep: first.index, toStep: last.index };
+}
+
+/**
  * Builds the per-step table for a run.
  *
  * The millisecond timetable comes from `model.beatToMs`, so a tempo change

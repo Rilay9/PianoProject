@@ -130,6 +130,13 @@ export function SettingsScreen(router: Router): HTMLElement {
       'The stricter completion rule. It never applies to a unit whose skill no song tests.',
     ),
     field(
+      'Strict prerequisites',
+      toggleControl('set-strict-prereqs', s.strictPrerequisites, (v) =>
+        set({ strictPrerequisites: v }),
+      ),
+      'Off by default (docs/00 D17). On, a lesson whose earlier rungs are unfinished shows a badge and a reason, and its options ask once before opening. Nothing is ever disabled.',
+    ),
+    field(
       'Weekday session (minutes)',
       selectControl(
         'set-weekday-minutes',

@@ -1,0 +1,364 @@
+{
+  "_comment": [
+    "Named practice sections for the loop (docs/04 §5, P18).",
+    "",
+    "Keyed by catalog id and merged into `teaching.sections` by the build, because an item's",
+    "notes arrive through three different pipelines — authored ABC, imported MusicXML and the",
+    "PDMX quarry — and one file is better than three mechanisms.",
+    "",
+    "`fromBar`/`toBar` are **1-based positions in the printed score**: bar 1 is the first",
+    "printed bar, a pickup included. That is what a player counts and what the model's",
+    "`sourceMeasureIndex` counts from, so the Score screen can turn a section into a loop",
+    "without knowing anything about repeats.",
+    "",
+    "Every range here was read off the file — repeat marks, double barlines and the first note",
+    "of each bar — rather than from what the piece is usually shaped like. validate.py checks",
+    "each one lies inside the piece's printed bar count from the render report."
+  ],
+  "sections": {
+    "exercise.blues.twelve-bar-shuffle.c": [
+      {
+        "label": "Bars 1-4, the I chord",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Bars 5-8, to the IV and back",
+        "fromBar": 5,
+        "toBar": 8
+      },
+      {
+        "label": "Bars 9-12, the turnaround",
+        "fromBar": 9,
+        "toBar": 12
+      }
+    ],
+    "exercise.blues.twelve-bar-shuffle.f": [
+      {
+        "label": "Bars 1-4, the I chord",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Bars 5-8, to the IV and back",
+        "fromBar": 5,
+        "toBar": 8
+      },
+      {
+        "label": "Bars 9-12, the turnaround",
+        "fromBar": 9,
+        "toBar": 12
+      }
+    ],
+    "exercise.blues.twelve-bar-shuffle.g": [
+      {
+        "label": "Bars 1-4, the I chord",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Bars 5-8, to the IV and back",
+        "fromBar": 5,
+        "toBar": 8
+      },
+      {
+        "label": "Bars 9-12, the turnaround",
+        "fromBar": 9,
+        "toBar": 12
+      }
+    ],
+    "song.classical.beethoven-fur-elise.beginner": [
+      {
+        "label": "Main theme (repeated)",
+        "fromBar": 1,
+        "toBar": 8
+      },
+      {
+        "label": "Middle section",
+        "fromBar": 9,
+        "toBar": 16
+      },
+      {
+        "label": "Theme again",
+        "fromBar": 17,
+        "toBar": 24
+      }
+    ],
+    "song.classical.beethoven-fur-elise.easy": [
+      {
+        "label": "Main theme",
+        "fromBar": 1,
+        "toBar": 9
+      },
+      {
+        "label": "Middle section",
+        "fromBar": 10,
+        "toBar": 13
+      },
+      {
+        "label": "Theme again",
+        "fromBar": 14,
+        "toBar": 22
+      }
+    ],
+    "song.classical.beethoven-ode-to-joy.easy": [
+      {
+        "label": "A section",
+        "fromBar": 1,
+        "toBar": 8
+      },
+      {
+        "label": "B section",
+        "fromBar": 9,
+        "toBar": 12
+      },
+      {
+        "label": "A section again",
+        "fromBar": 13,
+        "toBar": 17
+      }
+    ],
+    "song.classical.ode-to-joy.full": [
+      {
+        "label": "A section",
+        "fromBar": 1,
+        "toBar": 8
+      },
+      {
+        "label": "B section",
+        "fromBar": 9,
+        "toBar": 12
+      },
+      {
+        "label": "A section again",
+        "fromBar": 13,
+        "toBar": 17
+      }
+    ],
+    "song.classical.ode-to-joy.rh": [
+      {
+        "label": "First phrase",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Second phrase",
+        "fromBar": 5,
+        "toBar": 8
+      }
+    ],
+    "song.classical.pachelbel-canon-d.easy": [
+      {
+        "label": "Ground bass alone",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "First variation",
+        "fromBar": 5,
+        "toBar": 12
+      },
+      {
+        "label": "Second variation",
+        "fromBar": 13,
+        "toBar": 20
+      },
+      {
+        "label": "Third variation",
+        "fromBar": 21,
+        "toBar": 28
+      },
+      {
+        "label": "Fourth variation",
+        "fromBar": 29,
+        "toBar": 36
+      },
+      {
+        "label": "Fifth variation",
+        "fromBar": 37,
+        "toBar": 44
+      },
+      {
+        "label": "Ending",
+        "fromBar": 45,
+        "toBar": 49
+      }
+    ],
+    "song.classical.petzold-minuet-g-bwv-anh114": [
+      {
+        "label": "First half (repeated)",
+        "fromBar": 1,
+        "toBar": 16
+      },
+      {
+        "label": "Second half (repeated)",
+        "fromBar": 17,
+        "toBar": 32
+      }
+    ],
+    "song.classical.petzold-minuet-g-bwv-anh114.alt": [
+      {
+        "label": "First half (repeated)",
+        "fromBar": 1,
+        "toBar": 16
+      },
+      {
+        "label": "Second half (repeated)",
+        "fromBar": 17,
+        "toBar": 32
+      }
+    ],
+    "song.folk.greensleeves": [
+      {
+        "label": "Verse, first half",
+        "fromBar": 1,
+        "toBar": 8
+      },
+      {
+        "label": "Verse, second half",
+        "fromBar": 9,
+        "toBar": 16
+      },
+      {
+        "label": "Chorus, first half",
+        "fromBar": 17,
+        "toBar": 24
+      },
+      {
+        "label": "Chorus, second half",
+        "fromBar": 25,
+        "toBar": 33
+      }
+    ],
+    "song.folk.greensleeves.68": [
+      {
+        "label": "Verse",
+        "fromBar": 1,
+        "toBar": 9
+      },
+      {
+        "label": "Chorus",
+        "fromBar": 10,
+        "toBar": 16
+      }
+    ],
+    "song.folk.greensleeves.chords": [
+      {
+        "label": "Verse",
+        "fromBar": 1,
+        "toBar": 9
+      },
+      {
+        "label": "Chorus",
+        "fromBar": 10,
+        "toBar": 16
+      }
+    ],
+    "song.folk.greensleeves.waltz": [
+      {
+        "label": "Verse",
+        "fromBar": 1,
+        "toBar": 9
+      },
+      {
+        "label": "Chorus",
+        "fromBar": 10,
+        "toBar": 16
+      }
+    ],
+    "song.folk.happy-birthday.simple": [
+      {
+        "label": "First phrase",
+        "fromBar": 1,
+        "toBar": 5
+      },
+      {
+        "label": "Second phrase",
+        "fromBar": 6,
+        "toBar": 9
+      }
+    ],
+    "song.folk.lightly-row": [
+      {
+        "label": "First phrase",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Second phrase",
+        "fromBar": 5,
+        "toBar": 8
+      }
+    ],
+    "song.folk.mary-had-a-little-lamb": [
+      {
+        "label": "First phrase",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Second phrase",
+        "fromBar": 5,
+        "toBar": 8
+      }
+    ],
+    "song.folk.row-row-row-your-boat": [
+      {
+        "label": "First phrase",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Second phrase",
+        "fromBar": 5,
+        "toBar": 8
+      }
+    ],
+    "song.folk.when-the-saints.f": [
+      {
+        "label": "First phrase",
+        "fromBar": 1,
+        "toBar": 5
+      },
+      {
+        "label": "Second phrase",
+        "fromBar": 6,
+        "toBar": 9
+      }
+    ],
+    "song.holiday.carol-of-the-bells.easy": [
+      {
+        "label": "Opening ostinato",
+        "fromBar": 1,
+        "toBar": 16
+      },
+      {
+        "label": "Second idea",
+        "fromBar": 17,
+        "toBar": 24
+      },
+      {
+        "label": "Development",
+        "fromBar": 25,
+        "toBar": 32
+      },
+      {
+        "label": "Ending",
+        "fromBar": 33,
+        "toBar": 40
+      }
+    ],
+    "song.holiday.jingle-bells.g": [
+      {
+        "label": "First phrase",
+        "fromBar": 1,
+        "toBar": 4
+      },
+      {
+        "label": "Second phrase",
+        "fromBar": 5,
+        "toBar": 8
+      }
+    ]
+  }
+}

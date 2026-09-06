@@ -95,6 +95,12 @@ export interface DevScoreHandle {
     title: string;
     steps: number;
     measures: number;
+    /**
+     * Printed bars — what a musician counts, and what a section's bar numbers
+     * mean (P18). `measures` is the *unrolled* count, so a piece with a repeat
+     * has more of them than the page shows.
+     */
+    sourceMeasures: number;
     durationSec: number;
     tempoBpm: number | null;
     timeSig: string | null;
@@ -730,6 +736,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
         title: model.title,
         steps: model.steps.length,
         measures: model.measureCount,
+        sourceMeasures: model.sourceMeasureCount,
         durationSec: Math.round(model.beatToMs(endBeat) / 100) / 10,
         tempoBpm: model.tempoMap[0]?.bpm ?? null,
         timeSig: timeSig ? `${timeSig.beats}/${timeSig.beatType}` : null,

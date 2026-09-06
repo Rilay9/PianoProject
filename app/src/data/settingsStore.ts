@@ -40,6 +40,14 @@ export interface PracticeSettings {
   passTempoPct: number;
   /** docs/04 §7: the stricter completion rule — a lesson needs two songs. */
   requireTwoSongs: boolean;
+  /**
+   * docs/04 §7, `00` D17: gate a lesson behind its prerequisites.
+   *
+   * Off by default and deliberately so — D17's whole point is that nothing is
+   * locked. On, a rung whose prerequisites are unfinished shows a badge and a
+   * reason, and its options open behind a confirmation. Never a disabled card.
+   */
+  strictPrerequisites: boolean;
   /** Remembered per kind of day (docs/04 §2 session-length picker). */
   weekdaySessionMinutes: number;
   weekendSessionMinutes: number;
@@ -84,6 +92,7 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   passAccuracyPct: 90,
   passTempoPct: 80,
   requireTwoSongs: false,
+  strictPrerequisites: false,
   weekdaySessionMinutes: 30,
   weekendSessionMinutes: 60,
 

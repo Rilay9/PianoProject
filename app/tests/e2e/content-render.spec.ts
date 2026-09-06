@@ -114,6 +114,8 @@ interface ManifestEntry {
   ok: boolean;
   steps?: number;
   measures?: number;
+  /** Printed bars, which is what a section's numbers mean (P18). */
+  sourceMeasures?: number;
   durationSec?: number;
   tempoBpm?: number | null;
   timeSig?: string | null;

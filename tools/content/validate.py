@@ -508,6 +508,79 @@ def tip_errors(catalog: list, tips_dir: Path) -> list[str]:
     return errors
 
 
+#: Where the render check records what it measured about each item.
+RENDER_REPORT = CONTENT_SRC.parents[0] / "build" / "render-report.json"
+
+
+def section_errors(catalog: list, report_path: Path = RENDER_REPORT) -> list[str]:
+    """
+    replan/`04` §5: a named section has to name bars the piece actually has.
+
+    Bars are 1-based positions in the printed score, so the bound is
+    `sourceMeasures` from the render report — the *printed* count. Checking
+    against the unrolled count instead would pass a section that runs past the
+    last page of a piece with a repeat, which is exactly the mistake worth
+    catching: it produces a loop that silently ends early.
+
+    Without a render report the check reports what it cannot do rather than
+    passing quietly: a rule that disappears when its input is missing is a rule
+    that stops working the day somebody deletes `build/`.
+    """
+    errors: list[str] = []
+    with_sections = [
+        item for item in catalog if (item.get("teaching") or {}).get("sections")
+    ]
+    if not with_sections:
+        return errors
+    if not report_path.is_file():
+        return [
+            f"{len(with_sections)} item(s) carry named sections but {report_path.name} is "
+            "missing, so their bar numbers cannot be checked — run the render check"
+        ]
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    printed = {
+        entry["id"]: entry.get("sourceMeasures")
+        for entry in report.get("items", [])
+        if entry.get("ok") is not False
+    }
+    for item in with_sections:
+        bars = printed.get(item["id"])
+        sections = (item.get("teaching") or {})["sections"]
+        if bars is None:
+            errors.append(
+                f"{item['id']}: has named sections but the render report does not say how many "
+                "printed bars it has — re-run the render check so they can be checked"
+            )
+            continue
+        for section in sections:
+            low = section["fromMeasure"]
+            high = section["toMeasure"]
+            label = section["label"]
+            if low < 1:
+                errors.append(f"{item['id']}: section {label!r} starts at bar {low}; bars are 1-based")
+            if high < low:
+                errors.append(f"{item['id']}: section {label!r} ends at bar {high}, before it starts")
+            if high > bars:
+                errors.append(
+                    f"{item['id']}: section {label!r} runs to bar {high} but the piece has "
+                    f"{bars} printed bar(s)"
+                )
+    return errors
+
+
+def orphan_sections(catalog: list, path: Path) -> list[str]:
+    """A section keyed to an id that is not in the catalog — almost always a typo."""
+    if not path.is_file():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    known = {item["id"] for item in catalog}
+    return [
+        f"sections.json names {item_id!r}, which is not in the catalog"
+        for item_id in sorted(data.get("sections", {}))
+        if item_id not in known
+    ]
+
+
 def paper_hint_errors(curriculum: dict) -> list[str]:
     """
     replan §5.2: the rungs where a book almost certainly has an equivalent.
@@ -656,6 +729,8 @@ def main() -> None:
         errors += unknown_concepts(curriculum)
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
+        errors += section_errors(catalog)
+        errors += orphan_sections(catalog, CONTENT_SRC / "sources" / "sections.json")
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.

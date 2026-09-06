@@ -29,7 +29,7 @@ import type {
   Mode,
   SessionScore,
 } from '../engine/types';
-import { loopFromMeasures } from '../engine/prepareSession';
+import { loopFromMeasures, loopFromPrintedBars } from '../engine/prepareSession';
 import type { ScoreModel } from './types';
 import { WindowRenderer, type HandsFocus, type NoteState, type ScoreLayout } from './WindowRenderer';
 import type { KeyboardStrip } from '../ui/KeyboardStrip';
@@ -63,6 +63,19 @@ export interface RunOptions extends Omit<Partial<EngineOptions>, 'mode'> {
 export const PLAYBACK_LOOKAHEAD_MS = 250;
 /** Seconds a played-back note sounds for when the step has no duration. */
 const FALLBACK_NOTE_SEC = 0.4;
+
+/**
+ * The midi number out of a note id.
+ *
+ * `makeNoteId` builds `measure:staff:voice:onsetTicks:midi`, so the pitch is
+ * the last field. Reading it back is cheaper and less error-prone than keeping
+ * a second map from id to pitch in step with the first.
+ */
+export function midiFromNoteId(noteId: string): number | null {
+  const last = noteId.slice(noteId.lastIndexOf(':') + 1);
+  const midi = Number(last);
+  return Number.isInteger(midi) ? midi : null;
+}
 
 export class ScoreSession {
   private readonly options: ScoreSessionOptions;
@@ -226,6 +239,11 @@ export class ScoreSession {
     return loopFromMeasures(this.options.model, fromMeasure, toMeasure);
   }
 
+  /** A loop from a named section's printed bar numbers (`04` §5). */
+  loopForPrintedBars(fromBar: number, toBar: number): LoopRange | undefined {
+    return loopFromPrintedBars(this.options.model, fromBar, toBar);
+  }
+
   /** Restarts the run with new options — how the mode switch works at runtime. */
   restart(patch: Partial<RunOptions>): void {
     this.start({ ...this.runOptions, ...patch });
@@ -273,10 +291,18 @@ export class ScoreSession {
         break;
       case 'noteJudged': {
         // Amber, not red, when the source was not sure (docs/05 §11.1).
-        const state: NoteState = event.ok ? 'correct' : 'wrong';
-        if (event.ok || event.uncertain !== true) {
-          for (const id of event.noteIds) this.judgements.set(id, state);
-        }
+        //
+        // Until P18 an uncertain judgement was painted *nothing at all*, which
+        // is the safe half of the rule and leaves the learner with a run that
+        // says nothing about a note it clearly reacted to. Amber is the other
+        // half: it is a real state meaning "this may be wrong, or I may not
+        // have heard it", and it never counts against the score.
+        const state: NoteState = event.ok
+          ? 'correct'
+          : event.uncertain === true
+            ? 'uncertain'
+            : 'wrong';
+        for (const id of event.noteIds) this.judgements.set(id, state);
         this.dirty = true;
         break;
       }
@@ -348,11 +374,34 @@ export class ScoreSession {
     }
   }
 
+  /**
+   * The strip shows the same three verdicts the notation does.
+   *
+   * Until P18 it showed only what was expected, so a learner watching the
+   * keys — which is where a beginner is looking — got no feedback at all. The
+   * midi number is the last field of the note id, so no extra bookkeeping is
+   * needed to turn a judgement into a key.
+   */
   private paintStrip(): void {
     const strip = this.options.strip;
     if (!strip) return;
-    const expected = new Set(this.expectedNow);
-    strip.setState({ expected, pressed: new Set(), correct: new Set(), wrong: new Set() });
+    const correct = new Set<number>();
+    const wrong = new Set<number>();
+    const uncertain = new Set<number>();
+    for (const [noteId, state] of this.judgements) {
+      const midi = midiFromNoteId(noteId);
+      if (midi === null) continue;
+      if (state === 'correct') correct.add(midi);
+      else if (state === 'wrong') wrong.add(midi);
+      else if (state === 'uncertain') uncertain.add(midi);
+    }
+    strip.setState({
+      expected: new Set(this.expectedNow),
+      pressed: new Set(),
+      correct,
+      wrong,
+      uncertain,
+    });
   }
 
   /**

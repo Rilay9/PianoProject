@@ -61,7 +61,18 @@ export interface CatalogItem {
   abrsmGradeApprox?: number | null;
   source?: ItemSource | null;
   media?: ItemMedia[];
-  teaching?: { lessonIds?: string[]; notes?: string | null } | null;
+  teaching?: {
+    lessonIds?: string[];
+    notes?: string | null;
+    /**
+     * Named practice sections for the loop (docs/04 §5, P18).
+     *
+     * Bars are 1-based positions in the *printed* score, which is what a
+     * player counts — not the model's unrolled index, where a piece with a
+     * repeat has twice as many.
+     */
+    sections?: { label: string; fromMeasure: number; toMeasure: number }[];
+  } | null;
   drill?: { kind: string; params?: Record<string, unknown> } | null;
   /**
    * Set on the items synthesised from the `imports` store (docs/04 §4). The

@@ -169,8 +169,46 @@ def merge_catalog(out_dir: Path) -> Step:
         assert isinstance(fragment, list)
         entries.extend(fragment)
     entries.sort(key=lambda item: item["id"])
+    sections = attach_sections(entries)
     write_json(out_dir / "catalog.json", entries)
-    return Step("merge catalog", ok=True, detail=f"{len(entries)} items")
+    detail = f"{len(entries)} items"
+    if sections:
+        detail += f", {sections} with named sections"
+    return Step("merge catalog", ok=True, detail=detail)
+
+
+def attach_sections(entries: list[dict]) -> int:
+    """
+    Merges `content/sources/sections.json` into each item's `teaching.sections`.
+
+    One file rather than three mechanisms: an item's notes arrive through
+    authored ABC, an importer or the PDMX quarry, and the sections are the same
+    kind of fact about the music whichever way the file got here.
+
+    A section naming an item that is not in the catalog is left alone here and
+    reported by `validate.py`; the build is not the place to decide whether
+    that is a typo or an item that has not been generated yet.
+    """
+    path = CONTENT_SRC / "sources" / "sections.json"
+    if not path.exists():
+        return 0
+    data = read_json(path)
+    assert isinstance(data, dict)
+    by_id = data.get("sections", {})
+    assert isinstance(by_id, dict)
+    touched = 0
+    for entry in entries:
+        ranges = by_id.get(entry["id"])
+        if not ranges:
+            continue
+        teaching = dict(entry.get("teaching") or {})
+        teaching["sections"] = [
+            {"label": r["label"], "fromMeasure": r["fromBar"], "toMeasure": r["toBar"]}
+            for r in ranges
+        ]
+        entry["teaching"] = teaching
+        touched += 1
+    return touched
 
 
 def copy_curriculum(out_dir: Path) -> Step:

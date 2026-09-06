@@ -118,6 +118,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   let metronomeOn = false;
   let loopBars: { from: number; to: number } | null = null;
   let loopAnchor: number | null = null;
+  let sections: { label: string; fromMeasure: number; toMeasure: number }[] = [];
+  /** The section the current loop came from, so the button can name it. */
+  let loopSection: { label: string; fromMeasure: number; toMeasure: number } | null = null;
   const unsubscribers: (() => void)[] = [];
 
   // --- chrome --------------------------------------------------------------
@@ -253,6 +256,38 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   const loopButton = button('Loop', () => clearLoop(), 'score-loop');
   bar.appendChild(loopButton);
+
+  /**
+   * The named sections, when the piece has any (`04` §5, P18).
+   *
+   * Until P18 a loop could only be set by double-tapping the first and last
+   * bar, which means finding them — on a phone, in a window three bars wide.
+   * A rag's second strain or a minuet's second half is a thing the player
+   * already has a name for, and the score already knows where it is.
+   *
+   * Hidden entirely for a piece with no sections rather than shown empty: a
+   * disabled control is a question the screen cannot answer.
+   */
+  const sectionSelect = select([], 'score-section', 'Practice section', (value) => {
+    if (!value) {
+      clearLoop();
+      return;
+    }
+    const chosen = sections.find((entry) => entry.label === value);
+    if (!chosen || !session) return;
+    // Printed bars, not model indices: a section says what is on the page.
+    const range = session.loopForPrintedBars(chosen.fromMeasure, chosen.toMeasure);
+    if (!range) {
+      status.textContent = `${chosen.label} could not be found in this score.`;
+      return;
+    }
+    loopBars = { from: chosen.fromMeasure, to: chosen.toMeasure };
+    loopSection = chosen;
+    if (session.running) startRun();
+    render();
+  });
+  sectionSelect.hidden = true;
+  bar.appendChild(sectionSelect);
 
   const metronomeButton = button(
     '🎵',
@@ -457,8 +492,15 @@ export function ScoreScreen(router: Router): HTMLElement {
     // A performance is one pass through. Looping a section mid-performance is
     // practising, and the flag would then be recording something that did not
     // happen.
+    // A section loop is in printed bars; a double-tapped one is in the model's
+    // own measure index. They are different numbers and mixing them up would
+    // loop the wrong bars on any piece with a repeat.
     const loop =
-      loopBars && !performanceRun ? session.loopForMeasures(loopBars.from, loopBars.to) : undefined;
+      loopBars && !performanceRun
+        ? loopSection
+          ? session.loopForPrintedBars(loopBars.from, loopBars.to)
+          : session.loopForMeasures(loopBars.from, loopBars.to)
+        : undefined;
     session.start({
       mode,
       hands,
@@ -502,6 +544,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   function clearLoop(): void {
     loopBars = null;
     loopAnchor = null;
+    loopSection = null;
+    const control = document.getElementById('score-section');
+    if (control instanceof HTMLSelectElement) control.value = '';
     if (session?.running) startRun();
     render();
   }
@@ -529,6 +574,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     } else {
       loopBars = { from: Math.min(loopAnchor, measure), to: Math.max(loopAnchor, measure) };
       loopAnchor = null;
+      loopSection = null;
       if (session?.running) startRun();
     }
     render();
@@ -738,7 +784,11 @@ export function ScoreScreen(router: Router): HTMLElement {
         : settings.playbackDestination === 'piano'
           ? '🎹 Piano'
           : '🔈🎹 Both';
-    loopButton.textContent = loopBars ? `Loop ${loopBars.from}–${loopBars.to} ✕` : 'Loop';
+    loopButton.textContent = loopSection
+      ? `Loop ${loopSection.label} ✕`
+      : loopBars
+        ? `Loop ${loopBars.from}–${loopBars.to} ✕`
+        : 'Loop';
     loopButton.classList.toggle('is-selected', loopBars !== null);
     for (const hand of HANDS) {
       document.getElementById(`score-hands-${hand.id}`)?.classList.toggle('is-selected', hands === hand.id);
@@ -758,6 +808,21 @@ export function ScoreScreen(router: Router): HTMLElement {
       if (!item) {
         status.textContent = `Unknown item “${itemId}”.`;
         return;
+      }
+      sections = item.teaching?.sections ?? [];
+      if (sections.length > 0) {
+        sectionSelect.replaceChildren();
+        const none = document.createElement('option');
+        none.value = '';
+        none.textContent = 'Whole piece';
+        sectionSelect.appendChild(none);
+        for (const entry of sections) {
+          const option = document.createElement('option');
+          option.value = entry.label;
+          option.textContent = `${entry.label} (${String(entry.fromMeasure)}–${String(entry.toMeasure)})`;
+          sectionSelect.appendChild(option);
+        }
+        sectionSelect.hidden = false;
       }
       if (item.kind === 'pdf') {
         // A PDF has no notes to follow; it belongs to the page viewer.

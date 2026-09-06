@@ -290,6 +290,7 @@ export function TodayScreen(router: Router): HTMLElement {
         minutes,
         seed,
         requireTwoSongs: getSettings().requireTwoSongs,
+        strictPrerequisites: getSettings().strictPrerequisites,
       });
       slots = built.slots;
       breakAfter = built.template.breakAfterSlot;
@@ -298,6 +299,7 @@ export function TodayScreen(router: Router): HTMLElement {
 
       const position = nextRecommended(curriculum as Curriculum, records, plan.trackOrder, {
         requireTwoSongs: getSettings().requireTwoSongs,
+        strictPrerequisites: getSettings().strictPrerequisites,
       });
       status.textContent = position
         ? `Working on Stage ${String(position.stageNumber)} · ${position.unit.title} · lesson ${

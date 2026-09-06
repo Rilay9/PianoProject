@@ -25,16 +25,17 @@ export function isBlackKey(midi: number): boolean {
   return BLACK_PITCH_CLASSES.has(((midi % 12) + 12) % 12);
 }
 
-export type KeyStateName = 'expected' | 'pressed' | 'correct' | 'wrong';
+export type KeyStateName = 'expected' | 'pressed' | 'correct' | 'wrong' | 'uncertain';
 
 const STATE_CLASSES: Record<KeyStateName, string> = {
   expected: 'is-expected',
   pressed: 'is-pressed',
   correct: 'is-correct',
   wrong: 'is-wrong',
+  uncertain: 'is-uncertain',
 };
 
-const STATE_NAMES: KeyStateName[] = ['expected', 'pressed', 'correct', 'wrong'];
+const STATE_NAMES: KeyStateName[] = ['expected', 'pressed', 'correct', 'wrong', 'uncertain'];
 
 export interface KeyboardStripState {
   /** Notes the score wants next — highlighted blue. */
@@ -43,6 +44,13 @@ export interface KeyboardStripState {
   pressed?: Iterable<number>;
   /** Played and matched — green, with a ✓ for colour-blind readers. */
   correct?: Iterable<number>;
+  /**
+   * The microphone's "probably wrong" — amber, with a `?` (`04` §5).
+   *
+   * Never red: below the confidence floor the app can say it did not hear
+   * what it expected and cannot say the learner played the wrong note.
+   */
+  uncertain?: Iterable<number>;
   /** Played and wrong — red, with a ✗. */
   wrong?: Iterable<number>;
 }
@@ -76,6 +84,7 @@ export class KeyboardStrip {
     pressed: new Set(),
     correct: new Set(),
     wrong: new Set(),
+    uncertain: new Set(),
   };
   /** pointerId -> the note that pointer is currently sounding. */
   private readonly activePointers = new Map<number, number>();

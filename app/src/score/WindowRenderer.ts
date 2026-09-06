@@ -24,7 +24,19 @@ import { recordRenderTiming } from '../util/renderTiming';
 
 export type ScoreLayout = 'window' | 'scroll';
 export type HandsFocus = 'R' | 'L' | 'both';
-export type NoteState = 'correct' | 'wrong' | 'current';
+/**
+ * How a note is drawn.
+ *
+ * `uncertain` is the microphone's "probably wrong" (`05` §11.1, `04` §5). The
+ * mic is score-informed pitch detection, not transcription: below the
+ * confidence floor it can tell you it did not hear what it expected, and it
+ * cannot tell you that you played the wrong note. Painting that red would be
+ * the app blaming the learner for its own microphone; painting it nothing at
+ * all — which is what it did until P18 — leaves a run with no feedback and no
+ * explanation. Amber says the honest thing: *this may be wrong, or I may not
+ * have heard it.*
+ */
+export type NoteState = 'correct' | 'wrong' | 'current' | 'uncertain';
 
 export const MIN_BARS_PER_WINDOW = 1;
 export const MAX_BARS_PER_WINDOW = 8;
@@ -257,6 +269,7 @@ export class WindowRenderer {
       element.classList.toggle('is-correct', wanted === 'correct');
       element.classList.toggle('is-wrong', wanted === 'wrong');
       element.classList.toggle('is-current', wanted === 'current');
+      element.classList.toggle('is-uncertain', wanted === 'uncertain');
     }
   }
 

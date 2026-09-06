@@ -17,6 +17,7 @@ import {
   levelConfidence,
   type CatalogIndex,
 } from './selectors';
+import { lockState } from './prerequisites';
 
 export type SlotKind = 'technique' | 'review' | 'new' | 'repertoire' | 'jam' | 'free' | 'sightreading';
 
@@ -118,6 +119,8 @@ export interface BuildInput {
   seed?: number;
   /** docs/04 §7 "require 2 songs per lesson"; changes what counts as complete. */
   requireTwoSongs?: boolean;
+  /** docs/04 §7: opt-in gating, off by default (`00` D17). */
+  strictPrerequisites?: boolean;
 }
 
 export interface LessonPosition {
@@ -131,22 +134,40 @@ export function nextRecommended(
   curriculum: Curriculum,
   records: PassRecord[],
   activeTracks: string[] = [],
-  options: { requireTwoSongs?: boolean } = {},
+  options: { requireTwoSongs?: boolean; strictPrerequisites?: boolean } = {},
 ): LessonPosition | undefined {
   const tracks = new Set(activeTracks);
+  let firstLocked: LessonPosition | undefined;
   for (const stage of curriculum.stages) {
     for (const unit of stage.units) {
       // A track the learner has switched off is skipped, but the core track
       // is never optional — it is the spine the stages are built on.
       if (tracks.size > 0 && unit.track !== 'core' && !tracks.has(unit.track)) continue;
       for (const lesson of unit.lessons) {
-        if (!lessonComplete(lesson, records, options)) {
-          return { lesson, unit, stageNumber: stage.number };
+        if (lessonComplete(lesson, records, options)) continue;
+        const position = { lesson, unit, stageNumber: stage.number };
+        if (options.strictPrerequisites) {
+          // With gating on, "recommended" means the first rung he can start.
+          // A locked one is remembered rather than discarded: if *everything*
+          // left is locked — which happens when a prerequisite is a rung he
+          // has skipped past — recommending nothing would leave Today empty,
+          // and an empty Today is worse than a rung with a badge on it.
+          const state = lockState(lesson, curriculum, records, {
+            strict: true,
+            ...(options.requireTwoSongs === undefined
+              ? {}
+              : { requireTwoSongs: options.requireTwoSongs }),
+          });
+          if (state.locked) {
+            firstLocked ??= position;
+            continue;
+          }
         }
+        return position;
       }
     }
   }
-  return undefined;
+  return firstLocked;
 }
 
 /**
@@ -322,6 +343,7 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
   const template = templateFor(input.minutes);
   const position = nextRecommended(input.curriculum, input.records, input.activeTracks, {
     ...(input.requireTwoSongs === undefined ? {} : { requireTwoSongs: input.requireTwoSongs }),
+    ...(input.strictPrerequisites ? { strictPrerequisites: true } : {}),
   });
   const used = new Set<string>();
   const seed = input.seed ?? 0;

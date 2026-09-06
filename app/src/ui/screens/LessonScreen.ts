@@ -25,6 +25,7 @@ import { badge, button, el, handsLabel, levelLabel, listRow } from '../widgets';
 import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 import { openFinderSheet } from '../finderSheet';
+import { confirmMessage, lockState, type LockState } from '../../curriculum/prerequisites';
 import { openPieceSheet } from './ShelfScreen';
 import { allBooks, addBook, allShelfPieces, type ShelfPiece } from '../../data/booksStore';
 
@@ -47,12 +48,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const paper = el('div.list', { id: 'lesson-paper' });
   const actions = el('div.row', { id: 'lesson-actions' });
   const needsLine = el('p.needs', { id: 'lesson-needs' });
+  const lockLine = el('p.lesson-lock', { id: 'lesson-lock', hidden: true });
   const findRow = el('div.row', { id: 'lesson-find' });
 
   body.append(
     status,
     actions,
-    el('section.block', {}, needsLine, findRow),
+    el('section.block', {}, lockLine, needsLine, findRow),
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
     el('section.block', {}, el('h2', { text: 'Song options' }), songs),
     el('section.block', { id: 'lesson-paper-block' }, el('h2', { text: 'From your own books' }), paper),
@@ -65,6 +67,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   let progress = new Map<string, ProgressRow>();
   let items = new Map<string, CatalogItem>();
   let shelf: ShelfPiece[] = [];
+  let lock: LockState = { locked: false, missing: [], reason: '' };
 
   function records(): PassRecord[] {
     return [...progress.values()].map((row) => ({
@@ -74,7 +77,18 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     }));
   }
 
-  const open = (target: CatalogItem): void => void openItem(router, target);
+  /**
+   * Opens an item, asking once first when the rung is gated.
+   *
+   * Never a disabled card (`00` D17): the confirmation says what the app
+   * thinks and leaves the decision where it belongs. Cancelling does nothing
+   * and costs one tap; there is no second warning and no tone of disapproval,
+   * because skipping ahead is a legitimate thing to do.
+   */
+  const open = (target: CatalogItem): void => {
+    if (lock.locked && !window.confirm(confirmMessage(lock))) return;
+    void openItem(router, target);
+  };
 
   function optionRow(id: string): HTMLElement {
     const item = items.get(id);
@@ -252,6 +266,25 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     });
   }
 
+  /** The badge and the one-line reason, when gating is on and this rung is gated. */
+  function drawLock(): void {
+    lockLine.replaceChildren();
+    lockLine.hidden = !lock.locked;
+    if (!lock.locked) return;
+    lockLine.append(badge('comes later', 'warn'), ' ', el('span', { text: lock.reason }));
+    const first = lock.missing[0];
+    if (first) {
+      const id = first.id;
+      lockLine.append(
+        ' ',
+        button(`Go to ${id}`, () => router.navigateLesson(id), {
+          variant: 'quiet',
+          id: 'lesson-prereq-go',
+        }),
+      );
+    }
+  }
+
   function draw(): void {
     if (!lesson) return;
     exercises.replaceChildren(...lesson.exerciseOptions.map(optionRow));
@@ -269,6 +302,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
 
     drawNeeds(lesson);
     drawPaper(lesson);
+    drawLock();
 
     const done = lessonComplete(lesson, records(), { requireTwoSongs: getSettings().requireTwoSongs });
     actions.replaceChildren(
@@ -346,6 +380,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     items = new Map(loadedItems.map((item) => [item.id, item]));
     progress = new Map(rows.map((row) => [row.itemId, row]));
     lesson = findLesson(loaded, lessonId);
+    if (lesson) {
+      lock = lockState(lesson, loaded, records(), {
+        strict: getSettings().strictPrerequisites,
+        requireTwoSongs: getSettings().requireTwoSongs,
+      });
+    }
     if (!lesson) {
       status.textContent = `There is no lesson ${lessonId}.`;
       return;

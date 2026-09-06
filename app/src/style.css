@@ -196,6 +196,12 @@ body {
   --key-expected: #2f6fed;
   --key-correct: #17915c;
   --key-wrong: #cf3B3B;
+  /* The microphone's "probably wrong" (04 §5, 05 §11.1). Amber rather than
+     red because the app is not sure either: below the confidence floor it can
+     say it did not hear what it expected and cannot say the learner played the
+     wrong note. Chosen to be distinguishable from the green and the red for
+     the commonest colour blindness as well as by hue. */
+  --key-uncertain: #d98324;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -284,7 +290,12 @@ body {
   background: var(--key-wrong);
 }
 
+.key.is-uncertain {
+  background: var(--key-uncertain);
+}
+
 .key.is-correct::after,
+.key.is-uncertain::after,
 .key.is-wrong::after {
   position: absolute;
   bottom: 2px;
@@ -305,7 +316,14 @@ body {
   content: '✗';
 }
 
+/* A question mark rather than a cross: the mark has to say "not sure" to
+   somebody who cannot tell the amber from the red. */
+.key.is-uncertain::after {
+  content: '?';
+}
+
 .key.is-correct .key__label,
+.key.is-uncertain .key__label,
 .key.is-wrong .key__label,
 .key.is-expected .key__label,
 .key.is-pressed .key__label {
@@ -582,6 +600,13 @@ body {
 .score-note.is-wrong :is(path, rect, ellipse, text) {
   fill: #cf3b3b;
   stroke: #cf3b3b;
+}
+
+/* Amber: the mic thinks this was wrong and is not confident enough to say so.
+   It never counts against the score. */
+.score-note.is-uncertain :is(path, rect, ellipse, text) {
+  fill: var(--key-uncertain);
+  stroke: var(--key-uncertain);
 }
 
 /* Hand focus dims the other hand to 35 % (docs §5). Driven by data-hand on the
@@ -1791,4 +1816,19 @@ body {
 
 .paper-notes {
   color: var(--muted);
+}
+
+/* --- Reordering the track chips (docs/04 §3, P18) ----------------------- */
+
+.chip.is-dragging {
+  opacity: 0.7;
+  transform: scale(1.04);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+}
+
+/* While a drag is running the row must not scroll under the finger, or the
+   chip and the pointer part company on the first horizontal move. */
+[data-reordering='true'] {
+  touch-action: none;
+  user-select: none;
 }

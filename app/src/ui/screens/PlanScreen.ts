@@ -11,6 +11,7 @@ import { allItems, loadCurriculum } from '../../curriculum/load';
 import { lessonComplete } from '../../curriculum/selectors';
 import { getSettings } from '../../data/settingsStore';
 import { nextRecommended } from '../../curriculum/session';
+import { indexAtPoint, isDrag, moveDown, moveItem, moveUp } from '../reorder';
 import type { Curriculum, Lesson, PassRecord, Stage } from '../../curriculum/types';
 import { allProgress } from '../../data/progressStore';
 import { getPlan, updatePlan } from '../../data/planStore';
@@ -51,6 +52,8 @@ export function PlanScreen(router: Router): HTMLElement {
 
   let curriculum: Curriculum | null = null;
   let records: PassRecord[] = [];
+  /** Set by a drag so the click it produced does not also toggle the track. */
+  let suppressClickFor: string | null = null;
   let activeTracks: string[] = [];
 
   header.append(trackRow);
@@ -77,6 +80,7 @@ export function PlanScreen(router: Router): HTMLElement {
     if (!curriculum) return;
     const recommended = nextRecommended(curriculum, records, activeTracks, {
       requireTwoSongs: getSettings().requireTwoSongs,
+      strictPrerequisites: getSettings().strictPrerequisites,
     });
     list.replaceChildren();
 
@@ -119,31 +123,123 @@ export function PlanScreen(router: Router): HTMLElement {
       : 'Every lesson is complete.';
   }
 
+  /**
+   * Commits a new order and tells everything that reads it.
+   *
+   * `trackOrder` is what the session builder walks, so a reorder changes what
+   * the app recommends next — which is the whole point of the gesture and the
+   * reason it is worth confirming on screen.
+   */
+  function commitOrder(next: string[]): void {
+    activeTracks = next;
+    void updatePlan({ trackOrder: activeTracks });
+    drawTracks();
+    draw();
+  }
+
+  /**
+   * Pointer-drag reordering for the track chips (`04` §3, "ordering by drag").
+   *
+   * A chip is a toggle first: the drag only begins once the pointer has moved
+   * past `DRAG_THRESHOLD_PX`, and until then the press is still a tap. Pointer
+   * events rather than HTML5 drag-and-drop, which does not exist on touch.
+   */
+  function makeDraggable(node: HTMLElement, trackId: string): void {
+    node.addEventListener('pointerdown', (event: PointerEvent) => {
+      // Only the tracks that are on can be ordered — the order is the order
+      // they are played in, and an inactive track is not in it.
+      const from = activeTracks.indexOf(trackId);
+      if (from === -1 || trackId === 'core') return;
+      const startX = event.clientX;
+      const startY = event.clientY;
+      let dragging = false;
+
+      const move = (moveEvent: PointerEvent): void => {
+        if (!dragging) {
+          if (!isDrag(moveEvent.clientX - startX, moveEvent.clientY - startY)) return;
+          dragging = true;
+          node.setPointerCapture(moveEvent.pointerId);
+          node.classList.add('is-dragging');
+          trackRow.dataset.reordering = 'true';
+        }
+        const boxes = activeTracks.map((id) =>
+          (document.getElementById(`plan-track-${id}`) ?? node).getBoundingClientRect(),
+        );
+        const over = indexAtPoint(boxes, moveEvent.clientX, moveEvent.clientY);
+        const current = activeTracks.indexOf(trackId);
+        if (over !== null && over !== current) {
+          activeTracks = moveItem(activeTracks, current, over);
+          drawTracks();
+          const moved = document.getElementById(`plan-track-${trackId}`);
+          moved?.classList.add('is-dragging');
+        }
+      };
+
+      const up = (upEvent: PointerEvent): void => {
+        node.removeEventListener('pointermove', move);
+        node.removeEventListener('pointerup', up);
+        node.removeEventListener('pointercancel', up);
+        delete trackRow.dataset.reordering;
+        if (!dragging) return;
+        // A drag consumed the press, so the click that follows must not also
+        // toggle the track off.
+        upEvent.preventDefault();
+        suppressClickFor = trackId;
+        commitOrder(activeTracks);
+      };
+
+      node.addEventListener('pointermove', move);
+      node.addEventListener('pointerup', up);
+      node.addEventListener('pointercancel', up);
+    });
+  }
+
   function drawTracks(): void {
     if (!curriculum) return;
     trackRow.replaceChildren();
     for (const track of curriculum.tracks) {
       const on = activeTracks.includes(track.id);
-      trackRow.append(
-        chip(track.title, {
+      const node = chip(track.title, {
           id: `plan-track-${track.id}`,
           pressed: on,
+          dataset: { 'data-track': track.id, 'data-order': String(activeTracks.indexOf(track.id)) },
           onClick: () => {
+            if (suppressClickFor === track.id) {
+              suppressClickFor = null;
+              return;
+            }
             // `core` is the spine of the stages; switching it off would empty
             // the plan, so it is not a toggle.
             if (track.id === 'core') {
               status.textContent = 'The core path is always on — it is what the stages are.';
               return;
             }
-            activeTracks = on
-              ? activeTracks.filter((id) => id !== track.id)
-              : [...activeTracks, track.id];
-            void updatePlan({ trackOrder: activeTracks });
-            drawTracks();
-            draw();
+            commitOrder(
+              on
+                ? activeTracks.filter((id) => id !== track.id)
+                : [...activeTracks, track.id],
+            );
           },
-        }),
-      );
+        });
+      if (on && track.id !== 'core') makeDraggable(node, track.id);
+      trackRow.append(node);
+      if (on && track.id !== 'core') {
+        // The fallback. A drag is not reachable from a keyboard and is
+        // awkward with a tremor; two buttons are neither.
+        const index = activeTracks.indexOf(track.id);
+        trackRow.append(
+          button('▲', () => commitOrder(moveUp(activeTracks, index)), {
+            id: `plan-track-up-${track.id}`,
+            variant: 'quiet',
+            title: `Move ${track.title} earlier`,
+          }),
+          button('▼', () => commitOrder(moveDown(activeTracks, index)), {
+            id: `plan-track-down-${track.id}`,
+            variant: 'quiet',
+            title: `Move ${track.title} later`,
+          }),
+        );
+      }
     }
     trackRow.append(
       button('Placement test', () => router.navigateLesson('0.4'), { id: 'plan-placement', variant: 'quiet' }),
