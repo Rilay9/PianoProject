@@ -96,6 +96,27 @@ def item_id_for(row: dict, candidate: dict) -> str:
     return f"{prefix}.{stem}.pdmx"
 
 
+#: Which Zenodo record an archive came from, by the size of the `PDMX.csv` it
+#: ships. `mxl.tar.gz` is byte-identical in both records — 1,894,335,797 bytes
+#: — so it cannot tell them apart; the CSV can. Checked against the Zenodo API
+#: on 2026-09-06, and the owner's own archive is the January one.
+ZENODO_BY_CSV_BYTES = {
+    209_574_867: "14648209",  # version 5, 16 January 2025
+    225_399_738: "15571083",  # version 8, 1 June 2025
+}
+
+
+def zenodo_record_for(header: dict) -> str:
+    """
+    The record id this archive came from, or `unknown`.
+
+    Asking the owner to remember which of two five-year-old record ids he
+    downloaded is a way of getting a wrong answer written down for good: the
+    number ends up in every provenance row and nothing ever checks it. The
+    archive already says, so this reads it.
+    """
+    return ZENODO_BY_CSV_BYTES.get(header.get("csvBytes"), "unknown")
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -189,8 +210,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--table", type=Path, default=TABLE_FILE)
     parser.add_argument(
         "--record",
-        default="unknown",
-        help="the Zenodo record id this archive came from (14648209 or 15571083)",
+        default=None,
+        help="the Zenodo record id this archive came from. Left off, it is identified "
+             "from the CSV's byte count, which is the only thing that distinguishes the "
+             "two published records",
     )
     args = parser.parse_args(argv)
 
@@ -232,12 +255,22 @@ def main(argv: list[str] | None = None) -> int:
         entry["convertedSha256"] = sha256(destination)
 
     header = dict(data.get("header", {}))
-    header["zenodoRecord"] = args.record
-    if args.record == "unknown":
+    identified = zenodo_record_for(header)
+    record = args.record or identified
+    header["zenodoRecord"] = record
+    if record == "unknown":
         header["zenodoRecordNote"] = (
-            "The owner was not asked. The CSV sha256 and the archive byte counts above "
-            "identify which archive this was, so the record id can be filled in later "
-            "without re-running anything."
+            "This archive's PDMX.csv matches neither published record's byte count. The "
+            "CSV sha256 and the byte counts above identify it, so the record id can be "
+            "filled in later without re-running anything."
+        )
+    elif args.record and identified != "unknown" and args.record != identified:
+        # Say it rather than silently obeying: a wrong id here is copied into
+        # every provenance row and nothing downstream ever checks it again.
+        header["zenodoRecordNote"] = (
+            f"Recorded as {args.record} because it was given on the command line, but "
+            f"this archive's PDMX.csv is {header.get('csvBytes')} bytes, which is record "
+            f"{identified}."
         )
     table = {
         "_comment": [
@@ -259,8 +292,12 @@ def main(argv: list[str] | None = None) -> int:
     print(f"committed {kept} file(s) to {args.scores}")
     print(f"  skipped {len(skipped)} row(s) marked drop or later")
     print(f"  table   {args.table}")
-    if args.record == "unknown":
-        print("  Zenodo record id recorded as 'unknown' — the fingerprint identifies the archive.")
+    if record == "unknown":
+        print("  Zenodo record: unknown — the CSV matches neither published record's size.")
+    elif args.record and args.record != identified and identified != "unknown":
+        print(f"  Zenodo record: {record} as given, but the CSV's size says {identified}.")
+    else:
+        print(f"  Zenodo record: {record}, identified from the CSV's byte count.")
     return 0
 
 

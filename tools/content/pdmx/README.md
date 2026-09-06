@@ -229,16 +229,21 @@ not cost you the work.
 ## 5. Commit
 
 ```powershell
-py -3.11 tools\content\pdmx\commit.py --record 14648209
+py -3.11 tools\content\pdmx\commit.py
 ```
 
 Copies the `keep` rows into `content/scores/pdmx/` and writes
 `content/sources/pdmx.json`. A row with no decision stops it.
 
-`--record` is the Zenodo record id the archive came from — `14648209` or
-`15571083`. If you do not know which, leave it off: it records `unknown`, and
-the CSV's sha256 and the archive's byte counts identify the archive well enough
-to fill the id in later without re-running anything.
+**You do not have to know the Zenodo record id.** PDMX is published twice and
+`mxl.tar.gz` is byte-identical in both — 1,894,335,797 bytes — so the tarball
+cannot tell them apart. The CSV can: 209,574,867 bytes is record **14648209**
+(version 5, January 2025) and 225,399,738 is **15571083** (version 8, June
+2025). `commit.py` reads the byte count the shortlist already recorded and
+fills the id in. **This machine's archive is 14648209.**
+
+`--record` still overrides it, and if you give one that disagrees with the CSV
+the table says so rather than quietly believing you.
 
 ## Then the ordinary build
 

@@ -1168,3 +1168,46 @@ class TestEntryPointsRunAsScripts(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+
+
+class TestZenodoRecord(unittest.TestCase):
+    """
+    Which archive this was, read off the archive rather than remembered.
+
+    PDMX is published twice. `mxl.tar.gz` is byte-identical in both records —
+    1,894,335,797 bytes — so it cannot tell them apart, and asking a person to
+    recall which of two nine-digit ids he downloaded months ago is a way of
+    getting a wrong number written into every provenance row for good. The
+    CSVs differ in size, so the CSV is the answer.
+
+    Byte counts checked against the Zenodo API on 2026-09-06.
+    """
+
+    def test_the_january_archive_is_recognised(self) -> None:
+        self.assertEqual(commit_mod.zenodo_record_for({"csvBytes": 209_574_867}), "14648209")
+
+    def test_the_june_archive_is_recognised(self) -> None:
+        self.assertEqual(commit_mod.zenodo_record_for({"csvBytes": 225_399_738}), "15571083")
+
+    def test_an_unknown_size_is_not_guessed_at(self) -> None:
+        self.assertEqual(commit_mod.zenodo_record_for({"csvBytes": 123}), "unknown")
+        self.assertEqual(commit_mod.zenodo_record_for({}), "unknown")
+
+    def test_the_two_records_are_told_apart_by_the_csv_alone(self) -> None:
+        # If a future version ever ships the same CSV size as another, this
+        # whole approach is silently wrong — so the table's keys must be unique
+        # and its values distinct.
+        sizes = list(commit_mod.ZENODO_BY_CSV_BYTES)
+        self.assertEqual(len(sizes), len(set(sizes)))
+        ids = list(commit_mod.ZENODO_BY_CSV_BYTES.values())
+        self.assertEqual(len(ids), len(set(ids)))
+
+    def test_the_owners_archive_is_the_january_one(self) -> None:
+        # Not a hypothetical: this is the fingerprint select.py wrote from the
+        # real CSV, and it is what will end up in pdmx.json.
+        candidates = REPO_ROOT / "build" / "pdmx" / "candidates.json"
+        if not candidates.is_file():
+            self.skipTest("no quarry run on this machine")
+        header = json.loads(candidates.read_text(encoding="utf-8"))["header"]
+        self.assertEqual(header["csvBytes"], 209_574_867)
+        self.assertEqual(commit_mod.zenodo_record_for(header), "14648209")
