@@ -180,7 +180,7 @@ export interface FolderScore {
  * A folder of scores the owner pointed the app at.
  *
  * The rows are kept and the *files* are not: Android grants a folder for one
- * visit only (there is no `showDirectoryPicker` on Chrome for Android), so a
+ * visit only unless a handle was kept (see `folderLibrary.ts`), so a
  * stored handle is not on offer. Keeping the listing means browsing 37,000
  * scores works with nothing plugged in; adding one asks for the folder again.
  */

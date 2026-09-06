@@ -159,12 +159,20 @@ files too, not just the ones in the archive"*). Decision note:
 wrong one for 37,261 files sitting in a folder. So there is a second door, reached from
 Library → **Browse a score folder** (`#/library/folder`):
 
-- **Pick a folder.** `<input type="file" webkitdirectory>` — the only way to hand a folder to
-  a web app on Android; `showDirectoryPicker()` does not exist there, so there is no stored
-  permission and no re-reading the folder later.
+- **Pick a folder.** `<input type="file" webkitdirectory>` — the way to hand a folder to a web
+  app on Android that is known to work, and the default. **Corrected 2026-09-06 (P19):** MDN
+  lists `showDirectoryPicker` from Chrome for Android 132; until the owner confirms it on the
+  S25 the app re-picks the folder each time, and the **Remember the score folder** setting
+  (Settings → Content, off by default) turns the stored handle on. Everything that can go
+  wrong with a handle — no API, a refused permission, a folder that moved — falls back to the
+  picker, so the worst case is the behaviour without it.
 - **The listing is kept, the files are not.** The folder's rows go into IndexedDB
   (`folderLibraries`), so browsing works with nothing plugged in, months later. Adding asks
-  for the folder again — one tap, and only when something is actually wanted.
+  for the folder again — one tap, and only when something is actually wanted — or asks Chrome
+  for permission on the stored handle, if there is one.
+- **A row is marked *Added* by its file, not its title.** PDMX has six files called *The
+  Entertainer*; matching on the title greyed out the other five as soon as one was added
+  (P19). An import that came from a folder records where it came from.
 - **The folder describes itself.** A `library.json` beside the scores supplies title,
   composer, estimated level, bars and rating; `tools/content/pdmx/manifest.py` writes one.
   Nothing about the format is PDMX-specific, and a folder without one still works — each file
@@ -338,7 +346,7 @@ accuracy.**
 
 
 Drills are not scores (`05` §7), so they get their own screen rather than a mode on §5. One
-screen with twelve faces: the chrome — prompt counter, keyboard strip, right/wrong feedback,
+screen with nineteen faces: the chrome — prompt counter, keyboard strip, right/wrong feedback,
 result sheet, progress recording — is written once, and each kind supplies only the thing the
 learner looks at.
 

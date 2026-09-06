@@ -382,7 +382,10 @@ backup, and it keeps working whether or not the folder is still there.
 Two things that will otherwise look like bugs:
 
 - **You have to pick the folder again each time you want to add something.** Android
-  only lends a folder to an app for one visit; there is no way to hold onto it. The
+  lends a picked folder to an app for one visit. Turn on **Settings -> Content -> Remember
+  the score folder** and it may not have to: MDN says Chrome for Android has been able to
+  hold onto a folder since version 132, which nothing has yet tried on your phone. If it does
+  not work the app quietly goes back to asking. The
   *listing* is saved, so browsing works any time, offline, with nothing plugged in —
   it is only adding that needs the folder in hand.
 - **Levels marked `est.` are guesses**, made from the file's statistics rather than

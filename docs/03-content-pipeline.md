@@ -83,27 +83,51 @@ Also worth knowing about `[MUTO]`: its Joplin folder holds 18 rags and each `.ly
 
 ## 3. Pipeline steps (`tools/content/build.py` orchestrates)
 
-1. `fetch.py` — clone/download sources into `content/scores/imported/<source>/` (idempotent;
-   respects `--offline`).
-2. `convert.py` — every non-MusicXML input → MusicXML via music21 / python-ly; normalise:
-   - ensure a **single piano part with two staves** (`<staves>2</staves>`); if the source has
-     two parts (RH/LH as separate parts), merge into one part with `<staff>` numbers;
-   - unroll nothing (repeats stay; OSMD's cursor unrolls at runtime);
-   - keep `<fingering>`, `<harmony>` (chord symbols), `<sound tempo>`; add a default
-     `<sound tempo>` from `tempoBpm` metadata if missing;
-   - strip lyrics for instrumental items unless `keepLyrics: true`;
-   - write compressed `.mxl`.
-3. `generate_exercises.py` — produce `[GEN]` items + their catalog entries.
-4. `author.py` — compile `authored/*.abc` and `*.py` into MusicXML, attach metadata from the
-   YAML front-matter of each ABC file.
-5. `validate.py` — schema-check `catalog.json`/`curriculum.json`; every referenced file
-   exists; every curriculum option id exists in the catalog; every item renders in OSMD
-   headless (Node + jsdom or Playwright) without exceptions and yields ≥ 1 ScoreStep;
-   duration sanity (5 s – 20 min); license present.
-6. `render_check.py` — Playwright screenshot of the first 2 bars of every item to
-   `build/previews/*.png` for eyeballing (Sonnet reviews them in batches, flags broken ones).
-7. Output to `app/public/content/`: `catalog.json`, `curriculum.json`, `scores/**.mxl`,
-   `lessons/**.md`, `audio/<soundfont>`.
+*Rewritten 2026-09-06 (P19) from the steps `build.py` actually runs. The seven-step list that
+stood here was the plan before the importers and the drill content existed, and it put the
+render check in the wrong place.*
+
+In order, each writing its own catalog fragment so that a duplicate id between two sources is
+caught by the merge rather than by whichever wrote last:
+
+1. **fetch** (`fetch.py`) — clone or download the sources into
+   `content/scores/imported/<source>/`. Idempotent; `--offline` skips it, and a source that
+   cannot be reached is a smaller build rather than a failed one.
+2. **import [MT]** (`import_musetrainer.py`) — the MuseTrainer library, against the table in
+   `content/sources/musetrainer.json`. Normalises through `convert.py` where the file needs
+   it. A file whose *composition* is not public domain is bundled under `--personal` and is a
+   placeholder otherwise; both builds carry the same ids (P19).
+3. **import [KERN]** (`import_kern.py`) — Humdrum `**kern` editions (Sapp's Joplin, the Chopin
+   first editions) via music21. CC BY-NC editions are bundled only with `--allow-nc`.
+4. **import [PDMX]** (`import_pdmx.py`) — the reviewed slice of the PDMX quarry from
+   `content/sources/pdmx.json`, checksummed against what was reviewed. `--personal` bundles the
+   ones whose composition is not public domain; a strict build placeholders them.
+5. **generate [GEN]** (`generate_exercises.py`) — scales, arpeggios, Hanon-style cells, harmony
+   families, rhythm rows: 934 items, levelled from a table.
+6. **author [AUTH]** (`author.py`) — the hand-written ABC and music21 sources, with metadata
+   from each file's YAML front-matter.
+7. **merge catalog** — the fragments into one `catalog.json`, with `content/sources/sections.json`
+   attached as `teaching.sections`.
+8. **curriculum, lessons, tips** — copied through from `content/`, with the schemas and the
+   level model.
+9. **validate** (`validate.py`) — everything in §4 and more: schemas, every referenced file
+   present, every curriculum option in the catalog, the three-alternative floor, finders, tips
+   files, section bar numbers, track definitions, orphan exercises, licences, and the committed
+   ladder report. It also writes each rung's `needs` block into the built curriculum. This is
+   the step that fails a build.
+10. **render check** (`render_check.py`, only with `--render`) — opens every item in a real
+    Chromium through the app's own loader, compares the cursor's step count against the model's,
+    captures the console, records the printed bar count and the measured duration, and
+    remembers what it measured so the next build engraves only what changed. Because it writes
+    durations back into the catalog, **validate runs again after it**.
+
+Output is `app/public/content/`: `catalog.json`, `curriculum.json`, `scores/**.mxl`,
+`lessons/**.md`, `tips/*.md`, `level-model.json`, `audio/<soundfont>`.
+
+Two flavours come out of the same table (`00` D10a, D23): `--personal` is the owner's and
+carries everything; `--strict-license` is what CI and the Pages deploy run and turns the rest
+into placeholders. They differ in four fields — `file`, `importHint`, `tags` and
+`source.checksum` — and in nothing else, which is checked.
 
 ### 3a. What the build remembers between runs (P11)
 
