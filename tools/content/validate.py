@@ -299,7 +299,7 @@ def main() -> None:
     catalog = load(args.dir / "catalog.json")
     assert isinstance(catalog, list)
     personal = [item["id"] for item in catalog if NC_PERSONAL_TAG in (item.get("tags") or [])]
-    print(f"content validation OK: {args.dir} ({len(catalog)} catalog items)")
+    print(f"content validation of {args.dir}:")
     curriculum = load(args.dir / "curriculum.json")
     assert isinstance(curriculum, dict)
     lessons = [
@@ -348,6 +348,11 @@ def main() -> None:
             f"NOTE: {len(personal)} item(s) are CC BY-NC and bundled for a personal build "
             "(docs/00 D10a). Do not deploy this build publicly."
         )
+
+    # Last, so the build's one-line summary of this step is the verdict and the
+    # item count rather than whichever detail happened to print last — the same
+    # rule the importers follow. Everything above is the detail behind it.
+    print(f"content validation OK: {args.dir} ({len(catalog)} catalog items)")
 
 
 if __name__ == "__main__":
