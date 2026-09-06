@@ -14,8 +14,8 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 
 export const DB_NAME = 'pianopath';
-/** 2 adds `levelOverrides` (replan §1.4). */
-export const DB_VERSION = 2;
+/** 2 adds `levelOverrides` (replan §1.4); 3 adds `folderLibraries` (docs/04 §4b). */
+export const DB_VERSION = 3;
 
 export type ProgressStatus = 'new' | 'started' | 'passed' | 'mastered';
 
@@ -102,6 +102,43 @@ export interface LevelOverrideRow {
   at: string;
 }
 
+/** One score sitting in a folder on the phone (docs/04 §4b). */
+export interface FolderScore {
+  /** Path relative to the picked folder, e.g. `bb/Qmbb4….mxl`. The identity. */
+  file: string;
+  title: string;
+  composer: string;
+  /** Estimated, not measured, when it came from a manifest — the row says so. */
+  level: number | null;
+  bars: number | null;
+  status: string;
+  style: string;
+  rating: number;
+  ratings: number;
+  views: number;
+  lyrics: boolean;
+  /** The manifest's own title is mojibake; only the source has the real one. */
+  garbled: boolean;
+  museScore: string;
+}
+
+/**
+ * A folder of scores the owner pointed the app at.
+ *
+ * The rows are kept and the *files* are not: Android grants a folder for one
+ * visit only (there is no `showDirectoryPicker` on Chrome for Android), so a
+ * stored handle is not on offer. Keeping the listing means browsing 37,000
+ * scores works with nothing plugged in; adding one asks for the folder again.
+ */
+export interface FolderLibraryRow {
+  /** The folder's own name, which is all Android tells us about where it is. */
+  id: string;
+  addedAt: string;
+  /** From the folder's `library.json`, when it had one. */
+  source: string | null;
+  scores: FolderScore[];
+}
+
 interface PianoPathDb extends DBSchema {
   settings: { key: string; value: unknown };
   progress: { key: string; value: ProgressRow };
@@ -112,6 +149,7 @@ interface PianoPathDb extends DBSchema {
   micCalibration: { key: string; value: unknown };
   skills: { key: string; value: SkillRow };
   levelOverrides: { key: string; value: LevelOverrideRow };
+  folderLibraries: { key: string; value: FolderLibraryRow };
 }
 
 let dbPromise: Promise<IDBPDatabase<PianoPathDb> | null> | null = null;
@@ -141,12 +179,22 @@ export function openDatabase(): Promise<IDBPDatabase<PianoPathDb> | null> {
       if (oldVersion < 2) {
         db.createObjectStore('levelOverrides', { keyPath: 'itemId' });
       }
+      if (oldVersion < 3) {
+        db.createObjectStore('folderLibraries', { keyPath: 'id' });
+      }
     },
   }).catch(() => null);
   return dbPromise;
 }
 
-/** Every store name, in the order an export writes them. */
+/**
+ * Every store name, in the order an export writes them.
+ *
+ * `folderLibraries` is deliberately absent. It is a 6 MB listing of files that
+ * are on the phone anyway, rebuilt by pointing at the folder again — putting
+ * it in the backup would multiply the size of the one file that holds a year
+ * of practice, to save a single tap.
+ */
 export const STORE_NAMES = [
   'settings',
   'progress',

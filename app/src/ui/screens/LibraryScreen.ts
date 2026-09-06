@@ -176,6 +176,12 @@ export function LibraryScreen(router: Router): HTMLElement {
       'div.row',
       {},
       button('Import a score', () => picker.click(), { id: 'library-import', variant: 'primary' }),
+      // One file at a time is the wrong tool for a folder of thousands, so
+      // the folder browser is a screen of its own rather than a mode of this
+      // button (docs/04 §4b).
+      button('Browse a score folder', () => router.navigate('library', 'folder'), {
+        id: 'library-folder',
+      }),
       picker,
     ),
     status,

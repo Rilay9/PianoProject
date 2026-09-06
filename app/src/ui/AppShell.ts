@@ -11,6 +11,7 @@ import { MidiScreen } from './screens/MidiScreen';
 import { DiagnosticsScreen } from './screens/DiagnosticsScreen';
 import { MetronomeScreen } from './screens/MetronomeScreen';
 import { SkillsScreen } from './screens/SkillsScreen';
+import { FolderScreen } from './screens/FolderScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ChordChartScreen } from './screens/ChordChartScreen';
 import { DrillScreen } from './screens/DrillScreen';
@@ -40,6 +41,7 @@ const SUB_SCREENS: Record<SubId, ScreenFactory> = {
   diagnostics: DiagnosticsScreen,
   metronome: MetronomeScreen,
   skills: SkillsScreen,
+  folder: FolderScreen,
 };
 
 function screenFor(route: Route): ScreenFactory {
