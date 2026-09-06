@@ -177,6 +177,35 @@ back for review after 1, 3, 7 and 21 days.
 You can also **share into the app** from Files or Drive — long-press a file,
 choose PianoPath.
 
+### A whole folder of scores
+
+One at a time is fine for a score you bought. For a folder of thousands there is
+**Library → Browse a score folder**.
+
+Copy the folder onto the phone first — internal storage or an SD card, anywhere the
+file picker can see it. Then tap **Pick a folder** and choose it. The app reads what
+is in there and lists it: search by title or composer, narrow by level or style, or
+tick *rated 4+ by 5+ people* to see only what a lot of other people liked.
+
+Tap **Add** on anything you want. That copies it into your library for good, exactly
+as if you had imported it — it gets a level, it can go in a session, it is in your
+backup, and it keeps working whether or not the folder is still there.
+
+Two things that will otherwise look like bugs:
+
+- **You have to pick the folder again each time you want to add something.** Android
+  only lends a folder to an app for one visit; there is no way to hold onto it. The
+  *listing* is saved, so browsing works any time, offline, with nothing plugged in —
+  it is only adding that needs the folder in hand.
+- **Levels marked `est.` are guesses**, made from the file's statistics rather than
+  from anyone playing it. Treat them as a way to sort the shelf, not as a verdict.
+  Re-level anything that feels wrong: it is one tap on the item.
+
+If the folder came from the archive on the laptop it will have a `library.json` in
+it, which is where the titles and composers come from. A folder of your own scores
+with no such file works too — each one is listed by its filename, and takes its real
+title from inside the file when you add it.
+
 ---
 
 ## 5. Not losing your practice history

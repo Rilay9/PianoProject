@@ -110,6 +110,42 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
   offered. Anything you want judged has to arrive as MusicXML.
 - Item detail sheet: metadata, sections, practice tips, media, "Open".
 
+## 4b. Score folder (browsing files that live on the phone)
+
+Added 2026-09-06 (owner: *"I plan on putting the files on my phone… it should ask for folders
+with the data anyway and just use the CSV or the generated index to find them, and add other
+files too, not just the ones in the archive"*). Decision note:
+`docs/decisions/2026-09-06-p14-folder-library.md`.
+
+§4's import is one file at a time, which is the right shape for a score you bought and the
+wrong one for 37,261 files sitting in a folder. So there is a second door, reached from
+Library → **Browse a score folder** (`#/library/folder`):
+
+- **Pick a folder.** `<input type="file" webkitdirectory>` — the only way to hand a folder to
+  a web app on Android; `showDirectoryPicker()` does not exist there, so there is no stored
+  permission and no re-reading the folder later.
+- **The listing is kept, the files are not.** The folder's rows go into IndexedDB
+  (`folderLibraries`), so browsing works with nothing plugged in, months later. Adding asks
+  for the folder again — one tap, and only when something is actually wanted.
+- **The folder describes itself.** A `library.json` beside the scores supplies title,
+  composer, estimated level, bars and rating; `tools/content/pdmx/manifest.py` writes one.
+  Nothing about the format is PDMX-specific, and a folder without one still works — each file
+  is listed under its own name and titled from its `<work-title>` when it is added.
+- **Search, style, level range, "rated 4+ by 5+ people".** Filtering is synchronous over the
+  array; only the drawing is capped (60 rows, then "Show more").
+- **The only action on a row is "Add"**, and Add is the ordinary import (§4). After it, the
+  piece is a catalog item like any other: levelled, searchable, sessionable, in the backup,
+  and working with the folder long gone. Browsing is borrowed; adding is keeping.
+- **Levels from a manifest are estimates and say so** on the row (`level 3.3 est.`). They come
+  from the CSV proxy, not from the score.
+- **A title the manifest got wrong is never written over a good one.** The score's own
+  `<work-title>` wins; the manifest's title is used only when the score has none (`Untitled`,
+  `New Score`, or a bare CID), and never when the row is flagged `title garbled`.
+
+Not offered, deliberately: opening a score straight out of the folder without adding it. It
+would work for as long as the picker's grant lasts and then stop, and a piece you practised
+last week vanishing is worse than a tap.
+
 ## 5. Score screen (the core)
 
 Layout (landscape): notation fills the screen; a **thin control bar** auto-hides after 3 s
