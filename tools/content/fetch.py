@@ -265,7 +265,12 @@ def ledger_row(source: GitSource, dest: Path) -> LedgerRow:
     files = len([p for p in dest.glob(source.pattern) if p.is_file()])
     return LedgerRow(
         source=source.id,
-        path=str(dest.relative_to(IMPORTED_DIR)),
+        # `as_posix`, not `str`: the ledger is keyed on (source, path) so a
+        # re-fetch updates its row in place, and `str()` gives backslashes on
+        # Windows — which made every source append a second row instead,
+        # `kern\joplin` alongside the `kern/joplin` a Linux run had written.
+        # The file is the provenance record; it must not depend on who ran it.
+        path=dest.relative_to(IMPORTED_DIR).as_posix(),
         url=source.url,
         license=source.license,
         pd_region=source.pd_region,

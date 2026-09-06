@@ -72,15 +72,15 @@ def write_slice(source_score, low: int, high: int, keep_lyrics: bool) -> Path | 
     that breaks a file the app never sees. What has to be narrowed down is the
     thing the pipeline produces.
     """
-    from convert import ConversionError, normalise, write_mxl
+    from convert import normalise, write_mxl
 
     dest = slice_path(low, high)
     try:
         excerpt = source_score.measures(low, high)
         normalised, _ = normalise(excerpt, keep_lyrics=keep_lyrics, tempo_bpm=None)
         write_mxl(normalised, dest)
-    except (ConversionError, Exception) as exc:  # noqa: BLE001 - a slice that will
-        # not even convert is not the defect we are hunting; say so and move on.
+    except Exception as exc:  # noqa: BLE001 - a slice that will not even convert
+        # is not the defect we are hunting; say so and carry on with the search.
         print(f"  (bars {low}-{high}: could not be written — {type(exc).__name__}: {exc})")
         return None
     return dest
@@ -128,8 +128,6 @@ def render_batch(probes: list[Probe]) -> None:
 
 def measure_xml(source_score, low: int, high: int) -> str:
     """The failing measures as MusicXML text, which is what a bug report needs."""
-    from music21 import converter  # noqa: F401  (kept: music21 must be importable here)
-
     excerpt = source_score.measures(low, high)
     written = excerpt.write("musicxml")
     return Path(str(written)).read_text(encoding="utf-8", errors="replace")

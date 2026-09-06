@@ -169,7 +169,10 @@ test.describe('content render check', () => {
 
     const manifest = loadManifest();
     const wanted = limit > 0 ? items.slice(0, limit) : items;
-    prunePreviews(new Set(wanted.map((item) => item.id)));
+    // Pruned against the whole catalog, not against `wanted`: under --limit the
+    // items outside the slice are still current, and deleting their previews
+    // would make a quick spot-check destroy the rest of the gallery.
+    prunePreviews(new Set(items.map((item) => item.id)));
 
     // console.error/warn per item (replan §7.2). Attached once: openDevScore
     // navigates the same Page, so the listener survives every reopen.
