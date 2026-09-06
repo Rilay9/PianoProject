@@ -627,22 +627,7 @@
    "variantLabel": "alternative edition"
   },
   "Mozart_-_Piano_Sonata_No._16_-_Allegro.mxl": {
-   "id": "song.classical.mozart-k545-i.alt",
-   "title": "Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)",
-   "composer": "Wolfgang Amadeus Mozart",
-   "publishedYear": 1805,
-   "level": 7.1,
-   "abrsmGradeApprox": 6,
-   "tracks": [
-    "classical"
-   ],
-   "concepts": [
-    "alberti-bass",
-    "scale-runs",
-    "sonata-form"
-   ],
-   "variantOf": "song.classical.mozart-k545-i",
-   "variantLabel": "alternative edition"
+   "exclude": "render: throws inside OpenSheetMusicDisplay's SkyBottomLineCalculator (\"start index of line is greater than the end index\") and draws nothing, and unlike the primary K545 edition it cannot be normalised out of the way — music21 refuses it with \"incorrect accidental 9.0 for pitch F3\" in measure 18, which is a corrupt edition rather than an unusual one. The primary edition (song.classical.mozart-k545-i) is normalised, renders, and is what lesson classical.7 offers; nothing referenced this variant."
   },
   "Nocturne_No._20_in_C_Minor.mxl": {
    "id": "song.classical.chopin-nocturne-20",
@@ -845,7 +830,8 @@
     "alberti-bass",
     "scale-runs",
     "sonata-form"
-   ]
+   ],
+   "normalise": "render: the MuseScore 1.2 export throws inside OpenSheetMusicDisplay's SkyBottomLineCalculator (\"start index of line is greater than the end index\") and draws nothing. A music21 round-trip renders it with 2006 steps, so it is normalised rather than copied verbatim. Lesson classical.7 offers this piece, so losing it was not an option."
   },
   "Sonate_No._14_Moonlight_1st_Movement.mxl": {
    "id": "song.classical.beethoven-moonlight-i",
