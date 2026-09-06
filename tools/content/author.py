@@ -132,7 +132,9 @@ def entry_from_metadata(
             url=meta.get("sourceUrl"),
             license=str(meta.get("license", "CC0")),
             pd_region=str(meta.get("pd_region", "worldwide")),
-            fetchedAt=utc_now(),
+            # Authored here, not fetched from anywhere: a timestamp would be
+            # the build's clock dressed up as provenance.
+            fetchedAt=None,
             checksum=sha256_file(dest),
             editionNotes=meta.get("editionNotes") or pd_note,
         ),

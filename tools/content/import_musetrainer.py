@@ -33,7 +33,17 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from common import CONTENT_SRC, IMPORTED_DIR, SourceBlock, catalog_item, read_json, sha256_file, utc_now, write_json  # noqa: E402
+from common import (  # noqa: E402
+    CONTENT_SRC,
+    IMPORTED_DIR,
+    SourceBlock,
+    catalog_item,
+    ledger_fetched_at,
+    read_json,
+    sha256_file,
+    utc_now,
+    write_json,
+)
 from licensing import Verdict, composition_verdict  # noqa: E402
 
 TABLE_PATH = CONTENT_SRC / "sources" / "musetrainer.json"
@@ -113,7 +123,9 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
     items: dict = table["items"]
     report = ImportReport()
     entries: list[dict] = []
-    fetched_at = utc_now()
+    # The ledger records when the clone actually happened; `utc_now()` is only
+    # the fallback for a library that is present with no ledger row.
+    fetched_at = ledger_fetched_at("musetrainer") or utc_now()
 
     scores_out = out_dir / "scores" / "imported"
     scores_out.mkdir(parents=True, exist_ok=True)

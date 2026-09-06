@@ -37,6 +37,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import functools
 import os
 import re
 import sys
@@ -45,7 +46,29 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from common import CONTENT_SRC, IMPORTED_DIR, SourceBlock, catalog_item, read_json, sha256_file, utc_now, write_json  # noqa: E402
+from common import (  # noqa: E402
+    CONTENT_SRC,
+    IMPORTED_DIR,
+    SourceBlock,
+    catalog_item,
+    ledger_fetched_at,
+    read_json,
+    sha256_file,
+    utc_now,
+    write_json,
+)
+
+
+@functools.lru_cache(maxsize=None)
+def repo_fetched_at(repo_name: str) -> str | None:
+    """
+    When this repository's bytes actually arrived, from the provenance ledger.
+
+    Cached because it is asked once per catalog item and answered once per
+    repository. `None` when the ledger has no row — the caller falls back to
+    now, which is the old behaviour and the only honest answer available.
+    """
+    return ledger_fetched_at(f"kern/{repo_name}")
 from licensing import (  # noqa: E402
     NC_PERSONAL_TAG,
     LicenseDecision,
@@ -676,7 +699,7 @@ def build_entry(
             url=repo_meta.get("url"),
             license=stated_license,
             pd_region="worldwide",
-            fetchedAt=fetched_at,
+            fetchedAt=repo_fetched_at(repo_name) or fetched_at,
             checksum=checksum,
             editionNotes=" ".join(
                 part for part in (spec.get("editionNotes"), repo_meta.get("editionNotes")) if part

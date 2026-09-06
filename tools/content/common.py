@@ -154,16 +154,39 @@ class LedgerRow:
         return cls(cells[0], cells[1], cells[2], cells[3], cells[4], cells[5], cells[6], files)
 
 
+def read_ledger(path: Path = SOURCES_MD) -> dict[tuple[str, str], LedgerRow]:
+    """Every row currently in SOURCES.md, keyed by (source, path)."""
+    existing: dict[tuple[str, str], LedgerRow] = {}
+    if not path.exists():
+        return existing
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("|") or line.startswith("| source") or set(line) <= set("| -"):
+            continue
+        row = LedgerRow.from_markdown(line)
+        if row is not None:
+            existing[row.key()] = row
+    return existing
+
+
+def ledger_fetched_at(source_path: str, path: Path = SOURCES_MD) -> str | None:
+    """
+    When the bytes under `source_path` were last actually fetched.
+
+    The catalog's `fetchedAt` used to be `utc_now()` at *import* time, which is
+    two things wrong: it says a source was fetched now when the clone may be
+    days old, and it changes on every build, so two builds of untouched sources
+    produce different catalogs. The ledger is the record of what happened, so
+    the catalog quotes it.
+    """
+    for (_, row_path), row in read_ledger(path).items():
+        if row_path == source_path:
+            return row.fetched
+    return None
+
+
 def update_ledger(rows: list[LedgerRow], path: Path = SOURCES_MD) -> None:
     """Merges `rows` into SOURCES.md, replacing any row with the same key."""
-    existing: dict[tuple[str, str], LedgerRow] = {}
-    if path.exists():
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if not line.startswith("|") or line.startswith("| source") or set(line) <= set("| -"):
-                continue
-            row = LedgerRow.from_markdown(line)
-            if row is not None:
-                existing[row.key()] = row
+    existing = read_ledger(path)
     for row in rows:
         existing[row.key()] = row
 
