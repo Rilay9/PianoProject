@@ -48,7 +48,7 @@ import {
   webMidiSource,
 } from '../../app/services';
 import type { InputNoteEvent } from '../../midi/types';
-import { OsmdView } from '../../score/OsmdView';
+import type { OsmdView } from '../../score/OsmdView';
 import { KeyboardStrip } from '../KeyboardStrip';
 import { rhythmRow, staffCard } from '../StaffCard';
 import { onScreenDispose } from '../screenLifecycle';
@@ -451,13 +451,25 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (!xml) return;
     const key = `${String(target.index)}:${xml.length}`;
     notation?.dispose();
-    notation = new OsmdView(host, { drawFingerings: false, timingLabel: 'drill.osmd' });
+    notation = null;
     notationFor = key;
-    void notation
-      .load(xml)
-      .then(() => {
+    // Loaded when a drill actually has notation in it, which most do not.
+    //
+    // A static import here put OpenSheetMusicDisplay — the app's largest
+    // dependency, about a megabyte — back into the entry bundle, because this
+    // screen *is* in the entry bundle: the drill route is not lazy, and it
+    // should not be, since Today's warm-up row is usually a drill. P9 took
+    // OSMD out of the entry chunk (1,576 kB → 227 kB, Lighthouse 77 → 98) by
+    // making the Score screen lazy, and this import quietly put it back, which
+    // is why the audit read 77 again.
+    void import('../../score/OsmdView')
+      .then(async ({ OsmdView }) => {
         if (disposed || notationFor !== key) return;
-        notation?.render();
+        const view = new OsmdView(host, { drawFingerings: false, timingLabel: 'drill.osmd' });
+        notation = view;
+        await view.load(xml);
+        if (disposed || notationFor !== key) return;
+        view.render();
       })
       .catch((cause: unknown) => {
         status.textContent = `That exercise could not be drawn: ${String(cause)}`;

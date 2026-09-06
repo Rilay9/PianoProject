@@ -252,6 +252,34 @@ test.describe('offline', () => {
   });
 
   // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
+  test('the engraver is not in the entry bundle (P19)', async () => {
+    // P9 took OpenSheetMusicDisplay out of the first paint by making the Score
+    // screen lazy: entry 1,576 kB → 227 kB, Lighthouse 77 → 98. A later static
+    // `import { OsmdView }` in DrillScreen — which is *not* lazy, because
+    // Today's warm-up row is usually a drill — put it straight back, and the
+    // only thing that noticed was an audit nobody runs in CI. So the shape is
+    // asserted here instead: whoever adds the next import gets a failing test
+    // rather than a slower app.
+    const entry = readdirSync(resolve('dist/assets')).find(
+      (name) => name.startsWith('index-') && name.endsWith('.js'),
+    );
+    expect(entry, 'no entry chunk in dist/assets').toBeTruthy();
+    const code = readFileSync(resolve('dist/assets', entry!), 'utf8');
+    // Markers from inside the library, not its name: the name appears in the
+    // entry chunk legitimately, as the destructuring of a dynamic import.
+    for (const marker of ['SkyBottomLine', 'vexflow']) {
+      expect(
+        code.includes(marker),
+        `${marker} is in the entry chunk: something imports the engraver without a dynamic import`,
+      ).toBe(false);
+    }
+    // A ceiling with room in it, not the current number: this is a guard
+    // against a megabyte arriving, not a budget to shave.
+    const kib = Math.round(code.length / 1024);
+    expect(kib, `entry chunk is ${String(kib)} KiB`).toBeLessThan(600);
+  });
+
+  // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
   test('and nothing under content/ is served without being precached (P19)', async () => {
     // The inverse of the test above, and the one that catches a *new kind of
     // file* rather than a new file. Every check here so far asks "is this
