@@ -66,13 +66,6 @@ def load_item_labels(path: Path = TRACKS_FILE) -> tuple[str, ...]:
     return tuple(label["id"] for label in data.get("itemLabels", []))
 
 
-    if not path.exists():
-        return ()
-    data = read_json(path)
-    assert isinstance(data, dict)
-    return tuple(track["id"] for track in data.get("tracks", []))
-
-
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
