@@ -25,7 +25,7 @@ Measured on this machine, `build.py --offline`, 790 catalog items:
 
 | | cold (`rm -rf build/cache`) | warm |
 |---|---|---|
-| wall clock | **27 min 12 s** | **5 min 12 s** |
+| wall clock | **27 min 12 s** | **76 s** on an idle machine (5 min 12 s under load) |
 | `[KERN]` | 169 converted | **169 cached, 0 converted** |
 | `[AUTH]` | 32 converted | **32 cached, 0 converted** |
 | `[MT]` | 9 converted | 8 cached, 1 converted |
@@ -34,12 +34,12 @@ The one `[MT]` file that converts every run is the Chopin edition whose 2048th-n
 music21 refuses to export. `cached_convert` does not cache failures, so it is attempted and
 falls back to a verbatim copy each time, which is the existing behaviour and correct.
 
-**The cache did not get the build to the "about a minute" §1.3 hoped for, and the reason is
-worth writing down: conversion is no longer the expensive step.** `generate_exercises.py`
-builds 426 exercises with music21 on every run and nothing caches that, because they are
-generated rather than converted. It is now the bulk of a no-change build. Making the
-generator incremental is a P12a-sized job and is listed as a follow-up rather than smuggled
-in here.
+A no-change build hits §1.3's "about a minute" when nothing else is competing for the
+machine. What is left in it is **`generate_exercises.py`**, which rebuilds 426 exercises with
+music21 every run because they are generated rather than converted, and nothing caches that.
+Making the generator incremental is a P12a-sized job and is a follow-up rather than something
+smuggled in here — but it did have to become *reproducible* (§2), because until it was, the
+render check re-engraved all 426 on every run.
 
 ## 2. Conversions had to become reproducible first
 
@@ -59,6 +59,11 @@ archive with a fixed 1980 timestamp. The ids are internal cross-references and `
 what MuseScore and Finale emit anyway; ids someone actually chose are left alone. Verified by
 converting all 35 authored items twice with the cache off and diffing: byte-identical, where
 three of them changed every run before.
+
+`generate_exercises.py` had the same defect and was missed at first, because it wrote scores
+with `sc.write()` instead of going through `write_mxl`. All 426 generated exercises therefore
+changed bytes on every build, and the render manifest — keyed on exactly those bytes — re-engraved
+every one of them each run. Two independent generator runs are now `diff -r` identical.
 
 ## 3. The render check is incremental, and no longer blind
 
@@ -209,11 +214,19 @@ assignment or the conversion is putting both staves on one.
 and useful — a Gnossienne is written without barlines, so its eleven "bars" are
 enormous. The check is doing what §7.3 asked and the piece is fine.
 
-**58,852 console lines, one distinct message:** `SkyBottomLineCalculator: width
-not > 0 in measure N`, emitted once per measure by almost every item. Nothing
-had ever seen it — and it turned out to be the check's own zero-width probe
-reporting itself, which is exactly what §7.2 was for. Capturing the console is
-what made the false failures explicable instead of mysterious.
+**The console capture found the check's own defect.** The first run produced
+58,852 lines, every one of them `SkyBottomLineCalculator: width not > 0 in
+measure N`. That was the zero-width probe reporting itself, and capturing it is
+what made the false failures explicable rather than mysterious — exactly what
+§7.2 was for.
+
+With the probe fixed the same library produces **five** console lines, and all
+five are worth having: four scores warn "Not enough lines for SkyBottomLine
+calculation" (BWV 565, the Moonlight first movement, the first Ballade,
+Greensleeves) and `song.classical.chopin-nocturne-op32-2.nifc` logs a
+`MusicSheetReadingException` that OSMD swallows — it renders, so no other check
+would ever have mentioned it. The manifest went from 4.4 MB to 263 KB with the
+noise gone.
 
 ## 8. What the bisector found: the thirteen Chopin scores, explained
 
