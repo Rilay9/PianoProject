@@ -88,6 +88,19 @@ export function ScoreScreen(router: Router): HTMLElement {
   section.dataset.screen = 'score';
 
   const itemId = router.route.score ?? '';
+  /**
+   * Blind mode (replan §8): the engraving is hidden, everything else runs.
+   *
+   * Deliberately *not* a different engine path. The model, the expectations,
+   * the scoring and the keyboard strip are identical — the only difference is
+   * that the SVG is not shown, so the run is judged exactly as a sighted one
+   * is and the two numbers are comparable. That comparability is the feature:
+   * "play it from memory at 90 % of what you got with the score" only means
+   * something if both were measured the same way.
+   */
+  const blind = router.route.blind === true;
+  /** A performance run (replan §8): one pass, no restarts, no loop. */
+  const performanceRun = router.route.performance === true;
   let item: CatalogItem | undefined;
   let model: ScoreModel | null = null;
   let renderer: WindowRenderer | null = null;
@@ -111,6 +124,15 @@ export function ScoreScreen(router: Router): HTMLElement {
   const stage = document.createElement('div');
   stage.className = 'score-stage';
   stage.id = 'score-stage';
+  if (blind) {
+    // Hidden, not unmounted: the renderer still needs a box to lay out into,
+    // and the cursor still tracks — it is simply not drawn where he can see
+    // it. `visibility` rather than `display` keeps the layout stable so the
+    // keyboard strip does not jump when a run starts.
+    stage.classList.add('score-stage--blind');
+    stage.setAttribute('aria-hidden', 'true');
+    section.dataset.blind = 'true';
+  }
   section.appendChild(stage);
 
   const status = document.createElement('p');
@@ -413,7 +435,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (!session || !model) return;
     sheet.hidden = true;
     const midi = getMidiSettings();
-    const loop = loopBars ? session.loopForMeasures(loopBars.from, loopBars.to) : undefined;
+    // A performance is one pass through. Looping a section mid-performance is
+    // practising, and the flag would then be recording something that did not
+    // happen.
+    const loop =
+      loopBars && !performanceRun ? session.loopForMeasures(loopBars.from, loopBars.to) : undefined;
     session.start({
       mode,
       hands,
@@ -586,6 +612,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         durationMs: score.durationMs,
         passed: outcome.passed,
         masterEligible: outcome.masterEligible,
+        ...(performanceRun ? { performance: true } : {}),
       }).catch((cause: unknown) => {
         status.textContent = `Could not save this run: ${String(cause)}`;
       });

@@ -26,6 +26,29 @@ function passedIds(records: PassRecord[]): Set<string> {
  * another exercise. Forcing a song there was making the rule lie: unit 3.6 is about
  * accompaniment patterns and no song in the library tests one.
  */
+/**
+ * Does this rung's mastery rule demand a number the app has to measure?
+ *
+ * A paper piece can finish a repertoire rung: the owner played it, the app
+ * could not see it, and his word is the only evidence there was ever going to
+ * be. It cannot finish a rung whose rule is `dynamics-contrast>=1.6` or
+ * `20-keys-in-40s>=0.95`, because those are claims about a measurement, and
+ * accepting a self-report for them would be recording a number nobody took.
+ *
+ * The test is deliberately syntactic — a comparison against a number — rather
+ * than a list of rung ids. A list would go stale the first time a rung was
+ * added; this reads the rule the rung actually states.
+ */
+export function demandsMeasuredAccuracy(lesson: Lesson): boolean {
+  const custom = lesson.mastery.custom;
+  return custom !== undefined && /[<>]=?\s*\d/.test(custom);
+}
+
+/** True when a self-assessed pass on paper may count towards this rung (replan §5.2). */
+export function paperPassAllowed(lesson: Lesson): boolean {
+  return !demandsMeasuredAccuracy(lesson);
+}
+
 export function lessonComplete(
   lesson: Lesson,
   records: PassRecord[],
@@ -33,7 +56,16 @@ export function lessonComplete(
 ): boolean {
   const passed = passedIds(records);
   const exercises = lesson.exerciseOptions.filter((id) => passed.has(id)).length;
-  const songs = lesson.songOptions.filter((id) => passed.has(id)).length;
+  // A registered book piece counts as one of the rung's songs, on the same
+  // terms as anything else — except that a *self-assessed* pass on paper is
+  // refused where the rung's rule demands a measurement (replan §5.2).
+  const selfPassed = new Set(
+    records.filter((record) => record.passed && record.selfPassed).map((record) => record.itemId),
+  );
+  const paper = (lesson.paperOptions ?? []).filter(
+    (id) => passed.has(id) && (paperPassAllowed(lesson) || !selfPassed.has(id)),
+  ).length;
+  const songs = lesson.songOptions.filter((id) => passed.has(id)).length + paper;
   const { exercisesRequired } = lesson.mastery;
   // docs/04 §7 "require 2 songs per lesson [off]": the stricter rule for
   // anyone who wants it. It cannot apply to a lesson with no song that tests

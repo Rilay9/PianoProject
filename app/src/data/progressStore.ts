@@ -22,6 +22,14 @@ export interface RunResult {
   passed: boolean;
   masterEligible: boolean;
   selfReport?: 'rough' | 'ok' | 'clean';
+  /** Paper runs (replan §5.3). See `SessionRow`. */
+  steadinessMs?: number;
+  notesHeard?: number;
+  bpm?: number;
+  /** A performance run (replan §8): no restarts, no loop. */
+  performance?: boolean;
+  /** The pass is the owner's word, not a measurement. */
+  selfPassed?: boolean;
 }
 
 export const DEFAULT_WEEKLY_GOAL_MINUTES = 150;
@@ -92,6 +100,10 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   row.bestAccuracy = Math.max(row.bestAccuracy, result.accuracy);
   if (result.passed) row.bestTempoPct = Math.max(row.bestTempoPct, result.tempoPct);
 
+  // A pass the owner asserted rather than the app measured keeps saying so,
+  // and one that was measured clears the flag: playing it properly is a
+  // stronger claim than having said you could, and it should replace it.
+  if (result.passed) row.selfPassed = result.selfPassed ?? false;
   if (result.passed && !row.passedOn.includes(date)) row.passedOn.push(date);
   if (result.masterEligible && row.passedOn.length >= 2) row.status = 'mastered';
   else if (result.passed) row.status = row.status === 'mastered' ? 'mastered' : 'passed';
@@ -110,6 +122,10 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
     durationMs: result.durationMs,
     at: now.toISOString(),
     ...(result.selfReport === undefined ? {} : { selfReport: result.selfReport }),
+    ...(result.steadinessMs === undefined ? {} : { steadinessMs: result.steadinessMs }),
+    ...(result.notesHeard === undefined ? {} : { notesHeard: result.notesHeard }),
+    ...(result.bpm === undefined ? {} : { bpm: result.bpm }),
+    ...(result.performance ? { performance: true } : {}),
   };
 
   const db = await openDatabase();

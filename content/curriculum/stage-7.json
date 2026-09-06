@@ -99,7 +99,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or a two-part invention or a Scarlatti sonata from an album you own. An urtext edition is worth using here — the ornaments matter and editors disagree about them."
             }
           ]
         },

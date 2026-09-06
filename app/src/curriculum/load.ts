@@ -10,6 +10,7 @@
 import type { CatalogItem, Curriculum } from './types';
 import { indexCatalog, type CatalogIndex } from './selectors';
 import { importedCatalogItems, onImportsChange } from '../data/importStore';
+import { allShelfPieces, type ShelfPiece } from '../data/booksStore';
 import { getSettings, onSettingsChange } from '../data/settingsStore';
 import { applyLevelOverrides, onLevelOverridesChange } from '../data/levelOverrides';
 
@@ -93,9 +94,52 @@ export function overlayImports(curriculum: Curriculum, imports: CatalogItem[]): 
   };
 }
 
+/**
+ * Appends registered book pieces to the rungs they answer (replan §5.2).
+ *
+ * The same mechanism as `overlayImports`, and separate from it because the two
+ * lists mean different things: a `songOption` is something the app can open, a
+ * `paperOption` is something on a shelf in the room. The lesson page shows
+ * them apart for that reason, and `lessonComplete` treats a self-assessed
+ * paper pass more carefully than a measured one.
+ */
+export function overlayShelf(curriculum: Curriculum, pieces: ShelfPiece[]): Curriculum {
+  const byLesson = new Map<string, string[]>();
+  for (const entry of pieces) {
+    for (const lessonId of entry.piece.lessonIds) {
+      const list = byLesson.get(lessonId);
+      if (list) list.push(entry.itemId);
+      else byLesson.set(lessonId, [entry.itemId]);
+    }
+  }
+  if (byLesson.size === 0) return curriculum;
+
+  return {
+    ...curriculum,
+    stages: curriculum.stages.map((stage) => ({
+      ...stage,
+      units: stage.units.map((unit) => ({
+        ...unit,
+        lessons: unit.lessons.map((lesson) => {
+          const extra = byLesson.get(lesson.id);
+          if (!extra) return lesson;
+          const existing = new Set(lesson.paperOptions ?? []);
+          const added = extra.filter((id) => !existing.has(id));
+          if (added.length === 0) return lesson;
+          return { ...lesson, paperOptions: [...(lesson.paperOptions ?? []), ...added] };
+        }),
+      })),
+    })),
+  };
+}
+
 export async function loadCurriculum(): Promise<Curriculum> {
-  const [curriculum, imported] = await Promise.all([fetchCurriculum(), importedCatalogItems()]);
-  return overlayImports(curriculum, imported);
+  const [curriculum, imported, shelf] = await Promise.all([
+    fetchCurriculum(),
+    importedCatalogItems(),
+    allShelfPieces(),
+  ]);
+  return overlayShelf(overlayImports(curriculum, imported), shelf);
 }
 
 /**

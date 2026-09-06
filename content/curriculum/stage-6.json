@@ -93,7 +93,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or a Romantic miniature from your own shelf: a Song Without Words, a Grieg lyric piece, a Schumann album leaf. Anything where the melody has to sing above its own accompaniment."
             }
           ]
         },

@@ -2035,6 +2035,23 @@
       }
     },
     {
+      "id": "memorising",
+      "display": "Memorising",
+      "finder": {
+        "skill": "playing a piece from memory rather than from the page",
+        "levelWords": "moderate, Grade 2 to 3, short pieces worth memorising",
+        "constraints": [
+          "a short piece of 16 to 40 bars",
+          "clear repeating sections"
+        ],
+        "avoid": [
+          "long through-composed pieces",
+          "anything you cannot already play"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
       "id": "meter-5-4",
       "display": "Five-four time",
       "finder": {

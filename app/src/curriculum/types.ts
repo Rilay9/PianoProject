@@ -148,8 +148,24 @@ export interface Lesson {
   estimatedDays?: number;
   /** How to go and find more for this rung. Absent only on an exempt rung. */
   finder?: Finder;
+  /**
+   * What to play from a book instead, if he has one (replan §5.2).
+   *
+   * Prose, not data: "or bars 1-16 of whatever your method book gives for
+   * hands together with a held left hand". It is a sentence rather than a
+   * search because a method book is not searchable — he is looking at a shelf.
+   */
+  paperHint?: string;
+  /**
+   * Registered book pieces assigned to this rung, appended at runtime by the
+   * shelf overlay. Never in the built curriculum: the shelf lives on the
+   * phone, and nothing about which books he owns belongs in the repository.
+   */
+  paperOptions?: string[];
   /** What it is short of, written by validate.py. */
   needs?: Needs;
+  /** `[min, max]` level across this rung's options (replan §1.7). */
+  levelBand?: [number, number];
 }
 
 export interface Unit {
@@ -190,4 +206,9 @@ export interface PassRecord {
   itemId: string;
   passed: boolean;
   mastered?: boolean;
+  /**
+   * True when the pass is the learner's own word rather than a measurement —
+   * "I already know this", or a run against paper the app could not see.
+   */
+  selfPassed?: boolean;
 }

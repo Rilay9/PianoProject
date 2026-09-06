@@ -13,7 +13,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Core path (`core`)
 
-26 rung(s), stages 0–4.
+27 rung(s), stages 0–4.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
@@ -43,6 +43,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 4 | `4.4` | 5 | 3 | 4.1–5.1 | Ode to Joy (easy variation) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 4 | `4.5` | 7 | 3 | 2.2–4.5 | London Bridge Is Falling Down (2.2), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5) |
 | 4 | `4.6` | 4 | 4 | 1.5–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1) |
+| 4 | `4.7` | 3 | 3 | 1.5–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1) |
 
 ## Holiday (`holiday`)
 

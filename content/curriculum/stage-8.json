@@ -100,7 +100,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or an etude from your own copy of Czerny op. 299, Cramer, or the Chopin studies if you have them. One technical problem, sustained for a whole piece."
             }
           ]
         },

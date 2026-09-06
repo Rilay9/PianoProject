@@ -53,7 +53,12 @@ export function secondsPerSystem(bpm: number, barsPerSystem: number): number {
   return (barsPerSystem * BEATS_PER_BAR * 60) / Math.max(1, bpm);
 }
 
-export function PdfScreen(router: Router, importId: string): HTMLElement {
+/**
+ * @param openAtPage 1-based page to start on (replan §5.4). A shelf piece
+ * knows which page it is on, and opening the book at page one would waste the
+ * one fact the owner took the trouble to type in.
+ */
+export function PdfScreen(router: Router, importId: string, openAtPage?: number): HTMLElement {
   const section = el('section.screen.pdf-screen', { 'data-screen': 'pdf', 'data-mode': 'manual' });
 
   const status = el('p.status', { id: 'pdf-status', role: 'status', 'aria-live': 'polite' });
@@ -449,7 +454,14 @@ export function PdfScreen(router: Router, importId: string): HTMLElement {
         if (disposed) return;
       }
       rebuildSystems();
-      await ensurePage(systems[0]?.page ?? 0);
+      if (openAtPage !== undefined) {
+        // The first system *on* that page, not the page itself: the viewer's
+        // unit is a system, and landing between two of them would show half a
+        // stave.
+        const wanted = systems.findIndex((system) => system.page >= openAtPage - 1);
+        if (wanted !== -1) index = wanted;
+      }
+      await ensurePage(systems[index]?.page ?? 0);
       if (disposed) return;
       draw();
       status.textContent =

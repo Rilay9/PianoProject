@@ -77,7 +77,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or your book's first hands-together page: right hand melody over held whole notes in the left. Method books mark it clearly — it is the page everybody remembers being hard."
             }
           ]
         },
@@ -141,7 +142,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the page in your book where eighth notes first appear in pairs, usually with the counting printed under the notes."
             }
           ]
         },
@@ -208,7 +210,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or your book's first chord page — C, F and G as blocks in the left hand with the chord letters printed above the melody."
             }
           ]
         },
@@ -275,7 +278,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or any piece in your book that uses ties across a bar line and printed dynamics. Method books tend to introduce them together, in a slow piece."
             }
           ]
         },
@@ -344,7 +348,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or your book's first C major scale page, with the fingering printed and the thumb-under marked. A one-octave scale is what this rung wants, not two."
             }
           ]
         },

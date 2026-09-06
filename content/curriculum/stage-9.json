@@ -86,7 +86,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the largest piece on your shelf that you have always meant to learn. This rung is one piece for several months, and it should be one you chose."
             }
           ]
         },

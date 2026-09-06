@@ -25,6 +25,8 @@ import { badge, button, el, handsLabel, levelLabel, listRow } from '../widgets';
 import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 import { openFinderSheet } from '../finderSheet';
+import { openPieceSheet } from './ShelfScreen';
+import { allBooks, addBook, allShelfPieces, type ShelfPiece } from '../../data/booksStore';
 
 interface VideoLink {
   label?: string;
@@ -42,6 +44,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const videos = el('div.list', { id: 'lesson-videos' });
   const exercises = el('div.list', { id: 'lesson-exercises' });
   const songs = el('div.list', { id: 'lesson-songs' });
+  const paper = el('div.list', { id: 'lesson-paper' });
   const actions = el('div.row', { id: 'lesson-actions' });
   const needsLine = el('p.needs', { id: 'lesson-needs' });
   const findRow = el('div.row', { id: 'lesson-find' });
@@ -52,6 +55,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     el('section.block', {}, needsLine, findRow),
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
     el('section.block', {}, el('h2', { text: 'Song options' }), songs),
+    el('section.block', { id: 'lesson-paper-block' }, el('h2', { text: 'From your own books' }), paper),
     el('section.block', {}, el('h2', { text: 'Concept' }), text),
     el('section.block', {}, el('h2', { text: 'Videos' }), videos),
   );
@@ -60,6 +64,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   let curriculum: Curriculum | null = null;
   let progress = new Map<string, ProgressRow>();
   let items = new Map<string, CatalogItem>();
+  let shelf: ShelfPiece[] = [];
 
   function records(): PassRecord[] {
     return [...progress.values()].map((row) => ({
@@ -157,6 +162,96 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     );
   }
 
+  /**
+   * What the owner's own books offer for this rung (replan §5.2).
+   *
+   * Kept apart from the song options because the two are different kinds of
+   * thing: a song option is something the app can open and judge, a paper
+   * option is a page in a book in the room. Mixing them would make the list
+   * longer and the promise vaguer.
+   */
+  function drawPaper(current: Lesson): void {
+    const registered = shelf.filter((entry) => entry.piece.lessonIds.includes(current.id));
+    const rows: HTMLElement[] = registered.map((entry) => {
+      const row = progress.get(entry.itemId);
+      const badges: HTMLElement[] = [];
+      if (row && row.status !== 'new') {
+        badges.push(badge(row.selfPassed ? 'you said you can play it' : row.status, row.status));
+      }
+      if (entry.piece.itemId) badges.push(badge('has a twin', 'passed'));
+      const actions = [
+        button('Practise', () => router.navigatePaper(entry.book.id, entry.piece.id), {
+          variant: 'primary',
+        }),
+      ];
+      const twin = entry.piece.itemId;
+      if (twin) {
+        actions.push(button('With the score', () => router.navigateScore(twin), { variant: 'quiet' }));
+      }
+      return listRow({
+        title: entry.piece.title,
+        subtitle: `${entry.book.title}${entry.piece.page === undefined ? '' : ` · page ${String(entry.piece.page)}`}`,
+        badges,
+        actions,
+        dataset: { 'data-paper': entry.itemId },
+      });
+    });
+
+    if (current.paperHint) {
+      rows.unshift(el('p.paper-hint', { id: 'lesson-paper-hint', text: current.paperHint }));
+    }
+    if (registered.length === 0 && !current.paperHint) {
+      rows.push(el('p.muted', { text: 'Nothing registered from your books for this rung yet.' }));
+    }
+    // The one-tap route onto the shelf, with the rung already chosen. The
+    // whole point is that he is looking at this rung and saying his book
+    // covers it, so he should not then have to say which rung he meant.
+    rows.push(
+      el(
+        'div.row',
+        {},
+        button('I have this on paper', () => void addFromPaper(current), {
+          id: 'lesson-have-paper',
+        }),
+      ),
+    );
+    paper.replaceChildren(...rows);
+  }
+
+  async function addFromPaper(current: Lesson): Promise<void> {
+    let books = await allBooks();
+    if (books.length === 0) {
+      // With an empty shelf there is nothing to add a piece *to*, and sending
+      // him to the Shelf screen to create a book first would be the long way
+      // round from a button that promised to be short.
+      await addBook({ title: 'My book', kind: 'method' });
+      books = await allBooks();
+    }
+    const book = books[0];
+    if (!book) return;
+    // The whole rung list, so the preselected one has an option to be, and so
+    // he can move the piece to a different rung from here if he meant another.
+    const lessons = curriculum
+      ? curriculum.stages.flatMap((stage) =>
+          stage.units.flatMap((unit) =>
+            unit.lessons.map((entry) => ({ lesson: entry, stage: stage.number })),
+          ),
+        )
+      : [];
+    openPieceSheet({
+      book,
+      lessons,
+      items: [...items.values()],
+      preselectLesson: current.id,
+      onDone: () => {
+        void (async () => {
+          shelf = await allShelfPieces();
+          drawPaper(current);
+        })();
+      },
+    });
+  }
+
   function draw(): void {
     if (!lesson) return;
     exercises.replaceChildren(...lesson.exerciseOptions.map(optionRow));
@@ -173,6 +268,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     );
 
     drawNeeds(lesson);
+    drawPaper(lesson);
 
     const done = lessonComplete(lesson, records(), { requireTwoSongs: getSettings().requireTwoSongs });
     actions.replaceChildren(
@@ -239,7 +335,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   }
 
   void (async () => {
-    const [loaded, loadedItems, rows] = await Promise.all([loadCurriculum(), allItems(), allProgress()]);
+    const [loaded, loadedItems, rows, pieces] = await Promise.all([
+      loadCurriculum(),
+      allItems(),
+      allProgress(),
+      allShelfPieces(),
+    ]);
+    shelf = pieces;
     curriculum = loaded;
     items = new Map(loadedItems.map((item) => [item.id, item]));
     progress = new Map(rows.map((row) => [row.itemId, row]));
@@ -277,7 +379,6 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     } catch {
       text.replaceChildren(el('p.muted', { text: 'The lesson text is not on the device yet.' }));
     }
-    void curriculum;
   })().catch((cause: unknown) => {
     status.textContent = `That lesson could not be opened: ${String(cause)}`;
     status.classList.add('status--error');

@@ -16,9 +16,10 @@ import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 export const DB_NAME = 'pianopath';
 /**
  * 2 adds `levelOverrides` (replan §1.4); 3 adds `folderLibraries` (`04` §4b);
- * 4 gives an import the rungs it belongs to (replan §4.3).
+ * 4 gives an import the rungs it belongs to (replan §4.3); 5 adds `books` —
+ * the shelf of paper the owner already owns (replan §5.1).
  */
-export const DB_VERSION = 4;
+export const DB_VERSION = 5;
 
 export type ProgressStatus = 'new' | 'started' | 'passed' | 'mastered';
 
@@ -51,6 +52,28 @@ export interface SessionRow {
   /** ISO date-time. */
   at: string;
   selfReport?: 'rough' | 'ok' | 'clean';
+  /**
+   * Paper runs only (replan §5.3): the standard deviation of onset offset from
+   * the nearest metronome click, in ms.
+   *
+   * Absent when the metronome was off, when there was no MIDI, or when too few
+   * notes landed near a click for the number to be evidence. Its absence means
+   * "not measured" and never "measured as zero".
+   */
+  steadinessMs?: number;
+  /** Paper runs: how many note-ons were heard. Not how many were right. */
+  notesHeard?: number;
+  /** The click's tempo, when there was one. */
+  bpm?: number;
+  /**
+   * A run played as a performance (replan §8): started once, no restarts and
+   * no looping, and recorded as such whatever the accuracy came out at.
+   *
+   * The point is not the score. It is that playing a piece through for
+   * somebody is a different act from practising it, and the Progress screen
+   * lists them separately so the owner can see he has actually done it.
+   */
+  performance?: boolean;
 }
 
 export type ImportKind = 'musicxml' | 'pdf';
@@ -159,6 +182,56 @@ export interface FolderLibraryRow {
   scores: FolderScore[];
 }
 
+/**
+ * One piece inside a book on the shelf (replan §5.1).
+ *
+ * Registered by hand: the owner is looking at paper and types a page number.
+ * Nothing is scanned and nothing is inferred — that is the honest input, and
+ * it is why `page` is a number he read rather than something OMR guessed.
+ */
+export interface BookPiece {
+  id: string;
+  title: string;
+  /** Page in the book. Opens the linked PDF there, when there is one. */
+  page?: number;
+  /** Bars this piece occupies, when he wants only part of a page. */
+  bars?: [number, number];
+  /** Rungs it is an option of — the same overlay mechanism as an import. */
+  lessonIds: string[];
+  concepts: string[];
+  level?: number;
+  levelSource: 'estimated' | 'judged';
+  /**
+   * A MusicXML twin: an import, or a bundled item linked by search.
+   *
+   * This is what makes a paper piece *scorable*. With a twin the Score screen
+   * can run it properly and credit the book piece too; without one the paper
+   * screen measures only what it can actually hear (replan §5.3).
+   */
+  itemId?: string;
+}
+
+/**
+ * A book the owner owns, on paper (replan §5.1).
+ *
+ * The app has no copy of it and never will. What it has is a list of what is
+ * in it and which rung each piece answers, so a rung can say "or the
+ * equivalent in your book" and mean something specific.
+ */
+export interface BookRow {
+  /** `book.<slug>`. */
+  id: string;
+  title: string;
+  author?: string;
+  kind: 'method' | 'repertoire' | 'other';
+  /** The owner's own PDF of it, if he has one, as an import id. */
+  pdfImportId?: string;
+  /** For the PDF viewer's timed mode. Per book, not per open. */
+  barsPerSystem?: number;
+  pieces: BookPiece[];
+  addedAt: string;
+}
+
 interface PianoPathDb extends DBSchema {
   settings: { key: string; value: unknown };
   progress: { key: string; value: ProgressRow };
@@ -170,6 +243,7 @@ interface PianoPathDb extends DBSchema {
   skills: { key: string; value: SkillRow };
   levelOverrides: { key: string; value: LevelOverrideRow };
   folderLibraries: { key: string; value: FolderLibraryRow };
+  books: { key: string; value: BookRow };
 }
 
 let dbPromise: Promise<IDBPDatabase<PianoPathDb> | null> | null = null;
@@ -222,6 +296,12 @@ export function openDatabase(): Promise<IDBPDatabase<PianoPathDb> | null> {
           })();
         }
       }
+      if (oldVersion < 5) {
+        // The shelf (replan §5.1). A whole store rather than a field, because
+        // a book is a thing in its own right: it has pieces, and a piece has
+        // its own rungs, page and level.
+        db.createObjectStore('books', { keyPath: 'id' });
+      }
     },
   }).catch(() => null);
   return dbPromise;
@@ -245,6 +325,7 @@ export const STORE_NAMES = [
   'micCalibration',
   'skills',
   'levelOverrides',
+  'books',
 ] as const;
 
 export type StoreName = (typeof STORE_NAMES)[number];

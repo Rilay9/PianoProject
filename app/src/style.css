@@ -1765,3 +1765,30 @@ body {
   padding: 0.5rem;
   font-size: 1rem;
 }
+
+/* --- Blind mode and the paper screen (replan §5, §8) -------------------- */
+
+/* Hidden, not removed: the renderer still lays out and the cursor still
+   tracks, so a blind run is scored exactly as a sighted one is. `visibility`
+   rather than `display` keeps the box, so the keyboard strip does not jump
+   when the run starts. */
+.score-stage--blind {
+  visibility: hidden;
+}
+
+.paper-readout {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  margin: 0.5rem 0;
+}
+
+.paper-timer {
+  font-size: 2rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.paper-notes {
+  color: var(--muted);
+}

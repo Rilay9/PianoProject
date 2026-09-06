@@ -412,6 +412,36 @@ def finder_errors(curriculum: dict) -> list[str]:
     return errors
 
 
+def paper_hint_errors(curriculum: dict) -> list[str]:
+    """
+    replan §5.2: the rungs where a book almost certainly has an equivalent.
+
+    Every Stage 1-5 core rung and every classical rung. Those are the ones a
+    method book or a graded album covers — the owner has that material on a
+    shelf whether or not the app has any, and a rung that stayed silent about
+    it would be pretending the shelf is not there.
+
+    Elsewhere it is optional and deliberately so: nothing in a method book
+    trains tritone substitution, and inventing a hint for those rungs would be
+    filling a field rather than answering a question.
+    """
+    errors: list[str] = []
+    for stage in curriculum.get("stages", []):
+        number = stage.get("number", 0)
+        for unit in stage.get("units", []):
+            track = unit.get("track")
+            required = (track == "core" and 1 <= number <= 5) or track == "classical"
+            for lesson in unit.get("lessons", []):
+                if not required or lesson.get("optionsExempt"):
+                    continue
+                if not (lesson.get("paperHint") or "").strip():
+                    errors.append(
+                        f"lesson {lesson['id']}: a {track} rung at Stage {number} needs a "
+                        "paperHint — the owner's own books cover this one (replan §5.2)"
+                    )
+    return errors
+
+
 def unknown_concepts(curriculum: dict) -> list[str]:
     """Every concept a lesson names has to have a display name and a finder."""
     known = {c["id"] for c in curriculum.get("concepts", [])}
@@ -528,6 +558,7 @@ def main() -> None:
         errors += validate_curriculum(curriculum, catalog, args.min_options)
         errors += finder_errors(curriculum)
         errors += unknown_concepts(curriculum)
+        errors += paper_hint_errors(curriculum)
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.

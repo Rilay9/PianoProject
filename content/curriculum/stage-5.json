@@ -76,7 +76,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or a sonatina from an album you own — Clementi op. 36 and Kuhlau op. 20 are the usual ones — or a short Romantic character piece."
             }
           ]
         },

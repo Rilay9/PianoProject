@@ -48,12 +48,14 @@ export function ProgressScreen(router: Router): HTMLElement {
   const heat = el('div.heatmap', { id: 'progress-heatmap', role: 'img', 'aria-label': 'Practice minutes by day' });
   const repertoire = el('div.list', { id: 'progress-repertoire' });
   const history = el('div.list', { id: 'progress-history' });
+  const performances = el('div.list', { id: 'progress-performances' });
   const dataBlock = el('div.block', { id: 'progress-data' });
 
   body.append(
     summary,
     el('section.block', {}, el('h2', { text: 'Last three months' }), heat),
     el('section.block', {}, el('h2', { text: 'Repertoire' }), repertoire),
+    el('section.block', {}, el('h2', { text: 'Performances' }), performances),
     el('section.block', {}, el('h2', { text: 'Recent sessions' }), history),
     dataBlock,
     status,
@@ -141,6 +143,35 @@ export function ProgressScreen(router: Router): HTMLElement {
     );
   }
 
+  /**
+   * Runs played as performances (replan §8).
+   *
+   * Separate from the history because it answers a different question. The
+   * history says how practice is going; this says how many times he has
+   * actually played a piece through for somebody, which is the thing that
+   * never happens unless you can see that it has not been happening.
+   */
+  function drawPerformances(sessions: SessionRow[], items: Map<string, CatalogItem>): void {
+    const runs = sessions.filter((session) => session.performance);
+    performances.replaceChildren(
+      ...(runs.length > 0
+        ? runs.slice(0, 20).map((session) =>
+            listRow({
+              title: items.get(session.itemId)?.title ?? session.itemId,
+              subtitle: session.at.slice(0, 16).replace('T', ' '),
+              meta: `${String(Math.round(session.accuracy * 100))}% at ${String(session.tempoPct)}% · ${minutesLabel(session.durationMs / 60_000)}`,
+              badges: [badge('performance', 'passed')],
+              dataset: { 'data-performance': session.id ?? 0 },
+            }),
+          )
+        : [
+            el('p.muted', {
+              text: 'No performances yet. A performance is one run through with no restarts and no looping — start one from the Score screen.',
+            }),
+          ]),
+    );
+  }
+
   function drawHistory(sessions: SessionRow[], items: Map<string, CatalogItem>): void {
     history.replaceChildren(
       ...(sessions.length > 0
@@ -148,9 +179,21 @@ export function ProgressScreen(router: Router): HTMLElement {
             listRow({
               title: items.get(session.itemId)?.title ?? session.itemId,
               subtitle: `${session.at.slice(0, 16).replace('T', ' ')} · ${session.mode}`,
-              meta: `${String(Math.round(session.accuracy * 100))}%${
-                session.accuracyEstimated ? ' (estimated)' : ''
-              } at ${String(session.tempoPct)}% · ${minutesLabel(session.durationMs / 60_000)}`,
+              // A paper run has no accuracy and must not be printed as 0 %:
+              // the app could not see the notes, and a zero would read as a
+              // verdict rather than as an absence (replan §5.3).
+              meta:
+                session.mode === 'paper'
+                  ? [
+                      `${String(session.notesHeard ?? 0)} note(s) heard`,
+                      session.steadinessMs === undefined
+                        ? 'steadiness not measured'
+                        : `±${String(session.steadinessMs)} ms`,
+                      minutesLabel(session.durationMs / 60_000),
+                    ].join(' · ')
+                  : `${String(Math.round(session.accuracy * 100))}%${
+                      session.accuracyEstimated ? ' (estimated)' : ''
+                    } at ${String(session.tempoPct)}% · ${minutesLabel(session.durationMs / 60_000)}`,
               badges: session.selfReport ? [badge(session.selfReport)] : [],
               dataset: { 'data-session': session.id ?? 0 },
             }),
@@ -235,6 +278,7 @@ export function ProgressScreen(router: Router): HTMLElement {
     drawSummary(rows, streak.minutesByDay, streak.weeklyGoalMinutes);
     drawHeatmap(streak.minutesByDay);
     drawRepertoire(rows, byId);
+    drawPerformances(sessions, byId);
     drawHistory(sessions, byId);
     drawData();
   }

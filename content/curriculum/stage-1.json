@@ -81,7 +81,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the first right-hand piece in your method book — anything in C position, one hand, quarter and half notes. Almost every method book opens with three or four of them."
             }
           ]
         },
@@ -152,7 +153,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or whichever page of your book first mixes half notes, whole notes and rests. In a method book this is usually the second or third unit, still in C position."
             }
           ]
         },
@@ -218,7 +220,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or your book's first left-hand page: bass clef, five fingers in one place, nothing crossing. Method books usually give it right after the right-hand version of the same tune."
             }
           ]
         },
@@ -286,7 +289,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or any piece in your book where the hands take turns rather than play together — often called 'hands alternating' or printed with one staff resting while the other moves."
             }
           ]
         },
@@ -356,7 +360,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the sight-reading section at the back of your book, if it has one. Any short piece you have not played before will do; steps and skips are the point, not the tune."
             }
           ]
         }

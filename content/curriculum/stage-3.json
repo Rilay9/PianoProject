@@ -72,7 +72,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the first pieces in G major and F major in your book, where the key signature replaces the accidentals."
             }
           ]
         },
@@ -138,7 +139,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or your book's I-IV-V7 page in G or F — usually a chord drill followed by a short piece using the same three chords."
             }
           ]
         },
@@ -203,7 +205,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the first A minor piece in your book, and the harmonic minor scale page beside it if there is one."
             }
           ]
         },
@@ -268,7 +271,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or any piece in your book that uses ledger lines or an 8va, with the hands well apart. Method books introduce these with a piece that spans the keyboard."
             }
           ]
         },
@@ -335,7 +339,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or your book's first pedal page — the one with the pedal marks printed under the bass staff and a slow, chordal piece to try them on."
             }
           ]
         },
@@ -402,7 +407,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or any piece in your book with a broken-chord or waltz left hand: Alberti bass, or bass note then two chords in three time."
             }
           ]
         },
@@ -471,7 +477,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or a minuet or gavotte from an album you own — the Anna Magdalena notebook, or the Baroque section of a graded anthology."
             }
           ]
         },

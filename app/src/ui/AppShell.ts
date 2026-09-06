@@ -12,6 +12,8 @@ import { DiagnosticsScreen } from './screens/DiagnosticsScreen';
 import { MetronomeScreen } from './screens/MetronomeScreen';
 import { SkillsScreen } from './screens/SkillsScreen';
 import { FolderScreen } from './screens/FolderScreen';
+import { ShelfScreen } from './screens/ShelfScreen';
+import { PaperScreen } from './screens/PaperScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ChordChartScreen } from './screens/ChordChartScreen';
 import { DrillScreen } from './screens/DrillScreen';
@@ -42,6 +44,7 @@ const SUB_SCREENS: Record<SubId, ScreenFactory> = {
   metronome: MetronomeScreen,
   skills: SkillsScreen,
   folder: FolderScreen,
+  shelf: ShelfScreen,
 };
 
 function screenFor(route: Route): ScreenFactory {
@@ -60,6 +63,10 @@ function screenFor(route: Route): ScreenFactory {
   if (route.drill) {
     const drillId = route.drill;
     return (router) => DrillScreen(router, drillId);
+  }
+  if (route.paper) {
+    const { bookId, pieceId } = route.paper;
+    return (router) => PaperScreen(router, bookId, pieceId);
   }
   if (route.importFor) {
     // Library, but told which rung the import is for (replan §4.3).
@@ -173,8 +180,9 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
       );
     } else if (route.pdf) {
       const pdfId = route.pdf;
+      const page = route.pdfPage;
       currentScreen = mountLazyScreen(main, setCurrent, () =>
-        import('./screens/PdfScreen').then(({ PdfScreen }) => PdfScreen(router, pdfId)),
+        import('./screens/PdfScreen').then(({ PdfScreen }) => PdfScreen(router, pdfId, page)),
       );
     } else {
       currentScreen = screenFor(route)(router);

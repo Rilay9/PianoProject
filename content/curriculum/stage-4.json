@@ -65,7 +65,8 @@
                   "chromatic scales"
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the scale section of your book, or a separate scale manual if you have one: C, G, D and A hands together, two octaves, with the printed fingering."
             }
           ]
         },
@@ -128,7 +129,8 @@
                   "one-octave only"
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or your book's flat-key and minor scale pages — F, B flat and E flat major, and both forms of the minor."
             }
           ]
         },
@@ -188,7 +190,8 @@
                   "broken sevenths"
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or the arpeggio pages in your book or scale manual, plus any piece that uses inversions or slash chords."
             }
           ]
         },
@@ -260,7 +263,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or Hanon itself if you have it — the first five exercises. Czerny op. 599 or op. 139 do the same job if that is what is on your shelf."
             }
           ]
         },
@@ -322,7 +326,8 @@
                   "changing time signatures every bar"
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or any piece in your book in 6/8, or one that uses triplets against a steady beat. Method books usually introduce compound time with a lilting tune."
             }
           ]
         },
@@ -382,6 +387,66 @@
                   "famous tunes you already know by ear",
                   "fast tempos",
                   "frequent accidentals"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              },
+              "paperHint": "Or the sight-reading pieces at the back of your book, played once through without stopping. Choose ones you have never opened."
+            },
+            {
+              "id": "4.7",
+              "title": "Learning it from memory",
+              "concepts": [
+                "memorising",
+                "performance-mode",
+                "phrase-shaping"
+              ],
+              "textFile": "lessons/4.7.md",
+              "exerciseOptions": [
+                "drill.reading.sight-reading-3",
+                "exercise.interval-reading.c-position.right.07",
+                "exercise.interval-reading.c-position.left.07"
+              ],
+              "songOptions": [
+                "song.classical.beethoven-fur-elise.easy",
+                "song.classical.petzold-minuet-g-bwv-anh114",
+                "song.classical.pachelbel-canon-d.easy"
+              ],
+              "mastery": {
+                "exercisesRequired": 0,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.9,
+                "custom": "two clean passes, then blind at >=0.9"
+              },
+              "estimatedDays": 21,
+              "levelBand": [
+                1.5,
+                5.1
+              ],
+              "paperHint": "Or memorise something out of your own book — a piece you already play well and have stopped needing to read. The page is what you are trying to do without, so it hardly matters which page it was.",
+              "finder": {
+                "skill": "playing a piece you already know from memory, without the score",
+                "levelWords": "moderate, Grade 2 to 3, short pieces worth memorising",
+                "constraints": [
+                  "a short piece of 16 to 40 bars",
+                  "clear repeating sections",
+                  "a piece you would enjoy playing to somebody"
+                ],
+                "avoid": [
+                  "long through-composed pieces",
+                  "anything you cannot already play"
+                ],
+                "examples": [
+                  {
+                    "title": "Fur Elise (easy)",
+                    "composer": "Beethoven",
+                    "note": "bundled"
+                  },
+                  {
+                    "title": "Minuet in G major, BWV Anh. 114",
+                    "composer": "Petzold",
+                    "note": "bundled"
+                  }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
               }
@@ -454,7 +519,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "paperHint": "Or a Grade 1 piece from a graded album on your shelf, with the articulation as printed rather than as you would like it."
             }
           ]
         },
