@@ -367,10 +367,12 @@ criteria. Schema at `content/curriculum.schema.json`.
 
   **Measured on one Windows laptop, `build.py --offline`, 790 catalog items:** a cold build
   with an empty cache is **27 min**; a warm one is **76 s** on an idle machine, with 169 of
-  169 `[KERN]` conversions and 32 of 32 `[AUTH]` conversions served from the cache. A full
-  render check of all 689 playable items is about **40 min**; a second run renders **0** and
-  reuses the manifest. Neither number is CI's — its runner is faster and starts from a
-  restored cache — but the ratios are the point.
+  169 `[KERN]` conversions and 32 of 32 `[AUTH]` conversions served from the cache.
+  `build.py --offline --render` — the content build *plus* engraving all 689 playable items
+  from an empty manifest — is **300 s**; the same command again is **81 s** and re-engraves
+  **0**, because every file's hash is already in the manifest, and the two runs produce a
+  byte-identical `catalog.json`. Neither number is CI's — its runner is faster and starts from
+  a restored cache — but the ratios are the point.
 
   Prerequisite, and worth knowing: **a conversion is now byte-reproducible.** music21 mints
   part ids from object identity and zips with the wall clock, so the same music used to

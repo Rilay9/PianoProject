@@ -67,6 +67,10 @@ every one of them each run. Two independent generator runs are now `diff -r` ide
 
 ## 3. The render check is incremental, and no longer blind
 
+Measured, `build.py --offline --render` over 790 catalog items (689 of them with a file):
+**300 s from an empty manifest, 81 s on the next run with 0 items re-engraved**, and the two
+runs produce a byte-identical `catalog.json`.
+
 `build/render-manifest.json` holds one entry per output-file sha256 — ok, steps, measures,
 duration, tempo, time and key signature, hands, cursor steps, render time, console output,
 error. A run engraves only unseen hashes and merges the remembered numbers into the report,
