@@ -12,7 +12,8 @@
  * phone it is using.
  */
 import type { Router } from '../../router';
-import { allItems } from '../../curriculum/load';
+import { allItems, loadCurriculum } from '../../curriculum/load';
+import { activeTracksFor } from '../../curriculum/tracks';
 import { getMidiSettings, updateMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -267,12 +268,16 @@ export function SettingsScreen(router: Router): HTMLElement {
   const trackRow = el('div.filter-row', { id: 'settings-tracks' });
   content.append(trackRow, contentStatus);
 
-  void getPlan().then((plan) => {
+  void Promise.all([getPlan(), loadCurriculum()]).then(([plan, curriculum]) => {
     void allItems().then((items) => {
       const tracks = [...new Set(items.flatMap((item) => item.tracks))].sort();
+      // The set Plan and Today work from, not the raw row: on a fresh phone
+      // the row says `['core']` and the data says six tracks are on, and a
+      // chip that reads as off while Today is recommending from it is a lie.
+      const active = activeTracksFor(plan, curriculum);
       trackRow.replaceChildren();
       for (const track of tracks) {
-        const on = plan.trackOrder.includes(track);
+        const on = active.includes(track);
         const node = el('button.chip', {
           type: 'button',
           text: track,
@@ -282,13 +287,16 @@ export function SettingsScreen(router: Router): HTMLElement {
         node.addEventListener('click', () => {
           const pressed = node.getAttribute('aria-pressed') === 'true';
           node.setAttribute('aria-pressed', String(!pressed));
-          void getPlan().then((current) =>
-            updatePlan({
+          // Toggling writes the *resolved* set back, so the first tap makes
+          // the defaults explicit instead of collapsing them to one track.
+          void getPlan().then((current) => {
+            const before = activeTracksFor(current, curriculum);
+            return updatePlan({
               trackOrder: pressed
-                ? current.trackOrder.filter((id) => id !== track)
-                : [...current.trackOrder, track],
-            }),
-          );
+                ? before.filter((id) => id !== track)
+                : [...before, track],
+            });
+          });
         });
         trackRow.append(node);
       }
