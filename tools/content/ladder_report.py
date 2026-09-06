@@ -38,6 +38,42 @@ def level_band(items: list[dict]) -> tuple[float, float] | None:
     return (min(levels), max(levels)) if levels else None
 
 
+#: Tags that say an item is in the owner's build only (`00` D10a, D23).
+PERSONAL_ONLY_TAGS = ("personal-build", "nc-personal-build")
+
+
+def shippable(item: dict) -> bool:
+    """
+    Whether a public build may carry this file.
+
+    False for a placeholder, and false for an item the owner's build bundles
+    under `--personal` or `--allow-nc` — those have a file in his build and
+    none in the deployed one, and the tag is what says so in both.
+    """
+    if not item.get("file"):
+        return False
+    return not any(tag in PERSONAL_ONLY_TAGS for tag in item.get("tags") or [])
+
+
+def why_not_shipped(item: dict) -> str:
+    """
+    Why an item may not ship, said the same way in either build.
+
+    The `importHint` cannot be used on its own: it is written by the strict
+    build and is absent from the personal one, where the file is right there.
+    `compositionStatus` and `source.license` are on the item in both, so the
+    two reasons that depend on the flavour are read from those, and the hint is
+    kept for the placeholders that are placeholders in every build.
+    """
+    status = item.get("compositionStatus")
+    if status and status != "pd":
+        return f"The composition is {status}; the owner's own build carries it (`00` D23)."
+    licence = (item.get("source") or {}).get("license") or ""
+    if "NC" in licence.upper().split("-") or "-NC" in licence.upper():
+        return f"The edition is {licence}; the owner's own build carries it (`00` D10a)."
+    return " ".join((item.get("importHint") or "").split())[:110]
+
+
 def render(catalog: list[dict], curriculum: dict) -> str:
     by_id = {item["id"]: item for item in catalog}
     lines: list[str] = [
@@ -111,24 +147,27 @@ def render(catalog: list[dict], curriculum: dict) -> str:
 
     # What the ladder wants and the library has not got. `02` Part D names these
     # in prose; the finder (P15) is what does something about them.
-    wanted = [
-        item
-        for item in catalog
-        if item.get("type") == "song" and not item.get("file") and item.get("importHint")
-    ]
+    # "Cannot be shipped", not "has no file in this build" — the same list
+    # either way round. The owner's `--personal` build *does* carry these files
+    # and the public one does not, and asking the question the other way made
+    # this report describe whichever build last wrote it. One report is
+    # committed and both builds are checked against it, so a report that
+    # depended on the flavour meant the other flavour always failed validation:
+    # `--personal` had done so since P14 (review C11).
+    wanted = [item for item in catalog if item.get("type") == "song" and not shippable(item)]
     lines.append("## Wanted, and not bundled")
     lines.append("")
     lines.append(
-        f"{len(wanted)} song(s) are in the catalog as placeholders: the curriculum names them and "
-        "no file may be shipped. Each carries an `importHint` saying what to do instead."
+        f"{len(wanted)} song(s) may not be shipped: the curriculum names them and the public "
+        "build carries no file for them. Each carries an `importHint` saying what to do instead."
     )
     lines.append("")
     lines.append("| id | title | level | why |")
     lines.append("|---|---|---|---|")
     for item in sorted(wanted, key=lambda i: i["id"])[:80]:
-        hint = " ".join((item.get("importHint") or "").split())[:110]
         lines.append(
-            f"| `{item['id']}` | {item['title']} | {float(item['level']):.1f} | {hint} |"
+            f"| `{item['id']}` | {item['title']} | {float(item['level']):.1f} "
+            f"| {why_not_shipped(item)} |"
         )
     if len(wanted) > 80:
         lines.append(f"| … | and {len(wanted) - 80} more | | |")

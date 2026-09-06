@@ -71,6 +71,27 @@ test.describe('the rung asking for paper', () => {
     await expect(page.locator('#lesson-paper-hint')).toContainText(/method book/i);
   });
 
+  test('with no shelf it is one line, not a section (P19 A8)', async ({ page }) => {
+    // 29 rungs carry a paper hint. A heading, a hint and an empty list on
+    // every one of them reads as nagging to someone who has registered no
+    // books, so the section collapses until there is a shelf to show.
+    await page.goto('/#/lesson/2.1');
+    await expect(page.locator('#lesson-paper-hint')).toBeVisible();
+    await expect(page.locator('#lesson-paper-block')).toBeHidden();
+    // The way onto the shelf survives the collapse, beside the finder.
+    await expect(page.locator('#lesson-find #lesson-have-paper')).toBeVisible();
+  });
+
+  test('the section comes back as soon as there is a book on the shelf', async ({ page }) => {
+    await addBookAndPiece(page, { book: 'Czerny 599', piece: 'No. 12', page: '14', lesson: '4.4' });
+    // Registered against another rung entirely: one book anywhere is enough
+    // for the section to be worth drawing.
+    await page.goto('/#/lesson/2.1');
+    await expect(page.locator('#lesson-paper-block')).toBeVisible();
+    await expect(page.locator('#lesson-paper-hint-block')).toContainText(/method book/i);
+    await expect(page.locator('#lesson-paper')).toContainText('Nothing registered');
+  });
+
   test('"I have this on paper" opens the form with the rung already chosen', async ({ page }) => {
     await page.goto('/#/lesson/3.5');
     await page.locator('#lesson-have-paper').click();

@@ -51,11 +51,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const needsLine = el('p.needs', { id: 'lesson-needs' });
   const lockLine = el('p.lesson-lock', { id: 'lesson-lock', hidden: true });
   const findRow = el('div.row', { id: 'lesson-find' });
+  // Where the paper hint lives on a rung with no books behind it (P19 A8).
+  const paperHintLine = el('p.paper-hint.muted', { id: 'lesson-paper-hint', hidden: true });
 
   body.append(
     status,
     actions,
-    el('section.block', {}, lockLine, needsLine, findRow),
+    el('section.block', {}, lockLine, needsLine, findRow, paperHintLine),
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
     el('section.block', {}, el('h2', { text: 'Song options' }), songs),
     el('section.block', { id: 'lesson-paper-block' }, el('h2', { text: 'From your own books' }), paper),
@@ -185,6 +187,35 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    */
   function drawPaper(current: Lesson): void {
     const registered = shelf.filter((entry) => entry.piece.lessonIds.includes(current.id));
+
+    // A heading, a hint and an empty list on a rung with nothing behind it is
+    // the app asking for bookkeeping the owner never agreed to — and 29 rungs
+    // carry a paper hint. With no shelf at all the whole section collapses to
+    // one muted line under the finder row, which is what the hint is: an
+    // aside, not a section. The one thing that does not collapse with it is
+    // "I have this on paper", because that is the route onto the shelf and
+    // deleting it would mean the shelf could never be started from the rung
+    // that wanted it; it moves up beside the finder instead.
+    const shelfBlock = section.querySelector('#lesson-paper-block');
+    const worthShowing = registered.length > 0 || shelf.length > 0;
+    if (shelfBlock instanceof HTMLElement) shelfBlock.hidden = !worthShowing;
+    paperHintLine.hidden = worthShowing || !current.paperHint;
+    paperHintLine.textContent = current.paperHint ?? '';
+    if (!worthShowing) {
+      // drawNeeds clears this row and runs first; the guard is for the redraw
+      // after a piece is added, which calls drawPaper on its own.
+      if (!findRow.querySelector('#lesson-have-paper')) {
+        findRow.append(
+          button('I have this on paper', () => void addFromPaper(current), {
+            id: 'lesson-have-paper',
+            variant: 'quiet',
+          }),
+        );
+      }
+      paper.replaceChildren();
+      return;
+    }
+
     const rows: HTMLElement[] = registered.map((entry) => {
       const row = progress.get(entry.itemId);
       const badges: HTMLElement[] = [];
@@ -211,9 +242,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     });
 
     if (current.paperHint) {
-      rows.unshift(el('p.paper-hint', { id: 'lesson-paper-hint', text: current.paperHint }));
+      rows.unshift(el('p.paper-hint', { id: 'lesson-paper-hint-block', text: current.paperHint }));
     }
-    if (registered.length === 0 && !current.paperHint) {
+    if (registered.length === 0) {
       rows.push(el('p.muted', { text: 'Nothing registered from your books for this rung yet.' }));
     }
     // The one-tap route onto the shelf, with the rung already chosen. The

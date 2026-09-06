@@ -46,6 +46,17 @@ from common import (  # noqa: E402
 )
 from licensing import Verdict, composition_verdict  # noqa: E402
 
+#: What a strict build says in place of a score whose composition is not free.
+#:
+#: Worded like import_pdmx's, and for the same reason: the two builds must
+#: carry the same ids or the one committed ladder report can only match one of
+#: them, and `--personal` has failed validation since P14 because of it.
+IMPORT_HINT = (
+    "Not bundled in a redistributable build: the composition is still in copyright. "
+    "The owner's personal build carries it (build with --personal); import your own "
+    "copy of the score otherwise."
+)
+
 #: Tag on an item whose *composition* is not public domain (docs/00 D23).
 #: The same tag import_pdmx.py uses: one mechanism, every source.
 PERSONAL_BUILD_TAG = "personal-build"
@@ -64,6 +75,8 @@ class ImportReport:
     excluded: list[tuple[str, str]] = field(default_factory=list)
     #: Admitted only because --personal was passed (docs/00 D23).
     personal_build: list[tuple[str, str]] = field(default_factory=list)
+    #: In the catalog as a placeholder because --personal was not passed.
+    placeheld: list[tuple[str, str]] = field(default_factory=list)
     normalised: list[tuple[str, str]] = field(default_factory=list)
     fallback: list[tuple[str, str]] = field(default_factory=list)
     missing: list[str] = field(default_factory=list)
@@ -155,10 +168,10 @@ def import_library(
         personal_build = False
         excluded = spec.get("exclude")
         if excluded:
-            if not personal and str(excluded).startswith("composition:"):
-                report.excluded.append((filename, excluded))
-                continue
             if not str(excluded).startswith("composition:"):
+                # An exclusion about the *edition* stays an exclusion in both
+                # builds: nothing granted the right to redistribute it at all,
+                # so there is no id to keep in step.
                 report.excluded.append((filename, excluded))
                 continue
             personal_build = True
@@ -171,18 +184,67 @@ def import_library(
             traditional=bool(spec.get("traditional")),
         )
         if verdict.verdict is not Verdict.BUNDLE:
-            if not personal:
-                report.excluded.append((filename, f"composition: {verdict.reason}"))
-                continue
             personal_build = True
+
+        # A composition that is not free is a *placeholder* in a strict build,
+        # never a missing id. Dropping it made the two builds' catalogs differ
+        # by six items, and one committed ladder report can only be fresh for
+        # one of them: `--personal` has failed validation since P14 because of
+        # it, and nobody ran the owner's own build to find out. import_pdmx
+        # has always done it this way.
+        placeholder = personal_build and not personal
+        why = str(spec.get("exclude") or verdict.reason)
+        if personal_build:
+            (report.placeheld if placeholder else report.personal_build).append((filename, why))
+
+        tags = ["musetrainer"]
+        if personal_build:
+            tags.append(PERSONAL_BUILD_TAG)
+
+        if placeholder:
+            # Read, not copied. The facts about the music — its tempo, key and
+            # time signature — are the same whether or not the bytes ship, and
+            # leaving them off made the two builds' catalogs differ in three
+            # more fields than they had any reason to.
+            facts = measure_facts(read_main_xml(source_path))
+            entries.append(
+                catalog_item(
+                    item_id=spec["id"],
+                    item_type="song",
+                    title=spec["title"],
+                    level=spec["level"],
+                    level_source="judged",
+                    hands="both",
+                    tracks=spec["tracks"],
+                    concepts=spec["concepts"],
+                    source=SourceBlock(
+                        name="MuseTrainer public-domain MusicXML library",
+                        url=SOURCE_URL,
+                        license=STATED_LICENSE,
+                        pd_region=spec.get("pd_region", "worldwide"),
+                        fetchedAt=fetched_at,
+                        editionNotes=spec.get("editionNotes"),
+                    ),
+                    composer=spec.get("composer"),
+                    arranger=spec.get("arranger"),
+                    genre=["classical"] if "classical" in spec["tracks"] else None,
+                    abrsmGradeApprox=spec.get("abrsmGradeApprox"),
+                    importHint=IMPORT_HINT,
+                    variantOf=spec.get("variantOf"),
+                    variantLabel=spec.get("variantLabel"),
+                    tempoBpm=facts["tempoBpm"],
+                    keySig=facts["keySig"],
+                    timeSig=facts["timeSig"],
+                    compositionStatus="in-copyright",
+                    tags=tags,
+                )
+            )
+            report.imported.append(filename)
+            continue
 
         xml = read_main_xml(source_path)
         reasons = normalisation_reasons(xml)
         dest = scores_out / (spec["id"] + ".mxl")
-        tags = ["musetrainer"]
-        if personal_build:
-            tags.append(PERSONAL_BUILD_TAG)
-            report.personal_build.append((filename, str(spec.get("exclude") or verdict.reason)))
         if reasons:
             from convert import cached_convert  # imported late: music21 is slow to load
 
@@ -240,6 +302,9 @@ def import_library(
                 tempoBpm=facts["tempoBpm"],
                 keySig=facts["keySig"],
                 timeSig=facts["timeSig"],
+                # The same label import_pdmx writes, so the field means one
+                # thing across the three pipelines and agrees with the tag.
+                compositionStatus="in-copyright" if personal_build else "pd",
                 tags=tags,
             )
         )
@@ -279,6 +344,10 @@ def main() -> None:
         sys.exit(0)
 
     report = import_library(args.out, args.catalog, limit=args.limit, personal=args.personal)
+    if report.placeheld:
+        print(f"placeholders (not --personal) {len(report.placeheld)}:")
+        for name, why in report.placeheld:
+            print(f"  {name}: {why}")
     if report.personal_build:
         print(f"personal build only {len(report.personal_build)}:")
         for name, why in report.personal_build:
