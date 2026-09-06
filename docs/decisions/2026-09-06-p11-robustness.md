@@ -148,11 +148,116 @@ scale set the generator produces beyond what any rung names. They are not broken
 invisible to anyone following the plan. Reported now, a failure from P12b (§7.5), which is
 the phase that gives the generated backbone somewhere to live.
 
-## 7. What the bisector found
+## 7. What the first full render check found
 
-<!-- BISECTOR -->
+The blind spots were not hypothetical. The first run of the new check over all
+790 items reported this, and every line of it is something the previous check
+could not have said:
 
-## 8. Two things fixed on the way that were not in the prompt
+**Cursor-step parity: 0 mismatches in 689 items.** The invariant that had only
+ever run on the 41 fixtures holds across the whole library. That is the result
+worth having — it is now checked rather than assumed, on every new file.
+
+**One score does not render at all.** `song.classical.chopin-nocturne-20.alt`
+throws inside OSMD's `SkyBottomLineCalculator` and draws nothing. It was being
+copied verbatim by `import_musetrainer` on the stated assumption that "the
+original still renders", because music21 cannot export its measure 59. Nothing
+had tested the assumption. The bisector answered it in one run: the same
+2048th-note tuplet that keeps Op. 25 no. 7 out of the library. Excluded, with
+the reason in `musetrainer.json`; the primary edition of the same nocturne is
+bundled, renders, and nothing referenced the variant.
+
+**Six durations between 22 and 40 minutes**, all Chopin, all reporting exactly
+96 bpm — `DEFAULT_TEMPO_BPM`. The NIFC first editions state no tempo, so the
+converter inserts a neutral one and the model faithfully reports how long a
+scherzo takes at 96. The measurement is of the placeholder, not the music.
+`apply_durations` now refuses to write a duration the validator would reject
+and reports it instead. **Giving those editions real tempos is content work and
+is a follow-up** — it also affects the pieces short enough to stay inside the
+bound, which are wrong by the same factor and say nothing about it.
+
+**Seven items claim `hands: both` and the model sees one hand** — six left, one
+right, all NIFC Chopin. Reported, not failed, because it is a content-accuracy
+question rather than a pipeline one, but it is a real lead: an extractor that
+sees no right hand in a Chopin mazurka is either mis-reading the staff
+assignment or the conversion is putting both staves on one.
+
+**One pace flag:** `song.classical.satie-gnossienne-1`, 17.2 s per bar. Correct
+and useful — a Gnossienne is written without barlines, so its eleven "bars" are
+enormous. The check is doing what §7.3 asked and the piece is fine.
+
+**58,852 console lines, one distinct message:** `SkyBottomLineCalculator: width
+not > 0 in measure N`, emitted once per measure by almost every item. Nothing
+had ever seen it. It is the same subsystem as the crash above, which is the
+first thing to pull on if that defect is ever chased upstream.
+
+## 8. What the bisector found: the thirteen Chopin scores, explained
+
+**It is a rounded tuplet duration, and it was never the beams.**
+
+`tools/content/bisect_render.py` was pointed at the Op. 9 no. 2 nocturne's kern
+source. Five halvings, each rendering both candidate ranges in one browser round
+trip:
+
+```
+37 measures
+checking the whole score renders as badly as reported…
+  confirmed: BadArguments:Invalid note initialization object: {}
+  probing bars 1-19 and bars 20-37…    1-19  FAILS
+  probing bars 1-10 and bars 11-19…   11-19  FAILS
+  probing bars 11-15 and bars 16-19…  16-19  FAILS
+  probing bars 16-17 and bars 18-19…  16-17  FAILS
+  probing bars 16-16 and bars 17-17…  16-16  FAILS
+smallest failing range: measure 16
+```
+
+Bar 16 is a **13-in-8 tuplet of thirty-seconds** at `divisions=10080`. music21
+writes each tuplet note as **1163** divisions. Thirteen of them come to 15119 —
+one short of the 15120 they have to fill — so the bar totals 60479 where a full
+6/8 is 60480, and OSMD builds a note out of the leftover nothing. 10080 is not
+divisible by 13, so **no integer duration can express this tuplet**: it is a
+writer defect at least as much as a renderer one.
+
+The measure is committed as
+`app/tests/fixtures/scores/edge/known-issues/osmd-empty-note.musicxml` and
+`scoreModelKnownIssues.test.ts` asserts the throw, following the P2 pattern. It
+reproduces in a one-second jsdom test, where P10 had a 20-second browser
+timeout and no name for it.
+
+**One hypothesis was tested and rejected, which is worth recording because it
+looked so convincing.** The bisector's own output showed eighth notes carrying
+`<beam number="1">` through `<beam number="17">`; across that one score 249
+notes carry more beams than their printed type allows and the worst carries 46.
+Extending `clean_beams()` to drop them was written, and the measure still
+failed with the beams gone. The change was reverted rather than shipped: it
+alters the engraving of 249 notes in one score alone, and the evidence for it
+had evaporated. P10's "beams ruled out" was right.
+
+**The thirteen stay excluded**, and now with a cause. The fix belongs in
+`convert.py` — choose a `divisions` value divisible by every tuplet's
+`actual-notes`, or hand the remainder to the last note of the tuplet — and is a
+follow-up rather than this phase's work, because it changes the timing of every
+converted file by up to one division and needs a full render check to confirm
+it is safe. That check now exists and costs one weekly job.
+
+**Upstream issue text**, for opensheetmusicdisplay:
+
+> **Title:** `Invalid note initialization object: {}` on a tuplet whose
+> durations do not sum to its span
+>
+> **Version:** 2.1.2. **Repro:** the attached single measure — a 13-in-8 tuplet
+> of 32nds with `divisions=10080`, each tuplet note `<duration>1163</duration>`.
+> 13 × 1163 = 15119, one division short of the 15120 the tuplet spans; the
+> measure totals 60479 against a 6/8 bar of 60480.
+>
+> **Expected:** the measure renders, with the rounding absorbed or reported.
+> **Actual:** `load()` throws `Invalid note initialization object: {}` from
+> VexFlow before anything is drawn, so the whole score is lost rather than one
+> bar. MusicXML has no way to express a 13-tuplet at a `divisions` value not
+> divisible by 13, so writers will keep producing this; treating a short
+> remainder as a rest, or clamping it, would degrade gracefully.
+
+## 9. Other things fixed on the way
 
 **An unreachable source crashed the fetch.** `reachable()` let `subprocess.TimeoutExpired` out
 of `git ls-remote`, so a source the probe could not reach aborted the whole fetch instead of
@@ -172,7 +277,7 @@ rebuilt the very catalog it had been handed to measure — so the numbers it wro
 have described a different build from the one under test. The web server now runs `build:app`
 (icons, `tsc`, `vite build`, no content).
 
-## 9. Follow-ups
+## 10. Follow-ups
 
 - **The generator is now the slow step** (§1). Caching or incrementalising
   `generate_exercises.py` would take a no-change build from five minutes to well under one.
@@ -180,6 +285,16 @@ have described a different build from the one under test. The web server now run
   builds of unchanged sources still differ in the catalog. The honest value is in
   `content/scores/imported/SOURCES.md`, which records the actual fetch per source. Changing it
   is a provenance decision, not a pipeline one, so it is left here rather than taken.
+- **The thirteen Chopin scores now have a cause** (§8): fix the tuplet rounding in
+  `convert.py`, re-admit them in `kern.json`, and let the full render check confirm it.
+  Op. 25 no. 7 and the MuseTrainer nocturne are the same family — music21 cannot express
+  their durations at all — so a `divisions` fix may re-admit those too.
+- **Six Chopin editions state no tempo**, so their durations are computed at the neutral
+  96 bpm and come out between 22 and 40 minutes. The render check no longer writes them,
+  but the pieces short enough to stay inside the bound are wrong by the same factor and
+  say nothing about it. They need real tempos in `kern.json`.
+- **Seven items claim `hands: both` where the model sees one hand**, all NIFC Chopin.
+  Either the staff assignment or the extractor is wrong; the flag now says which items.
 - **Failed conversions are not cached**, so the one `[MT]` file that cannot be exported is
   retried every build. Cheap, but it is the reason `[MT]` never reads "0 converted".
 - **Windows consoles need `PYTHONUTF8=1`.** `build.py` prints `→` in its summary and the
