@@ -23,7 +23,8 @@ the on-device checks in `docs/OWNER-GUIDE.md`.
 | P7 | Today / Plan / Library / Progress / Settings, storage, own-score import, PDF viewer | built |
 | P8 | Drills UI | built |
 | P9 | Performance, error boundary, offline, PWA audit, APK toolchain | built; the APK itself and every on-device check are yours — see `docs/OWNER-GUIDE.md` |
-| P10 | Stages 6–9 content | next |
+| P10 | Stages 6–9 content | built · 802 items, stacked at Stages 6–9 |
+| P11–P17 | the replan: pipeline robustness, a generated backbone at every level, the PDMX quarry, finders, the shelf, drill tips | **next: `prompts/P11-pipeline-robustness.md`** — see `docs/decisions/2026-09-06-p11-replan.md` and `docs/06-build-plan.md` §2 |
 
 Each phase is built by a Claude Code session (Opus 5 / Sonnet 5) from one prompt in
 `prompts/`, so progress can be staggered and the model switched between phases. Decisions taken
@@ -39,8 +40,9 @@ mid-phase are written up in `docs/decisions/`.
    URL via Chrome's "Add to Home screen" — no app-store account of any kind, and the installed
    app works fully offline (see `app/README.md`'s "Deploying" section).
 3. Start the next Claude Code session on this repo, paste `prompts/_COMMON-HEADER.md` followed
-   by the next phase prompt — **`prompts/P10-content-expansion.md`** as of 2026-09-06 — using
-   the model named in its title.
+   by the next phase prompt — **`prompts/P11-pipeline-robustness.md`** as of 2026-09-06 — using
+   the model named in its title. The order and the one phase that must run on the owner's
+   own machine (P14, the PDMX quarry) are in `docs/06-build-plan.md` §2.
 4. Use `prompts/PR-review.md` with Opus after any Sonnet phase that touches `engine/` or
    `score/`.
 

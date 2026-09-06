@@ -166,6 +166,40 @@ proves it. See `docs/decisions/2026-09-06-p10-kern-import.md`.
 
 Run 2 (`feat/p10-content-2`): the Fryderyk Chopin Institute's first editions (`pl-wnifc/humdrum-chopin-first-editions`, **CC BY 4.0** — no `--allow-nc` needed) — 169 of 183 solo-piano works — plus the rest of `craigsapp/joplin`, and classical and ragtime rungs for Stages 6-9 with 8-22 options each rather than three. Catalog 581 → 789 items. See `docs/decisions/2026-09-06-p10-chopin-and-breadth.md`.
 
+**P10 is closed as of 2026-09-06.** Run 2 is on the default branch (`a38e3b5`); what the
+prompt still listed — Hanon 21–60, Czerny, more sight-reading levels, theory lessons for
+Stages 6–9 — is re-planned below, because the library that came out of P10 is stacked at
+Stages 6–9 (236 of 326 songs) while exercises and drills stop at level 5 and the owner is at
+the bottom of the ladder. The replan and every ruling behind the phases below is
+`docs/decisions/2026-09-06-p11-replan.md`; do not start a phase without reading its sections.
+
+### The P11–P17 plan (2026-09-06)
+
+| Phase | Prompt | Needs PDMX on disk? | Where it runs |
+|---|---|---|---|
+| P11 — pipeline robustness: conversion cache, incremental render check, the blind spots, one track list, `levelSource`, the thirteen Chopin scores bisected | `prompts/P11-pipeline-robustness.md` | no | container |
+| P12a — generated backbone 1: the level table, technique families to level 8 | `prompts/P12a-generated-technique.md` | no | container |
+| P12b — generated backbone 2: harmony, ear and reading families, sight-reading 5–7, the rungs above Stage 5 for jazz, blues, chords-pop, theory, improv | `prompts/P12b-generated-harmony-ear-reading.md` | no | container |
+| P13 — PDMX quarry tooling, tested on a fixture | `prompts/P13-pdmx-tooling.md` | no | container |
+| **P14 — the quarry run, the levelling model, the ladder rewrite** | `prompts/P14-pdmx-quarry-run.md` | **yes** | **the owner's machine** |
+| P15 — finders on every rung and concept; the two-tap import | `prompts/P15-finder-and-import.md` | no | container |
+| P16 — the shelf: books, paper practice, blind mode | `prompts/P16-shelf-and-paper.md` | no | container |
+| P17 — drill tips, coaching rules, the practice-method module | `prompts/P17-drill-tips-and-practice.md` | no | container |
+
+**Order.** P11 first — everything after it ships content through the checks P11 fixes. Then
+P12a, P12b and P13 in any order (they touch different files; P13 is the natural one to run
+while the owner is not available). P14 needs P13 merged and the archive on disk; it is the
+only phase that must run on the owner's Windows machine (Python 3.11, Node 24, the pipeline
+requirements and Playwright Chromium are installed there; CI pins Node 22 and the difference
+is harmless). P15 needs nothing from P14 but is better after it, because the finders' "wanted"
+lists come from what the quarry could not find. P16 builds on P15's overlay. P17 is
+independent and can fill any gap. Each is sized to one session; if one is not, split it at
+the numbered item and record the split in its decision note, as P7 should have.
+
+**What each phase must arrive with** (from the replan §7): its `validate.py` rule, its unit
+tests, a render-check entry for any notation it produces, and a decision note. A phase that
+ships content without its check is not done.
+
 ## 3. Definition of done for the whole project (v1.0)
 
 - Owner installs the **APK**, opens Today, completes a full Stage 1 lesson with the on-screen
@@ -174,6 +208,12 @@ Run 2 (`feat/p10-content-2`): the Fryderyk Chopin Institute's first editions (`p
 - **Every skill the curriculum names has a generated exercise, and every rung offers at least
   three alternatives** (`00` D21), checked by `validate.py` rather than by eye.
 - Stages 0–4 fully populated; tracks populated to Stage 5 including the Rock & metal, Jam, and Beautiful-pieces modules; library ≥ 250 items (573 after P5b); mic follow works on the owner's HP-130 + S25 in a quiet room (measured on his recordings).
+- **Added 2026-09-06 (replan):** every track reaches Stage 9 with ≥ 3 options per rung;
+  generated exercises exist at every level 1–8 with no level holding more than a third of
+  them; every lesson carries a `finder` and a `levelBand`; the catalog carries a
+  `levelSource` on every item and the app shows estimates as estimates; a paper piece can be
+  registered against a rung; every drill has its four-section tips; the content build with
+  no changes completes in about a minute and the render check renders only what changed.
 - CI green; all budgets met on device; no console errors in a 30-minute session.
 
 ## 4. Test strategy summary
