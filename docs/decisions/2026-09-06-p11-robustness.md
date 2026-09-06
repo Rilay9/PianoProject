@@ -158,14 +158,34 @@ could not have said:
 ever run on the 41 fixtures holds across the whole library. That is the result
 worth having — it is now checked rather than assumed, on every new file.
 
-**One score does not render at all.** `song.classical.chopin-nocturne-20.alt`
-throws inside OSMD's `SkyBottomLineCalculator` and draws nothing. It was being
-copied verbatim by `import_musetrainer` on the stated assumption that "the
-original still renders", because music21 cannot export its measure 59. Nothing
-had tested the assumption. The bisector answered it in one run: the same
-2048th-note tuplet that keeps Op. 25 no. 7 out of the library. Excluded, with
-the reason in `musetrainer.json`; the primary edition of the same nocturne is
-bundled, renders, and nothing referenced the variant.
+**Three scores do not render at all**, all of them throwing inside OSMD's
+`SkyBottomLineCalculator` ("start index of line is greater than the end index")
+and drawing nothing. All three are `[MT]` files the import copies **verbatim**,
+and that is the point: `import_musetrainer`'s header says the verbatim copies
+"were already verified to render". For these three it was never true, and until
+the check could report per-item failures nothing could have said so.
+
+Two of them are **Mozart's K545 first movement**, in two editions, and lesson
+`classical.7` offers it. There is no kern edition to fall back on, so dropping
+it was not an option. A music21 round-trip fixes the primary edition — 2,006
+steps against nothing at all — so `normalisation_reasons()` gained a reason a
+file cannot state about itself, and `musetrainer.json` now says `normalise`
+with the evidence. The alternative edition is excluded: music21 refuses it too
+("incorrect accidental 9.0 for pitch F3" in bar 18), which is a corrupt edition
+rather than an unusual one, and nothing referenced it.
+
+The third, `song.classical.chopin-nocturne-20.alt`, is excluded: music21 cannot
+export its bar 59 either — the same 2048th-note tuplet that keeps Op. 25 no. 7
+out — so there is no normalising it, and the primary edition of the same
+nocturne is bundled, renders, and nothing referenced the variant.
+
+**Two things were checked before concluding any of that**, because both would
+have made the report a lie. They are *not the harness*: each was re-rendered on
+a page of its own and failed identically, and the same K545 music from a
+different source renders with 2,846 steps. And they are *not this phase's
+doing*: all three are byte-identical to their upstream files and never pass
+through `convert.py`, so the reproducibility work in §2 cannot have touched
+them.
 
 **Six durations between 22 and 40 minutes**, all Chopin, all reporting exactly
 96 bpm — `DEFAULT_TEMPO_BPM`. The NIFC first editions state no tempo, so the
@@ -295,6 +315,11 @@ have described a different build from the one under test. The web server now run
   say nothing about it. They need real tempos in `kern.json`.
 - **Seven items claim `hands: both` where the model sees one hand**, all NIFC Chopin.
   Either the staff assignment or the extractor is wrong; the flag now says which items.
+- **The render manifest never forgets.** Entries are keyed by file hash and nothing prunes
+  the ones whose file no longer exists, so it grows by one entry every time a score is
+  re-converted. It is 4.4 MB today, most of that console lines written before they were
+  deduplicated, and it is restored from the CI cache on every run. Dropping entries whose
+  hash is not in the current catalog would bound it.
 - **Failed conversions are not cached**, so the one `[MT]` file that cannot be exported is
   retried every build. Cheap, but it is the reason `[MT]` never reads "0 converted".
 - **Windows consoles need `PYTHONUTF8=1`.** `build.py` prints `→` in its summary and the

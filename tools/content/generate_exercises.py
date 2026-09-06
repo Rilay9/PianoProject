@@ -20,6 +20,7 @@ import json
 import os
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Iterable
 
 from music21 import (chord, clef, instrument, key, layout, meter, metadata, note,
@@ -178,9 +179,21 @@ def finalize(sc: stream.Score) -> stream.Score:
 
 
 def write(sc: stream.Score, out_dir: str, item_id: str) -> str:
+    """
+    Writes one generated exercise, through the same writer every other score uses.
+
+    Not `sc.write()` directly: music21 mints part ids from object identity and
+    stamps zip entries with the wall clock, so these 426 files changed bytes on
+    every build. Nothing noticed until the render check became incremental —
+    and then it re-engraved all 426 every run, because the manifest is keyed on
+    the output file's sha256 and none of them ever matched. `write_mxl` pins
+    both (see convert.normalise_archive).
+    """
+    from convert import write_mxl  # late import: music21 is slow to load
+
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, item_id + ".mxl")
-    sc.write("musicxml", fp=path)
+    write_mxl(sc, Path(path))
     return path
 
 

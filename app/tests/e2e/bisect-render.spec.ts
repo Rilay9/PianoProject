@@ -44,6 +44,16 @@ test.describe('bisect render', () => {
     page.on('pageerror', (error) => consoleLines.push(`pageerror: ${error.message}`));
 
     const driver = await openDevScore(page);
+    // The same window size the render check uses (its PREVIEW_BARS).
+    //
+    // Not cosmetic: the window size decides the layout, and the layout is what
+    // OSMD's SkyBottomLineCalculator works on. A bisector that renders under
+    // different conditions from the check can disagree with it — Mozart's K545
+    // rendered here and failed there for exactly this reason, which cost an
+    // hour of chasing the wrong difference. The tool has to reproduce the
+    // check, or its verdicts do not transfer.
+    await driver.setBars(2);
+
     const results: Result[] = [];
 
     for (const file of plan.files) {

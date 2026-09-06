@@ -627,7 +627,22 @@
    "variantLabel": "alternative edition"
   },
   "Mozart_-_Piano_Sonata_No._16_-_Allegro.mxl": {
-   "exclude": "render: throws inside OpenSheetMusicDisplay's SkyBottomLineCalculator (\"start index of line is greater than the end index\") and draws nothing, and unlike the primary K545 edition it cannot be normalised out of the way — music21 refuses it with \"incorrect accidental 9.0 for pitch F3\" in measure 18, which is a corrupt edition rather than an unusual one. The primary edition (song.classical.mozart-k545-i) is normalised, renders, and is what lesson classical.7 offers; nothing referenced this variant."
+   "id": "song.classical.mozart-k545-i.alt",
+   "title": "Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)",
+   "composer": "Wolfgang Amadeus Mozart",
+   "publishedYear": 1805,
+   "level": 7.1,
+   "abrsmGradeApprox": 6,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "alberti-bass",
+    "scale-runs",
+    "sonata-form"
+   ],
+   "variantOf": "song.classical.mozart-k545-i",
+   "variantLabel": "alternative edition"
   },
   "Nocturne_No._20_in_C_Minor.mxl": {
    "id": "song.classical.chopin-nocturne-20",
@@ -646,7 +661,21 @@
    ]
   },
   "Nocturne_in_C_sharp_Minor.mxl": {
-   "exclude": "render: OpenSheetMusicDisplay throws \"start index of line is greater than the end index\" in SkyBottomLineCalculator and draws nothing. Normalising it is not a way out either — music21 refuses to export measure 59 (\"Cannot convert inexpressible durations to MusicXML\"), the same 2048th-note tuplet that keeps Chopin's Op. 25 no. 7 out of the library. The import copied it verbatim on the assumption that the original still rendered; the render check, once it could see per-item failures and read the browser console, showed that it does not. The primary edition of the same nocturne (song.classical.chopin-nocturne-20) is bundled and renders, and nothing referenced this one."
+   "id": "song.classical.chopin-nocturne-20.alt",
+   "title": "Nocturne No. 20 in C-sharp minor (alternative edition)",
+   "composer": "Frédéric Chopin",
+   "publishedYear": 1875,
+   "level": 8.1,
+   "abrsmGradeApprox": 7,
+   "tracks": [
+    "classical"
+   ],
+   "concepts": [
+    "rubato",
+    "cantabile"
+   ],
+   "variantOf": "song.classical.chopin-nocturne-20",
+   "variantLabel": "alternative edition"
   },
   "Nocturne_in_E-flat_Major_Op._9_No._2_Easy.mxl": {
    "id": "song.classical.chopin-nocturne-op9-2.easy",
@@ -830,8 +859,7 @@
     "alberti-bass",
     "scale-runs",
     "sonata-form"
-   ],
-   "normalise": "render: the MuseScore 1.2 export throws inside OpenSheetMusicDisplay's SkyBottomLineCalculator (\"start index of line is greater than the end index\") and draws nothing. A music21 round-trip renders it with 2006 steps, so it is normalised rather than copied verbatim. Lesson classical.7 offers this piece, so losing it was not an option."
+   ]
   },
   "Sonate_No._14_Moonlight_1st_Movement.mxl": {
    "id": "song.classical.beethoven-moonlight-i",

@@ -78,28 +78,14 @@ def read_main_xml(path: Path) -> str:
         return archive.read(name).decode("utf-8", "replace")
 
 
-def normalisation_reasons(xml: str, spec: dict | None = None) -> list[str]:
-    """
-    Why a file cannot be copied verbatim, or [] when it can.
-
-    The structural reasons are read from the file. The third cannot be: this
-    module's header says the verbatim copies were "already verified to render",
-    and for two of them that was untrue — Mozart's K545 first movement threw
-    inside OSMD's SkyBottomLineCalculator and drew nothing, in a MuseScore 1.2
-    export the pipeline had passed through untouched. Round-tripping it through
-    music21 fixes it (2,006 steps against nothing at all), so the table can now
-    say `normalise` with the reason, and the render check is what decides when
-    it is needed.
-    """
+def normalisation_reasons(xml: str) -> list[str]:
+    """Why a file cannot be copied verbatim, or [] when it can."""
     reasons: list[str] = []
     parts = xml.count("<score-part ")
     if parts > 1:
         reasons.append(f"{parts} separate parts to merge into one grand staff")
     if "<sound tempo=" not in xml and "<metronome" not in xml:
         reasons.append("no tempo of its own")
-    forced = (spec or {}).get("normalise")
-    if forced:
-        reasons.append(str(forced))
     return reasons
 
 
@@ -167,7 +153,7 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
             continue
 
         xml = read_main_xml(source_path)
-        reasons = normalisation_reasons(xml, spec)
+        reasons = normalisation_reasons(xml)
         dest = scores_out / (spec["id"] + ".mxl")
         tags = ["musetrainer"]
         if reasons:
