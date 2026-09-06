@@ -169,6 +169,202 @@
               }
             }
           ]
+        },
+        {
+          "id": "jazz.6.1",
+          "title": "Jazz: comping and the walking bass",
+          "track": "jazz",
+          "lessons": [
+            {
+              "id": "jazz.6",
+              "title": "Comping, walking bass, and hearing the changes",
+              "concepts": [
+                "comping",
+                "walking-bass",
+                "shell-voicings",
+                "swing-eighths",
+                "harmonic-dictation",
+                "ii-V-I"
+              ],
+              "textFile": "lessons/jazz.6.md",
+              "exerciseOptions": [
+                "exercise.comping.c.charleston",
+                "exercise.comping.f.off-beats",
+                "exercise.walking-bass.c.blues",
+                "exercise.walking-bass.f.ii-v-i",
+                "exercise.voicing7.c.shell",
+                "drill.theory.harmonic-dictation"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "jazz.5"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "blues.6.1",
+          "title": "Blues: boogie patterns and the walking bass",
+          "track": "blues-boogie",
+          "lessons": [
+            {
+              "id": "blues.6",
+              "title": "Pinetop, Yancey, and a bass line that walks",
+              "concepts": [
+                "boogie",
+                "shuffle",
+                "walking-bass",
+                "left-hand",
+                "turnaround",
+                "twelve-bar"
+              ],
+              "textFile": "lessons/blues.6.md",
+              "exerciseOptions": [
+                "exercise.boogie.c.pinetop",
+                "exercise.boogie.f.walking-eighths",
+                "exercise.walking-bass.c.blues",
+                "exercise.turnaround.c.i-vi-ii-v",
+                "exercise.boogie.c.yancey"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "blues.5"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "chords-pop.6.1",
+          "title": "Chords & pop: the loop in every key",
+          "track": "chords-pop",
+          "lessons": [
+            {
+              "id": "chords-pop.6",
+              "title": "I–V–vi–IV everywhere, and the bass that walks under it",
+              "concepts": [
+                "four-chord-loop",
+                "voice-leading",
+                "slash-chord",
+                "roman-numerals",
+                "inversions",
+                "transposition"
+              ],
+              "textFile": "lessons/chords-pop.6.md",
+              "exerciseOptions": [
+                "exercise.loop4.d.inversions",
+                "exercise.loop4.a-flat.inversions",
+                "exercise.slash-bass.c",
+                "drill.theory.roman-numerals",
+                "exercise.loop4.b.inversions"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "chords-pop.5"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "theory.6.1",
+          "title": "Theory & ear: numerals and dictation",
+          "track": "theory-ear",
+          "lessons": [
+            {
+              "id": "theory.6",
+              "title": "Roman numerals, and writing down what you hear",
+              "concepts": [
+                "roman-numerals",
+                "harmonic-dictation",
+                "modes",
+                "transposition",
+                "ear-training",
+                "chord-progression"
+              ],
+              "textFile": "lessons/theory.6.md",
+              "exerciseOptions": [
+                "drill.theory.roman-numerals",
+                "drill.theory.harmonic-dictation",
+                "drill.theory.modes",
+                "drill.reading.transposition",
+                "drill.reading.sight-reading-5"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "theory.5"
+              ],
+              "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "improv.6.1",
+          "title": "Improv & composition: playing over changes",
+          "track": "improv-compose",
+          "lessons": [
+            {
+              "id": "improv.6",
+              "title": "Modes, guide tones, and playing over a progression",
+              "concepts": [
+                "improvisation",
+                "modes",
+                "ii-V-I",
+                "guide-tones",
+                "comping",
+                "chord-scale"
+              ],
+              "textFile": "lessons/improv.6.md",
+              "exerciseOptions": [
+                "drill.theory.modes",
+                "exercise.ii-v-i.c",
+                "exercise.comping.c.charleston",
+                "drill.jazz.chord-scale",
+                "exercise.voicing7.c.shell"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "improv.5"
+              ],
+              "estimatedDays": 90
+            }
+          ]
         }
       ]
     }

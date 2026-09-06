@@ -62,6 +62,201 @@
               "estimatedDays": 365
             }
           ]
+        },
+        {
+          "id": "jazz.9.1",
+          "title": "Jazz: playing a standard without the page",
+          "track": "jazz",
+          "lessons": [
+            {
+              "id": "jazz.9",
+              "title": "Comping, walking and soloing on one tune",
+              "concepts": [
+                "comping",
+                "walking-bass",
+                "stride",
+                "improvisation",
+                "playing-by-ear",
+                "secondary-dominants"
+              ],
+              "textFile": "lessons/jazz.9.md",
+              "exerciseOptions": [
+                "drill.theory.roman-numerals-secondary",
+                "drill.ear.tune-long",
+                "exercise.comping.e-flat.anticipated",
+                "exercise.walking-bass.b-flat.ii-v-i",
+                "exercise.stride.e-flat"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "jazz.8"
+              ],
+              "estimatedDays": 180
+            }
+          ]
+        },
+        {
+          "id": "blues.9.1",
+          "title": "Blues: your own chorus",
+          "track": "blues-boogie",
+          "lessons": [
+            {
+              "id": "blues.9",
+              "title": "Improvising over the form, and making it yours",
+              "concepts": [
+                "improvisation",
+                "twelve-bar",
+                "call-response",
+                "boogie",
+                "stride",
+                "playing-by-ear"
+              ],
+              "textFile": "lessons/blues.9.md",
+              "exerciseOptions": [
+                "drill.ear.tune-long",
+                "exercise.walking-bass.f.blues",
+                "exercise.boogie.c.walking-eighths",
+                "exercise.stride.b-flat",
+                "exercise.comping.c.anticipated"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "blues.8"
+              ],
+              "estimatedDays": 180
+            }
+          ]
+        },
+        {
+          "id": "chords-pop.9.1",
+          "title": "Chords & pop: arranging",
+          "track": "chords-pop",
+          "lessons": [
+            {
+              "id": "chords-pop.9",
+              "title": "Turning a chord chart into an arrangement",
+              "concepts": [
+                "arranging",
+                "texture",
+                "voicing",
+                "comping",
+                "playing-by-ear",
+                "open-voicing"
+              ],
+              "textFile": "lessons/chords-pop.9.md",
+              "exerciseOptions": [
+                "exercise.slash-bass.e-flat",
+                "exercise.comping.c.anticipated",
+                "drill.ear.tune-long",
+                "exercise.open-voicing.e-flat.add9",
+                "exercise.voicing7.f.shell"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "chords-pop.8"
+              ],
+              "estimatedDays": 180
+            }
+          ]
+        },
+        {
+          "id": "theory.9.1",
+          "title": "Theory & ear: hearing a whole piece",
+          "track": "theory-ear",
+          "lessons": [
+            {
+              "id": "theory.9",
+              "title": "From a phrase to a form",
+              "concepts": [
+                "ear-training",
+                "playing-by-ear",
+                "form",
+                "harmonic-dictation",
+                "modulation",
+                "sight-reading"
+              ],
+              "textFile": "lessons/theory.9.md",
+              "exerciseOptions": [
+                "drill.ear.tune-long",
+                "drill.theory.harmonic-dictation-modulation",
+                "drill.reading.sight-reading-7",
+                "drill.theory.roman-numerals-secondary",
+                "drill.reading.sight-reading-6"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "theory.8"
+              ],
+              "estimatedDays": 180
+            }
+          ]
+        },
+        {
+          "id": "improv.9.1",
+          "title": "Improv & composition: writing a piece",
+          "track": "improv-compose",
+          "lessons": [
+            {
+              "id": "improv.9",
+              "title": "Something finished, with your name on it",
+              "concepts": [
+                "composition",
+                "form",
+                "arranging",
+                "playing-by-ear",
+                "voicing",
+                "improvisation"
+              ],
+              "textFile": "lessons/improv.9.md",
+              "exerciseOptions": [
+                "drill.ear.tune-long",
+                "exercise.slash-bass.e-flat",
+                "exercise.open-voicing.f.quartal",
+                "drill.theory.roman-numerals-secondary",
+                "exercise.open-voicing.c.sus2"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "improv.8"
+              ],
+              "estimatedDays": 180
+            }
+          ]
         }
       ]
     }

@@ -149,6 +149,23 @@ def estimated_by_stage(catalog: list) -> dict[int, tuple[int, int]]:
     return {stage: (values[0], values[1]) for stage, values in sorted(counts.items())}
 
 
+def exercises_by_level(catalog: list) -> dict[int, int]:
+    """
+    `{stage: exercises}` — the distribution P12a rebuilt and P12b added to.
+
+    Exercises only, and by whole level: the point of the number is whether
+    every rung of the ladder has generated material under it, and a stage whose
+    only entries are songs has nothing to practise on.
+    """
+    counts: dict[int, int] = {}
+    for item in catalog:
+        if item.get("type") != "exercise":
+            continue
+        stage = int(item.get("level", 0))
+        counts[stage] = counts.get(stage, 0) + 1
+    return dict(sorted(counts.items()))
+
+
 def validate_catalog(
     catalog: list, content_dir: Path, strict_license: bool, allow_nc: bool = False
 ) -> list[str]:
@@ -335,6 +352,13 @@ def main() -> None:
         f"L{stage}: {estimated}/{total}" for stage, (estimated, total) in by_stage.items()
     )
     print(f"  {estimated_total} item(s) with an estimated level — {spread}")
+
+    # §3.1: and how much there is to practise at each of them.
+    per_level = exercises_by_level(catalog)
+    print(
+        f"  {sum(per_level.values())} exercise(s) by level — "
+        + ", ".join(f"L{stage}: {count}" for stage, count in per_level.items())
+    )
 
     # The P2 grace-16th scan over everything this build converted (replan §7).
     scan = scan_dir(args.dir / "scores")

@@ -220,13 +220,17 @@
               "concepts": [
                 "carols",
                 "chord-symbols",
-                "transposing-for-singers"
+                "transposing-for-singers",
+                "four-chord-loop",
+                "roman-numerals"
               ],
               "textFile": "lessons/holiday.md",
               "exerciseOptions": [
                 "drill.chord.c-f-g",
                 "drill.chord.symbol-flash",
-                "exercise.cadence.c.root"
+                "exercise.cadence.c.root",
+                "exercise.loop4.c.root",
+                "exercise.loop4.f.root"
               ],
               "songOptions": [
                 "song.holiday.jingle-bells.rh",

@@ -166,6 +166,204 @@
               }
             }
           ]
+        },
+        {
+          "id": "jazz.7.1",
+          "title": "Jazz: rootless voicings and the substitution",
+          "track": "jazz",
+          "lessons": [
+            {
+              "id": "jazz.7",
+              "title": "Rootless voicings, quartal colour, and the tritone substitution",
+              "concepts": [
+                "rootless-voicings",
+                "quartal",
+                "tritone-substitution",
+                "stride",
+                "chord-scale",
+                "extended-chords",
+                "voicing"
+              ],
+              "textFile": "lessons/jazz.7.md",
+              "exerciseOptions": [
+                "exercise.voicing7.c.rootless-a",
+                "exercise.voicing7.f.rootless-b",
+                "exercise.open-voicing.c.quartal",
+                "exercise.tritone-sub.c",
+                "exercise.stride.c",
+                "drill.jazz.chord-scale",
+                "drill.jazz.extended-chords"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "jazz.6"
+              ],
+              "estimatedDays": 120
+            }
+          ]
+        },
+        {
+          "id": "blues.7.1",
+          "title": "Blues: stride, turnarounds and the shuffle at speed",
+          "track": "blues-boogie",
+          "lessons": [
+            {
+              "id": "blues.7",
+              "title": "The leaping left hand and the two bars that send you back",
+              "concepts": [
+                "stride",
+                "turnaround",
+                "boogie",
+                "shuffle",
+                "shell-voicings",
+                "leaps"
+              ],
+              "textFile": "lessons/blues.7.md",
+              "exerciseOptions": [
+                "exercise.stride.f",
+                "exercise.turnaround.f.iii-vi-ii-v",
+                "exercise.boogie.e-flat.pinetop",
+                "exercise.voicing7.f.shell",
+                "exercise.walking-bass.f.blues"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "blues.6"
+              ],
+              "estimatedDays": 120
+            }
+          ]
+        },
+        {
+          "id": "chords-pop.7.1",
+          "title": "Chords & pop: colour",
+          "track": "chords-pop",
+          "lessons": [
+            {
+              "id": "chords-pop.7",
+              "title": "sus2, sus4, add9 and the ninth chord",
+              "concepts": [
+                "open-voicing",
+                "sus-chords",
+                "add9",
+                "extended-chords",
+                "voicing",
+                "texture"
+              ],
+              "textFile": "lessons/chords-pop.7.md",
+              "exerciseOptions": [
+                "exercise.open-voicing.c.sus4",
+                "exercise.open-voicing.f.add9",
+                "exercise.open-voicing.c.sus2",
+                "drill.jazz.extended-chords",
+                "exercise.open-voicing.b-flat.add9"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "chords-pop.6"
+              ],
+              "estimatedDays": 120
+            }
+          ]
+        },
+        {
+          "id": "theory.7.1",
+          "title": "Theory & ear: chords from outside the key",
+          "track": "theory-ear",
+          "lessons": [
+            {
+              "id": "theory.7",
+              "title": "Secondary dominants, tonicisation, and the chord-scale",
+              "concepts": [
+                "secondary-dominants",
+                "tonicisation",
+                "roman-numerals",
+                "modes",
+                "chord-scale",
+                "ear-training"
+              ],
+              "textFile": "lessons/theory.7.md",
+              "exerciseOptions": [
+                "drill.theory.secondary-dominants",
+                "drill.theory.roman-numerals-secondary",
+                "drill.theory.modes-all",
+                "drill.jazz.chord-scale",
+                "drill.theory.harmonic-dictation"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "theory.6"
+              ],
+              "estimatedDays": 120
+            }
+          ]
+        },
+        {
+          "id": "improv.7.1",
+          "title": "Improv & composition: colour",
+          "track": "improv-compose",
+          "lessons": [
+            {
+              "id": "improv.7",
+              "title": "Quartal voicings, extensions, and a sound of your own",
+              "concepts": [
+                "improvisation",
+                "quartal",
+                "extended-chords",
+                "modes",
+                "voicing",
+                "texture"
+              ],
+              "textFile": "lessons/improv.7.md",
+              "exerciseOptions": [
+                "drill.jazz.chord-scale",
+                "exercise.open-voicing.c.quartal",
+                "drill.theory.modes-all",
+                "drill.jazz.extended-chords",
+                "exercise.open-voicing.f.quartal"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "improv.6"
+              ],
+              "estimatedDays": 120
+            }
+          ]
         }
       ]
     }

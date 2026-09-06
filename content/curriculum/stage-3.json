@@ -400,13 +400,17 @@
               "concepts": [
                 "four-part-harmony",
                 "passing-chords",
-                "plagal-cadence"
+                "plagal-cadence",
+                "slash-chord",
+                "voice-leading"
               ],
               "textFile": "lessons/hymns.md",
               "exerciseOptions": [
                 "drill.chord.primary-c-g-f",
                 "drill.pattern.lh-accompaniment",
-                "exercise.cadence.c.voice-led"
+                "exercise.cadence.c.voice-led",
+                "exercise.slash-bass.c",
+                "exercise.loop4.c.inversions"
               ],
               "songOptions": [
                 "song.folk.when-the-saints.f",

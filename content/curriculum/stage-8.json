@@ -156,6 +156,202 @@
               }
             }
           ]
+        },
+        {
+          "id": "jazz.8.1",
+          "title": "Jazz: extensions and modulation",
+          "track": "jazz",
+          "lessons": [
+            {
+              "id": "jazz.8",
+              "title": "Ninths, elevenths, thirteenths, and music that changes key",
+              "concepts": [
+                "extended-chords",
+                "modulation",
+                "rootless-voicings",
+                "tritone-substitution",
+                "modes",
+                "harmonic-dictation"
+              ],
+              "textFile": "lessons/jazz.8.md",
+              "exerciseOptions": [
+                "drill.jazz.extended-chords-13",
+                "drill.theory.harmonic-dictation-modulation",
+                "exercise.voicing7.e-flat.rootless-b",
+                "exercise.tritone-sub.e-flat",
+                "drill.theory.modes-all",
+                "drill.reading.sight-reading-7"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "jazz.7"
+              ],
+              "estimatedDays": 150
+            }
+          ]
+        },
+        {
+          "id": "blues.8.1",
+          "title": "Blues: every key, and the chords underneath",
+          "track": "blues-boogie",
+          "lessons": [
+            {
+              "id": "blues.8",
+              "title": "The form in twelve keys, and what the ninth chord adds",
+              "concepts": [
+                "twelve-bar",
+                "boogie",
+                "walking-bass",
+                "extended-chords",
+                "comping",
+                "transposition"
+              ],
+              "textFile": "lessons/blues.8.md",
+              "exerciseOptions": [
+                "exercise.walking-bass.e-flat.blues",
+                "exercise.boogie.b-flat.walking-eighths",
+                "exercise.comping.b-flat.four-on-the-floor",
+                "drill.jazz.extended-chords",
+                "drill.reading.transposition-hard"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "blues.7"
+              ],
+              "estimatedDays": 150
+            }
+          ]
+        },
+        {
+          "id": "chords-pop.8.1",
+          "title": "Chords & pop: transposing on sight",
+          "track": "chords-pop",
+          "lessons": [
+            {
+              "id": "chords-pop.8",
+              "title": "Playing a song in the key the singer needs",
+              "concepts": [
+                "transposition",
+                "roman-numerals",
+                "secondary-dominants",
+                "four-chord-loop",
+                "sight-reading",
+                "seventh-chord"
+              ],
+              "textFile": "lessons/chords-pop.8.md",
+              "exerciseOptions": [
+                "drill.reading.transposition-hard",
+                "drill.theory.roman-numerals-secondary",
+                "exercise.voicing7.c.close",
+                "drill.reading.sight-reading-6",
+                "exercise.slash-bass.f"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "chords-pop.7"
+              ],
+              "estimatedDays": 150
+            }
+          ]
+        },
+        {
+          "id": "theory.8.1",
+          "title": "Theory & ear: modulation",
+          "track": "theory-ear",
+          "lessons": [
+            {
+              "id": "theory.8",
+              "title": "Changing key, and hearing the moment it happens",
+              "concepts": [
+                "modulation",
+                "pivot-chord",
+                "harmonic-dictation",
+                "transposition",
+                "extended-chords",
+                "ear-training"
+              ],
+              "textFile": "lessons/theory.8.md",
+              "exerciseOptions": [
+                "drill.theory.harmonic-dictation-modulation",
+                "drill.reading.transposition-hard",
+                "drill.jazz.extended-chords-13",
+                "drill.ear.tune",
+                "drill.theory.secondary-dominants"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "theory.7"
+              ],
+              "estimatedDays": 150
+            }
+          ]
+        },
+        {
+          "id": "improv.8.1",
+          "title": "Improv & composition: reharmonising",
+          "track": "improv-compose",
+          "lessons": [
+            {
+              "id": "improv.8",
+              "title": "Changing the chords under a melody you did not write",
+              "concepts": [
+                "reharmonisation",
+                "tritone-substitution",
+                "secondary-dominants",
+                "modulation",
+                "extended-chords",
+                "turnaround"
+              ],
+              "textFile": "lessons/improv.8.md",
+              "exerciseOptions": [
+                "exercise.tritone-sub.c",
+                "drill.theory.harmonic-dictation-modulation",
+                "exercise.turnaround.c.iii-vi-ii-v",
+                "drill.jazz.extended-chords-13",
+                "exercise.tritone-sub.f"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.85
+              },
+              "prerequisites": [
+                "improv.7"
+              ],
+              "estimatedDays": 150
+            }
+          ]
         }
       ]
     }

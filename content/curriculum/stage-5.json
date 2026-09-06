@@ -287,13 +287,17 @@
                 "clave",
                 "tumbao",
                 "montuno",
-                "syncopation"
+                "syncopation",
+                "comping",
+                "walking-bass"
               ],
               "textFile": "lessons/latin.md",
               "exerciseOptions": [
                 "exercise.rhythm.syncopated.4bar",
                 "drill.pattern.lh-accompaniment",
-                "exercise.rhythm.shuffle-eighths.4bar"
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "exercise.comping.c.off-beats",
+                "exercise.walking-bass.c.ii-v-i"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
