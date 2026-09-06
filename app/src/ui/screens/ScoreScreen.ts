@@ -162,7 +162,26 @@ export function ScoreScreen(router: Router): HTMLElement {
   bar.appendChild(back);
 
   const restart = button('⏮', () => startRun(), 'score-restart');
-  bar.appendChild(restart);
+  // A performance is one pass through. Offering a restart during one would be
+  // offering to make it not a performance (replan §8).
+  if (!performanceRun) bar.appendChild(restart);
+
+  // Blind and performance are *routes*, not toggles: the run has to be set up
+  // that way from the start, and putting them in the hash means a blind run
+  // survives a reload and can be linked to from a rung.
+  const blindToggle = button(
+    blind ? 'Show the score' : 'Blind',
+    () => router.navigateScore(itemId, { blind: !blind, performance: performanceRun }),
+    'score-blind',
+  );
+  bar.appendChild(blindToggle);
+
+  const performanceToggle = button(
+    performanceRun ? 'Practising' : 'Perform',
+    () => router.navigateScore(itemId, { blind, performance: !performanceRun }),
+    'score-performance',
+  );
+  bar.appendChild(performanceToggle);
 
   const playPause = button('▶', () => togglePlay(), 'score-play');
   bar.appendChild(playPause);

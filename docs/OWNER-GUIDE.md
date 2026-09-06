@@ -224,6 +224,61 @@ the first choice in the list.
 You can also **share into the app** from Files or Drive — long-press a file,
 choose PianoPath.
 
+### The books you already own
+
+**Library → Shelf.** The app has no copy of your books and is not going to get
+one. What it can do is keep a list: which books, what is in them, what page,
+and which rung each piece answers.
+
+Add the book, then add pieces — title, page number, and the rung it belongs to.
+It takes about twenty seconds a piece and you only do it for the ones you are
+actually working on. From then on that piece shows up on the rung's own page,
+under **From your own books**, beside whatever the app has.
+
+Every lesson from Stage 1 to 5, and every classical rung, also carries a line
+saying what to look for in a method book if you have one — "or whichever page
+of your book first mixes half notes, whole notes and rests". If your book has
+it, tap **I have this on paper** on that lesson and the form opens with the
+rung already filled in.
+
+If you have a **PDF** of the book, link it when you add the book and each
+piece's page number will open the viewer at that page.
+
+If a piece has a **twin** in the app — the same notes, bundled or imported —
+link it by search. That is worth doing: with a twin the app can play it
+properly and score it. Without one, see below.
+
+### Practising something the app cannot see
+
+Tap **Practise** on a shelf piece. You get a metronome with a count-in, a
+tempo, the keyboard strip and a timer.
+
+What it measures: how many notes you played, over how long, at what tempo, and
+— if the click is on and the piano is connected — how steady you were, as the
+spread of your notes around the click. That last number is real. It is the one
+thing about playing that does not need the score.
+
+What it does not measure: whether any of it was right. It has not read the
+music. The summary says so in those words, and then asks you: Rough, OK or
+Clean. **Clean** counts as a pass and is marked as your own judgement, the same
+badge "I already know this" gets. On most rungs that is enough to finish them.
+On the few whose rule is a measured number — the dynamics drill, the timed
+chord changes — it is not, and the app will not pretend otherwise.
+
+### Playing from memory, and playing for someone
+
+On any piece, **Blind** hides the score. Nothing else changes: the cursor still
+moves, the keyboard strip still lights up, and the run is scored exactly as it
+would be with the page in front of you. That is the point — the two numbers are
+comparable, so "I played it from memory at 90 % of my sighted run" means
+something. Stage 4.7 is the rung that asks for it.
+
+**Perform** is one pass through: no restart button, no looping. It is recorded
+as a performance whatever the score, and Progress keeps a separate list of
+them. That list exists because playing a piece all the way through for somebody
+is the thing that quietly never happens, and the only cure is being able to see
+that it has not.
+
 ### A whole folder of scores
 
 One at a time is fine for a score you bought. For a folder of thousands there is
@@ -373,3 +428,21 @@ be pre-selected instead of *No rung*. Android normally posts to the plain
 address, so expect *No rung*; the pre-selection is there for the lesson page's
 **Import for this rung**, which you can check in one tap and which does work
 here.
+
+**Two more, from P16.**
+
+*Steadiness against the real piano.* The paper screen's ± figure was built and
+tested on scripted note times, never on an HP-130 with the sustain pedal down.
+Play something you know well from a book, with the click on, and see whether the
+number matches your sense of how steady you were. Two things could be wrong: a
+pedalled chord arriving as several onsets a few milliseconds apart should count
+once (the window is 60 ms), and a deliberately spread or rolled chord should not
+be read as lateness. If the number looks wrong in a way you can describe, the
+constants are `CHORD_WINDOW_MS` and `MAX_OFFSET_MS` in
+`app/src/engine/steadiness.ts`.
+
+*Whether the self-report feels honest.* Rough / OK / Clean, with "Clean" writing
+a pass in your name. Nobody can test whether that is a question you will answer
+truthfully at eleven at night having half-learned a Czerny study. If you find
+yourself tapping Clean to make the rung go green, say so — the fix is probably
+to stop letting it complete a rung at all, not to change the wording.

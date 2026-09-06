@@ -11,6 +11,7 @@
  */
 import type { Router } from '../../router';
 import { allItems } from '../../curriculum/load';
+import { allShelfPieces } from '../../data/booksStore';
 import type { CatalogItem } from '../../curriculum/types';
 import { exportAll, importAll, isBackupFile, saveBackupFile } from '../../data/backup';
 import type { ProgressRow, SessionRow } from '../../data/db';
@@ -268,13 +269,33 @@ export function ProgressScreen(router: Router): HTMLElement {
   }
 
   async function load(): Promise<void> {
-    const [rows, streak, sessions, items] = await Promise.all([
+    const [rows, streak, sessions, items, shelf] = await Promise.all([
       allProgress(),
       getStreak(),
       recentSessions(100),
       allItems(),
+      allShelfPieces(),
     ]);
     const byId = new Map(items.map((item) => [item.id, item]));
+    // A book piece is not in the catalog — the app has no copy of it — but it
+    // is practised and recorded, so it has to be nameable here or the history
+    // prints `book.czerny-599/no-12` at somebody who wants to read it.
+    for (const entry of shelf) {
+      if (byId.has(entry.itemId)) continue;
+      byId.set(entry.itemId, {
+        id: entry.itemId,
+        type: 'song',
+        title: entry.piece.title,
+        level: entry.piece.level ?? 0,
+        levelSource: entry.piece.levelSource,
+        hands: 'both',
+        tracks: [],
+        concepts: entry.piece.concepts,
+        file: null,
+        tags: [],
+        composer: entry.book.title,
+      });
+    }
     drawSummary(rows, streak.minutesByDay, streak.weeklyGoalMinutes);
     drawHeatmap(streak.minutesByDay);
     drawRepertoire(rows, byId);

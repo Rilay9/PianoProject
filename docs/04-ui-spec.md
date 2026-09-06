@@ -180,6 +180,26 @@ Not offered, deliberately: opening a score straight out of the folder without ad
 would work for as long as the picker's grant lasts and then stop, and a piece you practised
 last week vanishing is worse than a tap.
 
+## 4c. Shelf — the books he already owns (P16)
+
+Library → **Shelf** (`#/library/shelf`), from replan §5.1. The app has no copy of these books
+and never will; what it holds is a register.
+
+- A **book**: title, author, kind (method / repertoire / other), optionally the owner's own
+  PDF of it (`pdfImportId`) and its `barsPerSystem` — stored per book rather than per open,
+  because it is a fact about how the book is engraved.
+- A **piece** in it: title, page, which rung it answers, concepts, level (`≈` until he types
+  one), and optionally a **twin** — a bundled or imported item with the same notes, found by
+  search.
+- **Everything is typed in.** Nothing is scanned, no OMR runs, no page is inferred. He is
+  looking at the paper and reads the number off it, which is the one input that is certainly
+  right.
+- A registered piece becomes a **`paperOption`** of its rung at runtime (the overlay P15 built
+  for imports), so it appears on the lesson page under *From your own books* and can complete
+  the rung — see §5d for the terms.
+- The twin is what makes paper practice scorable without pretending: with one, "With the
+  score" opens a normal measured run; without one, §5d measures only what it can hear.
+
 ## 5. Score screen (the core)
 
 Layout (landscape): notation fills the screen; a **thin control bar** auto-hides after 3 s
@@ -225,6 +245,12 @@ bar plays it (Listen) ; pinch = zoom; two-finger tap = toggle hands focus.
 
 ## 5b. PDF viewer (imported PDFs)
 
+**From P16:** the route takes `?page=<n>` (`#/pdf/<importId>?page=12`) and opens at the first
+system on that page — a shelf piece knows which page it is on, and opening at page one would
+waste the one fact the owner took the trouble to type in. `barsPerSystem` is read from the
+linked book rather than being set per open.
+
+
 The owner buys sheet music as PDF, and a PDF on a phone screen is unreadable at page scale.
 This viewer solves exactly that and nothing more: **it shows one system at a time, full
 width.** See `docs/decisions/2026-09-05-p4-pdf-sheet-music.md`; the page-cutting is
@@ -250,6 +276,41 @@ width.** See `docs/decisions/2026-09-05-p4-pdf-sheet-music.md`; the page-cutting
   page, never to an empty viewer.
 - **No OMR.** Turning a PDF into notes is an offline desktop step (Audiveris, MuseScore); the
   result comes back through the MusicXML import.
+
+## 5d. Paper practice — `#/paper/<bookId>/<pieceId>` (P16)
+
+replan §5.3. The music is in a book on the stand and the app has never read it. The screen is
+built around one discipline: **measure what can be heard, say what cannot, and never record an
+accuracy.**
+
+- Metronome with the count-in from §7, a tempo box, the keyboard strip, MIDI and microphone
+  capture, and a timer.
+- **What it measures.** Notes heard, minutes, tempo, and — with the click running and MIDI
+  connected — *tempo steadiness*: the standard deviation of onset offset from the nearest
+  click. Chords count once (five fingers are one rhythmic event); an onset more than 250 ms
+  from every click is a different note rather than a late one and is excluded and counted;
+  fewer than twelve usable onsets reports "not measured" rather than a confident number drawn
+  from three taps.
+- **What it never measures.** Accuracy. The summary ends: *"It cannot see the notes, so
+  nothing here says whether they were the right ones. That part is your call."*
+- **The three-button self-report** (Rough / OK / Clean) from §5. "Clean" writes a pass, marked
+  `selfPassed` and badged the way "I already know this" is. It is never master-eligible:
+  mastery needs two measured passes and nothing here was measured.
+- The `sessions` row is `mode: 'paper'` with `notesHeard`, `steadinessMs` and `bpm`, and an
+  accuracy of 0 that the Progress screen deliberately never prints as a percentage — a zero
+  there would read as a verdict instead of an absence.
+
+### 5e. Blind mode and performances (P16)
+
+- **Blind** (`#/score/<id>?blind=1`, replan §8) hides the engraving and changes *nothing else*
+  — same model, same expectations, same scoring, keyboard strip and cursor still live. That
+  identity is the feature: "blind at 90 % of your sighted run" only means something if both
+  were measured the same way. The stage is `visibility: hidden` rather than unmounted so the
+  layout does not move when a run starts. Rung 4.7 asks for exactly this.
+- **Perform** (`?performance=1`) is one pass through: no restart button, no looping, and the
+  run is recorded `performance: true` whatever the accuracy. Progress lists them separately,
+  because playing a piece for somebody is a different act from practising it and it is the
+  thing that quietly never happens.
 
 ## 5c. Drill screen (P8)
 

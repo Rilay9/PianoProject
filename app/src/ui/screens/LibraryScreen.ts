@@ -218,6 +218,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       button('Browse a score folder', () => router.navigate('library', 'folder'), {
         id: 'library-folder',
       }),
+      // The books he already owns, which the app has no copy of (replan §5).
+      button('Shelf', () => router.navigate('library', 'shelf'), { id: 'library-shelf' }),
       picker,
     ),
     status,
