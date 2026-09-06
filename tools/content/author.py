@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import os
 import sys
 import traceback
 from dataclasses import dataclass, field
@@ -147,7 +148,7 @@ def entry_from_metadata(
 
 
 def compile_abc(path: Path, out_root: Path) -> dict:
-    from convert import convert_file  # late import: music21 is slow to load
+    from convert import cached_convert  # late import: music21 is slow to load
 
     text = path.read_text(encoding="utf-8")
     meta = parse_metadata(text)
@@ -158,7 +159,7 @@ def compile_abc(path: Path, out_root: Path) -> dict:
 
     dest = out_root / "scores" / "authored" / f"{fields['id']}.mxl"
     keep_lyrics = str(fields.get("keepLyrics", "")).lower() in {"1", "true", "yes"}
-    result = convert_file(
+    result = cached_convert(
         path,
         dest,
         keep_lyrics=keep_lyrics,
@@ -242,10 +243,17 @@ def main() -> None:
     parser.add_argument("--catalog", type=Path, required=True)
     parser.add_argument("--dir", type=Path, default=AUTHORED_DIR)
     parser.add_argument("--traceback", action="store_true")
+    parser.add_argument(
+        "--no-cache", action="store_true", help="ignore build/cache/convert and reconvert"
+    )
     args = parser.parse_args()
+    if args.no_cache:
+        os.environ["PIANOPATH_NO_CACHE"] = "1"
 
     report = author_all(args.out, args.catalog, args.dir)
-    print(f"authored {len(report.written)} item(s)")
+    from convert import CACHE_STATS  # late import: music21 is slow to load
+
+    print(f"authored {len(report.written)} item(s) ({CACHE_STATS.summary()})")
     for name, why in report.failed:
         print(f"FAIL {name}: {why}", file=sys.stderr)
     sys.exit(1 if report.failed else 0)

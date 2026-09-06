@@ -69,19 +69,22 @@ def step_fetch(offline: bool) -> Step:
     return Step("fetch", ok=True, detail=detail, skipped=False, warnings=[] if code == 0 else [output])
 
 
-def step_import(out_dir: Path) -> Step:
-    code, output = python(
-        "import_musetrainer.py", "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.mt.json")
-    )
+def step_import(out_dir: Path, no_cache: bool = False) -> Step:
+    args = ["--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.mt.json")]
+    if no_cache:
+        args.append("--no-cache")
+    code, output = python("import_musetrainer.py", *args)
     return Step("import [MT]", ok=code == 0, detail=summary_line(output))
 
 
-def step_import_kern(out_dir: Path, allow_nc: bool) -> Step:
+def step_import_kern(out_dir: Path, allow_nc: bool, no_cache: bool = False) -> Step:
     args = [
         "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.kern.json"),
     ]
     if allow_nc:
         args.append("--allow-nc")
+    if no_cache:
+        args.append("--no-cache")
     code, output = python("import_kern.py", *args)
     return Step("import [KERN]", ok=code == 0, detail=summary_line(output))
 
@@ -97,10 +100,11 @@ def step_generate(out_dir: Path, quick: bool) -> Step:
     return Step("generate [GEN]", ok=code == 0, detail=summary_line(output))
 
 
-def step_author(out_dir: Path) -> Step:
-    code, output = python(
-        "author.py", "--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.authored.json")
-    )
+def step_author(out_dir: Path, no_cache: bool = False) -> Step:
+    args = ["--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.authored.json")]
+    if no_cache:
+        args.append("--no-cache")
+    code, output = python("author.py", *args)
     return Step("author [AUTH]", ok=code == 0, detail=summary_line(output))
 
 
@@ -204,17 +208,6 @@ def clean_scores(out_dir: Path) -> None:
         shutil.rmtree(scores)
 
 
-def already_built(out_dir: Path) -> bool:
-    catalog = out_dir / "catalog.json"
-    if not catalog.exists():
-        return False
-    try:
-        items = read_json(catalog)
-    except Exception:  # noqa: BLE001 - a corrupt catalog is not "already built"
-        return False
-    return isinstance(items, list) and len(items) > 0
-
-
 def display_path(path: Path) -> str:
     """The output path, shortened when it sits inside the repository."""
     try:
@@ -234,9 +227,9 @@ def main() -> None:
     parser.add_argument("--render-limit", type=int, default=0)
     parser.add_argument("--skip-fetch", action="store_true")
     parser.add_argument(
-        "--if-missing",
+        "--no-cache",
         action="store_true",
-        help="do nothing when a catalog with items is already built",
+        help="ignore build/cache/convert and reconvert every source",
     )
     parser.add_argument(
         "--strict-license",
@@ -250,12 +243,6 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    if args.if_missing and already_built(args.out):
-        # `npm run build` runs this through prebuild, and rebuilding 300
-        # scores before every Playwright run costs more than it is worth.
-        print(f"content already built in {display_path(args.out)}; nothing to do")
-        return
-
     started = time.time()
     args.out.mkdir(parents=True, exist_ok=True)
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
@@ -264,10 +251,10 @@ def main() -> None:
     steps: list[Step] = []
     if not args.skip_fetch:
         steps.append(step_fetch(args.offline))
-    steps.append(step_import(args.out))
-    steps.append(step_import_kern(args.out, args.allow_nc))
+    steps.append(step_import(args.out, args.no_cache))
+    steps.append(step_import_kern(args.out, args.allow_nc, args.no_cache))
     steps.append(step_generate(args.out, args.quick))
-    steps.append(step_author(args.out))
+    steps.append(step_author(args.out, args.no_cache))
     steps.append(merge_catalog(args.out))
     steps.append(copy_curriculum(args.out))
     steps.append(copy_lessons(args.out))

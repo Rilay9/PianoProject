@@ -17,12 +17,19 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import functools
+import hashlib
+import json
+import os
+import shutil
 import sys
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from common import BUILD_DIR  # noqa: E402
 
 # music21 is noisy about things we do not control (missing metadata, unusual
 # spines); the pipeline reports its own diagnostics instead.
@@ -426,6 +433,179 @@ def write_mxl(score: stream.Score, out_path: Path) -> Path:
     return out_path
 
 
+# ---------------------------------------------------------------------------
+# conversion cache
+# ---------------------------------------------------------------------------
+
+#: Bump to invalidate every existing entry without deleting the directory.
+CACHE_VERSION = 1
+
+CACHE_DIR = BUILD_DIR / "cache" / "convert"
+
+#: Set by `--no-cache` so a build.py flag reaches the importers, which call
+#: `cached_convert` in their own subprocesses.
+NO_CACHE_ENV = "PIANOPATH_NO_CACHE"
+
+
+@dataclass
+class CacheStats:
+    """Counted per process; each importer prints it in its summary line."""
+
+    hits: int = 0
+    misses: int = 0
+
+    def summary(self) -> str:
+        return f"{self.hits} cached, {self.misses} converted"
+
+
+CACHE_STATS = CacheStats()
+
+
+@functools.lru_cache(maxsize=1)
+def tool_fingerprint() -> str:
+    """
+    A digest of everything except the source that decides what a conversion produces.
+
+    `convert.py` and `abc_tools.py` are the two files whose text changes the
+    output; music21's version changes it without either file moving. All three
+    go in the key, which is the cache's entire correctness argument: a cache
+    that keys on every input to the answer can only change *when* the answer is
+    computed, never what it is.
+    """
+    from music21 import __version__ as music21_version
+
+    digest = hashlib.sha256()
+    here = Path(__file__).resolve().parent
+    for name in ("convert.py", "abc_tools.py"):
+        digest.update((here / name).read_bytes())
+    digest.update(music21_version.encode("utf-8"))
+    digest.update(f"v{CACHE_VERSION}".encode("ascii"))
+    return digest.hexdigest()
+
+
+def cache_key(src: Path, **options: object) -> str:
+    """
+    The key for one conversion: source bytes + the tool fingerprint + the options.
+
+    The options are in the key because they change the output as surely as the
+    source does — a forced tempo, a kept lyric line and an overridden title all
+    end up inside the written file. Keying on the source alone would hand the
+    same `.mxl` to two callers that asked for different things, which is the
+    one way a cache can be wrong.
+    """
+    digest = hashlib.sha256()
+    digest.update(src.read_bytes())
+    digest.update(tool_fingerprint().encode("ascii"))
+    digest.update(json.dumps(options, sort_keys=True, default=str).encode("utf-8"))
+    return digest.hexdigest()
+
+
+def record_from_result(result: ConversionResult) -> dict:
+    """The parts of a ConversionResult that survive a round trip through JSON."""
+    return {
+        "title": result.title,
+        "composer": result.composer,
+        "measures": result.measures,
+        "notes": result.notes,
+        "staves": result.staves,
+        "tempo_bpm": result.tempo_bpm,
+        "added_tempo": result.added_tempo,
+        "stripped_lyrics": result.stripped_lyrics,
+        "fingerings": result.fingerings,
+        "harmonies": result.harmonies,
+        "warnings": result.warnings,
+    }
+
+
+def result_from_record(record: dict, dest: Path) -> ConversionResult:
+    return ConversionResult(
+        path=dest,
+        title=record["title"],
+        composer=record["composer"],
+        measures=record["measures"],
+        notes=record["notes"],
+        staves=record["staves"],
+        tempo_bpm=record["tempo_bpm"],
+        added_tempo=record["added_tempo"],
+        stripped_lyrics=record["stripped_lyrics"],
+        fingerings=record["fingerings"],
+        harmonies=record["harmonies"],
+        warnings=list(record.get("warnings") or []),
+    )
+
+
+def cache_enabled(use_cache: bool) -> bool:
+    return use_cache and os.environ.get(NO_CACHE_ENV, "") != "1"
+
+
+def cached_convert(
+    src: Path,
+    dest: Path,
+    *,
+    use_cache: bool = True,
+    keep_lyrics: bool = False,
+    tempo_bpm: float | None = None,
+    title: str | None = None,
+    composer: str | None = None,
+) -> ConversionResult:
+    """
+    `convert_file` with its answer remembered under `build/cache/convert/`.
+
+    music21 is the pipeline's whole cost: parsing and re-exporting the 800-odd
+    imported scores is most of a seven-minute build, and almost none of it
+    changes between runs. A hit copies the `.mxl` out of the cache and rebuilds
+    the ConversionResult from a JSON sidecar, so callers cannot tell the
+    difference — `import_musetrainer` re-reads the written file either way, and
+    `author.py` reads `tempo_bpm` off the result.
+
+    A cache that cannot be written is not an error: the build is correct
+    without it, only slower, so every write is best-effort.
+    """
+    options = {
+        "keep_lyrics": keep_lyrics,
+        "tempo_bpm": tempo_bpm,
+        "title": title,
+        "composer": composer,
+    }
+    if not cache_enabled(use_cache):
+        CACHE_STATS.misses += 1
+        return convert_file(src, dest, **options)  # type: ignore[arg-type]
+
+    key = cache_key(src, **options)
+    payload = CACHE_DIR / f"{key}.mxl"
+    sidecar = CACHE_DIR / f"{key}.json"
+    if payload.is_file() and sidecar.is_file():
+        try:
+            record = json.loads(sidecar.read_text(encoding="utf-8"))
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(payload, dest)
+        except (OSError, json.JSONDecodeError, KeyError):
+            pass  # a damaged entry is a miss, not a failure
+        else:
+            CACHE_STATS.hits += 1
+            return result_from_record(record, dest)
+
+    CACHE_STATS.misses += 1
+    result = convert_file(src, dest, **options)  # type: ignore[arg-type]
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        # Written to a temporary name and renamed, so a run killed mid-write
+        # never leaves a truncated `.mxl` that the next run would trust. The
+        # payload lands before the sidecar and a hit needs both, so the
+        # half-written state reads as a miss.
+        staged = payload.with_suffix(".mxl.tmp")
+        shutil.copyfile(dest, staged)
+        staged.replace(payload)
+        staged_json = sidecar.with_suffix(".json.tmp")
+        staged_json.write_text(
+            json.dumps(record_from_result(result), indent=2), encoding="utf-8"
+        )
+        staged_json.replace(sidecar)
+    except OSError:
+        pass
+    return result
+
+
 def convert_file(
     src: Path,
     dest: Path,
@@ -467,7 +647,14 @@ def main() -> None:
     parser.add_argument("--keep-lyrics", action="store_true")
     parser.add_argument("--tempo", type=float, help="force this tempo in bpm")
     parser.add_argument("--limit", type=int)
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="always run music21, ignoring build/cache/convert",
+    )
     args = parser.parse_args()
+    if args.no_cache:
+        os.environ[NO_CACHE_ENV] = "1"
 
     if args.batch:
         if not args.out:
@@ -479,18 +666,22 @@ def main() -> None:
         for src in sources:
             dest = args.out / (src.stem + ".mxl")
             try:
-                result = convert_file(src, dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo)
+                result = cached_convert(
+                    src, dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo
+                )
             except Exception as exc:  # noqa: BLE001 - one bad file must not stop a batch
                 failures += 1
                 print(f"FAIL {src}: {exc}", file=sys.stderr)
                 continue
             print(f"ok   {dest.name}: {result.measures} bars, {result.notes} notes, {result.staves} staves")
-        print(f"\nconverted {len(sources) - failures}/{len(sources)}")
+        print(f"\nconverted {len(sources) - failures}/{len(sources)} ({CACHE_STATS.summary()})")
         sys.exit(1 if failures and not sources else 0)
 
     if not args.source or not args.dest:
         parser.error("give SOURCE and DEST, or --batch")
-    result = convert_file(args.source, args.dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo)
+    result = cached_convert(
+        args.source, args.dest, keep_lyrics=args.keep_lyrics, tempo_bpm=args.tempo
+    )
     print(
         f"{result.path}: {result.title!r} — {result.measures} bars, {result.notes} notes, "
         f"{result.staves} staves, {result.tempo_bpm:g} bpm"

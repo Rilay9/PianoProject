@@ -12,8 +12,20 @@
 //
 // One page, one browser, every item in a loop: launching a page per item costs
 // more than the render does.
+//
+// **Incremental** (replan §1.3): each score's render result is remembered in
+// `build/render-manifest.json` under the sha256 of the file that produced it,
+// so a run only engraves files it has not seen. A file's bytes decide its
+// result, so the hash is the whole key — and `--full` (CONTENT_RENDER_FULL=1)
+// ignores the manifest, which is what the weekly workflow runs so an OSMD
+// upgrade cannot hide behind the cache.
+//
+// This file reports *facts*. Deciding which facts are wrong — cursor-step
+// parity, absurd bars-per-second, a mislabelled hand — is render_check.py's
+// job, because those comparisons need the catalog and are worth unit tests.
 
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { openDevScore } from './fixtures/devScore';
@@ -22,6 +34,9 @@ const enabled = process.env.CONTENT_RENDER_CHECK === '1';
 const contentDir = process.env.CONTENT_DIR ?? resolve('public/content');
 const reportPath = process.env.CONTENT_RENDER_REPORT ?? resolve('../build/render-report.json');
 const previewDir = process.env.CONTENT_PREVIEW_DIR ?? resolve('../build/previews');
+const manifestPath =
+  process.env.CONTENT_RENDER_MANIFEST ?? resolve('../build/render-manifest.json');
+const full = process.env.CONTENT_RENDER_FULL === '1';
 const limit = Number(process.env.CONTENT_RENDER_LIMIT ?? '0');
 /** Bars in a preview image — docs/03 §3 step 6 asks for the first two. */
 const PREVIEW_BARS = 2;
@@ -35,6 +50,14 @@ const PREVIEW_BARS = 2;
  */
 const RELOAD_EVERY = 40;
 /**
+ * Write the manifest this often.
+ *
+ * replan §7.8: a run that crashes half way through used to lose everything it
+ * had rendered. Flushing every 20 fresh renders means a killed run costs at
+ * most 20, and the next run picks up where it stopped.
+ */
+const MANIFEST_FLUSH_EVERY = 20;
+/**
  * How long one score may take to engrave.
  *
  * 20 s was enough until the Chopin ballades and scherzos arrived. This is the
@@ -43,6 +66,8 @@ const RELOAD_EVERY = 40;
  * — an open one, on the phone, for the longest pieces.
  */
 const RENDER_TIMEOUT_MS = 60_000;
+/** Bumped when an entry's shape changes, so old manifests are ignored whole. */
+const MANIFEST_VERSION = 1;
 
 interface CatalogItem {
   id: string;
@@ -50,8 +75,12 @@ interface CatalogItem {
   file: string | null;
 }
 
-interface ItemReport {
-  id: string;
+/**
+ * What one render measured. Keyed by file hash, so it carries no id: two
+ * catalog items with byte-identical files legitimately share an entry, and the
+ * id is put back from the catalog when the report is assembled.
+ */
+interface ManifestEntry {
   ok: boolean;
   steps?: number;
   measures?: number;
@@ -60,14 +89,72 @@ interface ItemReport {
   timeSig?: string | null;
   keySig?: string | null;
   hands?: string;
-  preview?: string;
+  /** A real rendered cursor's step count; render_check.py compares it to `steps`. */
+  cursorSteps?: number;
+  renderMs?: number;
+  /** console.error / console.warn seen while this item loaded (replan §7.2). */
+  consoleErrors?: string[];
   error?: string;
+}
+
+interface Manifest {
+  version: number;
+  entries: Record<string, ManifestEntry>;
+}
+
+interface ItemReport extends ManifestEntry {
+  id: string;
+  /** True when this row came from the manifest rather than a fresh render. */
+  cached: boolean;
+  preview?: string;
+}
+
+function loadManifest(): Manifest {
+  if (full || !existsSync(manifestPath)) return { version: MANIFEST_VERSION, entries: {} };
+  try {
+    const parsed = JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
+    if (parsed.version !== MANIFEST_VERSION || typeof parsed.entries !== 'object') {
+      return { version: MANIFEST_VERSION, entries: {} };
+    }
+    return { version: MANIFEST_VERSION, entries: parsed.entries ?? {} };
+  } catch {
+    // A truncated manifest is a cold start, not a failure.
+    return { version: MANIFEST_VERSION, entries: {} };
+  }
+}
+
+function writeManifest(manifest: Manifest): void {
+  mkdirSync(dirname(manifestPath), { recursive: true });
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf-8');
+}
+
+function hashFile(path: string): string {
+  return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+/**
+ * Drops previews whose item is no longer in the catalog.
+ *
+ * The check used to empty the directory every run, on the grounds that a stale
+ * preview looks current. That is still true, but emptying it is wrong once the
+ * run is incremental: a cached item renders nothing and would lose its picture.
+ * Pruning by id keeps both properties.
+ */
+function prunePreviews(keep: Set<string>): void {
+  if (!existsSync(previewDir)) {
+    mkdirSync(previewDir, { recursive: true });
+    return;
+  }
+  for (const name of readdirSync(previewDir)) {
+    if (!name.endsWith('.png')) continue;
+    if (!keep.has(name.slice(0, -4))) rmSync(join(previewDir, name), { force: true });
+  }
 }
 
 test.describe('content render check', () => {
   test.skip(!enabled, 'set CONTENT_RENDER_CHECK=1 (tools/content/render_check.py does)');
   // Hundreds of scores, some of them 500 bars long.
-  test.setTimeout(30 * 60 * 1000);
+  test.setTimeout(60 * 60 * 1000);
 
   test('every catalog item renders and yields at least one step', async ({ page }) => {
     const catalog = (await import(`file://${join(contentDir, 'catalog.json')}`, {
@@ -80,22 +167,61 @@ test.describe('content render check', () => {
     );
     expect(items.length, 'catalog has no items with files').toBeGreaterThan(0);
 
+    const manifest = loadManifest();
+    const wanted = limit > 0 ? items.slice(0, limit) : items;
+    prunePreviews(new Set(wanted.map((item) => item.id)));
+
+    // console.error/warn per item (replan §7.2). Attached once: openDevScore
+    // navigates the same Page, so the listener survives every reopen.
+    let consoleLines: string[] = [];
+    page.on('console', (message) => {
+      const kind = message.type();
+      if (kind === 'error' || kind === 'warning') consoleLines.push(`${kind}: ${message.text()}`);
+    });
+    page.on('pageerror', (error) => consoleLines.push(`pageerror: ${error.message}`));
+
     let driver = await openDevScore(page);
     await driver.setBars(PREVIEW_BARS);
-    // Start from an empty directory: a preview left over from an item that no
-    // longer exists is worse than no preview, because it looks current.
-    rmSync(previewDir, { recursive: true, force: true });
-    mkdirSync(previewDir, { recursive: true });
 
     const reports: ItemReport[] = [];
-    const wanted = limit > 0 ? items.slice(0, limit) : items;
+    let rendered = 0;
 
     for (const [index, item] of wanted.entries()) {
-      if (index > 0 && index % RELOAD_EVERY === 0) {
+      const filePath = join(contentDir, item.file as string);
+      let hash: string;
+      try {
+        hash = hashFile(filePath);
+      } catch (error) {
+        reports.push({
+          id: item.id,
+          ok: false,
+          cached: false,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        continue;
+      }
+
+      const remembered = manifest.entries[hash];
+      if (remembered) {
+        const preview = join(previewDir, `${item.id}.png`);
+        reports.push({
+          id: item.id,
+          cached: true,
+          ...remembered,
+          ...(existsSync(preview) ? { preview } : {}),
+        });
+        continue;
+      }
+
+      if (rendered > 0 && rendered % RELOAD_EVERY === 0) {
         driver = await openDevScore(page);
         await driver.setBars(PREVIEW_BARS);
       }
+      rendered += 1;
+      consoleLines = [];
+      const startedAt = Date.now();
       const url = `/PianoProject/content/${item.file}`;
+      let entry: ManifestEntry;
       try {
         await page.evaluate(async (target) => {
           await window.__pianopathDevScore?.loadUrl(target);
@@ -108,42 +234,73 @@ test.describe('content render check', () => {
         // measurements could be recorded against another's id.
         const loadError = await page.evaluate(() => window.__pianopathDevScore?.lastError());
         if (loadError) {
-          reports.push({ id: item.id, ok: false, error: loadError });
-          continue;
+          entry = { ok: false, error: loadError, consoleErrors: [...consoleLines] };
+        } else {
+          const summary = await page.evaluate(() => window.__pianopathDevScore?.modelSummary());
+          if (!summary || summary.steps < 1) {
+            entry = {
+              ok: false,
+              error: 'rendered but produced no steps',
+              consoleErrors: [...consoleLines],
+            };
+          } else {
+            // The renderer pre-renders into an off-screen buffer and swaps it
+            // in on an animation frame (docs/decisions P2), so a screenshot
+            // taken the moment `loadUrl` resolves catches an empty stage —
+            // which is how 39 of the first run's previews came out blank while
+            // the items themselves rendered fine.
+            await page.waitForFunction(
+              () => {
+                const svg = document.querySelector('#dev-stage svg');
+                return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+              },
+              undefined,
+              { timeout: RENDER_TIMEOUT_MS },
+            );
+            // The step-count invariant, on content rather than only on the 41
+            // fixtures (replan §7.1). It engraves the score a second time with
+            // a live cursor, which is why it is gated behind the manifest.
+            const cursorSteps = await driver.cursorStepCount();
+            entry = {
+              ok: true,
+              ...summary,
+              cursorSteps,
+              renderMs: Date.now() - startedAt,
+              consoleErrors: [...consoleLines],
+            };
+          }
         }
-        const summary = await page.evaluate(() => window.__pianopathDevScore?.modelSummary());
-        if (!summary || summary.steps < 1) {
-          reports.push({ id: item.id, ok: false, error: 'rendered but produced no steps' });
-          continue;
-        }
-        // The renderer pre-renders into an off-screen buffer and swaps it in
-        // on an animation frame (docs/decisions P2), so a screenshot taken
-        // the moment `loadUrl` resolves catches an empty stage — which is how
-        // 39 of the first run's previews came out blank while the items
-        // themselves rendered fine.
-        await page.waitForFunction(
-          () => {
-            const svg = document.querySelector('#dev-stage svg');
-            return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
-          },
-          undefined,
-          { timeout: RENDER_TIMEOUT_MS },
-        );
+      } catch (error) {
+        entry = {
+          ok: false,
+          error: error instanceof Error ? error.message : String(error),
+          consoleErrors: [...consoleLines],
+        };
+      }
+
+      manifest.entries[hash] = entry;
+      const row: ItemReport = { id: item.id, cached: false, ...entry };
+      if (entry.ok) {
         const preview = join(previewDir, `${item.id}.png`);
         mkdirSync(dirname(preview), { recursive: true });
         await page.locator('#dev-stage').screenshot({ path: preview });
-        reports.push({ id: item.id, ok: true, preview, ...summary });
-      } catch (error) {
-        reports.push({
-          id: item.id,
-          ok: false,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        row.preview = preview;
       }
+      reports.push(row);
+
+      if (rendered % MANIFEST_FLUSH_EVERY === 0) writeManifest(manifest);
+      // `index` is only used for progress; the reload counter follows fresh
+      // renders, because a cached item costs nothing and must not trigger one.
+      void index;
     }
 
+    writeManifest(manifest);
     mkdirSync(dirname(reportPath), { recursive: true });
-    writeFileSync(reportPath, `${JSON.stringify({ items: reports }, null, 2)}\n`, 'utf-8');
+    writeFileSync(
+      reportPath,
+      `${JSON.stringify({ rendered, cached: reports.length - rendered, items: reports }, null, 2)}\n`,
+      'utf-8',
+    );
 
     const failed = reports.filter((r) => !r.ok);
     // The report is written before this assertion so a failing run still

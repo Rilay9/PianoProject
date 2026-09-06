@@ -37,6 +37,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from dataclasses import dataclass, field
@@ -616,10 +617,10 @@ def build_entry(
         tags.append("level-banded")
 
     if bundling:
-        from convert import convert_file  # imported late: music21 is slow to load
+        from convert import cached_convert  # imported late: music21 is slow to load
 
         try:
-            convert_file(
+            cached_convert(
                 source_path,
                 dest,
                 title=spec["title"],
@@ -737,7 +738,12 @@ def main() -> None:
         action="store_true",
         help="bundle the CC BY-NC-SA editions — a personal build only (docs/00 D10a)",
     )
+    parser.add_argument(
+        "--no-cache", action="store_true", help="ignore build/cache/convert and reconvert"
+    )
     args = parser.parse_args()
+    if args.no_cache:
+        os.environ["PIANOPATH_NO_CACHE"] = "1"
 
     if not KERN_DIR.exists():
         print(
@@ -767,9 +773,11 @@ def main() -> None:
         for key in report.missing:
             print(f"  - {key}", file=sys.stderr)
     # Last, so the build's one-line summary of this step is the count.
+    from convert import CACHE_STATS  # late import: music21 is slow to load
+
     print(
         f"imported {len(report.imported)} score(s), {len(report.placeheld)} placeholder(s), "
-        f"excluded {len(report.excluded)}"
+        f"excluded {len(report.excluded)} ({CACHE_STATS.summary()})"
     )
 
 

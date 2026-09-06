@@ -23,6 +23,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import sys
@@ -144,10 +145,10 @@ def import_library(out_dir: Path, catalog_path: Path, *, limit: int | None = Non
         dest = scores_out / (spec["id"] + ".mxl")
         tags = ["musetrainer"]
         if reasons:
-            from convert import convert_file  # imported late: music21 is slow to load
+            from convert import cached_convert  # imported late: music21 is slow to load
 
             try:
-                convert_file(
+                cached_convert(
                     source_path,
                     dest,
                     title=spec["title"],
@@ -211,7 +212,12 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True, help="content output directory")
     parser.add_argument("--catalog", type=Path, required=True)
     parser.add_argument("--limit", type=int)
+    parser.add_argument(
+        "--no-cache", action="store_true", help="ignore build/cache/convert and reconvert"
+    )
     args = parser.parse_args()
+    if args.no_cache:
+        os.environ["PIANOPATH_NO_CACHE"] = "1"
 
     if not LIBRARY_DIR.exists():
         print(
@@ -238,9 +244,11 @@ def main() -> None:
         print(f"missing {len(report.missing)} file(s) named in the table", file=sys.stderr)
     # Last, so the build's one-line summary of this step is the count rather
     # than whichever exclusion happened to print last.
+    from convert import CACHE_STATS  # late import: music21 is slow to load
+
     print(
         f"imported {len(report.imported)} score(s), excluded {len(report.excluded)}, "
-        f"normalised {len(report.normalised)}"
+        f"normalised {len(report.normalised)} ({CACHE_STATS.summary()})"
     )
 
 

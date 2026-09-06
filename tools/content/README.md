@@ -16,9 +16,12 @@ python3 tools/content/build.py --quick         # a small generator subset, for a
 python3 tools/content/build.py --render        # …and render every item in Chromium (slow)
 ```
 
-`app`'s `npm run build` runs `build.py --if-missing` through `prebuild`, so a
-fresh clone builds its content once and every later build skips it. Use
-`npm run content:build` to force a rebuild.
+`app`'s `npm run build` runs the full `build.py` through `prebuild`, every time.
+It used to run `--if-missing`, which skipped the rebuild whenever a catalog
+already existed — so an edited source stayed silently stale in the built app
+(replan §7.9). The conversion cache below makes a no-change build cheap enough
+that always running it is the simpler correct thing; `--no-cache` forces every
+source back through music21.
 
 ## The steps, and when you would run one on its own
 
