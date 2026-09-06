@@ -107,12 +107,21 @@ def fold_title(text: str) -> str:
 
 def pitch_multiset(score) -> set[tuple[int, int, int]]:  # noqa: ANN001
     """
-    (bar, staff, MIDI) for every sounding note, as a multiset-ish set of triples.
+    (bar, staff, MIDI) for every note you *hear*, as a set of distinct triples.
 
     A set of `(bar, staff, pitch, index)` rather than a true multiset: two notes
     of the same pitch in the same bar and staff are common (a repeated note),
     so the index within the bar keeps them distinct without needing Counter
     semantics at every comparison site.
+
+    **Tie continuations are not counted.** A note tied from the previous bar is
+    one sound held, not a second attack, and music21 legitimately *adds* the
+    continuation when the source left it implicit — a malformed tie repaired on
+    export. Counting it made the round-trip gate reject files whose only crime
+    was being fixed: measured on the real run, eight of twenty-nine round-trip
+    failures were exactly one repaired tie. What this gate is for is the P10
+    listen-check — the same notes, at the same moments — and a held note is one
+    note by that measure.
     """
     out: set[tuple[int, int, int]] = set()
     counts: dict[tuple[int, int, int], int] = {}
@@ -121,6 +130,9 @@ def pitch_multiset(score) -> set[tuple[int, int, int]]:  # noqa: ANN001
         for measure in part.recurse().getElementsByClass("Measure"):
             number = int(measure.number or 0)
             for element in measure.recurse().notes:
+                tie = getattr(element.tie, "type", None)
+                if tie in ("stop", "continue"):
+                    continue
                 for pitch in element.pitches:
                     key = (number, staff, int(pitch.midi))
                     counts[key] = counts.get(key, 0) + 1

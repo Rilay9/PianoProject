@@ -29,7 +29,7 @@ $env:PIANOPATH_PDMX_DIR = "C:\Users\yalir\repos\Piano Stuff"
 
 …or pass `--pdmx-dir "C:\Users\yalir\repos\Piano Stuff"` to each command.
 
-## 1. Select — about 20 seconds
+## 1. Select — about two minutes
 
 ```powershell
 py -3.11 tools\content\pdmx\select.py --pdmx-dir "C:\Users\yalir\repos\Piano Stuff"
@@ -53,16 +53,22 @@ py -3.11 tools\content\pdmx\select.py --band 1-2
 Add `--no-fingerprint` while you are iterating: hashing 209 MB takes a few
 seconds and only matters for the run you actually commit.
 
-## 2. Extract — minutes
+**Measured on the real archive:** 254,077 rows read, 37,499 past the gates, 306
+chosen by the quotas, 6 named wants found. The dataset's own deduplication flag
+rejects 142,078 rows on its own — more than half the archive — so do not be
+alarmed by the size of the rejection table.
+
+## 2. Extract — seconds, not minutes
 
 ```powershell
 py -3.11 tools\content\pdmx\extract.py
 ```
 
 Streams `mxl.tar.gz` once, writing only the members `select.py` asked for into
-`build/pdmx/raw/`. It stops as soon as it has them all, so a small band is fast
-and a large one is most of a pass over 1.9 GB. Files already extracted are
-skipped, so a re-run after a crash costs only what is missing.
+`build/pdmx/raw/`. **Measured on the real archive: 306 members in 10.9 s, after
+scanning 254,974 tar entries.** It stops as soon as it has them all, so a small
+band is faster still, and files already extracted are skipped — a re-run after
+a crash costs only what is missing.
 
 ## 3. Quarry — the slow one
 
@@ -76,9 +82,18 @@ and duplicate detection against the catalog. Writes `build/pdmx/quarried.json`
 and the converted files, and prints the rejection rate per band.
 
 This needs music21 and a built app; the render step runs the same
-`content-render.spec.ts` the content build uses. Add `--skip-render` to do
-everything except the browser pass, which is much faster and is what to use
-while you are still adjusting the selector.
+`content-render.spec.ts` the content build uses, over copies staged into the
+app's own content root. Add `--skip-render` to do everything except the browser
+pass, which is much faster and is what to use while you are still adjusting the
+selector.
+
+Re-running is cheap. A verdict about the *file* — it would not convert, it did
+not round-trip, its structure is wrong — is carried over from the previous run
+when the source bytes are unchanged; only the browser's opinion is asked again,
+because that one depends on the app build. `--no-reuse` forces everything.
+
+**Measured on the real archive:** 306 candidates, about 25 minutes for the
+music21 pass and the browser pass together.
 
 **Stop rules** (replan §2.3):
 
