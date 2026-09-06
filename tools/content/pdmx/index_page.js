@@ -49,6 +49,7 @@ function matches() {
   const hi = parseFloat(document.getElementById('hi').value);
   const noLyrics = document.getElementById('nolyrics').checked;
   const rated = document.getElementById('rated').checked;
+  const showExercises = document.getElementById('exercises').checked;
 
   const out = [];
   for (let i = 0; i < ROWS.length; i += 1) {
@@ -64,6 +65,11 @@ function matches() {
     // vote is not a rating, which is the same argument the selector's
     // Bayesian score makes.
     if (rated && !(r[F.rating] >= 4 && r[F.ratings] >= 5)) continue;
+    // Hidden unless asked for: a metronome track, a paradiddle, a page of
+    // scales. The generator already writes those, better and in every key.
+    // Hidden and not deleted, because the rule is four lines of heuristics and
+    // the person it is hiding things from should be able to overrule it.
+    if (!showExercises && r[F.notASong]) continue;
     out.push(r);
   }
   return out;
@@ -110,6 +116,7 @@ function draw() {
     // The CSV mangled this one on the way in and the damage is lossy. The
     // MuseScore link is the only place the real title still exists.
     if (r[F.garbled]) title.appendChild(tag('title garbled'));
+    if (r[F.notASong]) title.appendChild(tag(r[F.notASong]));
     tr.appendChild(title);
 
     const who = document.createElement('td');
@@ -149,7 +156,8 @@ function tag(text, cls) {
   return span;
 }
 
-for (const id of ['q', 'band', 'bucket', 'status', 'lo', 'hi', 'nolyrics', 'rated']) {
+for (const id of ['q', 'band', 'bucket', 'status', 'lo', 'hi', 'nolyrics', 'rated',
+  'exercises']) {
   document.getElementById(id).addEventListener('input', draw);
 }
 

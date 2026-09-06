@@ -843,3 +843,70 @@ class TestNoStdlibShadowing(unittest.TestCase):
     def test_the_shortlist_module_is_reachable_by_package_name(self) -> None:
         self.assertTrue(hasattr(select_mod, "GATES"))
         self.assertTrue(hasattr(select_mod, "DEFAULT_QUOTAS"))
+
+
+class TestNotASong(unittest.TestCase):
+    """
+    Telling an exercise from a piece (index.py).
+
+    The generator already writes scales, arpeggios and rhythm rows, better and
+    in every key, so a metronome track in the library is noise. But the rule
+    that removes it must not remove Czerny's études — and the obvious rule,
+    "the title contains an exercise word", does exactly that.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        from pdmx import index as index_mod
+
+        cls.not_a_song = staticmethod(index_mod.not_a_song)
+        cls.index_mod = index_mod
+
+    def flag(self, title: str, entropy: float = 3.0, garbled: bool = False) -> str:
+        return self.index_mod.not_a_song(title, entropy, garbled)
+
+    def test_a_file_with_one_pitch_class_is_not_a_piece(self) -> None:
+        # Zero entropy: a metronome, a paradiddle, a rhythm-reading sheet.
+        for title in ("Metronome in 3/4 time", "Paradiddle Permutations", "reading 2A"):
+            self.assertIn("rhythm only", self.flag(title, entropy=0.0), title)
+
+    def test_the_entropy_line_sits_below_real_music(self) -> None:
+        # 1.5-1.8 is where Gregorian chant and pop transcriptions start, so the
+        # line is at 1.0 and anything above it survives on entropy alone.
+        self.assertTrue(self.flag("Psalm 67 - Anonymous (Gregorian chant)", entropy=1.58) == "")
+        self.assertTrue(self.flag("This Little Light of Mine", entropy=1.76) == "")
+        self.assertIn("rhythm only", self.flag("Basic Drum Rhythms", entropy=1.0))
+
+    def test_a_title_made_only_of_exercise_words_is_an_exercise(self) -> None:
+        for title in ("Scales", "All Major Scales", "Arpeggios", "chord progression",
+                      "Warm Up 1", "Exercises - Page 5", "Major Scales and Chords"):
+            self.assertIn("exercise words", self.flag(title), title)
+
+    def test_a_title_that_merely_mentions_one_is_not(self) -> None:
+        # Every one of these was thrown away by "contains an exercise word",
+        # and every one is real music the classical track wants.
+        for title in (
+            "Czerny: 160 Kurze Übungen op. 821 no. 3",
+            "Brahms - 51 Übungen für Klavier No. 2b",
+            "Czerny - The Art Of Finger Dexterity (Op. 740) - No. 3",
+            "Broken Finger Waltz",
+            "The sepulchre was empty - Adam Geibel",
+            "untitled in MS - Torryburn Lasses",
+            "Green Tea Frap (Snare Exercise)",
+        ):
+            self.assertEqual(self.flag(title), "", title)
+
+    def test_a_title_with_no_letters_in_it_is_unusable(self) -> None:
+        for title in ("12ef00a0e785e1a34670692a45534cdc643bf439", "2 08 20", "4"):
+            self.assertIn("no usable title", self.flag(title), title)
+
+    def test_a_garbled_title_is_kept_because_the_piece_is_real(self) -> None:
+        # The CSV ate the name; the music is fine, and the MuseScore link still
+        # has the real title. Dropping these would lose real repertoire to a
+        # data-entry bug upstream.
+        self.assertEqual(self.flag("ãæåãããªã¼ããªã¹ãã¹", garbled=True), "")
+
+    def test_ordinary_music_is_left_alone(self) -> None:
+        for title in ("Clair de Lune", "Nocturne Op. 9 No. 2", "The Skye Boat Song",
+                      "Minuet in G", "Für Elise"):
+            self.assertEqual(self.flag(title), "", title)

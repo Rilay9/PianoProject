@@ -70,10 +70,21 @@ Two things the page will show you about the data, because they are true:
   is lossy: each three-byte character was reduced to one. Use the MuseScore
   link; it is the only place the real title still exists. This is also why
   searching for a Japanese or Cyrillic title finds nothing.
-- **Junk at the low levels.** Metronome tracks, scale exercises, single chords,
-  files called `cmaj21x4745x…`. PDMX is what people uploaded, and a lot of what
-  people upload at the easy end is practice scraps. Nothing filters them out,
-  because a rule that did would throw away real beginner pieces too.
+- **Exercises are hidden.** 238 rows are not pieces of music — metronome
+  tracks, paradiddles, pages of scales, files called `cmaj21x4745x…` — and the
+  page hides them until you tick *show exercises*. The generator already writes
+  those, better and in every key.
+
+  Three signals, and all three are deliberately narrow. A file whose notes are
+  all one pitch class has no melody in it. A title made **entirely** of exercise
+  words is an exercise — "All Major Scales" is, "Czerny: 160 Kurze Übungen op.
+  821 no. 3" is not, and the obvious rule of *contains* an exercise word threw
+  away Czerny's études, Brahms's 51 Übungen, "Broken Finger Waltz" and a hymn
+  called "The sepulchre was empty". And a title with no letters in it is
+  unusable whatever it once said.
+
+  It is a label, not a deletion: 0.63 % of the index, densest exactly where you
+  will be browsing, and one tick away if the rule is wrong about something.
 
 ## 1. Select — about two minutes
 

@@ -26,7 +26,9 @@ import csv
 import html
 import json
 import math
+import re
 import sys
+import unicodedata
 from collections import Counter
 from pathlib import Path
 
@@ -87,6 +89,73 @@ def looks_garbled(text: str) -> bool:
         return False
     suspicious = sum(1 for ch in text if 0x80 <= ord(ch) <= 0xFF)
     return suspicious / len(text) >= GARBLED_SHARE
+
+
+#: Words that can make up the whole of an exercise's title.
+#:
+#: The rule is that a title is an exercise only when *every* word is in here —
+#: not when it merely contains one. "All Major Scales" qualifies; "Czerny: 160
+#: Kurze Übungen op. 821 no. 3" does not, and neither does "Broken Finger
+#: Waltz" or "The sepulchre was empty". Matching on any single word instead
+#: threw away Czerny's études, Brahms's 51 Übungen and a hymn, which is the
+#: opposite of what this is for: the generator already covers exercises, so a
+#: rule that eats real repertoire to remove noise is a bad trade.
+EXERCISE_WORDS = frozenset("""
+scale scales arpeggio arpeggios chord chords triad triads interval intervals
+exercise exercises exercice exercices ejercicio ejercicios ubung ubungen
+esercizio esercizi cvicenie cwiczenie zadanie aufgabe aufgaben rhythmusaufgaben
+metronome metronom click tempo warm warmup up drill drills practice practise
+lesson lessons theory worksheet homework assignment quiz test tests
+example examples demo sample template blank empty untitled
+major minor chromatic diatonic pentatonic
+reading sightreading rhythm rhythms rhythmic note notes
+all the a an of in and for no nr number part page level beginner basic simple
+piano keyboard hand hands left right position
+progression progressions voicing voicings inversion inversions cadence cadences
+lectura lecture notas noten grooves groove
+""".split())
+
+#: Above this many words, "every word is an exercise word" stops meaning much.
+EXERCISE_MAX_WORDS = 8
+
+#: At or below this pitch-class entropy, a file has no melody in it.
+#:
+#: Zero means every note shares one pitch class: a metronome track, a
+#: paradiddle, a rhythm-reading sheet. Measured on the archive, the rows at or
+#: under 1.0 are percussion and rhythm drills almost without exception, and the
+#: band above — 1.5 to 1.8 — is where Gregorian chant, "This Little Light of
+#: Mine" and a John Mayer transcription start appearing. So the line sits at
+#: 1.0 and not a step higher.
+MIN_PITCH_ENTROPY = 1.0
+
+
+def title_words(title: str) -> list[str]:
+    folded = unicodedata.normalize("NFKD", title.lower())
+    folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
+    return re.findall(r"[a-z]{2,}", folded)
+
+
+def not_a_song(title: str, pitch_entropy: float, garbled: bool) -> str:
+    """
+    Why this row is not a piece of music, or "" when it is one.
+
+    A *label*, never a deletion — the same rule `compositionStatus` follows.
+    The page hides these by default and shows them on a tick, because a
+    judgement made by four lines of heuristics should be reversible by the
+    person it was made for.
+    """
+    if pitch_entropy <= MIN_PITCH_ENTROPY:
+        return "rhythm only — every note is the same pitch class"
+    words = title_words(title)
+    if words and len(words) <= EXERCISE_MAX_WORDS and all(w in EXERCISE_WORDS for w in words):
+        return "the title is nothing but exercise words"
+    if not garbled and len(re.sub(r"[^a-zà-ɏ]", "", title.lower())) < max(
+        3, len(title) * 0.35
+    ):
+        # Not a garbled title — those are real pieces whose names the CSV ate —
+        # but one that never had letters in it: `4`, `2 08 20`, a bare sha1.
+        return "no usable title"
+    return ""
 
 
 def clean(value: str | None) -> str:
@@ -212,6 +281,8 @@ def build_index(csv_path: Path, table: ComposerTable, model: dict, limit: int = 
                 if from_artist.matched:
                     match = from_artist
 
+            garbled = looks_garbled(title)
+            entropy = number(row.get("pitch_class_entropy"), 9.0)
             bars = integer(row.get("song_length.bars"))
             notes = integer(row.get("n_notes"))
             notes_per_bar = number(row.get("notes_per_bar"))
@@ -226,7 +297,8 @@ def build_index(csv_path: Path, table: ComposerTable, model: dict, limit: int = 
                     "title": title,
                     "artist": artist,
                     "composer": match.canonical or clean(row.get("composer_name")),
-                    "garbled": looks_garbled(title),
+                    "garbled": garbled,
+                    "notASong": not_a_song(title, entropy, garbled),
                     "status": match.status,
                     "traditional": match.traditional,
                     "bucket": bucket_for(row.get("genres", ""), match.canonical is not None,
@@ -254,6 +326,10 @@ def build_index(csv_path: Path, table: ComposerTable, model: dict, limit: int = 
         "byStatus": dict(Counter(r["status"] for r in rows).most_common()),
         "byLevel": dict(sorted(Counter(int(r["level"]) for r in rows).items())),
         "garbledTitles": sum(1 for r in rows if r["garbled"]),
+        "notSongs": sum(1 for r in rows if r["notASong"]),
+        "notSongsByBand": dict(
+            sorted(Counter(r["band"] for r in rows if r["notASong"]).items())
+        ),
     }
     return rows, summary
 
@@ -293,7 +369,7 @@ def write_page(rows: list[dict], summary: dict, model: dict, out: Path) -> None:
     """
     order = ["cid", "title", "artist", "composer", "status", "bucket", "band", "level",
              "bars", "notes", "rating", "ratings", "views", "lyrics", "tracks",
-             "museScore", "want", "verifies", "garbled"]
+             "museScore", "want", "verifies", "garbled", "notASong"]
     payload = {
         "fields": order,
         "rows": [[row[key] for key in order] for row in rows],
@@ -307,7 +383,10 @@ def write_page(rows: list[dict], summary: dict, model: dict, out: Path) -> None:
         "<title>PDMX index</title>"
         f"<style>{PAGE_CSS}</style></head><body>"
         "<h1>PDMX — everything that passes the gates</h1>"
-        f"<p class='lede'>{summary['indexed']:,} of {summary['rowsRead']:,} rows. "
+        f"<p class='lede'>{summary['indexed']:,} of {summary['rowsRead']:,} rows, "
+        f"{summary['notSongs']} of which are not pieces of music — metronome tracks, "
+        "paradiddles, pages of scales — and are hidden until you tick "
+        "<em>show exercises</em>. The generator already writes those, better and in every key. "
         f"Bands: {html.escape(bands)}. "
         "Levels are estimated from the CSV alone — good enough to sort a shelf, not good "
         "enough for the catalog. Anything you pick still goes through "
@@ -325,6 +404,7 @@ def write_page(rows: list[dict], summary: dict, model: dict, out: Path) -> None:
         "–<input type='number' id='hi' min='1' max='9' step='.5' style='width:6ch'></label>"
         "<label><input type='checkbox' id='nolyrics'> no lyrics</label>"
         "<label><input type='checkbox' id='rated'> rated 4+</label>"
+        "<label><input type='checkbox' id='exercises'> show exercises</label>"
         "<button id='copy'>copy picked CIDs</button>"
         "<span id='picked'>0 picked</span>"
         "<span id='count'></span>"
@@ -394,6 +474,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  by status {summary['byStatus']}")
     print(f"  by level  {summary['byLevel']}")
     print(f"  {summary['garbledTitles']} title(s) are mojibake in the CSV itself and are flagged")
+    print(
+        f"  {summary['notSongs']} row(s) are not pieces of music — "
+        f"{summary['notSongsByBand']} — hidden on the page by default"
+    )
     print(f"wrote {args.out / 'index.html'}")
     return 0
 
