@@ -91,6 +91,104 @@ MINOR_KEYS = ("A", "E", "D", "G", "C", "B", "F", "F#", "C#", "G#", "B-", "E-")
 ARPEGGIO_FINGERING_RH = [1, 2, 3, 5]   # root-position major/minor triad, white-key roots
 ARPEGGIO_FINGERING_LH = [5, 3, 2, 1]
 
+# --------------------------------------------------------------------------------------
+# levels
+# --------------------------------------------------------------------------------------
+#
+# One table, `level_for()`, replaces the literal levels that used to sit in
+# `default_plan()` (replan §3.1, `02` Part E amendment). Every scale variant was
+# handed a literal 4.1 regardless of key, hands, octaves or motion, which is why
+# 225 exercises sat at level 4 and none above 5 — the ladder above Stage 5 had
+# nothing generated to stand on.
+#
+# The rules below are `02` Part E's stage table read as parameters. They are a
+# judgement about difficulty, so they are in one place, named, and tested.
+
+#: The keys a hand learns first, in the order Part E introduces them.
+FIRST_THREE = ("C", "G", "F")
+#: Sharp-side majors: the black keys fall under the long fingers, so two octaves
+#: hands-together arrive earlier here than in the flat keys.
+SHARP_SIDE = ("C", "G", "D", "A", "E", "B")
+#: The three flat keys Part E names at stage 4; the remaining flats come later.
+FLAT_SIDE = ("F", "B-", "E-")
+#: The minors Part E introduces first (`02` stage 3: "A minor harmonic HS").
+FIRST_MINORS = ("A", "E", "D")
+
+
+def accidental_count(tonic: str, mode: str) -> int:
+    """How many sharps or flats the key signature carries, as a count."""
+    signature = key.Key(tonic if mode == "major" else tonic.lower())
+    return abs(signature.sharps or 0)
+
+
+def scale_level(tonic: str, mode: str, hands: str, octaves: int, motion: str, rhythm: float) -> float:
+    """
+    The level of one scale variant (replan §3.1).
+
+    Read top-down: the widest span wins, because four octaves in a familiar key
+    is harder than one octave in an unfamiliar one. Within a span, the key
+    decides.
+    """
+    separately = hands != "both"
+    if octaves >= 4:
+        # `02` Part E stage 8: "all scales 4 oct at ♩=120 in 16ths". The span is
+        # stage 6 work; doing it in sixteenths at speed is what stage 8 adds.
+        return 8.1 if rhythm <= 0.25 else 6.2
+    if octaves == 3:
+        return 6.1
+    if mode == "chromatic":
+        return 6.1 if octaves >= 2 else 4.4
+    if mode == "major":
+        if separately and octaves == 1:
+            if tonic in FIRST_THREE:
+                return 2.5
+            return 3.1 if tonic in ("D", "A") else 4.2
+        # Hands together, one or two octaves, similar or contrary: the same
+        # three key bands, because what makes B major hard is the key and not
+        # the direction.
+        if octaves == 2:
+            if tonic in SHARP_SIDE:
+                return 4.1
+            return 4.2 if tonic in FLAT_SIDE else 5.1
+        if tonic in ("C", "G", "D", "A"):
+            return 4.1
+        return 4.2 if tonic in FLAT_SIDE else 5.1
+    # Minors: harmonic, melodic and natural share a table.
+    if separately and octaves == 1:
+        return 3.3 if tonic in FIRST_MINORS else 4.2
+    if octaves >= 2:
+        return 5.1 if accidental_count(tonic, "minor") <= 3 else 5.2
+    # Hands together at one octave. Part E names three minors at stage 4 — "Am
+    # Em Dm harmonic+melodic HT 1–2 oct" — and no others until stage 5, so the
+    # remote keys follow the same accidental split as two octaves rather than
+    # all landing on 4.2. Letting them sit at 4.2 was most of what was left of
+    # the level-4 bulge: 36 items in keys the stage does not teach.
+    if tonic in FIRST_MINORS:
+        return 4.2
+    return 5.1 if accidental_count(tonic, "minor") <= 3 else 5.2
+
+
+def arpeggio_level(root: str, quality: str, hands: str, octaves: int) -> float:
+    """Triads and sevenths (replan §3.1)."""
+    if quality in ("major", "minor"):
+        if octaves >= 4:
+            return 6.2
+        return 4.3 if hands != "both" else 5.1
+    if quality == "dominant7":
+        # Part E puts the dominant 7th in C, G and F at stage 5 and the rest a
+        # stage later, which is the same three-key ordering the scales use.
+        return 5.2 if root in FIRST_THREE else 6.1
+    if quality == "diminished7":
+        return 6.1
+    # maj7, min7 and half-diminished: the shapes Part E puts at stage 6, and
+    # the broken-seventh patterns built on them at stage 7.
+    return 6.3
+
+
+def broken_seventh_level(root: str) -> float:
+    """Broken-seventh patterns in all keys — Part E stage 7."""
+    return 7.2 if root not in FIRST_THREE else 7.1
+
 # Hanon 1–20 come from content/sources/hanon-mutopia.json, encoded by
 # tools/content/extract_hanon.py from the Mutopia Project's public-domain edition of
 # *The Virtuoso Pianist* (1873). Encoding twenty exercises from memory would have been
@@ -251,7 +349,11 @@ class ScaleSpec:
     motion: str = "similar"   # similar | contrary
     rhythm: float = 0.5       # quarterLength per note: 1.0 quarters, 0.5 eighths, 0.25 sixteenths
     bpm: int = 60
-    level: float = 2.5
+
+    @property
+    def level(self) -> float:
+        """Derived, never passed: see `scale_level` and replan §3.1."""
+        return scale_level(self.tonic, self.mode, self.hands, self.octaves, self.motion, self.rhythm)
 
 
 def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
@@ -328,7 +430,8 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
     return sc, entry
 
 
-def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octaves: int = 2, bpm: int = 60, level: float = 4.3) -> tuple[stream.Score, dict]:
+def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octaves: int = 2, bpm: int = 60) -> tuple[stream.Score, dict]:
+    level = arpeggio_level(root, quality, hands, octaves)
     third = 4 if quality == "major" else 3
     intervals = [0, third, 7]
     title = f"{root} {quality} arpeggio — {octaves} oct, {hands}"
@@ -362,6 +465,9 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
 
 
 def make_triad_inversions(root: str, quality: str = "major", hands: str = "both", bpm: int = 60, level: float = 4.3) -> tuple[stream.Score, dict]:
+    # 4.3 for every key: `02` Part E puts "triads all inversions (12 major, 12
+    # minor)" at stage 4 without splitting them by key, and the shape really is
+    # the same work in all of them.
     """Root position, 1st inversion, 2nd inversion, root (octave up), then back down — as block chords."""
     third = 4 if quality == "major" else 3
     base = [0, third, 7]
@@ -398,8 +504,10 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
     return sc, entry
 
 
-def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm: int = 60, level: float = 1.1) -> tuple[stream.Score, dict]:
+def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm: int = 60) -> tuple[stream.Score, dict]:
     """C-D-E-F-G-F-E-D-C style pattern in quarters, then the five notes as a block chord."""
+    # replan §3.1: hands separately is unit 1.1, hands together is 2.1.
+    level = 1.1 if hands != "both" else 2.1
     steps = [0, 2, 4, 5, 7] if quality == "major" else [0, 2, 3, 5, 7]
     seq = steps + list(reversed(steps))[1:]
     title = f"{root} {quality} five-finger pattern — {hands}"
@@ -423,7 +531,6 @@ def make_hanon(
     number: int,
     hands: str = "both",
     bpm: int = 60,
-    level: float = 4.4,
     data: dict | None = None,
 ) -> tuple[stream.Score, dict]:
     """
@@ -433,6 +540,8 @@ def make_hanon(
     hand's starting note, so building the score is a walk up the C major scale
     rather than a reconstruction of the pattern.
     """
+    # replan §3.1: Hanon 1-10 is stage 4 work, 11-20 stage 5.
+    level = 4.4 if number <= 10 else 5.3
     exercises = data if data is not None else load_hanon()
     spec = exercises[str(number)]
     cmaj = scale.MajorScale("C")
@@ -521,7 +630,7 @@ def chromatic_finger(midi: int, first: bool) -> int:
 
 
 def make_chromatic(
-    start: str = "C", hands: str = "both", octaves: int = 1, bpm: int = 60, level: float = 4.4
+    start: str = "C", hands: str = "both", octaves: int = 1, bpm: int = 60
 ) -> tuple[stream.Score, dict]:
     """
     The chromatic scale, with the standard 1-3 fingering.
@@ -531,6 +640,7 @@ def make_chromatic(
     rather than generated from a scale object so the fingering can be attached
     to the right notes.
     """
+    level = scale_level(start, "chromatic", hands, octaves, "similar", 0.5)
     title = f"Chromatic scale from {start} — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
 
@@ -561,12 +671,27 @@ def make_chromatic(
 SEVENTH_SHAPES = {
     "dominant7": [0, 4, 7, 10],
     "diminished7": [0, 3, 6, 9],
+    # The three shapes `02` Part E puts at stage 6. They are the seventh chords
+    # a jazz or late-Romantic texture is actually built from, and the ear has to
+    # know them as shapes before the hand can voice them.
+    "major7": [0, 4, 7, 11],
+    "minor7": [0, 3, 7, 10],
+    "half-diminished7": [0, 3, 6, 10],
+}
+
+#: How each shape is spoken about, for titles and concept tags.
+SEVENTH_LABELS = {
+    "dominant7": "dominant 7th",
+    "diminished7": "diminished 7th",
+    "major7": "major 7th",
+    "minor7": "minor 7th",
+    "half-diminished7": "half-diminished 7th",
 }
 
 
 def make_seventh_arpeggio(
     root: str, quality: str = "dominant7", hands: str = "both", octaves: int = 2,
-    bpm: int = 60, level: float = 5.2,
+    bpm: int = 60,
 ) -> tuple[stream.Score, dict]:
     """
     A four-note seventh arpeggio, up and back, over two octaves.
@@ -580,8 +705,9 @@ def make_seventh_arpeggio(
     standard shape for a four-note arpeggio and the reason these are taught
     after the triads: the hand has to stretch a seventh rather than a fifth.
     """
+    level = arpeggio_level(root, quality, hands, octaves)
     shape = SEVENTH_SHAPES[quality]
-    label = "dominant 7th" if quality == "dominant7" else "diminished 7th"
+    label = SEVENTH_LABELS[quality]
     title = f"{root} {label} arpeggio — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
 
@@ -607,6 +733,208 @@ def make_seventh_arpeggio(
     entry = catalog_entry(
         item_id, title, level, ["arpeggio", "seventh-chord", f"{root}-{label}", f"hands:{hands}"],
         hands, bpm, "arpeggio", {"key": root, "quality": quality, "octaves": octaves},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+# --------------------------------------------------------------------------------------
+# double notes, octaves and broken sevenths — `02` Part E stages 7 and 8
+# --------------------------------------------------------------------------------------
+#
+# These are the families that put generated material at level 7, which had none:
+# the ladder above stage 6 was asking for double-note work and octave technique
+# and had nothing to offer but repertoire.
+
+
+def add_chords(
+    part: stream.PartStaff,
+    groups: Iterable[Iterable[pitch.Pitch]],
+    fingers: Iterable[Iterable[int]] | None,
+    ql: float,
+) -> None:
+    """Appends a run of double stops, each with its own fingering."""
+    finger_list = list(fingers) if fingers is not None else None
+    for i, group in enumerate(groups):
+        tones = list(group)
+        if finger_list:
+            part.append(fingered_chord(tones, finger_list[i % len(finger_list)], ql))
+        else:
+            part.append(chord.Chord(sorted(tones, key=lambda p: p.ps), quarterLength=ql))
+
+
+def _diatonic_run(tonic: str, mode: str, start: pitch.Pitch, octaves: int) -> list[pitch.Pitch]:
+    """One scale, up and back down, as pitches."""
+    scale_obj = scale.MajorScale(tonic) if mode == "major" else scale.HarmonicMinorScale(tonic)
+    up = scale_obj.getPitches(start, start.transpose(12 * octaves))
+    return up + list(reversed(up))[1:]
+
+
+#: Double-third and double-sixth fingering is genuinely hand- and key-specific,
+#: and a printed fingering that is wrong is worse than none: it teaches a habit.
+#: What is safe to print is the *outer* finger on every note plus the thumb
+#: pattern the ascending run uses in the white keys, so that is what these
+#: carry, and `fingeringVerified` says so in the catalog.
+DOUBLE_THIRD_RH = ([1, 3], [2, 4], [3, 5], [1, 3], [2, 4], [3, 5], [1, 3], [2, 4])
+DOUBLE_THIRD_LH = ([5, 3], [4, 2], [3, 1], [5, 3], [4, 2], [3, 1], [5, 3], [4, 2])
+DOUBLE_SIXTH_RH = ([1, 5], [1, 5], [2, 5], [1, 4], [1, 5], [1, 5], [2, 5], [1, 4])
+DOUBLE_SIXTH_LH = ([5, 1], [5, 1], [5, 2], [4, 1], [5, 1], [5, 1], [5, 2], [4, 1])
+
+
+def make_double_scale(
+    tonic: str, interval_name: str = "third", hands: str = "right", octaves: int = 1, bpm: int = 54,
+) -> tuple[stream.Score, dict]:
+    """
+    A scale in parallel thirds or sixths — `02` Part E stage 7.
+
+    Both notes of each pair come from the scale, so the interval is diatonic
+    (major and minor thirds alternate) rather than a fixed transposition: that
+    is what makes it a scale in thirds and not a scale doubled.
+    """
+    steps = 2 if interval_name == "third" else 5
+    level = 7.1 if tonic in ("C", "G") else 7.3
+    label = "3rds" if interval_name == "third" else "6ths"
+    title = f"{tonic.replace('-', '♭')} major scale in {label} — {octaves} oct, {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    scale_obj = scale.MajorScale(tonic)
+
+    def pairs(start: pitch.Pitch) -> list[list[pitch.Pitch]]:
+        lower = scale_obj.getPitches(start, start.transpose(12 * octaves + 12))
+        run = [[lower[i], lower[i + steps]] for i in range(len(lower) - steps)]
+        # Up and back, without repeating the top pair.
+        return run + list(reversed(run))[1:]
+
+    rh_pairs = pairs(pitch.Pitch(tonic + "4"))
+    lh_pairs = pairs(pitch.Pitch(tonic + "2"))
+    rh_fingers = DOUBLE_THIRD_RH if interval_name == "third" else DOUBLE_SIXTH_RH
+    lh_fingers = DOUBLE_THIRD_LH if interval_name == "third" else DOUBLE_SIXTH_LH
+
+    if hands in ("both", "right"):
+        add_chords(rh, rh_pairs, rh_fingers, 0.5)
+    else:
+        silent(rh, 0.5 * len(rh_pairs))
+    if hands in ("both", "left"):
+        add_chords(lh, lh_pairs, lh_fingers, 0.5)
+    else:
+        silent(lh, 0.5 * len(lh_pairs))
+    finalize(sc)
+
+    item_id = f"exercise.double-{interval_name}.{key_slug(tonic)}.{octaves}oct.{hands}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["double-notes", f"scale-in-{label}", "finger-independence", f"hands:{hands}"],
+        hands, bpm, f"double-{interval_name}",
+        {"key": tonic, "interval": interval_name, "octaves": octaves,
+         # The outer finger is standard; the inner one varies by hand size and
+         # by key, so the catalog does not claim it is verified.
+         "fingeringVerified": False},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_octave_scale(
+    tonic: str, hands: str = "right", octaves: int = 1, bpm: int = 60, broken: bool = False,
+) -> tuple[stream.Score, dict]:
+    """
+    A scale in octaves, solid or broken — `02` Part E stage 7.
+
+    Fingering is the one rule that matters and it is safe to print: thumb and
+    fifth on the white keys, thumb and fourth on the black ones, in both hands.
+    A hand that plays every octave 1–5 will not survive D flat.
+    """
+    level = 7.2
+    kind_label = "broken octaves" if broken else "octave scale"
+    title = f"{tonic.replace('-', '♭')} {kind_label} — {octaves} oct, {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+
+    def top_finger(p: pitch.Pitch) -> int:
+        return 4 if p.pitchClass in BLACK_PITCH_CLASSES else 5
+
+    def build(part_: stream.PartStaff, start: pitch.Pitch, is_right: bool) -> float:
+        run = _diatonic_run(tonic, "major", start, octaves)
+        if broken:
+            # Lower note then upper note, so the wrist rotates rather than the
+            # arm lifting — which is the whole point of the broken form.
+            for p in run:
+                low, high = p, p.transpose(12)
+                for tone, finger in ((low, 1), (high, top_finger(high))):
+                    n = note.Note(tone, quarterLength=0.25)
+                    n.articulations.append(
+                        articulations.Fingering(finger if is_right else (1 if tone is high else finger))
+                    )
+                    part_.append(n)
+            return 0.5 * len(run)
+        for p in run:
+            fingers = [1, top_finger(p.transpose(12))]
+            part_.append(fingered_chord([p, p.transpose(12)], fingers, 0.5))
+        return 0.5 * len(run)
+
+    span = 0.0
+    if hands in ("both", "right"):
+        span = build(rh, pitch.Pitch(tonic + "4"), True)
+    if hands in ("both", "left"):
+        span = build(lh, pitch.Pitch(tonic + "2"), False)
+    if hands == "left":
+        silent(rh, span)
+    if hands == "right":
+        silent(lh, span)
+    finalize(sc)
+
+    slug_kind = "broken-octaves" if broken else "octave-scale"
+    item_id = f"exercise.{slug_kind}.{key_slug(tonic)}.{octaves}oct.{hands}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["octaves", "wrist", kind_label.replace(" ", "-"), f"hands:{hands}"],
+        hands, bpm, slug_kind,
+        {"key": tonic, "octaves": octaves, "broken": broken, "fingeringVerified": True},
+        f"scores/generated/{item_id}.mxl",
+    )
+    return sc, entry
+
+
+def make_broken_seventh(
+    root: str, quality: str = "dominant7", hands: str = "both", bpm: int = 63,
+) -> tuple[stream.Score, dict]:
+    """
+    A seventh chord as a broken figure rather than a straight arpeggio.
+
+    The arpeggio walks the shape once; this turns it back on itself
+    (1-3-5-7-5-3) so the hand crosses the same stretch repeatedly, which is the
+    stage-7 work: "broken chords 7ths all keys".
+    """
+    level = broken_seventh_level(root)
+    shape = SEVENTH_SHAPES[quality]
+    label = SEVENTH_LABELS[quality]
+    title = f"{root.replace('-', '♭')} broken {label} — {hands}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
+
+    def figure(start: pitch.Pitch) -> list[pitch.Pitch]:
+        tones = [start.transpose(i) for i in shape] + [start.transpose(12)]
+        cell = tones + list(reversed(tones))[1:-1]
+        # Two octaves of the same figure, so it lasts long enough to be an
+        # exercise rather than a gesture (docs/03 §3's five-second floor).
+        return cell + [p.transpose(12) for p in cell]
+
+    rh_fingers = [1, 2, 3, 5, 1, 5, 3, 2]
+    lh_fingers = [5, 4, 2, 1, 5, 1, 2, 4]
+    if hands in ("both", "right"):
+        add_notes(rh, figure(pitch.Pitch(root + "3")), rh_fingers, 0.25)
+    else:
+        silent(rh, 0.25 * len(figure(pitch.Pitch(root + "3"))))
+    if hands in ("both", "left"):
+        add_notes(lh, figure(pitch.Pitch(root + "2")), lh_fingers, 0.25)
+    else:
+        silent(lh, 0.25 * len(figure(pitch.Pitch(root + "2"))))
+    finalize(sc)
+
+    item_id = f"exercise.broken7.{key_slug(root)}-{quality}.{hands}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["broken-chord", "seventh-chord", f"{root}-{label}", f"hands:{hands}"],
+        hands, bpm, "broken-seventh",
+        {"key": root, "quality": quality, "fingeringVerified": False},
         f"scores/generated/{item_id}.mxl",
     )
     return sc, entry
@@ -1022,7 +1350,7 @@ def make_pedal(root: str, bpm: int = 54, level: float = 3.5):
 # --------------------------------------------------------------------------------------
 # main
 # --------------------------------------------------------------------------------------
-def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
+def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, dict]]:
     items: list[tuple[stream.Score, dict]] = []
     majors = list(MAJOR_KEYS)
     minors = list(MINOR_KEYS)
@@ -1035,23 +1363,48 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
         all_twelve_major, all_twelve_minor = ["C", "F"], ["A"]
         hanon_numbers = hanon_numbers[:2]
 
+    # Levels are no longer written here: every generator derives its own from
+    # `scale_level` / `arpeggio_level` (replan §3.1). What this function decides
+    # is *which variants exist*, which is a different question and the one the
+    # upper half of the ladder was missing.
     for k in majors:
         for hands in ("right", "left", "both"):
-            items.append(make_scale(ScaleSpec(k, "major", hands, 1, "similar", 0.5, 60, 2.5 if hands != "both" else 4.1)))
-        items.append(make_scale(ScaleSpec(k, "major", "both", 2, "similar", 0.5, 72, 4.1)))
-        items.append(make_scale(ScaleSpec(k, "major", "both", 1, "contrary", 0.5, 60, 4.1)))
+            items.append(make_scale(ScaleSpec(k, "major", hands, 1, "similar", 0.5, 60)))
+        items.append(make_scale(ScaleSpec(k, "major", "both", 2, "similar", 0.5, 72)))
+        items.append(make_scale(ScaleSpec(k, "major", "both", 1, "contrary", 0.5, 60)))
         # Contrary motion at two octaves: `02` Part E lists it from stage 4 and only the
         # one-octave form existed.
-        items.append(make_scale(ScaleSpec(k, "major", "both", 2, "contrary", 0.5, 72, 4.1)))
+        items.append(make_scale(ScaleSpec(k, "major", "both", 2, "contrary", 0.5, 72)))
+        # Three and four octaves (Part E stage 6), and the stage-8 form: four
+        # octaves in sixteenths at ♩=120. These are what put generated material
+        # above level 5 at all.
+        items.append(make_scale(ScaleSpec(k, "major", "both", 3, "similar", 0.5, 84)))
+        items.append(make_scale(ScaleSpec(k, "major", "both", 4, "similar", 0.5, 84)))
+        items.append(make_scale(ScaleSpec(k, "major", "both", 4, "similar", 0.25, 120)))
         items.append(make_arpeggio(k, "major", "both", 2))
+        items.append(make_arpeggio(k, "major", "both", 4))
         items.append(make_triad_inversions(k, "major", "both"))
         items.append(make_seventh_arpeggio(k, "dominant7", "both", 2))
+        # The stage-6 seventh shapes, and the broken-seventh patterns built on
+        # them at stage 7.
+        for quality in ("major7", "minor7", "half-diminished7"):
+            items.append(make_seventh_arpeggio(k, quality, "both", 2))
     for k in minors:
+        # Hands separately at one octave is where Part E starts the minors
+        # (stage 3, "A minor harmonic HS"); it did not exist before.
+        for mode in ("harmonic", "melodic"):
+            for hands in ("right", "left"):
+                items.append(make_scale(ScaleSpec(k, mode, hands, 1, "similar", 0.5, 60)))
         for mode in ("harmonic", "melodic", "natural"):
-            items.append(make_scale(ScaleSpec(k, mode, "both", 1, "similar", 0.5, 60, 4.2)))
+            items.append(make_scale(ScaleSpec(k, mode, "both", 1, "similar", 0.5, 60)))
+            # Two octaves hands together: stage 5 in Part E, and the level table
+            # splits them by how many accidentals the key carries.
+            items.append(make_scale(ScaleSpec(k, mode, "both", 2, "similar", 0.5, 72)))
         # Contrary motion in the minors too — 4.2 asks for the same work in the new keys.
-        items.append(make_scale(ScaleSpec(k, "harmonic", "both", 1, "contrary", 0.5, 60, 4.2)))
+        items.append(make_scale(ScaleSpec(k, "harmonic", "both", 1, "contrary", 0.5, 60)))
+        items.append(make_scale(ScaleSpec(k, "harmonic", "both", 3, "similar", 0.5, 84)))
         items.append(make_arpeggio(k, "minor", "both", 2))
+        items.append(make_arpeggio(k, "minor", "both", 4))
         items.append(make_triad_inversions(k, "minor", "both"))
         items.append(make_seventh_arpeggio(k, "diminished7", "both", 2))
 
@@ -1063,15 +1416,18 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
     # argument — it was simply never called with anything but "both".
     for k in all_twelve_major:
         for hands in ("right", "left", "both"):
-            items.append(make_five_finger(k, "major", hands, level=1.1 if hands != "both" else 2.1))
+            items.append(make_five_finger(k, "major", hands))
     for k in all_twelve_minor:
-        items.append(make_five_finger(k, "minor", "both", level=2.1))
+        items.append(make_five_finger(k, "minor", "both"))
 
     # The chromatic scale from each of the four starting points that use a
     # different fingering shape.
     for start in (["C"] if quick else ["C", "D", "E", "G"]):
         for hands in ("right", "left", "both"):
             items.append(make_chromatic(start, hands, 1))
+        # Two octaves hands together: Part E stage 6, and the span is what makes
+        # the thumb-under shape a technique rather than a pattern.
+        items.append(make_chromatic(start, "both", 2))
 
     for pattern, _, _ in (RHYTHM_PATTERNS[:2] if quick else RHYTHM_PATTERNS):
         items.append(make_rhythm(pattern))
@@ -1113,6 +1469,30 @@ def default_plan(quick: bool) -> list[tuple[stream.Score, dict]]:
 
     for k in (["C"] if quick else ["C", "G", "F", "D", "A", "B-"]):
         items.append(make_pedal(k))
+
+    # ---- `02` Part E stages 7-8: double notes, octaves, broken sevenths ----------------
+    #
+    # `02` names C and G first for the double-note scales and "all keys" a stage
+    # later, so the narrow set is the default and the twelve are behind --full:
+    # twenty-four double-third scales nobody has reached yet is payload, not
+    # breadth (the same argument Part E2 makes about 288 exercises).
+    double_keys = ["C"] if quick else (list(MAJOR_KEYS) if full else ["C", "G"])
+    for k in double_keys:
+        for interval_name in ("third", "sixth"):
+            for hands in ("right", "left"):
+                items.append(make_double_scale(k, interval_name, hands))
+
+    octave_keys = ["C"] if quick else (list(MAJOR_KEYS) if full else ["C", "G", "F", "D", "A"])
+    for k in octave_keys:
+        for hands in ("right", "left", "both"):
+            items.append(make_octave_scale(k, hands, 1))
+        items.append(make_octave_scale(k, "right", 1, broken=True))
+        items.append(make_octave_scale(k, "left", 1, broken=True))
+
+    broken_keys = ["C"] if quick else list(MAJOR_KEYS)
+    for k in broken_keys:
+        for quality in ("dominant7", "major7", "minor7"):
+            items.append(make_broken_seventh(k, quality, "both"))
     return items
 
 
@@ -1121,9 +1501,15 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--catalog", required=True)
     ap.add_argument("--quick", action="store_true", help="small subset for smoke tests")
+    ap.add_argument(
+        "--full",
+        action="store_true",
+        help="every key for the double-note and cell families, not just the ones "
+             "the curriculum introduces first",
+    )
     args = ap.parse_args()
     entries = []
-    for sc, entry in default_plan(args.quick):
+    for sc, entry in default_plan(args.quick, args.full):
         write(sc, args.out, entry["id"])
         entries.append(entry)
     os.makedirs(os.path.dirname(os.path.abspath(args.catalog)), exist_ok=True)
