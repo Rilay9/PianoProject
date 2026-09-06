@@ -40,10 +40,17 @@ self.addEventListener('fetch', (event) => {
         // with a message, rather than on an error page in a WebView with no
         // back button.
       }
+      // Carry `?for=<lessonId>` into the hash when the share arrived with one
+      // (replan §4.3). Android normally posts to the plain action URL, so this
+      // is usually absent — but when it is there it is the difference between
+      // the assign sheet opening on the right rung and opening on none, and
+      // dropping it here would be silent.
+      const wanted = url.searchParams.get('for');
+      const hash = wanted ? `#/library?for=${encodeURIComponent(wanted)}` : '#/library';
       // `Response.redirect` needs an absolute URL — a path throws a TypeError,
       // which inside a `respondWith` means the share lands on a WebView error
       // page with no back button.
-      return Response.redirect(new URL(`${home}#/library`, url).toString(), 303);
+      return Response.redirect(new URL(`${home}${hash}`, url).toString(), 303);
     })(),
   );
 });

@@ -61,6 +61,11 @@ function screenFor(route: Route): ScreenFactory {
     const drillId = route.drill;
     return (router) => DrillScreen(router, drillId);
   }
+  if (route.importFor) {
+    // Library, but told which rung the import is for (replan §4.3).
+    const lessonId = route.importFor;
+    return (router) => LibraryScreen(router, { importFor: lessonId });
+  }
   return route.sub ? SUB_SCREENS[route.sub] : SCREENS[route.tab];
 }
 

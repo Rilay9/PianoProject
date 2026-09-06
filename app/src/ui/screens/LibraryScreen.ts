@@ -26,7 +26,7 @@ import {
 } from '../../data/importStore';
 import { allProgress } from '../../data/progressStore';
 import { clearLevelOverride, levelOverrideFor, setLevelOverride } from '../../data/levelOverrides';
-import type { ProgressRow } from '../../data/db';
+import type { ImportRow, ProgressRow } from '../../data/db';
 import { onScreenDispose } from '../screenLifecycle';
 import {
   badge,
@@ -40,6 +40,9 @@ import {
 } from '../widgets';
 import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
+import { openAssignSheet } from '../assignSheet';
+import { loadCurriculum } from '../../curriculum/load';
+import { estimateLevelFor } from '../../score/estimateImport';
 
 type SortKey = 'level' | 'title' | 'recent';
 
@@ -107,7 +110,12 @@ export function sortItems(items: CatalogItem[], sort: SortKey): CatalogItem[] {
   return sorted;
 }
 
-export function LibraryScreen(router: Router): HTMLElement {
+export interface LibraryOptions {
+  /** The rung an import is being made for, from `#/library?for=<lessonId>`. */
+  importFor?: string;
+}
+
+export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTMLElement {
   const { section, header, body } = screenFrame('library', 'Library', 'Everything you can play, and your own scores.');
   const filters: Filters = { ...DEFAULT_FILTERS };
   let items: CatalogItem[] = [];
@@ -131,9 +139,14 @@ export function LibraryScreen(router: Router): HTMLElement {
     if (!files || files.length === 0) return;
     const added: string[] = [];
     const failed: string[] = [];
+    // Only the last one gets a sheet: importing five files at once is a
+    // desktop drag-and-drop, and five sheets in a row would be worse than
+    // none.
+    let lastRow: ImportRow | undefined;
     for (const file of Array.from(files)) {
       try {
         const row = await addImport(file);
+        lastRow = row;
         added.push(row.title);
       } catch (cause) {
         failed.push(cause instanceof ImportError ? cause.message : `${file.name} could not be read.`);
@@ -157,6 +170,29 @@ export function LibraryScreen(router: Router): HTMLElement {
       shown = PAGE_SIZE;
     }
     await refresh();
+    // replan §4.3: the sheet opens by itself after any import. The old path
+    // put the file in the library and left the owner to go and find it.
+    if (lastRow) await openAssignFor(lastRow);
+  }
+
+  /**
+   * The assign sheet, with everything it can know already filled in.
+   *
+   * The level is estimated here rather than in the sheet because estimating
+   * means parsing the score, which is the one slow thing in the path; doing it
+   * before the sheet opens means the number is there when it appears.
+   */
+  async function openAssignFor(row: ImportRow): Promise<void> {
+    const curriculum = await loadCurriculum();
+    const estimated = row.kind === 'musicxml' ? await estimateLevelFor(row) : undefined;
+    openAssignSheet(row, curriculum, {
+      ...(options.importFor === undefined ? {} : { preselect: options.importFor }),
+      ...(estimated === undefined ? {} : { estimated }),
+      onSaved: () => {
+        void refresh();
+        status.textContent = `${row.title} is in your library.`;
+      },
+    });
   }
 
   picker.addEventListener('change', () => {
@@ -576,7 +612,19 @@ export function LibraryScreen(router: Router): HTMLElement {
 
   // Anything Android shared into the app while it was closed lands here: the
   // service worker parked it and redirected to this screen.
+  // Arriving with a rung in the route means the owner pressed "Import for this
+  // rung" on the lesson page. Opening the picker for him is what makes that
+  // one tap rather than two (replan §4.3).
+  if (options.importFor) {
+    queueMicrotask(() => picker.click());
+  }
+
   void takeSharedFiles().then(({ added, errors }) => {
+    // A shared file goes straight to the assign sheet: a share is the path
+    // this phase exists to shorten, and it is the one where the owner is
+    // furthest from the Library row he would otherwise have to find.
+    const last = added[added.length - 1];
+    if (last) void openAssignFor(last);
     if (added.length === 0 && errors.length === 0) return;
     status.textContent = [
       added.length ? `Shared in: ${added.map((row) => row.title).join(', ')}.` : '',

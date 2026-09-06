@@ -70,6 +70,17 @@ export interface Route {
   chart?: string;
   /** Catalog id of the drill being run (docs/05 §7). */
   drill?: string;
+  /**
+   * `#/library?for=<lessonId>` — the rung an import is being made for
+   * (replan §4.3).
+   *
+   * It rides in the hash because that is the only thing that survives the two
+   * routes into Library that matter: the lesson page's "Import for this rung"
+   * button, and Android's share sheet, whose service-worker redirect carries
+   * the query through. Without it the assign sheet would open with nothing
+   * chosen and the two taps would be four.
+   */
+  importFor?: string;
 }
 
 function isTabId(value: string): value is TabId {
@@ -86,7 +97,20 @@ function isDevId(value: string): value is DevId {
 
 /** Pure function: hash string -> Route. Unknown/empty hashes fall back to the default tab. */
 export function parseHash(hash: string): Route {
-  const cleaned = hash.replace(/^#\/?/, '').trim();
+  const withQuery = hash.replace(/^#\/?/, '').trim();
+  // `#/library?for=2.1`. Split the query off before anything else looks at the
+  // path, so every existing route keeps parsing exactly as it did.
+  const queryAt = withQuery.indexOf('?');
+  const cleaned = queryAt === -1 ? withQuery : withQuery.slice(0, queryAt);
+  const query = queryAt === -1 ? '' : withQuery.slice(queryAt + 1);
+  let importFor: string | undefined;
+  if (query) {
+    const value = new URLSearchParams(query).get('for');
+    // A lesson id, or nothing. An unrecognised one is dropped rather than
+    // carried into the assign sheet, where it would select no rung and look
+    // like a bug in the sheet.
+    if (value && looksLikeLessonId(value)) importFor = value;
+  }
   if (cleaned === '') return { tab: DEFAULT_TAB };
   const [tab = '', sub = ''] = cleaned.split('/');
   if (tab === 'score') {
@@ -98,6 +122,9 @@ export function parseHash(hash: string): Route {
       return { tab: DEFAULT_TAB };
     }
     return looksLikeCatalogId(id) ? { tab: DEFAULT_TAB, score: id } : { tab: DEFAULT_TAB };
+  }
+  if (tab === 'library' && importFor) {
+    return { tab: 'library', importFor };
   }
   if (tab === 'pdf') {
     // A PDF is pixels, not notes, so it gets its own route rather than a mode
@@ -151,6 +178,7 @@ export function parseHash(hash: string): Route {
 }
 
 export function routeToHash(route: Route): string {
+  if (route.importFor) return `#/library?for=${encodeURIComponent(route.importFor)}`;
   if (route.score) return `#/score/${encodeURIComponent(route.score)}`;
   if (route.pdf) return `#/pdf/${encodeURIComponent(route.pdf)}`;
   if (route.lesson) return `#/lesson/${encodeURIComponent(route.lesson)}`;
@@ -187,6 +215,18 @@ export class Router {
    */
   navigate(tab: TabId, sub?: SubId): void {
     const route: Route = sub ? { tab, sub } : { tab };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
+  /**
+   * Opens Library ready to import for one rung (`#/library?for=<lessonId>`).
+   *
+   * The second half of the two-tap path: Library sees the rung in the route,
+   * opens the picker, and pre-selects that rung in the assign sheet.
+   */
+  navigateImportFor(lessonId: string): void {
+    const route: Route = { tab: 'library', importFor: lessonId };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }

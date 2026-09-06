@@ -1712,3 +1712,56 @@ body {
     max-width: 520px;
   }
 }
+
+/* --- Finders (docs/04 §3, §4b; replan §4) ------------------------------- */
+
+/* The one line that says what a rung is short of. Quiet when the rung is
+   full, because most of them are and a permanent nag reads as noise. */
+.needs {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+}
+
+.needs--short {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* A prompt is meant to be copied, not read: it is monospaced so a stray edit
+   is visible, and it scrolls rather than pushing the buttons off the sheet. */
+.finder-text {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2, var(--surface));
+  color: var(--text);
+  resize: vertical;
+}
+
+.finder-list {
+  margin: 0.25rem 0 0.75rem;
+  padding-left: 1.1rem;
+}
+
+.finder-list li {
+  margin: 0.15rem 0;
+}
+
+/* An example carries a badge saying whether it is already in the library or
+   is one of the pieces no source had (replan §1.5). */
+.finder-list li .badge {
+  margin-left: 0.4rem;
+}
+
+#assign-sheet select,
+#assign-sheet input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  font-size: 1rem;
+}

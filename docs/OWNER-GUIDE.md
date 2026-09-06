@@ -161,7 +161,54 @@ back for review after 1, 3, 7 and 21 days.
 
 ## 4. Your own sheet music
 
-**Library → Import a score.** It takes `.musicxml`, `.mxl` and `.pdf`.
+Most of what you will play, you will find yourself. The app's job is to tell
+you *what to look for* and then to get it onto the right rung in two taps.
+
+### Finding it
+
+Open any lesson. Under the title there is a line saying what that rung still
+wants — "This rung wants one more song to reach the floor of 3" — and a
+**Find more** button.
+
+That sheet gives you two things to paste. **Copy search** is a line for a search
+engine. **Copy prompt** is a paragraph for a chatbot, and it is the better one:
+it already says what the piece must have, what makes one wrong for this rung,
+that MusicXML is what you want rather than a picture, and that music still in
+copyright is fine because you are finding it for yourself. It asks for ten with
+composers and where to get each.
+
+Underneath, the examples: pieces of roughly the right kind, marked *already
+yours* if the app has one, or *not found yet* if it is one of the pieces the
+plan names that no free source turned out to have.
+
+The Skills screen has the same button on every skill, if what you want is "more
+of this" rather than "more for this rung".
+
+### Getting it in
+
+Once you have the file, either way round:
+
+- From the lesson, tap **Import for this rung**, pick the file, then **Save**.
+- Or share the file into PianoPath from Files or Drive, then **Save**.
+
+Either way a sheet opens by itself with everything filled in — the rung, a
+level estimated from the notes, what it trains — and **Save** is the only thing
+left to do. Two taps.
+
+The level is marked `≈` while it is the app's guess. Type over it and it stops
+being a guess, and stops showing the `≈`: you are a better judge than the model
+is.
+
+**Assigning it to a rung is what matters.** A piece attached to a rung is one
+of that rung's song options: it counts towards finishing the rung, it turns up
+when you ask for something else to play, and the session builder can pick it.
+A piece with no rung is just a file in your library — still playable, but the
+plan does not know about it. You can leave it that way on purpose; "No rung" is
+the first choice in the list.
+
+### What it takes
+
+**Library → Import a score** takes `.musicxml`, `.mxl` and `.pdf`.
 
 - **MusicXML and .mxl** become first-class: searchable, playable, and the music
   follows your playing exactly as it does for anything built in.
@@ -301,3 +348,28 @@ new note has arrived for 120 ms. That threshold has never met a sustain pedal.
 If you play a chord with the pedal down and the app splits it into two chords,
 or waits too long, the number is `CHORD_BOUNDARY_MS` and it wants your hands
 rather than mine.
+
+**One more, from P15 — and this one needs a real Android share.** Everything
+about the two-tap import was tested in a desktop browser, where a "share" is a
+simulated file drop. What could not be tested here is Android actually handing
+the file over.
+
+Do this once: open a `.mxl` or `.musicxml` in Files or Drive, tap Share, choose
+PianoPath.
+
+*What should happen:* the app opens on the Library tab, and within a second a
+sheet slides up headed **"Where does &lt;title&gt; go?"**, with a rung dropdown
+reading *No rung — just put it in my library*, a level box holding a number,
+and a hint underneath saying `≈ <n>, estimated from the notes`. Tapping **Save**
+closes it, and the piece is in the library.
+
+*What would be wrong:* landing on the Library list with no sheet (the shared
+file was not picked up), a sheet with an empty level box and "No estimate — the
+app could not read the notes" (fine for a PDF, wrong for MusicXML), or a WebView
+error page (the share-target redirect failed).
+
+If a share ever arrives carrying a rung — `?for=` in the URL — that rung should
+be pre-selected instead of *No rung*. Android normally posts to the plain
+address, so expect *No rung*; the pre-selection is there for the lesson page's
+**Import for this rung**, which you can check in one tap and which does work
+here.

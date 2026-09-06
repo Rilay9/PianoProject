@@ -8,12 +8,13 @@
  */
 import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
-import type { CatalogItem, Curriculum } from '../../curriculum/types';
+import type { CatalogItem, ConceptEntry as CurriculumConcept, Curriculum } from '../../curriculum/types';
 import { allProgress } from '../../data/progressStore';
 import { allSkills, displayState, type SkillState } from '../../data/skillsStore';
 import type { SkillRow } from '../../data/db';
 import { createSubScreen } from './subScreen';
 import { badge, button, chip, el, levelLabel, listRow } from '../widgets';
+import { openFinderSheet } from '../finderSheet';
 import { openItem } from '../openItem';
 
 const STATE_LABEL: Record<SkillState, string> = {
@@ -113,6 +114,8 @@ export function SkillsScreen(router: Router): HTMLElement {
   card.append(filters, status, list);
 
   let entries: ConceptEntry[] = [];
+
+  let conceptMeta = new Map<string, CurriculumConcept>();
   let stageFilter = 'all';
   let trackFilter = 'all';
   let stateFilter: 'all' | SkillState = 'all';
@@ -141,13 +144,26 @@ export function SkillsScreen(router: Router): HTMLElement {
    */
   function conceptBlock(entry: ConceptEntry): HTMLElement[] {
     const first = entry.items[0];
+    // The curriculum carries a display name for every concept id, because a
+    // label derived from the id gives you `Cc64` and `Ii-v-i` (replan §4.1).
+    const meta = conceptMeta.get(entry.concept);
+    const finder = meta?.finder;
+    const actions: HTMLElement[] = [];
+    if (first) actions.push(button('Drill it', () => void openItem(router, first), { variant: 'primary' }));
+    if (finder) {
+      // A concept finder exists whether or not any rung is short: "find me
+      // more of this" is a question about the skill, not about the ladder.
+      actions.push(
+        button('Find more', () => openFinderSheet(finder, meta?.display ?? entry.concept), {
+          variant: 'secondary',
+        }),
+      );
+    }
     const row = listRow({
-      title: entry.concept,
+      title: meta?.display ?? entry.concept,
       meta: `Stage ${entry.stages.join(', ')} · ${entry.tracks.join(', ')} · ${String(entry.items.length)} to practise`,
       badges: [badge(STATE_LABEL[entry.state], entry.state === 'rusty' ? 'warn' : entry.state)],
-      actions: first
-        ? [button('Drill it', () => void openItem(router, first), { variant: 'primary' })]
-        : [],
+      actions,
       dataset: { 'data-concept': entry.concept, 'data-state': entry.state },
     });
     if (entry.items.length === 0) return [row];
@@ -224,6 +240,7 @@ export function SkillsScreen(router: Router): HTMLElement {
     const passed = new Set(
       progress.filter((row) => row.status === 'passed' || row.status === 'mastered').map((row) => row.itemId),
     );
+    conceptMeta = new Map((curriculum.concepts ?? []).map((entry) => [entry.id, entry]));
     entries = buildConcepts(curriculum, items, skills, passed);
     drawFilters(
       curriculum.stages.map((stage) => stage.number),

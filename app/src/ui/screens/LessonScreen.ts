@@ -24,6 +24,7 @@ import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { badge, button, el, handsLabel, levelLabel, listRow } from '../widgets';
 import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
+import { openFinderSheet } from '../finderSheet';
 
 interface VideoLink {
   label?: string;
@@ -42,10 +43,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const exercises = el('div.list', { id: 'lesson-exercises' });
   const songs = el('div.list', { id: 'lesson-songs' });
   const actions = el('div.row', { id: 'lesson-actions' });
+  const needsLine = el('p.needs', { id: 'lesson-needs' });
+  const findRow = el('div.row', { id: 'lesson-find' });
 
   body.append(
     status,
     actions,
+    el('section.block', {}, needsLine, findRow),
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
     el('section.block', {}, el('h2', { text: 'Song options' }), songs),
     el('section.block', {}, el('h2', { text: 'Concept' }), text),
@@ -103,6 +107,56 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     status.textContent = 'Marked as already known. It shows a different badge from a measured pass.';
   }
 
+  /**
+   * One line saying what the rung is short of, and the way to fix it.
+   *
+   * The numbers come from `needs`, written into the built curriculum by
+   * validate.py (replan §4.2) — not recounted here, because the counting rules
+   * (the floor, a song-optional rung counting both lists together) would then
+   * live in two places and drift.
+   */
+  function drawNeeds(current: Lesson): void {
+    const needs = current.needs;
+    const short: string[] = [];
+    if (needs) {
+      if (needs.songs > 0) short.push(needs.songs === 1 ? 'one more song' : `${String(needs.songs)} more songs`);
+      if (needs.exercises > 0) {
+        short.push(
+          needs.exercises === 1 ? 'one more exercise' : `${String(needs.exercises)} more exercises`,
+        );
+      }
+    }
+    if (short.length === 0) {
+      const count = current.songOptions.length + current.exerciseOptions.length;
+      needsLine.textContent = `This rung has ${String(count)} option(s) — enough to choose between.`;
+      needsLine.classList.remove('needs--short');
+    } else {
+      needsLine.textContent =
+        `This rung wants ${short.join(' and ')} to reach the floor of ` +
+        `${String(needs?.floor ?? 3)}. Find one, or play what is here.`;
+      needsLine.classList.add('needs--short');
+    }
+
+    findRow.replaceChildren();
+    if (current.finder) {
+      const finder = current.finder;
+      findRow.append(
+        button('Find more', () => openFinderSheet(finder, `${current.id} · ${current.title}`), {
+          id: 'lesson-find-more',
+          variant: short.length > 0 ? 'primary' : 'secondary',
+        }),
+      );
+    }
+    findRow.append(
+      // The two-tap path (replan §4.3): the rung goes in the hash, Library
+      // imports the file and opens the assign sheet with this rung already
+      // chosen, so the only thing left is Save.
+      button('Import for this rung', () => router.navigateImportFor(current.id), {
+        id: 'lesson-import-for',
+      }),
+    );
+  }
+
   function draw(): void {
     if (!lesson) return;
     exercises.replaceChildren(...lesson.exerciseOptions.map(optionRow));
@@ -117,6 +171,8 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
             }),
           ]),
     );
+
+    drawNeeds(lesson);
 
     const done = lessonComplete(lesson, records(), { requireTwoSongs: getSettings().requireTwoSongs });
     actions.replaceChildren(

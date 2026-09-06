@@ -9,6 +9,12 @@ Terminology used throughout:
   From Stage 3 on, **Tracks** (genre/skill lines) run in parallel and the learner picks which
   to advance.
 - **Unit** — a group of 2–6 lessons around one theme inside a stage.
+- **Finder** (P15) — the block on every rung and every concept saying what music would train
+  it: the skill in words, the level in words a search engine matches, what the piece must
+  have, what makes one wrong, examples, and the file format to ask for. `finder.py` turns it
+  into a search line and a chat prompt at build time, and the app hands both over from
+  **Find more**. A finder is how a rung asks for something the app does not have — including
+  the pieces the ladders name that no reachable source has (§1.5 of the replan).
 - **Lesson** — one screen in the app: concept text, 1–3 videos (links), **exercise options**
   (pick at least one), **song options** (pick at least one), and a **mastery check**.
 - **Level number** — `stage.unit` style decimal (e.g. `3.4`) also used as the difficulty of a

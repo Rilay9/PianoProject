@@ -78,6 +78,18 @@ which drives the same `audio/Metronome`.
   options** and **Song options** as cards (title, composer, level, hands, duration, source
   badge, status badge new/started/passed/mastered, "Import needed" for `[IMPORT]`). Any card
   → Score screen. "Mark lesson done manually" (with confirmation) for the no-MIDI honour path.
+- **What this rung still needs** (P15, replan §4.2). One line above the options: "This rung
+  wants one more song to reach the floor of 3. Find one, or play what is here." The numbers
+  are `needs`, written into the built curriculum by `validate.py` — the lesson page reads
+  them rather than recounting, so the counting rules (the floor; a song-optional rung
+  counting both lists together) live in one place.
+- **Find more** opens the finder sheet (`02` terminology): the search line and the chat
+  prompt, each with Copy; what the piece must have and what makes one wrong; the examples,
+  badged *already yours* or *not found yet*; and the formats line. Both prompts are generated
+  at build time and shipped — the sheet presents them and never composes its own wording,
+  because the validator only checks the generated one.
+- **Import for this rung** goes to `#/library?for=<lessonId>`, opens the file picker, and the
+  assign sheet (§4) comes back with that rung already chosen.
 - Track chips at the top (Classical, Chords & Pop, Blues…) with toggle "active"; ordering by
   drag.
 - Placement test entry (Stage 0.4).
@@ -89,6 +101,15 @@ state (never / self-passed / measured / mastered / rusty = not practised in 30 d
 "Drill it" button that launches the concept's drill or a matching short exercise. Filters by
 stage and track. This is how "go back and practise old skills" works without navigating the
 plan.
+
+**Named, and findable** (P15). Each row shows the concept's *display name* from
+`content/curriculum/concepts.json` — the screen used to derive a label from the id, which
+gives you `Cc64` and `Ii-v-i` — and carries **Find more**, opening the same finder sheet as a
+rung does. A concept finder exists whether or not any rung is short, because "find me more of
+this" is a question about the skill and not about the ladder. Six concepts are features of
+this app rather than musical skills (wait mode, tempo mode, the review queue,
+self-assessment, the placement test, performance mode); they have a name and deliberately no
+finder.
 
 ### 3b. Chord-chart view (jam module)
 
@@ -109,6 +130,19 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
   Score screen, and its card says "pages, not notes" so it is obvious why Wait mode is not
   offered. Anything you want judged has to arrive as MusicXML.
 - Item detail sheet: metadata, sections, practice tips, media, "Open".
+- **The assign sheet** (P15, replan §4.3). After *any* import — the picker, a drag, or an
+  Android share — a sheet opens by itself asking where the piece goes: the rung (pre-selected
+  from `?for=`), the level (the runtime estimate from §4.4, shown as `≈` and editable), and
+  the concepts (the rung's). One tap on **Save**. From a share that is **two actions in
+  total**, against the eight the old path took, and the e2e suite counts them rather than
+  taking the claim on trust.
+  - Assigning is optional: "No rung — just put it in my library" is the first choice, and is
+    what an import used to be.
+  - Typing over the estimate makes the level *judged* rather than *estimated*, so the app
+    stops printing the `≈`: the owner is a better source than the model he is overruling.
+  - The assignment is what makes the piece an **option of the rung** — `curriculum/load.ts`
+    appends it to that lesson's `songOptions` at load, so it counts towards finishing the
+    rung, turns up in swaps, and can be chosen by the session builder. It is in the backup.
 
 ## 4b. Score folder (browsing files that live on the phone)
 
