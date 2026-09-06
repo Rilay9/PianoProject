@@ -8,8 +8,15 @@
  * load rather than being half-read.
  */
 import { beforeEach, describe, expect, it } from 'vitest';
-import { base64ToBytes, bytesToBase64, exportAll, importAll, isBackupFile } from '../../src/data/backup';
-import { openDatabase, type ProgressRow } from '../../src/data/db';
+import {
+  base64ToBytes,
+  bytesToBase64,
+  exportAll,
+  importAll,
+  isBackupFile,
+  type BackupFile,
+} from '../../src/data/backup';
+import { STORE_NAMES, openDatabase, type ProgressRow } from '../../src/data/db';
 import { useFakeIndexedDb } from './helpers/idb';
 
 beforeEach(() => {
@@ -226,5 +233,91 @@ describe('importAll', () => {
   it('refuses anything that is not a backup', async () => {
     expect(isBackupFile({ app: 'other' })).toBe(false);
     await expect(importAll({ hello: 'world' })).rejects.toThrow(/not a PianoPath backup/);
+  });
+});
+
+describe('a backup of a phone that has been used (P19 §C3)', () => {
+  /** One row in every store the backup covers, plus the one it does not. */
+  async function fillEveryStore(): Promise<void> {
+    const db = await openDatabase();
+    await db?.put('settings', '{"zoom":1.5,"folderHandles":true}', 'pianopath.settings');
+    await db?.put('progress', progress('song.a', { status: 'mastered', attempts: 9 }));
+    await db?.add('sessions', {
+      itemId: 'song.a',
+      at: '2026-09-01T00:00:00.000Z',
+      accuracy: 0.94,
+      mode: 'wait',
+    } as never);
+    await db?.put('imports', {
+      id: 'import.everything',
+      kind: 'musicxml',
+      title: 'Everything',
+      data: '<score-partwise/>',
+      tags: ['Someone'],
+      addedAt: '2026-09-01T00:00:00.000Z',
+      level: 4.5,
+      levelSource: 'judged',
+      lessonIds: ['2.1'],
+      concepts: ['legato'],
+      origin: { folder: 'Mine', file: 'a/one.mxl' },
+    });
+    await db?.put('plan', { id: 'current', stage: 3, unitId: '3.1', trackOrder: ['core', 'jazz'] });
+    await db?.put('streak', {
+      id: 'streak',
+      minutesByDay: { '2026-09-01': 45 },
+      weeklyGoalMinutes: 150,
+    });
+    await db?.put('micCalibration', { latencyMs: 42, noiseFloor: 0.01 } as never, 'device-1');
+    await db?.put('skills', { conceptId: 'scale', state: 'known' } as never);
+    await db?.put('levelOverrides', { itemId: 'song.a', level: 6.1 } as never);
+    await db?.put('books', {
+      id: 'book.mine',
+      title: 'My book',
+      pieces: [{ id: 'p1', title: 'Study', page: 14, lessonIds: ['4.4'] }],
+    } as never);
+    // The one store the backup leaves out on purpose: 6 MB of listing that is
+    // rebuilt by picking the folder again.
+    await db?.put('folderLibraries', {
+      id: 'Mine',
+      addedAt: '2026-09-01',
+      source: 'PDMX',
+      scores: [],
+    } as never);
+  }
+
+  it('round-trips every store it covers, and leaves out the one it does not', async () => {
+    await fillEveryStore();
+    const file = JSON.parse(JSON.stringify(await exportAll())) as BackupFile;
+
+    // Every store in STORE_NAMES is present in the file and has the row.
+    for (const store of STORE_NAMES) {
+      expect(file.stores[store], `${store} is missing from the backup`).toBeDefined();
+      expect((file.stores[store] as unknown[]).length, `${store} is empty`).toBeGreaterThan(0);
+    }
+    expect(Object.keys(file.stores)).not.toContain('folderLibraries');
+
+    useFakeIndexedDb();
+    const report = await importAll(file);
+    expect(Object.keys(report.written).sort()).toEqual([...STORE_NAMES].sort());
+
+    const fresh = await openDatabase();
+    expect((await fresh?.get('progress', 'song.a'))?.attempts).toBe(9);
+    expect((await fresh?.get('imports', 'import.everything'))?.origin).toEqual({
+      folder: 'Mine',
+      file: 'a/one.mxl',
+    });
+    expect((await fresh?.get('plan', 'current'))?.trackOrder).toEqual(['core', 'jazz']);
+    expect((await fresh?.get('books', 'book.mine'))?.pieces[0]?.page).toBe(14);
+    expect(await fresh?.get('settings', 'pianopath.settings')).toContain('folderHandles');
+    expect((await fresh?.getAll('sessions'))?.length).toBe(1);
+    expect((await fresh?.get('skills', 'scale'))?.state).toBe('known');
+    expect((await fresh?.get('levelOverrides', 'song.a'))?.level).toBe(6.1);
+    expect((await fresh?.get('micCalibration', 'device-1')) as { latencyMs: number } | undefined).toEqual({
+      latencyMs: 42,
+      noiseFloor: 0.01,
+    });
+
+    // And the folder listing did not come back, which is the design.
+    expect(await fresh?.get('folderLibraries', 'Mine')).toBeUndefined();
   });
 });

@@ -122,6 +122,35 @@ test.describe('offline', () => {
     expect(soundfont.ok).toBe(true);
     expect(soundfont.bytes).toBeGreaterThan(1_000_000);
 
+    // 4b. The three content directories added since this test was written
+    //     (P19): a quarried score, a tips file and the level model. Each
+    //     arrived in a directory the precache globs had never seen, and each
+    //     time the symptom would have been something missing on a train.
+    const quarried = items.find((item) => item.file?.includes('scores/pdmx/'));
+    expect(quarried, 'no quarried score in the catalog').toBeTruthy();
+    const later = await page.evaluate(
+      async ({ base, score: quarriedFile }) => {
+        const fetched = async (url: string): Promise<{ ok: boolean; length: number }> => {
+          const response = await fetch(url);
+          return { ok: response.ok, length: (await response.text()).length };
+        };
+        return {
+          quarried: (await fetch(`${base}content/${quarriedFile}`)).ok,
+          tips: await fetched(`${base}content/tips/note-flash.md`),
+          tipsIndex: await fetched(`${base}content/tips/index.json`),
+          model: await fetched(`${base}content/level-model.json`),
+        };
+      },
+      { base: BASE, score: quarried!.file },
+    );
+    expect(later.quarried, 'a quarried score is not cached').toBe(true);
+    expect(later.tips.ok && later.tips.length > 100, 'a tips file is not cached').toBe(true);
+    expect(later.tipsIndex.ok, 'the tips index is not cached').toBe(true);
+    // Without the level model an import silently gets no estimate — which the
+    // app says out loud, so this would look like a content bug rather than a
+    // caching one.
+    expect(later.model.ok && later.model.length > 50, 'the level model is not cached').toBe(true);
+
     // 5. Every tab and sub-screen, offline (P9). Navigated by moving the hash
     //    rather than by `goto`, for the same reason as the dev route above.
     for (const [hash, heading] of [
@@ -148,6 +177,19 @@ test.describe('offline', () => {
       timeout: 30_000,
     });
     await expect(page.locator('.staff-card .staff-note')).toBeVisible();
+
+    // 6b. A concept finder, which is generated from the curriculum and is the
+    //     one screen whose whole purpose is to send him to the internet — it
+    //     still has to *open* without one (P19).
+    await page.evaluate(() => {
+      window.location.hash = '#/plan/skills';
+    });
+    await expect(page.locator('.screen h1')).toHaveText('Review a skill', { timeout: 15_000 });
+    const finder = page.locator('#skills-list').getByRole('button', { name: 'Find more' }).first();
+    await expect(finder).toBeVisible({ timeout: 15_000 });
+    await finder.click();
+    await expect(page.locator('#finder-sheet')).toBeVisible();
+    await expect(page.locator('#finder-sheet')).toContainText(/search|prompt|internet/i);
 
     // 7. Diagnostics agrees: it is the screen the owner would check on a train.
     await page.evaluate(() => {
