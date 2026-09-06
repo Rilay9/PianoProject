@@ -191,6 +191,16 @@ export interface FolderLibraryRow {
   /** From the folder's `library.json`, when it had one. */
   source: string | null;
   scores: FolderScore[];
+  /**
+   * A `FileSystemDirectoryHandle`, when the browser gave one and the owner
+   * asked for it to be kept (the `folderHandles` setting).
+   *
+   * Typed as `unknown` because it is a live browser object IndexedDB stores by
+   * structured clone, not a shape this file should describe;
+   * `data/folderLibrary.ts` is the only thing that opens it, and it checks
+   * before using it. Absent on every folder picked the ordinary way.
+   */
+  handle?: unknown;
 }
 
 /**

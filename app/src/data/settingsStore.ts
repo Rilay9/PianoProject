@@ -71,6 +71,17 @@ export interface PracticeSettings {
   // --- Content ---
   /** docs/04 §7: hide items that are public domain only in the United States. */
   showUsOnlyPd: boolean;
+  /**
+   * Keep a handle on the score folder instead of re-picking it (`04` §4b).
+   *
+   * Off by default because it rests on a platform fact nobody has checked on
+   * the owner's phone: MDN puts `showDirectoryPicker` in Chrome for Android
+   * from 132, but an API that exists can still refuse to hold a permission.
+   * On, the folder is remembered and Add asks Chrome for read permission; if
+   * anything about that fails the app falls back to the picker, so the worst
+   * case is the behaviour he already has.
+   */
+  folderHandles: boolean;
 
   /** Fraction of a chord the microphone must hear before the step completes. */
   micChordLeniencyPct: number;
@@ -109,6 +120,7 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
 
   inputPriority: ['midi', 'mic', 'none'],
   showUsOnlyPd: true,
+  folderHandles: false,
   micChordLeniencyPct: 70,
   strictMicScoring: false,
   muteExpectedWhileMic: true,
@@ -177,6 +189,7 @@ export function coerceSettings(raw: unknown): PracticeSettings {
     if (cleaned.length > 0) out.inputPriority = [...new Set(cleaned)];
   }
   out.showUsOnlyPd = bool(v.showUsOnlyPd, out.showUsOnlyPd);
+  out.folderHandles = bool(v.folderHandles, out.folderHandles);
   out.micChordLeniencyPct = Math.round(num(v.micChordLeniencyPct, out.micChordLeniencyPct, 30, 100));
   out.strictMicScoring = bool(v.strictMicScoring, out.strictMicScoring);
   out.muteExpectedWhileMic = bool(v.muteExpectedWhileMic, out.muteExpectedWhileMic);

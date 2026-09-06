@@ -7,18 +7,22 @@
  * hold the library, it *reads* one, and adding a piece is the ordinary import
  * everything else already understands.
  *
- * Two facts about Android decide the shape, and both were checked rather than
- * assumed:
+ * Two facts about Android decide the shape:
  *
- *   - `showDirectoryPicker()` does not exist on Chrome for Android. There is
- *     no persistent folder permission to be had, so nothing can be re-read on
- *     a later launch.
- *   - `<input type="file" webkitdirectory>` does work — Chrome Android 132+ —
- *     and hands over every file in the folder for the life of the page.
+ *   - `<input type="file" webkitdirectory>` works — Chrome Android 132+ — and
+ *     hands over every file in the folder for the life of the page. This is
+ *     the path that is known to work and it is the default.
+ *   - MDN's compatibility data lists `showDirectoryPicker()` in Chrome for
+ *     Android from 132 as well, which would allow a *stored* handle and so a
+ *     folder that does not have to be picked again. Nobody has tried it on the
+ *     owner's S25, and an API that exists can still refuse to keep a
+ *     permission, so it sits behind the `folderHandles` setting — off until he
+ *     confirms it — and every failure falls back to the picker above.
  *
  * Hence: the **listing** is stored and the **files** are not. Browsing works
  * with nothing connected, on a plane, a year later. Adding needs the folder
- * picked again, which is one tap and only when something is actually wanted.
+ * picked again, which is one tap and only when something is actually wanted —
+ * or no taps at all, if the handle turns out to work.
  *
  * The metadata comes from a `library.json` sitting in the folder — written by
  * `tools/content/pdmx/manifest.py`, though nothing here is PDMX-specific. A
@@ -70,6 +74,18 @@ export interface FolderLibrary {
  * reload however they are stored.
  */
 const connected = new Map<string, Map<string, File>>();
+
+/**
+ * Directory handles for this page's lifetime.
+ *
+ * The handle is also written to the row, because the whole point is to survive
+ * a relaunch — but IndexedDB storing a live browser object is a privilege
+ * Chrome grants and every other engine may not, and `saveFolder` is not
+ * allowed to lose the folder listing because the handle would not clone. So
+ * the handle is kept here as well, and this map is what makes the feature work
+ * for the rest of the session even where the write failed.
+ */
+const handles = new Map<string, unknown>();
 
 const listeners = new Set<() => void>();
 
@@ -243,6 +259,22 @@ export async function readFolder(files: readonly File[]): Promise<FolderLibrary>
     }
     if (isScoreFile(path)) byPath.set(path, file);
   }
+  return buildLibrary(folderNameOf(files), byPath, manifestFile);
+}
+
+/**
+ * The half of `readFolder` that does not care where the files came from.
+ *
+ * The picker gives every file a `webkitRelativePath`; a directory handle gives
+ * none at all, and the path has to be assembled while walking. Everything
+ * after that — the manifest, the bare rows, the sort — is the same, and it is
+ * the same code.
+ */
+async function buildLibrary(
+  id: string,
+  byPath: Map<string, File>,
+  manifestFile: File | null,
+): Promise<FolderLibrary> {
   if (byPath.size === 0) {
     throw new FolderError(
       'That folder has no MusicXML in it. The app reads .mxl, .musicxml and .xml files; a PDF goes through Import instead.',
@@ -266,13 +298,151 @@ export async function readFolder(files: readonly File[]): Promise<FolderLibrary>
   // the one cost worth paying up front.
   scores.sort((a, b) => a.title.localeCompare(b.title));
 
-  const id = folderNameOf(files);
   connected.set(id, byPath);
   return { id, addedAt: new Date().toISOString(), source, scores, connected: true };
 }
 
-/** Opens Android's folder picker and reads whatever comes back. */
-export async function pickFolder(): Promise<FolderLibrary> {
+/**
+ * The bits of the File System Access API this file uses.
+ *
+ * Declared rather than imported: `showDirectoryPicker` is not in the
+ * TypeScript DOM lib, and `queryPermission`/`requestPermission` are a Chrome
+ * extension to the handle that is not in the standard either. Everything here
+ * is called through optional chaining, so a browser with half of it behaves
+ * like one with none.
+ */
+interface PermissionCapableHandle {
+  queryPermission?: (options: { mode: 'read' }) => Promise<PermissionState>;
+  requestPermission?: (options: { mode: 'read' }) => Promise<PermissionState>;
+}
+
+type DirectoryHandle = FileSystemDirectoryHandle & PermissionCapableHandle;
+
+interface PickerWindow {
+  showDirectoryPicker?: (options?: { mode?: 'read' | 'readwrite' }) => Promise<DirectoryHandle>;
+}
+
+/** Whether this browser has the API at all. Chrome for Android has it from 132. */
+export function directoryPickerAvailable(): boolean {
+  return typeof window !== 'undefined' && 'showDirectoryPicker' in window;
+}
+
+/** The picker was dismissed, however the browser chose to say so. */
+function isAbort(cause: unknown): boolean {
+  return cause instanceof DOMException && cause.name === 'AbortError';
+}
+
+/**
+ * Every score under a directory handle, keyed by its path inside the folder.
+ *
+ * Iterative rather than recursive: PDMX nests two levels and nothing here
+ * should care how deep the owner's own folders go, and a stack that cannot
+ * overflow costs nothing.
+ */
+async function readDirectoryHandle(
+  handle: DirectoryHandle,
+): Promise<{ byPath: Map<string, File>; manifestFile: File | null }> {
+  const byPath = new Map<string, File>();
+  let manifestFile: File | null = null;
+  const stack: { dir: FileSystemDirectoryHandle; prefix: string }[] = [{ dir: handle, prefix: '' }];
+  let seen = 0;
+  while (stack.length > 0) {
+    const next = stack.pop();
+    if (!next) break;
+    for await (const entry of next.dir.values()) {
+      const path = next.prefix + entry.name;
+      if (entry.kind === 'directory') {
+        stack.push({ dir: entry, prefix: path + '/' });
+        continue;
+      }
+      seen += 1;
+      if (seen > MAX_FOLDER_FILES) {
+        throw new FolderError(
+          `That folder holds more than ${MAX_FOLDER_FILES.toLocaleString()} files. Pick the folder with the scores in it, not the one above it.`,
+        );
+      }
+      if (path === MANIFEST_NAME) {
+        manifestFile = await entry.getFile();
+        continue;
+      }
+      if (isScoreFile(path)) byPath.set(path, await entry.getFile());
+    }
+  }
+  return { byPath, manifestFile };
+}
+
+/** Reads a folder the browser handed over as a handle rather than as files. */
+export async function readFolderHandle(handle: DirectoryHandle): Promise<FolderLibrary> {
+  const { byPath, manifestFile } = await readDirectoryHandle(handle);
+  return buildLibrary(handle.name || 'Scores', byPath, manifestFile);
+}
+
+/**
+ * Asks for read permission on a stored handle without assuming the API is
+ * there. `granted` when there is nothing to ask.
+ */
+async function readPermission(handle: DirectoryHandle): Promise<PermissionState> {
+  const options = { mode: 'read' } as const;
+  const current = (await handle.queryPermission?.(options)) ?? 'granted';
+  if (current === 'granted') return current;
+  return (await handle.requestPermission?.(options)) ?? 'denied';
+}
+
+/**
+ * Reconnects a folder from its stored handle, if there is one and it is
+ * allowed. `false` means the caller should ask for the folder again — which is
+ * the behaviour with no handle at all, and the reason nothing here throws.
+ */
+export async function reconnectFolder(id: string): Promise<boolean> {
+  if (connected.has(id)) return true;
+  const db = await openDatabase();
+  const row = await db?.get('folderLibraries', id);
+  const handle = (handles.get(id) ?? row?.handle) as DirectoryHandle | undefined;
+  if (!handle) return false;
+  try {
+    if ((await readPermission(handle)) !== 'granted') return false;
+    const { byPath } = await readDirectoryHandle(handle);
+    if (byPath.size === 0) return false;
+    connected.set(id, byPath);
+    notify();
+    return true;
+  } catch {
+    // A handle can go stale: the folder was moved, the card was pulled, the
+    // permission was revoked in Chrome's settings. The picker still works.
+    return false;
+  }
+}
+
+/**
+ * Opens Android's folder picker and reads whatever comes back.
+ *
+ * With `remember` on and the API present it asks for a handle first, which is
+ * the version that does not have to be repeated on the next Add. Anything that
+ * goes wrong there — no API, an old Chrome, a handle the browser will not keep
+ * — drops through to the picker that is known to work, so the fallback is the
+ * behaviour the owner already has rather than an error message.
+ */
+export async function pickFolder(options: { remember?: boolean } = {}): Promise<FolderLibrary> {
+  if (options.remember === true && directoryPickerAvailable()) {
+    const picker = (window as unknown as PickerWindow).showDirectoryPicker;
+    try {
+      const handle = await picker?.({ mode: 'read' });
+      if (handle) {
+        const library = await readFolderHandle(handle);
+        await saveFolder(library, handle);
+        return library;
+      }
+    } catch (cause) {
+      // A dismissed picker is a decision, not a failure: opening a second one
+      // behind it would be the app arguing with him.
+      if (isAbort(cause)) throw new FolderCancelled();
+      if (cause instanceof FolderError) throw cause;
+    }
+  }
+  return pickFolderWithInput();
+}
+
+async function pickFolderWithInput(): Promise<FolderLibrary> {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
@@ -302,7 +472,7 @@ export async function pickFolder(): Promise<FolderLibrary> {
   }
 }
 
-async function saveFolder(library: FolderLibrary): Promise<void> {
+async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<void> {
   const db = await openDatabase();
   const row: FolderLibraryRow = {
     id: library.id,
@@ -310,7 +480,14 @@ async function saveFolder(library: FolderLibrary): Promise<void> {
     source: library.source,
     scores: library.scores,
   };
-  await db?.put('folderLibraries', row);
+  if (handle !== undefined) handles.set(library.id, handle);
+  try {
+    await db?.put('folderLibraries', { ...row, ...(handle === undefined ? {} : { handle }) });
+  } catch {
+    // A handle the engine will not clone must not cost the listing, which is
+    // the part that has to survive: browsing works with nothing connected.
+    await db?.put('folderLibraries', row);
+  }
   notify();
 }
 
@@ -324,6 +501,7 @@ export async function forgetFolder(id: string): Promise<void> {
   const db = await openDatabase();
   await db?.delete('folderLibraries', id);
   connected.delete(id);
+  handles.delete(id);
   notify();
 }
 
@@ -340,6 +518,11 @@ export function disconnectForTest(id: string): void {
   connected.delete(id);
 }
 
+/** Test hook: forget a remembered handle without forgetting the folder. */
+export function forgetHandleForTest(id: string): void {
+  handles.delete(id);
+}
+
 /**
  * Copies one score out of the folder and into the library, as an import.
  *
@@ -349,6 +532,9 @@ export function disconnectForTest(id: string): void {
  * the folder long gone. Browsing is borrowed; adding is keeping.
  */
 export async function addFromFolder(folderId: string, score: FolderScore) {
+  // A stored handle, when there is one, turns "pick the folder again" into an
+  // Allow tap or into nothing at all.
+  if (!connected.has(folderId)) await reconnectFolder(folderId);
   const files = connected.get(folderId);
   if (!files) {
     throw new FolderError(

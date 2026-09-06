@@ -25,6 +25,7 @@ import {
   type FolderLibrary,
 } from '../../data/folderLibrary';
 import { ImportError, allImports } from '../../data/importStore';
+import { getSettings } from '../../data/settingsStore';
 import { badge, button, el, listRow } from '../widgets';
 import { addParagraph, addSection, createSubScreen } from './subScreen';
 
@@ -311,7 +312,7 @@ export function FolderScreen(router: Router): HTMLElement {
 
   async function pick(): Promise<void> {
     try {
-      library = await pickFolder();
+      library = await pickFolder({ remember: getSettings().folderHandles });
       haystacks = library.scores.map((s) => fold(`${s.title} ${s.composer}`));
       fillStyles(library.scores);
       shown = PAGE;

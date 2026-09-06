@@ -23,6 +23,7 @@ import {
 } from '../../data/settingsStore';
 import { getPlan, updatePlan } from '../../data/planStore';
 import { openDatabase } from '../../data/db';
+import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import {
   formatBytes,
@@ -345,6 +346,18 @@ export function SettingsScreen(router: Router): HTMLElement {
       'Show US-only public-domain items',
       toggleControl('set-us-only', s.showUsOnlyPd, (v) => set({ showUsOnlyPd: v })),
       'Nine bundled items are public domain in the United States but not everywhere.',
+    ),
+    field(
+      'Remember the score folder',
+      toggleControl('set-folder-handles', s.folderHandles, (v) => {
+        set({ folderHandles: v });
+        status.textContent = v
+          ? 'The next folder you pick will be remembered, if Chrome allows it.'
+          : 'The folder will be asked for each time you add from it.';
+      }),
+      directoryPickerAvailable()
+        ? 'Keeps a handle on the folder so Add does not ask for it again. Chrome may still ask you to allow it once.'
+        : 'This browser cannot remember a folder, so the app will ask for it each time whatever this says.',
     ),
     field(
       'Offline only',
