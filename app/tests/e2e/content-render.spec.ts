@@ -186,7 +186,7 @@ test.describe('content render check', () => {
     const reports: ItemReport[] = [];
     let rendered = 0;
 
-    for (const [index, item] of wanted.entries()) {
+    for (const item of wanted) {
       const filePath = join(contentDir, item.file as string);
       let hash: string;
       try {
@@ -289,9 +289,6 @@ test.describe('content render check', () => {
       reports.push(row);
 
       if (rendered % MANIFEST_FLUSH_EVERY === 0) writeManifest(manifest);
-      // `index` is only used for progress; the reload counter follows fresh
-      // renders, because a cached item costs nothing and must not trigger one.
-      void index;
     }
 
     writeManifest(manifest);

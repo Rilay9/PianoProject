@@ -104,6 +104,40 @@ Also worth knowing about `[MUTO]`: its Joplin folder holds 18 rags and each `.ly
 7. Output to `app/public/content/`: `catalog.json`, `curriculum.json`, `scores/**.mxl`,
    `lessons/**.md`, `audio/<soundfont>`.
 
+### 3a. What the build remembers between runs (P11)
+
+Steps 2 and 6 were the whole cost of a build, and almost none of their work changes from
+one run to the next. Both now remember what they did. Neither cache can change an answer,
+only when it is computed, because each key covers every input to that answer.
+
+**The conversion cache** — `build/cache/convert/`, written by `convert.cached_convert()`.
+The key is the sha256 of the source bytes, a sha256 of `convert.py` + `abc_tools.py`, the
+music21 version, and the conversion options (a forced tempo, `keep_lyrics`, an overridden
+title — all of which change the written file, so keying without them would hand two callers
+one another's score). Each entry is the `.mxl` plus a JSON sidecar holding the
+`ConversionResult`, so a hit reconstructs everything a caller reads. Both are written
+through a temporary name and renamed, so a run killed mid-write leaves a miss rather than a
+truncated file the next run would trust. A cache that cannot be written is not an error.
+`--no-cache` on `build.py` (or any of the three importers) forces every source back through
+music21.
+
+**The render manifest** — `build/render-manifest.json`, written by
+`app/tests/e2e/content-render.spec.ts`. One entry per *output file* sha256, holding what
+that render measured: ok, steps, measures, duration, tempo, time and key signature, hands,
+cursor steps, render time, console output, and any error. A run engraves only files whose
+hash it has not seen and reuses the recorded numbers for the rest, so `apply_durations`
+still writes a complete catalog. It is flushed every 20 fresh renders, so a run that
+crashes half way through costs at most twenty rather than everything.
+
+The manifest has one blind spot by construction: a change in OpenSheetMusicDisplay, in the
+ScoreModel extractor or in the browser leaves every remembered result standing, because no
+score file moved. `render_check.py --full` ignores the manifest, and
+`.github/workflows/render-full.yml` runs it weekly and on demand, which is what closes it.
+
+`build.py --if-missing` used to skip the whole content build whenever a catalog already
+existed. It is gone: it made an edited source silently stale in `npm run build`, and with
+the cache the build is cheap enough to always run.
+
 ## 4. Catalog and curriculum schemas
 
 Authoritative JSON Schemas are `content/catalog.schema.json` and
