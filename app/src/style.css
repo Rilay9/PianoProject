@@ -1472,6 +1472,26 @@ body {
   min-height: 1.4em;
 }
 
+/* The card's second line: the key a numeral is in, how many notes a chord has.
+   Quiet on purpose — it is help, not the question. */
+.drill-hint {
+  text-align: center;
+  font-size: 0.9rem;
+  margin: -4px 0 8px;
+  min-height: 1.2em;
+}
+
+/* A prompt that is four bars of music rather than a symbol (transposition).
+   Scrolls sideways rather than shrinking: unreadable notation is not a
+   sight-reading exercise. */
+.drill-notation {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 6px 4px;
+}
+
 .drill-strip {
   flex: none;
   margin-top: auto;

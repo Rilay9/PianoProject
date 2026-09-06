@@ -485,7 +485,9 @@ function buildRhythmDrill(p: Params, seed: number): Drill {
   );
   const beatMs = 60_000 / bpm / (timeSig.beatType === 8 ? 2 : 1);
   const pattern = events.filter((event) => !event.rest).map((event) => event.beat * beatMs);
-  return new RhythmDrill({ pattern, bpm, seed });
+  // The count-in is a whole bar of the drill's own metre, so a 3/4 row gets
+  // three clicks and not four.
+  return new RhythmDrill({ pattern, bpm, seed, countInBeats: timeSig.beats });
 }
 
 function buildPedal(p: Params): Drill {

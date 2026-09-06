@@ -21,12 +21,17 @@ import type { Router } from '../../router';
 import { findItem } from '../../curriculum/load';
 import type { CatalogItem } from '../../curriculum/types';
 import {
+  ChordDictationDrill,
+  RhythmDrill,
   drillFromCatalog,
   isSightReading,
   type Drill,
   type DrillPrompt,
   type DrillResult,
 } from '../../engine/drills';
+import { Metronome } from '../../audio/Metronome';
+import { audioTimeToPerformanceMs, captureAudioClockAnchor } from '../../audio/clock';
+import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
 import { noteLabel } from '../../engine/drills/types';
 import type { EngineInput } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
@@ -35,10 +40,12 @@ import { recordRun } from '../../data/progressStore';
 import {
   audioEngine,
   getPiano,
+  micSource,
   screenKeyboardSource,
   webMidiSource,
 } from '../../app/services';
 import type { InputNoteEvent } from '../../midi/types';
+import { OsmdView } from '../../score/OsmdView';
 import { KeyboardStrip } from '../KeyboardStrip';
 import { rhythmRow, staffCard } from '../StaffCard';
 import { onScreenDispose } from '../screenLifecycle';
@@ -47,6 +54,35 @@ import { screenFrame, statusLine } from './screenFrame';
 
 /** How long a right/wrong flash stays up before the next card. */
 const FEEDBACK_MS = 450;
+
+/**
+ * How sure the detector has to be before a heard note counts as an answer.
+ *
+ * `05` §11.4. The microphone is guessing, and a guess it is not confident
+ * about should not mark a drill wrong: below this the note is dropped rather
+ * than counted, so a noisy room costs the learner nothing. MIDI and the screen
+ * keys report confidence 1, so this only ever filters the microphone.
+ */
+export const MIC_ANSWER_CONFIDENCE = 0.5;
+
+/**
+ * Kinds where the learner says when the card is finished.
+ *
+ * Everything else settles the moment the answer is complete, which is what
+ * makes a flash card a flash card. These four cannot: a rhythm is judged over
+ * a whole pattern, a backing track judges nothing, a pedal change and a
+ * dynamics phrase are each one long gesture, and harmonic dictation is a
+ * series of chords whose end only the learner knows. Their `answered` count
+ * grows on every input, so auto-settling would end the card on the first tap.
+ */
+const MANUAL_ADVANCE = new Set<string>([
+  'rhythm',
+  'backing-track',
+  'harmonic-dictation',
+]);
+
+/** How often the chord-boundary rule is given a chance to close a chord. */
+const DICTATION_TICK_MS = 60;
 
 /** docs/02 Part G: a drill passes at the same accuracy a piece does. */
 export function drillOutcome(
@@ -75,11 +111,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   const counter = el('p.drill-counter.muted', { id: 'drill-counter' });
   const stage = el('div.drill-stage', { id: 'drill-stage' });
   const prompt = el('div.drill-prompt', { id: 'drill-prompt' });
+  const hint = el('p.drill-hint.muted', { id: 'drill-hint' });
   const controls = el('div.row', { id: 'drill-controls' });
   const stripHost = el('div.drill-strip', { id: 'drill-strip' });
   const sheet = el('div.drill-summary', { id: 'drill-summary', hidden: true });
 
-  body.append(counter, stage, prompt, controls, status, sheet);
+  body.append(counter, stage, prompt, hint, controls, status, sheet);
   section.append(stripHost);
 
   let item: CatalogItem | undefined;
@@ -93,6 +130,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   /** Which pedal state the lamp shows; the pedal drill is the only reader. */
   let pedalDown = false;
   let lastPedalReport = '';
+  /** Drives the chord-boundary rule's silence half; see `ChordDictationDrill`. */
+  let dictationTimer: ReturnType<typeof setInterval> | null = null;
+  /** The click the rhythm drill counts in and plays along with. */
+  let metronome: Metronome | null = null;
+  let stopMetronomeTicks: (() => void) | null = null;
+  /** True once the learner has opened the microphone on this screen. */
+  let micActive = false;
+  let stopMicNotes: (() => void) | null = null;
+  /** The engraver for a prompt that *is* a score — transposition, so far. */
+  let notation: OsmdView | null = null;
+  let notationFor = '';
 
   // --- input ---------------------------------------------------------------
 
@@ -104,13 +152,14 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
   function onNote(event: InputNoteEvent): void {
     if (!drill || finished || disposed) return;
+    if ((event.confidence ?? 1) < MIC_ANSWER_CONFIDENCE) return;
     const before = drill.result().answered;
     drill.feed(toEngineInput(event));
-    if (event.kind === 'noteOn') {
-      strip?.setState({ pressed: [event.midi] });
-      // Rhythm and backing-track have no per-note answer to settle, so they
-      // repaint on every tap instead of on every answer.
-      if (drill.kind === 'rhythm' || drill.kind === 'backing-track') draw();
+    if (event.kind === 'noteOn') strip?.setState({ pressed: [event.midi] });
+    if (MANUAL_ADVANCE.has(drill.kind)) {
+      // No per-note answer to settle: repaint and wait for "Done".
+      draw();
+      return;
     }
     const after = drill.result().answered;
     if (after > before) settled();
@@ -150,6 +199,19 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function playPrompt(target: DrillPrompt | null): void {
     clearPlayback();
     if (!target?.playback?.length) return;
+    // `05` §11.4: the microphone hears the phone's own speaker, so an ear drill
+    // that played its prompt out loud would be listening to itself and marking
+    // the learner right for saying nothing.
+    if (
+      shouldMuteExpectedPlayback({
+        micActive,
+        destination: getSettings().playbackDestination,
+      })
+    ) {
+      status.textContent =
+        'Playback is muted while the microphone is listening — use headphones, or send playback to the piano.';
+      return;
+    }
     void getPiano()
       .then((piano) => {
         if (disposed) return;
@@ -167,16 +229,104 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       });
   }
 
+  function stopDictationTicker(): void {
+    if (dictationTimer !== null) clearInterval(dictationTimer);
+    dictationTimer = null;
+  }
+
+  /**
+   * Lets a dictation chord end in silence.
+   *
+   * `ChordDictationDrill` closes a chord either when the next chord starts or
+   * when nothing has arrived for 120 ms. The second half cannot happen inside
+   * `feed`, because there is no note to feed — the last chord of a progression
+   * is followed by nothing at all. So something has to tell the drill what time
+   * it is, and this is that something.
+   */
+  function startDictationTicker(target: ChordDictationDrill): void {
+    stopDictationTicker();
+    dictationTimer = setInterval(() => {
+      if (disposed || finished) return;
+      const before = target.chordsHeard.length;
+      target.tick(performance.now());
+      if (target.chordsHeard.length !== before) draw();
+    }, DICTATION_TICK_MS);
+  }
+
+  // --- the count-in click ----------------------------------------------------
+
+  function stopMetronome(): void {
+    stopMetronomeTicks?.();
+    stopMetronomeTicks = null;
+    metronome?.dispose();
+    metronome = null;
+  }
+
+  /**
+   * Counts the rhythm drill in, and keeps clicking through it.
+   *
+   * The drill used to start its clock when the card appeared, which meant the
+   * learner had to guess the downbeat and every tap was measured against a
+   * moment nothing had marked. Now one bar of clicks goes first, the drill's
+   * origin is the audio time of bar 1 beat 1 converted onto the
+   * `performance.now()` timeline that input events carry, and the click keeps
+   * going so there is something to play with rather than against.
+   */
+  function startCountIn(target: RhythmDrill): void {
+    stopMetronome();
+    void audioEngine
+      .ensureStarted()
+      .then((context) => {
+        if (disposed || finished) return;
+        const settings = getSettings();
+        metronome = new Metronome(context, {
+          bpm: target.bpm,
+          beatsPerBar: Math.max(1, target.countInBeats),
+          countInBars: 1,
+          sound: metronomeSoundFor(
+            { micActive, destination: settings.playbackDestination },
+            settings.metronomeSound,
+          ),
+          volume: getMidiSettings().metronomeVolume,
+          ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
+        });
+        // Taken once, before the first click: both clocks drift, and the whole
+        // point is that the drill and the metronome share one reading.
+        const anchor = captureAudioClockAnchor(context);
+        stopMetronomeTicks = metronome.onTick((beat) => {
+          if (beat.isCountIn) {
+            status.textContent = `Count-in — ${String(beat.beatInBar)}`;
+            return;
+          }
+          if (beat.bar === 1 && beat.beatInBar === 1) {
+            target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec));
+            status.textContent = 'Tap the rhythm on any key.';
+          }
+        });
+        metronome.start();
+      })
+      .catch(() => {
+        // No audio is a reason to lose the click, not the drill: without a
+        // start time the drill falls back to its own clock, exactly as before.
+        status.textContent = 'No metronome — the count-in is silent on this device.';
+      });
+  }
+
   // --- the loop ------------------------------------------------------------
 
   function advance(): void {
     if (!drill) return;
+    stopMetronome();
+    stopDictationTicker();
     current = drill.next();
     if (!current) {
       finish();
       return;
     }
     draw();
+    publishExpectations();
+    if (drill instanceof RhythmDrill) startCountIn(drill);
+    if (drill instanceof ChordDictationDrill) startDictationTicker(drill);
     playPrompt(current);
   }
 
@@ -269,9 +419,44 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           }),
         );
         break;
+      case 'transposition': {
+        // The prompt is four bars of music, so it has to be engraved rather
+        // than described. Rendered once per card and reused on redraws: OSMD
+        // is the expensive thing on this screen and a repaint per keystroke
+        // would be felt.
+        const host = el('div.drill-notation', { id: 'drill-notation' });
+        stage.append(host);
+        drawNotation(host, current);
+        break;
+      }
       default:
         stage.append(el('div.symbol-card', { id: 'drill-symbol', text: current.label }));
     }
+  }
+
+  /**
+   * Engraves a prompt that carries its own music.
+   *
+   * Failure is reported on the status line rather than thrown: the answer is
+   * still playable from the expected pitches, and a drill that dies because a
+   * renderer hiccuped is worse than one without a picture.
+   */
+  function drawNotation(host: HTMLElement, target: DrillPrompt): void {
+    const xml = target.musicXml;
+    if (!xml) return;
+    const key = `${String(target.index)}:${xml.length}`;
+    notation?.dispose();
+    notation = new OsmdView(host, { drawFingerings: false, timingLabel: 'drill.osmd' });
+    notationFor = key;
+    void notation
+      .load(xml)
+      .then(() => {
+        if (disposed || notationFor !== key) return;
+        notation?.render();
+      })
+      .catch((cause: unknown) => {
+        status.textContent = `That exercise could not be drawn: ${String(cause)}`;
+      });
   }
 
   function velocityMeter(soft: number, loud: number, target: number): HTMLElement {
@@ -331,6 +516,20 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         return 'Play it back';
       case 'backing-track':
         return 'Play over the loop';
+      case 'mode':
+        return `Play ${current.label}`;
+      case 'chord-scale':
+        return `Play the scale that fits ${current.label}`;
+      case 'extended-chord':
+        return 'Play this chord — every note of it';
+      case 'roman-numeral':
+        return `Play ${current.label}`;
+      case 'transposition':
+        return current.label;
+      case 'ear-tune':
+        return 'Play the phrase back';
+      case 'harmonic-dictation':
+        return 'Play the progression back, as chords';
       default:
         return current.label;
     }
@@ -345,7 +544,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         button('▶ Play again', () => playPrompt(current), { id: 'drill-replay', variant: 'secondary' }),
       );
     }
-    if (drill.kind === 'rhythm' || drill.kind === 'backing-track' || drill.kind === 'dynamics' || drill.kind === 'pedal') {
+    if (MANUAL_ADVANCE.has(drill.kind) || drill.kind === 'dynamics' || drill.kind === 'pedal') {
       // These have no per-answer settle, so the learner says when they are done.
       controls.append(
         button(drill.kind === 'dynamics' || drill.kind === 'pedal' ? 'Next' : 'Done', () => advance(), {
@@ -354,8 +553,56 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         }),
       );
     }
+    // Offered only when the owner has put the microphone in the follow-input
+    // priority: it is never chosen automatically, because opening it raises a
+    // permission prompt and that needs a gesture (the same rule the Score
+    // screen follows).
+    if (!micActive && micSource.supported && getSettings().inputPriority.includes('mic')) {
+      controls.append(
+        button('🎤 Listen', () => openMicrophone(), { id: 'drill-mic', variant: 'secondary' }),
+      );
+    }
     controls.append(button('Skip', () => advance(), { id: 'drill-skip', variant: 'quiet' }));
     controls.append(button('End drill', () => finish(), { id: 'drill-end', variant: 'quiet' }));
+  }
+
+  /**
+   * Tells the detector what the current card is waiting for.
+   *
+   * `05` §11.1: the pitch detector is only tractable because it is told what to
+   * expect. On the Score screen the engine publishes the current step; here the
+   * prompt's expected set is the same thing, and without it the microphone is
+   * guessing across the whole keyboard.
+   */
+  function publishExpectations(): void {
+    if (!micActive) return;
+    const expected = current?.expected ?? [];
+    micSource.setExpectations(expected);
+    // Mirrored onto the element so what the detector was told is observable
+    // from outside — the worklet's port is one-way and a test that cannot see
+    // this would be asserting that the microphone works rather than that it
+    // was aimed at anything.
+    section.dataset.micExpects = expected.join(',');
+  }
+
+  function openMicrophone(): void {
+    if (micActive) return;
+    // From the button's click, because the permission prompt needs a gesture.
+    void micSource
+      .connect()
+      .then(() => {
+        if (disposed) return;
+        micActive = true;
+        stopMicNotes = micSource.onNote(onNote);
+        section.dataset.mic = 'listening';
+        status.textContent = 'Listening through the microphone.';
+        publishExpectations();
+        draw();
+      })
+      .catch((cause: unknown) => {
+        status.textContent = `Microphone unavailable: ${String(cause)}`;
+        status.classList.add('status--error');
+      });
   }
 
   function draw(): void {
@@ -380,9 +627,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         ? `${String(Math.min(result.answered + 1, result.total))} of ${String(result.total)} · ${String(result.correct)} right`
         : `${String(result.answered)} answered`;
     prompt.textContent = promptText();
+    // The hint is the second line the card is allowed: the key a numeral is in,
+    // how many notes a chord has, which note a phrase starts on. Never the
+    // answer — an ear drill with the answer written under it is a reading drill.
+    hint.textContent = current?.hint ?? '';
+    hint.hidden = !current?.hint;
     drawStage();
     drawControls();
     section.dataset.kind = drill.kind;
+    // What this card is waiting for, so a test can play the right answer
+    // without reimplementing the drill to work out what it is.
+    section.dataset.expects = (current?.expected ?? []).join(',');
   }
 
   // --- finishing -----------------------------------------------------------
@@ -391,6 +646,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (!drill || finished) return;
     finished = true;
     clearPlayback();
+    stopMetronome();
+    stopDictationTicker();
     const result = drill.result();
     const settings = getSettings();
     const outcome = drillOutcome(result, settings.passAccuracyPct);
@@ -525,9 +782,14 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   onScreenDispose(section, () => {
     disposed = true;
     clearPlayback();
+    stopMetronome();
+    stopDictationTicker();
     stopMidiNotes();
     stopKeyNotes();
     stopMidiControl();
+    stopMicNotes?.();
+    if (micActive) micSource.disconnect();
+    notation?.dispose();
     strip?.destroy();
   });
 

@@ -18,6 +18,14 @@ export interface RhythmDrillOptions {
   toleranceMs?: number;
   seed?: number;
   clock?: Clock;
+  /**
+   * Clicks before the pattern begins. One bar by default (`04` §7).
+   *
+   * The drill does not make the sound — the screen's metronome does — but the
+   * drill has to know how many beats the learner is being given, because that
+   * is what the screen counts down and what `startAt` is measured from.
+   */
+  countInBeats?: number;
 }
 
 /**
@@ -29,10 +37,15 @@ export interface RhythmDrillOptions {
  */
 export class RhythmDrill implements Drill {
   readonly kind = 'rhythm' as const;
+  /** One beat, in milliseconds — what the screen's metronome has to click at. */
+  readonly beatMs: number;
+  readonly bpm: number;
+  readonly countInBeats: number;
   private readonly pattern: number[];
   private readonly toleranceMs: number;
   private readonly clock: Clock;
   private startedAtMs: number | null = null;
+  private plannedStartMs: number | null = null;
   private readonly matched = new Set<number>();
   private readonly deltas: number[] = [];
   private extras = 0;
@@ -41,6 +54,9 @@ export class RhythmDrill implements Drill {
   constructor(options: RhythmDrillOptions = {}) {
     const bpm = options.bpm ?? 80;
     const beatMs = 60_000 / bpm;
+    this.bpm = bpm;
+    this.beatMs = beatMs;
+    this.countInBeats = Math.max(0, Math.trunc(options.countInBeats ?? 4));
     const rng = makeRng(options.seed ?? 11);
     this.pattern =
       options.pattern ??
@@ -63,8 +79,28 @@ export class RhythmDrill implements Drill {
       expected: [],
       playback: this.pattern.map((atMs) => ({ midi: [], atMs })),
     };
-    this.startedAtMs = this.clock.now();
+    this.startedAtMs = this.plannedStartMs ?? this.clock.now();
     return this.prompt;
+  }
+
+  /**
+   * Says when the pattern's first onset happens, on the input timeline.
+   *
+   * Before this existed the clock started when the card appeared, so the
+   * learner had to guess the downbeat and every tap was measured against a
+   * moment nothing had marked. The screen now starts a metronome, converts the
+   * audio time of bar 1 beat 1 onto the same `performance.now()` timeline the
+   * input events carry, and hands it here — so the drill and the click are
+   * reading one clock and a tap exactly on a click is exactly on time.
+   */
+  startAt(tMs: number): void {
+    this.plannedStartMs = tMs;
+    this.startedAtMs = tMs;
+  }
+
+  /** Where the pattern's first onset sits, once it is known. */
+  get startedAt(): number | null {
+    return this.startedAtMs;
   }
 
   feed(input: EngineInput): void {
@@ -106,7 +142,12 @@ export class RhythmDrill implements Drill {
       accuracy: this.pattern.length > 0 ? correct / this.pattern.length : 0,
       meanReactionMs: mean,
       answers,
-      detail: { extraTaps: this.extras, meanOffsetMs: mean },
+      detail: {
+        extraTaps: this.extras,
+        meanOffsetMs: mean,
+        bpm: this.bpm,
+        countInBeats: this.countInBeats,
+      },
     };
   }
 }

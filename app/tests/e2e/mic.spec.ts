@@ -231,3 +231,62 @@ test.describe('microphone input', () => {
     expect(report).toContain('Analysis cost: mean');
   });
 });
+
+/**
+ * The drill screen listening through the microphone (P8 carry-over, P12b).
+ *
+ * The drills subscribed to MIDI and the on-screen keys and ignored the
+ * microphone entirely, which meant a learner with no cable could sight-read
+ * but could not answer a chord card. These drive a chord drill from the fake
+ * capture device and nothing else — no MIDI mock is installed, so anything
+ * that happens on screen happened because the microphone heard it.
+ */
+test.describe('drills listen to the microphone', () => {
+  test('a chord card is aimed at the detector and answered by what it hears', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['microphone']);
+    await page.goto('/#/drill/drill.chord.c-f-g');
+    const screen = page.locator('[data-screen="drill"]');
+    await expect(screen).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });
+
+    // A real gesture: opening the microphone raises a permission prompt, which
+    // is why it is a button and never automatic.
+    await page.locator('#drill-mic').click();
+    await expect(screen).toHaveAttribute('data-mic', 'listening', { timeout: 30_000 });
+
+    // §11.1: the detector is told what this card wants. Without it the whole
+    // design falls back to open-ended transcription.
+    const expects = await screen.getAttribute('data-expects');
+    expect(expects).toBe('60,64,67');
+    await expect(screen).toHaveAttribute('data-mic-expects', expects ?? '');
+
+    // The clip is a C major scale on a loop, so what the microphone hears is
+    // not the chord on the card — the point here is that it reaches the drill
+    // at all. The counter moving means a card was answered by sound.
+    await expect(page.locator('#drill-counter')).not.toContainText('1 of 10', {
+      timeout: 30_000,
+    });
+  });
+
+  test('an ear drill does not play its prompt out loud while listening', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['microphone']);
+    await page.goto('/#/drill/drill.ear.major-minor');
+    const screen = page.locator('[data-screen="drill"]');
+    await expect(screen).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });
+    await page.locator('#drill-mic').click();
+    await expect(screen).toHaveAttribute('data-mic', 'listening', { timeout: 30_000 });
+
+    // §11.4: the microphone hears the phone's own speaker, so an ear drill
+    // playing its prompt aloud would be listening to itself — and would mark
+    // the learner right for saying nothing.
+    await page.locator('#drill-replay').click();
+    await expect(page.locator('#drill-status')).toContainText('muted while the microphone', {
+      timeout: 10_000,
+    });
+  });
+});
