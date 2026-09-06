@@ -95,6 +95,16 @@ jobs:
         # at least one step (docs/03 §3 steps 5-6).
         run: python3 tools/content/render_check.py --apply
 
+      - name: Validate again, now that durations have been written
+        # --apply *edits the catalog*, and this job validated it two steps ago,
+        # so nothing had ever checked what the render check wrote. That is how
+        # six Chopin durations of 22-40 minutes reached the catalog unnoticed:
+        # `build.py --render` re-validates and would have caught them, but CI
+        # runs the steps separately and did not. The render check now refuses to
+        # write a duration the validator would reject; this step is what makes
+        # that a guarantee rather than an intention.
+        run: python3 tools/content/validate.py
+
       - name: Upload content previews
         if: always()
         uses: actions/upload-artifact@v4

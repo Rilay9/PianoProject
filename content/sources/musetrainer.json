@@ -661,21 +661,7 @@
    ]
   },
   "Nocturne_in_C_sharp_Minor.mxl": {
-   "id": "song.classical.chopin-nocturne-20.alt",
-   "title": "Nocturne No. 20 in C-sharp minor (alternative edition)",
-   "composer": "Frédéric Chopin",
-   "publishedYear": 1875,
-   "level": 8.1,
-   "abrsmGradeApprox": 7,
-   "tracks": [
-    "classical"
-   ],
-   "concepts": [
-    "rubato",
-    "cantabile"
-   ],
-   "variantOf": "song.classical.chopin-nocturne-20",
-   "variantLabel": "alternative edition"
+   "exclude": "render: OpenSheetMusicDisplay throws \"start index of line is greater than the end index\" in SkyBottomLineCalculator and draws nothing. Normalising it is not a way out either — music21 refuses to export measure 59 (\"Cannot convert inexpressible durations to MusicXML\"), the same 2048th-note tuplet that keeps Chopin's Op. 25 no. 7 out of the library. The import copied it verbatim on the assumption that the original still rendered; the render check, once it could see per-item failures and read the browser console, showed that it does not. The primary edition of the same nocturne (song.classical.chopin-nocturne-20) is bundled and renders, and nothing referenced this one."
   },
   "Nocturne_in_E-flat_Major_Op._9_No._2_Easy.mxl": {
    "id": "song.classical.chopin-nocturne-op9-2.easy",

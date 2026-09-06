@@ -45,6 +45,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from common import BUILD_DIR, DEFAULT_OUT, REPO_ROOT, read_json, write_json  # noqa: E402
+# The one definition of a plausible duration, so this cannot drift from the
+# check that enforces it two steps later.
+from validate import MAX_DURATION_SEC, MIN_DURATION_SEC  # noqa: E402
 
 APP_DIR = REPO_ROOT / "app"
 SPEC = "tests/e2e/content-render.spec.ts"
@@ -248,6 +251,7 @@ def main() -> None:
     report_section("cursor-step parity mismatches", parity, stream=sys.stderr)
     report_section("pace outside 0.5-12s per bar", pace_flags(items))
     report_section("hands disagree with the model", hands_flags(items, catalog))
+    report_section("implausible durations", implausible_durations(items))
     report_section("browser console, by message", console_summary(items))
     report_section("browser console, by item", console_flags(items))
 
@@ -257,6 +261,38 @@ def main() -> None:
     # A parity mismatch means the engine would follow a different score from
     # the one drawn, which is the defect this check exists to catch.
     sys.exit(code or (1 if parity else 0))
+
+
+def implausible_durations(items: list[dict]) -> list[str]:
+    """
+    Measurements `validate.py` would reject, named rather than written.
+
+    A duration is `beatToMs(end of the last note)`, so it is only as good as the
+    tempo. Six of the Chopin first editions state no tempo at all, `convert.py`
+    inserts its neutral 96 bpm (docs/03 §3 step 2), and the scherzos come out
+    between 22 and 40 minutes — a measurement of the placeholder, not of the
+    music.
+
+    Writing such a number and then failing the next validation step helps
+    nobody, and it is worse than writing nothing: `durationSec: null` already
+    means "unknown" everywhere in the app, whereas 2426 means "forty minutes"
+    to the session builder, which fits pieces into a 15- or 30-minute slot.
+    So the number is reported here and left out of the catalog.
+    """
+    out: list[str] = []
+    for item in items:
+        if not item.get("ok"):
+            continue
+        duration = item.get("durationSec")
+        if duration is None:
+            continue
+        if not (MIN_DURATION_SEC <= duration <= MAX_DURATION_SEC):
+            out.append(
+                f"{item['id']}: {duration:g}s over {item.get('measures')} bars at "
+                f"{item.get('tempoBpm')} bpm — outside {MIN_DURATION_SEC}–{MAX_DURATION_SEC}s, "
+                "not written to the catalog"
+            )
+    return out
 
 
 def apply_durations(catalog_path: Path, items: list[dict]) -> None:
@@ -276,7 +312,11 @@ def apply_durations(catalog_path: Path, items: list[dict]) -> None:
         found = measured.get(entry["id"])
         if not found:
             continue
-        entry["durationSec"] = found.get("durationSec")
+        duration = found.get("durationSec")
+        # See `implausible_durations`: a number the validator would reject is
+        # not a number worth recording.
+        if duration is not None and MIN_DURATION_SEC <= duration <= MAX_DURATION_SEC:
+            entry["durationSec"] = duration
         if entry.get("tempoBpm") is None:
             entry["tempoBpm"] = found.get("tempoBpm")
         if entry.get("timeSig") is None:

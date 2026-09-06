@@ -20,6 +20,7 @@ from render_check import (  # noqa: E402
     console_flags,
     console_summary,
     hands_flags,
+    implausible_durations,
     pace_flags,
     parity_failures,
 )
@@ -118,6 +119,40 @@ class TestConsole(unittest.TestCase):
         summary = console_summary(rows)
         self.assertIn("warning: w — 3 time(s) across 2 item(s)", summary)
         self.assertIn("error: e — 1 time(s) across 1 item(s)", summary)
+
+
+class TestImplausibleDurations(unittest.TestCase):
+    """
+    A number validate.py would reject is not written to the catalog.
+
+    Six Chopin first editions state no tempo, so convert.py inserts its neutral
+    96 bpm and the scherzos measure 22-40 minutes. That is a measurement of the
+    placeholder, and `durationSec: null` already means "unknown" everywhere in
+    the app — whereas 2426 means "forty minutes" to the session builder.
+    """
+
+    def test_a_plausible_duration_is_not_reported(self) -> None:
+        self.assertEqual(implausible_durations([item(durationSec=300.0)]), [])
+
+    def test_a_forty_minute_piece_is_reported(self) -> None:
+        found = implausible_durations([item(durationSec=2426.3, measures=743, tempoBpm=96)])
+        self.assertEqual(len(found), 1)
+        self.assertIn("not written to the catalog", found[0])
+        self.assertIn("96 bpm", found[0])
+
+    def test_a_two_second_piece_is_reported(self) -> None:
+        self.assertEqual(len(implausible_durations([item(durationSec=2.0)])), 1)
+
+    def test_it_is_not_written_to_the_catalog(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            catalog_path = Path(tmp) / "catalog.json"
+            write_json(catalog_path, [{"id": "song.a", "durationSec": None, "tempoBpm": None}])
+            apply_durations(catalog_path, [item(id="song.a", durationSec=2426.3, tempoBpm=96)])
+            written = __import__("json").loads(catalog_path.read_text("utf-8"))
+            # Left unknown rather than recorded as forty minutes.
+            self.assertIsNone(written[0]["durationSec"])
+            # The rest of the measurement is still useful and is still written.
+            self.assertEqual(written[0]["tempoBpm"], 96)
 
 
 class TestApplyDurations(unittest.TestCase):
