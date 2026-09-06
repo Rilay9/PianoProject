@@ -40,6 +40,15 @@ export interface WriterNote {
    * the bug this flag exists to prevent.
    */
   chord?: boolean;
+  /**
+   * Part of a tuplet — three in the time of two, and so on.
+   *
+   * A triplet is not a duration, it is a duration *plus a claim about what it
+   * is in the time of*: without `<time-modification>` three eighths of 4
+   * divisions each are read as three twelfth-notes and the bar is wrong. `at`
+   * marks the group's first and last note, which is what draws the bracket.
+   */
+  tuplet?: { actual: number; normal: number; at?: 'start' | 'stop' };
 }
 
 export interface WriterMeasure {
@@ -121,6 +130,14 @@ function noteXml(note: WriterNote, preferFlats: boolean, indent: string): string
   lines.push(`${indent}  <voice>${note.voice ?? 1}</voice>`);
   lines.push(`${indent}  <type>${note.type}</type>`);
   if (note.dotted) lines.push(`${indent}  <dot/>`);
+  // Order matters: the MusicXML DTD puts <time-modification> after <dot> and
+  // before <staff>, and OSMD is strict about it.
+  if (note.tuplet) {
+    lines.push(`${indent}  <time-modification>`);
+    lines.push(`${indent}    <actual-notes>${note.tuplet.actual}</actual-notes>`);
+    lines.push(`${indent}    <normal-notes>${note.tuplet.normal}</normal-notes>`);
+    lines.push(`${indent}  </time-modification>`);
+  }
   if (note.staff !== undefined) lines.push(`${indent}  <staff>${note.staff}</staff>`);
   const notations: string[] = [];
   if (note.tie === 'stop' || note.tie === 'both') notations.push(`<tied type="stop"/>`);
@@ -128,6 +145,7 @@ function noteXml(note: WriterNote, preferFlats: boolean, indent: string): string
   if (note.fingering !== undefined) {
     notations.push(`<technical><fingering>${note.fingering}</fingering></technical>`);
   }
+  if (note.tuplet?.at) notations.push(`<tuplet type="${note.tuplet.at}"/>`);
   if (notations.length > 0) {
     lines.push(`${indent}  <notations>${notations.join('')}</notations>`);
   }
@@ -224,6 +242,10 @@ export function durationToType(duration: number): { type: NoteType; dotted: bool
     { divisions: DIVISIONS, type: 'quarter', dotted: false },
     { divisions: DIVISIONS * 0.75, type: 'eighth', dotted: true },
     { divisions: DIVISIONS / 2, type: 'eighth', dotted: false },
+    // An eighth inside a triplet: four divisions, still an eighth on the page.
+    // It is only right when <time-modification> goes with it, which is why
+    // `WriterNote.tuplet` exists rather than a "triplet duration".
+    { divisions: DIVISIONS / 3, type: 'eighth', dotted: false },
     { divisions: DIVISIONS / 4, type: '16th', dotted: false },
   ];
   const match = table.find((entry) => entry.divisions === duration);

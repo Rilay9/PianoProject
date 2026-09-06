@@ -3369,5 +3369,150 @@
       "checksum": null,
       "editionNotes": "Generated at runtime by the app; nothing is bundled."
     }
+  },
+  {
+    "id": "drill.reading.sight-reading-5",
+    "type": "drill",
+    "title": "Sight-reading generator, level 5",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 5.5,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "syncopation",
+      "keys",
+      "accompaniment-patterns"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 5,
+        "bars": 8,
+        "hands": "both"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.sight-reading-6",
+    "type": "drill",
+    "title": "Sight-reading generator, level 6",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 6.5,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "triplets",
+      "keys",
+      "accompaniment-patterns"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 6,
+        "bars": 8,
+        "hands": "both"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.sight-reading-7",
+    "type": "drill",
+    "title": "Sight-reading generator, level 7",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear",
+      "jazz"
+    ],
+    "level": 7.5,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "triplets",
+      "sixteenths",
+      "walking-bass"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 7,
+        "bars": 8,
+        "hands": "both"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
   }
 ]

@@ -51,12 +51,17 @@ export const SESSION_TEMPLATES: SessionTemplate[] = [
   },
   {
     minutes: 30,
+    // P12b (`02` Part A §8): a three-minute sight-reading slot, its minutes
+    // taken from free play. Free play was two minutes, so the third comes from
+    // repertoire — the doc asks for three and offers two, and one minute of
+    // repertoire is the smaller loss. Sight-reading only works on music you
+    // have not seen, and a slot that appears once a week is not a habit.
     slots: [
       { kind: 'technique', minutes: 5 },
       { kind: 'review', minutes: 5 },
       { kind: 'new', minutes: 10 },
-      { kind: 'repertoire', minutes: 8 },
-      { kind: 'free', minutes: 2 },
+      { kind: 'repertoire', minutes: 7 },
+      { kind: 'sightreading', minutes: 3 },
     ],
   },
   {
@@ -65,7 +70,8 @@ export const SESSION_TEMPLATES: SessionTemplate[] = [
       { kind: 'technique', minutes: 8 },
       { kind: 'review', minutes: 8 },
       { kind: 'new', minutes: 20 },
-      { kind: 'repertoire', minutes: 12 },
+      { kind: 'repertoire', minutes: 9 },
+      { kind: 'sightreading', minutes: 3 },
       { kind: 'jam', minutes: 8 },
       { kind: 'free', minutes: 4 },
     ],

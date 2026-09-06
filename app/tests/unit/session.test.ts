@@ -115,6 +115,22 @@ describe('the templates', () => {
   it('falls back to 30 minutes for an unknown length', () => {
     expect(templateFor(45).minutes).toBe(30);
   });
+
+  it('adds up to the length it claims', () => {
+    // The templates are what the Today screen budgets against, so one that
+    // sums to 31 quietly overruns every session the owner plans around it.
+    for (const template of SESSION_TEMPLATES) {
+      const total = template.slots.reduce((sum, slot) => sum + slot.minutes, 0);
+      expect(total, `${String(template.minutes)}-minute template`).toBe(template.minutes);
+    }
+  });
+
+  it('the 30 and the 60 each get three minutes of sight-reading (P12b)', () => {
+    for (const minutes of [30, 60]) {
+      const slots = templateFor(minutes).slots.filter((s) => s.kind === 'sightreading');
+      expect(slots.map((s) => s.minutes), `${String(minutes)}-minute template`).toEqual([3]);
+    }
+  });
 });
 
 describe('nextRecommended', () => {
@@ -153,7 +169,16 @@ describe('buildSession', () => {
     const { slots } = buildSession(input());
     const ids = slots.map((slot) => slot.item?.id).filter(Boolean);
     expect(new Set(ids).size).toBe(ids.length);
-    expect(slots.some((slot) => slot.kind === 'free')).toBe(true);
+    // Every slot the session kept is one the template asked for, in order: a
+    // row it cannot fill is dropped, never invented. (The fixture catalog has
+    // nothing to sight-read, so that row is legitimately missing here.)
+    const wanted = templateFor(30).slots.map((slot) => slot.kind);
+    let at = 0;
+    for (const slot of slots) {
+      at = wanted.indexOf(slot.kind, at);
+      expect(at, `${slot.kind} is not where the template puts it`).toBeGreaterThanOrEqual(0);
+      at += 1;
+    }
   });
 
   it('drops a row it cannot fill rather than showing an empty one', () => {

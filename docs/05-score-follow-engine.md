@@ -133,9 +133,18 @@ screen in Tempo mode. Level table (extend as the curriculum grows):
 | 2 | RH C4–C5, LH C3–G3 | + ♪ pairs, dotted ½ | alternating hands | steps + 3rds |
 | 3 | RH C4–C5 + LH C3–C4 together | + ties, rests | HT (LH whole/half notes) | LH roots of I/IV/V; RH chord tones on strong beats |
 | 4 | ± ledger lines, keys to 2♯/♭ | + dotted ♩, 6/8 | HT | LH block chords or broken chords |
-| 5+ | any key, 2 octaves | + syncopation, triplets | HT | melodic contours from a Markov table trained on the `[AUTH]` folk corpus (build-time) |
+| 5 | keys to 3♯/♭, 2 octaves | + syncopation | HT | RH chord tones on strong beats; LH Alberti |
+| 6 | keys to 4♯/♭, 2 octaves | + triplets | HT | as 5; LH broken chords |
+| 7 | keys to 4♯/♭, 2 octaves | + 16ths | HT | as 5; LH walking |
 
 Deterministic from a seed so a failed sight-read can be retried identically once.
+
+Levels 5–7 originally read "melodic contours from a Markov table trained on the `[AUTH]`
+folk corpus (build-time)". Dropped in P12b, on the P11 replan §3.2: a trained table needs a
+corpus at build time, ships a model with the app, and buys nothing that the chord-tone rule
+above does not — while putting the one property that matters, reproducibility from a seed,
+at the mercy of whichever corpus the build happened to see. The rules replacing it are in
+the three rows above.
 
 ## 9. MIDI adapter details (`midi/WebMidiSource.ts`)
 
