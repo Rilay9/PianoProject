@@ -313,6 +313,25 @@ accuracy.**
   thing that quietly never happens.
 
 ## 5c. Drill screen (P8)
+**Tips and coaching (P17, replan §6).**
+
+- A collapsible **Tips** block sits under the prompt, from
+  `content/tips/<kind>.md`. Same four sections everywhere — *What it's for ·
+  How to practise it · Common mistake · How you'll know you've got it* — so the
+  advice is always the same shape. Open the first time a kind is met and
+  collapsed after (a per-kind `localStorage` flag), because the first run is
+  when it is worth reading and the twentieth is when it is in the way.
+- **Variants** are chosen by matching a file's `when:` block against the item's
+  `drill.params`, most specific first: reading the bass clef is a different
+  problem from reading the treble, and tapping a rhythm back is a different
+  problem from reading one. The kind file is always a safe fallback.
+- The full text appears again on the result sheet, where there is time to read
+  it.
+- **One coaching sentence** on the result sheet when a rule fires, from
+  `engine/drills/coaching.ts` — at most one, because a screen offering four
+  observations after a two-minute drill is a screen nobody reads. `null` is the
+  common and correct answer. The plateau rule carries a link to `practice.5`.
+
 
 Drills are not scores (`05` §7), so they get their own screen rather than a mode on §5. One
 screen with twelve faces: the chrome — prompt counter, keyboard strip, right/wrong feedback,

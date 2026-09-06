@@ -36,7 +36,10 @@ import { noteLabel } from '../../engine/drills/types';
 import type { EngineInput } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
-import { recordRun } from '../../data/progressStore';
+import { recordRun, recentSessions } from '../../data/progressStore';
+import { tipsFor, type Tips } from '../../curriculum/tips';
+import { coach, type Coaching } from '../../engine/drills/coaching';
+import { renderMarkdown } from '../markdown';
 import {
   audioEngine,
   getPiano,
@@ -115,11 +118,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   const controls = el('div.row', { id: 'drill-controls' });
   const stripHost = el('div.drill-strip', { id: 'drill-strip' });
   const sheet = el('div.drill-summary', { id: 'drill-summary', hidden: true });
+  const tipsBlock = el('details.drill-tips', { id: 'drill-tips', hidden: true });
 
-  body.append(counter, stage, prompt, hint, controls, status, sheet);
+  body.append(counter, stage, prompt, hint, tipsBlock, controls, status, sheet);
   section.append(stripHost);
 
   let item: CatalogItem | undefined;
+  let tips: Tips | null = null;
   let drill: Drill | null = null;
   let current: DrillPrompt | null = null;
   let strip: KeyboardStrip | null = null;
@@ -642,6 +647,37 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
   // --- finishing -----------------------------------------------------------
 
+  /**
+   * The one sentence the rules had to say, if any.
+   *
+   * Asynchronous because the plateau rule needs the previous runs, and drawn
+   * after the sheet so a slow read never delays the numbers on screen.
+   */
+  async function showCoaching(result: DrillResult): Promise<void> {
+    const line = document.getElementById('drill-coaching');
+    if (!line || !item) return;
+    const current = item;
+    // No history is a fine reason for no plateau rule, and not a reason to
+    // lose the rules that do not need one.
+    const recent = await recentSessions(60)
+      .then((sessions) => sessions.filter((session) => session.itemId === current.id).slice(0, 2))
+      .catch(() => [] as { accuracy: number }[]);
+    const coaching: Coaching | null = coach(result.kind, result, recent);
+    if (!coaching) return;
+    line.replaceChildren(el('span', { text: coaching.text }));
+    if (coaching.lessonId) {
+      const lessonId = coaching.lessonId;
+      line.append(
+        ' ',
+        button('Read about plateaus', () => router.navigateLesson(lessonId), {
+          variant: 'quiet',
+          id: 'drill-coaching-lesson',
+        }),
+      );
+    }
+    line.hidden = false;
+  }
+
   function finish(): void {
     if (!drill || finished) return;
     finished = true;
@@ -666,13 +702,21 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         outcome.passed ? badge('passed', 'passed') : badge('keep going'),
       ),
       statSheet(result),
+      // The coaching line goes in before the buttons, because it is the thing
+      // worth reading and a sentence under a "Back to the plan" button is a
+      // sentence nobody sees.
+      el('p.drill-coaching', { id: 'drill-coaching', hidden: true }),
       el(
         'div.row',
         {},
         button('Again', () => restart(), { id: 'drill-again', variant: 'primary' }),
         button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
       ),
+      // In full on the sheet, rather than collapsed: at the end of a run the
+      // learner has time to read, which is exactly when advice lands.
+      ...(tips ? [el('div.drill-tips-full', { id: 'drill-tips-full' }, renderMarkdown(tips.markdown))] : []),
     );
+    void showCoaching(result);
 
     if (item) {
       // Not awaited: the numbers on screen are already final and a slow write
@@ -731,6 +775,50 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     advance();
   }
 
+  /** Remembers that this kind's tips have been read once. */
+  const TIPS_SEEN_PREFIX = 'pianopath.tips-seen.';
+
+  function tipsSeen(kind: string): boolean {
+    try {
+      return localStorage.getItem(`${TIPS_SEEN_PREFIX}${kind}`) === '1';
+    } catch {
+      // Site data blocked. Open by default is the safe side of that: showing
+      // advice to somebody who has read it costs a glance, and hiding it from
+      // somebody who has not costs the whole point.
+      return false;
+    }
+  }
+
+  function markTipsSeen(kind: string): void {
+    try {
+      localStorage.setItem(`${TIPS_SEEN_PREFIX}${kind}`, '1');
+    } catch {
+      // Nothing to do; the block simply opens again next time.
+    }
+  }
+
+  /**
+   * The advice for this drill kind, under the prompt.
+   *
+   * Open the first time a kind is met and collapsed thereafter: the first run
+   * is when the advice is worth reading and the twentieth is when a block of
+   * text between the prompt and the keyboard is in the way.
+   */
+  async function loadTips(target: CatalogItem): Promise<void> {
+    const kind = target.drill?.kind;
+    if (!kind) return;
+    tips = await tipsFor(kind, (target.drill?.params ?? {}));
+    if (!tips) return;
+    const seen = tipsSeen(kind);
+    tipsBlock.replaceChildren(
+      el('summary', { text: 'Tips', id: 'drill-tips-summary' }),
+      el('div.drill-tips-body', { id: 'drill-tips-body' }, renderMarkdown(tips.markdown)),
+    );
+    (tipsBlock as HTMLDetailsElement).open = !seen;
+    tipsBlock.hidden = false;
+    markTipsSeen(kind);
+  }
+
   // --- load ----------------------------------------------------------------
 
   void (async () => {
@@ -749,6 +837,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       return;
     }
 
+    void loadTips(item);
     drill = drillFromCatalog(item);
     if (!drill) {
       status.textContent = item.file

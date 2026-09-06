@@ -45,6 +45,18 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 4 | `4.6` | 4 | 4 | 1.5–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1) |
 | 4 | `4.7` | 3 | 3 | 1.5–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1) |
 
+## How to practise (`practice`)
+
+5 rung(s), stages 1–1.
+
+| stage | rung | exercises | songs | level | options |
+|---|---|---:|---:|---|---|
+| 1 | `practice.1` *(song-optional)* | 3 | 2 | 1.1–4.4 | Hot Cross Buns (1.1), Ode to Joy (theme) (1.1) |
+| 1 | `practice.2` *(song-optional)* | 3 | 1 | 1.1–4.4 | Ode to Joy (theme) (1.1) |
+| 1 | `practice.3` *(song-optional)* | 3 | 2 | 0.1–2.2 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1) |
+| 1 | `practice.4` *(song-optional)* | 3 | 1 | 1.1–2.1 | Hot Cross Buns (1.1) |
+| 1 | `practice.5` *(song-optional)* | 3 | 1 | 1.1–4.1 | Ode to Joy (theme) (1.1) |
+
 ## Holiday (`holiday`)
 
 1 rung(s), stages 2–2.

@@ -47,8 +47,17 @@ function looksLikeCatalogId(id: string): boolean {
   return SCORE_ID_PATTERN.test(id) && !id.includes('..');
 }
 
-/** Lesson ids are `0.1`, `3.2b` and the like — digits, dots, a letter. */
-export const LESSON_ID_PATTERN = /^[0-9][0-9A-Za-z.-]{0,39}$/;
+/**
+ * Lesson ids are `0.1` and `3.2b` on the core path, and `classical.3`,
+ * `ragtime.6`, `jam` and `practice.1` on every track beside it.
+ *
+ * The first version of this required a leading digit, which silently made 61
+ * of the 92 lesson pages unreachable by URL: `#/lesson/classical.3` parsed as
+ * "no lesson" and fell back to Today, and because the Plan screen navigates
+ * through the router object rather than through a link, nothing ever noticed.
+ * P17 found it by adding a track whose ids start with a letter.
+ */
+export const LESSON_ID_PATTERN = /^[0-9a-z][0-9A-Za-z.-]{0,39}$/;
 
 function looksLikeLessonId(id: string): boolean {
   return LESSON_ID_PATTERN.test(id) && !id.includes('..');

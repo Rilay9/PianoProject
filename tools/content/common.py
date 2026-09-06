@@ -353,3 +353,69 @@ def content_lock(what: str):
         yield
     finally:
         CONTENT_LOCK.unlink(missing_ok=True)
+
+
+def read_front_matter(path: Path) -> tuple[dict, str]:
+    """
+    The `---` block off the top of a lesson or a tips file, and the body.
+
+    A deliberately small parser rather than a YAML dependency: what these files
+    use is scalars, flow lists (`[a, b]`) and one level of indented
+    `key: value` pairs, and it has to agree with `app/src/ui/markdown.ts`'s
+    reader, which is the same subset. A real YAML library would accept things
+    the TypeScript side would then silently misread, which is worse than a
+    parser that refuses both.
+    """
+    text = path.read_text(encoding="utf-8")
+    if not text.startswith("---"):
+        return {}, text
+    end = text.find("\n---", 3)
+    if end == -1:
+        return {}, text
+    head = text[3:end]
+    body = text[end + 4 :].lstrip("\n")
+
+    def scalar(raw: str) -> object:
+        raw = raw.strip()
+        if raw.startswith(("'", '"')) and raw.endswith(("'", '"')) and len(raw) >= 2:
+            return raw[1:-1]
+        if raw == "true":
+            return True
+        if raw == "false":
+            return False
+        try:
+            return int(raw)
+        except ValueError:
+            pass
+        try:
+            return float(raw)
+        except ValueError:
+            return raw
+
+    data: dict = {}
+    pending: str | None = None
+    for line in head.splitlines():
+        if not line.strip():
+            continue
+        indented = line[:1].isspace()
+        stripped = line.strip()
+        if ":" not in stripped:
+            continue
+        key, _, raw = stripped.partition(":")
+        key = key.strip()
+        raw = raw.strip()
+        if indented and pending is not None:
+            nested = data.setdefault(pending, {})
+            if isinstance(nested, dict):
+                nested[key] = scalar(raw)
+            continue
+        if raw == "":
+            pending = key
+            data.setdefault(key, {})
+            continue
+        pending = None
+        if raw.startswith("[") and raw.endswith("]"):
+            data[key] = [scalar(part) for part in raw[1:-1].split(",") if part.strip()]
+        else:
+            data[key] = scalar(raw)
+    return data, body

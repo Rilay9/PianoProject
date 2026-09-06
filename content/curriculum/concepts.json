@@ -869,6 +869,22 @@
       }
     },
     {
+      "id": "chunking",
+      "display": "Chunking",
+      "finder": {
+        "skill": "taking the smallest unit that still makes sense and looping it",
+        "levelWords": "very easy to moderate, short pieces with one awkward bar",
+        "constraints": [
+          "a short piece with one clearly harder passage",
+          "bar numbers printed"
+        ],
+        "avoid": [
+          "pieces that are uniformly easy"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
       "id": "circle-of-fifths",
       "display": "The circle of fifths",
       "finder": {
@@ -1691,6 +1707,27 @@
       }
     },
     {
+      "id": "injury",
+      "display": "Injury and pain",
+      "appFeature": true
+    },
+    {
+      "id": "interleaving",
+      "display": "Interleaving",
+      "finder": {
+        "skill": "switching between several things in one session",
+        "levelWords": "very easy to moderate, short contrasting pieces",
+        "constraints": [
+          "several short pieces of contrasting character",
+          "under 32 bars each"
+        ],
+        "avoid": [
+          "one long piece"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
       "id": "interpretation",
       "display": "Interpretation",
       "finder": {
@@ -1930,6 +1967,22 @@
         ],
         "avoid": [
           "dense chordal writing"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "looping",
+      "display": "Looping a passage",
+      "finder": {
+        "skill": "repeating two bars until they are reliable",
+        "levelWords": "very easy to moderate, short pieces",
+        "constraints": [
+          "a short piece with a repeatable passage",
+          "16 to 48 bars"
+        ],
+        "avoid": [
+          "long through-composed pieces"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }
@@ -2244,6 +2297,11 @@
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }
+    },
+    {
+      "id": "motivation",
+      "display": "Motivation",
+      "appFeature": true
     },
     {
       "id": "multi-strain-form",
@@ -2608,6 +2666,22 @@
         ],
         "avoid": [
           "perfect cadences only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "plateau",
+      "display": "Plateaus",
+      "finder": {
+        "skill": "getting a stalled piece moving again by changing one variable",
+        "levelWords": "very easy to moderate, pieces you can already play",
+        "constraints": [
+          "a piece you already know",
+          "simple enough to transpose"
+        ],
+        "avoid": [
+          "anything technically at your limit"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }
@@ -3110,6 +3184,11 @@
       }
     },
     {
+      "id": "session-planning",
+      "display": "Planning a session",
+      "appFeature": true
+    },
+    {
       "id": "seventh-chord",
       "display": "Seventh chords",
       "finder": {
@@ -3285,6 +3364,23 @@
         ],
         "avoid": [
           "root position throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "slow-practice",
+      "display": "Slow practice",
+      "finder": {
+        "skill": "playing something accurately at half speed",
+        "levelWords": "very easy to moderate, pieces with a printed tempo",
+        "constraints": [
+          "a printed metronome mark",
+          "even note values"
+        ],
+        "avoid": [
+          "rubato throughout",
+          "pieces with no steady pulse"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }
@@ -3539,8 +3635,30 @@
       }
     },
     {
+      "id": "tempo-ladder",
+      "display": "The tempo ladder",
+      "finder": {
+        "skill": "climbing a tempo a notch at a time without losing accuracy",
+        "levelWords": "very easy to moderate, technical material",
+        "constraints": [
+          "a repeating pattern",
+          "a printed metronome mark"
+        ],
+        "avoid": [
+          "expressive pieces",
+          "rubato"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
       "id": "tempo-mode",
       "display": "Tempo mode",
+      "appFeature": true
+    },
+    {
+      "id": "tension",
+      "display": "Tension",
       "appFeature": true
     },
     {
@@ -4096,6 +4214,24 @@
         "avoid": [
           "4/4 accompaniment",
           "block chords"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "warm-up",
+      "display": "Warming up",
+      "finder": {
+        "skill": "playing something slow and easy before anything hard",
+        "levelWords": "very easy, beginner, slow and undemanding",
+        "constraints": [
+          "slow tempo",
+          "five-finger position",
+          "quiet dynamics"
+        ],
+        "avoid": [
+          "fast passagework",
+          "wide leaps"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }

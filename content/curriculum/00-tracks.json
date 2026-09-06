@@ -104,6 +104,13 @@
       "description": "Scales, arpeggios, double notes, octaves and the rest of the technique syllabus (docs/02 Part E). P11 recorded this as a label rather than a track because it had 434 items and no ladder; P12a gave it one, so it is a module you can follow.",
       "startsAtStage": 4,
       "defaultActive": true
+    },
+    {
+      "id": "practice",
+      "title": "How to practise",
+      "description": "Five lessons on the method rather than the music: chunking, slow practice, interleaving, when to stop, and what to do about a plateau. Runs alongside everything else from Stage 1.",
+      "startsAtStage": 1,
+      "defaultActive": true
     }
   ],
   "itemLabels": [

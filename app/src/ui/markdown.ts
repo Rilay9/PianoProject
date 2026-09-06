@@ -21,9 +21,10 @@ export interface FrontMatter {
 /**
  * Splits the `---` block off the top of a lesson file.
  *
- * The parser is deliberately shallow — scalars, flow lists (`[a, b]`) and one
- * level of `- key: value` blocks, which is exactly what the lesson files use
- * for `videos:`. Anything deeper is left as a string rather than guessed at.
+ * The parser is deliberately shallow — scalars, flow lists (`[a, b]`), one
+ * level of `- key: value` blocks (what `videos:` uses) and one level of plain
+ * `key: value` blocks (what the tips files' `when:` uses). Anything deeper is
+ * left as a string rather than guessed at.
  */
 export function parseFrontMatter(text: string): FrontMatter {
   const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(text);
@@ -32,23 +33,44 @@ export function parseFrontMatter(text: string): FrontMatter {
   const lines = (match[1] ?? '').split(/\r?\n/);
   let listKey: string | null = null;
   let list: Record<string, unknown>[] = [];
+  let map: Record<string, unknown> | null = null;
 
   const flush = (): void => {
-    if (listKey) data[listKey] = list;
+    // A key with an empty value is followed either by `- ` items or by
+    // indented pairs. Which one it was is only known once something has been
+    // read under it, so the decision is made here rather than at the header.
+    if (listKey) data[listKey] = map ?? list;
     listKey = null;
     list = [];
+    map = null;
   };
 
   for (const line of lines) {
     if (/^\s*-\s+/.test(line) && listKey) {
+      map = null;
       const entry = /^\s*-\s+(.*)$/.exec(line)?.[1] ?? '';
       const pair = /^([A-Za-z0-9_]+):\s*(.*)$/.exec(entry);
       list.push(pair ? { [pair[1] as string]: unquote(pair[2] as string) } : { value: unquote(entry) });
       continue;
     }
-    if (/^\s{2,}[A-Za-z0-9_]+:/.test(line) && listKey && list.length > 0) {
+    if (/^\s{2,}[A-Za-z0-9_]+:/.test(line) && listKey) {
       const pair = /^\s*([A-Za-z0-9_]+):\s*(.*)$/.exec(line);
-      if (pair) (list[list.length - 1] as Record<string, unknown>)[pair[1] as string] = unquote(pair[2] as string);
+      if (!pair) continue;
+      const key = pair[1] as string;
+      const raw = pair[2] as string;
+      if (list.length > 0) {
+        // Still filling in the last `- ` item's fields.
+        (list[list.length - 1] as Record<string, unknown>)[key] = unquote(raw);
+      } else {
+        // Indented pairs with no `- ` before them: a plain map, like the tips
+        // files' `when: { clef: bass }`.
+        map ??= {};
+        const asNumber = Number(raw);
+        map[key] =
+          raw === 'true' ? true : raw === 'false' ? false
+          : raw !== '' && !Number.isNaN(asNumber) ? asNumber
+          : unquote(raw);
+      }
       continue;
     }
     const pair = /^([A-Za-z0-9_]+):\s*(.*)$/.exec(line);

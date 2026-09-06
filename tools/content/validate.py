@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -38,7 +39,7 @@ except ImportError:  # pragma: no cover
     )
     sys.exit(2)
 
-from common import CONTENT_SRC, DEFAULT_OUT, load_item_labels, load_tracks  # noqa: E402
+from common import CONTENT_SRC, DEFAULT_OUT, load_item_labels, load_tracks, read_front_matter  # noqa: E402
 from licensing import NC_PERSONAL_TAG, Verdict, license_verdict  # noqa: E402
 from truncation_scan import scan_dir  # noqa: E402
 import finder  # noqa: E402
@@ -412,6 +413,101 @@ def finder_errors(curriculum: dict) -> list[str]:
     return errors
 
 
+#: The four headings every tips file has, in this order (replan §6).
+TIP_HEADINGS = (
+    "What it's for",
+    "How to practise it",
+    "Common mistake",
+    "How you'll know you've got it",
+)
+
+#: A tips file longer than this has stopped being a tip.
+MAX_TIP_WORDS = 250
+
+#: Where the runtime drill kinds are declared. Read, never copied: the list
+#: grew from twelve to nineteen in P12b, and a copy here would have gone stale
+#: without anything noticing.
+DRILL_KINDS_FILE = CONTENT_SRC.parent / "app" / "src" / "engine" / "drills" / "fromCatalog.ts"
+
+
+def runtime_drill_kinds(path: Path = DRILL_KINDS_FILE) -> list[str]:
+    """The `RUNTIME_DRILL_KINDS` array, parsed out of the TypeScript."""
+    if not path.is_file():
+        return []
+    text = path.read_text(encoding="utf-8")
+    match = re.search(r"RUNTIME_DRILL_KINDS[^=]*=\s*\[(.*?)\]", text, re.S)
+    if not match:
+        return []
+    return re.findall(r"'([^']+)'", match.group(1))
+
+
+def tip_errors(catalog: list, tips_dir: Path) -> list[str]:
+    """
+    replan §6: every drill kind explains itself, in the same four sections.
+
+    A drill that only says "wrong, again" teaches the thing it measures and
+    nothing else. The four headings are fixed so that the advice is always the
+    same shape — what it is for, how to practise it, the mistake, and how you
+    know you are done — and so that a file that drifted into an essay fails
+    rather than shipping.
+    """
+    errors: list[str] = []
+    kinds = runtime_drill_kinds()
+    if not kinds:
+        return ["could not read RUNTIME_DRILL_KINDS — the tips check cannot run"]
+    if not tips_dir.is_dir():
+        return [f"{tips_dir} does not exist: every drill kind needs a tips file (replan §6)"]
+
+    # Every parameter key any drill in the catalog actually carries. A `when:`
+    # naming something else would silently never match.
+    known_params: set[str] = set()
+    for item in catalog:
+        drill = item.get("drill") or {}
+        known_params.update((drill.get("params") or {}).keys())
+
+    files = sorted(tips_dir.glob("*.md"))
+    by_kind: dict[str, list[Path]] = {}
+    for path in files:
+        meta, body = read_front_matter(path)
+        kind = str(meta.get("kind") or "")
+        if not kind:
+            errors.append(f"tips/{path.name}: no `kind` in the front matter")
+            continue
+        by_kind.setdefault(kind, []).append(path)
+
+        headings = re.findall(r"^##\s+(.*?)\s*$", body, re.M)
+        if headings != list(TIP_HEADINGS):
+            errors.append(
+                f"tips/{path.name}: headings are {headings!r}; they must be exactly "
+                f"{list(TIP_HEADINGS)!r} in that order"
+            )
+        words = len(body.split())
+        if words > MAX_TIP_WORDS:
+            errors.append(f"tips/{path.name}: {words} words, over the {MAX_TIP_WORDS} limit")
+
+        stem = path.stem
+        when = meta.get("when") or {}
+        if stem == kind:
+            if when:
+                errors.append(f"tips/{path.name}: the default file for a kind must have no `when:`")
+        elif stem.startswith(f"{kind}."):
+            if not when:
+                errors.append(f"tips/{path.name}: a variant needs a `when:` block to be chosen by")
+            for key in when:
+                if key not in known_params:
+                    errors.append(
+                        f"tips/{path.name}: `when: {key}` is not a drill parameter any catalog "
+                        "item carries, so this variant can never be chosen"
+                    )
+        else:
+            errors.append(f"tips/{path.name}: the filename does not start with its kind {kind!r}")
+
+    for kind in kinds:
+        if not any(path.stem == kind for path in by_kind.get(kind, [])):
+            errors.append(f"drill kind {kind!r} has no tips file (content/tips/{kind}.md)")
+    return errors
+
+
 def paper_hint_errors(curriculum: dict) -> list[str]:
     """
     replan §5.2: the rungs where a book almost certainly has an equivalent.
@@ -559,6 +655,7 @@ def main() -> None:
         errors += finder_errors(curriculum)
         errors += unknown_concepts(curriculum)
         errors += paper_hint_errors(curriculum)
+        errors += tip_errors(catalog, CONTENT_SRC / "tips")
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.

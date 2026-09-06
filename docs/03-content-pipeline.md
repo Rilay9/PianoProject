@@ -176,3 +176,22 @@ Front-matter: `title`, `stage`, `unit`, `concepts[]`, `videos[]` (`{label, url, 
 define every term the first time (e.g. "a *triad* is three notes stacked in thirds — every
 other letter name"), give the intuition, then the rule, then "what to do at the piano".
 Include one "Common mistake" and one "How you'll know you've got it".
+
+### 6a. Drill tips (`content/tips/<kind>.md`, P17)
+
+One file per runtime drill kind, plus optional variants `<kind>.<variant>.md`.
+Front-matter: `kind`, and on a variant a `when:` block of `param: value` pairs
+matched against the item's `drill.params`. Body: **exactly** the four headings
+*What it's for · How to practise it · Common mistake · How you'll know you've
+got it*, in that order, ≤ 250 words, in the lesson voice.
+
+`validate.py` checks all of it, and reads the kind list out of
+`RUNTIME_DRILL_KINDS` in `app/src/engine/drills/fromCatalog.ts` rather than
+holding a copy — the list went from twelve to nineteen in P12b, and a copy here
+would have gone stale without anything noticing. It also refuses a `when:` key
+that no catalog drill carries, because such a variant never matches and looks
+like nothing at all.
+
+The build copies the directory and writes `content/tips/index.json` (which
+variants exist, and their `when:` blocks) so the app makes one request for the
+index and one for the file it wants.

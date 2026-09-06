@@ -364,6 +364,247 @@
               "paperHint": "Or the sight-reading section at the back of your book, if it has one. Any short piece you have not played before will do; steps and skips are the point, not the tune."
             }
           ]
+        },
+        {
+          "id": "practice.1.1",
+          "title": "How to practise",
+          "track": "practice",
+          "lessons": [
+            {
+              "id": "practice.1",
+              "title": "Chunking, and the loop",
+              "concepts": [
+                "chunking",
+                "looping",
+                "slow-practice"
+              ],
+              "textFile": "lessons/practice.1.md",
+              "exerciseOptions": [
+                "exercise.hanon.01.both",
+                "exercise.five-finger.c-major.both",
+                "drill.rhythm.mixed-values"
+              ],
+              "songOptions": [
+                "song.folk.hot-cross-buns",
+                "song.classical.ode-to-joy.rh"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.8,
+                "minTempoPct": 0.7,
+                "custom": "method-applied"
+              },
+              "songOptional": true,
+              "estimatedDays": 7,
+              "levelBand": [
+                0.1,
+                4.4
+              ],
+              "paperHint": "Or any piece in your own book that you can nearly play — the one with a bar you keep fluffing is the right one.",
+              "finder": {
+                "skill": "taking two bars out of a piece and looping them until they are reliable",
+                "levelWords": "very easy to moderate, short pieces with one awkward bar",
+                "constraints": [
+                  "a short piece with one clearly harder passage",
+                  "16 to 48 bars",
+                  "bar numbers printed"
+                ],
+                "avoid": [
+                  "pieces that are uniformly easy",
+                  "studies with no difficult moment"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            },
+            {
+              "id": "practice.2",
+              "title": "Slow practice and the tempo ladder",
+              "concepts": [
+                "slow-practice",
+                "tempo-ladder",
+                "evenness"
+              ],
+              "textFile": "lessons/practice.2.md",
+              "exerciseOptions": [
+                "exercise.hanon.01.both",
+                "exercise.scale.c-major.1oct.similar.both.2",
+                "drill.technique.five-finger-rh"
+              ],
+              "songOptions": [
+                "song.classical.ode-to-joy.rh"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.8,
+                "minTempoPct": 0.7,
+                "custom": "method-applied"
+              },
+              "songOptional": true,
+              "estimatedDays": 7,
+              "levelBand": [
+                0.1,
+                4.4
+              ],
+              "paperHint": "Or the scale page in your own book, with the metronome. A scale is the cleanest thing to climb a tempo ladder with.",
+              "finder": {
+                "skill": "playing something at half speed accurately, then climbing the tempo a notch at a time",
+                "levelWords": "very easy to moderate, pieces with a printed tempo",
+                "constraints": [
+                  "a printed metronome mark",
+                  "a passage that is hard at speed",
+                  "even note values"
+                ],
+                "avoid": [
+                  "rubato throughout",
+                  "pieces with no steady pulse"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            },
+            {
+              "id": "practice.3",
+              "title": "Interleaving, and what a session should look like",
+              "concepts": [
+                "interleaving",
+                "session-planning",
+                "review-queue"
+              ],
+              "textFile": "lessons/practice.3.md",
+              "exerciseOptions": [
+                "drill.rhythm.eighths",
+                "drill.technique.finger-numbers",
+                "exercise.five-finger.c-major.both"
+              ],
+              "songOptions": [
+                "song.folk.hot-cross-buns",
+                "song.folk.mary-had-a-little-lamb"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.8,
+                "minTempoPct": 0.7,
+                "custom": "method-applied"
+              },
+              "songOptional": true,
+              "estimatedDays": 7,
+              "levelBand": [
+                0.1,
+                4.4
+              ],
+              "paperHint": "Or three different things from your own book — a study, a piece, and something you already play — rather than one thing for the whole session.",
+              "finder": {
+                "skill": "having three different things to switch between in one session",
+                "levelWords": "very easy to moderate, short contrasting pieces",
+                "constraints": [
+                  "several short pieces of contrasting character",
+                  "under 32 bars each"
+                ],
+                "avoid": [
+                  "one long piece",
+                  "sets that are all the same texture"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            },
+            {
+              "id": "practice.4",
+              "title": "When to stop — warm-up, tension and pain",
+              "concepts": [
+                "warm-up",
+                "tension",
+                "injury",
+                "endurance"
+              ],
+              "textFile": "lessons/practice.4.md",
+              "exerciseOptions": [
+                "exercise.five-finger.c-major.both",
+                "exercise.five-finger.c-major.right",
+                "drill.technique.five-finger-lh"
+              ],
+              "songOptions": [
+                "song.folk.hot-cross-buns"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.8,
+                "minTempoPct": 0.7,
+                "custom": "method-applied"
+              },
+              "songOptional": true,
+              "estimatedDays": 7,
+              "levelBand": [
+                0.1,
+                4.4
+              ],
+              "paperHint": "Or the first page of your own book, played slowly as a warm-up. The point is that it is easy enough to think about your arms while you play it.",
+              "finder": {
+                "skill": "a slow, easy warm-up that lets you notice tension before you need the hands",
+                "levelWords": "very easy, beginner, slow and undemanding",
+                "constraints": [
+                  "slow tempo",
+                  "five-finger position",
+                  "no stretches beyond an octave",
+                  "quiet dynamics"
+                ],
+                "avoid": [
+                  "fast passagework",
+                  "wide leaps",
+                  "loud chordal writing"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            },
+            {
+              "id": "practice.5",
+              "title": "The plateau, and the three things to change",
+              "concepts": [
+                "plateau",
+                "motivation",
+                "session-planning"
+              ],
+              "textFile": "lessons/practice.5.md",
+              "exerciseOptions": [
+                "exercise.five-finger.g-major.both",
+                "exercise.scale.c-major.1oct.contrary.both.2",
+                "drill.rhythm.dotted"
+              ],
+              "songOptions": [
+                "song.classical.ode-to-joy.rh"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.8,
+                "minTempoPct": 0.7,
+                "custom": "method-applied"
+              },
+              "songOptional": true,
+              "estimatedDays": 7,
+              "levelBand": [
+                0.1,
+                4.4
+              ],
+              "paperHint": "Or something from your own book you learned months ago and have not touched since — a plateau is often broken by going back rather than forward.",
+              "finder": {
+                "skill": "something you have already learned, to practise in a different key or a different order",
+                "levelWords": "very easy to moderate, pieces you can already play",
+                "constraints": [
+                  "a piece you already know",
+                  "simple enough to transpose",
+                  "clear phrase structure"
+                ],
+                "avoid": [
+                  "pieces you have never played",
+                  "anything technically at your limit"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            }
+          ]
         }
       ]
     }

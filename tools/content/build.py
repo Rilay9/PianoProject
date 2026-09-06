@@ -42,6 +42,7 @@ from common import (  # noqa: E402
     ContentBusy,
     Step,
     content_lock,
+    read_front_matter,
     read_json,
     run,
     write_json,
@@ -252,6 +253,41 @@ def copy_lessons(out_dir: Path) -> Step:
     return Step("lessons", ok=True, detail=f"{len(list(target.rglob('*.md')))} file(s)")
 
 
+def copy_tips(out_dir: Path) -> Step:
+    """
+    The per-drill-kind advice, plus an index of which variants exist (replan §6).
+
+    The index is what lets the app pick a variant without fetching files to
+    find out whether they are there: it reads `when:` out of the front matter
+    at build time, so the drill screen makes one request for the index and one
+    for the file it actually wants.
+    """
+    source_dir = CONTENT_SRC / "tips"
+    target = out_dir / "tips"
+    if target.exists():
+        shutil.rmtree(target)
+    if not source_dir.exists():
+        return Step("tips", ok=True, detail="none yet", skipped=True)
+    shutil.copytree(source_dir, target)
+
+    kinds: dict[str, dict] = {}
+    for path in sorted(target.glob("*.md")):
+        meta, _ = read_front_matter(path)
+        kind = str(meta.get("kind") or "")
+        if not kind:
+            continue
+        entry = kinds.setdefault(kind, {"variants": []})
+        # `<kind>.<variant>.md`; a file named for the kind alone is the default.
+        stem = path.stem
+        if stem != kind and stem.startswith(f"{kind}."):
+            entry["variants"].append(
+                {"variant": stem[len(kind) + 1 :], "when": meta.get("when") or {}}
+            )
+    write_json(target / "index.json", {"kinds": kinds})
+    variants = sum(len(entry["variants"]) for entry in kinds.values())
+    return Step("tips", ok=True, detail=f"{len(kinds)} kind(s), {variants} variant(s)")
+
+
 def copy_schemas(out_dir: Path) -> None:
     for name in ("catalog.schema.json", "curriculum.schema.json"):
         source = CONTENT_SRC / name
@@ -390,6 +426,7 @@ def run_build(args: argparse.Namespace, started: float) -> None:
     steps.append(merge_catalog(args.out))
     steps.append(copy_curriculum(args.out))
     steps.append(copy_lessons(args.out))
+    steps.append(copy_tips(args.out))
     copy_schemas(args.out)
     copy_level_model(args.out)
     steps.append(step_validate(args.out, args.strict_license, allow_nc, args.personal))

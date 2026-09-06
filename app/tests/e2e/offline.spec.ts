@@ -198,6 +198,15 @@ test.describe('offline', () => {
     // replaces it with the real quarry's output.
     const quarried = [...urls].filter((url) => url?.startsWith('content/scores/pdmx/'));
     expect(quarried.length, 'no content/scores/pdmx/ file is precached').toBeGreaterThan(0);
+
+    // The drill tips (replan §6). Same failure mode as the quarried scores: a
+    // new content directory that the globs have never seen, where the symptom
+    // is a drill opening with no advice on a train rather than an error.
+    const tips = [...urls].filter((url) => url?.startsWith('content/tips/'));
+    expect(tips.length, 'no content/tips/ file is precached').toBeGreaterThan(0);
+    for (const essential of ['content/tips/index.json', 'content/tips/note-flash.md']) {
+      expect(urls.has(essential), `${essential} is not precached`).toBe(true);
+    }
   });
 });
 

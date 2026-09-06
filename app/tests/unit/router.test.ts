@@ -1,6 +1,24 @@
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_TAB, parseHash, routeToHash, Router, TAB_IDS } from '../../src/router';
 
+describe('lesson ids', () => {
+  // 61 of the 92 lessons are on a track and start with a letter. An earlier
+  // pattern required a leading digit, which made every one of their pages
+  // unreachable by URL without anything failing — the Plan screen navigates
+  // through the router object, so nothing ever tried the hash.
+  it('accepts every shape a real lesson id has', () => {
+    for (const id of ['0.1', '1.1', '3.2b', 'classical.3', 'ragtime.6', 'jam', 'practice.1']) {
+      expect(parseHash(`#/lesson/${id}`).lesson, id).toBe(id);
+    }
+  });
+
+  it('still refuses a traversal or a shape that is not an id', () => {
+    expect(parseHash('#/lesson/../secrets').lesson).toBeUndefined();
+    expect(parseHash('#/lesson/Capitalised').lesson).toBeUndefined();
+    expect(parseHash('#/lesson/').lesson).toBeUndefined();
+  });
+});
+
 describe('parseHash', () => {
   it('parses every known tab id', () => {
     for (const tab of TAB_IDS) {

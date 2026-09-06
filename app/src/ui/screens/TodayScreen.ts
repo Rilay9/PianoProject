@@ -255,6 +255,12 @@ export function TodayScreen(router: Router): HTMLElement {
       button('Jump to…', () => router.navigate('plan'), { id: 'today-jump' }),
       button('Review a skill', () => router.navigate('plan', 'skills'), { id: 'today-skills' }),
       button('Metronome', () => router.navigate('today', 'metronome'), { id: 'today-metronome' }),
+      // The method rather than the music (replan §8). It belongs beside the
+      // tools because that is what it is: five lessons you read once and come
+      // back to when something has stopped moving.
+      button('How to practise', () => router.navigateLesson('practice.1'), {
+        id: 'today-practice',
+      }),
     );
   }
 

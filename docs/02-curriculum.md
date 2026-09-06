@@ -442,6 +442,30 @@ shows piano-roll; notation export is a later feature). Stage 6: modal vamps, LH 
 motif development. Stage 7+: reharmonising melodies, arranging a PD song, composing in a form.
 Teachers: Bill Hilton (improvisation videos), Nahre Sol, Aimee Nolte, Open Studio.
 
+### D8a. How to practise (P17, from Stage 1)
+
+A five-lesson mini-module on the *method* rather than the music, on its own
+`practice` track, active by default and running alongside everything else from
+Stage 1. The comprehensiveness check (replan §8) found practising efficiently,
+plateaus and injury covered once in lesson 0.3 and nowhere after.
+
+1. **Chunking, and the loop** — the smallest unit that still makes sense, the
+   bar before the one you stumbled on, and five correct in a row.
+2. **Slow practice and the tempo ladder** — if you can play it faster than you
+   are practising it, you are not practising slowly; three clean repetitions
+   then up 5 %.
+3. **Interleaving, and what a session should look like** — why one thing for
+   forty minutes feels productive and is not, and what the review queue is for.
+4. **When to stop — warm-up, tension and pain** — the three tension checks, and
+   an unambiguous instruction to stop, because pain is not a practice problem.
+5. **The plateau, and the three things to change** — which of the three kinds
+   it is, and changing the tempo, the key or the order. This is the lesson the
+   drill screen's coaching rule links to.
+
+Each is a real rung with three options from existing material, not a reading
+list: `optionsExempt` would have been the easy way to ship five essays, and the
+point of the module is that the method gets applied to something.
+
 ### D8. Mini-modules (optional, any time after Stage 3)
 
 - **Hymns & gospel** `[AUTH]`: Amazing Grace, Be Thou My Vision, It Is Well, Great Is Thy
