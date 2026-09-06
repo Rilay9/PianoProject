@@ -342,6 +342,23 @@ criteria. Schema at `content/curriculum.schema.json`.
   cd app && npm run build:app
   ```
 
+  **Measured at the end of P19 under a ×4 CPU throttle** (`tests/e2e/perf.spec.ts`, which
+  prints every number it takes):
+
+  ```
+  2-bar window render        median 36 ms      (S25 budget 150 ms, gate 600 under ×4)
+  pre-rendered window swap   4.2 ms            (one frame)
+  input to note coloured     mean 8.6 ms, max 15.2 ms   (budget 30 ms)
+  the longest score          first window in 11.6 s
+  ```
+
+  The last one is new and is the one to know about: **Chopin's Scherzo No. 2 — 780 printed
+  bars, 3,331 steps — takes about twelve seconds under a ×4 throttle before its first two
+  bars are on the screen.** The window renderer means the *rest* of the piece costs nothing
+  after that, but the first window still waits for OSMD to parse the whole file. Nothing else
+  in the library is close; the median score is a page or two. Whether twelve throttled seconds
+  is three real ones on the S25 is a question for the phone.
+
   content **12.2 MB in 1,383 files** (6.6 MB of scores across 1,256 files, 2.7 MB of catalog
   and curriculum JSON, 2.6 MB soundfont, 0.24 MB of lessons and tips); built app **15.7 MB in
   1,411 files**; service worker precache **1,413 entries, 14.8 MB**. A quarter of the budget.
