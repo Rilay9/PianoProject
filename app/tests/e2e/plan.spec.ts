@@ -87,6 +87,61 @@ test.describe('Skills review', () => {
     await expect(first).toHaveAttribute('data-state', /unseen|learning|known|rusty/);
   });
 
+  test('lists every exercise for a concept, easiest first, collapsed after three', async ({
+    page,
+  }) => {
+    // replan §3.2: "always something to work on for one skill". Before P12a the
+    // screen offered one exercise per concept — whichever was found first — so a
+    // skill could only be practised at whatever level that item happened to be.
+    await page.goto('/#/plan/skills');
+    // A concept with more than three exercises — plenty of concepts have one or
+    // two (a stage-0 checklist has exactly one), and those correctly show no
+    // toggle at all, so picking the first row would test the wrong thing.
+    //
+    // Resolved to a *stable* selector before anything is clicked: a filtered
+    // locator is re-evaluated on every use, so once the button says "Show
+    // fewer" the filter stops matching and the locator silently moves to the
+    // next concept that still says "Show all".
+    const concept = await page
+      .locator('.skill-options')
+      .filter({ has: page.locator('button', { hasText: /Show all \d+/ }) })
+      .first()
+      .getAttribute('data-options-for');
+    expect(concept).toBeTruthy();
+    const options = page.locator(`.skill-options[data-options-for="${concept ?? ''}"]`);
+    await expect(options).toBeVisible();
+
+    const shown = options.locator('.list-row[data-skill-item]');
+    await expect(shown).toHaveCount(3);
+
+    const more = options.locator('button', { hasText: /Show all \d+/ });
+    await expect(more).toBeVisible();
+    await more.click();
+    expect(await shown.count()).toBeGreaterThan(3);
+
+    // Easiest first: the levels printed on the rows never decrease.
+    const levels = await shown.locator('.list-row__meta').allTextContents();
+    const numbers = levels.map((text) => Number(/L(\d+\.\d)/.exec(text)?.[1] ?? '0'));
+    expect(numbers).toEqual([...numbers].sort((a, b) => a - b));
+
+    await options.locator('button', { hasText: 'Show fewer' }).click();
+    await expect(shown).toHaveCount(3);
+  });
+
+  test('a concept with many exercises reaches the upper levels', async ({ page }) => {
+    // The point of the level table: `scale` is practisable at stage 8, not just
+    // wherever the first scale exercise happened to sit.
+    await page.goto('/#/plan/skills');
+    const scaleRow = page.locator('.list-row[data-concept="scale"]');
+    await expect(scaleRow).toBeVisible();
+    await expect(scaleRow).toContainText('to practise');
+    const options = page.locator('.skill-options[data-options-for="scale"]');
+    await options.locator('button', { hasText: /Show all \d+/ }).click();
+    const metas = await options.locator('.list-row[data-skill-item] .list-row__meta').allTextContents();
+    const highest = Math.max(...metas.map((t) => Number(/L(\d+\.\d)/.exec(t)?.[1] ?? '0')));
+    expect(highest).toBeGreaterThanOrEqual(6);
+  });
+
   test('filters by stage', async ({ page }) => {
     await page.goto('/#/plan/skills');
     const all = await page.locator('#skills-status').textContent();

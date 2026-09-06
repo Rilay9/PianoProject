@@ -120,6 +120,14 @@ export interface PedalDrillOptions {
   liftWindowMs?: [number, number];
   /** …and the pedal must be back down within this. */
   downWithinMs?: number;
+  /**
+   * Half pedal: score the CC64 *value* rather than the timing of the change
+   * (P12a). A damper held part-way lets the bass ring while the treble clears,
+   * and a pedal that is only ever 0 or 127 cannot play Romantic music. When
+   * this is set the drill asks for a value inside the range and reports how
+   * much of the run was spent there.
+   */
+  halfPedalRange?: [number, number];
 }
 
 interface PedalChange {
@@ -148,6 +156,9 @@ export class PedalDrill implements Drill {
   private downAtMs: number | null = null;
   private sustainDown = false;
   private readonly changes: PedalChange[] = [];
+  private readonly halfPedalRange: [number, number] | null;
+  /** Every CC64 value seen, so the half-pedal share is a measurement. */
+  private readonly pedalValues: number[] = [];
 
   constructor(options: PedalDrillOptions = {}) {
     this.chords = options.chords ?? [
@@ -158,6 +169,7 @@ export class PedalDrill implements Drill {
     ];
     this.liftWindow = options.liftWindowMs ?? [0, 120];
     this.downWithin = options.downWithinMs ?? 250;
+    this.halfPedalRange = options.halfPedalRange ?? null;
     // No clock: every interval here is a difference between two input
     // timestamps, so the drill is immune to when it happens to be ticked.
   }
@@ -181,6 +193,7 @@ export class PedalDrill implements Drill {
     if (this.index < 0 || this.index >= this.chords.length) return;
     if (input.kind === 'cc') {
       if (input.cc !== 64) return;
+      this.pedalValues.push(input.value);
       const down = input.value >= 64;
       // Only the first lift after the chord counts; a second bounce is not a
       // second change.
@@ -217,6 +230,7 @@ export class PedalDrill implements Drill {
   }
 
   result(): DrillResult {
+    if (this.halfPedalRange) return this.halfPedalResult(this.halfPedalRange);
     // Only changes *between* chords can be clean, so the first chord is not
     // part of the denominator.
     const scored = this.changes.filter((c) => c.chordIndex > 0);
@@ -235,6 +249,40 @@ export class PedalDrill implements Drill {
         played: [],
       })),
       detail: { cleanChanges: clean, scoredChanges: scored.length },
+    };
+  }
+
+  /**
+   * Half pedal: how much of the run was spent with the damper part-way.
+   *
+   * Not the timing of a change but the *value* held, so the denominator is
+   * every CC64 message rather than every chord. A run with no pedal messages
+   * at all scores zero and says so — the alternative, treating silence as a
+   * pass, would give full marks to a piano with no pedal connected.
+   */
+  private halfPedalResult(range: [number, number]): DrillResult {
+    const [low, high] = range;
+    const inRange = this.pedalValues.filter((v) => v >= low && v <= high).length;
+    const total = this.pedalValues.length;
+    const accuracy = total > 0 ? inRange / total : 0;
+    return {
+      kind: this.kind,
+      total: this.chords.length,
+      answered: total,
+      correct: inRange,
+      accuracy,
+      meanReactionMs: 0,
+      answers: [],
+      detail: {
+        halfPedalLow: low,
+        halfPedalHigh: high,
+        pedalMessages: total,
+        inRange,
+        // How often the pedal was anything but fully up or fully down, which is
+        // the habit this exercise exists to build. A count rather than a flag:
+        // "twice in a four-bar phrase" and "throughout" are different playing.
+        partialPedalMessages: this.pedalValues.filter((v) => v > 0 && v < 127).length,
+      },
     };
   }
 }

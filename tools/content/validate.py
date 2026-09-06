@@ -113,8 +113,11 @@ def orphan_exercises(catalog: list, curriculum: dict) -> list[str]:
 
     An orphan is not broken — it renders, it validates, it sits in the Library
     — it is simply unreachable by anyone following the plan, which makes it
-    invisible work. Reported now; P12b turns it into a failure, once the
-    generated backbone has given every concept a home.
+    invisible work. P11 reported them; **P12a fails on them**, now that the
+    technique rungs at stages 4-8 give every generated family a home. It was
+    428 of 774 generated exercises before those rungs existed, including
+    `scale` and `arpeggio` themselves, which no lesson had ever named as a
+    concept.
     """
     referenced: set[str] = set()
     taught: set[str] = set()
@@ -289,6 +292,11 @@ def main() -> None:
         errors += validate_catalog(catalog, args.dir, args.strict_license, args.allow_nc)
         errors += validate_curriculum(curriculum, catalog, args.min_options)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
+        # replan §7.5: reported by P11, an error from P12a.
+        errors += [
+            f"{item_id}: orphan exercise — reachable from no lesson and no concept"
+            for item_id in orphan_exercises(catalog, curriculum)
+        ]
 
     if errors:
         print(f"content validation FAILED ({len(errors)} error(s)):", file=sys.stderr)
@@ -327,15 +335,6 @@ def main() -> None:
         f"L{stage}: {estimated}/{total}" for stage, (estimated, total) in by_stage.items()
     )
     print(f"  {estimated_total} item(s) with an estimated level — {spread}")
-
-    orphans = orphan_exercises(catalog, curriculum)
-    if orphans:
-        # Reported, not failed, until P12b (replan §7.5).
-        print(f"  {len(orphans)} orphan exercise(s), reachable from no lesson and no concept:")
-        for orphan in orphans[:10]:
-            print(f"    - {orphan}")
-        if len(orphans) > 10:
-            print(f"    … and {len(orphans) - 10} more")
 
     # The P2 grace-16th scan over everything this build converted (replan §7).
     scan = scan_dir(args.dir / "scores")

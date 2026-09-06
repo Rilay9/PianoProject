@@ -426,6 +426,59 @@
               "estimatedDays": 21
             }
           ]
+        },
+        {
+          "id": "technique.5.1",
+          "title": "Technique: evenness, independence and the shape of a line",
+          "track": "technique",
+          "lessons": [
+            {
+              "id": "technique.5",
+              "title": "Repeated notes, two hands at different speeds, and a line that travels",
+              "concepts": [
+                "repeated-notes",
+                "evenness",
+                "hand-independence",
+                "polyrhythm-2:1",
+                "dynamics",
+                "shaping",
+                "crescendo",
+                "diminuendo",
+                "phrasing",
+                "rhythm",
+                "syncopation",
+                "tied-across-bar",
+                "odd-meter",
+                "meter-5-4",
+                "mordent",
+                "ornamentation",
+                "hanon"
+              ],
+              "textFile": "lessons/technique.5.md",
+              "exerciseOptions": [
+                "exercise.arpeggio.a-flat-major.2oct.both",
+                "exercise.independence.c.2v1",
+                "exercise.hanon.11.both",
+                "exercise.meter.5-4",
+                "exercise.repeated-notes.c.3x.left",
+                "exercise.scale.a-flat-major.1oct.contrary.both.2",
+                "exercise.shaping.a.crescendo",
+                "exercise.syncopation.tied-across-bar",
+                "exercise.mordent.c.2pb.left",
+                "exercise.arpeggio.a-major.2oct.both",
+                "exercise.independence.f.2v1",
+                "exercise.hanon.11.left"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              }
+            }
+          ]
         }
       ]
     }

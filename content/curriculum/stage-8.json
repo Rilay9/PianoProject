@@ -117,6 +117,45 @@
               "estimatedDays": 180
             }
           ]
+        },
+        {
+          "id": "technique.8.1",
+          "title": "Technique: speed, and what it costs",
+          "track": "technique",
+          "lessons": [
+            {
+              "id": "technique.8",
+              "title": "Four octaves in sixteenths, and why the metronome comes last",
+              "concepts": [
+                "scale",
+                "velocity",
+                "endurance"
+              ],
+              "textFile": "lessons/technique.8.md",
+              "exerciseOptions": [
+                "exercise.scale.a-flat-major.4oct.similar.both.1",
+                "exercise.scale.a-major.4oct.similar.both.1",
+                "exercise.scale.b-flat-major.4oct.similar.both.1",
+                "exercise.scale.b-major.4oct.similar.both.1",
+                "exercise.scale.c-major.4oct.similar.both.1",
+                "exercise.scale.d-flat-major.4oct.similar.both.1",
+                "exercise.scale.d-major.4oct.similar.both.1",
+                "exercise.scale.e-flat-major.4oct.similar.both.1",
+                "exercise.scale.e-major.4oct.similar.both.1",
+                "exercise.scale.f-major.4oct.similar.both.1",
+                "exercise.scale.g-flat-major.4oct.similar.both.1",
+                "exercise.scale.g-major.4oct.similar.both.1"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              }
+            }
+          ]
         }
       ]
     }

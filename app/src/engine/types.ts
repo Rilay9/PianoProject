@@ -251,6 +251,15 @@ export interface RecordedNote {
   stepIndex: number | null;
   ok: boolean;
   deltaMs?: number;
+  /**
+   * When the key came back up (P12a).
+   *
+   * Absent when the source never said — the microphone cannot know, and a
+   * run that ends with a key still down leaves its last note unreleased.
+   * `articulationScore` skips those rather than treating them as held for
+   * ever, which is the difference between "not measured" and "wrong".
+   */
+  releasedAtMs?: number;
 }
 
 export interface TimingStats {

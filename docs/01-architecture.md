@@ -352,10 +352,20 @@ criteria. Schema at `content/curriculum.schema.json`.
 - **Update checks are optional and silent.** An "update available — reload" toast when a new
   service worker is waiting; a setting turns the check off entirely, and a failed check when
   offline is not an error and is never shown.
-- **Budget check (re-measured 2026-09-06, after P10 run 2):** content 11 MB against the 60 MB
-  budget in §6, with 736 precached scores. Adding 208 scores — Chopin preludes, mazurkas,
-  nocturnes, waltzes, études, ballades and scherzos, and 47 Joplin rags — cost about 3 MB. Scores really
-  are tiny; the soundfont still dominates and there is room for several more phases.
+- **Budget check (re-measured 2026-09-06, after P12a):** content **9.6 MB** against the 60 MB
+  budget in §6 — 5.4 MB of scores across **1,037 files**, 2.5 MB of soundfont, 1.5 MB of
+  catalog, 0.16 MB of lesson text. The built app is 12.8 MB and the service worker precaches
+  **1,139 entries**.
+
+  P12a added 344 generated exercises — the whole technique syllabus from three-octave scales
+  to half pedal — for about **1.4 MB**, because a generated exercise is four bars of MusicXML
+  and compresses to a couple of kilobytes. The catalog grew faster than the scores did: at
+  1,138 items it is now the second-largest single file after the soundfont, which is the
+  thing to watch rather than the notation. The soundfont still dominates and there is room
+  for several more phases.
+
+  The earlier reading of 11 MB (after P10 run 2) counted a `scores/` directory that still
+  held files from an aborted run; the 9.6 MB above is a clean build.
 - **The build grew awkwardly, and P11 fixed the half of it that was conversion.** That fix
   was the one predicted here — cache the converted `.mxl` files by source checksum — and it
   is in `build/cache/convert/`, keyed on the source bytes, a digest of `convert.py` +

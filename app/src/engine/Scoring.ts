@@ -210,3 +210,196 @@ export function weakBarsLoop(
   if (fromStep < 0 || toStep < fromStep) return undefined;
   return { fromStep, toStep };
 }
+
+// --- articulation, voicing and shaping (P12a) --------------------------------
+//
+// Three things the engine already had the raw material for and did not measure.
+// All three are pure functions over what a run recorded, for the same reason
+// `buildScore` is: they can be recomputed from a stored session, and tested
+// without running one.
+//
+// They are deliberately *not* accuracy. A staccato phrase played with every
+// right note and no shortness is 100% accurate and misses the point of the
+// exercise, which is why these return their own numbers rather than folding
+// into `SessionScore.accuracy`.
+
+/** A staccato note is off the key before half its written value has passed. */
+export const STACCATO_MAX_HELD = 0.5;
+/** A legato note lasts almost all of its value… */
+export const LEGATO_MIN_HELD = 0.9;
+/** …and may run into the next note, but not past it (docs/05 §7: overlap ≤ 1 step). */
+export const LEGATO_MAX_HELD = 2.0;
+
+export type Articulation = 'staccato' | 'legato';
+
+export interface ArticulationScore {
+  target: Articulation;
+  /** Notes with both an onset and a release, judged against a step. */
+  judged: number;
+  matched: number;
+  meanHeldFraction: number;
+  /** Notes still down when the following note began. */
+  overlapping: number;
+  accuracy: number;
+}
+
+/**
+ * How well the held length of each note matched the articulation asked for.
+ *
+ * The denominator is the step's `durMs` — the time to the next step at this
+ * session's tempo — because that is what the written value *is* once a tempo
+ * is chosen. Using the printed duration instead would make the same playing
+ * pass at one tempo and fail at another, which is not what articulation means.
+ *
+ * A note with no recorded release is not judged rather than judged as held for
+ * ever: the source may simply not send note-off (the microphone does not).
+ */
+export function articulationScore(
+  notes: readonly RecordedNote[],
+  steps: readonly PreparedStep[],
+  target: Articulation,
+): ArticulationScore {
+  const byIndex = new Map(steps.map((step) => [step.index, step]));
+  const fractions: number[] = [];
+  let matched = 0;
+  let overlapping = 0;
+
+  for (const note of notes) {
+    if (note.stepIndex === null || note.releasedAtMs === undefined) continue;
+    const step = byIndex.get(note.stepIndex);
+    if (!step || step.durMs <= 0) continue;
+    const held = (note.releasedAtMs - note.tMs) / step.durMs;
+    if (held < 0) continue;
+    fractions.push(held);
+    if (held > 1) overlapping += 1;
+    const ok =
+      target === 'staccato'
+        ? held < STACCATO_MAX_HELD
+        : held >= LEGATO_MIN_HELD && held <= LEGATO_MAX_HELD;
+    if (ok) matched += 1;
+  }
+
+  const judged = fractions.length;
+  return {
+    target,
+    judged,
+    matched,
+    meanHeldFraction: judged > 0 ? fractions.reduce((a, b) => a + b, 0) / judged : 0,
+    overlapping,
+    accuracy: judged > 0 ? matched / judged : 0,
+  };
+}
+
+/** The top note must be this much louder than the mean of the rest. */
+export const VOICING_MIN_RATIO = 1.4;
+
+export interface VoicingScore {
+  /** Chords with at least two notes recorded against the same step. */
+  judged: number;
+  matched: number;
+  meanRatio: number;
+  accuracy: number;
+}
+
+/**
+ * Whether the top of each chord sang above the rest of it.
+ *
+ * The measurable behind the *Beautiful pieces* shelf's one real technique. Only
+ * chords are judged — a step with one note has no balance to get wrong — and
+ * the comparison is against the mean of the notes underneath rather than
+ * against the loudest of them, because what the ear hears is the melody
+ * standing out of a texture, not out of one other note.
+ */
+export function voicingScore(
+  notes: readonly RecordedNote[],
+  minRatio: number = VOICING_MIN_RATIO,
+): VoicingScore {
+  const chords = new Map<number, RecordedNote[]>();
+  for (const note of notes) {
+    if (note.stepIndex === null) continue;
+    const group = chords.get(note.stepIndex);
+    if (group) group.push(note);
+    else chords.set(note.stepIndex, [note]);
+  }
+
+  const ratios: number[] = [];
+  let matched = 0;
+  for (const group of chords.values()) {
+    if (group.length < 2) continue;
+    const sorted = [...group].sort((a, b) => a.midi - b.midi);
+    const top = sorted[sorted.length - 1];
+    const under = sorted.slice(0, -1);
+    if (!top) continue;
+    const mean = under.reduce((sum, n) => sum + n.velocity, 0) / under.length;
+    if (mean <= 0) continue;
+    const ratio = top.velocity / mean;
+    ratios.push(ratio);
+    if (ratio >= minRatio) matched += 1;
+  }
+
+  const judged = ratios.length;
+  return {
+    judged,
+    matched,
+    meanRatio: judged > 0 ? ratios.reduce((a, b) => a + b, 0) / judged : 0,
+    accuracy: judged > 0 ? matched / judged : 0,
+  };
+}
+
+/** A shaped line has to travel at least this far, in MIDI velocity. */
+export const SHAPING_MIN_RANGE = 30;
+
+export type Shape = 'crescendo' | 'diminuendo';
+
+export interface ShapingScore {
+  shape: Shape;
+  /** Velocity of the last note minus the first, signed for the shape asked. */
+  range: number;
+  /** Fraction of note-to-note steps that moved the right way (or stayed level). */
+  monotonic: number;
+  passed: boolean;
+}
+
+/**
+ * Whether a line *travelled* rather than stepping between two dynamics.
+ *
+ * `DynamicsDrill` compares a soft phrase with a loud one, which measures that
+ * two dynamics are different. A crescendo is a different claim: the velocity
+ * has to rise across the run and cover real ground. Both halves are required —
+ * a line that rises 5 and one that jumps 40 in the middle and then sits are
+ * each failing in their own way.
+ *
+ * "Monotonic" is measured as the share of adjacent pairs moving the right way
+ * rather than as an absolute, because no human plays a perfectly ordered
+ * crescendo and demanding one would fail every real performance.
+ */
+export function shapingScore(
+  notes: readonly RecordedNote[],
+  shape: Shape = 'crescendo',
+  minRange: number = SHAPING_MIN_RANGE,
+  minMonotonic = 0.7,
+): ShapingScore {
+  const played = [...notes].sort((a, b) => a.tMs - b.tMs);
+  if (played.length < 2) {
+    return { shape, range: 0, monotonic: 0, passed: false };
+  }
+  const first = played[0]?.velocity ?? 0;
+  const last = played[played.length - 1]?.velocity ?? 0;
+  const range = shape === 'crescendo' ? last - first : first - last;
+
+  let moved = 0;
+  for (let i = 1; i < played.length; i += 1) {
+    const previous = played[i - 1]?.velocity ?? 0;
+    const current = played[i]?.velocity ?? 0;
+    const delta = shape === 'crescendo' ? current - previous : previous - current;
+    if (delta >= 0) moved += 1;
+  }
+  const monotonic = moved / (played.length - 1);
+
+  return {
+    shape,
+    range,
+    monotonic,
+    passed: range >= minRange && monotonic >= minMonotonic,
+  };
+}
