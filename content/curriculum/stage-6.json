@@ -117,6 +117,58 @@
               "estimatedDays": 120
             }
           ]
+        },
+        {
+          "id": "technique.6.1",
+          "title": "Technique: sevenths, rotation and making one note sing",
+          "track": "technique",
+          "lessons": [
+            {
+              "id": "technique.6",
+              "title": "Seventh shapes, the rotating wrist, and voicing",
+              "concepts": [
+                "seventh-chord",
+                "broken-chord",
+                "rotation",
+                "alberti",
+                "wrist",
+                "trill",
+                "voicing",
+                "melody-projection",
+                "balance",
+                "tone",
+                "sustain-pedal",
+                "held-melody",
+                "CC64",
+                "legato-pedalling",
+                "polyrhythm-3:1",
+                "meter-7-8"
+              ],
+              "textFile": "lessons/technique.6.md",
+              "exerciseOptions": [
+                "exercise.arpeggio.a-flat-major.4oct.both",
+                "exercise.independence.c.3v1",
+                "exercise.meter.7-8",
+                "exercise.pedal.held-melody.a",
+                "exercise.repeated-notes.c.4x.left",
+                "exercise.rotation.c.left",
+                "exercise.chromatic.c.2oct.both",
+                "exercise.syncopation.sixteenth",
+                "exercise.trill.c.4pb.left",
+                "exercise.voicing.a",
+                "exercise.arpeggio.a-major.4oct.both",
+                "exercise.independence.f.3v1"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              }
+            }
+          ]
         }
       ]
     }

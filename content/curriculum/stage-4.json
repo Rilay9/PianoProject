@@ -674,6 +674,56 @@
               "estimatedDays": 21
             }
           ]
+        },
+        {
+          "id": "technique.4.1",
+          "title": "Technique: the scales and shapes everything else is built from",
+          "track": "technique",
+          "lessons": [
+            {
+              "id": "technique.4",
+              "title": "Scales, arpeggios and the two ways to touch a key",
+              "concepts": [
+                "scale",
+                "arpeggio",
+                "five-finger",
+                "similar",
+                "contrary",
+                "chromatic",
+                "semitones",
+                "coordination",
+                "finger-independence",
+                "inversions",
+                "articulation",
+                "staccato",
+                "legato",
+                "note-length"
+              ],
+              "textFile": "lessons/technique.4.md",
+              "exerciseOptions": [
+                "exercise.articulation.c.legato.right",
+                "exercise.hanon.01.both",
+                "exercise.inversions.a-flat-major.both",
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "exercise.chromatic.c.1oct.both",
+                "exercise.articulation.c.staccato.right",
+                "exercise.hanon.01.left",
+                "exercise.inversions.a-major.both",
+                "exercise.rhythm.shuffle-quarter-eighths.4bar",
+                "exercise.chromatic.c.1oct.left",
+                "exercise.articulation.d.legato.right",
+                "exercise.hanon.01.right"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              }
+            }
+          ]
         }
       ]
     }

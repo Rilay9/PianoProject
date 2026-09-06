@@ -97,14 +97,16 @@
       "description": "Mini-module: the shelf of pieces people learn the piano for.",
       "startsAtStage": 4,
       "defaultActive": false
-    }
-  ],
-  "itemLabels": [
+    },
     {
       "id": "technique",
       "title": "Technique",
-      "description": "Scales, arpeggios, Hanon and the rest of the technique syllabus (docs/02 Part E). A label on items, not a module you follow: the session builder reads it to pick a warm-up (src/curriculum/session.ts), and the Library filters on it. 434 items carry it."
-    },
+      "description": "Scales, arpeggios, double notes, octaves and the rest of the technique syllabus (docs/02 Part E). P11 recorded this as a label rather than a track because it had 434 items and no ladder; P12a gave it one, so it is a module you can follow.",
+      "startsAtStage": 4,
+      "defaultActive": true
+    }
+  ],
+  "itemLabels": [
     {
       "id": "film-game",
       "title": "Film & game",

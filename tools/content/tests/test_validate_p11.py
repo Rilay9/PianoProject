@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from common import load_item_labels, load_tracks  # noqa: E402
 from validate import (  # noqa: E402
+    MIN_OPTIONS,
     estimated_by_stage,
     orphan_exercises,
     validate_tracks,
@@ -96,8 +97,11 @@ class TestRealTrackFile(unittest.TestCase):
         labels = load_item_labels(TRACKS_FILE)
         self.assertIn("core", tracks)
         # The two ids that drifted: used by content, defined nowhere, which is
-        # what §1.8 was written about.
-        self.assertIn("technique", labels)
+        # what §1.8 was written about. `technique` was a label in P11 because it
+        # had 434 items and no ladder; P12a gave it rungs at stages 4-8, so it
+        # is a track now — which is the distinction the two lists exist to make,
+        # working as intended rather than being worked around.
+        self.assertIn("technique", tracks)
         self.assertIn("film-game", labels)
         self.assertEqual(set(tracks) & set(labels), set())
 
@@ -137,6 +141,44 @@ class TestOrphans(unittest.TestCase):
         # the Library is a legitimate way to reach it.
         found = orphan_exercises([item("song.a", type="song", concepts=["x"])], curriculum([]))
         self.assertEqual(found, [])
+
+
+class TestOrphansAreNowErrors(unittest.TestCase):
+    """
+    replan §7.5: P11 reported orphans, P12a fails on them.
+
+    The technique rungs at stages 4-8 are what made that affordable — before
+    them, 428 of 774 generated exercises were reachable from no lesson and no
+    concept, `scale` and `arpeggio` among them.
+    """
+
+    def test_the_shipped_curriculum_has_no_orphans(self) -> None:
+        content = REPO_ROOT / "app" / "public" / "content"
+        if not (content / "catalog.json").exists():
+            self.skipTest("no built content; run tools/content/build.py")
+        catalog = json.loads((content / "catalog.json").read_text(encoding="utf-8"))
+        curriculum = json.loads((content / "curriculum.json").read_text(encoding="utf-8"))
+        self.assertEqual(orphan_exercises(catalog, curriculum), [])
+
+    def test_a_technique_rung_exists_for_every_stage_four_to_eight(self) -> None:
+        for stage in range(4, 9):
+            path = REPO_ROOT / "content" / "curriculum" / f"stage-{stage}.json"
+            data = json.loads(path.read_text(encoding="utf-8"))
+            units = data["stages"][0]["units"]
+            technique = [u for u in units if u["track"] == "technique"]
+            self.assertEqual(len(technique), 1, f"stage {stage}")
+            lesson = technique[0]["lessons"][0]
+            # Technique rungs carry no repertoire of their own, so they must say
+            # they are song-optional or the three-alternatives rule fails them.
+            self.assertTrue(lesson.get("songOptional"), technique[0]["id"])
+            self.assertGreaterEqual(len(lesson["exerciseOptions"]), MIN_OPTIONS)
+
+    def test_technique_is_a_track_now_that_it_has_a_ladder(self) -> None:
+        # P11 made it an itemLabel because it had 434 items and no units; P12a
+        # gave it units, which is exactly the condition that distinguishes them.
+        tracks = load_tracks(TRACKS_FILE)
+        self.assertIn("technique", tracks)
+        self.assertNotIn("technique", load_item_labels(TRACKS_FILE))
 
 
 class TestEstimatedCounts(unittest.TestCase):

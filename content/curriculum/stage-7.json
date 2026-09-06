@@ -119,6 +119,53 @@
               "estimatedDays": 150
             }
           ]
+        },
+        {
+          "id": "technique.7.1",
+          "title": "Technique: double notes, octaves and the half pedal",
+          "track": "technique",
+          "lessons": [
+            {
+              "id": "technique.7",
+              "title": "Two notes at once in one hand, octaves, and a pedal that is not a switch",
+              "concepts": [
+                "double-notes",
+                "scale-in-3rds",
+                "scale-in-6ths",
+                "octaves",
+                "octave-scale",
+                "broken-octaves",
+                "tremolo",
+                "forearm",
+                "polyrhythm-2:3",
+                "polyrhythm-3:2",
+                "half-pedal"
+              ],
+              "textFile": "lessons/technique.7.md",
+              "exerciseOptions": [
+                "exercise.broken-octaves.a.1oct.left",
+                "exercise.broken7.a-dominant7.both",
+                "exercise.double-sixth.c.1oct.left",
+                "exercise.double-third.c.1oct.left",
+                "exercise.pedal.half-pedal.a",
+                "exercise.independence.c.2v3",
+                "exercise.octave-scale.a.1oct.both",
+                "exercise.tremolo.c.left",
+                "exercise.broken-octaves.a.1oct.right",
+                "exercise.broken7.a-flat-dominant7.both",
+                "exercise.double-sixth.c.1oct.right",
+                "exercise.double-third.c.1oct.right"
+              ],
+              "songOptions": [],
+              "songOptional": true,
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              }
+            }
+          ]
         }
       ]
     }
