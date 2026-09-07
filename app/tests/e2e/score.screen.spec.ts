@@ -335,3 +335,39 @@ test.describe('naming the note it is waiting for', () => {
     await expect(page.locator('#score-waiting')).toBeHidden();
   });
 });
+
+/**
+ * Blind mode (replan §8).
+ *
+ * It had never hidden the notation. `visibility` is the one property a child
+ * can use to escape an ancestor that hid it, and `.score-buffer.is-front` set
+ * `visibility: visible` unconditionally — so the class went on, the button
+ * relabelled itself to "Show the score", and the score stayed on the screen.
+ * The tour photographed exactly that in all four form factors and captioned it
+ * "the notation is hidden on purpose", which is how it survived a review.
+ */
+test.describe('blind mode', () => {
+  test('hides the notation and keeps everything else', async ({ page }) => {
+    await page.goto('/#/score/song.folk.hot-cross-buns?blind=1');
+    await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+    await expect(page.locator('[data-screen="score"]')).toHaveAttribute('data-blind', 'true');
+
+    // The engraving is laid out — the cursor still tracks and the run is scored
+    // the same way — it is simply not shown.
+    const svg = page.locator('#score-stage .is-front svg');
+    await expect(svg).toHaveCount(1);
+    await expect(svg).not.toBeVisible();
+
+    // And the things a blind run is played with are still there.
+    await expect(page.locator('.keyboard-strip')).toBeVisible();
+    await expect(page.locator('#score-play')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Show the score' })).toBeVisible();
+  });
+
+  test('showing the score again brings the notation back', async ({ page }) => {
+    await page.goto('/#/score/song.folk.hot-cross-buns?blind=1');
+    await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+    await page.getByRole('button', { name: 'Show the score' }).click();
+    await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 60_000 });
+  });
+});

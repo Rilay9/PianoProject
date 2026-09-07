@@ -2151,6 +2151,19 @@ input[type='checkbox'] {
   visibility: hidden;
 }
 
+/* And the buffer inside it, which was un-hiding itself.
+
+   `visibility` is the one property a child can use to escape an ancestor that
+   hid it: `.score-buffer.is-front { visibility: visible }` beat the rule above,
+   so blind mode had never once hidden the notation. It set the class, it
+   relabelled the button to "Show the score", and it drew the score. The tour
+   photographed it that way in all four form factors and captioned the picture
+   "the notation is hidden on purpose". */
+.score-stage--blind .score-buffer,
+.score-stage--blind .score-buffer.is-front {
+  visibility: hidden;
+}
+
 .paper-readout {
   display: flex;
   gap: 1rem;
