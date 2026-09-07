@@ -496,6 +496,27 @@ test.describe('the score control bar', () => {
     await expect(page.locator('#score-more')).toBeVisible();
   });
 
+  test('sideways, the whole menu is on the screen at once', async ({ page }) => {
+    // A phone held sideways is 360 px tall and the sheet showed four of its ten
+    // rows: Size, Layout, Keys, Sound, Blind and Perform were behind a scroll
+    // inside a dialog, which is a place nobody looks for them.
+    await page.setViewportSize({ width: 780, height: 360 });
+    await openScore(page);
+    await openScoreMenu(page);
+    const rows = await page.evaluate(() => {
+      const all = [...document.querySelectorAll('#score-more-sheet .score-menu-row')].filter(
+        (row) => (row as HTMLElement).offsetParent !== null,
+      );
+      const inside = all.filter((row) => {
+        const box = row.getBoundingClientRect();
+        return box.top >= 0 && box.bottom <= window.innerHeight + 1;
+      });
+      return { all: all.length, inside: inside.length };
+    });
+    expect(rows.all).toBeGreaterThan(6);
+    expect(rows.inside, `only ${String(rows.inside)} of ${String(rows.all)} rows are on the screen`).toBe(rows.all);
+  });
+
   test('the tempo label opens a sheet with the slider and a typed bpm', async ({ page }) => {
     await openScore(page);
     await openTempoSheet(page);

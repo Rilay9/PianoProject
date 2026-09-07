@@ -1183,6 +1183,30 @@ input[type='checkbox'] {
   border-bottom: 0;
 }
 
+/* A phone held sideways is 360 px tall, and the sheet showed four of its ten
+   rows — Size, Layout, Keys, Sound, Blind and Perform were all behind a scroll
+   inside a dialog, which is a place nobody looks. Two columns puts eight of
+   them on the screen at once. */
+@media (max-height: 520px) {
+  #score-more-sheet .sheet__body {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+
+  #score-more-sheet .score-menu-row {
+    padding: 0.2rem 0;
+  }
+
+  #score-more-sheet .sheet__panel {
+    padding-top: 0.5rem;
+  }
+
+  #score-more-sheet .sheet__head {
+    margin-bottom: 0.25rem;
+  }
+}
+
 /* `[hidden]`'s `display: none` and `.score-menu-row`'s `display: flex` have
    the same specificity, so the later one wins — and the Section row, hidden
    for a piece that has none, was drawn anyway. */
