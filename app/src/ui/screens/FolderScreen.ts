@@ -28,6 +28,7 @@ import { ImportError, allImports } from '../../data/importStore';
 import { getSettings } from '../../data/settingsStore';
 import { badge, button, el, listRow } from '../widgets';
 import { addParagraph, addSection, createSubScreen } from './subScreen';
+import { plural } from '../../util/plural';
 
 /** Rows drawn before "Show more". */
 const PAGE = 60;
@@ -288,8 +289,8 @@ export function FolderScreen(router: Router): HTMLElement {
     }
     const where = library.source ? ` from ${library.source}` : '';
     folderStatus.textContent = library.connected
-      ? `${library.scores.length.toLocaleString()} score(s) in ${library.id}${where}.`
-      : `${library.scores.length.toLocaleString()} score(s) in ${library.id}${where} — pick the folder again to add any of them.`;
+      ? `${plural(library.scores.length, 'score')} in ${library.id}${where}.`
+      : `${plural(library.scores.length, 'score')} in ${library.id}${where} — pick the folder again to add any of them.`;
   }
 
   function drawActions(): void {

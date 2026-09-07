@@ -29,6 +29,7 @@ import { openFinderSheet } from '../finderSheet';
 import { confirmMessage, lockState, type LockState } from '../../curriculum/prerequisites';
 import { openPieceSheet } from './ShelfScreen';
 import { allBooks, addBook, allShelfPieces, type ShelfPiece } from '../../data/booksStore';
+import { plural } from '../../util/plural';
 
 interface VideoLink {
   label?: string;
@@ -148,7 +149,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     }
     if (short.length === 0) {
       const count = current.songOptions.length + current.exerciseOptions.length;
-      needsLine.textContent = `This rung has ${String(count)} option(s) — enough to choose between.`;
+      needsLine.textContent = `This rung has ${plural(count, 'option')} — enough to choose between.`;
       needsLine.classList.remove('needs--short');
     } else {
       needsLine.textContent =

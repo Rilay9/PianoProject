@@ -40,6 +40,7 @@ import { getSettings } from '../../data/settingsStore';
 import { onScreenDispose } from '../screenLifecycle';
 import { button, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
+import { nounFor, plural } from '../../util/plural';
 
 type SelfReport = 'rough' | 'ok' | 'clean';
 
@@ -66,8 +67,8 @@ export function summarise(input: {
   const lines: string[] = [];
   const heard =
     input.bpm === null
-      ? `The app heard ${String(input.notes)} note(s) over ${minutes.toFixed(1)} minute(s).`
-      : `The app heard ${String(input.notes)} note(s) over ${minutes.toFixed(1)} minute(s) at ♩=${String(input.bpm)}.`;
+      ? `The app heard ${plural(input.notes, 'note')} over ${minutes.toFixed(1)} ${nounFor(minutes, 'minute')}.`
+      : `The app heard ${plural(input.notes, 'note')} over ${minutes.toFixed(1)} ${nounFor(minutes, 'minute')} at ♩=${String(input.bpm)}.`;
   lines.push(heard);
 
   if (input.steadiness && steadinessIsMeaningful(input.steadiness)) {
@@ -154,7 +155,7 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
     const mmss = `${String(Math.floor(seconds / 60))}:${String(seconds % 60).padStart(2, '0')}`;
     readout.replaceChildren(
       el('span.paper-timer', { id: 'paper-timer', text: mmss }),
-      el('span.paper-notes', { id: 'paper-notes', text: `${String(onsets.length)} note(s)` }),
+      el('span.paper-notes', { id: 'paper-notes', text: plural(onsets.length, 'note') }),
     );
   }
 

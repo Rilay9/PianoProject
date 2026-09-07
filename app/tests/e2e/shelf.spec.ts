@@ -166,7 +166,7 @@ test.describe('practising against paper', () => {
     await expect(summary).toBeVisible();
     // The sentence the whole screen exists to be able to say.
     await expect(summary).toContainText('It cannot see the notes');
-    await expect(summary).toContainText(/heard 0 note\(s\)/);
+    await expect(summary).toContainText(/heard 0 notes/);
     // And the thing it must never say.
     await expect(summary).not.toContainText('Accuracy');
     await expect(summary).not.toContainText('%');
@@ -184,7 +184,7 @@ test.describe('practising against paper', () => {
     await page.goto('/#/progress');
     const history = page.locator('#progress-history');
     await expect(history).toContainText('Study');
-    await expect(history).toContainText('note(s) heard');
+    await expect(history).toContainText('notes heard');
   });
 
   test('a self-assessed clean run finishes the rung it answers', async ({ page }) => {

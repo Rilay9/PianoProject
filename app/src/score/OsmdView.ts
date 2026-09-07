@@ -278,6 +278,7 @@ export class OsmdView {
     return n;
   }
 
+
   /** Frees the OSMD instance and empties the container. */
   dispose(): void {
     try {

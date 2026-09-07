@@ -29,7 +29,7 @@ test.describe('the finder on a rung', () => {
     // Not just "contains the word rung": the number is the claim, and it is
     // the number that could go stale (review C3).
     await expect(page.locator('#lesson-needs')).toContainText(
-      /This rung has \d+ option\(s\) — enough to choose between\./,
+      /This rung has \d+ options? — enough to choose between\./,
     );
 
     await page.locator('#lesson-find-more').click();

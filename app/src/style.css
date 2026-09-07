@@ -1,4 +1,13 @@
 :root {
+  /* Tells the browser which way to paint the controls it draws itself:
+     number inputs, checkboxes, radio buttons, select popups, scrollbars.
+
+     Without it they are painted light whatever the palette says, and the
+     screenshots showed exactly that — "Bars per window 2", "Weekly goal 150",
+     "Count-in bars 1" as white boxes with black digits, and a white checkbox,
+     sitting in a dark app. One property, set with the palette it belongs to,
+     rather than restyling every control by hand. */
+  color-scheme: light;
   --bg: #f7f7f9;
   --surface: #ffffff;
   --text: #14161a;
@@ -12,6 +21,7 @@
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
   --bg: #0f1115;
   --surface: #181b20;
   --text: #eef0f3;
@@ -1018,12 +1028,20 @@ body {
   padding-bottom: 24px;
 }
 
+/* A row of controls wraps rather than hiding controls off an edge.
+
+   It used to scroll sideways with the scrollbar hidden, which means a control
+   past the right edge has *no* signal that it exists — the screenshots caught
+   "Any st…" on Library, a track chip reading "Chords & p" on Plan, and
+   "Adjus" on the PDF bar, each clipped mid-word so it reads as a bug rather
+   than as an invitation to swipe. The same change was made to the score
+   screen's control bar for the same reason. A second row costs a line; a
+   control nobody knows about costs the feature. */
 .filter-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto;
   padding: 8px 0 4px;
-  scrollbar-width: none;
 }
 
 .filter-row::-webkit-scrollbar {
@@ -1258,12 +1276,13 @@ body {
 .pdf-timing {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  /* Wraps, for the reason `.filter-row` does: "Loop" and "Adjust" were both
+     cut off at the right edge of a phone with nothing to say they were there. */
+  flex-wrap: wrap;
   flex: none;
   padding: 4px 8px;
-  scrollbar-width: none;
 }
 
 .pdf-bar::-webkit-scrollbar,
@@ -1940,7 +1959,12 @@ body {
     grid-column: 2;
     grid-row: 1 / span 2;
     overflow-y: auto;
-    padding: 8px 12px;
+    /* The control bar is absolutely positioned across the bottom of the whole
+       screen, so it floats over the foot of this panel whatever the grid says
+       — on a tablet in portrait it was printed straight across the panel's own
+       "Lesson notes" heading. Same measured variable the stage uses, so the
+       panel gives the bar exactly the room the bar turns out to need. */
+    padding: 8px 12px calc(8px + var(--score-bar-h, 0px));
     border-left: 1px solid var(--border);
     font-size: 0.9rem;
     line-height: 1.5;

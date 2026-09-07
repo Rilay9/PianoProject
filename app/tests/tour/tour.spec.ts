@@ -26,6 +26,7 @@ import {
   writeContactSheet,
 } from './shoot';
 import { seedFolder, seedProgress, seedShelf, setSetting } from './seed';
+import { auditScreen, summarise, type Finding } from './audit';
 
 const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'imports');
 const MXL = path.join(FIXTURES, 'test-tune.mxl');
@@ -133,6 +134,7 @@ for (const { orientation, size } of FORM_FACTORS) {
       });
       const midi: MidiMock = await installMidiMock(page, { permission: 'granted' });
       const gaps: string[] = [];
+      const audited: { scene: string; findings: Finding[] }[] = [];
 
       /** One photograph. A scene that will not open is a gap, not a failure. */
       const scene = async (
@@ -144,6 +146,12 @@ for (const { orientation, size } of FORM_FACTORS) {
         try {
           await body();
           await shoot(page, orientation, slug, title, note);
+          // Photographed and checked in the same visit: the shapes a machine
+          // can find — a control off the edge, a control below the fold, a
+          // native input painted for the wrong theme — cost one round trip
+          // here and a great deal of squinting otherwise.
+          const findings = await auditScreen(page);
+          if (findings.length > 0) audited.push({ scene: slug, findings });
         } catch (cause) {
           const why = cause instanceof Error ? cause.message.split('\n')[0] : 'failed';
           gaps.push(`${slug}: ${why}`);
@@ -489,6 +497,14 @@ for (const { orientation, size } of FORM_FACTORS) {
 
       saveLedger();
       writeContactSheet();
+      if (audited.length > 0) {
+        const total = audited.reduce((n, a) => n + a.findings.length, 0);
+        console.log(
+          `
+: ${String(total)} thing(s) to look at across ${String(audited.length)} screen(s)`,
+        );
+        for (const line of summarise(audited)) console.log(`  ${line}`);
+      }
       if (gaps.length > 0) {
         console.log(`\n${orientation}: ${String(gaps.length)} scene(s) could not be shot:`);
         for (const gap of gaps) console.log(`  - ${gap}`);

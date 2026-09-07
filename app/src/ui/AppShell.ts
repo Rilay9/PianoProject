@@ -113,7 +113,7 @@ function mountLazyScreen(
    * nobody sees on a phone with no console. A dropped connection on the way
    * to the shop is enough to cause it.
    */
-  const attempt = (): void => {
+  const attempt = (retriesLeft = 1): void => {
     void load().then(
       (real) => {
         // The route may have changed while the chunk was in flight.
@@ -122,6 +122,14 @@ function mountLazyScreen(
         setCurrent(real);
       },
       (cause: unknown) => {
+        // One silent retry before saying anything. A chunk request that comes
+        // back short is almost always a one-off, and it is fixed by asking
+        // again — which is worth doing before putting an error in front of
+        // somebody who only wanted to open a screen.
+        if (retriesLeft > 0 && holder.isConnected) {
+          attempt(retriesLeft - 1);
+          return;
+        }
         const message = cause instanceof Error ? cause.message : String(cause);
         recordError(`screen did not load: ${message}`, 'rejection');
         if (!holder.isConnected) return;

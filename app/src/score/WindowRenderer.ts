@@ -72,6 +72,21 @@ interface Buffer {
   elements: Map<string, SVGGElement>;
 }
 
+/**
+ * What OSMD engraved, in CSS pixels, before any transform this class applied.
+ *
+ * `null` when the attributes are missing or unreadable, so the caller can
+ * fall back to measuring rather than guess.
+ */
+function engravedSize(svg: SVGElement): { width: number; height: number } | null {
+  const width = Number.parseFloat(svg.getAttribute('width') ?? '');
+  const height = Number.parseFloat(svg.getAttribute('height') ?? '');
+  return width > 0 && height > 0 ? { width, height } : null;
+}
+
+/** How many engravings the fit will try before settling. Each is a render. */
+const FIT_STEPS = 4;
+
 function clampBars(bars: number): number {
   return Math.min(MAX_BARS_PER_WINDOW, Math.max(MIN_BARS_PER_WINDOW, Math.round(bars)));
 }
@@ -100,6 +115,8 @@ export class WindowRenderer {
   private currentStep = -1;
   private manualScrollUntil = 0;
   private prerenderHandle: number | null = null;
+  /** Watches the stage, because its height settles after the first draw. */
+  private stageObserver: ResizeObserver | null = null;
   private disposed = false;
 
   private constructor(options: WindowRendererOptions, buffers: [Buffer, Buffer]) {
@@ -137,6 +154,24 @@ export class WindowRenderer {
       },
       { passive: true },
     );
+
+    // The stage does not have its final height when the score loads: the
+    // keyboard strip is built afterwards and the control bar measures itself
+    // into `--score-bar-h` a frame later, and both take height off the stage.
+    // Fitting once against whatever it happened to be gave two different
+    // engravings from the same code on the same screen — sideways it settled
+    // at 41% of the width one run and 98% the next. Watching the box means the
+    // fit answers the height the stage *ends up* being.
+    if (typeof ResizeObserver !== 'undefined') {
+      this.stageObserver = new ResizeObserver(() => {
+        if (this.disposed || this.fitting) return;
+        // `fitToStage` already returns immediately when the height is the one
+        // it last fitted, so an observation that changes nothing costs a
+        // rounded comparison.
+        this.fitToStage();
+      });
+      this.stageObserver.observe(this.el);
+    }
   }
 
   static async create(options: WindowRendererOptions): Promise<WindowRenderer> {
@@ -236,8 +271,14 @@ export class WindowRenderer {
         // The pre-rendered case: one class toggle, no layout work.
         this.swap();
       } else {
-        this.drawInto(this.backBuffer, wanted);
-        this.swap();
+        // Nothing was prepared, so draw in place. Drawing into the spare
+        // buffer and swapping costs the same render and leaves the *old*
+        // front holding the window that was just drawn — every note of it in
+        // the DOM twice, counted twice and painted twice. The spare buffer
+        // earns its keep on the prepared path above; on this one it only
+        // duplicates. Synchronous, so there is no paint between the clear and
+        // the draw.
+        this.drawInto(this.frontBuffer, wanted);
       }
       // Two labels, because they are two different budgets (`01` §6): a
       // pre-rendered swap must fit in a frame, a cold one only has to beat the
@@ -376,6 +417,8 @@ export class WindowRenderer {
 
   dispose(): void {
     this.disposed = true;
+    this.stageObserver?.disconnect();
+    this.stageObserver = null;
     if (this.prerenderHandle !== null) {
       cancelAnimationFrame(this.prerenderHandle);
       this.prerenderHandle = null;
@@ -529,7 +572,20 @@ export class WindowRenderer {
     // swap — which converges, because the zoom is clamped, but converging is
     // not the same as being free, and a swap is meant to cost a class toggle.
     if (this.fittedAtHeight === Math.round(available.height)) return;
-    const box = svg.getBoundingClientRect();
+    // The engraved size, not the size on screen.
+    //
+    // `fit()` has already put a CSS `scale()` on the wrapper, and
+    // `getBoundingClientRect` reports the scaled box — so this measured a
+    // sheet that had just been shrunk to fit, concluded it fitted, and left
+    // the engraving alone. On the S25 sideways that meant a window engraved
+    // at zoom 2 into a 389-unit page, drawn 778 px wide, then scaled to 0.42
+    // to make its height fit. Re-engraving at the smaller zoom gives the page
+    // more than twice the units, which is what lets the engraver put both
+    // bars on one line and stretch it across the screen.
+    //
+    // The `width`/`height` attributes are what OSMD wrote, before any
+    // transform of ours.
+    const box = engravedSize(svg) ?? svg.getBoundingClientRect();
     const target = fitZoom(this.zoomLevel, box, available) * this.userZoom;
     if (!worthRefitting(this.zoomLevel, target)) return;
     if (this.fitHandle !== null) cancelAnimationFrame(this.fitHandle);
@@ -538,12 +594,56 @@ export class WindowRenderer {
       if (this.disposed || this.fitting) return;
       this.fitting = true;
       try {
-        this.applyZoom(target);
+        this.searchForFit(available.height);
         this.fittedAtHeight = Math.round(available.height);
       } finally {
         this.fitting = false;
       }
     });
+  }
+
+  /**
+   * The largest engraving that still fits the height.
+   *
+   * A search rather than one division, because the two are not the same
+   * question. Changing the zoom changes the width of the *page* the engraver
+   * lays out on, so it can change how many systems the window takes — and the
+   * height with it. On the S25 sideways, halving the zoom put both bars on one
+   * line and the sheet became half as tall, leaving room the single division
+   * had no way to go back for. Nudging the other way puts them back on two
+   * lines and it is too tall again. There is no fixed point to divide towards.
+   *
+   * So: try a few zooms, keep the tallest engraving that fits, and settle
+   * there. Bounded hard, because every step is a real OSMD render — and it
+   * runs only when the stage changes size, never on a window swap.
+   */
+  private searchForFit(availableHeight: number): void {
+    if (!(availableHeight > 0)) return;
+    let bestZoom = this.zoomLevel;
+    let bestHeight = 0;
+    const tried = new Set<number>();
+
+    for (let step = 0; step < FIT_STEPS; step += 1) {
+      const svg = this.frontBuffer.view.svg;
+      const box = svg ? (engravedSize(svg) ?? svg.getBoundingClientRect()) : null;
+      if (!box || !(box.height > 0)) break;
+
+      // The tallest that fits wins; among those that do not fit, none does.
+      if (box.height <= availableHeight && box.height > bestHeight) {
+        bestHeight = box.height;
+        bestZoom = this.zoomLevel;
+      }
+      tried.add(this.zoomLevel);
+
+      const next = fitZoom(this.zoomLevel, box, { height: availableHeight }) * this.userZoom;
+      // Settled, or somewhere we have already been — which is the oscillation
+      // between one system and two, and the reason this keeps the best rather
+      // than the last.
+      if (!worthRefitting(this.zoomLevel, next) || tried.has(next)) break;
+      this.applyZoom(next);
+    }
+
+    if (bestHeight > 0 && bestZoom !== this.zoomLevel) this.applyZoom(bestZoom);
   }
 
   private fit(buffer: Buffer): void {

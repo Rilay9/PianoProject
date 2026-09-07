@@ -66,7 +66,7 @@ test.describe('every lesson page', () => {
       // The title proves the route resolved to this rung and not to the "no
       // such lesson" state, which is the failure a wrong id pattern produces.
       await expect(page.locator('[data-screen="lesson"] h1')).toContainText(lesson.id);
-      await expect(page.locator('#lesson-needs')).toContainText(/option\(s\)|wants/);
+      await expect(page.locator('#lesson-needs')).toContainText(/options?|wants/);
       const options = await page.locator('#lesson-exercises .list-row, #lesson-songs .list-row').count();
       if (options === 0 && lesson.optionsExempt !== true) empty.push(lesson.id);
     }

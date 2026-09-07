@@ -27,6 +27,18 @@ from music21 import (chord, clef, instrument, interval, key, layout, meter, meta
                      note, pitch, scale, stream, tempo, articulations)
 from music21.scale import Direction
 
+
+def note_name(name: str) -> str:
+    """A pitch or key name as a reader writes it: A♭, not A-.
+
+    music21 spells a flat as a trailing hyphen, which is fine inside the
+    library and wrong the moment it reaches a screen. Two of the five title
+    builders here remembered to translate it and three did not, so seventy
+    items shipped called "A- major arpeggio" — visible in the Library on any
+    screen wide enough to show two columns of it.
+    """
+    return name.replace("-", "♭").replace("#", "♯")
+
 # --------------------------------------------------------------------------------------
 # Fingering tables, verified against a published chart.
 #
@@ -380,7 +392,7 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
     else:
         raise ValueError(spec.mode)
 
-    title = f"{spec.tonic.replace('-', '♭').replace('#', '♯')} {mode_label} scale — {spec.octaves} oct, {spec.motion}, {spec.hands}"
+    title = f"{note_name(spec.tonic)} {mode_label} scale — {spec.octaves} oct, {spec.motion}, {spec.hands}"
     sc, rh, lh = grand_staff(title, spec.bpm, ks=ks)
 
     rh_start = pitch.Pitch(spec.tonic + "4")
@@ -430,11 +442,12 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
     return sc, entry
 
 
+
 def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octaves: int = 2, bpm: int = 60) -> tuple[stream.Score, dict]:
     level = arpeggio_level(root, quality, hands, octaves)
     third = 4 if quality == "major" else 3
     intervals = [0, third, 7]
-    title = f"{root} {quality} arpeggio — {octaves} oct, {hands}"
+    title = f"{note_name(root)} {quality} arpeggio — {octaves} oct, {hands}"
     ks = key.Key(root if quality == "major" else root.lower())
     sc, rh, lh = grand_staff(title, bpm, ks=ks)
 
@@ -641,7 +654,7 @@ def make_chromatic(
     to the right notes.
     """
     level = scale_level(start, "chromatic", hands, octaves, "similar", 0.5)
-    title = f"Chromatic scale from {start} — {octaves} oct, {hands}"
+    title = f"Chromatic scale from {note_name(start)} — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
 
     def run(base: str) -> list[pitch.Pitch]:
@@ -708,7 +721,7 @@ def make_seventh_arpeggio(
     level = arpeggio_level(root, quality, hands, octaves)
     shape = SEVENTH_SHAPES[quality]
     label = SEVENTH_LABELS[quality]
-    title = f"{root} {label} arpeggio — {octaves} oct, {hands}"
+    title = f"{note_name(root)} {label} arpeggio — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
 
     def run(start: pitch.Pitch) -> list[pitch.Pitch]:
@@ -794,7 +807,7 @@ def make_double_scale(
     steps = 2 if interval_name == "third" else 5
     level = 7.1 if tonic in ("C", "G") else 7.3
     label = "3rds" if interval_name == "third" else "6ths"
-    title = f"{tonic.replace('-', '♭')} major scale in {label} — {octaves} oct, {hands}"
+    title = f"{note_name(tonic)} major scale in {label} — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     scale_obj = scale.MajorScale(tonic)

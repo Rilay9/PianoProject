@@ -120,7 +120,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   const sheet = el('div.drill-summary', { id: 'drill-summary', hidden: true });
   const tipsBlock = el('details.drill-tips', { id: 'drill-tips', hidden: true });
 
-  body.append(counter, stage, prompt, hint, tipsBlock, controls, status, sheet);
+  // Controls before tips, not after.
+  //
+  // The tips block is open the first time a learner meets a drill kind, and
+  // it runs to several paragraphs. With it above the controls, the very first
+  // ear drill anyone opens showed a prompt, a headphones icon and a wall of
+  // advice, and the two buttons to answer with were off the bottom of the
+  // screen. The sweep test passed the whole time, because 'offers a way to
+  // answer' was asking the DOM and not the screen.
+  body.append(counter, stage, prompt, hint, controls, tipsBlock, status, sheet);
   section.append(stripHost);
 
   let item: CatalogItem | undefined;

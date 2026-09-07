@@ -32,6 +32,8 @@ from generate_exercises import (  # noqa: E402
     make_position_shift,
     make_rhythm,
     make_seventh_arpeggio,
+    make_arpeggio,
+    note_name,
 )
 
 
@@ -429,6 +431,28 @@ class TestChordFingeringSurvivesExport(unittest.TestCase):
         score, _ = make_triad_inversions("C", "major", "left")
         self.assertEqual(self.written_fingerings(score)[:3], ["5", "3", "1"])
 
+class FlatSpelling(unittest.TestCase):
+    """Seventy shipped titles read "A- major arpeggio" until this existed.
 
-if __name__ == "__main__":
-    unittest.main()
+    music21 spells a flat as a trailing hyphen. Two of the five title builders
+    in the generator translated it and three did not, so the Library showed
+    "A- major five-finger pattern" beside "A major five-finger pattern" and
+    nothing in the suite minded. A per-builder test would have missed it the
+    same way the builders did; this asks every one of them the same question.
+    """
+
+    def test_note_name_writes_them_the_way_a_reader_does(self):
+        self.assertEqual(note_name("A-"), "A♭")
+        self.assertEqual(note_name("B-"), "B♭")
+        self.assertEqual(note_name("F#"), "F♯")
+        self.assertEqual(note_name("C"), "C")
+
+    def test_no_generated_title_spells_a_flat_as_a_hyphen(self):
+        titles = [
+            make_arpeggio("A-", "major", "both", 2)[1]["title"],
+            make_seventh_arpeggio("B-", "dominant", "both", 2)[1]["title"],
+            make_chromatic("A-", "both", 1)[1]["title"],
+        ]
+        for title in titles:
+            self.assertIn("♭", title, title)
+            self.assertNotIn("- ", title, title)

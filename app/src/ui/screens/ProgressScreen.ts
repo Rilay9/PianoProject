@@ -25,6 +25,7 @@ import {
 import { badge, button, el, listRow, minutesLabel, numberControl } from '../widgets';
 import { openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
+import { plural } from '../../util/plural';
 
 /** Days shown in the heat-map: enough to see a term, short enough to fit. */
 export const HEATMAP_DAYS = 91;
@@ -186,7 +187,7 @@ export function ProgressScreen(router: Router): HTMLElement {
               meta:
                 session.mode === 'paper'
                   ? [
-                      `${String(session.notesHeard ?? 0)} note(s) heard`,
+                      `${plural(session.notesHeard ?? 0, 'note')} heard`,
                       session.steadinessMs === undefined
                         ? 'steadiness not measured'
                         : `±${String(session.steadinessMs)} ms`,
