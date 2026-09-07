@@ -69,7 +69,7 @@ export function SettingsScreen(router: Router): HTMLElement {
   const practice = group('Practice');
   practice.append(
     field(
-      'Default mode with MIDI or mic',
+      'Default mode, with MIDI or mic',
       selectControl(
         'set-mode-input',
         [
@@ -81,7 +81,7 @@ export function SettingsScreen(router: Router): HTMLElement {
       ),
     ),
     field(
-      'Default mode without one',
+      'Default mode, no input',
       selectControl(
         'set-mode-noinput',
         [
@@ -199,7 +199,7 @@ export function SettingsScreen(router: Router): HTMLElement {
       selectControl(
         'set-playback-hands',
         [
-          { value: 'non-focused', label: 'The hand you are not practising' },
+          { value: 'non-focused', label: 'The other hand' },
           { value: 'both', label: 'Both hands' },
           { value: 'none', label: 'Nothing' },
         ],
@@ -271,19 +271,30 @@ export function SettingsScreen(router: Router): HTMLElement {
 
   void Promise.all([getPlan(), loadCurriculum()]).then(([plan, curriculum]) => {
     void allItems().then((items) => {
-      const tracks = [...new Set(items.flatMap((item) => item.tracks))].sort();
+      // The curriculum's tracks, in its order, and only those the library can
+      // actually offer something for.
+      //
+      // Two things follow. The chips print `Chords & pop` rather than
+      // `chords-pop` — Plan says the first for the same track, on a screen
+      // reached from the same app. And a track the curriculum does not define
+      // gets no chip: switching it on would set a preference nothing reads,
+      // which is a dead control (`04` §0 R4). `film-game` is tagged on
+      // catalogue items and defined nowhere; that is a content gap, noted as a
+      // follow-up rather than papered over with a made-up label here.
+      const inLibrary = new Set(items.flatMap((item) => item.tracks));
+      const tracks = curriculum.tracks.filter((track) => inLibrary.has(track.id));
       // The set Plan and Today work from, not the raw row: on a fresh phone
       // the row says `['core']` and the data says six tracks are on, and a
       // chip that reads as off while Today is recommending from it is a lie.
       const active = activeTracksFor(plan, curriculum);
       trackRow.replaceChildren();
       for (const track of tracks) {
-        const on = active.includes(track);
+        const on = active.includes(track.id);
         const node = el('button.chip', {
           type: 'button',
-          text: track,
+          text: track.title,
           'aria-pressed': on,
-          id: `settings-track-${track}`,
+          id: `settings-track-${track.id}`,
         });
         node.addEventListener('click', () => {
           const pressed = node.getAttribute('aria-pressed') === 'true';
@@ -294,8 +305,8 @@ export function SettingsScreen(router: Router): HTMLElement {
             const before = activeTracksFor(current, curriculum);
             return updatePlan({
               trackOrder: pressed
-                ? before.filter((id) => id !== track)
-                : [...before, track],
+                ? before.filter((id) => id !== track.id)
+                : [...before, track.id],
             });
           });
         });
@@ -340,7 +351,11 @@ export function SettingsScreen(router: Router): HTMLElement {
         },
         { id: 'settings-download', variant: 'primary' },
       ),
-      button('Refresh the numbers', () => void measureStorage().then(showStorage), { id: 'settings-measure' }),
+      // Read once and pressed rarely (`04` §0 R3).
+      button('Refresh the numbers', () => void measureStorage().then(showStorage), {
+        id: 'settings-measure',
+        variant: 'quiet',
+      }),
     ),
     field(
       'Show US-only public-domain items',

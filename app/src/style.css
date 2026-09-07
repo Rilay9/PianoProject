@@ -95,7 +95,13 @@ body {
   line-height: 1.5;
 }
 
+/* A settings row is a label and its control on one line (`04` §0 R2, ≤ 56 px).
+   Eight of about forty settings fitted a 360 x 780 screen at a hundred pixels
+   apiece, which is five screens of scrolling to reach one. */
 .setting-row {
+  min-height: 44px;
+  margin-top: 8px;
+  padding-top: 8px;
   display: flex;
   /* Wraps, so a setting that carries a sentence of explanation puts its
      control on the next line instead of squeezing the words into a column.
@@ -107,8 +113,6 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
   border-top: 1px solid var(--border);
 }
 
@@ -604,7 +608,7 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 0.9rem;
-  min-height: 48px;
+  min-height: 40px;
   cursor: pointer;
 }
 
@@ -1431,12 +1435,11 @@ input[type='checkbox'] {
 
 .setting-row__text {
   /* A basis, not zero. `flex: 1` is `flex: 1 1 0%`, so the words were free to
-     shrink to nothing and did: "Metronome sound — the high click is the one the
-     mic listens for" came out four words wide beside a crushed select, with its
-     last line cut off. Given a basis it keeps its width and the control wraps
-     underneath instead, which is the right way round — the sentence is the part
+     shrink to nothing beside their control and did. Eight rems keeps a label
+     on the same line as its select on a 360 px screen; below that the control
+     wraps underneath, which is the right way round — the sentence is the part
      that has to be read. */
-  flex: 1 1 14rem;
+  flex: 1 1 8rem;
   min-width: 0;
 }
 
