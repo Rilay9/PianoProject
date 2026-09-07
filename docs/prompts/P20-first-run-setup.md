@@ -68,9 +68,12 @@ set, and each can be skipped:
 1. **The piano is there.** Name the connected input. Ask for one note; show which note arrived,
    by name and by octave. This alone would have shortened 2026-09-07 by forty minutes: it proves
    the cable, the permission, the transpose and the octave in one gesture.
-2. **The whole keyboard.** Ask for the lowest key, then the highest. Store the real range. Use
-   it to check the transpose setting and to pick a sensible default for anything that has to
-   guess at a range later. An HP-130 is 88 keys; do not assume it.
+2. **The whole keyboard.** Ask for the lowest key, then the highest. Store the real range as a
+   settings key `keyboardRange: { low, high } | null` (`settingsStore.ts`, validated like the
+   rest), and give it its two readers: `stripRange.ts`, as the fallback when there is no piece
+   to take a range from (paper practice, a drill with no notation), and step 1's octave check,
+   which can now say "your A0 arrived as A0". Use it to check the transpose setting
+   (`data/midiSettings.ts`). An HP-130 is 88 keys; do not assume it.
 3. **Latency.** Reuse the diagnostics test rather than writing a second one. Save the result to
    the input-latency setting.
 4. **Sound.** Play a note back on the phone; ask whether he heard it. Then, if the piano exposes
@@ -79,13 +82,21 @@ set, and each can be skipped:
    chosen deliberately.
 5. **A test song.** Open a real bundled piece in Wait mode and have him play the first bar. This
    is the end-to-end proof: notation, cursor, keyboard strip, note colouring, advance. Say what
-   it measured. Use `song.folk.mary-had-a-little-lamb` or
-   `song.classical.petzold-minuet-g-bwv-anh114` — both bundled, both public domain, both with a
-   real `file`. Do not use `song.folk.suo-gan-welsh-traditional-lullaby.pdmx`: it is the piece
-   that failed, and a setup step should not be a re-enactment.
+   it measured. Use `song.folk.mary-had-a-little-lamb`, always: level 1.1, right hand only,
+   one position, so the first bar is four notes anyone can play and the check is about the
+   cable, not the player. (`song.classical.petzold-minuet-g-bwv-anh114` is also bundled and
+   public domain, but it is level 5.1 and both hands — a test that can fail for musical
+   reasons is not a test of the phone.) Do not use
+   `song.folk.suo-gan-welsh-traditional-lullaby.pdmx`: it is the piece that failed, and a setup
+   step should not be a re-enactment.
 6. **A test drill.** One prompt from `drill.reading.grand-staff-flash` and one from
    `drill.ear.interval-2nd-3rd` — the second proves audio *out* the way the first proves MIDI
-   *in*. Two prompts, not a set: this is a check, not a practice session.
+   *in*. Two prompts, not a set: this is a check, not a practice session. The drill screen runs
+   sets of ten and is not what you want here; the engine underneath it is separable —
+   `drillFromCatalog(item)` gives a `Drill` with `next()`, `feed()` and `result()`
+   (`engine/drills/types.ts`), and the screen is only chrome around those three calls. Drive
+   one `next()` each from your own card, with the same `KeyboardStrip` for input, and do not
+   touch `DrillScreen` (it is moving under you; see Out of scope).
 7. **A test PDF.** Import a bundled PDF, show the system detection, and let him step through it.
    See §B.
 8. **The microphone, optional and last.** Only if he says he wants to practise away from the
@@ -124,13 +135,22 @@ reading and none has a correct answer:
 | `showNoteNames` | Wait mode with and without *Waiting for F♯4* under the title. This is the one that would have saved him forty seconds hunting for that F sharp. |
 
 **Live, not mock-ups.** Draw the real screen at each setting and let him tap the one he wants.
+One live score screen, not three mounted side by side: open `#/score/<the step-5 song>` with a
+strip of chips over it (`1 · 2 · 4 bars`, `Keys on · off`, `Names on · off`, and `Next`) and let
+each tap re-render in place — `setBars`, the strip toggle and `showNoteNames` all already apply
+live from the ⋯ sheet, so the chips call what the sheet calls. Three engravings at once is three
+fit searches on a phone, and a picture a third of the size is not the size it will really be.
 The whole reason this belongs in the setup is that a picture of notation is not the same as
 notation at the size it will really be, on the phone it will really be on.
 
 Three things to get right:
 
 - **Sideways is a separate answer from upright**, and the app has one setting for both today.
-  Whether that becomes two is your call; if it does, say so in `docs/04-ui-spec.md` §7. The
+  Make it two: `barsPerWindow` stays as the upright value and `barsPerWindowLandscape` is
+  added (default 2, the same as today, so nothing changes until he chooses), and the score
+  screen reads whichever matches `matchMedia('(orientation: landscape)')` at open and on
+  resize. `barsPerWindowFor` keeps its rule for both. Say so in `docs/04-ui-spec.md` §7. Two
+  values because the step asks him twice and one key cannot hold two answers. The
   measurements are in `docs/decisions/2026-09-07-the-ux-tour.md`, **and one of them was wrong
   in the first version of this prompt**. "A two-bar window sideways fills 98% of the screen" was
   the SVG *box*, not the ink. Measured again on 2026-09-07 with the ink:
@@ -156,9 +176,11 @@ Three things to get right:
 `npm run choices` in `app/` builds a page at `build/tour/choices.html` that puts these four
 questions side by side as pictures. It was built before this step existed, and **`build/` is
 gitignored, so the page is not in the repository — run the script to see it.** Treat what it
-shows as the content for step 9, not as something to keep: once the setup asks these properly
-the page has no reason to exist, and `app/tests/tour/choices.spec.ts` and the `choices` script
-in `app/package.json` should go with it.
+shows as the content for step 9: the four questions and their pairings are right. Do not
+delete it — `app/tests/tour/**` is off limits below, and the `choices` script in
+`app/package.json` goes with it. Put "delete `choices.spec.ts`, the `choices` and `review`
+scripts and the second page in `scripts/open-tour.mjs` once step 9 ships" under
+**Follow-ups** for whoever owns the tour.
 
 ## §B — The bundled test PDF
 
@@ -172,11 +194,21 @@ He asked for one to be included ("there's a million online for free"). Two hones
   `app/tests/fixtures/imports/make-two-systems-pdf.py` generates its fixture — no toolchain, no
   new licence question, and the provenance is already settled.
 
-**Recommendation: the second**, if you can get a real engraving out of it; the first only if you
-are certain of the licence. `app/tests/fixtures/imports/two-systems.pdf` is a *fixture* — blank
-staves, drawn by hand to exercise brace detection — and is not good enough to show a person.
-Whichever you choose, it ships in `app/public/`, is precached, and the setup step must work with
-the phone in aeroplane mode.
+**Recommendation: the second**, and there is a real engraving to be had without a toolchain:
+the app engraves. A Playwright script under `app/scripts/` (`make-setup-pdf.mjs`, run by hand,
+not in CI) opens the built app at `#/dev/score` with the Petzold Minuet, layout `scroll`,
+strip off, and calls `page.pdf({ format: 'Letter', printBackground: true })` — Chromium
+prints the SVG as vectors, so the page is a real engraving of a real piece, the brace is at the
+left edge where `systems.ts` looks for it, and the provenance is the item's own `source`
+block. Write that provenance into the PDF's `Title`/`Subject` metadata and into a sentence on
+the step. It is a setup asset, not a catalog item, so it lives at
+`app/public/content/setup/petzold-minuet.pdf` and needs no `validate.py` entry; say in
+`docs/03-content-pipeline.md` that it exists and how it is remade. The first option only if
+this cannot be made to detect systems, and then only with the licence certain.
+`app/tests/fixtures/imports/two-systems.pdf` is a *fixture* — blank staves, drawn by hand to
+exercise brace detection — and is not good enough to show a person. Whichever you choose, it
+ships in `app/public/`, is precached, and the setup step must work with the phone in aeroplane
+mode.
 
 ## §C — Prove it
 
@@ -210,6 +242,13 @@ Not "it should work". Paste what you ran.
   not something you broke.
 
 ## Out of scope — being done in parallel, do not touch
+
+**Because it is parallel, work on a branch**: `feat/p20-setup` off the current head of
+`claude/piano-teaching-app-bo19td`, rebased onto it before merging. The files both sides will
+touch are `router.ts` (`SUB_IDS`), `SettingsScreen.ts`, `TodayScreen.ts`, `style.css` and
+`package.json`; keep your additions to those append-only and in their own blocks, so the
+rebase is mechanical. The common header's branch line still names the target; this is where
+the work happens until it is merged.
 
 - `app/tests/tour/**` and `app/playwright.tour.config.ts` (the screenshot tour and the choices
   script) — mine.
