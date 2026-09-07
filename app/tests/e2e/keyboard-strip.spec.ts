@@ -102,3 +102,52 @@ test.describe('KeyboardStrip performance', () => {
     expect(overflow.bodyOverflows).toBe(false);
   });
 });
+
+/**
+ * The strip fits the band the Score screen gives it (`04` §5).
+ *
+ * It did not, in either orientation. `--key-h` is a constant 108 px, which
+ * with the strip's padding and border is a 122 px keyboard inside a 72 px box
+ * with no `overflow` — so the bottom 50 px of every key was drawn below the
+ * edge of the screen. What is lost there is exactly the part of a white key
+ * that is *not* hidden behind a black one, so the strip became a black-and-blue
+ * barcode: on a 780 px landscape phone the "play this note" marker on D4 was a
+ * 14 px sliver between C sharp and D sharp.
+ *
+ * That is the same failure as the F sharp 4 that took forty seconds to find.
+ * P19 narrowed the range from 88 keys to the ones the piece uses, which was
+ * also true and was not this.
+ */
+test.describe('the keyboard strip fits on the screen', () => {
+  const SONG = 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx';
+
+  for (const [name, size] of [
+    ['sideways', { width: 780, height: 360 }],
+    ['upright', { width: 360, height: 780 }],
+  ] as const) {
+    test(`${name}: no part of a key is below the fold`, async ({ page }) => {
+      await page.setViewportSize(size);
+      await page.goto(`/#/score/${SONG}`);
+      await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+        'data-mode',
+        /wait|tempo/,
+        { timeout: 60_000 },
+      );
+
+      const strip = await page.evaluate(() => {
+        const box = document.querySelector('.keyboard-strip')!.getBoundingClientRect();
+        const white = document.querySelector('.keyboard-strip .key--white')!.getBoundingClientRect();
+        const black = document.querySelector('.keyboard-strip .key--black')!.getBoundingClientRect();
+        return {
+          over: Math.round(box.bottom - window.innerHeight),
+          // The part of a white key a finger can aim at without hitting the
+          // black key drawn over its top.
+          exclusive: Math.round(white.height - black.height),
+        };
+      });
+
+      expect(strip.over, `the strip runs ${String(strip.over)}px past the bottom`).toBeLessThanOrEqual(1);
+      expect(strip.exclusive, 'a white key is entirely behind the black keys').toBeGreaterThan(12);
+    });
+  }
+});

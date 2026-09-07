@@ -1234,6 +1234,26 @@ input[type='checkbox'] {
   max-height: var(--strip-height, 4.5rem);
 }
 
+/**
+ * The keyboard fits the band the score screen gives it.
+ *
+ * It did not. `--key-h` is a constant 108 px, and with the strip's padding and
+ * border that is a 122 px keyboard inside a 72 px box with no `overflow` — so
+ * the bottom 50 px of every key was drawn below the edge of the screen, in
+ * both orientations. What is lost is exactly the part of a white key that is
+ * not hidden behind a black one, so the strip became a black-and-blue barcode:
+ * the "play this note" marker on D4 was a 14 px sliver between C sharp and D
+ * sharp on a 780 px landscape screen.
+ *
+ * That is the same thing that cost forty seconds hunting for an F sharp 4 that
+ * was on the screen the whole time. The range was narrowed to the piece in
+ * P19, which was also true and was not this.
+ */
+.score-strip .keyboard-strip {
+  /* The 14 px is the strip's own 6 px padding either side plus its border. */
+  --key-h: calc(var(--strip-height, 4.5rem) - 14px);
+}
+
 .score-strip[hidden] {
   display: none;
 }
