@@ -450,7 +450,7 @@ class FlatSpelling(unittest.TestCase):
     def test_no_generated_title_spells_a_flat_as_a_hyphen(self):
         titles = [
             make_arpeggio("A-", "major", "both", 2)[1]["title"],
-            make_seventh_arpeggio("B-", "dominant", "both", 2)[1]["title"],
+            make_seventh_arpeggio("B-", "dominant7", "both", 2)[1]["title"],
             make_chromatic("A-", "both", 1)[1]["title"],
         ]
         for title in titles:
