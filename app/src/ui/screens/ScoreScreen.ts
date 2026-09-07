@@ -1,10 +1,11 @@
 /**
  * The Score screen (docs/04-ui-spec.md §5) — the screen the app exists for.
  *
- * Structure: the notation fills the viewport, a control bar auto-hides over
- * it, an optional keyboard strip sits along the bottom, and a summary sheet
- * covers everything at the end of a run. All the timing, judging and
- * scheduling lives in `score/ScoreSession`; this file is chrome and wiring.
+ * Structure, top to bottom: a header row (Back, the title, the app's own
+ * messages), the notation, a control bar of six things and a `⋯`, and an
+ * optional keyboard strip. A summary sheet covers all of it at the end of a
+ * run. All the timing, judging and scheduling lives in `score/ScoreSession`;
+ * this file is chrome and wiring.
  *
  * `#/score/<catalog id>` — the id is in the hash so reload and the back
  * gesture work with no extra state (docs/04 §1).
@@ -62,10 +63,12 @@ const INPUTS: { id: FollowInput; label: string }[] = [
   { id: 'none', label: 'None' },
 ];
 
-const HANDS: { id: HandsFocus; label: string }[] = [
-  { id: 'R', label: 'R' },
-  { id: 'L', label: 'L' },
-  { id: 'both', label: 'Both' },
+// A letter is enough on the bar and not enough for a screen reader, which
+// would say "R" and leave it there.
+const HANDS: { id: HandsFocus; label: string; spoken: string }[] = [
+  { id: 'R', label: 'R', spoken: 'Right hand' },
+  { id: 'L', label: 'L', spoken: 'Left hand' },
+  { id: 'both', label: 'Both', spoken: 'Both hands' },
 ];
 
 /** The control bar hides after this long without a tap (docs/04 §5). */
@@ -302,6 +305,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   if (!performanceRun) bar.appendChild(restart);
 
   const playPause = button('▶', () => togglePlay(), 'score-play');
+  playPause.setAttribute('aria-label', 'Play');
   bar.appendChild(playPause);
 
   const modeSelect = select(
@@ -331,6 +335,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         `score-hands-${hand.id}`,
       ),
     );
+    handsGroup.lastElementChild?.setAttribute('aria-label', hand.spoken);
   }
   bar.appendChild(handsGroup);
 
@@ -458,13 +463,17 @@ export function ScoreScreen(router: Router): HTMLElement {
   );
 
   const barsDown = button('−', () => setBars(settings.barsPerWindow - 1), 'score-bars-down');
+  barsDown.setAttribute('aria-label', 'One bar fewer in the window');
   const barsLabel = document.createElement('span');
   barsLabel.id = 'score-bars';
   barsLabel.className = 'score-bars';
   const barsUp = button('+', () => setBars(settings.barsPerWindow + 1), 'score-bars-up');
+  barsUp.setAttribute('aria-label', 'One bar more in the window');
 
   const zoomOut = button('－', () => setZoom(settings.zoom - 0.1), 'score-zoom-out');
+  zoomOut.setAttribute('aria-label', 'Smaller notes');
   const zoomIn = button('＋', () => setZoom(settings.zoom + 0.1), 'score-zoom-in');
+  zoomIn.setAttribute('aria-label', 'Bigger notes');
 
   /**
    * Layout as a two-way segment rather than a button that says the state it
@@ -1140,7 +1149,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     for (const hand of HANDS) {
       document.getElementById(`score-hands-${hand.id}`)?.classList.toggle('is-selected', hands === hand.id);
     }
-    playPause.textContent = session?.running === true && session.state?.paused !== true ? '⏸' : '▶';
+    const playing = session?.running === true && session.state?.paused !== true;
+    playPause.textContent = playing ? '⏸' : '▶';
+    playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     stripHost.hidden = !settings.keyboardStrip;
     section.dataset.running = String(session?.running === true);
     section.dataset.mode = mode;

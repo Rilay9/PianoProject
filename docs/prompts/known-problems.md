@@ -1,19 +1,34 @@
 # Known problems, as of 2026-09-07
 
-Everything here is real, reproducible, and **not fixed**. It is written down so
-that whoever picks the work up next does not spend an afternoon rediscovering
-it, and does not mistake any of it for something they have just broken.
+Everything here is real and reproducible, and is written down so that whoever
+picks the work up next does not spend an afternoon rediscovering it, and does
+not mistake any of it for something they have just broken. Anything headed
+FIXED is fixed; it stays on the page because the road to it went through two or
+three confident wrong theories, and those are the expensive part.
 
 Both prompts in this directory reference it. Read it before running the suite
 for the first time.
 
 ---
 
-## 1. The tempo clock stops when the screen is not being drawn
+## 1. The tempo clock stops when the screen is not being drawn — FIXED in P21
 
-**The most serious thing on this page.** It is question 9 of `design-brief.md`,
-repeated here because a builder will meet it as a flaky test long before anyone
-meets it as a design question.
+**Kept for the record, because two of the theories below were wrong and it
+would be easy to arrive at them again.** What ships now (decision 9, `05` §3):
+a running Tempo or Listen run pauses on `visibilitychange` and says how long
+you were away, and `ScoreSession` ticks the engine from a 25 ms interval as
+well as from frames.
+
+**And the flaky test was something else entirely.** `startRun` and `replay` are
+two `page.evaluate` round trips, so on a loaded machine the run was already
+several hundred milliseconds old by the time the `ReplaySource` connected — and
+a script saying "the first note at 100 ms" arrived stamped for a slot the engine
+had long closed. Hence `hits: 0`, and hence more often the busier the machine.
+`DevScoreScreen.replay` now starts the run at the instant the source connects.
+The frames were never the problem; the two clocks disagreeing about zero was.
+
+The original description follows, because the *product* problem it describes was
+real and is what decision 9 answers.
 
 `ScoreSession.loop` calls `engine.tick()` once per `requestAnimationFrame`, and
 a browser stops issuing animation frames when the page is not being drawn —
@@ -49,8 +64,10 @@ run. The shipped screen is deliberately left alone.
   `DevScoreScreen.replay` saying so.
 - Ticking the harness from a timer. Necessary but not sufficient, as above.
 
-The fix is a decision, not a patch — see question 9 of the design brief for the
-three candidates.
+A third thing that was tried and is **not** the answer: turning off Chromium's
+background throttling in `playwright.config.ts`. Worth having — a background
+window really does clamp both frames and timers — but a full run with those
+flags and nothing else still flaked, which is what pointed at the two clocks.
 
 ## 2. Two other tests flake, less interestingly
 
