@@ -16,7 +16,9 @@
     "prebuild": "npm run content:build && node scripts/generate-icons.mjs",
     "predev": "node scripts/generate-icons.mjs",
     "pwa:audit": "node scripts/pwa-audit.mjs",
-    "tour": "playwright test --config playwright.tour.config.ts"
+    "tour": "playwright test --config playwright.tour.config.ts tour.spec.ts",
+    "choices": "playwright test --config playwright.tour.config.ts choices.spec.ts",
+    "review": "npm run tour && npm run choices && node scripts/open-tour.mjs"
   },
   "dependencies": {
     "fflate": "0.8.3",

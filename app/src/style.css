@@ -801,12 +801,38 @@ body {
   position: absolute;
   top: 0.4rem;
   right: 0.75rem;
-  max-width: 45%;
+  max-width: 60%;
   margin: 0;
   text-align: right;
   font-size: 0.8rem;
   opacity: 0.7;
   pointer-events: none;
+  /* One line, cut short, rather than two lines wrapping down over the stave.
+     A long title is not worth reading twice; the music under it is. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Held upright the sheet fills the width, so this line lands on top of the
+   music — the S25 screenshots had the title across the first bar and its
+   chord symbol. Upright, the stage starts below it.
+
+   Held sideways it costs nothing to leave alone: the sheet is much narrower
+   than the screen, the top-right corner is empty black, and height is the
+   scarce thing in landscape. If the engraver is ever made to fill that width,
+   this is the rule to revisit. */
+@media (orientation: portrait) {
+  /* Room for the message line and, under it, the note it is waiting for.
+
+     A constant rather than a rule that grows when the waiting line appears:
+     the stage height is what the sheet is fitted to, and changing it without
+     a resize event leaves the fit stale — which clipped the second stave the
+     moment Wait mode named a note. Two lines of room, always, so the stage is
+     the same height whatever the status line is saying. */
+  .screen--score .score-stage {
+    margin-top: 3rem;
+  }
 }
 
 /* A *thin* bar floating over the notation, not a row in the column (docs/04

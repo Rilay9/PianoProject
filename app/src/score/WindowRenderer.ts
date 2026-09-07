@@ -561,12 +561,13 @@ export class WindowRenderer {
       buffer.wrapper.style.transform = scale < 1 ? `scale(${scale})` : '';
       return;
     }
-    // Landscape fits to width, portrait to height (docs §5).
-    const landscape = available.width >= available.height;
-    const scale = landscape
-      ? Math.min(available.width / box.width, available.height / box.height)
-      : Math.min(available.height / box.height, available.width / box.width);
-    buffer.wrapper.style.transform = scale < 1 ? `scale(${scale})` : '';
+    // Whichever axis runs out first. It grows as well as shrinks: the engraver
+    // stops responding to zoom at 2 (`autoFit.MAX_FIT`), and up to that point
+    // the sheet was simply left small with the leftover screen black. Because
+    // it is the smaller of the two ratios, filling one axis can never overflow
+    // the other.
+    const scale = Math.min(available.width / box.width, available.height / box.height);
+    buffer.wrapper.style.transform = scale === 1 ? '' : `scale(${scale})`;
   }
 
   /**

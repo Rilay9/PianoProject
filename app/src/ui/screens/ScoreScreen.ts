@@ -136,6 +136,19 @@ export function ScoreScreen(router: Router): HTMLElement {
   // docs/04 §7a: a tablet gets four bars in the window by default and a side
   // panel. The phone is untouched — `isTablet` wants 900 px on the *shortest*
   // side, so a phone in landscape does not qualify.
+  //
+  // Four bars *were* tried for a phone held sideways, on the theory that 780 px
+  // of width deserved more music. It is worse: OSMD stacks four short bars onto
+  // three systems rather than one wide one, the window then overflows the
+  // height, and the fit shrinks the whole sheet to compensate — smaller notes
+  // using *less* of the width.
+  //
+  // The width is lost inside the engraving, not in the fitting: OSMD draws the
+  // page the full width of the screen and then inks about 40% of it. Three of
+  // its own settings were tried against that and none moved a pixel; the
+  // measurements are in docs/decisions/2026-09-07-the-ux-tour.md. What fills
+  // the width is *one* bar in the window, which costs all the read-ahead — so
+  // it is the owner's choice to make, not a default to change from here.
   const tablet = isTablet();
   if (tablet) {
     section.dataset.tablet = 'true';
