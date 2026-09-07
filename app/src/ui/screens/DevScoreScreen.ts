@@ -564,11 +564,14 @@ function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'
    * Tempo tests reported no ticks at all, intermittently, depending on how busy
    * the machine was.
    *
-   * This is the *harness*, whose job is to exercise the engine rather than to
-   * reproduce a compositor. The shipped Score screen still ticks from frames
-   * alone (`score/ScoreSession.ts`), and what a real run should do when the
-   * frames stop — pause, catch up, or leave the frame loop behind — is an open
-   * question and not one to answer here.
+   * The shipped screen does the same since P21 (`TICK_INTERVAL_MS` in
+   * `score/ScoreSession.ts`) and additionally pauses a clock-driven run when
+   * the page is hidden, which is decision 9's answer for a phone.
+   *
+   * A timer is not on its own enough for a *test* page: Chromium throttles
+   * background timers to about one a second, so 16 ms here becomes 1000 ms in
+   * a Playwright worker that is not the front window. That is what the launch
+   * flags in `playwright.config.ts` are for.
    */
   function startTicking(): void {
     const loop = () => {

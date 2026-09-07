@@ -14,7 +14,28 @@ export default defineConfig({
   reporter: process.env.CI ? [['github'], ['list']] : 'list',
   use: {
     ...devices['Desktop Chrome'],
-    launchOptions: { ...chromiumExecutable },
+    launchOptions: {
+      ...chromiumExecutable,
+      /**
+       * Every worker but one is a background window, and Chromium treats a
+       * background window as something nobody is looking at: animation frames
+       * stop, and `setInterval` is clamped to about one a second. A Tempo run
+       * driven by either then advances in one-second lurches or not at all,
+       * which is the mechanism behind the flake in `engine.spec.ts` — `hits:
+       * 0` and no `tempoTick` events, most often when the machine is busiest.
+       *
+       * The app's own answer to a hidden page is to pause and say so
+       * (decision 9, `05` §3), which is right for a phone and wrong for a test
+       * runner: these pages are hidden because of how the suite runs, not
+       * because the learner walked away. So the throttling is turned off here
+       * rather than worked around in the tests.
+       */
+      args: [
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding',
+      ],
+    },
     // Matches vite.config.ts's `base` (the app is served under the repo name
     // path, same as it will be on GitHub Pages).
     baseURL: 'http://localhost:4173/PianoProject/',

@@ -91,6 +91,8 @@ export class PracticeEngine {
   private startedAtMs = 0;
   /** Total time spent paused, subtracted from elapsed. */
   private pausedTotalMs = 0;
+  /** When the run ended, so its duration stops growing with the clock. */
+  private finishedAtMs: number | null = null;
   private pausedAtMs = 0;
 
   private readonly pressed = new Set<number>();
@@ -169,6 +171,7 @@ export class PracticeEngine {
     this.finished = false;
     this.startedAtMs = this.clock.now();
     this.pausedTotalMs = 0;
+    this.finishedAtMs = null;
     this.loopsCompleted = 0;
     this.step = this.mode === 'wait' ? (nextPlayableStep(this.session.steps, start, this.session.lastStep) ?? start) : start;
     this.resetRunTotals();
@@ -195,15 +198,25 @@ export class PracticeEngine {
 
   stop(): void {
     if (!this.running) return;
+    this.finishedAtMs = this.paused ? this.pausedAtMs : this.clock.now();
     this.running = false;
     this.finished = true;
     this.emit({ kind: 'finished', loop: false, tMs: this.clock.now(), score: this.buildScore() });
   }
 
-  /** Milliseconds into the piece, count-in included, pauses excluded. */
+  /**
+   * Milliseconds into the piece, count-in included, pauses excluded.
+   *
+   * A finished run keeps its length. It used to return 0 the moment the run
+   * ended — `running` goes false before `buildScore()` reads this — so every
+   * score run was recorded as `durationMs: 0` and contributed nothing to the
+   * weekly minutes. Found while checking that a paused run records the
+   * playing rather than the waiting (decision 9); the pause arithmetic was
+   * right, and the number it fed was thrown away a line later.
+   */
   get elapsedMs(): number {
-    if (!this.running) return 0;
-    const now = this.paused ? this.pausedAtMs : this.clock.now();
+    if (!this.running && this.finishedAtMs === null) return 0;
+    const now = this.paused ? this.pausedAtMs : (this.finishedAtMs ?? this.clock.now());
     return now - this.startedAtMs - this.pausedTotalMs;
   }
 
@@ -592,6 +605,7 @@ export class PracticeEngine {
   private completeLap(tMs: number): void {
     const loop = this.session.options.loop;
     if (!loop) {
+      this.finishedAtMs = tMs;
       this.running = false;
       this.finished = true;
       this.emit({ kind: 'finished', loop: false, tMs, score: this.buildScore() });

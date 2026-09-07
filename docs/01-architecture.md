@@ -330,7 +330,7 @@ criteria. Schema at `content/curriculum.schema.json`.
 - First render of a 2-bar window: < 150 ms on S25 (OSMD 2.x manages ~10× that for a full page).
 - Window swap (pre-rendered): < 16 ms (one frame).
 - MIDI-in to note-coloured: < 30 ms.
-- Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
+- Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`). That rule is about putting *sound* in the future. The engine's `tick()` is not audio and is driven by a 25 ms interval as well as by animation frames, because frames stop in a page that is not being drawn (`05` §3, decision 9).
   That rule is about *scheduling audio*. The engine's `tick()` is not audio — it reads a clock
   and advances a cursor — and it is driven by a timer as well as by animation frames, so a run
   keeps time when the page is not being drawn (`05` §3, `00` D26).

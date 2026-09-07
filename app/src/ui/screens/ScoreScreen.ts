@@ -1321,8 +1321,42 @@ export function ScoreScreen(router: Router): HTMLElement {
   };
   window.addEventListener('resize', onResize);
 
+  /**
+   * Leaving the page pauses a clock-driven run, and coming back says so
+   * (decision 9).
+   *
+   * A phone call, a notification, the screen going off: the frames stop, and
+   * a Tempo run that carried on regardless would be marking a page of bars
+   * nobody played. Catching up silently is the one thing it must not do.
+   *
+   * Wait and Free have no timetable to lose, so they are left alone — the run
+   * is exactly where it was when he comes back, which is the honest answer
+   * for a mode that waits.
+   */
+  let awayFromMs: number | null = null;
+  const onVisibilityChange = (): void => {
+    if (document.visibilityState === 'hidden') {
+      const driven = mode === 'tempo' || mode === 'listen';
+      if (!driven || session?.running !== true || session.state?.paused === true) return;
+      awayFromMs = Date.now();
+      session.pause();
+      render();
+      return;
+    }
+    if (awayFromMs === null) return;
+    const away = Math.max(1, Math.round((Date.now() - awayFromMs) / 1000));
+    awayFromMs = null;
+    // The engine's elapsed time already subtracts the pause, so the run's
+    // recorded minutes do not count the time he was away.
+    status.textContent = `Paused — you were away ${String(away)} s. ▶ to carry on, ⏮ to start again.`;
+    showBar();
+    render();
+  };
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
   onScreenDispose(section, () => {
     window.removeEventListener('resize', onResize);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
     if (hideTimer !== null) window.clearTimeout(hideTimer);
     detachInput();
     releaseWakeLock();

@@ -37,6 +37,17 @@ import type { Piano } from '../audio/Piano';
 import { Metronome, type MetronomeSound } from '../audio/Metronome';
 import { recordRenderTiming } from '../util/renderTiming';
 
+/**
+ * How often the clock is advanced when frames are not arriving (decision 9).
+ *
+ * 25 ms is a quarter of the tightest judging window, so a note's timestamp is
+ * never resolved against a clock that is meaningfully behind, and it is far
+ * enough from 16.7 ms that the two drivers do not beat against each other.
+ * This is not audio scheduling — `01` §6's "never `setTimeout`" is about
+ * putting sound in the future, which is still the audio clock's job.
+ */
+export const TICK_INTERVAL_MS = 25;
+
 export interface ScoreSessionOptions {
   model: ScoreModel;
   renderer: WindowRenderer;
@@ -83,6 +94,18 @@ export class ScoreSession {
   private engine: PracticeEngine | null = null;
   private metronome: Metronome | null = null;
   private raf: number | null = null;
+  /**
+   * A second driver for the clock, alongside the frames (decision 9).
+   *
+   * `requestAnimationFrame` is throttled hard when the page is not being
+   * composited — a background tab, a phone with the screen off, and, the
+   * reason this exists, a Playwright worker sharing a machine with nine
+   * others. The painting can wait for a frame; the *clock* cannot, because a
+   * Tempo run that stops advancing has silently changed what it is measuring.
+   * `tick()` is idempotent at a given time, so having two callers costs one
+   * comparison.
+   */
+  private ticker: number | null = null;
 
   /**
    * `performance.now()` of the input event that made the frame dirty.
@@ -172,6 +195,7 @@ export class ScoreSession {
 
     if (run.metronome === true && run.mode !== 'free') this.startMetronome(run);
     this.loop();
+    this.ticker = window.setInterval(this.beat, TICK_INTERVAL_MS);
     this.options.onChange?.();
   }
 
@@ -190,6 +214,8 @@ export class ScoreSession {
   stop(): void {
     if (this.raf !== null) cancelAnimationFrame(this.raf);
     this.raf = null;
+    if (this.ticker !== null) window.clearInterval(this.ticker);
+    this.ticker = null;
     this.engine?.stop();
     this.engine = null;
     this.metronome?.stop();
@@ -332,6 +358,14 @@ export class ScoreSession {
       }
     }
   }
+
+  /** The clock's other driver: advance and schedule, but never paint. */
+  private beat = (): void => {
+    const engine = this.engine;
+    if (!engine) return;
+    engine.tick();
+    this.schedulePlayback();
+  };
 
   /** One animation frame: advance the clock, schedule audio, then paint once. */
   private loop = (): void => {

@@ -424,3 +424,60 @@ test.describe('blind mode', () => {
     await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 60_000 });
   });
 });
+
+/**
+ * Leaving the page mid-run (decision 9, P21 §C).
+ *
+ * Playwright cannot minimise a window, but `visibilitychange` is what the app
+ * listens to and the browser will dispatch a forged one — the assertion is
+ * about the screen's reaction, not about Chromium's compositor.
+ */
+test.describe('a run interrupted by something else on the phone', () => {
+  async function hide(page: Page, hidden: boolean): Promise<void> {
+    await page.evaluate((value) => {
+      Object.defineProperty(document, 'visibilityState', {
+        configurable: true,
+        get: () => (value ? 'hidden' : 'visible'),
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+    }, hidden);
+  }
+
+  test('Tempo pauses when the page is hidden and says how long you were away', async ({
+    page,
+  }) => {
+    await openScore(page);
+    await page.locator('#score-mode').selectOption('tempo');
+    await page.locator('#score-play').click();
+    await expect(page.locator('#score-play')).toHaveText('⏸');
+
+    await hide(page, true);
+    // Paused, not stopped: the run is still there to come back to.
+    await expect(page.locator('#score-play')).toHaveText('▶');
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+      'data-running',
+      'true',
+    );
+
+    await page.waitForTimeout(1_200);
+    await hide(page, false);
+    await expect(page.locator('#score-status')).toContainText('you were away');
+    await expect(page.locator('#score-status')).toContainText('to carry on');
+
+    // And ▶ picks the run up rather than starting a new one.
+    await page.locator('#score-play').click();
+    await expect(page.locator('#score-play')).toHaveText('⏸');
+  });
+
+  test('Wait mode is left alone — it has no timetable to lose', async ({ page }) => {
+    await openScore(page);
+    await page.locator('#score-mode').selectOption('wait');
+    await page.locator('#score-play').click();
+    await expect(page.locator('#score-play')).toHaveText('⏸');
+
+    await hide(page, true);
+    await hide(page, false);
+    await expect(page.locator('#score-play')).toHaveText('⏸');
+    await expect(page.locator('#score-status')).not.toContainText('you were away');
+  });
+});

@@ -285,3 +285,80 @@ describe('Tempo mode — loops', () => {
     expect(h.engine.state.loops).toBeGreaterThanOrEqual(2);
   });
 });
+
+/**
+ * Two drivers for one clock (decision 9, P21 §C).
+ *
+ * `ScoreSession` ticks the engine from an animation frame *and* from a 25 ms
+ * interval, because frames are starved in a page that is not being composited
+ * — a background tab, a phone with the screen off, or a Playwright worker
+ * sharing a machine with nine others. That is only safe if a second `tick()`
+ * at the same instant does nothing, which is what these say.
+ */
+describe('the clock survives two drivers', () => {
+  it('ticking twice at the same time emits one beat, not two', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(2.5 * BEAT_MS);
+    const beats = h.of('tempoTick').length;
+    expect(beats).toBeGreaterThan(0);
+
+    // The interval and the frame landing on the same millisecond.
+    h.engine.tick();
+    h.engine.tick();
+    h.engine.tick();
+    expect(h.of('tempoTick')).toHaveLength(beats);
+  });
+
+  it('and neither does it advance the cursor twice', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(1.5 * BEAT_MS);
+    const advances = h.of('stepAdvanced').map((e) => e.to);
+    h.engine.tick();
+    h.engine.tick();
+    expect(h.of('stepAdvanced').map((e) => e.to)).toEqual(advances);
+  });
+
+  /**
+   * The other half of decision 9: a page that is hidden pauses, and the time
+   * away is not practice. `durationMs` is what the run is recorded with
+   * (`ScoreScreen` hands it to `recordRun`), so this is the number that must
+   * not include the phone call.
+   */
+  it('a run paused for a while records the playing, not the waiting', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(2 * BEAT_MS);
+
+    h.engine.pause();
+    expect(h.of('paused')).toHaveLength(1);
+    // Forty seconds away — the clock moves, the run does not.
+    h.clock.advanceBy(40_000);
+    h.engine.tick();
+    h.engine.resume();
+    expect(h.of('resumed')).toHaveLength(1);
+
+    h.advance(2 * BEAT_MS);
+    const finished = h.of('finished')[0];
+    const duration = finished ? finished.score.durationMs : h.engine.elapsedMs;
+    // Four beats of music, not four beats plus forty seconds.
+    expect(duration).toBeGreaterThanOrEqual(4 * BEAT_MS - 100);
+    expect(duration, 'the time away was counted as practice').toBeLessThan(4 * BEAT_MS + 500);
+  });
+
+  it('and the cursor is where it was left, not where the wall clock says', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(1.2 * BEAT_MS);
+    const step = h.engine.state.step;
+
+    h.engine.pause();
+    h.clock.advanceBy(40_000);
+    h.engine.tick();
+    expect(h.engine.state.step, 'it caught up silently while hidden').toBe(step);
+    h.engine.resume();
+    h.engine.tick();
+    expect(h.engine.state.step).toBe(step);
+  });
+});

@@ -88,6 +88,13 @@ stops advancing without saying so. Two things follow (`00` D26, decided 2026-09-
   two callers cost nothing, and a starved animation loop then slows the paint and never the
   music.
 
+**Ships as of P21.** The interval is `TICK_INTERVAL_MS` (25 ms) in `score/ScoreSession.ts`; the
+pause lives in `ScoreScreen`, where the status line and the buttons already are. Resume is the
+bar's `▶` and restart its `⏮` rather than two new buttons for something that happens once a
+session. Wait and Free are left alone — they have no timetable to lose, so the run is exactly
+where he left it. Found while checking the minutes: `elapsedMs` returned 0 the instant a run
+ended, so every score run had been recorded as `durationMs: 0`.
+
 ## 5. Free mode
 
 No cursor logic; input goes to the keyboard strip and is optionally recorded (`sessions` row
