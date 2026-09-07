@@ -245,3 +245,53 @@ test.describe('the keyboard strip shows the piece, not the whole piano', () => {
     expect(box!.x + box!.width).toBeLessThanOrEqual(strip!.x + strip!.width + 1);
   });
 });
+
+test.describe('the sheet fills the screen (P19b)', () => {
+  test('a two-bar window is not a third of a phone screen', async ({ page }) => {
+    // Measured on the owner's S25: stage 360x708, sheet 358x237 — a third of
+    // the height, the rest black, with the notes at desktop size on a phone
+    // propped on a music stand.
+    await page.setViewportSize({ width: 360, height: 780 });
+    await openScore(page, 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx');
+    // The fit is scheduled after a paint and costs one redraw.
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const stage = document.querySelector('#score-stage')?.getBoundingClientRect();
+            const svg = document
+              .querySelector('#score-stage .is-front svg')
+              ?.getBoundingClientRect();
+            if (!stage || !svg || stage.height === 0) return 0;
+            return Math.round((svg.height / stage.height) * 100);
+          }),
+        { timeout: 30_000, message: 'the sheet never grew' },
+      )
+      .toBeGreaterThan(55);
+
+    // And it still does not overflow sideways, which is the fact the whole
+    // approach rests on: OSMD grows the staff's height and pins its width.
+    const fits = await page.evaluate(() => {
+      const stage = document.querySelector('#score-stage')!.getBoundingClientRect();
+      const svg = document.querySelector('#score-stage .is-front svg')!.getBoundingClientRect();
+      return svg.width <= stage.width + 2;
+    });
+    expect(fits, 'the sheet is wider than the screen').toBe(true);
+  });
+
+  test('the zoom buttons still do something, now that the fit does the work', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 780 });
+    await openScore(page, 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx');
+    const height = async (): Promise<number> =>
+      page.evaluate(
+        () =>
+          document.querySelector('#score-stage .is-front svg')?.getBoundingClientRect().height ?? 0,
+      );
+    await expect.poll(height, { timeout: 30_000 }).toBeGreaterThan(300);
+    const fitted = await height();
+    // Zoom is a multiplier on the fitted size now. It used to be the absolute
+    // OSMD zoom, which a fit would simply cancel out.
+    await page.locator('#score-zoom-out').click();
+    await expect.poll(height, { timeout: 15_000 }).toBeLessThan(fitted - 5);
+  });
+});

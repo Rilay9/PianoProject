@@ -19,6 +19,7 @@
 // exactly what a player reading from the page does.
 
 import { OsmdView, type MeasureRange } from './OsmdView';
+import { MAX_FIT, MIN_FIT, fitZoom, worthRefitting } from './autoFit';
 import type { ScoreModel, ScoreNote, ScoreStep } from './types';
 import { recordRenderTiming } from '../util/renderTiming';
 
@@ -89,6 +90,13 @@ export class WindowRenderer {
   private halfWindow: boolean;
   private handsFocus: HandsFocus;
   private zoomLevel: number;
+  /** What the owner asked for; the drawn zoom is this times the fit. */
+  private userZoom: number;
+  /** Guards the one extra render a fit costs against becoming a loop. */
+  private fitting = false;
+  private fitHandle: number | null = null;
+  /** The stage height the sheet was last fitted to; -1 means never. */
+  private fittedAtHeight = -1;
   private currentStep = -1;
   private manualScrollUntil = 0;
   private prerenderHandle: number | null = null;
@@ -105,7 +113,10 @@ export class WindowRenderer {
     this.barsPerWindow = clampBars(options.barsPerWindow ?? 2);
     this.halfWindow = options.halfWindowScrolling ?? false;
     this.handsFocus = options.handsFocus ?? 'both';
-    this.zoomLevel = options.zoom ?? 1;
+    this.userZoom = options.zoom ?? 1;
+    // Starts at the owner's number and becomes the fitted one on the first
+    // draw, once there is a rendered sheet to measure.
+    this.zoomLevel = this.userZoom;
 
     this.el = options.container;
     this.el.classList.add('score-view');
@@ -290,11 +301,37 @@ export class WindowRenderer {
     this.invalidate();
   }
 
+  /**
+   * The owner's own zoom, as a multiplier on the fitted size.
+   *
+   * It used to be the absolute zoom handed to OSMD, which stopped meaning
+   * anything the moment the sheet was fitted to the screen: a bigger engraving
+   * simply got scaled back down to the same box. As a multiplier, 1.0 is
+   * "whatever fills the screen" and the buttons still do what they look like.
+   */
   setZoom(zoom: number): void {
     const next = Math.min(2, Math.max(0.5, zoom));
-    if (next === this.zoomLevel) return;
-    this.zoomLevel = next;
-    for (const buffer of this.buffers) buffer.view.zoom = next;
+    if (next === this.userZoom) return;
+    // The fitted base has to be read *before* the new multiplier is stored:
+    // `fittedZoom` divides by `userZoom`, so reading it afterwards divides by
+    // the very number about to be multiplied back in, and the zoom buttons do
+    // nothing at all. They did nothing at all.
+    const base = this.fittedZoom();
+    this.userZoom = next;
+    this.fittedAtHeight = -1;
+    this.applyZoom(base * next);
+  }
+
+  /** The last zoom the sheet was fitted at, before the owner's multiplier. */
+  private fittedZoom(): number {
+    return this.userZoom > 0 ? this.zoomLevel / this.userZoom : this.zoomLevel;
+  }
+
+  private applyZoom(next: number): void {
+    const clamped = Math.min(MAX_FIT, Math.max(MIN_FIT, next));
+    if (clamped === this.zoomLevel) return;
+    this.zoomLevel = clamped;
+    for (const buffer of this.buffers) buffer.view.zoom = clamped;
     this.invalidate();
   }
 
@@ -332,6 +369,9 @@ export class WindowRenderer {
   /** Re-fits the current window; call on resize or orientation change. */
   refit(): void {
     this.fit(this.frontBuffer);
+    // The box changed, so the fit is stale by definition.
+    this.fittedAtHeight = -1;
+    this.fitToStage(this.frontBuffer);
   }
 
   dispose(): void {
@@ -339,6 +379,10 @@ export class WindowRenderer {
     if (this.prerenderHandle !== null) {
       cancelAnimationFrame(this.prerenderHandle);
       this.prerenderHandle = null;
+    }
+    if (this.fitHandle !== null) {
+      cancelAnimationFrame(this.fitHandle);
+      this.fitHandle = null;
     }
     for (const buffer of this.buffers) {
       buffer.view.dispose();
@@ -369,6 +413,7 @@ export class WindowRenderer {
     buffer.range = { fromMeasure: 0, toMeasure: Infinity };
     this.annotate(buffer);
     this.fit(buffer);
+    this.fitToStage(buffer);
   }
 
   private drawInto(buffer: Buffer, range: MeasureRange): void {
@@ -377,6 +422,7 @@ export class WindowRenderer {
     buffer.range = range;
     this.annotate(buffer);
     this.fit(buffer);
+    this.fitToStage(buffer);
   }
 
   /**
@@ -453,6 +499,42 @@ export class WindowRenderer {
    * write instead of tens of milliseconds, and it leaves every note element
    * identical, so the id → element map survives.
    */
+  /**
+   * Grows the engraving until the window fills the height (`autoFit.ts`).
+   *
+   * Scheduled rather than immediate, and for the same reason the pre-render
+   * is: this is called from inside a draw, and re-entering the draw from
+   * within itself leaves the buffers half-written — the first attempt did
+   * exactly that and rendered nothing at all. So it measures now and redraws
+   * after the browser has painted, once, guarded by `fitting` so the redraw it
+   * causes cannot ask for another.
+   */
+  private fitToStage(buffer: Buffer): void {
+    if (this.fitting || this.layout === 'scroll' || this.disposed) return;
+    const svg = buffer.view.svg;
+    if (!svg) return;
+    const available = this.el.getBoundingClientRect();
+    // Once per stage size. Without this the fit is re-examined on every window
+    // swap — which converges, because the zoom is clamped, but converging is
+    // not the same as being free, and a swap is meant to cost a class toggle.
+    if (this.fittedAtHeight === Math.round(available.height)) return;
+    const box = svg.getBoundingClientRect();
+    const target = fitZoom(this.zoomLevel, box, available) * this.userZoom;
+    if (!worthRefitting(this.zoomLevel, target)) return;
+    if (this.fitHandle !== null) cancelAnimationFrame(this.fitHandle);
+    this.fitHandle = requestAnimationFrame(() => {
+      this.fitHandle = null;
+      if (this.disposed || this.fitting) return;
+      this.fitting = true;
+      try {
+        this.applyZoom(target);
+        this.fittedAtHeight = Math.round(available.height);
+      } finally {
+        this.fitting = false;
+      }
+    });
+  }
+
   private fit(buffer: Buffer): void {
     const svg = buffer.view.svg;
     if (!svg) return;
