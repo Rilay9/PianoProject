@@ -264,3 +264,47 @@ test.describe('sight-reading (docs/05 §8)', () => {
     expect(seen.size, 'four openings produced the same exercise every time').toBeGreaterThan(1);
   });
 });
+
+/**
+ * The drill screen on a phone held sideways.
+ *
+ * 360 px of height leaves the card 328, and the header and the keyboard take
+ * 184 — so a stage, a prompt, a hint and four buttons stacked in one column
+ * did not fit. The body overflowed silently and the keyboard, painted after
+ * it, covered "Play again", "Listen", "Skip" and "End drill": on the tour they
+ * were not merely below the fold, they were behind the keys.
+ */
+test.describe('a drill sideways', () => {
+  test.use({ viewport: { width: 780, height: 360 } });
+
+  for (const id of [
+    'drill.technique.five-finger-lh',
+    'drill.reading.grand-staff-flash',
+    'drill.chord.c-f-g',
+    'drill.ear.major-minor',
+    'drill.theory.roman-numerals',
+  ]) {
+    test(`${id}: its buttons are on the screen`, async ({ page }) => {
+      await page.goto(`/#/drill/${id}`);
+      await expect(page.locator('[data-screen="drill"]')).not.toHaveAttribute(
+        'data-drill',
+        'loading',
+        { timeout: 60_000 },
+      );
+      await page.waitForTimeout(900);
+
+      const where = await page.evaluate(() => {
+        const body = document.querySelector('.screen-body')!.getBoundingClientRect();
+        const controls = document.getElementById('drill-controls')!.getBoundingClientRect();
+        const strip = document.getElementById('drill-strip')!.getBoundingClientRect();
+        return {
+          below: Math.round(controls.bottom - body.bottom),
+          underTheKeys: Math.round(controls.bottom - strip.top),
+        };
+      });
+
+      expect(where.below, 'the buttons need a scroll to reach').toBeLessThanOrEqual(1);
+      expect(where.underTheKeys, 'the keyboard is drawn over the buttons').toBeLessThanOrEqual(0);
+    });
+  }
+});

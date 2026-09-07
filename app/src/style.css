@@ -1991,14 +1991,68 @@ input[type='checkbox'] {
    The stage gives up its floor first, because it is a letter or a chord name
    and reads perfectly well smaller; the body scrolls only if that is still not
    enough. */
+/* The drill screen, on a phone held sideways.
+ *
+ * 360 px of height leaves the card 328, and the header and the keyboard take
+ * 184 of those — so the body has about 120 px for a stage, a prompt, a hint
+ * and a row of four buttons stacked on top of each other. They did not fit:
+ * the body overflowed silently and the keyboard, painted after it, covered
+ * "Play again", "Listen", "Skip" and "End drill".
+ *
+ * Two columns, so the height is the taller of the two rather than the sum:
+ * the thing to look at on the left, the words and the buttons on the right.
+ * Tips and the result sheet span both, below, where they can scroll. */
 @media (max-height: 520px) {
-  [data-screen='drill'] .drill-stage {
-    min-height: 0;
-  }
-
   [data-screen='drill'] .screen-body {
+    display: grid;
+    /* The words need more of the width than the picture does: a prompt like
+       "Listen, then play the pattern back with the left hand" wrapped to
+       three lines at an even split and pushed the buttons out of the box. */
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-auto-rows: min-content;
+    align-content: start;
+    column-gap: 16px;
     min-height: 0;
     overflow-y: auto;
+  }
+
+  [data-screen='drill'] .drill-stage {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    min-height: 0;
+    align-self: center;
+  }
+
+  [data-screen='drill'] #drill-counter,
+  [data-screen='drill'] #drill-prompt,
+  [data-screen='drill'] #drill-hint,
+  [data-screen='drill'] #drill-controls {
+    grid-column: 2;
+  }
+
+  [data-screen='drill'] #drill-tips,
+  [data-screen='drill'] #drill-status,
+  [data-screen='drill'] #drill-summary {
+    grid-column: 1 / -1;
+  }
+
+  [data-screen='drill'] .drill-prompt {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  [data-screen='drill'] .drill-hint {
+    font-size: 0.8rem;
+    margin: 0 0 4px;
+  }
+
+  /* A staff or a chord diagram is sized by width everywhere else, which
+     sideways is the long edge and the one there is plenty of. Height is the
+     scarce one here, so it leads. */
+  [data-screen='drill'] .staff-card {
+    width: auto;
+    max-width: 100%;
+    height: min(150px, 42vh);
   }
 }
 
