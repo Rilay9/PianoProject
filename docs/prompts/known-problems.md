@@ -88,15 +88,18 @@ flaky**. Anything more than that is worth looking at rather than retrying.
 Not defects. The tour's audit prints a count per screen and these are the
 outliers, all of them a version of design-brief question 1:
 
-| Screen | Controls needing a scroll |
+| Screen | Controls needing a scroll (portrait, P21) |
 |---|---|
-| Skills | ~478 — every one of 266 concepts is rendered at once |
-| Library | ~58 |
-| Settings | ~49 |
-| A lesson page | ~15 |
+| Skills | 69 |
+| Score folder, seeded | 60 |
+| Library | 57 |
+| Settings | 45 |
+| A lesson page | 11 |
 
-Skills is the one to look at first: every other screen in the app is in double
-figures, and the Library holds 1,533 items without doing this.
+Skills was ~478 before P21 §A5 made it open on what is rusty rather than
+rendering all 266 concepts at once; it is now in the same range as the other
+long screens. All five are lists of things the owner asked to be able to
+browse, so the number is a fact about the screen rather than a fault.
 
 ## 4. Dead space the engraver cannot fill
 
@@ -107,10 +110,27 @@ width — and both look like something is missing. Question 5 of the design brie
 
 ## 5. What the tour has not been used for
 
-The audit covers the mechanical faults on every screen in all four form factors
-and currently reports **none**. The judgement half — is this readable, is this
-the right thing to show first, is it good-looking — was sampled, not completed:
-roughly 25 of about 290 pictures were looked at by eye.
+The seven mechanical checks — clipped, unreachable, overflow, plural,
+light-control, tap-target, clipped-text — report **none** on any of the 325
+pictures. The four rules of `04` §0 report plenty, and the biggest number is a
+real finding rather than a miscalibration:
+
+| Check | Portrait | Landscape | Tablet | What it is |
+|---|---|---|---|---|
+| R2 density | 112 | 7 | 100 | list rows of 105-117 px against a budget of 96 |
+| glyph-labelled | 54 | 54 | 54 | a one-glyph button that does carry an `aria-label` |
+| R3 one primary | 7 | 7 | 7 | mostly a list where every row has a Practise or an Add |
+| below-fold | 10 | 16 | 7 | informational; §3 above |
+| R4 empty state | 1 | 1 | 1 | "no chord symbols" offers two buttons |
+
+R2 is the one to look at. Skills rows are 105-117 px, the shelf 113-117, Today
+111 — about 20 % over, which on a 780 px phone is one row per screenful. It is a
+design pass, not a patch.
+
+The judgement half — is this readable, is this the right thing to show first, is
+it good-looking — is still sampled rather than completed: seven scenes were looked at
+by eye in portrait (20, 29, 31, 35, 01, 40-drill-five-finger, 53), two of them
+again after the fixes they prompted.
 
 `build/tour/index.html` is built for exactly that, and a person will get through
 it far faster than a machine will. If a change is made to any screen, reshoot
@@ -131,9 +151,9 @@ captions over one picture, which is how thirteen scenes had been lying).
 ```
 cd app
 npm run lint
-npm run test                    # 1,429 unit tests
-CI=1 npx playwright test        # 250 e2e; the CI=1 matters, it changes what runs
-npm run tour                    # ~290 screenshots + the audit, about 15 minutes
+npm run test                    # 1,436 unit tests
+CI=1 npx playwright test        # 281 e2e; the CI=1 matters, it changes what runs
+npm run tour                    # 325 screenshots + the audit, about 16 minutes
 ```
 
 and from the repository root:
