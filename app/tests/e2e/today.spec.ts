@@ -22,7 +22,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('Today', () => {
   test('shows a weekly goal, an input chip, and a session card', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('#today-goal')).toContainText('minutes this week');
+    await expect(page.locator('#today-goal')).toContainText('min this week');
     await expect(page.locator('#today-input')).toBeVisible();
     await expect(page.locator('#today-card .list-row').first()).toBeVisible();
     await expect(page.locator('#today-status')).toContainText('Working on Stage');
@@ -169,5 +169,61 @@ test.describe('Today', () => {
     // own; a bundled exercise is notation and opens the Score screen.
     await expect(page).toHaveURL(/#\/(score|drill)\//);
     await expect(page.locator('[data-screen="drill"], [data-screen="score"]')).toBeVisible();
+  });
+});
+
+/**
+ * The rules of `04` §0, on the screen they were written for.
+ *
+ * These are pixel assertions on purpose. R1 and R2 are claims about what a
+ * person sees without scrolling, and the only honest way to check that is to
+ * measure it at the size he holds.
+ */
+test.describe('Today obeys 04 §0', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('the session card starts inside the first screenful (R1)', async ({ page }) => {
+    await page.goto('/');
+    const first = page.locator('#today-card .list-row').first();
+    await expect(first).toBeVisible();
+    const box = await first.boundingBox();
+    expect(box).not.toBeNull();
+    // The header is a title, a goal line and four chips. Anything more and the
+    // thing the screen is for has left the screen.
+    expect(box?.y ?? 0).toBeLessThan(300);
+  });
+
+  test('a row is one line of detail and no taller than 96 px (R2)', async ({ page }) => {
+    await page.goto('/');
+    const rows = page.locator('#today-card .list-row');
+    await expect(rows.first()).toBeVisible();
+    const metas = await page.locator('#today-card .list-row__meta').all();
+    expect(metas.length).toBeGreaterThan(0);
+    for (const meta of metas) {
+      const wrapped = await meta.evaluate((el) => {
+        const line = Number.parseFloat(getComputedStyle(el).lineHeight);
+        // Two lines or more is a wrap; the line-height is the unit that says so.
+        return Number.isFinite(line) ? el.scrollHeight > line * 1.6 : false;
+      });
+      expect(wrapped, `meta wrapped: ${(await meta.textContent()) ?? ''}`).toBe(false);
+    }
+    // One title line and one detail line, plus padding and a badge row.
+    for (const row of await rows.all()) {
+      const box = await row.boundingBox();
+      expect(box?.height ?? 0).toBeLessThanOrEqual(96);
+    }
+  });
+
+  test('one filled button on the screen, and it is Start session (R3)', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#today-card .list-row').first()).toBeVisible();
+    // Row play buttons are the exception the rule names: one per row, and the
+    // row is the subject. The rule is about the screen's own chrome.
+    const filled = page.locator('#today-actions .button--primary');
+    await expect(filled).toHaveCount(1);
+    await expect(filled).toHaveAttribute('id', 'today-start');
+    // Both left for Plan, which is where they already were.
+    await expect(page.locator('#today-skills')).toHaveCount(0);
+    await expect(page.locator('#today-practice')).toHaveCount(0);
   });
 });

@@ -65,9 +65,11 @@ test.describe('the tips block', () => {
 });
 
 test.describe('the practice module', () => {
-  test('is reachable from Today', async ({ page }) => {
-    await page.goto('/#/today');
-    await page.locator('#today-practice').click();
+  // Moved off Today by `04` §0 R3: it is read once and returned to rarely, and
+  // it was one of six boxes of equal weight on the screen opened every day.
+  test('is reachable from Plan', async ({ page }) => {
+    await page.goto('/#/plan');
+    await page.locator('#plan-practice').click();
     await expect(page).toHaveURL(/#\/lesson\/practice\.1/);
     await expect(page.locator('[data-screen="lesson"]')).toContainText('Chunking');
   });

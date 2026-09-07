@@ -178,6 +178,18 @@ body {
   cursor: pointer;
 }
 
+/* Today's header: title and the input chip on one line (`04` §0 R1). */
+.today-titlerow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.today-titlerow h1 {
+  margin: 0;
+}
+
 /* Bottom tab bar (default / portrait) */
 .tab-nav {
   order: 2;
@@ -1238,12 +1250,33 @@ input[type='checkbox'] {
   white-space: nowrap;
 }
 
-.list-row__sub,
+/* The reason, one line, cut rather than wrapped (`04` §0 R2). */
+.list-row__sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The detail line, badges and all. One line per row, wrapping only when there
+   is genuinely too much to say. */
 .list-row__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   font-size: 0.85rem;
   color: var(--text-muted);
 }
 
+.list-row__metatext {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Kept for the screens that still build their own strip. */
 .list-row__badges {
   display: flex;
   flex-wrap: wrap;

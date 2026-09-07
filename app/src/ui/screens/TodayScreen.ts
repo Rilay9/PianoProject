@@ -37,7 +37,7 @@ import { getSettings, updateSettings } from '../../data/settingsStore';
 import type { ProgressRow } from '../../data/db';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
-import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
+import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet, shortHandsLabel } from '../widgets';
 import { openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 
@@ -121,7 +121,15 @@ export function TodayScreen(router: Router): HTMLElement {
   const card = el('div.list', { id: 'today-card' });
   const actions = el('div.row', { id: 'today-actions' });
 
-  header.append(goalLine, el('div.row', {}, inputChip), lengthRow);
+  // Title and the input chip share a line; the goal and the length chips take
+  // one each under it. Three short rows rather than four wrapping ones, so the
+  // session card — the subject — starts inside the first screenful (`04` §0 R1).
+  header.querySelector('h1')?.classList.add('today-title');
+  const titleRow = el('div.today-titlerow');
+  const heading = header.querySelector('h1');
+  if (heading) titleRow.append(heading, inputChip);
+  header.prepend(titleRow);
+  header.append(goalLine, lengthRow);
   body.append(card, actions, status);
 
   // --- rows ---------------------------------------------------------------
@@ -208,10 +216,16 @@ export function TodayScreen(router: Router): HTMLElement {
     return listRow({
       title: item.title,
       subtitle: slot.reason,
-      meta: `${SLOT_LABELS[slot.kind]} · ${String(slot.minutes)} min · ${levelLabel(
-        item.level,
-        item.levelSource,
-      )} · ${handsLabel(item.hands)}`,
+      // `04` §0 R2: one line that fits. The slot kind is already the badge
+      // beside it, and "Hands together" on every row is three words that never
+      // distinguish anything — so both leave, and the line stops wrapping.
+      meta: [
+        `${String(slot.minutes)} min`,
+        levelLabel(item.level, item.levelSource),
+        shortHandsLabel(item.hands),
+      ]
+        .filter(Boolean)
+        .join(' · '),
       badges,
       actions: actionButtons,
       onClick: substitute ? () => open(substitute) : () => open(item),
@@ -253,14 +267,14 @@ export function TodayScreen(router: Router): HTMLElement {
         },
         { id: 'today-shuffle' },
       ),
-      button('Jump to…', () => router.navigate('plan'), { id: 'today-jump' }),
-      button('Review a skill', () => router.navigate('plan', 'skills'), { id: 'today-skills' }),
-      button('Metronome', () => router.navigate('today', 'metronome'), { id: 'today-metronome' }),
-      // The method rather than the music (replan §8). It belongs beside the
-      // tools because that is what it is: five lessons you read once and come
-      // back to when something has stopped moving.
-      button('How to practise', () => router.navigateLesson('practice.1'), {
-        id: 'today-practice',
+      // `04` §0 R3, weight by frequency: one filled box on the screen, one
+      // outlined thing done often, and text for the rest. `Review a skill` and
+      // `How to practise` have left for Plan, which is where they belong and
+      // where they already are — six boxes of equal weight is no weighting.
+      button('Jump to…', () => router.navigate('plan'), { id: 'today-jump', variant: 'quiet' }),
+      button('Metronome', () => router.navigate('today', 'metronome'), {
+        id: 'today-metronome',
+        variant: 'quiet',
       }),
     );
   }
@@ -326,9 +340,11 @@ export function TodayScreen(router: Router): HTMLElement {
     progress = rows;
 
     const week = weekSoFar(streak);
-    goalLine.textContent = `${String(Math.round(week.minutes))} of ${String(
+    // Short enough not to wrap at 360 px (`04` §0 R2). Progress says it in
+    // full; this is the glance version, above four chips and a session card.
+    goalLine.textContent = `${String(Math.round(week.minutes))} / ${String(
       streak.weeklyGoalMinutes,
-    )} minutes this week · ${String(week.days)} day${week.days === 1 ? '' : 's'} practised`;
+    )} min this week · ${String(week.days)} day${week.days === 1 ? '' : 's'}`;
     const input = activeInputLabel();
     inputChip.textContent = input.label;
     rebuild();

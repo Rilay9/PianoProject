@@ -114,11 +114,17 @@ export interface RowOptions {
 export function listRow(options: RowOptions): HTMLElement {
   const text = el('div.list-row__text', {}, el('div.list-row__title', { text: options.title }));
   if (options.subtitle) text.append(el('div.list-row__sub', { text: options.subtitle }));
-  if (options.meta) text.append(el('div.list-row__meta.muted', { text: options.meta }));
-  if (options.badges?.length) {
-    const strip = el('div.list-row__badges');
-    for (const b of options.badges) strip.append(b);
-    text.append(strip);
+  // Badges ride on the detail line rather than taking one of their own.
+  //
+  // `04` §0 R2 puts a list row at one title line and one line of detail. A
+  // fourth line for two words apiece took a Today row to 123 px against a 96
+  // target, and the badges are the same *kind* of thing the detail line is:
+  // small facts about the item.
+  if (options.meta || options.badges?.length) {
+    const line = el('div.list-row__meta.muted');
+    if (options.meta) line.append(el('span.list-row__metatext', { text: options.meta }));
+    for (const b of options.badges ?? []) line.append(b);
+    text.append(line);
   }
 
   const row = el('div.list-row', { ...(options.dataset ?? {}) }, text);
@@ -251,6 +257,17 @@ export function levelLabel(level: number, source?: LevelSource): string {
 
 export function handsLabel(hands: string): string {
   return hands === 'both' ? 'Hands together' : hands === 'right' ? 'Right hand' : 'Left hand';
+}
+
+/**
+ * The same fact in a list row, where the line has to fit (`04` §0 R2).
+ *
+ * Empty for both hands: a row that says nothing about hands is a row about a
+ * piece for both of them, and "Hands together" on every line is three words
+ * that never distinguish anything.
+ */
+export function shortHandsLabel(hands: string): string {
+  return hands === 'right' ? 'RH' : hands === 'left' ? 'LH' : '';
 }
 
 export function minutesLabel(minutes: number): string {

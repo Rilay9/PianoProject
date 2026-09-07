@@ -41,7 +41,7 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
   //    loop rather than about which item the builder happened to pick.
   await page.goto('/');
   await expect(page.locator('#today-card .list-row').first()).toBeVisible();
-  await expect(page.locator('#today-goal')).toContainText('0 of 150 minutes this week');
+  await expect(page.locator('#today-goal')).toContainText('0 / 150 min this week');
 
   // 2. Play it through the on-screen keyboard — a real InputSource.
   await page.goto(`/#/score/${ITEM}`);

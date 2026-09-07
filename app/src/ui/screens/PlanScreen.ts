@@ -250,6 +250,14 @@ export function PlanScreen(router: Router): HTMLElement {
     trackRow.append(
       button('Placement test', () => router.navigateLesson('0.4'), { id: 'plan-placement', variant: 'quiet' }),
       button('Review a skill', () => router.navigate('plan', 'skills'), { id: 'plan-skills', variant: 'quiet' }),
+      // The method rather than the music (replan §8): five lessons read once
+      // and returned to when something has stopped moving. It sat on Today,
+      // where it was one of six boxes of equal weight on the screen opened
+      // every day; it belongs with the other things read occasionally.
+      button('How to practise', () => router.navigateLesson('practice.1'), {
+        id: 'plan-practice',
+        variant: 'quiet',
+      }),
     );
   }
 
