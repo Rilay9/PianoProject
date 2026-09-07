@@ -123,6 +123,12 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
 
   const strip = new KeyboardStrip();
   stripHost.append(strip.el);
+  // There is no score here to take a range from, so the strip opens on all 88
+  // keys — which means it opens on C1, two octaves nobody plays a Czerny study
+  // in. The drill screen has scrolled to middle C since P8; this never did, and
+  // the screenshots showed a keyboard of the bottom of the piano while the
+  // owner practised in the middle of it.
+  strip.scrollToMiddleC();
   const pressed = new Set<number>();
   let metronome: Metronome | null = null;
   let clicks: number[] = [];

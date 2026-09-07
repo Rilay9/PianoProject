@@ -229,14 +229,19 @@ export function PlanScreen(router: Router): HTMLElement {
         // awkward with a tremor; two buttons are neither.
         const index = activeTracks.indexOf(track.id);
         trackRow.append(
+          // `track-move` gives them a hit area. A bare quiet button around one
+          // arrow measured 14 px across on the S25 — narrower than the pixel
+          // error of a thumb, and there are two of them side by side.
           button('▲', () => commitOrder(moveUp(activeTracks, index)), {
             id: `plan-track-up-${track.id}`,
             variant: 'quiet',
+            className: 'track-move',
             title: `Move ${track.title} earlier`,
           }),
           button('▼', () => commitOrder(moveDown(activeTracks, index)), {
             id: `plan-track-down-${track.id}`,
             variant: 'quiet',
+            className: 'track-move',
             title: `Move ${track.title} later`,
           }),
         );

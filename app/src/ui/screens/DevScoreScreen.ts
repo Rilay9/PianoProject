@@ -264,6 +264,8 @@ export function DevScoreScreen(router: Router): HTMLElement {
   let engine: PracticeEngine | null = null;
   let engineEvents: EngineEvent[] = [];
   let rafHandle: number | null = null;
+  /** Backstop for when the page is not being drawn and frames stop coming. */
+  let tickTimer: number | null = null;
   /**
    * What the engine has judged so far, by note id. Kept across step changes:
    * advancing the cursor must not wipe the colours of the notes just played,
@@ -519,7 +521,9 @@ export function DevScoreScreen(router: Router): HTMLElement {
    * following it. This is the P2 renderer and the P3 engine joined up — the
    * first place the app does the thing it exists to do.
    */
-  function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'> = {}): void {
+  const HARNESS_TICK_MS = 16;
+
+function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'> = {}): void {
     if (!model) return;
     stopRun();
     engineEvents = [];
@@ -551,17 +555,35 @@ export function DevScoreScreen(router: Router): HTMLElement {
     renderHud();
   }
 
+  /**
+   * Drives the clock-driven modes.
+   *
+   * A frame *and* a timer. A browser stops issuing animation frames when the
+   * page is not being drawn, and this harness runs in pages the test runner
+   * keeps in the background — so `requestAnimationFrame` was starved and three
+   * Tempo tests reported no ticks at all, intermittently, depending on how busy
+   * the machine was.
+   *
+   * This is the *harness*, whose job is to exercise the engine rather than to
+   * reproduce a compositor. The shipped Score screen still ticks from frames
+   * alone (`score/ScoreSession.ts`), and what a real run should do when the
+   * frames stop — pause, catch up, or leave the frame loop behind — is an open
+   * question and not one to answer here.
+   */
   function startTicking(): void {
     const loop = () => {
       engine?.tick();
       rafHandle = requestAnimationFrame(loop);
     };
     rafHandle = requestAnimationFrame(loop);
+    tickTimer = window.setInterval(() => engine?.tick(), HARNESS_TICK_MS);
   }
 
   function stopTicking(): void {
     if (rafHandle !== null) cancelAnimationFrame(rafHandle);
     rafHandle = null;
+    if (tickTimer !== null) window.clearInterval(tickTimer);
+    tickTimer = null;
   }
 
   function stopRun(): void {
@@ -669,6 +691,16 @@ export function DevScoreScreen(router: Router): HTMLElement {
       // Driven through a real ReplaySource, so the path under test is the one
       // a MIDI cable uses: bytes -> parseMidiMessage -> InputSource -> engine.
       const source = new ReplaySource({
+        // Zero is when the *run* started, not when this source connected.
+        //
+        // `atMs` in a script means "milliseconds into the run" — every test
+        // here is written that way, and the comments say so. But the source
+        // took its base from `performance.now()` at `connect()`, which happens
+        // in a later round trip than `startRun`, so the zero was off by however
+        // long the browser and the test runner took in between. On a quiet
+        // machine that is a few milliseconds; on a busy one it exceeded the
+        // 150 ms tolerance and every note in the script judged as a miss. Three
+        // runs of this file gave nought, two and four flaky tests.
         name: 'dev harness',
         messages: script.map((entry) => ({
           atMs: entry.atMs,
@@ -678,7 +710,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
               : noteOnBytes(entry.midi, entry.velocity ?? 90)),
           ],
         })),
-      });
+      }, { now: () => running.startedAt });
       await new Promise<void>((resolve) => {
         const off = source.onNote((note) => {
           running.feed({

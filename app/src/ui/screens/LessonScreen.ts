@@ -12,7 +12,7 @@
  * is the only thing that makes the progress record worth anything.
  */
 import type { Router } from '../../router';
-import { allItems, contentUrl, loadCurriculum } from '../../curriculum/load';
+import { allItems, loadCurriculum, fetchMarkdown } from '../../curriculum/load';
 import { findLesson, idsToCompleteLesson, lessonComplete } from '../../curriculum/selectors';
 import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, PassRecord } from '../../curriculum/types';
@@ -428,9 +428,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     draw();
 
     try {
-      const response = await fetch(contentUrl(lesson.textFile));
-      if (!response.ok) throw new Error(`${response.status}`);
-      const { data, body: markdown } = parseFrontMatter(await response.text());
+      const { data, body: markdown } = parseFrontMatter(await fetchMarkdown(lesson.textFile));
       text.replaceChildren(renderMarkdown(markdown));
       const links = Array.isArray(data.videos) ? (data.videos as VideoLink[]) : [];
       videos.replaceChildren(

@@ -58,6 +58,35 @@ async function fetchJson<T>(path: string): Promise<T> {
   }
 }
 
+/**
+ * True when a body is the single-page app rather than the file that was asked
+ * for.
+ *
+ * A static host — GitHub Pages, `vite preview`, the service worker's
+ * navigation fallback — answers a missing path with `index.html` and a 200.
+ * So `response.ok` is true, the text is HTML, and anything that renders it as
+ * markdown puts the page source on the screen. The drill tips did exactly
+ * that for a kind whose file had not been written.
+ */
+export function looksLikeThePageItself(text: string): boolean {
+  return /^\s*<(!doctype html|html[\s>])/i.test(text);
+}
+
+/**
+ * A markdown file from the content directory.
+ *
+ * Throws rather than returning the wrong thing: the callers already treat a
+ * failure as "there are no tips for this" and show nothing, which is the right
+ * answer and is much better than showing the page source.
+ */
+export async function fetchMarkdown(path: string): Promise<string> {
+  const response = await fetch(contentUrl(path));
+  if (!response.ok) throw new Error(`${path}: ${String(response.status)}`);
+  const text = await response.text();
+  if (looksLikeThePageItself(text)) throw new Error(`${path}: not found (served the app instead)`);
+  return text;
+}
+
 export function loadCatalog(): Promise<CatalogItem[]> {
   catalogPromise ??= fetchJson<CatalogItem[]>('catalog.json').catch((cause: unknown) => {
     // Allow a retry: a failure here is almost always a first launch that lost

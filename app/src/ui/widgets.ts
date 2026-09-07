@@ -56,12 +56,22 @@ export function el<K extends keyof HTMLElementTagNameMap>(
 export function button(
   label: string,
   onClick: () => void,
-  options: { id?: string; variant?: 'primary' | 'secondary' | 'quiet'; title?: string } = {},
+  options: {
+    id?: string;
+    variant?: 'primary' | 'secondary' | 'quiet';
+    title?: string;
+    /** Extra class, for the few buttons that need a shape of their own. */
+    className?: string;
+  } = {},
 ): HTMLButtonElement {
   const node = el('button', {
     type: 'button',
-    className:
+    className: [
       options.variant === 'quiet' ? 'link-button' : `button button--${options.variant ?? 'secondary'}`,
+      options.className ?? '',
+    ]
+      .filter(Boolean)
+      .join(' '),
     ...(options.id ? { id: options.id } : {}),
     ...(options.title ? { title: options.title } : {}),
     text: label,

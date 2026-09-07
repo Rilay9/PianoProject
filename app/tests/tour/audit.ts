@@ -69,21 +69,46 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       );
     }
 
-    // --- 2. Anything interactive below the fold ----------------------------
+    // --- 2. Controls that cannot be reached at all -------------------------
     //
-    // How the ear drill's two answer buttons ended up under a wall of tips, and
-    // how the drill result sheet ended up off the bottom in landscape. Only
-    // things that are meant to be visible now: a closed sheet is not a defect.
+    // Not "below the fold". On a screen that scrolls, below the fold is where
+    // most of the app lives, and flagging it buried everything else under nine
+    // hundred findings of nothing. Unreachable is the defect: nothing between
+    // the control and the viewport scrolls, so no amount of dragging brings it
+    // into view.
+    //
+    // The count of merely-below-the-fold controls is still reported, as one
+    // line rather than a list — a screen that hides thirty of them is worth a
+    // look even when every one of them can be scrolled to.
+    const doc = document.documentElement;
+    const scrolls = (el: Element): boolean => {
+      const style = getComputedStyle(el);
+      return (
+        (/auto|scroll/.test(style.overflowY) && el.scrollHeight > el.clientHeight + 2) ||
+        (/auto|scroll/.test(style.overflowX) && el.scrollWidth > el.clientWidth + 2)
+      );
+    };
+    const reachable = (el: HTMLElement): boolean => {
+      if (doc.scrollHeight > doc.clientHeight + 2) return true;
+      for (let parent = el.parentElement; parent; parent = parent.parentElement) {
+        if (scrolls(parent)) return true;
+      }
+      return false;
+    };
+    let belowFold = 0;
     for (const el of screen.querySelectorAll<HTMLElement>('button, select, input, a')) {
       const box = el.getBoundingClientRect();
       if (box.width === 0 && box.height === 0) continue;
       if (getComputedStyle(el).visibility === 'hidden') continue;
-      if (box.top >= view.height) add('off-screen', `${name(el)} starts ${String(Math.round(box.top - view.height))}px below the bottom`);
-      if (box.left >= view.width) add('off-screen', `${name(el)} starts past the right edge`);
+      if (box.top < view.height && box.left < view.width) continue;
+      belowFold += 1;
+      if (!reachable(el)) {
+        add('unreachable', `${name(el)} is off the screen and nothing scrolls to it`);
+      }
     }
+    if (belowFold > 0) add('below-fold', `${String(belowFold)} controls need scrolling to reach`);
 
     // --- 3. The page itself scrolling sideways -----------------------------
-    const doc = document.documentElement;
     if (doc.scrollWidth > view.width + 2) {
       add('overflow', `the page is ${String(doc.scrollWidth - view.width)}px wider than the screen`);
     }
@@ -112,7 +137,11 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       const box = el.getBoundingClientRect();
       if (box.width === 0 || box.height === 0) continue;
       if (box.top >= view.height || box.bottom <= 0) continue;
-      if (box.height < 32 || box.width < 24) {
+      // A text link sits inside a line of text and is judged by whether a
+      // thumb can land on it, not by a button's standard. The reorder arrows
+      // at 14 px wide fail either way, which is the point.
+      const link = el.classList.contains('link-button') || el.tagName === 'A';
+      if (box.width < 24 || box.height < (link ? 24 : 32)) {
         add('tap-target', `${name(el)} is ${String(Math.round(box.width))}×${String(Math.round(box.height))}`);
       }
     }

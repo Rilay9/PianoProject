@@ -13,7 +13,7 @@
  * `drill.params`, and the most specific match wins, so a kind file is always a
  * safe fallback.
  */
-import { contentUrl } from './load';
+import { contentUrl, fetchMarkdown } from './load';
 import { parseFrontMatter } from '../ui/markdown';
 
 /** The four headings, in this order. `validate.py` enforces them in the files. */
@@ -101,9 +101,7 @@ export async function tipsFor(kind: string, params: DrillParams = {}): Promise<T
   if (cached !== undefined) return cached;
 
   try {
-    const response = await fetch(contentUrl(`tips/${name}.md`));
-    if (!response.ok) throw new Error(String(response.status));
-    const { body } = parseFrontMatter(await response.text());
+    const { body } = parseFrontMatter(await fetchMarkdown(`tips/${name}.md`));
     const tips: Tips = { kind, variant, markdown: body };
     cache.set(name, tips);
     return tips;

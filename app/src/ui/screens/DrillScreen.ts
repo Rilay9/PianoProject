@@ -442,8 +442,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         drawNotation(host, current);
         break;
       }
-      default:
-        stage.append(el('div.symbol-card', { id: 'drill-symbol', text: current.label }));
+      default: {
+        // The card is built for a chord symbol — 'C', 'G7', 'Fmaj7' — at a size
+        // you could read across a room. A backing-track drill puts its whole
+        // title in the same place, and 'Left-hand accompaniment patterns — 1'
+        // at 40 px a letter ran off both sides of a 360 px screen with the
+        // middle of a word clipped. Anything longer than a chord symbol gets a
+        // size that fits a sentence.
+        const symbol = el('div.symbol-card', { id: 'drill-symbol', text: current.label });
+        if (current.label.length > 12) symbol.classList.add('symbol-card--long');
+        stage.append(symbol);
+      }
     }
   }
 

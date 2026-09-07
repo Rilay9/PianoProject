@@ -97,6 +97,13 @@ body {
 
 .setting-row {
   display: flex;
+  /* Wraps, so a setting that carries a sentence of explanation puts its
+     control on the next line instead of squeezing the words into a column.
+     "Metronome sound — the high click is the one the mic listens for" came out
+     four words wide with the select crushed beside it and the last line cut
+     off, on a 360 px screen. Nothing else on the page changes: a row whose
+     label fits stays on one line, which is nearly all of them. */
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -105,6 +112,7 @@ body {
   border-top: 1px solid var(--border);
 }
 
+
 .setting-row select {
   min-height: 36px;
   border-radius: 8px;
@@ -112,6 +120,19 @@ body {
   background: var(--bg);
   color: var(--text);
   padding: 4px 8px;
+}
+
+/* The track reorder arrows.
+
+   A quiet button around a single ▲ is as wide as the glyph — 14 px on the S25,
+   narrower than the error in a thumb, with its twin immediately beside it. The
+   arrow stays small; the thing you press does not. */
+.track-move {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Bottom tab bar (default / portrait) */
@@ -1246,7 +1267,13 @@ body {
 }
 
 .setting-row__text {
-  flex: 1;
+  /* A basis, not zero. `flex: 1` is `flex: 1 1 0%`, so the words were free to
+     shrink to nothing and did: "Metronome sound — the high click is the one the
+     mic listens for" came out four words wide beside a crushed select, with its
+     last line cut off. Given a basis it keeps its width and the control wraps
+     underneath instead, which is the right way round — the sentence is the part
+     that has to be read. */
+  flex: 1 1 14rem;
   min-width: 0;
 }
 
@@ -1679,6 +1706,15 @@ body {
   font-weight: 600;
   letter-spacing: 0.02em;
   text-align: center;
+  /* A long word at 40 px a letter is wider than a phone, and `break-word`
+     alone will not split one. */
+  overflow-wrap: anywhere;
+}
+
+/* A title rather than a symbol: readable, not enormous. */
+.symbol-card--long {
+  font-size: clamp(1.15rem, 5.5vw, 1.75rem);
+  letter-spacing: 0;
 }
 
 .ear-card {
