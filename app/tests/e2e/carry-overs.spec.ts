@@ -54,9 +54,18 @@ test.describe('named sections', () => {
   });
 });
 
+// Ordering tracks moved into a sheet behind the header (`04` §0 R3, P21 A2):
+// it is done once and cost 470 px of the daily screen. The controls are the
+// same ones; only where they live changed, so these open the sheet first.
+async function openTracks(page: import('@playwright/test').Page): Promise<void> {
+  await page.goto('/#/plan');
+  await page.locator('#plan-tracks-open').click();
+  await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
+}
+
 test.describe('drag-to-reorder tracks', () => {
   test('moves a chip to the front and stores the new order', async ({ page }) => {
-    await page.goto('/#/plan');
+    await openTracks(page);
     const first = page.locator('#plan-track-core');
     await expect(first).toBeVisible();
 
@@ -74,7 +83,7 @@ test.describe('drag-to-reorder tracks', () => {
   });
 
   test('a drag past the threshold reorders; a tap still toggles', async ({ page }) => {
-    await page.goto('/#/plan');
+    await openTracks(page);
     const target = page.locator('#plan-track-classical');
     await expect(target).toBeVisible();
     const pressed = await target.getAttribute('aria-pressed');
@@ -90,12 +99,16 @@ test.describe('drag-to-reorder tracks', () => {
   });
 
   test('the order survives a reload, because it is stored', async ({ page }) => {
-    await page.goto('/#/plan');
+    await openTracks(page);
     const up = page.locator('#plan-track-up-classical');
     if (!(await up.count())) test.skip();
     await up.click();
     const after = await page.locator('[data-track][data-order="0"]').getAttribute('data-track');
     await page.reload();
+    // The order lives in the sheet, so reading it back means opening it again.
+    // That is the point of the test: the order survived, not the sheet.
+    await page.locator('#plan-tracks-open').click();
+    await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
     await expect(page.locator('[data-track][data-order="0"]')).toHaveAttribute(
       'data-track',
       after ?? '',

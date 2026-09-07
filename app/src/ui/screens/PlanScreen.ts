@@ -17,7 +17,7 @@ import type { Curriculum, Lesson, PassRecord, Stage } from '../../curriculum/typ
 import { allProgress } from '../../data/progressStore';
 import { getPlan, updatePlan } from '../../data/planStore';
 import { onScreenDispose } from '../screenLifecycle';
-import { badge, button, chip, el, listRow } from '../widgets';
+import { badge, button, chip, el, listRow, openSheet } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 
 /**
@@ -46,7 +46,7 @@ function completion(
 }
 
 export function PlanScreen(router: Router): HTMLElement {
-  const { section, header, body } = screenFrame('plan', 'Plan', 'Stages, units and lessons — open any of them.');
+  const { section, header, body } = screenFrame('plan', 'Plan');
   const status = statusLine('plan-status');
   const trackRow = el('div.filter-row', { id: 'plan-tracks' });
   const list = el('div.list', { id: 'plan-list' });
@@ -57,17 +57,21 @@ export function PlanScreen(router: Router): HTMLElement {
   let suppressClickFor: string | null = null;
   let activeTracks: string[] = [];
 
-  header.append(trackRow);
+  const linkRow = el('div.plan-links', { id: 'plan-links' });
+  header.append(trackRow, linkRow);
   body.append(list, status);
 
-  function lessonRow(lesson: Lesson, unitTitle: string): HTMLElement {
+  function lessonRow(lesson: Lesson): HTMLElement {
     const done = lessonComplete(lesson, records, { requireTwoSongs: getSettings().requireTwoSongs });
     const badges: HTMLElement[] = [];
     if (done) badges.push(badge('complete', 'passed'));
     if (lesson.songOptional) badges.push(badge('no song needed'));
+    // No subtitle. It was the unit's title, printed under a card whose own
+    // title usually *is* the unit's title, under a heading that says it a third
+    // time — three sizes of the same words for a third of the screen
+    // (`04` §3, `00` D26).
     return listRow({
       title: `${lesson.id} · ${lesson.title}`,
-      subtitle: unitTitle,
       meta: `${String(lesson.exerciseOptions.length)} exercises · ${String(
         lesson.songOptions.length,
       )} songs${lesson.estimatedDays ? ` · ~${String(lesson.estimatedDays)} days` : ''}`,
@@ -97,11 +101,10 @@ export function PlanScreen(router: Router): HTMLElement {
           stage.approxDuration ? ` · ${stage.approxDuration}` : ''
         }`,
         badges: done === total && total > 0 ? [badge('complete', 'passed')] : [],
-        actions: [button(open ? 'Hide' : 'Open', () => {
-          if (open) expanded.delete(stage.number);
-          else expanded.add(stage.number);
-          draw();
-        }, { variant: 'quiet' })],
+        // The row is the toggle, so the button beside it was a second way to
+        // do the same thing taking a tap target's worth of width. A chevron
+        // says which way it will go without claiming to be pressable itself.
+        actions: [el('span.plan-chevron', { text: open ? '⌄' : '›', 'aria-hidden': 'true' })],
         onClick: () => {
           if (open) expanded.delete(stage.number);
           else expanded.add(stage.number);
@@ -114,8 +117,18 @@ export function PlanScreen(router: Router): HTMLElement {
 
       for (const unit of stage.units) {
         if (activeTracks.length > 0 && unit.track !== 'core' && !activeTracks.includes(unit.track)) continue;
-        list.append(el('p.plan-unit.muted', { text: `${unit.id} · ${unit.title} — ${unit.track}` }));
-        for (const lesson of unit.lessons) list.append(lessonRow(lesson, unit.title));
+        // The unit heading earns its line only when it is not simply the
+        // lesson's title again: a unit of one lesson with the same name says
+        // nothing twice.
+        const echoes =
+          unit.lessons.length === 1 &&
+          unit.lessons[0]?.title.trim().toLowerCase() === unit.title.trim().toLowerCase();
+        if (!echoes) {
+          list.append(
+            el('p.plan-unit.muted', { text: `${unit.id} · ${unit.title} — ${unit.track}` }),
+          );
+        }
+        for (const lesson of unit.lessons) list.append(lessonRow(lesson));
       }
     }
 
@@ -195,15 +208,85 @@ export function PlanScreen(router: Router): HTMLElement {
     });
   }
 
+  /**
+   * The header: the tracks he is on, and one chip that opens the rest.
+   *
+   * It used to be all fifteen tracks as chips with a pair of ▲▼ beside each
+   * active one — about 470 px of a 780 px screen, so Stage 0 began below the
+   * fold. Choosing and ordering tracks is done once and then not again for
+   * months (`04` §0 R3), so it moves into a sheet and the daily screen keeps
+   * only the answer.
+   */
   function drawTracks(): void {
     if (!curriculum) return;
     trackRow.replaceChildren();
-    for (const track of curriculum.tracks) {
-      const on = activeTracks.includes(track.id);
-      const node = chip(track.title, {
+    // A bounded answer, not a list. Fifteen tracks switched on would be fifteen
+    // chips and six rows of header, which is the problem this change exists to
+    // remove — so the header names the first few and the chip counts the rest.
+    const SHOWN = 3;
+    for (const id of activeTracks.slice(0, SHOWN)) {
+      const track = curriculum.tracks.find((candidate) => candidate.id === id);
+      if (!track) continue;
+      trackRow.append(
+        // A different id from the sheet's chip for the same track: both are on
+        // the page while the sheet is open, and two elements cannot share one.
+        chip(track.title, {
+          id: `plan-active-${track.id}`,
+          pressed: true,
+          // `data-track` says which; `data-order` belongs to the sheet, which
+          // is where the order is set and the only place it should be read.
+          dataset: { 'data-track': track.id },
+        }),
+      );
+    }
+    const hidden = Math.max(0, activeTracks.length - SHOWN);
+    trackRow.append(
+      chip(hidden > 0 ? `Tracks… +${String(hidden)}` : 'Tracks…', {
+        id: 'plan-tracks-open',
+        onClick: () => openTracksSheet(),
+      }),
+    );
+
+    // One line of links rather than three boxes on two rows. All three are read
+    // occasionally and none is the thing the screen is for (`04` §0 R3), and as
+    // boxes they took eighty-eight pixels off the top of the stage list.
+    // `How to practise` is here because it left Today, where it was one of six
+    // boxes of equal weight on the screen opened every day.
+    linkRow.replaceChildren(
+      button('Placement test', () => router.navigateLesson('0.4'), {
+        id: 'plan-placement',
+        variant: 'quiet',
+      }),
+      el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
+      button('Review a skill', () => router.navigate('plan', 'skills'), {
+        id: 'plan-skills',
+        variant: 'quiet',
+      }),
+      el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
+      button('How to practise', () => router.navigateLesson('practice.1'), {
+        id: 'plan-practice',
+        variant: 'quiet',
+      }),
+    );
+  }
+
+  /** Every track, its switch, and the order — behind one chip. */
+  function openTracksSheet(): void {
+    if (!curriculum) return;
+    const sheet = openSheet('Tracks', { id: 'plan-tracks-sheet' });
+    const listEl = el('div.filter-row', { id: 'plan-tracks-list' });
+
+    const redraw = (): void => {
+      listEl.replaceChildren();
+      for (const track of curriculum?.tracks ?? []) {
+        const on = activeTracks.includes(track.id);
+        const node = chip(track.title, {
           id: `plan-track-${track.id}`,
           pressed: on,
-          dataset: { 'data-track': track.id, 'data-order': String(activeTracks.indexOf(track.id)) },
+          dataset: {
+            'data-track': track.id,
+            'data-order': String(activeTracks.indexOf(track.id)),
+          },
           onClick: () => {
             if (suppressClickFor === track.id) {
               suppressClickFor = null;
@@ -216,48 +299,39 @@ export function PlanScreen(router: Router): HTMLElement {
               return;
             }
             commitOrder(
-              on
-                ? activeTracks.filter((id) => id !== track.id)
-                : [...activeTracks, track.id],
+              on ? activeTracks.filter((candidate) => candidate !== track.id) : [...activeTracks, track.id],
             );
+            redraw();
           },
         });
-      if (on && track.id !== 'core') makeDraggable(node, track.id);
-      trackRow.append(node);
-      if (on && track.id !== 'core') {
-        // The fallback. A drag is not reachable from a keyboard and is
-        // awkward with a tremor; two buttons are neither.
-        const index = activeTracks.indexOf(track.id);
-        trackRow.append(
-          // `track-move` gives them a hit area. A bare quiet button around one
-          // arrow measured 14 px across on the S25 — narrower than the pixel
-          // error of a thumb, and there are two of them side by side.
-          button('▲', () => commitOrder(moveUp(activeTracks, index)), {
-            id: `plan-track-up-${track.id}`,
-            variant: 'quiet',
-            className: 'track-move',
-            title: `Move ${track.title} earlier`,
-          }),
-          button('▼', () => commitOrder(moveDown(activeTracks, index)), {
-            id: `plan-track-down-${track.id}`,
-            variant: 'quiet',
-            className: 'track-move',
-            title: `Move ${track.title} later`,
-          }),
-        );
+        if (on && track.id !== 'core') makeDraggable(node, track.id);
+        listEl.append(node);
+        if (on && track.id !== 'core') {
+          // The fallback. A drag is not reachable from a keyboard and is
+          // awkward with a tremor; two buttons are neither.
+          const index = activeTracks.indexOf(track.id);
+          listEl.append(
+            button('▲', () => { commitOrder(moveUp(activeTracks, index)); redraw(); }, {
+              id: `plan-track-up-${track.id}`,
+              variant: 'quiet',
+              className: 'track-move',
+              title: `Move ${track.title} earlier`,
+            }),
+            button('▼', () => { commitOrder(moveDown(activeTracks, index)); redraw(); }, {
+              id: `plan-track-down-${track.id}`,
+              variant: 'quiet',
+              className: 'track-move',
+              title: `Move ${track.title} later`,
+            }),
+          );
+        }
       }
-    }
-    trackRow.append(
-      button('Placement test', () => router.navigateLesson('0.4'), { id: 'plan-placement', variant: 'quiet' }),
-      button('Review a skill', () => router.navigate('plan', 'skills'), { id: 'plan-skills', variant: 'quiet' }),
-      // The method rather than the music (replan §8): five lessons read once
-      // and returned to when something has stopped moving. It sat on Today,
-      // where it was one of six boxes of equal weight on the screen opened
-      // every day; it belongs with the other things read occasionally.
-      button('How to practise', () => router.navigateLesson('practice.1'), {
-        id: 'plan-practice',
-        variant: 'quiet',
-      }),
+    };
+
+    redraw();
+    sheet.body.append(
+      el('p.muted', { text: 'Switch a track on or off, and drag or use the arrows to order them.' }),
+      listEl,
     );
   }
 

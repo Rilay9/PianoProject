@@ -40,7 +40,12 @@ test.describe('Plan', () => {
 
   test('track chips filter the units, and the core path cannot be switched off', async ({ page }) => {
     await page.goto('/#/plan');
-    await expect(page.locator('#plan-track-core')).toBeVisible();
+    // Choosing and ordering tracks moved into a sheet (`04` §0 R3): fifteen
+    // chips and eight arrows were 470 px of the daily screen for a thing done
+    // once. The header shows the answer; the sheet holds the question.
+    await expect(page.locator('#plan-active-core')).toBeVisible();
+    await page.locator('#plan-tracks-open').click();
+    await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
     await page.locator('#plan-track-core').click();
     await expect(page.locator('#plan-status')).toContainText('core path is always on');
   });
@@ -157,5 +162,56 @@ test.describe('Skills review', () => {
       .getByRole('button', { name: 'Drill it' })
       .click();
     await expect(page).toHaveURL(/#\/(score|drill)\//);
+  });
+});
+
+/**
+ * `04` §0 on Plan. The header used to be fifteen chips and eight arrows —
+ * about 470 px of a 780 px screen — for a choice made once a year.
+ */
+test.describe('Plan obeys 04 §0', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('Stage 0 starts inside the first screenful, with every track on (R1)', async ({ page }) => {
+    await page.goto('/#/plan');
+    // Turn everything on: the worst case for the header is every track active.
+    await page.locator('#plan-tracks-open').click();
+    for (const chipEl of await page.locator('#plan-tracks-list [data-track]').all()) {
+      if ((await chipEl.getAttribute('aria-pressed')) !== 'true') await chipEl.click();
+    }
+    await page.locator('#plan-tracks-sheet-close').click();
+    const stage = page.locator('.list-row[data-stage="0"]');
+    await expect(stage).toBeVisible();
+    const box = await stage.boundingBox();
+    expect(box?.y ?? 0).toBeLessThan(200);
+  });
+
+  test('a lesson card never repeats its unit title (D26)', async ({ page }) => {
+    await page.goto('/#/plan');
+    // The stage being worked on is already open on arrival; clicking it would
+    // close it, and there would be no lesson rows to look at.
+    const stage = page.locator('.list-row[data-stage="0"]');
+    if ((await stage.getAttribute('data-open')) !== 'true') await stage.click();
+    const rows = await page.locator('.list-row[data-lesson]').all();
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      const title = (await row.locator('.list-row__title').textContent()) ?? '';
+      // The subtitle was the unit's title, under a card whose own title is
+      // usually the same words, under a heading that says it a third time.
+      await expect(row.locator('.list-row__sub')).toHaveCount(0);
+      expect(title.trim()).not.toBe('');
+    }
+  });
+
+  test('ordering tracks lives in the sheet, not on the screen (R3)', async ({ page }) => {
+    await page.goto('/#/plan');
+    await expect(page.locator('#plan-track-up-classical')).toHaveCount(0);
+    await page.locator('#plan-tracks-open').click();
+    await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
+    // Present once the sheet is open, if classical is on.
+    const chipEl = page.locator('#plan-track-classical');
+    if ((await chipEl.getAttribute('aria-pressed')) === 'true') {
+      await expect(page.locator('#plan-track-up-classical')).toHaveCount(1);
+    }
   });
 });

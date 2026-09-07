@@ -190,6 +190,31 @@ body {
   margin: 0;
 }
 
+/* The stage row opens itself; this only says which way (`04` §3). */
+.plan-chevron {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  padding: 0 6px;
+}
+
+/* One line of occasional links under Plan's track chips (`04` §0 R3). */
+.plan-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.plan-links .link-button {
+  font-size: 0.85rem;
+  padding: 2px 0;
+}
+
+.plan-sep {
+  color: var(--text-muted);
+}
+
 /* Bottom tab bar (default / portrait) */
 .tab-nav {
   order: 2;
