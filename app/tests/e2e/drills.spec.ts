@@ -153,7 +153,13 @@ test.describe('the drill screen', () => {
   test('a call-and-response drill plays a phrase and takes it back in order', async ({ page }) => {
     await openDrill(page, 'drill.technique.five-finger-rh');
     await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-kind', 'call-response');
-    await expect(page.locator('#drill-prompt')).toHaveText('Play it back');
+    // A five-finger walk is built as a call-and-response drill, but
+    // `call-response`'s own sentence — "Play it back" — is true of a phrase and
+    // useless for a hand position, so the builder says what it means instead
+    // (P21 A8, `Drill.promptText`).
+    await expect(page.locator('#drill-prompt')).toHaveText(
+      'Listen, then play the pattern back with the right hand',
+    );
     await expect(page.locator('#drill-replay')).toBeVisible();
   });
 

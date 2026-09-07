@@ -48,6 +48,15 @@ export function ProgressScreen(router: Router): HTMLElement {
   const status = statusLine('progress-status');
   const summary = el('div.block', { id: 'progress-summary' });
   const heat = el('div.heatmap', { id: 'progress-heatmap', role: 'img', 'aria-label': 'Practice minutes by day' });
+  // The thresholds are `heatLevel`'s, written once so the key cannot drift
+  // from the colours it explains.
+  const heatKey = el('div.heatmap-key', { id: 'progress-heatmap-key' });
+  for (const [level, label] of [[0, '0'], [1, '<10'], [2, '<25'], [3, '<45'], [4, '45+ min']] as const) {
+    heatKey.append(
+      el('span.heatmap-key__swatch', { 'data-level': level, 'aria-hidden': 'true' }),
+      el('span.heatmap-key__label', { text: label }),
+    );
+  }
   const repertoire = el('div.list', { id: 'progress-repertoire' });
   const history = el('div.list', { id: 'progress-history' });
   const performances = el('div.list', { id: 'progress-performances' });
@@ -55,7 +64,17 @@ export function ProgressScreen(router: Router): HTMLElement {
 
   body.append(
     summary,
-    el('section.block', {}, el('h2', { text: 'Last three months' }), heat),
+    el(
+      'section.block',
+      {},
+      // The squares have had five levels since they were built; what they
+      // never had was a heading saying what they measure or a key saying what
+      // the shades mean, so two blues side by side told nobody anything
+      // (`04` §6).
+      el('h2', { text: 'Minutes a day, last 13 weeks' }),
+      heat,
+      heatKey,
+    ),
     el('section.block', {}, el('h2', { text: 'Repertoire' }), repertoire),
     el('section.block', {}, el('h2', { text: 'Performances' }), performances),
     el('section.block', {}, el('h2', { text: 'Recent sessions' }), history),

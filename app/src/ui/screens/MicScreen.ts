@@ -89,7 +89,11 @@ export function MicScreen(router: Router): HTMLElement {
     id: 'mic-connect',
     variant: 'primary',
   });
-  addButton(connection, 'Disconnect', () => micSource.disconnect(), { id: 'mic-disconnect' });
+  // Drawn only while there is something to disconnect from (`04` §0 R4). It
+  // sat there permanently, offering to end a connection that did not exist.
+  const disconnectButton = addButton(connection, 'Disconnect', () => micSource.disconnect(), {
+    id: 'mic-disconnect',
+  });
 
   // --- level ---------------------------------------------------------------
 
@@ -168,10 +172,15 @@ export function MicScreen(router: Router): HTMLElement {
 
   function renderConnection(): void {
     const state = micSource.state;
-    status.textContent = state.connected
-      ? `Connected — ${state.detail}`
-      : `Not connected (${state.detail}).`;
+    // The detail is only worth printing when it says something the state does
+    // not. Disconnected with a detail of 'not connected' printed the phrase
+    // twice: 'Not connected (not connected).'
+    const plain = state.connected ? 'Connected' : 'Not connected';
+    const detail = state.detail.trim();
+    const says = detail !== '' && detail.toLowerCase() !== plain.toLowerCase();
+    status.textContent = says ? `${plain} — ${detail}` : `${plain}.`;
     connectButton.textContent = state.connected ? 'Reconnect' : 'Connect microphone';
+    disconnectButton.hidden = !state.connected;
     renderDevices();
     renderStored();
   }

@@ -90,6 +90,15 @@ export interface DrillResult {
 
 export interface Drill {
   readonly kind: DrillKind;
+  /**
+   * What to do, in a sentence, when the kind alone does not say it.
+   *
+   * A five-finger walk and an accompaniment pattern are both built as
+   * `call-response` drills, and `call-response` says only "Play it back" —
+   * true, and useless when the thing to play back is a hand position rather
+   * than a phrase. The builder that knows which it is says so here.
+   */
+  readonly promptText?: string;
   /** The next prompt, or null when the drill is finished. */
   next(): DrillPrompt | null;
   /** The prompt currently awaiting an answer, if any. */

@@ -251,6 +251,43 @@ body {
   border-top: 0;
 }
 
+/* What the shades of the heat map mean (`04` §6). */
+.heatmap-key {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.heatmap-key__swatch {
+  background: var(--border);
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.heatmap-key__label {
+  margin-right: 4px;
+}
+
+/* Folded explanation, under the thing it explains (`04` §0 R1). */
+.folder-how {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.folder-how summary {
+  cursor: pointer;
+  color: var(--text-muted);
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
 /* Bottom tab bar (default / portrait) */
 .tab-nav {
   order: 2;
@@ -1706,18 +1743,22 @@ input[type='checkbox'] {
   background: var(--border);
 }
 
+.heatmap-key__swatch[data-level='1'],
 .heat-cell[data-level='1'] {
   background: color-mix(in srgb, var(--accent) 25%, var(--border));
 }
 
+.heatmap-key__swatch[data-level='2'],
 .heat-cell[data-level='2'] {
   background: color-mix(in srgb, var(--accent) 50%, var(--border));
 }
 
+.heatmap-key__swatch[data-level='3'],
 .heat-cell[data-level='3'] {
   background: color-mix(in srgb, var(--accent) 75%, var(--border));
 }
 
+.heatmap-key__swatch[data-level='4'],
 .heat-cell[data-level='4'] {
   background: var(--accent);
 }

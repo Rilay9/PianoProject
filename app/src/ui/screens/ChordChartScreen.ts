@@ -273,7 +273,21 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
       bars = chartBars(symbols, Math.max(measureCount, symbols.length));
       if (symbols.length === 0) {
-        status.textContent = `${item.title} has no chord symbols in it — open it on the Score screen instead.`;
+        // The sentence, and the one control that does what it suggests
+        // (`04` §0 R4). It used to say the screen could not work and then draw
+        // a working-looking one: four empty bars with dashes, a count-off, a
+        // stop, a bpm field and three live toggles, over a piece with no
+        // harmony in it and no way to act on the advice.
+        status.textContent = `${item.title} has no chord symbols in it.`;
+        form.hidden = true;
+        grid.hidden = true;
+        controls.replaceChildren(
+          button('Open on the Score screen', () => router.navigateScore(itemId), {
+            id: 'chart-open-score',
+            variant: 'primary',
+          }),
+        );
+        return;
       }
       if (item.tempoBpm) {
         bpm = item.tempoBpm;

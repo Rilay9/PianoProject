@@ -526,6 +526,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
   function promptText(): string {
     if (!drill || !current) return '';
+    // A drill that knows better than its kind says so itself.
+    if (drill.promptText !== undefined) return drill.promptText;
     switch (drill.kind) {
       case 'note-flash':
         return 'Play this note';
@@ -564,8 +566,6 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         return 'Play the phrase back';
       case 'harmonic-dictation':
         return 'Play the progression back, as chords';
-      default:
-        return current.label;
     }
   }
 

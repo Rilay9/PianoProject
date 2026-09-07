@@ -20,6 +20,8 @@ import {
 
 export interface PromptDrillConfig {
   kind: DrillKind;
+  /** Overrides the sentence the screen derives from `kind` (`Drill.promptText`). */
+  promptText?: string;
   prompts: DrillPrompt[];
   anyOctave: boolean;
   clock: Clock;
@@ -27,6 +29,7 @@ export interface PromptDrillConfig {
 
 export class PromptDrill implements Drill {
   readonly kind: DrillKind;
+  readonly promptText?: string;
   private readonly prompts: DrillPrompt[];
   private readonly anyOctave: boolean;
   private readonly clock: Clock;
@@ -39,6 +42,7 @@ export class PromptDrill implements Drill {
 
   constructor(config: PromptDrillConfig) {
     this.kind = config.kind;
+    if (config.promptText !== undefined) this.promptText = config.promptText;
     this.prompts = config.prompts;
     this.anyOctave = config.anyOctave;
     this.clock = config.clock;

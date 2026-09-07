@@ -107,14 +107,21 @@ export function FolderScreen(router: Router): HTMLElement {
   });
 
   const intro = addSection(card, 'Where the scores are');
-  addParagraph(
-    intro,
-    'Point the app at a folder of MusicXML on this phone. The listing is kept, so you can browse it any time; adding a piece copies it into your library, where it stays.',
-    'muted',
-  );
-  const folderStatus = addParagraph(intro, 'Nothing picked yet.');
+  const folderStatus = addParagraph(intro, 'No folder yet.');
   const actions = el('div.button-row');
   intro.append(actions);
+  // The paragraph explaining how it works goes under the button, folded away
+  // (`04` §0 R1). It is read once; the state line and the button are what the
+  // screen is for on every visit after that.
+  const how = el('details.folder-how', { id: 'folder-how' });
+  how.append(el('summary', { text: 'How this works' }));
+  how.append(
+    el('p.muted', {
+      text:
+        'Point the app at a folder of MusicXML on this phone. The listing is kept, so you can browse it any time; adding a piece copies it into your library, where it stays.',
+    }),
+  );
+  intro.append(how);
 
   const browse = addSection(card, 'Browse');
   const controls = el('div.filters');
@@ -283,8 +290,14 @@ export function FolderScreen(router: Router): HTMLElement {
   }
 
   function describe(): void {
+    // With no folder there is nothing to browse, so the browse block is not in
+    // the document at all — filters and a search box over a list that cannot
+    // exist are furniture (`04` §0 R4). Removed rather than hidden: a hidden
+    // search box is still a search box to anything that goes looking.
+    if (library) card.append(browse);
+    else browse.remove();
     if (!library) {
-      folderStatus.textContent = 'Nothing picked yet.';
+      folderStatus.textContent = 'No folder yet.';
       return;
     }
     const where = library.source ? ` from ${library.source}` : '';

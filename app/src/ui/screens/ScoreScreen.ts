@@ -816,11 +816,25 @@ export function ScoreScreen(router: Router): HTMLElement {
 
     const lines = document.createElement('dl');
     lines.className = 'summary-stats';
+    // Accuracy and Missed are facts about a run that played nothing: nought
+    // right, everything missed, and the self-report below is what the sheet
+    // offers instead of a number he did not earn.
+    //
+    // `Wrong notes` and `Timing` are not. Nought wrong notes out of nothing
+    // played, and a mean lateness over no notes, are statistics with nothing
+    // behind them — a dead control in a different coat (`04` §0 R4).
+    //
+    // Both counters, because the modes keep score differently: Wait counts
+    // `correctSteps` and can finish a clean run with `hits` at nought, while
+    // Tempo counts `hits` against the expected pitches (`engine/types.ts`).
+    const heard = score.hits > 0 || score.correctSteps > 0 || score.wrongNotesTotal > 0;
     addStat(lines, 'Accuracy', `${Math.round(score.accuracy * 100)}%${score.accuracyEstimated === true ? ' (estimated)' : ''}`);
     addStat(lines, 'Tempo', `${Math.round(score.tempoPct)}% of written`);
-    addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
+    if (heard) {
+      addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
+    }
     addStat(lines, 'Missed', String(score.missedTotal));
-    if (score.timing) {
+    if (score.timing && heard) {
       addStat(lines, 'Timing', `${Math.round(score.timing.meanMs)} ms mean, ${Math.round(score.timing.earlyPct)}% early`);
     }
     sheet.appendChild(lines);

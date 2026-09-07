@@ -270,6 +270,9 @@ test.describe('Skills obeys 04 §0', () => {
   test('draws a page, not the whole curriculum (R1)', async ({ page }) => {
     await page.goto('/#/plan/skills');
     await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    // Wait for the page to be complete, not merely started: the list is built
+    // in one pass and `Show all` is its last child.
+    await expect(page.locator('#skills-show-all')).toBeVisible();
     const controls = await page
       .locator('[data-screen="skills"] button, [data-screen="skills"] select')
       .count();
@@ -281,6 +284,7 @@ test.describe('Skills obeys 04 §0', () => {
   test('Show all reaches every concept', async ({ page }) => {
     await page.goto('/#/plan/skills');
     await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    await expect(page.locator('#skills-show-all')).toBeVisible();
     const before = await page.locator('.list-row[data-concept]').count();
     await page.locator('#skills-show-all').click();
     const after = await page.locator('.list-row[data-concept]').count();

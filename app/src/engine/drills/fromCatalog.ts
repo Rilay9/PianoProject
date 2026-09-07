@@ -534,20 +534,27 @@ function twelveBarLoop(key: string, twelveBar: boolean): number[][] {
  * A five-finger walk or an accompaniment pattern that has no notation file:
  * play it, then play it back.
  */
-function buildTechniquePattern(item: CatalogItem, p: Params, base: Required<BuildOptions>): Drill {
+function buildTechniquePattern(_item: CatalogItem, p: Params, base: Required<BuildOptions>): Drill {
   const tonic = 60 + (noteNameToPitchClass(typeof p.key === 'string' ? p.key : 'C') ?? 0);
   const hands = typeof p.hands === 'string' ? p.hands : 'right';
   const root = hands === 'left' ? tonic - 12 : tonic;
   const walk = [0, 2, 4, 5, 7, 5, 4, 2, 0].map((offset) => root + offset);
+  // The card shows the shape, not the item's name. It used to read
+  // `Left-hand accompaniment patterns — 1` at forty pixels a letter, which is
+  // the title of the thing he just tapped and says nothing about what to play.
+  const keyName = typeof p.key === 'string' ? p.key : 'C';
   const prompts: DrillPrompt[] = Array.from({ length: Math.min(base.count, 4) }, (_, index) => ({
     index,
-    label: `${item.title} — ${index + 1}`,
+    label: `${keyName} · ${String(index + 1)} of ${String(Math.min(base.count, 4))}`,
     expected: walk,
     ordered: true,
     playback: walk.map((midi, i) => ({ midi: [midi], atMs: i * 400 })),
   }));
   return new PromptDrill({
     kind: 'call-response',
+    // `call-response` on its own says "Play it back", which is true of a phrase
+    // and unhelpful for a hand position.
+    promptText: `Listen, then play the pattern back with the ${hands === 'left' ? 'left' : 'right'} hand`,
     prompts,
     anyOctave: false,
     clock: base.clock,
