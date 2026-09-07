@@ -97,7 +97,15 @@ roughly 25 of about 290 pictures were looked at by eye.
 
 `build/tour/index.html` is built for exactly that, and a person will get through
 it far faster than a machine will. If a change is made to any screen, reshoot
-before believing anything in this file about it.
+before believing anything in this file about it — and then tick **Only what
+changed since the last tour** at the top of that page, which hides every scene
+whose four pictures are byte-for-byte what they were last time. A second tour is
+a review of the difference rather than of three hundred pictures again.
+
+Two other things the tour now says at the end of each form factor, both of which
+should be empty: the **gaps** (a scene whose predicate did not hold — it was not
+photographed rather than photographed wrong) and the **identical pictures** (two
+captions over one picture, which is how thirteen scenes had been lying).
 
 ---
 

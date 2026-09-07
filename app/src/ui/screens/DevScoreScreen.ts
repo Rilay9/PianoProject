@@ -728,6 +728,20 @@ function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'
         // A script's last message may be a Note-Off, so wait for the source
         // rather than for the engine.
         const last = script.reduce((max, e) => Math.max(max, e.atMs), 0);
+        // The run's zero and the script's zero, made the same instant.
+        //
+        // This is what the Tempo flake actually was. `startRun` and `replay`
+        // are two `page.evaluate` round trips, so on a loaded machine the run
+        // could be several hundred milliseconds old before the source
+        // connected — and a script that says "the first note at 100 ms" then
+        // arrived stamped for a slot the engine had already closed. `hits: 0`,
+        // every time, and more often the busier the machine.
+        //
+        // Restarting here rather than moving the script's zero: the stamp and
+        // the delivery both stay on the source's own schedule, which is the
+        // property the paragraph above is about. Every caller of `replay`
+        // starts a run and then immediately replays into it.
+        running.start();
         void source.connect();
         setTimeout(finished, last + 250);
       });

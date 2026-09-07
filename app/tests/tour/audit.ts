@@ -18,7 +18,11 @@
 import type { Page } from '@playwright/test';
 
 export interface Finding {
-  /** `clipped`, `off-screen`, `overflow`, `plural`, `tap-target`, `light-control`. */
+  /**
+   * `clipped`, `unreachable`, `overflow`, `plural`, `tap-target`,
+   * `light-control`, `clipped-text`, the four `R1`-`R4` rules of `04` §0, and
+   * `glyph-only` / `glyph-labelled`.
+   */
   kind: string;
   detail: string;
 }
@@ -186,6 +190,81 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       if (el.scrollWidth > el.clientWidth + 2) {
         add('clipped-text', `${name(el)} is cut off by ${String(el.scrollWidth - el.clientWidth)}px`);
       }
+    }
+
+    // --- 8. The four rules of `04` §0 --------------------------------------
+    //
+    // R1–R4 are the rules every screen is supposed to obey, and until now the
+    // only thing enforcing them was somebody remembering. They are shapes; a
+    // machine can look for them on every screen in every size.
+    //
+    // A list screen is one that draws `.list-row`s — Today, Plan, Library,
+    // Skills, Folder and a lesson page all qualify, and so does anything else
+    // that grows one later, which is the point of testing for the shape rather
+    // than for a list of screen names.
+    const rows = [...screen.querySelectorAll<HTMLElement>('.list-row')];
+    const portrait = view.height > view.width;
+    if (rows.length > 0 && portrait) {
+      // R1 — what earns a place above the fold. The *first* row must be on the
+      // screen without scrolling: a list whose first item is below the fold is
+      // a screen that has spent its best space on something else.
+      const first = rows[0]?.getBoundingClientRect();
+      if (first && first.top > view.height) {
+        add('R1-first-row', `the first row starts ${String(Math.round(first.top - view.height))}px below the fold`);
+      }
+    }
+
+    // R2 — density. A row is a line of text and its controls, not a card.
+    for (const row of rows) {
+      const height = row.getBoundingClientRect().height;
+      if (height > 96) add('R2-density', `${name(row)} is ${String(Math.round(height))}px tall`);
+    }
+    for (const row of screen.querySelectorAll<HTMLElement>('.setting-row')) {
+      const height = row.getBoundingClientRect().height;
+      if (height > 56) {
+        add('R2-density', `${name(row)} is ${String(Math.round(height))}px tall (a settings row)`);
+      }
+    }
+
+    // R3 — one thing to do. Two primary buttons on a screen is two answers to
+    // "what now?", which is none.
+    const primaries = [...screen.querySelectorAll<HTMLElement>('.button--primary')].filter(
+      (el) => el.getBoundingClientRect().width > 0,
+    );
+    if (primaries.length > 1) {
+      add('R3-two-primaries', primaries.map((el) => name(el)).join(', '));
+    }
+
+    // R4 — an empty state offers one way out. A screen that has just said it
+    // has nothing is not the place for a row of choices.
+    const status = screen.querySelector('.screen-status, .status, [data-status], .score-status');
+    const said = (status?.textContent ?? '').trim();
+    const isEmpty = said.startsWith('No ') || said.includes('has no ');
+    if (isEmpty) {
+      const buttons = [...screen.querySelectorAll<HTMLElement>('button, .button')].filter(
+        (el) => el.getBoundingClientRect().width > 0,
+      );
+      if (buttons.length > 1) {
+        add('R4-empty-state', `"${said.slice(0, 40)}" offers ${String(buttons.length)} buttons`);
+      }
+    }
+
+    // --- 9. Buttons that are a single glyph --------------------------------
+    //
+    // `🎵` alone was the metronome for three phases. A picture is only a word
+    // if you already know which word; without an `aria-label` a screen reader
+    // reads the emoji's own name, and without a visible word a person guesses.
+    // Both cases are reported, separately: the second is a judgement call.
+    for (const el of screen.querySelectorAll<HTMLElement>('button, [role="button"]')) {
+      if (el.getBoundingClientRect().width === 0) continue;
+      const text = (el.textContent ?? '').trim();
+      if (text.length === 0) continue;
+      // One character, counting an emoji as one however many code units it is.
+      const glyphs = [...new Intl.Segmenter().segment(text)].length;
+      if (glyphs > 1) continue;
+      const spoken = el.getAttribute('aria-label') ?? el.getAttribute('title') ?? '';
+      if (spoken.trim().length === 0) add('glyph-only', `${name(el)} says "${text}" and nothing else`);
+      else add('glyph-labelled', `${name(el)} says "${text}", labelled "${spoken}"`);
     }
 
     return out;

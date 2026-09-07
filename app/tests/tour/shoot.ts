@@ -5,6 +5,7 @@
  * the same filenames and the same index — the point of the review is to talk
  * about *this* picture, and that only works if the picture has a stable name.
  */
+import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import type { Page } from '@playwright/test';
@@ -48,9 +49,24 @@ export interface Shot {
   note: string;
   orientation: Orientation;
   file: string;
+  /**
+   * SHA-1 of the PNG.
+   *
+   * Two things rest on it. Thirteen of the tour's 328 pictures turned out to
+   * be pixel-identical to another scene with a different caption — a scene
+   * that had photographed the screen it started from rather than the state it
+   * claimed — and a hash is how that stops being something a reviewer has to
+   * notice. And a hash that matches the last run means the scene has not
+   * changed, which is what makes a 328-picture tour reviewable at all.
+   */
+  hash?: string;
+  /** Against the previous ledger: `new`, `changed` or `same`. */
+  since?: 'new' | 'changed' | 'same';
 }
 
 const shots: Shot[] = [];
+/** The ledger as it was when this run started, for the changed/same mark. */
+const before = new Map<string, string>();
 
 /**
  * Photographs the whole viewport.
@@ -73,7 +89,43 @@ export async function shoot(
   // attention, which is the scarce thing here.
   await page.waitForTimeout(600);
   await page.screenshot({ path: file, animations: 'disabled' });
-  shots.push({ slug, title, note, orientation, file });
+  const hash = createHash('sha1').update(readFileSync(file)).digest('hex');
+  const was = previousHash(orientation, slug);
+  const since = was === undefined ? 'new' : was === hash ? 'same' : 'changed';
+  shots.push({ slug, title, note, orientation, file, hash, since });
+}
+
+function previousHash(orientation: Orientation, slug: string): string | undefined {
+  if (before.size === 0) {
+    for (const shot of loadLedger()) {
+      if (shot.hash) before.set(`${shot.orientation}/${shot.slug}`, shot.hash);
+    }
+    // A marker, so an empty previous ledger is not reloaded on every shot.
+    before.set('', '');
+  }
+  return before.get(`${orientation}/${slug}`);
+}
+
+/**
+ * Scenes in one form factor whose pictures are byte-for-byte the same.
+ *
+ * Not a near-match: identical. That only happens when two scenes ended up on
+ * the same screen in the same state, which means one of them did not do what
+ * its caption says — the tour photographed the screen it started from. Thirteen
+ * pairs were found this way, including a "blind mode" shot showing the score.
+ */
+export function identicalShots(): { orientation: Orientation; slugs: string[] }[] {
+  const byHash = new Map<string, { orientation: Orientation; slugs: string[] }>();
+  for (const shot of loadLedger()) {
+    if (!shot.hash) continue;
+    const key = `${shot.orientation}:${shot.hash}`;
+    const entry = byHash.get(key) ?? { orientation: shot.orientation, slugs: [] };
+    entry.slugs.push(shot.slug);
+    byHash.set(key, entry);
+  }
+  return [...byHash.values()]
+    .filter((entry) => entry.slugs.length > 1)
+    .map((entry) => ({ orientation: entry.orientation, slugs: [...entry.slugs].sort() }));
 }
 
 /** Remembers shots across the two orientation runs. */
@@ -104,10 +156,19 @@ export function saveLedger(): void {
  */
 export function writeContactSheet(): void {
   const all = loadLedger();
-  const bySlug = new Map<string, { title: string; note: string; shots: Partial<Record<Orientation, string>> }>();
+  const bySlug = new Map<
+    string,
+    {
+      title: string;
+      note: string;
+      shots: Partial<Record<Orientation, string>>;
+      since: Partial<Record<Orientation, string>>;
+    }
+  >();
   for (const shot of all) {
-    const entry = bySlug.get(shot.slug) ?? { title: shot.title, note: shot.note, shots: {} };
+    const entry = bySlug.get(shot.slug) ?? { title: shot.title, note: shot.note, shots: {}, since: {} };
     entry.shots[shot.orientation] = `${shot.orientation}/${shot.slug}.png`;
+    entry.since[shot.orientation] = shot.since ?? 'new';
     bySlug.set(shot.slug, entry);
   }
   const rows = [...bySlug.entries()]
@@ -115,10 +176,18 @@ export function writeContactSheet(): void {
     .map(([slug, entry], index) => {
       const cell = (o: Orientation): string =>
         entry.shots[o]
-          ? `<figure><img src="${entry.shots[o] ?? ''}" alt="${slug} ${o}"><figcaption>${o}</figcaption></figure>`
+          ? `<figure><img src="${entry.shots[o] ?? ''}" alt="${slug} ${o}"><figcaption>${o}${
+              entry.since[o] === 'same' ? '' : ` · ${entry.since[o] ?? 'new'}`
+            }</figcaption></figure>`
           : `<figure class="missing"><figcaption>${o} — not shot</figcaption></figure>`;
-      return `<section id="${slug}">
-  <h2><span class="n">${String(index + 1)}</span> ${entry.title} <code>${slug}</code></h2>
+      // A scene counts as changed if any of its four pictures did. The filter
+      // exists so a second tour is a review of the difference rather than of
+      // 328 pictures again.
+      const moved = Object.values(entry.since).some((s) => s !== 'same');
+      return `<section id="${slug}" data-since="${moved ? 'changed' : 'same'}">
+  <h2><span class="n">${String(index + 1)}</span> ${entry.title} <code>${slug}</code>${
+    moved ? ' <span class="tag">changed</span>' : ''
+  }</h2>
   <p class="note">${entry.note}</p>
   <div class="pair">${FORM_FACTORS.map((f) => cell(f.orientation)).join('')}</div>
   <textarea placeholder="What is wrong with this one? (type here, then copy the whole page's notes at the bottom)"
@@ -149,10 +218,14 @@ export function writeContactSheet(): void {
   #out { width:100%; min-height:12rem; margin-top:1rem; }
   button { background:#8ab4f8; color:#0f1115; border:0; border-radius:8px; padding:.6rem 1rem;
            font:inherit; font-weight:600; cursor:pointer; }
+  .tag { background:#3d2f14; color:#f6c26b; border-radius:999px; padding:.1rem .5rem; font-size:.75rem; font-weight:500; }
+  #filter { display:flex; align-items:center; gap:.5rem; color:#9aa0a6; margin:1rem 0 0; }
+  body.only-changed section[data-since="same"] { display:none; }
 </style>
 <h1>PianoPath — every screen, every shape</h1>
 <p class="note">Galaxy S25 (360 × 780 at 3×) and a 10-inch tablet (900 × 1200), both ways up. Type what is wrong under any shot, then press
 <b>Collect notes</b> at the bottom and send the text back.</p>
+<p id="filter"><label><input type="checkbox" id="changed-only" onchange="document.body.classList.toggle('only-changed', this.checked)"> Only what changed since the last tour</label></p>
 ${rows}
 <section>
   <h2>Your notes</h2>
