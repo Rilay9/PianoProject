@@ -63,7 +63,7 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       if (controls === 0) continue;
       add(
         'clipped',
-        `${name(el)} holds ${String(controls)} control(s) and is ${String(
+        `${name(el)} holds ${String(controls)} control${controls === 1 ? '' : 's'} and is ${String(
           el.scrollWidth - el.clientWidth,
         )}px wider than it shows`,
       );

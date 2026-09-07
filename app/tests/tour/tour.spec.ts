@@ -499,9 +499,10 @@ for (const { orientation, size } of FORM_FACTORS) {
       writeContactSheet();
       if (audited.length > 0) {
         const total = audited.reduce((n, a) => n + a.findings.length, 0);
+        const screens = audited.length;
         console.log(
-          `
-: ${String(total)} thing(s) to look at across ${String(audited.length)} screen(s)`,
+          `\n${orientation}: ${String(total)} to look at, across ` +
+            `${String(screens)} screen${screens === 1 ? '' : 's'}`,
         );
         for (const line of summarise(audited)) console.log(`  ${line}`);
       }
