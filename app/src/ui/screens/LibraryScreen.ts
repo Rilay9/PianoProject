@@ -138,7 +138,7 @@ export function compositionStatusLine(item: {
 }
 
 export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTMLElement {
-  const { section, header, body } = screenFrame('library', 'Library', 'Everything you can play, and your own scores.');
+  const { section, header, body } = screenFrame('library', 'Library');
   const filters: Filters = { ...DEFAULT_FILTERS };
   let items: CatalogItem[] = [];
   let progress = new Map<string, ProgressRow>();
@@ -232,31 +232,14 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     });
   });
 
-  const importBlock = el(
-    'div.block.import-block',
-    {},
-    el('h2', { text: 'Your own scores' }),
-    el('p.muted', {
-      text: 'MusicXML and .mxl play like anything else. A PDF opens in the page viewer — pages, not notes.',
-    }),
-    el(
-      'div.row',
-      {},
-      button('Import a score', () => picker.click(), { id: 'library-import', variant: 'primary' }),
-      // One file at a time is the wrong tool for a folder of thousands, so
-      // the folder browser is a screen of its own rather than a mode of this
-      // button (docs/04 §4b).
-      button('Browse a score folder', () => router.navigate('library', 'folder'), {
-        id: 'library-folder',
-      }),
-      // The books he already owns, which the app has no copy of (replan §5).
-      button('Shelf', () => router.navigate('library', 'shelf'), { id: 'library-shelf' }),
-      picker,
-    ),
-    status,
-  );
-
-  // Drag-and-drop, for the desktop half of docs/04 §4. Harmless on the phone.
+    // The drop target, and nothing else on the screen.
+  //
+  // It used to be a heading, two lines of prose and three filled buttons above
+  // the list — read once, then in the way for ever (`04` §0 R1). The buttons
+  // are text at the foot of the list now, and the sentence about MusicXML and
+  // PDFs is said by the status line when the picker is opened, which is the
+  // moment it means anything.
+  const importBlock = el('div.block.import-block', { id: 'library-drop' });
   const dropZone = importBlock;
   const onDragOver = (event: DragEvent): void => {
     event.preventDefault();
@@ -364,18 +347,79 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         filters.sort = value as SortKey;
       },
     ),
-    chip('Only mine', {
-      id: 'library-mine',
-      onClick: () => {
-        filters.importedOnly = !filters.importedOnly;
-        shown = PAGE_SIZE;
-        draw();
-      },
-    }),
   );
 
-  header.append(search, filterRow);
-  body.append(importBlock, count, list);
+  // The six selects live behind one chip (`04` §0 R1). They pushed the first
+  // item to about 640 px down a 780 px screen — the list is what the screen is
+  // for, and it began below the fold on every visit.
+  //
+  // The count line names any filter that is set, so a filter left on behind a
+  // closed row can never silently empty the list.
+  const filterToggle = chip('Filter', {
+    id: 'library-filter-toggle',
+    onClick: () => {
+      const open = filterRow.hidden;
+      filterRow.hidden = !open;
+      filterToggle.setAttribute('aria-expanded', String(open));
+    },
+  });
+  filterToggle.setAttribute('aria-expanded', 'false');
+  filterToggle.setAttribute('aria-controls', 'library-filters');
+  filterRow.id = 'library-filters';
+  filterRow.hidden = true;
+
+  const mineChip = chip('Only mine', {
+    id: 'library-mine',
+    onClick: () => {
+      filters.importedOnly = !filters.importedOnly;
+      shown = PAGE_SIZE;
+      draw();
+    },
+  });
+
+  // The ways in to his own scores sit at the foot of the list as text: read
+  // once, then scrolled past for ever (`04` §0 R1 and R3).
+  const ownScores = el(
+    'div.plan-links',
+    { id: 'library-own' },
+    button(
+      'Import a score',
+      () => {
+        // Said at the moment it means something, rather than above a list of
+        // 1,533 items he did not come here to read about (`04` §0 R1).
+        status.textContent =
+          'MusicXML and .mxl play like anything else. A PDF opens in the page viewer — pages, not notes.';
+        picker.click();
+      },
+      { id: 'library-import', variant: 'quiet' },
+    ),
+    el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
+    button('Shelf', () => router.navigate('library', 'shelf'), {
+      id: 'library-shelf',
+      variant: 'quiet',
+    }),
+    el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
+    // One file at a time is the wrong tool for a folder of thousands, so the
+    // folder browser is a screen of its own (docs/04 §4b).
+    button('Score folder', () => router.navigate('library', 'folder'), {
+      id: 'library-folder',
+      variant: 'quiet',
+    }),
+    picker,
+  );
+
+  // The count and the filters are the same subject, so they share a line: what
+  // is being shown, and how to change it. Two rows became one, and the list
+  // moved another forty pixels up the screen.
+  header.append(search);
+  body.append(
+    el('div.library-countrow', {}, filterToggle, mineChip, count),
+    filterRow,
+    list,
+    ownScores,
+    importBlock,
+    status,
+  );
 
   // --- rows --------------------------------------------------------------
   function open(target: CatalogItem): void {
@@ -398,7 +442,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     if (item.composer) facts.unshift(['Composer', item.composer]);
     if (item.keySig) facts.push(['Key', item.keySig]);
     if (item.timeSig) facts.push(['Time', item.timeSig]);
-    const kv = el('dl.kv');
+    const kv = el('dl.kv.kv--rows');
     for (const [term, value] of facts) {
       kv.append(el('dt', { text: term }), el('dd', { text: value }));
     }
@@ -621,7 +665,25 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       items.filter((item) => matches(item, filters, progress)),
       filters.sort,
     );
-    count.textContent = `${String(filtered.length)} of ${String(items.length)} items`;
+    // The count names whatever is set, because the selects can be closed and a
+    // filter left on behind a closed row must never silently empty the list.
+    // Read off the controls themselves, so the words in the count line are the
+    // same words as the option he chose and cannot drift from them.
+    const chosen = (id: string): string => {
+      const select = document.getElementById(id);
+      if (!(select instanceof HTMLSelectElement) || select.value === 'all') return '';
+      return select.selectedOptions[0]?.textContent?.trim() ?? '';
+    };
+    const active = [
+      chosen('library-type'),
+      chosen('library-track'),
+      chosen('library-status-filter'),
+      chosen('library-hands'),
+      filters.importedOnly ? 'Only mine' : '',
+    ].filter(Boolean);
+    count.textContent =
+      `${String(filtered.length)} of ${String(items.length)} items` +
+      (active.length > 0 ? ` · ${active.join(' · ')}` : '');
     (document.getElementById('library-mine') as HTMLButtonElement | null)?.setAttribute(
       'aria-pressed',
       String(filters.importedOnly),

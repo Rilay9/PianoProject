@@ -215,6 +215,19 @@ body {
   color: var(--text-muted);
 }
 
+/* What is being shown, and how to change it, on one line (`04` §4). */
+.library-countrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0 4px;
+}
+
+.library-countrow #library-count {
+  margin: 0;
+}
+
 /* Bottom tab bar (default / portrait) */
 .tab-nav {
   order: 2;
@@ -1152,6 +1165,13 @@ input[type='checkbox'] {
    than as an invitation to swipe. The same change was made to the score
    screen's control bar for the same reason. A second row costs a line; a
    control nobody knows about costs the feature. */
+/* `hidden` has to win over `display: flex`, which it does not on its own —
+   the attribute sets `display: none` at a specificity any class rule beats,
+   so a "hidden" filter row stayed on the screen. */
+.filter-row[hidden] {
+  display: none;
+}
+
 .filter-row {
   display: flex;
   flex-wrap: wrap;
@@ -1921,6 +1941,13 @@ input[type='checkbox'] {
    one list were laid side by side and the last was cut off at the edge of a
    360 px screen — the screenshots read "Mean reactio". A two-column grid
    gives each statistic its own line and lets the numbers align. */
+/* A list of term-and-value pairs, one to a line.
+
+   `.kv` is a flex row built for a *single* pair; several in one `dl` are laid
+   side by side and the last is cut off at the edge of a 360 px screen. The
+   drill result read "Mean reactio"; the library item sheet lost its last value
+   the same way. One class, both screens. */
+.kv--rows,
 #drill-stats {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -1928,10 +1955,12 @@ input[type='checkbox'] {
   border-bottom: 0;
 }
 
+.kv--rows dt,
 #drill-stats dt {
   color: var(--text-muted);
 }
 
+.kv--rows dd,
 #drill-stats dd {
   margin: 0;
   text-align: right;

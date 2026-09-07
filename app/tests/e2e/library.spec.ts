@@ -38,6 +38,9 @@ test.describe('Library', () => {
     await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
     const all = await page.locator('#library-count').textContent();
 
+    // The six selects live behind the Filter chip now (`04` §0 R1): above the
+    // list they pushed the first item about 640 px down a 780 px screen.
+    await page.locator('#library-filter-toggle').click();
     await page.locator('#library-type').selectOption('drill');
     await expect(page.locator('#library-count')).not.toHaveText(all ?? '');
     await expect(page.locator('#library-list .list-row').first()).toBeVisible();
@@ -127,5 +130,50 @@ test.describe('Library', () => {
     await page.locator('#library-file').setInputFiles(MXL);
     await page.locator('#library-mine').click();
     await expect(page.locator('#library-count')).toContainText('1 of');
+  });
+});
+
+/**
+ * `04` §0 on the Library. The first item used to start about 640 px down a
+ * 780 px screen: a heading, two lines of prose and three filled buttons above
+ * a list of 1,533 things.
+ */
+test.describe('Library obeys 04 §0', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('the list starts inside the first screenful (R1)', async ({ page }) => {
+    await page.goto('/#/library');
+    const first = page.locator('#library-list .list-row').first();
+    await expect(first).toBeVisible();
+    const box = await first.boundingBox();
+    expect(box?.y ?? 0).toBeLessThan(200);
+  });
+
+  test('a filter set behind the closed row is named in the count (R1)', async ({ page }) => {
+    await page.goto('/#/library');
+    await expect(page.locator('#library-list .list-row').first()).toBeVisible();
+    // Closed to begin with, or the six selects are back above the list.
+    await expect(page.locator('#library-filters')).toBeHidden();
+    await page.locator('#library-filter-toggle').click();
+    await expect(page.locator('#library-filters')).toBeVisible();
+    await page.locator('#library-type').selectOption('song');
+    await page.locator('#library-filter-toggle').click();
+    await expect(page.locator('#library-filters')).toBeHidden();
+    // The filter is still on and the screen says so, so an empty list is never
+    // a mystery.
+    await expect(page.locator('#library-count')).toContainText('Songs');
+  });
+
+  test('the item sheet fits its last value on the screen', async ({ page }) => {
+    await page.goto('/#/library');
+    await page
+      .locator('#library-list .list-row')
+      .first()
+      .getByRole('button', { name: 'Details' })
+      .click();
+    await expect(page.locator('#library-detail')).toBeVisible();
+    const last = page.locator('#library-detail dd').last();
+    const clipped = await last.evaluate((el) => el.scrollWidth > el.clientWidth + 2);
+    expect(clipped).toBe(false);
   });
 });
