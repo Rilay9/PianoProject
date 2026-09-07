@@ -1425,6 +1425,9 @@ input[type='checkbox'] {
 }
 
 .badge {
+  /* One line. A badge whose own words wrapped made the meta line 38 px
+     instead of 22, which is what put Today's repertoire row at 111. */
+  white-space: nowrap;
   display: inline-block;
   padding: 2px 8px;
   border-radius: 999px;
@@ -1492,9 +1495,19 @@ input[type='checkbox'] {
 
 .list-row__text {
   /* A basis, not zero: `flex: 1` is `flex: 1 1 0%`, which lets the words
-     shrink away to nothing beside whatever else is on the row. Below this
-     width the actions wrap instead. */
-  flex: 1 1 12rem;
+     shrink away to nothing beside whatever else is on the row.
+     
+     Seven rem, not twelve. The basis is what decides whether the actions fit
+     beside the words or drop under them, and dropping costs the row 42 px —
+     which is the whole of R2's budget gone (`04` §0: a row is ≤ 96 px). At
+     twelve, every Skills row (Drill it + Find more) and every shelf row
+     (Practise, Edit, Remove) wrapped and stood at 105-117 px. The words still
+     *grow* into whatever the actions leave, so a one-button row is unchanged;
+     this only says how little they will accept before pushing the buttons
+     down. Six rem: a shelf row carries Practise, Edit and Remove, 167 px of
+     them, against a content box of 262 — so the basis has to be under 83 for
+     them to stay on the line. */
+  flex: 1 1 5rem;
   min-width: 0;
 }
 
@@ -1519,7 +1532,12 @@ input[type='checkbox'] {
 .list-row__meta {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  /* One line. Wrapped, it cost the row a second 28 px line — "Mary Had a
+     Little Lamb" on Today stood at 111 px because its badges did not fit
+     beside "7 min · L1.1 · RH". The badges keep their size and the text
+     ellipsises, because "Repertoire" is the part that is hard to infer. */
+  flex-wrap: nowrap;
+  overflow: hidden;
   gap: 6px;
   font-size: 0.85rem;
   color: var(--text-muted);
