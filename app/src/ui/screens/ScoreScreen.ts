@@ -43,6 +43,7 @@ import {
 import { bpmAt, type ScoreModel } from '../../score/types';
 import type { Router } from '../../router';
 import { KeyboardStrip } from '../KeyboardStrip';
+import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
 
 const MODES: { id: Mode; label: string }[] = [
@@ -983,12 +984,22 @@ export function ScoreScreen(router: Router): HTMLElement {
         // the instrument (docs/04 §5). It feeds the shared ScreenKeyboardSource
         // rather than the session directly, so "screen keys" is an input like
         // any other and the engine cannot tell the difference.
+        // The range this piece uses, not all 88 keys. With the full keyboard
+        // on a 360 px phone every key is about seven pixels, and the blue key
+        // marking the note the app is waiting for is a sliver among eighty-
+        // eight slivers — which is exactly how a run got stuck on an F#4 that
+        // was on the screen the whole time.
+        const range = stripRangeFor(
+          loaded.steps.flatMap((step) => step.notes.map((note) => note.midi)),
+        );
         strip = new KeyboardStrip({
+          ...range,
           interactive: true,
           onNoteOn: (midi, velocity) => screenKeyboardSource.noteOn(midi, velocity),
           onNoteOff: (midi) => screenKeyboardSource.noteOff(midi),
         });
         stripHost.appendChild(strip.el);
+        strip.scrollToNote(loaded.steps[0]?.notes[0]?.midi ?? 60, 'auto');
       }
 
       const context = audioEngine.contextOrNull;

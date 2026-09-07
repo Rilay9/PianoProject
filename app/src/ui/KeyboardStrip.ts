@@ -142,10 +142,25 @@ export class KeyboardStrip {
     this.setState({ expected: [], pressed: [], correct: [], wrong: [] });
   }
 
-  /** Scrolls the strip so `midi` is centred, if it is off-screen. */
+  /**
+   * Scrolls the strip so `midi` is centred, if it is off-screen.
+   *
+   * "If it is off-screen" is now true: it used to scroll unconditionally,
+   * which is fine when it is called once on open and wrong when it is called
+   * on every step — the strip would slide under the learner's finger on a
+   * piece that fits on the screen anyway.
+   */
   scrollToNote(midi: number, behavior: ScrollBehavior = 'smooth'): void {
     const key = this.keys.get(midi);
     if (!key) return;
+    const viewLeft = this.el.scrollLeft;
+    const viewRight = viewLeft + this.el.clientWidth;
+    // A margin, so a key at the very edge counts as off-screen: a note you can
+    // only just see is one you will miss.
+    const margin = key.offsetWidth * 2;
+    const visible = key.offsetLeft >= viewLeft + margin &&
+      key.offsetLeft + key.offsetWidth <= viewRight - margin;
+    if (visible) return;
     const target = key.offsetLeft + key.offsetWidth / 2 - this.el.clientWidth / 2;
     this.el.scrollTo({ left: Math.max(0, target), behavior });
   }

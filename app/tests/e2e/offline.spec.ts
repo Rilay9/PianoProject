@@ -198,7 +198,26 @@ test.describe('offline', () => {
     await expect(page.locator('#diag-offline')).toContainText('Currently offline', {
       timeout: 30_000,
     });
-    await expect(page.locator('#diag-offline')).toContainText('Precached');
+    // Not `toContainText('Precached')`, which is what stood here and which
+    // passes just as happily on "Precached 0 of 1258". That is what it *did*
+    // say on the phone, on a device holding 1,413 cache entries that had run
+    // the whole app offline a moment earlier: `caches.match` was asked for a
+    // bare URL while Workbox stores every revisioned entry under
+    // `?__WB_REVISION__=…`, so all 1,258 read as missing. The service worker
+    // was right and the check was asking the wrong question — and this
+    // assertion could not tell the difference.
+    const precached = await page.locator('#diag-offline').textContent();
+    const counts = /Precached (\d+) of (\d+) catalog files/.exec(precached ?? '');
+    expect(counts, `no precache line in: ${precached ?? '(nothing)'}`).toBeTruthy();
+    const [, cached, total] = counts!;
+    expect(Number(total)).toBeGreaterThan(1000);
+    expect(
+      Number(cached),
+      `Diagnostics says ${cached} of ${total} are precached`,
+    ).toBe(Number(total));
+    // And it lists nothing as missing, which is the same claim said twice —
+    // deliberately, because the list is what the owner is asked to send back.
+    await expect(page.locator('#diag-missing')).toBeHidden();
   });
 
   // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async

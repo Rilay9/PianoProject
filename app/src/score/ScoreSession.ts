@@ -402,6 +402,11 @@ export class ScoreSession {
       wrong,
       uncertain,
     });
+    // Keep the note it is waiting for on the screen. `scrollToNote` does
+    // nothing when the key is already comfortably in view, so a piece that
+    // fits never moves.
+    const lowest = Math.min(...this.expectedNow);
+    if (Number.isFinite(lowest)) strip.scrollToNote(lowest);
   }
 
   /**

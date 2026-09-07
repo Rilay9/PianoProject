@@ -76,7 +76,16 @@ export async function precacheReport(): Promise<PrecacheReport> {
     const url = contentUrl(file);
     let hit: Response | undefined;
     try {
-      hit = await caches.match(url);
+      // `ignoreSearch`, or every single file reads as missing.
+      //
+      // Workbox precaches a revisioned entry under the URL *plus*
+      // `?__WB_REVISION__=<hash>`, and every content file is revisioned —
+      // they are not hashed in their names, the way the built assets are. An
+      // exact match therefore missed all 1,258 of them, and Diagnostics told
+      // the owner "precached 0 of 1258" on a phone whose storage held 1,413
+      // cache entries and which had just run the whole app offline. The
+      // service worker was right; this check was asking the wrong question.
+      hit = await caches.match(url, { ignoreSearch: true });
     } catch {
       hit = undefined;
     }

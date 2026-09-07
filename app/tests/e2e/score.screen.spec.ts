@@ -202,3 +202,46 @@ test.describe('score screen', () => {
     await expect(page.locator('#score-tempo-label')).toContainText('120%');
   });
 });
+
+test.describe('the keyboard strip shows the piece, not the whole piano', () => {
+  /**
+   * The bug this replaces, from the first run on the real phone.
+   *
+   * The strip was built with no range, so it drew all 88 keys. On a 360 px
+   * screen that is about seven pixels a key, and the blue key marking the note
+   * the app was waiting for — F#4, in *Suo Gân* — was a sliver among eighty-
+   * eight slivers. Forty seconds of hunting from E3 to E4 never found it, and
+   * the engine had been right the whole time.
+   */
+  const SUO_GAN = 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx';
+
+  test('draws the range the music uses', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 780 });
+    await openScore(page, SUO_GAN);
+    const keys = page.locator('.keyboard-strip [data-midi]');
+    const count = await keys.count();
+    expect(count, 'the whole piano is back on the strip').toBeLessThan(40);
+    expect(count, 'the strip is too narrow to see where the hand is').toBeGreaterThan(20);
+
+    // And the notes of the first bar are all on it.
+    for (const midi of [62, 64, 66, 69]) {
+      await expect(page.locator(`.keyboard-strip [data-midi="${String(midi)}"]`)).toHaveCount(1);
+    }
+  });
+
+  test('the key it is waiting for is wide enough to hit, and on the screen', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 780 });
+    await openScore(page, SUO_GAN);
+    const expected = page.locator('.keyboard-strip [data-midi="62"]'); // D4, the first note
+    const box = await expected.boundingBox();
+    expect(box, 'the first note has no key on the strip').toBeTruthy();
+    // Seven pixels was the old width. A finger is about forty.
+    expect(box!.width, `the key is ${String(box!.width)} px wide`).toBeGreaterThan(12);
+
+    // Within the strip's own scroll viewport, not merely in the DOM.
+    const strip = await page.locator('.keyboard-strip').boundingBox();
+    expect(strip).toBeTruthy();
+    expect(box!.x).toBeGreaterThanOrEqual(strip!.x - 1);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(strip!.x + strip!.width + 1);
+  });
+});
