@@ -386,7 +386,9 @@ for (const { orientation, size } of FORM_FACTORS) {
         await expect(page.locator('#score-section')).toBeVisible({ timeout: 30_000 });
         await page.locator('#score-section').selectOption({ index: 1 });
         await page.waitForTimeout(900);
-      }, async (p) => /Loop .+/.test((await p.locator('#score-loop').textContent()) ?? ''));
+        // The button names the section now — the row beside it is what says
+        // "Loop" — so "not Off" is what proves one is set.
+      }, async (p) => ((await p.locator('#score-loop').textContent()) ?? 'Off') !== 'Off');
       await scene('33-score-four-bars', 'Four bars in the window', 'More to read ahead into, smaller notes.', async () => {
         // A tablet opens at four already (`04` §7a), so on one this scene is
         // `20-score` with a different caption. The phone is where four bars is
