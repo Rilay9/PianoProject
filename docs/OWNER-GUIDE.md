@@ -8,6 +8,12 @@ needs the docs in this folder.
 
 ## 1. Getting it on the phone
 
+> Addresses are written as `<laptop-wifi-ip>` and `<laptop-name>` throughout,
+> rather than the real ones, because this repository is public while you are
+> showing it to people. Yours are in `packaging/lan/README-local.md`, which is
+> gitignored and never leaves the laptop; `ipconfig` and `mkcert -CAROOT`
+> print them too.
+
 The app is served from **your own laptop, over the house Wi-Fi**, and only while
 you are installing it or updating it. After the first launch the phone holds
 everything and the laptop can be off (`docs/00` D25). Nothing about your build
@@ -25,17 +31,22 @@ certificate it issues is trusted there.
 
 1. `mkcert` is installed on this laptop (`winget install FiloSottile.mkcert`
    if it ever goes missing). The certificate for this laptop's addresses is
-   already made, in `packaging\lan\` — `192.168.0.23` (Wi-Fi), `192.168.0.24`
-   (Ethernet), `philoceraptorii.local` and `localhost`. It is gitignored and
-   yours. If the laptop's address ever changes (see the note below), remake it:
+   already made, in `packaging\lan\` — its Wi-Fi and Ethernet addresses, its
+   `.local` name and `localhost`. It is gitignored and yours; the addresses it
+   was made for are written down in `packaging/lan/README-local.md`, which is
+   gitignored too.
+
+   `ipconfig` prints the addresses if you need them again. If the laptop's
+   address ever changes (see the note below), remake it:
 
    ```bash
-   mkcert -cert-file packaging/lan/cert.pem -key-file packaging/lan/key.pem 192.168.0.23 192.168.0.24 philoceraptorii.local localhost
+   mkcert -cert-file packaging/lan/cert.pem -key-file packaging/lan/key.pem <laptop-wifi-ip> <laptop-ethernet-ip> <laptop-name>.local localhost
    ```
 
-2. **Install the root certificate on the phone.** Find it with
-   `mkcert -CAROOT` — on this laptop that is
-   `C:\Users\yalir\AppData\Local\mkcert\rootCA.pem`. Copy that one file to the
+2. **Install the root certificate on the phone.** Find the folder with
+   `mkcert -CAROOT` — on Windows that is
+   `C:\Users\<you>\AppData\Local\mkcert\`, and the file is `rootCA.pem`
+   inside it. Copy that one file to the
    phone (share it to yourself, or a cable), then on the S25:
    **Settings → Security and privacy → More security settings → Install from
    device storage → CA certificate**, pick `rootCA.pem`, and accept the
@@ -48,7 +59,7 @@ certificate it issues is trusted there.
 
 > **Give the laptop a fixed address.** The certificate names the laptop's IP,
 > and the router hands IPs out by lease. In the router's admin page, reserve
-> `192.168.0.23` for this laptop's Wi-Fi (a "DHCP reservation" or "static
+> this laptop's Wi-Fi address (a "DHCP reservation" or "static
 > lease"). If you skip this and the address changes, the phone says the
 > certificate is wrong and the fix is step 1 again with the new address — and,
 > for the APK, a rebuild with the new host.
@@ -76,8 +87,9 @@ cd ..
 py -3.11 packaging/serve-lan.py
 ```
 
-It prints the addresses to open. Leave it running, and on the phone — on the
-same Wi-Fi — open `https://192.168.0.23/` in Chrome. The first launch
+It prints the addresses to open — use the one it prints. Leave it running,
+and on the phone, on the same Wi-Fi, open `https://<laptop-wifi-ip>/` in
+Chrome. The first launch
 downloads about 1,600 files (17 MB) into the phone's cache; give it a minute
 and watch the progress on Settings → Diagnostics if it seems slow.
 
@@ -89,7 +101,7 @@ and watch the progress on Settings → Diagnostics if it seems slow.
 > Security → Firewall & network protection → Allow an app through firewall →
 > Python.
 >
-> Tested 2026-09-06 from the laptop itself against `https://192.168.0.23` on
+> Tested 2026-09-06 from the laptop itself against its own address on
 > both ports, with the certificate chain verified against the mkcert root.
 > Not yet tried from the phone.
 
@@ -129,7 +141,7 @@ keytool -genkeypair -v -keystore ~/keys/pianopath.keystore \
   -alias pianopath -keyalg RSA -keysize 2048 -validity 10000
 
 # 2. Build (in Git Bash; the script is a shell script).
-export PIANOPATH_HOST=192.168.0.23               # the laptop, from step A
+export PIANOPATH_HOST=<laptop-wifi-ip>           # the laptop, from step A
 export PIANOPATH_KEYSTORE=~/keys/pianopath.keystore
 export PIANOPATH_KEY_ALIAS=pianopath
 ./packaging/build-apk.sh
@@ -162,7 +174,8 @@ say so — everything else can be worked around, that cannot.
 
 ### Where the app is served from
 
-Your laptop, over the house Wi-Fi, at `https://192.168.0.23/` — see A–C above.
+Your laptop, over the house Wi-Fi, at `https://<laptop-wifi-ip>/` — see A–C
+above.
 There is no public address any more. The GitHub Pages deploy that existed while
 the repository was public goes away with it; the tests still run in CI on every
 push.
