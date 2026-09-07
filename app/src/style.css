@@ -1981,6 +1981,27 @@ input[type='checkbox'] {
   margin-top: auto;
 }
 
+/* A phone held sideways gives the drill card 328 px, and its body wanted about
+   230 of them — a 140 px stage, the prompt, the hint and the row of buttons —
+   against the 120 it gets once the header and the keyboard have theirs. The
+   body overflows rather than scrolling, and the keyboard is painted after it,
+   so "Play again", "Listen", "Skip" and "End drill" were drawn underneath the
+   keys and could not be seen or pressed.
+
+   The stage gives up its floor first, because it is a letter or a chord name
+   and reads perfectly well smaller; the body scrolls only if that is still not
+   enough. */
+@media (max-height: 520px) {
+  [data-screen='drill'] .drill-stage {
+    min-height: 0;
+  }
+
+  [data-screen='drill'] .screen-body {
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
 /* Right and wrong differ by more than colour — the whole card shifts, which
    is legible at a glance and to a colour-blind reader (docs/04 §9). */
 .screen[data-feedback='correct'] .drill-stage {
@@ -2057,9 +2078,15 @@ input[type='checkbox'] {
   stroke-width: 3;
 }
 
-/* A chord symbol is the whole card: big, centred, nothing else. */
+/* A chord symbol is the whole card: big, centred, nothing else.
+
+   Sized off the *short* side of the screen. `vw` is the long side when the
+   phone is sideways, so 14vw came to 109 px on a screen only 360 px tall — the
+   symbol then took the room the buttons under it needed, and "Play again",
+   "Listen", "Skip" and "End drill" ended up behind the keyboard. Upright the
+   two units are the same number, so nothing changes there. */
 .symbol-card {
-  font-size: clamp(2.5rem, 14vw, 4.5rem);
+  font-size: clamp(2.5rem, 14vmin, 4.5rem);
   font-weight: 600;
   letter-spacing: 0.02em;
   text-align: center;
@@ -2070,12 +2097,12 @@ input[type='checkbox'] {
 
 /* A title rather than a symbol: readable, not enormous. */
 .symbol-card--long {
-  font-size: clamp(1.15rem, 5.5vw, 1.75rem);
+  font-size: clamp(1.15rem, 5.5vmin, 1.75rem);
   letter-spacing: 0;
 }
 
 .ear-card {
-  font-size: clamp(3rem, 18vw, 6rem);
+  font-size: clamp(3rem, 18vmin, 6rem);
   text-align: center;
 }
 
