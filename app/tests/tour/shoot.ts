@@ -6,7 +6,7 @@
  * about *this* picture, and that only works if the picture has a stable name.
  */
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import type { Page } from '@playwright/test';
 
@@ -128,6 +128,23 @@ export function identicalShots(): { orientation: Orientation; slugs: string[] }[
     .map((entry) => ({ orientation: entry.orientation, slugs: [...entry.slugs].sort() }));
 }
 
+/**
+ * Forgets a shot, and deletes its picture.
+ *
+ * A scene that used to be photographed and no longer is — because it turned
+ * out to have nothing of its own to show, or because it could not be reached —
+ * would otherwise keep its last picture for ever: the ledger carries forward
+ * every entry this run did not replace. That is how "the session controls"
+ * stayed in the identical list after the run had stopped shooting it.
+ */
+export function dropShot(orientation: Orientation, slug: string): void {
+  dropped.push(`${orientation}/${slug}`);
+  const file = join(TOUR_DIR, orientation, `${slug}.png`);
+  if (existsSync(file)) rmSync(file);
+}
+
+const dropped: string[] = [];
+
 /** Remembers shots across the two orientation runs. */
 const LEDGER = join(TOUR_DIR, 'shots.json');
 
@@ -142,7 +159,9 @@ export function loadLedger(): Shot[] {
 
 export function saveLedger(): void {
   const previous = loadLedger().filter(
-    (old) => !shots.some((s) => s.slug === old.slug && s.orientation === old.orientation),
+    (old) =>
+      !shots.some((s) => s.slug === old.slug && s.orientation === old.orientation) &&
+      !dropped.includes(`${old.orientation}/${old.slug}`),
   );
   mkdirSync(TOUR_DIR, { recursive: true });
   writeFileSync(LEDGER, JSON.stringify([...previous, ...shots], null, 2), 'utf8');

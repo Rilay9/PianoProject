@@ -21,6 +21,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
 import {
+  dropShot,
   FORM_FACTORS,
   identicalShots,
   type Orientation,
@@ -217,6 +218,11 @@ for (const { orientation, size } of FORM_FACTORS) {
           const why = cause instanceof Error ? cause.message.split('\n')[0] : 'failed';
           if (cause instanceof Redundant) redundant.push(`${slug}: ${why}`);
           else gaps.push(`${slug}: ${why}`);
+          // Whatever this scene last looked like is no longer a picture of
+          // anything, and the ledger would otherwise carry it forward for
+          // ever — which is how a scene that had stopped being shot went on
+          // appearing in the identical list.
+          dropShot(orientation, slug);
         }
       };
 
@@ -355,6 +361,10 @@ for (const { orientation, size } of FORM_FACTORS) {
         });
         await page.waitForTimeout(800);
       }, async (p) => !(await p.locator('#score-strip').isVisible()));
+      // Put it back. `Keys` is a *setting*, so leaving it off leaked into
+      // every later score scene — which is why `33-score-four-bars` came back
+      // as a second copy of this one on both tablets.
+      await setSetting(page, 'keyboardStrip', true);
       await scene('29-score-blind', 'Blind mode', 'The notation is hidden on purpose. Is that obvious?', async () => {
         await go(page, `/score/${SONG}?blind=1`, 'score');
         await page.waitForTimeout(2000);
@@ -378,11 +388,16 @@ for (const { orientation, size } of FORM_FACTORS) {
         await page.waitForTimeout(900);
       }, async (p) => /Loop .+/.test((await p.locator('#score-loop').textContent()) ?? ''));
       await scene('33-score-four-bars', 'Four bars in the window', 'More to read ahead into, smaller notes.', async () => {
+        // A tablet opens at four already (`04` §7a), so on one this scene is
+        // `20-score` with a different caption. The phone is where four bars is
+        // a choice worth photographing.
+        if (orientation.startsWith('tablet')) {
+          throw new Redundant('a tablet opens at four bars');
+        }
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
-        // To four, not up by two: a tablet already opens at four (`04` §7a),
-        // so "up twice" landed on six there and the scene was a gap in both
-        // tablet shapes.
+        // To four, not up by two: this way it does not depend on where the
+        // form factor happens to start.
         await withScoreMenu(page, async () => {
           for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
           for (let i = 0; i < 3; i += 1) await page.locator('#score-bars-up').click();

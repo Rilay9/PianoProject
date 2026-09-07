@@ -83,6 +83,13 @@ test.describe('a whole run', () => {
     await page.waitForTimeout(300);
     expect(await page.locator('#score-stage .is-front').innerHTML()).toBe(before);
     await expect(page.locator('#score-summary')).toBeHidden();
+
+    // …and the key he pressed goes red on the strip (`04` §5). The staff has
+    // nowhere to put it — there is no B4 in the bar — so the strip is the
+    // whole of the feedback, and it was showing nothing at all: the tour's
+    // "a wrong note" scene could not be photographed in any form factor
+    // because there was no red anywhere on the screen to photograph.
+    await expect(page.locator('.keyboard-strip [data-midi="71"]')).toHaveClass(/is-wrong/);
   });
 
   test('Wait mode: playing it wrongly still finishes, with a lower score', async ({ page }) => {

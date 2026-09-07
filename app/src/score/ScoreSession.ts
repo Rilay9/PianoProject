@@ -118,6 +118,19 @@ export class ScoreSession {
   private dirtiedByInputAtMs: number | null = null;
   /** Note id -> how it should be painted. Cleared when a lap restarts. */
   private judgements = new Map<string, NoteState>();
+  /**
+   * Keys played that are in no step of the score at all (`04` §5).
+   *
+   * The staff cannot show these — there is no note there to colour — so the
+   * spec puts them red on the keyboard strip, and until now nothing did:
+   * `judgements` is keyed by score-note id, so a key the piece never asks for
+   * left no trace anywhere. A learner pressing the wrong key got silence from
+   * the one surface a beginner is actually looking at.
+   *
+   * Cleared when the cursor moves on, so it says 'that key, now' rather than
+   * accumulating a red keyboard over a run.
+   */
+  private wrongKeys = new Set<number>();
   private dirty = false;
   private pendingStep: number | null = null;
 
@@ -173,6 +186,7 @@ export class ScoreSession {
     this.stop();
     this.runOptions = run;
     this.judgements = new Map();
+    this.wrongKeys = new Set();
     this.scheduledSteps = new Set();
     this.lastScore = null;
 
@@ -313,6 +327,7 @@ export class ScoreSession {
         break;
       case 'stepAdvanced':
         this.pendingStep = event.to;
+        this.wrongKeys.clear();
         this.dirty = true;
         break;
       case 'noteJudged': {
@@ -329,6 +344,9 @@ export class ScoreSession {
             ? 'uncertain'
             : 'wrong';
         for (const id of event.noteIds) this.judgements.set(id, state);
+        // A key that satisfies no note in the score: the staff has nowhere to
+        // put it, the strip does.
+        if (event.noteIds.length === 0 && state === 'wrong') this.wrongKeys.add(event.midi);
         this.dirty = true;
         break;
       }
@@ -420,7 +438,7 @@ export class ScoreSession {
     const strip = this.options.strip;
     if (!strip) return;
     const correct = new Set<number>();
-    const wrong = new Set<number>();
+    const wrong = new Set<number>(this.wrongKeys);
     const uncertain = new Set<number>();
     for (const [noteId, state] of this.judgements) {
       const midi = midiFromNoteId(noteId);
