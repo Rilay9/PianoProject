@@ -72,6 +72,22 @@ are scheduled via `requestAnimationFrame` comparing `audioContext.currentTime` t
 Tempo mode with all input ignored and both hands played back; the learner watches/listens. Loop
 and tempo controls apply. Used for "play this bar for me" long-press.
 
+### When the page is hidden
+
+A browser stops issuing animation frames when the page is not being drawn — another app in
+front, the screen off, the tab hidden — and a clock-driven run that ticks only from frames
+stops advancing without saying so. Two things follow (`00` D26, decided 2026-09-07):
+
+- **The run pauses and says so.** On `visibilitychange` to hidden a running Tempo or Listen
+  run pauses. On return the status line reads *Paused — you were away 40 s*, with **Resume**
+  and **Restart**. The away time is not practice: the engine already subtracts pauses from
+  elapsed time, and the session's recorded minutes must subtract them too. Never catch up
+  silently — a phone call must not become a page of missed bars.
+- **The engine ticks from a timer as well as from frames.** The frame loop stays the painter;
+  `engine.tick()` is also driven by a short interval. `tick()` is idempotent on the clock, so
+  two callers cost nothing, and a starved animation loop then slows the paint and never the
+  music.
+
 ## 5. Free mode
 
 No cursor logic; input goes to the keyboard strip and is optionally recorded (`sessions` row

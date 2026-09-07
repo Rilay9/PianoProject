@@ -8,12 +8,46 @@ Design language: high contrast, large tap targets (≥ 48 px), dark and light th
 default), no decorative animation on the score screen (rendering budget). Typography: system
 font; notation is SVG from OSMD. Icons: inline SVG (no icon font).
 
+## 0. Rules every screen obeys
+
+Four rules, decided 2026-09-07 after the app was made to photograph itself and the pictures
+were read. Reasoning and the per-screen consequences are in
+`docs/decisions/2026-09-07-ux-decisions.md`; `00` D26 points here. They exist so that the next
+twenty fixes have one taste rather than twenty.
+
+**R1 — The subject first.** A screen's subject — the list, the exercise options, the notation —
+starts within the first screenful on the phone, upright. Explanation is one line in the header at
+most; the long version lives *behind or below* the thing it explains (a `<details>`, a sheet, a
+link), never above it. The one exception is an error's remedy, which appears when the error does
+and not before.
+
+**R2 — Two reading distances.** Screens used on the music stand — Score, PDF, Paper practice,
+Drill, Metronome — are read at arm's length and stay large. Every other screen is held in the
+hand and uses ordinary phone density: a list row is one title line, one line of muted detail, and
+badges only when they say something the detail line does not; a settings row is a label and its
+control on one line, help text under it only when the label cannot carry the meaning. Targets, so
+the tour can check them: a Today or Plan row **≤ 96 px** tall, a settings row **≤ 56 px**, at
+least **eight settings** on the first screenful.
+
+**R3 — Weight by frequency.** A filled box is the thing you do on most visits, and there is at
+most **one per screen**. An outlined box is something you do often. Plain text is something you do
+once per lesson or less — reorder, mark done, register a book, find more. A rare action that needs
+several controls (ordering tracks, choosing sections) lives in a sheet behind one text link, not
+on the screen it is rarely used on.
+
+**R4 — Nothing dead.** When a screen's subject is missing, it draws the sentence that says so and
+the one control that does what the sentence suggests. No furniture: no empty grid, no live toggles
+that act on nothing, no "Disconnect" while disconnected, no statistic with no data behind it. A
+single-line list is not empty and gets no special treatment.
+
 ## 1. Navigation
 
 Bottom tab bar (portrait) / left rail (landscape): **Today · Plan · Library · Progress · Settings**.
 Score screen is a full-screen route pushed on top (back gesture returns).
 
 ## 2. Today
+
+**§0:** a hand screen (R2) — rows ≤ 96 px. Its one filled box (R3) is **Start session**; *Jump to…* and *Metronome* are text. The session card is the subject and starts within the first screenful (R1).
 
 - Header: minutes this week / weekly goal (no daily-streak guilt), days practised this week,
   **input chip** showing the active follow input (MIDI 🎹 / Mic 🎤 / Timed ⏱ / Manual) —
@@ -70,6 +104,8 @@ which drives the same `audio/Metronome`.
 
 ## 3. Plan (curriculum browser)
 
+**§0:** a hand screen (R2). Its one filled box (R3) is the stage being worked on; *Placement test*, *Review a skill* and *Tracks…* are text or chips. Ordering tracks is rare and lives in the **Tracks…** sheet, not on the screen (R3). A lesson card never repeats its unit's title (D26).
+
 - Stage list (0–9) with completion rings; expand → units → lessons.
 - Every lesson is openable regardless of status. Lesson page has **"I already know this"**
   (marks self-passed; distinct badge from a measured pass) and **"Quick check"** (a 2–3 minute
@@ -96,6 +132,8 @@ which drives the same `audio/Metronome`.
 
 ### 3a. Skills review
 
+**§0:** opens on what needs attention (R1): the rusty concepts if there are any, otherwise the current stage and the one below, with *Show all* revealing the rest in pages. *Drill it* is the box; *Find more* is text (R3).
+
 A grid of every concept in the curriculum (from `concepts[]` across lessons), each with its
 state (never / self-passed / measured / mastered / rusty = not practised in 30 days) and a
 "Drill it" button that launches the concept's drill or a matching short exercise. Filters by
@@ -119,6 +157,8 @@ not the point. Any item with `<harmony>` data can open in this view; the input c
 works (mic/MIDI can highlight the chord you actually play vs the chart, amber if different).
 
 ## 4. Library
+
+**§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder* sit as text at the foot of the list.
 
 - Search + filters: type, track, level range, hands, key, time signature, concept tag, status,
   source. Sorting by level/title/recent.
@@ -149,6 +189,8 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
     rung, turns up in swaps, and can be chosen by the session builder. It is in the backup.
 
 ## 4b. Score folder (browsing files that live on the phone)
+
+**§0:** one state line and the button at the top; the explanation goes in a `<details>` under it (R1). With no folder picked the browse block is not drawn at all (R4).
 
 Added 2026-09-06 (owner: *"I plan on putting the files on my phone… it should ask for folders
 with the data anyway and just use the CSV or the generated index to find them, and add other
@@ -214,6 +256,8 @@ and never will; what it holds is a register.
 
 ## 5. Score screen (the core)
 
+**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout and the bar no longer has to hide itself to get out of its own way. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional.
+
 Layout (landscape): notation fills the screen; a **thin control bar** auto-hides after 3 s
 and returns on tap.
 
@@ -256,6 +300,8 @@ Gestures: single tap toggles control bar; double-tap a bar sets loop start/end; 
 bar plays it (Listen) ; pinch = zoom; two-finger tap = toggle hands focus.
 
 ## 5b. PDF viewer (imported PDFs)
+
+**§0:** a stand screen (R2). A system fitted to the width is as large as it can be drawn; the height left over belongs to the layout, not to black.
 
 **From P16:** the route takes `?page=<n>` (`#/pdf/<importId>?page=12`) and opens at the first
 system on that page — a shelf piece knows which page it is on, and opening at page one would
@@ -375,6 +421,8 @@ learner looks at.
 
 ## 6. Progress
 
+**§0:** the heat map is *Minutes a day, last 13 weeks* and carries a one-line key for its five levels (`0 · <10 · <25 · <45 · 45+ min`).
+
 - Calendar heat-map of practice minutes; streak; weekly minutes vs goal.
 - Per-stage completion; per-track completion.
 - Repertoire list (mastered) with "last played" and a replay button.
@@ -382,6 +430,8 @@ learner looks at.
 - Export / Import all data (JSON). "Copy debug report".
 
 ## 7. Settings (all persisted; defaults in brackets)
+
+**§0:** a hand screen (R2) — a row is a label and its control on one line, ≤ 56 px, with help text under the label only where the label cannot carry the meaning. At least eight settings on the first screenful. Content chips print track *titles*, never ids.
 
 **Practice** — session lengths (weekday default [30], weekend default [60]); weekly goal
 minutes [150]; default mode with MIDI or mic [Wait], without [Tempo]; bars per window [2];
@@ -478,6 +528,8 @@ E2E at 1024×1000 for the panel and the default, and at 412×915 for the phone, 
 neither.
 
 ## 8. Empty/edge states
+
+**§0 R4 — nothing dead.** When a screen's subject is missing it draws the sentence that says so and the one control that acts on it: no empty grid, no live transport over nothing, no *Disconnect* while disconnected, no statistic with no data behind it. A one-item list is not empty.
 
 Mic permission denied: explain Chrome site settings; fall back to Timed. Mic too noisy (noise
 floor above threshold): suggest the USB audio interface path or headphones for playback.
