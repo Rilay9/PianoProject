@@ -108,16 +108,29 @@ test.describe('every kind of drill', () => {
       if (kind === 'sight-reading') continue; // notation: it opens the Score screen
       await page.goto(`/#/drill/${item.id}`);
       const screen = page.locator('[data-screen="drill"]');
-      // A generous per-kind wait rather than the default five seconds: this
-      // sweep runs beside nine other workers, and an ear drill that waits for
-      // an AudioContext on a loaded machine is slow rather than broken.
-      await expect(screen).toBeVisible({ timeout: 30_000 });
-      // Either a prompt card or the honest "nothing to run here" line, never a
-      // blank screen.
-      const card = page.locator('#drill-prompt');
-      await expect(card).toBeVisible({ timeout: 30_000 });
-      const text = (await card.textContent())?.trim() ?? '';
-      if (text.length === 0) broken.push(`${kind}: an empty card`);
+      // `data-drill` is the screen's own account of itself, and the only
+      // signal here that is not a race: `running` means a drill was built and
+      // its first card dealt. Waiting on an element being visible was not
+      // enough — the prompt has padding, so an empty one is still "visible",
+      // and under nine other workers it was read before it was filled.
+      //
+      // A generous timeout for the same reason: an ear drill waiting for an
+      // AudioContext on a loaded machine is slow, not broken.
+      try {
+        await expect(screen).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });
+      } catch {
+        const state = await screen.getAttribute('data-drill');
+        broken.push(`${kind}: the screen is "${state ?? 'absent'}", not running`);
+        continue;
+      }
+      // And something to look at: the prompt, or the stage, depending on the
+      // kind — a chord names a chord, a rhythm draws a row, a pedal lights a
+      // lamp.
+      const shown = await page
+        .locator('#drill-prompt, #drill-stage')
+        .evaluateAll((nodes) => nodes.map((node) => node.textContent?.trim() ?? '').join(''));
+      const drawn = await page.locator('#drill-stage svg, #drill-stage canvas, #drill-stage .meter-row').count();
+      if (shown.length === 0 && drawn === 0) broken.push(`${kind}: nothing on the card`);
     }
     expect(broken).toEqual([]);
   });

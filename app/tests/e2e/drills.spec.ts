@@ -238,8 +238,23 @@ test.describe('sight-reading (docs/05 §8)', () => {
     // never on a developer machine, which is the giveaway. A person taps
     // seconds apart; this makes the test navigate the way a person does.
     await expect(page.locator('#today-goal')).toBeVisible();
-    await page.goto('/#/score/drill.reading.sight-reading-2');
-    const second = await svgText();
-    expect(second).not.toBe(first);
+
+    // Three more openings, and *not all four the same*, rather than "the
+    // second differs from the first".
+    //
+    // The seed is `Math.random()`, so the material is redrawn every time —
+    // but at level 2 the space of four-bar exercises is small enough that two
+    // consecutive draws land on the same one occasionally, and this test then
+    // failed for the app doing exactly what it should. The claim worth making
+    // is that it is not a fixed piece; that is what this asserts, and a
+    // regression to a fixed piece fails it every run rather than sometimes.
+    const seen = new Set([first]);
+    for (let i = 0; i < 3; i += 1) {
+      await page.goto('/#/today');
+      await expect(page.locator('#today-goal')).toBeVisible();
+      await page.goto('/#/score/drill.reading.sight-reading-2');
+      seen.add(await svgText());
+    }
+    expect(seen.size, 'four openings produced the same exercise every time').toBeGreaterThan(1);
   });
 });

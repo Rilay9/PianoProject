@@ -125,7 +125,11 @@ test.describe('microphone input', () => {
     });
     const level = await page.evaluate(() => window.__pianopathDevScore?.micLevel());
     expect(level?.rmsDb).toBeLessThan(0);
-    expect(level?.noiseFloorDb).toBeLessThanOrEqual(level?.rmsDb ?? 0);
+    // A hair of tolerance: against a steady synthetic tone the noise floor
+    // converges *onto* the RMS, and an exact comparison then turns on the last
+    // bit of a float. It failed once by 7 × 10⁻⁷ dB, which is not a fact about
+    // the microphone.
+    expect(level?.noiseFloorDb).toBeLessThanOrEqual((level?.rmsDb ?? 0) + 1e-6);
     await page.evaluate(() => window.__pianopathDevScore?.micDisconnect());
   });
 
