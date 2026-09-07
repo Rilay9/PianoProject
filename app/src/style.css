@@ -1736,6 +1736,29 @@ body {
   font-size: 1.2rem;
 }
 
+/* One `dl` holding every statistic, rather than one per row.
+
+   `.kv` is a flex row built for a single term and value, so three pairs in
+   one list were laid side by side and the last was cut off at the edge of a
+   360 px screen — the screenshots read "Mean reactio". A two-column grid
+   gives each statistic its own line and lets the numbers align. */
+#drill-stats {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  border-bottom: 0;
+}
+
+#drill-stats dt {
+  color: var(--text-muted);
+}
+
+#drill-stats dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 /* --- Error banner and update toast (docs/04 §8, P9) ------------------------
    Both sit above everything and clear of the tab bar's safe area. The banner
    is not a modal on purpose: the error may be in one screen while the rest of

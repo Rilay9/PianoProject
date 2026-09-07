@@ -60,15 +60,57 @@ test.describe('performance budgets (docs/01 §6)', () => {
   test('a pre-rendered window swap still fits in a frame when throttled', async ({ page }) => {
     await throttle(page);
     const dev = await openDevScore(page);
-    await dev.load('tempo-change');
+    // A long fixture, for one reason: with one bar to a window, the number of
+    // pre-rendered swaps there are to measure is the number of bar lines in
+    // the piece. `tempo-change` has three bars and yields two swaps; the
+    // arpeggios have two bars and yield one. Hanon No. 1 has twenty-nine.
+    await dev.load('exercise.hanon.01.both');
     await dev.setBars(1);
     await dev.showStep(0);
 
-    const elapsed = await dev.timeShowStep(2);
-    console.log(`pre-rendered swap, CPU ×${String(CPU_THROTTLE)}: ${elapsed.toFixed(2)} ms`);
+    // Walk forward far enough to cross several window boundaries, then read
+    // the renderer's own record of the swaps.
+    //
+    // Two things were wrong with timing `showStep` from out here. It also
+    // times `positionBand`, which forces a layout — so the number asserted was
+    // never the one `01` §6 budgets — and it cannot tell a fast swap from a
+    // call that swapped nothing at all, which is how a budget test comes to
+    // pass by measuring a no-op. `window.swap` is recorded only when a
+    // pre-rendered buffer is actually brought forward, so no swaps means no
+    // samples and the test says so.
+    //
+    // A median, too, for the reason the render test above takes one: a single
+    // sample on a throttled, contended CPU catches a collection now and then.
+    // P19 measured this at 4.2 ms; one sample in a fourteen-worker run came
+    // back at 21.1 ms. The budget is unchanged.
+    // One step at a time, with a beat between, because the *next* window is
+    // drawn in a requestAnimationFrame after each move: jumping straight to
+    // the step after that finds nothing prepared and records a cold draw
+    // instead. Six jumps recorded two prepared swaps; walking records one per
+    // bar line crossed.
+    await dev.clearTimings();
+    const steps = Math.min(await dev.stepCount(), 160);
+    for (let step = 4; step < steps; step += 4) {
+      await dev.showStep(step);
+      await page.waitForTimeout(30);
+    }
+    const samples = await dev.swapTimings();
+    if (samples.length < 8) {
+      console.log(`timings by label: ${JSON.stringify(await dev.timingCounts())}`);
+    }
+    expect(
+      samples.length,
+      'the double buffer stopped pre-rendering: no prepared swaps were recorded',
+    ).toBeGreaterThanOrEqual(8);
+    const median = [...samples].sort((a, b) => a - b)[Math.floor(samples.length / 2)] ?? NaN;
+    console.log(
+      `pre-rendered swap, CPU ×${String(CPU_THROTTLE)}: median ${median.toFixed(2)} ms ` +
+        `over ${String(samples.length)} swaps ` +
+        `(${samples.map((sample) => sample.toFixed(2)).join(', ')})`,
+    );
     // The whole point of the double buffer: a swap is a class toggle, so
     // throttling the CPU fourfold should barely move it.
-    expect(elapsed).toBeLessThan(16.7);
+    expect(median).toBeLessThan(16.7);
   });
 
   test('the longest score in the library opens on the Score screen (P19)', async ({ page }) => {

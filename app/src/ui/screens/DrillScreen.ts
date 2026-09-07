@@ -728,6 +728,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       // learner has time to read, which is exactly when advice lands.
       ...(tips ? [el('div.drill-tips-full', { id: 'drill-tips-full' }, renderMarkdown(tips.markdown))] : []),
     );
+    // Bring it into view. The sheet is appended to the bottom of a body that
+    // has a keyboard under it, so on a phone held sideways the whole result —
+    // the score, the advice, and both buttons — landed below the fold with
+    // nothing to say it was there. The set had ended and the screen looked
+    // unchanged.
+    sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     void showCoaching(result);
 
     if (item) {

@@ -43,6 +43,9 @@ interface DevScoreHandle {
   measureCounts(): { unrolled: number; printed: number };
   timeWindowRender(): number;
   timeShowStep(index: number): number;
+  swapTimings(): number[];
+  timingCounts(): Record<string, number>;
+  clearTimings(): void;
   noteElementCount(): number;
   currentStepNoteIds(): string[];
   startRun(mode: string, options?: Record<string, unknown>): void;
@@ -124,6 +127,11 @@ export interface DevScoreDriver {
   measureCounts(): Promise<{ unrolled: number; printed: number }>;
   timeWindowRender(): Promise<number>;
   timeShowStep(index: number): Promise<number>;
+  /** Milliseconds for each pre-rendered window swap recorded so far. */
+  swapTimings(): Promise<number[]>;
+  /** Recorded timings by label, for diagnosing a budget test. */
+  timingCounts(): Promise<Record<string, number>>;
+  clearTimings(): Promise<void>;
   noteElementCount(): Promise<number>;
   currentStepNoteIds(): Promise<string[]>;
 
@@ -249,6 +257,27 @@ function makeDriver(page: Page): DevScoreDriver {
         const h = window.__pianopathDevScore;
         if (!h) throw new Error('dev score harness is not attached');
         return h.cursorStepCount();
+      }),
+
+    timingCounts: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        return h.timingCounts();
+      }),
+
+    clearTimings: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        h.clearTimings();
+      }),
+
+    swapTimings: () =>
+      page.evaluate(() => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        return h.swapTimings();
       }),
 
     showStep: (index: number) =>

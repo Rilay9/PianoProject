@@ -1,10 +1,10 @@
 /**
- * The UX tour — every screen and every state, on a Galaxy S25, both ways up.
+ * The UX tour — every screen and every state, in every shape it is used in.
  *
  * Not a test. It drives the app with a spoofed piano and photographs it, so
  * that "this looks wrong on the phone" stops being a memory and becomes a
- * picture with a name. `build/tour/index.html` puts the two orientations side
- * by side with a box to type into under each one.
+ * picture with a name. `build/tour/index.html` puts the four form factors side
+ * by side — phone and tablet, each way up — with a box to type into under each.
  *
  * Every scene asserts that its screen actually arrived before the shutter
  * opens — a photograph of a blank screen is worse than no photograph, because
@@ -12,15 +12,14 @@
  * and printed at the end: one broken screen should not cost the other seventy.
  *
  *   npm run tour
- *   npm run tour -- --grep portrait
+ *   npm run tour -- --grep "^portrait"
  */
 import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
 import {
-  LANDSCAPE,
-  PORTRAIT,
+  FORM_FACTORS,
   type Orientation,
   saveLedger,
   shoot,
@@ -119,10 +118,7 @@ async function importScore(page: Page, file: string, id: string): Promise<void> 
   await expect(page.locator(`.list-row[data-item="${id}"]`)).toBeVisible({ timeout: 60_000 });
 }
 
-for (const [orientation, size] of [
-  ['portrait', PORTRAIT],
-  ['landscape', LANDSCAPE],
-] as [Orientation, { width: number; height: number }][]) {
+for (const { orientation, size } of FORM_FACTORS) {
   test.describe(orientation, () => {
     test.use({ viewport: size });
     test.describe.configure({ timeout: 1_800_000 });

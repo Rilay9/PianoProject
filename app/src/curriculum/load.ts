@@ -23,10 +23,39 @@ let catalogPromise: Promise<CatalogItem[]> | null = null;
 let curriculumPromise: Promise<Curriculum> | null = null;
 let indexCache: CatalogIndex | null = null;
 
-async function fetchJson<T>(path: string): Promise<T> {
+async function readJson<T>(path: string): Promise<T> {
   const response = await fetch(contentUrl(path));
   if (!response.ok) throw new Error(`${path}: ${response.status} ${response.statusText}`);
-  return (await response.json()) as T;
+  // Not `response.json()`: a body that arrives truncated throws a bare
+  // SyntaxError naming neither the file nor the reason, which is what a
+  // half-read catalog.json looked like from the outside.
+  const text = await response.text();
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new Error(`${path}: ${String(text.length)} bytes and not valid JSON`);
+  }
+}
+
+/**
+ * Reads a content file, and reads it a second time if the first read failed.
+ *
+ * The retry is what the callers below have claimed since P7 — "a failure here
+ * is almost always a first launch that lost the network mid-precache, and it
+ * is fixed by trying again" — without anything ever trying again. One repeat,
+ * because the second failure of the same file is a real fault and hiding it
+ * behind a loop would only delay the message.
+ */
+async function fetchJson<T>(path: string): Promise<T> {
+  try {
+    return await readJson<T>(path);
+  } catch (first) {
+    try {
+      return await readJson<T>(path);
+    } catch {
+      throw first instanceof Error ? first : new Error(String(first));
+    }
+  }
 }
 
 export function loadCatalog(): Promise<CatalogItem[]> {

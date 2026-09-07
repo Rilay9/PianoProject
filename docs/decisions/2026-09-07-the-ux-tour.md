@@ -93,3 +93,48 @@ is not a change to make from here, though — one bar means no read-ahead at all
 cost to a reader and a matter of his taste, not of correctness. It is question 1 on
 `build/tour/choices.html` with the pictures beside it, and the recommendation now has a
 measurement behind it rather than an opinion.
+
+## Two flakes, fixed at the cause rather than retried away
+
+`CI=1 npx playwright test` came back green with two flaky tests. Both turned out to be hiding
+something worth having.
+
+**The PDF viewer, stuck on "Loading…".** The failure's own snapshot is the diagnosis: the page
+showed nothing but a heading reading *Loading…*, beside a `SyntaxError: Unexpected end of JSON
+input`. `mountLazyScreen` did `void load().then(…)` with no rejection handler, so a chunk or a
+content file that came back truncated left that card up for ever — no message, no way out, and an
+unhandled rejection nobody sees on a phone with no console. A dropped connection on the way to a
+lesson is enough to cause it. It now says what happened and offers **Try again**, and the failure
+is recorded where Diagnostics can see it.
+
+The other half is `curriculum/load.ts`. `response.json()` on a truncated body throws a bare
+`SyntaxError` naming neither the file nor the reason; it reads the text and parses it itself, so
+the message says which file and how many bytes arrived. And it reads a second time before giving
+up — which is what the comment beside `loadCatalog` has claimed since P7 ("a failure here is
+almost always a first launch that lost the network mid-precache, and it is fixed by trying
+again") without anything ever trying again.
+
+**The window-swap budget, measuring the wrong thing.** One sample came back at 21.1 ms against a
+16.7 ms budget. The interesting part is not the 21.1 — it is what was being timed. `timeShowStep`
+wraps the whole of `showStep`, which also runs `positionBand` and forces a layout, so the number
+asserted was never the one `01` §6 budgets. Worse, it could not tell a fast swap from a call that
+swapped nothing at all: `tempo-change` has three bars, so at one bar to a window there were two
+swaps in the whole piece, and a fixture with two bars would have given one.
+
+The test now walks Hanon No. 1 — twenty-nine bars — and reads the renderer's own `window.swap`
+samples, which are recorded only when a prepared buffer is actually brought forward. It requires
+at least eight of them, so a double buffer that quietly stopped pre-rendering fails the test
+instead of passing it. Nineteen samples, **median 0.40 ms** under a ×4 throttle, against the
+unchanged 16.7 ms budget.
+
+## Two more the screenshots found
+
+**The drill result was cut off.** Every statistic went into one `dl.kv`, which is a flex row built
+for a single term and value — so *Accuracy*, *Answered* and *Mean reaction* were laid side by side
+and the last was sliced off at the edge of a 360 px screen. A two-column grid, one statistic to a
+line.
+
+**And in landscape it was not on the screen at all.** The sheet is appended to the bottom of a
+body with a keyboard under it, so the whole result — score, advice, and both buttons — landed
+below the fold with nothing to say it was there. The set ended and the screen looked unchanged.
+It scrolls itself into view now.

@@ -1,5 +1,7 @@
 import { Router, TAB_IDS, type Route, type SubId, type TabId } from '../router';
 import { tabIcons } from './icons';
+import { button, el } from './widgets';
+import { recordError } from '../util/errorLog';
 import { disposeScreen } from './screenLifecycle';
 import { TodayScreen } from './screens/TodayScreen';
 import { PlanScreen } from './screens/PlanScreen';
@@ -102,12 +104,52 @@ function mountLazyScreen(
   card.appendChild(h1);
   holder.appendChild(card);
 
-  void load().then((real) => {
-    // The route may have changed while the chunk was in flight.
-    if (!holder.isConnected) return;
-    main.replaceChildren(real);
-    setCurrent(real);
-  });
+  /**
+   * Fetches the chunk and swaps it in, or says what went wrong.
+   *
+   * The failure path is not hypothetical. A chunk request that comes back
+   * truncated leaves this promise rejected, and with no catch the card said
+   * "Loading…" for ever — no message, no way out, and an unhandled rejection
+   * nobody sees on a phone with no console. A dropped connection on the way
+   * to the shop is enough to cause it.
+   */
+  const attempt = (): void => {
+    void load().then(
+      (real) => {
+        // The route may have changed while the chunk was in flight.
+        if (!holder.isConnected) return;
+        main.replaceChildren(real);
+        setCurrent(real);
+      },
+      (cause: unknown) => {
+        const message = cause instanceof Error ? cause.message : String(cause);
+        recordError(`screen did not load: ${message}`, 'rejection');
+        if (!holder.isConnected) return;
+        h1.textContent = 'That screen did not load';
+        note.textContent =
+          'The app could not fetch the code for this screen. It is stored on the ' +
+          'phone, so this is usually a one-off — try again.';
+        note.hidden = false;
+        retry.hidden = false;
+      },
+    );
+  };
+
+  const note = el('p.muted', { hidden: true });
+  const retry = button(
+    'Try again',
+    () => {
+      h1.textContent = 'Loading…';
+      note.hidden = true;
+      retry.hidden = true;
+      attempt();
+    },
+    { id: 'screen-retry', variant: 'primary' },
+  );
+  retry.hidden = true;
+  card.append(note, retry);
+
+  attempt();
   return holder;
 }
 

@@ -23,7 +23,7 @@ import type { InputNoteEvent } from '../../midi/types';
 import type { EngineEvent, EngineOptions, Mode, SessionScore } from '../../engine/types';
 import { toMusicXml } from '../../score/mxl';
 import { OsmdView } from '../../score/OsmdView';
-import { getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
+import { clearRenderTimings, getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
 import type { ScoreModel } from '../../score/types';
 import type { Router } from '../../router';
 
@@ -111,6 +111,20 @@ export interface DevScoreHandle {
   timeWindowRender(): number;
   /** Milliseconds to move to `index`, whose window should be pre-rendered. */
   timeShowStep(index: number): number;
+  /**
+   * Every pre-rendered window swap this page has recorded, in milliseconds.
+   *
+   * The renderer already times swaps under two labels — one for the swap the
+   * double buffer promises and one for a cold draw — and this hands back only
+   * the first. A budget test that measures the wrapper instead is measuring a
+   * forced layout it never meant to include, and it cannot tell a swap that
+   * did not happen from a swap that was fast.
+   */
+  swapTimings(): number[];
+  /** Every recorded timing, by label — for diagnosing a budget test. */
+  timingCounts(): Record<string, number>;
+  /** Empties the timing log, so a measurement starts from nothing. */
+  clearTimings(): void;
 
   // --- practice engine (P3) ---------------------------------------------
   /** Starts a run over the loaded score; the cursor then follows the engine. */
@@ -614,6 +628,23 @@ export function DevScoreScreen(router: Router): HTMLElement {
       printed: model?.sourceMeasureCount ?? 0,
     }),
     timeWindowRender: () => renderer?.redrawCurrentWindow() ?? Number.NaN,
+    timingCounts: () => {
+      const counts: Record<string, number> = {};
+      for (const timing of getRenderTimings()) {
+        counts[timing.label] = (counts[timing.label] ?? 0) + 1;
+      }
+      return counts;
+    },
+
+    clearTimings: () => {
+      clearRenderTimings();
+    },
+
+    swapTimings: () =>
+      getRenderTimings()
+        .filter((timing) => timing.label === 'window.swap')
+        .map((timing) => timing.ms),
+
     timeShowStep: (index) => {
       if (!renderer) return Number.NaN;
       const started = performance.now();

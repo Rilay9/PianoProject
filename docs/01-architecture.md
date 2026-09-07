@@ -347,10 +347,17 @@ criteria. Schema at `content/curriculum.schema.json`.
 
   ```
   2-bar window render        median 36 ms      (S25 budget 150 ms, gate 600 under ×4)
-  pre-rendered window swap   4.2 ms            (one frame)
+  pre-rendered window swap   median 0.40 ms    (one frame, budget 16.7)
   input to note coloured     mean 8.6 ms, max 15.2 ms   (budget 30 ms)
   the longest score          first window in 11.6 s
   ```
+
+  The swap figure changed meaning on 2026-09-07 and is not comparable with the 4.2 ms
+  recorded at P19. That number came from timing `WindowRenderer.showStep` from outside,
+  which also runs `positionBand` and so forces a layout the budget was never about — and
+  which could not tell a fast swap from a call that swapped nothing. The test now reads the
+  renderer's own `window.swap` samples, which exist only when a prepared buffer is actually
+  brought forward. Nineteen of them, median 0.40 ms under a ×4 throttle.
 
   The last one is new and is the one to know about: **Chopin's Scherzo No. 2 — 780 printed
   bars, 3,331 steps — takes about twelve seconds under a ×4 throttle before its first two

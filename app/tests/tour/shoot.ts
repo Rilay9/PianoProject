@@ -16,7 +16,28 @@ export const TOUR_DIR = resolve('../build/tour');
 export const PORTRAIT = { width: 360, height: 780 } as const;
 export const LANDSCAPE = { width: 780, height: 360 } as const;
 
-export type Orientation = 'portrait' | 'landscape';
+/**
+ * A tablet, both ways up.
+ *
+ * Not because the owner has one. Because `ui/tablet.ts` exists: at 900 CSS px
+ * on the shortest side the app switches to a four-bar window and a side panel,
+ * and until now that code path had never been photographed. A layout nobody
+ * has looked at is a layout nobody knows the state of, whoever owns the
+ * device. 10-inch class, portrait and landscape.
+ */
+export const TABLET_PORTRAIT = { width: 900, height: 1200 } as const;
+export const TABLET_LANDSCAPE = { width: 1200, height: 900 } as const;
+
+export type Orientation = 'portrait' | 'landscape' | 'tablet-portrait' | 'tablet-landscape';
+
+/** Every form factor the tour shoots, in the order the contact sheet shows them. */
+export const FORM_FACTORS: { orientation: Orientation; size: { width: number; height: number } }[] =
+  [
+    { orientation: 'portrait', size: PORTRAIT },
+    { orientation: 'landscape', size: LANDSCAPE },
+    { orientation: 'tablet-portrait', size: TABLET_PORTRAIT },
+    { orientation: 'tablet-landscape', size: TABLET_LANDSCAPE },
+  ];
 
 export interface Shot {
   /** `03-score-wait`, unique and sortable. */
@@ -99,7 +120,7 @@ export function writeContactSheet(): void {
       return `<section id="${slug}">
   <h2><span class="n">${String(index + 1)}</span> ${entry.title} <code>${slug}</code></h2>
   <p class="note">${entry.note}</p>
-  <div class="pair">${cell('portrait')}${cell('landscape')}</div>
+  <div class="pair">${FORM_FACTORS.map((f) => cell(f.orientation)).join('')}</div>
   <textarea placeholder="What is wrong with this one? (type here, then copy the whole page's notes at the bottom)"
             data-slug="${slug}"></textarea>
 </section>`;
@@ -129,8 +150,8 @@ export function writeContactSheet(): void {
   button { background:#8ab4f8; color:#0f1115; border:0; border-radius:8px; padding:.6rem 1rem;
            font:inherit; font-weight:600; cursor:pointer; }
 </style>
-<h1>PianoPath — every screen, both ways up</h1>
-<p class="note">Galaxy S25 (360 × 780 at 3×). Type what is wrong under any shot, then press
+<h1>PianoPath — every screen, every shape</h1>
+<p class="note">Galaxy S25 (360 × 780 at 3×) and a 10-inch tablet (900 × 1200), both ways up. Type what is wrong under any shot, then press
 <b>Collect notes</b> at the bottom and send the text back.</p>
 ${rows}
 <section>
