@@ -313,7 +313,9 @@ export function TodayScreen(router: Router): HTMLElement {
       slots = built.slots;
       breakAfter = built.template.breakAfterSlot;
       drawCard();
-      drawActions();
+      // Not the actions: nothing in that row depends on the session, and
+      // replacing four buttons on every rebuild threw away whichever one a
+      // finger had just landed on. It is built once, below.
 
       const position = nextRecommended(curriculum as Curriculum, records, active, {
         requireTwoSongs: getSettings().requireTwoSongs,
@@ -349,6 +351,11 @@ export function TodayScreen(router: Router): HTMLElement {
     inputChip.textContent = input.label;
     rebuild();
   }
+
+  // Once. The row is the same four controls whatever the session turns out to
+  // be, and it is on screen before the catalogue has loaded rather than
+  // appearing under a finger a moment later.
+  drawActions();
 
   void load().catch((cause: unknown) => {
     status.textContent = `Today could not be built: ${String(cause)}`;

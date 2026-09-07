@@ -215,3 +215,41 @@ test.describe('Plan obeys 04 §0', () => {
     }
   });
 });
+
+/**
+ * `04` §0 on the lesson page. The options — the reason the page exists — used
+ * to start about 560 px down a 780 px screen, under a status line, three
+ * buttons, a link, the needs line, two more buttons, a link and a paragraph.
+ */
+test.describe('the lesson page obeys 04 §0', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('the options start inside the first screenful (R1)', async ({ page }) => {
+    await page.goto('/#/lesson/2.1');
+    await expect(page.locator('#lesson-exercises .list-row').first()).toBeVisible();
+    const heading = page.getByRole('heading', { name: 'Exercise options' });
+    const box = await heading.boundingBox();
+    expect(box?.y ?? 0).toBeLessThan(260);
+  });
+
+  test('one filled button per option card and none in the chrome (R3)', async ({ page }) => {
+    await page.goto('/#/lesson/2.1');
+    await expect(page.locator('#lesson-exercises .list-row').first()).toBeVisible();
+    // The play button on a row is the row's own subject; the rule is about the
+    // screen's chrome, which should have none.
+    await expect(page.locator('#lesson-actions .button--primary')).toHaveCount(0);
+    await expect(page.locator('#lesson-find .button--primary')).toHaveCount(0);
+  });
+
+  test('the rarely-used things moved below the options (R1)', async ({ page }) => {
+    await page.goto('/#/lesson/2.1');
+    await expect(page.locator('#lesson-exercises .list-row').first()).toBeVisible();
+    const options = await page.getByRole('heading', { name: 'Exercise options' }).boundingBox();
+    const more = await page.getByRole('heading', { name: 'More for this rung' }).boundingBox();
+    expect(more?.y ?? 0).toBeGreaterThan(options?.y ?? 0);
+    // And they still work: the finder and the paper form are the two the
+    // existing tests drive.
+    await expect(page.locator('#lesson-find-more')).toBeVisible();
+    await expect(page.locator('#lesson-needs')).toContainText('option');
+  });
+});

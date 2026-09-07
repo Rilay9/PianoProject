@@ -228,6 +228,25 @@ body {
   margin: 0;
 }
 
+/* The lesson page's state row: a badge, one box, and text (`04` §0 R3). */
+.lesson-actions {
+  gap: 8px;
+}
+
+.lesson-actions .link-button {
+  font-size: 0.85rem;
+  padding: 2px 0;
+}
+
+/* The first block on a screen follows the header, which is already a divider.
+   A second rule of thirty-six pixels above the thing the screen is for is the
+   kind of spacing that adds up to a fold (`04` §0 R1). */
+.screen-body > .block:first-of-type {
+  margin-top: 4px;
+  padding-top: 0;
+  border-top: 0;
+}
+
 /* Bottom tab bar (default / portrait) */
 .tab-nav {
   order: 2;

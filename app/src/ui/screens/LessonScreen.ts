@@ -48,20 +48,37 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const exercises = el('div.list', { id: 'lesson-exercises' });
   const songs = el('div.list', { id: 'lesson-songs' });
   const paper = el('div.list', { id: 'lesson-paper' });
-  const actions = el('div.row', { id: 'lesson-actions' });
+  // The state and the two things done *to* a rung, on one line: a badge, one
+  // outlined check, and text for the rest (`04` §0 R3). As four boxes of equal
+  // weight they took two rows and pushed the options further down.
+  const actions = el('div.row.lesson-actions', { id: 'lesson-actions' });
   const needsLine = el('p.needs', { id: 'lesson-needs' });
   const lockLine = el('p.lesson-lock', { id: 'lesson-lock', hidden: true });
   const findRow = el('div.row', { id: 'lesson-find' });
   // Where the paper hint lives on a rung with no books behind it (P19 A8).
   const paperHintLine = el('p.paper-hint.muted', { id: 'lesson-paper-hint', hidden: true });
 
+  // The options are what the page is for, and they were about 560 px down a
+  // 780 px screen: under a status line, three buttons, a link, the needs line,
+  // two more buttons, another link and a hint paragraph (`04` §0 R1).
+  //
+  // Now: the state and the two things done to a rung, then the options, then
+  // everything that is read once and acted on rarely.
   body.append(
     status,
     actions,
-    el('section.block', {}, lockLine, needsLine, findRow, paperHintLine),
+    lockLine,
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
     el('section.block', {}, el('h2', { text: 'Song options' }), songs),
     el('section.block', { id: 'lesson-paper-block' }, el('h2', { text: 'From your own books' }), paper),
+    el(
+      'section.block',
+      { id: 'lesson-more' },
+      el('h2', { text: 'More for this rung' }),
+      needsLine,
+      findRow,
+      paperHintLine,
+    ),
     el('section.block', {}, el('h2', { text: 'Concept' }), text),
     el('section.block', {}, el('h2', { text: 'Videos' }), videos),
   );
@@ -164,7 +181,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       findRow.append(
         button('Find more', () => openFinderSheet(finder, `${current.id} · ${current.title}`), {
           id: 'lesson-find-more',
-          variant: short.length > 0 ? 'primary' : 'secondary',
+          variant: 'quiet',
         }),
       );
     }
@@ -174,6 +191,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       // chosen, so the only thing left is Save.
       button('Import for this rung', () => router.navigateImportFor(current.id), {
         id: 'lesson-import-for',
+        variant: 'quiet',
       }),
     );
   }
@@ -355,7 +373,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
             status.textContent = 'Lesson marked as already known.';
           })();
         },
-        { id: 'lesson-know', variant: 'secondary' },
+        { id: 'lesson-know', variant: 'quiet' },
       ),
       button(
         'Quick check',
@@ -371,7 +389,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         { id: 'lesson-check' },
       ),
       button(
-        'Mark lesson done',
+        // 'Mark done' rather than 'Mark lesson done': it is on a lesson page,
+        // beside that lesson's state, and the extra word was the one that took
+        // the row onto a second line.
+        'Mark done',
         () => {
           if (!confirm('Mark this lesson done without a measured run?')) return;
           void (async () => {
