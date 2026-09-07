@@ -5,9 +5,10 @@
 twenty small fixes add up to one app rather than twenty opinions.*
 
 *Companion to the P20 prompt (the first-run setup), which is separate work and
-can proceed independently. **Drop the §D addendum that was sent with P20** — it
-said the landscape width problem was an OpenSheetMusicDisplay limitation. It was
-not; it was two bugs in our own fitting code, and it is fixed.*
+can proceed independently. An addendum once circulated with P20 saying the
+landscape width problem was an OpenSheetMusicDisplay limitation. It was not — it
+was two bugs in this codebase's own fitting, and it is fixed. That addendum is
+deliberately not in this repository; if a copy reaches you, ignore it.*
 
 ## Why this exists
 
@@ -40,6 +41,11 @@ Read these first. Several questions below may already be answered there, and
   rung) all bear on what follows.
 - `docs/decisions/2026-09-07-the-ux-tour.md` — the measurements behind the
   layout questions, so none of them need re-deriving.
+
+## Before answering, and before reporting
+
+`docs/prompts/verifying.md` — short, and the reason several statements in the first draft of
+this brief were wrong. Question 9 in particular was written up twice with the wrong cause.
 
 ## What is wanted back
 

@@ -5,7 +5,8 @@
 Work on the branch `claude/piano-teaching-app-bo19td`. Commit early and often, conventional
 commit messages. **Never name an AI model in a commit message, a comment, a doc or code.**
 Verify by commands you actually ran and paste the exact output — do not claim something works
-because it should. Keep scope; anything you notice and do not do goes under **Follow-ups**.
+because it should; `docs/prompts/verifying.md` is the concrete version of that rule, and is
+short. Keep scope; anything you notice and do not do goes under **Follow-ups**.
 Where a decision has no obvious default, pick the simpler option and say that you did. Report
 as **Done · Not done/blocked · Follow-ups · Questions for the owner · Files touched**. Any
 deviation from the docs gets a note in `docs/decisions/<date>-<topic>.md`.
