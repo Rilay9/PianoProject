@@ -33,7 +33,7 @@ test.describe('named sections', () => {
     await picker.selectOption('Second half (repeated)');
     // The loop button names the section rather than a pair of bar numbers,
     // which is the whole point of having named them.
-    await expect(page.locator('#score-loop')).toHaveText(/Loop Second half \(repeated\)/);
+    await expect(page.locator('#score-loop')).toHaveText(/Second half \(repeated\)/);
   });
 
   test('is absent on a piece with no sections', async ({ page }) => {
@@ -55,9 +55,9 @@ test.describe('named sections', () => {
     await openScoreMenu(page);
     await expect(page.locator('#score-section')).toBeVisible({ timeout: 30_000 });
     await page.locator('#score-section').selectOption('First half (repeated)');
-    await expect(page.locator('#score-loop')).toHaveText(/Loop First half/);
+    await expect(page.locator('#score-loop')).toHaveText(/First half/);
     await page.locator('#score-loop').click();
-    await expect(page.locator('#score-loop')).toHaveText('Loop');
+    await expect(page.locator('#score-loop')).toHaveText('Off');
     await expect(page.locator('#score-section')).toHaveValue('');
   });
 });

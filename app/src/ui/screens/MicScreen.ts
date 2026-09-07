@@ -81,6 +81,11 @@ export function MicScreen(router: Router): HTMLElement {
   lineToggle.type = 'checkbox';
   lineToggle.id = 'mic-line-input';
   const lineText = document.createElement('div');
+  // The class the shared `field()` gives its text column. Without it the div
+  // has no flex sizing, takes the whole row, and pushes the checkbox onto a
+  // line of its own — which is how this screen ended up with a bare unlabelled
+  // square floating above "Connect microphone".
+  lineText.className = 'setting-row__text';
   lineText.append(lineLabel, lineHint);
   lineRow.append(lineText, lineToggle);
   connection.appendChild(lineRow);

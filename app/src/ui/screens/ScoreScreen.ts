@@ -1140,11 +1140,13 @@ export function ScoreScreen(router: Router): HTMLElement {
         : settings.playbackDestination === 'piano'
           ? '🎹 Piano'
           : '🔈🎹 Both';
+    // The row beside it already says "Loop", so the button says the state:
+    // "Loop / Loop" read as a stutter in the sheet.
     loopButton.textContent = loopSection
-      ? `Loop ${loopSection.label} ✕`
+      ? `${loopSection.label} ✕`
       : loopBars
-        ? `Loop ${loopBars.from}–${loopBars.to} ✕`
-        : 'Loop';
+        ? `Bars ${loopBars.from}–${loopBars.to} ✕`
+        : 'Off';
     loopButton.classList.toggle('is-selected', loopBars !== null);
     for (const hand of HANDS) {
       document.getElementById(`score-hands-${hand.id}`)?.classList.toggle('is-selected', hands === hand.id);
@@ -1299,7 +1301,12 @@ export function ScoreScreen(router: Router): HTMLElement {
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;
       // The title is in the header now. The status line is for the app's own
       // messages, and "Loading…" is finished being true.
-      status.textContent = '';
+      //
+      // Except in a blind run, where the screen is an empty black rectangle
+      // and nothing else on it says why: "Show the score" moved into the ⋯
+      // sheet with the rest of the settings, so without this the screen looks
+      // broken rather than deliberate.
+      status.textContent = blind ? 'Blind — the score is hidden. ⋯ to show it.' : '';
       if (sections.length > 0) sectionRow.hidden = false;
       showBar();
       render();

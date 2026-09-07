@@ -212,7 +212,10 @@ export function TodayScreen(router: Router): HTMLElement {
       );
     } else {
       actionButtons.push(
-        button('▶', () => open(item), { variant: 'primary', ariaLabel: `Open ${item.title}` }),
+        // Not primary: R3 wants one thing to do on a screen, and with a blue
+        // button on every row "Start session" was the fifth blue thing on
+        // Today rather than the first.
+        button('▶', () => open(item), { ariaLabel: `Open ${item.title}` }),
       );
     }
 

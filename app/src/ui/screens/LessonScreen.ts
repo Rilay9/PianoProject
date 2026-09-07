@@ -132,10 +132,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       actions: importNeeded
         ? []
         : [
-            button('▶', () => open(item), {
-              variant: 'primary',
-              ariaLabel: `Open ${item.title}`,
-            }),
+            // Secondary, not primary (R3): a rung with nine exercises had
+            // nine blue buttons and therefore no answer to "what now?".
+            button('▶', () => open(item), { ariaLabel: `Open ${item.title}` }),
             button('Know it', () => void markKnown(item.id), { variant: 'quiet' }),
           ],
       onClick: importNeeded ? undefined : () => open(item),

@@ -157,7 +157,6 @@ export function ProgressScreen(router: Router): HTMLElement {
               actions: item
                 ? [
                     button('▶', () => void openItem(router, item), {
-                      variant: 'primary',
                       ariaLabel: `Open ${item.title}`,
                     }),
                   ]
