@@ -978,59 +978,68 @@ input[type='checkbox'] {
   overflow: hidden;
 }
 
-/* Top *right*: OSMD draws the piece's own title and tempo mark at the top
-   left, and two titles on top of each other is worse than none. This line is
-   for the app's messages — the loop prompt, an import hint, an error. */
-/* Under the status line: the note Wait mode is waiting for, when the owner has
-   turned note names on. Quiet by default — it is there for the moment he is
-   stuck, not as a running commentary. */
-.score-waiting {
-  position: absolute;
-  top: 1.9rem;
-  right: 0.75rem;
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  color: var(--accent, #6ea8ff);
-  pointer-events: none;
+/* The header row (`04` §5, B1): Back, the piece's name, then the app's own
+   messages and the mic level.
+
+   A real row in the column, not three absolutely-positioned lines over the
+   notation. Those cost a constant 3 rem of top margin held upright — paid
+   whether or not anything was being said — and printed the title across bar 1
+   held sideways, because the sheet now fills the width. A row costs its own
+   height once, and it costs it in a place the fit already knows about, so the
+   stage no longer changes height when Wait mode names a note. */
+.score-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  min-height: 2.5rem;
 }
 
-.score-status {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.75rem;
-  max-width: 60%;
+.score-head__title {
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
-  text-align: right;
-  font-size: 0.8rem;
-  opacity: 0.7;
-  pointer-events: none;
-  /* One line, cut short, rather than two lines wrapping down over the stave.
-     A long title is not worth reading twice; the music under it is. */
+  font-size: 0.95rem;
+  font-weight: 600;
+  /* One line, cut short. A long title is not worth two rows of a phone. */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Held upright the sheet fills the width, so this line lands on top of the
-   music — the S25 screenshots had the title across the first bar and its
-   chord symbol. Upright, the stage starts below it.
+/* The app's own messages — the loop prompt, an import hint, an error. Pushed
+   to the right of the title, and allowed to take the room if the title is
+   short. */
+.score-status {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  text-align: right;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-   Held sideways it costs nothing to leave alone: the sheet is much narrower
-   than the screen, the top-right corner is empty black, and height is the
-   scarce thing in landscape. If the engraver is ever made to fill that width,
-   this is the rule to revisit. */
-@media (orientation: portrait) {
-  /* Room for the message line and, under it, the note it is waiting for.
+/* The note Wait mode is waiting for, when the owner has turned note names on.
+   Quiet by default — it is there for the moment he is stuck, not as a running
+   commentary. */
+.score-waiting {
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--accent, #6ea8ff);
+}
 
-     A constant rather than a rule that grows when the waiting line appears:
-     the stage height is what the sheet is fitted to, and changing it without
-     a resize event leaves the fit stale — which clipped the second stave the
-     moment Wait mode named a note. Two lines of room, always, so the stage is
-     the same height whatever the status line is saying. */
-  .screen--score .score-stage {
-    margin-top: 3rem;
-  }
+/* Where the controls that are not on the bar wait between openings of the
+   `⋯` sheet. Never seen; `[hidden]` does the work, this only stops it being
+   a flex or grid item if that rule is ever lost. */
+.score-stash {
+  display: none;
 }
 
 /* A *thin* bar floating over the notation, not a row in the column (docs/04
@@ -1062,12 +1071,16 @@ input[type='checkbox'] {
   display: flex;
   /* Wraps rather than scrolling away. A row that runs off the right of a
      phone held sideways hides "Both" behind an edge nobody knows to drag —
-     and the stage now makes room for however tall the bar turns out to be. */
+     and the stage now makes room for however tall the bar turns out to be.
+     Since B1 there are six controls and it should never come to that; this is
+     what happens if a phone narrower than the S25 ever turns up. */
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.6rem;
+  /* Measured, not chosen. At 0.35rem and 0.6rem the six controls came to
+     393 px on a 390 px screen and wrapped onto a second row. */
+  gap: 0.25rem;
+  padding: 0.35rem 0.4rem;
   background: color-mix(in srgb, var(--bg, #0f1115) 92%, transparent);
   border-top: 1px solid var(--border, rgba(255, 255, 255, 0.12));
   transition: opacity 160ms ease-out;
@@ -1075,6 +1088,18 @@ input[type='checkbox'] {
 
 .score-bar > * {
   flex: 0 0 auto;
+}
+
+/* The one thing on the bar allowed to give. At 360 px the six controls come to
+   358 of the 360, which is a fit that depends on a font: if anything ever
+   costs more than those two pixels, the tempo label goes short rather than the
+   whole bar going to two rows. */
+.score-bar > .score-tempo-label {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* The strip sits below the bar, so the bar floats just above it. */
@@ -1091,7 +1116,8 @@ input[type='checkbox'] {
 .score-select {
   font: inherit;
   font-size: 0.85rem;
-  padding: 0.3rem 0.5rem;
+  /* Narrow, not short: the height is the tap target and stays at 36 px. */
+  padding: 0.3rem 0.4rem;
   border-radius: 0.375rem;
   border: 1px solid var(--border, rgba(255, 255, 255, 0.16));
   background: transparent;
@@ -1121,6 +1147,68 @@ input[type='checkbox'] {
 .score-mic {
   width: 4rem;
   margin: 0;
+}
+
+/* One row of the `⋯` sheet: the word on the left, its control on the right.
+   Every control in there gets a word — the bar was the place where a lone
+   glyph had to do, and `🎵` on its own is a guess. */
+.score-menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+}
+
+.score-menu-row:last-child {
+  border-bottom: 0;
+}
+
+/* `[hidden]`'s `display: none` and `.score-menu-row`'s `display: flex` have
+   the same specificity, so the later one wins — and the Section row, hidden
+   for a piece that has none, was drawn anyway. */
+.score-menu-row[hidden] {
+  display: none;
+}
+
+.score-menu-row__label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Right-aligned and allowed to wrap: `Bars in window − 3 bars +` is three
+   controls, and on a 320 px screen they belong under the word rather than
+   squeezed beside it. */
+.score-menu-row__control {
+  flex: 0 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+.score-menu-row__control .score-tempo-label,
+.score-menu-row__control .score-bars {
+  cursor: default;
+}
+
+/* The slider is the one control in there that wants the width. */
+.score-menu-row__control input[type='range'] {
+  flex: 1 1 10rem;
+  min-width: 8rem;
+}
+
+.score-bpm {
+  font: inherit;
+  width: 5.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.16));
+  background: transparent;
+  color: inherit;
+  min-height: 2.25rem;
 }
 
 .score-strip {
@@ -2205,24 +2293,34 @@ input[type='checkbox'] {
 }
 
 @media (min-width: 900px) and (min-height: 900px) {
-  .score-screen[data-tablet='true'] {
+  /* `.screen--score`, not `.score-screen`. Written the wrong way round when
+     the panel was added, so none of these rules ever matched: the screen
+     stayed a flex column and the "beside the score" panel sat *under* it,
+     with the notation squeezed into whatever was left. Nothing about the
+     layout below is new — this is the first time it applies. */
+  .screen--score[data-tablet='true'] {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
-    grid-template-rows: 1fr auto auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     column-gap: 12px;
   }
 
-  .score-screen[data-tablet='true'] .score-stage {
-    grid-column: 1;
+  .screen--score[data-tablet='true'] .score-head {
+    grid-column: 1 / -1;
     grid-row: 1;
   }
 
-  /* Spans the full height beside the score, so the reading is beside the
-     playing rather than under it. */
+  .screen--score[data-tablet='true'] .score-stage {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* Beside the score, so the reading is beside the playing rather than under
+     it. */
   .score-side {
     display: block;
     grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-row: 2;
     overflow-y: auto;
     /* The control bar is absolutely positioned across the bottom of the whole
        screen, so it floats over the foot of this panel whatever the grid says
@@ -2241,8 +2339,14 @@ input[type='checkbox'] {
     padding: 4px 0;
   }
 
-  .score-screen[data-tablet='true'] .score-status,
-  .score-screen[data-tablet='true'] .score-bar {
+  .screen--score[data-tablet='true'] .score-strip {
     grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  /* The summary sheet covers the whole screen, grid or not. */
+  .screen--score[data-tablet='true'] .summary-sheet {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
   }
 }

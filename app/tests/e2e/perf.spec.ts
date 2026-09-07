@@ -14,6 +14,8 @@
  * test should err in.
  */
 import { expect, test, type CDPSession, type Page } from '@playwright/test';
+
+import { withScoreMenu } from './scoreControls';
 import { openDevScore } from './fixtures/devScore';
 import { installMidiMock } from './fixtures/midiMock';
 
@@ -158,7 +160,9 @@ test.describe('performance budgets (docs/01 §6)', () => {
       undefined,
       { timeout: 120_000 },
     );
-    await page.locator('#score-input').selectOption('midi');
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('midi');
+    });
     await page.locator('#score-mode').selectOption('wait');
     await page.locator('#score-hands-R').click();
     await page.locator('#score-play').click();

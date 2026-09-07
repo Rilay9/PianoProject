@@ -13,6 +13,8 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 
+import { setTempoPercent, withScoreMenu } from './scoreControls';
+
 const ITEM = 'song.folk.hot-cross-buns';
 /** Hot Cross Buns, right hand: E D C, E D C, C C C C, D D D D, E D C. */
 const MELODY = [64, 62, 60, 64, 62, 60, 60, 60, 60, 60, 62, 62, 62, 62, 64, 62, 60];
@@ -53,10 +55,12 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
     undefined,
     { timeout: 60_000 },
   );
-  await page.locator('#score-input').selectOption('keys');
+  await withScoreMenu(page, async () => {
+    await page.locator('#score-input').selectOption('keys');
+  });
   await page.locator('#score-mode').selectOption('wait');
   await page.locator('#score-hands-R').click();
-  await page.locator('#score-tempo').fill('100');
+  await setTempoPercent(page, 100);
   await page.locator('#score-play').click();
   for (const midi of MELODY) await press(page, midi);
 

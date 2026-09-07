@@ -256,17 +256,33 @@ and never will; what it holds is a register.
 
 ## 5. Score screen (the core)
 
-**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout and the bar no longer has to hide itself to get out of its own way. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional.
+**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional.
 
-Layout (landscape): notation fills the screen; a **thin control bar** auto-hides after 3 s
-and returns on tap.
+Layout: a **header row** across the top — `← Back`, the piece's name, then the app's own
+messages and the mic meter — the notation under it, a **thin control bar** along the bottom,
+and the keyboard strip under that. The header is a row in the column, not a line floating over
+the notation: three absolutely-positioned lines cost the stage a constant 3 rem upright and
+printed the title across bar 1 sideways.
 
-Control bar: ⏮ restart · ▶/⏸ · **input selector (MIDI / Mic / Screen keys / None)** ·
-mode selector (Wait / Tempo / Listen / Free) · tempo % slider
-(30–130 %) with tap-to-type bpm · hands (R / L / Both) · loop (set A/B by tapping bars, or
-pick a named section) · metronome on/off · count-in on/off · bars-per-window stepper (1–8) ·
-zoom ± · layout (Window / Scroll) · ⋯ menu (transpose ±, show fingering, show note names,
-show chord symbols, keyboard strip on/off, diagnostics).
+The control bar **auto-hides after 3 s during a run, and only when it is taking room from the
+notation** (decision 5, 2026-09-07). The stage reserves the bar's height rather than being
+covered by it, so what "in the way" means is that the fit used the whole stage: held sideways
+it does and the bar goes; held upright the sheet is fitted to the width and leaves the bottom
+third of the stage empty, so hiding the controls would buy nothing and cost a hunt for them.
+One measurement, when the timer fires — never per frame. A tap on the notation brings it back.
+
+Control bar, in this order and **nothing else**: `⏮` restart · `▶`/`⏸` · mode selector
+(Wait / Tempo / Listen / Free) · hands (`R` `L` `Both`) · the tempo label (tap opens a sheet
+with the % slider, 30–130 %, and a typed bpm field) · `⋯`. These are the things that change
+during a practice; one row in every form factor, on a phone either way up and on a tablet.
+
+`⋯` opens a sheet holding everything else, each with its word beside it: **Input**
+(MIDI / Mic / Screen keys / None) · **Section** (only when the piece has named sections) ·
+**Loop** (set A/B by tapping bars, or pick a section) · **Metronome** · **Bars in window**
+(1–8) · **Size** (zoom ±) · **Layout** (`Window` | `Scroll`, a segment: it is a state, not a
+verb) · **Keys** (keyboard strip) · **Sound** (Phone / Piano / Both) · **Blind** · **Perform**.
+The controls are moved into the sheet and back, not rebuilt, so each keeps its state and its
+id.
 
 Notation area:
 - **Window layout:** exactly N bars of the grand staff, scaled to fit width (landscape) or

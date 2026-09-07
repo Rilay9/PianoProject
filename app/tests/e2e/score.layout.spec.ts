@@ -7,13 +7,18 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
+import { closeScoreMenu, openScoreMenu } from './scoreControls';
+
 const ITEM = 'song.folk.twinkle.rh';
 
 async function open(page: Page): Promise<void> {
   await page.goto(`/#/score/${ITEM}`);
+  // Sixty seconds, not the default five: eight of these run at once and a
+  // score that takes two seconds alone takes twenty with the machine full.
   await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
     'data-mode',
     /wait|tempo/,
+    { timeout: 60_000 },
   );
   await page.waitForFunction(
     () => {
@@ -27,9 +32,12 @@ async function open(page: Page): Promise<void> {
 
 async function setBars(page: Page, bars: number): Promise<void> {
   const label = page.locator('#score-bars');
+  await openScoreMenu(page);
   for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
   for (let i = 1; i < bars; i += 1) await page.locator('#score-bars-up').click();
   await expect(label).toHaveText(`${bars} bar${bars === 1 ? '' : 's'}`);
+  // The sheet covers the notation, and these pictures are of the notation.
+  await closeScoreMenu(page);
   // Let the redraw and the pre-render settle before the shutter.
   await page.waitForTimeout(500);
 }

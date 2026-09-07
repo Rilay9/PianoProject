@@ -1,5 +1,11 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { openDevScore, waitForStableLayout } from './fixtures/devScore';
+import {
+  closeScoreMenu,
+  closeTempoSheet,
+  openScoreMenu,
+  openTempoSheet,
+} from './scoreControls';
 
 // docs/01-architecture.md §6: a 2-bar window must render in under 150 ms.
 // Measured on desktop Chromium here; the phone number comes from the owner
@@ -366,4 +372,149 @@ test.describe('screenshots', () => {
       }
     }
   }
+});
+
+/**
+ * The bar and the `⋯` sheet (`04` §5, P21 B1).
+ *
+ * The bar held nineteen controls. Held sideways it wrapped onto three rows and
+ * took a third of the screen off the notation; the four you reach for during a
+ * piece were mixed in with the ones you set once. These say what it holds now,
+ * that nothing was lost on the way out, and that Back is where a thumb looks
+ * for it.
+ */
+test.describe('the score control bar', () => {
+  const ITEM = 'song.folk.hot-cross-buns';
+
+  async function openScore(page: Page): Promise<void> {
+    await page.goto(`/#/score/${ITEM}`);
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+      'data-mode',
+      /wait|tempo/,
+      { timeout: 60_000 },
+    );
+    await page.waitForFunction(
+      () => {
+        const svg = document.querySelector('#score-stage .is-front svg');
+        return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+      },
+      undefined,
+      { timeout: 60_000 },
+    );
+  }
+
+  for (const [orientation, viewport] of [
+    ['upright', { width: 390, height: 844 }],
+    ['sideways', { width: 880, height: 412 }],
+  ] as const) {
+    test(`${orientation}: one row, seven controls at most`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await openScore(page);
+
+      const children = await page.locator('#score-bar > *').count();
+      expect(children, 'the bar has grown again').toBeLessThanOrEqual(8);
+
+      // One row. A `.score-button` is 36 px tall plus the bar's own padding,
+      // so anything past 60 has wrapped.
+      const box = await page.locator('#score-bar').boundingBox();
+      expect(box, 'no control bar').toBeTruthy();
+      expect(box!.height, `the bar is ${String(box!.height)} px tall`).toBeLessThan(60);
+
+      // And Back is where a thumb looks for it rather than in among the
+      // transport controls.
+      const back = await page.locator('#score-back').boundingBox();
+      expect(back, 'no back button').toBeTruthy();
+      expect(back!.y + back!.height, 'Back is not in the header').toBeLessThanOrEqual(60);
+    });
+  }
+
+  test('everything that left the bar is behind ⋯ and still works', async ({ page }) => {
+    await openScore(page);
+    await openScoreMenu(page);
+
+    for (const id of [
+      'score-input',
+      'score-loop',
+      'score-metronome',
+      'score-bars-down',
+      'score-bars',
+      'score-bars-up',
+      'score-zoom-out',
+      'score-zoom-in',
+      'score-layout-window',
+      'score-layout-scroll',
+      'score-strip-toggle',
+      'score-destination',
+      'score-blind',
+      'score-performance',
+    ]) {
+      await expect(page.locator(`#${id}`), `${id} is not in the sheet`).toBeVisible();
+    }
+
+    // Bars in the window.
+    await expect(page.locator('#score-bars')).toHaveText('2 bars');
+    await page.locator('#score-bars-up').click();
+    await expect(page.locator('#score-bars')).toHaveText('3 bars');
+    await page.locator('#score-bars-down').click();
+    await expect(page.locator('#score-bars')).toHaveText('2 bars');
+
+    // Layout, as a segment.
+    await page.locator('#score-layout-scroll').click();
+    await expect(page.locator('#score-layout-scroll')).toHaveClass(/is-selected/);
+    await page.locator('#score-layout-window').click();
+    await expect(page.locator('#score-layout-window')).toHaveClass(/is-selected/);
+
+    // The metronome, the strip and the sound destination.
+    await page.locator('#score-metronome').click();
+    await expect(page.locator('#score-metronome')).toHaveAttribute('aria-pressed', 'true');
+    await page.locator('#score-strip-toggle').click();
+    await expect(page.locator('#score-strip')).toBeHidden();
+    await page.locator('#score-destination').click();
+    await expect(page.locator('#score-destination')).toContainText('Piano');
+
+    // The input, which is the one that changes what the run listens to.
+    await page.locator('#score-input').selectOption('keys');
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+      'data-input',
+      'keys',
+    );
+
+    // Zoom, measured rather than assumed: it is the one whose effect is not
+    // visible in the sheet.
+    const height = async (): Promise<number> =>
+      page.evaluate(
+        () =>
+          document.querySelector('#score-stage .is-front svg')?.getBoundingClientRect().height ?? 0,
+      );
+    const before = await height();
+    await page.locator('#score-zoom-out').click();
+    await expect.poll(height, { timeout: 15_000 }).toBeLessThan(before - 5);
+
+    await closeScoreMenu(page);
+    // And the sheet gives the controls back rather than taking them with it.
+    await expect(page.locator('#score-bars')).toHaveCount(1);
+    await expect(page.locator('#score-more')).toBeVisible();
+  });
+
+  test('the tempo label opens a sheet with the slider and a typed bpm', async ({ page }) => {
+    await openScore(page);
+    await openTempoSheet(page);
+    await expect(page.locator('#score-tempo')).toBeVisible();
+    const bpm = page.locator('#score-bpm');
+    await expect(bpm).toBeVisible();
+
+    // A typed bpm, where `window.prompt` used to be. Relative to whatever the
+    // piece is written at, so this does not depend on its tempo mark.
+    const slider = page.locator('#score-tempo');
+    const startPct = await slider.inputValue();
+    const startBpm = Number(await bpm.inputValue());
+    expect(startBpm, 'the bpm field opened empty').toBeGreaterThan(0);
+    await bpm.fill(String(Math.round(startBpm * 0.6)));
+    await bpm.blur();
+    await expect(slider, 'typing a bpm did not move the tempo').not.toHaveValue(startPct);
+    const percent = await slider.inputValue();
+    await expect(page.locator('#score-tempo-label')).toContainText(`${percent}%`);
+    await closeTempoSheet(page);
+    await expect(page.locator('#score-tempo')).toHaveCount(1);
+  });
 });

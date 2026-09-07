@@ -15,6 +15,8 @@
  *   npm run tour -- --grep "^portrait"
  */
 import { expect, test, type Page } from '@playwright/test';
+
+import { openScoreMenu, openTempoSheet, withScoreMenu } from '../e2e/scoreControls';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
@@ -267,19 +269,22 @@ for (const { orientation, size } of FORM_FACTORS) {
         await page.locator('#score-play').click();
         await page.waitForTimeout(1800);
       });
-      await scene('27-score-bar-hidden', 'Mid-run, the bar out of the way', 'What it looks like once the controls hide themselves.', async () => {
+      // Deliberately no assertion on `data-visible` here: decision 5 says the
+      // bar hides only when it is taking room from the notation, which is true
+      // sideways and false upright. Both are the picture to look at.
+      await scene('27-score-bar-hidden', 'Mid-run, four seconds in', 'The bar hides itself only where it was taking room from the music (decision 5).', async () => {
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
         await page.locator('#score-mode').selectOption('tempo');
         await page.locator('#score-play').click();
-        await expect(page.locator('.score-bar')).toHaveAttribute('data-visible', 'false', {
-          timeout: 30_000,
-        });
+        await page.waitForTimeout(4_500);
       });
       await scene('28-score-no-strip', 'Keys hidden', 'A fifth of the height back. Worth it?', async () => {
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
-        await page.locator('#score-strip-toggle').click();
+        await withScoreMenu(page, async () => {
+          await page.locator('#score-strip-toggle').click();
+        });
         await page.waitForTimeout(800);
       });
       await scene('29-score-blind', 'Blind mode', 'The notation is hidden on purpose. Is that obvious?', async () => {
@@ -290,14 +295,16 @@ for (const { orientation, size } of FORM_FACTORS) {
         await go(page, `/score/${SONG}?performance=1`, 'score');
         await waitForSheet(page);
       });
-      await scene('31-score-sections', 'A piece with named sections', 'The section picker beside the loop button.', async () => {
+      await scene('31-score-sections', 'A piece with named sections', 'The section picker, in the ⋯ sheet with the rest of the settings.', async () => {
         await go(page, `/score/${SECTIONED}`, 'score');
         await waitForSheet(page);
+        await openScoreMenu(page);
         await expect(page.locator('#score-section')).toBeVisible({ timeout: 30_000 });
       });
       await scene('32-score-loop', 'A section looped', 'The loop names the section rather than bar numbers.', async () => {
         await go(page, `/score/${SECTIONED}`, 'score');
         await waitForSheet(page);
+        await openScoreMenu(page);
         await expect(page.locator('#score-section')).toBeVisible({ timeout: 30_000 });
         await page.locator('#score-section').selectOption({ index: 1 });
         await page.waitForTimeout(900);
@@ -305,13 +312,25 @@ for (const { orientation, size } of FORM_FACTORS) {
       await scene('33-score-four-bars', 'Four bars in the window', 'More to read ahead into, smaller notes.', async () => {
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
-        await page.locator('#score-bars-up').click();
-        await page.locator('#score-bars-up').click();
+        await withScoreMenu(page, async () => {
+          await page.locator('#score-bars-up').click();
+          await page.locator('#score-bars-up').click();
+        });
         await page.waitForTimeout(1200);
       });
       await scene('34-exercise', 'A generated exercise', 'Four bars, one hand. Is the fit right for something short?', async () => {
         await go(page, `/score/${EXERCISE}`, 'score');
         await waitForSheet(page);
+      });
+      await scene('36-score-controls', 'The ⋯ sheet', 'Everything that left the bar, each with its word. One tap from the score.', async () => {
+        await go(page, `/score/${SONG}`, 'score');
+        await waitForSheet(page);
+        await openScoreMenu(page);
+      });
+      await scene('37-score-tempo-sheet', 'Setting the tempo', 'The slider and a typed bpm, behind the tempo label on the bar.', async () => {
+        await go(page, `/score/${SONG}`, 'score');
+        await waitForSheet(page);
+        await openTempoSheet(page);
       });
       await scene('35-score-summary', 'The run summary', 'What it says when a run ends.', async () => {
         await go(page, `/score/${EXERCISE}`, 'score');

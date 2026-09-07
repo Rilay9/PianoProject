@@ -14,6 +14,8 @@
  *   npm run choices
  */
 import { expect, test, type Page } from '@playwright/test';
+
+import { withScoreMenu } from '../e2e/scoreControls';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { LANDSCAPE, PORTRAIT, TOUR_DIR, type Orientation } from './shoot';
@@ -50,9 +52,13 @@ async function openScore(page: Page): Promise<void> {
 
 /** Sets the window to `bars` through the buttons, as a person would. */
 async function setBars(page: Page, bars: number): Promise<void> {
-  for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
-  for (let i = 1; i < bars; i += 1) await page.locator('#score-bars-up').click();
-  await expect(page.locator('#score-bars')).toHaveText(`${String(bars)} bar${bars === 1 ? '' : 's'}`);
+  await withScoreMenu(page, async () => {
+    for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
+    for (let i = 1; i < bars; i += 1) await page.locator('#score-bars-up').click();
+    await expect(page.locator('#score-bars')).toHaveText(
+      `${String(bars)} bar${bars === 1 ? '' : 's'}`,
+    );
+  });
   await page.waitForTimeout(900);
 }
 
@@ -136,7 +142,9 @@ test.describe('choices, portrait', () => {
     };
     await openScore(page);
     await shootOption(page, question, 'Keys showing', 'What it does today.');
-    await page.locator('#score-strip-toggle').click();
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-strip-toggle').click();
+    });
     await page.waitForTimeout(900);
     await shootOption(page, question, 'Keys hidden', '');
     questions.push(question);
@@ -155,7 +163,9 @@ test.describe('choices, portrait', () => {
     };
     await openScore(page);
     await page.locator('#score-mode').selectOption('wait');
-    await page.locator('#score-input').selectOption('keys');
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
     await page.locator('#score-play').click();
     await page.waitForTimeout(600);
     await shootOption(page, question, 'No name', 'What it does today.');
@@ -164,7 +174,9 @@ test.describe('choices, portrait', () => {
     await page.locator('#set-notenames').click();
     await openScore(page);
     await page.locator('#score-mode').selectOption('wait');
-    await page.locator('#score-input').selectOption('keys');
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
     await page.locator('#score-play').click();
     await page.waitForTimeout(600);
     await shootOption(page, question, 'Named', '');

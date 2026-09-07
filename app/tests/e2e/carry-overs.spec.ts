@@ -8,6 +8,8 @@
  */
 import { expect, test } from '@playwright/test';
 
+import { openScoreMenu, withScoreMenu } from './scoreControls';
+
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     if (sessionStorage.getItem('e2e-fresh') === null) {
@@ -21,8 +23,9 @@ test.beforeEach(async ({ page }) => {
 test.describe('named sections', () => {
   test('offers the piece’s own sections and loops one of them', async ({ page }) => {
     await page.goto('/#/score/song.classical.petzold-minuet-g-bwv-anh114');
+    await openScoreMenu(page);
     const picker = page.locator('#score-section');
-    await expect(picker).toBeVisible();
+    await expect(picker).toBeVisible({ timeout: 30_000 });
     // Read off the score: the minuet is binary form with both halves repeated.
     await expect(picker).toContainText('First half (repeated)');
     await expect(picker).toContainText('Second half (repeated)');
@@ -36,6 +39,10 @@ test.describe('named sections', () => {
   test('is absent on a piece with no sections', async ({ page }) => {
     // A disabled control is a question the screen cannot answer.
     await page.goto('/#/score/exercise.five-finger.c-major.right');
+    await openScoreMenu(page);
+    // The rest of the sheet is there, so this is the row missing rather than
+    // the sheet not having opened.
+    await expect(page.locator('#score-loop')).toBeVisible();
     await expect(page.locator('#score-section')).toBeHidden();
   });
 
@@ -45,7 +52,8 @@ test.describe('named sections', () => {
     // parsed, because until then choosing a section has nothing to turn its
     // printed bars into. This test used to flake on a loaded machine by
     // selecting into that gap.
-    await expect(page.locator('#score-section')).toBeVisible();
+    await openScoreMenu(page);
+    await expect(page.locator('#score-section')).toBeVisible({ timeout: 30_000 });
     await page.locator('#score-section').selectOption('First half (repeated)');
     await expect(page.locator('#score-loop')).toHaveText(/Loop First half/);
     await page.locator('#score-loop').click();
@@ -183,7 +191,9 @@ test.describe('the tablet layout', () => {
     const panel = page.locator('#score-side');
     await expect(panel).toBeVisible();
     await expect(panel).toHaveJSProperty('open', true);
-    await expect(page.locator("#score-bars")).toContainText("4");
+    await withScoreMenu(page, async () => {
+      await expect(page.locator('#score-bars')).toContainText('4');
+    });
   });
 
   test('the panel collapses', async ({ page }) => {

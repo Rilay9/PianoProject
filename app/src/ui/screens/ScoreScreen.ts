@@ -46,6 +46,7 @@ import { KeyboardStrip } from '../KeyboardStrip';
 import { waitingForLine } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
+import { openSheet } from '../widgets';
 
 const MODES: { id: Mode; label: string }[] = [
   { id: 'wait', label: 'Wait' },
@@ -131,6 +132,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   /** The section the current loop came from, so the button can name it. */
   let loopSection: { label: string; fromMeasure: number; toMeasure: number } | null = null;
   const unsubscribers: (() => void)[] = [];
+  /** Closers for any open control sheet, so leaving the screen takes it too. */
+  const openSheets: (() => void)[] = [];
 
   // --- chrome --------------------------------------------------------------
   // docs/04 §7a: a tablet gets four bars in the window by default and a side
@@ -198,18 +201,18 @@ export function ScoreScreen(router: Router): HTMLElement {
     section.appendChild(sidePanel);
   }
 
+  // Both of these are put into the header row further down; they are built
+  // here because the loader below writes to them before it exists.
   const status = document.createElement('p');
   status.className = 'score-status';
   status.id = 'score-status';
   status.textContent = 'Loading…';
-  section.appendChild(status);
 
-  // Under the status line, hidden unless the owner has asked for note names.
+  // Beside the status line, hidden unless the owner has asked for note names.
   const waitingLine = document.createElement('p');
   waitingLine.className = 'score-waiting';
   waitingLine.id = 'score-waiting';
   waitingLine.hidden = true;
-  section.appendChild(waitingLine);
 
   const bar = document.createElement('div');
   bar.className = 'score-bar';
@@ -227,46 +230,79 @@ export function ScoreScreen(router: Router): HTMLElement {
   sheet.hidden = true;
   section.appendChild(sheet);
 
-  // --- control bar ---------------------------------------------------------
-  const back = button('← Back', () => router.navigate(router.route.tab), 'score-back');
-  bar.appendChild(back);
+  // --- header --------------------------------------------------------------
 
+  /**
+   * Back, the piece's name, the app's messages and the mic level, in one real
+   * row at the top (`04` §5, B1).
+   *
+   * These were three absolutely-positioned lines over the notation. Held
+   * sideways the title printed across bar 1; held upright the stage paid a
+   * constant 3 rem of top margin whether or not anything was being said. A
+   * row costs its height once, and the fit now gets a stage whose height does
+   * not depend on what the status line happens to say.
+   */
+  const head = document.createElement('div');
+  head.className = 'score-head';
+  head.id = 'score-head';
+  section.prepend(head);
+
+  const back = button('← Back', () => router.navigate(router.route.tab), 'score-back');
+
+  const title = document.createElement('h1');
+  title.className = 'score-head__title';
+  title.id = 'score-title';
+
+  const micMeter = document.createElement('div');
+  micMeter.className = 'mic-meter score-mic';
+  micMeter.id = 'score-mic-meter';
+  micMeter.hidden = true;
+  const micFill = document.createElement('div');
+  micFill.className = 'mic-meter__fill';
+  micMeter.appendChild(micFill);
+
+  head.append(back, title, status, waitingLine, micMeter);
+
+  /**
+   * Where the controls that are not on the bar live between openings.
+   *
+   * Parked in a hidden div and *moved* into the sheet rather than rebuilt
+   * inside it: each one carries state, listeners and the id the tour and the
+   * e2e suite address it by, and moving a node keeps all three where
+   * rebuilding would have to wire every one of them twice.
+   */
+  const menuStash = document.createElement('div');
+  menuStash.className = 'score-stash';
+  menuStash.id = 'score-stash';
+  menuStash.hidden = true;
+  section.appendChild(menuStash);
+
+  const tempoStash = document.createElement('div');
+  tempoStash.className = 'score-stash';
+  tempoStash.id = 'score-tempo-stash';
+  tempoStash.hidden = true;
+  section.appendChild(tempoStash);
+
+  // --- control bar ---------------------------------------------------------
+
+  /**
+   * Six controls and a `⋯`, in this order and nothing else (`04` §5, B1).
+   *
+   * It held nineteen. Held sideways that wrapped onto three rows and took a
+   * third of the screen off the notation, and the four you actually reach for
+   * mid-run — play, mode, which hand, how fast — were in among Layout, Size
+   * and Sound, which you set once a year. What is left is what changes during
+   * a practice. Everything else is one tap behind the ellipsis, where it gets
+   * its own word instead of a bare glyph.
+   */
   const restart = button('⏮', () => startRun(), 'score-restart');
+  restart.title = 'Start again';
   // A performance is one pass through. Offering a restart during one would be
   // offering to make it not a performance (replan §8).
   if (!performanceRun) bar.appendChild(restart);
 
-  // Blind and performance are *routes*, not toggles: the run has to be set up
-  // that way from the start, and putting them in the hash means a blind run
-  // survives a reload and can be linked to from a rung.
-  const blindToggle = button(
-    blind ? 'Show the score' : 'Blind',
-    () => router.navigateScore(itemId, { blind: !blind, performance: performanceRun }),
-    'score-blind',
-  );
-  bar.appendChild(blindToggle);
-
-  const performanceToggle = button(
-    performanceRun ? 'Practising' : 'Perform',
-    () => router.navigateScore(itemId, { blind, performance: !performanceRun }),
-    'score-performance',
-  );
-  bar.appendChild(performanceToggle);
-
   const playPause = button('▶', () => togglePlay(), 'score-play');
   bar.appendChild(playPause);
-
-  const inputSelect = select(
-    INPUTS.map((i) => ({ value: i.id, label: i.label })),
-    'score-input',
-    'Follow input',
-    (value) => {
-      input = value as FollowInput;
-      attachInput();
-      render();
-    },
-  );
-  bar.appendChild(inputSelect);
 
   const modeSelect = select(
     MODES.map((m) => ({ value: m.id, label: m.label })),
@@ -279,29 +315,6 @@ export function ScoreScreen(router: Router): HTMLElement {
     },
   );
   bar.appendChild(modeSelect);
-
-  const tempo = document.createElement('input');
-  tempo.type = 'range';
-  tempo.min = '30';
-  tempo.max = '130';
-  tempo.step = '5';
-  tempo.id = 'score-tempo';
-  tempo.setAttribute('aria-label', 'Tempo percent');
-  tempo.value = String(tempoPct);
-  tempo.addEventListener('input', () => {
-    tempoPct = Number(tempo.value);
-    if (session?.running) startRun();
-    render();
-  });
-  bar.appendChild(tempo);
-
-  const tempoLabel = document.createElement('span');
-  tempoLabel.className = 'score-tempo-label';
-  tempoLabel.id = 'score-tempo-label';
-  tempoLabel.tabIndex = 0;
-  tempoLabel.title = 'Tap to type a bpm';
-  tempoLabel.addEventListener('click', promptForBpm);
-  bar.appendChild(tempoLabel);
 
   const handsGroup = document.createElement('div');
   handsGroup.className = 'score-group';
@@ -321,8 +334,84 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
   bar.appendChild(handsGroup);
 
-  const loopButton = button('Loop', () => clearLoop(), 'score-loop');
-  bar.appendChild(loopButton);
+  const tempoLabel = document.createElement('span');
+  tempoLabel.className = 'score-tempo-label';
+  tempoLabel.id = 'score-tempo-label';
+  tempoLabel.tabIndex = 0;
+  tempoLabel.setAttribute('role', 'button');
+  tempoLabel.title = 'Tap to set the tempo';
+  tempoLabel.addEventListener('click', (event) => {
+    event.stopPropagation();
+    showBar();
+    openStashedSheet('Tempo', 'score-tempo-sheet', tempoStash);
+  });
+  tempoLabel.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    openStashedSheet('Tempo', 'score-tempo-sheet', tempoStash);
+  });
+  bar.appendChild(tempoLabel);
+
+  const moreButton = button(
+    '⋯',
+    () => openStashedSheet('Controls', 'score-more-sheet', menuStash),
+    'score-more',
+  );
+  moreButton.title = 'More controls';
+  moreButton.setAttribute('aria-label', 'More controls');
+  bar.appendChild(moreButton);
+
+  // --- the tempo sheet -----------------------------------------------------
+
+  const tempo = document.createElement('input');
+  tempo.type = 'range';
+  tempo.min = '30';
+  tempo.max = '130';
+  // A step of 1, not 5: the slider and the bpm field are two views of the same
+  // number, and a typed 30 bpm that landed on 42 % left the slider showing 40
+  // while the label said 42.
+  tempo.step = '1';
+  tempo.id = 'score-tempo';
+  tempo.setAttribute('aria-label', 'Tempo percent');
+  tempo.value = String(tempoPct);
+  tempo.addEventListener('input', () => {
+    tempoPct = Number(tempo.value);
+    if (session?.running) startRun();
+    render();
+  });
+
+  /**
+   * The typed bpm, in a field rather than a `window.prompt`.
+   *
+   * The prompt was a browser dialog over a full-screen app: unstyleable, not
+   * photographable by the tour, and on Android it takes the page's focus for
+   * as long as it is open. A number field in the same sheet as the slider
+   * says the same thing and can be seen in a picture.
+   */
+  const bpmField = document.createElement('input');
+  bpmField.type = 'number';
+  bpmField.id = 'score-bpm';
+  bpmField.className = 'score-bpm';
+  bpmField.min = '20';
+  bpmField.max = '300';
+  bpmField.step = '1';
+  bpmField.setAttribute('aria-label', 'Tempo in bpm');
+  bpmField.addEventListener('change', () => setBpm(Number(bpmField.value)));
+
+  tempoStash.append(menuRow('Speed', tempo), menuRow('Beats per minute', bpmField));
+
+  // --- the ⋯ sheet ---------------------------------------------------------
+
+  const inputSelect = select(
+    INPUTS.map((i) => ({ value: i.id, label: i.label })),
+    'score-input',
+    'Follow input',
+    (value) => {
+      input = value as FollowInput;
+      attachInput();
+      render();
+    },
+  );
 
   /**
    * The named sections, when the piece has any (`04` §5, P18).
@@ -353,11 +442,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (session.running) startRun();
     render();
   });
-  sectionSelect.hidden = true;
-  bar.appendChild(sectionSelect);
+
+  const loopButton = button('Loop', () => clearLoop(), 'score-loop');
 
   const metronomeButton = button(
-    '🎵',
+    'Off',
     () => {
       metronomeOn = !metronomeOn;
       // The click has to be able to start *while the score is showing*, not
@@ -367,35 +456,33 @@ export function ScoreScreen(router: Router): HTMLElement {
     },
     'score-metronome',
   );
-  metronomeButton.title = 'Metronome';
-  bar.appendChild(metronomeButton);
 
   const barsDown = button('−', () => setBars(settings.barsPerWindow - 1), 'score-bars-down');
   const barsLabel = document.createElement('span');
   barsLabel.id = 'score-bars';
   barsLabel.className = 'score-bars';
   const barsUp = button('+', () => setBars(settings.barsPerWindow + 1), 'score-bars-up');
-  bar.append(barsDown, barsLabel, barsUp);
-
-  const layoutButton = button(
-    'Window',
-    () => {
-      const next: ScoreLayout = settings.layout === 'window' ? 'scroll' : 'window';
-      settings.layout = next;
-      updateSettings({ layout: next });
-      renderer?.setLayout(next);
-      render();
-    },
-    'score-layout',
-  );
-  bar.appendChild(layoutButton);
 
   const zoomOut = button('－', () => setZoom(settings.zoom - 0.1), 'score-zoom-out');
   const zoomIn = button('＋', () => setZoom(settings.zoom + 0.1), 'score-zoom-in');
-  bar.append(zoomOut, zoomIn);
+
+  /**
+   * Layout as a two-way segment rather than a button that says the state it
+   * is already in.
+   *
+   * `Window` on a button reads as "press to get a window", and it was the
+   * label for *being* in one — so the one control on the screen with two
+   * equal settings was the one you had to press to find out what it did.
+   */
+  const layoutGroup = document.createElement('div');
+  layoutGroup.className = 'score-group';
+  layoutGroup.id = 'score-layout';
+  const layoutWindow = button('Window', () => setLayout('window'), 'score-layout-window');
+  const layoutScroll = button('Scroll', () => setLayout('scroll'), 'score-layout-scroll');
+  layoutGroup.append(layoutWindow, layoutScroll);
 
   const stripButton = button(
-    'Keys',
+    'Off',
     () => {
       settings.keyboardStrip = !settings.keyboardStrip;
       updateSettings({ keyboardStrip: settings.keyboardStrip });
@@ -403,19 +490,40 @@ export function ScoreScreen(router: Router): HTMLElement {
     },
     'score-strip-toggle',
   );
-  bar.appendChild(stripButton);
 
   const destinationButton = button('🔈 Phone', () => cyclePlaybackDestination(), 'score-destination');
-  bar.appendChild(destinationButton);
 
-  const micMeter = document.createElement('div');
-  micMeter.className = 'mic-meter score-mic';
-  micMeter.id = 'score-mic-meter';
-  micMeter.hidden = true;
-  const micFill = document.createElement('div');
-  micFill.className = 'mic-meter__fill';
-  micMeter.appendChild(micFill);
-  bar.appendChild(micMeter);
+  // Blind and performance are *routes*, not toggles: the run has to be set up
+  // that way from the start, and putting them in the hash means a blind run
+  // survives a reload and can be linked to from a rung.
+  const blindToggle = button(
+    blind ? 'Show the score' : 'Blind',
+    () => router.navigateScore(itemId, { blind: !blind, performance: performanceRun }),
+    'score-blind',
+  );
+
+  const performanceToggle = button(
+    performanceRun ? 'Practising' : 'Perform',
+    () => router.navigateScore(itemId, { blind, performance: !performanceRun }),
+    'score-performance',
+  );
+
+  const sectionRow = menuRow('Section', sectionSelect);
+  sectionRow.hidden = true;
+
+  menuStash.append(
+    menuRow('Input', inputSelect),
+    sectionRow,
+    menuRow('Loop', loopButton),
+    menuRow('Metronome', metronomeButton),
+    menuRow('Bars in window', barsDown, barsLabel, barsUp),
+    menuRow('Size', zoomOut, zoomIn),
+    menuRow('Layout', layoutGroup),
+    menuRow('Keys', stripButton),
+    menuRow('Sound', destinationButton),
+    menuRow('Blind', blindToggle),
+    menuRow('Perform', performanceToggle),
+  );
 
   // --- behaviour -----------------------------------------------------------
 
@@ -471,23 +579,72 @@ export function ScoreScreen(router: Router): HTMLElement {
     render();
   }
 
+  function setLayout(next: ScoreLayout): void {
+    if (settings.layout === next) return;
+    settings.layout = next;
+    updateSettings({ layout: next });
+    renderer?.setLayout(next);
+    render();
+  }
+
+  /**
+   * One labelled row of the `⋯` sheet: the word on the left, the control on
+   * the right. Every control in there gets a word — the bar was where a glyph
+   * on its own had to do, and `🎵` alone is a guess.
+   */
+  function menuRow(label: string, ...controls: HTMLElement[]): HTMLElement {
+    const row = document.createElement('div');
+    row.className = 'score-menu-row';
+    const text = document.createElement('span');
+    text.className = 'score-menu-row__label';
+    text.textContent = label;
+    const holder = document.createElement('div');
+    holder.className = 'score-menu-row__control';
+    holder.append(...controls);
+    row.append(text, holder);
+    return row;
+  }
+
+  /**
+   * Opens a sheet holding whatever is parked in `stash`, and parks it back
+   * when the sheet goes.
+   *
+   * The rows are *moved*, not copied: they own their state and their ids.
+   * `openSheet` closes on the Close button, on the backdrop and on Escape and
+   * does not say which, so the restore watches for the sheet leaving the
+   * document instead of hooking each of the three.
+   */
+  function openStashedSheet(heading: string, id: string, stash: HTMLElement): void {
+    if (document.getElementById(id)) return;
+    const sheet = openSheet(heading, { id });
+    sheet.body.append(...Array.from(stash.children));
+    render();
+    const observer = new MutationObserver(() => {
+      if (sheet.el.isConnected) return;
+      observer.disconnect();
+      stash.append(...Array.from(sheet.body.children));
+    });
+    observer.observe(document.body, { childList: true });
+    openSheets.push(() => {
+      observer.disconnect();
+      stash.append(...Array.from(sheet.body.children));
+      sheet.close();
+    });
+  }
+
+  function setBpm(wanted: number): void {
+    if (!Number.isFinite(wanted) || wanted <= 0) return;
+    tempoPct = Math.min(130, Math.max(30, Math.round((wanted / writtenBpm()) * 100)));
+    tempo.value = String(tempoPct);
+    if (session?.running) startRun();
+    render();
+  }
+
   function cyclePlaybackDestination(): void {
     const order = ['phone', 'piano', 'both'] as const;
     const index = order.indexOf(settings.playbackDestination);
     settings.playbackDestination = order[(index + 1) % order.length] ?? 'phone';
     updateSettings({ playbackDestination: settings.playbackDestination });
-    render();
-  }
-
-  function promptForBpm(): void {
-    if (!model) return;
-    const answer = window.prompt('Tempo in bpm', String(Math.round(bpmNow())));
-    if (answer === null) return;
-    const wanted = Number(answer);
-    if (!Number.isFinite(wanted) || wanted <= 0) return;
-    tempoPct = Math.min(130, Math.max(30, Math.round((wanted / writtenBpm()) * 100)));
-    tempo.value = String(tempoPct);
-    if (session?.running) startRun();
     render();
   }
 
@@ -721,13 +878,37 @@ export function ScoreScreen(router: Router): HTMLElement {
     section.style.setProperty('--score-bar-h', `${String(Math.round(height))}px`);
   }
 
+  /**
+   * Whether hiding the bar would give the notation anything (decision 5).
+   *
+   * The stage reserves the bar's height rather than being covered by it, so
+   * the bar is never literally on top of a note. What "would otherwise
+   * overlap" means in that layout is: the engraving has been fitted to a
+   * stage that the bar is taking a strip off, and it used all of it. Held
+   * upright, with a third of the stage empty under the sheet, it has not —
+   * and hiding the controls buys nothing but a hunt for them.
+   *
+   * One measurement, when the timer fires. Nothing here runs per frame.
+   */
+  function barCostsMusicRoom(): boolean {
+    const svg =
+      stage.querySelector<SVGSVGElement>('.score-buffer.is-front svg') ??
+      stage.querySelector('svg');
+    if (!svg) return false;
+    const music = svg.getBoundingClientRect();
+    if (music.height < 20) return false;
+    const box = stage.getBoundingClientRect();
+    // Within a line's height of the bottom edge: the fit ran out of stage.
+    return music.bottom >= box.bottom - 24;
+  }
+
   function showBar(): void {
     bar.dataset.visible = 'true';
     requestAnimationFrame(measureBar);
     if (hideTimer !== null) window.clearTimeout(hideTimer);
     if (session?.running !== true) return;
     hideTimer = window.setTimeout(() => {
-      if (session?.running === true) {
+      if (session?.running === true && barCostsMusicRoom()) {
         bar.dataset.visible = 'false';
         requestAnimationFrame(measureBar);
       }
@@ -929,12 +1110,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     modeSelect.value = mode;
     inputSelect.value = input;
     tempo.value = String(tempoPct);
+    // Not while it is being typed into: writing the rounded value back on
+    // every render would fight the digits going in.
+    if (document.activeElement !== bpmField) bpmField.value = String(Math.round(bpmNow()));
     tempoLabel.textContent = `${tempoPct}% · ${Math.round(bpmNow())} bpm`;
     barsLabel.textContent = `${settings.barsPerWindow} bar${settings.barsPerWindow === 1 ? '' : 's'}`;
-    layoutButton.textContent = settings.layout === 'window' ? 'Window' : 'Scroll';
+    layoutWindow.classList.toggle('is-selected', settings.layout === 'window');
+    layoutWindow.setAttribute('aria-pressed', String(settings.layout === 'window'));
+    layoutScroll.classList.toggle('is-selected', settings.layout === 'scroll');
+    layoutScroll.setAttribute('aria-pressed', String(settings.layout === 'scroll'));
+    metronomeButton.textContent = metronomeOn ? 'On' : 'Off';
     metronomeButton.classList.toggle('is-selected', metronomeOn);
     metronomeButton.setAttribute('aria-pressed', String(metronomeOn));
+    stripButton.textContent = settings.keyboardStrip ? 'On' : 'Off';
     stripButton.classList.toggle('is-selected', settings.keyboardStrip);
+    stripButton.setAttribute('aria-pressed', String(settings.keyboardStrip));
     destinationButton.textContent =
       settings.playbackDestination === 'phone'
         ? '🔈 Phone'
@@ -966,6 +1156,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         status.textContent = `Unknown item “${itemId}”.`;
         return;
       }
+      title.textContent = item.title;
       if (tablet) void fillSidePanel(item);
       sections = item.teaching?.sections ?? [];
       if (sections.length > 0) {
@@ -1095,8 +1286,10 @@ export function ScoreScreen(router: Router): HTMLElement {
 
       input = pickInput();
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;
-      status.textContent = item.title;
-      if (sections.length > 0) sectionSelect.hidden = false;
+      // The title is in the header now. The status line is for the app's own
+      // messages, and "Loading…" is finished being true.
+      status.textContent = '';
+      if (sections.length > 0) sectionRow.hidden = false;
       showBar();
       render();
       // Now that there is a drawn sheet to measure, grow it to fill the

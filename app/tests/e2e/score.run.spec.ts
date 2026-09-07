@@ -8,6 +8,8 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
+import { setTempoPercent, withScoreMenu } from './scoreControls';
+
 const ITEM = 'song.folk.hot-cross-buns';
 
 /** Hot Cross Buns, right hand: E D C, E D C, C C C C, D D D D, E D C. */
@@ -27,13 +29,15 @@ async function openAndArm(page: Page, mode: 'wait' | 'tempo'): Promise<void> {
     undefined,
     { timeout: 60_000 },
   );
-  await page.locator('#score-input').selectOption('keys');
+  await withScoreMenu(page, async () => {
+    await page.locator('#score-input').selectOption('keys');
+  });
   await page.locator('#score-mode').selectOption(mode);
   await page.locator('#score-hands-R').click();
   // Part G: a pass needs 90 % accuracy *at 80 % tempo or better*, and the
   // default for a newly opened piece is 70 %. Playing a piece perfectly at
   // 70 % is correctly not a pass, so a test about passing has to say so.
-  await page.locator('#score-tempo').fill('100');
+  await setTempoPercent(page, 100);
 }
 
 /** Presses a key on the strip, which feeds the shared ScreenKeyboardSource. */

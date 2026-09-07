@@ -10,6 +10,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 
+import { openScoreMenu } from './scoreControls';
+
 const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'imports');
 const MXL = path.join(FIXTURES, 'test-tune.mxl');
 
@@ -213,12 +215,14 @@ test.describe('blind mode', () => {
     // scored exactly as a sighted one is.
     await expect(stage).toBeHidden();
     await expect(page.locator('#score-bar')).toBeVisible();
+    await openScoreMenu(page);
     await expect(page.locator('#score-blind')).toHaveText('Show the score');
   });
 
   test('is a route, so it survives a reload and can be linked to', async ({ page }) => {
     await page.goto('/#/score/exercise.five-finger.c-major.right');
     await expect(page.locator('#score-stage')).not.toHaveClass(/score-stage--blind/);
+    await openScoreMenu(page);
     await page.locator('#score-blind').click();
     await expect(page).toHaveURL(/blind=1/);
     await page.reload();
@@ -229,6 +233,7 @@ test.describe('blind mode', () => {
 test.describe('performance runs', () => {
   test('offer no restart, and are listed apart from practice', async ({ page }) => {
     await page.goto('/#/score/exercise.five-finger.c-major.right?performance=1');
+    await openScoreMenu(page);
     await expect(page.locator('#score-performance')).toHaveText('Practising');
     // A restart mid-performance would make it not a performance.
     await expect(page.locator('#score-restart')).toHaveCount(0);

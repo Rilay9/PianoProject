@@ -7,6 +7,16 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
+import {
+  closeScoreMenu,
+  openScoreMenu,
+  setTempoPercent,
+  withScoreMenu,
+} from './scoreControls';
+
+/** Mirrors CONTROL_BAR_HIDE_MS; importing the screen would drag the app in. */
+const HIDE_MS = 3_000;
+
 /** A short authored piece: eight bars, both hands, and always present. */
 const ITEM = 'song.folk.hot-cross-buns';
 
@@ -39,7 +49,7 @@ test.describe('score screen', () => {
 
   test('opens a catalog item by id and renders it', async ({ page }) => {
     await openScore(page);
-    await expect(page.locator('#score-status')).toContainText('Hot Cross Buns');
+    await expect(page.locator('#score-title')).toContainText('Hot Cross Buns');
     await expect(page.locator('#score-stage .is-front svg')).toBeVisible();
   });
 
@@ -48,7 +58,19 @@ test.describe('score screen', () => {
     await expect(page.locator('#score-status')).toContainText('Unknown item');
   });
 
-  test('the control bar hides during a run and comes back on a tap', async ({ page }) => {
+  /**
+   * The auto-hide, as decision 5 rewrote it.
+   *
+   * The bar used to disappear three seconds into every run whatever the shape
+   * of the screen. Held upright the sheet is fitted to the width and leaves a
+   * third of the stage empty under it, so hiding the controls bought nothing
+   * and cost a hunt for them; held sideways the fit uses every pixel of the
+   * height and the bar's strip is coming straight out of the music.
+   */
+  test('the control bar gets out of the way when it is taking room from the music', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 880, height: 412 });
     await openScore(page);
     const bar = page.locator('#score-bar');
     await expect(bar).toHaveAttribute('data-visible', 'true');
@@ -62,21 +84,40 @@ test.describe('score screen', () => {
     await expect(bar).toHaveAttribute('data-visible', 'true');
   });
 
+  test('and stays put when it is not (decision 5)', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openScore(page);
+    const bar = page.locator('#score-bar');
+    await page.locator('#score-play').click();
+    await page.waitForTimeout(HIDE_MS + 2_000);
+    // The sheet does not reach the bottom of the stage upright, so there is
+    // nothing to get out of the way of.
+    const room = await page.evaluate(() => {
+      const stage = document.querySelector('#score-stage')!.getBoundingClientRect();
+      const svg = document.querySelector('#score-stage .is-front svg')!.getBoundingClientRect();
+      return Math.round(stage.bottom - svg.bottom);
+    });
+    expect(room, 'the sheet fills the stage upright too — check the premise').toBeGreaterThan(24);
+    await expect(bar).toHaveAttribute('data-visible', 'true');
+  });
+
   test('mode and input selectors change the run', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', 'tempo');
-    await page.locator('#score-input').selectOption('keys');
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-input', 'keys');
   });
 
   test('tempo slider moves the percentage and the bpm together', async ({ page }) => {
     await openScore(page);
     const label = page.locator('#score-tempo-label');
-    await page.locator('#score-tempo').fill('50');
+    await setTempoPercent(page, 50);
     await expect(label).toContainText('50%');
     const half = (await label.textContent()) ?? '';
-    await page.locator('#score-tempo').fill('100');
+    await setTempoPercent(page, 100);
     await expect(label).toContainText('100%');
     expect((await label.textContent()) ?? '').not.toBe(half);
   });
@@ -92,25 +133,32 @@ test.describe('score screen', () => {
 
   test('bars per window steps between 1 and 8 and redraws', async ({ page }) => {
     await openScore(page);
-    await expect(page.locator('#score-bars')).toHaveText('2 bars');
-    await page.locator('#score-bars-down').click();
-    await expect(page.locator('#score-bars')).toHaveText('1 bar');
-    // Clamped at the bottom, not wrapped.
-    await page.locator('#score-bars-down').click();
-    await expect(page.locator('#score-bars')).toHaveText('1 bar');
-    for (let i = 0; i < 4; i += 1) await page.locator('#score-bars-up').click();
-    await expect(page.locator('#score-bars')).toHaveText('5 bars');
+    await withScoreMenu(page, async () => {
+      await expect(page.locator('#score-bars')).toHaveText('2 bars');
+      await page.locator('#score-bars-down').click();
+      await expect(page.locator('#score-bars')).toHaveText('1 bar');
+      // Clamped at the bottom, not wrapped.
+      await page.locator('#score-bars-down').click();
+      await expect(page.locator('#score-bars')).toHaveText('1 bar');
+      for (let i = 0; i < 4; i += 1) await page.locator('#score-bars-up').click();
+      await expect(page.locator('#score-bars')).toHaveText('5 bars');
+    });
   });
 
-  test('layout toggles between window and scroll', async ({ page }) => {
+  test('layout is a segment that says which one you are in', async ({ page }) => {
     await openScore(page);
-    await expect(page.locator('#score-layout')).toHaveText('Window');
-    await page.locator('#score-layout').click();
-    await expect(page.locator('#score-layout')).toHaveText('Scroll');
+    await withScoreMenu(page, async () => {
+      await expect(page.locator('#score-layout-window')).toHaveClass(/is-selected/);
+      await expect(page.locator('#score-layout-scroll')).not.toHaveClass(/is-selected/);
+      await page.locator('#score-layout-scroll').click();
+      await expect(page.locator('#score-layout-scroll')).toHaveClass(/is-selected/);
+      await expect(page.locator('#score-layout-window')).not.toHaveClass(/is-selected/);
+    });
   });
 
   test('zoom, keyboard strip and playback destination all respond', async ({ page }) => {
     await openScore(page);
+    await openScoreMenu(page);
     await page.locator('#score-zoom-in').click();
     await page.locator('#score-zoom-out').click();
 
@@ -123,23 +171,22 @@ test.describe('score screen', () => {
     await expect(page.locator('#score-destination')).toContainText('Piano');
     await page.locator('#score-destination').click();
     await expect(page.locator('#score-destination')).toContainText('Both');
+    await closeScoreMenu(page);
   });
 
   test('the metronome toggles while the sheet music is showing', async ({ page }) => {
     await openScore(page);
     const button = page.locator('#score-metronome');
-    await expect(button).toHaveAttribute('aria-pressed', 'false');
     await page.locator('#score-play').click();
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
-    // Let the bar get out of the way as it does mid-piece, then tap it back:
-    // this is the actual sequence for reaching the click while playing.
-    await expect(page.locator('#score-bar')).toHaveAttribute('data-visible', 'false', {
-      timeout: 8_000,
+    // Mid-piece, through the ⋯ sheet: the click is the thing you reach for
+    // while the music is going, so it has to be reachable then.
+    await withScoreMenu(page, async () => {
+      await expect(button).toHaveAttribute('aria-pressed', 'false');
+      await button.click();
+      await expect(button).toHaveAttribute('aria-pressed', 'true');
+      await expect(button).toHaveText('On');
     });
-    await page.locator('#score-stage').click({ position: { x: 5, y: 5 } });
-    await expect(page.locator('#score-bar')).toHaveAttribute('data-visible', 'true');
-    await button.click();
-    await expect(button).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#score-stage .is-front svg')).toBeVisible();
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
   });
@@ -168,7 +215,7 @@ test.describe('score screen', () => {
   test('a Tempo-mode run reaches the summary sheet with its numbers', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
-    await page.locator('#score-tempo').fill('130');
+    await setTempoPercent(page, 130);
     await page.locator('#score-play').click();
     const sheet = page.locator('#score-summary');
     await expect(sheet).toBeVisible({ timeout: 60_000 });
@@ -185,7 +232,7 @@ test.describe('score screen', () => {
   test('the summary self-report records an answer', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
-    await page.locator('#score-tempo').fill('130');
+    await setTempoPercent(page, 130);
     await page.locator('#score-play').click();
     await expect(page.locator('#score-summary')).toBeVisible({ timeout: 60_000 });
     await page.locator('#summary-self-clean').click();
@@ -195,7 +242,7 @@ test.describe('score screen', () => {
   test('“Slower” restarts ten percent down', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
-    await page.locator('#score-tempo').fill('130');
+    await setTempoPercent(page, 130);
     await page.locator('#score-play').click();
     await expect(page.locator('#score-summary')).toBeVisible({ timeout: 60_000 });
     await page.locator('#summary-slower').click();
@@ -291,7 +338,9 @@ test.describe('the sheet fills the screen (P19b)', () => {
     const fitted = await height();
     // Zoom is a multiplier on the fitted size now. It used to be the absolute
     // OSMD zoom, which a fit would simply cancel out.
-    await page.locator('#score-zoom-out').click();
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-zoom-out').click();
+    });
     await expect.poll(height, { timeout: 15_000 }).toBeLessThan(fitted - 5);
   });
 });
@@ -313,7 +362,9 @@ test.describe('naming the note it is waiting for', () => {
 
     await page.locator('#score-mode').selectOption('wait');
     // The on-screen keys as the input, so this test can answer the app.
-    await page.locator('#score-input').selectOption('keys');
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
     await page.locator('#score-play').click();
 
     // Bar 1 of Suo Gân is D4 · E4 · F♯4 · A4, so it starts by wanting D4 —
@@ -361,12 +412,14 @@ test.describe('blind mode', () => {
     // And the things a blind run is played with are still there.
     await expect(page.locator('.keyboard-strip')).toBeVisible();
     await expect(page.locator('#score-play')).toBeVisible();
+    await openScoreMenu(page);
     await expect(page.getByRole('button', { name: 'Show the score' })).toBeVisible();
   });
 
   test('showing the score again brings the notation back', async ({ page }) => {
     await page.goto('/#/score/song.folk.hot-cross-buns?blind=1');
     await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+    await openScoreMenu(page);
     await page.getByRole('button', { name: 'Show the score' }).click();
     await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 60_000 });
   });

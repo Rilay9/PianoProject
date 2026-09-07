@@ -72,7 +72,7 @@ test.describe('PDF viewer', () => {
     await expect(page.locator('[data-screen="pdf"]')).toHaveAttribute('data-mode', 'timed');
 
     // Hidden, not disabled: a PDF has no notes to match (docs/04 §5b).
-    await expect(page.locator('#score-input')).toHaveCount(0);
+    await expect(page.locator('#score-more')).toHaveCount(0);
     await expect(page.locator('#score-mode')).toHaveCount(0);
     await expect(page.locator('.keyboard-strip')).toHaveCount(0);
   });
