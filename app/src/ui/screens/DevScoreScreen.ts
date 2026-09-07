@@ -690,17 +690,15 @@ function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'
       const running = engine;
       // Driven through a real ReplaySource, so the path under test is the one
       // a MIDI cable uses: bytes -> parseMidiMessage -> InputSource -> engine.
+      // The script's zero is when this source connects, deliberately.
+      //
+      // Basing it on the run's start was tried and is wrong: it makes the
+      // *timestamps* relative to the run while leaving *delivery* on this
+      // source's own schedule, so a note arrives stamped in the past for a
+      // slot the engine has already resolved, and Tempo mode scores it as a
+      // miss. Stamp and delivery have to agree, and connect-relative is what
+      // makes them agree.
       const source = new ReplaySource({
-        // Zero is when the *run* started, not when this source connected.
-        //
-        // `atMs` in a script means "milliseconds into the run" — every test
-        // here is written that way, and the comments say so. But the source
-        // took its base from `performance.now()` at `connect()`, which happens
-        // in a later round trip than `startRun`, so the zero was off by however
-        // long the browser and the test runner took in between. On a quiet
-        // machine that is a few milliseconds; on a busy one it exceeded the
-        // 150 ms tolerance and every note in the script judged as a miss. Three
-        // runs of this file gave nought, two and four flaky tests.
         name: 'dev harness',
         messages: script.map((entry) => ({
           atMs: entry.atMs,
@@ -710,7 +708,7 @@ function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'
               : noteOnBytes(entry.midi, entry.velocity ?? 90)),
           ],
         })),
-      }, { now: () => running.startedAt });
+      });
       await new Promise<void>((resolve) => {
         const off = source.onNote((note) => {
           running.feed({

@@ -141,8 +141,18 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       // thumb can land on it, not by a button's standard. The reorder arrows
       // at 14 px wide fail either way, which is the point.
       const link = el.classList.contains('link-button') || el.tagName === 'A';
-      if (box.width < 24 || box.height < (link ? 24 : 32)) {
-        add('tap-target', `${name(el)} is ${String(Math.round(box.width))}×${String(Math.round(box.height))}`);
+      // A checkbox inside a label is not the target — the label is, and it is
+      // usually a whole row tall. Measuring the box alone reported every
+      // switch in Settings as too small while a thumb could hit forty-eight
+      // pixels of it. The label has to be near, though: a `for=` pointing at
+      // something across the screen is not a hit area.
+      const label = el.closest('label');
+      const target = label && label.contains(el) ? label.getBoundingClientRect() : box;
+      if (target.width < 24 || target.height < (link ? 24 : 32)) {
+        add(
+          'tap-target',
+          `${name(el)} is ${String(Math.round(target.width))}×${String(Math.round(target.height))}`,
+        );
       }
     }
 

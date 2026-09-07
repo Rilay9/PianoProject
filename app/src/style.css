@@ -135,6 +135,49 @@ body {
   justify-content: center;
 }
 
+/* The score folder's filter block.
+
+   It had no styling whatever, which is why the screenshots showed a search
+   box, a 19-pixel-tall select and two number fields run together with no gaps
+   and the words "rated 4+ by 5+ people" wrapping around a checkbox. Every
+   other filter row in the app is a wrapping flex row of pill-shaped controls;
+   this one is now the same. */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 4px;
+}
+
+.filters input,
+.filters select {
+  min-height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  padding: 4px 12px;
+}
+
+.filters input[type='number'] {
+  width: 5rem;
+}
+
+.filters input[type='checkbox'] {
+  min-height: 0;
+  padding: 0;
+}
+
+/* A label wrapping its own control: the whole thing is the hit area. */
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  cursor: pointer;
+}
+
 /* Bottom tab bar (default / portrait) */
 .tab-nav {
   order: 2;

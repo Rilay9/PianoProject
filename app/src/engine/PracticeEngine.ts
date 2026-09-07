@@ -135,15 +135,6 @@ export class PracticeEngine {
     return this.session.options.mode;
   }
 
-  /**
-   * When the run started, on the same clock note timestamps are on.
-   *
-   * Exposed for the dev harness: a scripted performance is written as
-   * "milliseconds into the run", and without this it had to guess the zero.
-   */
-  get startedAt(): number {
-    return this.startedAtMs;
-  }
 
   get state(): EngineState {
     return {
