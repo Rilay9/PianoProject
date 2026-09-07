@@ -120,6 +120,17 @@ export function SkillsScreen(router: Router): HTMLElement {
   let trackFilter = 'all';
   let stateFilter: 'all' | SkillState = 'all';
 
+  /**
+   * How many concepts are drawn before `Show all` (`04` §3a, `00` D26).
+   *
+   * The whole curriculum is 266 concepts, and drawing every one of them meant
+   * 478 interactive elements on arrival — an order of magnitude more than any
+   * other screen in the app. The Library holds 1,533 items without doing that,
+   * and this is the same shape: a page at a time.
+   */
+  const PAGE_SIZE = 50;
+  let shownCount = PAGE_SIZE;
+
   function draw(): void {
     const shown = entries.filter(
       (entry) =>
@@ -127,9 +138,29 @@ export function SkillsScreen(router: Router): HTMLElement {
         (trackFilter === 'all' || entry.tracks.includes(trackFilter)) &&
         (stateFilter === 'all' || entry.state === stateFilter),
     );
-    status.textContent = `${String(shown.length)} of ${String(entries.length)} concepts`;
-    list.replaceChildren(...shown.flatMap((entry) => conceptBlock(entry)));
+    const page = shown.slice(0, shownCount);
+    status.textContent =
+      stateFilter === 'rusty'
+        ? `${String(shown.length)} rusty of ${String(entries.length)}`
+        : `${String(shown.length)} of ${String(entries.length)} concepts`;
+    list.replaceChildren(...page.flatMap((entry) => conceptBlock(entry)));
     if (shown.length === 0) list.append(el('p.muted', { text: 'No concepts match those filters.' }));
+    if (shown.length > page.length) {
+      list.append(
+        el(
+          'div.plan-links',
+          {},
+          button(
+            `Show all ${String(shown.length)}`,
+            () => {
+              shownCount = shown.length;
+              draw();
+            },
+            { id: 'skills-show-all', variant: 'quiet' },
+          ),
+        ),
+      );
+    }
   }
 
   /**
@@ -154,8 +185,11 @@ export function SkillsScreen(router: Router): HTMLElement {
       // A concept finder exists whether or not any rung is short: "find me
       // more of this" is a question about the skill, not about the ladder.
       actions.push(
+        // Text, not a box: `Drill it` is the thing to do here and this is the
+        // thing to do when it is not enough (`04` §0 R3). As two boxes they
+        // took half the row's width and squeezed the concept's name.
         button('Find more', () => openFinderSheet(finder, meta?.display ?? entry.concept), {
-          variant: 'secondary',
+          variant: 'quiet',
         }),
       );
     }
@@ -205,6 +239,7 @@ export function SkillsScreen(router: Router): HTMLElement {
     }
     stageSelect.addEventListener('change', () => {
       stageFilter = stageSelect.value;
+      shownCount = PAGE_SIZE;
       draw();
     });
 
@@ -213,6 +248,7 @@ export function SkillsScreen(router: Router): HTMLElement {
     for (const track of tracks) trackSelect.append(el('option', { value: track, text: track }));
     trackSelect.addEventListener('change', () => {
       trackFilter = trackSelect.value;
+      shownCount = PAGE_SIZE;
       draw();
     });
 
@@ -223,6 +259,7 @@ export function SkillsScreen(router: Router): HTMLElement {
         id: 'skills-rusty',
         onClick: () => {
           stateFilter = stateFilter === 'rusty' ? 'all' : 'rusty';
+          shownCount = PAGE_SIZE;
           document.getElementById('skills-rusty')?.setAttribute('aria-pressed', String(stateFilter === 'rusty'));
           draw();
         },
@@ -246,6 +283,14 @@ export function SkillsScreen(router: Router): HTMLElement {
       curriculum.stages.map((stage) => stage.number),
       curriculum.tracks.map((track) => track.id),
     );
+    // Opens on what needs attention (`04` §3a). The reason to come to this
+    // screen is that something has gone rusty, and the screen already knows
+    // which — so it starts there when there is anything to start on, and on
+    // everything when there is not.
+    if (entries.some((entry) => entry.state === 'rusty')) {
+      stateFilter = 'rusty';
+      document.getElementById('skills-rusty')?.setAttribute('aria-pressed', 'true');
+    }
     draw();
   })().catch((cause: unknown) => {
     status.textContent = `Skills could not be loaded: ${String(cause)}`;

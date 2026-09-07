@@ -137,6 +137,12 @@ test.describe('Skills review', () => {
     // The point of the level table: `scale` is practisable at stage 8, not just
     // wherever the first scale exercise happened to sit.
     await page.goto('/#/plan/skills');
+    // The screen draws fifty concepts and then `Show all` (`04` §3a): 266 of
+    // them at once was 478 interactive elements on arrival. Wait for the list
+    // before looking for the button — it is built after the catalogue loads.
+    await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    const showAll = page.locator('#skills-show-all');
+    if (await showAll.count()) await showAll.click();
     const scaleRow = page.locator('.list-row[data-concept="scale"]');
     await expect(scaleRow).toBeVisible();
     await expect(scaleRow).toContainText('to practise');
@@ -251,5 +257,53 @@ test.describe('the lesson page obeys 04 §0', () => {
     // existing tests drive.
     await expect(page.locator('#lesson-find-more')).toBeVisible();
     await expect(page.locator('#lesson-needs')).toContainText('option');
+  });
+});
+
+/**
+ * `04` §3a. Skills drew all 266 concepts on arrival — 478 interactive
+ * elements, where every other screen in the app is in double figures.
+ */
+test.describe('Skills obeys 04 §0', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('draws a page, not the whole curriculum (R1)', async ({ page }) => {
+    await page.goto('/#/plan/skills');
+    await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    const controls = await page
+      .locator('[data-screen="skills"] button, [data-screen="skills"] select')
+      .count();
+    expect(controls).toBeLessThan(200);
+    // And everything is still reachable.
+    await expect(page.locator('#skills-show-all')).toBeVisible();
+  });
+
+  test('Show all reaches every concept', async ({ page }) => {
+    await page.goto('/#/plan/skills');
+    await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    const before = await page.locator('.list-row[data-concept]').count();
+    await page.locator('#skills-show-all').click();
+    const after = await page.locator('.list-row[data-concept]').count();
+    expect(after).toBeGreaterThan(before);
+    await expect(page.locator('#skills-show-all')).toHaveCount(0);
+  });
+
+  test('at most one filled button per concept, and it is Drill it (R3)', async ({ page }) => {
+    await page.goto('/#/plan/skills');
+    await expect(page.locator('.list-row[data-concept]').first()).toBeVisible();
+    let drills = 0;
+    for (const row of await page.locator('.list-row[data-concept]').all()) {
+      const filled = await row.locator('.button--primary').count();
+      // A concept with nothing to practise yet has none, which is right. What
+      // must never happen is two boxes competing for the eye on one row.
+      expect(filled).toBeLessThanOrEqual(1);
+      if (filled === 1) {
+        drills += 1;
+        await expect(row.getByRole('button', { name: 'Drill it' })).toBeVisible();
+      }
+      // `Find more` is text beside it, never a second box.
+      await expect(row.locator('.button--secondary')).toHaveCount(0);
+    }
+    expect(drills).toBeGreaterThan(0);
   });
 });

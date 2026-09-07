@@ -96,6 +96,7 @@ export function TodayScreen(router: Router): HTMLElement {
   let minutes = readSessionLength();
   let seed = 0;
   let slots: SessionSlot[] = [];
+  let actionsDrawn = false;
   let breakAfter: number | undefined;
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
@@ -313,9 +314,14 @@ export function TodayScreen(router: Router): HTMLElement {
       slots = built.slots;
       breakAfter = built.template.breakAfterSlot;
       drawCard();
-      // Not the actions: nothing in that row depends on the session, and
-      // replacing four buttons on every rebuild threw away whichever one a
-      // finger had just landed on. It is built once, below.
+      // Once, after the first session exists. Nothing in the row depends on
+      // the session, so redrawing it on every rebuild only threw away whichever
+      // button a finger had just landed on — but drawing it *before* the first
+      // build put `Start session` on screen with nothing to start.
+      if (!actionsDrawn) {
+        drawActions();
+        actionsDrawn = true;
+      }
 
       const position = nextRecommended(curriculum as Curriculum, records, active, {
         requireTwoSongs: getSettings().requireTwoSongs,
@@ -352,10 +358,6 @@ export function TodayScreen(router: Router): HTMLElement {
     rebuild();
   }
 
-  // Once. The row is the same four controls whatever the session turns out to
-  // be, and it is on screen before the catalogue has loaded rather than
-  // appearing under a finger a moment later.
-  drawActions();
 
   void load().catch((cause: unknown) => {
     status.textContent = `Today could not be built: ${String(cause)}`;
