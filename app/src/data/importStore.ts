@@ -223,7 +223,10 @@ export async function takeSharedFiles(now = new Date()): Promise<{ added: Import
 export async function updateImport(
   id: string,
   patch: Partial<
-    Pick<ImportRow, 'title' | 'tags' | 'level' | 'cuts' | 'lessonIds' | 'concepts' | 'levelSource'>
+    Pick<
+      ImportRow,
+      'title' | 'tags' | 'level' | 'cuts' | 'lessonIds' | 'concepts' | 'levelSource' | 'origin'
+    >
   >,
 ): Promise<ImportRow | undefined> {
   const db = await openDatabase();

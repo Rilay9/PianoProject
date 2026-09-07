@@ -11,6 +11,7 @@ import { allItems, loadCurriculum } from '../../curriculum/load';
 import { lessonComplete } from '../../curriculum/selectors';
 import { getSettings } from '../../data/settingsStore';
 import { nextRecommended } from '../../curriculum/session';
+import { activeTracksFor } from '../../curriculum/tracks';
 import { indexAtPoint, isDrag, moveDown, moveItem, moveUp } from '../reorder';
 import type { Curriculum, Lesson, PassRecord, Stage } from '../../curriculum/types';
 import { allProgress } from '../../data/progressStore';
@@ -255,10 +256,7 @@ export function PlanScreen(router: Router): HTMLElement {
       passed: row.status === 'passed' || row.status === 'mastered',
       mastered: row.status === 'mastered',
     }));
-    activeTracks =
-      plan.trackOrder.length > 1
-        ? plan.trackOrder
-        : loaded.tracks.filter((track) => track.defaultActive !== false).map((track) => track.id);
+    activeTracks = activeTracksFor(plan, loaded);
     // Expand the stage being worked on, so the screen opens where the learner is.
     const recommended = nextRecommended(loaded, records, activeTracks, {
       requireTwoSongs: getSettings().requireTwoSongs,

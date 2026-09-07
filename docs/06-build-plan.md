@@ -2,11 +2,16 @@
 
 ## 1. How to run this plan
 
-One phase = one Claude Code session (sometimes two). Paste the matching `prompts/P<n>-*.md`
-into a fresh session on branch `main` (or a feature branch per phase, merged by PR). Each prompt
-tells the model what to read, what to build, how to prove it works, and what to report. Run
-phases in order; P4/P5 (content) can run in parallel with P2/P3 (engine) because they touch
-different directories.
+**The plan is finished. P0 through P19 are built and there are no phases left**; what remains
+is in `docs/OWNER-GUIDE.md` §8 and needs the phone and the piano, not a prompt. The rest of this
+file is the record of how it was run.
+
+One phase = one session (sometimes two). Paste the matching `prompts/P<n>-*.md` into a fresh
+session on a feature branch — the default branch is `claude/piano-teaching-app-bo19td` and
+**there is no `main`** (`docs/decisions/2026-09-05-default-branch.md`). Each prompt tells the
+model what to read, what to build, how to prove it works, and what to report. Run phases in
+order; P4/P5 (content) can run in parallel with P2/P3 (engine) because they touch different
+directories.
 
 **Model choice rule of thumb**
 
@@ -173,7 +178,7 @@ Stages 6–9 (236 of 326 songs) while exercises and drills stop at level 5 and t
 the bottom of the ladder. The replan and every ruling behind the phases below is
 `docs/decisions/2026-09-06-p11-replan.md`; do not start a phase without reading its sections.
 
-### The P11–P17 plan (2026-09-06)
+### The P11–P19 plan (2026-09-06)
 
 | Phase | Prompt | Needs PDMX on disk? | Where it runs |
 |---|---|---|---|
@@ -186,6 +191,11 @@ the bottom of the ladder. The replan and every ruling behind the phases below is
 | P16 — the shelf: books, paper practice, blind mode | `prompts/P16-shelf-and-paper.md` | no | container |
 | P17 — drill tips, coaching rules, the practice-method module | `prompts/P17-drill-tips-and-practice.md` | no | container |
 | P18 — carry-overs from P6–P8: named loop sections, the mic's amber state, drag-to-reorder tracks, the chord chart's backing loop, strict prerequisites, the tablet side panel | `prompts/P18-carry-overs.md` | no | container, any time |
+| **P19 — the final pass**: fix what the once-over found, hunt for what it missed, and prove the build | `prompts/P19-final-pass.md` | no | container |
+
+**All of them are built.** P19 was the last, and its own record — what the review found, what
+it got wrong, and what the hunt turned up — is
+`docs/decisions/2026-09-06-once-over.md` and `docs/decisions/2026-09-06-p19-final-pass.md`.
 
 **Order.** P11 first — everything after it ships content through the checks P11 fixes. Then
 P12a, P12b and P13 in any order (they touch different files; P13 is the natural one to run

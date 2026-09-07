@@ -8,8 +8,8 @@
 // The service worker only registers on a built, served app, which is what the Playwright
 // webServer already provides (`npm run build && npm run preview`).
 
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join, relative, resolve, sep } from 'node:path';
 import { expect, test } from '@playwright/test';
 
 const BASE = '/PianoProject/';
@@ -122,6 +122,35 @@ test.describe('offline', () => {
     expect(soundfont.ok).toBe(true);
     expect(soundfont.bytes).toBeGreaterThan(1_000_000);
 
+    // 4b. The three content directories added since this test was written
+    //     (P19): a quarried score, a tips file and the level model. Each
+    //     arrived in a directory the precache globs had never seen, and each
+    //     time the symptom would have been something missing on a train.
+    const quarried = items.find((item) => item.file?.includes('scores/pdmx/'));
+    expect(quarried, 'no quarried score in the catalog').toBeTruthy();
+    const later = await page.evaluate(
+      async ({ base, score: quarriedFile }) => {
+        const fetched = async (url: string): Promise<{ ok: boolean; length: number }> => {
+          const response = await fetch(url);
+          return { ok: response.ok, length: (await response.text()).length };
+        };
+        return {
+          quarried: (await fetch(`${base}content/${quarriedFile}`)).ok,
+          tips: await fetched(`${base}content/tips/note-flash.md`),
+          tipsIndex: await fetched(`${base}content/tips/index.json`),
+          model: await fetched(`${base}content/level-model.json`),
+        };
+      },
+      { base: BASE, score: quarried!.file },
+    );
+    expect(later.quarried, 'a quarried score is not cached').toBe(true);
+    expect(later.tips.ok && later.tips.length > 100, 'a tips file is not cached').toBe(true);
+    expect(later.tipsIndex.ok, 'the tips index is not cached').toBe(true);
+    // Without the level model an import silently gets no estimate — which the
+    // app says out loud, so this would look like a content bug rather than a
+    // caching one.
+    expect(later.model.ok && later.model.length > 50, 'the level model is not cached').toBe(true);
+
     // 5. Every tab and sub-screen, offline (P9). Navigated by moving the hash
     //    rather than by `goto`, for the same reason as the dev route above.
     for (const [hash, heading] of [
@@ -148,6 +177,19 @@ test.describe('offline', () => {
       timeout: 30_000,
     });
     await expect(page.locator('.staff-card .staff-note')).toBeVisible();
+
+    // 6b. A concept finder, which is generated from the curriculum and is the
+    //     one screen whose whole purpose is to send him to the internet — it
+    //     still has to *open* without one (P19).
+    await page.evaluate(() => {
+      window.location.hash = '#/plan/skills';
+    });
+    await expect(page.locator('.screen h1')).toHaveText('Review a skill', { timeout: 15_000 });
+    const finder = page.locator('#skills-list').getByRole('button', { name: 'Find more' }).first();
+    await expect(finder).toBeVisible({ timeout: 15_000 });
+    await finder.click();
+    await expect(page.locator('#finder-sheet')).toBeVisible();
+    await expect(page.locator('#finder-sheet')).toContainText(/search|prompt|internet/i);
 
     // 7. Diagnostics agrees: it is the screen the owner would check on a train.
     await page.evaluate(() => {
@@ -207,6 +249,56 @@ test.describe('offline', () => {
     for (const essential of ['content/tips/index.json', 'content/tips/note-flash.md']) {
       expect(urls.has(essential), `${essential} is not precached`).toBe(true);
     }
+  });
+
+  // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
+  test('the engraver is not in the entry bundle (P19)', async () => {
+    // P9 took OpenSheetMusicDisplay out of the first paint by making the Score
+    // screen lazy: entry 1,576 kB → 227 kB, Lighthouse 77 → 98. A later static
+    // `import { OsmdView }` in DrillScreen — which is *not* lazy, because
+    // Today's warm-up row is usually a drill — put it straight back, and the
+    // only thing that noticed was an audit nobody runs in CI. So the shape is
+    // asserted here instead: whoever adds the next import gets a failing test
+    // rather than a slower app.
+    const entry = readdirSync(resolve('dist/assets')).find(
+      (name) => name.startsWith('index-') && name.endsWith('.js'),
+    );
+    expect(entry, 'no entry chunk in dist/assets').toBeTruthy();
+    const code = readFileSync(resolve('dist/assets', entry!), 'utf8');
+    // Markers from inside the library, not its name: the name appears in the
+    // entry chunk legitimately, as the destructuring of a dynamic import.
+    for (const marker of ['SkyBottomLine', 'vexflow']) {
+      expect(
+        code.includes(marker),
+        `${marker} is in the entry chunk: something imports the engraver without a dynamic import`,
+      ).toBe(false);
+    }
+    // A ceiling with room in it, not the current number: this is a guard
+    // against a megabyte arriving, not a budget to shave.
+    const kib = Math.round(code.length / 1024);
+    expect(kib, `entry chunk is ${String(kib)} KiB`).toBeLessThan(600);
+  });
+
+  // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
+  test('and nothing under content/ is served without being precached (P19)', async () => {
+    // The inverse of the test above, and the one that catches a *new kind of
+    // file* rather than a new file. Every check here so far asks "is this
+    // thing I thought of in the manifest?"; four content phases have each
+    // added a directory the globs had never seen, and each was found by
+    // somebody thinking of it. This asks the question the other way round, so
+    // the fifth directory does not need to be thought of.
+    const sw = readFileSync(resolve('dist/sw.js'), 'utf8');
+    const urls = new Set([...sw.matchAll(/url:"([^"]+)"/g)].map((match) => match[1]));
+    const root = resolve('dist');
+    const walk = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+        const full = join(dir, entry.name);
+        return entry.isDirectory() ? walk(full) : [relative(root, full).split(sep).join('/')];
+      });
+    const served = walk(join(root, 'content'));
+    expect(served.length).toBeGreaterThan(1000);
+    const uncached = served.filter((file) => !urls.has(file));
+    expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
   });
 });
 

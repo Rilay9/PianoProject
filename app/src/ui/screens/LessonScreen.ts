@@ -14,6 +14,7 @@
 import type { Router } from '../../router';
 import { allItems, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { findLesson, idsToCompleteLesson, lessonComplete } from '../../curriculum/selectors';
+import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, PassRecord } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
 import { getSettings } from '../../data/settingsStore';
@@ -50,11 +51,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const needsLine = el('p.needs', { id: 'lesson-needs' });
   const lockLine = el('p.lesson-lock', { id: 'lesson-lock', hidden: true });
   const findRow = el('div.row', { id: 'lesson-find' });
+  // Where the paper hint lives on a rung with no books behind it (P19 A8).
+  const paperHintLine = el('p.paper-hint.muted', { id: 'lesson-paper-hint', hidden: true });
 
   body.append(
     status,
     actions,
-    el('section.block', {}, lockLine, needsLine, findRow),
+    el('section.block', {}, lockLine, needsLine, findRow, paperHintLine),
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
     el('section.block', {}, el('h2', { text: 'Song options' }), songs),
     el('section.block', { id: 'lesson-paper-block' }, el('h2', { text: 'From your own books' }), paper),
@@ -129,21 +132,19 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   /**
    * One line saying what the rung is short of, and the way to fix it.
    *
-   * The numbers come from `needs`, written into the built curriculum by
-   * validate.py (replan §4.2) — not recounted here, because the counting rules
-   * (the floor, a song-optional rung counting both lists together) would then
-   * live in two places and drift.
+   * Counted from the lesson the app is holding — imports and shelf pieces
+   * overlaid — rather than printed from the build's `needs` block, which was
+   * written before the owner added anything (review C3). The floor is still the
+   * build's; only the counting is here. See `curriculum/needs.ts`.
    */
   function drawNeeds(current: Lesson): void {
-    const needs = current.needs;
+    const needs = lessonShortfall(current);
     const short: string[] = [];
-    if (needs) {
-      if (needs.songs > 0) short.push(needs.songs === 1 ? 'one more song' : `${String(needs.songs)} more songs`);
-      if (needs.exercises > 0) {
-        short.push(
-          needs.exercises === 1 ? 'one more exercise' : `${String(needs.exercises)} more exercises`,
-        );
-      }
+    if (needs.songs > 0) short.push(needs.songs === 1 ? 'one more song' : `${String(needs.songs)} more songs`);
+    if (needs.exercises > 0) {
+      short.push(
+        needs.exercises === 1 ? 'one more exercise' : `${String(needs.exercises)} more exercises`,
+      );
     }
     if (short.length === 0) {
       const count = current.songOptions.length + current.exerciseOptions.length;
@@ -152,7 +153,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     } else {
       needsLine.textContent =
         `This rung wants ${short.join(' and ')} to reach the floor of ` +
-        `${String(needs?.floor ?? 3)}. Find one, or play what is here.`;
+        `${String(needs.floor)}. Find one, or play what is here.`;
       needsLine.classList.add('needs--short');
     }
 
@@ -186,19 +187,51 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    */
   function drawPaper(current: Lesson): void {
     const registered = shelf.filter((entry) => entry.piece.lessonIds.includes(current.id));
+
+    // A heading, a hint and an empty list on a rung with nothing behind it is
+    // the app asking for bookkeeping the owner never agreed to — and 29 rungs
+    // carry a paper hint. With no shelf at all the whole section collapses to
+    // one muted line under the finder row, which is what the hint is: an
+    // aside, not a section. The one thing that does not collapse with it is
+    // "I have this on paper", because that is the route onto the shelf and
+    // deleting it would mean the shelf could never be started from the rung
+    // that wanted it; it moves up beside the finder instead.
+    const shelfBlock = section.querySelector('#lesson-paper-block');
+    const worthShowing = registered.length > 0 || shelf.length > 0;
+    if (shelfBlock instanceof HTMLElement) shelfBlock.hidden = !worthShowing;
+    paperHintLine.hidden = worthShowing || !current.paperHint;
+    paperHintLine.textContent = current.paperHint ?? '';
+    if (!worthShowing) {
+      // drawNeeds clears this row and runs first; the guard is for the redraw
+      // after a piece is added, which calls drawPaper on its own.
+      if (!findRow.querySelector('#lesson-have-paper')) {
+        findRow.append(
+          button('I have this on paper', () => void addFromPaper(current), {
+            id: 'lesson-have-paper',
+            variant: 'quiet',
+          }),
+        );
+      }
+      paper.replaceChildren();
+      return;
+    }
+
     const rows: HTMLElement[] = registered.map((entry) => {
       const row = progress.get(entry.itemId);
       const badges: HTMLElement[] = [];
       if (row && row.status !== 'new') {
         badges.push(badge(row.selfPassed ? 'you said you can play it' : row.status, row.status));
       }
-      if (entry.piece.itemId) badges.push(badge('has a twin', 'passed'));
+      // Only if the catalog still has it: deleting the import leaves the id
+      // on the piece, and the button would open an "Unknown item" page.
+      const twin =
+        entry.piece.itemId && items.has(entry.piece.itemId) ? entry.piece.itemId : undefined;
+      if (twin) badges.push(badge('has a twin', 'passed'));
       const actions = [
         button('Practise', () => router.navigatePaper(entry.book.id, entry.piece.id), {
           variant: 'primary',
         }),
       ];
-      const twin = entry.piece.itemId;
       if (twin) {
         actions.push(button('With the score', () => router.navigateScore(twin), { variant: 'quiet' }));
       }
@@ -212,9 +245,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     });
 
     if (current.paperHint) {
-      rows.unshift(el('p.paper-hint', { id: 'lesson-paper-hint', text: current.paperHint }));
+      rows.unshift(el('p.paper-hint', { id: 'lesson-paper-hint-block', text: current.paperHint }));
     }
-    if (registered.length === 0 && !current.paperHint) {
+    if (registered.length === 0) {
       rows.push(el('p.muted', { text: 'Nothing registered from your books for this rung yet.' }));
     }
     // The one-tap route onto the shelf, with the rung already chosen. The

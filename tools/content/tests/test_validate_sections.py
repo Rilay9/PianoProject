@@ -156,3 +156,41 @@ class TestPrintedBars(unittest.TestCase):
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
+
+
+class TestLadderReportNote(unittest.TestCase):
+    """
+    A rule that goes quiet when its input is missing (P19 A9, review §5).
+
+    `stale_ladder_report` returns no error when the report is absent, by
+    design — a fresh checkout has not run the generator. That is right and it
+    is also how the rule could stop applying with nobody noticing, so validate
+    says out loud that it did not run.
+    """
+
+    def test_it_says_so_when_there_is_no_report(self) -> None:
+        import ladder_report
+        from validate import ladder_report_note
+
+        original = ladder_report.DEFAULT_OUT
+        try:
+            ladder_report.DEFAULT_OUT = Path("does-not-exist") / "ladder.md"
+            note = ladder_report_note()
+            self.assertIn("ladder_report.py", note)
+            self.assertIn("not checked", note)
+        finally:
+            ladder_report.DEFAULT_OUT = original
+
+    def test_it_says_nothing_when_the_report_is_there(self) -> None:
+        import ladder_report
+        from validate import ladder_report_note
+
+        original = ladder_report.DEFAULT_OUT
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                report = Path(tmp) / "ladder.md"
+                report.write_text("# anything", encoding="utf-8")
+                ladder_report.DEFAULT_OUT = report
+                self.assertEqual(ladder_report_note(), "")
+            finally:
+                ladder_report.DEFAULT_OUT = original

@@ -15,6 +15,7 @@
 import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
 import { indexCatalog, type CatalogIndex } from '../../curriculum/selectors';
+import { activeTracksFor } from '../../curriculum/tracks';
 import type { CatalogItem, Curriculum, PassRecord } from '../../curriculum/types';
 import {
   SESSION_TEMPLATES,
@@ -279,6 +280,9 @@ export function TodayScreen(router: Router): HTMLElement {
       mastered: row.status === 'mastered',
     }));
     void getPlan().then((plan) => {
+      // The same active set Plan and Settings show, so the three screens
+      // cannot disagree about what is switched on.
+      const active = activeTracksFor(plan, curriculum as Curriculum);
       const built = buildSession({
         curriculum: curriculum as Curriculum,
         catalog: catalog as CatalogIndex,
@@ -286,7 +290,7 @@ export function TodayScreen(router: Router): HTMLElement {
         records,
         dueForReview: reviewQueue(progress).map((entry) => entry.itemId),
         mastered: progress.filter((row) => row.status === 'mastered').map((row) => row.itemId),
-        activeTracks: plan.trackOrder,
+        activeTracks: active,
         minutes,
         seed,
         requireTwoSongs: getSettings().requireTwoSongs,
@@ -297,7 +301,7 @@ export function TodayScreen(router: Router): HTMLElement {
       drawCard();
       drawActions();
 
-      const position = nextRecommended(curriculum as Curriculum, records, plan.trackOrder, {
+      const position = nextRecommended(curriculum as Curriculum, records, active, {
         requireTwoSongs: getSettings().requireTwoSongs,
         strictPrerequisites: getSettings().strictPrerequisites,
       });

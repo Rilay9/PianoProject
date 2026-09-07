@@ -41,6 +41,16 @@ export interface CatalogItem {
    * catalog in a browser cache must not crash the app.
    */
   levelSource?: LevelSource;
+  /**
+   * Whether the *composition* is public domain (`00` D23).
+   *
+   * Not the same question as `source.license`, which is about the edition: a
+   * transcription can be CC0 while the song it transcribes is not. `unknown`
+   * is the honest answer for most of the quarried library — the dataset says
+   * the upload is public domain and says nothing about the work — and the
+   * Library sheet says so rather than implying either answer.
+   */
+  compositionStatus?: 'pd' | 'unknown' | 'in-copyright';
   hands: Hands;
   tracks: string[];
   concepts: string[];

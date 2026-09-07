@@ -92,6 +92,76 @@ test.describe('Today', () => {
       .not.toBe(before);
   });
 
+  test('the tracks the data switches on are on before he touches a chip (C2)', async ({
+    page,
+  }) => {
+    // Three screens used to answer this differently. Settings is the cheapest
+    // place to see it: on a fresh phone the stored order is ['core'] and the
+    // chip for a default-active track read as off while Plan showed it on.
+    await page.goto('/#/settings');
+    await expect(page.locator('#settings-track-core')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#settings-track-classical')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    // And one the data leaves off is still off.
+    await expect(page.locator('#settings-track-blues-boogie')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  test('Today keeps recommending after the core path, from a track he never turned on', async ({
+    page,
+  }) => {
+    // The failure this replaces: Today walked the raw ['core'] order, so the
+    // moment the core path was finished it said "Every lesson in the plan is
+    // complete" — to a learner who had done Stage 0 to 4 and nothing else.
+    await page.goto('/');
+    const coreLessons = await page.evaluate(async () => {
+      const response = await fetch('content/curriculum.json');
+      const curriculum = (await response.json()) as {
+        stages: { units: { track: string; lessons: { id: string; exerciseOptions: string[]; songOptions: string[] }[] }[] }[];
+      };
+      const store = (window as unknown as { __pianopath?: Record<string, unknown> }).__pianopath;
+      const recordRun = store?.recordRun as ((r: unknown) => Promise<unknown>) | undefined;
+      if (!recordRun) throw new Error('progress store not exposed');
+      const ids: string[] = [];
+      for (const stage of curriculum.stages) {
+        for (const unit of stage.units) {
+          if (unit.track !== 'core') continue;
+          for (const lesson of unit.lessons) {
+            ids.push(lesson.id);
+            for (const itemId of [...lesson.exerciseOptions, ...lesson.songOptions]) {
+              await recordRun({
+                itemId,
+                mode: 'tempo',
+                tempoPct: 100,
+                accuracy: 0.98,
+                accuracyEstimated: false,
+                wrongNotes: 0,
+                missed: 0,
+                durationMs: 120_000,
+                passed: true,
+                masterEligible: false,
+              });
+            }
+          }
+        }
+      }
+      return ids;
+    });
+    expect(coreLessons.length).toBeGreaterThan(20);
+
+    await page.reload();
+    const status = page.locator('#today-status');
+    await expect(status).toContainText('Working on Stage');
+    const line = (await status.textContent()) ?? '';
+    const named = /lesson (\S+)$/.exec(line.trim())?.[1] ?? '';
+    expect(named).not.toBe('');
+    expect(coreLessons).not.toContain(named);
+  });
+
   test('starting the session opens the first row', async ({ page }) => {
     await page.goto('/');
     await page.locator('#today-start').click();

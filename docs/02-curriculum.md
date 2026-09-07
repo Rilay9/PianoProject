@@ -82,6 +82,7 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    weekends, so the app builds sessions by length:
    - **15 min:** technique 4 · review 4 · one new item 7.
    - **30 min:** technique 5 · review 5 · new material 10 · repertoire 8 · free play 2.
+     *(Superseded by the P12b note below, which is what `curriculum/session.ts` implements.)*
    - **60 min:** technique 8 · review 8 · new material 20 · repertoire 12 · jam/chord-chart or
      improv 8 · free play 4.
    - **120 min (weekend):** two 60-min halves with a break reminder; the second half is
@@ -317,7 +318,47 @@ mode" in the app (no stopping, scored). Songs (choose two, different composers):
 Minuet in G Anh 114 (full)* `[MT]`, *Beethoven — Ecossaise*, *Clementi — Sonatina op. 36 no. 1,
 mvt 1* `[PDMX/MUTO]` (stretch), *Burgmüller op. 100 no. 1 "La candeur"* `[PDMX/MUTO]`,
 *Satie — Gymnopédie no. 1 (very easy arr.)* `[AUTH]`, *Für Elise (easy A-section)* `[MT]`.
-Mastery: two pieces in Performance mode ≥ 90 % at 90 % tempo. **End of core path.**
+Mastery: two pieces in Performance mode ≥ 90 % at 90 % tempo.
+
+**4.7 Learning it from memory.** *Added after this section was written; described here in P19.*
+Concepts: memorising, performance mode, phrase shaping. The core path used to end at 4.6, and
+4.6 mentions memorising a short piece in passing. This rung is the one that teaches it: what to
+memorise (the shape and the harmony, not the finger sequence), how to test it (start from any
+phrase, hands separately, away from the keys), and why a piece you can only play from the top
+is not memorised. **This is the end of the core path**, and it is the last rung Today
+recommends before it moves on to the tracks.
+
+### The technique rungs (Stages 4–8)
+
+*Added in P12a; described here in P19.* One rung per stage on the `technique` track, each with
+generated exercises rather than repertoire — this is the material that has no song to test it
+(`00` D21), and it is the reason exercises are first-class:
+
+- **technique.4** — scales, arpeggios, and the two ways to touch a key: five-finger shapes,
+  similar and contrary motion, legato against staccato.
+- **technique.5** — repeated notes, hands at different speeds, hand independence, a 2:1
+  polyrhythm, and a line that travels across the keyboard under a dynamic.
+- **technique.6** — seventh shapes, broken chords, forearm rotation, Alberti figures, and
+  bringing one voice out of a chord.
+- **technique.7** — double notes in one hand, scales in 3rds and 6ths, octaves and octave
+  scales, and a pedal used as a colour rather than as a switch.
+- **technique.8** — four octaves in sixteenths, velocity and endurance, and why the metronome
+  is the last thing you add rather than the first.
+
+### The "how to practise" module (`practice.1`–`practice.5`)
+
+*Added in P17; described here in P19.* Five short lessons that are about practising rather than
+about the piano, on their own track and open from Stage 1. They exist because the owner
+plateaued once after a few lessons, and the coaching rules link into them: three flat runs in a
+row on the same piece points at `practice.5`.
+
+1. **Chunking, and the loop** — small pieces, repeated, rather than whole passes.
+2. **Slow practice and the tempo ladder** — how slow, and how to come back up.
+3. **Interleaving, and what a session should look like** — mixing rather than blocking, and
+   what the review queue is for.
+4. **When to stop** — warm-up, tension, pain, and the difference between tired and hurt.
+5. **The plateau, and the three things to change** — the rung the app sends you to when
+   nothing has improved for three runs.
 
 ---
 

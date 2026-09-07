@@ -155,6 +155,11 @@ def build_item(entry: dict, *, bundled: bool, checksum: str | None) -> dict:
         alternatives=[entry["duplicateOf"]] if entry.get("duplicateOf") else None,
         tempoBpm=entry.get("tempoBpm") or None,
         tags=tags,
+        # On the item, not only inside editionNotes. `00` D23 says items are
+        # labelled with this, and until now nothing in the built catalog
+        # carried it: the status lived in a sentence, which the app cannot
+        # read, and in the personal-build tag, which says something narrower.
+        compositionStatus=status,
     )
 
 

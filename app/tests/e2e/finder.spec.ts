@@ -26,7 +26,11 @@ test.beforeEach(async ({ page }) => {
 test.describe('the finder on a rung', () => {
   test('says what the rung needs and hands over a search and a prompt', async ({ page }) => {
     await page.goto('/#/lesson/2.1');
-    await expect(page.locator('#lesson-needs')).toContainText(/rung/i);
+    // Not just "contains the word rung": the number is the claim, and it is
+    // the number that could go stale (review C3).
+    await expect(page.locator('#lesson-needs')).toContainText(
+      /This rung has \d+ option\(s\) — enough to choose between\./,
+    );
 
     await page.locator('#lesson-find-more').click();
     const sheet = page.locator('#finder-sheet');
@@ -135,6 +139,23 @@ test.describe('two taps from a share to a rung', () => {
     await expect(
       page.locator('#lesson-songs .list-row[data-item="import.imported-test-tune"]'),
     ).toBeVisible();
+  });
+
+  test('the needs line counts the piece he just added (C3)', async ({ page }) => {
+    // The line is recomputed from the rung as the app holds it — overlays and
+    // all — rather than printed from the block the build wrote before the
+    // import existed.
+    await page.goto('/#/lesson/2.1');
+    const needs = page.locator('#lesson-needs');
+    // The line is drawn once the curriculum and the catalog are in; read it
+    // only after it says something.
+    await expect(needs).toContainText(/has \d+ option/);
+    const before = Number(/has (\d+) option/.exec((await needs.textContent()) ?? '')?.[1] ?? '0');
+    expect(before).toBeGreaterThan(0);
+
+    await countedImport(page, '2.1');
+    await page.goto('/#/lesson/2.1');
+    await expect(needs).toContainText(`has ${String(before + 1)} option`);
   });
 
   test('the rung survives a reload, because it is stored and not just routed', async ({ page }) => {

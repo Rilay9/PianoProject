@@ -12,7 +12,8 @@
  * phone it is using.
  */
 import type { Router } from '../../router';
-import { allItems } from '../../curriculum/load';
+import { allItems, loadCurriculum } from '../../curriculum/load';
+import { activeTracksFor } from '../../curriculum/tracks';
 import { getMidiSettings, updateMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -22,6 +23,7 @@ import {
 } from '../../data/settingsStore';
 import { getPlan, updatePlan } from '../../data/planStore';
 import { openDatabase } from '../../data/db';
+import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import {
   formatBytes,
@@ -267,12 +269,16 @@ export function SettingsScreen(router: Router): HTMLElement {
   const trackRow = el('div.filter-row', { id: 'settings-tracks' });
   content.append(trackRow, contentStatus);
 
-  void getPlan().then((plan) => {
+  void Promise.all([getPlan(), loadCurriculum()]).then(([plan, curriculum]) => {
     void allItems().then((items) => {
       const tracks = [...new Set(items.flatMap((item) => item.tracks))].sort();
+      // The set Plan and Today work from, not the raw row: on a fresh phone
+      // the row says `['core']` and the data says six tracks are on, and a
+      // chip that reads as off while Today is recommending from it is a lie.
+      const active = activeTracksFor(plan, curriculum);
       trackRow.replaceChildren();
       for (const track of tracks) {
-        const on = plan.trackOrder.includes(track);
+        const on = active.includes(track);
         const node = el('button.chip', {
           type: 'button',
           text: track,
@@ -282,13 +288,16 @@ export function SettingsScreen(router: Router): HTMLElement {
         node.addEventListener('click', () => {
           const pressed = node.getAttribute('aria-pressed') === 'true';
           node.setAttribute('aria-pressed', String(!pressed));
-          void getPlan().then((current) =>
-            updatePlan({
+          // Toggling writes the *resolved* set back, so the first tap makes
+          // the defaults explicit instead of collapsing them to one track.
+          void getPlan().then((current) => {
+            const before = activeTracksFor(current, curriculum);
+            return updatePlan({
               trackOrder: pressed
-                ? current.trackOrder.filter((id) => id !== track)
-                : [...current.trackOrder, track],
-            }),
-          );
+                ? before.filter((id) => id !== track)
+                : [...before, track],
+            });
+          });
         });
         trackRow.append(node);
       }
@@ -337,6 +346,18 @@ export function SettingsScreen(router: Router): HTMLElement {
       'Show US-only public-domain items',
       toggleControl('set-us-only', s.showUsOnlyPd, (v) => set({ showUsOnlyPd: v })),
       'Nine bundled items are public domain in the United States but not everywhere.',
+    ),
+    field(
+      'Remember the score folder',
+      toggleControl('set-folder-handles', s.folderHandles, (v) => {
+        set({ folderHandles: v });
+        status.textContent = v
+          ? 'The next folder you pick will be remembered, if Chrome allows it.'
+          : 'The folder will be asked for each time you add from it.';
+      }),
+      directoryPickerAvailable()
+        ? 'Keeps a handle on the folder so Add does not ask for it again. Chrome may still ask you to allow it once.'
+        : 'This browser cannot remember a folder, so the app will ask for it each time whatever this says.',
     ),
     field(
       'Offline only',

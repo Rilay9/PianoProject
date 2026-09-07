@@ -24,6 +24,7 @@
 import type { Router } from '../../router';
 import { audioEngine, webMidiSource } from '../../app/services';
 import { Metronome } from '../../audio/Metronome';
+import { audioTimeToPerformanceMs, captureAudioClockAnchor } from '../../audio/clock';
 import type { MetronomeBeat } from '../../audio/BeatScheduler';
 import { KeyboardStrip } from '../KeyboardStrip';
 import {
@@ -200,13 +201,28 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
       // `performance.now()` milliseconds, so one has to be converted into the
       // other — and it has to be the click, because the note's timestamp is
       // the thing that must not be touched.
-      const contextStart = context.currentTime;
-      const wallStart = performance.now();
+      //
+      // Through `audioClock`, which the rhythm drill already used and this
+      // screen did not, for two reasons:
+      //
+      //   - it adds the device's **output latency**, so a click is timestamped
+      //     when it is *heard* rather than when it was scheduled. Without that
+      //     every onset looks early by however long the phone takes to get
+      //     sound out of itself — 20 to 100 ms on Android — and the summary
+      //     says "running 40 ms ahead of the beat" to somebody who is not.
+      //     The threshold for "sitting on the beat" is 10 ms, so the bias
+      //     swamps the judgement it is supposed to inform;
+      //   - the anchor is taken per tick rather than once. The audio clock and
+      //     `performance.now()` are different clocks and they drift; anchoring
+      //     once let the drift accumulate across a long practice into the one
+      //     number this screen exists to report. Reading both together costs
+      //     nothing, and `beat.timeSec` being in the future means the jitter
+      //     of when the callback fired cancels out.
       metronome.onTick((beat: MetronomeBeat) => {
         // Count-in bars are numbered 0 and below; they are clicks to play
         // *to*, not clicks to be measured against.
         if (beat.bar < 1) return;
-        clicks.push(wallStart + (beat.timeSec - contextStart) * 1000);
+        clicks.push(audioTimeToPerformanceMs(captureAudioClockAnchor(context), beat.timeSec));
       });
       metronome.start();
     } else {

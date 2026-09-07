@@ -218,89 +218,89 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-208 song(s) are in the catalog as placeholders: the curriculum names them and no file may be shipped. Each carries an `importHint` saying what to do instead.
+214 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
-| `song.beautiful.merry-christmas-mr-lawrence` | Merry Christmas Mr. Lawrence | 8.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.12-bar-blues.pdmx` | 12 Bar Blues | 2.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx` | Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2 | 7.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.bennet-rosemary-s-waltz.pdmx` | Rosemary's Waltz | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.c418-minecraft-nether.pdmx` | Minecraft Nether | 7.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
+| `song.beautiful.g-minor-bach` | G Minor Bach (Luo Ni) | 5.5 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.beautiful.g-minor-bach.alt` | G Minor Bach — second edition | 5.5 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.beautiful.hungarian-sonata` | Hungarian Sonata | 5.0 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.beautiful.mariage-damour` | Mariage d’Amour (“Spring Waltz”) | 5.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.beautiful.mariage-damour.alt` | Mariage d’Amour (“Spring Waltz”) — second edition | 5.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.beautiful.mariage-damour.alt2` | Mariage d’Amour — third edition | 5.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.beautiful.merry-christmas-mr-lawrence` | Merry Christmas Mr. Lawrence | 8.0 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.12-bar-blues.pdmx` | 12 Bar Blues | 2.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx` | Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2 | 7.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.bennet-rosemary-s-waltz.pdmx` | Rosemary's Waltz | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.c418-minecraft-nether.pdmx` | Minecraft Nether | 7.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.chopin-etude-op25-7.nifc` | Étude in C-sharp minor, Op. 25 No. 7 | 9.0 | MusicXML cannot express the 2048th-note tuplet in bar 27; import an edition that notates the cadenza different |
-| `song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx` | Pans Labyrinth Theme (El Laberinto del Fauno) | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.composer-rodolphe-kreutzer-etude-no-2.pdmx` | Rodolphe Kreutzer - Étude No. 2 | 3.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.crue-home-sweet-home-motley-crue.pdmx` | Home Sweet Home - Motley Crue | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.djawadi-light-of-the-seven.pdmx` | Light of the Seven | 7.3 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.einaudi-questa-notte.pdmx` | Questa Notte | 7.6 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx` | Elgar - Enigma Variations - XI. Nimrod | 7.5 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.elgar-pomp-and-circumstance.pdmx` | Pomp and Circumstance | 5.4 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx` | Salut d'amour Edward Elgar Love's Greeting | 8.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.glass-dead-things.pdmx` | Dead Things | 7.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.het-wilhelmus.pdmx` | Het Wilhelmus | 2.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.hisaishi-totoro-path-of-the-wind.pdmx` | Totoro: Path of the Wind | 3.6 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx` | Jupiter Theme arranged for piano - Gustav Holst | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.home-on-the-range-secondary-dominants.pdmx` | Home on the Range (Secondary Dominants) | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.hurwitz-the-armstrongs-first-man.pdmx` | The Armstrongs - First Man | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.i-got-rythm.pdmx` | I Got Rythm | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx` | Kreisler's Liebesleid - Piano Solo | 7.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx` | Mahler Symphony No. 5 (4th Movement Excerpt) Piano Solo | 6.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx` | Cavalleria Rusticana Intermezzo | 7.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.offenbach-cancan-offenbach.pdmx` | Cancan - Offenbach | 8.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.oh-canada.pdmx` | Oh Canada | 4.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.ondrus-silent-night.pdmx` | Silent night | 6.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.palmer-days-in-the-sun.pdmx` | Days In The Sun | 7.1 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.passacaglia-handel-halvorsen.pdmx` | Passacaglia Handel/Halvorsen | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx` | O Mio Babbino Caro for solo piano | 6.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx` | Rachmaninoff - Piano Concerto No. 2 | 7.0 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.radetzky-march-for-easy-piano.pdmx` | Radetzky March for easy piano | 6.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx` | Super Mario Land 2 Ending Theme as played by Tom Brier | 8.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.sakamoto-andata.pdmx` | andata | 6.8 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx` | Shining Boy And Little Randy - Ryuichi Sakamoto | 7.2 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.simple-gifts-2-part-round.pdmx` | Simple Gifts (2-Part Round) | 3.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.spiteri-travelling.pdmx` | Travelling | 7.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx` | Tango La Cumparsita - Piano Solo (Tutorial Parte A) | 5.1 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx` | Tango La Cumparsita - Piano Solo (Tutorial Parte B) | 5.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.classical.uematsu-at-zanarkand-ffx-hd-remaster.pdmx` | At Zanarkand (FFX HD Remaster) | 5.9 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx` | To Zanarkand (Final Fantasy X) | 7.2 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.zimmer-maestro-the-holiday.pdmx` | Maestro - The Holiday | 5.2 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.classical.zimmer-time-hans-zimmer-inception.pdmx` | Time - Hans Zimmer - Inception | 6.5 | Not bundled in a redistributable build: the composition is in-copyright. The owner's personal build carries it |
-| `song.folk.10000-reasons-matt-redman.pdmx` | 10000 Reasons Matt Redman | 6.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.before-you-go-lewis-capaldi.pdmx` | Before You Go - Lewis Capaldi | 4.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.bruno-major-nothing-wip.pdmx` | Bruno Major - Nothing [WIP] | 5.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.carioquinha.pdmx` | Carioquinha | 4.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.como-e-grande-meu-amor-por-voce.pdmx` | Como é grande meu amor por você | 3.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx` | Ga je mee op zoek naar het Koningskind | 3.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.hallelujah-easy.pdmx` | Hallelujah (easy) | 3.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.happy-xmas.pdmx` | Happy Xmas | 7.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.i-give-you-my-heart.pdmx` | I GIVE YOU MY HEART | 7.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.i-remember-you.pdmx` | I Remember You | 4.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.in-the-summertime.pdmx` | In the summertime | 2.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.insensatez-how-insensitive-jobim.pdmx` | Insensatez (How Insensitive) Jobim | 3.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.je-te-laisserai-des-mots-patrick-watson.pdmx` | Je te laisserai des mots - Patrick Watson | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.john-denver-annie-s-song.pdmx` | John Denver - Annie's Song | 6.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx` | Just a Closer Walk with Thee Easy Piano | 4.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.lost-without-you-freya-ridings.pdmx` | Lost Without You - Freya Ridings | 6.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.margaritaville-keyboard-part.pdmx` | Margaritaville Keyboard Part | 6.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.muskrat-ramble.pdmx` | Muskrat Ramble | 5.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.octobre-francis-cabrel.pdmx` | Octobre - Francis Cabrel | 5.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.scarborough-fair-piano-solo.pdmx` | Scarborough fair piano solo | 6.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.so-danco-samba.pdmx` | Só Danço Samba | 3.0 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.the-flute-tune-soulpride-remix.pdmx` | The Flute Tune Soulpride Remix | 4.4 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.tuyo-narcos-intro-theme.pdmx` | Tuyo Narcos intro theme | 3.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.wake-me-up-avicii.pdmx` | Wake Me Up Avicii | 7.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.folk.your-song-elton-john-easy-piano.pdmx` | Your Song - Elton John - Easy Piano | 5.5 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.bart-howard-fly-me-to-the-moon.pdmx` | Fly me to the moon | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.fats-waller-ain-t-misbehavin.pdmx` | Ain't Misbehavin' | 6.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.george-shearing-lullaby-of-birdland.pdmx` | Lullaby of Birdland | 6.9 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx` | O when the Saints Go Marching In | 5.2 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx` | Harmony and Chord Progressions | 5.8 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.the-dave-brubeck-quartet-take-five.pdmx` | Take Five | 6.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx` | Uncle Ben's Cakewalk Tom Brier | 7.6 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx` | Linus and Lucy (Fixed) Piano only | 8.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.jazz.vince-guaraldi-skating.pdmx` | Skating | 7.3 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| `song.pop.abba-dancing-queen.pdmx` | Dancing Queen | 5.7 | Not bundled in a redistributable build: the composition is unknown. The owner's personal build carries it (bui |
-| … | and 128 more | | |
+| `song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx` | Pans Labyrinth Theme (El Laberinto del Fauno) | 5.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.composer-rodolphe-kreutzer-etude-no-2.pdmx` | Rodolphe Kreutzer - Étude No. 2 | 3.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.crue-home-sweet-home-motley-crue.pdmx` | Home Sweet Home - Motley Crue | 5.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.djawadi-light-of-the-seven.pdmx` | Light of the Seven | 7.3 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.einaudi-questa-notte.pdmx` | Questa Notte | 7.6 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx` | Elgar - Enigma Variations - XI. Nimrod | 7.5 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.elgar-pomp-and-circumstance.pdmx` | Pomp and Circumstance | 5.4 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx` | Salut d'amour Edward Elgar Love's Greeting | 8.0 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.glass-dead-things.pdmx` | Dead Things | 7.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.het-wilhelmus.pdmx` | Het Wilhelmus | 2.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.hisaishi-totoro-path-of-the-wind.pdmx` | Totoro: Path of the Wind | 3.6 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx` | Jupiter Theme arranged for piano - Gustav Holst | 5.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.home-on-the-range-secondary-dominants.pdmx` | Home on the Range (Secondary Dominants) | 5.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.hurwitz-the-armstrongs-first-man.pdmx` | The Armstrongs - First Man | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.i-got-rythm.pdmx` | I Got Rythm | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx` | Kreisler's Liebesleid - Piano Solo | 7.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx` | Mahler Symphony No. 5 (4th Movement Excerpt) Piano Solo | 6.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx` | Cavalleria Rusticana Intermezzo | 7.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.offenbach-cancan-offenbach.pdmx` | Cancan - Offenbach | 8.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.oh-canada.pdmx` | Oh Canada | 4.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.ondrus-silent-night.pdmx` | Silent night | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.palmer-days-in-the-sun.pdmx` | Days In The Sun | 7.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.passacaglia-handel-halvorsen.pdmx` | Passacaglia Handel/Halvorsen | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx` | O Mio Babbino Caro for solo piano | 6.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx` | Rachmaninoff - Piano Concerto No. 2 | 7.0 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.radetzky-march-for-easy-piano.pdmx` | Radetzky March for easy piano | 6.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx` | Super Mario Land 2 Ending Theme as played by Tom Brier | 8.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.sakamoto-andata.pdmx` | andata | 6.8 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx` | Shining Boy And Little Randy - Ryuichi Sakamoto | 7.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.simple-gifts-2-part-round.pdmx` | Simple Gifts (2-Part Round) | 3.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.spiteri-travelling.pdmx` | Travelling | 7.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx` | Tango La Cumparsita - Piano Solo (Tutorial Parte A) | 5.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx` | Tango La Cumparsita - Piano Solo (Tutorial Parte B) | 5.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.uematsu-at-zanarkand-ffx-hd-remaster.pdmx` | At Zanarkand (FFX HD Remaster) | 5.9 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx` | To Zanarkand (Final Fantasy X) | 7.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.zimmer-maestro-the-holiday.pdmx` | Maestro - The Holiday | 5.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.classical.zimmer-time-hans-zimmer-inception.pdmx` | Time - Hans Zimmer - Inception | 6.5 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.folk.10000-reasons-matt-redman.pdmx` | 10000 Reasons Matt Redman | 6.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.before-you-go-lewis-capaldi.pdmx` | Before You Go - Lewis Capaldi | 4.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.bruno-major-nothing-wip.pdmx` | Bruno Major - Nothing [WIP] | 5.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.carioquinha.pdmx` | Carioquinha | 4.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.como-e-grande-meu-amor-por-voce.pdmx` | Como é grande meu amor por você | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx` | Ga je mee op zoek naar het Koningskind | 3.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.hallelujah-easy.pdmx` | Hallelujah (easy) | 3.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.happy-xmas.pdmx` | Happy Xmas | 7.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.i-give-you-my-heart.pdmx` | I GIVE YOU MY HEART | 7.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.i-remember-you.pdmx` | I Remember You | 4.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.in-the-summertime.pdmx` | In the summertime | 2.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.insensatez-how-insensitive-jobim.pdmx` | Insensatez (How Insensitive) Jobim | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.je-te-laisserai-des-mots-patrick-watson.pdmx` | Je te laisserai des mots - Patrick Watson | 5.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.john-denver-annie-s-song.pdmx` | John Denver - Annie's Song | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx` | Just a Closer Walk with Thee Easy Piano | 4.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.lost-without-you-freya-ridings.pdmx` | Lost Without You - Freya Ridings | 6.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.margaritaville-keyboard-part.pdmx` | Margaritaville Keyboard Part | 6.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.muskrat-ramble.pdmx` | Muskrat Ramble | 5.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.octobre-francis-cabrel.pdmx` | Octobre - Francis Cabrel | 5.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.scarborough-fair-piano-solo.pdmx` | Scarborough fair piano solo | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.so-danco-samba.pdmx` | Só Danço Samba | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.the-flute-tune-soulpride-remix.pdmx` | The Flute Tune Soulpride Remix | 4.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.tuyo-narcos-intro-theme.pdmx` | Tuyo Narcos intro theme | 3.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.wake-me-up-avicii.pdmx` | Wake Me Up Avicii | 7.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.your-song-elton-john-easy-piano.pdmx` | Your Song - Elton John - Easy Piano | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.jazz.bart-howard-fly-me-to-the-moon.pdmx` | Fly me to the moon | 5.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.jazz.fats-waller-ain-t-misbehavin.pdmx` | Ain't Misbehavin' | 6.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.jazz.george-shearing-lullaby-of-birdland.pdmx` | Lullaby of Birdland | 6.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx` | O when the Saints Go Marching In | 5.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| … | and 134 more | | |
 

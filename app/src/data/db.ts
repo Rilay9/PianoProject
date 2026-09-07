@@ -106,6 +106,17 @@ export interface ImportRow {
    * he is a better source than the estimate he is overruling.
    */
   levelSource?: 'estimated' | 'judged';
+  /**
+   * The folder row this came from, when it came from one.
+   *
+   * The folder screen has to know which of its 37,261 rows are already in the
+   * library, and it used to answer by matching titles — which greys out the
+   * five other *Entertainer*s and the dozens of *Minuet in G*s the moment one
+   * is added. The file name inside the folder is the identity that actually
+   * distinguishes them. Absent on anything imported by share or picker, which
+   * is why the title fallback stays.
+   */
+  origin?: { folder: string; file: string };
 }
 
 export interface PlanRow {
@@ -169,7 +180,7 @@ export interface FolderScore {
  * A folder of scores the owner pointed the app at.
  *
  * The rows are kept and the *files* are not: Android grants a folder for one
- * visit only (there is no `showDirectoryPicker` on Chrome for Android), so a
+ * visit only unless a handle was kept (see `folderLibrary.ts`), so a
  * stored handle is not on offer. Keeping the listing means browsing 37,000
  * scores works with nothing plugged in; adding one asks for the folder again.
  */
@@ -180,6 +191,16 @@ export interface FolderLibraryRow {
   /** From the folder's `library.json`, when it had one. */
   source: string | null;
   scores: FolderScore[];
+  /**
+   * A `FileSystemDirectoryHandle`, when the browser gave one and the owner
+   * asked for it to be kept (the `folderHandles` setting).
+   *
+   * Typed as `unknown` because it is a live browser object IndexedDB stores by
+   * structured clone, not a shape this file should describe;
+   * `data/folderLibrary.ts` is the only thing that opens it, and it checks
+   * before using it. Absent on every folder picked the ordinary way.
+   */
+  handle?: unknown;
 }
 
 /**

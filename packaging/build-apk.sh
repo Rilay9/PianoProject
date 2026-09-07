@@ -72,8 +72,25 @@ BASE_PATH="${BASE_PATH%/}/"
 ORIGIN="https://$HOST"
 SCOPE="$ORIGIN$BASE_PATH"
 
+# The content build is NOT run from here. `npm run build` would do it through
+# its prebuild hook, and that is wrong twice over: on Windows the hook used to
+# call the Store's `python3` shortcut and fail, and even where it works it
+# rebuilds *without* --personal, quietly replacing the owner's own library with
+# the public one on its way into the APK. So the content has to be built first,
+# deliberately, and this refuses to start without it.
+if [[ ! -f "$ROOT/app/public/content/catalog.json" ]]; then
+  echo "error: no built content at app/public/content/catalog.json" >&2
+  echo >&2
+  echo "Build it first — with --personal, or the APK gets the public library:" >&2
+  echo "  py -3.11 tools/content/build.py --offline --personal   # Windows" >&2
+  echo "  python3 tools/content/build.py --offline --personal    # everywhere else" >&2
+  exit 2
+fi
+
 echo "==> Building the web app for $SCOPE"
-( cd "$ROOT/app" && VITE_BASE="$BASE_PATH" npm run build )
+# build:app, not build: no prebuild, so the content that was built above is the
+# content that ships.
+( cd "$ROOT/app" && VITE_BASE="$BASE_PATH" npm run build:app )
 
 echo "==> Writing twa-manifest.json"
 mkdir -p "$OUT"

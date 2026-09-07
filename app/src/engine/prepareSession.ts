@@ -145,7 +145,14 @@ export function prepareSession(model: ScoreModel, options: EngineOptions): Prepa
   const timeSig = timeSignatureAt(model.timeSigMap, steps[firstStep]?.measureIndex ?? 0);
   // Beats here are quarter notes, so 6/8 is six eighths = three beats.
   const beatsPerBar = timeSig ? (timeSig.beats * 4) / timeSig.beatType : 4;
-  const msPerBeat = model.beatToMs(1, tempoScale);
+  // A beat *where the run starts*, not at bar 1. The count-in used
+  // `beatToMs(1)` — the length of the piece's first beat — so a loop set after
+  // a tempo change was counted in at the opening tempo and then played at the
+  // section's. Six of the Chopin editions change tempo mid-piece, and looping
+  // a slow section of a fast piece is exactly what a loop is for.
+  const startBeat = model.steps[firstStep]?.onset ?? 0;
+  const msPerBeat =
+    model.beatToMs(startBeat + 1, tempoScale) - model.beatToMs(startBeat, tempoScale);
   const countInBars = options.countInBars ?? ENGINE_DEFAULTS.countInBars;
   const countInMs =
     options.mode === 'tempo' || options.mode === 'listen' ? countInBars * beatsPerBar * msPerBeat : 0;

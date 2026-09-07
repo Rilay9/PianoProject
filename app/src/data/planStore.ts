@@ -9,8 +9,10 @@
  * and not just a display preference.
  */
 import { openDatabase, type PlanRow } from './db';
+import { FRESH_TRACK_ORDER } from '../curriculum/tracks';
 
-export const DEFAULT_TRACK_ORDER = ['core'];
+/** Re-exported so the stored default and the "has he touched it?" rule cannot drift. */
+export const DEFAULT_TRACK_ORDER = FRESH_TRACK_ORDER;
 
 function fresh(): PlanRow {
   return { id: 'current', stage: 0, unitId: '', trackOrder: [...DEFAULT_TRACK_ORDER] };

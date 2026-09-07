@@ -329,7 +329,14 @@ export function ShelfScreen(router: Router): HTMLElement {
 
   function pieceRow(book: BookRow, piece: BookPiece): HTMLElement {
     const badges: HTMLElement[] = [];
-    if (piece.itemId) badges.push(badge('has a twin', 'passed'));
+    // A twin the catalog no longer has is not a twin. Deleting the import
+    // left the id on the piece, and the row went on offering "With the score"
+    // — a button whose only outcome was an "Unknown item" page.
+    const twinId =
+      piece.itemId && items.some((candidate) => candidate.id === piece.itemId)
+        ? piece.itemId
+        : undefined;
+    if (twinId) badges.push(badge('has a twin', 'passed'));
     if (piece.lessonIds.length === 0) badges.push(badge('no rung'));
     const meta = [
       piece.page === undefined ? null : `page ${String(piece.page)}`,
@@ -344,9 +351,8 @@ export function ShelfScreen(router: Router): HTMLElement {
         variant: 'primary',
       }),
     ];
-    if (piece.itemId) {
-      const twin = piece.itemId;
-      actions.push(button('With the score', () => router.navigateScore(twin), { variant: 'quiet' }));
+    if (twinId) {
+      actions.push(button('With the score', () => router.navigateScore(twinId), { variant: 'quiet' }));
     }
     if (book.pdfImportId && piece.page !== undefined) {
       const pdfId = book.pdfImportId;

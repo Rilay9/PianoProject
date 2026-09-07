@@ -267,7 +267,10 @@ def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
     check uses.
 
     A missing report is not an error: the file is generated, and a checkout
-    that has not run the generator yet should not fail for it.
+    that has not run the generator yet should not fail for it. It is *said*
+    though — see `ladder_report_note` — because a rule that disappears in
+    silence when its input is missing is a rule that stops working the day
+    somebody deletes the file, and nobody finds out.
     """
     from ladder_report import DEFAULT_OUT, render
 
@@ -280,6 +283,26 @@ def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
         "since it was written. Run `python3 tools/content/ladder_report.py` and commit it "
         "(replan §2.6)."
     ]
+
+
+def ladder_report_note() -> str:
+    """
+    One line, every run, when the ladder check has nothing to check against.
+
+    The tips check is the model: `runtime_drill_kinds()` returns an *error*
+    when it cannot parse the TypeScript rather than an empty list, so it cannot
+    quietly stop applying. The ladder report has to stay a warning — a fresh
+    checkout genuinely has not run the generator — so it is printed instead,
+    beside the other counts that are printed to keep them honest.
+    """
+    from ladder_report import DEFAULT_OUT
+
+    if DEFAULT_OUT.is_file():
+        return ""
+    return (
+        f"NOTE: no ladder report at {DEFAULT_OUT.name}, so the rungs were not checked against "
+        "one — run `python3 tools/content/ladder_report.py` to turn the check back on."
+    )
 
 
 def level_band_errors(lesson: dict, options: list, catalog: list) -> list[str]:
@@ -782,8 +805,19 @@ def main() -> None:
     catalog = load(args.dir / "catalog.json")
     assert isinstance(catalog, list)
     personal = [item["id"] for item in catalog if NC_PERSONAL_TAG in (item.get("tags") or [])]
+    # Tagged *and* carrying a file. A placeholder keeps the tag — that is how
+    # the two builds keep the same ids — so counting the tag alone made a
+    # strict build announce that it had bundled 159 items it had not, and told
+    # the reader not to deploy a build that is exactly the one for deploying.
     personal_build = [
-        item["id"] for item in catalog if PERSONAL_BUILD_TAG in (item.get("tags") or [])
+        item["id"]
+        for item in catalog
+        if PERSONAL_BUILD_TAG in (item.get("tags") or []) and item.get("file")
+    ]
+    personal_build_placeheld = [
+        item["id"]
+        for item in catalog
+        if PERSONAL_BUILD_TAG in (item.get("tags") or []) and not item.get("file")
     ]
     print(f"content validation of {args.dir}:")
     curriculum = load(args.dir / "curriculum.json")
@@ -834,6 +868,11 @@ def main() -> None:
             "and are bundled for a personal build only (docs/00 D23). Do not deploy this "
             "build publicly."
         )
+    if personal_build_placeheld:
+        print(
+            f"  {len(personal_build_placeheld)} item(s) whose composition is not public domain "
+            "are placeholders in this build (docs/00 D23)."
+        )
     if personal:
         # Loudly, every time: this build is not for a public URL.
         print(
@@ -844,6 +883,9 @@ def main() -> None:
     # Last, so the build's one-line summary of this step is the verdict and the
     # item count rather than whichever detail happened to print last — the same
     # rule the importers follow. Everything above is the detail behind it.
+    note = ladder_report_note()
+    if note:
+        print(note)
     print(f"content validation OK: {args.dir} ({len(catalog)} catalog items)")
 
 

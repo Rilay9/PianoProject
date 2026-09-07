@@ -71,6 +71,38 @@ test.describe('performance budgets (docs/01 §6)', () => {
     expect(elapsed).toBeLessThan(16.7);
   });
 
+  test('the longest score in the library opens on the Score screen (P19)', async ({ page }) => {
+    // 780 printed bars and 3,331 steps, the largest thing the owner can open.
+    // The render check engraves a whole score to measure it; this is the
+    // question the *app* asks, which is different and is the one that matters:
+    // how long until the first window of bars is on the screen. The window
+    // renderer exists precisely so that this is not a function of the length
+    // of the piece, and this is the test that says so.
+    await throttle(page);
+    const started = Date.now();
+    await page.goto('/#/score/song.classical.chopin-scherzo-2.nifc');
+    await expect(page.locator('[data-screen="score"]')).toBeVisible();
+    // Engraved staves in the stage, not the status line changing. `toBeVisible`
+    // is wrong here: the renderer draws into two buffers and the one it draws
+    // into first is the hidden one, which is the whole trick that makes a
+    // window swap fit in a frame.
+    await expect
+      .poll(async () => page.locator('#score-stage svg .vf-measure').count(), {
+        timeout: 120_000,
+        message: 'no engraved bars appeared',
+      })
+      .toBeGreaterThan(0);
+    const firstWindowMs = Date.now() - started;
+    console.log(
+      `longest score (780 bars), CPU ×${String(CPU_THROTTLE)}: first window in ${String(firstWindowMs)} ms`,
+    );
+    // Generous, and deliberately so: this is a throttled desktop and the
+    // number that settles it comes from the S25. What it catches is the first
+    // window becoming a function of the whole score's length.
+    expect(firstWindowMs).toBeLessThan(60_000);
+    await expect(page.locator('#score-status')).not.toContainText('Could not open');
+  });
+
   test('a played note is coloured within the input-to-colour budget', async ({ page }) => {
     const midi = await installMidiMock(page, { permission: 'granted' });
     const client = await throttle(page);

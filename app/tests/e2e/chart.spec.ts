@@ -50,7 +50,18 @@ test.describe('chord chart', () => {
   });
 
   test('offers swing and comp toggles', async ({ page }) => {
-    await page.goto('/#/chart/song.folk.hot-cross-buns');
+    // On a chart that *has* chords. This used to open Hot Cross Buns — the
+    // very item the test above proves has none — so the loader's "no chord
+    // symbols in it" message landed on the status line after the toggle had
+    // written its own, and won whenever the machine was slow enough for the
+    // load to finish second. P11 recorded this as a timing flake; it was the
+    // test opening the wrong piece.
+    await page.goto('/#/library');
+    await page.locator('#library-file').setInputFiles(MXL);
+    await expect(page.locator('.list-row[data-item="import.imported-test-tune"]')).toBeVisible();
+    await page.goto('/#/chart/import.imported-test-tune');
+    await expect(page.locator('.chart-cell[data-bar="1"]')).toHaveText('C');
+
     await page.locator('#chart-swing').click();
     await expect(page.locator('#chart-swing')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#chart-status')).toContainText('click stays straight');

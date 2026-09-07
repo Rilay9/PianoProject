@@ -245,7 +245,10 @@ IndexedDB stores (via `idb`):
 | `micCalibration` | deviceId | per-pitch gain/inharmonicity table, latency ms, noise floor |
 | `skills` | conceptId | self-assessed / measured skill state for the Skills review screen |
 | `levelOverrides` | itemId | the owner's own difficulty number for one item, which wins over the catalog's everywhere (replan §1.4) |
-| `folderLibraries` | folder name | the listing of a folder of scores on the phone: one row per file, with the title, composer and estimated level from the folder's own `library.json` (`04` §4b). The *files* are not stored — Android lends a folder for one visit — so this is what makes browsing work with nothing plugged in. Deliberately **not** in the backup: 6 MB of listing, rebuilt by picking the folder again. |
+| `folderLibraries` | folder name | the listing of a folder of scores on the phone: one row per file, with the title, composer and estimated level from the folder's own `library.json` (`04` §4b). The *files* are not stored — a picked folder is lent for one visit — so this is what makes browsing work with nothing plugged in. Deliberately **not** in the backup: 6 MB of listing, rebuilt by picking the folder again. May also hold a `handle` — a `FileSystemDirectoryHandle`, when the browser has one and the `folderHandles` setting is on (P19) — which turns "pick the folder again" into an Allow tap. |
+| `books` | id | a book the owner owns on paper: title, and the pieces in it with their page numbers and the rungs they are options of (replan §5.1). Typed in by hand; nothing is scanned. |
+
+**`DB_VERSION` is 5.** Every upgrade is keyed on `oldVersion` and creates only the stores that version lacked, so a phone that skipped a version arrives correct.
 
 **`cuts` shape.** `Record<pageIndex, number[]>`, a flat sorted list of an *even* number of
 **fractions of the page height**: `[top0, bottom0, top1, bottom1, …]`. Fractions rather than
@@ -329,12 +332,39 @@ criteria. Schema at `content/curriculum.schema.json`.
 - MIDI-in to note-coloured: < 30 ms.
 - Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
 - Bundle: app JS < 1.5 MB gzipped; content precache < 60 MB total (scores are tiny; the
-  soundfont dominates — pick a ≤ 20 MB piano). **Re-measured 2026-09-06 after P10 run 2
-  (the Chopin first editions and the rest of the Joplin rags): content 11 MB. **789 catalog
-  items, 736 with a file**, up from 581 and 528. 208 new scores — 169 Chopin works and the 39
-  remaining Joplin rags — for about 3 MB, which is still nothing next to the soundfont.** Re-measure
-  and record it after every content phase; the whole library is precached (`00` D20, §7), so
-  this number is what the owner downloads.
+  soundfont dominates — pick a ≤ 20 MB piano).
+
+  **Measured 2026-09-06 at the end of P19**, on a clean build, and this is the one figure —
+  §7 used to carry a second, older one:
+
+  ```
+  python tools/content/build.py --offline    # 1,533 items
+  cd app && npm run build:app
+  ```
+
+  **Measured at the end of P19 under a ×4 CPU throttle** (`tests/e2e/perf.spec.ts`, which
+  prints every number it takes):
+
+  ```
+  2-bar window render        median 36 ms      (S25 budget 150 ms, gate 600 under ×4)
+  pre-rendered window swap   4.2 ms            (one frame)
+  input to note coloured     mean 8.6 ms, max 15.2 ms   (budget 30 ms)
+  the longest score          first window in 11.6 s
+  ```
+
+  The last one is new and is the one to know about: **Chopin's Scherzo No. 2 — 780 printed
+  bars, 3,331 steps — takes about twelve seconds under a ×4 throttle before its first two
+  bars are on the screen.** The window renderer means the *rest* of the piece costs nothing
+  after that, but the first window still waits for OSMD to parse the whole file. Nothing else
+  in the library is close; the median score is a page or two. Whether twelve throttled seconds
+  is three real ones on the S25 is a question for the phone.
+
+  content **12.2 MB in 1,383 files** (6.6 MB of scores across 1,256 files, 2.7 MB of catalog
+  and curriculum JSON, 2.6 MB soundfont, 0.24 MB of lessons and tips); built app **15.7 MB in
+  1,411 files**; service worker precache **1,413 entries, 14.8 MB**. A quarter of the budget.
+  The catalog JSON is now the second-largest single thing after the soundfont, which is what
+  to watch rather than the notation. Re-measure and record it here after any content phase;
+  the whole library is precached (`00` D20, §7), so this number is what the owner downloads.
 
 ## 7. Offline
 
@@ -360,20 +390,9 @@ criteria. Schema at `content/curriculum.schema.json`.
 - **Update checks are optional and silent.** An "update available — reload" toast when a new
   service worker is waiting; a setting turns the check off entirely, and a failed check when
   offline is not an error and is never shown.
-- **Budget check (re-measured 2026-09-06, after P12a):** content **9.6 MB** against the 60 MB
-  budget in §6 — 5.4 MB of scores across **1,037 files**, 2.5 MB of soundfont, 1.5 MB of
-  catalog, 0.16 MB of lesson text. The built app is 12.8 MB and the service worker precaches
-  **1,139 entries**.
-
-  P12a added 344 generated exercises — the whole technique syllabus from three-octave scales
-  to half pedal — for about **1.4 MB**, because a generated exercise is four bars of MusicXML
-  and compresses to a couple of kilobytes. The catalog grew faster than the scores did: at
-  1,138 items it is now the second-largest single file after the soundfont, which is the
-  thing to watch rather than the notation. The soundfont still dominates and there is room
-  for several more phases.
-
-  The earlier reading of 11 MB (after P10 run 2) counted a `scores/` directory that still
-  held files from an aborted run; the 9.6 MB above is a clean build.
+- **Budget check: §6 has the numbers**, measured once at the end of P19. They used to be
+  recorded in both places and the two disagreed, which is how a measurement becomes a
+  rumour.
 - **The build grew awkwardly, and P11 fixed the half of it that was conversion.** That fix
   was the one predicted here — cache the converted `.mxl` files by source checksum — and it
   is in `build/cache/convert/`, keyed on the source bytes, a digest of `convert.py` +
@@ -426,46 +445,48 @@ one the owner tests.
 
 ## 9. Deployment
 
-The delivery artifact is a **TWA APK** (`00` D19). Pages is the testing deploy and only while
-the repo is public.
+**The app is served from the owner's own laptop** (`00` D25), installed on the phone from
+there, and after the first launch never needs it again except to update. There is no host, and
+that is the decision — not a fallback. The whole payload is 15.7 MB precached on first launch
+and the app then works with the network off permanently (§7), so an origin that is switched on
+for five minutes a month is not a compromise, it is the right size of thing.
 
-**Now, while the repo is public:**
-- `.github/workflows/pages.yml`: on push to `main` — set up Python + Node, run
-  `tools/content/build.py` (produces `app/public/content/…`), `npm ci && npm run build`, upload
-  `app/dist` with `actions/upload-pages-artifact`, deploy with `actions/deploy-pages`.
-- Owner one-time step: repository **Settings → Pages → Source: GitHub Actions**.
-- `vite.config.ts` `base` MUST be `/PianoProject/` (repo name) for Pages, overridable by env.
-- The Pages build MUST be the default, NC-free content build (`00` D10a). It is a public URL.
+**Installing (`docs/OWNER-GUIDE.md` §1 has the steps).**
 
-**Built in P9 (2026-09-06), host-agnostic by the owner's choice.** The origin is not decided
-yet, so nothing in the packaging hard-codes one: `packaging/build-apk.sh` takes
-`PIANOPATH_HOST` and `PIANOPATH_BASE_PATH`, fills in `twa-manifest.template.json`, builds the
-web app with a matching `VITE_BASE`, runs Bubblewrap, and writes the Digital Asset Links file
-into `app/dist/.well-known/`. Choosing a host is then an environment variable, not a rewrite.
-`packaging/twa-manifest.json`, the keystore and the built APK are all gitignored.
+1. Build the content **with `--personal`**, then the app:
+   `python3 tools/content/build.py --offline --personal` and `cd app && npm run build:app`.
+   Not `npm run build`: its prebuild rebuilds the content without `--personal` and would swap
+   the owner's library for the public one.
+2. `mkcert` once, for this laptop's LAN address, into `packaging/lan/` (gitignored). Chrome
+   counts an origin as secure only if it trusts the certificate; a self-signed one leaves a
+   URL bar in the TWA and can cost Web MIDI. The mkcert root certificate is installed on the
+   phone once.
+3. `py -3.11 packaging/serve-lan.py` — HTTPS on port 443 for the APK, any port for "Add to
+   Home screen". It sets the MIME types Chrome needs to offer an install, `Service-Worker-
+   Allowed: /`, and cache headers that let a rebuilt app be noticed. Tested in
+   `tools/content/tests/test_serve_lan.py` over real TLS.
+4. `packaging/build-apk.sh` with `PIANOPATH_HOST` set to the laptop's address and
+   `PIANOPATH_KEYSTORE` to the owner's signing key. It fills in `twa-manifest.template.json`,
+   runs Bubblewrap, and writes Digital Asset Links into `app/dist/.well-known/`.
 
-**One trap the script warns about:** `assetlinks.json` must be at the **origin root**, never
-under the app's base path. If the app is served from `/PianoProject/`, the file still has to be
-at `https://host/.well-known/assetlinks.json`. That is the main argument for serving the app at
-`/` on whatever host the APK ends up pointing at — and the reason `PIANOPATH_BASE_PATH`
-defaults to `/` rather than to the Pages sub-path.
+**The assetlinks trap:** `assetlinks.json` must be at the **origin root**, never under the
+app's base path. That is why `PIANOPATH_BASE_PATH` defaults to `/` and why the laptop serves
+the app at `/` rather than at a sub-path. The keystore, the certificate and the built APK are
+all gitignored; losing the keystore means no upgrade path for an installed APK, so it is
+backed up somewhere that will still exist in five years.
 
-**At v1.0, when the repo goes private (P9):**
-- The content build may drop the licence gate for the APK; see `03` §1.
-- **Offline-first is decided (`00` D20).** The origin exists only so the TWA has a start URL
-  to install from and to check for updates against; after the first launch the service worker
-  serves everything and the app works with the network off permanently. Any static host will
-  do — Cloudflare Pages or Netlify free tier both build a private repo — precisely because it
-  is barely used. A laptop serving `app/dist` over HTTPS on the LAN is enough for an install.
-- Consequence for P9's acceptance: **airplane mode from the second launch onwards must be a
-  fully working app**, not a degraded one. That is a test, not an aspiration.
-- Bubblewrap needs a signing keystore and a `assetlinks.json` served from the origin's
-  `/.well-known/`. **The keystore is the owner's and is never committed**; P9 documents where
-  it lives and how to reproduce a build without it.
-- `base` must match wherever the origin serves from; a custom domain or a site root makes the
-  TWA config simpler than a `/PianoProject/` subpath.
-- Laptop fallback for a quick test without a host: `npx serve app/dist` on the same Wi-Fi with
-  a self-signed cert (Web MIDI needs HTTPS; `localhost` only counts on the phone itself).
+**GitHub Pages is the testing deploy, and only until the repository goes private.**
+`.github/workflows/pages.yml` runs on push to `claude/piano-teaching-app-bo19td` — there is no
+`main` (`docs/decisions/2026-09-05-default-branch.md`) — and builds with `--strict-license`,
+so the 159 items whose composition is not public domain are placeholders there (`00` D23).
+That is the build the owner tests on the phone before going private. **The workflow is deleted
+in the same breath as making the repository private**: Pages cannot deploy from a private
+repository without a paid plan, and its only job was that test. `ci.yml` stays — it is where
+the Linux screenshot baselines are compared.
+
+**No third-party host.** Cloudflare Pages and Netlify were the alternatives while the origin
+was undecided; D25 decided it. Nothing in the packaging hard-codes an origin, so if that ever
+changes it is an environment variable rather than a rewrite.
 
 ## 10. Development loop the builders MUST use
 

@@ -12,7 +12,7 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "e2e": "playwright test",
-    "content:build": "python3 ../tools/content/build.py",
+    "content:build": "node ../tools/content/python.cjs ../tools/content/build.py",
     "prebuild": "npm run content:build && node scripts/generate-icons.mjs",
     "predev": "node scripts/generate-icons.mjs",
     "pwa:audit": "node scripts/pwa-audit.mjs"

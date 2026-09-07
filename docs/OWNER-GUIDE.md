@@ -382,7 +382,10 @@ backup, and it keeps working whether or not the folder is still there.
 Two things that will otherwise look like bugs:
 
 - **You have to pick the folder again each time you want to add something.** Android
-  only lends a folder to an app for one visit; there is no way to hold onto it. The
+  lends a picked folder to an app for one visit. Turn on **Settings -> Content -> Remember
+  the score folder** and it may not have to: MDN says Chrome for Android has been able to
+  hold onto a folder since version 132, which nothing has yet tried on your phone. If it does
+  not work the app quietly goes back to asking. The
   *listing* is saved, so browsing works any time, offline, with nothing plugged in —
   it is only adding that needs the folder in hand.
 - **Levels marked `est.` are guesses**, made from the file's statistics rather than
@@ -551,3 +554,96 @@ it *feels* like something to play against is not something a test can tell you.
 Put it on at a tempo you would actually jam at and see whether you can sit in
 with it or whether it fights you. If the hat is too loud or the bass too quiet,
 those are two numbers in `app/src/audio/backingLoop.ts`.
+
+
+---
+
+## 9. Testing on Pages before going private
+
+Do this **before** you make the repository private, because Pages stops working
+the moment you do (it needs a paid plan on a private repo, and its only job was
+this test). The URL is the one the Pages workflow prints — `Settings → Pages`
+shows it, and the run's "deploy" step links straight to it.
+
+**One thing to know first.** The Pages build is the **strict** one: the 159
+scores whose composition is not public domain are *placeholders* there, showing
+"import needed" and a line saying what to do instead. That is correct and is
+not a fault to report. Those 159 appear only in the build you install from the
+laptop, which is made with `--personal`.
+
+Ten checks, in the order that finds the worst failure first. Each is one screen
+and one expected result. If a check fails, stop and send me the Diagnostics
+report — **Settings → Diagnostics → Copy debug report** — plus which number
+you were on.
+
+1. **Install it.** Open the Pages URL in Chrome on the S25, then menu →
+   *Add to Home screen*. **Right:** it installs and opens full screen, with no
+   URL bar. **Wrong:** no "Add to Home screen" offer at all (the manifest did
+   not load), or it opens in a tab with a URL bar. *Send:* the Diagnostics
+   "installed" line.
+
+2. **Diagnostics says the library is complete.** Open the app from the home
+   screen, then **Settings → Diagnostics**. **Right:** *Precached n of n*, with
+   the two numbers equal and n over 1,400. **Wrong:** a smaller first number
+   that does not catch up after a minute on Wi-Fi. *Send:* that line.
+
+3. **The piano connects.** Plug the HP-130 in with the USB cable and open
+   **Settings → MIDI**. Play a few keys. **Right:** the device is named, and
+   the keyboard strip lights the keys you press with no lag you can feel.
+   **Wrong:** no device listed (usually the cable or the phone's USB mode), or
+   keys that light late or stick down. *Send:* the MIDI section of the debug
+   report.
+
+4. **Play a piece in Wait mode.** Today → open the first song → make sure the
+   mode chip says **Wait** → play it. **Right:** the sheet music waits for you
+   and moves when you play the right notes; wrong notes go red and it does not
+   move on. **Wrong:** it scrolls on its own in Wait mode, or does not move at
+   all when you play the right notes.
+
+5. **Finish a run and look at the score.** Play to the end of that piece.
+   **Right:** a summary with an accuracy and a tempo, and the piece appears in
+   **Progress**. **Wrong:** no summary, or a run that is not in Progress
+   afterwards.
+
+6. **Open a drill.** Today → the warm-up row, or Library → any drill.
+   **Right:** a card appears, the keyboard strip answers it, and a result sheet
+   comes up at the end with four short sections of advice. **Wrong:** an empty
+   card, or "no drill to run" on something that is a drill.
+
+7. **Open a lesson and tap "Find more".** Any rung — 2.1 will do.
+   **Right:** a sheet with a search line and a chatbot prompt, both copyable,
+   naming what the rung wants. **Wrong:** an empty sheet, or a copy button that
+   does nothing.
+
+8. **Share a score into the app.** Open a `.mxl` or `.musicxml` in Files or
+   Drive → Share → PianoPath. **Right:** the app opens and within a second a
+   sheet asks where the piece goes, with a level already estimated and marked
+   `≈`. Tap **Save** and it is in your library. **Wrong:** landing on the
+   Library list with no sheet, a level box that says "No estimate" for a
+   MusicXML file, or a browser error page. *This is the one thing about the
+   import that no test here could check.*
+
+9. **Browse the score folder.** Copy `build/pdmx/pianopath-library.zip` to the
+   phone and unzip it, then **Library → Browse a score folder → Pick a folder**
+   and choose `pianopath-library`. **Right:** it lists 37,261 scores, the
+   search box filters them as you type, and **Add** on one of them puts it in
+   your library. **Wrong:** a long freeze while picking (tell me roughly how
+   long — this is the one number nobody could measure without your phone), or
+   an error about too many files. Also open `chrome://version` and tell me the
+   Chrome version: if it is 132 or newer, **Settings → Content → Remember the
+   score folder** may save you re-picking it every time, and you would be the
+   first to know whether it does.
+
+10. **Airplane mode, from the second launch.** Close the app, turn airplane
+    mode on, open it again. **Right:** everything works — Today, a score, a
+    drill, a lesson — with no network at all. **Wrong:** anything blank, any
+    "could not load", any spinner that does not end. Then turn airplane mode
+    off and, last, **Progress → Export a backup**, so you have one before you
+    change anything else.
+
+When all ten are right: make the repository private (**Settings → General →
+Danger zone**), delete `.github/workflows/pages.yml`, and install from the
+laptop with the personal build (§1). Your practice history survives that —
+it is in the phone's storage, not in the app — but export a backup first
+anyway, because an APK signed with a different key cannot upgrade an installed
+one and the way out is uninstalling.
