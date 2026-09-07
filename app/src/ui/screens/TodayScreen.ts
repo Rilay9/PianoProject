@@ -211,7 +211,9 @@ export function TodayScreen(router: Router): HTMLElement {
         button(`Play ${substitute.title}`, () => open(substitute), { variant: 'secondary' }),
       );
     } else {
-      actionButtons.push(button('▶', () => open(item), { variant: 'primary' }));
+      actionButtons.push(
+        button('▶', () => open(item), { variant: 'primary', ariaLabel: `Open ${item.title}` }),
+      );
     }
 
     return listRow({

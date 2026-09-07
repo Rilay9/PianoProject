@@ -595,6 +595,12 @@ body {
   padding: 6px 0;
   font-size: 0.9rem;
   cursor: pointer;
+  /* Tall enough to hit. These measured 19 px — "Placement check", "Skills",
+     "Know it", "Done" — because the padding collapses inside the flex rows
+     they live in. A link's target is 24; a button's is 32 (`04` §9). */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
 }
 
 .back-link {

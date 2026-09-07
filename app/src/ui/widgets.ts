@@ -60,6 +60,14 @@ export function button(
     id?: string;
     variant?: 'primary' | 'secondary' | 'quiet';
     title?: string;
+    /**
+     * What a screen reader should say, when the label is a glyph.
+     *
+     * `title` is not enough: the accessible name comes from the content
+     * first, so a button whose content is "▶" is announced as "black
+     * right-pointing triangle" however good the tooltip is.
+     */
+    ariaLabel?: string;
     /** Extra class, for the few buttons that need a shape of their own. */
     className?: string;
   } = {},
@@ -74,6 +82,7 @@ export function button(
       .join(' '),
     ...(options.id ? { id: options.id } : {}),
     ...(options.title ? { title: options.title } : {}),
+    ...(options.ariaLabel ? { 'aria-label': options.ariaLabel } : {}),
     text: label,
   }) as HTMLButtonElement;
   node.addEventListener('click', onClick);

@@ -219,10 +219,21 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       const height = row.getBoundingClientRect().height;
       if (height > 96) add('R2-density', `${name(row)} is ${String(Math.round(height))}px tall`);
     }
+    // A settings row is a label and its control on one line — 56 px. Most of
+    // them also carry a line of hint under the label, which is the app's own
+    // idea and a good one, and buys a second line: 88. Measured rather than
+    // guessed: the rule at a flat 56 reported 136 rows in portrait alone, of
+    // which the modal case was an ordinary 70 px row with a hint. What is left
+    // over 88 — 110, 118, 150 — is a row that has grown into a card.
     for (const row of screen.querySelectorAll<HTMLElement>('.setting-row')) {
       const height = row.getBoundingClientRect().height;
-      if (height > 56) {
-        add('R2-density', `${name(row)} is ${String(Math.round(height))}px tall (a settings row)`);
+      const hinted = row.querySelector('.muted') !== null;
+      const budget = hinted ? 88 : 56;
+      if (height > budget) {
+        add(
+          'R2-density',
+          `${name(row)} is ${String(Math.round(height))}px tall (a settings row${hinted ? ' with a hint' : ''})`,
+        );
       }
     }
 
@@ -271,20 +282,38 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
   });
 }
 
-/** Groups findings by kind so a run ends in a summary rather than a wall. */
+/**
+ * Groups findings by kind so a run ends in a summary rather than a wall.
+ *
+ * By *distinct* finding, not by occurrence. The score bar's five glyph
+ * buttons are on twenty scenes, and printing them a hundred times says
+ * "a hundred things to look at" when there are five. Each line names the
+ * finding once, with the scene it was first seen on and how many others
+ * had it.
+ */
 export function summarise(all: { scene: string; findings: Finding[] }[]): string[] {
-  const byKind = new Map<string, string[]>();
+  const byKind = new Map<string, Map<string, { first: string; count: number }>>();
   for (const { scene, findings } of all) {
     for (const finding of findings) {
-      const list = byKind.get(finding.kind) ?? [];
-      list.push(`${scene}: ${finding.detail}`);
-      byKind.set(finding.kind, list);
+      const details = byKind.get(finding.kind) ?? new Map();
+      const seen = details.get(finding.detail);
+      if (seen) seen.count += 1;
+      else details.set(finding.detail, { first: scene, count: 1 });
+      byKind.set(finding.kind, details);
     }
   }
   const lines: string[] = [];
-  for (const [kind, items] of [...byKind.entries()].sort((a, b) => b[1].length - a[1].length)) {
-    lines.push(`${kind} — ${String(items.length)}`);
-    for (const item of items.slice(0, 12)) lines.push(`    ${item}`);
+  const kinds = [...byKind.entries()].sort((a, b) => b[1].size - a[1].size);
+  for (const [kind, details] of kinds) {
+    const occurrences = [...details.values()].reduce((n, d) => n + d.count, 0);
+    lines.push(
+      `${kind} — ${String(details.size)} distinct` +
+        (occurrences === details.size ? '' : ` (${String(occurrences)} occurrences)`),
+    );
+    const items = [...details.entries()].sort((a, b) => b[1].count - a[1].count);
+    for (const [detail, { first, count }] of items.slice(0, 12)) {
+      lines.push(`    ${first}: ${detail}${count > 1 ? ` (+${String(count - 1)} more scenes)` : ''}`);
+    }
     if (items.length > 12) lines.push(`    … and ${String(items.length - 12)} more`);
   }
   return lines;

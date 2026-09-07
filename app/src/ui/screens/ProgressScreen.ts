@@ -155,7 +155,12 @@ export function ProgressScreen(router: Router): HTMLElement {
               // Through `openItem`, because a mastered *drill* belongs on the
               // drill screen and the Score screen would have nothing to show.
               actions: item
-                ? [button('▶', () => void openItem(router, item), { variant: 'primary' })]
+                ? [
+                    button('▶', () => void openItem(router, item), {
+                      variant: 'primary',
+                      ariaLabel: `Open ${item.title}`,
+                    }),
+                  ]
                 : [],
               dataset: { 'data-item': row.itemId },
             });

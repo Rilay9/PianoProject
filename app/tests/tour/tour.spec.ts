@@ -131,6 +131,25 @@ async function inView(page: Page, selector: string): Promise<boolean> {
   }, selector);
 }
 
+/**
+ * Thrown by `scrollTo` when there was nothing to scroll.
+ *
+ * A scene captioned "scrolled to the storage block" is only a picture worth
+ * having if the storage block was off the screen to begin with. On a tablet —
+ * and on the phone for a screen that happens to fit — the scroll does nothing
+ * and the tour comes back with a second copy of the previous scene under a new
+ * caption. That is one of the two identical pairs that survived the predicates.
+ */
+class Redundant extends Error {}
+
+/** Scrolls to something, or says the scene has no reason to exist. */
+async function scrollTo(page: Page, selector: string): Promise<void> {
+  if (await inView(page, selector)) {
+    throw new Redundant(`${selector} is already on the screen`);
+  }
+  await page.locator(selector).scrollIntoViewIfNeeded();
+}
+
 /** Imports a fixture once; a second call finds it already there. */
 async function importScore(page: Page, file: string, id: string): Promise<void> {
   await go(page, '/library', 'library');
@@ -154,6 +173,8 @@ for (const { orientation, size } of FORM_FACTORS) {
       });
       const midi: MidiMock = await installMidiMock(page, { permission: 'granted' });
       const gaps: string[] = [];
+      /** Scenes that would have been a second copy of another one. */
+      const redundant: string[] = [];
       const audited: { scene: string; findings: Finding[] }[] = [];
 
       /**
@@ -194,7 +215,8 @@ for (const { orientation, size } of FORM_FACTORS) {
           if (findings.length > 0) audited.push({ scene: slug, findings });
         } catch (cause) {
           const why = cause instanceof Error ? cause.message.split('\n')[0] : 'failed';
-          gaps.push(`${slug}: ${why}`);
+          if (cause instanceof Redundant) redundant.push(`${slug}: ${why}`);
+          else gaps.push(`${slug}: ${why}`);
         }
       };
 
@@ -202,16 +224,10 @@ for (const { orientation, size } of FORM_FACTORS) {
       await scene('01-today-empty', 'Today, first launch', 'Nothing practised yet. Does it say where to start?', async () => {
         await go(page, '/today', 'today');
       }, '[data-screen="today"] .list-row, [data-screen="today"] .block');
-      // Only where scrolling to it means anything. On a tablet the whole of
-      // Today is already on the screen, so this scene was a second copy of
-      // `01` with a different caption — one of the thirteen pixel-identical
-      // pairs. Better absent than duplicated.
-      if (!orientation.startsWith('tablet')) {
-        await scene('02-today-controls', 'Today, the session controls', 'Length, goal, shuffle, start. Thumb-sized?', async () => {
-          await go(page, '/today', 'today');
-          await page.locator('#today-start').scrollIntoViewIfNeeded();
-        }, async (p) => inView(p, '#today-start'));
-      }
+      await scene('02-today-controls', 'Today, the session controls', 'Length, goal, shuffle, start. Thumb-sized?', async () => {
+        await go(page, '/today', 'today');
+        await scrollTo(page, '#today-start');
+      }, async (p) => inView(p, '#today-start'));
       await scene('03-plan', 'Plan', 'Stages with their completion. Can you tell where you are?', async () => {
         await go(page, '/plan', 'plan');
         await expect(page.locator('.list-row[data-stage="0"]')).toBeVisible();
@@ -237,7 +253,7 @@ for (const { orientation, size } of FORM_FACTORS) {
       }, '[data-screen="settings"] .setting-row');
       await scene('09-settings-storage', 'Settings, storage', 'Backup, restore and what is taking room.', async () => {
         await go(page, '/settings', 'settings');
-        await page.locator('#settings-storage').scrollIntoViewIfNeeded();
+        await scrollTo(page, '#settings-storage');
       }, async (p) => inView(p, '#settings-storage'));
       await scene('10-shelf-empty', 'The shelf, empty', 'A first visit. Does it say what to do?', async () => {
         await go(page, '/library/shelf', 'shelf');
@@ -253,7 +269,7 @@ for (const { orientation, size } of FORM_FACTORS) {
       }, '#lesson-exercises .list-row');
       await scene('13-lesson-text', 'A lesson, scrolled to the text', 'The teaching itself. Readable length?', async () => {
         await go(page, '/lesson/2.1', 'lesson');
-        await page.locator('#lesson-text').scrollIntoViewIfNeeded();
+        await scrollTo(page, '#lesson-text');
       }, async (p) => inView(p, '#lesson-text'));
       await scene('14-lesson-finder', 'The finder sheet', 'A search line and a chatbot prompt, both copyable.', async () => {
         await go(page, '/lesson/2.1', 'lesson');
@@ -287,7 +303,12 @@ for (const { orientation, size } of FORM_FACTORS) {
         await page.locator('#score-play').click();
         await play(page, midi, [62, 64]);
       }, '#score-stage .is-front .is-correct');
-      await scene('23-score-wrong', 'A wrong note', 'Red, and it does not move on — the state that stopped you on the F sharp.', async () => {
+      // The red is on the *strip*. `04` §5: a note that is not in the score at
+      // all is shown on the keyboard strip in red and never on the staff, and
+      // `ScoreSession` only ever paints `wrong` onto note ids the engine names.
+      // So the old caption promised something the app does not do, and the
+      // predicate that finally asked for it is what said so.
+      await scene('23-score-wrong', 'A wrong note', 'Red on the strip, and the cursor does not move on — the state that stopped you on the F sharp.', async () => {
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
         await page.locator('#score-mode').selectOption('wait');
@@ -296,7 +317,7 @@ for (const { orientation, size } of FORM_FACTORS) {
         // own range, so the strip can show it. C3 was outside the range the
         // strip draws, so the picture had nothing red in it anywhere.
         await play(page, midi, [67, 67, 67]);
-      }, '#score-stage .is-front .is-wrong');
+      }, '.keyboard-strip .is-wrong');
       await scene('24-score-names', 'The same, with note names on', 'One line under the title. Enough? Too much?', async () => {
         await setSetting(page, 'showNoteNames', true);
         await go(page, `/score/${SONG}`, 'score');
@@ -359,9 +380,12 @@ for (const { orientation, size } of FORM_FACTORS) {
       await scene('33-score-four-bars', 'Four bars in the window', 'More to read ahead into, smaller notes.', async () => {
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
+        // To four, not up by two: a tablet already opens at four (`04` §7a),
+        // so "up twice" landed on six there and the scene was a gap in both
+        // tablet shapes.
         await withScoreMenu(page, async () => {
-          await page.locator('#score-bars-up').click();
-          await page.locator('#score-bars-up').click();
+          for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
+          for (let i = 0; i < 3; i += 1) await page.locator('#score-bars-up').click();
         });
         await page.waitForTimeout(1200);
       }, async (p) => (await p.locator('#score-bars').textContent()) === '4 bars');
@@ -534,7 +558,7 @@ for (const { orientation, size } of FORM_FACTORS) {
       }, '#progress-repertoire .list-row');
       await scene('78-progress-heatmap', 'The heat-map', 'A fortnight of squares. Legible at this width?', async () => {
         await go(page, '/progress', 'progress');
-        await page.locator('#progress-heatmap').scrollIntoViewIfNeeded();
+        await scrollTo(page, '#progress-heatmap');
       }, async (p) => inView(p, '#progress-heatmap [data-level]:not([data-level="0"])'));
 
       await scene('80-folder-full', 'The score folder, all 37,261', 'The real size. Does the list stay usable?', async () => {
@@ -575,6 +599,12 @@ for (const { orientation, size } of FORM_FACTORS) {
       if (gaps.length > 0) {
         console.log(`\n${orientation}: ${String(gaps.length)} scene(s) could not be shot:`);
         for (const gap of gaps) console.log(`  - ${gap}`);
+      }
+      if (redundant.length > 0) {
+        console.log(
+          `\n${orientation}: ${String(redundant.length)} scene(s) had nothing of their own to show:`,
+        );
+        for (const line of redundant) console.log(`  - ${line}`);
       }
       // Two scenes with one picture between them: one of them did not reach
       // the state its caption claims, and the tour said nothing about it for

@@ -360,8 +360,16 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     'div.pdf-bar',
     { id: 'pdf-bar' },
     button('←', () => router.navigate('library'), { id: 'pdf-back', title: 'Back to Library' }),
-    button('◀', () => goTo(index - 1), { id: 'pdf-prev', title: 'Previous system' }),
-    button('▶', () => goTo(index + 1), { id: 'pdf-next-system', title: 'Next system' }),
+    button('◀', () => goTo(index - 1), {
+      id: 'pdf-prev',
+      title: 'Previous system',
+      ariaLabel: 'Previous system',
+    }),
+    button('▶', () => goTo(index + 1), {
+      id: 'pdf-next-system',
+      title: 'Next system',
+      ariaLabel: 'Next system',
+    }),
     el('button.chip', { type: 'button', id: 'pdf-mode-manual', text: 'Tap', 'aria-pressed': true }),
     el('button.chip', { type: 'button', id: 'pdf-mode-timed', text: 'Timed', 'aria-pressed': false }),
     el('button.chip', { type: 'button', id: 'pdf-mode-loop', text: 'Loop', 'aria-pressed': false }),
