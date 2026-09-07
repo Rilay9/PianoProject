@@ -27,6 +27,13 @@ that the app was *correct* and *unusable*: it was waiting for F♯4, and F♯4 w
 on a 360 px keyboard strip. Nothing told him what it wanted. That is the class of problem this
 phase exists to make impossible on day one.
 
+**Two thirds of that particular sliver is now fixed and is not your job.** P19 narrowed the
+strip from 88 keys to the ones the piece uses, and P21 found the other half: `--key-h` was a
+constant 108 px inside a 72 px box, so the bottom 50 px of every key — the part of a white key
+that is not hidden behind a black one — was drawn below the edge of the screen in both
+orientations. The strip is now a keyboard you can aim at. What is still missing, and is yours,
+is the part where *something tells him what it wants* before he is lost.
+
 ## What already exists (do not rebuild these — wire them together)
 
 | Piece | Where | State |
@@ -36,7 +43,7 @@ phase exists to make impossible on day one.
 | Mic calibration | `#/settings/mic`, `app/src/audio/pitch/calibration.ts`, `app/src/data/micCalibrationStore.ts` | Works: latency + noise floor, stored per device id. |
 | Settings store | `app/src/data/settingsStore.ts` (`localStorage` key `pianopath.settings`, mirrored to IndexedDB) | ~40 keys, all with defaults. |
 | PDF import + system detection | `app/src/pdf/systems.ts`, `#/pdf/<importId>` | Works; detects systems from the brace at the left edge. |
-| Score screen, all four modes | `#/score/<itemId>` | Works. |
+| Score screen, all four modes | `#/score/<itemId>` | Works. **Changed in P21:** the control bar is `⏮ ▶/⏸ mode R-L-Both tempo ⋯` and nothing else; everything else moved into the `⋯` sheet. A test that touches Input, Loop, Metronome, Bars, Size, Layout, Keys, Sound, Blind or Perform must open that sheet first — use `app/tests/e2e/scoreControls.ts` (`withScoreMenu`, `setTempoPercent`), which every existing score test now goes through. |
 | Drill screen, 23 kinds | `#/drill/<itemId>` | Works. |
 | Diagnostics report | `#/settings/diagnostics`, "Copy debug report" | Works — this is how the 2026-09-07 report reached me. |
 
@@ -124,10 +131,22 @@ Three things to get right:
 
 - **Sideways is a separate answer from upright**, and the app has one setting for both today.
   Whether that becomes two is your call; if it does, say so in `docs/04-ui-spec.md` §7. The
-  measurements are in `docs/decisions/2026-09-07-the-ux-tour.md`: a two-bar window sideways now
-  fills 98% of the screen, so the trade-off is genuinely about how far ahead he wants to read,
-  and no longer about wasted space — which is what it was about when the question was first
-  written down.
+  measurements are in `docs/decisions/2026-09-07-the-ux-tour.md`, **and one of them was wrong
+  in the first version of this prompt**. "A two-bar window sideways fills 98% of the screen" was
+  the SVG *box*, not the ink. Measured again on 2026-09-07 with the ink:
+
+  | | stage | SVG box | ink |
+  |---|---|---|---|
+  | sideways 780x360 | 780x194 | 100% w, 61% h | **61% w, 57% h** |
+  | upright 360x780 | 360x614 | 100% w, 78% h | **95% w, 76% h** |
+
+  Upright is genuinely full. Sideways the music inks 61% of a box that is 100% of the width —
+  the other 39% is OSMD's own empty margin — inside a stage that is itself only 194 of the 360
+  px, once the header, the control bar and the keyboard have taken theirs. So sideways the
+  trade-off is still partly about wasted space, and you should show him what the sizes actually
+  look like rather than what this paragraph used to claim. The fit-to-ink work is mine (see Out
+  of scope); if it lands before you reach step 9 the numbers will be better and you should
+  re-measure rather than trust either version of this table.
 - **A choice made here is his, and nothing may quietly override it.** `barsPerWindowFor` in
   `app/src/ui/tablet.ts` already draws that line — a number he has set beats any default — and
   whatever you build has to keep it.
@@ -177,6 +196,18 @@ Not "it should work". Paste what you ran.
 - Then run `npm run tour` (`app/tests/tour/`) and **look at the pictures** of your own screens in
   both orientations before you call it done. That harness exists now; use it.
 
+  Two things about it changed in P21 and both apply to any scene you add. Every scene takes a
+  fifth argument — a selector or a predicate that must hold before the shutter opens — and a
+  scene that cannot prove itself is recorded as a gap rather than photographed; and every
+  picture is hashed, so two scenes that come back with the same picture under different captions
+  are printed as a finding. Thirteen of the tour's pictures were lying that way before this
+  existed. A run that ends with a gap or an identical pair is a run that found something.
+
+  The current baseline, so you know what you changed: 325 pictures, **0 gaps, 0 identical**,
+  1,436 unit tests, 281 e2e, and the seven mechanical audit checks reporting nothing. The four
+  rules of `04` §0 do report — R2 density is 112 rows over budget and is a known open question,
+  not something you broke.
+
 ## Out of scope — being done in parallel, do not touch
 
 - `app/tests/tour/**` and `app/playwright.tour.config.ts` (the screenshot tour and the choices
@@ -185,6 +216,11 @@ Not "it should work". Paste what you ran.
   sideways, fix that screen; leave `ScoreScreen`, `WindowRenderer`, `KeyboardStrip`, `autoFit`
   and `tablet.ts` alone.
 - `barsPerWindow` in landscape: an open question with the owner, decided from screenshots.
+- Three things starting now, so you know they will move under you: **fitting the engraving to
+  the ink** rather than to the SVG box (`WindowRenderer`), **a landscape layout for the drill
+  screen** (`DrillScreen`, `.drill-stage` and the 23 prompt cards), and the clipped system
+  brace at the left edge of a grand staff. Build your own screens; if one of these gets in your
+  way, say so in the report rather than working around it.
 
 ## Questions to answer in the report, not to block on
 
@@ -193,3 +229,9 @@ Not "it should work". Paste what you ran.
 2. Does step 5 use a bundled song or the same song for everyone every time? (Recommendation: the
    same one every time. A setup that varies is a setup you cannot compare against last week's.)
 3. Where does the setup record live — a new IndexedDB store or a settings key? Say which and why.
+4. **Sideways, the notation gets about a fifth of the screen.** Of 360 px of height the header
+   takes 40, the control bar 48 and the keyboard strip 72, leaving a 194 px stage of which the
+   music inks 57%. Every one of those four is defensible on its own. You will have had the
+   phone's real proportions in front of you at step 9 in a way nobody else has — so: is that
+   the right split, and if not, which of the four gives way first? An answer in the report, not
+   a change to the score screen, which is mine.
