@@ -39,16 +39,79 @@ test.describe('score screen in landscape', () => {
   // A phone held sideways: the orientation the score screen is designed for.
   test.use({ viewport: { width: 880, height: 412 } });
 
+  /**
+   * What the pictures were guarding, as assertions.
+   *
+   * Written when the sheet started being fitted to the screen (2026-09-07) and
+   * the pictures all went stale at once. They turned out not to have: the fix
+   * was to stop refitting inside every draw. But the hour spent finding that
+   * out is the argument for saying the three things the header describes as
+   * assertions too — a baseline can only tell you *that* something moved, and
+   * these say what.
+   */
   for (const bars of [1, 2, 4]) {
     test(`${bars} bar${bars === 1 ? '' : 's'} per window`, async ({ page }) => {
       await open(page);
       await setBars(page, bars);
-      await expect(page.locator('section[data-screen="score"]')).toHaveScreenshot(
-        `score-landscape-${bars}bar.png`,
-        { maxDiffPixelRatio: 0.02 },
+
+      const stage = await page.locator('#score-stage').boundingBox();
+      const bar = await page.locator('#score-bar').boundingBox();
+      const strip = await page.locator('#score-strip').boundingBox();
+      const sheet = await page.locator('#score-stage .is-front svg').boundingBox();
+      expect(stage && bar && strip && sheet).toBeTruthy();
+
+      // 1. The control bar has not wrapped onto three rows and eaten the
+      //    notation. One row of buttons is about 44 px; three would be 130.
+      expect(bar!.height, 'the control bar has wrapped').toBeLessThan(110);
+
+      // 2. The keyboard strip does not cover the bottom stave.
+      expect(sheet!.y + sheet!.height, 'the strip covers the notation').toBeLessThanOrEqual(
+        strip!.y + 1,
       );
+
+      // 3. Something is drawn. How *much* is the next test: OSMD emits a
+      //    `.vf-measure` per stave per bar, so the count is proportional to
+      //    the setting rather than equal to it.
+      const measures = await page.locator('#score-stage .is-front svg .vf-measure').count();
+      expect(measures, 'nothing was engraved').toBeGreaterThan(0);
+
+      // And the sheet is inside its box, which is what a fitted sheet must
+      // stay: wider than the stage would mean notes off the side of a phone.
+      expect(sheet!.width).toBeLessThanOrEqual(stage!.width + 2);
     });
   }
+
+  test('the window really holds more bars as the setting goes up', async ({ page }) => {
+    // The catastrophe the pictures caught: a window that draws one bar when it
+    // says four. Counted rather than looked at.
+    await open(page);
+    const drawn: number[] = [];
+    for (const bars of [1, 2, 4]) {
+      await setBars(page, bars);
+      drawn.push(await page.locator('#score-stage .is-front svg .vf-measure').count());
+    }
+    const [one, two, four] = drawn as [number, number, number];
+    expect(two, `1 bar drew ${String(one)}, 2 bars drew ${String(two)}`).toBeGreaterThan(one);
+    expect(four, `2 bars drew ${String(two)}, 4 bars drew ${String(four)}`).toBeGreaterThan(two);
+  });
+
+  // And the pictures themselves, which stay a CI guard: they catch what no
+  // assertion thought to look at. The assertions above are an addition, not a
+  // replacement — they were written when the sheet started being fitted to the
+  // screen and every baseline briefly went stale, which is a good argument for
+  // having both.
+  test.describe('screenshots', () => {
+    for (const bars of [1, 2, 4]) {
+      test(`${bars} bar${bars === 1 ? '' : 's'} per window, drawn`, async ({ page }) => {
+        await open(page);
+        await setBars(page, bars);
+        await expect(page.locator('section[data-screen="score"]')).toHaveScreenshot(
+          `score-landscape-${bars}bar.png`,
+          { maxDiffPixelRatio: 0.02 },
+        );
+      });
+    }
+  });
 
   test('the notation still has most of the height with the strip showing', async ({ page }) => {
     await open(page);

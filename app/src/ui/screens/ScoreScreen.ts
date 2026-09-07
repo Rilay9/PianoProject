@@ -1054,6 +1054,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       if (sections.length > 0) sectionSelect.hidden = false;
       showBar();
       render();
+      // Now that there is a drawn sheet to measure, grow it to fill the
+      // screen. Once, here — not from inside every draw, which would recreate
+      // every note element mid-run.
+      renderer?.fitToStage();
     } catch (cause: unknown) {
       status.textContent = `Could not open this score: ${String(cause)}`;
     }

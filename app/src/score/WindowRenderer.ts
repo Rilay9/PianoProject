@@ -371,7 +371,7 @@ export class WindowRenderer {
     this.fit(this.frontBuffer);
     // The box changed, so the fit is stale by definition.
     this.fittedAtHeight = -1;
-    this.fitToStage(this.frontBuffer);
+    this.fitToStage();
   }
 
   dispose(): void {
@@ -413,7 +413,6 @@ export class WindowRenderer {
     buffer.range = { fromMeasure: 0, toMeasure: Infinity };
     this.annotate(buffer);
     this.fit(buffer);
-    this.fitToStage(buffer);
   }
 
   private drawInto(buffer: Buffer, range: MeasureRange): void {
@@ -422,7 +421,6 @@ export class WindowRenderer {
     buffer.range = range;
     this.annotate(buffer);
     this.fit(buffer);
-    this.fitToStage(buffer);
   }
 
   /**
@@ -509,7 +507,20 @@ export class WindowRenderer {
    * after the browser has painted, once, guarded by `fitting` so the redraw it
    * causes cannot ask for another.
    */
-  private fitToStage(buffer: Buffer): void {
+  /**
+   * Grows the engraving until the window fills the height (`autoFit.ts`).
+   *
+   * Called by the screen at the two moments it is safe — once the score has
+   * loaded, and after a resize — and never from inside a draw. It was fired
+   * from every draw at first, and that is wrong twice over: re-entering the
+   * draw from within itself leaves the buffers half-written, and the redraw it
+   * causes *recreates every note element*, which is precisely what
+   * `score.spec.ts`'s "painted by class, not by re-rendering" exists to
+   * forbid. During a run the session would repaint and the learner would see a
+   * flicker for nothing.
+   */
+  fitToStage(): void {
+    const buffer = this.frontBuffer;
     if (this.fitting || this.layout === 'scroll' || this.disposed) return;
     const svg = buffer.view.svg;
     if (!svg) return;
