@@ -1,5 +1,9 @@
 # Design brief — the questions the screenshots raised
 
+> **Answered 2026-09-07** in `docs/decisions/2026-09-07-ux-decisions.md` (four rules, nine
+> decisions, and what the pictures showed that this brief did not ask). The work is
+> `prompts/P21-ux-fixes.md`. Kept as written so the decisions can be read against the questions.
+
 *This is not a build task. Nothing here needs code written; what is needed are
 **decisions**, written down where the next person can find them, so that
 twenty small fixes add up to one app rather than twenty opinions.*

@@ -192,6 +192,7 @@ the bottom of the ladder. The replan and every ruling behind the phases below is
 | P17 — drill tips, coaching rules, the practice-method module | `prompts/P17-drill-tips-and-practice.md` | no | container |
 | P18 — carry-overs from P6–P8: named loop sections, the mic's amber state, drag-to-reorder tracks, the chord chart's backing loop, strict prerequisites, the tablet side panel | `prompts/P18-carry-overs.md` | no | container, any time |
 | **P19 — the final pass**: fix what the once-over found, hunt for what it missed, and prove the build | `prompts/P19-final-pass.md` | no | container |
+| **P21 — the UX pass**: four rules on every screen, the score bar and menu, the clock, and a tour that proves its pictures (`docs/decisions/2026-09-07-ux-decisions.md`) | `prompts/P21-ux-fixes.md` | no | container |
 
 **All of them are built.** P19 was the last, and its own record — what the review found, what
 it got wrong, and what the hunt turned up — is
