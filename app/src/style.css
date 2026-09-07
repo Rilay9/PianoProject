@@ -1002,6 +1002,13 @@ input[type='checkbox'] {
   min-height: 2.5rem;
 }
 
+/* Back does not shrink and does not wrap. Given a title and a message to fit
+   beside, flex shrank it until the arrow sat on a line above the word. */
+.score-head > .score-button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .score-head__title {
   flex: 1 1 auto;
   min-width: 0;
@@ -1017,8 +1024,13 @@ input[type='checkbox'] {
 /* The app's own messages — the loop prompt, an import hint, an error. Pushed
    to the right of the title, and allowed to take the room if the title is
    short. */
+/* The title gives way first. When the app has something to say, the message
+   is the part worth reading — the title is on the screen you came from — and
+   with both shrinking in proportion neither was legible: "Suo Gan - Welsh
+   Tr…" beside "Blind — the score is hi…". */
 .score-status {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
+  max-width: 65%;
   min-width: 0;
   margin: 0;
   text-align: right;

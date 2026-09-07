@@ -1306,7 +1306,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // and nothing else on it says why: "Show the score" moved into the ⋯
       // sheet with the rest of the settings, so without this the screen looks
       // broken rather than deliberate.
-      status.textContent = blind ? 'Blind — the score is hidden. ⋯ to show it.' : '';
+      status.textContent = blind ? 'Blind — ⋯ shows the score' : '';
       if (sections.length > 0) sectionRow.hidden = false;
       showBar();
       render();

@@ -399,6 +399,9 @@ test.describe('naming the note it is waiting for', () => {
  */
 test.describe('blind mode', () => {
   test('hides the notation and keeps everything else', async ({ page }) => {
+    // The owner's phone, because the header assertions below are about a
+    // width where a title and a message have to share 360 px.
+    await page.setViewportSize({ width: 360, height: 780 });
     await page.goto('/#/score/song.folk.hot-cross-buns?blind=1');
     await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
     await expect(page.locator('[data-screen="score"]')).toHaveAttribute('data-blind', 'true');
@@ -414,6 +417,25 @@ test.describe('blind mode', () => {
     await expect(page.locator('#score-play')).toBeVisible();
     await openScoreMenu(page);
     await expect(page.getByRole('button', { name: 'Show the score' })).toBeVisible();
+
+    // And the header says why the screen is empty. "Show the score" moved into
+    // the ... sheet with the rest of the settings, so without this a blind run
+    // is a black rectangle that looks broken rather than deliberate — which is
+    // what the tour photographed.
+    await expect(page.locator('#score-status')).toContainText('Blind');
+    // On one line each, both of them: at 360 px the title and the message were
+    // shrinking in proportion and neither could be read.
+    const fits = await page.evaluate(() => {
+      const el = (id: string) => document.getElementById(id)!;
+      const back = el('score-back').getBoundingClientRect();
+      const status = el('score-status');
+      return {
+        backHeight: Math.round(back.height),
+        statusCut: status.scrollWidth - status.clientWidth,
+      };
+    });
+    expect(fits.backHeight, 'Back wrapped onto two lines').toBeLessThan(44);
+    expect(fits.statusCut, 'the message is cut off').toBeLessThanOrEqual(1);
   });
 
   test('showing the score again brings the notation back', async ({ page }) => {
