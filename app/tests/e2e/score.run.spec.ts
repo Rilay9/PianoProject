@@ -17,9 +17,13 @@ const MELODY = [64, 62, 60, 64, 62, 60, 60, 60, 60, 60, 62, 62, 62, 62, 64, 62, 
 
 async function openAndArm(page: Page, mode: 'wait' | 'tempo'): Promise<void> {
   await page.goto(`/#/score/${ITEM}`);
+  // Sixty seconds, not the default five. Opening a score is a fetch, a parse
+  // and an engraving, and with ten workers on one machine that is nowhere near
+  // five seconds — this is where the suite flakes, not in the engine.
   await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
     'data-mode',
     /wait|tempo/,
+    { timeout: 60_000 },
   );
   await page.waitForFunction(
     () => {

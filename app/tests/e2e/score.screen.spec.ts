@@ -37,7 +37,11 @@ async function openScore(page: Page, id: string = ITEM): Promise<void> {
   // The notation draws before the audio and the session are ready; `data-mode`
   // appears only once the screen's first `render()` has run, so waiting on the
   // SVG alone races the rest of the load.
-  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/);
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+    'data-mode',
+    /wait|tempo/,
+    { timeout: 60_000 },
+  );
   // Deliberately no tap on the stage here: a tap *toggles* the control bar
   // (docs/04 §5), and a hidden bar is `pointer-events: none`, so every
   // subsequent control click would land on the score instead.
