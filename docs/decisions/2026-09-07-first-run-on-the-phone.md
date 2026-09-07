@@ -98,6 +98,9 @@ buttons did nothing whatsoever. Caught by the test written to prove they still w
 - `Status: Connected — no MIDI inputs found` while the log is full of messages from an input
   called *USB MIDI Interface*. Most likely the cable was out when the report was generated;
   worth a second look if it recurs with the piano plugged in.
+
+---
+
 ## Naming the note
 
 The owner asked for the expected note to be named, and only when the existing **Note names**
