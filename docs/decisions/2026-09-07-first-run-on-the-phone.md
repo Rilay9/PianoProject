@@ -98,6 +98,10 @@ buttons did nothing whatsoever. Caught by the test written to prove they still w
 - `Status: Connected — no MIDI inputs found` while the log is full of messages from an input
   called *USB MIDI Interface*. Most likely the cable was out when the report was generated;
   worth a second look if it recurs with the piano plugged in.
-- The strip's range fits the piece, but nothing yet names the note. The owner asked for the
-  expected note's name to appear only when the existing **Note names** setting is on — that
-  setting currently does nothing on the Score screen at all. Not done here.
+## Naming the note
+
+The owner asked for the expected note to be named, and only when the existing **Note names**
+setting is on — a setting that until now did nothing on the Score screen at all. In Wait mode
+it puts *Waiting for F♯4* under the status line; in the clock-driven modes nothing is ever
+waited for, so it says nothing. Off by default, because he reads notation and a name is a
+crutch for the moment he is stuck rather than a running commentary.

@@ -295,3 +295,43 @@ test.describe('the sheet fills the screen (P19b)', () => {
     await expect.poll(height, { timeout: 15_000 }).toBeLessThan(fitted - 5);
   });
 });
+
+test.describe('naming the note it is waiting for', () => {
+  test('says nothing until the setting is on', async ({ page }) => {
+    await openScore(page);
+    await page.locator('#score-mode').selectOption('wait');
+    await page.locator('#score-play').click();
+    // Off by default: the owner reads notation, and a name is a crutch that
+    // should be there when he wants it rather than always.
+    await expect(page.locator('#score-waiting')).toBeHidden();
+  });
+
+  test('names it once the setting is on, and only in Wait mode', async ({ page }) => {
+    await page.goto('/#/settings');
+    await page.locator('#set-notenames').click();
+    await openScore(page, 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx');
+
+    await page.locator('#score-mode').selectOption('wait');
+    // The on-screen keys as the input, so this test can answer the app.
+    await page.locator('#score-input').selectOption('keys');
+    await page.locator('#score-play').click();
+
+    // Bar 1 of Suo Gân is D4 · E4 · F♯4 · A4, so it starts by wanting D4 —
+    // and two notes later, the F♯4 that started all this.
+    await expect(page.locator('#score-waiting')).toContainText('Waiting for D4');
+    const press = async (midi: number): Promise<void> => {
+      const key = page.locator(`.keyboard-strip [data-midi="${String(midi)}"]`);
+      await key.scrollIntoViewIfNeeded();
+      await key.dispatchEvent('pointerdown', { pointerId: 1, button: 0, isPrimary: true });
+      await key.dispatchEvent('pointerup', { pointerId: 1, button: 0, isPrimary: true });
+    };
+    await press(62);
+    await expect(page.locator('#score-waiting')).toContainText('Waiting for E4');
+    await press(64);
+    await expect(page.locator('#score-waiting')).toContainText('Waiting for F♯4');
+
+    // Tempo mode drives from the clock, so nothing is ever waited for.
+    await page.locator('#score-mode').selectOption('tempo');
+    await expect(page.locator('#score-waiting')).toBeHidden();
+  });
+});

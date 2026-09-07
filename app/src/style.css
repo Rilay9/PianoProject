@@ -783,6 +783,20 @@ body {
 /* Top *right*: OSMD draws the piece's own title and tempo mark at the top
    left, and two titles on top of each other is worse than none. This line is
    for the app's messages — the loop prompt, an import hint, an error. */
+/* Under the status line: the note Wait mode is waiting for, when the owner has
+   turned note names on. Quiet by default — it is there for the moment he is
+   stuck, not as a running commentary. */
+.score-waiting {
+  position: absolute;
+  top: 1.9rem;
+  right: 0.75rem;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--accent, #6ea8ff);
+  pointer-events: none;
+}
+
 .score-status {
   position: absolute;
   top: 0.4rem;

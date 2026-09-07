@@ -43,6 +43,7 @@ import {
 import { bpmAt, type ScoreModel } from '../../score/types';
 import type { Router } from '../../router';
 import { KeyboardStrip } from '../KeyboardStrip';
+import { waitingForLine } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
 
@@ -189,6 +190,13 @@ export function ScoreScreen(router: Router): HTMLElement {
   status.id = 'score-status';
   status.textContent = 'Loading…';
   section.appendChild(status);
+
+  // Under the status line, hidden unless the owner has asked for note names.
+  const waitingLine = document.createElement('p');
+  waitingLine.className = 'score-waiting';
+  waitingLine.id = 'score-waiting';
+  waitingLine.hidden = true;
+  section.appendChild(waitingLine);
 
   const bar = document.createElement('div');
   bar.className = 'score-bar';
@@ -856,7 +864,23 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   // --- render --------------------------------------------------------------
 
+  /**
+   * Names the note being waited for, when the owner has asked for names.
+   *
+   * Wait mode only: in the clock-driven modes nothing is ever waited for, and
+   * a line saying otherwise would be describing a different app.
+   */
+  function drawWaitingFor(): void {
+    const wanted =
+      getSettings().showNoteNames && mode === 'wait' && session?.running === true
+        ? waitingForLine(session.expectedNow)
+        : '';
+    waitingLine.textContent = wanted;
+    waitingLine.hidden = wanted === '';
+  }
+
   function render(): void {
+    drawWaitingFor();
     modeSelect.value = mode;
     inputSelect.value = input;
     tempo.value = String(tempoPct);
