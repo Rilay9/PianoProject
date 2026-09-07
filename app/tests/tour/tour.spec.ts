@@ -48,7 +48,14 @@ const EXERCISE = 'exercise.five-finger.c-major.right';
 const PLACEHOLDER = 'G Minor Bach';
 
 /**
- * Every drill kind in the catalogue, with one real id each.
+ * Every drill kind the screen *draws differently*, with one real id each.
+ *
+ * Not every kind in the catalogue: there are 57 of those, and 19 have their own
+ * prompt and judging in `engine/drills/fromCatalog.ts`. The other 38 fall
+ * through to `buildTechniquePattern` — demonstrate the pattern, play it back —
+ * which is one renderer wearing thirty-eight names, so `five-finger` and
+ * `arpeggio` here stand for all of them. Photographing the other 36 would be
+ * photographing the same screen with a different word on it.
  *
  * `sheet` marks the one kind that is not a drill screen at all: a sight-reading
  * drill is four bars of notation, so `#/drill/…` hands it to the Score screen

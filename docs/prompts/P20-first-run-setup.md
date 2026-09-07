@@ -44,7 +44,7 @@ is the part where *something tells him what it wants* before he is lost.
 | Settings store | `app/src/data/settingsStore.ts` (`localStorage` key `pianopath.settings`, mirrored to IndexedDB) | ~40 keys, all with defaults. |
 | PDF import + system detection | `app/src/pdf/systems.ts`, `#/pdf/<importId>` | Works; detects systems from the brace at the left edge. |
 | Score screen, all four modes | `#/score/<itemId>` | Works. **Changed in P21:** the control bar is `⏮ ▶/⏸ mode R-L-Both tempo ⋯` and nothing else; everything else moved into the `⋯` sheet. A test that touches Input, Loop, Metronome, Bars, Size, Layout, Keys, Sound, Blind or Perform must open that sheet first — use `app/tests/e2e/scoreControls.ts` (`withScoreMenu`, `setTempoPercent`), which every existing score test now goes through. |
-| Drill screen, 23 kinds | `#/drill/<itemId>` | Works. |
+| Drill screen | `#/drill/<itemId>` | Works. The catalogue names **57** drill kinds; **19** have their own prompt and their own judging in `engine/drills/fromCatalog.ts` and `DrillScreen.ts`, and the other 38 fall through to `buildTechniquePattern` — demonstrate the pattern, play it back — which is one renderer wearing thirty-eight names. Step 6 wants one of the 19. |
 | Diagnostics report | `#/settings/diagnostics`, "Copy debug report" | Works — this is how the 2026-09-07 report reached me. |
 
 Read before you design: `docs/04-ui-spec.md` §7 (the settings list), §7b (Diagnostics), §7c
@@ -153,11 +153,12 @@ Three things to get right:
 - **Skipping leaves the defaults alone.** This step is the least important in the run and the
   most tempting to make compulsory; it must be the easiest to walk past.
 
-There is a page at `build/tour/choices.html` that already puts these four questions side by side
-as pictures, built before this step existed. **Treat it as the content for step 9, not as
-something to keep**: once the setup asks them properly the page has no reason to exist, and
-`app/tests/tour/choices.spec.ts` and the `choices` script in `app/package.json` should go with
-it.
+`npm run choices` in `app/` builds a page at `build/tour/choices.html` that puts these four
+questions side by side as pictures. It was built before this step existed, and **`build/` is
+gitignored, so the page is not in the repository — run the script to see it.** Treat what it
+shows as the content for step 9, not as something to keep: once the setup asks these properly
+the page has no reason to exist, and `app/tests/tour/choices.spec.ts` and the `choices` script
+in `app/package.json` should go with it.
 
 ## §B — The bundled test PDF
 
