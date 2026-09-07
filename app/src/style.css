@@ -40,6 +40,13 @@ html,
 body {
   height: 100%;
   margin: 0;
+  /* The app is a shell with its own scrolling region; the *document* must
+     never scroll. It did: on the phone, scrolling the Library carried the tab
+     bar up off the screen and left three thousand pixels of background under
+     it. Whatever leaks — a list measured before its clipping ancestor is
+     sized, a margin escaping a flex item — stops here. */
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body {
@@ -66,6 +73,16 @@ body {
 
 .screen-container {
   flex: 1;
+  /* Without this the whole page scrolls and the tab bar goes with it.
+     
+     A flex item's automatic minimum size is its *content* size, so `flex: 1`
+     alone does not let this box be shorter than the list inside it: the shell
+     stayed 780 px, this grew to 4,623, and the overflow spilled out of the
+     shell into the document. Scrolling then moved everything — on the phone
+     the tab bar ended up in the middle of the screen with three thousand
+     pixels of background under it. `overflow-y: auto` cannot bite until the
+     box is allowed to be smaller than its contents. */
+  min-height: 0;
   overflow-y: auto;
   padding: max(16px, var(--safe-top)) 16px 16px;
 }

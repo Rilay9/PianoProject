@@ -62,3 +62,46 @@ test.describe('app shell', () => {
     await expect(page.locator('#theme-select')).toHaveValue('dark');
   });
 });
+
+/**
+ * The document never scrolls; the screen's own body does.
+ *
+ * From a photograph of the real phone: scrolling to the bottom of the Library
+ * carried the **tab bar** up with the content and left about three thousand
+ * pixels of background under it. The app is a shell with a scrolling region
+ * inside it, and the region was leaking — so a thumb was dragging the whole
+ * document, tab bar and all.
+ */
+test.describe('the shell holds still while a list scrolls', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('the tab bar stays on the bottom of the screen', async ({ page }) => {
+    await page.goto('/#/library');
+    await expect(page.locator('#library-list .list-row').first()).toBeVisible({ timeout: 60_000 });
+    await page.waitForTimeout(500);
+
+    const nav = page.locator('.tab-nav');
+    const atRest = await nav.boundingBox();
+    expect(atRest, 'no tab bar').toBeTruthy();
+
+    // A long, thumb-like drag over the middle of the list.
+    await page.mouse.move(180, 400);
+    for (let i = 0; i < 12; i += 1) await page.mouse.wheel(0, 600);
+    await page.waitForTimeout(400);
+
+    const after = await page.evaluate(() => {
+      const bar = document.querySelector('.tab-nav')!.getBoundingClientRect();
+      const body = document.querySelector('.screen-body')!;
+      return {
+        documentMoved: Math.round(document.scrollingElement?.scrollTop ?? 0),
+        gapUnderTheBar: Math.round(window.innerHeight - bar.bottom),
+        listMoved: Math.round(body.scrollTop),
+      };
+    });
+
+    expect(after.documentMoved, 'the whole page scrolled').toBe(0);
+    expect(after.gapUnderTheBar, 'the tab bar left the bottom of the screen').toBeLessThanOrEqual(1);
+    // And the point of scrolling still happened.
+    expect(after.listMoved, 'the list did not scroll at all').toBeGreaterThan(200);
+  });
+});
