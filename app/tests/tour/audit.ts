@@ -146,9 +146,27 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       // switch in Settings as too small while a thumb could hit forty-eight
       // pixels of it. The label has to be near, though: a `for=` pointing at
       // something across the screen is not a hit area.
-      const label = el.closest('label');
-      const target = label && label.contains(el) ? label.getBoundingClientRect() : box;
-      if (target.width < 24 || target.height < (link ? 24 : 32)) {
+      // A label counts as part of the target, whether it wraps the control or
+      // points at it with `for=`. Both are clickable, and Settings uses one
+      // shape while the microphone screen uses the other.
+      const wrapping = el.closest('label');
+      const pointing = el.id ? document.querySelector(`label[for="${el.id}"]`) : null;
+      const labelBox = (wrapping ?? pointing)?.getBoundingClientRect();
+      const target =
+        labelBox && labelBox.width > 0
+          ? {
+              width: Math.max(box.width, labelBox.width),
+              height: Math.max(box.height, labelBox.height),
+            }
+          : box;
+      // Both dimensions, not either one. A checkbox 22 wide and 48 tall is a
+      // comfortable strip to hit and was being flagged on its width alone;
+      // 14 × 40 and 22 × 19 are not, and neither is 13 × 13. So: nothing
+      // narrower than 20 in its smaller dimension, and nothing under 32 in its
+      // larger one.
+      const short = Math.min(target.width, target.height);
+      const long = Math.max(target.width, target.height);
+      if (short < 20 || long < (link ? 24 : 32)) {
         add(
           'tap-target',
           `${name(el)} is ${String(Math.round(target.width))}×${String(Math.round(target.height))}`,
