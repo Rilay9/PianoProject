@@ -816,18 +816,34 @@ body {
      - it scrolls sideways instead of wrapping. On a phone in landscape a
        wrapped bar of twenty controls took half the screen, which a layout
        test caught. */
+/* Room for the control bar while it is showing, taken back when it hides
+   itself during a run.
+
+   A margin on the stage rather than an inset on the buffer: the stage is what
+   clips (`overflow: hidden`), so a shorter buffer alone left the notation
+   spilling out underneath the buttons — which is what it did in landscape,
+   where the stage is short enough for the second stave to land right there.
+   The height itself is measured and written by ScoreScreen, because the bar
+   wraps to two rows on a narrow screen and a guessed constant would be wrong
+   exactly when it matters. */
+.score-stage {
+  margin-bottom: var(--score-bar-h, 0px);
+}
+
 .score-bar {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   display: flex;
-  flex-wrap: nowrap;
+  /* Wraps rather than scrolling away. A row that runs off the right of a
+     phone held sideways hides "Both" behind an edge nobody knows to drag —
+     and the stage now makes room for however tall the bar turns out to be. */
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 0.35rem;
   padding: 0.4rem 0.6rem;
-  overflow-x: auto;
-  scrollbar-width: thin;
   background: color-mix(in srgb, var(--bg, #0f1115) 92%, transparent);
   border-top: 1px solid var(--border, rgba(255, 255, 255, 0.12));
   transition: opacity 160ms ease-out;

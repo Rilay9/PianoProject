@@ -14,6 +14,15 @@
 
 import { midiToNoteName } from '../midi/parseMidiMessage';
 
+/**
+ * Key widths, in CSS pixels.
+ *
+ * The minimum is the width the strip always used; the maximum is about a
+ * thumb, past which a keyboard stops reading as a keyboard.
+ */
+export const MIN_KEY_W = 26;
+export const MAX_KEY_W = 56;
+
 /** Standard 88-key piano range: A0 to C8. */
 export const LOWEST_KEY = 21;
 export const HIGHEST_KEY = 108;
@@ -111,6 +120,10 @@ export class KeyboardStrip {
     this.el.appendChild(this.scroller);
 
     this.build();
+    // After a paint, when the element has a width to measure.
+    requestAnimationFrame(() => {
+      this.fitKeysToWidth();
+    });
     if (this.options.interactive) this.attachPointerHandlers();
   }
 
@@ -135,6 +148,38 @@ export class KeyboardStrip {
       if (next === undefined) continue;
       this.applySet(name, next);
     }
+  }
+
+  /**
+   * Widens the keys to fill the strip when the range is narrower than the
+   * screen.
+   *
+   * The key width was a constant, 26 px, chosen when the strip always drew all
+   * 88 keys and was therefore always wider than any phone. Now that it draws
+   * only the range a piece uses, two octaves on a phone held sideways left
+   * half the strip empty and the keys no bigger than before — the worst of
+   * both. Filling the width is free and is the difference between a key you
+   * aim at and a key you hit.
+   *
+   * Capped, because a five-note exercise on a tablet should not draw five keys
+   * the size of dinner plates; and never *below* the old constant, which is
+   * what a wide range on a narrow screen still wants (it scrolls instead).
+   */
+  fitKeysToWidth(): void {
+    if (this.disposed) return;
+    const whites = [...this.keys.values()].filter((key) =>
+      key.classList.contains('key--white'),
+    ).length;
+    if (whites === 0) return;
+    const style = getComputedStyle(this.el);
+    const padding =
+      Number.parseFloat(style.paddingLeft || '0') + Number.parseFloat(style.paddingRight || '0');
+    const available = this.el.clientWidth - padding;
+    if (available <= 0) return;
+    const width = Math.min(MAX_KEY_W, Math.max(MIN_KEY_W, Math.floor(available / whites)));
+    this.el.style.setProperty('--key-w', `${String(width)}px`);
+    // The black keys keep their proportion to the white ones (16/26).
+    this.el.style.setProperty('--black-w', `${String(Math.round(width * 0.62))}px`);
   }
 
   /** Clears every state class in one pass (end of a run, or a mode change). */

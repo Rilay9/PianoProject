@@ -586,9 +586,29 @@ export class WindowRenderer {
     const box = anchor.getBoundingClientRect();
     this.band.hidden = false;
     this.band.style.left = `${box.left - host.left + this.el.scrollLeft - 4}px`;
-    this.band.style.top = `${this.el.scrollTop}px`;
     this.band.style.width = `${Math.max(box.width + 8, 12)}px`;
-    this.band.style.height = `${host.height}px`;
+
+    // The height of the *stave the note is on*, not of the whole stage.
+    //
+    // It used to be `host.height`, which on a phone drew a full-height blue
+    // stripe straight through every system on the screen, the title, the
+    // chord symbols and — in landscape, where the control bar overlaps the
+    // stage — the buttons as well. It reads as a rendering fault rather than
+    // as a cursor. A stave is what the note is in, so a stave is what gets
+    // marked; a little padding above and below keeps ledger lines and stems
+    // inside it.
+    const system = anchor.closest('.staffline');
+    const line = system?.getBoundingClientRect();
+    const pad = 12;
+    if (line && line.height > 0) {
+      this.band.style.top = `${line.top - host.top + this.el.scrollTop - pad}px`;
+      this.band.style.height = `${line.height + pad * 2}px`;
+    } else {
+      // No stave to be found — a rest before anything is drawn. Fall back to
+      // the note's own box rather than to the whole screen.
+      this.band.style.top = `${box.top - host.top + this.el.scrollTop - pad}px`;
+      this.band.style.height = `${box.height + pad * 2}px`;
+    }
   }
 
   private anchorElementFor(step: ScoreStep): SVGGElement | undefined {

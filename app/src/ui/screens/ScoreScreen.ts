@@ -696,17 +696,35 @@ export function ScoreScreen(router: Router): HTMLElement {
    * two-tap affair, and hidden controls are `pointer-events: none`, so the
    * taps land on the score instead.
    */
+  /**
+   * Tells the stage how much room the bar is taking.
+   *
+   * Measured, not assumed: the bar wraps to two rows on a narrow screen, and
+   * a constant would be wrong on exactly the screen where the notation cannot
+   * spare the pixels.
+   */
+  function measureBar(): void {
+    const height = bar.dataset.visible === 'true' ? bar.getBoundingClientRect().height : 0;
+    section.style.setProperty('--score-bar-h', `${String(Math.round(height))}px`);
+  }
+
   function showBar(): void {
     bar.dataset.visible = 'true';
+    requestAnimationFrame(measureBar);
     if (hideTimer !== null) window.clearTimeout(hideTimer);
     if (session?.running !== true) return;
     hideTimer = window.setTimeout(() => {
-      if (session?.running === true) bar.dataset.visible = 'false';
+      if (session?.running === true) {
+        bar.dataset.visible = 'false';
+        requestAnimationFrame(measureBar);
+      }
     }, CONTROL_BAR_HIDE_MS);
   }
   function toggleBar(): void {
-    if (bar.dataset.visible === 'true') bar.dataset.visible = 'false';
-    else showBar();
+    if (bar.dataset.visible === 'true') {
+      bar.dataset.visible = 'false';
+      requestAnimationFrame(measureBar);
+    } else showBar();
   }
 
   // --- wake lock and orientation (docs/01 §8) ------------------------------
@@ -1073,7 +1091,14 @@ export function ScoreScreen(router: Router): HTMLElement {
     return 'none';
   }
 
-  const onResize = () => renderer?.refit();
+  const onResize = (): void => {
+    // The bar may wrap differently, which changes how much is left for the
+    // notation, so it is measured before the sheet is refitted.
+    measureBar();
+    renderer?.refit();
+    // Turning the phone changes how much room the keys have.
+    strip?.fitKeysToWidth();
+  };
   window.addEventListener('resize', onResize);
 
   onScreenDispose(section, () => {
