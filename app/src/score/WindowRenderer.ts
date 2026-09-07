@@ -84,6 +84,60 @@ function engravedSize(svg: SVGElement): { width: number; height: number } | null
   return width > 0 && height > 0 ? { width, height } : null;
 }
 
+/**
+ * The **ink**, in CSS pixels: what OSMD drew, not the page it drew it on.
+ *
+ * The two are very different sideways. OSMD lays the window out on a page the
+ * full width of the container and then inks the left part of it — measured on
+ * a 780 px phone: a 778 px page carrying 478 px of music, so 39% of the box is
+ * the engraver's own right margin. Fitting to the box therefore concluded the
+ * sheet already filled the width and stopped growing, and the notation ended
+ * up with about a fifth of the screen.
+ *
+ * `getBBox()` is one call and gives exactly the drawn extent, in the SVG's own
+ * user units; the width attribute against the viewBox converts it to pixels.
+ * It throws in some browsers on an element that is not rendered, hence the
+ * caller's fallback to the element's own box.
+ */
+function inkBox(svg: SVGElement): { x: number; y: number; width: number; height: number } | null {
+  if (!(svg instanceof SVGSVGElement)) return null;
+  const engraved = engravedSize(svg);
+  if (!engraved) return null;
+  const view = svg.viewBox.baseVal;
+  const unit = view && view.width > 0 ? engraved.width / view.width : 1;
+  let box: DOMRect;
+  try {
+    box = svg.getBBox();
+  } catch {
+    return null;
+  }
+  if (!(box.width > 0 && box.height > 0)) return null;
+  return {
+    x: box.x * unit,
+    y: box.y * unit,
+    width: box.width * unit,
+    height: box.height * unit,
+  };
+}
+
+/**
+ * The transform that puts a box's top-left corner in the stage's, at `scale`.
+ *
+ * The translate is what makes fitting to the ink safe. Scaling alone scales
+ * the engraver's left margin too, so a sheet grown to fill the width would run
+ * off the right edge by exactly that margin.
+ */
+function place(box: { x: number; y: number }, scale: number): string {
+  const moved = box.x !== 0 || box.y !== 0;
+  if (scale === 1 && !moved) return '';
+  const x = -box.x * scale;
+  const y = -box.y * scale;
+  return `translate(${String(x)}px, ${String(y)}px) scale(${String(scale)})`;
+}
+
+/** Kept clear of the stage edges, so a stroke width cannot be clipped. */
+const FIT_MARGIN_PX = 2;
+
 /** How many engravings the fit will try before settling. Each is a render. */
 const FIT_STEPS = 4;
 
@@ -652,13 +706,19 @@ export class WindowRenderer {
     buffer.wrapper.style.transform = '';
     const available = this.el.getBoundingClientRect();
     if (available.width <= 0 || available.height <= 0) return;
-    const box = svg.getBoundingClientRect();
-    if (box.width <= 0 || box.height <= 0) return;
+    const rect = svg.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    // The ink, not the page it was drawn on. Fitting to the page is what left
+    // the notation with a fifth of the screen sideways: the page is the full
+    // width of the container by construction, so `available.width / page.width`
+    // is always 1 and the sheet never grew, however much of the page was the
+    // engraver's own empty right margin.
+    const box = inkBox(svg) ?? { x: 0, y: 0, width: rect.width, height: rect.height };
 
     if (this.layout === 'scroll') {
       // Scroll layout fits width only; height is what the learner scrolls.
       const scale = Math.min(1, available.width / box.width);
-      buffer.wrapper.style.transform = scale < 1 ? `scale(${scale})` : '';
+      buffer.wrapper.style.transform = place(box, scale);
       return;
     }
     // Whichever axis runs out first. It grows as well as shrinks: the engraver
@@ -666,8 +726,14 @@ export class WindowRenderer {
     // the sheet was simply left small with the leftover screen black. Because
     // it is the smaller of the two ratios, filling one axis can never overflow
     // the other.
-    const scale = Math.min(available.width / box.width, available.height / box.height);
-    buffer.wrapper.style.transform = scale === 1 ? '' : `scale(${scale})`;
+    // A pixel off each axis: the ink box is measured to a fraction and a
+    // stave line has a stroke width, so filling the stage exactly clipped the
+    // final barline by about a pixel.
+    const scale = Math.min(
+      (available.width - FIT_MARGIN_PX) / box.width,
+      (available.height - FIT_MARGIN_PX) / box.height,
+    );
+    buffer.wrapper.style.transform = place(box, scale);
   }
 
   /**

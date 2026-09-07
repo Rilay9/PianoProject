@@ -300,9 +300,24 @@ test.describe('window layout holds its shape', () => {
         const svg = document.querySelector('.score-buffer.is-front svg');
         if (!host || !svg) throw new Error('nothing rendered');
         const h = host.getBoundingClientRect();
-        const s = svg.getBoundingClientRect();
+        // The ink, not the element. OSMD lays the window out on a page the full
+        // width of the container and inks part of it, and the fit now grows the
+        // sheet until the *drawn* music fills the stage — so the page overhangs
+        // to the right on purpose, by exactly the engraver's own right margin.
+        let left = Infinity;
+        let right = -Infinity;
+        let top = Infinity;
+        let bottom = -Infinity;
+        for (const el of svg.querySelectorAll('*')) {
+          const box = el.getBoundingClientRect();
+          if (box.width === 0 && box.height === 0) continue;
+          left = Math.min(left, box.left);
+          right = Math.max(right, box.right);
+          top = Math.min(top, box.top);
+          bottom = Math.max(bottom, box.bottom);
+        }
         // One pixel of slack for subpixel rounding in the scale transform.
-        return { widthOverflow: s.width - h.width, heightOverflow: s.height - h.height };
+        return { widthOverflow: right - left - h.width, heightOverflow: bottom - top - h.height };
       });
       expect(fits.widthOverflow).toBeLessThanOrEqual(1);
       // Window layout fits both axes; anything taller would clip the bass staff.
@@ -356,12 +371,18 @@ test.describe('screenshots', () => {
           await expect(page.locator('.score-buffer.is-front svg')).toBeVisible();
           // Visible is not final: see waitForStableLayout.
           await waitForStableLayout(page, '.score-buffer.is-front svg');
+          await page.locator('#dev-hud').evaluate((el: HTMLElement) => {
+            el.style.display = 'none';
+          });
           await expect(page.locator('.dev-score__stage')).toHaveScreenshot(
             `${fixture}-${bars}bar-${orientation}.png`,
             {
               // The HUD carries a load time in milliseconds, which differs on
-              // every run; masking it keeps the baseline about the notation.
-              mask: [page.locator('#dev-hud')],
+              // every run. It used to be masked; now that the sheet is fitted
+              // to the ink it fills the width, and the mask was a magenta
+              // block over the last bar. Hidden instead, so the picture is of
+              // the notation and nothing else.
+              mask: [],
               // Notation is antialiased vector art; a couple of pixels of
               // difference between machines is not a regression.
               maxDiffPixelRatio: 0.02,

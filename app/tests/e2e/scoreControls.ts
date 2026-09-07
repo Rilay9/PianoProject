@@ -29,6 +29,35 @@ export async function withScoreMenu(page: Page, body: () => Promise<void>): Prom
   await closeScoreMenu(page);
 }
 
+/**
+ * The engraved music's box on screen — the ink, not the page it sits on.
+ *
+ * OSMD lays a window out on a page the full width of the container and inks
+ * part of it, and since the fit grew the sheet to fill the width with *ink*
+ * the page itself deliberately runs off the right of the stage. So a test
+ * asking "does the music fit" has to ask about the drawn extent; the SVG
+ * element's own box stopped being that number.
+ */
+export async function inkBox(
+  page: Page,
+): Promise<{ left: number; right: number; top: number; bottom: number; width: number; height: number }> {
+  return page.evaluate(() => {
+    let left = Infinity;
+    let right = -Infinity;
+    let top = Infinity;
+    let bottom = -Infinity;
+    for (const el of document.querySelectorAll('#score-stage .is-front svg *')) {
+      const box = el.getBoundingClientRect();
+      if (box.width === 0 && box.height === 0) continue;
+      left = Math.min(left, box.left);
+      right = Math.max(right, box.right);
+      top = Math.min(top, box.top);
+      bottom = Math.max(bottom, box.bottom);
+    }
+    return { left, right, top, bottom, width: right - left, height: bottom - top };
+  });
+}
+
 /** The tempo sheet, behind the bar's tempo label. */
 export async function openTempoSheet(page: Page): Promise<void> {
   const sheet = page.locator('#score-tempo-sheet');

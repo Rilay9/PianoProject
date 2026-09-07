@@ -9,6 +9,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 import {
   closeScoreMenu,
+  inkBox,
   openScoreMenu,
   setTempoPercent,
   withScoreMenu,
@@ -96,11 +97,10 @@ test.describe('score screen', () => {
     await page.waitForTimeout(HIDE_MS + 2_000);
     // The sheet does not reach the bottom of the stage upright, so there is
     // nothing to get out of the way of.
-    const room = await page.evaluate(() => {
-      const stage = document.querySelector('#score-stage')!.getBoundingClientRect();
-      const svg = document.querySelector('#score-stage .is-front svg')!.getBoundingClientRect();
-      return Math.round(stage.bottom - svg.bottom);
-    });
+    const stageBottom = await page.evaluate(
+      () => document.querySelector('#score-stage')!.getBoundingClientRect().bottom,
+    );
+    const room = Math.round(stageBottom - (await inkBox(page)).bottom);
     expect(room, 'the sheet fills the stage upright too — check the premise').toBeGreaterThan(24);
     await expect(bar).toHaveAttribute('data-visible', 'true');
   });
@@ -320,14 +320,16 @@ test.describe('the sheet fills the screen (P19b)', () => {
       )
       .toBeGreaterThan(55);
 
-    // And it still does not overflow sideways, which is the fact the whole
-    // approach rests on: OSMD grows the staff's height and pins its width.
-    const fits = await page.evaluate(() => {
-      const stage = document.querySelector('#score-stage')!.getBoundingClientRect();
-      const svg = document.querySelector('#score-stage .is-front svg')!.getBoundingClientRect();
-      return svg.width <= stage.width + 2;
+    // And no note is off the side. The *page* deliberately overhangs now —
+    // the fit grows the sheet until the ink fills the width, and the ink is
+    // 61% of the page sideways — so this asks about the ink.
+    const stageBox = await page.evaluate(() => {
+      const box = document.querySelector('#score-stage')!.getBoundingClientRect();
+      return { left: box.left, right: box.right };
     });
-    expect(fits, 'the sheet is wider than the screen').toBe(true);
+    const ink = await inkBox(page);
+    expect(ink.left, 'notation off the left of the screen').toBeGreaterThanOrEqual(stageBox.left - 2);
+    expect(ink.right, 'notation off the right of the screen').toBeLessThanOrEqual(stageBox.right + 2);
   });
 
   test('the zoom buttons still do something, now that the fit does the work', async ({ page }) => {

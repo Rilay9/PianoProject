@@ -7,7 +7,7 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
-import { closeScoreMenu, openScoreMenu } from './scoreControls';
+import { closeScoreMenu, inkBox, openScoreMenu } from './scoreControls';
 
 const ITEM = 'song.folk.twinkle.rh';
 
@@ -65,17 +65,18 @@ test.describe('score screen in landscape', () => {
       const stage = await page.locator('#score-stage').boundingBox();
       const bar = await page.locator('#score-bar').boundingBox();
       const strip = await page.locator('#score-strip').boundingBox();
-      const sheet = await page.locator('#score-stage .is-front svg').boundingBox();
-      expect(stage && bar && strip && sheet).toBeTruthy();
+      // The ink, not the SVG element: the fit now grows the sheet until the
+      // *drawn* music fills the stage, which puts the engraver's empty right
+      // margin off the edge on purpose.
+      const sheet = await inkBox(page);
+      expect(stage && bar && strip).toBeTruthy();
 
       // 1. The control bar has not wrapped onto three rows and eaten the
       //    notation. One row of buttons is about 44 px; three would be 130.
       expect(bar!.height, 'the control bar has wrapped').toBeLessThan(110);
 
       // 2. The keyboard strip does not cover the bottom stave.
-      expect(sheet!.y + sheet!.height, 'the strip covers the notation').toBeLessThanOrEqual(
-        strip!.y + 1,
-      );
+      expect(sheet.bottom, 'the strip covers the notation').toBeLessThanOrEqual(strip!.y + 1);
 
       // 3. Something is drawn. How *much* is the next test: OSMD emits a
       //    `.vf-measure` per stave per bar, so the count is proportional to
@@ -85,7 +86,7 @@ test.describe('score screen in landscape', () => {
 
       // And the sheet is inside its box, which is what a fitted sheet must
       // stay: wider than the stage would mean notes off the side of a phone.
-      expect(sheet!.width).toBeLessThanOrEqual(stage!.width + 2);
+      expect(sheet.width).toBeLessThanOrEqual(stage!.width + 2);
     });
   }
 
