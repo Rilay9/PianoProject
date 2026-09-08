@@ -202,8 +202,49 @@ test.describe('score screen', () => {
     await expect(play).toHaveText('⏸');
     await play.click();
     await expect(play).toHaveText('▶');
-    await page.locator('#score-restart').click();
+    // `Start again` moved into the ⋯ sheet when `Hear it` took its place on
+    // the bar (P21c B1): eight controls came to 444 px of a 390 px row.
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-restart').click();
+    });
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+  });
+
+  test('Hear it plays the piece without moving the mode select (B1)', async ({ page }) => {
+    await openScore(page);
+    const modeSelect = page.locator('#score-mode');
+    await modeSelect.selectOption('wait');
+
+    await page.locator('#score-hear').click();
+    const screen = page.locator('section[data-screen="score"]');
+    await expect(screen).toHaveAttribute('data-running', 'true');
+    // It is a Listen run — both hands, nothing judged — but the control that
+    // says which mode you are practising in has not moved.
+    await expect(screen).toHaveAttribute('data-hearing', 'true');
+    await expect(screen).toHaveAttribute('data-mode', 'wait');
+    await expect(modeSelect).toHaveValue('wait');
+    // And the button says what a second tap will do.
+    await expect(page.locator('#score-hear')).toHaveText('Stop');
+
+    // A second tap stops it, and leaves the mode where it was.
+    await page.locator('#score-hear').click();
+    await expect(screen).toHaveAttribute('data-running', 'false');
+    await expect(screen).toHaveAttribute('data-hearing', 'false');
+    await expect(page.locator('#score-hear')).toHaveText('Hear it');
+    await expect(modeSelect).toHaveValue('wait');
+  });
+
+  test('pressing Play during a Hear it run gives you your own mode back', async ({ page }) => {
+    await openScore(page);
+    await page.locator('#score-mode').selectOption('tempo');
+    await page.locator('#score-hear').click();
+    const screen = page.locator('section[data-screen="score"]');
+    await expect(screen).toHaveAttribute('data-hearing', 'true');
+    await page.locator('#score-play').click();
+    // The demonstration ends and the run you chose starts.
+    await expect(screen).toHaveAttribute('data-hearing', 'false');
+    await expect(screen).toHaveAttribute('data-mode', 'tempo');
+    await expect(page.locator('#score-mode')).toHaveValue('tempo');
   });
 
   test('back from a deep link returns to the default tab', async ({ page }) => {

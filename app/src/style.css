@@ -1262,9 +1262,13 @@ input[type='checkbox'] {
    bar is not allowed to do. It shrinks instead: the closed select clips its
    text, the dropdown shows every label in full, and the row stays a row. */
 #score-mode {
-  flex: 0 1 auto;
-  min-width: 0;
-  max-width: 6.5rem;
+  /* Takes what the rest of the row leaves rather than a fixed width: at 390 px
+     that is about 5rem and `Play it to me` clips, sideways at 780 px it shows in
+     full. A fixed cap either wrapped the bar onto a second row upright or wasted
+     the width sideways. The dropdown always shows every label whole. */
+  flex: 1 1 4rem;
+  min-width: 3.5rem;
+  max-width: 8rem;
 }
 
 .score-group {
@@ -1312,8 +1316,18 @@ input[type='checkbox'] {
     column-gap: 1.5rem;
   }
 
+  /* Eleven rows in two columns of six and five. `Start again` joined them
+     when it left the bar for `Hear it`, and the eleventh sat just off the
+     bottom of a 360 px screen. The rows give up their padding and the panel
+     takes the height it is allowed — a sheet nobody can scroll to the end of
+     is the thing this whole rule exists to prevent. */
   #score-more-sheet .score-menu-row {
-    padding: 0.2rem 0;
+    padding: 0;
+  }
+
+  #score-more-sheet .sheet__panel {
+    max-height: 100vh;
+    padding-bottom: max(6px, var(--safe-bottom));
   }
 
   #score-more-sheet .sheet__panel {

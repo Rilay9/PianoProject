@@ -135,6 +135,17 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   const settings = { ...getSettings() };
   let mode: Mode = 'wait';
+  /**
+   * A `Hear it` run is going (P21c B1).
+   *
+   * It plays the piece the way Listen mode does without *being* Listen mode:
+   * the select does not move, so what the button interrupts is put back the
+   * moment it stops. The owner asked "is there a way to play the notes out
+   * loud to show me what it sounds like?" while sitting in front of the
+   * control that does exactly that — which is the answer to whether a mode
+   * in a dropdown counts as a way to do something.
+   */
+  let hearing = false;
   /** Runs finished since this exercise was generated (see the summary sheet). */
   let sightReadAttempts = 0;
   let input: FollowInput = 'none';
@@ -312,15 +323,26 @@ export function ScoreScreen(router: Router): HTMLElement {
    * a practice. Everything else is one tap behind the ellipsis, where it gets
    * its own word instead of a bare glyph.
    */
-  const restart = button('⏮', () => startRun(), 'score-restart');
-  restart.title = 'Start again';
-  // A performance is one pass through. Offering a restart during one would be
-  // offering to make it not a performance (replan §8).
-  if (!performanceRun) bar.appendChild(restart);
+  // `Start again` lives in the ⋯ sheet, not on the bar.
+  //
+  // The bar holds what changes while your hands are on the keys, and at 390 px
+  // it holds seven things. `Hear it` earned a place — a beginner asks to hear
+  // a piece constantly — and starting over did not: `▶` from stopped already
+  // starts from the beginning, so the glyph was the mid-run case only, which
+  // is a deliberate and occasional act. Eight controls came to 444 px of a
+  // 390 px bar and wrapped it onto a second row, taking 40 px off the music.
+  const restart = button('Start again', () => startRun(), 'score-restart');
 
   const playPause = button('▶', () => togglePlay(), 'score-play');
   playPause.setAttribute('aria-label', 'Play');
   bar.appendChild(playPause);
+
+  // Words, not a glyph: there is no symbol for "play it to me rather than
+  // with me", and this is the one control on the bar whose whole problem was
+  // that nobody could find it.
+  const hearButton = button('Hear it', () => toggleHear(), 'score-hear');
+  hearButton.title = 'Play the piece to you, nothing judged';
+  bar.appendChild(hearButton);
 
   const modeSelect = select(
     MODES.map((m) => ({ value: m.id, label: m.label })),
@@ -540,6 +562,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   sectionRow.hidden = true;
 
   menuStash.append(
+    // A performance is one pass through. Offering a restart during one would
+    // be offering to make it not a performance (replan §8).
+    ...(performanceRun ? [] : [menuRow('Start again', restart)]),
     menuRow('Input', inputSelect),
     sectionRow,
     menuRow('Loop', loopButton),
@@ -753,8 +778,10 @@ export function ScoreScreen(router: Router): HTMLElement {
           ? session.loopForPrintedBars(loopBars.from, loopBars.to)
           : session.loopForMeasures(loopBars.from, loopBars.to)
         : undefined;
+    // A `Hear it` run is a Listen run that leaves the select alone.
+    const runMode: Mode = hearing ? 'listen' : mode;
     session.start({
-      mode,
+      mode: runMode,
       hands,
       tempoPct,
       ...(loop ? { loop } : {}),
@@ -768,7 +795,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         settings.metronomeSound,
       ),
       metronomeVolume: midi.metronomeVolume,
-      playbackHands: mode === 'listen' ? 'both' : settings.playbackHands,
+      playbackHands: runMode === 'listen' ? 'both' : settings.playbackHands,
       ...(input === 'mic'
         ? {
             micChordLeniency: true,
@@ -785,8 +812,27 @@ export function ScoreScreen(router: Router): HTMLElement {
     render();
   }
 
+  /** `Hear it`: start a Listen run, or stop the one this button started. */
+  function toggleHear(): void {
+    if (!session) return;
+    if (hearing || session.running) {
+      session.stop();
+      hearing = false;
+      render();
+      return;
+    }
+    hearing = true;
+    startRun();
+  }
+
   function togglePlay(): void {
     if (!session) return;
+    // Pressing Play during a `Hear it` run is asking for the run you chose,
+    // not for the demonstration to carry on.
+    if (hearing) {
+      session.stop();
+      hearing = false;
+    }
     if (!session.running) startRun();
     else if (session.state?.paused === true) session.resume();
     else session.pause();
@@ -981,6 +1027,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   // --- summary sheet (docs/04 §5) -----------------------------------------
 
   function showSummary(score: SessionScore): void {
+    // A demonstration that has finished is over, whatever else happens next.
+    hearing = false;
     sheet.replaceChildren();
     const outcome = evaluateOutcome(score, {
       passAccuracy: settings.passAccuracyPct / 100,
@@ -1185,6 +1233,12 @@ export function ScoreScreen(router: Router): HTMLElement {
     stripHost.hidden = !settings.keyboardStrip;
     section.dataset.running = String(session?.running === true);
     section.dataset.mode = mode;
+    // Which mode the *run* is in, when it is not the one the select shows.
+    section.dataset.hearing = String(hearing);
+    hearButton.textContent = hearing ? 'Stop' : 'Hear it';
+    hearButton.title = hearing
+      ? 'Stop playing it to you'
+      : 'Play the piece to you, nothing judged';
     section.dataset.input = input;
   }
 
