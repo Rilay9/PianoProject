@@ -27,6 +27,13 @@ Four principles decide every question here:
 invariants** and **§10 the edge cases** — those three are what to diff against the code first,
 because they are falsifiable.
 
+**Scope.** This document is the **Score screen**: `ScoreScreen`, `WindowRenderer`, `slots.ts`
+and the overlays those three own. It is *not* the drill screen's four-bar notation
+(`#drill-notation`) or the PDF viewer, which draw music by different machinery and have their
+own rules. Two rules cross all three and are stated here because they have been broken in each:
+**dark ink** (§5.15) and **hidden means gone** (§9.11). Where this document says "every visible
+`OsmdView`", it means all three.
+
 ---
 
 ## 1. The state vector
@@ -179,7 +186,7 @@ against a 60 s budget under a fourfold throttle.
 |---|---|
 | A new window is drawn | **No.** This is the whole rule. |
 | The cursor crosses into the other slot | **No.** |
-| A slot goes blank at the end of the piece | **No.** The remaining slot keeps its size. |
+| The end of the piece is reached | **No.** The other slot fills with the bars behind, at the same size. |
 | A loop lap returns to the start | **No.** |
 | The probe's measurement arrives | Yes — **but not during a run** (§3.4). |
 | The owner presses Size | Yes, immediately. |
@@ -231,8 +238,14 @@ slot A re-drawn with block k+2, faded ~150 ms, ON IDLE (≤ 100 ms later)
 - **"What comes next" follows the playing order.** The next block holds the bar of the next
   *step*: at a repeat, the repeat's first bar; at a first/second-time ending, the ending that
   will actually be played on this pass.
-- The last bars leave the other slot **blank** — not a repeat of bars already played, and the
-  remaining slot does not stretch to fill the space.
+- **At the end of a piece the other slot shows the bars just played**, not blank. A blank slot
+  is half the screen gone black for the last bars of every song, with the final bar alone at the
+  bottom — which is what the pictures showed. The bars behind are what a paper page would have
+  there, and they are chosen in **playing** order too: at a second-time ending the slot shows the
+  bar before the ending, not the first ending printed above it.
+- The remaining slot never stretches to fill the space. Its size is the piece's size (§3).
+- A piece with **nothing behind and nothing ahead** — a one-bar piece — is the only case that
+  leaves a slot genuinely blank.
 
 ### 4.2 CHUNK
 
@@ -570,6 +583,20 @@ the run ends or the screen is left.
 Class toggles only. Band moves, notes repaint, keys repaint. **No engraving, no fit, no
 transform write.**
 
+### 8.1a The order of work within a frame
+
+Fixed, and getting it wrong is how bands end up pointing at nothing:
+
+```
+draw (engrave)  →  annotate (tag elements)  →  fit (scale)  →  place bands  →  paint colours
+```
+
+**No fit may be triggered from inside a draw.** Re-entering a draw from within itself leaves the
+buffers half-written and renders nothing at all; a fit that wants to re-engrave schedules itself
+for after the browser has painted, once, guarded so the redraw it causes cannot ask for another.
+Bands are placed **after** the fit, never before, or they are positioned against a sheet that is
+about to move.
+
 ### 8.2 A step advances across a window boundary
 
 - **SLOTS:** cursor slot changes (class toggle, same frame). Vacated slot re-drawn **on idle,
@@ -620,7 +647,22 @@ The free ones (§1.3) apply immediately. The re-engraving ones — bars per wind
 fingering, chord symbols — restart the run rather than re-engrave underneath it, because a
 re-engrave recreates every note element and the run's judgements are keyed to them.
 
-### 8.9 A seek or a restart
+### 8.9 Leaving the screen
+
+Everything the screen started must stop. In order: the run stops (a stop, not a finish, §8.5);
+the wake lock and any orientation lock are released; the session is disposed; and the renderer
+releases **the resize observer, the pre-render frame, the fit frame, the freeze timer, the
+settle timer, the idle measurement, all three `OsmdView`s and the band elements**.
+
+**"Two cursors" is the symptom of this going wrong.** A renderer that outlives its screen keeps
+its band in the document and keeps answering the observer, so the next score opens with the old
+one still there. Anything that survives disposal shows up as a duplicate overlay before it shows
+up as a leak.
+
+An idle re-draw queued for a slot (§4.1) must be cancelled, not left to run against a disposed
+renderer.
+
+### 8.10 A seek or a restart
 
 Both slots are drawn from scratch, cursor in slot 0, so the reading order starts at the top
 rather than wherever the previous run happened to leave it.
@@ -665,6 +707,12 @@ Numbered so a reviewer can cite them. Each is falsifiable; most are already test
 22. **A wrong note in Free does nothing.** No colour, no reset, no advance, no record.
 23. **Only built gestures are wired.** Pinch and two-finger tap are specified in `04` §5 and do
     not exist; nothing may behave as though they do.
+24. **Exactly one cursor band exists**, and at most one read-ahead line, in the whole document at
+    any moment. Two is a leaked renderer, not a drawing bug.
+25. **No fit from inside a draw** (§8.1a), and bands are placed after the fit, never before.
+26. **Disposal releases everything** (§8.9): observers, frames, timers, idle callbacks, views,
+    band elements, locks.
+27. **The end of a piece fills both slots** where there are bars behind to fill them with.
 
 ---
 
@@ -674,8 +722,8 @@ The cases that have broken before, or that the rules above do not obviously cove
 
 | Case | What must happen |
 |---|---|
-| A piece of **one bar** | One slot drawn, the other blank. No stretch, no repeat. |
-| A piece **shorter than two slots** | Draw what there is; the rest blank. |
+| A piece of **one bar** | One slot drawn, the other blank — the only case with nothing ahead *and* nothing behind. No stretch. |
+| A piece **shorter than two slots** | Draw what there is; the second slot takes the bars behind once there are any. |
 | `barsPerWindow` **larger than the piece** | The window clamps to the last bar; no empty measures drawn. |
 | A **pickup bar** | The only measure that may be numbered 0. |
 | A **repeat** | The other slot shows the repeat's first bar, not the bar printed after the sign. |
@@ -704,6 +752,13 @@ The cases that have broken before, or that the rules above do not obviously cove
 | **The same printed bar twice in a loop** (a repeat inside it) | The loop is in *steps*, not printed bars, so the two passes are distinct. |
 | **A window whose ink is wider than the stage** upright | The width fit binds; the staff shrinks rather than clipping. |
 | **A score with one staff** (not a grand staff) | Slots hold one staff each; nothing assumes two. |
+| **`countInBars: 0`** | No count-in overlay at all; the first note is the first beat. |
+| **Playing faster than the idle re-draw** | A crossing whose other slot is not yet drawn draws in place rather than showing a stale bar. The read-ahead is late; it is never wrong. |
+| **A tempo change written into the score** | The bpm label follows it; the scale does not. |
+| **Leaving while an idle re-draw is queued** | Cancelled at disposal (§8.9). |
+| **A `Hear it` or bar preview ending** | The window returns to where the run was, as a seek (§8.10), and the mode select has not moved. |
+| **Rotating with the summary open** | The sheet stays open and re-lays out; the run does not restart. |
+| **The stage at zero height** (mid-layout) | No fit is attempted; the previous scale stands. |
 
 ---
 
@@ -735,6 +790,10 @@ Deliberate gaps, so a reviewer knows what is not a bug.
 9. **Pinch to zoom and two-finger tap to switch hands** are in `04` §5 and are not built
    (§5.17). Either build them or strike them from §5 — a documented gesture that does nothing is
    worse than an undocumented one.
+10. **`showNoteNames` is labelled "Note names in note heads" and does not put names in note
+    heads** on this screen. It drives the waiting line — `Waiting for D4` — in Wait mode only,
+    and on the drill screen it does something else again. Either the label is wrong or the
+    feature is missing; they cannot both be right.
 
 ---
 
