@@ -1664,6 +1664,14 @@ input[type='checkbox'] {
 
 /* The badges, on the line under the detail. One line: a badge that wrapped
    inside itself cost the row a whole extra line. */
+.list-row__badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: 6px;
+}
+
 .list-row__metatext {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1689,6 +1697,7 @@ input[type='checkbox'] {
   min-height: 40px;
   padding: 0 12px;
 }
+
 
 .sheet {
   position: fixed;
