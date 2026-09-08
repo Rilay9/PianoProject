@@ -199,11 +199,19 @@ body {
   width: 5rem;
 }
 
-/* The search box takes whatever the style select and the Filter chip leave, so
-   the three of them are one line rather than two. */
+/* The search box takes whatever the style select leaves. The Filter chip is
+   not on this line: a search box, a select and a chip came to more than 360 px
+   and the chip wrapped onto a line of its own, which is the second line the
+   whole change was meant to save. It sits on the count line instead — what is
+   being shown and how to change it, the way the Library does it. */
 #folder-search {
   flex: 1 1 8rem;
   min-width: 0;
+}
+
+.library-countrow #folder-count {
+  margin: 0;
+  flex: 1 1 auto;
 }
 
 .filters input[type='checkbox'] {
@@ -815,8 +823,15 @@ input[type='checkbox'] {
 
 /* OSMD draws black on transparent; in dark mode the whole sheet is inverted
    rather than restyled, because VexFlow paints hundreds of primitives and a
-   per-element theme would be both slow and fragile. */
-[data-theme='dark'] .score-buffer svg {
+   per-element theme would be both slow and fragile.
+
+   Both hosts. The rule named only the Score screen's buffer, so the four
+   bars a transposition or sight-reading drill draws were painted black on a
+   dark card and could not be read at all — the one thing on the screen the
+   drill is about. Anywhere an `OsmdView` is visible belongs here; the two
+   off-screen probes have no colour to get wrong. */
+[data-theme='dark'] .score-buffer svg,
+[data-theme='dark'] .drill-notation svg {
   filter: invert(1) hue-rotate(180deg);
 }
 
@@ -1649,14 +1664,6 @@ input[type='checkbox'] {
 
 /* The badges, on the line under the detail. One line: a badge that wrapped
    inside itself cost the row a whole extra line. */
-.list-row__badges {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  gap: 6px;
-}
-
 .list-row__metatext {
   overflow: hidden;
   text-overflow: ellipsis;

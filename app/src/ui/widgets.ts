@@ -144,7 +144,16 @@ export function listRow(options: RowOptions): HTMLElement {
   const row = el('div.list-row', { ...(options.dataset ?? {}) }, text);
   if (options.actions?.length) {
     const actions = el('div.list-row__actions');
-    for (const action of options.actions) actions.append(action);
+    // A dot between two plain links. A shelf row ended "Edit Remove", which
+    // reads as one thing and is two; the same separator the drill uses
+    // between Skip and End drill.
+    let previousWasLink = false;
+    for (const action of options.actions) {
+      const isLink = action.classList.contains('link-button');
+      if (isLink && previousWasLink) actions.append(el('span.plan-sep', { text: '·' }));
+      actions.append(action);
+      previousWasLink = isLink;
+    }
     // A row is itself clickable, so a click on one of its buttons must not
     // also count as a click on the row — "Edit" would otherwise open the
     // score as well as the editor.

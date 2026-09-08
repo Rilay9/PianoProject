@@ -184,8 +184,12 @@ export function FolderScreen(router: Router): HTMLElement {
   });
   filterToggle.setAttribute('aria-expanded', 'false');
   filterToggle.setAttribute('aria-controls', 'folder-filters');
-  controls.append(search, style, filterToggle);
-  browse.insertBefore(folderFilters, countLine);
+  controls.append(search, style);
+  // The chip goes on the count line, not the search line: three controls do
+  // not fit across 360 px and it wrapped onto a line of its own.
+  const countRow = el('div.library-countrow', {}, countLine, filterToggle);
+  browse.insertBefore(countRow, list);
+  browse.insertBefore(folderFilters, countRow);
 
   function readFilters(): void {
     filters = {

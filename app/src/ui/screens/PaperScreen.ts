@@ -77,7 +77,9 @@ export function summarise(input: {
   steadiness: Steadiness | null;
 }): string[] {
   const minutes = input.durationMs / 60000;
-  const seconds = Math.round(input.durationMs / 1000);
+  // Floored, because the running clock on the same screen floors: it read
+  // 0:01 over a summary that said two seconds.
+  const seconds = Math.floor(input.durationMs / 1000);
   const lines: string[] = [];
   // Seconds under the minute. "8 notes over 0.0 minutes" is true and says
   // nothing, and a short run is exactly what a first go at a new page is.

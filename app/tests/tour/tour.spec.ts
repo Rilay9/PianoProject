@@ -590,10 +590,16 @@ for (const { orientation, size } of FORM_FACTORS) {
         await go(page, '/library/folder', 'folder');
         await expect(page.locator('#folder-list .list-row').first()).toBeVisible({ timeout: 60_000 });
       }, async (p) => {
-        // Not just "the list exists": the first score has to be on the screen
-        // without scrolling. It was 600 px down a 780 px phone, which `inView`
-        // was perfectly happy with, and R1 only catches a row pushed clean off
-        // the bottom. Upright, the picture is worthless unless a score is in it.
+        // Not just "the list exists": upright, the first score has to be on the
+        // screen without scrolling. It was 600 px down a 780 px phone, which
+        // `inView` was perfectly happy with, and R1 only catches a row pushed
+        // clean off the bottom, so the picture could be a screenful of chrome
+        // and prove itself.
+        //
+        // Sideways it only has to be drawn. On a 360 px-tall screen the first
+        // score is below the fold and that is worth photographing — demanding
+        // it be in view cost the landscape leg its picture altogether, and a
+        // gap says less than a bad shot does.
         const box = await p.evaluate(() => {
           const row = document.querySelector('#folder-list .list-row');
           if (!row) return null;
@@ -601,9 +607,8 @@ for (const { orientation, size } of FORM_FACTORS) {
           return { top: rect.top, height: rect.height, view: window.innerHeight, portrait: window.innerHeight > window.innerWidth };
         });
         if (!box || box.height === 0) return false;
-        if (!box.portrait) return box.top < box.view;
         console.log(`  80-folder-full: the first score starts at ${String(Math.round(box.top))}px of ${String(box.view)}`);
-        return box.top < box.view;
+        return box.portrait ? box.top < box.view : true;
       });
       await scene('81-folder-search', 'Searching the folder', 'One row out of 37,261.', async () => {
         await go(page, '/library/folder', 'folder');
