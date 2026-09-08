@@ -10,6 +10,10 @@ import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem, ConceptEntry as CurriculumConcept, Curriculum } from '../../curriculum/types';
 import { allProgress } from '../../data/progressStore';
+import { getPlan } from '../../data/planStore';
+import { activeTracksFor } from '../../curriculum/tracks';
+import { nextRecommended } from '../../curriculum/session';
+import { getSettings } from '../../data/settingsStore';
 import { allSkills, displayState, type SkillState } from '../../data/skillsStore';
 import type { SkillRow } from '../../data/db';
 import { createSubScreen } from './subScreen';
@@ -117,6 +121,15 @@ export function SkillsScreen(router: Router): HTMLElement {
 
   let conceptMeta = new Map<string, CurriculumConcept>();
   let stageFilter = 'all';
+  /**
+   * The stages the screen opens on when nothing is rusty (decision 6b).
+   *
+   * The one being worked on and the one below it: the reason to come here is
+   * usually that something has gone soft, and if nothing has, what is worth
+   * revisiting is what was learned most recently. Cleared by "Show all", and
+   * ignored the moment a stage is chosen by hand.
+   */
+  let openingStages: number[] | null = null;
   let trackFilter = 'all';
   let stateFilter: 'all' | SkillState = 'all';
 
@@ -132,28 +145,52 @@ export function SkillsScreen(router: Router): HTMLElement {
   let shownCount = PAGE_SIZE;
 
   function draw(): void {
+    const opening = stageFilter === 'all' ? openingStages : null;
     const shown = entries.filter(
       (entry) =>
         (stageFilter === 'all' || entry.stages.includes(Number(stageFilter))) &&
+        (opening === null || entry.stages.some((stage) => opening.includes(stage))) &&
         (trackFilter === 'all' || entry.tracks.includes(trackFilter)) &&
         (stateFilter === 'all' || entry.state === stateFilter),
     );
     const page = shown.slice(0, shownCount);
+    // The count says what it is showing, and what it is not.
     status.textContent =
       stateFilter === 'rusty'
         ? `${String(shown.length)} rusty of ${String(entries.length)}`
-        : `${String(shown.length)} of ${String(entries.length)} concepts`;
-    list.replaceChildren(...page.flatMap((entry) => conceptBlock(entry)));
+        : opening !== null
+          ? `${String(shown.length)} of ${String(entries.length)} concepts · stage${
+              opening.length === 1 ? '' : 's'
+            } ${opening.join(' and ')}`
+          : `${String(shown.length)} of ${String(entries.length)} concepts`;
+    list.replaceChildren(...page.map((entry) => conceptBlock(entry)));
     if (shown.length === 0) list.append(el('p.muted', { text: 'No concepts match those filters.' }));
-    if (shown.length > page.length) {
+    // Two jobs, one link. While the screen is showing what it opened on, it
+    // offers the whole curriculum; after that it pages through it fifty at a
+    // time, the way the Library does. Resetting the page on every press — which
+    // is what it did for one commit — shows the same fifty for ever.
+    const restricted = opening !== null || stateFilter === 'rusty';
+    const more = shown.length - page.length;
+    if (restricted || more > 0) {
       list.append(
         el(
           'div.plan-links',
           {},
           button(
-            `Show all ${String(shown.length)}`,
+            restricted
+              ? `Show all ${String(entries.length)}`
+              : `Show ${String(Math.min(PAGE_SIZE, more))} more`,
             () => {
-              shownCount = shown.length;
+              if (restricted) {
+                // What the screen opened on is a starting point, not a filter
+                // the learner set: one link clears all of it.
+                openingStages = null;
+                stateFilter = 'all';
+                document.getElementById('skills-rusty')?.setAttribute('aria-pressed', 'false');
+                shownCount = PAGE_SIZE;
+              } else {
+                shownCount += PAGE_SIZE;
+              }
               draw();
             },
             { id: 'skills-show-all', variant: 'quiet' },
@@ -173,7 +210,7 @@ export function SkillsScreen(router: Router): HTMLElement {
    * The first three are the easiest three, because the list is sorted by level
    * and the reason to come here is usually that something is rusty.
    */
-  function conceptBlock(entry: ConceptEntry): HTMLElement[] {
+  function conceptBlock(entry: ConceptEntry): HTMLElement {
     const first = entry.items[0];
     // The curriculum carries a display name for every concept id, because a
     // label derived from the id gives you `Cc64` and `Ii-v-i` (replan §4.1).
@@ -200,7 +237,12 @@ export function SkillsScreen(router: Router): HTMLElement {
       actions,
       dataset: { 'data-concept': entry.concept, 'data-state': entry.state },
     });
-    if (entry.items.length === 0) return [row];
+    // One element per concept, not two siblings. On a tablet the list is a
+    // two-column grid, and a concept's row and its drill rows were separate
+    // cells — so the exercises under "The placement test" were laid out
+    // *beside* it, and the "Show all 32" link landed in the middle of the
+    // grid. The grid places concepts; a concept holds its own rows.
+    if (entry.items.length === 0) return el('div.skill-concept', {}, row);
 
     const options = el('div.skill-options', { 'data-options-for': entry.concept });
     const hidden = entry.items.slice(SKILL_ITEMS_SHOWN);
@@ -228,7 +270,7 @@ export function SkillsScreen(router: Router): HTMLElement {
       options.replaceChildren(...rows);
     };
     render(false);
-    return [row, options];
+    return el('div.skill-concept', {}, row, options);
   }
 
   function drawFilters(stages: number[], tracks: string[]): void {
@@ -290,6 +332,19 @@ export function SkillsScreen(router: Router): HTMLElement {
     if (entries.some((entry) => entry.state === 'rusty')) {
       stateFilter = 'rusty';
       document.getElementById('skills-rusty')?.setAttribute('aria-pressed', 'true');
+    } else {
+      // Nothing rusty: the stage being worked on and the one below it.
+      const records = progress.map((row) => ({
+        itemId: row.itemId,
+        passed: row.status === 'passed' || row.status === 'mastered',
+        mastered: row.status === 'mastered',
+      }));
+      const here = nextRecommended(curriculum, records, activeTracksFor(await getPlan(), curriculum), {
+        requireTwoSongs: getSettings().requireTwoSongs,
+      })?.stageNumber;
+      if (here !== undefined) {
+        openingStages = here > 0 ? [here - 1, here] : [here];
+      }
     }
     draw();
   })().catch((cause: unknown) => {

@@ -137,13 +137,17 @@ test.describe('Skills review', () => {
     // The point of the level table: `scale` is practisable at stage 8, not just
     // wherever the first scale exercise happened to sit.
     await page.goto('/#/plan/skills');
-    // The screen draws fifty concepts and then `Show all` (`04` §3a): 266 of
-    // them at once was 478 interactive elements on arrival. Wait for the list
-    // before looking for the button — it is built after the catalogue loads.
+    // The screen opens on what needs attention and pages the rest fifty at a
+    // time (`04` §3a, decision 6b): all 266 at once was 478 interactive
+    // elements on arrival. Press through until the concept appears — the first
+    // press clears what the screen opened on, the rest are pages.
     await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
-    const showAll = page.locator('#skills-show-all');
-    if (await showAll.count()) await showAll.click();
     const scaleRow = page.locator('.list-row[data-concept="scale"]');
+    const showAll = page.locator('#skills-show-all');
+    for (let i = 0; i < 12 && (await scaleRow.count()) === 0; i += 1) {
+      if ((await showAll.count()) === 0) break;
+      await showAll.click();
+    }
     await expect(scaleRow).toBeVisible();
     await expect(scaleRow).toContainText('to practise');
     const options = page.locator('.skill-options[data-options-for="scale"]');
@@ -281,15 +285,20 @@ test.describe('Skills obeys 04 §0', () => {
     await expect(page.locator('#skills-show-all')).toBeVisible();
   });
 
-  test('Show all reaches every concept', async ({ page }) => {
+  test('Show all reaches every concept, a page at a time', async ({ page }) => {
     await page.goto('/#/plan/skills');
     await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
-    await expect(page.locator('#skills-show-all')).toBeVisible();
+    const link = page.locator('#skills-show-all');
+    // It opens on what needs attention, so the first press is "show me the
+    // rest of the curriculum" and the ones after it are pages of fifty.
+    await expect(link).toHaveText(/Show all \d+/);
     const before = await page.locator('.list-row[data-concept]').count();
-    await page.locator('#skills-show-all').click();
-    const after = await page.locator('.list-row[data-concept]').count();
-    expect(after).toBeGreaterThan(before);
-    await expect(page.locator('#skills-show-all')).toHaveCount(0);
+    await link.click();
+    expect(await page.locator('.list-row[data-concept]').count()).toBeGreaterThan(before);
+    for (let i = 0; i < 12 && (await link.count()) > 0; i += 1) await link.click();
+    // Every concept in the curriculum, and nothing left to press.
+    await expect(link).toHaveCount(0);
+    expect(await page.locator('.list-row[data-concept]').count()).toBeGreaterThan(200);
   });
 
   test('at most one filled button per concept, and it is Drill it (R3)', async ({ page }) => {

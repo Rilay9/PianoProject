@@ -1523,6 +1523,21 @@ input[type='checkbox'] {
   gap: 8px;
 }
 
+/* A concept and the exercises under it are one thing the list places, not two
+   things beside each other. */
+.skill-concept {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skill-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 12px;
+}
+
 .list-row {
   display: flex;
   /* Actions drop below the words rather than squeezing them. A row with two
@@ -1733,6 +1748,11 @@ input[type='checkbox'] {
        whose contents were 43 px were drawn 211, matching the tallest row
        beside them. R2 counted those, correctly. */
     align-items: start;
+  }
+
+  /* A screen-level link under the list belongs under the whole of it. */
+  .list > .plan-links {
+    grid-column: 1 / -1;
   }
 }
 
