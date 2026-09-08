@@ -60,15 +60,35 @@ const REPORTS: { value: SelfReport; label: string }[] = [
 export function summarise(input: {
   notes: number;
   durationMs: number;
+  /** The tempo the clicks were counted at, or `null` if none were. */
   bpm: number | null;
+  /**
+   * Whether the metronome was actually asked for.
+   *
+   * Separate from `bpm`, because "no clicks were recorded" and "the
+   * metronome was off" are different facts and the screen was reporting
+   * the first as the second — under a ticked box, which made it a lie the
+   * owner could see. A run stopped inside the count-in has a metronome
+   * that is running and no click worth measuring against, and that is what
+   * the tour photographs: 8 notes in 1.4 s against a count-in bar that is
+   * 2.7 s long at 90.
+   */
+  clickOn: boolean;
   steadiness: Steadiness | null;
 }): string[] {
   const minutes = input.durationMs / 60000;
+  const seconds = Math.round(input.durationMs / 1000);
   const lines: string[] = [];
+  // Seconds under the minute. "8 notes over 0.0 minutes" is true and says
+  // nothing, and a short run is exactly what a first go at a new page is.
+  const span =
+    minutes >= 1
+      ? `${minutes.toFixed(1)} ${nounFor(minutes, 'minute')}`
+      : `${String(seconds)} ${nounFor(seconds, 'second')}`;
   const heard =
     input.bpm === null
-      ? `The app heard ${plural(input.notes, 'note')} over ${minutes.toFixed(1)} ${nounFor(minutes, 'minute')}.`
-      : `The app heard ${plural(input.notes, 'note')} over ${minutes.toFixed(1)} ${nounFor(minutes, 'minute')} at ♩=${String(input.bpm)}.`;
+      ? `The app heard ${plural(input.notes, 'note')} over ${span}.`
+      : `The app heard ${plural(input.notes, 'note')} over ${span} at ♩=${String(input.bpm)}.`;
   lines.push(heard);
 
   if (input.steadiness && steadinessIsMeaningful(input.steadiness)) {
@@ -81,8 +101,12 @@ export function summarise(input: {
           ? `running ${String(Math.abs(mean))} ms ahead of the beat`
           : `sitting ${String(mean)} ms behind the beat`;
     lines.push(`Steadiness ±${String(sigma)} ms, ${drift}.`);
-  } else if (input.bpm === null) {
+  } else if (!input.clickOn) {
     lines.push('Steadiness was not measured: the metronome was off.');
+  } else if (input.bpm === null) {
+    // The metronome was on. What there was none of is a click *after* the
+    // count-in, which is the only kind worth measuring against.
+    lines.push('Steadiness was not measured: no click sounded after the count-in.');
   } else if (input.notes === 0) {
     lines.push('Steadiness was not measured: nothing was heard.');
   } else {
@@ -253,6 +277,9 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
     const measured = clicks.length > 0 ? steadiness(onsets, clicks) : null;
     drawControls();
     drawSummary(durationMs, measured);
+    // It said "Playing. The click is running" under a finished run and a
+    // summary of it. Nothing ever wrote over the line `start` had set.
+    status.textContent = 'Stopped. What it heard is below.';
   }
 
   function drawSummary(durationMs: number, measured: Steadiness | null): void {
@@ -260,6 +287,7 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
       notes: onsets.length,
       durationMs,
       bpm: clicks.length > 0 ? bpm : null,
+      clickOn: useClick.checked,
       steadiness: measured,
     });
     const chosen = el('div.row', { id: 'paper-report' });

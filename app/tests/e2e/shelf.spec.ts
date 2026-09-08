@@ -174,6 +174,32 @@ test.describe('practising against paper', () => {
     await expect(summary).not.toContainText('%');
   });
 
+  test('does not say Playing over a finished run, or blame a metronome that was on', async ({
+    page,
+  }) => {
+    // Two sentences the tour photographed, both of them untrue at the moment
+    // they were read (P21b D3).
+    await addBookAndPiece(page, { book: 'My book', piece: 'Study', lesson: '4.4' });
+    await page.locator('#shelf-list [data-piece]').first().getByRole('button', { name: 'Practise' }).click();
+    await expect(page.locator('#paper-click')).toBeChecked();
+
+    await page.locator('#paper-start').click();
+    await expect(page.locator('#paper-status')).toContainText('Playing');
+    await page.locator('#paper-stop').click();
+    await expect(page.locator('#paper-summary')).toBeVisible();
+
+    // The run is over; the line that described it while it ran is not.
+    await expect(page.locator('#paper-status')).not.toContainText('Playing');
+
+    // The box is still ticked, so the metronome was not off. What there was
+    // none of is a click past the count-in, and that is what it has to say.
+    await expect(page.locator('#paper-click')).toBeChecked();
+    await expect(page.locator('#paper-summary')).not.toContainText('the metronome was off');
+    await expect(page.locator('#paper-summary')).toContainText('after the count-in');
+
+    // And a run of two seconds is two seconds, not "0.0 minutes".
+    await expect(page.locator('#paper-summary')).not.toContainText('0.0 minutes');
+  });
   test('records the run under the owner’s own verdict, not a measurement', async ({ page }) => {
     await addBookAndPiece(page, { book: 'My book', piece: 'Study', lesson: '4.4' });
     await page.locator('#shelf-list [data-piece]').first().getByRole('button', { name: 'Practise' }).click();
