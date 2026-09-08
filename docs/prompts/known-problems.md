@@ -117,15 +117,26 @@ real finding rather than a miscalibration:
 
 | Check | Portrait | Landscape | Tablet | What it is |
 |---|---|---|---|---|
-| R2 density | 112 | 7 | 100 | list rows of 105-117 px against a budget of 96 |
 | glyph-labelled | 54 | 54 | 54 | a one-glyph button that does carry an `aria-label` |
 | R3 one primary | 7 | 7 | 7 | mostly a list where every row has a Practise or an Add |
 | below-fold | 10 | 16 | 7 | informational; §3 above |
+| R2 density | 5 | 0 | 0 | five **settings** rows, 90-150 px; no list row is over |
 | R4 empty state | 1 | 1 | 1 | "no chord symbols" offers two buttons |
 
-R2 is the one to look at. Skills rows are 105-117 px, the shelf 113-117, Today
-111 — about 20 % over, which on a 780 px phone is one row per screenful. It is a
-design pass, not a patch.
+**R2 was 112 in portrait and 100 on a tablet, and is now 5 and 0.** Three causes,
+each costing a whole second line:
+
+- the text column's flex basis pushed wide action groups onto a line of their
+  own — Skills carries "Drill it" and "Find more", the shelf carries "Practise",
+  "Edit" and "Remove", 167 px of buttons against a content box of 262;
+- a badge whose own words wrapped made a meta line 38 px instead of 22;
+- and, tablet only, the two-column `.list` is a grid, where an item stretches to
+  its track — so one tall row dragged the row beside it to 211 px while its own
+  contents measured 43.
+
+What is left is five **settings** rows — not list rows — at 90 to 150 px against
+a hinted budget of 88. "Playback destination" at 150 is genuinely a card. That is
+the next density job, and a much smaller one.
 
 The judgement half — is this readable, is this the right thing to show first, is
 it good-looking — is still sampled rather than completed: seven scenes were looked at
