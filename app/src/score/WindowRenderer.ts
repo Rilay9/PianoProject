@@ -64,6 +64,20 @@ const SCROLL_TARGET_FRACTION = 0.3;
 export const SCROLL_TARGET_MIN = 0.25;
 export const SCROLL_TARGET_MAX = 0.4;
 
+/**
+ * Where the cursor sits while the sheet slides under it, sideways (P21c A2).
+ *
+ * A third of the way across, so about two bars of what is coming stay to its
+ * right. The same fraction the scroll layout holds vertically, for the same
+ * reason: reading happens ahead of playing.
+ */
+const SLIDE_TARGET_FRACTION = 0.34;
+export const SLIDE_TARGET_MIN = 0.25;
+export const SLIDE_TARGET_MAX = 0.45;
+
+/** Bars of read-ahead drawn to the right of the window, sideways. */
+const SLIDE_READ_AHEAD_BARS = 2;
+
 /** Manual scrolling suspends auto-scroll for this long (docs §5). */
 export const MANUAL_SCROLL_PAUSE_MS = 5000;
 
@@ -212,6 +226,12 @@ export class WindowRenderer {
   private fittedAtHeight = -1;
   private currentStep = -1;
   private manualScrollUntil = 0;
+  /** How far the sheet has been slid left, sideways (P21c A2). */
+  private slideX = 0;
+  /** The bar the slide was last computed for; a slide happens once a bar. */
+  private slidBar = -1;
+  /** The fit transform, before any slide is added to it. */
+  private baseTransform = '';
   /** The single-system pre-render, queued for the frame after a swap. */
   private prerenderHandle: number | null = null;
   /** Watches the stage, because its height settles after the first draw. */
@@ -322,8 +342,25 @@ export class WindowRenderer {
     return this.handsFocus;
   }
 
-  /** The printed measure range on screen, or null before the first draw. */
+  /**
+   * The window the cursor is in, or null before the first draw.
+   *
+   * Not the same as the range *drawn*, and the difference matters sideways:
+   * there the sheet carries two extra bars to read into and slides past them
+   * (P21c A2), so the drawn range is wider than the window by design. "Which
+   * bars is the learner on" is the question everything asks this, and the
+   * answer is the window.
+   */
   get currentWindow(): MeasureRange | null {
+    const drawn = this.frontBuffer.range;
+    if (!drawn) return null;
+    if (!this.sliding) return drawn;
+    const step = this.model.steps[this.currentStep];
+    return step ? this.windowFor(step.sourceMeasureIndex) : drawn;
+  }
+
+  /** What is actually engraved on screen, read-ahead bars included. */
+  get drawnRange(): MeasureRange | null {
     return this.frontBuffer.range;
   }
 
@@ -467,8 +504,27 @@ export class WindowRenderer {
    * one frame. Slots do not need it (a crossing has a whole bar to happen in),
    * but here a swap is still the thing the learner is waiting on.
    */
+  /**
+   * Sideways, the drawn range is the window plus two bars to read into.
+   *
+   * Without them there is nothing to slide towards: the window ends at the
+   * bar being played, and the next one appears only when the whole window is
+   * replaced — the jump A1 removed upright. The extra bars are drawn once and
+   * slid past, so they cost one engraving rather than one per bar.
+   */
+  private slideRangeFor(sourceMeasureIndex: number): MeasureRange {
+    const window_ = this.windowFor(sourceMeasureIndex);
+    const last = Math.max(0, this.model.sourceMeasureCount - 1);
+    return {
+      fromMeasure: window_.fromMeasure,
+      toMeasure: Math.min(window_.toMeasure + SLIDE_READ_AHEAD_BARS, last),
+    };
+  }
+
   private showStepInOneSystem(step: ScoreStep): void {
-    const wanted = this.windowFor(step.sourceMeasureIndex);
+    const wanted = this.sliding
+      ? this.slideRangeFor(step.sourceMeasureIndex)
+      : this.windowFor(step.sourceMeasureIndex);
     const front = this.buffers[this.cursorSlot];
     if (!sameRange(front.range, wanted)) {
       const started = performance.now();
@@ -496,6 +552,57 @@ export class WindowRenderer {
       );
     }
     this.schedulePrepareNextWindow();
+    this.slideToStep(step);
+  }
+
+  /**
+   * Whether the sheet slides rather than being replaced a window at a time.
+   *
+   * Sideways only, and only in Window layout: Scroll already slides, in the
+   * other axis, and upright the two slots do the reading-ahead.
+   */
+  private get sliding(): boolean {
+    if (this.readAhead !== 'single' || this.layout !== 'window') return false;
+    return typeof window === 'undefined' ? false : window.innerWidth > window.innerHeight;
+  }
+
+  /**
+   * Slides the sheet so the bar being played sits a third across (A2).
+   *
+   * By bar, at the barline, never per note: a sheet that moves under a note
+   * being read is worse than one that jumps once a bar. The scale is already
+   * fixed by the fit, so this is one measurement and one translate — read
+   * where the cursor landed and shift by the difference.
+   */
+  private slideToStep(step: ScoreStep): void {
+    const slot = this.buffers[this.cursorSlot];
+    if (!this.sliding) {
+      if (this.slideX !== 0) {
+        this.slideX = 0;
+        this.slidBar = -1;
+        this.applySlide(slot);
+      }
+      return;
+    }
+    if (step.sourceMeasureIndex === this.slidBar) return;
+    const anchor = this.anchorElementFor(step);
+    if (!anchor) return;
+    const host = this.el.getBoundingClientRect();
+    if (host.width <= 0) return;
+    const at = anchor.getBoundingClientRect().left - host.left;
+    const delta = host.width * SLIDE_TARGET_FRACTION - at;
+    // Never past the start: bar 1 sits where it was engraved rather than
+    // being pushed into the middle of an otherwise empty stage.
+    this.slideX = Math.min(0, this.slideX + delta);
+    this.slidBar = step.sourceMeasureIndex;
+    this.applySlide(slot);
+  }
+
+  private applySlide(slot: Buffer): void {
+    slot.wrapper.style.transform =
+      this.slideX === 0
+        ? this.baseTransform
+        : `translateX(${String(Math.round(this.slideX))}px) ${this.baseTransform}`;
   }
 
   /**
@@ -812,18 +919,34 @@ export class WindowRenderer {
     if (boxes.length === 0) return;
 
     // Each slot gets its share of the height, and all of the width.
+    //
+    // Sideways the width is deliberately *not* a limit: the drawn range is the
+    // window plus two bars to read into, and fitting all of that across the
+    // stage would shrink the music to buy bars nobody is playing yet. Height
+    // fills the stage, the extra bars run off the right, and the sheet slides
+    // (P21c A2).
+    const sliding = this.sliding;
     const perSlot = available.height / boxes.length;
     let scale = Infinity;
     for (const { box } of boxes) {
-      scale = Math.min(
-        scale,
-        (available.width - FIT_MARGIN_PX) / box.width,
-        (perSlot - FIT_MARGIN_PX) / box.height,
-      );
+      const byHeight = (perSlot - FIT_MARGIN_PX) / box.height;
+      scale = sliding
+        ? Math.min(scale, byHeight)
+        : Math.min(scale, (available.width - FIT_MARGIN_PX) / box.width, byHeight);
     }
     if (!Number.isFinite(scale) || scale <= 0) return;
     const drawn = scale * this.userZoom;
-    for (const { slot, box } of boxes) slot.wrapper.style.transform = place(box, drawn);
+    for (const { slot, box } of boxes) {
+      const transform = place(box, drawn);
+      slot.wrapper.style.transform = transform;
+      if (slot === this.buffers[this.cursorSlot]) this.baseTransform = transform;
+    }
+    // The sheet has been re-laid out, so wherever it had been slid to is no
+    // longer where that bar is.
+    this.slideX = 0;
+    this.slidBar = -1;
+    const step = this.model.steps[this.currentStep];
+    if (step) this.slideToStep(step);
   }
 
   /**

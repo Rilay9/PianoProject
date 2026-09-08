@@ -106,7 +106,9 @@ test.describe('windowing', () => {
     await dev.load('chords-ties');
     await dev.setBars(2);
     await dev.showStep(0);
-    const band = page.locator('.score-cursor');
+    // Not `.score-cursor`: since P21c A4 there are two bands, the cursor and
+    // the faint one on the next step, and the bare class matches both.
+    const band = page.locator('.score-cursor:not(.score-cursor--next)');
     await expect(band).toBeVisible();
     const first = await band.boundingBox();
     await dev.showStep(1);
@@ -190,6 +192,10 @@ test.describe('layouts', () => {
   });
 
   test('window layout draws only the window', async ({ page }) => {
+    // Upright, where the drawn range is the window. Sideways it is the window
+    // plus two bars to read into and slide past (P21c A2), which is a
+    // different question and has its own test.
+    await page.setViewportSize({ width: 390, height: 844 });
     const dev = await openDevScore(page);
     await dev.load('tempo-change');
     await dev.setLayout('window');
@@ -326,6 +332,9 @@ test.describe('window layout holds its shape', () => {
   }
 
   test('bars per window changes how many measures are drawn', async ({ page }) => {
+    // Upright, for the same reason: sideways the count carries A2's read-ahead
+    // bars and 1, 2 and 4 all clamp to the length of a four-bar fixture.
+    await page.setViewportSize({ width: 390, height: 844 });
     const dev = await openDevScore(page);
     // A four-bar fixture, so 1/2/4 are all distinguishable.
     await dev.load('exercise.five-finger.c-major.both');
@@ -335,6 +344,7 @@ test.describe('window layout holds its shape', () => {
       await dev.showStep(0);
       counts.push(
         await page.evaluate(
+          // Both slots upright, so this counts the whole window.
           () => document.querySelectorAll('.score-buffer.is-front .vf-measure').length,
         ),
       );

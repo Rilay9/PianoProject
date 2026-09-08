@@ -33,7 +33,8 @@ test.describe('Wait mode end to end', () => {
     await dev.playNote(60);
     expect((await dev.engineState())?.step).toBe(1);
     // The rendered cursor band moved with it.
-    await expect(page.locator('.score-cursor')).toBeVisible();
+    // The cursor band, not the faint one A4 draws on the next step.
+    await expect(page.locator('.score-cursor:not(.score-cursor--next)')).toBeVisible();
   });
 
   test('a scripted MIDI performance drives the run through a real ReplaySource', async ({
