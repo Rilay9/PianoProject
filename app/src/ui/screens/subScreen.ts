@@ -20,16 +20,23 @@ export function createSubScreen(
   const card = document.createElement('div');
   card.className = 'card';
 
+  // Back and the title in one element, so that sideways they can share a
+  // line (P21d A2). Upright it changes nothing: a block and a button inside a
+  // plain div stack exactly as they did as siblings of the card.
+  const head = document.createElement('div');
+  head.className = 'sub-head';
+
   const back = document.createElement('button');
   back.type = 'button';
   back.className = 'link-button back-link';
   back.textContent = `← ${options.backLabel}`;
   back.addEventListener('click', () => router.navigate(options.backTo));
-  card.appendChild(back);
+  head.appendChild(back);
 
   const h1 = document.createElement('h1');
   h1.textContent = options.title;
-  card.appendChild(h1);
+  head.appendChild(h1);
+  card.appendChild(head);
 
   section.appendChild(card);
   return { section, card };

@@ -412,6 +412,90 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+   R5 — sideways on a phone, the header is one line (`04` §0, P21d §A)
+
+   "The landscape on phone I feel like could be way better use of the space."
+   A phone held sideways is 780 × 360 and every screen was spending its first
+   40 % on a header that carries nothing the side nav does not already say:
+   Today gave three rows to a title, a week line and the length chips before
+   the first card; a sub-screen gave two, inside a 610 px card with 170 px of
+   dead margin either side of it.
+
+   One rule, applied everywhere: the tab title goes (the side nav says which
+   tab this is), a sub-screen's Back and title share a line, the card is full
+   width, and lists whose rows are all the same shape run in two columns.
+   --------------------------------------------------------------------------- */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* A1 — the tab title. The side nav is already saying it, in the same
+     glance, permanently. */
+  /* A descendant, not a child: Today moves its h1 into a row with the input
+     chip, so a child selector missed it. */
+  .screen--list > .screen-header h1 {
+    display: none;
+  }
+
+  .screen--list > .screen-header {
+    padding-bottom: 0;
+  }
+
+  /* A2 — a sub-screen: Back and the title on one line, at body size. */
+  .sub-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .sub-head h1 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  /* A 610 px centred card is a portrait shape on a landscape screen. */
+  .card {
+    max-width: none;
+  }
+
+  /* A sub-screen with more than one block lays them in two columns: the
+     metronome's tempo beside its beat pattern, the microphone's connection
+     beside its level meter. One block — the chart, paper practice — stays one
+     column at full width, because a single column of content and a column of
+     nothing is what this rule is for. */
+  .card:has(> .block + .block) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    align-items: start;
+  }
+
+  .card:has(> .block + .block) > .sub-head,
+  .card:has(> .block + .block) > .status {
+    grid-column: 1 / -1;
+  }
+
+  /* A block's top rule is a separator between stacked blocks; side by side
+     it is a line across the middle of the screen. */
+  .card:has(> .block + .block) > .block {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  /* A3 — two columns for lists whose rows are all the same shape. A Today
+     card, a Plan lesson and a Library row are 1,650 px wide for three lines
+     of text. Not Skills: its rows nest drill rows of varying height. */
+  .list:not(:has(.skill-concept)) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 12px;
+    align-items: start;
+  }
+
+  .list:not(:has(.skill-concept)) > .plan-links {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
    Keyboard strip (docs/04-ui-spec.md §5)
 
    Layout is entirely CSS so that a state change is a class toggle and never a
@@ -1984,7 +2068,10 @@ input[type='checkbox'] {
 /* docs/04 §7a: ≥ 900 CSS px on the shortest side is a tablet — two columns
    for the browsing screens, everything else identical. */
 @media (min-width: 900px) and (min-height: 900px) {
-  .list {
+  /* Not Skills. Its rows nest drill rows of varying height, so a two-column
+     grid leaves a 330 px void beside every tall one — a grid whose cells are
+     not the same height is worse than a list (P21d A3). */
+  .list:not(:has(.skill-concept)) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     /* Each row its own height. A grid item stretches to its track by default,

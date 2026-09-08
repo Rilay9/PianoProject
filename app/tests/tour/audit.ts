@@ -20,7 +20,7 @@ import type { Page } from '@playwright/test';
 export interface Finding {
   /**
    * `clipped`, `unreachable`, `overflow`, `plural`, `tap-target`,
-   * `light-control`, `clipped-text`, `hidden-but-drawn`, the four `R1`-`R4`
+   * `light-control`, `clipped-text`, `hidden-but-drawn`, the five `R1`-`R5`
    * rules of `04` §0, and `glyph-only` / `glyph-labelled`.
    */
   kind: string;
@@ -324,6 +324,29 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
     );
     if (primaries.length > 1) {
       add('R3-two-primaries', primaries.map((el) => name(el)).join(', '));
+    }
+
+    // R5 — sideways on a phone, the header is one line (P21d §A).
+    //
+    // 780 × 360, and the first 40 % was going on a title the side nav had
+    // already said and a card shaped for a portrait screen. Only on a phone:
+    // a tablet sideways has the height for a heading, and this rule is about
+    // a screen with 360 px of it.
+    const phoneSideways = view.width > view.height && view.height <= 500;
+    if (phoneSideways) {
+      const title = screen.querySelector<HTMLElement>('.screen--list > .screen-header h1');
+      if (title && title.getBoundingClientRect().height > 0) {
+        add('R5-sideways-header', 'the tab title is drawn sideways');
+      }
+      const first = screen.querySelector<HTMLElement>(
+        '.list-row, .block, .filters, .filter-row, .today-goal, .plan-links',
+      );
+      if (first) {
+        const down = Math.round(first.getBoundingClientRect().top);
+        if (down > 48) {
+          add('R5-sideways-header', `the first content starts ${String(down)}px down`);
+        }
+      }
     }
 
     // R4 — an empty state offers one way out. A screen that has just said it
