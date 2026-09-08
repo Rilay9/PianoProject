@@ -1691,6 +1691,11 @@ input[type='checkbox'] {
   .list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Each row its own height. A grid item stretches to its track by default,
+       so one tall row made its neighbour tall too — on a tablet, Skills rows
+       whose contents were 43 px were drawn 211, matching the tallest row
+       beside them. R2 counted those, correctly. */
+    align-items: start;
   }
 }
 
