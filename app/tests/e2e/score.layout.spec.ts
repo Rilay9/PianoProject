@@ -84,9 +84,14 @@ test.describe('score screen in landscape', () => {
       const measures = await page.locator('#score-stage .is-front svg .vf-measure').count();
       expect(measures, 'nothing was engraved').toBeGreaterThan(0);
 
-      // And the sheet is inside its box, which is what a fitted sheet must
-      // stay: wider than the stage would mean notes off the side of a phone.
-      expect(sheet.width).toBeLessThanOrEqual(stage!.width + 2);
+      // Sideways the sheet is engraved *wider* than the stage on purpose:
+      // the window, two bars behind it and two ahead, slid past under a
+      // cursor held a third of the way across (P21c A2, P21e A3). What must
+      // hold is that it starts inside the stage and fills it.
+      expect(sheet.left, 'the sheet starts off the left of the stage').toBeGreaterThanOrEqual(
+        stage!.x - 2,
+      );
+      expect(sheet.width, 'the sheet does not fill the stage').toBeGreaterThan(stage!.width * 0.6);
     });
   }
 

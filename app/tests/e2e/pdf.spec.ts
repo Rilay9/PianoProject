@@ -40,14 +40,14 @@ async function importPdf(page: import('@playwright/test').Page): Promise<void> {
 test.describe('PDF viewer', () => {
   test('finds the two systems on the fixture page and steps between them', async ({ page }) => {
     await importPdf(page);
-    await expect(page.locator('#pdf-label')).toContainText('Page 1 · system 1  (1/2)');
+    await expect(page.locator('#pdf-label')).toContainText('Page 1 · system 1 · 1/2');
     // The next system is shown greyed underneath, so the eye has somewhere to go.
     await expect(page.locator('#pdf-next')).toBeVisible();
 
     await page.locator('#pdf-next-system').click();
-    await expect(page.locator('#pdf-label')).toContainText('system 2  (2/2)');
+    await expect(page.locator('#pdf-label')).toContainText('system 2 · 2/2');
     await page.locator('#pdf-prev').click();
-    await expect(page.locator('#pdf-label')).toContainText('system 1  (1/2)');
+    await expect(page.locator('#pdf-label')).toContainText('system 1 · 1/2');
   });
 
   test('tapping the right half of the page goes forward, the left half back', async ({ page }) => {
@@ -90,10 +90,10 @@ test.describe('PDF viewer', () => {
 
     await page.locator('#pdf-adjust-save').click();
     await expect(page.locator('#pdf-status')).toContainText('Cuts saved');
-    await expect(page.locator('#pdf-label')).toContainText('(1/3)');
+    await expect(page.locator('#pdf-label')).toContainText('· 1/3');
 
     await page.reload();
-    await expect(page.locator('#pdf-label')).toContainText('(1/3)', { timeout: 30_000 });
+    await expect(page.locator('#pdf-label')).toContainText('· 1/3', { timeout: 30_000 });
   });
 
   test('dragging a cut line moves it and keeps the systems in order', async ({ page }) => {

@@ -179,7 +179,19 @@ export function SettingsScreen(router: Router): HTMLElement {
     field('Show fingering', toggleControl('set-fingering', s.showFingering, (v) => set({ showFingering: v }))),
     field('Note names in note heads', toggleControl('set-notenames', s.showNoteNames, (v) => set({ showNoteNames: v }))),
     field('Show chord symbols', toggleControl('set-chords', s.showChordSymbols, (v) => set({ showChordSymbols: v }))),
-    field('Keyboard strip', toggleControl('set-strip', s.keyboardStrip, (v) => set({ keyboardStrip: v }))),
+    field(
+      'Keys under the score',
+      selectControl(
+        'set-keys',
+        [
+          { value: 'strip', label: 'Keyboard' },
+          { value: 'ribbon', label: 'Ribbon, with the note name' },
+          { value: 'off', label: 'Off' },
+        ],
+        s.keys,
+        (value) => set({ keys: value as PracticeSettings['keys'] }),
+      ),
+    ),
     field('Keep the screen awake', toggleControl('set-awake', s.keepScreenAwake, (v) => set({ keepScreenAwake: v }))),
   );
 

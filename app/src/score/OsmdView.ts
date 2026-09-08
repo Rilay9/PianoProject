@@ -42,6 +42,14 @@ export interface OsmdViewOptions {
   timingLabel?: string;
   /** Start with the cursor element hidden; the overlay draws its own band. */
   hideCursor?: boolean;
+  /**
+   * Print `♩ = 96` above the first system (default on).
+   *
+   * The score screen turns it off: its bar already says the bpm, and the mark
+   * was the tallest thing above any stave in the piece, so every window paid
+   * for it in the fit (P21e A2, P21d A6).
+   */
+  drawMetronomeMarks?: boolean;
 }
 
 /**
@@ -54,10 +62,13 @@ export interface OsmdViewOptions {
 function applyPhoneEngraving(osmd: OpenSheetMusicDisplay, options: OsmdViewOptions): void {
   const rules = osmd.EngravingRules;
   rules.CompactMode = true;
-  rules.PageTopMargin = 0.5;
-  rules.PageBottomMargin = 0.5;
-  rules.PageLeftMargin = 0.5;
-  rules.PageRightMargin = 0.5;
+  // No page margins at all: the fit measures the ink and insets it by six
+  // pixels itself (`WindowRenderer.FIT_INSET_PX`), and a margin here was a
+  // second one nobody could see the reason for (P21d A6).
+  rules.PageTopMargin = 0;
+  rules.PageBottomMargin = 0;
+  rules.PageLeftMargin = 0;
+  rules.PageRightMargin = 0;
   rules.SystemLeftMargin = 0;
   // The title block is dead weight on a two-bar window: the screen already
   // says which piece is open.
@@ -100,7 +111,7 @@ export class OsmdView {
       drawCredits: false,
       drawPartNames: false,
       drawFingerings: options.drawFingerings ?? true,
-      drawMetronomeMarks: true,
+      drawMetronomeMarks: options.drawMetronomeMarks ?? true,
       followCursor: false,
     });
     applyPhoneEngraving(this.osmd, options);

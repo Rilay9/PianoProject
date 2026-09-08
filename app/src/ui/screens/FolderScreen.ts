@@ -215,10 +215,12 @@ export function FolderScreen(router: Router): HTMLElement {
   }
 
   function rowFor(score: FolderScore): HTMLElement {
+    // A badge is for a *state* — rusty, passed, import needed. The level,
+    // the licence and whether there are lyrics are facts about the score, and
+    // as badges they were a fourth line on every row (P21e D1). Facts go on
+    // the detail line as tokens; the one state here, a garbled title, stays
+    // a badge.
     const badges: HTMLElement[] = [];
-    if (score.level !== null) badges.push(badge(`level ${score.level.toFixed(1)} est.`, 'level'));
-    if (score.status && score.status !== 'unknown') badges.push(badge(score.status, score.status));
-    if (score.lyrics) badges.push(badge('lyrics'));
     // The manifest's copy of this title was mangled before it ever reached the
     // app and the damage is lossy — there is no repairing it here, only saying
     // so, and pointing at the one place the real title still exists.
@@ -243,6 +245,9 @@ export function FolderScreen(router: Router): HTMLElement {
     const meta = [
       score.composer || null,
       score.bars === null ? null : `${String(score.bars)} bars`,
+      score.level === null ? null : `level ${score.level.toFixed(1)} est.`,
+      score.status && score.status !== 'unknown' ? score.status : null,
+      score.lyrics ? 'lyrics' : null,
       score.ratings >= 1 ? `${score.rating.toFixed(1)} from ${String(score.ratings)}` : null,
       score.views >= 100 ? `${score.views.toLocaleString()} views` : null,
     ]

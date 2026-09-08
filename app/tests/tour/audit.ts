@@ -224,6 +224,12 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
     // Two pixels of clearance stops a stroke being clipped and does not stop
     // it *reading* as clipped: the final barline sat on the stage border and a
     // grand staff's brace looked cut in half by it.
+    //
+    // The *visible* ink. Sideways the sheet is engraved wider than the stage
+    // on purpose — bars behind and ahead of the window, slid past — so it
+    // runs off both edges by design, and measuring the whole sheet reported
+    // every sideways score scene at "-515 px from the edge". An edge the
+    // sheet runs past is not flush; an edge it stops just short of is.
     const stage = document.querySelector('#score-stage');
     const sheet = stage?.querySelector('.is-front svg');
     if (stage && sheet) {
@@ -239,8 +245,11 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       if (Number.isFinite(left)) {
         const inLeft = Math.round(left - box.left);
         const inRight = Math.round(box.right - right);
-        if (inLeft < 4 || inRight < 4) {
-          add('ink-flush', `the notation is ${String(Math.min(inLeft, inRight))}px from the stage edge`);
+        const flushLeft = inLeft >= 0 && inLeft < 4;
+        const flushRight = inRight >= 0 && inRight < 4;
+        if (flushLeft || flushRight) {
+          const side = flushLeft ? `left, ${String(inLeft)}` : `right, ${String(inRight)}`;
+          add('ink-flush', `the notation is ${side}px from the stage edge`);
         }
       }
     }
@@ -347,12 +356,19 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       if (pushed && title && Number.parseFloat(getComputedStyle(title).fontSize) > 18) {
         add('R5-sideways-header', 'the title is still at heading size sideways');
       }
+      // The first thing that is content, whichever screen this is: a lesson's
+      // status row or text, a drill's stage, a paper run's readout, or a row.
       const first = screen.querySelector<HTMLElement>(
-        '.list-row, .block, .filters, .filter-row, .today-goal, .plan-links',
+        '#lesson-status, .lesson-text, .drill-stage, #paper-controls, .paper-readout, .score-stage, ' +
+          '.list-row, .block, .filters, .filter-row, .today-goal, .plan-links',
       );
       if (first) {
         const down = Math.round(first.getBoundingClientRect().top);
-        if (down > 48) {
+        // One header line is 40 px; a pushed screen's header line carries its
+        // title beside the back link, and a drill has its counter line under
+        // that before the stage.
+        const allowed = pushed ? 130 : 48;
+        if (down > allowed) {
           add('R5-sideways-header', `the first content starts ${String(down)}px down`);
         }
       }

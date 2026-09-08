@@ -16,7 +16,8 @@
     "prebuild": "npm run content:build && node scripts/generate-icons.mjs",
     "predev": "node scripts/generate-icons.mjs",
     "pwa:audit": "node scripts/pwa-audit.mjs",
-    "tour": "playwright test --config playwright.tour.config.ts tour.spec.ts",
+    "tour": "playwright test --config playwright.tour.config.ts tour.spec.ts sequence.spec.ts",
+    "tour:sequence": "playwright test --config playwright.tour.config.ts sequence.spec.ts",
     "choices": "playwright test --config playwright.tour.config.ts choices.spec.ts",
     "review": "npm run tour && npm run choices && node scripts/open-tour.mjs"
   },

@@ -385,6 +385,10 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         measures = max((len(s.getElementsByClass(stream.Measure)) for s in staves), default=0)
         notes.append("source had no measures; bars derived from the time signature")
 
+    renumbered = renumber_measures(staves)
+    if renumbered:
+        notes.append("first bar was numbered 0 without being a pickup; bars renumbered from 1")
+
     note_count = len([n for n in out.recurse().notes])
     fingerings = count_fingerings(out)
     harmonies = len(list(out.recurse().getElementsByClass(harmony.ChordSymbol)))
@@ -404,6 +408,36 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         warnings=notes,
     )
     return out, result
+
+
+def renumber_measures(staves: list[stream.PartStaff]) -> bool:
+    """
+    Numbers bars from 1 when the source numbered them from 0 without a pickup.
+
+    music21's ABC reader hands back a first measure numbered 0 for a tune that
+    starts on a full bar, and OSMD prints that number at the head of the first
+    system: an authored song opened at "bar 0" and the second system said "1"
+    (P21e A4). A real pickup — a first bar shorter than the time signature — is
+    the one case where 0 is right, and it is left alone.
+
+    Returns True when anything changed.
+    """
+    changed = False
+    for staff in staves:
+        measures = list(staff.getElementsByClass(stream.Measure))
+        if not measures or measures[0].number != 0:
+            continue
+        first = measures[0]
+        try:
+            full = float(first.barDuration.quarterLength)
+        except Exception:  # noqa: BLE001 — no time signature in scope; treat as full
+            full = float(first.duration.quarterLength)
+        if float(first.duration.quarterLength) + 1e-6 < full:
+            continue  # a pickup: numbered 0 on purpose
+        for index, measure in enumerate(measures):
+            measure.number = index + 1
+        changed = True
+    return changed
 
 
 def count_fingerings(score: stream.Stream) -> int:
@@ -514,7 +548,7 @@ def write_mxl(score: stream.Score, out_path: Path) -> Path:
 # ---------------------------------------------------------------------------
 
 #: Bump to invalidate every existing entry without deleting the directory.
-CACHE_VERSION = 1
+CACHE_VERSION = 2
 
 CACHE_DIR = BUILD_DIR / "cache" / "convert"
 

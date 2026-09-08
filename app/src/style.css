@@ -426,6 +426,27 @@ body {
    width, and lists whose rows are all the same shape run in two columns.
    --------------------------------------------------------------------------- */
 @media (orientation: landscape) and (max-height: 500px) {
+  /* A6 — the score screen: the header row goes, and Back, the title and the
+     status line sit at the bar's left end instead. The keyboard strip is 56
+     px, not 72: the keys are as wide as before, and height is the scarce
+     thing. Together with the bar's row going to the stage during a run, the
+     music gets about 300 of 360 px where it had 194. */
+  .screen--score .score-head {
+    display: none;
+  }
+
+  .screen--score .score-bar {
+    justify-content: flex-start;
+  }
+
+  .screen--score .score-bar__left {
+    display: flex;
+  }
+
+  .screen--score .score-strip:not([data-keys='ribbon']) {
+    --strip-height: 56px;
+  }
+
   /* A1 — the tab title goes. The side nav is already saying it, in the same
      glance, permanently. A descendant selector, not a child one: Today moves
      its h1 into a row with the input chip. */
@@ -547,8 +568,42 @@ body {
     align-items: start;
   }
 
-  .list:not(:has(.skill-concept)):not(#folder-list) > .plan-links {
+  .list:not(:has(.skill-concept)):not(#folder-list) > .plan-links,
+  /* C2 — a stage row is a heading for the lessons under it, and a heading
+     that lands mid-grid in the right column between two lessons of the stage
+     above has stopped being one. It spans; its lessons flow in two columns
+     under it; the next stage spans again. Same for a unit's line. */
+  .list:not(:has(.skill-concept)):not(#folder-list) > .list-row[data-stage],
+  .list:not(:has(.skill-concept)):not(#folder-list) > .plan-unit {
     grid-column: 1 / -1;
+  }
+
+  /* C1 — Today's header is one line sideways: the week on the left, the
+     length chips and the input chip on the right. It was three rows: the
+     input chip alone on the title's line, then the week, then the chips. */
+  [data-screen='today'] > .screen-header {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 6px;
+  }
+
+  [data-screen='today'] > .screen-header > .today-goal {
+    order: 1;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  [data-screen='today'] > .screen-header > #today-lengths {
+    order: 2;
+    margin: 0 0 0 auto;
+    flex-wrap: nowrap;
+  }
+
+  [data-screen='today'] > .screen-header > .today-titlerow {
+    order: 3;
+    margin: 0;
   }
 }
 
@@ -945,7 +1000,10 @@ input[type='checkbox'] {
    --------------------------------------------------------------------------- */
 .score-view {
   position: relative;
-  overflow: auto;
+  /* Hidden, not auto: sideways the sheet is engraved wider than the stage on
+     purpose and slid past under the cursor; a scrollbar for that is wrong.
+     Scroll layout, which scrolls, overrides this below. */
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -1019,6 +1077,10 @@ input[type='checkbox'] {
 }
 
 /* Scroll layout lets the page grow; Window layout clips to the viewport. */
+.score-view[data-layout='scroll'] {
+  overflow: auto;
+}
+
 .score-view[data-layout='scroll'] .score-buffer.is-front {
   position: relative;
 }
@@ -1463,6 +1525,43 @@ input[type='checkbox'] {
   flex: 0 0 auto;
 }
 
+/* Back, the title and the status line, mirrored from the header for a phone
+   held sideways (P21d A6). Upright the bar is full and the header row is the
+   right place, so this is not drawn at all. */
+.score-bar__left {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.score-bar__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 34vw;
+}
+
+.score-bar__status {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 28vw;
+}
+
+/* During a run the stage takes the bar's row (decision 5, P21d A6): the bar
+   hides itself three seconds in, and when it is asked back it overlays the
+   foot of the sheet rather than pushing the music up and down. One fit, at
+   the run's start, instead of one on every tap. */
+.screen--score[data-running='true'] .score-stage {
+  margin-bottom: 0;
+}
+
 /* The one thing on the bar allowed to give. At 360 px the six controls come to
    358 of the 360, which is a fit that depends on a font: if anything ever
    costs more than those two pixels, the tempo label goes short rather than the
@@ -1683,6 +1782,115 @@ input[type='checkbox'] {
 
 .score-strip[hidden] {
   display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   The ribbon (P21d A6): the strip's information at a third of the height.
+
+   The piece's range as a band of cells, one per semitone, white keys light and
+   black keys dark; the wanted key in blue with its name over it, the next one
+   paler, played keys green or red. 32 px: 12 for the name, 20 for the band.
+   --------------------------------------------------------------------------- */
+.key-ribbon {
+  --key-white: #e8eaee;
+  --key-black: #2a2d33;
+  --key-expected: #2f6fed;
+  --key-correct: #17915c;
+  --key-wrong: #cf3b3b;
+  --key-uncertain: #d98324;
+  position: relative;
+  height: 32px;
+  padding: 12px 6px 0;
+  box-sizing: border-box;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.key-ribbon__cells {
+  display: flex;
+  gap: 1px;
+  height: 18px;
+}
+
+.rib {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 2px;
+  background: var(--key-white);
+}
+
+.rib--black {
+  background: var(--key-black);
+}
+
+/* Every C carries its name, faintly, so the band can be read as a keyboard. */
+.rib[data-octave]::before {
+  content: attr(data-octave);
+  position: absolute;
+  top: -12px;
+  left: 0;
+  font-size: 9px;
+  line-height: 1;
+  color: var(--text-muted);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.rib.is-next {
+  background: color-mix(in srgb, var(--key-expected) 40%, var(--key-white));
+}
+
+.rib.is-expected {
+  background: var(--key-expected);
+}
+
+.rib.is-correct {
+  background: var(--key-correct);
+}
+
+.rib.is-uncertain {
+  background: var(--key-uncertain);
+}
+
+.rib.is-wrong {
+  background: var(--key-wrong);
+}
+
+/* The name of the key wanted now, and of the one after it, over the cell. The
+   thing the strip never said and the F sharp evening was missing. */
+.rib.is-expected::after,
+.rib.is-next::after {
+  content: attr(data-note);
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--key-expected);
+  pointer-events: none;
+}
+
+.rib.is-next:not(.is-expected)::after {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.rib.is-correct::after {
+  color: var(--key-correct);
+}
+
+.rib.is-wrong::after {
+  color: var(--key-wrong);
+}
+
+/* The host gives the ribbon its 32 px and the strip its 72 (56 sideways). */
+.score-strip[data-keys='ribbon'] {
+  --strip-height: 32px;
 }
 
 /* The summary sheet covers the score; there is nothing to read behind it and
@@ -2141,6 +2349,12 @@ input[type='checkbox'] {
     align-items: start;
   }
 
+  /* A stage row is a heading for the lessons under it: it spans (C2). */
+  .list:not(:has(.skill-concept)) > .list-row[data-stage],
+  .list:not(:has(.skill-concept)) > .plan-unit {
+    grid-column: 1 / -1;
+  }
+
   /* A screen-level link under the list belongs under the whole of it. */
   .list > .plan-links {
     grid-column: 1 / -1;
@@ -2167,10 +2381,59 @@ input[type='checkbox'] {
   justify-content: center;
   gap: 6px;
   /* Wraps, for the reason `.filter-row` does: "Loop" and "Adjust" were both
-     cut off at the right edge of a phone with nothing to say they were there. */
+     cut off at the right edge of a phone with nothing to say they were there.
+     Since P21d D2 the bar is eight things and fits a 360 px phone in one row;
+     this is what happens on a narrower one. */
   flex-wrap: wrap;
   flex: none;
   padding: 4px 8px;
+  gap: 4px;
+}
+
+.pdf-bar .chip {
+  padding: 0 10px;
+  min-height: 36px;
+}
+
+/* The page label gives way before the bar wraps. */
+.pdf-bar .pdf-label {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Upright on a phone the row is eight things in 360 px. The previous/next
+   buttons go: tapping the left or right half of the page does the same thing
+   and has since P4, and the arrows were the two that did not fit. */
+@media (max-width: 420px) {
+  .pdf-bar #pdf-prev,
+  .pdf-bar #pdf-next-system {
+    display: none;
+  }
+
+  .pdf-bar .pdf-label {
+    margin-left: 4px;
+    padding-left: 0;
+  }
+}
+
+/* Adjust mode's page row is one line: the buttons say ◀ ▶ and the label
+   shrinks, rather than three rows before the thumbnail and Save below the
+   fold. */
+.pdf-adjust > .row:first-child {
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdf-adjust > .row:first-child > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .pdf-bar::-webkit-scrollbar,
@@ -2233,10 +2496,35 @@ input[type='checkbox'] {
   filter: invert(1) hue-rotate(180deg);
 }
 
-/* The next system, greyed, so the eye has somewhere to go (docs/04 §5b). */
-.pdf-system--next {
+/* The systems after this one, greyed, as many as fit — so the eye always has
+   somewhere to go and the black under the page is music instead (P21d D1). */
+.pdf-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-top: 8px;
+}
+
+.pdf-system--next {
   opacity: 0.4;
+}
+
+.pdf-system--next[hidden] {
+  display: none;
+}
+
+/* Adjust cuts is text at the end of the bar (R3), after the page label. */
+.pdf-bar > .link-button {
+  margin-left: 8px;
+  flex: none;
+}
+
+/* The Timed sheet's two fields, side by side. */
+.pdf-timing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .pdf-adjust {

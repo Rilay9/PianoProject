@@ -32,7 +32,7 @@ import type {
 import { loopFromMeasures, loopFromPrintedBars } from '../engine/prepareSession';
 import type { ScoreModel } from './types';
 import { WindowRenderer, type HandsFocus, type NoteState, type ScoreLayout } from './WindowRenderer';
-import type { KeyboardStrip } from '../ui/KeyboardStrip';
+import type { KeyView } from '../ui/KeyboardStrip';
 import type { Piano } from '../audio/Piano';
 import { Metronome, type MetronomeSound } from '../audio/Metronome';
 import { recordRenderTiming } from '../util/renderTiming';
@@ -51,7 +51,7 @@ export const TICK_INTERVAL_MS = 25;
 export interface ScoreSessionOptions {
   model: ScoreModel;
   renderer: WindowRenderer;
-  strip?: KeyboardStrip | null;
+  strip?: KeyView | null;
   piano?: Piano | null;
   audioContext?: AudioContext | null;
   /** Node the piano and metronome connect to; the shared master gain. */
@@ -99,6 +99,8 @@ export function midiFromNoteId(noteId: string): number | null {
 
 export class ScoreSession {
   private readonly options: ScoreSessionOptions;
+  /** Whatever is drawing the keys right now; swappable while a run is going. */
+  private stripView: KeyView | null;
   private piano: Piano | null = null;
   private engine: PracticeEngine | null = null;
   private metronome: Metronome | null = null;
@@ -150,6 +152,7 @@ export class ScoreSession {
 
   constructor(options: ScoreSessionOptions) {
     this.options = options;
+    this.stripView = options.strip ?? null;
     this.piano = options.piano ?? null;
   }
 
@@ -482,8 +485,14 @@ export class ScoreSession {
    * midi number is the last field of the note id, so no extra bookkeeping is
    * needed to turn a judgement into a key.
    */
+  /** Changes which keys view is painted — the owner switching strip and ribbon. */
+  setStrip(view: KeyView | null): void {
+    this.stripView = view;
+    this.paintStrip();
+  }
+
   private paintStrip(): void {
-    const strip = this.options.strip;
+    const strip = this.stripView;
     if (!strip) return;
     const correct = new Set<number>();
     const wrong = new Set<number>(this.wrongKeys);

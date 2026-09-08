@@ -35,7 +35,9 @@ import {
   type PlannedSystem,
 } from '../../pdf/systemPlan';
 import { onScreenDispose } from '../screenLifecycle';
-import { button, el } from '../widgets';
+import { button, el, openSheet } from '../widgets';
+import { BEATS_PER_BAR, DEFAULT_BARS_PER_SYSTEM, intervalMs, LEARN_MAX_MS, LEARN_MIN_MS } from '../../pdf/timing';
+export { DEFAULT_BARS_PER_SYSTEM, intervalMs, LEARN_MAX_MS, LEARN_MIN_MS, secondsPerSystem } from '../../pdf/timing';
 
 export type FollowMode = 'manual' | 'timed' | 'loop';
 
@@ -44,14 +46,6 @@ const DISPLAY_WIDTH = 1400;
 
 /** Rendered pages kept in memory at once: the one being read, plus neighbours. */
 const PAGE_CACHE_SIZE = 3;
-
-/** docs/04 §5b: timed advance is set in bpm, so a system needs a bar count. */
-export const DEFAULT_BARS_PER_SYSTEM = 4;
-const BEATS_PER_BAR = 4;
-
-export function secondsPerSystem(bpm: number, barsPerSystem: number): number {
-  return (barsPerSystem * BEATS_PER_BAR * 60) / Math.max(1, bpm);
-}
 
 /**
  * @param openAtPage 1-based page to start on (replan §5.4). A shelf piece
@@ -66,10 +60,19 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
 
   const status = el('p.status', { id: 'pdf-status', role: 'status', 'aria-live': 'polite' });
   const mainCanvas = el('canvas.pdf-system', { id: 'pdf-system' }) as HTMLCanvasElement;
-  const nextCanvas = el('canvas.pdf-system.pdf-system--next', { id: 'pdf-next' }) as HTMLCanvasElement;
-  const stage = el('div.pdf-stage', { id: 'pdf-stage' }, mainCanvas, nextCanvas, status);
+  /**
+   * The systems after the current one, dimmed, as many as fit (P21d D1).
+   *
+   * It was one, "if it fits". A letter-page system fitted to a phone's width
+   * is about 170 px tall, so upright there was room for three more and a
+   * thousand pixels of black instead. The first of them keeps the id the
+   * tests and the tour know it by.
+   */
+  const column = el('div.pdf-column', { id: 'pdf-column' });
+  const stage = el('div.pdf-stage', { id: 'pdf-stage' }, mainCanvas, column, status);
   const label = el('div.pdf-label', { id: 'pdf-label' });
   const adjustHost = el('div.pdf-adjust', { id: 'pdf-adjust', hidden: true });
+  const followCanvases: HTMLCanvasElement[] = [];
 
   let doc: PdfDocument | null = null;
   let pageCount = 0;
@@ -94,6 +97,9 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
   let metronome: Metronome | null = null;
   let metronomeOn = false;
   let disposed = false;
+  /** When the last two manual advances happened, so Timed can learn from them. */
+  let lastManualAdvanceAt: number | null = null;
+  let learnedMs: number | null = null;
 
   // --- drawing -------------------------------------------------------------
 
@@ -144,12 +150,38 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     }
   }
 
+  /** How tall a system is on the screen, from its share of the page. */
+  function screenHeightOf(system: PlannedSystem | undefined): number {
+    const page = system ? pageCache.get(system.page) : undefined;
+    if (!system || !page) return 0;
+    const width = stage.clientWidth - 16;
+    if (width <= 0) return 0;
+    return ((system.bottom - system.top) * page.height * width) / page.width;
+  }
+
+  /** How many systems after the current one fit under it. */
+  function followCount(): number {
+    const room = stage.clientHeight - screenHeightOf(systems[index]) - 8;
+    let used = 0;
+    let count = 0;
+    for (let i = index + 1; i < systems.length; i += 1) {
+      const height = screenHeightOf(systems[i]);
+      if (height <= 0) break;
+      if (used + height + 8 > room && count > 0) break;
+      used += height + 8;
+      count += 1;
+      if (used > room) break;
+    }
+    return Math.max(count, index + 1 < systems.length ? 1 : 0);
+  }
+
   /** The pages the current position needs, then repaint once they are in. */
   function ensureVisiblePages(): void {
-    const wanted = [systems[index]?.page, systems[index + 1]?.page].filter(
-      (page): page is number => page !== undefined,
-    );
-    const missing = wanted.filter((page) => !pageCache.has(page));
+    const following = followCount();
+    const wanted = [systems[index]?.page];
+    for (let i = 1; i <= following; i += 1) wanted.push(systems[index + i]?.page);
+    const distinct = [...new Set(wanted.filter((page): page is number => page !== undefined))];
+    const missing = distinct.filter((page) => !pageCache.has(page));
     if (missing.length === 0) return;
     void (async () => {
       for (const page of missing) await ensurePage(page);
@@ -161,21 +193,63 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     const current = systems[index];
     ensureVisiblePages();
     drawInto(mainCanvas, current);
-    drawInto(nextCanvas, systems[index + 1]);
+    // The column of what comes next, as many as fit: the eye always has two
+    // systems of read-ahead and the music never moves mid-system, because
+    // advancing moves the column up one and nothing else.
+    const following = followCount();
+    while (followCanvases.length < following) {
+      const canvas = el('canvas.pdf-system.pdf-system--next') as HTMLCanvasElement;
+      if (followCanvases.length === 0) canvas.id = 'pdf-next';
+      followCanvases.push(canvas);
+      column.appendChild(canvas);
+    }
+    followCanvases.forEach((canvas, i) => {
+      drawInto(canvas, i < following ? systems[index + 1 + i] : undefined);
+    });
     label.textContent = current
-      ? `Page ${String(current.page + 1)} · system ${String(current.indexOnPage + 1)}  (${String(
+      ? `Page ${String(current.page + 1)} · system ${String(current.indexOnPage + 1)} · ${String(
           index + 1,
-        )}/${String(systems.length)})`
+        )}/${String(systems.length)}`
       : 'No systems found';
     section.dataset.system = String(index);
     section.dataset.page = String(current?.page ?? 0);
   }
 
-  function goTo(next: number): void {
+  function goTo(next: number, byHand = false): void {
     if (systems.length === 0) return;
-    index = Math.min(systems.length - 1, Math.max(0, next));
+    const target = Math.min(systems.length - 1, Math.max(0, next));
+    if (byHand && target === index + 1) learnFromTap();
+    index = target;
     draw();
     if (mode === 'timed' || mode === 'loop') arm();
+  }
+
+  /**
+   * Two manual advances in a row measure how long a system takes (P21d D3).
+   *
+   * The way tap-tempo works: the gap between the last two taps of "next",
+   * while he is playing, is the real duration of a system for this piece at
+   * his tempo — no 4/4 assumed, no bars per system to count. Kept until the
+   * next pair replaces it.
+   */
+  function learnFromTap(): void {
+    const now = performance.now();
+    if (lastManualAdvanceAt !== null) {
+      const gap = now - lastManualAdvanceAt;
+      if (gap >= LEARN_MIN_MS && gap <= LEARN_MAX_MS) {
+        learnedMs = Math.round(gap);
+        if (mode === 'timed') describeTiming();
+      }
+    }
+    lastManualAdvanceAt = now;
+  }
+
+  /** What Timed is going to do, in the status line. */
+  function describeTiming(): void {
+    const { ms, learned } = intervalMs(learnedMs, bpm, barsPerSystem);
+    status.textContent = learned
+      ? `Timed: every ${(ms / 1000).toFixed(1)} s, from your last two taps · Timed again to change`
+      : `Timed: every ${(ms / 1000).toFixed(1)} s from ${String(bpm)} bpm · Timed again to change`;
   }
 
   // --- follow modes --------------------------------------------------------
@@ -198,10 +272,18 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
         return;
       }
       arm();
-    }, secondsPerSystem(bpm, barsPerSystem) * 1000);
+    }, intervalMs(learnedMs, bpm, barsPerSystem).ms);
   }
 
   function setMode(next: FollowMode): void {
+    // Timed, tapped while already timed, opens its sheet (P21d D2): the bpm
+    // and bars-per-system arithmetic is the fallback for when there have
+    // been no taps to learn from, and it lives behind the chip it belongs to
+    // rather than on a row of its own under the page.
+    if (next === 'timed' && mode === 'timed') {
+      openTimingSheet();
+      return;
+    }
     mode = next;
     section.dataset.mode = next;
     for (const id of ['manual', 'timed', 'loop']) {
@@ -209,6 +291,38 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     }
     if (next === 'manual') disarm();
     else arm();
+    if (next === 'timed') describeTiming();
+  }
+
+  function openTimingSheet(): void {
+    const sheet = openSheet('Timed');
+    const rows = el('div.pdf-timing', { id: 'pdf-timing' });
+    rows.append(
+      el('label', { htmlFor: 'pdf-bpm', text: 'bpm' }),
+      bpmInput,
+      el('label', { htmlFor: 'pdf-bars', text: 'bars/system' }),
+      barsInput,
+    );
+    const learned = el('p.muted', {
+      id: 'pdf-learned',
+      text:
+        learnedMs === null
+          ? 'Tap ▶ twice while playing and Timed will take the gap between the taps instead.'
+          : `Learned ${(learnedMs / 1000).toFixed(1)} s from your last two taps. Forget it to use the bpm.`,
+    });
+    const forget = button(
+      'Forget the taps',
+      () => {
+        learnedMs = null;
+        lastManualAdvanceAt = null;
+        describeTiming();
+        if (mode !== 'manual') arm();
+        sheet.close();
+      },
+      { id: 'pdf-forget-taps', variant: 'quiet' },
+    );
+    forget.hidden = learnedMs === null;
+    sheet.body.append(rows, learned, forget);
   }
 
   async function toggleMetronome(): Promise<void> {
@@ -311,15 +425,15 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     const count = cutsToSystems(pageCuts, adjustPage).length;
     adjustHost.append(
       el('div.row', {},
-        button('◀ Page', () => {
+        button('◀', () => {
           adjustPage = Math.max(0, adjustPage - 1);
           drawAdjust();
-        }, { id: 'pdf-adjust-prev' }),
+        }, { id: 'pdf-adjust-prev', ariaLabel: 'Previous page' }),
         el('span', { id: 'pdf-adjust-label', text: `Page ${String(adjustPage + 1)} of ${String(pageCount)} · ${String(count)} systems` }),
-        button('Page ▶', () => {
+        button('▶', () => {
           adjustPage = Math.min(pageCount - 1, adjustPage + 1);
           drawAdjust();
-        }, { id: 'pdf-adjust-next' }),
+        }, { id: 'pdf-adjust-next', ariaLabel: 'Next page' }),
       ),
       frame,
       el('div.row', {},
@@ -388,27 +502,6 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
 
   // --- chrome --------------------------------------------------------------
 
-  const bar = el(
-    'div.pdf-bar',
-    { id: 'pdf-bar' },
-    button('←', () => router.navigate('library'), { id: 'pdf-back', title: 'Back to Library' }),
-    button('◀', () => goTo(index - 1), {
-      id: 'pdf-prev',
-      title: 'Previous system',
-      ariaLabel: 'Previous system',
-    }),
-    button('▶', () => goTo(index + 1), {
-      id: 'pdf-next-system',
-      title: 'Next system',
-      ariaLabel: 'Next system',
-    }),
-    el('button.chip', { type: 'button', id: 'pdf-mode-manual', text: 'Tap', 'aria-pressed': true }),
-    el('button.chip', { type: 'button', id: 'pdf-mode-timed', text: 'Timed', 'aria-pressed': false }),
-    el('button.chip', { type: 'button', id: 'pdf-mode-loop', text: 'Loop', 'aria-pressed': false }),
-    el('button.chip', { type: 'button', id: 'pdf-metronome', text: '🥁', 'aria-pressed': false, title: 'Metronome' }),
-    label,
-  );
-
   const bpmInput = el('input', {
     type: 'number',
     id: 'pdf-bpm',
@@ -438,29 +531,41 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     if (mode !== 'manual') arm();
   });
 
-  const timing = el(
-    'div.pdf-timing',
-    { id: 'pdf-timing' },
-    el('label', { htmlFor: 'pdf-bpm', text: 'bpm' }),
-    bpmInput,
-    el('label', { htmlFor: 'pdf-bars', text: 'bars/system' }),
-    barsInput,
-    el('button.chip', { type: 'button', id: 'pdf-adjust-toggle', text: 'Adjust cuts', 'aria-pressed': false }),
+
+  const bar = el(
+    'div.pdf-bar',
+    { id: 'pdf-bar' },
+    button('←', () => router.navigate('library'), { id: 'pdf-back', title: 'Back to Library' }),
+    button('◀', () => goTo(index - 1), {
+      id: 'pdf-prev',
+      title: 'Previous system',
+      ariaLabel: 'Previous system',
+    }),
+    button('▶', () => goTo(index + 1, true), {
+      id: 'pdf-next-system',
+      title: 'Next system',
+      ariaLabel: 'Next system',
+    }),
+    el('button.chip', { type: 'button', id: 'pdf-mode-manual', text: 'Tap', 'aria-pressed': true }),
+    el('button.chip', { type: 'button', id: 'pdf-mode-timed', text: 'Timed', 'aria-pressed': false }),
+    el('button.chip', { type: 'button', id: 'pdf-mode-loop', text: 'Loop', 'aria-pressed': false }),
+    el('button.chip', { type: 'button', id: 'pdf-metronome', text: '🥁', 'aria-pressed': false, title: 'Metronome' }),
+    label,
+    // A once-per-import action, as text at the end of the row (R3).
+    button('Adjust cuts', () => toggleAdjust(!adjusting), { id: 'pdf-adjust-toggle', variant: 'quiet' }),
   );
 
-  section.append(bar, stage, timing, adjustHost);
+  section.append(bar, stage, adjustHost);
 
   bar.querySelector('#pdf-mode-manual')?.addEventListener('click', () => setMode('manual'));
   bar.querySelector('#pdf-mode-timed')?.addEventListener('click', () => setMode('timed'));
   bar.querySelector('#pdf-mode-loop')?.addEventListener('click', () => setMode('loop'));
   bar.querySelector('#pdf-metronome')?.addEventListener('click', () => void toggleMetronome());
-  timing.querySelector('#pdf-adjust-toggle')?.addEventListener('click', () => toggleAdjust(!adjusting));
-
   // Tap the page itself: right half forward, left half back (docs/04 §5b).
   stage.addEventListener('click', (event) => {
     if (adjusting) return;
     const rect = stage.getBoundingClientRect();
-    goTo(event.clientX - rect.left > rect.width / 2 ? index + 1 : index - 1);
+    goTo(event.clientX - rect.left > rect.width / 2 ? index + 1 : index - 1, true);
   });
 
   // --- load ----------------------------------------------------------------

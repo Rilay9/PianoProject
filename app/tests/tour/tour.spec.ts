@@ -336,7 +336,18 @@ for (const { orientation, size } of FORM_FACTORS) {
         await waitForSheet(page);
         await page.locator('#score-mode').selectOption('wait');
         await page.locator('#score-play').click();
-      }, '#score-waiting');
+        // Sideways the header is not drawn and the waiting line is mirrored
+        // into the bar's left end (P21d A6); either counts.
+      }, async (p) => {
+        const named = ((await p.locator('#score-waiting').textContent()) ?? '').trim();
+        const side = ((await p.locator('#score-status-side').textContent()) ?? '').trim();
+        // Upright the line is visible; sideways it is mirrored into the bar.
+        const ok =
+          named !== '' &&
+          ((await p.locator('#score-waiting').isVisible()) || side.includes(named));
+        if (!ok) console.log(`  24-score-names: waiting="${named}" side="${side}"`);
+        return ok;
+      });
       await scene('25-score-tempo', 'Tempo mode', 'The clock drives. Same screen, different promise.', async () => {
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
@@ -363,14 +374,24 @@ for (const { orientation, size } of FORM_FACTORS) {
         await go(page, `/score/${SONG}`, 'score');
         await waitForSheet(page);
         await withScoreMenu(page, async () => {
-          await page.locator('#score-strip-toggle').click();
+          await page.locator('#score-keys-off').click();
         });
         await page.waitForTimeout(800);
       }, async (p) => !(await p.locator('#score-strip').isVisible()));
+      await scene('28b-score-ribbon', 'The ribbon', 'The keys as a band with the wanted note named. Enough, at a third of the height?', async () => {
+        await go(page, `/score/${SONG}`, 'score');
+        await waitForSheet(page);
+        await withScoreMenu(page, async () => {
+          await page.locator('#score-keys-ribbon').click();
+        });
+        await page.locator('#score-mode').selectOption('wait');
+        await page.locator('#score-play').click();
+        await page.waitForTimeout(800);
+      }, '#score-strip .key-ribbon .rib.is-expected');
       // Put it back. `Keys` is a *setting*, so leaving it off leaked into
       // every later score scene — which is why `33-score-four-bars` came back
       // as a second copy of this one on both tablets.
-      await setSetting(page, 'keyboardStrip', true);
+      await setSetting(page, 'keys', 'strip');
       await scene('29-score-blind', 'Blind mode', 'The notation is hidden on purpose. Is that obvious?', async () => {
         await go(page, `/score/${SONG}?blind=1`, 'score');
         await page.waitForTimeout(2000);

@@ -26,6 +26,7 @@ import {
   getSettings,
   updateSettings,
   type FollowInput,
+  type KeysView,
 } from '../../data/settingsStore';
 import { evaluateOutcome } from '../../engine/Scoring';
 import { recordRun } from '../../data/progressStore';
@@ -43,7 +44,8 @@ import {
 } from '../../score/WindowRenderer';
 import { bpmAt, type ScoreModel } from '../../score/types';
 import type { Router } from '../../router';
-import { KeyboardStrip } from '../KeyboardStrip';
+import { KeyboardStrip, type KeyView } from '../KeyboardStrip';
+import { KeyRibbon } from '../KeyRibbon';
 import { waitingForLine } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
@@ -149,7 +151,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   let model: ScoreModel | null = null;
   let renderer: WindowRenderer | null = null;
   let session: ScoreSession | null = null;
-  let strip: KeyboardStrip | null = null;
+  let strip: KeyView | null = null;
+  /** The keys the piece uses, once it is loaded; what a keys view is built for. */
+  let keysRange: { from: number; to: number } | null = null;
   let wakeLock: WakeLockSentinel | null = null;
 
   const settings = { ...getSettings() };
@@ -360,6 +364,40 @@ export function ScoreScreen(router: Router): HTMLElement {
   micMeter.appendChild(micFill);
 
   head.append(back, beatDot, title, status, waitingLine, micMeter);
+
+  /**
+   * The same three things at the bar's left end, for a phone held sideways
+   * (P21d A6).
+   *
+   * Sideways the header row is 40 of 360 px and carries nothing you need
+   * while playing, while the bar's left third is empty. So the header goes
+   * and Back, the title and the status line move into that third. Mirrored
+   * rather than moved: the header is still the right place upright, where the
+   * bar is full, and a node can only be in one place. Two elements, kept in
+   * step by watching the originals.
+   */
+  const barLeft = document.createElement('div');
+  barLeft.className = 'score-bar__left';
+  barLeft.id = 'score-bar-left';
+  const backSide = button('← Back', () => router.navigate(router.route.tab), 'score-back-side');
+  const titleSide = document.createElement('span');
+  titleSide.className = 'score-bar__title';
+  titleSide.id = 'score-title-side';
+  const statusSide = document.createElement('span');
+  statusSide.className = 'score-bar__status';
+  statusSide.id = 'score-status-side';
+  barLeft.append(backSide, titleSide, statusSide);
+  bar.prepend(barLeft);
+  const syncBarLeft = (): void => {
+    titleSide.textContent = title.textContent;
+    // The waiting line is the more useful of the two when it has something.
+    statusSide.textContent = waitingLine.hidden ? status.textContent : waitingLine.textContent;
+  };
+  const mirror = new MutationObserver(syncBarLeft);
+  for (const node of [title, status, waitingLine]) {
+    mirror.observe(node, { childList: true, characterData: true, subtree: true, attributes: true });
+  }
+  unsubscribers.push(() => mirror.disconnect());
 
   /**
    * Where the controls that are not on the bar live between openings.
@@ -619,15 +657,35 @@ export function ScoreScreen(router: Router): HTMLElement {
   const layoutScroll = button('Scroll', () => setLayout('scroll'), 'score-layout-scroll');
   layoutGroup.append(layoutWindow, layoutScroll);
 
-  const stripButton = button(
-    'Off',
-    () => {
-      settings.keyboardStrip = !settings.keyboardStrip;
-      updateSettings({ keyboardStrip: settings.keyboardStrip });
-      render();
-    },
-    'score-strip-toggle',
-  );
+  /**
+   * Keys, ribbon or nothing (P21d A6).
+   *
+   * The ribbon is the strip's information at a third of the height, with the
+   * wanted note's *name* over it — which is what the F♯4 evening was missing.
+   * Which of the two he wants is his taste, so both are here to be tried.
+   */
+  const keysGroup = document.createElement('div');
+  keysGroup.className = 'score-group';
+  keysGroup.id = 'score-keys';
+  const KEYS_CHOICES: { id: KeysView; label: string }[] = [
+    { id: 'strip', label: 'Keys' },
+    { id: 'ribbon', label: 'Ribbon' },
+    { id: 'off', label: 'Off' },
+  ];
+  for (const choice of KEYS_CHOICES) {
+    keysGroup.appendChild(
+      button(
+        choice.label,
+        () => {
+          settings.keys = choice.id;
+          updateSettings({ keys: choice.id });
+          mountKeys();
+          render();
+        },
+        `score-keys-${choice.id}`,
+      ),
+    );
+  }
 
   const destinationButton = button('🔈 Phone', () => cyclePlaybackDestination(), 'score-destination');
 
@@ -665,7 +723,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     menuRow('Bars in window', barsDown, barsLabel, barsUp),
     menuRow('Size', zoomOut, zoomIn),
     menuRow('Layout', layoutGroup),
-    menuRow('Keys', stripButton),
+    menuRow('Keys', keysGroup),
     menuRow('Sound', destinationButton),
     menuRow('Blind', blindToggle),
     menuRow('Perform', performanceToggle),
@@ -1426,6 +1484,9 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   function render(): void {
     drawWaitingFor();
+    // Belt and braces with the observer: every render is a moment the copy
+    // in the bar must agree with the header.
+    syncBarLeft();
     modeSelect.value = mode;
     inputSelect.value = input;
     tempo.value = String(tempoPct);
@@ -1448,9 +1509,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     metronomeButton.textContent = metronomeOn ? 'On' : 'Off';
     metronomeButton.classList.toggle('is-selected', metronomeOn);
     metronomeButton.setAttribute('aria-pressed', String(metronomeOn));
-    stripButton.textContent = settings.keyboardStrip ? 'On' : 'Off';
-    stripButton.classList.toggle('is-selected', settings.keyboardStrip);
-    stripButton.setAttribute('aria-pressed', String(settings.keyboardStrip));
+    for (const choice of KEYS_CHOICES) {
+      const node = document.getElementById(`score-keys-${choice.id}`);
+      node?.classList.toggle('is-selected', settings.keys === choice.id);
+      node?.setAttribute('aria-pressed', String(settings.keys === choice.id));
+    }
     destinationButton.textContent =
       settings.playbackDestination === 'phone'
         ? '🔈 Phone'
@@ -1479,8 +1542,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     const playing = session?.running === true && session.state?.paused !== true;
     playPause.textContent = playing ? '⏸' : '▶';
     playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
-    stripHost.hidden = !settings.keyboardStrip;
+    stripHost.hidden = settings.keys === 'off';
+    stripHost.dataset.keys = settings.keys;
     section.dataset.running = String(session?.running === true);
+    // The size a run starts at is the size it keeps (P21e A2).
+    renderer?.setRunning(session?.running === true);
     section.dataset.mode = mode;
     // Which mode the *run* is in, when it is not the one the select shows.
     section.dataset.hearing = String(hearing);
@@ -1489,6 +1555,37 @@ export function ScoreScreen(router: Router): HTMLElement {
       ? 'Stop playing it to you'
       : 'Play the piece to you, nothing judged';
     section.dataset.input = input;
+  }
+
+  /**
+   * Builds whatever is under the score — the strip, the ribbon, or nothing —
+   * from the setting, and hands it to the running session if there is one.
+   *
+   * The strip is tappable, because for a learner with no MIDI cable it *is*
+   * the instrument (docs/04 §5): it feeds the shared ScreenKeyboardSource
+   * rather than the session directly, so "screen keys" is an input like any
+   * other and the engine cannot tell the difference. The ribbon is not: an
+   * 8 px cell is not a key anyone can play.
+   */
+  function mountKeys(): KeyView | null {
+    strip?.destroy();
+    strip = null;
+    if (!keysRange || settings.keys === 'off') {
+      session?.setStrip(null);
+      return null;
+    }
+    strip =
+      settings.keys === 'ribbon'
+        ? new KeyRibbon(keysRange)
+        : new KeyboardStrip({
+            ...keysRange,
+            interactive: true,
+            onNoteOn: (midi, velocity) => screenKeyboardSource.noteOn(midi, velocity),
+            onNoteOff: (midi) => screenKeyboardSource.noteOff(midi),
+          });
+    stripHost.appendChild(strip.el);
+    session?.setStrip(strip);
+    return strip;
   }
 
   // --- load ----------------------------------------------------------------
@@ -1567,7 +1664,12 @@ export function ScoreScreen(router: Router): HTMLElement {
         layout: settings.layout,
         handsFocus: hands,
         drawFingerings: settings.showFingering,
+        // The bar says the bpm; the mark above the first system was the
+        // tallest thing above any stave, paid for by every window (P21d A6).
+        drawMetronomeMarks: false,
       });
+
+      if (window.__pianopath) window.__pianopath.scoreFit = () => renderer?.debugFit();
 
       // Draw the first window. `WindowRenderer.create` prepares its buffers but
       // does not commit to a position: the first `showStep` is what puts notes
@@ -1582,28 +1684,13 @@ export function ScoreScreen(router: Router): HTMLElement {
         if (modeSelect instanceof HTMLSelectElement) modeSelect.value = 'tempo';
       }
 
-      if (settings.keyboardStrip) {
-        // Tappable, because for a learner with no MIDI cable this strip *is*
-        // the instrument (docs/04 §5). It feeds the shared ScreenKeyboardSource
-        // rather than the session directly, so "screen keys" is an input like
-        // any other and the engine cannot tell the difference.
-        // The range this piece uses, not all 88 keys. With the full keyboard
-        // on a 360 px phone every key is about seven pixels, and the blue key
-        // marking the note the app is waiting for is a sliver among eighty-
-        // eight slivers — which is exactly how a run got stuck on an F#4 that
-        // was on the screen the whole time.
-        const range = stripRangeFor(
-          loaded.steps.flatMap((step) => step.notes.map((note) => note.midi)),
-        );
-        strip = new KeyboardStrip({
-          ...range,
-          interactive: true,
-          onNoteOn: (midi, velocity) => screenKeyboardSource.noteOn(midi, velocity),
-          onNoteOff: (midi) => screenKeyboardSource.noteOff(midi),
-        });
-        stripHost.appendChild(strip.el);
-        strip.scrollToNote(loaded.steps[0]?.notes[0]?.midi ?? 60, 'auto');
-      }
+      // The range this piece uses, not all 88 keys. With the full keyboard
+      // on a 360 px phone every key is about seven pixels, and the blue key
+      // marking the note the app is waiting for is a sliver among eighty-
+      // eight slivers — which is exactly how a run got stuck on an F#4 that
+      // was on the screen the whole time.
+      keysRange = stripRangeFor(loaded.steps.flatMap((step) => step.notes.map((note) => note.midi)));
+      mountKeys()?.scrollToNote(loaded.steps[0]?.notes[0]?.midi ?? 60, 'auto');
 
       const context = audioEngine.contextOrNull;
       session = new ScoreSession({

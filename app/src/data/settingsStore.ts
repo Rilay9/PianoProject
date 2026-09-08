@@ -17,6 +17,7 @@ import { persistLocal } from './persist';
 
 const STORAGE_KEY = 'pianopath.settings';
 
+export type KeysView = 'strip' | 'ribbon' | 'off';
 export type PlaybackDestination = 'phone' | 'piano' | 'both';
 export type PlaybackHands = 'none' | 'non-focused' | 'both';
 export type FollowInput = 'midi' | 'mic' | 'keys' | 'none';
@@ -57,7 +58,13 @@ export interface PracticeSettings {
   showFingering: boolean;
   showNoteNames: boolean;
   showChordSymbols: boolean;
-  keyboardStrip: boolean;
+  /**
+   * What is drawn under the score (P21d A6): the keyboard strip, the ribbon
+   * — the same keys as a 32 px band with the wanted note's name over it — or
+   * nothing. Replaces the `keyboardStrip` boolean; an old `false` reads as
+   * `off`.
+   */
+  keys: KeysView;
   keepScreenAwake: boolean;
 
   // --- Sound ---
@@ -110,7 +117,7 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   showFingering: true,
   showNoteNames: false,
   showChordSymbols: true,
-  keyboardStrip: true,
+  keys: 'strip',
   keepScreenAwake: true,
 
   playbackDestination: 'phone',
@@ -172,7 +179,9 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   out.showFingering = bool(v.showFingering, out.showFingering);
   out.showNoteNames = bool(v.showNoteNames, out.showNoteNames);
   out.showChordSymbols = bool(v.showChordSymbols, out.showChordSymbols);
-  out.keyboardStrip = bool(v.keyboardStrip, out.keyboardStrip);
+  // The old boolean, if that is what is stored: `false` was "no keys".
+  const legacyKeys: KeysView = v.keyboardStrip === false ? 'off' : out.keys;
+  out.keys = oneOf(v.keys, ['strip', 'ribbon', 'off'] as const, legacyKeys);
   out.keepScreenAwake = bool(v.keepScreenAwake, out.keepScreenAwake);
 
   out.playbackDestination = oneOf(v.playbackDestination, ['phone', 'piano', 'both'] as const, out.playbackDestination);

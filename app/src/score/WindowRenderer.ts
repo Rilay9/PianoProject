@@ -78,6 +78,18 @@ export const SLIDE_TARGET_MAX = 0.45;
 /** Bars of read-ahead drawn to the right of the window, sideways. */
 const SLIDE_READ_AHEAD_BARS = 2;
 
+/**
+ * Bars drawn to the *left* of the window, sideways (P21e A3).
+ *
+ * Without them a fresh chunk starts at the bar being played, so every swap
+ * lands the cursor on the left edge of the stage — measured at 11 % of the
+ * width — and the slide has nothing to pull it back to a third with. Two bars
+ * behind means the bar being played is never the first bar drawn, the slide
+ * can hold it at a third from the first note of a chunk, and the swap itself
+ * is invisible: the same bars sit at the same places on both sheets.
+ */
+const SLIDE_BEHIND_BARS = 2;
+
 /** Manual scrolling suspends auto-scroll for this long (docs §5). */
 export const MANUAL_SCROLL_PAUSE_MS = 5000;
 
@@ -90,6 +102,14 @@ export interface WindowRendererOptions {
   zoom?: number;
   handsFocus?: HandsFocus;
   drawFingerings?: boolean;
+  /**
+   * Whether the engraver prints `♩ = 96` above the first system.
+   *
+   * The score screen's bar already says the bpm, and the mark is the tallest
+   * thing above a stave: with it, the first window's ink was 45 px taller than
+   * every other window's, and the fit paid for that in every one of them.
+   */
+  drawMetronomeMarks?: boolean;
 }
 
 interface Buffer {
@@ -97,6 +117,17 @@ interface Buffer {
   wrapper: HTMLElement;
   /** The range currently drawn, or null when nothing has been drawn yet. */
   range: MeasureRange | null;
+  /**
+   * The stage height and scale this sheet was last fitted for.
+   *
+   * A pre-rendered spare is fitted off the critical path and brought forward
+   * as a class toggle — and if the stage changed height in between (a run
+   * starting takes the bar's row) it came forward at the size of the stage
+   * it was fitted to. Measured: 1.021 for the front sheet, 0.881 for the spare
+   * it swapped to, 1.021 for the next. So a swap checks this and refits
+   * once when it is stale, which is a transform write, not a render.
+   */
+  fittedFor?: { height: number; scale: number };
   /** printedNoteKey-independent: ScoreNote.id -> element, for the drawn range. */
   elements: Map<string, SVGGElement>;
 }
@@ -175,6 +206,9 @@ const FIT_MARGIN_PX = FIT_INSET_PX * 2;
 /** How many engravings the fit will try before settling. Each is a render. */
 const FIT_STEPS = 4;
 
+/** How much of a piece the probe engraves to measure it (P21e A2). */
+const PROBE_MAX_BARS = 48;
+
 function clampBars(bars: number): number {
   return Math.min(MAX_BARS_PER_WINDOW, Math.max(MIN_BARS_PER_WINDOW, Math.round(bars)));
 }
@@ -236,6 +270,44 @@ export class WindowRenderer {
   private slidBar = -1;
   /** The fit transform, before any slide is added to it. */
   private baseTransform = '';
+  /**
+   * A third engraver that is never shown: it draws the whole piece once, so
+   * the fit can be to the *tallest window in the piece* rather than to
+   * whichever bars happen to be on the screen (P21e A2).
+   *
+   * That was the size jump: the scale was recomputed from the slots' own ink
+   * on every swap, so a bar with a ledger line was engraved smaller than a
+   * bar without one and the staff grew and shrank under the player's eyes —
+   * 272, 334, 294 px across three windows of the same eight-bar song. One
+   * measurement of the piece, one scale for the run.
+   */
+  private probe: OsmdView | null = null;
+  /** The MusicXML, kept so the probe can load it lazily. */
+  private probeSource = '';
+  private probeLoading = false;
+  /** What the probe measured, at `pieceInkZoom`; null until it has run. */
+  private pieceInk: PieceInk | null = null;
+  private pieceInkZoom = -1;
+  private measureHandle: number | null = null;
+  /**
+   * The fallback while the probe has not run yet, and if it never can: the
+   * tallest and widest ink seen at this zoom. Held, never released, so the
+   * sheet can only ever get smaller during a run — and only until the probe
+   * has measured, which is one frame after the first draw.
+   */
+  private held: { height: number; width: number; zoom: number } = { height: 0, width: 0, zoom: -1 };
+  /**
+   * The size the run started at, held until it ends (P21e A2).
+   *
+   * The probe's measurement arrives on idle time, and on a busy phone that
+   * can be three bars into a run; applying it then is the size change this
+   * whole mechanism exists to remove, arriving late. So a run freezes the
+   * scale and the stave placement it began with: the measurement, if it
+   * comes later, is applied at the next fit — the next run, or a resize. A
+   * later bar taller than anything seen can still *shrink* it; nothing grows.
+   */
+  private frozen: { scale: number; piece: PieceInk | null } | null = null;
+  private freezeHandle: number | null = null;
   /** The single-system pre-render, queued for the frame after a swap. */
   private prerenderHandle: number | null = null;
   /** Watches the stage, because its height settles after the first draw. */
@@ -320,6 +392,9 @@ export class WindowRenderer {
         ...(options.drawFingerings === undefined
           ? {}
           : { drawFingerings: options.drawFingerings }),
+        ...(options.drawMetronomeMarks === undefined
+          ? {}
+          : { drawMetronomeMarks: options.drawMetronomeMarks }),
       });
       await view.load(options.musicXml);
       view.zoom = options.zoom ?? 1;
@@ -327,6 +402,24 @@ export class WindowRenderer {
     }
     const renderer = new WindowRenderer(options, buffers as [Buffer, Buffer]);
     renderer.updateSlotClasses();
+    // The probe. Loaded like the slots, drawn only when the zoom changes, and
+    // never visible: `.score-buffer` without `is-front` is `visibility:
+    // hidden`, which is what the second slot was for years.
+    const probeWrapper = document.createElement('div');
+    probeWrapper.className = 'score-buffer score-probe';
+    probeWrapper.setAttribute('aria-hidden', 'true');
+    options.container.appendChild(probeWrapper);
+    // Not loaded here: loading a 780-bar score into OSMD a third time is
+    // seconds on a throttled phone, and the first window must not wait for a
+    // measurement that only refines it. Loaded on idle, after the first paint.
+    renderer.probe = new OsmdView(probeWrapper, {
+      timingLabel: 'osmd.render.probe',
+      ...(options.drawFingerings === undefined ? {} : { drawFingerings: options.drawFingerings }),
+      ...(options.drawMetronomeMarks === undefined
+        ? {}
+        : { drawMetronomeMarks: options.drawMetronomeMarks }),
+    });
+    renderer.probeSource = options.musicXml;
     return renderer;
   }
 
@@ -524,10 +617,13 @@ export class WindowRenderer {
    * slid past, so they cost one engraving rather than one per bar.
    */
   private slideRangeFor(sourceMeasureIndex: number): MeasureRange {
+    // The window's bars, two behind and two ahead: a chunk. The window is
+    // still what `windowFor` says — the chunk is what is *engraved*, so the
+    // bar being played always has bars on both sides of it to slide against.
     const window_ = this.windowFor(sourceMeasureIndex);
     const last = Math.max(0, this.model.sourceMeasureCount - 1);
     return {
-      fromMeasure: window_.fromMeasure,
+      fromMeasure: Math.max(0, window_.fromMeasure - SLIDE_BEHIND_BARS),
       toMeasure: Math.min(window_.toMeasure + SLIDE_READ_AHEAD_BARS, last),
     };
   }
@@ -559,6 +655,10 @@ export class WindowRenderer {
       // 16.7 (`01` §6). The spare was fitted when it was pre-rendered; there
       // is nothing about it left to work out.
       if (prepared) {
+        // A spare fitted for a stage of another height, or a scale a run has
+        // since frozen, is refitted before it shows: one transform write.
+        const shown = this.buffers[this.cursorSlot];
+        if (!this.fitIsCurrent(shown)) this.fit(shown);
         // Except which transform the slide is now relative to: this sheet was
         // fitted on its own, off the critical path, and has never been slid.
         this.baseTransform = this.buffers[this.cursorSlot].wrapper.style.transform;
@@ -859,6 +959,30 @@ export class WindowRenderer {
     };
   }
 
+  /** What the fit is working from, for the tour's sequence log. */
+  debugFit(): unknown {
+    return {
+      zoom: this.zoomLevel,
+      userZoom: this.userZoom,
+      held: { ...this.held },
+      piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
+      pieceInkZoom: this.pieceInkZoom,
+      probeLoaded: this.probe?.isLoaded ?? false,
+      frozen: this.frozen,
+      readAhead: this.readAhead,
+      slots: this.buffers.map((slot) => {
+        const svg = slot.view.svg;
+        const ink = svg ? inkBox(svg) : null;
+        return {
+          range: slot.range,
+          ink: ink ? { w: Math.round(ink.width), h: Math.round(ink.height), y: Math.round(ink.y) } : null,
+          pageWidth: slot.wrapper.style.width,
+          transform: slot.wrapper.style.transform,
+        };
+      }),
+    };
+  }
+
   /** Re-fits the current window; call on resize or orientation change. */
   refit(): void {
     this.updateReadAhead();
@@ -879,6 +1003,21 @@ export class WindowRenderer {
     if (this.fitHandle !== null) {
       cancelAnimationFrame(this.fitHandle);
       this.fitHandle = null;
+    }
+    if (this.freezeHandle !== null) {
+      window.clearTimeout(this.freezeHandle);
+      this.freezeHandle = null;
+    }
+    if (this.measureHandle !== null) {
+      const w = window as Window & { cancelIdleCallback?: (id: number) => void };
+      if (typeof w.cancelIdleCallback === 'function') w.cancelIdleCallback(this.measureHandle);
+      window.clearTimeout(this.measureHandle);
+      this.measureHandle = null;
+    }
+    if (this.probe) {
+      this.probe.container.remove();
+      this.probe.dispose();
+      this.probe = null;
     }
     for (const buffer of this.buffers) {
       buffer.view.dispose();
@@ -913,6 +1052,21 @@ export class WindowRenderer {
   }
 
   private drawInto(buffer: Buffer, range: MeasureRange): void {
+    // Sideways a chunk is engraved on a page wide enough that it is always
+    // one system. OSMD breaks lines at the container's width, and a six-bar
+    // chunk on a stage-wide page wrapped onto two — which halved the size of
+    // every window sideways, and no amount of measuring the piece could see
+    // why, because the sheet really was that tall. A bar's width of page per
+    // bar is more than any bar needs, and the last system of a page is not
+    // stretched, so the bars keep their natural widths and the sheet slides
+    // past them (P21e A3).
+    if (this.sliding) {
+      const bars = Math.max(1, range.toMeasure - range.fromMeasure + 1);
+      const stageWidth = Math.max(1, this.el.getBoundingClientRect().width);
+      buffer.wrapper.style.width = `${String(Math.round(bars * stageWidth))}px`;
+    } else {
+      buffer.wrapper.style.width = '';
+    }
     buffer.view.setRange(range);
     buffer.view.render();
     buffer.range = range;
@@ -958,25 +1112,29 @@ export class WindowRenderer {
     // Each slot gets its share of the height, and all of the width.
     //
     // Sideways the width is deliberately *not* a limit: the drawn range is the
-    // window plus two bars to read into, and fitting all of that across the
-    // stage would shrink the music to buy bars nobody is playing yet. Height
-    // fills the stage, the extra bars run off the right, and the sheet slides
-    // (P21c A2).
-    const sliding = this.sliding;
+    // window plus bars to read into, and fitting all of that across the stage
+    // would shrink the music to buy bars nobody is playing yet. Height fills
+    // the stage, the extra bars run off the right, and the sheet slides (P21c
+    // A2).
     const perSlot = available.height / boxes.length;
-    let scale = Infinity;
-    for (const { box } of boxes) {
-      const byHeight = (perSlot - FIT_MARGIN_PX) / box.height;
-      scale = sliding
-        ? Math.min(scale, byHeight)
-        : Math.min(scale, (available.width - FIT_MARGIN_PX) / box.width, byHeight);
-    }
-    if (!Number.isFinite(scale) || scale <= 0) return;
+    const scale = this.scaleFor(
+      boxes.map((entry) => entry.box),
+      { width: available.width, height: perSlot },
+    );
+    if (scale === null) return;
     const drawn = scale * this.userZoom;
     for (const { slot, box } of boxes) {
-      const transform = place(box, drawn);
+      const transform = this.placement(slot, box, drawn);
       slot.wrapper.style.transform = transform;
+      slot.fittedFor = { height: Math.round(perSlot), scale };
       if (slot === this.buffers[this.cursorSlot]) this.baseTransform = transform;
+    }
+    // Sideways the spare is not on the screen and not in `drawnSlots`, but it
+    // is about to be: fit it to the same stage now rather than when it comes
+    // forward, where a fit would cost the swap its frame.
+    if (this.readAhead === 'single') {
+      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0];
+      if (spare.range && spare.view.svg) this.fit(spare);
     }
     // The sheet has been re-laid out, so wherever it had been slid to is no
     // longer where that bar is.
@@ -1104,6 +1262,10 @@ export class WindowRenderer {
       } finally {
         this.fitting = false;
       }
+      // The search redrew through `invalidate`, which fitted the slots while
+      // `fitting` was set and measurement was refused. Now the zoom is settled
+      // the piece can be measured at it, and the slots fitted to that.
+      this.fitSlots();
     });
   }
 
@@ -1172,23 +1334,217 @@ export class WindowRenderer {
       buffer.wrapper.style.transform = place(box, scale);
       return;
     }
-    // Whichever axis runs out first. It grows as well as shrinks: the engraver
-    // stops responding to zoom at 2 (`autoFit.MAX_FIT`), and up to that point
-    // the sheet was simply left small with the leftover screen black. Because
-    // it is the smaller of the two ratios, filling one axis can never overflow
-    // the other.
-    // A pixel off each axis: the ink box is measured to a fraction and a
-    // stave line has a stroke width, so filling the stage exactly clipped the
-    // final barline by about a pixel.
-    const fill = Math.min(
-      (available.width - FIT_MARGIN_PX) / box.width,
-      (available.height - FIT_MARGIN_PX) / box.height,
-    );
+    // The same scale the slots use, from the same measurement of the piece:
+    // this is the pre-render's fit, and a spare fitted to its own ink came
+    // forward at a different size from the sheet it replaced.
+    const fill = this.scaleFor([box], available);
+    if (fill === null) return;
     // Times what the owner asked for. Filling the stage on its own *cancels*
     // the Size control: the engraving search already carries `userZoom`, so a
     // smaller engraving was simply scaled back up to fill and the buttons did
     // nothing. One means "as large as fits", and the buttons move around it.
-    buffer.wrapper.style.transform = place(box, fill * this.userZoom);
+    buffer.wrapper.style.transform = this.placement(buffer, box, fill * this.userZoom);
+    buffer.fittedFor = { height: Math.round(available.height), scale: fill };
+  }
+
+  /** Whether a sheet's fit is for the stage as it is now. */
+  private fitIsCurrent(buffer: Buffer): boolean {
+    const stage = this.el.getBoundingClientRect();
+    const fitted = buffer.fittedFor;
+    if (!fitted) return false;
+    if (fitted.height !== Math.round(stage.height)) return false;
+    if (this.frozen && this.frozen.scale > 0 && fitted.scale > this.frozen.scale + 0.001) return false;
+    return true;
+  }
+
+  /**
+   * The scale that fits the *piece* into `available`, not just these boxes
+   * (P21e A2).
+   *
+   * Height comes from the probe's measurement of the tallest system in the
+   * piece when it has one, and from the tallest box seen so far — held, never
+   * released — until it does. Width is the widest box seen: a one-bar slot is
+   * stretched to the page by the engraver, so it is all but constant, and
+   * holding it stops the last, shorter bar of a piece being drawn larger.
+   * Sideways the width is no limit at all; the sheet slides.
+   */
+  /**
+   * A run is starting or ending.
+   *
+   * Starting: measure the piece now if the probe is ready and has not, so the
+   * run begins at the size it will keep; then freeze that size. Ending: let
+   * go, and fit again with whatever has been learned since.
+   */
+  setRunning(running: boolean): void {
+    if (running) {
+      if (this.frozen || this.freezeHandle !== null) return;
+      if (this.probe?.isLoaded && this.pieceInkZoom !== this.zoomLevel) this.measureLoaded();
+      // Not yet: the stage takes the bar's row when a run starts, and the
+      // `ResizeObserver` refits a moment later. Freezing now would hold the
+      // size of the smaller stage for the whole run, with the freed row left
+      // black. A short wait lets the stage settle, then the fit is the one
+      // that is kept.
+      this.freezeHandle = window.setTimeout(() => {
+        this.freezeHandle = null;
+        if (this.disposed) return;
+        this.fitSlots();
+        this.frozen = {
+          scale: this.currentScale(),
+          piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
+        };
+      }, 150);
+      return;
+    }
+    if (this.freezeHandle !== null) {
+      window.clearTimeout(this.freezeHandle);
+      this.freezeHandle = null;
+    }
+    if (!this.frozen) return;
+    this.frozen = null;
+    this.fitSlots();
+  }
+
+  /** The scale the cursor slot is drawn at, from its transform; 0 if none. */
+  private currentScale(): number {
+    const match = /scale\(([\d.]+)\)/.exec(this.buffers[this.cursorSlot].wrapper.style.transform);
+    const value = match ? Number(match[1]) : 0;
+    return Number.isFinite(value) && value > 0 ? value / this.userZoom : 0;
+  }
+
+  private scaleFor(
+    boxes: { width: number; height: number }[],
+    available: { width: number; height: number },
+  ): number | null {
+    if (boxes.length === 0) return null;
+    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, zoom: this.zoomLevel };
+    for (const box of boxes) {
+      this.held.height = Math.max(this.held.height, box.height);
+      this.held.width = Math.max(this.held.width, box.width);
+    }
+    this.scheduleMeasure();
+    const piece = this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null;
+    const height = Math.max(this.held.height, piece?.height ?? 0);
+    const width = this.held.width;
+    if (!(height > 0) || !(width > 0)) return null;
+    const byHeight = (available.height - FIT_MARGIN_PX) / height;
+    const fitted = this.sliding
+      ? byHeight
+      : Math.min((available.width - FIT_MARGIN_PX) / width, byHeight);
+    if (!Number.isFinite(fitted) || fitted <= 0) return null;
+    // During a run the size it started at, unless something taller has
+    // turned up — then smaller, never larger.
+    if (this.frozen && this.frozen.scale > 0) return Math.min(this.frozen.scale, fitted);
+    return fitted;
+  }
+
+  /**
+   * Where a slot's sheet goes, at `scale`.
+   *
+   * Aligned on the *stave*, not on the ink: with one scale for every window,
+   * the ink's top still moves — a chord symbol above bar 3 and none above bar
+   * 4 — and anchoring the ink's top in the slot's top would move the stave
+   * down and up by that much between windows. The stave is what the eye is on,
+   * so the stave holds still, at the distance below the slot's top that the
+   * tallest thing in the piece needs.
+   */
+  private placement(slot: Buffer, box: { x: number; y: number }, scale: number): string {
+    const piece = this.frozen
+      ? this.frozen.piece
+      : this.pieceInkZoom === this.zoomLevel
+        ? this.pieceInk
+        : null;
+    const svg = slot.view.svg;
+    if (!piece || !svg) return place(box, scale);
+    const staffTop = staffTopOf(svg);
+    if (staffTop === null) return place(box, scale);
+    return place({ x: box.x, y: staffTop - piece.above }, scale);
+  }
+
+  /**
+   * Measures the piece, a frame after it is first asked for.
+   *
+   * A frame after, because a full render of a long piece is hundreds of
+   * milliseconds, and the first window should be on the screen before it is
+   * paid. Until it has run the held sizes stand in, so the worst case is one
+   * size change, downward, one frame after the first draw.
+   */
+  private scheduleMeasure(): void {
+    if (!this.probe || this.pieceInkZoom === this.zoomLevel || this.measureHandle !== null) return;
+    if (this.fitting || this.probeLoading) return;
+    // Idle time, not the next frame: the pre-render of the next window is
+    // queued on a frame and a full render in front of it would push the first
+    // swap past its budget. `requestIdleCallback` is not everywhere; a short
+    // timer is the same idea with a worse guarantee.
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+    };
+    const run = (): void => {
+      this.measureHandle = null;
+      if (this.disposed || this.fitting) return;
+      void this.measurePiece().then(() => {
+        // Apply it: the slots were fitted to the held sizes until now.
+        if (!this.disposed && this.pieceInkZoom === this.zoomLevel) this.fitSlots();
+      });
+    };
+    this.measureHandle =
+      typeof w.requestIdleCallback === 'function'
+        ? w.requestIdleCallback(run, { timeout: 1500 })
+        : window.setTimeout(run, 400);
+  }
+
+  /**
+   * Draws the first `PROBE_MAX_BARS` of the piece into the probe and measures
+   * the tallest system.
+   *
+   * Bounded, because a full render of a 780-bar piece is many seconds even on
+   * a desktop; the first forty-eight bars are a fair sample of what the
+   * engraver will do with the rest, and the held sizes catch anything taller
+   * that comes later — one shrink, once, rather than a size per window.
+   */
+  private async measurePiece(): Promise<void> {
+    const probe = this.probe;
+    if (!probe || this.pieceInkZoom === this.zoomLevel) return;
+    if (!probe.isLoaded) {
+      if (!this.probeSource) return;
+      this.probeLoading = true;
+      try {
+        await probe.load(this.probeSource);
+      } catch {
+        // A piece the probe cannot load is measured the slow way, window by
+        // window, held and never released.
+        this.probe = null;
+        return;
+      } finally {
+        this.probeLoading = false;
+      }
+      if (this.disposed) return;
+    }
+    this.measureLoaded();
+  }
+
+  /** The synchronous half: the probe is loaded, draw and measure it. */
+  private measureLoaded(): void {
+    const probe = this.probe;
+    if (!probe?.isLoaded || this.pieceInkZoom === this.zoomLevel) return;
+    const zoom = this.zoomLevel;
+    try {
+      probe.zoom = zoom;
+      probe.setRange({
+        fromMeasure: 0,
+        toMeasure: Math.min(PROBE_MAX_BARS, this.model.sourceMeasureCount) - 1,
+      });
+      const started = performance.now();
+      probe.render();
+      recordRenderTiming('osmd.probe', performance.now() - started);
+    } catch {
+      return;
+    }
+    const svg = probe.svg;
+    if (!svg) return;
+    const measured = pieceInkOf(svg, stavesPerSystem(probe));
+    if (!measured) return;
+    this.pieceInk = measured;
+    this.pieceInkZoom = zoom;
   }
 
   /**
@@ -1304,4 +1660,135 @@ export class WindowRenderer {
 function sameRange(a: MeasureRange | null, b: MeasureRange | null): boolean {
   if (!a || !b) return false;
   return a.fromMeasure === b.fromMeasure && a.toMeasure === b.toMeasure;
+}
+
+/**
+ * The tallest system in the piece, in CSS pixels at the zoom it was drawn at.
+ *
+ * `above` is how far the tallest thing above a stave reaches over it (a chord
+ * symbol, a tempo mark, a high ledger line), `below` how far the lowest thing
+ * hangs under; `height` is the two plus the stave's own span. A window drawn
+ * at the same zoom can never be taller than this, so a scale that fits this
+ * fits every window.
+ */
+interface PieceInk {
+  height: number;
+  above: number;
+  below: number;
+}
+
+/** CSS pixels per SVG user unit, from what OSMD wrote on the element. */
+function svgUnit(svg: SVGSVGElement): number {
+  const engraved = engravedSize(svg);
+  const view = svg.viewBox.baseVal;
+  return engraved && view && view.width > 0 ? engraved.width / view.width : 1;
+}
+
+/** The top of the first stave in a drawn sheet, in CSS pixels, or null. */
+function staffTopOf(svg: SVGElement): number | null {
+  if (!(svg instanceof SVGSVGElement)) return null;
+  const unit = svgUnit(svg);
+  let top = Infinity;
+  for (const line of svg.querySelectorAll<SVGGraphicsElement>('.staffline')) {
+    try {
+      const box = line.getBBox();
+      if (box.height > 0) top = Math.min(top, box.y * unit);
+    } catch {
+      // Not rendered; nothing to measure.
+    }
+  }
+  return Number.isFinite(top) ? top : null;
+}
+
+/** How many staves a system has — two for a grand staff — from the engraver. */
+function stavesPerSystem(view: OsmdView): number {
+  try {
+    const systems = view.instance.GraphicSheet?.MusicPages?.[0]?.MusicSystems;
+    const count = systems?.[0]?.StaffLines?.length;
+    return count && count > 0 ? count : 1;
+  } catch {
+    return 1;
+  }
+}
+
+/**
+ * Buckets everything drawn into systems and takes the tallest.
+ *
+ * Systems are found from the `.staffline` groups, `staves` at a time; every
+ * other drawn element is given to the system whose staves it is nearest, so
+ * a chord symbol above bar 3 counts towards bar 3's system and not the one
+ * above it. `null` when there is nothing to measure.
+ */
+function pieceInkOf(svg: SVGSVGElement, staves: number): PieceInk | null {
+  const unit = svgUnit(svg);
+  const lines: { top: number; bottom: number }[] = [];
+  for (const line of svg.querySelectorAll<SVGGraphicsElement>('.staffline')) {
+    try {
+      const box = line.getBBox();
+      if (box.height > 0) lines.push({ top: box.y * unit, bottom: (box.y + box.height) * unit });
+    } catch {
+      // Skip what is not rendered.
+    }
+  }
+  if (lines.length === 0) return null;
+  lines.sort((a, b) => a.top - b.top);
+  const per = Math.max(1, Math.min(staves, lines.length));
+  const systems: { top: number; bottom: number; inkTop: number; inkBottom: number }[] = [];
+  for (let i = 0; i < lines.length; i += per) {
+    const group = lines.slice(i, i + per);
+    const top = Math.min(...group.map((l) => l.top));
+    const bottom = Math.max(...group.map((l) => l.bottom));
+    systems.push({ top, bottom, inkTop: top, inkBottom: bottom });
+  }
+  const nearest = (y: number): (typeof systems)[number] => {
+    let best = systems[0]!;
+    let bestDistance = Infinity;
+    for (const system of systems) {
+      const distance = y < system.top ? system.top - y : y > system.bottom ? y - system.bottom : 0;
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = system;
+      }
+    }
+    return best;
+  };
+  // Nothing that belongs to one system is taller than a few staves: a stem,
+  // a beam, a slur, a chord symbol. Anything taller spans the page — a
+  // background, a bracket across systems, a connector — and bucketing it to
+  // whichever system its middle is nearest made that system "as tall as the
+  // page", and every window a quarter of the size it should have been.
+  const tallest = Math.max(...systems.map((s) => s.bottom - s.top));
+  const cap = tallest * 3;
+  for (const el of svg.querySelectorAll<SVGGraphicsElement>('path, text, rect, line, polygon, circle, ellipse')) {
+    let box: DOMRect;
+    try {
+      box = el.getBBox();
+    } catch {
+      continue;
+    }
+    if (!(box.width > 0 || box.height > 0)) continue;
+    if (box.height * unit > cap) continue;
+    const top = box.y * unit;
+    const bottom = (box.y + box.height) * unit;
+    const system = nearest((top + bottom) / 2);
+    system.inkTop = Math.min(system.inkTop, top);
+    system.inkBottom = Math.max(system.inkBottom, bottom);
+  }
+  // The *typical* system, not the tallest. Measured on Suo Gan: three systems
+  // 79 px tall and one 156, because a few low notes hang far under the stave
+  // for two bars — and fitting every window to that one cost 40 % of the size
+  // everywhere. The upper quartile keeps a piece that is tall throughout
+  // tall, and lets a rare bar shrink the sheet once when it arrives, which
+  // the held sizes do on their own.
+  // Rounded *up*: with two or three systems the quartile is the tallest of
+  // them — the floor picked the shortest of two, and a piece whose second
+  // system carried the high notes was fitted to its first.
+  const quartile = (values: number[]): number => {
+    const sorted = [...values].sort((a, b) => a - b);
+    return sorted[Math.min(sorted.length - 1, Math.ceil((sorted.length - 1) * 0.75))] ?? 0;
+  };
+  const above = quartile(systems.map((s) => s.top - s.inkTop));
+  const below = quartile(systems.map((s) => s.inkBottom - s.bottom));
+  const span = Math.max(...systems.map((s) => s.bottom - s.top));
+  return { above, below, height: above + span + below };
 }

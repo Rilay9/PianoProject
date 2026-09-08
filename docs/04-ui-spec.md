@@ -286,11 +286,30 @@ the notation: three absolutely-positioned lines cost the stage a constant 3 rem 
 printed the title across bar 1 sideways.
 
 The control bar **auto-hides after 3 s during a run, and only when it is taking room from the
-notation** (decision 5, 2026-09-07). The stage reserves the bar's height rather than being
-covered by it, so what "in the way" means is that the fit used the whole stage: held sideways
-it does and the bar goes; held upright the sheet is fitted to the width and leaves the bottom
-third of the stage empty, so hiding the controls would buy nothing and cost a hunt for them.
-One measurement, when the timer fires — never per frame. A tap on the notation brings it back.
+notation** (decision 5, 2026-09-07). Outside a run the stage reserves the bar's height rather
+than being covered by it. **During a run the stage takes the bar's row** (P21d A6, built in
+P21e): the sheet is fitted once, at the run's start, to the height without the bar, and when a
+tap brings the bar back it overlays the foot of the sheet for three seconds rather than pushing
+the music up and down on every tap. What "in the way" means is that the fit used the whole
+stage: held sideways it does and the bar goes; held upright the sheet is fitted to the width
+and leaves the bottom third of the stage empty, so hiding the controls would buy nothing and
+cost a hunt for them. One measurement, when the timer fires — never per frame.
+
+**Sideways on a phone the header row is not drawn** (`04` §0 R5, P21d A6): `← Back`, the
+title and the status line sit at the bar's left end instead, mirrored from the header, and the
+keyboard strip is 56 px rather than 72. With the bar's row going to the stage during a run, the
+music has about 300 of 360 px where it had 194.
+
+**One size for the run** (P21e A2). The fit measures the *piece* — a third, never-shown
+engraver draws the whole score once per zoom and the tallest system in it sets the scale — so
+a bar with a ledger line is not engraved smaller than a bar without one, and the staves of both
+slots sit at the same height in every window. Until that measurement has run (one frame after
+the first draw) the tallest window seen so far stands in, held and never released.
+
+**Sideways, the sheet is engraved in chunks** (P21e A3): the window, two bars behind it and
+two ahead, so the bar being played always has neighbours on both sides to slide against. The
+slide holds it a third of the way across from the first chunk swap on, and the swap is
+invisible because the same bars sit at the same places on both sheets.
 
 Control bar, in this order and **nothing else**: `▶`/`⏸` · **`Hear it`** · mode selector
 (`Wait for me` / `Keep tempo` / `Play it to me` / `Free play`) · hands (`R` `L` `Both`) · the
@@ -323,7 +342,8 @@ nowhere, which on a stand with no piano connected reads as a fault.
 (MIDI / Mic / Screen keys / None) · **Section** (only when the piece has named sections) ·
 **Loop** (set A/B by tapping bars, or pick a section) · **Metronome** · **Bars in window**
 (1–8) · **Size** (zoom ±) · **Layout** (`Window` | `Scroll`, a segment: it is a state, not a
-verb) · **Keys** (keyboard strip) · **Sound** (Phone / Piano / Both) · **Blind** · **Perform**.
+verb) · **Keys** (`Keys` | `Ribbon` | `Off`, a segment) · **Sound** (Phone / Piano / Both) ·
+**Blind** · **Perform**.
 The controls are moved into the sheet and back, not rebuilt, so each keeps its state and its
 id.
 
@@ -356,6 +376,11 @@ Notation area:
   highlighted blue, pressed keys green/red; scrolls to keep expected keys visible. This is the
   no-MIDI learner's main feedback and also the ScreenKeyboardSource input surface (tap to play
   — enabled only in Free/Wait mode when no MIDI input is present).
+- **The ribbon** (P21d A6, `keys: 'ribbon'`): the same keys as a 32 px band, one cell per
+  semitone over the piece's range, the wanted key in blue with its **name** over it, the next
+  one paler, played keys green or red. Not tappable. The strip's information at a third of
+  the height, for a player with a piano connected; which of the two he wants is his taste
+  (`keys` in §7: `strip` | `ribbon` | `off`).
 - **Follow options on a phone** (the owner asked for several): (1) Wait mode with MIDI;
   (2) Wait mode with the microphone; (3) Tempo mode (timed to the song), with or without
   MIDI/mic judging; (4) Manual scroll layout with tap-to-advance (tap right half = next window,
@@ -419,12 +444,18 @@ This viewer solves exactly that and nothing more: **it shows one system at a tim
 width.** See `docs/decisions/2026-09-05-p4-pdf-sheet-music.md`; the page-cutting is
 `app/src/pdf/systems.ts`, written and tested in P4, and the renderer is `pdfjs-dist`.
 
-- **Layout:** the current system fills the width; the next system is shown greyed below it if
-  it fits, so the eye has somewhere to go. Page and system number in the corner.
+- **Layout:** the current system fills the width; **the systems after it fill the height,
+  greyed** (P21d D1), so the eye always has somewhere to go and the black under the page is
+  music. Advancing moves the column up one system. Page and system number in the corner.
+- **One row of chrome** (P21d D2): `←` · `◀` `▶` · `Tap` `Timed` `Loop` · metronome · the
+  page label · `Adjust cuts` as text. The bpm and bars-per-system fields live in a sheet that
+  opens from the `Timed` chip when Timed is already on.
 - **Follow modes offered:** *manual tap* (tap right half = next system, left = previous),
-  *timed* auto-advance at a bpm the learner sets, and *loop a system*. A PDF has no notes, so
-  the app cannot know how long a system lasts: timed mode asks for the bpm **and the bars per
-  system** (default 4) and advances every `bars × 4 × 60/bpm` seconds. The metronome can click
+  *timed* auto-advance, and *loop a system*. A PDF has no notes, so the app cannot know how
+  long a system lasts. **Timed learns it from the last two manual advances** (P21d D3) — the
+  gap between two taps of `▶` while playing, between 2 s and 120 s, the way tap-tempo works —
+  and falls back to `bars × 4 × 60/bpm` (bars per system default 4) when there have been no
+  taps to learn from. The status line says which it is using. The metronome can click
   alongside, from the same `audio/Metronome` as §2a.
 - **Wait mode, mic-follow and MIDI-follow are hidden, not disabled**, along with note
   colouring, the keyboard strip and scoring. A PDF has no notes to match, and a greyed-out
@@ -547,7 +578,8 @@ lesson [off]; strict prerequisites [off]; daily goal minutes [30].
 
 **Display** — theme [system]; landscape lock on score screen [on]; zoom [1.0]; show
 fingering [on]; show note names in note heads [off; auto-on for Stage ≤ 1]; show chord
-symbols [on]; keyboard strip [on]; keep screen awake [on]; left-handed layout [off].
+symbols [on]; keys under the score [keyboard | ribbon | off, default keyboard]; keep screen
+awake [on]; left-handed layout [off].
 
 **Sound** — piano volume; metronome volume; playback plays: both / only the non-focused hand
 [non-focused when hand focus set]; **playback destination: phone / piano over MIDI OUT /

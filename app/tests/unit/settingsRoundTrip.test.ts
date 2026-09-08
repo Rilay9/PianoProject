@@ -39,6 +39,7 @@ function candidates(key: keyof PracticeSettings): unknown[] {
     metronomeSound: ['beep', 'high'],
     playbackDestination: ['piano', 'both'],
     playbackHands: ['both', 'none'],
+    keys: ['ribbon', 'off'],
   };
   return strings[key] ?? [];
 }

@@ -83,6 +83,22 @@ export interface KeyboardStripState {
   wrong?: Iterable<number>;
 }
 
+/**
+ * What the score session needs from whatever is drawing the keys.
+ *
+ * Two things implement it: the keyboard strip, and the ribbon (`KeyRibbon`),
+ * which is the same information at a third of the height. The session paints
+ * verdicts onto either without knowing which it has.
+ */
+export interface KeyView {
+  readonly el: HTMLElement;
+  setState(state: KeyboardStripState): void;
+  scrollToNote(midi: number, behavior?: ScrollBehavior): void;
+  fitKeysToWidth(): void;
+  clear(): void;
+  destroy(): void;
+}
+
 export interface KeyboardStripOptions {
   /** Lowest/highest MIDI note to draw. Defaults to the full 88 keys. */
   from?: number;

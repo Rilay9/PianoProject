@@ -22,6 +22,8 @@ export interface TestHooks {
   importAll: typeof importAll;
   /** Empties every store — "a different phone", without closing the page. */
   wipeForTest: () => Promise<void>;
+  /** What the score screen's fit is holding; set while a score is open. */
+  scoreFit?: () => unknown;
 }
 
 declare global {

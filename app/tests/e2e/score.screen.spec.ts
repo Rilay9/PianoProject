@@ -167,7 +167,7 @@ test.describe('score screen', () => {
     await page.locator('#score-zoom-out').click();
 
     await expect(page.locator('#score-strip')).toBeVisible();
-    await page.locator('#score-strip-toggle').click();
+    await page.locator('#score-keys-off').click();
     await expect(page.locator('#score-strip')).toBeHidden();
 
     await expect(page.locator('#score-destination')).toContainText('Phone');

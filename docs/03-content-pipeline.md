@@ -171,6 +171,11 @@ Authoritative JSON Schemas are `content/catalog.schema.json` and
 
 ## 5. Authoring conventions for `[AUTH]` ABC files
 
+**Bars are numbered from 1.** music21's ABC reader numbers a tune's first full bar 0, and the
+engraver prints that number at the head of the first system; `convert.renumber_measures` puts
+the numbering right for every source, and leaves a real pickup — a first bar shorter than the
+time signature — at 0, which is what a pickup is called (P21e A4).
+
 ```
 X:1
 T:Amazing Grace

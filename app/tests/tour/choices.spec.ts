@@ -143,7 +143,7 @@ test.describe('choices, portrait', () => {
     await openScore(page);
     await shootOption(page, question, 'Keys showing', 'What it does today.');
     await withScoreMenu(page, async () => {
-      await page.locator('#score-strip-toggle').click();
+      await page.locator('#score-keys-off').click();
     });
     await page.waitForTimeout(900);
     await shootOption(page, question, 'Keys hidden', '');

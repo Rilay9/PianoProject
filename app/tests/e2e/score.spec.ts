@@ -466,11 +466,20 @@ test.describe('the score control bar', () => {
         `the bar's content is ${String(scrolled.scroll)} px tall`,
       ).toBeLessThan(60);
 
-      // And Back is where a thumb looks for it rather than in among the
-      // transport controls.
-      const back = await page.locator('#score-back').boundingBox();
-      expect(back, 'no back button').toBeTruthy();
-      expect(back!.y + back!.height, 'Back is not in the header').toBeLessThanOrEqual(60);
+      // And Back is where a thumb looks for it. Upright that is the header
+      // row; sideways on a phone the header is not drawn and Back sits at
+      // the bar's left end with the title beside it (P21d A6).
+      if (viewport.height <= 500) {
+        const back = await page.locator('#score-back-side').boundingBox();
+        expect(back, 'no back button at the left end of the bar').toBeTruthy();
+        expect(back!.x, 'Back is not at the left end of the bar').toBeLessThan(40);
+        await expect(page.locator('#score-head')).toBeHidden();
+        await expect(page.locator('#score-title-side')).not.toBeEmpty();
+      } else {
+        const back = await page.locator('#score-back').boundingBox();
+        expect(back, 'no back button').toBeTruthy();
+        expect(back!.y + back!.height, 'Back is not in the header').toBeLessThanOrEqual(60);
+      }
     });
   }
 
@@ -489,7 +498,9 @@ test.describe('the score control bar', () => {
       'score-zoom-in',
       'score-layout-window',
       'score-layout-scroll',
-      'score-strip-toggle',
+      'score-keys-strip',
+      'score-keys-ribbon',
+      'score-keys-off',
       'score-destination',
       'score-blind',
       'score-performance',
@@ -513,8 +524,13 @@ test.describe('the score control bar', () => {
     // The metronome, the strip and the sound destination.
     await page.locator('#score-metronome').click();
     await expect(page.locator('#score-metronome')).toHaveAttribute('aria-pressed', 'true');
-    await page.locator('#score-strip-toggle').click();
+    await page.locator('#score-keys-off').click();
     await expect(page.locator('#score-strip')).toBeHidden();
+    // The ribbon: the same keys as a band with the wanted note's name on it.
+    await page.locator('#score-keys-ribbon').click();
+    await expect(page.locator('#score-strip .key-ribbon')).toBeVisible();
+    await page.locator('#score-keys-strip').click();
+    await expect(page.locator('#score-strip .keyboard-strip')).toBeVisible();
     await page.locator('#score-destination').click();
     await expect(page.locator('#score-destination')).toContainText('Piano');
 

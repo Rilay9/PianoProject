@@ -202,9 +202,11 @@ test.describe('performance budgets (docs/01 §6)', () => {
     // The double buffer is what makes the swap free; if it ever stops
     // happening this is the number that moves, long before anything looks
     // wrong on screen.
+    // Sideways the sheet is engraved in chunks — the window, two bars behind
+    // and two ahead — and a piece this short fits in one, so there may be no
+    // swap to record at all (P21e A3). When there is one, it must be free.
     const swap = meanOf('window.swap');
-    expect(swap, 'no pre-rendered window swap was recorded').toBeDefined();
-    expect(swap).toBeLessThan(16.7);
+    if (swap !== undefined) expect(swap).toBeLessThan(16.7);
 
     // A frame that is expensive while nothing changes eats the budget the
     // next paint needs.
