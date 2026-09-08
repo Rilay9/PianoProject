@@ -281,6 +281,10 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         status.textContent = `${item.title} has no chord symbols in it.`;
         form.hidden = true;
         grid.hidden = true;
+        // Reason, then remedy. The status line lives under the chart while
+        // there is a chart, which is right; with no chart it was the button
+        // that came first and the sentence explaining it that came second.
+        body.insertBefore(status, controls);
         controls.replaceChildren(
           button('Open on the Score screen', () => router.navigateScore(itemId), {
             id: 'chart-open-score',

@@ -163,6 +163,10 @@ body {
    and the words "rated 4+ by 5+ people" wrapping around a checkbox. Every
    other filter row in the app is a wrapping flex row of pill-shaped controls;
    this one is now the same. */
+.filters[hidden] {
+  display: none;
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -1942,6 +1946,12 @@ input[type='checkbox'] {
   font-variant-numeric: tabular-nums;
   font-size: 1.1rem;
   margin-bottom: 8px;
+}
+
+/* `[hidden]` sets `display: none` at a specificity a class rule beats, so a
+   grid told to hide stayed a grid — empty, but still spending its margin. */
+.chart-grid[hidden] {
+  display: none;
 }
 
 .chart-grid {

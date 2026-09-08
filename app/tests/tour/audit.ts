@@ -20,8 +20,8 @@ import type { Page } from '@playwright/test';
 export interface Finding {
   /**
    * `clipped`, `unreachable`, `overflow`, `plural`, `tap-target`,
-   * `light-control`, `clipped-text`, the four `R1`-`R4` rules of `04` §0, and
-   * `glyph-only` / `glyph-labelled`.
+   * `light-control`, `clipped-text`, `hidden-but-drawn`, the four `R1`-`R4`
+   * rules of `04` §0, and `glyph-only` / `glyph-labelled`.
    */
   kind: string;
   detail: string;
@@ -243,6 +243,28 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
           add('ink-flush', `the notation is ${String(Math.min(inLeft, inRight))}px from the stage edge`);
         }
       }
+    }
+
+    // --- 7b. Hidden, and drawn anyway ---------------------------------------
+    //
+    // `[hidden]` is a UA rule — `display: none` at specificity zero — so any
+    // class rule that names a display beats it, and an element the code has
+    // just hidden stays on the screen. It has been the cause four times now
+    // (`.filter-row`, `.score-menu-row`, `.score-side`, `.chart-grid`), and it
+    // is invisible at the point of writing: the code says `hidden = true` and
+    // means it. The fix each time is a `.thing[hidden] { display: none }` beside
+    // the rule that broke it, so this looks for the shape rather than waiting
+    // for somebody to notice the screen.
+    //
+    // A rect of zero means it really is gone — including everything inside an
+    // ancestor that is properly hidden, which must not be reported.
+    for (const el of screen.querySelectorAll<HTMLElement>('[hidden]')) {
+      const box = el.getBoundingClientRect();
+      if (box.width === 0 && box.height === 0) continue;
+      add(
+        'hidden-but-drawn',
+        name(el) + ' is hidden but computes display: ' + getComputedStyle(el).display,
+      );
     }
 
     // --- 8. The four rules of `04` §0 --------------------------------------

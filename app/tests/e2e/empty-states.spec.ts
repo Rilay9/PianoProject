@@ -22,8 +22,29 @@ test('a chart with no chords draws the sentence and one button', async ({ page }
   await expect(page.locator('#chart-status')).toContainText('no chord symbols', {
     timeout: 30_000,
   });
-  // The one control that does what the sentence suggests.
+  // The one control that does what the sentence suggests — and *under* it.
+  // The status line belongs at the foot of a working chart, which is where it
+  // is built; with no chart, the button came first and the sentence that
+  // explains it came second.
   await expect(page.locator('#chart-open-score')).toBeVisible();
+  const order = await page.evaluate(() => {
+    const said = document.querySelector('#chart-status');
+    const act = document.querySelector('#chart-open-score');
+    if (!said || !act) return null;
+    return {
+      saidFirst: (said.compareDocumentPosition(act) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
+      saidTop: said.getBoundingClientRect().top,
+      actTop: act.getBoundingClientRect().top,
+    };
+  });
+  expect(order?.saidFirst).toBe(true);
+  expect(order?.saidTop).toBeLessThan(order?.actTop ?? 0);
+  // The empty grid is gone from the layout, not merely emptied: `[hidden]`
+  // loses to `.chart-grid { display: grid }` unless something says otherwise.
+  await expect(page.locator('#chart-grid')).toBeHidden();
+  expect(
+    await page.locator('#chart-grid').evaluate((el) => getComputedStyle(el).display),
+  ).toBe('none');
   await expect(page.locator('[data-screen="chart"] button')).toHaveCount(2); // back + open
   // And none of the furniture that made it look like a working chart.
   await expect(page.locator('.chart-cell')).toHaveCount(0);
