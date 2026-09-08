@@ -73,3 +73,41 @@ test.describe('the beat of warning', () => {
     expect(await page.locator('.keyboard-strip .key.is-next').count()).toBe(0);
   });
 });
+
+test.describe('the picture and the engine are the same clock (A7)', () => {
+  test('the keys the strip wants are the notes the cursor is on', async ({ page }) => {
+    // `inputLatencyMs` is subtracted from the *input* timestamp before it is
+    // judged (`PracticeEngine.feedTempo`), so it moves when the engine
+    // advances — and the band and the strip both follow that advance rather
+    // than a clock of their own: `pendingStep` is only ever set from
+    // `started.fromStep` and `stepAdvanced.to`, and `paintStrip` reads the
+    // same `engine.state.step`, in the same `paint()`. There is no second
+    // clock to drift. This is that claim, checked rather than believed.
+    await openScore(page);
+    await page.locator('#score-mode').selectOption('tempo');
+    await page.locator('#score-play').click();
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+      'data-running',
+      'true',
+    );
+
+    // Sampled a few times across the run, because agreeing once could be luck.
+    for (let i = 0; i < 5; i += 1) {
+      await page.waitForTimeout(400);
+      const agreement = await page.evaluate(() => {
+        const cursorNotes = [...document.querySelectorAll('.score-note.is-current')]
+          .map((el) => Number((el as HTMLElement).dataset.midi))
+          .filter((n) => Number.isFinite(n))
+          .sort((a, b) => a - b);
+        const wanted = [...document.querySelectorAll('.keyboard-strip .key.is-expected')]
+          .map((el) => Number((el as HTMLElement).dataset.midi))
+          .filter((n) => Number.isFinite(n))
+          .sort((a, b) => a - b);
+        return { cursorNotes, wanted };
+      });
+      // Only while there is something to compare: between steps both are empty.
+      if (agreement.cursorNotes.length === 0 || agreement.wanted.length === 0) continue;
+      expect(agreement.wanted).toEqual(agreement.cursorNotes);
+    }
+  });
+});
