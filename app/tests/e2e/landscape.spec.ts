@@ -51,6 +51,45 @@ for (const tab of TABS) {
   });
 }
 
+/** The sub-screens and pushed screens the prompt names (P21d A2, A4, A5). */
+const PUSHED: { name: string; route: string; screen: string }[] = [
+  { name: 'Skills', route: '/#/plan/skills', screen: 'skills' },
+  { name: 'Shelf', route: '/#/library/shelf', screen: 'shelf' },
+  { name: 'a lesson', route: '/#/lesson/1.1', screen: 'lesson' },
+  { name: 'a drill', route: '/#/drill/drill.reading.grand-staff-flash', screen: 'drill' },
+];
+
+for (const one of PUSHED) {
+  test(`${one.name} sideways: no h1 at heading size, content near the top`, async ({ page }) => {
+    await page.setViewportSize(SIDEWAYS);
+    await page.goto(one.route);
+    await expect(page.locator(`[data-screen="${one.screen}"]`)).toBeVisible({ timeout: 60_000 });
+    await page.waitForTimeout(800);
+    const measured = await page.evaluate(() => {
+      const screen = document.querySelector('.screen');
+      if (!screen) return null;
+      const top = screen.getBoundingClientRect().top;
+      const h1 = screen.querySelector('h1');
+      const size = h1 ? Number.parseFloat(getComputedStyle(h1).fontSize) : 0;
+      const first = screen.querySelector(
+        '.list-row, .block, .filters, .filter-row, .drill-stage, .plan-links, .lesson-actions',
+      );
+      const box = first?.getBoundingClientRect();
+      return { size, firstTop: box ? Math.round(box.top - top) : -1 };
+    });
+    expect(measured).not.toBeNull();
+    // A title at body size on the back link's line, not a heading of its own.
+    expect(
+      measured?.size ?? 99,
+      `${one.name}'s title is ${String(measured?.size)}px sideways`,
+    ).toBeLessThanOrEqual(18);
+    expect(
+      measured?.firstTop ?? 999,
+      `${one.name}'s first content starts ${String(measured?.firstTop)}px down`,
+    ).toBeLessThan(64);
+  });
+}
+
 test('a sub-screen puts Back and its title on one line', async ({ page }) => {
   await page.setViewportSize(SIDEWAYS);
   await page.goto('/#/plan/skills');

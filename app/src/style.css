@@ -426,16 +426,40 @@ body {
    width, and lists whose rows are all the same shape run in two columns.
    --------------------------------------------------------------------------- */
 @media (orientation: landscape) and (max-height: 500px) {
-  /* A1 — the tab title. The side nav is already saying it, in the same
-     glance, permanently. */
-  /* A descendant, not a child: Today moves its h1 into a row with the input
-     chip, so a child selector missed it. */
-  .screen--list > .screen-header h1 {
+  /* A1 — the tab title goes. The side nav is already saying it, in the same
+     glance, permanently. A descendant selector, not a child one: Today moves
+     its h1 into a row with the input chip. */
+  .screen--list > .screen-header:not(:has(> .link-button)) h1 {
     display: none;
   }
 
   .screen--list > .screen-header {
     padding-bottom: 0;
+  }
+
+  /* The first block of a pushed screen sits straight under the header line;
+     its top rule is a separator from something that is no longer above it. */
+  .screen--list > .screen-body > .block:first-of-type,
+  .screen--list > .screen-body > *:first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  /* A4, A5 — a drill and a lesson are pushed screens: they carry a back
+     link, and their title is the answer to "which drill is this?", so it
+     stays. On the back link's line, at body size, the way a sub-screen's
+     does. Wrapping, because `screenFrame` may put a subtitle here too and a
+     third thing on the line belongs under it rather than off the edge. */
+  .screen--list > .screen-header:has(> .link-button) {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+
+  .screen--list > .screen-header:has(> .link-button) h1 {
+    margin: 0;
+    font-size: 1.05rem;
   }
 
   /* A2 — a sub-screen: Back and the title on one line, at body size. */
@@ -451,9 +475,11 @@ body {
     font-size: 1.05rem;
   }
 
-  /* A 610 px centred card is a portrait shape on a landscape screen. */
+  /* A 610 px centred card is a portrait shape on a landscape screen, and
+     20 px of padding all round is 40 of the 360 there are. */
   .card {
     max-width: none;
+    padding: 10px 14px;
   }
 
   /* A sub-screen with more than one block lays them in two columns: the
