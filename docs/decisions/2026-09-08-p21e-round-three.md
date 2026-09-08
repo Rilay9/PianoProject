@@ -70,11 +70,61 @@ the same places on both sheets. The pre-render prepares the next chunk in the sa
   runs past by design; the R5 check knows where a lesson's, a drill's and a paper run's content
   starts. Bars per window stays at 2.
 
+## Round four: the state machines
+
+The owner, on a desktop browser in tablet mode: "there's like 2 cursors, and things are fading
+weird … it was barely able to do a full song without something going wrong … check your state
+machines." The tour's pictures had not shown it because the tour photographs moments, and
+these are faults in what happens *between* moments. Read from the code, each one confirmed by
+a test that now exists:
+
+- **Stopping was finishing.** The engine reports a stop as a `finished` event and the screen
+  took every finish for the end of a run. Restarting — which changing hands, changing mode,
+  setting a loop and clearing one all do — opened the summary sheet over the new run and wrote
+  the half-run into the practice history as a failure. `Hear it` reaching the end did the
+  same for a demonstration nobody played, under whichever mode the select showed. The session
+  now swallows the finish it caused itself, and a demonstration ending is not a run.
+- **A loop's lap left the cursor behind.** The engine went back to the loop's first step
+  without saying so; the cursor sat on the last bar until the *second* step of the new lap
+  was reached. A lap now emits the step change like any other.
+- **The crossing engraved on the input path.** Upright, the slot the cursor left was re-drawn
+  inside the same paint that coloured the note just played: an OSMD render between the key
+  and its colour, once every crossing — the hitch every other bar, and 42–56 ms against a
+  30 ms budget on the throttled desktop. The crossing is a class toggle now; the vacated slot
+  is re-drawn on idle time, at the latest 100 ms later, which nobody is looking at — and a
+  second note on the heels of the first is coloured before the engraving starts. The swap
+  sideways no longer forces a layout to learn the stage height either; the last fit's
+  measurement stands until the stage changes.
+- **The bands did not follow a refit.** The cursor and the warning mark are placed in stage
+  pixels; a refit — the stage taking the bar's row when a run starts, the probe's measurement
+  landing, the run ending — left them where the old scale had put the notes until the next
+  step. A fit now puts them back.
+- **The last window doubled.** With the other slot blank at the end of a piece, the fit gave
+  the remaining system the whole height: a pop the moment the summary appeared. Each slot is
+  half the stage whether or not both are drawn.
+- **Two cursors.** The warning mark was a second band at 30 %; it is a line under the stave.
+- **The frozen scale outlived a rotation.** A run's frozen scale capped the fit of the other
+  arrangement after turning the phone. A new arrangement clears it.
+
+And the tablet: a screen at least 600 px tall has the two slots sideways as well. Fitting one
+system to a 900 px height drew Suo Gân with note heads the size of a thumb, and the tour had
+photographed it. `TWO_SYSTEMS_MIN_PX`.
+
+## The sequence plays the whole song
+
+`sequence.spec.ts` now asks the app at every step what it is waiting for and plays exactly
+that, from the first note to the summary sheet, on all four form factors, and photographs the
+first note of every bar (`22-bar01`…) and the stage after the run has ended. It asserts that
+the score moved on after every step, one scale from the first note to after the summary, the
+next bar on the screen at every step but the last, and the slide holding a third across where
+the sheet slides.
+
 ## Not done
 
-**The tablet rule** (P21d: the window holds as many bars as fill the height). The slot
-arithmetic is two slots; three is a real change to `slots.ts` and the renderer, and the owner
-has a phone (`00` D19). Left for when a tablet exists.
+**The tablet rule** (P21d: the window holds as many bars as fill the height). Two slots
+sideways is done (above); three or more per screen is a real change to `slots.ts` and the
+renderer, and the owner has a phone (`00` D19). Bars per window is a setting, and 4 on a
+tablet puts two bars in each slot.
 
 ## The sequence is in the tour
 

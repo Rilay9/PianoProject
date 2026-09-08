@@ -55,7 +55,7 @@ test.describe('score screen', () => {
   test('opens a catalog item by id and renders it', async ({ page }) => {
     await openScore(page);
     await expect(page.locator('#score-title')).toContainText('Hot Cross Buns');
-    await expect(page.locator('#score-stage .is-front svg')).toBeVisible();
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible();
   });
 
   test('an unknown id says so instead of hanging', async ({ page }) => {
@@ -191,7 +191,7 @@ test.describe('score screen', () => {
       await expect(button).toHaveAttribute('aria-pressed', 'true');
       await expect(button).toHaveText('On');
     });
-    await expect(page.locator('#score-stage .is-front svg')).toBeVisible();
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible();
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
   });
 
@@ -532,7 +532,7 @@ test.describe('blind mode', () => {
     await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
     await openScoreMenu(page);
     await page.locator('#score-blind').click();
-    await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 60_000 });
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
   });
 });
 

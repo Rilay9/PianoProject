@@ -1,42 +1,44 @@
 /**
- * The score screen, bar by bar (P21e §E).
+ * The score screen, the whole song through (P21e §E, round four).
  *
  * A still cannot show timing, and the two things a player feels most — when
  * the next bar appears, and whether the staff holds still while he plays —
- * are both about the moment between two pictures. So this drives *Mary Had a
- * Little Lamb* with the spoofed piano and photographs seven moments of it in
- * both orientations: the last note of bar 1, the first of bar 2, the last of
- * bar 2, the first of bar 3, and the first of bars 4, 5 and 6. The frames go
- * on the contact sheet as `22a`–`22g`, beside the tour's own score scenes.
+ * are both about the moment between two pictures. So this plays *Mary Had a
+ * Little Lamb* from the first note to the summary sheet with the spoofed
+ * piano, on every form factor the tour photographs, asking the app at each
+ * step what it is waiting for and playing exactly that. One picture per bar
+ * goes on the contact sheet as `22-bar01`… beside the tour's own score
+ * scenes, and one more after the run has ended.
  *
- * And it asserts, from a log of both slots at every frame, the three things
- * the third tour found by eye (P21e A2, A3): the sheet's height is the same at
- * every frame, the bar after the cursor's is on the screen at every frame,
- * and sideways the cursor stays a third of the way across from the first
- * chunk swap on.
+ * At every step it records both slots, the cursor and the drawn scale, and
+ * afterwards asserts: the score moved on after every step (a run that stalls
+ * is the owner's "it could barely do a full song"); the sheet is one size
+ * from the first note to after the summary; the bar after the cursor's is on
+ * the screen at every step but the last; and where the sheet slides, the
+ * cursor stays a third of the way across from the first chunk swap on.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
-import { LANDSCAPE, PORTRAIT, saveLedger, shoot, TOUR_DIR, writeContactSheet } from './shoot';
+import { FORM_FACTORS, saveLedger, shoot, TOUR_DIR, writeContactSheet } from './shoot';
 
 const SONG = 'song.folk.mary-had-a-little-lamb';
-// E D C D | E E E | D D D | E G G | E D C D | E E E E
-const BARS: number[][] = [
-  [64, 62, 60, 62],
-  [64, 64, 64],
-  [62, 62, 62],
-  [64, 67, 67],
-  [64, 62, 60, 62],
-  [64, 64, 64, 64],
-];
+/** More steps than any song in the bundle; a run that never ends stops here. */
+const MAX_STEPS = 400;
+/** How long the score may take to move on after a step's notes are played. */
+const ADVANCE_TIMEOUT_MS = 4_000;
 
-/** The cursor must sit inside this band of the stage width, sideways. */
+/** The cursor must sit inside this band of the stage width where the sheet slides. */
 const SLIDE_MIN = 0.25;
 const SLIDE_MAX = 0.45;
-/** Frames may differ by this much in scale and still count as one size (1 %). */
-const HEIGHT_TOLERANCE_PX = 0.01;
+/** Sideways, the slide is asserted from this bar (0-based) on: past the first chunk swap. */
+const SLIDE_FROM_BAR = 2;
+/** Steps may differ by this much in scale and still count as one size (1 %). */
+const SCALE_TOLERANCE = 0.01;
+
+type Run = { step: number; expected: number[] } | null;
+type Hooked = Window & { __pianopath?: { scoreRun?: () => Run; scoreFit?: () => unknown } };
 
 interface Probe {
   viewport: { w: number; h: number };
@@ -46,7 +48,7 @@ interface Probe {
   band: { left: number; width: number } | null;
   cursorBar: number | null;
   /** The scale the cursor slot is drawn at (the transform's `a`). */
-  staffHeight: number;
+  scale: number;
   slots: {
     slot: string | null;
     cursor: boolean;
@@ -70,13 +72,28 @@ async function waitForSheet(page: Page): Promise<void> {
   );
 }
 
-async function play(page: Page, midi: MidiMock, notes: number[]): Promise<void> {
-  for (const note of notes) {
-    await midi.noteOn(note, 78);
-    await page.waitForTimeout(110);
-    await midi.noteOff(note);
-    await page.waitForTimeout(90);
-  }
+function runNow(page: Page): Promise<Run> {
+  return page.evaluate(() => (window as Hooked).__pianopath?.scoreRun?.() ?? null);
+}
+
+/** Plays one step's notes and waits for the score to move on; false if it did not. */
+async function playStep(page: Page, midi: MidiMock, run: NonNullable<Run>): Promise<boolean> {
+  for (const note of run.expected) await midi.noteOn(note, 78);
+  await page.waitForTimeout(110);
+  for (const note of run.expected) await midi.noteOff(note);
+  const moved = await page
+    .waitForFunction(
+      (was) => {
+        const now = (window as Hooked).__pianopath?.scoreRun?.() ?? null;
+        return now === null || now.step !== was;
+      },
+      run.step,
+      { timeout: ADVANCE_TIMEOUT_MS },
+    )
+    .then(() => true)
+    .catch(() => false);
+  await page.waitForTimeout(90);
+  return moved;
 }
 
 async function probe(page: Page): Promise<Probe> {
@@ -85,23 +102,26 @@ async function probe(page: Page): Promise<Probe> {
     const stage = stageEl?.getBoundingClientRect();
     const band = document.querySelector('#score-stage .score-cursor:not(.score-cursor--next)');
     const b = band instanceof HTMLElement && !band.hidden ? band.getBoundingClientRect() : null;
-    const current = document.querySelector<HTMLElement>('#score-stage .score-note.is-current');
+    // In the cursor's slot: sideways the spare keeps the classes it had when
+    // it was in front, and the first `.is-current` in document order was its.
+    const current = document.querySelector<HTMLElement>(
+      '#score-stage .score-buffer.is-cursor .score-note.is-current',
+    );
     // The scale the cursor slot is drawn at, from its transform: the one
-    // number that is the same at every frame if, and only if, the size is
+    // number that is the same at every step if, and only if, the size is
     // (P21e A2). Neither the slot's box (the page, taller for a chunk with
     // more in it) nor a staffline group's box (which holds the notes on it,
     // so a ledger line makes it taller) says that.
     const cursorWrapper = document.querySelector<HTMLElement>('#score-stage .score-buffer.is-cursor');
     const matrix = cursorWrapper ? new DOMMatrixReadOnly(getComputedStyle(cursorWrapper).transform) : null;
-    const staffHeight = matrix ? Math.round(matrix.a * 1000) / 1000 : 0;
-    const cursorBar = current ? measureOf(current) : null;
+    const scale = matrix ? Math.round(matrix.a * 1000) / 1000 : 0;
     function measureOf(el: Element): number | null {
       // The note id carries the printed bar as its first field.
       const id = (el as HTMLElement).dataset.noteId ?? '';
-      const first = id.split(':')[0];
-      const n = Number(first);
+      const n = Number(id.split(':')[0]);
       return Number.isFinite(n) ? n : null;
     }
+    const cursorBar = current ? measureOf(current) : null;
     const slots = [...document.querySelectorAll<HTMLElement>('#score-stage .score-buffer:not(.score-probe)')].map(
       (el) => {
         const r = el.getBoundingClientRect();
@@ -133,12 +153,10 @@ async function probe(page: Page): Promise<Probe> {
           }
         : null,
       readAhead: document.querySelector<HTMLElement>('.score-view')?.dataset.readAhead ?? null,
-      fit:
-        (window as Window & { __pianopath?: { scoreFit?: () => unknown } }).__pianopath?.scoreFit?.() ??
-        null,
+      fit: (window as Hooked).__pianopath?.scoreFit?.() ?? null,
       band: b ? { left: Math.round(b.left), width: Math.round(b.width) } : null,
       cursorBar,
-      staffHeight,
+      scale,
       slots,
     };
   });
@@ -156,15 +174,17 @@ function nextBarVisible(p: Probe): boolean {
   });
 }
 
-for (const [orientation, size] of [
-  ['portrait', PORTRAIT],
-  ['landscape', LANDSCAPE],
-] as const) {
+function cursorFraction(p: Probe): number | null {
+  if (!p.band || !p.stage) return null;
+  return (p.band.left + p.band.width / 2 - p.stage.left) / p.stage.width;
+}
+
+for (const { orientation, size } of FORM_FACTORS) {
   test.describe(orientation, () => {
     test.use({ viewport: size });
     test.describe.configure({ timeout: 600_000 });
 
-    test(`the score, bar by bar, ${orientation}`, async ({ page }) => {
+    test(`the whole song, ${orientation}`, async ({ page }, testInfo) => {
       await page.addInitScript(() => {
         if (sessionStorage.getItem('seq-fresh') === null) {
           sessionStorage.setItem('seq-fresh', '1');
@@ -173,11 +193,10 @@ for (const [orientation, size] of [
         }
       });
       const midi = await installMidiMock(page, { permission: 'granted' });
-      const frames: { slug: string; probe: Probe }[] = [];
+      const steps: { step: number; bar: number | null; moved: boolean; probe: Probe }[] = [];
       const frame = async (slug: string, title: string, note: string): Promise<void> => {
         await page.waitForTimeout(400);
         await shoot(page, orientation, slug, title, note);
-        frames.push({ slug, probe: await probe(page) });
       };
 
       await page.goto(`/#/score/${SONG}`);
@@ -191,57 +210,98 @@ for (const [orientation, size] of [
       await page.locator('#score-play').click();
       await page.waitForTimeout(800);
 
-      await play(page, midi, BARS[0].slice(0, -1));
-      await frame('22a-last-of-bar1', 'Bar 1, last note', 'Bar 2 is below (upright) or to the right (sideways) before it is needed.');
-      await play(page, midi, BARS[0].slice(-1));
-      await frame('22b-first-of-bar2', 'Bar 2, first note', 'Upright: the top slot has quietly become bar 3. Sideways: the sheet slid one bar.');
-      await play(page, midi, BARS[1].slice(0, -1));
-      await frame('22c-last-of-bar2', 'Bar 2, last note', 'Bar 3 has been on the screen for a whole bar.');
-      await play(page, midi, BARS[1].slice(-1));
-      await frame('22d-first-of-bar3', 'Bar 3, first note', 'Upright: the bottom slot is now bar 4. Sideways: the cursor is held a third across.');
-      await play(page, midi, BARS[2]);
-      await frame('22e-first-of-bar4', 'Bar 4, first note', 'Same size staff as every frame before it.');
-      await play(page, midi, BARS[3]);
-      await frame('22f-first-of-bar5', 'Bar 5, first note', 'Sideways: past the first chunk swap; the swap should be invisible.');
-      await play(page, midi, BARS[4]);
-      await frame('22g-first-of-bar6', 'Bar 6, first note', 'Still the same size; still a bar ahead.');
+      let lastBar: number | null = null;
+      for (let i = 0; i < MAX_STEPS; i += 1) {
+        const run = await runNow(page);
+        if (run === null) break; // the run has ended
+        const p = await probe(page);
+        if (p.cursorBar !== null && p.cursorBar !== lastBar) {
+          lastBar = p.cursorBar;
+          // Printed numbers: the index is from nought.
+          await frame(
+            `22-bar${String(p.cursorBar + 1).padStart(2, '0')}`,
+            `Bar ${String(p.cursorBar + 1)}, first note`,
+            'Same size as every bar before it; the bar after it already on the screen.',
+          );
+        }
+        const moved = await playStep(page, midi, run);
+        steps.push({ step: run.step, bar: p.cursorBar, moved, probe: p });
+        if (!moved) break;
+      }
+      const ended = await runNow(page);
+      const summary = page.locator('#score-summary');
+      await expect(summary, 'the run ended but no summary sheet appeared').toBeVisible({ timeout: 10_000 });
+      // The sheet covers the stage; the picture is of the stage behind it,
+      // which must not have changed size when the run let go of its scale.
+      await summary.evaluate((el) => {
+        (el as HTMLElement).style.visibility = 'hidden';
+      });
+      await frame('22z-finished', 'After the last note', 'The run has ended; the staff is still the size it was.');
+      const after = await probe(page);
 
       const dir = join(TOUR_DIR, 'sequence', orientation);
       mkdirSync(dir, { recursive: true });
-      writeFileSync(join(dir, 'log.json'), JSON.stringify(frames, null, 2));
+      // One log per attempt, so a retry that passes does not overwrite the
+      // evidence of the attempt that did not.
+      const logName = testInfo.retry > 0 ? `log-retry${String(testInfo.retry)}.json` : 'log.json';
+      writeFileSync(join(dir, logName), JSON.stringify({ steps, after }, null, 2));
       saveLedger();
       writeContactSheet();
 
-      // --- A2: one size for the run -----------------------------------------
-      const heights = frames.map((f) => f.probe.staffHeight);
-      const reference = heights[0] ?? 0;
+      // --- the score moved on after every step, to the end ------------------
+      const stalled = steps.find((s) => !s.moved);
+      expect(
+        stalled,
+        stalled
+          ? `step ${String(stalled.step)} (bar ${String(stalled.bar)}): the score did not move on after its notes were played`
+          : '',
+      ).toBeUndefined();
+      expect(ended, 'the run had not ended after every step was played').toBeNull();
+      expect(steps.length, 'too few steps for a whole song').toBeGreaterThan(20);
+
+      // --- A2: one size for the run, and after it -------------------------
+      // After it only where the stage is the size it was: sideways on a phone
+      // the summary sheet takes the keyboard strip with it, the stage grows
+      // by that much behind the sheet, and a refit to the new height is right.
+      const lastStage = steps[steps.length - 1]?.probe.stage?.height;
+      const stageHeld = lastStage !== undefined && after.stage?.height === lastStage;
+      const scales = [...steps.map((s) => s.probe.scale), ...(stageHeld ? [after.scale] : [])];
+      const reference = scales[0] ?? 0;
       expect(reference, 'no scale was measured').toBeGreaterThan(0);
-      for (const [i, h] of heights.entries()) {
+      for (const [i, scale] of scales.entries()) {
+        const where = i < steps.length ? `step ${String(steps[i]?.step)} (bar ${String(steps[i]?.bar)})` : 'after the run';
         expect(
-          Math.abs(h - reference) / reference,
-          `${frames[i].slug}: drawn at scale ${String(h)} against ${String(reference)} at the start — the size changed between windows`,
-        ).toBeLessThanOrEqual(HEIGHT_TOLERANCE_PX);
+          Math.abs(scale - reference) / reference,
+          `${where}: drawn at scale ${String(scale)} against ${String(reference)} at the start — the size changed`,
+        ).toBeLessThanOrEqual(SCALE_TOLERANCE);
       }
 
-      // --- the next bar is always on the screen ------------------------------
-      for (const f of frames) {
-        expect(nextBarVisible(f.probe), `${f.slug}: bar ${String((f.probe.cursorBar ?? -1) + 1)} is not on the screen`).toBe(true);
+      // --- the next bar is always on the screen, until there is none --------
+      const finalBar = Math.max(...steps.map((s) => s.bar ?? -1));
+      for (const s of steps) {
+        if (s.bar === null || s.bar >= finalBar) continue;
+        expect(
+          nextBarVisible(s.probe),
+          `step ${String(s.step)} (bar ${String(s.bar)}): bar ${String(s.bar + 1)} is not on the screen`,
+        ).toBe(true);
       }
 
-      // --- A3: sideways, the cursor holds a third across ----------------------
-      if (orientation === 'landscape') {
-        for (const f of frames) {
-          if (f.slug < '22d') continue;
-          const { band, stage } = f.probe;
-          expect(band && stage, `${f.slug}: no cursor band`).toBeTruthy();
-          if (!band || !stage) continue;
-          const fraction = (band.left + band.width / 2 - stage.left) / stage.width;
-          expect(
-            fraction,
-            `${f.slug}: the cursor is ${String(Math.round(fraction * 100))}% across the stage`,
-          ).toBeGreaterThanOrEqual(SLIDE_MIN);
-          expect(fraction).toBeLessThanOrEqual(SLIDE_MAX);
-        }
+      // --- A3: where the sheet slides, the cursor holds a third across ------
+      // At the first step of each bar: the slide happens once a bar, at the
+      // barline, and the cursor then walks the bar's width to the right.
+      let seenBar: number | null = null;
+      for (const s of steps) {
+        const first = s.bar !== null && s.bar !== seenBar;
+        if (s.bar !== null) seenBar = s.bar;
+        if (!first || s.probe.readAhead !== 'single' || s.bar === null || s.bar < SLIDE_FROM_BAR) continue;
+        const fraction = cursorFraction(s.probe);
+        expect(fraction, `step ${String(s.step)}: no cursor band`).not.toBeNull();
+        if (fraction === null) continue;
+        expect(
+          fraction,
+          `step ${String(s.step)} (bar ${String(s.bar)}): the cursor is ${String(Math.round(fraction * 100))}% across the stage`,
+        ).toBeGreaterThanOrEqual(SLIDE_MIN);
+        expect(fraction).toBeLessThanOrEqual(SLIDE_MAX);
       }
     });
   });

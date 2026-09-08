@@ -613,6 +613,7 @@ export class PracticeEngine {
     }
     this.loopsCompleted += 1;
     this.emit({ kind: 'finished', loop: true, tMs, score: this.buildScore() });
+    const from = this.step;
     this.step = this.session.firstStep;
     this.progress = freshProgress();
     this.earlyBuffer = new Set();
@@ -620,8 +621,14 @@ export class PracticeEngine {
     if (this.mode === 'wait') {
       const start = nextPlayableStep(this.session.steps, this.session.firstStep, this.session.lastStep);
       this.step = start ?? this.session.firstStep;
+      // Said, so the cursor goes back with the step. Without this the screen
+      // heard nothing until the *second* step of the new lap was reached:
+      // the cursor sat on the last bar of the loop while the engine waited
+      // for the first, and a looped section began with nowhere to look.
+      this.emit({ kind: 'stepAdvanced', from, to: this.step, tMs });
       return;
     }
+    this.emit({ kind: 'stepAdvanced', from, to: this.step, tMs });
     // Tempo restarts on the grid: rebase the clock so step 0 is now, after a
     // one-beat gap so the lap does not run into itself.
     this.startedAtMs =

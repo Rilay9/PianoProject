@@ -27,5 +27,5 @@ test('and so does the score screen, which is where the rule came from', async ({
   await page.goto('/#/score/exercise.five-finger.c-major.right');
   const svg = page.locator('.score-buffer.is-front svg').first();
   await expect(svg).toBeVisible({ timeout: 60_000 });
-  expect(await inverted(page, '.score-buffer.is-front svg')).toContain('invert');
+  expect(await inverted(page, '.score-buffer.is-cursor svg')).toContain('invert');
 });

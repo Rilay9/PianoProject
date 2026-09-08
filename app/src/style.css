@@ -1193,8 +1193,13 @@ input[type='checkbox'] {
   }
 }
 
+/* The step after this one: a line under its stave (Tempo and Listen). It was
+   a second band at 30 % — two cursors, to anyone who had not read the spec. */
 .score-cursor--next {
-  opacity: 0.3;
+  opacity: 0.6;
+  border-left: 0;
+  border-radius: 2px;
+  background: var(--accent);
 }
 
 .score-cursor {

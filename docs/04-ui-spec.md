@@ -350,10 +350,14 @@ id.
 Notation area:
 - **Window layout, upright — two slots.** The stage holds two systems and they are two
   independent engravings of N/2 bars each, not one window of N. **The slot the cursor is in
-  is never re-drawn**; the other shows what comes next and is replaced the moment the cursor
-  crosses into it, fading over ~150 ms. The eye goes top, bottom, top — the arrangement
-  karaoke uses — and the coming bar has been on the screen for a whole bar by the time it is
-  played. Not a setting: it is how the window works (P21c A3).
+  is never re-drawn**; the other shows what comes next and is replaced on idle time after the
+  cursor crosses into it — at the latest 100 ms later — fading over ~150 ms. The crossing
+  itself is a class toggle: the re-drawing is never on the path between a key and its colour. The eye goes top, bottom,
+  top — the arrangement karaoke uses — and the coming bar has been on the screen for a whole
+  bar by the time it is played. Not a setting: it is how the window works (P21c A3). A screen
+  at least 600 px tall — a tablet either way up, a desktop window — has the two slots
+  sideways as well; the single sliding system is for a phone held sideways, where the height
+  holds one.
 
   "What comes next" follows the **playing** order, not the printed one: at a repeat the other
   slot shows the repeat's first bar, and at a first- or second-time ending the ending that
@@ -407,8 +411,9 @@ the DOM carries `data-measure` the fallback is the only path there is: every loo
 double-tap gesture built asked for bar −1 and got nothing.
 
 **A beat of warning (Tempo and Listen only).** The cursor band marks the current step; a
-second band at 30 % opacity marks the next one, and the keyboard strip shows the next expected
-key in a paler blue behind the current one. Wait mode has no clock to be ahead of and draws
+short line under the stave marks the next one — not a second, paler band, which read as two
+cursors — and the keyboard strip shows the next expected key in a paler blue behind the
+current one. Wait mode has no clock to be ahead of and draws
 neither — a mark on a note nobody is going to reach yet tells a beginner to hurry. The warning
 band refuses the nearest-note fallback the cursor uses: a coming step that is not drawn hides
 rather than marking a note that is not next.

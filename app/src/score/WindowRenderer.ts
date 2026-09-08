@@ -90,6 +90,16 @@ const SLIDE_READ_AHEAD_BARS = 2;
  */
 const SLIDE_BEHIND_BARS = 2;
 
+/**
+ * How long the slot the cursor left may wait to be re-drawn.
+ *
+ * It is re-drawn on idle time, so a second note arriving on the heels of the
+ * first is coloured before the engraving starts rather than behind it; and
+ * no later than this, so the bar after next is on the screen long before it
+ * is wanted — a bar is hundreds of milliseconds at any tempo.
+ */
+const SETTLE_TIMEOUT_MS = 100;
+
 /** Manual scrolling suspends auto-scroll for this long (docs §5). */
 export const MANUAL_SCROLL_PAUSE_MS = 5000;
 
@@ -209,6 +219,9 @@ const FIT_STEPS = 4;
 /** How much of a piece the probe engraves to measure it (P21e A2). */
 const PROBE_MAX_BARS = 48;
 
+/** A viewport at least this tall holds two systems sideways as well as upright. */
+const TWO_SYSTEMS_MIN_PX = 600;
+
 function clampBars(bars: number): number {
   return Math.min(MAX_BARS_PER_WINDOW, Math.max(MIN_BARS_PER_WINDOW, Math.round(bars)));
 }
@@ -259,6 +272,12 @@ export class WindowRenderer {
   /** The stage height the sheet was last fitted to; -1 means never. */
   private fittedAtHeight = -1;
   private currentStep = -1;
+  /** The step the warning mark is on, so a refit can put it back. */
+  private nextStep: number | null = null;
+  /** The idle callback (or its timer) in which the slot the cursor left is re-drawn. */
+  private settleHandle: { kind: 'idle' | 'timer'; id: number } | null = null;
+  /** The stage height at the last fit; -1 before any. Saves the swap a layout. */
+  private stageHeight = -1;
   private manualScrollUntil = 0;
   /** Bumped whenever a slot is drawn or blanked, so the merge can cache. */
   private drawVersion = 0;
@@ -364,6 +383,7 @@ export class WindowRenderer {
     if (typeof ResizeObserver !== 'undefined') {
       this.stageObserver = new ResizeObserver(() => {
         if (this.disposed || this.fitting) return;
+        this.stageHeight = -1;
         // The drawn scale first, and always: it is a CSS transform, it costs
         // nothing, and without it the sheet keeps the size it was fitted to
         // before the stage changed. Turning the keyboard strip off gives the
@@ -567,36 +587,94 @@ export class WindowRenderer {
       this.model.sourceMeasureCount,
     );
     const started = performance.now();
-    let drew = false;
-    for (const index of [0, 1] as SlotIndex[]) {
-      const slot = this.buffers[index];
-      const wanted = plan.ranges[index];
-      if (wanted === null) {
-        if (slot.range === null) continue;
-        this.blank(slot);
-        drew = true;
-        continue;
-      }
-      if (sameSlotRange(slot.range, wanted)) continue;
-      this.drawInto(slot, wanted);
-      // A slot that changes while the eye is on the other one fades, because
-      // peripheral vision ignores a fade and notices a flash.
-      if (plan.fade === index) this.fadeIn(slot);
-      drew = true;
-    }
-    this.cursorSlot = plan.cursor;
-    this.slotRanges = plan.ranges;
-    this.updateSlotClasses();
-    if (drew) {
+    const cursor = this.buffers[plan.cursor];
+    const wanted = plan.ranges[plan.cursor];
+    if (wanted !== null && !sameSlotRange(cursor.range, wanted)) {
+      // A cold draw — a seek, a restart, the first step. Nothing on the
+      // screen is right, so both slots are drawn now and fitted together.
+      for (const index of [0, 1] as SlotIndex[]) this.settleSlot(index, plan.ranges[index], false);
+      this.cursorSlot = plan.cursor;
+      this.slotRanges = plan.ranges;
+      this.updateSlotClasses();
       this.fitSlots();
-      // Two labels, because they are two different budgets (`01` §6): the
-      // crossing is the one a player feels and has to fit in a frame; a cold
-      // draw is a seek and only has to beat the first-render figure.
-      recordRenderTiming(
-        plan.crossed ? 'window.swap' : 'window.swapCold',
-        performance.now() - started,
-      );
+      recordRenderTiming('window.swapCold', performance.now() - started);
+      return;
     }
+    // The bar being played is already drawn. Moving the cursor into it is a
+    // class toggle; the slot it left is re-drawn on the *next* frame. It used
+    // to be re-drawn here, inside the paint that colours the note just
+    // played — an engraving on the input path, tens of milliseconds on a
+    // phone, once every crossing: the hitch at every other bar, and the
+    // colour of the note landing late. Nobody is looking at that slot for
+    // another frame, and the read-ahead is a bar long, not a frame.
+    this.cursorSlot = plan.cursor;
+    this.updateSlotClasses();
+    const other: SlotIndex = plan.cursor === 0 ? 1 : 0;
+    if (this.slotDiffers(other, plan.ranges[other])) this.scheduleSettle();
+    if (plan.crossed) recordRenderTiming('window.swap', performance.now() - started);
+  }
+
+  private slotDiffers(index: SlotIndex, wanted: MeasureRange | null): boolean {
+    const slot = this.buffers[index];
+    return wanted === null ? slot.range !== null : !sameSlotRange(slot.range, wanted);
+  }
+
+  /** Draws or blanks one slot to what the plan wants; true if anything changed. */
+  private settleSlot(index: SlotIndex, wanted: MeasureRange | null, fade: boolean): boolean {
+    const slot = this.buffers[index];
+    if (!this.slotDiffers(index, wanted)) return false;
+    if (wanted === null) {
+      this.blank(slot);
+      return true;
+    }
+    this.drawInto(slot, wanted);
+    // A slot that changes while the eye is on the other one fades, because
+    // peripheral vision ignores a fade and notices a flash.
+    if (fade) this.fadeIn(slot);
+    return true;
+  }
+
+  private scheduleSettle(): void {
+    if (this.settleHandle !== null) return;
+    const run = (): void => {
+      this.settleHandle = null;
+      if (this.disposed || this.readAhead !== 'slots') return;
+      const started = performance.now();
+      // Planned again from wherever the cursor is *now*: a second step may
+      // have landed since the frame was asked for.
+      const plan = planSlots(
+        this.model.steps,
+        this.currentStep,
+        { cursor: this.cursorSlot, ranges: this.slotRanges },
+        this.barsPerWindow,
+        this.model.sourceMeasureCount,
+      );
+      if (plan.cursor !== this.cursorSlot) return; // a seek is on its way; showStep handles it
+      const other: SlotIndex = plan.cursor === 0 ? 1 : 0;
+      if (!this.settleSlot(other, plan.ranges[other], true)) return;
+      this.slotRanges = plan.ranges;
+      this.updateSlotClasses();
+      this.fitSlots();
+      recordRenderTiming('window.settle', performance.now() - started);
+    };
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => number;
+    };
+    this.settleHandle = w.requestIdleCallback
+      ? { kind: 'idle', id: w.requestIdleCallback(run, { timeout: SETTLE_TIMEOUT_MS }) }
+      : { kind: 'timer', id: window.setTimeout(run, SETTLE_TIMEOUT_MS / 2) };
+  }
+
+  private cancelSettle(): void {
+    const handle = this.settleHandle;
+    if (handle === null) return;
+    this.settleHandle = null;
+    if (handle.kind === 'timer') {
+      window.clearTimeout(handle.id);
+      return;
+    }
+    const w = window as Window & { cancelIdleCallback?: (id: number) => void };
+    w.cancelIdleCallback?.(handle.id);
   }
 
   /**
@@ -783,14 +861,25 @@ export class WindowRenderer {
     // there called a landscape screen upright.
     const upright =
       typeof window === 'undefined' ? true : window.innerHeight > window.innerWidth;
-    const next: 'slots' | 'single' = upright && this.barsPerWindow >= 2 ? 'slots' : 'single';
+    // A screen tall enough for two systems gets two slots whichever way up it
+    // is. The slide is for a phone held sideways, where 360 px holds one
+    // system; on a tablet or a desktop window 900 px tall, fitting one system
+    // to the height drew a bar of Suo Gân across 1,200 px with note heads the
+    // size of a thumb — the tour photographed it and I did not look.
+    const tall = typeof window === 'undefined' ? false : window.innerHeight >= TWO_SYSTEMS_MIN_PX;
+    const next: 'slots' | 'single' =
+      (upright || tall) && this.barsPerWindow >= 2 ? 'slots' : 'single';
     // Written every time, not only on a change: the field starts at
     // `single`, so a stage that is sideways from the first step never wrote
     // the attribute at all and the stylesheet had nothing to match.
     this.el.dataset.readAhead = next;
     if (next === this.readAhead) return;
     this.readAhead = next;
-    // Everything drawn belonged to the other arrangement.
+    // Everything drawn belonged to the other arrangement — and so did the
+    // scale a run froze. Rotating mid-run kept the upright scale as a ceiling
+    // on the sideways fit, and the other way round; the next render freezes
+    // whatever the new arrangement fits.
+    this.frozen = null;
     this.slotRanges = [null, null];
     this.cursorSlot = 0;
     for (const slot of this.buffers) {
@@ -1008,6 +1097,7 @@ export class WindowRenderer {
       window.clearTimeout(this.freezeHandle);
       this.freezeHandle = null;
     }
+    this.cancelSettle();
     if (this.measureHandle !== null) {
       const w = window as Window & { cancelIdleCallback?: (id: number) => void };
       if (typeof w.cancelIdleCallback === 'function') w.cancelIdleCallback(this.measureHandle);
@@ -1093,6 +1183,7 @@ export class WindowRenderer {
     if (slots.length === 0) return;
     const available = this.el.getBoundingClientRect();
     if (available.width <= 0 || available.height <= 0) return;
+    this.stageHeight = Math.round(available.height);
 
     const boxes: { slot: Buffer; box: { x: number; y: number; width: number; height: number } }[] =
       [];
@@ -1116,7 +1207,11 @@ export class WindowRenderer {
     // would shrink the music to buy bars nobody is playing yet. Height fills
     // the stage, the extra bars run off the right, and the sheet slides (P21c
     // A2).
-    const perSlot = available.height / boxes.length;
+    // Half the stage each in the slot arrangement, whether or not both are
+    // drawn: the last window of a piece leaves the other slot blank, and
+    // fitting the one that is left to the whole height doubled it — a pop
+    // at the end of every run, the moment the summary appeared over it.
+    const perSlot = available.height / (this.readAhead === 'slots' ? 2 : boxes.length);
     const scale = this.scaleFor(
       boxes.map((entry) => entry.box),
       { width: available.width, height: perSlot },
@@ -1142,6 +1237,17 @@ export class WindowRenderer {
     this.slidBar = -1;
     const step = this.model.steps[this.currentStep];
     if (step) this.slideToStep(step);
+    // The bands are placed in stage pixels against the transform that was:
+    // a refit — the stage taking the bar's row when a run starts, the probe's
+    // measurement landing, the run ending — left them where the old scale had
+    // put the notes until the next step moved them.
+    this.repositionBands();
+  }
+
+  private repositionBands(): void {
+    const step = this.model.steps[this.currentStep];
+    if (step) this.positionBand(step);
+    this.showNextStep(this.nextStep);
   }
 
   /**
@@ -1319,6 +1425,7 @@ export class WindowRenderer {
     buffer.wrapper.style.transform = '';
     const available = this.el.getBoundingClientRect();
     if (available.width <= 0 || available.height <= 0) return;
+    this.stageHeight = Math.round(available.height);
     const rect = svg.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) return;
     // The ink, not the page it was drawn on. Fitting to the page is what left
@@ -1349,10 +1456,15 @@ export class WindowRenderer {
 
   /** Whether a sheet's fit is for the stage as it is now. */
   private fitIsCurrent(buffer: Buffer): boolean {
-    const stage = this.el.getBoundingClientRect();
     const fitted = buffer.fittedFor;
     if (!fitted) return false;
-    if (fitted.height !== Math.round(stage.height)) return false;
+    // The height the last fit measured, not a fresh `getBoundingClientRect`:
+    // that forces a layout, and on a swap the spare's whole engraving has
+    // just been inserted, so the layout it forced was the expensive one the
+    // double buffer exists to keep off the swap. The observer resets it when
+    // the stage changes, and the fit that follows measures again.
+    const stageHeight = this.stageHeight >= 0 ? this.stageHeight : Math.round(this.el.getBoundingClientRect().height);
+    if (fitted.height !== stageHeight) return false;
     if (this.frozen && this.frozen.scale > 0 && fitted.scale > this.frozen.scale + 0.001) return false;
     return true;
   }
@@ -1561,6 +1673,7 @@ export class WindowRenderer {
    * clock to be ahead of is the run's business, not the renderer's.
    */
   showNextStep(stepIndex: number | null): void {
+    this.nextStep = stepIndex;
     const step = stepIndex === null ? undefined : this.model.steps[stepIndex];
     if (!step) {
       this.nextBand.hidden = true;
@@ -1606,6 +1719,15 @@ export class WindowRenderer {
     const system = anchor.closest('.staffline');
     const line = system?.getBoundingClientRect();
     const pad = 12;
+    if (band === this.nextBand) {
+      // A short line under the stave, not a paler copy of the cursor. Two
+      // bands on the screen read as two cursors — the owner's words — and a
+      // beginner cannot tell which one to play.
+      const bottom = line && line.height > 0 ? line.bottom : box.bottom;
+      band.style.top = `${bottom - host.top + this.el.scrollTop + 4}px`;
+      band.style.height = '4px';
+      return;
+    }
     if (line && line.height > 0) {
       band.style.top = `${line.top - host.top + this.el.scrollTop - pad}px`;
       band.style.height = `${line.height + pad * 2}px`;

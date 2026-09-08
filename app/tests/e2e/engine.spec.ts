@@ -162,7 +162,7 @@ test.describe('generated sight-reading renders and can be practised', () => {
       expect(await dev.lastError()).toBe('');
       expect(await dev.stepCount()).toBeGreaterThan(0);
       // It actually drew: notation, not an empty SVG.
-      await expect(page.locator('.score-buffer.is-front svg')).toBeVisible();
+      await expect(page.locator('.score-buffer.is-front svg').first()).toBeVisible();
       expect(await dev.noteElementCount()).toBeGreaterThan(0);
       expect(await dev.measureCounts()).toEqual({ unrolled: 4, printed: 4 });
 

@@ -64,7 +64,7 @@ test.describe('Library', () => {
     await row.click();
     await expect(page).toHaveURL(/#\/score\/import\.imported-test-tune/);
     // The imported bytes come from IndexedDB, not from a URL under content/.
-    await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 30_000 });
 
     await page.goto('/#/library');
     await page.reload();

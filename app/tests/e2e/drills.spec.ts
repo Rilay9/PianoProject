@@ -221,14 +221,14 @@ test.describe('sight-reading (docs/05 §8)', () => {
     await page.goto('/#/drill/drill.reading.sight-reading-1');
     // A drill screen would be wrong: this one is notation.
     await expect(page).toHaveURL(/#\/score\/drill\.reading\.sight-reading-1/, { timeout: 20_000 });
-    await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 60_000 });
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
     await expect(page.locator('[data-screen="score"]')).toHaveAttribute('data-mode', 'tempo');
   });
 
   test('is different material each time it is opened', async ({ page }) => {
     const svgText = async (): Promise<string> => {
-      await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 60_000 });
-      return (await page.locator('#score-stage .is-front svg').innerHTML()).slice(0, 4000);
+      await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
+      return (await page.locator('#score-stage .is-front svg').first().innerHTML()).slice(0, 4000);
     };
     await page.goto('/#/score/drill.reading.sight-reading-2');
     const first = await svgText();

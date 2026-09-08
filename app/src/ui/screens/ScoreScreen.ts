@@ -1669,7 +1669,17 @@ export function ScoreScreen(router: Router): HTMLElement {
         drawMetronomeMarks: false,
       });
 
-      if (window.__pianopath) window.__pianopath.scoreFit = () => renderer?.debugFit();
+      if (window.__pianopath) {
+        window.__pianopath.scoreFit = () => renderer?.debugFit();
+        // What the run is waiting for, so a test can play a whole piece by
+        // asking rather than by carrying a copy of it.
+        window.__pianopath.scoreRun = () => {
+          const state = session?.state;
+          return session?.running === true && state
+            ? { step: state.step, expected: session.expectedNow }
+            : null;
+        };
+      }
 
       // Draw the first window. `WindowRenderer.create` prepares its buffers but
       // does not commit to a position: the first `showStep` is what puts notes
@@ -1710,6 +1720,16 @@ export function ScoreScreen(router: Router): HTMLElement {
         }
         // An ordinary loop run keeps going; only a real ending is a summary.
         if (looped) return;
+        // `Hear it` reaching the end is the end of a demonstration: nothing
+        // was judged and nothing is recorded. It went to the summary, which
+        // wrote a nought-accuracy run into the history under whichever mode
+        // the select happened to show.
+        if (hearing) {
+          hearing = false;
+          clearBeat();
+          render();
+          return;
+        }
         showSummary(score);
       },
       });

@@ -149,6 +149,17 @@ export class ScoreSession {
   private scheduledSteps = new Set<number>();
   private runOptions: RunOptions = { mode: 'wait' };
   private lastScore: SessionScore | null = null;
+  /**
+   * True while `stop()` is stopping the engine.
+   *
+   * The engine reports a stop as a `finished` event, and the screen treated
+   * every finish as the end of a run: a summary sheet, and a row in the
+   * practice history. So changing hands mid-run — which restarts the run —
+   * opened the summary over the new run and recorded the half-run as a
+   * failure; stopping `Hear it` summarised a demonstration. A stop is the
+   * screen's own doing and is not reported back to it.
+   */
+  private stopping = false;
 
   constructor(options: ScoreSessionOptions) {
     this.options = options;
@@ -268,7 +279,12 @@ export class ScoreSession {
     this.raf = null;
     if (this.ticker !== null) window.clearInterval(this.ticker);
     this.ticker = null;
-    this.engine?.stop();
+    this.stopping = true;
+    try {
+      this.engine?.stop();
+    } finally {
+      this.stopping = false;
+    }
     this.engine = null;
     this.metronome?.stop();
     this.metronome?.dispose();
@@ -404,6 +420,10 @@ export class ScoreSession {
         break;
       case 'finished':
         this.lastScore = event.score;
+        if (this.stopping) {
+          this.dirty = true;
+          break;
+        }
         if (event.loop) {
           // A new lap: old colours would read as this lap's mistakes.
           this.judgements = new Map();

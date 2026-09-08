@@ -81,11 +81,11 @@ test.describe('a whole run', () => {
     await page.locator('#score-play').click();
     // A wrong note is judged and painted, but the cursor stays put — that is
     // the whole contract of Wait mode (docs/05 §2).
-    const before = await page.locator('#score-stage .is-front').innerHTML();
+    const before = await page.locator('#score-stage .is-cursor').innerHTML();
     await press(page, 71);
     await press(page, 71);
     await page.waitForTimeout(300);
-    expect(await page.locator('#score-stage .is-front').innerHTML()).toBe(before);
+    expect(await page.locator('#score-stage .is-cursor').innerHTML()).toBe(before);
     await expect(page.locator('#score-summary')).toBeHidden();
 
     // …and the key he pressed goes red on the strip (`04` §5). The staff has
@@ -107,5 +107,73 @@ test.describe('a whole run', () => {
     await expect(sheet).toBeVisible({ timeout: 30_000 });
     await expect(sheet.locator('[data-stat="wrong-notes"]')).not.toHaveText('0');
     await expect(sheet.locator('[data-stat="accuracy"]')).not.toHaveText('100%');
+  });
+});
+
+/**
+ * Stopping is not finishing (round four of the tour, the state machines).
+ *
+ * The engine reports a stop as a `finished` event, and the screen took every
+ * finish for the end of a run. So restarting a run — which a change of hands
+ * does — opened the summary over the new run and wrote the half-run into the
+ * practice history as a failure; `Hear it` reaching the end did the same for
+ * a demonstration nobody played. And a loop's lap put the engine back at the
+ * loop's first step without telling the cursor, which stayed on the last bar.
+ */
+test.describe('stopping, restarting and looping', () => {
+  test.setTimeout(180_000);
+
+  async function recordedRuns(page: Page): Promise<number> {
+    return page.evaluate(async () => {
+      type Hooked = Window & {
+        __pianopath?: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
+      };
+      const file = await (window as Hooked).__pianopath?.exportAll();
+      const rows = file?.stores.sessions;
+      return Array.isArray(rows) ? rows.length : 0;
+    });
+  }
+
+  test('changing hands mid-run restarts it without a summary or a recorded run', async ({ page }) => {
+    await openAndArm(page, 'wait');
+    await page.locator('#score-play').click();
+    await press(page, 64);
+    await press(page, 62);
+    await page.locator('#score-hands-L').click();
+    await page.waitForTimeout(500);
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+    await expect(page.locator('#score-summary')).toBeHidden();
+    expect(await recordedRuns(page)).toBe(0);
+  });
+
+  test('Hear it reaching the end is not a run', async ({ page }) => {
+    await openAndArm(page, 'wait');
+    await setTempoPercent(page, 130);
+    await page.locator('#score-hear').click();
+    const screen = page.locator('section[data-screen="score"]');
+    await expect(screen).toHaveAttribute('data-hearing', 'true');
+    await expect(screen).toHaveAttribute('data-running', 'false', { timeout: 90_000 });
+    await expect(screen).toHaveAttribute('data-hearing', 'false');
+    await expect(page.locator('#score-summary')).toBeHidden();
+    expect(await recordedRuns(page)).toBe(0);
+  });
+
+  test('a loop lap puts the cursor back on the first bar', async ({ page }) => {
+    await openAndArm(page, 'wait');
+    // Two double-taps on the stage: a one-bar loop on the window's first bar.
+    const stage = page.locator('#score-stage');
+    await stage.dispatchEvent('dblclick');
+    await stage.dispatchEvent('dblclick');
+    await expect(page.locator('#score-loop')).toContainText('Bars 1–1');
+    await page.locator('#score-play').click();
+    const current = page.locator('#score-stage .score-note.is-current');
+    await expect(current.first()).toHaveAttribute('data-midi', '64');
+    // Bar 1 of Hot Cross Buns: E D C. The lap ends on the C…
+    await press(page, 64);
+    await press(page, 62);
+    await press(page, 60);
+    // …and the cursor is back on the E before anything else is played.
+    await expect(current.first()).toHaveAttribute('data-midi', '64');
+    await expect(page.locator('#score-summary')).toBeHidden();
   });
 });
