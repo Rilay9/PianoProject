@@ -62,7 +62,15 @@ sideways: the 610 px centred card is a portrait shape on a landscape screen.
 hidden and the header's control row becomes the first row, laid out as one flex line.
 
 **A2 — Sub-screens** (`screenFrame`/`subScreen`, so it is one change): the card's `max-width`
-lifts sideways and `← Back` sits on the title line.
+lifts sideways and `← Back` sits on the title line. Lifting the width is not enough on its own:
+the content inside is one left-aligned column, so the right half stays empty (`51` Metronome
+is the clearest — `80 bpm` and three buttons on the left, nothing on the right; `53` Mic, `52`
+MIDI and `54` Diagnostics are the same shape). Sideways, a sub-screen with more than one
+`section.block` lays its blocks out in two columns: the metronome's tempo on the left with its
+beat pattern and sound on the right; the microphone's connection on the left with its level
+meter and calibration on the right; diagnostics' devices on the left with the latency test and
+the report on the right. A screen with one block (the chart, paper practice) stays one column
+at full width.
 
 **A3 — Rows in two columns where they are uniform.** A Today card, a Plan lesson row and a
 Library row are 1,650 px wide for three lines of text (`01`, `03`, `06`). Sideways on a phone,
