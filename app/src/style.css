@@ -800,14 +800,64 @@ input[type='checkbox'] {
   min-height: 200px;
 }
 
-/* Both buffers are stacked; only the front one is visible. Swapping windows is
-   this class moving from one wrapper to the other. */
+/* The two slots (P21c A1).
+
+   Sideways — `data-read-ahead='single'` — there is one system and the second
+   slot is not drawn, which is what both wrappers were before this: stacked in
+   the same box, one visible.
+
+   Upright they are two systems, one above the other, both visible, and the one
+   the cursor is in is never re-drawn. `is-front` therefore now means "drawn"
+   rather than "the visible one of two"; `is-cursor` is the one being played. */
 .score-buffer {
   position: absolute;
   inset: 0;
   transform-origin: top left;
   visibility: hidden;
   pointer-events: none;
+}
+
+/* A slot with nothing left to show — the end of the piece — is gone, not a
+   repeat of bars already played. `[hidden]` is a user-agent rule at specificity
+   zero, so it needs saying against the class rules above and below it. */
+.score-buffer[hidden] {
+  display: none;
+}
+
+.score-view[data-read-ahead='slots'] .score-buffer.is-front {
+  position: absolute;
+  height: 50%;
+  inset: auto 0 auto 0;
+}
+
+.score-view[data-read-ahead='slots'] .score-buffer[data-slot='0'] {
+  top: 0;
+}
+
+.score-view[data-read-ahead='slots'] .score-buffer[data-slot='1'] {
+  top: 50%;
+}
+
+/* The slot that changed fades in, because the swap happens while the eye is on
+   the other slot and peripheral vision ignores a fade but notices a flash. */
+.score-buffer.is-fading {
+  animation: score-slot-in 150ms ease-out;
+}
+
+@keyframes score-slot-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-buffer.is-fading {
+    animation: none;
+  }
 }
 
 .score-buffer.is-front {
@@ -1204,6 +1254,17 @@ input[type='checkbox'] {
 .score-button.is-selected {
   border-color: var(--accent, #4c8bf5);
   color: var(--accent, #4c8bf5);
+}
+
+/* The mode select is sized by its longest option, and P21c B2 made the
+   options sentences — "Play it to me" instead of "Listen". On a 390 px phone
+   that pushed the bar from one row to two (88 px), which is the one thing the
+   bar is not allowed to do. It shrinks instead: the closed select clips its
+   text, the dropdown shows every label in full, and the row stays a row. */
+#score-mode {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 6.5rem;
 }
 
 .score-group {

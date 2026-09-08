@@ -423,9 +423,15 @@ test.describe('blind mode', () => {
 
     // The engraving is laid out — the cursor still tracks and the run is scored
     // the same way — it is simply not shown.
+    //
+    // One `.is-front` per slot, so upright there are two of them (P21c A1).
+    // What matters here has never been how many there are, only that the
+    // engraving exists and that none of it is on the screen.
     const svg = page.locator('#score-stage .is-front svg');
-    await expect(svg).toHaveCount(1);
-    await expect(svg).not.toBeVisible();
+    // Waited for, not read: `expect(await count())` is one shot, and under a
+    // loaded machine this ran while the screen still said "Loading…".
+    await expect(svg.first()).toBeAttached({ timeout: 60_000 });
+    for (const one of await svg.all()) await expect(one).not.toBeVisible();
 
     // And the things a blind run is played with are still there.
     await expect(page.locator('.keyboard-strip')).toBeVisible();

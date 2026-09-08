@@ -4,10 +4,26 @@
 // plays (docs/04-ui-spec.md §5). Two things make that feel right on a phone,
 // and both are why this class exists rather than a bare OsmdView:
 //
-//  * **Double buffering.** Re-rendering OSMD costs tens of milliseconds — far
-//    over the one-frame budget for a window swap (docs/01 §6). So two OsmdView
-//    instances are kept: one visible, one off-screen holding the *next* window,
-//    already drawn. Advancing is a class toggle.
+//  * **Two slots.** Upright the stage holds two systems, and they are two
+//    independent OsmdViews rather than one window engraved together. The slot
+//    the cursor is in is never re-drawn; the other shows what comes next, and
+//    is replaced the moment the cursor crosses into the one below. The eye
+//    goes top, bottom, top — the arrangement karaoke uses — and the coming bar
+//    has been on the screen for a whole bar by the time it is played (P21c
+//    §A1). Sideways there is one system and no alternation.
+//
+//    It replaced a front/back double buffer that swapped the *whole* stage,
+//    which moved the bar being played from the lower system to the upper one
+//    mid-phrase every other bar. Re-rendering OSMD costs tens of milliseconds
+//    and the budget for a swap is one frame (docs/01 §6); a slot swap pays it
+//    while the eye is on the other slot, which is a whole bar rather than a
+//    frame, so it can afford a real render.
+//
+//    Sideways there is one system, and there the double buffer is still what
+//    it was: the second view is spare, the next window is drawn into it a
+//    frame after each swap, and advancing is a class toggle. A swap is the
+//    thing the learner is waiting on there, because nothing else is on screen
+//    to be reading while it happens.
 //  * **Class-based state.** Note colouring and hand dimming never re-render.
 //    After each draw, every drawn note gets `data-note-id`, `data-hand` and
 //    `data-midi`, so painting a chord green is four `classList` calls and
@@ -20,6 +36,7 @@
 
 import { OsmdView, type MeasureRange } from './OsmdView';
 import { MAX_FIT, MIN_FIT, fitZoom, worthRefitting } from './autoFit';
+import { planSlots, sameRange as sameSlotRange, type SlotIndex } from './slots';
 import type { ScoreModel, ScoreNote, ScoreStep } from './types';
 import { recordRenderTiming } from '../util/renderTiming';
 
@@ -158,7 +175,23 @@ export class WindowRenderer {
   private readonly notesById: Map<string, ScoreNote>;
   private readonly buffers: [Buffer, Buffer];
   private readonly band: HTMLElement;
-  private front = 0;
+  /**
+   * Which shape the read-ahead takes (P21c A1).
+   *
+   * `slots` is the karaoke arrangement: two systems, the one being played is
+   * never re-drawn, the other shows what comes next. It needs a stage taller
+   * than it is wide and a window of at least two bars to have anything to
+   * alternate. `single` is one system filling the stage — sideways, and at one
+   * bar per window — and is what the whole stage was before this.
+   *
+   * Derived from the stage box rather than passed in, so rotating the phone
+   * changes it through the `ResizeObserver` that is already watching.
+   */
+  private readAhead: 'slots' | 'single' = 'single';
+  /** In `slots`, which of the two the cursor is in; in `single`, always 0. */
+  private cursorSlot: SlotIndex = 0;
+  /** What each slot holds. `null` is a slot with nothing left to show. */
+  private slotRanges: [MeasureRange | null, MeasureRange | null] = [null, null];
   private layout: ScoreLayout;
   private barsPerWindow: number;
   private halfWindow: boolean;
@@ -173,6 +206,7 @@ export class WindowRenderer {
   private fittedAtHeight = -1;
   private currentStep = -1;
   private manualScrollUntil = 0;
+  /** The single-system pre-render, queued for the frame after a swap. */
   private prerenderHandle: number | null = null;
   /** Watches the stage, because its height settles after the first draw. */
   private stageObserver: ResizeObserver | null = null;
@@ -229,7 +263,8 @@ export class WindowRenderer {
         // before the stage changed. Turning the keyboard strip off gives the
         // stage 72 px and the notation simply did not grow into them — the
         // sheet only caught up the next time something else asked for a fit.
-        this.fit(this.frontBuffer);
+        this.updateReadAhead();
+        this.fitSlots();
         // Then the engraving, which may want re-laying out at the new height.
         // `fitToStage` returns immediately when the height is the one it last
         // fitted, so an observation that changes nothing costs a comparison.
@@ -257,7 +292,7 @@ export class WindowRenderer {
       buffers.push({ view, wrapper, range: null, elements: new Map() });
     }
     const renderer = new WindowRenderer(options, buffers as [Buffer, Buffer]);
-    renderer.updateFrontClasses();
+    renderer.updateSlotClasses();
     return renderer;
   }
 
@@ -286,12 +321,38 @@ export class WindowRenderer {
     return this.currentStep;
   }
 
+  /**
+   * The slot the cursor is in — what "the sheet on screen" means to everything
+   * that used to ask the front buffer: the fit, the ink box, the band.
+   */
   private get frontBuffer(): Buffer {
-    return this.front === 0 ? this.buffers[0] : this.buffers[1];
+    return this.cursorSlot === 0 ? this.buffers[0] : this.buffers[1];
   }
 
-  private get backBuffer(): Buffer {
-    return this.front === 0 ? this.buffers[1] : this.buffers[0];
+  /** Both slots, in drawing order, skipping any that is blank. */
+  private get drawnSlots(): Buffer[] {
+    if (this.readAhead === 'single') {
+      const front = this.buffers[this.cursorSlot];
+      return front.range ? [front] : [];
+    }
+    return this.buffers.filter((slot) => slot.range !== null);
+  }
+
+  /**
+   * Every note drawn anywhere on the screen.
+   *
+   * With two slots the notes on screen are the union of both, and everything
+   * that paints, positions or counts them has to see all of them — a chord in
+   * the slot the cursor has just moved into is as much on the screen as one in
+   * the slot it left.
+   */
+  private get allElements(): Map<string, SVGGElement> {
+    if (this.readAhead === 'single') return this.buffers[this.cursorSlot].elements;
+    const out = new Map<string, SVGGElement>();
+    for (const slot of this.buffers) {
+      for (const [id, element] of slot.elements) out.set(id, element);
+    }
+    return out;
   }
 
   /**
@@ -328,34 +389,176 @@ export class WindowRenderer {
       return;
     }
 
-    const wanted = this.windowFor(step.sourceMeasureIndex);
-    if (!sameRange(this.frontBuffer.range, wanted)) {
-      const started = performance.now();
-      const prepared = sameRange(this.backBuffer.range, wanted);
-      if (prepared) {
-        // The pre-rendered case: one class toggle, no layout work.
-        this.swap();
-      } else {
-        // Nothing was prepared, so draw in place. Drawing into the spare
-        // buffer and swapping costs the same render and leaves the *old*
-        // front holding the window that was just drawn — every note of it in
-        // the DOM twice, counted twice and painted twice. The spare buffer
-        // earns its keep on the prepared path above; on this one it only
-        // duplicates. Synchronous, so there is no paint between the clear and
-        // the draw.
-        this.drawInto(this.frontBuffer, wanted);
+    this.updateReadAhead();
+    if (this.readAhead === 'slots') this.showStepInSlots(stepIndex);
+    else this.showStepInOneSystem(step);
+    this.positionBand(step);
+  }
+
+  /**
+   * The karaoke arrangement (P21c A1).
+   *
+   * Two systems, and the one being played is never touched. When the cursor
+   * crosses into the other, the slot it just left is re-drawn with the bars
+   * that come after — so the eye goes top, bottom, top, and the coming bar has
+   * been on the screen for a whole bar by the time it is needed.
+   *
+   * What it replaces: one window of two bars, replaced whole, which moved the
+   * bar being played from the lower system to the upper one mid-phrase every
+   * other bar. That is the jump the owner felt.
+   */
+  private showStepInSlots(stepIndex: number): void {
+    const plan = planSlots(
+      this.model.steps,
+      stepIndex,
+      { cursor: this.cursorSlot, ranges: this.slotRanges },
+      this.barsPerWindow,
+      this.model.sourceMeasureCount,
+    );
+    const started = performance.now();
+    let drew = false;
+    for (const index of [0, 1] as SlotIndex[]) {
+      const slot = this.buffers[index];
+      const wanted = plan.ranges[index];
+      if (wanted === null) {
+        if (slot.range === null) continue;
+        this.blank(slot);
+        drew = true;
+        continue;
       }
+      if (sameSlotRange(slot.range, wanted)) continue;
+      this.drawInto(slot, wanted);
+      // A slot that changes while the eye is on the other one fades, because
+      // peripheral vision ignores a fade and notices a flash.
+      if (plan.fade === index) this.fadeIn(slot);
+      drew = true;
+    }
+    this.cursorSlot = plan.cursor;
+    this.slotRanges = plan.ranges;
+    this.updateSlotClasses();
+    if (drew) {
+      this.fitSlots();
+      // Two labels, because they are two different budgets (`01` §6): the
+      // crossing is the one a player feels and has to fit in a frame; a cold
+      // draw is a seek and only has to beat the first-render figure.
+      recordRenderTiming(
+        plan.crossed ? 'window.swap' : 'window.swapCold',
+        performance.now() - started,
+      );
+    }
+  }
+
+  /**
+   * One system filling the stage: sideways, and at one bar per window.
+   *
+   * With only one slot on the screen the other is spare, so this keeps the
+   * double buffer it always had — the next window drawn into the spare while
+   * the current one is being played, and advancing is a class toggle inside
+   * one frame. Slots do not need it (a crossing has a whole bar to happen in),
+   * but here a swap is still the thing the learner is waiting on.
+   */
+  private showStepInOneSystem(step: ScoreStep): void {
+    const wanted = this.windowFor(step.sourceMeasureIndex);
+    const front = this.buffers[this.cursorSlot];
+    if (!sameRange(front.range, wanted)) {
+      const started = performance.now();
+      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0];
+      const prepared = sameRange(spare.range, wanted);
+      if (prepared) {
+        this.cursorSlot = this.cursorSlot === 0 ? 1 : 0;
+      } else {
+        // Nothing was prepared, so draw in place. Drawing into the spare and
+        // swapping costs the same render and leaves the old front holding the
+        // window just drawn — every note of it in the DOM twice, counted twice
+        // and painted twice.
+        this.drawInto(front, wanted);
+      }
+      this.slotRanges = this.cursorSlot === 0 ? [wanted, spare.range] : [spare.range, wanted];
+      this.updateSlotClasses();
+      this.fitSlots();
       // Two labels, because they are two different budgets (`01` §6): a
       // pre-rendered swap must fit in a frame, a cold one only has to beat the
-      // first-render figure. Averaging them together would hide a pre-render
-      // that silently stopped happening.
+      // first-render figure. Averaging them would hide a pre-render that had
+      // silently stopped happening.
       recordRenderTiming(
         prepared ? 'window.swap' : 'window.swapCold',
         performance.now() - started,
       );
     }
-    this.positionBand(step);
     this.schedulePrepareNextWindow();
+  }
+
+  /**
+   * Queues the single-system pre-render for after the browser has painted.
+   *
+   * Inline it would put a full OSMD render inside the very swap it exists to
+   * make free. One frame later the learner has already seen the new window.
+   */
+  private schedulePrepareNextWindow(): void {
+    if (this.prerenderHandle !== null) cancelAnimationFrame(this.prerenderHandle);
+    this.prerenderHandle = requestAnimationFrame(() => {
+      this.prerenderHandle = null;
+      if (this.disposed || this.readAhead !== 'single') return;
+      const front = this.buffers[this.cursorSlot].range;
+      if (!front) return;
+      const nextStart = front.toMeasure + 1;
+      if (nextStart >= this.model.sourceMeasureCount) return;
+      const next = this.windowFor(nextStart);
+      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0];
+      if (sameRange(spare.range, next) || sameRange(front, next)) return;
+      // Off the critical path, and timed apart from the number the budget is
+      // about so the two are never averaged together.
+      const started = performance.now();
+      this.drawInto(spare, next);
+      recordRenderTiming('osmd.prerender', performance.now() - started);
+    });
+  }
+
+  /**
+   * Which arrangement the stage can hold, from the stage itself.
+   *
+   * Upright there is room for two systems and something to alternate; sideways
+   * there is one system and A2's slide instead. A window of one bar has no
+   * halves, so it is one system too. Reading the box rather than being told
+   * means rotating the phone changes it through the `ResizeObserver` that is
+   * already watching for the fit.
+   */
+  private updateReadAhead(): void {
+    // The viewport, not the stage box. "Upright" is a fact about the phone,
+    // and the stage is not always shaped like it: the dev renderer screen
+    // gives its stage a fixed height inside a wide window, so reading the box
+    // there called a landscape screen upright.
+    const upright =
+      typeof window === 'undefined' ? true : window.innerHeight > window.innerWidth;
+    const next: 'slots' | 'single' = upright && this.barsPerWindow >= 2 ? 'slots' : 'single';
+    // Written every time, not only on a change: the field starts at
+    // `single`, so a stage that is sideways from the first step never wrote
+    // the attribute at all and the stylesheet had nothing to match.
+    this.el.dataset.readAhead = next;
+    if (next === this.readAhead) return;
+    this.readAhead = next;
+    // Everything drawn belonged to the other arrangement.
+    this.slotRanges = [null, null];
+    this.cursorSlot = 0;
+    for (const slot of this.buffers) {
+      slot.range = null;
+      slot.elements = new Map();
+      slot.wrapper.hidden = false;
+    }
+  }
+
+  private blank(slot: Buffer): void {
+    slot.range = null;
+    slot.elements = new Map();
+    slot.wrapper.hidden = true;
+  }
+
+  private fadeIn(slot: Buffer): void {
+    slot.wrapper.classList.remove('is-fading');
+    // Reading `offsetWidth` restarts the animation: without it, re-adding a
+    // class the element already had in this frame does nothing at all.
+    void slot.wrapper.offsetWidth;
+    slot.wrapper.classList.add('is-fading');
   }
 
   /** ScoreNote.id → its drawn `<g>`, for the notes of one step. */
@@ -363,7 +566,7 @@ export class WindowRenderer {
     const step = this.model.steps[stepIndex];
     const out = new Map<string, SVGGElement>();
     if (!step) return out;
-    const drawn = this.frontBuffer.elements;
+    const drawn = this.allElements;
     for (const note of step.notes) {
       const element = drawn.get(note.id);
       if (element) out.set(note.id, element);
@@ -373,7 +576,7 @@ export class WindowRenderer {
 
   /** Every drawn note in the current window, by ScoreNote.id. */
   visibleNoteElements(): ReadonlyMap<string, SVGGElement> {
-    return this.frontBuffer.elements;
+    return this.allElements;
   }
 
   /**
@@ -381,7 +584,7 @@ export class WindowRenderer {
    * re-rendering, and only the notes whose state changed are touched.
    */
   setNoteStates(states: ReadonlyMap<string, NoteState>): void {
-    for (const [id, element] of this.frontBuffer.elements) {
+    for (const [id, element] of this.allElements) {
       const wanted = states.get(id);
       element.classList.toggle('is-correct', wanted === 'correct');
       element.classList.toggle('is-wrong', wanted === 'wrong');
@@ -429,7 +632,7 @@ export class WindowRenderer {
     const next = Math.min(2, Math.max(0.5, zoom));
     if (next === this.userZoom) return;
     this.userZoom = next;
-    this.fit(this.frontBuffer);
+    this.fitSlots();
   }
 
   /** The last zoom the sheet was fitted at, before the owner's multiplier. */
@@ -510,7 +713,8 @@ export class WindowRenderer {
 
   /** Re-fits the current window; call on resize or orientation change. */
   refit(): void {
-    this.fit(this.frontBuffer);
+    this.updateReadAhead();
+    this.fitSlots();
     // The box changed, so the fit is stale by definition.
     this.fittedAtHeight = -1;
     this.fitToStage();
@@ -563,53 +767,75 @@ export class WindowRenderer {
     buffer.view.setRange(range);
     buffer.view.render();
     buffer.range = range;
+    buffer.wrapper.hidden = false;
     this.annotate(buffer);
-    this.fit(buffer);
   }
 
   /**
-   * Queues the pre-render for after the browser has painted.
+   * One scale for both slots (P21c A1).
    *
-   * Doing it inline would put a full OSMD render (~10 ms) inside the very
-   * swap it is meant to make free, which defeats the point of the second
-   * buffer. One frame later the learner has already seen the new window.
+   * The two slots are engraved separately, so they have separate ink boxes —
+   * a bar of semiquavers is wider than a bar of minims. Fitting each to its
+   * own half of the stage would therefore draw one of them larger than the
+   * other, and a piece whose bar 3 is bigger than its bar 4 reads worse than
+   * the jump this whole change is removing.
+   *
+   * So: work out what each slot would need, take the smaller, and give it to
+   * both. They already share one OSMD zoom, so the glyphs are the same size to
+   * begin with; this only stops the CSS scale pulling them apart. Neither can
+   * overflow, because the scale is the one that fits the tighter of the two.
    */
-  private schedulePrepareNextWindow(): void {
-    if (this.prerenderHandle !== null) cancelAnimationFrame(this.prerenderHandle);
-    this.prerenderHandle = requestAnimationFrame(() => {
-      this.prerenderHandle = null;
-      if (this.disposed) return;
-      this.prepareNextWindow();
-    });
+  private fitSlots(): void {
+    const slots = this.drawnSlots;
+    if (slots.length === 0) return;
+    const available = this.el.getBoundingClientRect();
+    if (available.width <= 0 || available.height <= 0) return;
+
+    const boxes: { slot: Buffer; box: { x: number; y: number; width: number; height: number } }[] =
+      [];
+    for (const slot of slots) {
+      const svg = slot.view.svg;
+      if (!svg) continue;
+      slot.wrapper.style.transform = '';
+      const rect = svg.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) continue;
+      boxes.push({
+        slot,
+        box: inkBox(svg) ?? { x: 0, y: 0, width: rect.width, height: rect.height },
+      });
+    }
+    if (boxes.length === 0) return;
+
+    // Each slot gets its share of the height, and all of the width.
+    const perSlot = available.height / boxes.length;
+    let scale = Infinity;
+    for (const { box } of boxes) {
+      scale = Math.min(
+        scale,
+        (available.width - FIT_MARGIN_PX) / box.width,
+        (perSlot - FIT_MARGIN_PX) / box.height,
+      );
+    }
+    if (!Number.isFinite(scale) || scale <= 0) return;
+    const drawn = scale * this.userZoom;
+    for (const { slot, box } of boxes) slot.wrapper.style.transform = place(box, drawn);
   }
 
   /**
-   * Draws the window after the current one into the spare buffer, so the next
-   * swap costs a class toggle. Skipped when it would be the same window.
+   * Which slots are on the screen, and which one the cursor is in.
+   *
+   * `is-front` used to mean "the visible one of two buffers". With slots both
+   * are visible, so it means "drawn" — the class every stylesheet and test
+   * already uses to find the sheet keeps finding it. `is-cursor` is the new
+   * distinction, and it is what the band and the fit follow.
    */
-  private prepareNextWindow(): void {
-    const front = this.frontBuffer.range;
-    if (!front) return;
-    const nextStart = front.toMeasure + 1;
-    if (nextStart >= this.model.sourceMeasureCount) return;
-    const next = this.windowFor(nextStart);
-    if (sameRange(this.backBuffer.range, next) || sameRange(front, next)) return;
-    // Timed separately from the visible render: this one is off the critical
-    // path and should never be confused with the number the budget is about.
-    const started = performance.now();
-    this.drawInto(this.backBuffer, next);
-    recordRenderTiming('osmd.prerender', performance.now() - started);
-  }
-
-  private swap(): void {
-    this.front = this.front === 0 ? 1 : 0;
-    this.updateFrontClasses();
-  }
-
-  private updateFrontClasses(): void {
-    this.buffers.forEach((buffer, i) => {
-      buffer.wrapper.classList.toggle('is-front', i === this.front);
-      buffer.wrapper.setAttribute('aria-hidden', i === this.front ? 'false' : 'true');
+  private updateSlotClasses(): void {
+    this.buffers.forEach((slot, i) => {
+      const drawn = this.readAhead === 'single' ? i === this.cursorSlot : slot.range !== null;
+      slot.wrapper.classList.toggle('is-front', drawn);
+      slot.wrapper.classList.toggle('is-cursor', drawn && i === this.cursorSlot);
+      slot.wrapper.dataset.slot = String(i);
+      slot.wrapper.setAttribute('aria-hidden', drawn ? 'false' : 'true');
     });
   }
 
@@ -668,7 +894,15 @@ export class WindowRenderer {
     if (this.fitting || this.layout === 'scroll' || this.disposed) return;
     const svg = buffer.view.svg;
     if (!svg) return;
-    const available = this.el.getBoundingClientRect();
+    const stage = this.el.getBoundingClientRect();
+    // A slot gets its share of the stage, not all of it. Engraving each one
+    // against the full height grows it to twice what it can be drawn at, and
+    // the CSS scale then halves it again — two renders to arrive where one
+    // would have, at a stave thinner than the engraver intended.
+    const available = {
+      width: stage.width,
+      height: this.readAhead === 'slots' ? stage.height / 2 : stage.height,
+    };
     // Once per stage size. Without this the fit is re-examined on every window
     // swap — which converges, because the zoom is clamped, but converging is
     // not the same as being free, and a swap is meant to cost a class toggle.
@@ -850,7 +1084,7 @@ export class WindowRenderer {
   private firstElementOf(step: ScoreStep | undefined): SVGGElement | undefined {
     if (!step) return undefined;
     for (const note of step.notes) {
-      const element = this.frontBuffer.elements.get(note.id);
+      const element = this.allElements.get(note.id);
       if (element) return element;
     }
     return undefined;
