@@ -640,7 +640,11 @@ export class WindowRenderer {
     // The `width`/`height` attributes are what OSMD wrote, before any
     // transform of ours.
     const box = engravedSize(svg) ?? svg.getBoundingClientRect();
-    const target = fitZoom(this.zoomLevel, box, available) * this.userZoom;
+    // No `userZoom` here. It belongs to the *drawn* size and is applied once,
+    // in `fit()`. Carried in both places it was counted twice: a click on
+    // Size re-engraved smaller, the fill scaled that back up to the stage,
+    // and the sheet came out very slightly larger than before the click.
+    const target = fitZoom(this.zoomLevel, box, available);
     if (!worthRefitting(this.zoomLevel, target)) return;
     if (this.fitHandle !== null) cancelAnimationFrame(this.fitHandle);
     this.fitHandle = requestAnimationFrame(() => {
@@ -689,7 +693,7 @@ export class WindowRenderer {
       }
       tried.add(this.zoomLevel);
 
-      const next = fitZoom(this.zoomLevel, box, { height: availableHeight }) * this.userZoom;
+      const next = fitZoom(this.zoomLevel, box, { height: availableHeight });
       // Settled, or somewhere we have already been — which is the oscillation
       // between one system and two, and the reason this keeps the best rather
       // than the last.
@@ -717,7 +721,7 @@ export class WindowRenderer {
 
     if (this.layout === 'scroll') {
       // Scroll layout fits width only; height is what the learner scrolls.
-      const scale = Math.min(1, available.width / box.width);
+      const scale = Math.min(1, available.width / box.width) * this.userZoom;
       buffer.wrapper.style.transform = place(box, scale);
       return;
     }
@@ -729,11 +733,15 @@ export class WindowRenderer {
     // A pixel off each axis: the ink box is measured to a fraction and a
     // stave line has a stroke width, so filling the stage exactly clipped the
     // final barline by about a pixel.
-    const scale = Math.min(
+    const fill = Math.min(
       (available.width - FIT_MARGIN_PX) / box.width,
       (available.height - FIT_MARGIN_PX) / box.height,
     );
-    buffer.wrapper.style.transform = place(box, scale);
+    // Times what the owner asked for. Filling the stage on its own *cancels*
+    // the Size control: the engraving search already carries `userZoom`, so a
+    // smaller engraving was simply scaled back up to fill and the buttons did
+    // nothing. One means "as large as fits", and the buttons move around it.
+    buffer.wrapper.style.transform = place(box, fill * this.userZoom);
   }
 
   /**

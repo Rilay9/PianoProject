@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { openDevScore, waitForStableLayout } from './fixtures/devScore';
 import {
   closeScoreMenu,
+  inkBox,
   closeTempoSheet,
   openScoreMenu,
   openTempoSheet,
@@ -502,11 +503,12 @@ test.describe('the score control bar', () => {
 
     // Zoom, measured rather than assumed: it is the one whose effect is not
     // visible in the sheet.
-    const height = async (): Promise<number> =>
-      page.evaluate(
-        () =>
-          document.querySelector('#score-stage .is-front svg')?.getBoundingClientRect().height ?? 0,
-      );
+    //
+    // The *ink*, not the SVG element. The element is the page OSMD drew on,
+    // and a smaller engraving can put the same music on a page of a different
+    // shape — so the element grew by six pixels on a click that made the
+    // notation visibly smaller. What "Size" means is how big the notes are.
+    const height = async (): Promise<number> => (await inkBox(page)).height;
     const before = await height();
     await page.locator('#score-zoom-out').click();
     await expect.poll(height, { timeout: 15_000 }).toBeLessThan(before - 5);
