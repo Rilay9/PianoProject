@@ -1275,6 +1275,26 @@ input[type='checkbox'] {
   max-height: var(--strip-height, 4.5rem);
 }
 
+/* A phone does not need a full-size keyboard.
+ *
+ * `--key-h` is 108 px for every screen, which on a phone held sideways is a
+ * 122 px keyboard on a 360 px screen — a third of it — for something that,
+ * with a real piano plugged in, is mostly a picture of what you just played.
+ * The score screen already capped it to fit its own band; the drill screen and
+ * paper practice were still getting the full height, and sideways that is the
+ * room the prompt and the buttons were fighting over.
+ *
+ * 56 px: a white key is then 26 x 56, which is still a target a thumb can
+ * find, and the black keys keep their 62%. A tablet and a desktop are
+ * untouched — they have the height to spare and the keys are worth having
+ * large where the strip is the instrument.
+ */
+@media (max-height: 520px), (max-width: 420px) {
+  .keyboard-strip {
+    --key-h: 56px;
+  }
+}
+
 /**
  * The keyboard fits the band the score screen gives it.
  *

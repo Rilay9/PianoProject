@@ -219,9 +219,15 @@ export class WindowRenderer {
     if (typeof ResizeObserver !== 'undefined') {
       this.stageObserver = new ResizeObserver(() => {
         if (this.disposed || this.fitting) return;
-        // `fitToStage` already returns immediately when the height is the one
-        // it last fitted, so an observation that changes nothing costs a
-        // rounded comparison.
+        // The drawn scale first, and always: it is a CSS transform, it costs
+        // nothing, and without it the sheet keeps the size it was fitted to
+        // before the stage changed. Turning the keyboard strip off gives the
+        // stage 72 px and the notation simply did not grow into them — the
+        // sheet only caught up the next time something else asked for a fit.
+        this.fit(this.frontBuffer);
+        // Then the engraving, which may want re-laying out at the new height.
+        // `fitToStage` returns immediately when the height is the one it last
+        // fitted, so an observation that changes nothing costs a comparison.
         this.fitToStage();
       });
       this.stageObserver.observe(this.el);
@@ -404,24 +410,24 @@ export class WindowRenderer {
    * simply got scaled back down to the same box. As a multiplier, 1.0 is
    * "whatever fills the screen" and the buttons still do what they look like.
    */
+  /**
+   * Size, as a multiplier on the fitted sheet.
+   *
+   * It does **not** re-engrave. The engraving answers one question — what is
+   * the largest window that fits the stage — and this answers another: how big
+   * the owner wants it drawn. Mixing them made the buttons non-monotonic: a
+   * click down re-engraved smaller, the fit search climbed back to a different
+   * engraving whose ink had a different shape, and one press of "smaller" came
+   * out three pixels larger than before it.
+   */
   setZoom(zoom: number): void {
     const next = Math.min(2, Math.max(0.5, zoom));
     if (next === this.userZoom) return;
-    // The fitted base has to be read *before* the new multiplier is stored:
-    // `fittedZoom` divides by `userZoom`, so reading it afterwards divides by
-    // the very number about to be multiplied back in, and the zoom buttons do
-    // nothing at all. They did nothing at all.
-    const base = this.fittedZoom();
     this.userZoom = next;
-    this.fittedAtHeight = -1;
-    this.applyZoom(base * next);
+    this.fit(this.frontBuffer);
   }
 
   /** The last zoom the sheet was fitted at, before the owner's multiplier. */
-  private fittedZoom(): number {
-    return this.userZoom > 0 ? this.zoomLevel / this.userZoom : this.zoomLevel;
-  }
-
   private applyZoom(next: number): void {
     const clamped = Math.min(MAX_FIT, Math.max(MIN_FIT, next));
     if (clamped === this.zoomLevel) return;

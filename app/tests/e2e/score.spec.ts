@@ -508,8 +508,27 @@ test.describe('the score control bar', () => {
     // and a smaller engraving can put the same music on a page of a different
     // shape — so the element grew by six pixels on a click that made the
     // notation visibly smaller. What "Size" means is how big the notes are.
-    const height = async (): Promise<number> => (await inkBox(page)).height;
-    const before = await height();
+    // One drawn bar's own height: that is what "Size" means, and it is the
+    // only measure that survives the engraver. The ink box does not — a
+    // smaller zoom re-lays the window out, and a differently shaped page can
+    // leave the ink *taller* while every note on it is smaller.
+    const height = async (): Promise<number> =>
+      page.evaluate(
+        () =>
+          document.querySelector('#score-stage .is-front svg .vf-measure')?.getBoundingClientRect()
+            .height ?? 0,
+      );
+    // Let the sheet stop moving first. Turning the keyboard strip off a few
+    // lines up gives the stage another 70 px and the renderer refits into it,
+    // and that growth landing after this sample hid the zoom's ten percent —
+    // the click looked like it made the notation *bigger*.
+    let before = await height();
+    for (let i = 0; i < 20; i += 1) {
+      await page.waitForTimeout(250);
+      const now = await height();
+      if (now === before) break;
+      before = now;
+    }
     await page.locator('#score-zoom-out').click();
     await expect.poll(height, { timeout: 15_000 }).toBeLessThan(before - 5);
 

@@ -337,9 +337,19 @@ test.describe('the sheet fills the screen (P19b)', () => {
     await page.setViewportSize({ width: 360, height: 780 });
     await openScore(page, 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx');
     // The ink: a smaller engraving can sit on a differently shaped page, so
-    // the element's height is no longer a measure of how big the notes are.
-    const height = async (): Promise<number> => (await inkBox(page)).height;
-    await expect.poll(height, { timeout: 30_000 }).toBeGreaterThan(300);
+    // One drawn bar's own height: that is what "Size" means, and it is the
+    // only measure that survives the engraver. The ink box does not — a
+    // smaller zoom re-lays the window out, and a differently shaped page can
+    // leave the ink *taller* while every note on it is smaller.
+    const height = async (): Promise<number> =>
+      page.evaluate(
+        () =>
+          document.querySelector('#score-stage .is-front svg .vf-measure')?.getBoundingClientRect()
+            .height ?? 0,
+      );
+    // A stave, not the whole sheet: 40 px is "the fit has run and drawn
+    // something at a readable size", not "the sheet is 300 px tall".
+    await expect.poll(height, { timeout: 30_000 }).toBeGreaterThan(40);
     const fitted = await height();
     // Zoom is a multiplier on the fitted size now. It used to be the absolute
     // OSMD zoom, which a fit would simply cancel out.
