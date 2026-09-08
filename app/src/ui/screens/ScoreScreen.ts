@@ -49,11 +49,23 @@ import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
 import { openSheet } from '../widgets';
 
+/**
+ * What the four modes are called on the screen (P21c B2).
+ *
+ * They were one word each, and the one word was a noun for the mechanism:
+ * `Listen` is the app playing the piece *to* you, but in a row that also
+ * carries `R`, `L` and an input setting it reads as something the app does
+ * with your playing — which is why the owner asked for a way to hear the
+ * piece while sitting in front of the control that does it.
+ *
+ * The ids do not change, so every stored mode, route and test still means
+ * what it meant.
+ */
 const MODES: { id: Mode; label: string }[] = [
-  { id: 'wait', label: 'Wait' },
-  { id: 'tempo', label: 'Tempo' },
-  { id: 'listen', label: 'Listen' },
-  { id: 'free', label: 'Free' },
+  { id: 'wait', label: 'Wait for me' },
+  { id: 'tempo', label: 'Keep tempo' },
+  { id: 'listen', label: 'Play it to me' },
+  { id: 'free', label: 'Free play' },
 ];
 
 const INPUTS: { id: FollowInput; label: string }[] = [
