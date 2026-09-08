@@ -589,7 +589,22 @@ for (const { orientation, size } of FORM_FACTORS) {
         await seedFolder(page);
         await go(page, '/library/folder', 'folder');
         await expect(page.locator('#folder-list .list-row').first()).toBeVisible({ timeout: 60_000 });
-      }, '#folder-list .list-row');
+      }, async (p) => {
+        // Not just "the list exists": the first score has to be on the screen
+        // without scrolling. It was 600 px down a 780 px phone, which `inView`
+        // was perfectly happy with, and R1 only catches a row pushed clean off
+        // the bottom. Upright, the picture is worthless unless a score is in it.
+        const box = await p.evaluate(() => {
+          const row = document.querySelector('#folder-list .list-row');
+          if (!row) return null;
+          const rect = row.getBoundingClientRect();
+          return { top: rect.top, height: rect.height, view: window.innerHeight, portrait: window.innerHeight > window.innerWidth };
+        });
+        if (!box || box.height === 0) return false;
+        if (!box.portrait) return box.top < box.view;
+        console.log(`  80-folder-full: the first score starts at ${String(Math.round(box.top))}px of ${String(box.view)}`);
+        return box.top < box.view;
+      });
       await scene('81-folder-search', 'Searching the folder', 'One row out of 37,261.', async () => {
         await go(page, '/library/folder', 'folder');
         await page.locator('#folder-search').fill('Piece number 4242');

@@ -26,7 +26,7 @@ import {
 } from '../../data/folderLibrary';
 import { ImportError, allImports } from '../../data/importStore';
 import { getSettings } from '../../data/settingsStore';
-import { badge, button, el, listRow } from '../widgets';
+import { badge, button, chip, el, listRow } from '../widgets';
 import { addParagraph, addSection, createSubScreen } from './subScreen';
 import { plural } from '../../util/plural';
 
@@ -121,6 +121,8 @@ export function FolderScreen(router: Router): HTMLElement {
         'Point the app at a folder of MusicXML on this phone. The listing is kept, so you can browse it any time; adding a piece copies it into your library, where it stays.',
     }),
   );
+  const forgetRow = el('div.plan-links', { id: 'folder-forget-row' });
+  how.append(forgetRow);
   intro.append(how);
 
   const browse = addSection(card, 'Browse');
@@ -165,12 +167,25 @@ export function FolderScreen(router: Router): HTMLElement {
     'aria-label': 'Only well-rated scores',
   }) as HTMLInputElement;
 
-  controls.append(
-    search,
-    style,
+  const folderFilters = el(
+    'div.filters.filter-row',
+    { id: 'folder-filters' },
     el('label.inline', {}, minLevel, el('span', { text: 'to' }), maxLevel),
     el('label.inline', {}, rated, el('span', { text: 'rated 4+ by 5+ people' })),
   );
+  folderFilters.hidden = true;
+  const filterToggle = chip('Filter', {
+    id: 'folder-filter-toggle',
+    onClick: () => {
+      const open = folderFilters.hidden;
+      folderFilters.hidden = !open;
+      filterToggle.setAttribute('aria-expanded', String(open));
+    },
+  });
+  filterToggle.setAttribute('aria-expanded', 'false');
+  filterToggle.setAttribute('aria-controls', 'folder-filters');
+  controls.append(search, style, filterToggle);
+  browse.insertBefore(folderFilters, countLine);
 
   function readFilters(): void {
     filters = {
@@ -318,13 +333,21 @@ export function FolderScreen(router: Router): HTMLElement {
         { variant: 'primary', id: 'folder-pick' },
       ),
     );
-    if (library) {
-      actions.append(
-        button('Forget this folder', () => {
-          void drop();
-        }),
-      );
-    }
+    // Forgetting the folder is not a second answer to "what now" — it lives
+    // in `How this works`, out of the run between the heading and the list.
+    forgetRow.replaceChildren(
+      ...(library
+        ? [
+            button(
+              'Forget this folder',
+              () => {
+                void drop();
+              },
+              { variant: 'quiet', id: 'folder-forget' },
+            ),
+          ]
+        : []),
+    );
   }
 
   async function pick(): Promise<void> {

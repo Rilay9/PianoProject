@@ -185,6 +185,13 @@ body {
   width: 5rem;
 }
 
+/* The search box takes whatever the style select and the Filter chip leave, so
+   the three of them are one line rather than two. */
+#folder-search {
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
 .filters input[type='checkbox'] {
   min-height: 0;
   padding: 0;
@@ -295,6 +302,10 @@ body {
 .folder-how {
   margin-top: 8px;
   font-size: 0.9rem;
+}
+
+.folder-how #folder-forget-row {
+  margin-top: 8px;
 }
 
 .folder-how summary {

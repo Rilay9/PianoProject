@@ -2,7 +2,6 @@ import { expect, test, type Page } from '@playwright/test';
 import { openDevScore, waitForStableLayout } from './fixtures/devScore';
 import {
   closeScoreMenu,
-  inkBox,
   closeTempoSheet,
   openScoreMenu,
   openTempoSheet,

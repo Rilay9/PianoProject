@@ -116,6 +116,39 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-list .list-row').first()).toBeVisible();
   });
 
+  test('the first score is on the screen without scrolling, upright (R1)', async ({ page }) => {
+    // It was 600 px down a 780 px phone: a heading, a paragraph of prose, two
+    // buttons, and four filter controls all took their turn before the thing
+    // the screen is for. Everything above the list is now one state line, one
+    // button, one folded explanation and one row of search.
+    await page.setViewportSize({ width: 412, height: 780 });
+    await seedFolder(page, 400);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-list .list-row').first()).toBeVisible();
+    const top = await page.locator('#folder-list .list-row').first().evaluate((el) => el.getBoundingClientRect().top);
+    console.log(`folder: the first row starts at ${String(Math.round(top))}px of 780`);
+    expect(top).toBeLessThan(780);
+    // And the rare filters are behind the chip rather than on the line.
+    await expect(page.locator('#folder-filters')).toBeHidden();
+    await expect(page.locator('#folder-filter-toggle')).toHaveAttribute('aria-expanded', 'false');
+    await page.locator('#folder-filter-toggle').click();
+    await expect(page.locator('#folder-filters')).toBeVisible();
+  });
+
+  test('forgetting the folder is inside How this works, not beside Pick (R3)', async ({ page }) => {
+    await seedFolder(page, 20);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-pick')).toBeVisible();
+    // In the document, and inside the fold — so it is reachable, and it is not
+    // standing in the run between the heading and the list.
+    await expect(page.locator('#folder-how #folder-forget')).toHaveCount(1);
+    await expect(page.locator('#folder-forget')).toBeHidden();
+    await page.locator('#folder-how summary').click();
+    await expect(page.locator('#folder-forget')).toBeVisible();
+    await page.locator('#folder-forget').click();
+    await expect(page.locator('[data-screen="folder"]')).toContainText('No folder yet.');
+  });
+
   test('says how to add when the folder is not connected, instead of failing obscurely', async ({
     page,
   }) => {
@@ -135,6 +168,7 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-count')).toContainText('500 match');
     // No levels to filter by, so a level filter must not hide everything:
     // "unknown" is not "too hard".
+    await page.locator('#folder-filter-toggle').click();
     await page.locator('#folder-min').fill('5');
     await expect(page.locator('#folder-count')).toContainText('500 match');
     await page.locator('#folder-search').fill('Qm123');
