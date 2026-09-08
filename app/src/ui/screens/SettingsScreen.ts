@@ -115,12 +115,12 @@ export function SettingsScreen(router: Router): HTMLElement {
         [
           { value: 'wood', label: 'Wood' },
           { value: 'beep', label: 'Beep' },
-          { value: 'high', label: 'High (5 kHz — for mic follow)' },
+          { value: 'high', label: 'High (5 kHz)' },
         ],
         s.metronomeSound,
         (value) => set({ metronomeSound: value as PracticeSettings['metronomeSound'] }),
       ),
-      'The high click is the one the mic detector notches out, so use it when the microphone is listening.',
+      'High is the click the mic detector notches out. Use it when the mic is listening.',
     ),
     field('Strict Wait mode', toggleControl('set-waitstrict', s.waitStrict, (v) => set({ waitStrict: v })), 'Off (the default) means a wrong note does not reset the chord.'),
     field('Tempo-mode tolerance (ms)', numberControl('set-tolerance', s.toleranceMs, (v) => set({ toleranceMs: v }), { min: 30, max: 500, step: 10 })),
@@ -136,7 +136,8 @@ export function SettingsScreen(router: Router): HTMLElement {
       toggleControl('set-strict-prereqs', s.strictPrerequisites, (v) =>
         set({ strictPrerequisites: v }),
       ),
-      'Off by default (docs/00 D17). On, a lesson whose earlier rungs are unfinished shows a badge and a reason, and its options ask once before opening. Nothing is ever disabled.',
+      // Off by default (docs/00 D17).
+      'On, an unfinished rung shows a badge and asks once. Nothing is disabled.',
     ),
     field(
       'Weekday session (minutes)',
@@ -219,7 +220,7 @@ export function SettingsScreen(router: Router): HTMLElement {
         s.playbackDestination,
         (value) => set({ playbackDestination: value as PracticeSettings['playbackDestination'] }),
       ),
-      'Send it to the piano when the microphone is listening — the phone speaker would be heard as your playing.',
+      'With the mic listening, send it to the piano: the phone would be heard as you.',
     ),
   );
 
@@ -249,7 +250,7 @@ export function SettingsScreen(router: Router): HTMLElement {
     }, { min: -24, max: 24 })),
   );
   for (const link of [
-    { sub: 'midi' as const, label: 'MIDI devices', hint: 'Connect your piano, pick an input, run the latency test' },
+    { sub: 'midi' as const, label: 'MIDI devices', hint: 'Connect your piano and run the latency test' },
     { sub: 'mic' as const, label: 'Microphone', hint: 'Device, calibration, noise floor' },
     { sub: 'diagnostics' as const, label: 'Diagnostics', hint: 'Offline state, render timings, debug report' },
   ]) {
@@ -371,8 +372,8 @@ export function SettingsScreen(router: Router): HTMLElement {
           : 'The folder will be asked for each time you add from it.';
       }),
       directoryPickerAvailable()
-        ? 'Keeps a handle on the folder so Add does not ask for it again. Chrome may still ask you to allow it once.'
-        : 'This browser cannot remember a folder, so the app will ask for it each time whatever this says.',
+        ? 'Keeps a handle so Add does not ask again. Chrome may still ask once.'
+        : 'This browser cannot remember a folder, so it will ask every time.',
     ),
     field(
       'Offline only',

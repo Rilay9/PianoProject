@@ -76,7 +76,7 @@ export function MicScreen(router: Router): HTMLElement {
   const lineHint = document.createElement('div');
   lineHint.className = 'muted';
   lineHint.textContent =
-    'For a cable from the piano rather than a room microphone: lower thresholds, no room noise.';
+    'For a cable from the piano, not a room mic: lower thresholds, no room noise.';
   const lineToggle = document.createElement('input');
   lineToggle.type = 'checkbox';
   lineToggle.id = 'mic-line-input';

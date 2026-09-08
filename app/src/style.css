@@ -115,21 +115,31 @@ body {
 /* A settings row is a label and its control on one line (`04` §0 R2, ≤ 56 px).
    Eight of about forty settings fitted a 360 x 780 screen at a hundred pixels
    apiece, which is five screens of scrolling to reach one. */
+/* A settings row is a label, its control on the same line, and a sentence of
+   explanation underneath the two of them.
+
+   It was a wrapping flex row, and the label and the hint were one block, so a
+   row with a hint was as wide as its longest sentence and the control had
+   nowhere to go but the line below. That is the whole of the 04 §0 R2
+   overflow on the Settings screen: "Playback destination" 150 px, "Metronome
+   sound" 118, "Strict prerequisites" 110 — none of them a card, all of them a
+   two-line row with a stranded control.
+
+   A grid puts each part where it belongs regardless of how long the sentence
+   is: the label in column one, the control in column two beside it, the hint
+   across both on the row below. `display: contents` on the text wrapper lets
+   the label and the hint be grid items in their own right without changing a
+   line of markup, so the rows built by hand on the microphone and progress
+   screens get the same shape as the ones from `field()`. */
 .setting-row {
   min-height: 44px;
   margin-top: 8px;
   padding-top: 8px;
-  display: flex;
-  /* Wraps, so a setting that carries a sentence of explanation puts its
-     control on the next line instead of squeezing the words into a column.
-     "Metronome sound — the high click is the one the mic listens for" came out
-     four words wide with the select crushed beside it and the last line cut
-     off, on a 360 px screen. Nothing else on the page changes: a row whose
-     label fits stays on one line, which is nearly all of them. */
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  column-gap: 12px;
+  row-gap: 2px;
   border-top: 1px solid var(--border);
 }
 
@@ -1742,14 +1752,33 @@ input[type='checkbox'] {
   white-space: nowrap;
 }
 
+/* Not a box of its own: its two children are the row's own grid items, so
+   the label can sit beside the control while the hint runs under both. */
 .setting-row__text {
-  /* A basis, not zero. `flex: 1` is `flex: 1 1 0%`, so the words were free to
-     shrink to nothing beside their control and did. Eight rems keeps a label
-     on the same line as its select on a 360 px screen; below that the control
-     wraps underneath, which is the right way round — the sentence is the part
-     that has to be read. */
-  flex: 1 1 8rem;
+  display: contents;
+}
+
+/* The label — either a direct child, or the first thing in the text
+   wrapper. `minmax(0, 1fr)` on the column and `min-width: 0` here are what
+   let a long one wrap instead of pushing the control off the right edge. */
+.setting-row > label,
+.setting-row__text > :first-child {
+  grid-column: 1;
+  grid-row: 1;
   min-width: 0;
+}
+
+/* The sentence, under both of them and free to use the whole width. */
+.setting-row__text > .muted {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+/* Whatever the row is for: the select, the checkbox, the Open button. */
+.setting-row > :not(label):not(.setting-row__text) {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
 }
 
 /* docs/04 §7a: ≥ 900 CSS px on the shortest side is a tablet — two columns

@@ -295,15 +295,20 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       if (height > 96) add('R2-density', `${name(row)} is ${String(Math.round(height))}px tall`);
     }
     // A settings row is a label and its control on one line — 56 px. Most of
-    // them also carry a line of hint under the label, which is the app's own
-    // idea and a good one, and buys a second line: 88. Measured rather than
-    // guessed: the rule at a flat 56 reported 136 rows in portrait alone, of
-    // which the modal case was an ordinary 70 px row with a hint. What is left
-    // over 88 — 110, 118, 150 — is a row that has grown into a card.
+    // them also carry a sentence of explanation under both, which is the app's
+    // own idea and a good one, and buys two lines of it.
+    //
+    // 100, measured rather than guessed. On a 360 px screen the control sets
+    // the height of the first line — 40 px for a tick box, 48 for a button,
+    // both of them a thumb — and a two-line sentence under it is 40 more. That
+    // comes to 97 for a toggle and 99 for a button, and there is no arranging
+    // it smaller: 80 would leave room for one line of about forty characters,
+    // which is not a sentence. What is over 100 is a third line of hint, or a
+    // label that has wrapped — a row that has grown into a card.
     for (const row of screen.querySelectorAll<HTMLElement>('.setting-row')) {
       const height = row.getBoundingClientRect().height;
       const hinted = row.querySelector('.muted') !== null;
-      const budget = hinted ? 88 : 56;
+      const budget = hinted ? 100 : 56;
       if (height > budget) {
         add(
           'R2-density',

@@ -25,9 +25,15 @@ and not before.
 Drill, Metronome — are read at arm's length and stay large. Every other screen is held in the
 hand and uses ordinary phone density: a list row is one title line, one line of muted detail, and
 badges only when they say something the detail line does not; a settings row is a label and its
-control on one line, help text under it only when the label cannot carry the meaning. Targets, so
-the tour can check them: a Today or Plan row **≤ 96 px** tall, a settings row **≤ 56 px**, at
-least **eight settings** on the first screenful.
+control on one line, with the sentence of help — where the label cannot carry the meaning —
+underneath both of them, never squeezed beside the control. Targets, so the tour can check them:
+a Today or Plan row **≤ 96 px** tall, a settings row **≤ 56 px**, a settings row *with* a
+sentence **≤ 100 px**, at least **eight settings** on the first screenful.
+
+The 100 is measured on a 360 px screen and it is a floor, not a preference: the control sets the
+height of the first line (40 px for a tick box, 48 for a button — both of them a thumb) and two
+lines of sentence under it are 40 more. What breaks it is a third line, so a hint is written to
+about **eighty characters**. Anything longer belongs on the screen it explains, not here.
 
 **R3 — Weight by frequency.** A filled box is the thing you do on most visits, and there is at
 most **one per screen**. An outlined box is something you do often. Plain text is something you do
