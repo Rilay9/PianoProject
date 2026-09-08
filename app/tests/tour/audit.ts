@@ -334,9 +334,18 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
     // a screen with 360 px of it.
     const phoneSideways = view.width > view.height && view.height <= 500;
     if (phoneSideways) {
-      const title = screen.querySelector<HTMLElement>('.screen--list > .screen-header h1');
-      if (title && title.getBoundingClientRect().height > 0) {
+      // Only a *tab* screen. A pushed screen — a lesson, a drill — keeps its
+      // title, because "which drill is this?" is a question only the screen
+      // can answer; it just moves onto the back link's line at body size.
+      // The rule reported 34 scenes before it knew the difference.
+      const header = screen.querySelector<HTMLElement>('.screen--list > .screen-header');
+      const pushed = header?.querySelector(':scope > .link-button') !== null;
+      const title = header?.querySelector<HTMLElement>('h1');
+      if (!pushed && title && title.getBoundingClientRect().height > 0) {
         add('R5-sideways-header', 'the tab title is drawn sideways');
+      }
+      if (pushed && title && Number.parseFloat(getComputedStyle(title).fontSize) > 18) {
+        add('R5-sideways-header', 'the title is still at heading size sideways');
       }
       const first = screen.querySelector<HTMLElement>(
         '.list-row, .block, .filters, .filter-row, .today-goal, .plan-links',

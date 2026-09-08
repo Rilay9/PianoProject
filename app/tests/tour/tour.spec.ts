@@ -374,10 +374,18 @@ for (const { orientation, size } of FORM_FACTORS) {
       await scene('29-score-blind', 'Blind mode', 'The notation is hidden on purpose. Is that obvious?', async () => {
         await go(page, `/score/${SONG}?blind=1`, 'score');
         await page.waitForTimeout(2000);
-      }, async (p) => !(await p.locator('#score-stage .is-front svg').isVisible()));
-      await scene('30-score-performance', 'Performance mode', 'No marking, no stopping. Does it feel different enough?', async () => {
+        // `.first()`: upright there are two slots and both are `is-front`
+        // since P21c A1, so the bare locator is a strict-mode violation.
+      }, async (p) => !(await p.locator('#score-stage .is-front svg').first().isVisible()));
+      await scene('30-score-performance', 'Performance mode', 'No marking, no stopping — the ⋯ sheet has no way to start again.', async () => {
         await go(page, `/score/${SONG}?performance=1`, 'score');
         await waitForSheet(page);
+        // With the sheet open, because that is where the difference now is.
+        // `Start again` left the bar for `Hear it` (P21c B1), so a performance
+        // and an ordinary run were pixel-identical from the outside — the tour
+        // caught it as an identical pair in all four form factors.
+        await openScoreMenu(page);
+        await expect(page.locator('#score-more-sheet')).toBeVisible({ timeout: 30_000 });
       }, async (p) => (await p.locator('#score-restart').count()) === 0);
       await scene('31-score-sections', 'A piece with named sections', 'The section picker, in the ⋯ sheet with the rest of the settings.', async () => {
         await go(page, `/score/${SECTIONED}`, 'score');

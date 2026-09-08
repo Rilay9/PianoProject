@@ -475,6 +475,14 @@ body {
     font-size: 1.05rem;
   }
 
+  /* A sub-screen's first block sits straight under the header line; its top
+     rule and margin separate it from something no longer above it. */
+  .card > .block:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
   /* A 610 px centred card is a portrait shape on a landscape screen, and
      20 px of padding all round is 40 of the 360 there are. */
   .card {
@@ -527,14 +535,19 @@ body {
   /* A3 — two columns for lists whose rows are all the same shape. A Today
      card, a Plan lesson and a Library row are 1,650 px wide for three lines
      of text. Not Skills: its rows nest drill rows of varying height. */
-  .list:not(:has(.skill-concept)) {
+  /* Not the folder either. Measured: at half of 780 px a folder row carries
+     a title, a composer-and-detail line, three badges and an Add button, and
+     it wraps from 102 px to 154–180 — sixty-one rows over the budget where
+     there had been one. Two columns is only better when the rows stay the
+     shape they were. */
+  .list:not(:has(.skill-concept)):not(#folder-list) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 12px;
     align-items: start;
   }
 
-  .list:not(:has(.skill-concept)) > .plan-links {
+  .list:not(:has(.skill-concept)):not(#folder-list) > .plan-links {
     grid-column: 1 / -1;
   }
 }
