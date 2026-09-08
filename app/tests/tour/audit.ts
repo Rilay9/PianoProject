@@ -192,6 +192,33 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       }
     }
 
+    // --- 7a. A drill prompt drawn into the keyboard -------------------------
+    //
+    // The keyboard is laid out under the drill body and painted after it, so
+    // anything the body does not contain is drawn over the keys rather than
+    // merely below them. Sideways that hid "Play again", "Listen", "Skip" and
+    // "End drill" entirely, and cut a transposition drill's four-bar prompt in
+    // half. Measured against what is *painted*: an element clipped by the
+    // scrolling body is out of view, not on top of the keys.
+    const keys = document.getElementById('drill-strip');
+    const drillBody = document.querySelector('[data-screen="drill"] .screen-body');
+    if (keys && drillBody) {
+      const keyBox = keys.getBoundingClientRect();
+      const clip = drillBody.getBoundingClientRect();
+      for (const id of ['drill-stage', 'drill-prompt', 'drill-tips', 'drill-controls']) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const box = el.getBoundingClientRect();
+        if (box.height === 0) continue;
+        // What of it is actually on screen, after the body has clipped it.
+        const top = Math.max(box.top, clip.top);
+        const bottom = Math.min(box.bottom, clip.bottom);
+        if (bottom <= top) continue;
+        const over = Math.min(bottom, keyBox.bottom) - Math.max(top, keyBox.top);
+        if (over > 1) add('into-the-keys', `#${id} is drawn ${String(Math.round(over))}px over the keyboard`);
+      }
+    }
+
     // --- 7b. Notation flush against the edge of its stage -------------------
     //
     // Two pixels of clearance stops a stroke being clipped and does not stop

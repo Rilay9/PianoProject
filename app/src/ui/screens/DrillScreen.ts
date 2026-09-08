@@ -596,8 +596,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         button('🎤 Listen', () => openMicrophone(), { id: 'drill-mic', variant: 'secondary' }),
       );
     }
-    controls.append(button('Skip', () => advance(), { id: 'drill-skip', variant: 'quiet' }));
-    controls.append(button('End drill', () => finish(), { id: 'drill-end', variant: 'quiet' }));
+    // One group, so they wrap together. Loose in the row, "Skip" fitted beside
+    // the boxes and "End drill" did not, so it dropped to a line of its own —
+    // and in a narrow column the row went to three lines and pushed itself out
+    // of the scrolling body.
+    const leaving = el('div.drill-leave', { id: 'drill-leave' });
+    leaving.append(
+      button('Skip', () => advance(), { id: 'drill-skip', variant: 'quiet' }),
+      el('span.drill-leave__sep', { text: '·', 'aria-hidden': 'true' }),
+      button('End drill', () => finish(), { id: 'drill-end', variant: 'quiet' }),
+    );
+    controls.append(leaving);
   }
 
   /**
@@ -810,28 +819,6 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     advance();
   }
 
-  /** Remembers that this kind's tips have been read once. */
-  const TIPS_SEEN_PREFIX = 'pianopath.tips-seen.';
-
-  function tipsSeen(kind: string): boolean {
-    try {
-      return localStorage.getItem(`${TIPS_SEEN_PREFIX}${kind}`) === '1';
-    } catch {
-      // Site data blocked. Open by default is the safe side of that: showing
-      // advice to somebody who has read it costs a glance, and hiding it from
-      // somebody who has not costs the whole point.
-      return false;
-    }
-  }
-
-  function markTipsSeen(kind: string): void {
-    try {
-      localStorage.setItem(`${TIPS_SEEN_PREFIX}${kind}`, '1');
-    } catch {
-      // Nothing to do; the block simply opens again next time.
-    }
-  }
-
   /**
    * The advice for this drill kind, under the prompt.
    *
@@ -844,14 +831,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (!kind) return;
     tips = await tipsFor(kind, (target.drill?.params ?? {}));
     if (!tips) return;
-    const seen = tipsSeen(kind);
     tipsBlock.replaceChildren(
       el('summary', { text: 'Tips', id: 'drill-tips-summary' }),
       el('div.drill-tips-body', { id: 'drill-tips-body' }, renderMarkdown(tips.markdown)),
     );
-    (tipsBlock as HTMLDetailsElement).open = !seen;
+    // Collapsed during a set, open on the result (decision 5 §2). Open on a
+    // first meeting was the intent and it is the wrong moment: 581 px of
+    // advice between the prompt and the keyboard, on the very run where the
+    // learner is least oriented, and on a phone it pushed the buttons off. The
+    // result sheet prints the same text in full, which is when it is read.
+    (tipsBlock as HTMLDetailsElement).open = false;
     tipsBlock.hidden = false;
-    markTipsSeen(kind);
   }
 
   // --- load ----------------------------------------------------------------

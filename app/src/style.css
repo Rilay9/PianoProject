@@ -2080,6 +2080,30 @@ input[type='checkbox'] {
  * Two columns, so the height is the taller of the two rather than the sum:
  * the thing to look at on the left, the words and the buttons on the right.
  * Tips and the result sheet span both, below, where they can scroll. */
+/* The drill body is the scrolling box, at every size.
+   
+   Whatever it holds must fit it or scroll inside it, because the keyboard is
+   laid out under it and is painted after it — so anything that overflows is
+   drawn over the keys. That is where "Play again" went sideways, and where the
+   four-bar prompt of a transposition drill still went once the buttons were
+   fixed. */
+[data-screen='drill'] .screen-body {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* "Skip · End drill" is one thing that wraps as one thing. */
+.drill-leave {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.drill-leave__sep {
+  color: var(--text-muted);
+}
+
 @media (max-height: 520px) {
   [data-screen='drill'] .screen-body {
     display: grid;
@@ -2089,6 +2113,10 @@ input[type='checkbox'] {
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
     grid-auto-rows: min-content;
     align-content: start;
+    /* Each item its own height. Without this the stage — which spans the four
+       rows beside it — stretched every one of them, and a one-line counter
+       stood 86 px tall. */
+    align-items: start;
     column-gap: 16px;
     min-height: 0;
     overflow-y: auto;
@@ -2099,6 +2127,18 @@ input[type='checkbox'] {
     grid-row: 1 / span 4;
     min-height: 0;
     align-self: center;
+    /* And it must not size them either. A four-bar notation card is 390 px
+       tall; spanning four rows, it gave each of them a hundred and pushed the
+       counter, the prompt and the buttons in column two out of the scrolling
+       body altogether. Sideways the height is the scarce thing and the prompt
+       is the one that gives way. */
+    max-height: 42vh;
+    overflow: hidden;
+  }
+
+  [data-screen='drill'] .drill-notation {
+    max-height: 42vh;
+    overflow: auto;
   }
 
   [data-screen='drill'] #drill-counter,

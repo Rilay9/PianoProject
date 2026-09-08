@@ -38,14 +38,18 @@ test.describe('the tips block', () => {
     }
   });
 
-  test('is open the first time a kind is met and collapsed after', async ({ page }) => {
+  test('is collapsed during a set, on the first meeting and after', async ({ page }) => {
+    // Decision 5 §2. It used to open on a first meeting, which is the right
+    // instinct at the wrong moment: 581 px of advice between the prompt and
+    // the keyboard, on the very run where the learner is least oriented — and
+    // sideways it pushed "Skip" and "End drill" off the screen. The result
+    // sheet prints the same text in full, which is when it is read.
     await page.goto('/#/drill/drill.reading.note-flash-treble-c4-g4');
-    // The first run is when the advice is worth reading.
-    await expect(page.locator('#drill-tips')).toHaveJSProperty('open', true);
+    await expect(page.locator('#drill-tips')).toHaveJSProperty('open', false);
+    // And still one tap away.
+    await expect(page.locator('#drill-tips-summary')).toBeVisible();
 
     await page.reload();
-    // The twentieth is when a block of text between the prompt and the
-    // keyboard is in the way.
     await expect(page.locator('#drill-tips')).toHaveJSProperty('open', false);
   });
 
