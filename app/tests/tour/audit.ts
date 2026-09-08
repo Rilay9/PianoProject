@@ -192,6 +192,32 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       }
     }
 
+    // --- 7b. Notation flush against the edge of its stage -------------------
+    //
+    // Two pixels of clearance stops a stroke being clipped and does not stop
+    // it *reading* as clipped: the final barline sat on the stage border and a
+    // grand staff's brace looked cut in half by it.
+    const stage = document.querySelector('#score-stage');
+    const sheet = stage?.querySelector('.is-front svg');
+    if (stage && sheet) {
+      const box = stage.getBoundingClientRect();
+      let left = Infinity;
+      let right = -Infinity;
+      for (const el of sheet.querySelectorAll('*')) {
+        const b = el.getBoundingClientRect();
+        if (b.width === 0 && b.height === 0) continue;
+        left = Math.min(left, b.left);
+        right = Math.max(right, b.right);
+      }
+      if (Number.isFinite(left)) {
+        const inLeft = Math.round(left - box.left);
+        const inRight = Math.round(box.right - right);
+        if (inLeft < 4 || inRight < 4) {
+          add('ink-flush', `the notation is ${String(Math.min(inLeft, inRight))}px from the stage edge`);
+        }
+      }
+    }
+
     // --- 8. The four rules of `04` §0 --------------------------------------
     //
     // R1–R4 are the rules every screen is supposed to obey, and until now the

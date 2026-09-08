@@ -431,7 +431,7 @@ test.describe('blind mode', () => {
     await expect(page.locator('.keyboard-strip')).toBeVisible();
     await expect(page.locator('#score-play')).toBeVisible();
     await openScoreMenu(page);
-    await expect(page.getByRole('button', { name: 'Show the score' })).toBeVisible();
+    await expect(page.locator('#score-blind')).toHaveText('On');
 
     // And the header says why the screen is empty. "Show the score" moved into
     // the ... sheet with the rest of the settings, so without this a blind run
@@ -457,7 +457,7 @@ test.describe('blind mode', () => {
     await page.goto('/#/score/song.folk.hot-cross-buns?blind=1');
     await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
     await openScoreMenu(page);
-    await page.getByRole('button', { name: 'Show the score' }).click();
+    await page.locator('#score-blind').click();
     await expect(page.locator('#score-stage .is-front svg')).toBeVisible({ timeout: 60_000 });
   });
 });

@@ -216,7 +216,8 @@ test.describe('blind mode', () => {
     await expect(stage).toBeHidden();
     await expect(page.locator('#score-bar')).toBeVisible();
     await openScoreMenu(page);
-    await expect(page.locator('#score-blind')).toHaveText('Show the score');
+    // Every toggle in the sheet reads On or Off (P21b A2).
+    await expect(page.locator('#score-blind')).toHaveText('On');
   });
 
   test('is a route, so it survives a reload and can be linked to', async ({ page }) => {
@@ -234,7 +235,7 @@ test.describe('performance runs', () => {
   test('offer no restart, and are listed apart from practice', async ({ page }) => {
     await page.goto('/#/score/exercise.five-finger.c-major.right?performance=1');
     await openScoreMenu(page);
-    await expect(page.locator('#score-performance')).toHaveText('Practising');
+    await expect(page.locator('#score-performance')).toHaveText('On');
     // A restart mid-performance would make it not a performance.
     await expect(page.locator('#score-restart')).toHaveCount(0);
 

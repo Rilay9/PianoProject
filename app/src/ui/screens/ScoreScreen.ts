@@ -192,6 +192,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   sidePanel.className = 'score-side';
   sidePanel.id = 'score-side';
   sidePanel.open = true;
+  sidePanel.hidden = true;
+  section.dataset.side = 'empty';
   if (tablet) {
     const summary = document.createElement('summary');
     summary.textContent = 'Lesson notes';
@@ -506,15 +508,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   // that way from the start, and putting them in the hash means a blind run
   // survives a reload and can be linked to from a rung.
   const blindToggle = button(
-    blind ? 'Show the score' : 'Blind',
+    blind ? 'On' : 'Off',
     () => router.navigateScore(itemId, { blind: !blind, performance: performanceRun }),
     'score-blind',
   );
+  blindToggle.setAttribute('aria-label', blind ? 'Show the score' : 'Hide the score');
 
   const performanceToggle = button(
-    performanceRun ? 'Practising' : 'Perform',
+    performanceRun ? 'On' : 'Off',
     () => router.navigateScore(itemId, { blind, performance: !performanceRun }),
     'score-performance',
+  );
+  performanceToggle.setAttribute(
+    'aria-label',
+    performanceRun ? 'Stop performing and go back to practising' : 'Play it as a performance',
   );
 
   const sectionRow = menuRow('Section', sectionSelect);
@@ -840,15 +847,14 @@ export function ScoreScreen(router: Router): HTMLElement {
           }
         }
       }
-      if (!found) {
-        sidePanel.hidden = true;
-        return;
-      }
+      if (!found) return;
       const summary = document.getElementById('score-side-summary');
       if (summary) summary.textContent = `${found.id} · ${found.title}`;
       const response = await fetch(contentUrl(found.textFile));
       if (!response.ok) throw new Error(String(response.status));
       const { body: markdown } = parseFrontMatter(await response.text());
+      sidePanel.hidden = false;
+      section.dataset.side = 'text';
       body.replaceChildren(renderMarkdown(markdown));
     } catch {
       sidePanel.hidden = true;
@@ -1150,6 +1156,14 @@ export function ScoreScreen(router: Router): HTMLElement {
         ? `Bars ${loopBars.from}–${loopBars.to} ✕`
         : 'Off';
     loopButton.classList.toggle('is-selected', loopBars !== null);
+    // One convention for every toggle in the sheet (P21b A2): the word is On
+    // or Off and On is the highlighted one. Blind and Perform are routes
+    // rather than settings, but from inside the sheet they are states of the
+    // run like the rest, and were the only two naming themselves instead.
+    blindToggle.classList.toggle('is-selected', blind);
+    blindToggle.setAttribute('aria-pressed', String(blind));
+    performanceToggle.classList.toggle('is-selected', performanceRun);
+    performanceToggle.setAttribute('aria-pressed', String(performanceRun));
     for (const hand of HANDS) {
       document.getElementById(`score-hands-${hand.id}`)?.classList.toggle('is-selected', hands === hand.id);
     }

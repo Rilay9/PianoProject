@@ -128,15 +128,20 @@ function inkBox(svg: SVGElement): { x: number; y: number; width: number; height:
  * off the right edge by exactly that margin.
  */
 function place(box: { x: number; y: number }, scale: number): string {
-  const moved = box.x !== 0 || box.y !== 0;
-  if (scale === 1 && !moved) return '';
-  const x = -box.x * scale;
-  const y = -box.y * scale;
+  const x = -box.x * scale + FIT_INSET_PX;
+  const y = -box.y * scale + FIT_INSET_PX;
   return `translate(${String(x)}px, ${String(y)}px) scale(${String(scale)})`;
 }
 
-/** Kept clear of the stage edges, so a stroke width cannot be clipped. */
-const FIT_MARGIN_PX = 2;
+/**
+ * Air between the music and the edge of the stage.
+ *
+ * Two pixels was enough to stop a stroke being clipped and not enough to stop
+ * it *reading* as clipped: the final barline sat on the stage border and the
+ * brace of a grand staff looked cut in half by it. Six each side.
+ */
+const FIT_INSET_PX = 6;
+const FIT_MARGIN_PX = FIT_INSET_PX * 2;
 
 /** How many engravings the fit will try before settling. Each is a render. */
 const FIT_STEPS = 4;

@@ -2504,6 +2504,18 @@ input[type='checkbox'] {
   .screen--score[data-tablet='true'] {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
+  }
+
+  /* No lesson text, no column. `display: none` on the panel still leaves its
+     320 px track, so the stage kept paying for a panel that was not there —
+     and `[hidden]` loses a specificity tie to the `display: block` below, so
+     the panel was drawn empty anyway. Both, explicitly. */
+  .score-side[hidden] {
+    display: none;
+  }
+
+  .screen--score[data-tablet='true'][data-side='empty'] {
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr) auto;
     column-gap: 12px;
   }
