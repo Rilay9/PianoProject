@@ -234,6 +234,33 @@ test.describe('score screen', () => {
     await expect(modeSelect).toHaveValue('wait');
   });
 
+  for (const [chosen, played] of [
+    ['R', 'left'],
+    ['L', 'right'],
+  ] as const) {
+    test(`says once that the app is playing the ${played} hand (B3)`, async ({ page }) => {
+      // `playbackHands` defaults to `non-focused`, so choosing R means the app
+      // plays the left hand under you. With no piano connected and the phone on
+      // a stand, a sound arriving from nowhere reads as a fault rather than help.
+      //
+      // One run per case, on its own page: pressing Play a second time pauses
+      // the run rather than starting another, and by then the bar has hidden
+      // itself and is not clickable at all.
+      await openScore(page);
+      await page.locator(`#score-hands-${chosen}`).click();
+      await page.locator('#score-play').click();
+      await expect(page.locator('#score-status')).toHaveText(
+        `Playing the ${played} hand for you`,
+      );
+    });
+  }
+
+  test('and says nothing when there is no other hand to play (B3)', async ({ page }) => {
+    await openScore(page);
+    await page.locator('#score-hands-both').click();
+    await page.locator('#score-play').click();
+    await expect(page.locator('#score-status')).not.toHaveText(/Playing the/);
+  });
   test('pressing Play during a Hear it run gives you your own mode back', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');

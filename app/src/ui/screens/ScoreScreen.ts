@@ -146,6 +146,16 @@ export function ScoreScreen(router: Router): HTMLElement {
    * in a dropdown counts as a way to do something.
    */
   let hearing = false;
+  /**
+   * Whether this run has already said the app is playing a hand (P21c B3).
+   *
+   * `playbackHands` defaults to `non-focused`, so choosing `R` means the app
+   * plays the left hand under you. That is the right default and it is also a
+   * sound arriving from nowhere: with no piano connected and the phone on the
+   * stand it reads as a fault rather than as help. Said once when the run
+   * starts, not on every render — a line that keeps reappearing is noise.
+   */
+  let saidPlayingHand = false;
   /** Runs finished since this exercise was generated (see the summary sheet). */
   let sightReadAttempts = 0;
   let input: FollowInput = 'none';
@@ -364,6 +374,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         hand.label,
         () => {
           hands = hand.id;
+          forgetPlayingHand();
           renderer?.setHandsFocus(hand.id);
           if (session?.running) startRun();
           render();
@@ -805,11 +816,29 @@ export function ScoreScreen(router: Router): HTMLElement {
           }
         : {}),
     });
+    sayWhichHandIsPlayed(runMode);
     attachInput();
     void requestWakeLock();
     // Starting a run is what arms the auto-hide.
     showBar();
     render();
+  }
+
+  /**
+   * Says, once per run, that the sound is the app playing the other hand.
+   *
+   * Only when there is another hand to play: with `Both` chosen nothing is
+   * played under you, and in a Listen or `Hear it` run the whole point is
+   * that the app is playing, which the button already said.
+   */
+  function sayWhichHandIsPlayed(runMode: Mode): void {
+    if (saidPlayingHand) return;
+    if (runMode === 'listen' || runMode === 'free') return;
+    if (hands === 'both') return;
+    if (settings.playbackHands !== 'non-focused') return;
+    const other = hands === 'R' ? 'left' : 'right';
+    status.textContent = `Playing the ${other} hand for you`;
+    saidPlayingHand = true;
   }
 
   /** `Hear it`: start a Listen run, or stop the one this button started. */
@@ -837,6 +866,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     else if (session.state?.paused === true) session.resume();
     else session.pause();
     render();
+  }
+
+  /** Choosing a different hand makes the sentence worth saying again. */
+  function forgetPlayingHand(): void {
+    saidPlayingHand = false;
   }
 
   function clearLoop(): void {
