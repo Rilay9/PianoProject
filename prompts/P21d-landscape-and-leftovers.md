@@ -87,12 +87,40 @@ stage.
 **A5 — Lesson sideways** (`12`): the same header line; the status row (`in progress · I already
 know this · Quick check · Mark done`) is already one line.
 
-**A6 — The score screen sideways — after P21c has landed, and only then.** The bar is centred
-with its left and right thirds empty (`20`). `← Back` and the title move into the bar's left
-end; the header row goes, and the stage grows by 40 px (the P21b report's question 4: the
-header gives way first). The keyboard strip sideways drops from 72 to 56 px: the white keys are
-as wide as before, and it is height that is scarce. Net: the stage goes from 194 to 250 px, a
-third more music. Reshoot `20`–`33` sideways.
+**A6 — The score screen: the music gets everything that is not needed while playing.** After
+P21c has landed, and only then. This is the screen the app exists for, and sideways it gives
+the music 194 of 360 px and inks 57 % of that. Four things are competing with it, and the
+test for each is *do you need it while your hands are on the keys?*
+
+| Now | px | Needed while playing? | After |
+|---|---|---|---|
+| Header: `← Back`, title, status line | 40 | No | Gone. `← Back` and the title move to the bar's left end (its left third is empty, `20`); the status line (`Waiting for D4`, `Paused — you were away 40 s`) takes the title's place while it has something to say. |
+| Control bar | 48 | Once per run at most | Reserved only while it is showing. During a run it already hides itself (`CONTROL_BAR_HIDE_MS`); now the stage **takes its row** when it hides, and a tap brings it back as an overlay over the bottom of the sheet for 3 s. Overlapping the music is acceptable at that moment because he asked for the bar; decision 5's rule was about overlap while playing. Refit on hide once per run, not per tap: fit the sheet to the bar-hidden height when the run starts and leave it. |
+| Keyboard strip | 72 | Feedback only, with a piano connected | 56 px sideways (the keys are as wide as before; height is the scarce thing). And a second form: a **ribbon** — 28 px, the piece's range as a thin band with the expected key as a blue tick under its name (`F♯4`), played keys green, wrong red. It is the same information as the strip at a third of the height, and it names the note, which is the thing the F♯4 evening was missing. It is a matter of his taste which he wants, so `keyboardStrip` becomes `keys: 'strip' \| 'ribbon' \| 'off'` (default `strip`), the ⋯ sheet's `Keys` becomes that three-way, and the tour shoots `20` in all three so he can choose by looking. |
+| Inside the engraving | ~45 | No | The tempo mark `♩ = 96` is drawn above the first system and the bar already says `67 bpm`: `drawMetronomeMarks: false`. OSMD's own page margins (`PageTopMargin`, `PageBottomMargin`, `PageLeftMargin`, `PageRightMargin`, `SystemLeftMargin`) are set to 0 and the 6 px ink inset from P21b is the only margin. Measure the ink before and after and put both numbers in the report. |
+
+Net, sideways on the phone: the stage goes from 194 px to about **300 px** with the strip, or
+**330 px** with the ribbon — half as much music again before the notation size changes. Upright
+the same rules apply and the gain is smaller, because the header there also carries the
+waiting line; keep the waiting line above the stage upright, as `style.css` explains.
+
+**The tablet: the window fills the height.** `tablet-landscape/20` draws four bars on two
+systems and leaves the lower half of the stage empty, because the fit is width-limited there
+(a system already spans the width at the engraver's zoom cap) and four bars is a fixed number
+from `04` §7a. Replace the fixed number with a rule: *the window holds as many bars as fill the
+stage's height at the width-limited size*. With P21c's slots that is three slots of two bars
+on a 10-inch tablet sideways, two slots of two bars upright on the phone, and the slide
+sideways on the phone. `barsPerWindowFor` keeps its promise that a number he has set wins; the
+rule is the default under it, and `04` §7a says so.
+
+**What not to do.** Do not shrink the notation to fit more bars; the size is the largest the
+fit allows and that stays. Do not overlay the bar while a run is going and the bar has not been
+asked for. Do not remove the strip by default: it is the beginner's feedback and the ribbon is
+offered beside it, not instead of it.
+
+Reshoot `20`–`33` sideways and upright, plus `20` in the three `keys` states; the audit adds
+a line per score scene giving the stage's height as a share of the viewport and the ink's
+share of the stage, so the numbers in this section are checked rather than believed.
 
 Tests: an e2e at 780 × 360 for each of Today, Plan, Library, Skills, Shelf, a lesson and a
 drill asserting the first content element's top is within 48 px of the viewport top and that
