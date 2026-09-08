@@ -435,6 +435,11 @@ test.describe('the score control bar', () => {
   }
 
   for (const [orientation, viewport] of [
+    // 360 as well as 390: the owner's S25 is 360 CSS px upright, and that is
+    // the width the bar wrapped at when `Hear it` joined it — 392 px of
+    // controls on a 360 px row, three rows, 40 px off the music. Twice now
+    // this row has grown past its width, so all three are pinned (P21e A1).
+    ['upright, 360', { width: 360, height: 780 }],
     ['upright', { width: 390, height: 844 }],
     ['sideways', { width: 880, height: 412 }],
   ] as const) {
@@ -450,6 +455,16 @@ test.describe('the score control bar', () => {
       const box = await page.locator('#score-bar').boundingBox();
       expect(box, 'no control bar').toBeTruthy();
       expect(box!.height, `the bar is ${String(box!.height)} px tall`).toBeLessThan(60);
+      // `scrollHeight`, because a bar that has wrapped can still be *drawn*
+      // short if something above it is clipping — the rule is about the row,
+      // not about what happens to be visible of it (P21e A1).
+      const scrolled = await page
+        .locator('#score-bar')
+        .evaluate((el) => ({ scroll: el.scrollHeight, client: el.clientHeight }));
+      expect(
+        scrolled.scroll,
+        `the bar's content is ${String(scrolled.scroll)} px tall`,
+      ).toBeLessThan(60);
 
       // And Back is where a thumb looks for it rather than in among the
       // transport controls.

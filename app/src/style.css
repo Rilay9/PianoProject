@@ -1514,8 +1514,11 @@ input[type='checkbox'] {
      that is about 5rem and `Play it to me` clips, sideways at 780 px it shows in
      full. A fixed cap either wrapped the bar onto a second row upright or wasted
      the width sideways. The dropdown always shows every label whole. */
-  flex: 1 1 4rem;
-  min-width: 3.5rem;
+  /* Shrinks to what the row leaves. `flex-basis: 4rem` was still too wide to
+     fit at 360 px, so the row wrapped and *then* the select grew on its own
+     line — 81 px of a bar that had already broken the one rule it has. */
+  flex: 1 1 3rem;
+  min-width: 2.75rem;
   max-width: 8rem;
 }
 

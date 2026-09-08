@@ -68,6 +68,25 @@ const MODES: { id: Mode; label: string }[] = [
   { id: 'free', label: 'Free play' },
 ];
 
+/**
+ * The same four modes, in one word each, for a bar that has run out of room.
+ *
+ * `Hear it` earned its place on the bar and something had to give: at 360 px
+ * the row came to 392 px and wrapped onto three, which is 40 px off the music
+ * and the one thing the bar may not do (`04` §5). Below 400 px the select
+ * shows these; the sentences are still what the dropdown lists, and sideways
+ * — where there is room — the sentences are on the bar too.
+ */
+const SHORT_MODES: Record<Mode, string> = {
+  wait: 'Wait',
+  tempo: 'Tempo',
+  listen: 'Play',
+  free: 'Free',
+};
+
+/** Below this the bar cannot hold the sentences. Measured, not chosen. */
+const NARROW_BAR_PX = 400;
+
 const INPUTS: { id: FollowInput; label: string }[] = [
   { id: 'midi', label: 'MIDI' },
   { id: 'mic', label: 'Mic' },
@@ -406,6 +425,28 @@ export function ScoreScreen(router: Router): HTMLElement {
     },
   );
   bar.appendChild(modeSelect);
+
+  /**
+   * Long labels where they fit, short ones where they do not.
+   *
+   * The text of an `<option>` is not something CSS can change, so this is the
+   * one thing on the bar that has to be done in script. Only the *closed*
+   * select is affected in practice — the dropdown is a list, and a list has
+   * room — but both are set, because a select shows whichever it likes.
+   */
+  function applyModeLabels(): void {
+    const narrow = window.innerWidth < NARROW_BAR_PX;
+    for (const option of [...modeSelect.options]) {
+      const id = option.value as Mode;
+      const long = MODES.find((m) => m.id === id)?.label ?? option.textContent ?? id;
+      option.textContent = narrow ? SHORT_MODES[id] : long;
+    }
+  }
+  applyModeLabels();
+  // Re-rendered on resize too: the tempo label's width depends on it.
+  window.addEventListener('resize', () => render());
+  window.addEventListener('resize', applyModeLabels);
+  unsubscribers.push(() => window.removeEventListener('resize', applyModeLabels));
 
   const handsGroup = document.createElement('div');
   handsGroup.className = 'score-group';
@@ -1391,7 +1432,14 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Not while it is being typed into: writing the rounded value back on
     // every render would fight the digits going in.
     if (document.activeElement !== bpmField) bpmField.value = String(Math.round(bpmNow()));
-    tempoLabel.textContent = `${tempoPct}% · ${Math.round(bpmNow())} bpm`;
+    // Below 400 px the percentage goes and the bpm stays: the bar has to be
+    // one row (`04` §5), and the percentage is set in the sheet this label
+    // opens, where it is written on the slider. The bpm is the number you
+    // read while playing.
+    tempoLabel.textContent =
+      window.innerWidth < NARROW_BAR_PX
+        ? `${String(Math.round(bpmNow()))} bpm`
+        : `${String(tempoPct)}% · ${String(Math.round(bpmNow()))} bpm`;
     barsLabel.textContent = `${settings.barsPerWindow} bar${settings.barsPerWindow === 1 ? '' : 's'}`;
     layoutWindow.classList.toggle('is-selected', settings.layout === 'window');
     layoutWindow.setAttribute('aria-pressed', String(settings.layout === 'window'));
