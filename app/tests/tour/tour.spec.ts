@@ -24,7 +24,6 @@ import {
   dropShot,
   FORM_FACTORS,
   identicalShots,
-  type Orientation,
   saveLedger,
   shoot,
   writeContactSheet,

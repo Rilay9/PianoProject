@@ -461,6 +461,42 @@ export class WindowRenderer {
     return performance.now() - started;
   }
 
+  /**
+   * Where the drawn music is on the screen, in viewport pixels.
+   *
+   * Not the SVG element's box: that is the *page* OSMD laid the window out on,
+   * which is the full width of the container and taller than the ink, and
+   * since the fit anchors the ink's top-left in the stage's the page now hangs
+   * off the right on purpose. Anything asking "how much room is the music
+   * taking" has to ask about the ink — the control bar's auto-hide asked the
+   * element and concluded the music reached the bottom of the stage when it
+   * did not.
+   *
+   * Falls back to the element's own box when the ink cannot be measured, which
+   * is the same thing the fit does.
+   */
+  inkRect(): { top: number; bottom: number; left: number; right: number } | null {
+    const svg = this.frontBuffer.view.svg;
+    if (!svg) return null;
+    const rect = svg.getBoundingClientRect();
+    const ink = inkBox(svg);
+    const engraved = engravedSize(svg);
+    if (!ink || !engraved || !(engraved.width > 0) || !(rect.width > 0)) {
+      return { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right };
+    }
+    // What the wrapper's transform did to it. The element's own box already
+    // carries that scale, so the ratio recovers it without reading the style.
+    const scale = rect.width / engraved.width;
+    const left = rect.left + ink.x * scale;
+    const top = rect.top + ink.y * scale;
+    return {
+      left,
+      top,
+      right: left + ink.width * scale,
+      bottom: top + ink.height * scale,
+    };
+  }
+
   /** Re-fits the current window; call on resize or orientation change. */
   refit(): void {
     this.fit(this.frontBuffer);

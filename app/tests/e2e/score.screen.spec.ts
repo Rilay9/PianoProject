@@ -305,17 +305,18 @@ test.describe('the sheet fills the screen (P19b)', () => {
     await page.setViewportSize({ width: 360, height: 780 });
     await openScore(page, 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx');
     // The fit is scheduled after a paint and costs one redraw.
+    // The ink against the stage, not the SVG element against it: the element
+    // is the page, which is taller than the music and wider than the stage,
+    // so it would report a full screen while the notation was small.
     await expect
       .poll(
-        async () =>
-          page.evaluate(() => {
-            const stage = document.querySelector('#score-stage')?.getBoundingClientRect();
-            const svg = document
-              .querySelector('#score-stage .is-front svg')
-              ?.getBoundingClientRect();
-            if (!stage || !svg || stage.height === 0) return 0;
-            return Math.round((svg.height / stage.height) * 100);
-          }),
+        async () => {
+          const stage = await page.evaluate(
+            () => document.querySelector('#score-stage')?.getBoundingClientRect().height ?? 0,
+          );
+          if (stage === 0) return 0;
+          return Math.round(((await inkBox(page)).height / stage) * 100);
+        },
         { timeout: 30_000, message: 'the sheet never grew' },
       )
       .toBeGreaterThan(55);
@@ -335,11 +336,9 @@ test.describe('the sheet fills the screen (P19b)', () => {
   test('the zoom buttons still do something, now that the fit does the work', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 780 });
     await openScore(page, 'song.folk.suo-gan-welsh-traditional-lullaby.pdmx');
-    const height = async (): Promise<number> =>
-      page.evaluate(
-        () =>
-          document.querySelector('#score-stage .is-front svg')?.getBoundingClientRect().height ?? 0,
-      );
+    // The ink: a smaller engraving can sit on a differently shaped page, so
+    // the element's height is no longer a measure of how big the notes are.
+    const height = async (): Promise<number> => (await inkBox(page)).height;
     await expect.poll(height, { timeout: 30_000 }).toBeGreaterThan(300);
     const fitted = await height();
     // Zoom is a multiplier on the fitted size now. It used to be the absolute

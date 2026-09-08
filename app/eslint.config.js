@@ -7,7 +7,16 @@ import prettier from 'eslint-config-prettier';
 // tsconfig.json's references): app source + its unit tests, and the
 // Node-side tooling configs + e2e tests. Both are covered by
 // projectService, which walks the project graph from tsconfigRootDir.
-const typedProjectFiles = ['src/**/*.ts', 'tests/unit/**/*.ts', 'tests/e2e/**/*.ts', '*.config.ts'];
+const typedProjectFiles = [
+  'src/**/*.ts',
+  'tests/unit/**/*.ts',
+  'tests/e2e/**/*.ts',
+  // The tour was linted by nothing: not in this list, so `npx eslint .` said
+  // "File ignored because no matching configuration was supplied" and moved
+  // on. It is four files that drive the whole app and write the report.
+  'tests/tour/**/*.ts',
+  '*.config.ts',
+];
 
 const nodeGlobals = {
   process: 'readonly',

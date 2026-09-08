@@ -295,7 +295,8 @@ export function summarise(all: { scene: string; findings: Finding[] }[]): string
   const byKind = new Map<string, Map<string, { first: string; count: number }>>();
   for (const { scene, findings } of all) {
     for (const finding of findings) {
-      const details = byKind.get(finding.kind) ?? new Map();
+      const details =
+        byKind.get(finding.kind) ?? new Map<string, { first: string; count: number }>();
       const seen = details.get(finding.detail);
       if (seen) seen.count += 1;
       else details.set(finding.detail, { first: scene, count: 1 });

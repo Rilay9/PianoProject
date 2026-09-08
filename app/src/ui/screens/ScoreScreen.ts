@@ -900,12 +900,14 @@ export function ScoreScreen(router: Router): HTMLElement {
    * One measurement, when the timer fires. Nothing here runs per frame.
    */
   function barCostsMusicRoom(): boolean {
-    const svg =
-      stage.querySelector<SVGSVGElement>('.score-buffer.is-front svg') ??
-      stage.querySelector('svg');
-    if (!svg) return false;
-    const music = svg.getBoundingClientRect();
-    if (music.height < 20) return false;
+    // The ink, not the SVG element. The element is the page OSMD laid the
+    // window out on — taller than the music and, since the fit anchors the
+    // ink's top-left in the stage's, hanging off the edge on purpose. Asking
+    // the element whether the music reached the bottom of the stage answered
+    // yes when it had not, and the bar hid itself for nothing.
+    const music = renderer?.inkRect();
+    if (!music) return false;
+    if (music.bottom - music.top < 20) return false;
     const box = stage.getBoundingClientRect();
     // Within a line's height of the bottom edge: the fit ran out of stage.
     return music.bottom >= box.bottom - 24;
