@@ -1321,13 +1321,31 @@ input[type='checkbox'] {
 
 /* The summary sheet covers the score; there is nothing to read behind it and
    a translucent sheet over notation is illegible. */
+/* A sheet over the foot of the score, not a page instead of it (decision 5).
+   
+   It was `inset: 0` — a black screen with a heading, three numbers and five
+   buttons in the top third and nothing under them. The one button that needs
+   the score is "Loop the weak bars": you are choosing which bars, and they
+   were behind the sheet. */
 .summary-sheet {
   position: absolute;
-  inset: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 5;
-  background: var(--bg, #0f1115);
-  padding: 1.25rem;
+  max-height: 72%;
+  background: var(--surface, #181b20);
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -8px 24px rgb(0 0 0 / 35%);
+  padding: 1rem 1.25rem calc(1rem + var(--safe-bottom, 0px));
   overflow-y: auto;
+}
+
+/* The score is the thing it is a sheet *over*, so it keeps the room the sheet
+   is not using rather than being covered by a keyboard as well. */
+.screen--score:has(.summary-sheet:not([hidden])) .score-strip {
+  display: none;
 }
 
 .summary-stats {
