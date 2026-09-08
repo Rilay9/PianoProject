@@ -286,7 +286,8 @@ the notation: three absolutely-positioned lines cost the stage a constant 3 rem 
 printed the title across bar 1 sideways.
 
 The control bar **auto-hides after 3 s during a run, and only when it is taking room from the
-notation** (decision 5, 2026-09-07). Outside a run the stage reserves the bar's height rather
+notation** (decision 5, 2026-09-07) — and after 0.7 s at the run's start, because sideways the
+three seconds were the lower staff of the first bar hidden behind it, every run. Outside a run the stage reserves the bar's height rather
 than being covered by it. **During a run the stage takes the bar's row** (P21d A6, built in
 P21e): the sheet is fitted once, at the run's start, to the height without the bar, and when a
 tap brings the bar back it overlays the foot of the sheet for three seconds rather than pushing
@@ -303,8 +304,12 @@ music has about 300 of 360 px where it had 194.
 **One size for the run** (P21e A2). The fit measures the *piece* — a third, never-shown
 engraver draws the whole score once per zoom and the tallest system in it sets the scale — so
 a bar with a ledger line is not engraved smaller than a bar without one, and the staves of both
-slots sit at the same height in every window. Until that measurement has run (one frame after
-the first draw) the tallest window seen so far stands in, held and never released.
+slots sit at the same height in every window — anchored on the stave *lines* from the
+engraver's model, not on the drawn group, whose top is wherever the highest fingering landed.
+Until that measurement has run (one frame after the first draw) the tallest window seen so far
+stands in, held and never released. A run keeps the scale it started at: ink up to a tenth
+taller than the fit runs into the margin rather than shrinking the sheet; only ink taller than
+that still shrinks it, once.
 
 **Sideways, the sheet is engraved in chunks** (P21e A3): the window, two bars behind it and
 two ahead, so the bar being played always has neighbours on both sides to slide against. The
@@ -361,8 +366,8 @@ Notation area:
 
   "What comes next" follows the **playing** order, not the printed one: at a repeat the other
   slot shows the repeat's first bar, and at a first- or second-time ending the ending that
-  will actually be played on this pass. The last bars of a piece leave the other slot blank
-  rather than repeating bars already played.
+  will actually be played on this pass. At the last bars of a piece the other slot keeps the
+  bars just played, as a page would; it does not go blank.
 
   Both slots are drawn at **one scale** — they are engraved separately, so fitting each to
   its own half would draw a bar of minims larger than a bar of semiquavers.
@@ -401,7 +406,8 @@ Notation area:
 Gestures: single tap toggles control bar; double-tap a bar sets loop start/end; **long-press a
 bar (400 ms) plays that bar**, both hands, once, at the current tempo, band moving, nothing
 judged, and puts the run back afterwards — the "show me what this is meant to sound like" for
-a bar you are stuck on; pinch = zoom; two-finger tap = toggle hands focus. A drag of more than
+a bar you are stuck on. (Pinch-to-zoom and a two-finger tap for hands were listed here and never
+built; struck — Size and hands have buttons, `08` §11.20.) A drag of more than
 12 px is a scroll and cancels the press; less is a finger.
 
 **Bar numbers in a gesture are as printed — 1-based.** `loopFromPrintedBars` looks for

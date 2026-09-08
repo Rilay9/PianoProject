@@ -106,6 +106,13 @@ const HANDS: { id: HandsFocus; label: string; spoken: string }[] = [
 
 /** The control bar hides after this long without a tap (docs/04 §5). */
 export const CONTROL_BAR_HIDE_MS = 3_000;
+/**
+ * …and sooner at the start of a run. Sideways the bar overlays the bottom of
+ * the music once the stage has taken its row, and three seconds of it over
+ * the lower staff is the first bar of every piece hidden (the Twinkle
+ * pictures). Long enough to see ▶ become ⏸; not long enough to matter.
+ */
+export const CONTROL_BAR_START_HIDE_MS = 700;
 
 /**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
@@ -310,6 +317,12 @@ export function ScoreScreen(router: Router): HTMLElement {
   beatDot.setAttribute('aria-hidden', 'true');
   status.textContent = 'Loading…';
 
+  // Where you are in the piece as a whole — `bar 3 / 48` — which nothing else
+  // on the screen says: two systems, no scrollbar, no proportion (`08` §4.4).
+  const where = document.createElement('span');
+  where.className = 'score-head__where';
+  where.id = 'score-where';
+
   // Beside the status line, hidden unless the owner has asked for note names.
   const waitingLine = document.createElement('p');
   waitingLine.className = 'score-waiting';
@@ -363,7 +376,11 @@ export function ScoreScreen(router: Router): HTMLElement {
   micFill.className = 'mic-meter__fill';
   micMeter.appendChild(micFill);
 
-  head.append(back, beatDot, title, status, waitingLine, micMeter);
+  head.append(back, title, where, status, waitingLine, micMeter);
+  // On the stage, not in the header: the header is not drawn sideways and
+  // the bar hides itself during a run, and the dot is the one thing that must
+  // be visible while the clock runs (`08` §5.3).
+  stage.appendChild(beatDot);
 
   /**
    * The same three things at the bar's left end, for a phone held sideways
@@ -386,15 +403,19 @@ export function ScoreScreen(router: Router): HTMLElement {
   const statusSide = document.createElement('span');
   statusSide.className = 'score-bar__status';
   statusSide.id = 'score-status-side';
-  barLeft.append(backSide, titleSide, statusSide);
+  const whereSide = document.createElement('span');
+  whereSide.className = 'score-bar__where';
+  whereSide.id = 'score-where-side';
+  barLeft.append(backSide, titleSide, whereSide, statusSide);
   bar.prepend(barLeft);
   const syncBarLeft = (): void => {
     titleSide.textContent = title.textContent;
+    whereSide.textContent = where.textContent;
     // The waiting line is the more useful of the two when it has something.
     statusSide.textContent = waitingLine.hidden ? status.textContent : waitingLine.textContent;
   };
   const mirror = new MutationObserver(syncBarLeft);
-  for (const node of [title, status, waitingLine]) {
+  for (const node of [title, where, status, waitingLine]) {
     mirror.observe(node, { childList: true, characterData: true, subtree: true, attributes: true });
   }
   unsubscribers.push(() => mirror.disconnect());
@@ -882,6 +903,15 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (!session) return;
     if (input === 'midi') {
       unsubscribers.push(webMidiSource.onNote(feedNote));
+      // The cable comes out mid-run: say so once; the keys on the screen
+      // still feed the run (`08` §10).
+      unsubscribers.push(
+        webMidiSource.onStateChange((state) => {
+          if (!state.connected && session?.running === true) {
+            status.textContent = 'Piano disconnected — the keys on the screen still work';
+          }
+        }),
+      );
       // Sustain is recorded for the pedal scorer and never blocks the run.
       unsubscribers.push(
         webMidiSource.onMessage((message) => {
@@ -957,11 +987,23 @@ export function ScoreScreen(router: Router): HTMLElement {
           }
         : {}),
     });
+    // Nothing to wait for: the hand chosen has no notes in this piece, and a
+    // Wait run would sit on its first step for ever (the random walk found
+    // it, with L on a right-hand song).
+    if ((runMode === 'wait' || runMode === 'tempo') && session.expectedNow.length === 0) {
+      session.stop();
+      status.textContent =
+        hands === 'both'
+          ? 'Nothing to play in this piece'
+          : `Nothing for the ${hands === 'L' ? 'left' : 'right'} hand in this piece — choose ${hands === 'L' ? 'R' : 'L'} or Both`;
+      render();
+      return;
+    }
     sayWhichHandIsPlayed(runMode);
     attachInput();
     void requestWakeLock();
     // Starting a run is what arms the auto-hide.
-    showBar();
+    showBar(CONTROL_BAR_START_HIDE_MS);
     render();
   }
 
@@ -977,6 +1019,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (runMode === 'listen' || runMode === 'free') return;
     if (hands === 'both') return;
     if (settings.playbackHands !== 'non-focused') return;
+    // Only when that hand has notes: "playing the left hand for you" over a
+    // right-hand tune is a sentence about nothing.
+    if (model?.handsPresent[hands === 'R' ? 'L' : 'R'] !== true) return;
     const other = hands === 'R' ? 'left' : 'right';
     status.textContent = `Playing the ${other} hand for you`;
     saidPlayingHand = true;
@@ -985,13 +1030,16 @@ export function ScoreScreen(router: Router): HTMLElement {
   /** `Hear it`: start a Listen run, or stop the one this button started. */
   function toggleHear(): void {
     if (!session) return;
-    if (hearing || session.running) {
+    if (hearing) {
       session.stop();
       hearing = false;
       clearBeat();
       render();
       return;
     }
+    // During a run: the run ends and the demonstration begins (`08` §7.1).
+    // It used to only stop the run, which is not what the tap asked for.
+    if (session.running) session.stop();
     hearing = true;
     startRun();
   }
@@ -1004,9 +1052,13 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   function onBeat(tick: { beat: number; bar: number; isCountIn: boolean }): void {
     const clocked = mode === 'tempo' || mode === 'listen' || hearing;
-    // From the piece, not a guess: a count-in of four over a 3/4 waltz would
-    // be counting a bar that does not exist.
-    const beatsPerBar = Math.max(1, Math.round(model?.timeSigMap[0]?.beats ?? 4));
+    // From the run, not the piece's first bar: the engine already counts the
+    // meter at the bar the run starts from, so a loop in a different meter is
+    // counted in correctly (`08` §11.2), and the dots must agree with it.
+    const beatsPerBar = Math.max(
+      1,
+      Math.round(session?.prepared?.options.beatsPerBar ?? model?.timeSigMap[0]?.beats ?? 4),
+    );
     if (tick.isCountIn) {
       countIn.hidden = false;
       countIn.replaceChildren(
@@ -1094,6 +1146,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     pressFrom = { x: event.clientX, y: event.clientY };
     pressHold = window.setTimeout(() => {
       pressHold = null;
+      // Not during a run: demonstrating a bar would end the run, and the
+      // engine keeps no state to resume it from (`08` §7.3). Stop first.
+      if (session?.running === true) return;
       const measure = measureAt(target);
       if (measure !== null) hearBar(measure);
     }, 400);
@@ -1276,7 +1331,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     return music.bottom >= box.bottom - 24;
   }
 
-  function showBar(): void {
+  function showBar(hideAfterMs = CONTROL_BAR_HIDE_MS): void {
     bar.dataset.visible = 'true';
     requestAnimationFrame(measureBar);
     if (hideTimer !== null) window.clearTimeout(hideTimer);
@@ -1286,7 +1341,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         bar.dataset.visible = 'false';
         requestAnimationFrame(measureBar);
       }
-    }, CONTROL_BAR_HIDE_MS);
+    }, hideAfterMs);
   }
   function toggleBar(): void {
     if (bar.dataset.visible === 'true') {
@@ -1329,6 +1384,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // A demonstration that has finished is over, whatever else happens next.
     hearing = false;
     clearBeat();
+    // "Playing the left hand for you" must not stand over a finished run
+    // (`08` §6.3).
+    status.textContent = '';
     sheet.replaceChildren();
     const outcome = evaluateOutcome(score, {
       passAccuracy: settings.passAccuracyPct / 100,
@@ -1482,8 +1540,43 @@ export function ScoreScreen(router: Router): HTMLElement {
     waitingLine.hidden = wanted === '';
   }
 
+  /** The loop's bars by source measure index, for the dimming (`08` §11.18). */
+  function syncLoopDim(): void {
+    if (!renderer || !model || !session || hearingBar) {
+      renderer?.setLoopRange(null);
+      return;
+    }
+    const loop =
+      loopBars && !performanceRun
+        ? loopSection
+          ? session.loopForPrintedBars(loopBars.from, loopBars.to)
+          : session.loopForMeasures(loopBars.from, loopBars.to)
+        : undefined;
+    if (!loop) {
+      renderer.setLoopRange(null);
+      return;
+    }
+    const from = model.steps[loop.fromStep]?.sourceMeasureIndex;
+    const to = model.steps[loop.toStep]?.sourceMeasureIndex;
+    renderer.setLoopRange(from === undefined || to === undefined ? null : { from, to });
+  }
+
+  /** `bar 3 / 48`: the bar under the cursor and the piece's length. */
+  function drawWhere(): void {
+    if (!model || !renderer) {
+      where.textContent = '';
+      return;
+    }
+    const step = session?.state?.step ?? renderer.stepIndex;
+    const bar = model.steps[step]?.sourceMeasureIndex;
+    where.textContent =
+      bar === undefined ? '' : `bar ${String(bar + 1)} / ${String(model.sourceMeasureCount)}`;
+  }
+
   function render(): void {
     drawWaitingFor();
+    drawWhere();
+    syncLoopDim();
     // Belt and braces with the observer: every render is a moment the copy
     // in the bar must agree with the header.
     syncBarLeft();
@@ -1667,6 +1760,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         // The bar says the bpm; the mark above the first system was the
         // tallest thing above any stave, paid for by every window (P21d A6).
         drawMetronomeMarks: false,
+        // The words are for singing; this screen is for the hands (`08` §3.4.1).
+        drawLyrics: false,
       });
 
       if (window.__pianopath) {
@@ -1675,9 +1770,16 @@ export function ScoreScreen(router: Router): HTMLElement {
         // asking rather than by carrying a copy of it.
         window.__pianopath.scoreRun = () => {
           const state = session?.state;
-          return session?.running === true && state
-            ? { step: state.step, expected: session.expectedNow }
-            : null;
+          if (session?.running !== true || !state || !model) return null;
+          return {
+            step: state.step,
+            expected: session.expectedNow,
+            bar: model.steps[state.step]?.sourceMeasureIndex ?? 0,
+            lastBar: Math.max(0, model.sourceMeasureCount - 1),
+            paused: state.paused,
+            engineMode: state.mode,
+            input,
+          };
         };
       }
 
@@ -1724,9 +1826,18 @@ export function ScoreScreen(router: Router): HTMLElement {
         // was judged and nothing is recorded. It went to the summary, which
         // wrote a nought-accuracy run into the history under whichever mode
         // the select happened to show.
-        if (hearing) {
+        // …and so is a Listen run chosen from the select: the app played it,
+        // there is nothing to report (`08` §7.4). The status line says so.
+        if (hearing || mode === 'listen') {
           hearing = false;
           clearBeat();
+          status.textContent = 'Played to the end.';
+          render();
+          return;
+        }
+        // Free play judges nothing, so there is nothing to summarise: the
+        // page has been turned to the end, and that is all (`08` §7.4).
+        if (mode === 'free') {
           render();
           return;
         }

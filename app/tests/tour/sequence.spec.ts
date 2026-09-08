@@ -23,7 +23,11 @@ import { join } from 'node:path';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
 import { FORM_FACTORS, saveLedger, shoot, TOUR_DIR, writeContactSheet } from './shoot';
 
-const SONG = 'song.folk.mary-had-a-little-lamb';
+/** The song, and which form factors: `SEQ_SONG=song.folk.twinkle.rh SEQ_FACTORS=portrait,landscape`. */
+const SONG = process.env.SEQ_SONG ?? 'song.folk.mary-had-a-little-lamb';
+const FACTORS = (process.env.SEQ_FACTORS ?? '').split(',').filter((s) => s.length > 0);
+/** Mary's frames sit beside the tour's own score scenes; another song's carry its name. */
+const PREFIX = SONG === 'song.folk.mary-had-a-little-lamb' ? '22' : SONG.replace(/^song\.[a-z]+\./, '');
 /** More steps than any song in the bundle; a run that never ends stops here. */
 const MAX_STEPS = 400;
 /** How long the score may take to move on after a step's notes are played. */
@@ -37,7 +41,7 @@ const SLIDE_FROM_BAR = 2;
 /** Steps may differ by this much in scale and still count as one size (1 %). */
 const SCALE_TOLERANCE = 0.01;
 
-type Run = { step: number; expected: number[] } | null;
+type Run = { step: number; expected: number[]; bar: number; lastBar: number; paused: boolean; engineMode: string; input: string } | null;
 type Hooked = Window & { __pianopath?: { scoreRun?: () => Run; scoreFit?: () => unknown } };
 
 interface Probe {
@@ -179,7 +183,7 @@ function cursorFraction(p: Probe): number | null {
   return (p.band.left + p.band.width / 2 - p.stage.left) / p.stage.width;
 }
 
-for (const { orientation, size } of FORM_FACTORS) {
+for (const { orientation, size } of FORM_FACTORS.filter((f) => FACTORS.length === 0 || FACTORS.includes(f.orientation))) {
   test.describe(orientation, () => {
     test.use({ viewport: size });
     test.describe.configure({ timeout: 600_000 });
@@ -219,13 +223,18 @@ for (const { orientation, size } of FORM_FACTORS) {
           lastBar = p.cursorBar;
           // Printed numbers: the index is from nought.
           await frame(
-            `22-bar${String(p.cursorBar + 1).padStart(2, '0')}`,
+            `${PREFIX}-bar${String(p.cursorBar + 1).padStart(2, '0')}`,
             `Bar ${String(p.cursorBar + 1)}, first note`,
             'Same size as every bar before it; the bar after it already on the screen.',
           );
         }
         const moved = await playStep(page, midi, run);
         steps.push({ step: run.step, bar: p.cursorBar, moved, probe: p });
+        // Before and after: the first input, and one in the middle.
+        if (i === 0) await frame(`${PREFIX}-after-first`, 'After the first note', 'What the first note changed.');
+        else if (p.cursorBar === Math.floor(run.lastBar / 2) && lastBar === p.cursorBar && steps.filter((s) => s.bar === p.cursorBar).length === 1) {
+          await frame(`${PREFIX}-after-mid`, 'After a note mid-piece', 'What one note in the middle changed.');
+        }
         if (!moved) break;
       }
       const ended = await runNow(page);
@@ -236,14 +245,14 @@ for (const { orientation, size } of FORM_FACTORS) {
       await summary.evaluate((el) => {
         (el as HTMLElement).style.visibility = 'hidden';
       });
-      await frame('22z-finished', 'After the last note', 'The run has ended; the staff is still the size it was.');
+      await frame(`${PREFIX}z-finished`, 'After the last note', 'The run has ended; the staff is still the size it was.');
       const after = await probe(page);
 
       const dir = join(TOUR_DIR, 'sequence', orientation);
       mkdirSync(dir, { recursive: true });
       // One log per attempt, so a retry that passes does not overwrite the
       // evidence of the attempt that did not.
-      const logName = testInfo.retry > 0 ? `log-retry${String(testInfo.retry)}.json` : 'log.json';
+      const logName = `${PREFIX}-log${testInfo.retry > 0 ? `-retry${String(testInfo.retry)}` : ''}.json`;
       writeFileSync(join(dir, logName), JSON.stringify({ steps, after }, null, 2));
       saveLedger();
       writeContactSheet();

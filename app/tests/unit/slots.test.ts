@@ -91,9 +91,10 @@ describe('a five-bar piece at two bars per window', () => {
       [r(2, 2), r(1, 1)],
       [r(2, 2), r(3, 3)],
       [r(4, 4), r(3, 3)],
-      // The last bar has nothing after it, so the other slot goes blank rather
-      // than showing bars that have been played (A1).
-      [r(4, 4), null],
+      // The last bar has nothing after it, so the other slot keeps the bar
+      // just played rather than going blank — half the screen black at the
+      // end of every song was what the pictures showed.
+      [r(4, 4), r(3, 3)],
     ]);
   });
 
@@ -131,8 +132,8 @@ describe('four bars per window', () => {
       [r(0, 1), r(2, 3)],
       [r(4, 5), r(2, 3)],
       [r(4, 5), r(2, 3)],
-      [r(4, 5), null],
-      [r(4, 5), null],
+      [r(4, 5), r(2, 3)],
+      [r(4, 5), r(2, 3)],
     ]);
   });
 });
@@ -162,7 +163,9 @@ describe('what comes next, when the piece repeats', () => {
     expect(nextRangeAfter(all, 2, r(0, 0), 2, 3)).toEqual(r(2, 2));
 
     expect(seen[2]?.ranges).toEqual([r(0, 0), r(2, 2)]);
-    expect(seen[3]?.ranges).toEqual([null, r(2, 2)]);
+    // At the second ending nothing follows; the bar just played — bar 0 on
+    // its second pass, not the first ending printed between — stays above.
+    expect(seen[3]?.ranges).toEqual([r(0, 0), r(2, 2)]);
   });
 });
 

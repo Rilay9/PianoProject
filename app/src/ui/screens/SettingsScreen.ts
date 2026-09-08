@@ -177,7 +177,7 @@ export function SettingsScreen(router: Router): HTMLElement {
     field('Landscape lock on the Score screen', toggleControl('set-landscape', s.landscapeLock, (v) => set({ landscapeLock: v }))),
     field('Zoom', numberControl('set-zoom', s.zoom, (v) => set({ zoom: v }), { min: 0.5, max: 2.5, step: 0.1 })),
     field('Show fingering', toggleControl('set-fingering', s.showFingering, (v) => set({ showFingering: v }))),
-    field('Note names in note heads', toggleControl('set-notenames', s.showNoteNames, (v) => set({ showNoteNames: v }))),
+    field('Name the note I am waiting for', toggleControl('set-notenames', s.showNoteNames, (v) => set({ showNoteNames: v }))),
     field('Show chord symbols', toggleControl('set-chords', s.showChordSymbols, (v) => set({ showChordSymbols: v }))),
     field(
       'Keys under the score',

@@ -205,6 +205,23 @@ def collapse_to_two(parts: list[stream.Part], notes: list[str]) -> list[stream.P
     return [treble, bass]
 
 
+def drop_silent_staves(parts: list[stream.Part], notes: list[str]) -> list[stream.Part]:
+    """Leaves out a staff that has nothing to play.
+
+    Fourteen of the authored songs are one hand's tune over a bass staff of
+    whole-bar rests, so that the page looked like a piano piece. On the phone
+    that staff took half of every window for nothing: the tune was engraved at
+    half the size it could have been, and the fit paid for a stave nobody was
+    reading. The rests are the source's; the app has no use for them.
+    """
+    sounding = [part for part in parts if any(True for _ in part.recurse().notes)]
+    if sounding and len(sounding) < len(parts):
+        dropped = len(parts) - len(sounding)
+        notes.append(f"dropped {dropped} silent staff(ves) with only rests")
+        return sounding
+    return parts
+
+
 def to_part_staff(part: stream.Part, staff_clef: clef.Clef | None) -> stream.PartStaff:
     """Re-homes a Part's elements into a PartStaff, keeping their offsets."""
     staff = stream.PartStaff()
@@ -319,6 +336,7 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
 
     parts = collapse_to_two(parts, notes)
     parts = order_as_grand_staff(parts)
+    parts = drop_silent_staves(parts, notes)
 
     if len(parts) == 1:
         notes.append("source had a single staff; kept as one")

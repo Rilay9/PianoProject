@@ -173,7 +173,10 @@ export class PracticeEngine {
     this.pausedTotalMs = 0;
     this.finishedAtMs = null;
     this.loopsCompleted = 0;
-    this.step = this.mode === 'wait' ? (nextPlayableStep(this.session.steps, start, this.session.lastStep) ?? start) : start;
+    this.step =
+      this.mode === 'wait' || this.mode === 'free'
+        ? (nextPlayableStep(this.session.steps, start, this.session.lastStep) ?? start)
+        : start;
     this.resetRunTotals();
     this.openSlots.clear();
     this.nextSlotToOpen = this.step;
@@ -264,7 +267,7 @@ export class PracticeEngine {
     if (confidence < this.session.options.minConfidence) return;
     if (this.mode === 'listen') return;
     if (this.mode === 'free') {
-      this.recorded.push({ midi: input.midi, velocity: input.velocity, tMs: input.tMs, stepIndex: null, ok: true });
+      this.feedFree(input.midi);
       return;
     }
     if (this.mode === 'wait') this.feedWait(input.midi, input.velocity, input.tMs, confidence);
@@ -333,6 +336,34 @@ export class PracticeEngine {
       this.progress.strikeTimes.length = 0;
       this.progress.retries += 1;
     }
+  }
+
+  /**
+   * Free play: the page turns, nothing is marked (`08` §7.4, decided by the
+   * owner 2026-09-08).
+   *
+   * The step advances when the notes under the cursor have been played, by
+   * the matching Wait uses; a note that is not one of them does nothing — not
+   * wrong, not a reset, not recorded. It must not advance on a note merely
+   * near the expected one, or the page runs away from an improviser; when in
+   * doubt the page stays put, which is a page you can still read.
+   */
+  private feedFree(midi: number): void {
+    const current = this.session.steps[this.step];
+    if (!current || !current.expected.includes(midi)) return;
+    this.progress.satisfied.add(midi);
+    for (const wanted of current.expected) {
+      if (!this.progress.satisfied.has(wanted)) return;
+    }
+    const from = this.step;
+    const next = this.nextWaitStep(from);
+    this.progress = freshProgress();
+    if (next === null) {
+      this.completeLap(this.clock.now());
+      return;
+    }
+    this.step = next;
+    this.emit({ kind: 'stepAdvanced', from, to: next, tMs: this.clock.now() });
   }
 
   private maybeAdvanceWait(tMs: number): void {
@@ -618,7 +649,7 @@ export class PracticeEngine {
     this.progress = freshProgress();
     this.earlyBuffer = new Set();
     this.openSlots.clear();
-    if (this.mode === 'wait') {
+    if (this.mode === 'wait' || this.mode === 'free') {
       const start = nextPlayableStep(this.session.steps, this.session.firstStep, this.session.lastStep);
       this.step = start ?? this.session.firstStep;
       // Said, so the cursor goes back with the step. Without this the screen

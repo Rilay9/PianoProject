@@ -1139,13 +1139,17 @@ input[type='checkbox'] {
 
 /* The beat dot: how a player checks the tempo without hearing the click. */
 .score-beat {
-  flex: none;
+  /* In the stage's top-left corner, every form factor (`08` §5.3). */
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 4;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: var(--text-muted);
   opacity: 0.35;
-  align-self: center;
+  pointer-events: none;
 }
 
 .score-beat[hidden] {
@@ -1237,10 +1241,27 @@ input[type='checkbox'] {
 
 /* Hand focus dims the other hand to 35 % (docs §5). Driven by data-hand on the
    note groups, which the model knows exactly — including cross-staff notes,
-   where the printed staff would give the wrong answer. */
+   where the printed staff would give the wrong answer. A loop dims the bars
+   outside it the same way (`08` §11.18). */
 .score-view[data-hands='R'] .score-note[data-hand='L'],
-.score-view[data-hands='L'] .score-note[data-hand='R'] {
+.score-view[data-hands='L'] .score-note[data-hand='R'],
+.score-view .score-note.is-outside-loop {
   opacity: 0.35;
+}
+
+/* Free play draws no band (`08` §7.4). */
+.score-view[data-cursor='off'] .score-cursor {
+  display: none;
+}
+
+/* Where you are in the piece: `bar 3 / 48`, beside the title, and mirrored
+   into the bar's left end sideways. */
+.score-head__where,
+.score-bar__where {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------------------------------------------------------------------------

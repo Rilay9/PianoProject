@@ -110,6 +110,45 @@ And the tablet: a screen at least 600 px tall has the two slots sideways as well
 system to a 900 px height drew Suo Gân with note heads the size of a thumb, and the tour had
 photographed it. `TWO_SYSTEMS_MIN_PX`.
 
+## What the walks found, the same evening
+
+Then the owner: "there are way better tests you could do to fix half the state machine stuff
+without me doing visual inspection." Three were built (`docs/08-test-map.md`): the session's
+transitions with a fake renderer, a seeded random walk over the renderer, and a seeded random
+walk over the score screen with the spoofed piano, each checking invariants after every event.
+In their first hour:
+
+- **The engraver handed out dead elements.** OSMD keeps the graphical notes of every measure an
+  instance has ever drawn, each still pointing at the `<g>` of the drawing it was in. Once one
+  slot drew a bar the other had drawn before, the merged note map held a detached node for it:
+  the band went to the page's origin and the colour to a node nobody could see. Any seek, any
+  backward move, any turn of the phone. Only connected elements are handed out now.
+- **A slot was engraved while `display: none`.** Blanked at the end of the piece and drawn
+  again — a lap, `Again`, a step back — it laid out into a width of nought. Shown before it is
+  engraved.
+- **Turning the phone drew nothing.** The plan was reset and only a step draws, so the old
+  arrangement sat squeezed in the new stage, band and all, until the next note; in Wait mode,
+  indefinitely. The resize now redraws when the arrangement changes.
+- **The warning mark outlived a stop.** The frame that would have cleared it was the one the
+  stop cancelled.
+- **A Wait run with nothing to wait for.** `L` on a right-hand song sat on its first step for
+  ever. The screen now says so and does not start.
+
+And the owner's simpler request — Twinkle, phone both ways up, before and after the first, a
+middle and the last input — showed three more: the silent bass staff of rests that fourteen
+authored one-hand songs carry took half of every window (dropped in the pipeline now); sideways
+the control bar sat over the lower staff for the first three seconds of every run (0.7 s at a
+run's start now); and the end of every song left the top half of the screen black (the other
+slot keeps the bars just played).
+
+And one more from the Twinkle pictures' numbers, sideways: the sheet shrank 6 % at bar 10. The
+engraver had set the fingering over one high note nine units higher on that chunk's page than
+on the others, the drawn group's box grew by that gap of nothing, and the "smaller, never
+larger" rule honoured it. Two changes: the stave is anchored on its lines, from the engraver's
+model, so a fingering set higher cannot move it; and a run keeps its scale while the fit would
+shrink it by less than a tenth — that ink runs into the margin — and shrinks only for more,
+where a note clipped off the stage would be the worse fault.
+
 ## The sequence plays the whole song
 
 `sequence.spec.ts` now asks the app at every step what it is waiting for and plays exactly

@@ -1,8 +1,11 @@
 # 08 — What the score screen draws, and when
 
 **Status:** specification. Written 2026-09-08 against the code at `7f7538f`, the decision records
-for P21b–P21e, and `04` §5. Where this document and the code disagree, **this document is the
-intent** and one of the two is a bug — that is what it is for.
+for P21b–P21e, and `04` §5; revised the same evening by the reviewer after the random walks and
+the Twinkle pictures (the width axis, the overlays' states off a run, the beat dot sideways, the
+rules the code had acquired since). Where this document and the code disagree, **this document
+is the intent** and one of the two is a bug — that is what it is for. §11 lists where the code is
+known to differ, and what to build.
 
 ---
 
@@ -111,6 +114,10 @@ a cell and find it decided.
 | Input | `midi` · `mic` · `keys` · `none` |
 | Keys view | `strip` · `ribbon` · `off` |
 | Loop | `none` · `bars` · `section` |
+| Bars per window | 1 … 8 (default 2; a tablet defaults to 4) |
+| Size | the owner's multiplier on the drawn scale, 1.0 = as large as fits |
+| Decorations | fingering · chord symbols · note names, each on or off |
+| Side panel | `none` · `lesson` (tablet: the lesson text beside the stage takes a third of the width) |
 | Theme | `light` · `dark` |
 | Motion | `full` · `reduced` |
 | Special | `blind` · `performance` · `sightReading` |
@@ -128,6 +135,9 @@ Most cells are independent. These interact, and each has been got wrong before:
 | Loop × run-end | §8.2 — a lap is neither a stop nor a finish |
 | Blind × everything | §3.4.4 — hides, never skips |
 | Overlay mode × mode select | §7.1 — a demonstration never moves it |
+| Bars per window × stage width | §3.2 — a window wider than the stage is fitted by width, and the stave stops filling the height |
+| Hands × the piece | §8.2 — a hand with no notes has nothing to judge |
+| Loop × the next bar | §4.1 — "next" is the next *step*, so a loop's last bar is followed on the sheet by the printed next bar, not the loop's first (§11.6) |
 
 ### 2.3 Sizes this must be correct at
 
@@ -197,6 +207,20 @@ height of whatever happens to be drawn above it. The ink box is still what the *
 uses, because OSMD lays a window out on a page the full width of the container and inks only
 part of it.
 
+**Width is the other limit, upright.** The drawn scale is the smaller of the height fit and the
+width fit of the widest window measured. Two bars of a dense piece, or two bars of anything on a
+tablet upright with the lesson panel taking a third of the width, are wider than they are tall:
+the width decides, and the stave sits small in the upper part of its slot with air under it.
+That is correct as far as it goes — nothing may run off the right edge upright — but it is the
+wrong number of bars for the space: **the intent is the P21d tablet rule, still open (§11.15):
+bars per window chosen so that the window fills the height without exceeding the width.** Until
+it is built, the owner's bars-per-window setting is the lever.
+
+**Content the file does not carry.** A staff with nothing to play — the bass staff of whole-bar
+rests under a one-hand tune, which fourteen authored songs had — is removed by the content
+pipeline, so a right-hand piece is one staff and the fit gives it the whole slot. A staff that
+sounds is never dropped, however sparse.
+
 Air: **6 px** each side and nothing else. OSMD's page margins are zero; the metronome mark is
 not drawn here because the bar says the bpm.
 
@@ -204,15 +228,17 @@ not drawn here because the bar says the bpm.
 
 | Event | May the scale change? |
 |---|---|
-| A new window is drawn | **No.** This is the whole rule. |
+| A new window is drawn | **No.** This is the whole rule. A window whose ink is up to a tenth taller than the fit keeps the size and lets that ink run into the 6 px margin — a fingering the engraver set higher over one high note, a rare ledger line. Only ink taller than that shrinks the sheet, once, because a note clipped off the stage is the worse fault. |
 | The cursor crosses into the other slot | **No.** |
 | The end of the piece is reached | **No.** The other slot fills with the bars behind, at the same size. |
 | A loop lap returns to the start | **No.** |
+| The run is paused, resumed, or a note is played wrong | **No.** |
 | The probe's measurement arrives | Yes — **but not during a run**. |
-| The owner presses Size | Yes, at once. |
+| The owner presses Size | Yes, at once, mid-run included; the run re-freezes at the new size. |
 | The stage resizes by more than a few px | Yes. |
-| Rotation | Yes; the frozen scale is released. |
-| `barsPerWindow`, `layout`, fingering or chord symbols change | Yes. |
+| Rotation | Yes; the frozen scale is released and the run continues at the new one. |
+| The summary sheet opens | Yes — the keys view leaves with the run, the stage grows, and the run is over. |
+| `barsPerWindow`, `layout`, fingering or chord symbols change | Yes (and a run restarts, §8.3). |
 | A different piece | Yes. |
 
 **Freezing.** Starting a run freezes the scale, after a short wait for the stage to settle into
@@ -228,6 +254,8 @@ at the next fit *after* the run — a measurement arriving late is the size chan
 | staves, notes, rests, clefs, key and time signatures | title, subtitle, composer, lyricist, credits, part names |
 | fingerings, when `showFingering` | the metronome mark (the bar says the bpm) |
 | chord symbols, when `showChordSymbols` | page numbers, page margins |
+| bar numbers, as printed, from 1 (0 only for a pickup) | a staff with nothing to play (removed by the pipeline) |
+| | lyrics — **decided: not on this screen** (§11.4); the words are for singing, and this screen is for the hands |
 
 **Open:** lyrics are not among the suppressed, so OSMD draws them. On a two-bar window of a
 song that is a second row of text competing with the notes (§11.4).
@@ -299,8 +327,12 @@ the bar being played.
 
 - Slides **left only, by bar, at the barline**. A sheet that moves under a note being read is
   worse than one that jumps once a bar.
-- The cursor is held between **25 % and 45 %** of the stage width, targeting a third.
-- Never slides past the start: bar 1 sits where it was engraved.
+- **At the first note of each bar** the cursor is between **25 % and 45 %** of the stage width,
+  targeting a third; within the bar the cursor walks right over a still sheet and may reach
+  two-thirds before the next barline brings it back.
+- Never slides past the start: bar 1 sits where it was engraved. Never slides past the end
+  either: once the sheet's last bar has reached the right edge the sheet stops, and the cursor
+  walks the last bars to the right — there is nothing left to slide towards.
 - The next chunk is pre-rendered **in the same shape**, so the same bars sit at the same x on
   both sheets and the swap is invisible.
 - Width is deliberately **not** a fit constraint here: the read-ahead bars run off the right
@@ -319,6 +351,17 @@ suspends it for **5 s**. Under reduced motion the scroll is immediate rather tha
 | **Where** | over the current step's notes, spanning **the stave the note is on** — not the stage. A full-height stripe reads as a rendering fault and crosses the title, the chord symbols and, sideways, the bar |
 | **When it changes** | follows every refit; a band left at its old position after a rescale points at the wrong note |
 | **If it cannot be known** | a rest or a tie continuation borrows the nearest step's position — correct for "you are here" |
+
+**Off a run:**
+
+| Run state | The band |
+|---|---|
+| idle, before the first run | on the first step, so the eye knows where the piece begins |
+| counting in | on the first step from the first click |
+| paused | stays where it was; nothing moves until ▶ |
+| stopped by a restart | on the new run's first step, the moment it starts |
+| finished | stays on the last step under the summary sheet, until `Again` or `Done` |
+| Free | none (§7.4) |
 
 **Exactly one cursor band exists in the document at any moment.** Two is a leaked renderer
 (§8.4), not a drawing bug.
@@ -375,9 +418,12 @@ The strip's `next` key follows the same rule.
   note before the bar starts. Tempo and Listen only; nothing at `countInBars: 0`.
   **The count comes from the time signature at the bar the run starts from**, not the piece's
   first — a run beginning at a loop in a different meter counts the wrong bar (§11.2).
-- **The beat dot** — in the header, pulsing each beat, brighter on beat 1. How a player checks
-  the tempo without hearing the click, which next to a piano is most of the time. Tempo and
-  Listen only; suppressed under reduced motion.
+- **The beat dot** — pulsing each beat, brighter on beat 1. How a player checks the tempo
+  without hearing the click, which next to a piano is most of the time. Tempo and Listen only;
+  suppressed under reduced motion. **It sits in the stage's top-left corner, in every form
+  factor**, over the notation's margin: the header is not drawn sideways and the bar hides
+  itself during a run, so neither is a place for the one thing that must be visible while the
+  clock runs. (Today it is in the header, and sideways there is no dot at all — §11.12.)
 
 Both are independent of whether the **metronome** is audible: the dot follows the mode's clock,
 which is the point of having it.
@@ -413,7 +459,9 @@ Stats, hot-spot bars, a pass/master badge, and `Again · Slower (−10 %) · Fas
 the weak bars · Done`. **With no judging input it asks rather than shows** — `How did it go?`
 (Rough / OK / Clean) — because a number nobody measured is a number nobody earned.
 
-Opened by a **finish**, never by a stop (§8.2).
+Opened by a **finish**, never by a stop (§8.2) — and not by the end of a Listen run, whether
+`Hear it` or the mode chosen from the select: the app played it, there is nothing to report,
+and the status line says `Played to the end.`
 
 ### 6.3 What is the app saying?
 
@@ -443,13 +491,17 @@ one row. It has broken twice.
 word and the tempo label drops the percentage. `Start again` is in `⋯` — the test for the bar is
 *do you need this while your hands are on the keys?*
 
-**Auto-hide:** hides 3 s into a run **only where it would otherwise take room from the music**.
-Upright, where the sheet does not reach the bottom of the stage, it stays. During a run the
-stage takes the bar's row; the bar overlays the bottom when asked back, which is acceptable at
-the moment you asked for it.
+**Auto-hide:** hides **0.7 s into a run**, and 3 s after a tap brings it back, **only where it
+would otherwise take room from the music**. Upright, where the sheet does not reach the bottom
+of the stage, it stays. During a run the stage takes the bar's row; the bar overlays the bottom
+when asked back, which is acceptable at the moment you asked for it — and three seconds of it
+over the lower staff at the start of every run sideways was not, which is why the first hide is
+quick.
 
 `Hear it` is a Listen run that **does not move the mode select**: what it interrupts is restored
-when it ends, and `▶` during one ends it and starts the run you chose.
+when it ends, and `▶` during one ends it and starts the run you chose. **`Hear it` during a run
+ends the run and begins the demonstration** — from the loop if one is set, else from the top —
+and a second tap ends that. (Today the first tap only stops the run — §11.13.)
 
 ### 7.2 Rarely — the `⋯` sheet
 
@@ -464,7 +516,7 @@ the end of hides its last rows from someone who does not know they are there.
 | Single tap on the stage | toggles the control bar | built |
 | Single tap, SCROLL, not running | advance (right half) / back (left half) | built |
 | Double-tap a bar | sets loop start, then loop end | built |
-| Long-press a bar, 400 ms | plays that bar once, both hands, nothing judged | built |
+| Long-press a bar, 400 ms | plays that bar once, both hands, nothing judged — **not during a run**: the engine keeps no state to resume a run from, so a press mid-run is ignored; stop first | built |
 | Drag over 12 px | is a scroll; cancels a pending long-press | built |
 | Pinch | zoom | **not built** (`04` §5 says it exists) |
 | Two-finger tap | toggle hands focus | **not built** (`04` §5 says it exists) |
@@ -540,6 +592,16 @@ Bands are placed **after** the fit, never before.
 | **A run starts** | freeze the scale (after the stage settles) → clear colours → count-in → status says which hand is played, once → bar arms auto-hide → wake lock |
 | **A seek or restart** | both slots drawn fresh, cursor to slot 0, so the reading order starts at the top rather than wherever the last run left it |
 
+**Paused** — in every mode: the clock stops, notes played are ignored, the band and the colours
+stay where they are, the bar shows ▶ and stays visible. Resuming continues from the same step
+with the same judgements; in Tempo and Listen the clock resumes from where it stopped.
+
+**Nothing to judge.** A run in a mode with expectations (Wait, Tempo) whose chosen hand has no
+notes in the piece is **not started**: the status line says so (`Nothing for the left hand in
+this piece — choose R or Both`) and nothing changes. A Wait run would otherwise sit on its first
+step for ever; a Tempo run would play the clock through an empty scoresheet. Listen and Free are
+unaffected. (Today only Wait refuses — §11.14.)
+
 **Stop is not finish.** Conflating them is what recorded half-runs as failures.
 
 | | Stop | Finish |
@@ -555,8 +617,11 @@ clear, no summary.
 ### 8.3 The device changes
 
 - **Rotation** — release the frozen scale, re-derive the arrangement, discard both slots, redraw
-  from the current step; the run continues. Mid-count-in the count continues: the clock is not
-  the layout's business.
+  from the current step **before the next frame**, band placed on the redrawn note; the run
+  continues and re-freezes at the new size. The keys view changes height with it (108 px
+  upright, 56 sideways) and the bar's row comes and goes; the refit follows both. Mid-count-in
+  the count continues: the clock is not the layout's business. Paused, the same — the pause is
+  the run's, the layout does not know about it.
 - **Resize** — the same, above a few px of tolerance. Below it, nothing: jitter is not a resize.
 - **The page is hidden** — Tempo and Listen **pause** (a clock left running scores a performance
   that did not happen); on return the status says how long you were away. **Wait is untouched** —
@@ -641,6 +706,18 @@ Numbered for citation. Each is falsifiable; most are already testable.
 27. Input-to-colour under **30 ms**.
 28. The longest score's first window under **60 s**.
 
+**Between frames** (found by the random walks, `docs/08-test-map.md`)
+29. Every element the renderer hands out — for the band, for colouring — is in the document. The
+    engraver keeps the notes of every measure it has ever drawn; only the connected ones count.
+30. A slot is shown before it is engraved; nothing is ever laid out into a hidden box.
+31. The slot the cursor left is re-drawn on idle time and no later than 100 ms after the crossing;
+    the crossing itself is a class toggle.
+32. A stop clears the read-ahead line and the `next` key; nothing of a run outlives it but the
+    colours and the band.
+33. The beat dot is visible in every form factor while a clock-driven run is on.
+34. The control bar's controls are reachable after any sequence of taps: a hidden bar comes back
+    on one tap of the stage, always.
+
 ---
 
 ## 10. Edge cases, by branch
@@ -662,6 +739,9 @@ Numbered for citation. Each is falsifiable; most are already testable.
 | Notes on both staves in one step | The band spans the stave of the *first* drawn note, not both |
 | One staff, not a grand staff | Slots hold one staff each; nothing assumes two |
 | No notes at all | Not READY — a terminal state with a reason |
+| A bar wider than the stage upright (a dense bar at one bar per slot) | Fitted by width; the stave is small and stays small for the run — never clipped on the right |
+| A system far taller than the rest (low notes two ledger lines down, for two bars) | Up to a tenth taller than the fit: the same size, ink into the margin. Taller: the sheet shrinks once when it arrives and stays smaller |
+| The chosen hand has no notes | The run is refused with a sentence (§8.2) |
 
 **Branches 2–3 — position and read-ahead**
 
@@ -673,6 +753,9 @@ Numbered for citation. Each is falsifiable; most are already testable.
 | A loop set backwards | Normalised to a range, not rejected |
 | The same printed bar twice in a loop | The loop is in *steps*, so the two passes are distinct |
 | Seeking backwards | Both slots redrawn, cursor to slot 0 |
+| Any backward move, seek or rotation after the same bar has been drawn in both slots | The band and the colours go to the drawn note, never to the engraver's memory of a previous drawing (invariant 29) |
+| Rotating while paused | Redrawn like any rotation; still paused |
+| The last chunk sideways | The sheet stops at its end; the cursor walks right past a third |
 | Free, playing something not in the piece | Nothing moves, nothing marked |
 | Free, playing far ahead | Advances a step at a time as each is matched; never skips to where you are |
 
@@ -682,7 +765,7 @@ Numbered for citation. Each is falsifiable; most are already testable.
 |---|---|
 | `countInBars: 0` | No count-in overlay; the first note is the first beat |
 | `Hear it` pressed twice quickly | The second stops; no second run starts |
-| Long-press during a run | The run pauses for the bar and resumes after |
+| Long-press during a run | Ignored; the run continues (§7.3) |
 | `Hear it` or a bar preview ending | The window returns as a seek; the mode select has not moved |
 | Rotating with the summary open | The sheet stays open and re-lays out; the run does not restart |
 | The stage measured at zero height | No fit attempted; the previous scale stands |
@@ -691,6 +774,10 @@ Numbered for citation. Each is falsifiable; most are already testable.
 | Input `none` | The clock drives; nothing is judged wrong for being absent |
 | Leaving mid-run | A stop, not a finish; wake lock released; idle re-draws cancelled |
 | The probe never finishes | The stand-in scale holds, never released upward |
+| Size pressed mid-run | Applies at once; the run re-freezes at the new size |
+| The keys view changed mid-run | Applies at once; the stage's height change is a resize |
+| Tapping the stage while the bar is hidden | The bar returns over the music for 3 s; the sheet does not move |
+| `L` chosen on a right-hand piece, then ▶ | Refused with a sentence; `R` or `Both` starts it |
 
 ---
 
@@ -711,15 +798,34 @@ Numbered for citation. Each is falsifiable; most are already testable.
    from the stage a looped run is a cursor that jumps backwards with nothing to explain it.
 7. **Pinch and two-finger tap** are documented in `04` §5 and not built. Build them or strike
    them: a documented gesture that does nothing is worse than an undocumented one.
-8. **Bar numbering from 0.** Authored songs number the first measure `0`, so the sheet prints `0`
-   on the first system. Only a pickup may be bar 0.
-9. **`ink-flush` in the audit** measures the whole sheet, which under CHUNK is wider than the
-   stage by design, and reports large negative insets on every sideways score scene. It should
-   measure the ink **clipped to the stage**.
+8. ~~Bar numbering from 0.~~ **Done** (P21e A4): the pipeline renumbers from 1 unless the first bar
+   is a pickup.
+9. ~~`ink-flush` in the audit measures the whole sheet.~~ **Done** (P21e C3): it measures the edge
+   the sheet stops at.
 10. **The first step in Free** — with no cursor, nothing says where the piece begins.
     **Recommend: a one-off "start here" mark, cleared by the first matched note.**
 11. **Chord symbols and stave placement.** §3.2 places on the stave, so a chord symbol may sit
     closer to the top edge in one window than another. Accepted: the staff is what is read.
+12. **The beat dot is in the header, which is not drawn sideways** (§5.3): a Tempo run held
+    sideways has no beat indicator. **Build: the dot in the stage's top-left corner, every form
+    factor; the header's copy goes.**
+13. **`Hear it` during a run only stops the run** (§7.1). **Build: it ends the run and starts the
+    demonstration.**
+14. **Only Wait refuses a hand with no notes** (§8.2). **Build: Tempo refuses too.**
+15. **The tablet rule** (§3.2, P21d): bars per window from the space rather than a fixed setting.
+    Upright on a tablet with the lesson panel, two bars a slot are width-limited and the stave sits
+    small. **Build when a tablet exists; until then the setting.**
+16. **Lyrics** (§3.4.1): **decided, not drawn on this screen.** Build: the engraver's lyrics off
+    for the score screen's views; the PDF viewer is unaffected.
+17. **Free play** (§7.4) is specified to change and has not: build the matching-advance, remove
+    the band, the keys' marks and the record in Free, and the one-off start mark (§11.10).
+18. **A running loop is invisible on the stage** (§11.6). **Decided: the bars outside the loop are
+    dimmed the way the other hand is dimmed under a hand focus** — the same mechanism, the same
+    look, and the loop reads from the sheet without a word.
+19. **`showNoteNames`** (§11.5): **decided: the setting is relabelled "Name the note I am waiting
+    for"**, which is what it does. Names in note heads are not built and not planned.
+20. **Pinch and two-finger tap** (§11.7): **decided: struck from `04` §5.** Size has buttons; hands
+    have buttons.
 
 ---
 
@@ -732,3 +838,77 @@ Numbered for citation. Each is falsifiable; most are already testable.
 5. §3.3 — the table of what may change the scale, against every write of a transform.
 6. §11 — the eleven known divergences, before hunting for new ones.
 7. §3.1, §8.3–§8.5, §10 — the states that only appear when something has gone wrong.
+
+---
+
+## 13. The walk: every leaf against the code (2026-09-08, evening)
+
+Each leaf of the tree, what the code does, and the verdict. **Done** means changed today to
+match; **later** is the list for the next builder. The random walks and the whole-song sequence
+(`docs/08-test-map.md`) are what keep the verdicts true. Written down so that none is skipped.
+
+| Leaf | The code | Verdict |
+|---|---|---|
+| §3.1 lifecycle terminals | `ScoreScreen` sets a status for unknown / PDF / no-notation / failed; Back is in the header upright and mirrored into the bar's left end sideways | matches |
+| §3.1 sight-reading regenerates per open, `Again` re-runs the loaded score | the `sightReading` path; attempts counted for the first-attempt rule | matches |
+| §3.2 probe on idle, 48-bar cap, upper quartile, held stand-in | `measurePiece` / `pieceInkOf` / `held` | matches |
+| §3.2 placement on the stave lines | was the `.staffline` group's top, which moves with the highest fingering | **done** — `staffLineBoxes` from the engraver's model |
+| §3.2 width fit upright | `scaleFor`: the smaller of the width and height fits | matches; the tablet rule is **later** (§11.15) |
+| §3.2 silent staff | the pipeline drops a staff of rests (`drop_silent_staves`) | **done** |
+| §3.3 one size per run | `frozen`; ink up to 10 % taller keeps the size | **done** — `FROZEN_OVERFLOW` |
+| §3.3 probe result mid-run | held until the next fit after the run | matches |
+| §3.3 Size mid-run | `setZoom` multiplies the drawn scale on top of the frozen one | matches |
+| §3.3 rotation releases the frozen scale and redraws | `updateReadAhead` clears `frozen`; `stageChanged` redraws | **done** |
+| §3.3 the summary opening refits | the strip hides with the sheet; the observer refits | matches |
+| §3.4.1 not drawn: title, credits, part names, metronome mark, lyrics | OSMD options; `drawLyrics: false` | **done** (lyrics) |
+| §3.4.2 dark ink everywhere | one CSS rule for every visible `OsmdView` | matches (`dark-ink.spec`) |
+| §3.4.3 hand focus dims, never hides | the `[data-hands]` opacity rule | matches |
+| §3.4.4 blind hides, never skips; the status says why | `score-stage--blind`, the status line | matches |
+| §4.1 arrangement by height | `updateReadAhead`: `(upright or innerHeight >= 600) and bars >= 2` | matches |
+| §4.1 SLOTS: cursor slot never re-drawn; vacated slot on idle within 100 ms; fade; playing-order next; the end shows the bars behind | `showStepInSlots`, `scheduleSettle`, `planSlots` + `rangeBehind` | **done** (idle settle, bars behind) |
+| §4.1 CHUNK: two behind, two ahead; slides by bar; a third at the first note; stops at the end | `slideRangeFor`, `slideToStep` | matches (the sequence asserts the first note of each bar) |
+| §4.1 SCROLL: 25 to 40 %, 5 s manual pause, reduced motion | `autoScrollTo`, `MANUAL_SCROLL_PAUSE_MS`; smooth scroll is `auto` under reduced motion now | **done** (reduced motion) |
+| §4.2 band on the stave the note is on; follows a refit; a rest borrows a neighbour | `placeBand`, `repositionBands` in `fitSlots` | **done** (follows a refit) |
+| §4.2 band off a run: idle on the first step; stays when paused or finished; the new run's first step on a restart | `showStep(0)` at load; nothing moves it on pause or finish; the `started` event on a restart | matches |
+| §4.3 keys: `next` applied before `expected`; 56 px sideways; the ribbon names the note; scrolls to the wanted note | `STATE_NAMES` order, `--strip-height: 56px`, `KeyRibbon`, `scrollToNote` | matches |
+| §4.4 where am I in the piece | nothing drew it | **done** — `bar 3 / 48` beside the title, mirrored sideways. **Later:** a pickup piece is off by one (index + 1, not the printed number) |
+| §5.2 the read-ahead line only in Tempo and Listen; refuses the fallback | `nextStepIndex`, `placeBand(exact)`; a line under the stave | **done** (the line; cleared on a stop) |
+| §5.3 the count-in counts the run's first bar; the beat dot Tempo and Listen only; reduced motion | the engine's `beatsPerBar` at `firstStep`; the screen's dots read it now; the dot on the stage in every form factor | **done** (the dots' meter, the dot on the stage) |
+| §6.1 colours by class; `uncertain` never red; clear per lap | `setNoteStates`; `judgements` cleared on a lap | matches |
+| §6.2 the summary by a finish only; asks with no judging input; the keys hidden | `onFinished`, `summary-selfreport`, CSS | **done** (a stop is not a finish; Listen ends with a status line) |
+| §6.3 the status never says "Playing" over a finished run | `showSummary` clears it | **done** |
+| §6.3 the waiting line only in Wait during a run; mirrored sideways | `drawWaitingFor`, `syncBarLeft` | matches |
+| §7.1 one row at every width; short modes below 400 px | CSS and `NARROW_BAR_PX`; `score.spec` widths | matches |
+| §7.1 auto-hide 0.7 s at a run's start, 3 s after a tap, only where it costs room | `showBar(CONTROL_BAR_START_HIDE_MS)`, `barCostsMusicRoom` | **done**; `score.screen.spec:75` still fails sideways — **open**, see below |
+| §7.1 `Hear it` during a run ends the run and demonstrates | `toggleHear` | **done** |
+| §7.2 the ⋯ sheet sideways in two columns without scrolling | CSS at `max-height: 520px` | matches by reading; **later:** a test that the sheet's `scrollHeight` fits at 360 px |
+| §7.3 tap toggles the bar; double-tap loops; long-press demonstrates; a drag cancels; the click after a press is swallowed | the stage handlers | matches; long-press during a run is ignored now — **done** |
+| §7.3 pinch, two-finger tap | never built | **done** — struck from `04` |
+| §7.4 the mode matrix | Free rebuilt: advances on the piece's notes, marks nothing, no summary; the start mark once | **done**; Listen: no summary — **done** |
+| §7.4 Performance: one pass, no restart | `performanceRun` | matches |
+| §8.1 no fit from inside a draw; bands after the fit | `fitToStage` schedules; `repositionBands` is last in `fitSlots` | matches |
+| §8.2 stop is not finish; a lap tells the cursor; paused ignores input; nothing to judge is refused | `stopping`, `completeLap` emits, the engine's `feed` guard, `startRun` refuses for Wait and Tempo | **done** |
+| §8.3 rotation redraws before the next frame; a hidden page pauses Tempo and Listen; re-engraving settings restart the run | `stageChanged`, `onVisibilityChange`, the setting handlers | **done** (rotation); the rest matches |
+| §8.4 disposal releases everything | `dispose()`: the observer, pre-render, fit, freeze, settle, measurement, three views, bands | matches |
+| §8.5 the current slot for a reader; glyph controls named; colour never the only channel; reduced motion | `aria-current` on the cursor slot; `aria-label`s; the marks on the keys; the motion queries | **done** (`aria-current`) |
+| §10 `barsPerWindow` larger than the piece | `windowFor` clamps | matches |
+| §10 a loop set backwards | normalised with min and max | matches |
+| §10 `Hear it` twice quickly | the second tap stops | matches |
+| §10 rotate with the summary open | the sheet is DOM over the stage; no run to restart | matches |
+| §10 the stage at zero height | `fitSlots` returns | matches |
+| §10 the mic fails | falls back to the clock with a sentence | matches |
+| §10 MIDI disconnected mid-run | nothing was said | **done** — one status line; the screen keys still feed the run |
+| §10 leaving mid-run | `dispose` then `stop` (not a finish); the wake lock released | matches |
+| §10 playing faster than the idle re-draw | a cold draw in place when neither slot holds the bar | matches |
+| §11.15 the tablet rule | not built | **later** |
+| §11.19 the note-names label | relabelled | **done** |
+
+**Measured, not guessed:** sideways in `score.screen.spec:75` the bar stayed because Hot Cross
+Buns' music stops 67 px above the stage's bottom — one size for the piece means a window
+shorter than the piece's tallest is drawn short of the stage — so the bar covered nothing and
+was right to stay. The test now checks the criterion the bar uses rather than assuming it.
+
+**Later, in one list:** the tablet rule (bars per window from the space); the bar count on a
+pickup piece; a test for the ⋯ sheet sideways; the 780-bar open budget, which flaps around 60 s
+on this laptop; walks for the keys under mic input, the lesson and drill hosts, the PDF viewer,
+and scroll layout (`docs/08-test-map.md`).

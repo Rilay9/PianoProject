@@ -139,7 +139,9 @@ test.describe('stopping, restarting and looping', () => {
     await page.locator('#score-play').click();
     await press(page, 64);
     await press(page, 62);
-    await page.locator('#score-hands-L').click();
+    // `both`, not `L`: this piece has no left hand, and a Wait run with
+    // nothing to wait for is refused rather than started.
+    await page.locator('#score-hands-both').click();
     await page.waitForTimeout(500);
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
     await expect(page.locator('#score-summary')).toBeHidden();

@@ -69,8 +69,8 @@ export function sameRange(a: MeasureRange | null, b: MeasureRange | null): boole
  * screen that the player is not about to play, which is worse than showing
  * nothing (P21c A5).
  *
- * `null` when nothing follows — the last bars of the piece. The caller blanks
- * the slot rather than leaving stale bars in it.
+ * `null` when nothing follows — the last bars of the piece; `planSlots` then
+ * shows the bars just played instead (see `rangeBehind`).
  */
 export function nextRangeAfter(
   steps: readonly ScoreStep[],
@@ -80,6 +80,32 @@ export function nextRangeAfter(
   sourceMeasureCount: number,
 ): MeasureRange | null {
   for (let i = Math.max(0, fromStepIndex); i < steps.length; i += 1) {
+    const step = steps[i];
+    if (!step) continue;
+    if (!inRange(range, step.sourceMeasureIndex)) {
+      return rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount);
+    }
+  }
+  return null;
+}
+
+/**
+ * The block of the bars played just before `range`, or `null` at the start.
+ *
+ * For the other slot when nothing follows: the last bars of a piece used to
+ * leave it blank, which on a phone is half the screen gone black at the end
+ * of every song, with the last bar alone at the bottom. The bars just played
+ * — in playing order, so at a second ending it is the bar before the ending,
+ * not the first ending printed above it — are what a page would show there.
+ */
+export function rangeBehind(
+  steps: readonly ScoreStep[],
+  fromStepIndex: number,
+  range: MeasureRange,
+  barsPerWindow: number,
+  sourceMeasureCount: number,
+): MeasureRange | null {
+  for (let i = Math.min(fromStepIndex, steps.length) - 1; i >= 0; i -= 1) {
     const step = steps[i];
     if (!step) continue;
     if (!inRange(range, step.sourceMeasureIndex)) {
@@ -131,8 +157,10 @@ export function planSlots(
   const bar = step ? step.sourceMeasureIndex : 0;
   const wanted = rangeAt(bar, barsPerWindow, sourceMeasureCount);
   const other: SlotIndex = current.cursor === 0 ? 1 : 0;
+  // What comes next, or — at the end — what has just been played.
   const next = (r: MeasureRange): MeasureRange | null =>
-    nextRangeAfter(steps, stepIndex, r, barsPerWindow, sourceMeasureCount);
+    nextRangeAfter(steps, stepIndex, r, barsPerWindow, sourceMeasureCount) ??
+    rangeBehind(steps, stepIndex, r, barsPerWindow, sourceMeasureCount);
 
   const held: [MeasureRange | null, MeasureRange | null] = [
     current.ranges[0],

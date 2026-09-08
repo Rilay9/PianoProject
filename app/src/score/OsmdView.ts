@@ -50,6 +50,8 @@ export interface OsmdViewOptions {
    * for it in the fit (P21e A2, P21d A6).
    */
   drawMetronomeMarks?: boolean;
+  /** Draw the words under the notes (default on). Off on the score screen: it is for the hands. */
+  drawLyrics?: boolean;
 }
 
 /**
@@ -112,6 +114,7 @@ export class OsmdView {
       drawPartNames: false,
       drawFingerings: options.drawFingerings ?? true,
       drawMetronomeMarks: options.drawMetronomeMarks ?? true,
+      drawLyrics: options.drawLyrics ?? true,
       followCursor: false,
     });
     applyPhoneEngraving(this.osmd, options);
@@ -241,6 +244,14 @@ export class OsmdView {
             for (const graphicalNote of voiceEntry.notes ?? []) {
               const element = svgElementOf(graphicalNote);
               if (!element) continue;
+              // Drawn *now*. The graphic sheet keeps the graphical notes of
+              // every measure this engraver has ever drawn, and each still
+              // points at the `<g>` of the drawing it was in — detached once
+              // the range moved on. Handing those out put the cursor band at
+              // the page's origin and the colour on a node nobody could see
+              // whenever one slot drew a bar the other had drawn before: any
+              // seek, any backward move, any turn of the phone.
+              if (!element.isConnected) continue;
               const key = printedKeyOf(graphicalNote, measureIndexes);
               if (key) map.set(key, element);
             }

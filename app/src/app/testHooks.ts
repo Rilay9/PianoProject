@@ -25,7 +25,15 @@ export interface TestHooks {
   /** What the score screen's fit is holding; set while a score is open. */
   scoreFit?: () => unknown;
   /** Where the running score is and what it is waiting for; null when no run is on. */
-  scoreRun?: () => { step: number; expected: number[] } | null;
+  scoreRun?: () => {
+    step: number;
+    expected: number[];
+    bar: number;
+    lastBar: number;
+    paused: boolean;
+    engineMode: string;
+    input: string;
+  } | null;
 }
 
 declare global {

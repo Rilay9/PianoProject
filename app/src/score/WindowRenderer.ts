@@ -100,6 +100,9 @@ const SLIDE_BEHIND_BARS = 2;
  */
 const SETTLE_TIMEOUT_MS = 100;
 
+/** A frozen run keeps its scale while the fit would shrink it by less than this. */
+const FROZEN_OVERFLOW = 0.9;
+
 /** Manual scrolling suspends auto-scroll for this long (docs §5). */
 export const MANUAL_SCROLL_PAUSE_MS = 5000;
 
@@ -120,6 +123,8 @@ export interface WindowRendererOptions {
    * every other window's, and the fit paid for that in every one of them.
    */
   drawMetronomeMarks?: boolean;
+  /** Whether the words are drawn under the notes (`08` §3.4.1: not on the score screen). */
+  drawLyrics?: boolean;
 }
 
 interface Buffer {
@@ -272,6 +277,8 @@ export class WindowRenderer {
   /** The stage height the sheet was last fitted to; -1 means never. */
   private fittedAtHeight = -1;
   private currentStep = -1;
+  /** The loop's bars, by source measure index; the rest are dimmed. */
+  private loopRange: { from: number; to: number } | null = null;
   /** The step the warning mark is on, so a refit can put it back. */
   private nextStep: number | null = null;
   /** The idle callback (or its timer) in which the slot the cursor left is re-drawn. */
@@ -389,8 +396,7 @@ export class WindowRenderer {
         // before the stage changed. Turning the keyboard strip off gives the
         // stage 72 px and the notation simply did not grow into them — the
         // sheet only caught up the next time something else asked for a fit.
-        this.updateReadAhead();
-        this.fitSlots();
+        this.stageChanged();
         // Then the engraving, which may want re-laying out at the new height.
         // `fitToStage` returns immediately when the height is the one it last
         // fitted, so an observation that changes nothing costs a comparison.
@@ -415,6 +421,7 @@ export class WindowRenderer {
         ...(options.drawMetronomeMarks === undefined
           ? {}
           : { drawMetronomeMarks: options.drawMetronomeMarks }),
+        ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
       });
       await view.load(options.musicXml);
       view.zoom = options.zoom ?? 1;
@@ -438,6 +445,7 @@ export class WindowRenderer {
       ...(options.drawMetronomeMarks === undefined
         ? {}
         : { drawMetronomeMarks: options.drawMetronomeMarks }),
+      ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
     });
     renderer.probeSource = options.musicXml;
     return renderer;
@@ -854,7 +862,7 @@ export class WindowRenderer {
    * means rotating the phone changes it through the `ResizeObserver` that is
    * already watching for the fit.
    */
-  private updateReadAhead(): void {
+  private updateReadAhead(): boolean {
     // The viewport, not the stage box. "Upright" is a fact about the phone,
     // and the stage is not always shaped like it: the dev renderer screen
     // gives its stage a fixed height inside a wide window, so reading the box
@@ -873,7 +881,7 @@ export class WindowRenderer {
     // `single`, so a stage that is sideways from the first step never wrote
     // the attribute at all and the stylesheet had nothing to match.
     this.el.dataset.readAhead = next;
-    if (next === this.readAhead) return;
+    if (next === this.readAhead) return false;
     this.readAhead = next;
     // Everything drawn belonged to the other arrangement — and so did the
     // scale a run froze. Rotating mid-run kept the upright scale as a ceiling
@@ -887,6 +895,7 @@ export class WindowRenderer {
       slot.elements = new Map();
       slot.wrapper.hidden = false;
     }
+    return true;
   }
 
   private blank(slot: Buffer): void {
@@ -994,6 +1003,41 @@ export class WindowRenderer {
   }
 
   /**
+   * Whether the band is drawn at all (`08` §7.4: not in Free play, where a
+   * band would be the app saying "play this now" in the one mode where the
+   * player decides).
+   */
+  setCursorVisible(visible: boolean): void {
+    this.el.dataset.cursor = visible ? 'on' : 'off';
+  }
+
+  /**
+   * The bars of a loop, by source measure index, or null for none.
+   *
+   * The bars outside it are dimmed the way the other hand is dimmed under a
+   * hand focus (`08` §11.18): a looped run used to be a cursor that jumped
+   * backwards with nothing on the sheet to say why.
+   */
+  setLoopRange(range: { from: number; to: number } | null): void {
+    const same =
+      (range === null && this.loopRange === null) ||
+      (range !== null && this.loopRange !== null && range.from === this.loopRange.from && range.to === this.loopRange.to);
+    if (same) return;
+    this.loopRange = range;
+    for (const buffer of this.buffers) this.applyLoopClass(buffer);
+  }
+
+  private applyLoopClass(buffer: Buffer): void {
+    const range = this.loopRange;
+    for (const [id, element] of buffer.elements) {
+      const note = this.notesById.get(id);
+      const outside =
+        range !== null && note !== undefined && (note.sourceMeasureIndex < range.from || note.sourceMeasureIndex > range.to);
+      element.classList.toggle('is-outside-loop', outside);
+    }
+  }
+
+  /**
    * Forces a full redraw of the window on screen and returns how long it took
    * in milliseconds.
    *
@@ -1065,6 +1109,7 @@ export class WindowRenderer {
         return {
           range: slot.range,
           ink: ink ? { w: Math.round(ink.width), h: Math.round(ink.height), y: Math.round(ink.y) } : null,
+          staffTop: staffTopOf(slot.view),
           pageWidth: slot.wrapper.style.width,
           transform: slot.wrapper.style.transform,
         };
@@ -1074,11 +1119,23 @@ export class WindowRenderer {
 
   /** Re-fits the current window; call on resize or orientation change. */
   refit(): void {
-    this.updateReadAhead();
-    this.fitSlots();
+    this.stageChanged();
     // The box changed, so the fit is stale by definition.
     this.fittedAtHeight = -1;
     this.fitToStage();
+  }
+
+  /**
+   * The stage's box changed: the screen's resize handler and the observer
+   * both land here. A new arrangement — the phone turned — has nothing drawn
+   * in it yet: the plan is reset and only a step draws. Without the redraw
+   * the old arrangement sat squeezed into the new stage, cursor band and all,
+   * until the next note was played; in Wait mode, indefinitely. Whichever of
+   * the two callers gets there first takes the transition.
+   */
+  private stageChanged(): void {
+    if (this.updateReadAhead() && this.currentStep >= 0) this.showStep(this.currentStep);
+    else this.fitSlots();
   }
 
   dispose(): void {
@@ -1157,10 +1214,14 @@ export class WindowRenderer {
     } else {
       buffer.wrapper.style.width = '';
     }
+    // Shown *before* it is engraved. A slot blanked at the end of the piece
+    // is `display: none`, and the engraver lays out into the width it can
+    // measure — nought — so a slot drawn again after a blank (a lap, `Again`,
+    // a step back) came out as a zero-width sheet that no fit would touch.
+    buffer.wrapper.hidden = false;
     buffer.view.setRange(range);
     buffer.view.render();
     buffer.range = range;
-    buffer.wrapper.hidden = false;
     this.annotate(buffer);
   }
 
@@ -1265,6 +1326,10 @@ export class WindowRenderer {
       slot.wrapper.classList.toggle('is-cursor', drawn && i === this.cursorSlot);
       slot.wrapper.dataset.slot = String(i);
       slot.wrapper.setAttribute('aria-hidden', drawn ? 'false' : 'true');
+      // Which of the two systems is being played, for a reader that cannot
+      // see the band (`08` §8.5).
+      if (drawn && i === this.cursorSlot) slot.wrapper.setAttribute('aria-current', 'true');
+      else slot.wrapper.removeAttribute('aria-current');
     });
   }
 
@@ -1288,6 +1353,7 @@ export class WindowRenderer {
     }
     buffer.elements = elements;
     this.drawVersion += 1;
+    this.applyLoopClass(buffer);
   }
 
   /**
@@ -1543,9 +1609,15 @@ export class WindowRenderer {
       ? byHeight
       : Math.min((available.width - FIT_MARGIN_PX) / width, byHeight);
     if (!Number.isFinite(fitted) || fitted <= 0) return null;
-    // During a run the size it started at, unless something taller has
-    // turned up — then smaller, never larger.
-    if (this.frozen && this.frozen.scale > 0) return Math.min(this.frozen.scale, fitted);
+    // During a run, the size it started at. A chunk a little taller than the
+    // piece's measure — a fingering the engraver set higher over one high
+    // note, a rare ledger line — keeps the size and lets that ink run into
+    // the margin, because a sheet that shrinks by 6 % at bar 10 is the size
+    // change the owner saw; only ink far taller than the stage has room for
+    // still shrinks it, since a note clipped off the bottom is worse.
+    if (this.frozen && this.frozen.scale > 0) {
+      return fitted >= this.frozen.scale * FROZEN_OVERFLOW ? this.frozen.scale : fitted;
+    }
     return fitted;
   }
 
@@ -1567,7 +1639,7 @@ export class WindowRenderer {
         : null;
     const svg = slot.view.svg;
     if (!piece || !svg) return place(box, scale);
-    const staffTop = staffTopOf(svg);
+    const staffTop = staffTopOf(slot.view);
     if (staffTop === null) return place(box, scale);
     return place({ x: box.x, y: staffTop - piece.above }, scale);
   }
@@ -1653,7 +1725,7 @@ export class WindowRenderer {
     }
     const svg = probe.svg;
     if (!svg) return;
-    const measured = pieceInkOf(svg, stavesPerSystem(probe));
+    const measured = pieceInkOf(probe, stavesPerSystem(probe));
     if (!measured) return;
     this.pieceInk = measured;
     this.pieceInkZoom = zoom;
@@ -1772,9 +1844,13 @@ export class WindowRenderer {
     const offsetInContent = box.top - host.top + this.el.scrollTop;
     const fraction = (box.top - host.top) / host.height;
     if (fraction >= SCROLL_TARGET_MIN && fraction <= SCROLL_TARGET_MAX) return;
+    const reduced =
+      typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        : false;
     this.el.scrollTo({
       top: Math.max(0, offsetInContent - host.height * SCROLL_TARGET_FRACTION),
-      behavior: 'smooth',
+      behavior: reduced ? 'auto' : 'smooth',
     });
   }
 }
@@ -1806,8 +1882,49 @@ function svgUnit(svg: SVGSVGElement): number {
   return engraved && view && view.width > 0 ? engraved.width / view.width : 1;
 }
 
-/** The top of the first stave in a drawn sheet, in CSS pixels, or null. */
-function staffTopOf(svg: SVGElement): number | null {
+/** OSMD's unit, in the SVG's own coordinates: ten user units to one of its. */
+const OSMD_UNIT = 10;
+
+/**
+ * Every stave's lines — top and bottom of the five — from the engraver's
+ * model, in CSS pixels of the drawn sheet, sorted from the top.
+ *
+ * Not the `.staffline` group's box: that group holds the notes, the clef and
+ * the fingerings as well as the lines, so its top is wherever the engraver
+ * put the highest fingering, and that moved by nine units between two
+ * chunks of the same bars. Anchoring on it moved the stave; the model knows
+ * where the lines are.
+ */
+function staffLineBoxes(view: OsmdView): { top: number; bottom: number }[] {
+  const svg = view.svg;
+  if (!(svg instanceof SVGSVGElement)) return [];
+  const unit = svgUnit(svg) * OSMD_UNIT;
+  const out: { top: number; bottom: number }[] = [];
+  try {
+    const pages = view.instance.GraphicSheet?.MusicPages ?? [];
+    for (const page of pages) {
+      for (const system of page.MusicSystems ?? []) {
+        for (const line of system.StaffLines ?? []) {
+          const shape = line.PositionAndShape;
+          const y = shape?.AbsolutePosition?.y;
+          const height = shape?.Size?.height;
+          if (typeof y !== 'number' || typeof height !== 'number' || !(height > 0)) continue;
+          out.push({ top: y * unit, bottom: (y + height) * unit });
+        }
+      }
+    }
+  } catch {
+    return [];
+  }
+  return out.sort((a, b) => a.top - b.top);
+}
+
+/** The top of the first stave's lines in a drawn sheet, in CSS pixels, or null. */
+function staffTopOf(view: OsmdView): number | null {
+  const first = staffLineBoxes(view)[0];
+  if (first) return first.top;
+  // No model to ask: the group's box, which is at least the right stave.
+  const svg = view.svg;
   if (!(svg instanceof SVGSVGElement)) return null;
   const unit = svgUnit(svg);
   let top = Infinity;
@@ -1841,19 +1958,25 @@ function stavesPerSystem(view: OsmdView): number {
  * a chord symbol above bar 3 counts towards bar 3's system and not the one
  * above it. `null` when there is nothing to measure.
  */
-function pieceInkOf(svg: SVGSVGElement, staves: number): PieceInk | null {
+function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
+  const svg = view.svg;
+  if (!(svg instanceof SVGSVGElement)) return null;
   const unit = svgUnit(svg);
-  const lines: { top: number; bottom: number }[] = [];
-  for (const line of svg.querySelectorAll<SVGGraphicsElement>('.staffline')) {
-    try {
-      const box = line.getBBox();
-      if (box.height > 0) lines.push({ top: box.y * unit, bottom: (box.y + box.height) * unit });
-    } catch {
-      // Skip what is not rendered.
+  // The stave *lines*, so `above` and `below` are measured from the lines
+  // and the placement, which anchors on the lines, agrees with them.
+  let lines = staffLineBoxes(view);
+  if (lines.length === 0) {
+    for (const line of svg.querySelectorAll<SVGGraphicsElement>('.staffline')) {
+      try {
+        const box = line.getBBox();
+        if (box.height > 0) lines.push({ top: box.y * unit, bottom: (box.y + box.height) * unit });
+      } catch {
+        // Skip what is not rendered.
+      }
     }
+    lines = lines.sort((a, b) => a.top - b.top);
   }
   if (lines.length === 0) return null;
-  lines.sort((a, b) => a.top - b.top);
   const per = Math.max(1, Math.min(staves, lines.length));
   const systems: { top: number; bottom: number; inkTop: number; inkBottom: number }[] = [];
   for (let i = 0; i < lines.length; i += per) {

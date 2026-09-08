@@ -257,19 +257,22 @@ describe('Listen mode', () => {
 });
 
 describe('Free mode', () => {
-  it('records what was played and never moves a cursor', () => {
+  it('turns the page on the notes of the piece and marks nothing (08 §7.4)', () => {
     const h = harness(melody, { mode: 'free' });
     h.engine.start();
+    // The first note of the piece: the page moves on.
     h.play(60, { velocity: 80 });
+    expect(h.of('stepAdvanced').map((e) => [e.from, e.to])).toEqual([[0, 1]]);
+    // A note that is not the one the page is on: nothing at all.
     h.play(67, { velocity: 100 });
     h.advance(5 * BEAT_MS);
-    expect(h.of('stepAdvanced')).toEqual([]);
+    expect(h.of('stepAdvanced')).toHaveLength(1);
+    expect(h.of('noteJudged')).toEqual([]);
+    expect(h.of('missed')).toEqual([]);
+    // Nothing is recorded, nothing is counted.
     const notes = h.engine.state.score.notes;
-    expect(notes.map((n) => [n.midi, n.velocity])).toEqual([
-      [60, 80],
-      [67, 100],
-    ]);
-    expect(notes.every((n) => n.stepIndex === null)).toBe(true);
+    expect(notes).toEqual([]);
+    expect(h.engine.state.score.wrongNotesTotal).toBe(0);
   });
 });
 

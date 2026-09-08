@@ -202,8 +202,13 @@ export class ScoreSession {
   get expectedNow(): number[] {
     const engine = this.engine;
     if (!engine) return [];
+    // Free play marks nothing, the keys included (`08` §7.4).
+    if (this.runOptions.mode === 'free') return [];
     return engine.prepared.steps[engine.state.step]?.expected ?? [];
   }
+
+  /** Free play: whether the page has turned yet, for the one-off start mark. */
+  private freeMoved = false;
 
   /**
    * The notes after the ones wanted now, or none (P21c A4).
@@ -238,6 +243,7 @@ export class ScoreSession {
     this.wrongKeys = new Set();
     this.scheduledSteps = new Set();
     this.lastScore = null;
+    this.freeMoved = false;
 
     // The screen's run options are a superset of the engine's: strip the ones
     // that belong to playback and the click before handing them over, so a new
@@ -286,6 +292,11 @@ export class ScoreSession {
       this.stopping = false;
     }
     this.engine = null;
+    // The frame that would have cleared it has just been cancelled: the
+    // warning mark otherwise stays on the note after next of a run that is
+    // over (found by the screen's random walk, after `Hear it` was stopped).
+    this.options.renderer.showNextStep(null);
+    this.options.renderer.setCursorVisible(true);
     this.metronome?.stop();
     this.metronome?.dispose();
     this.metronome = null;
@@ -382,6 +393,7 @@ export class ScoreSession {
       case 'stepAdvanced':
         this.pendingStep = event.to;
         this.wrongKeys.clear();
+        this.freeMoved = true;
         this.dirty = true;
         break;
       case 'noteJudged': {
@@ -479,13 +491,20 @@ export class ScoreSession {
     // After the cursor, so the warning is placed against the window the cursor
     // has just settled in rather than the one before it.
     renderer.showNextStep(this.running ? this.nextStepIndex : null);
+    // Free play draws no band — except once, on the first step before
+    // anything has been played, so the reader knows where the piece begins
+    // (`08` §11.10); the first matched note clears it.
+    const free = this.runOptions.mode === 'free' && this.running;
+    renderer.setCursorVisible(!free || !this.freeMoved);
     const states = new Map<string, NoteState>();
     for (const id of renderer.visibleNoteElements().keys()) {
       const judged = this.judgements.get(id);
       if (judged) states.set(id, judged);
     }
-    for (const id of renderer.noteElements(renderer.stepIndex).keys()) {
-      if (!states.has(id)) states.set(id, 'current');
+    if (!free) {
+      for (const id of renderer.noteElements(renderer.stepIndex).keys()) {
+        if (!states.has(id)) states.set(id, 'current');
+      }
     }
     renderer.setNoteStates(states);
     this.paintStrip();

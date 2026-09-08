@@ -82,10 +82,21 @@ test.describe('score screen', () => {
     // It does not vanish while the learner is still setting up…
     await page.waitForTimeout(4_000);
     await expect(bar).toHaveAttribute('data-visible', 'true');
-    // …but it gets out of the way once the piece is running (docs/04 §5).
+    // …but it gets out of the way once the piece is running (docs/04 §5) —
+    // *if* the music reaches its row. One size for the piece (P21e A2) means a
+    // piece whose tallest window is taller than this one is drawn short of
+    // the stage's bottom, and then the bar covers nothing and rightly stays.
     await page.locator('#score-play').click();
-    await expect(bar).toHaveAttribute('data-visible', 'false', { timeout: 8_000 });
-    await page.locator('#score-stage').click({ position: { x: 5, y: 5 } });
+    await page.waitForTimeout(1_500);
+    const reaches = await page.evaluate(() => {
+      const stage = document.querySelector('#score-stage')?.getBoundingClientRect();
+      const music = document.querySelector('#score-stage .score-buffer.is-cursor svg')?.getBoundingClientRect();
+      return Boolean(stage && music && music.bottom >= stage.bottom - 24);
+    });
+    if (reaches) {
+      await expect(bar).toHaveAttribute('data-visible', 'false', { timeout: 8_000 });
+      await page.locator('#score-stage').click({ position: { x: 5, y: 5 } });
+    }
     await expect(bar).toHaveAttribute('data-visible', 'true');
   });
 
@@ -246,7 +257,10 @@ test.describe('score screen', () => {
       // One run per case, on its own page: pressing Play a second time pauses
       // the run rather than starting another, and by then the bar has hidden
       // itself and is not clickable at all.
-      await openScore(page);
+      // A piece with both hands: on a right-hand-only piece there is no left
+      // hand to play for you, and nothing is said (08 §6.3); and `L` on it
+      // is refused outright, having nothing to wait for (08 §8.2).
+      await openScore(page, 'song.folk.twinkle.ht');
       await page.locator(`#score-hands-${chosen}`).click();
       await page.locator('#score-play').click();
       await expect(page.locator('#score-status')).toHaveText(
