@@ -1483,8 +1483,9 @@ input[type='checkbox'] {
   /* One line. A badge whose own words wrapped made the meta line 38 px
      instead of 22, which is what put Today's repertoire row at 111. */
   white-space: nowrap;
+  line-height: 1.3;
   display: inline-block;
-  padding: 2px 8px;
+  padding: 1px 8px;
   border-radius: 999px;
   border: 1px solid var(--border);
   font-size: 0.75rem;
@@ -1532,7 +1533,12 @@ input[type='checkbox'] {
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  /* Six, not ten. Giving the badges a line of their own costs a Today row a
+     fourth line — title, subtitle, detail, badge — and the budget is 96. Six
+     with a 56 px floor is still a comfortable row; it is the four lines that
+     are tight, and which of them Today actually needs is a question for the
+     owner rather than a thing to shave. */
+  padding: 6px 12px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--surface);
@@ -1567,6 +1573,7 @@ input[type='checkbox'] {
 }
 
 .list-row__title {
+  line-height: 1.3;
   font-size: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1576,6 +1583,7 @@ input[type='checkbox'] {
 /* The reason, one line, cut rather than wrapped (`04` §0 R2). */
 .list-row__sub {
   font-size: 0.85rem;
+  line-height: 1.35;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1586,6 +1594,7 @@ input[type='checkbox'] {
    is genuinely too much to say. */
 .list-row__meta {
   display: flex;
+  line-height: 1.35;
   align-items: center;
   /* One line. Wrapped, it cost the row a second 28 px line — "Mary Had a
      Little Lamb" on Today stood at 111 px because its badges did not fit
@@ -1596,6 +1605,16 @@ input[type='checkbox'] {
   gap: 6px;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+/* The badges, on the line under the detail. One line: a badge that wrapped
+   inside itself cost the row a whole extra line. */
+.list-row__badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: 6px;
 }
 
 .list-row__metatext {

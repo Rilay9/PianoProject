@@ -123,16 +123,21 @@ export interface RowOptions {
 export function listRow(options: RowOptions): HTMLElement {
   const text = el('div.list-row__text', {}, el('div.list-row__title', { text: options.title }));
   if (options.subtitle) text.append(el('div.list-row__sub', { text: options.subtitle }));
-  // Badges ride on the detail line rather than taking one of their own.
+  // The detail line and the badges get a line each.
   //
-  // `04` §0 R2 puts a list row at one title line and one line of detail. A
-  // fourth line for two words apiece took a Today row to 123 px against a 96
-  // target, and the badges are the same *kind* of thing the detail line is:
-  // small facts about the item.
-  if (options.meta || options.badges?.length) {
-    const line = el('div.list-row__meta.muted');
-    if (options.meta) line.append(el('span.list-row__metatext', { text: options.meta }));
-    for (const b of options.badges ?? []) line.append(b);
+  // They shared one, to keep a row inside `04` §0 R2's 96 px, and the badges
+  // won: the meta is what shrinks, so a shelf row read "page 14 · ≈… and p.."
+  // beside an intact "no rung", and a Skills row "Stage 0 · core · 0 to …"
+  // beside "never". The line that carries the information was the one being
+  // cut. Badges below it, always.
+  if (options.meta) {
+    text.append(
+      el('div.list-row__meta.muted', {}, el('span.list-row__metatext', { text: options.meta })),
+    );
+  }
+  if (options.badges?.length) {
+    const line = el('div.list-row__badges');
+    for (const b of options.badges) line.append(b);
     text.append(line);
   }
 
