@@ -35,6 +35,21 @@ height of the first line (40 px for a tick box, 48 for a button — both of them
 lines of sentence under it are 40 more. What breaks it is a third line, so a hint is written to
 about **eighty characters**. Anything longer belongs on the screen it explains, not here.
 
+**R5 — Sideways on a phone, the header is one line of 40 px.** A phone held sideways is
+780 × 360 and every screen was spending its first 40 % on a header carrying nothing the side
+nav does not already say. So: a **tab** screen draws no `h1` — the side nav says which tab
+this is, in the same glance, permanently — and its first row is the row that had the
+controls. A **pushed** screen (a sub-screen, a lesson, a drill) keeps its title, because
+"which drill is this?" is a question only the screen can answer, but on the back link's line
+at body size. Cards are full width: a 610 px centred card is a portrait shape on a landscape
+screen. A sub-screen with more than one `section.block` lays them in two columns; one block
+stays one column, since a column of content beside a column of nothing is the thing being
+fixed. Lists whose rows are all the same shape run in two columns — **not** Skills, whose
+rows nest drill rows of varying height, and which goes back to one column on the tablet for
+the same reason. A grid whose cells are not the same height is worse than a list. Target, so
+the tour can check it: the first content within **48 px** of the top, and no `h1` above body
+size. Media query: `(orientation: landscape) and (max-height: 500px)`.
+
 **R3 — Weight by frequency.** A filled box is the thing you do on most visits, and there is at
 most **one per screen**. An outlined box is something you do often. Plain text is something you do
 once per lesson or less — reorder, mark done, register a book, find more. A rare action that needs
@@ -380,6 +395,16 @@ Clicks alone leave the first note unannounced on a phone with the sound low, whi
 moment a beginner most needs to know when to start.
 
 ## 5b. PDF viewer (imported PDFs)
+
+**Dark paper.** Under the dark theme the rendered page and the adjust-mode thumbnail are
+inverted (`filter: invert(1) hue-rotate(180deg)`), which is what the score screen and the
+drills already do with their notation. A white letter page on a stand in a dark room is the
+brightest thing in it. `data-paper="light"` on the screen turns it off for a scan that
+inverts badly — a photograph of a page rather than a clean scan comes out a negative.
+
+**The first time a PDF opens upright**, the status line says `Turn the phone sideways for a
+bigger page`, once, ever. Fitted to 360 px a letter page's system is 59 % of print size;
+fitted to 780 px it is 127 %.
 
 **§0:** a stand screen (R2). A system fitted to the width is as large as it can be drawn; the height left over belongs to the layout, not to black.
 
