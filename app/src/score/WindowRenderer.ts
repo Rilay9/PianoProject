@@ -174,6 +174,15 @@ export class WindowRenderer {
   private readonly buffers: [Buffer, Buffer];
   private readonly band: HTMLElement;
   /**
+   * A second, fainter band on the step after this one (P21c A4).
+   *
+   * Only in the clock-driven modes. Tempo and Listen move whether or not the
+   * learner is ready, so the eye needs somewhere to go before the clock gets
+   * there; Wait mode has no clock and nothing to warn about, and a band on a
+   * note nobody is going to reach yet would be telling a beginner to hurry.
+   */
+  private readonly nextBand: HTMLElement;
+  /**
    * Which shape the read-ahead takes (P21c A1).
    *
    * `slots` is the karaoke arrangement: two systems, the one being played is
@@ -233,6 +242,11 @@ export class WindowRenderer {
     this.band.className = 'score-cursor';
     this.band.hidden = true;
     this.el.appendChild(this.band);
+
+    this.nextBand = document.createElement('div');
+    this.nextBand.className = 'score-cursor score-cursor--next';
+    this.nextBand.hidden = true;
+    this.el.appendChild(this.nextBand);
 
     // Manual scrolling wins for a few seconds, so a learner can look ahead
     // without the auto-scroll yanking the page back.
@@ -727,6 +741,7 @@ export class WindowRenderer {
       buffer.wrapper.remove();
     }
     this.band.remove();
+    this.nextBand.remove();
     this.el.classList.remove('score-view');
   }
 
@@ -1022,17 +1037,45 @@ export class WindowRenderer {
    * position of the nearest step that has one — simpler than deriving geometry
    * from OSMD's layout, and visually indistinguishable.
    */
+  /**
+   * Marks the step after this one, or nothing.
+   *
+   * Called by the screen rather than worked out here: whether there is a
+   * clock to be ahead of is the run's business, not the renderer's.
+   */
+  showNextStep(stepIndex: number | null): void {
+    const step = stepIndex === null ? undefined : this.model.steps[stepIndex];
+    if (!step) {
+      this.nextBand.hidden = true;
+      return;
+    }
+    this.placeBand(this.nextBand, step, true);
+  }
+
   private positionBand(step: ScoreStep): void {
-    const anchor = this.anchorElementFor(step);
+    this.placeBand(this.band, step);
+  }
+
+  /**
+   * `exact` refuses the nearest-drawn-note fallback.
+   *
+   * The cursor may borrow a neighbour's position — a rest has no element and
+   * the band has to go somewhere sensible. The *next* band may not: if the
+   * coming step is not drawn, because it is past the end of the other slot,
+   * borrowing would put a "play this next" mark on a note that is not next.
+   * Nothing is better than a lie.
+   */
+  private placeBand(band: HTMLElement, step: ScoreStep, exact = false): void {
+    const anchor = exact ? this.firstElementOf(step) : this.anchorElementFor(step);
     if (!anchor) {
-      this.band.hidden = true;
+      band.hidden = true;
       return;
     }
     const host = this.el.getBoundingClientRect();
     const box = anchor.getBoundingClientRect();
-    this.band.hidden = false;
-    this.band.style.left = `${box.left - host.left + this.el.scrollLeft - 4}px`;
-    this.band.style.width = `${Math.max(box.width + 8, 12)}px`;
+    band.hidden = false;
+    band.style.left = `${box.left - host.left + this.el.scrollLeft - 4}px`;
+    band.style.width = `${Math.max(box.width + 8, 12)}px`;
 
     // The height of the *stave the note is on*, not of the whole stage.
     //
@@ -1047,13 +1090,13 @@ export class WindowRenderer {
     const line = system?.getBoundingClientRect();
     const pad = 12;
     if (line && line.height > 0) {
-      this.band.style.top = `${line.top - host.top + this.el.scrollTop - pad}px`;
-      this.band.style.height = `${line.height + pad * 2}px`;
+      band.style.top = `${line.top - host.top + this.el.scrollTop - pad}px`;
+      band.style.height = `${line.height + pad * 2}px`;
     } else {
       // No stave to be found — a rest before anything is drawn. Fall back to
       // the note's own box rather than to the whole screen.
-      this.band.style.top = `${box.top - host.top + this.el.scrollTop - pad}px`;
-      this.band.style.height = `${box.height + pad * 2}px`;
+      band.style.top = `${box.top - host.top + this.el.scrollTop - pad}px`;
+      band.style.height = `${box.height + pad * 2}px`;
     }
   }
 

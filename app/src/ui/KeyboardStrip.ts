@@ -34,21 +34,40 @@ export function isBlackKey(midi: number): boolean {
   return BLACK_PITCH_CLASSES.has(((midi % 12) + 12) % 12);
 }
 
-export type KeyStateName = 'expected' | 'pressed' | 'correct' | 'wrong' | 'uncertain';
+export type KeyStateName = 'expected' | 'next' | 'pressed' | 'correct' | 'wrong' | 'uncertain';
 
 const STATE_CLASSES: Record<KeyStateName, string> = {
   expected: 'is-expected',
+  next: 'is-next',
   pressed: 'is-pressed',
   correct: 'is-correct',
   wrong: 'is-wrong',
   uncertain: 'is-uncertain',
 };
 
-const STATE_NAMES: KeyStateName[] = ['expected', 'pressed', 'correct', 'wrong', 'uncertain'];
+// `next` first, so a key that is both the coming note and the one wanted now
+// is painted as wanted now: the order here is the order the classes are
+// applied, and the later state wins the colour.
+const STATE_NAMES: KeyStateName[] = [
+  'next',
+  'expected',
+  'pressed',
+  'correct',
+  'wrong',
+  'uncertain',
+];
 
 export interface KeyboardStripState {
   /** Notes the score wants next — highlighted blue. */
   expected?: Iterable<number>;
+  /**
+   * The notes after those — a paler blue behind the current ones (P21c A4).
+   *
+   * A beginner's eyes are on the keys, not on the page, so "where next" has
+   * to be answerable there as well. Paler than `expected` and never instead
+   * of it: the key wanted *now* stays the brightest thing on the strip.
+   */
+  next?: Iterable<number>;
   /** Notes physically held right now. */
   pressed?: Iterable<number>;
   /** Played and matched — green, with a ✓ for colour-blind readers. */
@@ -90,6 +109,7 @@ export class KeyboardStrip {
   private readonly keys = new Map<number, HTMLElement>();
   private readonly current: Record<KeyStateName, Set<number>> = {
     expected: new Set(),
+    next: new Set(),
     pressed: new Set(),
     correct: new Set(),
     wrong: new Set(),
@@ -184,7 +204,7 @@ export class KeyboardStrip {
 
   /** Clears every state class in one pass (end of a run, or a mode change). */
   clear(): void {
-    this.setState({ expected: [], pressed: [], correct: [], wrong: [] });
+    this.setState({ expected: [], next: [], pressed: [], correct: [], wrong: [] });
   }
 
   /**

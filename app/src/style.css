@@ -508,6 +508,17 @@ body {
   background: var(--key-expected);
 }
 
+/* The note after the one wanted now (P21c A4). Paler, and behind it in the
+   cascade, so a key that is both stays the bright one — a beginner's eyes
+   are on the keys and "where next" has to be answerable there too. */
+.key.is-next {
+  background: color-mix(in srgb, var(--key-expected) 38%, var(--key-white, #fff));
+}
+
+.key--black.is-next {
+  background: color-mix(in srgb, var(--key-expected) 45%, #000);
+}
+
 .key--black.is-expected {
   background: color-mix(in srgb, var(--key-expected) 80%, #000);
 }
@@ -887,6 +898,15 @@ input[type='checkbox'] {
 
 /* The cursor band: a translucent stripe over the current step, spanning both
    staves (docs §5). */
+/* The beat of warning (P21c A4): the step *after* the current one, in the
+   clock-driven modes only. Faint enough to be somewhere for the eye to go
+   and not so bright that it competes with the note being played — Tempo and
+   Listen move whether or not you are ready, and Wait mode has no clock to be
+   ahead of, so it draws none of this. */
+.score-cursor--next {
+  opacity: 0.3;
+}
+
 .score-cursor {
   position: absolute;
   z-index: 3;

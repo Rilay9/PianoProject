@@ -182,6 +182,32 @@ export class ScoreSession {
     return engine.prepared.steps[engine.state.step]?.expected ?? [];
   }
 
+  /**
+   * The notes after the ones wanted now, or none (P21c A4).
+   *
+   * A beat of warning, and only where there is a clock to be ahead of. Tempo
+   * and Listen move whether or not the learner is ready; Wait mode waits, so
+   * marking a note nobody is going to reach yet would be telling a beginner to
+   * hurry. Free play has no expectations at all.
+   */
+  get expectedNext(): number[] {
+    const engine = this.engine;
+    if (!engine) return [];
+    const mode = this.runOptions?.mode;
+    if (mode !== 'tempo' && mode !== 'listen') return [];
+    return engine.prepared.steps[engine.state.step + 1]?.expected ?? [];
+  }
+
+  /** The step index the warning belongs to, or `null`. */
+  get nextStepIndex(): number | null {
+    const engine = this.engine;
+    if (!engine) return null;
+    const mode = this.runOptions?.mode;
+    if (mode !== 'tempo' && mode !== 'listen') return null;
+    const next = engine.state.step + 1;
+    return engine.prepared.steps[next] ? next : null;
+  }
+
   start(run: RunOptions): void {
     this.stop();
     this.runOptions = run;
@@ -408,6 +434,9 @@ export class ScoreSession {
       renderer.showStep(this.pendingStep);
       this.pendingStep = null;
     }
+    // After the cursor, so the warning is placed against the window the cursor
+    // has just settled in rather than the one before it.
+    renderer.showNextStep(this.running ? this.nextStepIndex : null);
     const states = new Map<string, NoteState>();
     for (const id of renderer.visibleNoteElements().keys()) {
       const judged = this.judgements.get(id);
@@ -449,6 +478,7 @@ export class ScoreSession {
     }
     strip.setState({
       expected: new Set(this.expectedNow),
+      next: new Set(this.expectedNext),
       pressed: new Set(),
       correct,
       wrong,
