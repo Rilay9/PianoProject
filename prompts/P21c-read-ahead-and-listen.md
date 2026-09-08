@@ -43,6 +43,12 @@ already draws the next window into the spare buffer; this is the same machinery 
 applied to one slot rather than the whole stage. Each slot holds `barsPerWindow / 2` bars
 (one, at the default of two); at `barsPerWindow` 4 each slot holds two.
 
+The slot that changes fades in over about 150 ms rather than popping: the swap happens while
+he is reading the other slot, and peripheral vision ignores a fade and notices a flash. The
+swap happens the moment the cursor *enters* the other slot, not when it finishes — that is
+what turns "the next bar appears as I need it" into "the next bar has been there for a whole
+bar". At one bar per window there is nothing to alternate; fall back to A2's slide.
+
 The last window of a piece has nothing after it: the other slot goes blank (not a repeat of
 earlier bars), and a piece shorter than two slots draws what it has.
 
