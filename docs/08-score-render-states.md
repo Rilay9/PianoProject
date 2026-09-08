@@ -356,19 +356,42 @@ Upright, where the sheet does not reach the bottom of the stage, it stays. Durin
 stage takes the bar's row; the bar overlays the bottom of the sheet when asked back, which is
 acceptable at the moment you asked for it.
 
-### 5.9 The status line
+### 5.9 The status line, and the waiting line
 
-The app's own voice, one line: what it is waiting for (Wait, with note names on), that a hand is
-being played for you (**once** per run), that a run was paused and for how long, that a bar is
-being demonstrated, that the microphone failed and the clock is standing in, and errors. It must
-never still say `Playing` over a finished run.
+**Two elements, not one**, and they say different kinds of thing.
 
-### 5.10 The microphone meter
+- **The status line** is the app's own voice about the *session*: that a hand is being played
+  for you (**once** per run), that a run was paused and for how long, that a bar is being
+  demonstrated, that the microphone failed and the clock is standing in, why the screen is
+  blind, and errors. It must never still say `Playing` over a finished run.
+- **The waiting line** names the note being waited for — `Waiting for D4` — and exists only
+  when `showNoteNames` is on **and** the mode is Wait **and** a run is going. In a clock-driven
+  mode nothing is ever waited for and a line saying otherwise describes a different app. It is
+  hidden, not blank, when it has nothing to say, so it costs no height.
+
+Sideways on a phone the header row is not drawn and both are **mirrored into the control bar's
+left end**, kept in sync with the originals. The originals remain the source of truth; anything
+writing to the mirror instead will be overwritten.
+
+### 5.10 Things that are audible and change nothing drawn
+
+Listed so a reviewer does not go looking for a visual for them.
+
+- **The metronome** (`⋯ → Metronome`) is sound only. It does not draw the beat dot — that
+  follows the mode's clock and appears in Tempo and Listen whether or not the click is audible,
+  which is the point of it.
+- **Playback of the other hand** is sound only; the notes are not coloured as though played.
+- **Input transposition** shifts what arrives from the piano before it is matched. The score is
+  drawn **as written**, always. A transposed input that matches is coloured correct on the
+  printed note.
+- **The playback destination** (phone / piano / both) changes where sound goes, never the page.
+
+### 5.11 The microphone meter
 
 A level bar, drawn only while the mic is the active input. If the mic cannot be opened the run
 does not fail: it falls back to the clock and the status line says so.
 
-### 5.11 The summary sheet
+### 5.12 The summary sheet
 
 A bottom sheet over the stage at the end of a run. While it is open the keys view is hidden —
 the run is over and the sheet is the subject.
@@ -380,32 +403,63 @@ earned.
 
 Opened by a **finish**, never by a stop (§8.5).
 
-### 5.12 The `⋯` sheet
+### 5.13 The `⋯` sheet
 
 Everything not on the bar, each with its word beside it. Opening it does not pause a run — it is
 a sheet over a screen that keeps working — but it does hold the bar visible while open. Sideways
 it must fit on the screen without scrolling: a sheet nobody can scroll to the end of hides its
 last rows from someone who does not know they are there.
 
-### 5.13 Blind mode
+### 5.14 Blind mode
 
 The engraving is laid out and **hidden**, never skipped. Model, expectations, scoring and keys
 are identical, so a blind run and a sighted run are comparable — which is the feature. The
 status line says why the screen is empty, or a black rectangle reads as broken.
 
-### 5.14 Dark theme
+### 5.15 Dark theme
 
 Notation inverts (`invert(1) hue-rotate(180deg)`) wherever an `OsmdView` is visible: the score
 slots, the drill's notation, the PDF page and its adjust thumbnail. Everywhere — the one that is
 missed becomes the brightest thing in a dark room.
 
-### 5.15 The tablet side panel
+### 5.16 The tablet side panel
 
 ≥ 900 px on the short side: a 320 px column of the lesson's prose beside the stage. Built
 hidden, revealed only when there is text. A piece with no lesson gets no empty column and the
 stage takes the width.
 
-### 5.16 Stacking order
+### 5.17 Gestures
+
+Gestures change state, so they belong in a rendering spec. **Built** and **specified but not
+built** are marked, because `04` §5 lists two that do not exist and a reviewer should not go
+looking for them.
+
+| Gesture | Does | Status |
+|---|---|---|
+| Single tap on the stage | toggles the control bar | built |
+| Single tap, SCROLL, not running | advances a step (right half) or goes back (left half) | built |
+| Double-tap a bar | sets loop start, then loop end | built |
+| Long-press a bar, 400 ms | plays that bar once, both hands, nothing judged | built |
+| Drag over 12 px | is a scroll and cancels a pending long-press | built |
+| Pinch | zoom | **not built** |
+| Two-finger tap | toggle hands focus | **not built** |
+
+A tap that has become a long press must not also toggle the bar: the click that follows the
+press is swallowed.
+
+### 5.18 The loop, while it is running
+
+**Gap — nothing on the stage says a loop is running.** Today the only indication is inside the
+`⋯` sheet: the Loop row's button reads the section's name or the bar range and carries
+`is-selected`. From the stage, a looped run is a cursor that inexplicably jumps backwards every
+few bars.
+
+What it should be: the looped bars marked on the sheet itself — a rule under the looping bars,
+or their barlines emphasised — so that the jump back is visibly the loop doing its job and not
+the app losing its place. The status line says the range when the loop is *set*; it should not
+have to be the only record of it.
+
+### 5.19 Stacking order
 
 Lowest to highest. A new overlay must be placed in this list deliberately.
 
@@ -426,22 +480,54 @@ Lowest to highest. A new overlay must be placed in this list deliberately.
 
 | | Wait | Tempo | Listen / `Hear it` | Free |
 |---|---|---|---|---|
-| Cursor band | ✓ | ✓ | ✓ | see below |
+| Cursor band | ✓ | ✓ | ✓ | **—** |
 | Read-ahead line | — | ✓ | ✓ | — |
 | `next` key | — | ✓ | ✓ | — |
 | `expected` key | ✓ | ✓ | ✓ | — |
 | Count-in | — | ✓ | ✓ | — |
 | Beat dot | — | ✓ | ✓ | — |
 | Note colouring | ✓ | ✓ | — | — |
-| Advances on | your notes | the clock | the clock | **nothing** |
+| Advances on | your notes | the clock | the clock | your notes |
 | Summary at the end | ✓ | ✓ | — | — |
 | Playback of the other hand | ✓ | ✓ | both hands | — |
 
-**Free play does not follow the score at all.** The engine records what is played with no step
-index and returns; no `stepAdvanced` is ever emitted, so the cursor never moves. This is
-deliberate — Free is for playing, not for being marked — but it means **the band sits on the
-first note for the whole session**, which reads as a stuck cursor. See §11.5: the band should
-almost certainly not be drawn in Free at all.
+### 6.1 Free play — the page turns, nothing is marked
+
+**Decided 2026-09-08 by the owner.** Free play draws **no cursor** and **advances on the notes
+you play**. It is the page-turner: you play, the page keeps up, and nothing is judged, coloured,
+counted or recorded.
+
+That is a change. Today the engine records what is played with no step index and returns, so no
+`stepAdvanced` is ever emitted, the window never moves and the band sits on the first note for
+the whole session — a stuck cursor over a page that never turns.
+
+What Free must do:
+
+| | |
+|---|---|
+| Advance | when the played notes match the current step, by the same matching Wait uses |
+| A wrong note | **nothing happens.** No colour, no reset, no advance, no record. It is not wrong; it is not what the page is on. |
+| Not playing | nothing moves. The page waits, indefinitely, without comment. |
+| Cursor band | not drawn |
+| Read-ahead line | not drawn |
+| `expected` / `next` keys | not drawn — showing what to play next is the opposite of free |
+| Note colouring | none |
+| Count-in, beat dot | none |
+| Summary | none, and nothing recorded |
+| Windows and slots | exactly as every other mode — the read-ahead is the point |
+
+**Why no cursor.** A band is the app saying *play this now*. In every other mode that is true and
+useful; in Free it is an instruction nobody asked for, and it is the one mode where the player,
+not the app, decides what happens next. Removing it leaves the window as the only feedback — and
+the window moving *is* the feedback that the app is following you.
+
+**The one thing to get right.** Free must not advance on a note that is merely *near* the
+expected one, or the page runs away from an improviser. Match exactly as strictly as Wait does,
+and when in doubt do not move: a page that stays put is a page you can still read.
+
+**Open within this decision** (§11.5): whether the very first step should carry a one-off mark
+so the player knows where the piece begins, clearing on the first note. A page with nothing on
+it does not say where to start.
 
 `Hear it` is a Listen run that **does not move the mode select**: what it interrupts is restored
 when it ends, and `▶` during one ends it and starts the run you chose. A long-pressed bar is a
@@ -574,6 +660,11 @@ Numbered so a reviewer can cite them. Each is falsifiable; most are already test
 19. **Budgets** (`01` §6): a prepared window swap under **16.7 ms** on a fourfold-throttled CPU;
     input-to-colour under **30 ms**; the longest score's first window under **60 s**.
 20. **Nothing re-engraves during a run** except by restarting it (§8.8).
+21. **Free marks nothing.** In Free there is no band, no read-ahead, no expected or next key, no
+    colour, no record — and the window still advances as the notes are played.
+22. **A wrong note in Free does nothing.** No colour, no reset, no advance, no record.
+23. **Only built gestures are wired.** Pinch and two-finger tap are specified in `04` §5 and do
+    not exist; nothing may behave as though they do.
 
 ---
 
@@ -605,6 +696,14 @@ The cases that have broken before, or that the rules above do not obviously cove
 | **Long-press during a run** | The run is paused for the bar and resumed after. |
 | The **summary open** and the device rotates | The sheet stays open and re-lays out; the run does not restart. |
 | **Leaving the screen mid-run** | A stop, not a finish (§8.5). Wake lock released. |
+| **Free, playing something not in the piece** | Nothing moves and nothing is marked. The page waits. |
+| **Free, playing far ahead of the page** | The page advances a step at a time as each step is matched; it does not skip to where you are. |
+| **Free, the last step played** | The page stops at the end. No summary, nothing recorded. |
+| **A loop of the whole piece** | Behaves as a piece that never ends; the lap boundary still clears colour. |
+| **A loop set backwards** (end before start) | Normalised to a range, not rejected. |
+| **The same printed bar twice in a loop** (a repeat inside it) | The loop is in *steps*, not printed bars, so the two passes are distinct. |
+| **A window whose ink is wider than the stage** upright | The width fit binds; the staff shrinks rather than clipping. |
+| **A score with one staff** (not a grand staff) | Slots hold one staff each; nothing assumes two. |
 
 ---
 
@@ -621,15 +720,21 @@ Deliberate gaps, so a reviewer knows what is not a bug.
    tokens)*
 4. **`barsPerWindow` stays at 2** upright — one bar per slot, a full bar of warning. The owner
    chooses in first-run setup. *(decided)*
-5. **The cursor in Free play.** Free never advances (§6), so the band sits on the first note for
-   the whole session and reads as stuck. It should probably not be drawn at all in Free — but
-   that leaves the screen with no indication of where the piece starts, so the alternative is a
-   one-off "start here" mark that clears on the first note. **Not settled; needs the owner.**
+5. **The cursor in Free play — settled 2026-09-08.** No cursor, and the page advances on the
+   notes played (§6.1). This is a change to the engine, not only to the drawing: Free emits no
+   `stepAdvanced` today. What remains open inside the decision is whether the *first* step
+   carries a one-off "start here" mark that clears on the first note — a page with nothing on it
+   does not say where to begin. Recommendation: yes, and only until the first matched note.
 6. **The read-ahead line replaced the second band** after "two cursors" was reported. This
    document specifies the line; anything still drawing a band is stale.
 7. **Chord symbols and the stave placement.** §3.5 places on the stave so a chord symbol does not
    move the staff — which means a chord symbol may sit closer to the top edge in one window than
    another. Accepted: the staff is the thing being read.
+8. **A running loop is invisible on the stage** (§5.18). The cursor jumps backwards with nothing
+   to explain it. Needs a mark on the looping bars.
+9. **Pinch to zoom and two-finger tap to switch hands** are in `04` §5 and are not built
+   (§5.17). Either build them or strike them from §5 — a documented gesture that does nothing is
+   worse than an undocumented one.
 
 ---
 
@@ -639,7 +744,7 @@ If a reviewer has an hour, diff in this order — highest yield first:
 
 1. §9 invariants 1, 2, 3, 4 — the reading experience is those four.
 2. §8.5 — the stop/finish table.
-3. §6 — the mode matrix, especially Free, and whether the read-ahead is a line.
+3. §6 and §6.1 — the mode matrix, and Free in particular: it is specified to change.
 4. §2 — whether the arrangement is derived from height rather than orientation.
 5. §3.3 — the table of what may change the scale, against every write of a transform.
 6. §1.5 and §10 — the states that only appear when something has gone wrong.
