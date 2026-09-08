@@ -67,7 +67,35 @@ window lead" is deleted, because this decides it.
 
 **A4 — A beat of warning in Tempo and Listen.** The cursor band marks the current step; in the
 clock-driven modes also mark the *next* step faintly (a second band at 30 % opacity) so the eye
-has somewhere to go before the clock gets there. Wait mode has no clock and no next-band.
+has somewhere to go before the clock gets there. Wait mode has no clock and no next-band. The
+keyboard strip does the same: the next expected key in a lighter blue behind the current one,
+in every mode — a beginner's eyes are on the keys, and "where next" matters there as much as
+on the page.
+
+**A5 — Slots follow the playing order, not the printed order.** `ScoreStep` carries both
+`measureIndex` (playback order, repeats unrolled) and `sourceMeasureIndex` (as printed). "What
+comes next" for a slot is the next *step's* bar: at the end of a repeated section the other
+slot shows the repeat's first bar, not the bar printed after the repeat sign, and at a first-
+or second-time ending it shows the ending that will actually be played on this pass. Unit-test
+it on a fixture with a repeat and one with a first/second ending (`tests/fixtures` has both
+from P2).
+
+**A6 — You can see the beat.** Two things the ear gets today and the eye does not:
+
+- *A visible count-in.* In Tempo and Listen the count-in is clicks only; on a phone on a stand
+  with the sound low, the first note arrives unannounced. During the count-in, draw the beat
+  numbers large in the stage (`1 · 2 · 3 · 4`, the current one bright), the way `DrillScreen`
+  already does with `Count-in — 3`, and put the first step's band in place from the first
+  click so the eye is already on the note when the bar starts.
+- *A beat indicator during the run.* A small dot in the header row that pulses on every beat
+  and is brighter on beat 1, driven by the same `tempoTick` events the metronome uses. It
+  costs nothing and it is how a player checks the tempo without hearing the click. Off in
+  Wait and Free.
+
+**A7 — Latency is subtracted from the picture, not only the judgement.** `inputLatencyMs`
+already shifts the judgement window; make sure the band and the strip advance on the same
+corrected clock, so what he sees is where the engine is. If they already do, say so with the
+line that proves it.
 
 Tests: unit tests on `windowFor`/the slot logic (a 5-bar piece at 2 bars per window: which
 slot holds which bar at each step, the last window blank on one side, a 1-bar piece); an e2e
@@ -94,12 +122,27 @@ nothing that stores a mode is touched.
 the left hand for you` (or right) the first time in a run, so he knows the sound is the app and
 not a fault.
 
+**B4 — Hear one bar.** `04` §5 lists "long-press a bar plays it (Listen)" among the gestures
+and it was never built. Build it: press and hold on a bar for 400 ms plays that bar, both
+hands, at the current tempo, with the band moving, and stops at its end; nothing is judged and
+the run, if one is going, is paused for it and resumed after. In Wait mode that is the
+"show me what it sounds like" for the bar he is stuck on.
+
 Tests: e2e that `Hear it` starts a run with `playbackHands: 'both'` and no judging, stops on
 the second tap, and leaves the mode select where it was; unit test that the four labels map to
-the four unchanged ids. Reshoot `20` and `26`.
+the four unchanged ids; e2e that a long-press on bar 3 emits playback for bar 3's steps only.
+Reshoot `20` and `26`.
 
 ## §C — Prove
 
 `npm run lint`, `npm run test`, `CI=1 npx playwright test` from `app/`, each to a file, last
 line and `EXIT=` pasted. `npm run tour` once at the end: zero gaps, zero identical. Pictures
 named above, one line each on what you see.
+
+**Stills cannot show timing, so add a sequence to the tour.** In `tour.spec.ts`, after `22`,
+add four scenes shot in one run of an 8-bar piece in Wait mode with the MIDI mock, each with
+its predicate: `22a` cursor on the last note of bar 1 (bar 2 visible below); `22b` first note
+of bar 2 (top slot now shows bar 3, faded in); `22c` last note of bar 2; `22d` first note of
+bar 3 (bottom slot now shows bar 4). Sideways the same four, where the assertion is the
+cursor's x. A person reading those four in a row can see whether the next bar was there in
+time; the audit checks that the bar after the cursor's is on screen in all four.
