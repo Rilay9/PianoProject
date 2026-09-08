@@ -405,6 +405,10 @@ export class ScoreSession {
           // A new lap: old colours would read as this lap's mistakes.
           this.judgements = new Map();
           this.scheduledSteps = new Set();
+          // Told, not hidden. A lap is a finish, and "play this once and stop"
+          // — hearing one bar (P21c B4) — is exactly a caller that wants to
+          // act on the first one. The screen decides whether a lap matters.
+          this.options.onFinished?.(event.score, true);
         } else {
           this.metronome?.stop();
           this.options.onFinished?.(event.score, false);

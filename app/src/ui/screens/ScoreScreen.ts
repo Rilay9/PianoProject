@@ -156,6 +156,19 @@ export function ScoreScreen(router: Router): HTMLElement {
    * starts, not on every render — a line that keeps reappearing is noise.
    */
   let saidPlayingHand = false;
+  /**
+   * A bar being played back on its own (P21c B4).
+   *
+   * `04` §5 has listed "long-press a bar plays it" among the gestures since
+   * the spec was written and it was never built. In Wait mode it is the
+   * "show me what this is meant to sound like" for the bar you are stuck on.
+   * Holds what the run was doing so it can be put back afterwards.
+   */
+  let hearingBar: { mode: Mode; loop: { from: number; to: number } | null } | null = null;
+  /** The pending long-press, if a finger is down on the stage. */
+  let pressHold: number | null = null;
+  /** Where that finger went down, so a wobble can be told from a drag. */
+  let pressFrom: { x: number; y: number } | null = null;
   /** Runs finished since this exercise was generated (see the summary sheet). */
   let sightReadAttempts = 0;
   let input: FollowInput = 'none';
@@ -817,8 +830,9 @@ export function ScoreScreen(router: Router): HTMLElement {
           ? session.loopForPrintedBars(loopBars.from, loopBars.to)
           : session.loopForMeasures(loopBars.from, loopBars.to)
         : undefined;
-    // A `Hear it` run is a Listen run that leaves the select alone.
-    const runMode: Mode = hearing ? 'listen' : mode;
+    // A `Hear it` run — and a one-bar preview — is a Listen run that leaves
+    // the select alone.
+    const runMode: Mode = hearing || hearingBar ? 'listen' : mode;
     session.start({
       mode: runMode,
       hands,
@@ -968,6 +982,72 @@ export function ScoreScreen(router: Router): HTMLElement {
     toggleBar();
   });
 
+  /**
+   * Long-press a bar to hear it (P21c B4, `04` §5).
+   *
+   * 400 ms, and cancelled by moving — a drag is a scroll, not a request.
+   * A tap that has become a press must not also toggle the control bar, so
+   * the click that follows it is swallowed.
+   */
+  stage.addEventListener('pointerdown', (event) => {
+    cancelPress();
+    const target = event.target;
+    pressFrom = { x: event.clientX, y: event.clientY };
+    pressHold = window.setTimeout(() => {
+      pressHold = null;
+      const measure = measureAt(target);
+      if (measure !== null) hearBar(measure);
+    }, 400);
+  });
+
+  // A drag is a scroll and cancels the press; a wobble is a finger and does
+  // not. Without the threshold nothing was ever a long press at all — a
+  // `pointermove` arrives immediately after `pointerdown`, before anything has
+  // actually moved.
+  stage.addEventListener('pointermove', (event) => {
+    if (pressHold === null || !pressFrom) return;
+    const moved = Math.hypot(event.clientX - pressFrom.x, event.clientY - pressFrom.y);
+    if (moved > 12) cancelPress();
+  });
+
+  for (const kind of ['pointerup', 'pointercancel'] as const) {
+    stage.addEventListener(kind, () => cancelPress());
+  }
+
+  function cancelPress(): void {
+    if (pressHold !== null) window.clearTimeout(pressHold);
+    pressHold = null;
+    pressFrom = null;
+  }
+
+  /** Plays one bar, both hands, once, and puts the run back afterwards. */
+  function hearBar(measure: number): void {
+    if (!session || !model || hearingBar) return;
+    const loop = session.loopForPrintedBars(measure, measure);
+    if (!loop) return;
+    hearingBar = { mode, loop: loopBars };
+    loopBars = { from: measure, to: measure };
+    loopSection = null;
+    status.textContent = `Bar ${String(measure)}, as written`;
+    startRun();
+  }
+
+  /** The bar has been played once; give the screen back what it had. */
+  function endBarPreview(): void {
+    const was = hearingBar;
+    if (!was) return;
+    // Stopped while the flag is still set, because stopping is itself a finish
+    // and it arrives back through `onFinished`. Cleared first, that finish
+    // looked like the end of an ordinary run and opened the summary sheet over
+    // a bar nobody had played.
+    session?.stop();
+    hearingBar = null;
+    loopBars = was.loop;
+    clearBeat();
+    status.textContent = '';
+    render();
+  }
+
   stage.addEventListener('dblclick', (event) => {
     const measure = measureAt(event.target);
     if (measure === null) return;
@@ -1024,12 +1104,27 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
   }
 
+  /**
+   * Which printed bar the pointer is over, as a **1-based** bar number.
+   *
+   * The units matter and were wrong. `loopFromPrintedBars` takes bar numbers
+   * as printed — it looks for `sourceMeasureIndex === fromBar - 1` — while the
+   * fallback here returned `currentWindow.fromMeasure`, which is a 0-based
+   * index. Nothing in the DOM carries `data-measure` today, so the fallback is
+   * the only path there is, and every loop it produced asked for bar −1 and
+   * got nothing: double-tap-to-loop has been quietly doing nothing at all, and
+   * long-pressing a bar to hear it (B4) found the same wall.
+   *
+   * The named attribute keeps whatever it says; the fallback now converts.
+   */
   function measureAt(target: EventTarget | null): number | null {
     if (!(target instanceof Element)) return null;
     const holder = target.closest('[data-measure]');
     const raw = holder instanceof HTMLElement ? holder.dataset.measure : undefined;
     const value = Number(raw);
-    return Number.isFinite(value) ? value : (renderer?.currentWindow?.fromMeasure ?? null);
+    if (Number.isFinite(value)) return value;
+    const from = renderer?.currentWindow?.fromMeasure;
+    return from === undefined ? null : from + 1;
   }
 
   let hideTimer: number | null = null;
@@ -1472,7 +1567,16 @@ export function ScoreScreen(router: Router): HTMLElement {
         destination: audioEngine.masterGain,
         onChange: render,
         onBeat: (tick) => onBeat(tick),
-      onFinished: (score) => showSummary(score),
+      onFinished: (score, looped) => {
+        // One bar, once: the first lap of the preview loop ends it.
+        if (hearingBar) {
+          if (looped) endBarPreview();
+          return;
+        }
+        // An ordinary loop run keeps going; only a real ending is a summary.
+        if (looped) return;
+        showSummary(score);
+      },
       });
 
       // Pick the follow input the way docs/04 §7 says: first available in the
