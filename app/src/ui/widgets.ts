@@ -119,6 +119,37 @@ export interface RowOptions {
   dataset?: Attrs;
 }
 
+/**
+ * A detail line cut to length by whole tokens (P21d B3).
+ *
+ * The line is ` · `-separated facts, and cutting it with `text-overflow`
+ * cut it mid-fact: a shelf row read `page 14 · ≈…` and a Skills row
+ * `Stage 0 · core · 1 t…`, where the part that was lost — how long it takes,
+ * how many are left to practise — is the part the line was for. Half a word
+ * says less than one fewer word does.
+ *
+ * So: drop whole tokens from the end until it fits, and then ellipsise
+ * nothing. The first token always survives, however long it is; a row with
+ * one very long fact is a different problem and truncating it here would
+ * leave the line empty.
+ */
+export function fitDetail(text: string, maxChars: number): string {
+  const tokens = text.split(' · ');
+  while (tokens.length > 1 && tokens.join(' · ').length > maxChars) tokens.pop();
+  return tokens.join(' · ');
+}
+
+/**
+ * How many characters a detail line gets before tokens start dropping.
+ *
+ * A character count rather than a measurement, because the alternative is
+ * laying the row out twice for every row on a screen of sixty. Tuned to the
+ * narrowest screen the app is built for: at 360 px the text column is about
+ * 200 px beside a row of actions, which is a little over forty characters at
+ * the detail line's 0.85 rem.
+ */
+const DETAIL_CHARS = 42;
+
 /** One item in a list: title, a line of metadata, badges, and buttons. */
 export function listRow(options: RowOptions): HTMLElement {
   const text = el('div.list-row__text', {}, el('div.list-row__title', { text: options.title }));
@@ -132,7 +163,11 @@ export function listRow(options: RowOptions): HTMLElement {
   // cut. Badges below it, always.
   if (options.meta) {
     text.append(
-      el('div.list-row__meta.muted', {}, el('span.list-row__metatext', { text: options.meta })),
+      el(
+        'div.list-row__meta.muted',
+        {},
+        el('span.list-row__metatext', { text: fitDetail(options.meta, DETAIL_CHARS) }),
+      ),
     );
   }
   if (options.badges?.length) {

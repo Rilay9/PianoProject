@@ -1854,9 +1854,11 @@ input[type='checkbox'] {
   gap: 6px;
 }
 
+/* No ellipsis. `fitDetail` has already dropped whole tokens to make the line
+   fit, so anything left is a fact worth reading; an ellipsis here could only
+   cut one of them in half again (P21d B3). */
 .list-row__metatext {
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 

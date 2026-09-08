@@ -277,10 +277,32 @@ it does and the bar goes; held upright the sheet is fitted to the width and leav
 third of the stage empty, so hiding the controls would buy nothing and cost a hunt for them.
 One measurement, when the timer fires — never per frame. A tap on the notation brings it back.
 
-Control bar, in this order and **nothing else**: `⏮` restart · `▶`/`⏸` · mode selector
-(Wait / Tempo / Listen / Free) · hands (`R` `L` `Both`) · the tempo label (tap opens a sheet
-with the % slider, 30–130 %, and a typed bpm field) · `⋯`. These are the things that change
-during a practice; one row in every form factor, on a phone either way up and on a tablet.
+Control bar, in this order and **nothing else**: `▶`/`⏸` · **`Hear it`** · mode selector
+(`Wait for me` / `Keep tempo` / `Play it to me` / `Free play`) · hands (`R` `L` `Both`) · the
+tempo label (tap opens a sheet with the % slider, 30–130 %, and a typed bpm field) · `⋯`.
+These are the things that change during a practice; one row in every form factor, on a phone
+either way up and on a tablet.
+
+**`Hear it`** plays the piece — or the loop, if one is set — with both hands through the
+current Sound destination, cursor moving, nothing judged; a second tap stops it. It is Listen
+mode without having to know Listen mode exists, and it does **not** move the mode selector:
+what it interrupts is put back when it ends, and `▶` during one ends it and starts the run
+you chose. The screen carries `data-hearing` so the run's mode and the selected mode stay two
+facts rather than one.
+
+The modes are named for what they do to *you*, not for the mechanism. `Listen` in a row
+beside `R`, `L` and an input setting read as something done with your playing, which is how
+the owner came to ask for a way to hear a piece while looking straight at the control that
+does it. The ids are unchanged (`wait`, `tempo`, `listen`, `free`).
+
+`⏮ Start again` is **in the `⋯` sheet**, not on the bar. Eight controls come to 444 px of a
+390 px row and wrap it onto a second line, taking 40 px off the music; `▶` from stopped
+already starts from the beginning, so the glyph was the mid-run case only. The test for the
+bar is *do you need it while your hands are on the keys?*
+
+With `R` or `L` chosen and `playbackHands: non-focused`, the status line says `Playing the
+left hand for you` **once** when the run starts. The sound is otherwise a note arriving from
+nowhere, which on a stand with no piano connected reads as a fault.
 
 `⋯` opens a sheet holding everything else, each with its word beside it: **Input**
 (MIDI / Mic / Screen keys / None) · **Section** (only when the piece has named sections) ·
@@ -332,8 +354,30 @@ Notation area:
   hot spots (bars), pass/master badge, buttons "Again", "Slower (−10 %)", "Faster (+10 %)",
   "Loop the weak bars", "Done". Without MIDI: "How did it go?" (Rough / OK / Clean) self-report.
 
-Gestures: single tap toggles control bar; double-tap a bar sets loop start/end; long-press a
-bar plays it (Listen) ; pinch = zoom; two-finger tap = toggle hands focus.
+Gestures: single tap toggles control bar; double-tap a bar sets loop start/end; **long-press a
+bar (400 ms) plays that bar**, both hands, once, at the current tempo, band moving, nothing
+judged, and puts the run back afterwards — the "show me what this is meant to sound like" for
+a bar you are stuck on; pinch = zoom; two-finger tap = toggle hands focus. A drag of more than
+12 px is a scroll and cancels the press; less is a finger.
+
+**Bar numbers in a gesture are as printed — 1-based.** `loopFromPrintedBars` looks for
+`sourceMeasureIndex === fromBar - 1`, and the fallback that reads the current window returns a
+0-based index, so the two have to be converted between. They were not, and since nothing in
+the DOM carries `data-measure` the fallback is the only path there is: every loop the
+double-tap gesture built asked for bar −1 and got nothing.
+
+**A beat of warning (Tempo and Listen only).** The cursor band marks the current step; a
+second band at 30 % opacity marks the next one, and the keyboard strip shows the next expected
+key in a paler blue behind the current one. Wait mode has no clock to be ahead of and draws
+neither — a mark on a note nobody is going to reach yet tells a beginner to hurry. The warning
+band refuses the nearest-note fallback the cursor uses: a coming step that is not drawn hides
+rather than marking a note that is not next.
+
+**You can see the beat.** During the count-in the bar's beats are drawn large over the
+notation with the current one lit, counted from the piece's own time signature; during a run a
+dot in the header pulses on every beat and brighter on beat 1. Both are off in Wait and Free.
+Clicks alone leave the first note unannounced on a phone with the sound low, which is the one
+moment a beginner most needs to know when to start.
 
 ## 5b. PDF viewer (imported PDFs)
 

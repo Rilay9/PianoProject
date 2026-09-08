@@ -209,7 +209,35 @@ export function openPieceSheet(options: {
     },
     { id: 'piece-save', variant: 'primary' },
   );
-  sheet.body.append(el('div.row', {}, save, button('Cancel', () => sheet.close(), { variant: 'quiet' })));
+  // Removing lives in here, beside the thing it removes (P21d B2).
+  //
+  // On the row it sat immediately after `Edit` with nothing between them, so
+  // "Edit Remove" read as one control; and a row of five actions left the
+  // detail line about forty characters of a 360 px screen. Destructive, rare,
+  // and only reachable once you have opened the piece you mean — which is also
+  // the confirmation it never had.
+  const remove = piece
+    ? button(
+        'Remove this piece',
+        () => {
+          void (async () => {
+            await deletePiece(book.id, piece.id);
+            options.onDone();
+            sheet.close();
+          })();
+        },
+        { id: 'piece-remove', variant: 'quiet' },
+      )
+    : null;
+  sheet.body.append(
+    el(
+      'div.row',
+      {},
+      save,
+      button('Cancel', () => sheet.close(), { variant: 'quiet' }),
+      ...(remove ? [remove] : []),
+    ),
+  );
   return sheet;
 }
 
@@ -330,6 +358,20 @@ export function ShelfScreen(router: Router): HTMLElement {
           { id: 'book-save', variant: 'primary' },
         ),
         button('Cancel', () => sheet.close(), { variant: 'quiet' }),
+        // Same as a piece: destructive, rare, and behind the thing it removes.
+        ...(book
+          ? [
+              button(
+                'Remove this book',
+                () => {
+                  void deleteBook(book.id).then(() => refresh()).then(() => {
+                    sheet.close();
+                  });
+                },
+                { id: 'book-remove', variant: 'quiet' },
+              ),
+            ]
+          : []),
       ),
     );
   }
@@ -374,9 +416,6 @@ export function ShelfScreen(router: Router): HTMLElement {
           openPieceSheet({ book, piece, lessons, items, onDone: () => void refresh() }),
         { variant: 'quiet' },
       ),
-      button('Remove', () => void deletePiece(book.id, piece.id).then(() => refresh()), {
-        variant: 'quiet',
-      }),
     );
 
     return listRow({
@@ -416,9 +455,6 @@ export function ShelfScreen(router: Router): HTMLElement {
               () => openPieceSheet({ book, lessons, items, onDone: () => void refresh() }),
               { id: `shelf-add-piece-${book.id}` },
             ),
-            button('Remove', () => void deleteBook(book.id).then(() => refresh()), {
-              variant: 'quiet',
-            }),
           ),
           book.author ? el('p.muted', { text: book.author }) : el('span'),
           ...(book.pieces.length

@@ -226,6 +226,10 @@ export class WindowRenderer {
   private fittedAtHeight = -1;
   private currentStep = -1;
   private manualScrollUntil = 0;
+  /** Bumped whenever a slot is drawn or blanked, so the merge can cache. */
+  private drawVersion = 0;
+  private merged: Map<string, SVGGElement> | null = null;
+  private mergedFor = -1;
   /** How far the sheet has been slid left, sideways (P21c A2). */
   private slideX = 0;
   /** The bar the slide was last computed for; a slide happens once a bar. */
@@ -395,10 +399,17 @@ export class WindowRenderer {
    */
   private get allElements(): Map<string, SVGGElement> {
     if (this.readAhead === 'single') return this.buffers[this.cursorSlot].elements;
+    // Cached, because `paint()` asks three times a frame and a piece has
+    // hundreds of notes: building the merged map per read put the
+    // input-to-colour budget over 30 ms, which is the number that says a
+    // played note is coloured late (`01` §6).
+    if (this.mergedFor === this.drawVersion && this.merged) return this.merged;
     const out = new Map<string, SVGGElement>();
     for (const slot of this.buffers) {
       for (const [id, element] of slot.elements) out.set(id, element);
     }
+    this.merged = out;
+    this.mergedFor = this.drawVersion;
     return out;
   }
 
@@ -541,7 +552,21 @@ export class WindowRenderer {
       }
       this.slotRanges = this.cursorSlot === 0 ? [wanted, spare.range] : [spare.range, wanted];
       this.updateSlotClasses();
-      this.fitSlots();
+      // Only when something was drawn. A prepared swap is supposed to be a
+      // class toggle, and fitting reads `getBBox()` and the stage box and
+      // writes a transform — a forced layout, which on a fourfold-throttled
+      // CPU took the swap from ~4 ms to a median of 20–26 against a budget of
+      // 16.7 (`01` §6). The spare was fitted when it was pre-rendered; there
+      // is nothing about it left to work out.
+      if (prepared) {
+        // Except which transform the slide is now relative to: this sheet was
+        // fitted on its own, off the critical path, and has never been slid.
+        this.baseTransform = this.buffers[this.cursorSlot].wrapper.style.transform;
+        this.slideX = 0;
+        this.slidBar = -1;
+      } else {
+        this.fitSlots();
+      }
       // Two labels, because they are two different budgets (`01` §6): a
       // pre-rendered swap must fit in a frame, a cold one only has to beat the
       // first-render figure. Averaging them would hide a pre-render that had
@@ -618,15 +643,26 @@ export class WindowRenderer {
       if (this.disposed || this.readAhead !== 'single') return;
       const front = this.buffers[this.cursorSlot].range;
       if (!front) return;
-      const nextStart = front.toMeasure + 1;
+      // From the *window*, not the drawn range: sliding, the drawn range runs
+      // two bars past the window (A2), and starting from its end skipped a
+      // window. And prepared in the same shape the swap will ask for — the
+      // pre-render drew `windowFor` while a sliding swap wanted
+      // `slideRangeFor`, so the ranges never matched, the prepared buffer was
+      // never used, and every swap sideways paid a full render.
+      const step = this.model.steps[this.currentStep];
+      const here = step ? this.windowFor(step.sourceMeasureIndex) : front;
+      const nextStart = here.toMeasure + 1;
       if (nextStart >= this.model.sourceMeasureCount) return;
-      const next = this.windowFor(nextStart);
+      const next = this.sliding ? this.slideRangeFor(nextStart) : this.windowFor(nextStart);
       const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0];
       if (sameRange(spare.range, next) || sameRange(front, next)) return;
       // Off the critical path, and timed apart from the number the budget is
       // about so the two are never averaged together.
       const started = performance.now();
       this.drawInto(spare, next);
+      // Fitted here, off the critical path, so bringing it forward later costs
+      // nothing but the class toggle it is meant to cost.
+      this.fit(spare);
       recordRenderTiming('osmd.prerender', performance.now() - started);
     });
   }
@@ -668,6 +704,7 @@ export class WindowRenderer {
     slot.range = null;
     slot.elements = new Map();
     slot.wrapper.hidden = true;
+    this.drawVersion += 1;
   }
 
   private fadeIn(slot: Buffer): void {
@@ -986,6 +1023,7 @@ export class WindowRenderer {
       element.dataset.midi = String(note.midi);
     }
     buffer.elements = elements;
+    this.drawVersion += 1;
   }
 
   /**

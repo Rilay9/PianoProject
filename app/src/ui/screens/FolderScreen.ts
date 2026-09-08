@@ -236,7 +236,12 @@ export function FolderScreen(router: Router): HTMLElement {
     );
     add.disabled = added;
 
+    // The composer belongs on the detail line, not on a line of its own.
+    // Title, composer, meta and badges is four lines and 121 px against the
+    // 96 the row is allowed (`04` §0 R2); as a token in the detail line it is
+    // three, and the composer is exactly the kind of thing that line is for.
     const meta = [
+      score.composer || null,
       score.bars === null ? null : `${String(score.bars)} bars`,
       score.ratings >= 1 ? `${score.rating.toFixed(1)} from ${String(score.ratings)}` : null,
       score.views >= 100 ? `${score.views.toLocaleString()} views` : null,
@@ -246,7 +251,6 @@ export function FolderScreen(router: Router): HTMLElement {
 
     return listRow({
       title: score.title || score.file,
-      subtitle: score.composer || undefined,
       meta: meta || undefined,
       badges,
       actions: [add],

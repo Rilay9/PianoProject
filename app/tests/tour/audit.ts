@@ -335,8 +335,19 @@ export async function auditScreen(page: Page): Promise<Finding[]> {
       const buttons = [...screen.querySelectorAll<HTMLElement>('button, .button')].filter(
         (el) => el.getBoundingClientRect().width > 0,
       );
-      if (buttons.length > 1) {
-        add('R4-empty-state', `"${said.slice(0, 40)}" offers ${String(buttons.length)} buttons`);
+      // Going back is not one of the ways out being counted. The rule is about
+      // a screen that has just said it has nothing and then offers a row of
+      // choices; `← Back` and `← Library` are the frame, on every screen in
+      // the app, and counting them reported "offers 2 buttons" on a screen with
+      // one (P21d B4). Links are not buttons either.
+      const offered = buttons.filter(
+        (el) =>
+          el.tagName !== 'A' &&
+          !el.classList.contains('back-link') &&
+          !/^\s*←/.test(el.textContent ?? ''),
+      );
+      if (offered.length > 1) {
+        add('R4-empty-state', `"${said.slice(0, 40)}" offers ${String(offered.length)} buttons`);
       }
     }
 
