@@ -153,7 +153,9 @@ export function MicScreen(router: Router): HTMLElement {
   stageText.id = 'mic-stage';
   const calibrateButton = addButton(calibration, 'Start calibration', () => void runCalibration(), {
     id: 'mic-calibrate',
-    variant: 'primary',
+    // Connecting is what the screen is for; calibrating is what comes after it
+    // and is not a second answer to the same question (R3).
+    variant: 'secondary',
   });
   const storedText = addParagraph(calibration, '', 'muted');
   storedText.id = 'mic-stored';

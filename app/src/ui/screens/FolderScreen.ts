@@ -211,7 +211,9 @@ export function FolderScreen(router: Router): HTMLElement {
       () => {
         void addOne(score, add);
       },
-      { variant: added ? 'quiet' : 'primary' },
+      // A row's action, outlined: sixty filled `Add` boxes made the one thing
+      // the screen is for — picking the folder — impossible to find (R3).
+      { variant: added ? 'quiet' : 'secondary' },
     );
     add.disabled = added;
 

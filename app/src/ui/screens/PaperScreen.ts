@@ -270,7 +270,10 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
           () => {
             void save(durationMs, measured, report.value);
           },
-          { id: `paper-report-${report.value}`, variant: report.value === 'clean' ? 'primary' : 'secondary' },
+          // Three equal answers to "how did it go?". Filling one of them made
+          // it a second filled box beside Start, and made "Clean" look like
+          // the answer the app was hoping for (R3).
+          { id: `paper-report-${report.value}`, variant: 'secondary' },
         ),
       );
     }

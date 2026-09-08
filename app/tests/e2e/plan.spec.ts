@@ -301,22 +301,19 @@ test.describe('Skills obeys 04 §0', () => {
     expect(await page.locator('.list-row[data-concept]').count()).toBeGreaterThan(200);
   });
 
-  test('at most one filled button per concept, and it is Drill it (R3)', async ({ page }) => {
+  test('no filled button anywhere on the list (R3)', async ({ page }) => {
+    // It used to be one per row, and `Drill it` was it. On a screen of
+    // twenty-four concepts that is twenty-four filled boxes, which is R3's
+    // point exactly: one per *screen*, and a list of them is none. Every row
+    // action here is outlined; Skills has no single thing you came to do.
     await page.goto('/#/plan/skills');
     await expect(page.locator('.list-row[data-concept]').first()).toBeVisible();
     let drills = 0;
     for (const row of await page.locator('.list-row[data-concept]').all()) {
-      const filled = await row.locator('.button--primary').count();
-      // A concept with nothing to practise yet has none, which is right. What
-      // must never happen is two boxes competing for the eye on one row.
-      expect(filled).toBeLessThanOrEqual(1);
-      if (filled === 1) {
-        drills += 1;
-        await expect(row.getByRole('button', { name: 'Drill it' })).toBeVisible();
-      }
-      // `Find more` is text beside it, never a second box.
-      await expect(row.locator('.button--secondary')).toHaveCount(0);
+      await expect(row.locator('.button--primary')).toHaveCount(0);
+      if ((await row.getByRole('button', { name: 'Drill it' }).count()) === 1) drills += 1;
     }
+    // And it is still there to press.
     expect(drills).toBeGreaterThan(0);
   });
 });

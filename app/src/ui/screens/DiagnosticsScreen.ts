@@ -131,7 +131,9 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   );
   const latencyStart = addButton(latency, 'Start latency test', () => void runLatencyTest(), {
     id: 'diag-latency-start',
-    variant: 'primary',
+    // The screen exists to be copied into a message (`04` §7b); the latency
+    // test is a tool on it, not the reason for it (R3).
+    variant: 'secondary',
   });
   const latencyStatus = document.createElement('p');
   latencyStatus.id = 'diag-latency-status';

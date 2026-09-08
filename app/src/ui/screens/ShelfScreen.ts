@@ -348,7 +348,8 @@ export function ShelfScreen(router: Router): HTMLElement {
 
     const actions = [
       button('Practise', () => router.navigatePaper(book.id, piece.id), {
-        variant: 'primary',
+        // Outlined: one per piece is a screen of filled boxes (R3).
+        variant: 'secondary',
       }),
     ];
     if (twinId) {

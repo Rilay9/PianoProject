@@ -217,7 +217,9 @@ export function SkillsScreen(router: Router): HTMLElement {
     const meta = conceptMeta.get(entry.concept);
     const finder = meta?.finder;
     const actions: HTMLElement[] = [];
-    if (first) actions.push(button('Drill it', () => void openItem(router, first), { variant: 'primary' }));
+    // Outlined, not filled (R3). One filled box per *screen*, and a list of
+    // them is a list of nothing: Skills drew twenty-four.
+    if (first) actions.push(button('Drill it', () => void openItem(router, first)));
     if (finder) {
       // A concept finder exists whether or not any rung is short: "find me
       // more of this" is a question about the skill, not about the ladder.
