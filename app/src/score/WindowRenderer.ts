@@ -75,8 +75,6 @@ export interface WindowRendererOptions {
   barsPerWindow?: number;
   zoom?: number;
   handsFocus?: HandsFocus;
-  /** Advance by half a window so the learner always sees ahead (docs §5). */
-  halfWindowScrolling?: boolean;
   drawFingerings?: boolean;
 }
 
@@ -194,7 +192,6 @@ export class WindowRenderer {
   private slotRanges: [MeasureRange | null, MeasureRange | null] = [null, null];
   private layout: ScoreLayout;
   private barsPerWindow: number;
-  private halfWindow: boolean;
   private handsFocus: HandsFocus;
   private zoomLevel: number;
   /** What the owner asked for; the drawn zoom is this times the fit. */
@@ -221,7 +218,6 @@ export class WindowRenderer {
     this.buffers = buffers;
     this.layout = options.layout ?? 'window';
     this.barsPerWindow = clampBars(options.barsPerWindow ?? 2);
-    this.halfWindow = options.halfWindowScrolling ?? false;
     this.handsFocus = options.handsFocus ?? 'both';
     this.userZoom = options.zoom ?? 1;
     // Starts at the owner's number and becomes the fitted one on the first
@@ -356,16 +352,16 @@ export class WindowRenderer {
   }
 
   /**
-   * Which printed measures a step belongs in.
+   * Which printed measures a step belongs in, for the single-system layout.
    *
-   * With half-window scrolling the stride is half the window, so consecutive
-   * windows overlap and the learner always has the coming bar in view.
+   * Windows tile the piece; they used to be able to overlap by half, which was
+   * `halfWindowScrolling` — a setting, off by default, named after its
+   * mechanism rather than its effect, and the owner never found it. Upright,
+   * seeing ahead is what the two slots do and is no longer optional (P21c A3).
    */
   windowFor(sourceMeasureIndex: number): MeasureRange {
     const total = this.model.sourceMeasureCount;
-    const stride = this.halfWindow
-      ? Math.max(1, Math.floor(this.barsPerWindow / 2))
-      : this.barsPerWindow;
+    const stride = this.barsPerWindow;
     const start = Math.max(0, Math.floor(sourceMeasureIndex / stride) * stride);
     const from = Math.min(start, Math.max(0, total - 1));
     const to = Math.min(from + this.barsPerWindow - 1, Math.max(0, total - 1));
@@ -601,12 +597,6 @@ export class WindowRenderer {
     const next = clampBars(bars);
     if (next === this.barsPerWindow) return;
     this.barsPerWindow = next;
-    this.invalidate();
-  }
-
-  setHalfWindowScrolling(enabled: boolean): void {
-    if (enabled === this.halfWindow) return;
-    this.halfWindow = enabled;
     this.invalidate();
   }
 

@@ -27,7 +27,6 @@ export interface PracticeSettings {
   defaultModeWithInput: 'wait' | 'tempo';
   defaultModeWithoutInput: 'wait' | 'tempo';
   barsPerWindow: number;
-  halfWindowScrolling: boolean;
   layout: ScoreLayout;
   /** Percentage of written tempo for a newly opened item, 30..130. */
   defaultTempoPct: number;
@@ -93,7 +92,6 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   defaultModeWithInput: 'wait',
   defaultModeWithoutInput: 'tempo',
   barsPerWindow: 2,
-  halfWindowScrolling: false,
   layout: 'window',
   defaultTempoPct: 70,
   countInBars: 1,
@@ -156,7 +154,6 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   out.defaultModeWithInput = oneOf(v.defaultModeWithInput, ['wait', 'tempo'] as const, out.defaultModeWithInput);
   out.defaultModeWithoutInput = oneOf(v.defaultModeWithoutInput, ['wait', 'tempo'] as const, out.defaultModeWithoutInput);
   out.barsPerWindow = Math.round(num(v.barsPerWindow, out.barsPerWindow, 1, 8));
-  out.halfWindowScrolling = bool(v.halfWindowScrolling, out.halfWindowScrolling);
   out.layout = oneOf(v.layout, ['window', 'scroll'] as const, out.layout);
   out.defaultTempoPct = Math.round(num(v.defaultTempoPct, out.defaultTempoPct, 30, 130));
   out.countInBars = Math.round(num(v.countInBars, out.countInBars, 0, 4));

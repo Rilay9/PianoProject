@@ -291,10 +291,24 @@ The controls are moved into the sheet and back, not rebuilt, so each keeps its s
 id.
 
 Notation area:
-- **Window layout:** exactly N bars of the grand staff, scaled to fit width (landscape) or
-  height (portrait). The window advances when the cursor leaves the last bar (or, setting
-  "half-window scrolling": when it reaches bar N/2+1, the next N/2 bars slide in so the
-  learner always sees ahead). Pre-rendered next window ⇒ no flicker.
+- **Window layout, upright — two slots.** The stage holds two systems and they are two
+  independent engravings of N/2 bars each, not one window of N. **The slot the cursor is in
+  is never re-drawn**; the other shows what comes next and is replaced the moment the cursor
+  crosses into it, fading over ~150 ms. The eye goes top, bottom, top — the arrangement
+  karaoke uses — and the coming bar has been on the screen for a whole bar by the time it is
+  played. Not a setting: it is how the window works (P21c A3).
+
+  "What comes next" follows the **playing** order, not the printed one: at a repeat the other
+  slot shows the repeat's first bar, and at a first- or second-time ending the ending that
+  will actually be played on this pass. The last bars of a piece leave the other slot blank
+  rather than repeating bars already played.
+
+  Both slots are drawn at **one scale** — they are engraved separately, so fitting each to
+  its own half would draw a bar of minims larger than a bar of semiquavers.
+
+- **Window layout, sideways — one system.** Nothing to alternate, so the window is N bars
+  scaled to fit the width, and the next window is pre-rendered into the spare buffer so a
+  swap is a class toggle. A window of one bar is this layout upright too.
 - **Scroll layout:** full piece, auto-scroll keeps the cursor between 25–40 % of viewport
   height; manual scroll pauses auto-scroll for 5 s.
 - **Cursor:** translucent vertical band over the current step's notes spanning both staves.
@@ -457,10 +471,9 @@ learner looks at.
 
 **Practice** — session lengths (weekday default [30], weekend default [60]); weekly goal
 minutes [150]; default mode with MIDI or mic [Wait], without [Tempo]; bars per window [2];
-half-window scrolling [off]; layout [Window]; default tempo % for new items [70]; count-in
+layout [Window]; default tempo % for new items [70]; count-in
 [1 bar]; metronome sound [wood]; wait-mode strictness [lenient: wrong notes don't block];
-tempo-mode timing tolerance ms [±150]; auto-advance to next window lead [when cursor enters
-last bar's last beat]; pass criteria (accuracy % [90], tempo % [80]); require 2 songs per
+tempo-mode timing tolerance ms [±150]; pass criteria (accuracy % [90], tempo % [80]); require 2 songs per
 lesson [off]; strict prerequisites [off]; daily goal minutes [30].
 
 **Display** — theme [system]; landscape lock on score screen [on]; zoom [1.0]; show
@@ -500,7 +513,7 @@ set it.
 | Setting | Status |
 |---|---|
 | strict prerequisites | **Built (P18)**, off by default. On, a rung whose prerequisites are unfinished shows a badge and a one-line reason naming what would unlock it, `nextRecommended` prefers a rung he can start, and the option cards open behind a confirmation. **Never a disabled card**: `00` D17 promises that moving on is always one tap, and a disabled card tells the learner no and gives him nothing to do about it. "I already know this" on the prerequisite unlocks it. |
-| auto-advance to next window lead | The renderer's rule is fixed; making it a setting is engine work, not a control. |
+| auto-advance to next window lead · half-window scrolling | **Deliberately dropped (P21c A3).** Both described the same thing — when the learner gets to see what is coming — and the answer is now "always, in the other slot", which is not a preference. The stored value of `halfWindowScrolling` is ignored rather than migrated: `parse` reads only the keys it knows. |
 | **daily goal minutes** | **Deliberately dropped.** It contradicts the weekly-minutes decision this spec makes twice over (§2 "no daily-streak guilt", `02` Part A §8 "goals are weekly minutes"). Treat the line in §7 as a leftover; the weekly goal is on Progress. |
 | left-handed layout | Mirroring the score screen's chrome; low value for one right-handed owner, not free to build. |
 | velocity curve · sustain pedal CC · ignore channels · Note-On velocity 0 as Note-Off | The parser already does the right thing with velocity-0; the other three are unexercised on the one piano this app talks to. They belong on the MIDI screen when there is a second device to need them. |

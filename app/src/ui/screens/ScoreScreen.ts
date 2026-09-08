@@ -1262,7 +1262,6 @@ export function ScoreScreen(router: Router): HTMLElement {
         barsPerWindow: settings.barsPerWindow,
         zoom: settings.zoom,
         layout: settings.layout,
-        halfWindowScrolling: settings.halfWindowScrolling,
         handsFocus: hands,
         drawFingerings: settings.showFingering,
       });

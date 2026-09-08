@@ -93,7 +93,6 @@ export function SettingsScreen(router: Router): HTMLElement {
       ),
     ),
     field('Bars per window', numberControl('set-bars', s.barsPerWindow, (v) => set({ barsPerWindow: v }), { min: 1, max: 8 })),
-    field('Half-window scrolling', toggleControl('set-halfwindow', s.halfWindowScrolling, (v) => set({ halfWindowScrolling: v }))),
     field(
       'Layout',
       selectControl(
