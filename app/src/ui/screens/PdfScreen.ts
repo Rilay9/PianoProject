@@ -58,6 +58,9 @@ export function secondsPerSystem(bpm: number, barsPerSystem: number): number {
  * knows which page it is on, and opening the book at page one would waste the
  * one fact the owner took the trouble to type in.
  */
+/** Remembers that the "turn it sideways" hint has been given (P21d D5). */
+const SIDEWAYS_HINT_KEY = 'pianopath.pdf.sidewaysHint';
+
 export function PdfScreen(router: Router, importId: string, openAtPage?: number): HTMLElement {
   const section = el('section.screen.pdf-screen', { 'data-screen': 'pdf', 'data-mode': 'manual' });
 
@@ -226,6 +229,35 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     metronome.setVolume(getMidiSettings().metronomeVolume);
     metronome.setSound(getSettings().metronomeSound);
     metronome.start();
+  }
+
+  /**
+   * Said once, the first time a PDF is opened upright (P21d D5).
+   *
+   * Fitted to 360 px a letter page's system is 59 % of print size; fitted to
+   * 780 px it is 127 %. That is the difference between squinting and
+   * reading, and nothing on the screen says so. Once, because a hint that
+   * comes back is an instruction, and this one is a fact you only need
+   * told the first time.
+   */
+  function sidewaysHint(): string {
+    if (typeof window === 'undefined') return '';
+    const upright = window.innerHeight > window.innerWidth;
+    if (!upright) return '';
+    let seen = false;
+    try {
+      seen = localStorage.getItem(SIDEWAYS_HINT_KEY) === '1';
+    } catch {
+      // A private window with storage blocked: say it, every time, rather
+      // than never. A repeated fact is better than a missing one.
+    }
+    if (seen) return '';
+    try {
+      localStorage.setItem(SIDEWAYS_HINT_KEY, '1');
+    } catch {
+      // Nothing to do: the hint is advice, not state worth failing over.
+    }
+    return 'Turn the phone sideways for a bigger page';
   }
 
   // --- adjust cuts ---------------------------------------------------------
@@ -474,7 +506,7 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
       draw();
       status.textContent =
         systems.length > 0
-          ? ''
+          ? sidewaysHint()
           : 'No systems were found on these pages — use “Adjust cuts” to place them by hand.';
     } catch (cause) {
       status.textContent = `That PDF could not be opened: ${

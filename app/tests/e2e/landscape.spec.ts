@@ -121,3 +121,21 @@ test('a sub-screen card uses the width sideways', async ({ page }) => {
   // the side nav takes its own width first and is not margin.
   expect(share).toBeGreaterThan(0.95);
 });
+
+test('Settings sideways shows twice as many rows (B5)', async ({ page }) => {
+  await page.setViewportSize(SIDEWAYS);
+  await page.goto('/#/settings');
+  await expect(page.locator('[data-screen="settings"]')).toBeVisible({ timeout: 60_000 });
+  await page.waitForTimeout(600);
+  const visible = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll('.setting-row')];
+    return rows.filter((row) => {
+      const box = row.getBoundingClientRect();
+      return box.top >= 0 && box.bottom <= window.innerHeight;
+    }).length;
+  });
+  // It was five of forty on a 360 px screen. Two columns of the most uniform
+  // rows in the app — a label, a control, sometimes a sentence — is ten.
+  console.log(`settings sideways: ${String(visible)} rows on the first screenful`);
+  expect(visible).toBeGreaterThanOrEqual(8);
+});

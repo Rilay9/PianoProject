@@ -506,6 +506,24 @@ body {
     padding-top: 0;
   }
 
+  /* B5 — Settings sideways showed five rows of forty. Its rows are not a
+     `.list`, they are `.setting-row`s inside blocks, and they are the most
+     uniform rows in the app: a label, a control, sometimes a sentence. Two
+     columns of them is ten rows a screenful instead of five. The block's own
+     heading spans both, or it stops being a heading for what is under it. */
+  [data-screen='settings'] .block {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 20px;
+    align-items: start;
+  }
+
+  [data-screen='settings'] .block > h2,
+  [data-screen='settings'] .block > p,
+  [data-screen='settings'] .block > .filter-row {
+    grid-column: 1 / -1;
+  }
+
   /* A3 — two columns for lists whose rows are all the same shape. A Today
      card, a Plan lesson and a Library row are 1,650 px wide for three lines
      of text. Not Skills: its rows nest drill rows of varying height. */
@@ -2182,6 +2200,21 @@ input[type='checkbox'] {
   height: auto;
   border-radius: 6px;
   background: #ffffff;
+}
+
+/* Dark paper (P21d D4).
+
+   Every other music screen in the app draws light notation on the dark
+   theme — the score screen and the drills both invert their SVG. The PDF
+   did not, so a white letter page on a stand in a dark room is the
+   brightest thing in it, next to a score screen that is not. The same
+   inversion, on the canvas and on the adjust-mode thumbnail.
+
+   `[data-paper='light']` turns it off for a scan that inverts badly — a
+   photograph of a page rather than a clean scan comes out as a negative. */
+[data-theme='dark'] .pdf-screen:not([data-paper='light']) .pdf-system,
+  [data-theme='dark'] .pdf-screen:not([data-paper='light']) .pdf-adjust__page {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 /* The next system, greyed, so the eye has somewhere to go (docs/04 §5b). */
