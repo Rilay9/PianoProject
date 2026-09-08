@@ -903,6 +903,93 @@ input[type='checkbox'] {
    and not so bright that it competes with the note being played — Tempo and
    Listen move whether or not you are ready, and Wait mode has no clock to be
    ahead of, so it draws none of this. */
+/* The count-in, drawn over the notation (P21c A6). Clicks alone leave the
+   first note of a piece unannounced on a phone with the sound low, which is
+   the one moment a beginner most needs to know when to start. */
+.score-countin {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 6vw, 48px);
+  pointer-events: none;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.score-countin[hidden] {
+  display: none;
+}
+
+.score-countin__beat {
+  font-size: clamp(2rem, 12vmin, 5rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  opacity: 0.45;
+}
+
+.score-countin__beat.is-now {
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* The beat dot: how a player checks the tempo without hearing the click. */
+.score-beat {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.35;
+  align-self: center;
+}
+
+.score-beat[hidden] {
+  display: none;
+}
+
+.score-beat.is-beat {
+  animation: score-beat 220ms ease-out;
+}
+
+.score-beat.is-downbeat {
+  animation: score-downbeat 260ms ease-out;
+}
+
+@keyframes score-beat {
+  from {
+    opacity: 0.9;
+    background: var(--text);
+  }
+
+  to {
+    opacity: 0.35;
+    background: var(--text-muted);
+  }
+}
+
+@keyframes score-downbeat {
+  from {
+    opacity: 1;
+    background: var(--accent);
+    transform: scale(1.5);
+  }
+
+  to {
+    opacity: 0.35;
+    background: var(--text-muted);
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-beat.is-beat,
+  .score-beat.is-downbeat {
+    animation: none;
+  }
+}
+
 .score-cursor--next {
   opacity: 0.3;
 }

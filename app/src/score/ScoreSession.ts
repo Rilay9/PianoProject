@@ -58,6 +58,15 @@ export interface ScoreSessionOptions {
   destination?: AudioNode | null;
   onChange?: () => void;
   onFinished?: (score: SessionScore, looped: boolean) => void;
+  /**
+   * One call per beat, count-in included (P21c A6).
+   *
+   * The clock is audible and invisible: on a phone on a stand with the sound
+   * low, the count-in is four clicks nobody hears and the first note arrives
+   * unannounced. The screen draws the count and a beat dot from this; the
+   * session only forwards what the engine already emits.
+   */
+  onBeat?: (beat: { beat: number; bar: number; isCountIn: boolean }) => void;
 }
 
 export interface RunOptions extends Omit<Partial<EngineOptions>, 'mode'> {
@@ -381,6 +390,12 @@ export class ScoreSession {
         this.dirty = true;
         break;
       case 'tempoTick':
+        this.options.onBeat?.({
+          beat: event.beat,
+          bar: event.bar,
+          isCountIn: event.isCountIn,
+        });
+        break;
       case 'paused':
       case 'resumed':
         break;

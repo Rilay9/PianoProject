@@ -200,6 +200,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   const stage = document.createElement('div');
   stage.className = 'score-stage';
   stage.id = 'score-stage';
+
+  /**
+   * The count-in, drawn (P21c A6).
+   *
+   * It was clicks only. On a phone on a stand with the sound low the first
+   * note therefore arrives unannounced, which is the one moment a beginner
+   * most needs to know when to start. The drill screen already counts down in
+   * words; this is the same idea over the notation.
+   */
+  const countIn = document.createElement('div');
+  countIn.className = 'score-countin';
+  countIn.id = 'score-countin';
+  countIn.hidden = true;
+  stage.appendChild(countIn);
   if (blind) {
     // Hidden, not unmounted: the renderer still needs a box to lay out into,
     // and the cursor still tracks — it is simply not drawn where he can see
@@ -244,6 +258,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   const status = document.createElement('p');
   status.className = 'score-status';
   status.id = 'score-status';
+
+  /**
+   * A dot that pulses on the beat (P21c A6).
+   *
+   * How a player checks the tempo without hearing the click, which on a phone
+   * on a stand next to a piano is most of the time. Brighter on beat 1 so the
+   * bar is readable and not just the pulse. Off in Wait and Free, which have
+   * no clock to show.
+   */
+  const beatDot = document.createElement('span');
+  beatDot.className = 'score-beat';
+  beatDot.id = 'score-beat';
+  beatDot.hidden = true;
+  beatDot.setAttribute('aria-hidden', 'true');
   status.textContent = 'Loading…';
 
   // Beside the status line, hidden unless the owner has asked for note names.
@@ -299,7 +327,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   micFill.className = 'mic-meter__fill';
   micMeter.appendChild(micFill);
 
-  head.append(back, title, status, waitingLine, micMeter);
+  head.append(back, beatDot, title, status, waitingLine, micMeter);
 
   /**
    * Where the controls that are not on the bar live between openings.
@@ -847,11 +875,54 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (hearing || session.running) {
       session.stop();
       hearing = false;
+      clearBeat();
       render();
       return;
     }
     hearing = true;
     startRun();
+  }
+
+  /**
+   * One beat: the count-in if we are still in it, and the dot either way.
+   *
+   * Restarting the animation needs the class off, a reflow, and the class on
+   * again — re-adding a class the element already has does nothing.
+   */
+  function onBeat(tick: { beat: number; bar: number; isCountIn: boolean }): void {
+    const clocked = mode === 'tempo' || mode === 'listen' || hearing;
+    // From the piece, not a guess: a count-in of four over a 3/4 waltz would
+    // be counting a bar that does not exist.
+    const beatsPerBar = Math.max(1, Math.round(model?.timeSigMap[0]?.beats ?? 4));
+    if (tick.isCountIn) {
+      countIn.hidden = false;
+      countIn.replaceChildren(
+        ...Array.from({ length: beatsPerBar }, (_, i) => {
+          const dot = document.createElement('span');
+          dot.className = 'score-countin__beat';
+          dot.textContent = String(i + 1);
+          dot.classList.toggle('is-now', i + 1 === tick.beat);
+          return dot;
+        }),
+      );
+    } else {
+      countIn.hidden = true;
+      countIn.replaceChildren();
+    }
+
+    beatDot.hidden = !clocked;
+    if (!clocked) return;
+    beatDot.classList.remove('is-beat', 'is-downbeat');
+    void beatDot.offsetWidth;
+    beatDot.classList.add(tick.beat === 1 ? 'is-downbeat' : 'is-beat');
+  }
+
+  /** Nothing is counting any more. */
+  function clearBeat(): void {
+    countIn.hidden = true;
+    countIn.replaceChildren();
+    beatDot.hidden = true;
+    beatDot.classList.remove('is-beat', 'is-downbeat');
   }
 
   function togglePlay(): void {
@@ -1063,6 +1134,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   function showSummary(score: SessionScore): void {
     // A demonstration that has finished is over, whatever else happens next.
     hearing = false;
+    clearBeat();
     sheet.replaceChildren();
     const outcome = evaluateOutcome(score, {
       passAccuracy: settings.passAccuracyPct / 100,
@@ -1399,7 +1471,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         audioContext: context,
         destination: audioEngine.masterGain,
         onChange: render,
-        onFinished: (score) => showSummary(score),
+        onBeat: (tick) => onBeat(tick),
+      onFinished: (score) => showSummary(score),
       });
 
       // Pick the follow input the way docs/04 §7 says: first available in the
