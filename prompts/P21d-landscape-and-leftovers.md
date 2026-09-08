@@ -145,9 +145,55 @@ with one). Exclude `a` elements and the back link from the R4 count.
 **B5 — Settings sideways** (`08`): five rows visible of forty. With A3's two columns it is ten;
 the section headings span both columns.
 
+## §D — The PDF viewer: the same rule, on paper
+
+`66` and `67`, both orientations. The viewer does the one thing it promised — one system, full
+width — and then stops using the screen. Upright: two rows of chips, a 170 px system, its
+successor dimmed, and **1,000 px of black** before `bpm · bars/system · Adjust cuts` at the
+bottom. Sideways: three rows of chrome (toolbar, bpm row, page row in adjust mode) before the
+page, whose second system is off the bottom. `04` §5b already says *the height left over
+belongs to the layout, not to black*; nothing was done with it.
+
+**D1 — Fill the height with what comes next.** A letter-page system fitted to a phone's width is
+about 170 px tall, so upright there is room for three or four. Draw the current system bright
+at the top and **as many following systems as fit, dimmed** — not "the next one if it fits".
+Advancing moves the column up one system (the current one leaves, the dimmed ones step up,
+one more arrives at the bottom). Same slide as P21c A2, vertical: the eye always has two systems
+of read-ahead and the music never moves mid-system. The last system of the piece leaves the
+space below it empty rather than repeating.
+
+**D2 — One row of chrome.** Sideways and upright: `← · ◀ ▶ · Tap Timed Loop · 🥁 ·
+Page 1 · system 1/2` on one line (drop the parentheses). `bpm` and `bars/system` matter only in
+Timed and open from the `Timed` chip as a small sheet; `Adjust cuts` is a once-per-import action
+and becomes text at the right end of the row (R3). In adjust mode the `◀ Page · Page 1 of 1 ·
+2 systems · Page ▶` line is one line too, and the thumbnail starts within 48 px of it.
+
+**D3 — Timed learns from your taps.** `bars × 4 × 60 / bpm` assumes 4/4 and a bars-per-system
+he has to count. Simpler and truer: when he switches to Timed, the interval is **the time
+between his last two manual advances** (the way tap-tempo works), shown as `every 9.6 s ·
+change`; the bpm × bars sheet is the fallback when there have been no taps yet. Say so in `04`
+§5b.
+
+**D4 — Dark paper.** The score screen and the drills draw white notation on the dark theme; the
+PDF is a white page on a dark stand, the brightest thing in the room. Invert the rendered page
+under the dark theme (`filter: invert(1) hue-rotate(180deg)` on the canvas, and the same on the
+adjust-mode thumbnail), with a `Paper` toggle in the ⋯/Timed sheet for a scan that inverts
+badly. Default inverted, because it is what every other music screen in the app does.
+
+**D5 — Say once that PDFs read best sideways.** Fitted to 360 px a letter page's system is
+59 % of print size; fitted to 780 px it is 127 %. The first time a PDF opens upright, the
+status line says `Turn the phone sideways for a bigger page` and never again (a settings
+flag, like the other one-time hints).
+
+Tests: an e2e upright at 360 × 780 on `two-systems.pdf` asserting two systems are drawn (one
+bright, one dimmed) and the chrome is one row; sideways the same; Timed after two manual
+advances 3 s apart advances 3 s later without a bpm being set; the inverted canvas has the
+`filter` under `prefers-color-scheme: dark`. Reshoot `66` and `67` both ways.
+
 ## §C — Prove
 
 `npm run lint`, `npm run test`, `CI=1 npx playwright test` from `app/`, each to a file, last
 line and `EXIT=` pasted. `npm run tour` once at the end: zero gaps, zero identical, R2 and R4
 empty, R5 empty. Before/after, **sideways**: `01`, `03`, `06`, `12`, `50`, `70`, `80`,
-`40-drill-transposition`, and `20` if A6 was done. One line each on what you see.
+`40-drill-transposition`, `66`, and `20` if A6 was done; upright `66` and `67`. One line each
+on what you see.
