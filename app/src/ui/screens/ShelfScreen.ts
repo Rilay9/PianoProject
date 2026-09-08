@@ -222,11 +222,18 @@ export function ShelfScreen(router: Router): HTMLElement {
   });
 
   const intro = addSection(card, 'Books you own');
-  addParagraph(
-    intro,
-    'The app has no copy of these. Register what is in them — title, page, which rung it answers — and a rung can offer your book beside the pieces the app holds.',
-    'muted',
+  // One line, and the rest folded — the same shape the score folder uses.
+  // Four lines of prose and a button stood between the heading and the first
+  // book, which is the screen's subject (`04` §0 R1).
+  addParagraph(intro, 'The app has no copy of these.', 'muted');
+  const how = el('details.folder-how', { id: 'shelf-how' });
+  how.append(
+    el('summary', { text: 'How this works' }),
+    el('p.muted', {
+      text: 'Register what is in them — title, page, which rung it answers — and a rung can offer your book beside the pieces the app holds.',
+    }),
   );
+  intro.append(how);
   const addRow = el('div.row', { id: 'shelf-add' });
   intro.append(addRow);
   const list = el('div.list', { id: 'shelf-list' });
