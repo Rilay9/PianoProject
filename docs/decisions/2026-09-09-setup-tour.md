@@ -33,6 +33,29 @@ Three decisions worth writing down:
    into `midi/errorHelp`. A number measured in the tour is the number measured on the screen
    it came from.
 
+## The builder's review
+
+Read all eighteen pictures and found the one real problem: on a phone held sideways — the very
+orientation the second step asks about — Back, Skip and Next were below the 360 px fold on most
+steps, and on several upright ones. The footer is pinned to the foot of the screen now and the
+step scrolls under it, and sideways the settings rows run in two columns as Settings' own do.
+The spec asserts the Next button is inside the viewport on every step, both ways up. The
+builder also noted, rightly, that the orientation choice is asymmetric: sideways locks the score
+screen to landscape, upright only unlocks it, which is what the landscape-lock setting is.
+
+**Open on the Linux runner.** CI run 57 failed on the tour's own new assertion: sideways on a
+360 px fold the Start button's bottom measured 365.2, five pixels under. The same step measures
+340 on the builder's Windows box, twenty above — a 45 px swing on the same viewport, because
+`position: sticky` pins to whichever ancestor scrolls and that is not the same box on both.
+Two fixes were tried and backed out. Keeping a footer's height clear below the step addressed
+nothing: the controls it was meant to free — `Connect microphone`, `Quick calibration` — sit in
+a fold that is closed, so they were never laid out where anyone could reach them, and with the
+folds opened every control on every step is reachable already. Bounding the card to the screen
+and scrolling the step inside it does hold the footer on the first screenful at every height
+tried, 300 to 780 px, with 31 px to spare sideways — but it leaves step two showing the words
+`Upright` and `Sideways` over a sliver of each miniature, which is the one thing that step is
+for. The fold is worth less than the previews. It wants a fix that keeps both.
+
 ## The tests
 
 `tests/e2e/setup.spec.ts` starts from an empty origin, which is a first launch, and walks all

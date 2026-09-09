@@ -660,6 +660,11 @@ finished or skipped.
 | Your practice | Weekday and weekend session lengths, the track chips, strict prerequisites, two songs per lesson. |
 | Ready | A summary of what was set, and where to find the tour again. |
 
+**Back, Skip and Next are pinned** to the foot of the screen on every step, and the step scrolls
+under them: sideways on a phone the fold is 360 px and most steps are longer. Sideways the
+settings rows run in two columns, as Settings' own do (§0 R5); the prose, the miniatures and
+the chips span both.
+
 The miniature (`ui/devicePreview`) is built from the phone's own short and long sides and the
 score screen's chrome at its real heights, scaled as one to the width the card can give it, and
 the renderer is told which way up it is (`WindowRenderer`'s `orientation`), so the arrangement

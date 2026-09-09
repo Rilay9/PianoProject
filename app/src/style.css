@@ -799,12 +799,20 @@ body {
 /* The buttons that move the tour along: Back on the left, Skip in the middle,
    the one filled box on the right — the thing you do on most visits (R3). */
 .setup-footer {
+  /* Pinned to the foot of whatever is on the screen, so Back, Skip and
+     Next are in reach on every step however long the step is; the content
+     scrolls under it. Sideways on a phone the fold is 360 px and most
+     steps are longer, which is how the builder found the buttons gone. */
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 20px;
-  padding-top: 12px;
+  padding: 12px 0 4px;
   border-top: 1px solid var(--border);
+  background: var(--surface);
 }
 
 .setup-footer > :last-child {
@@ -974,6 +982,25 @@ body {
   .setup-choices {
     flex-wrap: nowrap;
     align-items: flex-start;
+  }
+
+  /* Sideways the settings rows run in two columns, as Settings' own do
+     (`04` §0 R5); the prose, the miniatures, the strips and the chips span
+     both, since a column of them beside a column of nothing is the thing
+     two columns exist to fix. */
+  .setup-step {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+    align-items: start;
+  }
+
+  .setup-step > :not(.setting-row) {
+    grid-column: 1 / -1;
+  }
+
+  .setup-step > .setting-row {
+    margin-top: 4px;
   }
 }
 

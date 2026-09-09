@@ -199,6 +199,12 @@ test.describe('the setup tour', () => {
           fullPage: true,
           animations: 'disabled',
         });
+        // Back, Skip and Next are in reach on every step without scrolling,
+        // whichever way the phone is held: the footer is pinned.
+        const box = await page.locator('#setup-next').boundingBox();
+        expect(box, `step ${step}: the Next button has a box`).not.toBeNull();
+        expect((box?.y ?? 0) + (box?.height ?? 0), `step ${step} ${orientation}: Next is below the fold`).toBeLessThanOrEqual(size.height);
+        expect(box?.y ?? -1, `step ${step} ${orientation}: Next is above the top`).toBeGreaterThanOrEqual(0);
         await page.locator('#setup-next').click();
       }
       await expect(page.locator('.screen h1')).toHaveText('Today');
