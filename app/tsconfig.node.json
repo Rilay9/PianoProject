@@ -19,8 +19,10 @@
     "vite.config.ts",
     "playwright.config.ts",
     "playwright.tour.config.ts",
+    "playwright.states.config.ts",
     "vitest.config.ts",
     "tests/e2e/**/*.ts",
-    "tests/tour/**/*.ts"
+    "tests/tour/**/*.ts",
+    "tests/states/**/*.ts"
   ]
 }

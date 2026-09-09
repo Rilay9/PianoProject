@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "build:app": "node scripts/generate-icons.mjs && tsc -b && vite build",
     "preview": "vite preview --port 4173",
+    "preview:states": "vite preview --port 4183",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
@@ -17,6 +18,8 @@
     "predev": "node scripts/generate-icons.mjs",
     "pwa:audit": "node scripts/pwa-audit.mjs",
     "tour": "playwright test --config playwright.tour.config.ts tour.spec.ts sequence.spec.ts",
+    "states": "npm run build:app && playwright test --config playwright.states.config.ts",
+    "states:only": "playwright test --config playwright.states.config.ts",
     "tour:sequence": "playwright test --config playwright.tour.config.ts sequence.spec.ts",
     "choices": "playwright test --config playwright.tour.config.ts choices.spec.ts",
     "review": "npm run tour && npm run choices && node scripts/open-tour.mjs"

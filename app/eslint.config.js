@@ -15,6 +15,8 @@ const typedProjectFiles = [
   // "File ignored because no matching configuration was supplied" and moved
   // on. It is four files that drive the whole app and write the report.
   'tests/tour/**/*.ts',
+  // Same reason: the state gallery drives the whole score screen.
+  'tests/states/**/*.ts',
   '*.config.ts',
 ];
 
