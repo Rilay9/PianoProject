@@ -94,6 +94,11 @@ test.describe('a whole run', () => {
     // "a wrong note" scene could not be photographed in any form factor
     // because there was no red anywhere on the screen to photograph.
     await expect(page.locator('.keyboard-strip [data-midi="71"]')).toHaveClass(/is-wrong/);
+    // …for a moment. A key that stayed red for the run told him nothing
+    // about what to press next; it goes back to plain, and the blue key is
+    // still the one the score is waiting for (`04` §5).
+    await expect(page.locator('.keyboard-strip [data-midi="71"]')).not.toHaveClass(/is-wrong/, { timeout: 3_000 });
+    await expect(page.locator('.keyboard-strip .key.is-expected').first()).toBeVisible();
   });
 
   test('Wait mode: playing it wrongly still finishes, with a lower score', async ({ page }) => {

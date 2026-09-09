@@ -7,8 +7,9 @@
  * the code: a restart or a stop is not a finish, a lap moves the cursor back,
  * Wait mode never asks for a warning mark, and a natural end is reported once.
  */
-import { beforeEach, describe, expect, it } from 'vitest';
-import { ScoreSession } from '../../src/score/ScoreSession';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { KEY_FLASH_MS, ScoreSession } from '../../src/score/ScoreSession';
+import type { KeyboardStripState, KeyView } from '../../src/ui/KeyboardStrip';
 import type { WindowRenderer } from '../../src/score/WindowRenderer';
 import type { SessionScore } from '../../src/engine/types';
 import { makeModel, note } from './helpers/engineHarness';
@@ -195,6 +196,64 @@ describe('pausing', () => {
     session.resume();
     expect(session.state?.paused).toBe(false);
     expect(finishes).toHaveLength(0);
+    session.dispose();
+  });
+});
+
+describe('the keys under the score', () => {
+  /** A strip that only remembers what it was last told. */
+  function fakeStrip(): { strip: KeyView; last: () => KeyboardStripState } {
+    let state: KeyboardStripState = {};
+    const strip: KeyView = {
+      el: document.createElement('div'),
+      setState: (next) => {
+        state = next;
+      },
+      scrollToNote: () => undefined,
+      fitKeysToWidth: () => undefined,
+      clear: () => undefined,
+      destroy: () => undefined,
+    };
+    return { strip, last: () => state };
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date', 'performance'] });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('flashes a wrong key red for a moment, then goes back to the note it wants', () => {
+    const { strip, last } = fakeStrip();
+    session.setStrip(strip);
+    session.start({ mode: 'wait' });
+    flushFrame();
+    expect([...(last().expected ?? [])]).toEqual([60]);
+
+    press(71);
+    expect([...(last().wrong ?? [])]).toEqual([71]);
+    expect([...(last().expected ?? [])]).toEqual([60]);
+
+    vi.advanceTimersByTime(KEY_FLASH_MS + 50);
+    expect([...(last().wrong ?? [])]).toEqual([]);
+    expect([...(last().expected ?? [])]).toEqual([60]);
+    session.dispose();
+  });
+
+  it('flashes a right key green for a moment, and the next key is the blue one', () => {
+    const { strip, last } = fakeStrip();
+    session.setStrip(strip);
+    session.start({ mode: 'wait' });
+    flushFrame();
+
+    press(60);
+    expect([...(last().correct ?? [])]).toEqual([60]);
+    expect([...(last().expected ?? [])]).toEqual([62]);
+
+    vi.advanceTimersByTime(KEY_FLASH_MS + 50);
+    expect([...(last().correct ?? [])]).toEqual([]);
+    expect([...(last().expected ?? [])]).toEqual([62]);
     session.dispose();
   });
 });

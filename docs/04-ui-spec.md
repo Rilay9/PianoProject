@@ -382,7 +382,11 @@ Notation area:
   wrong/missed = red; extra notes played that are not in the score are shown on the keyboard
   strip in red, not on the score. Non-focused hand dims to 35 % opacity.
 - **Keyboard strip** (optional, bottom 12 % of height): 88-key mini keyboard, expected keys
-  highlighted blue, pressed keys green/red; scrolls to keep expected keys visible. This is the
+  highlighted blue, the ones after in a paler blue; a hit flashes its key green and a miss red
+  **for under a second** (`KEY_FLASH_MS`, 900 ms), then the key goes back to what the score
+  wants. Decided 2026-09-09: verdicts used to stay for the whole run, so a beginner who missed
+  early was looking at a keyboard that stayed red, which says nothing about what to press next.
+  The notation keeps its colours; the strip is about the next key. Scrolls to keep expected keys visible. This is the
   no-MIDI learner's main feedback and also the ScreenKeyboardSource input surface (tap to play
   — enabled only in Free/Wait mode when no MIDI input is present).
 - **The ribbon** (P21d A6, `keys: 'ribbon'`): the same keys as a 32 px band, one cell per

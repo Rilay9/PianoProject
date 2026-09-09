@@ -91,6 +91,9 @@ const FALLBACK_NOTE_SEC = 0.4;
  * the last field. Reading it back is cheaper and less error-prone than keeping
  * a second map from id to pitch in step with the first.
  */
+/** How long a verdict stays on a key before it goes back to what the score wants. */
+export const KEY_FLASH_MS = 900;
+
 export function midiFromNoteId(noteId: string): number | null {
   const last = noteId.slice(noteId.lastIndexOf(':') + 1);
   const midi = Number(last);
@@ -142,6 +145,19 @@ export class ScoreSession {
    * accumulating a red keyboard over a run.
    */
   private wrongKeys = new Set<number>();
+  /**
+   * The keys' verdicts, each for a moment (docs/04 §5).
+   *
+   * The strip used to keep every verdict for the whole run, so a beginner
+   * who missed a few notes early was looking at a keyboard that stayed red,
+   * and one who played well at one that stayed green — neither of which says
+   * what to press next. A verdict now lands on its key for `KEY_FLASH_MS`
+   * and the key goes back to what the score wants: blue for the note it is
+   * waiting for, a paler blue for the one after. The notation keeps its
+   * colours; the summary keeps the score.
+   */
+  private readonly keyFlashes = new Map<number, { state: NoteState; until: number }>();
+  private flashTimer: ReturnType<typeof setTimeout> | null = null;
   private dirty = false;
   private pendingStep: number | null = null;
 
@@ -241,6 +257,7 @@ export class ScoreSession {
     this.runOptions = run;
     this.judgements = new Map();
     this.wrongKeys = new Set();
+    this.clearFlashes();
     this.scheduledSteps = new Set();
     this.lastScore = null;
     this.freeMoved = false;
@@ -418,11 +435,16 @@ export class ScoreSession {
         // A key that satisfies no note in the score: the staff has nowhere to
         // put it, the strip does.
         if (event.noteIds.length === 0 && state === 'wrong') this.wrongKeys.add(event.midi);
+        this.flashKey(event.midi, state);
         this.dirty = true;
         break;
       }
       case 'missed':
-        for (const id of event.noteIds) this.judgements.set(id, 'wrong');
+        for (const id of event.noteIds) {
+          this.judgements.set(id, 'wrong');
+          const midi = midiFromNoteId(id);
+          if (midi !== null) this.flashKey(midi, 'wrong');
+        }
         this.dirty = true;
         break;
       case 'tempoTick':
@@ -444,6 +466,7 @@ export class ScoreSession {
         if (event.loop) {
           // A new lap: old colours would read as this lap's mistakes.
           this.judgements = new Map();
+          this.clearFlashes();
           this.scheduledSteps = new Set();
           // Told, not hidden. A lap is a finish, and "play this once and stop"
           // — hearing one bar (P21c B4) — is exactly a caller that wants to
@@ -538,15 +561,17 @@ export class ScoreSession {
   private paintStrip(): void {
     const strip = this.stripView;
     if (!strip) return;
+    // Only the verdicts of the last moment; the rest of the strip is what
+    // the score wants next.
+    const now = this.nowMs();
     const correct = new Set<number>();
-    const wrong = new Set<number>(this.wrongKeys);
+    const wrong = new Set<number>();
     const uncertain = new Set<number>();
-    for (const [noteId, state] of this.judgements) {
-      const midi = midiFromNoteId(noteId);
-      if (midi === null) continue;
-      if (state === 'correct') correct.add(midi);
-      else if (state === 'wrong') wrong.add(midi);
-      else if (state === 'uncertain') uncertain.add(midi);
+    for (const [midi, flash] of this.keyFlashes) {
+      if (flash.until <= now) continue;
+      if (flash.state === 'correct') correct.add(midi);
+      else if (flash.state === 'wrong') wrong.add(midi);
+      else if (flash.state === 'uncertain') uncertain.add(midi);
     }
     strip.setState({
       expected: new Set(this.expectedNow),
@@ -561,6 +586,46 @@ export class ScoreSession {
     // fits never moves.
     const lowest = Math.min(...this.expectedNow);
     if (Number.isFinite(lowest)) strip.scrollToNote(lowest);
+  }
+
+  private nowMs(): number {
+    return typeof performance !== 'undefined' ? performance.now() : Date.now();
+  }
+
+  /** A verdict lands on a key for a moment; the strip is painted again when it ends. */
+  private flashKey(midi: number, state: NoteState): void {
+    if (state === 'current') return;
+    this.keyFlashes.set(midi, { state, until: this.nowMs() + KEY_FLASH_MS });
+    if (this.flashTimer === null) {
+      this.flashTimer = setTimeout(() => {
+        this.flashTimer = null;
+        this.expireFlashes();
+      }, KEY_FLASH_MS + 20);
+    }
+  }
+
+  private expireFlashes(): void {
+    const now = this.nowMs();
+    let soonest = Infinity;
+    for (const [midi, flash] of this.keyFlashes) {
+      if (flash.until <= now) this.keyFlashes.delete(midi);
+      else soonest = Math.min(soonest, flash.until);
+    }
+    this.paintStrip();
+    if (Number.isFinite(soonest) && this.flashTimer === null) {
+      this.flashTimer = setTimeout(() => {
+        this.flashTimer = null;
+        this.expireFlashes();
+      }, Math.max(20, soonest - now + 20));
+    }
+  }
+
+  private clearFlashes(): void {
+    this.keyFlashes.clear();
+    if (this.flashTimer !== null) {
+      clearTimeout(this.flashTimer);
+      this.flashTimer = null;
+    }
   }
 
   /**
