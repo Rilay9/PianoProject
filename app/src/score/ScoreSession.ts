@@ -304,6 +304,11 @@ export class ScoreSession {
     this.options.onChange?.();
   }
 
+  /** Asks for a paint at the next frame: the sheet was redrawn under the run. */
+  repaint(): void {
+    this.dirty = true;
+  }
+
   /** Feeds an input event. Never renders — see rule 1 in the file comment. */
   feed(midi: number, velocity: number, tMs: number, confidence = 1): void {
     this.dirtiedByInputAtMs ??= performance.now();

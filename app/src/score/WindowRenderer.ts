@@ -103,6 +103,17 @@ const SETTLE_TIMEOUT_MS = 100;
 /** A frozen run keeps its scale while the fit would shrink it by less than this. */
 const FROZEN_OVERFLOW = 0.9;
 
+/**
+ * Between the two systems when they are packed (`08` §4.1).
+ *
+ * Upright on a phone the fit is limited by the width, not the height: one
+ * bar with a clef is as wide as the screen. The two systems then used a
+ * third of their half of the stage each and sat 500 px apart, black between
+ * and below them. A page puts its systems close together and leaves the
+ * spare space at the bottom; so does this, when there is spare space.
+ */
+const SLOT_GAP_PX = 24;
+
 /** Manual scrolling suspends auto-scroll for this long (docs §5). */
 export const MANUAL_SCROLL_PAUSE_MS = 5000;
 
@@ -1285,6 +1296,7 @@ export class WindowRenderer {
       slot.fittedFor = { height: Math.round(perSlot), scale };
       if (slot === this.buffers[this.cursorSlot]) this.baseTransform = transform;
     }
+    this.packSlots(boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX })));
     // Sideways the spare is not on the screen and not in `drawnSlots`, but it
     // is about to be: fit it to the same stage now rather than when it comes
     // forward, where a fit would cost the swap its frame.
@@ -1303,6 +1315,32 @@ export class WindowRenderer {
     // measurement landing, the run ending — left them where the old scale had
     // put the notes until the next step moved them.
     this.repositionBands();
+  }
+
+  /**
+   * Stacks the two slots from the top when their music is shorter than half
+   * the stage each; otherwise the stylesheet's halves stand. The scale was
+   * fitted against the halves, so a packed pair never overflows.
+   */
+  private packSlots(entries: { slot: Buffer; height: number }[]): void {
+    const packed =
+      this.readAhead === 'slots' &&
+      entries.length === 2 &&
+      entries[0]!.height + entries[1]!.height + SLOT_GAP_PX < this.el.getBoundingClientRect().height;
+    if (!packed) {
+      for (const buffer of this.buffers) {
+        buffer.wrapper.style.top = '';
+        buffer.wrapper.style.height = '';
+      }
+      return;
+    }
+    // `drawnSlots` is in slot order, so the first entry is the upper slot.
+    let top = 0;
+    for (const { slot, height } of entries) {
+      slot.wrapper.style.top = `${String(Math.round(top))}px`;
+      slot.wrapper.style.height = `${String(Math.round(height))}px`;
+      top += height + SLOT_GAP_PX;
+    }
   }
 
   private repositionBands(): void {

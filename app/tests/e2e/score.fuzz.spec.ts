@@ -147,6 +147,16 @@ async function reveal(page: Page): Promise<void> {
   await page.waitForTimeout(150);
 }
 
+async function pressControl(page: Page, selector: string): Promise<void> {
+  await reveal(page);
+  try {
+    await page.locator(selector).click({ timeout: 1_500 });
+  } catch {
+    await reveal(page);
+    await page.locator(selector).click({ timeout: 3_000 });
+  }
+}
+
 type ActionName =
   | 'right'
   | 'wrong'
@@ -281,24 +291,21 @@ for (const seed of SEEDS) {
           await page.waitForTimeout(60);
           await midi.noteOff(WRONG_NOTE);
           break;
-        // `force`: the bar may hide itself between the reveal and the click
-        // (0.7 s into a run); the walk is about what the press does, not
-        // whether the finger found it.
+        // A real press: reveal the bar if it has hidden itself, then click.
+        // If it hid again in between (0.7 s into a run), reveal once more —
+        // the invariant is that one tap always brings it back (`08` §9.34).
         case 'playPause':
-          await reveal(page);
-          await page.locator('#score-play').click({ force: true });
+          await pressControl(page, '#score-play');
           break;
         case 'hands':
-          await reveal(page);
-          await page.locator(`#score-hands-${['R', 'L', 'both'][Math.floor(random() * 3)] ?? 'R'}`).click({ force: true });
+          await pressControl(page, `#score-hands-${['R', 'L', 'both'][Math.floor(random() * 3)] ?? 'R'}`);
           break;
         case 'mode':
           await reveal(page);
           await page.locator('#score-mode').selectOption(['wait', 'tempo', 'wait', 'listen', 'free'][Math.floor(random() * 5)] ?? 'wait');
           break;
         case 'hear':
-          await reveal(page);
-          await page.locator('#score-hear').click({ force: true });
+          await pressControl(page, '#score-hear');
           break;
         case 'loop': {
           const stage = page.locator('#score-stage');

@@ -53,6 +53,9 @@ interface Probe {
   cursorBar: number | null;
   /** The scale the cursor slot is drawn at (the transform's `a`). */
   scale: number;
+  /** The cursor slot's stave-line top, in px from the slot's own top (`08` §9.2). */
+  staveTop: number | null;
+  cursorSlotIndex: string | null;
   slots: {
     slot: string | null;
     cursor: boolean;
@@ -119,6 +122,19 @@ async function probe(page: Page): Promise<Probe> {
     const cursorWrapper = document.querySelector<HTMLElement>('#score-stage .score-buffer.is-cursor');
     const matrix = cursorWrapper ? new DOMMatrixReadOnly(getComputedStyle(cursorWrapper).transform) : null;
     const scale = matrix ? Math.round(matrix.a * 1000) / 1000 : 0;
+    // The stave's lines, from the engraver's model via the fit's debug view,
+    // carried through the slot's transform: the number that must not move
+    // between windows (`08` §9.2).
+    const fitNow = (window as Hooked).__pianopath?.scoreFit?.() as
+      | { slots?: { staffTop?: number | null }[] }
+      | null
+      | undefined;
+    const slotIndex = cursorWrapper?.dataset.slot ?? null;
+    const slotFit = slotIndex === null ? undefined : fitNow?.slots?.[Number(slotIndex)];
+    const staveTop =
+      matrix && slotFit && typeof slotFit.staffTop === 'number'
+        ? Math.round((matrix.f + slotFit.staffTop * matrix.d) * 10) / 10
+        : null;
     function measureOf(el: Element): number | null {
       // The note id carries the printed bar as its first field.
       const id = (el as HTMLElement).dataset.noteId ?? '';
@@ -161,6 +177,8 @@ async function probe(page: Page): Promise<Probe> {
       band: b ? { left: Math.round(b.left), width: Math.round(b.width) } : null,
       cursorBar,
       scale,
+      staveTop,
+      cursorSlotIndex: slotIndex,
       slots,
     };
   });
@@ -283,6 +301,23 @@ for (const { orientation, size } of FORM_FACTORS.filter((f) => FACTORS.length ==
           Math.abs(scale - reference) / reference,
           `${where}: drawn at scale ${String(scale)} against ${String(reference)} at the start — the size changed`,
         ).toBeLessThanOrEqual(SCALE_TOLERANCE);
+      }
+
+      // --- 9.2: the stave's lines sit at the same y in every window ----------
+      // Per slot, since upright the cursor alternates between two boxes.
+      const staveBySlot = new Map<string, number>();
+      for (const s of steps) {
+        const { staveTop, cursorSlotIndex } = s.probe;
+        if (staveTop === null || cursorSlotIndex === null) continue;
+        const seen = staveBySlot.get(cursorSlotIndex);
+        if (seen === undefined) {
+          staveBySlot.set(cursorSlotIndex, staveTop);
+          continue;
+        }
+        expect(
+          Math.abs(staveTop - seen),
+          `step ${String(s.step)} (bar ${String(s.bar)}): the stave sits at ${String(staveTop)} px in slot ${cursorSlotIndex}, against ${String(seen)} before — it moved`,
+        ).toBeLessThanOrEqual(2);
       }
 
       // --- the next bar is always on the screen, until there is none --------

@@ -100,6 +100,24 @@ test.describe('score screen', () => {
     await expect(bar).toHaveAttribute('data-visible', 'true');
   });
 
+  test('the ⋯ sheet fits sideways without scrolling (08 §7.2)', async ({ page }) => {
+    await page.setViewportSize({ width: 780, height: 360 });
+    await openScore(page);
+    await openScoreMenu(page);
+    const fits = await page.evaluate(() => {
+      const panel = document.querySelector<HTMLElement>('#score-more-sheet .sheet__panel');
+      const body = document.querySelector<HTMLElement>('#score-more-sheet .sheet__body');
+      return {
+        panel: panel ? [panel.scrollHeight, panel.clientHeight] : null,
+        body: body ? [body.scrollHeight, body.clientHeight] : null,
+      };
+    });
+    for (const [name, pair] of Object.entries(fits)) {
+      expect(pair, `no ${name}`).not.toBeNull();
+      if (pair) expect(pair[0], `${name} scrolls: ${String(pair[0])} in ${String(pair[1])}`).toBeLessThanOrEqual(pair[1] + 1);
+    }
+  });
+
   test('and stays put when it is not (decision 5)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await openScore(page);
@@ -174,8 +192,20 @@ test.describe('score screen', () => {
   test('zoom, keyboard strip and playback destination all respond', async ({ page }) => {
     await openScore(page);
     await openScoreMenu(page);
+    // ＋ grows the sheet and － shrinks it back: the buttons are monotonic
+    // (`08` §9.3) — a press of "bigger" never yields a smaller sheet.
+    const scaleNow = () =>
+      page.evaluate(() => {
+        const el = document.querySelector<HTMLElement>('#score-stage .score-buffer.is-cursor');
+        return el ? new DOMMatrixReadOnly(getComputedStyle(el).transform).a : 0;
+      });
+    const before = await scaleNow();
     await page.locator('#score-zoom-in').click();
+    await page.waitForTimeout(200);
+    expect(await scaleNow()).toBeGreaterThan(before);
     await page.locator('#score-zoom-out').click();
+    await page.waitForTimeout(200);
+    expect(await scaleNow()).toBeCloseTo(before, 2);
 
     await expect(page.locator('#score-strip')).toBeVisible();
     await page.locator('#score-keys-off').click();

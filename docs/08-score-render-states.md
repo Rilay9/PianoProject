@@ -315,6 +315,10 @@ slot A re-drawn with block k+2, faded ~150 ms, ON IDLE (≤ 100 ms later)
   notices a flash; that is the whole reason it exists.
 - **"Next" follows the playing order.** The next block holds the bar of the next *step*: at a
   repeat, the repeat's first bar; at a first/second-time ending, the ending played on this pass.
+- **The two slots pack from the top** when the fit leaves room — upright on a phone the width
+  limits the size, and each system used a third of its half of the stage with black between and
+  below — with 24 px between them, like a page; the spare space is at the bottom. When the music
+  fills the halves, the halves stand.
 - **At the end of a piece the other slot shows the bars just played**, not blank — a blank slot
   is half the screen gone black for the last bars of every song. Chosen in playing order too, so
   at a second-time ending it is the bar *before* the ending, not the first ending printed above.
@@ -871,7 +875,7 @@ match; **later** is the list for the next builder. The random walks and the whol
 | §4.2 band on the stave the note is on; follows a refit; a rest borrows a neighbour | `placeBand`, `repositionBands` in `fitSlots` | **done** (follows a refit) |
 | §4.2 band off a run: idle on the first step; stays when paused or finished; the new run's first step on a restart | `showStep(0)` at load; nothing moves it on pause or finish; the `started` event on a restart | matches |
 | §4.3 keys: `next` applied before `expected`; 56 px sideways; the ribbon names the note; scrolls to the wanted note | `STATE_NAMES` order, `--strip-height: 56px`, `KeyRibbon`, `scrollToNote` | matches |
-| §4.4 where am I in the piece | nothing drew it | **done** — `bar 3 / 48` beside the title, mirrored sideways. **Later:** a pickup piece is off by one (index + 1, not the printed number) |
+| §4.4 where am I in the piece | nothing drew it | **done** — `bar 3 / 48` beside the title, mirrored sideways; a pickup piece counts from 0 |
 | §5.2 the read-ahead line only in Tempo and Listen; refuses the fallback | `nextStepIndex`, `placeBand(exact)`; a line under the stave | **done** (the line; cleared on a stop) |
 | §5.3 the count-in counts the run's first bar; the beat dot Tempo and Listen only; reduced motion | the engine's `beatsPerBar` at `firstStep`; the screen's dots read it now; the dot on the stage in every form factor | **done** (the dots' meter, the dot on the stage) |
 | §6.1 colours by class; `uncertain` never red; clear per lap | `setNoteStates`; `judgements` cleared on a lap | matches |
@@ -881,15 +885,15 @@ match; **later** is the list for the next builder. The random walks and the whol
 | §7.1 one row at every width; short modes below 400 px | CSS and `NARROW_BAR_PX`; `score.spec` widths | matches |
 | §7.1 auto-hide 0.7 s at a run's start, 3 s after a tap, only where it costs room | `showBar(CONTROL_BAR_START_HIDE_MS)`, `barCostsMusicRoom` | **done**; `score.screen.spec:75` still fails sideways — **open**, see below |
 | §7.1 `Hear it` during a run ends the run and demonstrates | `toggleHear` | **done** |
-| §7.2 the ⋯ sheet sideways in two columns without scrolling | CSS at `max-height: 520px` | matches by reading; **later:** a test that the sheet's `scrollHeight` fits at 360 px |
+| §7.2 the ⋯ sheet sideways in two columns without scrolling | CSS at `max-height: 520px` | matches; **done** — a test at 780 by 360 |
 | §7.3 tap toggles the bar; double-tap loops; long-press demonstrates; a drag cancels (12 px); the click after a press is swallowed | the stage handlers, read | matches; long-press during a run is ignored now — **done** |
 | §9.24 bar numbers at gesture boundaries | the double-tap handed its *printed* number to the index-based loop builder: double-tapping bar 3 looped bar 4 (the long-press used the printed builder and was right) | **done** — loops are printed bars everywhere; the weak-bars loop converts its unrolled measure |
 | §10 a tempo change written in | the bpm label read the tempo at beat 0 | **done** — at the cursor |
 | §8.3 `barsPerWindow` and `layout` mid-run | re-engraved under the run, so the judgements' elements were gone | **done** — they restart the run, like mode and hands |
-| §6.2 hot-spot bars and the master badge | the sheet shows stats and a pass title; the hot spots feed `Loop the weak bars` but are not listed, and master-eligible is recorded, not shown | **later** |
+| §6.2 hot-spot bars and the master badge | the sheet shows stats and a pass title; the hot spots feed `Loop the weak bars` but were not listed, and master-eligible was recorded, not shown | **done** — `Mastered` as the title when eligible; `Weakest bars: 3, 5` among the stats |
 | §7.2 opening the ⋯ sheet holds the bar, does not pause | the sheet is modal over the screen and calls no pause; the bar's state is moot while it is open | matches, by reading `openStashedSheet` |
-| §9.3 zoom monotonic | a multiplier on the drawn scale, never an engraving zoom | matches by reading; **later:** an assertion that ＋ grows the sheet |
-| §9.23 one row at every width | tested at 360, 390, 412 and 915; 780 and 1200 by the tour's pictures only | matches; **later:** the two widths in the test |
+| §9.3 zoom monotonic | a multiplier on the drawn scale, never an engraving zoom | matches; **done** — the test asserts ＋ grows and － restores |
+| §9.23 one row at every width | tested at 360, 390, 412, 780, 880 and 1200 | **done** |
 | §7.3 pinch, two-finger tap | never built | **done** — struck from `04` |
 | §7.4 the mode matrix | Free rebuilt: advances on the piece's notes, marks nothing, no summary; the start mark once | **done**; Listen: no summary — **done** |
 | §7.4 Performance: one pass, no restart | `performanceRun` | matches |
@@ -911,13 +915,14 @@ match; **later** is the list for the next builder. The random walks and the whol
 | §4.3 the keys' `pressed` state | the strip sets it for its own touches; the session hands it an empty set — a cable's presses are not shown as pressed, only as their verdict | matches the intent; note it |
 | §7.1 `Start again` in the ⋯ sheet | `score-restart` calls `startRun` | matches |
 | §8.3 a resize below a few px changes nothing | the observer refits on any change; the fit yields the same scale and `fitToStage` returns on an unchanged height, so the effect is nothing | matches in effect; no tolerance is coded |
-| §9.2 stave lines at the same y in every window | anchored on the lines (§3.2); measured once by hand in the sequence's pictures | **later:** the sequence to assert the cursor slot's stave y, not only the scale |
-| §9.5 nothing re-engraves during a run except by restarting | true of every setting now; **rotation is the exception** — the stage changes shape and the sheet must be engraved for it. The colours survive it, because judgements are keyed by note id and the next paint re-applies them — but the next paint is the next note | **later:** paint once after a rotation so the colours return at once |
+| §9.2 stave lines at the same y in every window | anchored on the lines (§3.2) | **done** — the sequence asserts the cursor slot's stave y per slot, within 2 px |
+| §9.5 nothing re-engraves during a run except by restarting | true of every setting now; **rotation is the exception** — the stage changes shape and the sheet must be engraved for it. The colours survive it, because judgements are keyed by note id | **done** — a paint is asked for after a resize, so they return at once |
 | §9.12 the keys marked `expected` are the cursor's notes in the same frame | one `paint` sets both from `expectedNow`; `keyboard-strip.spec` checks the marks | matches |
-| §9.34 a hidden bar comes back on one tap, always | `toggleBar` on a stage tap; the walk reveals then clicks with `force`, so it exercises the reveal but does not prove the hit | **later:** the walk to click without `force` after a reveal |
-| §10 no notes at all | a PDF or a missing file is a terminal state; a MusicXML with zero notes is not checked for — it would open with nothing to play and every mode with expectations refused | **later:** a terminal state with a reason |
+| §9.34 a hidden bar comes back on one tap, always | `toggleBar` on a stage tap; the walk reveals and clicks for real, revealing once more if the bar hid in between | **done** |
+| §10 no notes at all | a PDF or a missing file is a terminal state; a MusicXML with zero notes | **done** — `… has no notes to play.` and no stage |
 | §10 a bar preview ending returns the window as a seek | after the bar the run stops and the cursor stays on the previewed bar, which is where the eye is | matches in effect; the spec's "returns" is loose — the cursor stays where the preview was |
-| §11.15 the tablet rule | not built | **later** |
+| §11.15 the tablet rule | not built | **later** — and the pictures say what it must do: on a tablet upright with the lesson panel, two bars a slot are width-limited and small, so the rule is not "as many bars as fill the height" but "the bars per slot that gives the largest stave within both limits", which there is *fewer* |
+| §4.1 the slots pack from the top | sat at 0 % and 50 % of the stage whatever the music's height; the Mary pictures on every upright size showed two small systems 500 px apart | **done** — `packSlots`, 24 px between them when the fit leaves room |
 | §11.19 the note-names label | relabelled | **done** |
 
 **Measured, not guessed:** sideways in `score.screen.spec:75` the bar stayed because Hot Cross
@@ -927,15 +932,11 @@ was right to stay. The test now checks the criterion the bar uses rather than as
 
 **Later, in one list** — the fixes and improvements the walk wrote down and did not build:
 
-1. The tablet rule: bars per window from the space (§3.2, §11.15).
-2. The bar count on a pickup piece: printed number, not index + 1 (§4.4).
-3. The summary's hot-spot bars and the master badge (§6.2).
-4. A paint once after a rotation, so the colours are back before the next note (§9.5).
-5. The sequence to assert the stave's y as well as the scale (§9.2); an assertion that ＋ grows
-   the sheet (§9.3); the two remaining widths in the one-row test (§9.23).
-6. The walk to click bar controls without `force` after a reveal (§9.34).
-7. A test that the ⋯ sheet fits sideways without scrolling (§7.2).
-8. A terminal state for a file with no notes (§10).
-9. The 780-bar open budget, which flaps around 60 s on this laptop (§9.28).
-10. Walks for the keys under mic input, the lesson and drill hosts, the PDF viewer and scroll
-    layout (`docs/08-test-map.md`).
+1. The tablet rule: bars per window from the space (§3.2, §11.15) — needs a tablet to judge.
+2. The 780-bar open budget, which flaps around 60 s on this laptop (§9.28).
+3. Walks for the keys under mic input, the lesson and drill hosts, the PDF viewer and scroll
+   layout (`docs/08-test-map.md`).
+
+Items 2 to 8 of the earlier list — the pickup bar count, the summary's weakest bars and master
+title, the paint after a rotation, the three assertions, the walk's real clicks, the sideways
+sheet test, the no-notes state — were built the same evening.

@@ -441,7 +441,9 @@ test.describe('the score control bar', () => {
     // this row has grown past its width, so all three are pinned (P21e A1).
     ['upright, 360', { width: 360, height: 780 }],
     ['upright', { width: 390, height: 844 }],
+    ['sideways, 780', { width: 780, height: 360 }],
     ['sideways', { width: 880, height: 412 }],
+    ['tablet', { width: 1200, height: 900 }],
   ] as const) {
     test(`${orientation}: one row, seven controls at most`, async ({ page }) => {
       await page.setViewportSize(viewport);

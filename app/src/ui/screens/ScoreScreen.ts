@@ -1434,7 +1434,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
 
     const title = document.createElement('h2');
-    title.textContent = outcome.passed ? 'Passed' : 'Run finished';
+    title.textContent = outcome.masterEligible ? 'Mastered' : outcome.passed ? 'Passed' : 'Run finished';
     sheet.appendChild(title);
 
     const lines = document.createElement('dl');
@@ -1457,6 +1457,14 @@ export function ScoreScreen(router: Router): HTMLElement {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
     }
     addStat(lines, 'Missed', String(score.missedTotal));
+    // The bars that went worst, by printed number, so the learner knows where
+    // to look before choosing `Loop the weak bars` (`08` §6.2).
+    const weakest = [...score.hotSpots]
+      .filter((spot) => spot.misses + spot.wrongs > 0)
+      .sort((a, b) => b.misses + b.wrongs - (a.misses + a.wrongs))
+      .slice(0, 3)
+      .map((spot) => printedBar(model?.steps.find((s) => s.measureIndex === spot.measureIndex)?.sourceMeasureIndex ?? spot.measureIndex));
+    if (weakest.length > 0) addStat(lines, 'Weakest bars', [...new Set(weakest)].sort((a, b) => a - b).join(', '));
     if (score.timing && heard) {
       addStat(lines, 'Timing', `${Math.round(score.timing.meanMs)} ms mean, ${Math.round(score.timing.earlyPct)}% early`);
     }
@@ -1565,6 +1573,24 @@ export function ScoreScreen(router: Router): HTMLElement {
     renderer.setLoopRange(from === undefined || to === undefined ? null : { from, to });
   }
 
+  /**
+   * The printed number of a source measure: from 1, or from 0 when the piece
+   * opens with a pickup — the only measure that may be numbered 0 (`08` §10).
+   * A pickup is a first measure shorter than the time signature says.
+   */
+  function printedBar(sourceMeasureIndex: number): number {
+    if (!model) return sourceMeasureIndex + 1;
+    const sig = model.timeSigMap[0];
+    const barBeats = sig ? (sig.beats * 4) / sig.beatType : 4;
+    let firstBarEnds = 0;
+    for (const step of model.steps) {
+      if (step.sourceMeasureIndex !== 0) break;
+      for (const note of step.notes) firstBarEnds = Math.max(firstBarEnds, step.sourceOnset + note.duration);
+    }
+    const pickup = firstBarEnds > 0 && firstBarEnds < barBeats - 1e-6;
+    return sourceMeasureIndex + (pickup ? 0 : 1);
+  }
+
   /** `bar 3 / 48`: the bar under the cursor and the piece's length. */
   function drawWhere(): void {
     if (!model || !renderer) {
@@ -1574,7 +1600,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     const step = session?.state?.step ?? renderer.stepIndex;
     const bar = model.steps[step]?.sourceMeasureIndex;
     where.textContent =
-      bar === undefined ? '' : `bar ${String(bar + 1)} / ${String(model.sourceMeasureCount)}`;
+      bar === undefined
+        ? ''
+        : `bar ${String(printedBar(bar))} / ${String(printedBar(model.sourceMeasureCount - 1))}`;
   }
 
   function render(): void {
@@ -1750,6 +1778,13 @@ export function ScoreScreen(router: Router): HTMLElement {
       await probe.load(musicXml);
       const loaded = probe.extractModel({ id: item.id });
       probe.dispose();
+      // Nothing to play is a terminal state with a reason, not a stage with
+      // nothing on it and every mode refused (`08` §10).
+      if (loaded.steps.length === 0) {
+        status.textContent = `${item.title} has no notes to play.`;
+        render();
+        return;
+      }
       model = loaded;
 
       renderer = await WindowRenderer.create({
@@ -1896,6 +1931,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     // notation, so it is measured before the sheet is refitted.
     measureBar();
     renderer?.refit();
+    // The refit may have engraved the sheet again; the colours are keyed by
+    // note id and come back at the next paint, so ask for one now rather
+    // than at the next note (`08` §9.5).
+    session?.repaint();
     // Turning the phone changes how much room the keys have.
     strip?.fitKeysToWidth();
   };

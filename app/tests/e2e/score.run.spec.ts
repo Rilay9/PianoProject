@@ -69,7 +69,7 @@ test.describe('a whole run', () => {
 
     const sheet = page.locator('#score-summary');
     await expect(sheet).toBeVisible({ timeout: 30_000 });
-    await expect(sheet).toContainText('Passed');
+    await expect(sheet).toContainText(/Passed|Mastered/);
     // Wait mode with every step completed cleanly is 100 %, and the run had a
     // judging input, so there is no self-report to fall back on.
     await expect(sheet.locator('[data-stat="accuracy"]')).toHaveText('100%');

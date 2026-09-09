@@ -66,7 +66,7 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
 
   const sheet = page.locator('#score-summary');
   await expect(sheet).toBeVisible({ timeout: 30_000 });
-  await expect(sheet).toContainText('Passed');
+  await expect(sheet).toContainText(/Passed|Mastered/);
 
   // 3. Progress has it: a session row, a pass, and minutes on today's cell.
   await page.goto('/#/progress');
