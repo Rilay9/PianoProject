@@ -136,7 +136,9 @@ In their first hour:
 
 And the owner's simpler request — Twinkle, phone both ways up, before and after the first, a
 middle and the last input — showed three more: the silent bass staff of rests that fourteen
-authored one-hand songs carry took half of every window (dropped in the pipeline now); sideways
+authored one-hand songs carry took half of every window (dropped in the pipeline now — and
+confirmed by the owner on 2026-09-09: a single staff is right for the learning songs, the grand
+staff is not what they are for); sideways
 the control bar sat over the lower staff for the first three seconds of every run (0.7 s at a
 run's start now); and the end of every song left the top half of the screen black (the other
 slot keeps the bars just played).
