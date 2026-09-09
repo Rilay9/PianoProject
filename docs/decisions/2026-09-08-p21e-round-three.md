@@ -268,6 +268,26 @@ was quiet:
 The corpus stands at twelve legs on four form factors, 48 of 48, every picture read; the gallery
 at 52 of 52; the full `npm run e2e` run before the commit rather than a subset.
 
+**And the one open bug from the builder's report**, three Chopin scores that "cannot be rendered"
+since the probe began measuring width: not a load hang. The Barcarolle loads in under a second;
+its first window was drawn at a scale of 0.0023, the Fantaisie's at 0.00015 — a one-pixel sheet,
+which the content check's wait for a visible sheet reads as a timeout. The engraver draws a tie or
+a beam that crosses a system break as a path from where the note was on the line before: x =
+−487,777 on the Barcarolle, −5,247,479 on the Fantaisie. The width cap excluded the wide ones and
+a narrow piece of the same path still put the sheet's left edge there. The probe now counts
+nothing off the page, and a drawn window whose own box cannot be a bar's (the engraver's `♩ = 96`
+came out of `getBBox` 2584 units wide on the Barcarolle) is measured element by element on the
+page. The dev harness engraves what the score screen does, metronome mark off, so the content
+check measures the sheet the learner gets. The three fit at 0.57–0.59 like their neighbours.
+
+One more thing the run-alone corpus showed, worth knowing before anyone reads an older log:
+several legs in the earlier runs (Greensleeves upright at 1.27, Happy Birthday at 1.20) were
+drawn from the first window's narrow ink because the probe's measurement landed late — the
+gallery was running beside the corpus. Measured, the width floors at the page, which is the
+deliberate rule (a one-bar system is not stretched by the engraver, the next multi-bar one would
+be, and a run must not shrink between them): those pieces sit at 0.93 with three slots upright,
+the size Hot Cross Buns and Mary have always had. Every leg read; nothing else moved.
+
 ## The sequence is in the tour
 
 `npm run tour` now runs `sequence.spec.ts` after the scenes: seven frames of *Mary Had a Little

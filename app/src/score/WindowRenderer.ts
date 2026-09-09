@@ -220,12 +220,55 @@ function inkBox(svg: SVGElement): { x: number; y: number; width: number; height:
     return null;
   }
   if (!(box.width > 0 && box.height > 0)) return null;
+  // The one call is the whole drawing's extent, which is right until one
+  // element is nowhere near the page: the engraver's `♩ = 96` came out of
+  // `getBBox` at 2584 units wide and 800 above the sheet on the Barcarolle,
+  // and a tie across a system break lands its path at x = -5,000,000. A box
+  // wider than a page and a half, or starting a quarter of a page to its
+  // left, is one of those, and the drawing is measured element by element
+  // instead, keeping only what lies on the page.
+  const page = view.width > 0 ? view.width : engraved.width / unit;
+  const implausible = box.width > page * 1.5 || box.x < -page * 0.25 || box.x + box.width > page * 1.75;
+  const measured = implausible ? inkOnPage(svg, page) : null;
+  const ink = measured ?? box;
   return {
-    x: box.x * unit,
-    y: box.y * unit,
-    width: box.width * unit,
-    height: box.height * unit,
+    x: ink.x * unit,
+    y: ink.y * unit,
+    width: ink.width * unit,
+    height: ink.height * unit,
   };
+}
+
+/**
+ * The extent of the elements that lie on the page, in the SVG's own units;
+ * null when nothing does. Element by element, so it is only asked for when
+ * the drawing's own box is not to be trusted.
+ */
+function inkOnPage(svg: SVGSVGElement, page: number): { x: number; y: number; width: number; height: number } | null {
+  let left = Infinity;
+  let right = -Infinity;
+  let top = Infinity;
+  let bottom = -Infinity;
+  const engraved = engravedSize(svg);
+  const view = svg.viewBox.baseVal;
+  const pageHeight = view && view.height > 0 ? view.height : (engraved?.height ?? Infinity);
+  for (const el of svg.querySelectorAll<SVGGraphicsElement>('path, text, rect, line, polygon, circle, ellipse')) {
+    let b: DOMRect;
+    try {
+      b = el.getBBox();
+    } catch {
+      continue;
+    }
+    if (!(b.width > 0 || b.height > 0)) continue;
+    if (b.width > page * 1.5 || b.x < -page * 0.25 || b.x + b.width > page * 1.75) continue;
+    if (b.y < -pageHeight || b.y + b.height > pageHeight * 2) continue;
+    left = Math.min(left, b.x);
+    right = Math.max(right, b.x + b.width);
+    top = Math.min(top, b.y);
+    bottom = Math.max(bottom, b.y + b.height);
+  }
+  if (!(right > left && bottom > top)) return null;
+  return { x: left, y: top, width: right - left, height: bottom - top };
 }
 
 /**
@@ -2272,6 +2315,20 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
   // phone's screen. Same reasoning as the height cap above, on the other axis.
   const staveWidth = Math.max(...lines.map((l) => l.right - l.left), 0);
   const widthCap = staveWidth > 0 ? staveWidth * 1.5 : Infinity;
+  // And nothing *off the page* counts, whatever its size. The engraver draws
+  // a beam or a tie that crosses a system break as a path from where the
+  // note was on the line before — hundreds of thousands of units to the
+  // left, five million on Chopin's Fantaisie — and a narrow piece of it
+  // passes the width cap and still puts the sheet's left edge there. Three
+  // Chopin scores in the catalog were fitted to a width of millions and
+  // drawn at a scale of 0.0002: a one-pixel sheet, read as "cannot render".
+  // The stave, with a margin of a quarter of itself on the left for a brace
+  // and a clef, and half again on the right for a bar too dense for the
+  // page, is where the ink of a bar can be.
+  const pageLeft = staveWidth > 0 ? Math.min(...lines.map((l) => l.left)) - staveWidth * 0.25 : -Infinity;
+  const pageRight = staveWidth > 0 ? Math.max(...lines.map((l) => l.right)) + staveWidth * 0.5 : Infinity;
+  const pageTop = Math.min(...systems.map((s) => s.top)) - cap;
+  const pageBottom = Math.max(...systems.map((s) => s.bottom)) + cap;
   let inkLeft = Infinity;
   let inkRight = -Infinity;
   for (const el of svg.querySelectorAll<SVGGraphicsElement>('path, text, rect, line, polygon, circle, ellipse')) {
@@ -2284,6 +2341,8 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
     if (!(box.width > 0 || box.height > 0)) continue;
     if (box.height * unit > cap) continue;
     if (box.width * unit > widthCap) continue;
+    if (box.x * unit < pageLeft || (box.x + box.width) * unit > pageRight) continue;
+    if (box.y * unit < pageTop || (box.y + box.height) * unit > pageBottom) continue;
     inkLeft = Math.min(inkLeft, box.x * unit);
     inkRight = Math.max(inkRight, (box.x + box.width) * unit);
     const top = box.y * unit;

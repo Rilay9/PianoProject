@@ -343,6 +343,10 @@ export function DevScoreScreen(router: Router): HTMLElement {
         layout,
         barsPerWindow: Number(barsInput.value),
         handsFocus: hands,
+        // What the score screen engraves, so the content check and the
+        // previews measure the sheet the learner gets: the bar says the
+        // tempo, and the mark was the tallest thing above any stave.
+        drawMetronomeMarks: false,
       });
       stepIndex = 0;
       goToStep(0);

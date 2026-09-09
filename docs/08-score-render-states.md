@@ -950,6 +950,7 @@ match; **later** is the list for the next builder. The random walks and the whol
 | §6.2 the summary on a tablet | the end of every run on a tablet upright showed a heading cut in half over the title and no numbers: the sheet is placed `1 / -1` in a grid with no explicit rows, so its containing block collapsed to the top edge | **done** — explicit rows |
 | §6.1 the colour after a re-draw the renderer starts itself | the first note of a run was white on fourteen legs until the second was played: the fit's re-draw when the piece's measurement lands, and a slot the settle refreshes, engrave fresh elements with no classes, and nobody asked the session to paint again | **done** — the renderer keeps the states last painted and applies them to whatever it engraves |
 | §3.2 a bar too dense for the page | *Hot Cross Buns* on a tablet sideways shrank 29 % at bar 3: eight quavers are wider than the page, the engraver runs the bar past the edge rather than squeeze it, and the frozen scale had been chosen from the two narrower bars before it | **done** — the probe's measurement now includes the widest system the engraver made of the piece, so the run starts at the size that bar needs |
+| §3.2 three Chopin scores "cannot render" | the Barcarolle, the Étude op. 25 no. 10 and the Fantaisie timed out in the content check since the probe measured the piece's width — read as a load hang, it was a fit of 0.0002: the engraver draws a tie or a beam across a system break as a path from where the note was on the line before, hundreds of thousands of units to the left (five million on the Fantaisie), a narrow piece of it passed the width cap, and the sheet's left edge went with it. On the phone these three opened as a one-pixel sheet | **done** — nothing off the page counts in the probe's measurement, and a drawn window whose own box cannot be a bar's is measured element by element on the page; the three fit at 0.57–0.59 like their neighbours |
 | §3.4 Scroll on a tablet, and after a turn | the sheet was engraved once, at whatever width the stage had first, and every later refit scaled that page: on a tablet the piece was laid out before the side panel took its column and drawn at two thirds of the stage (the corpus's scroll leg, 367 px in 580); a phone turned in Scroll kept the upright page | **done** — the sheet remembers the width it was engraved at and is engraved again at a different one |
 | §3.2 the probe on a piece past its cap | the probe loads the whole 780-bar piece to draw its first 48 bars — five seconds of the Scherzo's first window. Without the probe at all (tried first) the Scherzo's run shrank 13 % and its stave jumped 45 px at bar 16, which is what the probe exists to prevent | **done** — the probe loads a document cut to its first 48 bars (`trimMusicXml`, a parse and a serialise on idle time); the measurement stays |
 | §5.1 the read-ahead on the 780-bar piece | the next bar arrived a second or more after the crossing — read as the cost of engraving a bar of the Scherzo, it was in fact the probe loading the whole 780-bar document on the main thread during the run | **done** — with the probe's document cut to 48 bars the Scherzo reads ahead in about 10 ms, like every other piece; the corpus allows one second everywhere and records the lag a step |
@@ -963,9 +964,17 @@ was right to stay. The test now checks the criterion the bar uses rather than as
 **Later, in one list** — the fixes and improvements the walk wrote down and did not build:
 
 1. The tablet rule: bars per window from the space (§3.2, §11.15) — needs a tablet to judge.
+   With numbers now (the builder, 2026-09-09): §9.35's floor passes because the gallery's pieces
+   are short; on real repertoire the music is 29 % of a phone upright on *Doctor Gradus*, 49 %
+   on the Pachelbel chaconne, 54 % on the Scherzo, and 26–35 % on a tablet sideways. The same
+   packing question, measured; a design decision, not a fault.
 2. The 780-bar open budget, which flaps around 60 s on this laptop (§9.28).
-3. Walks for the keys under mic input, the lesson and drill hosts, the PDF viewer and scroll
-   layout (`docs/08-test-map.md`).
+3. Walks for the keys under mic input, the lesson and drill hosts, the PDF viewer (the scroll
+   layout has its corpus leg now) (`docs/08-test-map.md`).
+4. Informational, from the content build: 36 generated `exercise.broken7.*` items measure 3.8 s
+   over one bar, outside the 5–1200 s window, so no duration is written — arguably right for a
+   one-bar drill; and the Gnossienne flags 17.2 s a bar, which is what an unmetered piece looks
+   like to the flag.
 
 Items 2 to 8 of the earlier list — the pickup bar count, the summary's weakest bars and master
 title, the paint after a rotation, the three assertions, the walk's real clicks, the sideways
