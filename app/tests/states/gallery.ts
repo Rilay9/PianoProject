@@ -214,12 +214,11 @@ ${sections}`;
  * fixing them — and still goes green, because it is watching for *new*
  * breakage. Deleting an entry here is how a fix gets its test.
  */
-const KNOWN: { match: RegExp; why: string }[] = [
-  {
-    match: /Free draws a cursor band/,
-    why: '§11.10 — Free is specified to draw no cursor and to advance on the notes played; not built yet',
-  },
-];
+// Nothing at the moment: Free was built the same evening (it draws the band
+// once, on the first step, until the first note). An entry here is a known
+// divergence reported rather than failed, so a permanently red suite is
+// not ignored.
+const KNOWN: { match: RegExp; why: string }[] = [];
 
 function knownReason(line: string): string | null {
   return KNOWN.find((k) => k.match.test(line))?.why ?? null;

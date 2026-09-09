@@ -30,6 +30,7 @@ export interface TestHooks {
     expected: number[];
     bar: number;
     lastBar: number;
+    pitches: number[];
     paused: boolean;
     engineMode: string;
     input: string;

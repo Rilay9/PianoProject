@@ -87,7 +87,10 @@ const SHORT_MODES: Record<Mode, string> = {
 };
 
 /** Below this the bar cannot hold the sentences. Measured, not chosen. */
-const NARROW_BAR_PX = 400;
+// 440, not 400: at 412 px — the other common phone width — the long mode
+// labels fitted the row but not the select, which clipped "Wait for me" to
+// "Wait for m" (the state gallery, size 412).
+const NARROW_BAR_PX = 440;
 
 const INPUTS: { id: FollowInput; label: string }[] = [
   { id: 'midi', label: 'MIDI' },
@@ -1603,6 +1606,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       bar === undefined
         ? ''
         : `bar ${String(printedBar(bar))} / ${String(printedBar(model.sourceMeasureCount - 1))}`;
+    // The status line wins the header: with both, the title was squeezed to
+    // "Hot Cr…" (the gallery's blind cell). Sideways the mirror has room.
+    where.hidden = status.textContent !== '' && window.innerHeight > window.innerWidth;
   }
 
   function render(): void {
@@ -1720,6 +1726,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       item = await findItem(itemId);
       if (!item) {
         status.textContent = `Unknown item “${itemId}”.`;
+        // No score, no controls: a bar of live buttons over nothing is noise
+        // (`08` §3.1, the state gallery's lifecycle cell).
+        bar.hidden = true;
         return;
       }
       title.textContent = item.title;
@@ -1746,11 +1755,13 @@ export function ScoreScreen(router: Router): HTMLElement {
       if (item.kind === 'pdf') {
         // A PDF has no notes to follow; it belongs to the page viewer.
         status.textContent = `${item.title} is a PDF — open it from Library.`;
+        bar.hidden = true;
         return;
       }
       const sightReading = isSightReading(item);
       if (!item.file && !item.imported && !sightReading) {
         status.textContent = `${item.title} has no notation to open. ${item.importHint ?? ''}`.trim();
+        bar.hidden = true;
         return;
       }
 
@@ -1782,6 +1793,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // nothing on it and every mode refused (`08` §10).
       if (loaded.steps.length === 0) {
         status.textContent = `${item.title} has no notes to play.`;
+        bar.hidden = true;
         render();
         return;
       }
@@ -1815,6 +1827,9 @@ export function ScoreScreen(router: Router): HTMLElement {
             expected: session.expectedNow,
             bar: model.steps[state.step]?.sourceMeasureIndex ?? 0,
             lastBar: Math.max(0, model.sourceMeasureCount - 1),
+            // The step's own notes, whatever the mode expects: Free expects
+            // nothing and still turns the page on these.
+            pitches: [...new Set((model.steps[state.step]?.notes ?? []).map((n) => n.midi))],
             paused: state.paused,
             engineMode: state.mode,
             input,

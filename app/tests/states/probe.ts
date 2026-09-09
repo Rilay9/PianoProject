@@ -144,8 +144,8 @@ export async function probeState(page: Page): Promise<StateRecord> {
     const cursors = drawnCount(cursorSel);
     const nextLines = drawnCount(nextSel);
 
-    const hooks = (window as unknown as { __pianopathTestHooks?: Record<string, () => unknown> })
-      .__pianopathTestHooks;
+    const hooks = (window as unknown as { __pianopath?: Record<string, () => unknown> })
+      .__pianopath;
 
     const stageEl = document.querySelector<HTMLElement>('#score-stage');
     const stageBox = stageEl ? stageEl.getBoundingClientRect() : null;

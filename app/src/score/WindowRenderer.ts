@@ -931,6 +931,12 @@ export class WindowRenderer {
     this.slotRanges = this.buffers.map(() => null);
     this.cursorSlot = 0;
     for (const slot of this.buffers) {
+      // The classes too: a buffer hidden by the new arrangement kept its old
+      // `is-current`, and the next time it came forward showed a stale one
+      // for a frame (the state gallery's rotation cell).
+      for (const element of slot.elements.values()) {
+        element.classList.remove('is-current', 'is-correct', 'is-wrong', 'is-uncertain');
+      }
       slot.range = null;
       slot.elements = new Map();
       slot.wrapper.hidden = false;

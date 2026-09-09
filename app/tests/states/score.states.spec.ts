@@ -50,11 +50,12 @@ async function setMode(page: Page, mode: string): Promise<void> {
 async function playInto(page: Page, midi: MidiMock, count: number): Promise<void> {
   for (let i = 0; i < count; i += 1) {
     const run = await page.evaluate(() => {
-      const h = (window as unknown as { __pianopathTestHooks?: { scoreRun?: () => unknown } })
-        .__pianopathTestHooks;
-      return h?.scoreRun ? (h.scoreRun() as { expected: number[] } | null) : null;
+      const h = (window as unknown as { __pianopath?: { scoreRun?: () => unknown } })
+        .__pianopath;
+      return h?.scoreRun ? (h.scoreRun() as { expected: number[]; pitches?: number[] } | null) : null;
     });
-    const note = run?.expected?.[0];
+    // Free expects nothing and still turns the page on the step's own notes.
+    const note = run?.expected?.[0] ?? run?.pitches?.[0];
     if (note === undefined) break;
     await midi.noteOn(note, 78);
     await page.waitForTimeout(90);
@@ -168,10 +169,11 @@ test('every state, photographed and measured', async ({ page }) => {
   await setMode(page, 'wait');
   await page.locator('#score-play').click();
   await playInto(page, midi, 3);
-  // A deliberate wrong note, for the red.
-  await midi.noteOn(37, 78);
+  // A deliberate wrong note, for the red — one the strip can show. 37 was
+  // two octaves below its left edge, and the cell showed no red at all.
+  await midi.noteOn(61, 78);
   await page.waitForTimeout(120);
-  await midi.noteOff(37);
+  await midi.noteOff(61);
   await page.waitForTimeout(300);
   await shoot(page, '4-how-am-i-doing', 'colour--right-and-wrong', 'Green for matched, red for wrong, accent for current.');
 

@@ -1109,7 +1109,11 @@ input[type='checkbox'] {
   inset: 0;
   z-index: 3;
   display: flex;
-  align-items: center;
+  /* Low on the stage, not centred: upright the packed slots leave the
+     bottom free, and centred the count sat on the second system's notes
+     (the state gallery's count-in cell). */
+  align-items: flex-end;
+  padding-bottom: 6%;
   justify-content: center;
   gap: clamp(12px, 6vw, 48px);
   pointer-events: none;
@@ -1603,6 +1607,12 @@ input[type='checkbox'] {
 .score-bar[data-visible='false'] {
   opacity: 0;
   pointer-events: none;
+}
+
+/* Hidden means gone (`08` §9.20): `display: flex` above beat the user-agent
+   `[hidden]` rule, and a screen with no score kept a bar of live controls. */
+.score-bar[hidden] {
+  display: none;
 }
 
 .score-button,
