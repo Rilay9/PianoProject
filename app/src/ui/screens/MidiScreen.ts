@@ -17,20 +17,7 @@ import type { Router } from '../../router';
 
 const LAST_NOTES_SHOWN = 10;
 
-/** Recovery text per failure mode; the codes come from WebMidiSource. */
-const ERROR_HELP: Record<string, string> = {
-  unsupported:
-    'This browser does not implement the Web MIDI API. Chrome (or Samsung Internet) ' +
-    'on Android, or Chrome/Edge on a desktop, do. Everything else in PianoPath works ' +
-    'without MIDI — the on-screen keyboard below is a full input.',
-  'permission-denied':
-    'Chrome remembers a dismissed MIDI prompt. To re-enable it: Chrome ⋮ menu → ' +
-    'Settings → Site settings → MIDI devices → find this site → Allow. Then come ' +
-    'back and tap Connect piano again.',
-  failed:
-    'MIDI access failed for a reason the browser did not explain. Check that the USB ' +
-    'adapter is seated, then try again. The Diagnostics screen shows the raw details.',
-};
+import { MIDI_ERROR_HELP as ERROR_HELP } from '../../midi/errorHelp';
 
 export function MidiScreen(router: Router): HTMLElement {
   const { section, card } = createSubScreen(router, {

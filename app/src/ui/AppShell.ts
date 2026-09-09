@@ -38,8 +38,12 @@ const SCREENS: Record<TabId, ScreenFactory> = {
   settings: SettingsScreen,
 };
 
-/** Sub-screens pushed on top of a tab; the tab stays highlighted in the nav. */
-const SUB_SCREENS: Record<SubId, ScreenFactory> = {
+/**
+ * Sub-screens pushed on top of a tab; the tab stays highlighted in the nav.
+ * The setup tour is not here: it draws a live score preview, so it carries
+ * the engraver and is loaded on demand like the Score screen.
+ */
+const SUB_SCREENS: Record<Exclude<SubId, 'setup'>, ScreenFactory> = {
   midi: MidiScreen,
   mic: MicScreen,
   diagnostics: DiagnosticsScreen,
@@ -75,7 +79,7 @@ function screenFor(route: Route): ScreenFactory {
     const lessonId = route.importFor;
     return (router) => LibraryScreen(router, { importFor: lessonId });
   }
-  return route.sub ? SUB_SCREENS[route.sub] : SCREENS[route.tab];
+  return route.sub && route.sub !== 'setup' ? SUB_SCREENS[route.sub] : SCREENS[route.tab];
 }
 
 /**
@@ -233,6 +237,10 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
       const page = route.pdfPage;
       currentScreen = mountLazyScreen(main, setCurrent, () =>
         import('./screens/PdfScreen').then(({ PdfScreen }) => PdfScreen(router, pdfId, page)),
+      );
+    } else if (route.sub === 'setup') {
+      currentScreen = mountLazyScreen(main, setCurrent, () =>
+        import('./screens/SetupScreen').then(({ SetupScreen }) => SetupScreen(router)),
       );
     } else {
       currentScreen = screenFor(route)(router);

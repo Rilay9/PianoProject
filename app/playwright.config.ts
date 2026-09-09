@@ -40,6 +40,11 @@ export default defineConfig({
     // path, same as it will be on GitHub Pages).
     baseURL: 'http://localhost:4173/PianoProject/',
     trace: 'retain-on-failure',
+    // Every test starts with the setup tour already skipped, because a fresh
+    // origin is a first launch and a first launch is the tour (docs/04 §7d).
+    // `setup.spec.ts` starts from nothing on purpose. A spec that clears
+    // localStorage itself puts the flag back (see `today.spec.ts`).
+    storageState: 'tests/e2e/fixtures/storageState.json',
   },
   webServer: {
     // `build:app`, not `build`: content is an *input* to these tests, not

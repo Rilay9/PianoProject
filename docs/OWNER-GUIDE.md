@@ -167,10 +167,16 @@ py -3.11 packaging/serve-lan.py
 > to uninstall the old one — and that takes your practice history with it.
 > Export a backup from Progress first (§5).
 
+**The first launch opens the setup tour** — eight short steps: the piano, how
+late it is, the sound, the screen, the four modes, your practice. It connects
+the cable, runs the latency test and shows the score at the size it will be.
+Skip it and it stays as the first row of Settings, *Setup tour · Run again*.
+
 **The first thing to check after installing** is that the piano works inside
-the APK. Plug in the cable, open Settings → MIDI, tap Connect, play a key. If
-notes appear in the log, the whole approach is sound. If they do not, stop and
-say so — everything else can be worked around, that cannot.
+the APK. Plug in the cable, tap Connect on the tour's piano step (or in
+Settings → MIDI), play a key. If the key lights up, the whole approach is
+sound. If it does not, stop and say so — everything else can be worked
+around, that cannot.
 
 ### Where the app is served from
 

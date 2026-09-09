@@ -12,8 +12,8 @@
  * phone it is using.
  */
 import type { Router } from '../../router';
-import { allItems, loadCurriculum } from '../../curriculum/load';
-import { activeTracksFor } from '../../curriculum/tracks';
+import { allItems } from '../../curriculum/load';
+import { renderTrackChips } from '../trackChips';
 import { getMidiSettings, updateMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -21,7 +21,7 @@ import {
   updateSettings,
   type PracticeSettings,
 } from '../../data/settingsStore';
-import { getPlan, updatePlan } from '../../data/planStore';
+import { getSetupRecord } from '../../data/setupStore';
 import { openDatabase } from '../../data/db';
 import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
@@ -65,9 +65,33 @@ export function SettingsScreen(router: Router): HTMLElement {
   const s = getSettings();
   const midi = getMidiSettings();
 
+  // --- The tour ------------------------------------------------------------
+  // First, because it is the one row that sets the rest: the first launch
+  // opens it, and this is the way back to it (docs/04 §7d).
+  const setup = getSetupRecord();
+  const setupWhen =
+    setup.status === 'never'
+      ? 'Not run yet'
+      : `${setup.status === 'done' ? 'Finished' : 'Skipped'}${setup.at ? ` ${new Date(setup.at).toLocaleDateString()}` : ''}`;
+  // The first row of the first group, not a group of its own: a one-row
+  // block sideways takes a column and leaves the rest of it empty, and the
+  // first screenful is measured in rows (`04` §0 R2, R5).
+  const setupRow = el(
+    'div.setting-row',
+    { id: 'settings-setup' },
+    el(
+      'div.setting-row__text',
+      {},
+      el('div', { text: 'Setup tour' }),
+      el('div.muted', { text: setupWhen }),
+    ),
+    button('Run again', () => router.navigate('settings', 'setup'), { id: 'open-setup' }),
+  );
+
   // --- Practice ------------------------------------------------------------
   const practice = group('Practice');
   practice.append(
+    setupRow,
     field(
       'Default mode, with MIDI or mic',
       selectControl(
@@ -281,51 +305,12 @@ export function SettingsScreen(router: Router): HTMLElement {
   const trackRow = el('div.filter-row', { id: 'settings-tracks' });
   content.append(trackRow, contentStatus);
 
-  void Promise.all([getPlan(), loadCurriculum()]).then(([plan, curriculum]) => {
-    void allItems().then((items) => {
-      // The curriculum's tracks, in its order, and only those the library can
-      // actually offer something for.
-      //
-      // Two things follow. The chips print `Chords & pop` rather than
-      // `chords-pop` — Plan says the first for the same track, on a screen
-      // reached from the same app. And a track the curriculum does not define
-      // gets no chip: switching it on would set a preference nothing reads,
-      // which is a dead control (`04` §0 R4). `film-game` is tagged on
-      // catalogue items and defined nowhere; that is a content gap, noted as a
-      // follow-up rather than papered over with a made-up label here.
-      const inLibrary = new Set(items.flatMap((item) => item.tracks));
-      const tracks = curriculum.tracks.filter((track) => inLibrary.has(track.id));
-      // The set Plan and Today work from, not the raw row: on a fresh phone
-      // the row says `['core']` and the data says six tracks are on, and a
-      // chip that reads as off while Today is recommending from it is a lie.
-      const active = activeTracksFor(plan, curriculum);
-      trackRow.replaceChildren();
-      for (const track of tracks) {
-        const on = active.includes(track.id);
-        const node = el('button.chip', {
-          type: 'button',
-          text: track.title,
-          'aria-pressed': on,
-          id: `settings-track-${track.id}`,
-        });
-        node.addEventListener('click', () => {
-          const pressed = node.getAttribute('aria-pressed') === 'true';
-          node.setAttribute('aria-pressed', String(!pressed));
-          // Toggling writes the *resolved* set back, so the first tap makes
-          // the defaults explicit instead of collapsing them to one track.
-          void getPlan().then((current) => {
-            const before = activeTracksFor(current, curriculum);
-            return updatePlan({
-              trackOrder: pressed
-                ? before.filter((id) => id !== track.id)
-                : [...before, track.id],
-            });
-          });
-        });
-        trackRow.append(node);
-      }
-    });
-  });
+  // The chips are shared with the setup tour (`ui/trackChips`): the
+  // curriculum's tracks, in its order, only those the library can offer
+  // something for, titles never ids. `film-game` is tagged on catalogue items
+  // and defined nowhere; that is a content gap, noted as a follow-up rather
+  // than papered over with a made-up label here.
+  void renderTrackChips(trackRow);
 
   content.append(
     el(

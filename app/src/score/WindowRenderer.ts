@@ -150,6 +150,14 @@ export interface WindowRendererOptions {
   drawMetronomeMarks?: boolean;
   /** Whether the words are drawn under the notes (`08` §3.4.1: not on the score screen). */
   drawLyrics?: boolean;
+  /** Whether chord symbols are printed over the stave; the Display setting. */
+  drawChordSymbols?: boolean;
+  /**
+   * `single` draws one system whatever the screen's shape — for a preview in
+   * a card, where two slots in a short stage would be two unreadable ones.
+   * Default: the slots upright and on a tall screen, one system sideways.
+   */
+  arrangement?: 'auto' | 'single';
 }
 
 interface Buffer {
@@ -313,6 +321,8 @@ export class WindowRenderer {
   private readonly model: ScoreModel;
   /** Built once: `annotate` runs on every window draw and must not re-walk the piece. */
   private readonly notesById: Map<string, ScoreNote>;
+  /** One system whatever the screen's shape (`arrangement: 'single'`). */
+  private readonly singleOnly: boolean;
   private readonly buffers: Buffer[];
   private readonly band: HTMLElement;
   /**
@@ -432,6 +442,7 @@ export class WindowRenderer {
     this.buffers = buffers;
     this.layout = options.layout ?? 'window';
     this.barsPerWindow = clampBars(options.barsPerWindow ?? 2);
+    this.singleOnly = options.arrangement === 'single';
     this.handsFocus = options.handsFocus ?? 'both';
     this.userZoom = options.zoom ?? 1;
     // Starts at the owner's number and becomes the fitted one on the first
@@ -506,6 +517,7 @@ export class WindowRenderer {
           ? {}
           : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
         ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
+        ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
       });
       await view.load(options.musicXml);
       view.zoom = options.zoom ?? 1;
@@ -537,6 +549,7 @@ export class WindowRenderer {
         ? {}
         : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
       ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
+      ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
     });
     renderer.probeSource = options.musicXml;
     return renderer;
@@ -990,7 +1003,7 @@ export class WindowRenderer {
     // size of a thumb — the tour photographed it and I did not look.
     const tall = typeof window === 'undefined' ? false : window.innerHeight >= TWO_SYSTEMS_MIN_PX;
     const next: 'slots' | 'single' =
-      this.layout === 'scroll'
+      this.layout === 'scroll' || this.singleOnly
         ? 'single'
         : (upright || tall) && this.barsPerWindow >= 2
           ? 'slots'

@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:4173",
+      "localStorage": [
+        {
+          "name": "pianopath.setup",
+          "value": "{\"status\":\"skipped\",\"at\":\"2026-09-09T00:00:00.000Z\",\"version\":1}"
+        }
+      ]
+    }
+  ]
+}

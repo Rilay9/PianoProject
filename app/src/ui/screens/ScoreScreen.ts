@@ -1813,6 +1813,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         drawMetronomeMarks: false,
         // The words are for singing; this screen is for the hands (`08` §3.4.1).
         drawLyrics: false,
+        drawChordSymbols: settings.showChordSymbols,
       });
 
       if (window.__pianopath) {

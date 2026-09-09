@@ -26,6 +26,7 @@ export const MIRRORED_KEYS = [
   'pianopath.midi',
   'pianopath.micCalibration',
   'pianopath.theme',
+  'pianopath.setup',
 ] as const;
 
 export type MirroredKey = (typeof MIRRORED_KEYS)[number];

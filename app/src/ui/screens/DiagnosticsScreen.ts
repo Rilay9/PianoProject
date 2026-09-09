@@ -13,14 +13,11 @@
 
 import { addButton, addParagraph, addSection, createSubScreen } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
-import { audioEngine, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
+import { audioEngine, micSource, webMidiSource } from '../../app/services';
 import { isWebMidiSupported, type MidiLogEntry } from '../../midi/WebMidiSource';
 import { midiToNoteName } from '../../midi/parseMidiMessage';
-import type { InputNoteEvent } from '../../midi/types';
-import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
-import { audioTimeToPerformanceMs, captureAudioClockAnchor } from '../../audio/clock';
-import { matchTapsToClicks } from '../../audio/latency';
-import { summarise } from '../../util/stats';
+import { describeLatency, LATENCY_BEATS, runLatencyTest as runLatencyTest2 } from '../../audio/latencyTest';
+import type { Stats } from '../../util/stats';
 import { measureDetectorCost, type CostReport } from '../../audio/pitch/benchmark';
 import { concatChunks, encodeWav } from '../../util/wav';
 import { getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
@@ -35,8 +32,6 @@ import { formatBytes, measureStorage, type StorageBreakdown } from '../../util/s
 const LOG_ROWS_SHOWN = 100;
 const DEBUG_REPORT_MESSAGES = 100;
 /** Clicks in one latency run: enough for a usable σ, short enough to sit through. */
-const LATENCY_BEATS = 8;
-const LATENCY_BPM = 60;
 
 const SOUNDFONT_CREDIT =
   'Piano samples: FluidR3_GM by Frank Wen (CC-BY 3.0), pre-rendered by midi-js-soundfonts.';
@@ -226,8 +221,7 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   reportBlock.appendChild(reportArea);
 
   // --- Wiring --------------------------------------------------------------
-  let latestLatency: ReturnType<typeof summarise> | null = null;
-  let metronome: Metronome | null = null;
+  let latestLatency: Stats | null = null;
   let stopLatency: (() => void) | null = null;
 
   async function connect(): Promise<void> {
@@ -353,82 +347,33 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
     latencySave.hidden = true;
     latencyResult.textContent = '';
     latencyStatus.textContent = 'Starting audio…';
-
-    let context: AudioContext;
     try {
-      context = await audioEngine.ensureStarted();
+      const run = await runLatencyTest2({
+        onClick: (n, of) => {
+          latencyStatus.textContent = `Click ${String(n)} of ${String(of)} — tap on the beat.`;
+        },
+        onDone: (result) => {
+          stopLatency = null;
+          latencyStart.disabled = false;
+          latestLatency = result.stats;
+          if (result.matched === 0) {
+            latencyStatus.textContent = 'No taps landed near a click. Try again.';
+            latencyResult.textContent = '';
+            return;
+          }
+          latencyStatus.textContent = 'Done.';
+          latencyResult.textContent = describeLatency(result, (n) => fmt(n));
+          latencySave.hidden = false;
+        },
+      });
+      stopLatency = () => run.stop();
+      latencyStatus.textContent = 'Listening…';
     } catch (cause) {
       latencyStatus.textContent = `Audio unavailable: ${
         cause instanceof Error ? cause.message : String(cause)
       }`;
       latencyStart.disabled = false;
-      return;
     }
-
-    const anchor = captureAudioClockAnchor(context);
-    const clickTimesMs: number[] = [];
-    const tapTimesMs: number[] = [];
-
-    const onTap = (e: InputNoteEvent) => {
-      if (e.kind === 'noteOn') tapTimesMs.push(e.tMs);
-    };
-    const offMidi = webMidiSource.onNote(onTap);
-    const offScreen = screenKeyboardSource.onNote(onTap);
-
-    metronome = new Metronome(context, {
-      bpm: LATENCY_BPM,
-      beatsPerBar: 4,
-      countInBars: 0,
-      volume: getMidiSettings().metronomeVolume,
-      ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
-    });
-
-    const finish = () => {
-      stopLatency = null;
-      offMidi();
-      offScreen();
-      metronome?.dispose();
-      metronome = null;
-      latencyStart.disabled = false;
-      report();
-    };
-
-    const offTick = metronome.onTick((beat: MetronomeBeat) => {
-      clickTimesMs.push(audioTimeToPerformanceMs(anchor, beat.timeSec));
-      latencyStatus.textContent = `Click ${clickTimesMs.length} of ${LATENCY_BEATS} — tap on the beat.`;
-      if (clickTimesMs.length >= LATENCY_BEATS) {
-        // The last click is scheduled ahead of when it sounds, so wait out the
-        // look-ahead plus one beat before scoring, or the final tap is missed.
-        const graceMs = (60 / LATENCY_BPM) * 1000 + 500;
-        const timer = setTimeout(finish, graceMs);
-        stopLatency = () => {
-          clearTimeout(timer);
-          finish();
-        };
-        offTick();
-        metronome?.stop();
-      }
-    });
-
-    function report(): void {
-      const matches = matchTapsToClicks(clickTimesMs, tapTimesMs);
-      latestLatency = summarise(matches.map((m) => m.deltaMs));
-      if (latestLatency.n === 0) {
-        latencyStatus.textContent = 'No taps landed near a click. Try again.';
-        latencyResult.textContent = '';
-        return;
-      }
-      latencyStatus.textContent = 'Done.';
-      latencyResult.textContent =
-        `${latestLatency.n} of ${LATENCY_BEATS} clicks matched · ` +
-        `mean ${fmt(latestLatency.mean)} ms · σ ${fmt(latestLatency.stdDev)} ms · ` +
-        `median ${fmt(latestLatency.median)} ms · ` +
-        `range ${fmt(latestLatency.min)}…${fmt(latestLatency.max)} ms`;
-      latencySave.hidden = false;
-    }
-
-    metronome.start();
-    latencyStatus.textContent = 'Listening…';
   }
 
   function saveLatency(): void {
@@ -821,7 +766,6 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   onScreenDispose(section, () => {
     for (const off of unsubscribers) off();
     stopLatency?.();
-    metronome?.dispose();
     micSource.stopRecording();
   });
 

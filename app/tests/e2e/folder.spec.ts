@@ -22,6 +22,9 @@ test.beforeEach(async ({ page }) => {
       sessionStorage.setItem('e2e-fresh', '1');
       indexedDB.deleteDatabase('pianopath');
       localStorage.clear();
+      // A cleared origin is a first launch, and a first launch is the setup
+      // tour (docs/04 §7d); this spec is about what comes after it.
+      localStorage.setItem('pianopath.setup', JSON.stringify({ status: 'skipped', version: 1 }));
     }
   });
 });

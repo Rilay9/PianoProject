@@ -6,6 +6,7 @@ import { audioEngine } from './audio/AudioEngine';
 import { autoConnectMidi } from './app/services';
 import { hydratePersisted, needsHydration } from './data/persist';
 import { reloadSettings } from './data/settingsStore';
+import { reloadSetup, setupStatus } from './data/setupStore';
 import { loadLevelOverrides } from './data/levelOverrides';
 import { installErrorLog } from './util/errorLog';
 import { installErrorBoundary } from './ui/errorBoundary';
@@ -57,6 +58,12 @@ installTestHooks(window);
 function mount(): void {
   const router = new Router();
   mountAppShell(root, router);
+  // The first launch, and only a launch: a fresh install opened from the
+  // icon — an address with no route in it — lands on the setup tour
+  // (docs/04 §7d). Anything addressed, `#/today` included, is left alone;
+  // the tour is one row in Settings then.
+  const hash = window.location.hash.replace(/^#\/?/, '');
+  if (hash === '' && setupStatus() === 'never') router.navigate('settings', 'setup');
 }
 
 // The owner's own difficulty numbers (replan §1.4). Not awaited: every screen
@@ -70,6 +77,7 @@ if (needsHydration()) {
     .then((restored) => {
       if (restored.length > 0) {
         reloadSettings();
+        reloadSetup();
         initTheme();
       }
     })

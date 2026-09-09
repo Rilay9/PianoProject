@@ -775,8 +775,99 @@ body {
    Sub-screens (MIDI, Diagnostics) and their shared controls.
    --------------------------------------------------------------------------- */
 .screen[data-screen='midi'] .card,
-.screen[data-screen='diagnostics'] .card {
+.screen[data-screen='diagnostics'] .card,
+.screen[data-screen='setup'] .card {
   max-width: 720px;
+}
+
+/* --- The setup tour (docs/04 §7d) ---------------------------------------- */
+
+.setup-progress {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+}
+
+.setup-title {
+  margin: 2px 0 12px;
+  font-size: 1.3rem;
+}
+
+.setup-step > p:first-child {
+  margin-top: 0;
+}
+
+/* The buttons that move the tour along: Back on the left, Skip in the middle,
+   the one filled box on the right — the thing you do on most visits (R3). */
+.setup-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.setup-footer > :last-child {
+  margin-left: auto;
+}
+
+/* `.button` is `display: inline-flex`, which beats the `hidden` attribute's
+   `display: none` — the same way the control bar's did. Back on the first
+   step and Skip on the last are hidden, and must be. */
+.setup-footer > [hidden] {
+  display: none;
+}
+
+/* The live preview: one system of a real piece, at the size the score screen
+   would draw it in this width. Tall enough for a grand staff; short enough
+   that the controls under it start inside the first screenful upright. */
+.setup-preview {
+  height: 150px;
+  margin: 8px 0 0;
+}
+
+.setup-preview-keys {
+  margin: 8px 0 12px;
+  --key-h: 56px;
+}
+
+.setup-preview-keys[hidden] {
+  display: none;
+}
+
+.setup-details {
+  margin: 12px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.setup-details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 4px 0;
+}
+
+.setup-modes {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.setup-mode {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.setup-summary {
+  margin: 0 0 12px;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .setup-preview {
+    height: 140px;
+  }
 }
 
 .block {

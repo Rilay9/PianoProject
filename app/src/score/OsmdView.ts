@@ -52,6 +52,8 @@ export interface OsmdViewOptions {
   drawMetronomeMarks?: boolean;
   /** Draw the words under the notes (default on). Off on the score screen: it is for the hands. */
   drawLyrics?: boolean;
+  /** Print the chord symbols over the stave (default on) — the Display setting that read as one. */
+  drawChordSymbols?: boolean;
   /**
    * Print the piece's opening tempo word — *Allegro* — above the first
    * system (default on). Off with the metronome mark, for the same reason:
@@ -85,6 +87,7 @@ function applyPhoneEngraving(osmd: OpenSheetMusicDisplay, options: OsmdViewOptio
   rules.SheetTitleHeight = 0;
   rules.RenderTitle = false;
   if (options.drawFirstTempoExpression === false) rules.RenderFirstTempoExpression = false;
+  if (options.drawChordSymbols === false) rules.RenderChordSymbols = false;
   rules.RenderSubtitle = false;
   rules.RenderComposer = false;
   rules.RenderLyricist = false;

@@ -11,30 +11,12 @@
 
 import { createSubScreen, addSection, addParagraph, addButton } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
-import { audioEngine, micSource } from '../../app/services';
-import { Metronome } from '../../audio/Metronome';
-import { metronomeSoundFor } from '../../audio/inputPolicy';
-import {
-  analyseCalibration,
-  CALIBRATION_STAGES,
-  pitchName,
-  SCALE_PITCHES,
-  type CalibrationStage,
-  type StageRecording,
-} from '../../audio/pitch/calibration';
+import { micSource } from '../../app/services';
+import { pitchName } from '../../audio/pitch/calibration';
+import { describeCalibration, runCalibrationRoutine } from '../../audio/pitch/calibrationRun';
 import { LINE_INPUT_PRESET, type MicLevel } from '../../audio/pitch/MicSource';
-import {
-  micCalibrationStore,
-  type StoredCalibration,
-} from '../../data/micCalibrationStore';
-import { getMidiSettings } from '../../data/midiSettings';
+import { micCalibrationStore } from '../../data/micCalibrationStore';
 import type { Router } from '../../router';
-
-/** Clicks per minute for the chromatic-scale stage: slow, as §11.5 asks. */
-const SCALE_BPM = 60;
-
-/** How much of each stage the quick routine keeps. */
-const QUICK_FRACTION = 0.25;
 
 export function MicScreen(router: Router): HTMLElement {
   const { section, card } = createSubScreen(router, {
@@ -290,144 +272,24 @@ export function MicScreen(router: Router): HTMLElement {
 
     calibrating = true;
     calibrateButton.disabled = true;
-    const sampleRate = micSource.sampleRate ?? 48000;
-    const recordings: StageRecording[] = [];
-
     try {
-      for (const stage of CALIBRATION_STAGES) {
-        // The stages are a sequence the learner is walked through, so they
-        // are run strictly one after another rather than in parallel.
-        recordings.push(await runStage(stage, sampleRate));
-      }
-      finish(recordings);
+      const outcome = await runCalibrationRoutine({
+        deviceId: deviceSelect.value,
+        lineInput: lineToggle.checked,
+        quick: speedSelect.value === 'quick',
+        onStage: (text) => {
+          stageText.textContent = text;
+        },
+      });
+      stageText.textContent = describeCalibration(outcome);
+      renderStored();
     } catch (error) {
       stageText.textContent =
         error instanceof Error ? `Calibration stopped: ${error.message}` : 'Calibration stopped.';
     } finally {
-      micSource.stopRecording();
       calibrating = false;
       calibrateButton.disabled = false;
     }
-  }
-
-  /** Records one stage, counting down in the heading as it goes. */
-  async function runStage(stage: CalibrationStage, sampleRate: number): Promise<StageRecording> {
-    const chunks: Float32Array[] = [];
-    const offAudio = micSource.onAudio((chunk) => chunks.push(chunk));
-    const onsetTimesMs: number[] = [];
-    const offNotes = micSource.onNote((note) => {
-      if (note.kind === 'noteOn') onsetTimesMs.push(note.tMs);
-    });
-
-    // The scale stage is the one with a click, and its pitches are what the
-    // detector is told to listen for so its onsets can be timed against it.
-    if (stage.id === 'scale') micSource.setExpectations(SCALE_PITCHES, []);
-    else micSource.setExpectations(stage.pitches.slice(0, 8), []);
-
-    const clickTimesMs: number[] = [];
-    const metronome = stage.id === 'scale' ? await startClicks(clickTimesMs) : null;
-
-    micSource.startRecording();
-    await countdown(stage);
-    micSource.stopRecording();
-    metronome?.stop();
-    metronome?.dispose();
-    offAudio();
-    offNotes();
-
-    let total = 0;
-    for (const chunk of chunks) total += chunk.length;
-    const samples = new Float32Array(total);
-    let at = 0;
-    for (const chunk of chunks) {
-      samples.set(chunk, at);
-      at += chunk.length;
-    }
-    return {
-      id: stage.id,
-      samples,
-      sampleRate,
-      ...(stage.id === 'scale' ? { clickTimesMs, onsetTimesMs } : {}),
-    };
-  }
-
-  /**
-   * Starts the metronome on the high click and records when each one sounds.
-   *
-   * The click has to be the high one (docs/05 §11.4): a woodblock at 1.6 kHz
-   * sits in the middle of the piano's partials and would be measured as a note.
-   */
-  async function startClicks(into: number[]): Promise<Metronome> {
-    const context = await audioEngine.ensureStarted();
-    const metronome = new Metronome(context, {
-      bpm: SCALE_BPM,
-      beatsPerBar: 4,
-      countInBars: 0,
-      // The one decision that must not be made ad hoc: with the microphone
-      // listening, the click has to be the one the detector notches out.
-      sound: metronomeSoundFor({ micActive: true, destination: 'phone' }, 'wood'),
-      volume: getMidiSettings().metronomeVolume,
-      ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
-    });
-    metronome.onTick((beat) => {
-      // AudioContext seconds to the performance.now() timeline the detector's
-      // events are already on.
-      into.push(performance.now() + (beat.timeSec - context.currentTime) * 1000);
-    });
-    metronome.start();
-    return metronome;
-  }
-
-  /** Stage length, shortened for the quick routine but never below two seconds. */
-  function secondsFor(stage: CalibrationStage): number {
-    if (speedSelect.value !== 'quick') return stage.seconds;
-    return Math.max(2, Math.round(stage.seconds * QUICK_FRACTION));
-  }
-
-  function countdown(stage: CalibrationStage): Promise<void> {
-    return new Promise((resolve) => {
-      let left = secondsFor(stage);
-      const show = () => {
-        stageText.textContent = `${stage.title}: ${stage.instruction} (${left}s)`;
-      };
-      show();
-      const timer = setInterval(() => {
-        left -= 1;
-        if (left <= 0) {
-          clearInterval(timer);
-          resolve();
-          return;
-        }
-        show();
-      }, 1000);
-    });
-  }
-
-  function finish(recordings: StageRecording[]): void {
-    const device = micSource.inputs.find((d) => d.deviceId === deviceSelect.value);
-    const result = analyseCalibration(recordings, {
-      ...(lineToggle.checked ? { thresholds: { ...LINE_INPUT_PRESET } } : {}),
-    });
-    const stored: StoredCalibration = {
-      ...result.calibration,
-      // The click is notched out whenever this calibration is in use.
-      thresholds: result.calibration.thresholds,
-      deviceId: deviceSelect.value,
-      deviceLabel: device?.label ?? 'Default input',
-      measuredAt: new Date().toISOString(),
-      missed: result.missed,
-      chordsHeard: result.chordsHeard,
-    };
-    micCalibrationStore.put(stored);
-    micSource.applyCalibration(stored);
-    stageText.textContent =
-      `Done. Measured ${result.measurements.length} pitches, ` +
-      `${result.chordsHeard}/3 chords heard, ` +
-      `latency ${result.calibration.latencyMs.toFixed(0)} ms.` +
-      (result.missed.length > 0
-        ? ` Not heard: ${result.missed.map(pitchName).join(', ')} — play those louder and run it again.`
-        : '');
-    renderStored();
   }
 
   renderConnection();

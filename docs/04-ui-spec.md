@@ -614,7 +614,8 @@ storage used, with a breakdown by scores / audio / lessons / your imports; reset
 The list above is the target. This is the state, so nobody has to read the code to find out:
 
 **Built and wired to real behaviour** — every Practice setting except the two below; every
-Display setting except left-handed layout; every Sound setting; follow-input priority, the four
+Display setting except left-handed layout (show chord symbols reached the engraver only with
+the setup tour, 2026-09-09 — it had been a stored value nothing read); every Sound setting; follow-input priority, the four
 microphone settings and MIDI input transpose; and in Content: active tracks, show US-only PD
 items, "Download everything now", offline only, the storage breakdown and reset progress.
 Weekday/weekend session length lives here *and* on Today's picker — one value, two places to
@@ -636,6 +637,33 @@ set it.
 **Built since, in P18** (`docs/decisions/2026-09-06-p18-carry-overs.md`): the mic's amber
 state (§5), named sections and their loop picker (§5), drag-to-reorder tracks (§3), the chord
 chart's bass-and-drums loop (§3b), and the tablet side panel (§7a; the four-bar default it had went with the multi-slot arrangement, `08` §4.1).
+
+### 7d. The setup tour (`#/settings/setup`)
+
+The first launch of a fresh install lands here rather than on Today — a launch, not a deep
+link: a piece, a lesson or a drill opened by its address is left alone. Eight steps, one
+screen each, in the order a person meets the app; every control writes straight through to
+the same stores Settings writes, so leaving half-way loses nothing and Settings shows what the
+tour set. **Skip for now** is on every step and is remembered, as is **Finish**; after either,
+the tour is the first row of Settings — *Setup tour · Run again*, with the date it was last
+finished or skipped.
+
+| Step | What it does |
+|---|---|
+| Welcome | Two sentences on what the app does; Start or Skip. |
+| Your piano | *Connect piano* (the same permission prompt and recovery text as the MIDI screen), the inputs to pin, a strip that lights up from the cable or from a tap; *No cable? Use the microphone* folds out the mic's connect, level and a fifteen-second calibration; the follow-input priority. |
+| How late is the piano? | The latency test — eight clicks, tap on each — with the median saved as the input latency the moment it ends. Skippable for a mic or the screen keys. |
+| Sound | Test sound, the two volumes, the metronome sound, playback plays / destination. |
+| The screen | A **live preview** — the real engraver over *Hot Cross Buns*, one system, with the keys view under it — that redraws as theme, keys, fingering, chord symbols, size, bars per window and layout change; landscape lock and keep-awake. |
+| How it follows you | The four modes in one line each, *Hear it* and the long-press; the default modes with and without an input, count-in, default tempo, strict Wait, tolerance, the pass criteria. |
+| Your practice | Weekday and weekend session lengths, the track chips, strict prerequisites, two songs per lesson. |
+| Ready | A summary of what was set, and where to find the tour again. |
+
+The preview draws one system whatever the phone's orientation (`WindowRenderer`'s `arrangement:
+'single'`): two slots in a 200 px stage would be two unreadable ones. The latency test and the
+mic calibration are the same routines the Diagnostics and Microphone screens run
+(`audio/latencyTest`, `audio/pitch/calibrationRun`), so a number measured here is the number
+measured there.
 
 ## 7b. Diagnostics
 
