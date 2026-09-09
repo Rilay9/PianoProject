@@ -191,9 +191,15 @@ class TestTempoMarks(ConvertCase):
 
 
 class TestSilentStaff(ConvertCase):
-    def test_a_hand_that_only_rests_keeps_its_staff(self) -> None:
-        # A right-hand-only beginner tune is printed on a grand staff with an
-        # empty bass staff, not squeezed onto one line.
+    def test_a_hand_that_only_rests_loses_its_staff(self) -> None:
+        # It used to keep it: a right-hand-only beginner tune was printed on a
+        # grand staff with an empty bass staff, so the page looked like a piano
+        # piece. On the phone that staff took half of every window for nothing,
+        # and the tune was engraved at half the size it could have been, so the
+        # pipeline leaves it out (`docs/08` 3.2, `drop_silent_staves`).
+        #
+        # `test_silent_staff.py` covers the function; this covers a whole
+        # conversion, which is where the staff count is actually written.
         import tempfile
 
         abc = (
@@ -207,7 +213,7 @@ class TestSilentStaff(ConvertCase):
             dest = self.out / "rh.mxl"
             convert_file(source, dest)
             written = read_mxl(dest)
-        self.assertEqual(written.staves, 2)
+        self.assertEqual(written.staves, 1)
         self.assertEqual(written.score_parts, 1)
 
 
@@ -241,11 +247,16 @@ class TestDeclaredClefs(ConvertCase):
         self.assertEqual(written.clef_of_staff(1), "G")
         self.assertEqual(written.clef_of_staff(2), "F")
 
-    def test_a_silent_bass_staff_still_gets_a_bass_clef(self) -> None:
+    def test_a_high_tune_over_a_sounding_bass_still_gets_a_bass_clef(self) -> None:
+        # The bass voice holds a note rather than resting. It used to rest, and
+        # the point was the clef on a staff nobody plays -- but such a staff is
+        # dropped now (`drop_silent_staves`), and a test of clef *guessing*
+        # should not turn on whether the staff survives. A tune this high is
+        # what made music21 guess two treble staves, which is the bug here.
         written = self.write_and_convert(
-            "X:1\nT:Right hand only\nL:1/4\nM:4/4\nK:C\n"
+            "X:1\nT:Right hand over a held bass\nL:1/4\nM:4/4\nK:C\n"
             "V:1 clef=treble\nV:2 clef=bass\n"
-            "[V:1] c d e f |]\n[V:2] z4 |]\n"
+            "[V:1] c d e f |]\n[V:2] C,4 |]\n"
         )
         self.assertEqual(written.clef_of_staff(1), "G")
         self.assertEqual(written.clef_of_staff(2), "F")

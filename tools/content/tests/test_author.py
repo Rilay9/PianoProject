@@ -46,13 +46,26 @@ class TestAuthoredSources(unittest.TestCase):
             with self.subTest(item=item["id"]):
                 self.assertTrue((self.out / item["file"]).exists())
 
-    def test_every_item_is_a_grand_staff_with_a_tempo(self) -> None:
+    def test_every_item_is_one_part_with_a_tempo(self) -> None:
+        # Was "a grand staff": every authored item had two staves, because a
+        # one-handed tune was written over a bass staff of whole-bar rests so
+        # the page looked like a piano piece. `drop_silent_staves` leaves that
+        # staff out now (`docs/08` §3.2) — on a phone it took half of every
+        # window and the tune was engraved at half the size it could have been.
+        # So one staff or two, and which is a fact about the tune.
         for item in self.catalog:
             with self.subTest(item=item["id"]):
                 written = read_mxl(self.out / item["file"])
                 self.assertEqual(written.score_parts, 1)
-                self.assertEqual(written.staves, 2)
+                self.assertIn(written.staves, (1, 2))
                 self.assertTrue(written.tempos)
+
+    def test_both_kinds_of_authored_item_exist(self) -> None:
+        # The other half of the test above: "one staff or two" passes just as
+        # well if a bug collapsed every item to one, or if the drop stopped
+        # happening at all. The library has both, and should keep having both.
+        counts = {read_mxl(self.out / item["file"]).staves for item in self.catalog}
+        self.assertEqual(counts, {1, 2})
 
     def test_ids_are_unique(self) -> None:
         ids = [item["id"] for item in self.catalog]
