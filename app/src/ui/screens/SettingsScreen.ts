@@ -216,6 +216,22 @@ export function SettingsScreen(router: Router): HTMLElement {
         (value) => set({ keys: value as PracticeSettings['keys'] }),
       ),
     ),
+    field(
+      'Keys guide',
+      selectControl(
+        'set-keys-guide',
+        [
+          { value: 'next', label: 'The note it waits for' },
+          { value: 'next-two', label: 'That, and the one after' },
+          { value: 'off', label: 'Off' },
+        ],
+        s.keysGuide,
+        (value) => set({ keysGuide: value as PracticeSettings['keysGuide'] }),
+      ),
+      'Marked blue on the keys before you play it; the one after in a paler blue.',
+    ),
+    field('Finger numbers on the keys', toggleControl('set-keys-fingers', s.keysFingerNumbers, (v) => set({ keysFingerNumbers: v })), 'The score’s finger number, printed on each marked key.'),
+    field('Flash a hit green and a miss red', toggleControl('set-keys-flash', s.keysFlash, (v) => set({ keysFlash: v })), 'For under a second; then the key goes back to the guide.'),
     field('Keep the screen awake', toggleControl('set-awake', s.keepScreenAwake, (v) => set({ keepScreenAwake: v }))),
   );
 

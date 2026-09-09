@@ -698,6 +698,26 @@ body {
   pointer-events: none;
 }
 
+/* The score's finger number on a marked key (docs/04 §5): a small figure
+   in the top of the key, where the eye lands before the hand does. */
+.key__finger {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text);
+  pointer-events: none;
+}
+
+.key--black .key__finger,
+.key.is-expected .key__finger {
+  color: #fff;
+}
+
 /* State colours. Correct/wrong also carry a glyph so the strip is readable
    without colour vision (docs/04-ui-spec.md §9). */
 .key.is-expected {

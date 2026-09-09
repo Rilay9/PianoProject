@@ -164,8 +164,19 @@ export function createDevicePreview(options: DevicePreviewOptions): DevicePrevie
     const range = stripRangeFor(midis);
     keys = now.keys === 'ribbon' ? new KeyRibbon(range) : new KeyboardStrip({ ...range, interactive: false });
     strip.append(keys.el);
-    const first = model.steps[0]?.notes.map((note) => note.midi) ?? [];
-    keys.setState({ expected: first });
+    // The guide as the settings have it: the first step's keys, the second's
+    // paler when two notes ahead is on, the finger numbers on the marked keys.
+    const first = now.keysGuide === 'off' ? [] : (model.steps[0]?.notes.map((note) => note.midi) ?? []);
+    const second = now.keysGuide === 'next-two' ? (model.steps[1]?.notes.map((note) => note.midi) ?? []) : [];
+    const fingers = new Map<number, string>();
+    if (now.keysFingerNumbers && now.keysGuide !== 'off') {
+      for (const step of [model.steps[0], now.keysGuide === 'next-two' ? model.steps[1] : undefined]) {
+        for (const note of step?.notes ?? []) {
+          if (note.fingering !== undefined && !fingers.has(note.midi)) fingers.set(note.midi, String(note.fingering));
+        }
+      }
+    }
+    keys.setState({ expected: first, next: second, fingers });
     keys.fitKeysToWidth();
   }
 

@@ -8,7 +8,7 @@
  * Wait mode never asks for a warning mark, and a natural end is reported once.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { KEY_FLASH_MS, ScoreSession } from '../../src/score/ScoreSession';
+import { DEFAULT_STRIP_OPTIONS, KEY_FLASH_MS, ScoreSession, type StripOptions } from '../../src/score/ScoreSession';
 import type { KeyboardStripState, KeyView } from '../../src/ui/KeyboardStrip';
 import type { WindowRenderer } from '../../src/score/WindowRenderer';
 import type { SessionScore } from '../../src/engine/types';
@@ -255,5 +255,80 @@ describe('the keys under the score', () => {
     expect([...(last().correct ?? [])]).toEqual([]);
     expect([...(last().expected ?? [])]).toEqual([62]);
     session.dispose();
+  });
+});
+
+describe('what the keys show ahead of time', () => {
+  const guided = makeModel([
+    { onset: 0, notes: [note({ midi: 60, fingering: 1 })] },
+    { onset: 1, notes: [note({ midi: 62, fingering: 2 })] },
+    { onset: 2, notes: [note({ midi: 64, fingering: 3 })] },
+  ]);
+
+  function fakeStrip(): { strip: KeyView; last: () => KeyboardStripState } {
+    let state: KeyboardStripState = {};
+    const strip: KeyView = {
+      el: document.createElement('div'),
+      setState: (next) => {
+        state = next;
+      },
+      scrollToNote: () => undefined,
+      fitKeysToWidth: () => undefined,
+      clear: () => undefined,
+      destroy: () => undefined,
+    };
+    return { strip, last: () => state };
+  }
+
+  function guidedSession(options: Partial<StripOptions>): { last: () => KeyboardStripState; session: ScoreSession } {
+    const { strip, last } = fakeStrip();
+    const fake = fakeRenderer();
+    const s = new ScoreSession({ model: guided, renderer: fake.renderer, strip, stripOptions: { ...DEFAULT_STRIP_OPTIONS, ...options } });
+    return { last, session: s };
+  }
+
+  it('two notes ahead marks the next step in Wait mode too, with both finger numbers', () => {
+    const { session: s, last } = guidedSession({ guide: 'next-two', fingers: true });
+    s.start({ mode: 'wait' });
+    flushFrame();
+    expect([...(last().expected ?? [])]).toEqual([60]);
+    expect([...(last().next ?? [])]).toEqual([62]);
+    expect([...(last().fingers?.entries() ?? [])]).toEqual([[60, '1'], [62, '2']]);
+    s.dispose();
+  });
+
+  it('the default guide marks only the note it waits for in Wait mode, with its finger', () => {
+    const { session: s, last } = guidedSession({ guide: 'next', fingers: true });
+    s.start({ mode: 'wait' });
+    flushFrame();
+    expect([...(last().expected ?? [])]).toEqual([60]);
+    expect([...(last().next ?? [])]).toEqual([]);
+    expect([...(last().fingers?.entries() ?? [])]).toEqual([[60, '1']]);
+    s.dispose();
+  });
+
+  it('off marks nothing and prints no numbers', () => {
+    const { session: s, last } = guidedSession({ guide: 'off', fingers: true });
+    s.start({ mode: 'wait' });
+    flushFrame();
+    expect([...(last().expected ?? [])]).toEqual([]);
+    expect([...(last().next ?? [])]).toEqual([]);
+    expect(last().fingers?.size ?? 0).toBe(0);
+    s.dispose();
+  });
+
+  it('with the flash off a wrong key is never coloured', () => {
+    const { session: s, last } = guidedSession({ flash: false });
+    s.start({ mode: 'wait' });
+    flushFrame();
+    let clock = 0;
+    clock += 100;
+    s.feed(71, 80, clock);
+    clock += 50;
+    s.feedOff(71, clock);
+    flushFrame();
+    expect([...(last().wrong ?? [])]).toEqual([]);
+    expect([...(last().expected ?? [])]).toEqual([60]);
+    s.dispose();
   });
 });

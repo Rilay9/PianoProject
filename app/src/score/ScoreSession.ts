@@ -52,6 +52,8 @@ export interface ScoreSessionOptions {
   model: ScoreModel;
   renderer: WindowRenderer;
   strip?: KeyView | null;
+  /** What the keys show ahead of time and after a verdict (docs/04 §5). */
+  stripOptions?: StripOptions;
   piano?: Piano | null;
   audioContext?: AudioContext | null;
   /** Node the piano and metronome connect to; the shared master gain. */
@@ -94,6 +96,16 @@ const FALLBACK_NOTE_SEC = 0.4;
 /** How long a verdict stays on a key before it goes back to what the score wants. */
 export const KEY_FLASH_MS = 900;
 
+/** What the keys show: the guide ahead of time, the finger numbers, the flash. */
+export interface StripOptions {
+  /** The same choices as the `keysGuide` setting; spelled out so the session owes the store nothing. */
+  guide: 'next' | 'next-two' | 'off';
+  fingers: boolean;
+  flash: boolean;
+}
+
+export const DEFAULT_STRIP_OPTIONS: Readonly<StripOptions> = { guide: 'next', fingers: true, flash: true };
+
 export function midiFromNoteId(noteId: string): number | null {
   const last = noteId.slice(noteId.lastIndexOf(':') + 1);
   const midi = Number(last);
@@ -104,6 +116,7 @@ export class ScoreSession {
   private readonly options: ScoreSessionOptions;
   /** Whatever is drawing the keys right now; swappable while a run is going. */
   private stripView: KeyView | null;
+  private stripOptions: StripOptions;
   private piano: Piano | null = null;
   private engine: PracticeEngine | null = null;
   private metronome: Metronome | null = null;
@@ -180,6 +193,7 @@ export class ScoreSession {
   constructor(options: ScoreSessionOptions) {
     this.options = options;
     this.stripView = options.strip ?? null;
+    this.stripOptions = { ...DEFAULT_STRIP_OPTIONS, ...(options.stripOptions ?? {}) };
     this.piano = options.piano ?? null;
   }
 
@@ -239,6 +253,16 @@ export class ScoreSession {
     if (!engine) return [];
     const mode = this.runOptions?.mode;
     if (mode !== 'tempo' && mode !== 'listen') return [];
+    return engine.prepared.steps[engine.state.step + 1]?.expected ?? [];
+  }
+
+  /**
+   * The notes of the step after this one, in every mode but Free — what
+   * the keys show when the guide is set to two notes ahead (docs/04 §5).
+   */
+  get expectedAfter(): number[] {
+    const engine = this.engine;
+    if (!engine || this.runOptions.mode === 'free') return [];
     return engine.prepared.steps[engine.state.step + 1]?.expected ?? [];
   }
 
@@ -558,6 +582,22 @@ export class ScoreSession {
     this.paintStrip();
   }
 
+  /** The owner changing what the keys show; painted at once. */
+  setStripOptions(options: Partial<StripOptions>): void {
+    this.stripOptions = { ...this.stripOptions, ...options };
+    if (!this.stripOptions.flash) this.clearFlashes();
+    this.paintStrip();
+  }
+
+  /** The score's finger numbers for a step's notes, by midi. */
+  private fingersOf(stepIndex: number, into: Map<number, string>): void {
+    const step = this.options.model.steps[stepIndex];
+    if (!step) return;
+    for (const note of step.notes) {
+      if (note.fingering !== undefined && !into.has(note.midi)) into.set(note.midi, String(note.fingering));
+    }
+  }
+
   private paintStrip(): void {
     const strip = this.stripView;
     if (!strip) return;
@@ -573,13 +613,28 @@ export class ScoreSession {
       else if (flash.state === 'wrong') wrong.add(midi);
       else if (flash.state === 'uncertain') uncertain.add(midi);
     }
+    // The guide: what is marked before it is played (docs/04 §5).
+    const { guide, fingers } = this.stripOptions;
+    const expected = guide === 'off' ? [] : this.expectedNow;
+    const next = guide === 'off' ? [] : guide === 'next-two' ? this.expectedAfter : this.expectedNext;
+    const fingerMap = new Map<number, string>();
+    const engine = this.engine;
+    if (fingers && engine && guide !== 'off') {
+      const step = engine.state.step;
+      this.fingersOf(step, fingerMap);
+      if (next.length > 0) this.fingersOf(step + 1, fingerMap);
+      // Only the keys that are marked: a number on a plain key is a puzzle.
+      const marked = new Set([...expected, ...next]);
+      for (const midi of [...fingerMap.keys()]) if (!marked.has(midi)) fingerMap.delete(midi);
+    }
     strip.setState({
-      expected: new Set(this.expectedNow),
-      next: new Set(this.expectedNext),
+      expected: new Set(expected),
+      next: new Set(next),
       pressed: new Set(),
       correct,
       wrong,
       uncertain,
+      fingers: fingerMap,
     });
     // Keep the note it is waiting for on the screen. `scrollToNote` does
     // nothing when the key is already comfortably in view, so a piece that
@@ -594,7 +649,7 @@ export class ScoreSession {
 
   /** A verdict lands on a key for a moment; the strip is painted again when it ends. */
   private flashKey(midi: number, state: NoteState): void {
-    if (state === 'current') return;
+    if (state === 'current' || !this.stripOptions.flash) return;
     this.keyFlashes.set(midi, { state, until: this.nowMs() + KEY_FLASH_MS });
     if (this.flashTimer === null) {
       this.flashTimer = setTimeout(() => {

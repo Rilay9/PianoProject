@@ -18,6 +18,11 @@ import { persistLocal } from './persist';
 const STORAGE_KEY = 'pianopath.settings';
 
 export type KeysView = 'strip' | 'ribbon' | 'off';
+/**
+ * What the keys show ahead of time (docs/04 §5): the note the score waits
+ * for, that and the one after, or nothing.
+ */
+export type KeysGuide = 'next' | 'next-two' | 'off';
 export type PlaybackDestination = 'phone' | 'piano' | 'both';
 export type PlaybackHands = 'none' | 'non-focused' | 'both';
 export type FollowInput = 'midi' | 'mic' | 'keys' | 'none';
@@ -65,6 +70,12 @@ export interface PracticeSettings {
    * `off`.
    */
   keys: KeysView;
+  /** Which keys are marked before they are played. */
+  keysGuide: KeysGuide;
+  /** The score's finger number printed on each marked key. */
+  keysFingerNumbers: boolean;
+  /** A hit flashes its key green and a miss red, for a moment. */
+  keysFlash: boolean;
   keepScreenAwake: boolean;
 
   // --- Sound ---
@@ -118,6 +129,9 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   showNoteNames: false,
   showChordSymbols: true,
   keys: 'strip',
+  keysGuide: 'next',
+  keysFingerNumbers: true,
+  keysFlash: true,
   keepScreenAwake: true,
 
   playbackDestination: 'phone',
@@ -166,6 +180,9 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   out.countInBars = Math.round(num(v.countInBars, out.countInBars, 0, 4));
   out.metronomeSound = oneOf(v.metronomeSound, ['wood', 'beep', 'high'] as const, out.metronomeSound);
   out.waitStrict = bool(v.waitStrict, out.waitStrict);
+  out.keysGuide = oneOf(v.keysGuide, ['next', 'next-two', 'off'] as const, out.keysGuide);
+  out.keysFingerNumbers = bool(v.keysFingerNumbers, out.keysFingerNumbers);
+  out.keysFlash = bool(v.keysFlash, out.keysFlash);
   out.toleranceMs = Math.round(num(v.toleranceMs, out.toleranceMs, 30, 500));
   out.passAccuracyPct = Math.round(num(v.passAccuracyPct, out.passAccuracyPct, 50, 100));
   out.passTempoPct = Math.round(num(v.passTempoPct, out.passTempoPct, 30, 130));

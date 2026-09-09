@@ -87,6 +87,26 @@ export class KeyRibbon implements KeyView {
       if (next === undefined) continue;
       this.applySet(name, next);
     }
+    if (state.fingers !== undefined) this.applyFingers(state.fingers);
+  }
+
+  /** The cells carrying a finger number; the name gets the number after it. */
+  private readonly fingered = new Set<number>();
+
+  private applyFingers(fingers: ReadonlyMap<number, string>): void {
+    for (const midi of this.fingered) {
+      if (!fingers.has(midi)) {
+        const cell = this.cells.get(midi);
+        if (cell) cell.dataset.note = midiToNoteName(midi).replace('#', '♯');
+        this.fingered.delete(midi);
+      }
+    }
+    for (const [midi, finger] of fingers) {
+      const cell = this.cells.get(midi);
+      if (!cell) continue;
+      cell.dataset.note = `${midiToNoteName(midi).replace('#', '♯')} ${finger}`;
+      this.fingered.add(midi);
+    }
   }
 
   clear(): void {

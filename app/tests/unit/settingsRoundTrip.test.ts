@@ -36,6 +36,7 @@ function candidates(key: keyof PracticeSettings): unknown[] {
     defaultModeWithInput: ['tempo'],
     defaultModeWithoutInput: ['wait'],
     layout: ['scroll'],
+    keysGuide: ['next-two', 'off'],
     metronomeSound: ['beep', 'high'],
     playbackDestination: ['piano', 'both'],
     playbackHands: ['both', 'none'],

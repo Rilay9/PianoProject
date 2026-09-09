@@ -40,6 +40,7 @@ export interface StateRecord {
     tablet: string;
     side: string;
     hands: string;
+    keysGuide: string;
   };
   /**
    * The stage, and how much of it is music.
@@ -212,6 +213,7 @@ export async function probeState(page: Page): Promise<StateRecord> {
         tablet: screen?.dataset.tablet ?? '',
         side: screen?.dataset.side ?? '',
         hands: view?.dataset.hands ?? '',
+        keysGuide: screen?.dataset.keysGuide ?? '',
       },
       slots,
       bands: {

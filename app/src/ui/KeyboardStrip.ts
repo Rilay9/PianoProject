@@ -81,6 +81,12 @@ export interface KeyboardStripState {
   uncertain?: Iterable<number>;
   /** Played and wrong — red, with a ✗. */
   wrong?: Iterable<number>;
+  /**
+   * The score's finger number for a marked key, by midi — "3", printed on
+   * the key (docs/04 §5). A map with no entry for a key clears its number;
+   * `undefined` leaves the numbers as they were, like every other field.
+   */
+  fingers?: ReadonlyMap<number, string>;
 }
 
 /**
@@ -183,6 +189,31 @@ export class KeyboardStrip {
       const next = state[name];
       if (next === undefined) continue;
       this.applySet(name, next);
+    }
+    if (state.fingers !== undefined) this.applyFingers(state.fingers);
+  }
+
+  /** The finger numbers, one small label per key that has one. */
+  private readonly fingerEls = new Map<number, HTMLElement>();
+
+  private applyFingers(fingers: ReadonlyMap<number, string>): void {
+    for (const [midi, label] of this.fingerEls) {
+      if (!fingers.has(midi)) {
+        label.remove();
+        this.fingerEls.delete(midi);
+      }
+    }
+    for (const [midi, finger] of fingers) {
+      const key = this.keys.get(midi);
+      if (!key) continue;
+      let label = this.fingerEls.get(midi);
+      if (!label) {
+        label = document.createElement('span');
+        label.className = 'key__finger';
+        key.appendChild(label);
+        this.fingerEls.set(midi, label);
+      }
+      label.textContent = finger;
     }
   }
 

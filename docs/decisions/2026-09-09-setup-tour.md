@@ -77,3 +77,20 @@ then checks Settings shows what the tour set, and photographs every step upright
 spec starts with the tour already skipped: the Playwright config seeds `pianopath.setup`
 through `storageState`, and the three specs that clear localStorage themselves put the flag
 back. Without that, every `goto('/')` in the suite would have landed on the tour.
+
+## The keys: the guide, the finger numbers, the flash (later the same day)
+
+The owner, after playing with it: "the keyboard turning all red and staying that way is bad.
+Either show the next note(s) to press on the keyboard or show green/red for a brief time after
+a miss/hit." Then: "is there also an option to show the right keys on the keyboard ahead of time
+(as like a fingering guide) instead of or with the correct/incorrect feedback?" — "add all
+those as options and features."
+
+So a verdict on a key is a flash, 900 ms, and then the key goes back to the guide; and the guide
+is three settings under Display, in Settings and in the tour's screen step, shown in the
+miniature: **Keys guide** (the note it waits for · that and the one after · off — with two ahead
+the paler blue shows in Wait mode too, which the gallery's §9.11 now allows), **Finger numbers
+on the keys** (the score's finger number on each marked key, and after the name on the ribbon),
+**Flash a hit green and a miss red**. Each works alone. The session takes them as
+`StripOptions`, spelled out so it owes the settings store nothing; `keys-guide.spec.ts` checks
+each on Hot Cross Buns, whose first two notes are fingered 3 and 2.

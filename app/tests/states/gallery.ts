@@ -108,7 +108,9 @@ function check(state: StateRecord, cell: string): string[] {
   if (!clocked && state.bands.nextLines > 0 && state.screen.running === 'true') {
     say(11, `a read-ahead line in ${state.screen.mode}`);
   }
-  if (!clocked && state.keys.next.length > 0) {
+  // Two notes ahead is the guide the owner may ask for (`04` §5); then the
+  // next keys are marked in every mode, and that is the setting, not a fault.
+  if (!clocked && state.keys.next.length > 0 && state.screen.keysGuide !== 'next-two') {
     say(11, `next keys marked in ${state.screen.mode}`);
   }
 

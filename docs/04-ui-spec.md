@@ -386,7 +386,12 @@ Notation area:
   **for under a second** (`KEY_FLASH_MS`, 900 ms), then the key goes back to what the score
   wants. Decided 2026-09-09: verdicts used to stay for the whole run, so a beginner who missed
   early was looking at a keyboard that stayed red, which says nothing about what to press next.
-  The notation keeps its colours; the strip is about the next key. Scrolls to keep expected keys visible. This is the
+  The notation keeps its colours; the strip is about the next key. Scrolls to keep expected keys visible.
+  Three settings under Display (2026-09-09, the owner's ask): **Keys guide** [the note it waits
+  for | that and the one after | off] — with two notes ahead, the paler blue is shown in every
+  mode, Wait included; **Finger numbers on the keys** [on] — the score's finger number printed
+  on each marked key, and after the note's name on the ribbon; **Flash a hit green and a miss
+  red** [on]. Any of the three works alone: a guide with no verdicts, verdicts with no guide. This is the
   no-MIDI learner's main feedback and also the ScreenKeyboardSource input surface (tap to play
   — enabled only in Free/Wait mode when no MIDI input is present).
 - **The ribbon** (P21d A6, `keys: 'ribbon'`): the same keys as a 32 px band, one cell per
@@ -593,8 +598,9 @@ lesson [off]; strict prerequisites [off]; daily goal minutes [30].
 
 **Display** — theme [system]; landscape lock on score screen [on]; zoom [1.0]; show
 fingering [on]; show note names in note heads [off; auto-on for Stage ≤ 1]; show chord
-symbols [on]; keys under the score [keyboard | ribbon | off, default keyboard]; keep screen
-awake [on]; left-handed layout [off].
+symbols [on]; keys under the score [keyboard | ribbon | off, default keyboard]; keys guide
+[next | next-two | off, default next]; finger numbers on the keys [on]; flash a hit green and a
+miss red [on]; keep screen awake [on]; left-handed layout [off].
 
 **Sound** — piano volume; metronome volume; playback plays: both / only the non-focused hand
 [non-focused when hand focus set]; **playback destination: phone / piano over MIDI OUT /

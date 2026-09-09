@@ -628,6 +628,22 @@ export function SetupScreen(router: Router): HTMLElement {
           ),
           'The key it is waiting for is blue; a played one turns green or red.',
         ),
+        field(
+          'Keys guide',
+          selectControl(
+            'setup-keys-guide',
+            [
+              { value: 'next', label: 'The note it waits for' },
+              { value: 'next-two', label: 'That, and the one after' },
+              { value: 'off', label: 'Off' },
+            ],
+            s.keysGuide,
+            (value) => { set({ keysGuide: value as PracticeSettings['keysGuide'] }); later(); },
+          ),
+          'Marked blue on the keys before you play it; the one after in a paler blue.',
+        ),
+        field('Finger numbers on the keys', toggleControl('setup-keys-fingers', s.keysFingerNumbers, (v) => { set({ keysFingerNumbers: v }); later(); }), 'The score’s finger number, printed on each marked key.'),
+        field('Flash a hit green and a miss red', toggleControl('setup-keys-flash', s.keysFlash, (v) => set({ keysFlash: v })), 'For under a second; then the key goes back to the guide.'),
         field('Show fingering', toggleControl('setup-fingering', s.showFingering, (v) => { set({ showFingering: v }); later(); })),
         field('Show chord symbols', toggleControl('setup-chords', s.showChordSymbols, (v) => { set({ showChordSymbols: v }); later(); })),
         field(

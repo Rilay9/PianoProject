@@ -1679,6 +1679,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // The size a run starts at is the size it keeps (P21e A2).
     renderer?.setRunning(session?.running === true);
     section.dataset.mode = mode;
+    section.dataset.keysGuide = settings.keysGuide;
     // Which mode the *run* is in, when it is not the one the select shows.
     section.dataset.hearing = String(hearing);
     hearButton.textContent = hearing ? 'Stop' : 'Hear it';
@@ -1868,6 +1869,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         model: loaded,
         renderer,
         strip,
+        stripOptions: { guide: settings.keysGuide, fingers: settings.keysFingerNumbers, flash: settings.keysFlash },
         piano: null,
         audioContext: context,
         destination: audioEngine.masterGain,
