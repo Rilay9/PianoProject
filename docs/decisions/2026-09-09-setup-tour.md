@@ -56,6 +56,18 @@ tried, 300 to 780 px, with 31 px to spare sideways — but it leaves step two sh
 `Upright` and `Sideways` over a sliver of each miniature, which is the one thing that step is
 for. The fold is worth less than the previews. It wants a fix that keeps both.
 
+### How the footer was actually pinned
+
+`position: sticky` pinned to whichever ancestor scrolls, which is not the same box on every
+platform: `#setup-next`'s bottom measured 365 px on the Linux runner and 340 on Windows for a
+360 px fold, and CI went red on the tour alone. Bounding the card alone squeezed the
+miniatures, because a flex column shrinks its children before it overflows. The shape that
+holds: the tour's card is bounded to the fold, the *step* is the one child allowed to
+overflow and scrolls inside the card, and what is in the step keeps its size (`flex: none`
+on the miniatures). The footer is then simply the card's last row, inside the card's own
+padding, on any platform. Recorded here because two plausible fixes were tried first and
+both were wrong in a way the pictures showed.
+
 ## The tests
 
 `tests/e2e/setup.spec.ts` starts from an empty origin, which is a first launch, and walks all

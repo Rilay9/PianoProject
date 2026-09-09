@@ -798,19 +798,48 @@ body {
 
 /* The buttons that move the tour along: Back on the left, Skip in the middle,
    the one filled box on the right — the thing you do on most visits (R3). */
+/* The tour's card is bounded to the fold and the *step* scrolls inside it,
+   so Back, Skip and Next are the card's own last row and never leave the
+   screen — on any platform. `position: sticky` was tried first and pinned
+   to whichever ancestor scrolls, which measured 365 px on the Linux runner
+   and 340 on Windows for a 360 px fold. Bounding the card alone squeezed
+   the miniatures, because a flex column shrinks its children before it
+   overflows; the step is the one child allowed to overflow, and what is in
+   it keeps its size and scrolls. */
+.screen[data-screen='setup'] {
+  height: 100%;
+  min-height: 0;
+}
+
+.screen[data-screen='setup'] .card {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  min-height: 0;
+}
+
+.screen[data-screen='setup'] .card > * {
+  flex: 0 0 auto;
+}
+
+.screen[data-screen='setup'] .card > .setup-step {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  /* Air at the foot, so the last control is not against the footer's rule. */
+  padding-bottom: 8px;
+}
+
+.setup-device,
+.setup-preview-host {
+  flex: none;
+}
+
 .setup-footer {
-  /* Pinned to the foot of whatever is on the screen, so Back, Skip and
-     Next are in reach on every step however long the step is; the content
-     scrolls under it. Sideways on a phone the fold is 360 px and most
-     steps are longer, which is how the builder found the buttons gone. */
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 20px;
-  padding: 12px 0 4px;
+  padding: 12px 0 0;
   border-top: 1px solid var(--border);
   background: var(--surface);
 }
