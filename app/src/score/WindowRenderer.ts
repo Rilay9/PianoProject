@@ -153,11 +153,19 @@ export interface WindowRendererOptions {
   /** Whether chord symbols are printed over the stave; the Display setting. */
   drawChordSymbols?: boolean;
   /**
-   * `single` draws one system whatever the screen's shape — for a preview in
-   * a card, where two slots in a short stage would be two unreadable ones.
-   * Default: the slots upright and on a tall screen, one system sideways.
+   * Which way the phone is held, when the stage is not the screen: the setup
+   * tour draws a miniature of the score screen upright and sideways inside
+   * one card, and the arrangement — slots upright, a sliding chunk sideways
+   * — has to follow the miniature, not the window it sits in.
    */
-  arrangement?: 'auto' | 'single';
+  orientation?: 'upright' | 'sideways';
+  /**
+   * The scale an ancestor draws the stage at, for a miniature laid out at the
+   * real screen's size and shown smaller by a CSS transform (the setup tour).
+   * The renderer divides what it measures by it, so the fit is the real
+   * screen's fit. Default 1.
+   */
+  miniature?: number;
 }
 
 interface Buffer {
@@ -321,8 +329,16 @@ export class WindowRenderer {
   private readonly model: ScoreModel;
   /** Built once: `annotate` runs on every window draw and must not re-walk the piece. */
   private readonly notesById: Map<string, ScoreNote>;
-  /** One system whatever the screen's shape (`arrangement: 'single'`). */
-  private readonly singleOnly: boolean;
+  /** The way the phone is held, when the stage is a miniature; null: the window's. */
+  private readonly orientation: 'upright' | 'sideways' | null;
+  /**
+   * The scale an ancestor draws the stage at, when it is a miniature (the
+   * setup tour): the stage is laid out at the real screen's size and shown
+   * smaller by a CSS transform, so what `getBoundingClientRect` reports is
+   * this much smaller than the layout every other number is in. 1 on a
+   * screen.
+   */
+  private readonly miniature: number;
   private readonly buffers: Buffer[];
   private readonly band: HTMLElement;
   /**
@@ -442,7 +458,8 @@ export class WindowRenderer {
     this.buffers = buffers;
     this.layout = options.layout ?? 'window';
     this.barsPerWindow = clampBars(options.barsPerWindow ?? 2);
-    this.singleOnly = options.arrangement === 'single';
+    this.orientation = options.orientation ?? null;
+    this.miniature = options.miniature !== undefined && options.miniature > 0 ? options.miniature : 1;
     this.handsFocus = options.handsFocus ?? 'both';
     this.userZoom = options.zoom ?? 1;
     // Starts at the owner's number and becomes the fitted one on the first
@@ -899,8 +916,29 @@ export class WindowRenderer {
    * Sideways only, and only in Window layout: Scroll already slides, in the
    * other axis, and upright the two slots do the reading-ahead.
    */
+  /**
+   * A node's box in layout pixels — the box `getBoundingClientRect` reports,
+   * undone for the miniature's scale (see `miniature`).
+   */
+  private measure(node: Element): { left: number; top: number; right: number; bottom: number; width: number; height: number; x: number; y: number } {
+    const r = node.getBoundingClientRect();
+    const k = this.miniature;
+    if (k === 1) return r;
+    return {
+      left: r.left / k,
+      top: r.top / k,
+      right: r.right / k,
+      bottom: r.bottom / k,
+      width: r.width / k,
+      height: r.height / k,
+      x: r.x / k,
+      y: r.y / k,
+    };
+  }
+
   private get sliding(): boolean {
     if (this.readAhead !== 'single' || this.layout !== 'window') return false;
+    if (this.orientation !== null) return this.orientation === 'sideways';
     return typeof window === 'undefined' ? false : window.innerWidth > window.innerHeight;
   }
 
@@ -925,9 +963,9 @@ export class WindowRenderer {
     if (step.sourceMeasureIndex === this.slidBar) return;
     const anchor = this.anchorElementFor(step);
     if (!anchor) return;
-    const host = this.el.getBoundingClientRect();
+    const host = this.measure(this.el);
     if (host.width <= 0) return;
-    const at = anchor.getBoundingClientRect().left - host.left;
+    const at = this.measure(anchor).left - host.left;
     const delta = host.width * SLIDE_TARGET_FRACTION - at;
     // Never past the start: bar 1 sits where it was engraved rather than
     // being pushed into the middle of an otherwise empty stage.
@@ -995,15 +1033,21 @@ export class WindowRenderer {
     // gives its stage a fixed height inside a wide window, so reading the box
     // there called a landscape screen upright.
     const upright =
-      typeof window === 'undefined' ? true : window.innerHeight > window.innerWidth;
+      this.orientation !== null
+        ? this.orientation === 'upright'
+        : typeof window === 'undefined'
+          ? true
+          : window.innerHeight > window.innerWidth;
     // A screen tall enough for two systems gets two slots whichever way up it
     // is. The slide is for a phone held sideways, where 360 px holds one
     // system; on a tablet or a desktop window 900 px tall, fitting one system
     // to the height drew a bar of Suo Gân across 1,200 px with note heads the
     // size of a thumb — the tour photographed it and I did not look.
-    const tall = typeof window === 'undefined' ? false : window.innerHeight >= TWO_SYSTEMS_MIN_PX;
+    // A miniature is a phone: never tall.
+    const tall =
+      this.orientation !== null || typeof window === 'undefined' ? false : window.innerHeight >= TWO_SYSTEMS_MIN_PX;
     const next: 'slots' | 'single' =
-      this.layout === 'scroll' || this.singleOnly
+      this.layout === 'scroll'
         ? 'single'
         : (upright || tall) && this.barsPerWindow >= 2
           ? 'slots'
@@ -1054,7 +1098,7 @@ export class WindowRenderer {
       Math.max(2, Math.ceil(this.model.sourceMeasureCount / barsPerSlot(this.barsPerWindow))),
     );
     if (this.frozen || this.freezeHandle !== null) return Math.min(most, Math.max(2, this.slotCount));
-    const stage = this.el.getBoundingClientRect();
+    const stage = this.measure(this.el);
     const height = this.held.zoom === this.zoomLevel ? Math.max(this.held.height, this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0) : 0;
     const width = Math.max(
       this.held.zoom === this.zoomLevel ? this.held.width : 0,
@@ -1274,7 +1318,7 @@ export class WindowRenderer {
   inkRect(): { top: number; bottom: number; left: number; right: number } | null {
     const svg = this.frontBuffer.view.svg;
     if (!svg) return null;
-    const rect = svg.getBoundingClientRect();
+    const rect = this.measure(svg);
     const ink = inkBox(svg);
     const engraved = engravedSize(svg);
     if (!ink || !engraved || !(engraved.width > 0) || !(rect.width > 0)) {
@@ -1391,7 +1435,7 @@ export class WindowRenderer {
 
   private ensureScrollRender(): void {
     const buffer = this.frontBuffer;
-    const width = Math.round(this.el.getBoundingClientRect().width);
+    const width = Math.round(this.measure(this.el).width);
     const whole = buffer.range !== null && buffer.range.fromMeasure === 0 && buffer.range.toMeasure === Infinity;
     if (whole && (buffer.engravedWidth === undefined || Math.abs(buffer.engravedWidth - width) <= 2)) return;
     if (whole && width <= 0) return; // hidden: nothing to lay out into
@@ -1415,7 +1459,7 @@ export class WindowRenderer {
     // past them (P21e A3).
     if (this.sliding) {
       const bars = Math.max(1, range.toMeasure - range.fromMeasure + 1);
-      const stageWidth = Math.max(1, this.el.getBoundingClientRect().width);
+      const stageWidth = Math.max(1, this.measure(this.el).width);
       buffer.wrapper.style.width = `${String(Math.round(bars * stageWidth))}px`;
     } else {
       buffer.wrapper.style.width = '';
@@ -1465,7 +1509,7 @@ export class WindowRenderer {
     }
     const slots = this.drawnSlots;
     if (slots.length === 0) return;
-    const available = this.el.getBoundingClientRect();
+    const available = this.measure(this.el);
     if (available.width <= 0 || available.height <= 0) return;
     this.stageHeight = Math.round(available.height);
 
@@ -1475,7 +1519,7 @@ export class WindowRenderer {
       const svg = slot.view.svg;
       if (!svg) continue;
       slot.wrapper.style.transform = '';
-      const rect = svg.getBoundingClientRect();
+      const rect = this.measure(svg);
       if (rect.width <= 0 || rect.height <= 0) continue;
       boxes.push({
         slot,
@@ -1558,7 +1602,7 @@ export class WindowRenderer {
       }
       return;
     }
-    const stageHeight = this.el.getBoundingClientRect().height;
+    const stageHeight = this.measure(this.el).height;
     const perSlot = stageHeight / this.slotCount;
     const total = entries.reduce((sum, entry) => sum + entry.height, 0) + SLOT_GAP_PX * (entries.length - 1);
     const packed = entries.length >= 2 && total < stageHeight;
@@ -1665,7 +1709,7 @@ export class WindowRenderer {
     if (this.fitting || this.layout === 'scroll' || this.disposed) return;
     const svg = buffer.view.svg;
     if (!svg) return;
-    const stage = this.el.getBoundingClientRect();
+    const stage = this.measure(this.el);
     // A slot gets its share of the stage, not all of it. Engraving each one
     // against the full height grows it to twice what it can be drawn at, and
     // the CSS scale then halves it again — two renders to arrive where one
@@ -1691,7 +1735,7 @@ export class WindowRenderer {
     //
     // The `width`/`height` attributes are what OSMD wrote, before any
     // transform of ours.
-    const box = engravedSize(svg) ?? svg.getBoundingClientRect();
+    const box = engravedSize(svg) ?? this.measure(svg);
     // No `userZoom` here. It belongs to the *drawn* size and is applied once,
     // in `fit()`. Carried in both places it was counted twice: a click on
     // Size re-engraved smaller, the fill scaled that back up to the stage,
@@ -1739,7 +1783,7 @@ export class WindowRenderer {
 
     for (let step = 0; step < FIT_STEPS; step += 1) {
       const svg = this.frontBuffer.view.svg;
-      const box = svg ? (engravedSize(svg) ?? svg.getBoundingClientRect()) : null;
+      const box = svg ? (engravedSize(svg) ?? this.measure(svg)) : null;
       if (!box || !(box.height > 0)) break;
 
       // The tallest that fits wins; among those that do not fit, none does.
@@ -1764,10 +1808,10 @@ export class WindowRenderer {
     const svg = buffer.view.svg;
     if (!svg) return;
     buffer.wrapper.style.transform = '';
-    const available = this.el.getBoundingClientRect();
+    const available = this.measure(this.el);
     if (available.width <= 0 || available.height <= 0) return;
     this.stageHeight = Math.round(available.height);
-    const rect = svg.getBoundingClientRect();
+    const rect = this.measure(svg);
     if (rect.width <= 0 || rect.height <= 0) return;
     // The ink, not the page it was drawn on. Fitting to the page is what left
     // the notation with a fifth of the screen sideways: the page is the full
@@ -1804,7 +1848,7 @@ export class WindowRenderer {
     // just been inserted, so the layout it forced was the expensive one the
     // double buffer exists to keep off the swap. The observer resets it when
     // the stage changes, and the fit that follows measures again.
-    const stageHeight = this.stageHeight >= 0 ? this.stageHeight : Math.round(this.el.getBoundingClientRect().height);
+    const stageHeight = this.stageHeight >= 0 ? this.stageHeight : Math.round(this.measure(this.el).height);
     if (fitted.height !== stageHeight) return false;
     if (this.frozen && this.frozen.scale > 0 && fitted.scale > this.frozen.scale + 0.001) return false;
     return true;
@@ -2062,8 +2106,8 @@ export class WindowRenderer {
       band.hidden = true;
       return;
     }
-    const host = this.el.getBoundingClientRect();
-    const box = anchor.getBoundingClientRect();
+    const host = this.measure(this.el);
+    const box = this.measure(anchor);
     band.hidden = false;
     band.style.left = `${box.left - host.left + this.el.scrollLeft - 4}px`;
     band.style.width = `${Math.max(box.width + 8, 12)}px`;
@@ -2078,7 +2122,7 @@ export class WindowRenderer {
     // marked; a little padding above and below keeps ledger lines and stems
     // inside it.
     const system = anchor.closest('.staffline');
-    const line = system?.getBoundingClientRect();
+    const line = system ? this.measure(system) : undefined;
     const pad = 12;
     if (band === this.nextBand) {
       // A short line under the stave, not a paler copy of the cursor. Two
@@ -2128,8 +2172,8 @@ export class WindowRenderer {
     if (performance.now() < this.manualScrollUntil) return;
     const anchor = this.anchorElementFor(step);
     if (!anchor) return;
-    const host = this.el.getBoundingClientRect();
-    const box = anchor.getBoundingClientRect();
+    const host = this.measure(this.el);
+    const box = this.measure(anchor);
     const offsetInContent = box.top - host.top + this.el.scrollTop;
     const fraction = (box.top - host.top) / host.height;
     if (fraction >= SCROLL_TARGET_MIN && fraction <= SCROLL_TARGET_MAX) return;

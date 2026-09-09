@@ -16,7 +16,7 @@ const SHOTS = resolve('../build/setup');
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
-const STEPS = ['welcome', 'piano', 'latency', 'sound', 'display', 'modes', 'practice', 'done'];
+const STEPS = ['welcome', 'hold', 'piano', 'latency', 'sound', 'display', 'modes', 'practice', 'done'];
 
 async function fresh(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -76,6 +76,21 @@ test.describe('the setup tour', () => {
       // filled button on the right (`04` §0 R3).
       await expect(page.locator('#setup-next')).toBeVisible();
 
+      if (step === 'hold') {
+        // Both ways up, drawn by the real engraver in the phone's proportions:
+        // slots upright, one sliding system sideways.
+        const upright = page.locator('#setup-hold-upright .setup-device');
+        const sideways = page.locator('#setup-hold-sideways .setup-device');
+        await expect(upright.locator('svg').first()).toBeVisible({ timeout: 60_000 });
+        await expect(sideways.locator('svg').first()).toBeVisible({ timeout: 60_000 });
+        await expect(upright.locator('.score-view')).toHaveAttribute('data-read-ahead', 'slots');
+        await expect(sideways.locator('.score-view')).toHaveAttribute('data-read-ahead', 'single');
+        // The landscape lock is on by default, so sideways is the choice to begin with.
+        await expect(page.locator('#setup-hold-sideways')).toHaveAttribute('aria-pressed', 'true');
+        await page.locator('#setup-hold-upright').click();
+        await expect(page.locator('#setup-hold-upright')).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.locator('#setup-hold-sideways')).toHaveAttribute('aria-pressed', 'false');
+      }
       if (step === 'piano') {
         await page.locator('#setup-midi-connect').click();
         await expect(page.locator('#setup-midi-status')).not.toHaveText('', { timeout: 10_000 });
@@ -84,20 +99,27 @@ test.describe('the setup tour', () => {
         await page.locator('#setup-input-priority').selectOption('mic,midi,none');
       }
       if (step === 'display') {
-        // The live preview: the real engraver over a real piece.
+        // The miniature follows the choice: upright, the slots.
+        await expect(page.locator('#setup-preview')).toHaveAttribute('data-orientation', 'upright');
         await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 60_000 });
+        await expect(page.locator('#setup-preview .score-view')).toHaveAttribute('data-read-ahead', 'slots');
         await expect(page.locator('#setup-preview .score-note.is-current').first()).toBeAttached();
-        await expect(page.locator('#setup-preview-keys .key').first()).toBeVisible();
+        await expect(page.locator('#setup-preview .setup-device__strip .key').first()).toBeVisible();
+        await expect(page.locator('#setup-landscape')).not.toBeChecked();
+        await page.locator('#setup-preview-flip').click();
+        await expect(page.locator('#setup-preview')).toHaveAttribute('data-orientation', 'sideways');
+        await expect(page.locator('#setup-preview .score-view')).toHaveAttribute('data-read-ahead', 'single', { timeout: 30_000 });
         await page.locator('#setup-theme').selectOption('dark');
         await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
         await page.locator('#setup-keys').selectOption('ribbon');
-        await expect(page.locator('#setup-preview-keys')).toHaveAttribute('data-keys', 'ribbon');
+        await expect(page.locator('#setup-preview .setup-device__strip')).toHaveAttribute('data-keys', 'ribbon', { timeout: 30_000 });
         // The preview is drawn again without the fingering digits, which are
         // text: fewer text nodes after than before.
+        await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 30_000 });
         const textsBefore = await page.locator('#setup-preview svg text').count();
         await page.locator('#setup-fingering').uncheck();
         await expect
-          .poll(() => page.locator('#setup-preview svg text').count(), { timeout: 10_000 })
+          .poll(() => page.locator('#setup-preview svg text').count(), { timeout: 30_000 })
           .toBeLessThan(textsBefore);
       }
       if (step === 'modes') {
@@ -111,6 +133,7 @@ test.describe('the setup tour', () => {
       }
       if (step === 'done') {
         const summary = page.locator('#setup-summary');
+        await expect(summary).toContainText('upright');
         await expect(summary).toContainText('MIDI input');
         await expect(summary).toContainText('Keep tempo');
         await expect(summary).toContainText('Ribbon');
@@ -125,6 +148,7 @@ test.describe('the setup tour', () => {
     // What the tour set is what Settings shows.
     await page.goto('/#/settings');
     await expect(page.locator('#settings-setup')).toContainText('Finished');
+    await expect(page.locator('#set-landscape')).not.toBeChecked();
     await expect(page.locator('#set-keys')).toHaveValue('ribbon');
     await expect(page.locator('#set-mode-input')).toHaveValue('tempo');
     await expect(page.locator('#set-countin')).toHaveValue('2');
@@ -156,6 +180,11 @@ test.describe('the setup tour', () => {
           await page.locator('#setup-midi-connect').click();
           await expect(tour).toHaveAttribute('data-midi-connected', 'true');
           await page.locator('#setup-mic summary').click();
+        }
+        if (step === 'hold') {
+          await expect(page.locator('#setup-hold-upright svg').first()).toBeVisible({ timeout: 60_000 });
+          await expect(page.locator('#setup-hold-sideways svg').first()).toBeVisible({ timeout: 60_000 });
+          await page.waitForTimeout(400);
         }
         if (step === 'display') {
           await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 60_000 });

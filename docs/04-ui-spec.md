@@ -641,7 +641,7 @@ chart's bass-and-drums loop (§3b), and the tablet side panel (§7a; the four-ba
 ### 7d. The setup tour (`#/settings/setup`)
 
 The first launch of a fresh install lands here rather than on Today — a launch, not a deep
-link: a piece, a lesson or a drill opened by its address is left alone. Eight steps, one
+link: a piece, a lesson or a drill opened by its address is left alone. Nine steps, one
 screen each, in the order a person meets the app; every control writes straight through to
 the same stores Settings writes, so leaving half-way loses nothing and Settings shows what the
 tour set. **Skip for now** is on every step and is remembered, as is **Finish**; after either,
@@ -651,17 +651,20 @@ finished or skipped.
 | Step | What it does |
 |---|---|
 | Welcome | Two sentences on what the app does; Start or Skip. |
+| Which way will the phone sit? | Two **miniatures of the score screen in this phone's own proportions**, upright and sideways, drawn by the real engraver with the arrangement each way up gets (slots upright, a sliding system sideways), captioned with the fraction of real size they are shown at. A tap chooses; the choice is the score screen's landscape lock. |
 | Your piano | *Connect piano* (the same permission prompt and recovery text as the MIDI screen), the inputs to pin, a strip that lights up from the cable or from a tap; *No cable? Use the microphone* folds out the mic's connect, level and a fifteen-second calibration; the follow-input priority. |
 | How late is the piano? | The latency test — eight clicks, tap on each — with the median saved as the input latency the moment it ends. Skippable for a mic or the screen keys. |
 | Sound | Test sound, the two volumes, the metronome sound, playback plays / destination. |
-| The screen | A **live preview** — the real engraver over *Hot Cross Buns*, one system, with the keys view under it — that redraws as theme, keys, fingering, chord symbols, size, bars per window and layout change; landscape lock and keep-awake. |
+| The screen | The **miniature the way the phone was chosen to sit** — header, stage, keys and control bar at their real proportions — redrawn as theme, keys, fingering, chord symbols, size, bars per window and layout change, with *Show it sideways / upright* to see the other; landscape lock and keep-awake. |
 | How it follows you | The four modes in one line each, *Hear it* and the long-press; the default modes with and without an input, count-in, default tempo, strict Wait, tolerance, the pass criteria. |
 | Your practice | Weekday and weekend session lengths, the track chips, strict prerequisites, two songs per lesson. |
 | Ready | A summary of what was set, and where to find the tour again. |
 
-The preview draws one system whatever the phone's orientation (`WindowRenderer`'s `arrangement:
-'single'`): two slots in a 200 px stage would be two unreadable ones. The latency test and the
-mic calibration are the same routines the Diagnostics and Microphone screens run
+The miniature (`ui/devicePreview`) is built from the phone's own short and long sides and the
+score screen's chrome at its real heights, scaled as one to the width the card can give it, and
+the renderer is told which way up it is (`WindowRenderer`'s `orientation`), so the arrangement
+follows the miniature rather than the window it sits in. The latency test and the mic
+calibration are the same routines the Diagnostics and Microphone screens run
 (`audio/latencyTest`, `audio/pitch/calibrationRun`), so a number measured here is the number
 measured there.
 

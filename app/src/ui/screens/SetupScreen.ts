@@ -1,32 +1,28 @@
 // The setup tour (docs/04 §7d): the first launch, and Settings → "Run the
 // setup tour again".
 //
-// Eight steps, one screen each, in the order a person meets the app: what
-// it is, the piano, how late the piano is, the sound, the screen, the four
-// ways it follows you, the practice plan, and a summary. Every control
-// writes straight through to the same stores Settings writes, so leaving
-// half-way loses nothing and Settings shows what the tour set. Skipping is
-// one tap on every step and is remembered; so is finishing.
+// Nine steps, one screen each, in the order a person meets the app: what it
+// is, which way the phone will sit, the piano, how late the piano is, the
+// sound, the screen, the four ways it follows you, the practice plan, and a
+// summary. Every control writes straight through to the same stores Settings
+// writes, so leaving half-way loses nothing and Settings shows what the tour
+// set. Skipping is one tap on every step and is remembered; so is finishing.
 //
-// The display step draws the real engraver over a real piece, because a
-// setting called "Show fingering" means nothing until the fingering is on
-// the screen in front of the person deciding.
+// The choices that change what the screen looks like are shown, not
+// described: a miniature of the score screen in this phone's own proportions
+// (`ui/devicePreview`), drawn by the real engraver, either way up — because
+// "Show fingering" means nothing until the fingering is on the screen in
+// front of the person deciding, and "sideways" means nothing until they see
+// what sideways buys.
 
 import { createSubScreen } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
-import {
-  audioEngine,
-  getPiano,
-  micSource,
-  screenKeyboardSource,
-  webMidiSource,
-} from '../../app/services';
+import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { isWebMidiSupported, type MidiAccessError } from '../../midi/WebMidiSource';
 import { MIDI_ERROR_HELP } from '../../midi/errorHelp';
 import { midiToNoteName } from '../../midi/parseMidiMessage';
 import type { InputNoteEvent } from '../../midi/types';
-import { KeyboardStrip, type KeyView } from '../KeyboardStrip';
-import { KeyRibbon } from '../KeyRibbon';
+import { KeyboardStrip } from '../KeyboardStrip';
 import { describeLatency, LATENCY_BEATS, runLatencyTest, type LatencyRun } from '../../audio/latencyTest';
 import { describeCalibration, runCalibrationRoutine } from '../../audio/pitch/calibrationRun';
 import type { MicLevel } from '../../audio/pitch/MicSource';
@@ -38,15 +34,15 @@ import { getThemePreference, setThemePreference, type ThemePreference } from '..
 import { contentUrl, findItem } from '../../curriculum/load';
 import { toMusicXml } from '../../score/mxl';
 import { OsmdView } from '../../score/OsmdView';
-import { WindowRenderer, type NoteState } from '../../score/WindowRenderer';
 import type { ScoreModel } from '../../score/types';
-import { stripRangeFor } from '../stripRange';
+import { createDevicePreview, describeRatio, deviceSides, type DevicePreview, type Orientation } from '../devicePreview';
 import { renderTrackChips } from '../trackChips';
 import { button, el, field, numberControl, selectControl, toggleControl } from '../widgets';
 import type { Router } from '../../router';
 
-/** The piece the display step draws: one staff, four bars, always bundled. */
+/** The piece the miniatures draw: one staff, four bars, always bundled. */
 const PREVIEW_ITEM = 'song.folk.hot-cross-buns';
+const PREVIEW_TITLE = 'Hot Cross Buns';
 
 const SESSION_LENGTHS = [15, 30, 60, 120].map((minutes) => ({
   value: String(minutes),
@@ -58,6 +54,11 @@ interface Step {
   title: string;
   /** Builds the step into `host`; returns what to run when it is left. */
   build(host: HTMLElement): (() => void) | void;
+}
+
+/** The way the phone will sit, as the settings remember it. */
+function chosenOrientation(): Orientation {
+  return getSettings().landscapeLock ? 'sideways' : 'upright';
 }
 
 export function SetupScreen(router: Router): HTMLElement {
@@ -114,6 +115,9 @@ export function SetupScreen(router: Router): HTMLElement {
     updateSettings(patch);
   };
 
+  /** The width a miniature may take: the step's, less the card's own air. */
+  const roomFor = (h: HTMLElement): number => Math.max(200, (h.clientWidth || card.clientWidth || 320) - 4);
+
   // ---------------------------------------------------------------- 1 welcome
   const welcome: Step = {
     id: 'welcome',
@@ -127,16 +131,81 @@ export function SetupScreen(router: Router): HTMLElement {
         }),
         el('p', {
           text:
-            'This takes about three minutes: the piano, how late it is, the sound, the ' +
-            'screen, and the way the app follows you. Everything here can be changed ' +
-            'later in Settings, and this tour can be run again from there.',
+            'This takes about three minutes: which way the phone sits, the piano, how late ' +
+            'it is, the sound, the screen, and the way the app follows you. Everything here ' +
+            'can be changed later in Settings, and this tour can be run again from there.',
         }),
         el('p.muted', { text: 'Skip for now if you would rather look around first.' }),
       );
     },
   };
 
-  // ---------------------------------------------------------------- 2 the piano
+  // ---------------------------------------------------------------- 2 which way up
+  const hold: Step = {
+    id: 'hold',
+    title: 'Which way will the phone sit on the stand?',
+    build(h) {
+      const { short, long } = deviceSides();
+      h.append(
+        el('p', {
+          text:
+            `This is your screen, ${String(short)} by ${String(long)}, with a piece on it both ways up. ` +
+            'Upright shows the bars being played and the ones coming, one under the other. ' +
+            'Sideways shows one line at a time, larger, and slides along it.',
+        }),
+      );
+      const choices = el('div.setup-choices', { id: 'setup-orientation' });
+      h.append(choices);
+      const previews: DevicePreview[] = [];
+      const draw = (): void => {
+        for (const p of previews) p.dispose();
+        previews.length = 0;
+        choices.replaceChildren();
+        // Two side by side where the room allows, one above the other where
+        // it does not; each takes what is left after the other.
+        const room = roomFor(h);
+        const wide = room >= 560;
+        const each = wide ? Math.floor((room - 16) / 2) : room;
+        for (const orientation of ['upright', 'sideways'] as const) {
+          const preview = createDevicePreview({
+            orientation,
+            maxWidth: orientation === 'upright' ? Math.min(each, 260) : each,
+            title: PREVIEW_TITLE,
+            source: loadPreviewSource,
+          });
+          previews.push(preview);
+          const chosen = chosenOrientation() === orientation;
+          const choice = el(
+            'button.setup-choice',
+            { type: 'button', 'aria-pressed': chosen, id: `setup-hold-${orientation}` },
+            el('span.setup-choice__label', { text: orientation === 'upright' ? 'Upright' : 'Sideways' }),
+            preview.el,
+            el('span.muted', { text: describeRatio(preview.ratio) }),
+          );
+          choice.addEventListener('click', () => {
+            // The score screen's landscape lock is the memory of this choice.
+            set({ landscapeLock: orientation === 'sideways' });
+            for (const node of choices.querySelectorAll('.setup-choice')) {
+              node.setAttribute('aria-pressed', String(node === choice));
+            }
+          });
+          choices.append(choice);
+          void preview.redraw();
+        }
+      };
+      draw();
+      h.append(
+        el('p.muted', {
+          text: 'Sideways locks the score screen to landscape; upright leaves the phone free to turn.',
+        }),
+      );
+      return () => {
+        for (const p of previews) p.dispose();
+      };
+    },
+  };
+
+  // ---------------------------------------------------------------- 3 the piano
   const piano: Step = {
     id: 'piano',
     title: 'Your piano',
@@ -177,7 +246,9 @@ export function SetupScreen(router: Router): HTMLElement {
         if (e.kind === 'noteOn') pressed.add(e.midi);
         else pressed.delete(e.midi);
         strip.setState({ pressed });
-        if (e.kind === 'noteOn') lastNote.textContent = `Heard ${midiToNoteName(e.midi)} from the ${e.source === 'midi' ? 'piano' : 'screen keys'}.`;
+        if (e.kind === 'noteOn') {
+          lastNote.textContent = `Heard ${midiToNoteName(e.midi)} from the ${e.source === 'midi' ? 'piano' : 'screen keys'}.`;
+        }
       };
 
       // The microphone, for a piano with no usable MIDI out.
@@ -334,7 +405,7 @@ export function SetupScreen(router: Router): HTMLElement {
     },
   };
 
-  // ---------------------------------------------------------------- 3 latency
+  // ---------------------------------------------------------------- 4 latency
   const latency: Step = {
     id: 'latency',
     title: 'How late is the piano?',
@@ -406,7 +477,7 @@ export function SetupScreen(router: Router): HTMLElement {
     },
   };
 
-  // ---------------------------------------------------------------- 4 sound
+  // ---------------------------------------------------------------- 5 sound
   const sound: Step = {
     id: 'sound',
     title: 'Sound',
@@ -485,89 +556,47 @@ export function SetupScreen(router: Router): HTMLElement {
     },
   };
 
-  // ---------------------------------------------------------------- 5 display
+  // ---------------------------------------------------------------- 6 the screen
   const display: Step = {
     id: 'display',
     title: 'The screen',
     build(h) {
+      let orientation = chosenOrientation();
       h.append(
         el('p', {
-          text: 'This is how a piece looks on the score screen. Change anything and watch it change.',
+          text: 'The score screen on your phone, the way you chose to hold it. Change anything and watch it change.',
         }),
       );
-      const stage = el('div.score-view.setup-preview', { id: 'setup-preview' });
-      const keysHost = el('div.score-strip.setup-preview-keys', { id: 'setup-preview-keys' });
-      const previewStatus = el('p.muted', { id: 'setup-preview-status', text: 'Loading the engraver…' });
-      h.append(stage, keysHost, previewStatus);
+      const frameHost = el('div.setup-preview-host', { id: 'setup-preview' });
+      const caption = el('p.muted', { id: 'setup-preview-caption' });
+      const flip = button('Show it sideways', () => {
+        orientation = orientation === 'upright' ? 'sideways' : 'upright';
+        rebuildFrame();
+      }, { id: 'setup-preview-flip', variant: 'quiet' });
+      h.append(frameHost, el('div.row', {}, caption, flip));
 
-      let renderer: WindowRenderer | null = null;
-      let keys: KeyView | null = null;
-      let source: { model: ScoreModel; musicXml: string } | null = null;
-      let building = 0;
-      let disposed = false;
-
-      const rebuild = async (): Promise<void> => {
-        const token = (building += 1);
-        try {
-          source ??= await loadPreviewSource();
-        } catch (cause) {
-          previewStatus.textContent = `The preview did not load: ${cause instanceof Error ? cause.message : String(cause)}`;
-          return;
-        }
-        if (disposed || token !== building) return;
-        const s = getSettings();
-        renderer?.dispose();
-        renderer = null;
-        stage.replaceChildren();
-        const next = await WindowRenderer.create({
-          container: stage,
-          model: source.model,
-          musicXml: source.musicXml,
-          barsPerWindow: s.barsPerWindow,
-          zoom: s.zoom,
-          layout: s.layout,
-          handsFocus: 'both',
-          drawFingerings: s.showFingering,
-          drawChordSymbols: s.showChordSymbols,
-          drawMetronomeMarks: false,
-          drawLyrics: false,
-          // One system in a card, whichever way the phone is held.
-          arrangement: 'single',
+      let preview: DevicePreview | null = null;
+      const rebuildFrame = (): void => {
+        preview?.dispose();
+        preview = createDevicePreview({
+          orientation,
+          maxWidth: roomFor(h),
+          title: PREVIEW_TITLE,
+          source: loadPreviewSource,
         });
-        if (disposed || token !== building) {
-          next.dispose();
-          return;
-        }
-        renderer = next;
-        renderer.showStep(0);
-        const states = new Map<string, NoteState>();
-        for (const id of renderer.noteElements(0).keys()) states.set(id, 'current');
-        renderer.setNoteStates(states);
-        previewStatus.textContent = '';
-        mountKeys();
+        frameHost.replaceChildren(preview.el);
+        frameHost.dataset.orientation = orientation;
+        caption.textContent = `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(preview.ratio)}.`;
+        flip.textContent = orientation === 'upright' ? 'Show it sideways' : 'Show it upright';
+        void preview.redraw();
       };
-
-      function mountKeys(): void {
-        keys?.destroy();
-        keys = null;
-        keysHost.replaceChildren();
-        const s = getSettings();
-        keysHost.hidden = s.keys === 'off';
-        keysHost.dataset.keys = s.keys;
-        if (!source || s.keys === 'off') return;
-        const midis = source.model.steps.flatMap((step) => step.notes.map((note) => note.midi));
-        const range = stripRangeFor(midis);
-        keys = s.keys === 'ribbon' ? new KeyRibbon(range) : new KeyboardStrip({ ...range, interactive: false });
-        keysHost.append(keys.el);
-        const first = source.model.steps[0]?.notes.map((note) => note.midi) ?? [];
-        keys.setState({ expected: first });
-        if (first[0] !== undefined) keys.scrollToNote(first[0], 'auto');
-      }
 
       let timer: ReturnType<typeof setTimeout> | null = null;
       const later = (): void => {
         if (timer !== null) clearTimeout(timer);
-        timer = setTimeout(() => void rebuild(), 60);
+        // The strip and the stage trade height when the keys view changes,
+        // so the whole miniature is built again rather than only engraved.
+        timer = setTimeout(rebuildFrame, 60);
       };
 
       const s = getSettings();
@@ -595,10 +624,7 @@ export function SetupScreen(router: Router): HTMLElement {
               { value: 'off', label: 'Off' },
             ],
             s.keys,
-            (value) => {
-              set({ keys: value as PracticeSettings['keys'] });
-              mountKeys();
-            },
+            (value) => { set({ keys: value as PracticeSettings['keys'] }); later(); },
           ),
           'The key it is waiting for is blue; a played one turns green or red.',
         ),
@@ -624,21 +650,19 @@ export function SetupScreen(router: Router): HTMLElement {
           ),
           'Window shows the bars being played, and the next ones; Scroll shows the whole piece.',
         ),
-        field('Landscape lock on the score screen', toggleControl('setup-landscape', s.landscapeLock, (v) => set({ landscapeLock: v }))),
+        field('Landscape lock on the score screen', toggleControl('setup-landscape', s.landscapeLock, (v) => set({ landscapeLock: v })), 'What the sideways choice set; the score screen turns with the phone when it is off.'),
         field('Keep the screen awake', toggleControl('setup-awake', s.keepScreenAwake, (v) => set({ keepScreenAwake: v }))),
       );
 
-      void rebuild();
+      rebuildFrame();
       return () => {
-        disposed = true;
         if (timer !== null) clearTimeout(timer);
-        renderer?.dispose();
-        keys?.destroy();
+        preview?.dispose();
       };
     },
   };
 
-  // ---------------------------------------------------------------- 6 modes
+  // ---------------------------------------------------------------- 7 modes
   const modes: Step = {
     id: 'modes',
     title: 'How it follows you',
@@ -692,7 +716,7 @@ export function SetupScreen(router: Router): HTMLElement {
     },
   };
 
-  // ---------------------------------------------------------------- 7 practice
+  // ---------------------------------------------------------------- 8 practice
   const practice: Step = {
     id: 'practice',
     title: 'Your practice',
@@ -730,7 +754,7 @@ export function SetupScreen(router: Router): HTMLElement {
     },
   };
 
-  // ---------------------------------------------------------------- 8 done
+  // ---------------------------------------------------------------- 9 done
   const done: Step = {
     id: 'done',
     title: 'Ready',
@@ -743,6 +767,7 @@ export function SetupScreen(router: Router): HTMLElement {
         el('div.kv', {}, el('span.kv__k', { text: label }), el('span.kv__v', { text: value }));
       h.append(
         el('div.setup-summary', { id: 'setup-summary' },
+          line('The phone sits', s.landscapeLock ? 'sideways' : 'upright'),
           line('Piano', inputs > 0 ? `${String(inputs)} MIDI input${inputs === 1 ? '' : 's'} connected` : calibrated ? 'Microphone, calibrated' : 'Screen keys, or timed'),
           line('Input latency', midi.inputLatencyMs > 0 ? `${String(midi.inputLatencyMs)} ms` : 'not measured'),
           line('Default mode', s.defaultModeWithInput === 'wait' ? 'Wait for me' : 'Keep tempo'),
@@ -750,12 +775,12 @@ export function SetupScreen(router: Router): HTMLElement {
           line('Theme', getThemePreference()),
           line('Sessions', `${String(s.weekdaySessionMinutes)} min weekdays, ${String(s.weekendSessionMinutes)} min weekends`),
         ),
-        el('p', { text: 'Today has a session waiting. Settings → “Run the setup tour again” brings this back any time.' }),
+        el('p', { text: 'Today has a session waiting. Settings → “Setup tour · Run again” brings this back any time.' }),
       );
     },
   };
 
-  const STEPS: Step[] = [welcome, piano, latency, sound, display, modes, practice, done];
+  const STEPS: Step[] = [welcome, hold, piano, latency, sound, display, modes, practice, done];
 
   onScreenDispose(section, () => {
     disposeStep?.();
@@ -775,7 +800,7 @@ async function playThrough(midi: number, velocity: number): Promise<void> {
   }
 }
 
-/** The preview's piece, loaded once for the life of the page. */
+/** The miniatures' piece, loaded once for the life of the page. */
 let previewSource: Promise<{ model: ScoreModel; musicXml: string }> | null = null;
 
 function loadPreviewSource(): Promise<{ model: ScoreModel; musicXml: string }> {
@@ -797,7 +822,3 @@ function loadPreviewSource(): Promise<{ model: ScoreModel; musicXml: string }> {
   });
   return previewSource;
 }
-
-// `audioEngine` is armed at boot for the first gesture; the sound step's
-// button is a gesture of its own, so nothing here needs it directly.
-void audioEngine;

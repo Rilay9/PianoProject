@@ -818,21 +818,127 @@ body {
   display: none;
 }
 
-/* The live preview: one system of a real piece, at the size the score screen
-   would draw it in this width. Tall enough for a grand staff; short enough
-   that the controls under it start inside the first screenful upright. */
-.setup-preview {
-  height: 150px;
-  margin: 8px 0 0;
+/* The miniature of the score screen (`ui/devicePreview`): the phone's own
+   proportions, the header, the stage, the control bar and the keys at their
+   real heights, all scaled by `--setup-ratio`. */
+/* The outer box is the miniature's size in the card; the screen inside is
+   laid out at the phone's real size and scaled down as one, so every part —
+   the engraving, the keys, the buttons' text — is the real one, smaller. */
+.setup-device {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
 }
 
-.setup-preview-keys {
-  margin: 8px 0 12px;
-  --key-h: 56px;
+.setup-device__screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  transform-origin: top left;
+  font-size: 0.95rem;
+  color: var(--text);
 }
 
-.setup-preview-keys[hidden] {
+.setup-device__head,
+.setup-device__bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.6rem;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--text);
+}
+
+.setup-device__head[hidden] {
   display: none;
+}
+
+.setup-device__head > strong {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.setup-device__bar {
+  justify-content: center;
+  border-top: 1px solid var(--border);
+}
+
+.setup-device__button {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.setup-device__button.is-selected {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.setup-device__stage {
+  flex: 0 0 auto;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.setup-device__strip {
+  flex: 0 0 auto;
+  overflow: hidden;
+  max-height: none;
+}
+
+.setup-device__strip[hidden] {
+  display: none;
+}
+
+.setup-device__strip .keyboard-strip,
+.setup-device__strip .key-ribbon {
+  height: 100%;
+}
+
+.setup-preview-host {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 4px;
+}
+
+/* The two ways up, side by side where there is room, chosen by a tap. */
+.setup-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.setup-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.setup-choice[aria-pressed='true'] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.setup-choice__label {
+  font-weight: 600;
 }
 
 .setup-details {
@@ -865,8 +971,9 @@ body {
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
-  .setup-preview {
-    height: 140px;
+  .setup-choices {
+    flex-wrap: nowrap;
+    align-items: flex-start;
   }
 }
 
