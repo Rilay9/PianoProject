@@ -86,7 +86,7 @@ test.describe('upright: two slots, karaoke style', () => {
     }
 
     // Every step has a slot with the cursor in it, and it is one of the two.
-    for (const state of seen) expect(['0', '1']).toContain(state.cursorSlot);
+    for (const state of seen) expect(['0', '1', '2', '3']).toContain(state.cursorSlot);
 
     // The node identity test: while the cursor stays on one bar, the `<svg>`
     // holding it must be the same element. A re-render replaces it, and that

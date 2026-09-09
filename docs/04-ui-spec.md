@@ -635,7 +635,7 @@ set it.
 
 **Built since, in P18** (`docs/decisions/2026-09-06-p18-carry-overs.md`): the mic's amber
 state (§5), named sections and their loop picker (§5), drag-to-reorder tracks (§3), the chord
-chart's bass-and-drums loop (§3b), and the tablet side panel with its four-bar default (§7a).
+chart's bass-and-drums loop (§3b), and the tablet side panel (§7a; the four-bar default it had went with the multi-slot arrangement, `08` §4.1).
 
 ## 7b. Diagnostics
 
@@ -668,7 +668,7 @@ rung the piece belongs to.
 
 Two details worth stating. The test is on the **shortest side**, both dimensions: a phone in
 landscape is 915 × 412 and would pass a width-only check while having 412 px of height to put a
-panel in. And the four-bar default never overrides a number the owner has set — it is a default
+panel in. And the default never overrides a number the owner has set — it is a default
 for a screen with room for it, not an opinion about what he wants.
 
 E2E at 1024×1000 for the panel and the default, and at 412×915 for the phone, which gets

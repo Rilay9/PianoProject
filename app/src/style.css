@@ -1010,15 +1010,17 @@ input[type='checkbox'] {
   min-height: 200px;
 }
 
-/* The two slots (P21c A1).
+/* The slots (P21c A1, `08` §4.1).
 
-   Sideways — `data-read-ahead='single'` — there is one system and the second
-   slot is not drawn, which is what both wrappers were before this: stacked in
+   Sideways — `data-read-ahead='single'` — there is one system and the other
+   slots are not drawn, which is what both wrappers were before this: stacked in
    the same box, one visible.
 
-   Upright they are two systems, one above the other, both visible, and the one
-   the cursor is in is never re-drawn. `is-front` therefore now means "drawn"
-   rather than "the visible one of two"; `is-cursor` is the one being played. */
+   Upright they are systems one above the other, two to four, all visible, and
+   the one the cursor is in is never re-drawn. `is-front` therefore now means
+   "drawn" rather than "the visible one of two"; `is-cursor` is the one being
+   played. Each slot's `top` and `height` are set by the renderer, packed or
+   an even share. */
 .score-buffer {
   position: absolute;
   inset: 0;
@@ -1038,14 +1040,7 @@ input[type='checkbox'] {
   position: absolute;
   height: 50%;
   inset: auto 0 auto 0;
-}
-
-.score-view[data-read-ahead='slots'] .score-buffer[data-slot='0'] {
   top: 0;
-}
-
-.score-view[data-read-ahead='slots'] .score-buffer[data-slot='1'] {
-  top: 50%;
 }
 
 /* The slot that changed fades in, because the swap happens while the eye is on

@@ -114,7 +114,7 @@ a cell and find it decided.
 | Input | `midi` · `mic` · `keys` · `none` |
 | Keys view | `strip` · `ribbon` · `off` |
 | Loop | `none` · `bars` · `section` |
-| Bars per window | 1 … 8 (default 2; a tablet defaults to 4) |
+| Bars per window | 1 … 8 (default 2, tablet included: its extra height buys slots, not bars a slot) |
 | Size | the owner's multiplier on the drawn scale, 1.0 = as large as fits |
 | Decorations | fingering · chord symbols · note names, each on or off |
 | Side panel | `none` · `lesson` (tablet: the lesson text beside the stage takes a third of the width) |
@@ -295,18 +295,28 @@ status line says why the screen is empty, or a black rectangle reads as broken.
 has 900 px and reading two systems beats sliding one; a phone sideways has 360, where a second
 system halves a staff already at its minimum.
 
-#### SLOTS — two systems, karaoke
+#### SLOTS — two to four systems, karaoke
 
-Slot 0 above slot 1, each holding `max(1, ⌊barsPerWindow / 2⌋)` bars. Exactly one holds the
-cursor and **is never re-drawn while it does**.
+Slots stacked from the top, each holding `max(1, ⌊barsPerWindow / 2⌋)` bars. Exactly one holds
+the cursor and **is never re-drawn while it does**. **How many:** two, unless the width limits
+the size — upright, one bar with a clef is as wide as a phone — in which case the height that is
+left over holds more systems at that same size: `⌊(stage + gap) / (system + gap)⌋`, at most four,
+never more than the piece has blocks. Four on the owner's phone upright, where two used 42 % of
+the stage (Opus's state gallery measured it) and left the rest black. Each slot is an engraver
+loaded with the piece, so a piece longer than the probe's cap keeps two. The count is chosen at
+the first fit and held for a run, like the scale.
 
 ```
-cursor in slot A showing block k          other slot shows block k+1
-        │  cursor's bar enters block k+1 (already drawn there)
+cursor in slot k                          slots k+1 … round to k−1 show the next blocks
+        │  cursor's bar enters the next slot (already drawn there)
         ▼
-cursor slot becomes B — untouched, already on the screen
-slot A re-drawn with block k+2, faded ~150 ms, ON IDLE (≤ 100 ms later)
+that slot becomes the cursor slot — untouched, already on the screen
+the vacated slot is re-drawn with the block after the last on the screen,
+faded ~150 ms, ON IDLE (≤ 100 ms later)
 ```
+
+The eye goes down the screen and back to the top. With four slots there are three bars of
+read-ahead on the screen at every moment.
 
 - Which slot is current changes by class toggle in the same frame as the step. The **re-draw of
   the vacated slot is deferred to idle** and must never share a frame with colouring the note
@@ -315,10 +325,8 @@ slot A re-drawn with block k+2, faded ~150 ms, ON IDLE (≤ 100 ms later)
   notices a flash; that is the whole reason it exists.
 - **"Next" follows the playing order.** The next block holds the bar of the next *step*: at a
   repeat, the repeat's first bar; at a first/second-time ending, the ending played on this pass.
-- **The two slots pack from the top** when the fit leaves room — upright on a phone the width
-  limits the size, and each system used a third of its half of the stage with black between and
-  below — with 24 px between them, like a page; the spare space is at the bottom. When the music
-  fills the halves, the halves stand.
+- **The slots pack from the top** when the fit leaves room, with 24 px between them, like a
+  page; the spare space is at the bottom. When the music fills its share, the shares stand.
 - **At the end of a piece the other slot shows the bars just played**, not blank — a blank slot
   is half the screen gone black for the last bars of every song. Chosen in playing order too, so
   at a second-time ending it is the bar *before* the ending, not the first ending printed above.
@@ -721,6 +729,8 @@ Numbered for citation. Each is falsifiable; most are already testable.
 33. The beat dot is visible in every form factor while a clock-driven run is on.
 34. The control bar's controls are reachable after any sequence of taps: a hidden bar comes back
     on one tap of the stage, always.
+35. Upright, during a run, at least half the stage is music: the height the width fit leaves
+    over holds more systems at the same size, never black (checked by the state gallery).
 
 ---
 
@@ -921,7 +931,8 @@ match; **later** is the list for the next builder. The random walks and the whol
 | §9.34 a hidden bar comes back on one tap, always | `toggleBar` on a stage tap; the walk reveals and clicks for real, revealing once more if the bar hid in between | **done** |
 | §10 no notes at all | a PDF or a missing file is a terminal state; a MusicXML with zero notes | **done** — `… has no notes to play.` and no stage |
 | §10 a bar preview ending returns the window as a seek | after the bar the run stops and the cursor stays on the previewed bar, which is where the eye is | matches in effect; the spec's "returns" is loose — the cursor stays where the preview was |
-| §11.15 the tablet rule | not built | **later** — and the pictures say what it must do: on a tablet upright with the lesson panel, two bars a slot are width-limited and small, so the rule is not "as many bars as fill the height" but "the bars per slot that gives the largest stave within both limits", which there is *fewer* |
+| §11.15 the tablet rule | not built | **done, in the form the numbers asked for**: not more bars per slot but more slots — `chooseSlotCount`, up to four, from the width-limited system height. The remaining piece, fewer bars per slot when the width limits (tablet upright with the panel), is the setting for now |
+| §4.1 two to four slots | two slots whatever the height; Opus's state gallery measured the music at 42 % of the stage on the phone upright and 18 % on a tablet upright | **done** — `chooseSlotCount` from the width-limited system height, the plan generalised to N (`slots.ts`), the tablet's default back to two bars; the gallery now reads 67 %, 56 %, 52 % and 78 % on the four upright-or-tall sizes at the same or a larger scale, and guards it (§9.35) |
 | §4.1 the slots pack from the top | sat at 0 % and 50 % of the stage whatever the music's height; the Mary pictures on every upright size showed two small systems 500 px apart | **done** — `packSlots`, 24 px between them when the fit leaves room |
 | §11.19 the note-names label | relabelled | **done** |
 

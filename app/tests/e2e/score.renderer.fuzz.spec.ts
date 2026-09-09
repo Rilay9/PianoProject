@@ -149,7 +149,7 @@ for (const seed of SEEDS) {
         throw new Error(`seed ${String(seed)} at step ${String(step)} after "${trace.at(-1) ?? ''}": ${what}\ntrace: ${trace.join(' ')}\n${JSON.stringify(snap)}`);
       };
       if (snap.cursorSlots !== 1) fail(`${String(snap.cursorSlots)} cursor slots`);
-      if (snap.drawn < 1 || snap.drawn > 2) fail(`${String(snap.drawn)} slots drawn`);
+      if (snap.drawn < 1 || snap.drawn > 4) fail(`${String(snap.drawn)} slots drawn`);
       if (snap.readAhead === 'single' && snap.drawn !== 1) fail('sideways, more than one slot is drawn');
       if (snap.duplicates.length > 0) fail(`drawn twice: ${snap.duplicates.slice(0, 3).join(', ')}`);
       for (const f of snap.found) {
@@ -161,9 +161,11 @@ for (const seed of SEEDS) {
       const first = snap.found[0]?.box;
       if (first && snap.band && !intersects(snap.band, first)) fail('the band is not on the current step');
       if (first && !snap.band) fail('no cursor band');
-      if (snap.readAhead === 'slots' && snap.scales.length === 2) {
-        const [a, b] = snap.scales as [number, number];
-        if (Math.abs(a - b) / a > 0.01) fail(`the two slots are drawn at different scales: ${String(a)} vs ${String(b)}`);
+      if (snap.readAhead === 'slots' && snap.scales.length >= 2) {
+        const a = snap.scales[0];
+        for (const b of snap.scales) {
+          if (Math.abs(a - b) / a > 0.01) fail(`the slots are drawn at different scales: ${snap.scales.join(', ')}`);
+        }
       }
     }
     expect(trace.length).toBe(MOVES);

@@ -14,7 +14,12 @@
 export const TABLET_MIN_PX = 900;
 
 /** The bars-per-window default on a tablet — §7a's number. */
-export const TABLET_BARS_PER_WINDOW = 4;
+// Two, like the phone, since 2026-09-08: the height a tablet has over a phone
+// buys more *slots* at the same size (`08` §4.1), not more bars a slot — four
+// bars a slot were width-limited and small the moment the lesson panel took
+// its third of the width, and the owner's rule is that the notes must not get
+// small.
+export const TABLET_BARS_PER_WINDOW = 2;
 
 export function isTablet(
   width: number = typeof window === 'undefined' ? 0 : window.innerWidth,

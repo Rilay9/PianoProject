@@ -1,16 +1,17 @@
-// Which bars each of the two slots holds, and when one of them changes.
+// Which bars each slot holds, and when one of them changes.
 //
-// The Score screen upright draws two systems. Until now they were one window:
-// two bars engraved together, replaced together, so advancing moved the bar
-// being played from the bottom system to the top mid-phrase, every other bar.
-// That is the jump the owner felt — "someone playing wouldn't have enough time
-// to match the playing since they won't see the next bar in time".
+// The Score screen upright draws several systems — two on a phone sideways
+// when it is tall enough, four upright, more on a tablet — and they are
+// **slots**: the slot holding the cursor is never touched; the others show
+// what comes next. When the cursor crosses into the next slot, the one it
+// just left is re-drawn with the bars after the last on the screen — the eye
+// goes down the screen and back to the top, the arrangement karaoke uses, and
+// the coming bars have been on the screen for a whole system by the time they
+// are needed (docs/04-ui-spec.md §5, docs/08 §4.1).
 //
-// So the two systems become two **slots**. The slot holding the cursor is
-// never touched; the other one shows what comes next. When the cursor crosses
-// into the other slot, the one it just left is re-drawn with the bars after —
-// the eye goes top, bottom, top, and the coming bar has been on the screen for
-// a whole bar by the time it is needed (docs/04-ui-spec.md §5).
+// Two slots was the phone's number; the height that is left over upright,
+// where the width limits the size, buys more systems rather than bigger ones
+// (docs/08 §3.2). The arithmetic is the same for any count.
 //
 // This module is the arithmetic only: no DOM, no OSMD, no rendering. That is
 // what makes it testable, and the part that is easy to get wrong is arithmetic
@@ -20,8 +21,8 @@
 import type { MeasureRange } from './OsmdView';
 import type { ScoreStep } from './types';
 
-/** The two slots, in the order they are drawn: 0 above 1. */
-export type SlotIndex = 0 | 1;
+/** A slot's index, in the order they are drawn: 0 at the top. */
+export type SlotIndex = number;
 
 /** How many printed bars one slot holds, for a window of `barsPerWindow`. */
 export function barsPerSlot(barsPerWindow: number): number {
@@ -58,7 +59,7 @@ export function sameRange(a: MeasureRange | null, b: MeasureRange | null): boole
 }
 
 /**
- * What the other slot should show, given where the cursor is.
+ * What comes after `range`, given where the cursor is.
  *
  * **Not** the bars printed after `range`. `ScoreStep` carries the playback
  * order with repeats unrolled, so the honest answer to "what comes next" is
@@ -69,8 +70,7 @@ export function sameRange(a: MeasureRange | null, b: MeasureRange | null): boole
  * screen that the player is not about to play, which is worse than showing
  * nothing (P21c A5).
  *
- * `null` when nothing follows — the last bars of the piece; `planSlots` then
- * shows the bars just played instead (see `rangeBehind`).
+ * `null` when nothing follows — the last bars of the piece.
  */
 export function nextRangeAfter(
   steps: readonly ScoreStep[],
@@ -90,46 +90,47 @@ export function nextRangeAfter(
 }
 
 /**
- * The block of the bars played just before `range`, or `null` at the start.
- *
- * For the other slot when nothing follows: the last bars of a piece used to
- * leave it blank, which on a phone is half the screen gone black at the end
- * of every song, with the last bar alone at the bottom. The bars just played
- * — in playing order, so at a second ending it is the bar before the ending,
- * not the first ending printed above it — are what a page would show there.
+ * The blocks that follow the cursor's, in playing order, up to `count` of
+ * them: the first block after leaving the cursor's, the first after leaving
+ * that one, and so on. Fewer when the piece ends first.
  */
-export function rangeBehind(
+export function blocksAhead(
   steps: readonly ScoreStep[],
   fromStepIndex: number,
   range: MeasureRange,
   barsPerWindow: number,
   sourceMeasureCount: number,
-): MeasureRange | null {
-  for (let i = Math.min(fromStepIndex, steps.length) - 1; i >= 0; i -= 1) {
-    const step = steps[i];
-    if (!step) continue;
-    if (!inRange(range, step.sourceMeasureIndex)) {
-      return rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount);
-    }
+  count: number,
+): MeasureRange[] {
+  const out: MeasureRange[] = [];
+  let current = range;
+  let at = Math.max(0, fromStepIndex);
+  while (out.length < count) {
+    // Advance to the first step outside the current block.
+    while (at < steps.length && inRange(current, steps[at]?.sourceMeasureIndex ?? -1)) at += 1;
+    const step = steps[at];
+    if (!step) break;
+    current = rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount);
+    out.push(current);
   }
-  return null;
+  return out;
 }
 
 export interface SlotPlan {
   /** Which slot the cursor's bars are in. */
   cursor: SlotIndex;
   /** What each slot should hold; `null` means blank. */
-  ranges: [MeasureRange | null, MeasureRange | null];
+  ranges: (MeasureRange | null)[];
   /**
-   * The slot that should fade in, or `null`.
+   * The slots that should fade in.
    *
-   * A slot that changes while the eye is on the other one fades over about
+   * A slot that changes while the eye is on another one fades over about
    * 150 ms, because peripheral vision ignores a fade and notices a flash. A
-   * cold draw — a seek, a restart, the first step — changes both slots with
+   * cold draw — a seek, a restart, the first step — changes every slot with
    * nothing to be peripheral to, so it fades nothing.
    */
-  fade: SlotIndex | null;
-  /** True when the cursor moved from one slot to the other on this step. */
+  fades: SlotIndex[];
+  /** True when the cursor moved from one slot to another on this step. */
   crossed: boolean;
 }
 
@@ -138,56 +139,55 @@ export interface SlotPlan {
  *
  * Three cases, and the third is the one that matters:
  *
- *  - the cursor is still in its slot — nothing moves, and the other slot is
- *    already showing what comes next;
- *  - the cursor has crossed into the other slot — that slot becomes the cursor
- *    slot untouched, and the one just vacated takes the bars after it;
- *  - the cursor is in neither, which is a seek, a restart or a jump — both
- *    slots are drawn, cursor in slot 0, so the reading order starts at the top
+ *  - the cursor is still in its slot — the slots after it, round the screen,
+ *    already hold the coming blocks, and nothing moves;
+ *  - the cursor has crossed into another slot — that slot becomes the cursor
+ *    slot untouched, and the slots round from it take the coming blocks, so
+ *    the one just vacated gets the block after the last on the screen;
+ *  - the cursor is in no slot, which is a seek, a restart or a jump — every
+ *    slot is drawn, cursor in slot 0, so the reading order starts at the top
  *    again rather than wherever the last run happened to leave it.
+ *
+ * At the end of the piece a slot with nothing ahead to show **keeps what it
+ * has** — the bars just played — rather than going blank, which on a phone is
+ * half the screen gone black for the last bars of every song. Only a cold
+ * draw at the end leaves a slot blank, having nothing to keep.
  */
 export function planSlots(
   steps: readonly ScoreStep[],
   stepIndex: number,
-  current: { cursor: SlotIndex; ranges: [MeasureRange | null, MeasureRange | null] },
+  current: { cursor: SlotIndex; ranges: readonly (MeasureRange | null)[] },
   barsPerWindow: number,
   sourceMeasureCount: number,
+  slotCount = current.ranges.length,
 ): SlotPlan {
+  const count = Math.max(1, slotCount);
   const step = steps[stepIndex];
   const bar = step ? step.sourceMeasureIndex : 0;
   const wanted = rangeAt(bar, barsPerWindow, sourceMeasureCount);
-  const other: SlotIndex = current.cursor === 0 ? 1 : 0;
-  // What comes next, or — at the end — what has just been played.
-  const next = (r: MeasureRange): MeasureRange | null =>
-    nextRangeAfter(steps, stepIndex, r, barsPerWindow, sourceMeasureCount) ??
-    rangeBehind(steps, stepIndex, r, barsPerWindow, sourceMeasureCount);
+  const held: (MeasureRange | null)[] = Array.from({ length: count }, (_, i) => current.ranges[i] ?? null);
 
-  const held: [MeasureRange | null, MeasureRange | null] = [
-    current.ranges[0],
-    current.ranges[1],
-  ];
+  let cursor = held.findIndex((range) => sameRange(range, wanted));
+  const cold = cursor < 0;
+  if (cold) cursor = 0;
+  const crossed = !cold && cursor !== current.cursor;
 
-  if (sameRange(held[current.cursor], wanted)) {
-    const ahead = next(wanted);
-    const settled = ahead === null ? held[other] === null : sameRange(held[other], ahead);
-    if (settled) return { cursor: current.cursor, ranges: held, fade: null, crossed: false };
-    const ranges: [MeasureRange | null, MeasureRange | null] =
-      other === 0 ? [ahead, held[1]] : [held[0], ahead];
-    return { cursor: current.cursor, ranges, fade: other, crossed: false };
+  const ahead = blocksAhead(steps, stepIndex, wanted, barsPerWindow, sourceMeasureCount, count - 1);
+  const ranges: (MeasureRange | null)[] = held.slice();
+  const fades: SlotIndex[] = [];
+  ranges[cursor] = wanted;
+  for (let k = 1; k < count; k += 1) {
+    const slot = (cursor + k) % count;
+    const coming = ahead[k - 1];
+    if (coming === undefined) {
+      // Nothing ahead: keep the bars just played, or blank when there is
+      // nothing to keep.
+      if (cold) ranges[slot] = null;
+      continue;
+    }
+    if (sameRange(held[slot] ?? null, coming)) continue;
+    ranges[slot] = coming;
+    if (!cold) fades.push(slot);
   }
-
-  if (sameRange(held[other], wanted)) {
-    // The crossing. The slot the eye has moved to is already drawn and is not
-    // touched; the one it left takes the bars after — which is what buys the
-    // read-ahead a whole bar of warning instead of none.
-    const ahead = next(wanted);
-    const ranges: [MeasureRange | null, MeasureRange | null] =
-      current.cursor === 0 ? [ahead, held[1]] : [held[0], ahead];
-    return { cursor: other, ranges, fade: current.cursor, crossed: true };
-  }
-
-  // Neither slot holds it: a seek, a restart, or the first step. Both are
-  // drawn, cursor on top, so the reading order starts at the top rather than
-  // wherever the previous run happened to leave it.
-  return { cursor: 0, ranges: [wanted, next(wanted)], fade: null, crossed: false };
+  return { cursor, ranges, fades, crossed };
 }

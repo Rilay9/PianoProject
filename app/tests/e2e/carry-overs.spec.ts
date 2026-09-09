@@ -185,14 +185,16 @@ test.describe('strict prerequisites', () => {
 test.describe('the tablet layout', () => {
   test.use({ viewport: { width: 1024, height: 1000 } });
 
-  test('shows the side panel and opens at four bars', async ({ page }) => {
+  test('shows the side panel and opens at two bars', async ({ page }) => {
     await page.goto('/#/score/song.classical.petzold-minuet-g-bwv-anh114');
     await expect(page.locator('[data-screen="score"]')).toHaveAttribute('data-tablet', 'true');
     const panel = page.locator('#score-side');
     await expect(panel).toBeVisible();
     await expect(panel).toHaveJSProperty('open', true);
     await withScoreMenu(page, async () => {
-      await expect(page.locator('#score-bars')).toContainText('4');
+      // Two, like the phone: a tablet's extra height buys more slots at the
+      // same size, not more bars a slot (`08` §4.1).
+      await expect(page.locator('#score-bars')).toContainText('2');
     });
   });
 

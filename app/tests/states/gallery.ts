@@ -84,6 +84,20 @@ function check(state: StateRecord, cell: string): string[] {
     if (a !== b) say(12, `strip wants ${a}, cursor is on ${b}`);
   }
 
+  // 35 — upright, at least half the stage is music: the height the width
+  // fit leaves over buys more slots, not black (`08` §3.2, §4.1). Two slots
+  // measured 42 % on the phone and 18 % on a tablet; the arrangement now
+  // holds as many systems as fit at the width-limited size.
+  if (
+    state.arrangement === 'slots' &&
+    state.layout === 'window' &&
+    state.screen.running === 'true' &&
+    state.musicShare > 0 &&
+    state.musicShare < 0.5
+  ) {
+    say(35, `music is ${String(Math.round(state.musicShare * 100))}% of the stage`);
+  }
+
   // 2 — the staves sit at one height, and every drawn slot shares one scale.
   const drawn = state.slots.filter((s) => s.drawn && !s.hidden && s.scale > 0);
   const scales = [...new Set(drawn.map((s) => s.scale))];

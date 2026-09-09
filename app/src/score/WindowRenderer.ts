@@ -36,7 +36,7 @@
 
 import { OsmdView, type MeasureRange } from './OsmdView';
 import { MAX_FIT, MIN_FIT, fitZoom, worthRefitting } from './autoFit';
-import { planSlots, sameRange as sameSlotRange, type SlotIndex } from './slots';
+import { barsPerSlot, planSlots, sameRange as sameSlotRange, type SlotIndex } from './slots';
 import type { ScoreModel, ScoreNote, ScoreStep } from './types';
 import { recordRenderTiming } from '../util/renderTiming';
 
@@ -102,6 +102,19 @@ const SETTLE_TIMEOUT_MS = 100;
 
 /** A frozen run keeps its scale while the fit would shrink it by less than this. */
 const FROZEN_OVERFLOW = 0.9;
+
+/**
+ * The most slots a stage holds (`08` §3.2, §4.1).
+ *
+ * Upright the width limits the size — one bar with a clef is as wide as a
+ * phone — and the height that is left over buys more systems rather than
+ * bigger ones: four on the owner's phone, where two used 42 % of the stage
+ * and left the rest black. Each slot is an engraver of its own, loaded with
+ * the piece, so the count is bounded; and a piece longer than the probe's
+ * cap keeps two, because loading a 780-bar score four times is seconds a
+ * throttled phone does not have.
+ */
+const MAX_SLOTS = 4;
 
 /**
  * Between the two systems when they are packed (`08` §4.1).
@@ -248,7 +261,7 @@ export class WindowRenderer {
   private readonly model: ScoreModel;
   /** Built once: `annotate` runs on every window draw and must not re-walk the piece. */
   private readonly notesById: Map<string, ScoreNote>;
-  private readonly buffers: [Buffer, Buffer];
+  private readonly buffers: Buffer[];
   private readonly band: HTMLElement;
   /**
    * A second, fainter band on the step after this one (P21c A4).
@@ -274,8 +287,10 @@ export class WindowRenderer {
   private readAhead: 'slots' | 'single' = 'single';
   /** In `slots`, which of the two the cursor is in; in `single`, always 0. */
   private cursorSlot: SlotIndex = 0;
+  /** How many slots the arrangement is using; 1 sideways, 2 or more upright. */
+  private slotCount = 2;
   /** What each slot holds. `null` is a slot with nothing left to show. */
-  private slotRanges: [MeasureRange | null, MeasureRange | null] = [null, null];
+  private slotRanges: (MeasureRange | null)[] = [null, null];
   private layout: ScoreLayout;
   private barsPerWindow: number;
   private handsFocus: HandsFocus;
@@ -351,7 +366,7 @@ export class WindowRenderer {
   private stageObserver: ResizeObserver | null = null;
   private disposed = false;
 
-  private constructor(options: WindowRendererOptions, buffers: [Buffer, Buffer]) {
+  private constructor(options: WindowRendererOptions, buffers: Buffer[]) {
     this.model = options.model;
     this.notesById = new Map();
     for (const step of options.model.steps) {
@@ -419,7 +434,8 @@ export class WindowRenderer {
 
   static async create(options: WindowRendererOptions): Promise<WindowRenderer> {
     const buffers: Buffer[] = [];
-    for (const index of [0, 1]) {
+    const views = options.model.sourceMeasureCount > PROBE_MAX_BARS ? 2 : MAX_SLOTS;
+    for (let index = 0; index < views; index += 1) {
       const wrapper = document.createElement('div');
       wrapper.className = 'score-buffer';
       wrapper.dataset.buffer = String(index);
@@ -438,7 +454,8 @@ export class WindowRenderer {
       view.zoom = options.zoom ?? 1;
       buffers.push({ view, wrapper, range: null, elements: new Map() });
     }
-    const renderer = new WindowRenderer(options, buffers as [Buffer, Buffer]);
+    const renderer = new WindowRenderer(options, buffers);
+    renderer.slotRanges = buffers.map(() => null);
     renderer.updateSlotClasses();
     // The probe. Loaded like the slots, drawn only when the zoom changes, and
     // never visible: `.score-buffer` without `is-front` is `visibility:
@@ -509,13 +526,13 @@ export class WindowRenderer {
    * that used to ask the front buffer: the fit, the ink box, the band.
    */
   private get frontBuffer(): Buffer {
-    return this.cursorSlot === 0 ? this.buffers[0] : this.buffers[1];
+    return this.cursorSlot === 0 ? this.buffers[0]! : this.buffers[1]!;
   }
 
   /** Both slots, in drawing order, skipping any that is blank. */
   private get drawnSlots(): Buffer[] {
     if (this.readAhead === 'single') {
-      const front = this.buffers[this.cursorSlot];
+      const front = this.buffers[this.cursorSlot]!;
       return front.range ? [front] : [];
     }
     return this.buffers.filter((slot) => slot.range !== null);
@@ -530,7 +547,7 @@ export class WindowRenderer {
    * the slot it left.
    */
   private get allElements(): Map<string, SVGGElement> {
-    if (this.readAhead === 'single') return this.buffers[this.cursorSlot].elements;
+    if (this.readAhead === 'single') return this.buffers[this.cursorSlot]!.elements;
     // Cached, because `paint()` asks three times a frame and a piece has
     // hundreds of notes: building the merged map per read put the
     // input-to-colour budget over 30 ms, which is the number that says a
@@ -604,14 +621,17 @@ export class WindowRenderer {
       { cursor: this.cursorSlot, ranges: this.slotRanges },
       this.barsPerWindow,
       this.model.sourceMeasureCount,
+      this.slotCount,
     );
     const started = performance.now();
-    const cursor = this.buffers[plan.cursor];
-    const wanted = plan.ranges[plan.cursor];
+    const cursor = this.buffers[plan.cursor]!;
+    const wanted = plan.ranges[plan.cursor] ?? null;
     if (wanted !== null && !sameSlotRange(cursor.range, wanted)) {
       // A cold draw — a seek, a restart, the first step. Nothing on the
-      // screen is right, so both slots are drawn now and fitted together.
-      for (const index of [0, 1] as SlotIndex[]) this.settleSlot(index, plan.ranges[index], false);
+      // screen is right, so every slot is drawn now and fitted together.
+      for (let index = 0; index < this.slotCount; index += 1) {
+        this.settleSlot(index, plan.ranges[index] ?? null, false);
+      }
       this.cursorSlot = plan.cursor;
       this.slotRanges = plan.ranges;
       this.updateSlotClasses();
@@ -628,20 +648,21 @@ export class WindowRenderer {
     // another frame, and the read-ahead is a bar long, not a frame.
     this.cursorSlot = plan.cursor;
     this.updateSlotClasses();
-    const other: SlotIndex = plan.cursor === 0 ? 1 : 0;
-    if (this.slotDiffers(other, plan.ranges[other])) this.scheduleSettle();
+    const differs = plan.ranges.some((range, index) => index !== plan.cursor && this.slotDiffers(index, range));
+    if (differs) this.scheduleSettle();
     if (plan.crossed) recordRenderTiming('window.swap', performance.now() - started);
   }
 
   private slotDiffers(index: SlotIndex, wanted: MeasureRange | null): boolean {
     const slot = this.buffers[index];
+    if (!slot) return false;
     return wanted === null ? slot.range !== null : !sameSlotRange(slot.range, wanted);
   }
 
   /** Draws or blanks one slot to what the plan wants; true if anything changed. */
   private settleSlot(index: SlotIndex, wanted: MeasureRange | null, fade: boolean): boolean {
     const slot = this.buffers[index];
-    if (!this.slotDiffers(index, wanted)) return false;
+    if (!slot || !this.slotDiffers(index, wanted)) return false;
     if (wanted === null) {
       this.blank(slot);
       return true;
@@ -667,10 +688,15 @@ export class WindowRenderer {
         { cursor: this.cursorSlot, ranges: this.slotRanges },
         this.barsPerWindow,
         this.model.sourceMeasureCount,
+        this.slotCount,
       );
       if (plan.cursor !== this.cursorSlot) return; // a seek is on its way; showStep handles it
-      const other: SlotIndex = plan.cursor === 0 ? 1 : 0;
-      if (!this.settleSlot(other, plan.ranges[other], true)) return;
+      let drew = false;
+      for (let index = 0; index < this.slotCount; index += 1) {
+        if (index === plan.cursor) continue;
+        if (this.settleSlot(index, plan.ranges[index] ?? null, true)) drew = true;
+      }
+      if (!drew) return;
       this.slotRanges = plan.ranges;
       this.updateSlotClasses();
       this.fitSlots();
@@ -729,10 +755,10 @@ export class WindowRenderer {
     const wanted = this.sliding
       ? this.slideRangeFor(step.sourceMeasureIndex)
       : this.windowFor(step.sourceMeasureIndex);
-    const front = this.buffers[this.cursorSlot];
+    const front = this.buffers[this.cursorSlot]!;
     if (!sameRange(front.range, wanted)) {
       const started = performance.now();
-      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0];
+      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0]!;
       const prepared = sameRange(spare.range, wanted);
       if (prepared) {
         this.cursorSlot = this.cursorSlot === 0 ? 1 : 0;
@@ -754,11 +780,11 @@ export class WindowRenderer {
       if (prepared) {
         // A spare fitted for a stage of another height, or a scale a run has
         // since frozen, is refitted before it shows: one transform write.
-        const shown = this.buffers[this.cursorSlot];
+        const shown = this.buffers[this.cursorSlot]!;
         if (!this.fitIsCurrent(shown)) this.fit(shown);
         // Except which transform the slide is now relative to: this sheet was
         // fitted on its own, off the critical path, and has never been slid.
-        this.baseTransform = this.buffers[this.cursorSlot].wrapper.style.transform;
+        this.baseTransform = this.buffers[this.cursorSlot]!.wrapper.style.transform;
         this.slideX = 0;
         this.slidBar = -1;
       } else {
@@ -797,7 +823,7 @@ export class WindowRenderer {
    * where the cursor landed and shift by the difference.
    */
   private slideToStep(step: ScoreStep): void {
-    const slot = this.buffers[this.cursorSlot];
+    const slot = this.buffers[this.cursorSlot]!;
     if (!this.sliding) {
       if (this.slideX !== 0) {
         this.slideX = 0;
@@ -838,7 +864,7 @@ export class WindowRenderer {
     this.prerenderHandle = requestAnimationFrame(() => {
       this.prerenderHandle = null;
       if (this.disposed || this.readAhead !== 'single') return;
-      const front = this.buffers[this.cursorSlot].range;
+      const front = this.buffers[this.cursorSlot]!.range;
       if (!front) return;
       // From the *window*, not the drawn range: sliding, the drawn range runs
       // two bars past the window (A2), and starting from its end skipped a
@@ -851,7 +877,7 @@ export class WindowRenderer {
       const nextStart = here.toMeasure + 1;
       if (nextStart >= this.model.sourceMeasureCount) return;
       const next = this.sliding ? this.slideRangeFor(nextStart) : this.windowFor(nextStart);
-      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0];
+      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0]!;
       if (sameRange(spare.range, next) || sameRange(front, next)) return;
       // Off the critical path, and timed apart from the number the budget is
       // about so the two are never averaged together.
@@ -892,21 +918,51 @@ export class WindowRenderer {
     // `single`, so a stage that is sideways from the first step never wrote
     // the attribute at all and the stylesheet had nothing to match.
     this.el.dataset.readAhead = next;
-    if (next === this.readAhead) return false;
+    const count = next === 'slots' ? this.chooseSlotCount() : 1;
+    if (next === this.readAhead && count === this.slotCount) return false;
     this.readAhead = next;
+    this.slotCount = count;
+    this.el.dataset.slots = String(count);
     // Everything drawn belonged to the other arrangement — and so did the
     // scale a run froze. Rotating mid-run kept the upright scale as a ceiling
     // on the sideways fit, and the other way round; the next render freezes
     // whatever the new arrangement fits.
     this.frozen = null;
-    this.slotRanges = [null, null];
+    this.slotRanges = this.buffers.map(() => null);
     this.cursorSlot = 0;
     for (const slot of this.buffers) {
       slot.range = null;
       slot.elements = new Map();
       slot.wrapper.hidden = false;
+      slot.wrapper.style.top = '';
+      slot.wrapper.style.height = '';
     }
     return true;
+  }
+
+  /**
+   * How many slots the stage holds (`08` §3.2).
+   *
+   * Two, unless the width limits the size: then the height that is left
+   * over holds more systems at the same size. Measured from the widest and
+   * tallest window seen at this zoom; before anything has been seen, two.
+   * Held during a run — a run keeps its arrangement as it keeps its scale.
+   */
+  private chooseSlotCount(): number {
+    const most = Math.min(
+      this.buffers.length,
+      Math.max(2, Math.ceil(this.model.sourceMeasureCount / barsPerSlot(this.barsPerWindow))),
+    );
+    if (this.frozen || this.freezeHandle !== null) return Math.min(most, Math.max(2, this.slotCount));
+    const stage = this.el.getBoundingClientRect();
+    const height = this.held.zoom === this.zoomLevel ? Math.max(this.held.height, this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0) : 0;
+    const width = this.held.zoom === this.zoomLevel ? this.held.width : 0;
+    if (!(height > 0) || !(width > 0) || stage.height <= 0 || stage.width <= 0) return 2;
+    const byWidth = (stage.width - FIT_MARGIN_PX) / width;
+    const byHeightForTwo = (stage.height / 2 - FIT_MARGIN_PX) / height;
+    if (byWidth >= byHeightForTwo) return 2;
+    const systemPx = height * byWidth + FIT_MARGIN_PX;
+    return Math.max(2, Math.min(most, Math.floor((stage.height + SLOT_GAP_PX) / (systemPx + SLOT_GAP_PX))));
   }
 
   private blank(slot: Buffer): void {
@@ -1283,7 +1339,7 @@ export class WindowRenderer {
     // drawn: the last window of a piece leaves the other slot blank, and
     // fitting the one that is left to the whole height doubled it — a pop
     // at the end of every run, the moment the summary appeared over it.
-    const perSlot = available.height / (this.readAhead === 'slots' ? 2 : boxes.length);
+    const perSlot = available.height / (this.readAhead === 'slots' ? this.slotCount : boxes.length);
     const scale = this.scaleFor(
       boxes.map((entry) => entry.box),
       { width: available.width, height: perSlot },
@@ -1294,14 +1350,30 @@ export class WindowRenderer {
       const transform = this.placement(slot, box, drawn);
       slot.wrapper.style.transform = transform;
       slot.fittedFor = { height: Math.round(perSlot), scale };
-      if (slot === this.buffers[this.cursorSlot]) this.baseTransform = transform;
+      if (slot === this.buffers[this.cursorSlot]!) this.baseTransform = transform;
     }
     this.packSlots(boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX })));
+    // The first fit is what tells the count: the widest and tallest window
+    // are known now. A different answer redraws once, from the current step.
+    if (this.readAhead === 'slots' && !this.frozen && this.freezeHandle === null) {
+      const count = this.chooseSlotCount();
+      if (count !== this.slotCount) {
+        this.slotCount = count;
+        this.el.dataset.slots = String(count);
+        this.slotRanges = this.buffers.map(() => null);
+        for (const slot of this.buffers) {
+          slot.range = null;
+          slot.elements = new Map();
+        }
+        if (this.currentStep >= 0) this.showStep(this.currentStep);
+        return;
+      }
+    }
     // Sideways the spare is not on the screen and not in `drawnSlots`, but it
     // is about to be: fit it to the same stage now rather than when it comes
     // forward, where a fit would cost the swap its frame.
     if (this.readAhead === 'single') {
-      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0];
+      const spare = this.buffers[this.cursorSlot === 0 ? 1 : 0]!;
       if (spare.range && spare.view.svg) this.fit(spare);
     }
     // The sheet has been re-laid out, so wherever it had been slid to is no
@@ -1323,23 +1395,28 @@ export class WindowRenderer {
    * fitted against the halves, so a packed pair never overflows.
    */
   private packSlots(entries: { slot: Buffer; height: number }[]): void {
-    const packed =
-      this.readAhead === 'slots' &&
-      entries.length === 2 &&
-      entries[0]!.height + entries[1]!.height + SLOT_GAP_PX < this.el.getBoundingClientRect().height;
-    if (!packed) {
+    if (this.readAhead !== 'slots') {
       for (const buffer of this.buffers) {
         buffer.wrapper.style.top = '';
         buffer.wrapper.style.height = '';
       }
       return;
     }
-    // `drawnSlots` is in slot order, so the first entry is the upper slot.
+    const stageHeight = this.el.getBoundingClientRect().height;
+    const perSlot = stageHeight / this.slotCount;
+    const total = entries.reduce((sum, entry) => sum + entry.height, 0) + SLOT_GAP_PX * (entries.length - 1);
+    const packed = entries.length >= 2 && total < stageHeight;
+    // Every slot in use gets its box: packed from the top when the music is
+    // shorter than its share, otherwise an even share each.
     let top = 0;
-    for (const { slot, height } of entries) {
-      slot.wrapper.style.top = `${String(Math.round(top))}px`;
+    for (let index = 0; index < this.slotCount; index += 1) {
+      const slot = this.buffers[index];
+      if (!slot) break;
+      const entry = entries.find((candidate) => candidate.slot === slot);
+      const height = packed && entry ? entry.height : perSlot;
+      slot.wrapper.style.top = `${String(Math.round(packed ? top : index * perSlot))}px`;
       slot.wrapper.style.height = `${String(Math.round(height))}px`;
-      top += height + SLOT_GAP_PX;
+      if (entry) top += height + SLOT_GAP_PX;
     }
   }
 
@@ -1359,7 +1436,7 @@ export class WindowRenderer {
    */
   private updateSlotClasses(): void {
     this.buffers.forEach((slot, i) => {
-      const drawn = this.readAhead === 'single' ? i === this.cursorSlot : slot.range !== null;
+      const drawn = this.readAhead === 'single' ? i === this.cursorSlot : i < this.slotCount && slot.range !== null;
       slot.wrapper.classList.toggle('is-front', drawn);
       slot.wrapper.classList.toggle('is-cursor', drawn && i === this.cursorSlot);
       slot.wrapper.dataset.slot = String(i);
@@ -1622,7 +1699,7 @@ export class WindowRenderer {
 
   /** The scale the cursor slot is drawn at, from its transform; 0 if none. */
   private currentScale(): number {
-    const match = /scale\(([\d.]+)\)/.exec(this.buffers[this.cursorSlot].wrapper.style.transform);
+    const match = /scale\(([\d.]+)\)/.exec(this.buffers[this.cursorSlot]!.wrapper.style.transform);
     const value = match ? Number(match[1]) : 0;
     return Number.isFinite(value) && value > 0 ? value / this.userZoom : 0;
   }

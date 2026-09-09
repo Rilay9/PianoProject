@@ -149,6 +149,22 @@ model, so a fingering set higher cannot move it; and a run keeps its scale while
 shrink it by less than a tenth — that ink runs into the margin — and shrinks only for more,
 where a note clipped off the stage would be the worse fault.
 
+## Round five: the state gallery, and the slots
+
+The builder's state gallery (`npm run states`, `docs/08` §2 driven cell by cell, each shot
+measured) put a number on what the Mary pictures had shown: upright, the width limits the size,
+and the two slots used 42 % of the stage on the phone and 18 % on a tablet. The owner's rule is
+that the notes must not get smaller; so the height that is left over buys **more systems at the
+same size**, not bigger ones and not black. The slot plan is the same arithmetic for any count
+(`slots.ts`: the cursor's slot is never touched, the slots round from it hold the coming
+blocks, the vacated one takes the block after the last on the screen), the renderer holds up to
+four engravers for a piece the probe can measure and two for a longer one, and the count is
+chosen at the first fit from the width-limited system height and held for a run like the scale.
+The tablet's four-bar default went: its extra height buys slots, not bars a slot, which with
+the lesson panel had made the notes small. Measured after: 67 % on the phone upright, 52 % and
+78 % on the tablet, at the same or a larger scale than before; the gallery guards it as
+invariant 35.
+
 ## The sequence plays the whole song
 
 `sequence.spec.ts` now asks the app at every step what it is waiting for and plays exactly

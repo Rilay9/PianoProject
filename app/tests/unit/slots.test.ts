@@ -41,16 +41,17 @@ function walk(
   all: ScoreStep[],
   barsPerWindow: number,
   count: number,
-): { cursor: SlotIndex; ranges: [MeasureRange | null, MeasureRange | null]; fade: SlotIndex | null }[] {
-  let state: { cursor: SlotIndex; ranges: [MeasureRange | null, MeasureRange | null] } = {
+  slots = 2,
+): { cursor: SlotIndex; ranges: (MeasureRange | null)[]; fades: SlotIndex[] }[] {
+  let state: { cursor: SlotIndex; ranges: (MeasureRange | null)[] } = {
     cursor: 0,
-    ranges: [null, null],
+    ranges: Array.from({ length: slots }, () => null),
   };
   const seen = [];
   for (let i = 0; i < all.length; i += 1) {
-    const plan = planSlots(all, i, state, barsPerWindow, count);
+    const plan = planSlots(all, i, state, barsPerWindow, count, slots);
     state = { cursor: plan.cursor, ranges: plan.ranges };
-    seen.push({ cursor: plan.cursor, ranges: plan.ranges, fade: plan.fade });
+    seen.push({ cursor: plan.cursor, ranges: plan.ranges, fades: plan.fades });
   }
   return seen;
 }
@@ -99,9 +100,30 @@ describe('a five-bar piece at two bars per window', () => {
   });
 
   it('never re-draws the slot the cursor is in', () => {
-    for (const { cursor, fade } of walk(all, 2, 5)) {
-      expect(fade).not.toBe(cursor);
+    for (const { cursor, fades } of walk(all, 2, 5)) {
+      expect(fades).not.toContain(cursor);
     }
+  });
+
+  it('with four slots, the eye goes down the screen and round: three bars ahead', () => {
+    const eight = steps([0, 1, 2, 3, 4, 5, 6, 7]);
+    const seen = walk(eight, 2, 8, 4);
+    expect(seen.map((s) => s.cursor)).toEqual([0, 1, 2, 3, 0, 1, 2, 3]);
+    expect(seen.map((s) => s.ranges)).toEqual([
+      [r(0, 0), r(1, 1), r(2, 2), r(3, 3)],
+      [r(4, 4), r(1, 1), r(2, 2), r(3, 3)],
+      [r(4, 4), r(5, 5), r(2, 2), r(3, 3)],
+      [r(4, 4), r(5, 5), r(6, 6), r(3, 3)],
+      [r(4, 4), r(5, 5), r(6, 6), r(7, 7)],
+      // Nothing after bar 7: the slots keep the bars just played.
+      [r(4, 4), r(5, 5), r(6, 6), r(7, 7)],
+      [r(4, 4), r(5, 5), r(6, 6), r(7, 7)],
+      [r(4, 4), r(5, 5), r(6, 6), r(7, 7)],
+    ]);
+    // Only the vacated slot is ever re-drawn, and never the cursor's.
+    for (const { cursor, fades } of seen) expect(fades).not.toContain(cursor);
+    expect(seen[1]?.fades).toEqual([0]);
+    expect(seen[4]?.fades).toEqual([3]);
   });
 
   it('always has the bar after the cursor on the screen, until the last', () => {
@@ -145,7 +167,7 @@ describe('a seek', () => {
     expect(plan.cursor).toBe(0);
     expect(plan.ranges).toEqual([r(3, 3), r(4, 4)]);
     // Nothing to be peripheral to, so nothing fades.
-    expect(plan.fade).toBeNull();
+    expect(plan.fades).toEqual([]);
   });
 });
 
