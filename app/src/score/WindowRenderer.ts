@@ -602,6 +602,11 @@ export class WindowRenderer {
     this.currentStep = stepIndex;
 
     if (this.layout === 'scroll') {
+      // Said out loud, because the stylesheet reads it. Scroll draws the whole
+      // piece as one sheet and the learner scrolls it; leaving the attribute
+      // on `slots` handed that sheet the slot stylesheet — half the stage's
+      // height, and the packed slot geometry on top of it.
+      this.updateReadAhead();
       this.ensureScrollRender();
       this.positionBand(step);
       this.autoScrollTo(step);
@@ -927,7 +932,11 @@ export class WindowRenderer {
     // size of a thumb — the tour photographed it and I did not look.
     const tall = typeof window === 'undefined' ? false : window.innerHeight >= TWO_SYSTEMS_MIN_PX;
     const next: 'slots' | 'single' =
-      (upright || tall) && this.barsPerWindow >= 2 ? 'slots' : 'single';
+      this.layout === 'scroll'
+        ? 'single'
+        : (upright || tall) && this.barsPerWindow >= 2
+          ? 'slots'
+          : 'single';
     // Written every time, not only on a change: the field starts at
     // `single`, so a stage that is sideways from the first step never wrote
     // the attribute at all and the stylesheet had nothing to match.
@@ -1363,6 +1372,18 @@ export class WindowRenderer {
    * overflow, because the scale is the one that fits the tighter of the two.
    */
   private fitSlots(): void {
+    // Scroll has one sheet and no slots, and its fit is width-only. Running
+    // the slot fit over it gave the stage's height divided by the slot count
+    // and limited it by the height of the *whole piece*: Twinkle upright came
+    // out at scale 0.23 in a quarter of the width, three quarters of the
+    // screen black, with nothing left tall enough to scroll. Every caller
+    // that refits — the stage observer, a run starting, the probe's
+    // measurement landing — came through here and undid `fit`.
+    if (this.layout === 'scroll') {
+      const front = this.frontBuffer;
+      if (front.view.svg) this.fit(front);
+      return;
+    }
     const slots = this.drawnSlots;
     if (slots.length === 0) return;
     const available = this.el.getBoundingClientRect();

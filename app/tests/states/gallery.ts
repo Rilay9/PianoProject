@@ -135,6 +135,16 @@ function check(state: StateRecord, cell: string): string[] {
     say(35, `music is ${String(Math.round(state.musicShare * 100))}% of the stage`);
   }
 
+  // 36 — scroll fills the width, because that is the only thing it fits to.
+  //
+  // The slot fit ran over the scrolling sheet as well: it divided the stage
+  // by the slot count and limited the scale by the height of the whole piece,
+  // so Twinkle upright was drawn at 0.23 in a quarter of the width with
+  // nothing left tall enough to scroll (`08` §4.3).
+  if (state.layout === 'scroll' && state.musicWidth > 0 && state.musicWidth < 0.8) {
+    say(36, `scroll draws ${String(Math.round(state.musicWidth * 100))}% of the stage's width`);
+  }
+
   // 2 — the staves sit at one height, and every drawn slot shares one scale.
   const drawn = state.slots.filter((s) => s.drawn && !s.hidden && s.scale > 0);
   const scales = [...new Set(drawn.map((s) => s.scale))];

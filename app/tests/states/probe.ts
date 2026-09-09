@@ -17,6 +17,7 @@ export interface SlotRecord {
   height: number;
   svgTop: number;
   svgHeight: number;
+  svgWidth: number;
   /** The first stave line's y — what `08` §3.2 says must not move. */
   staveY: number | null;
   /** The CSS scale actually applied. */
@@ -47,9 +48,18 @@ export interface StateRecord {
    * nothing on its own: two 71 px staves are fine on a phone and absurd on a
    * 1200 px tablet, and only the share says which you are looking at.
    */
-  stage: { top: number; height: number } | null;
+  stage: { top: number; height: number; width: number } | null;
   /** Drawn sheet height as a share of the stage, 0–1. */
   musicShare: number;
+  /**
+   * The widest drawn sheet as a share of the stage's width, 0–1.
+   *
+   * The other half of the same question, and the one that catches scroll:
+   * scroll fits on width alone, so a sheet that is not as wide as the stage
+   * has been fitted by something else. Twinkle upright read 0.23 here while
+   * the height share looked ordinary.
+   */
+  musicWidth: number;
   slots: SlotRecord[];
   bands: {
     cursors: number;
@@ -134,6 +144,7 @@ export async function probeState(page: Page): Promise<StateRecord> {
         height: Math.round(r.height),
         svgTop: sr ? Math.round(sr.top) : -1,
         svgHeight: sr ? Math.round(sr.height) : -1,
+        svgWidth: sr ? Math.round(sr.width) : -1,
         staveY: stave ? Math.round(stave.getBoundingClientRect().top) : null,
         scale: scaleOf(el),
         measures: el.querySelectorAll('.vf-measure').length,
@@ -166,6 +177,10 @@ export async function probeState(page: Page): Promise<StateRecord> {
 
     const stageEl = document.querySelector<HTMLElement>('#score-stage');
     const stageBox = stageEl ? stageEl.getBoundingClientRect() : null;
+    const widestSheet = Math.max(
+      0,
+      ...slots.filter((s) => s.drawn && !s.hidden && s.svgWidth > 0).map((s) => s.svgWidth),
+    );
     const drawnSheet = slots
       .filter((s) => s.drawn && !s.hidden && s.svgHeight > 0)
       .reduce((n, s) => n + s.svgHeight, 0);
@@ -174,12 +189,18 @@ export async function probeState(page: Page): Promise<StateRecord> {
       viewport: { w: window.innerWidth, h: window.innerHeight },
       theme: document.documentElement.getAttribute('data-theme') ?? '',
       stage: stageBox
-        ? { top: Math.round(stageBox.top), height: Math.round(stageBox.height) }
+        ? {
+            top: Math.round(stageBox.top),
+            height: Math.round(stageBox.height),
+            width: Math.round(stageBox.width),
+          }
         : null,
       musicShare:
         stageBox && stageBox.height > 0
           ? Number((drawnSheet / stageBox.height).toFixed(3))
           : 0,
+      musicWidth:
+        stageBox && stageBox.width > 0 ? Number((widestSheet / stageBox.width).toFixed(3)) : 0,
       arrangement: view?.dataset.readAhead ?? '',
       layout: view?.dataset.layout ?? '',
       screen: {

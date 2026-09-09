@@ -731,6 +731,10 @@ Numbered for citation. Each is falsifiable; most are already testable.
     on one tap of the stage, always.
 35. Upright, during a run, at least half the stage is music: the height the width fit leaves
     over holds more systems at the same size, never black (checked by the state gallery).
+36. In Scroll the sheet is as wide as the stage: scroll fits on width alone and the height is
+    what the learner scrolls, so a sheet narrower than the stage has been fitted by something
+    else — the slot fit was running over it and limiting the scale by the height of the whole
+    piece (checked by the state gallery).
 
 ---
 
