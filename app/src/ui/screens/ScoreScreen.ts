@@ -1826,7 +1826,11 @@ export function ScoreScreen(router: Router): HTMLElement {
             step: state.step,
             expected: session.expectedNow,
             bar: model.steps[state.step]?.sourceMeasureIndex ?? 0,
+            // Playing order, so a repeat's jump back is the bar a test
+            // expects on the screen, not the printed one after it.
+            nextBar: model.steps[state.step + 1]?.sourceMeasureIndex ?? null,
             lastBar: Math.max(0, model.sourceMeasureCount - 1),
+            noteIds: (model.steps[state.step]?.notes ?? []).map((n) => n.id),
             // The step's own notes, whatever the mode expects: Free expects
             // nothing and still turns the page on these.
             pitches: [...new Set((model.steps[state.step]?.notes ?? []).map((n) => n.midi))],

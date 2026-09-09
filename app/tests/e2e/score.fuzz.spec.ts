@@ -24,11 +24,19 @@ import { expect, test, type Page } from '@playwright/test';
 import { installMidiMock, type MidiMock } from './fixtures/midiMock';
 import { withScoreMenu } from './scoreControls';
 
-const ITEM = 'song.folk.mary-had-a-little-lamb';
 const UPRIGHT = { width: 390, height: 844 };
 const SIDEWAYS = { width: 880, height: 412 };
+const TABLET_UP = { width: 900, height: 1200 };
+const TABLET_SIDE = { width: 1200, height: 900 };
 const ACTIONS_PER_RUN = 45;
-const SEEDS = [1, 2, 3];
+/** Seeds, and the piece and pair of sizes each walks. */
+const WALKS: { seed: number; item: string; sizes: [{ width: number; height: number }, { width: number; height: number }] }[] = [
+  { seed: 1, item: 'song.folk.mary-had-a-little-lamb', sizes: [UPRIGHT, SIDEWAYS] },
+  { seed: 2, item: 'song.folk.mary-had-a-little-lamb', sizes: [UPRIGHT, SIDEWAYS] },
+  { seed: 3, item: 'song.folk.mary-had-a-little-lamb', sizes: [UPRIGHT, SIDEWAYS] },
+  { seed: 4, item: 'song.folk.twinkle.ht', sizes: [UPRIGHT, SIDEWAYS] },
+  { seed: 5, item: 'song.folk.twinkle.ht', sizes: [TABLET_UP, TABLET_SIDE] },
+];
 /** A note the song never asks for. */
 const WRONG_NOTE = 61;
 /** A run keeps its size from this long after it (re)starts. */
@@ -199,12 +207,12 @@ function pick(random: () => number, summaryUp: boolean): ActionName {
 /** Actions that begin a new run or re-fit the sheet: the size may change. */
 const RESTARTS = new Set<ActionName>(['playPause', 'hands', 'mode', 'hear', 'loop', 'clearLoop', 'rotate', 'again']);
 
-for (const seed of SEEDS) {
-  test(`seed ${String(seed)}: forty-five things a restless learner does, and what must still hold`, async ({
+for (const { seed, item: ITEM, sizes } of WALKS) {
+  test(`seed ${String(seed)} on ${ITEM} at ${String(sizes[0].width)}×${String(sizes[0].height)}: forty-five things a restless learner does`, async ({
     page,
   }) => {
     test.setTimeout(240_000);
-    await page.setViewportSize(UPRIGHT);
+    await page.setViewportSize(sizes[0]);
     await page.addInitScript(() => {
       const w = window as Hooked;
       w.__longTasks = [];
@@ -321,7 +329,7 @@ for (const seed of SEEDS) {
           break;
         case 'rotate':
           sideways = !sideways;
-          await page.setViewportSize(sideways ? SIDEWAYS : UPRIGHT);
+          await page.setViewportSize(sideways ? sizes[1] : sizes[0]);
           break;
         case 'tap':
           await page.locator('#score-stage').click({ position: { x: 20, y: 20 } });

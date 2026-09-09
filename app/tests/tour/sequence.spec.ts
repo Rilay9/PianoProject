@@ -41,7 +41,17 @@ const SLIDE_FROM_BAR = 2;
 /** Steps may differ by this much in scale and still count as one size (1 %). */
 const SCALE_TOLERANCE = 0.01;
 
-type Run = { step: number; expected: number[]; bar: number; lastBar: number; paused: boolean; engineMode: string; input: string } | null;
+type Run = {
+  step: number;
+  expected: number[];
+  bar: number;
+  nextBar: number | null;
+  lastBar: number;
+  pitches: number[];
+  paused: boolean;
+  engineMode: string;
+  input: string;
+} | null;
 type Hooked = Window & { __pianopath?: { scoreRun?: () => Run; scoreFit?: () => unknown } };
 
 interface Probe {
@@ -51,6 +61,8 @@ interface Probe {
   fit?: unknown;
   band: { left: number; width: number } | null;
   cursorBar: number | null;
+  /** The midis of the notes marked current, sorted: what the colouring says is next. */
+  currentMidis: number[];
   /** The scale the cursor slot is drawn at (the transform's `a`). */
   scale: number;
   /** The cursor slot's stave-line top, in px from the slot's own top (`08` §9.2). */
@@ -136,12 +148,17 @@ async function probe(page: Page): Promise<Probe> {
         ? Math.round((matrix.f + slotFit.staffTop * matrix.d) * 10) / 10
         : null;
     function measureOf(el: Element): number | null {
-      // The note id carries the printed bar as its first field.
-      const id = (el as HTMLElement).dataset.noteId ?? '';
-      const n = Number(id.split(':')[0]);
+      const n = Number((el as HTMLElement).dataset.bar);
       return Number.isFinite(n) ? n : null;
     }
     const cursorBar = current ? measureOf(current) : null;
+    const currentMidis = [
+      ...new Set(
+        [...document.querySelectorAll<HTMLElement>('#score-stage .score-buffer.is-front .score-note.is-current')]
+          .map((el) => Number(el.dataset.midi))
+          .filter((n) => Number.isFinite(n)),
+      ),
+    ].sort((a, b) => a - b);
     const slots = [...document.querySelectorAll<HTMLElement>('#score-stage .score-buffer:not(.score-probe)')].map(
       (el) => {
         const r = el.getBoundingClientRect();
@@ -176,6 +193,7 @@ async function probe(page: Page): Promise<Probe> {
       fit: (window as Hooked).__pianopath?.scoreFit?.() ?? null,
       band: b ? { left: Math.round(b.left), width: Math.round(b.width) } : null,
       cursorBar,
+      currentMidis,
       scale,
       staveTop,
       cursorSlotIndex: slotIndex,
@@ -184,10 +202,8 @@ async function probe(page: Page): Promise<Probe> {
   });
 }
 
-/** The bar after the cursor's is drawn somewhere on the screen. */
-function nextBarVisible(p: Probe): boolean {
-  if (p.cursorBar === null) return false;
-  const wanted = p.cursorBar + 1;
+/** The bar the run plays next is drawn somewhere on the screen. */
+function nextBarVisible(p: Probe, wanted: number): boolean {
   return p.slots.some((slot) => {
     if (!slot.drawn || !slot.bars.includes(wanted)) return false;
     if (!p.stage) return true;
@@ -215,7 +231,7 @@ for (const { orientation, size } of FORM_FACTORS.filter((f) => FACTORS.length ==
         }
       });
       const midi = await installMidiMock(page, { permission: 'granted' });
-      const steps: { step: number; bar: number | null; moved: boolean; probe: Probe }[] = [];
+      const steps: { step: number; bar: number | null; nextBar: number | null; pitches: number[]; moved: boolean; probe: Probe }[] = [];
       const frame = async (slug: string, title: string, note: string): Promise<void> => {
         await page.waitForTimeout(400);
         await shoot(page, orientation, slug, title, note);
@@ -247,7 +263,14 @@ for (const { orientation, size } of FORM_FACTORS.filter((f) => FACTORS.length ==
           );
         }
         const moved = await playStep(page, midi, run);
-        steps.push({ step: run.step, bar: p.cursorBar, moved, probe: p });
+        steps.push({
+          step: run.step,
+          bar: run.bar,
+          nextBar: run.nextBar,
+          pitches: [...new Set(run.pitches)].sort((a, b) => a - b),
+          moved,
+          probe: p,
+        });
         // Before and after: the first input, and one in the middle.
         if (i === 0) await frame(`${PREFIX}-after-first`, 'After the first note', 'What the first note changed.');
         else if (p.cursorBar === Math.floor(run.lastBar / 2) && lastBar === p.cursorBar && steps.filter((s) => s.bar === p.cursorBar).length === 1) {
@@ -286,6 +309,15 @@ for (const { orientation, size } of FORM_FACTORS.filter((f) => FACTORS.length ==
       expect(ended, 'the run had not ended after every step was played').toBeNull();
       expect(steps.length, 'too few steps for a whole song').toBeGreaterThan(20);
 
+      // --- the step's notes are the ones coloured current ---------------------
+      for (const s of steps) {
+        expect(
+          s.probe.currentMidis,
+          `step ${String(s.step)} (bar ${String(s.bar)}): the notes coloured current are ${s.probe.currentMidis.join(',')}, the run waits for ${s.pitches.join(',')}`,
+        ).toEqual(s.pitches);
+        expect(s.probe.cursorBar, `step ${String(s.step)}: the cursor's note is in bar ${String(s.probe.cursorBar)}, the run is at bar ${String(s.bar)}`).toBe(s.bar);
+      }
+
       // --- A2: one size for the run, and after it -------------------------
       // After it only where the stage is the size it was: sideways on a phone
       // the summary sheet takes the keyboard strip with it, the stage grows
@@ -321,12 +353,13 @@ for (const { orientation, size } of FORM_FACTORS.filter((f) => FACTORS.length ==
       }
 
       // --- the next bar is always on the screen, until there is none --------
-      const finalBar = Math.max(...steps.map((s) => s.bar ?? -1));
+      // The bar the run plays next, in playing order.
       for (const s of steps) {
-        if (s.bar === null || s.bar >= finalBar) continue;
+        if (s.nextBar === null || s.nextBar === s.bar) continue;
+        if (s.bar !== null && s.nextBar < s.bar && s.probe.readAhead === 'single') continue;
         expect(
-          nextBarVisible(s.probe),
-          `step ${String(s.step)} (bar ${String(s.bar)}): bar ${String(s.bar + 1)} is not on the screen`,
+          nextBarVisible(s.probe, s.nextBar),
+          `step ${String(s.step)} (bar ${String(s.bar)}): bar ${String(s.nextBar)} is not on the screen`,
         ).toBe(true);
       }
 

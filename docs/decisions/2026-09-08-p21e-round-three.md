@@ -181,6 +181,65 @@ sideways is done (above); three or more per screen is a real change to `slots.ts
 renderer, and the owner has a phone (`00` D19). Bars per window is a setting, and 4 on a
 tablet puts two bars in each slot.
 
+## Round six: the corpus, and what one song could not show
+
+The owner asked what tests would find all the issues, definitively, and said to run them
+rather than describe them. Three instruments, run in full and read in full:
+
+- **The corpus** (`tests/tour/corpus.spec.ts`): ten pieces chosen to differ in the ways the
+  renderer and the engine care about, on all four form factors, every step measured, three
+  pictures a leg tiled into contact sheets. 40 legs.
+- **The state gallery** grown to 52 cells: both pieces for the arrangement cells, the scroll
+  layout, a pickup's bar count, the tablet for every mode, the end of a grand-staff piece.
+- **The walks** on a grand staff and on a tablet.
+
+Read cell by cell, the gallery was clean once the harness played whole chords. The corpus was
+not. Four faults, none of which *Mary* or *Hot Cross Buns* could show:
+
+1. **A pickup piece was drawn a bar late, everywhere, since the slots were built.** OSMD takes
+   `drawUpToMeasureNumber` as an index outright when the first measure is implicit, and
+   `drawFromMeasureNumber` too once it is past 1. The slot the plan called bar 1 held bar 2;
+   the cursor's notes sat in a slot the settle then re-drew with bar 3; nothing was coloured
+   for the whole of *Happy Birthday* and both *Greensleeves*. The model now says `pickup`,
+   the view passes indexes when there is one, and a block of bars is the pickup with the bars
+   it leads into, then tiles from bar 1 — the one bar the engraver cannot start on.
+2. **Nothing coloured on a repeat's first pass.** The second pass has ids of its own for the
+   same printed notes; one `<g>` answers to two; the per-id toggle let the pass with no state
+   undo the one with. Resolved per element now, the cursor first.
+3. **The stave moved on the piece the probe cannot measure** — 37 px on the Scherzo between a
+   window with a dynamic over it and one without. The most any window has had above its
+   stave is now held like the sizes.
+4. **The summary sheet on a tablet sat above the screen**: placed `1 / -1` in a grid with no
+   explicit rows. Every tablet-upright end picture in the corpus showed half a heading over
+   the title; the earlier gallery had no such cell.
+
+And the instrument itself: neither the sequence nor the corpus had asserted that *the notes
+coloured current are the notes the run waits for*. Both do now, and it is the assertion that
+found 1 and 2 — the pictures had been read with the band over a white note, and a band over
+a white note looks like a band over a note. The next-bar check now follows playing order
+(the hook says `nextBar`), which is what a repeat needs, and waits up to a second for a heavy
+piece's read-ahead, recording the lag.
+
+The second full run found two more that the first had hidden behind the pickup fault: the
+first note of a run white on fourteen legs — the fit's own re-draw when the piece's measurement
+lands engraves fresh elements with no classes and nobody painted again (the renderer now keeps
+the states last painted and applies them to whatever it engraves); and *Hot Cross Buns* on a
+tablet sideways shrinking 29 % at bar 3, eight quavers being wider than the page — the probe
+now measures the widest system the engraver made of the piece, so a run starts at the size its
+densest bar needs.
+
+Then the instrument again, twice: the probe read a slot's bars from its note elements, so a bar
+of rests in the Scherzo could never be "on the screen"; and a piece too long for the probe may
+settle its stave down once as a taller window arrives, which the check now allows only for a run
+whose *frozen* fit has no measurement. With those, the corpus stands at 40 of 40 legs and the
+gallery at 52 of 52 cells, every picture read.
+
+Smaller: the opening tempo word clipped at the top of the Minuet's first slot (off on the
+score screen with the metronome mark); the gallery's harness played one note of each chord, so
+every grand-staff cell sat at step 0 under a "five notes in" caption (it plays the step); the
+music-share guard at 45 %, because a four-bar piece with all four bars on a tablet measures
+50 % exactly and there is no fifth bar to buy.
+
 ## The sequence is in the tour
 
 `npm run tour` now runs `sequence.spec.ts` after the scenes: seven frames of *Mary Had a Little
@@ -188,3 +247,21 @@ Lamb* driven by the spoofed piano in both orientations, on the contact sheet as 
 with three assertions from a log of both slots at every frame — one height for the run, the
 next bar always on the screen, and sideways the cursor between 25 % and 45 % of the stage from
 the first chunk swap on. It is how A2 and A3 were found, and it is how they stay fixed.
+
+## Round seven: a verse of lyrics is not a bar
+
+Measuring the piece's ink width to catch a bar too dense for the page (round six, item 4) read
+the ink box of the whole probe SVG, and *Suo Gan* carries both its verses in the file as one
+unwrapped `<text>` — 5841 user units against a 180-unit page. The fit divided the stage's width
+by that: **scale 0.0298**, four one-bar slots five pixels tall, 3 % of a phone's screen with the
+rest black. Sideways was untouched, because sliding does not limit on width.
+
+Nothing that belongs in a bar is wider than the system it is in — a note, a beam, a slur across
+the whole line. So the width is measured the way the height already was, by ignoring what is out
+of scale: the stave's own width from the engraver's model, and ink unioned only from elements no
+wider than one and a half staves. A dense bar's notes are each narrow and still counted, which is
+what round six wanted; a block of text laid out on one line is not.
+
+Suo Gan upright, phone: 3 % of the stage → **48.5 %**, one scale of 0.967 across two slots. Hot
+Cross Buns is unchanged at 67 % upright and 77 % sideways, and Suo Gan sideways at 0.815. Caught
+by `score.screen.spec.ts` "the sheet fills the screen (P19b)", which is where it stays caught.

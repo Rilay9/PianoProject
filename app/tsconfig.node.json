@@ -20,6 +20,7 @@
     "playwright.config.ts",
     "playwright.tour.config.ts",
     "playwright.states.config.ts",
+    "playwright.corpus.config.ts",
     "vitest.config.ts",
     "tests/e2e/**/*.ts",
     "tests/tour/**/*.ts",

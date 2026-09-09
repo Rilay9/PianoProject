@@ -40,12 +40,23 @@ export function rangeAt(
   sourceMeasureIndex: number,
   barsPerWindow: number,
   sourceMeasureCount: number,
+  pickup = false,
 ): MeasureRange {
   const size = barsPerSlot(barsPerWindow);
   const last = Math.max(0, sourceMeasureCount - 1);
   const bar = Math.min(Math.max(0, sourceMeasureIndex), last);
-  const from = Math.floor(bar / size) * size;
-  return { fromMeasure: from, toMeasure: Math.min(from + size - 1, last) };
+  // A pickup goes with the bars after it: the first block is the pickup and
+  // the `size` bars it leads into, and the blocks after tile from bar 1. It
+  // is the upbeat to bar 1, and a block on its own would be one note drawn
+  // the width of the screen — and the engraver cannot draw a range that
+  // starts at bar 1 without the pickup in front (`OsmdView.setRange`).
+  const from = pickup
+    ? bar <= size
+      ? 0
+      : Math.floor((bar - 1) / size) * size + 1
+    : Math.floor(bar / size) * size;
+  const to = pickup && from === 0 ? size : from + size - 1;
+  return { fromMeasure: from, toMeasure: Math.min(to, last) };
 }
 
 export function inRange(range: MeasureRange | null, sourceMeasureIndex: number): boolean {
@@ -78,12 +89,13 @@ export function nextRangeAfter(
   range: MeasureRange,
   barsPerWindow: number,
   sourceMeasureCount: number,
+  pickup = false,
 ): MeasureRange | null {
   for (let i = Math.max(0, fromStepIndex); i < steps.length; i += 1) {
     const step = steps[i];
     if (!step) continue;
     if (!inRange(range, step.sourceMeasureIndex)) {
-      return rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount);
+      return rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount, pickup);
     }
   }
   return null;
@@ -101,6 +113,7 @@ export function blocksAhead(
   barsPerWindow: number,
   sourceMeasureCount: number,
   count: number,
+  pickup = false,
 ): MeasureRange[] {
   const out: MeasureRange[] = [];
   let current = range;
@@ -110,7 +123,7 @@ export function blocksAhead(
     while (at < steps.length && inRange(current, steps[at]?.sourceMeasureIndex ?? -1)) at += 1;
     const step = steps[at];
     if (!step) break;
-    current = rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount);
+    current = rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount, pickup);
     out.push(current);
   }
   return out;
@@ -160,11 +173,12 @@ export function planSlots(
   barsPerWindow: number,
   sourceMeasureCount: number,
   slotCount = current.ranges.length,
+  pickup = false,
 ): SlotPlan {
   const count = Math.max(1, slotCount);
   const step = steps[stepIndex];
   const bar = step ? step.sourceMeasureIndex : 0;
-  const wanted = rangeAt(bar, barsPerWindow, sourceMeasureCount);
+  const wanted = rangeAt(bar, barsPerWindow, sourceMeasureCount, pickup);
   const held: (MeasureRange | null)[] = Array.from({ length: count }, (_, i) => current.ranges[i] ?? null);
 
   let cursor = held.findIndex((range) => sameRange(range, wanted));
@@ -172,7 +186,7 @@ export function planSlots(
   if (cold) cursor = 0;
   const crossed = !cold && cursor !== current.cursor;
 
-  const ahead = blocksAhead(steps, stepIndex, wanted, barsPerWindow, sourceMeasureCount, count - 1);
+  const ahead = blocksAhead(steps, stepIndex, wanted, barsPerWindow, sourceMeasureCount, count - 1, pickup);
   const ranges: (MeasureRange | null)[] = held.slice();
   const fades: SlotIndex[] = [];
   ranges[cursor] = wanted;

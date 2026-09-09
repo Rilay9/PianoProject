@@ -79,6 +79,46 @@ describe('which bars a slot holds', () => {
     expect(rangeAt(4, 4, 5)).toEqual(r(4, 4));
     expect(rangeAt(99, 2, 5)).toEqual(r(4, 4));
   });
+
+  // A pickup is the upbeat to bar 1, and the engraver cannot draw a range
+  // that starts at bar 1 without it: the first block is the pickup and the
+  // bars it leads into, and the blocks after tile from bar 1.
+  it('puts a pickup with the first bars, and tiles from bar 1 after it', () => {
+    expect(rangeAt(0, 2, 9, true)).toEqual(r(0, 1));
+    expect(rangeAt(1, 2, 9, true)).toEqual(r(0, 1));
+    expect(rangeAt(2, 2, 9, true)).toEqual(r(2, 2));
+    expect(rangeAt(8, 2, 9, true)).toEqual(r(8, 8));
+    expect(rangeAt(0, 4, 9, true)).toEqual(r(0, 2));
+    expect(rangeAt(2, 4, 9, true)).toEqual(r(0, 2));
+    expect(rangeAt(3, 4, 9, true)).toEqual(r(3, 4));
+    expect(rangeAt(8, 4, 9, true)).toEqual(r(7, 8));
+  });
+
+  it('never asks the engraver for a block that starts on bar 1', () => {
+    for (const barsPerWindow of [2, 4, 6, 8]) {
+      for (let bar = 0; bar < 12; bar += 1) {
+        expect(rangeAt(bar, barsPerWindow, 12, true).fromMeasure, `bar ${String(bar)} at ${String(barsPerWindow)} bars`).not.toBe(1);
+      }
+    }
+  });
+
+  it('walks a pickup piece with the bar after the cursor always on the screen', () => {
+    // Pickup, then eight bars, two steps a bar.
+    const bars = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
+    const all = steps(bars);
+    let state: { cursor: SlotIndex; ranges: (MeasureRange | null)[] } = { cursor: 0, ranges: [null, null] };
+    for (let i = 0; i < all.length; i += 1) {
+      const plan = planSlots(all, i, state, 2, 9, 2, true);
+      state = { cursor: plan.cursor, ranges: plan.ranges };
+      const bar = bars[i] ?? 0;
+      const here = plan.ranges[plan.cursor];
+      expect(here && bar >= here.fromMeasure && bar <= here.toMeasure, `step ${String(i)}: the cursor's bar is in its slot`).toBe(true);
+      if (bar < 8) {
+        const next = plan.ranges.some((range) => range !== null && bar + 1 >= range.fromMeasure && bar + 1 <= range.toMeasure);
+        expect(next, `step ${String(i)}: bar ${String(bar + 1)} is on the screen`).toBe(true);
+      }
+    }
+  });
 });
 
 describe('a five-bar piece at two bars per window', () => {

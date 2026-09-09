@@ -18,6 +18,7 @@
     "predev": "node scripts/generate-icons.mjs",
     "pwa:audit": "node scripts/pwa-audit.mjs",
     "tour": "playwright test --config playwright.tour.config.ts tour.spec.ts sequence.spec.ts",
+    "corpus": "playwright test --config playwright.corpus.config.ts corpus.spec.ts",
     "states": "npm run build:app && playwright test --config playwright.states.config.ts",
     "states:only": "playwright test --config playwright.states.config.ts",
     "tour:sequence": "playwright test --config playwright.tour.config.ts sequence.spec.ts",

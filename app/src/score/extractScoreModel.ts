@@ -353,6 +353,7 @@ export function extractScoreModelFromSheet(
     timeSigMap,
     measureCount: measureIndex + 1,
     sourceMeasureCount: sheet.SourceMeasures.length,
+    ...(sheet.SourceMeasures[0]?.ImplicitMeasure === true ? { pickup: true } : {}),
     ...(readKeySignature(sheet) === undefined ? {} : { keySig: readKeySignature(sheet) }),
     handsPresent,
   });

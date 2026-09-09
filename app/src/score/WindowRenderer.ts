@@ -347,7 +347,12 @@ export class WindowRenderer {
    * sheet can only ever get smaller during a run — and only until the probe
    * has measured, which is one frame after the first draw.
    */
-  private held: { height: number; width: number; zoom: number } = { height: 0, width: 0, zoom: -1 };
+  private held: { height: number; width: number; above: number; zoom: number } = {
+    height: 0,
+    width: 0,
+    above: 0,
+    zoom: -1,
+  };
   /**
    * The size the run started at, held until it ends (P21e A2).
    *
@@ -447,7 +452,7 @@ export class WindowRenderer {
           : { drawFingerings: options.drawFingerings }),
         ...(options.drawMetronomeMarks === undefined
           ? {}
-          : { drawMetronomeMarks: options.drawMetronomeMarks }),
+          : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
         ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
       });
       await view.load(options.musicXml);
@@ -472,7 +477,7 @@ export class WindowRenderer {
       ...(options.drawFingerings === undefined ? {} : { drawFingerings: options.drawFingerings }),
       ...(options.drawMetronomeMarks === undefined
         ? {}
-        : { drawMetronomeMarks: options.drawMetronomeMarks }),
+        : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
       ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
     });
     renderer.probeSource = options.musicXml;
@@ -571,12 +576,19 @@ export class WindowRenderer {
    * seeing ahead is what the two slots do and is no longer optional (P21c A3).
    */
   windowFor(sourceMeasureIndex: number): MeasureRange {
-    const total = this.model.sourceMeasureCount;
+    const last = Math.max(0, this.model.sourceMeasureCount - 1);
     const stride = this.barsPerWindow;
-    const start = Math.max(0, Math.floor(sourceMeasureIndex / stride) * stride);
-    const from = Math.min(start, Math.max(0, total - 1));
-    const to = Math.min(from + this.barsPerWindow - 1, Math.max(0, total - 1));
-    return { fromMeasure: from, toMeasure: to };
+    const bar = Math.min(Math.max(0, sourceMeasureIndex), last);
+    // A pickup goes with the window after it, as a slot's block does
+    // (`slots.rangeAt`): the engraver cannot draw from bar 1 without it.
+    const pickup = this.model.pickup === true;
+    const from = pickup
+      ? bar <= stride
+        ? 0
+        : Math.floor((bar - 1) / stride) * stride + 1
+      : Math.floor(bar / stride) * stride;
+    const to = pickup && from === 0 ? stride : from + stride - 1;
+    return { fromMeasure: from, toMeasure: Math.min(to, last) };
   }
 
   /**
@@ -622,6 +634,7 @@ export class WindowRenderer {
       this.barsPerWindow,
       this.model.sourceMeasureCount,
       this.slotCount,
+      this.model.pickup === true,
     );
     const started = performance.now();
     const cursor = this.buffers[plan.cursor]!;
@@ -689,6 +702,7 @@ export class WindowRenderer {
         this.barsPerWindow,
         this.model.sourceMeasureCount,
         this.slotCount,
+        this.model.pickup === true,
       );
       if (plan.cursor !== this.cursorSlot) return; // a seek is on its way; showStep handles it
       let drew = false;
@@ -962,7 +976,10 @@ export class WindowRenderer {
     if (this.frozen || this.freezeHandle !== null) return Math.min(most, Math.max(2, this.slotCount));
     const stage = this.el.getBoundingClientRect();
     const height = this.held.zoom === this.zoomLevel ? Math.max(this.held.height, this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0) : 0;
-    const width = this.held.zoom === this.zoomLevel ? this.held.width : 0;
+    const width = Math.max(
+      this.held.zoom === this.zoomLevel ? this.held.width : 0,
+      this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.width ?? 0) : 0,
+    );
     if (!(height > 0) || !(width > 0) || stage.height <= 0 || stage.width <= 0) return 2;
     const byWidth = (stage.width - FIT_MARGIN_PX) / width;
     const byHeightForTwo = (stage.height / 2 - FIT_MARGIN_PX) / height;
@@ -1009,12 +1026,43 @@ export class WindowRenderer {
    * re-rendering, and only the notes whose state changed are touched.
    */
   setNoteStates(states: ReadonlyMap<string, NoteState>): void {
-    for (const [id, element] of this.allElements) {
-      const wanted = states.get(id);
-      element.classList.toggle('is-correct', wanted === 'correct');
-      element.classList.toggle('is-wrong', wanted === 'wrong');
-      element.classList.toggle('is-current', wanted === 'current');
-      element.classList.toggle('is-uncertain', wanted === 'uncertain');
+    this.lastStates = states;
+    // Every buffer, not the front alone: sideways the spare is pre-rendered
+    // with the states of the moment, and a paint that touched only the front
+    // left the spare's marks behind, stale, for the next swap to show.
+    for (const slot of this.buffers) this.applyNoteStates(slot.elements, states);
+  }
+
+  /**
+   * The states last painted, re-applied to whatever the renderer engraves
+   * on its own — the fit's re-draw when the piece's measurement lands, a
+   * slot the settle refreshes. A fresh engraving has fresh elements with
+   * no classes, and nobody asked the session to paint again: the corpus
+   * found the first note of a run white on fourteen legs, until the second
+   * note was played.
+   */
+  private lastStates: ReadonlyMap<string, NoteState> = new Map();
+
+  private applyNoteStates(elements: ReadonlyMap<string, SVGGElement>, states: ReadonlyMap<string, NoteState>): void {
+    // Resolved per element, not per id: a repeat's second pass has ids of
+    // its own for the same printed notes, so one `<g>` answers to two, and
+    // toggling per id let the pass with nothing to say undo the pass that
+    // had — on the first time through the Minuet in G nothing was ever
+    // coloured, because the second pass's id came last. The cursor wins,
+    // then whichever pass has a judgement.
+    const wanted = new Map<SVGGElement, NoteState | undefined>();
+    for (const [id, element] of elements) {
+      const state = states.get(id);
+      const seen = wanted.get(element);
+      if (!wanted.has(element) || state === 'current' || (seen === undefined && state !== undefined)) {
+        wanted.set(element, state);
+      }
+    }
+    for (const [element, state] of wanted) {
+      element.classList.toggle('is-correct', state === 'correct');
+      element.classList.toggle('is-wrong', state === 'wrong');
+      element.classList.toggle('is-current', state === 'current');
+      element.classList.toggle('is-uncertain', state === 'uncertain');
     }
   }
 
@@ -1176,6 +1224,8 @@ export class WindowRenderer {
       probeLoaded: this.probe?.isLoaded ?? false,
       frozen: this.frozen,
       readAhead: this.readAhead,
+      slotCount: this.slotCount,
+      cursorSlot: this.cursorSlot,
       slots: this.buffers.map((slot) => {
         const svg = slot.view.svg;
         const ink = svg ? inkBox(svg) : null;
@@ -1469,12 +1519,16 @@ export class WindowRenderer {
       if (!note) continue;
       element.classList.add('score-note');
       element.dataset.noteId = id;
+      // The printed bar, which the id does not carry once a repeat gives the
+      // same `<g>` a second id (the last one written wins the attribute).
+      element.dataset.bar = String(note.sourceMeasureIndex);
       element.dataset.hand = note.hand;
       element.dataset.midi = String(note.midi);
     }
     buffer.elements = elements;
     this.drawVersion += 1;
     this.applyLoopClass(buffer);
+    this.applyNoteStates(elements, this.lastStates);
   }
 
   /**
@@ -1715,7 +1769,7 @@ export class WindowRenderer {
     available: { width: number; height: number },
   ): number | null {
     if (boxes.length === 0) return null;
-    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, zoom: this.zoomLevel };
+    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
     for (const box of boxes) {
       this.held.height = Math.max(this.held.height, box.height);
       this.held.width = Math.max(this.held.width, box.width);
@@ -1723,7 +1777,7 @@ export class WindowRenderer {
     this.scheduleMeasure();
     const piece = this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null;
     const height = Math.max(this.held.height, piece?.height ?? 0);
-    const width = this.held.width;
+    const width = Math.max(this.held.width, piece?.width ?? 0);
     if (!(height > 0) || !(width > 0)) return null;
     const byHeight = (available.height - FIT_MARGIN_PX) / height;
     const fitted = this.sliding
@@ -1759,10 +1813,18 @@ export class WindowRenderer {
         ? this.pieceInk
         : null;
     const svg = slot.view.svg;
-    if (!piece || !svg) return place(box, scale);
+    if (!svg) return place(box, scale);
     const staffTop = staffTopOf(slot.view);
     if (staffTop === null) return place(box, scale);
-    return place({ x: box.x, y: staffTop - piece.above }, scale);
+    if (piece) return place({ x: box.x, y: staffTop - piece.above }, scale);
+    // Not measured — the probe has not run yet, or the piece is too long for
+    // it to ever run: the most any window so far has had above its stave,
+    // held like the sizes are. Anchoring on the ink instead moved the stave
+    // of the Scherzo by 37 px between a window with a dynamic over it and
+    // one without.
+    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
+    this.held.above = Math.max(this.held.above, staffTop - box.y);
+    return place({ x: box.x, y: staffTop - this.held.above }, scale);
   }
 
   /**
@@ -1994,6 +2056,15 @@ interface PieceInk {
   height: number;
   above: number;
   below: number;
+  /**
+   * The widest system the engraver made of the piece on this page: the page
+   * width, unless a bar is too dense to fit it, when the engraver runs that
+   * bar past the edge rather than squeeze it — and would do the same in a
+   * slot. Known before the run, the fit starts at the size that bar needs;
+   * unknown, the run shrank by 29 % at bar 3 of Hot Cross Buns on a tablet
+   * sideways, where eight quavers are wider than the page.
+   */
+  width: number;
 }
 
 /** CSS pixels per SVG user unit, from what OSMD wrote on the element. */
@@ -2003,12 +2074,19 @@ function svgUnit(svg: SVGSVGElement): number {
   return engraved && view && view.width > 0 ? engraved.width / view.width : 1;
 }
 
+interface StaffLineBox {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
 /** OSMD's unit, in the SVG's own coordinates: ten user units to one of its. */
 const OSMD_UNIT = 10;
 
 /**
- * Every stave's lines — top and bottom of the five — from the engraver's
- * model, in CSS pixels of the drawn sheet, sorted from the top.
+ * Every stave's lines — the box of the five — from the engraver's model, in
+ * CSS pixels of the drawn sheet, sorted from the top.
  *
  * Not the `.staffline` group's box: that group holds the notes, the clef and
  * the fingerings as well as the lines, so its top is wherever the engraver
@@ -2016,11 +2094,11 @@ const OSMD_UNIT = 10;
  * chunks of the same bars. Anchoring on it moved the stave; the model knows
  * where the lines are.
  */
-function staffLineBoxes(view: OsmdView): { top: number; bottom: number }[] {
+function staffLineBoxes(view: OsmdView): StaffLineBox[] {
   const svg = view.svg;
   if (!(svg instanceof SVGSVGElement)) return [];
   const unit = svgUnit(svg) * OSMD_UNIT;
-  const out: { top: number; bottom: number }[] = [];
+  const out: StaffLineBox[] = [];
   try {
     const pages = view.instance.GraphicSheet?.MusicPages ?? [];
     for (const page of pages) {
@@ -2030,7 +2108,11 @@ function staffLineBoxes(view: OsmdView): { top: number; bottom: number }[] {
           const y = shape?.AbsolutePosition?.y;
           const height = shape?.Size?.height;
           if (typeof y !== 'number' || typeof height !== 'number' || !(height > 0)) continue;
-          out.push({ top: y * unit, bottom: (y + height) * unit });
+          const x = shape?.AbsolutePosition?.x;
+          const width = shape?.Size?.width;
+          const left = typeof x === 'number' ? x * unit : 0;
+          const right = typeof width === 'number' && width > 0 ? left + width * unit : left;
+          out.push({ top: y * unit, bottom: (y + height) * unit, left, right });
         }
       }
     }
@@ -2090,7 +2172,13 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
     for (const line of svg.querySelectorAll<SVGGraphicsElement>('.staffline')) {
       try {
         const box = line.getBBox();
-        if (box.height > 0) lines.push({ top: box.y * unit, bottom: (box.y + box.height) * unit });
+        if (box.height > 0)
+          lines.push({
+            top: box.y * unit,
+            bottom: (box.y + box.height) * unit,
+            left: box.x * unit,
+            right: (box.x + box.width) * unit,
+          });
       } catch {
         // Skip what is not rendered.
       }
@@ -2125,6 +2213,17 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
   // page", and every window a quarter of the size it should have been.
   const tallest = Math.max(...systems.map((s) => s.bottom - s.top));
   const cap = tallest * 3;
+  // Nothing that belongs in a bar is wider than the system it is in: a note, a
+  // beam, a slur across the whole line. Anything wider is a block of text the
+  // engraver laid out on one line and never wrapped — Suo Gan carries both its
+  // verses that way, one `<text>` 5841 units wide against a 180-unit page, and
+  // the ink box of the sheet is that text. Fitting the stage's width to it gave
+  // the piece a scale of 0.03: four slots, five pixels of music each, 3 % of a
+  // phone's screen. Same reasoning as the height cap above, on the other axis.
+  const staveWidth = Math.max(...lines.map((l) => l.right - l.left), 0);
+  const widthCap = staveWidth > 0 ? staveWidth * 1.5 : Infinity;
+  let inkLeft = Infinity;
+  let inkRight = -Infinity;
   for (const el of svg.querySelectorAll<SVGGraphicsElement>('path, text, rect, line, polygon, circle, ellipse')) {
     let box: DOMRect;
     try {
@@ -2134,6 +2233,9 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
     }
     if (!(box.width > 0 || box.height > 0)) continue;
     if (box.height * unit > cap) continue;
+    if (box.width * unit > widthCap) continue;
+    inkLeft = Math.min(inkLeft, box.x * unit);
+    inkRight = Math.max(inkRight, (box.x + box.width) * unit);
     const top = box.y * unit;
     const bottom = (box.y + box.height) * unit;
     const system = nearest((top + bottom) / 2);
@@ -2156,5 +2258,10 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
   const above = quartile(systems.map((s) => s.top - s.inkTop));
   const below = quartile(systems.map((s) => s.inkBottom - s.bottom));
   const span = Math.max(...systems.map((s) => s.bottom - s.top));
-  return { above, below, height: above + span + below };
+  // The widest bar the engraver drew, which is the page unless a bar was too
+  // dense to fit it and ran past the edge; never less than a stave, so a piece
+  // whose ink cannot be measured still gets the page.
+  const width =
+    inkRight > inkLeft ? Math.max(staveWidth, inkRight - inkLeft) : (inkBox(svg)?.width ?? 0);
+  return { above, below, height: above + span + below, width };
 }

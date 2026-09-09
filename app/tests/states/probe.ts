@@ -72,6 +72,8 @@ export interface StateRecord {
   notes: { current: number; correct: number; wrong: number; uncertain: number };
   currentMidis: number[];
   status: string;
+  /** The bar count beside the title, `bar 3 / 8`, or empty. */
+  where: string;
   waiting: string | null;
   summary: { shown: boolean };
   sheet: { shown: boolean };
@@ -101,6 +103,12 @@ export async function probeState(page: Page): Promise<StateRecord> {
         .map((el) => Number(el.dataset.midi))
         .filter((n) => Number.isFinite(n))
         .sort((a, b) => a - b);
+
+    /** Elements inside a slot that is actually drawn. */
+    const onScreen = (selector: string): HTMLElement[] =>
+      [...document.querySelectorAll<HTMLElement>('.score-buffer.is-front')]
+        .filter((slot) => !slot.hidden && slot.getBoundingClientRect().height > 0)
+        .flatMap((slot) => [...slot.querySelectorAll<HTMLElement>(selector)]);
 
     const screen = document.querySelector<HTMLElement>('[data-screen="score"]');
     const view = document.querySelector<HTMLElement>('.score-view');
@@ -214,14 +222,31 @@ export async function probeState(page: Page): Promise<StateRecord> {
       beatDot: {
         shown: beat ? !beat.hidden && beat.getBoundingClientRect().height > 0 : false,
       },
+      // **On the screen**, not in the document.
+      //
+      // The spare buffer holds a whole engraved chunk with whatever classes it
+      // carried when it was last in front, and it is still in the DOM. Counting
+      // the document reported three notes under the cursor for a step the engine
+      // says has one — two of them painted on a sheet nobody can see. Scoped to
+      // drawn slots, which is what "under the cursor" means.
       notes: {
-        current: document.querySelectorAll('.score-note.is-current').length,
-        correct: document.querySelectorAll('.score-note.is-correct').length,
-        wrong: document.querySelectorAll('.score-note.is-wrong').length,
-        uncertain: document.querySelectorAll('.score-note.is-uncertain').length,
+        current: onScreen('.score-note.is-current').length,
+        correct: onScreen('.score-note.is-correct').length,
+        wrong: onScreen('.score-note.is-wrong').length,
+        uncertain: onScreen('.score-note.is-uncertain').length,
       },
-      currentMidis: midisOf('.score-note.is-current'),
+      currentMidis: [
+        ...new Set(
+          onScreen('.score-note.is-current')
+            .map((el) => Number(el.dataset.midi))
+            .filter((n) => Number.isFinite(n)),
+        ),
+      ].sort((a, b) => a - b),
       status: (document.querySelector('#score-status')?.textContent ?? '').trim(),
+      where: (() => {
+        const el = document.querySelector<HTMLElement>('#score-where');
+        return el && !el.hidden ? (el.textContent ?? '').trim() : '';
+      })(),
       waiting: waiting && !waiting.hidden ? (waiting.textContent ?? '').trim() : null,
       summary: {
         shown: (() => {

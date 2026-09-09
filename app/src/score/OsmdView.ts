@@ -52,6 +52,14 @@ export interface OsmdViewOptions {
   drawMetronomeMarks?: boolean;
   /** Draw the words under the notes (default on). Off on the score screen: it is for the hands. */
   drawLyrics?: boolean;
+  /**
+   * Print the piece's opening tempo word — *Allegro* — above the first
+   * system (default on). Off with the metronome mark, for the same reason:
+   * the fit holds every stave at the distance the tallest thing above any
+   * stave needs, and a word over the first bar alone was cut off at the top
+   * of the slot on the imported Minuet in G.
+   */
+  drawFirstTempoExpression?: boolean;
 }
 
 /**
@@ -76,6 +84,7 @@ function applyPhoneEngraving(osmd: OpenSheetMusicDisplay, options: OsmdViewOptio
   // says which piece is open.
   rules.SheetTitleHeight = 0;
   rules.RenderTitle = false;
+  if (options.drawFirstTempoExpression === false) rules.RenderFirstTempoExpression = false;
   rules.RenderSubtitle = false;
   rules.RenderComposer = false;
   rules.RenderLyricist = false;
@@ -173,9 +182,19 @@ export class OsmdView {
     const from = Math.max(0, Math.min(range.fromMeasure, this.measureCount - 1));
     const to = Math.max(from, Math.min(range.toMeasure, this.measureCount - 1));
     this.range = { fromMeasure: from, toMeasure: to };
+    // With a pickup the engraver counts the draw range from the pickup's own
+    // number, 0, not from index + 1: it takes `drawUpToMeasureNumber` as an
+    // index outright, and `drawFromMeasureNumber` too once it is past 1. So
+    // the numbers *are* the indexes then — except a range from index 1,
+    // which it cannot draw without the pickup in front; `slots.rangeAt`
+    // never asks for one. Before this, every range on a pickup piece was
+    // drawn one bar late: the slot the plan called bar 1 held bar 2, the
+    // cursor's notes were in a slot that was then re-drawn with bar 3, and
+    // nothing was ever coloured.
+    const pickup = this.hasPickup;
     this.osmd.setOptions({
-      drawFromMeasureNumber: from + 1,
-      drawUpToMeasureNumber: to + 1,
+      drawFromMeasureNumber: pickup ? from : from + 1,
+      drawUpToMeasureNumber: pickup ? to : to + 1,
     });
   }
 
@@ -186,6 +205,11 @@ export class OsmdView {
 
   get currentRange(): MeasureRange | null {
     return this.range;
+  }
+
+  /** The first measure is a pickup, by the engraver's own reckoning. */
+  get hasPickup(): boolean {
+    return this.osmd.Sheet?.SourceMeasures[0]?.ImplicitMeasure === true;
   }
 
   get zoom(): number {

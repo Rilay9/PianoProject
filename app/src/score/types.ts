@@ -117,6 +117,13 @@ export interface ScoreModelData {
   measureCount: number;
   /** Printed measure count — the range the renderer can draw. */
   sourceMeasureCount: number;
+  /**
+   * The piece opens with a pickup: a first measure the engraver numbers 0.
+   * The engraver counts its draw range from that 0 rather than from the
+   * measure's index (`OsmdView.setRange`), and a block of bars starts after
+   * the pickup, never on bar 1 (`slots.rangeAt`). Absent when there is none.
+   */
+  pickup?: boolean;
   keySig?: string;
   handsPresent: { R: boolean; L: boolean };
 }

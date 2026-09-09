@@ -19,6 +19,8 @@ A test named here is the reproduction: every failure prints the seed and the act
 | **Score screen** (`ScoreScreen`): everything a learner can do during a run | summary over a live run; a recorded half-run; the warning mark after a stop; a Wait run with nothing to wait for; a freeze | `tests/e2e/score.fuzz.spec.ts` — seeded random walk with the spoofed piano, invariants after every action, long-task watch | done; extend with the ⋯ sheet (keys, blind, size, layout), section loops, the summary's Slower/Faster/Loop the weak bars, tablet sizes |
 | **A whole song** on every form factor | a stall; a size change mid-run; the next bar not on the screen; the slide losing the cursor | `tests/tour/sequence.spec.ts` — plays what the app asks for, first note to summary; `SEQ_SONG`/`SEQ_FACTORS` choose the song and sizes | done |
 | **Pictures**: the first, a middle and the last input, before and after | what a person sees | the sequence's `…-bar01`, `…-after-first`, `…-after-mid`, the last bar and `…z-finished` frames, per form factor | done; read them every round |
+| **The corpus**: ten pieces chosen to differ — one staff and two, 4/4, 3/4, 6/8, a pickup, chord symbols, a key signature, repeats, a long piece, the longest — on all four form factors | a fault that one song never shows: the pickup piece drawn a bar late; nothing coloured on a repeat's first pass; the stave moving on a piece the probe cannot measure; the summary off the screen on a tablet | `tests/tour/corpus.spec.ts` (`npm run corpus`, about half an hour; `CORPUS=` and `CORPUS_FACTORS=` narrow it) — the sequence's invariants plus: the notes coloured current are the notes the run waits for, and the next bar *in playing order* is on the screen; a log and three pictures a leg under `build/corpus/`, tiled by `tools/contact_sheet.py` | done; read the sheets every round |
+| **The state gallery**: 52 cells, every branch of `08`, measured and photographed | a caption that is not what the picture shows | `tests/states/` (`npm run states`) — each cell records claims and the gallery goes red where the record disagrees; a harness self-check runs first | done; read every cell |
 | **Fit and freeze** (`scaleFor`, the probe, `setRunning`) | the size changing during a run; the last window doubling; a frozen scale outliving a rotation | the sequence's one-scale assertion; the screen fuzz's mid-run scale check; `tests/e2e/score.layout.spec.ts` | done |
 | **Timing budgets** | a swap or a coloured note over budget; a freeze | `tests/e2e/perf.spec.ts`; the screen fuzz's long-task limit | done; the 780-bar open budget is marginal on this laptop |
 | **Keys strip and ribbon** during a run | the wanted key not shown; a wrong key not red; the strip not scrolling to the note | `tests/e2e/keyboard-strip.spec.ts`, `score.run.spec.ts` | partial: not under the random walk yet |
@@ -39,6 +41,18 @@ CI=1 npx playwright test score.fuzz score.renderer.fuzz --retries=0
 # one song through, pictures included (about 30 s per form factor)
 SEQ_SONG=song.folk.twinkle.rh SEQ_FACTORS=portrait,landscape npx playwright test --config playwright.tour.config.ts sequence.spec.ts
 ```
+
+## What the corpus found (2026-09-09)
+
+Four faults no single song could show, all found by an assertion rather than a picture: on a
+piece with a pickup every window was drawn one bar late and nothing was ever coloured (the
+engraver's draw range counts from the pickup's 0); on a piece with repeats nothing was coloured
+on the first pass (one element, two ids, the second toggle undid the first); on the 780-bar
+piece the stave moved between windows (no measurement, so the placement anchored on the ink);
+and on a tablet the summary sheet sat above the screen (a grid with no explicit rows). The
+assertion that found the first two — *the notes coloured current are the notes the run waits
+for* — had not existed; the pictures had been read with the band over a white note and nobody
+noticed the note was white.
 
 ## What a walk found, so far (2026-09-08)
 

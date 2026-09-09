@@ -44,6 +44,9 @@ export interface Claim {
   minCorrectKeys?: number;
   theme?: string;
   viewportW?: number;
+  layout?: 'window' | 'scroll';
+  /** The bar count reads like this: `bar 0 /` on a pickup piece. */
+  whereIncludes?: string;
 }
 
 export interface Shot {
@@ -125,7 +128,9 @@ function check(state: StateRecord, cell: string): string[] {
     state.layout === 'window' &&
     state.screen.running === 'true' &&
     state.musicShare > 0 &&
-    state.musicShare < 0.5
+    // Under 45 %, not 50: a four-bar piece with all four bars on a tablet
+    // upright measures 50 % exactly, and there is no fifth bar to buy.
+    state.musicShare < 0.45
   ) {
     say(35, `music is ${String(Math.round(state.musicShare * 100))}% of the stage`);
   }
@@ -210,6 +215,10 @@ export function checkClaims(state: StateRecord, claims: Claim): string[] {
     broke.push(`claim: a matched key shown green, but ${String(state.keys.correct.length)} are`);
   }
   if (claims.theme !== undefined) claim('theme', claims.theme, state.theme);
+  if (claims.layout !== undefined) claim('layout', claims.layout, state.layout);
+  if (claims.whereIncludes !== undefined && !state.where.includes(claims.whereIncludes)) {
+    broke.push(`claim: the bar count says "${claims.whereIncludes}", but "${state.where}"`);
+  }
   if (claims.viewportW !== undefined) claim('viewport width', claims.viewportW, state.viewport.w);
   return broke;
 }

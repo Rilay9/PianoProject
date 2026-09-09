@@ -3332,6 +3332,13 @@ input[type='checkbox'] {
   .screen--score[data-tablet='true'] {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
+    /* Explicit rows, because the summary sheet below is placed `1 / -1` —
+       and with the rows implicit, `-1` is the end of the *explicit* grid,
+       which was line 1: the sheet's containing block collapsed to the top
+       edge, `bottom: 0` put it above the screen, and the end of every run
+       on a tablet showed a heading cut in half over the title and no
+       numbers (the corpus, tablet upright, every piece). */
+    grid-template-rows: auto minmax(0, 1fr) auto;
   }
 
   /* No lesson text, no column. `display: none` on the panel still leaves its

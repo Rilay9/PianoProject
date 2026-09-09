@@ -10,8 +10,12 @@ import { expect, test } from '@playwright/test';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
 import { reset, saveRecords, shoot, summarise, writeSheet } from './gallery';
 
-/** Eight bars, both hands, always present, and short enough to finish. */
+/** Four bars, one staff, always present, and short enough to finish. */
 const SONG = 'song.folk.hot-cross-buns';
+/** A grand staff, for the cells where two staves change the answer. */
+const SONG_TWO_HANDS = 'song.folk.twinkle.ht';
+/** 3/4 with a pickup: the only bar that may be numbered 0. */
+const SONG_PICKUP = 'song.folk.happy-birthday.simple';
 
 const PHONE_UP = { width: 360, height: 780 };
 const PHONE_UP_BIG = { width: 412, height: 915 };
@@ -30,8 +34,8 @@ async function settings(page: Page, patch: Record<string, unknown>): Promise<voi
   }, patch);
 }
 
-async function openScore(page: Page, query = ''): Promise<void> {
-  await page.goto(`/#/score/${SONG}${query}`);
+async function openScore(page: Page, query = '', song = SONG): Promise<void> {
+  await page.goto(`/#/score/${song}${query}`);
   await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
   await expect(page.locator('[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, {
     timeout: 60_000,
@@ -55,11 +59,13 @@ async function playInto(page: Page, midi: MidiMock, count: number): Promise<void
       return h?.scoreRun ? (h.scoreRun() as { expected: number[]; pitches?: number[] } | null) : null;
     });
     // Free expects nothing and still turns the page on the step's own notes.
-    const note = run?.expected?.[0] ?? run?.pitches?.[0];
-    if (note === undefined) break;
-    await midi.noteOn(note, 78);
+    // All of them: a grand staff's step is a chord, and one note of it does
+    // not move a Wait run on — which left every grand-staff cell at step 0.
+    const notes = (run?.expected?.length ?? 0) > 0 ? run?.expected ?? [] : run?.pitches ?? [];
+    if (notes.length === 0) break;
+    for (const note of notes) await midi.noteOn(note, 78);
     await page.waitForTimeout(90);
-    await midi.noteOff(note);
+    for (const note of notes) await midi.noteOff(note);
     await page.waitForTimeout(70);
   }
 }
@@ -131,23 +137,56 @@ test('every state, photographed and measured', async ({ page }) => {
 
   // ---------------------------------------------------------------- branch 2
   // Where am I? Arrangement, the cursor, the keys.
-  for (const [name, size] of [
-    ['slots--upright', PHONE_UP],
-    ['chunk--sideways', PHONE_SIDE],
-    ['slots--tablet-sideways', TABLET_SIDE],
+  for (const [song, staves] of [
+    [SONG, 'one-staff'],
+    [SONG_TWO_HANDS, 'grand-staff'],
+  ] as const) {
+    for (const [name, size] of [
+      ['slots--upright', PHONE_UP],
+      ['chunk--sideways', PHONE_SIDE],
+      ['slots--tablet-upright', TABLET_UP],
+      ['slots--tablet-sideways', TABLET_SIDE],
+    ] as const) {
+      await page.setViewportSize(size);
+      await openScore(page, '', song);
+      await setMode(page, 'wait');
+      await page.locator('#score-play').click();
+      await playInto(page, midi, 5);
+      await shoot(page, '2-where-am-i', `arrangement--${name}--${staves}`, 'Five notes in: where is the cursor, what is in the other slots?', {
+        running: true,
+        mode: 'wait',
+        minStep: 5,
+        arrangement: name.startsWith('chunk') ? 'single' : 'slots',
+      });
+    }
+  }
+
+  // Scroll layout: the whole piece, the cursor held a third down.
+  for (const [orient, size] of [
+    ['upright', PHONE_UP],
+    ['sideways', PHONE_SIDE],
   ] as const) {
     await page.setViewportSize(size);
-    await openScore(page);
+    await settings(page, { layout: 'scroll' });
+    await openScore(page, '', SONG_TWO_HANDS);
     await setMode(page, 'wait');
     await page.locator('#score-play').click();
-    await playInto(page, midi, 5);
-    await shoot(page, '2-where-am-i', `arrangement--${name}`, 'Five notes in: where is the cursor, what is in the other slot?', {
+    await playInto(page, midi, 6);
+    await shoot(page, '2-where-am-i', `layout--scroll--${orient}`, 'Scroll layout, six notes in: the cursor between 25 and 40 % down.', {
       running: true,
-      mode: 'wait',
-      minStep: 5,
-      arrangement: name.startsWith('chunk') ? 'single' : 'slots',
+      layout: 'scroll',
+      minStep: 6,
     });
   }
+  await settings(page, { layout: 'window' });
+
+  // A pickup: bar 0 is the one bar that may be numbered 0 (`08` §10).
+  await page.setViewportSize(PHONE_UP);
+  await openScore(page, '', SONG_PICKUP);
+  await shoot(page, '2-where-am-i', 'pickup--bar-count', 'A pickup: the count starts at bar 0.', {
+    running: false,
+    whereIncludes: 'bar 0 /',
+  });
 
   // The keys view, all three.
   for (const view of ['strip', 'ribbon', 'off'] as const) {
@@ -173,6 +212,7 @@ test('every state, photographed and measured', async ({ page }) => {
     for (const [orient, size] of [
       ['upright', PHONE_UP],
       ['sideways', PHONE_SIDE],
+      ['tablet', TABLET_UP],
     ] as const) {
       await page.setViewportSize(size);
       await openScore(page);
@@ -190,7 +230,7 @@ test('every state, photographed and measured', async ({ page }) => {
           running: true,
           mode,
           hearing: false,
-          arrangement: orient === 'upright' ? 'slots' : 'single',
+          arrangement: orient === 'sideways' ? 'single' : 'slots',
           // Wait and Free were driven four notes in; Tempo and Listen are
           // still counting in at this tempo, and the line is up from the start.
           ...(mode === 'wait' || mode === 'free' ? { minStep: 4 } : {}),
@@ -313,6 +353,17 @@ test('every state, photographed and measured', async ({ page }) => {
   await playInto(page, midi, 40);
   await page.waitForTimeout(800);
   await shoot(page, '6-what-if-it-goes-wrong', 'end-of-piece', 'The last bars: the slots keep the bars played, and the summary is up.', {
+    running: false,
+    summary: true,
+  });
+
+  await page.setViewportSize(PHONE_UP);
+  await openScore(page, '', SONG_TWO_HANDS);
+  await setMode(page, 'wait');
+  await page.locator('#score-play').click();
+  await playInto(page, midi, 80);
+  await page.waitForTimeout(800);
+  await shoot(page, '6-what-if-it-goes-wrong', 'end-of-piece--grand-staff', 'A grand staff to the end: the summary, and the bars kept.', {
     running: false,
     summary: true,
   });

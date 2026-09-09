@@ -29,7 +29,11 @@ export interface TestHooks {
     step: number;
     expected: number[];
     bar: number;
+    /** The bar the next step is in, in playing order; null after the last. */
+    nextBar: number | null;
     lastBar: number;
+    /** The step's notes, by ScoreNote id — the keys the colouring is by. */
+    noteIds: string[];
     pitches: number[];
     paused: boolean;
     engineMode: string;
