@@ -2185,6 +2185,17 @@ input[type='checkbox'] {
   opacity: 0.7;
 }
 
+/* A C that is also the key being waited for says its name twice, in the same
+   place: the faint octave marker and the blue label are both at `top: -12px`
+   on the same cell, so `C2` and `C2 5` print on top of each other and neither
+   can be read. Chopin's Ballade opens on a C, which is how it was seen; a
+   piece whose first notes are D and E never shows it. The blue label already
+   carries the octave, so the marker steps aside while it is there. */
+.rib.is-expected[data-octave]::before,
+.rib.is-next[data-octave]::before {
+  content: none;
+}
+
 .rib.is-correct::after {
   color: var(--key-correct);
 }
