@@ -35,6 +35,7 @@
 // exactly what a player reading from the page does.
 
 import { OsmdView, type MeasureRange } from './OsmdView';
+import { trimMusicXml } from './trimMusicXml';
 import { MAX_FIT, MIN_FIT, fitZoom, worthRefitting } from './autoFit';
 import { barsPerSlot, planSlots, sameRange as sameSlotRange, type SlotIndex } from './slots';
 import type { ScoreModel, ScoreNote, ScoreStep } from './types';
@@ -167,6 +168,14 @@ interface Buffer {
    * once when it is stale, which is a transform write, not a render.
    */
   fittedFor?: { height: number; scale: number };
+  /**
+   * Scroll only: the stage width the whole piece was engraved at. The
+   * engraver breaks systems at the page's width, so a sheet engraved for one
+   * width and scaled to another is the wrong sheet — on a tablet the piece
+   * was laid out before the side panel took its column, then scaled to two
+   * thirds of the stage; turning the phone in Scroll did the same.
+   */
+  engravedWidth?: number;
   /** printedNoteKey-independent: ScoreNote.id -> element, for the drawn range. */
   elements: Map<string, SVGGElement>;
 }
@@ -472,6 +481,12 @@ export class WindowRenderer {
     // Not loaded here: loading a 780-bar score into OSMD a third time is
     // seconds on a throttled phone, and the first window must not wait for a
     // measurement that only refines it. Loaded on idle, after the first paint.
+    // And loaded from the first `PROBE_MAX_BARS` only (`measurePiece`): the
+    // probe draws no more than that, but the engraver loads the whole
+    // document to draw any of it, and on the Scherzo that load was five
+    // seconds of the first window's budget. Without a probe at all the
+    // Scherzo's run shrank 13 % and its stave jumped 45 px at bar 16 — the
+    // corpus measured both — so the measurement stays; the document is cut.
     renderer.probe = new OsmdView(probeWrapper, {
       timingLabel: 'osmd.render.probe',
       ...(options.drawFingerings === undefined ? {} : { drawFingerings: options.drawFingerings }),
@@ -1320,12 +1335,15 @@ export class WindowRenderer {
 
   private ensureScrollRender(): void {
     const buffer = this.frontBuffer;
-    if (buffer.range && buffer.range.fromMeasure === 0 && buffer.range.toMeasure === Infinity) {
-      return;
-    }
+    const width = Math.round(this.el.getBoundingClientRect().width);
+    const whole = buffer.range !== null && buffer.range.fromMeasure === 0 && buffer.range.toMeasure === Infinity;
+    if (whole && (buffer.engravedWidth === undefined || Math.abs(buffer.engravedWidth - width) <= 2)) return;
+    if (whole && width <= 0) return; // hidden: nothing to lay out into
+    buffer.wrapper.style.width = '';
     buffer.view.clearRange();
     buffer.view.render();
     buffer.range = { fromMeasure: 0, toMeasure: Infinity };
+    buffer.engravedWidth = width;
     this.annotate(buffer);
     this.fit(buffer);
   }
@@ -1381,7 +1399,12 @@ export class WindowRenderer {
     // measurement landing — came through here and undid `fit`.
     if (this.layout === 'scroll') {
       const front = this.frontBuffer;
-      if (front.view.svg) this.fit(front);
+      if (front.view.svg) {
+        // Engraved again if the stage is a different width now; a fit either way.
+        this.ensureScrollRender();
+        this.fit(front);
+        this.repositionBands();
+      }
       return;
     }
     const slots = this.drawnSlots;
@@ -1896,7 +1919,13 @@ export class WindowRenderer {
       if (!this.probeSource) return;
       this.probeLoading = true;
       try {
-        await probe.load(this.probeSource);
+        const started = performance.now();
+        const source =
+          this.model.sourceMeasureCount > PROBE_MAX_BARS
+            ? trimMusicXml(this.probeSource, PROBE_MAX_BARS)
+            : this.probeSource;
+        recordRenderTiming('osmd.probe.trim', performance.now() - started);
+        await probe.load(source);
       } catch {
         // A piece the probe cannot load is measured the slow way, window by
         // window, held and never released.

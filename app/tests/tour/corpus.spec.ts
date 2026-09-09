@@ -24,8 +24,11 @@ import { FORM_FACTORS } from './shoot';
 
 export const CORPUS_DIR = resolve('../build/corpus');
 
-/** id → why it is here, and a cap on steps for the one that never ends. */
-const PIECES: { id: string; why: string; maxSteps?: number }[] = [
+/**
+ * id → why it is here, a cap on steps for the one that never ends, and for
+ * one piece the scroll layout, which is a different renderer path altogether.
+ */
+const PIECES: { id: string; why: string; maxSteps?: number; layout?: 'scroll' }[] = [
   { id: 'song.folk.hot-cross-buns', why: 'one staff, four bars' },
   { id: 'song.folk.mary-had-a-little-lamb', why: 'one staff, eight bars, a ledger line' },
   { id: 'song.folk.twinkle.ht', why: 'a grand staff, twelve bars' },
@@ -36,6 +39,8 @@ const PIECES: { id: string; why: string; maxSteps?: number }[] = [
   { id: 'song.classical.ode-to-joy.full', why: 'both hands, longer' },
   { id: 'song.classical.petzold-minuet-g-bwv-anh114', why: 'an imported piece with repeats' },
   { id: 'song.classical.chopin-scherzo-2.nifc', why: 'the longest in the library, 780 bars', maxSteps: 60 },
+  { id: 'song.classical.satie-gnossienne-1', why: 'words written under the notes, which the score screen does not draw' },
+  { id: 'song.folk.twinkle.ht', why: 'the scroll layout: the whole piece on one sheet, scrolled to the cursor', layout: 'scroll' },
 ];
 
 const ADVANCE_TIMEOUT_MS = 4_000;
@@ -58,7 +63,8 @@ type Hooked = Window & { __pianopath?: { scoreRun?: () => Run; scoreFit?: () => 
 interface Probe {
   stage: { top: number; left: number; height: number; width: number } | null;
   readAhead: string | null;
-  band: { left: number; width: number } | null;
+  layout: string | null;
+  band: { left: number; top: number; width: number; height: number } | null;
   cursorBar: number | null;
   /** The midis of the notes marked current, sorted: what the colouring says is next. */
   currentMidis: number[];
@@ -73,12 +79,11 @@ interface Probe {
 }
 
 /**
- * How long the read-ahead may take to put the next bar on the screen; three
- * times that on the piece that is capped, whose bars each take the engraver
- * the better part of a second on this laptop. Recorded per step as `lag`.
+ * How long the read-ahead may take to put the next bar on the screen.
+ * Recorded per step as `lag`; every piece, the 780-bar one included, reads
+ * ahead in tens of milliseconds once the probe loads a cut-down document.
  */
 const READ_AHEAD_MS = 1_000;
-const READ_AHEAD_CAPPED_MS = 3_000;
 
 const wanted = (process.env.CORPUS ?? '').split(',').filter((s) => s.length > 0);
 const factors = (process.env.CORPUS_FACTORS ?? '').split(',').filter((s) => s.length > 0);
@@ -195,7 +200,10 @@ async function probe(page: Page): Promise<Probe> {
       // element to read — and the notes' bars otherwise.
       const range = fitNow?.slots?.[Number(el.dataset.slot)]?.range;
       if (range != null) {
-        for (let bar = range.fromMeasure; bar <= range.toMeasure; bar += 1) bars.add(bar);
+        // Scroll draws the whole piece with a range that runs to the end of
+        // numbers; the bars past the last note are not bars.
+        const last = Math.min(range.toMeasure, range.fromMeasure + 2000);
+        for (let bar = range.fromMeasure; bar <= last; bar += 1) bars.add(bar);
       } else {
         for (const note of el.querySelectorAll<HTMLElement>('.score-note')) {
           const m = measureOf(note);
@@ -216,7 +224,8 @@ async function probe(page: Page): Promise<Probe> {
     return {
       stage: stage ? { top: Math.round(stage.top), left: Math.round(stage.left), height: Math.round(stage.height), width: Math.round(stage.width) } : null,
       readAhead: document.querySelector<HTMLElement>('.score-view')?.dataset.readAhead ?? null,
-      band: b ? { left: Math.round(b.left), width: Math.round(b.width) } : null,
+      layout: document.querySelector<HTMLElement>('.score-view')?.dataset.layout ?? null,
+      band: b ? { left: Math.round(b.left), top: Math.round(b.top), width: Math.round(b.width), height: Math.round(b.height) } : null,
       cursorBar: current ? measureOf(current) : null,
       currentMidis: [...new Set(currentMidis)],
       scale,
@@ -252,12 +261,13 @@ for (const piece of PIECES) {
   if (wanted.length > 0 && !wanted.includes(piece.id)) continue;
   for (const { orientation, size } of FORM_FACTORS) {
     if (factors.length > 0 && !factors.includes(orientation)) continue;
-    test.describe(`${piece.id} · ${orientation}`, () => {
+    const leg = piece.layout === undefined ? piece.id : `${piece.id}.${piece.layout}`;
+    test.describe(`${leg} · ${orientation}`, () => {
       test.use({ viewport: size });
       test.describe.configure({ timeout: 900_000 });
 
       test(`${piece.why}, ${orientation}`, async ({ page }) => {
-        const dir = join(CORPUS_DIR, piece.id);
+        const dir = join(CORPUS_DIR, leg);
         mkdirSync(dir, { recursive: true });
         const shot = async (name: string): Promise<void> => {
           await page.waitForTimeout(350);
@@ -270,6 +280,14 @@ for (const piece of PIECES) {
             localStorage.clear();
           }
         });
+        if (piece.layout !== undefined) {
+          // After the clearing script above, so the setting survives it.
+          await page.addInitScript((layout) => {
+            const raw = localStorage.getItem('pianopath.settings');
+            const s = raw === null ? {} : (JSON.parse(raw) as Record<string, unknown>);
+            localStorage.setItem('pianopath.settings', JSON.stringify({ ...s, layout }));
+          }, piece.layout);
+        }
         const midi = await installMidiMock(page, { permission: 'granted' });
         await page.goto(`/#/score/${piece.id}`);
         await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 120_000 });
@@ -289,7 +307,7 @@ for (const piece of PIECES) {
           probe: Probe;
         }[] = [];
         const maxSteps = piece.maxSteps ?? 600;
-        const readAheadMs = piece.maxSteps === undefined ? READ_AHEAD_MS : READ_AHEAD_CAPPED_MS;
+        const readAheadMs = READ_AHEAD_MS;
         let shotMid = false;
         await shot('start');
         for (let i = 0; i < maxSteps; i += 1) {
@@ -346,6 +364,27 @@ for (const piece of PIECES) {
         expect(reference).toBeGreaterThan(0);
         for (const [i, scale] of scales.entries()) {
           expect(Math.abs(scale - reference) / reference, `step ${String(steps[i]?.step)} (bar ${String(steps[i]?.bar)}): scale ${String(scale)} against ${String(reference)}`).toBeLessThanOrEqual(SCALE_TOLERANCE);
+        }
+
+        // --- scroll: one sheet as wide as the stage, scrolled to the cursor ------
+        // No slots to hold still and nothing to read ahead into: the whole
+        // piece is drawn, and the invariants are the sheet's width (`08`
+        // §9.36) and the cursor kept on the screen.
+        if (piece.layout === 'scroll') {
+          for (const s of steps) {
+            expect(s.probe.layout, `step ${String(s.step)}: layout`).toBe('scroll');
+            const { stage, band } = s.probe;
+            const sheet = s.probe.slots.find((x) => x.drawn);
+            if (stage && sheet) {
+              expect(sheet.width, `step ${String(s.step)}: the sheet is ${String(sheet.width)} px wide in a ${String(stage.width)} px stage`).toBeGreaterThanOrEqual(stage.width * 0.9);
+            }
+            if (stage && band) {
+              const centre = band.top + band.height / 2;
+              expect(centre, `step ${String(s.step)} (bar ${String(s.bar)}): the cursor is ${String(Math.round(centre))} px, the stage ${String(stage.top)}–${String(stage.top + stage.height)}`).toBeGreaterThanOrEqual(stage.top);
+              expect(centre).toBeLessThanOrEqual(stage.top + stage.height);
+            }
+          }
+          return;
         }
 
         // --- the stave sits still, per slot ---------------------------------------

@@ -240,6 +240,32 @@ every grand-staff cell sat at step 0 under a "five notes in" caption (it plays t
 music-share guard at 45 %, because a four-bar piece with all four bars on a tablet measures
 50 % exactly and there is no fifth bar to buy.
 
+## Round seven: the probe's cost, and what the corpus's two new legs found
+
+Three things from the builder's report after round six, taken in one batch once its session
+was quiet:
+
+1. **The probe cost five seconds on the Scherzo** — loading the whole 780-bar document to draw
+   its first 48 bars. Skipping the probe past its cap was tried first and the corpus refused it:
+   without a measurement the Scherzo's run shrank 13 % and its stave jumped 45 px at bar 16,
+   which is what the probe exists to prevent. So the probe stays and the document is cut to its
+   first 48 bars before the engraver loads it (`trimMusicXml`: a parse and a serialise, on idle
+   time). Two things fell out of that: the Scherzo's run is now *measured* on every form factor,
+   and the "3 s read-ahead lag" on it, which had been read as the cost of engraving a bar, was
+   the probe's load hogging the main thread during the run — with the cut document the Scherzo
+   reads ahead in about 10 ms like every other piece.
+2. **A corpus leg in the scroll layout** found Scroll on a tablet drawing the sheet at two thirds
+   of the stage's width: the sheet was engraved once, at whatever width the stage had first
+   (before the side panel took its column), and every later refit scaled that page. A phone turned
+   in Scroll kept its upright page the same way. The sheet now remembers the width it was engraved
+   at and is engraved again at a different one. Scroll on the four form factors: 346/360, 765/780,
+   565/580, 865/880 px.
+3. **A corpus leg with words under the notes** (Satie's first Gnossienne, with its French
+   directions above the staff as well) passed on all four form factors.
+
+The corpus stands at twelve legs on four form factors, 48 of 48, every picture read; the gallery
+at 52 of 52; the full `npm run e2e` run before the commit rather than a subset.
+
 ## The sequence is in the tour
 
 `npm run tour` now runs `sequence.spec.ts` after the scenes: seven frames of *Mary Had a Little
