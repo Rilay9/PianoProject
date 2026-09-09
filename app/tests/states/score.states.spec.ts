@@ -66,9 +66,32 @@ async function playInto(page: Page, midi: MidiMock, count: number): Promise<void
 
 test.describe.configure({ timeout: 900_000 });
 
+/** The run's step index, from the app's own hook; -1 when no run is on. */
+async function stepNow(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const h = (window as unknown as { __pianopath?: { scoreRun?: () => { step: number } | null } }).__pianopath;
+    return h?.scoreRun?.()?.step ?? -1;
+  });
+}
+
 test('every state, photographed and measured', async ({ page }) => {
   reset();
   const midi: MidiMock = await installMidiMock(page, { permission: 'granted' });
+
+  // ------------------------------------------------------- the harness first
+  // Before any cell: the hook exists and the spoofed piano moves the run.
+  // Without this the gallery once photographed thirty-nine convincing cells
+  // of the wrong state, because the hook it drove was misnamed.
+  await page.setViewportSize(PHONE_UP);
+  await openScore(page);
+  const hooked = await page.evaluate(
+    () => typeof (window as unknown as { __pianopath?: { scoreRun?: unknown } }).__pianopath?.scoreRun === 'function',
+  );
+  expect(hooked, 'the app exposes __pianopath.scoreRun; the harness cannot drive without it').toBe(true);
+  await setMode(page, 'wait');
+  await page.locator('#score-play').click();
+  await playInto(page, midi, 3);
+  expect(await stepNow(page), 'three notes played must move a Wait run three steps').toBeGreaterThanOrEqual(3);
 
   // ---------------------------------------------------------------- branch 1
   // Can I read it at all? Every form factor, then the failures.
@@ -82,21 +105,29 @@ test('every state, photographed and measured', async ({ page }) => {
   ] as const) {
     await page.setViewportSize(size);
     await openScore(page);
-    await shoot(page, '1-can-i-read-it', `size--${name}`, 'Idle, Wait, dark. Is it big and still?');
+    await shoot(page, '1-can-i-read-it', `size--${name}`, 'Idle, Wait, dark. Is it big and still?', {
+      running: false,
+      viewportW: size.width,
+      // Height, not orientation, decides (`08` §4.1): 600 px or more holds slots.
+      arrangement: size.height >= 600 ? 'slots' : 'single',
+    });
   }
 
   // The theme, on the binding size.
   await page.setViewportSize(PHONE_UP);
   await page.emulateMedia({ colorScheme: 'light' });
   await openScore(page);
-  await shoot(page, '1-can-i-read-it', 'theme--light', 'Light theme: notation must not be inverted.');
+  await shoot(page, '1-can-i-read-it', 'theme--light', 'Light theme: notation must not be inverted.', { theme: 'light' });
   await page.emulateMedia({ colorScheme: 'dark' });
 
   // The lifecycle's terminal states — §3.1, and P4: each must say why and leave.
   await page.goto('/#/score/song.not.a.real.item');
   await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
   await page.waitForTimeout(800);
-  await shoot(page, '1-can-i-read-it', 'lifecycle--unknown-item', 'Unknown id: says so, and Back is there.');
+  await shoot(page, '1-can-i-read-it', 'lifecycle--unknown-item', 'Unknown id: says so, and Back is there.', {
+    running: false,
+    statusIncludes: 'Unknown item',
+  });
 
   // ---------------------------------------------------------------- branch 2
   // Where am I? Arrangement, the cursor, the keys.
@@ -110,7 +141,12 @@ test('every state, photographed and measured', async ({ page }) => {
     await setMode(page, 'wait');
     await page.locator('#score-play').click();
     await playInto(page, midi, 5);
-    await shoot(page, '2-where-am-i', `arrangement--${name}`, 'Five notes in: where is the cursor, what is in the other slot?');
+    await shoot(page, '2-where-am-i', `arrangement--${name}`, 'Five notes in: where is the cursor, what is in the other slot?', {
+      running: true,
+      mode: 'wait',
+      minStep: 5,
+      arrangement: name.startsWith('chunk') ? 'single' : 'slots',
+    });
   }
 
   // The keys view, all three.
@@ -118,7 +154,7 @@ test('every state, photographed and measured', async ({ page }) => {
     await page.setViewportSize(PHONE_UP);
     await settings(page, { keys: view });
     await openScore(page);
-    await shoot(page, '2-where-am-i', `keys--${view}`, `keys: ${view}`);
+    await shoot(page, '2-where-am-i', `keys--${view}`, `keys: ${view}`, { keysView: view });
   }
   await settings(page, { keys: 'strip' });
 
@@ -128,7 +164,7 @@ test('every state, photographed and measured', async ({ page }) => {
     await openScore(page);
     await page.locator(`#score-hands-${hand}`).click();
     await page.waitForTimeout(300);
-    await shoot(page, '2-where-am-i', `hands--${hand}`, `Hands ${hand}: the other hand dimmed, not gone.`);
+    await shoot(page, '2-where-am-i', `hands--${hand}`, `Hands ${hand}: the other hand dimmed, not gone.`, { hands: hand });
   }
 
   // ---------------------------------------------------------------- branch 3
@@ -150,6 +186,16 @@ test('every state, photographed and measured', async ({ page }) => {
         '3-what-comes-next',
         `mode--${mode}--${orient}`,
         `${mode}, running. Read-ahead line and next key: Tempo and Listen only.`,
+        {
+          running: true,
+          mode,
+          hearing: false,
+          arrangement: orient === 'upright' ? 'slots' : 'single',
+          // Wait and Free were driven four notes in; Tempo and Listen are
+          // still counting in at this tempo, and the line is up from the start.
+          ...(mode === 'wait' || mode === 'free' ? { minStep: 4 } : {}),
+          readAhead: mode === 'tempo' || mode === 'listen',
+        },
       );
     }
   }
@@ -160,7 +206,11 @@ test('every state, photographed and measured', async ({ page }) => {
   await setMode(page, 'tempo');
   await page.locator('#score-play').click();
   await page.waitForTimeout(400);
-  await shoot(page, '3-what-comes-next', 'count-in--tempo', 'The count-in, over the notation, one beat lit.');
+  await shoot(page, '3-what-comes-next', 'count-in--tempo', 'The count-in, low on the stage, one beat lit.', {
+    running: true,
+    mode: 'tempo',
+    countIn: true,
+  });
 
   // ---------------------------------------------------------------- branch 4
   // How am I doing? Colour, the summary, the app's voice.
@@ -175,14 +225,23 @@ test('every state, photographed and measured', async ({ page }) => {
   await page.waitForTimeout(120);
   await midi.noteOff(61);
   await page.waitForTimeout(300);
-  await shoot(page, '4-how-am-i-doing', 'colour--right-and-wrong', 'Green for matched, red for wrong, accent for current.');
+  await shoot(page, '4-how-am-i-doing', 'colour--right-and-wrong', 'Green for matched, red for wrong, accent for current.', {
+    running: true,
+    minStep: 3,
+    minCorrectKeys: 1,
+    minWrongKeys: 1,
+  });
 
   await settings(page, { showNoteNames: true });
   await openScore(page);
   await setMode(page, 'wait');
   await page.locator('#score-play').click();
   await page.waitForTimeout(600);
-  await shoot(page, '4-how-am-i-doing', 'waiting-line--wait', 'Wait, note names on: the waiting line names the note.');
+  await shoot(page, '4-how-am-i-doing', 'waiting-line--wait', 'Wait, note names on: the waiting line names the note.', {
+    running: true,
+    mode: 'wait',
+    waitingIncludes: 'Waiting for',
+  });
   await settings(page, { showNoteNames: false });
 
   // ---------------------------------------------------------------- branch 5
@@ -195,35 +254,42 @@ test('every state, photographed and measured', async ({ page }) => {
   ] as const) {
     await page.setViewportSize(size);
     await openScore(page);
-    await shoot(page, '5-what-can-i-change', `bar--${name}`, 'One row, always. §9.23.');
+    await shoot(page, '5-what-can-i-change', `bar--${name}`, 'One row, always. §9.23.', { viewportW: size.width, running: false });
   }
 
   await page.setViewportSize(PHONE_UP);
   await openScore(page);
   await page.locator('#score-more').click();
   await page.waitForTimeout(500);
-  await shoot(page, '5-what-can-i-change', 'sheet--more-upright', 'The ⋯ sheet upright.');
+  await shoot(page, '5-what-can-i-change', 'sheet--more-upright', 'The ⋯ sheet upright.', { sheet: true });
 
   await page.setViewportSize(PHONE_SIDE);
   await openScore(page);
   await page.locator('#score-more').click();
   await page.waitForTimeout(500);
-  await shoot(page, '5-what-can-i-change', 'sheet--more-sideways', 'Sideways it must fit without scrolling.');
+  await shoot(page, '5-what-can-i-change', 'sheet--more-sideways', 'Sideways it must fit without scrolling.', { sheet: true });
 
   await page.setViewportSize(PHONE_UP);
   await openScore(page);
   await page.locator('#score-hear').click();
   await page.waitForTimeout(2_000);
-  await shoot(page, '5-what-can-i-change', 'hear-it--running', 'Hear it: a Listen run, mode select unmoved.');
+  await shoot(page, '5-what-can-i-change', 'hear-it--running', 'Hear it: a Listen run, mode select unmoved.', {
+    running: true,
+    hearing: true,
+    mode: 'wait',
+  });
 
   // ---------------------------------------------------------------- branch 6
   // What if it goes wrong? Blind, performance, rotation, the end.
   await page.setViewportSize(PHONE_UP);
   await openScore(page, '?blind=1');
-  await shoot(page, '6-what-if-it-goes-wrong', 'blind--upright', 'Blind: laid out, hidden, and said so.');
+  await shoot(page, '6-what-if-it-goes-wrong', 'blind--upright', 'Blind: laid out, hidden, and said so.', {
+    running: false,
+    statusIncludes: 'Blind',
+  });
 
   await openScore(page, '?performance=1');
-  await shoot(page, '6-what-if-it-goes-wrong', 'performance--upright', 'A performance: no restart offered.');
+  await shoot(page, '6-what-if-it-goes-wrong', 'performance--upright', 'A performance: no restart offered.', { running: false });
 
   // Rotation mid-run: the run continues, the arrangement is rebuilt.
   await page.setViewportSize(PHONE_UP);
@@ -233,7 +299,11 @@ test('every state, photographed and measured', async ({ page }) => {
   await playInto(page, midi, 3);
   await page.setViewportSize(PHONE_SIDE);
   await page.waitForTimeout(1_500);
-  await shoot(page, '6-what-if-it-goes-wrong', 'rotation--mid-run', 'Rotated mid-run: still running, rebuilt sideways.');
+  await shoot(page, '6-what-if-it-goes-wrong', 'rotation--mid-run', 'Rotated mid-run: still running, rebuilt sideways.', {
+    running: true,
+    minStep: 3,
+    arrangement: 'single',
+  });
 
   // The end of a piece: the other slot shows the bars behind, never blank.
   await page.setViewportSize(PHONE_UP);
@@ -242,7 +312,10 @@ test('every state, photographed and measured', async ({ page }) => {
   await page.locator('#score-play').click();
   await playInto(page, midi, 40);
   await page.waitForTimeout(800);
-  await shoot(page, '6-what-if-it-goes-wrong', 'end-of-piece', 'The last bars: both slots full, or the summary.');
+  await shoot(page, '6-what-if-it-goes-wrong', 'end-of-piece', 'The last bars: the slots keep the bars played, and the summary is up.', {
+    running: false,
+    summary: true,
+  });
 
   // ------------------------------------------------------------------ report
   saveRecords();

@@ -16,11 +16,43 @@ export type Branch =
   | '5-what-can-i-change'
   | '6-what-if-it-goes-wrong';
 
+/**
+ * What a cell claims to be showing, checked against the record.
+ *
+ * A caption alone is a promise nobody keeps: the harness once drove a hook
+ * that did not exist, and every "five notes in" cell was a convincing picture
+ * of the idle state for two rounds. A claim the record contradicts is
+ * breakage, whether the fault is in the app or in the harness.
+ */
+export interface Claim {
+  running?: boolean;
+  hearing?: boolean;
+  mode?: string;
+  arrangement?: 'slots' | 'single';
+  /** The run's step index is at least this: the notes really were played. */
+  minStep?: number;
+  keysView?: string;
+  hands?: string;
+  summary?: boolean;
+  sheet?: boolean;
+  countIn?: boolean;
+  /** A read-ahead line is (or is not) on the screen. */
+  readAhead?: boolean;
+  statusIncludes?: string;
+  waitingIncludes?: string;
+  minWrongKeys?: number;
+  minCorrectKeys?: number;
+  theme?: string;
+  viewportW?: number;
+}
+
 export interface Shot {
   cell: string;
   branch: Branch;
   /** What the cell is meant to show, in one line, for the sheet. */
   says: string;
+  /** What it claims, checked. */
+  claims: Claim;
   file: string;
   state: StateRecord;
   /** Invariants that failed here, by their number in `08` §9. */
@@ -125,14 +157,61 @@ export async function shoot(
   branch: Branch,
   cell: string,
   says: string,
+  claims: Claim = {},
 ): Promise<Shot> {
   const state = await probeState(page);
   const file = join(STATES_DIR, branch, `${cell}.png`);
   mkdirSync(dirname(file), { recursive: true });
   await page.screenshot({ path: file });
-  const shot: Shot = { cell, branch, says, file, state, broke: check(state, cell) };
+  const shot: Shot = {
+    cell,
+    branch,
+    says,
+    claims,
+    file,
+    state,
+    broke: [...checkClaims(state, claims), ...check(state, cell)],
+  };
   shots.push(shot);
   return shot;
+}
+
+/** Each claim the record contradicts, as a line for the sheet. */
+export function checkClaims(state: StateRecord, claims: Claim): string[] {
+  const broke: string[] = [];
+  const claim = (name: string, wanted: unknown, got: unknown): void => {
+    if (wanted !== got) broke.push(`claim: ${name} = ${JSON.stringify(wanted)}, but ${JSON.stringify(got)}`);
+  };
+  const run = state.run as { step?: number } | null;
+  if (claims.running !== undefined) claim('running', claims.running, state.screen.running === 'true');
+  if (claims.hearing !== undefined) claim('hearing', claims.hearing, state.screen.hearing === 'true');
+  if (claims.mode !== undefined) claim('mode', claims.mode, state.screen.mode);
+  if (claims.arrangement !== undefined) claim('arrangement', claims.arrangement, state.arrangement);
+  if (claims.minStep !== undefined) {
+    const step = run?.step ?? -1;
+    if (step < claims.minStep) broke.push(`claim: at least step ${String(claims.minStep)}, but ${String(step)} — the notes were not played`);
+  }
+  if (claims.keysView !== undefined) claim('keys', claims.keysView, state.keys.view);
+  if (claims.hands !== undefined) claim('hands', claims.hands, state.screen.hands);
+  if (claims.summary !== undefined) claim('summary shown', claims.summary, state.summary.shown);
+  if (claims.sheet !== undefined) claim('sheet open', claims.sheet, state.sheet.shown);
+  if (claims.countIn !== undefined) claim('count-in shown', claims.countIn, state.countIn.shown);
+  if (claims.readAhead !== undefined) claim('read-ahead line', claims.readAhead, state.bands.nextLines > 0);
+  if (claims.statusIncludes !== undefined && !state.status.includes(claims.statusIncludes)) {
+    broke.push(`claim: status says "${claims.statusIncludes}", but "${state.status}"`);
+  }
+  if (claims.waitingIncludes !== undefined && !(state.waiting ?? '').includes(claims.waitingIncludes)) {
+    broke.push(`claim: waiting line says "${claims.waitingIncludes}", but ${JSON.stringify(state.waiting)}`);
+  }
+  if (claims.minWrongKeys !== undefined && state.keys.wrong.length < claims.minWrongKeys) {
+    broke.push(`claim: a wrong key shown red, but ${String(state.keys.wrong.length)} are`);
+  }
+  if (claims.minCorrectKeys !== undefined && state.keys.correct.length < claims.minCorrectKeys) {
+    broke.push(`claim: a matched key shown green, but ${String(state.keys.correct.length)} are`);
+  }
+  if (claims.theme !== undefined) claim('theme', claims.theme, state.theme);
+  if (claims.viewportW !== undefined) claim('viewport width', claims.viewportW, state.viewport.w);
+  return broke;
 }
 
 export function reset(): void {

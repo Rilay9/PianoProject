@@ -38,6 +38,7 @@ export interface StateRecord {
     blind: string;
     tablet: string;
     side: string;
+    hands: string;
   };
   /**
    * The stage, and how much of it is music.
@@ -56,7 +57,15 @@ export interface StateRecord {
     cursor: { left: number; top: number; width: number; height: number } | null;
     next: { left: number; top: number; width: number; height: number } | null;
   };
-  keys: { view: string; expected: number[]; next: number[]; visible: boolean; height: number };
+  keys: {
+    view: string;
+    expected: number[];
+    next: number[];
+    correct: number[];
+    wrong: number[];
+    visible: boolean;
+    height: number;
+  };
   bar: { height: number; scrollHeight: number; children: number; modeLabel: string };
   countIn: { shown: boolean; beats: number; lit: number };
   beatDot: { shown: boolean };
@@ -173,6 +182,7 @@ export async function probeState(page: Page): Promise<StateRecord> {
         blind: screen?.dataset.blind ?? '',
         tablet: screen?.dataset.tablet ?? '',
         side: screen?.dataset.side ?? '',
+        hands: view?.dataset.hands ?? '',
       },
       slots,
       bands: {
@@ -185,6 +195,8 @@ export async function probeState(page: Page): Promise<StateRecord> {
         view: strip?.dataset.keys ?? '',
         expected: midisOf('.key.is-expected'),
         next: midisOf('.key.is-next'),
+        correct: midisOf('.key.is-correct'),
+        wrong: midisOf('.key.is-wrong'),
         visible: strip ? strip.getBoundingClientRect().height > 0 : false,
         height: strip ? Math.round(strip.getBoundingClientRect().height) : 0,
       },
