@@ -794,6 +794,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     settings.barsPerWindow = Math.min(MAX_BARS_PER_WINDOW, Math.max(MIN_BARS_PER_WINDOW, Math.round(next)));
     updateSettings({ barsPerWindow: settings.barsPerWindow });
     renderer?.setBarsPerWindow(settings.barsPerWindow);
+    // A re-engraving recreates every element the run's judgements are keyed
+    // to, so the run restarts rather than continuing over a sheet that has
+    // forgotten it (`08` §8.3).
+    if (session?.running) startRun();
     render();
   }
 
@@ -809,6 +813,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     settings.layout = next;
     updateSettings({ layout: next });
     renderer?.setLayout(next);
+    if (session?.running) startRun();
     render();
   }
 
@@ -874,7 +879,11 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   function writtenBpm(): number {
-    return model ? bpmAt(model.tempoMap, 0) : 80;
+    if (!model) return 80;
+    // At the cursor, so a tempo change written into the piece shows when it
+    // arrives (`08` §10).
+    const step = session?.state?.step ?? renderer?.stepIndex ?? 0;
+    return bpmAt(model.tempoMap, model.steps[step]?.onset ?? 0);
   }
 
   function bpmNow(): number {
@@ -953,12 +962,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     // A section loop is in printed bars; a double-tapped one is in the model's
     // own measure index. They are different numbers and mixing them up would
     // loop the wrong bars on any piece with a repeat.
-    const loop =
-      loopBars && !performanceRun
-        ? loopSection
-          ? session.loopForPrintedBars(loopBars.from, loopBars.to)
-          : session.loopForMeasures(loopBars.from, loopBars.to)
-        : undefined;
+    // Printed bar numbers, whichever gesture set them (`08` invariant 24).
+    // The double-tap used to hand its printed number to the index-based
+    // builder, so double-tapping bar 3 looped bar 4.
+    const loop = loopBars && !performanceRun ? session.loopForPrintedBars(loopBars.from, loopBars.to) : undefined;
     // A `Hear it` run — and a one-bar preview — is a Listen run that leaves
     // the select alone.
     const runMode: Mode = hearing || hearingBar ? 'listen' : mode;
@@ -1519,7 +1526,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       status.textContent = 'No weak bars to loop — nothing went wrong.';
       return;
     }
-    loopBars = { from: worst.measureIndex, to: worst.measureIndex + 1 };
+    // The hot spot is an unrolled measure; the loop is printed bars.
+    const printed = (model?.steps.find((s) => s.measureIndex === worst.measureIndex)?.sourceMeasureIndex ?? worst.measureIndex) + 1;
+    loopBars = { from: printed, to: Math.min(printed + 1, model?.sourceMeasureCount ?? printed + 1) };
     startRun();
   }
 
@@ -1546,12 +1555,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       renderer?.setLoopRange(null);
       return;
     }
-    const loop =
-      loopBars && !performanceRun
-        ? loopSection
-          ? session.loopForPrintedBars(loopBars.from, loopBars.to)
-          : session.loopForMeasures(loopBars.from, loopBars.to)
-        : undefined;
+    const loop = loopBars && !performanceRun ? session.loopForPrintedBars(loopBars.from, loopBars.to) : undefined;
     if (!loop) {
       renderer.setLoopRange(null);
       return;
