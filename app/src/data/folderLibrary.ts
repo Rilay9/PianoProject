@@ -57,6 +57,29 @@ export class FolderError extends Error {}
 /** Thrown when the picker was dismissed. Not a failure; nothing to report. */
 export class FolderCancelled extends Error {}
 
+/**
+ * Why remembering the folder did not work, when there is something to say.
+ *
+ * `null` is the ordinary case — either the setting is off, or the handle is
+ * held and everything is fine. The other four are the ways the feature
+ * degrades, and each one degrades differently enough that "pick the folder
+ * again" on its own would not tell the owner what to do about it:
+ *
+ *   - `not-remembered` — the setting is on and the browser handed over no
+ *     handle at all (no `showDirectoryPicker`, an old Chrome, a refusal). The
+ *     app is exactly as capable as it was with the setting off.
+ *   - `not-stored` — a handle was taken, and IndexedDB would not clone it.
+ *     Adding works for the rest of this visit, from the in-memory map below,
+ *     and there is nothing to reconnect to after the app is closed. This is
+ *     the silent one: everything looks like it worked until the next launch.
+ *   - `permission` — a handle was stored and `queryPermission` /
+ *     `requestPermission` did not come back `granted`. The folder is known;
+ *     Chrome will not open it.
+ *   - `stale` — a handle was stored and reading through it failed: moved,
+ *     renamed, card pulled, permission revoked in Chrome's own settings.
+ */
+export type FolderRememberNote = 'not-remembered' | 'not-stored' | 'permission' | 'stale' | null;
+
 export interface FolderLibrary {
   id: string;
   addedAt: string;
@@ -64,6 +87,8 @@ export interface FolderLibrary {
   scores: FolderScore[];
   /** True while the folder is picked and its files can actually be read. */
   connected: boolean;
+  /** What to say about remembering this folder, if anything. */
+  rememberNote: FolderRememberNote;
 }
 
 /**
@@ -86,6 +111,21 @@ const connected = new Map<string, Map<string, File>>();
  * for the rest of the session even where the write failed.
  */
 const handles = new Map<string, unknown>();
+
+/**
+ * The last thing worth saying about remembering each folder.
+ *
+ * Session state rather than a stored column, deliberately: every entry is a
+ * fact about *this* visit — what the picker did just now, what
+ * `queryPermission` answered just now — and a stale one written a month ago
+ * would be a sentence on the screen that nothing has checked.
+ */
+const notes = new Map<string, FolderRememberNote>();
+
+/** What to tell the owner about remembering this folder. `null` when nothing. */
+export function folderRememberNote(id: string): FolderRememberNote {
+  return notes.get(id) ?? null;
+}
 
 const listeners = new Set<() => void>();
 
@@ -407,7 +447,14 @@ async function buildLibrary(
   scores.sort((a, b) => a.title.localeCompare(b.title));
 
   connected.set(id, byPath);
-  return { id, addedAt: new Date().toISOString(), source, scores, connected: true };
+  return {
+    id,
+    addedAt: new Date().toISOString(),
+    source,
+    scores,
+    connected: true,
+    rememberNote: null,
+  };
 }
 
 /**
@@ -521,17 +568,40 @@ export async function reconnectFolder(id: string): Promise<boolean> {
   const db = await openDatabase();
   const row = await db?.get('folderLibraries', id);
   const handle = (handles.get(id) ?? row?.handle) as DirectoryHandle | undefined;
+  // No handle is not a failure of the feature — it is the ordinary picker
+  // path, which has its own sentence — so nothing is recorded here.
   if (!handle) return false;
+  // Asked separately from the read, because the two fail for different
+  // reasons and the owner is told which. `requestPermission` needs a user
+  // gesture and throws without one — a phone that has let the activation
+  // lapse is a permission problem, not a folder that has gone missing, and
+  // "pick it again" is the wrong instruction for it.
+  let permission: PermissionState;
   try {
-    if ((await readPermission(handle)) !== 'granted') return false;
+    permission = await readPermission(handle);
+  } catch {
+    permission = 'denied';
+  }
+  if (permission !== 'granted') {
+    notes.set(id, 'permission');
+    return false;
+  }
+  try {
     const { byPath } = await readDirectoryHandle(handle);
-    if (byPath.size === 0) return false;
+    if (byPath.size === 0) {
+      notes.set(id, 'stale');
+      return false;
+    }
     connected.set(id, byPath);
+    notes.set(id, null);
     notify();
     return true;
   } catch {
     // A handle can go stale: the folder was moved, the card was pulled, the
-    // permission was revoked in Chrome's settings. The picker still works.
+    // permission was revoked in Chrome's settings. The picker still works —
+    // but silently falling back to it is what left the owner guessing, so the
+    // reason is recorded and the screen says it.
+    notes.set(id, 'stale');
     return false;
   }
 }
@@ -555,8 +625,13 @@ export async function pickFolder(
       const handle = await picker?.({ mode: 'read' });
       if (handle) {
         const library = await readFolderHandle(handle, readOptions);
-        await saveFolder(library, handle);
-        return library;
+        // Whether the handle actually reached the database is the whole
+        // difference between "remembered" and "remembered until you close
+        // the app", and nothing used to say which of the two had happened.
+        const stored = await saveFolder(library, handle);
+        const note: FolderRememberNote = stored ? null : 'not-stored';
+        notes.set(library.id, note);
+        return { ...library, rememberNote: note };
       }
     } catch (cause) {
       // A dismissed picker is a decision, not a failure: opening a second one
@@ -565,10 +640,15 @@ export async function pickFolder(
       if (cause instanceof FolderError || cause instanceof FolderCancelled) throw cause;
     }
   }
-  return pickFolderWithInput(readOptions);
+  // Here on purpose (the setting is off) or here because the handle path did
+  // not work. The two are the same folder listing and a different sentence.
+  return pickFolderWithInput(readOptions, remember === true ? 'not-remembered' : null);
 }
 
-async function pickFolderWithInput(options: FolderReadOptions = {}): Promise<FolderLibrary> {
+async function pickFolderWithInput(
+  options: FolderReadOptions = {},
+  note: FolderRememberNote = null,
+): Promise<FolderLibrary> {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
@@ -592,13 +672,22 @@ async function pickFolderWithInput(options: FolderReadOptions = {}): Promise<Fol
     if (files.length === 0) throw new FolderCancelled();
     const library = await readFolder(files, options);
     await saveFolder(library);
-    return library;
+    notes.set(library.id, note);
+    return { ...library, rememberNote: note };
   } finally {
     input.remove();
   }
 }
 
-async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<void> {
+/**
+ * Writes the listing, and the handle beside it when there is one.
+ *
+ * Returns whether the *handle* survived the write. The listing always does:
+ * that is the point of the second `put`, and it is the whole safety net under
+ * the remember-the-folder feature — a browser that will not structured-clone
+ * a `FileSystemDirectoryHandle` must cost the owner a tap, never the folder.
+ */
+async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<boolean> {
   const db = await openDatabase();
   const row: FolderLibraryRow = {
     id: library.id,
@@ -609,18 +698,31 @@ async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<voi
   if (handle !== undefined) handles.set(library.id, handle);
   try {
     await db?.put('folderLibraries', { ...row, ...(handle === undefined ? {} : { handle }) });
+    return handle !== undefined;
   } catch {
     // A handle the engine will not clone must not cost the listing, which is
     // the part that has to survive: browsing works with nothing connected.
     await db?.put('folderLibraries', row);
+    return false;
+  } finally {
+    notify();
   }
-  notify();
 }
 
 export async function savedFolders(): Promise<FolderLibrary[]> {
   const db = await openDatabase();
   const rows = (await db?.getAll('folderLibraries')) ?? [];
-  return rows.map((row) => ({ ...row, connected: connected.has(row.id) }));
+  // Built field by field rather than spread: a stored row also carries the
+  // handle, and a live browser object has no business travelling out of here
+  // inside something a screen draws.
+  return rows.map((row) => ({
+    id: row.id,
+    addedAt: row.addedAt,
+    source: row.source,
+    scores: row.scores,
+    connected: connected.has(row.id),
+    rememberNote: notes.get(row.id) ?? null,
+  }));
 }
 
 export async function forgetFolder(id: string): Promise<void> {
@@ -628,7 +730,22 @@ export async function forgetFolder(id: string): Promise<void> {
   await db?.delete('folderLibraries', id);
   connected.delete(id);
   handles.delete(id);
+  notes.delete(id);
   notify();
+}
+
+/**
+ * True when the *database* holds a handle for this folder.
+ *
+ * Deliberately not "or the session map holds one": the session map is gone
+ * the moment the app is closed, and this question is only ever asked about
+ * what will still be there on the next launch. The two differ exactly when
+ * the clone failed, which is the case worth being able to see.
+ */
+export async function hasStoredHandle(id: string): Promise<boolean> {
+  const db = await openDatabase();
+  const row = await db?.get('folderLibraries', id);
+  return row?.handle !== undefined;
 }
 
 export function isConnected(id: string): boolean {
@@ -663,8 +780,17 @@ export async function addFromFolder(folderId: string, score: FolderScore) {
   if (!connected.has(folderId)) await reconnectFolder(folderId);
   const files = connected.get(folderId);
   if (!files) {
+    // Three different reasons, three different things to do about them. The
+    // one message for all of them ("Android only lends a folder for one
+    // visit") was a lie in two of the three cases, and in both of those it
+    // named the wrong cure.
+    const note = notes.get(folderId) ?? null;
     throw new FolderError(
-      `Pick the ${folderId} folder again to add from it — Android only lends a folder for one visit.`,
+      note === 'permission'
+        ? `Chrome would not open the ${folderId} folder — it is remembered, but read permission was not given. Pick the folder again to add from it.`
+        : note === 'stale'
+          ? `The remembered ${folderId} folder could not be read — it may have been moved, renamed, or on a card that is out. Pick the folder again to add from it.`
+          : `Pick the ${folderId} folder again to add from it — Android only lends a folder for one visit.`,
     );
   }
   let file = files.get(score.file);

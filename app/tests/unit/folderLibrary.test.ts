@@ -25,7 +25,12 @@ import {
   titleFromFilename,
 } from '../../src/data/folderLibrary';
 import { allImports } from '../../src/data/importStore';
-import { addedFiles, looksLikeUnnamedArchive } from '../../src/ui/screens/FolderScreen';
+import {
+  addedFiles,
+  importsByFolderFile,
+  looksLikeUnnamedArchive,
+  rememberSentence,
+} from '../../src/ui/screens/FolderScreen';
 import type { FolderScore } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 
@@ -312,6 +317,66 @@ describe('which folder rows are already in the library (review C4)', () => {
 
   it('has nothing to say about an empty library', () => {
     expect([...addedFiles([], library)]).toEqual([]);
+  });
+
+  /**
+   * Which import each added row *is*, not just that it is one.
+   *
+   * The row needs the import itself to open the assign sheet on it — that is
+   * the whole difference between "Added" and a rung. It has to be the same
+   * rule that greys the row out, or the screen offers Assign on a row it also
+   * calls unadded, or refuses it on a row it calls added.
+   */
+  it('says which import each added row became', () => {
+    const fromFolder = {
+      title: 'The Entertainer',
+      origin: { folder: 'pianopath-library', file: 'a/one.mxl' },
+    };
+    const shared = { title: 'Maple Leaf Rag' };
+    const index = importsByFolderFile([fromFolder, shared], library);
+    expect(index.get('a/one.mxl')).toBe(fromFolder);
+    // The other edition of the same title is not this import, and must stay
+    // addable — the C4 bug, seen from the other side.
+    expect(index.has('b/two.mxl')).toBe(false);
+    // An import that arrived by share has no origin, so the title is all
+    // there is; it is still the row the assign sheet should open.
+    expect(index.get('c/three.mxl')).toBe(shared);
+    // And the two answers agree, always.
+    expect([...index.keys()].sort()).toEqual([...addedFiles([fromFolder, shared], library)].sort());
+  });
+
+  it('will not guess between two origin-less imports of the same title', () => {
+    const first = { title: 'Maple Leaf Rag' };
+    const second = { title: 'maple leaf rag' };
+    // The first wins rather than the last, and only one row is claimed.
+    expect(importsByFolderFile([first, second], library).get('c/three.mxl')).toBe(first);
+  });
+});
+
+describe('saying why the folder was not remembered (P19 A4)', () => {
+  // Every one of these was silent: the setting was on, something refused,
+  // and the app fell back to the picker with no explanation — which looks
+  // exactly like the setting doing nothing.
+  it('names the handle the browser would not hand over', () => {
+    expect(rememberSentence('Scores', 'not-remembered')).toMatch(/would not hand a folder over/);
+    expect(rememberSentence('Scores', 'not-remembered')).toContain('Scores');
+  });
+
+  it('separates "not stored" from "not remembered", because they end differently', () => {
+    // This is the one that looks like success until the next launch: adding
+    // works all session and there is nothing to come back to.
+    const sentence = rememberSentence('Scores', 'not-stored');
+    expect(sentence).toMatch(/once the app is closed/);
+    expect(sentence).not.toMatch(/would not hand a folder over/);
+  });
+
+  it('tells the owner to allow it when it is a permission, and to re-pick when it is gone', () => {
+    expect(rememberSentence('Scores', 'permission')).toMatch(/allow it when asked/);
+    expect(rememberSentence('Scores', 'stale')).toMatch(/moved, renamed/);
+  });
+
+  it('says nothing at all when there is nothing to say', () => {
+    expect(rememberSentence('Scores', null)).toBeNull();
   });
 });
 

@@ -16,6 +16,9 @@ import {
   addFromFolder,
   directoryPickerAvailable,
   disconnectForTest,
+  folderRememberNote,
+  forgetHandleForTest,
+  hasStoredHandle,
   pickFolder,
   readFolderHandle,
   reconnectFolder,
@@ -87,6 +90,34 @@ function fakeHandle(
 }
 
 const FILES = { 'aa/one.mxl': mxlBytes(), 'bb/two.mxl': mxlBytes() };
+
+/** A `File` that reports a `webkitRelativePath`, which only the picker can set. */
+function folderFile(path: string, contents: Uint8Array): File {
+  const file = new File([contents as BlobPart], path.slice(path.lastIndexOf('/') + 1));
+  Object.defineProperty(file, 'webkitRelativePath', { value: path });
+  return file;
+}
+
+/**
+ * Makes `<input webkitdirectory>` hand these files over.
+ *
+ * jsdom opens no picker, so the element is driven directly: clicking it puts
+ * the files on `input.files` and fires `change`, which is what Chrome does
+ * once the person has chosen a folder. Returns the undo.
+ */
+function stubPickerWith(files: File[]): () => void {
+  const original = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'click');
+  Object.defineProperty(HTMLInputElement.prototype, 'click', {
+    configurable: true,
+    value(this: HTMLInputElement) {
+      Object.defineProperty(this, 'files', { configurable: true, value: files });
+      this.dispatchEvent(new Event('change'));
+    },
+  });
+  return () => {
+    if (original) Object.defineProperty(HTMLInputElement.prototype, 'click', original);
+  };
+}
 
 describe('reading a folder from a handle', () => {
   beforeEach(() => {
@@ -176,6 +207,148 @@ describe('reconnecting from a stored handle', () => {
     const score = saved?.scores.find((entry) => entry.file === 'aa/one.mxl');
     const row = await addFromFolder(id, score!);
     expect(row.origin).toEqual({ folder: id, file: 'aa/one.mxl' });
+    clearFakeIndexedDb();
+  });
+});
+
+/**
+ * The safety net under the whole feature.
+ *
+ * A `FileSystemDirectoryHandle` is a live browser object, and storing one is a
+ * privilege Chrome grants to IndexedDB that no specification obliges any
+ * engine to grant. If the clone fails, the *listing* must still be written —
+ * browsing a folder that is not plugged in is the design (`00` D24), and
+ * losing 37,261 rows because a handle would not serialise would be the feature
+ * costing more than it is worth.
+ *
+ * Nothing here can be faked into cloning: a directory handle stands or falls
+ * on `values()`, and a function never survives a structured clone. That makes
+ * this environment permanently the unhappy path, which is exactly the one
+ * worth pinning down.
+ */
+describe('a handle the database will not keep', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+  });
+
+  it('keeps the listing, loses only the handle, and says which happened', async () => {
+    (window as unknown as Record<string, unknown>).showDirectoryPicker = () =>
+      Promise.resolve(fakeHandle('Scores', FILES, { query: 'granted' }));
+    const library = await pickFolder({ remember: true });
+
+    // The part that has to survive did.
+    expect(library.scores.map((score) => score.file).sort()).toEqual(['aa/one.mxl', 'bb/two.mxl']);
+    const [saved] = await savedFolders();
+    expect(saved?.scores).toHaveLength(2);
+    // The part that could not be written was not written, and nothing
+    // pretended otherwise.
+    expect(await hasStoredHandle('Scores')).toBe(false);
+    // And the owner is told, rather than finding out at the next launch that
+    // the setting he switched on did nothing.
+    expect(library.rememberNote).toBe('not-stored');
+    expect(folderRememberNote('Scores')).toBe('not-stored');
+    clearFakeIndexedDb();
+  });
+
+  it('still works for the rest of the visit, and asks again after a relaunch', async () => {
+    (window as unknown as Record<string, unknown>).showDirectoryPicker = () =>
+      Promise.resolve(fakeHandle('Scores', FILES, { query: 'granted' }));
+    const library = await pickFolder({ remember: true });
+    disconnectForTest(library.id);
+    // This visit: the in-memory map is what makes Add work without a picker.
+    expect(await reconnectFolder(library.id)).toBe(true);
+
+    // The next launch has neither map nor stored handle, and must fall back
+    // to asking rather than throwing.
+    disconnectForTest(library.id);
+    forgetHandleForTest(library.id);
+    expect(await reconnectFolder(library.id)).toBe(false);
+    const [saved] = await savedFolders();
+    expect(saved?.scores).toHaveLength(2);
+    clearFakeIndexedDb();
+  });
+});
+
+describe('when a remembered folder will not open, the reason is legible', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+  });
+
+  async function saveWithHandle(handle: unknown): Promise<string> {
+    (window as unknown as Record<string, unknown>).showDirectoryPicker = () =>
+      Promise.resolve(handle);
+    const library = await pickFolder({ remember: true });
+    disconnectForTest(library.id);
+    return library.id;
+  }
+
+  it('says permission when permission is what was refused', async () => {
+    const id = await saveWithHandle(fakeHandle('Scores', FILES, { query: 'prompt', request: 'denied' }));
+    expect(await reconnectFolder(id)).toBe(false);
+    expect(folderRememberNote(id)).toBe('permission');
+    // The message the Add button produces has to name that, not the
+    // one-visit story, which is a different problem with a different cure.
+    const [saved] = await savedFolders();
+    expect(saved?.rememberNote).toBe('permission');
+    await expect(addFromFolder(id, saved!.scores[0]!)).rejects.toThrow(/read permission was not given/i);
+    clearFakeIndexedDb();
+  });
+
+  it('reads a throw from the permission call as a permission, not a missing folder', async () => {
+    // `requestPermission` needs a user gesture and throws without one. That
+    // is not a folder that has moved, and telling the owner to go and find it
+    // again would send him after the wrong thing.
+    const handle = fakeHandle('Scores', FILES, { query: 'prompt' }) as Record<string, unknown>;
+    handle.requestPermission = () => Promise.reject(new DOMException('gesture', 'SecurityError'));
+    const id = await saveWithHandle(handle);
+    expect(await reconnectFolder(id)).toBe(false);
+    expect(folderRememberNote(id)).toBe('permission');
+    clearFakeIndexedDb();
+  });
+
+  it('says the folder is gone when the handle has gone stale', async () => {
+    const handle = fakeHandle('Scores', FILES, { query: 'granted' }) as Record<string, unknown>;
+    const id = await saveWithHandle(handle);
+    handle.values = () => {
+      throw new DOMException('gone', 'NotFoundError');
+    };
+    expect(await reconnectFolder(id)).toBe(false);
+    expect(folderRememberNote(id)).toBe('stale');
+    const [saved] = await savedFolders();
+    await expect(addFromFolder(id, saved!.scores[0]!)).rejects.toThrow(/moved, renamed/i);
+    clearFakeIndexedDb();
+  });
+
+  it('claims nothing about a folder that was never remembered', () => {
+    // No handle path was taken, so the Add message stays the one-visit one.
+    expect(folderRememberNote('never-picked')).toBeNull();
+    clearFakeIndexedDb();
+  });
+
+  it('says so when the setting is on and the browser hands over no folder at all', async () => {
+    // The silent case that started this: `folderHandles` on, no
+    // `showDirectoryPicker`, and the app quietly using the picker it always
+    // used — indistinguishable, from the outside, from the setting being off.
+    delete (window as unknown as Record<string, unknown>).showDirectoryPicker;
+    const restore = stubPickerWith([folderFile('Scores/aa/one.mxl', mxlBytes())]);
+    try {
+      const library = await pickFolder({ remember: true });
+      expect(library.rememberNote).toBe('not-remembered');
+      expect(folderRememberNote(library.id)).toBe('not-remembered');
+    } finally {
+      restore();
+    }
+    clearFakeIndexedDb();
+  });
+
+  it('says nothing when the folder was picked with remembering switched off', async () => {
+    delete (window as unknown as Record<string, unknown>).showDirectoryPicker;
+    const restore = stubPickerWith([folderFile('Scores/aa/one.mxl', mxlBytes())]);
+    try {
+      expect((await pickFolder({})).rememberNote).toBeNull();
+    } finally {
+      restore();
+    }
     clearFakeIndexedDb();
   });
 });

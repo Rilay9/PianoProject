@@ -14,20 +14,23 @@
 // blocked main thread on a phone.
 
 import type { Router } from '../../router';
-import type { FolderScore } from '../../data/db';
+import type { FolderScore, ImportRow } from '../../data/db';
 import {
   FolderCancelled,
   FolderError,
   addFromFolder,
+  folderRememberNote,
   forgetFolder,
   looksUnnamed,
   pickFolder,
   savedFolders,
   type FolderLibrary,
   type FolderProgress,
+  type FolderRememberNote,
 } from '../../data/folderLibrary';
 import { ImportError, allImports } from '../../data/importStore';
 import { getSettings } from '../../data/settingsStore';
+import { openAssignSheetFor } from '../assignSheet';
 import { badge, button, chip, el, listRow } from '../widgets';
 import { addParagraph, addSection, createSubScreen } from './subScreen';
 import { plural } from '../../util/plural';
@@ -83,21 +86,62 @@ export function matchesFilters(
  * picker has no origin, and stopping the owner re-importing a piece he already
  * has by another route is the thing this set was for in the first place.
  */
+export function importsByFolderFile<
+  T extends { title: string; origin?: { folder: string; file: string } },
+>(imports: readonly T[], library: { id: string; scores: readonly FolderScore[] }): Map<string, T> {
+  const fromHere = new Map<string, T>();
+  const titles = new Map<string, T>();
+  for (const row of imports) {
+    if (row.origin?.folder === library.id) fromHere.set(row.origin.file, row);
+    else if (row.origin === undefined && !titles.has(fold(row.title))) {
+      titles.set(fold(row.title), row);
+    }
+  }
+  const out = new Map<string, T>();
+  for (const score of library.scores) {
+    const row = fromHere.get(score.file) ?? titles.get(fold(score.title));
+    if (row) out.set(score.file, row);
+  }
+  return out;
+}
+
+/**
+ * The same rule, as the set the row drawing used to ask for.
+ *
+ * One rule in one place: which rows are greyed out and which row can be
+ * assigned to a rung have to agree, or the screen offers Assign on a row it
+ * also says is not in the library.
+ */
 export function addedFiles(
   imports: readonly { title: string; origin?: { folder: string; file: string } }[],
   library: { id: string; scores: readonly FolderScore[] },
 ): Set<string> {
-  const fromHere = new Set(
-    imports.filter((row) => row.origin?.folder === library.id).map((row) => row.origin?.file),
-  );
-  const titles = new Set(
-    imports.filter((row) => row.origin === undefined).map((row) => fold(row.title)),
-  );
-  const added = new Set<string>();
-  for (const score of library.scores) {
-    if (fromHere.has(score.file) || titles.has(fold(score.title))) added.add(score.file);
+  return new Set(importsByFolderFile(imports, library).keys());
+}
+
+/**
+ * One sentence about remembering this folder, or nothing.
+ *
+ * Every one of these was silent before: the setting was on, the handle did
+ * not survive whatever it did not survive, and the app quietly went back to
+ * asking for the folder — which looks exactly like the setting having no
+ * effect at all. Each says which of the four things happened, because each
+ * has a different answer ("nothing you can do", "it will ask again next
+ * launch", "allow it", "pick it again").
+ */
+export function rememberSentence(id: string, note: FolderRememberNote): string | null {
+  switch (note) {
+    case 'not-remembered':
+      return `Remember the score folder is on, but this browser would not hand a folder over — you will be asked for ${id} each time you add from it.`;
+    case 'not-stored':
+      return `${id} is remembered for now, but this phone would not store the folder itself — you will be asked for it again once the app is closed.`;
+    case 'permission':
+      return `${id} is remembered, but Chrome will not open it without permission — allow it when asked, or pick the folder again.`;
+    case 'stale':
+      return `The remembered ${id} folder could not be read — it may have been moved, renamed, or on a card that is out. Pick the folder again.`;
+    default:
+      return null;
   }
-  return added;
 }
 
 /**
@@ -125,6 +169,12 @@ export function FolderScreen(router: Router): HTMLElement {
 
   const intro = addSection(card, 'Where the scores are');
   const folderStatus = addParagraph(intro, 'No folder yet.');
+  // "Remember the score folder" failing has always been silent — the app just
+  // asks for the folder again, which is indistinguishable from the setting
+  // being off. One line, under the state line, only when there is something
+  // to say.
+  const rememberNotice = el('p.muted', { id: 'folder-remember', hidden: true });
+  intro.append(rememberNotice);
   const actions = el('div.button-row');
   intro.append(actions);
 
@@ -179,6 +229,15 @@ export function FolderScreen(router: Router): HTMLElement {
   let library: FolderLibrary | null = null;
   let haystacks: string[] = [];
   let alreadyAdded = new Set<string>();
+  /**
+   * The import each already-added row became.
+   *
+   * Kept because a row that is in the library is a row the assign sheet can
+   * be opened for, and the sheet needs the `ImportRow` itself. Without this
+   * the only way to a rung was Library, and finding one score among the
+   * owner's imports by hand is the hunt this screen exists to avoid.
+   */
+  let importIndex = new Map<string, ImportRow>();
   let filters: Filters = { ...NO_FILTERS };
   let shown = PAGE;
   let busy = false;
@@ -202,6 +261,12 @@ export function FolderScreen(router: Router): HTMLElement {
     progress.hidden = true;
     progressText.textContent = '';
     progressFill.style.width = '0%';
+  }
+
+  function updateRememberNotice(): void {
+    const sentence = library ? rememberSentence(library.id, folderRememberNote(library.id)) : null;
+    rememberNotice.hidden = sentence === null;
+    rememberNotice.textContent = sentence ?? '';
   }
 
   function updateUnnamedNotice(): void {
@@ -304,16 +369,38 @@ export function FolderScreen(router: Router): HTMLElement {
     if (score.garbled) badges.push(badge('title garbled', 'warn'));
 
     const added = alreadyAdded.has(score.file);
-    const add = button(
-      added ? 'Added' : 'Add',
-      () => {
-        void addOne(score, add);
-      },
-      // A row's action, outlined: sixty filled `Add` boxes made the one thing
-      // the screen is for — picking the folder — impossible to find (R3).
-      { variant: added ? 'quiet' : 'secondary' },
-    );
-    add.disabled = added;
+    const imported = importIndex.get(score.file);
+    const onRung = (imported?.lessonIds?.length ?? 0) > 0;
+    // Adding a score used to end the story, and the story was not over: an
+    // import with no `lessonIds` "sits outside the curriculum" — it cannot
+    // complete a rung, it never appears in a swap, and the session builder
+    // cannot pick it (`curriculum/load.ts`). So an added row says which of
+    // the two it is, and carries the one action that changes the answer.
+    if (added) badges.push(badge(onRung ? 'on a rung' : 'no rung'));
+
+    // A row's action, outlined: sixty filled `Add` boxes made the one thing
+    // the screen is for — picking the folder — impossible to find (R3).
+    const add = !added
+      ? button(
+          'Add',
+          () => {
+            void addOne(score, add);
+          },
+          { variant: 'secondary' },
+        )
+      : imported
+        ? button(
+            onRung ? 'Change rung' : 'Assign',
+            () => {
+              void assignOne(score, imported);
+            },
+            { variant: onRung ? 'quiet' : 'secondary' },
+          )
+        : // Added, but which import it became cannot be told — a title match
+          // against an import that arrived by share, most likely. Assigning
+          // the wrong row would be worse than not offering to.
+          button('Added', () => undefined, { variant: 'quiet' });
+    if (added && !imported) add.disabled = true;
 
     // The composer belongs on the detail line, not on a line of its own.
     // Title, composer, meta and badges is four lines and 121 px against the
@@ -373,6 +460,11 @@ export function FolderScreen(router: Router): HTMLElement {
     }
   }
 
+  /** Redraws one row in place, so adding or assigning does not rebuild the list. */
+  function redrawRow(score: FolderScore): void {
+    list.querySelector(`[data-file="${CSS.escape(score.file)}"]`)?.replaceWith(rowFor(score));
+  }
+
   async function addOne(score: FolderScore, control: HTMLButtonElement): Promise<void> {
     if (!library || busy) return;
     busy = true;
@@ -380,10 +472,15 @@ export function FolderScreen(router: Router): HTMLElement {
     const was = control.textContent;
     control.textContent = 'Adding…';
     try {
-      await addFromFolder(library.id, score);
+      const row = await addFromFolder(library.id, score);
       alreadyAdded.add(score.file);
-      control.textContent = 'Added';
-      folderStatus.textContent = `Added ${score.title || score.file} to your library.`;
+      importIndex.set(score.file, row);
+      // Not the assign sheet, unasked. Adding five in a row is the ordinary
+      // way to use this screen and five sheets would be five interruptions;
+      // the row now carries `Assign`, and this sentence says the row is
+      // worth going back to. See the report for why this shape and not that.
+      folderStatus.textContent = `Added ${score.title || score.file} to your library. It is on no rung yet — Assign, on its row, puts it on one.`;
+      redrawRow(score);
     } catch (cause) {
       control.textContent = was ?? 'Add';
       control.disabled = false;
@@ -391,9 +488,34 @@ export function FolderScreen(router: Router): HTMLElement {
         cause instanceof FolderError || cause instanceof ImportError
           ? cause.message
           : 'That score could not be added.';
+      // The Add failed because the remembered folder would not open, and the
+      // *reason* it would not open is only known once that has been tried.
+      updateRememberNotice();
     } finally {
       busy = false;
     }
+  }
+
+  /**
+   * The assign sheet, for a score that came out of this folder.
+   *
+   * The same sheet the plain import flow opens, reached without going to
+   * Library and finding the row by hand — which for an owner with 37,261
+   * scores on the shelf was the whole obstacle between adding a piece and it
+   * counting towards anything.
+   */
+  async function assignOne(score: FolderScore, row: ImportRow): Promise<void> {
+    await openAssignSheetFor(row, {
+      onSaved: (saved) => {
+        importIndex.set(score.file, saved);
+        const rungs = saved.lessonIds ?? [];
+        folderStatus.textContent =
+          rungs.length > 0
+            ? `${saved.title} is on ${rungs.join(', ')} — it counts towards that rung now.`
+            : `${saved.title} is in your library, on no rung.`;
+        redrawRow(score);
+      },
+    });
   }
 
   function describe(): void {
@@ -403,6 +525,7 @@ export function FolderScreen(router: Router): HTMLElement {
     // search box is still a search box to anything that goes looking.
     if (library) card.append(browse);
     else browse.remove();
+    updateRememberNotice();
     if (!library) {
       folderStatus.textContent = 'No folder yet.';
       return;
@@ -495,9 +618,11 @@ export function FolderScreen(router: Router): HTMLElement {
   async function restore(): Promise<void> {
     const [folders, imports] = await Promise.all([savedFolders(), allImports()]);
     alreadyAdded = new Set<string>();
+    importIndex = new Map<string, ImportRow>();
     library = folders[0] ?? null;
     if (library) {
-      alreadyAdded = addedFiles(imports, library);
+      importIndex = importsByFolderFile(imports, library);
+      alreadyAdded = new Set(importIndex.keys());
       haystacks = library.scores.map((s) => fold(`${s.title} ${s.composer}`));
       fillStyles(library.scores);
     }

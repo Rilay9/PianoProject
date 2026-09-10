@@ -12,7 +12,9 @@
  */
 import type { Curriculum, Lesson } from '../curriculum/types';
 import type { ImportRow } from '../data/db';
+import { loadCurriculum } from '../curriculum/load';
 import { updateImport } from '../data/importStore';
+import { estimateLevelFor } from '../score/estimateImport';
 import { button, el, openSheet } from './widgets';
 
 export interface AssignResult {
@@ -169,4 +171,26 @@ export function openAssignSheet(
     el('div.row', {}, save, button('Not now', () => sheet.close(), { variant: 'quiet' })),
   );
   return sheet;
+}
+
+/**
+ * The same sheet, for a caller that has an import row and nothing else.
+ *
+ * The curriculum has to be fetched and the level has to be estimated before
+ * the sheet can be honest about either, and estimating means parsing the
+ * score — the one slow step in the path. Doing both here means every screen
+ * that can reach the sheet reaches the *same* sheet, with the same number in
+ * it, rather than each one assembling its own half of the answer.
+ *
+ * A failed estimate is not an error: `estimateLevelFor` returns `undefined`
+ * and the sheet says "no estimate" instead of showing a number nobody
+ * computed.
+ */
+export async function openAssignSheetFor(row: ImportRow, options: AssignOptions = {}) {
+  const curriculum = await loadCurriculum();
+  const estimated = row.kind === 'musicxml' ? await estimateLevelFor(row) : undefined;
+  return openAssignSheet(row, curriculum, {
+    ...options,
+    ...(estimated === undefined ? {} : { estimated }),
+  });
 }

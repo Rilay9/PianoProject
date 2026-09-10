@@ -129,6 +129,142 @@ async function seedUnnamedArchive(page: import('@playwright/test').Page, rows: n
   );
 }
 
+/**
+ * An import as `addFromFolder` leaves it: in the library, stamped with where
+ * it came from, and on no rung at all.
+ *
+ * Written straight into the store rather than added through the screen
+ * because Add needs the folder's *files*, and Android only lends those for
+ * one visit — there is no way to hand a headless Chromium a directory the
+ * page can read. What is being tested is what happens next, and next begins
+ * with a row in exactly this state.
+ */
+async function seedImportFromFolder(
+  page: import('@playwright/test').Page,
+  score: { id: string; title: string; file: string; lessonIds?: string[] },
+): Promise<void> {
+  await page.evaluate(
+    async ({ folder, row }) => {
+      const xml = `<?xml version="1.0"?>
+<score-partwise version="4.0">
+  <part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list>
+  <part id="P1"><measure number="1"><attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note></measure></part>
+</score-partwise>`;
+      const open = indexedDB.open('pianopath');
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        open.onsuccess = () => resolve(open.result);
+        open.onerror = () => reject(open.error ?? new Error('could not open the database'));
+      });
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('imports', 'readwrite');
+        tx.objectStore('imports').put({
+          id: row.id,
+          kind: 'musicxml',
+          title: row.title,
+          data: xml,
+          tags: [],
+          addedAt: new Date().toISOString(),
+          origin: { folder, file: row.file },
+          ...(row.lessonIds ? { lessonIds: row.lessonIds } : {}),
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error ?? new Error('could not write the import'));
+      });
+      db.close();
+    },
+    { folder: FOLDER, row: score },
+  );
+}
+
+/**
+ * A score added from the folder has to be able to reach a rung (replan §4.3).
+ *
+ * `addFromFolder` runs the ordinary import, and an import arrives with no
+ * `lessonIds` — which, in `curriculum/load.ts`'s own words, means it "cannot
+ * complete a rung, it never appears in a swap, and the session builder cannot
+ * pick it". The mechanism to fix that has existed all along on the Library
+ * row's Assign button; what did not exist was any way to get there from the
+ * screen the piece was added on, or anything saying it was needed.
+ */
+test.describe('a score added from the folder and the rung it has not got', () => {
+  test('says it is on no rung, and opens the assign sheet from the folder row', async ({ page }) => {
+    await seedFolder(page, 200);
+    await seedImportFromFolder(page, {
+      id: 'import.piece-number-7',
+      title: 'Piece number 7',
+      file: '07/Qm7.mxl',
+    });
+    await page.goto('/#/library/folder');
+    await page.locator('#folder-search').fill('Piece number 7');
+    const row = page.locator('#folder-list .list-row[data-file="07/Qm7.mxl"]');
+    await expect(row).toBeVisible();
+    // The state the owner could not see before: in the library, counting for
+    // nothing.
+    await expect(row).toContainText('no rung');
+    // And the way out of it, on the row itself — not in Library, three
+    // screens away, among every other import he owns.
+    await row.getByRole('button', { name: 'Assign' }).click();
+    await expect(page.locator('#assign-sheet')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#assign-sheet')).toContainText('Piece number 7');
+  });
+
+  test('assigning it on the folder screen makes the row say so, without a reload', async ({
+    page,
+  }) => {
+    await seedFolder(page, 200);
+    await seedImportFromFolder(page, {
+      id: 'import.piece-number-7',
+      title: 'Piece number 7',
+      file: '07/Qm7.mxl',
+    });
+    await page.goto('/#/library/folder');
+    await page.locator('#folder-search').fill('Piece number 7');
+    const row = page.locator('#folder-list .list-row[data-file="07/Qm7.mxl"]');
+    await row.getByRole('button', { name: 'Assign' }).click();
+    const sheet = page.locator('#assign-sheet');
+    await expect(sheet).toBeVisible({ timeout: 30_000 });
+
+    // Any rung will do; the second option is the first real one, after
+    // "No rung — just put it in my library".
+    const rung = page.locator('#assign-lesson');
+    const chosen = await rung.locator('option').nth(1).getAttribute('value');
+    expect(chosen).toBeTruthy();
+    await rung.selectOption(chosen ?? '');
+    await page.locator('#assign-save').click();
+    await expect(sheet).toHaveCount(0);
+
+    const assigned = page.locator('#folder-list .list-row[data-file="07/Qm7.mxl"]');
+    await expect(assigned).toContainText('on a rung');
+    await expect(page.locator('[data-screen="folder"]')).toContainText(
+      `is on ${String(chosen)} — it counts towards that rung now.`,
+    );
+    // And it survives the trip through the store, which is the only proof
+    // that the rung is real rather than a label on a row.
+    await page.goto('/#/library/folder');
+    await page.locator('#folder-search').fill('Piece number 7');
+    await expect(page.locator('#folder-list .list-row[data-file="07/Qm7.mxl"]')).toContainText(
+      'on a rung',
+    );
+  });
+
+  test('a score already on a rung is not asked about again', async ({ page }) => {
+    await seedFolder(page, 200);
+    await seedImportFromFolder(page, {
+      id: 'import.piece-number-9',
+      title: 'Piece number 9',
+      file: '09/Qm9.mxl',
+      lessonIds: ['1.1'],
+    });
+    await page.goto('/#/library/folder');
+    await page.locator('#folder-search').fill('Piece number 9');
+    const row = page.locator('#folder-list .list-row[data-file="09/Qm9.mxl"]');
+    await expect(row).toContainText('on a rung');
+    // Still changeable — one rung is a decision, not a sentence — but it is
+    // no longer the loud action on the row.
+    await expect(row.getByRole('button', { name: 'Change rung' })).toBeVisible();
+  });
+});
+
 test.describe('a listing stored without its library.json ever being found', () => {
   // This is the silent failure from the handoff: a stale listing shows
   // content hashes for titles and nothing on screen says why, or what to do
