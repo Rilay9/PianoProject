@@ -105,7 +105,17 @@ export interface EngineOptions {
   // Tempo mode
   toleranceMs?: number;
   countInBars?: number;
-  /** Subtracted from input timestamps; measured by the P1 latency test. */
+  /**
+   * The whole of the input path's delay, in ms — and the only place it is
+   * ever removed.
+   *
+   * Subtracted from an input's timestamp before it is judged, for *every*
+   * source. A source reports when it heard the note; deciding how late that
+   * makes the learner is the engine's business alone. The microphone used to
+   * dock its calibration's own figure at the source as well, so a calibrated
+   * learner had it taken off twice and was scored as rushing by exactly their
+   * input latency (docs/05 §9).
+   */
   inputLatencyMs?: number;
   /** Beats per bar for the count-in and tempoTick; from the model when absent. */
   beatsPerBar?: number;

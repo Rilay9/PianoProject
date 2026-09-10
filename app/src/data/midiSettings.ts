@@ -17,7 +17,13 @@ export interface MidiSettings {
    * name alone).
    */
   pinnedInputId: string | null;
-  /** Measured by the diagnostics latency test; subtracted in Tempo mode. */
+  /**
+   * The input path's delay in ms, measured by the diagnostics acoustic
+   * loopback (or set by hand) and subtracted once, in Tempo mode, by the
+   * engine — for the microphone as much as for MIDI. Nothing else anywhere
+   * takes an input latency off: a second subtraction is a scoring bug, not a
+   * safety margin.
+   */
   inputLatencyMs: number;
   /** docs/04-ui-spec.md §7 "transpose input semitones". */
   transposeSemitones: number;

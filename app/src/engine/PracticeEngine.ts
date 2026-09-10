@@ -450,9 +450,12 @@ export class PracticeEngine {
   // --- Tempo mode (docs/05 §3) ---------------------------------------------
 
   private feedTempo(midi: number, velocity: number, rawTMs: number, confidence: number): void {
-    // The input path has a fixed delay (cable, USB stack, browser); the
-    // diagnostics latency test measures it and it is removed here so a
-    // learner is not marked late for their equipment.
+    // The input path has a fixed delay — cable, USB stack, browser, or for a
+    // microphone the room, the capsule and the input buffer. The diagnostics
+    // loopback measures it and it is removed *here, and only here*, so a
+    // learner is not marked late for their equipment. Every source hands the
+    // engine the time it heard the note; no source compensates its own
+    // timestamps, or this line would take the same delay off a second time.
     const tMs = rawTMs - this.session.options.inputLatencyMs;
     const music = this.musicMs;
     // Trust the event's own timestamp where it is sane, but a replayed or

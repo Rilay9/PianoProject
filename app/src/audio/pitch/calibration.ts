@@ -183,6 +183,11 @@ export function measurePitch(
 /**
  * Input latency from the learner playing along with the metronome.
  *
+ * Recorded on the calibration, not applied by it: nothing subtracts this
+ * number. The delay is taken off once, by the engine, from the setting the
+ * Diagnostics screen's acoustic loopback writes — which times the machine
+ * rather than the human and is the better measurement of the two.
+ *
  * docs/05 §11.5 defines it as onset time minus click time. That folds the
  * learner's own timing into the number, which is why the median is used and
  * the result is clamped: a human playing with a click is scattered by tens of

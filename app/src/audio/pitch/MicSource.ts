@@ -43,7 +43,13 @@ export interface MicCalibration {
   gainDb: [number, number][];
   /** Per-pitch inharmonicity coefficient. */
   inharmonicity: [number, number][];
-  /** Measured input latency in ms; subtracted from every event's timestamp. */
+  /**
+   * Input latency in ms as the calibration routine measured it.
+   *
+   * A record of what was measured, not a compensation: nothing here subtracts
+   * it. The delay is taken off once, by the engine, from `inputLatencyMs` —
+   * see `toPerformanceMs` below and `midiSettings.inputLatencyMs`.
+   */
   latencyMs: number;
   /** Room noise floor in dBFS at calibration time. */
   noiseFloorDb: number;
@@ -395,15 +401,18 @@ export class MicSource implements InputSource {
   }
 
   /**
-   * Worklet time → app time, less the calibrated input latency.
+   * Worklet time → app time. A clock conversion, and nothing else.
    *
-   * The latency term is what makes Tempo mode honest: the note reaches the
-   * detector after the room, the microphone and the input buffer have each
-   * added their delay, and without subtracting it every note the owner plays
-   * would be reported late (docs/05 §11.4).
+   * It used to subtract the calibration's `latencyMs` here as well, and that
+   * was a bug: `PracticeEngine.feedTempo` subtracts `inputLatencyMs` from
+   * every event it is given, whatever the source, so a calibrated microphone
+   * had the same delay taken off twice and every note was judged as arriving
+   * earlier than it did (docs/05 §9). Compensation happens once, in the
+   * engine; a source's job is to say *when it heard the note*, which is what
+   * `InputNoteEvent.tMs` means for every other source in `midi/types.ts`.
    */
   private toPerformanceMs(contextMs: number): number {
-    return contextMs + this.clockOffsetMs - (this.calibration?.latencyMs ?? 0);
+    return contextMs + this.clockOffsetMs;
   }
 
   private emitNote(event: InputNoteEvent): void {
