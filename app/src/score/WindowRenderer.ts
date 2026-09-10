@@ -141,6 +141,34 @@ const MAX_SLOTS = 4;
  * and below them. A page puts its systems close together and leaves the
  * spare space at the bottom; so does this, when there is spare space.
  */
+/**
+ * The widest a single bar may be drawn, in multiples of one staff's height.
+ *
+ * A guardrail, not a typesetter: it exists to catch the absurd case, not to
+ * pick a width. Expressed against the engraving rather than in pixels, because
+ * a pixel count is right on one screen and nonsense on the next — and against
+ * one *staff* rather than the whole system, because the system's height
+ * depends on how many staves the music has while the screen's width does not.
+ *
+ * Eight, from the two ends it has to separate. A phone drawing one bar has
+ * roughly four staff-heights of width to give it, and the phone must always
+ * stretch: that is what took the fill from 58 % to 96 %. A laptop drawing one
+ * bar has nearer eighteen, which is the case that reads as a diagram of a bar
+ * rather than a bar. Eight sits clear of both, so the rule never fires on the
+ * screen it exists to help.
+ */
+const MAX_BAR_WIDTH_IN_STAVES = 8;
+
+/**
+ * How much of the stage must be going spare before the music is centred.
+ *
+ * The companion to `MAX_BAR_WIDTH_IN_SYSTEMS`: that one stops the music being
+ * smeared across a wide screen, and this one stops what is left of it sitting
+ * in the corner. A quarter of the width unused is a right margin; two thirds
+ * unused is a layout that looks broken.
+ */
+const CENTRE_WHEN_SPARE = 0.25;
+
 const SLOT_GAP_PX = 24;
 
 /** Manual scrolling suspends auto-scroll for this long (docs §5). */
@@ -309,8 +337,8 @@ function inkOnPage(svg: SVGSVGElement, page: number): { x: number; y: number; wi
  * the engraver's left margin too, so a sheet grown to fill the width would run
  * off the right edge by exactly that margin.
  */
-function place(box: { x: number; y: number }, scale: number): string {
-  const x = -box.x * scale + FIT_INSET_PX;
+function place(box: { x: number; y: number }, scale: number, insetX = FIT_INSET_PX): string {
+  const x = -box.x * scale + insetX;
   const y = -box.y * scale + FIT_INSET_PX;
   return `translate(${String(x)}px, ${String(y)}px) scale(${String(scale)})`;
 }
@@ -432,6 +460,8 @@ export class WindowRenderer {
   /** The MusicXML, kept so the probe can load it lazily. */
   private probeSource = '';
   private probeLoading = false;
+  /** The widest window in the current fit, so every slot shares one offset. */
+  private slotSpan = 0;
   /** What the probe measured, at `pieceInkZoom`; null until it has run. */
   private pieceInk: PieceInk | null = null;
   private pieceInkZoom = -1;
@@ -1646,8 +1676,9 @@ export class WindowRenderer {
     // measure — nought — so a slot drawn again after a blank (a lap, `Again`,
     // a step back) came out as a zero-width sheet that no fit would touch.
     buffer.wrapper.hidden = false;
-    // A slot fills the width; a sliding chunk keeps its bars' natural widths.
-    buffer.view.stretchLastSystem = !this.sliding;
+    // A slot fills the width; a sliding chunk keeps its bars' natural widths,
+    // and so does a slot with more room than the music can justify.
+    buffer.view.stretchLastSystem = !this.sliding && this.mayStretch(range);
     buffer.view.setRange(range);
     buffer.view.render();
     buffer.range = range;
@@ -1725,6 +1756,13 @@ export class WindowRenderer {
     );
     if (scale === null) return;
     const drawn = scale * this.userZoom;
+    // One offset for every slot, for the same reason there is one scale: the
+    // slots are engraved separately, so their ink boxes differ — a bar of
+    // semiquavers is wider than a bar of minims — and centring each in its own
+    // right put four stacked systems at four different left edges. The widest
+    // window decides, so every system starts in the same place and the widest
+    // one is the one that is actually centred.
+    this.slotSpan = Math.max(...boxes.map((entry) => entry.box.width), 0);
     for (const { slot, box } of boxes) {
       const transform = this.placement(slot, box, drawn);
       slot.wrapper.style.transform = transform;
@@ -2042,6 +2080,55 @@ export class WindowRenderer {
    * share of the stage a slot gets. Returns 0 when nothing has been measured
    * yet, and the page is then the stage's width, which is what it always was.
    */
+  /**
+   * Whether a slot's one system may be stretched to fill its page.
+   *
+   * Filling the width is right up to the point where it stops being
+   * engraving. OSMD stretches a page's last system to the page's width, and a
+   * slot draws exactly one system, so on a wide screen however few notes the
+   * bar holds get spread across all of it: on a laptop a single bar of a
+   * beginner's tune was smeared over the whole display and the eye had to
+   * travel its width to find the next note. The phone never showed this,
+   * because there the same bar nearly fills the width already — which is why
+   * stretching was the fix for the phone and the fault on the laptop.
+   *
+   * The judgement is a density: how much page there is per bar, measured
+   * against the piece's own system height rather than a count of pixels. A
+   * proportion of the engraving holds at every zoom and on every screen, which
+   * a pixel number does not — it would be right on one display and absurd on
+   * the next.
+   *
+   * Deliberately *only* the stretch, never the page's width. Narrowing the
+   * page to force density instead makes the engraver break the window's bars
+   * onto more systems, which makes each slot taller, which the fit answers by
+   * shrinking everything — the mismatch the comment above `fitSlots` warns
+   * about, and in practice a renderer that ran out of memory rather than a
+   * tidier sheet. Unstretched, the bars simply keep their natural spacing and
+   * the system ends short of the right edge, which is what a sparse bar on a
+   * wide screen should look like.
+   *
+   * With no measurement of the piece there is no scaled reference to judge
+   * against, so it stretches, exactly as it did before this existed. That
+   * fallback matters: it is the state every window is in for the first frame.
+   */
+  private mayStretch(range: MeasureRange): boolean {
+    const systemHeight = this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0;
+    if (!(systemHeight > 0)) return true;
+    const page = this.measure(this.el).width;
+    if (!(page > 0)) return true;
+    // Per *staff*, not per system. A grand staff is twice as tall as a single
+    // one while the screen is exactly as wide either way, so a reference taken
+    // from the system halved the allowance for one-staff music and refused the
+    // stretch to a treble-only tuplet piece on a phone — the one place the
+    // stretch is the whole point. One staff is the same size in both, so it is
+    // the reference that means the same thing in both.
+    const staves = Math.max(1, stavesPerSystem(this.frontBuffer.view));
+    const staffHeight = systemHeight / staves;
+    const span = range.toMeasure - range.fromMeasure + 1;
+    const bars = Number.isFinite(span) ? Math.max(1, span) : 1;
+    return page / bars <= staffHeight * MAX_BAR_WIDTH_IN_STAVES;
+  }
+
   private expectedSlotScale(stage: { width: number; height: number }): number {
     if (this.readAhead !== 'slots' || stage.height <= 0) return 0;
     // The *piece's* measurement only, never the held one.
@@ -2228,7 +2315,7 @@ export class WindowRenderer {
    * so the stave holds still, at the distance below the slot's top that the
    * tallest thing in the piece needs.
    */
-  private placement(slot: Buffer, box: { x: number; y: number }, scale: number): string {
+  private placement(slot: Buffer, box: { x: number; y: number; width?: number }, scale: number): string {
     const piece = this.frozen
       ? this.frozen.piece
       : this.pieceInkZoom === this.zoomLevel
@@ -2237,8 +2324,9 @@ export class WindowRenderer {
     const svg = slot.view.svg;
     if (!svg) return place(box, scale);
     const staffTop = staffTopOf(slot.view);
-    if (staffTop === null) return place(box, scale);
-    if (piece) return place({ x: box.x, y: staffTop - piece.above }, scale);
+    const inset = this.centredInset(slot, box, scale);
+    if (staffTop === null) return place(box, scale, inset);
+    if (piece) return place({ x: box.x, y: staffTop - piece.above }, scale, inset);
     // Not measured — the probe has not run yet, or the piece is too long for
     // it to ever run: the most any window so far has had above its stave,
     // held like the sizes are. Anchoring on the ink instead moved the stave
@@ -2246,7 +2334,39 @@ export class WindowRenderer {
     // one without.
     if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
     this.held.above = Math.max(this.held.above, staffTop - box.y);
-    return place({ x: box.x, y: staffTop - this.held.above }, scale);
+    return place({ x: box.x, y: staffTop - this.held.above }, scale, inset);
+  }
+
+  /**
+   * Where a system that does not fill the stage sits across it.
+   *
+   * Centred, not pinned left. Once `mayStretch` stops stretching a sparse bar
+   * on a wide screen, the system keeps its natural width — which is the point
+   * — and left-aligned that put a 380 px system at the left edge of a 1512 px
+   * display with eleven hundred pixels of nothing beside it. Compact music in
+   * the corner of an empty screen reads as a layout that failed rather than as
+   * engraving.
+   *
+   * Only ever a *positive* offset, and only for stacked slots: a stretched
+   * system already fills the width so the offset is nought, and a sliding
+   * chunk is positioned horizontally by the slide itself, which this must not
+   * fight.
+   */
+  private centredInset(slot: Buffer, box: { width?: number }, scale: number): number {
+    if (this.readAhead !== 'slots' || this.sliding) return FIT_INSET_PX;
+    // Only the windows that were *refused* the stretch. One decision, one
+    // consequence: if the music was allowed to fill the width then it already
+    // sits where it should, and nudging it to balance the margins moved phone
+    // screenshots for no visible gain. If the stretch was refused then the
+    // system keeps its natural width by design, and that is the only case in
+    // which it can end up in the corner of an empty screen.
+    if (slot.range === null || this.mayStretch(slot.range)) return FIT_INSET_PX;
+    const width = this.slotSpan > 0 ? this.slotSpan : box.width;
+    if (width === undefined || !(width > 0)) return FIT_INSET_PX;
+    const stage = this.measure(this.el).width;
+    if (!(stage > 0)) return FIT_INSET_PX;
+    const spare = stage - width * scale;
+    return spare > stage * CENTRE_WHEN_SPARE ? spare / 2 : FIT_INSET_PX;
   }
 
   /**
