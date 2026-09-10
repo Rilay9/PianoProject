@@ -232,11 +232,11 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     });
   });
 
-    // The drop target, and nothing else on the screen.
+  // The drop target, and nothing else on the screen.
   //
   // It used to be a heading, two lines of prose and three filled buttons above
   // the list — read once, then in the way for ever (`04` §0 R1). The buttons
-  // are text at the foot of the list now, and the sentence about MusicXML and
+  // are one line of text in the header now, and the sentence about MusicXML and
   // PDFs is said by the status line when the picker is opened, which is the
   // moment it means anything.
   const importBlock = el('div.block.import-block', { id: 'library-drop' });
@@ -377,8 +377,20 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     },
   });
 
-  // The ways in to his own scores sit at the foot of the list as text: read
-  // once, then scrolled past for ever (`04` §0 R1 and R3).
+  // The ways in to his own scores. Text rather than boxes, because each is
+  // done once in a while and the list is what the screen is for (`04` §0 R3).
+  //
+  // They used to sit at the foot of the list, which put them 4,325 px down a
+  // 780 px screen with the default sixty rows drawn — reachable only by
+  // scrolling past everything, and further still after "Show more". Owner:
+  // "adding the import and other options to the top of library so you don't
+  // have to scroll all the way down". So they go in the header, the way Plan
+  // puts its own occasional links there: the header does not scroll, so the
+  // list runs under them and they are there whatever row he is looking at.
+  //
+  // Above the search box, not below it: sideways the `h1` is hidden, so this
+  // row becomes the first content on the screen at 16 px down, and `04` §0 R5
+  // wants that inside 48. Below the search it would have started at 60.
   const ownScores = el(
     'div.plan-links',
     { id: 'library-own' },
@@ -411,12 +423,16 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   // The count and the filters are the same subject, so they share a line: what
   // is being shown, and how to change it. Two rows became one, and the list
   // moved another forty pixels up the screen.
-  header.append(search);
+  //
+  // The three links cost the list 24 px: on the owner's phone — 342 CSS px
+  // wide, not 360 — the first row starts 182 px down instead of 158, still
+  // well inside the first screenful (R1), and the links end at 237 px of the
+  // 326 available, so there is nothing for them to wrap over.
+  header.append(ownScores, search);
   body.append(
     el('div.library-countrow', {}, filterToggle, mineChip, count),
     filterRow,
     list,
-    ownScores,
     importBlock,
     status,
   );

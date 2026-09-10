@@ -1144,6 +1144,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   // --- gestures (docs/04 §5) ----------------------------------------------
 
   stage.addEventListener('click', (event) => {
+    // Folded, a tap always brings it back — before any mode or layout decides
+    // it has something else to do with the tap.
+    //
+    // Free play returned here without unfolding, and Scroll while stopped used
+    // the tap to step. Both fold on their own during a run, once the ink
+    // reaches the bar (`startRun` arms the timer whatever the mode is), so the
+    // chrome could fold and the tap that is supposed to undo it did nothing.
+    // It was recoverable only by tabbing to the invisible bar, which is a bug
+    // of its own and is being closed in the same change — so without this the
+    // fix for that one would have turned a nuisance into a dead end.
+    if (section.dataset.chrome === 'folded') {
+      showBar();
+      return;
+    }
     if (mode === 'free') return;
     // Manual tap-to-advance in Scroll layout: right half forward, left back.
     if (settings.layout === 'scroll' && !session?.running) {
@@ -1373,6 +1387,16 @@ export function ScoreScreen(router: Router): HTMLElement {
   function foldChrome(folded: boolean): void {
     bar.dataset.visible = String(!folded);
     section.dataset.chrome = folded ? 'folded' : 'open';
+    // Gone, not merely invisible (`08` §9.20).
+    //
+    // The rule was `opacity: 0; pointer-events: none`, which stops a finger
+    // and stops nothing else: every control kept its tab stop and its
+    // accessible name, and because the shared button wrapper calls `showBar()`
+    // before running a handler, Tab and then Enter into a bar nobody can see
+    // unfolded the chrome *and* fired the button. `inert` takes the whole
+    // subtree out of the tab order and out of the accessibility tree, which is
+    // what "hidden" is supposed to mean here.
+    bar.inert = folded;
     requestAnimationFrame(measureBar);
   }
   function showBar(hideAfterMs = CONTROL_BAR_HIDE_MS): void {
