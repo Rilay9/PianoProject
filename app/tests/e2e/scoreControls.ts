@@ -7,6 +7,41 @@
 
 import { expect, type Page } from '@playwright/test';
 
+/**
+ * Brings the control bar back if it has folded itself away.
+ *
+ * A few seconds into a run the chrome folds when the music has reached it
+ * (`08` §9.20), and folded means gone: the stage is extended underneath and
+ * takes the tap. A person gets the bar back by tapping the sheet, and so must
+ * a test — `score.rotate.spec` clicked `#score-play` without doing so and spent
+ * its whole four-minute budget being told that `#score-stage` intercepts
+ * pointer events.
+ */
+export async function revealBar(page: Page): Promise<void> {
+  if ((await page.locator('#score-bar[data-visible="false"]').count()) === 0) return;
+  await page.locator('#score-stage').click({ position: { x: 20, y: 20 } });
+  await page.waitForTimeout(150);
+}
+
+/**
+ * Presses a control on the bar the way a person does: reveal, then click.
+ *
+ * Twice, because the fold's timer is three seconds and a run can hide the bar
+ * again between the reveal and the click. One tap always brings it back
+ * (`08` §9.34), so a second attempt is the whole recovery; a third would be
+ * hiding a real fault behind a retry loop. The timeouts are short on purpose:
+ * a control that cannot be pressed should say so in seconds, not in minutes.
+ */
+export async function pressControl(page: Page, selector: string): Promise<void> {
+  await revealBar(page);
+  try {
+    await page.locator(selector).click({ timeout: 1_500 });
+  } catch {
+    await revealBar(page);
+    await page.locator(selector).click({ timeout: 3_000 });
+  }
+}
+
 /** Opens the `⋯` sheet, or does nothing if it is already open. */
 export async function openScoreMenu(page: Page): Promise<void> {
   const sheet = page.locator('#score-more-sheet');

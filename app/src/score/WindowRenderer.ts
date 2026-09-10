@@ -445,6 +445,16 @@ export class WindowRenderer {
    */
   private frozen: { scale: number; piece: PieceInk | null } | null = null;
   private freezeHandle: number | null = null;
+  /**
+   * Whether a run is on, so a stage change can put the freeze back.
+   *
+   * `setRunning` is called at the two ends of a run and nowhere else, and the
+   * freeze it takes is released by every rotation. Without knowing that a run
+   * is still going there was nothing to re-freeze against, so a phone turned
+   * mid-run finished it with the scale free to move per window — the 13 %
+   * shrink and the 45 px stave jump the corpus exists to catch.
+   */
+  private running = false;
   /** The single-system pre-render, queued for the frame after a swap. */
   private prerenderHandle: number | null = null;
   /** Watches the stage, because its height settles after the first draw. */
@@ -962,12 +972,31 @@ export class WindowRenderer {
       }
       return;
     }
-    if (step.sourceMeasureIndex === this.slidBar) return;
     const anchor = this.anchorElementFor(step);
     if (!anchor) return;
     const host = this.measure(this.el);
     if (host.width <= 0) return;
     const at = this.measure(anchor).left - host.left;
+    // Once a bar, *and* whenever the cursor has drifted past the far edge of
+    // the band it is supposed to stay in.
+    //
+    // It used to slide on a change of bar alone, which put the cursor at 34 %
+    // at the head of the bar and then let it walk right across the whole bar
+    // uncorrected. On four notes to a bar that is a few per cent and nobody
+    // notices — which is why `sequence.spec` has always passed on *Mary Had a
+    // Little Lamb*. On Chopin's third Prelude, sixteen semiquavers to a bar,
+    // the cursor reached 82 % of the way across with two notes left in front
+    // of it: the read-ahead the sliding layout exists for was gone, and the
+    // owner's word for it was "impossible to play stuff in".
+    //
+    // `SLIDE_TARGET_MAX` was exported and never read: `sequence.spec` asserts
+    // the same 0.45 from a local constant of its own, so the renderer and the
+    // test agreed on a number neither of them shared. This is the first code
+    // that enforces it. `SLIDE_TARGET_MIN` is still referenced nowhere — the
+    // cursor drifting *left* of the band has never been a complaint, and a
+    // number nothing reads is worth deleting rather than keeping as a promise.
+    const drifted = at > host.width * SLIDE_TARGET_MAX;
+    if (step.sourceMeasureIndex === this.slidBar && !drifted) return;
     const delta = host.width * SLIDE_TARGET_FRACTION - at;
     // Never past the start: bar 1 sits where it was engraved rather than
     // being pushed into the middle of an otherwise empty stage.
@@ -1068,6 +1097,27 @@ export class WindowRenderer {
     // on the sideways fit, and the other way round; the next render freezes
     // whatever the new arrangement fits.
     this.frozen = null;
+    this.dropDrawnSheets();
+    return true;
+  }
+
+  /**
+   * Everything drawn belonged to the stage that has just gone.
+   *
+   * Called when the arrangement changes and when the stage changes width — two
+   * different questions with the same answer, because a sheet engraved for one
+   * width is the wrong sheet at another whatever the slots are doing.
+   *
+   * The spare is the reason this has to reach every buffer and not only the
+   * one on the screen. `fitSlots` fits the spare too, so that a swap costs no
+   * fit, and `scaleFor` folds every box it is given into a running maximum
+   * that is never released downward. So a spare still holding the sideways
+   * three-bar chunk — 1,470 px of ink — put 1,470 back into `held.width` the
+   * moment after the turn had cleared it, and the *next* fit divided a 360 px
+   * stage by it: the bar came out at a quarter of the width, on every one-bar
+   * rotation case in `score.rotate.spec`.
+   */
+  private dropDrawnSheets(): void {
     this.slotRanges = this.buffers.map(() => null);
     this.cursorSlot = 0;
     for (const slot of this.buffers) {
@@ -1083,7 +1133,6 @@ export class WindowRenderer {
       slot.wrapper.style.top = '';
       slot.wrapper.style.height = '';
     }
-    return true;
   }
 
   /**
@@ -1390,16 +1439,46 @@ export class WindowRenderer {
     // phone showed after a turn. Height changes alone (the bar hiding) keep
     // what was measured; that is the case the holding exists for.
     const width = Math.round(this.measure(this.el).width);
+    let turned = false;
     if (width > 0) {
       if (this.measuredWidth >= 0 && Math.abs(width - this.measuredWidth) > 2) {
+        turned = true;
         this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
         this.pieceInk = null;
         this.pieceInkZoom = -1;
+        // And the size a run is holding, which was taken on a stage this is
+        // not (`08` §3.3: a turn releases it and the run continues at the new
+        // one). It used to be released only when the *arrangement* changed,
+        // which at one bar per window never happens — `single` both ways up —
+        // so a run frozen sideways kept that scale as a ceiling through the
+        // turn.
+        this.frozen = null;
+        // And every sheet drawn for the old width, the spare included.
+        this.dropDrawnSheets();
       }
       this.measuredWidth = width;
     }
-    if (this.updateReadAhead() && this.currentStep >= 0) this.showStep(this.currentStep);
+    // A new width is a new *engraving*, not only a new fit.
+    //
+    // `updateReadAhead` answers "have the slots changed", and at one bar per
+    // window the answer is no whichever way up the phone is — so this took
+    // the branch that only re-fits, and the sheet on the screen stayed the
+    // sideways sliding chunk: three bars on a 2,340 px page, fitted into 360
+    // px at a scale of 0.24. Measured on Hot Cross Buns turned upright while
+    // paused: 34 px of music in a 662 px stage, and it stays there until the
+    // next note is played — which in Wait mode, paused, is never. The width
+    // assertion passed throughout, because a chunk squeezed to fit the width
+    // does fill the width.
+    //
+    // What actually changed is `sliding`, and with it the range a step wants:
+    // `slideRangeFor` sideways, `windowFor` upright. Redrawing from the
+    // current step asks for the right one and `drawInto` engraves it — which
+    // also clears the chunk's inline page width and puts `stretchLastSystem`
+    // back for a slot.
+    if ((this.updateReadAhead() || turned) && this.currentStep >= 0) this.showStep(this.currentStep);
     else this.fitSlots();
+    // The run keeps going, so it needs a size to keep.
+    if (this.running) this.freezeAfterSettle();
   }
 
   dispose(): void {
@@ -1486,6 +1565,8 @@ export class WindowRenderer {
     // measure — nought — so a slot drawn again after a blank (a lap, `Again`,
     // a step back) came out as a zero-width sheet that no fit would touch.
     buffer.wrapper.hidden = false;
+    // A slot fills the width; a sliding chunk keeps its bars' natural widths.
+    buffer.view.stretchLastSystem = !this.sliding;
     buffer.view.setRange(range);
     buffer.view.render();
     buffer.range = range;
@@ -1733,7 +1814,10 @@ export class WindowRenderer {
     // would have, at a stave thinner than the engraver intended.
     const available = {
       width: stage.width,
-      height: this.readAhead === 'slots' ? stage.height / 2 : stage.height,
+      // Over the slot count, not two: with three or four slots the zoom
+      // search aimed at twice the height a slot actually has, which is the
+      // mismatch the comment beside `fitSlots` warns about.
+      height: this.readAhead === 'slots' ? stage.height / this.slotCount : stage.height,
     };
     // Once per stage size. Without this the fit is re-examined on every window
     // swap — which converges, because the zoom is clamped, but converging is
@@ -1890,23 +1974,10 @@ export class WindowRenderer {
    * go, and fit again with whatever has been learned since.
    */
   setRunning(running: boolean): void {
+    this.running = running;
     if (running) {
-      if (this.frozen || this.freezeHandle !== null) return;
       if (this.probe?.isLoaded && this.pieceInkZoom !== this.zoomLevel) this.measureLoaded();
-      // Not yet: the stage takes the bar's row when a run starts, and the
-      // `ResizeObserver` refits a moment later. Freezing now would hold the
-      // size of the smaller stage for the whole run, with the freed row left
-      // black. A short wait lets the stage settle, then the fit is the one
-      // that is kept.
-      this.freezeHandle = window.setTimeout(() => {
-        this.freezeHandle = null;
-        if (this.disposed) return;
-        this.fitSlots();
-        this.frozen = {
-          scale: this.currentScale(),
-          piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
-        };
-      }, 150);
+      this.freezeAfterSettle();
       return;
     }
     if (this.freezeHandle !== null) {
@@ -1916,6 +1987,35 @@ export class WindowRenderer {
     if (!this.frozen) return;
     this.frozen = null;
     this.fitSlots();
+  }
+
+  /**
+   * Takes the size the run will keep, once the stage has stopped moving.
+   *
+   * Not at once: the stage takes the bar's row when a run starts, and the
+   * `ResizeObserver` refits a moment later. Freezing now would hold the size
+   * of the smaller stage for the whole run, with the freed row left black. A
+   * short wait lets the stage settle, then the fit is the one that is kept.
+   *
+   * Also called after a turn. A rotation releases the frozen scale — it was
+   * taken on a stage that no longer exists — and `08` §3.3 says the run then
+   * continues *at the new one*, which means taking a new one. Nothing did:
+   * `updateReadAhead` set `frozen` to null with a comment saying the next
+   * render would freeze whatever the new arrangement fits, and no code
+   * anywhere put it back, so every run turned mid-piece finished with its
+   * scale free to move from window to window.
+   */
+  private freezeAfterSettle(): void {
+    if (this.frozen || this.freezeHandle !== null) return;
+    this.freezeHandle = window.setTimeout(() => {
+      this.freezeHandle = null;
+      if (this.disposed || !this.running) return;
+      this.fitSlots();
+      this.frozen = {
+        scale: this.currentScale(),
+        piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
+      };
+    }, 150);
   }
 
   /** The scale the cursor slot is drawn at, from its transform; 0 if none. */
@@ -2425,26 +2525,66 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
     system.inkTop = Math.min(system.inkTop, top);
     system.inkBottom = Math.max(system.inkBottom, bottom);
   }
-  // The *typical* system, not the tallest. Measured on Suo Gan: three systems
-  // 79 px tall and one 156, because a few low notes hang far under the stave
-  // for two bars — and fitting every window to that one cost 40 % of the size
-  // everywhere. The upper quartile keeps a piece that is tall throughout
-  // tall, and lets a rare bar shrink the sheet once when it arrives, which
-  // the held sizes do on their own.
-  // Rounded *up*: with two or three systems the quartile is the tallest of
-  // them — the floor picked the shortest of two, and a piece whose second
-  // system carried the high notes was fitted to its first.
-  const quartile = (values: number[]): number => {
-    const sorted = [...values].sort((a, b) => a - b);
-    return sorted[Math.min(sorted.length - 1, Math.ceil((sorted.length - 1) * 0.75))] ?? 0;
-  };
-  const above = quartile(systems.map((s) => s.top - s.inkTop));
-  const below = quartile(systems.map((s) => s.inkBottom - s.bottom));
-  const span = Math.max(...systems.map((s) => s.bottom - s.top));
+  const { above, below, height } = pieceExtent(systems);
   // The widest bar the engraver drew, which is the page unless a bar was too
   // dense to fit it and ran past the edge; never less than a stave, so a piece
   // whose ink cannot be measured still gets the page.
   const width =
     inkRight > inkLeft ? Math.max(staveWidth, inkRight - inkLeft) : (inkBox(svg)?.width ?? 0);
-  return { above, below, height: above + span + below, width };
+  return { above, below, height, width };
+}
+
+/** One system of the probe's page: its stave lines, and how far its ink reaches. */
+export interface SystemExtent {
+  /** The top and bottom of the stave *lines*. */
+  top: number;
+  bottom: number;
+  /** The top and bottom of everything drawn that belongs to this system. */
+  inkTop: number;
+  inkBottom: number;
+}
+
+/**
+ * How much room a system of this piece needs (`08` §3.2 step 3).
+ *
+ * The *typical* system, not the tallest. Measured on Suo Gan: three systems
+ * 79 px tall and one 156, because a few low notes hang far under the stave for
+ * two bars — and fitting every window to that one cost 40 % of the size
+ * everywhere. The upper quartile keeps a piece that is tall throughout tall,
+ * and lets a rare bar shrink the sheet once when it arrives, which the held
+ * sizes do on their own. Rounded *up*: with two or three systems the quartile
+ * is the tallest of them — the floor picked the shortest of two, and a piece
+ * whose second system carried the high notes was fitted to its first.
+ *
+ * The height is the quartile of the systems' **own extents**, which is what
+ * `08` §3.2 says and what the code did not do. It used to be the *tallest*
+ * stave span plus the quartile of the overhangs above and the quartile of the
+ * overhangs below — three different systems' worst cases added together, so
+ * the answer was a height no system in the piece had. On Chopin's Nocturne op.
+ * 27 no. 1 that reserved 505 px for systems whose tallest is 463 and whose
+ * typical is 397, and the sheet was drawn at 0.56 where 0.71 fits: the staves
+ * covered 54 % of a 342 px screen. It is also why the same piece looked one
+ * size on load and another a second later — until the probe answers, the
+ * tallest window *seen* stands in (313 px here), so the arrival of a figure
+ * 61 % larger was a visible shrink rather than the small correction the
+ * measurement is meant to be.
+ *
+ * `above` and `below` stay quartiles of the overhangs on their own: placement
+ * anchors the stave `above` from the slot's top, and that has to be the
+ * typical overhang whatever the height works out to.
+ */
+export function pieceExtent(systems: readonly SystemExtent[]): {
+  above: number;
+  below: number;
+  height: number;
+} {
+  const quartile = (values: number[]): number => {
+    const sorted = [...values].sort((a, b) => a - b);
+    return sorted[Math.min(sorted.length - 1, Math.ceil((sorted.length - 1) * 0.75))] ?? 0;
+  };
+  return {
+    above: quartile(systems.map((s) => s.top - s.inkTop)),
+    below: quartile(systems.map((s) => s.inkBottom - s.bottom)),
+    height: quartile(systems.map((s) => s.inkBottom - s.inkTop)),
+  };
 }

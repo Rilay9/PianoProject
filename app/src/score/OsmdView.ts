@@ -219,6 +219,29 @@ export class OsmdView {
     return this.osmd.Zoom;
   }
 
+  /**
+   * Whether the last system on the page is stretched out to the page's width.
+   *
+   * A slot holds exactly one system, so that system is always the page's last
+   * — and OSMD does not stretch the last one: it caps the note spacing at
+   * `LastSystemMaxScalingFactor` and then trims the stave lines back to where
+   * the music ends. A slot's stave is therefore as wide as its *bar* happens
+   * to be, not as wide as the stage, while the fit divides by a stave measured
+   * on the probe's page — where every system but the last *is* stretched. So
+   * there is no term anywhere saying "this slot is narrower than the stage,
+   * grow it", and a sparse bar simply stays small: Chopin's Nocturne op. 27
+   * no. 1 drew its staves across 58 % of a 342 px screen and 91 % of a 360 px
+   * one, at the same zoom, because at 342 the bar's natural width fell short
+   * of the page and at 360 it did not. Stretched, the two measurements are of
+   * the same thing.
+   *
+   * Off for the sliding chunk, where the bars' natural widths are the point:
+   * the sheet has to have something to slide past (P21e A3).
+   */
+  set stretchLastSystem(value: boolean) {
+    this.osmd.EngravingRules.StretchLastSystemLine = value;
+  }
+
   set zoom(value: number) {
     // 0.5..2.0 per docs/01-architecture.md §4.1.
     this.osmd.Zoom = Math.min(2, Math.max(0.5, value));

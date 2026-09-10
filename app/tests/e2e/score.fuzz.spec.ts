@@ -22,7 +22,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { installMidiMock, type MidiMock } from './fixtures/midiMock';
-import { withScoreMenu } from './scoreControls';
+import { pressControl, revealBar, withScoreMenu } from './scoreControls';
 
 const UPRIGHT = { width: 390, height: 844 };
 const SIDEWAYS = { width: 880, height: 412 };
@@ -143,26 +143,6 @@ async function snapshot(page: Page): Promise<Snap> {
       run: (window as Hooked).__pianopath?.scoreRun?.() ?? null,
     };
   });
-}
-
-/**
- * The bar hides itself a few seconds into a run when it overlaps the music;
- * a person taps the stage to get it back, and so does the walk.
- */
-async function reveal(page: Page): Promise<void> {
-  if ((await page.locator('#score-bar[data-visible="false"]').count()) === 0) return;
-  await page.locator('#score-stage').click({ position: { x: 20, y: 20 } });
-  await page.waitForTimeout(150);
-}
-
-async function pressControl(page: Page, selector: string): Promise<void> {
-  await reveal(page);
-  try {
-    await page.locator(selector).click({ timeout: 1_500 });
-  } catch {
-    await reveal(page);
-    await page.locator(selector).click({ timeout: 3_000 });
-  }
 }
 
 type ActionName =
@@ -309,7 +289,7 @@ for (const { seed, item: ITEM, sizes } of WALKS) {
           await pressControl(page, `#score-hands-${['R', 'L', 'both'][Math.floor(random() * 3)] ?? 'R'}`);
           break;
         case 'mode':
-          await reveal(page);
+          await revealBar(page);
           await page.locator('#score-mode').selectOption(['wait', 'tempo', 'wait', 'listen', 'free'][Math.floor(random() * 5)] ?? 'wait');
           break;
         case 'hear':
