@@ -63,6 +63,9 @@ body {
 }
 
 body {
+  /* The containing block for the update toast and the error banner, which are
+     appended here and positioned against it — see the comment on those two. */
+  position: relative;
   background: var(--bg);
   color: var(--text);
   font-family:
@@ -331,6 +334,40 @@ body {
 
 .heatmap-key__label {
   margin-right: 4px;
+}
+
+/* A folder of a thousand files takes real time to read. Countable, not a
+   spinner: "Reading 142 of 900" is the whole point, so the number and the
+   filename are the two things this has to show without competing for room. */
+.folder-progress {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.folder-progress__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.folder-progress__track {
+  flex: 1 1 80px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.folder-progress__fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
 }
 
 /* Folded explanation, under the thing it explains (`04` §0 R1). */
@@ -869,6 +906,40 @@ body {
   text-decoration: none;
 }
 
+/* The procedures and the terms.
+
+   The rewrite gave them classes and left the stylesheet alone, on the
+   reasoning that a browser draws an `ol` and a `dl` sensibly by itself. It
+   does, and two things about this card still needed saying. `.card p` mutes
+   every paragraph here, so an unstyled `dd` came out at full contrast beside
+   grey prose and read as the emphasis — right for the steps of a procedure
+   being followed with the phone in one hand, wrong for the second line of a
+   definition. And the browser's default `ol` margins are a full line above and
+   below, which on a 342 px screen puts an eleven-section guide further from
+   its own headings than the headings are from each other. */
+.guide-steps {
+  margin: 6px 0 10px;
+  padding-left: 22px;
+}
+
+.guide-steps > li {
+  margin-bottom: 4px;
+}
+
+.guide-terms {
+  margin: 6px 0 10px;
+}
+
+.guide-terms > dt {
+  margin-top: 8px;
+}
+
+.guide-terms > dd {
+  margin: 2px 0 0;
+  padding-left: 0;
+  color: var(--text-muted);
+}
+
 .guide-figure {
   margin: 12px 0;
 }
@@ -1147,6 +1218,24 @@ body {
   margin: 0 0 12px;
 }
 
+/* Controls in the tour have to be *hit*, not merely seen.
+
+   `04` §0 puts the floor at 40 px for a control and 48 for a button. A select
+   in a settings row is 36, and a number box is whatever the browser draws it
+   at with no rule at all — about 21 px on Chrome, which is a third of a
+   fingertip. The tour is where a first-time user meets forty of these in a
+   row, on a phone, one-handed, and it is the screen with the least room to
+   spare: sideways on a 342 px-tall phone the whole step is about 110 px, so
+   this is also where a too-small control is hardest to aim at.
+
+   Scoped to the tour because `.setting-row select` and the unstyled number box
+   are shared with Settings and the microphone screen, which are not this
+   file's to change here. The same rule belongs on all three. */
+.screen[data-screen='setup'] .setting-row select,
+.screen[data-screen='setup'] .setting-row input[type='number'] {
+  min-height: 44px;
+}
+
 @media (orientation: landscape) and (max-height: 500px) {
   .setup-choices {
     flex-wrap: nowrap;
@@ -1214,8 +1303,15 @@ body {
     padding-top: 6px;
   }
 
+  /* 40, not 36. Sideways the phone is 342 px tall and every row is fought
+     over, which is why these were shrunk — but `04` §0 puts the floor for a
+     control at 40 and Back, Skip and Next are the three the whole tour depends
+     on: a first-time user who cannot hit Next has a brick. Four pixels back is
+     the smallest thing on this screen worth paying for, and the sweep in
+     `tests/states/audit.ts` had this as the only real fault on the sideways
+     walk of all eight steps. */
   .setup-footer > button {
-    min-height: 36px;
+    min-height: 40px;
     padding-top: 4px;
     padding-bottom: 4px;
   }
@@ -1303,6 +1399,15 @@ body {
   border-color: var(--accent);
   color: var(--accent-contrast);
 }
+
+/* `.button--secondary` has no rule of its own, on purpose: the bordered,
+   unfilled `.button` above *is* the secondary look, and a rule repeating it
+   would be one more place to keep in step. Written down because the class was
+   raised as "a class with no rule, the same shape as the corner chip that had
+   none and drew itself into the notation" — the corner had no fallback and
+   this has one, which is the whole difference. The quiet variant is not a
+   modifier at all: `widgets.ts` gives it `.link-button`, which does have a
+   rule. */
 
 .link-button {
   appearance: none;
@@ -1612,7 +1717,27 @@ input[type='checkbox'] {
   display: none;
 }
 
-[data-chrome='folded'] .score-stage__corner {
+/* Not on a tablet: there the header does not fold, so it is still saying
+   `bar n / m` and a chip over the sheet would say it twice. */
+/* Folded, the sheet starts below the chip rather than under it.
+
+   The chip is drawn *over* the notation on purpose — that is the trade for
+   getting `bar n / m` without a row of its own — but over is not the same as
+   on top of a note. On Greensleeves folded, it sat on a `G` chord symbol. The
+   answer is to shift the ink down by the chip's height, not to move the chip:
+   the top-right corner is where it belongs and moving it into the bar's row is
+   impossible while folded, because while folded there is no bar.
+
+   On the buffers rather than the stage: `.score-buffer` is `inset: 0` and the
+   renderer's placement is a transform inside it, so padding on the stage would
+   move nothing. It costs the music 22 px of a screen that has just been given
+   back the bar's whole row, which is 44. Not on a tablet, where the chip is
+   never drawn (the header does not fold there). */
+.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-buffer {
+  top: var(--score-corner-h, 22px);
+}
+
+.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-stage__corner {
   display: block;
   position: absolute;
   top: 4px;
@@ -1829,6 +1954,21 @@ input[type='checkbox'] {
 .dev-score__drop.is-over {
   border-color: var(--accent);
   color: var(--text);
+}
+
+/* The input-latency box, on Diagnostics under the loopback measurement
+   (`audio/loopbackLatency`).
+
+   `.setting-row input[type='number']` has no rule anywhere in this file, so
+   the browser draws one at its own default — about 21 px tall against the 40
+   `04` §0 asks for. That is a third of a fingertip, on the single control that
+   is left when the measurement cannot run: headphones in, permission refused,
+   echo cancellation the browser will not let go of. Named in the microphone's
+   family because it is the microphone's number; the same floor is owed to
+   every other number box in the app, which is a different selector and a
+   different owner. */
+.mic-latency-input {
+  min-height: 44px;
 }
 
 /* Microphone level meter (docs/04 §5: "amber mic feedback + level meter"). */
@@ -2105,6 +2245,21 @@ input[type='checkbox'] {
 .score-bar[data-visible='false'] {
   opacity: 0;
   pointer-events: none;
+}
+
+/* Folded, the header goes with the bar — upright, and not on a tablet.
+
+   `data-chrome='folded'` was written and only the corner chip ever read it, so
+   the header stayed where it was: `bar n / m` in the header *and* `bar n / m`
+   in the corner, which is the duplicate this round set out to end, in a new
+   place. It also meant the stage never got the row the fold is for.
+
+   Not on a tablet: `04` §7a says the screens are the same there and the tablet
+   has the height to spare. Not sideways either — sideways the header is
+   already gone and its contents live in the bar's left end, which fades with
+   the bar. */
+.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-head {
+  display: none;
 }
 
 /* Hidden means gone (`08` §9.20): `display: flex` above beat the user-agent
@@ -3306,6 +3461,41 @@ input[type='checkbox'] {
   padding: 8px 0;
 }
 
+/* The posture checklist: one tickable line per item.
+
+   `.drill-stage` centres a single card, which is right for a note to name or a
+   chord to play and wrong for a list — without these the six labels are inline
+   boxes and run together into one wrapped paragraph with checkboxes loose in
+   it. The rows are 44 px because the whole row is the target: `04` §0 wants 40
+   at the least, and a 22 px tick box beside text you cannot tap is the thing
+   the sweep in `tests/states/audit.ts` looks for. */
+.checklist {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.checklist-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.checklist-row:last-child {
+  border-bottom: 0;
+}
+
+/* The tick box does not shrink when the line beside it wraps to three. */
+.checklist-row > input[type='checkbox'] {
+  flex: none;
+}
+
 .drill-prompt {
   text-align: center;
   font-size: 1.05rem;
@@ -3665,7 +3855,26 @@ input[type='checkbox'] {
 
 .error-banner,
 .update-toast {
-  position: fixed;
+  /* `absolute`, not `fixed`, and this is the whole fix for the update toast the
+     owner photographed half below the screen.
+
+     A fixed element is positioned against the *layout* viewport, and Chrome on
+     Android sizes that with the address bar retracted — the same fact that put
+     the tab bar off the bottom of the screen in `08dbd45`. So `bottom: 12px`
+     was 12 px above an edge that is not the edge you can see, and the toast sat
+     under the address bar. `100dvh` fixed the shell because the shell is an
+     element; it cannot help a fixed child, because a fixed child is not
+     positioned against its parent at all.
+
+     `body` is `100dvh` and `overflow: hidden`, so an absolute child anchored to
+     it lands on the visible bottom edge and is clipped rather than hidden if
+     anything is ever wrong. Both of these are appended to `document.body`
+     (`showUpdateToast`, `installErrorBoundary`), so `body` is the containing
+     block once it is positioned.
+
+     Not provable here: an emulated viewport has no address bar, which is the
+     entire condition. It needs the phone. */
+  position: absolute;
   left: 12px;
   right: 12px;
   bottom: calc(12px + var(--safe-bottom));
@@ -3722,7 +3931,7 @@ input[type='checkbox'] {
    full, because most of them are and a permanent nag reads as noise. */
 .needs {
   margin: 0 0 0.5rem;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .needs--short {
@@ -3806,7 +4015,7 @@ input[type='checkbox'] {
 }
 
 .paper-notes {
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 /* --- Reordering the track chips (docs/04 §3, P18) ----------------------- */
