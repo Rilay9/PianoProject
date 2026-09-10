@@ -294,15 +294,23 @@ status line says why the screen is empty, or a black rectangle reads as broken.
               layout = scroll ─────────────────────────► SCROLL
                     │
    layout = window ─┤
-                    ├─ barsPerWindow ≥ 2 AND (upright OR tall) ──► SLOTS
+                    ├─ upright OR tall ──────────────────────────► SLOTS (1–4)
                     └─ otherwise ───────────────────────────────► CHUNK
 ```
+
+**`barsPerWindow` is not in that decision any more.** It used to require 2 or more before the
+slot arrangement was allowed, on the reading that one bar has no halves to alternate. What that
+did on a phone was draw one bar and leave the rest of the screen black — the owner's own
+five-finger exercise used 57 % of a 342 x 740 stage with a whole second system's worth of room
+going spare, and was photographed as the score being compressed. One bar per window means one
+bar *in each system*; how many systems there are is a question about the room, and
+`chooseSlotCount` answers it.
 
 **Height, not orientation.** Two systems need vertical room, not portraitness: a tablet sideways
 has 900 px and reading two systems beats sliding one; a phone sideways has 360, where a second
 system halves a staff already at its minimum.
 
-#### SLOTS — two to four systems, karaoke
+#### SLOTS — one to four systems, karaoke
 
 Slots stacked from the top, each holding `max(1, ⌊barsPerWindow / 2⌋)` bars. **That
 arithmetic is the open question, not a settled rule:** it was written when SLOTS meant exactly
@@ -316,6 +324,16 @@ never more than the piece has blocks. Four on the owner's phone upright, where t
 the stage (the state gallery measured it) and left the rest black. Each slot is an engraver
 loaded with the piece, so a piece longer than the probe's cap keeps two. The count is chosen at
 the first fit and held for a run, like the scale.
+
+**And one, when two would make both unreadable.** On a dense piece upright the *height* is what
+binds and the two systems lose together: Chopin's Nocturne op. 27 no. 1 at 342 x 740 drew its
+staves across 60 % of the width and 42 % of the height, with the rest of the stage black — the
+"the score loads compressed" in the owner's photographs. One system of the same piece is drawn
+at 0.82 rather than 0.61, a third larger, at 82 % of the width. So the count may be **1**, and it
+is only taken when two systems would cost a quarter of the size or more (`ONE_SYSTEM_GAIN`); a
+four-bar tune is width-limited and never reaches that branch. The cost is that invariant 7 does
+not hold there — with one system the next bar is not on the screen — and that is the trade: a
+readable bar you can play beats an unreadable pair with a preview.
 
 ```
 cursor in slot k                          slots k+1 … round to k−1 show the next blocks
@@ -703,7 +721,9 @@ Numbered for citation. Each is falsifiable; most are already testable.
 **Position and read-ahead**
 6. The cursor's system is never re-drawn: in SLOTS the `<svg>` holding it is the same DOM node
    for every step within its block.
-7. The bar of the next step is on the screen at every step but the last.
+7. The bar of the next step is on the screen at every step but the last — **except where the
+   arrangement is one system**, which upright is the answer to a piece too tall for two (§4.1).
+   There the next bar arrives when the window turns, and the size is what was bought with it.
 8. The end of a piece fills both slots wherever there are bars behind to fill them with.
 9. Exactly one cursor band, and at most one read-ahead line, exist in the document.
 10. No overlay outlives its anchor: after any refit, rotation or window change, every band is

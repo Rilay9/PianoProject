@@ -246,16 +246,23 @@ function verdict(page: Page, check: Verdict): Promise<string> {
   return shoot(page).then(check);
 }
 
-/** One system, filling the width, inside the height: a turn to upright at one bar. */
+/** Re-engraved for the upright stage, filling the width: a turn at one bar. */
 const uprightSingle: Verdict = (shot) => {
   const stage = shot.stage;
   if (!stage) return 'there is no stage';
   const notes: string[] = [];
-  // One bar has no halves to alternate, so upright is a single system, not
-  // the two slots. `08` §3.2.
-  if (shot.readAhead !== 'single') notes.push(`read-ahead is ${String(shot.readAhead)}`);
+  // **Changed deliberately.** This used to require `single` upright, because
+  // one bar per window refused the slot arrangement outright. That drew one bar
+  // and left the rest of the phone black — 57 % of the stage used on the owner's
+  // own exercise — so how many systems is decided by the room now, and upright
+  // is `slots` with whatever count fits (`08` §4.1). What this case is really
+  // about is the *turn*: the sheet must be re-engraved for the width it is now,
+  // not the sideways chunk squeezed into it, which is what the page and
+  // engraving checks below say.
+  if (shot.readAhead !== 'slots' && shot.readAhead !== 'single')
+    notes.push(`read-ahead is ${String(shot.readAhead)}`);
   const drawn = shot.slots.filter((s) => s.ink !== null);
-  if (drawn.length !== 1) notes.push(`${String(drawn.length)} slots are drawn`);
+  if (drawn.length < 1) notes.push(`${String(drawn.length)} slots are drawn`);
   const front = drawn[0];
   const ink = front?.ink;
   if (!ink || !front) notes.push('nothing is drawn');

@@ -76,6 +76,21 @@ const SLIDE_TARGET_FRACTION = 0.34;
 export const SLIDE_TARGET_MIN = 0.25;
 export const SLIDE_TARGET_MAX = 0.45;
 
+/**
+ * The smallest a five-line staff may be drawn, in pixels on the glass.
+ *
+ * This is the only floor the fit has, and everything else gives way to it: the
+ * screen is filled with as much of the piece as will go, and the size falls
+ * until a staff reaches this, at which point fewer systems are drawn instead.
+ *
+ * 40 px is five lines with ten between them — about the smallest a note head
+ * and its ledger lines stay separable at arm's length on a phone. Under it,
+ * notation becomes texture: the thing the owner meant by "impossible to play
+ * stuff in". Over it, more music on the screen is worth more than bigger notes,
+ * which is the thing they meant by "compressed".
+ */
+const MIN_STAFF_PX = 40;
+
 /** Bars of read-ahead drawn to the right of the window, sideways. */
 const SLIDE_READ_AHEAD_BARS = 2;
 
@@ -1077,12 +1092,23 @@ export class WindowRenderer {
     // A miniature is a phone: never tall.
     const tall =
       this.orientation !== null || typeof window === 'undefined' ? false : window.innerHeight >= TWO_SYSTEMS_MIN_PX;
+    // How many systems is a question about the *space*, not about the setting.
+    //
+    // This used to refuse the slot arrangement whenever `barsPerWindow` was 1,
+    // on the reading that one bar has no halves to alternate. What that
+    // actually did on a phone was draw one bar and leave the rest of the screen
+    // black: the owner's own five-finger exercise at 342 x 740 used **57 % of
+    // the stage** with a whole second system's worth of room going spare, and
+    // photographed it as the score being compressed. One bar per window means
+    // one bar in each system — `barsPerSlot(1)` is 1 — and there is no reason
+    // the screen may only hold one of them.
+    //
+    // `chooseSlotCount` decides how many actually fit, and since it can now
+    // answer 1, "slots" spans the whole range: one readable system on a dense
+    // piece, up to four on a sparse one. Sideways is untouched — neither upright
+    // nor tall — so the sliding chunk is still the sideways arrangement.
     const next: 'slots' | 'single' =
-      this.layout === 'scroll'
-        ? 'single'
-        : (upright || tall) && this.barsPerWindow >= 2
-          ? 'slots'
-          : 'single';
+      this.layout === 'scroll' ? 'single' : upright || tall ? 'slots' : 'single';
     // Written every time, not only on a change: the field starts at
     // `single`, so a stage that is sideways from the first step never wrote
     // the attribute at all and the stylesheet had nothing to match.
@@ -1148,7 +1174,10 @@ export class WindowRenderer {
       this.buffers.length,
       Math.max(2, Math.ceil(this.model.sourceMeasureCount / barsPerSlot(this.barsPerWindow))),
     );
-    if (this.frozen || this.freezeHandle !== null) return Math.min(most, Math.max(2, this.slotCount));
+    // A run keeps the count it started with, whatever it was — including one.
+    // The old `Math.max(2, …)` here would have forced a second system back on
+    // during a run over a dense piece, which is the size change P1 forbids.
+    if (this.frozen || this.freezeHandle !== null) return Math.min(most, Math.max(1, this.slotCount));
     const stage = this.measure(this.el);
     const height = this.held.zoom === this.zoomLevel ? Math.max(this.held.height, this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0) : 0;
     const width = Math.max(
@@ -1156,11 +1185,34 @@ export class WindowRenderer {
       this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.width ?? 0) : 0,
     );
     if (!(height > 0) || !(width > 0) || stage.height <= 0 || stage.width <= 0) return 2;
+    // Show as much of the piece as the screen can hold, and let the size be
+    // whatever that costs — down to the point where a staff stops being
+    // readable, and no further.
+    //
+    // The owner's rule, in their words: choose the size that fits all the notes
+    // it has to show, fill the screen, and if there is a lot of music it comes
+    // out small; that is the trade you make. What the code did instead was pick
+    // the size *one system* could be at the full width and then stack however
+    // many happened to fit, which leaves the remainder of the division as black
+    // — a third of a phone, every time, whatever the piece.
+    //
+    // So this counts downward from as much of the piece as there are buffers
+    // for, and takes the first count whose staff still clears `MIN_STAFF_PX`.
+    // The floor is in the one unit readability actually has: a five-line staff,
+    // in pixels on the glass. Not a share of the width, which says nothing — a
+    // stave line spans the whole line whether it carries five notes or none,
+    // which is exactly the measurement that let this go unnoticed.
     const byWidth = (stage.width - FIT_MARGIN_PX) / width;
-    const byHeightForTwo = (stage.height / 2 - FIT_MARGIN_PX) / height;
-    if (byWidth >= byHeightForTwo) return 2;
-    const systemPx = height * byWidth + FIT_MARGIN_PX;
-    return Math.max(2, Math.min(most, Math.floor((stage.height + SLOT_GAP_PX) / (systemPx + SLOT_GAP_PX))));
+    const staff = this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.staff ?? 0) : 0;
+    for (let count = most; count > 1; count -= 1) {
+      const perSlot = (stage.height - SLOT_GAP_PX * (count - 1)) / count;
+      const scale = Math.min(byWidth, (perSlot - FIT_MARGIN_PX) / height);
+      // Before the probe has measured, there is no staff to judge; two systems
+      // is the old default and the fit is redone the moment it lands.
+      if (staff <= 0) return Math.min(2, most);
+      if (staff * scale >= MIN_STAFF_PX) return count;
+    }
+    return 1;
   }
 
   private blank(slot: Buffer): void {
@@ -1558,7 +1610,28 @@ export class WindowRenderer {
       const stageWidth = Math.max(1, this.measure(this.el).width);
       buffer.wrapper.style.width = `${String(Math.round(bars * stageWidth))}px`;
     } else {
-      buffer.wrapper.style.width = '';
+      // Upright, the page is made *wider than the stage* by exactly the amount
+      // the fit is about to shrink it by, so the system comes back to the
+      // stage's width once it is drawn.
+      //
+      // This is the other half of filling the screen, and without it the first
+      // half makes things worse. The scale is decided by the height — how many
+      // systems the stage holds — so a page engraved at the stage's own width is
+      // drawn at that scale and ends short of the right edge by the same
+      // fraction: three systems of the B major five-finger exercise filled the
+      // stage top to bottom and left a third of every line empty on the right.
+      // Trading black at the bottom for black at the right is not a fix.
+      //
+      // OSMD stretches the last system of a page to the page's width, so a
+      // wider page means the same bar spread further across it; scaled back
+      // down, it spans the stage exactly. The height is untouched, because a
+      // page's width does not change how tall a staff is.
+      const stageBox = this.measure(this.el);
+      const shrink = this.expectedSlotScale(stageBox);
+      buffer.wrapper.style.width =
+        shrink > 0 && shrink < 1
+          ? `${String(Math.round(stageBox.width / shrink))}px`
+          : '';
     }
     // Shown *before* it is engraved. A slot blanked at the end of the piece
     // is `display: none`, and the engraver lays out into the width it can
@@ -1655,7 +1728,40 @@ export class WindowRenderer {
     // are known now. A different answer redraws once, from the current step.
     if (this.readAhead === 'slots' && !this.frozen && this.freezeHandle === null) {
       const count = this.chooseSlotCount();
-      if (count !== this.slotCount) {
+      // The page a slot was engraved on, against the page it should be on now.
+      //
+      // A slot's page is chosen at draw time from the scale the fit is about to
+      // apply, and that scale is not known until the piece has been measured —
+      // which happens on idle, after the first draw. So the first slots of a
+      // dense piece are engraved on a stage-wide page, the measurement lands, a
+      // re-fit shrinks them, and nothing re-engraves: Chopin's Nocturne came out
+      // with its staves across 61 % of the width and the rest of every line
+      // empty. Re-fitting cannot fix a page; only re-drawing can.
+      const wanted = this.expectedSlotScale(available);
+      const engraved = Number.parseFloat(this.buffers[this.cursorSlot]?.wrapper.style.width ?? '');
+      const shouldBe = wanted > 0 && wanted < 1 ? available.width / wanted : available.width;
+      const pageIsStale =
+        shouldBe > 0 && Math.abs((Number.isFinite(engraved) ? engraved : available.width) - shouldBe) > shouldBe * 0.1;
+      // A stale page is corrected *before the learner has played anything*, and
+      // never once they have.
+      //
+      // `drawInto` chooses the page every time it draws, so a slot picks up the
+      // right one the moment it is next engraved anyway — which for the slot the
+      // cursor has left is the settle, a beat later. Forcing it here re-draws
+      // the slot the cursor is *in*, and §9.6 says that system is never re-drawn
+      // while it holds the cursor: `score.slots.spec` caught bar 1 being
+      // re-engraved between steps 3 and 4.
+      // Both the count and the page are settled before the first step is
+      // played, and neither moves afterwards.
+      //
+      // The count depends on the piece measurement, which lands on idle after
+      // the first draw — so without this guard a piece could re-plan its slots
+      // in the middle of being played, which re-engraves every system including
+      // the one holding the cursor. `08` §9.6 forbids exactly that, and
+      // `score.slots.spec` and `score.run.spec` both caught it. A count that
+      // arrives too late to be used is a count for the next visit.
+      const atTheStart = this.currentStep <= 0;
+      if (atTheStart && (count !== this.slotCount || pageIsStale)) {
         this.slotCount = count;
         this.el.dataset.slots = String(count);
         this.slotRanges = this.buffers.map(() => null);
@@ -1903,6 +2009,38 @@ export class WindowRenderer {
     }
 
     if (bestHeight > 0 && bestZoom !== this.zoomLevel) this.applyZoom(bestZoom);
+  }
+
+  /**
+   * The scale a slot is about to be drawn at, from the height alone.
+   *
+   * Used to choose the page a slot is engraved on, before it is engraved — so
+   * it cannot ask the sheet, and works from the piece's measurement and the
+   * share of the stage a slot gets. Returns 0 when nothing has been measured
+   * yet, and the page is then the stage's width, which is what it always was.
+   */
+  private expectedSlotScale(stage: { width: number; height: number }): number {
+    if (this.readAhead !== 'slots' || stage.height <= 0) return 0;
+    // The *piece's* measurement only, never the held one.
+    //
+    // `held` is a running maximum that grows as windows are drawn — including
+    // during the very fit that would read this — so a page chosen from it is
+    // stale the instant it is engraved, the fit asks for another, and the slots
+    // re-engrave without ever settling. That loop churned the buffers' classes
+    // and ranges continuously, and four specs caught it by sampling a screen
+    // that was mid-redraw: no `is-cursor` to invert, the cursor's own system
+    // being re-drawn, and more bars on the screen than the window holds.
+    //
+    // The probe's figure does not move once it has landed, so a page chosen
+    // from it converges after exactly one redraw. Before it lands there is
+    // nothing to choose from and the page is the stage's width, as it always
+    // was.
+    const height = this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0;
+    if (!(height > 0)) return 0;
+    const count = Math.max(1, this.slotCount);
+    const perSlot = (stage.height - SLOT_GAP_PX * (count - 1)) / count;
+    const byHeight = (perSlot - FIT_MARGIN_PX) / height;
+    return byHeight > 0 ? Math.min(1, byHeight) : 0;
   }
 
   private fit(buffer: Buffer): void {
@@ -2332,6 +2470,15 @@ interface PieceInk {
    * sideways, where eight quavers are wider than the page.
    */
   width: number;
+  /**
+   * One staff's own five lines, unscaled: the unit readability is measured in.
+   *
+   * Everything else here is about the *system* — how tall a window is with its
+   * ink. This is the thing a person actually reads. A staff drawn under about
+   * 40 px on a phone is texture rather than notation, and that floor is what
+   * decides how much music the screen may be asked to hold.
+   */
+  staff: number;
 }
 
 /** CSS pixels per SVG user unit, from what OSMD wrote on the element. */
@@ -2531,7 +2678,10 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
   // whose ink cannot be measured still gets the page.
   const width =
     inkRight > inkLeft ? Math.max(staveWidth, inkRight - inkLeft) : (inkBox(svg)?.width ?? 0);
-  return { above, below, height, width };
+  // The typical staff's own height, from the stave-line boxes themselves.
+  const staffHeights = lines.map((l) => l.bottom - l.top).filter((h) => h > 0).sort((a, b) => a - b);
+  const staff = staffHeights[Math.floor(staffHeights.length / 2)] ?? 0;
+  return { above, below, height, width, staff };
 }
 
 /** One system of the probe's page: its stave lines, and how far its ink reaches. */

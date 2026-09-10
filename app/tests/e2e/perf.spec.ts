@@ -60,6 +60,18 @@ test.describe('performance budgets (docs/01 §6)', () => {
   });
 
   test('a pre-rendered window swap still fits in a frame when throttled', async ({ page }) => {
+    // Sideways, deliberately. `window.swap` is recorded by the *chunk* path —
+    // one system that slides, with the next window pre-rendered into the spare
+    // buffer and brought forward. Upright the arrangement is slots, where the
+    // equivalent work is the vacated slot being re-drawn on idle
+    // (`window.settle`), and no swap is ever recorded.
+    //
+    // It used to reach the chunk path by accident: one bar per window refused
+    // the slot arrangement outright, so `setBars(1)` below was enough. That
+    // refusal is gone — how many systems the screen holds is decided by the
+    // room now — so this asks for the arrangement it means to measure instead
+    // of relying on a side effect of the setting.
+    await page.setViewportSize({ width: 780, height: 360 });
     await throttle(page);
     const dev = await openDevScore(page);
     // A long fixture, for one reason: with one bar to a window, the number of

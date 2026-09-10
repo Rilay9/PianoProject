@@ -205,7 +205,15 @@ test.describe('layouts', () => {
     await dev.setLayout('scroll');
     await dev.showStep(0);
     const whole = await dev.noteElementCount();
-    expect(inWindow).toBeLessThan(whole);
+    // At most the whole piece, and on a fixture this short that is the whole
+    // piece.
+    //
+    // **Changed deliberately.** The window used to be a strict subset because
+    // the screen held two systems whatever the room; it now holds as many as
+    // fit, down to a readable staff, so a four-bar fixture fits entirely. The
+    // claim worth making is that a window never draws *more* than the piece,
+    // which is what would signal the range being ignored.
+    expect(inWindow).toBeLessThanOrEqual(whole);
   });
 });
 
@@ -349,8 +357,21 @@ test.describe('window layout holds its shape', () => {
         ),
       );
     }
-    // Strictly increasing: more bars per window means more measures drawn.
-    expect(counts[0]).toBeLessThan(counts[1] ?? 0);
+    // Not strictly increasing any more, and that is worth saying out loud.
+    //
+    // How many systems the screen holds is decided by the room now, not by the
+    // setting — that is what stopped a phone drawing one bar with a third of the
+    // stage black. A slot still holds `⌊barsPerWindow / 2⌋` bars, so at 1 and at
+    // 2 a slot holds one bar and the screen holds as many as fit: **the two
+    // settings draw the same screen upright.** 4 doubles it and still differs.
+    //
+    // That is the `barsPerWindow` question `08` §4.1 and the handoff's §4b have
+    // been carrying, arriving at the surface. The one-line answer the docs
+    // recommend is to make a slot hold `barsPerWindow` bars rather than half of
+    // them, which would make every setting distinct and mean "bars on a line".
+    // It is an owner decision, so it is not taken here; this asserts what is
+    // true today rather than what would be tidier.
+    expect(counts[0]).toBe(counts[1]);
     expect(counts[1]).toBeLessThan(counts[2] ?? 0);
   });
 });
