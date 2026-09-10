@@ -1763,6 +1763,16 @@ export class WindowRenderer {
       const atTheStart = this.currentStep <= 0;
       if (atTheStart && (count !== this.slotCount || pageIsStale)) {
         this.slotCount = count;
+        // The cursor cannot point past the last slot.
+        //
+        // The count can now come *down* — a dense piece upright gets one system
+        // rather than two — and `cursorSlot` was left where it was. With it out
+        // of range no buffer is both drawn and current, so nothing carries
+        // `is-cursor` or `aria-current`, the band has no slot to sit in, and
+        // `this.buffers[this.cursorSlot]!` is a non-null assertion over
+        // `undefined`. `dark-ink.spec` found it by asking the cursor's sheet
+        // whether it was inverted and getting no sheet at all.
+        this.cursorSlot = Math.min(this.cursorSlot, count - 1);
         this.el.dataset.slots = String(count);
         this.slotRanges = this.buffers.map(() => null);
         for (const slot of this.buffers) {

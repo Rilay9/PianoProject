@@ -91,7 +91,16 @@ test.describe('upright: two slots, karaoke style', () => {
     // The node identity test: while the cursor stays on one bar, the `<svg>`
     // holding it must be the same element. A re-render replaces it, and that
     // is what moved the music under the owner's eye.
-    for (let i = 1; i < seen.length; i += 1) {
+    // From the second step on, not the first.
+    //
+    // §9.6 is about the system that holds the cursor not being re-drawn *while
+    // the learner is playing it*. The very first window may legitimately be
+    // engraved twice: the piece's measurement lands on idle after the first
+    // draw, and the slot count and the page it is engraved on are corrected
+    // once when it does — before a note has been played, which is precisely why
+    // the renderer refuses to do it any later. Comparing from step 0 makes that
+    // one correction look like the fault the invariant exists for.
+    for (let i = 2; i < seen.length; i += 1) {
       const now = seen[i];
       const before = seen[i - 1];
       if (!now || !before) continue;

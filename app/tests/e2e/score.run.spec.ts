@@ -81,11 +81,31 @@ test.describe('a whole run', () => {
     await page.locator('#score-play').click();
     // A wrong note is judged and painted, but the cursor stays put — that is
     // the whole contract of Wait mode (docs/05 §2).
-    const before = await page.locator('#score-stage .is-cursor').innerHTML();
+    // Where the run is and where the cursor is drawn — not the engraving's
+    // markup.
+    //
+    // This used to compare the cursor slot's `innerHTML` before and after, which
+    // asks a much bigger question than the one in the test's name: it fails on
+    // *any* re-engraving, including the ones the screen is supposed to do — the
+    // vacated slot settling, or the fit being redone when the piece's
+    // measurement lands a moment after the run starts. "The score does not move"
+    // is about the step, the bar and the cursor's position, and those are what
+    // it checks now. A re-render that moved the music would still fail it,
+    // because the band would move with it.
+    const where = async (): Promise<string> => {
+      const run = await page.evaluate(
+        () =>
+          (window as unknown as { __pianopath?: { scoreRun?: () => { step: number; bar: number } | null } })
+            .__pianopath?.scoreRun?.() ?? null,
+      );
+      const band = await page.locator('#score-stage .score-cursor:not(.score-cursor--next)').first().boundingBox();
+      return `${String(run?.step ?? -1)}/${String(run?.bar ?? -1)}@${String(Math.round(band?.x ?? -1))}`;
+    };
+    const before = await where();
     await press(page, 71);
     await press(page, 71);
     await page.waitForTimeout(300);
-    expect(await page.locator('#score-stage .is-cursor').innerHTML()).toBe(before);
+    expect(await where()).toBe(before);
     await expect(page.locator('#score-summary')).toBeHidden();
 
     // …and the key he pressed goes red on the strip (`04` §5). The staff has
