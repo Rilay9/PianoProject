@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 import { openDevScore } from './fixtures/devScore';
 import { chromiumExecutable } from './fixtures/chromium';
+import { installMidiMock } from './fixtures/midiMock';
 
 const scaleWav = fileURLToPath(new URL('../fixtures/audio/scale-fast.wav', import.meta.url));
 
@@ -233,6 +234,93 @@ test.describe('microphone input', () => {
     const report = await page.locator('#diag-report').inputValue();
     expect(report).toContain('## Microphone');
     expect(report).toContain('Analysis cost: mean');
+  });
+});
+
+/**
+ * The latency measurement, and who is allowed to reach it.
+ *
+ * The test this replaced was on the Diagnostics screen for everybody: eight
+ * clicks, tap on each, median saved as `inputLatencyMs`. For a MIDI user there
+ * was nothing there to measure — `clock.ts` reads `AudioContext.outputLatency`
+ * from the browser and folds it into every conversion already, and a cable
+ * delivers a key press in single-digit milliseconds — so what it actually
+ * measured was how well the owner taps, and it then offered to subtract that
+ * from every note the engine judged.
+ *
+ * These three would all have failed against it: the button was there with a
+ * piano attached, it stayed there when one was plugged in, and there was no
+ * hand-set fallback at all for the case where the measurement cannot work.
+ */
+test.describe('the latency measurement is only ever offered to a microphone user', () => {
+  test('a piano on the end of a cable does not get it, and is told why', async ({ page }) => {
+    await installMidiMock(page);
+    await page.goto('/#/settings/diagnostics');
+    await expect(page.locator('.screen h1')).toHaveText('Diagnostics');
+
+    await page.locator('#diag-connect').click();
+    await expect(page.locator('#diag-env')).toContainText('USB MIDI Interface');
+
+    // Not shortened, not defaulted off, not skippable: not built.
+    await expect(page.locator('#diag-latency-start')).toHaveCount(0);
+    await expect(page.locator('#diag-latency-save')).toHaveCount(0);
+    await expect(page.locator('#diag-latency-manual')).toHaveCount(0);
+    // And the space it would have taken says what is there instead, so a
+    // missing button is never a mystery.
+    await expect(page.locator('#diag-latency-why')).toContainText('USB MIDI');
+  });
+
+  test('plugging the piano in takes it away again', async ({ page }) => {
+    const mock = await installMidiMock(page, { inputs: [] });
+    await page.goto('/#/settings/diagnostics');
+    await expect(page.locator('.screen h1')).toHaveText('Diagnostics');
+    await page.locator('#diag-connect').click();
+
+    // No cable: the microphone is what the app would follow, so the
+    // measurement is the one that applies.
+    await expect(page.locator('#diag-latency-start')).toHaveCount(1);
+    await expect(page.locator('#diag-latency-manual')).toHaveCount(1);
+
+    await mock.addInput({ id: 'hot-1', name: 'Digital Piano', manufacturer: 'PianoPath Test' });
+    await expect(page.locator('#diag-latency-start')).toHaveCount(0);
+    await expect(page.locator('#diag-latency-why')).toContainText('USB MIDI');
+  });
+
+  test('a run that hears nothing says so and leaves the number to be set by hand', async ({
+    page,
+    context,
+  }) => {
+    // The fake capture device plays a piano scale from a file, so the click
+    // the app emits is never in what comes back — which is exactly the
+    // headphones-in, echo-cancelled case the fallback exists for. What is
+    // being asserted is that the failure is honest: no median, no pass mark,
+    // no number offered to be saved.
+    await context.grantPermissions(['microphone']);
+    await installMidiMock(page, { inputs: [] });
+    await page.goto('/#/settings/diagnostics');
+    await expect(page.locator('.screen h1')).toHaveText('Diagnostics');
+
+    await page.locator('#diag-latency-start').click();
+    // Either honest ending: the clicks did not come back, or the listener
+    // could not be opened at all. What must not happen is a number.
+    await expect(page.locator('#diag-latency-status')).toHaveText(
+      /clicks came back|Could not measure/,
+      { timeout: 60_000 },
+    );
+    await expect(page.locator('#diag-latency-save')).toBeHidden();
+
+    // The hand-set fallback is still there, and writing to it is what the
+    // engine then uses.
+    const manual = page.locator('#diag-latency-manual');
+    await manual.fill('90');
+    await manual.dispatchEvent('change');
+    await expect(page.locator('#diag-latency-status')).toContainText('90 ms by hand');
+    expect(
+      await page.evaluate(() => {
+        const raw = localStorage.getItem('pianopath.midi');
+        return raw === null ? null : (JSON.parse(raw) as { inputLatencyMs?: number }).inputLatencyMs;
+      }),
+    ).toBe(90);
   });
 });
 

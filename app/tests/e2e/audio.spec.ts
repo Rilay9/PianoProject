@@ -48,26 +48,18 @@ test.describe('audio', () => {
     expect(['running', 'suspended']).toContain(audioState);
   });
 
-  test('the latency test runs a metronome and reports a result', async ({ page }) => {
-    const mock = await installMidiMock(page);
-    await page.goto('/#/settings/diagnostics');
-    await page.locator('#diag-connect').click();
-    await page.locator('#diag-latency-start').click();
-
-    // Play a key on each click. 8 clicks at 60 bpm is 8 s of wall time; the
-    // taps land wherever they land, which is exactly what the test measures.
-    await expect(page.locator('#diag-latency-status')).toContainText('Click 1 of 8');
-    for (let i = 0; i < 8; i += 1) {
-      await mock.noteOn(60, 100);
-      await mock.noteOff(60);
-      await page.waitForTimeout(950);
-    }
-
-    await expect(page.locator('#diag-latency-status')).toHaveText('Done.', { timeout: 30_000 });
-    const result = page.locator('#diag-latency-result');
-    await expect(result).toContainText('clicks matched');
-    await expect(result).toContainText('mean');
-    await expect(result).toContainText('σ');
-    await expect(page.locator('#diag-latency-save')).toBeVisible();
-  });
+  // The tap-along latency test is gone, and this test is why it had to be
+  // named rather than quietly dropped.
+  //
+  // What it did was install a MIDI mock, connect a piano, and then press
+  // `#diag-latency-start` — that is a MIDI user reaching the sync click, which
+  // is the one thing that must never be possible. Over USB MIDI both halves of
+  // the round trip are already known (`clock.ts` reads
+  // `AudioContext.outputLatency` and folds it into every conversion; MIDI-in is
+  // a few milliseconds), so the test was measuring how well somebody taps and
+  // then offering to subtract that from every note the engine judges.
+  //
+  // Its replacement is in `mic.spec.ts`: the section is not built at all when
+  // the input is MIDI, and the measurement is a click through the speaker heard
+  // on the microphone, with no human in the loop.
 });

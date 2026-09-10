@@ -16,12 +16,20 @@ import { onScreenDispose } from '../screenLifecycle';
 import { audioEngine, micSource, webMidiSource } from '../../app/services';
 import { isWebMidiSupported, type MidiLogEntry } from '../../midi/WebMidiSource';
 import { midiToNoteName } from '../../midi/parseMidiMessage';
-import { describeLatency, LATENCY_BEATS, runLatencyTest as runLatencyTest2 } from '../../audio/latencyTest';
-import type { Stats } from '../../util/stats';
+import {
+  describeLoopback,
+  LOOPBACK_CLICKS,
+  whyNoLoopback,
+  type LoopbackResult,
+} from '../../audio/loopbackLatency';
+import { runLoopbackLatency } from '../../audio/loopbackRun';
 import { measureDetectorCost, type CostReport } from '../../audio/pitch/benchmark';
 import { concatChunks, encodeWav } from '../../util/wav';
 import { getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
 import { getMidiSettings, updateMidiSettings } from '../../data/midiSettings';
+import { DEFAULT_DEVICE_KEY, micCalibrationStore } from '../../data/micCalibrationStore';
+import { getSettings } from '../../data/settingsStore';
+import { field, numberControl } from '../widgets';
 import type { Router } from '../../router';
 import { loadCurriculum, allItems } from '../../curriculum/load';
 import { thinLessons } from '../../curriculum/selectors';
@@ -31,7 +39,15 @@ import { formatBytes, measureStorage, type StorageBreakdown } from '../../util/s
 
 const LOG_ROWS_SHOWN = 100;
 const DEBUG_REPORT_MESSAGES = 100;
-/** Clicks in one latency run: enough for a usable σ, short enough to sit through. */
+
+/**
+ * The most the input-latency box will accept.
+ *
+ * The same ceiling `loopbackLatency` clamps a measured round trip to. A phone
+ * whose microphone is really 400 ms behind has a problem the engine cannot
+ * paper over, and a typo of 4000 would silently stop every note counting.
+ */
+const MAX_MANUAL_LATENCY_MS = 400;
 
 const SOUNDFONT_CREDIT =
   'Piano samples: FluidR3_GM by Frank Wen (CC-BY 3.0), pre-rendered by midi-js-soundfonts.';
@@ -115,32 +131,65 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   logTable.className = 'log-table';
   logBlock.appendChild(logTable);
 
-  // --- Latency test --------------------------------------------------------
-  const latency = addSection(card, 'Latency test');
-  addParagraph(
-    latency,
-    `Tap any key on the piano (or on the on-screen keyboard) exactly on each of ` +
-      `${LATENCY_BEATS} clicks. The result is how far behind the click your note ` +
-      `arrives — cable, USB stack and audio output together.`,
-    'muted',
-  );
-  const latencyStart = addButton(latency, 'Start latency test', () => void runLatencyTest(), {
+  // --- Microphone latency (acoustic loopback) ------------------------------
+  //
+  // Only ever drawn for a microphone user. Over USB MIDI there is nothing to
+  // measure: `clock.ts` reads `AudioContext.outputLatency` from the browser and
+  // folds it into every conversion already, and a cable delivers a key press
+  // within a few milliseconds. `whyNoLoopback` says so in the section's place,
+  // rather than leaving a button missing with no explanation.
+  const latency = addSection(card, 'Microphone latency');
+  const latencyBody = document.createElement('div');
+  latencyBody.id = 'diag-latency';
+  latency.appendChild(latencyBody);
+
+  const latencyWhy = document.createElement('p');
+  latencyWhy.className = 'muted';
+  latencyWhy.id = 'diag-latency-why';
+  const latencyStartRow = document.createElement('div');
+  latencyStartRow.className = 'row';
+  const latencyStart = addButton(latencyStartRow, 'Measure', () => void measureLoopback(), {
     id: 'diag-latency-start',
-    // The screen exists to be copied into a message (`04` §7b); the latency
-    // test is a tool on it, not the reason for it (R3).
+    // The screen exists to be copied into a message (`04` §7b); the
+    // measurement is a tool on it, not the reason for it (R3).
     variant: 'secondary',
   });
   const latencyStatus = document.createElement('p');
   latencyStatus.id = 'diag-latency-status';
   latencyStatus.className = 'status';
-  latency.appendChild(latencyStatus);
   const latencyResult = document.createElement('p');
   latencyResult.id = 'diag-latency-result';
-  latency.appendChild(latencyResult);
-  const latencySave = addButton(latency, 'Save as input latency', () => saveLatency(), {
+  const latencySaveRow = document.createElement('div');
+  latencySaveRow.className = 'row';
+  const latencySave = addButton(latencySaveRow, 'Save as input latency', () => saveLatency(), {
     id: 'diag-latency-save',
   });
   latencySave.hidden = true;
+  // The fallback, and the only control when the loopback cannot work —
+  // headphones in, permission refused, echo cancellation the browser will not
+  // let go of. One number, nudged until Keep tempo stops calling on-the-beat
+  // notes late. It is not dressed up as a measurement, because it is not one.
+  const latencyInput = numberControl(
+    'diag-latency-manual',
+    getMidiSettings().inputLatencyMs,
+    (value) => {
+      const ms = Math.round(Math.min(MAX_MANUAL_LATENCY_MS, Math.max(0, value)));
+      updateMidiSettings({ inputLatencyMs: ms });
+      latencyStatus.textContent = `Set to ${String(ms)} ms by hand.`;
+      renderEnv();
+    },
+    { min: 0, max: MAX_MANUAL_LATENCY_MS, step: 5 },
+  );
+  // A number box has no rule anywhere in the stylesheet, so the browser draws
+  // it about 21 px tall — a third of a fingertip, on the one control that is
+  // left when the measurement cannot run at all.
+  latencyInput.classList.add('mic-latency-input');
+  const latencyManual = field(
+    'Input latency (ms)',
+    latencyInput,
+    'Subtracted from every note the app hears before it is judged. Raise it if ' +
+      'Keep tempo marks notes late that you played on the beat; lower it if it marks them early.',
+  );
 
   // --- Render timings (P2 hook) -------------------------------------------
   const timings = addSection(card, 'Render timings');
@@ -221,8 +270,9 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   reportBlock.appendChild(reportArea);
 
   // --- Wiring --------------------------------------------------------------
-  let latestLatency: Stats | null = null;
-  let stopLatency: (() => void) | null = null;
+  let latestLoopback: LoopbackResult | null = null;
+  let latestInputLatencyMs: number | null = null;
+  let measuring = false;
 
   async function connect(): Promise<void> {
     try {
@@ -340,49 +390,89 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
     }
   }
 
-  // --- Latency test --------------------------------------------------------
-  async function runLatencyTest(): Promise<void> {
-    stopLatency?.();
+  // --- Microphone latency --------------------------------------------------
+  /** The facts `whyNoLoopback` needs, read fresh: the cable can come and go. */
+  function inputPath(): { inputPriority: readonly string[]; midiInputs: number; micSupported: boolean } {
+    return {
+      inputPriority: getSettings().inputPriority,
+      midiInputs: webMidiSource.inputs.length,
+      micSupported: micSource.supported,
+    };
+  }
+
+  /**
+   * Draws the section, or the sentence that stands in for it.
+   *
+   * Rebuilt rather than hidden: `.row` is a flex box and `.setting-row` a
+   * grid, and either display beats the `hidden` attribute — the mistake the
+   * setup tour's footer already carries a comment about. Re-parenting the same
+   * elements keeps their listeners and their state.
+   */
+  function renderLatency(): void {
+    const why = whyNoLoopback(inputPath());
+    latencyWhy.textContent =
+      why ??
+      `The app plays ${String(LOOPBACK_CLICKS)} short clicks through the speaker and listens ` +
+        'for them on the microphone. The gap is the whole round trip — output buffer, air, ' +
+        'input buffer — measured by the phone, with nothing for you to tap. Keep the room ' +
+        'quiet, turn the volume up, and take any headphones out.';
+    latencyBody.replaceChildren(
+      latencyWhy,
+      ...(why === null
+        ? [latencyStartRow, latencyStatus, latencyResult, latencySaveRow, latencyManual]
+        : []),
+    );
+  }
+
+  async function measureLoopback(): Promise<void> {
+    if (measuring) return;
+    measuring = true;
     latencyStart.disabled = true;
     latencySave.hidden = true;
     latencyResult.textContent = '';
     latencyStatus.textContent = 'Starting audio…';
     try {
-      const run = await runLatencyTest2({
-        onClick: (n, of) => {
-          latencyStatus.textContent = `Click ${String(n)} of ${String(of)} — tap on the beat.`;
+      const stored = micCalibrationStore.get(micSource.pinnedInputId ?? DEFAULT_DEVICE_KEY);
+      const outcome = await runLoopbackLatency({
+        onStage: (text) => {
+          latencyStatus.textContent = text;
         },
-        onDone: (result) => {
-          stopLatency = null;
-          latencyStart.disabled = false;
-          latestLatency = result.stats;
-          if (result.matched === 0) {
-            latencyStatus.textContent = 'No taps landed near a click. Try again.';
-            latencyResult.textContent = '';
-            return;
-          }
-          latencyStatus.textContent = 'Done.';
-          latencyResult.textContent = describeLatency(result, (n) => fmt(n));
-          latencySave.hidden = false;
-        },
+        // A calibrated microphone already has its own latency taken off at the
+        // source (`MicSource.toPerformanceMs`), and the engine subtracts
+        // `inputLatencyMs` on top of that. Saving the whole input path here
+        // would compensate the same delay twice.
+        ...(stored ? { alreadyCompensatedMs: stored.latencyMs } : {}),
       });
-      stopLatency = () => run.stop();
-      latencyStatus.textContent = 'Listening…';
+      latestLoopback = outcome.result;
+      latestInputLatencyMs = outcome.inputLatencyMs;
+      latencyResult.textContent = describeLoopback(outcome.result, (n) => fmt(n));
+      if (!outcome.result.usable) {
+        latencyStatus.textContent = outcome.result.why ?? 'Nothing usable came back.';
+        latestInputLatencyMs = null;
+        return;
+      }
+      latencyStatus.textContent =
+        `Round trip ${fmt(outcome.result.roundTripMs)} ms, less ` +
+        `${fmt(outcome.outputLatencyMs)} ms the browser reports for the output path: ` +
+        `${String(outcome.inputLatencyMs)} ms of input.`;
+      latencySave.hidden = false;
     } catch (cause) {
-      latencyStatus.textContent = `Audio unavailable: ${
+      latencyStatus.textContent = `Could not measure: ${
         cause instanceof Error ? cause.message : String(cause)
-      }`;
+      }. Set the number below by hand instead.`;
+    } finally {
+      measuring = false;
       latencyStart.disabled = false;
     }
   }
 
   function saveLatency(): void {
-    if (!latestLatency || !Number.isFinite(latestLatency.median)) return;
-    // The median, not the mean: one badly missed tap should not move the
-    // compensation the whole app then applies.
-    const ms = Math.round(latestLatency.median);
+    if (latestInputLatencyMs === null) return;
+    const ms = latestInputLatencyMs;
     updateMidiSettings({ inputLatencyMs: ms });
-    latencyStatus.textContent = `Saved ${ms} ms as the input latency.`;
+    const manual = latencyManual.querySelector<HTMLInputElement>('#diag-latency-manual');
+    if (manual) manual.value = String(ms);
+    latencyStatus.textContent = `Saved ${String(ms)} ms as the input latency.`;
     renderEnv();
   }
 
@@ -675,10 +765,14 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
       '## Settings (MIDI/audio)',
       ...Object.entries(settings).map(([k, v]) => `${k}: ${String(v)}`),
       '',
-      '## Latency test',
-      latestLatency && latestLatency.n > 0
-        ? `n=${latestLatency.n} mean=${fmt(latestLatency.mean)}ms sd=${fmt(latestLatency.stdDev)}ms ` +
-          `median=${fmt(latestLatency.median)}ms min=${fmt(latestLatency.min)}ms max=${fmt(latestLatency.max)}ms`
+      '## Microphone latency (acoustic loopback)',
+      `Applies here: ${whyNoLoopback(inputPath()) ?? 'yes'}`,
+      latestLoopback
+        ? `heard=${latestLoopback.heard}/${latestLoopback.of} ` +
+          `roundTrip=${fmt(latestLoopback.roundTripMs)}ms spread=±${fmt(latestLoopback.spreadMs)}ms ` +
+          `min=${fmt(latestLoopback.summary.minMs)}ms max=${fmt(latestLoopback.summary.maxMs)}ms ` +
+          `usable=${String(latestLoopback.usable)}` +
+          (latestInputLatencyMs === null ? '' : ` → input ${String(latestInputLatencyMs)}ms`)
         : 'not run',
       '',
       '## Microphone',
@@ -743,6 +837,7 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   renderLog();
   renderTimings();
   renderMic();
+  renderLatency();
 
   // The log is re-rendered on an animation frame rather than per message: a
   // glissando can deliver a few hundred messages a second and rebuilding 100
@@ -759,13 +854,18 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
 
   const unsubscribers = [
     webMidiSource.onLog(scheduleLogRender),
-    webMidiSource.onStateChange(() => renderEnv()),
+    // Plugging the cable in is exactly the event that must take the loopback
+    // section away again: from that moment the app follows the piano, and
+    // there is nothing about a MIDI round trip left to measure.
+    webMidiSource.onStateChange(() => {
+      renderEnv();
+      if (!measuring) renderLatency();
+    }),
     micSource.onLevel(() => renderMic()),
     micSource.onStateChange(() => renderMic()),
   ];
   onScreenDispose(section, () => {
     for (const off of unsubscribers) off();
-    stopLatency?.();
     micSource.stopRecording();
   });
 
