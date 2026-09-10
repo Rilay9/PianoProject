@@ -444,7 +444,25 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       });
     }
     if (!lesson) {
-      status.textContent = `There is no lesson ${lessonId}.`;
+      // `04` §0 R4. It said the rung did not exist and then drew the whole rung
+      // anyway: six empty section blocks — Exercise options, Song options, From
+      // your own books, More for this rung, Concept, Videos — one sentence, and
+      // nothing on the screen that went anywhere. `#/lesson/9.9` parses, so
+      // this is one mistyped hash away and not a hypothetical.
+      status.textContent = `There is no lesson “${lessonId}”. The plan lists every lesson there is.`;
+      status.classList.add('status--error');
+      for (const block of body.querySelectorAll('.block')) {
+        if (block instanceof HTMLElement) block.hidden = true;
+      }
+      lockLine.hidden = true;
+      // The sentence is the first thing in the body and `actions` the second,
+      // so the reason still comes before the remedy.
+      actions.replaceChildren(
+        button('Open the plan', () => router.navigate('plan'), {
+          id: 'lesson-open-plan',
+          variant: 'primary',
+        }),
+      );
       return;
     }
     (header.querySelector('h1') as HTMLElement).textContent = `${lesson.id} · ${lesson.title}`;

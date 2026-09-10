@@ -18,6 +18,24 @@ export interface UpdatePrompt {
   apply: () => void;
 }
 
+/**
+ * Shows the toast, once.
+ *
+ * `root` must be `document.body` in the running app, and the default is the
+ * only value `main.ts` passes. `.update-toast` is `position: absolute` — it
+ * was `fixed` until the owner photographed it half under the address bar, and
+ * a fixed box is positioned against the layout viewport, which Chrome on
+ * Android sizes with the bar retracted. Absolute means it is positioned
+ * against the nearest *positioned* ancestor instead, and the stylesheet makes
+ * that `body`: `position: relative`, `height: 100dvh`, `overflow: hidden`. So
+ * `body` is exactly the box that can be seen, the document never scrolls, and
+ * the toast lands on the visible bottom edge.
+ *
+ * The consequence for this module: passing any other `root` re-anchors the
+ * toast to whatever positioned ancestor that element has — a scrolling
+ * `.screen-body`, most likely, which would carry the toast away with the list.
+ * Nothing here reads the viewport, so there is nothing else to keep in step.
+ */
 export function showUpdateToast(prompt: UpdatePrompt, root: HTMLElement = document.body): HTMLElement {
   const existing = document.getElementById(TOAST_ID);
   if (existing) return existing;

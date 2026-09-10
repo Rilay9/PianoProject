@@ -14,7 +14,7 @@ import { onScreenDispose } from '../screenLifecycle';
 import { micSource } from '../../app/services';
 import { pitchName } from '../../audio/pitch/calibration';
 import { describeCalibration, runCalibrationRoutine } from '../../audio/pitch/calibrationRun';
-import { LINE_INPUT_PRESET, type MicLevel } from '../../audio/pitch/MicSource';
+import { LINE_INPUT_PRESET, MicAccessError, type MicLevel } from '../../audio/pitch/MicSource';
 import { micCalibrationStore } from '../../data/micCalibrationStore';
 import type { Router } from '../../router';
 
@@ -39,6 +39,27 @@ export function MicScreen(router: Router): HTMLElement {
   const connection = addSection(card, 'Connection');
   const status = addParagraph(connection, 'Not connected.');
   status.id = 'mic-status';
+
+  // The one control for a microphone there is no way to have (`04` §0 R4).
+  //
+  // Drawn only when the refusal is one that pressing Connect again cannot
+  // undo: a denied permission is remembered by the browser and will not be
+  // asked for a second time, and a phone with no microphone will not grow one.
+  // Before this the screen answered both with the raw message off the
+  // exception — "microphone permission was refused" — under a Connect button
+  // that would do nothing for ever, over a level meter reading "Level: —" and
+  // a calibration routine whose first act is to connect.
+  const noInputRow = document.createElement('div');
+  noInputRow.className = 'row';
+  noInputRow.hidden = true;
+  connection.appendChild(noInputRow);
+  const midiInstead = document.createElement('button');
+  midiInstead.type = 'button';
+  midiInstead.className = 'button button--secondary';
+  midiInstead.id = 'mic-use-midi';
+  midiInstead.textContent = 'Set up MIDI instead';
+  midiInstead.addEventListener('click', () => router.navigate('settings', 'midi'));
+  noInputRow.appendChild(midiInstead);
 
   const deviceRow = document.createElement('div');
   deviceRow.className = 'setting-row';
@@ -251,15 +272,68 @@ export function MicScreen(router: Router): HTMLElement {
     });
   }
 
+  /**
+   * What to say, and whether pressing Connect again could ever help.
+   *
+   * `failed` is the one that can: a worklet that did not load or a device that
+   * was busy is worth another try, so it keeps the screen as it is. The other
+   * three are settled until something outside the app changes.
+   */
+  function describeRefusal(error: unknown): { sentence: string; settled: boolean } {
+    if (!(error instanceof MicAccessError)) {
+      return {
+        sentence: error instanceof Error ? error.message : 'Could not open the microphone.',
+        settled: false,
+      };
+    }
+    if (error.code === 'permission-denied') {
+      return {
+        sentence:
+          'The microphone was refused, and the browser will not ask again until you allow it ' +
+          'in this page’s own site settings. A MIDI cable needs no permission and is more accurate.',
+        settled: true,
+      };
+    }
+    if (error.code === 'no-device') {
+      return {
+        sentence:
+          'No microphone was found on this device. A MIDI cable from the piano needs no microphone.',
+        settled: true,
+      };
+    }
+    if (error.code === 'unsupported') {
+      return {
+        sentence:
+          'This browser has no microphone API, so listening is not possible here. A MIDI cable does not need one.',
+        settled: true,
+      };
+    }
+    return { sentence: `${error.message}. Try again.`, settled: false };
+  }
+
+  /** Hides everything that only means something once the microphone is open. */
+  function showNoInput(settled: boolean): void {
+    noInputRow.hidden = !settled;
+    levels.hidden = settled;
+    calibration.hidden = settled;
+    // Nothing to reconnect to and nothing to disconnect from.
+    connectButton.hidden = settled;
+    disconnectButton.hidden = true;
+    status.classList.toggle('status--error', settled);
+  }
+
   async function connect(): Promise<void> {
     status.textContent = 'Asking for permission…';
     try {
       await micSource.connect(deviceSelect.value === '' ? undefined : deviceSelect.value);
       applyStored();
     } catch (error) {
-      status.textContent = error instanceof Error ? error.message : 'Could not open the microphone.';
+      const { sentence, settled } = describeRefusal(error);
+      showNoInput(settled);
+      status.textContent = sentence;
       return;
     }
+    showNoInput(false);
     renderConnection();
   }
 

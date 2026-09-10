@@ -246,11 +246,40 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
 
   // --- load ---------------------------------------------------------------
 
+  /**
+   * The sentence, then the one control that does what it suggests (`04` §0 R4).
+   *
+   * Every way this screen can fail ends here, because every one of them ends
+   * with no chart: the four empty bars, the count-off, the stop, the bpm field
+   * and the three live toggles were drawn over an unknown item, over a piece
+   * with no file, and over a fetch that threw, exactly as they were over a
+   * piece with no harmony in it. Only the no-chords branch had ever been
+   * cured; the others still offered a transport with nothing to run.
+   *
+   * Reason, then remedy: the status line lives under the chart while there is
+   * a chart, which is right, so with no chart it moves above the row it
+   * explains.
+   */
+  function deadEnd(sentence: string, label: string, act: () => void, id: string): void {
+    status.textContent = sentence;
+    form.hidden = true;
+    grid.hidden = true;
+    bars = [];
+    drawGrid();
+    body.insertBefore(status, controls);
+    controls.replaceChildren(button(label, act, { id, variant: 'primary' }));
+  }
+
   void (async () => {
     try {
       const item = await findItem(itemId);
       if (!item) {
-        status.textContent = `Unknown item “${itemId}”.`;
+        deadEnd(
+          `There is nothing in the library called “${itemId}”.`,
+          'Open the library',
+          () => router.navigate('library'),
+          'chart-open-library',
+        );
         return;
       }
       (header.querySelector('h1') as HTMLElement).textContent = item.title;
@@ -265,7 +294,14 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
         xml = toMusicXml(new Uint8Array(await response.arrayBuffer()));
       } else {
-        status.textContent = `${item.title} has no file to read chords from.`;
+        // Not bundled: the catalog row is a placeholder and the owner's own
+        // copy is the only way to get the notes — and therefore the chords.
+        deadEnd(
+          `${item.title} is not bundled, so there is no file to read chords from — import your own copy.`,
+          'Import a copy',
+          () => router.navigate('library'),
+          'chart-open-library',
+        );
         return;
       }
 
@@ -273,23 +309,15 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
       bars = chartBars(symbols, Math.max(measureCount, symbols.length));
       if (symbols.length === 0) {
-        // The sentence, and the one control that does what it suggests
-        // (`04` §0 R4). It used to say the screen could not work and then draw
-        // a working-looking one: four empty bars with dashes, a count-off, a
+        // It used to say the screen could not work and then draw a
+        // working-looking one: four empty bars with dashes, a count-off, a
         // stop, a bpm field and three live toggles, over a piece with no
         // harmony in it and no way to act on the advice.
-        status.textContent = `${item.title} has no chord symbols in it.`;
-        form.hidden = true;
-        grid.hidden = true;
-        // Reason, then remedy. The status line lives under the chart while
-        // there is a chart, which is right; with no chart it was the button
-        // that came first and the sentence explaining it that came second.
-        body.insertBefore(status, controls);
-        controls.replaceChildren(
-          button('Open on the Score screen', () => router.navigateScore(itemId), {
-            id: 'chart-open-score',
-            variant: 'primary',
-          }),
+        deadEnd(
+          `${item.title} has no chord symbols in it.`,
+          'Open on the Score screen',
+          () => router.navigateScore(itemId),
+          'chart-open-score',
         );
         return;
       }
@@ -300,9 +328,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       drawGrid();
       drawForm();
     } catch (cause) {
-      status.textContent = `That chart could not be opened: ${
-        cause instanceof Error ? cause.message : String(cause)
-      }`;
+      deadEnd(
+        `That chart could not be opened: ${cause instanceof Error ? cause.message : String(cause)}`,
+        'Open the library',
+        () => router.navigate('library'),
+        'chart-open-library',
+      );
       status.classList.add('status--error');
     }
   })();

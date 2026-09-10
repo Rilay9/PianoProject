@@ -43,6 +43,22 @@ export function heatLevel(minutes: number): 0 | 1 | 2 | 3 | 4 {
   return 4;
 }
 
+/**
+ * An empty list's sentence and the one control that acts on it (`04` §0 R4).
+ *
+ * All three lists on this screen are empty on a fresh phone and all three said
+ * so and stopped there — "No runs recorded yet." with nothing to press, and
+ * "start one from the Score screen" naming a screen the reader had no route
+ * to. The sentence comes first because a button whose explanation is
+ * underneath it is a button you press to find out what it does.
+ *
+ * Quiet, never filled: `04` §0 R3 allows one filled box per screen and this
+ * screen's is Export everything.
+ */
+function emptyList(text: string, label: string, act: () => void, id: string): HTMLElement[] {
+  return [el('p.muted', { text }), button(label, act, { id, variant: 'quiet' })];
+}
+
 export function ProgressScreen(router: Router): HTMLElement {
   const { section, body } = screenFrame('progress', 'Progress');
   const status = statusLine('progress-status');
@@ -164,7 +180,12 @@ export function ProgressScreen(router: Router): HTMLElement {
               dataset: { 'data-item': row.itemId },
             });
           })
-        : [el('p.muted', { text: 'Nothing mastered yet. A piece joins this list after two clean runs on different days.' })]),
+        : emptyList(
+            'Nothing mastered yet. A piece joins this list after two clean runs on different days.',
+            "Start today's session",
+            () => router.navigate('today'),
+            'progress-repertoire-start',
+          )),
     );
   }
 
@@ -189,11 +210,12 @@ export function ProgressScreen(router: Router): HTMLElement {
               dataset: { 'data-performance': session.id ?? 0 },
             }),
           )
-        : [
-            el('p.muted', {
-              text: 'No performances yet. A performance is one run through with no restarts and no looping — start one from the Score screen.',
-            }),
-          ]),
+        : emptyList(
+            'No performances yet. A performance is one run through with no restarts and no looping.',
+            'Pick a piece to perform',
+            () => router.navigate('library'),
+            'progress-performances-pick',
+          )),
     );
   }
 
@@ -223,7 +245,12 @@ export function ProgressScreen(router: Router): HTMLElement {
               dataset: { 'data-session': session.id ?? 0 },
             }),
           )
-        : [el('p.muted', { text: 'No runs recorded yet.' })]),
+        : emptyList(
+            'No runs recorded yet. Playing a piece through records one.',
+            "Start today's session",
+            () => router.navigate('today'),
+            'progress-history-start',
+          )),
     );
   }
 

@@ -719,8 +719,57 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       );
     }
     if (filtered.length === 0) {
-      list.append(el('p.muted', { text: 'Nothing matches. Try clearing a filter, or import a score.' }));
+      // `04` §0 R4: the sentence *and* the control that does what it suggests.
+      // It used to say "Try clearing a filter" over a filter row that is closed
+      // by default — so the advice named a control that was not on the screen,
+      // and the only way to act on it was to guess that the Filter chip hid it.
+      //
+      // One button, not two, and it says what it will do rather than which
+      // control it will touch: a search box and four selects can each empty the
+      // list and the sentence has to work whichever one did it.
+      const query = filters.query.trim();
+      const narrowedBy = [query ? `“${query}”` : '', ...active].filter(Boolean);
+      list.append(
+        el('p.muted', {
+          id: 'library-empty',
+          text:
+            narrowedBy.length > 0
+              ? `Nothing matches what is set: ${narrowedBy.join(' · ')}.`
+              : 'There is nothing in the library yet.',
+        }),
+        narrowedBy.length > 0
+          ? button('Show everything', clearFilters, { id: 'library-show-everything' })
+          : button('Import a score', () => picker.click(), { id: 'library-empty-import' }),
+      );
     }
+  }
+
+  /**
+   * Back to the whole list, from the one button the empty list draws.
+   *
+   * The selects are reset through the DOM as well as through `filters`,
+   * because `draw` reads the count line's words off the controls themselves —
+   * leaving a select showing "Drills" over a list of everything would be the
+   * same lie in the other direction. The sort is left alone: it cannot empty
+   * anything, and throwing away a chosen order would be a second thing this
+   * button did without saying so.
+   */
+  function clearFilters(): void {
+    filters.query = DEFAULT_FILTERS.query;
+    filters.type = DEFAULT_FILTERS.type;
+    filters.track = DEFAULT_FILTERS.track;
+    filters.status = DEFAULT_FILTERS.status;
+    filters.hands = DEFAULT_FILTERS.hands;
+    filters.minLevel = DEFAULT_FILTERS.minLevel;
+    filters.maxLevel = DEFAULT_FILTERS.maxLevel;
+    filters.importedOnly = DEFAULT_FILTERS.importedOnly;
+    search.value = '';
+    for (const id of ['library-type', 'library-track', 'library-status-filter', 'library-hands']) {
+      const select = document.getElementById(id);
+      if (select instanceof HTMLSelectElement) select.value = 'all';
+    }
+    shown = PAGE_SIZE;
+    draw();
   }
 
   async function refresh(): Promise<void> {

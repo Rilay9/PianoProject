@@ -115,8 +115,10 @@ export function PlanScreen(router: Router): HTMLElement {
       list.append(head);
       if (!open) continue;
 
+      let drawn = 0;
       for (const unit of stage.units) {
         if (activeTracks.length > 0 && unit.track !== 'core' && !activeTracks.includes(unit.track)) continue;
+        drawn += unit.lessons.length;
         // The unit heading earns its line only when it is not simply the
         // lesson's title again: a unit of one lesson with the same name says
         // nothing twice.
@@ -129,6 +131,25 @@ export function PlanScreen(router: Router): HTMLElement {
           );
         }
         for (const lesson of unit.lessons) list.append(lessonRow(lesson));
+      }
+
+      // `04` §0 R4. Stages 5 to 9 have no `core` units at all — every one of
+      // them belongs to a side track — so switching off the four tracks that
+      // are on by default leaves them expanding to nothing at all, under a
+      // header still counting "3 of 12 lessons" because completion is counted
+      // over the whole stage and not over what is on screen. An empty
+      // accordion is the worst kind of dead: it looks like the app failed.
+      if (drawn === 0) {
+        list.append(
+          el('p.plan-unit.muted', {
+            'data-empty-stage': stage.number,
+            text: `Nothing in Stage ${String(stage.number)} is on the tracks you have switched on.`,
+          }),
+          button('Choose tracks', () => openTracksSheet(), {
+            id: `plan-stage-tracks-${String(stage.number)}`,
+            variant: 'quiet',
+          }),
+        );
       }
     }
 
