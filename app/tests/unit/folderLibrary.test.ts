@@ -10,6 +10,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { zipSync, strToU8 } from 'fflate';
 import {
+  FolderCancelled,
   FolderError,
   MANIFEST_NAME,
   addFromFolder,
@@ -24,7 +25,7 @@ import {
   titleFromFilename,
 } from '../../src/data/folderLibrary';
 import { allImports } from '../../src/data/importStore';
-import { addedFiles } from '../../src/ui/screens/FolderScreen';
+import { addedFiles, looksLikeUnnamedArchive } from '../../src/ui/screens/FolderScreen';
 import type { FolderScore } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 
@@ -328,5 +329,165 @@ describe('addFromFolder records where the file came from', () => {
     const stored = (await allImports()).find((candidate) => candidate.id === row.id);
     expect(stored?.origin).toEqual({ folder: 'Mine', file: 'fur_elise.mxl' });
     clearFakeIndexedDb();
+  });
+});
+
+describe('adding from a listing stored by an older build ("Add" bugging out)', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+  });
+
+  /**
+   * `buildLibrary` writes `score.file` as the path the file is *actually*
+   * at, but a listing saved by a build before that was true kept the
+   * manifest's own copy of the path instead — and `reconnectFolder` always
+   * rebuilds the connected files keyed by the real tree, so a straight
+   * `files.get(score.file)` misses for exactly that stored shape. Before the
+   * fallback in `addFromFolder`, this rejected with "is listed but is not in
+   * the folder any more"; the fix trusts the filename (a content hash, unique
+   * by construction) when the path itself does not match.
+   */
+  it('still adds the file by name when the stored path is not where the file actually is', async () => {
+    const file = folderFile('Anything/nested/bb/Qm1.mxl', mxlBytes());
+    connectForTest('mine', new Map([['nested/bb/Qm1.mxl', file]]));
+    const staleRow: FolderScore = {
+      file: 'bb/Qm1.mxl', // the manifest's own path — not `nested/bb/Qm1.mxl`
+      title: 'Paddies Evermore',
+      composer: "Chief F. O'Neill",
+      level: 3.3,
+      bars: 25,
+      status: 'pd',
+      style: 'folk-hymn-carol',
+      rating: 4.5,
+      ratings: 12,
+      views: 2100,
+      lyrics: false,
+      garbled: false,
+      museScore: '4702198',
+    };
+    const row = await addFromFolder('mine', staleRow);
+    expect(row.title).toBe('Paddies Evermore');
+    clearFakeIndexedDb();
+  });
+
+  it('still fails obscurely-but-honestly when more than one file shares that name', async () => {
+    // The filename fallback is only safe while the name is unique — two
+    // files of the same name is not the shape the fallback exists for, and
+    // guessing between them would be worse than saying so.
+    connectForTest(
+      'mine',
+      new Map([
+        ['a/Qm1.mxl', folderFile('Anything/a/Qm1.mxl', 'x')],
+        ['b/Qm1.mxl', folderFile('Anything/b/Qm1.mxl', 'x')],
+      ]),
+    );
+    const staleRow: FolderScore = {
+      file: 'somewhere-else/Qm1.mxl',
+      title: 'Ambiguous',
+      composer: '',
+      level: null,
+      bars: null,
+      status: 'unknown',
+      style: '',
+      rating: 0,
+      ratings: 0,
+      views: 0,
+      lyrics: false,
+      garbled: false,
+      museScore: '',
+    };
+    await expect(addFromFolder('mine', staleRow)).rejects.toThrow(/not in the folder/);
+    clearFakeIndexedDb();
+  });
+});
+
+describe('reading a folder shows progress and can be cancelled', () => {
+  it('reports done/total as it works through the files, not only at the end', async () => {
+    const files = Array.from({ length: 600 }, (_, i) => folderFile(`Big/${String(i)}.mxl`, 'x'));
+    const calls: { done: number; total: number }[] = [];
+    const library = await readFolder(files, {
+      onProgress: (p) => calls.push({ done: p.done, total: p.total }),
+    });
+    expect(library.scores).toHaveLength(600);
+    // One call per file is what makes "Reading 142 of 900" a real read-out
+    // rather than a single call once everything is already done — a spinner
+    // in disguise.
+    expect(calls.length).toBeGreaterThanOrEqual(600);
+    expect(new Set(calls.map((c) => c.done)).size).toBeGreaterThan(50);
+    expect(calls[calls.length - 1]).toEqual({ done: 600, total: 600 });
+  });
+
+  it('a signal aborted before the read starts cancels it instead of finishing', async () => {
+    const files = Array.from({ length: 10 }, (_, i) => folderFile(`Big/${String(i)}.mxl`, 'x'));
+    const controller = new AbortController();
+    controller.abort();
+    await expect(readFolder(files, { signal: controller.signal })).rejects.toBeInstanceOf(FolderCancelled);
+  });
+
+  it('a signal aborted partway through stops the read before it finishes building the listing', async () => {
+    // Large enough to cross a yield checkpoint, so the cancellation is
+    // actually noticed mid-read rather than only at the very start.
+    const files = Array.from({ length: 600 }, (_, i) => folderFile(`Big/${String(i)}.mxl`, 'x'));
+    const controller = new AbortController();
+    let seen = 0;
+    await expect(
+      readFolder(files, {
+        signal: controller.signal,
+        onProgress: (p) => {
+          seen = p.done;
+          if (p.done === 300) controller.abort();
+        },
+      }),
+    ).rejects.toBeInstanceOf(FolderCancelled);
+    expect(seen).toBeLessThan(600);
+  });
+});
+
+describe('a stale listing looks like the archive with no library.json (looksLikeUnnamedArchive)', () => {
+  // A real base58 CID never contains '0', 'O', 'I' or 'l' — using a letter
+  // for the varying part keeps every generated title inside `looksUnnamed`'s
+  // own pattern instead of accidentally testing something looser.
+  const hash = (n: number): string => `Qm${'a'.repeat(43)}${String.fromCharCode(98 + n)}`;
+
+  it('is true once most titles are content hashes', () => {
+    const scores: FolderScore[] = Array.from({ length: 10 }, (_, i) => ({
+      file: `${String(i)}.mxl`,
+      title: i < 6 ? hash(i) : `Real Title ${String(i)}`,
+      composer: '',
+      level: null,
+      bars: null,
+      status: 'unknown',
+      style: '',
+      rating: 0,
+      ratings: 0,
+      views: 0,
+      lyrics: false,
+      garbled: false,
+      museScore: '',
+    }));
+    expect(looksLikeUnnamedArchive(scores)).toBe(true);
+  });
+
+  it('is false for a folder of the owner\'s own scores with a stray untitled one', () => {
+    const scores: FolderScore[] = Array.from({ length: 10 }, (_, i) => ({
+      file: `${String(i)}.mxl`,
+      title: i === 0 ? 'Untitled' : `My Piece ${String(i)}`,
+      composer: '',
+      level: null,
+      bars: null,
+      status: 'unknown',
+      style: '',
+      rating: 0,
+      ratings: 0,
+      views: 0,
+      lyrics: false,
+      garbled: false,
+      museScore: '',
+    }));
+    expect(looksLikeUnnamedArchive(scores)).toBe(false);
+  });
+
+  it('has nothing to say about an empty listing', () => {
+    expect(looksLikeUnnamedArchive([])).toBe(false);
   });
 });

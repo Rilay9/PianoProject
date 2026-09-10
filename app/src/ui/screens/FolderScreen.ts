@@ -20,9 +20,11 @@ import {
   FolderError,
   addFromFolder,
   forgetFolder,
+  looksUnnamed,
   pickFolder,
   savedFolders,
   type FolderLibrary,
+  type FolderProgress,
 } from '../../data/folderLibrary';
 import { ImportError, allImports } from '../../data/importStore';
 import { getSettings } from '../../data/settingsStore';
@@ -98,6 +100,21 @@ export function addedFiles(
   return added;
 }
 
+/**
+ * True when most of a listing's titles are unreadable content hashes.
+ *
+ * A folder with no manifest is expected to have a few of these — a personal
+ * file MuseScore left with no title. A listing where *most* rows look this
+ * way is a different thing: it is the archive, read without its
+ * `library.json` ever being found, and the cure is not "rename your files",
+ * it is "pick the folder again" (docs/04 §4b).
+ */
+export function looksLikeUnnamedArchive(scores: readonly FolderScore[]): boolean {
+  if (scores.length === 0) return false;
+  const unnamed = scores.filter((score) => looksUnnamed(score.title)).length;
+  return unnamed / scores.length > 0.5;
+}
+
 export function FolderScreen(router: Router): HTMLElement {
   const { section, card } = createSubScreen(router, {
     id: 'folder',
@@ -110,6 +127,30 @@ export function FolderScreen(router: Router): HTMLElement {
   const folderStatus = addParagraph(intro, 'No folder yet.');
   const actions = el('div.button-row');
   intro.append(actions);
+
+  // A folder of a thousand files is a real thing to be stuck in, and the read
+  // has no other way to say it is still alive. Countable, not a spinner —
+  // "Reading 142 of 900" says roughly how long is left, which a spinner
+  // cannot, and is why a working import used to read as a frozen one.
+  const progressText = el('p.folder-progress__text', { id: 'folder-progress-text' });
+  const progressFill = el('div.folder-progress__fill', { id: 'folder-progress-fill' });
+  const progressBar = el('div.folder-progress__track', {}, progressFill);
+  const progressCancel = button(
+    'Cancel',
+    () => {
+      cancelledByOwner = true;
+      abortRead?.();
+    },
+    { id: 'folder-cancel', variant: 'quiet' },
+  );
+  const progress = el('div.folder-progress', { id: 'folder-progress', hidden: true }, progressText, progressBar, progressCancel);
+  intro.append(progress);
+
+  // A listing an older build stored is unreadable — every title a content
+  // hash — and until now nothing said why or what to do about it.
+  const unnamedNotice = el('div.notice', { id: 'folder-unnamed-notice', hidden: true });
+  intro.append(unnamedNotice);
+
   // The paragraph explaining how it works goes under the button, folded away
   // (`04` §0 R1). It is read once; the state line and the button are what the
   // screen is for on every visit after that.
@@ -141,6 +182,42 @@ export function FolderScreen(router: Router): HTMLElement {
   let filters: Filters = { ...NO_FILTERS };
   let shown = PAGE;
   let busy = false;
+  /** True while a folder is being read — disables the Pick button, shows progress. */
+  let reading = false;
+  /** Stops the read in progress, while one is running. */
+  let abortRead: (() => void) | null = null;
+  /** Distinguishes "the Cancel button was pressed" from "the native picker was dismissed", which stays silent (see `pick`). */
+  let cancelledByOwner = false;
+
+  function showReadingProgress(progress: FolderProgress): void {
+    const pct = progress.total > 0 ? Math.min(100, Math.round((progress.done / progress.total) * 100)) : 0;
+    progressFill.style.width = `${String(pct)}%`;
+    progressText.textContent =
+      progress.total > 0
+        ? `Reading ${String(progress.done)} of ${String(progress.total)}${progress.file ? ` — ${progress.file}` : ''}`
+        : `Reading… ${String(progress.done)} found${progress.file ? ` — ${progress.file}` : ''}`;
+  }
+
+  function hideReadingProgress(): void {
+    progress.hidden = true;
+    progressText.textContent = '';
+    progressFill.style.width = '0%';
+  }
+
+  function updateUnnamedNotice(): void {
+    const stale = library !== null && looksLikeUnnamedArchive(library.scores);
+    unnamedNotice.hidden = !stale;
+    if (!stale) return;
+    unnamedNotice.replaceChildren(
+      el('p', {
+        text: 'This looks like the archive but its library.json was not found — pick the folder again.',
+      }),
+      button('Pick the folder again', () => void pick(), {
+        id: 'folder-unnamed-pick',
+        variant: 'secondary',
+      }),
+    );
+  }
 
   const search = el('input#folder-search', {
     type: 'search',
@@ -334,18 +411,19 @@ export function FolderScreen(router: Router): HTMLElement {
     folderStatus.textContent = library.connected
       ? `${plural(library.scores.length, 'score')} in ${library.id}${where}.`
       : `${plural(library.scores.length, 'score')} in ${library.id}${where} — pick the folder again to add any of them.`;
+    updateUnnamedNotice();
   }
 
   function drawActions(): void {
-    actions.replaceChildren(
-      button(
-        library ? 'Pick the folder again' : 'Pick a folder',
-        () => {
-          void pick();
-        },
-        { variant: 'primary', id: 'folder-pick' },
-      ),
+    const pickButton = button(
+      library ? 'Pick the folder again' : 'Pick a folder',
+      () => {
+        void pick();
+      },
+      { variant: 'primary', id: 'folder-pick' },
     );
+    pickButton.disabled = reading;
+    actions.replaceChildren(pickButton);
     // Forgetting the folder is not a second answer to "what now" — it lives
     // in `How this works`, out of the run between the heading and the list.
     forgetRow.replaceChildren(
@@ -364,19 +442,41 @@ export function FolderScreen(router: Router): HTMLElement {
   }
 
   async function pick(): Promise<void> {
+    if (reading) return;
+    reading = true;
+    cancelledByOwner = false;
+    const controller = new AbortController();
+    abortRead = () => controller.abort();
+    progress.hidden = false;
+    showReadingProgress({ done: 0, total: 0, file: '' });
+    drawActions();
+
+    let failure: string | null = null;
     try {
-      library = await pickFolder({ remember: getSettings().folderHandles });
+      library = await pickFolder({
+        remember: getSettings().folderHandles,
+        signal: controller.signal,
+        onProgress: showReadingProgress,
+      });
       haystacks = library.scores.map((s) => fold(`${s.title} ${s.composer}`));
       fillStyles(library.scores);
       shown = PAGE;
     } catch (cause) {
-      // A dismissed picker is not an error and gets no message: the owner
-      // knows they cancelled.
-      if (cause instanceof FolderCancelled) return;
-      folderStatus.textContent =
-        cause instanceof FolderError ? cause.message : 'That folder could not be read.';
-      return;
+      if (cause instanceof FolderCancelled) {
+        // A dismissed native picker is not an error and gets no message: the
+        // owner knows they cancelled. Pressing Cancel below the progress bar
+        // mid-read is a decision worth naming — silence there would look
+        // exactly like the freeze this progress bar exists to rule out.
+        failure = cancelledByOwner ? 'Cancelled — the folder was not read.' : null;
+      } else {
+        failure = cause instanceof FolderError ? cause.message : 'That folder could not be read.';
+      }
+    } finally {
+      reading = false;
+      abortRead = null;
+      hideReadingProgress();
     }
+    if (failure !== null) folderStatus.textContent = failure;
     describe();
     drawActions();
     draw();

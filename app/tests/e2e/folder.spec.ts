@@ -82,6 +82,79 @@ async function seedFolder(
   );
 }
 
+/**
+ * Writes a listing whose titles are the archive's own content hashes — the
+ * shape a folder ends up in when its `library.json` is never found (picked
+ * from the wrong level, or a build too old to look for it at all).
+ */
+async function seedUnnamedArchive(page: import('@playwright/test').Page, rows: number): Promise<void> {
+  await page.goto('/');
+  await page.evaluate(
+    async ({ folder, count }) => {
+      const hash = (i: number) => `Qm${'a'.repeat(43)}${String.fromCharCode(98 + (i % 20))}`;
+      const scores = Array.from({ length: count }, (_, i) => ({
+        file: `${String(i)}.mxl`,
+        title: hash(i),
+        composer: '',
+        level: null,
+        bars: null,
+        status: 'unknown',
+        style: '',
+        rating: 0,
+        ratings: 0,
+        views: 0,
+        lyrics: false,
+        garbled: false,
+        museScore: '',
+      }));
+      const open = indexedDB.open('pianopath');
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        open.onsuccess = () => resolve(open.result);
+        open.onerror = () => reject(open.error ?? new Error('could not open the database'));
+      });
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('folderLibraries', 'readwrite');
+        tx.objectStore('folderLibraries').put({
+          id: folder,
+          addedAt: new Date().toISOString(),
+          source: null,
+          scores,
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error ?? new Error('could not write the folder'));
+      });
+      db.close();
+    },
+    { folder: FOLDER, count: rows },
+  );
+}
+
+test.describe('a listing stored without its library.json ever being found', () => {
+  // This is the silent failure from the handoff: a stale listing shows
+  // content hashes for titles and nothing on screen says why, or what to do
+  // about it. `folder.spec.ts` is where this assertion lives because it is
+  // the folder screen's own state; `empty-states.spec.ts` may be the more
+  // natural home for it (see the report) but that file belongs to another
+  // owner.
+  test('names the problem and offers the fix, instead of just showing hashes', async ({ page }) => {
+    await seedUnnamedArchive(page, 50);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-count')).toContainText('50 match');
+    const notice = page.locator('#folder-unnamed-notice');
+    await expect(notice).toBeVisible();
+    await expect(notice).toContainText(/library\.json was not found/i);
+    await expect(notice).toContainText(/pick the folder again/i);
+    await expect(notice.getByRole('button', { name: /pick the folder again/i })).toBeVisible();
+  });
+
+  test('says nothing for an ordinary folder, even with a stray untitled file', async ({ page }) => {
+    await seedFolder(page, 50);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-count')).toContainText('50 match');
+    await expect(page.locator('#folder-unnamed-notice')).toBeHidden();
+  });
+});
+
 test.describe('a folder of 37,261 scores', () => {
   test('browses, filters and searches without the screen falling over', async ({ page }) => {
     test.setTimeout(180_000);

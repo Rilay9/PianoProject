@@ -164,6 +164,28 @@ test.describe('Library obeys 04 §0', () => {
     await expect(page.locator('#library-count')).toContainText('Songs');
   });
 
+  test('Import, Shelf and Score folder sit above the list, not below it (R3)', async ({ page }) => {
+    // They used to sit at the foot of the whole list — reachable only after
+    // scrolling past everything and past "Show more". They are header
+    // content now (`#library-own`), so they exist and come before the list
+    // in the DOM whatever row is currently scrolled to.
+    await page.goto('/#/library');
+    const own = page.locator('#library-own');
+    await expect(own).toBeVisible();
+    await expect(own.getByRole('button', { name: 'Import a score' })).toBeVisible();
+    await expect(own.getByRole('button', { name: 'Shelf' })).toBeVisible();
+    await expect(own.getByRole('button', { name: 'Score folder' })).toBeVisible();
+    const ownIsBeforeList = await page.evaluate(() => {
+      const own = document.querySelector('#library-own');
+      const list = document.querySelector('#library-list');
+      if (!own || !list) return false;
+      // DOCUMENT_POSITION_FOLLOWING on `list` from `own`'s perspective means
+      // `list` comes after `own`.
+      return (own.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+    });
+    expect(ownIsBeforeList).toBe(true);
+  });
+
   test('the item sheet fits its last value on the screen', async ({ page }) => {
     await page.goto('/#/library');
     await page

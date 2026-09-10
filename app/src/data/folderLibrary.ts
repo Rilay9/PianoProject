@@ -236,6 +236,51 @@ function bareScore(path: string, name: string): FolderScore {
 }
 
 /**
+ * How the folder is doing so far, for a screen that wants to say so.
+ *
+ * `total` is 0 when it is not known yet — the directory-handle walk below
+ * finds out how many files there are by finding them, so until it is done
+ * "142 of 900" is not a number anyone has; `total: 0` says "still counting"
+ * rather than lying with a guess.
+ */
+export interface FolderProgress {
+  /** Files looked at so far. */
+  done: number;
+  /** How many there are to look at, or 0 while that is still being found out. */
+  total: number;
+  /** The one just looked at, so "is it stuck" has an answer. */
+  file: string;
+}
+
+export interface FolderReadOptions {
+  onProgress?: (progress: FolderProgress) => void;
+  /** Checked between batches; an aborted signal ends the read with `FolderCancelled`. */
+  signal?: AbortSignal;
+}
+
+/** How many files pass between a check of `signal` and a breath for the UI thread. */
+const YIELD_EVERY = 250;
+
+function checkCancelled(signal: AbortSignal | undefined): void {
+  if (signal?.aborted) throw new FolderCancelled();
+}
+
+/**
+ * Hands control back to the browser for a tick.
+ *
+ * A folder of 37,261 files is real work, and none of the loops below await
+ * anything else on the way through it — without this they would run to
+ * completion in one uninterrupted turn, and a synchronous turn is a turn in
+ * which nothing else paints, however many progress numbers were written
+ * along the way. This is what makes "Reading 142 of 900" an honest read-out
+ * instead of a number nobody sees until the loop is already done, and it is
+ * also the only place `signal` actually gets a chance to be noticed.
+ */
+function yieldToUI(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
+/**
  * Builds the listing for a picked folder.
  *
  * A manifest describes the files; the files decide what is listed. A row the
@@ -243,7 +288,11 @@ function bareScore(path: string, name: string): FolderScore {
  * — and a file the manifest never mentioned is kept under its own name, which
  * is how a folder of the owner's own scores works with no manifest at all.
  */
-export async function readFolder(files: readonly File[]): Promise<FolderLibrary> {
+export async function readFolder(
+  files: readonly File[],
+  options: FolderReadOptions = {},
+): Promise<FolderLibrary> {
+  checkCancelled(options.signal);
   if (files.length > MAX_FOLDER_FILES) {
     throw new FolderError(
       `That folder holds ${files.length.toLocaleString()} files. Pick the folder with the scores in it, not the one above it.`,
@@ -252,6 +301,7 @@ export async function readFolder(files: readonly File[]): Promise<FolderLibrary>
   const byPath = new Map<string, File>();
   let manifestFile: File | null = null;
   let manifestRoot = '';
+  let done = 0;
   for (const file of files) {
     const path = relativePath(file);
     const root = manifestRootOf(path);
@@ -260,11 +310,18 @@ export async function readFolder(files: readonly File[]): Promise<FolderLibrary>
         manifestFile = file;
         manifestRoot = root;
       }
-      continue;
+    } else if (isScoreFile(path)) {
+      byPath.set(path, file);
     }
-    if (isScoreFile(path)) byPath.set(path, file);
+    done += 1;
+    options.onProgress?.({ done, total: files.length, file: path });
+    if (done % YIELD_EVERY === 0) {
+      checkCancelled(options.signal);
+      await yieldToUI();
+    }
   }
-  return buildLibrary(folderNameOf(files), byPath, manifestFile, manifestRoot);
+  checkCancelled(options.signal);
+  return buildLibrary(folderNameOf(files), byPath, manifestFile, manifestRoot, options);
 }
 
 /**
@@ -297,7 +354,9 @@ async function buildLibrary(
   byPath: Map<string, File>,
   manifestFile: File | null,
   manifestRoot = '',
+  options: FolderReadOptions = {},
 ): Promise<FolderLibrary> {
+  checkCancelled(options.signal);
   if (byPath.size === 0) {
     throw new FolderError(
       'That folder has no MusicXML in it. The app reads .mxl, .musicxml and .xml files; a PDF goes through Import instead.',
@@ -322,13 +381,26 @@ async function buildLibrary(
   }
 
   const scores: FolderScore[] = [];
+  const total = byPath.size;
+  let done = 0;
   for (const [path, file] of byPath) {
     const key = manifestRoot !== '' && path.startsWith(manifestRoot) ? path.slice(manifestRoot.length) : path;
     const row = described.get(key) ?? described.get(path) ?? byName.get(file.name) ?? null;
-    // The row keeps the manifest's path, which is what a later `Add` looks
-    // the file up by; the file is where it actually is.
+    // `file` is overwritten with the path this file is *actually* at, not
+    // the manifest's own copy of it — `path` is the `byPath` key, and
+    // `addFromFolder` looks a row up in the reconnected `byPath` by this same
+    // field, so the two have to agree. (An older build kept the manifest's
+    // path here instead, which is exactly the mismatch `addFromFolder`'s
+    // filename fallback exists to paper over for a listing stored back then.)
     scores.push(row ? { ...row, file: path } : bareScore(path, file.name));
+    done += 1;
+    options.onProgress?.({ done, total, file: path });
+    if (done % YIELD_EVERY === 0) {
+      checkCancelled(options.signal);
+      await yieldToUI();
+    }
   }
+  checkCancelled(options.signal);
   // Sorted once here rather than on every draw: the browse screen re-filters
   // 37,000 rows on each keystroke and a comparison per row per keystroke is
   // the one cost worth paying up front.
@@ -377,6 +449,7 @@ function isAbort(cause: unknown): boolean {
  */
 async function readDirectoryHandle(
   handle: DirectoryHandle,
+  options: FolderReadOptions = {},
 ): Promise<{ byPath: Map<string, File>; manifestFile: File | null; manifestRoot: string }> {
   const byPath = new Map<string, File>();
   let manifestFile: File | null = null;
@@ -387,6 +460,7 @@ async function readDirectoryHandle(
     const next = stack.pop();
     if (!next) break;
     for await (const entry of next.dir.values()) {
+      checkCancelled(options.signal);
       const path = next.prefix + entry.name;
       if (entry.kind === 'directory') {
         stack.push({ dir: entry, prefix: path + '/' });
@@ -406,15 +480,24 @@ async function readDirectoryHandle(
         continue;
       }
       if (isScoreFile(path)) byPath.set(path, await entry.getFile());
+      // The total is not known until the walk is over — a directory can hold
+      // another directory, so "how many files" is not answerable from the
+      // top before it is done. `total: 0` is `FolderProgress`'s way of saying
+      // "still counting" rather than a number nobody yet has.
+      options.onProgress?.({ done: seen, total: 0, file: path });
+      if (seen % YIELD_EVERY === 0) await yieldToUI();
     }
   }
   return { byPath, manifestFile, manifestRoot };
 }
 
 /** Reads a folder the browser handed over as a handle rather than as files. */
-export async function readFolderHandle(handle: DirectoryHandle): Promise<FolderLibrary> {
-  const { byPath, manifestFile, manifestRoot } = await readDirectoryHandle(handle);
-  return buildLibrary(handle.name || 'Scores', byPath, manifestFile, manifestRoot);
+export async function readFolderHandle(
+  handle: DirectoryHandle,
+  options: FolderReadOptions = {},
+): Promise<FolderLibrary> {
+  const { byPath, manifestFile, manifestRoot } = await readDirectoryHandle(handle, options);
+  return buildLibrary(handle.name || 'Scores', byPath, manifestFile, manifestRoot, options);
 }
 
 /**
@@ -462,13 +545,16 @@ export async function reconnectFolder(id: string): Promise<boolean> {
  * — drops through to the picker that is known to work, so the fallback is the
  * behaviour the owner already has rather than an error message.
  */
-export async function pickFolder(options: { remember?: boolean } = {}): Promise<FolderLibrary> {
-  if (options.remember === true && directoryPickerAvailable()) {
+export async function pickFolder(
+  options: { remember?: boolean } & FolderReadOptions = {},
+): Promise<FolderLibrary> {
+  const { remember, ...readOptions } = options;
+  if (remember === true && directoryPickerAvailable()) {
     const picker = (window as unknown as PickerWindow).showDirectoryPicker;
     try {
       const handle = await picker?.({ mode: 'read' });
       if (handle) {
-        const library = await readFolderHandle(handle);
+        const library = await readFolderHandle(handle, readOptions);
         await saveFolder(library, handle);
         return library;
       }
@@ -476,13 +562,13 @@ export async function pickFolder(options: { remember?: boolean } = {}): Promise<
       // A dismissed picker is a decision, not a failure: opening a second one
       // behind it would be the app arguing with him.
       if (isAbort(cause)) throw new FolderCancelled();
-      if (cause instanceof FolderError) throw cause;
+      if (cause instanceof FolderError || cause instanceof FolderCancelled) throw cause;
     }
   }
-  return pickFolderWithInput();
+  return pickFolderWithInput(readOptions);
 }
 
-async function pickFolderWithInput(): Promise<FolderLibrary> {
+async function pickFolderWithInput(options: FolderReadOptions = {}): Promise<FolderLibrary> {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
@@ -504,7 +590,7 @@ async function pickFolderWithInput(): Promise<FolderLibrary> {
       input.click();
     });
     if (files.length === 0) throw new FolderCancelled();
-    const library = await readFolder(files);
+    const library = await readFolder(files, options);
     await saveFolder(library);
     return library;
   } finally {
@@ -581,7 +667,20 @@ export async function addFromFolder(folderId: string, score: FolderScore) {
       `Pick the ${folderId} folder again to add from it — Android only lends a folder for one visit.`,
     );
   }
-  const file = files.get(score.file);
+  let file = files.get(score.file);
+  if (!file) {
+    // A listing stored by an older build kept the *manifest's* path in
+    // `file` rather than the path the file is actually at — `buildLibrary`
+    // above now always writes the actual path, but a row written before that
+    // was true is still sitting in IndexedDB, and `reconnectFolder` always
+    // rebuilds `files` keyed by actual paths. The filename on its own is
+    // still reliable: it is the archive's content hash, unique by
+    // construction (`buildLibrary`'s `byName` map above relies on the same
+    // fact), so a row with the older shape still finds its file by name.
+    const name = score.file.slice(score.file.lastIndexOf('/') + 1);
+    const bySameName = [...files.entries()].filter(([path]) => path === name || path.endsWith(`/${name}`));
+    if (bySameName.length === 1) file = bySameName[0]?.[1];
+  }
   if (!file) {
     throw new FolderError(`${score.title} is listed but is not in the folder any more.`);
   }
