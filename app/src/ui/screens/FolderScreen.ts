@@ -531,6 +531,20 @@ export function FolderScreen(router: Router): HTMLElement {
       return;
     }
     const where = library.source ? ` from ${library.source}` : '';
+    if (library.scores.length === 0) {
+      // A folder with no MusicXML at all is refused while it is being read,
+      // with the sentence that says which files are looked for. This is the
+      // other way to end with nothing: files were found and not one of them
+      // could be described. "0 scores in music." is true and tells a person
+      // neither what went wrong nor what to do, and the button below says
+      // "Pick the folder again", which is the wrong advice if the folder was
+      // right.
+      folderStatus.textContent =
+        `Nothing in ${library.id}${where} could be read as a score. The app reads .mxl, ` +
+        '.musicxml and .xml files; a PDF goes through Import instead.';
+      updateUnnamedNotice();
+      return;
+    }
     folderStatus.textContent = library.connected
       ? `${plural(library.scores.length, 'score')} in ${library.id}${where}.`
       : `${plural(library.scores.length, 'score')} in ${library.id}${where} — pick the folder again to add any of them.`;

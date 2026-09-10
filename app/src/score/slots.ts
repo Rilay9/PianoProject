@@ -230,7 +230,7 @@ export function planSlots(
     behind.forEach((range, i) => (filled[at - 1 - i] = range));
     filled[at] = wanted;
     ahead.forEach((range, i) => (filled[at + 1 + i] = range));
-    return { cursor: at as SlotIndex, ranges: filled, fades: [], crossed: false };
+    return { cursor: at, ranges: filled, fades: [], crossed: false };
   }
 
   const ranges: (MeasureRange | null)[] = held.slice();
