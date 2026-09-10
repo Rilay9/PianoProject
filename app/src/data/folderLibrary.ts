@@ -31,6 +31,7 @@
  */
 import { openDatabase, type FolderLibraryRow, type FolderScore } from './db';
 import { addImport, updateImport, ImportError } from './importStore';
+import type { WalkMessage, WalkRequest } from './folderWalk.worker';
 
 /** The file a folder uses to describe itself. */
 export const MANIFEST_NAME = 'library.json';
@@ -522,7 +523,95 @@ function isAbort(cause: unknown): boolean {
  * should care how deep the owner's own folders go, and a stack that cannot
  * overflow costs nothing.
  */
+/**
+ * The walk, in a worker, with the old main-thread walk as the fallback.
+ *
+ * Everything the worker needs is either serializable or a constant, so the
+ * boundary is one message each way plus progress. `FileSystemDirectoryHandle`
+ * is transferable in Chromium, which is where this feature exists at all; a
+ * browser that refuses to post one, or has no module workers, falls back to
+ * the thread it always used, which is slower but correct.
+ */
 async function readDirectoryHandle(
+  handle: DirectoryHandle,
+  options: FolderReadOptions = {},
+): Promise<{ byPath: Map<string, File>; manifestFile: File | null; manifestRoot: string }> {
+  if (typeof Worker !== 'function') return readDirectoryHandleOnThisThread(handle, options);
+  let worker: Worker;
+  try {
+    worker = new Worker(new URL('./folderWalk.worker.ts', import.meta.url), { type: 'module' });
+  } catch {
+    return readDirectoryHandleOnThisThread(handle, options);
+  }
+  try {
+    return await new Promise((resolve, reject) => {
+      const stop = (): void => {
+        options.signal?.removeEventListener('abort', onAbort);
+        worker.terminate();
+      };
+      // Cancel is a message now rather than a flag read between blocking hops,
+      // so it lands the moment it is pressed instead of at the next check.
+      const onAbort = (): void => {
+        stop();
+        reject(new FolderCancelled());
+      };
+      if (options.signal?.aborted) {
+        onAbort();
+        return;
+      }
+      options.signal?.addEventListener('abort', onAbort, { once: true });
+      worker.onmessage = (event: MessageEvent<WalkMessage>): void => {
+        const message = event.data;
+        switch (message.kind) {
+          case 'counting':
+            options.onProgress?.({ done: message.seen, total: 0, file: message.file, phase: 'counting' });
+            return;
+          case 'reading':
+            options.onProgress?.({
+              done: message.done,
+              total: message.total,
+              file: message.file,
+              phase: 'reading',
+            });
+            return;
+          case 'done':
+            stop();
+            resolve({
+              byPath: new Map(message.files),
+              manifestFile: message.manifest,
+              manifestRoot: message.manifestRoot,
+            });
+            return;
+          default:
+            stop();
+            reject(new FolderError(message.message));
+        }
+      };
+      // A worker that cannot start, or cannot be given the handle, is not a
+      // failed import: it is this thread's job after all.
+      worker.onerror = (): void => {
+        stop();
+        void readDirectoryHandleOnThisThread(handle, options).then(resolve, reject);
+      };
+      try {
+        worker.postMessage({
+          handle,
+          manifestName: MANIFEST_NAME,
+          scoreExtensions: [...SCORE_SUFFIXES],
+          maxFiles: MAX_FOLDER_FILES,
+          readChunk: READ_CHUNK,
+        } satisfies WalkRequest);
+      } catch {
+        stop();
+        void readDirectoryHandleOnThisThread(handle, options).then(resolve, reject);
+      }
+    });
+  } finally {
+    worker.terminate();
+  }
+}
+
+async function readDirectoryHandleOnThisThread(
   handle: DirectoryHandle,
   options: FolderReadOptions = {},
 ): Promise<{ byPath: Map<string, File>; manifestFile: File | null; manifestRoot: string }> {
