@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { matchTapsToClicks } from '../../src/audio/latency';
+import { EARLY_WINDOW_MS, LATE_WINDOW_MS, matchTapsToClicks } from '../../src/audio/latency';
 import { audioTimeToPerformanceMs, type AudioClockAnchor } from '../../src/audio/clock';
 import { summarise } from '../../src/util/stats';
 
@@ -16,8 +16,17 @@ describe('matchTapsToClicks', () => {
   });
 
   it('ignores taps further than the window from any click', () => {
-    expect(matchTapsToClicks(clicks, [1500], 400)).toEqual([]);
-    expect(matchTapsToClicks(clicks, [1350], 400)).toHaveLength(1);
+    const window = { earlyMs: 400, lateMs: 400 };
+    expect(matchTapsToClicks(clicks, [1500], window)).toEqual([]);
+    expect(matchTapsToClicks(clicks, [1350], window)).toHaveLength(1);
+  });
+
+  it('is later-leaning: the window after a click is wider than the one before', () => {
+    // A learner is late far more often than early, and the input path only
+    // ever adds delay. A symmetric window throws away the real readings.
+    expect(matchTapsToClicks([1000], [1000 + LATE_WINDOW_MS - 1])).toHaveLength(1);
+    expect(matchTapsToClicks([1000], [1000 - LATE_WINDOW_MS + 1])).toEqual([]);
+    expect(matchTapsToClicks([1000], [1000 - EARLY_WINDOW_MS + 1])).toHaveLength(1);
   });
 
   it('uses at most one tap per click, keeping the earlier one', () => {
