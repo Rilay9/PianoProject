@@ -290,6 +290,15 @@ export interface FolderProgress {
   total: number;
   /** The one just looked at, so "is it stuck" has an answer. */
   file: string;
+  /**
+   * Which wait this is.
+   *
+   * Counting and reading are different waits and a single sentence covering
+   * both is why a slow import read as a broken one: during `counting` there is
+   * no denominator, so a number that climbs is the only honest read-out, and a
+   * bar showing 0 % is indistinguishable from a bar that is stuck.
+   */
+  phase: 'counting' | 'reading' | 'listing';
 }
 
 export interface FolderReadOptions {
@@ -317,8 +326,27 @@ function checkCancelled(signal: AbortSignal | undefined): void {
  * also the only place `signal` actually gets a chance to be noticed.
  */
 function yieldToUI(): Promise<void> {
+  // `scheduler.yield` puts the continuation at the *front* of the queue and
+  // keeps its priority. `setTimeout(0)` sends it to the back, where anything
+  // queued in the meantime goes first, and the delay is clamped to several
+  // milliseconds — far more when the page is not visible, which is why an
+  // import built on it *stops* when the phone is put down rather than getting
+  // slower. The timer stays as the fallback for browsers without it.
+  const scheduling = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler;
+  if (typeof scheduling?.yield === 'function') return scheduling.yield();
   return new Promise((resolve) => setTimeout(resolve, 0));
 }
+
+/**
+ * How many file handles are resolved at once.
+ *
+ * Each `getFile()` is a round trip to the browser process, so a thousand of
+ * them in sequence is dominated by latency rather than work — on Android that
+ * was most of the wait. Resolved in chunks the latency overlaps instead of
+ * accumulating. Wide enough to hide it, narrow enough that a chunk is still a
+ * short task and `signal` is still noticed promptly.
+ */
+const READ_CHUNK = 32;
 
 /**
  * Builds the listing for a picked folder.
@@ -354,7 +382,7 @@ export async function readFolder(
       byPath.set(path, file);
     }
     done += 1;
-    options.onProgress?.({ done, total: files.length, file: path });
+    options.onProgress?.({ done, total: files.length, file: path, phase: 'reading' });
     if (done % YIELD_EVERY === 0) {
       checkCancelled(options.signal);
       await yieldToUI();
@@ -434,7 +462,7 @@ async function buildLibrary(
     // filename fallback exists to paper over for a listing stored back then.)
     scores.push(row ? { ...row, file: path } : bareScore(path, file.name));
     done += 1;
-    options.onProgress?.({ done, total, file: path });
+    options.onProgress?.({ done, total, file: path, phase: 'listing' });
     if (done % YIELD_EVERY === 0) {
       checkCancelled(options.signal);
       await yieldToUI();
@@ -498,9 +526,17 @@ async function readDirectoryHandle(
   handle: DirectoryHandle,
   options: FolderReadOptions = {},
 ): Promise<{ byPath: Map<string, File>; manifestFile: File | null; manifestRoot: string }> {
-  const byPath = new Map<string, File>();
-  let manifestFile: File | null = null;
+  // Two passes, because they are two different waits.
+  //
+  // The walk only *names* things: it collects handles and opens none, so it is
+  // fast and it is what produces the total. Opening every file as it was found
+  // meant the one loop had no denominator to report and paid a round trip per
+  // file at the same time, so it could neither say how far along it was nor
+  // get there quickly. Named first, opened second: the reading pass has a real
+  // total and can resolve handles in parallel.
+  let manifestHandle: FileSystemFileHandle | null = null;
   let manifestRoot = '';
+  const scoreHandles: { path: string; handle: FileSystemFileHandle }[] = [];
   const stack: { dir: FileSystemDirectoryHandle; prefix: string }[] = [{ dir: handle, prefix: '' }];
   let seen = 0;
   while (stack.length > 0) {
@@ -520,20 +556,39 @@ async function readDirectoryHandle(
         );
       }
       if (entry.name === MANIFEST_NAME) {
-        if (manifestFile === null || next.prefix.length < manifestRoot.length) {
-          manifestFile = await entry.getFile();
+        if (manifestHandle === null || next.prefix.length < manifestRoot.length) {
+          manifestHandle = entry;
           manifestRoot = next.prefix;
         }
         continue;
       }
-      if (isScoreFile(path)) byPath.set(path, await entry.getFile());
-      // The total is not known until the walk is over — a directory can hold
-      // another directory, so "how many files" is not answerable from the
-      // top before it is done. `total: 0` is `FolderProgress`'s way of saying
-      // "still counting" rather than a number nobody yet has.
-      options.onProgress?.({ done: seen, total: 0, file: path });
+      if (isScoreFile(path)) scoreHandles.push({ path, handle: entry });
+      // No total yet: a directory can hold another directory, so "how many
+      // files" is not answerable from the top. `counting` is how the screen
+      // knows to show a climbing count rather than a percentage of nothing.
+      options.onProgress?.({ done: seen, total: 0, file: path, phase: 'counting' });
       if (seen % YIELD_EVERY === 0) await yieldToUI();
     }
+  }
+
+  const byPath = new Map<string, File>();
+  const manifestFile = manifestHandle === null ? null : await manifestHandle.getFile();
+  for (let at = 0; at < scoreHandles.length; at += READ_CHUNK) {
+    checkCancelled(options.signal);
+    const chunk = scoreHandles.slice(at, at + READ_CHUNK);
+    const files = await Promise.all(chunk.map((entry) => entry.handle.getFile()));
+    chunk.forEach((entry, index) => {
+      const file = files[index];
+      if (file) byPath.set(entry.path, file);
+    });
+    const last = chunk[chunk.length - 1];
+    options.onProgress?.({
+      done: Math.min(at + chunk.length, scoreHandles.length),
+      total: scoreHandles.length,
+      file: last ? last.path : '',
+      phase: 'reading',
+    });
+    await yieldToUI();
   }
   return { byPath, manifestFile, manifestRoot };
 }

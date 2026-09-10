@@ -193,7 +193,22 @@ export function FolderScreen(router: Router): HTMLElement {
     },
     { id: 'folder-cancel', variant: 'quiet' },
   );
-  const progress = el('div.folder-progress', { id: 'folder-progress', hidden: true }, progressText, progressBar, progressCancel);
+  // Leaving is the thing that actually breaks a long read: a browser throttles
+  // a page it cannot see, so the work stops rather than slows. Worth one line,
+  // because the alternative is finding it out by losing a ten-minute import.
+  const progressNote = el(
+    'p.folder-progress__note',
+    {},
+    'A large folder can take a few minutes. Keep this screen open — leaving the app pauses it.',
+  );
+  const progress = el(
+    'div.folder-progress',
+    { id: 'folder-progress', hidden: true },
+    progressText,
+    progressBar,
+    progressNote,
+    progressCancel,
+  );
   intro.append(progress);
 
   // A listing an older build stored is unreadable — every title a content
@@ -245,20 +260,72 @@ export function FolderScreen(router: Router): HTMLElement {
   let reading = false;
   /** Stops the read in progress, while one is running. */
   let abortRead: (() => void) | null = null;
+  /** No faster than the eye can read, and no faster than the thread can spare. */
+  const PROGRESS_EVERY_MS = 100;
+  let latestProgress: FolderProgress | null = null;
+  let progressFrame: number | null = null;
+  let progressPaintedAt = 0;
   /** Distinguishes "the Cancel button was pressed" from "the native picker was dismissed", which stays silent (see `pick`). */
   let cancelledByOwner = false;
 
-  function showReadingProgress(progress: FolderProgress): void {
-    const pct = progress.total > 0 ? Math.min(100, Math.round((progress.done / progress.total) * 100)) : 0;
-    progressFill.style.width = `${String(pct)}%`;
-    progressText.textContent =
-      progress.total > 0
-        ? `Reading ${String(progress.done)} of ${String(progress.total)}${progress.file ? ` — ${progress.file}` : ''}`
-        : `Reading… ${String(progress.done)} found${progress.file ? ` — ${progress.file}` : ''}`;
+  /**
+   * Paints the progress read-out, at most once every `PROGRESS_EVERY_MS`.
+   *
+   * The read reports every file, and painting every report was most of the
+   * reason the app stopped answering: two text nodes and a width per file is a
+   * forced layout per file, and a thousand short layouts saturate the main
+   * thread just as thoroughly as one long task while looking innocent in a
+   * profile. The numbers change faster than anyone can read them anyway, so
+   * throttling loses nothing — except that the *last* report must always land,
+   * or the bar stops short of the end and looks stuck at the finish line.
+   */
+  function showReadingProgress(next: FolderProgress): void {
+    latestProgress = next;
+    if (progressFrame !== null) return;
+    const since = performance.now() - progressPaintedAt;
+    if (since < PROGRESS_EVERY_MS) {
+      progressFrame = window.setTimeout(() => {
+        progressFrame = null;
+        paintProgress();
+      }, PROGRESS_EVERY_MS - since);
+      return;
+    }
+    paintProgress();
+  }
+
+  function paintProgress(): void {
+    const at = latestProgress;
+    if (at === null) return;
+    progressPaintedAt = performance.now();
+    // A bar at 0 % looks exactly like a bar that is stuck, and while the folder
+    // is still being counted there is no denominator to be a fraction of. So
+    // the bar says "working" rather than "none of the way there" until a total
+    // exists.
+    const known = at.total > 0;
+    progressBar.dataset.indeterminate = known ? 'false' : 'true';
+    progressFill.style.width = known
+      ? `${String(Math.min(100, Math.round((at.done / at.total) * 100)))}%`
+      : '';
+    // Counting and reading are different waits. One sentence covering both is
+    // why a slow import read as a broken one.
+    const count = at.done.toLocaleString();
+    const head =
+      at.phase === 'counting'
+        ? `Looking through the folder — ${count} ${at.done === 1 ? 'file' : 'files'} so far`
+        : at.phase === 'reading'
+          ? `Reading ${count} of ${at.total.toLocaleString()}`
+          : `Listing ${count} of ${at.total.toLocaleString()}`;
+    progressText.textContent = at.file ? `${head} — ${at.file}` : head;
   }
 
   function hideReadingProgress(): void {
+    if (progressFrame !== null) {
+      clearTimeout(progressFrame);
+      progressFrame = null;
+    }
+    latestProgress = null;
     progress.hidden = true;
+    progressBar.dataset.indeterminate = 'false';
     progressText.textContent = '';
     progressFill.style.width = '0%';
   }
@@ -585,7 +652,8 @@ export function FolderScreen(router: Router): HTMLElement {
     const controller = new AbortController();
     abortRead = () => controller.abort();
     progress.hidden = false;
-    showReadingProgress({ done: 0, total: 0, file: '' });
+    progressPaintedAt = 0;
+    showReadingProgress({ done: 0, total: 0, file: '', phase: 'counting' });
     drawActions();
 
     let failure: string | null = null;
