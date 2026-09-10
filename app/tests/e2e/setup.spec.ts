@@ -16,7 +16,7 @@ const SHOTS = resolve('../build/setup');
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
-const STEPS = ['welcome', 'hold', 'piano', 'latency', 'sound', 'display', 'modes', 'practice', 'done'];
+const STEPS = ['welcome', 'hold', 'piano', 'sound', 'display', 'modes', 'practice', 'done'];
 
 async function fresh(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -77,19 +77,21 @@ test.describe('the setup tour', () => {
       await expect(page.locator('#setup-next')).toBeVisible();
 
       if (step === 'hold') {
-        // Both ways up, drawn by the real engraver in the phone's proportions:
-        // slots upright, one sliding system sideways.
-        const upright = page.locator('#setup-hold-upright .setup-device');
-        const sideways = page.locator('#setup-hold-sideways .setup-device');
-        await expect(upright.locator('svg').first()).toBeVisible({ timeout: 60_000 });
-        await expect(sideways.locator('svg').first()).toBeVisible({ timeout: 60_000 });
-        await expect(upright.locator('.score-view')).toHaveAttribute('data-read-ahead', 'slots');
-        await expect(sideways.locator('.score-view')).toHaveAttribute('data-read-ahead', 'single');
-        // The landscape lock is on by default, so sideways is the choice to begin with.
+        // The chosen way up, drawn by the real engraver in the phone's
+        // proportions — one sliding system sideways, slots upright — and the
+        // other a tap away. The landscape lock is on by default, so sideways
+        // is the choice to begin with.
+        const frame = page.locator('#setup-hold-preview');
         await expect(page.locator('#setup-hold-sideways')).toHaveAttribute('aria-pressed', 'true');
+        await expect(frame).toHaveAttribute('data-orientation', 'sideways');
+        await expect(frame.locator('svg').first()).toBeVisible({ timeout: 60_000 });
+        await expect(frame.locator('.score-view')).toHaveAttribute('data-read-ahead', 'single');
         await page.locator('#setup-hold-upright').click();
         await expect(page.locator('#setup-hold-upright')).toHaveAttribute('aria-pressed', 'true');
         await expect(page.locator('#setup-hold-sideways')).toHaveAttribute('aria-pressed', 'false');
+        await expect(frame).toHaveAttribute('data-orientation', 'upright');
+        await expect(frame.locator('svg').first()).toBeVisible({ timeout: 60_000 });
+        await expect(frame.locator('.score-view')).toHaveAttribute('data-read-ahead', 'slots');
       }
       if (step === 'piano') {
         await page.locator('#setup-midi-connect').click();
@@ -99,28 +101,39 @@ test.describe('the setup tour', () => {
         await page.locator('#setup-input-priority').selectOption('mic,midi,none');
       }
       if (step === 'display') {
-        // The miniature follows the choice: upright, the slots.
+        await expect(page.locator('#setup-landscape')).not.toBeChecked();
+        // Preview: the miniature follows the choice — upright, the slots —
+        // and has the step to itself.
+        await page.locator('#setup-preview-open').click();
+        await expect(page.locator('#setup-options')).toBeHidden();
         await expect(page.locator('#setup-preview')).toHaveAttribute('data-orientation', 'upright');
         await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 60_000 });
         await expect(page.locator('#setup-preview .score-view')).toHaveAttribute('data-read-ahead', 'slots');
         await expect(page.locator('#setup-preview .score-note.is-current').first()).toBeAttached();
         await expect(page.locator('#setup-preview .setup-device__strip .key').first()).toBeVisible();
-        await expect(page.locator('#setup-landscape')).not.toBeChecked();
         await page.locator('#setup-preview-flip').click();
         await expect(page.locator('#setup-preview')).toHaveAttribute('data-orientation', 'sideways');
         await expect(page.locator('#setup-preview .score-view')).toHaveAttribute('data-read-ahead', 'single', { timeout: 30_000 });
+        await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 30_000 });
+        const textsBefore = await page.locator('#setup-preview svg text').count();
+        // Back to the choices: the preview is gone until it is asked for.
+        await page.locator('#setup-preview-close').click();
+        await expect(page.locator('#setup-preview-panel')).toBeHidden();
+        await expect(page.locator('#setup-options')).toBeVisible();
         await page.locator('#setup-theme').selectOption('dark');
         await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
         await page.locator('#setup-keys').selectOption('ribbon');
-        await expect(page.locator('#setup-preview .setup-device__strip')).toHaveAttribute('data-keys', 'ribbon', { timeout: 30_000 });
-        // The preview is drawn again without the fingering digits, which are
-        // text: fewer text nodes after than before.
-        await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 30_000 });
-        const textsBefore = await page.locator('#setup-preview svg text').count();
         await page.locator('#setup-fingering').uncheck();
+        // Opened again it is drawn with the choices as they are now: the
+        // ribbon under the score, and no fingering digits, which are text.
+        await page.locator('#setup-preview-open').click();
+        await expect(page.locator('#setup-preview')).toHaveAttribute('data-orientation', 'sideways');
+        await expect(page.locator('#setup-preview .setup-device__strip')).toHaveAttribute('data-keys', 'ribbon', { timeout: 30_000 });
+        await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 30_000 });
         await expect
           .poll(() => page.locator('#setup-preview svg text').count(), { timeout: 30_000 })
           .toBeLessThan(textsBefore);
+        await page.locator('#setup-preview-close').click();
       }
       if (step === 'modes') {
         await page.locator('#setup-mode-input').selectOption('tempo');
@@ -182,12 +195,7 @@ test.describe('the setup tour', () => {
           await page.locator('#setup-mic summary').click();
         }
         if (step === 'hold') {
-          await expect(page.locator('#setup-hold-upright svg').first()).toBeVisible({ timeout: 60_000 });
-          await expect(page.locator('#setup-hold-sideways svg').first()).toBeVisible({ timeout: 60_000 });
-          await page.waitForTimeout(400);
-        }
-        if (step === 'display') {
-          await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 60_000 });
+          await expect(page.locator('#setup-hold-preview svg').first()).toBeVisible({ timeout: 60_000 });
           await page.waitForTimeout(400);
         }
         if (step === 'practice') {
@@ -205,6 +213,20 @@ test.describe('the setup tour', () => {
         expect(box, `step ${step}: the Next button has a box`).not.toBeNull();
         expect((box?.y ?? 0) + (box?.height ?? 0), `step ${step} ${orientation}: Next is below the fold`).toBeLessThanOrEqual(size.height);
         expect(box?.y ?? -1, `step ${step} ${orientation}: Next is above the top`).toBeGreaterThanOrEqual(0);
+        if (step === 'display') {
+          // And the preview, which has the step to itself.
+          await page.locator('#setup-preview-open').click();
+          await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 60_000 });
+          await page.waitForTimeout(400);
+          await page.screenshot({
+            path: join(SHOTS, `${orientation}--${String(i + 1)}-${step}-preview.png`),
+            fullPage: true,
+            animations: 'disabled',
+          });
+          const closeBox = await page.locator('#setup-preview-close').boundingBox();
+          expect((closeBox?.y ?? 0) + (closeBox?.height ?? 0), `${orientation}: the preview's Back is below the fold`).toBeLessThanOrEqual(size.height);
+          await page.locator('#setup-preview-close').click();
+        }
         await page.locator('#setup-next').click();
       }
       await expect(page.locator('.screen h1')).toHaveText('Today');

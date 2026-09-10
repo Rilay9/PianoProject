@@ -80,8 +80,7 @@ test.describe('guide pictures', () => {
     await shot('diagnostics');
     await open('#/settings/setup', 'setup');
     await page.locator('#setup-next').click();
-    await expect(page.locator('#setup-hold-upright svg').first()).toBeVisible({ timeout: 60_000 });
-    await expect(page.locator('#setup-hold-sideways svg').first()).toBeVisible({ timeout: 60_000 });
+    await expect(page.locator('#setup-hold-preview svg').first()).toBeVisible({ timeout: 60_000 });
     await shot('tour');
 
     // The score screen: three notes into Hot Cross Buns, then the end.

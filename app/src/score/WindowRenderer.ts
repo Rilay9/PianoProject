@@ -389,6 +389,8 @@ export class WindowRenderer {
   private settleHandle: { kind: 'idle' | 'timer'; id: number } | null = null;
   /** The stage height at the last fit; -1 before any. Saves the swap a layout. */
   private stageHeight = -1;
+  /** The stage width the held and probed measurements were taken at. */
+  private measuredWidth = -1;
   private manualScrollUntil = 0;
   /** Bumped whenever a slot is drawn or blanked, so the merge can cache. */
   private drawVersion = 0;
@@ -1381,6 +1383,21 @@ export class WindowRenderer {
    * the two callers gets there first takes the transition.
    */
   private stageChanged(): void {
+    // A new width is a new measurement. The widest box held and the probe's
+    // figures were taken at the old width — sideways, that is the 780 px
+    // sliding chunk — and one bar upright fitted to *that* width was four
+    // one-bar systems at a fifth of the screen, which is what the owner's
+    // phone showed after a turn. Height changes alone (the bar hiding) keep
+    // what was measured; that is the case the holding exists for.
+    const width = Math.round(this.measure(this.el).width);
+    if (width > 0) {
+      if (this.measuredWidth >= 0 && Math.abs(width - this.measuredWidth) > 2) {
+        this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
+        this.pieceInk = null;
+        this.pieceInkZoom = -1;
+      }
+      this.measuredWidth = width;
+    }
     if (this.updateReadAhead() && this.currentStep >= 0) this.showStep(this.currentStep);
     else this.fitSlots();
   }

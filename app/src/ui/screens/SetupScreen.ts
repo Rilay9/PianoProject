@@ -1,10 +1,9 @@
 // The setup tour (docs/04 §7d): the first launch, and Settings → "Run the
 // setup tour again".
 //
-// Nine steps, one screen each, in the order a person meets the app: what it
-// is, which way the phone will sit, the piano, how late the piano is, the
-// sound, the screen, the four ways it follows you, the practice plan, and a
-// summary. Every control writes straight through to the same stores Settings
+// Eight steps, one screen each, in the order a person meets the app: what it
+// is, which way the phone will sit, the piano, the sound, the screen, the four
+// ways it follows you, the practice plan, and a summary. Every control writes straight through to the same stores Settings
 // writes, so leaving half-way loses nothing and Settings shows what the tour
 // set. Skipping is one tap on every step and is remembered; so is finishing.
 //
@@ -13,7 +12,9 @@
 // (`ui/devicePreview`), drawn by the real engraver, either way up — because
 // "Show fingering" means nothing until the fingering is on the screen in
 // front of the person deciding, and "sideways" means nothing until they see
-// what sideways buys.
+// what sideways buys. The miniature has the step to itself when it is shown:
+// on the phone that is the choice between a miniature worth looking at and
+// the choices beside it, so it is Preview and Back, never both at once.
 
 import { createSubScreen } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
@@ -23,7 +24,6 @@ import { MIDI_ERROR_HELP } from '../../midi/errorHelp';
 import { midiToNoteName } from '../../midi/parseMidiMessage';
 import type { InputNoteEvent } from '../../midi/types';
 import { KeyboardStrip } from '../KeyboardStrip';
-import { describeLatency, LATENCY_BEATS, runLatencyTest, type LatencyRun } from '../../audio/latencyTest';
 import { describeCalibration, runCalibrationRoutine } from '../../audio/pitch/calibrationRun';
 import type { MicLevel } from '../../audio/pitch/MicSource';
 import { DEFAULT_DEVICE_KEY, micCalibrationStore } from '../../data/micCalibrationStore';
@@ -70,8 +70,13 @@ export function SetupScreen(router: Router): HTMLElement {
   });
   section.dataset.setupStatus = getSetupRecord().status;
 
+  // The step's number and title go in with Back and the screen's title, so
+  // that sideways the four make one line (`04` §0 R5): the phone's 360 px
+  // were spending 85 on three lines of heading before the step began.
+  const subHead = card.querySelector('.sub-head');
   const progress = el('p.setup-progress.muted', { id: 'setup-progress' });
   const heading = el('h2.setup-title', { id: 'setup-title' });
+  subHead?.append(progress, heading);
   const host = el('div.setup-step', { id: 'setup-step' });
   const back = button('← Back', () => show(index - 1), { id: 'setup-back', variant: 'quiet' });
   const skip = button('Skip for now', () => leave('skipped'), { id: 'setup-skip', variant: 'quiet' });
@@ -80,7 +85,7 @@ export function SetupScreen(router: Router): HTMLElement {
     variant: 'primary',
   });
   const footer = el('div.setup-footer', {}, back, skip, next);
-  card.append(progress, heading, host, footer);
+  card.append(host, footer);
 
   let index = 0;
   let disposeStep: (() => void) | void;
@@ -117,6 +122,26 @@ export function SetupScreen(router: Router): HTMLElement {
 
   /** The width a miniature may take: the step's, less the card's own air. */
   const roomFor = (h: HTMLElement): number => Math.max(200, (h.clientWidth || card.clientWidth || 320) - 4);
+  /** Whether the phone is sideways now — the miniature's neighbours go beside it, not under. */
+  const sidewaysNow = (): boolean => window.innerWidth > window.innerHeight;
+  /**
+   * The box a miniature may fill, with `beside` — the text and buttons that
+   * go with it — taking its share: to the left of it sideways, above and
+   * below it upright. The step is the card's one stretching child, so its
+   * height is the room the fold leaves, and the miniature is bounded by that
+   * as well as by the width — a preview that has to be scrolled to be seen is
+   * what the owner's phone showed.
+   */
+  const boxFor = (h: HTMLElement, beside: HTMLElement[]): { maxWidth: number; maxHeight: number } => {
+    const room = roomFor(h);
+    const height = Math.max(120, h.clientHeight - 8);
+    if (sidewaysNow()) {
+      const column = Math.max(...beside.map((node) => node.getBoundingClientRect().width), 200);
+      return { maxWidth: Math.max(160, room - column - 16), maxHeight: height };
+    }
+    const taken = beside.reduce((sum, node) => sum + node.getBoundingClientRect().height, 0);
+    return { maxWidth: room, maxHeight: Math.max(120, height - taken - 12) };
+  };
 
   // ---------------------------------------------------------------- 1 welcome
   const welcome: Step = {
@@ -131,9 +156,9 @@ export function SetupScreen(router: Router): HTMLElement {
         }),
         el('p', {
           text:
-            'This takes about three minutes: which way the phone sits, the piano, how late ' +
-            'it is, the sound, the screen, and the way the app follows you. Everything here ' +
-            'can be changed later in Settings, and this tour can be run again from there.',
+            'This takes about three minutes: which way the phone sits, the piano, the sound, ' +
+            'the screen, and the way the app follows you. Everything here can be changed ' +
+            'later in Settings, and this tour can be run again from there.',
         }),
         el('p.muted', { text: 'Skip for now if you would rather look around first.' }),
       );
@@ -146,62 +171,64 @@ export function SetupScreen(router: Router): HTMLElement {
     title: 'Which way will the phone sit on the stand?',
     build(h) {
       const { short, long } = deviceSides();
-      h.append(
+      // The words and the two choices in one column, the miniature of the
+      // chosen way up beside them sideways and under them upright; the other
+      // way up is a tap away. Two miniatures side by side were each too small
+      // to show anything on the phone.
+      const text = el(
+        'div.setup-hold__text',
+        {},
         el('p', {
           text:
-            `This is your screen, ${String(short)} by ${String(long)}, with a piece on it both ways up. ` +
+            `This is your screen, ${String(short)} by ${String(long)}, with a piece on it. ` +
             'Upright shows the bars being played and the ones coming, one under the other. ' +
-            'Sideways shows one line at a time, larger, and slides along it.',
+            'Sideways shows one line at a time, larger, and slides along it. Tap the other to see it.',
         }),
       );
       const choices = el('div.setup-choices', { id: 'setup-orientation' });
-      h.append(choices);
-      const previews: DevicePreview[] = [];
+      const caption = el('p.muted', { id: 'setup-hold-caption' });
+      text.append(choices, caption);
+      const frame = el('div.setup-preview-host.setup-preview-host--fill', { id: 'setup-hold-preview' });
+      h.append(el('div.setup-hold', {}, text, frame));
+
+      let preview: DevicePreview | null = null;
       const draw = (): void => {
-        for (const p of previews) p.dispose();
-        previews.length = 0;
-        choices.replaceChildren();
-        // Two side by side where the room allows, one above the other where
-        // it does not; each takes what is left after the other.
-        const room = roomFor(h);
-        const wide = room >= 560;
-        const each = wide ? Math.floor((room - 16) / 2) : room;
-        for (const orientation of ['upright', 'sideways'] as const) {
-          const preview = createDevicePreview({
-            orientation,
-            maxWidth: orientation === 'upright' ? Math.min(each, 260) : each,
-            title: PREVIEW_TITLE,
-            source: loadPreviewSource,
-          });
-          previews.push(preview);
-          const chosen = chosenOrientation() === orientation;
-          const choice = el(
-            'button.setup-choice',
-            { type: 'button', 'aria-pressed': chosen, id: `setup-hold-${orientation}` },
-            el('span.setup-choice__label', { text: orientation === 'upright' ? 'Upright' : 'Sideways' }),
-            preview.el,
-            el('span.muted', { text: describeRatio(preview.ratio) }),
-          );
-          choice.addEventListener('click', () => {
-            // The score screen's landscape lock is the memory of this choice.
-            set({ landscapeLock: orientation === 'sideways' });
-            for (const node of choices.querySelectorAll('.setup-choice')) {
-              node.setAttribute('aria-pressed', String(node === choice));
-            }
-          });
-          choices.append(choice);
-          void preview.redraw();
+        const orientation = chosenOrientation();
+        preview?.dispose();
+        preview = createDevicePreview({
+          orientation,
+          ...boxFor(h, [text]),
+          title: PREVIEW_TITLE,
+          source: loadPreviewSource,
+        });
+        frame.replaceChildren(preview.el);
+        frame.dataset.orientation = orientation;
+        caption.textContent =
+          `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(preview.ratio)}. ` +
+          (orientation === 'sideways'
+            ? 'Sideways locks the score screen to landscape.'
+            : 'Upright leaves the phone free to turn.');
+        for (const node of choices.querySelectorAll('.setup-choice')) {
+          node.setAttribute('aria-pressed', String(node.id === `setup-hold-${orientation}`));
         }
+        void preview.redraw();
       };
+      for (const orientation of ['upright', 'sideways'] as const) {
+        const choice = el('button.setup-choice', {
+          type: 'button',
+          id: `setup-hold-${orientation}`,
+          'aria-pressed': false,
+          text: orientation === 'upright' ? 'Upright' : 'Sideways',
+        });
+        choice.addEventListener('click', () => {
+          // The score screen's landscape lock is the memory of this choice.
+          set({ landscapeLock: orientation === 'sideways' });
+          draw();
+        });
+        choices.append(choice);
+      }
       draw();
-      h.append(
-        el('p.muted', {
-          text: 'Sideways locks the score screen to landscape; upright leaves the phone free to turn.',
-        }),
-      );
-      return () => {
-        for (const p of previews) p.dispose();
-      };
+      return () => preview?.dispose();
     },
   };
 
@@ -291,6 +318,12 @@ export function SetupScreen(router: Router): HTMLElement {
           ),
           'Timed means the clock drives the cursor and nothing is judged.',
         ),
+        el('p.muted', {
+          text:
+            'If Keep tempo ever scores you late on notes you played on the beat, Settings → ' +
+            'Diagnostics measures how late the piano is — cable, USB and audio together — and ' +
+            'the app allows for it.',
+        }),
       );
 
       async function connectMidi(): Promise<void> {
@@ -405,78 +438,6 @@ export function SetupScreen(router: Router): HTMLElement {
     },
   };
 
-  // ---------------------------------------------------------------- 4 latency
-  const latency: Step = {
-    id: 'latency',
-    title: 'How late is the piano?',
-    build(h) {
-      let run: LatencyRun | null = null;
-      h.append(
-        el('p', {
-          text:
-            `Tap any key on the piano — or the keys below — exactly on each of ${String(LATENCY_BEATS)} ` +
-            'clicks. The result is how far behind the click your note arrives: cable, USB and audio ' +
-            'together. Keep tempo mode subtracts it, so a note you played on the beat is scored on the beat.',
-        }),
-      );
-      const start = button('Start the clicks', () => void begin(), { id: 'setup-latency-start', variant: 'primary' });
-      const status = el('p.status', { id: 'setup-latency-status', role: 'status' });
-      const result = el('p', { id: 'setup-latency-result' });
-      const strip = new KeyboardStrip({
-        from: 60,
-        to: 72,
-        interactive: true,
-        onNoteOn: (midi, velocity) => screenKeyboardSource.noteOn(midi, velocity),
-        onNoteOff: (midi) => screenKeyboardSource.noteOff(midi),
-      });
-      const current = getMidiSettings().inputLatencyMs;
-      const known = el('p.muted', {
-        id: 'setup-latency-known',
-        text: current > 0 ? `Measured before: ${String(current)} ms. Run it again to replace that.` : 'Not measured yet. Skip this if you have no cable.',
-      });
-      h.append(el('div.row', {}, start), status, result, strip.el, known);
-
-      async function begin(): Promise<void> {
-        run?.stop();
-        start.disabled = true;
-        result.textContent = '';
-        status.textContent = 'Starting audio…';
-        try {
-          run = await runLatencyTest({
-            onClick: (n, of) => {
-              status.textContent = `Click ${String(n)} of ${String(of)} — tap on the beat.`;
-            },
-            onDone: (done) => {
-              run = null;
-              start.disabled = false;
-              if (done.matched === 0) {
-                status.textContent = 'No taps landed near a click. Try again.';
-                return;
-              }
-              // The median, not the mean: one badly missed tap should not
-              // move the compensation the whole app then applies.
-              const ms = Math.round(done.stats.median);
-              updateMidiSettings({ inputLatencyMs: ms });
-              status.textContent = `Saved ${String(ms)} ms as the input latency.`;
-              result.textContent = describeLatency(done, (n) => n.toFixed(1));
-              known.textContent = '';
-            },
-          });
-          status.textContent = 'Listening…';
-        } catch (cause) {
-          status.textContent = `Audio unavailable: ${cause instanceof Error ? cause.message : String(cause)}`;
-          start.disabled = false;
-        }
-      }
-
-      return () => {
-        run?.stop();
-        screenKeyboardSource.releaseAll();
-        strip.destroy();
-      };
-    },
-  };
-
   // ---------------------------------------------------------------- 5 sound
   const sound: Step = {
     id: 'sound',
@@ -562,45 +523,58 @@ export function SetupScreen(router: Router): HTMLElement {
     title: 'The screen',
     build(h) {
       let orientation = chosenOrientation();
-      h.append(
-        el('p', {
-          text: 'The score screen on your phone, the way you chose to hold it. Change anything and watch it change.',
-        }),
-      );
-      const frameHost = el('div.setup-preview-host', { id: 'setup-preview' });
+      // Two views of the one step: the choices, and the preview of them. The
+      // preview has the whole step, bounded by the fold both ways, with its
+      // caption and buttons beside it sideways and under it upright.
+      const options = el('div.setup-options', { id: 'setup-options' });
+      const panel = el('div.setup-preview-panel', { id: 'setup-preview-panel' });
+      panel.hidden = true;
+      h.append(options, panel);
+
+      const frameHost = el('div.setup-preview-host.setup-preview-host--fill', { id: 'setup-preview' });
       const caption = el('p.muted', { id: 'setup-preview-caption' });
       const flip = button('Show it sideways', () => {
         orientation = orientation === 'upright' ? 'sideways' : 'upright';
         rebuildFrame();
       }, { id: 'setup-preview-flip', variant: 'quiet' });
-      h.append(frameHost, el('div.row', {}, caption, flip));
+      const close = button('Back to the choices', () => showPreview(false), { id: 'setup-preview-close', variant: 'primary' });
+      const beside = el('div.setup-preview-panel__text', {}, caption, el('div.row', {}, close, flip));
+      panel.append(beside, frameHost);
 
       let preview: DevicePreview | null = null;
       const rebuildFrame = (): void => {
         preview?.dispose();
         preview = createDevicePreview({
           orientation,
-          maxWidth: roomFor(h),
+          ...boxFor(h, [beside]),
           title: PREVIEW_TITLE,
           source: loadPreviewSource,
         });
         frameHost.replaceChildren(preview.el);
         frameHost.dataset.orientation = orientation;
-        caption.textContent = `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(preview.ratio)}.`;
+        caption.textContent = `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(preview.ratio)}, with the choices as they are now.`;
         flip.textContent = orientation === 'upright' ? 'Show it sideways' : 'Show it upright';
         void preview.redraw();
       };
-
-      let timer: ReturnType<typeof setTimeout> | null = null;
-      const later = (): void => {
-        if (timer !== null) clearTimeout(timer);
-        // The strip and the stage trade height when the keys view changes,
-        // so the whole miniature is built again rather than only engraved.
-        timer = setTimeout(rebuildFrame, 60);
+      const showPreview = (on: boolean): void => {
+        options.hidden = on;
+        panel.hidden = !on;
+        h.scrollTop = 0;
+        if (on) {
+          rebuildFrame();
+        } else {
+          preview?.dispose();
+          preview = null;
+          frameHost.replaceChildren();
+        }
       };
 
       const s = getSettings();
-      h.append(
+      options.append(
+        el('p', {
+          text: 'The score screen on your phone, the way you chose to hold it. Preview draws it with the choices below as they stand; change one and look again.',
+        }),
+        el('div.row', {}, button('Preview', () => showPreview(true), { id: 'setup-preview-open', variant: 'primary' })),
         field(
           'Theme',
           selectControl(
@@ -624,7 +598,7 @@ export function SetupScreen(router: Router): HTMLElement {
               { value: 'off', label: 'Off' },
             ],
             s.keys,
-            (value) => { set({ keys: value as PracticeSettings['keys'] }); later(); },
+            (value) => set({ keys: value as PracticeSettings['keys'] }),
           ),
           'The key it is waiting for is blue; a played one turns green or red.',
         ),
@@ -638,21 +612,21 @@ export function SetupScreen(router: Router): HTMLElement {
               { value: 'off', label: 'Off' },
             ],
             s.keysGuide,
-            (value) => { set({ keysGuide: value as PracticeSettings['keysGuide'] }); later(); },
+            (value) => set({ keysGuide: value as PracticeSettings['keysGuide'] }),
           ),
           'Marked blue on the keys before you play it; the one after in a paler blue.',
         ),
-        field('Finger numbers on the keys', toggleControl('setup-keys-fingers', s.keysFingerNumbers, (v) => { set({ keysFingerNumbers: v }); later(); }), 'The score’s finger number, printed on each marked key.'),
+        field('Finger numbers on the keys', toggleControl('setup-keys-fingers', s.keysFingerNumbers, (v) => set({ keysFingerNumbers: v })), 'The score’s finger number, printed on each marked key.'),
         field('Flash a hit green and a miss red', toggleControl('setup-keys-flash', s.keysFlash, (v) => set({ keysFlash: v })), 'For under a second; then the key goes back to the guide.'),
-        field('Show fingering', toggleControl('setup-fingering', s.showFingering, (v) => { set({ showFingering: v }); later(); })),
-        field('Show chord symbols', toggleControl('setup-chords', s.showChordSymbols, (v) => { set({ showChordSymbols: v }); later(); })),
+        field('Show fingering', toggleControl('setup-fingering', s.showFingering, (v) => set({ showFingering: v }))),
+        field('Show chord symbols', toggleControl('setup-chords', s.showChordSymbols, (v) => set({ showChordSymbols: v }))),
         field(
           'Name the note I am waiting for',
           toggleControl('setup-notenames', s.showNoteNames, (v) => set({ showNoteNames: v })),
           'In Wait mode: “Waiting for F♯4” under the title. A crutch for when you are stuck.',
         ),
-        field('Size', numberControl('setup-zoom', s.zoom, (v) => { set({ zoom: v }); later(); }, { min: 0.5, max: 2.5, step: 0.1 }), '1 is as big as the screen allows; the notes never get smaller than the width needs.'),
-        field('Bars per window', numberControl('setup-bars', s.barsPerWindow, (v) => { set({ barsPerWindow: v }); later(); }, { min: 1, max: 8 }), 'Two is a magnifying glass; eight is a reading exercise.'),
+        field('Size', numberControl('setup-zoom', s.zoom, (v) => set({ zoom: v }), { min: 0.5, max: 2.5, step: 0.1 }), '1 is as big as the screen allows; the notes never get smaller than the width needs.'),
+        field('Bars per window', numberControl('setup-bars', s.barsPerWindow, (v) => set({ barsPerWindow: v }), { min: 1, max: 8 }), 'Two is a magnifying glass; eight is a reading exercise.'),
         field(
           'Layout',
           selectControl(
@@ -662,7 +636,7 @@ export function SetupScreen(router: Router): HTMLElement {
               { value: 'scroll', label: 'Scroll' },
             ],
             s.layout,
-            (value) => { set({ layout: value as PracticeSettings['layout'] }); later(); },
+            (value) => set({ layout: value as PracticeSettings['layout'] }),
           ),
           'Window shows the bars being played, and the next ones; Scroll shows the whole piece.',
         ),
@@ -670,9 +644,7 @@ export function SetupScreen(router: Router): HTMLElement {
         field('Keep the screen awake', toggleControl('setup-awake', s.keepScreenAwake, (v) => set({ keepScreenAwake: v }))),
       );
 
-      rebuildFrame();
       return () => {
-        if (timer !== null) clearTimeout(timer);
         preview?.dispose();
       };
     },
@@ -776,7 +748,6 @@ export function SetupScreen(router: Router): HTMLElement {
     title: 'Ready',
     build(h) {
       const s = getSettings();
-      const midi = getMidiSettings();
       const inputs = webMidiSource.inputs.length;
       const calibrated = micCalibrationStore.get(micSource.pinnedInputId ?? DEFAULT_DEVICE_KEY);
       const line = (label: string, value: string): HTMLElement =>
@@ -785,7 +756,6 @@ export function SetupScreen(router: Router): HTMLElement {
         el('div.setup-summary', { id: 'setup-summary' },
           line('The phone sits', s.landscapeLock ? 'sideways' : 'upright'),
           line('Piano', inputs > 0 ? `${String(inputs)} MIDI input${inputs === 1 ? '' : 's'} connected` : calibrated ? 'Microphone, calibrated' : 'Screen keys, or timed'),
-          line('Input latency', midi.inputLatencyMs > 0 ? `${String(midi.inputLatencyMs)} ms` : 'not measured'),
           line('Default mode', s.defaultModeWithInput === 'wait' ? 'Wait for me' : 'Keep tempo'),
           line('Keys under the score', s.keys === 'strip' ? 'Keyboard' : s.keys === 'ribbon' ? 'Ribbon' : 'Off'),
           line('Theme', getThemePreference()),
@@ -796,7 +766,7 @@ export function SetupScreen(router: Router): HTMLElement {
     },
   };
 
-  const STEPS: Step[] = [welcome, hold, piano, latency, sound, display, modes, practice, done];
+  const STEPS: Step[] = [welcome, hold, piano, sound, display, modes, practice, done];
 
   onScreenDispose(section, () => {
     disposeStep?.();

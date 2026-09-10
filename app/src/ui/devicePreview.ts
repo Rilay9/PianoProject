@@ -49,6 +49,8 @@ export interface DevicePreviewOptions {
   orientation: Orientation;
   /** The width the card can give the miniature, in CSS pixels. */
   maxWidth: number;
+  /** The height it can give it; the width alone bounds it when absent. */
+  maxHeight?: number;
   /** The title in the miniature's header. */
   title: string;
   source: () => Promise<{ model: ScoreModel; musicXml: string }>;
@@ -65,7 +67,8 @@ export function createDevicePreview(options: DevicePreviewOptions): DevicePrevie
   const upright = options.orientation === 'upright';
   const deviceW = upright ? short : long;
   const deviceH = upright ? long : short;
-  const ratio = Math.min(1, options.maxWidth / deviceW);
+  const byHeight = options.maxHeight !== undefined && options.maxHeight > 0 ? options.maxHeight / deviceH : 1;
+  const ratio = Math.min(1, options.maxWidth / deviceW, byHeight);
   const headReal = upright ? HEAD_UPRIGHT_PX : HEAD_SIDEWAYS_PX;
 
   const head = el(

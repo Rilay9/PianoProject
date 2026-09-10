@@ -866,6 +866,34 @@ body {
   font-size: 1.3rem;
 }
 
+/* The two steps that show the miniature: the words and the buttons in one
+   column, the miniature under them upright and beside them sideways, where
+   the height is the scarce thing and a column of text beside a miniature
+   costs nothing the miniature wanted. */
+.setup-hold,
+.setup-preview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setup-hold__text > p:first-child,
+.setup-preview-panel__text > p:first-child {
+  margin-top: 0;
+}
+
+.setup-preview-host--fill {
+  margin: 0;
+}
+
+/* Hidden means gone: the panel is a flex box and the choices a grid sideways,
+   and either rule beats the attribute — the owner would have had the preview
+   drawn under thirteen rows of choices, off the fold. */
+.setup-options[hidden],
+.setup-preview-panel[hidden] {
+  display: none;
+}
+
 .setup-step > p:first-child {
   margin-top: 0;
 }
@@ -1091,19 +1119,85 @@ body {
      (`04` §0 R5); the prose, the miniatures, the strips and the chips span
      both, since a column of them beside a column of nothing is the thing
      two columns exist to fix. */
-  .setup-step {
+  .setup-step,
+  .setup-options {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Each row as tall as what is in it. The step is also the scroll box,
+       and a grid whose box is shorter than its content leaves every auto row
+       at its minimum — the row's 44 px, the strip's 14 of padding — so the
+       hint under one row was printed across the row below it, and the keys
+       were drawn over the paragraph after them. The owner's phone showed it;
+       780 × 360 in the suite measures it. */
+    grid-auto-rows: max-content;
+    align-content: start;
     column-gap: 16px;
     align-items: start;
   }
 
-  .setup-step > :not(.setting-row) {
+  .setup-step > :not(.setting-row),
+  .setup-options > :not(.setting-row) {
     grid-column: 1 / -1;
   }
 
-  .setup-step > .setting-row {
+  .setup-step > .setting-row,
+  .setup-options > .setting-row {
     margin-top: 4px;
+  }
+
+  /* One heading line: Back, the step's title, and "Step 3 of 8" at the end.
+     The screen's own title goes; the step's says more. */
+  .screen[data-screen='setup'] .sub-head {
+    flex-wrap: nowrap;
+    align-items: baseline;
+  }
+
+  .screen[data-screen='setup'] .sub-head > h1 {
+    display: none;
+  }
+
+  .screen[data-screen='setup'] .setup-title {
+    order: 1;
+    margin: 0;
+    min-width: 0;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .screen[data-screen='setup'] .setup-progress {
+    order: 2;
+    margin: 0 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .setup-footer {
+    padding-top: 6px;
+  }
+
+  .setup-footer > button {
+    min-height: 36px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .setup-hold,
+  .setup-preview-panel {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .setup-hold__text,
+  .setup-preview-panel__text {
+    flex: 0 1 260px;
+    min-width: 0;
+  }
+
+  .setup-preview-host--fill {
+    flex: 1 1 auto;
+    justify-content: center;
   }
 }
 

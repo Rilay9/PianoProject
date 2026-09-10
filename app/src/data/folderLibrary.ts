@@ -251,15 +251,37 @@ export async function readFolder(files: readonly File[]): Promise<FolderLibrary>
   }
   const byPath = new Map<string, File>();
   let manifestFile: File | null = null;
+  let manifestRoot = '';
   for (const file of files) {
     const path = relativePath(file);
-    if (path === MANIFEST_NAME) {
-      manifestFile = file;
+    const root = manifestRootOf(path);
+    if (root !== null) {
+      if (manifestFile === null || root.length < manifestRoot.length) {
+        manifestFile = file;
+        manifestRoot = root;
+      }
       continue;
     }
     if (isScoreFile(path)) byPath.set(path, file);
   }
-  return buildLibrary(folderNameOf(files), byPath, manifestFile);
+  return buildLibrary(folderNameOf(files), byPath, manifestFile, manifestRoot);
+}
+
+/**
+ * `library.json` -> `''`; `pianopath-library/library.json` ->
+ * `pianopath-library/`; anything else -> null.
+ *
+ * The manifest is looked for anywhere in the tree, not only at the top,
+ * because the phone's own unzip puts the archive's folder *inside* a folder
+ * of the same name — Samsung's Extract does — and the person, told to pick
+ * `pianopath-library`, picks the outer one. That listed 37,261 hashes with
+ * every title in a file one level down. The shallowest manifest wins, and its
+ * directory is what the rows' paths are relative to.
+ */
+function manifestRootOf(path: string): string | null {
+  if (path === MANIFEST_NAME) return '';
+  if (path.endsWith('/' + MANIFEST_NAME)) return path.slice(0, path.length - MANIFEST_NAME.length);
+  return null;
 }
 
 /**
@@ -274,6 +296,7 @@ async function buildLibrary(
   id: string,
   byPath: Map<string, File>,
   manifestFile: File | null,
+  manifestRoot = '',
 ): Promise<FolderLibrary> {
   if (byPath.size === 0) {
     throw new FolderError(
@@ -282,16 +305,29 @@ async function buildLibrary(
   }
 
   let described = new Map<string, FolderScore>();
+  // By the file's own name as well: the archive's names are content hashes,
+  // unique by construction, so a row still finds its file when the folder
+  // was flattened, re-sharded, or picked from a level the paths do not
+  // expect. Only a name the manifest uses once is trusted this way.
+  const byName = new Map<string, FolderScore | null>();
   let source: string | null = null;
   if (manifestFile) {
     const parsed = parseManifest(await manifestFile.text());
     source = parsed.source;
     described = new Map(parsed.scores.map((score) => [score.file, score]));
+    for (const score of parsed.scores) {
+      const name = score.file.slice(score.file.lastIndexOf('/') + 1);
+      byName.set(name, byName.has(name) ? null : score);
+    }
   }
 
   const scores: FolderScore[] = [];
   for (const [path, file] of byPath) {
-    scores.push(described.get(path) ?? bareScore(path, file.name));
+    const key = manifestRoot !== '' && path.startsWith(manifestRoot) ? path.slice(manifestRoot.length) : path;
+    const row = described.get(key) ?? described.get(path) ?? byName.get(file.name) ?? null;
+    // The row keeps the manifest's path, which is what a later `Add` looks
+    // the file up by; the file is where it actually is.
+    scores.push(row ? { ...row, file: path } : bareScore(path, file.name));
   }
   // Sorted once here rather than on every draw: the browse screen re-filters
   // 37,000 rows on each keystroke and a comparison per row per keystroke is
@@ -341,9 +377,10 @@ function isAbort(cause: unknown): boolean {
  */
 async function readDirectoryHandle(
   handle: DirectoryHandle,
-): Promise<{ byPath: Map<string, File>; manifestFile: File | null }> {
+): Promise<{ byPath: Map<string, File>; manifestFile: File | null; manifestRoot: string }> {
   const byPath = new Map<string, File>();
   let manifestFile: File | null = null;
+  let manifestRoot = '';
   const stack: { dir: FileSystemDirectoryHandle; prefix: string }[] = [{ dir: handle, prefix: '' }];
   let seen = 0;
   while (stack.length > 0) {
@@ -361,20 +398,23 @@ async function readDirectoryHandle(
           `That folder holds more than ${MAX_FOLDER_FILES.toLocaleString()} files. Pick the folder with the scores in it, not the one above it.`,
         );
       }
-      if (path === MANIFEST_NAME) {
-        manifestFile = await entry.getFile();
+      if (entry.name === MANIFEST_NAME) {
+        if (manifestFile === null || next.prefix.length < manifestRoot.length) {
+          manifestFile = await entry.getFile();
+          manifestRoot = next.prefix;
+        }
         continue;
       }
       if (isScoreFile(path)) byPath.set(path, await entry.getFile());
     }
   }
-  return { byPath, manifestFile };
+  return { byPath, manifestFile, manifestRoot };
 }
 
 /** Reads a folder the browser handed over as a handle rather than as files. */
 export async function readFolderHandle(handle: DirectoryHandle): Promise<FolderLibrary> {
-  const { byPath, manifestFile } = await readDirectoryHandle(handle);
-  return buildLibrary(handle.name || 'Scores', byPath, manifestFile);
+  const { byPath, manifestFile, manifestRoot } = await readDirectoryHandle(handle);
+  return buildLibrary(handle.name || 'Scores', byPath, manifestFile, manifestRoot);
 }
 
 /**

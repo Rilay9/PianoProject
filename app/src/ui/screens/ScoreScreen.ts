@@ -332,6 +332,14 @@ export function ScoreScreen(router: Router): HTMLElement {
   waitingLine.id = 'score-waiting';
   waitingLine.hidden = true;
 
+  // Where you are, in the stage's top-right corner, for when the chrome has
+  // folded away — the header upright, the bar's left end sideways — and
+  // nothing else on the screen says it.
+  const corner = document.createElement('span');
+  corner.className = 'score-stage__corner';
+  corner.id = 'score-corner';
+  corner.setAttribute('aria-hidden', 'true');
+
   const bar = document.createElement('div');
   bar.className = 'score-bar';
   bar.id = 'score-bar';
@@ -384,6 +392,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   // the bar hides itself during a run, and the dot is the one thing that must
   // be visible while the clock runs (`08` §5.3).
   stage.appendChild(beatDot);
+  stage.appendChild(corner);
 
   /**
    * The same three things at the bar's left end, for a phone held sideways
@@ -416,6 +425,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     whereSide.textContent = where.textContent;
     // The waiting line is the more useful of the two when it has something.
     statusSide.textContent = waitingLine.hidden ? status.textContent : waitingLine.textContent;
+    corner.textContent = [where.textContent, waitingLine.hidden ? '' : waitingLine.textContent]
+      .filter((text) => text !== null && text !== '')
+      .join(' · ');
   };
   const mirror = new MutationObserver(syncBarLeft);
   for (const node of [title, where, status, waitingLine]) {
@@ -1341,23 +1353,27 @@ export function ScoreScreen(router: Router): HTMLElement {
     return music.bottom >= box.bottom - 24;
   }
 
-  function showBar(hideAfterMs = CONTROL_BAR_HIDE_MS): void {
-    bar.dataset.visible = 'true';
+  /**
+   * The chrome folds away as one: the bar, and upright the header row with
+   * it — the stage takes both rows, and `bar 4 / 8` moves to the stage's
+   * corner. Back is a tap on the sheet, or the tab at the foot of it.
+   */
+  function foldChrome(folded: boolean): void {
+    bar.dataset.visible = String(!folded);
+    section.dataset.chrome = folded ? 'folded' : 'open';
     requestAnimationFrame(measureBar);
+  }
+  function showBar(hideAfterMs = CONTROL_BAR_HIDE_MS): void {
+    foldChrome(false);
     if (hideTimer !== null) window.clearTimeout(hideTimer);
     if (session?.running !== true) return;
     hideTimer = window.setTimeout(() => {
-      if (session?.running === true && barCostsMusicRoom()) {
-        bar.dataset.visible = 'false';
-        requestAnimationFrame(measureBar);
-      }
+      if (session?.running === true && barCostsMusicRoom()) foldChrome(true);
     }, hideAfterMs);
   }
   function toggleBar(): void {
-    if (bar.dataset.visible === 'true') {
-      bar.dataset.visible = 'false';
-      requestAnimationFrame(measureBar);
-    } else showBar();
+    if (bar.dataset.visible === 'true') foldChrome(true);
+    else showBar();
   }
 
   // --- wake lock and orientation (docs/01 §8) ------------------------------

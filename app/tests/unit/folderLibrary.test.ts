@@ -113,6 +113,28 @@ describe('reading a folder', () => {
     expect(library.scores[0]?.rating).toBe(4.5);
   });
 
+  it('finds the manifest one folder down, where the phone\'s unzip puts it', async () => {
+    // Samsung's Extract makes `pianopath-library/pianopath-library/…`, and
+    // the person picks the outer one: every path is a level off the manifest.
+    const library = await readFolder([
+      folderFile(`Outer/pianopath-library/${MANIFEST_NAME}`, manifest([ROW], FIELDS)),
+      folderFile('Outer/pianopath-library/bb/Qm1.mxl', mxlBytes()),
+    ]);
+    expect(library.scores).toHaveLength(1);
+    expect(library.scores[0]?.title).toBe('Paddies Evermore');
+    // Where the file is, not where the manifest thought it was.
+    expect(library.scores[0]?.file).toBe('pianopath-library/bb/Qm1.mxl');
+  });
+
+  it('matches a row by its filename when the folder was flattened', async () => {
+    const library = await readFolder([
+      folderFile(`Library/${MANIFEST_NAME}`, manifest([ROW], FIELDS)),
+      folderFile('Library/Qm1.mxl', mxlBytes()),
+    ]);
+    expect(library.scores[0]?.title).toBe('Paddies Evermore');
+    expect(library.scores[0]?.file).toBe('Qm1.mxl');
+  });
+
   it('reads columns by name, so a new column shifts nothing', () => {
     // The same row with a column inserted in the middle: a positional reader
     // would put the composer in the level and the level in the bars.

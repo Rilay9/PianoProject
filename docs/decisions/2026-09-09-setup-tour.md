@@ -122,3 +122,51 @@ the sideways score picture is its own run rather than a rotation of the upright 
 
 **Read.** The guide's own screen, the contents wrapping at 360 px, a text section, and
 all sixteen pictures on contact sheets. Guide, landscape and settings-rules specs pass.
+
+## The owner's phone (later the same day)
+
+Pictures from the S25, sideways: the tour's step had 110 px of the 360, the rows were printed
+over each other, and the keys were drawn over the paragraph after them. Three causes, three
+changes, plus two things the owner asked for outright.
+
+1. **A grid that is also the scroll box sizes its rows at their minimum.** The step was
+   `display: grid` sideways *and* the card's one scrolling child. Once the box was shorter
+   than its content, every auto row sat at the row's `min-height` (44 px) or the strip's
+   padding (14 px) and its content spilled into the row below. Not visible in the pictures
+   the suite took, because they were full-page; a measurement at 780 × 360 showed rows 48 px
+   apart and 93 px tall. `grid-auto-rows: max-content` on the step and on the choices.
+2. **One heading line sideways.** Back, the step's title and *Step 3 of 8* share the
+   sub-head's line; the screen's own title is not drawn there. The footer is a short row.
+   The step went from 90 px to about 230.
+3. **The miniature has the step to itself.** The owner: "too cramped to see what it'll look
+   like… a button that says preview and back so you can do both". The screen step is the
+   choices, or the preview of them — *Preview* / *Back to the choices* — never both; the
+   hold step is the two choices and one miniature, the chosen way up, the other a tap away.
+   `createDevicePreview` takes a `maxHeight` as well as a width, so a miniature is bounded
+   by the fold, and the words go beside it sideways and under it upright. A flex box does
+   not honour `hidden` — the panel and the choices both needed `[hidden] { display: none }`,
+   which the first run caught: the preview was drawn under thirteen rows of choices.
+4. **The latency step is gone.** "The beat click sync thing feels like a bad idea." Eight
+   clicks to tap along to, in the first three minutes with the app, is not a first
+   impression. The test stays in Diagnostics; the piano step says where, in one sentence.
+   Eight steps.
+5. **Two things the same pictures showed on the score screen.** One bar per window, turned
+   from sideways to upright, drew four one-bar systems at a fifth of the screen: the widest
+   box the renderer holds — and the probe's figures — were taken at the sideways width, the
+   780 px sliding chunk, and one bar upright was fitted to *that*. A new stage width now
+   drops both and measures again; a height change alone (the bar folding away) keeps them,
+   which is the case the holding exists for. And the chrome folds away as one: the bar,
+   and upright the header with it, with `bar 4 / 8` in the stage's corner and a `▴` tab at
+   the foot of the sheet to bring it back — the owner asked for "expanding and shrinking
+   menu tabs". The Hanon picture, sideways with two bars, is a different case: during a run
+   the sheet already extends under the bar, so folding it buys nothing there; the room
+   under the bass staff is the room reserved for the piece's tallest system, so the size
+   does not change mid-run (P21e A2).
+
+**The archive listed 37,261 hashes.** The owner's picture of Library → Score folder: every
+row a `Qm…` name, no titles, with `library.json` two folders down. Samsung's Extract makes a
+folder named after the zip and unpacks the archive's own top folder *inside* it, so the
+person, told to pick `pianopath-library`, picks the outer one, and no path in the manifest
+matched. The reader now takes the shallowest `library.json` anywhere in the tree as the root
+the rows are relative to, and matches a row by its filename when the path does not — the
+names are content hashes, unique by construction. The guide says either folder works.
