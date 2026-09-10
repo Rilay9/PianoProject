@@ -175,9 +175,12 @@ test.describe('the setup tour', () => {
     await expect(page.locator('.screen h1')).toHaveText('Today');
   });
 
+  // The owner's real screen, not 360x780. A round number divides by 8, 12, 18,
+  // 24, 40, 45 and 72, and a layout that only survives on numbers like that
+  // survives on no actual phone. `setup-layout.spec.ts` uses the same two.
   for (const [orientation, size] of [
-    ['upright', { width: 360, height: 780 }],
-    ['sideways', { width: 780, height: 360 }],
+    ['upright', { width: 342, height: 740 }],
+    ['sideways', { width: 740, height: 342 }],
   ] as const) {
     test(`every step photographed, phone ${orientation}`, async ({ page }) => {
       await fresh(page);
@@ -235,12 +238,12 @@ test.describe('the setup tour', () => {
 
   test('sideways on a phone the footer is on the first screenful', async ({ page }) => {
     await fresh(page);
-    await page.setViewportSize({ width: 780, height: 360 });
+    await page.setViewportSize({ width: 740, height: 342 });
     await page.goto('/');
     const next = page.locator('#setup-next');
     await expect(next).toBeVisible({ timeout: 60_000 });
     const box = await next.boundingBox();
     expect(box, 'the Start button has a box').not.toBeNull();
-    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(360);
+    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(342);
   });
 });

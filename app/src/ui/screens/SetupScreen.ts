@@ -252,11 +252,16 @@ export function SetupScreen(router: Router): HTMLElement {
       const text = el(
         'div.setup-hold__text',
         {},
+        // Short on purpose. Sideways this column is a 209 px scroll box and
+        // this paragraph is the last thing in it, so every line over about
+        // three is a line read by scrolling. The screen's own size moved into
+        // the caption, which is beside the miniature it describes and is on
+        // the screen either way up.
         el('p', {
           text:
-            `This is your screen, ${String(short)} by ${String(long)}, with a piece on it. ` +
-            'Upright shows the bars being played and the ones coming, one under the other. ' +
-            'Sideways shows one line at a time, larger, and slides along it. Tap the other to see it.',
+            'Upright stacks the bars, the one being played and the ones coming, and leaves ' +
+            'the phone free to turn. Sideways shows one line at a time, larger, slides along ' +
+            'it, and locks the score screen to landscape. Tap the other to see it.',
         }),
       );
       const choices = el('div.setup-choices', { id: 'setup-orientation' });
@@ -266,11 +271,13 @@ export function SetupScreen(router: Router): HTMLElement {
       h.append(el('div.setup-hold', {}, text, frame));
 
       let preview: DevicePreview | null = null;
+      // One line. It sits directly under the two buttons sideways, where the
+      // column has room for about five lines in total before the reader is
+      // scrolling; what each choice *does* is in the paragraph below, which is
+      // the part it is reasonable to scroll for.
       const captionFor = (orientation: Orientation, ratio: number): string =>
-        `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(ratio)}. ` +
-        (orientation === 'sideways'
-          ? 'Sideways locks the score screen to landscape.'
-          : 'Upright leaves the phone free to turn.');
+        `${orientation === 'upright' ? 'Upright' : 'Sideways'}: ${String(short)} by ${String(long)}, ` +
+        `shown ${describeRatio(ratio)}.`;
       const draw = (): void => {
         const orientation = chosenOrientation();
         preview?.dispose();
@@ -754,20 +761,16 @@ export function SetupScreen(router: Router): HTMLElement {
       const s = getSettings();
       const mode = (name: string, what: string): HTMLElement =>
         el('div.setup-mode', {}, el('strong', { text: name }), el('span', { text: ` — ${what}` }));
+      // The two choices first, then what each mode is.
+      //
+      // The four cards run to about 360 px and the step is 446 upright, so
+      // with them at the top the only control on the step began below the fold
+      // and was drawn cut in half against the footer's rule. Nothing is lost by
+      // turning it round: the choices are named "Wait for me" and "Keep tempo"
+      // in the menus themselves, and the cards under them say what those mean.
       h.append(
-        el(
-          'div.setup-modes',
-          {},
-          mode('Wait for me', 'the score holds still until you play the right note. The first time you meet a piece.'),
-          mode('Keep tempo', 'a click and a moving cursor, whether you are with it or not. This is the mode that scores.'),
-          mode('Play it to me', 'the phone plays the piece; you watch and listen. Also “Hear it” on the score screen.'),
-          mode('Free play', 'nothing judged, the page turns on your own notes. For improvising or just playing.'),
-        ),
-        el('p.muted', {
-          text: 'Long-press a bar on the score screen to hear that bar; double-tap two bars to loop them.',
-        }),
         field(
-          'Default mode, with a piano or a mic',
+          'Default mode, piano or mic',
           selectControl(
             'setup-mode-input',
             [
@@ -779,16 +782,19 @@ export function SetupScreen(router: Router): HTMLElement {
           ),
         ),
         field(
-          'Default mode, with nothing to hear you',
+          'Default mode, no piano or mic',
           selectControl(
             'setup-mode-noinput',
             [
-              { value: 'tempo', label: 'Keep tempo (timed)' },
-              { value: 'wait', label: 'Wait for me (screen keys)' },
+              { value: 'tempo', label: 'Keep tempo' },
+              { value: 'wait', label: 'Wait for me' },
             ],
             s.defaultModeWithoutInput,
             (value) => set({ defaultModeWithoutInput: value as 'wait' | 'tempo' }),
           ),
+          // What "(timed)" and "(screen keys)" used to say inside the menu,
+          // where a 118 px select on a phone cut both off mid-word.
+          'With nothing listening, Keep tempo is timed and Wait for me watches the screen keys.',
         ),
         field('Count-in bars', numberControl('setup-countin', s.countInBars, (v) => set({ countInBars: v }), { min: 0, max: 4 }), 'Clicks before a Keep tempo run starts.'),
         field('Default tempo % for a new piece', numberControl('setup-tempo', s.defaultTempoPct, (v) => set({ defaultTempoPct: v }), { min: 30, max: 130, step: 5 }), 'Slow practice is the only kind that changes what your hands do.'),
@@ -796,6 +802,17 @@ export function SetupScreen(router: Router): HTMLElement {
         field('Keep tempo tolerance (ms)', numberControl('setup-tolerance', s.toleranceMs, (v) => set({ toleranceMs: v }), { min: 30, max: 500, step: 10 }), 'How far from the beat a note still counts.'),
         field('A pass needs accuracy %', numberControl('setup-pass-accuracy', s.passAccuracyPct, (v) => set({ passAccuracyPct: v }), { min: 50, max: 100 })),
         field('… at tempo %', numberControl('setup-pass-tempo', s.passTempoPct, (v) => set({ passTempoPct: v }), { min: 30, max: 130, step: 5 })),
+        el(
+          'div.setup-modes',
+          {},
+          mode('Wait for me', 'the score holds still until you play the right note. The first time you meet a piece.'),
+          mode('Keep tempo', 'a click and a moving cursor, whether you are with it or not. This is the mode that scores.'),
+          mode('Play it to me', 'the phone plays the piece; you watch and listen. Also “Hear it” on the score screen.'),
+          mode('Free play', 'nothing judged, the page turns on your own notes. For improvising or just playing.'),
+        ),
+        el('p.muted', {
+          text: 'Long-press a bar on the score screen to hear that bar; double-tap two bars to loop them.',
+        }),
       );
     },
   };

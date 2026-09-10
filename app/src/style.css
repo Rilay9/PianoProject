@@ -152,7 +152,15 @@ body {
   margin-top: 8px;
   padding-top: 8px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  /* The control column was `auto`, which is its own intrinsic width and will
+     not give a pixel back. A select holding "Keep tempo (timed)" is about
+     170 px, and on a 342 px phone that left the label 60 — "Default mode,
+     with nothing to hear you" came out one word per line, five rows tall, to
+     keep a menu from truncating. `minmax(0, max-content)` lets the control
+     shrink; `min(9rem, 100%)` stops the label going below a readable width,
+     and caps itself so it cannot overflow the narrower of the two columns the
+     rows run in sideways. */
+  grid-template-columns: minmax(min(9rem, 100%), 1fr) minmax(0, max-content);
   align-items: center;
   column-gap: 12px;
   row-gap: 2px;
@@ -162,6 +170,7 @@ body {
 
 .setting-row select {
   min-height: 36px;
+  max-width: 100%;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--bg);
@@ -389,13 +398,21 @@ body {
 }
 
 /* Bottom tab bar (default / portrait) */
+/* The bar's own padding, not the buttons inside it, is what makes this tall.
+   The owner: "the footer def doesn't have to be so big on mobile." Six pixels
+   above and below a row of 48 px buttons is twelve pixels of nothing on a
+   screen where the setup tour was spending 48 % of its height on chrome.
+
+   The 48 stays. `04` §0 puts the floor for a button at 48 and this is the bar
+   a person hits more than any other control in the app; the room is taken from
+   the padding around it instead, which costs nobody a missed tap. */
 .tab-nav {
   order: 2;
   display: flex;
   justify-content: space-around;
   background: var(--tab-bar-bg);
   border-top: 1px solid var(--border);
-  padding: 6px 4px calc(6px + var(--safe-bottom));
+  padding: 2px 4px calc(2px + var(--safe-bottom));
 }
 
 .tab-button {
@@ -975,6 +992,63 @@ body {
   font-size: 1.3rem;
 }
 
+/* ---------------------------------------------------------------------------
+   Upright on a phone the tour was 48 % chrome.
+
+   Measured at 342 x 740 on the step that shows the miniature: 197 px of
+   heading, a 61 px footer, a 61 px tab bar and 37 px of card and container
+   padding between the two — 356 of 740 — leaving the preview of the score
+   screen, which is the whole point of the step, 94 px to live in.
+
+   The heading was four lines: "Settings", "Set up PianoPath", "Step 2 of 8",
+   and the step's own title. Sideways `04` §0 R5 already collapses these to one
+   line on the argument that the screen's title says nothing the step's title
+   does not say better. That argument does not become false when the phone is
+   turned upright, so the same two go here: the h1, and the step count onto
+   Back's row. The step's title keeps its own line, because upright there is
+   width for it to wrap and it is the sentence the person is answering.
+
+   About 60 px, all of it to the miniature. */
+@media (max-width: 480px) and (orientation: portrait) {
+  /* Upright this is not a flex box — `04` §0 A2 makes it one only sideways —
+     so Back, the count and the title were three stacked blocks. */
+  .screen[data-screen='setup'] .sub-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .screen[data-screen='setup'] .sub-head > h1 {
+    display: none;
+  }
+
+  .screen[data-screen='setup'] .setup-progress {
+    order: 1;
+    margin: 0 0 0 auto;
+    white-space: nowrap;
+  }
+
+  /* Its own line under that row, at full width so a long question wraps
+     rather than being cut with an ellipsis the way it is sideways. */
+  .screen[data-screen='setup'] .setup-title {
+    order: 2;
+    flex: 1 0 100%;
+    margin: 6px 0 8px;
+  }
+
+  /* The card's foot is the footer's own rule; twenty pixels under it is
+     twenty pixels of surface with nothing on it. */
+  .screen[data-screen='setup'] .card {
+    padding-bottom: 8px;
+  }
+
+  .screen[data-screen='setup'] .setup-footer {
+    padding-top: 8px;
+  }
+}
+
 /* The two steps that show the miniature: the words and the buttons in one
    column, the miniature under them upright and beside them sideways, where
    the height is the scarce thing and a column of text beside a miniature
@@ -1039,6 +1113,13 @@ body {
   overflow-y: auto;
   /* Air at the foot, so the last control is not against the footer's rule. */
   padding-bottom: 8px;
+  /* A sentence cut flat by the footer's rule reads as a bug; the same
+     sentence fading out reads as "there is more below", which is what it is.
+     The mask only bites when something is actually under it — content that
+     ends above the last twelve pixels is untouched — so a step that fits is
+     drawn exactly as before. Sideways this is the difference between the
+     tour looking broken and looking scrollable. */
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 12px), transparent 100%);
 }
 
 .setup-device,
@@ -1323,10 +1404,41 @@ body {
     gap: 16px;
   }
 
+  /* Sideways the step is a 209 px scroll box and this column's contents run
+     to 302, so about ninety pixels of it are below the fold. What was below
+     the fold was the wrong ninety: the two orientation buttons were cut
+     twelve pixels short of their own bottom border, and the caption that says
+     what the miniature is showing was not on the screen at all. A person saw
+     two half-drawn boxes above a rule and nothing explaining either.
+
+     Scrolling is not the fault — a box with more in it than fits is what a
+     scroll box is for. The order was. A sentence you have to scroll for is a
+     sentence you scroll for; a button cut in half looks broken and is the one
+     thing on the step you have to hit. So the controls come first here, the
+     caption that labels them second, and the prose that explains the choice
+     last, where being the thing below the fold costs the least. */
   .setup-hold__text,
   .setup-preview-panel__text {
+    display: flex;
+    flex-direction: column;
     flex: 0 1 260px;
     min-width: 0;
+  }
+
+  .setup-hold__text > .setup-choices,
+  .setup-preview-panel__text > .row {
+    order: 0;
+  }
+
+  .setup-hold__text > #setup-hold-caption,
+  .setup-preview-panel__text > #setup-preview-caption {
+    order: 1;
+    margin-top: 6px;
+  }
+
+  .setup-hold__text > p:not([id]),
+  .setup-preview-panel__text > p:not([id]) {
+    order: 2;
   }
 
   .setup-preview-host--fill {

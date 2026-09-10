@@ -200,6 +200,50 @@ async function footerInReach(page: Page, where: string, height: number): Promise
   }
 }
 
+/**
+ * The step's first control is whole and on the screen before anything is
+ * scrolled.
+ *
+ * Sideways the step is a 209 px scroll box, and a box with more in it than
+ * fits is what a scroll box is for — the tour cannot promise every control on
+ * the first screenful without deleting things a person needs. What it can
+ * promise is that the *first* one is not cut: the two orientation buttons on
+ * the "hold" step were drawn twelve pixels short of their own bottom border,
+ * above a rule, and a control cut in half does not read as "scroll down", it
+ * reads as broken. Everything under it is reachable and now fades out at the
+ * boundary rather than stopping flat, which says there is more.
+ */
+async function firstControlIsWhole(page: Page, where: string): Promise<void> {
+  const cut = await page.evaluate(() => {
+    const step = document.querySelector('.setup-step');
+    if (!step) return null;
+    // As the step is arrived at. Opening the microphone panel a moment ago
+    // scrolled this box, and a control above the top of a box someone has
+    // scrolled is not a layout fault — it is scrolling working.
+    step.scrollTop = 0;
+    const box = step.getBoundingClientRect();
+    const controls = [...step.querySelectorAll<HTMLElement>('button, select, input, summary, .chip')];
+    const first = controls.find((c) => {
+      const r = c.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    if (!first) return null;
+    const r = first.getBoundingClientRect();
+    // A pixel of slack: sub-pixel layout rounds either way and a hairline is
+    // not what anybody means by cut.
+    const over = Math.round(r.bottom - box.bottom);
+    const under = Math.round(box.top - r.top);
+    return over > 1 || under > 1
+      ? { what: first.id || first.className || first.tagName, over, under }
+      : null;
+  });
+  expect(
+    cut,
+    `${where}: the first control (${cut?.what ?? ''}) is cut by the step's own box — ` +
+      `${String(cut?.over ?? 0)} px past the bottom, ${String(cut?.under ?? 0)} px above the top`,
+  ).toBeNull();
+}
+
 for (const [orientation, size] of Object.entries(SIZES)) {
   test(`every step is laid out for a real phone, ${orientation} ${size.width}x${size.height}`, async ({
     page,
@@ -231,6 +275,7 @@ for (const [orientation, size] of Object.entries(SIZES)) {
       }
       await judge(page, `${orientation} ${size.width}x${size.height}, step "${step}"`);
       await footerInReach(page, `${orientation} step "${step}"`, size.height);
+      await firstControlIsWhole(page, `${orientation} step "${step}"`);
 
       if (step === 'display') {
         // The preview has the step to itself: the choices go away while it is
@@ -242,6 +287,7 @@ for (const [orientation, size] of Object.entries(SIZES)) {
         await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 60_000 });
         await judge(page, `${orientation}, the preview panel`);
         await footerInReach(page, `${orientation}, the preview panel`, size.height);
+        await firstControlIsWhole(page, `${orientation}, the preview panel`);
 
         await page.locator('#setup-preview-flip').click();
         await expect(page.locator('#setup-preview svg').first()).toBeVisible({ timeout: 30_000 });
