@@ -167,6 +167,10 @@ py -3.11 packaging/serve-lan.py
 > to uninstall the old one — and that takes your practice history with it.
 > Export a backup from Progress first (§5).
 
+**There is a guide in the app**: Settings → *How PianoPath works* — what it can do and how to
+get music into it, with pictures. This document is for installing and building it; that one is
+for playing.
+
 **The first launch opens the setup tour** — nine short steps: which way the
 phone will sit, the piano, how late it is, the sound, the screen, the four
 modes, your practice. It shows the score screen both ways up in your phone's

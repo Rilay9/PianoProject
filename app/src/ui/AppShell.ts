@@ -19,6 +19,7 @@ import { PaperScreen } from './screens/PaperScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ChordChartScreen } from './screens/ChordChartScreen';
 import { DrillScreen } from './screens/DrillScreen';
+import { GuideScreen } from './screens/GuideScreen';
 
 const TAB_LABELS: Record<TabId, string> = {
   today: 'Today',
@@ -51,6 +52,7 @@ const SUB_SCREENS: Record<Exclude<SubId, 'setup'>, ScreenFactory> = {
   skills: SkillsScreen,
   folder: FolderScreen,
   shelf: ShelfScreen,
+  guide: GuideScreen,
 };
 
 function screenFor(route: Route): ScreenFactory {

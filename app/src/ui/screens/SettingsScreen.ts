@@ -88,10 +88,18 @@ export function SettingsScreen(router: Router): HTMLElement {
     button('Run again', () => router.navigate('settings', 'setup'), { id: 'open-setup' }),
   );
 
+  const guideRow = el(
+    'div.setting-row',
+    { id: 'settings-guide' },
+    el('div.setting-row__text', {}, el('div', { text: 'How PianoPath works' }), el('div.muted', { text: 'The guide, with pictures' })),
+    button('Open', () => router.navigate('settings', 'guide'), { id: 'open-guide' }),
+  );
+
   // --- Practice ------------------------------------------------------------
   const practice = group('Practice');
   practice.append(
     setupRow,
+    guideRow,
     field(
       'Default mode, with MIDI or mic',
       selectControl(

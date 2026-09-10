@@ -683,6 +683,20 @@ calibration are the same routines the Diagnostics and Microphone screens run
 (`audio/latencyTest`, `audio/pitch/calibrationRun`), so a number measured here is the number
 measured there.
 
+### 7e. The guide (`#/settings/guide`)
+
+Settings → *How PianoPath works*: what the app can do and how to get music into it, in the
+app, with pictures of the app. Eleven sections in the order a person needs them — what it
+does; the score screen; finding music; adding your own scores; a whole folder of scores (the
+archive from the laptop, `library.json`, re-picking the folder, `est.` levels); PDF sheet
+music; the books you own; lessons, drills and skills; progress and backups; the piano, the
+microphone and the setup tour; offline, updates and diagnostics. Every section that describes
+a screen has a button that opens it. The pictures are of the app itself, taken by
+`tests/e2e/guide-shots.spec.ts` (`GUIDE_SHOTS=1`) at a phone's size and shipped under
+`public/guide/`, precached like everything else; `guide.spec.ts` fails if one the guide names
+is missing. The owner guide in `docs/` stays the installer's and builder's manual; this is
+the player's.
+
 ## 7b. Diagnostics
 
 One screen, reachable from Settings and from the score screen's ⋯ menu, whose entire purpose

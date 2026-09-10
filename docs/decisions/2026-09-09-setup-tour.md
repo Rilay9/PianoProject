@@ -94,3 +94,31 @@ on the keys** (the score's finger number on each marked key, and after the name 
 **Flash a hit green and a miss red**. Each works alone. The session takes them as
 `StripOptions`, spelled out so it owes the settings store nothing; `keys-guide.spec.ts` checks
 each on Hot Cross Buns, whose first two notes are fingered 3 and 2.
+
+## The guide (later the same day)
+
+The owner asked for a user guide beside the tour: what the app can do, how to add files
+(the archive folder and its `library.json`), PDF sheet music, the rest — with pictures.
+
+**Where.** Settings → *How PianoPath works*, its own sub-screen (`#/settings/guide`),
+lazy-loaded like the tour. It is the second row of the Practice group, under the tour's
+row, so the sideways settings rules still hold (eight rows). The owner guide in `docs/`
+stays the installer's manual; this one is the player's, and says so.
+
+**What.** Eleven sections, data-driven in `GuideScreen.ts`, in the order a person needs
+them: what it does; the score screen; finding music; adding your own scores; a whole
+folder of scores; PDF sheet music; the books you own; lessons, drills and skills;
+progress and backups; the piano, the microphone and the tour; offline, updates and
+diagnostics. A contents strip at the top jumps within the page. Every section that
+describes a screen ends in a button that opens it, so the guide is also a map.
+
+**The pictures are of the app.** Sixteen screenshots under `public/guide/`, taken by
+`tests/e2e/guide-shots.spec.ts` at the phone's size (sideways where the screen is used
+sideways: the score mid-run and a PDF), gated behind `GUIDE_SHOTS=1` because it writes
+into the source tree. They are committed with the build they show, precached with the
+rest, and `guide.spec.ts` fetches every one the guide names so a missing picture fails
+before it is a broken box on the phone. Half a megabyte in all. A run is one size, so
+the sideways score picture is its own run rather than a rotation of the upright one.
+
+**Read.** The guide's own screen, the contents wrapping at 360 px, a text section, and
+all sixteen pictures on contact sheets. Guide, landscape and settings-rules specs pass.

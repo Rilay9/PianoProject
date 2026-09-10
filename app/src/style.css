@@ -800,6 +800,47 @@ body {
   max-width: 720px;
 }
 
+/* --- The guide (docs/04 §7e) ---------------------------------------------- */
+
+.screen[data-screen='guide'] .card {
+  max-width: 720px;
+}
+
+.guide-contents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 8px 0 4px;
+}
+
+.guide-contents__link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.guide-figure {
+  margin: 12px 0;
+}
+
+.guide-figure img {
+  display: block;
+  max-width: 100%;
+  width: 240px;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.guide-figure--wide img {
+  width: 100%;
+}
+
+.guide-figure figcaption {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
 /* --- The setup tour (docs/04 §7d) ---------------------------------------- */
 
 .setup-progress {
