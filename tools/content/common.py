@@ -20,6 +20,25 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
+# The console this prints to.
+#
+# Windows gives a Python process cp1252 stdout unless it is told otherwise, and
+# every script here prints arrows, dashes, curly quotes and the names of pieces
+# with accents in them. Piped, that degrades quietly: `validate.py` printed
+# "estimated level ? L0" where it meant an em-dash. Straight to a console it
+# does not degrade, it raises — `build.py` did the whole build and then died on
+# its own closing summary line, printing an arrow, with UnicodeEncodeError. The
+# work was done and the files were written; only the exit code said otherwise,
+# which is the worst way for a build to fail.
+#
+# UTF-8 with `errors="replace"`: the arrow comes out right where the console can
+# draw it, and a console that genuinely cannot substitutes a character rather
+# than throwing away a finished build. CI is Linux and already UTF-8, so this
+# changes nothing there.
+for _stream in (sys.stdout, sys.stderr):
+    with contextlib.suppress(AttributeError, ValueError):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_SRC = REPO_ROOT / "content"
 IMPORTED_DIR = CONTENT_SRC / "scores" / "imported"
