@@ -606,7 +606,10 @@ export function ScoreScreen(router: Router): HTMLElement {
   bpmField.setAttribute('aria-label', 'Tempo in bpm');
   bpmField.addEventListener('change', () => setBpm(Number(bpmField.value)));
 
-  tempoStash.append(menuRow('Speed', tempo), menuRow('Beats per minute', bpmField));
+  tempoStash.append(
+    menuRow('Speed', 'A share of the written tempo. Slower is how a hard bar becomes an easy one.', tempo),
+    menuRow('Beats per minute', 'The written tempo itself.', bpmField),
+  );
 
   // --- the ⋯ sheet ---------------------------------------------------------
 
@@ -745,24 +748,24 @@ export function ScoreScreen(router: Router): HTMLElement {
     performanceRun ? 'Stop performing and go back to practising' : 'Play it as a performance',
   );
 
-  const sectionRow = menuRow('Section', sectionSelect);
+  const sectionRow = menuRow('Section', 'Jump to a named part of the piece.', sectionSelect);
   sectionRow.hidden = true;
 
   menuStash.append(
     // A performance is one pass through. Offering a restart during one would
     // be offering to make it not a performance (replan §8).
-    ...(performanceRun ? [] : [menuRow('Start again', restart)]),
-    menuRow('Input', inputSelect),
+    ...(performanceRun ? [] : [menuRow('Start again', 'Back to bar 1 without leaving this screen.', restart)]),
+    menuRow('Input', 'What the app listens to while you play: the piano over its cable, the microphone, or nothing.', inputSelect),
     sectionRow,
-    menuRow('Loop', loopButton),
-    menuRow('Metronome', metronomeButton),
-    menuRow('Bars in window', barsDown, barsLabel, barsUp),
-    menuRow('Size', zoomOut, zoomIn),
-    menuRow('Layout', layoutGroup),
-    menuRow('Keys', keysGroup),
-    menuRow('Sound', destinationButton),
-    menuRow('Blind', blindToggle),
-    menuRow('Perform', performanceToggle),
+    menuRow('Loop', 'Repeat a few bars over and over until they are yours. Double-tap the sheet to mark them.', loopButton),
+    menuRow('Metronome', 'The click, on or off.', metronomeButton),
+    menuRow('Bars in window', 'How much music is on the screen at once. Fewer bars means bigger notes.', barsDown, barsLabel, barsUp),
+    menuRow('Size', 'Bigger or smaller notes, around whatever already fits.', zoomOut, zoomIn),
+    menuRow('Layout', 'A screenful at a time, or one long sheet you scroll through.', layoutGroup),
+    menuRow('Keys', 'The keyboard under the score: the full strip, a thin ribbon that names the note, or nothing.', keysGroup),
+    menuRow('Sound', 'Whether the phone or the piano plays the hand you are not practising.', destinationButton),
+    menuRow('Blind', 'Hides the notation so you play from memory. The app still follows you and still marks what you play.', blindToggle),
+    menuRow('Perform', 'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.', performanceToggle),
   );
 
   // --- behaviour -----------------------------------------------------------
@@ -837,16 +840,25 @@ export function ScoreScreen(router: Router): HTMLElement {
    * the right. Every control in there gets a word — the bar was where a glyph
    * on its own had to do, and `🎵` alone is a guess.
    */
-  function menuRow(label: string, ...controls: HTMLElement[]): HTMLElement {
+  function menuRow(label: string, hint: string, ...controls: HTMLElement[]): HTMLElement {
     const row = document.createElement('div');
     row.className = 'score-menu-row';
+    const words = document.createElement('div');
+    words.className = 'score-menu-row__words';
     const text = document.createElement('span');
     text.className = 'score-menu-row__label';
     text.textContent = label;
+    words.append(text);
+    if (hint) {
+      const said = document.createElement('span');
+      said.className = 'score-menu-row__hint';
+      said.textContent = hint;
+      words.append(said);
+    }
     const holder = document.createElement('div');
     holder.className = 'score-menu-row__control';
     holder.append(...controls);
-    row.append(text, holder);
+    row.append(words, holder);
     return row;
   }
 
@@ -1342,42 +1354,21 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
-   * Whether hiding the bar would give the notation anything (decision 5).
+   * The fade has no condition on it any more.
    *
-   * The stage reserves the bar's height rather than being covered by it, so
-   * the bar is never literally on top of a note. What "would otherwise
-   * overlap" means in that layout is: the engraving has been fitted to a
-   * stage that the bar is taking a strip off, and it used all of it. Held
-   * upright, with a third of the stage empty under the sheet, it has not —
-   * and hiding the controls buys nothing but a hunt for them.
+   * It used to ask `barCostsMusicRoom()` first — is the music actually reaching
+   * the bar's row — and stay put when the answer was no, on the reasoning that
+   * hiding controls buys nothing over an empty third of the stage and costs a
+   * hunt for them. The owner's instruction, after looking at it on the phone:
+   * just always fade it. Judging "is it covering anything" from inside the app
+   * kept getting the answer wrong, and a rule whose exception nobody can
+   * predict is worse than a rule. One tap on the sheet brings it back, always
+   * (`08` §9.34), which is what makes it safe to be unconditional.
    *
-   * One measurement, when the timer fires. Nothing here runs per frame.
+   * The measurement that used to gate it is not lost: `08` §13 records it —
+   * sideways, Hot Cross Buns' music stops 67 px above the stage's bottom, which
+   * is why the bar used to stay there and nowhere else.
    */
-  function barCostsMusicRoom(): boolean {
-    // The ink, not the SVG element. The element is the page OSMD laid the
-    // window out on — taller than the music and, since the fit anchors the
-    // ink's top-left in the stage's, hanging off the edge on purpose. Asking
-    // the element whether the music reached the bottom of the stage answered
-    // yes when it had not, and the bar hid itself for nothing.
-    const music = renderer?.inkRect();
-    if (!music) return false;
-    if (music.bottom - music.top < 20) return false;
-    // The bar's top edge while the bar is there, not the stage's bottom.
-    //
-    // During a run the stage is deliberately extended underneath the bar
-    // (`[data-running='true'] .score-stage { margin-bottom: 0 }`) to win the
-    // vertical room. That put the stage's bottom edge *behind* the bar, so
-    // this asked whether the music had reached a line nobody can see: on
-    // Greensleeves sideways the whole bass staff sat under the bar and the
-    // answer was still "there is room", so the fold never fired and the left
-    // hand could not be read. The line past which music is actually covered
-    // is the bar's own top.
-    const bottom = bar.dataset.visible === 'true'
-      ? Math.min(stage.getBoundingClientRect().bottom, bar.getBoundingClientRect().top)
-      : stage.getBoundingClientRect().bottom;
-    // Within a line's height of it: the fit ran out of the room it can use.
-    return music.bottom >= bottom - 24;
-  }
 
   /**
    * The chrome folds away as one: the bar, and upright the header row with
@@ -1404,7 +1395,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (hideTimer !== null) window.clearTimeout(hideTimer);
     if (session?.running !== true) return;
     hideTimer = window.setTimeout(() => {
-      if (session?.running === true && barCostsMusicRoom()) foldChrome(true);
+      if (session?.running === true) foldChrome(true);
     }, hideAfterMs);
   }
   function toggleBar(): void {

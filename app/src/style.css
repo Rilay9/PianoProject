@@ -2344,6 +2344,11 @@ input[type='checkbox'] {
    inside a dialog, which is a place nobody looks. Two columns puts eight of
    them on the screen at once. */
 @media (max-height: 520px) {
+  /* No room for the sentences here; the words alone have to do. */
+  #score-more-sheet .score-menu-row__hint {
+    display: none;
+  }
+
   #score-more-sheet .sheet__body {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2378,6 +2383,32 @@ input[type='checkbox'] {
    for a piece that has none, was drawn anyway. */
 .score-menu-row[hidden] {
   display: none;
+}
+
+/* The word and, under it, what the control does *for you*.
+
+   The owner asked what Perform mode is and why Blind is useful — and they
+   specified the app. If the person who asked for a mode has to ask what it is
+   for, a name on a button is not an explanation. A phone has no hover, so
+   `title` is dead weight; this sheet is full-screen and is the only surface
+   with the room.
+
+   Upright only. Sideways the sheet is already two columns because eleven
+   single-line rows did not fit a 360 px screen, and a second line each would
+   put half of them behind a scroll inside a dialog, which is where nobody
+   looks. The rule that does that is in the `max-height: 520px` block below. */
+.score-menu-row__words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.score-menu-row__hint {
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: var(--text-muted);
 }
 
 .score-menu-row__label {

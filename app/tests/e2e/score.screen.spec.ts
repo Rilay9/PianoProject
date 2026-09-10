@@ -126,19 +126,36 @@ test.describe('score screen', () => {
     }
   });
 
-  test('and stays put when it is not (decision 5)', async ({ page }) => {
+  /**
+   * **Reversed deliberately.** This used to assert the opposite: that upright,
+   * where the sheet stops short of the bar, the bar *stays* because it is
+   * covering nothing. The owner's instruction after looking at it on the phone
+   * was "just always fade it" — judging from inside the app whether the bar was
+   * covering anything kept getting the answer wrong, and a rule whose exception
+   * nobody can predict is worse than a rule.
+   *
+   * So the premise is kept and the conclusion is flipped: the sheet still does
+   * not reach the bar upright, and the bar goes anyway. What makes that safe is
+   * §9.34 — one tap on the sheet brings it back, always — and that is asserted
+   * here rather than left to the reader.
+   */
+  test('and goes anyway, even when it is covering nothing (decision 5)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await openScore(page);
     const bar = page.locator('#score-bar');
     await page.locator('#score-play').click();
     await page.waitForTimeout(HIDE_MS + 2_000);
-    // The sheet does not reach the bottom of the stage upright, so there is
-    // nothing to get out of the way of.
+    // The premise, unchanged: upright the sheet stops short of the bar.
     const stageBottom = await page.evaluate(
       () => document.querySelector('#score-stage')!.getBoundingClientRect().bottom,
     );
     const room = Math.round(stageBottom - (await inkBox(page)).bottom);
     expect(room, 'the sheet fills the stage upright too — check the premise').toBeGreaterThan(24);
+    // And it fades regardless.
+    await expect(bar).toHaveAttribute('data-visible', 'false');
+    // One tap, and it is back. That is what pays for the rule having no
+    // exceptions.
+    await page.locator('#score-stage').click({ position: { x: 5, y: 5 } });
     await expect(bar).toHaveAttribute('data-visible', 'true');
   });
 

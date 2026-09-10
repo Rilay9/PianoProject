@@ -46,6 +46,10 @@ export async function pressControl(page: Page, selector: string): Promise<void> 
 export async function openScoreMenu(page: Page): Promise<void> {
   const sheet = page.locator('#score-more-sheet');
   if (await sheet.isVisible()) return;
+  // Reveal first. The bar fades after three seconds of a run whatever it is
+  // covering, so mid-run `⋯` is behind a stage that takes the tap — the fuzz
+  // walk spent its whole four-minute budget being told so.
+  await revealBar(page);
   await page.locator('#score-more').click();
   await expect(sheet).toBeVisible();
 }
@@ -95,6 +99,7 @@ export async function inkBox(
 
 /** The tempo sheet, behind the bar's tempo label. */
 export async function openTempoSheet(page: Page): Promise<void> {
+  await revealBar(page);
   const sheet = page.locator('#score-tempo-sheet');
   if (await sheet.isVisible()) return;
   await page.locator('#score-tempo-label').click();
