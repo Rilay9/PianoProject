@@ -75,8 +75,21 @@ test.describe('the lesson page', () => {
   });
 
   test('an option that needs importing offers no play button', async ({ page }) => {
-    await page.goto('/#/lesson/0.1');
-    const importNeeded = page.locator('#lesson-exercises .list-row', { hasText: 'import needed' });
+    // `ragtime.6`, not `0.1`. Lesson 0.1's stage-0 posture checklist was the
+    // row this used to find, and it stopped needing an import the moment the
+    // catalog schema let its `drill.kind` through - so the test was pointed at
+    // a case that had moved, not a rule that had broken. Ragtime is where the
+    // rule still bites: the Joplin editions are CC BY-NC-SA and cannot be
+    // bundled in a redistributable build (`00` D23), so ten of that lesson's
+    // options are placeholders.
+    //
+    // `everyOptionOpens.test.ts` holds the other half for every lesson at
+    // once: an option that cannot be opened carries the sentence that says
+    // why, because a badge with nothing beside it is a dead end with a label.
+    await page.goto('/#/lesson/ragtime.6');
+    const importNeeded = page.locator('#lesson-exercises .list-row, #lesson-songs .list-row', {
+      hasText: 'import needed',
+    });
     await expect(importNeeded.first()).toBeVisible();
     await expect(importNeeded.first().getByRole('button', { name: '▶' })).toHaveCount(0);
   });

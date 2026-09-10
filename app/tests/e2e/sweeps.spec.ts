@@ -104,10 +104,41 @@ test.describe('every kind of drill', () => {
     test.setTimeout(300_000);
     expect(byKind.size).toBeGreaterThanOrEqual(15);
     const broken: string[] = [];
+    /**
+     * Kinds the screen openly marks `unavailable`, with the sentence that says
+     * so, rather than dealing a card.
+     *
+     * Named one by one and never widened without reading this. A kind here is
+     * a promise the catalog is making and the app is not keeping; the only
+     * thing that makes it tolerable is that the screen says which, in words,
+     * instead of drawing a working-looking card or blaming the learner for not
+     * importing a file. `walkthrough` is the guided tour of Wait, Tempo and
+     * loops: it has to step through the Score screen on a real piece, which
+     * the drill screen cannot do, and it is not built.
+     *
+     * Anything that reaches `unavailable` and is *not* named here fails, which
+     * is the case this list exists to keep failing.
+     */
+    const notBuilt = new Set(['walkthrough']);
+
     for (const [kind, item] of byKind) {
       if (kind === 'sight-reading') continue; // notation: it opens the Score screen
       await page.goto(`/#/drill/${item.id}`);
       const screen = page.locator('[data-screen="drill"]');
+      if (notBuilt.has(kind)) {
+        // Still held to something: the state, and a sentence a person can read
+        // that names the thing and does not ask them to do anything about it.
+        await expect(screen).toHaveAttribute('data-drill', 'unavailable', { timeout: 30_000 });
+        const said = (await page.locator('#drill-status').textContent())?.trim() ?? '';
+        if (said.length < 20) broken.push(`${kind}: marked unavailable and says nothing`);
+        // Not the word "import" — the sentence is allowed to say it is *not* a
+        // file to import, and that is the point it is making. What it may not
+        // do is ask for one, which is the badge this kind used to wear.
+        if (/import needed|needs? import|import (?:your|a copy|it)/i.test(said)) {
+          broken.push(`${kind}: asks the learner to import a file`);
+        }
+        continue;
+      }
       // `data-drill` is the screen's own account of itself, and the only
       // signal here that is not a race: `running` means a drill was built and
       // its first card dealt. Waiting on an element being visible was not

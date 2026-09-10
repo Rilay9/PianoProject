@@ -29,6 +29,24 @@ const catalog = JSON.parse(
 /** A drill item with no notation file is one this screen has to run. */
 const runtimeDrills = catalog.filter((item) => item.drill && !item.file);
 
+/**
+ * The kinds that are not a note-answering prompt loop.
+ *
+ * `drillFromCatalog` returns null for all four on purpose and `DrillScreen`
+ * draws them itself: sight-reading opens the score screen, a checklist is
+ * ticked prose, a placement test is a branching self-judged sequence, and a
+ * walkthrough says in one sentence that it is being built rather than wearing
+ * a badge that blames the learner for not importing a file.
+ *
+ * This list is the point of the two assertions below. Without it they read
+ * "every runtime drill builds a prompt loop", which stopped being true the
+ * moment the catalog schema let these kinds in — and then reported three items
+ * as having "no runtime implementation" when all three have one.
+ */
+function drawnByTheScreen(item: CatalogItem): boolean {
+  return isSightReading(item) || isChecklist(item) || isPlacement(item) || isWalkthrough(item);
+}
+
 function noteOn(midi: number, tMs = 0, velocity = 80): EngineInput {
   return { kind: 'noteOn', midi, velocity, tMs, confidence: 1 };
 }
@@ -38,9 +56,24 @@ describe('the catalog’s runtime drills', () => {
     expect(runtimeDrills.length).toBeGreaterThan(20);
   });
 
-  it('every one either builds a drill or is sight-reading', () => {
+  it('the screen-drawn kinds are all actually in the catalog', () => {
+    // The exclusion below is what keeps the two assertions after it honest, and
+    // an exclusion that excuses nothing is one that will quietly excuse
+    // whatever is added to it next. Three kinds — checklist, placement and
+    // walkthrough — reached the catalog in this batch because the schema's
+    // `drill.kind` enum was widened for them, and the assertion that noticed
+    // said they had "no runtime implementation" when the screen ran all three.
+    // The guard against a kind nothing runs is the assertion after this one:
+    // a kind that neither builds a prompt loop nor is drawn by the screen
+    // fails there, which is exactly what these three did.
+    for (const has of [isSightReading, isChecklist, isPlacement, isWalkthrough]) {
+      expect(runtimeDrills.some((item) => has(item))).toBe(true);
+    }
+  });
+
+  it('every one either builds a drill or is drawn by the screen', () => {
     const unbuildable = runtimeDrills.filter(
-      (item) => !isSightReading(item) && drillFromCatalog(item) === null,
+      (item) => !drawnByTheScreen(item) && drillFromCatalog(item) === null,
     );
     expect(
       unbuildable.map((item) => `${item.id} (${item.drill?.kind ?? '?'})`),
@@ -50,7 +83,7 @@ describe('the catalog’s runtime drills', () => {
 
   it('every built drill offers a first prompt with a label', () => {
     for (const item of runtimeDrills) {
-      if (isSightReading(item)) continue;
+      if (drawnByTheScreen(item)) continue;
       const drill = drillFromCatalog(item);
       expect(drill, item.id).not.toBeNull();
       const prompt = drill?.next();
@@ -62,7 +95,7 @@ describe('the catalog’s runtime drills', () => {
 
   it('every expected pitch is a real key on an 88-key piano', () => {
     for (const item of runtimeDrills) {
-      if (isSightReading(item)) continue;
+      if (drawnByTheScreen(item)) continue;
       const drill = drillFromCatalog(item);
       for (let i = 0; i < 12; i += 1) {
         const prompt = drill?.next();
