@@ -4,12 +4,9 @@ stage: 3
 unit: "theory-ear.3.1"
 concepts: [intervals, key-signatures, rhythm-dictation, chord-identification]
 videos:
-  - label: "Intervals"
-    url: "https://www.youtube.com/@Lypur"
-    teacher: "Andrew Furmanczyk (Lypur)"
-  - label: "Intervals chapter"
-    url: "https://viva.pressbooks.pub/openmusictheory/"
-    teacher: "Open Music Theory (CC BY-SA)"
+  - label: "Identifying Intervals (Perfect, Major, Minor, Augmented, Diminished) - Music Theory for Beginners"
+    url: "https://www.youtube.com/watch?v=Hwx7KSEi4z8"
+    teacher: "Online Piano Learning"
 readingTime: 3
 ---
 

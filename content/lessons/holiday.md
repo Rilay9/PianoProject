@@ -4,9 +4,9 @@ stage: 2
 unit: "holiday.2.1"
 concepts: [carols, chord-symbols, transposing-for-singers, simple-arranging]
 videos:
-  - label: "Playing carols from chord symbols"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
+  - label: "One Simple Trick To Play 5 Christmas Carols BEAUTIFULLY On Piano"
+    url: "https://www.youtube.com/watch?v=UE3dIteGuL0"
+    teacher: "Matt Hodge Music"
 readingTime: 2
 ---
 

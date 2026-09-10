@@ -4,12 +4,9 @@ stage: 3
 unit: "hymns-gospel.3.1"
 concepts: [four-part-harmony, SATB-reading, passing-chords, walk-ups, plagal-cadence]
 videos:
-  - label: "Gospel piano basics"
-    url: "https://www.pianowithjonny.com/piano-lessons/"
-    teacher: "Piano With Jonny"
-  - label: "Hymn playing"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
+  - label: "Passing Chords | Gospel Piano Tutorial for Beginners to Advanced"
+    url: "https://www.youtube.com/watch?v=D78jyasHY2s"
+    teacher: "PrettySimpleMusic"
 readingTime: 3
 ---
 

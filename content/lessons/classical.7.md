@@ -4,12 +4,9 @@ stage: 7
 unit: "classical.7.1"
 concepts: [counterpoint, sonata-form, cantabile, ornamented-melody, rubato]
 videos:
-  - label: "Playing Bach: hands, voices and articulation"
-    url: "https://www.youtube.com/@JosephHoffmanPiano"
-    teacher: "Joseph Hoffman"
-  - label: "Chopin nocturnes: the ornamented line"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
+  - label: "Piano Lesson - How to approach Bach's Two Part Inventions - Part 1"
+    url: "https://www.youtube.com/watch?v=WV4aKBla10M"
+    teacher: "Virtual Sheet Music"
 readingTime: 5
 ---
 

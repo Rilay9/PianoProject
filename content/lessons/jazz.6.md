@@ -4,12 +4,9 @@ stage: 6
 unit: "jazz.6.1"
 concepts: [comping, walking-bass, shell-voicings, swing-eighths, harmonic-dictation, ii-V-I]
 videos:
-  - label: "Jazz piano, explained slowly"
-    url: "https://www.youtube.com/@AimeeNolteMusic"
-    teacher: "Aimee Nolte"
-  - label: "Free jazz piano lessons"
-    url: "https://www.youtube.com/@OpenStudioJazz"
-    teacher: "Open Studio (Peter Martin)"
+  - label: "How to Play Left Hand Jazz Piano Walking Bass Techniques"
+    url: "https://www.youtube.com/watch?v=9QtvnbuGjUs"
+    teacher: "Sweetwater"
 readingTime: 4
 ---
 

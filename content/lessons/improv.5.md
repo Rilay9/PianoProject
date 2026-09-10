@@ -4,12 +4,9 @@ stage: 5
 unit: "improv-compose.5.1"
 concepts: [blues-scale, twelve-bar-improv, melody-writing, recording]
 videos:
-  - label: "Improvising over a 12 bar blues"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "Writing a melody"
-    url: "https://www.youtube.com/@AimeeNolteMusic"
-    teacher: "Aimee Nolte"
+  - label: "How To Improvise On Blues Scale: Piano Lesson"
+    url: "https://www.youtube.com/watch?v=RJu-wptS6Ng"
+    teacher: "London Contemporary School of Piano"
 readingTime: 3
 ---
 

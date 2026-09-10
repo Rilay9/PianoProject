@@ -4,12 +4,9 @@ stage: 6
 unit: "chords-pop.6.1"
 concepts: [four-chord-loop, voice-leading, slash-chord, roman-numerals, inversions, transposition]
 videos:
-  - label: "Chords, songs and arranging"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
-  - label: "Theory through the songs you know"
-    url: "https://www.youtube.com/@DavidBennettPiano"
-    teacher: "David Bennett"
+  - label: "Easy slash chords tutorial on the piano!"
+    url: "https://www.youtube.com/watch?v=cQY7iOkQj-Y"
+    teacher: "Play Piano In A Flash"
 readingTime: 4
 ---
 

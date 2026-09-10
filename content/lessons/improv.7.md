@@ -4,12 +4,9 @@ stage: 7
 unit: "improv.7.1"
 concepts: [improvisation, quartal, extended-chords, modes, voicing, texture]
 videos:
-  - label: "Composing, and how a piece is built"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
-  - label: "Voicings and substitutions"
-    url: "https://www.youtube.com/@JazzTutorial"
-    teacher: "Julian Bradley"
+  - label: "Ultimate Guide to Jazz Piano Quartal Voicings"
+    url: "https://www.youtube.com/watch?v=XYSEQhwsEz0"
+    teacher: "Josh Walsh"
 readingTime: 4
 ---
 

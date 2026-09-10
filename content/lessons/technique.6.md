@@ -4,12 +4,9 @@ stage: 6
 unit: "technique.6.1"
 concepts: [seventh-chord, broken-chord, rotation, alberti, wrist, trill, voicing, melody-projection, balance, tone, sustain-pedal, held-melody, CC64, legato-pedalling, "polyrhythm-3:1", meter-7-8]
 videos:
-  - label: "Voicing: making the top note sing"
-    url: "https://www.youtube.com/@JosephHoffmanPiano"
-    teacher: "Joseph Hoffman"
-  - label: "Rotation, and why your wrist should not be still"
-    url: "https://www.youtube.com/@PianoTV"
-    teacher: "Allysia Van Betuw"
+  - label: "Rotation Technique on the piano explained -- Playground Sessions"
+    url: "https://www.youtube.com/watch?v=kgEG3_ebGsQ"
+    teacher: "Playground Sessions"
 readingTime: 5
 ---
 

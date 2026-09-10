@@ -4,12 +4,9 @@ stage: 6
 unit: "theory.6.1"
 concepts: [roman-numerals, harmonic-dictation, modes, transposition, ear-training, chord-progression]
 videos:
-  - label: "Open Music Theory"
-    url: "https://viva.pressbooks.pub/openmusictheory/"
-    teacher: "VIVA Open Publishing"
-  - label: "Theory through the songs you know"
-    url: "https://www.youtube.com/@DavidBennettPiano"
-    teacher: "David Bennett"
+  - label: "The Roman Numeral System Explained: Build Any Chord Progression by Number"
+    url: "https://www.youtube.com/watch?v=mxVzktPGxaY"
+    teacher: "Jason Zac - Nathaniel School of Music"
 readingTime: 4
 ---
 

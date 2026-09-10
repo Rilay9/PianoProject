@@ -4,12 +4,9 @@ stage: 3
 unit: "classical.3.1"
 concepts: [baroque-dance, articulation, ornaments-preview, two-voice-texture]
 videos:
-  - label: "Bach Minuet in G — walkthrough"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
-  - label: "Practising a Baroque dance"
-    url: "https://www.youtube.com/@JoshWrightPiano"
-    teacher: "Josh Wright"
+  - label: "C. Petzold: Minuet in G Major BWV Anh. 114 | Slow Piano Tutorial | Late Beginner"
+    url: "https://www.youtube.com/watch?v=fVbPrKuc2F4"
+    teacher: "Classical Piano Made Playable"
 readingTime: 3
 ---
 

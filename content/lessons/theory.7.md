@@ -4,12 +4,9 @@ stage: 7
 unit: "theory.7.1"
 concepts: [secondary-dominants, tonicisation, roman-numerals, modes, chord-scale, ear-training]
 videos:
-  - label: "Open Music Theory"
-    url: "https://viva.pressbooks.pub/openmusictheory/"
-    teacher: "VIVA Open Publishing"
-  - label: "What makes that chord sound like that"
-    url: "https://www.youtube.com/@RickBeato"
-    teacher: "Rick Beato"
+  - label: "Secondary Dominants: The Complete Guide"
+    url: "https://www.youtube.com/watch?v=32G6cIiZ3sI"
+    teacher: "Piano With Jonny"
 readingTime: 5
 ---
 

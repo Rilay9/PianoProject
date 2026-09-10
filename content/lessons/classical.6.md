@@ -4,12 +4,9 @@ stage: 6
 unit: "classical.6.1"
 concepts: [voicing-melody, rubato, pedalling, romantic-miniature]
 videos:
-  - label: "Voicing: making the melody sing"
-    url: "https://www.youtube.com/@JosephHoffmanPiano"
-    teacher: "Joseph Hoffman"
-  - label: "Pedalling basics for Romantic piano"
-    url: "https://www.youtube.com/@PianoTV"
-    teacher: "Allysia Van Betuw"
+  - label: "Rubato in Romantic Piano Music"
+    url: "https://www.youtube.com/watch?v=fUVQL4vBVks"
+    teacher: "University of Sydney Library"
 readingTime: 5
 ---
 

@@ -4,12 +4,9 @@ stage: 8
 unit: "jazz.8.1"
 concepts: [extended-chords, modulation, rootless-voicings, tritone-substitution, modes, harmonic-dictation]
 videos:
-  - label: "Free jazz piano lessons"
-    url: "https://www.youtube.com/@OpenStudioJazz"
-    teacher: "Open Studio (Peter Martin)"
-  - label: "What makes that chord sound like that"
-    url: "https://www.youtube.com/@RickBeato"
-    teacher: "Rick Beato"
+  - label: "Jazz Chord Extensions Explained: How to Find 9ths, 11ths, 13ths, b9s & #11s"
+    url: "https://www.youtube.com/watch?v=8VWktDGNqmM"
+    teacher: "Jazz Tutorial | Julian Bradley"
 readingTime: 5
 ---
 

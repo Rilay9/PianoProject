@@ -4,12 +4,9 @@ stage: 8
 unit: "chords-pop.8.1"
 concepts: [transposition, roman-numerals, secondary-dominants, four-chord-loop, sight-reading, seventh-chord]
 videos:
-  - label: "Theory through the songs you know"
-    url: "https://www.youtube.com/@DavidBennettPiano"
-    teacher: "David Bennett"
-  - label: "Chords, songs and arranging"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
+  - label: "The Easiest Way to Transpose a Song to ANY key on piano!"
+    url: "https://www.youtube.com/watch?v=Ri9N5mH7YUE"
+    teacher: "Piano With Jonny"
 readingTime: 4
 ---
 

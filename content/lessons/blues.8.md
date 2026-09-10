@@ -4,12 +4,9 @@ stage: 8
 unit: "blues.8.1"
 concepts: [twelve-bar, boogie, walking-bass, extended-chords, comping, transposition]
 videos:
-  - label: "Blues and pop piano"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "What makes that chord sound like that"
-    url: "https://www.youtube.com/@RickBeato"
-    teacher: "Rick Beato"
+  - label: "How To Form & Play Dominant 9th Chords On The Piano"
+    url: "https://www.youtube.com/watch?v=zwlReOAa9KE"
+    teacher: "PlayPiano"
 readingTime: 4
 ---
 

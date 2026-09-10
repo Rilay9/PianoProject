@@ -4,12 +4,9 @@ stage: 7
 unit: "chords-pop.7.1"
 concepts: [open-voicing, sus-chords, add9, extended-chords, voicing, texture]
 videos:
-  - label: "Chords, songs and arranging"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
-  - label: "Piano with Jonny — chords and arranging"
-    url: "https://www.pianowithjonny.com/piano-lessons/"
-    teacher: "Jonny May"
+  - label: "Sound Amazing at the Piano With SUS CHORDS"
+    url: "https://www.youtube.com/watch?v=lPJQfvm39jw"
+    teacher: "Piano With Jonny"
 readingTime: 4
 ---
 

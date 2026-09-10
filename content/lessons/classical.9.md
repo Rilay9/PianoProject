@@ -4,12 +4,9 @@ stage: 9
 unit: "classical.9.1"
 concepts: [large-form, virtuoso-technique, dramatic-contrast, interpretation]
 videos:
-  - label: "Learning a large work"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
-  - label: "Interpretation and score study"
-    url: "https://www.youtube.com/@RickBeato"
-    teacher: "Rick Beato"
+  - label: "How I Learn a New Piece at the Piano [3 Steps!]"
+    url: "https://www.youtube.com/watch?v=YG9kdmY7iVI"
+    teacher: "The Piano Prof | Kate Boyd"
 readingTime: 4
 ---
 

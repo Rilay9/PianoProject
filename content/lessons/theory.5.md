@@ -4,12 +4,9 @@ stage: 5
 unit: "theory-ear.5.1"
 concepts: [seventh-qualities, progressions-by-ear, modes, transposition]
 videos:
-  - label: "Modes explained"
-    url: "https://www.youtube.com/@DavidBennettPiano"
-    teacher: "David Bennett"
-  - label: "Harmony chapters"
-    url: "https://viva.pressbooks.pub/openmusictheory/"
-    teacher: "Open Music Theory (CC BY-SA)"
+  - label: "Modes Explained on the Piano [tutorial lesson]"
+    url: "https://www.youtube.com/watch?v=pCfV-i20olM"
+    teacher: "Bitesize Piano"
 readingTime: 3
 ---
 

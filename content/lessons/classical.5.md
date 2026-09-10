@@ -4,12 +4,9 @@ stage: 5
 unit: "classical.5.1"
 concepts: [sonatina-form, alberti-bass-HT, trills, pedal-in-romantic, binary-form]
 videos:
-  - label: "Playing a Clementi sonatina"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
-  - label: "Voicing melody over accompaniment"
-    url: "https://www.youtube.com/@JoshWrightPiano"
-    teacher: "Josh Wright"
+  - label: "How to Play Ornaments: Trills, Mordents and More"
+    url: "https://www.youtube.com/watch?v=Hx_-ZWk0sy0"
+    teacher: "pianoTV"
 readingTime: 3
 ---
 

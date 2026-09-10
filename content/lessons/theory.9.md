@@ -4,12 +4,9 @@ stage: 9
 unit: "theory.9.1"
 concepts: [ear-training, playing-by-ear, form, harmonic-dictation, modulation, sight-reading]
 videos:
-  - label: "Theory through the songs you know"
-    url: "https://www.youtube.com/@DavidBennettPiano"
-    teacher: "David Bennett"
-  - label: "Composing, and how a piece is built"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
+  - label: "How to Transcribe Songs by Ear on Piano for Beginners"
+    url: "https://www.youtube.com/watch?v=5rNStzsnR_M"
+    teacher: "Shane's Queen Site"
 readingTime: 4
 ---
 

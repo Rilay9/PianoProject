@@ -4,12 +4,9 @@ stage: 4
 unit: "beautiful.4.1"
 concepts: [repertoire-collection, tone, pedalling, voicing, patience]
 videos:
-  - label: "Making the piano sing"
-    url: "https://www.youtube.com/@JoshWrightPiano"
-    teacher: "Josh Wright"
-  - label: "Tone and touch"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
+  - label: "Voicing in Piano Explained: How to Bring Out Melody over Accompaniment"
+    url: "https://www.youtube.com/watch?v=MUEyZfxUC6o"
+    teacher: "Akira Ikegami"
 readingTime: 3
 ---
 

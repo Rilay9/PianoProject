@@ -4,12 +4,9 @@ stage: 6
 unit: "blues.6.1"
 concepts: [boogie, shuffle, walking-bass, left-hand, turnaround, twelve-bar]
 videos:
-  - label: "Boogie-woogie, from the left hand up"
-    url: "https://www.youtube.com/@ArthurMigliazza"
-    teacher: "Arthur Migliazza"
-  - label: "Blues and pop piano"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
+  - label: "Secret Key To Pinetop's Boogie Woogie (Right Hand Boogie Pattern)"
+    url: "https://www.youtube.com/watch?v=z6Ytf2EdOQM"
+    teacher: "Brendan Kavanagh"
 readingTime: 4
 ---
 

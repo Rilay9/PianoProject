@@ -4,12 +4,9 @@ stage: 9
 unit: "improv.9.1"
 concepts: [composition, form, arranging, playing-by-ear, voicing, improvisation]
 videos:
-  - label: "Composing, and how a piece is built"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
-  - label: "Piano with Jonny — chords and arranging"
-    url: "https://www.pianowithjonny.com/piano-lessons/"
-    teacher: "Jonny May"
+  - label: "Compose Your Own Piano Music: A TOTAL Beginner's Guide"
+    url: "https://www.youtube.com/watch?v=JPtBDJgY22M"
+    teacher: "MangoldProject"
 readingTime: 4
 ---
 

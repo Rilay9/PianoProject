@@ -4,12 +4,9 @@ stage: 9
 unit: "chords-pop.9.1"
 concepts: [arranging, texture, voicing, comping, playing-by-ear, open-voicing]
 videos:
-  - label: "Piano with Jonny — chords and arranging"
-    url: "https://www.pianowithjonny.com/piano-lessons/"
-    teacher: "Jonny May"
-  - label: "Chords, songs and arranging"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
+  - label: "Create Your Own Piano Arrangements - PERFECT for any level!"
+    url: "https://www.youtube.com/watch?v=oq3v8SpWCi0"
+    teacher: "Piano and Voice with Brenda"
 readingTime: 4
 ---
 

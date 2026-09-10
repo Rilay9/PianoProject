@@ -4,12 +4,9 @@ stage: 5
 unit: "blues-boogie.5.1"
 concepts: [turnaround, tremolo-thirds, call-and-response, walking-bass, blues-in-F-and-G]
 videos:
-  - label: "Blues turnarounds"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "Boogie woogie piano"
-    url: "https://www.youtube.com/@ArthurMigliazza"
-    teacher: "Arthur Migliazza"
+  - label: "How to Play Blues Piano - Scales, Licks, Turnarounds, Techniques, Left Hand Patterns"
+    url: "https://www.youtube.com/watch?v=S3YRSVBjUH0"
+    teacher: "Walk That Bass"
 readingTime: 3
 ---
 

@@ -4,12 +4,9 @@ stage: 4
 unit: "improv-compose.4.1"
 concepts: [pentatonic-scale, call-and-response, four-chord-loop, motif-development]
 videos:
-  - label: "Pentatonic improvisation"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "Melodic development"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
+  - label: "Piano improvisation with pentatonic scale"
+    url: "https://www.youtube.com/watch?v=1W8TjulBrHM"
+    teacher: "Play By Ear Music School"
 readingTime: 3
 ---
 

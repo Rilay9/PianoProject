@@ -4,12 +4,9 @@ stage: 3
 unit: "rock-metal.3.1"
 concepts: [reduction, ostinato, power-chords, sus-and-add9, pedal-textures, importing]
 videos:
-  - label: "Rock piano textures"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
-  - label: "Reducing a band arrangement to piano"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
+  - label: "Rock Piano for Beginners: Riffs, Power Chords & Rock Solos"
+    url: "https://www.youtube.com/watch?v=o3JEVliBpN0"
+    teacher: "Birds Piano Academy"
 readingTime: 3
 ---
 

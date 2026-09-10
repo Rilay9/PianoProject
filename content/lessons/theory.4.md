@@ -4,12 +4,12 @@ stage: 4
 unit: "theory-ear.4.1"
 concepts: [circle-of-fifths, inversions-by-ear, melodic-dictation, cadences]
 videos:
-  - label: "Circle of fifths"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "Cadences chapter"
-    url: "https://viva.pressbooks.pub/openmusictheory/"
-    teacher: "Open Music Theory (CC BY-SA)"
+  - label: "Circle of 5ths: Easiest Way to Memorize and Understand It"
+    url: "https://www.youtube.com/watch?v=sWAaJF9Wk0w"
+    teacher: "Gracie Terzian"
+  - label: "Music Theory: Authentic Cadences"
+    url: "https://www.youtube.com/watch?v=mJQP9TTDYLo"
+    teacher: "Scott Watson"
 readingTime: 3
 ---
 

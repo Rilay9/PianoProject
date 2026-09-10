@@ -4,12 +4,9 @@ stage: 3
 unit: "improv-compose.3.1"
 concepts: [improvisation, I-IV-V-loop, phrasing, motif]
 videos:
-  - label: "Improvising for beginners"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "How to start improvising"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
+  - label: "Beginners, Start Here to Improvise Piano"
+    url: "https://www.youtube.com/watch?v=YTYpGUSBBc8"
+    teacher: "Piano With Jonny"
 readingTime: 3
 ---
 

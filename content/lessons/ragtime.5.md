@@ -4,12 +4,9 @@ stage: 5
 unit: "ragtime.5.1"
 concepts: [oom-pah-bass, syncopation, secondary-rag, not-fast]
 videos:
-  - label: "Playing ragtime piano"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
-  - label: "The Entertainer walkthrough"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
+  - label: "Ragtime & Jazz Stride Piano for BEGINNERS Part 1.1, LEFT HAND | Piano Lesson Tutorial"
+    url: "https://www.youtube.com/watch?v=iPuMhcommkM"
+    teacher: "Vladimir Uspenskii"
 readingTime: 3
 ---
 

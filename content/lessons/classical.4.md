@@ -4,12 +4,9 @@ stage: 4
 unit: "classical.4.1"
 concepts: [staccato, legato, articulation-contrast, phrase-shaping, ornaments]
 videos:
-  - label: "Staccato and legato touch"
-    url: "https://www.youtube.com/@JoshWrightPiano"
-    teacher: "Josh Wright"
-  - label: "Practising the Piano — articulation"
-    url: "https://www.youtube.com/@informancepiano"
-    teacher: "Graham Fitch"
+  - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
+    url: "https://www.youtube.com/watch?v=sfty1bjShBI"
+    teacher: "PianoTips"
 readingTime: 3
 ---
 

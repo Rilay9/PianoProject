@@ -4,12 +4,12 @@ stage: 5
 unit: "technique.5.1"
 concepts: [repeated-notes, evenness, hand-independence, "polyrhythm-2:1", dynamics, shaping, crescendo, diminuendo, phrasing, rhythm, syncopation, tied-across-bar, odd-meter, meter-5-4, mordent, ornamentation, hanon]
 videos:
-  - label: "Two against one, and how to stop counting"
-    url: "https://www.youtube.com/@PianoTV"
-    teacher: "Allysia Van Betuw"
-  - label: "Making a crescendo actually grow"
-    url: "https://www.youtube.com/@JosephHoffmanPiano"
-    teacher: "Joseph Hoffman"
+  - label: "Piano Hand Independence Exercises (for Beginners)"
+    url: "https://www.youtube.com/watch?v=G78DQpEDDWE"
+    teacher: "Become a Piano Superhuman"
+  - label: "How To Crescendo & Diminuendo On Piano"
+    url: "https://www.youtube.com/watch?v=he_huVwMRsg"
+    teacher: "Musician's Addition"
 readingTime: 4
 ---
 

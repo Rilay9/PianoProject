@@ -4,12 +4,9 @@ stage: 7
 unit: "ragtime.7.1"
 concepts: [oom-pah-bass, stride-bass, syncopation, trio-key-change, not-fast]
 videos:
-  - label: "Ragtime piano lessons"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
-  - label: "Maple Leaf Rag, slowly"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
+  - label: "Ragtime Piano CRASH COURSE for Beginners! Rag Rolls, Stride Bass, & More w/ Jonny May"
+    url: "https://www.youtube.com/watch?v=PZt-GA_8F2A"
+    teacher: "Piano With Jonny"
 readingTime: 4
 ---
 

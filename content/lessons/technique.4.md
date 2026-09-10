@@ -4,12 +4,12 @@ stage: 4
 unit: "technique.4.1"
 concepts: [scale, arpeggio, five-finger, similar, contrary, chromatic, semitones, coordination, finger-independence, inversions, articulation, staccato, legato, note-length]
 videos:
-  - label: "Scale fingering, and why the thumb goes under"
-    url: "https://www.youtube.com/@PianoTV"
-    teacher: "Allysia Van Betuw"
-  - label: "Staccato and legato: the two basic touches"
-    url: "https://www.youtube.com/@JosephHoffmanPiano"
-    teacher: "Joseph Hoffman"
+  - label: "2-1-6 Chromatic and Contrary Motions Scales for Grade 1 Piano - Free Piano Lesson with Lisa"
+    url: "https://www.youtube.com/watch?v=OSnuTvk_OgA"
+    teacher: "PianoVideoLessons"
+  - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
+    url: "https://www.youtube.com/watch?v=sfty1bjShBI"
+    teacher: "PianoTips"
 readingTime: 4
 ---
 

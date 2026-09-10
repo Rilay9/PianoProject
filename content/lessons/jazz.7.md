@@ -4,12 +4,9 @@ stage: 7
 unit: "jazz.7.1"
 concepts: [rootless-voicings, quartal, tritone-substitution, stride, chord-scale, extended-chords, voicing]
 videos:
-  - label: "Voicings and substitutions"
-    url: "https://www.youtube.com/@JazzTutorial"
-    teacher: "Julian Bradley"
-  - label: "Free jazz piano lessons"
-    url: "https://www.youtube.com/@OpenStudioJazz"
-    teacher: "Open Studio (Peter Martin)"
+  - label: "Rootless Voicings for Jazz Piano – Sound Pro Instantly"
+    url: "https://www.youtube.com/watch?v=-Q0413UQjrs"
+    teacher: "Jazz Tutorial | Julian Bradley"
 readingTime: 5
 ---
 

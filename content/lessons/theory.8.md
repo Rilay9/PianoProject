@@ -4,12 +4,9 @@ stage: 8
 unit: "theory.8.1"
 concepts: [modulation, pivot-chord, harmonic-dictation, transposition, extended-chords, ear-training]
 videos:
-  - label: "Open Music Theory"
-    url: "https://viva.pressbooks.pub/openmusictheory/"
-    teacher: "VIVA Open Publishing"
-  - label: "Theory through the songs you know"
-    url: "https://www.youtube.com/@DavidBennettPiano"
-    teacher: "David Bennett"
+  - label: "How to change key with a pivot chord"
+    url: "https://www.youtube.com/watch?v=AqY0om_QFA0"
+    teacher: "Write A Song"
 readingTime: 4
 ---
 

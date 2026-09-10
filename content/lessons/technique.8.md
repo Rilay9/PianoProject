@@ -4,9 +4,9 @@ stage: 8
 unit: "technique.8.1"
 concepts: [scale, velocity, endurance]
 videos:
-  - label: "Practising for speed without practising mistakes"
-    url: "https://www.youtube.com/@PianoTV"
-    teacher: "Allysia Van Betuw"
+  - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
+    url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"
+    teacher: "Danae Dörken"
 readingTime: 3
 ---
 

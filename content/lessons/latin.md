@@ -4,12 +4,9 @@ stage: 5
 unit: "latin.5.1"
 concepts: [clave, tumbao, montuno, syncopation, two-three-and-three-two]
 videos:
-  - label: "Latin piano rhythms"
-    url: "https://www.youtube.com/@OpenStudioJazz"
-    teacher: "Open Studio"
-  - label: "Understanding clave"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
+  - label: "How to play a Salsa montuno (tumbao) on the piano - tutorial #1"
+    url: "https://www.youtube.com/watch?v=wC3Iq5ImTXE"
+    teacher: "Vanessa Rodrigues"
 readingTime: 3
 ---
 

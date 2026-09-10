@@ -4,12 +4,9 @@ stage: 7
 unit: "technique.7.1"
 concepts: [double-notes, scale-in-3rds, scale-in-6ths, octaves, octave-scale, broken-octaves, tremolo, forearm, "polyrhythm-2:3", "polyrhythm-3:2", half-pedal]
 videos:
-  - label: "Double thirds without tension"
-    url: "https://www.youtube.com/@PianoTV"
-    teacher: "Allysia Van Betuw"
-  - label: "Octave technique and the loose wrist"
-    url: "https://www.youtube.com/@JosephHoffmanPiano"
-    teacher: "Joseph Hoffman"
+  - label: "How to Play Octaves on Piano (2 Ways!) | Kate Boyd - The Piano Prof"
+    url: "https://www.youtube.com/watch?v=E8q-CWA3nis"
+    teacher: "The Piano Prof | Kate Boyd"
 readingTime: 5
 ---
 

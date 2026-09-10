@@ -4,11 +4,8 @@ stage: 7
 unit: "blues.7.1"
 concepts: [stride, turnaround, boogie, shuffle, shell-voicings, leaps]
 videos:
-  - label: "Boogie-woogie, from the left hand up"
-    url: "https://www.youtube.com/@ArthurMigliazza"
-    teacher: "Arthur Migliazza"
-  - label: "Blues and pop piano"
-    url: "https://www.youtube.com/@BillHiltonBiz"
+  - label: "Stride piano - basics of the left hand stride"
+    url: "https://www.youtube.com/watch?v=zdHZ-RkF4L0"
     teacher: "Bill Hilton"
 readingTime: 4
 ---

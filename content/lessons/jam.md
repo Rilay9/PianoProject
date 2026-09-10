@@ -4,12 +4,9 @@ stage: 4
 unit: "jam.4.1"
 concepts: [head-and-chorus, counting-in, guitar-keys, comping, trading-fours, form-tracker]
 videos:
-  - label: "Comping behind a soloist"
-    url: "https://www.youtube.com/@OpenStudioJazz"
-    teacher: "Open Studio"
-  - label: "Playing with other musicians"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
+  - label: "Jazz Piano Comping Made Simple for Absolute Beginners"
+    url: "https://www.youtube.com/watch?v=Dx1W77_mdpI"
+    teacher: "South Shore Piano School"
 readingTime: 3
 ---
 

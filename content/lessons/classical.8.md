@@ -4,12 +4,9 @@ stage: 8
 unit: "classical.8.1"
 concepts: [etude, velocity, voicing-melody, large-form, pedalling]
 videos:
-  - label: "How to practise fast passages"
-    url: "https://www.youtube.com/@JosephHoffmanPiano"
-    teacher: "Joseph Hoffman"
-  - label: "Chopin études, one at a time"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
+  - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
+    url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"
+    teacher: "Danae Dörken"
 readingTime: 5
 ---
 

@@ -4,12 +4,9 @@ stage: 6
 unit: "improv.6.1"
 concepts: [improvisation, modes, ii-V-I, guide-tones, comping, chord-scale]
 videos:
-  - label: "Composing, and how a piece is built"
-    url: "https://www.youtube.com/@NahreSol"
-    teacher: "Nahre Sol"
-  - label: "Jazz piano, explained slowly"
-    url: "https://www.youtube.com/@AimeeNolteMusic"
-    teacher: "Aimee Nolte"
+  - label: "Guide Tones: Start Here to Play Jazz Piano Chords"
+    url: "https://www.youtube.com/watch?v=XJ42wPHMuK0"
+    teacher: "Piano With Jonny"
 readingTime: 4
 ---
 

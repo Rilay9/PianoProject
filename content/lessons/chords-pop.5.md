@@ -4,12 +4,9 @@ stage: 5
 unit: "chords-pop.5.1"
 concepts: [maj7, min7, dom7, sus2, sus4, add9, broken-chord-accompaniment, lead-sheets]
 videos:
-  - label: "Seventh chords and extensions"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "Accompaniment patterns for singers"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
+  - label: "The 3 Essential 7th Chords Explained on Piano: Major 7, Minor 7 & Dominant 7 (Step-by-Step)"
+    url: "https://www.youtube.com/watch?v=Ku-kFUSMWw4"
+    teacher: "Olympia Piano"
 readingTime: 3
 ---
 

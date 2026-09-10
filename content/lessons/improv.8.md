@@ -4,12 +4,9 @@ stage: 8
 unit: "improv.8.1"
 concepts: [reharmonisation, tritone-substitution, secondary-dominants, modulation, extended-chords, turnaround]
 videos:
-  - label: "Voicings and substitutions"
-    url: "https://www.youtube.com/@JazzTutorial"
-    teacher: "Julian Bradley"
-  - label: "What makes that chord sound like that"
-    url: "https://www.youtube.com/@RickBeato"
-    teacher: "Rick Beato"
+  - label: "Tritone Substitution: the one jazz piano trick you need to know"
+    url: "https://www.youtube.com/watch?v=3z8a0Z7K6ag"
+    teacher: "PianoGroove"
 readingTime: 5
 ---
 

@@ -4,12 +4,9 @@ stage: 9
 unit: "jazz.9.1"
 concepts: [comping, walking-bass, stride, improvisation, playing-by-ear, secondary-dominants]
 videos:
-  - label: "Jazz piano, explained slowly"
-    url: "https://www.youtube.com/@AimeeNolteMusic"
-    teacher: "Aimee Nolte"
-  - label: "Free jazz piano lessons"
-    url: "https://www.youtube.com/@OpenStudioJazz"
-    teacher: "Open Studio (Peter Martin)"
+  - label: "Intro to STRIDE PIANO (solo jazz piano)"
+    url: "https://www.youtube.com/watch?v=aXuytElotSQ"
+    teacher: "Piano Fluency"
 readingTime: 4
 ---
 

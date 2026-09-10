@@ -4,12 +4,9 @@ stage: 3
 unit: "chords-pop.3.1"
 concepts: [chord-symbols, I-IV-V, LH-rhythms, melody-with-chords, transposing]
 videos:
-  - label: "How to play from chord symbols"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "Chord piano for beginners"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote (Lisa Witt)"
+  - label: "How To Read Chord Charts (Piano Lesson)"
+    url: "https://www.youtube.com/watch?v=8UNcTn435cE"
+    teacher: "Pianote"
 readingTime: 3
 ---
 

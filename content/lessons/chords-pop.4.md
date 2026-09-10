@@ -4,12 +4,9 @@ stage: 4
 unit: "chords-pop.4.1"
 concepts: [inversions, minor-chords-in-major, four-chord-progression, slash-chords]
 videos:
-  - label: "The four chord song"
-    url: "https://www.youtube.com/@BillHiltonBiz"
-    teacher: "Bill Hilton"
-  - label: "Inversions in pop playing"
-    url: "https://www.pianowithjonny.com/piano-lessons/"
-    teacher: "Piano With Jonny"
+  - label: "I vi IV V: Easy And Fun Chord Progression Tutorial"
+    url: "https://www.youtube.com/watch?v=ZPabFqOPrkg"
+    teacher: "PianoLessonsOnline.com"
 readingTime: 3
 ---
 

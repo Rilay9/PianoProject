@@ -4,14 +4,8 @@ stage: 5
 unit: "jazz.5.1"
 concepts: [swing-eighths, seventh-chords, shell-voicings, ii-V-I, comping]
 videos:
-  - label: "Jazz piano for beginners"
-    url: "https://www.youtube.com/@AimeeNolteMusic"
-    teacher: "Aimee Nolte"
-  - label: "Free jazz piano lessons"
-    url: "https://www.youtube.com/@OpenStudioJazz"
-    teacher: "Open Studio (Peter Martin)"
-  - label: "Jazz tutorial — shell voicings"
-    url: "https://www.youtube.com/@JazzTutorial"
+  - label: "Shell Voicings Explained Clearly (Beginner Jazz Piano)"
+    url: "https://www.youtube.com/watch?v=_ldxtscmCpo"
     teacher: "Julian Bradley"
 readingTime: 3
 ---

@@ -4,12 +4,9 @@ stage: 8
 unit: "ragtime.8.1"
 concepts: [syncopation, secondary-rag, stride-bass, chromatic-harmony, not-fast]
 videos:
-  - label: "Ragtime piano lessons"
-    url: "https://www.youtube.com/@PianoteOfficial"
-    teacher: "Pianote"
-  - label: "Late Joplin, played slowly"
-    url: "https://www.youtube.com/@PaulBartonPiano"
-    teacher: "Paul Barton"
+  - label: "Ragtime Piano CRASH COURSE - Intermediate/Advanced! Rag Rolls, Stride Bass, & more w/ Jonny May"
+    url: "https://www.youtube.com/watch?v=XEh613qjnXg"
+    teacher: "Piano With Jonny"
 readingTime: 4
 ---
 
