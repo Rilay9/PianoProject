@@ -981,7 +981,7 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   function startRun(): void {
     if (!session || !model) return;
-    sheet.hidden = true;
+    summaryUp(false);
     const midi = getMidiSettings();
     // A performance is one pass through. Looping a section mid-performance is
     // practising, and the flag would then be recording something that did not
@@ -1532,7 +1532,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       }, 'summary-faster'),
       button('Loop the weak bars', () => loopWeakBars(score), 'summary-loop'),
       button('Done', () => {
-        sheet.hidden = true;
+        summaryUp(false);
         router.navigate(router.route.tab);
       }, 'summary-done'),
     );
@@ -1557,7 +1557,31 @@ export function ScoreScreen(router: Router): HTMLElement {
       }
       sheet.appendChild(ask);
     }
-    sheet.hidden = false;
+    summaryUp(true);
+  }
+
+  /**
+   * Shows or hides the run's summary, and puts the screen behind it out of
+   * reach while it is up.
+   *
+   * The sheet covers the control bar, the header and the strip — that is what a
+   * sheet is — but covering something is not the same as disabling it, and
+   * every control underneath stayed focusable and clickable through it. The
+   * geometric sweep reported it as the summary's buttons overlapping the bar's
+   * on 59 cells, which is the same shape of fault as the folded bar: a tap
+   * landing on a control the owner cannot see. `inert` was the answer there and
+   * it is the answer here.
+   *
+   * Only the summary. A count-in is also an overlay, and during one the bar has
+   * to keep working — stopping a run that has started counting is exactly what
+   * someone reaches for.
+   */
+  function summaryUp(open: boolean): void {
+    sheet.hidden = !open;
+    head.inert = open;
+    bar.inert = open;
+    stripHost.inert = open;
+    stage.inert = open;
   }
 
   function addStat(list: HTMLElement, label: string, value: string): void {

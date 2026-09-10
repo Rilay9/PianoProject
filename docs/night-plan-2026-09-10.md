@@ -1,4 +1,19 @@
-# Night plan — start 01:20, 2026-09-10
+# Night plan — 2026-09-10 — EXECUTED, kept for its reasoning
+
+**This plan has run.** It fired at 01:23 and again through the day, and what came
+of it is recorded in `handoff-2026-09-09.md` section 4 — 4g and 4g-2 for the
+folder import, 4i-2 and 4i-3 for the geometric sweep's backlog, 4j and 4k for the
+two decisions still waiting on the owner. **Read the handoff for the current
+state; read this only for why something was done the way it was.**
+
+Do not work from the task list below as though it were open. Most of it is
+finished, some of it was deliberately declined after being measured, and two
+items are the owner's decision rather than anyone's task. The tier discipline in
+"How much may land tonight" and the phase and ownership rules in "The schedule"
+are the parts still worth following.
+
+## The plan as written
+
 
 Written the evening before, when the owner's token budget ran low. Everything a
 fresh session needs is here or in the two files it points at. Nothing depends on

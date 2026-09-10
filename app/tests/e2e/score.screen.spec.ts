@@ -396,6 +396,31 @@ test.describe('score screen', () => {
     }
   });
 
+  test('the summary puts the screen behind it out of reach', async ({ page }) => {
+    // Covering a control is not disabling it. The bar, the header and the
+    // strip sit under the sheet and stayed clickable and focusable through it
+    // — the same fault as the folded bar, where a tap landed on something the
+    // owner could not see. The geometric sweep reports it as the summary's
+    // buttons overlapping the bar's on 59 cells.
+    await openScore(page);
+    await page.locator('#score-mode').selectOption('tempo');
+    await setTempoPercent(page, 130);
+    await page.locator('#score-play').click();
+    await expect(page.locator('#score-summary')).toBeVisible({ timeout: 60_000 });
+
+    for (const id of ['score-bar', 'score-head', 'score-strip']) {
+      const behind = page.locator(`#${id}`);
+      if ((await behind.count()) === 0) continue;
+      await expect(behind, `${id} is still reachable under the summary`).toHaveAttribute('inert', '');
+    }
+    // And the sheet's own controls are not: it would be a poor trade.
+    await expect(page.locator('#summary-done')).toBeEnabled();
+
+    // Leaving the summary gives the screen back, or the next run is unusable.
+    await page.locator('#summary-again').click();
+    await expect(page.locator('#score-bar')).not.toHaveAttribute('inert', '');
+  });
+
   test('the summary self-report records an answer', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');

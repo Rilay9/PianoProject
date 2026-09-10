@@ -212,10 +212,40 @@ export interface Sheet {
  * WebView still fights the on-screen keyboard, and this needs no focus trap
  * beyond returning focus on close.
  */
+/**
+ * Puts everything except `root` out of reach, and gives it back.
+ *
+ * A sheet says `role="dialog"` and covers the screen, and until now that was
+ * all it did: every control behind it stayed focusable by keyboard and
+ * clickable wherever the sheet's panel did not happen to cover it. The
+ * geometric sweep found it as one sheet's buttons "overlapping" the controls
+ * underneath on dozens of cells, which is the same fault as a tap landing on
+ * the folded control bar — something the owner cannot see answering a tap.
+ *
+ * Skips anything already inert, and restores only what it changed, so a screen
+ * that has put part of itself out of reach for its own reasons does not get it
+ * handed back by a sheet closing. Stacking works for the same reason: a second
+ * sheet makes the first one's root inert, and closing it gives that back.
+ */
+function isolate(root: HTMLElement): () => void {
+  const changed: HTMLElement[] = [];
+  for (const node of Array.from(document.body.children)) {
+    if (node === root || !(node instanceof HTMLElement) || node.inert) continue;
+    node.inert = true;
+    changed.push(node);
+  }
+  return () => {
+    for (const node of changed) node.inert = false;
+  };
+}
+
 export function openSheet(title: string, options: { id?: string } = {}): Sheet {
   const returnFocus = document.activeElement;
   const body = el('div.sheet__body');
+  let release: (() => void) | null = null;
   const close = (): void => {
+    release?.();
+    release = null;
     root.remove();
     if (returnFocus instanceof HTMLElement) returnFocus.focus();
   };
@@ -234,6 +264,7 @@ export function openSheet(title: string, options: { id?: string } = {}): Sheet {
     if (event.key === 'Escape') close();
   });
   document.body.append(root);
+  release = isolate(root);
   panel.focus();
   return { el: root, body, close };
 }
