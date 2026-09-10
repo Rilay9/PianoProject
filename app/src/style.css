@@ -39,6 +39,19 @@
 html,
 body {
   height: 100%;
+  /* Then the height that is actually on the screen.
+
+     Chrome on Android sizes `100%` — and `100vh` — to the viewport with the
+     address bar retracted, so in a browser tab the shell is taller than what
+     can be seen and its bottom row, the tab bar, sits below the screen. With
+     `overflow: hidden` there is no scrolling to it either: the nav is simply
+     gone, on every screen, with black where it should be. The installed app
+     has no address bar and never showed it, which is why it looked like a
+     browser-only fault and could not be reproduced at a fixed viewport size.
+
+     `dvh` is the visible height and it changes as the bar comes and goes. A
+     browser that does not know the unit keeps the `100%` above. */
+  height: 100dvh;
   margin: 0;
   /* The app is a shell with its own scrolling region; the *document* must
      never scroll. It did: on the phone, scrolling the Library carried the tab
