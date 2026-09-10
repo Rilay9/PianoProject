@@ -1348,9 +1348,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     const music = renderer?.inkRect();
     if (!music) return false;
     if (music.bottom - music.top < 20) return false;
-    const box = stage.getBoundingClientRect();
-    // Within a line's height of the bottom edge: the fit ran out of stage.
-    return music.bottom >= box.bottom - 24;
+    // The bar's top edge while the bar is there, not the stage's bottom.
+    //
+    // During a run the stage is deliberately extended underneath the bar
+    // (`[data-running='true'] .score-stage { margin-bottom: 0 }`) to win the
+    // vertical room. That put the stage's bottom edge *behind* the bar, so
+    // this asked whether the music had reached a line nobody can see: on
+    // Greensleeves sideways the whole bass staff sat under the bar and the
+    // answer was still "there is room", so the fold never fired and the left
+    // hand could not be read. The line past which music is actually covered
+    // is the bar's own top.
+    const bottom = bar.dataset.visible === 'true'
+      ? Math.min(stage.getBoundingClientRect().bottom, bar.getBoundingClientRect().top)
+      : stage.getBoundingClientRect().bottom;
+    // Within a line's height of it: the fit ran out of the room it can use.
+    return music.bottom >= bottom - 24;
   }
 
   /**

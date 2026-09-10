@@ -89,9 +89,17 @@ test.describe('score screen', () => {
     await page.locator('#score-play').click();
     await page.waitForTimeout(1_500);
     const reaches = await page.evaluate(() => {
+      // The bar's top, not the stage's bottom — the same edge the screen
+      // measures. During a run the stage is extended underneath the bar to
+      // win the room, so its bottom edge is behind the bar: asking whether
+      // the music reached *that* said no while the bass staff was already
+      // covered, here and in the app.
       const stage = document.querySelector('#score-stage')?.getBoundingClientRect();
+      const bar = document.querySelector('#score-bar')?.getBoundingClientRect();
       const music = document.querySelector('#score-stage .score-buffer.is-cursor svg')?.getBoundingClientRect();
-      return Boolean(stage && music && music.bottom >= stage.bottom - 24);
+      if (!stage || !music) return false;
+      const bottom = bar && bar.height > 0 ? Math.min(stage.bottom, bar.top) : stage.bottom;
+      return music.bottom >= bottom - 24;
     });
     if (reaches) {
       await expect(bar).toHaveAttribute('data-visible', 'false', { timeout: 8_000 });

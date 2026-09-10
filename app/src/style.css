@@ -450,10 +450,48 @@ body {
 
   .screen--score .score-bar {
     justify-content: flex-start;
+    /* One row, and the title is what gives.
+
+       The bar wraps by design when it cannot fit — a safety valve so that
+       `Both` is never hidden off an edge nobody knows to drag. Sideways that
+       valve fired in ordinary use: the bar carries Back, the piece's name and
+       `bar n / m` as well as the six controls, which the valve's arithmetic
+       never counted. On a phone whose landscape is 740 px or less — a larger
+       Display size does that — Beethoven's `Piano Sonata No. 14 "Moonlight",
+       III.` pushed `⋯` onto a second row and cost the music 40 px.
+
+       So sideways it does not wrap, and the name shrinks instead: it is the
+       one thing here that is still useful at half its length. */
+    flex-wrap: nowrap;
   }
 
   .screen--score .score-bar__left {
     display: flex;
+    /* Takes the room that is left and gives it back first. */
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .screen--score .score-bar__title {
+    /* No fixed cap sideways: a share of the viewport cannot know what the
+       controls need, and 34vw of 740 is 251 px the controls then have to do
+       without. */
+    max-width: none;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  /* Everything else keeps its size; the name is the only thing that yields. */
+  .screen--score .score-bar > :not(.score-bar__left) {
+    flex: none;
+  }
+
+  /* Inside the left group too: squeezed, `← Back` and `bar 1 / 201` wrapped
+     their own text onto a second line and took the group from 36 px to 48,
+     which is the same 12 px back by another door. */
+  .screen--score .score-bar__left > :not(.score-bar__title) {
+    flex: none;
+    white-space: nowrap;
   }
 
   .screen--score .score-strip:not([data-keys='ribbon']) {
@@ -1558,6 +1596,38 @@ input[type='checkbox'] {
   opacity: 1;
 }
 
+/* Where you are, for when the chrome has folded away and nothing else on the
+   screen says it (`08` §5.3).
+
+   It had no rule at all, so it was an inline span in the stage's normal flow:
+   drawn whatever the chrome was doing — `bar 7 / 15` in the bar's left end and
+   `bar 7 / 15` again at the top of the sheet, on every leg of the corpus — and
+   sitting in the text flow, so it ran straight into whatever the engraver puts
+   above the first system. `bar 7 / 15E7` on both Greensleeves, and
+   `bar 6 / 11du bout de la pensée` on the Gnossienne.
+
+   Only while folded, then, and out of the flow. Top-right because the beat dot
+   has the top-left. */
+.score-stage__corner {
+  display: none;
+}
+
+[data-chrome='folded'] .score-stage__corner {
+  display: block;
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  z-index: 4;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  text-align: right;
+  color: var(--text-muted);
+  background: var(--bg);
+  padding: 1px 4px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
 /* The beat dot: how a player checks the tempo without hearing the click. */
 .score-beat {
   /* In the stage's top-left corner, every form factor (`08` §5.3). */
@@ -1846,6 +1916,12 @@ input[type='checkbox'] {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
+  /* The positioning context the things drawn over the sheet assume: the beat
+     dot says "in the stage's top-left corner" and the corner says the
+     top-right, and both are `position: absolute`. Without this they resolved
+     against the viewport instead — the same place upright, the wrong place
+     sideways, where the nav rail takes the left edge. */
+  position: relative;
 }
 
 /* The header row (`04` §5, B1): Back, the piece's name, then the app's own
