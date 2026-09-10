@@ -116,6 +116,36 @@ export function isSightReading(item: CatalogItem): boolean {
   return item.drill?.kind === 'sight-reading';
 }
 
+/**
+ * `checklist` is ticked prose, not a note-answering prompt loop — there is no
+ * MIDI input to judge, so it does not fit the `Drill` interface at all.
+ * `DrillScreen` renders it directly, the same way it special-cases
+ * `isSightReading` above rather than forcing a non-fit through the engine.
+ */
+export function isChecklist(item: CatalogItem): boolean {
+  return item.drill?.kind === 'checklist';
+}
+
+/**
+ * `placement` is a branching, self-judged pass/fail sequence that ends by
+ * writing a starting unit (docs/02 Stage 0.4) — also not a note-answering
+ * prompt loop, and also rendered directly by `DrillScreen`.
+ */
+export function isPlacement(item: CatalogItem): boolean {
+  return item.drill?.kind === 'placement';
+}
+
+/**
+ * `walkthrough` is a sketch, not a runner (P19 handoff): a real guided tour
+ * needs to step through the Score screen's Wait/Tempo/Loop modes on a real
+ * piece, which is a Score-screen change and out of scope here. `DrillScreen`
+ * shows an honest "coming soon" state for it rather than pretending a note
+ * needs importing (docs/04 §2).
+ */
+export function isWalkthrough(item: CatalogItem): boolean {
+  return item.drill?.kind === 'walkthrough';
+}
+
 /** Kinds the catalog uses for *generated exercises*, which have a file. */
 function isNotationKind(kind: string): boolean {
   return [
@@ -133,7 +163,9 @@ function isNotationKind(kind: string): boolean {
  */
 export function drillFromCatalog(item: CatalogItem, options: BuildOptions = {}): Drill | null {
   const kind = item.drill?.kind;
-  if (!kind || isSightReading(item)) return null;
+  if (!kind || isSightReading(item) || isChecklist(item) || isPlacement(item) || isWalkthrough(item)) {
+    return null;
+  }
 
   const p = params(item);
   const clock = options.clock ?? systemClock;

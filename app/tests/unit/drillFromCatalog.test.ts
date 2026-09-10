@@ -13,8 +13,12 @@ import {
   RUNTIME_DRILL_KINDS,
   drillFromCatalog,
   hashSeed,
+  isChecklist,
+  isPlacement,
   isSightReading,
+  isWalkthrough,
 } from '../../src/engine/drills/fromCatalog';
+import { targetFor } from '../../src/ui/openItem';
 import type { CatalogItem } from '../../src/curriculum/types';
 import type { EngineInput } from '../../src/engine/types';
 
@@ -279,5 +283,83 @@ describe('a drill can actually be answered', () => {
     expect(result?.answered).toBe(2);
     expect(result?.correct).toBe(1);
     expect(result?.accuracy).toBeCloseTo(0.5);
+  });
+});
+
+function bareItem(id: string, drill: CatalogItem['drill']): CatalogItem {
+  return {
+    id,
+    type: 'drill',
+    title: id,
+    level: 0,
+    hands: 'both',
+    tracks: [],
+    concepts: [],
+    drill,
+  };
+}
+
+/**
+ * `checklist`, `placement` and `walkthrough` (P19 Task 3b) are not
+ * note-answering prompt loops — a checklist is ticked prose, a placement
+ * test is a self-judged branch, and a walkthrough is (for now) a sketch — so
+ * none of them fits the `Drill` interface `drillFromCatalog` builds.
+ * `DrillScreen` renders each one directly instead, the same way it already
+ * special-cases `sight-reading` before ever calling `drillFromCatalog`.
+ */
+describe('checklist, placement and walkthrough sit outside the Drill interface', () => {
+  it('drillFromCatalog builds none of them — DrillScreen handles these kinds itself', () => {
+    for (const kind of ['checklist', 'placement', 'walkthrough']) {
+      const built = drillFromCatalog(bareItem(`x.${kind}`, { kind }));
+      expect(built, `drillFromCatalog should not build a '${kind}' Drill`).toBeNull();
+    }
+  });
+
+  it('isChecklist, isPlacement and isWalkthrough each match only their own kind', () => {
+    expect(isChecklist(bareItem('a', { kind: 'checklist' }))).toBe(true);
+    expect(isChecklist(bareItem('a', { kind: 'placement' }))).toBe(false);
+    expect(isPlacement(bareItem('a', { kind: 'placement' }))).toBe(true);
+    expect(isPlacement(bareItem('a', { kind: 'checklist' }))).toBe(false);
+    expect(isWalkthrough(bareItem('a', { kind: 'walkthrough' }))).toBe(true);
+    expect(isWalkthrough(bareItem('a', { kind: 'checklist' }))).toBe(false);
+  });
+
+  it('targetFor still routes all three to the drill screen, not the "import needed" case', () => {
+    for (const kind of ['checklist', 'placement', 'walkthrough']) {
+      expect(targetFor(bareItem(`x.${kind}`, { kind })), kind).toBe('drill');
+    }
+    // The contrast: an item with no drill block at all is the real
+    // "import needed" case, and this must stay 'none'.
+    expect(targetFor(bareItem('bare', null))).toBe('none');
+  });
+});
+
+/**
+ * The whole point of Task 3b: three PianoPath-generator items — the posture
+ * checklist, the guided tour and the placement test — had `drill: null`,
+ * `file: null` and no `imported`, so `targetFor` fell through to `'none'` and
+ * every screen showed them as "import needed" for content that can never be
+ * imported because it does not exist as a file. This reads
+ * `content/catalog.static.json` directly (not the built `catalog.json`) and
+ * checks the whole thing, not a sample: 70 items, 63 of them
+ * generator-sourced, none of them allowed to be unplayable.
+ */
+describe('every generator-sourced item in the static catalog is playable (P19 Task 3b)', () => {
+  const STATIC_CATALOG = JSON.parse(
+    readFileSync(resolve('../content/catalog.static.json'), 'utf8'),
+  ) as CatalogItem[];
+
+  it('is the 70-item catalog this test was written against', () => {
+    expect(STATIC_CATALOG.length).toBe(70);
+  });
+
+  it('no item whose source is "PianoPath generator" is ever unplayable', () => {
+    const generatorSourced = STATIC_CATALOG.filter((item) => item.source?.name === 'PianoPath generator');
+    expect(generatorSourced.length).toBe(63);
+    const unplayable = generatorSourced.filter((item) => targetFor(item) === 'none');
+    expect(
+      unplayable.map((item) => item.id),
+      'these generator-sourced items still show "import needed" with nothing importable',
+    ).toEqual([]);
   });
 });

@@ -26,7 +26,19 @@
     "file": null,
     "variantOf": null,
     "variantLabel": null,
-    "drill": null,
+    "drill": {
+      "kind": "checklist",
+      "params": {
+        "items": [
+          "Forearms level — a line from elbow to knuckles is roughly horizontal, elbows slightly in front of the body.",
+          "Sitting far enough back — about a forearm's length from the keys.",
+          "Fingers curved, as if holding a bubble whole without popping it; thumb relaxed, not flat.",
+          "Shoulders down, not creeping toward the ears.",
+          "Wrists level — not drooping below the hand or cocked up above it.",
+          "Finger numbers known on both hands: thumb is 1 through little finger 5."
+        ]
+      }
+    },
     "source": {
       "name": "PianoPath generator",
       "url": null,
@@ -200,7 +212,13 @@
     "file": null,
     "variantOf": null,
     "variantLabel": null,
-    "drill": null,
+    "drill": {
+      "kind": "walkthrough",
+      "params": {
+        "song": "song.folk.hot-cross-buns",
+        "steps": ["wait-mode", "tempo-mode", "loops"]
+      }
+    },
     "source": {
       "name": "PianoPath generator",
       "url": null,
@@ -208,7 +226,7 @@
       "pd_region": "worldwide",
       "fetchedAt": null,
       "checksum": null,
-      "editionNotes": "A guided tour over song.folk.hot-cross-buns."
+      "editionNotes": "A guided tour over song.folk.hot-cross-buns. The runner is a prototype: it stops at an honest \"coming soon\" screen rather than a real step-through of the Score screen."
     }
   },
   {
@@ -237,7 +255,22 @@
     "file": null,
     "variantOf": null,
     "variantLabel": null,
-    "drill": null,
+    "drill": {
+      "kind": "placement",
+      "params": {
+        "items": [
+          { "text": "Name a note on the staff.", "failUnit": "1.1" },
+          { "text": "Clap a rhythm back.", "failUnit": "1.2" },
+          { "text": "Play a five-finger pattern hands together.", "failUnit": "2.1" },
+          { "text": "Play a C major scale hands together.", "failUnit": "3.1" },
+          { "text": "Sight-read a four-bar phrase on the grand staff.", "failUnit": "3.1" },
+          { "text": "Play I–IV–V in G from chord symbols.", "failUnit": "3.2" },
+          { "text": "Play a swung twelve-bar blues left hand.", "failUnit": "blues.4" },
+          { "text": "Play the Petzold Minuet in G at 60% tempo.", "failUnit": "4.2" }
+        ],
+        "passUnit": "4.3"
+      }
+    },
     "source": {
       "name": "PianoPath generator",
       "url": null,

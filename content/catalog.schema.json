@@ -218,7 +218,10 @@
                 "harmonic-dictation",
                 "transposition",
                 "roman-numeral",
-                "ear-tune"
+                "ear-tune",
+            "checklist",
+            "placement",
+            "walkthrough"
               ],
               "description": "on a type=drill item this selects the runtime screen; on a type=exercise item it records what generated the notation and needs no screen (docs/05 §7)"
             },

@@ -24,7 +24,10 @@ import {
   ChordDictationDrill,
   RhythmDrill,
   drillFromCatalog,
+  isChecklist,
+  isPlacement,
   isSightReading,
+  isWalkthrough,
   type Drill,
   type DrillPrompt,
   type DrillResult,
@@ -37,6 +40,7 @@ import type { EngineInput } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
 import { recordRun, recentSessions } from '../../data/progressStore';
+import { recordPlacement } from '../../data/planStore';
 import { tipsFor, type Tips } from '../../curriculum/tips';
 import { coach, type Coaching } from '../../engine/drills/coaching';
 import { renderMarkdown } from '../markdown';
@@ -844,6 +848,273 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     tipsBlock.hidden = false;
   }
 
+  // --- checklist and placement -----------------------------------------------
+  //
+  // Neither is a note-answering prompt loop — a checklist is ticked prose and
+  // a placement test is a self-judged pass/fail branch — so neither fits the
+  // `Drill` interface the rest of this screen is built around (no MIDI input,
+  // no expected pitches, no keyboard strip). They render straight into the
+  // same `stage`/`prompt`/`counter`/`controls`/`sheet` elements the prompt
+  // loop uses, so the screen still looks like one screen, but they drive that
+  // DOM by hand instead of through `advance()`/`settled()`.
+
+  /** Where a checklist's own ticks live between visits: nothing else here needs the DB. */
+  function checklistStorageKey(id: string): string {
+    return `pianopath:checklist:${id}`;
+  }
+
+  function loadChecklistTicks(id: string, length: number): boolean[] {
+    try {
+      const raw = localStorage.getItem(checklistStorageKey(id));
+      const parsed: unknown = raw ? JSON.parse(raw) : null;
+      if (Array.isArray(parsed)) return Array.from({ length }, (_, i) => parsed[i] === true);
+    } catch {
+      // Private browsing, a full quota, or junk left by an older shape — any
+      // of those just means the checklist starts unticked, same as the first
+      // time it is ever opened.
+    }
+    return new Array<boolean>(length).fill(false);
+  }
+
+  function saveChecklistTicks(id: string, ticked: readonly boolean[]): void {
+    try {
+      localStorage.setItem(checklistStorageKey(id), JSON.stringify(ticked));
+    } catch {
+      // Nothing to fall back to; the ticks just do not survive a reload,
+      // which is no worse than before this existed.
+    }
+  }
+
+  function checklistItems(target: CatalogItem): string[] {
+    const raw = target.drill?.params?.items;
+    return Array.isArray(raw) ? raw.filter((entry): entry is string => typeof entry === 'string') : [];
+  }
+
+  /**
+   * `kind: 'checklist'` (P19 Task 3b tier 1) — the posture and hand-shape
+   * checklist. Ticks persist across visits so it can be revisited rather than
+   * repeated blindly, and "Done" records a run the same way any other drill
+   * does, so it shows up in progress like everything else.
+   */
+  function runChecklist(target: CatalogItem): void {
+    const items = checklistItems(target);
+    const ticked = loadChecklistTicks(target.id, items.length);
+    section.dataset.drill = 'running';
+    section.dataset.kind = 'checklist';
+    startedAtMs = Date.now();
+    prompt.textContent = 'Go through the list before you play. Come back to it any time.';
+    hint.hidden = true;
+
+    function updateCounter(): void {
+      const done = ticked.filter(Boolean).length;
+      counter.textContent = `${String(done)} of ${String(items.length)} checked`;
+    }
+
+    function renderRows(): void {
+      const rows = el('div.checklist', { id: 'drill-checklist' });
+      items.forEach((text, index) => {
+        const boxId = `drill-checklist-${String(index)}`;
+        const box = el('input', { type: 'checkbox', id: boxId }) as HTMLInputElement;
+        box.checked = ticked[index] ?? false;
+        box.addEventListener('change', () => {
+          ticked[index] = box.checked;
+          saveChecklistTicks(target.id, ticked);
+          updateCounter();
+        });
+        rows.append(el('label.checklist-row', { htmlFor: boxId }, box, el('span', { text })));
+      });
+      stage.replaceChildren(rows);
+    }
+
+    function finishChecklist(): void {
+      const done = ticked.filter(Boolean).length;
+      const accuracy = items.length > 0 ? done / items.length : 0;
+      finished = true;
+      section.dataset.drill = 'finished';
+      void recordRun({
+        itemId: target.id,
+        mode: 'drill:checklist',
+        tempoPct: 100,
+        accuracy,
+        accuracyEstimated: false,
+        wrongNotes: 0,
+        missed: items.length - done,
+        durationMs: Date.now() - startedAtMs,
+        passed: done === items.length,
+        masterEligible: done === items.length,
+      }).catch((cause: unknown) => {
+        status.textContent = `Could not save this checklist: ${String(cause)}`;
+        status.classList.add('status--error');
+      });
+      controls.replaceChildren();
+      stage.replaceChildren();
+      prompt.textContent = '';
+      sheet.hidden = false;
+      sheet.replaceChildren(
+        el(
+          'div.row',
+          {},
+          el('h2', { text: done === items.length ? 'All set' : 'Saved' }),
+          done === items.length ? badge('passed', 'passed') : badge('keep going'),
+        ),
+        el('p', { text: `${String(done)} of ${String(items.length)} checked off.` }),
+        el(
+          'div.row',
+          {},
+          button(
+            'Again',
+            () => {
+              finished = false;
+              sheet.hidden = true;
+              runChecklist(target);
+            },
+            { id: 'drill-again', variant: 'primary' },
+          ),
+          button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
+        ),
+      );
+      sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+
+    counter.textContent = '';
+    renderRows();
+    updateCounter();
+    controls.replaceChildren(
+      button('Done', () => finishChecklist(), { id: 'drill-checklist-done', variant: 'primary' }),
+    );
+  }
+
+  interface PlacementStep {
+    text: string;
+    failUnit: string;
+  }
+
+  function placementSteps(target: CatalogItem): { items: PlacementStep[]; passUnit: string } {
+    const params = target.drill?.params ?? {};
+    const itemsRaw = params.items;
+    const raw = Array.isArray(itemsRaw) ? itemsRaw : [];
+    const items: PlacementStep[] = raw
+      .map((entry) => (entry && typeof entry === 'object' ? (entry as Record<string, unknown>) : null))
+      .filter((entry): entry is Record<string, unknown> => entry !== null)
+      .map((entry) => ({
+        text: typeof entry.text === 'string' ? entry.text : '',
+        failUnit: typeof entry.failUnit === 'string' ? entry.failUnit : '',
+      }))
+      .filter((entry) => entry.text !== '' && entry.failUnit !== '');
+    const passUnit = typeof params.passUnit === 'string' ? params.passUnit : '';
+    return { items, passUnit };
+  }
+
+  /**
+   * `kind: 'placement'` (P19 Task 3b tier 2, handoff §4e-2) — the eight-item
+   * branching placement test from `lessons/0.4.md`. Self-judged: the learner
+   * says Pass or Fail on each item in turn, the first Fail ends the test, and
+   * the unit that failure names is offered as the starting point the same way
+   * `LessonScreen`'s "Start here" already writes one, via `recordPlacement`.
+   */
+  function runPlacement(target: CatalogItem): void {
+    const { items, passUnit } = placementSteps(target);
+    let index = 0;
+    let answered = 0;
+    section.dataset.drill = 'running';
+    section.dataset.kind = 'placement';
+    startedAtMs = Date.now();
+    hint.textContent = 'Be strict — if you are unsure whether you can do it cleanly, call it a fail.';
+    hint.hidden = false;
+
+    function showStep(): void {
+      const step = items[index];
+      if (!step) {
+        finishPlacement(passUnit);
+        return;
+      }
+      counter.textContent = `${String(index + 1)} of ${String(items.length)}`;
+      prompt.textContent = step.text;
+      stage.replaceChildren();
+      controls.replaceChildren(
+        button(
+          'Pass',
+          () => {
+            index += 1;
+            answered += 1;
+            showStep();
+          },
+          { id: 'drill-placement-pass', variant: 'primary' },
+        ),
+        button(
+          'Fail',
+          () => {
+            answered += 1;
+            finishPlacement(step.failUnit);
+          },
+          { id: 'drill-placement-fail' },
+        ),
+      );
+    }
+
+    function finishPlacement(unitId: string): void {
+      finished = true;
+      section.dataset.drill = 'finished';
+      controls.replaceChildren();
+      stage.replaceChildren();
+      prompt.textContent = '';
+      void recordRun({
+        itemId: target.id,
+        mode: 'drill:placement',
+        tempoPct: 100,
+        accuracy: items.length > 0 ? answered / items.length : 0,
+        accuracyEstimated: false,
+        wrongNotes: 0,
+        missed: 0,
+        durationMs: Date.now() - startedAtMs,
+        // A placement test is not passed or failed itself — it is completed,
+        // and what it produces is a starting point, not a score.
+        passed: true,
+        masterEligible: false,
+      }).catch(() => undefined);
+      sheet.hidden = false;
+      sheet.replaceChildren(
+        el('div.row', {}, el('h2', { text: 'Placement result' })),
+        el('p', {
+          text: unitId
+            ? `Starting unit: ${unitId}. Nothing is locked — you can still open any stage yourself.`
+            : 'No starting unit came out of that — check the items this drill was given.',
+        }),
+        el(
+          'div.row',
+          {},
+          ...(unitId
+            ? [
+                button(
+                  'Start here',
+                  () => {
+                    void recordPlacement(unitId).then(() => {
+                      status.textContent = 'Placement recorded. Today will build from here.';
+                    });
+                  },
+                  { id: 'drill-placement-start', variant: 'primary' },
+                ),
+              ]
+            : []),
+          button(
+            'Again',
+            () => {
+              finished = false;
+              sheet.hidden = true;
+              runPlacement(target);
+            },
+            { id: 'drill-again' },
+          ),
+          button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done', variant: 'quiet' }),
+        ),
+      );
+      sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+
+    counter.textContent = '';
+    showStep();
+  }
+
   // --- load ----------------------------------------------------------------
 
   void (async () => {
@@ -859,6 +1130,27 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       // Generated notation, not a prompt loop: it belongs on the Score screen
       // in Tempo mode (docs/05 §8).
       router.navigateScore(item.id);
+      return;
+    }
+
+    // Neither of these is a note-answering prompt loop, so neither goes
+    // through `drillFromCatalog`/`advance()` at all — see the comment above
+    // `runChecklist`.
+    if (isChecklist(item)) {
+      runChecklist(item);
+      return;
+    }
+    if (isPlacement(item)) {
+      runPlacement(item);
+      return;
+    }
+    if (isWalkthrough(item)) {
+      // P19 Task 3b tier 3: a real guided tour has to step through the Score
+      // screen's Wait/Tempo/Loop modes on a real piece, which this screen
+      // cannot do on its own. Honest and not-yet, rather than the "import
+      // needed" badge this item wore before it had a `drill` block at all.
+      status.textContent = `${item.title} is being built — a step-through of Wait mode, Tempo mode and loops is coming, not a file to import.`;
+      section.dataset.drill = 'unavailable';
       return;
     }
 
