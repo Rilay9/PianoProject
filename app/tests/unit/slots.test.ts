@@ -11,6 +11,7 @@ import { extractScoreModel } from '../../src/score/extractScoreModel';
 import type { ScoreStep } from '../../src/score/types';
 import {
   barsPerSlot,
+  blocksBehind,
   nextRangeAfter,
   planSlots,
   rangeAt,
@@ -139,10 +140,52 @@ describe('a five-bar piece at two bars per window', () => {
     ]);
   });
 
+  it('a cold draw at the end fills the screen from behind, not from black', () => {
+    // A seek to the last bar, a restart there, or opening a piece at its end:
+    // there is nothing ahead to show and — unlike a walk that arrives there —
+    // nothing already on the screen to keep. It used to leave the final system
+    // in slot 0 and the rest of the screen blank, which on a phone is most of
+    // the screen black for the last bars of every song (`08` invariant 8).
+    const plan = planSlots(all, 4, { cursor: 0, ranges: [null, null, null] }, 2, 5, 3);
+    expect(plan.ranges).toEqual([r(2, 2), r(3, 3), r(4, 4)]);
+    // And the cursor is at the foot, where reading order puts the bar being
+    // played when everything else on the screen came before it.
+    expect(plan.cursor).toBe(2);
+    // A cold draw fades nothing: there is no eye already resting elsewhere.
+    expect(plan.fades).toEqual([]);
+    expect(plan.crossed).toBe(false);
+  });
+
+  it('a cold draw at the start still reads downwards from the top', () => {
+    // The mirror case, and the one that must not change: at bar 0 there is
+    // nothing behind, so the cursor stays in slot 0 and the coming bars fill
+    // the slots under it.
+    const plan = planSlots(all, 0, { cursor: 0, ranges: [null, null, null] }, 2, 5, 3);
+    expect(plan.cursor).toBe(0);
+    expect(plan.ranges).toEqual([r(0, 0), r(1, 1), r(2, 2)]);
+  });
+
+  it('a piece with fewer bars than slots leaves the extra ones blank', () => {
+    // Two bars, three slots. There is nothing ahead and nothing behind to
+    // find, so one slot has nothing it could honestly show.
+    const two = steps([0, 1]);
+    const plan = planSlots(two, 1, { cursor: 0, ranges: [null, null, null] }, 2, 2, 3);
+    expect(plan.ranges).toEqual([r(0, 0), r(1, 1), null]);
+    expect(plan.cursor).toBe(1);
+  });
+
   it('never re-draws the slot the cursor is in', () => {
     for (const { cursor, fades } of walk(all, 2, 5)) {
       expect(fades).not.toContain(cursor);
     }
+  });
+
+  it('blocksBehind walks backwards and stops at the first bar', () => {
+    expect(blocksBehind(r(4, 4), 2, 5, 3)).toEqual([r(3, 3), r(2, 2), r(1, 1)]);
+    // Asked for more than there are.
+    expect(blocksBehind(r(1, 1), 2, 5, 3)).toEqual([r(0, 0)]);
+    // Already at the first: nothing behind, and no loop.
+    expect(blocksBehind(r(0, 0), 2, 5, 3)).toEqual([]);
   });
 
   it('with four slots, the eye goes down the screen and round: three bars ahead', () => {

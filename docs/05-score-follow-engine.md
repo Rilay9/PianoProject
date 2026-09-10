@@ -212,10 +212,13 @@ the three rows above.
   Diagnostics screen estimates it by acoustic loopback — a click emitted through the speaker and
   detected on the mic, the machine timing itself. It used to be estimated by asking the learner
   to tap along to a metronome, which measured the human as much as the input path.
-  **Open, and reported 2026-09-10:** a calibrated mic user has the latency taken off twice —
-  `MicSource.toPerformanceMs` docks the calibration's own `latencyMs` at the source and
-  `PracticeEngine` then subtracts `inputLatencyMs` on top. The saving path nets it off, which is
-  a patch on the symptom; where the number should live is an owner decision.
+  **Fixed 2026-09-10.** A calibrated mic user had the latency taken off twice:
+  `MicSource.toPerformanceMs` docked the calibration's own `latencyMs` at the source and
+  `PracticeEngine` subtracted `inputLatencyMs` on top, so every note was judged that much early
+  in the one mode that scores. `MicSource` reports observed times now, like every other input
+  source, and the engine's subtraction is the only one. The saving path used to net the two off
+  against each other; that netting is gone with the thing it compensated for, so a calibrated
+  microphone and an uncalibrated one store the same figure.
 - **Output** (`send`): if an output port exists and the setting "send playback to piano" is
   on, playback Note-On/Off goes to the port with channel 1 and the HP-130 plays it. Also
   send `CC123` on stop.
@@ -296,8 +299,9 @@ and, on a strong onset with no expected pitch rising, report the most salient pi
 - Wait mode: an expected pitch is satisfied at `confidence ≥ 0.5`; the whole step completes
   when all expected pitches are satisfied **or** when ≥ 70 % are satisfied *and* the loudest
   onset in the window was strong (chord with one masked note) — setting `micChordLeniency`.
-- Tempo mode: onsets are time-stamped in the worklet (sample-accurate) and shifted by the
-  calibrated input latency; tolerance defaults to ±200 ms for mic (vs ±150 for MIDI).
+- Tempo mode: onsets are time-stamped in the worklet (sample-accurate) and reported as observed;
+  `PracticeEngine` shifts them by `inputLatencyMs` when it judges them, which is the only place
+  that subtraction happens. Tolerance defaults to ±200 ms for mic (vs ±150 for MIDI).
 - Accuracy from mic is labelled "estimated"; the summary sheet says so.
 - The app playing back the *other* hand through the phone speaker while listening through the
   same phone's mic will contaminate detection. Rules: when mic input is active, playback of
@@ -308,7 +312,9 @@ and, on a strong onset with no expected pitch rising, report the most salient pi
 
 Guided 60-second routine: silence (noise floor) → play each C across the keyboard
 (gain per octave, inharmonicity fit from partial positions) → play a chromatic scale C3–C5
-slowly with the metronome (per-pitch thresholds; latency = onset time − click time) →
+slowly with the metronome (per-pitch thresholds; latency = onset time − click time, kept as a
+record of what was measured by ear rather than as something anything subtracts — the figure the
+engine uses comes from the acoustic loopback on Diagnostics) →
 play three chords (C, F, G) (chord leniency check). Stores to `micCalibration`. Offers a
 "line input" preset when the selected device is not the built-in mic.
 

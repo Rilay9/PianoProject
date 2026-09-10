@@ -246,18 +246,16 @@ describe('what gets stored', () => {
     expect(inputLatencyFromRoundTrip({ roundTripMs: 180, outputLatencyMs: 60, flightMs: 2 })).toBe(118);
   });
 
-  it('takes off what a stored calibration already subtracts at the source', () => {
-    // `MicSource.toPerformanceMs` subtracts the calibration's own latency
-    // before the engine sees an event, and the engine then subtracts
-    // `inputLatencyMs` as well.
-    expect(
-      inputLatencyFromRoundTrip({
-        roundTripMs: 180,
-        outputLatencyMs: 60,
-        flightMs: 2,
-        alreadyCompensatedMs: 40,
-      }),
-    ).toBe(78);
+  it('does not care whether the microphone has been calibrated', () => {
+    // It used to. `MicSource.toPerformanceMs` docked the calibration's own
+    // `latencyMs` from every event before the engine saw it, the engine
+    // subtracted `inputLatencyMs` on top, and this function took the
+    // difference so the same delay was not compensated twice. `MicSource`
+    // reports observed times now — one subtraction, in the engine — so the
+    // figure saved here is the whole input path either way. The netting that
+    // was here would have stored 78 for a 40 ms calibration and under-
+    // compensated every note by 40.
+    expect(inputLatencyFromRoundTrip({ roundTripMs: 180, outputLatencyMs: 60, flightMs: 2 })).toBe(118);
   });
 
   it('never stores a negative correction', () => {

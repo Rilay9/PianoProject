@@ -187,6 +187,27 @@ export async function waitForStableLayout(page: Page, selector: string): Promise
   );
 }
 
+/**
+ * Waits until the renderer has measured the piece.
+ *
+ * The measurement runs a hidden third engraving of the first 48 bars and lands
+ * on idle, *after* the first draw. The slot count and the width the systems
+ * are engraved at are corrected once when it does, and never again — §9.6
+ * forbids re-planning under a cursor that is being played.
+ *
+ * So there are two settled states, and which one a test sees depends on how
+ * busy the machine is. Under `fullyParallel` on a loaded runner idle arrives
+ * late enough that a spec walking the piece immediately measures the layout
+ * before the correction; on a quiet machine it measures the layout after. That
+ * is the whole story behind `score.slots.spec.ts` passing alone and failing in
+ * the suite.
+ *
+ * Call this after `load()` and before judging anything about size or count.
+ */
+export async function waitForPieceMeasured(page: Page): Promise<void> {
+  await page.waitForSelector('.score-view[data-measured]', { timeout: 30_000 });
+}
+
 /** Opens /dev/score and waits for the harness and its first fixture. */
 export async function openDevScore(page: Page): Promise<DevScoreDriver> {
   await page.goto('/#/dev/score');

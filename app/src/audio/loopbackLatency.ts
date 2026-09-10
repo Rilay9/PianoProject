@@ -369,15 +369,6 @@ export interface InputLatencyParts {
   outputLatencyMs: number;
   /** Speaker to microphone through the air. */
   flightMs?: number;
-  /**
-   * Delay something else already takes off, in milliseconds.
-   *
-   * A stored microphone calibration carries its own `latencyMs`, and
-   * `MicSource` subtracts it from every event before the engine ever sees one.
-   * The engine then subtracts `inputLatencyMs` as well, so saving the whole
-   * input path here would compensate a calibrated microphone twice.
-   */
-  alreadyCompensatedMs?: number;
 }
 
 /**
@@ -388,13 +379,15 @@ export interface InputLatencyParts {
  * and folds it into every conversion already. What is left after taking it and
  * the flight time off is the input path — how late a note the microphone hears
  * reaches the engine — and that is what `inputLatencyMs` means.
+ *
+ * A stored microphone calibration does not come into it. It used to: `MicSource`
+ * docked its `latencyMs` from every event, so the whole input path saved here
+ * would have been taken off twice, and this took the difference. `MicSource`
+ * reports observed times now, the engine's subtraction is the only one, and a
+ * calibrated microphone stores the same figure as an uncalibrated one.
  */
 export function inputLatencyFromRoundTrip(parts: InputLatencyParts): number {
-  const raw =
-    parts.roundTripMs -
-    parts.outputLatencyMs -
-    (parts.flightMs ?? FLIGHT_MS) -
-    (parts.alreadyCompensatedMs ?? 0);
+  const raw = parts.roundTripMs - parts.outputLatencyMs - (parts.flightMs ?? FLIGHT_MS);
   if (!Number.isFinite(raw)) return 0;
   return Math.round(Math.min(MAX_SAVED_INPUT_LATENCY_MS, Math.max(0, raw)));
 }

@@ -646,7 +646,14 @@ export class WindowRenderer {
    * that used to ask the front buffer: the fit, the ink box, the band.
    */
   private get frontBuffer(): Buffer {
-    return this.cursorSlot === 0 ? this.buffers[0]! : this.buffers[1]!;
+    // `this.buffers[this.cursorSlot]`, and it used to be written as "0 if the
+    // cursor is in 0, otherwise 1" — true while there were only ever two
+    // slots. The fit stacks as many as the staff height allows now, and on a
+    // 390 x 844 phone a short piece gets three. With the cursor in the third
+    // this handed back the second, so `currentWindow` reported the bar in slot
+    // 1 while the band was drawn on slot 2: the run said bar 1, the screen
+    // highlighted bar 2, and the fit measured the wrong sheet.
+    return this.buffers[this.cursorSlot] ?? this.buffers[0]!;
   }
 
   /** Both slots, in drawing order, skipping any that is blank. */
@@ -1498,6 +1505,7 @@ export class WindowRenderer {
         this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
         this.pieceInk = null;
         this.pieceInkZoom = -1;
+        delete this.el.dataset.measured;
         // And the size a run is holding, which was taken on a stage this is
         // not (`08` §3.3: a turn releases it and the run continues at the new
         // one). It used to be released only when the *arrangement* changed,
@@ -1854,6 +1862,11 @@ export class WindowRenderer {
       slot.wrapper.classList.toggle('is-front', drawn);
       slot.wrapper.classList.toggle('is-cursor', drawn && i === this.cursorSlot);
       slot.wrapper.dataset.slot = String(i);
+      // Which bars this one is showing. Nothing outside could tell before, so
+      // a test could see *that* the cursor had moved to another slot but not
+      // whether the bars under it had moved with it.
+      if (slot.range) slot.wrapper.dataset.bars = `${String(slot.range.fromMeasure)}-${String(slot.range.toMeasure)}`;
+      else delete slot.wrapper.dataset.bars;
       slot.wrapper.setAttribute('aria-hidden', drawn ? 'false' : 'true');
       // Which of the two systems is being played, for a reader that cannot
       // see the band (`08` §8.5).
@@ -2327,6 +2340,14 @@ export class WindowRenderer {
     if (!measured) return;
     this.pieceInk = measured;
     this.pieceInkZoom = zoom;
+    // The one thing outside this class that can tell the measurement has
+    // landed. It arrives on idle, after the first draw, and the slot count and
+    // the page width are corrected once when it does. A test that starts
+    // walking before it lands is timing the machine it happens to be running
+    // on: under a parallel suite idle comes late, and `score.slots.spec.ts`
+    // failed on a busy runner and passed on a quiet one for exactly that
+    // reason. Waiting on this makes the wait explicit instead.
+    this.el.dataset.measured = String(zoom);
   }
 
   /**

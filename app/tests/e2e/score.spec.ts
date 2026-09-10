@@ -481,8 +481,10 @@ test.describe('the score control bar', () => {
       const children = await page.locator('#score-bar > *').count();
       expect(children, 'the bar has grown again').toBeLessThanOrEqual(8);
 
-      // One row. A `.score-button` is 36 px tall plus the bar's own padding,
-      // so anything past 60 has wrapped.
+      // One row. A `.score-button` is 40 px tall plus the bar's own padding,
+      // so anything past 60 has wrapped. It was 36 until the controls were
+      // put on `04` §0's floor; the threshold had four pixels of room in it
+      // and still has, because two rows would be past 90.
       const box = await page.locator('#score-bar').boundingBox();
       expect(box, 'no control bar').toBeTruthy();
       expect(box!.height, `the bar is ${String(box!.height)} px tall`).toBeLessThan(60);

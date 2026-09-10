@@ -27,7 +27,6 @@ import { measureDetectorCost, type CostReport } from '../../audio/pitch/benchmar
 import { concatChunks, encodeWav } from '../../util/wav';
 import { getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
 import { getMidiSettings, updateMidiSettings } from '../../data/midiSettings';
-import { DEFAULT_DEVICE_KEY, micCalibrationStore } from '../../data/micCalibrationStore';
 import { getSettings } from '../../data/settingsStore';
 import { field, numberControl } from '../widgets';
 import type { Router } from '../../router';
@@ -432,16 +431,13 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
     latencyResult.textContent = '';
     latencyStatus.textContent = 'Starting audio…';
     try {
-      const stored = micCalibrationStore.get(micSource.pinnedInputId ?? DEFAULT_DEVICE_KEY);
+      // The whole input path, whether or not this microphone has been
+      // calibrated. The calibration's own figure is a record of what was
+      // measured by ear, not something anything subtracts.
       const outcome = await runLoopbackLatency({
         onStage: (text) => {
           latencyStatus.textContent = text;
         },
-        // A calibrated microphone already has its own latency taken off at the
-        // source (`MicSource.toPerformanceMs`), and the engine subtracts
-        // `inputLatencyMs` on top of that. Saving the whole input path here
-        // would compensate the same delay twice.
-        ...(stored ? { alreadyCompensatedMs: stored.latencyMs } : {}),
       });
       latestLoopback = outcome.result;
       latestInputLatencyMs = outcome.inputLatencyMs;

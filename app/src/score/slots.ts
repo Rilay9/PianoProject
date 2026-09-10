@@ -129,6 +129,35 @@ export function blocksAhead(
   return out;
 }
 
+/**
+ * The blocks *before* the cursor's, nearest first, up to `count` of them.
+ *
+ * Only the end of a piece needs these. `08` invariant 8 asks that the end fill
+ * every slot wherever there are bars behind to fill them with, and a warm walk
+ * does that for free — a slot with nothing coming keeps the bars it was already
+ * showing. A cold draw has nothing to keep: seeking to the last bar, restarting
+ * at it, or the first draw of a piece opened there left slot 0 with the final
+ * system and the rest of the screen black.
+ */
+export function blocksBehind(
+  range: MeasureRange,
+  barsPerWindow: number,
+  sourceMeasureCount: number,
+  count: number,
+  pickup = false,
+): MeasureRange[] {
+  const out: MeasureRange[] = [];
+  let current = range;
+  while (out.length < count && current.fromMeasure > 0) {
+    const previous = rangeAt(current.fromMeasure - 1, barsPerWindow, sourceMeasureCount, pickup);
+    // A block that does not actually move backwards would loop for ever.
+    if (previous.fromMeasure >= current.fromMeasure) break;
+    out.push(previous);
+    current = previous;
+  }
+  return out;
+}
+
 export interface SlotPlan {
   /** Which slot the cursor's bars are in. */
   cursor: SlotIndex;
@@ -187,6 +216,23 @@ export function planSlots(
   const crossed = !cold && cursor !== current.cursor;
 
   const ahead = blocksAhead(steps, stepIndex, wanted, barsPerWindow, sourceMeasureCount, count - 1, pickup);
+
+  // A cold draw near the end has fewer blocks ahead than there are slots to
+  // fill, and nothing already on the screen to keep. Fill downwards from the
+  // bars behind instead, and put the cursor where reading order puts it — last
+  // but for whatever *is* ahead — so the final system is at the foot of the
+  // screen with what led up to it above, rather than alone at the top with the
+  // rest black (`08` invariant 8).
+  if (cold && ahead.length < count - 1) {
+    const behind = blocksBehind(wanted, barsPerWindow, sourceMeasureCount, count - 1 - ahead.length, pickup);
+    const at = behind.length;
+    const filled: (MeasureRange | null)[] = Array.from({ length: count }, () => null);
+    behind.forEach((range, i) => (filled[at - 1 - i] = range));
+    filled[at] = wanted;
+    ahead.forEach((range, i) => (filled[at + 1 + i] = range));
+    return { cursor: at as SlotIndex, ranges: filled, fades: [], crossed: false };
+  }
+
   const ranges: (MeasureRange | null)[] = held.slice();
   const fades: SlotIndex[] = [];
   ranges[cursor] = wanted;

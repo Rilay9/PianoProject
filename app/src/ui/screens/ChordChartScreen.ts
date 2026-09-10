@@ -221,15 +221,29 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     },
   });
 
-  controls.append(
-    button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' }),
-    button('Stop', stop, { id: 'chart-stop' }),
-    el('label', { htmlFor: 'chart-bpm', text: 'bpm' }),
-    bpmInput,
-    swingChip,
-    compChip,
-    backingChip,
-  );
+  /**
+   * The transport, once there is something for it to run.
+   *
+   * It used to be appended here, on the way past, before the item had been
+   * found or the file read. So for as long as the load took — a fetch, on a
+   * phone — a count-off, a stop, a bpm field and three live toggles sat over a
+   * chart that did not exist yet and might never: `deadEnd` replaced the whole
+   * row when the answer came back, so a control could be under a finger one
+   * moment and gone the next. `04` §0 R4 is that a screen offers the one
+   * control that does what it suggests, and a transport suggests something to
+   * play.
+   */
+  function showTransport(): void {
+    controls.append(
+      button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' }),
+      button('Stop', stop, { id: 'chart-stop' }),
+      el('label', { htmlFor: 'chart-bpm', text: 'bpm' }),
+      bpmInput,
+      swingChip,
+      compChip,
+      backingChip,
+    );
+  }
 
   // --- input --------------------------------------------------------------
 
@@ -327,6 +341,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       }
       drawGrid();
       drawForm();
+      showTransport();
     } catch (cause) {
       deadEnd(
         `That chart could not be opened: ${cause instanceof Error ? cause.message : String(cause)}`,

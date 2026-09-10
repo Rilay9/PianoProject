@@ -61,11 +61,6 @@ export interface LoopbackRunOptions {
   onStage(text: string): void;
   clicks?: number;
   bpm?: number;
-  /**
-   * Delay something else already subtracts, in milliseconds — a stored
-   * microphone calibration's own `latencyMs`. See `inputLatencyFromRoundTrip`.
-   */
-  alreadyCompensatedMs?: number;
   /** Injection points for tests; the platform's own by default. */
   media?: MediaDevices | null;
   moduleUrl?: string;
@@ -195,9 +190,6 @@ export async function runLoopbackLatency(options: LoopbackRunOptions): Promise<L
       inputLatencyMs: inputLatencyFromRoundTrip({
         roundTripMs: result.roundTripMs,
         outputLatencyMs,
-        ...(options.alreadyCompensatedMs === undefined
-          ? {}
-          : { alreadyCompensatedMs: options.alreadyCompensatedMs }),
       }),
       frames: frames.length,
     };

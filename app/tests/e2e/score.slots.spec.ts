@@ -10,7 +10,7 @@
  * the next bar always be visible?"
  */
 import { expect, test } from '@playwright/test';
-import { openDevScore } from './fixtures/devScore';
+import { openDevScore, waitForPieceMeasured } from './fixtures/devScore';
 
 const UPRIGHT = { width: 390, height: 844 };
 const SIDEWAYS = { width: 880, height: 412 };
@@ -57,7 +57,7 @@ async function slots(page: import('@playwright/test').Page): Promise<
   });
 }
 
-test.describe('upright: two slots, karaoke style', () => {
+test.describe('upright: stacked slots, karaoke style', () => {
   test('the system being played is never re-drawn, and the next bar is always there', async ({
     page,
   }) => {
@@ -65,6 +65,11 @@ test.describe('upright: two slots, karaoke style', () => {
     const dev = await openDevScore(page);
     await dev.load('tempo-change');
     await dev.setBars(2);
+    await dev.showStep(0);
+    // Before this the layout is the one drawn from the first window alone; the
+    // piece's own measurement corrects it once, on idle. Waiting means the walk
+    // below judges the settled layout on a busy machine as well as a quiet one.
+    await waitForPieceMeasured(page);
     await dev.showStep(0);
 
     await expect(page.locator('.score-view')).toHaveAttribute('data-read-ahead', 'slots');
@@ -91,16 +96,10 @@ test.describe('upright: two slots, karaoke style', () => {
     // The node identity test: while the cursor stays on one bar, the `<svg>`
     // holding it must be the same element. A re-render replaces it, and that
     // is what moved the music under the owner's eye.
-    // From the second step on, not the first.
-    //
-    // §9.6 is about the system that holds the cursor not being re-drawn *while
-    // the learner is playing it*. The very first window may legitimately be
-    // engraved twice: the piece's measurement lands on idle after the first
-    // draw, and the slot count and the page it is engraved on are corrected
-    // once when it does — before a note has been played, which is precisely why
-    // the renderer refuses to do it any later. Comparing from step 0 makes that
-    // one correction look like the fault the invariant exists for.
-    for (let i = 2; i < seen.length; i += 1) {
+    // From the first step, now that the correction has already happened above.
+    // It used to start at step 2 to skip over it, which also meant two steps
+    // where the invariant was not being checked at all.
+    for (let i = 1; i < seen.length; i += 1) {
       const now = seen[i];
       const before = seen[i - 1];
       if (!now || !before) continue;
@@ -117,17 +116,26 @@ test.describe('upright: two slots, karaoke style', () => {
     expect(slotOrder.length, 'the cursor never left the first slot').toBeGreaterThan(1);
   });
 
-  test('both slots are drawn at the same size', async ({ page }) => {
+  test('every drawn slot is drawn at the same size', async ({ page }) => {
     await page.setViewportSize(UPRIGHT);
     const dev = await openDevScore(page);
     await dev.load('tempo-change');
     await dev.setBars(2);
     await dev.showStep(0);
+    await waitForPieceMeasured(page);
+    await dev.showStep(0);
     const drawn = (await slots(page)).filter((s) => s.drawn);
-    expect(drawn.length, 'only one slot is drawn').toBe(2);
-    // Two independent engravings, one scale. Fitting each to its own half
-    // would draw a bar of minims larger than a bar of semiquavers.
-    expect(drawn[0]?.scale).toBe(drawn[1]?.scale);
+    // At least two, because the point of the arrangement is that the bar after
+    // the one being played is already on the screen. Not exactly two: the fit
+    // stacks as many systems as clear the staff-height floor, and a short
+    // piece on a 390 x 844 phone gets three. Pinning the number here pinned
+    // the old cap, and pinned it against the rule the owner asked for — choose
+    // the size that fits what has to be shown, then fill the screen.
+    expect(drawn.length, 'the next bar is not on the screen').toBeGreaterThanOrEqual(2);
+    // Independent engravings, one scale. Fitting each to its own share would
+    // draw a bar of minims larger than a bar of semiquavers.
+    const scales = [...new Set(drawn.map((d) => d.scale))];
+    expect(scales, `the slots are drawn at ${String(scales.length)} different sizes`).toHaveLength(1);
   });
 });
 
