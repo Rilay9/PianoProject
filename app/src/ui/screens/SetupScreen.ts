@@ -17,6 +17,7 @@
 // the choices beside it, so it is Preview and Back, never both at once.
 
 import { createSubScreen } from './subScreen';
+import { rememberedSetupStep, rememberSetupStep, resumeIndex } from './setupProgress';
 import { onScreenDispose } from '../screenLifecycle';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { isWebMidiSupported, type MidiAccessError } from '../../midi/WebMidiSource';
@@ -43,6 +44,12 @@ import type { Router } from '../../router';
 /** The piece the miniatures draw: one staff, four bars, always bundled. */
 const PREVIEW_ITEM = 'song.folk.hot-cross-buns';
 const PREVIEW_TITLE = 'Hot Cross Buns';
+
+/**
+ * A stand-in scale, used only to give a caption its real length before the
+ * miniature it describes has been sized. Two digits, like every real answer.
+ */
+const NOMINAL_RATIO = 0.5;
 
 const SESSION_LENGTHS = [15, 30, 60, 120].map((minutes) => ({
   value: String(minutes),
@@ -92,6 +99,7 @@ export function SetupScreen(router: Router): HTMLElement {
 
   function leave(status: 'skipped' | 'done'): void {
     markSetup(status);
+    rememberSetupStep(null);
     router.navigate('today');
   }
 
@@ -100,7 +108,14 @@ export function SetupScreen(router: Router): HTMLElement {
     if (!step) return;
     disposeStep?.();
     disposeStep = undefined;
+    refit = null;
     index = at;
+    // Where to come back to. A first launch lands on the tour, and a person
+    // who leaves it half-way — a phone call, a notification, the back gesture
+    // — used to come back to step one and have to do it all again. Cleared the
+    // moment the tour is skipped or finished, so "run it again" still starts
+    // at the beginning.
+    rememberSetupStep(step.id);
     host.replaceChildren();
     section.dataset.setupStep = step.id;
     progress.textContent = `Step ${String(at + 1)} of ${String(STEPS.length)}`;
@@ -120,28 +135,87 @@ export function SetupScreen(router: Router): HTMLElement {
     updateSettings(patch);
   };
 
-  /** The width a miniature may take: the step's, less the card's own air. */
-  const roomFor = (h: HTMLElement): number => Math.max(200, (h.clientWidth || card.clientWidth || 320) - 4);
   /** Whether the phone is sideways now — the miniature's neighbours go beside it, not under. */
   const sidewaysNow = (): boolean => window.innerWidth > window.innerHeight;
+
+  /**
+   * The smallest a miniature is allowed to be drawn.
+   *
+   * Below this it stops being a picture of anything. It is deliberately far
+   * under the room any real phone leaves: it is a guard against a degenerate
+   * zero, not a size the miniature is entitled to.
+   */
+  const MIN_PREVIEW_PX = 88;
+  /** Stand-ins for the instant before the step has been laid out at all. */
+  const UNMEASURED_WIDTH = 320;
+  const UNMEASURED_HEIGHT = 240;
+
   /**
    * The box a miniature may fill, with `beside` — the text and buttons that
    * go with it — taking its share: to the left of it sideways, above and
-   * below it upright. The step is the card's one stretching child, so its
-   * height is the room the fold leaves, and the miniature is bounded by that
-   * as well as by the width — a preview that has to be scrolled to be seen is
-   * what the owner's phone showed.
+   * below it upright.
+   *
+   * A *measured* dimension is the truth and is used as it stands. It used to
+   * be rounded up to a floor — 200 px of width, 120 of height — which on the
+   * owner's 740 × 342 landscape asked for more height than the step had, so
+   * the miniature was drawn taller than the room and had to be scrolled to be
+   * seen. A preview is the last thing on the step that may be compressed, and
+   * it must never be the thing that overflows either; small and whole beats
+   * big and cut off. The floors below only stand in for a box that has not
+   * been laid out yet, where `clientWidth` reads 0.
    */
   const boxFor = (h: HTMLElement, beside: HTMLElement[]): { maxWidth: number; maxHeight: number } => {
-    const room = roomFor(h);
-    const height = Math.max(120, h.clientHeight - 8);
+    const measuredWidth = (h.clientWidth || card.clientWidth || 0) - 4;
+    const room = measuredWidth > 0 ? measuredWidth : UNMEASURED_WIDTH;
+    const height = h.clientHeight > 0 ? h.clientHeight - 8 : UNMEASURED_HEIGHT;
     if (sidewaysNow()) {
-      const column = Math.max(...beside.map((node) => node.getBoundingClientRect().width), 200);
-      return { maxWidth: Math.max(160, room - column - 16), maxHeight: height };
+      const column = Math.max(...beside.map((node) => node.getBoundingClientRect().width), 0);
+      return {
+        maxWidth: atLeast(room - column - 16, room),
+        maxHeight: atLeast(height, height),
+      };
     }
     const taken = beside.reduce((sum, node) => sum + node.getBoundingClientRect().height, 0);
-    return { maxWidth: room, maxHeight: Math.max(120, height - taken - 12) };
+    return { maxWidth: room, maxHeight: atLeast(height - taken - 12, height) };
   };
+
+  /**
+   * `wanted`, given a picture's worth of floor and never more than the room.
+   *
+   * The floor is itself capped by the room, which is the whole point: a
+   * miniature that will not go below 88 px in a box 60 px tall is a miniature
+   * that overflows its box, and an overflowing preview is worse than a small
+   * one — the owner's phone showed a miniature that had to be scrolled to be
+   * seen, and scrolling it moves the words that explain it off the screen.
+   */
+  function atLeast(wanted: number, room: number): number {
+    return Math.min(room, Math.max(wanted, Math.min(MIN_PREVIEW_PX, room)));
+  }
+
+  /**
+   * What to draw again when the phone is turned.
+   *
+   * A miniature is sized once, from the room the step had when it was built,
+   * and nothing was watching for that room changing. Turn the phone on the
+   * "which way up" step and a frame measured for a 306 px upright column stays
+   * 424 px wide in it — the document then scrolls sideways, which is the one
+   * thing `style.css` says must never happen. Set by the two steps that draw a
+   * miniature, cleared by every other.
+   */
+  let refit: (() => void) | null = null;
+  let refitPending = false;
+  const onResize = (): void => {
+    if (refit === null || refitPending) return;
+    refitPending = true;
+    // Next frame: a rotation fires `resize` several times as the viewport
+    // settles, and engraving the miniature three times is three engravings.
+    requestAnimationFrame(() => {
+      refitPending = false;
+      refit?.();
+    });
+  };
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
 
   // ---------------------------------------------------------------- 1 welcome
   const welcome: Step = {
@@ -192,9 +266,22 @@ export function SetupScreen(router: Router): HTMLElement {
       h.append(el('div.setup-hold', {}, text, frame));
 
       let preview: DevicePreview | null = null;
+      const captionFor = (orientation: Orientation, ratio: number): string =>
+        `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(ratio)}. ` +
+        (orientation === 'sideways'
+          ? 'Sideways locks the score screen to landscape.'
+          : 'Upright leaves the phone free to turn.');
       const draw = (): void => {
         const orientation = chosenOrientation();
         preview?.dispose();
+        // The caption is written before the box is measured, not after.
+        // `boxFor` subtracts the height of everything that goes above the
+        // miniature, and this is two lines of it on a phone — measured while
+        // it was still empty, so every miniature was asked for two lines more
+        // height than the step had, and the preview was what ran off the fold.
+        // The nominal ratio is only to give the sentence its real length; the
+        // true one is written in below.
+        caption.textContent = captionFor(orientation, NOMINAL_RATIO);
         preview = createDevicePreview({
           orientation,
           ...boxFor(h, [text]),
@@ -203,16 +290,13 @@ export function SetupScreen(router: Router): HTMLElement {
         });
         frame.replaceChildren(preview.el);
         frame.dataset.orientation = orientation;
-        caption.textContent =
-          `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(preview.ratio)}. ` +
-          (orientation === 'sideways'
-            ? 'Sideways locks the score screen to landscape.'
-            : 'Upright leaves the phone free to turn.');
+        caption.textContent = captionFor(orientation, preview.ratio);
         for (const node of choices.querySelectorAll('.setup-choice')) {
           node.setAttribute('aria-pressed', String(node.id === `setup-hold-${orientation}`));
         }
         void preview.redraw();
       };
+      refit = draw;
       for (const orientation of ['upright', 'sideways'] as const) {
         const choice = el('button.setup-choice', {
           type: 'button',
@@ -542,8 +626,16 @@ export function SetupScreen(router: Router): HTMLElement {
       panel.append(beside, frameHost);
 
       let preview: DevicePreview | null = null;
+      const captionFor = (ratio: number): string =>
+        `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(ratio)}, ` +
+        'with the choices as they are now.';
       const rebuildFrame = (): void => {
         preview?.dispose();
+        // Written before the measurement, for the reason the "which way up"
+        // step carries in full: `beside` is what the miniature's height is
+        // taken out of, and an empty caption measures two lines short.
+        caption.textContent = captionFor(NOMINAL_RATIO);
+        flip.textContent = orientation === 'upright' ? 'Show it sideways' : 'Show it upright';
         preview = createDevicePreview({
           orientation,
           ...boxFor(h, [beside]),
@@ -552,9 +644,13 @@ export function SetupScreen(router: Router): HTMLElement {
         });
         frameHost.replaceChildren(preview.el);
         frameHost.dataset.orientation = orientation;
-        caption.textContent = `${orientation === 'upright' ? 'Upright' : 'Sideways'}, shown ${describeRatio(preview.ratio)}, with the choices as they are now.`;
-        flip.textContent = orientation === 'upright' ? 'Show it sideways' : 'Show it upright';
+        caption.textContent = captionFor(preview.ratio);
         void preview.redraw();
+      };
+      // Turning the phone with the preview open re-measures it; with the
+      // choices showing there is nothing drawn to re-measure.
+      refit = () => {
+        if (!panel.hidden) rebuildFrame();
       };
       const showPreview = (on: boolean): void => {
         options.hidden = on;
@@ -769,11 +865,14 @@ export function SetupScreen(router: Router): HTMLElement {
   const STEPS: Step[] = [welcome, hold, piano, sound, display, modes, practice, done];
 
   onScreenDispose(section, () => {
+    window.removeEventListener('resize', onResize);
+    window.removeEventListener('orientationchange', onResize);
+    refit = null;
     disposeStep?.();
     disposeStep = undefined;
   });
 
-  show(0);
+  show(resumeIndex(rememberedSetupStep(), STEPS.map((step) => step.id)));
   return section;
 }
 
