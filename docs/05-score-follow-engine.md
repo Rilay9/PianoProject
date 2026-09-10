@@ -206,8 +206,16 @@ the three rows above.
   send active-sensing every 300 ms).
 - Timestamps: use `event.timeStamp` (DOMHighResTimeStamp) not `performance.now()` at handler
   time, to remove JS scheduling jitter.
-- Latency compensation setting `inputLatencyMs` [0]: subtracted from `tMs` in Tempo mode;
-  the diagnostics "latency test" estimates it (metronome click → learner taps → mean delta).
+- Latency compensation setting `inputLatencyMs` [0]: subtracted from `tMs` in Tempo mode.
+  For MIDI it stays 0 and should: `clock.ts` already reads `AudioContext.outputLatency` and
+  MIDI-in is a few milliseconds, so there is nothing to compensate for. For the microphone the
+  Diagnostics screen estimates it by acoustic loopback — a click emitted through the speaker and
+  detected on the mic, the machine timing itself. It used to be estimated by asking the learner
+  to tap along to a metronome, which measured the human as much as the input path.
+  **Open, and reported 2026-09-10:** a calibrated mic user has the latency taken off twice —
+  `MicSource.toPerformanceMs` docks the calibration's own `latencyMs` at the source and
+  `PracticeEngine` then subtracts `inputLatencyMs` on top. The saving path nets it off, which is
+  a patch on the symptom; where the number should live is an owner decision.
 - **Output** (`send`): if an output port exists and the setting "send playback to piano" is
   on, playback Note-On/Off goes to the port with channel 1 and the HP-130 plays it. Also
   send `CC123` on stop.

@@ -197,7 +197,14 @@ a different engraving.)
    reaches above the top stave line, the staves' own span, and how far below.
 3. The fit targets the **upper quartile** of those extents, not the maximum. One freak bar — two
    ledger lines below, once in eight bars — otherwise costs 40 % of the size everywhere,
-   permanently, to spare that bar a single shrink.
+   permanently, to spare that bar a single shrink. *The quartile is of a system's whole extent.*
+   The code used to take the tallest stave span in the piece and add the quartile of the
+   overhangs above and the quartile of the overhangs below — three different systems' worst
+   cases summed into a height no system had. On Chopin's Nocturne op. 27 no. 1 that reserved
+   505 px where the tallest system occupies 463 and the typical one 458, and the sheet was drawn
+   at 0.56 where 0.71 fits: 54 % of a 342 px screen. `pieceExtent` is the one place this is
+   worked out, and `tests/unit/pieceExtent.test.ts` holds it to "never more than the tallest
+   system in the piece occupies".
 4. Until the probe answers, the tallest window seen so far stands in and is **never released
    upward**: the scale may tighten, never grow.
 
@@ -297,7 +304,11 @@ system halves a staff already at its minimum.
 
 #### SLOTS — two to four systems, karaoke
 
-Slots stacked from the top, each holding `max(1, ⌊barsPerWindow / 2⌋)` bars. Exactly one holds
+Slots stacked from the top, each holding `max(1, ⌊barsPerWindow / 2⌋)` bars. **That
+arithmetic is the open question, not a settled rule:** it was written when SLOTS meant exactly
+two systems, and packing to two-to-four broke it, so setting 3 draws the same screen as setting
+2 (one bar a slot, three slots) on Au Clair de la Lune. What the number should mean is the
+owner's to say — handoff §4b lists the three ways out. Exactly one holds
 the cursor and **is never re-drawn while it does**. **How many:** two, unless the width limits
 the size — upright, one bar with a clef is as wide as a phone — in which case the height that is
 left over holds more systems at that same size: `⌊(stage + gap) / (system + gap)⌋`, at most four,
@@ -675,11 +686,19 @@ Numbered for citation. Each is falsifiable; most are already testable.
 
 **Size and stillness**
 1. One size per run: the drawn scale is identical at every frame between a run starting and
-   finishing.
+   finishing — across a turn, at the size the new stage fits. The release used to be the whole
+   story: `updateReadAhead` set the frozen scale to null and nothing put one back, so a run
+   turned mid-piece finished with its scale free to move from window to window.
 2. Stave lines sit at the same y in every window of a piece.
 3. Zoom is monotonic.
 4. No fit is triggered from inside a draw; bands are placed after the fit.
-5. Nothing re-engraves during a run except by restarting it.
+5. Nothing re-engraves during a run except by restarting it — **or by turning the phone**, which
+   §10 has always required ("rotating while paused: redrawn like any rotation; still paused").
+   A turn changes what a step's range even is (`slideRangeFor` sideways, `windowFor` upright), so
+   a fit alone leaves the wrong sheet on the screen: Hot Cross Buns turned upright while paused
+   kept its three-bar 2,340 px sliding page and drew 34 px of music into a 662 px stage, and
+   stayed there, because in Wait mode paused there is no next note to redraw it. The run keeps
+   its scale across the turn by taking a new freeze once the stage has settled.
 
 **Position and read-ahead**
 6. The cursor's system is never re-drawn: in SLOTS the `<svg>` holding it is the same DOM node
@@ -957,6 +976,29 @@ match; **later** is the list for the next builder. The random walks and the whol
 | §3.2 the probe on a piece past its cap | the probe loads the whole 780-bar piece to draw its first 48 bars — five seconds of the Scherzo's first window. Without the probe at all (tried first) the Scherzo's run shrank 13 % and its stave jumped 45 px at bar 16, which is what the probe exists to prevent | **done** — the probe loads a document cut to its first 48 bars (`trimMusicXml`, a parse and a serialise on idle time); the measurement stays |
 | §5.1 the read-ahead on the 780-bar piece | the next bar arrived a second or more after the crossing — read as the cost of engraving a bar of the Scherzo, it was in fact the probe loading the whole 780-bar document on the main thread during the run | **done** — with the probe's document cut to 48 bars the Scherzo reads ahead in about 10 ms, like every other piece; the corpus allows one second everywhere and records the lag a step |
 | the gallery on a grand staff and in scroll layout | every grand-staff cell sat at step 0 under a "five notes in" caption: the harness played one note of each chord and a Wait run does not move on one note of a chord | **done** — the harness plays the whole step; 52 cells, read one by one, no breakage |
+
+## 13a. What the same walk found on 2026-09-10
+
+Three rows, all measured rather than reasoned about, because reading the code produced two wrong
+diagnoses of the first one earlier in the week.
+
+| Leaf | What was wrong | Verdict |
+|---|---|---|
+| §3.2 the piece's height | The fit reserved the *tallest stave span in the piece* plus the upper quartile of the overhangs above plus the upper quartile of the overhangs below — three different systems' worst cases added together, so the number was a height no system in the piece has. Chopin's Nocturne op. 27 no. 1 at 342 x 740: 505 px reserved, tallest system 463, typical 458; the sheet drawn at 0.56 where 0.71 fits, the staves covering 54 % of the screen. It is also half of "58 % on one run and 90 % on the next" — until the probe answers the tallest window *seen* stands in (313 px here), so its arrival was a 39 % shrink rather than a small correction | **done** — `pieceExtent`, the upper quartile of the systems' own extents, which is what §3.2 step 3 always said. Measured after: 63 % of the width at 342 and 64 % at 360, identical over three runs at each size; Hot Cross Buns unchanged at 96 % and 97 % |
+| §3.3 / §10 a turn at one bar per window | `updateReadAhead` answers "have the slots changed", and at one bar per window the answer is no whichever way up the phone is — so `stageChanged` only re-fitted and the sheet stayed the sideways sliding chunk. Hot Cross Buns turned upright while paused kept its three-bar 2,340 px page and drew **34 px of music into a 662 px stage**, and stayed there, because in Wait mode paused there is no next note to redraw it. Four of the ten rotation cases passed anyway: they asserted the ink filled 80 % of the *width*, and a chunk squeezed to fit the width does fill the width | **done** — a width change redraws from the current step, so the range a step wants (`slideRangeFor` sideways, `windowFor` upright) is engraved for the stage that exists. The assertion now names what was engraved, not only how wide the ink came out |
+| §3.3 the frozen scale after a turn | Released only when the *arrangement* changed, which at one bar per window never happens — so a run frozen sideways kept that scale as a ceiling through the turn. And nothing anywhere put a freeze *back*: `updateReadAhead` set it to null with a comment saying the next render would take a new one, and no code did, so every run turned mid-piece finished with its scale free to move from window to window | **done** — released on any width change and re-taken 150 ms later while a run is on (`freezeAfterSettle`) |
+
+Two further things the walk turned up and did **not** fix, both left for the owner:
+
+- **The Nocturne is still only 63 % of the width upright**, and that is now honest rather than
+  wrong: two slots of a 574 px stage give 287 px each, and a system of this piece genuinely needs
+  458. One slot would fit it at 80 % (the width then binds). Whether a dense piece should drop to
+  a single system upright is §11.15's packing question again, with numbers.
+- **The spare buffer pollutes the width fit.** `fitSlots` fits the spare so that a swap costs no
+  fit, and `scaleFor` folds every box it is handed into a maximum that is never released downward
+  — so a spare holding the old sideways chunk put 1,470 px back into `held.width` the moment a
+  turn had cleared it, and the next fit divided a 360 px stage by it. Dropped on a turn now
+  (`dropDrawnSheets`), but the shape — a cache feeding a running maximum — is still there.
 
 **Measured, not guessed:** sideways in `score.screen.spec:75` the bar stayed because Hot Cross
 Buns' music stops 67 px above the stage's bottom — one size for the piece means a window

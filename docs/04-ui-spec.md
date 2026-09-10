@@ -179,7 +179,7 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
 
 ## 4. Library
 
-**§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder* sit as text at the foot of the list.
+**§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder* sit as one line of text in the header, above the search box — text rather than boxes (R3), but at the top: at the foot of the list they were 4,325 px down with the default sixty rows drawn. The header does not scroll, so the list runs under them.
 
 - Search + filters: type, track, level range, hands, key, time signature, concept tag, status,
   source. Sorting by level/title/recent.
@@ -611,7 +611,10 @@ USB interface / headset), calibration (run / re-run, shows latency and noise flo
 leniency [70 %], strict mic scoring [off], mute playback of expected notes while mic is active
 [on]; **MIDI** — input device (auto / list); transpose input semitones [0]; velocity curve
 [linear]; treat Note-On velocity 0 as Note-Off [on]; sustain pedal CC [64]; ignore channels;
-diagnostics: raw log, latency test (tap a key, see ms), "connected devices".
+diagnostics: raw log, "connected devices". (No latency test: over USB MIDI both halves of the
+round trip are already known — `clock.ts` reads `AudioContext.outputLatency` and folds it into
+every conversion, and MIDI-in is a few milliseconds — so there is nothing left to measure and
+the section is not built for a MIDI user at all.)
 
 **Content** — active tracks; show US-only PD items [on]; language [en]; note naming
 [letters]; **"Download everything now"** (re-runs the precache and reports total size and
@@ -663,7 +666,7 @@ finished or skipped.
 | Welcome | Two sentences on what the app does; Start or Skip. |
 | Which way will the phone sit? | Two **miniatures of the score screen in this phone's own proportions**, upright and sideways, drawn by the real engraver with the arrangement each way up gets (slots upright, a sliding system sideways), captioned with the fraction of real size they are shown at. A tap chooses; the choice is the score screen's landscape lock. |
 | Your piano | *Connect piano* (the same permission prompt and recovery text as the MIDI screen), the inputs to pin, a strip that lights up from the cable or from a tap; *No cable? Use the microphone* folds out the mic's connect, level and a fifteen-second calibration; the follow-input priority. |
-| How late is the piano? | The latency test — eight clicks, tap on each — with the median saved as the input latency the moment it ends. Skippable for a mic or the screen keys. |
+| ~~How late is the piano?~~ | **Gone.** It asked the learner to tap along to eight clicks, which measures the input path *plus the human*: tapping spread is 20–50 ms and people anticipate a beat by another 20–80, so the noise was an order of magnitude larger than the signal. The tour is eight steps without it. What replaced it, for a microphone user only, is in `7b`. |
 | Sound | Test sound, the two volumes, the metronome sound, playback plays / destination. |
 | The screen | The **miniature the way the phone was chosen to sit** — header, stage, keys and control bar at their real proportions — redrawn as theme, keys, fingering, chord symbols, size, bars per window and layout change, with *Show it sideways / upright* to see the other; landscape lock and keep-awake. |
 | How it follows you | The four modes in one line each, *Hear it* and the long-press; the default modes with and without an input, count-in, default tempo, strict Wait, tolerance, the pass criteria. |
@@ -678,19 +681,20 @@ the chips span both.
 The miniature (`ui/devicePreview`) is built from the phone's own short and long sides and the
 score screen's chrome at its real heights, scaled as one to the width the card can give it, and
 the renderer is told which way up it is (`WindowRenderer`'s `orientation`), so the arrangement
-follows the miniature rather than the window it sits in. The latency test and the mic
-calibration are the same routines the Diagnostics and Microphone screens run
-(`audio/latencyTest`, `audio/pitch/calibrationRun`), so a number measured here is the number
+follows the miniature rather than the window it sits in. The mic
+calibration is the same routine the Diagnostics and Microphone screens run
+(`audio/pitch/calibrationRun`), so a number measured here is the number
 measured there.
 
 ### 7e. The guide (`#/settings/guide`)
 
 Settings → *How PianoPath works*: what the app can do and how to get music into it, in the
 app, with pictures of the app. Eleven sections in the order a person needs them — what it
-does; the score screen; finding music; adding your own scores; a whole folder of scores (the
+does; connecting the piano (MIDI, the microphone, the setup tour); the score screen; lessons,
+drills and skills; finding pieces to add; adding your own scores; a whole folder of scores (the
 archive from the laptop, `library.json`, re-picking the folder, `est.` levels); PDF sheet
-music; the books you own; lessons, drills and skills; progress and backups; the piano, the
-microphone and the setup tour; offline, updates and diagnostics. Every section that describes
+music; the books you own; progress and backups; offline, updates and diagnostics. The piano is
+second because nothing else works until the app can hear you play. Every section that describes
 a screen has a button that opens it. The pictures are of the app itself, taken by
 `tests/e2e/guide-shots.spec.ts` (`GUIDE_SHOTS=1`) at a phone's size and shipped under
 `public/guide/`, precached like everything else; `guide.spec.ts` fails if one the guide names
@@ -707,7 +711,16 @@ it on the clipboard as text.
   total bytes cached, last successful update check, whether the app is currently online. A
   missing-files list if n < m, because a silently skipped precache (the soundfont exceeding
   Workbox's 2 MB default) is the failure mode this screen exists to catch.
-- **MIDI**: connected devices, raw message log (last 200), latency test (tap a key, see ms).
+- **MIDI**: connected devices, raw message log (last 200).
+- **Latency**, and only when the input is the microphone: a short, sharp click through the
+  speaker, heard back on the mic, the gap between the two being the whole round trip — measured
+  by the machine in a couple of seconds, with no human in the loop, which is how a DAW does it.
+  The output latency the browser already reports is subtracted, so what is saved is the input
+  path. A run that does not hear enough of its clicks, or whose readings disagree with each
+  other, is refused rather than reported. With a piano connected the section is **not drawn at
+  all** — not hidden, not disabled — and says in one sentence why. A hand-set field is there for
+  the cases loopback cannot work in: headphones, a denied microphone, echo cancellation that
+  swallows the click.
 - **Microphone**: level, noise floor, detector confidence histogram, calibration values.
 - **Render**: window-swap ms, cursor-update ms, MIDI→colour latency, frame drops — the
   numbers `01` §6 sets budgets for.

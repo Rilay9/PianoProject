@@ -649,7 +649,9 @@ you were on.
 
 9. **Browse the score folder.** Copy `build/pdmx/pianopath-library.zip` to the
    phone and unzip it, then **Library → Browse a score folder → Pick a folder**
-   and choose `pianopath-library`. **Right:** it lists 37,261 scores, the
+   and choose `pianopath-library` (either one, if the phone made two — unzipping
+   on Samsung's My Files puts a `pianopath-library` inside a `pianopath-library`,
+   and the reader finds `library.json` either way). **Right:** it lists 37,261 scores, the
    search box filters them as you type, and **Add** on one of them puts it in
    your library. **Wrong:** a long freeze while picking (tell me roughly how
    long — this is the one number nobody could measure without your phone), or
