@@ -61,6 +61,32 @@ test.describe('score screen', () => {
   test('an unknown id says so instead of hanging', async ({ page }) => {
     await page.goto('/#/score/song.not.a.real.item');
     await expect(page.locator('#score-status')).toContainText('Unknown item');
+    // And takes the transport away with it. A row of live buttons over a stage
+    // with no score on it is noise (`08` §3.1), and pressing play there starts
+    // a run with no notes to follow.
+    await expect(page.locator('#score-bar')).toBeHidden();
+  });
+
+  test('a score whose file will not load says why, and takes the transport away', async ({
+    page,
+  }) => {
+    // The branches that end in a sentence — unknown item, a PDF, no notation,
+    // no notes — each hid the bar. A *thrown* load, which is what a fetch that
+    // fails or a file that will not parse looks like, did not: the controls
+    // stayed live over a stage that never got a score.
+    //
+    // Only the notation is refused, not the catalog under it: with the catalog
+    // gone this would take the "Unknown item" branch instead, which was never
+    // the broken one. And `openScore` is no use here — it waits for a drawn
+    // SVG, and the whole point is that there will not be one.
+    await page.route('**/*.mxl', (route) => route.fulfill({ status: 404, body: 'gone' }));
+    await page.route('**/*.musicxml', (route) => route.fulfill({ status: 404, body: 'gone' }));
+    await page.goto(`/#/score/${ITEM}`);
+    await expect(page.locator('section[data-screen="score"]')).toBeVisible();
+    await expect(page.locator('#score-status')).toContainText('Could not open this score');
+    // The sentence carries the reason, not a stringified Error object.
+    await expect(page.locator('#score-status')).not.toContainText('Error:');
+    await expect(page.locator('#score-bar')).toBeHidden();
   });
 
   /**

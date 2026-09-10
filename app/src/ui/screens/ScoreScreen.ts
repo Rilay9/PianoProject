@@ -1977,7 +1977,17 @@ export function ScoreScreen(router: Router): HTMLElement {
       // every note element mid-run.
       renderer?.fitToStage();
     } catch (cause: unknown) {
-      status.textContent = `Could not open this score: ${String(cause)}`;
+      // Every branch above that ends without a score hides the bar first: a
+      // row of live buttons over nothing is noise (`08` §3.1). This one did
+      // not, so a fetch that failed or a file that would not parse left a
+      // count-in, a play button, a mode select and a tempo over a stage that
+      // never got a score - and pressing play started a transport with no
+      // notes to run. It also printed the raw error object, so the sentence a
+      // person got began "Could not open this score: Error: ".
+      status.textContent = `Could not open this score: ${
+        cause instanceof Error ? cause.message : String(cause)
+      }`;
+      bar.hidden = true;
     }
   })();
 

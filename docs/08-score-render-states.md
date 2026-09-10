@@ -356,10 +356,13 @@ read-ahead on the screen at every moment.
   repeat, the repeat's first bar; at a first/second-time ending, the ending played on this pass.
 - **The slots pack from the top** when the fit leaves room, with 24 px between them, like a
   page; the spare space is at the bottom. When the music fills its share, the shares stand.
-- **At the end of a piece the other slot shows the bars just played**, not blank — a blank slot
+- **At the end of a piece the other slots show the bars just played**, not blank — a blank slot
   is half the screen gone black for the last bars of every song. Chosen in playing order too, so
   at a second-time ending it is the bar *before* the ending, not the first ending printed above.
-  A one-bar piece is the only genuinely blank case.
+  A walk to the end gets this for free by keeping what each slot already held; a *cold* draw
+  there — a seek, a restart, a piece opened at its last bar — has nothing to keep and works
+  backwards from the cursor instead (`blocksBehind`). A piece with fewer blocks than slots is
+  the only genuinely blank case.
 
 #### CHUNK — one system, sliding
 
@@ -631,7 +634,7 @@ Bands are placed **after** the fit, never before.
 | **Across a boundary, SLOTS** | cursor slot changes (class toggle, same frame); vacated slot re-drawn **on idle, ≤ 100 ms**, faded. Scale unchanged |
 | **Across a boundary, CHUNK** | prepared → class toggle and a slide; else draw in place. Scale unchanged; a prepared swap must not force a layout |
 | **A run starts** | freeze the scale (after the stage settles) → clear colours → count-in → status says which hand is played, once → bar arms auto-hide → wake lock |
-| **A seek or restart** | both slots drawn fresh, cursor to slot 0, so the reading order starts at the top rather than wherever the last run left it |
+| **A seek or restart** | every slot drawn fresh, cursor to slot 0 with the coming blocks under it, so the reading order starts at the top rather than wherever the last run left it. **Near the end** there are fewer blocks ahead than slots and nothing on the screen to keep, so the slots fill downwards from the bars *behind* and the cursor sits at the foot: seeking to the last bar used to leave the final system in slot 0 and the rest of the screen black (invariant 8) |
 
 **Paused** — in every mode: the clock stops, notes played are ignored, the band and the colours
 stay where they are, the bar shows ▶ and stays visible. Resuming continues from the same step
