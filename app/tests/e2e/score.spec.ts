@@ -378,7 +378,15 @@ test.describe('screenshots', () => {
           await dev.load(fixture);
           await dev.setBars(bars);
           await dev.showStep(0);
-          await expect(page.locator('.score-buffer.is-front svg')).toBeVisible();
+          // `.first()`, because `is-front` means *drawn* and not "the visible
+          // one of two": at two bars per window upright the arrangement is
+          // slots, so two buffers are drawn and the locator matches both. The
+          // assertion was written before slots existed and has been ambiguous
+          // ever since — it only shows on a machine fast enough to have
+          // engraved the second slot by the time the assertion runs, which is
+          // why it passes under load and fails on an idle one. What the shot
+          // needs is that the sheet is there and has stopped moving.
+          await expect(page.locator('.score-buffer.is-front svg').first()).toBeVisible();
           // Visible is not final: see waitForStableLayout.
           await waitForStableLayout(page, '.score-buffer.is-front svg');
           await page.locator('#dev-hud').evaluate((el: HTMLElement) => {

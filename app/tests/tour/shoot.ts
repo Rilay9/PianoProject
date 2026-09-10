@@ -29,7 +29,25 @@ export const LANDSCAPE = { width: 780, height: 360 } as const;
 export const TABLET_PORTRAIT = { width: 900, height: 1200 } as const;
 export const TABLET_LANDSCAPE = { width: 1200, height: 900 } as const;
 
-export type Orientation = 'portrait' | 'landscape' | 'tablet-portrait' | 'tablet-landscape';
+/**
+ * The four the picture tour shoots, and the two the measuring runs add.
+ *
+ * `phone-portrait-342` and `phone-landscape-740` are the owner's real device —
+ * 342 x 740 and 740 x 342, not the round 360 x 780 and 780 x 360 every fixture
+ * in this repository used until now. They are deliberately *not* in
+ * `FORM_FACTORS`: that list is what `tour.spec` walks, and two more
+ * orientations there would be two more sixteen-minute passes and several
+ * hundred new photographs to review. The corpus and the sequence add them to
+ * lists of their own, and both name a shot by its orientation, so the type has
+ * to know them.
+ */
+export type Orientation =
+  | 'portrait'
+  | 'landscape'
+  | 'tablet-portrait'
+  | 'tablet-landscape'
+  | 'phone-portrait-342'
+  | 'phone-landscape-740';
 
 /** Every form factor the tour shoots, in the order the contact sheet shows them. */
 export const FORM_FACTORS: { orientation: Orientation; size: { width: number; height: number } }[] =
@@ -190,6 +208,17 @@ export function writeContactSheet(): void {
     entry.since[shot.orientation] = shot.since ?? 'new';
     bySlug.set(shot.slug, entry);
   }
+  // The columns are whatever was actually shot, not a fixed four.
+  //
+  // `FORM_FACTORS` is the picture tour's list; the corpus and the sequence add
+  // the owner's own 342 x 740 and 740 x 342 to lists of their own. Rendering a
+  // fixed four meant a run at those sizes wrote its pictures and its ledger
+  // and then showed neither — a photograph nobody can see is not evidence.
+  const shotOrientations = [...new Set(all.map((shot) => shot.orientation))];
+  const columns = [
+    ...FORM_FACTORS.map((f) => f.orientation).filter((o) => shotOrientations.includes(o)),
+    ...shotOrientations.filter((o) => !FORM_FACTORS.some((f) => f.orientation === o)),
+  ];
   const rows = [...bySlug.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([slug, entry], index) => {
@@ -199,7 +228,7 @@ export function writeContactSheet(): void {
               entry.since[o] === 'same' ? '' : ` · ${entry.since[o] ?? 'new'}`
             }</figcaption></figure>`
           : `<figure class="missing"><figcaption>${o} — not shot</figcaption></figure>`;
-      // A scene counts as changed if any of its four pictures did. The filter
+      // A scene counts as changed if any of its pictures did. The filter
       // exists so a second tour is a review of the difference rather than of
       // 328 pictures again.
       const moved = Object.values(entry.since).some((s) => s !== 'same');
@@ -208,7 +237,7 @@ export function writeContactSheet(): void {
     moved ? ' <span class="tag">changed</span>' : ''
   }</h2>
   <p class="note">${entry.note}</p>
-  <div class="pair">${FORM_FACTORS.map((f) => cell(f.orientation)).join('')}</div>
+  <div class="pair">${columns.map((o) => cell(o)).join('')}</div>
   <textarea placeholder="What is wrong with this one? (type here, then copy the whole page's notes at the bottom)"
             data-slug="${slug}"></textarea>
 </section>`;

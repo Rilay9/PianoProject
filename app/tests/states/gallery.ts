@@ -4,6 +4,7 @@ import { mkdirSync, writeFileSync, existsSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import type { Page } from '@playwright/test';
 import { probeState, type StateRecord } from './probe';
+import { auditScreen } from './audit';
 
 export const STATES_DIR = resolve('../build/states');
 
@@ -180,6 +181,28 @@ export async function shoot(
   const file = join(STATES_DIR, branch, `${cell}.png`);
   mkdirSync(dirname(file), { recursive: true });
   await page.screenshot({ path: file });
+  // What no assertion was written for: text over text, text clipped, a control
+  // off the screen or too small, contrast, a page that scrolls sideways.
+  const faults = await auditScreen(page, {
+    ignore: [
+      // Drawn *over* the notation on purpose, with a background, and only
+      // while the chrome is folded: covering a chord symbol is the trade.
+      '.score-stage__corner',
+      // The beat dot has no text and is 10 px by design — it is a dot.
+      '.score-beat',
+      // A key's own label sits on the key; the strip is not chrome over a
+      // score, it is the control itself.
+      '.key__finger',
+      // And the key's name on it, for the same reason: 9 px on a 26 px key is
+      // a label on a control, not prose to read.
+      '.key__label',
+      // A piano key. 26 px wide is what a key is on a phone, and the strip
+      // scrolls to the one wanted; judging 88 of them against a 40 px floor
+      // was 181 of the gallery's first 600 lines and says nothing anyone
+      // could act on.
+      '.key',
+    ],
+  });
   const shot: Shot = {
     cell,
     branch,
@@ -187,7 +210,7 @@ export async function shoot(
     claims,
     file,
     state,
-    broke: [...checkClaims(state, claims), ...check(state, cell)],
+    broke: [...checkClaims(state, claims), ...check(state, cell), ...faults],
   };
   shots.push(shot);
   return shot;
@@ -266,7 +289,12 @@ export function writeSheet(): void {
             ? `<p class="broke">${shot.broke.map(esc).join('<br>')}</p>`
             : '';
           const facts = [
-            `music ${String(Math.round(shot.state.musicShare * 100))}% of stage`,
+            // Both shares, because they answer different questions and the
+            // fault this week was in the second: the height share says whether
+            // the stage is black under the music, the width share whether the
+            // staves reach across it. The Nocturne read 58 % of the width with
+            // an ordinary-looking height share.
+            `music ${String(Math.round(shot.state.musicShare * 100))}% tall, ${String(Math.round(shot.state.musicWidth * 100))}% wide`,
             shot.state.arrangement,
             `${String(shot.state.viewport.w)}×${String(shot.state.viewport.h)}`,
             shot.state.screen.mode,

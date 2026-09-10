@@ -228,7 +228,14 @@ test.describe('sight-reading (docs/05 §8)', () => {
   test('is different material each time it is opened', async ({ page }) => {
     const svgText = async (): Promise<string> => {
       await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
-      return (await page.locator('#score-stage .is-front svg').first().innerHTML()).slice(0, 4000);
+      // The whole engraving, not its first four kilobytes.
+      //
+      // OSMD opens every sheet with the same few thousand characters — the
+      // `<defs>`, the stave lines, the clef and the key — so a slice that short
+      // is mostly a fingerprint of the *format*, and two different exercises at
+      // this level can share it. The claim being made is about the material, so
+      // the material is what gets compared.
+      return page.locator('#score-stage .is-front svg').first().innerHTML();
     };
     await page.goto('/#/score/drill.reading.sight-reading-2');
     const first = await svgText();

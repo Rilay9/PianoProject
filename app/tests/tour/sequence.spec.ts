@@ -21,7 +21,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
-import { FORM_FACTORS, saveLedger, shoot, TOUR_DIR, writeContactSheet } from './shoot';
+import { FORM_FACTORS, saveLedger, shoot, TOUR_DIR, writeContactSheet, type Orientation } from './shoot';
 
 /** The song, and which form factors: `SEQ_SONG=song.folk.twinkle.rh SEQ_FACTORS=portrait,landscape`. */
 const SONG = process.env.SEQ_SONG ?? 'song.folk.mary-had-a-little-lamb';
@@ -217,7 +217,27 @@ function cursorFraction(p: Probe): number | null {
   return (p.band.left + p.band.width / 2 - p.stage.left) / p.stage.width;
 }
 
-for (const { orientation, size } of FORM_FACTORS.filter((f) => FACTORS.length === 0 || FACTORS.includes(f.orientation))) {
+/**
+ * The four the tour shoots, plus the owner's actual phone.
+ *
+ * 342 x 740 and 740 x 342. Local to this file rather than added to
+ * `FORM_FACTORS`, because that list also drives the picture tour, where two
+ * more orientations are two more sixteen-minute passes and several hundred new
+ * photographs to review. Here they are two more runs through one short song.
+ *
+ * The reason to want them: this is the file that measures where the cursor
+ * sits across the stage sideways, step by step, and the owner's landscape
+ * width is 740 and not 780. A slide that holds the cursor inside its band at
+ * 780 can miss at 740 — the arithmetic is a fraction of a width that is not
+ * the same width.
+ */
+const SEQUENCE_FORM_FACTORS: { orientation: Orientation; size: { width: number; height: number } }[] = [
+  ...FORM_FACTORS,
+  { orientation: 'phone-portrait-342', size: { width: 342, height: 740 } },
+  { orientation: 'phone-landscape-740', size: { width: 740, height: 342 } },
+];
+
+for (const { orientation, size } of SEQUENCE_FORM_FACTORS.filter((f) => FACTORS.length === 0 || FACTORS.includes(f.orientation))) {
   test.describe(orientation, () => {
     test.use({ viewport: size });
     test.describe.configure({ timeout: 600_000 });

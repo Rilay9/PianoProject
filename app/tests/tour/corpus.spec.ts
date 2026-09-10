@@ -20,7 +20,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
-import { FORM_FACTORS } from './shoot';
+import { FORM_FACTORS, type Orientation } from './shoot';
 
 export const CORPUS_DIR = resolve('../build/corpus');
 
@@ -40,6 +40,17 @@ const PIECES: { id: string; why: string; maxSteps?: number; layout?: 'scroll' }[
   { id: 'song.classical.petzold-minuet-g-bwv-anh114', why: 'an imported piece with repeats' },
   { id: 'song.classical.chopin-scherzo-2.nifc', why: 'the longest in the library, 780 bars', maxSteps: 60 },
   { id: 'song.classical.satie-gnossienne-1', why: 'words written under the notes, which the score screen does not draw' },
+  {
+    // The piece the owner photographed loading compressed, and the one the
+    // piece measurement is wrong about: its systems are genuinely tall — 307
+    // to 463 px at zoom 1.69 on a 342 px screen — so it is the case where the
+    // difference between the typical system and the tallest is worth real
+    // pixels. Every other piece here is four to twelve easy bars, which is
+    // exactly why none of them ever showed it.
+    id: 'song.classical.chopin-nocturne-op27-1.nifc',
+    why: 'a dense grand staff with a long title, where the fit has something to get wrong',
+    maxSteps: 40,
+  },
   { id: 'song.folk.twinkle.ht', why: 'the scroll layout: the whole piece on one sheet, scrolled to the cursor', layout: 'scroll' },
 ];
 
@@ -87,6 +98,27 @@ const READ_AHEAD_MS = 1_000;
 
 const wanted = (process.env.CORPUS ?? '').split(',').filter((s) => s.length > 0);
 const factors = (process.env.CORPUS_FACTORS ?? '').split(',').filter((s) => s.length > 0);
+
+/**
+ * The four the tour shoots, plus the owner's actual phone.
+ *
+ * 342 x 740 and 740 x 342, not 360 x 780 and 780 x 360. Three faults in one
+ * week were invisible purely because every fixture in this repository used
+ * round numbers — a width that divides evenly into 360 does not divide evenly
+ * into 342, and 740 is the landscape width at which the control bar wrapped
+ * onto a second row and took 40 px off the music.
+ *
+ * Local to the corpus rather than added to `FORM_FACTORS`, deliberately: that
+ * list also drives the UX tour, and two more orientations there would be two
+ * more full sixteen-minute passes and several hundred new photographs to
+ * review. Here they are two more legs per piece, and the legs are the
+ * instrument. `CORPUS_FACTORS=phone-portrait-342` runs just one.
+ */
+const CORPUS_FORM_FACTORS: { orientation: Orientation; size: { width: number; height: number } }[] = [
+  ...FORM_FACTORS,
+  { orientation: 'phone-portrait-342', size: { width: 342, height: 740 } },
+  { orientation: 'phone-landscape-740', size: { width: 740, height: 342 } },
+];
 
 async function waitForSheet(page: Page): Promise<void> {
   await page.waitForFunction(
@@ -259,7 +291,7 @@ function nextBarVisible(p: Probe, next: number): boolean {
 
 for (const piece of PIECES) {
   if (wanted.length > 0 && !wanted.includes(piece.id)) continue;
-  for (const { orientation, size } of FORM_FACTORS) {
+  for (const { orientation, size } of CORPUS_FORM_FACTORS) {
     if (factors.length > 0 && !factors.includes(orientation)) continue;
     const leg = piece.layout === undefined ? piece.id : `${piece.id}.${piece.layout}`;
     test.describe(`${leg} · ${orientation}`, () => {

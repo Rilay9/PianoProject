@@ -18,6 +18,8 @@ export interface SlotRecord {
   svgTop: number;
   svgHeight: number;
   svgWidth: number;
+  /** The drawn extent of the staves, in CSS px; -1 when nothing is drawn. */
+  inkWidth: number;
   /** The first stave line's y — what `08` §3.2 says must not move. */
   staveY: number | null;
   /** The CSS scale actually applied. */
@@ -53,12 +55,15 @@ export interface StateRecord {
   /** Drawn sheet height as a share of the stage, 0–1. */
   musicShare: number;
   /**
-   * The widest drawn sheet as a share of the stage's width, 0–1.
+   * The widest drawn *ink* as a share of the stage's width, 0–1.
    *
    * The other half of the same question, and the one that catches scroll:
    * scroll fits on width alone, so a sheet that is not as wide as the stage
    * has been fitted by something else. Twinkle upright read 0.23 here while
    * the height share looked ordinary.
+   *
+   * The staves, not the `<svg>` — see `inkWidth` on a slot for why the page is
+   * the wrong thing to measure and what it reported when it was measured.
    */
   musicWidth: number;
   slots: SlotRecord[];
@@ -136,8 +141,28 @@ export async function probeState(page: Page): Promise<StateRecord> {
       const stave = el.querySelector('.vf-stave, .staffline');
       const r = el.getBoundingClientRect();
       const sr = svg?.getBoundingClientRect();
+      // The drawn extent of the staves, which is what an eye judges.
+      //
+      // Not the `<svg>`'s box: that is the *page* the engraver laid out on,
+      // and the two are different numbers with different meanings. Upright the
+      // page is the stage's width by construction, so it says the music fills
+      // the screen whatever the music does — it reported 90 % for a screen the
+      // owner photographed 58 % full. Sideways it is worse than useless: a
+      // sliding chunk is engraved on a page a bar's width per bar, so the page
+      // is several times the stage and the share is a number over 100 %.
+      let inkLeft = Infinity;
+      let inkRight = -Infinity;
+      const staves = el.querySelectorAll<SVGGraphicsElement>('.staffline');
+      const lines = staves.length > 0 ? staves : el.querySelectorAll<SVGGraphicsElement>('.vf-stave');
+      for (const line of lines) {
+        const box = line.getBoundingClientRect();
+        if (box.width <= 0) continue;
+        inkLeft = Math.min(inkLeft, box.left);
+        inkRight = Math.max(inkRight, box.right);
+      }
       return {
         slot: el.dataset.slot ?? '?',
+        inkWidth: inkRight > inkLeft ? Math.round(inkRight - inkLeft) : -1,
         drawn: el.classList.contains('is-front'),
         cursor: el.classList.contains('is-cursor'),
         hidden: el.hidden === true,
@@ -180,7 +205,7 @@ export async function probeState(page: Page): Promise<StateRecord> {
     const stageBox = stageEl ? stageEl.getBoundingClientRect() : null;
     const widestSheet = Math.max(
       0,
-      ...slots.filter((s) => s.drawn && !s.hidden && s.svgWidth > 0).map((s) => s.svgWidth),
+      ...slots.filter((s) => s.drawn && !s.hidden && s.inkWidth > 0).map((s) => s.inkWidth),
     );
     const drawnSheet = slots
       .filter((s) => s.drawn && !s.hidden && s.svgHeight > 0)

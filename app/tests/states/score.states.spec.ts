@@ -16,11 +16,25 @@ const SONG = 'song.folk.hot-cross-buns';
 const SONG_TWO_HANDS = 'song.folk.twinkle.ht';
 /** 3/4 with a pickup: the only bar that may be numbered 0. */
 const SONG_PICKUP = 'song.folk.happy-birthday.simple';
+/** The longest title in the authored library, 53 characters, for §9.23. */
+const SONG_LONG_TITLE = 'song.folk.when-the-saints.alternating';
 
 const PHONE_UP = { width: 360, height: 780 };
 const PHONE_UP_BIG = { width: 412, height: 915 };
 const PHONE_SIDE = { width: 780, height: 360 };
 const PHONE_SIDE_BIG = { width: 915, height: 412 };
+/**
+ * The owner's actual phone, which is not a round number.
+ *
+ * Every fixture here was 360 x 780 or 780 x 360, and three faults in one week
+ * were invisible for that reason alone: a width that divides evenly into 360
+ * does not divide evenly into 342, and 740 is the landscape width at which the
+ * control bar wrapped onto a second row. These are *extra* cells, never
+ * replacements — the round sizes stay exactly as they are so that nothing
+ * already photographed moves.
+ */
+const PHONE_UP_REAL = { width: 342, height: 740 };
+const PHONE_SIDE_REAL = { width: 740, height: 342 };
 const TABLET_UP = { width: 900, height: 1200 };
 const TABLET_SIDE = { width: 1200, height: 900 };
 
@@ -43,7 +57,15 @@ async function openScore(page: Page, query = '', song = SONG): Promise<void> {
   // Let the fit settle: the strip and the bar each take their share a frame
   // after the score arrives, and a shot taken before that is of a screen the
   // owner never sees.
-  await page.waitForTimeout(1_500);
+  //
+  // 2.5 s, not 1.5. The piece measurement is scheduled with
+  // `requestIdleCallback(…, { timeout: 1500 })`, so it lands *at* 1,500 ms in
+  // the worst case and the fit changes when it does — which made this wait a
+  // coin toss between the stand-in size and the measured one, and is one of
+  // the two mechanisms behind "the same piece fills 58 % of the width on one
+  // run and 90 % on the next". A cell has to be a photograph of a settled
+  // screen or it is not evidence of anything.
+  await page.waitForTimeout(2_500);
 }
 
 async function setMode(page: Page, mode: string): Promise<void> {
@@ -103,8 +125,10 @@ test('every state, photographed and measured', async ({ page }) => {
   // Can I read it at all? Every form factor, then the failures.
   for (const [name, size] of [
     ['phone-upright-360', PHONE_UP],
+    ['phone-upright-342', PHONE_UP_REAL],
     ['phone-upright-412', PHONE_UP_BIG],
     ['phone-sideways-780', PHONE_SIDE],
+    ['phone-sideways-740', PHONE_SIDE_REAL],
     ['phone-sideways-915', PHONE_SIDE_BIG],
     ['tablet-upright-900', TABLET_UP],
     ['tablet-sideways-1200', TABLET_SIDE],
@@ -288,13 +312,38 @@ test('every state, photographed and measured', async ({ page }) => {
   // What can I change? The bar at every width, the sheets.
   for (const [name, size] of [
     ['360', PHONE_UP],
+    ['342', PHONE_UP_REAL],
     ['412', PHONE_UP_BIG],
     ['780', PHONE_SIDE],
+    ['740', PHONE_SIDE_REAL],
     ['1200', TABLET_SIDE],
   ] as const) {
     await page.setViewportSize(size);
     await openScore(page);
     await shoot(page, '5-what-can-i-change', `bar--${name}`, 'One row, always. §9.23.', { viewportW: size.width, running: false });
+  }
+
+  // §9.23 against a title that does not fit.
+  //
+  // The check is correct and had only ever run against *Hot Cross Buns*, whose
+  // name is short enough that the bar has room whatever else is on it. The
+  // fault it exists for — `⋯` alone on a second row — needed a long name and a
+  // 740 px landscape together, which is why a photograph found it and this did
+  // not. 53 characters, the longest title in the authored library.
+  for (const [name, size] of [
+    ['342', PHONE_UP_REAL],
+    ['740', PHONE_SIDE_REAL],
+    ['780', PHONE_SIDE],
+  ] as const) {
+    await page.setViewportSize(size);
+    await openScore(page, '', SONG_LONG_TITLE);
+    await shoot(
+      page,
+      '5-what-can-i-change',
+      `bar--long-title-${name}`,
+      'A 53-character title: the bar is still one row. §9.23.',
+      { viewportW: size.width, running: false },
+    );
   }
 
   await page.setViewportSize(PHONE_UP);
@@ -344,6 +393,33 @@ test('every state, photographed and measured', async ({ page }) => {
     minStep: 3,
     arrangement: 'single',
   });
+
+  // The turn that had no picture: sideways to upright, at one bar per window,
+  // paused, on the owner's own phone.
+  //
+  // At one bar `updateReadAhead` says `single` whichever way up the phone is,
+  // so the arrangement does not change and nothing used to be re-engraved: the
+  // sideways sliding chunk stayed on a 2,340 px page and was squeezed into 342
+  // px — 34 px of music in a 662 px stage — and in Wait mode, paused, there is
+  // no next note to redraw it. Every assertion passed, because they were all
+  // about the *width* and a chunk squeezed to fit the width fills the width.
+  // A photograph would have shown it in one glance.
+  await page.setViewportSize(PHONE_SIDE_REAL);
+  await settings(page, { barsPerWindow: 1 });
+  await openScore(page);
+  await setMode(page, 'wait');
+  await page.locator('#score-play').click();
+  await playInto(page, midi, 2);
+  await page.setViewportSize(PHONE_UP_REAL);
+  await page.waitForTimeout(2_500);
+  await shoot(
+    page,
+    '6-what-if-it-goes-wrong',
+    'rotation--bars1-real-phone',
+    'Turned upright at one bar per window, 740x342 to 342x740: re-engraved for the new width, not the old chunk squeezed into it.',
+    { running: true, arrangement: 'single', viewportW: PHONE_UP_REAL.width },
+  );
+  await settings(page, { barsPerWindow: 2 });
 
   // The end of a piece: the other slot shows the bars behind, never blank.
   await page.setViewportSize(PHONE_UP);

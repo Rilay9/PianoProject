@@ -18,6 +18,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 import { openScoreMenu, openTempoSheet, withScoreMenu } from '../e2e/scoreControls';
 import path from 'node:path';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
 import {
@@ -26,6 +27,7 @@ import {
   identicalShots,
   saveLedger,
   shoot,
+  TOUR_DIR,
   writeContactSheet,
 } from './shoot';
 import { seedFolder, seedProgress, seedShelf, setSetting } from './seed';
@@ -659,12 +661,39 @@ for (const { orientation, size } of FORM_FACTORS) {
 
       saveLedger();
       writeContactSheet();
+      // Written down, not only printed.
+      //
+      // The sweep used to `console.log` its findings and nothing else, so the
+      // only record of what it found was whatever scrollback survived a
+      // sixteen-minute run — and half of §4d item 1 was therefore advisory in
+      // the literal sense that nobody could read it afterwards. It goes beside
+      // the pictures now, one file per form factor, so a finding can be looked
+      // up against the photograph it came from and compared with the last run.
+      const auditFile = path.join(TOUR_DIR, `audit-${orientation}.json`);
+      mkdirSync(TOUR_DIR, { recursive: true });
+      writeFileSync(
+        auditFile,
+        JSON.stringify(
+          {
+            orientation,
+            at: new Date().toISOString(),
+            screens: audited.length,
+            findings: audited.reduce((n, a) => n + a.findings.length, 0),
+            summary: summarise(audited),
+            byScene: audited,
+            gaps,
+            redundant,
+          },
+          null,
+          1,
+        ),
+      );
       if (audited.length > 0) {
         const total = audited.reduce((n, a) => n + a.findings.length, 0);
         const screens = audited.length;
         console.log(
           `\n${orientation}: ${String(total)} to look at, across ` +
-            `${String(screens)} screen${screens === 1 ? '' : 's'}`,
+            `${String(screens)} screen${screens === 1 ? '' : 's'} — ${auditFile}`,
         );
         for (const line of summarise(audited)) console.log(`  ${line}`);
       }
