@@ -2300,7 +2300,25 @@ export class WindowRenderer {
     // change the owner saw; only ink far taller than the stage has room for
     // still shrinks it, since a note clipped off the bottom is worse.
     if (this.frozen && this.frozen.scale > 0) {
-      return fitted >= this.frozen.scale * FROZEN_OVERFLOW ? this.frozen.scale : fitted;
+      if (fitted >= this.frozen.scale * FROZEN_OVERFLOW) return this.frozen.scale;
+      // The shrink is allowed — and the freeze moves with it.
+      //
+      // Without this the run keeps comparing every later window against the
+      // size it started at, so each window that needs less room than the last
+      // gets its own scale and the sheet changes size again and again. That is
+      // `09` §1's rule broken in the one place it matters most, and the Scherzo
+      // in landscape showed it: frozen at 0.788 before the probe had measured
+      // anything, then drawn at 0.691, 0.684 and 0.657, because each of those
+      // is below 0.9 of 0.788 and none was ever compared with the one before
+      // it. Re-seating means the first honest window sets the size and the
+      // rest hold to *that* — one change, at the start, instead of one per
+      // discovery. `03` §3.3 already states this is the rule ("a new window is
+      // drawn — No. This is the whole rule"); it simply was not implemented.
+      this.frozen = {
+        scale: fitted,
+        piece: this.frozen.piece ?? piece,
+      };
+      return fitted;
     }
     return fitted;
   }
