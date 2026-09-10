@@ -132,6 +132,9 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   if (db) {
     await db.put('progress', row);
     await db.add('sessions', session);
+    // Not awaited: the run is finished and the learner is looking at a
+    // summary. Tidying up is the app's business, not theirs.
+    void pruneSessions();
   }
   await addMinutes(result.durationMs / 60_000, now);
   notify();
@@ -156,6 +159,72 @@ export async function recentSessions(limit = 50): Promise<SessionRow[]> {
   const db = await openDatabase();
   const rows = (await db?.getAll('sessions')) ?? [];
   return rows.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+}
+
+/**
+ * How many practice sessions are stored.
+ *
+ * Cheap: a `count()` on the store rather than reading it. Diagnostics shows it
+ * so that a store which grows for ever can be *seen* growing.
+ */
+export async function sessionCount(): Promise<number> {
+  const db = await openDatabase();
+  return (await db?.count('sessions')) ?? 0;
+}
+
+/**
+ * The most sessions kept, and the slack before pruning is worth doing.
+ *
+ * The store had no retention rule at all: `db.ts` creates it with
+ * `autoIncrement` and nothing anywhere removed a row, so every practice run
+ * appended one for ever. Daily use for a year is thousands of rows on a phone,
+ * and `recentSessions` reads *all* of them and sorts the lot to hand back
+ * fifty.
+ *
+ * 2,000 because that is far more than anything reads. The deepest consumer is
+ * the Progress screen at 100, then the drill host at 60; the weekly minutes and
+ * the heat map come from the `streak` store, which is a total per day and does
+ * not depend on this at all. So the cap cannot change a number the owner sees
+ * until they are two thousand sessions deep — about six years at a session a
+ * day — and by then the oldest rows are of no use to any screen.
+ *
+ * Pruned in blocks rather than one row per run: deleting on every write would
+ * put a cursor walk in the path of finishing a piece, which is the one moment
+ * this store must not be slow.
+ */
+export const MAX_SESSIONS = 2_000;
+export const PRUNE_SLACK = 200;
+
+/**
+ * Drops the oldest sessions once there are more than the cap plus its slack.
+ *
+ * By the `byDate` index, oldest first, so "the oldest" means the oldest run
+ * and not the lowest auto-increment key — the two agree today and would stop
+ * agreeing the first time a backup is restored.
+ *
+ * Failure is deliberately silent: a phone that cannot prune keeps every row,
+ * which is exactly the behaviour that shipped, and is far better than a run
+ * that will not record because tidying up threw.
+ */
+export async function pruneSessions(max = MAX_SESSIONS, slack = PRUNE_SLACK): Promise<number> {
+  const db = await openDatabase();
+  if (!db) return 0;
+  try {
+    const total = await db.count('sessions');
+    if (total <= max + slack) return 0;
+    const tx = db.transaction('sessions', 'readwrite');
+    let cursor = await tx.store.index('byDate').openCursor();
+    let dropped = 0;
+    while (cursor && total - dropped > max) {
+      await cursor.delete();
+      dropped += 1;
+      cursor = await cursor.continue();
+    }
+    await tx.done;
+    return dropped;
+  } catch {
+    return 0;
+  }
 }
 
 // --- weekly minutes (docs/04 §2: a weekly goal, never a daily streak) ------

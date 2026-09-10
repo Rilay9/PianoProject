@@ -8,6 +8,7 @@
  * Settings into the first parse.
  */
 import { allImports } from '../data/importStore';
+import { MAX_SESSIONS, sessionCount } from '../data/progressStore';
 
 /** docs/04 §7: "offline only [off]" — stops the app checking for updates. */
 export const OFFLINE_ONLY_KEY = 'pianopath.offlineOnly';
@@ -35,6 +36,17 @@ export interface StorageBreakdown {
   precached: number;
   imports: number;
   importBytes: number;
+  /**
+   * Practice sessions stored, and the cap they are held to.
+   *
+   * Here because the owner asked whether the log grows for ever and this was
+   * the one store with no answer: `renderTiming` keeps a 200-entry ring and
+   * `errorLog` stops at 50 distinct errors, and `sessions` simply appended a
+   * row per run. It has a retention rule now, and a number nobody can see is
+   * a rule nobody can check.
+   */
+  sessions: number;
+  sessionCap: number;
 }
 
 export function formatBytes(bytes: number): string {
@@ -56,7 +68,7 @@ export async function measureStorage(): Promise<StorageBreakdown> {
       // Cache Storage can be unavailable; the number is then simply unknown.
     }
   }
-  const rows = await allImports();
+  const [rows, sessions] = await Promise.all([allImports(), sessionCount()]);
   const importBytes = rows.reduce(
     (sum, row) => sum + (typeof row.data === 'string' ? row.data.length : row.data.byteLength),
     0,
@@ -67,5 +79,7 @@ export async function measureStorage(): Promise<StorageBreakdown> {
     precached,
     imports: rows.length,
     importBytes,
+    sessions,
+    sessionCap: MAX_SESSIONS,
   };
 }
