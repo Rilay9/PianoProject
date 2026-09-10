@@ -29,11 +29,43 @@ const STRIP_UPRIGHT_PX = 72;
 const STRIP_SIDEWAYS_PX = 56;
 const RIBBON_PX = 32;
 
-/** The device's sides, from the window it is running in. */
+/**
+ * The phone the miniature stands for, in CSS pixels.
+ *
+ * On a phone this is the phone, which is the point: the preview shows the
+ * owner their own screen. On a laptop the window is not a phone at all, and
+ * taking it literally is what made the previews unreadable — a 1512 x 850
+ * window is a 850 x 1512 "device" upright, and a card 320 px wide can only
+ * draw that at a fifth of size, so every miniature came out tiny while the
+ * same card on the phone managed twice that. A tablet did the same thing for
+ * the same reason.
+ *
+ * So the simulated device is clamped to the range of screens this app is for.
+ * Inside the range nothing changes. Outside it the miniature stands for a
+ * large phone instead of for the window it happens to be running in, which is
+ * both legible and a truer picture of what the owner will actually hold.
+ *
+ * Clamped, not replaced by one fixed size: a 412 px phone and a 342 px phone
+ * should still preview differently, because they do differ.
+ */
+const PHONE_SHORT_PX = { min: 320, max: 430 };
+const PHONE_LONG_PX = { min: 640, max: 950 };
+
+function clamp(value: number, range: { min: number; max: number }): number {
+  return Math.min(range.max, Math.max(range.min, value));
+}
+
+/** The device's sides: the window's own, held to the range of a phone. */
 export function deviceSides(): { short: number; long: number } {
   const w = window.innerWidth || 360;
   const h = window.innerHeight || 780;
-  return { short: Math.min(w, h), long: Math.max(w, h) };
+  const short = clamp(Math.min(w, h), PHONE_SHORT_PX);
+  const long = clamp(Math.max(w, h), PHONE_LONG_PX);
+  // A phone is taller than it is wide, and a clamp applied to each side on its
+  // own could in principle cross them over. The long side wins, because a
+  // miniature drawn wider than it is tall would be a picture of a way up the
+  // owner did not choose.
+  return { short: Math.min(short, long), long: Math.max(short, long) };
 }
 
 export interface DevicePreview {
@@ -68,6 +100,11 @@ export function createDevicePreview(options: DevicePreviewOptions): DevicePrevie
   const deviceW = upright ? short : long;
   const deviceH = upright ? long : short;
   const byHeight = options.maxHeight !== undefined && options.maxHeight > 0 ? options.maxHeight / deviceH : 1;
+  // No floor here. A miniature forced up to a legible size overflowed its
+  // step — 252 px of preview in a 209 px step sideways — and a preview taller
+  // than the step it is in is the fault that put the tour's footer below the
+  // fold. Legibility is bought by clamping what the miniature *stands for*,
+  // above, which costs the layout nothing.
   const ratio = Math.min(1, options.maxWidth / deviceW, byHeight);
   const headReal = upright ? HEAD_UPRIGHT_PX : HEAD_SIDEWAYS_PX;
 
