@@ -2361,6 +2361,20 @@ input[type='checkbox'] {
   flex: 0 0 auto;
 }
 
+/*
+ * The one control that may give ground, so a wider font cannot wrap the row.
+ *
+ * Everything else on the bar is fixed, so a row that comes out a few pixels
+ * over has nowhere to put them and breaks onto a second line. The mode select
+ * is the one thing here that can be narrower without losing anything a person
+ * needs — its labels already shorten on a narrow screen — so it absorbs the
+ * difference and the row stays a row.
+ */
+.score-bar > .score-select {
+  flex: 0 1 auto;
+  min-width: 3.25rem;
+}
+
 /* Back, the title and the status line, mirrored from the header for a phone
    held sideways (P21d A6). Upright the bar is full and the header row is the
    right place, so this is not drawn at all. */
@@ -2468,7 +2482,14 @@ input[type='checkbox'] {
 .score-select {
   font: inherit;
   font-size: 0.85rem;
-  padding: 0.3rem 0.4rem;
+  /* 0.3rem across, not 0.4: the row has to survive a font it was not measured
+     in. Tuned on Windows it fitted 342 px with a pixel to spare and wrapped on
+     the Linux runner, where the same words are wider — which is the fault
+     §9.23 exists to prevent, found by `score.bar-targets.spec.ts` rather than
+     by a photograph for once. Padding is the right place to take it from:
+     `#score-play` and `#score-more` hold their forty either way, and the ones
+     with words in them lose whitespace rather than letters. */
+  padding: 0.3rem 0.3rem;
   border-radius: 0.375rem;
   border: 1px solid var(--border, rgba(255, 255, 255, 0.16));
   background: transparent;

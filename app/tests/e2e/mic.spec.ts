@@ -128,9 +128,11 @@ test.describe('microphone input', () => {
     expect(level?.rmsDb).toBeLessThan(0);
     // A hair of tolerance: against a steady synthetic tone the noise floor
     // converges *onto* the RMS, and an exact comparison then turns on the last
-    // bit of a float. It failed once by 7 × 10⁻⁷ dB, which is not a fact about
-    // the microphone.
-    expect(level?.noiseFloorDb).toBeLessThanOrEqual((level?.rmsDb ?? 0) + 1e-6);
+    // bit of a float. 10⁻⁶ dB was not quite enough — it went 1.6 × 10⁻⁶ over on
+    // 2026-09-10, twice in one afternoon — so the allowance is 10⁻⁴ dB, which
+    // is still four orders of magnitude below anything a microphone could mean
+    // by it and far below what any assertion here is about.
+    expect(level?.noiseFloorDb).toBeLessThanOrEqual((level?.rmsDb ?? 0) + 1e-4);
     await page.evaluate(() => window.__pianopathDevScore?.micDisconnect());
   });
 

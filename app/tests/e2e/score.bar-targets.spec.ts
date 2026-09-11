@@ -57,12 +57,25 @@ test('every control on the bar is big enough to hit, and the row never wraps', a
             .filter((k) => k.getBoundingClientRect().height > 0)
             .map((k) => Math.round(k.getBoundingClientRect().top)),
         );
-        return { rows: tops.size, small };
+        // Nothing squeezed into illegibility.
+        //
+        // The row survives a wider font because one control gives ground: the
+        // mode select may shrink, so the six of them can never wrap onto two
+        // lines whatever the machine's font does. The risk that buys is the
+        // other one — a select squeezed until its own words are cut off — so
+        // that is what is checked. `.score-bar__title` is exempt: truncating
+        // is what it is for, it says so with `text-overflow: ellipsis`, and a
+        // 53-character piece name has nowhere else to go.
+        const cut = [...bar.querySelectorAll<HTMLElement>('select, button')]
+          .filter((el) => el.scrollWidth > el.clientWidth + 1)
+          .map((el) => `${el.id || el.className} needs ${String(el.scrollWidth)}px in ${String(el.clientWidth)}px`);
+        return { rows: tops.size, small, cut };
       }, TAP_MIN);
 
       if (!seen) throw new Error(`no control bar at ${String(width)}px`);
       const where = `${song.replace('song.folk.', '')} at ${String(width)}px`;
       if (seen.rows > 1) faults.push(`${where}: the bar wrapped onto ${String(seen.rows)} rows`);
+      for (const el of seen.cut) faults.push(`${where}: ${el}`);
       for (const el of seen.small) {
         faults.push(`${where}: ${el.id} is ${String(el.w)}x${String(el.h)}, under ${String(TAP_MIN)}`);
       }
