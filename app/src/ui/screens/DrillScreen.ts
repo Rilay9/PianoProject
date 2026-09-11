@@ -18,7 +18,7 @@
  *   which is the whole point of a flash card.
  */
 import type { Router } from '../../router';
-import { findItem } from '../../curriculum/load';
+import { findItem, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem } from '../../curriculum/types';
 import {
   ChordDictationDrill,
@@ -1123,6 +1123,36 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       );
     }
 
+    /**
+     * Does the curriculum actually have this unit?
+     *
+     * The placement test's outcome is not a score, it is a **starting point**:
+     * `recordPlacement` writes it into the plan and Today builds from there. So
+     * a target that does not resolve does not misreport anything — it sets the
+     * learner's whole plan to a unit nothing can find, silently.
+     *
+     * One of the eight shipped that way. `blues.4` was not among the 88 units
+     * in the curriculum, so failing the swung-blues item — the seventh of
+     * eight, a fairly capable player — recorded a starting unit that did not
+     * exist. The data is corrected and
+     * `tests/unit/placementTargets.test.ts` now joins the two files so the
+     * same slip cannot be written again. This is the second line of defence:
+     * offering nothing is better than offering a plan that goes nowhere.
+     */
+    async function unitExists(unitId: string): Promise<boolean> {
+      if (unitId === '') return false;
+      try {
+        const curriculum = await loadCurriculum();
+        return curriculum.stages.some((stage) => stage.units.some((unit) => unit.id === unitId));
+      } catch {
+        // The curriculum could not be read at all, which is a bigger problem
+        // than this one and is reported elsewhere. Do not block the result on
+        // it: the learner still gets their answer, and `Start here` is the
+        // only thing that needs the unit to be real.
+        return true;
+      }
+    }
+
     function finishPlacement(unitId: string): void {
       finished = true;
       section.dataset.drill = 'finished';
@@ -1159,8 +1189,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
                 button(
                   'Start here',
                   () => {
-                    void recordPlacement(unitId).then(() => {
-                      status.textContent = 'Placement recorded. Today will build from here.';
+                    void unitExists(unitId).then((real) => {
+                      if (!real) {
+                        status.textContent = `${unitId} is not a unit in the plan, so nothing was recorded — this drill's items need correcting.`;
+                        status.classList.add('status--error');
+                        return;
+                      }
+                      void recordPlacement(unitId).then(() => {
+                        status.textContent = 'Placement recorded. Today will build from here.';
+                      });
                     });
                   },
                   { id: 'drill-placement-start', variant: 'primary' },

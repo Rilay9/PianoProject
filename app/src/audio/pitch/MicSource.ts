@@ -127,6 +127,21 @@ export class MicSource implements InputSource {
    * because the two clocks drift.
    */
   private clockOffsetMs = 0;
+  /** False until `syncClock` has run once, so a note cannot use an offset of 0. */
+  private clockSynced = false;
+
+  /**
+   * Bumped by every `connect()` and every `disconnect()`.
+   *
+   * `connect()` has four `await`s in it and each one is a point at which a
+   * second call can start — two taps on the microphone toggle, or a screen
+   * re-connecting while the permission prompt is still up. The later call used
+   * to overwrite `this.stream` and `this.node`, and the earlier attempt's
+   * microphone track and worklet were left running with `receive` still wired
+   * to their port: the phone's recording indicator stayed on after
+   * `disconnect()`, and every note was reported to the engine twice.
+   */
+  private attempt = 0;
 
   constructor(options: MicSourceOptions) {
     this.media =
@@ -192,8 +207,15 @@ export class MicSource implements InputSource {
     }
     if (deviceId !== undefined) this.pinnedDeviceId = deviceId;
     this.disconnect();
+    // `disconnect()` has just bumped the token; anything that bumps it again
+    // — another `connect()`, or an explicit `disconnect()` — has taken over
+    // from this attempt, and this attempt must let go of what it opened
+    // instead of installing it over the top.
+    const attempt = this.attempt;
+    const superseded = (): boolean => attempt !== this.attempt;
 
     const context = await this.getContext();
+    if (superseded()) return;
     this.context = context;
 
     let stream: MediaStream;
@@ -209,6 +231,12 @@ export class MicSource implements InputSource {
       }
       this.fail('failed', 'could not open the microphone', cause);
     }
+    if (superseded()) {
+      // Nobody else holds this stream: the newer call's `disconnect()` ran
+      // before `this.stream` was assigned, so it is this attempt's to close.
+      for (const track of stream.getTracks()) track.stop();
+      return;
+    }
     this.stream = stream;
 
     try {
@@ -217,6 +245,9 @@ export class MicSource implements InputSource {
       this.disconnect();
       this.fail('failed', 'the pitch detector worklet failed to load', cause);
     }
+    // From here `this.stream` is this attempt's, so a newer call's
+    // `disconnect()` has already stopped it; there is nothing left to release.
+    if (superseded()) return;
 
     const node = new AudioWorkletNode(context, 'pitch-detector', {
       numberOfInputs: 1,
@@ -242,13 +273,25 @@ export class MicSource implements InputSource {
     node.port.postMessage({ type: 'notch', hz: MIC_CLICK_HZ } satisfies ToPitchWorklet);
     if (this.calibration) this.sendCalibration(this.calibration);
 
+    // Before any note can arrive. The offset was only set by a `level`
+    // message, which the worklet posts once every eight hops — ~85 ms at
+    // 48 kHz — so a note detected before the first one was stamped with an
+    // offset of 0, i.e. on the AudioContext timeline rather than
+    // `performance.now()`. That is the whole age of the context out (minutes,
+    // for a context opened at the first tap), and it reaches the engine as a
+    // note played long before the run began. Connecting the microphone while a
+    // note is already ringing is exactly when it happens.
+    this.syncClock(context.currentTime * 1000);
+
     this.connected = true;
     this.detail = describeTrack(stream);
     await this.refreshDevices();
+    if (superseded()) return;
     this.emitState();
   }
 
   disconnect(): void {
+    this.attempt += 1;
     this.node?.port.postMessage({ type: 'record', on: false } satisfies ToPitchWorklet);
     if (this.node) this.node.port.onmessage = null;
     this.input?.disconnect();
@@ -260,6 +303,9 @@ export class MicSource implements InputSource {
     this.sink = null;
     this.stream = null;
     this.lastLevel = null;
+    // The next connection may be on a different context; make it re-anchor.
+    this.clockSynced = false;
+    this.clockOffsetMs = 0;
     if (this.connected) {
       this.connected = false;
       this.detail = 'not connected';
@@ -355,6 +401,9 @@ export class MicSource implements InputSource {
   private receive(message: FromPitchWorklet): void {
     switch (message.type) {
       case 'notes':
+        // Belt and braces for the case `connect()`'s own sync cannot cover: a
+        // node whose port outlives the context it was made on.
+        if (!this.clockSynced) this.syncClock((this.context?.currentTime ?? 0) * 1000);
         for (const event of message.events) {
           this.emitNote({
             kind: event.kind,
@@ -392,6 +441,7 @@ export class MicSource implements InputSource {
    * message hop but stable.
    */
   private syncClock(contextMs: number): void {
+    this.clockSynced = true;
     const stamp = this.context?.getOutputTimestamp?.();
     if (stamp && stamp.contextTime && stamp.performanceTime) {
       this.clockOffsetMs = stamp.performanceTime - stamp.contextTime * 1000;

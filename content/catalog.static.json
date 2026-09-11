@@ -265,7 +265,7 @@
           { "text": "Play a C major scale hands together.", "failUnit": "3.1" },
           { "text": "Sight-read a four-bar phrase on the grand staff.", "failUnit": "3.1" },
           { "text": "Play I–IV–V in G from chord symbols.", "failUnit": "3.2" },
-          { "text": "Play a swung twelve-bar blues left hand.", "failUnit": "blues.4" },
+          { "text": "Play a swung twelve-bar blues left hand.", "failUnit": "blues-boogie.4.1" },
           { "text": "Play the Petzold Minuet in G at 60% tempo.", "failUnit": "4.2" }
         ],
         "passUnit": "4.3"

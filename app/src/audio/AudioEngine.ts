@@ -38,6 +38,7 @@ export class AudioEngine {
   private readonly factory: (() => AudioContext) | null;
   private readonly listeners = new Set<(s: AudioEngineState) => void>();
   private gestureCleanup: (() => void) | null = null;
+  private stateCleanup: (() => void) | null = null;
   private volume = 1;
 
   constructor(options: AudioEngineOptions = {}) {
@@ -83,12 +84,37 @@ export class AudioEngine {
       this.master = this.context.createGain();
       this.master.gain.value = this.volume;
       this.master.connect(this.context.destination);
+      this.watchState(this.context);
     }
     if (this.context.state !== 'running') {
       await this.context.resume();
     }
     this.emit();
     return this.context;
+  }
+
+  /**
+   * Reports a suspend the app did not ask for.
+   *
+   * `state` was only ever published from `ensureStarted()` and `close()`, so
+   * the *platform* suspending the context — which Android does whenever the
+   * screen locks, a call arrives, or another app takes the audio focus — moved
+   * nothing. `onStateChange` subscribers went on believing sound was running
+   * while the metronome had silently stopped clicking, and the only way back
+   * was a tap that happened to call `ensureStarted()` again. The context fires
+   * `statechange` for exactly this; listen to it.
+   */
+  private watchState(context: AudioContext): void {
+    this.stateCleanup?.();
+    // A real BaseAudioContext is an EventTarget; a hand-written test double
+    // need not be, and a missing listener must not stop audio from starting.
+    if (typeof context.addEventListener !== 'function') return;
+    const handler = (): void => this.emit();
+    context.addEventListener('statechange', handler);
+    this.stateCleanup = () => {
+      context.removeEventListener('statechange', handler);
+      this.stateCleanup = null;
+    };
   }
 
   /**
@@ -136,6 +162,7 @@ export class AudioEngine {
 
   async close(): Promise<void> {
     this.gestureCleanup?.();
+    this.stateCleanup?.();
     const ctx = this.context;
     this.context = null;
     this.master = null;

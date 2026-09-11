@@ -33,6 +33,13 @@ export const EMPTY_TAP_STATE: TapTempoState = { taps: [], bpm: null };
 
 export function tap(state: TapTempoState, atMs: number): TapTempoState {
   const last = state.taps.at(-1);
+  // Two taps the clock cannot tell apart are one tap — a button that fired
+  // twice, or a handler reached from two events in the same task. Keeping both
+  // put a zero in the interval average, and the `mean <= 0` guard below only
+  // covers the case where the pair is *all* there is: with one duplicate in
+  // the window, four steady taps half a second apart read 160 bpm instead of
+  // 120, and stayed wrong for the next four taps.
+  if (last !== undefined && atMs <= last) return state;
   const restart = last === undefined || atMs - last > TAP_RESET_MS;
   const taps = restart ? [atMs] : [...state.taps, atMs].slice(-(TAP_WINDOW + 1));
   if (taps.length < 2) return { taps, bpm: null };

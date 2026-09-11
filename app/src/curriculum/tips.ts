@@ -77,8 +77,19 @@ let indexPromise: Promise<TipsIndex | null> | null = null;
 
 function loadIndex(): Promise<TipsIndex | null> {
   indexPromise ??= fetch(contentUrl('tips/index.json'))
-    .then((response) => (response.ok ? (response.json() as Promise<TipsIndex>) : null))
-    .catch(() => null);
+    .then((response) => {
+      if (!response.ok) throw new Error(`tips/index.json: ${String(response.status)}`);
+      return response.json() as Promise<TipsIndex>;
+    })
+    .catch(() => {
+      // A failure here is almost always a first-launch network hiccup mid
+      // precache — the same shape `loadCatalog` in `load.ts` retries for —
+      // and caching it forever would silently blind every drill's tips for
+      // the rest of the session. `tipsFor` still gets its `null` this time;
+      // clearing the cache just lets the *next* call try the network again.
+      indexPromise = null;
+      return null;
+    });
   return indexPromise;
 }
 

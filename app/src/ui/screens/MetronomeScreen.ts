@@ -170,11 +170,18 @@ export function MetronomeScreen(router: Router): HTMLElement {
     metronome?.stop();
     metronome?.dispose();
     metronome = null;
+    // Every scheduled click left a timer up to one look-ahead window out. Not
+    // clearing them meant a dot lit up ~100 ms after Stop and stayed lit on a
+    // stopped metronome, and on unmount they went on painting a section that
+    // was no longer in the document.
+    for (const id of pendingPaints) window.clearTimeout(id);
+    pendingPaints.clear();
     currentBeat = -1;
     render();
   }
 
   let currentBeat = -1;
+  const pendingPaints = new Set<number>();
   function onBeat(beat: MetronomeBeat): void {
     // `beatInBar` is 1-based; the dots are an array.
     const index = beat.beatInBar - 1;
@@ -185,9 +192,11 @@ export function MetronomeScreen(router: Router): HTMLElement {
     // exactly the error a metronome exists to not have.
     const context = audioEngine.contextOrNull;
     const delayMs = context ? Math.max(0, (beat.timeSec - context.currentTime) * 1000) : 0;
-    window.setTimeout(() => {
+    const id = window.setTimeout(() => {
+      pendingPaints.delete(id);
       paintBeats(index);
     }, delayMs);
+    pendingPaints.add(id);
   }
 
   function paintBeats(active: number): void {

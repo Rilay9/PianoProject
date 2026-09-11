@@ -37,16 +37,28 @@ export interface BeatSchedulerOptions {
 const MAX_BEATS_PER_PULL = 1024;
 
 export class BeatScheduler {
-  private readonly beatsPerBar: number;
+  private beatsPerBar: number;
   private readonly countInBeats: number;
   private secondsPerBeat: number;
   private nextIndex = 0;
   private nextTimeSec: number;
+  /**
+   * The beat index that is beat 1 of a bar, and the bar number it carries.
+   *
+   * Bar numbering used to be `floor((index - countInBeats) / beatsPerBar) + 1`,
+   * which only works while `beatsPerBar` never changes. A meter change moves
+   * this pair instead, so beats already handed to the audio clock keep the
+   * numbers they were given and the new meter starts a new bar.
+   */
+  private barOriginIndex = 0;
+  private barOriginBar: number;
 
   constructor(options: BeatSchedulerOptions) {
     if (!(options.bpm > 0)) throw new RangeError(`bpm must be positive, got ${options.bpm}`);
     this.beatsPerBar = Math.max(1, Math.trunc(options.beatsPerBar ?? 4));
-    this.countInBeats = Math.max(0, Math.trunc(options.countInBars ?? 0)) * this.beatsPerBar;
+    const countInBars = Math.max(0, Math.trunc(options.countInBars ?? 0));
+    this.countInBeats = countInBars * this.beatsPerBar;
+    this.barOriginBar = 1 - countInBars;
     this.secondsPerBeat = 60 / options.bpm;
     this.nextTimeSec = options.startTimeSec;
   }
@@ -54,6 +66,11 @@ export class BeatScheduler {
   /** Number of clicks before bar 1 beat 1. */
   get countInBeatCount(): number {
     return this.countInBeats;
+  }
+
+  /** Beats to a bar as of now — the changed value after `setBeatsPerBar`. */
+  get beatsInBar(): number {
+    return this.beatsPerBar;
   }
 
   /** AudioContext time of the next beat that has not been pulled yet. */
@@ -76,6 +93,32 @@ export class BeatScheduler {
   }
 
   /**
+   * Changes the meter from the next un-pulled beat onwards, which becomes
+   * beat 1 of a new bar.
+   *
+   * A new bar rather than a re-slicing of the one already sounding: the beats
+   * behind the look-ahead window have already been given a `beatInBar`, the UI
+   * has already lit those dots, and renumbering them retrospectively would put
+   * the accent somewhere the click did not fall. Truncating the current bar is
+   * what a person switching the metronome from 4/4 to 3/4 mid-click expects —
+   * the next click is a downbeat.
+   */
+  setBeatsPerBar(beats: number): void {
+    const next = Math.max(1, Math.trunc(beats));
+    if (next === this.beatsPerBar) return;
+    // The bar the last handed-out beat belonged to; the new meter starts the
+    // one after it. With nothing handed out since the last origin, the next
+    // beat is already a downbeat and keeps its bar number.
+    const lastBar =
+      this.nextIndex > this.barOriginIndex
+        ? this.describe(this.nextIndex - 1, 0).bar
+        : this.barOriginBar - 1;
+    this.barOriginBar = lastBar + 1;
+    this.barOriginIndex = this.nextIndex;
+    this.beatsPerBar = next;
+  }
+
+  /**
    * Returns every beat starting before `currentTimeSec + lookaheadSec` and
    * advances past them. This is the look-ahead scheduler pattern from
    * docs/01-architecture.md §4.4: a coarse timer wakes up often enough to
@@ -94,15 +137,17 @@ export class BeatScheduler {
   }
 
   private describe(index: number, timeSec: number): MetronomeBeat {
-    const musicIndex = index - this.countInBeats;
-    const bar = Math.floor(musicIndex / this.beatsPerBar) + 1;
-    const beatInBar = (((musicIndex % this.beatsPerBar) + this.beatsPerBar) % this.beatsPerBar) + 1;
+    const offset = index - this.barOriginIndex;
+    const bar = this.barOriginBar + Math.floor(offset / this.beatsPerBar);
+    const beatInBar = (((offset % this.beatsPerBar) + this.beatsPerBar) % this.beatsPerBar) + 1;
     return {
       index,
       timeSec,
       bar,
       beatInBar,
-      isCountIn: musicIndex < 0,
+      // The count-in is a fixed number of clicks, fixed when the run started:
+      // changing the meter part-way through one does not buy more of them.
+      isCountIn: index < this.countInBeats,
       isAccent: beatInBar === 1,
     };
   }

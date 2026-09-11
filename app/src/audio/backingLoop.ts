@@ -146,6 +146,15 @@ export class DrumKit {
     osc.connect(level).connect(this.output);
     osc.start(whenSec);
     osc.stop(whenSec + seconds + 0.02);
+    // Unlike a finished source node, the gain stays attached to `output`
+    // whether or not anything still refers to it, so the graph hanging off the
+    // kit grows for as long as the loop plays: about twelve events a bar, so a
+    // ten-minute jam at 120 bpm leaves some seven thousand live nodes on it.
+    // `Metronome` has always disconnected its click chains; this did not.
+    osc.onended = () => {
+      osc.disconnect();
+      level.disconnect();
+    };
   }
 
   private noise(whenSec: number, seconds: number, gain: number, highpassHz: number): void {
@@ -161,6 +170,12 @@ export class DrumKit {
     source.connect(filter).connect(level).connect(this.output);
     source.start(whenSec);
     source.stop(whenSec + seconds + 0.02);
+    // See `tone`: the filter and the gain outlive the source otherwise.
+    source.onended = () => {
+      source.disconnect();
+      filter.disconnect();
+      level.disconnect();
+    };
   }
 
   private ensureNoise(): AudioBuffer {

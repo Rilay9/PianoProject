@@ -42,6 +42,27 @@ export const SCHEDULER_LOOKAHEAD_MS = 100;
 /** A click is scheduled this far ahead of `currentTime` at the earliest. */
 const MIN_SCHEDULE_LEAD_SEC = 0.005;
 
+/**
+ * A beat further behind `currentTime` than this is dropped, not played late.
+ *
+ * The 25 ms timer is the one part of this that Android is free to ignore: a
+ * backgrounded tab is throttled to a wake-up a second or less often, and a main
+ * thread engraving a page can stall for as long as that on its own. The audio
+ * clock keeps running through it, so the next `pull()` hands back every beat in
+ * the gap — all of them in the past. Clamping each to `currentTime +
+ * MIN_SCHEDULE_LEAD_SEC`, which is what this used to do, fires the whole gap's
+ * worth of clicks at one instant: a second of silence and then a burst, plus
+ * one `onTick` per beat in the same frame, which jumps the beat dot and any
+ * bar counter through several bars at once.
+ *
+ * At the look-ahead window, at most one beat can be behind `currentTime` and
+ * still be worth playing (the window is 100 ms; the fastest tempo the UI
+ * offers, 240 bpm, is a 250 ms beat), so this bounds the catch-up to a single
+ * click and the metronome simply resumes on the next beat — which is what a
+ * metronome that went quiet should do.
+ */
+export const SCHEDULER_STALE_MS = SCHEDULER_LOOKAHEAD_MS;
+
 export class Metronome {
   private readonly context: BaseAudioContext;
   private readonly output: GainNode;
@@ -53,6 +74,7 @@ export class Metronome {
   private beatsPerBar: number;
   private countInBars: number;
   private sound: MetronomeSound;
+  private dropped = 0;
 
   constructor(context: BaseAudioContext, options: MetronomeOptions = {}) {
     this.context = context;
@@ -73,6 +95,11 @@ export class Metronome {
     return this.bpm;
   }
 
+  /** Beats skipped because the timer woke up too late to play them. */
+  get droppedBeats(): number {
+    return this.dropped;
+  }
+
   /**
    * Starts clicking. `startTimeSec` defaults to a hair in the future so the
    * first click is never scheduled in the past (which browsers play
@@ -80,6 +107,7 @@ export class Metronome {
    */
   start(startTimeSec?: number): void {
     this.stop();
+    this.dropped = 0;
     const begin = startTimeSec ?? this.context.currentTime + 0.1;
     this.scheduler = new BeatScheduler({
       bpm: this.bpm,
@@ -110,8 +138,18 @@ export class Metronome {
     this.scheduler?.setBpm(bpm);
   }
 
+  /**
+   * Changes the meter, mid-run included.
+   *
+   * This used to set the field and stop, which the next `start()` read and a
+   * run already in progress never did: switching the Metronome screen from 4/4
+   * to 3/4 while it was clicking redrew three dots and kept accenting every
+   * fourth beat, and on the beats the old meter numbered 4 the screen lit no
+   * dot at all, because there was no fourth dot to light.
+   */
   setBeatsPerBar(beats: number): void {
     this.beatsPerBar = beats;
+    this.scheduler?.setBeatsPerBar(beats);
   }
 
   setCountInBars(bars: number): void {
@@ -134,12 +172,20 @@ export class Metronome {
 
   private tick(): void {
     if (!this.scheduler) return;
-    const beats = this.scheduler.pull(
-      this.context.currentTime,
-      SCHEDULER_LOOKAHEAD_MS / 1000,
-    );
+    // One clock reading for the whole tick: the clamp below and the horizon
+    // above have to be measured from the same instant, or a long pull moves
+    // the floor it is clamping to while it walks.
+    const now = this.context.currentTime;
+    const beats = this.scheduler.pull(now, SCHEDULER_LOOKAHEAD_MS / 1000);
+    const stale = now - SCHEDULER_STALE_MS / 1000;
     for (const beat of beats) {
-      const when = Math.max(beat.timeSec, this.context.currentTime + MIN_SCHEDULE_LEAD_SEC);
+      if (beat.timeSec < stale) {
+        // Too late to be this beat. See SCHEDULER_STALE_MS: playing it now
+        // would stack it on top of every other beat the stall swallowed.
+        this.dropped += 1;
+        continue;
+      }
+      const when = Math.max(beat.timeSec, now + MIN_SCHEDULE_LEAD_SEC);
       this.click(when, beat.isAccent);
       for (const l of this.tickListeners) l(beat);
     }

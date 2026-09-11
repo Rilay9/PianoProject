@@ -29,6 +29,21 @@ import { screenFrame, statusLine } from './screenFrame';
 /** How much of the chord has to be heard before the bar counts as matched. */
 const MATCH_THRESHOLD = 0.6;
 
+/**
+ * The bar and chorus a beat lands on.
+ *
+ * Exported for testing: `beatBar` (`MetronomeBeat.bar`) is 1-based and counts
+ * up for ever, the chart wraps at `barsLength`, and the chorus is derived
+ * from the same division rather than incremented on a "wrapped to bar 0"
+ * guess — a one-bar chart wraps to 0 on *every* beat, so an increment that
+ * only fires when the bar index changes never fires there at all.
+ */
+export function barAt(beatBar: number, barsLength: number): { bar: number; chorus: number } {
+  const length = Math.max(1, barsLength);
+  const musicBar = beatBar - 1;
+  return { bar: musicBar % length, chorus: Math.floor(musicBar / length) + 1 };
+}
+
 export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   const { section, header, body } = screenFrame('chart', 'Chord chart');
   const status = statusLine('chart-status');
@@ -42,6 +57,20 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   let bars: (ChordSymbol | null)[] = [];
   let bar = 0;
   let chorus = 1;
+  /**
+   * Has the first real beat of this run been seen yet?
+   *
+   * `onBeat` used to decide "a new bar started" by comparing the derived bar
+   * index against the last one drawn, but bar 1 beat 1 derives to the same
+   * index (`0`) that `bar` is initialised to — so the comparison was already
+   * false on the very first beat of every run, and the first bar played with
+   * no comp, no backing loop and no fresh `markMatch`. On a one-bar chart
+   * (a vamp, a single held chord) the derived index is `0` on *every* beat
+   * for ever, so this was not just a first-bar quirk there: nothing after the
+   * initial draw ever ran again, comping included, and the chorus counter
+   * never moved no matter how many times the loop went round.
+   */
+  let barStarted = false;
   let bpm = 100;
   let swing = false;
   let comping = false;
@@ -89,13 +118,11 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
 
   function onBeat(beat: MetronomeBeat): void {
     if (disposed || beat.isCountIn) return;
-    // `beat.bar` is 1-based and counts up for ever; the chart wraps, which is
-    // what makes the chorus counter mean anything.
-    const length = Math.max(1, bars.length);
-    const nextBar = (beat.bar - 1) % length;
-    if (nextBar !== bar) {
+    const { bar: nextBar, chorus: nextChorus } = barAt(beat.bar, bars.length);
+    if (!barStarted || nextBar !== bar || nextChorus !== chorus) {
+      barStarted = true;
       bar = nextBar;
-      if (bar === 0 && beat.bar > 1) chorus += 1;
+      chorus = nextChorus;
       drawForm();
       markMatch();
       if (comping) compBar();
@@ -153,6 +180,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     running = true;
     bar = 0;
     chorus = 1;
+    barStarted = false;
     drawForm();
     section.dataset.running = 'true';
     status.textContent = swing ? 'Swing the eighths.' : '';
