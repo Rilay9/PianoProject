@@ -221,8 +221,11 @@ test.describe('score screen', () => {
       await expect(page.locator('#score-bars')).toHaveText('2 bars');
       await page.locator('#score-bars-down').click();
       await expect(page.locator('#score-bars')).toHaveText('1 bar');
-      // Clamped at the bottom, not wrapped.
-      await page.locator('#score-bars-down').click();
+      // Clamped at the bottom, not wrapped — and it says so now rather than
+      // absorbing the press. A lit button that does nothing reads as a broken
+      // control, and pressing it used to restart the run into the bargain, so
+      // the end of the range is a dead button. See `score.stepper-limits`.
+      await expect(page.locator('#score-bars-down')).toBeDisabled();
       await expect(page.locator('#score-bars')).toHaveText('1 bar');
       for (let i = 0; i < 4; i += 1) await page.locator('#score-bars-up').click();
       await expect(page.locator('#score-bars')).toHaveText('5 bars');

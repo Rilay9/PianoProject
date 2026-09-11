@@ -2618,6 +2618,20 @@ input[type='checkbox'] {
   color: var(--accent, #4c8bf5);
 }
 
+/* A stepper at the end of its range.
+
+   `Bars in window` stops at 1 and 8 and `Size` at 50 % and 250 %, and until
+   now the button past the end stayed lit and swallowed the press. On a phone
+   there is no other feedback for a tap, so the honest reading of a lit button
+   that does nothing is that the control is broken. Dimmed, beside a readout
+   that has not moved, it reads as the end of the range instead — which is what
+   it is. The same half-opacity the app's other buttons use, so it needs no
+   learning. */
+.score-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 /* The mode select is sized by its longest option, and P21c B2 made the
    options sentences — "Play it to me" instead of "Listen". On a 390 px phone
    that pushed the bar from one row to two (88 px), which is the one thing the
@@ -2664,6 +2678,10 @@ input[type='checkbox'] {
   gap: 0.75rem;
   padding: 0.55rem 0;
   border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  /* If a row genuinely cannot fit, it breaks *here* — words on one line, the
+     whole control on the next — and never inside the control itself. See the
+     holder below for what that was costing. */
+  flex-wrap: wrap;
 }
 
 .score-menu-row:last-child {
@@ -2750,10 +2768,29 @@ input[type='checkbox'] {
 /* Right-aligned and allowed to wrap: `Bars in window − 3 bars +` is three
    controls, and on a 320 px screen they belong under the word rather than
    squeezed beside it. */
+/* One control, one line — always.
+
+   This wrapped, and a stepper is the worst thing to wrap: `Bars in window` is
+   minus, the value, plus, and at every width from 280 px to 740 px the three of
+   them took a line each. The `−` sat at the top, `2 bars` under it and the `+`
+   under that, so the two halves of a single control were a finger's length
+   apart with the number they change in between, and the row stood three times
+   the height of its neighbours — which is what pushed `Layout` off the bottom
+   of the sheet on the owner's phone.
+
+   It was shrinkable (`flex: 0 1 auto`) next to a words column that can also
+   shrink, so both gave ground proportionally; squeezed under its content width
+   with `flex-wrap: wrap`, the holder broke rather than narrowed. Flexbox wraps
+   before it shrinks (`08` §9.23) — the same fault as the control bar's second
+   row and the folder's saved notice.
+
+   Now the holder keeps its content width and the prose beside it gives way
+   instead: a label and a hint are sentences and can wrap anywhere, a stepper
+   cannot wrap anywhere at all. */
 .score-menu-row__control {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
   gap: 0.35rem;
@@ -4404,6 +4441,26 @@ input[type='checkbox'] {
 .score-stage--blind .score-buffer,
 .score-stage--blind .score-buffer.is-front {
   visibility: hidden;
+}
+
+/* And back on again: the three things that live on the stage *because* the
+   notation might not be there.
+
+   Hiding the stage as a whole took the visible count-in, the beat dot and the
+   corner readout with it, since `visibility` inherits. Every one of them was
+   added for exactly this situation — the dot is "the one thing that must be
+   visible while the clock runs" (`08` §5.3), the corner is for when the chrome
+   has folded away and nothing else says which bar you are in, and the count-in
+   exists because on a music stand the sound is often turned down. So a blind
+   run in tempo mode counted itself in invisibly, on a screen with nothing else
+   on it whatsoever, and the gallery photographed 1,400 px of black.
+
+   The notation is the buffers and the rule above hides those by name, which is
+   all blind mode ever meant to do. */
+.score-stage--blind .score-countin,
+.score-stage--blind .score-beat,
+.score-stage--blind .score-stage__corner {
+  visibility: visible;
 }
 
 .paper-readout {

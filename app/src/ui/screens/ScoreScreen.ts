@@ -86,6 +86,18 @@ const SHORT_MODES: Record<Mode, string> = {
   free: 'Free',
 };
 
+/**
+ * How far the drawn size may be pushed either way, and by how much per press.
+ *
+ * These were three literals inside `setZoom` — `Math.min(2.5, Math.max(0.5,
+ * …))` — and the readout beside the buttons has to know the same numbers to
+ * grey a button out at the end of the range. Two copies of a limit is how a
+ * control ends up claiming to be at its maximum while still moving.
+ */
+const ZOOM_MIN = 0.5;
+const ZOOM_MAX = 2.5;
+const ZOOM_STEP = 0.1;
+
 /** Below this the bar cannot hold the sentences. Measured, not chosen. */
 // 440, not 400: at 412 px — the other common phone width — the long mode
 // labels fitted the row but not the select, which clipped "Wait for me" to
@@ -773,9 +785,28 @@ export function ScoreScreen(router: Router): HTMLElement {
   const barsUp = button('+', () => setBars(settings.barsPerWindow + 1), 'score-bars-up');
   barsUp.setAttribute('aria-label', 'One bar more in the window');
 
-  const zoomOut = button('－', () => setZoom(settings.zoom - 0.1), 'score-zoom-out');
+  // The same glyphs as the bars stepper above, which is the point: two
+  // steppers side by side in one sheet were drawn with three different
+  // characters — `−` (minus) and `+` for bars, `－` and `＋` (the fullwidth
+  // pair) for size — and at a glance the size row read as the smaller, lesser
+  // control.
+  const zoomOut = button('−', () => setZoom(settings.zoom - ZOOM_STEP), 'score-zoom-out');
   zoomOut.setAttribute('aria-label', 'Smaller notes');
-  const zoomIn = button('＋', () => setZoom(settings.zoom + 0.1), 'score-zoom-in');
+  /**
+   * How big the notes are now, as a percentage.
+   *
+   * The bars stepper says `2 bars` between its buttons and this one said
+   * nothing at all, so the size control could be pressed twelve times without
+   * ever saying where it had got to. That matters more here than for bars: the
+   * owner's complaint is notes too big or too small, and "put it back how it
+   * was" has no target without a number. It is also the only way the ends of
+   * the range announce themselves — at 250 % the `+` goes dead, and a dead
+   * button beside a number reads as a limit rather than as a fault.
+   */
+  const zoomLabel = document.createElement('span');
+  zoomLabel.id = 'score-zoom-level';
+  zoomLabel.className = 'score-bars';
+  const zoomIn = button('+', () => setZoom(settings.zoom + ZOOM_STEP), 'score-zoom-in');
   zoomIn.setAttribute('aria-label', 'Bigger notes');
 
   /**
@@ -859,7 +890,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     menuRow('Loop', 'Repeat a few bars over and over until they are yours. Double-tap the sheet to mark them.', loopButton),
     menuRow('Metronome', 'The click, on or off.', metronomeButton),
     menuRow('Bars in window', 'How much music is on the screen at once. Fewer bars means bigger notes.', barsDown, barsLabel, barsUp),
-    menuRow('Size', 'Bigger or smaller notes, around whatever already fits.', zoomOut, zoomIn),
+    menuRow('Size', 'Bigger or smaller notes, around whatever already fits.', zoomOut, zoomLabel, zoomIn),
     menuRow('Layout', 'A screenful at a time, or one long sheet you scroll through.', layoutGroup),
     menuRow('Keys', 'The keyboard under the score: the full strip, a thin ribbon that names the note, or nothing.', keysGroup),
     menuRow('Sound', 'Whether the phone or the piano plays the hand you are not practising.', destinationButton),
@@ -908,7 +939,15 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   function setBars(next: number): void {
-    settings.barsPerWindow = Math.min(MAX_BARS_PER_WINDOW, Math.max(MIN_BARS_PER_WINDOW, Math.round(next)));
+    const wanted = Math.min(MAX_BARS_PER_WINDOW, Math.max(MIN_BARS_PER_WINDOW, Math.round(next)));
+    // Already there, so there is nothing to do — and doing it anyway was not
+    // free. The clamp means `−` at one bar produced one bar again, and the
+    // lines below then wrote the setting, re-seated the renderer and, because
+    // a re-engraving invalidates the run's judgements, **restarted the run**.
+    // A tap that changes nothing threw away the pass you were in the middle
+    // of. `setLayout` has always guarded this; these two never did.
+    if (wanted === settings.barsPerWindow) return;
+    settings.barsPerWindow = wanted;
     updateSettings({ barsPerWindow: settings.barsPerWindow });
     renderer?.setBarsPerWindow(settings.barsPerWindow);
     // A re-engraving recreates every element the run's judgements are keyed
@@ -919,7 +958,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   function setZoom(next: number): void {
-    settings.zoom = Math.min(2.5, Math.max(0.5, Math.round(next * 10) / 10));
+    const wanted = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.round(next * 10) / 10));
+    if (wanted === settings.zoom) return;
+    settings.zoom = wanted;
     updateSettings({ zoom: settings.zoom });
     renderer?.setZoom(settings.zoom);
     render();
@@ -1329,7 +1370,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     hearingBar = { mode, loop: loopBars };
     loopBars = { from: measure, to: measure };
     loopSection = null;
-    status.textContent = `Bar ${String(measure)}, as written`;
+    status.textContent = `Bar ${String(shownBar(measure))}, as written`;
     startRun();
   }
 
@@ -1354,7 +1395,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (measure === null) return;
     if (loopAnchor === null) {
       loopAnchor = measure;
-      status.textContent = `Loop start: bar ${measure}. Double-tap the last bar.`;
+      status.textContent = `Loop start: bar ${String(shownBar(measure))}. Double-tap the last bar.`;
     } else {
       loopBars = { from: Math.min(loopAnchor, measure), to: Math.max(loopAnchor, measure) };
       loopAnchor = null;
@@ -1629,7 +1670,16 @@ export function ScoreScreen(router: Router): HTMLElement {
         tempo.value = String(tempoPct);
         startRun();
       }, 'summary-faster'),
-      button('Loop the weak bars', () => loopWeakBars(score), 'summary-loop'),
+      // Only when there is something to loop. Offered unconditionally, its one
+      // possible outcome on a clean run was the message "No weak bars to loop
+      // — nothing went wrong", which is a button whose entire function is to
+      // say it should not have been drawn. The gallery's `end-of-piece` cell
+      // shows it under 100 % accuracy, zero wrong and zero missed. `weakest`
+      // is the same set the `Weakest bars` stat is built from, so the button
+      // appears exactly when the sheet has already named the bars it means.
+      ...(weakest.length > 0
+        ? [button('Loop the weak bars', () => loopWeakBars(score), 'summary-loop')]
+        : []),
       button('Done', () => {
         summaryUp(false);
         router.navigate(router.route.tab);
@@ -1760,6 +1810,26 @@ export function ScoreScreen(router: Router): HTMLElement {
     return sourceMeasureIndex + (pickup ? 0 : 1);
   }
 
+  /**
+   * A loop's bar number, written the way the rest of the screen writes it.
+   *
+   * Loop ranges count from one, because `loopFromPrintedBars` matches
+   * `sourceMeasureIndex === bar - 1` and everything that feeds it has to speak
+   * that language. The header and the `Weakest bars` stat do not: they go
+   * through `printedBar`, which follows the engraving convention and numbers an
+   * incomplete first bar **0**.
+   *
+   * Both are right internally, and printing both was the fault. On a pickup
+   * piece the header said `bar 0` while the loop control said `Bars 1–1` for
+   * the very same bar, and the summary named the weakest bar 3 while `Loop the
+   * weak bars` labelled itself 4. So the conversion happens at the edge: the
+   * ranges keep counting from one, and every number written on the screen goes
+   * through the one function that decides what a bar is called.
+   */
+  function shownBar(loopBarNumber: number): number {
+    return printedBar(loopBarNumber - 1);
+  }
+
   /** `bar 3 / 48`: the bar under the cursor and the piece's length. */
   function drawWhere(): void {
     if (!model || !renderer) {
@@ -1802,6 +1872,14 @@ export function ScoreScreen(router: Router): HTMLElement {
     // whether the row still fits.
     fitBarControls();
     barsLabel.textContent = `${settings.barsPerWindow} bar${settings.barsPerWindow === 1 ? '' : 's'}`;
+    zoomLabel.textContent = `${String(Math.round(settings.zoom * 100))}%`;
+    // The ends of both ranges, said rather than silently absorbed. Pressing a
+    // stepper that has nowhere left to go used to look exactly like a control
+    // that had stopped working.
+    barsDown.disabled = settings.barsPerWindow <= MIN_BARS_PER_WINDOW;
+    barsUp.disabled = settings.barsPerWindow >= MAX_BARS_PER_WINDOW;
+    zoomOut.disabled = settings.zoom <= ZOOM_MIN;
+    zoomIn.disabled = settings.zoom >= ZOOM_MAX;
     layoutWindow.classList.toggle('is-selected', settings.layout === 'window');
     layoutWindow.setAttribute('aria-pressed', String(settings.layout === 'window'));
     layoutScroll.classList.toggle('is-selected', settings.layout === 'scroll');
@@ -1825,7 +1903,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     loopButton.textContent = loopSection
       ? `${loopSection.label} ✕`
       : loopBars
-        ? `Bars ${loopBars.from}–${loopBars.to} ✕`
+        ? `Bars ${String(shownBar(loopBars.from))}–${String(shownBar(loopBars.to))} ✕`
         : 'Off';
     loopButton.classList.toggle('is-selected', loopBars !== null);
     // One convention for every toggle in the sheet (P21b A2): the word is On

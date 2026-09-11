@@ -33,7 +33,10 @@ async function open(page: Page): Promise<void> {
 async function setBars(page: Page, bars: number): Promise<void> {
   const label = page.locator('#score-bars');
   await openScoreMenu(page);
-  for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
+  // Down to the floor, then up: the stepper's buttons go dead at the ends now,
+  // so this presses until one does rather than a fixed eight times.
+  const down = page.locator('#score-bars-down');
+  for (let i = 0; i < 12 && !(await down.isDisabled()); i += 1) await down.click();
   for (let i = 1; i < bars; i += 1) await page.locator('#score-bars-up').click();
   await expect(label).toHaveText(`${bars} bar${bars === 1 ? '' : 's'}`);
   // The sheet covers the notation, and these pictures are of the notation.

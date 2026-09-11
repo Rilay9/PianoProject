@@ -74,6 +74,44 @@ test.describe('a whole run', () => {
     // judging input, so there is no self-report to fall back on.
     await expect(sheet.locator('[data-stat="accuracy"]')).toHaveText('100%');
     await expect(page.locator('#summary-selfreport')).toHaveCount(0);
+    // And nothing went wrong, so there is nothing to practise. `Loop the weak
+    // bars` used to be offered anyway: its only possible outcome on a clean
+    // run was the message "No weak bars to loop — nothing went wrong", which
+    // is a button whose whole function is to say it should not have been
+    // there. The gallery caught it — `end-of-piece` shows 100 % accuracy, zero
+    // wrong, zero missed, and the button sitting under them.
+    await expect(
+      page.locator('#summary-loop'),
+      'a flawless run was offered a remedy for a fault it did not have',
+    ).toHaveCount(0);
+    // The rest of the choices are exactly what a clean run wants next.
+    await expect(page.locator('#summary-faster')).toBeVisible();
+    await expect(page.locator('#summary-again')).toBeVisible();
+    await expect(page.locator('#summary-done')).toBeVisible();
+  });
+
+  test('a run with a fumble is offered the loop, and it names the bar', async ({ page }) => {
+    // The counter-case, and the reason the button cannot simply be deleted: a
+    // run with something to fix has to be able to go and fix it.
+    await openAndArm(page, 'wait');
+    await page.locator('#score-play').click();
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+      'data-running',
+      'true',
+    );
+
+    // A wrong note in bar 1. Wait mode does not advance on one, so the run
+    // still finishes — with a hot spot on the bar where it happened.
+    await press(page, 65);
+    for (const midi of MELODY) await press(page, midi);
+
+    const sheet = page.locator('#score-summary');
+    await expect(sheet).toBeVisible({ timeout: 30_000 });
+    await expect(sheet.locator('[data-stat="wrong-notes"]')).not.toHaveText('0');
+    await expect(page.locator('#summary-loop')).toBeVisible();
+    // And the summary says which bar, so the learner knows what the loop will
+    // do before pressing it.
+    await expect(sheet.locator('[data-stat="weakest-bars"]')).toHaveCount(1);
   });
 
   test('Wait mode: the score does not move on a wrong note', async ({ page }) => {
