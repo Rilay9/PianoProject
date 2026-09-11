@@ -238,11 +238,17 @@ export function FolderScreen(router: Router): HTMLElement {
   const countLine = addParagraph(browse, '', 'muted');
   countLine.id = 'folder-count';
   const list = el('div.list', { id: 'folder-list' });
-  browse.append(list);
+  // The rail sits beside the list, so the two share a row and the list keeps
+  // the width it had minus the rail's.
+  const listWithRail = el('div.list-with-rail');
+  listWithRail.append(list);
+  browse.append(listWithRail);
   const more = el('div.button-row', { id: 'folder-more' });
   browse.append(more);
 
   let library: FolderLibrary | null = null;
+  /** What `draw` last put on the screen, which is what the rail moves through. */
+  let drawn: FolderScore[] = [];
   let haystacks: string[] = [];
   let alreadyAdded = new Set<string>();
   /**
@@ -512,7 +518,9 @@ export function FolderScreen(router: Router): HTMLElement {
       const score = scores[i];
       if (score && matchesFilters(score, haystacks[i] ?? '', filters, query)) found.push(score);
     }
-    list.replaceChildren(...found.slice(0, shown).map(rowFor));
+    drawn = found.slice(0, shown);
+    list.replaceChildren(...drawn.map(rowFor));
+    rail.update();
     countLine.textContent =
       found.length > shown
         ? `${found.length.toLocaleString()} match — showing ${String(shown)}`
