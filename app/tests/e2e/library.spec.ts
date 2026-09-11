@@ -199,3 +199,40 @@ test.describe('Library obeys 04 §0', () => {
     expect(clipped).toBe(false);
   });
 });
+
+test.describe('the letter rail in Library', () => {
+  test('waits for the title sort, then jumps — growing the list to reach a letter', async ({
+    page,
+  }) => {
+    await page.goto('/#/library');
+    await expect(page.locator('#library-count')).toContainText('items');
+    await expect(page.locator('#library-list .list-row').first()).toBeVisible();
+
+    const rail = page.locator('.list-with-rail .alpha-rail');
+    // Level is the default sort and it is a teaching order, so a letter would
+    // point wherever that letter happened to fall — nowhere anyone could
+    // predict. An index that cannot be predicted is worse than none.
+    await expect(rail).toBeHidden();
+
+    // The sort lives behind the Filter chip, which is right for a thing set
+    // once rather than read at a glance.
+    await page.locator('#library-filter-toggle').click();
+    await page.locator('#library-sort').selectOption('title');
+    await expect(rail).toBeVisible();
+    await expect(rail.locator('.alpha-rail__letter')).toHaveCount(27);
+
+    // Sixty rows of 1,533 in title order cover only the first letter or two,
+    // so nearly every letter on the rail is real and not drawn yet. That is
+    // the case worth testing: doing nothing there reads as a broken rail.
+    const drawnBefore = await page.locator('#library-list .list-row').count();
+    await rail.locator('[data-letter="M"]').click();
+    await page.waitForTimeout(500);
+    expect(
+      await page.locator('#library-list .list-row').count(),
+      'the list did not grow to reach M',
+    ).toBeGreaterThan(drawnBefore);
+    await expect(
+      page.locator('#library-list .list-row').filter({ hasText: /^[ ]*M/i }).first(),
+    ).toBeVisible();
+  });
+});

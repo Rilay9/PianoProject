@@ -295,7 +295,14 @@ export function PlanScreen(router: Router): HTMLElement {
   function openTracksSheet(): void {
     if (!curriculum) return;
     const sheet = openSheet('Tracks', { id: 'plan-tracks-sheet' });
-    const listEl = el('div.filter-row', { id: 'plan-tracks-list' });
+    // A column of rows, not one wrapping row of everything.
+    //
+    // The chips and their arrows used to be appended straight into a
+    // `.filter-row`, all siblings, so they flowed as a single stream: arrows
+    // ended up under the wrong track, some lines carried three pairs of them,
+    // and two names shared a line. Each track is its own row now, and the row
+    // does not wrap.
+    const listEl = el('div.track-list', { id: 'plan-tracks-list' });
 
     const redraw = (): void => {
       listEl.replaceChildren();
@@ -326,26 +333,32 @@ export function PlanScreen(router: Router): HTMLElement {
           },
         });
         if (on && track.id !== 'core') makeDraggable(node, track.id);
-        listEl.append(node);
+        const row = el('div.track-row', { 'data-row-track': track.id });
+        row.append(node);
         if (on && track.id !== 'core') {
           // The fallback. A drag is not reachable from a keyboard and is
           // awkward with a tremor; two buttons are neither.
           const index = activeTracks.indexOf(track.id);
-          listEl.append(
-            button('▲', () => { commitOrder(moveUp(activeTracks, index)); redraw(); }, {
-              id: `plan-track-up-${track.id}`,
-              variant: 'quiet',
-              className: 'track-move',
-              title: `Move ${track.title} earlier`,
-            }),
-            button('▼', () => { commitOrder(moveDown(activeTracks, index)); redraw(); }, {
-              id: `plan-track-down-${track.id}`,
-              variant: 'quiet',
-              className: 'track-move',
-              title: `Move ${track.title} later`,
-            }),
+          row.append(
+            el(
+              'div.track-row__moves',
+              {},
+              button('▲', () => { commitOrder(moveUp(activeTracks, index)); redraw(); }, {
+                id: `plan-track-up-${track.id}`,
+                variant: 'quiet',
+                className: 'track-move',
+                title: `Move ${track.title} earlier`,
+              }),
+              button('▼', () => { commitOrder(moveDown(activeTracks, index)); redraw(); }, {
+                id: `plan-track-down-${track.id}`,
+                variant: 'quiet',
+                className: 'track-move',
+                title: `Move ${track.title} later`,
+              }),
+            ),
           );
         }
+        listEl.append(row);
       }
     };
 

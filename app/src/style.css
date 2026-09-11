@@ -183,6 +183,42 @@ body {
    A quiet button around a single ▲ is as wide as the glyph — 14 px on the S25,
    narrower than the error in a thumb, with its twin immediately beside it. The
    arrow stays small; the thing you press does not. */
+/*
+ * One track to a line, its arrows beside it.
+ *
+ * The sheet used to put every chip and every arrow into one wrapping row, so
+ * the whole thing flowed as a single stream — arrows under the wrong track,
+ * three pairs on one line, two names sharing another. A track and its own
+ * controls belong together, and the line they share must not wrap.
+ */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.track-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* The name takes the room and the arrows keep theirs. */
+.track-row > .chip {
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.track-row__moves {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
 .track-move {
   min-width: 44px;
   min-height: 44px;
@@ -4481,6 +4517,13 @@ input[type='checkbox'] {
   line-height: 1.1;
   text-align: center;
   cursor: pointer;
+}
+
+/* `display: flex` beats the `hidden` attribute, which is the same trap
+   `.button` carries a note about: the rail was set hidden over a level-sorted
+   list and stayed on the screen anyway. */
+.alpha-rail[hidden] {
+  display: none;
 }
 
 .alpha-rail__letter[data-empty='true'] {

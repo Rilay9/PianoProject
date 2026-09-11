@@ -330,3 +330,65 @@ test.describe('Skills obeys 04 §0', () => {
     expect(drills).toBeGreaterThan(0);
   });
 });
+
+test.describe('the Tracks sheet is a list of tracks, not a stream of chips', () => {
+  for (const size of [
+    { width: 342, height: 740, label: 'the owner’s phone upright' },
+    { width: 740, height: 342, label: 'the owner’s phone sideways' },
+    { width: 900, height: 1200, label: 'a tablet' },
+  ]) {
+    test(`each track keeps its own arrows — ${size.label}`, async ({ page }) => {
+      // Photographed and unreadable: every chip and every arrow went into one
+      // wrapping row, so they flowed as a single stream. Arrows sat under the
+      // wrong track, one line carried three pairs, and two names shared a
+      // line. Twenty plan tests passed throughout, because none of them asked
+      // where anything was.
+      await page.setViewportSize(size);
+      await page.goto('/#/plan');
+      await expect(page.locator('#plan-active-core')).toBeVisible();
+      await page.locator('#plan-tracks-open').click();
+      await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
+
+      const rows = page.locator('#plan-tracks-list .track-row');
+      expect(await rows.count(), 'no track rows at all').toBeGreaterThan(3);
+
+      const faults = await page.evaluate(() => {
+        const out: string[] = [];
+        for (const row of document.querySelectorAll('#plan-tracks-list .track-row')) {
+          const box = row.getBoundingClientRect();
+          const chip = row.querySelector('.chip');
+          const arrows = [...row.querySelectorAll('.track-move')];
+          const name = chip?.textContent?.trim() ?? '?';
+          // One track to a row: its name, and at most one pair of arrows.
+          if (row.querySelectorAll('.chip').length !== 1) {
+            out.push(`${name}: ${String(row.querySelectorAll('.chip').length)} names in one row`);
+          }
+          if (arrows.length !== 0 && arrows.length !== 2) {
+            out.push(`${name}: ${String(arrows.length)} arrows`);
+          }
+          // And the row is one line: the name and its arrows share a top.
+          for (const control of [chip, ...arrows]) {
+            if (!control) continue;
+            const r = control.getBoundingClientRect();
+            if (r.height <= 0) continue;
+            if (r.top < box.top - 1 || r.bottom > box.bottom + 1) {
+              out.push(`${name}: its controls wrapped out of the row`);
+              break;
+            }
+          }
+          // An arrow belongs to the track it sits beside, so it must not be
+          // further from this row's name than the row is tall.
+          for (const arrow of arrows) {
+            const r = arrow.getBoundingClientRect();
+            if (Math.abs(r.top - box.top) > box.height) {
+              out.push(`${name}: an arrow is not on its own row`);
+              break;
+            }
+          }
+        }
+        return out;
+      });
+      expect(faults, faults.join('\n')).toEqual([]);
+    });
+  }
+});

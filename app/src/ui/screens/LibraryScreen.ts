@@ -11,6 +11,7 @@
  * changes — a virtual list would cost more in scroll-position bugs than it
  * saves.
  */
+import { createAlphaRail, letterFor } from '../alphaRail';
 import type { Router } from '../../router';
 import { allItems } from '../../curriculum/load';
 import type { CatalogItem } from '../../curriculum/types';
@@ -143,9 +144,16 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   let items: CatalogItem[] = [];
   let progress = new Map<string, ProgressRow>();
   let shown = PAGE_SIZE;
+  /** What `draw` last put on the screen, which is what the rail moves through. */
+  let drawn: CatalogItem[] = [];
 
   const status = statusLine('library-status');
   const list = el('div.list', { id: 'library-list' });
+  // The rail shares a row with the list, so the list keeps its width minus the
+  // rail's. Same component the score folder uses — one long list's answer
+  // should not be re-invented for the other.
+  const listWithRail = el('div.list-with-rail');
+  listWithRail.append(list);
   const count = el('p.muted', { id: 'library-count' });
 
   // --- import ------------------------------------------------------------
@@ -432,7 +440,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   body.append(
     el('div.library-countrow', {}, filterToggle, mineChip, count),
     filterRow,
-    list,
+    listWithRail,
     importBlock,
     status,
   );
@@ -676,6 +684,44 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     });
   }
 
+  /**
+   * The letter rail, and when it earns its place on the screen.
+   *
+   * Fifteen hundred items sorted by title, sixty at a time: the same fault the
+   * score folder has, so the same component answers it. Two differences here.
+   * It is hidden unless the sort is by title, because a letter over a
+   * level-ordered list points nowhere a person could predict. And a letter that
+   * is real but past the end of what is drawn grows the list to reach it, which
+   * `Show more` paging makes possible at 1,533 rows as much as at 37,000.
+   */
+  const rail = createAlphaRail({
+    rows: () =>
+      drawn
+        .map((item) => {
+          const row = list.querySelector<HTMLElement>(`[data-item="${CSS.escape(item.id)}"]`);
+          return row ? { el: row, title: item.title } : null;
+        })
+        .filter((row): row is { el: HTMLElement; title: string } => row !== null),
+    onMissing: (letter) => {
+      const ordered = sortItems(
+        items.filter((item) => matches(item, filters, progress)),
+        filters.sort,
+      );
+      const at = ordered.findIndex((item) => letterFor(item.title) === letter);
+      if (at === -1) return;
+      shown = Math.max(shown, Math.ceil((at + 1) / PAGE_SIZE) * PAGE_SIZE);
+      draw();
+      rail.el.querySelector<HTMLButtonElement>(`[data-letter="${letter}"]`)?.click();
+    },
+  });
+  listWithRail.append(rail.el);
+
+  function railFor(filtered: CatalogItem[]): void {
+    const byTitle = filters.sort === 'title';
+    rail.el.hidden = !byTitle || filtered.length <= PAGE_SIZE;
+    if (!rail.el.hidden) rail.update();
+  }
+
   function draw(): void {
     const filtered = sortItems(
       items.filter((item) => matches(item, filters, progress)),
@@ -705,7 +751,12 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       String(filters.importedOnly),
     );
     list.replaceChildren();
-    for (const item of filtered.slice(0, shown)) list.append(rowFor(item));
+    drawn = filtered.slice(0, shown);
+    for (const item of drawn) list.append(rowFor(item));
+    // Only under a title sort. A letter rail over a list ordered by level would
+    // jump to wherever that letter happened to fall, which is nowhere in
+    // particular — an index that cannot be predicted is worse than none.
+    railFor(filtered);
     if (filtered.length > shown) {
       list.append(
         button(
