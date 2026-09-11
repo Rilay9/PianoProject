@@ -15,6 +15,7 @@
 
 import type { Router } from '../../router';
 import type { FolderScore, ImportRow } from '../../data/db';
+import { createAlphaRail, letterFor } from '../alphaRail';
 import {
   FolderCancelled,
   FolderError,
@@ -238,6 +239,8 @@ export function FolderScreen(router: Router): HTMLElement {
   const countLine = addParagraph(browse, '', 'muted');
   countLine.id = 'folder-count';
   const list = el('div.list', { id: 'folder-list' });
+  const savedNotice = el('div.folder-saved', { id: 'folder-saved', hidden: true });
+  browse.append(savedNotice);
   // The rail sits beside the list, so the two share a row and the list keeps
   // the width it had minus the rail's.
   const listWithRail = el('div.list-with-rail');
@@ -404,7 +407,11 @@ export function FolderScreen(router: Router): HTMLElement {
   // The chip goes on the count line, not the search line: three controls do
   // not fit across 360 px and it wrapped onto a line of its own.
   const countRow = el('div.library-countrow', {}, countLine, filterToggle);
-  browse.insertBefore(countRow, list);
+  // Before the *host* of the list, not the list: the list lives inside
+  // `.list-with-rail` alongside the letter rail now, so it is no longer a child
+  // of `browse` and `insertBefore` threw — which took the whole screen down,
+  // search box and all.
+  browse.insertBefore(countRow, savedNotice);
   browse.insertBefore(folderFilters, countRow);
 
   function readFilters(): void {
@@ -501,6 +508,83 @@ export function FolderScreen(router: Router): HTMLElement {
     });
   }
 
+  /** The rows that pass the filters, in order — what the list is a page of. */
+  function matchesNow(): FolderScore[] {
+    if (!library) return [];
+    // Indexed rather than `filter`, because the haystack is a parallel array:
+    // folding a title on every keystroke over 37,000 rows is the difference
+    // between instant and sluggish, so it is done once when the folder loads.
+    const query = fold(filters.query);
+    const found: FolderScore[] = [];
+    const scores = library.scores;
+    for (let i = 0; i < scores.length; i += 1) {
+      const score = scores[i];
+      if (score && matchesFilters(score, haystacks[i] ?? '', filters, query)) found.push(score);
+    }
+    return found;
+  }
+
+  /**
+   * The letter rail, down the side of the list.
+   *
+   * Tens of thousands of scores sorted by title, a page at a time, and
+   * scrolling was the only way to S. A tapped letter that is real but not drawn
+   * yet is this list's own case — `Show more` pages through the matches — so
+   * rather than doing nothing, which reads as a broken rail, it grows the list
+   * to whole pages until that letter is in it and then jumps.
+   */
+  const rail = createAlphaRail({
+    rows: () =>
+      drawn
+        .map((score) => {
+          const row = list.querySelector<HTMLElement>(`[data-file="${CSS.escape(score.file)}"]`);
+          return row ? { el: row, title: score.title || score.file } : null;
+        })
+        .filter((row): row is { el: HTMLElement; title: string } => row !== null),
+    onMissing: (letter) => {
+      const matching = matchesNow();
+      const at = matching.findIndex((score) => letterFor(score.title || score.file) === letter);
+      if (at === -1) return;
+      shown = Math.max(shown, Math.ceil((at + 1) / PAGE) * PAGE);
+      draw();
+      rail.el.querySelector<HTMLButtonElement>(`[data-letter="${letter}"]`)?.click();
+    },
+  });
+  listWithRail.append(rail.el);
+
+  /**
+   * Says the listing is saved rather than live, right above the list.
+   *
+   * This is the whole of why "Add just flashes and does nothing" was baffling:
+   * the listing lives in IndexedDB, so all thirty-seven thousand rows come back
+   * with their titles, composers and levels, and the screen looks completely
+   * connected. What does not come back is the folder — Android lends it for a
+   * visit — so every Add fails for the same reason, and the only thing saying
+   * so was a line at the top that reads as a summary rather than a warning.
+   */
+  function updateSavedNotice(): void {
+    if (!library || library.connected) {
+      savedNotice.hidden = true;
+      savedNotice.replaceChildren();
+      return;
+    }
+    savedNotice.hidden = false;
+    savedNotice.replaceChildren(
+      el(
+        'p.folder-saved__text',
+        {},
+        `This is a saved listing of ${library.scores.length.toLocaleString()} scores — you can search and read it, but the folder itself is not open, so nothing can be added yet.`,
+      ),
+      button(
+        'Pick the folder again',
+        () => {
+          void pick();
+        },
+        { variant: 'secondary', id: 'folder-reconnect' },
+      ),
+    );
+  }
+
   function draw(): void {
     if (!library) {
       list.replaceChildren();
@@ -508,16 +592,7 @@ export function FolderScreen(router: Router): HTMLElement {
       countLine.textContent = '';
       return;
     }
-    const query = fold(filters.query);
-    const found: FolderScore[] = [];
-    // Indexed rather than `filter`, because the haystack is a parallel array:
-    // folding a title on every keystroke over 37,000 rows is the difference
-    // between instant and sluggish, so it is done once when the folder loads.
-    const scores = library.scores;
-    for (let i = 0; i < scores.length; i += 1) {
-      const score = scores[i];
-      if (score && matchesFilters(score, haystacks[i] ?? '', filters, query)) found.push(score);
-    }
+    const found = matchesNow();
     drawn = found.slice(0, shown);
     list.replaceChildren(...drawn.map(rowFor));
     rail.update();
@@ -672,6 +747,7 @@ export function FolderScreen(router: Router): HTMLElement {
       updateUnnamedNotice();
       return;
     }
+    updateSavedNotice();
     folderStatus.textContent = library.connected
       ? `${plural(library.scores.length, 'score')} in ${library.id}${where}.`
       : `${plural(library.scores.length, 'score')} in ${library.id}${where} — pick the folder again to add any of them.`;

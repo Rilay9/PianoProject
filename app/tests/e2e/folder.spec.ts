@@ -412,3 +412,56 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-list .list-row').first()).toContainText('Qm123');
   });
 });
+
+test.describe('the letter rail', () => {
+  test('jumps to a letter, and grows the list to reach one that is not drawn yet', async ({
+    page,
+  }) => {
+    // 200 rows against a page of 60, so most letters are real and off-screen —
+    // which is the folder's own case and the one a rail that silently does
+    // nothing would fail at.
+    await seedFolder(page, 200);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-count')).toContainText('200 match');
+
+    const rail = page.locator('.alpha-rail');
+    await expect(rail).toBeVisible();
+    // Always all 27, so the rail is a fixed shape rather than one that moves
+    // about from list to list.
+    await expect(rail.locator('.alpha-rail__letter')).toHaveCount(27);
+
+    const drawnBefore = await page.locator('#folder-list .list-row').count();
+    const titles = await page.locator('#folder-list .list-row').allInnerTexts();
+    const firstLetter = (titles[0] ?? '').trim().charAt(0).toUpperCase();
+
+    // A letter that is certainly further down than one page.
+    await rail.locator('[data-letter="P"]').click();
+    await page.waitForTimeout(400);
+    const drawnAfter = await page.locator('#folder-list .list-row').count();
+    expect(drawnAfter, 'the list did not grow to reach the letter').toBeGreaterThanOrEqual(
+      drawnBefore,
+    );
+    // Something beginning with P is now on the screen.
+    await expect(
+      page.locator('#folder-list .list-row').filter({ hasText: /^\s*P/i }).first(),
+    ).toBeVisible();
+    expect(firstLetter.length).toBe(1);
+  });
+
+  test('says the listing is saved, and offers the folder back, when nothing is connected', async ({
+    page,
+  }) => {
+    // The whole reason "Add just flashes" was baffling: the listing comes back
+    // from IndexedDB complete with titles, composers and levels, so the screen
+    // looks connected. It is not, and it has to say so where the rows are.
+    await seedFolder(page, 200);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-count')).toContainText('200 match');
+
+    const saved = page.locator('#folder-saved');
+    await expect(saved).toBeVisible();
+    await expect(saved).toContainText(/saved listing/i);
+    await expect(saved).toContainText('200');
+    await expect(saved.getByRole('button', { name: /pick the folder again/i })).toBeVisible();
+  });
+});

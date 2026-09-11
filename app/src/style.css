@@ -374,6 +374,26 @@ body {
   font-size: 0.85rem;
 }
 
+/* A saved listing looks exactly like a live one, so it has to say which it is.
+   Above the list, carrying the cure rather than pointing at it. */
+.folder-saved {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--warn, var(--border));
+  background: color-mix(in srgb, var(--warn, var(--border)) 12%, transparent);
+}
+
+.folder-saved__text {
+  flex: 1 1 14rem;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
 .folder-row-note__aside {
   flex: 1 1 100%;
   color: var(--text-muted);
@@ -4406,5 +4426,98 @@ input[type='checkbox'] {
   .screen--score[data-tablet='true'] .summary-sheet {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
+  }
+}
+
+/* --- the letter rail beside a long list ---------------------------------- */
+
+.list-with-rail {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.list-with-rail > .list {
+  /* The list takes what is left. Without `min-width: 0` a flex item is as wide
+     as its content, and a row with a long title pushed the rail off the edge. */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/*
+ * Sticky rather than fixed, so it belongs to the list rather than to the
+ * screen: on a screen where the page scrolls it stays beside the rows, and on
+ * one where a pane scrolls it stays inside the pane.
+ */
+.alpha-rail {
+  position: sticky;
+  top: 8px;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1px;
+  padding: 2px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.alpha-rail__letter {
+  /*
+   * Twenty-seven letters have to fit the height of a phone, so these cannot be
+   * forty pixels tall and there is no arrangement in which they could be: at
+   * 740 px that would need 1,080. The finger is guided by the rail as a whole,
+   * which is a single tall target, and a near miss lands on a neighbouring
+   * letter — a tap away from right, and the same trade every music app makes.
+   */
+  min-height: 1.1rem;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.62rem;
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.alpha-rail__letter[data-empty='true'] {
+  opacity: 0.3;
+}
+
+.alpha-rail__letter:disabled {
+  cursor: default;
+}
+
+/* Where there is room, the letters are worth being able to read. */
+@media (min-width: 700px) {
+  .alpha-rail__letter {
+    min-height: 1.4rem;
+    font-size: 0.75rem;
+  }
+}
+
+/*
+ * Sideways on a phone there is no vertical room for twenty-seven of anything,
+ * so the rail lies down across the top of the list instead of beside it.
+ */
+@media (orientation: landscape) and (max-height: 500px) {
+  .list-with-rail {
+    flex-direction: column;
+  }
+
+  .alpha-rail {
+    position: static;
+    flex-direction: row;
+    align-self: stretch;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
+
+  .alpha-rail__letter {
+    min-height: 1.6rem;
+    font-size: 0.7rem;
   }
 }

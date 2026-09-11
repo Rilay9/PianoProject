@@ -35,25 +35,33 @@ describe('letterFor', () => {
   });
 });
 
-function rowsOf(titles: string[]): { el: HTMLElement; title: string }[] {
-  return titles.map((title) => {
+/** Rows, plus the `scrollIntoView` spy for each, kept out of the DOM object. */
+function rowsOf(titles: string[]): {
+  rows: { el: HTMLElement; title: string }[];
+  wentTo: ReturnType<typeof vi.fn>[];
+} {
+  const wentTo: ReturnType<typeof vi.fn>[] = [];
+  const rows = titles.map((title) => {
     const node = document.createElement('div');
     node.textContent = title;
-    node.scrollIntoView = vi.fn();
+    const spy = vi.fn();
+    node.scrollIntoView = spy;
+    wentTo.push(spy);
     document.body.append(node);
     return { el: node, title };
   });
+  return { rows, wentTo };
 }
 
 describe('the rail', () => {
   it('draws every letter, whatever the list holds', () => {
     // A rail whose letters move about from list to list cannot be learned.
-    const rail = createAlphaRail({ rows: () => rowsOf(['Air', 'Bourrée']) });
+    const rail = createAlphaRail({ rows: () => rowsOf(['Air', 'Bourrée']).rows });
     expect(rail.el.querySelectorAll('.alpha-rail__letter')).toHaveLength(27);
   });
 
   it('marks the letters with nothing behind them', () => {
-    const rail = createAlphaRail({ rows: () => rowsOf(['Air', 'Zortziko']) });
+    const rail = createAlphaRail({ rows: () => rowsOf(['Air', 'Zortziko']).rows });
     const at = (l: string): HTMLButtonElement | null =>
       rail.el.querySelector(`[data-letter="${l}"]`);
     expect(at('A')?.dataset.empty).toBe('false');
@@ -63,13 +71,13 @@ describe('the rail', () => {
   });
 
   it('scrolls to the first row under the letter that was tapped', () => {
-    const rows = rowsOf(['Air', 'Bourrée', 'Bagatelle', 'Caprice']);
+    const { rows, wentTo } = rowsOf(['Air', 'Bourrée', 'Bagatelle', 'Caprice']);
     const rail = createAlphaRail({ rows: () => rows });
     rail.el.querySelector<HTMLButtonElement>('[data-letter="B"]')?.click();
     // The first one in the list's own order, not the alphabetically first —
     // the list decides its order and the rail follows it.
-    expect(rows[1]?.el.scrollIntoView).toHaveBeenCalled();
-    expect(rows[2]?.el.scrollIntoView).not.toHaveBeenCalled();
+    expect(wentTo[1]).toHaveBeenCalled();
+    expect(wentTo[2]).not.toHaveBeenCalled();
   });
 
   it('tells a list that can grow when the letter is not drawn yet', () => {
@@ -77,7 +85,7 @@ describe('the rail', () => {
     // real and simply not on screen. Silently doing nothing would read as a
     // broken rail.
     const onMissing = vi.fn();
-    const rail = createAlphaRail({ rows: () => rowsOf(['Air']), onMissing });
+    const rail = createAlphaRail({ rows: () => rowsOf(['Air']).rows, onMissing });
     rail.el.querySelector<HTMLButtonElement>('[data-letter="Q"]')?.click();
     expect(onMissing).toHaveBeenCalledWith('Q');
     // And it stays tappable, because there may be something behind it.
