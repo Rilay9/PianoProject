@@ -139,11 +139,18 @@ function update(banner: HTMLElement): void {
  */
 export function installErrorBoundary(root: HTMLElement = document.body): () => void {
   return onErrorLogged(() => {
-    let banner = document.getElementById(BANNER_ID);
-    if (!banner) {
-      banner = build();
-      root.appendChild(banner);
+    const existing = document.getElementById(BANNER_ID);
+    if (existing) {
+      update(existing);
+      return;
     }
+    // Filled *before* it is appended. `role="alert"` is announced when the
+    // node enters the document, and this used to append an empty paragraph
+    // and write the message on the next line — so the one thing the app says
+    // out loud when it breaks was an announcement of nothing, with the
+    // sentence arriving afterwards as a live-region change or not at all.
+    const banner = build();
     update(banner);
+    root.appendChild(banner);
   });
 }

@@ -180,14 +180,37 @@ export function MidiScreen(router: Router): HTMLElement {
     const inputs = webMidiSource.inputs;
     deviceList.replaceChildren();
     if (inputs.length === 0) {
-      addParagraph(deviceList, 'No MIDI inputs yet. Plugging one in is picked up live.', 'muted');
+      addParagraph(
+        deviceList,
+        webMidiSource.state.connected || webMidiSource.knownInputs.length > 0
+          ? 'No MIDI input is plugged in. Plugging one in is picked up live.'
+          : 'No MIDI inputs yet. Tap Connect piano, then plug the cable in — after that it is ' +
+              'picked up live.',
+        'muted',
+      );
       return;
     }
     const pinned = getMidiSettings().pinnedInputId;
-    deviceList.appendChild(deviceRow('Listen to all inputs', null, pinned === null));
+    // The pinned id may name a port that is not here — a different cable, or
+    // the same one after a re-plug, since ids are not stable across plug-ins
+    // (docs/05 §9). `WebMidiSource` treats that as "no filter", and the screen
+    // has to show the same thing: checking `pinned === null` alone left the
+    // whole radio group with nothing selected while every input was being
+    // listened to, which is the one state a radio group cannot mean.
+    const pinnedPresent = pinned !== null && inputs.some((input) => input.id === pinned);
+    deviceList.appendChild(deviceRow('Listen to all inputs', null, !pinnedPresent));
     for (const input of inputs) {
       const label = input.manufacturer ? `${input.name} — ${input.manufacturer}` : input.name;
       deviceList.appendChild(deviceRow(label, input.id, pinned === input.id));
+    }
+    if (pinned !== null && !pinnedPresent) {
+      const note = addParagraph(
+        deviceList,
+        'The input you pinned is not plugged in, so every input is being listened to. ' +
+          'Pin one of these to change that.',
+        'muted',
+      );
+      note.id = 'midi-pin-lost';
     }
   }
 

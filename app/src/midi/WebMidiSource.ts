@@ -18,6 +18,16 @@
 //   devices send active sensing every 300 ms; logging them at full rate would
 //   push every real note out of a 500-entry buffer within minutes. They are
 //   counted instead, which is what diagnostics actually needs from them.
+// * **A port that goes away is not removed from `access.inputs`.** The Web
+//   MIDI API keeps the `MIDIPort` in the map and sets its `state` to
+//   `'disconnected'`, precisely so a page can recognise the same device when
+//   it comes back. Everything here that asks "is the piano there?" therefore
+//   has to read `port.state`, not `access.inputs.size`. Both of this repo's
+//   MIDI fakes model an unplug as *deleting* the entry (`tests/unit/helpers/
+//   fakeMidiAccess.ts`, `tests/e2e/fixtures/midiMock.ts`), and their ports
+//   are hard-coded `state: 'connected'` — so the suite only ever exercised
+//   the branch the device does not take. `isPresent()` below is correct under
+//   both behaviours: where the entry really is deleted it changes nothing.
 
 import {
   CC_ALL_NOTES_OFF,
@@ -103,6 +113,18 @@ export function isWebMidiSupported(): boolean {
   return defaultRequestAccess() !== null;
 }
 
+/**
+ * Whether the device behind this port is physically there.
+ *
+ * `!== 'disconnected'` rather than `=== 'connected'`: the one answer that
+ * means "gone" is the one worth acting on, and a port from an implementation
+ * (or a fake) that never sets `state` then reads as present rather than as
+ * missing.
+ */
+function isPresent(port: MIDIPort): boolean {
+  return port.state !== 'disconnected';
+}
+
 function portInfo(port: MIDIPort): MidiPortInfo {
   return {
     id: port.id,
@@ -124,14 +146,19 @@ export class WebMidiSource implements MidiSource {
   private readonly messageListeners = new Set<(m: MidiMessageEvent) => void>();
   private readonly stateListeners = new Set<(s: MidiSourceState) => void>();
   private readonly logListeners = new Set<() => void>();
-  /** midi note -> timestamp of its Note-On, so CC123 can release what is held. */
-  private readonly pressed = new Map<number, number>();
+  /**
+   * midi note -> the Note-On that put it down, so CC123 can release what is
+   * held and an unplug can release only the keys of the port that went.
+   */
+  private readonly pressed = new Map<number, { tMs: number; inputId: string }>();
   private readonly counters: MidiHighRateCounters = {
     clock: 0,
     activeSensing: 0,
     lastTMs: null,
   };
   private seq = 0;
+  /** Ids of the ports that were present last time presence was read. */
+  private presentIds = new Set<string>();
   private pinned: string | null = null;
   private selectedOutput: string | null = null;
   private lastError: MidiAccessError | null = null;
@@ -189,18 +216,26 @@ export class WebMidiSource implements MidiSource {
     // Hot-plug: the OTG cable is very often inserted after the app is open.
     access.onstatechange = () => {
       this.attachAllInputs();
+      // Before the state goes out: a port that has just gone takes any key
+      // held on it with it, and the engine must hear the release first.
+      this.syncPresence();
       this.emitState();
     };
     this.attachAllInputs();
+    this.syncPresence();
     this.emitState();
   }
 
   disconnect(): void {
+    // Anything still down is released on the way out, for the same reason the
+    // CC123 path releases it: nothing else ever will.
+    this.releaseHeld();
     for (const input of this.attached) input.onmidimessage = null;
     this.attached.clear();
     if (this.access) this.access.onstatechange = null;
     this.access = null;
     this.pressed.clear();
+    this.presentIds.clear();
     this.emitState();
   }
 
@@ -225,13 +260,27 @@ export class WebMidiSource implements MidiSource {
     return () => this.logListeners.delete(cb);
   }
 
+  /** The inputs that are physically present. See the note in the header. */
   get inputs(): MidiPortInfo[] {
     return this.activeInputs().map(portInfo);
   }
 
   get outputs(): MidiPortInfo[] {
     if (!this.access) return [];
-    return [...this.access.outputs.values()].map(portInfo);
+    return [...this.access.outputs.values()].filter(isPresent).map(portInfo);
+  }
+
+  /**
+   * Every port the browser still remembers, present or not.
+   *
+   * Diagnostics wants this — "the piano is in the list but disconnected" and
+   * "there is no piano in the list" are different problems with different
+   * cures — while everything that decides whether the app can be played reads
+   * `inputs`.
+   */
+  get knownInputs(): MidiPortInfo[] {
+    if (!this.access) return [];
+    return [...this.access.inputs.values()].map(portInfo);
   }
 
   /**
@@ -271,7 +320,16 @@ export class WebMidiSource implements MidiSource {
   send(bytes: Uint8Array): void {
     const out = this.resolveOutput();
     if (!out) return;
-    out.send(Array.from(bytes));
+    try {
+      out.send(Array.from(bytes));
+    } catch {
+      // `send()` on a port the device has left throws InvalidStateError, and
+      // this is called once per note of the part the piano is playing: a
+      // cable pulled mid-piece would otherwise raise the error banner over
+      // the score a few hundred times. The port is dropped from `outputs` by
+      // the same `statechange`, so the state the screen reads is already
+      // right; there is nothing here for the learner to do about one note.
+    }
   }
 
   /** Panic: release everything on the piano. Sent on stop (docs/05 §9). */
@@ -321,7 +379,15 @@ export class WebMidiSource implements MidiSource {
     if (this.lastError) return this.lastError.message;
     if (!this.access) return 'Not connected';
     const n = this.activeInputs().length;
-    if (n === 0) return 'Connected — no MIDI inputs found';
+    if (n === 0) {
+      // "It was here a moment ago" and "there has never been one" are two
+      // different problems and the cure for the first is a cable, so they get
+      // two different sentences. A port left behind with `state:
+      // 'disconnected'` is what tells the two apart.
+      return this.access.inputs.size > 0
+        ? 'MIDI input unplugged — plug the cable back in'
+        : 'Connected — no MIDI inputs found';
+    }
     return n === 1 ? '1 input' : `${n} inputs`;
   }
 
@@ -334,31 +400,94 @@ export class WebMidiSource implements MidiSource {
 
   private activeInputs(): MIDIInput[] {
     if (!this.access) return [];
-    return [...this.access.inputs.values()];
+    return [...this.access.inputs.values()].filter(isPresent);
   }
 
   private resolveOutput(): MIDIOutput | null {
     if (!this.access) return null;
     if (this.selectedOutput) {
       const chosen = this.access.outputs.get(this.selectedOutput);
-      if (chosen) return chosen;
+      // A chosen output that has been unplugged must fall through to whatever
+      // is still there rather than swallow every message: the setting outlives
+      // the cable it names.
+      if (chosen && isPresent(chosen)) return chosen;
     }
-    const first = this.access.outputs.values().next();
-    return first.done ? null : first.value;
+    for (const out of this.access.outputs.values()) {
+      if (isPresent(out)) return out;
+    }
+    return null;
+  }
+
+  /**
+   * Notices a port that has gone and releases whatever was held on it.
+   *
+   * A key held down when the cable goes is never released by anything — the
+   * Note-Off is on the wire that has just been pulled. Without this the engine
+   * waits for ever for a release that cannot arrive, the keyboard strip keeps
+   * the key lit, and `pressedNotes` reports a note held for the rest of the
+   * session. It is the same cure the CC123 path already applies to a dropped
+   * Note-Off, applied to the other way a Note-Off can go missing.
+   *
+   * Presence is compared by id rather than by object identity, because the
+   * same device coming back is the same `MIDIPort` with the same id and a
+   * `state` that has changed twice.
+   */
+  private syncPresence(): void {
+    const now = new Set(this.activeInputs().map((input) => input.id));
+    const lost = new Set<string>();
+    for (const id of this.presentIds) {
+      if (!now.has(id)) lost.add(id);
+    }
+    this.presentIds = now;
+    // Only the keys of the port that went: a second adapter being unplugged
+    // must not drop the chord being held on the piano.
+    if (lost.size > 0) this.releaseHeld((held) => lost.has(held.inputId));
+  }
+
+  /**
+   * Releases the notes this source believes are down, optionally only those
+   * matching `pick`.
+   */
+  private releaseHeld(
+    pick: (held: { tMs: number; inputId: string }) => boolean = () => true,
+    tMs = performance.now(),
+  ): void {
+    for (const [midi, held] of [...this.pressed.entries()]) {
+      if (!pick(held)) continue;
+      this.pressed.delete(midi);
+      this.emitNote({ kind: 'noteOff', midi, velocity: 0, tMs, confidence: 1, source: 'midi' });
+    }
   }
 
   /**
    * Idempotent: `onmidimessage` is a single-handler slot, so re-running this on
    * every `statechange` reattaches new ports without doubling up on old ones.
+   *
+   * The second branch is the cable being plugged back in. The device comes
+   * back as the *same* `MIDIPort` object, so `attached` still holds it and
+   * `onmidimessage` is still non-null — but the browser closed the port while
+   * the device was gone, and assigning a handler is the only thing that opens
+   * it again (Web MIDI: setting `onmidimessage` to a non-null value implicitly
+   * calls `open()`). Assigning to a slot that already holds a function is not
+   * that, so without this the piano is plugged in, listed, and silent for the
+   * rest of the session.
    */
   private attachAllInputs(): void {
     if (!this.access) return;
     const current = new Set<MIDIInput>();
     for (const input of this.access.inputs.values()) {
       current.add(input);
-      if (this.attached.has(input)) continue;
-      input.onmidimessage = (event: MIDIMessageEvent) => this.handleMessage(input, event);
-      this.attached.add(input);
+      if (!this.attached.has(input)) {
+        input.onmidimessage = (event: MIDIMessageEvent) => this.handleMessage(input, event);
+        this.attached.add(input);
+        continue;
+      }
+      if (isPresent(input) && input.connection === 'closed') {
+        input.onmidimessage = (event: MIDIMessageEvent) => this.handleMessage(input, event);
+        // Belt and braces for an implementation that does not honour the
+        // implicit open; a rejection here only means it is already opening.
+        void input.open?.().catch(() => undefined);
+      }
     }
     for (const stale of [...this.attached]) {
       if (!current.has(stale)) {
@@ -396,12 +525,12 @@ export class WebMidiSource implements MidiSource {
 
     const pinnedId = this.effectiveInputId;
     if (pinnedId !== null && input.id !== pinnedId) return;
-    this.emitNotesFor(parsed);
+    this.emitNotesFor(parsed, input.id);
   }
 
-  private emitNotesFor(parsed: ParsedMidiMessage): void {
+  private emitNotesFor(parsed: ParsedMidiMessage, inputId: string): void {
     if (parsed.kind === 'noteOn' && parsed.midi !== undefined) {
-      this.pressed.set(parsed.midi, parsed.tMs);
+      this.pressed.set(parsed.midi, { tMs: parsed.tMs, inputId });
       this.emitNote({
         kind: 'noteOn',
         midi: parsed.midi,

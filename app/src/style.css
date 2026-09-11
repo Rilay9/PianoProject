@@ -1,3 +1,24 @@
+/* `hidden` means hidden.
+
+   The browser's own `[hidden] { display: none }` is a user-agent rule, and any
+   author rule that sets `display` beats it — so every element in this app that
+   is laid out as a flex row, a grid or a block *and* hidden in TypeScript was
+   drawn anyway. It has been found and patched eight separate times, one
+   element at a time: `.filters`, `.setup-options`, `.setup-preview-panel`,
+   `.setup-footer > *`, `.setup-device__head`, `.setup-device__strip`,
+   `.score-buffer`, `.score-countin`, `.score-beat`, and a `.score-menu-row`
+   that needed `display: none` spelled out for the same reason.
+
+   The ninth was the microphone screen's `Set up MIDI instead` row, which is a
+   `.row` — `display: flex` — and `hidden` from the moment it is built. It has
+   therefore been on that screen permanently: "Set up MIDI instead" offered
+   under a working microphone, and offered before Connect has ever been
+   pressed. Nobody has ever wanted the opposite of this rule, so it is one rule
+   in one place rather than a tenth patch. */
+[hidden] {
+  display: none !important;
+}
+
 :root {
   /* Tells the browser which way to paint the controls it draws itself:
      number inputs, checkboxes, radio buttons, select popups, scrollbars.

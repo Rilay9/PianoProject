@@ -14,6 +14,7 @@ import { showUpdateToast } from './ui/updateToast';
 import { noteUpdateCheck } from './util/offlineStatus';
 import { isOfflineOnly } from './util/storageReport';
 import { installTestHooks } from './app/testHooks';
+import { wireServiceWorkerUpdates } from './app/updates';
 
 // Before anything else: this phone has no console open and no crash reporter,
 // so an error nobody catches leaves no trace at all (docs/04 §7b).
@@ -96,16 +97,20 @@ if ('serviceWorker' in navigator) {
   // what makes the app work with no network — but stops it polling for a new
   // version. On a phone that is deliberately kept off the network, a periodic
   // update check is a request that can only ever fail.
-  void import('virtual:pwa-register').then(({ registerSW }) => {
-    const updateServiceWorker = registerSW({
-      immediate: true,
-      onNeedRefresh() {
-        // Never automatic: swapping the worker in mid-practice would reload
-        // the page under a running session. The learner chooses the moment.
-        if (isOfflineOnly()) return;
-        showUpdateToast({ apply: () => void updateServiceWorker(true) });
-      },
-    });
-    if (!isOfflineOnly()) noteUpdateCheck();
-  });
+  void import('virtual:pwa-register')
+    .then(({ registerSW }) => {
+      wireServiceWorkerUpdates({
+        registerSW,
+        offlineOnly: isOfflineOnly,
+        online: () => navigator.onLine,
+        showToast: showUpdateToast,
+        noteCheck: noteUpdateCheck,
+      });
+    })
+    // A failed dynamic import here is an unhandled rejection, and
+    // `installErrorLog` turns that into the red banner across the bottom of a
+    // working app: "Failed to fetch dynamically imported module". An app with
+    // no service worker is an app that needs the network — worth saying on
+    // Diagnostics (see `util/offlineStatus`), not worth saying over the score.
+    .catch(() => undefined);
 }

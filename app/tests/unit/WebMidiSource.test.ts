@@ -289,3 +289,115 @@ describe('WebMidiSource — disconnect', () => {
     expect(ctx.access.onstatechange).toBeNull();
   });
 });
+
+// ---------------------------------------------------------------------------
+// The unplug the device actually performs.
+//
+// Every test above models an unplug as `removeInput` — the entry deleted from
+// `access.inputs`. The Web MIDI API does not do that: the `MIDIPort` stays in
+// the map with `state: 'disconnected'`, so a page can recognise the same
+// device when it returns, and the browser closes the port. These drive
+// `disconnectInput`/`reconnectInput` instead, which is the branch the owner's
+// HP-130 and its OTG cable take and which nothing in the suite reached.
+// ---------------------------------------------------------------------------
+
+describe('WebMidiSource — the cable, pulled and put back', () => {
+  it('stops reporting a port that the device has left, without it being removed', async () => {
+    const ctx = setup();
+    await ctx.source.connect();
+    expect(ctx.source.connected).toBe(true);
+
+    ctx.access.disconnectInput('in-1');
+
+    // The entry is still there — that is the point.
+    expect(ctx.access.inputs.size).toBe(1);
+    expect(ctx.source.connected).toBe(false);
+    expect(ctx.source.inputs).toEqual([]);
+    expect(ctx.source.state.detail).toBe('MIDI input unplugged — plug the cable back in');
+    // Diagnostics still needs to be able to say "it is listed but gone".
+    expect(ctx.source.knownInputs.map((i) => [i.id, i.state])).toEqual([
+      ['in-1', 'disconnected'],
+    ]);
+  });
+
+  it('releases a key that was held when the cable went', async () => {
+    const ctx = setup();
+    await ctx.source.connect();
+    ctx.piano.emit([0x90, 60, 100], 0);
+    ctx.piano.emit([0x90, 64, 100], 1);
+    expect(ctx.source.pressedNotes).toEqual([60, 64]);
+    ctx.notes.length = 0;
+
+    ctx.access.disconnectInput('in-1');
+
+    expect(ctx.notes.map((n) => [n.kind, n.midi])).toEqual([
+      ['noteOff', 60],
+      ['noteOff', 64],
+    ]);
+    expect(ctx.source.pressedNotes).toEqual([]);
+  });
+
+  it('releases held notes on an explicit disconnect too', async () => {
+    const ctx = setup();
+    await ctx.source.connect();
+    ctx.piano.emit([0x90, 67, 100], 0);
+    ctx.notes.length = 0;
+    ctx.source.disconnect();
+    expect(ctx.notes.map((n) => [n.kind, n.midi])).toEqual([['noteOff', 67]]);
+    expect(ctx.source.pressedNotes).toEqual([]);
+  });
+
+  it('does not release anything when a *different* port goes', async () => {
+    const ctx = setup((access) => {
+      access.inputs.set('in-2', new FakeInput('in-2', 'MIDI Device'));
+    });
+    await ctx.source.connect();
+    ctx.piano.emit([0x90, 60, 100], 0);
+    ctx.notes.length = 0;
+    ctx.access.disconnectInput('in-2');
+    expect(ctx.notes).toEqual([]);
+    expect(ctx.source.pressedNotes).toEqual([60]);
+  });
+
+  it('hears the piano again when it is plugged back in', async () => {
+    const ctx = setup();
+    await ctx.source.connect();
+    ctx.access.disconnectInput('in-1');
+    ctx.notes.length = 0;
+
+    ctx.access.reconnectInput('in-1');
+
+    expect(ctx.source.connected).toBe(true);
+    expect(ctx.source.state.detail).toBe('1 input');
+    ctx.piano.emit([0x90, 72, 100], 500);
+    expect(ctx.notes.map((n) => n.midi)).toEqual([72]);
+  });
+
+  it('does not send to an output the device has left, and does not throw', async () => {
+    const ctx = setup((access) => {
+      access.outputs.set('out-1', new FakeOutput('out-1', 'USB MIDI Interface'));
+    });
+    await ctx.source.connect();
+    const out = ctx.access.outputs.get('out-1');
+    if (!out) throw new Error('missing fixture output out-1');
+    ctx.access.disconnectOutput('out-1');
+
+    expect(ctx.source.outputs).toEqual([]);
+    expect(() => ctx.source.sendAllNotesOff()).not.toThrow();
+    expect(out.sent).toEqual([]);
+  });
+
+  it('a send that throws does not reach the error banner', async () => {
+    const ctx = setup((access) => {
+      const out = new FakeOutput('out-1', 'USB MIDI Interface');
+      out.send = () => {
+        const err = new Error('port closed');
+        err.name = 'InvalidStateError';
+        throw err;
+      };
+      access.outputs.set('out-1', out);
+    });
+    await ctx.source.connect();
+    expect(() => ctx.source.send(Uint8Array.from([0x90, 60, 100]))).not.toThrow();
+  });
+});

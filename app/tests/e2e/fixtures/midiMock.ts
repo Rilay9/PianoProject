@@ -58,6 +58,21 @@ export interface MidiMock {
   /** Hot-plug: adds a port and fires `statechange`. */
   addInput(spec: MockPortSpec): Promise<void>;
   removeInput(id: string): Promise<void>;
+  /**
+   * What an unplug actually does, which is *not* `removeInput`.
+   *
+   * The Web MIDI API leaves the `MIDIPort` in `access.inputs` and sets its
+   * `state` to `'disconnected'`, so a page can recognise the same device when
+   * it returns; the browser closes the port as well, and a closed port
+   * delivers nothing until something assigns `onmidimessage` again. Every
+   * unplug in the suite used `removeInput` — the branch the device never
+   * takes — which is why an unplugged piano counted as connected for a whole
+   * session (handoff §6a).
+   */
+  unplugInput(id: string): Promise<void>;
+  /** The cable going back in: the same port object, present again. */
+  replugInput(id: string): Promise<void>;
+  unplugOutput(id: string): Promise<void>;
   /** Everything the app has sent to a MIDI output, oldest first. */
   sentMessages(): Promise<number[][]>;
   /** How many times the app called `requestMIDIAccess`, and with what. */
@@ -67,6 +82,9 @@ export interface MidiMock {
 interface MockGlobal {
   addInput(spec: MockPortSpec): void;
   removeInput(id: string): void;
+  unplugInput(id: string): void;
+  replugInput(id: string): void;
+  unplugOutput(id: string): void;
   deliver(inputId: string | null, bytes: number[]): void;
   sent: number[][];
   requests: { sysex: boolean }[];
@@ -98,8 +116,8 @@ export async function installMidiMock(
   await page.addInitScript((config: Required<MidiMockOptions>) => {
     class MockPort {
       readonly type: string;
-      readonly state = 'connected';
-      readonly connection = 'open';
+      state = 'connected';
+      connection = 'open';
       readonly version = '1.0';
       readonly id: string;
       readonly name: string;
@@ -114,10 +132,12 @@ export async function installMidiMock(
       }
 
       open(): Promise<MockPort> {
+        this.connection = 'open';
         return Promise.resolve(this);
       }
 
       close(): Promise<MockPort> {
+        this.connection = 'closed';
         return Promise.resolve(this);
       }
 
@@ -126,14 +146,28 @@ export async function installMidiMock(
     }
 
     class MockInput extends MockPort {
-      onmidimessage: ((ev: { data: Uint8Array; timeStamp: number }) => unknown) | null = null;
+      private handler: ((ev: { data: Uint8Array; timeStamp: number }) => unknown) | null = null;
 
       constructor(spec: MockPortSpec) {
         super(spec, 'input');
       }
 
+      // A property, not a field: assigning a non-null `onmidimessage`
+      // implicitly opens the port, and that is the only thing that reopens a
+      // port the browser closed while its device was away.
+      get onmidimessage(): ((ev: { data: Uint8Array; timeStamp: number }) => unknown) | null {
+        return this.handler;
+      }
+
+      set onmidimessage(fn: ((ev: { data: Uint8Array; timeStamp: number }) => unknown) | null) {
+        this.handler = fn;
+        if (fn) this.connection = 'open';
+      }
+
       deliver(bytes: number[]): void {
-        this.onmidimessage?.({
+        // A closed port delivers nothing.
+        if (this.connection !== 'open') return;
+        this.handler?.({
           data: new Uint8Array(bytes),
           // The real API stamps the message when it arrived; performance.now()
           // read here is the closest a mock can get, and is on the same clock.
@@ -180,6 +214,26 @@ export async function installMidiMock(
       },
       removeInput(id) {
         inputs.delete(id);
+        fireStateChange();
+      },
+      unplugInput(id) {
+        const input = inputs.get(id);
+        if (!input) throw new Error(`midiMock: no input ${id}`);
+        input.state = 'disconnected';
+        input.connection = 'closed';
+        fireStateChange();
+      },
+      replugInput(id) {
+        const input = inputs.get(id);
+        if (!input) throw new Error(`midiMock: no input ${id}`);
+        input.state = 'connected';
+        fireStateChange();
+      },
+      unplugOutput(id) {
+        const output = outputs.get(id);
+        if (!output) throw new Error(`midiMock: no output ${id}`);
+        output.state = 'disconnected';
+        output.connection = 'closed';
         fireStateChange();
       },
       deliver(inputId, bytes) {
@@ -258,6 +312,24 @@ export async function installMidiMock(
         const mock = window.__midiMock;
         if (!mock) throw new Error('midiMock was not installed');
         mock.removeInput(portId);
+      }, id),
+    unplugInput: (id) =>
+      page.evaluate((portId: string) => {
+        const mock = window.__midiMock;
+        if (!mock) throw new Error('midiMock was not installed');
+        mock.unplugInput(portId);
+      }, id),
+    replugInput: (id) =>
+      page.evaluate((portId: string) => {
+        const mock = window.__midiMock;
+        if (!mock) throw new Error('midiMock was not installed');
+        mock.replugInput(portId);
+      }, id),
+    unplugOutput: (id) =>
+      page.evaluate((portId: string) => {
+        const mock = window.__midiMock;
+        if (!mock) throw new Error('midiMock was not installed');
+        mock.unplugOutput(portId);
       }, id),
     sentMessages: () => page.evaluate(() => window.__midiMock?.sent ?? []),
     accessRequests: () => page.evaluate(() => window.__midiMock?.requests ?? []),

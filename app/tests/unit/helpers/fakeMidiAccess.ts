@@ -25,24 +25,45 @@ export class FakePort extends EventTarget {
   }
 
   open(): Promise<FakePort> {
+    this.connection = 'open';
     return Promise.resolve(this);
   }
 
   close(): Promise<FakePort> {
+    this.connection = 'closed';
     return Promise.resolve(this);
   }
 }
 
 export class FakeInput extends FakePort {
-  onmidimessage: ((ev: MIDIMessageEvent) => unknown) | null = null;
+  private handler: ((ev: MIDIMessageEvent) => unknown) | null = null;
 
   constructor(id: string, name: string, manufacturer = 'Test') {
     super(id, name, manufacturer, 'input');
   }
 
+  /**
+   * A property, not a field, so the fake models the one piece of Web MIDI
+   * behaviour the port lifetime turns on: **assigning a non-null
+   * `onmidimessage` implicitly opens the port.** A port the browser closed
+   * while its device was away delivers nothing until something assigns the
+   * handler again, and assigning over a slot that already holds a function is
+   * the only thing that does it.
+   */
+  get onmidimessage(): ((ev: MIDIMessageEvent) => unknown) | null {
+    return this.handler;
+  }
+
+  set onmidimessage(fn: ((ev: MIDIMessageEvent) => unknown) | null) {
+    this.handler = fn;
+    if (fn) this.connection = 'open';
+  }
+
   /** Delivers one message, exactly as `midimessage` would. */
   emit(bytes: number[], timeStamp: number): void {
-    this.onmidimessage?.({
+    // A closed port delivers nothing, which is the whole point of the above.
+    if (this.connection !== 'open') return;
+    this.handler?.({
       data: Uint8Array.from(bytes),
       timeStamp,
     } as unknown as MIDIMessageEvent);
@@ -75,6 +96,40 @@ export class FakeMidiAccess extends EventTarget {
 
   removeInput(id: string): void {
     this.inputs.delete(id);
+    this.onstatechange?.(new Event('statechange'));
+  }
+
+  /**
+   * What a real unplug does, which is *not* `removeInput`.
+   *
+   * The Web MIDI API keeps the `MIDIPort` in the map and sets its `state` to
+   * `'disconnected'`, so the page can recognise the same device when it comes
+   * back; the browser closes the port as well. Every test in this file used
+   * `removeInput` — the branch the device never takes — which is why
+   * `WebMidiSource` counted an unplugged piano as connected for a whole
+   * session (handoff §6a).
+   */
+  disconnectInput(id: string): void {
+    const input = this.inputs.get(id);
+    if (!input) throw new Error(`fakeMidiAccess: no input ${id}`);
+    input.state = 'disconnected';
+    input.connection = 'closed';
+    this.onstatechange?.(new Event('statechange'));
+  }
+
+  /** The cable going back in: the same port object, present and closed. */
+  reconnectInput(id: string): void {
+    const input = this.inputs.get(id);
+    if (!input) throw new Error(`fakeMidiAccess: no input ${id}`);
+    input.state = 'connected';
+    this.onstatechange?.(new Event('statechange'));
+  }
+
+  disconnectOutput(id: string): void {
+    const output = this.outputs.get(id);
+    if (!output) throw new Error(`fakeMidiAccess: no output ${id}`);
+    output.state = 'disconnected';
+    output.connection = 'closed';
     this.onstatechange?.(new Event('statechange'));
   }
 

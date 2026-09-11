@@ -842,7 +842,22 @@ it on the clipboard as text.
   total bytes cached, last successful update check, whether the app is currently online. A
   missing-files list if n < m, because a silently skipped precache (the soundfont exceeding
   Workbox's 2 MB default) is the failure mode this screen exists to catch.
-- **MIDI**: connected devices, raw message log (last 200).
+
+  Three rules on the service-worker line, each of them a fault that shipped.
+  **"No worker registered" is its own sentence** — "not registered — this app will not work
+  offline" — and never "registered but not controlling", which is what the line said for a
+  failed registration as well as for a worker one reload away from taking over. **A waiting
+  worker is named**: an update is deliberately held back until the page is reloaded (`00` D20),
+  so once *Later* has been tapped, or "offline only" has suppressed the toast, this line is the
+  only place that says a new version is sitting there. And **"last update check" means a check
+  that reached the server** — it is written from the resolution of `registration.update()`, not
+  from the app having been opened, because a line whose job is to say how stale the app might be
+  must not report "a moment ago" on a phone that has been offline for a month.
+- **MIDI**: connected devices, raw message log (last 200). *Connected* means
+  `port.state === 'connected'`, not "in `access.inputs`": the Web MIDI API leaves an unplugged
+  port in the map with `state: 'disconnected'` so a page can recognise the same device when it
+  returns, and reading the map alone made an unplugged piano count as connected for a whole
+  session. A port that is listed but gone is shown as such here rather than counted.
 - **Latency**, and only when the input is the microphone: a short, sharp click through the
   speaker, heard back on the mic, the gap between the two being the whole round trip — measured
   by the machine in a couple of seconds, with no human in the loop, which is how a DAW does it.
@@ -882,11 +897,30 @@ neither.
 
 **§0 R4 — nothing dead.** When a screen's subject is missing it draws the sentence that says so and the one control that acts on it: no empty grid, no live transport over nothing, no *Disconnect* while disconnected, no statistic with no data behind it. A one-item list is not empty.
 
-Mic permission denied: explain Chrome site settings; fall back to Timed. Mic too noisy (noise
+Mic permission denied: explain Chrome site settings; fall back to Timed. **A dismissed prompt
+is not a denial.** Chrome throws the same `NotAllowedError` for *Block* and for a prompt that
+closed without an answer — a notification landing, a hand brushing the screen — and the two are
+opposites: a block is remembered and needs a trip through site settings, a dismissal is
+remembered by nothing and the next tap asks again. The screen asks
+`navigator.permissions.query({ name: 'microphone' })` and only takes the *Connect microphone*
+button away when the answer is `denied`; on `prompt`, or where the browser will not say, the
+button stays and the sentence says to tap it again. Mic too noisy (noise
 floor above threshold): suggest the USB audio interface path or headphones for playback.
+**Leaving the Microphone screen closes the microphone**, like the Score and Drill screens: it is
+the screen most likely to be opened to test something and walked away from, and a stream left
+open is the phone's recording indicator on for the rest of the session.
 No MIDI: the app never nags; "Connect piano" chip stays grey; Tempo/Listen/Free modes work
 fully; Wait mode uses the on-screen keyboard. Permission denied: explain how to re-enable in
-Chrome site settings (Chrome ⋮ → Settings → Site settings → MIDI devices). **Offline
+Chrome site settings (Chrome ⋮ → Settings → Site settings → MIDI devices).
+**The cable pulled mid-run**: the app stops counting the port as connected, **releases every key
+that was held on it** (the Note-Off is on the wire that has just been pulled, so nothing else
+ever sends it), and says "MIDI input unplugged — plug the cable back in" rather than "no inputs
+found", which is a different problem with a different cure. Plugged back in, the same port is
+reopened — a port the browser closed while its device was away delivers nothing until
+`onmidimessage` is assigned again. **A pinned input that is not plugged in** means "no filter"
+(`05` §9), and the Inputs list says so: *Listen to all inputs* is selected and one line
+explains why, rather than a radio group with nothing selected over an app listening to
+everything. **Offline
 (`00` D20): everything works** — scores, drills, playback, progress, import of a file already
 on the phone — because the whole library is on the device. Only the teaching-video links show
 "needs internet", and they say so before you tap them rather than after. A failed update check

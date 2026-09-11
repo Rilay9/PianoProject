@@ -248,6 +248,24 @@ test('a refused microphone says what to do instead, and stops pretending to list
       refusal.name = 'NotAllowedError';
       return Promise.reject(refusal);
     };
+    // And the permission has to *say* denied, which is the half this test was
+    // missing. Chrome throws the same `NotAllowedError` for a Block and for a
+    // prompt swiped away, and the two are opposites: a Block is remembered and
+    // needs site settings, a dismissal is remembered by nothing and the next
+    // tap asks again. `MicScreen` now asks the Permissions API which it was, so
+    // shadowing `getUserMedia` alone describes a *dismissal* — the browser's
+    // own permission state was never touched by this stub.
+    Object.defineProperty(navigator, 'permissions', {
+      configurable: true,
+      writable: true,
+      value: {
+        query: (descriptor: { name: string }) =>
+          Promise.resolve({
+            state: descriptor.name === 'microphone' ? 'denied' : 'prompt',
+            onchange: null,
+          }),
+      },
+    });
   });
   await page.goto('/#/settings/mic');
   await expect(page.locator('#mic-connect')).toBeVisible({ timeout: 30_000 });
@@ -268,6 +286,50 @@ test('a refused microphone says what to do instead, and stops pretending to list
 
   await page.locator('#mic-use-midi').click();
   await expect(page).toHaveURL(/#\/settings\/midi$/);
+});
+
+test('a microphone prompt that was only dismissed still offers Connect', async ({ page }) => {
+  // **Not run in the session that wrote it** (Playwright was forbidden there);
+  // needs a run.
+  //
+  // The other half of the test above. A prompt can close without an answer for
+  // reasons that have nothing to do with the learner's intent — a notification
+  // landing, a hand brushing the screen, the app being backgrounded — and
+  // Chrome throws the same `NotAllowedError` it throws for Block. The screen
+  // used to answer both by printing "will not ask again until you allow it in
+  // this page's own site settings" and taking the Connect button away, so an
+  // accidental dismissal left the one screen whose whole subject is the
+  // microphone with no way to open one and directions to a setting nothing had
+  // changed.
+  await page.addInitScript(() => {
+    navigator.mediaDevices.getUserMedia = () => {
+      const refusal = new Error('Permission dismissed');
+      refusal.name = 'NotAllowedError';
+      return Promise.reject(refusal);
+    };
+    // The permission is untouched — which is exactly what a dismissal leaves.
+    Object.defineProperty(navigator, 'permissions', {
+      configurable: true,
+      writable: true,
+      value: {
+        query: () => Promise.resolve({ state: 'prompt', onchange: null }),
+      },
+    });
+  });
+  await page.goto('/#/settings/mic');
+  await expect(page.locator('#mic-connect')).toBeVisible({ timeout: 30_000 });
+  await page.locator('#mic-connect').click();
+
+  const status = page.locator('#mic-status');
+  await expect(status).toContainText('closed without an answer');
+  await expect(status).not.toContainText('site settings');
+
+  // The way forward is still on the screen, and so is everything that only
+  // means something once the microphone is open.
+  await expect(page.locator('#mic-connect')).toBeVisible();
+  await expect(page.locator('#mic-connect')).toBeEnabled();
+  await expect(page.locator('#mic-calibrate')).toBeVisible();
+  await expect(page.locator('#mic-use-midi')).toBeHidden();
 });
 
 test('a stage with nothing on the tracks you have on says so and offers the tracks', async ({

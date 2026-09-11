@@ -8,7 +8,7 @@
  * than stacking a banner per error.
  */
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { installErrorBoundary } from '../../src/ui/errorBoundary';
 import { errorCount, loggedErrors, recordError, resetErrorLogForTest } from '../../src/util/errorLog';
 
@@ -79,5 +79,24 @@ describe('installErrorBoundary', () => {
     stop();
     recordError('after', 'error');
     expect(document.getElementById('error-banner')).toBeNull();
+  });
+});
+
+describe('the moment the banner enters the document', () => {
+  it('already carries its message, because role="alert" is announced on insertion', () => {
+    installErrorBoundary(document.body);
+    let textAtInsertion: string | null = null;
+    const realAppend = document.body.appendChild.bind(document.body);
+    const spy = vi
+      .spyOn(document.body, 'appendChild')
+      .mockImplementation(<T extends Node>(node: T): T => {
+        if (node instanceof HTMLElement && node.id === 'error-banner') {
+          textAtInsertion = node.querySelector('.error-banner__text')?.textContent ?? '';
+        }
+        return realAppend(node);
+      });
+    recordError('the engraver gave up', 'error');
+    spy.mockRestore();
+    expect(textAtInsertion).toContain('the engraver gave up');
   });
 });

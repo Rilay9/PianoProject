@@ -178,6 +178,14 @@ export function MicScreen(router: Router): HTMLElement {
     offLevel();
     offState();
     micSource.stopRecording();
+    // And close it. `stopRecording()` only stops the raw-audio tap; the
+    // microphone track, the worklet and the graph stay open, so testing the
+    // microphone once and walking away left the stream live — the phone's
+    // recording indicator on and the detector running — for the rest of the
+    // session, over screens that never asked to listen. The Score, Drill and
+    // Dev screens all release it on dispose; this one, whose whole subject is
+    // the microphone, was the one that did not.
+    micSource.disconnect();
   });
 
   function renderConnection(): void {
@@ -277,9 +285,36 @@ export function MicScreen(router: Router): HTMLElement {
    *
    * `failed` is the one that can: a worklet that did not load or a device that
    * was busy is worth another try, so it keeps the screen as it is. The other
-   * three are settled until something outside the app changes.
+   * two are settled until something outside the app changes.
+   *
+   * `permission-denied` is the one that has to be *asked about*. Chrome throws
+   * the same `NotAllowedError` whether the learner tapped Block or swiped the
+   * prompt away, and `MicSource` can only report the one code for both — but
+   * the two are opposites: a block is remembered and needs a trip through site
+   * settings, while a dismissal is remembered by nothing and the very next tap
+   * asks again. This screen used to answer both with the site-settings
+   * sentence *and* take the Connect button away (`settled`), so a prompt
+   * dismissed by accident — a notification landing, a hand brushing the
+   * screen — left the owner with no way to open the microphone and
+   * instructions for a setting that was never changed. The Permissions API is
+   * what tells the two apart.
    */
-  function describeRefusal(error: unknown): { sentence: string; settled: boolean } {
+  async function micPermissionState(): Promise<string | null> {
+    try {
+      const permissions = navigator.permissions as
+        | { query?: (descriptor: { name: string }) => Promise<{ state: string }> }
+        | undefined;
+      if (typeof permissions?.query !== 'function') return null;
+      const status = await permissions.query({ name: 'microphone' });
+      return status.state;
+    } catch {
+      // An unsupported descriptor name (Firefox once, older WebViews): the
+      // browser will not say, so nothing is treated as settled.
+      return null;
+    }
+  }
+
+  async function describeRefusal(error: unknown): Promise<{ sentence: string; settled: boolean }> {
     if (!(error instanceof MicAccessError)) {
       return {
         sentence: error instanceof Error ? error.message : 'Could not open the microphone.',
@@ -287,6 +322,23 @@ export function MicScreen(router: Router): HTMLElement {
       };
     }
     if (error.code === 'permission-denied') {
+      const state = await micPermissionState();
+      if (state === 'prompt') {
+        return {
+          sentence:
+            'The prompt closed without an answer, so nothing was refused. Tap Connect ' +
+            'microphone again and choose Allow.',
+          settled: false,
+        };
+      }
+      if (state === null) {
+        return {
+          sentence:
+            'The microphone was not opened. Tap Connect microphone to be asked again; if you ' +
+            'are not asked, allow it in this page’s own site settings.',
+          settled: false,
+        };
+      }
       return {
         sentence:
           'The microphone was refused, and the browser will not ask again until you allow it ' +
@@ -322,16 +374,29 @@ export function MicScreen(router: Router): HTMLElement {
     status.classList.toggle('status--error', settled);
   }
 
+  let connecting = false;
+
   async function connect(): Promise<void> {
+    // Two taps while the prompt is up used to start two attempts. `MicSource`
+    // survives that (its `attempt` token makes the earlier one let go), but
+    // the screen did not: the two `applyStored()`/`status` writes land in
+    // whichever order the permission prompt resolves in, so the sentence on
+    // screen could describe the attempt that lost.
+    if (connecting) return;
+    connecting = true;
+    connectButton.disabled = true;
     status.textContent = 'Asking for permission…';
     try {
       await micSource.connect(deviceSelect.value === '' ? undefined : deviceSelect.value);
       applyStored();
     } catch (error) {
-      const { sentence, settled } = describeRefusal(error);
+      const { sentence, settled } = await describeRefusal(error);
       showNoInput(settled);
       status.textContent = sentence;
       return;
+    } finally {
+      connecting = false;
+      connectButton.disabled = false;
     }
     showNoInput(false);
     renderConnection();
