@@ -24,11 +24,14 @@ import { getSettings } from '../../data/settingsStore';
 import { audioEngine } from '../../app/services';
 import { Metronome } from '../../audio/Metronome';
 import { DETECTION_WIDTH, PdfDocument } from '../../pdf/PdfDocument';
+import { BoundedPageCache } from '../../pdf/pageCache';
+import { backgroundDetectionOrder } from '../../pdf/detectionOrder';
 import {
   addSystem,
   cutsToSystems,
   detectPageSystems,
   moveCut,
+  reindexAfterRebuild,
   removeSystem,
   wholePageCuts,
   type CutMap,
@@ -84,7 +87,7 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
    * of canvas per page, which is 300 MB of bitmap on a phone. Only the page
    * being read and its neighbours are kept.
    */
-  const pageCache = new Map<number, HTMLCanvasElement>();
+  const pageCache = new BoundedPageCache<HTMLCanvasElement>(PAGE_CACHE_SIZE);
   /** Renders in progress, so two draws never rasterise the same page twice. */
   const inFlight = new Map<number, Promise<void>>();
   let cuts: CutMap = {};
@@ -123,8 +126,15 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     context.drawImage(page, 0, top, page.width, height, 0, 0, page.width, height);
   }
 
-  /** Renders a page into the cache if it is not there, evicting the oldest. */
-  async function ensurePage(page: number): Promise<void> {
+  /**
+   * Renders a page into the cache if it is not there, evicting the oldest —
+   * except any page in `keep`, which is the set of pages the current draw
+   * actually needs. Without that guard, a draw wanting more pages at once
+   * than `PAGE_CACHE_SIZE` (small systems, tall stage, several pages of
+   * read-ahead) could evict the *current* page while still fetching its
+   * neighbours (`docs/04` §5b).
+   */
+  async function ensurePage(page: number, keep: readonly number[] = []): Promise<void> {
     if (!doc || page < 0 || page >= pageCount || pageCache.has(page)) return;
     // Two draws can want the same page at once — the current system and the
     // greyed next one, when both are on it. Sharing the render keeps a phone
@@ -139,12 +149,7 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     try {
       const rendered = await render;
       if (disposed) return;
-      pageCache.set(page, rendered.canvas);
-      while (pageCache.size > PAGE_CACHE_SIZE) {
-        const oldest = pageCache.keys().next().value;
-        if (oldest === undefined) break;
-        pageCache.delete(oldest);
-      }
+      pageCache.set(page, rendered.canvas, keep);
     } finally {
       inFlight.delete(page);
     }
@@ -184,7 +189,7 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
     const missing = distinct.filter((page) => !pageCache.has(page));
     if (missing.length === 0) return;
     void (async () => {
-      for (const page of missing) await ensurePage(page);
+      for (const page of missing) await ensurePage(page, distinct);
       if (!disposed && !adjusting) draw();
     })();
   }
@@ -480,23 +485,49 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
   }
 
   function rebuildSystems(): void {
+    // Captured before `systems` is replaced: adjusting cuts on a page other
+    // than the one being read changes how many systems come before it, so a
+    // leftover flat index would silently land on a different system once the
+    // reader closes "Adjust cuts" (handoff-2026-09-09 §5).
+    const current = systems[index];
+    const position = current ? { page: current.page, indexOnPage: current.indexOnPage } : null;
     const rebuilt: PlannedSystem[] = [];
     for (let page = 0; page < pageCount; page += 1) {
       rebuilt.push(...cutsToSystems(cuts[page] ?? wholePageCuts(), page));
     }
     systems = rebuilt;
-    index = Math.min(index, Math.max(0, systems.length - 1));
+    index = reindexAfterRebuild(systems, position, index);
     if (!adjusting) draw();
   }
 
-  async function redetect(page: number): Promise<void> {
+  /**
+   * Renders one page at detection width and stores what it found in `cuts`.
+   * Does not rebuild or redraw.
+   *
+   * `onlyIfUnset` guards the background pass: it checks `cuts[page]` again
+   * after the (async) render, not only before starting it, because "Adjust
+   * cuts" is reachable while the background pass is still running and a
+   * manual edit or an explicit "Re-detect this page" can land on the same
+   * page in between. Without the second check, a slow render finishing after
+   * the reader's own edit would silently overwrite it. The button itself
+   * calls this with the default `false`, because overriding an existing
+   * value — including a manual one — is what "Re-detect this page" is for.
+   */
+  async function detectOnePageQuietly(page: number, onlyIfUnset = false): Promise<void> {
     if (!doc) return;
+    if (onlyIfUnset && cuts[page]) return;
     const rendered = await doc.renderPage(page, DETECTION_WIDTH);
     const context = rendered.canvas.getContext('2d');
     if (!context) return;
     const data = context.getImageData(0, 0, rendered.width, rendered.height).data;
     const detected = detectPageSystems(data, rendered.width, rendered.height);
+    if (onlyIfUnset && cuts[page]) return;
     cuts = { ...cuts, [page]: detected.length >= 2 ? detected : wholePageCuts() };
+  }
+
+  /** Detects one page and shows the result — the "Re-detect this page" button. */
+  async function redetect(page: number): Promise<void> {
+    await detectOnePageQuietly(page);
     rebuildSystems();
   }
 
@@ -588,31 +619,80 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
       pageCount = doc.pageCount;
 
       // Stored corrections win over detection, always: the learner has already
-      // told us this page is not what the profile thought it was. Detection
-      // runs a page at a time at a small width and keeps no canvas, so a long
-      // score costs seconds rather than hundreds of megabytes.
+      // told us this page is not what the profile thought it was.
       cuts = { ...(row.cuts ?? {}) };
-      for (let page = 0; page < pageCount; page += 1) {
-        if (cuts[page]) continue;
-        status.textContent = `Finding the systems on page ${String(page + 1)} of ${String(pageCount)}…`;
-        await redetect(page);
+
+      // Only the page being opened is detected before anything is drawn. A
+      // bound method book runs into hundreds of pages, and detection is a
+      // rendered page plus a pixel-by-pixel scan of it — seconds each on a
+      // phone — so finding every page before showing the first one means a
+      // 400-page book makes the reader wait to see the one page they asked
+      // for. The rest is found afterward, in the background, while they read
+      // (handoff-2026-09-09 §5).
+      const requestedPage = openAtPage !== undefined ? openAtPage - 1 : 0;
+      const openPage = Math.min(Math.max(requestedPage, 0), Math.max(0, pageCount - 1));
+      if (pageCount > 0 && !cuts[openPage]) {
+        status.textContent = `Finding the systems on page ${String(openPage + 1)} of ${String(pageCount)}…`;
+        await detectOnePageQuietly(openPage, true);
         if (disposed) return;
       }
       rebuildSystems();
+
+      // The first system *on* the requested page, not the page itself: the
+      // viewer's unit is a system, and landing between two of them would show
+      // half a stave. A page number typed past the end of the file cannot be
+      // found this way — say so, rather than silently opening at the start.
+      let pageNotFound = false;
       if (openAtPage !== undefined) {
-        // The first system *on* that page, not the page itself: the viewer's
-        // unit is a system, and landing between two of them would show half a
-        // stave.
-        const wanted = systems.findIndex((system) => system.page >= openAtPage - 1);
+        const wanted = systems.findIndex((system) => system.page >= requestedPage);
         if (wanted !== -1) index = wanted;
+        else pageNotFound = pageCount > 0;
       }
-      await ensurePage(systems[index]?.page ?? 0);
+
+      const startPage = systems[index]?.page ?? 0;
+      await ensurePage(startPage, [startPage]);
       if (disposed) return;
       draw();
-      status.textContent =
-        systems.length > 0
+      status.textContent = pageNotFound
+        ? `Page ${String(openAtPage)} isn’t in this file — it only has ${String(pageCount)} page${
+            pageCount === 1 ? '' : 's'
+          }. Opening from the start.`
+        : systems.length > 0
           ? sidewaysHint()
           : 'No systems were found on these pages — use “Adjust cuts” to place them by hand.';
+
+      // The rest of the book, quietly, nearest the opening page first.
+      void (async () => {
+        const order = backgroundDetectionOrder(pageCount, startPage);
+        let touchedAny = false;
+        let lastRebuiltAt = performance.now();
+        for (const page of order) {
+          if (disposed) return;
+          if (cuts[page]) continue;
+          await detectOnePageQuietly(page, true);
+          touchedAny = true;
+          if (disposed) return;
+          // Rebuilding walks every page's cuts and redraws; batching it by
+          // time keeps a long book from repeating, once per page, the exact
+          // "forced layout pass per item" mistake this same handoff fixed
+          // for the folder import's progress read-out.
+          const now = performance.now();
+          if (now - lastRebuiltAt >= 200) {
+            rebuildSystems();
+            lastRebuiltAt = now;
+          }
+        }
+        if (disposed) return;
+        if (touchedAny) rebuildSystems();
+        if (touchedAny) {
+          // Persisted once, so the next time this book is opened the whole
+          // thing is not re-detected from page 1 again. Before this, nothing
+          // but the "Adjust cuts" sheet's own Save button ever wrote an
+          // auto-detected cut back to the row, so a book the reader never
+          // corrected paid the full detection cost on every single open.
+          await updateImport(importId, { cuts });
+        }
+      })();
     } catch (cause) {
       status.textContent = `That PDF could not be opened: ${
         cause instanceof Error ? cause.message : String(cause)

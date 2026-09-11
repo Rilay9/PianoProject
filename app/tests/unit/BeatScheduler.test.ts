@@ -85,4 +85,72 @@ describe('BeatScheduler', () => {
     const s = new BeatScheduler({ bpm: 60, startTimeSec: 0 });
     expect(() => s.setBpm(-1)).toThrow(RangeError);
   });
+
+  describe('a meter change mid-run', () => {
+    it('starts a new bar at the next un-pulled beat', () => {
+      const s = new BeatScheduler({ bpm: 60, beatsPerBar: 4, startTimeSec: 0 });
+      // Bar 1, beats 1 and 2 are committed.
+      expect(s.pull(0, 1.1).map((b) => [b.bar, b.beatInBar])).toEqual([
+        [1, 1],
+        [1, 2],
+      ]);
+      s.setBeatsPerBar(3);
+      expect(s.beatsInBar).toBe(3);
+      // Bar 1 is cut short at two beats; bar 2 is the first full bar of 3.
+      expect(s.pull(2, 4.1).map((b) => [b.bar, b.beatInBar])).toEqual([
+        [2, 1],
+        [2, 2],
+        [2, 3],
+        [3, 1],
+        [3, 2],
+      ]);
+    });
+
+    it('accents only the new meter, so the click and the dots agree', () => {
+      const s = new BeatScheduler({ bpm: 60, beatsPerBar: 4, startTimeSec: 0 });
+      s.pull(0, 2.1); // three beats of 4/4
+      s.setBeatsPerBar(3);
+      const beats = s.pull(3, 5.1); // beats at 3 … 8 s
+      expect(beats.map((b) => b.beatInBar)).toEqual([1, 2, 3, 1, 2, 3]);
+      expect(beats.map((b) => b.isAccent)).toEqual([true, false, false, true, false, false]);
+      // Nothing is ever numbered above the meter now in force — a `beatInBar`
+      // of 4 against three beat dots is the screen fault this guards.
+      for (const beat of beats) expect(beat.beatInBar).toBeLessThanOrEqual(3);
+    });
+
+    it('leaves the numbering alone when nothing has been pulled yet', () => {
+      const s = new BeatScheduler({ bpm: 60, beatsPerBar: 4, startTimeSec: 0 });
+      s.setBeatsPerBar(3);
+      expect(s.pull(0, 3.1).map((b) => [b.bar, b.beatInBar])).toEqual([
+        [1, 1],
+        [1, 2],
+        [1, 3],
+        [2, 1],
+      ]);
+    });
+
+    it('is a no-op for the meter already in force', () => {
+      const s = new BeatScheduler({ bpm: 60, beatsPerBar: 4, startTimeSec: 0 });
+      s.pull(0, 2.1);
+      s.setBeatsPerBar(4);
+      // No new bar: beat 4 of bar 1 still follows beat 3.
+      expect(s.pull(3, 0.1).map((b) => [b.bar, b.beatInBar])).toEqual([[1, 4]]);
+    });
+
+    it('keeps the count-in the length it was promised', () => {
+      const s = new BeatScheduler({
+        bpm: 60,
+        beatsPerBar: 4,
+        countInBars: 1,
+        startTimeSec: 0,
+      });
+      expect(s.countInBeatCount).toBe(4);
+      s.pull(0, 1.1); // two count-in clicks
+      s.setBeatsPerBar(3);
+      const beats = s.pull(2, 3.1);
+      // Four count-in clicks in total, whatever the meter did in between.
+      expect(beats.filter((b) => b.isCountIn).map((b) => b.index)).toEqual([2, 3]);
+      expect(beats.filter((b) => !b.isCountIn).map((b) => b.index)).toEqual([4, 5]);
+    });
+  });
 });

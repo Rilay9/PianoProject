@@ -7,13 +7,14 @@
  * survive a backup, because it is judgement the owner entered by hand and
  * nothing else in the app could reconstruct it.
  */
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   applyLevelOverrides,
   clearLevelOverride,
   levelOverrideCount,
   levelOverrideFor,
   loadLevelOverrides,
+  onLevelOverridesChange,
   resetLevelOverridesForTest,
   setLevelOverride,
 } from '../../src/data/levelOverrides';
@@ -96,6 +97,41 @@ describe('the store', () => {
     const db = await openDatabase();
     const row = await db?.get('levelOverrides', 'song.a');
     expect(row?.at).toBe('2026-09-06T12:00:00.000Z');
+  });
+
+  it('still tells every listener when the database write fails', async () => {
+    // A phone with a library of large PDFs is exactly what runs a database
+    // close to its quota — the comment on `setLevelOverride` promises "the
+    // session still gets the number" even then. Before the fix, an
+    // unhandled rejection from `db.put` skipped the `notify()` call after
+    // it, so the merged catalog index never heard about the change and kept
+    // serving the stale level.
+    const db = await openDatabase();
+    const putSpy = vi.spyOn(db!, 'put').mockRejectedValueOnce(new Error('quota exceeded'));
+    let notified = 0;
+    const off = onLevelOverridesChange(() => {
+      notified += 1;
+    });
+    await expect(setLevelOverride('song.a', 6.4)).resolves.toBeUndefined();
+    expect(levelOverrideFor('song.a')).toBe(6.4);
+    expect(notified).toBe(1);
+    off();
+    putSpy.mockRestore();
+  });
+
+  it('still tells every listener when clearing fails to persist', async () => {
+    await setLevelOverride('song.a', 6.4);
+    const db = await openDatabase();
+    const deleteSpy = vi.spyOn(db!, 'delete').mockRejectedValueOnce(new Error('quota exceeded'));
+    let notified = 0;
+    const off = onLevelOverridesChange(() => {
+      notified += 1;
+    });
+    await expect(clearLevelOverride('song.a')).resolves.toBeUndefined();
+    expect(levelOverrideFor('song.a')).toBeUndefined();
+    expect(notified).toBe(1);
+    off();
+    deleteSpy.mockRestore();
   });
 });
 

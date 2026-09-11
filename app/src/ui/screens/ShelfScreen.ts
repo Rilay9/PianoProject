@@ -291,6 +291,17 @@ export function ShelfScreen(router: Router): HTMLElement {
   intro.append(addRow);
   const list = el('div.list', { id: 'shelf-list' });
   card.append(list);
+  /**
+   * Says so when the shelf could not be loaded.
+   *
+   * Library, Progress and Today all catch their first load and report it; this
+   * screen did not, so a content read that failed rejected into nothing: the
+   * redraw never ran and the shelf sat empty and silent. It is how a full test
+   * run turns into `element(s) not found`, and on a bad connection it is a
+   * blank screen that says nothing about why.
+   */
+  const status = el('p.status', { id: 'shelf-status', role: 'status' });
+  card.append(status);
 
   let books: BookRow[] = [];
   let lessons: LessonChoice[] = [];
@@ -520,7 +531,7 @@ export function ShelfScreen(router: Router): HTMLElement {
     }
     const section = list.querySelector(`[data-book="${book.id}"]`);
     if (!(section instanceof HTMLElement)) {
-      void refresh();
+      void refresh().catch(sayLoadFailed);
       return;
     }
     const row = section.querySelector(`[data-piece="${book.id}/${saved.id}"]`);
@@ -572,7 +583,12 @@ export function ShelfScreen(router: Router): HTMLElement {
     draw();
   }
 
+  function sayLoadFailed(cause: unknown): void {
+    status.textContent = `The shelf could not be loaded: ${String(cause)}`;
+    status.classList.add('status--error');
+  }
+
   draw();
-  void refresh();
+  void refresh().catch(sayLoadFailed);
   return section;
 }

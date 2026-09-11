@@ -64,6 +64,31 @@ describe('tapTempo', () => {
     expect(tapAt([2_400]).bpm).toBe(MIN_BPM);
   });
 
+  /**
+   * A button that fires twice, or a handler reached from two events in the
+   * same task, gives two taps the clock cannot tell apart. Keeping both put a
+   * zero in the interval average: four steady taps half a second apart then
+   * read 160 bpm instead of 120, and stayed wrong until the duplicate fell out
+   * of the window four taps later.
+   */
+  it('treats two taps at the same instant as one', () => {
+    let state = EMPTY_TAP_STATE;
+    state = tap(state, 1_000);
+    state = tap(state, 1_000); // the same tap arriving twice
+    expect(state.taps).toEqual([1_000]);
+
+    for (const at of [1_500, 2_000, 2_500]) state = tap(state, at);
+    expect(state.bpm).toBe(120);
+  });
+
+  it('ignores a tap timestamped before the one before it', () => {
+    let state = tapAt([500, 500]);
+    expect(state.bpm).toBe(120);
+    const before = state;
+    state = tap(state, (state.taps.at(-1) as number) - 10);
+    expect(state).toBe(before);
+  });
+
   it('rounds to a whole number', () => {
     const bpm = tapAt([617, 617, 617]).bpm;
     expect(bpm).toBe(Math.round(bpm!));

@@ -159,11 +159,22 @@ which drives the same `audio/Metronome`.
 
 - **Tempo:** a large tabular-numeral bpm readout, a 30–240 slider, ±5 buttons and **tap
   tempo**. Tap tempo averages the last four intervals and restarts after 2.5 s of silence,
-  because two taps a minute apart are two attempts and not a 1 bpm tempo.
+  because two taps a minute apart are two attempts and not a 1 bpm tempo. Two taps the
+  clock cannot separate are one tap: keeping both put a zero in the interval average, and
+  four steady taps half a second apart then read 160 bpm rather than 120 and stayed wrong
+  until the duplicate fell out of the window.
 - **Bar:** 2/4, 3/4, 4/4, 6/8 buttons, one dot per beat, the first accented. **The dot
   lights when the click sounds, not when it is scheduled** — the scheduler runs up to
   100 ms ahead (`01` §4.4), and a flash that early reads as wrong even when the audio is
-  exact.
+  exact. Those late paints are cancelled by Stop and by leaving the screen: a dot that
+  lit a window after the metronome stopped, and stayed lit, was the visible half of the
+  same timers going on painting a detached screen.
+- **A meter changed while it is clicking takes effect on the next click**, which becomes
+  a downbeat — the bar in progress is cut short rather than renumbered, since the beats
+  inside the look-ahead window have already been given their accent. Until this worked,
+  `setBeatsPerBar` reached only the *next* `start()`: tapping 3/4 on a running metronome
+  redrew three dots while the click went on accenting every fourth beat, and on the beats
+  the old meter numbered 4 no dot lit at all.
 - **Sound:** wood, beep, high. The screen says why "high" exists: it is the 5 kHz click the
   mic detector notches out (`05` §11.4), so it is the one to use when the microphone is
   listening.
@@ -353,6 +364,10 @@ and never will; what it holds is a register.
   score" opens a normal measured run; without one, §5d measures only what it can hear. The
   search for a twin is debounced, stops once it has six matches instead of filtering the whole
   catalog, and matches the composer as well as the title — the row it draws shows both.
+- **A twin is checked, not assumed, wherever it is offered** (2026-09-11). Deleting the import or
+  bundled item behind an `itemId` leaves the id on the piece; both the Shelf row and the
+  practice screen (§5d) look it up before showing "With the score" / "Practise with the score",
+  so a stale twin is dropped from the button rather than opening to "unknown item".
 - Saving a piece redraws only that piece's row (a book's whole section when the save added or
   removed one), not the whole shelf, so the scroll position and every other book on the page
   survive an edit.
@@ -574,6 +589,19 @@ width.** See `docs/decisions/2026-09-05-p4-pdf-sheet-music.md`; the page-cutting
   `imports.cuts` — fractions of the page height, in `[top, bottom]` pairs; see `01` §4.5 for
   why fractions and why pairs. A page the detector finds nothing on falls back to the whole
   page, never to an empty viewer.
+- **Only the page being opened is detected before the viewer draws anything** (2026-09-11).
+  Detection is a rendered page plus a pixel-by-pixel scan of it, seconds of work on a phone once a
+  book runs into the hundreds of pages; finding every page first used to make a 400-page book
+  make the reader wait to see the one page they asked for. The rest is detected afterward, in the
+  background, nearest the opening page first, and the result is written back to the import once —
+  before this, nothing but "Adjust cuts"' own Save button ever persisted an auto-detected cut, so
+  a book the reader never corrected paid the full cost again on every open. Adjusting cuts on a
+  page other than the one being read (flipping back to fix an earlier page while reading ahead)
+  keeps the reading position on the same system rather than a raw index that drifts when an
+  earlier page's system count changes. The rendered-page cache (three pages) never evicts a page
+  a draw currently needs, even when more read-ahead is wanted at once than the cache's target
+  size. A page number past the end of the file (a stale page on a shelf piece, or a typo) says so
+  rather than silently opening at page 1.
 - **No OMR.** Turning a PDF into notes is an offline desktop step (Audiveris, MuseScore); the
   result comes back through the MusicXML import.
 

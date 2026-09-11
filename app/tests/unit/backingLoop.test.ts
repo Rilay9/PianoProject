@@ -6,10 +6,11 @@
  * three oscillators and a noise burst and is somebody's opinion; where the
  * backbeat falls is not.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   SWING_OFFBEAT,
   STRAIGHT_OFFBEAT,
+  DrumKit,
   barSchedule,
   midiToHz,
 } from '../../src/audio/backingLoop';
@@ -128,5 +129,87 @@ describe('midiToHz', () => {
   it('puts A4 at 440', () => {
     expect(midiToHz(69)).toBeCloseTo(440, 6);
     expect(midiToHz(57)).toBeCloseTo(220, 6);
+  });
+});
+
+/**
+ * Every event builds a fresh chain of two or three nodes and attaches it to the
+ * kit's output. A finished source node the browser can collect is one thing;
+ * the gain and the filter behind it stay connected to `output` regardless, so
+ * the graph hanging off the kit grew for as long as the loop played. A bar is
+ * about twelve events, so a ten-minute jam at 120 bpm left some seven thousand
+ * live nodes on it. `Metronome` has always disconnected its click chains.
+ */
+describe('DrumKit node lifetime', () => {
+  function fakeContext() {
+    const created: { disconnect: ReturnType<typeof vi.fn>; kind: string }[] = [];
+    const param = () => ({
+      value: 0,
+      setValueAtTime: vi.fn(),
+      exponentialRampToValueAtTime: vi.fn(),
+    });
+    const make = (kind: string, extra: Record<string, unknown> = {}) => {
+      const node = {
+        kind,
+        connect: vi.fn((next: unknown) => next),
+        disconnect: vi.fn(),
+        ...extra,
+      };
+      created.push(node);
+      return node;
+    };
+    const sources: { onended: (() => void) | null }[] = [];
+    const ctx = {
+      sampleRate: 48_000,
+      destination: { connect: vi.fn(), disconnect: vi.fn() },
+      createGain: () => make('gain', { gain: param() }),
+      createBiquadFilter: () => make('filter', { type: '', frequency: param() }),
+      createOscillator: () => {
+        const node = make('osc', {
+          type: '',
+          frequency: param(),
+          start: vi.fn(),
+          stop: vi.fn(),
+          onended: null,
+        });
+        sources.push(node as unknown as { onended: (() => void) | null });
+        return node;
+      },
+      createBufferSource: () => {
+        const node = make('source', {
+          buffer: null,
+          start: vi.fn(),
+          stop: vi.fn(),
+          onended: null,
+        });
+        sources.push(node as unknown as { onended: (() => void) | null });
+        return node;
+      },
+      createBuffer: (_ch: number, length: number) => ({
+        getChannelData: () => new Float32Array(length),
+      }),
+    };
+    return { ctx: ctx as unknown as BaseAudioContext, created, sources };
+  }
+
+  it('disconnects every node of a finished event', () => {
+    const { ctx, created, sources } = fakeContext();
+    const kit = new DrumKit(ctx);
+    // The kit's own output gain is created first and must stay connected.
+    const output = created.length;
+
+    for (const event of barSchedule({ pitchClasses: C_MAJOR, swing: true })) {
+      kit.play(event, 0);
+    }
+    // Every source reports that it has finished, as the browser does.
+    for (const source of sources) source.onended?.();
+
+    const perEvent = created.slice(output);
+    expect(perEvent.length).toBeGreaterThan(12);
+    for (const node of perEvent) {
+      expect(node.disconnect, `${node.kind} left attached to the kit`).toHaveBeenCalled();
+    }
+    // The kit's output is not touched by an event ending.
+    expect(created[0]?.disconnect).not.toHaveBeenCalled();
   });
 });

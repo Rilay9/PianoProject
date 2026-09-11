@@ -4,6 +4,7 @@ import { AudioEngine } from '../../src/audio/AudioEngine';
 /** The slice of AudioContext this module touches. */
 function fakeContext() {
   const gainNode = { gain: { value: 1 }, connect: vi.fn(), disconnect: vi.fn() };
+  const listeners = new Map<string, Set<EventListener>>();
   const ctx = {
     state: 'suspended' as AudioContextState,
     currentTime: 0,
@@ -14,14 +15,34 @@ function fakeContext() {
       return Promise.resolve();
     }),
     close: vi.fn(() => Promise.resolve()),
+    addEventListener: vi.fn((type: string, fn: EventListener) => {
+      const set = listeners.get(type) ?? new Set<EventListener>();
+      set.add(fn);
+      listeners.set(type, set);
+    }),
+    removeEventListener: vi.fn((type: string, fn: EventListener) => {
+      listeners.get(type)?.delete(fn);
+    }),
   };
-  return { ctx, gainNode };
+  /** What the platform does when it takes the audio focus away. */
+  const platformSuspend = (): void => {
+    ctx.state = 'suspended';
+    for (const fn of listeners.get('statechange') ?? []) fn(new Event('statechange'));
+  };
+  return { ctx, gainNode, listeners, platformSuspend };
 }
 
 function makeEngine() {
-  const { ctx, gainNode } = fakeContext();
+  const { ctx, gainNode, listeners, platformSuspend } = fakeContext();
   const factory = vi.fn(() => ctx as unknown as AudioContext);
-  return { engine: new AudioEngine({ contextFactory: factory }), ctx, gainNode, factory };
+  return {
+    engine: new AudioEngine({ contextFactory: factory }),
+    ctx,
+    gainNode,
+    factory,
+    listeners,
+    platformSuspend,
+  };
 }
 
 describe('AudioEngine', () => {
@@ -109,5 +130,50 @@ describe('AudioEngine', () => {
     await engine.ensureStarted();
     await engine.close();
     expect(seen).toEqual(['running', 'uninitialised']);
+  });
+
+  /**
+   * Android suspends the AudioContext whenever the screen locks, a call
+   * arrives, or another app takes the audio focus. `state` was only ever
+   * published from `ensureStarted()` and `close()`, so nothing in the app
+   * learned about it: subscribers went on believing sound was running while
+   * the metronome had silently stopped clicking.
+   */
+  it('reports a suspend the app did not ask for', async () => {
+    const { engine, platformSuspend } = makeEngine();
+    await engine.ensureStarted();
+    const seen: string[] = [];
+    engine.onStateChange((s) => seen.push(s));
+
+    platformSuspend();
+
+    expect(seen).toEqual(['suspended']);
+    expect(engine.state).toBe('suspended');
+  });
+
+  it('stops listening to a context it has closed', async () => {
+    const { engine, ctx, listeners } = makeEngine();
+    await engine.ensureStarted();
+    expect(listeners.get('statechange')?.size).toBe(1);
+    await engine.close();
+    expect(listeners.get('statechange')?.size ?? 0).toBe(0);
+    expect(ctx.removeEventListener).toHaveBeenCalledWith('statechange', expect.any(Function));
+  });
+
+  it('starts audio even when the context is not an EventTarget', async () => {
+    // A hand-written double in another suite need not implement the event
+    // methods, and a missing listener must not stop audio from starting.
+    const bare = {
+      state: 'suspended' as AudioContextState,
+      currentTime: 0,
+      destination: {},
+      createGain: () => ({ gain: { value: 1 }, connect: vi.fn(), disconnect: vi.fn() }),
+      resume: () => Promise.resolve(),
+      close: () => Promise.resolve(),
+    };
+    const engine = new AudioEngine({
+      contextFactory: () => bare as unknown as AudioContext,
+    });
+    await expect(engine.ensureStarted()).resolves.toBe(bare as unknown as AudioContext);
   });
 });

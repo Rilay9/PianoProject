@@ -123,3 +123,33 @@ export function removeSystem(cuts: readonly number[], index: number): number[] {
   sorted.splice(index * 2, 2);
   return sorted;
 }
+
+/**
+ * Keeps the reading position on the same system after a rebuild, rather than
+ * reusing a raw array index.
+ *
+ * `systems` is a flat list across every page, so its length — and the
+ * position of everything after the edited page — changes the moment a cut
+ * is added or removed anywhere in the book. "Adjust cuts" lets a reader flip
+ * to a page other than the one they were reading and fix it there, which is
+ * the normal way to work through a scanned book; rebuilding from a leftover
+ * numeric index after that silently lands them on a different system, with
+ * nothing on screen to say it moved. Finding the same `(page, indexOnPage)`
+ * pair in the new list — or the last system left on that page, if the edit
+ * removed the one they were on — is what "the same position" actually means.
+ */
+export function reindexAfterRebuild(
+  systems: readonly PlannedSystem[],
+  position: { page: number; indexOnPage: number } | null,
+  fallbackIndex: number,
+): number {
+  if (position) {
+    const onPage = systems.filter((system) => system.page === position.page);
+    if (onPage.length > 0) {
+      const target = onPage.find((system) => system.indexOnPage === position.indexOnPage) ?? onPage[onPage.length - 1];
+      const found = target ? systems.indexOf(target) : -1;
+      if (found !== -1) return found;
+    }
+  }
+  return Math.min(fallbackIndex, Math.max(0, systems.length - 1));
+}

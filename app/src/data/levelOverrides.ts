@@ -85,16 +85,34 @@ export async function setLevelOverride(
 ): Promise<void> {
   const row: LevelOverrideRow = { itemId, level, at: now.toISOString() };
   cache.set(itemId, row);
-  const db = await openDatabase();
-  // The write can fail (no storage, quota); the session still gets the number.
-  if (db) await db.put('levelOverrides', row);
+  // The write can fail (no storage, quota — a phone with a library of large
+  // PDFs is exactly what runs a database close to its limit) and the comment
+  // above used to promise "the session still gets the number" without
+  // keeping it: an unhandled rejection from `db.put` skipped the `notify()`
+  // below it, so the in-memory cache had the new level but nothing told the
+  // merged catalog index to drop its stale copy — every reader kept showing
+  // the old one until something else happened to invalidate it. The write is
+  // now allowed to fail on its own without taking the rest of the update
+  // down with it.
+  try {
+    const db = await openDatabase();
+    if (db) await db.put('levelOverrides', row);
+  } catch {
+    // Nothing further to do: the number lives in `cache` regardless, which
+    // is the fallback the comment above describes.
+  }
   notify();
 }
 
 export async function clearLevelOverride(itemId: string): Promise<void> {
   cache.delete(itemId);
-  const db = await openDatabase();
-  if (db) await db.delete('levelOverrides', itemId);
+  try {
+    const db = await openDatabase();
+    if (db) await db.delete('levelOverrides', itemId);
+  } catch {
+    // Same as `setLevelOverride`: the in-memory clear still has to reach
+    // every listener even if the database would not let it happen.
+  }
   notify();
 }
 

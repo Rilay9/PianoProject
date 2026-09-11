@@ -364,7 +364,13 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         return;
       }
       if (item.tempoBpm) {
-        bpm = item.tempoBpm;
+        // Clamped the same way a manual edit is (`bpmInput`'s own `change`
+        // handler, above): the catalog carries real pieces down to 31 bpm and
+        // up to 264, both outside the field's declared 40–240 and outside
+        // what `BeatScheduler` was sized for, and an unclamped value here
+        // disagreed with the field's own `min`/`max` the moment the chart
+        // loaded, before anyone had touched it.
+        bpm = Math.min(240, Math.max(40, item.tempoBpm));
         bpmInput.value = String(bpm);
       }
       drawGrid();

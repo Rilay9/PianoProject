@@ -109,6 +109,46 @@ test.describe('metronome', () => {
     );
   });
 
+  /**
+   * The meter changed *while it is clicking* (docs/04 §2a).
+   *
+   * `setBeatsPerBar` used to reach only the next `start()`, so the dots were
+   * redrawn to the new meter while the run went on numbering beats by the old
+   * one. The visible symptom is the one asserted here: on the beats the old
+   * meter numbered 4, the three-dot row had no dot to light, so the row went
+   * dark for a beat every bar. Over several bars of 3/4 at a fast tempo, a row
+   * that never goes dark is the proof the change reached the scheduler.
+   */
+  test('a meter chosen while it is running reaches the click', async ({ page }) => {
+    await page.locator('#metronome-slider').fill('240');
+    await page.locator('#metronome-start').click();
+    await expect(page.locator('#metronome-start')).toHaveText('Stop');
+    // Let a bar of 4/4 go by, so beats are committed under the old meter.
+    await expect(page.locator('#metronome-beats .beat-dot.is-active')).toHaveCount(1, {
+      timeout: 5_000,
+    });
+    await page.waitForTimeout(1_000);
+
+    await page.locator('#metronome-meter-3').click();
+    await expect(page.locator('#metronome-beats .beat-dot')).toHaveCount(3);
+
+    // 240 bpm is a beat every 250 ms. Sample faster than that for three bars
+    // and count how often the row is dark: the old fault left it dark on one
+    // beat in four, which at this rate is a run of samples, not a race.
+    let dark = 0;
+    let lit = 0;
+    for (let i = 0; i < 60; i += 1) {
+      const active = await page.locator('#metronome-beats .beat-dot.is-active').count();
+      if (active === 0) dark += 1;
+      else lit += 1;
+      await page.waitForTimeout(40);
+    }
+    expect(lit).toBeGreaterThan(0);
+    // A dot is lit until the next beat replaces it, so a healthy row is
+    // essentially never dark; a quarter of the samples dark is the fault.
+    expect(dark / (dark + lit)).toBeLessThan(0.1);
+  });
+
   test('leaving the screen stops it', async ({ page }) => {
     await page.locator('#metronome-start').click();
     await expect(page.locator('#metronome-start')).toHaveText('Stop');

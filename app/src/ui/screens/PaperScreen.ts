@@ -35,6 +35,7 @@ import {
   type Steadiness,
 } from '../../engine/steadiness';
 import { findShelfPiece, type ShelfPiece } from '../../data/booksStore';
+import { findItem } from '../../curriculum/load';
 import { recordRun, selfPass } from '../../data/progressStore';
 import { getSettings } from '../../data/settingsStore';
 import { onScreenDispose } from '../screenLifecycle';
@@ -388,10 +389,15 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
     (header.querySelector('h1') as HTMLElement).textContent = entry.piece.title;
     const page = entry.piece.page === undefined ? '' : ` · page ${String(entry.piece.page)}`;
     where.textContent = `${entry.book.title}${page}`;
-    if (entry.piece.itemId) {
-      // A piece with a twin should not be here: the app can read those notes.
+    // A twin the catalog no longer has is not a twin — the same fault the
+    // Shelf list itself was fixed for (handoff-2026-09-09 §5): deleting the
+    // import left the id on the piece, and this screen offered "Practise
+    // with the score" unconditionally, a button whose only outcome is the
+    // score screen's own "unknown item" page.
+    const twinId = entry.piece.itemId && (await findItem(entry.piece.itemId)) ? entry.piece.itemId : undefined;
+    if (twinId) {
       controls.prepend(
-        button('Practise with the score', () => router.navigateScore(entry?.piece.itemId ?? ''), {
+        button('Practise with the score', () => router.navigateScore(twinId), {
           id: 'paper-with-score',
         }),
       );

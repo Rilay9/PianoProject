@@ -34,7 +34,7 @@ function fetchMock(indexReply: () => Promise<Response>): (url: string) => Promis
     }
     if (String(url).includes('drill.foo.v1.md')) return Promise.resolve(new Response('VARIANT', { status: 200 }));
     return Promise.resolve(new Response('BASE', { status: 200 }));
-  }) as unknown as (url: string) => Promise<Response>;
+  });
 }
 
 describe('tipsFor: a transient failure fetching the index must not be permanent', () => {
