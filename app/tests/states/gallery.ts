@@ -188,6 +188,13 @@ export async function shoot(
       // Drawn *over* the notation on purpose, with a background, and only
       // while the chrome is folded: covering a chord symbol is the trade.
       '.score-stage__corner',
+      // The count-in is a modal overlay over the stage: it dims the notation
+      // and puts the beat over it, which is the whole of what it does. What it
+      // must *not* cover is the control bar, because the bar stays usable
+      // during a count-in — stopping a run that has begun counting is exactly
+      // what someone reaches for — and that is guaranteed by its own clearance
+      // in `style.css` and asserted in `score.countin.spec.ts`, not here.
+      '.score-countin',
       // The beat dot has no text and is 10 px by design — it is a dot.
       '.score-beat',
       // A key's own label sits on the key; the strip is not chrome over a

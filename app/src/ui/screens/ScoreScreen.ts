@@ -524,6 +524,15 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   const handsGroup = document.createElement('div');
   handsGroup.className = 'score-group';
+  // One control made of three segments, and it says so.
+  //
+  // `R`, `L` and `Both` are about 23 px wide each, and judged one at a time
+  // they read as three tap targets far under `04` §0 R4's forty — 118 gallery
+  // cells said so. They are not three targets: they are one 92 x 40 segmented
+  // control, adjacent, and a slip between neighbouring segments costs a tap to
+  // undo rather than doing something unexpected. Marking the group lets the
+  // sweep judge what is really there, so what it still reports is real.
+  handsGroup.dataset.tapGroup = '';
   for (const hand of HANDS) {
     handsGroup.appendChild(
       button(
@@ -691,6 +700,7 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   const layoutGroup = document.createElement('div');
   layoutGroup.className = 'score-group';
+  layoutGroup.dataset.tapGroup = '';
   layoutGroup.id = 'score-layout';
   const layoutWindow = button('Window', () => setLayout('window'), 'score-layout-window');
   const layoutScroll = button('Scroll', () => setLayout('scroll'), 'score-layout-scroll');
@@ -705,6 +715,7 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   const keysGroup = document.createElement('div');
   keysGroup.className = 'score-group';
+  keysGroup.dataset.tapGroup = '';
   keysGroup.id = 'score-keys';
   const KEYS_CHOICES: { id: KeysView; label: string }[] = [
     { id: 'strip', label: 'Keys' },

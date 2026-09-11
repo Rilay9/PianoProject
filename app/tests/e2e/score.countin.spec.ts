@@ -37,6 +37,41 @@ test.describe('the count-in you can see', () => {
     await expect(countIn).toBeHidden({ timeout: 30_000 });
   });
 
+  test('it covers the notation but never the controls', async ({ page }) => {
+    // Covering the notation is the whole of what it does. The bar is the
+    // exception: during a count-in it stays usable, because stopping a run
+    // that has begun counting is exactly what someone reaches for — and a
+    // control that is usable but has a numeral drawn across it is not usable
+    // in any way that matters. The stage is extended under the bar during a
+    // run to win the height, so the count-in has to keep off it deliberately.
+    for (const size of [
+      { width: 342, height: 740 },
+      { width: 740, height: 342 },
+      { width: 360, height: 780 },
+    ]) {
+      await page.setViewportSize(size);
+      await openScore(page);
+      await page.locator('#score-mode').selectOption('tempo');
+      await page.locator('#score-play').click();
+      await expect(page.locator('#score-countin')).toBeVisible({ timeout: 30_000 });
+
+      const clash = await page.evaluate(() => {
+        const bar = document.querySelector('#score-bar');
+        if (!bar || (bar as HTMLElement).hidden) return null;
+        const barBox = bar.getBoundingClientRect();
+        for (const beat of document.querySelectorAll('#score-countin .score-countin__beat')) {
+          const b = beat.getBoundingClientRect();
+          if (b.height <= 0) continue;
+          if (b.bottom > barBox.top + 1 && b.top < barBox.bottom - 1) {
+            return `a beat reaches ${String(Math.round(b.bottom))} and the bar starts at ${String(Math.round(barBox.top))}`;
+          }
+        }
+        return null;
+      });
+      expect(clash, `${String(size.width)}x${String(size.height)}: ${clash ?? ''}`).toBeNull();
+    }
+  });
+
   test('the beat dot pulses in Tempo and stays away in Wait', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');

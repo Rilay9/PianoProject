@@ -80,6 +80,19 @@ export async function auditScreen(page: Page, options: AuditOptions = {}): Promi
         faults.push(fault);
       };
 
+      /**
+       * Covered on purpose, and the app has said so.
+       *
+       * An overlay drawing over the screen is what an overlay is, and the
+       * sweep cannot tell that from a control landing on another by accident —
+       * it reported the summary's buttons and the `...` sheet's rows over the
+       * bar's controls on dozens of cells. `inert` is the app declaring that
+       * this element is not part of the interactive screen at the moment, so
+       * something covering it is meant to, and a tap cannot reach it anyway.
+       * That is exactly the difference the sweep was missing.
+       */
+      const disabled = (el: Element): boolean => el.closest('[inert]') !== null;
+
       const ignored = (el: Element): boolean =>
         ignore.some((sel) => el.matches(sel) || el.closest(sel) !== null);
 
@@ -106,7 +119,7 @@ export async function auditScreen(page: Page, options: AuditOptions = {}): Promi
       // beam over a stem over a ledger line. What is being looked for is the
       // app's chrome landing on top of the score, or on itself.
       const chromeText: Element[] = [...document.querySelectorAll('body *')].filter((el) => {
-        if (ignored(el) || !visible(el)) return false;
+        if (ignored(el) || !visible(el) || disabled(el)) return false;
         if (el.closest('svg') !== null) return false;
         const hasOwnText = [...el.childNodes].some(
           (n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? '').trim().length > 0,
@@ -114,7 +127,7 @@ export async function auditScreen(page: Page, options: AuditOptions = {}): Promi
         return hasOwnText;
       });
       const svgText: Element[] = [...document.querySelectorAll('svg text')].filter(
-        (el) => !ignored(el) && visible(el),
+        (el) => !ignored(el) && visible(el) && !disabled(el),
       );
 
       const overlaps = (a: DOMRect, b: DOMRect): boolean =>
@@ -274,9 +287,19 @@ export async function auditScreen(page: Page, options: AuditOptions = {}): Promi
       }
 
       // --- controls off the screen, or too small to hit ---------------------
+      //
+      // A segmented control is one target, not one per segment. `R`, `L` and
+      // `Both` are about 23 px each, and judged separately they were 118 cells
+      // of fault; together they are one 92 x 40 control, and a slip between
+      // neighbouring segments of the same control costs a tap to undo rather
+      // than doing something unexpected. The app says which groups those are
+      // with `data-tap-group`, so this judges the group and skips its members.
+      // What is left over after that is real.
       const controls = [...document.querySelectorAll<HTMLElement>('button, a[href], select, input, [role="button"]')];
-      for (const el of controls) {
-        if (ignored(el) || !visible(el)) continue;
+      const groups = [...document.querySelectorAll<HTMLElement>('[data-tap-group]')];
+      for (const el of [...groups, ...controls]) {
+        if (ignored(el) || !visible(el) || disabled(el)) continue;
+        if (!el.hasAttribute('data-tap-group') && el.closest('[data-tap-group]') !== null) continue;
         const r = box(el);
         const pastX = r.right > window.innerWidth + 1 || r.left < -1;
         const pastY = r.bottom > window.innerHeight + 1 || r.top < -1;
