@@ -359,6 +359,27 @@ body {
   flex-wrap: wrap;
 }
 
+/* A sentence under the row it is about, because the status line at the top of
+   the screen is out of sight when the row is three thousand down. */
+.folder-row-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -4px 0 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--warn, var(--border));
+  background: color-mix(in srgb, var(--warn, var(--border)) 12%, transparent);
+  font-size: 0.85rem;
+}
+
+.folder-row-note__aside {
+  flex: 1 1 100%;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
 .folder-progress__note {
   flex: 1 1 100%;
   margin: 0;

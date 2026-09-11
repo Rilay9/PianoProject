@@ -15,12 +15,32 @@
  * promise surfaces as "no scores found" rather than as an error.
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { readFolderHandle } from '../../src/data/folderLibrary';
+import { zipSync, strToU8 } from 'fflate';
+import { addFromFolder, readFolderHandle } from '../../src/data/folderLibrary';
+import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 import { walkFolder, type WalkMessage } from '../../src/data/folderWalk.worker';
 
+const MUSICXML = `<?xml version="1.0"?>
+<score-partwise version="4.0">
+  <work><work-title>Walked</work-title></work>
+  <part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list>
+  <part id="P1"><measure number="1"><note><rest/><duration>4</duration></note></measure></part>
+</score-partwise>`;
+
+/**
+ * A real `.mxl` — a zip with a container and a score in it.
+ *
+ * Not a stub eight bytes of zip header. The importer opens what it is given,
+ * so a fake one only ever proves the importer rejects fakes, and the question
+ * here is whether a file that travelled through a worker still opens.
+ */
 function mxl(): Uint8Array {
-  // Enough of a zip header that the reader treats it as a compressed score.
-  return new Uint8Array([0x50, 0x4b, 0x03, 0x04, 0, 0, 0, 0]);
+  return zipSync({
+    'META-INF/container.xml': strToU8(
+      '<container><rootfiles><rootfile full-path="score.xml"/></rootfiles></container>',
+    ),
+    'score.xml': strToU8(MUSICXML),
+  });
 }
 
 /** A directory handle over a set of paths, as the picker would give one. */
@@ -203,5 +223,54 @@ describe('handing the walk to a worker', () => {
     installWorker(record, 'none');
     const library = await readFolderHandle(fakeHandle(FILES) as never);
     expect(library.scores).toHaveLength(2);
+  });
+});
+
+describe('adding a score after a walk that went through the worker', () => {
+  const realWorker = (globalThis as unknown as Record<string, unknown>).Worker;
+
+  afterEach(() => {
+    (globalThis as unknown as Record<string, unknown>).Worker = realWorker;
+  });
+
+  /**
+   * A `Worker` that runs the real walk in this thread and posts its messages
+   * back, so the files reaching `readFolderHandle` arrive the way they do in a
+   * browser — through the message handler — rather than from the fallback.
+   *
+   * This is the gap every other folder test leaves. jsdom has no `Worker`, so
+   * all of them exercise the path the owner's phone does *not* take, and the
+   * first report of "Add flashes and does nothing" came from a phone.
+   */
+  function installRealWalkWorker(): void {
+    class WalkWorker {
+      onmessage: ((event: MessageEvent<unknown>) => void) | null = null;
+      onerror: (() => void) | null = null;
+      postMessage(message: unknown): void {
+        void walkFolder(message as Parameters<typeof walkFolder>[0], (out) => {
+          this.onmessage?.({ data: out } as MessageEvent<unknown>);
+        });
+      }
+      terminate(): void {
+        // The real one stops the moment the walk resolves, and the files it
+        // handed over have to outlive it. That is the thing worth proving: a
+        // file that went stale with its worker would look exactly like "Add
+        // flashes and nothing happens".
+      }
+    }
+    (globalThis as unknown as Record<string, unknown>).Worker = WalkWorker;
+  }
+
+  it('lists the folder, and the files still read after the worker has gone', async () => {
+    useFakeIndexedDb();
+    installRealWalkWorker();
+    const library = await readFolderHandle(fakeHandle(FILES) as never);
+    expect(library.scores).toHaveLength(2);
+
+    const score = library.scores.find((s) => s.file === 'aa/one.mxl');
+    expect(score).toBeDefined();
+    const row = await addFromFolder(library.id, score!);
+    expect(row.origin).toEqual({ folder: library.id, file: 'aa/one.mxl' });
+    clearFakeIndexedDb();
   });
 });

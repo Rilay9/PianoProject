@@ -19,6 +19,7 @@ import {
   FolderCancelled,
   FolderError,
   addFromFolder,
+  directoryPickerAvailable,
   folderRememberNote,
   forgetFolder,
   looksUnnamed,
@@ -527,6 +528,49 @@ export function FolderScreen(router: Router): HTMLElement {
     }
   }
 
+  /**
+   * Puts a sentence under the row it belongs to, with its cure when there is one.
+   *
+   * The commonest failure here is the folder no longer being lent to the page —
+   * Android hands it over for a visit, and `folderHandles` is off until a real
+   * phone is known to keep the permission. That is entirely recoverable: the
+   * fix is to pick the folder again, and the button to do it is at the top of
+   * a screen the owner has scrolled a long way down. So the offer comes to
+   * them.
+   */
+  function sayOnRow(score: FolderScore, said: string): void {
+    const row = list.querySelector(`[data-file="${CSS.escape(score.file)}"]`);
+    if (!row) return;
+    row.parentElement?.querySelectorAll('.folder-row-note').forEach((old) => old.remove());
+    const note = el('p.folder-row-note', { role: 'status' }, said);
+    if (/pick the .* folder again|pick the folder again/i.test(said)) {
+      note.append(
+        button(
+          'Pick the folder again',
+          () => {
+            void pick();
+          },
+          { variant: 'secondary' },
+        ),
+      );
+      // The immediate cure is above; this is the one that stops it happening
+      // again. The setting is off by default because no real Android had been
+      // seen to keep the permission — the owner's phone is the thing that can
+      // answer that, so it is worth telling them the switch is there.
+      if (!getSettings().folderHandles && directoryPickerAvailable()) {
+        note.append(
+          el(
+            'span.folder-row-note__aside',
+            {},
+            'To stop it asking each time, turn on “Remember the score folder” in Settings.',
+          ),
+        );
+      }
+    }
+    row.after(note);
+    note.scrollIntoView({ block: 'nearest' });
+  }
+
   /** Redraws one row in place, so adding or assigning does not rebuild the list. */
   function redrawRow(score: FolderScore): void {
     list.querySelector(`[data-file="${CSS.escape(score.file)}"]`)?.replaceWith(rowFor(score));
@@ -547,14 +591,22 @@ export function FolderScreen(router: Router): HTMLElement {
       // the row now carries `Assign`, and this sentence says the row is
       // worth going back to. See the report for why this shape and not that.
       folderStatus.textContent = `Added ${score.title || score.file} to your library. It is on no rung yet — Assign, on its row, puts it on one.`;
+      list.querySelectorAll('.folder-row-note').forEach((old) => old.remove());
       redrawRow(score);
     } catch (cause) {
       control.textContent = was ?? 'Add';
       control.disabled = false;
-      folderStatus.textContent =
+      const said =
         cause instanceof FolderError || cause instanceof ImportError
           ? cause.message
           : 'That score could not be added.';
+      folderStatus.textContent = said;
+      // And beside the row that was tapped, which is the whole of why this
+      // read as "Add flashes and does nothing": the status line lives at the
+      // top of the screen and the row is somewhere down a list of thousands,
+      // so the app was explaining itself where nobody was looking. A failure
+      // has to appear where the failing tap was.
+      sayOnRow(score, said);
       // The Add failed because the remembered folder would not open, and the
       // *reason* it would not open is only known once that has been tried.
       updateRememberNotice();

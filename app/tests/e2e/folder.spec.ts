@@ -370,8 +370,33 @@ test.describe('a folder of 37,261 scores', () => {
     // Browsing works with nothing plugged in — that is the design (`00` D24).
     // Adding is where the folder is needed again, and the message has to say
     // so rather than throwing.
-    await page.locator('#folder-list .list-row').first().getByRole('button', { name: 'Add' }).click();
+    const row = page.locator('#folder-list .list-row').first();
+    await row.getByRole('button', { name: 'Add' }).click();
     await expect(page.locator('[data-screen="folder"]')).toContainText(/pick the .* folder again/i);
+
+    // And *where* it says so. This test passed for a long time while the owner
+    // reported "Add just flashes and does nothing", because it asked whether
+    // the screen contained the sentence and never whether anyone could see it:
+    // the status line is at the top, and a tapped row is somewhere down a list
+    // of thousands. So the message has to be beside the row, with the cure on
+    // it — the button that fixes this lives at the top of the screen too.
+    const note = page.locator('#folder-list .folder-row-note');
+    await expect(note).toHaveCount(1);
+    await expect(note).toContainText(/pick the .* folder again/i);
+    await expect(note.getByRole('button', { name: /pick the folder again/i })).toBeVisible();
+  });
+
+  test('a row that failed to add stops saying so once one succeeds', async ({ page }) => {
+    // A stale complaint under a row is its own small lie.
+    await seedFolder(page, 200);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-count')).toContainText('200 match');
+    await page.locator('#folder-list .list-row').first().getByRole('button', { name: 'Add' }).click();
+    await expect(page.locator('#folder-list .folder-row-note')).toHaveCount(1);
+
+    await page.reload();
+    await expect(page.locator('#folder-count')).toContainText('200 match');
+    await expect(page.locator('#folder-list .folder-row-note')).toHaveCount(0);
   });
 
   test('a folder with no manifest still lists and still searches', async ({ page }) => {
