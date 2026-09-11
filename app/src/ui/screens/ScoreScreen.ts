@@ -92,6 +92,9 @@ const SHORT_MODES: Record<Mode, string> = {
 // "Wait for m" (the state gallery, size 412).
 const NARROW_BAR_PX = 440;
 
+/** The smallest a finger can reliably hit (`04` §0 R4: "about forty"). */
+const TAP_MIN_PX = 40;
+
 const INPUTS: { id: FollowInput; label: string }[] = [
   { id: 'midi', label: 'MIDI' },
   { id: 'mic', label: 'Mic' },
@@ -508,6 +511,75 @@ export function ScoreScreen(router: Router): HTMLElement {
    * select is affected in practice — the dropdown is a list, and a list has
    * room — but both are set, because a select shows whichever it likes.
    */
+  /**
+   * What leaves the bar when the bar cannot afford it, and in what order.
+   *
+   * The row carries six controls and a 342 px phone has no forty pixels to give
+   * each of them — two CI runs proved that the hard way. Finding the pixels was
+   * never the answer: at this size something has to go, and the `...` sheet is
+   * full-screen, explains every control it holds, and is one tap away.
+   *
+   * Ordered by how often a hand reaches for it *during* a session, least first.
+   * Hands is a setting chosen once for a piece and it is the widest thing here,
+   * so it buys the most and costs the least. Hearing the piece is occasional.
+   * Play, the mode, the tempo readout and `...` itself never leave — `...` is
+   * where the others go, and a gateway that could hide itself would be a trap.
+   */
+  const OVERFLOW_ORDER: { el: HTMLElement; label: string; hint: string }[] = [];
+
+  /** Where each overflowed control came from, so it can go back in its place. */
+  const barSlot = new Map<HTMLElement, Element | null>();
+  const overflowed = new Map<HTMLElement, HTMLElement>();
+
+  function sendToSheet(entry: { el: HTMLElement; label: string; hint: string }): void {
+    if (overflowed.has(entry.el)) return;
+    barSlot.set(entry.el, entry.el.nextElementSibling);
+    const row = menuRow(entry.label, entry.hint, entry.el);
+    menuStash.append(row);
+    overflowed.set(entry.el, row);
+  }
+
+  function bringBackToBar(el: HTMLElement): void {
+    const row = overflowed.get(el);
+    if (!row) return;
+    bar.insertBefore(el, barSlot.get(el) ?? null);
+    row.remove();
+    overflowed.delete(el);
+  }
+
+  /** The bar is on more than one line, or a control that stays is too small. */
+  function barIsOverfull(): boolean {
+    const rows = new Set(
+      [...bar.children]
+        .filter((k) => k.getBoundingClientRect().height > 0)
+        .map((k) => Math.round(k.getBoundingClientRect().top)),
+    );
+    if (rows.size > 1) return true;
+    for (const el of [playPause, moreButton]) {
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && (r.width < TAP_MIN_PX || r.height < TAP_MIN_PX)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Puts as much on the bar as it can hold, and the rest in the sheet.
+   *
+   * Everything comes back first and then leaves one at a time, so a phone
+   * turned sideways gets its controls back rather than keeping whatever the
+   * narrower way up decided. Skipped while the sheet is open, because the
+   * stash's children are inside it then and moving them would empty it under
+   * the owner's finger.
+   */
+  function fitBarControls(): void {
+    if (document.getElementById('score-more-sheet')) return;
+    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
+    for (const entry of OVERFLOW_ORDER) {
+      if (!barIsOverfull()) return;
+      sendToSheet(entry);
+    }
+  }
+
   function applyModeLabels(): void {
     const narrow = window.innerWidth < NARROW_BAR_PX;
     for (const option of [...modeSelect.options]) {
@@ -520,6 +592,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   // Re-rendered on resize too: the tempo label's width depends on it.
   window.addEventListener('resize', () => render());
   window.addEventListener('resize', applyModeLabels);
+  window.addEventListener('resize', fitBarControls);
+  unsubscribers.push(() => window.removeEventListener('resize', fitBarControls));
   unsubscribers.push(() => window.removeEventListener('resize', applyModeLabels));
 
   const handsGroup = document.createElement('div');
@@ -577,6 +651,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   moreButton.title = 'More controls';
   moreButton.setAttribute('aria-label', 'More controls');
   bar.appendChild(moreButton);
+
+  OVERFLOW_ORDER.push(
+    {
+      el: handsGroup,
+      label: 'Hands',
+      hint: 'Which hand the app waits for. Chosen once for a piece, so it is the first thing to leave the bar when the screen is narrow.',
+    },
+    {
+      el: hearButton,
+      label: 'Hear it',
+      hint: 'Plays the piece to you, nothing judged.',
+    },
+  );
+
 
   // --- the tempo sheet -----------------------------------------------------
 
@@ -1710,6 +1798,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       window.innerWidth < NARROW_BAR_PX
         ? `${String(Math.round(bpmNow()))} bpm`
         : `${String(tempoPct)}% · ${String(Math.round(bpmNow()))} bpm`;
+    // After the label is written, because its width is part of what decides
+    // whether the row still fits.
+    fitBarControls();
     barsLabel.textContent = `${settings.barsPerWindow} bar${settings.barsPerWindow === 1 ? '' : 's'}`;
     layoutWindow.classList.toggle('is-selected', settings.layout === 'window');
     layoutWindow.setAttribute('aria-pressed', String(settings.layout === 'window'));

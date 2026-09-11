@@ -2486,23 +2486,26 @@ input[type='checkbox'] {
 }
 
 /*
- * The bar's own controls keep the widths they had.
+ * Play and `⋯` get a proper target, and the bar makes room by carrying less.
  *
- * `#score-play` and `#score-more` were given a 40 px floor and it wrapped the
- * row on the Linux runner, twice — CI runs 67 and 68. The reasoning that said
- * it would fit was wrong twice over: the first time it added the minimums as
- * fixed widths and assumed flex would absorb them, and the second time it made
- * the mode select shrinkable and assumed that would stop a wrap. It does not.
- * **A flex row decides its lines from items' hypothetical sizes and only then
- * shrinks them within a line**, so a shrinkable item still starts a new line.
- * Nothing in this row can be widened while the row is full.
+ * A 342 px row holding six controls has no forty pixels to give these two. That
+ * was established twice by CI, and twice the answer attempted was to find the
+ * pixels somewhere — first by assuming flex would absorb the minimums, then by
+ * making the mode select shrinkable. Neither works, and the second is worth
+ * remembering: **a flex row decides its lines from items' hypothetical sizes
+ * and only shrinks them within a line afterwards**, so a shrinkable item still
+ * starts a new line.
  *
- * So `4i-2`'s arithmetic stands after all: nine controls cannot each have forty
- * pixels in a 342 px row, and the way to get them is to carry fewer controls,
- * not to find pixels that are not there. The free wins from that attempt are
- * kept — the tempo readout's height, the sheet's own toggles, the segmented
- * groups declaring themselves — and this part is not.
+ * The pixels are not there to find. At this size something has to leave, which
+ * is what the `⋯` sheet is for — full-screen, one tap away, and it explains
+ * every control it holds. `fitBarControls` in `ScoreScreen` measures the row
+ * and moves the least-used controls into it until what stays fits properly.
+ * So the floor below is affordable: whatever it costs, the bar stops carrying.
  */
+#score-play,
+#score-more {
+  min-width: 2.5rem;
+}
 
 /*
  * The sheet has the room the bar does not.

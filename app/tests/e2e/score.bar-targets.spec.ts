@@ -25,21 +25,18 @@ import { expect, test } from '@playwright/test';
 const TAP_MIN = 40;
 
 /**
- * The two the row has no room for, and why they are named rather than hidden.
+ * Which controls may leave the bar, and which must stay on it.
  *
- * A 342 px row carrying six controls cannot give all of them forty pixels —
- * `4i-2` worked that out and two CI runs proved it, because widening either of
- * these wrapped the bar onto a second line on the Linux runner. Wrapping is
- * §9.23's fault and it is worse than a narrow button, so they keep their width
- * until the bar carries fewer controls.
- *
- * Listed here rather than skipped quietly: the day the bar loses a control,
- * this list is what says the exception can go.
+ * The point of the overflow is that no control needs an exception: whatever the
+ * row cannot afford goes into the `...` sheet instead of being drawn too small.
+ * So there is no allow-list here any more — only a check that the two which can
+ * never leave are still there, because `...` is where the others go and a
+ * gateway that hid itself would be a trap.
  */
-const TOO_NARROW_FOR_NOW = new Set(['score-play', 'score-more']);
+const MUST_STAY = ['score-play', 'score-more'];
 
 /** Every width the gallery shoots, plus the owner's real phone. */
-const WIDTHS = [342, 360, 412, 740, 780, 1200];
+const WIDTHS = [280, 320, 342, 360, 412, 740, 780, 1200];
 
 /** The longest title in the authored library, which is what wrapped the row. */
 const LONG_TITLE = 'song.folk.when-the-saints.alternating';
@@ -54,7 +51,7 @@ test('every control on the bar is big enough to hit, and the row never wraps', a
       await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
       await page.waitForTimeout(700);
 
-      const seen = await page.evaluate(({ min, allowed }) => {
+      const seen = await page.evaluate(({ min, stay }) => {
         const bar = document.querySelector('#score-bar');
         if (!bar) return null;
         const controls = [
@@ -69,8 +66,11 @@ test('every control on the bar is big enough to hit, and the row never wraps', a
             const r = el.getBoundingClientRect();
             return { id: el.id || el.className, w: Math.round(r.width), h: Math.round(r.height) };
           })
-          .filter((el) => el.w > 0 && (el.w < min || el.h < min))
-          .filter((el) => !allowed.includes(el.id));
+          .filter((el) => el.w > 0 && (el.w < min || el.h < min));
+        const missing = stay.filter((id) => {
+          const el = document.getElementById(id);
+          return !el || !bar.contains(el) || el.getBoundingClientRect().width <= 0;
+        });
         // One row, from the bar's height rather than its children's tops: a
         // zero-height child sits at the top whatever the row does.
         const tops = new Set(
@@ -90,17 +90,50 @@ test('every control on the bar is big enough to hit, and the row never wraps', a
         const cut = [...bar.querySelectorAll<HTMLElement>('select, button')]
           .filter((el) => el.scrollWidth > el.clientWidth + 1)
           .map((el) => `${el.id || el.className} needs ${String(el.scrollWidth)}px in ${String(el.clientWidth)}px`);
-        return { rows: tops.size, small, cut };
-      }, { min: TAP_MIN, allowed: [...TOO_NARROW_FOR_NOW] });
+        return { rows: tops.size, small, cut, missing, held: [...bar.children].map((k) => k.id || k.className) };
+      }, { min: TAP_MIN, stay: MUST_STAY });
 
       if (!seen) throw new Error(`no control bar at ${String(width)}px`);
       const where = `${song.replace('song.folk.', '')} at ${String(width)}px`;
       if (seen.rows > 1) faults.push(`${where}: the bar wrapped onto ${String(seen.rows)} rows`);
       for (const el of seen.cut) faults.push(`${where}: ${el}`);
+      for (const id of seen.missing) faults.push(`${where}: ${id} left the bar, and it may not`);
+      console.log(`${where}: bar holds ${seen.held.filter((h) => h).join(', ')}`);
       for (const el of seen.small) {
         faults.push(`${where}: ${el.id} is ${String(el.w)}x${String(el.h)}, under ${String(TAP_MIN)}`);
       }
     }
   }
   expect(faults, faults.join('\n')).toEqual([]);
+});
+
+test('a control that leaves the bar is still reachable, with a word for it', async ({ page }) => {
+  // The whole trade is that a control is better in the sheet than drawn too
+  // small on the bar. That only holds if it is actually *there* — one that
+  // quietly vanished at a narrow width would be worse than either.
+  await page.setViewportSize({ width: 280, height: 740 });
+  await page.goto(`/#/score/${PLAIN}`);
+  await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+  await page.waitForTimeout(700);
+
+  // By class: the hands group is a `div.score-group` and carries no id of its
+  // own — only its three buttons do.
+  await expect(
+    page.locator('#score-bar .score-group'),
+    'nothing overflowed at 280px, so this proves nothing',
+  ).toHaveCount(0);
+
+  await page.locator('#score-more').click();
+  const sheet = page.locator('#score-more-sheet');
+  await expect(sheet).toBeVisible();
+  // Three groups live in this sheet — layout and keys are always there — so
+  // the hands one is found by a button only it has.
+  await expect(sheet.locator('#score-hands-L')).toBeVisible();
+  // And with its name beside it: the bar is the place where a bare glyph has to
+  // do, the sheet is not.
+  await expect(
+    sheet.locator('.score-menu-row', { has: page.locator('#score-hands-L') }),
+  ).toContainText('Hands');
+  // And it still works from in there.
+  await expect(sheet.locator('#score-hands-L')).toBeEnabled();
 });
