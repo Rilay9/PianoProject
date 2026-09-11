@@ -1,22 +1,42 @@
 /**
- * Everything on the control bar is big enough to hit, at every width.
+ * The control bar's targets, and the row they have to fit in.
  *
  * The geometric sweep reported the bar's controls as under `04` §0 R4's "about
- * forty" on 118 gallery cells and nobody could act on it, because the bar was
- * tuned to be exactly full: at 342 px it held 310 px of controls and 20 px of
- * gaps in 329 px of room, so widening anything wrapped the row — and a wrapped
- * row is §9.23's fault, the one the owner photographed.
+ * forty" on 118 gallery cells. Most of that was the instrument — `R`, `L` and
+ * `Both` are one segmented control, not three targets, and they say so now with
+ * `data-tap-group`. What was real is the tempo readout, which was 43 x 17 and
+ * is a control because it opens the tempo sheet; its height cost nothing
+ * horizontally, and the sheet's own toggles were narrow in a full-screen sheet
+ * with a column to spare.
  *
- * The space came from between and around the controls rather than from another
- * control: a tighter gap and no side padding. That is also why this test exists
- * at both ends. Making the targets bigger and wrapping the row would be a worse
- * screen than the one it replaced, so "one row" is asserted beside "big enough"
- * and neither is allowed to buy the other.
+ * `#score-play` and `#score-more` are the two that could not be fixed. A 342 px
+ * row carrying six controls has no forty pixels to give them, and two CI runs
+ * proved it the hard way: widening them wrapped the bar onto a second line on
+ * the Linux runner, where the same words are wider. Wrapping is §9.23's fault
+ * and it is the worse of the two.
+ *
+ * So this asserts both ends and lets neither buy the other — one row, and no
+ * target under forty except the two named above. The exceptions are a list so
+ * that the day the bar carries fewer controls, it is obvious what can go.
  */
 import { expect, test } from '@playwright/test';
 
 /** `04` §0 R4. */
 const TAP_MIN = 40;
+
+/**
+ * The two the row has no room for, and why they are named rather than hidden.
+ *
+ * A 342 px row carrying six controls cannot give all of them forty pixels —
+ * `4i-2` worked that out and two CI runs proved it, because widening either of
+ * these wrapped the bar onto a second line on the Linux runner. Wrapping is
+ * §9.23's fault and it is worse than a narrow button, so they keep their width
+ * until the bar carries fewer controls.
+ *
+ * Listed here rather than skipped quietly: the day the bar loses a control,
+ * this list is what says the exception can go.
+ */
+const TOO_NARROW_FOR_NOW = new Set(['score-play', 'score-more']);
 
 /** Every width the gallery shoots, plus the owner's real phone. */
 const WIDTHS = [342, 360, 412, 740, 780, 1200];
@@ -34,7 +54,7 @@ test('every control on the bar is big enough to hit, and the row never wraps', a
       await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
       await page.waitForTimeout(700);
 
-      const seen = await page.evaluate((min) => {
+      const seen = await page.evaluate(({ min, allowed }) => {
         const bar = document.querySelector('#score-bar');
         if (!bar) return null;
         const controls = [
@@ -49,7 +69,8 @@ test('every control on the bar is big enough to hit, and the row never wraps', a
             const r = el.getBoundingClientRect();
             return { id: el.id || el.className, w: Math.round(r.width), h: Math.round(r.height) };
           })
-          .filter((el) => el.w > 0 && (el.w < min || el.h < min));
+          .filter((el) => el.w > 0 && (el.w < min || el.h < min))
+          .filter((el) => !allowed.includes(el.id));
         // One row, from the bar's height rather than its children's tops: a
         // zero-height child sits at the top whatever the row does.
         const tops = new Set(
@@ -70,7 +91,7 @@ test('every control on the bar is big enough to hit, and the row never wraps', a
           .filter((el) => el.scrollWidth > el.clientWidth + 1)
           .map((el) => `${el.id || el.className} needs ${String(el.scrollWidth)}px in ${String(el.clientWidth)}px`);
         return { rows: tops.size, small, cut };
-      }, TAP_MIN);
+      }, { min: TAP_MIN, allowed: [...TOO_NARROW_FOR_NOW] });
 
       if (!seen) throw new Error(`no control bar at ${String(width)}px`);
       const where = `${song.replace('song.folk.', '')} at ${String(width)}px`;

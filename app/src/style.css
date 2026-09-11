@@ -2361,19 +2361,6 @@ input[type='checkbox'] {
   flex: 0 0 auto;
 }
 
-/*
- * The one control that may give ground, so a wider font cannot wrap the row.
- *
- * Everything else on the bar is fixed, so a row that comes out a few pixels
- * over has nowhere to put them and breaks onto a second line. The mode select
- * is the one thing here that can be narrower without losing anything a person
- * needs — its labels already shorten on a narrow screen — so it absorbs the
- * difference and the row stays a row.
- */
-.score-bar > .score-select {
-  flex: 0 1 auto;
-  min-width: 3.25rem;
-}
 
 /* Back, the title and the status line, mirrored from the header for a phone
    held sideways (P21d A6). Upright the bar is full and the header row is the
@@ -2499,17 +2486,23 @@ input[type='checkbox'] {
 }
 
 /*
- * The primary action gets the biggest target on the bar.
+ * The bar's own controls keep the widths they had.
  *
- * Play was 27 px wide — tied for the smallest control on the screen, and the
- * one pressed more than all the others together. `04` §0 R4 asks for about
- * forty and the bar had no room for it; the gap and the side padding above are
- * where it came from.
+ * `#score-play` and `#score-more` were given a 40 px floor and it wrapped the
+ * row on the Linux runner, twice — CI runs 67 and 68. The reasoning that said
+ * it would fit was wrong twice over: the first time it added the minimums as
+ * fixed widths and assumed flex would absorb them, and the second time it made
+ * the mode select shrinkable and assumed that would stop a wrap. It does not.
+ * **A flex row decides its lines from items' hypothetical sizes and only then
+ * shrinks them within a line**, so a shrinkable item still starts a new line.
+ * Nothing in this row can be widened while the row is full.
+ *
+ * So `4i-2`'s arithmetic stands after all: nine controls cannot each have forty
+ * pixels in a 342 px row, and the way to get them is to carry fewer controls,
+ * not to find pixels that are not there. The free wins from that attempt are
+ * kept — the tempo readout's height, the sheet's own toggles, the segmented
+ * groups declaring themselves — and this part is not.
  */
-#score-play,
-#score-more {
-  min-width: 2.5rem;
-}
 
 /*
  * The sheet has the room the bar does not.
