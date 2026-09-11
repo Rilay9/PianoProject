@@ -258,6 +258,14 @@ export class PracticeEngine {
       this.recordRelease(input.midi, input.tMs);
       return;
     }
+    // Whether this key was already down with no Note-Off since — a cheap
+    // contact bouncing, or a flaky cable repeating a Note-On. Read *before*
+    // `pressed` is updated, and only ever used by Tempo mode (below): Wait
+    // mode's own matching can legitimately need the same pitch struck again
+    // with nothing but a wrong-note reset in between (`strict` mode) and
+    // never promises a Note-Off will have arrived by then, so the same guard
+    // there would drop a note the learner still has to play.
+    const alreadyDown = this.pressed.has(input.midi);
     this.pressed.add(input.midi);
     if (!this.running || this.paused || this.finished) return;
     // Below this the source is telling us it does not know (docs/05 §11.4).
@@ -271,7 +279,7 @@ export class PracticeEngine {
       return;
     }
     if (this.mode === 'wait') this.feedWait(input.midi, input.velocity, input.tMs, confidence);
-    else this.feedTempo(input.midi, input.velocity, input.tMs, confidence);
+    else this.feedTempo(input.midi, input.velocity, input.tMs, confidence, alreadyDown);
   }
 
   // --- Wait mode (docs/05 §2) ----------------------------------------------
@@ -449,7 +457,23 @@ export class PracticeEngine {
 
   // --- Tempo mode (docs/05 §3) ---------------------------------------------
 
-  private feedTempo(midi: number, velocity: number, rawTMs: number, confidence: number): void {
+  private feedTempo(
+    midi: number,
+    velocity: number,
+    rawTMs: number,
+    confidence: number,
+    alreadyDown: boolean,
+  ): void {
+    // A deterministic source (MIDI, the screen keyboard, a replay) cannot
+    // send a second Note-On for a key that never came up: the previous strike
+    // already matched a slot (or missed one) and is done, so a repeat with no
+    // Note-Off between them is the key's contact bouncing or a flaky cable,
+    // not a second note to judge — without this it used to land as an extra
+    // wrong note on top of whatever the first Note-On earned. Only for a
+    // deterministic source: the microphone cannot see a key come up at all,
+    // so it reports a fast, legitimate re-strike the same way, as a second
+    // Note-On with no Note-Off in between, and that must still be judged.
+    if (alreadyDown && !this.session.options.accuracyEstimated) return;
     // The input path has a fixed delay — cable, USB stack, browser, or for a
     // microphone the room, the capsule and the input buffer. The diagnostics
     // loopback measures it and it is removed *here, and only here*, so a
@@ -480,8 +504,7 @@ export class PracticeEngine {
       });
       if (!certain) return;
       this.wrongNotesTotal += 1;
-      const measure = this.session.steps[this.step]?.measureIndex ?? 0;
-      this.bump(this.wrongsByMeasure, measure);
+      this.bump(this.wrongsByMeasure, this.measureIndexNear(at));
       return;
     }
 
@@ -522,6 +545,33 @@ export class PracticeEngine {
       }
     }
     return best;
+  }
+
+  /**
+   * The bar closest to a time on the music clock — for attributing a note
+   * that matched nothing (docs/05 §3's hot-spot list, "Loop the weak bars").
+   *
+   * Not `this.step`: that is the *cursor*, which only moves in
+   * `advanceClockTo` and lags a note played near a barline. `openUpcomingSlots`
+   * opens the next bar's window up to `toleranceMs` before the cursor gets
+   * there, so a wrong note struck in that window is closer to the bar ahead
+   * than to the one the cursor is still showing — and a wrong note by
+   * definition matched no open slot, so `findSlot`'s own search cannot be
+   * reused here. Scored by time over every step of the run instead.
+   */
+  private measureIndexNear(atMs: number): number {
+    let best = this.session.steps[this.step];
+    let bestDistance = best ? Math.abs(atMs - best.tMs) : Number.POSITIVE_INFINITY;
+    for (let i = this.session.firstStep; i <= this.session.lastStep; i += 1) {
+      const step = this.session.steps[i];
+      if (!step) continue;
+      const distance = Math.abs(atMs - step.tMs);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = step;
+      }
+    }
+    return best?.measureIndex ?? 0;
   }
 
   /** Opens the matching window for a step, if it expects anything. */

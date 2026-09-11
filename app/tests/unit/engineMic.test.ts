@@ -159,3 +159,35 @@ describe('estimated accuracy', () => {
     expect(MIC_ENGINE_OPTIONS.toleranceMs).toBe(200);
   });
 });
+
+describe('a repeated note with no Note-Off in between', () => {
+  // The pitch detector cannot see a key come up, so it reports a fast
+  // re-strike as a second Note-On the instant the note's energy dips and
+  // rises again (detector.ts's restrike arming) — with no Note-Off between
+  // the two. That is its only way of ever reporting a repeated note at all,
+  // so the engine must not mistake it for a bouncing contact and drop it (the
+  // guard added for Tempo/Wait mode's MIDI bounce case is keyed off
+  // `accuracyEstimated` for exactly this reason).
+  const repeated = makeModel([
+    { onset: 0, notes: [note({ midi: 60 })] },
+    { onset: 1, notes: [note({ midi: 60 })] },
+  ]);
+
+  it('still judges the second strike in Tempo mode', () => {
+    const h = harness(repeated, { mode: 'tempo', countInBars: 0, ...MIC_ENGINE_OPTIONS });
+    h.engine.start();
+    h.play(60, { atMs: 0, confidence: 0.9 });
+    h.play(60, { atMs: BEAT_MS, confidence: 0.9 });
+    h.advance(1.5 * BEAT_MS);
+    expect(h.engine.state.score.hits).toBe(2);
+  });
+
+  it('still advances twice in Wait mode', () => {
+    const h = harness(repeated, { mode: 'wait', ...MIC_ENGINE_OPTIONS });
+    h.engine.start();
+    h.play(60, { confidence: 0.9 });
+    h.play(60, { confidence: 0.9 });
+    expect(h.of('stepAdvanced')).toHaveLength(1);
+    expect(h.engine.state.finished).toBe(true);
+  });
+});

@@ -127,6 +127,71 @@ describe('Tempo mode — judging', () => {
     expect(h.of('noteJudged')[0]?.ok).toBe(false);
   });
 
+  it('a bouncing key does not turn one correct strike into a hit plus a wrong note', () => {
+    // A cheap contact can fire twice for one physical strike, with no
+    // Note-Off between the two Note-Ons — the key never came up. Without a
+    // guard, the first Note-On matches the slot and the second finds it
+    // already closed and is scored as an extra wrong note, docking a run that
+    // was actually played correctly.
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.play(60, { atMs: 0 });
+    h.play(60, { atMs: 3 }); // the bounce: same key, no release in between
+    h.advance(1.5 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(1);
+    expect(score.wrongNotesTotal).toBe(0);
+  });
+
+  it('but a genuine repeated note — released, then struck again — is judged twice', () => {
+    const repeated = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 1, notes: [note({ midi: 60 })] },
+    ]);
+    const h = harness(repeated, noCountIn);
+    h.engine.start();
+    h.play(60, { atMs: 0 });
+    h.release(60, { atMs: 20 });
+    h.play(60, { atMs: BEAT_MS });
+    h.advance(1.5 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(2);
+    expect(score.wrongNotesTotal).toBe(0);
+  });
+
+  it('attributes a mistimed wrong note to the bar its timing is nearest, not the cursor', () => {
+    // Bar 1 has one note at beat 0; bar 2 has one at beat 4 (4 beats/bar).
+    // `openUpcomingSlots` opens bar 2's window at beat 4 minus the 150 ms
+    // tolerance — 3850 ms — well before the cursor (`this.step`) advances to
+    // it, which only happens once the clock actually reaches 4000 ms. A wrong
+    // note struck at 3900 ms is inside bar 2's own open window and 100 ms from
+    // its note, against 3900 ms from bar 1's — so it belongs to bar 2, not to
+    // whichever bar the cursor is still displaying.
+    const twoBars = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 4, notes: [note({ midi: 62 })] },
+    ]);
+    const h = harness(twoBars, noCountIn);
+    h.engine.start();
+    h.clock.set(3900);
+    h.engine.tick();
+    expect(h.engine.state.step).toBe(0); // the cursor has not crossed into bar 2 yet
+    h.play(99, { atMs: 3900 });
+    h.advance(2 * BEAT_MS);
+    // Bar 2's own note (62) is also never played, so it is missed as well as
+    // wronged; the point of the test is which bar the *wrong* note lands on.
+    expect(h.engine.state.score.hotSpots).toContainEqual({
+      measureIndex: 1,
+      misses: 1,
+      wrongs: 1,
+    });
+    expect(h.engine.state.score.hotSpots).toContainEqual({
+      measureIndex: 0,
+      misses: 1,
+      wrongs: 0,
+    });
+  });
+
   it('a note played at exactly the tolerance still counts', () => {
     const h = harness(melody, noCountIn);
     h.engine.start();
