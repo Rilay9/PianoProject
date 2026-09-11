@@ -201,9 +201,7 @@ test.describe('Library obeys 04 §0', () => {
 });
 
 test.describe('the letter rail in Library', () => {
-  test('waits for the title sort, then jumps — growing the list to reach a letter', async ({
-    page,
-  }) => {
+  test('waits for the title sort, then moves the window to the letter', async ({ page }) => {
     await page.goto('/#/library');
     await expect(page.locator('#library-count')).toContainText('items');
     await expect(page.locator('#library-list .list-row').first()).toBeVisible();
@@ -221,18 +219,18 @@ test.describe('the letter rail in Library', () => {
     await expect(rail).toBeVisible();
     await expect(rail.locator('.alpha-rail__letter')).toHaveCount(27);
 
-    // Sixty rows of 1,533 in title order cover only the first letter or two,
-    // so nearly every letter on the rail is real and not drawn yet. That is
-    // the case worth testing: doing nothing there reads as a broken rail.
+    // Sixty rows of 1,533 in title order cover the first letter or two, so
+    // nearly every letter is real and not drawn yet. Reaching one must *move*
+    // the page rather than grow it: the folder's version of this drew 4,860
+    // rows for a tap on Z before it was fixed.
     const drawnBefore = await page.locator('#library-list .list-row').count();
     await rail.locator('[data-letter="M"]').click();
-    await page.waitForTimeout(500);
-    expect(
-      await page.locator('#library-list .list-row').count(),
-      'the list did not grow to reach M',
-    ).toBeGreaterThan(drawnBefore);
-    await expect(
-      page.locator('#library-list .list-row').filter({ hasText: /^[ ]*M/i }).first(),
-    ).toBeVisible();
+    await page.waitForTimeout(400);
+
+    const after = await page.locator('#library-list .list-row').count();
+    expect(after, `the jump drew ${String(after)} rows`).toBeLessThanOrEqual(drawnBefore);
+    await expect(page.locator('#library-list .list-row').first()).toContainText(/^M/i);
+    // And the count says this is a window into the list, not the top of it.
+    await expect(page.locator('#library-count')).toContainText('showing');
   });
 });

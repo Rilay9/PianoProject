@@ -252,6 +252,17 @@ export function FolderScreen(router: Router): HTMLElement {
   let library: FolderLibrary | null = null;
   /** What `draw` last put on the screen, which is what the rail moves through. */
   let drawn: FolderScore[] = [];
+  /**
+   * Where the drawn page starts in the matches.
+   *
+   * The rail used to reach a letter by *growing* the list until that letter was
+   * in it. Measured on 5,000 scores, a tap on Z drew 4,860 rows and took 2.7 s
+   * on a desktop — on the owner's 37,261 it is some thirty-six thousand rows
+   * and the frozen phone this whole screen has been fighting. A letter does not
+   * need everything above it on the screen; it needs the page that starts
+   * there, which is what an index in a book is for.
+   */
+  let from = 0;
   let haystacks: string[] = [];
   let alreadyAdded = new Set<string>();
   /**
@@ -422,6 +433,9 @@ export function FolderScreen(router: Router): HTMLElement {
       maxLevel: maxLevel.value === '' ? 10 : Number(maxLevel.value),
       ratedOnly: rated.checked,
     };
+    // A new question gets the top of its answer, not wherever the last jump
+    // left the window.
+    from = 0;
     shown = PAGE;
     draw();
   }
@@ -545,7 +559,9 @@ export function FolderScreen(router: Router): HTMLElement {
       const matching = matchesNow();
       const at = matching.findIndex((score) => letterFor(score.title || score.file) === letter);
       if (at === -1) return;
-      shown = Math.max(shown, Math.ceil((at + 1) / PAGE) * PAGE);
+      // Move the window, do not grow it: one page, starting at the letter.
+      from = at;
+      shown = PAGE;
       draw();
       rail.el.querySelector<HTMLButtonElement>(`[data-letter="${letter}"]`)?.click();
     },
@@ -593,12 +609,19 @@ export function FolderScreen(router: Router): HTMLElement {
       return;
     }
     const found = matchesNow();
-    drawn = found.slice(0, shown);
+    // The window can outlive the list it indexed — a search narrows the
+    // matches under it — so it is pulled back inside them before slicing.
+    if (from >= found.length) from = 0;
+    drawn = found.slice(from, from + shown);
     list.replaceChildren(...drawn.map(rowFor));
     rail.update();
+    const to = Math.min(from + drawn.length, found.length);
     countLine.textContent =
-      found.length > shown
-        ? `${found.length.toLocaleString()} match — showing ${String(shown)}`
+      found.length > drawn.length
+        ? // Where in the list this is, not just how much of it: after a jump to
+          // S the rows are neither the first nor all of them, and a count that
+          // did not say so would be describing a different list.
+          `${found.length.toLocaleString()} match — showing ${(from + 1).toLocaleString()}–${to.toLocaleString()}`
         : `${found.length.toLocaleString()} match`;
     more.replaceChildren();
     if (found.length > shown) {
@@ -801,6 +824,7 @@ export function FolderScreen(router: Router): HTMLElement {
       });
       haystacks = library.scores.map((s) => fold(`${s.title} ${s.composer}`));
       fillStyles(library.scores);
+      from = 0;
       shown = PAGE;
     } catch (cause) {
       if (cause instanceof FolderCancelled) {
