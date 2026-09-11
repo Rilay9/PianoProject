@@ -414,11 +414,14 @@ body {
    Above the list, carrying the cure rather than pointing at it. */
 .folder-saved {
   display: flex;
-  flex-wrap: wrap;
+  /* One line, never two.
+     It sits between the search box and the first row, and R1 asks for that row
+     to be on the screen without scrolling — a wrap here costs about 60 px and
+     is what put the first score below the fold on the CI runner. The text
+     gives way before the row does. */
+  flex-wrap: nowrap;
   align-items: center;
-  /* Tight, because it sits between the search box and the first row, and R1
-     asks for that row to be on the screen without scrolling. */
-  gap: 6px 10px;
+  gap: 8px;
   margin: 6px 0 8px;
   padding: 6px 10px;
   border-radius: 10px;
@@ -427,10 +430,20 @@ body {
 }
 
 .folder-saved__text {
-  flex: 1 1 12rem;
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
   font-size: 0.8rem;
-  line-height: 1.25;
+  line-height: 1.3;
+  /* Truncates rather than wrapping: the notice's job is to say which of two
+     states the screen is in, and the button beside it is the cure. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-saved > .button {
+  flex: none;
 }
 
 .folder-row-note__aside {

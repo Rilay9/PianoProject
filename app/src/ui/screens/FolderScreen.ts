@@ -676,17 +676,23 @@ export function FolderScreen(router: Router): HTMLElement {
       el(
         'p.folder-saved__text',
         {},
-        // Short on purpose. This sits above the list, and `04` §0 R1 asks for
-        // the first score to be on the screen without scrolling — the longer
-        // sentence this replaced wrapped to two lines in the CI runner's wider
-        // fonts and pushed the first row to 784 px of 780. What the owner needs
-        // here is which of the two states they are in, not an explanation of
-        // it; the sheet behind Details and the note under a failed Add both
-        // have room for the rest.
-        `Saved listing — the folder is not open, so nothing can be added yet.`,
+        // One line, and measured rather than guessed at.
+        //
+        // This sits between the search box and the first row, where `04` §0 R1
+        // is watching every pixel — and it has already broken that rule twice.
+        // The first attempt was a full sentence, which wrapped to two lines in
+        // the CI runner's wider fonts and put the first score at 784 px of 780.
+        // The second was a shorter sentence, which *still* measured 116 px and
+        // two lines here, because the button wrapped onto a row of its own: the
+        // sentence was shortened without anybody measuring the block.
+        //
+        // So: short enough to sit beside its button on one line at this width,
+        // and the rest of the explanation lives where there is room for it —
+        // the Details sheet, and the note under a failed Add.
+        'Folder not open — nothing can be added.',
       ),
       button(
-        'Pick the folder again',
+        'Open it',
         () => {
           void pick();
         },

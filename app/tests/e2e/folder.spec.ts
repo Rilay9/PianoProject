@@ -339,12 +339,37 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-list .list-row').first()).toBeVisible();
     const top = await page.locator('#folder-list .list-row').first().evaluate((el) => el.getBoundingClientRect().top);
     console.log(`folder: the first row starts at ${String(Math.round(top))}px of 780`);
-    // 740, not 780: a margin for a machine whose fonts are wider than this
-    // one's. Fitting exactly here is what failed on the CI runner — the saved
-    // listing notice wrapped to two lines there and pushed the first row to
-    // 784 px of 780, so the rule this test exists for was broken by a change
-    // that passed locally. The screen is 780; the assertion leaves forty.
-    expect(top, `the first row starts at ${String(Math.round(top))}px`).toBeLessThan(740);
+    // The rule, at the real screen size — and then the rule again with wider
+    // type, because that is how it has actually been broken.
+    //
+    // This was `< 780`, the screen itself, so anything that fitted exactly
+    // passed here and failed on CI, where the same text is wider. The reply to
+    // that was `< 740`, a number nobody measured: the runner puts the row at
+    // 744, so it failed by four pixels of invention while the rule itself was
+    // met. Both mistakes were the same one — a pixel threshold standing in for
+    // a question about whether one screen fits.
+    //
+    // So the assertion is the rule, and the margin is bought by asking the page
+    // to lay itself out at 115 % of its font size. The runner measures about
+    // 108 % of this machine, so 115 % is that with room to spare, and it is a
+    // simulation of the thing that goes wrong rather than an allowance for it.
+    expect(top, `the first row starts at ${String(Math.round(top))}px of 780`).toBeLessThan(780);
+
+    const wider = await page.evaluate(() => {
+      const root = document.documentElement;
+      const was = root.style.fontSize;
+      const base = Number.parseFloat(getComputedStyle(root).fontSize) || 16;
+      root.style.fontSize = `${String(base * 1.15)}px`;
+      void root.offsetHeight;
+      const row = document.querySelector('#folder-list .list-row');
+      const at = row ? Math.round(row.getBoundingClientRect().top) : -1;
+      root.style.fontSize = was;
+      return at;
+    });
+    expect(
+      wider,
+      `at 115 % of the font size the first row starts at ${String(wider)}px of 780`,
+    ).toBeLessThan(780);
     // And the rare filters are behind the chip rather than on the line.
     await expect(page.locator('#folder-filters')).toBeHidden();
     await expect(page.locator('#folder-filter-toggle')).toHaveAttribute('aria-expanded', 'false');
@@ -465,13 +490,20 @@ test.describe('the letter rail', () => {
 
     const saved = page.locator('#folder-saved');
     await expect(saved).toBeVisible();
-    await expect(saved).toContainText(/saved listing/i);
+    await expect(saved).toContainText(/folder not open/i);
     await expect(saved).toContainText(/nothing can be added/i);
     // The count is not repeated here: it is on the line below, and this notice
     // sits between the search box and the first row, where R1 is watching every
     // pixel.
     await expect(page.locator('#folder-count')).toContainText('200');
-    await expect(saved.getByRole('button', { name: /pick the folder again/i })).toBeVisible();
+    await expect(saved.getByRole('button', { name: /open it/i })).toBeVisible();
+    // One line, always. A wrap here costs about 55 px and pushes the first
+    // score below the fold, which is how this notice broke R1 twice.
+    const lines = await saved.locator('.folder-saved__text').evaluate((el) => {
+      const lh = Number.parseFloat(getComputedStyle(el).lineHeight) || 16;
+      return Math.round(el.getBoundingClientRect().height / lh);
+    });
+    expect(lines, 'the notice wrapped onto a second line').toBe(1);
   });
 });
 
