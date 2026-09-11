@@ -19,8 +19,8 @@ import {
   IMPORT_ACCEPT,
   ImportError,
   addImport,
-  allImports,
   deleteImport,
+  getImport,
   onImportsChange,
   takeSharedFiles,
   updateImport,
@@ -154,6 +154,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
    * 2.7 s on 5,000 scores when it was measured — the window moves instead.
    */
   let from = 0;
+  /** The letters the current filters leave something under, from the last draw. */
+  let presentLetters = new Set<string>();
 
   const status = statusLine('library-status');
   const list = el('div.list', { id: 'library-list' });
@@ -601,8 +603,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   }
 
   function showEditor(itemId: string): void {
-    void allImports().then((rows) => {
-      const row = rows.find((candidate) => candidate.id === itemId);
+    // One row by key. `allImports()` here read every imported file on the
+    // phone to find one title — the same shape as the catalog overlay, on a
+    // path a finger is waiting on.
+    void getImport(itemId).then((row) => {
       if (!row) return;
       const sheet = openSheet(`Edit “${row.title}”`, { id: 'library-edit' });
       const title = el('input', { type: 'text', id: 'edit-title', value: row.title }) as HTMLInputElement;
@@ -675,8 +679,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         button(
           'Assign',
           () => {
-            void allImports().then((rows) => {
-              const row = rows.find((candidate) => candidate.id === item.id);
+            void getImport(item.id).then((row) => {
               if (row) void openAssignFor(row);
             });
           },
@@ -715,6 +718,11 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
           return row ? { el: row, title: item.title } : null;
         })
         .filter((row): row is { el: HTMLElement; title: string } => row !== null),
+    // What the filtered list has under each letter, not what this page of
+    // sixty has: after a jump to S the drawn rows are all S, and a rail asked
+    // about them would dim the other twenty-six letters of a list that has
+    // plenty under them.
+    letters: () => presentLetters,
     onMissing: (letter) => {
       const ordered = sortItems(
         items.filter((item) => matches(item, filters, progress)),
@@ -734,7 +742,11 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   function railFor(filtered: CatalogItem[]): void {
     const byTitle = filters.sort === 'title';
     rail.el.hidden = !byTitle || filtered.length <= PAGE_SIZE;
-    if (!rail.el.hidden) rail.update();
+    if (rail.el.hidden) return;
+    // Worked out here, where the filtered list is already in hand, and read
+    // back by the rail: it asks on every draw and again on every tap.
+    presentLetters = new Set(filtered.map((item) => letterFor(item.title)));
+    rail.update();
   }
 
   function draw(): void {

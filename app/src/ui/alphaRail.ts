@@ -17,6 +17,15 @@
  * whatever the list holds is what makes the rail a fixed, learnable shape, and
  * dimming the empty ones is more honest than a rail whose letters move about
  * from list to list.
+ *
+ * **"Behind them" means the whole list, not the drawn page.** Both lists here
+ * draw a window — sixty rows out of 1,533 or out of 37,261 — and a rail told
+ * only about those sixty describes the window rather than the list. After a
+ * jump to S that is twenty-six letters marked empty over a folder that has
+ * something under every one of them, which is the rail contradicting itself
+ * one tap after it was obeyed. So a windowed list hands over `letters`: the
+ * set for everything that matches, computed once by the screen that knows how,
+ * and that is what the dimming and the disabling are read from.
  */
 import { el } from './widgets';
 
@@ -41,7 +50,19 @@ export interface AlphaRailOptions {
    */
   rows: () => { el: HTMLElement; title: string }[];
   /**
-   * Called when a letter is tapped and nothing in the list starts with it.
+   * Every letter the *whole* list has something under, when the rows above are
+   * only a window onto it.
+   *
+   * Without this the rail can only read the rows it was given, which after a
+   * jump is one page in the middle of a folder of 37,261 — so it dims the
+   * twenty-six letters it cannot see and offers a tap on each of them that
+   * does nothing. With it the rail says the truth about the list and a letter
+   * with genuinely nothing behind it is not tappable at all.
+   */
+  letters?: () => Set<string>;
+  /**
+   * Called when a letter is tapped and nothing in the *drawn* rows starts with
+   * it.
    *
    * Optional: a rail over a list that can grow (the folder shows a page at a
    * time) needs somewhere to say "show more first", and a rail over a complete
@@ -77,6 +98,10 @@ export function createAlphaRail(options: AlphaRailOptions): AlphaRail {
   }
 
   function jump(letter: string): void {
+    // Nothing under it anywhere in the list: growing or moving the window
+    // cannot produce a row that does not exist, and calling `onMissing` for it
+    // would be a search of the whole collection to arrive back here.
+    if (options.letters !== undefined && !options.letters().has(letter)) return;
     const found = options.rows().find((row) => letterFor(row.title) === letter);
     if (!found) {
       options.onMissing?.(letter);
@@ -89,10 +114,19 @@ export function createAlphaRail(options: AlphaRailOptions): AlphaRail {
   }
 
   function update(): void {
-    const present = new Set(options.rows().map((row) => letterFor(row.title)));
+    // The whole list when the screen can say what is in it, the drawn rows
+    // when it cannot. A windowed list that answered from its rows would
+    // describe the window — see the note at the top of this file.
+    const whole = options.letters?.();
+    const present = whole ?? new Set(options.rows().map((row) => letterFor(row.title)));
     for (const [letter, button] of buttons) {
       const has = present.has(letter);
-      button.disabled = !has && options.onMissing === undefined;
+      // A letter is only dead when the *list* has nothing under it. Where the
+      // rows are a window, `onMissing` can still reach a letter that is real
+      // and simply not drawn, so the old rule — anything not on screen stays
+      // tappable — had to keep every letter live. With `letters` the two cases
+      // are told apart and a dead letter stops taking taps.
+      button.disabled = !has && (whole !== undefined || options.onMissing === undefined);
       button.dataset.empty = has ? 'false' : 'true';
     }
     // A rail over an empty list is decoration. It goes.

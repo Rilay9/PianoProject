@@ -265,6 +265,50 @@ synchronous read path, every write goes to both, and `hydratePersisted()` reconc
 at boot — localStorage wins when it has a value, IndexedDB fills it in when it does not, which
 is what makes a restored backup and a cleared-localStorage device both come back.
 
+**An import row carries the file; almost nothing that reads the store wants it.** `ImportRow.data`
+is the whole MusicXML text or the whole PDF, up to 64 MB of it, and IndexedDB has no way to read
+part of a record — a `getAll('imports')` deserializes every byte. `allItems()` is what Today,
+Plan, Library, Lesson, the drill host and the session builder all load through, and it went
+through `importedCatalogItems` → `allImports`, so **every screen the owner opened read their
+whole imported collection out of the database to take a title and a level off each row**. Two
+imports of forty bytes in a fixture makes that free, which is why it survived.
+
+So there are three read paths and they are not interchangeable:
+
+- `importSummaries()` — the rows **without `data`**, cached until something writes to the store.
+  This is what lists, filters, badges and the catalog overlay use. The cache is the promise, not
+  the value, so two screens loading at once share one read. `importsChanged()` drops it, and is
+  what every writer — including `backup.ts`, which writes the store directly — has to call.
+- `getImport(id)` — one row, by key, for the score actually being opened, edited or assigned.
+- `allImports()` — everything, bytes and all. Two callers left: the storage report, which adds
+  the sizes up, and the backup, which writes them out.
+
+**A write-through cache in front of a store has to be told when the store is written from
+outside.** `progressStore` (`memory`, `streakMemory`), `planStore` (`memory`) and `skillsStore`
+(`memory`) all answer from memory once populated, and both restoring a backup and *Reset
+progress* clear or overwrite the rows underneath them. Left alone that is not a stale display:
+the next run reads the cached streak, adds today's minutes and **writes it back over the restored
+history**, which is the one number in this app with no second copy. `forgetCachedProgress()`,
+`forgetCachedPlan()` and `forgetCachedSkills()` are that other half; `importAll` calls all three
+and the reset calls the two whose stores it clears. The listeners are deliberately left
+subscribed — a screen that is on the page is the one that has to redraw.
+
+**A day is a local day.** `dayKey()` in `progressStore` is the one rule, and the minutes, the
+`passedOn` dates and the Progress heat map all use it. It was `toISOString().slice(0, 10)`, which
+is UTC: the owner is in the US, so practice after about 7 pm was filed under *tomorrow* — today's
+square read zero, and a Saturday-evening session counted towards next week's goal. The heat map
+made it worse by walking days with local arithmetic and naming them in UTC, so around the offset
+it could emit one square twice and skip another.
+
+**The `sessions` store is read by its indexes, not whole.** `recentSessions` walks `byDate`
+backwards and stops at the limit; `sessionsForItem` uses `byItem`. Reading and sorting the whole
+store to hand back fifty rows was 2,200 rows and 2,200 `localeCompare`s at the retention cap, on
+the Progress screen's load and again at the end of every drill. And two readers were asking the
+wrong question altogether: performances and one drill's own history are both **rare by
+construction**, so filtering them out of "the last hundred runs of anything" meant that a few
+weeks of ordinary practice made them disappear — the Progress screen said *No performances yet*
+over a history that had them. `recentPerformances` asks for performances.
+
 Export/import: one JSON file containing all stores (imports included), via the File System
 Access API when available and share-sheet/`<a download>` fallback otherwise. PDF bytes are
 base64 in the JSON: that inflates them by a third, and the alternative — a zip — would mean

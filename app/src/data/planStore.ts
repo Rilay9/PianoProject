@@ -47,8 +47,19 @@ export async function recordPlacement(unitId: string, now = new Date()): Promise
   return updatePlan({ placement: { unitId, at: now.toISOString() }, unitId });
 }
 
+/**
+ * Forgets the cached row, so the next read comes off the disk.
+ *
+ * Restoring a backup writes this store from outside, and the cache is
+ * write-through: the next `updatePlan` would have put the pre-restore stage and
+ * track order straight back over the restored one.
+ */
+export function forgetCachedPlan(): void {
+  memory = null;
+}
+
 /** Test hook. */
 export function resetPlanForTest(): void {
-  memory = null;
+  forgetCachedPlan();
   listeners.clear();
 }

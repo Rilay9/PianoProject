@@ -165,7 +165,6 @@ describe('importToCatalogItem', () => {
       id: 'import.x',
       kind: 'pdf',
       title: 'X',
-      data: new ArrayBuffer(1),
       tags: [],
       addedAt: '2026-09-05T00:00:00.000Z',
     });
@@ -180,7 +179,6 @@ describe('importToCatalogItem', () => {
       id: 'import.y',
       kind: 'musicxml',
       title: 'Y',
-      data: '<score-partwise/>',
       tags: [],
       addedAt: '2026-09-05T00:00:00.000Z',
     });

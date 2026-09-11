@@ -67,7 +67,13 @@ test.describe('Progress', () => {
     await page.reload();
     await expect(page.locator('#progress-history')).toContainText('Hot Cross Buns');
     await expect(page.locator('#progress-totals')).toContainText('1 passed');
-    const today = new Date().toISOString().slice(0, 10);
+    // The owner's calendar, not UTC: the heat map is keyed by the local day
+    // now, because in the US an evening's practice was being filed under
+    // tomorrow and today's square read zero.
+    const now = new Date();
+    const today = `${String(now.getFullYear())}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+      now.getDate(),
+    ).padStart(2, '0')}`;
     await expect(page.locator(`.heat-cell[data-day="${today}"]`)).toHaveAttribute('data-level', /[1-4]/);
   });
 

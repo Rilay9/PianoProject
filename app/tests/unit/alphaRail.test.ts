@@ -97,3 +97,59 @@ describe('the rail', () => {
     expect(rail.el.hidden).toBe(true);
   });
 });
+
+/**
+ * The rail over a list it can only see a page of.
+ *
+ * Both long lists draw a window — sixty rows out of 1,533 or out of 37,261 —
+ * and since the window *moves* to a letter instead of growing to it, the drawn
+ * rows after a jump are all the same letter. A rail that reads its rows and
+ * nothing else then reports that the folder has nothing under any other letter,
+ * one tap after it obeyed a tap on one of them.
+ */
+describe('the rail over a windowed list', () => {
+  const wholeList = new Set(['A', 'B', 'S', 'Z']);
+
+  it('marks a letter the list has but the page does not as present', () => {
+    // The page is the S's, because that is where the last jump went.
+    const rail = createAlphaRail({
+      rows: () => rowsOf(['Suo Gân', 'Sonata']).rows,
+      letters: () => wholeList,
+      onMissing: vi.fn(),
+    });
+    const at = (l: string): HTMLButtonElement | null =>
+      rail.el.querySelector(`[data-letter="${l}"]`);
+    expect(at('S')?.dataset.empty).toBe('false');
+    // A, B and Z are not on this page and every one of them is in the folder.
+    expect(at('A')?.dataset.empty).toBe('false');
+    expect(at('Z')?.dataset.empty).toBe('false');
+    expect(at('A')?.disabled).toBe(false);
+  });
+
+  it('takes no tap for a letter the whole list has nothing under', () => {
+    // Q is not in the folder at all, so growing or moving the window cannot
+    // produce a row. It used to stay lit and swallow the tap in silence.
+    const onMissing = vi.fn();
+    const rail = createAlphaRail({
+      rows: () => rowsOf(['Suo Gân']).rows,
+      letters: () => wholeList,
+      onMissing,
+    });
+    const q = rail.el.querySelector<HTMLButtonElement>('[data-letter="Q"]');
+    expect(q?.dataset.empty).toBe('true');
+    expect(q?.disabled).toBe(true);
+    q?.click();
+    expect(onMissing).not.toHaveBeenCalled();
+  });
+
+  it('still asks the list to move for a letter that is real and not drawn', () => {
+    const onMissing = vi.fn();
+    const rail = createAlphaRail({
+      rows: () => rowsOf(['Suo Gân']).rows,
+      letters: () => wholeList,
+      onMissing,
+    });
+    rail.el.querySelector<HTMLButtonElement>('[data-letter="Z"]')?.click();
+    expect(onMissing).toHaveBeenCalledWith('Z');
+  });
+});

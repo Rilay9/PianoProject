@@ -21,10 +21,9 @@ import {
   type BookPiece,
   type BookRow,
 } from '../../data/booksStore';
-import { allImports } from '../../data/importStore';
-import { allItems, loadCurriculum } from '../../curriculum/load';
+import { importSummaries, type ImportSummary } from '../../data/importStore';
+import { catalogIndex, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
-import type { ImportRow } from '../../data/db';
 import { badge, button, el, listRow, openSheet } from '../widgets';
 import { addParagraph, addSection, createSubScreen } from './subScreen';
 
@@ -56,7 +55,13 @@ export function openPieceSheet(options: {
   lessons: LessonChoice[];
   items: CatalogItem[];
   preselectLesson?: string;
-  onDone: () => void;
+  /**
+   * Called after Save or Remove, with the saved piece — or `undefined` when
+   * the piece was removed. The caller already knows which piece it opened the
+   * sheet for; this only has to say what happened to it, so a save can redraw
+   * one row instead of a whole shelf (`08` §13).
+   */
+  onDone: (saved?: BookPiece) => void;
 }) {
   const { book, piece, lessons, items } = options;
   const sheet = openSheet(piece ? `Edit ${piece.title}` : `Add a piece to ${book.title}`, {
@@ -131,16 +136,26 @@ export function openPieceSheet(options: {
       : 'No twin. Practice against this piece measures time and steadiness, never accuracy.';
   };
   drawTwin();
-  twinSearch.addEventListener('input', () => {
-    const query = twinSearch.value.trim().toLowerCase();
-    if (query.length < 2) {
-      twinResults.replaceChildren();
-      return;
+  // Debounced, and stopped at the first six matches rather than filtering the
+  // whole catalog on every keystroke — 1,533 items scanned per keypress was
+  // the sluggish list this screen keeps being fixed for. It matches the
+  // composer too, because that is what the row underneath the search box
+  // shows (`items.title` alone left "mozart" typed over a Mozart sonata
+  // finding nothing).
+  const TWIN_SEARCH_DEBOUNCE_MS = 200;
+  const TWIN_SEARCH_MAX_RESULTS = 6;
+  let twinSearchTimer: ReturnType<typeof setTimeout> | undefined;
+  const matchesTwinQuery = (item: CatalogItem, query: string): boolean =>
+    item.title.toLowerCase().includes(query) ||
+    (item.composer?.toLowerCase().includes(query) ?? false);
+  const runTwinSearch = (query: string): void => {
+    const matches: CatalogItem[] = [];
+    for (const item of items) {
+      if (matches.length >= TWIN_SEARCH_MAX_RESULTS) break;
+      if (matchesTwinQuery(item, query)) matches.push(item);
     }
-    const found = items
-      .filter((item) => item.title.toLowerCase().includes(query))
-      .slice(0, 6)
-      .map((item) =>
+    twinResults.replaceChildren(
+      ...matches.map((item) =>
         listRow({
           title: item.title,
           subtitle: item.composer ?? undefined,
@@ -151,8 +166,17 @@ export function openPieceSheet(options: {
             twinSearch.value = '';
           },
         }),
-      );
-    twinResults.replaceChildren(...found);
+      ),
+    );
+  };
+  twinSearch.addEventListener('input', () => {
+    if (twinSearchTimer !== undefined) clearTimeout(twinSearchTimer);
+    const query = twinSearch.value.trim().toLowerCase();
+    if (query.length < 2) {
+      twinResults.replaceChildren();
+      return;
+    }
+    twinSearchTimer = setTimeout(() => runTwinSearch(query), TWIN_SEARCH_DEBOUNCE_MS);
   });
 
   sheet.body.append(
@@ -201,9 +225,10 @@ export function openPieceSheet(options: {
         ...(twinId ? { itemId: twinId } : {}),
       };
       void (async () => {
-        if (piece) await updatePiece(book.id, piece.id, patch);
-        else await addPiece(book.id, { ...patch, levelSource: 'estimated' });
-        options.onDone();
+        const saved = piece
+          ? await updatePiece(book.id, piece.id, patch)
+          : await addPiece(book.id, { ...patch, levelSource: 'estimated' });
+        options.onDone(saved);
         sheet.close();
       })();
     },
@@ -270,7 +295,16 @@ export function ShelfScreen(router: Router): HTMLElement {
   let books: BookRow[] = [];
   let lessons: LessonChoice[] = [];
   let items: CatalogItem[] = [];
-  let imports: ImportRow[] = [];
+  // The catalog by id, from `catalogIndex()` — built once per refresh rather
+  // than scanned per piece row. A piece row used to ask "does the catalog
+  // still have this twin?" with `items.some(...)`, an O(1,533) scan repeated
+  // for every registered piece; `byId.has(id)` is the map the index already
+  // keeps for exactly this question (`findItem` uses the same one).
+  let catalogById: Map<string, CatalogItem> = new Map();
+  // Titles and kinds, which is all the PDF picker reads. `allImports()` here
+  // meant every refresh — and the shelf refreshes after every save — pulled
+  // every imported PDF's bytes out of IndexedDB to fill a select box.
+  let imports: ImportSummary[] = [];
 
   function openBookSheet(book?: BookRow): void {
     const sheet = openSheet(book ? `Edit ${book.title}` : 'Add a book', { id: 'book-sheet' });
@@ -381,10 +415,7 @@ export function ShelfScreen(router: Router): HTMLElement {
     // A twin the catalog no longer has is not a twin. Deleting the import
     // left the id on the piece, and the row went on offering "With the score"
     // — a button whose only outcome was an "Unknown item" page.
-    const twinId =
-      piece.itemId && items.some((candidate) => candidate.id === piece.itemId)
-        ? piece.itemId
-        : undefined;
+    const twinId = piece.itemId && catalogById.has(piece.itemId) ? piece.itemId : undefined;
     if (twinId) badges.push(badge('has a twin', 'passed'));
     if (piece.lessonIds.length === 0) badges.push(badge('no rung'));
     const meta = [
@@ -413,7 +444,16 @@ export function ShelfScreen(router: Router): HTMLElement {
       button(
         'Edit',
         () =>
-          openPieceSheet({ book, piece, lessons, items, onDone: () => void refresh() }),
+          openPieceSheet({
+            book,
+            piece,
+            lessons,
+            items,
+            onDone: (saved) => {
+              if (saved) afterPieceSaved(book, saved);
+              else afterPieceRemoved(book, piece.id);
+            },
+          }),
         { variant: 'quiet' },
       ),
     );
@@ -425,6 +465,82 @@ export function ShelfScreen(router: Router): HTMLElement {
       actions,
       dataset: { 'data-piece': `${book.id}/${piece.id}` },
     });
+  }
+
+  /** A book's whole section: header row, author line, its pieces. */
+  function bookSection(book: BookRow): HTMLElement {
+    return el(
+      'section.block',
+      { 'data-book': book.id },
+      el(
+        'div.row',
+        {},
+        el('h2', { text: book.title }),
+        badge(book.kind),
+        button('Edit', () => openBookSheet(book), { variant: 'quiet' }),
+        button(
+          'Add a piece',
+          () =>
+            openPieceSheet({
+              book,
+              lessons,
+              items,
+              onDone: (saved) => {
+                if (saved) afterPieceSaved(book, saved);
+              },
+            }),
+          { id: `shelf-add-piece-${book.id}` },
+        ),
+      ),
+      book.author ? el('p.muted', { text: book.author }) : el('span'),
+      ...(book.pieces.length
+        ? book.pieces.map((piece) => pieceRow(book, piece))
+        : [el('p.muted.shelf-no-pieces', { text: 'No pieces registered yet.' })]),
+    );
+  }
+
+  /**
+   * Redraws the one row a save touched, instead of the whole shelf.
+   *
+   * `draw()` used to run on every save — `list.replaceChildren(...)` over
+   * every book and every piece, so editing the page number of exercise 74 of
+   * Czerny Op. 599 tore down and rebuilt every other row too. That destroyed
+   * the "Edit" button the sheet was about to return focus to, which is what
+   * threw the scroll back to the top: `sheet.close()`'s `returnFocus.focus()`
+   * found nothing left to focus and the browser fell back to the top of the
+   * body. Touching only this row leaves everything else — including that
+   * button — exactly where it was.
+   */
+  function afterPieceSaved(book: BookRow, saved: BookPiece): void {
+    const cached = books.find((b) => b.id === book.id);
+    if (cached) {
+      const idx = cached.pieces.findIndex((p) => p.id === saved.id);
+      if (idx !== -1) cached.pieces[idx] = saved;
+      else cached.pieces = [...cached.pieces, saved];
+    }
+    const section = list.querySelector(`[data-book="${book.id}"]`);
+    if (!(section instanceof HTMLElement)) {
+      void refresh();
+      return;
+    }
+    const row = section.querySelector(`[data-piece="${book.id}/${saved.id}"]`);
+    if (row) {
+      row.replaceWith(pieceRow(book, saved));
+    } else {
+      section.querySelector('.shelf-no-pieces')?.remove();
+      section.append(pieceRow(book, saved));
+    }
+  }
+
+  function afterPieceRemoved(book: BookRow, pieceId: string): void {
+    const cached = books.find((b) => b.id === book.id);
+    if (cached) cached.pieces = cached.pieces.filter((p) => p.id !== pieceId);
+    const row = list.querySelector(`[data-piece="${book.id}/${pieceId}"]`);
+    const section = row?.closest('[data-book]');
+    row?.remove();
+    if (section && !section.querySelector('[data-piece]')) {
+      section.append(el('p.muted.shelf-no-pieces', { text: 'No pieces registered yet.' }));
+    }
   }
 
   function draw(): void {
@@ -439,34 +555,19 @@ export function ShelfScreen(router: Router): HTMLElement {
       );
       return;
     }
-    list.replaceChildren(
-      ...books.map((book) =>
-        el(
-          'section.block',
-          { 'data-book': book.id },
-          el(
-            'div.row',
-            {},
-            el('h2', { text: book.title }),
-            badge(book.kind),
-            button('Edit', () => openBookSheet(book), { variant: 'quiet' }),
-            button(
-              'Add a piece',
-              () => openPieceSheet({ book, lessons, items, onDone: () => void refresh() }),
-              { id: `shelf-add-piece-${book.id}` },
-            ),
-          ),
-          book.author ? el('p.muted', { text: book.author }) : el('span'),
-          ...(book.pieces.length
-            ? book.pieces.map((piece) => pieceRow(book, piece))
-            : [el('p.muted', { text: 'No pieces registered yet.' })]),
-        ),
-      ),
-    );
+    list.replaceChildren(...books.map((book) => bookSection(book)));
   }
 
   async function refresh(): Promise<void> {
-    [books, imports, items] = await Promise.all([allBooks(), allImports(), allItems()]);
+    const [booksResult, importsResult, index] = await Promise.all([
+      allBooks(),
+      importSummaries(),
+      catalogIndex(),
+    ]);
+    books = booksResult;
+    imports = importsResult;
+    catalogById = index.byId;
+    items = [...index.byId.values()];
     lessons = allLessons(await loadCurriculum());
     draw();
   }

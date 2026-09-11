@@ -22,13 +22,13 @@ import { markSkill } from '../../data/skillsStore';
 import { recordPlacement } from '../../data/planStore';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
-import { badge, button, el, handsLabel, levelLabel, listRow } from '../widgets';
+import { badge, button, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
 import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 import { openFinderSheet } from '../finderSheet';
 import { confirmMessage, lockState, type LockState } from '../../curriculum/prerequisites';
 import { openPieceSheet } from './ShelfScreen';
-import { allBooks, addBook, allShelfPieces, type ShelfPiece } from '../../data/booksStore';
+import { allBooks, addBook, allShelfPieces, type BookRow, type ShelfPiece } from '../../data/booksStore';
 import { plural } from '../../util/plural';
 
 interface VideoLink {
@@ -286,29 +286,22 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     paper.replaceChildren(...rows);
   }
 
-  async function addFromPaper(current: Lesson): Promise<void> {
-    let books = await allBooks();
-    if (books.length === 0) {
-      // With an empty shelf there is nothing to add a piece *to*, and sending
-      // him to the Shelf screen to create a book first would be the long way
-      // round from a button that promised to be short.
-      await addBook({ title: 'My book', kind: 'method' });
-      books = await allBooks();
-    }
-    const book = books[0];
-    if (!book) return;
-    // The whole rung list, so the preselected one has an option to be, and so
-    // he can move the piece to a different rung from here if he meant another.
-    const lessons = curriculum
+  /** The whole rung list — the preselected one needs an option to be, and he
+   * can move the piece to a different rung from here if he meant another. */
+  function lessonChoicesFor(): { lesson: Lesson; stage: number }[] {
+    return curriculum
       ? curriculum.stages.flatMap((stage) =>
           stage.units.flatMap((unit) =>
             unit.lessons.map((entry) => ({ lesson: entry, stage: stage.number })),
           ),
         )
       : [];
+  }
+
+  function openPaperSheetFor(book: BookRow, current: Lesson): void {
     openPieceSheet({
       book,
-      lessons,
+      lessons: lessonChoicesFor(),
       items: [...items.values()],
       preselectLesson: current.id,
       onDone: () => {
@@ -318,6 +311,44 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         })();
       },
     });
+  }
+
+  /**
+   * "I have this on paper" used to file straight into `books[0]` — the
+   * alphabetically first book, with no picker anywhere in the flow. With one
+   * book (the fixture, and the auto-created "My book") that is always right;
+   * with three registered books, every piece added from a lesson page went
+   * silently into the first one, and the only way to notice was to open the
+   * Shelf. One book keeps the one-tap flow; more than one asks which.
+   */
+  async function addFromPaper(current: Lesson): Promise<void> {
+    let books = await allBooks();
+    if (books.length === 0) {
+      // With an empty shelf there is nothing to add a piece *to*, and sending
+      // him to the Shelf screen to create a book first would be the long way
+      // round from a button that promised to be short.
+      await addBook({ title: 'My book', kind: 'method' });
+      books = await allBooks();
+    }
+    if (books.length === 1) {
+      const [book] = books;
+      if (book) openPaperSheetFor(book, current);
+      return;
+    }
+    const sheet = openSheet('Which book?', { id: 'lesson-paper-book-picker' });
+    sheet.body.append(
+      el('p.muted', { text: 'More than one book is registered — pick the one this piece is in.' }),
+      ...books.map((book) =>
+        listRow({
+          title: book.title,
+          subtitle: book.author ?? undefined,
+          onClick: () => {
+            sheet.close();
+            openPaperSheetFor(book, current);
+          },
+        }),
+      ),
+    );
   }
 
   /** The badge and the one-line reason, when gating is on and this rung is gated. */

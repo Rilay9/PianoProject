@@ -43,7 +43,16 @@ export function displayState(row: SkillRow | undefined, now = new Date()): Skill
   return days >= RUSTY_AFTER_DAYS ? 'rusty' : row.state;
 }
 
+/**
+ * Forgets what is cached here, so the next read comes off the disk.
+ *
+ * Restoring a backup and Reset progress both write this store from outside.
+ */
+export function forgetCachedSkills(): void {
+  memory.clear();
+}
+
 /** Test hook. */
 export function resetSkillsForTest(): void {
-  memory.clear();
+  forgetCachedSkills();
 }

@@ -47,7 +47,17 @@ test.describe('Plan', () => {
     await page.locator('#plan-tracks-open').click();
     await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
     await page.locator('#plan-track-core').click();
-    await expect(page.locator('#plan-status')).toContainText('core path is always on');
+    // Inside the sheet, not on the screen's status line.
+    //
+    // The line it used to be written to is outside the sheet, and `openSheet`
+    // makes everything outside itself `inert` and covers it — so the one
+    // control that deliberately refuses a tap was giving feedback that could
+    // be neither seen nor announced.
+    await expect(page.locator('#plan-tracks-sheet-status')).toContainText('core path is always on');
+    await expect(
+      page.locator('#plan-tracks-sheet #plan-tracks-sheet-status'),
+      'the message is outside the sheet, where it cannot be read',
+    ).toHaveCount(1);
   });
 });
 

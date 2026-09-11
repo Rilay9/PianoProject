@@ -763,7 +763,17 @@ export async function pickFolder(
   options: { remember?: boolean } & FolderReadOptions = {},
 ): Promise<FolderLibrary> {
   const { remember, ...readOptions } = options;
-  if (remember === true && directoryPickerAvailable()) {
+  // The picker whenever the browser has one — not only when the folder is to be
+  // remembered.
+  //
+  // These were one decision and they are two. `remember` is about whether the
+  // handle is *kept*; the picker is about how the folder is *read*. Tying them
+  // together meant that with the setting off — which is the default — every
+  // import went through the file input instead, and that is a different path in
+  // every way that matters: it hands over all 37,261 files at once rather than
+  // enumerating them, and it cannot use the worker, so the walk that was moved
+  // off the main thread was still on it for the one person this is built for.
+  if (directoryPickerAvailable()) {
     const picker = (window as unknown as PickerWindow).showDirectoryPicker;
     try {
       const handle = await picker?.({ mode: 'read' });
@@ -772,6 +782,14 @@ export async function pickFolder(
         // Whether the handle actually reached the database is the whole
         // difference between "remembered" and "remembered until you close
         // the app", and nothing used to say which of the two had happened.
+        //
+        // Only asked when the owner asked for it. Reading through the picker is
+        // this app's business; keeping a handle to the owner's files is theirs.
+        if (remember !== true) {
+          await saveFolder(library);
+          notes.set(library.id, 'not-remembered');
+          return { ...library, rememberNote: 'not-remembered' };
+        }
         const stored = await saveFolder(library, handle);
         const note: FolderRememberNote = stored ? null : 'not-stored';
         notes.set(library.id, note);
@@ -784,8 +802,8 @@ export async function pickFolder(
       if (cause instanceof FolderError || cause instanceof FolderCancelled) throw cause;
     }
   }
-  // Here on purpose (the setting is off) or here because the handle path did
-  // not work. The two are the same folder listing and a different sentence.
+  // Here because the browser has no picker, or because the picker did not
+  // work. Either way it is the same folder listing through a slower door.
   return pickFolderWithInput(readOptions, remember === true ? 'not-remembered' : null);
 }
 
@@ -853,9 +871,23 @@ async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<boo
   }
 }
 
+/**
+ * Every saved listing, **most recently picked first**.
+ *
+ * The order matters because the screen shows one of them. `getAll` hands rows
+ * back in key order, and the key is the folder's own name — so a `Download`
+ * picked once by mistake sorted ahead of `pianopath-library` and became the
+ * folder the app showed on every launch from then on, with the archive
+ * invisible and the only Forget button pointed at the wrong one. Whatever the
+ * owner reached for last is the one they meant.
+ */
 export async function savedFolders(): Promise<FolderLibrary[]> {
   const db = await openDatabase();
   const rows = (await db?.getAll('folderLibraries')) ?? [];
+  // `?? ''` because this decides what the screen shows: a row from some older
+  // build with no date must cost the owner its place in the order, not the
+  // whole listing and the screen with it.
+  rows.sort((a, b) => (b.addedAt ?? '').localeCompare(a.addedAt ?? ''));
   // Built field by field rather than spread: a stored row also carries the
   // handle, and a live browser object has no business travelling out of here
   // inside something a screen draws.

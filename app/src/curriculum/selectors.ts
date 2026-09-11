@@ -19,6 +19,47 @@ function passedIds(records: PassRecord[]): Set<string> {
 }
 
 /**
+ * `passedIds` and the self-pass set below are both loop-invariant over
+ * `records` — everything `lessonComplete` needs from them depends only on
+ * which records exist, never on the lesson being checked. `nextRecommended`
+ * calls `lessonComplete` once per lesson across all of them (93 and
+ * growing), and Plan's `draw()` reaches that path several times a redraw and
+ * on every stage expand and track reorder; at a few hundred progress rows
+ * that was rebuilding two Sets from scratch roughly 250,000 times over.
+ *
+ * Cached by the `records` array's own identity rather than threading a cache
+ * through every call site: every caller in the app builds a fresh `records`
+ * array once per load and then passes that same reference to `lessonComplete`
+ * for each lesson it checks, so a `WeakMap` keyed on it gives the hoist
+ * `nextRecommended` wants without changing `lessonComplete`'s signature for
+ * any of its callers, and lets the entry be collected the moment nothing
+ * still holds that array.
+ *
+ * **The invariant this rests on: a `records` array is never mutated in place.**
+ * Every caller builds one with `.map()` over the progress rows and throws it
+ * away when the rows change — checked across `PlanScreen`, `TodayScreen`,
+ * `SkillsScreen` and `prerequisites`, none of which push, splice, sort or
+ * assign into one. A caller that appended to an existing array instead would
+ * get a stale answer here, and the symptom would be a rung that stayed
+ * incomplete after it was passed: silent, and nowhere near this file.
+ * `selectorsCacheInvariant.test.ts` fails if that ever starts happening.
+ */
+const recordSetsCache = new WeakMap<PassRecord[], { passed: Set<string>; selfPassed: Set<string> }>();
+
+function recordSets(records: PassRecord[]): { passed: Set<string>; selfPassed: Set<string> } {
+  const cached = recordSetsCache.get(records);
+  if (cached) return cached;
+  const computed = {
+    passed: passedIds(records),
+    selfPassed: new Set(
+      records.filter((record) => record.passed && record.selfPassed).map((record) => record.itemId),
+    ),
+  };
+  recordSetsCache.set(records, computed);
+  return computed;
+}
+
+/**
  * docs/02 Part G, as amended by docs/00 D21.
  *
  * A lesson completes on `exercisesRequired` exercises plus `songsRequired` songs — except
@@ -54,14 +95,11 @@ export function lessonComplete(
   records: PassRecord[],
   options: { requireTwoSongs?: boolean } = {},
 ): boolean {
-  const passed = passedIds(records);
-  const exercises = lesson.exerciseOptions.filter((id) => passed.has(id)).length;
   // A registered book piece counts as one of the rung's songs, on the same
   // terms as anything else — except that a *self-assessed* pass on paper is
   // refused where the rung's rule demands a measurement (replan §5.2).
-  const selfPassed = new Set(
-    records.filter((record) => record.passed && record.selfPassed).map((record) => record.itemId),
-  );
+  const { passed, selfPassed } = recordSets(records);
+  const exercises = lesson.exerciseOptions.filter((id) => passed.has(id)).length;
   const paper = (lesson.paperOptions ?? []).filter(
     (id) => passed.has(id) && (paperPassAllowed(lesson) || !selfPassed.has(id)),
   ).length;

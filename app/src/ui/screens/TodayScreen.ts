@@ -89,11 +89,21 @@ export function TodayScreen(router: Router): HTMLElement {
   const { section, header, body } = screenFrame('today', 'Today');
   const status = statusLine('today-status');
 
+  // Which day this screen's session length belongs to, decided once and held
+  // for the screen's whole life rather than re-asked of the clock on every
+  // read. Without this, a screen opened Friday night and left open (the tab
+  // kept in the background, not rebuilt) drifted past midnight: `minutes` was
+  // still the weekday figure, but a tap on a length chip re-read `new Date()`
+  // at click time and filed that weekday figure under `weekendSessionMinutes`
+  // — the day the practice session started, not the day the tap landed. One
+  // `now`, read once, is what the screen's chips and its write agree on.
+  const now = new Date();
+
   let curriculum: Curriculum | null = null;
   let catalog: CatalogIndex | null = null;
   let items: CatalogItem[] = [];
   let progress: ProgressRow[] = [];
-  let minutes = readSessionLength();
+  let minutes = readSessionLength(now);
   let seed = 0;
   let slots: SessionSlot[] = [];
   let actionsDrawn = false;
@@ -104,6 +114,10 @@ export function TodayScreen(router: Router): HTMLElement {
     id: 'today-input',
     onClick: () => router.navigate('settings', activeInputLabel().sub),
   });
+  function showInput(): void {
+    inputChip.textContent = activeInputLabel().label;
+  }
+
   const lengthRow = el('div.filter-row', { id: 'today-lengths' });
   for (const template of SESSION_TEMPLATES) {
     lengthRow.append(
@@ -112,7 +126,7 @@ export function TodayScreen(router: Router): HTMLElement {
         pressed: template.minutes === minutes,
         onClick: () => {
           minutes = template.minutes;
-          writeSessionLength(minutes);
+          writeSessionLength(minutes, now);
           rebuild();
         },
       }),
@@ -358,8 +372,7 @@ export function TodayScreen(router: Router): HTMLElement {
     goalLine.textContent = `${String(Math.round(week.minutes))} / ${String(
       streak.weeklyGoalMinutes,
     )} min this week · ${String(week.days)} day${week.days === 1 ? '' : 's'}`;
-    const input = activeInputLabel();
-    inputChip.textContent = input.label;
+    showInput();
     rebuild();
   }
 
@@ -367,6 +380,26 @@ export function TodayScreen(router: Router): HTMLElement {
   void load().catch((cause: unknown) => {
     status.textContent = `Today could not be built: ${String(cause)}`;
     status.classList.add('status--error');
+  });
+
+  /**
+   * The chip follows the piano, instead of guessing once and being wrong.
+   *
+   * `autoConnectMidi()` is started and not awaited (`main.ts`), and it awaits a
+   * permission query and then the MIDI access itself — so on a cold start with
+   * the HP-130 plugged in and permission long since granted, `webMidiSource`
+   * has no inputs yet at the moment this screen reads it. The chip then said
+   * **Timed** or **Screen keys** for the whole visit over a connected piano,
+   * and tapping it went to the wrong settings page. No test can see it: there
+   * is no Web MIDI in jsdom or in a headless runner, so the fixture always
+   * takes the "no input" branch and the race does not exist there.
+   */
+  const stopWatchingInput = [
+    webMidiSource.onStateChange(() => showInput()),
+    micSource.onStateChange(() => showInput()),
+  ];
+  onScreenDispose(section, () => {
+    for (const stop of stopWatchingInput) stop();
   });
 
   const stopWatchingProgress = onProgressChange(() => {

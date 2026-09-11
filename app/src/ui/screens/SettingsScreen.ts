@@ -23,6 +23,8 @@ import {
 } from '../../data/settingsStore';
 import { getSetupRecord } from '../../data/setupStore';
 import { openDatabase } from '../../data/db';
+import { forgetCachedProgress } from '../../data/progressStore';
+import { forgetCachedSkills } from '../../data/skillsStore';
 import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import {
@@ -40,6 +42,7 @@ import {
   selectControl,
   toggleControl,
 } from '../widgets';
+import { onScreenDispose } from '../screenLifecycle';
 import { screenFrame, statusLine } from './screenFrame';
 
 const SESSION_LENGTHS = [15, 30, 60, 120].map((minutes) => ({
@@ -47,13 +50,84 @@ const SESSION_LENGTHS = [15, 30, 60, 120].map((minutes) => ({
   label: `${String(minutes)} min`,
 }));
 
+/** How often the library download is allowed to repaint its count. */
+const DOWNLOAD_PROGRESS_MS = 150;
+
+/**
+ * Consecutive failures that end the run.
+ *
+ * `navigator.onLine` is true on a wifi with nothing behind it, so the network
+ * is also judged by what happens: ten refusals in a row is a dead connection
+ * and not ten missing files, and there is no sense in asking it twelve hundred
+ * more times to find that out.
+ */
+const DOWNLOAD_GIVE_UP_AFTER = 10;
+
 export function SettingsScreen(router: Router): HTMLElement {
   const { section, body } = screenFrame('settings', 'Settings');
   const status = statusLine('settings-status');
 
+  // --- where a message goes (`04` §0 R6) -----------------------------------
+  //
+  // This screen is about forty controls and one status line, and the line was
+  // the last element in the body: every `Saved.` for a toggle near the top
+  // landed thousands of pixels below the finger that caused it, which is not
+  // feedback, it is a rumour. So the sentence goes **on the row that caused
+  // it** — the shape the score folder's failed *Add* already uses — and the
+  // status line keeps a copy for the screen reader and for the two things that
+  // belong to no single row (the library download, and *Reset progress*).
+  //
+  // The row is found from the event rather than passed in by forty call sites:
+  // a capture-phase listener on the body runs before the control's own
+  // handler, so by the time `set()` is called the row that is being changed is
+  // already known.
+  let activeRow: Element | null = null;
+  const rememberRow = (event: Event): void => {
+    const target = event.target;
+    activeRow = target instanceof Element ? target.closest('.setting-row') : null;
+  };
+  body.addEventListener('change', rememberRow, true);
+  body.addEventListener('click', rememberRow, true);
+
+  /**
+   * Says one thing, once, where the control that caused it is.
+   *
+   * One note at a time: the previous one goes, so the screen never carries two
+   * *Saved.*s for two different rows and leaves the owner to work out which
+   * belongs to the tap they just made.
+   *
+   * The note carries no `role="status"` on purpose. The status line already
+   * has one, and two live regions holding the same sentence is the same
+   * sentence read out twice — so the line announces and the note is what there
+   * is to look at.
+   */
+  /** The hint a note has displaced, so it can be put back. */
+  function rowHint(row: Element | null): HTMLElement | null {
+    return row?.querySelector('.setting-row__text > .muted') ?? null;
+  }
+
+  function say(text: string): void {
+    status.textContent = text;
+    for (const old of body.querySelectorAll('.setting-note')) {
+      rowHint(old.closest('.setting-row'))?.removeAttribute('hidden');
+      old.remove();
+    }
+    if (!activeRow?.isConnected) return;
+    // The note takes the hint's line rather than adding one. A row is a label,
+    // a control and at most two lines of sentence under them (`04` §0 R2,
+    // measured at 100 px), and a confirmation on a third line is a row grown
+    // into a card. It is also the better line of the two to be showing: the
+    // hint says what the control does, and the owner has just done it.
+    rowHint(activeRow)?.setAttribute('hidden', '');
+    // Inside the row, not after it: after it, the row's own grid rules claim
+    // the note for the control's cell, and sideways the block's two columns
+    // stretch it across both and it belongs to neither.
+    activeRow.append(el('p.setting-note', { text }));
+  }
+
   const set = (patch: Partial<PracticeSettings>): void => {
     updateSettings(patch);
-    status.textContent = 'Saved.';
+    say('Saved.');
   };
 
   function group(title: string): HTMLElement {
@@ -248,11 +322,11 @@ export function SettingsScreen(router: Router): HTMLElement {
   sound.append(
     field('Piano volume', numberControl('set-piano-volume', Math.round(midi.pianoVolume * 100), (v) => {
       updateMidiSettings({ pianoVolume: v / 100 });
-      status.textContent = 'Saved.';
+      say('Saved.');
     }, { min: 0, max: 100, step: 5 })),
     field('Metronome volume', numberControl('set-metronome-volume', Math.round(midi.metronomeVolume * 100), (v) => {
       updateMidiSettings({ metronomeVolume: v / 100 });
-      status.textContent = 'Saved.';
+      say('Saved.');
     }, { min: 0, max: 100, step: 5 })),
     field(
       'Playback plays',
@@ -305,7 +379,7 @@ export function SettingsScreen(router: Router): HTMLElement {
     field('Mute expected notes while the mic is on', toggleControl('set-mic-mute', s.muteExpectedWhileMic, (v) => set({ muteExpectedWhileMic: v }))),
     field('Transpose MIDI input (semitones)', numberControl('set-transpose', midi.transposeSemitones, (v) => {
       updateMidiSettings({ transposeSemitones: Math.round(v) });
-      status.textContent = 'Saved.';
+      say('Saved.');
     }, { min: -24, max: 24 })),
   );
   for (const link of [
@@ -336,48 +410,139 @@ export function SettingsScreen(router: Router): HTMLElement {
   // than papered over with a made-up label here.
   void renderTrackChips(trackRow);
 
+  // --- "Download everything now" -------------------------------------------
+  //
+  // Twelve hundred and fifty-six files, one at a time. What it used to do was
+  // start that loop, say nothing for as long as it took, and write one line at
+  // the end — so there was no way to tell a download in progress from a dead
+  // button, no way to stop it, and offline it ran 1,256 failures to report
+  // "0 of 1256". Leaving the screen did not stop it either: the loop ran on
+  // against a detached status line.
+
+  /** The run in flight, and the handle the Stop button aborts it with. */
+  let downloading: AbortController | null = null;
+  /** Set when the app shell throws this screen away; the loop reads it. */
+  let unmounted = false;
+
+  const downloadButton = button('Download everything now', () => void downloadEverything(), {
+    id: 'settings-download',
+    variant: 'primary',
+  });
+  // Beside the button it stops, and only while there is something to stop
+  // (`04` §0 R4: nothing dead).
+  const stopButton = button(
+    'Stop',
+    () => {
+      downloading?.abort();
+    },
+    { id: 'settings-download-stop' },
+  );
+  stopButton.hidden = true;
+
+  async function downloadEverything(): Promise<void> {
+    if (downloading) return;
+    // Asked before the first fetch, not learned from twelve hundred failures.
+    // `{ cache: 'reload' }` goes past the service worker to the network by
+    // definition, so with no network every one of them fails.
+    if (navigator.onLine === false) {
+      say('No network, so there is nothing to download. What is already on the device still works offline.');
+      return;
+    }
+    const items = await allItems().catch(() => null);
+    if (!items) {
+      say('The catalog could not be read, so there is nothing to download from yet.');
+      status.classList.add('status--error');
+      return;
+    }
+    const files = items.map((item) => item.file).filter((file): file is string => Boolean(file));
+    const total = files.length;
+    if (total === 0) {
+      say('The catalog names no score files to download.');
+      return;
+    }
+
+    downloading = new AbortController();
+    const { signal } = downloading;
+    downloadButton.disabled = true;
+    stopButton.hidden = false;
+    let ok = 0;
+    let done = 0;
+    let refused = 0;
+    let paintedAt = 0;
+    let gaveUp = false;
+    // Throttled, because 1,256 writes to a live region is 1,256 things for a
+    // screen reader to say and a repaint per file on the phone.
+    const report = (force: boolean): void => {
+      const now = Date.now();
+      if (!force && now - paintedAt < DOWNLOAD_PROGRESS_MS) return;
+      paintedAt = now;
+      status.textContent = `Downloading… ${String(done)} of ${String(total)}, ${String(ok)} on the device.`;
+    };
+    report(true);
+    try {
+      for (const file of files) {
+        if (signal.aborted || unmounted) break;
+        try {
+          const response = await fetch(new URL(`content/${file}`, document.baseURI).toString(), {
+            cache: 'reload',
+            signal,
+          });
+          if (response.ok) {
+            ok += 1;
+            refused = 0;
+          } else {
+            refused += 1;
+          }
+        } catch {
+          if (signal.aborted) break;
+          refused += 1;
+        }
+        done += 1;
+        if (refused >= DOWNLOAD_GIVE_UP_AFTER) {
+          gaveUp = true;
+          break;
+        }
+        report(false);
+      }
+      if (unmounted) return;
+      if (signal.aborted) {
+        status.textContent = `Stopped. ${String(ok)} of ${String(total)} score files are on the device.`;
+      } else if (gaveUp) {
+        status.textContent =
+          `The network stopped answering after ${String(done)} files, so the rest were not tried. ` +
+          `${String(ok)} of ${String(total)} score files are on the device.`;
+        status.classList.add('status--error');
+      } else {
+        status.textContent = `${String(ok)} of ${String(total)} score files are on the device.`;
+      }
+    } finally {
+      downloading = null;
+      downloadButton.disabled = false;
+      stopButton.hidden = true;
+    }
+    // The numbers above the button describe the same thing this just changed.
+    if (!unmounted) {
+      await measureStorage()
+        .then(showStorage)
+        .catch(() => undefined);
+    }
+  }
+
   content.append(
     el(
       'div.row',
       {},
-      button(
-        'Download everything now',
-        () => {
-          // Re-runs the precache: fetch every catalog file so the service
-          // worker's runtime cache holds it, then report what landed.
-          status.textContent = 'Downloading the whole library…';
-          void allItems()
-            .then(async (items) => {
-              const files = items.map((item) => item.file).filter((file): file is string => Boolean(file));
-              let ok = 0;
-              for (const file of files) {
-                try {
-                  const response = await fetch(
-                    new URL(`content/${file}`, document.baseURI).toString(),
-                    { cache: 'reload' },
-                  );
-                  if (response.ok) ok += 1;
-                } catch {
-                  // Counted as missing below rather than aborting the run.
-                }
-              }
-              status.textContent = `${String(ok)} of ${String(files.length)} score files are on the device.`;
-              return measureStorage();
-            })
-            .then(showStorage)
-            .catch((cause: unknown) => {
-              status.textContent = `The download did not finish: ${String(cause)}`;
-              status.classList.add('status--error');
-            });
-        },
-        { id: 'settings-download', variant: 'primary' },
-      ),
+      downloadButton,
+      stopButton,
       // Read once and pressed rarely (`04` §0 R3).
       button('Refresh the numbers', () => void measureStorage().then(showStorage), {
         id: 'settings-measure',
         variant: 'quiet',
       }),
     ),
+    // The download's own progress line, beside the button it belongs to
+    // (`04` §0 R6) rather than at the far bottom of the body.
+    status,
     field(
       'Show US-only public-domain items',
       toggleControl('set-us-only', s.showUsOnlyPd, (v) => set({ showUsOnlyPd: v })),
@@ -387,9 +552,9 @@ export function SettingsScreen(router: Router): HTMLElement {
       'Remember the score folder',
       toggleControl('set-folder-handles', s.folderHandles, (v) => {
         set({ folderHandles: v });
-        status.textContent = v
+        say(v
           ? 'The next folder you pick will be remembered, if Chrome allows it.'
-          : 'The folder will be asked for each time you add from it.';
+          : 'The folder will be asked for each time you add from it.');
       }),
       directoryPickerAvailable()
         ? 'Keeps a handle so Add does not ask again. Chrome may still ask once.'
@@ -399,9 +564,9 @@ export function SettingsScreen(router: Router): HTMLElement {
       'Offline only',
       toggleControl('set-offline-only', isOfflineOnly(), (value) => {
         setOfflineOnly(value);
-        status.textContent = value
+        say(value
           ? 'The app will not check for updates. Turn this off to get a new version.'
-          : 'The app will check for updates when it has a network.';
+          : 'The app will check for updates when it has a network.');
       }),
       'Stops the app checking for updates at all. Everything else already works offline.',
     ),
@@ -419,6 +584,13 @@ export function SettingsScreen(router: Router): HTMLElement {
             for (const store of ['progress', 'sessions', 'streak', 'skills'] as const) {
               await db.clear(store);
             }
+            // The stores are cleared; the write-through caches in front of them
+            // are not, and they are what the next run reads. Without this the
+            // first drill after a reset put the old attempt count and the old
+            // minutes straight back into the emptied store — the reset was
+            // undone rather than merely unrendered.
+            forgetCachedProgress();
+            forgetCachedSkills();
             status.textContent = 'Progress reset. Reload the app to see it.';
           })();
         },
@@ -466,6 +638,13 @@ export function SettingsScreen(router: Router): HTMLElement {
     ),
   );
 
-  body.append(status);
+  // A download is 1,256 fetches and the owner can leave in the middle of one.
+  // Without this the loop ran on to the end against a status line that was no
+  // longer in the document — minutes of radio for a number nobody would read.
+  onScreenDispose(section, () => {
+    unmounted = true;
+    downloading?.abort();
+  });
+
   return section;
 }

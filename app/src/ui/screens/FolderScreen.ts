@@ -14,7 +14,7 @@
 // blocked main thread on a phone.
 
 import type { Router } from '../../router';
-import type { FolderScore, ImportRow } from '../../data/db';
+import type { FolderScore } from '../../data/db';
 import { createAlphaRail, letterFor } from '../alphaRail';
 import {
   FolderCancelled,
@@ -30,10 +30,18 @@ import {
   type FolderProgress,
   type FolderRememberNote,
 } from '../../data/folderLibrary';
-import { ImportError, allImports } from '../../data/importStore';
+import {
+  ImportError,
+  getImport,
+  importSummaries,
+  type ImportSummary,
+} from '../../data/importStore';
 import { getSettings } from '../../data/settingsStore';
 import { openAssignSheetFor } from '../assignSheet';
-import { badge, button, chip, el, listRow } from '../widgets';
+import { badge, button, chip, el, listRow, openSheet } from '../widgets';
+import { loadCurriculum } from '../../curriculum/load';
+import { rungForLevel, rungSentence } from '../../curriculum/rungFor';
+import type { Curriculum } from '../../curriculum/types';
 import { addParagraph, addSection, createSubScreen } from './subScreen';
 import { plural } from '../../util/plural';
 
@@ -250,6 +258,15 @@ export function FolderScreen(router: Router): HTMLElement {
   browse.append(more);
 
   let library: FolderLibrary | null = null;
+  /**
+   * The other listings in the database, which this screen is not showing.
+   *
+   * There can be more than one — every folder ever picked leaves a row, and a
+   * listing of the archive is about 6 MB. They were invisible and unreachable:
+   * the screen drew whichever sorted first and offered one Forget button,
+   * pointed at that one. Named here so they can at least be got rid of.
+   */
+  let others: FolderLibrary[] = [];
   /** What `draw` last put on the screen, which is what the rail moves through. */
   let drawn: FolderScore[] = [];
   /**
@@ -264,16 +281,29 @@ export function FolderScreen(router: Router): HTMLElement {
    */
   let from = 0;
   let haystacks: string[] = [];
+  /**
+   * The letter each row files under, in the listing's own order.
+   *
+   * Parallel to `haystacks` and built in the same pass, for the same reason:
+   * `letterFor` normalises, and normalising 37,261 titles costs about 60 ms on
+   * the phone — once at load is nothing, once per keystroke is the sluggish
+   * list this screen has twice been fixed for.
+   */
+  let letters: string[] = [];
+  /** The letters the current filters leave something under, from the last draw. */
+  let presentLetters = new Set<string>();
   let alreadyAdded = new Set<string>();
   /**
    * The import each already-added row became.
    *
    * Kept because a row that is in the library is a row the assign sheet can
-   * be opened for, and the sheet needs the `ImportRow` itself. Without this
-   * the only way to a rung was Library, and finding one score among the
-   * owner's imports by hand is the hunt this screen exists to avoid.
+   * be opened for. Titles and rungs only: the sheet needs the whole row, and
+   * the whole row carries the file, so it is fetched for the one score being
+   * assigned rather than held here for all of them. Without this index the
+   * only way to a rung was Library, and finding one score among the owner's
+   * imports by hand is the hunt this screen exists to avoid.
    */
-  let importIndex = new Map<string, ImportRow>();
+  let importIndex = new Map<string, ImportSummary>();
   let filters: Filters = { ...NO_FILTERS };
   let shown = PAGE;
   let busy = false;
@@ -513,29 +543,79 @@ export function FolderScreen(router: Router): HTMLElement {
       .filter(Boolean)
       .join(' · ');
 
+    /**
+     * Everything the archive knows about this score, on demand.
+     *
+     * The listing carries the level, the bar count, the style, the copyright
+     * status, MuseScore's rating and view count, whether it has words and a
+     * link to the source — and the row could only ever show four of those,
+     * truncated, because a row is 96 px (`04` §0 R2). So the rest lives one tap
+     * away, the way Library's own rows do it.
+     *
+     * A sheet rather than a `title` tooltip: the owner reads this on a phone,
+     * and a phone has no hover. It is the same reason the `...` sheet is where
+     * the score screen explains its controls.
+     */
+    const details = button(
+      'Details',
+      () => {
+        void showScoreDetail(score);
+      },
+      { variant: 'quiet' },
+    );
+
     return listRow({
       title: score.title || score.file,
       meta: meta || undefined,
       badges,
-      actions: [add],
+      actions: [details, add],
       dataset: { 'data-file': score.file },
     });
   }
 
-  /** The rows that pass the filters, in order — what the list is a page of. */
-  function matchesNow(): FolderScore[] {
-    if (!library) return [];
+  /**
+   * The rows that pass the filters, in order — what the list is a page of —
+   * and the letters those rows file under.
+   *
+   * Both in one pass, because the rail needs the second every time the list is
+   * drawn and a second walk of 37,261 rows to get it would be the whole cost
+   * of the first one again.
+   */
+  function matchesNow(): { found: FolderScore[]; present: Set<string> } {
+    if (!library) return { found: [], present: new Set() };
     // Indexed rather than `filter`, because the haystack is a parallel array:
     // folding a title on every keystroke over 37,000 rows is the difference
     // between instant and sluggish, so it is done once when the folder loads.
     const query = fold(filters.query);
     const found: FolderScore[] = [];
+    const present = new Set<string>();
     const scores = library.scores;
     for (let i = 0; i < scores.length; i += 1) {
       const score = scores[i];
-      if (score && matchesFilters(score, haystacks[i] ?? '', filters, query)) found.push(score);
+      if (score && matchesFilters(score, haystacks[i] ?? '', filters, query)) {
+        found.push(score);
+        present.add(letters[i] ?? letterFor(score.title || score.file));
+      }
     }
-    return found;
+    return { found, present };
+  }
+
+  /**
+   * The haystack and the letter for every row, in one walk.
+   *
+   * Two walks were two `normalize()` passes over 37,261 titles for no reason —
+   * and the second of them, the one the rail needs, used to happen on every
+   * draw.
+   */
+  function indexScores(scores: readonly FolderScore[]): void {
+    haystacks = new Array<string>(scores.length);
+    letters = new Array<string>(scores.length);
+    for (let i = 0; i < scores.length; i += 1) {
+      const score = scores[i];
+      if (!score) continue;
+      haystacks[i] = fold(`${score.title} ${score.composer}`);
+      letters[i] = letterFor(score.title || score.file);
+    }
   }
 
   /**
@@ -555,8 +635,15 @@ export function FolderScreen(router: Router): HTMLElement {
           return row ? { el: row, title: score.title || score.file } : null;
         })
         .filter((row): row is { el: HTMLElement; title: string } => row !== null),
+    // What the *listing* has under each letter, not what this page of sixty
+    // has. Without it a jump to S left twenty-six letters dimmed over a folder
+    // with something under every one of them. Read from what the last draw
+    // worked out rather than recomputed: the rail asks on every draw and on
+    // every tap, and a second walk of 37,261 rows for an answer already in
+    // hand is exactly the shape this screen keeps being fixed for.
+    letters: () => presentLetters,
     onMissing: (letter) => {
-      const matching = matchesNow();
+      const matching = matchesNow().found;
       const at = matching.findIndex((score) => letterFor(score.title || score.file) === letter);
       if (at === -1) return;
       // Move the window, do not grow it: one page, starting at the letter.
@@ -608,7 +695,8 @@ export function FolderScreen(router: Router): HTMLElement {
       countLine.textContent = '';
       return;
     }
-    const found = matchesNow();
+    const { found, present } = matchesNow();
+    presentLetters = present;
     // The window can outlive the list it indexed — a search narrows the
     // matches under it — so it is pulled back inside them before slicing.
     if (from >= found.length) from = 0;
@@ -677,6 +765,63 @@ export function FolderScreen(router: Router): HTMLElement {
     note.scrollIntoView({ block: 'nearest' });
   }
 
+  /** Loaded once, and only when a Details sheet actually asks for it. */
+  let curriculum: Curriculum | null = null;
+
+  async function showScoreDetail(score: FolderScore): Promise<void> {
+    const sheet = openSheet(score.title || score.file, { id: 'folder-detail' });
+    curriculum ??= await loadCurriculum();
+    const rung = rungForLevel(curriculum, score.level);
+
+    // The estimate first, because "is this for me yet" is the question a person
+    // opens this to answer — and it is put as where the level *sits* in the
+    // plan, not as a verdict. The number came out of the archive's index; the
+    // app has not heard the piece.
+    sheet.body.append(
+      el('p', { id: 'folder-detail-rung' }, rungSentence(rung, score.level)),
+      el('p.muted', {
+        text:
+          score.level === null
+            ? 'Add it and the app will place it once it has seen you play.'
+            : 'An estimate from the archive’s own index, not from playing it — treat it as a hint, not a grade.',
+      }),
+    );
+
+    const facts: [string, string][] = [];
+    if (score.composer) facts.push(['Composer', score.composer]);
+    if (score.bars !== null) facts.push(['Length', `${String(score.bars)} bars`]);
+    if (score.style) facts.push(['Style', score.style]);
+    if (score.status && score.status !== 'unknown') facts.push(['Status', score.status]);
+    if (score.ratings > 0) {
+      facts.push(['Rated', `${score.rating.toFixed(1)} out of 5, by ${String(score.ratings)}`]);
+    }
+    if (score.views > 0) facts.push(['Views', score.views.toLocaleString()]);
+    facts.push(['Words', score.lyrics ? 'Has lyrics — the score screen does not draw them' : 'None']);
+    facts.push(['File', score.file]);
+
+    const kv = el('dl.kv.kv--rows');
+    for (const [term, value] of facts) {
+      kv.append(el('dt', { text: term }), el('dd', { text: value }));
+    }
+    sheet.body.append(kv);
+
+    // The manifest's copy of this title was mangled before it reached the app
+    // and the damage is lossy. There is no repairing it here, only saying so
+    // and pointing at the one place the real title still exists.
+    if (score.garbled) {
+      sheet.body.append(
+        el('p.muted', {
+          text: 'The title in the archive’s index is garbled. The score inside the file is untouched, and MuseScore has the real name.',
+        }),
+      );
+    }
+    if (score.museScore) {
+      const link = el('a', { href: score.museScore, target: '_blank', rel: 'noreferrer noopener' });
+      link.textContent = 'See it on MuseScore';
+      sheet.body.append(el('p', {}, link));
+    }
+  }
+
   /** Redraws one row in place, so adding or assigning does not rebuild the list. */
   function redrawRow(score: FolderScore): void {
     list.querySelector(`[data-file="${CSS.escape(score.file)}"]`)?.replaceWith(rowFor(score));
@@ -729,7 +874,17 @@ export function FolderScreen(router: Router): HTMLElement {
    * scores on the shelf was the whole obstacle between adding a piece and it
    * counting towards anything.
    */
-  async function assignOne(score: FolderScore, row: ImportRow): Promise<void> {
+  async function assignOne(score: FolderScore, summary: ImportSummary): Promise<void> {
+    // The sheet estimates a level, which means parsing the score, which means
+    // the bytes — so the one row that needs them is fetched at the moment it
+    // is needed. The index this screen keeps holds titles and rungs and no
+    // file contents at all: it used to hold every imported file on the phone
+    // for as long as the screen was open.
+    const row = await getImport(summary.id);
+    if (!row) {
+      sayOnRow(score, `${summary.title} is no longer in your library.`);
+      return;
+    }
     await openAssignSheetFor(row, {
       onSaved: (saved) => {
         importIndex.set(score.file, saved);
@@ -801,7 +956,35 @@ export function FolderScreen(router: Router): HTMLElement {
             ),
           ]
         : []),
+      // Every folder ever picked leaves a listing behind, and the archive's is
+      // about 6 MB. They were invisible — the screen showed one and the one
+      // Forget button pointed at it — so a folder picked by mistake sat in the
+      // database for good. Named, with the only thing there is to do about
+      // them.
+      ...(others.length > 0
+        ? [
+            el('p.muted', {
+              id: 'folder-others',
+              text: `Also saved: ${others.map((folder) => folder.id).join(', ')}. Not shown — this screen reads the folder you picked last.`,
+            }),
+            ...others.map((folder) =>
+              button(
+                `Forget ${folder.id}`,
+                () => {
+                  void dropOther(folder.id);
+                },
+                { variant: 'quiet' },
+              ),
+            ),
+          ]
+        : []),
     );
+  }
+
+  /** Forgets a listing this screen is not showing. */
+  async function dropOther(id: string): Promise<void> {
+    await forgetFolder(id);
+    await restore();
   }
 
   async function pick(): Promise<void> {
@@ -822,7 +1005,7 @@ export function FolderScreen(router: Router): HTMLElement {
         signal: controller.signal,
         onProgress: showReadingProgress,
       });
-      haystacks = library.scores.map((s) => fold(`${s.title} ${s.composer}`));
+      indexScores(library.scores);
       fillStyles(library.scores);
       from = 0;
       shown = PAGE;
@@ -850,22 +1033,36 @@ export function FolderScreen(router: Router): HTMLElement {
   async function drop(): Promise<void> {
     if (!library) return;
     await forgetFolder(library.id);
+    // Another listing may be waiting behind this one, and dropping to "No
+    // folder yet" over a database that still holds 6 MB of scores would be the
+    // screen lying about what it has.
+    if (others.length > 0) {
+      await restore();
+      return;
+    }
     library = null;
     haystacks = [];
+    letters = [];
+    presentLetters = new Set();
     describe();
     drawActions();
     draw();
   }
 
   async function restore(): Promise<void> {
-    const [folders, imports] = await Promise.all([savedFolders(), allImports()]);
+    const [folders, imports] = await Promise.all([savedFolders(), importSummaries()]);
     alreadyAdded = new Set<string>();
-    importIndex = new Map<string, ImportRow>();
-    library = folders[0] ?? null;
+    importIndex = new Map<string, ImportSummary>();
+    // The one still open if there is one, and otherwise the one picked most
+    // recently. `folders[0]` on its own was whichever folder name sorted
+    // first, which is how a `Download` picked once by mistake could hide the
+    // archive for good.
+    library = folders.find((folder) => folder.connected) ?? folders[0] ?? null;
+    others = folders.filter((folder) => folder.id !== library?.id);
     if (library) {
       importIndex = importsByFolderFile(imports, library);
       alreadyAdded = new Set(importIndex.keys());
-      haystacks = library.scores.map((s) => fold(`${s.title} ${s.composer}`));
+      indexScores(library.scores);
       fillStyles(library.scores);
     }
     describe();
@@ -874,6 +1071,12 @@ export function FolderScreen(router: Router): HTMLElement {
   }
 
   drawActions();
-  void restore();
+  // Caught, because a screen whose only failure mode is "No folder yet." over a
+  // database holding 37,261 rows would send the owner off to re-read a folder
+  // they have already read. Shelf still has this hole; see the handoff's 5j.
+  void restore().catch((cause: unknown) => {
+    folderStatus.textContent = `The saved listing could not be read: ${String(cause)}`;
+    folderStatus.classList.add('status--error');
+  });
   return section;
 }

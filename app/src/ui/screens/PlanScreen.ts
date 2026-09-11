@@ -178,8 +178,13 @@ export function PlanScreen(router: Router): HTMLElement {
    * A chip is a toggle first: the drag only begins once the pointer has moved
    * past `DRAG_THRESHOLD_PX`, and until then the press is still a tap. Pointer
    * events rather than HTML5 drag-and-drop, which does not exist on touch.
+   *
+   * `onReorder` lets the caller keep whatever chips this chip lives among in
+   * sync with `activeTracks` as it moves — the sheet's own rows, which is
+   * where the drag actually happens and where the next move's hit-testing
+   * reads their positions from.
    */
-  function makeDraggable(node: HTMLElement, trackId: string): void {
+  function makeDraggable(node: HTMLElement, trackId: string, onReorder: () => void): void {
     node.addEventListener('pointerdown', (event: PointerEvent) => {
       // Only the tracks that are on can be ordered — the order is the order
       // they are played in, and an inactive track is not in it.
@@ -205,6 +210,14 @@ export function PlanScreen(router: Router): HTMLElement {
         if (over !== null && over !== current) {
           activeTracks = moveItem(activeTracks, current, over);
           drawTracks();
+          // The header just redrawn is inert and hidden behind this sheet —
+          // it is the sheet's own rows the pointer is actually over, and
+          // which the next `move` event measures. Without moving them too,
+          // `getElementById('plan-track-…').getBoundingClientRect()` keeps
+          // answering with wherever they sat before this reorder, and every
+          // hit-test after the first is checked against a layout that no
+          // longer matches what `activeTracks` says.
+          onReorder();
           const moved = document.getElementById(`plan-track-${trackId}`);
           moved?.classList.add('is-dragging');
         }
@@ -217,10 +230,21 @@ export function PlanScreen(router: Router): HTMLElement {
         delete trackRow.dataset.reordering;
         if (!dragging) return;
         // A drag consumed the press, so the click that follows must not also
-        // toggle the track off.
+        // toggle the track off. On a mouse, the click a browser synthesises
+        // after this `pointerup` is what clears the flag below, from the
+        // chip's own handler. Touch does not synthesise one at all once a
+        // `pointermove` has happened — nothing was ever going to clear it —
+        // so without this timeout the flag stood forever and the next
+        // genuine tap on this chip, tomorrow or next week, would be silently
+        // swallowed by a suppression meant for a click that already isn't
+        // coming. Queued after `commitOrder` so a click that *does* arrive
+        // (mouse) still finds the flag set and consumes it first.
         upEvent.preventDefault();
         suppressClickFor = trackId;
         commitOrder(activeTracks);
+        setTimeout(() => {
+          if (suppressClickFor === trackId) suppressClickFor = null;
+        }, 0);
       };
 
       node.addEventListener('pointermove', move);
@@ -303,9 +327,61 @@ export function PlanScreen(router: Router): HTMLElement {
     // and two names shared a line. Each track is its own row now, and the row
     // does not wrap.
     const listEl = el('div.track-list', { id: 'plan-tracks-list' });
+    // The one control here that refuses a tap — `core` — has to say so where
+    // the tap landed. The screen's own status line is no good for it:
+    // `openSheet`'s `isolate()` makes everything outside the sheet `inert`
+    // and the sheet covers it besides, so a message written there is both
+    // unreachable by a screen reader (`inert` pulls it out of the
+    // accessibility tree) and invisible. `statusLine` gives this sheet the
+    // same announced, self-clearing line every full screen has.
+    const sheetStatus = statusLine('plan-tracks-sheet-status');
+    // Which row element belongs to which track, so a drag can move rows
+    // around without rebuilding them — see `reorderActiveRows`.
+    const rowsByTrack = new Map<string, HTMLElement>();
+
+    /**
+     * Moves each active track's existing row to the slot matching its
+     * current place in `activeTracks`, in the existing DOM nodes rather than
+     * through `redraw()`.
+     *
+     * `redraw()` would reorder them too, but it tears every row down and
+     * builds new ones — including whichever chip the pointer is presently
+     * captured by, and a chip that stops being the element holding that
+     * capture mid-drag ends the gesture the finger is still in the middle
+     * of. This moves the same elements instead: same listeners, same
+     * capture, just re-parented.
+     *
+     * `listEl`'s children are live, so reading a child's index and then
+     * moving a node earlier in the same pass invalidates every index after
+     * it. Comment placeholders mark each active row's slot before anything
+     * moves, so the slots keep their identity independent of which row ends
+     * up filling them.
+     */
+    const reorderActiveRows = (): void => {
+      const slotFor = new Map<string, Comment>();
+      for (const id of activeTracks) {
+        const row = rowsByTrack.get(id);
+        if (!row?.parentElement) continue;
+        const marker = document.createComment(id);
+        row.replaceWith(marker);
+        slotFor.set(id, marker);
+      }
+      // `slotFor`'s insertion order followed `activeTracks`, not the
+      // document — read the markers back out of `listEl` for their real,
+      // top-to-bottom order.
+      const slotsInOrder = Array.from(listEl.childNodes).filter(
+        (child): child is Comment => child instanceof Comment && slotFor.get(child.data) === child,
+      );
+      activeTracks.forEach((id, index) => {
+        const row = rowsByTrack.get(id);
+        const slot = slotsInOrder[index];
+        if (row && slot) slot.replaceWith(row);
+      });
+    };
 
     const redraw = (): void => {
       listEl.replaceChildren();
+      rowsByTrack.clear();
       for (const track of curriculum?.tracks ?? []) {
         const on = activeTracks.includes(track.id);
         const node = chip(track.title, {
@@ -323,7 +399,7 @@ export function PlanScreen(router: Router): HTMLElement {
             // `core` is the spine of the stages; switching it off would empty
             // the plan, so it is not a toggle.
             if (track.id === 'core') {
-              status.textContent = 'The core path is always on — it is what the stages are.';
+              sheetStatus.textContent = 'The core path is always on — it is what the stages are.';
               return;
             }
             commitOrder(
@@ -332,9 +408,10 @@ export function PlanScreen(router: Router): HTMLElement {
             redraw();
           },
         });
-        if (on && track.id !== 'core') makeDraggable(node, track.id);
+        if (on && track.id !== 'core') makeDraggable(node, track.id, reorderActiveRows);
         const row = el('div.track-row', { 'data-row-track': track.id });
         row.append(node);
+        rowsByTrack.set(track.id, row);
         if (on && track.id !== 'core') {
           // The fallback. A drag is not reachable from a keyboard and is
           // awkward with a tremor; two buttons are neither.
@@ -365,6 +442,7 @@ export function PlanScreen(router: Router): HTMLElement {
     redraw();
     sheet.body.append(
       el('p.muted', { text: 'Switch a track on or off, and drag or use the arrows to order them.' }),
+      sheetStatus,
       listEl,
     );
   }

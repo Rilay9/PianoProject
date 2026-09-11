@@ -32,14 +32,28 @@ export class ImportError extends Error {}
 
 const listeners = new Set<() => void>();
 
+/** The cached summaries, or `null` when they have to be read again. */
+let summaries: Promise<ImportSummary[]> | null = null;
+
 export function onImportsChange(cb: () => void): () => void {
   listeners.add(cb);
   return () => listeners.delete(cb);
 }
 
-function notify(): void {
+/**
+ * Says the imports have changed: drops the summary cache, then tells the app.
+ *
+ * Exported because `data/backup.ts` writes this store directly on a restore.
+ * Before the cache that was a silent bug — a restore put rows in and no screen
+ * redrew; with the cache it would have been a worse one, so the two are the
+ * same call.
+ */
+export function importsChanged(): void {
+  summaries = null;
   for (const listener of listeners) listener();
 }
+
+const notify = importsChanged;
 
 /** `Fur Elise (2).mxl` -> `import.fur-elise-2`, uniquified against what exists. */
 export function importIdFor(title: string, taken: ReadonlySet<string>): string {
@@ -93,10 +107,71 @@ export function composerFromMusicXml(xml: string): string | null {
   return creator ?? null;
 }
 
+/**
+ * Every import **with its file in it**.
+ *
+ * There are two readers left for this and both of them want the bytes: the
+ * storage report, which adds them up, and the backup, which writes them out.
+ * Everything else — the Library list, the folder's already-added index, the
+ * catalog overlay every screen loads — wants a title and a level, and calling
+ * this for that reads every score on the phone out of IndexedDB to throw it
+ * away again. Use `importSummaries` for those, and `getImport` for the one row
+ * that is actually being opened.
+ */
 export async function allImports(): Promise<ImportRow[]> {
   const db = await openDatabase();
   const rows = (await db?.getAll('imports')) ?? [];
   return rows.sort((a, b) => b.addedAt.localeCompare(a.addedAt));
+}
+
+/**
+ * How many bytes a stored file really is.
+ *
+ * `String.length` is UTF-16 code units, not bytes, and the storage report puts
+ * its total beside `navigator.storage.estimate()`, which is bytes — so a score
+ * full of accented composer names was under-reported against a real
+ * measurement. Encoded rather than guessed at.
+ */
+export function byteSizeOf(data: string | ArrayBuffer): number {
+  return typeof data === 'string' ? new TextEncoder().encode(data).length : data.byteLength;
+}
+
+/** An import without its file: everything a list, a filter or a badge needs. */
+export type ImportSummary = Omit<ImportRow, 'data'>;
+
+/**
+ * The imports, newest first, without their contents — and read once.
+ *
+ * This is the answer to a fault of exactly the shape this app keeps finding:
+ * work proportional to the whole collection on a path that only wants a name.
+ * `allItems()` is loaded by Today, Plan, Library, Drill, the score screen and
+ * the session builder, and each of those used to pull every imported file's
+ * bytes out of IndexedDB — a MusicXML score is 50–200 KB, so a hundred pieces
+ * added from the folder is 5–20 MB decoded and discarded on every screen the
+ * owner opens. A test fixture with two imports in it cannot see that at all.
+ *
+ * Two halves to the fix. The rows come back stripped, so nothing downstream
+ * holds a file it did not ask for; and the result is cached until something
+ * writes to the store, so navigating between screens re-reads nothing. The
+ * cache is the promise rather than the value, so two screens loading at once
+ * share one read instead of racing to start two.
+ */
+export function importSummaries(): Promise<ImportSummary[]> {
+  summaries ??= allImports().then((rows) =>
+    rows.map(({ data, ...rest }) => ({
+      ...rest,
+      // Filled in here for a row written before `bytes` existed. This is the
+      // one place the file is in hand anyway, so it costs nothing — and it
+      // means the storage report never has to load a file to size it.
+      bytes: rest.bytes ?? byteSizeOf(data),
+    })),
+  );
+  return summaries;
+}
+
+/** Test hook: forget the cached summaries, as a fresh database would. */
+export function resetImportCacheForTest(): void {
+  summaries = null;
 }
 
 export async function getImport(id: string): Promise<ImportRow | undefined> {
@@ -147,6 +222,7 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
       kind: 'pdf',
       title,
       data: buffer,
+      bytes: byteSizeOf(buffer),
       tags: [],
       addedAt: now.toISOString(),
     };
@@ -173,6 +249,7 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
       kind: 'musicxml',
       title,
       data: xml,
+      bytes: byteSizeOf(xml),
       tags: composer ? [composer] : [],
       addedAt: now.toISOString(),
     };
@@ -252,7 +329,7 @@ export async function deleteImport(id: string): Promise<void> {
  * likely to be beyond the current lesson than below it, and putting it at 0
  * would have the session builder offering Rachmaninoff as a warm-up.
  */
-export function importToCatalogItem(row: ImportRow): CatalogItem {
+export function importToCatalogItem(row: ImportSummary): CatalogItem {
   return {
     id: row.id,
     type: 'song',
@@ -278,5 +355,7 @@ export function importToCatalogItem(row: ImportRow): CatalogItem {
 }
 
 export async function importedCatalogItems(): Promise<CatalogItem[]> {
-  return (await allImports()).map(importToCatalogItem);
+  // Summaries, not rows: this is the path every screen loads through
+  // (`allItems`), and a catalog item has no use for the file's bytes.
+  return (await importSummaries()).map(importToCatalogItem);
 }

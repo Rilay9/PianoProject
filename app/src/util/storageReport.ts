@@ -7,7 +7,7 @@
  * screen exists — a screen module in the entry bundle would drag the whole of
  * Settings into the first parse.
  */
-import { allImports } from '../data/importStore';
+import { importSummaries } from '../data/importStore';
 import { MAX_SESSIONS, sessionCount } from '../data/progressStore';
 
 /** docs/04 §7: "offline only [off]" — stops the app checking for updates. */
@@ -68,11 +68,18 @@ export async function measureStorage(): Promise<StorageBreakdown> {
       // Cache Storage can be unavailable; the number is then simply unknown.
     }
   }
-  const [rows, sessions] = await Promise.all([allImports(), sessionCount()]);
-  const importBytes = rows.reduce(
-    (sum, row) => sum + (typeof row.data === 'string' ? row.data.length : row.data.byteLength),
-    0,
-  );
+  // Summaries, not the files.
+  //
+  // This used to be `allImports()`, which loads every stored score and PDF out
+  // of IndexedDB purely to add up their sizes — on the mount of the one screen
+  // the owner opens *because* storage is tight. The line above it uses
+  // `db.count()` and explains in a comment why that is the right shape; this
+  // line did the opposite. Summaries are read once per write and shared, and
+  // they carry `bytes`, which is recorded at import time and is real bytes
+  // rather than `String.length`'s UTF-16 code units — the total sits beside
+  // `navigator.storage.estimate()` on the screen, and that one is in bytes.
+  const [rows, sessions] = await Promise.all([importSummaries(), sessionCount()]);
+  const importBytes = rows.reduce((sum, row) => sum + (row.bytes ?? 0), 0);
   return {
     usageBytes: estimate.usage ?? 0,
     quotaBytes: estimate.quota ?? 0,

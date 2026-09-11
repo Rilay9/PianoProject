@@ -84,6 +84,21 @@ export interface ImportRow {
   title: string;
   /** MusicXML text, or the PDF's bytes. */
   data: string | ArrayBuffer;
+  /**
+   * How big `data` is, in real bytes, written when the row is.
+   *
+   * Recorded rather than measured because measuring means loading the file,
+   * and the one screen that wants the number is the storage report — the
+   * screen the owner opens *because* storage is tight. It is also the only way
+   * to be honest about text: `String.length` is UTF-16 code units, and the
+   * report puts its total beside `navigator.storage.estimate()`, which is
+   * bytes. A MusicXML score full of accented composer names was being
+   * under-reported against a real measurement.
+   *
+   * Optional because rows written before this existed do not have it; the
+   * reader fills it in for those from the row it has already loaded.
+   */
+  bytes?: number;
   tags: string[];
   level?: number;
   addedAt: string;

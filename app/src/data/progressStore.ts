@@ -37,9 +37,30 @@ export const DEFAULT_WEEKLY_GOAL_MINUTES = 150;
 /** docs/02 Part G: review comes back 1, 3, 7 and 21 days after a pass. */
 export const REVIEW_INTERVALS_DAYS = [1, 3, 7, 21];
 
-function today(now = new Date()): string {
-  return now.toISOString().slice(0, 10);
+/**
+ * The date a moment belongs to, **where the owner is**.
+ *
+ * This was `toISOString().slice(0, 10)`, which is the date in UTC. The owner is
+ * in the US, so from mid-afternoon onwards that is *tomorrow*: an hour of
+ * practice after 7 pm Eastern was filed under the next day, the heat map showed
+ * today as blank while the minutes sat in a square that had not happened yet,
+ * and a Saturday-evening session counted towards the following week's goal. Six
+ * days out of seven nobody would notice; the seventh is the day the weekly goal
+ * is decided.
+ *
+ * Local, therefore, and the same rule everywhere a day is named — `passedOn`
+ * (mastery wants two passes on different *days*), the minutes, and the Progress
+ * screen's heat map, which walks days with local arithmetic and was keying them
+ * with the UTC formatter.
+ */
+export function dayKey(now = new Date()): string {
+  const year = now.getFullYear();
+  const month = `${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const day = `${String(now.getDate()).padStart(2, '0')}`;
+  return `${String(year)}-${month}-${day}`;
 }
+
+const today = dayKey;
 
 function freshRow(itemId: string): ProgressRow {
   return {
@@ -155,10 +176,89 @@ export async function selfPass(itemId: string, now = new Date()): Promise<Progre
   return row;
 }
 
+/**
+ * The last `limit` runs, newest first.
+ *
+ * Walked backwards down the `byDate` index rather than read whole and sorted.
+ * At the cap that was 2,200 rows out of IndexedDB and 2,200 `localeCompare`s —
+ * an ICU call per comparison — to hand back fifty, on the Progress screen's
+ * load and again at the end of every drill. The index has been there since the
+ * store was created; `pruneSessions` already uses it.
+ */
 export async function recentSessions(limit = 50): Promise<SessionRow[]> {
   const db = await openDatabase();
-  const rows = (await db?.getAll('sessions')) ?? [];
-  return rows.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+  if (!db) return [];
+  try {
+    const out: SessionRow[] = [];
+    let cursor = await db.transaction('sessions').store.index('byDate').openCursor(null, 'prev');
+    while (cursor && out.length < limit) {
+      out.push(cursor.value);
+      cursor = await cursor.continue();
+    }
+    return out;
+  } catch {
+    // A browser that will not open a reverse index cursor still gets its list.
+    const rows = await db.getAll('sessions');
+    return rows.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+  }
+}
+
+/**
+ * The last `limit` performances, however far back they are.
+ *
+ * The Progress screen used to filter performances out of `recentSessions(100)`,
+ * which is the last hundred runs *of anything*. A performance is rare by
+ * design — that is the whole point of the section — so a few weeks of ordinary
+ * practice pushes the last one out of the window, and the screen then says "No
+ * performances yet" over a history that has them. It said the opposite of the
+ * one thing it exists to say.
+ *
+ * Walked down the same index, which is where the answer actually is; capped by
+ * the store's own retention so it can never be an unbounded scan.
+ */
+export async function recentPerformances(limit = 20): Promise<SessionRow[]> {
+  const db = await openDatabase();
+  if (!db) return [];
+  try {
+    const out: SessionRow[] = [];
+    let scanned = 0;
+    let cursor = await db.transaction('sessions').store.index('byDate').openCursor(null, 'prev');
+    while (cursor && out.length < limit && scanned < MAX_SESSIONS + PRUNE_SLACK) {
+      if (cursor.value.performance === true) out.push(cursor.value);
+      scanned += 1;
+      cursor = await cursor.continue();
+    }
+    return out;
+  } catch {
+    const rows = await db.getAll('sessions');
+    return rows
+      .filter((row) => row.performance === true)
+      .sort((a, b) => b.at.localeCompare(a.at))
+      .slice(0, limit);
+  }
+}
+
+/**
+ * The last `limit` runs **of one item**, newest first.
+ *
+ * The drill screen's coaching wants "the previous two runs of this drill" and
+ * asked for it as "any of this drill's runs inside the last sixty runs of
+ * anything". Sixty runs is about a week of practice, so anything on a
+ * fortnightly rotation silently stopped getting plateau advice — no error, no
+ * empty state, just a paragraph that quietly stopped appearing. `byItem` is the
+ * index that answers the question that was meant.
+ */
+export async function sessionsForItem(itemId: string, limit = 5): Promise<SessionRow[]> {
+  const db = await openDatabase();
+  if (!db) return [];
+  try {
+    const rows = await db.getAllFromIndex('sessions', 'byItem', itemId);
+    return rows.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+  } catch {
+    return (await recentSessions(MAX_SESSIONS))
+      .filter((row) => row.itemId === itemId)
+      .slice(0, limit);
+  }
 }
 
 /**
@@ -182,11 +282,14 @@ export async function sessionCount(): Promise<number> {
  * fifty.
  *
  * 2,000 because that is far more than anything reads. The deepest consumer is
- * the Progress screen at 100, then the drill host at 60; the weekly minutes and
- * the heat map come from the `streak` store, which is a total per day and does
- * not depend on this at all. So the cap cannot change a number the owner sees
- * until they are two thousand sessions deep — about six years at a session a
- * day — and by then the oldest rows are of no use to any screen.
+ * the Progress screen's history at 30, and the performances list, which asks
+ * for twenty of a rare thing and may therefore walk the whole store to find
+ * them — that is the one reader for which the cap is also the bound. The weekly
+ * minutes and the heat map come from the `streak` store, which is a total per
+ * day and does not depend on this at all. So the cap cannot change a number the
+ * owner sees until they are two thousand sessions deep — about six years at a
+ * session a day — except that a performance older than that is forgotten, which
+ * is the price of not keeping every run ever played.
  *
  * Pruned in blocks rather than one row per run: deleting on every write would
  * put a cursor walk in the path of finishing a piece, which is the one moment
@@ -309,9 +412,28 @@ export function reviewQueue(rows: ProgressRow[], now = new Date()): ReviewItem[]
   return due.sort((a, b) => a.dueAt.localeCompare(b.dueAt));
 }
 
-/** Test hook. */
-export function resetProgressForTest(): void {
+/**
+ * Forgets what is cached in this module, so the next read comes off the disk.
+ *
+ * Not a test hook — this is the other half of two operations that write the
+ * database from outside: restoring a backup, and Reset progress. Both used to
+ * clear or overwrite the stored rows while `memory` and `streakMemory` went on
+ * holding what was there before, and the caches are **write-through**: the next
+ * run did `{...(await getStreak())}` and put the pre-restore object back over
+ * the restored one. The minutes are the single number in this app with no other
+ * source, and they were being destroyed by the operation that exists to save
+ * them.
+ *
+ * The listeners are deliberately left alone: a screen that is on the page is
+ * still on the page, and it is the one that has to redraw afterwards.
+ */
+export function forgetCachedProgress(): void {
   memory.clear();
   streakMemory = null;
+}
+
+/** Test hook. */
+export function resetProgressForTest(): void {
+  forgetCachedProgress();
   listeners.clear();
 }

@@ -14,17 +14,23 @@
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { resetDatabaseForTest } from '../../../src/data/db';
+import { resetImportCacheForTest } from '../../../src/data/importStore';
 
 /** Installs a blank database. Call from `beforeEach` for isolation. */
 export function useFakeIndexedDb(): void {
   (globalThis as { indexedDB?: IDBFactory }).indexedDB = new IDBFactory();
   resetDatabaseForTest();
+  // The import summaries are cached until something writes to the store, and a
+  // brand-new database is the one write the store cannot see. Without this a
+  // test would read the previous test's imports back out of a module variable.
+  resetImportCacheForTest();
 }
 
 /** Removes it again, so tests that want the no-database path still get it. */
 export function clearFakeIndexedDb(): void {
   delete (globalThis as { indexedDB?: IDBFactory }).indexedDB;
   resetDatabaseForTest();
+  resetImportCacheForTest();
 }
 
 /** A minimal `File` for import tests; jsdom is not loaded in this environment. */

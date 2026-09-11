@@ -465,3 +465,38 @@ test.describe('the letter rail', () => {
     await expect(saved.getByRole('button', { name: /pick the folder again/i })).toBeVisible();
   });
 });
+
+test.describe('what the archive knows about a score', () => {
+  test('Details says where the estimated level sits, and what the estimate is worth', async ({
+    page,
+  }) => {
+    // The listing carries the level, the bars, the style, the status, the
+    // rating, the views, whether it has words and a link to the source. A row
+    // is 96 px and could show four of those, truncated — and "level 2.3 est."
+    // on its own answers a question nobody asked. The sheet turns the number
+    // into the rung it refers to, because unit ids in the curriculum *are*
+    // those numbers.
+    await seedFolder(page, 200);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-count')).toContainText('200 match');
+
+    const row = page.locator('#folder-list .list-row').first();
+    await row.getByRole('button', { name: 'Details' }).click();
+
+    const sheet = page.locator('#folder-detail');
+    await expect(sheet).toBeVisible();
+    // Either a rung, or plainly no estimate — never a bare number, and never
+    // a level of 0 invented for a score the manifest never mentioned.
+    await expect(page.locator('#folder-detail-rung')).toContainText(
+      /Estimated level|No level estimate/,
+    );
+    // And what the number is worth, said next to it rather than assumed.
+    await expect(sheet).toContainText(/hint, not a grade|has seen you play/);
+    // The file is the identity, so it is always shown.
+    await expect(sheet).toContainText('File');
+
+    // A sheet, not a tooltip: a phone has no hover, which is why the score
+    // screen explains its controls the same way.
+    await expect(sheet.getByRole('button', { name: 'Close' })).toBeVisible();
+  });
+});

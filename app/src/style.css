@@ -3374,6 +3374,31 @@ input[type='checkbox'] {
   justify-self: end;
 }
 
+/* What the control just did, in the row that did it (`04` §0 R6).
+
+   Settings is about forty rows and one status line, and that line was the last
+   element in the body — so `Saved.` for the second toggle was printed two
+   thousand pixels below the thumb that caused it. The score folder's failed
+   *Add* is answered on its row and this is the same answer.
+
+   Inside the row rather than after it, on a third line of its own grid: after
+   it, the rule above would have claimed it for the control's cell, and sideways
+   the block's two columns would have stretched it across both and left it
+   belonging to neither. `p.setting-note`, and immediately after that rule,
+   because it matches this element too and they are the same specificity — the
+   later one wins the tie.
+
+   One quiet line, no box: it is a confirmation, not a warning, and forty rows
+   that can each grow a bordered panel is a screen that jumps on every tap. */
+.setting-row > p.setting-note {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  justify-self: start;
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
 /* docs/04 §7a: ≥ 900 CSS px on the shortest side is a tablet — two columns
    for the browsing screens, everything else identical. */
 @media (min-width: 900px) and (min-height: 900px) {
@@ -3939,7 +3964,10 @@ input[type='checkbox'] {
 
   [data-screen='drill'] .drill-stage {
     grid-column: 1;
-    grid-row: 1 / span 4;
+    /* Five rows: the counter, the prompt, the hint, the status line and the
+       buttons (`04` §0 R6 moved the status line up here from the bottom of
+       the body, where sideways it was below the fold). */
+    grid-row: 1 / span 5;
     min-height: 0;
     align-self: center;
     /* And it must not size them either. A four-bar notation card is 390 px
@@ -3956,15 +3984,17 @@ input[type='checkbox'] {
     overflow: auto;
   }
 
+  /* The words column, in the order they are read: what card this is, what to
+     do, the hint, what the drill is saying, and the buttons. */
   [data-screen='drill'] #drill-counter,
   [data-screen='drill'] #drill-prompt,
   [data-screen='drill'] #drill-hint,
+  [data-screen='drill'] #drill-status,
   [data-screen='drill'] #drill-controls {
     grid-column: 2;
   }
 
   [data-screen='drill'] #drill-tips,
-  [data-screen='drill'] #drill-status,
   [data-screen='drill'] #drill-summary {
     grid-column: 1 / -1;
   }
@@ -3977,6 +4007,19 @@ input[type='checkbox'] {
   [data-screen='drill'] .drill-hint {
     font-size: 0.8rem;
     margin: 0 0 4px;
+  }
+
+  /* The status line is in the words column now, above the buttons, so a long
+     sentence — "playback is muted while the microphone is listening…" is a
+     hundred characters in a 190 px column — must not be able to push them out
+     of the box the way "Play again" once went under the keys. It gives up its
+     own height first and scrolls inside it; the count-in, which is the message
+     that has to be read at a glance, is four characters long. */
+  [data-screen='drill'] #drill-status {
+    font-size: 0.8rem;
+    margin: 0 0 4px;
+    max-height: 3.4em;
+    overflow-y: auto;
   }
 
   /* A staff or a chord diagram is sized by width everywhere else, which

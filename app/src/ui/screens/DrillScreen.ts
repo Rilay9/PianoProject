@@ -39,7 +39,7 @@ import { noteLabel } from '../../engine/drills/types';
 import type { EngineInput } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
-import { recordRun, recentSessions } from '../../data/progressStore';
+import { recordRun, sessionsForItem } from '../../data/progressStore';
 import { recordPlacement } from '../../data/planStore';
 import { tipsFor, type Tips } from '../../curriculum/tips';
 import { coach, type Coaching } from '../../engine/drills/coaching';
@@ -132,7 +132,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   // advice, and the two buttons to answer with were off the bottom of the
   // screen. The sweep test passed the whole time, because 'offers a way to
   // answer' was asking the DOM and not the screen.
-  body.append(counter, stage, prompt, hint, controls, tipsBlock, status, sheet);
+  //
+  // And the status line goes with the card, not at the bottom of the body
+  // (`04` §0 R6). It was the last element before the result sheet, which
+  // sideways is below the fold — and it is the *only* cue for the rhythm
+  // count-in ("Count-in — 1, 2, 3"), for "playback is muted while the
+  // microphone is listening", and for a microphone that would not open. A
+  // count-in nobody can see is a count-in that has not happened. Between the
+  // hint and the buttons it sits under the prompt it is about, in the same
+  // column as the prompt when the screen is sideways.
+  body.append(counter, stage, prompt, hint, status, controls, tipsBlock, sheet);
   section.append(stripHost);
 
   let item: CatalogItem | undefined;
@@ -157,7 +166,24 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let stopMicNotes: (() => void) | null = null;
   /** The engraver for a prompt that *is* a score — transposition, so far. */
   let notation: OsmdView | null = null;
+  /**
+   * The element the engraving lives in, kept across redraws of the same card.
+   *
+   * `drawStage()` rebuilds the stage on every `draw()`, and `draw()` runs at
+   * least twice per card. A host built per draw meant a new `OsmdView` per
+   * draw, so the four bars blanked and re-engraved 450 ms after the learner
+   * answered — while they were looking at them to see whether they were right.
+   */
+  let notationHost: HTMLElement | null = null;
   let notationFor = '';
+  /**
+   * Which set of cards is on screen. Bumped by `restart()`.
+   *
+   * The card key used to be `index:xml.length`, which is the same string for
+   * card 1 of one run and card 1 of the next — so *Again* could re-show the
+   * previous run's engraving. The run counter makes every card its own card.
+   */
+  let runSeq = 0;
 
   // --- input ---------------------------------------------------------------
 
@@ -438,12 +464,27 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         break;
       case 'transposition': {
         // The prompt is four bars of music, so it has to be engraved rather
-        // than described. Rendered once per card and reused on redraws: OSMD
-        // is the expensive thing on this screen and a repaint per keystroke
-        // would be felt.
-        const host = el('div.drill-notation', { id: 'drill-notation' });
-        stage.append(host);
-        drawNotation(host, current);
+        // than described. Engraved once per card and *re-appended* on every
+        // redraw: OSMD is the expensive thing on this screen, and this comment
+        // used to claim the reuse while the code built a fresh host and a
+        // fresh renderer each time (handoff §5j).
+        //
+        // The host is kept out of the stage's rebuild rather than kept in the
+        // DOM: `replaceChildren()` detaches it, the engraved SVG stays in its
+        // subtree, and re-appending it shows the same four bars with nothing
+        // re-parsed.
+        const key = `${String(runSeq)}:${String(current.index)}`;
+        if (notationHost && notationFor === key) {
+          stage.append(notationHost);
+          break;
+        }
+        disposeNotation();
+        notationHost = el('div.drill-notation', { id: 'drill-notation' });
+        notationFor = key;
+        // Attached before the engraver is asked for, because OSMD measures the
+        // width it is drawing into.
+        stage.append(notationHost);
+        drawNotation(notationHost, current, key);
         break;
       }
       default: {
@@ -460,20 +501,27 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     }
   }
 
+  /** Drops the engraver and the host it drew into. */
+  function disposeNotation(): void {
+    notation?.dispose();
+    notation = null;
+    notationHost = null;
+    // Cleared last: an `import()` still in flight reads this to decide whether
+    // the card it was asked for is still the card on screen.
+    notationFor = '';
+  }
+
   /**
    * Engraves a prompt that carries its own music.
    *
-   * Failure is reported on the status line rather than thrown: the answer is
-   * still playable from the expected pitches, and a drill that dies because a
-   * renderer hiccuped is worse than one without a picture.
+   * Called once per card — see `drawStage`. Failure is reported on the status
+   * line rather than thrown: the answer is still playable from the expected
+   * pitches, and a drill that dies because a renderer hiccuped is worse than
+   * one without a picture.
    */
-  function drawNotation(host: HTMLElement, target: DrillPrompt): void {
+  function drawNotation(host: HTMLElement, target: DrillPrompt, key: string): void {
     const xml = target.musicXml;
     if (!xml) return;
-    const key = `${String(target.index)}:${xml.length}`;
-    notation?.dispose();
-    notation = null;
-    notationFor = key;
     // Loaded when a drill actually has notation in it, which most do not.
     //
     // A static import here put OpenSheetMusicDisplay — the app's largest
@@ -486,10 +534,24 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     void import('../../score/OsmdView')
       .then(async ({ OsmdView }) => {
         if (disposed || notationFor !== key) return;
+        // On the first card this import has not resolved when the second draw
+        // comes, so this continuation used to run twice for one card and build
+        // two renderers — the first attached to a host the redraw had already
+        // thrown away, leaked until the screen unmounted. One card, one
+        // engraver: if there is already one for this key, it is this one.
+        if (notation) return;
         const view = new OsmdView(host, { drawFingerings: false, timingLabel: 'drill.osmd' });
         notation = view;
         await view.load(xml);
-        if (disposed || notationFor !== key) return;
+        // The load is where the milliseconds go, so the card can have changed
+        // (or the screen gone) across it — and this view is then nobody's, so
+        // it is disposed here rather than left for an unmount that has already
+        // happened.
+        if (disposed || notationFor !== key) {
+          view.dispose();
+          if (notation === view) notation = null;
+          return;
+        }
         view.render();
       })
       .catch((cause: unknown) => {
@@ -701,9 +763,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     const current = item;
     // No history is a fine reason for no plateau rule, and not a reason to
     // lose the rules that do not need one.
-    const recent = await recentSessions(60)
-      .then((sessions) => sessions.filter((session) => session.itemId === current.id).slice(0, 2))
-      .catch(() => [] as { accuracy: number }[]);
+    // This drill's own last two runs, asked for as such. It used to be "any of
+    // this drill's runs inside the last sixty runs of anything", and sixty runs
+    // is about a week of practice — so anything on a fortnightly rotation got
+    // no history, and the plateau advice silently stopped appearing with no
+    // error and nothing on the screen to show for it.
+    const recent = await sessionsForItem(current.id, 2).catch(() => [] as { accuracy: number }[]);
     const coaching: Coaching | null = coach(result.kind, result, recent);
     if (!coaching) return;
     line.replaceChildren(el('span', { text: coaching.text }));
@@ -734,6 +799,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     section.dataset.drill = 'finished';
     controls.replaceChildren();
     stage.replaceChildren();
+    // The set is over and the engraving is off the screen, so the renderer
+    // goes now rather than sitting on the megabyte it holds until the owner
+    // leaves the screen.
+    disposeNotation();
     prompt.textContent = '';
     sheet.hidden = false;
     sheet.replaceChildren(
@@ -817,6 +886,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     sheet.hidden = true;
     section.dataset.drill = 'running';
     startedAtMs = Date.now();
+    // A new set of cards, so card 1 of it is not card 1 of the last one.
+    runSeq += 1;
     // A fresh seed, so "again" is a new set of cards rather than the same
     // ones memorised in order.
     drill = drillFromCatalog(item, { seed: (Date.now() & 0x7fffffff) >>> 0 });
@@ -1195,7 +1266,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     stopMidiControl();
     stopMicNotes?.();
     if (micActive) micSource.disconnect();
-    notation?.dispose();
+    disposeNotation();
     strip?.destroy();
   });
 

@@ -381,3 +381,56 @@ describe('when the API is not there', () => {
     clearFakeIndexedDb();
   });
 });
+
+describe('the picker is how the folder is read, not a reward for a setting', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+  });
+
+  it('uses the picker with remembering switched off, and keeps no handle', async () => {
+    // These were one decision and they are two. `remember` is about whether the
+    // handle is *kept*; the picker is about how the folder is *read*. Tied
+    // together, the default — off — sent every import through the file input
+    // instead: all 37,261 files handed over at once rather than enumerated, and
+    // no worker, so the walk that was moved off the main thread was still on it
+    // for the one person this is built for.
+    let pickerUsed = 0;
+    (window as unknown as Record<string, unknown>).showDirectoryPicker = () => {
+      pickerUsed += 1;
+      return Promise.resolve(fakeHandle('Scores', FILES, { query: 'granted' }));
+    };
+
+    const library = await pickFolder({ remember: false });
+
+    expect(pickerUsed, 'the file input was used instead of the picker').toBe(1);
+    expect(library.scores).toHaveLength(2);
+    // And the owner's folder is not held on to, because they did not ask.
+    expect(await hasStoredHandle('Scores')).toBe(false);
+    expect(library.rememberNote).toBe('not-remembered');
+    clearFakeIndexedDb();
+  });
+
+  it('tries to keep the handle only when remembering is switched on', async () => {
+    // The difference is in what was *attempted*, which is all this environment
+    // can show: as the block above says, a faked directory handle can never
+    // survive a structured clone, so storing one always fails here. With
+    // remembering on the app tries and says "not-stored"; with it off it does
+    // not try, and says "not-remembered". Two different sentences for two
+    // different situations, and the picker is used either way.
+    (window as unknown as Record<string, unknown>).showDirectoryPicker = () =>
+      Promise.resolve(fakeHandle('Scores', FILES, { query: 'granted' }));
+
+    const on = await pickFolder({ remember: true });
+    expect(on.rememberNote).toBe('not-stored');
+    expect(on.scores).toHaveLength(2);
+    clearFakeIndexedDb();
+
+    useFakeIndexedDb();
+    const off = await pickFolder({ remember: false });
+    expect(off.rememberNote).toBe('not-remembered');
+    expect(off.scores).toHaveLength(2);
+    // Neither one kept anything, but only one of them asked to.
+    expect(await hasStoredHandle('Scores')).toBe(false);
+    clearFakeIndexedDb();
+  });
+});

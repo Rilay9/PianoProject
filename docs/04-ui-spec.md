@@ -61,6 +61,47 @@ the one control that does what the sentence suggests. No furniture: no empty gri
 that act on nothing, no "Disconnect" while disconnected, no statistic with no data behind it. A
 single-line list is not empty and gets no special treatment.
 
+**R6 — A message appears where the thing that caused it is, and its colour belongs to it.**
+Added 2026-09-11, from three faults of one shape. A screen's status line is the *last* element in
+the body on Plan, Progress, Settings and Drill, so *Saved.* for a toggle near the top of Settings
+and *Weekly goal set* for a control at the very top of Progress both landed thousands of pixels
+below the finger that caused them — the same fault as "Add flashes and does nothing", where the
+reason was written at the top of a list scrolled thousands of rows down. Where a message answers
+one control or one row, it goes beside that control or that row (the score folder's failed *Add*
+now does). And `status--error` is a property of the *message*: every screen added it and none ever
+removed it, so one microphone that would not open left every later *Saved.* printed in red.
+`statusLine()` clears it whenever a new message is written, which is the rule stated once instead
+of at fifteen call sites.
+
+Done 2026-09-11, and both move layout, so the gallery cells for Settings and Drill are new
+pictures:
+
+- **Settings** writes the sentence into the row whose control caused it — a quiet line inside
+  `.setting-row`, one at a time, `Saved.` or the toggle's own sentence. The screen's status line
+  keeps a copy (it is the one `aria-live` region, and it is what announces) and moves up beside
+  the *Download everything now* row, whose progress is the one message on this screen that
+  belongs to no single control. The note takes the **hint's** line rather than adding a third
+  one, so a row with a sentence is no taller while it shows — the hint says what the control
+  does and the owner has just done it. A row with *no* hint grows by that one line, about 18 px,
+  for as long as the confirmation is up: that is over R2's 56 px for a bare row and is the
+  price of R6 on this screen. The tour's row-height audit does not see it, because no scene
+  changes a setting; a scene that does should read a row carrying a `.setting-note` against the
+  100 px budget, not the 56.
+- **Drill** moves its status line out of the bottom of the body to under the prompt and above the
+  buttons, in the same column as the prompt when the phone is sideways. That is where the rhythm
+  count-in and "playback is muted while the microphone is listening" are read; sideways the line
+  gives up its own height first and scrolls inside it, because the buttons must not be pushed out
+  of the scrolling body.
+- **Progress** writes *Weekly goal set…* into a line of its own beside the weekly-goal control, at
+  the top of the screen where the control is — not the screen's bottom status line, which used to
+  print it below the heat map, the repertoire list, twenty performances and thirty sessions. See
+  §6.
+- **Plan's Tracks… sheet** (§3) writes "The core path is always on — it is what the stages are"
+  into a status line of its own inside the sheet, not the Plan screen's status line: the sheet is
+  modal and puts everything behind it `inert`, so a message written to the screen's own line was
+  both invisible and unreachable to a screen reader for as long as the sheet stayed open. Added
+  2026-09-11.
+
 ## 1. Navigation
 
 Bottom tab bar (portrait) / left rail (landscape): **Today · Plan · Library · Progress · Settings**.
@@ -72,7 +113,14 @@ Score screen is a full-screen route pushed on top (back gesture returns).
 
 - Header: minutes this week / weekly goal (no daily-streak guilt), days practised this week,
   **input chip** showing the active follow input (MIDI 🎹 / Mic 🎤 / Timed ⏱ / Manual) —
-  tap → Input screen.
+  tap → Input screen. **The chip follows the piano rather than guessing once.** MIDI
+  auto-connect is started and not awaited at boot, and it waits on a permission query and then
+  on the MIDI access itself, while the router mounts Today on the next line — so on a cold
+  start with the HP-130 plugged in and permission granted a year ago, the chip read *Timed* or
+  *Screen keys* for the whole visit and a tap on it went to the wrong settings page. It
+  subscribes to the MIDI and microphone sources and redraws. Nothing in the suite could see
+  this: there is no Web MIDI in jsdom or on a headless runner, so every fixture takes the
+  no-input branch.
 - **Session length picker:** 15 · 30 · 60 · 120 min (remembers weekday vs weekend choice).
   Short sessions = technique + review + one new item; long sessions = full template plus a
   repertoire block and, if the jam module is active, a jam block (chord-chart practice).
@@ -181,6 +229,13 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
 
 **§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder* sit as one line of text in the header, above the search box — text rather than boxes (R3), but at the top: at the foot of the list they were 4,325 px down with the default sixty rows drawn. The header does not scroll, so the list runs under them.
 
+**The letter rail** (`ui/alphaRail.ts`, the same component the score folder uses) sits beside the
+list **only under the title sort** and only when there is more than one page: the default sort is
+by level, which is a teaching order, and a letter over that points wherever the letter happens to
+fall. It moves the window rather than growing the list, and its letters describe the filtered
+list rather than the drawn page — see §4b, where both rules and the reasons for them are written
+out.
+
 - Search + filters: type, track, level range, hands, key, time signature, concept tag, status,
   source. Sorting by level/title/recent.
 - Imports section: **"Import a score"** — a file picker taking `.musicxml`, `.mxl` **and
@@ -242,6 +297,28 @@ Library → **Browse a score folder** (`#/library/folder`):
   is listed under its own name and titled from its `<work-title>` when it is added.
 - **Search, style, level range, "rated 4+ by 5+ people".** Filtering is synchronous over the
   array; only the drawing is capped (60 rows, then "Show more").
+- **A letter rail down the side** (`ui/alphaRail.ts`, shared with Library's list). A to Z is
+  always drawn, so the rail is a shape that can be learned. A tap **moves the window** — the page
+  starts at that letter — rather than growing the list to reach it: growing it drew 4,860 rows in
+  2.7 s on 5,000 scores, which on 37,261 is some thirty-six thousand. The count line therefore
+  says *where* the rows are ("showing 1,201–1,260"), and the window goes back to the top whenever
+  the question changes.
+  **The letters describe the listing, not the drawn page.** After a jump the sixty rows on screen
+  are all one letter, and a rail reading only its rows dimmed the other twenty-six over a folder
+  with something under every one of them — the rail contradicting itself one tap after it was
+  obeyed. The screen hands over the set of letters its current filters leave something under
+  (computed in the same pass as the filtering; the letter of every row is indexed once when the
+  folder loads, because `letterFor` normalises and doing 37,261 of them per keystroke is the
+  sluggishness this list keeps being fixed for). A letter with nothing under it anywhere is dimmed
+  **and takes no tap**, which is the one honest thing to do with it.
+- **One folder is shown: the one picked last.** The screen holds a single listing, and
+  `getAll` hands rows back in key order — the key being the folder's own name. So a `Download`
+  picked once by mistake sorted ahead of `pianopath-library` and became the folder the app showed
+  on every launch, with the archive invisible and the one *Forget this folder* button pointed at
+  the folder worth keeping. `savedFolders()` is newest-first now, the screen prefers a folder that
+  is still open and otherwise takes the newest, and any other listings are **named** under *How
+  this works* with a Forget for each — one archive listing is about 6 MB, so a folder picked by
+  mistake must not be able to sit in the database unreachable.
 - **The only action on a row is "Add"**, and Add is the ordinary import (§4). After it, the
   piece is a catalog item like any other: levelled, searchable, sessionable, in the backup,
   and working with the folder long gone. Browsing is borrowed; adding is keeping.
@@ -273,7 +350,16 @@ and never will; what it holds is a register.
   for imports), so it appears on the lesson page under *From your own books* and can complete
   the rung — see §5d for the terms.
 - The twin is what makes paper practice scorable without pretending: with one, "With the
-  score" opens a normal measured run; without one, §5d measures only what it can hear.
+  score" opens a normal measured run; without one, §5d measures only what it can hear. The
+  search for a twin is debounced, stops once it has six matches instead of filtering the whole
+  catalog, and matches the composer as well as the title — the row it draws shows both.
+- Saving a piece redraws only that piece's row (a book's whole section when the save added or
+  removed one), not the whole shelf, so the scroll position and every other book on the page
+  survive an edit.
+- **"I have this on paper"**, reached from a lesson page, files the piece into the owner's one
+  book with no extra tap; with more than one book registered it asks which book first, since
+  filing it into whichever one sorts first is a silent mistake the owner would only notice by
+  opening the Shelf.
 
 ## 5. Score screen (the core)
 
@@ -552,9 +638,18 @@ screen with nineteen faces: the chrome — prompt counter, keyboard strip, right
 result sheet, progress recording — is written once, and each kind supplies only the thing the
 learner looks at.
 
-- **Layout:** counter, the card, one line saying what to do, the controls, and the keyboard
-  strip pinned to the bottom. The strip is always there: for a learner with no cable it *is*
-  the instrument, and a drill you cannot answer is not a drill.
+- **Layout:** counter, the card, one line saying what to do, the hint, **the status line**, the
+  controls, and the keyboard strip pinned to the bottom. The strip is always there: for a
+  learner with no cable it *is* the instrument, and a drill you cannot answer is not a drill.
+  The status line is with the card and above the buttons rather than at the foot of the body
+  (R6, 2026-09-11): it carries the rhythm count-in, "playback is muted while the microphone is
+  listening" and a microphone that would not open, and at the foot of the body sideways all
+  three were below the fold. Sideways it is in the words column and scrolls inside its own
+  three lines, because a hundred-character sentence there must not push the buttons out.
+- **The card is engraved once.** A transposition prompt is four bars of music, so its host
+  element is kept across the redraws of that card and re-appended — `draw()` runs at least
+  twice per card, and rebuilding the host meant the bars blanking and re-parsing 450 ms after
+  the answer, while the learner was reading them (handoff §5j).
 - **The cards.** *note-flash*: one note on a hand-drawn SVG staff (five lines, a Unicode clef,
   ledger lines, and the accidental the drill's own name uses — E♭ on the E line, never D♯).
   *find-key* and *chord/inversion*: the symbol, as large as the screen allows and nothing
@@ -581,9 +676,15 @@ learner looks at.
 
 - Calendar heat-map of practice minutes; streak; weekly minutes vs goal.
 - Per-stage completion; per-track completion.
-- Repertoire list (mastered) with "last played" and a replay button.
+- **Repertoire list (mastered)** with "last played" and a replay button, capped at 20 rows (same
+  shape as Skills' concept grid) with a *Show N more* link — the history and the performances are
+  already bounded by asking for a bounded number of recent rows, but mastery only grows, so this
+  list needed its own way to see the rest rather than one that would eventually make it the
+  longest, slowest list on the screen.
 - Session history (table) with per-session detail (accuracy over time chart for an item).
 - Export / Import all data (JSON). "Copy debug report".
+- The weekly-goal number control writes its confirmation to its own line beside it, inside the
+  "This week" block — not the screen's bottom status line (`04` §0 R6).
 
 ## 7. Settings (all persisted; defaults in brackets)
 
@@ -618,7 +719,9 @@ the section is not built for a MIDI user at all.)
 
 **Content** — active tracks; show US-only PD items [on]; language [en]; note naming
 [letters]; **"Download everything now"** (re-runs the precache and reports total size and
-item count); **offline only** [off] (stops the app checking for updates at all — `00` D20);
+item count — it counts as it goes, offers **Stop** beside itself while it runs, says so and
+fetches nothing when there is no network, gives up after ten refusals in a row, and ends when
+the screen is left); **offline only** [off] (stops the app checking for updates at all — `00` D20);
 storage used, with a breakdown by scores / audio / lessons / your imports; reset progress
 (double confirm).
 
