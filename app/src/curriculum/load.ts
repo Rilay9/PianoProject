@@ -23,8 +23,43 @@ let catalogPromise: Promise<CatalogItem[]> | null = null;
 let curriculumPromise: Promise<Curriculum> | null = null;
 let indexCache: CatalogIndex | null = null;
 
-async function readJson<T>(path: string): Promise<T> {
-  const response = await fetch(contentUrl(path));
+/**
+ * How long a content read may take before it is treated as lost.
+ *
+ * `fetch` has no timeout of its own. A response that is accepted and then never
+ * arrives leaves `await fetch(...)` pending for ever — the retry below never
+ * runs, nothing rejects, and every screen waiting on the catalog simply never
+ * appears. That is not hypothetical: a screen failing to mount inside a 120 s
+ * wait, then passing when run again, has happened three times in two days, and
+ * this is the only path in the boot that can hang without saying anything.
+ *
+ * On the owner's phone it is worse than a flaky test. The app is offline-first
+ * and these files are precached, so a read normally costs nothing; a stalled
+ * one means a dead screen with no message on a bad connection.
+ *
+ * Twelve seconds: the largest of these files is 81 KB and it is usually served
+ * by the service worker from local storage, so anything approaching this is not
+ * slow, it is gone. The retry doubles the patience, because a first launch that
+ * lost the network mid-precache is the case the retry was written for.
+ */
+const READ_TIMEOUT_MS = 12_000;
+
+async function readJson<T>(path: string, timeoutMs = READ_TIMEOUT_MS): Promise<T> {
+  // A controller and a timer rather than `AbortSignal.timeout`, for two
+  // reasons: the timer is cleared the moment the response arrives, so a
+  // successful read leaves nothing pending; and `AbortSignal.timeout` schedules
+  // on a clock no test can advance, which would make this behaviour
+  // unassertable — and unasserted is how it came to be missing.
+  const controller = new AbortController();
+  const timer = setTimeout(() => {
+    controller.abort(new DOMException(`${path} did not answer in ${String(timeoutMs)}ms`, 'TimeoutError'));
+  }, timeoutMs);
+  let response: Response;
+  try {
+    response = await fetch(contentUrl(path), { signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
   if (!response.ok) throw new Error(`${path}: ${response.status} ${response.statusText}`);
   // Not `response.json()`: a body that arrives truncated throws a bare
   // SyntaxError naming neither the file nor the reason, which is what a
@@ -51,7 +86,10 @@ async function fetchJson<T>(path: string): Promise<T> {
     return await readJson<T>(path);
   } catch (first) {
     try {
-      return await readJson<T>(path);
+      // Twice the patience on the second go: the case this retry exists for is
+      // a first launch that lost the network mid-precache, and that one is
+      // slow rather than dead.
+      return await readJson<T>(path, READ_TIMEOUT_MS * 2);
     } catch {
       throw first instanceof Error ? first : new Error(String(first));
     }
