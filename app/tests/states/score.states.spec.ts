@@ -416,8 +416,21 @@ test('every state, photographed and measured', async ({ page }) => {
     page,
     '6-what-if-it-goes-wrong',
     'rotation--bars1-real-phone',
-    'Turned upright at one bar per window, 740x342 to 342x740: re-engraved for the new width, not the old chunk squeezed into it.',
-    { running: true, arrangement: 'single', viewportW: PHONE_UP_REAL.width },
+    'Turned upright at one bar per window, 740x342 to 342x740: re-engraved for the new width, not the old chunk squeezed into it, and stacked because upright has room for more than one.',
+    // `slots`, not `single`.
+    //
+    // This claim was written when `updateReadAhead` refused the slot
+    // arrangement whenever `barsPerWindow` was 1, on the reading that one bar
+    // has no halves to alternate. That rule was deliberately removed — it drew
+    // one bar and left the rest of the screen black, 57 % of the stage on the
+    // owner's own five-finger exercise at 342 x 740, and they photographed it
+    // as the score being compressed. One bar per window means one bar in each
+    // system, and nothing says the screen may hold only one of them.
+    //
+    // So the claim was asserting the old behaviour against the new, and it is
+    // the claim that was stale. `WindowRenderer.updateReadAhead` carries the
+    // reasoning at the line that decides it.
+    { running: true, arrangement: 'slots', viewportW: PHONE_UP_REAL.width },
   );
   await settings(page, { barsPerWindow: 2 });
 
