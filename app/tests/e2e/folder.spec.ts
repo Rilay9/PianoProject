@@ -339,7 +339,12 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-list .list-row').first()).toBeVisible();
     const top = await page.locator('#folder-list .list-row').first().evaluate((el) => el.getBoundingClientRect().top);
     console.log(`folder: the first row starts at ${String(Math.round(top))}px of 780`);
-    expect(top).toBeLessThan(780);
+    // 740, not 780: a margin for a machine whose fonts are wider than this
+    // one's. Fitting exactly here is what failed on the CI runner — the saved
+    // listing notice wrapped to two lines there and pushed the first row to
+    // 784 px of 780, so the rule this test exists for was broken by a change
+    // that passed locally. The screen is 780; the assertion leaves forty.
+    expect(top, `the first row starts at ${String(Math.round(top))}px`).toBeLessThan(740);
     // And the rare filters are behind the chip rather than on the line.
     await expect(page.locator('#folder-filters')).toBeHidden();
     await expect(page.locator('#folder-filter-toggle')).toHaveAttribute('aria-expanded', 'false');
@@ -461,7 +466,11 @@ test.describe('the letter rail', () => {
     const saved = page.locator('#folder-saved');
     await expect(saved).toBeVisible();
     await expect(saved).toContainText(/saved listing/i);
-    await expect(saved).toContainText('200');
+    await expect(saved).toContainText(/nothing can be added/i);
+    // The count is not repeated here: it is on the line below, and this notice
+    // sits between the search box and the first row, where R1 is watching every
+    // pixel.
+    await expect(page.locator('#folder-count')).toContainText('200');
     await expect(saved.getByRole('button', { name: /pick the folder again/i })).toBeVisible();
   });
 });

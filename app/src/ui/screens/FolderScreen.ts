@@ -676,7 +676,14 @@ export function FolderScreen(router: Router): HTMLElement {
       el(
         'p.folder-saved__text',
         {},
-        `This is a saved listing of ${library.scores.length.toLocaleString()} scores — you can search and read it, but the folder itself is not open, so nothing can be added yet.`,
+        // Short on purpose. This sits above the list, and `04` §0 R1 asks for
+        // the first score to be on the screen without scrolling — the longer
+        // sentence this replaced wrapped to two lines in the CI runner's wider
+        // fonts and pushed the first row to 784 px of 780. What the owner needs
+        // here is which of the two states they are in, not an explanation of
+        // it; the sheet behind Details and the note under a failed Add both
+        // have room for the rest.
+        `Saved listing — the folder is not open, so nothing can be added yet.`,
       ),
       button(
         'Pick the folder again',

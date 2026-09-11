@@ -416,18 +416,21 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin: 8px 0 12px;
-  padding: 10px 12px;
+  /* Tight, because it sits between the search box and the first row, and R1
+     asks for that row to be on the screen without scrolling. */
+  gap: 6px 10px;
+  margin: 6px 0 8px;
+  padding: 6px 10px;
   border-radius: 10px;
   border: 1px solid var(--warn, var(--border));
   background: color-mix(in srgb, var(--warn, var(--border)) 12%, transparent);
 }
 
 .folder-saved__text {
-  flex: 1 1 14rem;
+  flex: 1 1 12rem;
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1.25;
 }
 
 .folder-row-note__aside {
