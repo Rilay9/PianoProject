@@ -133,16 +133,31 @@ test.describe('the offline report', () => {
       timeout: 120_000,
     });
 
+    // A value planted by the test, rather than an empty key.
+    //
+    // The rule is that an update check is recorded only when it reached the
+    // server. Clearing the key and expecting "never" tests that by way of a
+    // *race*: the online page's own check is still in flight when the test
+    // clears the key, and if it lands a moment later the key is back before the
+    // offline reload, through no fault of the code. That is what failed here
+    // under a full suite while passing alone. A sentinel asks the same question
+    // without the race — after a boot with the network off, is the recorded
+    // time still the one nobody has touched?
+    const SENTINEL = '2020-01-01T00:00:00.000Z';
     await context.setOffline(true);
-    // A reload with the network off: `registration.update()` cannot reach the
-    // server, so nothing may be recorded. Before the fix this wrote the moment
-    // the page was opened, whatever happened next.
-    await page.evaluate(() => {
-      localStorage.removeItem('pianopath.lastUpdateCheck');
-    });
+    await page.evaluate((planted) => {
+      localStorage.setItem('pianopath.lastUpdateCheck', planted);
+    }, SENTINEL);
     await page.reload();
-    await openDiagnostics(page);
-    await expect(page.locator('#diag-offline')).toContainText('Last update check: never');
+    await page.waitForFunction(() => document.readyState === 'complete', undefined, {
+      timeout: 120_000,
+    });
+    // Long enough that a check, had one been made, would have resolved.
+    await page.waitForTimeout(2_000);
+    expect(
+      await page.evaluate(() => localStorage.getItem('pianopath.lastUpdateCheck')),
+      'a check was recorded on a boot with no network',
+    ).toBe(SENTINEL);
 
     await context.setOffline(false);
     await page.reload();
@@ -152,8 +167,11 @@ test.describe('the offline report', () => {
     // report is a snapshot taken when the screen is built — open it too early
     // and it says "never" for the honest reason.
     await page.waitForFunction(
-      () => localStorage.getItem('pianopath.lastUpdateCheck') !== null,
-      undefined,
+      (planted) => {
+        const now = localStorage.getItem('pianopath.lastUpdateCheck');
+        return now !== null && now !== planted;
+      },
+      SENTINEL,
       { timeout: 120_000 },
     );
     await openDiagnostics(page);

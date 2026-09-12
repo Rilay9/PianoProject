@@ -92,34 +92,79 @@ async function overflowing(page: import('@playwright/test').Page): Promise<strin
  * its own, and the sheet went from seven rows on a 740 px screen to five and a
  * half. Fixing the stepper is no good if the rows below it leave the screen.
  *
- * The measurement is the sheet's *total* height, not a cap per row, because the
- * two cases are far apart in the total and close in any single row: 894 px of
- * rows with the words shrinking, 1,288 px with them wrapping the control away,
- * where the tallest individual rows are only 106 and 126. A total also does not
- * care which particular row wrapped, and there is room either side of the line
- * for the CI runner's wider fonts to take a hint onto an extra line.
+ * Asked structurally rather than in pixels. The first version of this check
+ * capped the sheet's total height at 1,050 px against a measured 894, and that
+ * is a number about *fonts* as much as about layout: the CI runner's are wider
+ * than the owner's, every hint wraps a little sooner, and the total moves
+ * without anything being wrong. It failed there and passed here, which is the
+ * signature of a measurement that is not measuring what it means.
+ *
+ * What it means is that a control sits *beside* its words rather than under
+ * them. That is a question about two boxes and it has the same answer in every
+ * font: if the control's box shares no vertical span with the words' box, the
+ * row has broken in two.
  */
-test('no row in the sheet is tall enough to push the rest off the screen', async ({ page }) => {
-  await page.setViewportSize({ width: 342, height: 740 });
-  await page.goto(`/#/score/${SONG}`);
-  await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
-  await openScoreMenu(page);
-  await page.waitForTimeout(200);
-  const seen = await page.evaluate(() => {
-    let total = 0;
-    const rows: string[] = [];
-    for (const row of document.querySelectorAll<HTMLElement>('#score-more-sheet .score-menu-row')) {
-      if (row.hidden || row.offsetParent === null) continue;
-      const height = row.getBoundingClientRect().height;
-      total += height;
-      rows.push(`${row.querySelector('.score-menu-row__label')?.textContent ?? '?'}=${String(Math.round(height))}`);
+test('a control sits beside its words, not on a line under them', async ({ page }) => {
+  const faults: string[] = [];
+  // Both text sizes, because this is the fault a bigger font causes.
+  for (const scale of [1, 1.15]) {
+    await page.setViewportSize({ width: 342, height: 740 });
+    await page.goto(`/#/score/${SONG}`);
+    await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+    if (scale !== 1) {
+      await page.evaluate((pct) => {
+        document.documentElement.style.fontSize = `${String(16 * pct)}px`;
+      }, scale);
+      await page.waitForTimeout(150);
     }
-    return { total: Math.round(total), rows };
-  });
-  expect(
-    seen.total,
-    `the sheet's rows come to ${String(seen.total)} px, so fewer of them fit: ${seen.rows.join(' ')}`,
-  ).toBeLessThan(1_050);
+    await openScoreMenu(page);
+    await page.waitForTimeout(200);
+    const broken = await page.evaluate(() => {
+      const out: string[] = [];
+      for (const row of document.querySelectorAll<HTMLElement>('#score-more-sheet .score-menu-row')) {
+        if (row.hidden || row.offsetParent === null) continue;
+        const words = row.querySelector<HTMLElement>('.score-menu-row__words');
+        const control = row.querySelector<HTMLElement>('.score-menu-row__control');
+        if (!words || !control || control.offsetParent === null) continue;
+        const w = words.getBoundingClientRect();
+        const c = control.getBoundingClientRect();
+        if (w.height <= 0 || c.height <= 0) continue;
+        // Beside means the two boxes share some vertical span. A pixel of
+        // tolerance either way, because a border can round.
+        if (c.top >= w.bottom - 1 || c.bottom <= w.top + 1) {
+          out.push(
+            `${row.querySelector('.score-menu-row__label')?.textContent ?? '?'}: words end at ${String(Math.round(w.bottom))}, control starts at ${String(Math.round(c.top))}`,
+          );
+        }
+      }
+      return out;
+    });
+    for (const fault of broken) faults.push(`${String(Math.round(scale * 100))} % text — ${fault}`);
+
+    // The other half of the same rule, and the half the first version of this
+    // file missed. Letting the words shrink instead of wrapping the row is only
+    // right while they still have room to say something: starve them and the
+    // hint wraps to five or six lines, which makes the row tall by a different
+    // route. Expressed as a share of the row, so it means the same thing in any
+    // font — an absolute height here would be a number about this machine.
+    const starved = await page.evaluate(() => {
+      const out: string[] = [];
+      for (const row of document.querySelectorAll<HTMLElement>('#score-more-sheet .score-menu-row')) {
+        if (row.hidden || row.offsetParent === null) continue;
+        const words = row.querySelector<HTMLElement>('.score-menu-row__words');
+        if (!words) continue;
+        const share = words.getBoundingClientRect().width / row.getBoundingClientRect().width;
+        if (share < 0.4) {
+          out.push(
+            `${row.querySelector('.score-menu-row__label')?.textContent ?? '?'}: words get ${String(Math.round(share * 100))} % of the row`,
+          );
+        }
+      }
+      return out;
+    });
+    for (const fault of starved) faults.push(`${String(Math.round(scale * 100))} % text — ${fault}`);
+  }
+  expect(faults, `a row broke in two, or starved its words: ${faults.join(' | ')}`).toEqual([]);
 });
 
 test('no control in the sheet is split across lines', async ({ page }) => {

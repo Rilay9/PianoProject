@@ -22,15 +22,40 @@
  * screen with a beat on it are different instruments.
  */
 import { expect, test, type Page } from '@playwright/test';
+import { pressControl } from './scoreControls';
 
 const SONG = 'song.folk.hot-cross-buns';
 
+/**
+ * Opens the piece blind, and waits until it can actually be played.
+ *
+ * `data-blind` is set while the screen is being built, long before the score
+ * has been fetched, parsed and engraved. Waiting on it and then pressing Play
+ * works on an idle machine and fails under a full suite, which is what happened
+ * here: all three of these timed out waiting for a run that had never started.
+ * The rest is the opening every other score spec uses — a mode, then ink on the
+ * stage. The ink is hidden in blind mode but `visibility: hidden` still takes
+ * part in layout, so it still has a height to wait for.
+ */
 async function openBlind(page: Page): Promise<void> {
   await page.setViewportSize({ width: 342, height: 740 });
   await page.goto(`/#/score/${SONG}?blind=1`);
   await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-blind', 'true', {
     timeout: 60_000,
   });
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+    'data-mode',
+    /wait|tempo/,
+    { timeout: 60_000 },
+  );
+  await page.waitForFunction(
+    () => {
+      const svg = document.querySelector('#score-stage .is-front svg');
+      return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+    },
+    undefined,
+    { timeout: 60_000 },
+  );
 }
 
 test.describe('a blind run', () => {
@@ -45,18 +70,56 @@ test.describe('a blind run', () => {
   test('counts you in where you can see it', async ({ page }) => {
     await openBlind(page);
     await page.locator('#score-mode').selectOption('tempo');
-    await page.locator('#score-play').click();
-    const countIn = page.locator('#score-countin');
-    await expect(countIn, 'the count-in ran invisibly in the one mode with nothing else to see').toBeVisible({
-      timeout: 30_000,
+
+    // Watched, not polled for. A count-in is over in a couple of bars, and
+    // `toBeVisible` asks the question again and again *after* the click — so
+    // under a full suite's load the count-in can begin and end between the tap
+    // and the first look, and the test reports that it never happened. This
+    // one passed alone and failed in the suite, which here always means timing.
+    // The observer is installed before the tap and records what actually
+    // occurred, so the assertion is about the run rather than about when the
+    // test got round to looking.
+    await page.evaluate(() => {
+      const seen = { visible: false, lit: 0 };
+      (window as unknown as { __countIn?: typeof seen }).__countIn = seen;
+      const node = document.querySelector('#score-countin');
+      if (!node) return;
+      const look = (): void => {
+        const el = node as HTMLElement;
+        if (el.hidden || el.offsetParent === null) return;
+        if (getComputedStyle(el).visibility === 'hidden') return;
+        seen.visible = true;
+        seen.lit = Math.max(seen.lit, el.querySelectorAll('.is-now').length);
+      };
+      new MutationObserver(look).observe(node, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
+      look();
     });
-    await expect(page.locator('#score-countin .is-now')).toHaveCount(1);
+
+    await pressControl(page, '#score-play');
+    await page.waitForFunction(
+      () => (window as unknown as { __countIn?: { visible: boolean } }).__countIn?.visible === true,
+      undefined,
+      { timeout: 30_000 },
+    );
+    const seen = await page.evaluate(
+      () => (window as unknown as { __countIn?: { visible: boolean; lit: number } }).__countIn,
+    );
+    expect(seen?.visible, 'the count-in ran invisibly in the one mode with nothing else to see').toBe(
+      true,
+    );
+    // One beat lit at a time, which is what makes it a count rather than a row
+    // of numbers.
+    expect(seen?.lit ?? 0).toBe(1);
   });
 
   test('keeps the beat where you can see it', async ({ page }) => {
     await openBlind(page);
     await page.locator('#score-mode').selectOption('tempo');
-    await page.locator('#score-play').click();
+    await pressControl(page, '#score-play');
     // Past the count-in and into the music.
     await expect(page.locator('#score-countin')).toBeHidden({ timeout: 30_000 });
     await expect(page.locator('#score-beat'), 'the beat dot went with the notation').toBeVisible({
@@ -67,9 +130,29 @@ test.describe('a blind run', () => {
   test('still says which bar you are in', async ({ page }) => {
     await openBlind(page);
     await page.locator('#score-mode').selectOption('tempo');
-    await page.locator('#score-play').click();
-    const corner = page.locator('#score-corner');
-    await expect(corner).toBeVisible({ timeout: 30_000 });
-    await expect(corner).not.toHaveText('');
+    await pressControl(page, '#score-play');
+    // Which bar, from wherever the screen is saying it.
+    //
+    // There are two places and they take turns: the header's readout, and the
+    // corner chip that appears once the chrome has folded three seconds into a
+    // run. In blind mode the status line permanently reads "Blind — ⋯ shows the
+    // score", and a status line hides the header readout upright — so for the
+    // first few seconds the corner is the only one, and it is not drawn yet.
+    // Asserting on the corner alone meant asserting on the fold's timer, which
+    // is why this passed alone and timed out under load. What matters to a
+    // player is that *something* says which bar, so that is what is asked.
+    await page.waitForFunction(
+      () => {
+        const shows = (id: string): boolean => {
+          const el = document.getElementById(id);
+          if (!el || el.offsetParent === null) return false;
+          if (getComputedStyle(el).visibility === 'hidden') return false;
+          return /bar\s+\d/.test(el.textContent ?? '');
+        };
+        return shows('score-corner') || shows('score-where');
+      },
+      undefined,
+      { timeout: 30_000 },
+    );
   });
 });

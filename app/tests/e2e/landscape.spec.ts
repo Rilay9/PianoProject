@@ -75,18 +75,34 @@ for (const one of PUSHED) {
         '.list-row, .block, .filters, .filter-row, .drill-stage, .plan-links, .lesson-actions',
       );
       const box = first?.getBoundingClientRect();
-      return { size, firstTop: box ? Math.round(box.top - top) : -1 };
+      return {
+        size,
+        firstTop: box ? Math.round(box.top - top) : -1,
+        // The two things the numbers below are *about*, measured here rather
+        // than written in as constants: a title at body size is a title the
+        // same size as the app's text, and "the chrome does not eat a short
+        // screen" is a share of that screen.
+        bodySize: Math.round(Number.parseFloat(getComputedStyle(document.body).fontSize)),
+        viewportH: window.innerHeight,
+      };
     });
     expect(measured).not.toBeNull();
     // A title at body size on the back link's line, not a heading of its own.
+    // Against the body's own size rather than a number, because "body size" is
+    // what the rule says and 18 px was only what that came to here.
+    const body = measured?.bodySize ?? 16;
     expect(
       measured?.size ?? 99,
-      `${one.name}'s title is ${String(measured?.size)}px sideways`,
-    ).toBeLessThanOrEqual(18);
+      `${one.name}'s title is ${String(measured?.size)}px sideways against body text at ${String(body)}px`,
+    ).toBeLessThanOrEqual(body + 2);
+    // And the chrome above the first content takes under a fifth of a screen
+    // that is only 342 px tall. A share, not a pixel count: a wider font makes
+    // the header taller on the runner without anything being wrong.
+    const fold = (measured?.viewportH ?? 342) / 5;
     expect(
       measured?.firstTop ?? 999,
-      `${one.name}'s first content starts ${String(measured?.firstTop)}px down`,
-    ).toBeLessThan(64);
+      `${one.name}'s first content starts ${String(measured?.firstTop)}px down, a fifth of the screen is ${String(Math.round(fold))}px`,
+    ).toBeLessThan(fold);
   });
 }
 

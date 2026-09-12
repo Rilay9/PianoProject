@@ -143,11 +143,19 @@ test.describe('the keyboard strip fits on the screen', () => {
           // The part of a white key a finger can aim at without hitting the
           // black key drawn over its top.
           exclusive: Math.round(white.height - black.height),
+          whiteHeight: Math.round(white.height),
         };
       });
 
       expect(strip.over, `the strip runs ${String(strip.over)}px past the bottom`).toBeLessThanOrEqual(1);
-      expect(strip.exclusive, 'a white key is entirely behind the black keys').toBeGreaterThan(12);
+      // A quarter of the key's own height, not twelve pixels. The keys are
+      // sized from the stage, so the number that mattered here was always a
+      // proportion — twelve was a quarter of the height they happened to have.
+      const quarter = strip.whiteHeight / 4;
+      expect(
+        strip.exclusive,
+        `a white key shows ${String(strip.exclusive)}px below the black keys, of ${String(strip.whiteHeight)}px`,
+      ).toBeGreaterThan(quarter);
     });
   }
 });
