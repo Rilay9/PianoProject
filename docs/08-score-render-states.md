@@ -742,6 +742,11 @@ Numbered for citation. Each is falsifiable; most are already testable.
 
 **Lifecycle**
 16. A stop is not a finish: no summary, nothing recorded.
+    Screen-wide, not score-only. Drill and Paper both draw a summary on a stop —
+    the numbers for what you did play are worth seeing — and neither records
+    until asked: Paper by its self-report buttons, Drill by `Count this set`. The
+    binding half is *nothing recorded*; whether the summary is shown is the
+    screen's own judgement.
 17. Judgements clear at the start of every lap.
 18. Disposal releases every observer, frame, timer, idle callback, view, band and lock.
 19. No dead ends: every terminal lifecycle state names what happened and offers Back.

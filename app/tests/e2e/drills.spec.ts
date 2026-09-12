@@ -200,6 +200,56 @@ test.describe('the drill screen', () => {
     await expect(page.locator('#progress-totals')).toContainText('1 passed');
   });
 
+  test('ending a set early keeps it out of the history', async ({ page }) => {
+    // `08` §16: a stop is not a finish. `End drill` used to call the same
+    // `finish()` a completed set calls, so leaving a ten-card drill after one
+    // chord wrote a run at that card's accuracy with `missed: 9` and
+    // `passed: false` — a failure never attempted, in the record this screen
+    // calls the one thing that cannot be regenerated.
+    //
+    // Paper practice is the model: the summary is drawn, and the button under
+    // it is what records. So the numbers for the card you did play are still
+    // there, and the history gets what you chose.
+    const midi = await openDrill(page, 'drill.chord.c-f-g');
+    await playChord(midi, [60, 64, 67]);
+    await page.locator('#drill-end').click();
+
+    // The summary is still drawn — stopping is not a punishment — and it says
+    // where the set went, beside itself (`04` §0 R6).
+    await expect(page.locator('#drill-outcome')).toBeVisible();
+    await expect(page.locator('#drill-not-kept')).toContainText('not in your practice history');
+
+    // Asserted on Progress, which is where it would show, rather than on a
+    // store this test cannot see. Leaving the screen is what discards it, so
+    // this navigation is the act as well as the check.
+    await page.goto('/#/progress');
+    await expect(page.locator('#progress-history')).not.toContainText('Chord drill');
+  });
+
+  test('and keeping it puts it there', async ({ page }) => {
+    // The other half: an offer that does nothing is worse than no offer.
+    const midi = await openDrill(page, 'drill.chord.c-f-g');
+    await playChord(midi, [60, 64, 67]);
+    await page.locator('#drill-end').click();
+    await page.locator('#drill-keep').click();
+    await expect(page.locator('#drill-keep')).toBeDisabled();
+    await page.goto('/#/progress');
+    await expect(page.locator('#progress-history')).toContainText('Chord drill');
+  });
+
+  test('a set that runs to its end still records itself', async ({ page }) => {
+    // The other side of the same rule, on the shortest set there is: a backing
+    // track has one card, so `Done` ends it, and ending it is the choosing.
+    const midi = await openDrill(page, 'drill.improv.loop-i-iv-v');
+    await midi.noteOn(64, 90);
+    await page.locator('#drill-next').click();
+    await expect(page.locator('#drill-outcome')).toBeVisible();
+    await expect(page.locator('#drill-keep')).toHaveCount(0);
+    await expect(page.locator('#drill-not-kept')).toHaveCount(0);
+    await page.goto('/#/progress');
+    await expect(page.locator('#progress-history')).toContainText('Improvise over a I-IV-V loop');
+  });
+
   test('"Again" starts a fresh set rather than repeating the same cards', async ({ page }) => {
     const midi = await openDrill(page, 'drill.chord.c-f-g');
     await playChord(midi, [61, 63, 66]);

@@ -165,6 +165,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let startedAtMs = Date.now();
   let disposed = false;
   let finished = false;
+  /** What the last finished set came to, so the summary's button can record it. */
+  let lastResult: {
+    result: DrillResult;
+    outcome: ReturnType<typeof drillOutcome>;
+    durationMs: number;
+  } | null = null;
   let playbackTimers: ReturnType<typeof setTimeout>[] = [];
   /** Which pedal state the lamp shows; the pedal drill is the only reader. */
   let pedalDown = false;
@@ -683,7 +689,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     leaving.append(
       button('Skip', () => advance(), { id: 'drill-skip', variant: 'quiet' }),
       el('span.drill-leave__sep', { text: '·', 'aria-hidden': 'true' }),
-      button('End drill', () => finish(), { id: 'drill-end', variant: 'quiet' }),
+      button('End drill', () => finish('stopped'), { id: 'drill-end', variant: 'quiet' }),
     );
     controls.append(leaving);
   }
@@ -798,7 +804,26 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     line.hidden = false;
   }
 
-  function finish(): void {
+  /**
+   * The set is over — because it ran out, or because the learner stopped it.
+   *
+   * `08` §16: **a stop is not a finish**. The score screen has obeyed that for
+   * a long time and this screen did not: `End drill` called the same `finish()`
+   * a completed set calls, so abandoning a ten-card drill after one chord wrote
+   * a run at that card's accuracy with `missed: 9` and `passed: false` — a
+   * failure the learner never attempted, in the record this screen's own
+   * comment below calls the one thing that cannot be regenerated. Every kind
+   * has a natural ending, so `End drill` was never the only way to complete a
+   * set: `advance()` finishes when `next()` runs out, and the four
+   * manual-advance kinds get a `Done` button that calls it.
+   *
+   * Paper practice already had the answer and this copies it. `PaperScreen`
+   * draws its summary on `stop()` and records nothing; the buttons under it are
+   * what write the run. So the numbers for the cards you *did* play are always
+   * shown, and what enters the history is something you chose. A set that ran
+   * to its end still records on its own — finishing it is the choosing.
+   */
+  function finish(how: 'ran-out' | 'stopped' = 'ran-out'): void {
     if (!drill || finished) return;
     finished = true;
     clearPlayback();
@@ -808,7 +833,21 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     const settings = getSettings();
     const outcome = drillOutcome(result, settings.passAccuracyPct);
     const durationMs = Date.now() - startedAtMs;
+    lastResult = { result, outcome, durationMs };
 
+    // Built before the sheet so its own handler can disable it: `button`'s
+    // callback takes no event, and reading `currentTarget` off one would be a
+    // lie about what the helper passes.
+    const keepButton = button(
+      'Count this set',
+      () => {
+        keep();
+        keepButton.disabled = true;
+        keepButton.textContent = 'Counted';
+        status.textContent = 'Kept. It is in your practice history.';
+      },
+      { id: 'drill-keep' },
+    );
     section.dataset.drill = 'finished';
     controls.replaceChildren();
     stage.replaceChildren();
@@ -834,8 +873,26 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         'div.row',
         {},
         button('Again', () => restart(), { id: 'drill-again', variant: 'primary' }),
+        // Only on a set that was stopped. A set that ran to its end has already
+        // been recorded, and a button offering to do it again would be asking a
+        // question that has no answer.
+        ...(how === 'stopped'
+          ? [
+              keepButton,
+            ]
+          : []),
         button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
       ),
+      // Said where the thing that caused it is (`04` §0 R6), not in a status
+      // line at the other end of the screen.
+      ...(how === 'stopped'
+        ? [
+            el('p.muted', {
+              id: 'drill-not-kept',
+              text: 'Ended early, so this is not in your practice history unless you keep it.',
+            }),
+          ]
+        : []),
       // In full on the sheet, rather than collapsed: at the end of a run the
       // learner has time to read, which is exactly when advice lands.
       ...(tips ? [el('div.drill-tips-full', { id: 'drill-tips-full' }, renderMarkdown(tips.markdown))] : []),
@@ -848,28 +905,37 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     void showCoaching(result);
 
-    if (item) {
-      // Not awaited: the numbers on screen are already final and a slow write
-      // must not delay them. A failure is reported rather than swallowed —
-      // practice history is the one thing here that cannot be regenerated.
-      void recordRun({
-        itemId: item.id,
-        mode: `drill:${result.kind}`,
-        tempoPct: 100,
-        accuracy: result.accuracy,
-        // A drill's accuracy is measured, not estimated — every answer is
-        // either the right pitch set or it is not.
-        accuracyEstimated: false,
-        wrongNotes: Math.max(0, result.answered - result.correct),
-        missed: Math.max(0, result.total - result.answered),
-        durationMs,
-        passed: outcome.passed,
-        masterEligible: outcome.masterEligible,
-      }).catch((cause: unknown) => {
-        status.textContent = `Could not save this drill: ${String(cause)}`;
-        status.classList.add('status--error');
-      });
-    }
+    // A set that ran out records itself; one that was stopped waits to be asked.
+    if (how === 'ran-out') keep();
+  }
+
+  /**
+   * Writes the set to the practice history.
+   *
+   * Not awaited: the numbers on screen are already final and a slow write must
+   * not delay them. A failure is reported rather than swallowed — practice
+   * history is the one thing here that cannot be regenerated.
+   */
+  function keep(): void {
+    if (!item || !lastResult) return;
+    const { result, outcome, durationMs } = lastResult;
+    void recordRun({
+      itemId: item.id,
+      mode: `drill:${result.kind}`,
+      tempoPct: 100,
+      accuracy: result.accuracy,
+      // A drill's accuracy is measured, not estimated — every answer is
+      // either the right pitch set or it is not.
+      accuracyEstimated: false,
+      wrongNotes: Math.max(0, result.answered - result.correct),
+      missed: Math.max(0, result.total - result.answered),
+      durationMs,
+      passed: outcome.passed,
+      masterEligible: outcome.masterEligible,
+    }).catch((cause: unknown) => {
+      status.textContent = `Could not save this drill: ${String(cause)}`;
+      status.classList.add('status--error');
+    });
   }
 
   function statSheet(result: DrillResult): HTMLElement {
