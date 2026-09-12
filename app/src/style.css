@@ -463,8 +463,117 @@ body {
   white-space: nowrap;
 }
 
+/* Upright, it gets a second line and says the whole thing.
+
+   Truncation was the wrong half of the trade here. On the owner's phone the
+   notice read "Folder not open — nothing c…", which says the state and hides
+   the consequence — and the consequence is the entire reason the notice
+   exists, because the symptom it explains is that `Add` flashes and nothing
+   happens.
+
+   One line is a rule about R1: the first score has to be on the screen without
+   scrolling, and this sits between the search box and that row. But the 55 px
+   that broke R1 twice was the *button* wrapping below the text, and
+   `flex-wrap: nowrap` on the container already prevents that. A second line of
+   0.8 rem text costs about 17 px, which a 740 px-tall screen can pay and a
+   342 px-tall one cannot — so it is portrait only. */
+@media (orientation: portrait) {
+  .folder-saved__text {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
+
 .folder-saved > .button {
   flex: none;
+}
+
+/* Held upright, a score's name gets the row to itself.
+
+   The rows in the two lists that carry *archive* titles are a different
+   problem from the rest of the app's rows. A Today row says "Mary Had a Little
+   Lamb"; these say "Billie Eilish - all the good girls go to hell" and
+   "Bad Guy (Billie Eilish) piano arrangement", and there are 37,000 of them
+   with no shorter form anywhere. On the owner's phone the words got about 300
+   px of 342 minus two buttons and the letter rail, so every row read
+   "all the good gi…", "Bad Guy - Billie…", "Banks of Gree…" — and the four
+   Billie Eilish arrangements were four rows that all said `Billie Eilish - `
+   and then stopped. A list you cannot tell the rows apart in is not a list.
+
+   So upright the words take the full width and the buttons drop to a line of
+   their own, at full size: the owner asked for exactly that trade — taller
+   rows, in portrait, so the buttons *and* the names can both be read. A title
+   gets two lines before it gives up, which covers all but the longest.
+
+   Deliberately scoped to these two lists. `04` §0 R2 caps a row at 96 px and
+   Today is measured against it at 360 px wide; this costs about 35 px, which
+   is affordable in a list you scroll and is not affordable on a card that has
+   to hold the whole day. Sideways is untouched — width is the one thing a
+   phone on its side has. */
+@media (orientation: portrait) {
+  #folder-list .list-row,
+  #library-list .list-row {
+    row-gap: 8px;
+  }
+
+  /* 100 %, so the actions are pushed onto the next flex line rather than
+     competing for the width. `flex-wrap: wrap` on the row already allows it;
+     the basis is what decides whether it happens. */
+  #folder-list .list-row__text,
+  #library-list .list-row__text {
+    flex-basis: 100%;
+  }
+
+  #folder-list .list-row__actions,
+  #library-list .list-row__actions {
+    margin-left: auto;
+  }
+
+  /* And now that the buttons have a line to themselves, they can be the size
+     `04` §0 R4 asks for. `Details` was 44 x 28 — a quiet variant, which is a
+     text link with a box around it — and it sits immediately beside `Add`,
+     which copies a file into the library. Of every mis-tap on this screen that
+     is the one with a consequence, on the control that was hardest to hit, in
+     a list sixty rows long. The row pays for it in height, which upright it
+     can afford. */
+  #folder-list .list-row__actions > button,
+  #library-list .list-row__actions > button {
+    min-height: 40px;
+  }
+
+  /* `Details` is a `quiet` button, which is `.link-button` — a text link, with
+     no box and no padding to grow. It needs the padding as well as the height,
+     or it is a 40 px-tall row with a 14 px word floating in it and no edge to
+     aim at. */
+  #folder-list .list-row__actions > .link-button,
+  #library-list .list-row__actions > .link-button {
+    padding: 0 10px;
+  }
+
+  /* Two lines, then an ellipsis. `-webkit-line-clamp` is the only way to
+     ellipsise a wrapped block, and it is unprefixed nowhere that matters. */
+  #folder-list .list-row__title,
+  #library-list .list-row__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+  }
+
+  /* And the detail line gets the width too, so a composer stops being cut
+     mid-word: `.list-row__meta` clips without an ellipsis, which is why the
+     photograph shows "Mr. and Mrs. Cranst" simply stopping. */
+  #folder-list .list-row__metatext,
+  #library-list .list-row__metatext {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
 }
 
 .folder-row-note__aside {
