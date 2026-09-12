@@ -14,6 +14,7 @@
  */
 import { exportAll, importAll } from '../data/backup';
 import { openDatabase, STORE_NAMES } from '../data/db';
+import { connectForTest } from '../data/folderLibrary';
 import { recordRun, resetProgressForTest } from '../data/progressStore';
 
 export interface TestHooks {
@@ -22,6 +23,23 @@ export interface TestHooks {
   importAll: typeof importAll;
   /** Empties every store — "a different phone", without closing the page. */
   wipeForTest: () => Promise<void>;
+  /**
+   * Lends a folder its files for this session, the way a picker would.
+   *
+   * Exposed because the single most important path on the folder screen could
+   * not be tested without it, and was not. `Add` descends the score's stored
+   * path in a `FileSystemDirectoryHandle` and imports the one file it finds;
+   * a headless browser has no directory picker, and a hand-made handle cannot
+   * be put in the database in its place because functions are not
+   * structured-cloneable. So every end-to-end test of `Add` exercised the
+   * *failure* — no folder open, "pick the folder again" — and the success it
+   * was reported broken for went unproven.
+   *
+   * `connectForTest` is the seam the unit tests already use, and this is the
+   * same seam reachable from a page. It hands over real `File` objects, so the
+   * import that follows is the ordinary one and not an imitation of it.
+   */
+  lendFolderFiles: (id: string, files: Map<string, File>) => void;
   /** What the score screen's fit is holding; set while a score is open. */
   scoreFit?: () => unknown;
   /** Where the running score is and what it is waiting for; null when no run is on. */
@@ -57,5 +75,6 @@ export function installTestHooks(target: Window = window): void {
       for (const store of STORE_NAMES) await db?.clear(store);
       resetProgressForTest();
     },
+    lendFolderFiles: connectForTest,
   };
 }
