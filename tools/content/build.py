@@ -420,13 +420,25 @@ def main() -> None:
         action="store_true",
         help="include CC BY-NC editions — a personal build only, never deployed (docs/00 D10a)",
     )
+    # The owner's build is *the* build, so this defaults on (owner, 2026-09-12:
+    # "just forget about the personal flag thing. It should always treat the app
+    # as my personal app which it is, even though it's on a public repo").
+    #
+    # Off, 159 items never reach the app: the whole ragtime ladder at Stages 6-8
+    # and the repertoire several mini-modules are named for are placeholders, and
+    # the Plan screen reads as a wall of rungs nothing can open. That is not a
+    # licensing safeguard, it is a broken app — the safeguard is
+    # `--strict-license`, which the Pages deploy runs and which refuses these
+    # items at the point where they would actually be published.
     parser.add_argument(
         "--personal",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=True,
         help=(
-            "the owner's build (docs/00 D23): implies --allow-nc, and also admits items whose "
-            "*composition* is not public domain. --strict-license, which the Pages deploy runs, "
-            "refuses them"
+            "the owner's build (docs/00 D23), on by default: implies --allow-nc, and also admits "
+            "items whose *composition* is not public domain. Pass --no-personal for a build that "
+            "does not, and note that --strict-license, which the Pages deploy runs, refuses them "
+            "regardless"
         ),
     )
     args = parser.parse_args()
@@ -444,6 +456,18 @@ def main() -> None:
 
 
 def run_build(args: argparse.Namespace, started: float) -> None:
+    # A strict build is never a personal one, whatever the default says.
+    #
+    # `--personal` now defaults on, because the owner's build *is* the build and
+    # off it leaves 159 items — the whole ragtime ladder among them — as rungs
+    # that open nothing. But `allow_nc` is derived from it, so without this line
+    # the Pages deploy would inherit it and publish CC BY-NC editions to the open
+    # internet. `PIANOPATH_STRICT_LICENSE=1` is exactly the deploy asking not to
+    # be a personal build, so it is honoured here rather than left to the caller
+    # to remember to pass `--no-personal` as well.
+    if args.strict_license:
+        args.personal = False
+
     # One flag for the owner. --allow-nc was about the edition; --personal is
     # about the edition *and* the composition, and a build that admitted one
     # but not the other would be a distinction nobody asked for.

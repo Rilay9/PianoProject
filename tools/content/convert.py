@@ -24,6 +24,7 @@ import os
 import re
 import shutil
 import sys
+import time
 import warnings
 import zipfile
 from dataclasses import dataclass, field
@@ -515,6 +516,34 @@ def deterministic_ids(xml_text: str) -> str:
     return xml_text
 
 
+def replace_atomically(staged: Path, path: Path, attempts: int = 6) -> None:
+    """
+    `staged.replace(path)`, retried, because Windows lets other processes veto it.
+
+    On Windows a rename fails with `PermissionError` (WinError 5) while any other
+    handle to either file is open, and the commonest holder is a virus scanner
+    reading the `.tmp` the line above has just finished writing. It is transient
+    and it is measured in milliseconds, but the whole content build dies on it:
+    the generate step wipes `scores/generated/` before it starts, so a failure
+    part-way leaves the catalogue referencing hundreds of files that no longer
+    exist, and every later step reports them as missing. That happened three
+    times in a row here, on a different file each run, which is the signature of
+    a scanner rather than of anything this code is doing wrong.
+
+    Six attempts over about a second. Any longer and a genuine permission problem
+    — a read-only file, a directory the build cannot write — would be hidden
+    behind a wait instead of being reported, so the last failure is re-raised.
+    """
+    for attempt in range(attempts):
+        try:
+            staged.replace(path)
+            return
+        except PermissionError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(0.05 * (2**attempt))
+
+
 def normalise_archive(path: Path) -> None:
     """
     Rewrites a `.mxl` so its bytes depend only on its music.
@@ -537,7 +566,7 @@ def normalise_archive(path: Path) -> None:
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o600 << 16
             archive.writestr(info, data)
-    staged.replace(path)
+    replace_atomically(staged, path)
 
 
 def write_mxl(score: stream.Score, out_path: Path) -> Path:
@@ -723,12 +752,12 @@ def cached_convert(
         # half-written state reads as a miss.
         staged = payload.with_suffix(".mxl.tmp")
         shutil.copyfile(dest, staged)
-        staged.replace(payload)
+        replace_atomically(staged, payload)
         staged_json = sidecar.with_suffix(".json.tmp")
         staged_json.write_text(
             json.dumps(record_from_result(result), indent=2), encoding="utf-8"
         )
-        staged_json.replace(sidecar)
+        replace_atomically(staged_json, sidecar)
     except OSError:
         pass
     return result

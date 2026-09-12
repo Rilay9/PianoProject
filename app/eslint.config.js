@@ -59,7 +59,17 @@ export default tseslint.config(
       },
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      // `ignoreRestSiblings` and the `_` prefix are for one idiom: dropping a
+      // key by destructuring it out. `const { scores: _dropped, ...rest } = row`
+      // is how a row is stored without its heaviest field, and `const { folder:
+      // _folder, ...score } = row` is how the stored extras come back off it.
+      // Both say what they mean far better than building a new object key by
+      // key, and without these two options the rule reports the deliberate name
+      // as dead code.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', ignoreRestSiblings: true },
+      ],
     },
   },
   {

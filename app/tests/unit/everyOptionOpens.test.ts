@@ -82,9 +82,22 @@ describe('every option a lesson offers', () => {
     expect(mute, mute.join('; ')).toEqual([]);
   });
 
-  it('has some of each, so neither list above is empty by accident', () => {
+  it('offers nothing a learner cannot open', () => {
+    // This used to insist that *some* option was a placeholder, so that the
+    // test above could not pass by having nothing to judge. It no longer can
+    // be satisfied, and the reason is the point: with the owner's build the
+    // default (`tools/content/build.py`, 2026-09-12), every option a lesson
+    // offers resolves to something that opens. Off, 159 items were placeholders
+    // and the screens wore "import needed" badges over content that was sitting
+    // in the repository the whole time.
+    //
+    // So the guard is inverted. The list above is still not allowed to be empty
+    // by accident — there have to be enough options to be worth checking — and
+    // the count of dead ends is now asserted to be zero rather than merely
+    // non-empty.
     const items = [...everyOption()].map((o) => byId.get(o.itemId)).filter((i) => i !== undefined);
-    expect(items.filter((item) => targetFor(item) !== 'none').length).toBeGreaterThan(100);
-    expect(items.filter((item) => targetFor(item) === 'none').length).toBeGreaterThan(0);
+    expect(items.length, 'no options were read — the catalog join is wrong').toBeGreaterThan(100);
+    const dead = items.filter((item) => targetFor(item) === 'none').map((item) => item.id);
+    expect(dead, `options that open nothing: ${dead.join(', ')}`).toEqual([]);
   });
 });
