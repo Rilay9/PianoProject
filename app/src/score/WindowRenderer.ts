@@ -2354,11 +2354,26 @@ export class WindowRenderer {
     // the margin, because a sheet that shrinks by 6 % at bar 10 is the size
     // change the owner saw; only ink far taller than the stage has room for
     // still shrinks it, since a note clipped off the bottom is worse.
-    // A freeze taken at a different engraving zoom is not a size, it is a
-    // number in units nothing on the screen is drawn in any more. Dropped, so
-    // this fit is the one that freezes — which is the same "one change, at the
-    // start" the re-seat below is for, arriving by the other route.
-    if (this.frozen && this.frozen.zoom !== this.zoomLevel) this.frozen = null;
+    // A freeze taken at a different engraving zoom is a number in units nothing
+    // on the screen is drawn in any more — so it is **converted**, not dropped.
+    //
+    // Dropping it was the first attempt and it is wrong in the other direction:
+    // the next fit then freezes whatever it happens to compute, so the sheet
+    // changes size in the middle of a run. `score.fuzz` caught exactly that on
+    // CI — seed 4, after a hand change, scale 0.934 to 0.727 — and a sheet that
+    // resizes under a player's hands is the one thing `09` §1 forbids outright.
+    //
+    // What a run is holding is a *drawn size*, and the drawn size is the
+    // engraving zoom times the CSS scale. So when the zoom moves from Z1 to Z2
+    // the same size is `scale × Z1 / Z2`, and the freeze can carry across the
+    // re-engraving intact instead of being thrown away and re-taken.
+    if (this.frozen && this.frozen.zoom !== this.zoomLevel && this.zoomLevel > 0) {
+      this.frozen = {
+        ...this.frozen,
+        scale: this.frozen.scale * (this.frozen.zoom / this.zoomLevel),
+        zoom: this.zoomLevel,
+      };
+    }
     if (this.frozen && this.frozen.scale > 0) {
       if (fitted >= this.frozen.scale * FROZEN_OVERFLOW) return this.frozen.scale;
       // The shrink is allowed — and the freeze moves with it.
