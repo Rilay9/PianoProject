@@ -101,10 +101,13 @@ export function PlanScreen(router: Router): HTMLElement {
           stage.approxDuration ? ` · ${stage.approxDuration}` : ''
         }`,
         badges: done === total && total > 0 ? [badge('complete', 'passed')] : [],
-        // The row is the toggle, so the button beside it was a second way to
-        // do the same thing taking a tap target's worth of width. A chevron
-        // says which way it will go without claiming to be pressable itself.
-        actions: [el('span.plan-chevron', { text: open ? '⌄' : '›', 'aria-hidden': 'true' })],
+        // The row is the toggle; the chevron only says which way a tap will
+        // go. It rides in `indicator`, not `actions` — `actions` stops a
+        // click from reaching the row (right for a real button beside it,
+        // wrong here), which used to swallow exactly the tap a person aims at
+        // the chevron once a stage is open and it is pointing at what closes
+        // it.
+        indicator: el('span.plan-chevron', { text: open ? '⌄' : '›', 'aria-hidden': 'true' }),
         onClick: () => {
           if (open) expanded.delete(stage.number);
           else expanded.add(stage.number);

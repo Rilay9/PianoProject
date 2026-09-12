@@ -115,6 +115,23 @@ export interface RowOptions {
   meta?: string;
   badges?: HTMLElement[];
   actions?: HTMLElement[];
+  /**
+   * A trailing decoration that toggles the same thing the row's own click
+   * does — a chevron that says which way a tap will go, not a second control.
+   *
+   * `actions` sits in a container that stops a click from also reaching the
+   * row (`04` D: pressing "Edit" must not also open the thing being edited),
+   * which is right for a real action and wrong for a decoration a person aims
+   * at expecting the row's own behaviour: the Plan screen's chevron, passed as
+   * an action, read as a small arrow while a stage was collapsed — where the
+   * row's title is what gets tapped — and as *the* thing to press once it was
+   * expanded and pointed the other way, where it swallowed the tap instead of
+   * closing anything. `indicator` renders in the same slot without the
+   * stopPropagation, so a tap on it reaches the row like a tap anywhere else
+   * on it. Keep it `aria-hidden` and unfocusable — the row already carries
+   * the button semantics, and this is not a second one.
+   */
+  indicator?: HTMLElement;
   onClick?: () => void;
   dataset?: Attrs;
 }
@@ -185,6 +202,12 @@ export function listRow(options: RowOptions): HTMLElement {
     // score as well as the editor.
     actions.addEventListener('click', (event) => event.stopPropagation());
     row.append(actions);
+  }
+  if (options.indicator) {
+    // Same slot and layout as `actions` (reusing its class), deliberately
+    // without the stopPropagation listener above: this is not a second
+    // control, so a tap on it is a tap on the row.
+    row.append(el('div.list-row__actions', {}, options.indicator));
   }
   if (options.onClick) {
     row.setAttribute('role', 'button');

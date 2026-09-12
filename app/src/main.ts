@@ -15,6 +15,7 @@ import { noteUpdateCheck } from './util/offlineStatus';
 import { isOfflineOnly } from './util/storageReport';
 import { installTestHooks } from './app/testHooks';
 import { wireServiceWorkerUpdates } from './app/updates';
+import { bootShell } from './app/boot';
 
 // Before anything else: this phone has no console open and no crash reporter,
 // so an error nobody catches leaves no trace at all (docs/04 §7b).
@@ -73,22 +74,23 @@ function mount(): void {
 // not a delayed first paint.
 void loadLevelOverrides().catch(() => undefined);
 
-if (needsHydration()) {
-  void hydratePersisted()
-    .then((restored) => {
-      if (restored.length > 0) {
-        reloadSettings();
-        reloadSetup();
-        initTheme();
-      }
-    })
-    .catch(() => undefined)
-    .finally(mount);
-} else {
-  mount();
-  // Still reconcile, so the database keeps up with what this session writes.
-  void hydratePersisted().catch(() => undefined);
-}
+// `bootShell` is what decides whether `mount()` waits on `hydratePersisted()`
+// and, if it does, how long — see `app/boot.ts`. It lived here until a boot
+// that could hang forever (a blocked IndexedDB open behind a version bump,
+// most plausibly right after the reload a service-worker update itself
+// performs) turned out to mean the tab bar, built inside `mount()`, never
+// existed at all, and nothing here could be reached by a test that proved it.
+bootShell({
+  needsHydration,
+  hydratePersisted,
+  onRestored: () => {
+    reloadSettings();
+    reloadSetup();
+    initTheme();
+  },
+  mount,
+  after: (ms, cb) => setTimeout(cb, ms),
+});
 
 if ('serviceWorker' in navigator) {
   // Registered by vite-plugin-pwa's virtual module; see vite.config.ts.
