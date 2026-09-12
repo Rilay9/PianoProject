@@ -19,6 +19,7 @@ import { createAlphaRail, letterFor } from '../alphaRail';
 import {
   FolderCancelled,
   FolderError,
+  MANIFEST_NAME,
   addFromFolder,
   directoryPickerAvailable,
   folderRememberNote,
@@ -26,6 +27,7 @@ import {
   looksUnnamed,
   openFolder,
   pickFolder,
+  rescanFolder,
   savedFolders,
   type FolderCure,
   type FolderLibrary,
@@ -247,7 +249,19 @@ export function FolderScreen(router: Router): HTMLElement {
   // (`04` §0 R1). It is read once; the state line and the button are what the
   // screen is for on every visit after that.
   const how = el('details.folder-how', { id: 'folder-how' });
-  how.append(el('summary', { text: 'How this works' }));
+  /**
+   * The fold's own label, which changes when there is something under it.
+   *
+   * A manifest-first listing has a real blind spot — a score dropped into the
+   * folder since `library.json` was written is not in it — and that has to be
+   * *said*, not merely be true. It cannot go above the list: this screen is
+   * 342 px wide on the owner's phone and `04` §0 R1 has already been broken
+   * twice by one more sentence there. So the sentence lives in the fold with
+   * the rest of the explanation and the summary points at it, which costs no
+   * height at all because the summary is a line that is drawn anyway.
+   */
+  const howSummary = el('summary', { text: 'How this works' });
+  how.append(howSummary);
   how.append(
     el('p.muted', {
       text:
@@ -392,9 +406,17 @@ export function FolderScreen(router: Router): HTMLElement {
     const head =
       at.phase === 'counting'
         ? `Looking through the folder — ${count} ${at.done === 1 ? 'file' : 'files'} so far`
-        : at.phase === 'reading'
-          ? `Reading ${count} of ${at.total.toLocaleString()}`
-          : `Listing ${count} of ${at.total.toLocaleString()}`;
+        : at.phase === 'indexing'
+          ? // In folders, not in files. The folders at the top of the archive are
+            // counted before any of them is entered, so this is a real fraction
+            // from the first second — where a count of files has no denominator
+            // until the walk is over, which is to say until it no longer matters.
+            `Indexing ${count} of ${at.total.toLocaleString()} folders — ${at.found.toLocaleString()} ${
+              at.found === 1 ? 'score' : 'scores'
+            } found`
+          : at.phase === 'reading'
+            ? `Reading ${count} of ${at.total.toLocaleString()}`
+            : `Listing ${count} of ${at.total.toLocaleString()}`;
     progressText.textContent = at.file ? `${head} — ${at.file}` : head;
   }
 
@@ -882,6 +904,20 @@ export function FolderScreen(router: Router): HTMLElement {
           { variant: 'secondary' },
         ),
       );
+    } else if (cure === 'rescan') {
+      // The folder is open and readable; it is the listing that is behind. So
+      // the offer is the walk, not the picker — and it is an offer rather than
+      // an instruction, because the row that failed has already been taken off
+      // the list and one dead row is not a reason to spend several minutes.
+      note.append(
+        button(
+          'Rescan folder',
+          () => {
+            void rescan();
+          },
+          { variant: 'secondary' },
+        ),
+      );
     } else if (cure === 'pick') {
       note.append(
         button(
@@ -907,7 +943,10 @@ export function FolderScreen(router: Router): HTMLElement {
       }
     }
     row.after(note);
-    note.scrollIntoView({ block: 'nearest' });
+    // Optional because jsdom has no layout and so no `scrollIntoView`, and a
+    // throw here would take the rest of the failure handling with it — which is
+    // exactly where the row that has gone is taken off the list.
+    note.scrollIntoView?.({ block: 'nearest' });
   }
 
   /** Loaded once, and only when a Details sheet actually asks for it. */
@@ -972,6 +1011,36 @@ export function FolderScreen(router: Router): HTMLElement {
     list.querySelector(`[data-file="${CSS.escape(score.file)}"]`)?.replaceWith(rowFor(score));
   }
 
+  /**
+   * Takes a row off the list because the file behind it is not there.
+   *
+   * The listing is the folder's index, and an index can be out of date in
+   * exactly one direction the app cannot see: a file deleted since it was
+   * written. `addFromFolder` is the only thing that ever looks, so what it
+   * finds out has to be kept — the row is already out of the stored listing by
+   * the time this runs, and this is the screen catching up with it.
+   *
+   * The row element is removed rather than the whole list redrawn, so the note
+   * that says what happened stays where the row was. A redraw would put the
+   * explanation at the top of a list of thousands, which is the fault this
+   * screen was fixed for once already.
+   */
+  function dropRowFromList(file: string): void {
+    if (!library) return;
+    const at = library.scores.findIndex((score) => score.file === file);
+    if (at === -1) return;
+    const scores = [...library.scores];
+    scores.splice(at, 1);
+    // The haystack and the letter of every row are parallel to `scores` and
+    // are not rebuilt on a draw, so all three have to lose the same index or
+    // every row after it searches under its neighbour's title.
+    haystacks.splice(at, 1);
+    letters.splice(at, 1);
+    library = { ...library, scores };
+    drawn = drawn.filter((score) => score.file !== file);
+    list.querySelector(`[data-file="${CSS.escape(file)}"]`)?.remove();
+  }
+
   async function addOne(score: FolderScore, control: HTMLButtonElement): Promise<void> {
     if (!library || busy) return;
     busy = true;
@@ -1017,6 +1086,9 @@ export function FolderScreen(router: Router): HTMLElement {
       // so the app was explaining itself where nobody was looking. A failure
       // has to appear where the failing tap was.
       sayOnRow(score, said, cause instanceof FolderError ? cause.cure : null);
+      // The row is gone from the folder and now from the listing, so it goes
+      // from the screen too — after the note, which takes its place.
+      if (cause instanceof FolderError && cause.gone !== null) dropRowFromList(cause.gone);
       // The Add failed because the remembered folder would not open, and the
       // *reason* it would not open is only known once that has been tried — so
       // the notice above the list is brought into line with what was just
@@ -1094,13 +1166,31 @@ export function FolderScreen(router: Router): HTMLElement {
     }
     updateSavedNotice();
     const count = `${plural(library.scores.length, 'score')} in ${library.id}${where}`;
-    // Which of the two states, in three words. The cure for the closed one is
-    // not here: it belongs beside the rows it stops working, which is the
-    // notice above the list — and a sentence long enough to carry it costs four
-    // lines on a 342 px phone and pushes the first score off the screen (R1).
-    folderStatus.textContent = library.connected
-      ? `${count} — folder open.`
-      : `${count} — folder closed.`;
+    // Which state, in three or four words. The cure is not here: it belongs
+    // beside the rows it stops working, which is the notice above the list —
+    // and a sentence long enough to carry it costs four lines on a 342 px phone
+    // and pushes the first score off the screen (R1).
+    //
+    // A half-finished index says so here rather than only in the fold, because
+    // it is the one state in which the number beside it is not the answer to
+    // "how many scores are there": it is how many have been found so far, and a
+    // count presented as a total would be the screen quietly lying about the
+    // size of the folder.
+    folderStatus.textContent =
+      library.listedFrom === 'partial'
+        ? // Shorter than the other two on purpose. This state carries an extra
+          // button, and at 342 px the button row and this sentence are
+          // competing for the same pixels above the first score (R1) — so the
+          // folder's name and where it came from, which are on the screen
+          // anyway once indexing finishes, give way to the two numbers that are
+          // only true now.
+          `${plural(library.scores.length, 'score')} so far — ${plural(
+            library.pending.length,
+            'folder',
+          )} still to index.`
+        : library.connected
+          ? `${count} — folder open.`
+          : `${count} — folder closed.`;
     updateUnnamedNotice();
   }
 
@@ -1112,16 +1202,31 @@ export function FolderScreen(router: Router): HTMLElement {
     const pickButton = button(
       library ? 'Rescan folder' : 'Pick a folder',
       () => {
-        void pick();
+        if (library) void rescan();
+        else void pick();
       },
       { variant: library?.connected === false && library.canOpen ? 'quiet' : 'primary', id: 'folder-pick' },
     );
     pickButton.disabled = reading || opening;
     rescanNote.hidden = library === null;
+    // Three listings, three different things a rescan is *for*, and the
+    // manifest one is the reason this note exists at all now: a listing read
+    // out of `library.json` is complete as of the day that file was written and
+    // blind to everything since, and an owner who copies a new score into the
+    // folder and cannot find it in the app deserves to have been told why
+    // beforehand rather than to go looking for a bug.
     rescanNote.textContent =
       library === null
         ? ''
-        : `Rescan picks the folder again and reads all ${library.scores.length.toLocaleString()} files — a few minutes. Only needed when the folder itself has changed.`;
+        : library.listedFrom === 'manifest'
+          ? `This listing is the folder's own ${MANIFEST_NAME}, read in one go — the files themselves were never gone through, which is why it was instant. It cannot see a score put into the folder after that file was written, and it does not know about one that has been deleted until you tap Add on it. Rescan folder reads all ${library.scores.length.toLocaleString()} files — a few minutes — and is the only thing that finds either.`
+          : library.listedFrom === 'partial'
+            ? `Indexing stopped part way: ${library.scores.length.toLocaleString()} scores found, ${plural(library.pending.length, 'folder')} still to look in. Continue indexing carries on from there; Rescan folder starts again from the top.`
+            : `Rescan reads all ${library.scores.length.toLocaleString()} files again — a few minutes. Only needed when the folder itself has changed.`;
+    howSummary.textContent =
+      library?.listedFrom === 'manifest'
+        ? 'How this works, and what it misses'
+        : 'How this works';
     // The cheap cure goes first and loudest when it is available at all.
     const openButton =
       library && !library.connected && library.canOpen
@@ -1134,10 +1239,36 @@ export function FolderScreen(router: Router): HTMLElement {
           )
         : null;
     if (openButton) openButton.disabled = reading || opening;
-    actions.replaceChildren(...(openButton ? [openButton] : []), pickButton);
+    // An index that was stopped half way is the one state where the most useful
+    // thing on the screen is neither picking nor rescanning. It is only offered
+    // when the folder can actually be read — with it shut, opening it comes
+    // first and this comes back once it is open.
+    const resumeButton =
+      library && library.listedFrom === 'partial' && openButton === null
+        ? button(
+            'Continue indexing',
+            () => {
+              void resumeIndexing();
+            },
+            { variant: 'primary', id: 'folder-resume' },
+          )
+        : null;
+    if (resumeButton) resumeButton.disabled = reading || opening;
+    // Two buttons on this row is 40 px at 342 px, measured, and 40 px is what
+    // stands between the first score and the bottom of the owner's screen
+    // (`04` §0 R1). So while there is an index to finish, finishing it is the
+    // button here and starting again from the top goes into the fold beside
+    // Forget — where the note explaining the difference already lives.
+    actions.replaceChildren(
+      ...(openButton ? [openButton] : []),
+      ...(resumeButton ? [resumeButton] : [pickButton]),
+    );
     // Forgetting the folder is not a second answer to "what now" — it lives
     // in `How this works`, out of the run between the heading and the list.
     forgetRow.replaceChildren(
+      // Here rather than on the row above only while an index is unfinished;
+      // see the note on `actions`.
+      ...(resumeButton ? [pickButton] : []),
       ...(library
         ? [
             button(
@@ -1180,7 +1311,19 @@ export function FolderScreen(router: Router): HTMLElement {
     await restore();
   }
 
-  async function pick(): Promise<void> {
+  /**
+   * One read, whichever of the three it is, with one progress bar and one Cancel.
+   *
+   * Picking, rescanning and finishing an interrupted index are the same wait
+   * from the owner's side and used to be one function because only one of them
+   * existed. They differ in one line each, so they are one function still.
+   */
+  async function runRead(
+    read: (options: {
+      signal: AbortSignal;
+      onProgress: (progress: FolderProgress) => void;
+    }) => Promise<FolderLibrary>,
+  ): Promise<void> {
     if (reading || opening) return;
     reading = true;
     lastOpen = null;
@@ -1189,16 +1332,13 @@ export function FolderScreen(router: Router): HTMLElement {
     abortRead = () => controller.abort();
     progress.hidden = false;
     progressPaintedAt = 0;
-    showReadingProgress({ done: 0, total: 0, file: '', phase: 'counting' });
+    showReadingProgress({ done: 0, total: 0, file: '', found: 0, phase: 'counting' });
     drawActions();
 
     let failure: string | null = null;
+    let stopped = false;
     try {
-      library = await pickFolder({
-        remember: getSettings().folderHandles,
-        signal: controller.signal,
-        onProgress: showReadingProgress,
-      });
+      library = await read({ signal: controller.signal, onProgress: showReadingProgress });
       indexScores(library.scores);
       fillStyles(library.scores);
       from = 0;
@@ -1209,7 +1349,14 @@ export function FolderScreen(router: Router): HTMLElement {
         // owner knows they cancelled. Pressing Cancel below the progress bar
         // mid-read is a decision worth naming — silence there would look
         // exactly like the freeze this progress bar exists to rule out.
-        failure = cancelledByOwner ? 'Cancelled — the folder was not read.' : null;
+        stopped = cancelledByOwner;
+        failure = cancelledByOwner
+          ? // Not "the folder was not read" any more, because that is no longer
+            // what happens: the walk writes down what it has found as it goes,
+            // so stopping it keeps every score it had reached and leaves the
+            // rest to be picked up later.
+            'Stopped. The scores found so far are listed; Continue indexing finishes the rest.'
+          : null;
       } else {
         failure = cause instanceof FolderError ? cause.message : 'That folder could not be read.';
       }
@@ -1218,10 +1365,67 @@ export function FolderScreen(router: Router): HTMLElement {
       abortRead = null;
       hideReadingProgress();
     }
+    // What was indexed before Cancel is in the database, so the screen goes and
+    // reads it rather than going back to whatever it was showing beforehand.
+    if (stopped) await restore();
     if (failure !== null) folderStatus.textContent = failure;
     describe();
     drawActions();
     draw();
+  }
+
+  async function pick(): Promise<void> {
+    await runRead((options) => pickFolder({ remember: getSettings().folderHandles, ...options }));
+  }
+
+  /**
+   * Walks the folder the app already has, because the folder itself has changed.
+   *
+   * The expensive one, and the only thing that can find a score added to the
+   * folder since the manifest was written or notice a batch of them deleted.
+   * It does not go through the picker when it does not have to: a folder that
+   * is open is a folder that can be walked, and asking the owner to find it
+   * again would be a second cost for nothing.
+   */
+  async function rescan(): Promise<void> {
+    const shelf = library;
+    if (!shelf) {
+      await pick();
+      return;
+    }
+    await runRead(async (options) => {
+      try {
+        return await rescanFolder(shelf.id, {
+          remember: getSettings().folderHandles,
+          ...options,
+        });
+      } catch (cause) {
+        // No handle, or one that no longer points anywhere. The picker is the
+        // only road to a rescan then, and from the owner's side it is the same
+        // act — so it happens rather than being reported.
+        if (cause instanceof FolderError && cause.cure === 'pick') {
+          return await pickFolder({
+            remember: getSettings().folderHandles,
+            rescan: true,
+            ...options,
+          });
+        }
+        throw cause;
+      }
+    });
+  }
+
+  /** Finishes an index that was cancelled or killed, from where it stopped. */
+  async function resumeIndexing(): Promise<void> {
+    const shelf = library;
+    if (!shelf) return;
+    await runRead((options) =>
+      rescanFolder(shelf.id, {
+        resume: true,
+        remember: getSettings().folderHandles,
+        ...options,
+      }),
+    );
   }
 
   async function drop(): Promise<void> {

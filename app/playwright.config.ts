@@ -11,6 +11,26 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  /**
+   * Four locally, not the ten Playwright would choose.
+   *
+   * Left unset, Playwright takes half the logical processors — twenty here, so
+   * ten browsers at once. The limit on this suite is not processors, it is
+   * memory: every worker is a Chromium rendering full scores through the
+   * engraver, on a machine with 16 GB that usually has half of it spoken for
+   * already. Past a point they stop running and start thrashing, and thrashing
+   * does not look like slowness, it looks like forty unrelated failures — a
+   * `waitForTimeout(2_500)` blowing a thirty-second test timeout, screens that
+   * "never appeared", specs about the dark theme failing in a batch about
+   * folders. Two whole suite runs were read as regressions before the cause
+   * turned out to be the machine, and the second of those very nearly had an
+   * agent blamed for it.
+   *
+   * A test run whose result depends on what else the owner happens to have
+   * open is not an answer. CI keeps the default: its runner is sized
+   * differently and has been green throughout.
+   */
+  workers: process.env.CI ? undefined : 4,
   reporter: process.env.CI ? [['github'], ['list']] : 'list',
   use: {
     ...devices['Desktop Chrome'],

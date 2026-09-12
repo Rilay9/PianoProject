@@ -11,27 +11,45 @@
  *
  *   - `<input type="file" webkitdirectory>` works — Chrome Android 132+ — and
  *     hands over every file in the folder for the life of the page. This is
- *     the path that is known to work and it is the default.
- *   - MDN's compatibility data lists `showDirectoryPicker()` in Chrome for
- *     Android from 132 as well, which would allow a *stored* handle and so a
- *     folder that does not have to be picked again. Nobody has tried it on the
- *     owner's S25, and an API that exists can still refuse to keep a
- *     permission, so it sits behind the `folderHandles` setting — off until he
- *     confirms it — and every failure falls back to the picker above.
+ *     the path that is known to work and it is the fallback.
+ *   - `showDirectoryPicker()` is in Chrome for Android from 132 as well, which
+ *     allows a *stored* handle and so a folder that does not have to be picked
+ *     again. An installed PWA keeps File System Access permissions across
+ *     sessions from Chrome 122, so the handle in IndexedDB plus one free
+ *     `queryPermission` on each launch should mean no prompt at all — but an
+ *     API that exists can still refuse, so every failure falls back to the
+ *     picker above and says which failure it was.
  *
  * Hence: the **listing** is stored and the **files** are not. Browsing works
- * with nothing connected, on a plane, a year later. Adding needs the folder
- * picked again, which is one tap and only when something is actually wanted —
- * or no taps at all, if the handle turns out to work.
+ * with nothing connected, on a plane, a year later. Adding descends one path
+ * through the stored handle, which is a handful of round trips whatever the
+ * folder's size.
  *
- * The metadata comes from a `library.json` sitting in the folder — written by
- * `tools/content/pdmx/manifest.py`, though nothing here is PDMX-specific. A
- * folder without one still works: the title is read out of each file the first
- * time it is opened, which is what the import path does anyway.
+ * **The manifest is the index; the walk is the fallback.** This was the other
+ * way round, and that was the fault. `library.json` — written by
+ * `tools/content/pdmx/manifest.py`, though nothing here is PDMX-specific —
+ * carries a row per score with the path to that score in it, so one 6 MB file
+ * read holds the whole listing. The old code walked all 37,261 directory
+ * entries to decide what existed and used the manifest only to decorate what
+ * it found, which meant the first run was several minutes of enumeration —
+ * and Chromium's own intent-to-ship for the API records that opening a very
+ * large directory makes the browser unresponsive, so at this size that was not
+ * slowness but a documented failure mode. Reading the index instead removes it
+ * from the common path entirely.
+ *
+ * The walk still exists, for exactly two cases: a folder with no manifest, and
+ * an owner who asks for a rescan. Both are told what they cost, and the walk
+ * itself is now incremental, resumable and cancellable (see `walkLibrary`).
+ *
+ * What manifest-first gives up is said on the screen rather than hidden: a
+ * score dropped into the folder after the manifest was written is not in the
+ * listing until a rescan, and a row whose file has since gone is only found
+ * out about when it is tapped — at which point that row is taken out of the
+ * listing rather than left to fail again.
  */
 import { openDatabase, type FolderLibraryRow, type FolderScore } from './db';
 import { addImport, updateImport, ImportError } from './importStore';
-import type { WalkMessage, WalkRequest } from './folderWalk.worker';
+import { walkFolder, type WalkMessage, type WalkRequest } from './folderWalk.worker';
 
 /** The file a folder uses to describe itself. */
 export const MANIFEST_NAME = 'library.json';
@@ -61,18 +79,32 @@ export const MAX_FOLDER_FILES = 100_000;
  *     makes it usable, and nothing is re-read.
  *   - `pick`  — there is no handle, or the one there is no longer points at
  *     anything. The folder has to be chosen again, and that does mean a rescan.
+ *   - `rescan` — the folder is open and readable; it is the *listing* that is
+ *     out of date. Nothing needs picking and no permission is missing, so
+ *     sending the owner to the picker would be the wrong instruction as well
+ *     as the expensive one.
  *
  * The screen used to decide which of these it was by running a regular
  * expression over the sentence, which meant a reworded message silently lost
  * its button.
  */
-export type FolderCure = 'open' | 'pick' | null;
+export type FolderCure = 'open' | 'pick' | 'rescan' | null;
 
 export class FolderError extends Error {
   readonly cure: FolderCure;
-  constructor(message: string, cure: FolderCure = null) {
+  /**
+   * The path of a listed score the folder turned out not to have.
+   *
+   * Manifest-first cannot know a file has gone without looking for it, and the
+   * only thing that ever looks is `Add`. So the discovery has to go somewhere:
+   * the row is dropped from the stored listing, and this is what tells the
+   * screen which row to take off the list it is drawing.
+   */
+  readonly gone: string | null;
+  constructor(message: string, cure: FolderCure = null, gone: string | null = null) {
     super(message);
     this.cure = cure;
+    this.gone = gone;
   }
 }
 
@@ -102,6 +134,31 @@ export class FolderCancelled extends Error {}
  */
 export type FolderRememberNote = 'not-remembered' | 'not-stored' | 'permission' | 'stale' | null;
 
+/**
+ * Where a listing came from, which decides what it can be trusted to know.
+ *
+ *   - `manifest` — the folder's own `library.json`, read in one go. Complete as
+ *     of the moment that file was written, and blind to anything since.
+ *   - `walk` — the folder was enumerated. Complete as of the moment it was
+ *     walked, including files no manifest mentions.
+ *   - `partial` — a walk that was cancelled or interrupted. Browsable, and
+ *     honest that there is more: `pending` says how much.
+ */
+export type FolderListing = 'manifest' | 'walk' | 'partial';
+
+/**
+ * The stored row, plus the two fields `db.ts` does not describe.
+ *
+ * `db.ts` is not this change's to edit (see the report), and both fields are
+ * optional, so an older row reads as a completed walk — which is what every
+ * row written before this was.
+ */
+type StoredFolderRow = FolderLibraryRow & {
+  listedFrom?: FolderListing;
+  /** Top-level folders still to index, when the walk did not finish. */
+  pending?: string[];
+};
+
 export interface FolderLibrary {
   id: string;
   addedAt: string;
@@ -109,6 +166,16 @@ export interface FolderLibrary {
   scores: FolderScore[];
   /** True while the folder is picked and its files can actually be read. */
   connected: boolean;
+  /** How this listing was built, and so what it cannot know. */
+  listedFrom: FolderListing;
+  /**
+   * Top-level folders an interrupted walk has still to index.
+   *
+   * Empty for every finished listing. A phone that kills the app half way
+   * through 37,261 files leaves this non-empty, and it is both the sentence
+   * the screen says and the instruction the resumed walk takes.
+   */
+  pending: string[];
   /**
    * True when a handle for this folder is held, so `openFolder` is worth
    * offering.
@@ -316,12 +383,14 @@ function bareScore(path: string, name: string): FolderScore {
  * rather than lying with a guess.
  */
 export interface FolderProgress {
-  /** Files looked at so far. */
+  /** Files looked at so far — or, while `indexing`, folders finished. */
   done: number;
   /** How many there are to look at, or 0 while that is still being found out. */
   total: number;
   /** The one just looked at, so "is it stuck" has an answer. */
   file: string;
+  /** Scores found so far, which is the number the owner actually cares about. */
+  found: number;
   /**
    * Which wait this is.
    *
@@ -329,14 +398,29 @@ export interface FolderProgress {
    * both is why a slow import read as a broken one: during `counting` there is
    * no denominator, so a number that climbs is the only honest read-out, and a
    * bar showing 0 % is indistinguishable from a bar that is stuck.
+   *
+   * `indexing` is the walk once the root has been read. It is the one phase
+   * with a real denominator that arrives early — the folders at the top are
+   * counted before any of them is entered — so it is the one that can say how
+   * far along a walk of 37,261 files is while it is still in its first seconds.
    */
-  phase: 'counting' | 'reading' | 'listing';
+  phase: 'counting' | 'reading' | 'listing' | 'indexing';
 }
 
 export interface FolderReadOptions {
   onProgress?: (progress: FolderProgress) => void;
   /** Checked between batches; an aborted signal ends the read with `FolderCancelled`. */
   signal?: AbortSignal;
+  /**
+   * Walk the folder even though it has a manifest.
+   *
+   * The manifest is the index, so the walk is not something to do casually. It
+   * happens when the owner asks for it by name — because the folder itself has
+   * changed — and the button that asks says what it costs.
+   */
+  rescan?: boolean;
+  /** Finish an interrupted walk rather than starting one. */
+  resume?: { branches: string[]; scores: FolderScore[] };
 }
 
 /** How many files pass between a check of `signal` and a breath for the UI thread. */
@@ -368,17 +452,6 @@ function yieldToUI(): Promise<void> {
   if (typeof scheduling?.yield === 'function') return scheduling.yield();
   return new Promise((resolve) => setTimeout(resolve, 0));
 }
-
-/**
- * How many file handles are resolved at once.
- *
- * Each `getFile()` is a round trip to the browser process, so a thousand of
- * them in sequence is dominated by latency rather than work — on Android that
- * was most of the wait. Resolved in chunks the latency overlaps instead of
- * accumulating. Wide enough to hide it, narrow enough that a chunk is still a
- * short task and `signal` is still noticed promptly.
- */
-const READ_CHUNK = 32;
 
 /**
  * Builds the listing for a picked folder.
@@ -414,7 +487,13 @@ export async function readFolder(
       byPath.set(path, file);
     }
     done += 1;
-    options.onProgress?.({ done, total: files.length, file: path, phase: 'reading' });
+    options.onProgress?.({
+      done,
+      total: files.length,
+      file: path,
+      found: byPath.size,
+      phase: 'reading',
+    });
     if (done % YIELD_EVERY === 0) {
       checkCancelled(options.signal);
       await yieldToUI();
@@ -463,38 +542,15 @@ async function buildLibrary(
     );
   }
 
-  let described = new Map<string, FolderScore>();
-  // By the file's own name as well: the archive's names are content hashes,
-  // unique by construction, so a row still finds its file when the folder
-  // was flattened, re-sharded, or picked from a level the paths do not
-  // expect. Only a name the manifest uses once is trusted this way.
-  const byName = new Map<string, FolderScore | null>();
-  let source: string | null = null;
-  if (manifestFile) {
-    const parsed = parseManifest(await manifestFile.text());
-    source = parsed.source;
-    described = new Map(parsed.scores.map((score) => [score.file, score]));
-    for (const score of parsed.scores) {
-      const name = score.file.slice(score.file.lastIndexOf('/') + 1);
-      byName.set(name, byName.has(name) ? null : score);
-    }
-  }
+  const described = manifestFile === null ? null : describedBy(await manifestFile.text());
 
   const scores: FolderScore[] = [];
   const total = byPath.size;
   let done = 0;
   for (const [path, file] of byPath) {
-    const key = manifestRoot !== '' && path.startsWith(manifestRoot) ? path.slice(manifestRoot.length) : path;
-    const row = described.get(key) ?? described.get(path) ?? byName.get(file.name) ?? null;
-    // `file` is overwritten with the path this file is *actually* at, not
-    // the manifest's own copy of it — `path` is the `byPath` key, and
-    // `addFromFolder` looks a row up in the reconnected `byPath` by this same
-    // field, so the two have to agree. (An older build kept the manifest's
-    // path here instead, which is exactly the mismatch `addFromFolder`'s
-    // filename fallback exists to paper over for a listing stored back then.)
-    scores.push(row ? { ...row, file: path } : bareScore(path, file.name));
+    scores.push(decorate(path, file.name, described, manifestRoot));
     done += 1;
-    options.onProgress?.({ done, total, file: path, phase: 'listing' });
+    options.onProgress?.({ done, total, file: path, found: done, phase: 'listing' });
     if (done % YIELD_EVERY === 0) {
       checkCancelled(options.signal);
       await yieldToUI();
@@ -504,20 +560,77 @@ async function buildLibrary(
   // Sorted once here rather than on every draw: the browse screen re-filters
   // 37,000 rows on each keystroke and a comparison per row per keystroke is
   // the one cost worth paying up front.
-  scores.sort((a, b) => a.title.localeCompare(b.title));
+  scores.sort(byTitle);
 
   connected.set(id, byPath);
   return {
     id,
     addedAt: new Date().toISOString(),
-    source,
+    source: described?.source ?? null,
     scores,
     connected: true,
+    listedFrom: 'walk',
+    pending: [],
     // Filled in by `pickFolder` once it knows whether a handle was kept; a
     // folder read through the file input never has one.
     canOpen: false,
     rememberNote: null,
   };
+}
+
+/** One order for every listing, so a partial one merges into a finished one. */
+function byTitle(a: FolderScore, b: FolderScore): number {
+  return a.title.localeCompare(b.title);
+}
+
+/** A parsed manifest, indexed the two ways a path is looked up in it. */
+interface Described {
+  source: string | null;
+  byPath: Map<string, FolderScore>;
+  /**
+   * By the file's own name as well: the archive's names are content hashes,
+   * unique by construction, so a row still finds its file when the folder was
+   * flattened, re-sharded, or picked from a level the paths do not expect.
+   * Only a name the manifest uses once is trusted this way — `null` marks the
+   * ones it uses twice.
+   */
+  byName: Map<string, FolderScore | null>;
+}
+
+function describedBy(text: string): Described {
+  return describedFrom(parseManifest(text));
+}
+
+function describedFrom(parsed: { scores: FolderScore[]; source: string | null }): Described {
+  const byPath = new Map(parsed.scores.map((score) => [score.file, score]));
+  const byName = new Map<string, FolderScore | null>();
+  for (const score of parsed.scores) {
+    const name = score.file.slice(score.file.lastIndexOf('/') + 1);
+    byName.set(name, byName.has(name) ? null : score);
+  }
+  return { source: parsed.source, byPath, byName };
+}
+
+/**
+ * The row for one file the walk found, described by the manifest when it can be.
+ *
+ * `file` is overwritten with the path this file is *actually* at, not the
+ * manifest's own copy of it — `addFromFolder` descends this field to fetch the
+ * bytes, so the two have to agree. (An older build kept the manifest's path
+ * here instead, which is exactly the mismatch `addFromFolder`'s filename
+ * fallback exists to paper over for a listing stored back then.)
+ */
+function decorate(
+  path: string,
+  name: string,
+  described: Described | null,
+  manifestRoot: string,
+): FolderScore {
+  if (described === null) return bareScore(path, name);
+  const key =
+    manifestRoot !== '' && path.startsWith(manifestRoot) ? path.slice(manifestRoot.length) : path;
+  const row = described.byPath.get(key) ?? described.byPath.get(path) ?? described.byName.get(name);
+  return row ? { ...row, file: path } : bareScore(path, name);
 }
 
 /**
@@ -571,37 +684,141 @@ function isAbort(cause: unknown): boolean {
   return cause instanceof DOMException && cause.name === 'AbortError';
 }
 
+/** One file out of a directory, or null when it is not there. */
+async function fileIn(dir: FileSystemDirectoryHandle, name: string): Promise<File | null> {
+  try {
+    return await (await dir.getFileHandle(name)).getFile();
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Every score under a directory handle, keyed by its path inside the folder.
+ * How many of the root's folders are looked inside for a manifest.
  *
- * Iterative rather than recursive: PDMX nests two levels and nothing here
- * should care how deep the owner's own folders go, and a stack that cannot
- * overflow costs nothing.
+ * The manifest is at the top of the folder that was packed, so the first
+ * question — `getFileHandle('library.json')` on the root — answers it for
+ * anyone who picked the right folder. The second question exists because the
+ * phone's own unzip puts the archive's folder *inside* a folder of the same
+ * name (Samsung's Extract does), and the person, told to pick
+ * `pianopath-library`, picks the outer one. That case has exactly one child
+ * folder. The ceiling is what stops a wrong folder of six hundred directories
+ * turning the cheap probe into six hundred round trips.
  */
+const MANIFEST_PROBE_DIRS = 24;
+
+/** The folder's own index, if it has one, and where its paths are relative to. */
+async function findManifest(
+  handle: DirectoryHandle,
+): Promise<{ file: File; root: string } | null> {
+  const atRoot = await fileIn(handle, MANIFEST_NAME);
+  if (atRoot) return { file: atRoot, root: '' };
+  let looked = 0;
+  try {
+    for await (const entry of handle.values()) {
+      if (entry.kind !== 'directory') continue;
+      looked += 1;
+      if (looked > MANIFEST_PROBE_DIRS) break;
+      const nested = await fileIn(entry, MANIFEST_NAME);
+      if (nested) return { file: nested, root: entry.name + '/' };
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 /**
- * The walk, in a worker, with the old main-thread walk as the fallback.
+ * The listing, from the manifest alone.
+ *
+ * This is the whole of the change. One file read, one parse, and 37,261 rows —
+ * against a walk of 37,261 directory entries that Chromium's own intent-to-ship
+ * says can make the browser unresponsive. Nothing in the tree is touched: each
+ * row already carries the path to its file (`manifest.py` writes
+ * `<shard>/<cid>.mxl`), which is exactly what `Add` descends when it wants the
+ * bytes, so there is nothing the walk would have found out.
+ *
+ * The paths are rewritten to be relative to the folder that was *picked* rather
+ * than to the manifest, which is the same correction `decorate` makes on the
+ * walk path and for the same reason: those two are the only ways `score.file`
+ * is ever produced, and `fileAt` descends it from the picked folder.
+ */
+async function manifestLibrary(
+  id: string,
+  parsed: { scores: FolderScore[]; source: string | null },
+  root: string,
+  options: FolderReadOptions,
+): Promise<FolderLibrary> {
+  checkCancelled(options.signal);
+  const scores: FolderScore[] = [];
+  const total = parsed.scores.length;
+  for (const row of parsed.scores) {
+    const file = root + row.file;
+    scores.push(root === '' ? row : { ...row, file });
+    const done = scores.length;
+    options.onProgress?.({ done, total, file, found: done, phase: 'listing' });
+    if (done % YIELD_EVERY === 0) {
+      checkCancelled(options.signal);
+      await yieldToUI();
+    }
+  }
+  scores.sort(byTitle);
+  return {
+    id,
+    addedAt: new Date().toISOString(),
+    source: parsed.source,
+    scores,
+    connected: true,
+    listedFrom: 'manifest',
+    pending: [],
+    canOpen: false,
+    rememberNote: null,
+  };
+}
+
+/**
+ * The walk, in a worker, with the same walk on this thread as the fallback.
  *
  * Everything the worker needs is either serializable or a constant, so the
  * boundary is one message each way plus progress. `FileSystemDirectoryHandle`
  * is transferable in Chromium, which is where this feature exists at all; a
- * browser that refuses to post one, or has no module workers, falls back to
- * the thread it always used, which is slower but correct.
+ * browser that refuses to post one, or has no module workers, runs the very
+ * same `walkFolder` here — slower, because it is sharing the thread that
+ * paints, but identical in what it produces.
  */
-async function readDirectoryHandle(
+async function runWalk(
   handle: DirectoryHandle,
-  options: FolderReadOptions = {},
-): Promise<{ byPath: Map<string, File>; manifestFile: File | null; manifestRoot: string }> {
-  if (typeof Worker !== 'function') return readDirectoryHandleOnThisThread(handle, options);
+  only: string[] | undefined,
+  on: (message: WalkMessage) => void,
+  signal: AbortSignal | undefined,
+): Promise<void> {
+  const request = {
+    handle,
+    manifestName: MANIFEST_NAME,
+    scoreExtensions: [...SCORE_SUFFIXES],
+    maxFiles: MAX_FOLDER_FILES,
+    ...(only === undefined ? {} : { only }),
+  } satisfies WalkRequest;
+
+  const here = async (): Promise<void> => {
+    await walkFolder(request, on, {
+      stopped: () => signal?.aborted === true,
+      breathe: yieldToUI,
+    });
+    checkCancelled(signal);
+  };
+
+  if (typeof Worker !== 'function') return here();
   let worker: Worker;
   try {
     worker = new Worker(new URL('./folderWalk.worker.ts', import.meta.url), { type: 'module' });
   } catch {
-    return readDirectoryHandleOnThisThread(handle, options);
+    return here();
   }
   try {
-    return await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const stop = (): void => {
-        options.signal?.removeEventListener('abort', onAbort);
+        signal?.removeEventListener('abort', onAbort);
         worker.terminate();
       };
       // Cancel is a message now rather than a flag read between blocking hops,
@@ -610,55 +827,35 @@ async function readDirectoryHandle(
         stop();
         reject(new FolderCancelled());
       };
-      if (options.signal?.aborted) {
+      if (signal?.aborted) {
         onAbort();
         return;
       }
-      options.signal?.addEventListener('abort', onAbort, { once: true });
+      signal?.addEventListener('abort', onAbort, { once: true });
       worker.onmessage = (event: MessageEvent<WalkMessage>): void => {
         const message = event.data;
-        switch (message.kind) {
-          case 'counting':
-            options.onProgress?.({ done: message.seen, total: 0, file: message.file, phase: 'counting' });
-            return;
-          case 'reading':
-            options.onProgress?.({
-              done: message.done,
-              total: message.total,
-              file: message.file,
-              phase: 'reading',
-            });
-            return;
-          case 'done':
-            stop();
-            resolve({
-              byPath: new Map(message.files),
-              manifestFile: message.manifest,
-              manifestRoot: message.manifestRoot,
-            });
-            return;
-          default:
-            stop();
-            reject(new FolderError(message.message));
+        if (message.kind === 'failed') {
+          stop();
+          reject(new FolderError(message.message));
+          return;
+        }
+        on(message);
+        if (message.kind === 'done') {
+          stop();
+          resolve();
         }
       };
       // A worker that cannot start, or cannot be given the handle, is not a
       // failed import: it is this thread's job after all.
       worker.onerror = (): void => {
         stop();
-        void readDirectoryHandleOnThisThread(handle, options).then(resolve, reject);
+        void here().then(resolve, reject);
       };
       try {
-        worker.postMessage({
-          handle,
-          manifestName: MANIFEST_NAME,
-          scoreExtensions: [...SCORE_SUFFIXES],
-          maxFiles: MAX_FOLDER_FILES,
-          readChunk: READ_CHUNK,
-        } satisfies WalkRequest);
+        worker.postMessage(request);
       } catch {
         stop();
-        void readDirectoryHandleOnThisThread(handle, options).then(resolve, reject);
+        void here().then(resolve, reject);
       }
     });
   } finally {
@@ -666,84 +863,217 @@ async function readDirectoryHandle(
   }
 }
 
-async function readDirectoryHandleOnThisThread(
+/**
+ * How often a walk in progress is written down, in milliseconds.
+ *
+ * The reason it is written down at all: the owner's folder is 37,261 files and
+ * a phone is free to kill a backgrounded page at any moment. A walk that only
+ * existed in memory had to be started again from nothing, having shown nothing,
+ * however far it had got — which on the one folder this is built for is the
+ * difference between an interruption and a wasted several minutes.
+ *
+ * Not more often than this, because each save clones the whole listing. Not
+ * less, because the gap is what is lost.
+ */
+const SAVE_EVERY_MS = 4000;
+
+/**
+ * The listing, by walking — for a folder with no manifest, and for a rescan.
+ *
+ * Incremental, resumable and cancellable, which the old walk was none of:
+ *
+ *   - rows are written to the database as each top-level folder finishes, so
+ *     browsing can start on what is already indexed and a phone that kills the
+ *     app keeps every one of them;
+ *   - what is left is written down beside them, so the next run can be asked
+ *     for exactly that and nothing is walked twice;
+ *   - cancelling keeps what was found rather than throwing it away, which is
+ *     what makes Cancel something other than a way to lose four minutes.
+ */
+async function walkLibrary(
+  id: string,
   handle: DirectoryHandle,
-  options: FolderReadOptions = {},
-): Promise<{ byPath: Map<string, File>; manifestFile: File | null; manifestRoot: string }> {
-  // Two passes, because they are two different waits.
+  described: Described | null,
+  manifestRoot: string,
+  options: FolderReadOptions,
+): Promise<FolderLibrary> {
+  const seed = options.resume?.scores ?? [];
+  const scores: FolderScore[] = [...seed];
+  const have = new Set(scores.map((score) => score.file));
+  const remaining = new Set(options.resume?.branches ?? []);
+  let branches = 0;
+  let branchesDone = 0;
+  let deeperManifest: string | null = null;
+  // Read through a call rather than directly: the compiler cannot see that the
+  // walk's callback ran, so it would hold `deeperManifest` at the `null` it was
+  // declared with and narrow the check below to nothing.
+  const manifestSeen = (): string | null => deeperManifest;
+  // Negative, so the *first* folder finished is written down at once rather
+  // than four seconds in. The gap at the start is the one that matters: it is
+  // where "I pointed it at the folder and it showed nothing" lives.
+  let savedAt = -Infinity;
+  // Chained rather than awaited: the message handler is synchronous, and two
+  // overlapping writes of the same row would be a race over which snapshot
+  // wins. One after another, oldest first.
+  let saving: Promise<unknown> = Promise.resolve();
+
+  const snapshot = (listedFrom: FolderListing): FolderLibrary => ({
+    id,
+    addedAt: new Date().toISOString(),
+    source: described?.source ?? null,
+    scores: [...scores].sort(byTitle),
+    connected: true,
+    listedFrom,
+    // Only a partial listing owes anything. A branch the resumed walk never saw
+    // — one that was deleted while the app was closed — would otherwise sit in
+    // `remaining` for ever and leave a finished listing claiming it had work
+    // left to do.
+    pending: listedFrom === 'partial' ? [...remaining] : [],
+    canOpen: false,
+    rememberNote: null,
+  });
+
+  const save = (listedFrom: FolderListing): void => {
+    savedAt = performance.now();
+    const partial = snapshot(listedFrom);
+    // Whatever handle is already being kept for this folder, so a partial save
+    // during a rescan cannot quietly cost the owner the remembered folder.
+    saving = saving.then(() => saveFolder(partial, handles.get(id)));
+  };
+
+  const on = (message: WalkMessage): void => {
+    switch (message.kind) {
+      case 'plan':
+        branches = message.branches.length;
+        // A resumed run is told which folders to walk; a fresh one owes itself
+        // all of them.
+        if (options.resume === undefined) {
+          for (const name of message.branches) remaining.add(name);
+        }
+        options.onProgress?.({
+          done: 0,
+          total: branches,
+          file: '',
+          found: scores.length,
+          phase: branches === 0 ? 'counting' : 'indexing',
+        });
+        return;
+      case 'manifest':
+        deeperManifest = message.path;
+        return;
+      case 'found':
+        for (const path of message.paths) {
+          if (have.has(path)) continue;
+          have.add(path);
+          scores.push(decorate(path, path.slice(path.lastIndexOf('/') + 1), described, manifestRoot));
+        }
+        branchesDone = message.branchesDone;
+        options.onProgress?.({
+          done: branchesDone,
+          total: message.branches,
+          file: message.file,
+          found: scores.length,
+          phase: message.branches === 0 ? 'counting' : 'indexing',
+        });
+        return;
+      case 'branch':
+        remaining.delete(message.name);
+        branchesDone = message.branchesDone;
+        branches = message.branches;
+        options.onProgress?.({
+          done: branchesDone,
+          total: branches,
+          file: '',
+          found: scores.length,
+          phase: 'indexing',
+        });
+        // Written down at a point the walk can be picked up from — the end of a
+        // top-level folder — and no more often than the clock allows.
+        if (performance.now() - savedAt >= SAVE_EVERY_MS) save('partial');
+        return;
+      default:
+        return;
+    }
+  };
+
+  try {
+    await runWalk(handle, options.resume?.branches, on, options.signal);
+  } catch (cause) {
+    // A cancelled walk keeps what it found. The alternative — and what this
+    // used to do — is that pressing Cancel after four minutes leaves nothing
+    // at all, which makes Cancel a button nobody can afford to press.
+    if (cause instanceof FolderCancelled && scores.length > 0) {
+      save('partial');
+      await saving;
+    }
+    throw cause;
+  }
+  await saving;
+
+  // A manifest deeper than the probe looks. Rare — the phone's unzip nests one
+  // level and that is probed directly — but a walk has been done anyway, so
+  // using what it saw costs one file read and saves a listing of hashes.
   //
-  // The walk only *names* things: it collects handles and opens none, so it is
-  // fast and it is what produces the total. Opening every file as it was found
-  // meant the one loop had no denominator to report and paid a round trip per
-  // file at the same time, so it could neither say how far along it was nor
-  // get there quickly. Named first, opened second: the reading pass has a real
-  // total and can resolve handles in parallel.
-  let manifestHandle: FileSystemFileHandle | null = null;
-  let manifestRoot = '';
-  const scoreHandles: { path: string; handle: FileSystemFileHandle }[] = [];
-  const stack: { dir: FileSystemDirectoryHandle; prefix: string }[] = [{ dir: handle, prefix: '' }];
-  let seen = 0;
-  while (stack.length > 0) {
-    const next = stack.pop();
-    if (!next) break;
-    for await (const entry of next.dir.values()) {
-      checkCancelled(options.signal);
-      const path = next.prefix + entry.name;
-      if (entry.kind === 'directory') {
-        stack.push({ dir: entry, prefix: path + '/' });
-        continue;
-      }
-      seen += 1;
-      if (seen > MAX_FOLDER_FILES) {
-        throw new FolderError(
-          `That folder holds more than ${MAX_FOLDER_FILES.toLocaleString()} files. Pick the folder with the scores in it, not the one above it.`,
+  const deeper = manifestSeen();
+  if (described === null && deeper !== null) {
+    const file = await fileAt(handle, deeper);
+    if (file) {
+      const late = describedBy(await file.text());
+      const root = deeper.slice(0, deeper.length - MANIFEST_NAME.length);
+      for (let at = 0; at < scores.length; at += 1) {
+        const score = scores[at];
+        if (!score) continue;
+        scores[at] = decorate(
+          score.file,
+          score.file.slice(score.file.lastIndexOf('/') + 1),
+          late,
+          root,
         );
       }
-      if (entry.name === MANIFEST_NAME) {
-        if (manifestHandle === null || next.prefix.length < manifestRoot.length) {
-          manifestHandle = entry;
-          manifestRoot = next.prefix;
-        }
-        continue;
-      }
-      if (isScoreFile(path)) scoreHandles.push({ path, handle: entry });
-      // No total yet: a directory can hold another directory, so "how many
-      // files" is not answerable from the top. `counting` is how the screen
-      // knows to show a climbing count rather than a percentage of nothing.
-      options.onProgress?.({ done: seen, total: 0, file: path, phase: 'counting' });
-      if (seen % YIELD_EVERY === 0) await yieldToUI();
+      return { ...snapshot('walk'), source: late.source };
     }
   }
 
-  const byPath = new Map<string, File>();
-  const manifestFile = manifestHandle === null ? null : await manifestHandle.getFile();
-  for (let at = 0; at < scoreHandles.length; at += READ_CHUNK) {
-    checkCancelled(options.signal);
-    const chunk = scoreHandles.slice(at, at + READ_CHUNK);
-    const files = await Promise.all(chunk.map((entry) => entry.handle.getFile()));
-    chunk.forEach((entry, index) => {
-      const file = files[index];
-      if (file) byPath.set(entry.path, file);
-    });
-    const last = chunk[chunk.length - 1];
-    options.onProgress?.({
-      done: Math.min(at + chunk.length, scoreHandles.length),
-      total: scoreHandles.length,
-      file: last ? last.path : '',
-      phase: 'reading',
-    });
-    await yieldToUI();
+  if (scores.length === 0) {
+    throw new FolderError(
+      'That folder has no MusicXML in it. The app reads .mxl, .musicxml and .xml files; a PDF goes through Import instead.',
+    );
   }
-  return { byPath, manifestFile, manifestRoot };
+  return snapshot('walk');
 }
 
-/** Reads a folder the browser handed over as a handle rather than as files. */
+/**
+ * Reads a folder the browser handed over as a handle rather than as files.
+ *
+ * The manifest is asked for first and the tree is not touched when there is
+ * one. That is the reversal: the folder's own index decides what is listed,
+ * and the files are consulted one at a time, when one of them is wanted.
+ */
 export async function readFolderHandle(
   handle: DirectoryHandle,
   options: FolderReadOptions = {},
 ): Promise<FolderLibrary> {
-  const { byPath, manifestFile, manifestRoot } = await readDirectoryHandle(handle, options);
-  return buildLibrary(handle.name || 'Scores', byPath, manifestFile, manifestRoot, options);
+  const id = handle.name || 'Scores';
+  // The probe is a couple of round trips either way, so it is worth making even
+  // when a rescan is going to walk anyway: it is what gives the walked rows
+  // their titles without the walk having to find the manifest itself.
+  const found = await findManifest(handle);
+  checkCancelled(options.signal);
+  // Read through it, so it is open for the rest of this visit whatever the
+  // remember setting says. `remember` decides whether the handle is *kept*;
+  // being able to add from the folder that was just picked is not a reward for
+  // a setting.
+  opened.set(id, handle);
+  const parsed = found === null ? null : parseManifest(await found.file.text());
+  checkCancelled(options.signal);
+  // An index that describes nothing is not an index. A manifest whose rows all
+  // dropped out, or one written for an empty folder, falls through to the walk
+  // rather than leaving the owner with a folder the app says is empty.
+  if (parsed !== null && parsed.scores.length > 0 && options.rescan !== true && options.resume === undefined) {
+    return manifestLibrary(id, parsed, found?.root ?? '', options);
+  }
+  const described = parsed === null ? null : describedFrom(parsed);
+  return walkLibrary(id, handle, described, found?.root ?? '', options);
 }
 
 /**
@@ -938,6 +1268,13 @@ export async function pickFolder(
     try {
       const handle = await picker?.({ mode: 'read' });
       if (handle) {
+        // Kept before the read rather than after it. A walk writes down what it
+        // has found every few seconds so that an interrupted one can be
+        // finished, and a save that did not carry the handle would leave the
+        // resumed run with nothing to resume *through* — the one case where
+        // this matters is the one where the app was killed, which is exactly
+        // when nothing later gets a chance to put it right.
+        if (remember === true) handles.set(handle.name || 'Scores', handle);
         const library = await readFolderHandle(handle, readOptions);
         // Whether the handle actually reached the database is the whole
         // difference between "remembered" and "remembered until you close
@@ -965,6 +1302,58 @@ export async function pickFolder(
   // Here because the browser has no picker, or because the picker did not
   // work. Either way it is the same folder listing through a slower door.
   return pickFolderWithInput(readOptions, remember === true ? 'not-remembered' : null);
+}
+
+/**
+ * Walks a folder the app already holds a handle for, without the picker.
+ *
+ * The two reasons to walk are both here. **Rescan** is the owner saying the
+ * folder itself has changed — a score added since the manifest was written, or
+ * one deleted — and it is the only thing that can find either. **Resume** is an
+ * indexing run that was cancelled or killed, picked up from the folders it had
+ * not reached, so 37,261 files are never walked twice.
+ *
+ * Going through the picker for this was the old shape and it was wrong twice
+ * over: it asked the owner to find a folder the app can already read, and it
+ * threw away the handle's permission to do it.
+ */
+export async function rescanFolder(
+  id: string,
+  options: { remember?: boolean; resume?: boolean } & Omit<FolderReadOptions, 'rescan' | 'resume'> = {},
+): Promise<FolderLibrary> {
+  const { remember, resume, ...readOptions } = options;
+  // The permission first, and separately, because it fails for its own reasons
+  // and each of them has its own cure.
+  const state = await openFolder(id, { interactive: true });
+  const handle = opened.get(id);
+  if (state !== 'open' || !handle) {
+    throw new FolderError(
+      state === 'permission'
+        ? `Chrome would not open the ${id} folder. Open it and allow the prompt, then try again.`
+        : state === 'stale'
+          ? `The ${id} folder could not be read — it may have been moved, renamed, or on a card that is out. Pick the folder again.`
+          : `This phone kept no link to ${id}. Pick the folder again to read it.`,
+      state === 'permission' ? 'open' : 'pick',
+    );
+  }
+  let carry: FolderReadOptions['resume'];
+  if (resume === true) {
+    const db = await openDatabase();
+    const row: StoredFolderRow | undefined = await db?.get('folderLibraries', id);
+    const branches = row?.pending ?? [];
+    // Nothing left to finish is not a failure and not a reason to walk the
+    // whole folder by surprise: the listing is simply already complete.
+    if (branches.length > 0) carry = { branches, scores: row?.scores ?? [] };
+  }
+  const library = await readFolderHandle(handle, {
+    ...readOptions,
+    ...(carry === undefined ? { rescan: true } : { resume: carry }),
+  });
+  // Whatever handle policy is already in force stays in force: a rescan is not
+  // a moment to start keeping the owner's folder, nor to stop.
+  const keep = handles.has(id) ? handles.get(id) : remember === true ? handle : undefined;
+  const stored = await saveFolder(library, keep);
+  return { ...library, canOpen: stored || handles.has(id), rememberNote: notes.get(id) ?? null };
 }
 
 async function pickFolderWithInput(
@@ -1011,11 +1400,18 @@ async function pickFolderWithInput(
  */
 async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<boolean> {
   const db = await openDatabase();
-  const row: FolderLibraryRow = {
+  const row: StoredFolderRow = {
     id: library.id,
     addedAt: library.addedAt,
     source: library.source,
     scores: library.scores,
+    // Where the listing came from, and what it still owes. Stored rather than
+    // worked out again on the next launch, because neither is knowable from the
+    // rows: a listing of 37,261 titles looks the same whether it was read out
+    // of the manifest in one go or walked, and only this says which — which is
+    // what the screen needs to tell the owner what the listing cannot see.
+    listedFrom: library.listedFrom,
+    ...(library.pending.length === 0 ? {} : { pending: library.pending }),
   };
   if (handle !== undefined) {
     handles.set(library.id, handle);
@@ -1057,15 +1453,22 @@ export async function savedFolders(): Promise<FolderLibrary[]> {
   // Built field by field rather than spread: a stored row also carries the
   // handle, and a live browser object has no business travelling out of here
   // inside something a screen draws.
-  return rows.map((row) => ({
-    id: row.id,
-    addedAt: row.addedAt,
-    source: row.source,
-    scores: row.scores,
-    connected: folderUsable(row.id),
-    canOpen: opened.has(row.id) || handles.has(row.id) || row.handle !== undefined,
-    rememberNote: notes.get(row.id) ?? null,
-  }));
+  return rows.map((row) => {
+    const stored = row as StoredFolderRow;
+    return {
+      id: row.id,
+      addedAt: row.addedAt,
+      source: row.source,
+      scores: row.scores,
+      connected: folderUsable(row.id),
+      // A row written before any of this was walked, because the walk was the
+      // only way a listing was ever made.
+      listedFrom: stored.listedFrom ?? 'walk',
+      pending: stored.pending ?? [],
+      canOpen: opened.has(row.id) || handles.has(row.id) || row.handle !== undefined,
+      rememberNote: notes.get(row.id) ?? null,
+    };
+  });
 }
 
 export async function forgetFolder(id: string): Promise<void> {
@@ -1111,6 +1514,29 @@ export function disconnectForTest(id: string): void {
 export function forgetHandleForTest(id: string): void {
   handles.delete(id);
   opened.delete(id);
+}
+
+/**
+ * Takes one row out of a stored listing, keeping everything else about it.
+ *
+ * Read-modify-write rather than a plain `put` of a row built here, because the
+ * row also carries the directory handle and how the listing was made, and
+ * losing the handle would cost the owner the folder to save them one dead row.
+ * Returns whether anything was actually removed.
+ */
+async function dropScore(folderId: string, file: string): Promise<boolean> {
+  const db = await openDatabase();
+  const row: StoredFolderRow | undefined = await db?.get('folderLibraries', folderId);
+  if (!row) return false;
+  const scores = row.scores.filter((score) => score.file !== file);
+  if (scores.length === row.scores.length) return false;
+  try {
+    await db?.put('folderLibraries', { ...row, scores });
+  } catch {
+    return false;
+  }
+  notify();
+  return true;
 }
 
 /**
@@ -1166,9 +1592,23 @@ export async function addFromFolder(folderId: string, score: FolderScore) {
   // fetch the one file the owner asked for and nothing else.
   if (!file && handle) file = (await fileAt(handle, score.file)) ?? undefined;
   if (!file) {
+    // The one thing manifest-first cannot know until it looks.
+    //
+    // The listing is the folder's own index, and an index is a statement about
+    // the past: a file deleted since it was written is still a row, and the
+    // only thing that ever finds out is this. So the discovery is *kept* — the
+    // row comes out of the stored listing here and off the screen beside it —
+    // rather than being spent on one error message and learnt again on the next
+    // tap. The walk is offered as the cure because it is the only thing that
+    // can put a whole listing right, but it is not needed for this row: this
+    // row is already gone.
+    const dropped = await dropScore(folderId, score.file);
     throw new FolderError(
-      `${score.title || score.file} is in the listing but not in the folder any more. Rescan the folder to bring the listing up to date.`,
-      'pick',
+      `${score.title || score.file} is in the listing but not in the folder any more.` +
+        (dropped ? ' It has been taken off the list.' : '') +
+        ' Rescan the folder if more of it has changed.',
+      'rescan',
+      score.file,
     );
   }
   // A CID makes a hopeless filename to be greeted by in the library, so the
