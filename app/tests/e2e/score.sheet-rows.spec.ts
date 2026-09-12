@@ -83,6 +83,45 @@ async function overflowing(page: import('@playwright/test').Page): Promise<strin
   });
 }
 
+/**
+ * How tall a row is, which is how many of them fit on the screen.
+ *
+ * `flex-wrap: wrap` on the row is the safety valve for a control that genuinely
+ * will not fit, and with the words starting at their *content* width it fired
+ * constantly instead: `Input` and `Loop` both put their control on a line of
+ * its own, and the sheet went from seven rows on a 740 px screen to five and a
+ * half. Fixing the stepper is no good if the rows below it leave the screen.
+ *
+ * The measurement is the sheet's *total* height, not a cap per row, because the
+ * two cases are far apart in the total and close in any single row: 894 px of
+ * rows with the words shrinking, 1,288 px with them wrapping the control away,
+ * where the tallest individual rows are only 106 and 126. A total also does not
+ * care which particular row wrapped, and there is room either side of the line
+ * for the CI runner's wider fonts to take a hint onto an extra line.
+ */
+test('no row in the sheet is tall enough to push the rest off the screen', async ({ page }) => {
+  await page.setViewportSize({ width: 342, height: 740 });
+  await page.goto(`/#/score/${SONG}`);
+  await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+  await openScoreMenu(page);
+  await page.waitForTimeout(200);
+  const seen = await page.evaluate(() => {
+    let total = 0;
+    const rows: string[] = [];
+    for (const row of document.querySelectorAll<HTMLElement>('#score-more-sheet .score-menu-row')) {
+      if (row.hidden || row.offsetParent === null) continue;
+      const height = row.getBoundingClientRect().height;
+      total += height;
+      rows.push(`${row.querySelector('.score-menu-row__label')?.textContent ?? '?'}=${String(Math.round(height))}`);
+    }
+    return { total: Math.round(total), rows };
+  });
+  expect(
+    seen.total,
+    `the sheet's rows come to ${String(seen.total)} px, so fewer of them fit: ${seen.rows.join(' ')}`,
+  ).toBeLessThan(1_050);
+});
+
 test('no control in the sheet is split across lines', async ({ page }) => {
   const faults: string[] = [];
   for (const scale of [1, 1.15]) {

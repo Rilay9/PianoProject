@@ -2881,7 +2881,19 @@ input[type='checkbox'] {
   flex-direction: column;
   gap: 2px;
   min-width: 0;
-  flex: 1 1 auto;
+  /* Basis zero, not `auto`, and that one word decides how many rows fit on the
+     screen.
+
+     With an `auto` basis the words start at their *content* width — a label and
+     a two-sentence hint — so words plus control came to more than the row, and
+     since flexbox wraps before it shrinks (`08` §9.23) the row broke and put
+     the control on a line of its own. `Input` and `Loop` both did it, at three
+     lines each, and the sheet went from seven rows on a 740 px screen to five
+     and a half. From zero the words take whatever is left after the control and
+     the hint wraps inside them, which is what a hint is for. The row can still
+     break, but only when the control on its own will not fit — which is the
+     case the wrap was added for. */
+  flex: 1 1 0;
 }
 
 .score-menu-row__hint {
