@@ -261,9 +261,7 @@
    "title": "Mariage d’Amour (“Spring Waltz”)",
    "composer": "Paul de Senneville",
    "level": 5.2,
-   "tracks": [
-    "beautiful"
-   ],
+   "tracks": ["classical"],
    "concepts": [
     "arpeggiated-accompaniment",
     "pedalling",
@@ -421,9 +419,7 @@
    "title": "G Minor Bach (Luo Ni)",
    "composer": "Luo Ni",
    "level": 5.5,
-   "tracks": [
-    "beautiful"
-   ],
+   "tracks": ["classical"],
    "concepts": [
     "arpeggiated-accompaniment",
     "voicing",
@@ -438,9 +434,7 @@
    "level": 5.5,
    "variantOf": "song.beautiful.g-minor-bach",
    "variantLabel": "the same arrangement, credited “Lyo Ni”",
-   "tracks": [
-    "beautiful"
-   ],
+   "tracks": ["classical"],
    "concepts": [
     "arpeggiated-accompaniment",
     "voicing",
@@ -561,9 +555,7 @@
    "title": "Hungarian Sonata",
    "composer": "Richard Clayderman",
    "level": 5.0,
-   "tracks": [
-    "beautiful"
-   ],
+   "tracks": ["classical"],
    "concepts": [
     "melody-projection",
     "pedalling",
@@ -661,9 +653,7 @@
    "level": 5.2,
    "variantOf": "song.beautiful.mariage-damour",
    "variantLabel": "a third upload, correctly credited",
-   "tracks": [
-    "beautiful"
-   ],
+   "tracks": ["classical"],
    "concepts": [
     "arpeggiated-accompaniment",
     "pedalling",
@@ -983,9 +973,7 @@
    "level": 5.2,
    "variantOf": "song.beautiful.mariage-damour",
    "variantLabel": "another MuseScore upload of the same arrangement",
-   "tracks": [
-    "beautiful"
-   ],
+   "tracks": ["classical"],
    "concepts": [
     "arpeggiated-accompaniment",
     "pedalling",

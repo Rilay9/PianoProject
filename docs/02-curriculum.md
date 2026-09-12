@@ -555,8 +555,12 @@ point of the module is that the method gets applied to something.
   leaving space, shell voicings); walking bass when there is no bass player; trading fours;
   following a lead sheet and the form tracker; endings and turnarounds; a shared set list of
   PD tunes from the jazz/blues ladders; recording a jam in Free mode.
-- **Beautiful pieces** (a curated collection tag across stages, the owner's "all beautiful
-  songs"): PD bundled — Satie Gymnopédie 1 & Gnossienne 1, Pachelbel Canon, Bach Air on G and
+- **The shelf** (`classical.4.shelf`, the second lesson on the classical stage-4 rung — a curated
+  collection, not a track; the owner's "all beautiful songs"). It was a track of its own until
+  2026-09-12, when the owner struck it: the branches are genres, skills and methods, and this was
+  a taste. What it teaches — tone, voicing, pedalling — is what Romantic writing asks for and what
+  `classical.6.1` goes on to, so stage 4 of the classical ladder is where it starts. The pieces
+  listed here mostly sit *above* stage 4, which is what a shelf is for: PD bundled — Satie Gymnopédie 1 & Gnossienne 1, Pachelbel Canon, Bach Air on G and
   Prelude in C, Chopin Preludes 4/7/20, Nocturne op.9/2, Waltz A minor, Beethoven Moonlight I
   and Für Elise, Debussy Clair de Lune, Arabesque 1 and Rêverie, Schumann Träumerei, Grieg
   Arietta and Morning Mood, Liszt Liebestraum 3 and Consolation 3, Schubert Ave Maria and

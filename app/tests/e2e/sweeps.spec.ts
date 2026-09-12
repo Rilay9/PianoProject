@@ -76,9 +76,17 @@ test.describe('every lesson page', () => {
     const empty: string[] = [];
     for (const { lesson } of lessons) {
       await page.goto(`/#/lesson/${lesson.id}`);
-      // The title proves the route resolved to this rung and not to the "no
-      // such lesson" state, which is the failure a wrong id pattern produces.
-      await expect(page.locator('[data-screen="lesson"] h1')).toContainText(lesson.id);
+      // `data-lesson` proves the route resolved to this rung and not to the
+      // "no such lesson" state, which is the failure a wrong id pattern
+      // produces — that state never sets the attribute.
+      //
+      // It used to read the id out of the `h1`, which worked because the
+      // heading printed `${id} · ${title}`. That put an internal identifier on
+      // screen (`00` §1) and the heading now carries the title alone, so the
+      // identity check reads the attribute and the heading is checked for being
+      // the words a person came for.
+      await expect(page.locator('[data-screen="lesson"]')).toHaveAttribute('data-lesson', lesson.id);
+      await expect(page.locator('[data-screen="lesson"] h1')).not.toBeEmpty();
       await expect(page.locator('#lesson-needs')).toContainText(/options?|wants/);
       const options = await page.locator('#lesson-exercises .list-row, #lesson-songs .list-row').count();
       if (options === 0 && lesson.optionsExempt !== true) empty.push(lesson.id);

@@ -37,6 +37,8 @@ interface Unit {
   lessons?: Lesson[];
 }
 interface Stage {
+  index?: number;
+  stage?: number;
   units: Unit[];
 }
 
@@ -56,6 +58,21 @@ function everyLesson(): { unit: string; lesson: Lesson }[] {
   return curriculum().flatMap((stage) =>
     stage.units.flatMap((unit) => (unit.lessons ?? []).map((lesson) => ({ unit: unit.id, lesson }))),
   );
+}
+
+/** The `key: value` lines at the top of a lesson's markdown, flat and unparsed. */
+function frontMatter(file: string): Record<string, string> {
+  const raw = readFileSync(join(CONTENT, file), 'utf8');
+  const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw);
+  if (!match) return {};
+  const out: Record<string, string> = {};
+  for (const line of (match[1] ?? '').split(/\r?\n/)) {
+    // Top-level keys only: a nested block (`videos:`) is indented, and its
+    // children are not this file's business.
+    const pair = /^([A-Za-z][\w-]*):\s*(.*)$/.exec(line);
+    if (pair?.[1] !== undefined) out[pair[1]] = (pair[2] ?? '').trim().replace(/^"(.*)"$/, '$1');
+  }
+  return out;
 }
 
 describe('the curriculum points at things that exist', () => {
@@ -90,6 +107,38 @@ describe('the curriculum points at things that exist', () => {
     expect(
       dangling,
       `options a learner would be offered that resolve to nothing:\n${dangling.join('\n')}`,
+    ).toEqual([]);
+  });
+
+  it('has each lesson claiming the unit that points at it', () => {
+    // The join nothing made. A lesson's markdown carries `unit:` and `stage:`
+    // in its front matter, the curriculum carries a `textFile` pointing back,
+    // and neither file is wrong on its own — which is exactly how
+    // `failUnit: 'blues.4'` shipped. Moving a lesson between units means
+    // editing both, and the only thing that can notice you edited one is this.
+    //
+    // Reached for when the shelf lesson moved off the struck `beautiful` track
+    // onto the classical stage-4 rung: three files had to agree and nothing
+    // would have said so if they had not.
+    const wrong: string[] = [];
+    for (const { unit, lesson } of everyLesson()) {
+      if (!lesson.textFile || !existsSync(join(CONTENT, lesson.textFile))) continue;
+      const meta = frontMatter(lesson.textFile);
+      const claimed = meta['unit'];
+      // Not every lesson carries one; the check is for the ones that do, since
+      // a claim that disagrees is worse than no claim.
+      if (claimed !== undefined && claimed !== unit) {
+        wrong.push(`${lesson.textFile} says unit ${claimed}, but ${unit} is what points at it`);
+      }
+      const stage = meta['stage'];
+      const fromUnit = /^(?:[a-z-]+\.)?(\d+)\./.exec(unit)?.[1];
+      if (stage !== undefined && fromUnit !== undefined && stage !== fromUnit) {
+        wrong.push(`${lesson.textFile} says stage ${stage}, but ${unit} is on stage ${fromUnit}`);
+      }
+    }
+    expect(
+      wrong,
+      `lesson front matter that disagrees with the curriculum:\n${wrong.join('\n')}`,
     ).toEqual([]);
   });
 

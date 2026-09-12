@@ -1342,8 +1342,7 @@
       "idPrefix": "song.classical.chopin-prelude-op28",
       "titleTemplate": "Prelude No. {n} in {key}, Op. 28",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "romantic-miniature",
@@ -1370,8 +1369,7 @@
           "level": 6.2,
           "abrsmGradeApprox": 4,
           "tracks": [
-            "classical",
-            "beautiful"
+            "classical"
           ],
           "concepts": [
             "cantabile",
@@ -1502,8 +1500,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op9",
       "titleTemplate": "Nocturne in {key}, Op. 9 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -1532,8 +1529,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op15",
       "titleTemplate": "Nocturne in {key}, Op. 15 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -1565,8 +1561,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op27",
       "titleTemplate": "Nocturne in {key}, Op. 27 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -1594,8 +1589,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op32",
       "titleTemplate": "Nocturne in {key}, Op. 32 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -1623,8 +1617,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op37",
       "titleTemplate": "Nocturne in {key}, Op. 37 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -1652,8 +1645,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op48",
       "titleTemplate": "Nocturne in {key}, Op. 48 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -1680,8 +1672,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op55",
       "titleTemplate": "Nocturne in {key}, Op. 55 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -1709,8 +1700,7 @@
       "idPrefix": "song.classical.chopin-nocturne-op62",
       "titleTemplate": "Nocturne in {key}, Op. 62 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "cantabile",
@@ -2104,8 +2094,7 @@
           "level": 7.2,
           "abrsmGradeApprox": 6,
           "tracks": [
-            "classical",
-            "beautiful"
+            "classical"
           ]
         },
         "003": {
@@ -2137,8 +2126,7 @@
       "idPrefix": "song.classical.chopin-waltz-op64",
       "titleTemplate": "Waltz in {key}, Op. 64 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "waltz-bass",
@@ -2169,8 +2157,7 @@
       "idPrefix": "song.classical.chopin-waltz-op69",
       "titleTemplate": "Waltz in {key}, Op. 69 No. {n}",
       "tracks": [
-        "classical",
-        "beautiful"
+        "classical"
       ],
       "concepts": [
         "waltz-bass",
@@ -2259,8 +2246,7 @@
           "level": 8.6,
           "abrsmGradeApprox": 8,
           "tracks": [
-            "classical",
-            "beautiful"
+            "classical"
           ],
           "concepts": [
             "cantabile",

@@ -511,7 +511,19 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       );
       return;
     }
-    (header.querySelector('h1') as HTMLElement).textContent = `${lesson.id} · ${lesson.title}`;
+    // The title, and nothing else — the same correction Plan's rows already
+    // carry. `classical.4.shelf · A singing melody, and the shelf to aim at`
+    // spent the first half of the heading on an internal id the learner has no
+    // use for, and on a 342 px phone that is the half that wraps. `00` §1:
+    // no internal identifiers on screen.
+    //
+    // The id stays on the screen's own element as `data-lesson`, which is
+    // where a test wants it and a person does not. `sweeps.spec` reads it
+    // there to prove the route resolved to this rung rather than to the "no
+    // such lesson" state, which is the only thing it was ever using the
+    // heading for.
+    section.dataset.lesson = lesson.id;
+    (header.querySelector('h1') as HTMLElement).textContent = lesson.title;
     draw();
 
     try {

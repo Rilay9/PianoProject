@@ -81,12 +81,13 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Classical (`classical`)
 
-7 rung(s), stages 3–9.
+8 rung(s), stages 3–9.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `classical.3` | 3 | 3 | 3.4–5.1 | Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1), Canon in D (easy) (5.1) |
 | 4 | `classical.4` | 3 | 4 | 4.1–4.4 | Für Elise (easy) (4.1), Für Elise (beginner) (4.1), Ode to Joy (easy variation) (4.1), Bella Ciao (4.2) |
+| 4 | `classical.4.shelf` | 3 | 9 | 3.5–6.2 | Für Elise (easy) (4.1), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1), Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 20 in C minor, Op. 28 (6.0), Prelude No. 6 in B minor, Op. 28 (6.0), … and 3 more |
 | 5 | `classical.5` | 4 | 4 | 3.6–5.2 | Greensleeves (5.1), Carol of the Bells (easy) (5.1), Canon in D (easy) (5.1), Ave Maria, D. 839 (solo piano arrangement) (5.2) |
 | 6 | `classical.6` | 9 | 21 | 3.2–6.6 | Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 6 in B minor, Op. 28 (6.0), Prelude No. 20 in C minor, Op. 28 (6.0), Prélude in E minor, Op. 28 No. 4 (6.1), Air on the G String (from BWV 1068) (6.1), Prelude No. 1 in C major, BWV 846 (6.1), … and 15 more |
 | 7 | `classical.7` | 8 | 22 | 4.2–8.4 | Prelude No. 9 in E major, Op. 28 (7.0), Prelude No. 11 in B major, Op. 28 (7.0), Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Prelude No. 2 in C minor, BWV 847 (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), … and 16 more |
@@ -136,14 +137,6 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 7 | `theory.7` *(song-optional)* | 5 | 0 | 6.4–7.5 | — |
 | 8 | `theory.8` *(song-optional)* | 5 | 0 | 6.5–8.3 | — |
 | 9 | `theory.9` *(song-optional)* | 5 | 0 | 6.5–8.4 | — |
-
-## Beautiful pieces (`beautiful`)
-
-1 rung(s), stages 4–4.
-
-| stage | rung | exercises | songs | level | options |
-|---|---|---:|---:|---|---|
-| 4 | `beautiful` | 3 | 9 | 3.5–6.2 | Für Elise (easy) (4.1), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1), Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 20 in C minor, Op. 28 (6.0), Prelude No. 6 in B minor, Op. 28 (6.0), … and 3 more |
 
 ## Blues & boogie (`blues-boogie`)
 

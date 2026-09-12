@@ -92,13 +92,6 @@
       "defaultActive": false
     },
     {
-      "id": "beautiful",
-      "title": "Beautiful pieces",
-      "description": "Mini-module: the shelf of pieces people learn the piano for.",
-      "startsAtStage": 4,
-      "defaultActive": false
-    },
-    {
       "id": "technique",
       "title": "Technique",
       "description": "Scales, arpeggios, double notes, octaves and the rest of the technique syllabus (docs/02 Part E). P11 recorded this as a label rather than a track because it had 434 items and no ladder; P12a gave it one, so it is a module you can follow.",

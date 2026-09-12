@@ -1,7 +1,7 @@
 ---
-title: "Beautiful pieces — the collection, and how to approach it"
+title: "A singing melody, and the shelf to aim at"
 stage: 4
-unit: "beautiful.4.1"
+unit: "classical.4.1"
 concepts: [repertoire-collection, tone, pedalling, voicing, patience]
 videos:
   - label: "Voicing in Piano Explained: How to Bring Out Melody over Accompaniment"
@@ -10,9 +10,12 @@ videos:
 readingTime: 3
 ---
 
-This is not a ladder; it is a shelf. The pieces here are the ones people learn
-the piano *for*, and they are collected in one place so you can always see what
-you are working towards and take one down when you are ready.
+The three skills below are what Romantic piano writing asks for, and they are
+the ones this stage of the classical ladder is here to start. The list that
+follows them is not a ladder; it is a shelf. These are the pieces people learn
+the piano *for*, collected in one place so you can see what you are working
+towards and take one down when you are ready — most of them sit above this
+stage, and that is the point of a shelf.
 
 **What is on the shelf and bundled.** Satie *Gymnopédie no. 1* and *Gnossienne
 no. 1*; Pachelbel *Canon in D* (easy and full); Bach *Air on the G String* and
@@ -39,7 +42,8 @@ it will sit on the same shelf.
 
 **Choose one, not five.** The characteristic failure with this shelf is starting
 six pieces that are all slightly too hard and finishing none. Take the easiest
-thing here that you actually love, and finish it.
+thing here that you actually love, and finish it. The rest of the classical
+ladder keeps going while you do; nothing here is a detour from it.
 
 **Common mistake.** Learning the famous eight bars and stopping. The middle
 section is where the piece is.
