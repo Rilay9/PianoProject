@@ -30,6 +30,20 @@ underneath both of them, never squeezed beside the control. Targets, so the tour
 a Today or Plan row **≤ 96 px** tall, a settings row **≤ 56 px**, a settings row *with* a
 sentence **≤ 100 px**, at least **eight settings** on the first screenful.
 
+**Exception, upright, for the two lists of archive titles** (Library and the score
+folder; owner, 2026-09-12). R2 assumes a row's words are a name someone chose —
+"Mary Had a Little Lamb". These two carry whatever 37,261 files in an archive
+happen to be called: "Billie Eilish - all the good girls go to hell", four of
+which begin with the same eleven characters. Held upright, 96 px buys about half
+a row of words beside two buttons, and every row reads as an ellipsis. So there
+the words take the full width and the buttons drop to a line of their own at
+full size, costing about 35 px. The owner asked for exactly that trade in these
+words: *"make the rows larger in portrait so that the buttons AND the full names
+can be seen"*. It is affordable in a list you scroll and is **not** affordable on
+a card that has to hold the whole day, which is why Today is unchanged and still
+measured against 96. Sideways is untouched, because width is the one thing a
+phone on its side has.
+
 The 100 is measured on a 360 px screen and it is a floor, not a preference: the control sets the
 height of the first line (40 px for a tick box, 48 for a button — both of them a thumb) and two
 lines of sentence under it are 40 more. What breaks it is a third line, so a hint is written to
@@ -290,11 +304,18 @@ Library → **Browse a score folder** (`#/library/folder`):
 
 - **Pick a folder.** `<input type="file" webkitdirectory>` — the way to hand a folder to a web
   app on Android that is known to work, and the default. **Corrected 2026-09-06 (P19):** MDN
-  lists `showDirectoryPicker` from Chrome for Android 132; until the owner confirms it on the
-  S25 the app re-picks the folder each time, and the **Remember the score folder** setting
-  (Settings → Content, off by default) turns the stored handle on. Everything that can go
-  wrong with a handle — no API, a refused permission, a folder that moved — falls back to the
-  picker, so the worst case is the behaviour without it.
+  lists `showDirectoryPicker` from Chrome for Android 132. **Updated 2026-09-12:** it is
+  confirmed shipped there, and Chromium's own intent-to-ship records that opening very large
+  folders can make the browser unresponsive — which is the freeze the owner reported, at this
+  archive's size. Separately, **installed PWAs persist File System Access grants
+  automatically** from Chrome 122, without the three-way prompt a plain tab gets; this app is
+  installed, so one grant should carry across launches. On that basis **Remember the score
+  folder** (Settings → Content) now defaults **on**, at the owner's word: off, every visit
+  re-picks the folder and re-reads 37,261 files, which is the whole of what he reported.
+  Everything that can go wrong with a handle — no API, a refused permission, a folder that
+  moved — still falls back to the picker, so the worst case is the behaviour without it. The
+  one fact still unverified is whether the S25 keeps the grant across a relaunch; only the
+  phone can answer it.
 - **The listing is kept, the files are not.** The folder's rows go into IndexedDB
   (`folderLibraries`), so browsing works with nothing plugged in, months later. Adding asks
   for the folder again — one tap, and only when something is actually wanted — or asks Chrome
@@ -302,10 +323,28 @@ Library → **Browse a score folder** (`#/library/folder`):
 - **A row is marked *Added* by its file, not its title.** PDMX has six files called *The
   Entertainer*; matching on the title greyed out the other five as soon as one was added
   (P19). An import that came from a folder records where it came from.
-- **The folder describes itself.** A `library.json` beside the scores supplies title,
-  composer, estimated level, bars and rating; `tools/content/pdmx/manifest.py` writes one.
-  Nothing about the format is PDMX-specific, and a folder without one still works — each file
-  is listed under its own name and titled from its `<work-title>` when it is added.
+- **The folder describes itself, and that description *is* the listing.** A `library.json`
+  beside the scores supplies title, composer, estimated level, bars and rating;
+  `tools/content/pdmx/manifest.py` writes one. Nothing about the format is PDMX-specific, and
+  a folder without one still works — each file is listed under its own name and titled from
+  its `<work-title>` when it is added.
+
+  **Changed 2026-09-12.** This used to read "a manifest describes the files; the files decide
+  what is listed", so the app enumerated all 37,261 directory entries to find out what existed
+  and used the manifest only to decorate what it found. That made every permission grant cost
+  an archive read, which is the fault the owner reported. It is reversed: each manifest row's
+  first field is the file's path relative to the manifest — the same string the add path
+  descends — so one file both lists the archive and can reach any piece in it. When a
+  `library.json` is found, that file is the library: no directory is enumerated at all.
+
+  The walk is now the **fallback**, for a folder with no manifest and for an explicit rescan.
+  It opens no files, works one top-level folder at a time, writes rows as it goes so browsing
+  can start early, and resumes where it stopped if the app is killed.
+
+  Two consequences are the trade, and both are said on screen rather than left implicit: a
+  score added to the folder *since* the manifest was written is invisible until a rescan, and
+  a manifest row whose file has gone is only discovered when Add reaches for it, at which
+  point the row is removed and a rescan offered.
 - **Search, style, level range, "rated 4+ by 5+ people".** Filtering is synchronous over the
   array; only the drawing is capped (60 rows, then "Show more").
 - **A letter rail down the side** (`ui/alphaRail.ts`, shared with Library's list). A to Z is
@@ -378,7 +417,7 @@ and never will; what it holds is a register.
 
 ## 5. Score screen (the core)
 
-**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional.
+**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional. **And hides nothing else (2026-09-12):** the visible count-in, the beat dot and the corner readout are children of that stage, and `visibility` inherits, so they went with it. Every one of them exists *because* the notation might not be there — the dot is the one thing that must be visible while the clock runs, the corner says which bar when the chrome has folded, and the count-in was built because the sound is usually turned down on a music stand. A blind run in Tempo mode counted itself in invisibly, on a screen with nothing else on it at all. The notation is the buffers; hiding those is all blind mode ever meant to do.
 
 Layout: a **header row** across the top — `← Back`, the piece's name, then the app's own
 messages and the mic meter — the notation under it, a **thin control bar** along the bottom,
@@ -447,9 +486,18 @@ nowhere, which on a stand with no piano connected reads as a fault.
 `⋯` opens a sheet holding everything else, each with its word beside it: **Input**
 (MIDI / Mic / Screen keys / None) · **Section** (only when the piece has named sections) ·
 **Loop** (set A/B by tapping bars, or pick a section) · **Metronome** · **Bars in window**
-(1–8) · **Size** (zoom ±) · **Layout** (`Window` | `Scroll`, a segment: it is a state, not a
-verb) · **Keys** (`Keys` | `Ribbon` | `Off`, a segment) · **Sound** (Phone / Piano / Both) ·
-**Blind** · **Perform**.
+(1–8) · **Size** (zoom ±, with the percentage between the buttons) · **Layout** (`Window` |
+`Scroll`, a segment: it is a state, not a verb) · **Keys** (`Keys` | `Ribbon` | `Off`, a
+segment) · **Sound** (Phone / Piano / Both) · **Blind** · **Perform**.
+
+**Both steppers say where they are and where they stop (2026-09-12).** `Bars in window` always
+read `2 bars` between its buttons; `Size` said nothing at all, so it could be pressed a dozen
+times without ever admitting where it had got to — and "put it back how it was" had no target.
+Both now grey the button out at the end of the range, because a lit button that absorbs a
+press reads as a broken control on a phone, where a tap has no other feedback. A press that
+cannot change anything now does nothing at all: it used to write the setting, re-seat the
+renderer and, since a re-engraving invalidates a run's judgements, **restart the run** — so a
+tap that changed nothing threw away the pass you were in the middle of.
 The controls are moved into the sheet and back, not rebuilt, so each keeps its state and its
 id.
 
