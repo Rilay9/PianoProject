@@ -18,7 +18,7 @@ import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, PassRecord } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
 import { getSettings } from '../../data/settingsStore';
-import { markSkill } from '../../data/skillsStore';
+import { markLessonLearnt, markSkill } from '../../data/skillsStore';
 import { recordPlacement } from '../../data/planStore';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
@@ -36,6 +36,7 @@ interface VideoLink {
   url?: string;
   teacher?: string;
 }
+
 
 export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const { section, header, body } = screenFrame('lesson', `Lesson ${lessonId}`);
@@ -390,6 +391,20 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     drawLock();
 
     const done = lessonComplete(lesson, records(), { requireTwoSongs: getSettings().requireTwoSongs });
+    // A lesson finished by *playing* it teaches its concepts too.
+    //
+    // `markSkill` was called in exactly one place: the `I already know this`
+    // shortcut. So a learner who practised a rung properly left every one of
+    // its concepts at `unseen` for ever — and because `displayState` derives
+    // "rusty" only from a state that is *not* unseen, those concepts could
+    // never go rusty either. The Skills review screen was inert for anyone who
+    // actually played the piano, which is the opposite of who it is for.
+    //
+    // Only on the transition, and only for a concept still unseen. Marking on
+    // every draw would refresh `lastReviewedAt` each time the page was opened,
+    // and a timestamp that keeps moving is one that never reaches thirty days —
+    // the screen would then have no rusty skills for the other reason.
+    if (done) void markLessonLearnt(lesson.concepts ?? []);
     actions.replaceChildren(
       el('span', { id: 'lesson-state' }, done ? badge('complete', 'passed') : badge('in progress')),
       button(

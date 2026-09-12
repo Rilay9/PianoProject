@@ -44,6 +44,33 @@ export function displayState(row: SkillRow | undefined, now = new Date()): Skill
 }
 
 /**
+ * Marks the concepts a finished lesson teaches, once each.
+ *
+ * `markSkill` used to be called in exactly one place in the app — the lesson
+ * page's `I already know this` shortcut — so a learner who finished a rung by
+ * *playing* it left every concept at `unseen` for ever. And `displayState`
+ * returns early for `unseen`, so those concepts could never go rusty either:
+ * the review screen was empty for the people it is for and full only for
+ * someone who had used the shortcut.
+ *
+ * The `seen` check is not an optimisation, it is the rule. What must not move
+ * is `lastReviewedAt`, because that is the only thing rusty is measured from —
+ * re-marking on every visit to a finished lesson would keep pushing the
+ * timestamp forward and thirty days would never elapse.
+ */
+export async function markLessonLearnt(concepts: readonly string[]): Promise<string[]> {
+  if (concepts.length === 0) return [];
+  const seen = new Set((await allSkills()).map((row) => row.conceptId));
+  const marked: string[] = [];
+  for (const concept of concepts) {
+    if (seen.has(concept)) continue;
+    await markSkill(concept, 'known');
+    marked.push(concept);
+  }
+  return marked;
+}
+
+/**
  * Forgets what is cached here, so the next read comes off the disk.
  *
  * Restoring a backup and Reset progress both write this store from outside.
