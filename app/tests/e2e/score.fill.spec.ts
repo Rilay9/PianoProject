@@ -77,6 +77,48 @@ async function fillOfStage(page: Page): Promise<number | null> {
 /** Below this the music is not being read, it is being looked at. */
 const FLOOR = 0.55;
 
+/**
+ * And again with a run going, which is the case that mattered and the case the
+ * first version of this file missed.
+ *
+ * A run freezes its size so the sheet cannot change under the player, and the
+ * freeze was stored without the engraving zoom it was taken at. Opening Satie's
+ * Gnossienne engraves at zoom 1; starting a run re-engraves at 0.74, and the
+ * frozen number went on being applied to sheets whose units had changed — 0.20
+ * where the right answer was 0.90, for all 312 steps of the corpus run. Merely
+ * opening the score looked fine the whole time, so a check that only opens it
+ * is not a check.
+ */
+test('and a piece being played uses the stage too', async ({ page }) => {
+  test.setTimeout(240_000);
+  const thin: string[] = [];
+  for (const piece of PIECES) {
+    await page.setViewportSize({ width: 342, height: 740 });
+    await page.goto(`/#/score/${piece}`);
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+      'data-mode',
+      /wait|tempo/,
+      { timeout: 60_000 },
+    );
+    await page.waitForFunction(
+      () => {
+        const svg = document.querySelector('#score-stage .is-front svg');
+        return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+      },
+      undefined,
+      { timeout: 60_000 },
+    );
+    await page.locator('#score-play').click();
+    // Past the 150 ms settle the freeze waits for, and past the re-engrave a
+    // run triggers.
+    await page.waitForTimeout(3_000);
+    const fill = await fillOfStage(page);
+    if (fill === null) thin.push(`${piece}: nothing drawn`);
+    else if (fill < FLOOR) thin.push(`${piece}: ${String(Math.round(fill * 100))} % of the width, mid-run`);
+  }
+  expect(thin, `music drawn too small to read during a run: ${thin.join(' | ')}`).toEqual([]);
+});
+
 for (const size of SIZES) {
   test(`every corpus piece uses the stage, ${size.name}`, async ({ page }) => {
     test.setTimeout(240_000);

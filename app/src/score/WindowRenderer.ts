@@ -488,7 +488,26 @@ export class WindowRenderer {
    * comes later, is applied at the next fit — the next run, or a resize. A
    * later bar taller than anything seen can still *shrink* it; nothing grows.
    */
-  private frozen: { scale: number; piece: PieceInk | null } | null = null;
+  /**
+   * The size a run is holding to, and **the engraving zoom it means anything
+   * at**.
+   *
+   * The scale is a CSS transform on a sheet OSMD engraved at `zoomLevel`, so it
+   * is a number in that zoom's units and in no other. Change the zoom and the
+   * SVG's own dimensions change under it; the same number then draws something
+   * else entirely. `held` has always been reset on a zoom change and `pieceInk`
+   * has always been ignored unless `pieceInkZoom` matches — the freeze was the
+   * one of the three with no such guard.
+   *
+   * It cost the corpus's worst cell. Opening Satie's Gnossienne engraves at
+   * zoom 1; starting a run re-engraves at 0.74 and the probe measures the piece
+   * there — and the freeze, taken 150 ms in against the *old* measurement, went
+   * on applying 0.2015 to sheets whose ink is 371 px wide on a 342 px stage.
+   * The right scale is about 0.90. Every step of a 312-step run was drawn four
+   * and a half times too small, and the re-seat could not save it because that
+   * only ever lowers the frozen scale.
+   */
+  private frozen: { scale: number; piece: PieceInk | null; zoom: number } | null = null;
   private freezeHandle: number | null = null;
   /**
    * Whether a run is on, so a stage change can put the freeze back.
@@ -2262,6 +2281,7 @@ export class WindowRenderer {
       this.frozen = {
         scale: this.currentScale(),
         piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
+        zoom: this.zoomLevel,
       };
     }, 150);
   }
@@ -2334,6 +2354,11 @@ export class WindowRenderer {
     // the margin, because a sheet that shrinks by 6 % at bar 10 is the size
     // change the owner saw; only ink far taller than the stage has room for
     // still shrinks it, since a note clipped off the bottom is worse.
+    // A freeze taken at a different engraving zoom is not a size, it is a
+    // number in units nothing on the screen is drawn in any more. Dropped, so
+    // this fit is the one that freezes — which is the same "one change, at the
+    // start" the re-seat below is for, arriving by the other route.
+    if (this.frozen && this.frozen.zoom !== this.zoomLevel) this.frozen = null;
     if (this.frozen && this.frozen.scale > 0) {
       if (fitted >= this.frozen.scale * FROZEN_OVERFLOW) return this.frozen.scale;
       // The shrink is allowed — and the freeze moves with it.
@@ -2352,6 +2377,7 @@ export class WindowRenderer {
       this.frozen = {
         scale: fitted,
         piece: this.frozen.piece ?? piece,
+        zoom: this.zoomLevel,
       };
       return fitted;
     }
