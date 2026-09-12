@@ -1,5 +1,5 @@
 ---
-title: "Rock and metal piano — how this module works"
+title: "Reducing a band arrangement to one piano"
 stage: 3
 unit: "rock-metal.3.1"
 concepts: [reduction, ostinato, power-chords, sus-and-add9, pedal-textures, importing]
@@ -10,22 +10,24 @@ videos:
 readingTime: 3
 ---
 
-This module exists because the songs you actually want to play are still in
+This rung exists because the songs you actually want to play are still in
 copyright, and PianoPath will never ship a transcription of them. What it can do
-is teach the techniques those parts are made of, on music that is free to
-bundle, and then get out of the way when you bring in a score you have obtained
-yourself.
+is teach the techniques those parts are made of, on music that is free to bundle
+— and every piece named below is already in your library, so there is nothing to
+go and find first.
 
-**How each song lesson works.** Each target song gets a *technique brief*: what
-the piano part has to do, which public-domain piece trains it, and what to listen
-for. Its catalog entry has no file, only an import hint — bring the MusicXML and
-the import screen puts it in your library, where every practice mode works.
+This used to be seven further rungs, one per named song, each of them a written
+brief about a score that had to be bought or transcribed before a note could be
+played. They were removed: a rung whose music never arrives is not a rung. What
+they taught is here, in the five textures, on music you have.
 
-**Where to get scores legally.** Some retailers of digital sheet music let you
-download MusicXML rather than only PDF. Failing that, transcribe it yourself in
-MuseScore and export MusicXML — slow, and the best ear training there is.
+**If you do bring a score in.** Some retailers of digital sheet music let you
+download MusicXML rather than only PDF; failing that, transcribe it yourself in
+MuseScore and export MusicXML — slow, and the best ear training there is. The
+Library import screen takes it from there, and you can assign it to whichever
+rung it belongs on.
 
-**The five textures this module covers.**
+**The five textures this rung covers.**
 
 1. **Minor-key ostinato** — a short repeated figure over a held or pedal bass.
    Trains on: Bach *Prelude in C minor* BWV 999, Chopin *Prelude* op. 28 no. 4.

@@ -159,9 +159,14 @@ test.describe('Today', () => {
     await page.reload();
     const status = page.locator('#today-status');
     await expect(status).toContainText('Working on Stage');
-    const line = (await status.textContent()) ?? '';
-    const named = /lesson (\S+)$/.exec(line.trim())?.[1] ?? '';
-    expect(named).not.toBe('');
+    // From the attribute, not the sentence. This used to read `lesson 0.1` out
+    // of the status line's prose; that id was an internal key printed beside a
+    // title that repeated it, and taking it off the screen was right. The id
+    // now lives in `data-lesson`, which is where a test should have been
+    // reading it all along — the rule being checked is about *which* rung Today
+    // offers, not about how the line is worded.
+    const named = (await status.getAttribute('data-lesson')) ?? '';
+    expect(named, 'Today named no rung to work on').not.toBe('');
     expect(coreLessons).not.toContain(named);
   });
 

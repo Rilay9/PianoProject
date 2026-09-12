@@ -5,6 +5,40 @@
  * build is that the owner can skip ahead, and a plan that locks him out of
  * Stage 4 until Stage 3 is ticked would be the app arguing with him. Strict
  * prerequisites exist as a setting for anyone who wants the argument.
+ *
+ * ## What this screen is for, in order
+ *
+ * Photographed on the phone and read back, the screen said everything at the
+ * same volume: a row of chips, a row of links, ten stage cards, and between
+ * them a shouty all-caps line per unit —
+ * `CLASSICAL.5.1 · CLASSICAL: SONATINA FORM AND ROMANTIC MINIATURES —
+ * CLASSICAL` — over a card repeating the same title, truncated. Three
+ * announcements of one rung, two of them carrying an internal id, and the one
+ * you actually tap was the one cut short.
+ *
+ * So the screen now ranks what it draws, and the ranking is the design:
+ *
+ *  1. **What to practise next.** One filled card at the top (`04` §0 R3's one
+ *     box per screen), naming the rung, where it sits and what it costs. This
+ *     is the question the screen is opened to answer, so it is inside the
+ *     first screenful whatever stage the learner is on (R1) — the stage list
+ *     alone could not manage that, because the stage being worked on is the
+ *     sixth row down.
+ *  2. **The stage being worked on, and the rungs inside it.** Stage rows are
+ *     headings with a completion bar; the current one is marked. Inside an
+ *     open stage the rungs are grouped by *track*, with the track named once
+ *     over its group rather than once per rung — which is what the all-caps
+ *     line was doing, badly, and with the track name printed twice.
+ *  3. **Everything else, available but quiet.** Which tracks are on (one
+ *     chip, one sheet), the placement test, skills review and how to
+ *     practise — all read occasionally, none of them the reason the screen is
+ *     open, so they are a chip in the header and a line of text below the
+ *     list (R3).
+ *
+ * A unit no longer gets a line of its own unless it has more than one lesson
+ * in it, which two units in the whole curriculum do. Everywhere else the unit
+ * and the lesson are the same rung under two names, and printing both was the
+ * duplication (`00` D26).
  */
 import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
@@ -13,7 +47,7 @@ import { getSettings } from '../../data/settingsStore';
 import { nextRecommended } from '../../curriculum/session';
 import { activeTracksFor } from '../../curriculum/tracks';
 import { indexAtPoint, isDrag, moveDown, moveItem, moveUp } from '../reorder';
-import type { Curriculum, Lesson, PassRecord, Stage } from '../../curriculum/types';
+import type { Curriculum, Lesson, PassRecord, Stage, Track, Unit } from '../../curriculum/types';
 import { allProgress } from '../../data/progressStore';
 import { getPlan, updatePlan } from '../../data/planStore';
 import { onScreenDispose } from '../screenLifecycle';
@@ -29,14 +63,80 @@ import { screenFrame, statusLine } from './screenFrame';
  */
 const expanded = new Set<number>();
 
+/**
+ * The four families the sixteen tracks fall into.
+ *
+ * Sixteen tracks in one flat list is the "organise all the different genres"
+ * problem: a jazz ladder that runs from Stage 5 to Stage 9 and a one-rung
+ * holiday module were the same kind of thing on screen, so choosing between
+ * them meant reading all sixteen descriptions.
+ *
+ * Two of the families are named here because they are an editorial judgement
+ * and should read as one — the spine of the plan, and the three that run
+ * *beside* whatever else is on. The other two are read off the curriculum:
+ * a track with one unit in the whole plan is a mini-module, and a track with
+ * more than one is a ladder. That is why a new track added to
+ * `content/curriculum/00-tracks.json` lands somewhere sensible without this
+ * file being edited, and why deleting rungs from a track can move it — the
+ * rock module became a mini-module the day its seven import-only briefs went.
+ */
+type FamilyId = 'path' | 'alongside' | 'ladder' | 'module';
+
+const PATH_TRACKS = new Set(['core', 'practice']);
+const ALONGSIDE_TRACKS = new Set(['technique', 'theory-ear', 'improv-compose']);
+
+const FAMILY_ORDER: FamilyId[] = ['path', 'alongside', 'ladder', 'module'];
+
+const FAMILY_TITLES: Record<FamilyId, string> = {
+  path: 'The path itself',
+  alongside: 'Alongside everything',
+  ladder: 'Style ladders',
+  module: 'Mini-modules — one rung each',
+};
+
+/** How many units each track owns, across every stage. */
+function unitsPerTrack(curriculum: Curriculum): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) counts.set(unit.track, (counts.get(unit.track) ?? 0) + 1);
+  }
+  return counts;
+}
+
+function familyOf(trackId: string, units: number): FamilyId {
+  if (PATH_TRACKS.has(trackId)) return 'path';
+  if (ALONGSIDE_TRACKS.has(trackId)) return 'alongside';
+  return units > 1 ? 'ladder' : 'module';
+}
+
+/**
+ * Whether a unit is on a track the learner has switched on.
+ *
+ * `core` is never filtered out: it is the spine the stages are built on and it
+ * cannot be switched off, so a stage's own rungs are always there.
+ */
+function onActiveTrack(unit: Unit, activeTracks: string[]): boolean {
+  return unit.track === 'core' || activeTracks.length === 0 || activeTracks.includes(unit.track);
+}
+
+/**
+ * How much of a stage is done — counting only what is on screen.
+ *
+ * It used to count every unit in the stage whatever the learner had switched
+ * on, so a stage showing three rungs was headed "3 of 12 lessons" and the
+ * other nine were nowhere. A fraction whose denominator names rows that are
+ * not there is worse than no fraction.
+ */
 function completion(
   stage: Stage,
   records: PassRecord[],
+  activeTracks: string[],
   options: { requireTwoSongs?: boolean },
 ): { done: number; total: number } {
   let done = 0;
   let total = 0;
   for (const unit of stage.units) {
+    if (!onActiveTrack(unit, activeTracks)) continue;
     for (const lesson of unit.lessons) {
       total += 1;
       if (lessonComplete(lesson, records, options)) done += 1;
@@ -45,10 +145,38 @@ function completion(
   return { done, total };
 }
 
+/** Two titles that are the same words — the duplication `00` D26 is about. */
+function sameWords(a: string | undefined, b: string | undefined): boolean {
+  if (!a || !b) return false;
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
+/** `1 exercise`, `4 exercises` — and nothing at all for none of them. */
+function count(n: number, singular: string, plural = `${singular}s`): string[] {
+  if (n <= 0) return [];
+  return [`${String(n)} ${n === 1 ? singular : plural}`];
+}
+
+/**
+ * What a rung costs, as a line: how many ways in, and how long it takes.
+ *
+ * A zero is left out rather than printed. "2 exercises · 0 songs" was on every
+ * orientation rung in Stage 0 — a fact whose only content is an absence, taking
+ * a third of the line from the two that say something.
+ */
+function costLine(lesson: Lesson): string {
+  return [
+    ...count(lesson.exerciseOptions.length, 'exercise'),
+    ...(lesson.songOptional ? ['no song needed'] : count(lesson.songOptions.length, 'song')),
+    ...(lesson.estimatedDays ? [`~${String(lesson.estimatedDays)} ${lesson.estimatedDays === 1 ? 'day' : 'days'}`] : []),
+  ].join(' · ');
+}
+
 export function PlanScreen(router: Router): HTMLElement {
   const { section, header, body } = screenFrame('plan', 'Plan');
   const status = statusLine('plan-status');
   const trackRow = el('div.filter-row', { id: 'plan-tracks' });
+  const nextBox = el('div', { id: 'plan-next-slot' });
   const list = el('div.list', { id: 'plan-list' });
 
   let curriculum: Curriculum | null = null;
@@ -58,27 +186,79 @@ export function PlanScreen(router: Router): HTMLElement {
   let activeTracks: string[] = [];
 
   const linkRow = el('div.plan-links', { id: 'plan-links' });
-  header.append(trackRow, linkRow);
-  body.append(list, status);
+  header.append(trackRow);
+  // The answer first, then the message about it, then the list, then the
+  // things read once a month. `04` §0 R1 and R6: the status line sits beside
+  // what it is about rather than under ninety rows of stage list, which is
+  // where "Next up: …" used to be printed.
+  body.append(nextBox, status, list, linkRow);
 
-  function lessonRow(lesson: Lesson): HTMLElement {
+  function trackById(id: string): Track | undefined {
+    return curriculum?.tracks.find((candidate) => candidate.id === id);
+  }
+
+  function lessonRow(lesson: Lesson, options: { next: boolean }): HTMLElement {
     const done = lessonComplete(lesson, records, { requireTwoSongs: getSettings().requireTwoSongs });
-    const badges: HTMLElement[] = [];
-    if (done) badges.push(badge('complete', 'passed'));
-    if (lesson.songOptional) badges.push(badge('no song needed'));
-    // No subtitle. It was the unit's title, printed under a card whose own
-    // title usually *is* the unit's title, under a heading that says it a third
-    // time — three sizes of the same words for a third of the screen
+    // Only what the detail line does not already say (`04` §0 R2). "No song
+    // needed" is *in* the detail line, where it replaces the "0 songs" it used
+    // to sit beside; as a badge as well it cost the row a fourth line and put
+    // two rungs over the 96 px budget.
+    const badges: HTMLElement[] = done ? [badge('complete', 'passed')] : [];
+    // The title, and nothing else. It used to be `${lesson.id} · ${title}` —
+    // `classical.5 · Sonatina form and Romantic…` — so an internal id the
+    // learner has no use for took the room that then truncated the words that
+    // say what the rung is. The id is still on the row as `data-lesson`,
+    // which is where a test wants it and a person does not.
+    //
+    // No subtitle either. It was the unit's title, printed under a card whose
+    // own title usually *is* the unit's title, under a heading that said it a
+    // third time — three sizes of the same words for a third of the screen
     // (`04` §3, `00` D26).
     return listRow({
-      title: `${lesson.id} · ${lesson.title}`,
-      meta: `${String(lesson.exerciseOptions.length)} exercises · ${String(
-        lesson.songOptions.length,
-      )} songs${lesson.estimatedDays ? ` · ~${String(lesson.estimatedDays)} days` : ''}`,
+      title: lesson.title,
+      meta: costLine(lesson),
       badges,
       onClick: () => router.navigateLesson(lesson.id),
-      dataset: { 'data-lesson': lesson.id },
+      dataset: { 'data-lesson': lesson.id, ...(options.next ? { 'data-next': true } : {}) },
     });
+  }
+
+  /**
+   * The one filled box on the screen (`04` §0 R3): what to practise next.
+   *
+   * The screen is opened to answer one question and the answer used to be a
+   * sentence at the very bottom of the body, under every stage and every rung
+   * the learner had expanded. It is a card at the top now, and it is the
+   * thing you tap.
+   */
+  function drawNext(recommended: ReturnType<typeof nextRecommended>): void {
+    nextBox.replaceChildren();
+    if (!recommended) return;
+    const { lesson, unit, stageNumber } = recommended;
+    const track = trackById(unit.track);
+    const where = [
+      `Stage ${String(stageNumber)}`,
+      ...(track && track.id !== 'core' ? [track.title] : []),
+    ].join(' · ');
+    const cost = costLine(lesson);
+    const card = el(
+      'div.plan-next',
+      { id: 'plan-next', role: 'button', tabIndex: 0, 'data-lesson-next': lesson.id },
+      el('p.plan-next__eyebrow', { text: `Next up · ${where}` }),
+      el('p.plan-next__title', { text: lesson.title }),
+      el('p.plan-next__meta', { text: cost }),
+    );
+    const open = (): void => {
+      router.navigateLesson(lesson.id);
+    };
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        open();
+      }
+    });
+    nextBox.append(card);
   }
 
   function draw(): void {
@@ -87,16 +267,22 @@ export function PlanScreen(router: Router): HTMLElement {
       requireTwoSongs: getSettings().requireTwoSongs,
       strictPrerequisites: getSettings().strictPrerequisites,
     });
+    drawNext(recommended);
     list.replaceChildren();
 
     for (const stage of curriculum.stages) {
-      const { done, total } = completion(stage, records, {
+      const { done, total } = completion(stage, records, activeTracks, {
         requireTwoSongs: getSettings().requireTwoSongs,
       });
       const open = expanded.has(stage.number);
+      const current = recommended?.stageNumber === stage.number;
       const head = listRow({
         title: `Stage ${String(stage.number)} · ${stage.title}`,
-        subtitle: stage.summary,
+        // The summary is not on the row. It was a second muted line — over
+        // R2's one — and at this width it was cut to "Sitting, the layout of
+        // the keyboard, how…", which is an explanation that has stopped
+        // explaining. It moves *below the thing it explains* (R1): in full,
+        // wrapping, as the first line inside the stage once it is open.
         meta: `${String(done)} of ${String(total)} lessons${
           stage.approxDuration ? ` · ${stage.approxDuration}` : ''
         }`,
@@ -113,34 +299,75 @@ export function PlanScreen(router: Router): HTMLElement {
           else expanded.add(stage.number);
           draw();
         },
-        dataset: { 'data-stage': stage.number, 'data-open': open },
+        dataset: { 'data-stage': stage.number, 'data-open': open, 'data-current': current },
       });
+      // How far through the stage is, as a bar rather than only as a
+      // fraction: it is what makes a column of ten stage rows scannable
+      // without reading any of them. Absolutely positioned along the row's
+      // bottom edge, so it costs the row no height against `04` §0 R2.
+      const fill = el('span.plan-stage-bar__fill');
+      fill.style.width = `${String(total > 0 ? Math.round((done / total) * 100) : 0)}%`;
+      head.append(el('span.plan-stage-bar', { 'aria-hidden': 'true' }, fill));
       list.append(head);
       if (!open) continue;
+      if (stage.summary) {
+        list.append(
+          el('p.plan-stage-summary.muted', { 'data-summary-for': stage.number, text: stage.summary }),
+        );
+      }
+
+      // Rungs grouped by track, each track named once over its own group.
+      //
+      // Grouped by *first appearance*, not resorted: the order the curriculum
+      // puts its units in is the order `nextRecommended` walks them in, so
+      // resorting here would put a rung above the one the screen is telling
+      // him to do next. In practice this only pulls together tracks that have
+      // more than one unit in a stage, which is rare.
+      const groups: { track: string; units: Unit[] }[] = [];
+      for (const unit of stage.units) {
+        if (!onActiveTrack(unit, activeTracks)) continue;
+        const existing = groups.find((group) => group.track === unit.track);
+        if (existing) existing.units.push(unit);
+        else groups.push({ track: unit.track, units: [unit] });
+      }
 
       let drawn = 0;
-      for (const unit of stage.units) {
-        if (activeTracks.length > 0 && unit.track !== 'core' && !activeTracks.includes(unit.track)) continue;
-        drawn += unit.lessons.length;
-        // The unit heading earns its line only when it is not simply the
-        // lesson's title again: a unit of one lesson with the same name says
-        // nothing twice.
-        const echoes =
-          unit.lessons.length === 1 &&
-          unit.lessons[0]?.title.trim().toLowerCase() === unit.title.trim().toLowerCase();
-        if (!echoes) {
+      for (const group of groups) {
+        const track = trackById(group.track);
+        // `core` gets no heading: it is the stage itself, not a side track,
+        // and a line reading "Core path" over the rungs of Stage 1 tells the
+        // reader nothing they cannot see. The heading earns its line where it
+        // marks a change of direction — Classical, Blues, Technique.
+        if (group.track !== 'core') {
           list.append(
-            el('p.plan-unit.muted', { text: `${unit.id} · ${unit.title} — ${unit.track}` }),
+            el('p.plan-track', { 'data-track-head': group.track }, // no id, no repeat
+              el('span.plan-track__name', { text: track?.title ?? group.track })),
           );
         }
-        for (const lesson of unit.lessons) list.append(lessonRow(lesson));
+        for (const unit of group.units) {
+          drawn += unit.lessons.length;
+          // A unit line only where the unit is genuinely more than its
+          // lessons: two units in the whole curriculum have more than one
+          // lesson, and everywhere else the heading was the card's own title
+          // in capitals with an id in front of it. A unit named after its own
+          // track — `practice.1.1`, "How to practise" — or after one of its
+          // own rungs — `4.6`, "Sight-reading and phrasing capstone" — is the
+          // same repetition wearing a different hat (`00` D26).
+          const echoes =
+            sameWords(unit.title, track?.title) ||
+            unit.lessons.some((candidate) => sameWords(unit.title, candidate.title));
+          if (unit.lessons.length > 1 && !echoes) {
+            list.append(el('p.plan-unit.muted', { 'data-unit': unit.id, text: unit.title }));
+          }
+          for (const lesson of unit.lessons) {
+            list.append(lessonRow(lesson, { next: recommended?.lesson.id === lesson.id }));
+          }
+        }
       }
 
       // `04` §0 R4. Stages 5 to 9 have no `core` units at all — every one of
-      // them belongs to a side track — so switching off the four tracks that
-      // are on by default leaves them expanding to nothing at all, under a
-      // header still counting "3 of 12 lessons" because completion is counted
-      // over the whole stage and not over what is on screen. An empty
+      // them belongs to a side track — so switching off the tracks that are
+      // on by default leaves them expanding to nothing at all. An empty
       // accordion is the worst kind of dead: it looks like the app failed.
       if (drawn === 0) {
         list.append(
@@ -156,17 +383,22 @@ export function PlanScreen(router: Router): HTMLElement {
       }
     }
 
-    status.textContent = recommended
-      ? `Next up: lesson ${recommended.lesson.id} — ${recommended.lesson.title}.`
-      : 'Every lesson is complete.';
+    // The card says what is next, so the line beside it has nothing to add
+    // until there is nothing next to say. Writing "Next up: …" here as well
+    // would be the same sentence twice, one of them in the one region a
+    // screen reader announces on every redraw.
+    status.textContent = recommended ? '' : 'Every lesson is complete.';
   }
 
   /**
    * Commits a new order and tells everything that reads it.
    *
-   * `trackOrder` is what the session builder walks, so a reorder changes what
-   * the app recommends next — which is the whole point of the gesture and the
-   * reason it is worth confirming on screen.
+   * Note for whoever picks this up next: `trackOrder` is only ever consumed as
+   * a *set* — `activeTracksFor` hands it to `nextRecommended` and to the
+   * session builder, both of which do `new Set(activeTracks)`. So switching a
+   * track on or off changes what the app recommends and the order does not.
+   * `04` §3 asks for "ordering by drag" and this keeps it; whether it should
+   * survive is the owner's call, not a thing to delete in a layout pass.
    */
   function commitOrder(next: string[]): void {
     activeTracks = next;
@@ -257,49 +489,42 @@ export function PlanScreen(router: Router): HTMLElement {
   }
 
   /**
-   * The header: the tracks he is on, and one chip that opens the rest.
+   * The header: one line that says which tracks are on and opens the chooser.
    *
-   * It used to be all fifteen tracks as chips with a pair of ▲▼ beside each
-   * active one — about 470 px of a 780 px screen, so Stage 0 began below the
-   * fold. Choosing and ordering tracks is done once and then not again for
-   * months (`04` §0 R3), so it moves into a sheet and the daily screen keeps
-   * only the answer.
+   * It was three chips that looked pressable and were not — `chip(..., {
+   * pressed: true })` with no handler — followed by a fourth reading
+   * `Tracks… +13`, on a second line. Two rows of header for a fact and a
+   * door. One chip now, carrying both: the fact is its label and the door is
+   * the tap.
    */
   function drawTracks(): void {
     if (!curriculum) return;
     trackRow.replaceChildren();
-    // A bounded answer, not a list. Fifteen tracks switched on would be fifteen
-    // chips and six rows of header, which is the problem this change exists to
-    // remove — so the header names the first few and the chip counts the rest.
-    const SHOWN = 3;
-    for (const id of activeTracks.slice(0, SHOWN)) {
-      const track = curriculum.tracks.find((candidate) => candidate.id === id);
-      if (!track) continue;
-      trackRow.append(
-        // A different id from the sheet's chip for the same track: both are on
-        // the page while the sheet is open, and two elements cannot share one.
-        chip(track.title, {
-          id: `plan-active-${track.id}`,
-          pressed: true,
-          // `data-track` says which; `data-order` belongs to the sheet, which
-          // is where the order is set and the only place it should be read.
-          dataset: { 'data-track': track.id },
-        }),
-      );
-    }
-    const hidden = Math.max(0, activeTracks.length - SHOWN);
-    trackRow.append(
-      chip(hidden > 0 ? `Tracks… +${String(hidden)}` : 'Tracks…', {
-        id: 'plan-tracks-open',
-        onClick: () => openTracksSheet(),
-      }),
+    const names = activeTracks
+      .map((id) => trackById(id)?.title)
+      .filter((title): title is string => Boolean(title));
+    // Two names and a count, not a list. Fifteen tracks switched on is
+    // fifteen chips and six rows of header, which is the problem this exists
+    // to remove.
+    const SHOWN = 2;
+    const rest = Math.max(0, names.length - SHOWN);
+    const label =
+      names.length === 0
+        ? 'Tracks…'
+        : `Tracks: ${names.slice(0, SHOWN).join(', ')}${rest > 0 ? ` +${String(rest)}` : ''}`;
+    const opener = chip(label, { id: 'plan-tracks-open', onClick: () => openTracksSheet() });
+    // The label is a summary, so the accessible name has to be the action.
+    opener.setAttribute(
+      'aria-label',
+      `Choose tracks — ${String(names.length)} of ${String(curriculum.tracks.length)} on`,
     );
+    trackRow.append(opener);
 
-    // One line of links rather than three boxes on two rows. All three are read
-    // occasionally and none is the thing the screen is for (`04` §0 R3), and as
-    // boxes they took eighty-eight pixels off the top of the stage list.
-    // `How to practise` is here because it left Today, where it was one of six
-    // boxes of equal weight on the screen opened every day.
+    // One line of occasional links, and *below* the list rather than above it
+    // (`04` §0 R1, R3). All three are read occasionally and none is the thing
+    // the screen is for; two of them — the placement test and how to
+    // practise — are rungs that already appear in the list, so at the top
+    // they were pushing the subject down to repeat it.
     linkRow.replaceChildren(
       button('Placement test', () => router.navigateLesson('0.4'), {
         id: 'plan-placement',
@@ -318,7 +543,24 @@ export function PlanScreen(router: Router): HTMLElement {
     );
   }
 
-  /** Every track, its switch, and the order — behind one chip. */
+  /**
+   * Every track, its switch, and the order — behind one chip.
+   *
+   * Two things about the order of the rows, both of them fixes:
+   *
+   *  - **The tracks that are on come first, in the order they are stored in.**
+   *    The list used to be drawn in curriculum order whatever `activeTracks`
+   *    said, so after a drag and any redraw the sheet showed one order and
+   *    stored another — the arrows moved rows that snapped back the next time
+   *    a chip was tapped.
+   *  - **The rest are grouped into families.** Sixteen tracks in one flat
+   *    list is the thing that made choosing between them hard; a ladder that
+   *    runs from Stage 5 to Stage 9 and a one-rung mini-module are not the
+   *    same kind of offer and should not read as one. The families are drawn
+   *    only below the active block, so no heading ever falls between two
+   *    draggable rows and the drag's hit-testing keeps measuring a contiguous
+   *    column.
+   */
   function openTracksSheet(): void {
     if (!curriculum) return;
     const sheet = openSheet('Tracks', { id: 'plan-tracks-sheet' });
@@ -341,6 +583,7 @@ export function PlanScreen(router: Router): HTMLElement {
     // Which row element belongs to which track, so a drag can move rows
     // around without rebuilding them — see `reorderActiveRows`.
     const rowsByTrack = new Map<string, HTMLElement>();
+    const units = unitsPerTrack(curriculum);
 
     /**
      * Moves each active track's existing row to the slot matching its
@@ -382,69 +625,102 @@ export function PlanScreen(router: Router): HTMLElement {
       });
     };
 
+    const rowFor = (track: Track, on: boolean): HTMLElement => {
+      const node = chip(track.title, {
+        id: `plan-track-${track.id}`,
+        pressed: on,
+        dataset: {
+          'data-track': track.id,
+          'data-order': String(activeTracks.indexOf(track.id)),
+        },
+        onClick: () => {
+          if (suppressClickFor === track.id) {
+            suppressClickFor = null;
+            return;
+          }
+          // `core` is the spine of the stages; switching it off would empty
+          // the plan, so it is not a toggle.
+          if (track.id === 'core') {
+            sheetStatus.textContent = 'The core path is always on — it is what the stages are.';
+            return;
+          }
+          commitOrder(
+            on
+              ? activeTracks.filter((candidate) => candidate !== track.id)
+              : [...activeTracks, track.id],
+          );
+          redraw();
+        },
+      });
+      if (on && track.id !== 'core') makeDraggable(node, track.id, reorderActiveRows);
+      const row = el('div.track-row', { 'data-row-track': track.id });
+      row.append(node);
+      rowsByTrack.set(track.id, row);
+      if (on && track.id !== 'core') {
+        // The fallback. A drag is not reachable from a keyboard and is
+        // awkward with a tremor; two buttons are neither.
+        const index = activeTracks.indexOf(track.id);
+        row.append(
+          el(
+            'div.track-row__moves',
+            {},
+            button('▲', () => { commitOrder(moveUp(activeTracks, index)); redraw(); }, {
+              id: `plan-track-up-${track.id}`,
+              variant: 'quiet',
+              className: 'track-move',
+              title: `Move ${track.title} earlier`,
+            }),
+            button('▼', () => { commitOrder(moveDown(activeTracks, index)); redraw(); }, {
+              id: `plan-track-down-${track.id}`,
+              variant: 'quiet',
+              className: 'track-move',
+              title: `Move ${track.title} later`,
+            }),
+          ),
+        );
+      }
+      return row;
+    };
+
     const redraw = (): void => {
       listEl.replaceChildren();
       rowsByTrack.clear();
-      for (const track of curriculum?.tracks ?? []) {
-        const on = activeTracks.includes(track.id);
-        const node = chip(track.title, {
-          id: `plan-track-${track.id}`,
-          pressed: on,
-          dataset: {
-            'data-track': track.id,
-            'data-order': String(activeTracks.indexOf(track.id)),
-          },
-          onClick: () => {
-            if (suppressClickFor === track.id) {
-              suppressClickFor = null;
-              return;
-            }
-            // `core` is the spine of the stages; switching it off would empty
-            // the plan, so it is not a toggle.
-            if (track.id === 'core') {
-              sheetStatus.textContent = 'The core path is always on — it is what the stages are.';
-              return;
-            }
-            commitOrder(
-              on ? activeTracks.filter((candidate) => candidate !== track.id) : [...activeTracks, track.id],
-            );
-            redraw();
-          },
-        });
-        if (on && track.id !== 'core') makeDraggable(node, track.id, reorderActiveRows);
-        const row = el('div.track-row', { 'data-row-track': track.id });
-        row.append(node);
-        rowsByTrack.set(track.id, row);
-        if (on && track.id !== 'core') {
-          // The fallback. A drag is not reachable from a keyboard and is
-          // awkward with a tremor; two buttons are neither.
-          const index = activeTracks.indexOf(track.id);
-          row.append(
-            el(
-              'div.track-row__moves',
-              {},
-              button('▲', () => { commitOrder(moveUp(activeTracks, index)); redraw(); }, {
-                id: `plan-track-up-${track.id}`,
-                variant: 'quiet',
-                className: 'track-move',
-                title: `Move ${track.title} earlier`,
-              }),
-              button('▼', () => { commitOrder(moveDown(activeTracks, index)); redraw(); }, {
-                id: `plan-track-down-${track.id}`,
-                variant: 'quiet',
-                className: 'track-move',
-                title: `Move ${track.title} later`,
-              }),
-            ),
-          );
-        }
-        listEl.append(row);
+      const tracks = curriculum?.tracks ?? [];
+      const byId = new Map(tracks.map((track) => [track.id, track]));
+      // On, in the stored order, and contiguous — see the note on this
+      // function about why no heading may fall inside this block.
+      for (const id of activeTracks) {
+        const track = byId.get(id);
+        if (track) listEl.append(rowFor(track, true));
+      }
+      const off = tracks.filter((track) => !activeTracks.includes(track.id));
+      if (off.length === 0) {
+        // `04` §0 R4: say so rather than leaving a heading over nothing.
+        listEl.append(
+          el('p.muted.track-empty', {
+            id: 'plan-tracks-all-on',
+            text: 'Every track is switched on.',
+          }),
+        );
+        return;
+      }
+      for (const family of FAMILY_ORDER) {
+        const members = off.filter(
+          (track) => familyOf(track.id, units.get(track.id) ?? 0) === family,
+        );
+        if (members.length === 0) continue;
+        listEl.append(
+          el('p.track-family', { 'data-family': family, text: FAMILY_TITLES[family] }),
+        );
+        for (const track of members) listEl.append(rowFor(track, false));
       }
     };
 
     redraw();
     sheet.body.append(
-      el('p.muted', { text: 'Switch a track on or off, and drag or use the arrows to order them.' }),
+      el('p.muted', {
+        text: 'Switch a track on or off. Drag or use the arrows to order the ones that are on.',
+      }),
       sheetStatus,
       listEl,
     );

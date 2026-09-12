@@ -43,7 +43,14 @@ test.describe('Plan', () => {
     // Choosing and ordering tracks moved into a sheet (`04` §0 R3): fifteen
     // chips and eight arrows were 470 px of the daily screen for a thing done
     // once. The header shows the answer; the sheet holds the question.
-    await expect(page.locator('#plan-active-core')).toBeVisible();
+    //
+    // The answer is one chip now, not three-plus-one on two lines. The three
+    // that named the first three active tracks were drawn `pressed` and had no
+    // click handler at all — three toggles that looked on and did nothing —
+    // and the fourth beside them was the only real control. Its label is the
+    // summary and its tap is the door.
+    await expect(page.locator('#plan-tracks-open')).toContainText(/^Tracks: /);
+    await expect(page.locator('#plan-tracks [aria-pressed="true"]')).toHaveCount(0);
     await page.locator('#plan-tracks-open').click();
     await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
     await page.locator('#plan-track-core').click();
@@ -84,24 +91,33 @@ test.describe('the lesson page', () => {
     await expect(page.locator('#lesson-exercises')).toContainText('you said you know it');
   });
 
-  test('an option that needs importing offers no play button', async ({ page }) => {
-    // `ragtime.6`, not `0.1`. Lesson 0.1's stage-0 posture checklist was the
-    // row this used to find, and it stopped needing an import the moment the
-    // catalog schema let its `drill.kind` through - so the test was pointed at
-    // a case that had moved, not a rule that had broken. Ragtime is where the
-    // rule still bites: the Joplin editions are CC BY-NC-SA and cannot be
-    // bundled in a redistributable build (`00` D23), so ten of that lesson's
-    // options are placeholders.
+  test('every option on a lesson offers a way to open it', async ({ page }) => {
+    // This used to look for an "import needed" badge on `ragtime.6` and assert
+    // that its row carried no play button. There is no such row any more, and
+    // the reason is the point: the Joplin editions are CC BY-NC-SA, they were
+    // excluded from the build, and ten of this lesson's options were
+    // placeholders. The owner's build is now the default
+    // (`tools/content/build.py`, 2026-09-12), so all fifteen resolve — fourteen
+    // to a file and one to a drill, which needs none.
     //
-    // `everyOptionOpens.test.ts` holds the other half for every lesson at
-    // once: an option that cannot be opened carries the sentence that says
-    // why, because a badge with nothing beside it is a dead end with a label.
+    // The rule the old test stood for is still held, in two places that do not
+    // depend on the shipped content containing a placeholder:
+    // `everyOptionOpens.test.ts` asserts that **no** option anywhere is a dead
+    // end, so a placeholder reaching a lesson fails there first and loudly; and
+    // `curriculumSelectors.test.ts` exercises the selection side against a
+    // synthetic `file: null` item with an `importHint`.
+    //
+    // What is worth asserting at this URL now is the thing a learner meets:
+    // every option on the page can actually be started.
     await page.goto('/#/lesson/ragtime.6');
-    const importNeeded = page.locator('#lesson-exercises .list-row, #lesson-songs .list-row', {
-      hasText: 'import needed',
-    });
-    await expect(importNeeded.first()).toBeVisible();
-    await expect(importNeeded.first().getByRole('button', { name: '▶' })).toHaveCount(0);
+    const rows = page.locator('#lesson-exercises .list-row, #lesson-songs .list-row');
+    await expect(rows.first()).toBeVisible({ timeout: 60_000 });
+    const count = await rows.count();
+    expect(count, 'the lesson drew no options at all').toBeGreaterThan(5);
+    const stuck = await page
+      .locator('#lesson-exercises .list-row, #lesson-songs .list-row', { hasText: 'import needed' })
+      .count();
+    expect(stuck, 'an option on this lesson cannot be opened').toBe(0);
   });
 });
 
@@ -205,7 +221,9 @@ test.describe('Skills review', () => {
 test.describe('Plan obeys 04 §0', () => {
   test.use({ viewport: { width: 360, height: 780 } });
 
-  test('Stage 0 starts inside the first screenful, with every track on (R1)', async ({ page }) => {
+  test('what to practise next starts inside the first screenful, with every track on (R1)', async ({
+    page,
+  }) => {
     await page.goto('/#/plan');
     // Turn everything on: the worst case for the header is every track active.
     await page.locator('#plan-tracks-open').click();
@@ -213,10 +231,18 @@ test.describe('Plan obeys 04 §0', () => {
       if ((await chipEl.getAttribute('aria-pressed')) !== 'true') await chipEl.click();
     }
     await page.locator('#plan-tracks-sheet-close').click();
-    const stage = page.locator('.list-row[data-stage="0"]');
-    await expect(stage).toBeVisible();
-    const box = await stage.boundingBox();
-    expect(box?.y ?? 0).toBeLessThan(200);
+
+    // The subject of this screen is the next rung, not Stage 0 — the stage
+    // being worked on is the sixth row down once the learner is past Stage 2,
+    // so the stage list on its own could never satisfy R1 for anyone but a
+    // beginner. The card answers it wherever he is, and Stage 0 remains the
+    // first row of the list below it.
+    const next = page.locator('#plan-next');
+    await expect(next).toBeVisible();
+    const card = await next.boundingBox();
+    const viewport = page.viewportSize();
+    expect(card?.y ?? 0).toBeLessThan((viewport?.height ?? 0) / 3);
+    await expect(page.locator('.list-row[data-stage="0"]')).toBeVisible();
   });
 
   test('a lesson card never repeats its unit title (D26)', async ({ page }) => {
@@ -233,6 +259,12 @@ test.describe('Plan obeys 04 §0', () => {
       // usually the same words, under a heading that says it a third time.
       await expect(row.locator('.list-row__sub')).toHaveCount(0);
       expect(title.trim()).not.toBe('');
+      // And the id is gone from the words. It was `classical.5 · Sonatina
+      // form and Romantic…`: an internal name taking the room that then
+      // truncated the words describing the rung. It stays on the row as an
+      // attribute, which is where a test wants it and a person does not.
+      const id = (await row.getAttribute('data-lesson')) ?? '';
+      expect(title, `the row for ${id} still prints its id`).not.toContain(id);
     }
   });
 
@@ -355,7 +387,7 @@ test.describe('the Tracks sheet is a list of tracks, not a stream of chips', () 
       // where anything was.
       await page.setViewportSize(size);
       await page.goto('/#/plan');
-      await expect(page.locator('#plan-active-core')).toBeVisible();
+      await expect(page.locator('#plan-tracks-open')).toBeVisible();
       await page.locator('#plan-tracks-open').click();
       await expect(page.locator('#plan-tracks-sheet')).toBeVisible();
 

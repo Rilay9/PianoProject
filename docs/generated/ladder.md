@@ -117,18 +117,11 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Rock & metal (`rock-metal`)
 
-8 rung(s), stages 3–5.
+1 rung(s), stages 3–3.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `rock.overview` | 3 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (with chords) (3.3), Canon in D (easy) (5.1) |
-| 4 | `rock.seize-the-day` | 3 | 3 | 3.5–7.1 | Seize the Day (5.1), Prélude in E minor, Op. 28 No. 4 (6.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1) |
-| 4 | `rock.dear-god` | 3 | 3 | 3.2–4.5 | Greensleeves (waltz bass) (3.6), Dear God (4.2), Row, Row, Row Your Boat (4.5) |
-| 4 | `rock.final-masquerade` | 3 | 3 | 2.2–7.1 | Final Masquerade (4.3), Prélude in E minor, Op. 28 No. 4 (6.1), Gnossienne No. 1 (7.1) |
-| 4 | `rock.shadow-of-the-day` | 3 | 3 | 3.6–7.1 | Greensleeves (waltz bass) (3.6), Shadow of the Day (4.4), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1) |
-| 5 | `rock.so-far-away` | 3 | 3 | 3.2–6.1 | Greensleeves (with chords) (3.3), So Far Away (5.1), Prélude in E minor, Op. 28 No. 4 (6.1) |
-| 5 | `rock.fiction` | 3 | 3 | 3.6–7.1 | Greensleeves (in 6/8) (4.5), Fiction (5.2), Gnossienne No. 1 (7.1) |
-| 5 | `rock.waiting-for-the-end` | 3 | 3 | 3.2–6.2 | Twelve-bar blues shuffle in C (3.4), Waiting for the End (5.3), Gymnopédie No. 1 (6.2) |
 
 ## Theory & ear (`theory-ear`)
 

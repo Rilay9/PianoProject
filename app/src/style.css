@@ -523,10 +523,23 @@ body {
    Today is measured against it at 360 px wide; this costs about 35 px, which
    is affordable in a list you scroll and is not affordable on a card that has
    to hold the whole day. Sideways is untouched — width is the one thing a
-   phone on its side has. */
+   phone on its side has.
+
+   **And only where there are buttons to fit (2026-09-12).** The trade the
+   owner asked for is "the buttons AND the full names" — it buys a row nothing
+   when the row has one text link on it. Every bundled catalog row has exactly
+   that: a single `Details`, beside a title somebody chose and wrote down, in a
+   list of 1,533. Measured at 342 px they stood at 101 px each with about 45 of
+   those a blank band under the words holding one word, which is four and a
+   half rows a screenful. So in the *library* the drop happens on rows with
+   more than one action — an imported score, which is where the archive titles
+   and the `Edit`/`Assign`/`Details` strip both are — and an ordinary row keeps
+   its words on the same line as its one link. The score folder is untouched:
+   every one of its rows carries two buttons, so the condition is always true
+   there and writing it in would only be a way to get it wrong later. */
 @media (orientation: portrait) {
   #folder-list .list-row,
-  #library-list .list-row {
+  #library-list .list-row:has(.list-row__actions > button + button) {
     row-gap: 8px;
   }
 
@@ -534,12 +547,12 @@ body {
      competing for the width. `flex-wrap: wrap` on the row already allows it;
      the basis is what decides whether it happens. */
   #folder-list .list-row__text,
-  #library-list .list-row__text {
+  #library-list .list-row:has(.list-row__actions > button + button) .list-row__text {
     flex-basis: 100%;
   }
 
   #folder-list .list-row__actions,
-  #library-list .list-row__actions {
+  #library-list .list-row:has(.list-row__actions > button + button) .list-row__actions {
     margin-left: auto;
   }
 
@@ -950,6 +963,12 @@ body {
      above has stopped being one. It spans; its lessons flow in two columns
      under it; the next stage spans again. Same for a unit's line. */
   .list:not(:has(.skill-concept)):not(#folder-list) > .list-row[data-stage],
+  .list:not(:has(.skill-concept)):not(#folder-list) > .plan-track,
+  .list:not(:has(.skill-concept)):not(#folder-list) > .plan-stage-summary,
+  /* Today's break and its free-play prompt are about the whole card, not
+     about the column they happen to land in. */
+  .list:not(:has(.skill-concept)):not(#folder-list) > .today-break,
+  .list:not(:has(.skill-concept)):not(#folder-list) > .today-prompt,
   .list:not(:has(.skill-concept)):not(#folder-list) > .plan-unit {
     grid-column: 1 / -1;
   }
@@ -965,21 +984,44 @@ body {
     padding-bottom: 6px;
   }
 
+  /* Nothing on that line may leave the screen.
+
+     It was `flex-wrap: nowrap` over three items none of which would yield: the
+     week is `white-space: nowrap`, the four chips are a grid, and the input
+     chip sat last. At the width the owner's phone actually reports sideways
+     the line came to more than the screen, and what fell off the right-hand
+     edge was the input chip — a live control, 30 % of it past the edge, that
+     opens the settings page for whichever input is following him. The order is
+     the ranking, so the yielding follows it: the week's minutes give up their
+     width first and ellipsise, the chips compress next, and the chip that is a
+     control keeps its size. */
   [data-screen='today'] > .screen-header > .today-goal {
     order: 1;
     margin: 0;
     white-space: nowrap;
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   [data-screen='today'] > .screen-header > #today-lengths {
     order: 2;
     margin: 0 0 0 auto;
-    flex-wrap: nowrap;
+    flex: 0 1 auto;
+    min-width: 0;
   }
 
   [data-screen='today'] > .screen-header > .today-titlerow {
     order: 3;
     margin: 0;
+    flex: none;
+  }
+
+  /* The card is two columns sideways; the button that starts it, and the three
+     links that change it, are one line each above and below. */
+  [data-screen='today'] .today-start-row > .button {
+    flex: 0 1 auto;
   }
 }
 
@@ -3542,6 +3584,134 @@ input[type='checkbox'] {
   outline-offset: 4px;
 }
 
+/* --- Shelf, ranked (`04` §4c; see ShelfScreen.ts) ------------------------- */
+
+/* The block with no heading over it: the screen's own title is the heading,
+   and `BOOKS YOU OWN` under an `h1` reading **Shelf** was the same thing said
+   twice. Its top rule went with the heading. */
+.shelf-intro {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 4px;
+}
+
+/* A book's name is a name.
+
+   `.block h2` is this app's *section-label* style — muted, letter-spaced,
+   uppercase — which is right for `YOUR DATA` and wrong for "Czerny, Practical
+   Method for Beginners on the Pianoforte Op. 599". Set that way it ran to
+   three lines of grey capitals and was the loudest thing on a screen whose
+   subject is the pieces underneath it, which were meanwhile reading
+   `No. 12 — Stud…`. Two lines, then it gives up; ordinary text colour,
+   ordinary case, one weight heavier than the rows it heads. */
+.shelf-book > .shelf-book__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Kind, author and how many pieces, on the one line the author used to have
+   to itself — with the kind having been a badge on the title's line and the
+   count having been nowhere at all. */
+.shelf-book__facts {
+  margin: 2px 0 6px;
+  font-size: 0.85rem;
+}
+
+.shelf-book__actions {
+  margin-bottom: 8px;
+}
+
+/* A piece's title takes a second line rather than an ellipsis: it is the name
+   of the thing the page number belongs to, and `No. 12 — Stud…` is not a name.
+   The same trade Today's card makes, for the same reason. */
+#shelf-list .list-row__title {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* And upright, the same trade the Library's imported rows make.
+
+   A shelf row carries up to four ways in — *Practise*, *With the score*,
+   *Open the PDF*, *Edit* — against a 342 px screen, which left the words about
+   a third of the row: `No. 12 — Stud…` over `page 14 · for Right h`, the
+   second of those clipped mid-word because `.list-row__meta` has no ellipsis
+   of its own. This is the case `04` §0's portrait exception was written for —
+   the buttons *and* the name, both readable — so it applies here for the same
+   reason, and sideways is untouched. */
+@media (orientation: portrait) {
+  #shelf-list .list-row {
+    row-gap: 8px;
+  }
+
+  #shelf-list .list-row__text {
+    flex-basis: 100%;
+  }
+
+  #shelf-list .list-row__actions {
+    margin-left: auto;
+  }
+
+  #shelf-list .list-row__actions > button {
+    min-height: 40px;
+  }
+
+  #shelf-list .list-row__actions > .link-button {
+    padding: 0 10px;
+  }
+}
+
+/* An ellipsis, in both orientations.
+
+   `.list-row__metatext` deliberately has none — `fitDetail` has already
+   dropped whole tokens to fit, so what is left should be readable. That
+   argument holds while the column is the width its character budget was tuned
+   for; sideways this list is two columns of a 740 px phone and the line read
+   `page 14 · for Right har`, stopping in the middle of a word. Half a word is
+   the thing the token-dropping exists to avoid, so where the budget has been
+   overtaken by the layout, say so with three dots. */
+#shelf-list .list-row__metatext {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Sideways, the explanation is one line and the books start above the fold.
+
+   The block in front of the list is a sentence, a folded `How this works` and
+   `Add a book` — three short things stacked, which upright is four rows and
+   sideways was two-thirds of a 342 px screen before the first book. `04` §0 R1
+   wants the subject inside the first screenful, and R5 wants the header to
+   stop eating a landscape phone; the three go on one line and the shelf starts
+   under them. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .shelf-intro {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0 16px;
+  }
+
+  .shelf-intro > p,
+  .shelf-intro > .row {
+    margin: 0;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -3621,8 +3791,13 @@ input[type='checkbox'] {
     align-items: start;
   }
 
-  /* A stage row is a heading for the lessons under it: it spans (C2). */
+  /* A stage row is a heading for the lessons under it: it spans (C2). So is
+     the line naming the track a group of rungs belongs to. */
   .list:not(:has(.skill-concept)) > .list-row[data-stage],
+  .list:not(:has(.skill-concept)) > .plan-track,
+  .list:not(:has(.skill-concept)) > .plan-stage-summary,
+  .list:not(:has(.skill-concept)) > .today-break,
+  .list:not(:has(.skill-concept)) > .today-prompt,
   .list:not(:has(.skill-concept)) > .plan-unit {
     grid-column: 1 / -1;
   }
@@ -3867,11 +4042,214 @@ input[type='checkbox'] {
 
 /* --- Plan, lesson page, skills, chord chart (docs/04 §3, §3a, §3b) -------- */
 
-.plan-unit {
-  margin: 12px 0 2px;
+/* The Plan screen's ranking, drawn (`04` §0 R1, R3; see PlanScreen.ts).
+
+   Four weights, and they are the whole design: the next rung is filled, a
+   stage row is a heading on a tinted card, a track's name is a quiet rule
+   across the list, and a rung is an ordinary row. Before this everything was
+   an ordinary row — ten stage cards, eighty-eight unit headings in capitals
+   and ninety-three rungs, all of them the same size — so there was nothing
+   for the eye to hold on to and the answer to "what do I play next?" was a
+   sentence at the very bottom. */
+
+/* 1. The one filled box on the screen: what to practise next. */
+.plan-next {
+  display: block;
+  cursor: pointer;
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  /* The bar is R2's 96 px for a Plan row and this card is the widest thing on
+     the screen, so it buys its three lines by keeping each of them tight and
+     by clamping the title. */
+  min-height: 56px;
+}
+
+.plan-next:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.plan-next__eyebrow,
+.plan-next__title,
+.plan-next__meta {
+  margin: 0;
+}
+
+.plan-next__eyebrow,
+.plan-next__meta {
   font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  line-height: 1.3;
+  /* Not `--text-muted`: on a filled card that is the surface colour's muted
+     grey against the accent, which is unreadable in both themes. */
+  opacity: 0.85;
+}
+
+.plan-next__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.25;
+  /* Two lines, then stop. The card is the thing you tap, so it is the one
+     place the title must not be cut to `Sonatina form and Romantic…` — that
+     was backwards, because the full title was printed in the heading above
+     it, which is not tappable and which has now gone. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 2. A stage row is a heading for what is under it. */
+#plan-list .list-row[data-stage] {
+  position: relative;
+  background: var(--bg);
+}
+
+#plan-list .list-row[data-stage] .list-row__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  /* "Stage 0 · Orientation & placem…" — a heading that cannot say which
+     stage it is heading. Two lines for the two stage titles that need them,
+     and one for the other eight. */
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* What a stage is about, in full and wrapping, under the row it belongs to
+   and only while that row is open (`04` §0 R1). On the row it was a second
+   muted line cut to "Sitting, the layout of the keyboard, how…". */
+.plan-stage-summary {
+  margin: 6px 4px 8px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  max-width: 60ch;
+}
+
+/* The stage being worked on, marked — it is where the screen scrolls to and
+   where the next rung lives. */
+#plan-list .list-row[data-current='true'] {
+  border-color: var(--accent);
+}
+
+/* How far through the stage is, along its bottom edge. Positioned, so it
+   costs the row no height against `04` §0 R2. */
+.plan-stage-bar {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.plan-stage-bar__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+/* 3. A track's name, once, over the rungs that belong to it.
+
+   It replaces a line per unit that read
+   `CLASSICAL.5.1 · CLASSICAL: SONATINA FORM AND ROMANTIC MINIATURES —
+   CLASSICAL`: an internal id, the track's name inside the title, and the
+   track's name again after a dash, in capitals, over a card saying the same
+   words a third time. Sentence case, one name, and no id. */
+.plan-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.plan-track::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--border);
+}
+
+.plan-track__name {
+  flex: none;
+}
+
+/* A unit line survives only where a unit is more than one rung — two units in
+   the whole curriculum. Quiet, and no longer shouted in capitals. */
+.plan-unit {
+  margin: 10px 0 2px;
+  font-size: 0.85rem;
+}
+
+/* 4. A rung. Its title wraps to a second line rather than being cut: this is
+   the thing you tap, and half a title is not a name. */
+#plan-list .list-row[data-lesson] .list-row__title {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* The rung the card at the top names, marked where it sits in the ladder.
+   A thick left edge rather than a second blue frame: the stage row already
+   carries one, and two outlines of equal weight compete for "you are here". */
+#plan-list .list-row[data-next] {
+  border-left: 4px solid var(--accent);
+  padding-left: 9px;
+}
+
+/* The tracks chip is a tap target before it is a label (`04` §0 R4). */
+#plan-tracks-open {
+  min-height: 40px;
+  max-width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* The occasional links, now under the list rather than over it. Quiet in
+   weight (R3) but still a thumb in height: at the row's own 2 px of padding
+   they were 24 px tall, well under the 40 the design language asks of
+   anything you press. */
+#plan-links {
+  margin-top: 16px;
+  gap: 4px;
+}
+
+#plan-links .link-button {
+  min-height: 40px;
+  padding: 0 6px;
+}
+
+/* Tracks that are off, grouped: a ladder that runs from Stage 5 to Stage 9
+   and a one-rung mini-module are not the same offer. Only below the block of
+   tracks that are on, so no heading falls between two draggable rows. */
+.track-family {
+  margin: 14px 0 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.track-family:first-child {
+  margin-top: 0;
+}
+
+.track-empty {
+  margin: 8px 0 0;
 }
 
 .lesson-text {
@@ -3953,6 +4331,8 @@ input[type='checkbox'] {
   }
 }
 
+/* --- Today's ranking, drawn (`04` §0 R1, R3; see TodayScreen.ts) ---------- */
+
 .today-goal {
   font-size: 1.05rem;
   margin: 0 0 8px;
@@ -3962,6 +4342,115 @@ input[type='checkbox'] {
   margin: 4px 0;
   padding: 8px 12px;
   border-left: 3px solid var(--accent);
+}
+
+/* The four session lengths, one line, whatever the font.
+
+   They were four chips in a wrapping flex row and they did not fit: at the
+   width the owner actually holds the phone the row read 15 · 30 · 60 and then
+   `120 min` alone on a second line, 48 px of the screen spent on a ragged
+   break. A share each rather than a measurement each — four equal columns are
+   four equal columns on a runner whose fonts are wider, which a tuned padding
+   would not be. */
+#today-lengths {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+#today-lengths > .chip {
+  padding-inline: 4px;
+  justify-content: center;
+  text-align: center;
+}
+
+/* The one filled box, above the card rather than under it. */
+.today-start-row {
+  margin-bottom: 8px;
+}
+
+.today-start-row > .button {
+  flex: 1 1 auto;
+}
+
+/* A row's title takes a second line rather than an ellipsis.
+
+   This is the row you tap and the title is the name of the thing you would
+   play, so it is the last thing on the row that should be cut — and it was the
+   first: `Posture and hand-shape …`, `No. 12 — Stud…`, the words clipped at
+   the width `Swap` and `▶` left over. It is paid for by the badge line, which
+   used to carry the slot kind on every single row and now carries only what
+   the detail line does not say. */
+#today-card .list-row__title,
+#progress-repertoire .list-row__title,
+#progress-performances .list-row__title,
+#progress-history .list-row__title {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Except where the row also carries a badge, and then the budget decides.
+   (2026-09-12, reviewing the rule above.)
+
+   A row on these two cards is four lines deep already — title, reason, detail,
+   badges — and `04` §0 R2 gives a Today row 96 px. At 16 px text that is 14 of
+   padding and border, 18.4 for the reason, 18.4 for the detail and 24 for the
+   badge line, which leaves 21 for the title: one line, and the sum comes to
+   95.6. Taking a second title line without giving up the badge line makes it
+   116, and the *reason the badge line was removed* from Today's rows was that
+   it was the line the title needed. So the trade is honest only while there is
+   no badge, and where there is one it is the badge that is the news — "you
+   passed this", "this needs importing", "that felt rough" — while the title is
+   a name the reader has seen before on the same card.
+
+   Written as `:has()` rather than as a class on the row, because the condition
+   is literally "is there a badge line", and `listRow` decides that from
+   whether the caller passed any. The alternative was to badge nothing at all
+   on these two cards, which is R2's own instruction read backwards: badges
+   *only* when they say something the detail line does not, not never. */
+#today-card .list-row:has(.list-row__badges) .list-row__title,
+#progress-history .list-row:has(.list-row__badges) .list-row__title {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+/* Free play is a prompt, not a row.
+
+   It had no click handler, no buttons and the same border, radius, surface and
+   height as the four tappable cards above it — the Plan screen's dead-control
+   fault in its quietest form. It keeps every word and gives up the costume. */
+.today-prompt {
+  margin: 4px 0 0;
+  padding: 8px 12px 8px 0;
+  border-left: 3px solid var(--border);
+  padding-left: 12px;
+}
+
+.today-prompt__title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.today-prompt__text {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* The three that change the day, under the card (R3). Quiet in weight, still
+   a thumb in height — the same treatment Plan's link row has. */
+#today-tools {
+  margin-top: 12px;
+  gap: 4px;
+}
+
+#today-tools .link-button {
+  min-height: 40px;
+  padding: 0 6px;
 }
 
 /* --- Progress heat-map (docs/04 §6) --------------------------------------- */
@@ -4000,6 +4489,54 @@ input[type='checkbox'] {
 .heatmap-key__swatch[data-level='4'],
 .heat-cell[data-level='4'] {
   background: var(--accent);
+}
+
+/* --- Progress, ranked (`04` §0 R1, R3, §6; see ProgressScreen.ts) --------- */
+
+/* The one loud thing on the screen: am I keeping it up.
+
+   It was `.today-goal` — 1.05 rem, the same weight as the muted line under it
+   and as the six section labels — under an `h2` reading `THIS WEEK`, which is
+   the last three words of the sentence it was heading. The heading is gone and
+   the figure has its weight, which is the whole of the hierarchy here: one
+   number, then a map of it, then labels, then rows. */
+.progress-week {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* The map's caption sits under the figure it elaborates, so it does not get
+   the 20 px of air a `.block h2` opening a section gets. */
+#progress-summary > h2 {
+  margin-top: 12px;
+}
+
+#progress-summary > #progress-totals {
+  margin: 2px 0 0;
+}
+
+/* The goal is set about once, so it goes below the map rather than between the
+   figure and the map (R3's ordering, applied to reading weight rather than to
+   buttons). A rule above it, because it is a different subject from the two
+   readings above and there is no heading to say so. */
+#progress-goal-block {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* The text actions on this screen are still a thumb tall (`04` §0 R4).
+
+   `.link-button`'s own floor is 24 px — `04` §9's target for a *link* — and
+   that is fine for a word inside a sentence. It is not fine for the four
+   controls that R3 says are text on this screen: the way out of each empty
+   list, *Show N more*, *Import a backup* and *Diagnostics*. Plan's link row
+   needed exactly this bump for exactly this reason. */
+[data-screen='progress'] .link-button {
+  min-height: 40px;
+  padding: 0 6px;
 }
 
 .kv-block p {
@@ -4852,6 +5389,20 @@ input[type='checkbox'] {
   }
 
   .alpha-rail {
+    /* Across the *top*, which the comment above has been promising and the
+       layout has not been doing.
+       
+       `FolderScreen` and `LibraryScreen` both append the rail after the list,
+       which is right when it sits beside the rows and wrong the moment this
+       rule turns the container into a column: a column puts a later child
+       lower, so the rail landed under all of the rows — measured at 3,559 px
+       down a 620-row listing on a 342 px-tall screen. There was effectively no
+       A-to-Z rail sideways, on either screen.
+       
+       `folder.rail-cost.spec` missed it because its sideways case asserts only
+       that the rail is horizontally inside the list. That is a proxy for "a
+       rail you can reach", and the two parted company. */
+    order: -1;
     position: static;
     flex-direction: row;
     align-self: stretch;
@@ -4862,5 +5413,26 @@ input[type='checkbox'] {
   .alpha-rail__letter {
     min-height: 1.6rem;
     font-size: 0.7rem;
+  }
+}
+
+/* A walkthrough step has no card, so it needs no picture column either.
+   
+   `runWalkthrough` hides `.drill-stage`, and without this the sideways grid
+   keeps its 0.8fr for the card that is no longer there — so the prose reads in
+   the right 60 % of a 740 px screen with four tenths of it blank alongside.
+   Readable, but asymmetric for no reason. The screen already sets
+   `data-kind`, so this needs no new hook. */
+@media (max-height: 520px) {
+  [data-screen='drill'][data-kind='walkthrough'] .screen-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-screen='drill'][data-kind='walkthrough'] #drill-counter,
+  [data-screen='drill'][data-kind='walkthrough'] #drill-prompt,
+  [data-screen='drill'][data-kind='walkthrough'] #drill-hint,
+  [data-screen='drill'][data-kind='walkthrough'] #drill-status,
+  [data-screen='drill'][data-kind='walkthrough'] #drill-controls {
+    grid-column: 1;
   }
 }

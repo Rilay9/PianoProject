@@ -8,6 +8,31 @@
  *
  * Export/import lives here because this is the screen you are on when you
  * think about losing all of it.
+ *
+ * ## What this screen is for, in order
+ *
+ * The same pass the Plan screen had, and this screen had four of its six
+ * faults. Six `section.block` headings in the same muted capitals, the first
+ * of them reading `THIS WEEK` directly above a line opening "48 of 150 minutes
+ * **this week**" — a name repeated inside its own heading, and the half taking
+ * the room was the heading. `REPERTOIRE` over twenty rows each badged
+ * *mastered*, `PERFORMANCES` over twenty each badged *performance*: a mark on
+ * every row of a list that is *defined* by that mark, costing every one of
+ * them the line its title needed. Fifty cards in the two record lists drawn
+ * exactly like the tappable ones and with no handler at all. And a history
+ * line reading `2026-09-12 08:30 · drill:walkthrough`.
+ *
+ *  1. **Am I keeping it up** — the week against the goal, and the thirteen
+ *     weeks of minutes a day. One loud figure and the map under it, in one
+ *     block, so the answer is the first thing on the screen (`04` §0 R1).
+ *  2. **What has come of it** — the repertoire, and the counts of what is
+ *     started, passed and mastered.
+ *  3. **The record** — performances, then recent sessions. Each row opens the
+ *     piece it names, which is what a row drawn like that promises.
+ *  4. **Merely available** — the weekly-goal control, which is set about once,
+ *     and the backup. There is no filled box on this screen: nothing here is
+ *     done on most visits, and *Export everything* was wearing one at the
+ *     bottom of a screen fifty rows long (R3).
  */
 import type { Router } from '../../router';
 import { allItems } from '../../curriculum/load';
@@ -66,6 +91,51 @@ export function heatLevel(minutes: number): 0 | 1 | 2 | 3 | 4 {
 }
 
 /**
+ * How a run was played, in words rather than in the key it is stored under.
+ *
+ * `SessionRow.mode` is the engine's own name for the run and the history line
+ * printed it raw, so a week of drills read `drill:walkthrough`,
+ * `drill:checklist`, `drill:placement` — internal identifiers, on screen, in
+ * the line that is supposed to say what the run was (`00` D26, and the Plan
+ * screen's third fault). The drill kinds collapse to one word because the
+ * row's *title* is already the drill's name; which harness it used is not a
+ * fact about the practice.
+ *
+ * An unknown mode keeps its own word rather than disappearing: a mode this map
+ * has not heard of is a thing to notice, and a blank would hide it. It is
+ * capitalised and never colon-separated, so the id-shaped form cannot come
+ * back by the side door.
+ */
+export function modeLabel(mode: string): string {
+  if (mode.startsWith('drill:')) return 'Drill';
+  const known: Record<string, string> = {
+    wait: 'Wait mode',
+    tempo: 'Tempo mode',
+    listen: 'Listening',
+    free: 'Free play',
+    read: 'Reading',
+    paper: 'From the book',
+  };
+  const word = known[mode];
+  if (word) return word;
+  const bare = mode.split(':')[0] ?? mode;
+  return bare.charAt(0).toUpperCase() + bare.slice(1);
+}
+
+/**
+ * What to call a recorded run whose item the app can no longer find.
+ *
+ * All three lists printed `row.itemId` — `song.folk.hot-cross-buns`, or a
+ * shelf piece's `book.czerny-599/no-12` — which is the one thing `00` D26 says
+ * never goes on screen. It happens: a deleted import leaves its runs behind,
+ * and the runs are the part worth keeping. The id stays on the row in
+ * `data-item`, for a test and for a debug report.
+ */
+function titleFor(item: CatalogItem | undefined): string {
+  return item?.title ?? 'A piece that is no longer in the library';
+}
+
+/**
  * An empty list's sentence and the one control that acts on it (`04` §0 R4).
  *
  * All three lists on this screen are empty on a fresh phone and all three said
@@ -74,8 +144,9 @@ export function heatLevel(minutes: number): 0 | 1 | 2 | 3 | 4 {
  * to. The sentence comes first because a button whose explanation is
  * underneath it is a button you press to find out what it does.
  *
- * Quiet, never filled: `04` §0 R3 allows one filled box per screen and this
- * screen's is Export everything.
+ * Quiet, never filled: `04` §0 R3 allows *at most* one filled box per screen,
+ * and this screen has none — see `drawData`. A way out of an empty list is the
+ * least frequent thing on it, because it only exists while the list is empty.
  */
 function emptyList(text: string, label: string, act: () => void, id: string): HTMLElement[] {
   return [el('p.muted', { text }), button(label, act, { id, variant: 'quiet' })];
@@ -85,6 +156,15 @@ export function ProgressScreen(router: Router): HTMLElement {
   const { section, body } = screenFrame('progress', 'Progress');
   const status = statusLine('progress-status');
   const summary = el('div.block', { id: 'progress-summary' });
+  // The answer, loud, and then the same fact over thirteen weeks.
+  //
+  // These were two blocks with a rule and a heading each, and the first
+  // heading read `THIS WEEK` over a line that opens "… minutes this week". The
+  // heading is gone — the figure is the heading — and the map moves in beside
+  // it, because a map of minutes a day and a count of minutes this week are
+  // one subject and were being announced as two.
+  const weekLine = el('p.progress-week', { id: 'progress-week' });
+  const totalsLine = el('p.muted', { id: 'progress-totals' });
   const heat = el('div.heatmap', { id: 'progress-heatmap', role: 'img', 'aria-label': 'Practice minutes by day' });
   // The thresholds are `heatLevel`'s, written once so the key cannot drift
   // from the colours it explains.
@@ -99,25 +179,32 @@ export function ProgressScreen(router: Router): HTMLElement {
   const history = el('div.list', { id: 'progress-history' });
   const performances = el('div.list', { id: 'progress-performances' });
   const dataBlock = el('div.block', { id: 'progress-data' });
+  // The goal, set about once and then left: last in the block, under the map,
+  // rather than between the figure and the map it belongs to. Its own status
+  // line stays inside this block beside it (`04` §0 R6).
+  const goalBlock = el('div', { id: 'progress-goal-block' });
   // Held so "Show more" can redraw from the same data without a re-fetch —
   // the same shape as Skills' `entries` (`08` §13).
   let repertoireRows: ProgressRow[] = [];
   let repertoireItems: Map<string, CatalogItem> = new Map();
   let repertoireShown = REPERTOIRE_PAGE_SIZE;
 
+  summary.append(
+    weekLine,
+    totalsLine,
+    // The squares have had five levels since they were built; what they
+    // never had was a heading saying what they measure or a key saying what
+    // the shades mean, so two blues side by side told nobody anything
+    // (`04` §6). The heading is a caption for the map now rather than the
+    // title of a section of its own.
+    el('h2', { text: 'Minutes a day, last 13 weeks' }),
+    heat,
+    heatKey,
+    goalBlock,
+  );
+
   body.append(
     summary,
-    el(
-      'section.block',
-      {},
-      // The squares have had five levels since they were built; what they
-      // never had was a heading saying what they measure or a key saying what
-      // the shades mean, so two blues side by side told nobody anything
-      // (`04` §6).
-      el('h2', { text: 'Minutes a day, last 13 weeks' }),
-      heat,
-      heatKey,
-    ),
     el('section.block', {}, el('h2', { text: 'Repertoire' }), repertoire),
     el('section.block', {}, el('h2', { text: 'Performances' }), performances),
     el('section.block', {}, el('h2', { text: 'Recent sessions' }), history),
@@ -169,22 +256,23 @@ export function ProgressScreen(router: Router): HTMLElement {
       });
     }, { min: 0, max: 2000, step: 10 });
 
-    summary.replaceChildren(
-      el('h2', { text: 'This week' }),
-      el('p.today-goal', {
-        id: 'progress-week',
-        // Same wording as Today's header, deliberately: it is the same number,
-        // and two phrasings for one figure reads as two different figures.
-        text: `${String(Math.round(week.minutes))} of ${String(goal)} minutes this week · ${String(
-          week.days,
-        )} day${week.days === 1 ? '' : 's'} practised`,
-      }),
-      el('p.muted', {
-        id: 'progress-totals',
-        text: `${minutesLabel(total)} in total · ${String(counts.started)} started · ${String(
-          counts.passed,
-        )} passed · ${String(counts.mastered)} mastered`,
-      }),
+    // One line, one weight, and the one thing the screen is opened to read.
+    //
+    // "days practised" moves down to the quiet line: it is a second figure,
+    // and a headline that wraps to two lines at 342 px is not a headline. The
+    // wording is Today's, said in full — it is the same number, and two
+    // phrasings for one figure reads as two different figures.
+    weekLine.textContent = `${String(Math.round(week.minutes))} of ${String(
+      goal,
+    )} minutes this week`;
+    totalsLine.textContent = [
+      `${String(week.days)} day${week.days === 1 ? '' : 's'} practised`,
+      `${minutesLabel(total)} in total`,
+      `${String(counts.started)} started`,
+      `${String(counts.passed)} passed`,
+      `${String(counts.mastered)} mastered`,
+    ].join(' · ');
+    goalBlock.replaceChildren(
       el('div.setting-row', {}, el('label', { htmlFor: 'progress-goal', text: 'Weekly goal (minutes)' }), goalInput),
       goalStatus,
     );
@@ -203,18 +291,23 @@ export function ProgressScreen(router: Router): HTMLElement {
             const item = items.get(row.itemId);
             const last = row.lastPracticedAt ? row.lastPracticedAt.slice(0, 10) : 'never';
             return listRow({
-              title: item?.title ?? row.itemId,
+              title: titleFor(item),
               meta: `Last played ${last} · best ${String(Math.round(row.bestAccuracy * 100))}%`,
-              badges: [badge('mastered', 'mastered')],
-              // Through `openItem`, because a mastered *drill* belongs on the
-              // drill screen and the Score screen would have nothing to show.
-              actions: item
-                ? [
-                    button('▶', () => void openItem(router, item), {
-                      ariaLabel: `Open ${item.title}`,
-                    }),
-                  ]
-                : [],
+              // No badge.
+              //
+              // Every row in this list carried `mastered`, under a heading
+              // reading *Repertoire*, in a list whose definition is "the
+              // mastered ones" — the Plan screen's first fault, and it cost
+              // each row the line its title needed. What is left says the
+              // thing once.
+              //
+              // And the row opens the piece rather than carrying a `▶` that
+              // does what a tap on the row would: one control, a whole row
+              // tall instead of a 40 px glyph, and the same behaviour the
+              // other two lists here now have. Through `openItem`, because a
+              // mastered *drill* belongs on the drill screen and the Score
+              // screen would have nothing to show.
+              ...(item ? { onClick: () => void openItem(router, item) } : {}),
               dataset: { 'data-item': row.itemId },
             });
           })
@@ -260,15 +353,24 @@ export function ProgressScreen(router: Router): HTMLElement {
   function drawPerformances(runs: SessionRow[], items: Map<string, CatalogItem>): void {
     performances.replaceChildren(
       ...(runs.length > 0
-        ? runs.slice(0, 20).map((session) =>
-            listRow({
-              title: items.get(session.itemId)?.title ?? session.itemId,
+        ? runs.slice(0, 20).map((session) => {
+            const item = items.get(session.itemId);
+            return listRow({
+              title: titleFor(item),
               subtitle: session.at.slice(0, 16).replace('T', ' '),
               meta: `${String(Math.round(session.accuracy * 100))}% at ${String(session.tempoPct)}% · ${minutesLabel(session.durationMs / 60_000)}`,
-              badges: [badge('performance', 'passed')],
-              dataset: { 'data-performance': session.id ?? 0 },
-            }),
-          )
+              // No badge: `performance` on every row of a list headed
+              // *Performances*, which is queried as `recentPerformances`. The
+              // heading says it, once.
+              //
+              // And the row is a control now. Twenty of these were drawn with
+              // the border, the surface and the height of a tappable card and
+              // had no handler at all — the Plan screen's dead-control fault,
+              // twenty times over and again thirty times below.
+              ...(item ? { onClick: () => void openItem(router, item) } : {}),
+              dataset: { 'data-performance': session.id ?? 0, 'data-item': session.itemId },
+            });
+          })
         : emptyList(
             'No performances yet. A performance is one run through with no restarts and no looping.',
             'Pick a piece to perform',
@@ -281,10 +383,13 @@ export function ProgressScreen(router: Router): HTMLElement {
   function drawHistory(sessions: SessionRow[], items: Map<string, CatalogItem>): void {
     history.replaceChildren(
       ...(sessions.length > 0
-        ? sessions.slice(0, 30).map((session) =>
-            listRow({
-              title: items.get(session.itemId)?.title ?? session.itemId,
-              subtitle: `${session.at.slice(0, 16).replace('T', ' ')} · ${session.mode}`,
+        ? sessions.slice(0, 30).map((session) => {
+            const item = items.get(session.itemId);
+            return listRow({
+              title: titleFor(item),
+              // `modeLabel`, not `session.mode`: this line printed
+              // `drill:walkthrough` and `drill:checklist` at a reader.
+              subtitle: `${session.at.slice(0, 16).replace('T', ' ')} · ${modeLabel(session.mode)}`,
               // A paper run has no accuracy and must not be printed as 0 %:
               // the app could not see the notes, and a zero would read as a
               // verdict rather than as an absence (replan §5.3).
@@ -300,10 +405,13 @@ export function ProgressScreen(router: Router): HTMLElement {
                   : `${String(Math.round(session.accuracy * 100))}%${
                       session.accuracyEstimated ? ' (estimated)' : ''
                     } at ${String(session.tempoPct)}% · ${minutesLabel(session.durationMs / 60_000)}`,
+              // Kept: how it felt is not on the detail line, and it is only
+              // on the rows where he said so (`04` §0 R2).
               badges: session.selfReport ? [badge(session.selfReport)] : [],
-              dataset: { 'data-session': session.id ?? 0 },
-            }),
-          )
+              ...(item ? { onClick: () => void openItem(router, item) } : {}),
+              dataset: { 'data-session': session.id ?? 0, 'data-item': session.itemId },
+            });
+          })
         : emptyList(
             'No runs recorded yet. Playing a piece through records one.',
             "Start today's session",
@@ -352,13 +460,27 @@ export function ProgressScreen(router: Router): HTMLElement {
       el('p.muted', {
         text: 'Everything is on this phone and nowhere else. The backup file is the only copy — imports included.',
       }),
+      // `04` §0 R3, weight by frequency. Three boxes of equal weight is no
+      // weighting, and the filled one was on the rarest of the three at the
+      // bottom of a screen that can be fifty rows long — the same fault
+      // Today's *Start session* had, minus the excuse that Start is what the
+      // screen is for. Nothing on Progress is done on most visits, so nothing
+      // here is filled: *Export everything* keeps an outline because it is the
+      // one action on this screen with a consequence, and restoring a backup
+      // and opening Diagnostics are text.
       el(
         'div.row',
         {},
         exportButton,
-        button('Import a backup', () => filePicker.click(), { id: 'progress-import' }),
+        button('Import a backup', () => filePicker.click(), {
+          id: 'progress-import',
+          variant: 'quiet',
+        }),
         filePicker,
-        button('Diagnostics', () => router.navigate('settings', 'diagnostics'), { id: 'progress-diagnostics' }),
+        button('Diagnostics', () => router.navigate('settings', 'diagnostics'), {
+          id: 'progress-diagnostics',
+          variant: 'quiet',
+        }),
       ),
     );
   }
@@ -400,7 +522,7 @@ export function ProgressScreen(router: Router): HTMLElement {
           exportButton.textContent = wasLabel ?? 'Export everything';
         });
     },
-    { id: 'progress-export', variant: 'primary' },
+    { id: 'progress-export' },
   );
 
   async function load(): Promise<void> {

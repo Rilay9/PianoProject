@@ -8,6 +8,27 @@
  * A registered piece is not a note in a notebook — it becomes a `paperOption`
  * of whichever rung it answers, so the plan can offer "or number 12 in your
  * Czerny" beside the pieces the app actually holds.
+ *
+ * ## What this screen is for, in order
+ *
+ * Photographed at 342 px this screen had every one of the Plan screen's faults
+ * at once. A heading `BOOKS YOU OWN` over a screen already titled **Shelf**,
+ * with a card under it saying much the same. A book's title set in the muted
+ * capitals the app uses for *section labels* — three lines of shouting for a
+ * proper noun — while the piece rows underneath, which are the things you tap,
+ * read `No. 12 — Stud…`. And on those rows, `rung 1.1`: an internal key, beside
+ * a bare `≈ 1.1` that was the same number again by coincidence.
+ *
+ *  1. **The pieces, and the ways to open one** — *Practise*, *With the score*,
+ *     *Open the PDF*. This is what the screen is for: the paper is in front of
+ *     him and he wants the app to time it.
+ *  2. **Which book each is in, and what page.** A book is a heading for its
+ *     pieces, so it reads as a name and not as a label, and its facts — kind,
+ *     author, how many pieces — take one quiet line under it instead of three.
+ *  3. **Registering** — *Add a piece* on each book, *Edit* beside it.
+ *  4. **The shelf itself** — adding a book, and the sentence explaining what a
+ *     shelf is. `04` §0 R3 names "register a book" as a *text* action, and it
+ *     was the one filled box on the screen, above everything.
  */
 import type { Router } from '../../router';
 import {
@@ -24,8 +45,8 @@ import {
 import { importSummaries, type ImportSummary } from '../../data/importStore';
 import { catalogIndex, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
-import { badge, button, el, listRow, openSheet } from '../widgets';
-import { addParagraph, addSection, createSubScreen } from './subScreen';
+import { badge, button, el, levelLabel, listRow, openSheet } from '../widgets';
+import { addParagraph, createSubScreen } from './subScreen';
 
 interface LessonChoice {
   lesson: Lesson;
@@ -274,10 +295,16 @@ export function ShelfScreen(router: Router): HTMLElement {
     backLabel: 'Library',
   });
 
-  const intro = addSection(card, 'Books you own');
-  // One line, and the rest folded — the same shape the score folder uses.
-  // Four lines of prose and a button stood between the heading and the first
-  // book, which is the screen's subject (`04` §0 R1).
+  // No heading over this block.
+  //
+  // It read `BOOKS YOU OWN` — in the muted capitals the app uses for section
+  // labels — directly under an `h1` reading **Shelf**, over a card saying "The
+  // app has no copy of these". The same thing announced twice, and the second
+  // announcement was the one taking the room. The screen's own title is the
+  // heading; what is left here is the one line of explanation R1 allows and
+  // the folded long version.
+  const intro = el('section.block.shelf-intro');
+  card.append(intro);
   addParagraph(intro, 'The app has no copy of these.', 'muted');
   const how = el('details.folder-how', { id: 'shelf-how' });
   how.append(
@@ -429,10 +456,32 @@ export function ShelfScreen(router: Router): HTMLElement {
     const twinId = piece.itemId && catalogById.has(piece.itemId) ? piece.itemId : undefined;
     if (twinId) badges.push(badge('has a twin', 'passed'));
     if (piece.lessonIds.length === 0) badges.push(badge('no rung'));
+    // The rung by its name, and the level the way the rest of the app writes
+    // one.
+    //
+    // This line read `page 14 · ≈ 1.1 · rung 1.1`. Two of those three facts
+    // were unreadable: `rung 1.1` is an internal key, and the level was a bare
+    // number where every other screen prints `levelLabel` — so it came out as
+    // the same figure twice, one of them meaning a difficulty and the other a
+    // lesson, with nothing on the line to say which was which. The id is still
+    // on the row as `data-piece`'s sibling data, where a test wants it.
+    const rungNames = piece.lessonIds.map(
+      (id) => lessons.find((entry) => entry.lesson.id === id)?.lesson.title ?? id,
+    );
+    // The rung takes the row's own line rather than a slot on the detail line.
+    //
+    // `fitDetail` drops whole tokens from the end of the detail line until it
+    // fits, and a rung's title is long — "Sight-reading and phrasing capstone"
+    // is thirty-five characters of a forty-two character budget, so as a token
+    // it was simply deleted, taking the page number's neighbour with it. The
+    // subtitle is one line, ellipsised rather than dropped, and it is where
+    // `listRow` puts the sentence that says what a row is (Today's reason line
+    // is the same slot). The facts — where it is, and how hard it is — stay on
+    // the detail line, short enough now to always survive whole.
+    const subtitle = rungNames.length ? `for ${rungNames.join(', ')}` : undefined;
     const meta = [
       piece.page === undefined ? null : `page ${String(piece.page)}`,
-      piece.level === undefined ? null : `${piece.levelSource === 'judged' ? '' : '≈ '}${String(piece.level)}`,
-      piece.lessonIds.length ? `rung ${piece.lessonIds.join(', ')}` : null,
+      piece.level === undefined ? null : levelLabel(piece.level, piece.levelSource),
     ]
       .filter(Boolean)
       .join(' · ');
@@ -471,6 +520,7 @@ export function ShelfScreen(router: Router): HTMLElement {
 
     return listRow({
       title: piece.title,
+      ...(subtitle === undefined ? {} : { subtitle }),
       meta: meta || undefined,
       badges,
       actions,
@@ -478,17 +528,33 @@ export function ShelfScreen(router: Router): HTMLElement {
     });
   }
 
-  /** A book's whole section: header row, author line, its pieces. */
+  /**
+   * A book's whole section: its name, one line of facts, its pieces.
+   *
+   * The name is a name. It was an `h2` inside a `.block`, which in this app is
+   * the *section-label* style — muted, letter-spaced, uppercase — so
+   * "Czerny, Practical Method for Beginners on the Pianoforte Op. 599" was set
+   * in three lines of grey capitals, the loudest thing on a screen whose
+   * subject is the pieces underneath it. It reads as a title now, and the
+   * author, the kind and how many pieces are in it share the one quiet line
+   * that used to be the author alone.
+   */
   function bookSection(book: BookRow): HTMLElement {
+    const facts = [
+      book.kind,
+      ...(book.author ? [book.author] : []),
+      // A count, because a book folded into a heading and a strip of buttons
+      // gave no sign of how much was in it until you had scrolled past it.
+      `${String(book.pieces.length)} ${book.pieces.length === 1 ? 'piece' : 'pieces'}`,
+    ].join(' · ');
     return el(
-      'section.block',
+      'section.block.shelf-book',
       { 'data-book': book.id },
+      el('h2.shelf-book__title', { text: book.title }),
+      el('p.shelf-book__facts.muted', { text: facts }),
       el(
-        'div.row',
+        'div.row.shelf-book__actions',
         {},
-        el('h2', { text: book.title }),
-        badge(book.kind),
-        button('Edit', () => openBookSheet(book), { variant: 'quiet' }),
         button(
           'Add a piece',
           () =>
@@ -502,8 +568,8 @@ export function ShelfScreen(router: Router): HTMLElement {
             }),
           { id: `shelf-add-piece-${book.id}` },
         ),
+        button('Edit the book', () => openBookSheet(book), { variant: 'quiet' }),
       ),
-      book.author ? el('p.muted', { text: book.author }) : el('span'),
       ...(book.pieces.length
         ? book.pieces.map((piece) => pieceRow(book, piece))
         : [el('p.muted.shelf-no-pieces', { text: 'No pieces registered yet.' })]),
@@ -541,6 +607,7 @@ export function ShelfScreen(router: Router): HTMLElement {
       section.querySelector('.shelf-no-pieces')?.remove();
       section.append(pieceRow(book, saved));
     }
+    countPieces(section, cached ?? book);
   }
 
   function afterPieceRemoved(book: BookRow, pieceId: string): void {
@@ -552,11 +619,35 @@ export function ShelfScreen(router: Router): HTMLElement {
     if (section && !section.querySelector('[data-piece]')) {
       section.append(el('p.muted.shelf-no-pieces', { text: 'No pieces registered yet.' }));
     }
+    if (section instanceof HTMLElement) countPieces(section, cached ?? book);
+  }
+
+  /**
+   * Keeps a book's fact line honest after a one-row redraw.
+   *
+   * The whole point of `afterPieceSaved` is that it does *not* rebuild the
+   * section, so anything in the section's heading that counts its rows has to
+   * be told. A count that is right only until you add something is worse than
+   * no count.
+   */
+  function countPieces(section: HTMLElement, book: BookRow): void {
+    const facts = section.querySelector('.shelf-book__facts');
+    if (!facts) return;
+    const n = section.querySelectorAll('[data-piece]').length;
+    facts.textContent = [
+      book.kind,
+      ...(book.author ? [book.author] : []),
+      `${String(n)} ${n === 1 ? 'piece' : 'pieces'}`,
+    ].join(' · ');
   }
 
   function draw(): void {
+    // Text, not a filled box. `04` §0 R3 names "register a book" among the
+    // things done once per lesson or less, and this was the one filled box on
+    // the screen — at the top, above every book, shouting the rarest action on
+    // it. `Add a piece` keeps its outline: that is the one done often.
     addRow.replaceChildren(
-      button('Add a book', () => openBookSheet(), { id: 'shelf-add-book', variant: 'primary' }),
+      button('Add a book', () => openBookSheet(), { id: 'shelf-add-book', variant: 'quiet' }),
     );
     if (books.length === 0) {
       list.replaceChildren(

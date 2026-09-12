@@ -117,12 +117,28 @@ for (const size of [
       await expect(button).toBeEnabled();
     }
 
-    // And it is still a rail you can reach: inside the viewport, and the page
-    // does not scroll sideways to make room for it.
+    // And it is still a rail you can reach.
+    //
+    // This asked only whether the rail was *horizontally* inside the list, and
+    // that is a proxy for reachability rather than the thing itself. The two
+    // parted company: sideways, the landscape rule makes the container a column
+    // while both screens append the rail after the list, so a column put it
+    // under all the rows — 3,559 px down a 620-row listing on a 342 px-tall
+    // screen, which is no rail at all. Every assertion here passed throughout.
+    //
+    // So it is asked vertically too, and against the viewport, which is what
+    // "you can reach it" means.
     const box = await page.locator('.alpha-rail').boundingBox();
     expect(box).not.toBeNull();
     expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
     expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(size.width + 1);
+    expect(
+      box?.y ?? -1,
+      `the rail starts ${String(Math.round(box?.y ?? -1))}px down a ${String(size.height)}px screen`,
+    ).toBeLessThan(size.height);
+    // Not merely on the screen: usable without hunting. Within the first
+    // screenful either way, expressed against the viewport rather than a pixel.
+    expect(box?.y ?? -1).toBeLessThan(size.height * 0.9);
     const widths = await page.evaluate(() => ({
       scroll: document.documentElement.scrollWidth,
       client: document.documentElement.clientWidth,

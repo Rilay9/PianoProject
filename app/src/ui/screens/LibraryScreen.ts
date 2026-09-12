@@ -10,6 +10,22 @@
  * elements each is about 15 ms on the S25, and it only rebuilds when a filter
  * changes — a virtual list would cost more in scroll-position bugs than it
  * saves.
+ *
+ * ## What this screen is for, in order
+ *
+ * 1. **The list, and the box that narrows it.** Everything else on the screen
+ *    is a door out of it.
+ * 2. **A row's name, and whose it is.** The title, then the composer.
+ * 3. **What it is** — level, hands where hands are news, type — and its state,
+ *    as badges that only appear when there is something to say.
+ * 4. **The doors: import, Shelf, score folder, the six filters.** Text in the
+ *    header and one chip, never boxes (`04` §0 R3).
+ *
+ * The pass that produced this ranking found two things worth naming. The
+ * detail line said `Hands together` on nearly every row of 1,533 — see
+ * `rowFor`. And the tall-row exception the owner authorised for archive titles
+ * was being paid on *every* row: see the note in `style.css` on
+ * `#library-list .list-row:has(…)`.
  */
 import { createAlphaRail, letterFor } from '../alphaRail';
 import type { Router } from '../../router';
@@ -38,6 +54,7 @@ import {
   levelLabel,
   listRow,
   openSheet,
+  shortHandsLabel,
 } from '../widgets';
 import { isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
@@ -251,15 +268,25 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     });
   });
 
-  // The drop target, and nothing else on the screen.
+  // The drop target is the list itself.
   //
   // It used to be a heading, two lines of prose and three filled buttons above
   // the list — read once, then in the way for ever (`04` §0 R1). The buttons
   // are one line of text in the header now, and the sentence about MusicXML and
   // PDFs is said by the status line when the picker is opened, which is the
   // moment it means anything.
-  const importBlock = el('div.block.import-block', { id: 'library-drop' });
-  const dropZone = importBlock;
+  //
+  // What was left behind was an empty `div.block` under the list: no text, no
+  // control, nothing at all — but `.block` draws a rule across the screen and
+  // seventeen pixels of nothing under it, so the list ended with a divider
+  // separating it from the bottom of the page. `04` §0 R4 calls that
+  // furniture, and on a phone it was furniture for a gesture that does not
+  // exist: drag-and-drop is a desktop path. So the box goes and the list
+  // carries the listeners — dropping a file on the thing you are dropping it
+  // *into* is also the better target on the desktop where the gesture is real.
+  const dropZone = listWithRail;
+  dropZone.id = 'library-drop';
+  dropZone.classList.add('import-block');
   const onDragOver = (event: DragEvent): void => {
     event.preventDefault();
     dropZone.classList.add('is-dropping');
@@ -456,7 +483,6 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     el('div.library-countrow', {}, filterToggle, mineChip, count),
     filterRow,
     listWithRail,
-    importBlock,
     status,
   );
 
@@ -692,7 +718,15 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     return listRow({
       title: item.title,
       subtitle: item.composer ?? undefined,
-      meta: `${levelLabel(item.level, item.levelSource)} · ${handsLabel(item.hands)} · ${item.type}`,
+      // `Hands together` was on very nearly every one of 1,533 rows — three
+      // words that never distinguish one row from another, in the middle of
+      // the line that is supposed to tell them apart, pushing the type off the
+      // end. It is the same fact `shortHandsLabel` exists for on Today: silent
+      // for both hands, `RH`/`LH` where it is actually news. The full sentence
+      // is still on the item's detail sheet, where it is read once.
+      meta: [levelLabel(item.level, item.levelSource), shortHandsLabel(item.hands), item.type]
+        .filter(Boolean)
+        .join(' · '),
       badges,
       actions,
       onClick: () => open(item),

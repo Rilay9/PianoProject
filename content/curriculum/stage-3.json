@@ -721,12 +721,12 @@
         },
         {
           "id": "rock-metal.3.1",
-          "title": "Rock & metal: how this module works",
+          "title": "Rock & metal: reducing a band arrangement",
           "track": "rock-metal",
           "lessons": [
             {
               "id": "rock.overview",
-              "title": "Rock and metal piano — how this module works",
+              "title": "Reducing a band arrangement to one piano",
               "concepts": [
                 "reduction",
                 "ostinato",

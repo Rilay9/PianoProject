@@ -11,6 +11,32 @@
  * of `00` D21: a skill has several vehicles, some of them not songs, and being
  * told to play one particular tune is the thing that stalls a practice
  * session.
+ *
+ * ## What this screen is for, in order
+ *
+ * The same pass the Plan screen had, with the same four weights. Read back off
+ * the phone at 342 px the card said everything at one volume: five identical
+ * cards, each with a badge repeating the words its own second line opened with
+ * (`Warm-up` over "Warm-up in the keys you are working in"), each with the
+ * title — the name of the thing you would play — cut to `Posture and
+ * hand-shape …` so that `Swap` and `▶` could sit beside it, and the one filled
+ * button on the screen 679 px down a 740 px phone.
+ *
+ *  1. **The session, in order, and the button that starts it.** *Start
+ *     session* is the one filled box (`04` §0 R3) and it is now above the card
+ *     rather than under five rows of it — it was off the bottom of the screen
+ *     both ways round, which is a strange place for the thing you came to do.
+ *  2. **Each row's name.** The title takes a second line rather than an
+ *     ellipsis. Half a title is not a name, and this is the row you tap.
+ *  3. **What it costs and what it is for** — `Warm-up · 8 min · L0.1`, one
+ *     muted line. The slot kind moved off its own badge line and into the
+ *     front of this one: it was a badge on every single row, which is a badge
+ *     that distinguishes nothing, and it cost the row the line the title now
+ *     has. A badge is left for what the line does *not* say — that you have
+ *     started or passed this, or that it needs importing.
+ *  4. **Why it is here, and the ways to change the day** — the reason line,
+ *     *Shuffle options*, *Jump to…*, *Metronome*, which move below the card
+ *     the way Plan's occasional links moved below its list.
  */
 import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
@@ -134,7 +160,11 @@ export function TodayScreen(router: Router): HTMLElement {
   }
 
   const card = el('div.list', { id: 'today-card' });
-  const actions = el('div.row', { id: 'today-actions' });
+  const actions = el('div.row.today-start-row', { id: 'today-actions' });
+  // The three that change the day rather than start it. Below the card, the
+  // way Plan's placement test and how-to-practise links moved below its list:
+  // read occasionally, and none of them the reason the screen is open.
+  const tools = el('div.plan-links', { id: 'today-tools' });
 
   // Title and the input chip share a line; the goal and the length chips take
   // one each under it. Three short rows rather than four wrapping ones, so the
@@ -145,7 +175,15 @@ export function TodayScreen(router: Router): HTMLElement {
   if (heading) titleRow.append(heading, inputChip);
   header.prepend(titleRow);
   header.append(goalLine, lengthRow);
-  body.append(card, actions, status);
+  // The thing you came to do, then the card that says what it will be, then
+  // the message about it, then the three ways to change the day.
+  //
+  // `Start session` used to be under the card: 679 px down a 740 px phone
+  // upright, and off the bottom entirely sideways. The one filled box on the
+  // screen the app opens on (`04` §0 R3) was the one thing you had to scroll
+  // to find. The card still starts inside the first screenful (R1) — the
+  // button is one row of 40 px, and the card was starting at 198.
+  body.append(actions, card, status, tools);
 
   // --- rows ---------------------------------------------------------------
 
@@ -201,17 +239,30 @@ export function TodayScreen(router: Router): HTMLElement {
 
   function rowFor(slot: SessionSlot, slotIndex: number): HTMLElement {
     if (!slot.item) {
-      return listRow({
-        title: SLOT_LABELS[slot.kind],
-        subtitle: slot.reason,
-        meta: `${String(slot.minutes)} min`,
-        dataset: { 'data-slot': slot.kind },
-      });
+      // The free-play prompt, and it is a prompt rather than a row.
+      //
+      // It was a `listRow` — the same card, the same border, the same size as
+      // the four above it — with no `onClick`, no actions and nothing to
+      // press. That is the Plan screen's dead-control fault in its quietest
+      // form: a thing drawn exactly like four tappable things, which does
+      // nothing at all when tapped. Every word it carried is still here; what
+      // has gone is the costume.
+      return el(
+        'div.today-prompt',
+        { 'data-slot': slot.kind },
+        el('div.today-prompt__title', { text: SLOT_LABELS[slot.kind] }),
+        el('p.today-prompt__text', { text: `${String(slot.minutes)} min · ${slot.reason}` }),
+      );
     }
 
     const item = slot.item;
     const substitute = curriculum && catalog ? playInstead(item, curriculum, catalog) : undefined;
-    const badges: HTMLElement[] = [badge(SLOT_LABELS[slot.kind], slot.kind)];
+    // Only what the detail line does not already say (`04` §0 R2). The slot
+    // kind is the first fact *on* that line now; as a badge as well it was on
+    // every row of the card — a mark that never distinguishes one row from
+    // another — and it took the fourth line that the title needed in order to
+    // stop being cut in half.
+    const badges: HTMLElement[] = [];
     const row = progress.find((candidate) => candidate.itemId === item.id);
     if (row && row.status !== 'new') badges.push(badge(row.status, row.status));
     if (substitute) badges.push(badge('import needed', 'warn'));
@@ -236,10 +287,14 @@ export function TodayScreen(router: Router): HTMLElement {
     return listRow({
       title: item.title,
       subtitle: slot.reason,
-      // `04` §0 R2: one line that fits. The slot kind is already the badge
-      // beside it, and "Hands together" on every row is three words that never
-      // distinguish anything — so both leave, and the line stops wrapping.
+      // `04` §0 R2: one line that fits. "Hands together" on every row is three
+      // words that never distinguish anything, so it leaves and the line stops
+      // wrapping. The slot kind leads, because a row's first question is what
+      // it is *for* — and because it used to be a badge on a line of its own,
+      // on every row, saying the same word the reason line under the title
+      // opens with.
       meta: [
+        SLOT_LABELS[slot.kind],
         `${String(slot.minutes)} min`,
         levelLabel(item.level, item.levelSource),
         shortHandsLabel(item.hands),
@@ -279,19 +334,25 @@ export function TodayScreen(router: Router): HTMLElement {
         },
         { id: 'today-start', variant: 'primary' },
       ),
+    );
+    // `04` §0 R3, weight by frequency: one filled box on the screen, and text
+    // for the rest. `Review a skill` and `How to practise` have left for Plan,
+    // which is where they belong and where they already are — six boxes of
+    // equal weight is no weighting. `Shuffle options` was the last of these
+    // still drawn as a box; it is done once in a while, on a card you have
+    // already been given, so it reads as text like the other two.
+    tools.replaceChildren(
       button(
         'Shuffle options',
         () => {
           seed += 1;
           rebuild();
         },
-        { id: 'today-shuffle' },
+        { id: 'today-shuffle', variant: 'quiet' },
       ),
-      // `04` §0 R3, weight by frequency: one filled box on the screen, one
-      // outlined thing done often, and text for the rest. `Review a skill` and
-      // `How to practise` have left for Plan, which is where they belong and
-      // where they already are — six boxes of equal weight is no weighting.
+      el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
       button('Jump to…', () => router.navigate('plan'), { id: 'today-jump', variant: 'quiet' }),
+      el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
       button('Metronome', () => router.navigate('today', 'metronome'), {
         id: 'today-metronome',
         variant: 'quiet',
@@ -346,11 +407,25 @@ export function TodayScreen(router: Router): HTMLElement {
         requireTwoSongs: getSettings().requireTwoSongs,
         strictPrerequisites: getSettings().strictPrerequisites,
       });
+      // The rung's name, not its id. `lesson 0.1` is an internal key that means
+      // nothing to a person, and it was printed here beside the unit's title —
+      // which on all but two rungs in the curriculum is the lesson's title
+      // again (`00` D26). One name, no id; the Plan screen says the same thing
+      // the same way on its `Next up` card.
       status.textContent = position
-        ? `Working on Stage ${String(position.stageNumber)} · ${position.unit.title} · lesson ${
-            position.lesson.id
-          }`
+        ? `Working on Stage ${String(position.stageNumber)} · ${position.lesson.title}`
         : 'Every lesson in the plan is complete. Pick anything from Library.';
+      // The rung's id in data, where a test can read it and a learner cannot.
+      //
+      // It used to be in the sentence above, which is why it was removed. But a
+      // test did need it: `today.spec`'s "keeps recommending after the core
+      // path" finished every core lesson and then checked that what Today
+      // offered next was *not* one of them, and the only way it could name the
+      // recommendation was to parse `lesson 0.1` out of the prose. Taking the
+      // id off the screen broke it. An id belongs in an attribute, and a test
+      // that reads one is not depending on wording.
+      if (position) status.dataset.lesson = position.lesson.id;
+      else delete status.dataset.lesson;
     });
   }
 

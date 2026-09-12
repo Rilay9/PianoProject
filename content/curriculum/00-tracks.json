@@ -80,7 +80,7 @@
     {
       "id": "rock-metal",
       "title": "Rock & metal",
-      "description": "Mini-module: the textures behind the songs you want, taught on public-domain music. Songs are imported, never bundled.",
+      "description": "Mini-module: the five textures a band arrangement reduces to on one piano, taught on public-domain music you already have.",
       "startsAtStage": 3,
       "defaultActive": false
     },
