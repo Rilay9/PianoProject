@@ -1306,7 +1306,21 @@ export function FolderScreen(router: Router): HTMLElement {
           )} still to index.`
         : library.connected
           ? `${count} — folder open.`
-          : `${count} — folder closed.`;
+          : // Closed is *not* said here. It is said once, in the notice above
+            // the list, where the cure is — and `updateSavedNotice` shows that
+            // notice exactly when `connected` is false, so there is no state in
+            // which dropping it here leaves the screen silent about it.
+            //
+            // "37,261 scores in scores from PDMX — folder closed." and "Folder
+            // not open — pick it again to add." were six lines apart on the
+            // owner's phone, saying the same thing with two different remedies
+            // attached. Their rule: never say the same thing twice.
+            //
+            // It buys no height — measured at 342 px with 37,261 scores, the
+            // first row starts at the same 557 px either way, because the count
+            // sentence wraps to two lines with or without the suffix. What is
+            // above the list is a separate problem, written up in `04` §0 R1.
+            `${count}.`;
     updateUnnamedNotice();
   }
 

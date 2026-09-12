@@ -328,6 +328,42 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-list .list-row').first()).toBeVisible();
   });
 
+  test('the second open is the one the owner lives with, and it is not the first', async ({
+    page,
+  }) => {
+    test.setTimeout(180_000);
+    // The first open of a folder seeded in the legacy inline shape splits
+    // 37,261 scores into a record each, and that dominates it — 17 s on this
+    // laptop. It happens once per folder, ever. Every open after it reads the
+    // index row and one page of scores, and *that* is the number the owner
+    // meets when they tap Score folder, so it is the one worth watching.
+    //
+    // Asserted as a ratio, not a duration: a desktop Chromium's milliseconds
+    // say nothing about an S25's, but "the everyday open is a small fraction of
+    // the one-off migration" holds on any machine, and it is the claim the
+    // per-score store was built to make. If the migration ever stops being
+    // once-only, this is what notices.
+    await seedFolder(page, ROWS);
+    const firstStarted = Date.now();
+    await page.goto('/#/library/folder');
+    const count = page.locator('#folder-count');
+    await expect(count).toContainText('37,261 match', { timeout: 60_000 });
+    const migrating = Date.now() - firstStarted;
+
+    await page.reload();
+    const againStarted = Date.now();
+    await expect(count).toContainText('37,261 match', { timeout: 60_000 });
+    const settled = Date.now() - againStarted;
+    console.log(
+      `folder: first open ${String(migrating)} ms (migration), every open after ${String(settled)} ms`,
+    );
+    await expect(page.locator('#folder-list .list-row')).toHaveCount(60);
+    expect(
+      settled,
+      `opening a migrated folder of 37,261 took ${String(settled)} ms against ${String(migrating)} ms for the migration — the migration is not once-only`,
+    ).toBeLessThan(migrating / 2);
+  });
+
   test('the first score is on the screen without scrolling, upright (R1)', async ({ page }) => {
     // It was 600 px down a 780 px phone: a heading, a paragraph of prose, two
     // buttons, and four filter controls all took their turn before the thing

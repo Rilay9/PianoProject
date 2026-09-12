@@ -379,6 +379,34 @@ describe('the folder screen says which state it is in', () => {
     expect(section.querySelectorAll('#folder-list .list-row').length).toBe(before);
   });
 
+  it('says the folder is shut once, not twice', async () => {
+    // The screen used to announce it in two places six lines apart on the
+    // owner's phone: "37,261 scores in scores from PDMX — folder closed." at
+    // the top, and "Folder not open — pick it again to add." in the notice
+    // above the list, each with its own button. Their rule: never say the same
+    // thing twice. The notice is the one that keeps it, because the cure lives
+    // there, beside the rows it stops working.
+    //
+    // Counted rather than pattern-matched on the top line, so that moving the
+    // sentence somewhere else does not quietly satisfy it.
+    const id = freshId('screen-said-once');
+    await savedAndClosed(id, { query: 'prompt', request: 'granted' });
+    const section = await mount();
+    await vi.waitFor(() => {
+      expect(notice(section).hidden).toBe(false);
+    });
+
+    const shut = [...section.querySelectorAll('p')].filter((p) =>
+      /folder (is )?(not open|closed|shut)/i.test(p.textContent ?? ''),
+    );
+    expect(
+      shut.map((p) => p.textContent),
+      'the screen says the folder is shut in more than one place',
+    ).toHaveLength(1);
+    // And the count is still there, because that is what the top line is for.
+    expect(section.textContent).toMatch(/40 scores in /);
+  });
+
   it('sends the owner to the picker only when there is no handle to open', async () => {
     // No handle was ever kept, so the picker really is the only way back — and
     // the notice says that rather than offering an Open that cannot work.
