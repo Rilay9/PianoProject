@@ -36,7 +36,7 @@ import { Metronome } from '../../audio/Metronome';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
 import { noteLabel } from '../../engine/drills/types';
-import type { EngineInput } from '../../engine/types';
+import type { EngineInput, Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
 import { recordRun, sessionsForItem } from '../../data/progressStore';
@@ -112,7 +112,20 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   // Always present, so "no feedback showing" is a state a test can wait for
   // rather than the absence of an attribute.
   section.dataset.feedback = '';
-  header.prepend(button('← Back', () => history.back(), { variant: 'quiet', id: 'drill-back' }));
+  /**
+   * Where the header's Back goes.
+   *
+   * `history.back()` is right for every drill that is opened and left in one
+   * hop. The guided tour is not one of those: each of its steps *leaves* this
+   * screen for the Score screen and is navigated back to, so the entry behind
+   * the tour is the piece the learner just came out of — Back re-entered the
+   * score, whose own Back came here again, and the two bounced off each other
+   * with no way out but the tab bar. `runWalkthrough` re-points this.
+   */
+  let leaveDrill = (): void => {
+    history.back();
+  };
+  header.prepend(button('← Back', () => leaveDrill(), { variant: 'quiet', id: 'drill-back' }));
 
   const status = statusLine('drill-status');
   const counter = el('p.drill-counter.muted', { id: 'drill-counter' });
@@ -919,15 +932,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     tipsBlock.hidden = false;
   }
 
-  // --- checklist and placement -----------------------------------------------
+  // --- checklist, placement and walkthrough ---------------------------------
   //
-  // Neither is a note-answering prompt loop — a checklist is ticked prose and
-  // a placement test is a self-judged pass/fail branch — so neither fits the
-  // `Drill` interface the rest of this screen is built around (no MIDI input,
-  // no expected pitches, no keyboard strip). They render straight into the
-  // same `stage`/`prompt`/`counter`/`controls`/`sheet` elements the prompt
-  // loop uses, so the screen still looks like one screen, but they drive that
-  // DOM by hand instead of through `advance()`/`settled()`.
+  // None of the three is a note-answering prompt loop — a checklist is ticked
+  // prose, a placement test is a self-judged pass/fail branch, and a
+  // walkthrough is prose that hands the learner to the Score screen — so none
+  // fits the `Drill` interface the rest of this screen is built around (no
+  // MIDI input, no expected pitches, no keyboard strip). They render straight
+  // into the same `stage`/`prompt`/`counter`/`controls`/`sheet` elements the
+  // prompt loop uses, so the screen still looks like one screen, but they
+  // drive that DOM by hand instead of through `advance()`/`settled()`.
 
   /** Where a checklist's own ticks live between visits: nothing else here needs the DB. */
   function checklistStorageKey(id: string): string {
@@ -1092,6 +1106,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     startedAtMs = Date.now();
     hint.textContent = 'Be strict — if you are unsure whether you can do it cleanly, call it a fail.';
     hint.hidden = false;
+    // The same empty card the walkthrough had, for the same reason: a placement
+    // item is a sentence and two buttons, with nothing to draw. `.drill-stage`
+    // is `flex: 1` upright, so left in place it pushes the question the learner
+    // has to read down past the middle of the screen with a void above it. The
+    // walkthrough's own comment below has the measurement.
+    stage.replaceChildren();
+    stage.hidden = true;
 
     function showStep(): void {
       const step = items[index];
@@ -1223,6 +1244,282 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     showStep();
   }
 
+  // --- walkthrough ---------------------------------------------------------
+
+  /**
+   * One step of the guided tour: a couple of sentences, and the real screen.
+   *
+   * The tour does **not** draw its own miniature Score screen. A second
+   * imitation of the most delicate screen in the app would drift from the real
+   * one the first time either changed, and it would teach a screen the learner
+   * never uses. So each step explains its mode in two sentences and then opens
+   * `#/score/<song>?mode=…`, which is the same route mechanism `blind=1`
+   * already uses, and Back on that screen comes back here.
+   */
+  interface WalkthroughStep {
+    /** The catalog's own step id, so the item says which steps it wants. */
+    id: string;
+    title: string;
+    text: string;
+    /** What the button that opens the score says it will do. */
+    openLabel: string;
+    mode: Mode;
+    /** Printed bars to arrive looping, for the step that is about looping. */
+    loop?: { from: number; to: number };
+  }
+
+  /**
+   * The three steps, by the ids `drill.tour.app-basics` lists.
+   *
+   * Held here rather than in the catalog because the wording is UI copy: the
+   * catalog says *which* modes the tour covers and on what piece, and a
+   * sentence about what Wait mode feels like belongs beside the screen it
+   * describes. An id the catalog lists and this map does not know is skipped
+   * rather than drawn blank.
+   */
+  const WALKTHROUGH_STEPS: Record<string, Omit<WalkthroughStep, 'id'>> = {
+    'wait-mode': {
+      title: 'Wait mode',
+      text: 'Wait mode waits for you. The app holds on a note until you play it — for as long as you like — and only then moves on, so a hard bar costs you time instead of costing you the run. It is the mode for learning something new.',
+      openLabel: 'Try Wait mode',
+      mode: 'wait',
+    },
+    'tempo-mode': {
+      title: 'Tempo mode',
+      text: 'Tempo mode keeps the clock. It moves at a steady speed whether or not you keep up, and marks what you miss — which is the only way to find out whether a piece is really up to speed. Start slow: the tempo control goes down to a third of what is written.',
+      openLabel: 'Try Tempo mode',
+      mode: 'tempo',
+    },
+    loops: {
+      title: 'Loops',
+      text: 'A loop repeats a few bars until they are yours, instead of playing the whole piece to reach the one bar that is wrong. This opens the first two bars on repeat: play them and they come round again.',
+      openLabel: 'Try a two-bar loop',
+      mode: 'wait',
+      loop: { from: 1, to: 2 },
+    },
+  };
+
+  /** The piece the tour is given, with a bundled fallback if it names none. */
+  function walkthroughSong(target: CatalogItem): string {
+    const song = target.drill?.params?.song;
+    return typeof song === 'string' && song !== '' ? song : 'song.folk.hot-cross-buns';
+  }
+
+  function walkthroughSteps(target: CatalogItem): WalkthroughStep[] {
+    const raw = target.drill?.params?.steps;
+    const ids = Array.isArray(raw) ? raw.filter((entry): entry is string => typeof entry === 'string') : [];
+    return ids
+      .map((id) => {
+        const known = WALKTHROUGH_STEPS[id];
+        return known ? { id, ...known } : null;
+      })
+      .filter((step): step is WalkthroughStep => step !== null);
+  }
+
+  /**
+   * Where the tour was left, so coming back from the score resumes it.
+   *
+   * The learner leaves this screen entirely to try a mode — the Score screen
+   * replaces it, and coming back builds this one again from nothing — so the
+   * position has to survive outside the closure. `localStorage`, like the
+   * checklist's ticks above: it is one small number, it does not belong in the
+   * practice database, and losing it means the tour starts at the beginning,
+   * which is the state it is in the first time anyway.
+   *
+   * Written *before* navigating rather than on return, so the Android back
+   * gesture and the screen's own Back land in the same place.
+   */
+  function walkthroughStorageKey(id: string): string {
+    return `pianopath:walkthrough:${id}`;
+  }
+
+  function loadWalkthroughStep(id: string, length: number): number {
+    try {
+      const raw = localStorage.getItem(walkthroughStorageKey(id));
+      const value = raw === null ? 0 : Number(raw);
+      if (!Number.isInteger(value) || value < 0 || value > length) return 0;
+      return value;
+    } catch {
+      // Private browsing or a full quota. Starting at the beginning is the
+      // same thing that happens the first time anyone opens it.
+      return 0;
+    }
+  }
+
+  function saveWalkthroughStep(id: string, index: number): void {
+    try {
+      localStorage.setItem(walkthroughStorageKey(id), String(index));
+    } catch {
+      // The tour then restarts on the next visit rather than resuming, which
+      // is a worse tour and not a broken one.
+    }
+  }
+
+  function clearWalkthroughStep(id: string): void {
+    try {
+      localStorage.removeItem(walkthroughStorageKey(id));
+    } catch {
+      /* as above */
+    }
+  }
+
+  /**
+   * `kind: 'walkthrough'` — the guided tour of the practice modes (`04` §5c-1).
+   *
+   * Three steps, a way out of every one of them, and repeatable: *Start over*
+   * while it is running and *Again* on the sheet both put it back to the
+   * first step, because the owner's instruction for all three Stage 0 items
+   * was that they be revisitable rather than one-shot.
+   */
+  function runWalkthrough(target: CatalogItem): void {
+    const steps = walkthroughSteps(target);
+    const song = walkthroughSong(target);
+    if (steps.length === 0) {
+      // The catalog named no step this screen knows. Honest, and it does not
+      // ask the learner to import anything.
+      status.textContent = `${target.title} has no steps this version of the app knows how to show.`;
+      section.dataset.drill = 'unavailable';
+      return;
+    }
+    let index = loadWalkthroughStep(target.id, steps.length);
+    section.dataset.drill = 'running';
+    section.dataset.kind = 'walkthrough';
+    startedAtMs = Date.now();
+    // Out of the tour, not back into the piece it just came from — the tour is
+    // the one drill whose steps leave this screen and come back to it, so the
+    // history entry behind it is the Score screen and `history.back()` walked
+    // into it. See `leaveDrill`.
+    leaveDrill = () => {
+      router.navigate(router.route.tab);
+    };
+
+    function openStep(step: WalkthroughStep): void {
+      // The step after this one is where coming back lands. Written before the
+      // navigation, because after it this screen no longer exists.
+      saveWalkthroughStep(target.id, index + 1);
+      router.navigateScore(song, {
+        mode: step.mode,
+        ...(step.loop ? { loop: step.loop } : {}),
+        tour: target.id,
+      });
+    }
+
+    function showStep(): void {
+      const step = steps[index];
+      if (!step) {
+        finishWalkthrough();
+        return;
+      }
+      section.dataset.step = step.id;
+      counter.textContent = `${String(index + 1)} of ${String(steps.length)} · ${step.title}`;
+      prompt.textContent = step.text;
+      // What Back on *that* screen will do, which on the last step is not what
+      // it does on the others: it ends the tour. A line promising a next step
+      // that does not exist is the same fault as a control that does nothing.
+      hint.textContent =
+        index === steps.length - 1
+          ? 'It opens the real screen on a real piece. ← Back there finishes the tour.'
+          : 'It opens the real screen on a real piece. ← Back there brings you to the next step.';
+      hint.hidden = false;
+      // No card, and therefore no room kept for one.
+      //
+      // `.drill-stage` is `flex: 1` upright and spans five grid rows sideways,
+      // because every other kind of drill puts the thing to look at in it — a
+      // note on a staff, a chord symbol, four bars of music. A walkthrough
+      // step has nothing to draw, and an empty stage left the sentence the
+      // learner is meant to read starting three-quarters of the way down a
+      // 342x740 screen with a void above it.
+      stage.replaceChildren();
+      stage.hidden = true;
+      controls.replaceChildren(
+        button(step.openLabel, () => openStep(step), {
+          id: 'drill-walkthrough-open',
+          variant: 'primary',
+        }),
+        button(
+          index === steps.length - 1 ? 'Finish' : 'Next',
+          () => {
+            index += 1;
+            saveWalkthroughStep(target.id, index);
+            showStep();
+          },
+          { id: 'drill-walkthrough-next' },
+        ),
+        // Only once there is something to go back past. On step one it would
+        // be a button whose entire function is to redraw the screen.
+        ...(index > 0
+          ? [
+              button(
+                'Start over',
+                () => {
+                  index = 0;
+                  saveWalkthroughStep(target.id, 0);
+                  showStep();
+                },
+                { id: 'drill-walkthrough-restart', variant: 'quiet' },
+              ),
+            ]
+          : []),
+      );
+    }
+
+    function finishWalkthrough(): void {
+      finished = true;
+      section.dataset.drill = 'finished';
+      section.dataset.step = '';
+      // Nothing is left behind: the next time it is opened it starts at the
+      // first step, which is what "run it again" has to mean.
+      clearWalkthroughStep(target.id);
+      controls.replaceChildren();
+      stage.replaceChildren();
+      stage.hidden = true;
+      prompt.textContent = '';
+      hint.hidden = true;
+      counter.textContent = '';
+      void recordRun({
+        itemId: target.id,
+        mode: 'drill:walkthrough',
+        tempoPct: 100,
+        // A tour is not accurate or inaccurate — `02` Stage 0.3's mastery is
+        // "tour completed", so reaching the end is the whole criterion.
+        accuracy: 1,
+        accuracyEstimated: false,
+        wrongNotes: 0,
+        missed: 0,
+        durationMs: Date.now() - startedAtMs,
+        passed: true,
+        masterEligible: true,
+      }).catch((cause: unknown) => {
+        status.textContent = `Could not save this tour: ${String(cause)}`;
+        status.classList.add('status--error');
+      });
+      sheet.hidden = false;
+      sheet.replaceChildren(
+        el('div.row', {}, el('h2', { text: 'Tour finished' }), badge('passed', 'passed')),
+        el('p', {
+          text: 'Wait mode, Tempo mode and loops are all on the ⋯ sheet and the control bar of every piece you open. Come back to this any time.',
+        }),
+        el(
+          'div.row',
+          {},
+          button(
+            'Again',
+            () => {
+              finished = false;
+              sheet.hidden = true;
+              runWalkthrough(target);
+            },
+            { id: 'drill-again', variant: 'primary' },
+          ),
+          button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
+        ),
+      );
+      sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+
+    showStep();
+  }
+
   // --- load ----------------------------------------------------------------
 
   void (async () => {
@@ -1253,12 +1550,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       return;
     }
     if (isWalkthrough(item)) {
-      // P19 Task 3b tier 3: a real guided tour has to step through the Score
-      // screen's Wait/Tempo/Loop modes on a real piece, which this screen
-      // cannot do on its own. Honest and not-yet, rather than the "import
-      // needed" badge this item wore before it had a `drill` block at all.
-      status.textContent = `${item.title} is being built — a step-through of Wait mode, Tempo mode and loops is coming, not a file to import.`;
-      section.dataset.drill = 'unavailable';
+      runWalkthrough(item);
       return;
     }
 

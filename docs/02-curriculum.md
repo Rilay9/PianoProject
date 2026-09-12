@@ -147,6 +147,16 @@ layout), Lypur lesson 1. Mastery: 20 keys in 40 s with ≥ 95 %.
 "slow is fast". Exercise: guided tour on `song.folk.hot-cross-buns` `[AUTH]`. Mastery: tour
 completed.
 
+> **What the tour actually covers**, since the concept list above is the unit's and not the
+> exercise's: three steps — Wait mode, Tempo mode and loops — each explaining its mode in a
+> couple of sentences and then opening the real Score screen on Hot Cross Buns already in it
+> (`04` §5c-1). The rest of the list — hand focus, tempo %, bars-per-window, the review queue,
+> what "mastered" means, the 30-minute template — is taught by the lesson text and the Guide,
+> not by the tour: a tour long enough to visit every control is a tour nobody finishes. Adding
+> a step is adding an entry to `WALKTHROUGH_STEPS` in `DrillScreen` and naming it in the
+> catalog item's `drill.params.steps`; an id the catalog names and the app does not know is
+> skipped rather than drawn blank.
+
 **0.4 Placement test (optional).** A branching set of 8 short items (read a note, clap a
 rhythm, play a 5-finger pattern HT, play a C major scale HT, sight-read a 4-bar grand-staff
 phrase, play I–IV–V in G from symbols, play a swung 12-bar blues LH, play Bach Minuet Anh 114

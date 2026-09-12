@@ -44,6 +44,22 @@ a card that has to hold the whole day, which is why Today is unchanged and still
 measured against 96. Sideways is untouched, because width is the one thing a
 phone on its side has.
 
+**Narrowed, and extended, 2026-09-12** — from the pass that ranked the four tab
+screens. The trade the owner asked for is "the buttons **and** the full names",
+so it buys a row nothing when the row has one text link on it, and every bundled
+catalog row has exactly that: a single *Details* beside a title somebody chose
+and wrote down, in a list of 1,533. Measured at 342 px those stood at 101 px
+each with about 45 of them a blank band under the words, which is four and a half
+rows a screenful. So in the **Library** the exception applies only to rows
+carrying more than one action — an imported score, which is where the archive
+titles and the *Edit · Assign · Details* strip both are — and an ordinary row
+keeps its words on the same line as its one link. The **score folder** stays
+unconditional: every one of its rows carries two buttons. And the **Shelf's
+piece rows** join the exception for the reason it was written — a piece carries
+up to four ways in (*Practise*, *With the score*, *Open the PDF*, *Edit*), which
+upright left the words about a third of the row, `No. 12 — Stud…` over
+`page 14 · for Right h`.
+
 The 100 is measured on a 360 px screen and it is a floor, not a preference: the control sets the
 height of the first line (40 px for a tick box, 48 for a button — both of them a thumb) and two
 lines of sentence under it are 40 more. What breaks it is a third line, so a hint is written to
@@ -123,7 +139,16 @@ Score screen is a full-screen route pushed on top (back gesture returns).
 
 ## 2. Today
 
-**§0:** a hand screen (R2) — rows ≤ 96 px. Its one filled box (R3) is **Start session**; *Jump to…* and *Metronome* are text. The session card is the subject and starts within the first screenful (R1).
+**§0:** a hand screen (R2) — rows ≤ 96 px. Its one filled box (R3) is **Start session**; *Shuffle options*, *Jump to…* and *Metronome* are text. The session card is the subject and starts within the first screenful (R1).
+
+**Ranked, 2026-09-12** (the pass the Plan screen had; see `TodayScreen.ts`). The card said everything at one volume: five identical rows, each badged with the slot kind — a mark on every row, which distinguishes nothing — over a reason line opening with the same word, and each with the *title* cut to `Posture and hand-shape …` so that *Swap* and *▶* could sit beside it. So:
+
+- **Start session moves above the card.** It was under five rows of it: 679 px down a 740 px phone upright and off the bottom entirely sideways, which is a strange place for the one filled box on the screen the app opens on. The card still starts inside the first screenful — the button is one row of 40 px and the card was starting at 198.
+- **The slot kind leaves its badge and leads the detail line** (`Warm-up · 8 min · L0.1`). A badge is left for what that line does *not* say: that you have started or passed this, or that it needs importing.
+- **A row's title takes a second line** rather than an ellipsis, paid for by the badge line — **except where the row carries a badge**, and then it is one. A Today row is four lines deep (title, reason, detail, badges) and 96 px is one title line plus the other three; both at once is 116. Where there is a badge it is the news and the title is a name already on the card.
+- **Free play is a prompt, not a row.** It was a `listRow` — same border, surface and height as the four tappable cards above it — with no click handler, no actions and nothing to press. Every word it carried is still there; the costume is gone.
+- *Shuffle options* was the last of the three day-changing actions still drawn as a box; all three are text now, under the card.
+- The "Working on…" line names the rung rather than printing `lesson 0.1` beside a unit title that is the same words.
 
 - Header: minutes this week / weekly goal (no daily-streak guilt), days practised this week,
   **input chip** showing the active follow input (MIDI 🎹 / Mic 🎤 / Timed ⏱ / Manual) —
@@ -254,6 +279,8 @@ works (mic/MIDI can highlight the chord you actually play vs the chart, amber if
 
 **§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder* sit as one line of text in the header, above the search box — text rather than boxes (R3), but at the top: at the foot of the list they were 4,325 px down with the default sixty rows drawn. The header does not scroll, so the list runs under them.
 
+**Ranked, 2026-09-12.** Two faults, both "the same thing on every row". The detail line said `Hands together` on very nearly all 1,533 of them — three words in the middle of the line that is supposed to tell rows apart, which never tell any two apart, and which pushed the type off the end; it is `RH`/`LH` where the fact is news and silent otherwise, with the full sentence still on the item's detail sheet. And **the drop target is the list itself**: when the import heading and its buttons moved into the header they left an empty `div.block` under the list — no text, no control, but a rule across the screen and seventeen pixels of nothing (R4: no furniture), for a gesture that does not exist on a phone. The listeners moved onto the list, which is also the better desktop target: you drop the file on the thing you are dropping it into.
+
 **The letter rail** (`ui/alphaRail.ts`, the same component the score folder uses) sits beside the
 list **only under the title sort** and only when there is more than one page: the default sort is
 by level, which is a teaching order, and a letter over that points wherever the letter happens to
@@ -316,10 +343,23 @@ Library → **Browse a score folder** (`#/library/folder`):
   moved — still falls back to the picker, so the worst case is the behaviour without it. The
   one fact still unverified is whether the S25 keeps the grant across a relaunch; only the
   phone can answer it.
-- **The listing is kept, the files are not.** The folder's rows go into IndexedDB
-  (`folderLibraries`), so browsing works with nothing plugged in, months later. Adding asks
-  for the folder again — one tap, and only when something is actually wanted — or asks Chrome
-  for permission on the stored handle, if there is one.
+- **The listing is kept, the files are not.** The folder's rows go into IndexedDB, so browsing
+  works with nothing plugged in, months later. Adding asks for the folder again — one tap, and
+  only when something is actually wanted — or asks Chrome for permission on the stored handle,
+  if there is one.
+
+  **Changed 2026-09-12.** The listing used to be *one* record (`folderLibraries.scores`), and
+  IndexedDB can read or write only whole records — so every operation cost the whole listing:
+  opening this screen deserialized all 37,261 objects to draw sixty, adding one piece rewrote
+  all of them, and a rescan replaced the listing wholesale. It is now one record per score
+  (`folderScores`, keyed `[folder, file]`, indexed on the folded title) plus one small record
+  per folder holding the arrays this screen filters over (`folderIndexes`), with the folder's
+  own row left small. **Opening the screen reads the index and not the rows**; the full rows
+  are fetched by key for the page about to be drawn; adding one piece writes one record; and a
+  rescan diffs in one transaction — a path that is still there keeps its identity, so a piece
+  already added stays added, a new path is inserted, and a row whose file has gone is *marked*
+  rather than deleted, because a rescan run with the card out must not be able to destroy a
+  listing. See `01-architecture.md` §4.5 for the stores and the migration.
 - **A row is marked *Added* by its file, not its title.** PDMX has six files called *The
   Entertainer*; matching on the title greyed out the other five as soon as one was added
   (P19). An import that came from a folder records where it came from.
@@ -345,8 +385,12 @@ Library → **Browse a score folder** (`#/library/folder`):
   score added to the folder *since* the manifest was written is invisible until a rescan, and
   a manifest row whose file has gone is only discovered when Add reaches for it, at which
   point the row is removed and a rescan offered.
-- **Search, style, level range, "rated 4+ by 5+ people".** Filtering is synchronous over the
-  array; only the drawing is capped (60 rows, then "Show more").
+- **Search, style, level range, "rated 4+ by 5+ people".** Filtering is synchronous over
+  parallel arrays — one folded haystack, letter, level, style id and rated flag per row — and
+  those arrays are read from `folderIndexes` rather than folded out of the rows on load. Only
+  the drawing is capped (60 rows, then "Show more"). The filter itself is unchanged and is
+  deliberately not a worker and not a virtual list: 37,000 rows over typed arrays filter in a
+  few milliseconds, and the cost was never the filtering.
 - **A letter rail down the side** (`ui/alphaRail.ts`, shared with Library's list). A to Z is
   always drawn, so the rail is a shape that can be learned. A tap **moves the window** — the page
   starts at that letter — rather than growing the list to reach it: growing it drew 4,860 rows in
@@ -357,9 +401,15 @@ Library → **Browse a score folder** (`#/library/folder`):
   are all one letter, and a rail reading only its rows dimmed the other twenty-six over a folder
   with something under every one of them — the rail contradicting itself one tap after it was
   obeyed. The screen hands over the set of letters its current filters leave something under
-  (computed in the same pass as the filtering; the letter of every row is indexed once when the
-  folder loads, because `letterFor` normalises and doing 37,261 of them per keystroke is the
-  sluggishness this list keeps being fixed for). A letter with nothing under it anywhere is dimmed
+  (computed in the same pass as the filtering; the letter of every row is folded once, when the
+  folder is *scanned*, and stored in `folderIndexes` — `letterFor` normalises, and doing 37,261
+  of them per keystroke is the sluggishness this list keeps being fixed for). With no filters
+  set, a jump asks the database where a letter starts instead: the `byTitle` index is keyed on
+  the folded title, so it is a count of the key range below that letter and no record is read.
+  The answer is *checked* against the stored index before it is used — a row marked missing is
+  in the store and not in the index, which would shift it — and anything that does not check
+  out falls back to the walk over the current matches, which is also what a filtered list has
+  to do, since the stored order knows nothing about the search box. A letter with nothing under it anywhere is dimmed
   **and takes no tap**, which is the one honest thing to do with it.
 - **One folder is shown: the one picked last.** The screen holds a single listing, and
   `getAll` hands rows back in key order — the key being the folder's own name. So a `Download`
@@ -383,6 +433,33 @@ would work for as long as the picker's grant lasts and then stop, and a piece yo
 last week vanishing is worse than a tap.
 
 ## 4c. Shelf — the books he already owns (P16)
+
+**§0:** a hand screen (R2), with the portrait exception above for its piece rows. **No filled box**
+(R3): R3 lists "register a book" among the things done once per lesson or less, so *Add a book* is
+text and *Add a piece* keeps its outline. The pieces are the subject and start within the first
+screenful (R1).
+
+**Ranked, 2026-09-12** (see `ShelfScreen.ts`). Photographed at 342 px this screen had every one of
+the Plan screen's faults at once, and all five fixes are in that pass:
+
+- **No `BOOKS YOU OWN` heading.** It sat in the muted section-label capitals directly under an `h1`
+  reading **Shelf**, over a card saying much the same — the same thing announced twice, and the
+  heading was the half taking the room. The screen's title is the heading; the one line of
+  explanation and the folded long version stay.
+- **A book's name is a name.** It was an `h2` inside a `.block`, which in this app is the
+  section-label style, so "Czerny, Practical Method for Beginners on the Pianoforte Op. 599" was
+  three lines of grey capitals and the loudest thing on a screen whose subject is the pieces under
+  it. Ordinary case and colour, two lines, one weight heavier than its rows — and its kind, author
+  and **how many pieces it holds** share the one quiet line the author used to have alone.
+- **A piece's title gets the room**, two lines rather than `No. 12 — Stud…`. That heading was drawn
+  in full while the rows you tap were cut, which is backwards.
+- **The rung is named, not numbered.** The row read `page 14 · ≈ 1.1 · rung 1.1` — an internal key
+  beside a bare level that was the same figure by coincidence, one meaning a difficulty and the
+  other a lesson. The level is `levelLabel` like everywhere else, and the rung takes the row's
+  sentence line (`for Landmark notes`) because `fitDetail` drops whole tokens and a rung's title is
+  long enough to be dropped whole.
+- **Nothing is filled.** *Add a book* was a filled box at the top, above every book — the rarest
+  action on the screen wearing its loudest weight.
 
 Library → **Shelf** (`#/library/shelf`), from replan §5.1. The app has no copy of these books
 and never will; what it holds is a register.
@@ -772,14 +849,74 @@ learner looks at.
 - **Sight-reading is not here.** It is generated notation and opens on the Score screen in
   Tempo mode (`05` §8), scored on the first attempt only — after that the material has been
   seen and a second run measures something else.
+- **Three faces are not prompt loops at all.** A `checklist` is ticked prose, a `placement`
+  test is a self-judged pass/fail branch, and a `walkthrough` is a few sentences per step that
+  hand the learner to another screen. None of them has expected pitches or a keyboard strip, so
+  none goes through `drillFromCatalog`; each drives the same counter, prompt, hint, status line,
+  controls and result sheet by hand, so the screen still looks like one screen. **A face with
+  nothing to draw hides the card area rather than leaving it empty.** `.drill-stage` is
+  `flex: 1` upright and spans the words column's five rows sideways, because every other kind
+  puts the thing to look at in it — an empty one started the sentence a walkthrough step exists
+  to be read three-quarters of the way down a 342x740 screen, under a void.
+
+### 5c-1. The guided tour of the practice modes
+
+`drill.tour.app-basics`, the exercise for `02` Stage 0.3, whose mastery is "tour completed".
+Three steps — **Wait mode · Tempo mode · loops** — and each one says in two sentences what the
+mode is for and then opens **the real Score screen** on Hot Cross Buns already in it:
+`#/score/<song>?mode=wait`, `?mode=tempo`, `?mode=wait&loop=1-2`, each carrying
+`&tour=drill.tour.app-basics`.
+
+**Why not a tour that draws its own score.** A second, smaller imitation of §5 inside the drill
+would have drifted from the real one the first time either changed, and it would teach a screen
+the learner never uses again. The cost of opening the real one is three query parameters, which
+is the mechanism `blind=1` and `performance=1` already use, and they reach §5 at the two points
+where it already decides those things: the line that picks a default mode, and the line that
+sets a loop.
+
+- **`?mode=`** beats the learner's own default for this visit only; the select stays live, so a
+  step about Wait mode cannot be read in Tempo mode by accident and can still be changed on
+  purpose.
+- **`?loop=1-2`** arrives with those bars already looping — printed bar numbers, the ones on the
+  page and on the Loop control, converted at the edge because the loop machinery counts from
+  one and a pickup bar is printed 0. A range the piece does not have is dropped rather than
+  drawn. Refused outright in a performance, which is one pass by definition. A step that opened
+  the screen and then asked the learner to discover the double-tap gesture would have taught
+  nothing.
+- **`?tour=<drill id>`** is where Back goes. All three exits from §5 use it — Back in the
+  header, its twin at the bar's left end sideways, and Done on the summary sheet — because a
+  tour the learner loses by finishing a run is not repeatable. Blind and Perform are routes, so
+  they carry all three parameters through, or pressing either would drop the learner out of the
+  tour silently. An id that is not a catalog id is dropped and Back goes to the tab, since the
+  only thing the id is used for is a navigation target.
+
+**A way out of every step, and repeatable.** *Next*/*Finish* moves on without opening anything;
+*Start over* appears the moment there is a step to go back past; the header's **Back leaves the
+tour for the tab**, and *not* through `history.back()` as every other drill's does — the tour is
+the one drill whose steps leave this screen and are navigated back to, so the entry behind it is
+the piece just left, and Back walked into it while §5's own Back came here again. The step to
+resume on is written to `localStorage` **before** navigating, so the Android back gesture, §5's
+Back and never coming back at all all land on the same step. Reaching the end records the run,
+clears that position and offers *Again*, so opening it a second time is opening it from the
+beginning.
 
 ## 6. Progress
 
-**§0:** the heat map is *Minutes a day, last 13 weeks* and carries a one-line key for its five levels (`0 · <10 · <25 · <45 · 45+ min`).
+**§0:** a hand screen (R2) — rows ≤ 96 px. The heat map is *Minutes a day, last 13 weeks* and carries a one-line key for its five levels (`0 · <10 · <25 · <45 · 45+ min`). **No filled box** (R3): nothing on this screen is done on most visits. The week's figure is the subject and is the first thing on the screen (R1).
+
+**Ranked, 2026-09-12** (the pass the four tab screens had; see `ProgressScreen.ts`). Four of the Plan screen's six faults were here:
+
+- **`THIS WEEK` over "48 of 150 minutes *this week*"** — a name repeated inside its own heading, and the heading was taking the room while the figure it headed was set at the same weight as the muted line under it. The heading is gone, the figure is the one loud thing on the screen, and "days practised" moves to the quiet line so the headline does not wrap at 342 px.
+- **The heat map joins it in the same block.** Minutes a day and minutes this week are one subject and were announced as two, behind a heading and a rule each. The map's own caption stays — it is what tells a reader what the squares are.
+- **The weekly goal moves below the map**, with a rule of its own: it is set about once, and it was standing between the figure and the map it belongs to. Its confirmation line stays inside the same block, beside the control (R6).
+- **No badge on every row of a list defined by that badge.** `mastered` was on every row under *Repertoire*, `performance` on every row under *Performances*. Each cost its row the line the title needed; the titles now take two lines (one where the row carries a self-report badge, which is the only badge left).
+- **A row in any of the three lists opens the piece it names.** Fifty cards — twenty performances and thirty sessions — were drawn with the border, surface and height of the tappable rows with no click handler at all. The repertoire row's `▶` goes with the change: one control instead of two doing the same thing, and a whole row is a bigger target than a 40 px glyph. A run whose item has been deleted since is *not* drawn as a control, and says so in words.
+- **No internal identifiers.** The history's second line printed `session.mode` raw, so a week of drills read `drill:walkthrough`; it is words now (*Wait mode*, *Tempo mode*, *From the book*, *Drill*). All three lists used to fall back to `itemId` when the catalog had no entry.
+- **Nothing filled, and the text actions are a thumb tall.** *Export everything* was the one filled box, for the rarest action on the screen, at the bottom of fifty rows; it keeps an outline because it is the one action here with a consequence, and *Import a backup* and *Diagnostics* are text. `.link-button`'s own floor is `§9`'s 24 px for a link, which is not enough for a control, so this screen's link buttons are held to R4's 40.
 
 - Calendar heat-map of practice minutes; streak; weekly minutes vs goal.
 - Per-stage completion; per-track completion.
-- **Repertoire list (mastered)** with "last played" and a replay button, capped at 20 rows (same
+- **Repertoire list (mastered)** with "last played", the row itself opening the piece, capped at 20 rows (same
   shape as Skills' concept grid) with a *Show N more* link — the history and the performances are
   already bounded by asking for a bounded number of recent rows, but mastery only grows, so this
   list needed its own way to see the rest rather than one that would eventually make it the
@@ -825,8 +962,13 @@ the section is not built for a MIDI user at all.)
 item count — it counts as it goes, offers **Stop** beside itself while it runs, says so and
 fetches nothing when there is no network, gives up after ten refusals in a row, and ends when
 the screen is left); **offline only** [off] (stops the app checking for updates at all — `00` D20);
-storage used, with a breakdown by scores / audio / lessons / your imports; reset progress
-(double confirm).
+storage used, with a breakdown by scores / audio / lessons / your imports; **whether that
+storage is safe** (2026-09-12) — one sentence under the usage figure saying what
+`navigator.storage.persist()` answered, because everything the app holds is local with no copy
+anywhere and IndexedDB starts in best-effort mode, where a device short of space may clear the
+lot; the same line is where a *blocked database* is reported, since another copy of the app
+holding the old version open means the app is running and saving nothing, and no one could
+guess that from anywhere else; reset progress (double confirm).
 
 ### 7c. What §7 actually ships (as of P18, 2026-09-06)
 

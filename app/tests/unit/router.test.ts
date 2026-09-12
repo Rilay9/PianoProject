@@ -256,3 +256,128 @@ describe('score routes', () => {
     expect(seen).toEqual([undefined, 'a.b', 'c.d']);
   });
 });
+
+/**
+ * The three parameters the guided tour rides on (`04` §5c-1).
+ *
+ * The tour opens the *real* Score screen rather than drawing an imitation of
+ * it, which needs the hash to carry three things: which mode to start in,
+ * which bars to loop, and which walkthrough Back returns to. They follow
+ * `blind=1` exactly — a query parameter on the score route, dropped rather
+ * than trusted when it is not something this app wrote.
+ */
+describe('the score route carries a mode, a loop and a way back', () => {
+  it('parses all three', () => {
+    expect(parseHash('#/score/song.a?mode=tempo')).toEqual({
+      tab: DEFAULT_TAB,
+      score: 'song.a',
+      scoreMode: 'tempo',
+    });
+    expect(parseHash('#/score/song.a?loop=1-2')).toEqual({
+      tab: DEFAULT_TAB,
+      score: 'song.a',
+      scoreLoop: { from: 1, to: 2 },
+    });
+    expect(parseHash('#/score/song.a?tour=drill.tour.app-basics')).toEqual({
+      tab: DEFAULT_TAB,
+      score: 'song.a',
+      tour: 'drill.tour.app-basics',
+    });
+  });
+
+  it('accepts every mode the Score screen offers, and nothing else', () => {
+    for (const mode of ['wait', 'tempo', 'listen', 'free'] as const) {
+      expect(parseHash(`#/score/song.a?mode=${mode}`).scoreMode, mode).toBe(mode);
+    }
+    // Not a mode: the screen would be asked for something it cannot be, and
+    // falling back to the learner's own default is the right answer.
+    expect(parseHash('#/score/song.a?mode=slowly').scoreMode).toBeUndefined();
+    expect(parseHash('#/score/song.a?mode=').scoreMode).toBeUndefined();
+    expect(parseHash('#/score/song.a?mode=toString').scoreMode).toBeUndefined();
+  });
+
+  it('refuses a loop that is not two bar numbers in order', () => {
+    // A pickup bar is printed 0, so 0 is a real bar number here.
+    expect(parseHash('#/score/song.a?loop=0-1').scoreLoop).toEqual({ from: 0, to: 1 });
+    expect(parseHash('#/score/song.a?loop=4-2').scoreLoop).toBeUndefined();
+    expect(parseHash('#/score/song.a?loop=1').scoreLoop).toBeUndefined();
+    expect(parseHash('#/score/song.a?loop=one-two').scoreLoop).toBeUndefined();
+    expect(parseHash('#/score/song.a?loop=-1-2').scoreLoop).toBeUndefined();
+  });
+
+  it('refuses a tour id that is not a catalog id', () => {
+    // It is used as a navigation target and nothing else, so a Back that would
+    // go nowhere is dropped in favour of one that goes to the tab.
+    expect(parseHash('#/score/song.a?tour=../../etc/passwd').tour).toBeUndefined();
+    expect(parseHash('#/score/song.a?tour=').tour).toBeUndefined();
+  });
+
+  it('round-trips all three together, alongside blind and performance', () => {
+    const route = {
+      tab: DEFAULT_TAB,
+      score: 'song.folk.hot-cross-buns',
+      blind: true,
+      performance: true,
+      scoreMode: 'wait' as const,
+      scoreLoop: { from: 1, to: 2 },
+      tour: 'drill.tour.app-basics',
+    };
+    expect(parseHash(routeToHash(route))).toEqual(route);
+  });
+
+  it('navigateScore puts them in the hash', () => {
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    router.navigateScore('song.folk.hot-cross-buns', {
+      mode: 'tempo',
+      loop: { from: 1, to: 2 },
+      tour: 'drill.tour.app-basics',
+    });
+    expect(parseHash(win.location.hash)).toEqual({
+      tab: DEFAULT_TAB,
+      score: 'song.folk.hot-cross-buns',
+      scoreMode: 'tempo',
+      scoreLoop: { from: 1, to: 2 },
+      tour: 'drill.tour.app-basics',
+    });
+    expect(router.route.scoreMode).toBe('tempo');
+    expect(router.route.tour).toBe('drill.tour.app-basics');
+  });
+
+  it('treats a change of mode or of loop on the same piece as a real change', () => {
+    // The tour opens the same piece three times and only these change. Without
+    // them in the comparison the second step would be handed the first step's
+    // screen, unchanged and in the wrong mode.
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigateScore('song.a', { mode: 'wait', tour: 'drill.t' });
+    router.navigateScore('song.a', { mode: 'tempo', tour: 'drill.t' });
+    router.navigateScore('song.a', { mode: 'wait', loop: { from: 1, to: 2 }, tour: 'drill.t' });
+    expect(seen).toEqual([
+      '#/plan',
+      '#/score/song.a?mode=wait&tour=drill.t',
+      '#/score/song.a?mode=tempo&tour=drill.t',
+      '#/score/song.a?mode=wait&loop=1-2&tour=drill.t',
+    ]);
+  });
+
+  it('does not re-notify when the same loop is asked for twice', () => {
+    // The range is an object, so an identity comparison would call every
+    // repeat a change and rebuild the screen under the learner's hands.
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigateScore('song.a', { loop: { from: 1, to: 2 } });
+    router.navigateScore('song.a', { loop: { from: 1, to: 2 } });
+    expect(seen).toEqual(['#/plan', '#/score/song.a?loop=1-2']);
+  });
+
+  it('leaves a plain score route exactly as it was', () => {
+    // Nothing new appears on a route that asked for none of it.
+    expect(parseHash('#/score/song.a')).toEqual({ tab: DEFAULT_TAB, score: 'song.a' });
+    expect(routeToHash({ tab: DEFAULT_TAB, score: 'song.a' })).toBe('#/score/song.a');
+  });
+});

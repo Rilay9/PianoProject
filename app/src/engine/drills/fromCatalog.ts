@@ -136,11 +136,11 @@ export function isPlacement(item: CatalogItem): boolean {
 }
 
 /**
- * `walkthrough` is a sketch, not a runner (P19 handoff): a real guided tour
- * needs to step through the Score screen's Wait/Tempo/Loop modes on a real
- * piece, which is a Score-screen change and out of scope here. `DrillScreen`
- * shows an honest "coming soon" state for it rather than pretending a note
- * needs importing (docs/04 §2).
+ * `walkthrough` is the guided tour of the practice modes (docs/04 §5c-1): a few
+ * sentences per step, each of which opens the **real** Score screen already in
+ * the mode it is about (`#/score/<song>?mode=tempo`) and comes back to the
+ * next step. Not a prompt loop and not a second copy of the Score screen —
+ * `DrillScreen` renders it directly, the same way it does the two above.
  */
 export function isWalkthrough(item: CatalogItem): boolean {
   return item.drill?.kind === 'walkthrough';

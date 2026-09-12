@@ -8,6 +8,8 @@
 // case. History-API routing would need a Pages 404->index fallback and is
 // unnecessary here since the app has no deep content to link externally.
 
+import type { Mode } from './engine/types';
+
 export const TAB_IDS = ['today', 'plan', 'library', 'progress', 'settings'] as const;
 export type TabId = (typeof TAB_IDS)[number];
 
@@ -123,6 +125,63 @@ export interface Route {
    * the flag is what lets Progress list the times he has actually done it.
    */
   performance?: boolean;
+  /**
+   * `#/score/<id>?mode=tempo` — open already in that practice mode (`04` §5c-1,
+   * the guided tour).
+   *
+   * The tour teaches Wait, Tempo and loops, and the only honest way to teach
+   * them is on the screen they live on. The alternative was a small imitation
+   * of the Score screen inside the drill, which would have drifted from the
+   * real one the first time either changed. A route parameter is the same
+   * mechanism `blind` and `performance` already use, and it costs the Score
+   * screen one line at the point where it picks its default.
+   */
+  scoreMode?: Mode;
+  /**
+   * `#/score/<id>?loop=1-2` — arrive with those printed bars already looping.
+   *
+   * Printed bar numbers — the ones written on the page and on the Loop
+   * control, which on a piece that opens with a pickup are one behind the
+   * numbers the loop machinery counts in (`08` invariant 24). The Score screen
+   * converts at the edge, the same place it already converts the other way to
+   * label the control. The tour's third step is "a loop repeats a few bars",
+   * and a step that opens the screen and then asks the learner to find the
+   * double-tap gesture has not taught anything.
+   */
+  scoreLoop?: { from: number; to: number };
+  /**
+   * `#/score/<id>?tour=<drill id>` — Back returns to that walkthrough.
+   *
+   * Without it the tour is a one-way door: every exit from the Score screen
+   * goes to a tab, and the learner who wanted to see the next step would have
+   * to find the drill again. The id rather than a bare flag, so any future
+   * walkthrough gets the same ride with no second mechanism.
+   */
+  tour?: string;
+}
+
+/**
+ * The four practice modes, as a lookup rather than a list.
+ *
+ * A `Record<Mode, …>` fails to compile when a fifth mode is added and not
+ * named here, which a `readonly Mode[]` would not — and a mode the router
+ * silently refused would look like the Score screen ignoring the tour.
+ */
+const SCORE_MODES: Record<Mode, true> = { wait: true, tempo: true, listen: true, free: true };
+
+function looksLikeMode(value: string | null | undefined): value is Mode {
+  return value !== null && value !== undefined && Object.hasOwn(SCORE_MODES, value);
+}
+
+/** `1-2`: two printed bar numbers. A pickup bar is printed 0, so 0 is allowed. */
+function parseLoopParam(value: string | null | undefined): { from: number; to: number } | undefined {
+  const match = value === null || value === undefined ? null : /^(\d{1,3})-(\d{1,3})$/.exec(value);
+  if (!match) return undefined;
+  const from = Number(match[1]);
+  const to = Number(match[2]);
+  // Backwards is not a range, and a screen asked for one would loop nothing
+  // and say nothing about why.
+  return to < from ? undefined : { from, to };
 }
 
 function isTabId(value: string): value is TabId {
@@ -149,6 +208,17 @@ export function parseHash(hash: string): Route {
   const params = query ? new URLSearchParams(query) : null;
   const blind = params?.get('blind') === '1';
   const performance = params?.get('performance') === '1';
+  const wantedMode = params?.get('mode');
+  const scoreMode = looksLikeMode(wantedMode) ? wantedMode : undefined;
+  const scoreLoop = parseLoopParam(params?.get('loop'));
+  const wantedTour = params?.get('tour');
+  // An unrecognised one is dropped rather than carried: it would only ever be
+  // used as a navigation target, and a Back that goes nowhere is worse than a
+  // Back that goes to the tab.
+  const tour =
+    wantedTour !== null && wantedTour !== undefined && looksLikeCatalogId(wantedTour)
+      ? wantedTour
+      : undefined;
   if (query) {
     const value = new URLSearchParams(query).get('for');
     // A lesson id, or nothing. An unrecognised one is dropped rather than
@@ -172,6 +242,9 @@ export function parseHash(hash: string): Route {
       score: id,
       ...(blind ? { blind: true } : {}),
       ...(performance ? { performance: true } : {}),
+      ...(scoreMode ? { scoreMode } : {}),
+      ...(scoreLoop ? { scoreLoop } : {}),
+      ...(tour === undefined ? {} : { tour }),
     };
   }
   if (tab === 'paper') {
@@ -255,6 +328,11 @@ export function routeToHash(route: Route): string {
     const flags = [
       ...(route.blind ? ['blind=1'] : []),
       ...(route.performance ? ['performance=1'] : []),
+      ...(route.scoreMode ? [`mode=${route.scoreMode}`] : []),
+      ...(route.scoreLoop
+        ? [`loop=${String(route.scoreLoop.from)}-${String(route.scoreLoop.to)}`]
+        : []),
+      ...(route.tour === undefined ? [] : [`tour=${encodeURIComponent(route.tour)}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
     return flags.length ? `${base}?${flags.join('&')}` : base;
@@ -321,12 +399,27 @@ export class Router {
   }
 
   /** Opens the Score screen on a catalog item (`#/score/<itemId>`). */
-  navigateScore(itemId: string, options: { blind?: boolean; performance?: boolean } = {}): void {
+  navigateScore(
+    itemId: string,
+    options: {
+      blind?: boolean;
+      performance?: boolean;
+      /** Open in this practice mode rather than the learner's default. */
+      mode?: Mode;
+      /** Open with these printed bars already looping. */
+      loop?: { from: number; to: number };
+      /** The walkthrough that opened it, which Back returns to. */
+      tour?: string;
+    } = {},
+  ): void {
     const route: Route = {
       tab: this.current.tab,
       score: itemId,
       ...(options.blind ? { blind: true } : {}),
       ...(options.performance ? { performance: true } : {}),
+      ...(options.mode ? { scoreMode: options.mode } : {}),
+      ...(options.loop ? { scoreLoop: options.loop } : {}),
+      ...(options.tour === undefined ? {} : { tour: options.tour }),
     };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
@@ -386,6 +479,13 @@ export class Router {
       route.pdfPage === this.current.pdfPage &&
       route.blind === this.current.blind &&
       route.performance === this.current.performance &&
+      route.scoreMode === this.current.scoreMode &&
+      route.tour === this.current.tour &&
+      // By value: two loop ranges naming the same bars are the same route, and
+      // comparing the objects would remount the Score screen on every repeat
+      // of a navigation that changed nothing.
+      route.scoreLoop?.from === this.current.scoreLoop?.from &&
+      route.scoreLoop?.to === this.current.scoreLoop?.to &&
       route.lesson === this.current.lesson &&
       route.chart === this.current.chart &&
       route.drill === this.current.drill

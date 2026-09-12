@@ -35,8 +35,8 @@ const runtimeDrills = catalog.filter((item) => item.drill && !item.file);
  * `drillFromCatalog` returns null for all four on purpose and `DrillScreen`
  * draws them itself: sight-reading opens the score screen, a checklist is
  * ticked prose, a placement test is a branching self-judged sequence, and a
- * walkthrough says in one sentence that it is being built rather than wearing
- * a badge that blames the learner for not importing a file.
+ * walkthrough is a few sentences per mode that open the real Score screen
+ * (`04` §5c-1) rather than a badge blaming the learner for not importing a file.
  *
  * This list is the point of the two assertions below. Without it they read
  * "every runtime drill builds a prompt loop", which stopped being true the
@@ -335,8 +335,9 @@ function bareItem(id: string, drill: CatalogItem['drill']): CatalogItem {
 /**
  * `checklist`, `placement` and `walkthrough` (P19 Task 3b) are not
  * note-answering prompt loops — a checklist is ticked prose, a placement
- * test is a self-judged branch, and a walkthrough is (for now) a sketch — so
- * none of them fits the `Drill` interface `drillFromCatalog` builds.
+ * test is a self-judged branch, and a walkthrough is prose that hands the
+ * learner to the Score screen in the mode the step is about — so none of them
+ * fits the `Drill` interface `drillFromCatalog` builds.
  * `DrillScreen` renders each one directly instead, the same way it already
  * special-cases `sight-reading` before ever calling `drillFromCatalog`.
  */

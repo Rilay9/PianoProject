@@ -125,14 +125,17 @@ test.describe('every kind of drill', () => {
      * a promise the catalog is making and the app is not keeping; the only
      * thing that makes it tolerable is that the screen says which, in words,
      * instead of drawing a working-looking card or blaming the learner for not
-     * importing a file. `walkthrough` is the guided tour of Wait, Tempo and
-     * loops: it has to step through the Score screen on a real piece, which
-     * the drill screen cannot do, and it is not built.
+     * importing a file.
+     *
+     * **It is empty, and keeping it empty is the point.** `walkthrough` — the
+     * guided tour of Wait, Tempo and loops — was the last entry: it now runs,
+     * by explaining each mode and opening the real Score screen in it
+     * (`04` §5c-1), so every kind the catalog offers deals a card or steps.
      *
      * Anything that reaches `unavailable` and is *not* named here fails, which
      * is the case this list exists to keep failing.
      */
-    const notBuilt = new Set(['walkthrough']);
+    const notBuilt = new Set<string>([]);
 
     for (const [kind, item] of byKind) {
       if (kind === 'sight-reading') continue; // notation: it opens the Score screen

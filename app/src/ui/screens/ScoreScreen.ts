@@ -172,6 +172,43 @@ export function ScoreScreen(router: Router): HTMLElement {
   const blind = router.route.blind === true;
   /** A performance run (replan §8): one pass, no restarts, no loop. */
   const performanceRun = router.route.performance === true;
+  /**
+   * What a guided tour asked this screen to be (`04` §5c-1).
+   *
+   * The tour of the practice modes does not draw its own little score screen —
+   * it opens *this* one, already in the mode the step is about, and Back
+   * returns to the step after it. So three route parameters and nothing else:
+   * the mode to start in, the bars to loop, and the walkthrough to go back to.
+   * Read once, applied at the two points where this screen already decides
+   * those things, so there is nothing new to keep in step.
+   */
+  const routeMode = router.route.scoreMode;
+  const routeLoop = router.route.scoreLoop;
+  const tourId = router.route.tour;
+  /**
+   * The tour's parameters, for a navigation that has to keep them.
+   *
+   * Blind and Perform are routes, so pressing either rebuilds the screen from
+   * the hash — and without these the learner would be silently dropped out of
+   * the tour by a control that has nothing to do with it.
+   */
+  const tourRoute = {
+    ...(routeMode ? { mode: routeMode } : {}),
+    ...(routeLoop ? { loop: routeLoop } : {}),
+    ...(tourId === undefined ? {} : { tour: tourId }),
+  };
+  /**
+   * Where Back goes: the tour that opened this, or the tab it came from.
+   *
+   * All three ways off this screen — the header's Back, its twin at the bar's
+   * left end when the phone is sideways, and Done on the summary sheet — go
+   * through here, because a tour that can only be resumed from one of the
+   * three is a tour the learner loses by finishing a run.
+   */
+  function leaveScore(): void {
+    if (tourId === undefined) router.navigate(router.route.tab);
+    else router.navigateDrill(tourId);
+  }
   let item: CatalogItem | undefined;
   let model: ScoreModel | null = null;
   let renderer: WindowRenderer | null = null;
@@ -388,7 +425,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   head.id = 'score-head';
   section.prepend(head);
 
-  const back = button('← Back', () => router.navigate(router.route.tab), 'score-back');
+  const back = button('← Back', () => leaveScore(), 'score-back');
 
   const title = document.createElement('h1');
   title.className = 'score-head__title';
@@ -423,7 +460,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   const barLeft = document.createElement('div');
   barLeft.className = 'score-bar__left';
   barLeft.id = 'score-bar-left';
-  const backSide = button('← Back', () => router.navigate(router.route.tab), 'score-back-side');
+  const backSide = button('← Back', () => leaveScore(), 'score-back-side');
   const titleSide = document.createElement('span');
   titleSide.className = 'score-bar__title';
   titleSide.id = 'score-title-side';
@@ -863,14 +900,14 @@ export function ScoreScreen(router: Router): HTMLElement {
   // survives a reload and can be linked to from a rung.
   const blindToggle = button(
     blind ? 'On' : 'Off',
-    () => router.navigateScore(itemId, { blind: !blind, performance: performanceRun }),
+    () => router.navigateScore(itemId, { ...tourRoute, blind: !blind, performance: performanceRun }),
     'score-blind',
   );
   blindToggle.setAttribute('aria-label', blind ? 'Show the score' : 'Hide the score');
 
   const performanceToggle = button(
     performanceRun ? 'On' : 'Off',
-    () => router.navigateScore(itemId, { blind, performance: !performanceRun }),
+    () => router.navigateScore(itemId, { ...tourRoute, blind, performance: !performanceRun }),
     'score-performance',
   );
   performanceToggle.setAttribute(
@@ -1682,7 +1719,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         : []),
       button('Done', () => {
         summaryUp(false);
-        router.navigate(router.route.tab);
+        leaveScore();
       }, 'summary-done'),
     );
     sheet.appendChild(actions);
@@ -1830,6 +1867,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     return printedBar(loopBarNumber - 1);
   }
 
+  /**
+   * `shownBar` the other way round: the loop number of the bar printed `bar`.
+   *
+   * Only the hash needs it (`?loop=1-2`, `04` §5c-1). Every other loop on this
+   * screen is set by a finger on a bar the renderer already identified, so it
+   * arrives counting from one and never has to be converted; a URL arrives in
+   * the numbers the learner can read off the page. Without the conversion
+   * `?loop=1-2` named the right bars on an ordinary piece and the bar before
+   * each of them on a pickup piece — where bar 1 is printed 0, so the range
+   * asked for `sourceMeasureIndex` -1 and looped nothing at all.
+   */
+  function loopBarForShown(bar: number): number {
+    return bar + 1 - printedBar(0);
+  }
+
   /** `bar 3 / 48`: the bar under the cursor and the piece's length. */
   function drawWhere(): void {
     if (!model || !renderer) {
@@ -1906,6 +1958,12 @@ export function ScoreScreen(router: Router): HTMLElement {
         ? `Bars ${String(shownBar(loopBars.from))}–${String(shownBar(loopBars.to))} ✕`
         : 'Off';
     loopButton.classList.toggle('is-selected', loopBars !== null);
+    // The bars being looped, on the screen element, so "did it open looping"
+    // is a question that can be asked without opening the ⋯ sheet first — the
+    // bar folds three seconds into a run and the sheet is two taps away.
+    section.dataset.loop = loopBars
+      ? `${String(shownBar(loopBars.from))}-${String(shownBar(loopBars.to))}`
+      : '';
     // One convention for every toggle in the sheet (P21b A2): the word is On
     // or Off and On is the highlighted one. Blind and Perform are routes
     // rather than settings, but from inside the sheet they are states of the
@@ -2165,6 +2223,29 @@ export function ScoreScreen(router: Router): HTMLElement {
 
       input = pickInput();
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;
+      // …unless the hash asked for one. A tour step about Wait mode that opens
+      // in whatever the learner's default happens to be is a step teaching the
+      // wrong thing, and the select is still theirs to change afterwards.
+      if (routeMode) mode = routeMode;
+      // Set here rather than at the top of the screen because the label the
+      // Loop control draws goes through `shownBar`, which needs the parsed
+      // model. Nothing reads `loopBars` before a run starts, so this is the
+      // first moment it can be both applied and drawn correctly.
+      if (routeLoop && !performanceRun) {
+        // The hash speaks printed bar numbers and `loopBars` counts from one;
+        // they differ by one on a pickup piece, which is why `shownBar` exists.
+        const wanted = {
+          from: loopBarForShown(routeLoop.from),
+          to: loopBarForShown(routeLoop.to),
+        };
+        // ...and only if the piece has those bars. A range past the end would
+        // otherwise draw a Loop control naming bars that loop nothing, which
+        // is the one thing worse than opening without a loop.
+        if (session.loopForPrintedBars(wanted.from, wanted.to)) {
+          loopBars = wanted;
+          loopSection = null;
+        }
+      }
       // The title is in the header now. The status line is for the app's own
       // messages, and "Loading…" is finished being true.
       //
