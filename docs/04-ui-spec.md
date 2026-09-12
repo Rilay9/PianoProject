@@ -490,6 +490,33 @@ nowhere, which on a stand with no piano connected reads as a fault.
 `Scroll`, a segment: it is a state, not a verb) · **Keys** (`Keys` | `Ribbon` | `Off`, a
 segment) · **Sound** (Phone / Piano / Both) · **Blind** · **Perform**.
 
+**Fill the width with music, not with space (owner, 2026-09-12).** *"We don't want
+to stretch the music bar out to where it doesn't look natural. At the extreme, when
+there's room for two bars it should show two bars not stretch one to fill."* This is
+the rule the bars-in-window setting has to serve, and it settles what that setting
+means: it is the number of bars you want **at least**, not a ceiling the fit may not
+pass. Two halves follow.
+
+*Do not stretch past natural.* `mayStretch` already refuses to stretch a system once
+a bar would exceed `MAX_BAR_WIDTH_IN_STAVES` (8) staff-heights across, and
+`CENTRE_WHEN_SPARE` centres what is left rather than pushing it to one edge. That
+came from the same owner's earlier report — notes so spread out you had to look
+across the screen to find the next one in a bar.
+
+*What to do with the room that is left.* **Clarified by the owner, same day:** showing
+another bar is one good answer, not a requirement — *"I didn't mean you HAVE to show
+two bars. Centered instead of stretching is fine. I just meant BE SMART and ux
+oriented!"* So the binding rule is the first half: never stretch past natural
+spacing. What to do with the spare width after that is a judgement, and centring a
+naturally-spaced system is a perfectly good one. Filling the width is not a goal in
+itself, and a rule that forced a second bar would be the same mistake as a rule that
+forced a stretch — a number winning over how it reads.
+
+A note for whoever writes the test: **a check that drawn ink fills some share of the
+stage width cannot tell these apart.** One stretched bar scores exactly as well as two
+natural ones, so `score.fill.spec`'s floor needs a companion that pins bar count or
+note spacing, or it will push the code the wrong way.
+
 **Both steppers say where they are and where they stop (2026-09-12).** `Bars in window` always
 read `2 bars` between its buttons; `Size` said nothing at all, so it could be pressed a dozen
 times without ever admitting where it had got to — and "put it back how it was" had no target.

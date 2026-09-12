@@ -3,8 +3,8 @@
  * (P19 §C3).
  *
  * The rest of the suite tests one lesson page, one drill of each interesting
- * kind, one import. These walk the shipped content: all 93 lessons, every
- * runtime drill kind, one item of every type and every source. They are slow
+ * kind, one import. These walk the shipped content: every lesson the curriculum
+ * declares, every runtime drill kind, one item of every type and every source. They are slow
  * on purpose, and they are the tests that catch content changing under code
  * that was written for the content of the day.
  */
@@ -49,7 +49,20 @@ const IGNORED = [/favicon/i, /soundfont/i, /AudioContext/i, /user gesture/i];
 test.describe('every lesson page', () => {
   test('all of them open by URL, draw their options and say what they need', async ({ page }) => {
     test.setTimeout(300_000);
-    expect(lessons.length).toBeGreaterThanOrEqual(90);
+    // Every lesson the curriculum declares, however many that is.
+    //
+    // This read `>= 90`, which is a count of the content on the day it was
+    // written, not a property of anything. Removing seven rungs whose songs
+    // could never be obtained took the curriculum to 86 and turned a
+    // deliberate, approved deletion into a red suite. What the sweep is for is
+    // that *every* lesson opens — so it asserts it visited all of them, and
+    // that there are enough to be worth sweeping at all.
+    expect(lessons.length, 'no lessons were read — the curriculum path is wrong').toBeGreaterThan(20);
+    const declared = curriculum.stages.reduce(
+      (sum, stage) => sum + stage.units.reduce((n, unit) => n + (unit.lessons?.length ?? 0), 0),
+      0,
+    );
+    expect(lessons.length, 'the sweep is not visiting every lesson in the curriculum').toBe(declared);
 
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(`${page.url()}: ${error.message}`));
