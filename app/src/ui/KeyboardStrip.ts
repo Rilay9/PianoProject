@@ -100,6 +100,8 @@ export interface KeyView {
   readonly el: HTMLElement;
   setState(state: KeyboardStripState): void;
   scrollToNote(midi: number, behavior?: ScrollBehavior): void;
+  /** Brings a whole chord into view; falls back to the low note if it cannot. */
+  scrollToSpan(low: number, high: number, behavior?: ScrollBehavior): void;
   fitKeysToWidth(): void;
   clear(): void;
   destroy(): void;
@@ -274,6 +276,45 @@ export class KeyboardStrip {
       key.offsetLeft + key.offsetWidth <= viewRight - margin;
     if (visible) return;
     const target = key.offsetLeft + key.offsetWidth / 2 - this.el.clientWidth / 2;
+    this.el.scrollTo({ left: Math.max(0, target), behavior });
+  }
+
+  /**
+   * Brings a whole chord into view, not just one note of it.
+   *
+   * `scrollToNote(lowest)` is the wrong question for two hands. Chopin's
+   * Nocturne Op. 27 No. 1 opens with the left hand an octave apart; at 342 px
+   * the strip scrolled to centre the lower note and the upper one landed just
+   * past the right edge, off the screen, with nothing to say it was there. The
+   * learner is looking at a keyboard that shows half the chord it is asking
+   * for.
+   *
+   * When the span fits, it is centred and both ends are visible. When it does
+   * not — a reach wider than the screen can hold at a playable key size — the
+   * lowest note anchors the view, which is the old behaviour and the right one:
+   * a consistent anchor beats a centred view that shows the middle of a chord
+   * and neither end of it.
+   */
+  scrollToSpan(low: number, high: number, behavior: ScrollBehavior = 'smooth'): void {
+    const first = this.keys.get(Math.min(low, high));
+    const last = this.keys.get(Math.max(low, high));
+    if (!first || !last) {
+      this.scrollToNote(low, behavior);
+      return;
+    }
+    const width = this.el.clientWidth;
+    const left = first.offsetLeft;
+    const right = last.offsetLeft + last.offsetWidth;
+    // The same margin `scrollToNote` uses: a key you can only just see is one
+    // you will miss.
+    const margin = first.offsetWidth * 2;
+    const viewLeft = this.el.scrollLeft;
+    if (left >= viewLeft + margin && right <= viewLeft + width - margin) return;
+    if (right - left + margin * 2 > width) {
+      this.scrollToNote(Math.min(low, high), behavior);
+      return;
+    }
+    const target = left + (right - left) / 2 - width / 2;
     this.el.scrollTo({ left: Math.max(0, target), behavior });
   }
 

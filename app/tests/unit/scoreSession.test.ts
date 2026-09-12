@@ -210,6 +210,7 @@ describe('the keys under the score', () => {
         state = next;
       },
       scrollToNote: () => undefined,
+      scrollToSpan: () => undefined,
       fitKeysToWidth: () => undefined,
       clear: () => undefined,
       destroy: () => undefined,
@@ -273,6 +274,7 @@ describe('what the keys show ahead of time', () => {
         state = next;
       },
       scrollToNote: () => undefined,
+      scrollToSpan: () => undefined,
       fitKeysToWidth: () => undefined,
       clear: () => undefined,
       destroy: () => undefined,

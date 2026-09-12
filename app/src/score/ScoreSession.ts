@@ -636,11 +636,15 @@ export class ScoreSession {
       uncertain,
       fingers: fingerMap,
     });
-    // Keep the note it is waiting for on the screen. `scrollToNote` does
-    // nothing when the key is already comfortably in view, so a piece that
-    // fits never moves.
+    // Keep what it is waiting for on the screen — all of it. This asked for
+    // the lowest note alone, which for two hands an octave apart put the other
+    // one just off the right edge with nothing to say so. `scrollToSpan` does
+    // nothing when the whole chord is already comfortably in view, so a piece
+    // that fits never moves, and falls back to the lowest note when the reach
+    // is wider than the screen can hold.
     const lowest = Math.min(...this.expectedNow);
-    if (Number.isFinite(lowest)) strip.scrollToNote(lowest);
+    const highest = Math.max(...this.expectedNow);
+    if (Number.isFinite(lowest) && Number.isFinite(highest)) strip.scrollToSpan(lowest, highest);
   }
 
   private nowMs(): number {

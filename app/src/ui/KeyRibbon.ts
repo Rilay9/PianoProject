@@ -118,6 +118,12 @@ export class KeyRibbon implements KeyView {
     // Intentionally nothing.
   }
 
+  /** Nor is there for a chord: the ribbon names the notes, it does not lay
+      them out on a keyboard. */
+  scrollToSpan(): void {
+    // Intentionally nothing.
+  }
+
   /** The cells are flex children and size themselves. */
   fitKeysToWidth(): void {
     // Intentionally nothing.
