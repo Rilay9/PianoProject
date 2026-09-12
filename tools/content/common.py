@@ -58,10 +58,11 @@ def load_tracks(path: Path = TRACKS_FILE) -> tuple[str, ...]:
 
     There used to be three lists: a tuple in this file, the `tracks` enum in
     `catalog.schema.json`, and `00-tracks.json` itself. They drifted — the
-    schema was missing `rock-metal`, `jam` and `beautiful`, and the tuple named
-    `film-game` and `technique`, which no track file has ever defined. Adding a
-    Chopin prelude to the Beautiful-pieces module is what finally surfaced it.
-    Now the curriculum file is the list and everything else asks it.
+    schema was missing `rock-metal`, `jam` and the since-struck `beautiful`,
+    and the tuple named `film-game` and `technique`, which no track file had
+    defined. Adding a Chopin prelude to the Beautiful-pieces module is what
+    finally surfaced it. Now the curriculum file is the list and everything
+    else asks it.
     """
     if not path.exists():
         return ()
@@ -74,13 +75,16 @@ def load_item_labels(path: Path = TRACKS_FILE) -> tuple[str, ...]:
     """
     Categories an item may carry that are not modules a learner follows.
 
-    The code has always used `tracks[]` for two jobs. Fourteen of the ids are
-    curriculum modules with stages and units behind them; `technique` and
-    `film-game` are labels — `technique` is on 434 items and the session
-    builder reads it to choose a warm-up, but there is no technique ladder and
-    a Plan screen drawing an empty one would be a lie. Keeping both roles in
-    the one file keeps the single source of truth §1.8 asks for without
-    pretending the two are the same thing.
+    The code has always used `tracks[]` for two jobs: most of the ids are
+    curriculum modules with stages and units behind them, and the rest are
+    plain labels an item can carry. `film-game` is the only label left —
+    `technique` was one, on 434 items the session builder reads to choose a
+    warm-up, until P12a gave it a ladder and it moved into `tracks`. Keeping
+    both roles in the one file keeps the single source of truth §1.8 asks for
+    without pretending the two are the same thing.
+
+    Both lists are read from the file rather than counted here, so a track
+    added or struck — `beautiful` was struck on 2026-09-12 — needs no edit.
     """
     if not path.exists():
         return ()

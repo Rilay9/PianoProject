@@ -55,6 +55,38 @@ test.describe('the shelf', () => {
     await expect(page.locator('#shelf-list')).toContainText('page 14');
   });
 
+  test('an empty shelf leads with the one thing you can do on it', async ({ page }) => {
+    // `04` §0 R4: a screen whose subject is missing draws the sentence that says
+    // so *and the one control that does what the sentence suggests*. The empty
+    // shelf drew the sentence and a quiet link, so the screen had no action on
+    // it at all — and above them a caption, "The app has no copy of these",
+    // describing books that were not there.
+    //
+    // Found by reading what the screen renders rather than from a failing
+    // assertion: nothing asked about the empty state.
+    await page.goto('/#/library/shelf');
+    const add = page.locator('#shelf-add-book');
+    await expect(add).toBeVisible();
+    await expect(page.locator('#shelf-list')).toContainText('Nothing on the shelf yet');
+    // Filled, and the only filled thing here. Compared against a plainly quiet
+    // control on the same screen rather than against a colour, so a theme
+    // change cannot make this pass or fail.
+    const quiet = page.locator('#shelf-how summary');
+    const [addFill, quietFill] = await Promise.all([
+      add.evaluate((el) => getComputedStyle(el).backgroundColor),
+      quiet.evaluate((el) => getComputedStyle(el).backgroundColor),
+    ]);
+    expect(addFill, 'Add a book is not drawn as the primary action').not.toBe(quietFill);
+    await expect(page.locator('.shelf-intro p.muted').first()).toBeHidden();
+
+    // And once there is a book, it steps back: registering one is then the
+    // rarest thing on the screen, which is what R3 weights by.
+    await addBookAndPiece(page);
+    const withBooks = await add.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(withBooks, 'Add a book stayed filled over a shelf that has books').toBe(quietFill);
+    await expect(page.locator('.shelf-intro p.muted').first()).toBeVisible();
+  });
+
   test('is reachable from Library', async ({ page }) => {
     await page.goto('/#/library');
     await page.locator('#library-shelf').click();

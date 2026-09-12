@@ -306,7 +306,7 @@ export function ShelfScreen(router: Router): HTMLElement {
   // the folded long version.
   const intro = el('section.block.shelf-intro');
   card.append(intro);
-  addParagraph(intro, 'The app has no copy of these.', 'muted');
+  const noCopies = addParagraph(intro, 'The app has no copy of these.', 'muted');
   const how = el('details.folder-how', { id: 'shelf-how' });
   how.append(
     el('summary', { text: 'How this works' }),
@@ -643,14 +643,39 @@ export function ShelfScreen(router: Router): HTMLElement {
   }
 
   function draw(): void {
-    // Text, not a filled box. `04` §0 R3 names "register a book" among the
-    // things done once per lesson or less, and this was the one filled box on
-    // the screen — at the top, above every book, shouting the rarest action on
-    // it. `Add a piece` keeps its outline: that is the one done often.
+    // Quiet over a shelf that has books on it, filled over one that does not.
+    //
+    // `04` §0 R3 names "register a book" among the things done once per lesson
+    // or less, and as the one filled box on the screen — at the top, above
+    // every book — it shouted the rarest action on it. `Add a piece` keeps its
+    // outline: that is the one done often.
+    //
+    // On an *empty* shelf that reasoning inverts, and R4 is the rule that says
+    // so: when a screen's subject is missing it draws the sentence that says so
+    // **and the one control that does what the sentence suggests**. "Nothing on
+    // the shelf yet. Add the method book…" suggests exactly one thing, and that
+    // thing was a quiet link. The score folder already switches its own variant
+    // the same way, for the same reason.
+    //
+    // R3 is untouched: it caps a screen at *at most* one filled box, and an
+    // empty shelf has one.
+    const empty = books.length === 0;
     addRow.replaceChildren(
-      button('Add a book', () => openBookSheet(), { id: 'shelf-add-book', variant: 'quiet' }),
+      button('Add a book', () => openBookSheet(), {
+        id: 'shelf-add-book',
+        variant: empty ? 'primary' : 'quiet',
+      }),
     );
-    if (books.length === 0) {
+    // And no caption over a list that is not there yet. "The app has no copy of
+    // these" describes books on the shelf, and on an empty shelf there are no
+    // "these" — it read as a statement about nothing, above the sentence that
+    // actually says the shelf is empty.
+    //
+    // The paragraph, not `intro`: `How this works` and the Add button live in
+    // that block too, and hiding it would take the explanation and the only
+    // action with it — which on an empty screen is the whole screen.
+    noCopies.hidden = empty;
+    if (empty) {
       list.replaceChildren(
         el('p.muted', {
           text: 'Nothing on the shelf yet. Add the method book or the album you are working out of.',

@@ -48,7 +48,15 @@ night to the size machine.
 
 **`04` §0 is the screen contract.** R1 the subject starts in the first screenful, R2
 rows ≤ 96 px (with the Library/folder exception for archive titles, written down),
-R3 one filled button, R4 40 px tap targets.
+R3 **at most** one filled button, R4 nothing dead.
+
+Read R3 and R4 in the spec rather than from this line. "At most one" is not "one":
+Progress deliberately has none, because nothing on it is done on most visits and a
+filled box would have been pointing at the rarest action on a screen fifty rows
+long. R4 is the other half — an *empty* screen draws the sentence saying so and the
+one control that sentence suggests, so the Shelf's `Add a book` is filled while the
+shelf is empty and quiet once it is not. Paraphrasing either rule as a count is how
+a considered decision gets read as a bug; it happened here on 2026-09-12.
 
 ---
 
