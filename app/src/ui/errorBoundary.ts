@@ -11,6 +11,7 @@
  * half. The two share a source so the banner's count and the report's agree.
  */
 import { errorCount, loggedErrors, onErrorLogged } from '../util/errorLog';
+import { toastStack } from './toastStack';
 
 const BANNER_ID = 'error-banner';
 
@@ -121,12 +122,15 @@ function update(banner: HTMLElement): void {
  * happened.
  *
  * `root` must be `document.body`, which is the only value `main.ts` passes.
- * `.error-banner` is `position: absolute` — it was `fixed` until the toast
- * that shares its rule turned up half under Chrome's address bar, and a fixed
- * box is positioned against the layout viewport, which Android sizes with the
- * bar retracted. Absolute is positioned against the nearest *positioned*
- * ancestor, and the stylesheet makes that `body`: `position: relative`,
- * `height: 100dvh`, `overflow: hidden`.
+ * The banner goes into `#app-toasts` inside it — the shared stack it and the
+ * update toast live in, because they carried identical offsets and identical
+ * z-index each, so when both were up one was invisible under the other. The
+ * stack is `position: absolute` — it was `fixed` until the toast turned up
+ * half under Chrome's address bar, and a fixed box is positioned against the
+ * layout viewport, which Android sizes with the bar retracted. Absolute is
+ * positioned against the nearest *positioned* ancestor, and the stylesheet
+ * makes that `body`: `position: relative`, `height: 100dvh`,
+ * `overflow: hidden`.
  *
  * Two things follow, and both are why this comment is here rather than only in
  * the stylesheet. Nothing in this module reads the viewport — the banner is
@@ -134,8 +138,8 @@ function update(banner: HTMLElement): void {
  * measurement to keep in step with the change. And the banner cannot end up
  * off-screen when the app is scrolled, because the *document* never scrolls:
  * `body` is `overflow: hidden` and the shell's `.screen-body` is the scroll
- * container, so an absolute child of `body` does not move with a list. Append
- * it anywhere else and that stops being true.
+ * container, so an absolute child of `body` does not move with a list. Put the
+ * stack anywhere else and that stops being true.
  */
 export function installErrorBoundary(root: HTMLElement = document.body): () => void {
   return onErrorLogged(() => {
@@ -151,6 +155,6 @@ export function installErrorBoundary(root: HTMLElement = document.body): () => v
     // sentence arriving afterwards as a live-region change or not at all.
     const banner = build();
     update(banner);
-    root.appendChild(banner);
+    toastStack(root).appendChild(banner);
   });
 }

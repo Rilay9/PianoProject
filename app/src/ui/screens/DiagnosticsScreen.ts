@@ -495,12 +495,29 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
     });
   }
 
+  /**
+   * Whether *this screen* opened the microphone, so it knows to close it.
+   *
+   * It opened one and never closed it: `capture()` connects when nothing is
+   * connected, stops recording at the end and releases its audio listener, and
+   * leaves the track live. On a phone that is the recording indicator on for
+   * the rest of the session, after a five-second capture, on the screen the
+   * owner opens when something is already wrong. `MicScreen` had the same fault
+   * and every other screen releases it.
+   *
+   * The flag matters as much as the release. The score screen may already have
+   * the microphone open and be listening through it, and closing that would
+   * stop a run dead — so this closes only what it opened itself.
+   */
+  let micOpenedHere = false;
+
   /** Records a clip of raw microphone audio for the owner to send back. */
   async function capture(): Promise<void> {
     if (capturing) return;
     if (!micSource.state.connected) {
       try {
         await micSource.connect();
+        micOpenedHere = true;
       } catch (error) {
         captureStatus.textContent =
           error instanceof Error ? error.message : 'Could not open the microphone.';
@@ -526,6 +543,7 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
     clearInterval(timer);
     micSource.stopRecording();
     off();
+    releaseMic();
     capturing = false;
     captureButton.disabled = false;
 
@@ -541,6 +559,13 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
       `${(samples.length / rate).toFixed(1)}s recorded at ${rate} Hz ` +
       `(${(blob.size / 1024).toFixed(0)} kB).`;
     offerFile(blob, name);
+  }
+
+  /** Closes the microphone if this screen was the one that opened it. */
+  function releaseMic(): void {
+    if (!micOpenedHere) return;
+    micOpenedHere = false;
+    micSource.disconnect();
   }
 
   /**
@@ -863,6 +888,11 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   onScreenDispose(section, () => {
     for (const off of unsubscribers) off();
     micSource.stopRecording();
+    // Leaving mid-capture is the ordinary way out of a five-second wait, and
+    // `stopRecording` only stops the raw-audio tap — the track, the worklet and
+    // the graph stay live, which on a phone is the recording indicator on for
+    // the rest of the session.
+    releaseMic();
   });
 
   return section;

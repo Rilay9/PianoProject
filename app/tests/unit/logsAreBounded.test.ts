@@ -29,9 +29,15 @@ describe('the error log', () => {
 
   it('stops at fifty distinct errors, however many arrive', () => {
     for (let i = 0; i < 5_000; i += 1) recordError(`error ${String(i)}`, 'error');
-    // The cap is on distinct errors; `errorCount` is how many happened.
-    expect(loggedErrors()).toHaveLength(50);
-    expect(errorCount()).toBe(50);
+    // Fifty kept separately, plus one row standing for everything past the
+    // bound. The bound is on *memory* — fifty messages with stacks, on a phone
+    // — and it used to be enforced by dropping the rest on the floor, which
+    // also stopped the banner from ever mentioning a kind of error that had
+    // not been seen before. See `errorLogOverflow.test.ts`.
+    expect(loggedErrors()).toHaveLength(51);
+    expect(loggedErrors().filter((e) => e.message.includes('other kind'))).toHaveLength(1);
+    // And nothing is uncounted: five thousand arrived, five thousand counted.
+    expect(errorCount()).toBe(5_000);
   });
 
   it('keeps counting a repeat after the cap, so a storm is still visible', () => {
@@ -42,10 +48,11 @@ describe('the error log', () => {
     for (let i = 0; i < 10_000; i += 1) recordError('the same one', 'error');
     const entry = loggedErrors().find((e) => e.message === 'the same one');
     expect(entry?.count).toBe(10_001);
-    // Fifty rows held; the total says ten thousand happened, which is the
-    // whole point of counting a repeat rather than dropping it.
-    expect(loggedErrors()).toHaveLength(50);
-    expect(errorCount()).toBe(10_050);
+    // Fifty rows held plus the overflow row; the total says ten thousand
+    // happened, which is the whole point of counting a repeat rather than
+    // dropping it.
+    expect(loggedErrors()).toHaveLength(51);
+    expect(errorCount()).toBe(10_061);
   });
 
   it('is empty again after a reset, so one test cannot fill another', () => {

@@ -4446,16 +4446,47 @@ input[type='checkbox'] {
 
      Not provable here: an emulated viewport has no address bar, which is the
      entire condition. It needs the phone. */
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: calc(12px + var(--safe-bottom));
-  z-index: 60;
   border-radius: 12px;
   border: 1px solid var(--border);
   background: var(--surface);
   padding: 12px 14px;
   box-shadow: 0 6px 24px rgb(0 0 0 / 28%);
+}
+
+/* The one box both of them live in.
+
+   They carried these offsets each, which meant that when both existed they
+   were the same box at the same z-index and one was simply invisible under the
+   other — with no stacking order between them, so which one you saw was
+   whichever was appended last. A new version installing while a run is throwing
+   errors is an ordinary Tuesday.
+
+   `column-reverse`, so the newest message is nearest the bottom edge and
+   whatever is already there is pushed up by exactly its own height. A `:has()`
+   offset would have had to guess that height, and the banner's changes with its
+   sentence.
+
+   The offsets are the ones the messages used to carry, unchanged: a lone
+   message lands exactly where it landed before. That matters more here than
+   tidiness — this rule was `fixed` once and put the toast under Chrome's
+   address bar on the owner's phone, and its own comment says the condition
+   cannot be reproduced in an emulated viewport. */
+.app-toasts {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + var(--safe-bottom));
+  z-index: 60;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  /* The host spans the width whether or not it holds anything, so it must not
+     take taps meant for what is behind it. The messages themselves do. */
+  pointer-events: none;
+}
+
+.app-toasts > * {
+  pointer-events: auto;
 }
 
 .error-banner {

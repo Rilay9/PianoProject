@@ -13,6 +13,8 @@
  */
 const TOAST_ID = 'update-toast';
 
+import { toastStack } from './toastStack';
+
 export interface UpdatePrompt {
   /** Applies the waiting worker and reloads. */
   apply: () => void;
@@ -65,6 +67,6 @@ export function showUpdateToast(prompt: UpdatePrompt, root: HTMLElement = docume
   later.addEventListener('click', () => toast.remove());
   toast.appendChild(later);
 
-  root.appendChild(toast);
+  toastStack(root).appendChild(toast);
   return toast;
 }

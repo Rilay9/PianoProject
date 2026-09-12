@@ -31,6 +31,23 @@ export interface LoggedError {
 }
 
 const MAX_DISTINCT = 50;
+/**
+ * Where every kind of error past the bound is counted together.
+ *
+ * The bound is on *memory* — fifty distinct messages, each with a stack, on a
+ * phone — and it was being enforced by dropping the fifty-first on the floor:
+ * not counted, not stored, and above all not announced. The error boundary
+ * listens to the announcement, so once fifty kinds had happened a *new* kind
+ * of error raised no banner at all. A session that had been noisy went quiet
+ * about the one fault that had not been seen before, which is exactly the one
+ * worth saying.
+ *
+ * So the bound still holds and nothing past it is kept separately, but it is
+ * counted, it is in the report, and it still announces. The message says how
+ * many kinds it stands for so the report cannot read as one stray error.
+ */
+const OVERFLOW_KEY = 'error:__overflow__';
+const overflowKinds = new Set<string>();
 const log = new Map<string, LoggedError>();
 let sequence = 0;
 const listeners = new Set<(entry: LoggedError) => void>();
@@ -69,7 +86,31 @@ export function recordError(message: string, source: LoggedError['source'], stac
     announce(existing);
     return;
   }
-  if (log.size >= MAX_DISTINCT) return;
+  if (log.size >= MAX_DISTINCT) {
+    overflowKinds.add(key);
+    const bucket = log.get(OVERFLOW_KEY);
+    const kinds = overflowKinds.size;
+    const said = `${String(kinds)} other kind${kinds === 1 ? '' : 's'} of error, not kept separately`;
+    if (bucket) {
+      bucket.count += 1;
+      bucket.lastAt = now;
+      bucket.seq = sequence;
+      bucket.message = said;
+      announce(bucket);
+      return;
+    }
+    const first: LoggedError = {
+      message: said,
+      source,
+      firstAt: now,
+      lastAt: now,
+      count: 1,
+      seq: sequence,
+    };
+    log.set(OVERFLOW_KEY, first);
+    announce(first);
+    return;
+  }
   const entry: LoggedError = {
     message,
     source,
@@ -113,6 +154,7 @@ export function installErrorLog(target: Window = window): void {
 export function resetErrorLogForTest(): void {
   log.clear();
   listeners.clear();
+  overflowKinds.clear();
   installed = false;
   sequence = 0;
 }

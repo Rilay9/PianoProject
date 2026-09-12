@@ -86,14 +86,22 @@ describe('the moment the banner enters the document', () => {
   it('already carries its message, because role="alert" is announced on insertion', () => {
     installErrorBoundary(document.body);
     let textAtInsertion: string | null = null;
-    const realAppend = document.body.appendChild.bind(document.body);
+    // On the prototype, not on `document.body`: the banner goes into the
+    // shared `#app-toasts` stack now — it and the update toast used to be the
+    // same box at the same z-index, so whichever was appended last hid the
+    // other — and a spy on one particular parent stops seeing it. What is being
+    // asserted has not changed: the sentence is in the node *before* the node
+    // is in the document, because `role="alert"` is announced on insertion.
     const spy = vi
-      .spyOn(document.body, 'appendChild')
-      .mockImplementation(<T extends Node>(node: T): T => {
+      .spyOn(Element.prototype, 'appendChild')
+      .mockImplementation(function <T extends Node>(this: Element, node: T): T {
         if (node instanceof HTMLElement && node.id === 'error-banner') {
           textAtInsertion = node.querySelector('.error-banner__text')?.textContent ?? '';
         }
-        return realAppend(node);
+        // Through the real DOM, not the spy: `Node.prototype.appendChild` is
+        // the implementation `Element.prototype` inherits, so calling it back
+        // here cannot re-enter the mock.
+        return Node.prototype.appendChild.call(this, node) as T;
       });
     recordError('the engraver gave up', 'error');
     spy.mockRestore();
