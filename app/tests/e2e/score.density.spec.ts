@@ -13,6 +13,7 @@
  * centre what it has rather than pinning it to a corner of an empty screen.
  */
 import { expect, test } from '@playwright/test';
+import { openDevScore, waitForStableLayout } from './fixtures/devScore';
 
 const SONG = 'song.folk.hot-cross-buns';
 
@@ -116,3 +117,65 @@ for (const size of [TABLET, LAPTOP]) {
     ).toBeLessThan(size.width * 0.1);
   });
 }
+
+/**
+ * And the same rule on a phone, which is where the code was skipping it.
+ *
+ * `centredInset` used to return early for any window `mayStretch` had
+ * permitted, on the reasoning that music allowed to fill the width already sits
+ * where it should. Permission is not the same as having filled it: a slot's
+ * page is sized so a stretched system would reach both edges, and OSMD may
+ * decline the stretch and engrave the bar at its natural width — which is the
+ * behaviour the owner asked for. The 6/8 tuplet fixture upright then drew 209 px
+ * of music on a 338 px stage with 7 px before it and 122 px after it: not
+ * stretched, which is right, and not a margin either.
+ *
+ * Structural rather than a picture, because this is about *where* the music is
+ * and a reference image cannot say that without also pinning the engraving to
+ * one machine's fonts. `score.spec`'s screenshot of the same fixture still
+ * watches the engraving; this watches the position, in CI as well.
+ *
+ * The dev harness, because no catalog piece leaves this much of the owner's
+ * 342 px unused — every one of them fills 84 % or more — so the case only
+ * exists on a fixture.
+ */
+test('a narrow system on a phone is centred, not pinned left', async ({ page }) => {
+  await page.setViewportSize({ width: 412, height: 915 });
+  const dev = await openDevScore(page);
+  await dev.load('tuplets-68');
+  await dev.setBars(4);
+  await dev.showStep(0);
+  await expect(page.locator('.score-buffer.is-front svg').first()).toBeVisible();
+  await waitForStableLayout(page, '.score-buffer.is-front svg');
+  const box = await page.evaluate(() => {
+    const stage = document.querySelector<HTMLElement>('.dev-score__stage');
+    if (!stage) return null;
+    const frame = stage.getBoundingClientRect();
+    let left = Infinity;
+    let right = -Infinity;
+    // The notes and the staves, not the page: the page is as wide as OSMD
+    // wanted and the question is where the ink ended up on the glass.
+    for (const svg of stage.querySelectorAll('.score-buffer.is-front svg')) {
+      for (const node of svg.querySelectorAll('path, rect, text, polyline, line')) {
+        const r = node.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) continue;
+        left = Math.min(left, r.left);
+        right = Math.max(right, r.right);
+      }
+    }
+    if (!Number.isFinite(left)) return null;
+    return { before: left - frame.left, after: frame.right - right, span: right - left, stage: frame.width };
+  });
+  expect(box, 'nothing was drawn').not.toBeNull();
+  if (!box) return;
+  // Only asked for where the code asks for it: `CENTRE_WHEN_SPARE` centres a
+  // system once a quarter of the stage is spare, and leaves a narrower margin
+  // alone. If this fixture ever engraves wide enough to fill the stage the
+  // question stops applying, and saying so beats asserting a stale premise.
+  const spare = (box.stage - box.span) / box.stage;
+  test.skip(spare <= 0.25, `the fixture filled the stage: ${String(Math.round(spare * 100))} % spare`);
+  expect(
+    Math.abs(box.before - box.after),
+    `${String(Math.round(box.before))}px before the music and ${String(Math.round(box.after))}px after it, on a ${String(Math.round(box.stage))}px stage`,
+  ).toBeLessThan(box.stage * 0.1);
+});

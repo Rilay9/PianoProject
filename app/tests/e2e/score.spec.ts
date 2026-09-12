@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { openDevScore, waitForStableLayout } from './fixtures/devScore';
+import { openDevScore, waitForPieceMeasured, waitForStableLayout } from './fixtures/devScore';
 import {
   closeScoreMenu,
   closeTempoSheet,
@@ -409,6 +409,17 @@ test.describe('screenshots', () => {
           // needs is that the sheet is there and has stopped moving.
           await expect(page.locator('.score-buffer.is-front svg').first()).toBeVisible();
           // Visible is not final: see waitForStableLayout.
+          await waitForStableLayout(page, '.score-buffer.is-front svg');
+          // And stable is not settled. How many systems the stage holds is
+          // decided from the probe's measurement of the piece, which arrives on
+          // idle after the first draw — so under load the shot caught the
+          // arrangement chosen *before* it. `tuplets-68` at four bars upright
+          // was photographed either as one system of four bars stretched across
+          // the width or as two systems of two, run to run, and this cell
+          // therefore passed alone and failed at two workers. Waiting on the
+          // measurement makes the wait explicit instead of timing the machine
+          // (`00` §2).
+          await waitForPieceMeasured(page);
           await waitForStableLayout(page, '.score-buffer.is-front svg');
           await page.locator('#dev-hud').evaluate((el: HTMLElement) => {
             el.style.display = 'none';

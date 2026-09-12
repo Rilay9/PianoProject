@@ -2448,13 +2448,18 @@ export class WindowRenderer {
    */
   private centredInset(slot: Buffer, box: { width?: number }, scale: number): number {
     if (this.readAhead !== 'slots' || this.sliding) return FIT_INSET_PX;
-    // Only the windows that were *refused* the stretch. One decision, one
-    // consequence: if the music was allowed to fill the width then it already
-    // sits where it should, and nudging it to balance the margins moved phone
-    // screenshots for no visible gain. If the stretch was refused then the
-    // system keeps its natural width by design, and that is the only case in
-    // which it can end up in the corner of an empty screen.
-    if (slot.range === null || this.mayStretch(slot.range)) return FIT_INSET_PX;
+    // What the ink *is*, not what it was allowed to be.
+    //
+    // This used to return early for any window `mayStretch` had permitted,
+    // reasoning that music allowed to fill the width already sits where it
+    // should. Permission is not the same as having filled it: a slot's page is
+    // sized so that a stretched system would reach both edges, and OSMD is free
+    // to decline the stretch and engrave the bar at its natural width instead,
+    // which is the behaviour the owner asked for. A system that did fill the
+    // width leaves no spare, and the `CENTRE_WHEN_SPARE` test below refuses to
+    // move it — so the guard cost nothing where its premise held and hid the
+    // one case it was written for.
+    if (slot.range === null) return FIT_INSET_PX;
     const width = this.slotSpan > 0 ? this.slotSpan : box.width;
     if (width === undefined || !(width > 0)) return FIT_INSET_PX;
     const stage = this.measure(this.el).width;
