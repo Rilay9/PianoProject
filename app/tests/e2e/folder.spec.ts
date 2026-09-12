@@ -452,18 +452,30 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-rescan-note')).toContainText('reads all 37,261 files');
   });
 
-  test('forgetting the folder is inside How this works, not beside Pick (R3)', async ({ page }) => {
+  test('rescanning and forgetting are both inside How this works (R1, R3)', async ({ page }) => {
+    // Both are things done once per folder or less, and this row is what stands
+    // between the heading and the first score. Forget has been in the fold for
+    // a while; Rescan joined it once the picture showed one row of 37,261 on the
+    // owner's phone, with the sentence explaining what a rescan costs already in
+    // there and the button it describes left outside.
+    //
+    // In the document, and inside the fold — reachable, and not standing in the
+    // run between the heading and the list.
     await seedFolder(page, 20);
     await page.goto('/#/library/folder');
-    await expect(page.locator('#folder-pick')).toBeVisible();
-    // In the document, and inside the fold — so it is reachable, and it is not
-    // standing in the run between the heading and the list.
+    await expect(page.locator('#folder-how #folder-pick')).toHaveCount(1);
     await expect(page.locator('#folder-how #folder-forget')).toHaveCount(1);
+    await expect(page.locator('#folder-pick')).toBeHidden();
     await expect(page.locator('#folder-forget')).toBeHidden();
     await page.locator('#folder-how summary').click();
+    await expect(page.locator('#folder-pick')).toBeVisible();
     await expect(page.locator('#folder-forget')).toBeVisible();
     await page.locator('#folder-forget').click();
     await expect(page.locator('[data-screen="folder"]')).toContainText('No folder yet.');
+    // And with no folder at all, picking one *is* the screen, so it comes back
+    // out of the fold and is the filled one.
+    await expect(page.locator('#folder-pick')).toBeVisible();
+    await expect(page.locator('#folder-pick')).toHaveClass(/button--primary/);
   });
 
   test('says how to add when the folder is not connected, instead of failing obscurely', async ({

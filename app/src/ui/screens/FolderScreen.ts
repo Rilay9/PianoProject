@@ -60,7 +60,7 @@ import { badge, button, chip, el, listRow, openSheet } from '../widgets';
 import { loadCurriculum } from '../../curriculum/load';
 import { rungForLevel, rungSentence } from '../../curriculum/rungFor';
 import type { Curriculum } from '../../curriculum/types';
-import { addParagraph, addSection, createSubScreen } from './subScreen';
+import { addParagraph, createSubScreen } from './subScreen';
 import { plural } from '../../util/plural';
 
 /** Rows drawn before "Show more". */
@@ -221,7 +221,15 @@ export function FolderScreen(router: Router): HTMLElement {
     backLabel: 'Library',
   });
 
-  const intro = addSection(card, 'Where the scores are');
+  // No heading over this block, for the reason the Shelf's was dropped.
+  //
+  // It read `WHERE THE SCORES ARE` — in the muted capitals the app uses for
+  // section labels — directly under an `h1` reading **Score folder**, over one
+  // sentence naming the folder. The same thing announced twice, and the second
+  // announcement was the one taking the room: 55 px of a screen where the first
+  // score starts at 501 px (`04` §0 R1). The screen's own title is the heading.
+  const intro = el('section.block');
+  card.append(intro);
   const folderStatus = addParagraph(intro, 'No folder yet.');
   // "Remember the score folder" failing has always been silent — the app just
   // asks for the folder again, which is indistinguishable from the setting
@@ -309,7 +317,12 @@ export function FolderScreen(router: Router): HTMLElement {
   how.append(forgetRow);
   intro.append(how);
 
-  const browse = addSection(card, 'Browse');
+  // Nor over this one. With the block above it unlabelled, `BROWSE` was the
+  // only section label on the screen — a heading over the rest of it, which is
+  // not a section. A search box above a list of scores does not need to be told
+  // what it is for, and 55 px is most of a row of the archive.
+  const browse = el('section.block');
+  card.append(browse);
   const controls = el('div.filters');
   browse.append(controls);
   const countLine = addParagraph(browse, '', 'muted');
@@ -1335,7 +1348,14 @@ export function FolderScreen(router: Router): HTMLElement {
         if (library) void rescan();
         else void pick();
       },
-      { variant: library?.connected === false && library.canOpen ? 'quiet' : 'primary', id: 'folder-pick' },
+      {
+        // Filled only as `Pick a folder`, which is the whole screen when there
+        // is no folder yet. As `Rescan folder` it sits in the fold beside
+        // `Forget this folder`, and a filled box on the rarest action there
+        // would be shouting from inside a drawer.
+        variant: library ? 'quiet' : 'primary',
+        id: 'folder-pick',
+      },
     );
     pickButton.disabled = reading || opening;
     rescanNote.hidden = library === null;
@@ -1384,21 +1404,38 @@ export function FolderScreen(router: Router): HTMLElement {
           )
         : null;
     if (resumeButton) resumeButton.disabled = reading || opening;
-    // Two buttons on this row is 40 px at 342 px, measured, and 40 px is what
-    // stands between the first score and the bottom of the owner's screen
-    // (`04` §0 R1). So while there is an index to finish, finishing it is the
-    // button here and starting again from the top goes into the fold beside
-    // Forget — where the note explaining the difference already lives.
+    // Rescan lives in the fold whenever there is a folder at all.
+    //
+    // This row is what stands between the heading and the first score, and at
+    // 342 x 740 with the owner's 37,261 scores the first row started at 557 px:
+    // one row of the archive on the screen, with nothing behind it. A button is
+    // 40 px of that, measured.
+    //
+    // And it is the wrong button to spend them on. Someone opens this screen to
+    // browse and add; rescanning reads all 37,261 files and takes minutes, which
+    // is why it was renamed to say so. `04` §0 R3 weights by frequency and puts
+    // a rare action behind a text link on the screen it is rarely used on — and
+    // the sentence explaining what a rescan costs is *already* in the fold, so
+    // the button was separated from its own explanation. `Forget this folder`
+    // has been in there for the same reason, and this function already moved
+    // Rescan there while an index was unfinished: that was this rule applied
+    // once, to one state.
+    //
+    // What is left above the fold is the cheap, immediate cure and nothing
+    // else: `Open folder` when the folder is shut, `Continue indexing` when an
+    // index stopped part way, `Pick a folder` when there is no folder yet. With
+    // a folder open and fully listed the row is empty, which is right — the
+    // subject is the list, and there is nothing to do but read it.
     actions.replaceChildren(
       ...(openButton ? [openButton] : []),
-      ...(resumeButton ? [resumeButton] : [pickButton]),
+      ...(resumeButton ? [resumeButton] : []),
+      ...(library ? [] : [pickButton]),
     );
     // Forgetting the folder is not a second answer to "what now" — it lives
     // in `How this works`, out of the run between the heading and the list.
     forgetRow.replaceChildren(
-      // Here rather than on the row above only while an index is unfinished;
-      // see the note on `actions`.
-      ...(resumeButton ? [pickButton] : []),
+      // Whenever there is a folder to rescan; see the note on `actions`.
+      ...(library ? [pickButton] : []),
       ...(library
         ? [
             button(
