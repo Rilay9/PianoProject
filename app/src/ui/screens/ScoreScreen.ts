@@ -1471,7 +1471,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       }
       if (!found) return;
       const summary = document.getElementById('score-side-summary');
-      if (summary) summary.textContent = `${found.id} · ${found.title}`;
+      // The rung's title alone. This is the heading over its text beside the
+      // score, where the id said nothing and cost the words their room.
+      if (summary) summary.textContent = found.title;
       const response = await fetch(contentUrl(found.textFile));
       if (!response.ok) throw new Error(String(response.status));
       const { body: markdown } = parseFrontMatter(await response.text());

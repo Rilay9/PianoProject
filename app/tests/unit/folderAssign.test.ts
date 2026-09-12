@@ -176,6 +176,36 @@ describe('a score added from the folder', () => {
     clearFakeIndexedDb();
   });
 
+  it('names the rungs by their words, not by their ids', async () => {
+    // `00` §1: no internal identifiers on screen. Every option read
+    // `Stage 4 · classical.4.1 — Classical: Grade 1 pieces and articulation`,
+    // so the first third of the label was an id, and a `select` on a 342 px
+    // phone truncates from the right — the id ate the beginning of the only
+    // words that tell one rung from another. Four screens had the same fault
+    // (this sheet, the shelf's piece sheet, the lesson heading, and the score's
+    // side panel) and Plan's rows had already been corrected for it.
+    //
+    // The `value` is still the id. Asserted separately, because a label with no
+    // id is only right if the machine-readable half is still there — dropping
+    // both would pass a check that only looked at the text.
+    const row = await addOneFromAFolder();
+    await openAssignSheetFor(row, { onSaved: () => undefined });
+    const select = document.getElementById('assign-lesson');
+    expect(select).toBeInstanceOf(HTMLSelectElement);
+    const options = [...(select as HTMLSelectElement).options].filter((o) => o.value !== '');
+    expect(options.length, 'no rungs were offered').toBe(CURRICULUM.stages[0]?.units[0]?.lessons.length ?? 0);
+    const showingIds = options.filter((o) => o.text.includes(o.value));
+    expect(
+      showingIds.map((o) => o.text),
+      'rung options printing their own id:',
+    ).toEqual([]);
+    // The words are there, and so is the id where a machine wants it.
+    for (const option of options) {
+      expect(option.text, `option ${option.value} has no words`).toMatch(/Stage \d+ · \S/);
+      expect(option.value, 'an option lost the id it is chosen by').toMatch(/\S/);
+    }
+  });
+
   it('leaves the piece on no rung when the sheet is saved with none chosen', async () => {
     const row = await addOneFromAFolder();
     let resolveSaved: (saved: ImportRow) => void = () => undefined;

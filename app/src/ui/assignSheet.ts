@@ -70,7 +70,13 @@ export function openAssignSheet(
   for (const { lesson, stage } of lessons) {
     const option = el('option', {
       value: lesson.id,
-      text: `Stage ${String(stage)} · ${lesson.id} — ${lesson.title}`,
+      // The stage and the words, not the id. `Stage 4 · classical.4.1 — Classical:
+      // Grade 1 pieces and articulation` is a picker whose first third is an
+      // internal identifier, and a `select` on a 342 px phone truncates from the
+      // right, so the id ate the beginning of the only words that tell one rung
+      // from another. `00` §1: no internal identifiers on screen. The option's
+      // `value` is still the id, which is what every test here reads.
+      text: `Stage ${String(stage)} · ${lesson.title}`,
     }) as HTMLOptionElement;
     if (preselected.has(lesson.id)) option.selected = true;
     rungSelect.append(option);

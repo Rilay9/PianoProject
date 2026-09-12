@@ -109,7 +109,8 @@ export function openPieceSheet(options: {
   for (const entry of lessons) {
     const option = el('option', {
       value: entry.lesson.id,
-      text: `Stage ${String(entry.stage)} · ${entry.lesson.id} — ${entry.lesson.title}`,
+      // As in `assignSheet`: the stage and the words. The id stays the value.
+      text: `Stage ${String(entry.stage)} · ${entry.lesson.title}`,
     }) as HTMLOptionElement;
     if (entry.lesson.id === chosen) option.selected = true;
     rung.append(option);

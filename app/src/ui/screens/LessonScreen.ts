@@ -182,7 +182,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     if (current.finder) {
       const finder = current.finder;
       findRow.append(
-        button('Find more', () => openFinderSheet(finder, `${current.id} · ${current.title}`), {
+        // `openFinderSheet`'s own contract calls this "a rung's title, or a
+        // concept's name"; it was being handed the id as well.
+        button('Find more', () => openFinderSheet(finder, current.title), {
           id: 'lesson-find-more',
           variant: 'quiet',
         }),
