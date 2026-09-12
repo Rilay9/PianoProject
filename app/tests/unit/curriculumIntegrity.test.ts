@@ -125,8 +125,11 @@ describe('the curriculum points at things that exist', () => {
       if (!lesson.textFile || !existsSync(join(CONTENT, lesson.textFile))) continue;
       const meta = frontMatter(lesson.textFile);
       const claimed = meta['unit'];
-      // Not every lesson carries one; the check is for the ones that do, since
-      // a claim that disagrees is worse than no claim.
+      // Optional, because a claim that disagrees is worse than no claim — but
+      // measured, so nobody assumes the guard is doing the work: all 86 lessons
+      // carry both `unit:` and `stage:` today, so this joins 172 pairs and not a
+      // handful. If that count ever collapses, the guard is hiding a file that
+      // lost its front matter rather than excusing one that never had any.
       if (claimed !== undefined && claimed !== unit) {
         wrong.push(`${lesson.textFile} says unit ${claimed}, but ${unit} is what points at it`);
       }
