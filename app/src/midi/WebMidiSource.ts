@@ -139,6 +139,8 @@ export class WebMidiSource implements MidiSource {
   readonly kind = 'midi' as const;
 
   private access: MIDIAccess | null = null;
+  /** The attempt everyone waiting on `connect()` is sharing; null when idle. */
+  private connecting: Promise<void> | null = null;
   private readonly requestAccess: RequestMidiAccess | null;
   private readonly log: RingBuffer<MidiLogEntry>;
   private readonly attached = new Set<MIDIInput>();
@@ -197,7 +199,33 @@ export class WebMidiSource implements MidiSource {
    * or `failed` (anything else). The MIDI screen renders one recovery path
    * per code, so callers should surface `err.code` rather than the message.
    */
+  /**
+   * Opens MIDI access, once, however many callers ask at the same time.
+   *
+   * Three places call this and two of them routinely overlap: `autoConnectMidi`
+   * runs at boot, and the MIDI screen's *Connect piano* is a button a learner
+   * presses the moment the screen appears — before the boot call has come back,
+   * because `requestMIDIAccess` in Chrome is a permission prompt and a prompt
+   * takes as long as a person takes. Diagnostics is the third and dedupes
+   * nothing either. Two calls in flight meant two prompts queued and two
+   * `onstatechange` handlers installed over the same access, and the screen's
+   * button sat disabled under "Waiting for the browser's permission prompt…"
+   * until whichever call it was holding came back, which was not necessarily
+   * the one the learner had answered.
+   *
+   * Everyone waiting joins the same attempt. A *finished* attempt is not
+   * remembered: connecting again after a disconnect, or after a refusal, has to
+   * really try again.
+   */
   async connect(): Promise<void> {
+    if (this.connecting) return this.connecting;
+    this.connecting = this.openAccess().finally(() => {
+      this.connecting = null;
+    });
+    return this.connecting;
+  }
+
+  private async openAccess(): Promise<void> {
     if (!this.requestAccess) {
       throw this.fail('unsupported', 'This browser does not support the Web MIDI API.');
     }

@@ -237,7 +237,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       ...(options.importFor === undefined ? {} : { preselect: options.importFor }),
       ...(estimated === undefined ? {} : { estimated }),
       onSaved: () => {
-        void refresh();
+        void refresh().catch(sayLoadFailed);
         status.textContent = `${row.title} is in your library.`;
       },
     });
@@ -572,7 +572,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         if (!Number.isFinite(next) || next < 0 || next > 9.9) return;
         void setLevelOverride(item.id, Math.round(next * 100) / 100).then(() => {
           sheet.close();
-          void refresh();
+          void refresh().catch(sayLoadFailed);
         });
       },
       { id: 'library-relevel' },
@@ -592,7 +592,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
           () => {
             void clearLevelOverride(item.id).then(() => {
               sheet.close();
-              void refresh();
+              void refresh().catch(sayLoadFailed);
             });
           },
           { id: 'library-relevel-clear' },
@@ -641,7 +641,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
                   .filter(Boolean),
               }).then(() => {
                 sheet.close();
-                void refresh();
+                void refresh().catch(sayLoadFailed);
               });
             },
             { variant: 'primary', id: 'edit-save' },
@@ -654,7 +654,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
               if (!confirm(`Delete “${row.title}”? The imported file is removed from the app.`)) return;
               void deleteImport(row.id).then(() => {
                 sheet.close();
-                void refresh();
+                void refresh().catch(sayLoadFailed);
               });
             },
             { id: 'edit-delete' },
@@ -869,10 +869,24 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     draw();
   }
 
-  void refresh().catch((cause: unknown) => {
+  /**
+   * Says so when a redraw fails, instead of leaving the old list standing.
+   *
+   * The first load has always been guarded. The seven redraws *after an edit*
+   * were not: `void refresh()` with no `catch`, so a rejected read left the
+   * list showing what it showed before the edit, with no error and no sign
+   * that anything had gone wrong — you renamed a piece, or deleted one, and the
+   * screen simply disagreed with the database from then on. Content reads
+   * reject rather than hang now, which makes that a reachable state rather
+   * than a theoretical one; the same shape in `ShelfScreen` was the cause of
+   * the intermittent "screen never appeared" failures.
+   */
+  function sayLoadFailed(cause: unknown): void {
     status.textContent = `The library could not be loaded: ${String(cause)}`;
     status.classList.add('status--error');
-  });
+  }
+
+  void refresh().catch(sayLoadFailed);
 
   // Anything Android shared into the app while it was closed lands here: the
   // service worker parked it and redirected to this screen.
@@ -896,10 +910,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     ]
       .filter(Boolean)
       .join(' ');
-    void refresh();
+    void refresh().catch(sayLoadFailed);
   });
 
-  const stopWatchingImports = onImportsChange(() => void refresh());
+  const stopWatchingImports = onImportsChange(() => void refresh().catch(sayLoadFailed));
   onScreenDispose(section, () => {
     stopWatchingImports();
     dropZone.removeEventListener('dragover', onDragOver);

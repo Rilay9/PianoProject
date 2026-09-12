@@ -336,7 +336,7 @@ export function ProgressScreen(router: Router): HTMLElement {
           status.textContent = `Restored. ${String(report.written.progress ?? 0)} progress rows written, ${String(
             report.keptLocal,
           )} kept because this device was further along. Reload to see it all.`;
-          void load();
+          void load().catch(sayLoadFailed);
         })
         .catch((cause: unknown) => {
           status.textContent = cause instanceof Error ? cause.message : String(cause);
@@ -447,10 +447,13 @@ export function ProgressScreen(router: Router): HTMLElement {
     drawData();
   }
 
-  void load().catch((cause: unknown) => {
+  /** Same rule as the library's: a redraw that fails has to say so. */
+  function sayLoadFailed(cause: unknown): void {
     status.textContent = `Progress could not be loaded: ${String(cause)}`;
     status.classList.add('status--error');
-  });
+  }
+
+  void load().catch(sayLoadFailed);
 
   return section;
 }
