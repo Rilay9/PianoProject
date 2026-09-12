@@ -139,6 +139,17 @@ test.describe('a whole run', () => {
       const band = await page.locator('#score-stage .score-cursor:not(.score-cursor--next)').first().boundingBox();
       return `${String(run?.step ?? -1)}/${String(run?.bar ?? -1)}@${String(Math.round(band?.x ?? -1))}`;
     };
+    // After the settle, not before it. `freezeAfterSettle` deliberately waits
+    // 150 ms, re-fits and freezes *that* — "a short wait lets the stage settle,
+    // then the fit is the one that is kept" — and the piece's measurement lands
+    // a beat after the first draw, which is the other half of the same moment.
+    // The comment above already names this as a re-engraving the screen is
+    // supposed to do; reading `before` at nought milliseconds measured across
+    // it. It used to pass only because the settle was a no-op: the fit was
+    // pinned by a high-water mark that could not come down, so the honest
+    // measurement changed nothing. Now that it does, the baseline has to be
+    // taken where the contract actually starts.
+    await page.waitForTimeout(600);
     const before = await where();
     await press(page, 71);
     await press(page, 71);

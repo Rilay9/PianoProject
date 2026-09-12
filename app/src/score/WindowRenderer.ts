@@ -2285,8 +2285,43 @@ export class WindowRenderer {
     }
     this.scheduleMeasure();
     const piece = this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null;
-    const height = Math.max(this.held.height, piece?.height ?? 0);
-    const width = Math.max(this.held.width, piece?.width ?? 0);
+    // Once the probe has measured, `held` stops deciding anything.
+    //
+    // `held` is a running maximum that is never lowered — its own comment says
+    // "held, never released" — and that is right while it is the only thing
+    // there is. It is wrong afterwards, because the ink that set the maximum
+    // can leave the screen. A read-ahead slot engraved onto a 1,166 px page
+    // folds 1,184 px into `held.width`; the slot count then drops to one and
+    // that slot's range is cleared, and nothing ever takes the maximum back
+    // down. Satie's Gnossienne No. 1 upright was the result: the cursor's own
+    // bar is 384 px of ink in a 342 px stage, and it was drawn at 0.28 — the
+    // scale needed to fit a page that was no longer anywhere — four illegible
+    // systems in the top quarter of the screen with two thirds of it black.
+    // The Nocturne at 48 % spare and the rotation cell at 41 % fill are the
+    // same arithmetic.
+    //
+    // So after the probe, the two numbers that matter are the piece's own
+    // measurement and the ink actually in *this* fit. The maximum of the two
+    // keeps what the `max` was protecting — a window a little taller than the
+    // piece's measure, a fingering set high over one note — without keeping a
+    // ceiling from ink that has gone.
+    let nowHeight = 0;
+    let nowWidth = 0;
+    for (const box of boxes) {
+      nowHeight = Math.max(nowHeight, box.height);
+      nowWidth = Math.max(nowWidth, box.width);
+    }
+    //
+    // Both sides of the freeze have to be measured the same way. Gating this on
+    // "not during a run" was tried and is worse than not fixing it: the frozen
+    // scale is then an honest one and every later `fitted` a stale one, so a
+    // window measured against a 1,184 px ceiling came out far below the frozen
+    // scale, tripped the re-seat, and *shrank* the sheet on the first wrong
+    // note. One unit, everywhere; the freeze then does its job, which is to
+    // hold the size a run starts with, and the settle moves it once at the
+    // start where `freezeAfterSettle` already says it will.
+    const height = piece ? Math.max(piece.height, nowHeight) : this.held.height;
+    const width = piece ? Math.max(piece.width, nowWidth) : this.held.width;
     if (!(height > 0) || !(width > 0)) return null;
     const byHeight = (available.height - FIT_MARGIN_PX) / height;
     const fitted = this.sliding
