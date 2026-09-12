@@ -22,6 +22,7 @@ import {
   pickFolder,
   readFolderHandle,
   reconnectFolder,
+  allFolderScores,
   savedFolders,
 } from '../../src/data/folderLibrary';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
@@ -214,8 +215,7 @@ describe('reconnecting from a stored handle', () => {
 
   it('lets Add work with the folder disconnected, which is the point of the whole thing', async () => {
     const id = await saveWithHandle(fakeHandle('Scores', FILES, { query: 'granted' }));
-    const [saved] = await savedFolders();
-    const score = saved?.scores.find((entry) => entry.file === 'aa/one.mxl');
+    const score = (await allFolderScores(id)).find((entry) => entry.file === 'aa/one.mxl');
     const row = await addFromFolder(id, score!);
     expect(row.origin).toEqual({ folder: id, file: 'aa/one.mxl' });
     clearFakeIndexedDb();
@@ -250,7 +250,8 @@ describe('a handle the database will not keep', () => {
     // The part that has to survive did.
     expect(library.scores.map((score) => score.file).sort()).toEqual(['aa/one.mxl', 'bb/two.mxl']);
     const [saved] = await savedFolders();
-    expect(saved?.scores).toHaveLength(2);
+    expect(saved?.count).toBe(2);
+    expect(await allFolderScores('Scores')).toHaveLength(2);
     // The part that could not be written was not written, and nothing
     // pretended otherwise.
     expect(await hasStoredHandle('Scores')).toBe(false);
@@ -275,7 +276,8 @@ describe('a handle the database will not keep', () => {
     forgetHandleForTest(library.id);
     expect(await reconnectFolder(library.id)).toBe(false);
     const [saved] = await savedFolders();
-    expect(saved?.scores).toHaveLength(2);
+    expect(saved?.count).toBe(2);
+    expect(await allFolderScores(library.id)).toHaveLength(2);
     clearFakeIndexedDb();
   });
 });
@@ -301,7 +303,9 @@ describe('when a remembered folder will not open, the reason is legible', () => 
     // one-visit story, which is a different problem with a different cure.
     const [saved] = await savedFolders();
     expect(saved?.rememberNote).toBe('permission');
-    await expect(addFromFolder(id, saved!.scores[0]!)).rejects.toThrow(/read permission was not given/i);
+    await expect(addFromFolder(id, (await allFolderScores(id))[0]!)).rejects.toThrow(
+      /read permission was not given/i,
+    );
     clearFakeIndexedDb();
   });
 
@@ -325,8 +329,9 @@ describe('when a remembered folder will not open, the reason is legible', () => 
     };
     expect(await reconnectFolder(id)).toBe(false);
     expect(folderRememberNote(id)).toBe('stale');
-    const [saved] = await savedFolders();
-    await expect(addFromFolder(id, saved!.scores[0]!)).rejects.toThrow(/moved, renamed/i);
+    await expect(addFromFolder(id, (await allFolderScores(id))[0]!)).rejects.toThrow(
+      /moved, renamed/i,
+    );
     clearFakeIndexedDb();
   });
 

@@ -7,34 +7,47 @@
 // which the piece is a catalog item like every other and this screen has
 // nothing more to do with it.
 //
-// Filtering is synchronous over a plain array. 37,000 rows filter in a few
-// milliseconds, which is fast enough that a worker or a virtual list would be
-// two new ways to be wrong for no gain. Only the *drawing* is capped: nobody
-// scrolls past the first hundred, and building 37,000 rows is a second of
-// blocked main thread on a phone.
+// Filtering is synchronous over parallel arrays — a folded haystack and a
+// letter per row. 37,000 rows filter in a few milliseconds, which is fast
+// enough that a worker or a virtual list would be two new ways to be wrong for
+// no gain. Only the *drawing* is capped: nobody scrolls past the first hundred,
+// and building 37,000 rows is a second of blocked main thread on a phone.
+//
+// What changed underneath is where those arrays come from. They used to be
+// folded here at load, out of 37,261 full `FolderScore` objects that the screen
+// had just deserialized from one IndexedDB record — forty-odd megabytes to
+// produce two of index. The arrays are stored now (`db.ts`'s `FolderIndexRow`),
+// so opening the screen reads the index and nothing else, and the full rows are
+// fetched by key for the sixty that are about to be drawn. The filter itself is
+// the same filter over the same shape.
 
 import type { Router } from '../../router';
 import type { FolderScore } from '../../data/db';
-import { createAlphaRail, letterFor } from '../alphaRail';
+import { createAlphaRail } from '../alphaRail';
 import {
   FolderCancelled,
   FolderError,
   MANIFEST_NAME,
   addFromFolder,
   directoryPickerAvailable,
+  fold,
+  folderFilesByTitle,
+  folderIndex,
+  folderLetterOffset,
   folderRememberNote,
+  folderScoresAt,
   forgetFolder,
-  looksUnnamed,
   openFolder,
   pickFolder,
   rescanFolder,
   savedFolders,
   type FolderCure,
+  type FolderIndex,
   type FolderLibrary,
   type FolderOpenResult,
   type FolderProgress,
   type FolderRememberNote,
-} from '../../data/folderLibrary';
+  needsAdopting,} from '../../data/folderLibrary';
 import {
   ImportError,
   getImport,
@@ -63,29 +76,42 @@ interface Filters {
 
 const NO_FILTERS: Filters = { query: '', style: '', minLevel: 0, maxLevel: 10, ratedOnly: false };
 
-/** Accents off and lower-cased, so "faure" finds "Fauré". */
-export function fold(text: string): string {
-  return text
-    .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase();
-}
+export { fold };
 
-export function matchesFilters(
-  score: FolderScore,
-  haystack: string,
+/**
+ * Whether row `at` of the stored index passes the filters.
+ *
+ * Reads the parallel arrays rather than a `FolderScore`, which is the point of
+ * having them: the full rows are in IndexedDB and are fetched for the sixty
+ * about to be drawn, so nothing the filter asks may need one.
+ *
+ * `style` arrives as an id into the index's own dictionary rather than a name,
+ * worked out once per draw instead of a string comparison per row: `-1` is a
+ * style this listing does not have, which matches nothing, and `null` is no
+ * style filter at all.
+ */
+export function matchesAt(
+  index: FolderIndex,
+  at: number,
   filters: Filters,
   query: string,
+  styleId: number | null,
 ): boolean {
-  if (query && !haystack.includes(query)) return false;
-  if (filters.style && score.style !== filters.style) return false;
-  if (filters.ratedOnly && !(score.rating >= 4 && score.ratings >= 5)) return false;
+  if (query && !(index.haystacks[at] ?? '').includes(query)) return false;
+  if (styleId !== null && index.styles[at] !== styleId) return false;
+  if (filters.ratedOnly && index.rated[at] !== 1) return false;
   // A score with no level is not hidden by a level filter: "unknown" is not
-  // "too hard", and the folder without a manifest has no levels at all.
-  if (score.level !== null) {
-    if (score.level < filters.minLevel || score.level > filters.maxLevel) return false;
-  }
+  // "too hard", and the folder without a manifest has no levels at all. That
+  // is what `NaN` means here, and why the levels are `Float64Array` and not a
+  // number per row with 0 standing in for "none".
+  const level = index.levels[at] ?? Number.NaN;
+  if (!Number.isNaN(level) && (level < filters.minLevel || level > filters.maxLevel)) return false;
   return true;
+}
+
+/** The dictionary id for the chosen style, for `matchesAt` above. */
+export function styleIdFor(index: FolderIndex, style: string): number | null {
+  return style === '' ? null : index.styleNames.indexOf(style);
 }
 
 /**
@@ -100,22 +126,28 @@ export function matchesFilters(
  * The title fallback is not a leftover. An import that arrived by share or
  * picker has no origin, and stopping the owner re-importing a piece he already
  * has by another route is the thing this set was for in the first place.
+ *
+ * **Asked of the database, not of the listing.** This used to walk all 37,261
+ * rows on every visit to the screen to answer a question about the owner's
+ * handful of imports. It is now one lookup on the `byTitle` index per import
+ * that has no `origin` — which is to say, per piece that arrived by share or
+ * picker — and no lookup at all for the ones that came from this folder, since
+ * those carry the file they came from.
  */
-export function importsByFolderFile<
+export async function importsByFolderFile<
   T extends { title: string; origin?: { folder: string; file: string } },
->(imports: readonly T[], library: { id: string; scores: readonly FolderScore[] }): Map<string, T> {
-  const fromHere = new Map<string, T>();
+>(imports: readonly T[], folderId: string): Promise<Map<string, T>> {
+  const out = new Map<string, T>();
   const titles = new Map<string, T>();
   for (const row of imports) {
-    if (row.origin?.folder === library.id) fromHere.set(row.origin.file, row);
+    if (row.origin?.folder === folderId) out.set(row.origin.file, row);
     else if (row.origin === undefined && !titles.has(fold(row.title))) {
       titles.set(fold(row.title), row);
     }
   }
-  const out = new Map<string, T>();
-  for (const score of library.scores) {
-    const row = fromHere.get(score.file) ?? titles.get(fold(score.title));
-    if (row) out.set(score.file, row);
+  const byTitle = await folderFilesByTitle(folderId, [...titles.keys()]);
+  for (const [title, row] of titles) {
+    for (const file of byTitle.get(title) ?? []) if (!out.has(file)) out.set(file, row);
   }
   return out;
 }
@@ -127,11 +159,11 @@ export function importsByFolderFile<
  * assigned to a rung have to agree, or the screen offers Assign on a row it
  * also says is not in the library.
  */
-export function addedFiles(
+export async function addedFiles(
   imports: readonly { title: string; origin?: { folder: string; file: string } }[],
-  library: { id: string; scores: readonly FolderScore[] },
-): Set<string> {
-  return new Set(importsByFolderFile(imports, library).keys());
+  folderId: string,
+): Promise<Set<string>> {
+  return new Set((await importsByFolderFile(imports, folderId)).keys());
 }
 
 /**
@@ -170,11 +202,15 @@ export function rememberSentence(id: string, note: FolderRememberNote): string |
  * way is a different thing: it is the archive, read without its
  * `library.json` ever being found, and the cure is not "rename your files",
  * it is "pick the folder again" (docs/04 §4b).
+ *
+ * Takes the tally rather than the rows: the tally is counted once when the
+ * folder is scanned and stored in the index, so the screen no longer runs a
+ * regular expression over 37,261 titles to draw one notice that is almost
+ * always hidden.
  */
-export function looksLikeUnnamedArchive(scores: readonly FolderScore[]): boolean {
-  if (scores.length === 0) return false;
-  const unnamed = scores.filter((score) => looksUnnamed(score.title)).length;
-  return unnamed / scores.length > 0.5;
+export function looksLikeUnnamedArchive(unnamed: number, total: number): boolean {
+  if (total === 0) return false;
+  return unnamed / total > 0.5;
 }
 
 export function FolderScreen(router: Router): HTMLElement {
@@ -312,16 +348,27 @@ export function FolderScreen(router: Router): HTMLElement {
    * there, which is what an index in a book is for.
    */
   let from = 0;
-  let haystacks: string[] = [];
   /**
-   * The letter each row files under, in the listing's own order.
+   * The parallel arrays the filter runs over: a folded haystack, a letter, a
+   * level, a style and a status per row.
    *
-   * Parallel to `haystacks` and built in the same pass, for the same reason:
-   * `letterFor` normalises, and normalising 37,261 titles costs about 60 ms on
-   * the phone — once at load is nothing, once per keystroke is the sluggish
-   * list this screen has twice been fixed for.
+   * Read from the database rather than folded here. `letterFor` normalises,
+   * and normalising 37,261 titles costs about 60 ms on the phone — once at
+   * load was already the right shape, but it came after deserializing every
+   * full row, which was the forty megabytes this screen kept being fixed for.
+   * `null` until the folder's index has been read, which is the only thing the
+   * first paint waits on.
    */
-  let letters: string[] = [];
+  let index: FolderIndex | null = null;
+  /**
+   * Rows taken off the list this session because the file behind one turned
+   * out not to be there.
+   *
+   * A set rather than surgery on the arrays above: the arrays are typed and
+   * splicing them would mean rebuilding all five, and a drop is rare while a
+   * keystroke is not. The `size > 0` guard keeps the ordinary case free.
+   */
+  const dropped = new Set<string>();
   /** The letters the current filters leave something under, from the last draw. */
   let presentLetters = new Set<string>();
   let alreadyAdded = new Set<string>();
@@ -439,7 +486,7 @@ export function FolderScreen(router: Router): HTMLElement {
   }
 
   function updateUnnamedNotice(): void {
-    const stale = library !== null && looksLikeUnnamedArchive(library.scores);
+    const stale = index !== null && looksLikeUnnamedArchive(index.unnamed, index.files.length);
     unnamedNotice.hidden = !stale;
     if (!stale) return;
     unnamedNotice.replaceChildren(
@@ -525,9 +572,12 @@ export function FolderScreen(router: Router): HTMLElement {
     control.addEventListener('input', readFilters);
   }
 
-  function fillStyles(scores: FolderScore[]): void {
+  // The index already holds the distinct styles — it stores them once as a
+  // dictionary and an id per row — so the menu is the dictionary, sorted. It
+  // used to be a `Set` built by walking every score on every load.
+  function fillStyles(names: readonly string[]): void {
     style.replaceChildren(el('option', { value: '', text: 'Any style' }));
-    for (const name of [...new Set(scores.map((s) => s.style))].filter(Boolean).sort()) {
+    for (const name of [...names].filter(Boolean).sort()) {
       style.append(el('option', { value: name, text: name }));
     }
   }
@@ -632,41 +682,36 @@ export function FolderScreen(router: Router): HTMLElement {
    * drawn and a second walk of 37,261 rows to get it would be the whole cost
    * of the first one again.
    */
-  function matchesNow(): { found: FolderScore[]; present: Set<string> } {
-    if (!library) return { found: [], present: new Set() };
+  function matchesNow(): { found: number[]; present: Set<string> } {
+    const at = index;
+    if (!at) return { found: [], present: new Set() };
     // Indexed rather than `filter`, because the haystack is a parallel array:
     // folding a title on every keystroke over 37,000 rows is the difference
-    // between instant and sluggish, so it is done once when the folder loads.
+    // between instant and sluggish, so it is done once when the folder is
+    // scanned and stored with the listing.
+    //
+    // What comes back is positions, not rows. The rows are in the database and
+    // only the page about to be drawn is fetched — so a search over 37,261
+    // scores costs an array of numbers rather than an array of objects.
     const query = fold(filters.query);
-    const found: FolderScore[] = [];
+    const styleId = styleIdFor(at, filters.style);
+    const found: number[] = [];
     const present = new Set<string>();
-    const scores = library.scores;
-    for (let i = 0; i < scores.length; i += 1) {
-      const score = scores[i];
-      if (score && matchesFilters(score, haystacks[i] ?? '', filters, query)) {
-        found.push(score);
-        present.add(letters[i] ?? letterFor(score.title || score.file));
-      }
+    const skipping = dropped.size > 0;
+    for (let row = 0; row < at.files.length; row += 1) {
+      if (skipping && dropped.has(at.files[row] ?? '')) continue;
+      if (!matchesAt(at, row, filters, query, styleId)) continue;
+      found.push(row);
+      present.add(at.letters[row] ?? '#');
     }
     return { found, present };
   }
 
-  /**
-   * The haystack and the letter for every row, in one walk.
-   *
-   * Two walks were two `normalize()` passes over 37,261 titles for no reason —
-   * and the second of them, the one the rail needs, used to happen on every
-   * draw.
-   */
-  function indexScores(scores: readonly FolderScore[]): void {
-    haystacks = new Array<string>(scores.length);
-    letters = new Array<string>(scores.length);
-    for (let i = 0; i < scores.length; i += 1) {
-      const score = scores[i];
-      if (!score) continue;
-      haystacks[i] = fold(`${score.title} ${score.composer}`);
-      letters[i] = letterFor(score.title || score.file);
-    }
+  /** The stored index for a folder, or nothing when it has no listing. */
+  async function loadIndex(id: string): Promise<void> {
+    index = await folderIndex(id);
+    dropped.clear();
+    fillStyles(index?.styleNames ?? []);
   }
 
   /**
@@ -694,16 +739,64 @@ export function FolderScreen(router: Router): HTMLElement {
     // hand is exactly the shape this screen keeps being fixed for.
     letters: () => presentLetters,
     onMissing: (letter) => {
-      const matching = matchesNow().found;
-      const at = matching.findIndex((score) => letterFor(score.title || score.file) === letter);
-      if (at === -1) return;
-      // Move the window, do not grow it: one page, starting at the letter.
-      from = at;
-      shown = PAGE;
-      draw();
-      rail.el.querySelector<HTMLButtonElement>(`[data-letter="${letter}"]`)?.click();
+      void jumpTo(letter);
     },
   });
+
+  /**
+   * Moves the window to where a letter starts.
+   *
+   * With nothing filtered the listing's stored order *is* the drawn order, so
+   * where S starts is a question the database can answer without the screen
+   * walking anything: the `byTitle` index is keyed on the folded title, a
+   * folded title beginning with `s` is exactly a row filed under S, and the
+   * answer is a count of the key range below it. The seek is checked rather
+   * than trusted — a row marked missing is in the store and not in the index,
+   * which would shift it — and anything that does not check out falls back to
+   * the walk over the matches, which is also what a filtered list has to do,
+   * since the stored order knows nothing about the search box.
+   */
+  async function jumpTo(letter: string): Promise<void> {
+    const at = index;
+    if (!library || !at) return;
+    let start = -1;
+    if (noFiltersSet() && dropped.size === 0) {
+      const offset = await folderLetterOffset(library.id, letter);
+      const starts =
+        offset !== null &&
+        offset < at.files.length &&
+        at.letters[offset] === letter &&
+        (offset === 0 || at.letters[offset - 1] !== letter);
+      if (starts) start = offset;
+    }
+    if (start === -1) {
+      const matching = matchesNow().found;
+      start = matching.findIndex((row) => (at.letters[row] ?? '#') === letter);
+    }
+    if (start === -1) return;
+    // Move the window, do not grow it: one page, starting at the letter.
+    from = start;
+    shown = PAGE;
+    await redraw();
+    try {
+      rail.el.querySelector<HTMLButtonElement>(`[data-letter="${letter}"]`)?.click();
+    } catch {
+      // The rail scrolls the row it lands on into view, and a scroll is not
+      // something to fail a jump over — the window has already moved by the
+      // time this runs. jsdom has no layout and so no `scrollIntoView`, which
+      // is the same hole `sayOnRow` guards with an optional call.
+    }
+  }
+
+  function noFiltersSet(): boolean {
+    return (
+      filters.query === '' &&
+      filters.style === '' &&
+      filters.minLevel === NO_FILTERS.minLevel &&
+      filters.maxLevel === NO_FILTERS.maxLevel &&
+      !filters.ratedOnly
+    );
+  }
   listWithRail.append(rail.el);
 
   /**
@@ -841,8 +934,25 @@ export function FolderScreen(router: Router): HTMLElement {
     drawActions();
   }
 
+  /**
+   * How many draws have been asked for, so a stale one cannot land.
+   *
+   * The rows come out of the database now, which means a draw is asynchronous
+   * and two keystrokes can be in flight at once. Without this the slower of
+   * the two paints last and the list shows the answer to the previous
+   * question.
+   */
+  let drawToken = 0;
+
+  /** Kicks off a draw. Fire and forget, so every existing caller still reads. */
   function draw(): void {
-    if (!library) {
+    void redraw();
+  }
+
+  async function redraw(): Promise<void> {
+    const token = (drawToken += 1);
+    const at = index;
+    if (!library || !at) {
       list.replaceChildren();
       more.replaceChildren();
       countLine.textContent = '';
@@ -853,7 +963,17 @@ export function FolderScreen(router: Router): HTMLElement {
     // The window can outlive the list it indexed — a search narrows the
     // matches under it — so it is pulled back inside them before slicing.
     if (from >= found.length) from = 0;
-    drawn = found.slice(from, from + shown);
+    const window = found.slice(from, from + shown);
+    // The only rows that leave the database: the page about to be drawn, by
+    // key, in one transaction.
+    const rows = await folderScoresAt(
+      library.id,
+      window.map((row) => at.files[row] ?? ''),
+    );
+    if (token !== drawToken) return;
+    // A row whose record has gone between the index being read and the page
+    // being drawn is simply not drawn; the index is rebuilt by the next scan.
+    drawn = rows.filter((score): score is FolderScore => score !== undefined);
     list.replaceChildren(...drawn.map(rowFor));
     rail.update();
     const to = Math.min(from + drawn.length, found.length);
@@ -1026,17 +1146,13 @@ export function FolderScreen(router: Router): HTMLElement {
    * screen was fixed for once already.
    */
   function dropRowFromList(file: string): void {
-    if (!library) return;
-    const at = library.scores.findIndex((score) => score.file === file);
-    if (at === -1) return;
-    const scores = [...library.scores];
-    scores.splice(at, 1);
-    // The haystack and the letter of every row are parallel to `scores` and
-    // are not rebuilt on a draw, so all three have to lose the same index or
-    // every row after it searches under its neighbour's title.
-    haystacks.splice(at, 1);
-    letters.splice(at, 1);
-    library = { ...library, scores };
+    if (!library || dropped.has(file)) return;
+    // Noted rather than spliced out of five parallel arrays. The filter skips
+    // it from here on, the count goes down by one, and the row's element is
+    // taken out where it stands — which is the point: a redraw would put the
+    // explanation at the top of a list of thousands.
+    dropped.add(file);
+    library = { ...library, count: Math.max(0, library.count - 1) };
     drawn = drawn.filter((score) => score.file !== file);
     list.querySelector(`[data-file="${CSS.escape(file)}"]`)?.remove();
   }
@@ -1147,7 +1263,7 @@ export function FolderScreen(router: Router): HTMLElement {
       return;
     }
     const where = library.source ? ` from ${library.source}` : '';
-    if (library.scores.length === 0) {
+    if (library.count === 0) {
       // A folder with no MusicXML at all is refused while it is being read,
       // with the sentence that says which files are looked for. This is the
       // other way to end with nothing: files were found and not one of them
@@ -1165,7 +1281,7 @@ export function FolderScreen(router: Router): HTMLElement {
       return;
     }
     updateSavedNotice();
-    const count = `${plural(library.scores.length, 'score')} in ${library.id}${where}`;
+    const count = `${plural(library.count, 'score')} in ${library.id}${where}`;
     // Which state, in three or four words. The cure is not here: it belongs
     // beside the rows it stops working, which is the notice above the list —
     // and a sentence long enough to carry it costs four lines on a 342 px phone
@@ -1184,7 +1300,7 @@ export function FolderScreen(router: Router): HTMLElement {
           // folder's name and where it came from, which are on the screen
           // anyway once indexing finishes, give way to the two numbers that are
           // only true now.
-          `${plural(library.scores.length, 'score')} so far — ${plural(
+          `${plural(library.count, 'score')} so far — ${plural(
             library.pending.length,
             'folder',
           )} still to index.`
@@ -1219,10 +1335,10 @@ export function FolderScreen(router: Router): HTMLElement {
       library === null
         ? ''
         : library.listedFrom === 'manifest'
-          ? `This listing is the folder's own ${MANIFEST_NAME}, read in one go — the files themselves were never gone through, which is why it was instant. It cannot see a score put into the folder after that file was written, and it does not know about one that has been deleted until you tap Add on it. Rescan folder reads all ${library.scores.length.toLocaleString()} files — a few minutes — and is the only thing that finds either.`
+          ? `This listing is the folder's own ${MANIFEST_NAME}, read in one go — the files themselves were never gone through, which is why it was instant. It cannot see a score put into the folder after that file was written, and it does not know about one that has been deleted until you tap Add on it. Rescan folder reads all ${library.count.toLocaleString()} files — a few minutes — and is the only thing that finds either.`
           : library.listedFrom === 'partial'
-            ? `Indexing stopped part way: ${library.scores.length.toLocaleString()} scores found, ${plural(library.pending.length, 'folder')} still to look in. Continue indexing carries on from there; Rescan folder starts again from the top.`
-            : `Rescan reads all ${library.scores.length.toLocaleString()} files again — a few minutes. Only needed when the folder itself has changed.`;
+            ? `Indexing stopped part way: ${library.count.toLocaleString()} scores found, ${plural(library.pending.length, 'folder')} still to look in. Continue indexing carries on from there; Rescan folder starts again from the top.`
+            : `Rescan reads all ${library.count.toLocaleString()} files again — a few minutes. Only needed when the folder itself has changed.`;
     howSummary.textContent =
       library?.listedFrom === 'manifest'
         ? 'How this works, and what it misses'
@@ -1339,8 +1455,11 @@ export function FolderScreen(router: Router): HTMLElement {
     let stopped = false;
     try {
       library = await read({ signal: controller.signal, onProgress: showReadingProgress });
-      indexScores(library.scores);
-      fillStyles(library.scores);
+      // Read back rather than folded from the rows that were just built: the
+      // read has already written the index, and one small read after a walk
+      // that took minutes is the price of having one path that produces the
+      // arrays rather than two that have to agree.
+      await loadIndex(library.id);
       from = 0;
       shown = PAGE;
     } catch (cause) {
@@ -1439,8 +1558,8 @@ export function FolderScreen(router: Router): HTMLElement {
       return;
     }
     library = null;
-    haystacks = [];
-    letters = [];
+    index = null;
+    dropped.clear();
     presentLetters = new Set();
     describe();
     drawActions();
@@ -1457,15 +1576,42 @@ export function FolderScreen(router: Router): HTMLElement {
     // archive for good.
     library = folders.find((folder) => folder.connected) ?? folders[0] ?? null;
     others = folders.filter((folder) => folder.id !== library?.id);
+    index = null;
     if (library) {
-      importIndex = importsByFolderFile(imports, library);
+      // Say so if this visit is the one that has to tidy the stored listing.
+      //
+      // A listing written by an older build sits inline on the folder's own
+      // row, and the first open after the upgrade splits it into a record per
+      // score. That is deliberately here rather than in the database upgrade —
+      // a version-change transaction holds every other connection shut, which
+      // is the blocked open that left the shell unmounted — but on the owner's
+      // 37,261 it is still seconds of work, and in silence it is a blank screen
+      // that looks exactly like the old "Add just flashes" fault we spent a
+      // night removing. It happens once per folder, and it says so while it
+      // does.
+      if (await needsAdopting(library.id)) {
+        folderStatus.textContent =
+          'Tidying up the stored listing — this happens once, after an update.';
+      }
+      // The index and the already-added set, together, because both are
+      // needed before a row can be drawn and neither depends on the other.
+      // Between them this is what opening the screen now costs: one small
+      // record and one seek per hand-imported piece, where it used to be the
+      // whole listing twice over.
+      const [, added] = await Promise.all([
+        loadIndex(library.id),
+        importsByFolderFile(imports, library.id),
+      ]);
+      importIndex = added;
       alreadyAdded = new Set(importIndex.keys());
-      indexScores(library.scores);
-      fillStyles(library.scores);
+    } else {
+      fillStyles([]);
     }
     describe();
     drawActions();
     draw();
+    // Cleared by the redraw above having something real to say instead.
+    if (folderStatus.textContent?.startsWith('Tidying up')) folderStatus.textContent = '';
     await reopenQuietly();
   }
 

@@ -32,6 +32,7 @@ import {
   openFolder,
   pickFolder,
   reconnectFolder,
+  allFolderScores,
   savedFolders,
 } from '../../src/data/folderLibrary';
 import { FolderScreen } from '../../src/ui/screens/FolderScreen';
@@ -255,8 +256,7 @@ describe('adding one score reads one file', () => {
   it('fetches the score asked for and nothing else', async () => {
     const id = freshId('adding');
     const counts = await savedAndClosed(id, { query: 'granted' });
-    const [saved] = await savedFolders();
-    const score = saved?.scores.find((row) => row.file === '01/Qm5.mxl');
+    const score = (await allFolderScores(id)).find((row) => row.file === '01/Qm5.mxl');
     expect(score).toBeDefined();
 
     const row = await addFromFolder(id, score!);
@@ -275,8 +275,9 @@ describe('adding one score reads one file', () => {
     const [saved] = await savedFolders();
     expect(saved?.connected).toBe(false);
 
-    await addFromFolder(id, saved!.scores.find((row) => row.file === '02/Qm6.mxl')!);
-    await addFromFolder(id, saved!.scores.find((row) => row.file === '03/Qm7.mxl')!);
+    const listed = await allFolderScores(id);
+    await addFromFolder(id, listed.find((row) => row.file === '02/Qm6.mxl')!);
+    await addFromFolder(id, listed.find((row) => row.file === '03/Qm7.mxl')!);
 
     expect(counts.opened).toEqual(['02/Qm6.mxl', '03/Qm7.mxl']);
     // The permission question is asked once, not once per Add.
@@ -286,11 +287,10 @@ describe('adding one score reads one file', () => {
   it('names the cure when the folder cannot be opened at all', async () => {
     const id = freshId('refused');
     await savedAndClosed(id, { query: 'prompt', request: 'denied' });
-    const [saved] = await savedFolders();
 
     // The message says what to tap, and the error carries which button that is
     // rather than leaving the screen to guess it out of the wording.
-    const thrown = await addFromFolder(id, saved!.scores[0]!).then(
+    const thrown = await addFromFolder(id, (await allFolderScores(id))[0]!).then(
       () => null,
       (cause: unknown) => cause,
     );

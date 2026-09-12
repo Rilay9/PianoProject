@@ -391,7 +391,16 @@ test.describe('a folder of 37,261 scores', () => {
     await seedFolder(page, ROWS);
     await page.goto('/#/library/folder');
     const first = page.locator('#folder-list .list-row').first();
-    await expect(first).toBeVisible();
+    // A real budget, because this open does real work.
+    //
+    // A listing this size seeded in the old inline shape is split into a record
+    // per score the first time it is opened — measured at 1.45 s on an idle
+    // machine for all 37,261. That is deliberate and it happens once per
+    // folder, but it is more than the five seconds Playwright allows by default
+    // once four workers are competing, so this passed alone and failed in the
+    // suite. The number is what the work costs with room for a loaded machine,
+    // not a guess at how slow this laptop is.
+    await expect(first).toBeVisible({ timeout: 60_000 });
     const box = await first.boundingBox();
     expect(box, 'no first row').not.toBeNull();
     const top = Math.round(box?.y ?? 0);

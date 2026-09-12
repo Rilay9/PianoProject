@@ -11,15 +11,24 @@
  * falls back to memory for the session. A learner who cannot save progress
  * should still be able to practise.
  */
-import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
+import {
+  openDB,
+  type DBSchema,
+  type IDBPDatabase,
+  type IDBPTransaction,
+  type StoreNames,
+} from 'idb';
 
 export const DB_NAME = 'pianopath';
 /**
  * 2 adds `levelOverrides` (replan §1.4); 3 adds `folderLibraries` (`04` §4b);
  * 4 gives an import the rungs it belongs to (replan §4.3); 5 adds `books` —
- * the shelf of paper the owner already owns (replan §5.1).
+ * the shelf of paper the owner already owns (replan §5.1); 6 splits a folder
+ * listing into one record per score plus a compact per-folder index, so
+ * opening the browse screen and adding one piece stop costing the whole
+ * listing (see `folderLibraries` below).
  */
-export const DB_VERSION = 5;
+export const DB_VERSION = 6;
 
 export type ProgressStatus = 'new' | 'started' | 'passed' | 'mastered';
 
@@ -191,13 +200,100 @@ export interface FolderScore {
   museScore: string;
 }
 
+/** Where a listing came from, and so what it can be trusted to know. */
+export type FolderListing = 'manifest' | 'walk' | 'partial';
+
 /**
- * A folder of scores the owner pointed the app at.
+ * One score in one folder, as its own record.
+ *
+ * **This used to be an element of `FolderLibraryRow.scores`, and that was the
+ * fault.** IndexedDB cannot read or write part of a record, so a listing held
+ * as one array meant that every operation cost the whole 37,261 of it: opening
+ * the browse screen deserialized some forty megabytes to draw a screenful, and
+ * taking one dead row out of the listing read the array, copied it, and wrote
+ * all of it back. One record per score makes both of those proportional to
+ * what is actually wanted — a page of sixty rows, or one row.
+ *
+ * The key is `[folder, file]`, which is the identity the rest of the app
+ * already uses: `ImportRow.origin` is exactly that pair.
+ */
+export interface FolderScoreRow extends FolderScore {
+  /** The folder this sits in. First half of the key and of `byTitle`. */
+  folder: string;
+  /**
+   * The title, folded — accents off, lower-cased — which is what `byTitle` is
+   * an index on.
+   *
+   * Stored rather than derived because an index can only be built on a field
+   * that is in the record, and it is what turns the A-to-Z rail from a walk of
+   * the listing into a key-range seek.
+   */
+  sort: string;
+  /**
+   * ISO date-time at which the file behind this row was found to be gone.
+   *
+   * Marked rather than deleted: a rescan run while the card is out would
+   * otherwise throw away the whole listing, and a row that comes back should
+   * come back as itself. A marked row is left out of the folder's index, so
+   * nothing lists it, and a later scan that finds the file clears the mark.
+   */
+  missingAt?: string;
+}
+
+/**
+ * The compact per-folder index the browse screen filters over.
+ *
+ * `ui/screens/FolderScreen.ts` already folds every title once at load into
+ * parallel arrays and filters over *those* on each keystroke — that part was
+ * always right. What was wrong is where the arrays came from: they were built
+ * by reading all 37,261 full rows, which is forty-odd megabytes of structured
+ * clone to produce about two of index. So the arrays are stored, and opening
+ * the screen reads this record instead of the rows. The rows are then fetched
+ * by key, for the sixty that are about to be drawn.
+ *
+ * Everything here is parallel to `files` and in the same order, which is the
+ * order the listing is drawn in.
+ */
+export interface FolderIndexRow {
+  /** The folder's name — the same key `folderLibraries` uses. */
+  id: string;
+  /** Each row's path, which is also the second half of its record's key. */
+  files: string[];
+  /** `fold(title + ' ' + composer)` — what the search box matches against. */
+  haystacks: string[];
+  /**
+   * One character per row: the letter it files under, packed into a single
+   * string rather than an array of 37,261 one-character strings.
+   */
+  letters: string;
+  /** `NaN` where a row has no level, which is not the same as level 0. */
+  levels: Float64Array;
+  /** The distinct styles, sorted — which is also what the filter's menu lists. */
+  styleNames: string[];
+  /** An index into `styleNames` per row. Low-cardinality, so a dictionary. */
+  styles: Uint16Array;
+  /** The distinct statuses. Same dictionary trick, same reason. */
+  statusNames: string[];
+  statuses: Uint16Array;
+  /** 1 where `rating >= 4 && ratings >= 5` — all the rated filter asks. */
+  rated: Uint8Array;
+  /** How many rows are titled with a placeholder or a content hash. */
+  unnamed: number;
+}
+
+/**
+ * A folder of scores the owner pointed the app at — the folder itself, not
+ * its contents.
  *
  * The rows are kept and the *files* are not: Android grants a folder for one
  * visit only unless a handle was kept (see `folderLibrary.ts`), so a
  * stored handle is not on offer. Keeping the listing means browsing 37,000
  * scores works with nothing plugged in; adding one asks for the folder again.
+ *
+ * The scores themselves live in `folderScores`, one record each, and the index
+ * the screen filters over lives in `folderIndexes`. This row is the handful of
+ * facts about the folder as a whole, so reading every saved folder — which is
+ * what the screen does first, on every visit — is a few small records.
  */
 export interface FolderLibraryRow {
   /** The folder's own name, which is all Android tells us about where it is. */
@@ -205,7 +301,22 @@ export interface FolderLibraryRow {
   addedAt: string;
   /** From the folder's `library.json`, when it had one. */
   source: string | null;
-  scores: FolderScore[];
+  /** Listable rows — every score in the folder bar the ones marked missing. */
+  count?: number;
+  /** How the listing was made, and so what it cannot know. */
+  listedFrom?: FolderListing;
+  /** Top-level folders an interrupted walk has still to index. */
+  pending?: string[];
+  /**
+   * Paths marked missing since the index was last built.
+   *
+   * Kept here, in the small record, rather than folded into the index: a row
+   * dropping out is a one-row change, and rebuilding the index for it would
+   * put a megabyte-and-a-half write back on the path this whole shape exists
+   * to take it off. The next scan rebuilds the index without them and empties
+   * this, so it stays as short as the number of files deleted between scans.
+   */
+  missing?: string[];
   /**
    * A `FileSystemDirectoryHandle`, when the browser gave one and the owner
    * asked for it to be kept (the `folderHandles` setting).
@@ -216,6 +327,18 @@ export interface FolderLibraryRow {
    * before using it. Absent on every folder picked the ordinary way.
    */
   handle?: unknown;
+  /**
+   * The whole listing, as every build before version 6 wrote it.
+   *
+   * Not written any more. It is still read, once, by `folderLibrary.ts`'s
+   * `folderIndex()`: a row in this shape is split into records and an index
+   * the first time the folder is opened, and the field is dropped. Doing it
+   * there rather than in the `upgrade` block is deliberate — rewriting 37,261
+   * records inside a `versionchange` transaction blocks every other connection
+   * to the database for as long as it takes, and a blocked open at start-up is
+   * precisely the failure `app/boot.ts` is written around.
+   */
+  scores?: FolderScore[];
 }
 
 /**
@@ -279,21 +402,164 @@ interface PianoPathDb extends DBSchema {
   skills: { key: string; value: SkillRow };
   levelOverrides: { key: string; value: LevelOverrideRow };
   folderLibraries: { key: string; value: FolderLibraryRow };
+  folderScores: {
+    key: [string, string];
+    value: FolderScoreRow;
+    indexes: { byTitle: [string, string] };
+  };
+  folderIndexes: { key: string; value: FolderIndexRow };
   books: { key: string; value: BookRow };
 }
 
 let dbPromise: Promise<IDBPDatabase<PianoPathDb> | null> | null = null;
+
+/**
+ * Whether a version bump is being held up by a connection somewhere else, and
+ * by which version.
+ *
+ * `null` is the ordinary state. It becomes a value when `blocked` fires, which
+ * means another page — another tab, or the outgoing page of a service-worker
+ * update's own reload — still holds this database open at the older version.
+ * The screen that can say something useful about it is the storage report.
+ */
+export interface DatabaseBlock {
+  /** The version this page is trying to open at. */
+  wanted: number;
+  /** The version the connection in the way is holding, when it says. */
+  held: number | null;
+  /** True once the open gave up waiting and the app fell back to memory. */
+  gaveUp: boolean;
+}
+
+let block: DatabaseBlock | null = null;
+
+/** What is holding the database open at an older version, if anything. */
+export function databaseBlock(): DatabaseBlock | null {
+  return block;
+}
+
+/**
+ * How long a blocked open waits before the app carries on without a database.
+ *
+ * The alternative is what used to happen, and it is much worse than no
+ * storage: a blocked `open()` never fires `success` *or* `error` — only the
+ * silent `blocked` event — so `hydratePersisted()` never settled, and
+ * `app/boot.ts`'s own note records the result, which was a launch with no tab
+ * bar at all. Every store above this one already falls back to memory for the
+ * session when there is no database, so giving up is a degraded app rather
+ * than a dead one, and the storage report says which it is. The real open is
+ * left running: whichever call comes next gets it once the other connection
+ * has gone away.
+ */
+export const BLOCKED_GIVE_UP_MS = 4000;
 
 export function openDatabase(): Promise<IDBPDatabase<PianoPathDb> | null> {
   // `openDB` throws synchronously rather than rejecting when there is no
   // IndexedDB at all, which is the case in a test environment and in a
   // browser with site data blocked — so the guard has to come first.
   if (typeof indexedDB === 'undefined') return Promise.resolve(null);
-  dbPromise ??= openDB<PianoPathDb>(DB_NAME, DB_VERSION, {
-    // `oldVersion` is 0 on a fresh database and the previous version on an
-    // upgrade, so each block runs exactly once and a phone that has been on
-    // version 1 since P7 keeps every row it has.
-    upgrade(db, oldVersion, _newVersion, tx) {
+  if (dbPromise === null) {
+    // Asked alongside the first open rather than from a screen: by the time a
+    // screen could ask, rows have already been written in best-effort mode.
+    askToPersist();
+    dbPromise = openBounded();
+  }
+  return dbPromise;
+}
+
+function openBounded(): Promise<IDBPDatabase<PianoPathDb> | null> {
+  let settle: (db: IDBPDatabase<PianoPathDb> | null) => void = () => undefined;
+  const bounded = new Promise<IDBPDatabase<PianoPathDb> | null>((resolve) => {
+    settle = resolve;
+  });
+  let done = false;
+  const finish = (db: IDBPDatabase<PianoPathDb> | null): void => {
+    if (done) return;
+    done = true;
+    settle(db);
+  };
+
+  const open = openDb();
+  void open.then((db) => {
+    // The request that was blocked has come through after all, which means the
+    // connection in the way has closed. Nothing to report any more.
+    if (db !== null && block !== null && !block.gaveUp) block = null;
+    finish(db);
+  });
+  return bounded;
+
+  function openDb(): Promise<IDBPDatabase<PianoPathDb> | null> {
+    return openDB<PianoPathDb>(DB_NAME, DB_VERSION, {
+      // `oldVersion` is 0 on a fresh database and the previous version on an
+      // upgrade, so each block runs exactly once and a phone that has been on
+      // version 1 since P7 keeps every row it has.
+      upgrade,
+      /**
+       * Something else is holding the old version open, so this open will not
+       * complete until it lets go.
+       *
+       * There was no handler here at all, and that is the hole `app/boot.ts`
+       * describes: the spec fires neither `success` nor `upgradeneeded` while
+       * an open is blocked, so the promise simply never settled and everything
+       * awaiting it waited for ever. Two things change that. The other page now
+       * closes itself (see `blocking`), which fixes it outright whenever both
+       * pages are running this code; and when the page in the way is an older
+       * build that has no such handler, this bounds the wait.
+       */
+      blocked(currentVersion, blockedVersion) {
+        block = { wanted: blockedVersion ?? DB_VERSION, held: currentVersion, gaveUp: false };
+        setTimeout(() => {
+          if (done) return;
+          if (block) block.gaveUp = true;
+          // The next caller waits on the real open rather than starting a
+          // second one, so the moment the other connection goes away the app
+          // has its database back without a reload.
+          dbPromise = open;
+          finish(null);
+        }, BLOCKED_GIVE_UP_MS);
+      },
+      /**
+       * This connection is what is standing in another one's way.
+       *
+       * The other side of the same fault, and the half that actually cures it:
+       * a service-worker update reloads the page, the outgoing page's
+       * connection is not reliably gone before the incoming page asks to open
+       * at the bumped version, and the incoming page then blocks on a
+       * connection nobody is using. Letting go at once costs this page
+       * nothing — `dbPromise` is cleared, so the next read reopens, by which
+       * time the upgrade will have happened.
+       */
+      blocking() {
+        const held = dbPromise;
+        dbPromise = null;
+        void held?.then((db) => {
+          db?.close();
+        });
+      },
+      /**
+       * The browser closed the connection underneath us — storage cleared, or
+       * the tab evicted. Forgetting it means the next read opens a fresh one
+       * instead of calling into a dead handle for the rest of the session.
+       */
+      terminated() {
+        dbPromise = null;
+      },
+    }).catch(() => null);
+  }
+}
+
+/** The transaction an upgrade runs in — every store, at `versionchange`. */
+type UpgradeTx = IDBPTransaction<PianoPathDb, StoreNames<PianoPathDb>[], 'versionchange'>;
+
+// `oldVersion` is 0 on a fresh database and the previous version on an
+// upgrade, so each block runs exactly once and a phone that has been on
+// version 1 since P7 keeps every row it has.
+function upgrade(
+  db: IDBPDatabase<PianoPathDb>,
+  oldVersion: number,
+  _newVersion: number | null,
+  tx: UpgradeTx,
+): void {
       if (oldVersion < 1) {
         db.createObjectStore('settings');
         db.createObjectStore('progress', { keyPath: 'itemId' });
@@ -338,18 +604,127 @@ export function openDatabase(): Promise<IDBPDatabase<PianoPathDb> | null> {
         // its own rungs, page and level.
         db.createObjectStore('books', { keyPath: 'id' });
       }
-    },
-  }).catch(() => null);
-  return dbPromise;
+      if (oldVersion < 6) {
+        // The stores are made here; the listings already on the phone are
+        // **not** moved into them here. A `versionchange` transaction holds
+        // every other connection to the database shut for as long as it runs,
+        // and rewriting the owner's 37,261 rows inside one would do that at
+        // start-up, which is exactly the blocked-open failure `app/boot.ts` is
+        // written around. `folderLibrary.ts`'s `folderIndex()` splits an old
+        // row the first time that folder is opened instead — on a screen that
+        // already has somewhere to say it is working, and where nothing else
+        // is waiting on the answer.
+        const scores = db.createObjectStore('folderScores', { keyPath: ['folder', 'file'] });
+        // Lower-cased and accent-folded, so the A-to-Z rail is a seek over a
+        // key range rather than a walk of the listing.
+        scores.createIndex('byTitle', ['folder', 'sort']);
+        db.createObjectStore('folderIndexes', { keyPath: 'id' });
+      }
 }
+
+/**
+ * Whether the browser has promised not to evict this app's storage.
+ *
+ * `null` until the question has been put, which `openDatabase()` does the
+ * first time anything opens the database.
+ */
+export type PersistenceState = 'persisted' | 'best-effort' | 'unavailable' | null;
+
+let persistence: PersistenceState = null;
+
+/** What `navigator.storage.persist()` answered, or `null` before it was asked. */
+export function persistenceState(): PersistenceState {
+  return persistence;
+}
+
+/**
+ * Asks the browser to stop treating this app's storage as disposable.
+ *
+ * **Nothing in the app asked, and everything in it is local.** IndexedDB
+ * starts in best-effort mode, which means the browser is free to throw the
+ * whole origin away when the device runs short of space — and what it would be
+ * throwing away is the practice history, the progress, the imported scores and
+ * the folder listing, none of which exists anywhere else. There is no server
+ * copy to come back from.
+ *
+ * Asked once, from here, because this is the one place every store goes
+ * through and because it has to be asked *before* the answer matters rather
+ * than from a screen the owner may never open. Chrome grants it silently for
+ * an installed PWA — installation is one of the signals it scores — so on the
+ * phone this is expected to be a promotion with no prompt at all; a browser
+ * that would prompt instead is one where the app is not installed, and there
+ * the answer is simply no and nothing is worse than it was.
+ *
+ * Fire and forget: the answer changes what the storage report says and nothing
+ * else. A failure is an answer too.
+ */
+function askToPersist(): void {
+  const storage = (globalThis as { navigator?: { storage?: StorageManager } }).navigator?.storage;
+  if (typeof storage?.persist !== 'function') {
+    persistence = 'unavailable';
+    return;
+  }
+  void (async () => {
+    try {
+      // Already granted is the common case after the first launch, and asking
+      // again is free — but `persisted()` is cheaper and never prompts.
+      const already = (await storage.persisted?.()) ?? false;
+      persistence = already || (await storage.persist()) ? 'persisted' : 'best-effort';
+    } catch {
+      persistence = 'unavailable';
+    }
+  })();
+}
+
+/* ---------------------------------------------------------------------------
+ * Storage Buckets: considered, and the answer is no.
+ *
+ * The API splits an origin's storage into named buckets, each with its own
+ * durability, persistence and expiry, and — the part that would matter here —
+ * its own eviction. So it looks made for this app's one real asymmetry: the
+ * folder listing (`folderScores` and `folderIndexes`, some 6 MB of it) is the
+ * only thing in the database that can be rebuilt, because the files it
+ * describes are on the phone and one folder pick reads them again. Everything
+ * else — the practice history, the progress, the imported scores — exists
+ * nowhere else at all. A bucket per class would let a phone running short of
+ * space throw away the rebuildable half and keep the year of practice.
+ *
+ * It is still the wrong trade, for three reasons that do not depend on which
+ * Chrome the phone is running:
+ *
+ *   1. **A bucket is a separate IndexedDB namespace.** `bucket.indexedDB`
+ *      opens a *different* database from `indexedDB`, with its own version
+ *      ladder, its own upgrades and its own `blocked` path. The change this
+ *      file has just been through exists because one blocked open left the app
+ *      shell unmounted; doubling the number of connections that can block, to
+ *      protect 6 MB that a folder pick rebuilds, is paying in the currency
+ *      that has already cost the most.
+ *   2. **The line is already drawn, and drawn for free.** `STORE_NAMES` below
+ *      leaves the folder stores out of the backup for exactly the reason a
+ *      bucket would be created: they are rebuildable. Eviction and export want
+ *      the same answer, and one list gives it.
+ *   3. **`persist()` makes the question moot in the case that matters.** An
+ *      installed PWA is expected to be granted persistence, and a persisted
+ *      origin is not evicted — so there is nothing to prioritise. When it is
+ *      *not* granted, the browser evicts the whole origin rather than choosing
+ *      within it, and a bucket would then be the difference between losing the
+ *      listing and losing everything. That is the case worth revisiting, and
+ *      the storage report now says when the app is in it (Settings →
+ *      Content: "Storage is best-effort…").
+ *
+ * Revisit when both halves are true on the phone: `navigator.storageBuckets`
+ * exists there, *and* the report says best-effort. Until then this is a
+ * mechanism with no risk to answer.
+ * ------------------------------------------------------------------------- */
 
 /**
  * Every store name, in the order an export writes them.
  *
- * `folderLibraries` is deliberately absent. It is a 6 MB listing of files that
- * are on the phone anyway, rebuilt by pointing at the folder again — putting
- * it in the backup would multiply the size of the one file that holds a year
- * of practice, to save a single tap.
+ * `folderLibraries` is deliberately absent, and so are `folderScores` and
+ * `folderIndexes` for the same reason. Between them they are a 6 MB listing of
+ * files that are on the phone anyway, rebuilt by pointing at the folder again
+ * — putting it in the backup would multiply the size of the one file that
+ * holds a year of practice, to save a single tap.
  */
 export const STORE_NAMES = [
   'settings',
@@ -369,4 +744,6 @@ export type StoreName = (typeof STORE_NAMES)[number];
 /** Test hook: forgets the cached handle so a fresh database is opened. */
 export function resetDatabaseForTest(): void {
   dbPromise = null;
+  block = null;
+  persistence = null;
 }

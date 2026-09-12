@@ -7,6 +7,7 @@
  * screen exists — a screen module in the entry bundle would drag the whole of
  * Settings into the first parse.
  */
+import { databaseBlock, persistenceState, type DatabaseBlock, type PersistenceState } from '../data/db';
 import { importSummaries } from '../data/importStore';
 import { MAX_SESSIONS, sessionCount } from '../data/progressStore';
 
@@ -47,6 +48,50 @@ export interface StorageBreakdown {
    */
   sessions: number;
   sessionCap: number;
+  /**
+   * Whether the browser has promised not to throw this app's storage away.
+   *
+   * The one number on this screen that is not about size. Everything the app
+   * holds — a year of practice, the progress, the imported scores — is local
+   * and has no copy anywhere, and IndexedDB starts in best-effort mode, which
+   * means a device running short of space may evict the lot. `data/db.ts` asks
+   * for persistence on the first open; this is the answer, and it belongs
+   * beside the usage figure because that is the screen the owner opens when
+   * storage is tight, which is exactly when eviction happens.
+   */
+  persisted: PersistenceState;
+  /**
+   * Another copy of the app holding the database at an older version.
+   *
+   * `null` in every ordinary case. When it is not, the app is running on
+   * memory alone — nothing is being saved — and the cure is to close the other
+   * tab or restart the app, which nobody can guess at without being told.
+   */
+  blocked: DatabaseBlock | null;
+}
+
+/**
+ * One sentence about whether what the app holds is safe, or nothing.
+ *
+ * Here rather than on the two screens that print the breakdown, so they do not
+ * grow two wordings of the same fact.
+ */
+export function durabilitySentence(breakdown: StorageBreakdown): string | null {
+  if (breakdown.blocked) {
+    return breakdown.blocked.gaveUp
+      ? 'Another copy of this app is open and holding the database at an older version — nothing is being saved. Close the other tab, or restart the app.'
+      : 'Waiting for another copy of this app to let go of the database.';
+  }
+  switch (breakdown.persisted) {
+    case 'persisted':
+      return 'Storage is persistent — the browser will not clear it to make room.';
+    case 'best-effort':
+      return 'Storage is best-effort: the browser may clear it if this device runs low on space. Installing the app makes it persistent.';
+    case 'unavailable':
+      return 'This browser will not say whether it may clear the app’s storage.';
+    default:
+      return null;
+  }
 }
 
 export function formatBytes(bytes: number): string {
@@ -88,5 +133,7 @@ export async function measureStorage(): Promise<StorageBreakdown> {
     importBytes,
     sessions,
     sessionCap: MAX_SESSIONS,
+    persisted: persistenceState(),
+    blocked: databaseBlock(),
   };
 }

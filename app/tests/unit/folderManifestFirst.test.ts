@@ -33,6 +33,7 @@ import {
   pickFolder,
   readFolderHandle,
   rescanFolder,
+  allFolderScores,
   savedFolders,
   type FolderProgress,
 } from '../../src/data/folderLibrary';
@@ -309,7 +310,10 @@ describe('what the manifest cannot see', () => {
     // Kept, not spent on one message: the row is out of the stored listing, so
     // the next launch does not offer it again.
     const [saved] = await savedFolders();
-    expect(saved?.scores.map((r) => r.file)).toEqual(['00/Qm0.mxl']);
+    expect(saved?.count).toBe(1);
+    // Marked rather than deleted, so the record is still there to come back —
+    // what the listing offers is what the index holds, and that is the one row.
+    expect((await allFolderScores(id)).map((r) => r.file)).toEqual(['00/Qm0.mxl']);
     // And the row that is really there still adds.
     await addFromFolder(id, library.scores.find((r) => r.title === 'Still here')!);
   });
@@ -354,8 +358,9 @@ describe('the walk survives a folder of 37,261 files', () => {
     // app, which looks the same from here — threw away every file the walk had
     // reached, so pressing it cost the whole run.
     expect(saved?.listedFrom).toBe('partial');
-    expect(saved?.scores.length).toBeGreaterThan(0);
-    expect(saved?.scores.length).toBeLessThan(40);
+    expect(saved?.count).toBeGreaterThan(0);
+    expect(saved?.count).toBeLessThan(40);
+    expect((await allFolderScores(id)).length).toBe(saved?.count);
     expect(saved?.pending.length).toBeGreaterThan(0);
     expect(saved?.pending.length).toBeLessThan(4);
   });
@@ -373,7 +378,7 @@ describe('the walk survives a folder of 37,261 files', () => {
       }),
     ).rejects.toBeInstanceOf(FolderCancelled);
     const [stopped] = await savedFolders();
-    const already = stopped?.scores.length ?? 0;
+    const already = stopped?.count ?? 0;
     const left = stopped?.pending ?? [];
     tally.listed.length = 0;
 

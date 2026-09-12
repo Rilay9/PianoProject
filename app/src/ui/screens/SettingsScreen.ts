@@ -28,6 +28,7 @@ import { forgetCachedSkills } from '../../data/skillsStore';
 import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import {
+  durabilitySentence,
   formatBytes,
   isOfflineOnly,
   measureStorage,
@@ -400,8 +401,25 @@ export function SettingsScreen(router: Router): HTMLElement {
   // --- Content -------------------------------------------------------------
   const content = group('Content');
   const contentStatus = el('p.muted', { id: 'settings-storage', text: 'Measuring…' });
+  /**
+   * Whether what the app holds is safe from being cleared — the one line on
+   * this screen that is not about size.
+   *
+   * Everything the app holds is local and has no copy anywhere, and IndexedDB
+   * starts in best-effort mode: a device short of space is free to throw the
+   * whole origin away. `data/db.ts` asks for persistence on the first open;
+   * this is where the answer is said, beside the usage figure, because this is
+   * the screen the owner opens when storage is tight — which is exactly when
+   * eviction happens. It also carries the other thing nobody could guess at:
+   * that another copy of the app is holding the database open at an older
+   * version, so nothing at all is being saved.
+   *
+   * Hidden rather than blank while the question is still out, so the screen
+   * does not reserve a line for a sentence that may never come.
+   */
+  const durability = el('p.muted', { id: 'settings-durability', hidden: true });
   const trackRow = el('div.filter-row', { id: 'settings-tracks' });
-  content.append(trackRow, contentStatus);
+  content.append(trackRow, contentStatus, durability);
 
   // The chips are shared with the setup tour (`ui/trackChips`): the
   // curriculum's tracks, in its order, only those the library can offer
@@ -616,6 +634,14 @@ export function SettingsScreen(router: Router): HTMLElement {
       `${formatBytes(breakdown.usageBytes)} used of ${formatBytes(breakdown.quotaBytes)} available · ` +
       `${String(breakdown.precached)} files cached · ` +
       `${String(breakdown.imports)} of your own scores (${formatBytes(breakdown.importBytes)})`;
+    // One wording, in `util/storageReport`, so the two screens that print the
+    // breakdown cannot grow two answers to the same question.
+    const said = durabilitySentence(breakdown);
+    durability.textContent = said ?? '';
+    durability.hidden = said === null;
+    // An older copy of the app holding the database shut is not a note about
+    // storage size, it is the app not saving anything.
+    durability.classList.toggle('status--error', breakdown.blocked?.gaveUp === true);
   }
 
   void measureStorage().then(showStorage).catch(() => {

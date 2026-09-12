@@ -245,10 +245,62 @@ IndexedDB stores (via `idb`):
 | `micCalibration` | deviceId | per-pitch gain/inharmonicity table, latency ms, noise floor |
 | `skills` | conceptId | self-assessed / measured skill state for the Skills review screen |
 | `levelOverrides` | itemId | the owner's own difficulty number for one item, which wins over the catalog's everywhere (replan §1.4) |
-| `folderLibraries` | folder name | the listing of a folder of scores on the phone: one row per file, with the title, composer and estimated level from the folder's own `library.json` (`04` §4b). The *files* are not stored — a picked folder is lent for one visit — so this is what makes browsing work with nothing plugged in. Deliberately **not** in the backup: 6 MB of listing, rebuilt by picking the folder again. May also hold a `handle` — a `FileSystemDirectoryHandle`, when the browser has one and the `folderHandles` setting is on (P19) — which turns "pick the folder again" into an Allow tap. |
+| `folderLibraries` | folder name | the *folder*, not its contents: when it was picked, what its `library.json` said it was, how many listable scores it holds, how the listing was made (`manifest` / `walk` / `partial`), what an interrupted walk still owes, and the handful of paths found missing since the index was last built. May also hold a `handle` — a `FileSystemDirectoryHandle`, when the browser has one and the `folderHandles` setting is on (P19) — which turns "pick the folder again" into an Allow tap. Small on purpose: this is what the browse screen reads on every visit. |
+| `folderScores` | `[folder, file]` | one score in one folder, one record each: title, composer, estimated level, bars, rating, plus the folded title the `byTitle` index is built on and a `missingAt` stamp when the file behind it has gone. Indexed `byTitle` on `[folder, sort]`, which is what makes the A-to-Z rail a key-range question rather than a walk of the listing. The *files* are not stored — a picked folder is lent for one visit — so these rows are what make browsing work with nothing plugged in. Fetched by key, for the page about to be drawn. |
+| `folderIndexes` | folder name | one compact record per folder holding the parallel arrays the browse screen filters over — path, folded haystack, letter, level, style id, status id, rated flag, and the tally of placeholder titles. About 2 MB for the owner's 37,261 against the 40-odd the full rows cost, and **opening the screen reads this and not the rows**. Rebuilt whole by a scan; deliberately untouched by a one-row change. |
 | `books` | id | a book the owner owns on paper: title, and the pieces in it with their page numbers and the rungs they are options of (replan §5.1). Typed in by hand; nothing is scanned. |
 
-**`DB_VERSION` is 5.** Every upgrade is keyed on `oldVersion` and creates only the stores that version lacked, so a phone that skipped a version arrives correct.
+**`DB_VERSION` is 6.** Every upgrade is keyed on `oldVersion` and creates only the stores that
+version lacked, so a phone that skipped a version arrives correct.
+
+**The folder three, and why the split.** Every score in a folder used to be an element of one
+`folderLibraries` record, and IndexedDB can read or write only whole records — so every
+operation cost the whole listing. Opening the browse screen deserialized all 37,261 objects to
+draw sixty; adding one piece rewrote all of them; a rescan replaced the listing wholesale and
+took the app's own knowledge of each row with it. One record per score, plus a small index
+record per folder, makes each of those proportional to what is actually wanted. A rescan
+**diffs**: known paths keep their identity — which is what `ImportRow.origin` points at, so an
+added piece stays added and its `levelOverrides` row stays attached — new paths are inserted,
+and rows whose file has gone are *marked* rather than deleted, so a card that was out does not
+destroy a listing and a file that comes back comes back as itself.
+
+**Version 6 adds the stores and moves nothing.** A `versionchange` transaction holds every
+other connection to the database shut while it runs, and rewriting 37,261 records inside one
+at start-up is precisely the blocked open that left the app shell unmounted after an update.
+`folderLibrary.ts`'s `folderIndex()` splits a pre-6 row the first time that folder is opened
+instead — on the one screen that wants the listing, once, with nothing else waiting on it.
+
+**All three are deliberately out of the backup** (`STORE_NAMES`): between them they are 6 MB
+of listing describing files that are on the phone anyway, rebuilt by pointing at the folder
+again. Putting them in would multiply the size of the one file that holds a year of practice,
+to save a single tap.
+
+**A blocked open is bounded, and both sides are handled.** `blocked` means another copy of the
+app holds the database at an older version; the spec fires neither `success` nor `error` while
+it does, so the open promise simply never settled and `boot.ts` waited for ever — a launch
+with no tab bar at all. Now the page in the way closes its own connection (`blocking`), which
+cures it outright whenever both pages run this code, and a page held up by an older build
+falls back to memory after `BLOCKED_GIVE_UP_MS` rather than hanging. The real open is left
+running, so the database comes back without a reload. `terminated` forgets a connection the
+browser closed underneath us.
+
+**`navigator.storage.persist()` is asked on the first open, and the answer is on screen.**
+Everything the app holds is local and has no copy anywhere, and IndexedDB starts in
+best-effort mode — a device short of space may evict the origin. Chrome grants persistence
+silently for an installed PWA, so on the phone this should be a promotion with no prompt.
+`persistenceState()` carries the answer into `util/storageReport.ts`, and Settings → Content
+prints it under the usage figure (`#settings-durability`) along with the blocked-database
+sentence, because that is the screen the owner opens when storage is tight.
+
+**Storage Buckets: considered, no.** The API would let the rebuildable half of the database
+(the folder listing) be evicted ahead of the irreplaceable half, which is the one real
+asymmetry here. It is still the wrong trade: a bucket is a separate IndexedDB namespace with
+its own version ladder and its own `blocked` path, so it doubles what can block in order to
+protect 6 MB that a folder pick rebuilds; `STORE_NAMES` already draws the same line for free;
+and a persisted origin is not evicted at all, so with `persist()` granted there is nothing to
+prioritise. Revisit when `navigator.storageBuckets` exists on the phone *and* the report says
+best-effort — a mechanism and a real risk, rather than one without the other. The reasoning is
+kept beside the code, in `data/db.ts`.
 
 **`cuts` shape.** `Record<pageIndex, number[]>`, a flat sorted list of an *even* number of
 **fractions of the page height**: `[top0, bottom0, top1, bottom1, …]`. Fractions rather than

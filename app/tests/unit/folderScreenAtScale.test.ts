@@ -58,6 +58,23 @@ async function saveListing(id: string, addedAt: string, count: number): Promise<
 
 const router = { navigate: vi.fn() } as unknown as Router;
 
+/**
+ * jsdom has no layout and so no `scrollIntoView`, and the rail calls it
+ * unguarded on the row a letter lands on (`ui/alphaRail.ts`).
+ *
+ * In a browser the method is always there, so this makes jsdom behave like the
+ * thing being tested rather than papering over a fault: without it every jump
+ * in this file throws inside jsdom's event dispatch, which jsdom reports as an
+ * uncaught exception rather than failing the assertion — a noise that has been
+ * in this suite for as long as the rail has, and that hides a real throw if one
+ * ever turns up here.
+ */
+if (typeof Element.prototype.scrollIntoView !== 'function') {
+  Element.prototype.scrollIntoView = function scrollIntoView(): void {
+    /* no layout, nothing to scroll */
+  };
+}
+
 async function mount(): Promise<HTMLElement> {
   const section = FolderScreen(router);
   document.body.replaceChildren(section);
@@ -90,6 +107,12 @@ describe('the letter rail over a folder of thousands', () => {
     expect(letter(section, 'A').dataset.empty).toBe('false');
     letter(section, 'S').click();
 
+    // The rows come out of the database now — the screen holds the index and
+    // fetches the page it is about to draw — so a jump lands a turn later.
+    await vi.waitFor(() => {
+      const first = section.querySelector('#folder-list .list-row .list-row__title');
+      expect(first?.textContent?.startsWith('Suo')).toBe(true);
+    });
     const titles = [...section.querySelectorAll('#folder-list .list-row')].map(
       (row) => row.querySelector('.list-row__title')?.textContent ?? '',
     );

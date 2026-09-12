@@ -14,11 +14,13 @@ import {
   FolderError,
   MANIFEST_NAME,
   addFromFolder,
+  buildFolderIndex,
   connectForTest,
   disconnectForTest,
   folderNameOf,
   isScoreFile,
   looksUnnamed,
+  folderIndex,
   parseManifest,
   readFolder,
   relativePath,
@@ -31,7 +33,7 @@ import {
   looksLikeUnnamedArchive,
   rememberSentence,
 } from '../../src/ui/screens/FolderScreen';
-import type { FolderScore } from '../../src/data/db';
+import { openDatabase, type FolderScore } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 
 const MUSICXML = `<?xml version="1.0"?>
@@ -283,40 +285,64 @@ describe('which folder rows are already in the library (review C4)', () => {
     museScore: '',
   });
 
-  const library = {
-    id: 'pianopath-library',
-    scores: [
-      score('a/one.mxl', 'The Entertainer'),
-      score('b/two.mxl', 'The Entertainer'),
-      score('c/three.mxl', 'Maple Leaf Rag'),
-    ],
-  };
+  const ID = 'pianopath-library';
+  const SCORES = [
+    score('a/one.mxl', 'The Entertainer'),
+    score('b/two.mxl', 'The Entertainer'),
+    score('c/three.mxl', 'Maple Leaf Rag'),
+  ];
 
-  it('greys out only the edition that was added', () => {
+  /**
+   * A listing in the database, because the title fallback is a lookup now.
+   *
+   * Matching an import that arrived by share used to mean walking every row of
+   * the listing in memory. It is a seek on the `byTitle` index instead, so
+   * these assertions need the rows actually stored — which also covers the one
+   * thing the pure function could not: that the fold the writer puts into
+   * `sort` and the fold the reader looks up with are the same fold.
+   */
+  beforeEach(async () => {
+    useFakeIndexedDb();
+    const db = await openDatabase();
+    await db?.put('folderLibraries', {
+      id: ID,
+      addedAt: '2026-09-01T00:00:00.000Z',
+      source: null,
+      scores: SCORES,
+    });
+    // Splits a row in the shape an older build wrote into records and an index.
+    await folderIndex(ID);
+  });
+
+  it('greys out only the edition that was added', async () => {
     // The bug: PDMX has six files called The Entertainer, and matching on the
     // title meant adding one made the other five unaddable.
-    const added = addedFiles(
-      [{ title: 'The Entertainer', origin: { folder: 'pianopath-library', file: 'a/one.mxl' } }],
-      library,
+    const added = await addedFiles(
+      [{ title: 'The Entertainer', origin: { folder: ID, file: 'a/one.mxl' } }],
+      ID,
     );
     expect([...added]).toEqual(['a/one.mxl']);
+    clearFakeIndexedDb();
   });
 
-  it('still matches by title for an import that came from a share or the picker', () => {
-    const added = addedFiles([{ title: 'the entertainer' }], library);
+  it('still matches by title for an import that came from a share or the picker', async () => {
+    const added = await addedFiles([{ title: 'the entertainer' }], ID);
     expect([...added].sort()).toEqual(['a/one.mxl', 'b/two.mxl']);
+    clearFakeIndexedDb();
   });
 
-  it('ignores an origin from a different folder', () => {
-    const added = addedFiles(
+  it('ignores an origin from a different folder', async () => {
+    const added = await addedFiles(
       [{ title: 'Something else', origin: { folder: 'another-folder', file: 'a/one.mxl' } }],
-      library,
+      ID,
     );
     expect([...added]).toEqual([]);
+    clearFakeIndexedDb();
   });
 
-  it('has nothing to say about an empty library', () => {
-    expect([...addedFiles([], library)]).toEqual([]);
+  it('has nothing to say about an empty library', async () => {
+    expect([...(await addedFiles([], ID))]).toEqual([]);
+    clearFakeIndexedDb();
   });
 
   /**
@@ -327,13 +353,13 @@ describe('which folder rows are already in the library (review C4)', () => {
    * rule that greys the row out, or the screen offers Assign on a row it also
    * calls unadded, or refuses it on a row it calls added.
    */
-  it('says which import each added row became', () => {
+  it('says which import each added row became', async () => {
     const fromFolder = {
       title: 'The Entertainer',
-      origin: { folder: 'pianopath-library', file: 'a/one.mxl' },
+      origin: { folder: ID, file: 'a/one.mxl' },
     };
     const shared = { title: 'Maple Leaf Rag' };
-    const index = importsByFolderFile([fromFolder, shared], library);
+    const index = await importsByFolderFile([fromFolder, shared], ID);
     expect(index.get('a/one.mxl')).toBe(fromFolder);
     // The other edition of the same title is not this import, and must stay
     // addable — the C4 bug, seen from the other side.
@@ -342,14 +368,18 @@ describe('which folder rows are already in the library (review C4)', () => {
     // there is; it is still the row the assign sheet should open.
     expect(index.get('c/three.mxl')).toBe(shared);
     // And the two answers agree, always.
-    expect([...index.keys()].sort()).toEqual([...addedFiles([fromFolder, shared], library)].sort());
+    expect([...index.keys()].sort()).toEqual(
+      [...(await addedFiles([fromFolder, shared], ID))].sort(),
+    );
+    clearFakeIndexedDb();
   });
 
-  it('will not guess between two origin-less imports of the same title', () => {
+  it('will not guess between two origin-less imports of the same title', async () => {
     const first = { title: 'Maple Leaf Rag' };
     const second = { title: 'maple leaf rag' };
     // The first wins rather than the last, and only one row is claimed.
-    expect(importsByFolderFile([first, second], library).get('c/three.mxl')).toBe(first);
+    expect((await importsByFolderFile([first, second], ID)).get('c/three.mxl')).toBe(first);
+    clearFakeIndexedDb();
   });
 });
 
@@ -534,7 +564,10 @@ describe('a stale listing looks like the archive with no library.json (looksLike
       garbled: false,
       museScore: '',
     }));
-    expect(looksLikeUnnamedArchive(scores)).toBe(true);
+    // The tally is counted when the listing is indexed, not by the screen
+    // walking 37,261 titles to draw a notice that is almost always hidden.
+    const index = buildFolderIndex('mine', scores);
+    expect(looksLikeUnnamedArchive(index.unnamed, index.files.length)).toBe(true);
   });
 
   it('is false for a folder of the owner\'s own scores with a stray untitled one', () => {
@@ -553,10 +586,11 @@ describe('a stale listing looks like the archive with no library.json (looksLike
       garbled: false,
       museScore: '',
     }));
-    expect(looksLikeUnnamedArchive(scores)).toBe(false);
+    const index = buildFolderIndex('mine', scores);
+    expect(looksLikeUnnamedArchive(index.unnamed, index.files.length)).toBe(false);
   });
 
   it('has nothing to say about an empty listing', () => {
-    expect(looksLikeUnnamedArchive([])).toBe(false);
+    expect(looksLikeUnnamedArchive(0, 0)).toBe(false);
   });
 });

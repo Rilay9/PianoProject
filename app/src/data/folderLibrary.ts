@@ -47,7 +47,14 @@
  * out about when it is tapped — at which point that row is taken out of the
  * listing rather than left to fail again.
  */
-import { openDatabase, type FolderLibraryRow, type FolderScore } from './db';
+import {
+  openDatabase,
+  type FolderIndexRow,
+  type FolderLibraryRow,
+  type FolderListing,
+  type FolderScore,
+  type FolderScoreRow,
+} from './db';
 import { addImport, updateImport, ImportError } from './importStore';
 import { walkFolder, type WalkMessage, type WalkRequest } from './folderWalk.worker';
 
@@ -143,27 +150,32 @@ export type FolderRememberNote = 'not-remembered' | 'not-stored' | 'permission' 
  *     walked, including files no manifest mentions.
  *   - `partial` — a walk that was cancelled or interrupted. Browsable, and
  *     honest that there is more: `pending` says how much.
+ *
+ * Re-exported from `db.ts`, which is where the stored row that carries it is
+ * described; this is the name the screens have always imported.
  */
-export type FolderListing = 'manifest' | 'walk' | 'partial';
+export type { FolderListing };
 
 /**
- * The stored row, plus the two fields `db.ts` does not describe.
+ * A folder the app has a listing for — the folder, not the listing.
  *
- * `db.ts` is not this change's to edit (see the report), and both fields are
- * optional, so an older row reads as a completed walk — which is what every
- * row written before this was.
+ * **The rows are deliberately not in here.** This is what `savedFolders()`
+ * hands back on every visit to the browse screen, and it used to carry all
+ * 37,261 `FolderScore`s with it: some forty megabytes of structured clone,
+ * materialised in full, to draw a screenful and a count. The screen now reads
+ * `folderIndex()` for the arrays it filters over and `folderScoresAt()` for
+ * the sixty rows it is about to draw, so nothing on the common path loads the
+ * listing at all.
+ *
+ * A *read* — picking a folder, rescanning one — does produce every row, because
+ * it just built them, and says so with `FolderReading` below.
  */
-type StoredFolderRow = FolderLibraryRow & {
-  listedFrom?: FolderListing;
-  /** Top-level folders still to index, when the walk did not finish. */
-  pending?: string[];
-};
-
 export interface FolderLibrary {
   id: string;
   addedAt: string;
   source: string | null;
-  scores: FolderScore[];
+  /** Listable scores in the folder. The number the screen prints. */
+  count: number;
   /** True while the folder is picked and its files can actually be read. */
   connected: boolean;
   /** How this listing was built, and so what it cannot know. */
@@ -188,6 +200,17 @@ export interface FolderLibrary {
   canOpen: boolean;
   /** What to say about remembering this folder, if anything. */
   rememberNote: FolderRememberNote;
+}
+
+/**
+ * What a read of a folder produces: the folder, and every row it just built.
+ *
+ * The rows are here because they are already in hand — the manifest was parsed
+ * into them a moment ago, or the walk found them — and throwing them away only
+ * to read them back would be the same mistake in the other direction.
+ */
+export interface FolderReading extends FolderLibrary {
+  scores: FolderScore[];
 }
 
 /**
@@ -262,6 +285,40 @@ export function folderNameOf(files: readonly File[]): string {
     if (path?.includes('/')) return path.slice(0, path.indexOf('/'));
   }
   return 'Scores';
+}
+
+/**
+ * Accents off and lower-cased, so "faure" finds "Fauré".
+ *
+ * Here rather than on the screen because the *stored* index is folded — both
+ * the haystack the search box matches and the `byTitle` index the A-to-Z rail
+ * seeks on — and a fold that differed between the writer and the reader would
+ * be an index that silently matched nothing.
+ */
+export function fold(text: string): string {
+  return text
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+}
+
+/** Everything before A and after Z, which in a folder is mostly numbers. */
+export const OTHER_LETTER = '#';
+
+/**
+ * Which letter a title files under. `#` for digits, punctuation and the rest.
+ *
+ * The same rule as `ui/alphaRail.ts`'s own `letterFor`, and it has to stay the
+ * same rule: the rail reads the drawn rows with its copy and reads which
+ * letters the *listing* has with this one, so a divergence would dim a letter
+ * the list has something under. `folderStorage.test.ts` asserts the two agree,
+ * row by row, over a listing built the way a scan builds one.
+ */
+export function letterFor(title: string): string {
+  // Accents fold to their base letter, so `Étude` files under E rather than
+  // under `#` — which is where it went before, along with every Dvořák.
+  const first = title.trim().normalize('NFD').replace(/[̀-ͯ]/g, '').charAt(0).toUpperCase();
+  return first >= 'A' && first <= 'Z' ? first : OTHER_LETTER;
 }
 
 /** A filename with no metadata behind it, made readable. */
@@ -464,7 +521,7 @@ function yieldToUI(): Promise<void> {
 export async function readFolder(
   files: readonly File[],
   options: FolderReadOptions = {},
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   checkCancelled(options.signal);
   if (files.length > MAX_FOLDER_FILES) {
     throw new FolderError(
@@ -534,7 +591,7 @@ async function buildLibrary(
   manifestFile: File | null,
   manifestRoot = '',
   options: FolderReadOptions = {},
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   checkCancelled(options.signal);
   if (byPath.size === 0) {
     throw new FolderError(
@@ -568,6 +625,7 @@ async function buildLibrary(
     addedAt: new Date().toISOString(),
     source: described?.source ?? null,
     scores,
+    count: scores.length,
     connected: true,
     listedFrom: 'walk',
     pending: [],
@@ -748,7 +806,7 @@ async function manifestLibrary(
   parsed: { scores: FolderScore[]; source: string | null },
   root: string,
   options: FolderReadOptions,
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   checkCancelled(options.signal);
   const scores: FolderScore[] = [];
   const total = parsed.scores.length;
@@ -768,6 +826,7 @@ async function manifestLibrary(
     addedAt: new Date().toISOString(),
     source: parsed.source,
     scores,
+    count: scores.length,
     connected: true,
     listedFrom: 'manifest',
     pending: [],
@@ -896,7 +955,7 @@ async function walkLibrary(
   described: Described | null,
   manifestRoot: string,
   options: FolderReadOptions,
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   const seed = options.resume?.scores ?? [];
   const scores: FolderScore[] = [...seed];
   const have = new Set(scores.map((score) => score.file));
@@ -917,11 +976,12 @@ async function walkLibrary(
   // wins. One after another, oldest first.
   let saving: Promise<unknown> = Promise.resolve();
 
-  const snapshot = (listedFrom: FolderListing): FolderLibrary => ({
+  const snapshot = (listedFrom: FolderListing): FolderReading => ({
     id,
     addedAt: new Date().toISOString(),
     source: described?.source ?? null,
     scores: [...scores].sort(byTitle),
+    count: scores.length,
     connected: true,
     listedFrom,
     // Only a partial listing owes anything. A branch the resumed walk never saw
@@ -933,12 +993,29 @@ async function walkLibrary(
     rememberNote: null,
   });
 
+  /**
+   * How far into `scores` the last partial save got.
+   *
+   * `scores` is in discovery order and only ever grows — the sort happens in
+   * `snapshot`, on a copy — so this is a stable pointer at the rows that have
+   * already been written down, and a save writes the ones after it and no
+   * others. That is the difference between a walk of the archive writing
+   * thirty-seven thousand rows once and writing them sixty times over.
+   */
+  let written = 0;
+
   const save = (listedFrom: FolderListing): void => {
     savedAt = performance.now();
     const partial = snapshot(listedFrom);
-    // Whatever handle is already being kept for this folder, so a partial save
-    // during a rescan cannot quietly cost the owner the remembered folder.
-    saving = saving.then(() => saveFolder(partial, handles.get(id)));
+    const fresh = scores.slice(written);
+    written = scores.length;
+    // Chained onto whatever is already in flight: a partial save is a
+    // side effect of a message handler, and two of them overlapping would race
+    // over which index wins.
+    // Whatever handle is already being kept for this folder, so a phone that
+    // kills the app mid-walk still has something for the resumed run to walk
+    // *through* — that is the one case where nothing later can put it right.
+    saving = saving.then(() => saveProgress(partial, fresh, handles.get(id)));
   };
 
   const on = (message: WalkMessage): void => {
@@ -1052,7 +1129,7 @@ async function walkLibrary(
 export async function readFolderHandle(
   handle: DirectoryHandle,
   options: FolderReadOptions = {},
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   const id = handle.name || 'Scores';
   // The probe is a couple of round trips either way, so it is worth making even
   // when a rescan is going to walk anyway: it is what gives the walked rows
@@ -1251,7 +1328,7 @@ async function fileAt(handle: DirectoryHandle, path: string): Promise<File | nul
  */
 export async function pickFolder(
   options: { remember?: boolean } & FolderReadOptions = {},
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   const { remember, ...readOptions } = options;
   // The picker whenever the browser has one — not only when the folder is to be
   // remembered.
@@ -1320,7 +1397,7 @@ export async function pickFolder(
 export async function rescanFolder(
   id: string,
   options: { remember?: boolean; resume?: boolean } & Omit<FolderReadOptions, 'rescan' | 'resume'> = {},
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   const { remember, resume, ...readOptions } = options;
   // The permission first, and separately, because it fails for its own reasons
   // and each of them has its own cure.
@@ -1339,11 +1416,11 @@ export async function rescanFolder(
   let carry: FolderReadOptions['resume'];
   if (resume === true) {
     const db = await openDatabase();
-    const row: StoredFolderRow | undefined = await db?.get('folderLibraries', id);
+    const row = await db?.get('folderLibraries', id);
     const branches = row?.pending ?? [];
     // Nothing left to finish is not a failure and not a reason to walk the
     // whole folder by surprise: the listing is simply already complete.
-    if (branches.length > 0) carry = { branches, scores: row?.scores ?? [] };
+    if (branches.length > 0) carry = { branches, scores: await allFolderScores(id) };
   }
   const library = await readFolderHandle(handle, {
     ...readOptions,
@@ -1359,7 +1436,7 @@ export async function rescanFolder(
 async function pickFolderWithInput(
   options: FolderReadOptions = {},
   note: FolderRememberNote = null,
-): Promise<FolderLibrary> {
+): Promise<FolderReading> {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
@@ -1390,21 +1467,144 @@ async function pickFolderWithInput(
   }
 }
 
-/**
- * Writes the listing, and the handle beside it when there is one.
+/* ------------------------------------------------------------------------ *
+ * Storage.
  *
- * Returns whether the *handle* survived the write. The listing always does:
- * that is the point of the second `put`, and it is the whole safety net under
- * the remember-the-folder feature — a browser that will not structured-clone
- * a `FileSystemDirectoryHandle` must cost the owner a tap, never the folder.
+ * One record per score, keyed `[folder, file]`, with a compact per-folder
+ * index beside it — see `db.ts` for the shapes and why. Three rules run
+ * through everything below.
+ *
+ *   - **One transaction.** IndexedDB's cost is transactions, not bytes: a
+ *     thousand inserts one per transaction is a couple of seconds, and the
+ *     same thousand in one transaction is under a tenth of that. So a listing
+ *     is written in a single `readwrite` over all three stores, and the puts
+ *     inside it are queued rather than awaited one at a time.
+ *   - **Read by key range, not by cursor.** `getAllKeys` over
+ *     `[id, ''] … [id, []]` is one round trip for every path this folder
+ *     knows; stepping a cursor is one per row.
+ *   - **A one-row change writes one row.** Marking a score gone touches its
+ *     own record and the folder's small row, and leaves the index alone —
+ *     which is what `FolderLibraryRow.missing` is for.
+ * ------------------------------------------------------------------------ */
+
+/** Read and written together, so they cannot disagree after a crash. */
+const LISTING_STORES = ['folderLibraries', 'folderScores', 'folderIndexes'] as const;
+
+/**
+ * Everything this folder has a record for, listable or marked gone.
+ *
+ * `[]` as the upper bound rather than `'￿'`: IndexedDB sorts arrays after
+ * every string, so this is the only bound that is genuinely above all of them
+ * — a path containing an astral character would sit above `'￿'`.
  */
-async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<boolean> {
-  const db = await openDatabase();
-  const row: StoredFolderRow = {
+function rangeFor(id: string): IDBKeyRange {
+  return IDBKeyRange.bound([id, ''], [id, []]);
+}
+
+function toRow(folder: string, score: FolderScore): FolderScoreRow {
+  return { ...score, folder, sort: fold(score.title || score.file) };
+}
+
+/**
+ * How many puts are queued before one is awaited.
+ *
+ * Not a batch — every put in the loop is part of the same transaction either
+ * way, which is where the speed comes from. This only bounds how many pending
+ * promises are alive at once, so writing the owner's 37,261 does not also hold
+ * 37,261 promise objects.
+ */
+const QUEUE_DEPTH = 500;
+
+async function putScores(
+  put: (row: FolderScoreRow) => Promise<unknown>,
+  id: string,
+  scores: readonly FolderScore[],
+): Promise<void> {
+  let queued: Promise<unknown>[] = [];
+  for (const score of scores) {
+    queued.push(put(toRow(id, score)));
+    if (queued.length >= QUEUE_DEPTH) {
+      await Promise.all(queued);
+      queued = [];
+    }
+  }
+  await Promise.all(queued);
+}
+
+/** A dictionary id for a low-cardinality column, growing the dictionary. */
+function idFor(names: string[], ids: Map<string, number>, value: string): number {
+  const found = ids.get(value);
+  if (found !== undefined) return found;
+  // 65,535 distinct styles is not a folder, it is a corrupt manifest; past
+  // that everything files under the first value rather than the column
+  // silently wrapping round to the wrong one.
+  if (names.length > 0xffff) return 0;
+  const next = names.length;
+  names.push(value);
+  ids.set(value, next);
+  return next;
+}
+
+/**
+ * The parallel arrays the browse screen filters over, built once per scan.
+ *
+ * About two megabytes for the owner's 37,261 against the forty-odd the full
+ * rows cost, and that ratio is the whole point: this is what opening the
+ * screen reads, and the rows are read only for what is about to be drawn.
+ */
+export function buildFolderIndex(id: string, scores: readonly FolderScore[]): FolderIndexRow {
+  const size = scores.length;
+  const files = new Array<string>(size);
+  const haystacks = new Array<string>(size);
+  const letters = new Array<string>(size);
+  const levels = new Float64Array(size);
+  const styles = new Uint16Array(size);
+  const statuses = new Uint16Array(size);
+  const rated = new Uint8Array(size);
+  const styleNames: string[] = [];
+  const styleIds = new Map<string, number>();
+  const statusNames: string[] = [];
+  const statusIds = new Map<string, number>();
+  let unnamed = 0;
+  for (let at = 0; at < size; at += 1) {
+    const score = scores[at];
+    if (!score) continue;
+    files[at] = score.file;
+    haystacks[at] = fold(`${score.title} ${score.composer}`);
+    letters[at] = letterFor(score.title || score.file);
+    // `NaN` rather than 0: a score with no level is not a score at level 0,
+    // and a level filter must not hide it (see `matchesFilters`).
+    levels[at] = score.level ?? Number.NaN;
+    styles[at] = idFor(styleNames, styleIds, score.style);
+    statuses[at] = idFor(statusNames, statusIds, score.status);
+    rated[at] = score.rating >= 4 && score.ratings >= 5 ? 1 : 0;
+    if (looksUnnamed(score.title)) unnamed += 1;
+  }
+  return {
+    id,
+    files,
+    haystacks,
+    // One string of `size` characters rather than `size` one-character
+    // strings: `letters[i]` reads the same either way and this is a fortieth
+    // of the clone.
+    letters: letters.join(''),
+    levels,
+    styleNames,
+    styles,
+    statusNames,
+    statuses,
+    rated,
+    unnamed,
+  };
+}
+
+/** The folder's own small row, without the handle, which is written apart. */
+function metaOf(library: FolderLibrary, count: number, missing: string[]): FolderLibraryRow {
+  return {
     id: library.id,
     addedAt: library.addedAt,
     source: library.source,
-    scores: library.scores,
+    count,
     // Where the listing came from, and what it still owes. Stored rather than
     // worked out again on the next launch, because neither is knowable from the
     // rows: a listing of 37,261 titles looks the same whether it was read out
@@ -1412,25 +1612,142 @@ async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<boo
     // what the screen needs to tell the owner what the listing cannot see.
     listedFrom: library.listedFrom,
     ...(library.pending.length === 0 ? {} : { pending: library.pending }),
+    ...(missing.length === 0 ? {} : { missing }),
   };
-  if (handle !== undefined) {
-    handles.set(library.id, handle);
-    // Just came back from the picker, so permission is granted by definition.
-    // Recording it here is what lets a folder picked this session be reopened
-    // after a reload without another trip through the picker.
-    opened.set(library.id, handle as DirectoryHandle);
+}
+
+/**
+ * The handle, in a transaction of its own.
+ *
+ * Apart from the listing deliberately. A browser that will not
+ * structured-clone a `FileSystemDirectoryHandle` throws, and when the handle
+ * rode along with the rows that throw aborted the write of the whole listing
+ * — so the fallback had to write all of it a second time. Separate, a refused
+ * handle costs one small failed put and nothing else.
+ */
+async function putHandle(id: string, handle: unknown): Promise<boolean> {
+  const db = await openDatabase();
+  if (!db) return false;
+  try {
+    const row = await db.get('folderLibraries', id);
+    if (!row) return false;
+    await db.put('folderLibraries', { ...row, handle });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Remembers a handle for this session, whatever the database does with it. */
+function holdHandle(id: string, handle: unknown): void {
+  handles.set(id, handle);
+  // Just came back from the picker, so permission is granted by definition.
+  // Recording it here is what lets a folder picked this session be reopened
+  // after a reload without another trip through the picker.
+  opened.set(id, handle as DirectoryHandle);
+}
+
+/**
+ * Writes a finished listing — **diffing it**, not replacing it.
+ *
+ * A rescan used to hand the whole new array to one `put`, which meant every
+ * row was rewritten whether or not anything about it had changed, and a row
+ * whose file had gone simply vanished along with anything the app had learnt
+ * about it. Now: paths that are still there are written with whatever the scan
+ * knows (which clears any `missingAt` on them), paths the scan did not see are
+ * *marked* rather than deleted, and the index is rebuilt from what is listable.
+ *
+ * Returns whether the *handle* survived. The listing always does.
+ */
+async function saveFolder(library: FolderReading, handle?: unknown): Promise<boolean> {
+  if (handle !== undefined) holdHandle(library.id, handle);
+  const db = await openDatabase();
+  if (!db) {
+    notify();
+    return false;
+  }
+  const id = library.id;
+  const scores = library.scores;
+  try {
+    const tx = db.transaction(LISTING_STORES, 'readwrite');
+    const rows = tx.objectStore('folderScores');
+    // One round trip for every path this folder knows — keys only, so it is
+    // the paths and not the forty megabytes hanging off them.
+    const known = new Set((await rows.getAllKeys(rangeFor(id))).map(([, file]) => file));
+    const seen = new Set(scores.map((score) => score.file));
+    await putScores((row) => rows.put(row), id, scores);
+    const at = new Date().toISOString();
+    for (const file of known) {
+      if (seen.has(file)) continue;
+      const old = await rows.get([id, file]);
+      // Marked, not deleted. A rescan run with the card out would otherwise
+      // throw the listing away, and a file that comes back should come back as
+      // the row it was.
+      if (old && old.missingAt === undefined) await rows.put({ ...old, missingAt: at });
+    }
+    await tx.objectStore('folderIndexes').put(buildFolderIndex(id, scores));
+    const folders = tx.objectStore('folderLibraries');
+    const existing = await folders.get(id);
+    await folders.put({
+      ...metaOf(library, scores.length, []),
+      // The handle is written apart, so carrying it across is this write's job.
+      ...(existing?.handle === undefined ? {} : { handle: existing.handle }),
+    });
+    await tx.done;
+  } catch {
+    // Storage refused the listing. The session still works from memory, and
+    // saying nothing here is what the app has always done with a failed write.
+    notify();
+    return false;
+  }
+  const stored = handle === undefined ? false : await putHandle(id, handle);
+  notify();
+  return stored;
+}
+
+/**
+ * Writes down what an unfinished walk has found so far.
+ *
+ * Only the rows it has not written before, which is the whole difference: a
+ * walk of the owner's folder saves every few seconds, and each save used to
+ * clone the entire growing listing — a hundred-odd megabytes written over one
+ * walk to record thirty-seven thousand rows once. Nothing is marked missing
+ * here, because a folder that has not been walked yet is not a folder whose
+ * files have gone.
+ */
+async function saveProgress(
+  library: FolderReading,
+  fresh: readonly FolderScore[],
+  handle?: unknown,
+): Promise<void> {
+  const db = await openDatabase();
+  if (!db) {
+    notify();
+    return;
   }
   try {
-    await db?.put('folderLibraries', { ...row, ...(handle === undefined ? {} : { handle }) });
-    return handle !== undefined;
+    const tx = db.transaction(LISTING_STORES, 'readwrite');
+    const rows = tx.objectStore('folderScores');
+    await putScores((row) => rows.put(row), library.id, fresh);
+    await tx.objectStore('folderIndexes').put(buildFolderIndex(library.id, library.scores));
+    const folders = tx.objectStore('folderLibraries');
+    const existing = await folders.get(library.id);
+    await folders.put({
+      ...metaOf(library, library.scores.length, existing?.missing ?? []),
+      ...(existing?.handle === undefined ? {} : { handle: existing.handle }),
+    });
+    await tx.done;
   } catch {
-    // A handle the engine will not clone must not cost the listing, which is
-    // the part that has to survive: browsing works with nothing connected.
-    await db?.put('folderLibraries', row);
-    return false;
-  } finally {
-    notify();
+    // Nothing to do about it, and a partial save that fails must not stop the
+    // walk it is a side effect of.
   }
+  // Only when it is not already down: the handle is the one thing a walk that
+  // is killed cannot rebuild, and writing it every four seconds for the rest
+  // of the walk would be a structured clone of a browser object for nothing.
+  if (handle !== undefined && !(await hasStoredHandle(library.id))) {
+    await putHandle(library.id, handle);
+  }
+  notify();
 }
 
 /**
@@ -1445,6 +1762,10 @@ async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<boo
  */
 export async function savedFolders(): Promise<FolderLibrary[]> {
   const db = await openDatabase();
+  // Small rows now — a folder's name, its date and half a dozen fields. This
+  // one call used to deserialize every score in every folder the owner had
+  // ever picked, which on the archive is some forty megabytes, before the
+  // screen had drawn anything at all.
   const rows = (await db?.getAll('folderLibraries')) ?? [];
   // `?? ''` because this decides what the screen shows: a row from some older
   // build with no date must cost the owner its place in the order, not the
@@ -1453,27 +1774,266 @@ export async function savedFolders(): Promise<FolderLibrary[]> {
   // Built field by field rather than spread: a stored row also carries the
   // handle, and a live browser object has no business travelling out of here
   // inside something a screen draws.
-  return rows.map((row) => {
-    const stored = row as StoredFolderRow;
-    return {
-      id: row.id,
-      addedAt: row.addedAt,
-      source: row.source,
-      scores: row.scores,
-      connected: folderUsable(row.id),
-      // A row written before any of this was walked, because the walk was the
-      // only way a listing was ever made.
-      listedFrom: stored.listedFrom ?? 'walk',
-      pending: stored.pending ?? [],
-      canOpen: opened.has(row.id) || handles.has(row.id) || row.handle !== undefined,
-      rememberNote: notes.get(row.id) ?? null,
-    };
-  });
+  return rows.map((row) => ({
+    id: row.id,
+    addedAt: row.addedAt,
+    source: row.source,
+    // `scores?.length` for a row an older build wrote, which still holds the
+    // whole listing inline and has not been split yet — the count has to be
+    // right before `folderIndex()` gets round to splitting it, or the screen
+    // says "0 scores" over a folder it is about to list in full.
+    count: row.count ?? row.scores?.length ?? 0,
+    connected: folderUsable(row.id),
+    // A row written before any of this was walked, because the walk was the
+    // only way a listing was ever made.
+    listedFrom: row.listedFrom ?? 'walk',
+    pending: row.pending ?? [],
+    canOpen: opened.has(row.id) || handles.has(row.id) || row.handle !== undefined,
+    rememberNote: notes.get(row.id) ?? null,
+  }));
+}
+
+/**
+ * The arrays the browse screen filters over, for one folder.
+ *
+ * This is what opening the screen reads: about two megabytes for the owner's
+ * archive, against the forty the rows cost. `null` when the folder has no
+ * listing at all.
+ */
+export type FolderIndex = Omit<FolderIndexRow, 'id'>;
+
+export async function folderIndex(id: string): Promise<FolderIndex | null> {
+  const db = await openDatabase();
+  if (!db) return null;
+  const stored = (await db.get('folderIndexes', id)) ?? (await adoptLegacyListing(id));
+  if (!stored) return null;
+  const missing = (await db.get('folderLibraries', id))?.missing ?? [];
+  return missing.length === 0 ? stored : withoutFiles(stored, new Set(missing));
+}
+
+/**
+ * Whether this folder's listing is still the old inline shape.
+ *
+ * Asked so the screen can say that the first open after an update has work to
+ * do. Two small reads and no score records: the index either exists or it does
+ * not, and a folder row that still carries `scores` is one that has never been
+ * split. Silence during that split is the fault it is there to prevent — a
+ * blank list for seconds, indistinguishable from the screen being broken.
+ */
+export async function needsAdopting(id: string): Promise<boolean> {
+  const db = await openDatabase();
+  if (!db) return false;
+  if (await db.get('folderIndexes', id)) return false;
+  const row = await db.get('folderLibraries', id);
+  return (row?.scores?.length ?? 0) > 0;
+}
+
+/**
+ * Splits a listing an older build wrote inline, the first time it is opened.
+ *
+ * The alternative was to do it in the `upgrade` block, and that is worse than
+ * it looks: a `versionchange` transaction holds every other connection to the
+ * database shut while it runs, and rewriting 37,261 records inside one at
+ * start-up is the blocked open `app/boot.ts` is written around — the failure
+ * where the shell never mounts and the tab bar never exists. Here it happens
+ * on the one screen that wants the listing, once, and everything it writes is
+ * the ordinary shape afterwards. It is also the net under an upgrade that was
+ * interrupted, and under a test or a tour that seeds the old shape directly.
+ */
+async function adoptLegacyListing(id: string): Promise<FolderIndexRow | null> {
+  const db = await openDatabase();
+  const row = await db?.get('folderLibraries', id);
+  const scores = row?.scores;
+  if (!db || !row || scores === undefined) return null;
+  const index = buildFolderIndex(id, scores);
+  try {
+    const tx = db.transaction(LISTING_STORES, 'readwrite');
+    const rows = tx.objectStore('folderScores');
+    await putScores((entry) => rows.put(entry), id, scores);
+    await tx.objectStore('folderIndexes').put(index);
+    // `scores` goes, which is the point: the row is small from here on and
+    // `savedFolders()` stops paying for it on every visit.
+    const { scores: _dropped, ...rest } = row;
+    await tx.objectStore('folderLibraries').put({ ...rest, count: scores.length });
+    await tx.done;
+  } catch {
+    // The split did not stick — a full quota, most likely. The index is still
+    // right for this session, and the next visit will try again.
+  }
+  return index;
+}
+
+/** The same index with some rows taken out, for the handful marked missing. */
+function withoutFiles(index: FolderIndexRow, drop: ReadonlySet<string>): FolderIndex {
+  const keep: number[] = [];
+  for (let at = 0; at < index.files.length; at += 1) {
+    const file = index.files[at];
+    if (file !== undefined && !drop.has(file)) keep.push(at);
+  }
+  const size = keep.length;
+  const levels = new Float64Array(size);
+  const styles = new Uint16Array(size);
+  const statuses = new Uint16Array(size);
+  const rated = new Uint8Array(size);
+  const files = new Array<string>(size);
+  const haystacks = new Array<string>(size);
+  let letters = '';
+  for (let out = 0; out < size; out += 1) {
+    const at = keep[out] ?? 0;
+    files[out] = index.files[at] ?? '';
+    haystacks[out] = index.haystacks[at] ?? '';
+    letters += index.letters[at] ?? OTHER_LETTER;
+    levels[out] = index.levels[at] ?? Number.NaN;
+    styles[out] = index.styles[at] ?? 0;
+    statuses[out] = index.statuses[at] ?? 0;
+    rated[out] = index.rated[at] ?? 0;
+  }
+  // Rows that are gone cannot make the listing look like an archive whose
+  // titles were never read, so the proportion is over what is left. Counting
+  // the dropped ones exactly would mean reading their titles back; the tally
+  // is only ever compared against a half, and what is dropped is a handful.
+  const unnamed = Math.min(index.unnamed, size);
+  return {
+    files,
+    haystacks,
+    letters,
+    levels,
+    styleNames: index.styleNames,
+    styles,
+    statusNames: index.statusNames,
+    statuses,
+    rated,
+    unnamed,
+  };
+}
+
+/**
+ * The full rows for the page that is about to be drawn, by key.
+ *
+ * Sixty `get`s in one transaction, which is one transaction's overhead and
+ * sixty records — against the thirty-seven thousand that used to be in memory
+ * so that sixty of them could be read off.
+ */
+export async function folderScoresAt(
+  id: string,
+  files: readonly string[],
+): Promise<(FolderScore | undefined)[]> {
+  const db = await openDatabase();
+  if (!db || files.length === 0) return files.map(() => undefined);
+  try {
+    const tx = db.transaction('folderScores');
+    const store = tx.objectStore('folderScores');
+    const found = await Promise.all(files.map((file) => store.get([id, file])));
+    await tx.done;
+    return found;
+  } catch {
+    return files.map(() => undefined);
+  }
+}
+
+/** The stored extras off a row, so what comes out is what went in. */
+function fromRow(row: FolderScoreRow): FolderScore {
+  const { folder: _folder, sort: _sort, missingAt: _missingAt, ...score } = row;
+  return score;
+}
+
+/**
+ * Every listable row of one folder.
+ *
+ * **The one reader that loads the whole listing, and the only one that has to.**
+ * A walk that was cancelled or killed is resumed from what it had already
+ * found, and "already found" is precisely these rows — the resumed run needs
+ * them to know what not to walk again and to finish the listing it is half
+ * way through. It costs what the old screen used to cost on every single
+ * visit; it now happens when the owner taps Continue indexing, which is the
+ * one moment the cost is what they asked for.
+ */
+export async function allFolderScores(id: string): Promise<FolderScore[]> {
+  const db = await openDatabase();
+  if (!db) return [];
+  try {
+    const rows = await db.getAll('folderScores', rangeFor(id));
+    return rows.filter((row) => row.missingAt === undefined).map(fromRow);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Which files in this folder are filed under each of these folded titles.
+ *
+ * The `byTitle` index earning its keep. The browse screen has to know which of
+ * its rows are already in the library, and an import that arrived by share
+ * carries no `origin` — so it is matched by title. That used to mean walking
+ * all 37,261 rows on every visit to the screen; it is now one key-range seek
+ * per import that needs one, of which there are as many as the owner has
+ * imported by hand.
+ */
+export async function folderFilesByTitle(
+  id: string,
+  titles: readonly string[],
+): Promise<Map<string, string[]>> {
+  const out = new Map<string, string[]>();
+  const db = await openDatabase();
+  if (!db || titles.length === 0) return out;
+  try {
+    const tx = db.transaction('folderScores');
+    const byTitle = tx.objectStore('folderScores').index('byTitle');
+    await Promise.all(
+      titles.map(async (title) => {
+        const keys = await byTitle.getAllKeys(IDBKeyRange.only([id, title]));
+        if (keys.length > 0) out.set(title, keys.map(([, file]) => file));
+      }),
+    );
+    await tx.done;
+  } catch {
+    return out;
+  }
+  return out;
+}
+
+/**
+ * How many rows of the listing sort before a letter — the A-to-Z rail's jump.
+ *
+ * A seek over the `byTitle` index rather than a walk of the listing: a folded
+ * title beginning with `s` is exactly a row filed under S, so "where does S
+ * start" is a count of the key range below it. `null` when the folder has no
+ * index to seek — the caller then falls back to its in-memory arrays, which is
+ * also what a filtered list has to do, since the stored order knows nothing
+ * about the search box.
+ */
+export async function folderLetterOffset(id: string, letter: string): Promise<number | null> {
+  const db = await openDatabase();
+  if (!db) return null;
+  // `#` is everything that is not a letter and it is not one range: digits and
+  // punctuation sort below `a`, and anything above `z` sorts above it.
+  if (letter < 'A' || letter > 'Z') return null;
+  try {
+    const byTitle = db.transaction('folderScores').objectStore('folderScores').index('byTitle');
+    const below = await byTitle.count(IDBKeyRange.bound([id, ''], [id, letter.toLowerCase()], false, true));
+    return below;
+  } catch {
+    return null;
+  }
 }
 
 export async function forgetFolder(id: string): Promise<void> {
   const db = await openDatabase();
-  await db?.delete('folderLibraries', id);
+  if (db) {
+    try {
+      const tx = db.transaction(LISTING_STORES, 'readwrite');
+      // The rows go with the folder. Deleting the folder's own row and leaving
+      // thirty-seven thousand orphans behind would be the worst of both: the
+      // screen shows nothing and the space is still gone.
+      await tx.objectStore('folderScores').delete(rangeFor(id));
+      await tx.objectStore('folderIndexes').delete(id);
+      await tx.objectStore('folderLibraries').delete(id);
+      await tx.done;
+    } catch {
+      // Nothing to do; the maps below are still cleared so the session agrees
+      // with what the owner just asked for.
+    }
+  }
   connected.delete(id);
   handles.delete(id);
   opened.delete(id);
@@ -1517,21 +2077,71 @@ export function forgetHandleForTest(id: string): void {
 }
 
 /**
- * Takes one row out of a stored listing, keeping everything else about it.
+ * Test hook: the write a finished scan performs, without the scan.
  *
- * Read-modify-write rather than a plain `put` of a row built here, because the
- * row also carries the directory handle and how the listing was made, and
- * losing the handle would cost the owner the folder to save them one dead row.
- * Returns whether anything was actually removed.
+ * The real `saveFolder`, not an imitation of it — the diff, the marking and
+ * the index are exactly what a rescan does, and a test that wrote the records
+ * itself would be checking its own arithmetic.
+ */
+export function saveFolderForTest(id: string, scores: FolderScore[]): Promise<boolean> {
+  return saveFolder({
+    id,
+    addedAt: new Date().toISOString(),
+    source: null,
+    scores,
+    count: scores.length,
+    connected: false,
+    listedFrom: 'walk',
+    pending: [],
+    canOpen: false,
+    rememberNote: null,
+  });
+}
+
+/**
+ * Takes one row out of a stored listing.
+ *
+ * **Two small records, not the listing.** This used to read the whole 37,261
+ * rows out of the one record they lived in, copy the array without one of
+ * them, and write all of it back — a multi-megabyte write for a one-row change,
+ * and the change happens on the path the owner is on most. Now it marks the
+ * score's own record and appends its path to the folder's `missing` list,
+ * which is what keeps the index — the other big record — out of the way of a
+ * single row.
+ *
+ * Marked rather than deleted, for the same reason a rescan marks: the row is
+ * evidence of something the folder used to hold, and if the file comes back
+ * the next scan clears the mark and the row is itself again.
+ *
+ * Returns whether anything was actually taken off the list.
  */
 async function dropScore(folderId: string, file: string): Promise<boolean> {
   const db = await openDatabase();
-  const row: StoredFolderRow | undefined = await db?.get('folderLibraries', folderId);
-  if (!row) return false;
-  const scores = row.scores.filter((score) => score.file !== file);
-  if (scores.length === row.scores.length) return false;
+  if (!db) return false;
   try {
-    await db?.put('folderLibraries', { ...row, scores });
+    const tx = db.transaction(['folderLibraries', 'folderScores'], 'readwrite');
+    const rows = tx.objectStore('folderScores');
+    const score = await rows.get([folderId, file]);
+    const folders = tx.objectStore('folderLibraries');
+    const row = await folders.get(folderId);
+    if (!row) return false;
+    const missing = row.missing ?? [];
+    if (missing.includes(file)) return false;
+    // A folder that has not been split yet keeps the old shape honest: the
+    // inline array loses the row too, so the count and the listing agree
+    // however this folder is read next.
+    const scores = row.scores?.filter((entry) => entry.file !== file);
+    if (score === undefined && scores === undefined) return false;
+    if (score !== undefined && score.missingAt === undefined) {
+      await rows.put({ ...score, missingAt: new Date().toISOString() });
+    }
+    await folders.put({
+      ...row,
+      ...(scores === undefined ? {} : { scores }),
+      count: Math.max(0, (row.count ?? row.scores?.length ?? 0) - 1),
+      missing: [...missing, file],
+    });
+    await tx.done;
   } catch {
     return false;
   }
