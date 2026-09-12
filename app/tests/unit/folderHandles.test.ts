@@ -70,10 +70,21 @@ function fakeHandle(
         if (!here.has(dirName)) here.set(dirName, dirFor(prefix + dirName + '/'));
       }
     }
+    // `getDirectoryHandle` and `getFileHandle` are how one file is reached
+    // without enumerating the folder, which is the whole of how `Add` works
+    // now. A double without them could only be walked, so it could only ever
+    // exercise the expensive path.
+    const child = (childName: string, kind: 'file' | 'directory'): Promise<unknown> => {
+      const found = here.get(childName);
+      if (found && (found as { kind?: string }).kind === kind) return Promise.resolve(found);
+      return Promise.reject(new DOMException(`no such ${kind}: ${childName}`, 'NotFoundError'));
+    };
     return {
       kind: 'directory',
       name: prefix.replace(/\/$/, '').split('/').pop() ?? name,
       values: () => here.values(),
+      getDirectoryHandle: (childName: string) => child(childName, 'directory'),
+      getFileHandle: (childName: string) => child(childName, 'file'),
     };
   }
 

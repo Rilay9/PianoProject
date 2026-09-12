@@ -108,6 +108,26 @@ describe('the walk itself', () => {
     expect(done.files.map(([path]) => path).sort()).toEqual(['aa/one.mxl', 'bb/two.mxl']);
   });
 
+  it('reports the count on a clock, not once per file', async () => {
+    // Moving the walk off the main thread does not help if the walk then wakes
+    // the main thread once per file: 37,261 messages is a deserialize and a
+    // handler every few hundred microseconds on the one thread that has to
+    // answer taps, and the read-out throttle that was meant to fix it ran
+    // 37,261 times itself.
+    const many: Record<string, Uint8Array> = {};
+    for (let i = 0; i < 600; i += 1) many[`${String(i % 10)}/f${String(i)}.mxl`] = mxl();
+    const messages: WalkMessage[] = [];
+    await walkFolder(request(fakeHandle(many)), (message) => messages.push(message));
+
+    const counting = messages.filter((m) => m.kind === 'counting');
+    expect(counting.length).toBeLessThan(60);
+    // And the last one is the real total, not wherever the clock stopped — the
+    // number the owner is left looking at as the reading pass begins.
+    const last = counting[counting.length - 1];
+    expect(last?.kind === 'counting' ? last.seen : 0).toBe(600);
+    expect(messages[messages.length - 1]?.kind).toBe('done');
+  });
+
   it('has no denominator while it is still counting', async () => {
     const messages: WalkMessage[] = [];
     await walkFolder(request(fakeHandle(FILES)), (message) => messages.push(message));

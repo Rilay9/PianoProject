@@ -24,9 +24,12 @@ import {
   folderRememberNote,
   forgetFolder,
   looksUnnamed,
+  openFolder,
   pickFolder,
   savedFolders,
+  type FolderCure,
   type FolderLibrary,
+  type FolderOpenResult,
   type FolderProgress,
   type FolderRememberNote,
 } from '../../data/folderLibrary';
@@ -146,7 +149,10 @@ export function rememberSentence(id: string, note: FolderRememberNote): string |
     case 'not-stored':
       return `${id} is remembered for now, but this phone would not store the folder itself — you will be asked for it again once the app is closed.`;
     case 'permission':
-      return `${id} is remembered, but Chrome will not open it without permission — allow it when asked, or pick the folder again.`;
+      // Not "pick the folder again" any more: the handle is held, so the cure
+      // is one tap and an Allow, and sending the owner to the picker would cost
+      // a full re-read of the folder for nothing.
+      return `${id} is remembered, but Chrome will not open it without permission — tap Open folder and choose Allow.`;
     case 'stale':
       return `The remembered ${id} folder could not be read — it may have been moved, renamed, or on a card that is out. Pick the folder again.`;
     default:
@@ -187,6 +193,17 @@ export function FolderScreen(router: Router): HTMLElement {
   intro.append(rememberNotice);
   const actions = el('div.button-row');
   intro.append(actions);
+  /**
+   * What the expensive button costs, and when it is the right one.
+   *
+   * Neither in the label nor beside it. The owner's phone is 342 px wide and
+   * this sentence is four lines there — put above the list it pushed the first
+   * score off the screen, which is `04` §0 R1 and the exact mistake this screen
+   * has been fixed for twice. It still has to be said, because the complaint
+   * began with a button that quietly took several minutes, so it goes into the
+   * fold with the other explanation, attached below the button it describes.
+   */
+  const rescanNote = el('p.muted.folder-rescan-note', { id: 'folder-rescan-note', hidden: true });
 
   // A folder of a thousand files is a real thing to be stuck in, and the read
   // has no other way to say it is still alive. Countable, not a spinner —
@@ -237,6 +254,7 @@ export function FolderScreen(router: Router): HTMLElement {
         'Point the app at a folder of MusicXML on this phone. The listing is kept, so you can browse it any time; adding a piece copies it into your library, where it stays.',
     }),
   );
+  how.append(rescanNote);
   const forgetRow = el('div.plan-links', { id: 'folder-forget-row' });
   how.append(forgetRow);
   intro.append(how);
@@ -309,6 +327,17 @@ export function FolderScreen(router: Router): HTMLElement {
   let busy = false;
   /** True while a folder is being read — disables the Pick button, shows progress. */
   let reading = false;
+  /**
+   * True while the stored folder is being reopened.
+   *
+   * A separate flag from `reading`, because they are separate waits and the
+   * whole complaint was that the screen would not say which one it was in.
+   * Reopening is a permission question and a single directory probe — a second
+   * at most; reading is every file in the folder.
+   */
+  let opening = false;
+  /** What the last attempt to reopen the folder came back with, until something changes it. */
+  let lastOpen: FolderOpenResult | null = null;
   /** Stops the read in progress, while one is running. */
   let abortRead: (() => void) | null = null;
   /** No faster than the eye can read, and no faster than the thread can spare. */
@@ -668,37 +697,126 @@ export function FolderScreen(router: Router): HTMLElement {
   function updateSavedNotice(): void {
     if (!library || library.connected) {
       savedNotice.hidden = true;
+      savedNotice.removeAttribute('data-state');
       savedNotice.replaceChildren();
       return;
     }
     savedNotice.hidden = false;
-    savedNotice.replaceChildren(
-      el(
-        'p.folder-saved__text',
-        {},
-        // One line, and measured rather than guessed at.
-        //
-        // This sits between the search box and the first row, where `04` §0 R1
-        // is watching every pixel — and it has already broken that rule twice.
-        // The first attempt was a full sentence, which wrapped to two lines in
-        // the CI runner's wider fonts and put the first score at 784 px of 780.
-        // The second was a shorter sentence, which *still* measured 116 px and
-        // two lines here, because the button wrapped onto a row of its own: the
-        // sentence was shortened without anybody measuring the block.
-        //
-        // So: short enough to sit beside its button on one line at this width,
-        // and the rest of the explanation lives where there is room for it —
-        // the Details sheet, and the note under a failed Add.
-        'Folder not open — nothing can be added.',
-      ),
+    // Five states, five sentences, and the button that belongs to each. The
+    // screen used to have one of these — "Folder not open" with a button that
+    // silently re-read all 37,261 files — so the owner could not tell a folder
+    // that needs one Allow tap from one that has genuinely gone missing, and
+    // the cure for both cost several minutes.
+    const state = opening ? 'opening' : (lastOpen ?? (library.canOpen ? 'closed' : 'no-handle'));
+    savedNotice.dataset.state = state;
+    // One line, and measured rather than guessed at.
+    //
+    // This sits between the search box and the first row, where `04` §0 R1
+    // is watching every pixel — and it has already broken that rule twice.
+    // The first attempt was a full sentence, which wrapped to two lines in
+    // the CI runner's wider fonts and put the first score at 784 px of 780.
+    // The second was a shorter sentence, which *still* measured 116 px and
+    // two lines here, because the button wrapped onto a row of its own: the
+    // sentence was shortened without anybody measuring the block.
+    //
+    // So: short enough to sit beside its button on one line at this width,
+    // and the rest of the explanation lives where there is room for it —
+    // the Details sheet, and the note under a failed Add.
+    const said =
+      state === 'opening'
+        ? 'Opening the folder…'
+        : state === 'permission'
+          ? 'Chrome did not allow it — try again and tap Allow.'
+          : state === 'stale'
+            ? 'Folder moved or gone — pick it again.'
+            : state === 'no-handle'
+              ? 'Folder not open — pick it again to add.'
+              : 'Folder not open — nothing can be added.';
+    savedNotice.replaceChildren(el('p.folder-saved__text', {}, said));
+    if (state === 'opening') {
+      const wait = button('Opening…', () => undefined, {
+        variant: 'secondary',
+        id: 'folder-reconnect',
+      });
+      wait.disabled = true;
+      savedNotice.append(wait);
+      return;
+    }
+    // A handle is held: one tap and an Allow, and not one file is re-read.
+    // Without one the picker is the only way back, and it is honest about
+    // costing a full read rather than hiding it behind "Open it".
+    //
+    // `state` outranks `canOpen` here, because `canOpen` is what the listing
+    // said when it was loaded and `state` is what actually just happened. A
+    // folder that has gone, or whose handle turned out not to be there after
+    // all, must not keep offering an Open that cannot work.
+    if (library.canOpen && state !== 'stale' && state !== 'no-handle') {
+      savedNotice.append(
+        button(
+          state === 'permission' ? 'Try again' : 'Open it',
+          () => {
+            void openNow();
+          },
+          { variant: 'secondary', id: 'folder-reconnect' },
+        ),
+      );
+      return;
+    }
+    savedNotice.append(
       button(
-        'Open it',
+        'Pick folder',
         () => {
           void pick();
         },
         { variant: 'secondary', id: 'folder-reconnect' },
       ),
     );
+  }
+
+  /**
+   * Reopens the saved folder — the transition this screen never had.
+   *
+   * Re-granting access is a permission question, not a reason to rebuild a
+   * listing that is already in the database complete. The owner's complaint was
+   * exactly this: "we can't have it spend the time reading in all 37000 every
+   * time I give it permission for the folder". Nothing here reads a file.
+   */
+  async function openNow(): Promise<void> {
+    if (!library || opening || reading) return;
+    const id = library.id;
+    opening = true;
+    lastOpen = null;
+    updateSavedNotice();
+    drawActions();
+    folderStatus.textContent = `Opening ${id}…`;
+    let result: FolderOpenResult;
+    try {
+      result = await openFolder(id, { interactive: true });
+    } finally {
+      opening = false;
+    }
+    lastOpen = result;
+    if (result === 'open') {
+      // Only the flag changes. The listing, the filters, the scroll position and
+      // the page of rows are all still the right ones.
+      library = { ...library, connected: true };
+      lastOpen = null;
+      folderStatus.textContent = `${library.id} is open — Add works now, and nothing was re-read.`;
+      updateSavedNotice();
+      updateRememberNotice();
+      drawActions();
+      draw();
+      return;
+    }
+    folderStatus.textContent =
+      result === 'permission'
+        ? `Chrome did not give ${id} read permission. Tap Try again and choose Allow.`
+        : result === 'stale'
+          ? `${id} could not be read — it may have been moved, renamed, or on a card that is out. Pick the folder again.`
+          : `This phone kept no link to ${id}. Pick the folder again — it will be read once and then remembered.`;
+    updateSavedNotice();
+    updateRememberNotice();
+    drawActions();
   }
 
   function draw(): void {
@@ -745,12 +863,26 @@ export function FolderScreen(router: Router): HTMLElement {
    * a screen the owner has scrolled a long way down. So the offer comes to
    * them.
    */
-  function sayOnRow(score: FolderScore, said: string): void {
+  function sayOnRow(score: FolderScore, said: string, cure: FolderCure = null): void {
     const row = list.querySelector(`[data-file="${CSS.escape(score.file)}"]`);
     if (!row) return;
     row.parentElement?.querySelectorAll('.folder-row-note').forEach((old) => old.remove());
     const note = el('p.folder-row-note', { role: 'status' }, said);
-    if (/pick the .* folder again|pick the folder again/i.test(said)) {
+    // Carried by the error rather than sniffed out of its wording. The regular
+    // expression that used to do this job matched on "pick the folder again",
+    // so rewording a message silently took its button away — and it could never
+    // offer the cheap cure, because the cheap cure did not exist.
+    if (cure === 'open' || (cure === null && library !== null && !library.connected && library.canOpen)) {
+      note.append(
+        button(
+          'Open folder',
+          () => {
+            void openNow();
+          },
+          { variant: 'secondary' },
+        ),
+      );
+    } else if (cure === 'pick') {
       note.append(
         button(
           'Pick the folder again',
@@ -845,9 +977,23 @@ export function FolderScreen(router: Router): HTMLElement {
     busy = true;
     control.disabled = true;
     const was = control.textContent;
-    control.textContent = 'Adding…';
+    // Named for what it is doing, which is not always the same thing. With the
+    // folder open this is one file and a moment; with it closed the first step
+    // is Chrome's permission prompt, and "Adding…" over a dialog the owner has
+    // not been told to expect is how "Add just says adding" happened.
+    const shelf = library;
+    const closed = !shelf.connected;
+    control.textContent = closed ? 'Opening…' : 'Adding…';
+    if (closed) folderStatus.textContent = `Opening ${shelf.id} to add ${score.title || score.file}…`;
     try {
-      const row = await addFromFolder(library.id, score);
+      const row = await addFromFolder(shelf.id, score);
+      // The Add may have opened the folder on its way past. The screen's copy
+      // of `connected` is a snapshot and nothing used to refresh it, so the
+      // "Folder not open" notice sat there over a folder that was, by then,
+      // open — and every later Add went on claiming it had to reopen it.
+      library = { ...shelf, connected: true };
+      lastOpen = null;
+      updateSavedNotice();
       alreadyAdded.add(score.file);
       importIndex.set(score.file, row);
       // Not the assign sheet, unasked. Adding five in a row is the ordinary
@@ -870,9 +1016,14 @@ export function FolderScreen(router: Router): HTMLElement {
       // top of the screen and the row is somewhere down a list of thousands,
       // so the app was explaining itself where nobody was looking. A failure
       // has to appear where the failing tap was.
-      sayOnRow(score, said);
+      sayOnRow(score, said, cause instanceof FolderError ? cause.cure : null);
       // The Add failed because the remembered folder would not open, and the
-      // *reason* it would not open is only known once that has been tried.
+      // *reason* it would not open is only known once that has been tried — so
+      // the notice above the list is brought into line with what was just
+      // learned rather than left saying something staler.
+      const note = folderRememberNote(shelf.id);
+      lastOpen = note === 'stale' ? 'stale' : note === 'permission' ? 'permission' : lastOpen;
+      updateSavedNotice();
       updateRememberNotice();
     } finally {
       busy = false;
@@ -935,26 +1086,55 @@ export function FolderScreen(router: Router): HTMLElement {
       folderStatus.textContent =
         `Nothing in ${library.id}${where} could be read as a score. The app reads .mxl, ` +
         '.musicxml and .xml files; a PDF goes through Import instead.';
+      // Nothing to add from, so "the folder is not open" is not the thing to
+      // say — an empty listing left the notice showing whatever it said last.
+      updateSavedNotice();
       updateUnnamedNotice();
       return;
     }
     updateSavedNotice();
+    const count = `${plural(library.scores.length, 'score')} in ${library.id}${where}`;
+    // Which of the two states, in three words. The cure for the closed one is
+    // not here: it belongs beside the rows it stops working, which is the
+    // notice above the list — and a sentence long enough to carry it costs four
+    // lines on a 342 px phone and pushes the first score off the screen (R1).
     folderStatus.textContent = library.connected
-      ? `${plural(library.scores.length, 'score')} in ${library.id}${where}.`
-      : `${plural(library.scores.length, 'score')} in ${library.id}${where} — pick the folder again to add any of them.`;
+      ? `${count} — folder open.`
+      : `${count} — folder closed.`;
     updateUnnamedNotice();
   }
 
   function drawActions(): void {
+    // Reading the folder again is a different act from opening the one that is
+    // already listed, and they were the same button. Named for what it costs:
+    // the owner has no way to know that "Pick the folder again" means several
+    // minutes and 37,261 files unless the button says so.
     const pickButton = button(
-      library ? 'Pick the folder again' : 'Pick a folder',
+      library ? 'Rescan folder' : 'Pick a folder',
       () => {
         void pick();
       },
-      { variant: 'primary', id: 'folder-pick' },
+      { variant: library?.connected === false && library.canOpen ? 'quiet' : 'primary', id: 'folder-pick' },
     );
-    pickButton.disabled = reading;
-    actions.replaceChildren(pickButton);
+    pickButton.disabled = reading || opening;
+    rescanNote.hidden = library === null;
+    rescanNote.textContent =
+      library === null
+        ? ''
+        : `Rescan picks the folder again and reads all ${library.scores.length.toLocaleString()} files — a few minutes. Only needed when the folder itself has changed.`;
+    // The cheap cure goes first and loudest when it is available at all.
+    const openButton =
+      library && !library.connected && library.canOpen
+        ? button(
+            opening ? 'Opening…' : 'Open folder',
+            () => {
+              void openNow();
+            },
+            { variant: 'primary', id: 'folder-open' },
+          )
+        : null;
+    if (openButton) openButton.disabled = reading || opening;
+    actions.replaceChildren(...(openButton ? [openButton] : []), pickButton);
     // Forgetting the folder is not a second answer to "what now" — it lives
     // in `How this works`, out of the run between the heading and the list.
     forgetRow.replaceChildren(
@@ -1001,8 +1181,9 @@ export function FolderScreen(router: Router): HTMLElement {
   }
 
   async function pick(): Promise<void> {
-    if (reading) return;
+    if (reading || opening) return;
     reading = true;
+    lastOpen = null;
     cancelledByOwner = false;
     const controller = new AbortController();
     abortRead = () => controller.abort();
@@ -1081,6 +1262,33 @@ export function FolderScreen(router: Router): HTMLElement {
     describe();
     drawActions();
     draw();
+    await reopenQuietly();
+  }
+
+  /**
+   * Takes the permission the phone may already have, on the way in.
+   *
+   * `queryPermission` needs no user gesture and reads no files, so a phone that
+   * kept the grant is simply usable from the first paint with no taps and no
+   * walk — which is the answer to "I thought the whole point was that it had
+   * access". A phone that did not keep it comes back `prompt`, and asking for
+   * that needs a tap, so the screen offers one rather than nagging.
+   *
+   * After the first draw, deliberately: the listing is in hand and painting
+   * 37,261 rows must not wait on a permission round trip.
+   */
+  async function reopenQuietly(): Promise<void> {
+    const shelf = library;
+    if (!shelf || shelf.connected || !shelf.canOpen) return;
+    const result = await openFolder(shelf.id);
+    // Nothing is said about a `prompt` answer here: it is not a failure, it is
+    // the ordinary state of a folder that has not been asked for yet, and the
+    // notice above the list already offers the ask.
+    if (result !== 'open' || library !== shelf) return;
+    library = { ...shelf, connected: true };
+    lastOpen = null;
+    describe();
+    drawActions();
   }
 
   drawActions();

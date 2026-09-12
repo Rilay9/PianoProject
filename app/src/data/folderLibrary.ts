@@ -53,7 +53,28 @@ const SCORE_SUFFIXES = ['.mxl', '.musicxml', '.xml'];
  */
 export const MAX_FOLDER_FILES = 100_000;
 
-export class FolderError extends Error {}
+/**
+ * What the owner can actually *do* about a failure, as a value rather than as
+ * a phrase the screen has to pattern-match out of the message.
+ *
+ *   - `open`  — the folder is known and a handle is held; one tap and an Allow
+ *     makes it usable, and nothing is re-read.
+ *   - `pick`  — there is no handle, or the one there is no longer points at
+ *     anything. The folder has to be chosen again, and that does mean a rescan.
+ *
+ * The screen used to decide which of these it was by running a regular
+ * expression over the sentence, which meant a reworded message silently lost
+ * its button.
+ */
+export type FolderCure = 'open' | 'pick' | null;
+
+export class FolderError extends Error {
+  readonly cure: FolderCure;
+  constructor(message: string, cure: FolderCure = null) {
+    super(message);
+    this.cure = cure;
+  }
+}
 
 /** Thrown when the picker was dismissed. Not a failure; nothing to report. */
 export class FolderCancelled extends Error {}
@@ -88,6 +109,16 @@ export interface FolderLibrary {
   scores: FolderScore[];
   /** True while the folder is picked and its files can actually be read. */
   connected: boolean;
+  /**
+   * True when a handle for this folder is held, so `openFolder` is worth
+   * offering.
+   *
+   * This is the difference between the two cures, and the screen had no way to
+   * tell them apart: with a handle the fix is one tap and an Allow and nothing
+   * is re-read; without one the folder has to be picked again, and that does
+   * mean reading all of it.
+   */
+  canOpen: boolean;
   /** What to say about remembering this folder, if anything. */
   rememberNote: FolderRememberNote;
 }
@@ -482,6 +513,9 @@ async function buildLibrary(
     source,
     scores,
     connected: true,
+    // Filled in by `pickFolder` once it knows whether a handle was kept; a
+    // folder read through the file input never has one.
+    canOpen: false,
     rememberNote: null,
   };
 }
@@ -501,6 +535,27 @@ interface PermissionCapableHandle {
 }
 
 type DirectoryHandle = FileSystemDirectoryHandle & PermissionCapableHandle;
+
+/**
+ * Folders this page is allowed to read *right now*, by id.
+ *
+ * The distinction between this and `connected` above is the whole of fault 1.
+ * `connected` holds every file of a folder that was walked during this visit —
+ * it is what a fresh pick produces, and producing it for the owner's archive
+ * means enumerating 37,261 entries. This holds one object per folder and is
+ * produced by asking Chrome a question, so it costs nothing and can be had on
+ * every launch.
+ *
+ * Both mean "Add can work". Neither is storage: a handle survives in IndexedDB,
+ * the *permission* on it does not, and this map is where the answer to
+ * "permission, now" lives for the life of the page.
+ */
+const opened = new Map<string, DirectoryHandle>();
+
+/** True when a score can be fetched out of this folder without picking it again. */
+function folderUsable(id: string): boolean {
+  return connected.has(id) || opened.has(id);
+}
 
 interface PickerWindow {
   showDirectoryPicker?: (options?: { mode?: 'read' | 'readwrite' }) => Promise<DirectoryHandle>;
@@ -703,18 +758,87 @@ async function readPermission(handle: DirectoryHandle): Promise<PermissionState>
 }
 
 /**
- * Reconnects a folder from its stored handle, if there is one and it is
- * allowed. `false` means the caller should ask for the folder again — which is
- * the behaviour with no handle at all, and the reason nothing here throws.
+ * The handle for a folder, from this session or from the database.
+ *
+ * Cached into `handles` on the way past, because the interactive caller below
+ * is inside a click and `requestPermission` wants the user activation that
+ * click carries. An IndexedDB round trip is short, but it is a round trip
+ * standing between the tap and the ask, and there is no reason to pay it twice.
  */
-export async function reconnectFolder(id: string): Promise<boolean> {
-  if (connected.has(id)) return true;
+async function storedHandle(id: string): Promise<DirectoryHandle | null> {
+  const held = handles.get(id);
+  if (held !== undefined) return held as DirectoryHandle;
   const db = await openDatabase();
   const row = await db?.get('folderLibraries', id);
-  const handle = (handles.get(id) ?? row?.handle) as DirectoryHandle | undefined;
+  if (row?.handle === undefined) return null;
+  handles.set(id, row.handle);
+  return row.handle as DirectoryHandle;
+}
+
+/**
+ * What happened when the folder was asked to open. Each wants a different
+ * sentence and a different button, which is why this is five values and not a
+ * boolean.
+ */
+export type FolderOpenResult =
+  /** Usable now — either it already was, or permission was there for the asking. */
+  | 'open'
+  /** There is no handle to open. The picker is the only way back. */
+  | 'no-handle'
+  /** A handle, and Chrome will not grant read on it. Asking again can still work. */
+  | 'permission'
+  /** A handle that no longer points at a readable folder. */
+  | 'stale';
+
+/**
+ * Touches the folder without walking it.
+ *
+ * One entry is enough to know a handle still resolves: a folder that was moved,
+ * renamed, or is on a card that is out throws on the first `values()` step. The
+ * point is that it is O(1) — the old check read every one of the owner's 37,261
+ * files to decide whether the folder was there.
+ */
+async function folderStillThere(handle: DirectoryHandle): Promise<boolean> {
+  try {
+    // `break` on the first entry, so an empty folder and a folder of 37,261
+    // cost the same. An empty one is not a failure here: it may genuinely have
+    // been emptied, and `Add` will say so per row with the rescan on offer.
+    for await (const entry of handle.values()) {
+      void entry;
+      break;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Makes a saved folder usable again, **without re-reading it**.
+ *
+ * This is the transition the screen never had. Re-granting access used to mean
+ * `showDirectoryPicker` and a walk of every file in the folder, which for the
+ * owner's archive is thirty-seven thousand of them and several minutes — to
+ * rebuild a listing that was already sitting in IndexedDB, complete. Nothing
+ * about the listing changes when permission comes back; only whether the files
+ * behind it can be opened. So this asks that one question and stops.
+ *
+ * `interactive` is the difference between the launch path and the button path.
+ * `queryPermission` is free and needs no gesture, so it runs on every visit and
+ * a phone that kept the permission is simply usable with no taps at all — which
+ * is what "I thought the whole point was that it had access" was asking for.
+ * `requestPermission` shows Chrome's prompt and needs a user gesture, so it only
+ * runs from a tap.
+ */
+export async function openFolder(
+  id: string,
+  options: { interactive?: boolean } = {},
+): Promise<FolderOpenResult> {
+  if (folderUsable(id)) return 'open';
+  const handle = await storedHandle(id);
   // No handle is not a failure of the feature — it is the ordinary picker
   // path, which has its own sentence — so nothing is recorded here.
-  if (!handle) return false;
+  if (!handle) return 'no-handle';
   // Asked separately from the read, because the two fail for different
   // reasons and the owner is told which. `requestPermission` needs a user
   // gesture and throws without one — a phone that has let the activation
@@ -722,31 +846,67 @@ export async function reconnectFolder(id: string): Promise<boolean> {
   // "pick it again" is the wrong instruction for it.
   let permission: PermissionState;
   try {
-    permission = await readPermission(handle);
+    permission = options.interactive
+      ? await readPermission(handle)
+      : ((await handle.queryPermission?.({ mode: 'read' })) ?? 'granted');
   } catch {
     permission = 'denied';
   }
   if (permission !== 'granted') {
-    notes.set(id, 'permission');
-    return false;
-  }
-  try {
-    const { byPath } = await readDirectoryHandle(handle);
-    if (byPath.size === 0) {
-      notes.set(id, 'stale');
-      return false;
+    // A `prompt` answer to a question nobody has asked yet is not a refusal —
+    // it is the ordinary state of a stored handle at launch. Recording it as
+    // one would put "Chrome will not open it without permission" on the screen
+    // every single launch, before the owner had been offered the prompt.
+    if (options.interactive) {
+      notes.set(id, 'permission');
+      notify();
     }
-    connected.set(id, byPath);
-    notes.set(id, null);
-    notify();
-    return true;
-  } catch {
+    return 'permission';
+  }
+  if (!(await folderStillThere(handle))) {
     // A handle can go stale: the folder was moved, the card was pulled, the
     // permission was revoked in Chrome's settings. The picker still works —
     // but silently falling back to it is what left the owner guessing, so the
     // reason is recorded and the screen says it.
     notes.set(id, 'stale');
-    return false;
+    notify();
+    return 'stale';
+  }
+  opened.set(id, handle);
+  notes.set(id, null);
+  notify();
+  return 'open';
+}
+
+/**
+ * Reconnects a folder from its stored handle, if there is one and it is
+ * allowed. `false` means the caller should ask for the folder again — which is
+ * the behaviour with no handle at all, and the reason nothing here throws.
+ */
+export async function reconnectFolder(id: string): Promise<boolean> {
+  return (await openFolder(id, { interactive: true })) === 'open';
+}
+
+/**
+ * One file out of an open folder, by the path the listing stored.
+ *
+ * Walking down the path is the counterpart to not walking the tree: `Add`
+ * wants exactly one of 37,261 files, and the old code got it by opening all of
+ * them first. `score.file` is the path relative to the folder that was picked —
+ * `buildLibrary` writes the walk's own key into that field precisely so the two
+ * agree — so descending it is a handful of round trips whatever the folder's
+ * size.
+ */
+async function fileAt(handle: DirectoryHandle, path: string): Promise<File | null> {
+  const parts = path.split('/').filter(Boolean);
+  const name = parts.pop();
+  if (name === undefined) return null;
+  try {
+    let dir: FileSystemDirectoryHandle = handle;
+    for (const part of parts) dir = await dir.getDirectoryHandle(part);
+    return await (await dir.getFileHandle(name)).getFile();
+  } catch {
+    return null;
   }
 }
 
@@ -788,12 +948,12 @@ export async function pickFolder(
         if (remember !== true) {
           await saveFolder(library);
           notes.set(library.id, 'not-remembered');
-          return { ...library, rememberNote: 'not-remembered' };
+          return { ...library, rememberNote: 'not-remembered', canOpen: false };
         }
         const stored = await saveFolder(library, handle);
         const note: FolderRememberNote = stored ? null : 'not-stored';
         notes.set(library.id, note);
-        return { ...library, rememberNote: note };
+        return { ...library, rememberNote: note, canOpen: stored };
       }
     } catch (cause) {
       // A dismissed picker is a decision, not a failure: opening a second one
@@ -835,7 +995,7 @@ async function pickFolderWithInput(
     const library = await readFolder(files, options);
     await saveFolder(library);
     notes.set(library.id, note);
-    return { ...library, rememberNote: note };
+    return { ...library, rememberNote: note, canOpen: false };
   } finally {
     input.remove();
   }
@@ -857,7 +1017,13 @@ async function saveFolder(library: FolderLibrary, handle?: unknown): Promise<boo
     source: library.source,
     scores: library.scores,
   };
-  if (handle !== undefined) handles.set(library.id, handle);
+  if (handle !== undefined) {
+    handles.set(library.id, handle);
+    // Just came back from the picker, so permission is granted by definition.
+    // Recording it here is what lets a folder picked this session be reopened
+    // after a reload without another trip through the picker.
+    opened.set(library.id, handle as DirectoryHandle);
+  }
   try {
     await db?.put('folderLibraries', { ...row, ...(handle === undefined ? {} : { handle }) });
     return handle !== undefined;
@@ -896,7 +1062,8 @@ export async function savedFolders(): Promise<FolderLibrary[]> {
     addedAt: row.addedAt,
     source: row.source,
     scores: row.scores,
-    connected: connected.has(row.id),
+    connected: folderUsable(row.id),
+    canOpen: opened.has(row.id) || handles.has(row.id) || row.handle !== undefined,
     rememberNote: notes.get(row.id) ?? null,
   }));
 }
@@ -906,6 +1073,7 @@ export async function forgetFolder(id: string): Promise<void> {
   await db?.delete('folderLibraries', id);
   connected.delete(id);
   handles.delete(id);
+  opened.delete(id);
   notes.delete(id);
   notify();
 }
@@ -925,7 +1093,7 @@ export async function hasStoredHandle(id: string): Promise<boolean> {
 }
 
 export function isConnected(id: string): boolean {
-  return connected.has(id);
+  return folderUsable(id);
 }
 
 /** Test hook: the session's file handles, without going through a picker. */
@@ -933,13 +1101,16 @@ export function connectForTest(id: string, files: Map<string, File>): void {
   connected.set(id, files);
 }
 
+/** Test hook: a new visit — the listing survives, nothing is open. */
 export function disconnectForTest(id: string): void {
   connected.delete(id);
+  opened.delete(id);
 }
 
 /** Test hook: forget a remembered handle without forgetting the folder. */
 export function forgetHandleForTest(id: string): void {
   handles.delete(id);
+  opened.delete(id);
 }
 
 /**
@@ -952,29 +1123,37 @@ export function forgetHandleForTest(id: string): void {
  */
 export async function addFromFolder(folderId: string, score: FolderScore) {
   // A stored handle, when there is one, turns "pick the folder again" into an
-  // Allow tap or into nothing at all.
-  if (!connected.has(folderId)) await reconnectFolder(folderId);
+  // Allow tap or into nothing at all — and it does it without re-reading the
+  // folder, which is the difference between an Add that takes a moment and the
+  // "Adding…" that never came back.
+  if (!folderUsable(folderId)) await openFolder(folderId, { interactive: true });
   const files = connected.get(folderId);
-  if (!files) {
+  const handle = opened.get(folderId);
+  if (!files && !handle) {
     // Three different reasons, three different things to do about them. The
     // one message for all of them ("Android only lends a folder for one
     // visit") was a lie in two of the three cases, and in both of those it
     // named the wrong cure.
     const note = notes.get(folderId) ?? null;
+    if (note === 'permission') {
+      throw new FolderError(
+        `Chrome would not open the ${folderId} folder — it is remembered, but read permission was not given. Open it and allow the prompt.`,
+        'open',
+      );
+    }
     throw new FolderError(
-      note === 'permission'
-        ? `Chrome would not open the ${folderId} folder — it is remembered, but read permission was not given. Pick the folder again to add from it.`
-        : note === 'stale'
-          ? `The remembered ${folderId} folder could not be read — it may have been moved, renamed, or on a card that is out. Pick the folder again to add from it.`
-          : `Pick the ${folderId} folder again to add from it — Android only lends a folder for one visit.`,
+      note === 'stale'
+        ? `The remembered ${folderId} folder could not be read — it may have been moved, renamed, or on a card that is out. Pick the folder again to add from it.`
+        : `Pick the ${folderId} folder again to add from it — Android only lends a folder for one visit.`,
+      'pick',
     );
   }
-  let file = files.get(score.file);
-  if (!file) {
+  let file = files?.get(score.file);
+  if (!file && files) {
     // A listing stored by an older build kept the *manifest's* path in
     // `file` rather than the path the file is actually at — `buildLibrary`
     // above now always writes the actual path, but a row written before that
-    // was true is still sitting in IndexedDB, and `reconnectFolder` always
+    // was true is still sitting in IndexedDB, and a fresh pick always
     // rebuilds `files` keyed by actual paths. The filename on its own is
     // still reliable: it is the archive's content hash, unique by
     // construction (`buildLibrary`'s `byName` map above relies on the same
@@ -983,8 +1162,14 @@ export async function addFromFolder(folderId: string, score: FolderScore) {
     const bySameName = [...files.entries()].filter(([path]) => path === name || path.endsWith(`/${name}`));
     if (bySameName.length === 1) file = bySameName[0]?.[1];
   }
+  // The folder is open but was never walked, which is the ordinary case now:
+  // fetch the one file the owner asked for and nothing else.
+  if (!file && handle) file = (await fileAt(handle, score.file)) ?? undefined;
   if (!file) {
-    throw new FolderError(`${score.title} is listed but is not in the folder any more.`);
+    throw new FolderError(
+      `${score.title || score.file} is in the listing but not in the folder any more. Rescan the folder to bring the listing up to date.`,
+      'pick',
+    );
   }
   // A CID makes a hopeless filename to be greeted by in the library, so the
   // manifest's title goes on the file before the importer reads it — though

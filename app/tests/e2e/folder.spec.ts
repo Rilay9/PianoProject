@@ -377,6 +377,36 @@ test.describe('a folder of 37,261 scores', () => {
     await expect(page.locator('#folder-filters')).toBeVisible();
   });
 
+  test('R1 again at the owner’s real geometry, with the real number of scores', async ({
+    page,
+  }) => {
+    // The test above measures 412 × 780 with 400 scores. The owner's phone is
+    // 342 × 740 and his folder holds 37,261, and both of those differences cost
+    // lines: the folder name and the count are longer, and everything above the
+    // list wraps sooner. Explaining what a rescan costs, next to the button,
+    // put the first score at 800 px of 740 here while the 412 px test went on
+    // passing — so the explanation moved into the fold and the rule is measured
+    // where it actually breaks.
+    await page.setViewportSize({ width: 342, height: 740 });
+    await seedFolder(page, ROWS);
+    await page.goto('/#/library/folder');
+    const first = page.locator('#folder-list .list-row').first();
+    await expect(first).toBeVisible();
+    const box = await first.boundingBox();
+    expect(box, 'no first row').not.toBeNull();
+    const top = Math.round(box?.y ?? 0);
+    console.log(`folder: at 342×740 with 37,261 scores the first row starts at ${String(top)}px`);
+    // The whole row, not just its top edge, and above the tab bar it sits over.
+    // Against the viewport rather than a repeated 740: two numbers that have to
+    // stay equal are one number waiting to drift apart.
+    const fold = page.viewportSize()?.height ?? 740;
+    expect(top + (box?.height ?? 0), `the first score fell below the fold at ${String(top)}px`)
+      .toBeLessThan(fold);
+    // The rescan's cost is still said — in the fold, where there is room for it.
+    await page.locator('#folder-how summary').click();
+    await expect(page.locator('#folder-rescan-note')).toContainText('reads all 37,261 files');
+  });
+
   test('forgetting the folder is inside How this works, not beside Pick (R3)', async ({ page }) => {
     await seedFolder(page, 20);
     await page.goto('/#/library/folder');
@@ -491,12 +521,23 @@ test.describe('the letter rail', () => {
     const saved = page.locator('#folder-saved');
     await expect(saved).toBeVisible();
     await expect(saved).toContainText(/folder not open/i);
-    await expect(saved).toContainText(/nothing can be added/i);
+    // This listing was seeded straight into the store, so there is no handle
+    // behind it and the picker really is the only way back. The notice says
+    // which of the two closed states this is — it used to offer one "Open it"
+    // for both, and for this one that button could not work.
+    await expect(saved).toHaveAttribute('data-state', 'no-handle');
+    await expect(saved).toContainText(/pick it again/i);
     // The count is not repeated here: it is on the line below, and this notice
     // sits between the search box and the first row, where R1 is watching every
     // pixel.
     await expect(page.locator('#folder-count')).toContainText('200');
-    await expect(saved.getByRole('button', { name: /open it/i })).toBeVisible();
+    await expect(saved.getByRole('button', { name: /^pick folder$/i })).toBeVisible();
+    // And what the expensive button costs is said out loud — in the fold, with
+    // the other explanation, rather than discovered by tapping it and waiting
+    // several minutes.
+    await expect(page.locator('#folder-pick')).toHaveText('Rescan folder');
+    await page.locator('#folder-how summary').click();
+    await expect(page.locator('#folder-rescan-note')).toContainText('reads all 200 files');
     // One line, always. A wrap here costs about 55 px and pushes the first
     // score below the fold, which is how this notice broke R1 twice.
     const lines = await saved.locator('.folder-saved__text').evaluate((el) => {

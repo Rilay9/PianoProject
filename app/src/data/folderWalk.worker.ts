@@ -67,6 +67,23 @@ export async function walkFolder(
     { dir: request.handle, prefix: '' },
   ];
   let seen = 0;
+  /**
+   * How often the count is reported, in milliseconds.
+   *
+   * A message costs this thread almost nothing, which is what "every file, not
+   * one in every N" was reasoning from — but it does not land on this thread.
+   * Every one of them wakes the main thread to deserialize it and run a
+   * handler, and 37,261 of those is a wake-up every few hundred microseconds
+   * on the one thread that has to answer taps. Throttling the *painting* did
+   * not help, because the throttle itself ran 37,261 times.
+   *
+   * The numbers change far faster than anyone can read them, so nothing is
+   * lost — except the last one, which is why it is flushed below rather than
+   * left to the throttle.
+   */
+  const COUNT_EVERY_MS = 50;
+  let countedAt = -Infinity;
+  let pending: { seen: number; file: string } | null = null;
   while (stack.length > 0) {
     const next = stack.pop();
     if (!next) break;
@@ -93,12 +110,19 @@ export async function walkFolder(
         continue;
       }
       if (isScoreFile(path, request.scoreExtensions)) scoreHandles.push({ path, handle: entry });
-      // Every file, not one in every N. Nothing paints on this thread, so a
-      // message costs a copy of a short string — and the main thread throttles
-      // what it draws from these anyway.
-      post({ kind: 'counting', seen, file: path });
+      pending = { seen, file: path };
+      const at = performance.now();
+      if (at - countedAt >= COUNT_EVERY_MS) {
+        countedAt = at;
+        post({ kind: 'counting', ...pending });
+        pending = null;
+      }
     }
   }
+  // The last count always lands, whatever the throttle would have said: the
+  // number the owner is left looking at while the reading pass starts has to be
+  // the real total found, not wherever the clock happened to stop.
+  if (pending) post({ kind: 'counting', ...pending });
 
   const files: [string, File][] = [];
   const manifest = manifestHandle === null ? null : await manifestHandle.getFile();

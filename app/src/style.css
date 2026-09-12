@@ -450,6 +450,17 @@ body {
   background: color-mix(in srgb, var(--warn, var(--border)) 12%, transparent);
 }
 
+/* Opening the folder is a wait, not a warning.
+
+   The notice keeps its box so the list below it does not jump while the
+   permission prompt is up, and drops the alarm colour, because at that moment
+   nothing is wrong — something is happening, which is the state the screen had
+   no way of showing at all. */
+.folder-saved[data-state='opening'] {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--border) 12%, transparent);
+}
+
 .folder-saved__text {
   flex: 1 1 auto;
   min-width: 0;

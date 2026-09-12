@@ -371,7 +371,11 @@ describe('saying why the folder was not remembered (P19 A4)', () => {
   });
 
   it('tells the owner to allow it when it is a permission, and to re-pick when it is gone', () => {
-    expect(rememberSentence('Scores', 'permission')).toMatch(/allow it when asked/);
+    // The cure for a refused permission is Open folder and Allow, not the
+    // picker: the handle is held, so sending the owner back to the picker would
+    // re-read all 37,261 files to learn nothing new.
+    expect(rememberSentence('Scores', 'permission')).toMatch(/tap Open folder and choose Allow/);
+    expect(rememberSentence('Scores', 'permission')).not.toMatch(/pick the folder again/i);
     expect(rememberSentence('Scores', 'stale')).toMatch(/moved, renamed/);
   });
 

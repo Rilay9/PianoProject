@@ -91,12 +91,19 @@ export interface PracticeSettings {
   /**
    * Keep a handle on the score folder instead of re-picking it (`04` §4b).
    *
-   * Off by default because it rests on a platform fact nobody has checked on
-   * the owner's phone: MDN puts `showDirectoryPicker` in Chrome for Android
-   * from 132, but an API that exists can still refuse to hold a permission.
-   * On, the folder is remembered and Add asks Chrome for read permission; if
-   * anything about that fails the app falls back to the picker, so the worst
-   * case is the behaviour he already has.
+   * **On by default**, at the owner's word. It was off while the platform fact
+   * underneath it was unchecked — MDN puts `showDirectoryPicker` in Chrome for
+   * Android from 132, but an API that exists can still refuse to hold a
+   * permission across launches. Off, though, the whole point of pointing the
+   * app at a folder is lost: every visit re-picks it and re-reads 37,261 files,
+   * which is exactly what the owner reported. On, the folder is remembered and
+   * opening it asks Chrome for read permission without touching a file; if any
+   * part of that fails the app falls back to the picker, so the worst case is
+   * the behaviour he already had.
+   *
+   * The platform fact is still unchecked. Only the phone can answer whether the
+   * grant survives a relaunch, and it is the first thing to look at after this
+   * ships.
    */
   folderHandles: boolean;
 
@@ -139,7 +146,7 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
 
   inputPriority: ['midi', 'mic', 'none'],
   showUsOnlyPd: true,
-  folderHandles: false,
+  folderHandles: true,
   micChordLeniencyPct: 70,
   strictMicScoring: false,
   muteExpectedWhileMic: true,
