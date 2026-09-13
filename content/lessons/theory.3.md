@@ -14,8 +14,10 @@ readingTime: 3
 inclusively: C to E is a 3rd (C, D, E — three letters). The count gives the
 *number*; the exact semitones give the *quality*. A 3rd spanning four semitones
 is **major**; three semitones is **minor**. Perfect intervals — the 4th, 5th and
-octave — are called perfect because they sound the same either way up and are
-neither major nor minor.
+octave — take neither name: there is no major 5th and no minor 4th, only
+perfect, diminished and augmented ones. They are the intervals whose two notes
+share the simplest relationship, which is why they sound hollow rather than
+sweet, and why every tuning system in history agrees about them.
 
 **The intervals inside the octave**: minor and major 2nd, minor and major 3rd,
 perfect 4th, tritone, perfect 5th, minor and major 6th, minor and major 7th,
@@ -29,7 +31,8 @@ just the label.
 
 **Key signatures to three sharps and flats.** Sharps arrive F♯ C♯ G♯; the key is
 a half step above the last sharp. Flats arrive B♭ E♭ A♭; the key is the
-second-to-last flat. Two rules, no memorising.
+second-to-last flat. Two rules, no memorising — plus one fact, because the flat
+rule has nothing to point at when there is only one flat: one flat is F major.
 
 **I, IV and V by ear.** These three sound different in a way you can learn to
 hear. **I** is home and settled. **IV** feels like stepping away — it is the

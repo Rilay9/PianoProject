@@ -32,3 +32,9 @@ year is actually an F. Then Tempo mode at eighty per cent, then at full.
 work of two, and the first thing to fail is not accuracy but the wrist. If it
 aches, stop. There is no version of this rung worth an injury, and every piece
 it prepares you for will still be there next week.
+
+**How you'll know you've got it.** Four octaves hands together, sixteenths at
+120, with the turn at the top sounding like the rest of the run rather than a
+seam in it. And a wrist that feels the same at the end as it did at the start.
+The second half of that is not the lesser test: a scale you can play once and
+not twice is not at tempo yet.

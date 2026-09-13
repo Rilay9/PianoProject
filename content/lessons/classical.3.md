@@ -30,9 +30,13 @@ legato, leaps detached**, and long notes slightly separated from what follows.
 A little space between phrases is worth more than any dynamic.
 
 **Repeats and ornaments.** Each half repeats. On the repeat, change something —
-softer, or with one added ornament. A **mordent** (the short zigzag) is the
-main note, the note below, and the main note again, played fast and on the beat,
-not before it.
+softer, or with one added ornament. A **mordent** is the main note, a
+neighbour, and the main note again, played fast and *on* the beat rather than
+before it. Which neighbour depends on the sign: the zigzag with a vertical line
+through it goes to the note below, the plain zigzag to the note above. Editions
+are not consistent about this, so when an edition does not say, take the upper
+one — that is what the Classical style assumes, and Stage 5's trills start there
+for the same reason.
 
 **Repertoire for this rung.** Petzold *Minuet in G*, BWV Anh. 114, in either
 edition in the library; the same minuet's alternative setting; and the easy

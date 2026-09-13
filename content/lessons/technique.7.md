@@ -38,3 +38,10 @@ is actually pedalled. This exercise is scored on the pedal *value* rather than
 its timing: the app wants it somewhere in the middle of its travel, and will
 tell you if your pedal only ever reports 0 or 127 — some digital pianos send
 nothing in between, and that is worth knowing about your instrument.
+
+**How you'll know you've got it.** The same inner fingering in thirds twice in a
+row without deciding it again. An octave in D flat that takes the fourth finger
+without being reminded. Two against three where you can stop anywhere and say
+which hand is on the beat. And a half pedal your piano reports somewhere between
+0 and 127 — if it only ever sends those two, that is the instrument and not
+you.

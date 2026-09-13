@@ -37,3 +37,9 @@ trust your ear over the number when the two disagree.
 **Holding a melody note while the harmony changes underneath** is the pedalling
 problem this rung adds. The pedal has to lift and fall without breaking the held
 note. Slowly, and listen to the note rather than watching the foot.
+
+**How you'll know you've got it.** A seventh chord you recognise rather than
+spell. An Alberti figure at speed with a hand that is not tired afterwards — if
+it is, you played it with the fingers. And a voiced chord where you hear a tune
+over an accompaniment instead of a block: loud enough that you could sing the top
+note back after one hearing.

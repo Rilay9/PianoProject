@@ -43,3 +43,9 @@ the whole exercise, and the only way to place it is to keep counting through it.
 
 **5/4** is here rather than later because odd meters are easier than they look
 once you stop counting to five and start counting three-plus-two.
+
+**How you'll know you've got it.** The 2:1 exercise gone boring. A tie across
+the bar line where the pulse does not hesitate on either side of it. And a
+crescendo your *ear* hears as one line rather than a jump at the end — the score
+will pass both, as the lesson says above, so this is the one thing on the rung
+only you can check.

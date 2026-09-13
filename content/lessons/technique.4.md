@@ -39,3 +39,9 @@ staccato phrase full of right notes held too long will say so.
 
 Two exercises pass this rung. Take the scales at a tempo where the thumb is
 silent.
+
+**How you'll know you've got it.** A scale hands together at a tempo where you
+cannot hear the thumb arrive — not quieter, *inaudible* as an event. And the
+staccato and legato versions of the same four bars sounding like two different
+pieces of music: if someone in the next room could tell you which one you were
+playing, you have it.

@@ -20,7 +20,8 @@ it as four lines, not as two chords: each voice moves smoothly, mostly by step,
 and seeing that makes the page far easier than it looks.
 
 **The soprano is the tune.** It must be audible above the other three. This is
-voicing (see the beautiful-pieces module) and in a hymn it is the whole job.
+voicing — the skill the classical ladder starts at Stage 4 and is still
+working on at Stage 6 — and in a hymn it is the whole job.
 
 **The plagal cadence.** IV–I, the "amen". It is the sound of this repertoire and
 it is worth playing a dozen times in different keys to fix it in the ear.

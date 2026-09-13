@@ -40,12 +40,13 @@ tempo is wrong.
 Cascades*, *Scott Joplin's New Rag*, *Stoptime*, *Wall Street Rag*, and
 *Reflection Rag*, published in 1917, the year he died.
 
-**What is missing, and why.** `docs/02` names three more pieces for this rung —
+**What is missing, and why.** Three more pieces belong on this rung —
 Joplin's *Euphonic Sounds*, James Scott's *Frog Legs Rag* and Joseph Lamb's
-*Ragtime Nightingale*. None is in the source this library was built from: the
-`craigsapp/joplin` edition holds 47 rags and *Euphonic Sounds* is not among
-them, and Scott and Lamb are not Joplin. They are on the list to find elsewhere;
-until then this rung is Joplin only, and the eight above are enough for a year.
+*Ragtime Nightingale*. None of them is in the public-domain Joplin edition this
+library was built from: it holds 47 rags and *Euphonic Sounds* is not among
+them, and Scott and Lamb were not Joplin. They are on the list to find
+elsewhere; until then this rung is Joplin only, and the eight above are enough
+for a year.
 
 **Common mistake.** Treating these as harder versions of *The Entertainer*. They
 are not — they are later music, and the difficulty is in hearing the harmony,
