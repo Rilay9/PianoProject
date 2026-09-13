@@ -144,7 +144,28 @@ test.describe('the offline report', () => {
     // without the race — after a boot with the network off, is the recorded
     // time still the one nobody has touched?
     const SENTINEL = '2020-01-01T00:00:00.000Z';
+    // Let the online page's own check finish before planting anything.
+    //
+    // The sentinel closed one race and left the other end of it open: the check
+    // started by the reload above is a network round trip, and if it resolves
+    // *after* the sentinel is planted it overwrites it, on a page that was
+    // online when the request left. The test then reports a check recorded with
+    // no network, which is the one thing it is supposed to be able to say.
+    // Waiting for a first recorded time means nothing is in flight when the
+    // sentinel goes in, so the only writer left is the offline boot.
+    await page.waitForFunction(
+      () => localStorage.getItem('pianopath.lastUpdateCheck') !== null,
+      undefined,
+      { timeout: 120_000 },
+    );
     await context.setOffline(true);
+    // The app's guard is `navigator.onLine`, and the emulated flag does not
+    // reach the page the instant `setOffline` resolves. Reloading before it
+    // lands boots a page that still believes it is online, makes a real check,
+    // and records it — which the assertion below then reports as the app
+    // recording a check with no network. Wait for the page to agree that it is
+    // offline before going any further.
+    await page.waitForFunction(() => navigator.onLine === false, undefined, { timeout: 30_000 });
     await page.evaluate((planted) => {
       localStorage.setItem('pianopath.lastUpdateCheck', planted);
     }, SENTINEL);
@@ -152,6 +173,12 @@ test.describe('the offline report', () => {
     await page.waitForFunction(() => document.readyState === 'complete', undefined, {
       timeout: 120_000,
     });
+    // And that the boot itself saw it. If this fails the emulation slipped, not
+    // the app, and the message should say so rather than blaming the code.
+    expect(
+      await page.evaluate(() => navigator.onLine),
+      'the reloaded page thought it was online, so this proves nothing about the rule',
+    ).toBe(false);
     // Long enough that a check, had one been made, would have resolved.
     await page.waitForTimeout(2_000);
     expect(
