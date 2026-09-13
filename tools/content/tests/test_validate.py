@@ -89,6 +89,49 @@ class TestAlternativesReferences(unittest.TestCase):
         self.assertTrue(any("itself" in e for e in errors), errors)
 
 
+class TestTitlesThatLostAByte(unittest.TestCase):
+    """
+    A letter that came apart on the way in, caught before a learner reads it.
+
+    Three quarried rows shipped like this. Each held one or two ruined letters
+    and was otherwise perfect, which is why nothing saw them: the quarry's
+    `looks_garbled` wants a quarter of the characters to be high bytes and one
+    bad letter in sixteen is six per cent, the result is valid NFC so a
+    normalisation check passes it, and it round-trips through Latin-1 to an
+    error rather than back to the original, so the usual repair test says
+    "not mojibake".
+
+    Position is what is left. A real accented capital opens a word.
+    """
+
+    def test_an_accented_capital_inside_a_word_is_an_error(self) -> None:
+        # "Petit Papa Noël", whose ë arrived as a bare Ì.
+        catalog = [item("song.a", title="Petit Papa Noe\u00ccl")]
+        errors = validate_catalog(catalog, Path("."), strict_license=False)
+        self.assertTrue(any("lost a byte" in e for e in errors), errors)
+
+    def test_it_checks_the_people_as_well_as_the_piece(self) -> None:
+        catalog = [item("song.a", composer="Anton\u00cdn Dvo\u0159\u00e1k")]
+        errors = validate_catalog(catalog, Path("."), strict_license=False)
+        self.assertTrue(any("composer" in e for e in errors), errors)
+
+    def test_an_accented_capital_that_opens_a_word_is_a_name(self) -> None:
+        # Every one of these is a real title or a real person, and none may
+        # cost a build. The rule is about position, not about the alphabet.
+        for good in (
+            "\u00c1nh tr\u0103ng n\u00f3i h\u1ed9 l\u00f2ng t\u00f4i",
+            "\u00dcbung f\u00fcr die linke Hand",
+            "\u00c9cole moderne",
+            "Fikrimin ince g\u00fcl\u00fc - piyano notlar\u0131",
+            "Ma m\u00e8re l'Oye",
+            "Antonin Dvo\u0159\u00e1k",
+            "3 \u00d7 4 against 2",
+        ):
+            catalog = [item("song.a", title=good)]
+            errors = validate_catalog(catalog, Path("."), strict_license=False)
+            self.assertEqual(errors, [], f"{good!r} is a real title and was rejected")
+
+
 class TestThreeAlternatives(unittest.TestCase):
     def test_a_full_lesson_passes(self) -> None:
         data = curriculum(lesson("1.1", THREE_EX, THREE_SONGS))

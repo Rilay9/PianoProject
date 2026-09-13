@@ -434,7 +434,8 @@
               "exerciseOptions": [
                 "drill.improv.blues-backing",
                 "drill.improv.call-response",
-                "exercise.rhythm.shuffle-eighths.4bar"
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "exercise.blues-scale.c.1oct.right"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
@@ -499,12 +500,18 @@
                 "exercise.rhythm.shuffle-eighths.4bar",
                 "exercise.comping.c.off-beats",
                 "exercise.walking-bass.c.ii-v-i",
-                "exercise.syncopation.tied-across-bar"
+                "exercise.syncopation.tied-across-bar",
+                "exercise.clave.son-3-2",
+                "exercise.clave.son-2-3",
+                "exercise.tumbao.c",
+                "exercise.montuno.c.2note.son-3-2",
+                "exercise.montuno.c.3note.son-3-2"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
-                "song.folk.greensleeves.68",
-                "song.folk.row-row-row-your-boat"
+                "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
+                "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx",
+                "song.folk.carioquinha.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,

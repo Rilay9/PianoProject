@@ -25,7 +25,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from music21 import harmony  # noqa: E402
 
 from generate_exercises import (  # noqa: E402
+    BLUES_SCALE,
     BOOGIE_PATTERNS,
+    CLAVE_PATTERNS,
+    TUMBAO_OFFSETS,
+    make_blues_scale,
+    make_clave,
+    make_montuno,
+    make_tumbao,
     COMPING_PATTERNS,
     HARMONY_KEYS,
     SEVENTH_VOICINGS,
@@ -372,6 +379,123 @@ class TestBoogie(HarmonyFamilyCase):
                 sc, entry = make_boogie(tonic, pattern)
                 self.assertReadable(sc, entry["id"])
                 self.assertCharted(sc, entry["id"], 4)
+
+
+class TestLatin(HarmonyFamilyCase):
+    """
+    Clave, tumbao and montuno — the three skills the latin rung names.
+
+    It named all three and offered a syncopated rhythm drill, shuffle eighths,
+    off-beat comping, a ii-V-I walking bass and ties across the bar line, with a
+    twelve-bar blues, Greensleeves in 6/8 and Row Row Row Your Boat for
+    repertoire. Not one bar of latin music on the latin rung.
+    """
+
+    def test_the_clave_is_the_pattern_the_lesson_states(self) -> None:
+        # `latin.md`: 3-2 son has the first bar on beat 1, the "and" of 2 and
+        # beat 4, and the second bar on beats 2 and 3. In quarter-lengths from
+        # the start of the two-bar unit that is 0, 1.5, 3 | 5, 6. The lesson and
+        # the table have to say the same thing, because the lesson is what the
+        # learner reads and the table is what they hear.
+        self.assertEqual(CLAVE_PATTERNS["son-3-2"], [0.0, 1.5, 3.0, 5.0, 6.0])
+
+    def test_two_three_is_the_same_pattern_with_the_bars_swapped(self) -> None:
+        for style in ("son", "rumba"):
+            three_two = CLAVE_PATTERNS[f"{style}-3-2"]
+            two_three = CLAVE_PATTERNS[f"{style}-2-3"]
+            swapped = sorted((x + 4.0) % 8.0 for x in three_two)
+            self.assertEqual(two_three, swapped, style)
+
+    def test_the_rumba_differs_from_the_son_by_one_eighth(self) -> None:
+        # The third stroke, delayed from beat four to the "and" of four. If any
+        # other stroke differs, one of the two tables is wrong.
+        son = CLAVE_PATTERNS["son-3-2"]
+        rumba = CLAVE_PATTERNS["rumba-3-2"]
+        differences = [(a, b) for a, b in zip(son, rumba) if a != b]
+        self.assertEqual(differences, [(3.0, 3.5)])
+
+    def test_every_clave_engraves_its_own_strokes(self) -> None:
+        for pattern, offsets in CLAVE_PATTERNS.items():
+            sc, entry = make_clave(pattern, bars=2)
+            attacks = [float(n.getOffsetInHierarchy(sc))
+                       for n in sc.parts[0].recurse().notes]
+            self.assertEqual(attacks, offsets, pattern)
+            self.assertReadable(sc, entry["id"])
+
+    def test_the_montuno_plays_on_the_clave_and_nowhere_else(self) -> None:
+        """
+        The one unmistakable error in the style, per the lesson, is playing
+        against the clave. So the montuno's attacks are not a rhythm that
+        resembles the clave — they are `CLAVE_PATTERNS` itself, and this is what
+        stops the two drifting apart.
+        """
+        from music21 import chord as m21chord, harmony as m21harmony
+
+        for clave, offsets in CLAVE_PATTERNS.items():
+            for voices in (2, 3):
+                sc, entry = make_montuno("C", voices, clave)
+                attacks = sorted(
+                    float(c.getOffsetInHierarchy(sc))
+                    for c in sc.parts[0].recurse().getElementsByClass(m21chord.Chord)
+                    if not isinstance(c, m21harmony.ChordSymbol)
+                )
+                self.assertEqual(attacks, offsets + [x + 8.0 for x in offsets],
+                                 f"{clave} {voices}-note")
+                self.assertReadable(sc, entry["id"])
+
+    def test_the_tumbao_is_never_on_a_downbeat(self) -> None:
+        # "not on beat one ... which is why Latin music feels like it is leaning
+        # forward". A tumbao with a note on beat one is not a tumbao.
+        sc, entry = make_tumbao("C", bars=4)
+        attacks = [float(n.getOffsetInHierarchy(sc))
+                   for n in sc.parts[1].recurse().notes]
+        self.assertEqual(attacks, [bar * 4.0 + o for bar in range(4) for o in TUMBAO_OFFSETS])
+        self.assertTrue(all(a % 4.0 != 0.0 for a in attacks), attacks)
+
+    def test_the_tumbao_takes_the_next_chord_early(self) -> None:
+        # The note on beat four is the root of the bar that has not started yet.
+        # That anticipation is the figure; without it this is just an off-beat
+        # bass line.
+        sc, _ = make_tumbao("C", bars=4)
+        notes = list(sc.parts[1].recurse().notes)
+        fours = notes[1::2]
+        symbols = [cs for cs in sc.parts[0].recurse().getElementsByClass("ChordSymbol")]
+        for index, note_on_four in enumerate(fours):
+            nxt = symbols[(index + 1) % len(symbols)]
+            self.assertEqual(note_on_four.pitch.pitchClass, nxt.root().pitchClass,
+                             f"bar {index + 1} does not anticipate {nxt.figure}")
+
+    def test_the_parts_are_the_same_length(self) -> None:
+        for sc, entry in (make_tumbao("C"), make_montuno("C", 2), make_montuno("C", 3)):
+            lengths = {float(part.duration.quarterLength) for part in sc.parts}
+            self.assertEqual(len(lengths), 1, f"{entry['id']}: staves of different lengths")
+
+
+class TestBluesScale(HarmonyFamilyCase):
+    def test_it_has_the_flat_fifth(self) -> None:
+        # The note that separates a blues scale from a minor pentatonic. Without
+        # it this family would be a pentatonic scale under another name.
+        self.assertIn(6, BLUES_SCALE)
+        self.assertEqual(BLUES_SCALE, (0, 3, 5, 6, 7, 10, 12))
+
+    def test_the_notes_are_right_in_every_key(self) -> None:
+        for tonic in HARMONY_KEYS:
+            sc, entry = make_blues_scale(tonic, "right")
+            classes = {p.pitchClass for n in sc.parts[0].recurse().notes for p in n.pitches}
+            root = sc.parts[0].recurse().notes[0].pitch.pitchClass
+            self.assertEqual(classes, {(root + i) % 12 for i in BLUES_SCALE}, tonic)
+            self.assertReadable(sc, entry["id"])
+
+    def test_it_prints_no_fingering(self) -> None:
+        # Deliberate: there is no published chart for this scale in
+        # `content/sources`, and a fingering on a melodic line is the one error
+        # here that ships silently — `confirm_fingering` can only see chords.
+        from music21 import articulations
+
+        sc, _ = make_blues_scale("C", "both")
+        marks = [a for n in sc.recurse().notes for a in n.articulations
+                 if isinstance(a, articulations.Fingering)]
+        self.assertEqual(marks, [])
 
 
 class TestTheNotesAgreeWithTheSymbols(unittest.TestCase):

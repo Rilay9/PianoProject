@@ -173,6 +173,35 @@ def exercises_by_level(catalog: list) -> dict[int, int]:
 PERSONAL_BUILD_TAG = "personal-build"
 
 
+#: A lowercase letter followed by an accented capital, which is not a name.
+#:
+#: Three quarried titles reached the shipped catalogue reading "Petit Papa
+#: NoeIl", "piyano notlarA" and "Anh trAng noi ha long toi" -- one or two
+#: letters each, the rest of the title perfectly fine. Every one is the same
+#: accident: a letter whose UTF-8 is a lead byte plus a continuation in the C1
+#: range, read as Latin-1, and then stripped of the control half by something
+#: downstream. What is left is valid Unicode, valid NFC, and round-trips
+#: through Latin-1 to an error rather than to the original -- so every general
+#: mojibake test misses it. The quarry's own `looks_garbled` needs a quarter of
+#: the characters to be high bytes, and one ruined letter in sixteen is six per
+#: cent.
+#:
+#: What is left as a signal is position. A real accented capital opens a word --
+#: "Ánh", "Über", "École". One sitting immediately after a lowercase letter is
+#: the Latin-1 rendering of a lead byte, every time. Across 1,585 catalogue rows
+#: it matched exactly the three that were broken and nothing that was not.
+#:
+#: This lives in the catalogue check rather than in the quarry because it is the
+#: catalogue that must be clean: it is the last gate every row passes through
+#: whatever imported it, and the title is the one field a learner actually
+#: reads.
+#: U+00D7 and U+00F7 are the multiplication and division signs, which sit inside
+#: the Latin-1 letter ranges without being letters.
+MANGLED_LETTER = re.compile(
+    r"[a-z\u00DF-\u00F6\u00F8-\u00FF][\u00C0-\u00D6\u00D8-\u00DE\u0178]"
+)
+
+
 def validate_catalog(
     catalog: list, content_dir: Path, strict_license: bool, allow_nc: bool = False,
     personal: bool = False,
@@ -222,6 +251,15 @@ def validate_catalog(
                 errors.append(
                     f"{item_id}: tagged {PERSONAL_BUILD_TAG} — its composition is not public "
                     "domain, so it cannot ship in a strict build (docs/00 D23)"
+                )
+
+        for field in ("title", "composer", "artist"):
+            value = item.get(field)
+            if isinstance(value, str) and MANGLED_LETTER.search(value):
+                errors.append(
+                    f"{item_id}: {field} {value!r} has an accented capital inside a "
+                    "word, which is a letter that lost a byte on the way in; repair "
+                    "it in the source rather than shipping it"
                 )
 
         duration = item.get("durationSec")

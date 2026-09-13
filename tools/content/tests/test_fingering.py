@@ -22,7 +22,16 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from generate_exercises import HARMONIC_MINOR_FINGERING, MAJOR_FINGERING  # noqa: E402
+from generate_exercises import (  # noqa: E402
+    HARMONIC_MINOR_FINGERING,
+    MAJOR_FINGERING,
+    ScaleSpec,
+    _walk,
+    expand_fingering,
+    make_scale,
+    make_syncopation,
+    one_of,
+)
 
 CHART = Path(__file__).resolve().parents[3] / "content" / "sources" / "clementi-op42-fingering.json"
 
@@ -138,3 +147,123 @@ class TestFingeringRules(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class TestTheOctaveJoin(unittest.TestCase):
+    """
+    Where one octave of a scale meets the next.
+
+    The two hands join differently. The right thumb *starts* each octave group,
+    so the tonic in the middle of a run takes the finger the run began with. The
+    left thumb *ends* one, so the middle tonic takes the finger the octave ends
+    on. One rule was used for both, and every two-octave left-hand scale in C,
+    G, D, A, E, B and F major — and in seven harmonic minors — printed the fifth
+    finger on the middle tonic, telling the hand to jump back to its little
+    finger halfway up.
+
+    The seven flat keys hid it. Their tables begin and end on the same finger,
+    so both rules agree there, and the bug was invisible in every key except the
+    ones a beginner actually plays.
+    """
+
+    def test_the_left_hand_joins_on_its_thumb(self) -> None:
+        for table in (MAJOR_FINGERING, HARMONIC_MINOR_FINGERING):
+            for tonic, (_rh, lh) in table.items():
+                fingers = expand_fingering(lh, 2, hand="left")
+                self.assertEqual(len(fingers), 15, tonic)
+                self.assertEqual(fingers[7], lh[-1],
+                                 f"{tonic}: the middle tonic should take the finger the "
+                                 f"octave ends on")
+
+    def test_the_right_hand_joins_on_its_thumb(self) -> None:
+        for table in (MAJOR_FINGERING, HARMONIC_MINOR_FINGERING):
+            for tonic, (rh, _lh) in table.items():
+                fingers = expand_fingering(rh, 2)
+                self.assertEqual(len(fingers), 15, tonic)
+                self.assertEqual(fingers[7], rh[0], tonic)
+
+    def test_one_octave_is_the_table_itself(self) -> None:
+        # Whatever the join rule, a single octave has to be exactly what the
+        # chart says, in both hands.
+        for tonic, (rh, lh) in MAJOR_FINGERING.items():
+            self.assertEqual(expand_fingering(rh, 1), rh, tonic)
+            self.assertEqual(expand_fingering(lh, 1, hand="left"), lh, tonic)
+
+    def test_no_two_octave_scale_repeats_a_finger_on_a_step(self) -> None:
+        # The symptom, measured on the score rather than the table: an ascending
+        # scale that asks for a *lower* finger than the note before it has
+        # either crossed the thumb under or made a mistake, and a crossing to
+        # the fifth finger is not a crossing.
+        for tonic in ("C", "G", "F", "B"):
+            sc, _ = make_scale(ScaleSpec(tonic=tonic, mode="major", hands="left", octaves=2))
+            notes = list(sc.parts[1].recurse().notes)
+            for before, after in zip(notes, notes[1:]):
+                if after.pitch.ps <= before.pitch.ps:
+                    break  # the descent; the same rule mirrored, tested above
+                fb = [a.fingerNumber for a in before.articulations
+                      if hasattr(a, "fingerNumber")]
+                fa = [a.fingerNumber for a in after.articulations
+                      if hasattr(a, "fingerNumber")]
+                if fb and fa and fa[0] > fb[0]:
+                    self.assertNotEqual(
+                        fa[0], 5,
+                        f"{tonic}: {before.pitch.nameWithOctave}({fb[0]}) -> "
+                        f"{after.pitch.nameWithOctave}({fa[0]}) climbs to the little "
+                        "finger mid-scale",
+                    )
+
+
+class TestAWalkIsStepwise(unittest.TestCase):
+    """
+    `_walk` fills a phrase with a scale, and it used to fill it by repeating the
+    ascending run — so the moment more than fifteen notes were asked for, the
+    line hit the top C and fell two octaves to start again. It reached the page
+    in three families: the staccato and legato phrases ended "A5 B5 C6 C4", and
+    so did the 5/4 meter drill and both syncopation studies.
+    """
+
+    def test_every_step_is_a_step(self) -> None:
+        for per_bar in (2, 3, 4, 5, 7, 10):
+            walk = _walk("C", bars=4, per_bar=per_bar)
+            self.assertEqual(len(walk), 4 * per_bar)
+            leaps = [abs(b.ps - a.ps) for a, b in zip(walk, walk[1:])]
+            self.assertLessEqual(max(leaps), 2.0,
+                                 f"per_bar={per_bar}: a walk that leaps is not a walk")
+
+
+class TestPhrasesEndOnABarline(unittest.TestCase):
+    def test_syncopation_fills_whole_bars(self) -> None:
+        # Both variants stopped part-way through a bar — fourteen quarters and
+        # ten — so the last bar of each was half empty and the left hand's
+        # whole-note chords ran out before the right hand did.
+        for variant in ("tied-across-bar", "sixteenth"):
+            sc, _ = make_syncopation(variant)
+            lengths = {float(part.duration.quarterLength) for part in sc.parts}
+            self.assertEqual(len(lengths), 1, f"{variant}: staves of different lengths")
+            self.assertEqual(lengths.pop() % 4.0, 0.0, f"{variant}: ends mid-bar")
+
+
+class TestTheInputsAreAClosedSet(unittest.TestCase):
+    """
+    An `else` is not a check.
+
+    `make_shaping("C", "rise")` produced a score titled "Rise over a scale in C"
+    that printed *ff* and "Fade evenly from the first note to the last", because
+    "rise" is not "crescendo". There was one `raise ValueError` in three
+    thousand lines, and the families that turned out to be right were the
+    table-driven ones — because indexing a table raises.
+    """
+
+    def test_a_word_the_generator_does_not_know_is_an_error(self) -> None:
+        with self.assertRaises(ValueError):
+            one_of("shape", "rise", ("crescendo", "diminuendo"))
+
+    def test_a_word_it_does_know_comes_back(self) -> None:
+        self.assertEqual(one_of("shape", "crescendo", ("crescendo", "diminuendo")),
+                         "crescendo")
+
+    def test_the_message_names_what_was_allowed(self) -> None:
+        with self.assertRaises(ValueError) as caught:
+            one_of("motion", "sideways", ("similar", "contrary"))
+        self.assertIn("similar", str(caught.exception))
+        self.assertIn("sideways", str(caught.exception))
+

@@ -671,7 +671,8 @@
                 "drill.blues.lh-patterns",
                 "exercise.rhythm.syncopated.4bar",
                 "exercise.arpeggio7.c-dominant7.2oct.both",
-                "exercise.rhythm.shuffle-eighths.4bar"
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "exercise.blues-scale.c.1oct.right"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
