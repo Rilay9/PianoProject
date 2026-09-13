@@ -79,9 +79,23 @@ function logScale(name: string, value: number): number {
 /**
  * Fifths from a key signature name, because that is what Python counts.
  *
- * `extractScoreModel` stores the *name* ("E-flat major"), and the feature is
- * the number of sharps or flats. Inverting the table is smaller and clearer
- * than threading a second field through the model.
+ * `extractScoreModel` stores the *name*, and the feature is the number of
+ * sharps or flats. Inverting the table is smaller and clearer than threading a
+ * second field through the model.
+ *
+ * Both spellings, and that is the whole point of `tonicKey`. These tables were
+ * written as "E-flat" and "F-sharp"; `keySignatureName`, which is what actually
+ * fills `model.keySig`, writes "Eb" and "F#". So every key with an accidental
+ * in it — sixteen of the thirty signatures, every flat key and every sharp key
+ * — looked up nothing and scored **zero** accidentals, which is what C major
+ * scores. A piece in D flat was fed to the level model as though it had no
+ * black notes in its signature at all.
+ *
+ * It survived because the unit test called this function with "E-flat major",
+ * a string nothing produces. A test that writes its own input cannot find a
+ * disagreement between two modules about what the input is; the round-trip
+ * test beside it now goes through `keySignatureName`, so the two vocabularies
+ * are checked against each other rather than against a third one.
  */
 const FIFTHS_BY_TONIC: Record<string, number> = {
   C: 0, G: 1, D: 2, A: 3, E: 4, B: 5, 'F-sharp': 6, 'C-sharp': 7,
@@ -93,6 +107,11 @@ const FIFTHS_BY_MINOR_TONIC: Record<string, number> = {
   D: 1, G: 2, C: 3, F: 4, 'B-flat': 5, 'E-flat': 6, 'A-flat': 7,
 };
 
+/** "Eb" and "E-flat" are the same key; the tables are written the long way. */
+function tonicKey(tonic: string): string {
+  return tonic.replace(/^([A-G])(?:b|♭)$/, '$1-flat').replace(/^([A-G])(?:#|♯)$/, '$1-sharp');
+}
+
 export function keyAccidentals(keySig: string | undefined): number {
   if (!keySig) return 0;
   // The mode has to be read first. "A minor" has no accidentals; A *major* has
@@ -102,7 +121,7 @@ export function keyAccidentals(keySig: string | undefined): number {
   const minor = /(?:^|\s)minor\s*$/i.test(keySig);
   const tonic = keySig.replace(/\s+(major|minor)\s*$/i, '').trim();
   const table = minor ? FIFTHS_BY_MINOR_TONIC : FIFTHS_BY_TONIC;
-  return table[tonic] ?? 0;
+  return table[tonicKey(tonic)] ?? 0;
 }
 
 interface HandStats {

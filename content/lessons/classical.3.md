@@ -35,8 +35,10 @@ A little space between phrases is worth more than any dynamic.
 softer, or with one added ornament. A **mordent** is the main note, a
 neighbour and the main note again, fast and *on* the beat. Which neighbour
 depends on the sign: the zigzag with a line through it takes the note below, the
-plain zigzag the note above. Editions differ, so when one does not say, take the
-upper — as Stage 5's trills do.
+plain zigzag the note above. Editions differ, and when one does not say, take
+the note above — the plain sign is much the commoner one in print. The drill on
+the technique track at Stage 5 is deliberately the other one, the stroked sign
+going below, so that you end up with both under the hand.
 
 **Repertoire for this rung.** Petzold *Minuet in G*, BWV Anh. 114, in either
 edition in the library; the same minuet's alternative setting; and the easy

@@ -15,8 +15,9 @@ extra ones are named.
 
 **A secondary dominant is a dominant of something that is not the tonic.** In C,
 `V/V` is D major — the dominant of G — and the F sharp in it is the note that
-tells you the music has briefly left home. Written as a numeral it is two
-characters; described in words it takes a sentence, which is the argument for
+tells you the music has briefly left home. Written as a numeral it is one short
+symbol that means the same thing in every key; described in words it takes a
+sentence and has to be said again in the next key. That is the argument for
 numerals in miniature.
 
 **Tonicisation is not modulation.** A secondary dominant points at a chord for a

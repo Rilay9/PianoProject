@@ -33,6 +33,10 @@ from generate_exercises import (  # noqa: E402
     make_rhythm,
     make_seventh_arpeggio,
     make_arpeggio,
+    make_trill,
+    engraved_key,
+    make_scale,
+    ScaleSpec,
     note_name,
 )
 
@@ -430,6 +434,129 @@ class TestChordFingeringSurvivesExport(unittest.TestCase):
     def test_the_left_hand_fingers_inversions_from_the_bottom(self) -> None:
         score, _ = make_triad_inversions("C", "major", "left")
         self.assertEqual(self.written_fingerings(score)[:3], ["5", "3", "1"])
+
+class TestTrillAndMordent(unittest.TestCase):
+    """
+    Where an ornament starts and where it ends, which two lessons teach.
+
+    `classical.5` says a trill in Classical style starts on the note above the
+    main one and finishes on the main note; `technique.6` says the same about
+    the exercise itself, which is written out note for note so the learner can
+    see it. The maker wrote main-note-first, which made both lessons false about
+    the app's own material and also left every trill hanging on its upper
+    neighbour — the one thing no trill does.
+
+    The mordent is the other sign and stays main-lower-main: `classical.3`
+    describes the stroked mordent as taking the note below, and this is it.
+    """
+
+    @staticmethod
+    def _notes(part):
+        return [n.nameWithOctave for n in part.recurse().notes]
+
+    @staticmethod
+    def _fingers(part):
+        return [a.fingerNumber
+                for n in part.recurse().notes
+                for a in n.articulations
+                if hasattr(a, "fingerNumber")]
+
+    def _sounding(self, score):
+        for part in score.parts:
+            names = self._notes(part)
+            if names:
+                return part, names
+        self.fail("no part has any notes")
+
+    def test_a_trill_starts_on_the_note_above(self) -> None:
+        score, _ = make_trill(tonic="C", notes_per_beat=4, hands="right")
+        _, names = self._sounding(score)
+        self.assertEqual(names[0][0], "D", f"trill began on {names[0]}, not the upper note")
+        self.assertEqual(names[1][0], "C")
+
+    def test_a_trill_ends_on_its_main_note(self) -> None:
+        # Eight notes to a main note at four per beat, alternating from the
+        # upper: the last of each cell has to be the note being decorated.
+        score, _ = make_trill(tonic="C", notes_per_beat=4, hands="right")
+        _, names = self._sounding(score)
+        cell = names[:8]
+        self.assertEqual(cell[-1][0], "C", f"trill ended on {cell[-1]}")
+        self.assertEqual(len(cell), 8)
+
+    def test_a_mordent_is_main_lower_main(self) -> None:
+        score, _ = make_trill(tonic="C", notes_per_beat=2, hands="left", ornament="mordent")
+        _, names = self._sounding(score)
+        self.assertEqual([n[0] for n in names[:3]], ["C", "B", "C"])
+
+    def test_the_two_hands_finger_the_first_note_from_their_own_end(self) -> None:
+        # The right hand climbs away from the thumb and the left climbs towards
+        # it, so the upper of two adjacent keys is 3 in one hand and 2 in the
+        # other. One number for both was only right while the first note was
+        # the lower of the pair.
+        right, _ = make_trill(tonic="C", notes_per_beat=4, hands="right")
+        left, _ = make_trill(tonic="C", notes_per_beat=4, hands="left")
+        self.assertEqual(self._fingers(self._sounding(right)[0])[0], 3)
+        self.assertEqual(self._fingers(self._sounding(left)[0])[0], 2)
+
+    def test_the_lessons_still_say_what_this_builds(self) -> None:
+        # The reason the notes are this way round is written in two lessons. If
+        # one of them is reworded away, this test should be read again rather
+        # than the maker quietly changed back.
+        lessons = Path(__file__).resolve().parents[3] / "content" / "lessons"
+        classical = " ".join((lessons / "classical.5.md").read_text(encoding="utf-8").split())
+        technique = " ".join((lessons / "technique.6.md").read_text(encoding="utf-8").split())
+        self.assertIn("starts on the **upper** note", classical)
+        self.assertIn("on the note *above* the main one, and on the main note last", technique)
+
+
+class TestKeySignatureInTheRow(unittest.TestCase):
+    """
+    What the Library screen prints under "Key", against what is on the page.
+
+    `catalog_entry` filled `keySig` from the maker's `key` argument, which is a
+    music21 root and not a key signature. Across the generated family — 1,012
+    rows, about two thirds of the catalogue — that shipped two faults at once:
+    no mode, so every minor exercise was labelled with its relative major's
+    name; and music21's trailing hyphen for a flat, so the Library showed
+    "Key: B-" and "Key: E-". `note_name` exists in this file because that same
+    hyphen leaked into seventy titles once; nothing was watching this field.
+
+    Every other importer already writes a real key name with its mode, so this
+    was the only family doing it.
+    """
+
+    def test_a_minor_exercise_is_not_labelled_with_its_relative_major(self) -> None:
+        score, entry = make_scale(ScaleSpec("A", "harmonic", "both", 1, "similar", 0.5, 60))
+        declared = entry["drill"]["params"]["key"]
+        self.assertEqual(engraved_key(score, declared), "A minor")
+
+    def test_a_flat_key_is_spelled_the_way_a_reader_writes_it(self) -> None:
+        score, entry = make_scale(ScaleSpec("E-", "major", "both", 1, "similar", 0.5, 60))
+        declared = entry["drill"]["params"]["key"]
+        self.assertEqual(engraved_key(score, declared), "Eb major")
+
+    def test_a_shape_written_without_a_signature_claims_no_key(self) -> None:
+        # The seventh families are engraved with no key signature on purpose, so
+        # the shape is spelled in accidentals. Naming the root as the key would
+        # be false and naming C major would be worse.
+        score, entry = make_seventh_arpeggio("A-", "dominant7", "both")
+        declared = entry["drill"]["params"]["key"]
+        self.assertIsNone(engraved_key(score, declared))
+
+    def test_no_generated_row_ships_a_hyphen_flat_or_a_bare_root(self) -> None:
+        # The whole family, not a sample: this is the check that would have
+        # caught it, and it costs one plan.
+        bad = []
+        for score, entry in default_plan(quick=True):
+            value = engraved_key(score, (entry.get("drill") or {}).get("params", {}).get("key"))
+            if value is None:
+                continue
+            if "-" in value:
+                bad.append(f"{entry['id']}: {value}")
+            elif not value.endswith((" major", " minor")):
+                bad.append(f"{entry['id']}: {value} has no mode")
+        self.assertEqual(bad, [], "generated rows with an unreadable key: " + "; ".join(bad))
+
 
 class FlatSpelling(unittest.TestCase):
     """Seventy shipped titles read "A- major arpeggio" until this existed.

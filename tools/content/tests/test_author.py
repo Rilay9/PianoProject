@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from author import AuthoringError, author_all, compile_abc  # noqa: E402
+from author import AuthoringError, author_all, compile_abc, key_name  # noqa: E402
 from common import AUTHORED_DIR  # noqa: E402
 from tests.mxlutil import read_mxl  # noqa: E402
 
@@ -89,6 +89,54 @@ class TestAuthoredSources(unittest.TestCase):
             with self.subTest(item=item["id"]):
                 self.assertTrue(item["source"]["license"])
                 self.assertTrue(item["source"]["checksum"])
+
+
+class TestKeyName(unittest.TestCase):
+    """
+    The `K:` field is an ABC field; `keySig` is a fact the Library prints.
+
+    Thirty-two authored rows carried "C", "G", "F" and "Am" straight out of the
+    ABC, on the same shelf as kern rows saying "Ab major" and generated rows
+    saying "A minor" — three spellings of one fact, one of them with no mode at
+    all, all three shown to the learner under the same heading.
+    """
+
+    def test_a_bare_letter_is_major(self) -> None:
+        self.assertEqual(key_name("C"), "C major")
+        self.assertEqual(key_name("G"), "G major")
+
+    def test_the_m_suffix_is_minor(self) -> None:
+        self.assertEqual(key_name("Am"), "A minor")
+        self.assertEqual(key_name("F#m"), "F# minor")
+
+    def test_an_accidental_survives(self) -> None:
+        self.assertEqual(key_name("Bb"), "Bb major")
+        self.assertEqual(key_name("Eb"), "Eb major")
+
+    def test_a_mode_it_cannot_name_is_left_for_the_renderer(self) -> None:
+        # `render_check --apply` measures the engraved signature, which is a
+        # better answer than this function could invent for a church mode.
+        self.assertIsNone(key_name("Ador"))
+        self.assertIsNone(key_name(None))
+
+    def test_every_authored_source_produces_a_key_with_a_mode(self) -> None:
+        from common import AUTHORED_DIR
+        import re as _re
+
+        seen = 0
+        for path in sorted(AUTHORED_DIR.glob("*.abc")):
+            for line in path.read_text(encoding="utf-8").splitlines():
+                match = _re.match(r"^K:\s*(.+?)\s*$", line)
+                if not match:
+                    continue
+                seen += 1
+                named = key_name(match.group(1))
+                self.assertIsNotNone(named, f"{path.name}: K:{match.group(1)} has no key name")
+                self.assertTrue(
+                    named.endswith((" major", " minor")),
+                    f"{path.name}: {named!r} has no mode",
+                )
+        self.assertGreater(seen, 20, "no K: fields were read")
 
 
 class TestMetadataErrors(unittest.TestCase):

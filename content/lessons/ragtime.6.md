@@ -68,7 +68,10 @@ anything you have played so far, and the road map matters — a rag played in th
 wrong order is not the piece. Before you play a note, trace the route through
 the page with a finger and say the strain letters out loud.
 
-**Repertoire for this rung.** Three complete rags, any one of which counts:
+**Repertoire for this rung.** Ten options; one complete rag counts. Start with
+*School of Ragtime* — six short exercises Joplin wrote to teach exactly this,
+and the shortest thing on the rung. Then any of the three below, which are the
+three whose trios this lesson walks through:
 
 - ***The Entertainer*** (1902) — the one you already half know from Stage 5, now
   complete: intro, A, A, B, B, A, then the trio in F and a last strain back in
@@ -78,6 +81,13 @@ the page with a finger and say the strain letters out loud.
   trades one problem for another.
 - ***The Easy Winners*** (1901) — A flat, four strains, a rag two-step. The most
   work of the three and the most rewarding; its name is a joke.
+
+Six more sit behind them, all in 2/4 and all within a hair of the same
+difficulty, for when you want a fourth: *Swipsey*, *Sunflower Slow Drag*,
+*Weeping Willow*, *The Favorite*, *Cleopha* and *Something Doing*. Three of them
+— *Swipsey* with Arthur Marshall, *Sunflower Slow Drag* and *Something Doing*
+with Scott Hayden — Joplin wrote with somebody else, which is worth knowing when
+one of them feels slightly unlike the rest.
 
 **Common mistake.** Playing hands together from bar one. At this length that
 means learning four strains badly at once. Left hand alone, one strain, until it

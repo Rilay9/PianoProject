@@ -609,15 +609,13 @@
                 "song.folk.greensleeves.chords",
                 "song.folk.greensleeves.waltz",
                 "song.folk.when-the-saints.f",
+                "song.holiday.jingle-bells.g",
                 "song.folk.happy-birthday",
                 "song.pop.canciones-populares-feliz-cumpleanos-piano.pdmx",
-                "song.pop.misc-cartoons-les-mysterieuses-cites-d-or-generique.pdmx",
                 "song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx",
                 "song.pop.sammy-fain-and-irving-kahal-i-ll-be-seeing-you.pdmx",
                 "song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx",
-                "song.pop.kevin-sherwood-damned.pdmx",
-                "song.pop.koji-kondo-song-of-storms-easy.pdmx",
-                "song.pop.misc-computer-games-coconut-mall-trombone-solo.pdmx"
+                "song.pop.koji-kondo-song-of-storms-easy.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -783,6 +781,7 @@
               "textFile": "lessons/improv.4.md",
               "exerciseOptions": [
                 "drill.improv.call-response",
+                "drill.improv.loop-four-chord",
                 "drill.improv.loop-i-iv-v",
                 "exercise.accompaniment.broken.c-major.left"
               ],

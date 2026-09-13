@@ -23,8 +23,9 @@ the page, and not all at once.
 
 **Roman numerals are the memory.** A tune you know as chord symbols is a tune in
 one key. A tune you know as numerals is a tune in twelve. The secondary-dominant
-drill is here because standards are full of them, and `V7/vi` is four characters
-instead of a chord you would otherwise have to memorise separately in every key.
+drill is here because standards are full of them, and `V7/vi` names the same
+chord in all twelve keys — one thing to learn instead of a chord you would
+otherwise memorise separately every time the tune moved.
 
 **What to practise.** One tune, twenty minutes at a time, in the four ways
 above. Then the same tune a fourth higher.

@@ -10,9 +10,9 @@ videos:
 readingTime: 2
 ---
 
-Four octaves, in sixteenths, at a quarter-note pulse of 120. That is sixteen
-notes a second in each hand, and it is the standard this stage is measured
-against.
+Four octaves, in sixteenths, at a quarter-note pulse of 120. That is eight
+notes a second in each hand — two beats a second with four notes in each — and
+it is the standard this stage is measured against.
 
 The exercises here are not new material. They are the scales you have played
 since Stage 2, over a wider span and much faster, and the only thing that has

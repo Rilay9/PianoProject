@@ -25,9 +25,11 @@ alone until you can hear the next chord arriving before it does — that is the
 whole point of a walking line, and it is why bass players are never lost.
 
 **Hearing it.** The harmonic-dictation drill plays a progression and waits for
-you to play it back as chords. It gives you 120 milliseconds of silence to
-finish each chord, which is about four times longer than a spread chord takes,
-so play them as chords rather than picking the notes out one at a time.
+you to play it back as chords. A chord is finished when no new note has arrived
+for 120 milliseconds — long enough that rolling one does not split it in two,
+short enough that two chords played in tempo are never run together. So play
+them as chords: a triad picked out one finger at a time reads as three chords,
+and it should.
 
 **What to practise.** One comping pattern in one key until the rhythm is
 automatic, then the same pattern in a second key. A walking line over the blues

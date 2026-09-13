@@ -375,25 +375,74 @@ describe('checklist, placement and walkthrough sit outside the Drill interface',
  * every screen showed them as "import needed" for content that can never be
  * imported because it does not exist as a file. This reads
  * `content/catalog.static.json` directly (not the built `catalog.json`) and
- * checks the whole thing, not a sample: 70 items, 63 of them
+ * checks the whole thing, not a sample: 71 items, 64 of them
  * generator-sourced, none of them allowed to be unplayable.
+ *
+ * The counts are deliberate, not decoration — they are what makes an item
+ * added without a thought about playability show up here. The 71st is
+ * `drill.improv.loop-four-chord`, added because `improv.4` told the learner
+ * "the app loops C-Am-F-G" and the only backing track on that rung was the
+ * I-IV-V loop from the stage before.
  */
 describe('every generator-sourced item in the static catalog is playable (P19 Task 3b)', () => {
   const STATIC_CATALOG = JSON.parse(
     readFileSync(resolve('../content/catalog.static.json'), 'utf8'),
   ) as CatalogItem[];
 
-  it('is the 70-item catalog this test was written against', () => {
-    expect(STATIC_CATALOG.length).toBe(70);
+  it('is the 71-item catalog this test was written against', () => {
+    expect(STATIC_CATALOG.length).toBe(71);
   });
 
   it('no item whose source is "PianoPath generator" is ever unplayable', () => {
     const generatorSourced = STATIC_CATALOG.filter((item) => item.source?.name === 'PianoPath generator');
-    expect(generatorSourced.length).toBe(63);
+    expect(generatorSourced.length).toBe(64);
     const unplayable = generatorSourced.filter((item) => targetFor(item) === 'none');
     expect(
       unplayable.map((item) => item.id),
       'these generator-sourced items still show "import needed" with nothing importable',
     ).toEqual([]);
+  });
+});
+
+describe('the four-chord loop plays the four chords the lesson names', () => {
+  // `improv.4` is built on I-vi-IV-V: "Over I-vi-IV-V. The app loops C-Am-F-G",
+  // then a page about which pentatonic fits all four. The app did not loop
+  // C-Am-F-G — the only backing track on that rung was `loop-i-iv-v`, four bars
+  // of C, two of F and two of G, which is the Stage 3 drill and has no vi in it
+  // at all. The rung's own concept list said `four-chord-loop` and nothing
+  // played one.
+  //
+  // Checked as pitches rather than as the symbols in the row, because the row
+  // is what was already right: the question is whether "Am" survives
+  // `parseChordSymbol` as a minor triad, which is the step that would make the
+  // lesson true or false in the learner's ears.
+  const STATIC = JSON.parse(
+    readFileSync(resolve('../content/catalog.static.json'), 'utf8'),
+  ) as CatalogItem[];
+
+  it('is C major, A minor, F major, G major, one chord a bar', () => {
+    const item = STATIC.find((entry) => entry.id === 'drill.improv.loop-four-chord');
+    expect(item, 'drill.improv.loop-four-chord is not in the static catalog').toBeDefined();
+    const drill = drillFromCatalog(item as CatalogItem, {});
+    expect(drill?.kind).toBe('backing-track');
+    const loop = (drill?.next()?.playback ?? []).map((bar) => bar.midi);
+    expect(loop).toEqual([
+      [48, 52, 55], // C  E  G
+      [57, 60, 64], // A  C  E
+      [53, 57, 60], // F  A  C
+      [55, 59, 62], // G  B  D
+    ]);
+  });
+
+  it('is not the same loop as the rung before it', () => {
+    // The two sit on `improv.4` together and the lesson distinguishes them, so
+    // a copy-paste that made them identical would make that paragraph wrong
+    // without failing anything else.
+    const four = STATIC.find((entry) => entry.id === 'drill.improv.loop-four-chord');
+    const three = STATIC.find((entry) => entry.id === 'drill.improv.loop-i-iv-v');
+    expect(three, 'drill.improv.loop-i-iv-v is not in the static catalog').toBeDefined();
+    const bars = (item: CatalogItem): number[][] =>
+      (drillFromCatalog(item, {})?.next()?.playback ?? []).map((bar) => bar.midi);
+    expect(bars(four as CatalogItem)).not.toEqual(bars(three as CatalogItem));
   });
 });

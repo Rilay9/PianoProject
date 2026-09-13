@@ -71,8 +71,8 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `chords-pop.3` | 5 | 8 | 2.3–3.3 | Happy Birthday to You (2.3), Resistiré (Dúo Dinámico) (2.3), Tom Dooley (3.1), A Brotherhood of Heroes (Call of Duty WWII Theme Song) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), … and 2 more |
-| 4 | `chords-pop.4` | 4 | 12 | 3.2–4.3 | Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Feliz Cumpleaños (Piano) (3.4), Les mystérieuses cités d'or (générique) (3.4), Twinkle Twinkle Little Star (Easy) (3.5), I'll Be Seeing You (3.5), … and 6 more |
+| 3 | `chords-pop.3` | 5 | 6 | 2.3–3.3 | Happy Birthday to You (2.3), Tom Dooley (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), Let it Snow - Leadsheet (3.2), Greensleeves (with chords) (3.3) |
+| 4 | `chords-pop.4` | 4 | 10 | 3.2–4.3 | Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), Greensleeves (with chords) (3.3), Feliz Cumpleaños (Piano) (3.4), Twinkle Twinkle Little Star (Easy) (3.5), I'll Be Seeing You (3.5), … and 4 more |
 | 5 | `chords-pop.5` | 3 | 11 | 4.5–5.2 | Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5), Lavender's Blue (4.6), Löwenzahn Thema (Piano) (4.7), As the Deer Piano (5.0), Joy to the World (5.0), … and 5 more |
 | 6 | `chords-pop.6` *(song-optional)* | 5 | 12 | 5.4–6.2 | How to Train Your Dragon: Flying Theme (5.5), Clocks Coldplay (5.5), Lazy Afternoons (Kingdom Hearts II) [Piano] (5.5), All of Me (John Legend) - easy piano (5.6), Westworld - Sweetwater (5.6), Dancing Queen (5.7), … and 6 more |
 | 7 | `chords-pop.7` *(song-optional)* | 6 | 12 | 5.3–7.3 | The Danish Girl (theme) (6.1), The Lion theme (6.1), Never Forget by Martin O'Donnell (6.1), For the damaged coda Blonde Redhead (6.2), Isolated System (6.2), The Weekend - Blinding Lights - Easy Piano (6.3), … and 6 more |
@@ -88,7 +88,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 3 | `classical.3` | 3 | 12 | 3.4–5.1 | Swan Lake (3.5), Rodolphe Kreutzer - Étude No. 2 (3.5), Totoro: Path of the Wind (3.6), Inno alla Gioia (3.6), Simple Gifts (2-Part Round) (3.9), Ode à Alegria (Nona Sinfonia) (3.9), … and 6 more |
 | 4 | `classical.4` | 3 | 4 | 4.1–4.4 | Für Elise (easy) (4.1), Für Elise (beginner) (4.1), Ode to Joy (easy variation) (4.1), Bella Ciao (4.2) |
 | 4 | `classical.4.shelf` | 3 | 12 | 3.5–6.2 | Für Elise (easy) (4.1), Erik Satie - Gnossienne n1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1), … and 6 more |
-| 5 | `classical.5` | 4 | 12 | 3.6–5.2 | clair de lune beginner version (4.7), Chopin - Waltz in A Minor (Piano Solo) (4.8), Oh Canada (4.8), Hungarian Sonata (5.0), Aria Notebook Anna Magdalena Bach (5.0), Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), … and 6 more |
+| 5 | `classical.5` | 4 | 10 | 3.6–5.2 | clair de lune beginner version (4.7), Chopin - Waltz in A Minor (Piano Solo) (4.8), Oh Canada (4.8), Hungarian Sonata (5.0), Aria Notebook Anna Magdalena Bach (5.0), Greensleeves (5.1), … and 4 more |
 | 6 | `classical.6` | 9 | 21 | 3.2–6.6 | Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 6 in B minor, Op. 28 (6.0), Prelude No. 20 in C minor, Op. 28 (6.0), Prélude in E minor, Op. 28 No. 4 (6.1), Air on the G String (from BWV 1068) (6.1), Prelude No. 1 in C major, BWV 846 (6.1), … and 15 more |
 | 7 | `classical.7` | 8 | 22 | 4.2–8.4 | Prelude No. 9 in E major, Op. 28 (7.0), Prelude No. 11 in B major, Op. 28 (7.0), Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Prelude No. 2 in C minor, BWV 847 (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), … and 16 more |
 | 8 | `classical.8` | 8 | 23 | 4.3–8.8 | Waltz in C-sharp minor, Op. 64 No. 2 (7.8), Prelude No. 5 in D major, Op. 28 (8.0), Grande valse brillante in E-flat major, Op. 18 (8.0), Waltz in D-flat major, Op. 64 No. 1 (8.0), Nocturne No. 20 in C-sharp minor, Op. posth. (8.1), Arabesque No. 1, L. 66 (8.1), … and 17 more |
@@ -109,7 +109,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `improv.3` *(song-optional)* | 3 | 0 | 3.1–3.2 | — |
-| 4 | `improv.4` *(song-optional)* | 3 | 0 | 3.1–4.1 | — |
+| 4 | `improv.4` *(song-optional)* | 4 | 0 | 3.1–4.1 | — |
 | 5 | `improv.5` *(song-optional)* | 4 | 3 | 3.4–5.1 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
 | 6 | `improv.6` *(song-optional)* | 5 | 0 | 5.4–7.2 | — |
 | 7 | `improv.7` *(song-optional)* | 5 | 0 | 7.1–7.3 | — |
@@ -189,7 +189,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `latin` | 12 | 4 | 3.2–6.4 | Twelve-bar blues shuffle in C (3.4), Carioquinha (4.5), Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), Tango La Cumparsita - Piano Solo (Tutorial Parte A) (5.1) |
+| 5 | `latin` | 12 | 3 | 3.2–6.4 | Carioquinha (4.5), Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), Tango La Cumparsita - Piano Solo (Tutorial Parte A) (5.1) |
 
 ## Ragtime (`ragtime`)
 

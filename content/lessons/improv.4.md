@@ -17,9 +17,11 @@ leading tone that demands resolution), so taking them out leaves a scale where
 nothing can sound wrong over a diatonic progression. It is the reason the black
 keys alone (an F sharp pentatonic) sound good over almost anything.
 
-**Over I–vi–IV–V.** The app loops C–Am–F–G. Use C major pentatonic throughout —
-all five notes fit all four chords. Now the ear is free and the only questions
-left are rhythm, shape and where you stop.
+**Over I–vi–IV–V.** The app loops C–Am–F–G, one chord a bar. Use C major
+pentatonic throughout — all five notes fit all four chords. Now the ear is free
+and the only questions left are rhythm, shape and where you stop. Stage 3's
+I–IV–V loop is still on this rung and is the easier of the two; the four-chord
+one moves twice as often, which is the whole difference.
 
 **Answering the phrase.** The app plays a two-bar call; you play a two-bar
 answer. Rules that make an answer sound like an answer rather than a new

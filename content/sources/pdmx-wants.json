@@ -61,7 +61,23 @@
     "archive: what sits in those bands is anime and game arrangements with 'blues' or 'jazz'",
     "in the title, modern transcriptions still in copyright, and uploader improvisations. An",
     "empty rung that says so is better than a rung filled with the wrong music, and both",
-    "lessons already say so."
+    "lessons already say so.",
+    "",
+    "The three sonatinas are a third group and a different reason again. classical.5 is built",
+    "on sonata form — its finder asks for it, its 'how you'll know' asks for one movement to",
+    "tempo — and not one of the twelve pieces on that rung is a sonatina, or in sonata form at",
+    "all; classical.6 and .7 carry the form forward with the same gap. The learner cannot do",
+    "what the rung asks with what the rung has.",
+    "",
+    "These are public domain and would never win a quota: the classical bucket is the most",
+    "crowded one in the archive and a teaching sonatina loses every ranking to a Chopin",
+    "nocturne. That is the whole point of this list. Each `title` pattern was checked against",
+    "the 37,499-row index and matches exactly one row, so none of them is a guess:",
+    "  Clementi op. 36 no. 1   level 4.9  38 bars, two staves, 4.83 from 3 ratings  -> classical.5",
+    "  Beethoven WoO Anh. 5 F  level 5.5  71 bars, 4.78 from 25 ratings             -> classical.6",
+    "  Diabelli op. 168 no. 1  level 6.6  53 bars, 4.85 from 71 ratings             -> classical.6/.7",
+    "Until a quarry run brings them in, the lessons say plainly that a sonatina has to be",
+    "imported and name these three, rather than claiming pieces the library does not have."
   ],
   "wants": [
     {
@@ -429,6 +445,33 @@
       "artist": [
         "zequinha de abreu",
         "abreu"
+      ]
+    },
+    {
+      "id": "song.classical.clementi-sonatina-op36-1",
+      "title": [
+        "sonatina no 1 muzio clementi"
+      ],
+      "artist": [
+        "clementi"
+      ]
+    },
+    {
+      "id": "song.classical.beethoven-sonatina-f-anh5",
+      "title": [
+        "sonatine in f major woo anh 5"
+      ],
+      "artist": [
+        "beethoven"
+      ]
+    },
+    {
+      "id": "song.classical.diabelli-sonatina-op168-1",
+      "title": [
+        "sonatina in f major op 168 no 1"
+      ],
+      "artist": [
+        "diabelli"
       ]
     }
   ],

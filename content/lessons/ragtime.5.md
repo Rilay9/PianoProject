@@ -7,7 +7,7 @@ videos:
   - label: "Ragtime & Jazz Stride Piano for BEGINNERS Part 1.1, LEFT HAND | Piano Lesson Tutorial"
     url: "https://www.youtube.com/watch?v=iPuMhcommkM"
     teacher: "Vladimir Uspenskii"
-readingTime: 2
+readingTime: 3
 ---
 
 Ragtime is written-out music, not improvised, and it is built from one idea: a
@@ -38,8 +38,16 @@ pieces; there is no development to worry about.
 Right hand alone, counting sixteenths out loud. Hands together at half tempo,
 four bars at a time. This is a style where slow practice is not optional.
 
-**Repertoire for this rung.** *The Entertainer* (easy arrangement), in either
-edition in the library.
+**Repertoire for this rung.** Nine options, and they split in two. *The
+Entertainer* is here in two editions and is the only actual rag on the rung —
+the syncopation and the oom-pah at once, which is the thing being built towards.
+The other seven are the oom-pah on its own, which is the better place to start:
+*Greensleeves* with a waltz bass, and six of Joplin's own marches and waltzes —
+the *Augustan Club*, *Harmony Club* and *Binks's* waltzes in 3/4, the
+*Combination* and *Crush Collision* marches in 4/4, and *The Rose-bud March* in
+6/8. He wrote them alongside the rags and they are the left hand without the
+problem on top. Get the leaps silent on one of those before you open
+*The Entertainer*.
 
 **Common mistake.** Rushing into hands together. The left hand must be
 automatic first — you cannot think about a leap and a syncopation at once.

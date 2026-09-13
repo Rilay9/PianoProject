@@ -10,7 +10,7 @@ videos:
   - label: "How To Crescendo & Diminuendo On Piano"
     url: "https://www.youtube.com/watch?v=he_huVwMRsg"
     teacher: "Musician's Addition"
-readingTime: 2
+readingTime: 3
 ---
 
 Stage 4 was about getting the notes under the hand. This rung is about what they
@@ -43,6 +43,15 @@ the whole exercise, and the only way to place it is to keep counting through it.
 
 **5/4** is here rather than later because odd meters are easier than they look
 once you stop counting to five and start counting three-plus-two.
+
+**Mordents.** Three notes in the time of one: the main note, the note below it,
+and the main note again. Two things go wrong and both are fixable. It belongs
+*on* the beat, not before it — the first of the three lands where the beat
+lands, so the note it decorates is not late. And it is a flick from the hand,
+not three separate finger strokes; if you can hear three even notes it is too
+slow to be an ornament. Printed at two per beat here so that you can count it
+before you speed it up, and in the left hand, which is where a mordent is
+hardest and where the music of Stage 6 will ask for it.
 
 **How you'll know you've got it.** The 2:1 exercise gone boring. A tie across
 the bar line where the pulse does not hesitate on either side of it. And a

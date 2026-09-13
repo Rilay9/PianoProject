@@ -73,6 +73,51 @@ const QUOTED: { where: string; says: RegExp; from: string; holds: RegExp }[] = [
     from: 'src/engine/drills/special.ts',
     holds: /targetRatio \?\? 1\.6\b/,
   },
+  // Two lessons state the chord boundary, for the same drill, and they
+  // disagreed about why. `theory.6` gave the rule the code gives. `jazz.6` said
+  // 120 ms was "about four times longer than a spread chord takes", which would
+  // make a rolled chord 30 ms — the "four times" had been borrowed from the
+  // other side of the code's own comparison, where a quarter note at 120 is
+  // 500 ms. Both are pinned here so the number cannot drift and neither
+  // sentence can be reworded back into a claim the code does not make.
+  {
+    where: 'theory.6.md',
+    says: /no new note has arrived for 120 milliseconds/,
+    from: 'src/engine/drills/harmony.ts',
+    holds: /CHORD_BOUNDARY_MS = 120\b/,
+  },
+  {
+    where: 'jazz.6.md',
+    says: /finished when no new note has arrived for 120 milliseconds/,
+    from: 'src/engine/drills/harmony.ts',
+    holds: /CHORD_BOUNDARY_MS = 120\b/,
+  },
+  {
+    // The rung's whole standard, and it was stated at twice its value:
+    // sixteenths at a quarter-note pulse of 120 are eight notes a second, not
+    // sixteen. Pinned to the tempo on the exercises the learner actually plays.
+    where: 'technique.8.md',
+    says: /quarter-note pulse of 120\. That is eight notes a second/,
+    from: '../tools/content/generate_exercises.py',
+    holds: /ScaleSpec\(k, "major", "both", 4, "similar", 0\.25, 120\)/,
+  },
+  {
+    // `theory.9` describes the level-7 sight-reading generator by three of its
+    // settings. All three are real, and all three are one edit away from not
+    // being — the table is a plain object literal with no test over it.
+    where: 'theory.9.md',
+    says: /keys with four accidentals, with triplets and a walking bass/,
+    from: 'src/engine/sightReading.ts',
+    holds: /maxFifths: 4,[\s\S]{0,200}?leftHand: 'walking',[\s\S]{0,120}?triplets: true,/,
+  },
+  {
+    // Stated in figures in `0.3` and in words in `practice.3`; the figures were
+    // guarded and the words were not.
+    where: 'practice.3.md',
+    says: /one, three, seven and twenty-one days after you passed it/,
+    from: 'src/data/progressStore.ts',
+    holds: /REVIEW_INTERVALS_DAYS = \[1, 3, 7, 21\]/,
+  },
 ];
 
 describe('every lesson keeps its shape', () => {
@@ -220,6 +265,68 @@ describe('every lesson keeps its shape', () => {
   // words for it. Warning a learner off a trap is not a convention, it is
   // writing, and a test insisting on a vocabulary for it enforces my regex on
   // somebody's prose.
+});
+
+describe('a lesson that counts its rung’s pieces counts them right', () => {
+  // Six lessons tell the learner how much is waiting — "Twelve options",
+  // "Eleven options" — and then enumerate them. Two were wrong: ragtime.7 said
+  // eleven and offered twelve, ragtime.8 said eight and offered twelve, because
+  // pieces were wired onto the rungs afterwards and the prose was never told.
+  // The failure is worse than a stale number: both lessons list the options by
+  // name, so the sentence and the list under it disagreed on the same page.
+  //
+  // Pieces, not pieces-plus-exercises. Every one of these paragraphs is about
+  // repertoire — "Twelve options, all Joplin" — and the exercises are counted
+  // separately where they are counted at all.
+  const WORDS: Record<string, number> = {
+    one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+    nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14,
+    fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19,
+    twenty: 20, 'twenty-one': 21, 'twenty-two': 22, 'twenty-three': 23,
+    'twenty-four': 24, 'twenty-five': 25,
+  };
+
+  /** Every rung's id, against the number of pieces offered on it. */
+  function offered(): Map<string, number> {
+    const counts = new Map<string, number>();
+    for (const file of readdirSync(join(ROOT, 'content', 'curriculum'))) {
+      if (!/^stage-\d+\.json$/.test(file)) continue;
+      const doc = JSON.parse(
+        readFileSync(join(ROOT, 'content', 'curriculum', file), 'utf8'),
+      ) as { stages?: { units?: { lessons?: { id: string; songOptions?: string[] }[] }[] }[] };
+      for (const stage of doc.stages ?? []) {
+        for (const unit of stage.units ?? []) {
+          for (const lesson of unit.lessons ?? []) {
+            counts.set(lesson.id, (lesson.songOptions ?? []).length);
+          }
+        }
+      }
+    }
+    return counts;
+  }
+
+  it('matches the rung, wherever a lesson states the number', () => {
+    const counts = offered();
+    expect(counts.size, 'no rungs were read').toBeGreaterThan(80);
+    const spoken = Object.keys(WORDS).sort((a, b) => b.length - a.length).join('|');
+    const states = new RegExp(`(${spoken}|[0-9]+) options`, 'i');
+    const wrong: string[] = [];
+    let checked = 0;
+    for (const { name, text } of bodies()) {
+      const match = states.exec(text.replace(/\s+/g, ' '));
+      if (!match) continue;
+      const token = (match[1] ?? '').toLowerCase();
+      const claimed = WORDS[token] ?? Number.parseInt(token, 10);
+      const actual = counts.get(name.replace(/\.md$/, ''));
+      if (!Number.isFinite(claimed) || actual === undefined) continue;
+      checked += 1;
+      if (actual !== claimed) {
+        wrong.push(`${name} says ${String(claimed)}, the rung offers ${String(actual)}`);
+      }
+    }
+    expect(checked, 'no lesson stated a count — has the wording changed?').toBeGreaterThan(3);
+    expect(wrong, `a lesson counting its rung wrong:\n${wrong.join('\n')}`).toEqual([]);
+  });
 });
 
 describe('a lesson quoting one of the app’s numbers quotes the right one', () => {

@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import os
+import re
 import sys
 import traceback
 from dataclasses import dataclass, field
@@ -152,6 +153,34 @@ def entry_from_metadata(
     )
 
 
+def key_name(abc_key: str | None) -> str | None:
+    """
+    An ABC `K:` field as the catalog says a key: "C major", "A minor".
+
+    ABC writes the key the way a folk musician does — `C`, `Am`, `Bb`, `F#m` —
+    and this field went into the catalog untranslated, so thirty-two authored
+    rows carried "C", "G", "F" and "Am". The Library screen prints this under
+    the heading "Key", beside kern rows that say "Ab major" and "c# minor" and
+    generated rows that now say "A minor", so the same shelf showed the same
+    fact three different ways and one of them had no mode at all.
+
+    Anything that is not plainly major or minor — ABC's church modes, `Ador`
+    and the rest — returns nothing rather than a guess. `render_check --apply`
+    fills an empty `keySig` from the engraved signature it measures while
+    rendering, which is a better answer than this function could invent, and
+    none of the thirty-two authored sources uses one today.
+    """
+    if not abc_key:
+        return None
+    text = abc_key.strip()
+    match = re.fullmatch(r"([A-G])([b#]?)\s*(maj|major|m|min|minor)?", text, re.I)
+    if match is None:
+        return None
+    tonic, accidental, mode = match.group(1).upper(), match.group(2), (match.group(3) or "").lower()
+    minor = mode in {"m", "min", "minor"}
+    return f"{tonic}{accidental} {'minor' if minor else 'major'}"
+
+
 def compile_abc(path: Path, out_root: Path) -> dict:
     from convert import cached_convert  # late import: music21 is slow to load
 
@@ -180,7 +209,7 @@ def compile_abc(path: Path, out_root: Path) -> dict:
         composer=meta.composer,
         tempo_bpm=result.tempo_bpm,
     )
-    entry.setdefault("keySig", meta.key)
+    entry.setdefault("keySig", key_name(meta.key))
     entry.setdefault("timeSig", meta.meter)
     return entry
 

@@ -201,6 +201,31 @@ MANGLED_LETTER = re.compile(
     r"[a-z\u00DF-\u00F6\u00F8-\u00FF][\u00C0-\u00D6\u00D8-\u00DE\u0178]"
 )
 
+#: The other mojibake, which the rule above is the wrong shape to catch.
+#:
+#: `MANGLED_LETTER` finds a letter that lost *one* byte. This finds a whole
+#: string decoded with the wrong codec: UTF-8 read as Latin-1, where every
+#: non-ASCII character becomes two or three, the first in the Latin-1 letter
+#: range and the rest continuation bytes rendered as C1 controls and stray
+#: punctuation. "Rolling Girl" in Japanese arrives as "ãã¼ãªã³ãã¼ã".
+#:
+#: Two rows in the shipped catalogue read that way, both on chords-and-pop
+#: rungs, and both had passed every gate: the quarry's `looks_garbled` wants a
+#: quarter of the characters to be high bytes, and `MANGLED_LETTER` wants an
+#: accented *capital*, which this never produces. So a learner opening those
+#: rungs saw two pieces whose titles were unreadable.
+#:
+#: The damage is not reversible by re-encoding — bytes are missing as well as
+#: misread, so `title.encode("latin-1").decode("utf-8")` raises rather than
+#: recovering the Japanese. The repair is to keep the part of the title that
+#: survived, which in both cases carried the identity of the piece.
+#:
+#: Deliberately not a count or a ratio. One occurrence of a Latin-1 high letter
+#: immediately followed by a continuation byte does not happen in any real
+#: title in any language this catalogue holds; a threshold would only let the
+#: short cases through.
+MOJIBAKE = re.compile(r"[\u00C0-\u00FF][\u0080-\u00BF]")
+
 
 def validate_catalog(
     catalog: list, content_dir: Path, strict_license: bool, allow_nc: bool = False,
@@ -260,6 +285,12 @@ def validate_catalog(
                     f"{item_id}: {field} {value!r} has an accented capital inside a "
                     "word, which is a letter that lost a byte on the way in; repair "
                     "it in the source rather than shipping it"
+                )
+            if isinstance(value, str) and MOJIBAKE.search(value):
+                errors.append(
+                    f"{item_id}: {field} {value!r} was decoded with the wrong codec "
+                    "— UTF-8 read as Latin-1 — and is unreadable; repair it in the "
+                    "source rather than shipping it"
                 )
 
         duration = item.get("durationSec")

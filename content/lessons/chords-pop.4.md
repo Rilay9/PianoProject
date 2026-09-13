@@ -7,7 +7,7 @@ videos:
   - label: "I vi IV V: Easy And Fun Chord Progression Tutorial"
     url: "https://www.youtube.com/watch?v=ZPabFqOPrkg"
     teacher: "PianoLessonsOnline.com"
-readingTime: 2
+readingTime: 3
 ---
 
 Three chords get you folk songs. Two more get you most of pop music.
@@ -35,9 +35,16 @@ walking bass line under static harmony: C, C/E, F, C/G. The bass moves by step
 while the chords barely change, and that stepwise bass is what makes an
 arrangement sound composed rather than blocked out.
 
-**Repertoire for this rung.** *Greensleeves* with chords and with waltz bass,
-*When the Saints in F*, *Jingle Bells in G*, *Happy Birthday*, and any lead
-sheet you bring in yourself through the import screen.
+**Repertoire for this rung.** Ten options. *Greensleeves* is here twice, with
+chords and with a waltz bass — one song, two left hands, and the plainest
+demonstration on this rung of what arranging actually is. *When the Saints* in
+F, *Jingle Bells* with block chords in G and *Happy Birthday* carry their
+symbols too, and *I'll Be Seeing You* is a lead sheet with nothing but melody
+and symbols, which is where the inversions above start to earn their keep. The
+rest — *Feliz Cumpleaños*, *Twinkle Twinkle Little Star*, *Solanum's Theme* and
+*Song of Storms* — are written out in both hands with no symbols: play them as
+printed, then name the chord under each bar and try your own left hand against
+it. Plus any lead sheet you bring in yourself through the import screen.
 
 **Common mistake.** Learning the four-chord loop only in C. Its whole value is
 that it transposes; play it in five keys.

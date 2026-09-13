@@ -39,9 +39,7 @@
                 "song.classical.oh-canada.pdmx",
                 "song.beautiful.hungarian-sonata",
                 "song.classical.bach-aria-notebook-anna-magdalena-bach.pdmx",
-                "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
-                "song.classical.handel-georg-friedrich-handel-sarabande.pdmx",
-                "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx"
+                "song.classical.handel-georg-friedrich-handel-sarabande.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -510,7 +508,6 @@
                 "exercise.latin-groove.c.son-3-2"
               ],
               "songOptions": [
-                "exercise.blues.twelve-bar-shuffle.c",
                 "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
                 "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx",
                 "song.folk.carioquinha.pdmx"

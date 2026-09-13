@@ -1789,19 +1789,34 @@ def make_trill(
         return p
 
     def build(part_: stream.PartStaff, transpose: int) -> float:
+        # The finger that lands on the first printed note. The two hands number
+        # a pair of adjacent keys from opposite ends — the right hand counts up
+        # away from the thumb, the left hand counts down towards it — so one
+        # number for both was only ever right while the first note was the
+        # lower of the pair. It no longer is, for a trill.
+        first = 3 if (ornament == "trill" and part_.id == "RH") else 2
         total = 0.0
         for main in starts:
             upper = neighbour(main, 1)
             lower = neighbour(main, -1)
             if ornament == "trill":
-                cell = [main, upper] * (notes_per_beat * 2 // 2)
+                # Upper note first, main note last, and both halves are
+                # corrections. A Classical trill begins on the note above —
+                # which is what `classical.5` tells the learner, while the only
+                # trill in the app began on the main note and made that lesson
+                # false about its own material. And a trill resolves onto its
+                # main note; written main-first with an even count it ended
+                # hanging on the neighbour, which no trill does.
+                cell = [upper, main] * notes_per_beat
             else:
-                # A mordent is main-lower-main, then the beat is held.
+                # A mordent is main-lower-main, then the beat is held. This is
+                # the stroked sign, the one `classical.3` describes as taking
+                # the note below.
                 cell = [main, lower, main]
             for i, p in enumerate(cell):
                 n = note.Note(by_octaves(p, transpose // 12), quarterLength=ql)
                 if i == 0:
-                    n.articulations.append(articulations.Fingering(2))
+                    n.articulations.append(articulations.Fingering(first))
                 part_.append(n)
             total += len(cell) * ql
             rest = note.Rest(quarterLength=max(0.0, 2.0 - len(cell) * ql))
@@ -3285,11 +3300,17 @@ def make_boogie(
     exactly how it is played, and why the exercise is about stamina and the
     shift rather than about reading.
 
-    The four bars come from `TWELVE_BAR`, not from a literal written here. They
-    were written here, as `(0, 0, 5, 0)`, and `TWELVE_BAR` opens I-IV-I-I: the
-    same file said two different things about the first four bars of a blues,
-    and a learner who practised the boogie and then the twelve-bar met the
-    change to the four in a different place each time.
+    The four bars come from `TWELVE_BAR` rather than from a literal written
+    here, so that there is one statement of the form in this file and not two.
+    They were written here once, as `(0, 0, 5, 0)` — a quick change in the
+    second bar — while the form everything else used stayed on the one for four
+    bars. A learner who practised the boogie and then played the twelve-bar
+    shuffle met the move to the four in a different place each time, and nothing
+    anywhere named the variant that explains it.
+
+    So this is four bars of the tonic seventh, which is what `TWELVE_BAR` opens
+    with, what `blues_forms.DEGREES` writes into the authored shuffle on the
+    same rung, and what `blues.4` tells the learner to expect.
     """
     offsets, fingers, level = BOOGIE_PATTERNS[pattern]
     title = f"Boogie left hand — {pattern.replace('-', ' ')} in {tonic.replace('-', '♭')}"
@@ -3938,6 +3959,43 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
     return items
 
 
+def engraved_key(sc: stream.Score, declared: str | None) -> str | None:
+    """
+    The key signature actually written on the page, as the catalog says it.
+
+    `catalog_entry` filled this field from the maker's `key` parameter, which is
+    a music21 root and not a key: across the 1,012 generated rows it shipped
+    "A" for an exercise engraved in A *minor*, and "B-" and "E-" and "A-" —
+    music21's trailing hyphen for a flat, in a field the Library screen prints
+    to the learner under the heading "Key". `note_name` exists in this file
+    because that exact spelling leaked into seventy *titles* once and was
+    fixed there; the same leak in `keySig` was never noticed, and it is the
+    only family in the catalog that does it — every kern and MuseTrainer row
+    carries a real key name with its mode.
+
+    Two things it is not allowed to guess. The mode comes off the engraved
+    signature, never off the root, because a minor exercise and its relative
+    major share a signature and only the score knows which one it is. And where
+    the engraved key is not the exercise's own — the seventh-chord families are
+    deliberately written with no signature at all, `ks=key.Key("C")`, so the
+    shape is spelled in accidentals — this returns nothing rather than claiming
+    the piece is in C major. The root is in the title, where it belongs.
+
+    ASCII, not ``♭``: this field follows the chord-symbol convention the kern
+    importer documents, and titles are the place for the typographic sign.
+    """
+    if declared is None:
+        return None
+    signature = next(iter(sc.recurse().getElementsByClass(key.Key)), None)
+    if signature is None:
+        return None
+    tonic = signature.tonic.name
+    if tonic != declared:
+        return None
+    mode = signature.mode or "major"
+    return f"{tonic.replace('-', 'b').replace('#', '#')} {mode}"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
@@ -3953,6 +4011,10 @@ def main() -> None:
     entries = []
     for sc, entry in default_plan(args.quick, args.full):
         write(sc, args.out, entry["id"])
+        # The one place both the score and its row are in hand. `catalog_entry`
+        # cannot do this: it never sees the score, which is the only thing that
+        # knows what key signature was actually engraved.
+        entry["keySig"] = engraved_key(sc, (entry.get("drill") or {}).get("params", {}).get("key"))
         entries.append(entry)
     os.makedirs(os.path.dirname(os.path.abspath(args.catalog)), exist_ok=True)
     with open(args.catalog, "w", encoding="utf-8") as f:

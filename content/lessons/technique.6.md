@@ -7,7 +7,7 @@ videos:
   - label: "Rotation Technique on the piano explained -- Playground Sessions"
     url: "https://www.youtube.com/watch?v=kgEG3_ebGsQ"
     teacher: "Playground Sessions"
-readingTime: 2
+readingTime: 3
 ---
 
 **Seventh arpeggios** are the shapes the next four stages of music are made of.
@@ -24,7 +24,10 @@ fingers.
 
 **Trills are measured.** The number of notes to the beat is written above the
 staff and the notation matches it exactly. "As fast as you can" is not a target
-and cannot be practised evenly; four notes to the beat can.
+and cannot be practised evenly; four notes to the beat can. Notice where it
+begins and ends: on the note *above* the main one, and on the main note last.
+That is the Classical convention rather than a house rule, and having it in the
+fingers saves working it out over a sonatina later.
 
 **Voicing** is the skill this whole track exists to reach — a chord under one
 hand where the top note is the melody and the rest is accompaniment, and the

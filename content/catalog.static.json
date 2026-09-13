@@ -216,7 +216,11 @@
       "kind": "walkthrough",
       "params": {
         "song": "song.folk.hot-cross-buns",
-        "steps": ["wait-mode", "tempo-mode", "loops"]
+        "steps": [
+          "wait-mode",
+          "tempo-mode",
+          "loops"
+        ]
       }
     },
     "source": {
@@ -259,14 +263,38 @@
       "kind": "placement",
       "params": {
         "items": [
-          { "text": "Name a note on the staff.", "failUnit": "1.1" },
-          { "text": "Clap a rhythm back.", "failUnit": "1.2" },
-          { "text": "Play a five-finger pattern hands together.", "failUnit": "2.1" },
-          { "text": "Play a C major scale hands together.", "failUnit": "3.1" },
-          { "text": "Sight-read a four-bar phrase on the grand staff.", "failUnit": "3.1" },
-          { "text": "Play I–IV–V in G from chord symbols.", "failUnit": "3.2" },
-          { "text": "Play a swung twelve-bar blues left hand.", "failUnit": "blues-boogie.4.1" },
-          { "text": "Play the Petzold Minuet in G at 60% tempo.", "failUnit": "4.2" }
+          {
+            "text": "Name a note on the staff.",
+            "failUnit": "1.1"
+          },
+          {
+            "text": "Clap a rhythm back.",
+            "failUnit": "1.2"
+          },
+          {
+            "text": "Play a five-finger pattern hands together.",
+            "failUnit": "2.1"
+          },
+          {
+            "text": "Play a C major scale hands together.",
+            "failUnit": "3.1"
+          },
+          {
+            "text": "Sight-read a four-bar phrase on the grand staff.",
+            "failUnit": "3.1"
+          },
+          {
+            "text": "Play I–IV–V in G from chord symbols.",
+            "failUnit": "3.2"
+          },
+          {
+            "text": "Play a swung twelve-bar blues left hand.",
+            "failUnit": "blues-boogie.4.1"
+          },
+          {
+            "text": "Play the Petzold Minuet in G at 60% tempo.",
+            "failUnit": "4.2"
+          }
         ],
         "passUnit": "4.3"
       }
@@ -1955,6 +1983,59 @@
           "G"
         ],
         "bpm": 72,
+        "scored": false
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.improv.loop-four-chord",
+    "type": "drill",
+    "title": "Improvise over a four-chord loop",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "improv-compose",
+      "core"
+    ],
+    "level": 4.1,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "improvisation",
+      "pentatonic",
+      "four-chord-progression",
+      "call-and-response"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "backing-track",
+      "params": {
+        "progression": [
+          "C",
+          "Am",
+          "F",
+          "G"
+        ],
+        "bpm": 76,
         "scored": false
       }
     },

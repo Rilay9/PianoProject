@@ -39,8 +39,11 @@ fills the gap. The two simplest devices:
 Both are decorations on a harmony that is already correct. Get the hymn right
 first; add the passing chords afterwards.
 
-**Repertoire.** *When the Saints* in C and F, *Greensleeves* with chords for
-minor-key harmony, and the hymn tunes that come in through import.
+**Repertoire.** Three options. *When the Saints* in F is the one to read as four
+parts; the hands-alternating setting of the same tune is far easier and is there
+to get the melody in your ear first. *Greensleeves* with chords gives you the
+same job in a minor key. Beyond those, the hymn tunes you bring in yourself —
+a hymnal is the cheapest large book of four-part harmony there is.
 
 **Common mistake.** Playing four parts at equal volume, which produces a wash.
 Balance: soprano loudest, bass next, inner voices quiet.

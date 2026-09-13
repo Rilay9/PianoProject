@@ -36,16 +36,19 @@ you cannot keep time without hearing yourself.
 more happening per bar. If the syncopation is not audible as syncopation, the
 tempo is wrong.
 
-**What to play.** Eight options: *Pine Apple*, *Magnetic*, *Gladiolus*, *The
-Cascades*, *Scott Joplin's New Rag*, *Stoptime*, *Wall Street Rag*, and
-*Reflection Rag*, published in 1917, the year he died.
+**What to play.** Twelve options. The late ones first: *Pine Apple*,
+*Magnetic*, *Gladiolus*, *The Cascades*, *Scott Joplin's New Rag*, *Stoptime*,
+*Wall Street Rag*, and *Reflection Rag*, published in 1917, the year he died.
+Then four earlier and lighter ones to sit beside them — *A Breeze from Alabama*,
+*Country Club*, *Eugenia* and *Felicity Rag* — which are worth playing straight
+after a late rag to hear how far the writing moved.
 
 **What is missing, and why.** Three more pieces belong on this rung —
 Joplin's *Euphonic Sounds*, James Scott's *Frog Legs Rag* and Joseph Lamb's
 *Ragtime Nightingale*. None of them is in the public-domain Joplin edition this
 library was built from: it holds 47 rags and *Euphonic Sounds* is not among
 them, and Scott and Lamb were not Joplin. They are on the list to find
-elsewhere; until then this rung is Joplin only, and the eight above are enough
+elsewhere; until then this rung is Joplin only, and the twelve above are enough
 for a year.
 
 **Common mistake.** Treating these as harder versions of *The Entertainer*. They

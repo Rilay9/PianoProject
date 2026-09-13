@@ -45,9 +45,10 @@ and a MuseScore transcription. They differ in small ways — beaming, a few
 accidentals, some dynamics. When they disagree, the first edition is the better
 guess about what Joplin wrote.
 
-**What to play.** Eleven options. Beyond the four above there are *Original
+**What to play.** Twelve options. Beyond the four above there are *Original
 Rags* (his first published rag, a string of unrelated strains), *Fig Leaf*,
-*Paragon*, *Search-Light*, and *Pleasant Moments*, a ragtime waltz that is the
+*Paragon*, *Search-Light*, *Antoinette* — a march rather than a rag, and easier
+than most of this list — and *Pleasant Moments*, a ragtime waltz that is the
 gentlest thing here after *Solace*.
 
 **Common mistake.** Taking Maple Leaf at the tempo of the famous piano-roll

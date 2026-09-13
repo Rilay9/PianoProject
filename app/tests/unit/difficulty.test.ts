@@ -14,7 +14,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { edgeFixtures, generatedFixtures, loadFixture, type Fixture } from './helpers/fixtures';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
+import { extractScoreModel, keySignatureName } from '../../src/score/extractScoreModel';
 import type { ScoreModel } from '../../src/score/types';
 import {
   estimate,
@@ -98,6 +98,34 @@ describe('key signatures', () => {
     expect(keyAccidentals('A minor')).toBe(0);
     expect(keyAccidentals('C minor')).toBe(3);
     expect(keyAccidentals(undefined)).toBe(0);
+  });
+
+  it('reads every name the model can actually store', () => {
+    // The test above is the one that let the bug through, and it is kept
+    // because it is still true. What it could not catch is that it writes its
+    // own input: "E-flat major" is a string no part of this app produces.
+    // `model.keySig` is filled by `keySignatureName`, which writes "Eb major",
+    // and the lookup tables were written the long way — so sixteen of the
+    // thirty signatures, every flat key and every sharp key, resolved to
+    // nothing and were scored as having no accidentals at all. A piece in
+    // D flat reached the level model looking like C major.
+    //
+    // So this one does not name a single key. It goes through the producer for
+    // all fifteen signatures in both modes and asks for the number back, which
+    // is the only version of this test that can find the two modules
+    // disagreeing about what a key signature is called.
+    const wrong: string[] = [];
+    for (let fifths = -7; fifths <= 7; fifths += 1) {
+      for (const mode of [0, 1]) {
+        const name = keySignatureName(fifths, mode);
+        expect(name, `no name for fifths ${String(fifths)}`).toBeDefined();
+        const counted = keyAccidentals(name);
+        if (counted !== Math.abs(fifths)) {
+          wrong.push(`"${String(name)}" counted ${String(counted)}, has ${String(Math.abs(fifths))}`);
+        }
+      }
+    }
+    expect(wrong, `key names the difficulty model cannot read:\n${wrong.join('\n')}`).toEqual([]);
   });
 });
 
