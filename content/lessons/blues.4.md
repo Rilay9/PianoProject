@@ -7,7 +7,7 @@ videos:
   - label: "12 BAR BLUES on Piano - Boogie Woogie Basslines Tutorial"
     url: "https://www.youtube.com/watch?v=H-PqMj7Lgc8"
     teacher: "Bitesize Piano"
-readingTime: 2
+readingTime: 3
 ---
 
 The blues is a **form** before it is a style: twelve bars, three chords, repeated
@@ -35,10 +35,15 @@ in eighth notes — for C7 that is C–G–A–G, repeated, and it moves up to F
 for the IV chord. Some versions add the flat seventh: root–5–6–♭7–6–5. Learn it
 in C first until the hand does it without you.
 
-**The blues scale.** C–E♭–F–G♭–G–B♭–C. The E flat and the G flat are the "blue
-notes" — they sit between the major and minor versions of those degrees, and on
-a piano, which cannot bend, you get the effect by grinding the two adjacent keys
-together or sliding off the flat onto the natural.
+**The blues scale.** C–E♭–F–F♯–G–B♭–C. The E flat and that black key between F
+and G are the "blue notes" — they sit between the major and minor versions of
+those degrees, and on a piano, which cannot bend, you get the effect by grinding
+the two adjacent keys together or sliding off the flat onto the natural.
+
+It is the same key whether you call it F sharp or G flat, and you will see both.
+The app writes it as a sharp, because the flat spelling runs out: the flattened
+fifth of F is C flat, of B flat is F flat, of E flat is B double flat — and no
+edition prints those. A raised fourth works in every key.
 
 **What to practise.** The twelve-bar left-hand patterns in C, F and G from the
 generator; the shuffle exercise; then the same form with a simple right-hand
