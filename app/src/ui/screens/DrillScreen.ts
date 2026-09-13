@@ -1280,6 +1280,32 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
      * same slip cannot be written again. This is the second line of defence:
      * offering nothing is better than offering a plan that goes nowhere.
      */
+    /**
+     * The unit's own name, for the one sentence a learner reads at the end.
+     *
+     * `00` §1: an internal id does not go in front of a person. The placement
+     * result said "Starting unit: blues-boogie.4.1", which is the id of a real
+     * unit and means nothing to anybody — and it is the *last* thing this drill
+     * says, to somebody who has just been told where they are starting. The
+     * curriculum carries a title for every unit; this is only a lookup.
+     *
+     * The id still goes out, in `data-unit`, which is where a test wants it.
+     */
+    async function unitTitle(unitId: string): Promise<string> {
+      if (unitId === '') return '';
+      try {
+        const curriculum = await loadCurriculum();
+        for (const stage of curriculum.stages) {
+          for (const unit of stage.units) {
+            if (unit.id === unitId) return unit.title;
+          }
+        }
+      } catch {
+        // Same reasoning as `unitExists`: the result is still worth showing.
+      }
+      return '';
+    }
+
     async function unitExists(unitId: string): Promise<boolean> {
       if (unitId === '') return false;
       try {
@@ -1315,13 +1341,22 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         masterEligible: false,
       }).catch(() => undefined);
       sheet.hidden = false;
+      const where = el('p', {
+        text: unitId
+          ? 'Working out where to start\u2026'
+          : 'No starting point came out of that — check the items this drill was given.',
+      });
+      if (unitId !== '') {
+        where.dataset.unit = unitId;
+        void unitTitle(unitId).then((title) => {
+          where.textContent = title
+            ? `Start here: ${title}. Nothing is locked — you can still open any stage yourself.`
+            : 'Nothing is locked — you can open any stage yourself.';
+        });
+      }
       sheet.replaceChildren(
         el('div.row', {}, el('h2', { text: 'Placement result' })),
-        el('p', {
-          text: unitId
-            ? `Starting unit: ${unitId}. Nothing is locked — you can still open any stage yourself.`
-            : 'No starting unit came out of that — check the items this drill was given.',
-        }),
+        where,
         el(
           'div.row',
           {},

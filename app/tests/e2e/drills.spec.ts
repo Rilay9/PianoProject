@@ -396,3 +396,39 @@ test.describe('a drill sideways', () => {
     });
   }
 });
+
+test.describe('the placement test says where you start', () => {
+  // `00` §1 in the one place it was still broken. The result sheet is the last
+  // thing this drill says, to somebody who has just been told where to begin,
+  // and it read "Starting unit: blues-boogie.4.1" — a real unit id, and
+  // meaningless to a person. The curriculum has a title for every unit.
+  test('names the unit rather than printing its id', async ({ page }) => {
+    await page.goto('/#/drill/drill.placement.stage-0');
+    await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-kind', 'placement');
+
+    // Fail the first item: the shortest route to a result.
+    await page.locator('#drill-placement-fail').click();
+    const where = page.locator('[data-screen="drill"] p[data-unit]');
+    await expect(where).toHaveAttribute('data-unit', '1.1');
+    await expect(where).toContainText('Right hand C position');
+
+    // The id is carried, not shown.
+    await expect(where).not.toContainText('1.1');
+  });
+
+  test('every item it can end on names a unit that exists', async ({ page }) => {
+    // Walking the whole test: pass everything and the last card still has to
+    // resolve. A target that does not exist sets the learner's plan to a unit
+    // nothing can find, which is why `unitExists` is there at all.
+    await page.goto('/#/drill/drill.placement.stage-0');
+    await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-kind', 'placement');
+    for (let i = 0; i < 8; i += 1) {
+      const pass = page.locator('#drill-placement-pass');
+      if (!(await pass.isVisible())) break;
+      await pass.click();
+    }
+    const where = page.locator('[data-screen="drill"] p[data-unit]');
+    await expect(where).toHaveAttribute('data-unit', /.+/);
+    await expect(where).toContainText('Start here:');
+  });
+});
