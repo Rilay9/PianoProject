@@ -38,7 +38,30 @@
     "",
     "No placeholder rows were added for them. A catalog row with no file behind it is what the",
     "seven rock rungs were, and they were struck for it: a rung whose music never arrives is",
-    "not a rung. These are wants until a file exists, and the lessons already say so honestly."
+    "not a rung. These are wants until a file exists, and the lessons already say so honestly.",
+    "",
+    "Third group, 2026-09-13: the public-domain repertoire for the blues, jazz and latin",
+    "rungs, which between them offered almost nothing to play. blues.6 to blues.9 had no",
+    "songs at all — four rungs, levels 5.4 to 8.4, teaching boogie and the twelve-bar form",
+    "with no twelve-bar to play — and the latin rung's repertoire was a blues shuffle,",
+    "Greensleeves and Row Row Row Your Boat.",
+    "",
+    "Each was looked up as the standard repertoire for what its rung teaches and then found",
+    "in the archive index before being written here, with the level the index gives it, so",
+    "the rung named beside it is a band the piece actually fits. Nothing in this group is a",
+    "guess that something might be in the dataset.",
+    "",
+    "All of them were published in 1930 or earlier and are therefore public domain in the US",
+    "under the 95-year term, so they can ship in the strict build as well as the personal",
+    "one — which is the point: the tracks that had no repertoire are the ones where the",
+    "public-domain material is richest.",
+    "",
+    "Two rungs got nothing and should stay as they are. jazz.6 (6.1-6.4, comping and walking",
+    "bass) and blues.8 (6.2-8.3, the form in twelve keys) have nothing suitable in the",
+    "archive: what sits in those bands is anime and game arrangements with 'blues' or 'jazz'",
+    "in the title, modern transcriptions still in copyright, and uploader improvisations. An",
+    "empty rung that says so is better than a rung filled with the wrong music, and both",
+    "lessons already say so."
   ],
   "wants": [
     {
@@ -221,6 +244,191 @@
         "shelton brooks",
         "brooks",
         "sophie tucker"
+      ]
+    },
+    {
+      "id": "song.blues.st-louis-blues",
+      "title": [
+        "st louis blues",
+        "st. louis blues"
+      ],
+      "artist": [
+        "w c handy",
+        "handy"
+      ]
+    },
+    {
+      "id": "song.blues.memphis-blues",
+      "title": [
+        "memphis blues"
+      ],
+      "artist": [
+        "w c handy",
+        "handy"
+      ]
+    },
+    {
+      "id": "song.blues.yellow-dog-blues",
+      "title": [
+        "yellow dog blues"
+      ],
+      "artist": [
+        "w c handy",
+        "handy"
+      ]
+    },
+    {
+      "id": "song.blues.joe-turner-blues",
+      "title": [
+        "joe turner blues"
+      ],
+      "artist": [
+        "w c handy",
+        "handy"
+      ]
+    },
+    {
+      "id": "song.blues.royal-garden-blues",
+      "title": [
+        "royal garden blues"
+      ],
+      "artist": [
+        "clarence williams",
+        "spencer williams",
+        "williams"
+      ]
+    },
+    {
+      "id": "song.blues.careless-love",
+      "title": [
+        "careless love",
+        "careless love blues"
+      ],
+      "artist": [
+        "traditional",
+        "w c handy",
+        "handy"
+      ]
+    },
+    {
+      "id": "song.blues.backwater-blues",
+      "title": [
+        "backwater blues"
+      ],
+      "artist": [
+        "bessie smith",
+        "smith"
+      ]
+    },
+    {
+      "id": "song.blues.evening-prayer-blues",
+      "title": [
+        "evening prayer blues"
+      ],
+      "artist": [
+        "deford bailey",
+        "bailey"
+      ]
+    },
+    {
+      "id": "song.blues.pinetops-boogie-woogie",
+      "title": [
+        "pinetop's boogie woogie",
+        "pinetops boogie woogie",
+        "boogie woogie"
+      ],
+      "artist": [
+        "clarence pinetop smith",
+        "pinetop smith",
+        "pine top smith"
+      ]
+    },
+    {
+      "id": "song.jazz.bill-bailey",
+      "title": [
+        "bill bailey",
+        "bill bailey won't you please come home"
+      ],
+      "artist": [
+        "hughie cannon",
+        "cannon"
+      ]
+    },
+    {
+      "id": "song.jazz.darktown-strutters-ball",
+      "title": [
+        "darktown strutters ball",
+        "darktown strutter's ball"
+      ],
+      "artist": [
+        "shelton brooks",
+        "brooks"
+      ]
+    },
+    {
+      "id": "song.jazz.tiger-rag",
+      "title": [
+        "tiger rag"
+      ],
+      "artist": [
+        "original dixieland jazz band",
+        "nick larocca",
+        "larocca"
+      ]
+    },
+    {
+      "id": "song.jazz.twelfth-street-rag",
+      "title": [
+        "twelfth street rag",
+        "12th street rag"
+      ],
+      "artist": [
+        "euday bowman",
+        "bowman"
+      ]
+    },
+    {
+      "id": "song.jazz.muskrat-ramble",
+      "title": [
+        "muskrat ramble"
+      ],
+      "artist": [
+        "kid ory",
+        "ory",
+        "edward ory"
+      ]
+    },
+    {
+      "id": "song.jazz.sweet-georgia-brown",
+      "title": [
+        "sweet georgia brown"
+      ],
+      "artist": [
+        "ben bernie",
+        "maceo pinkard",
+        "pinkard"
+      ]
+    },
+    {
+      "id": "song.latin.el-choclo",
+      "title": [
+        "el choclo"
+      ],
+      "artist": [
+        "angel villoldo",
+        "villoldo"
+      ]
+    },
+    {
+      "id": "song.latin.tico-tico",
+      "title": [
+        "tico-tico",
+        "tico tico",
+        "tico-tico no fuba"
+      ],
+      "artist": [
+        "zequinha de abreu",
+        "abreu"
       ]
     }
   ],
