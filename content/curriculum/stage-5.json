@@ -176,7 +176,8 @@
                 "exercise.arpeggio7.f-dominant7.2oct.both",
                 "exercise.rhythm.shuffle-quarter-eighths.4bar",
                 "exercise.turnaround.c.i-vi-ii-v.intro",
-                "exercise.walking-bass.c.blues.intro"
+                "exercise.walking-bass.c.blues.intro",
+                "exercise.tremolo-third.c.right"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.f",

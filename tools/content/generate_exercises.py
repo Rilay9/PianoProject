@@ -1033,11 +1033,18 @@ def _diatonic_run(tonic: str, mode: str, start: pitch.Pitch, octaves: int) -> li
     return up + list(reversed(up))[1:]
 
 
-#: Double-third and double-sixth fingering is genuinely hand- and key-specific,
-#: and a printed fingering that is wrong is worse than none: it teaches a habit.
-#: What is safe to print is the *outer* finger on every note plus the thumb
-#: pattern the ascending run uses in the white keys, so that is what these
-#: carry, and `fingeringVerified` says so in the catalog.
+#: Double-third and double-sixth fingering, both fingers, as the standard
+#: three-group cycle: 1-3, 2-4, 3-5 repeating in the right hand and its mirror
+#: in the left, retraced coming down.
+#:
+#: This comment used to say only the outer finger was printed, because that part
+#: is genuinely hand-specific and a wrong printed fingering teaches a habit. The
+#: data has always carried both, and printing only the upper one is not
+#: expressible anyway: a lone `Fingering` on a two-note chord binds to the
+#: *lower* note, so "upper only" would silently mark the wrong finger. Both is
+#: also what a published edition does. `technique.7` used to repeat the claim
+#: and now tells the learner the truth — the inner finger is a starting point to
+#: change if their hand disagrees, not a rule.
 DOUBLE_THIRD_RH = ([1, 3], [2, 4], [3, 5], [1, 3], [2, 4], [3, 5], [1, 3], [2, 4])
 DOUBLE_THIRD_LH = ([5, 3], [4, 2], [3, 1], [5, 3], [4, 2], [3, 1], [5, 3], [4, 2])
 DOUBLE_SIXTH_RH = ([1, 5], [1, 5], [2, 5], [1, 4], [1, 5], [1, 5], [2, 5], [1, 4])
@@ -1826,19 +1833,39 @@ def make_trill(
     return sc, entry
 
 
+#: The two tremolos, as (semitones apart, lower finger, upper finger, level).
+#:
+#: A third and an octave are the same wrist motion at two sizes, and the size is
+#: the whole difficulty: the hand that plays a third tremolo is closed and can
+#: do it in a week, and the one that plays an octave is open and cannot. So they
+#: are one maker and two rows rather than two makers.
+#:
+#: The third is here because `blues.5` names "tremolo-thirds" as one of the
+#: three things it teaches and nothing in the app played one — the only tremolo
+#: was the octave, which is level 7.2 and sits two stages above that rung. The
+#: shimmering right hand over a blues is a third, not an octave.
+TREMOLOS: dict[str, tuple[int, int, int, float]] = {
+    #          semitones  lower  upper  level
+    "third":  (4, 1, 3, 5.0),
+    "octave": (12, 1, 5, 7.2),
+}
+
+
 def make_tremolo_octaves(
-    tonic: str = "C", hands: str = "right", bpm: int = 60,
+    tonic: str = "C", hands: str = "right", bpm: int = 60, shape: str = "octave",
 ) -> tuple[stream.Score, dict]:
     """
-    An octave tremolo: the two notes of an octave alternating in sixteenths.
+    A tremolo: two notes alternating in sixteenths, an octave or a third apart.
 
     Hanon 51-60 territory. The exercise is the forearm, not the fingers, so the
-    fingering is the octave's (1 and 5, or 1 and 4 on a black key) and nothing
-    else is marked.
+    fingering is the interval's own — 1 and 5 for an octave, 1 and 4 when the
+    upper note is black, 1 and 3 for a third — and nothing else is marked.
     """
     one_of("hands", hands, HANDS)
-    level = 7.2
-    title = f"Octave tremolo in {tonic.replace('-', '♭')} — {hands}"
+    one_of("shape", shape, tuple(TREMOLOS))
+    semitones, lower_finger, upper_finger, level = TREMOLOS[shape]
+    label = "Octave tremolo" if shape == "octave" else "Tremolo in 3rds"
+    title = f"{label} in {tonic.replace('-', '♭')} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     scale_obj = scale.MajorScale(tonic)
     roots = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "5"))[:4]
@@ -1849,17 +1876,21 @@ def make_tremolo_octaves(
             # Octaves, not a semitone count: the left hand's -24 respelled a
             # D flat tremolo as C sharp, under a five-flat key signature.
             low = by_octaves(root, transpose // 12)
-            # A perfect octave, not twelve semitones: the second spelling of a
+            # A named interval, not a semitone count: the second spelling of a
             # D flat octave came back as C sharp.
-            high = up(low, 12)
-            outer = 4 if high.pitchClass in BLACK_PITCH_CLASSES else 5
+            high = up(low, semitones)
+            # The stretch finger drops to 4 on a black key, which only applies
+            # to the octave — a third is taken 1-3 whatever colour it lands on.
+            outer = (4 if (shape == "octave" and high.pitchClass in BLACK_PITCH_CLASSES)
+                     else upper_finger)
             for i in range(8):
                 is_low = i % 2 == 0
                 tone = low if is_low else high
                 # The thumb takes the note nearer the middle of the keyboard:
                 # the low note of the octave in the right hand, the high note in
                 # the left. Both hands were fingered as a right hand.
-                finger = (1 if is_low else outer) if is_right else (outer if is_low else 1)
+                finger = ((lower_finger if is_low else outer) if is_right
+                          else (outer if is_low else lower_finger))
                 n = note.Note(tone, quarterLength=0.25)
                 n.articulations.append(articulations.Fingering(finger))
                 part_.append(n)
@@ -1877,9 +1908,11 @@ def make_tremolo_octaves(
         silent(lh, span)
     finalize(sc)
 
-    item_id = f"exercise.tremolo.{key_slug(tonic)}.{hands}"
+    slug_kind = "tremolo" if shape == "octave" else "tremolo-third"
+    item_id = f"exercise.{slug_kind}.{key_slug(tonic)}.{hands}"
     entry = catalog_entry(
-        item_id, title, level, ["tremolo", "octaves", "forearm", f"hands:{hands}"],
+        item_id, title, level, ["tremolo", "octaves" if shape == "octave" else "tremolo-thirds",
+         "forearm", f"hands:{hands}"],
         hands, bpm, "tremolo",
         {"key": tonic, "fingeringVerified": True},
         f"scores/generated/{item_id}.mxl",
@@ -3819,6 +3852,9 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
             items.append(make_trill(k, 4, hands, ornament="trill"))
             items.append(make_trill(k, 2, hands, ornament="mordent"))
             items.append(make_tremolo_octaves(k, hands))
+            # The third as well as the octave: `blues.5` teaches
+            # tremolo thirds and nothing played one.
+            items.append(make_tremolo_octaves(k, hands, shape="third"))
         for hands in ("left", "right"):
             items.append(make_rotation(k, hands))
 

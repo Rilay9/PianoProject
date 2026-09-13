@@ -14,11 +14,12 @@ Everything on this rung is one hand doing two things at once.
 
 **Scales in thirds and sixths.** Both notes come out of the scale, so the
 interval keeps changing between major and minor — that is what makes it a scale
-in thirds rather than a scale doubled, and it is why the fingering cannot be one
-repeating pattern. The outer finger is printed on every note. The inner one
-depends on your hand and on the key, and a printed fingering that is wrong for
-your hand teaches a habit you then have to unlearn, so it is left off
-deliberately. Find it slowly, write it in if you like, and then keep it.
+in thirds rather than a scale doubled. Both fingers are printed, as the standard
+three-group cycle: 1-3, 2-4, 3-5 and round again, retraced on the way down. Take
+that as a starting point rather than a rule. The inner finger in particular
+depends on your hand and on the key, and if it does not suit yours, change it,
+write it in, and then keep the one you chose — an inner fingering you decide
+again every time is the thing that stops this getting faster.
 
 **Octaves.** One rule, worth more than any amount of practice without it: thumb
 and fifth on the white keys, thumb and **fourth** on the black ones, in both
