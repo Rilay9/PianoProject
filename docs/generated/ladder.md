@@ -21,19 +21,19 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 0 | `0.2` *(exempt)* | 2 | 0 | 0.2–0.2 | — |
 | 0 | `0.3` *(exempt)* | 1 | 1 | 0.3–1.1 | Hot Cross Buns (1.1) |
 | 0 | `0.4` *(exempt)* | 1 | 0 | 0.4–0.4 | — |
-| 1 | `1.1` | 6 | 5 | 1.1–2.1 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1) |
+| 1 | `1.1` | 6 | 6 | 1.1–2.1 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1), In the summertime (2.0) |
 | 1 | `1.2` | 4 | 4 | 1.1–1.4 | Lightly Row (1.2), Jingle Bells (chorus) (1.2), Twinkle, Twinkle, Little Star (1.2), Frère Jacques (1.2) |
 | 1 | `1.3` | 5 | 3 | 1.1–2.1 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
 | 1 | `1.4` | 5 | 3 | 1.2–1.4 | Lightly Row (1.2), Ode to Joy (hands alternating) (1.4), Oh When the Saints Go Marching In (hands alternating) (1.4) |
 | 1 | `1.5` *(song-optional)* | 6 | 3 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), Old MacDonald Had a Farm (2.2) |
 | 2 | `2.1` | 5 | 4 | 2.1–2.1 | Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
 | 2 | `2.2` | 4 | 3 | 1.1–2.2 | Merrily We Roll Along (1.1), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2) |
-| 2 | `2.3` | 4 | 4 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Happy Birthday to You (4.1), Happy Birthday to You (alternative arrangement) (4.1) |
-| 2 | `2.4` | 4 | 3 | 2.2–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
+| 2 | `2.3` | 4 | 12 | 2.3–4.3 | Happy Birthday to You (2.3), Was wollen wir trinken (2.7), Dark Eyes (2.8), Como é grande meu amor por você (3.0), Insensatez (How Insensitive) Jobim (3.0), Só Danço Samba (3.0), … and 6 more |
+| 2 | `2.4` | 4 | 12 | 2.2–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Tuyo Narcos intro theme (3.7), Petit Papa Noël (3.8), Hallelujah (easy) (3.8), … and 6 more |
 | 2 | `2.5` *(song-optional)* | 6 | 2 | 2.5–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
 | 3 | `3.1` | 6 | 3 | 1.1–3.2 | Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 3 | 2.3–3.2 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2) |
-| 3 | `3.3` | 4 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
+| 3 | `3.3` | 4 | 6 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Carioquinha (4.5), Before You Go - Lewis Capaldi (4.7), Uti vår hage swedish traditional song (5.0), Greensleeves (5.1) |
 | 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (beginner) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 3 | `3.5` | 5 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
 | 3 | `3.6` *(song-optional)* | 7 | 2 | 3.6–5.1 | Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
@@ -71,13 +71,13 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `chords-pop.3` | 5 | 4 | 2.3–3.3 | Happy Birthday to You (2.3), Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), Greensleeves (with chords) (3.3) |
-| 4 | `chords-pop.4` | 4 | 4 | 3.2–4.3 | Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Greensleeves (waltz bass) (3.6), Happy Birthday to You (4.1) |
-| 5 | `chords-pop.5` | 3 | 3 | 4.5–5.2 | Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5), Greensleeves (5.1) |
-| 6 | `chords-pop.6` *(song-optional)* | 5 | 0 | 5.4–6.2 | — |
-| 7 | `chords-pop.7` *(song-optional)* | 5 | 0 | 5.3–7.3 | — |
-| 8 | `chords-pop.8` *(song-optional)* | 5 | 0 | 5.4–8.3 | — |
-| 9 | `chords-pop.9` *(song-optional)* | 5 | 0 | 5.3–8.4 | — |
+| 3 | `chords-pop.3` | 5 | 8 | 2.3–3.3 | Happy Birthday to You (2.3), Resistiré (Dúo Dinámico) (2.3), Tom Dooley (3.1), A Brotherhood of Heroes (Call of Duty WWII Theme Song) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), … and 2 more |
+| 4 | `chords-pop.4` | 4 | 12 | 3.2–4.3 | Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Feliz Cumpleaños (Piano) (3.4), Les mystérieuses cités d'or (générique) (3.4), Twinkle Twinkle Little Star (Easy) (3.5), I'll Be Seeing You (3.5), … and 6 more |
+| 5 | `chords-pop.5` | 3 | 11 | 4.5–5.2 | Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5), Lavender's Blue (4.6), Löwenzahn Thema (Piano) (4.7), As the Deer Piano (5.0), Joy to the World (5.0), … and 5 more |
+| 6 | `chords-pop.6` *(song-optional)* | 5 | 12 | 5.4–6.2 | How to Train Your Dragon: Flying Theme (5.5), Clocks Coldplay (5.5), Lazy Afternoons (Kingdom Hearts II) [Piano] (5.5), All of Me (John Legend) - easy piano (5.6), Westworld - Sweetwater (5.6), Dancing Queen (5.7), … and 6 more |
+| 7 | `chords-pop.7` *(song-optional)* | 6 | 12 | 5.3–7.3 | The Danish Girl (theme) (6.1), The Lion theme (6.1), Never Forget by Martin O'Donnell (6.1), For the damaged coda Blonde Redhead (6.2), Isolated System (6.2), The Weekend - Blinding Lights - Easy Piano (6.3), … and 6 more |
+| 8 | `chords-pop.8` *(song-optional)* | 5 | 12 | 5.4–8.3 | Silhouette - KANA-BOON (Naruto shippuden Opening/OP 16) (6.7), Minecraft Calm (6.8), Levi's Choice (ThanksAT/T-KT) - Attack on Titan (6.8), Resonance(Soul Eater Opening 1) (6.9), Fallout 4- Trailer soundtrack (6.9), All I want - Kodaline (6.9), … and 6 more |
+| 9 | `chords-pop.9` *(song-optional)* | 6 | 12 | 5.3–8.4 | Falling by Harry Styles (7.2), Location Unknown (Brooklyn Session) - HONNE (7.2), Joy to the World (7.2), Joy to the World (Piano solo) (7.3), Platinum Disco by Yuka Iguchi (7.3), Rousseau: Billy Joel - Piano Man (7.4), … and 6 more |
 
 ## Classical (`classical`)
 
@@ -85,10 +85,10 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `classical.3` | 3 | 3 | 3.4–5.1 | Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1), Canon in D (easy) (5.1) |
+| 3 | `classical.3` | 3 | 12 | 3.4–5.1 | Swan Lake (3.5), Rodolphe Kreutzer - Étude No. 2 (3.5), Totoro: Path of the Wind (3.6), Inno alla Gioia (3.6), Simple Gifts (2-Part Round) (3.9), Ode à Alegria (Nona Sinfonia) (3.9), … and 6 more |
 | 4 | `classical.4` | 3 | 4 | 4.1–4.4 | Für Elise (easy) (4.1), Für Elise (beginner) (4.1), Ode to Joy (easy variation) (4.1), Bella Ciao (4.2) |
-| 4 | `classical.4.shelf` | 3 | 9 | 3.5–6.2 | Für Elise (easy) (4.1), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1), Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 20 in C minor, Op. 28 (6.0), Prelude No. 6 in B minor, Op. 28 (6.0), … and 3 more |
-| 5 | `classical.5` | 4 | 4 | 3.6–5.2 | Greensleeves (5.1), Carol of the Bells (easy) (5.1), Canon in D (easy) (5.1), Ave Maria, D. 839 (solo piano arrangement) (5.2) |
+| 4 | `classical.4.shelf` | 3 | 12 | 3.5–6.2 | Für Elise (easy) (4.1), Erik Satie - Gnossienne n1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1), … and 6 more |
+| 5 | `classical.5` | 4 | 12 | 3.6–5.2 | clair de lune beginner version (4.7), Chopin - Waltz in A Minor (Piano Solo) (4.8), Oh Canada (4.8), Hungarian Sonata (5.0), Aria Notebook Anna Magdalena Bach (5.0), Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), … and 6 more |
 | 6 | `classical.6` | 9 | 21 | 3.2–6.6 | Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 6 in B minor, Op. 28 (6.0), Prelude No. 20 in C minor, Op. 28 (6.0), Prélude in E minor, Op. 28 No. 4 (6.1), Air on the G String (from BWV 1068) (6.1), Prelude No. 1 in C major, BWV 846 (6.1), … and 15 more |
 | 7 | `classical.7` | 8 | 22 | 4.2–8.4 | Prelude No. 9 in E major, Op. 28 (7.0), Prelude No. 11 in B major, Op. 28 (7.0), Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Prelude No. 2 in C minor, BWV 847 (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), … and 16 more |
 | 8 | `classical.8` | 8 | 23 | 4.3–8.8 | Waltz in C-sharp minor, Op. 64 No. 2 (7.8), Prelude No. 5 in D major, Op. 28 (8.0), Grande valse brillante in E-flat major, Op. 18 (8.0), Waltz in D-flat major, Op. 64 No. 1 (8.0), Nocturne No. 20 in C-sharp minor, Op. posth. (8.1), Arabesque No. 1, L. 66 (8.1), … and 17 more |
@@ -110,11 +110,11 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 |---|---|---:|---:|---|---|
 | 3 | `improv.3` *(song-optional)* | 3 | 0 | 3.1–3.2 | — |
 | 4 | `improv.4` *(song-optional)* | 3 | 0 | 3.1–4.1 | — |
-| 5 | `improv.5` *(song-optional)* | 3 | 3 | 3.4–5.1 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 5 | `improv.5` *(song-optional)* | 4 | 3 | 3.4–5.1 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
 | 6 | `improv.6` *(song-optional)* | 5 | 0 | 5.4–7.2 | — |
 | 7 | `improv.7` *(song-optional)* | 5 | 0 | 7.1–7.3 | — |
 | 8 | `improv.8` *(song-optional)* | 5 | 0 | 7.1–8.2 | — |
-| 9 | `improv.9` *(song-optional)* | 5 | 0 | 5.3–8.4 | — |
+| 9 | `improv.9` *(song-optional)* | 6 | 0 | 5.3–8.4 | — |
 
 ## Rock & metal (`rock-metal`)
 
@@ -144,8 +144,8 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 4 | `blues.4` | 4 | 3 | 3.2–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
-| 5 | `blues.5` | 4 | 3 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 4 | `blues.4` | 5 | 3 | 3.2–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 5 | `blues.5` | 6 | 3 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
 | 6 | `blues.6` *(song-optional)* | 5 | 0 | 5.4–6.4 | — |
 | 7 | `blues.7` *(song-optional)* | 5 | 0 | 6.1–7.3 | — |
 | 8 | `blues.8` *(song-optional)* | 5 | 0 | 6.2–8.3 | — |
@@ -157,7 +157,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 4 | `jam` | 3 | 3 | 3.4–4.5 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 4 | `jam` | 4 | 3 | 3.4–4.5 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
 
 ## Technique (`technique`)
 
@@ -177,11 +177,11 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `jazz.5` | 4 | 3 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Greensleeves (in 6/8) (4.5) |
-| 6 | `jazz.6` *(song-optional)* | 6 | 0 | 6.1–6.4 | — |
-| 7 | `jazz.7` *(song-optional)* | 7 | 0 | 7.1–7.4 | — |
-| 8 | `jazz.8` *(song-optional)* | 6 | 0 | 7.1–8.2 | — |
-| 9 | `jazz.9` *(song-optional)* | 5 | 0 | 6.3–8.4 | — |
+| 5 | `jazz.5` | 6 | 5 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Greensleeves (in 6/8) (4.5), Fly me to the moon (5.2), O when the Saints Go Marching In (5.2) |
+| 6 | `jazz.6` *(song-optional)* | 7 | 0 | 6.1–6.4 | — |
+| 7 | `jazz.7` *(song-optional)* | 7 | 2 | 7.1–7.4 | Jingle Bells - Jazz Piano (7.2), Skating (7.3) |
+| 8 | `jazz.8` *(song-optional)* | 6 | 1 | 7.1–8.2 | Uncle Ben's Cakewalk Tom Brier (7.6) |
+| 9 | `jazz.9` *(song-optional)* | 5 | 4 | 6.3–8.4 | Take Five (6.6), Ain't Misbehavin' (6.9), Lullaby of Birdland (6.9), Linus and Lucy (Fixed) Piano only (8.3) |
 
 ## Latin (`latin`)
 
@@ -189,7 +189,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `latin` | 5 | 3 | 3.2–6.4 | Twelve-bar blues shuffle in C (3.4), Greensleeves (in 6/8) (4.5), Row, Row, Row Your Boat (4.5) |
+| 5 | `latin` | 12 | 4 | 3.2–6.4 | Twelve-bar blues shuffle in C (3.4), Carioquinha (4.5), Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), Tango La Cumparsita - Piano Solo (Tutorial Parte A) (5.1) |
 
 ## Ragtime (`ragtime`)
 
@@ -197,10 +197,10 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `ragtime.5` | 3 | 3 | 3.2–7.1 | Greensleeves (waltz bass) (3.6), The Entertainer (7.1), The Entertainer (alternative edition) (7.1) |
-| 6 | `ragtime.6` | 5 | 10 | 3.3–7.1 | School of Ragtime (6.4), Swipsey (6.8), Peacherine Rag (7.0), The Easy Winners (7.0), Sunflower Slow Drag (7.0), Weeping Willow (7.0), … and 4 more |
-| 7 | `ragtime.7` | 5 | 11 | 3.2–7.4 | Solace (6.8), Maple Leaf Rag (7.2), Maple Leaf Rag (7.2), Elite Syncopations (7.2), Original Rags (7.2), Pleasant Moments (7.2), … and 5 more |
-| 8 | `ragtime.8` | 5 | 8 | 3.3–7.6 | Wall Street Rag (7.2), Pine Apple Rag (7.4), Stoptime Rag (7.4), Reflection Rag (7.4), Magnetic Rag (7.6), Gladiolus Rag (7.6), … and 2 more |
+| 5 | `ragtime.5` | 4 | 9 | 3.2–7.1 | Greensleeves (waltz bass) (3.6), Augustan Club Waltz (6.8), Combination March (6.8), The Crush Collision March (6.8), Harmony Club Waltz (6.8), Binks's Waltz (7.0), … and 3 more |
+| 6 | `ragtime.6` | 6 | 10 | 3.3–7.1 | School of Ragtime (6.4), Swipsey (6.8), Peacherine Rag (7.0), The Easy Winners (7.0), Sunflower Slow Drag (7.0), Weeping Willow (7.0), … and 4 more |
+| 7 | `ragtime.7` | 6 | 12 | 3.2–7.4 | Solace (6.8), Maple Leaf Rag (7.2), Maple Leaf Rag (7.2), Elite Syncopations (7.2), Original Rags (7.2), Pleasant Moments (7.2), … and 6 more |
+| 8 | `ragtime.8` | 6 | 12 | 3.3–7.6 | Wall Street Rag (7.2), A Breeze from Alabama (7.2), Country Club (7.2), Eugenia (7.2), Felicity Rag (7.2), Pine Apple Rag (7.4), … and 6 more |
 
 ## Wanted, and not bundled
 
