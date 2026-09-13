@@ -27,6 +27,7 @@ from music21 import harmony  # noqa: E402
 from generate_exercises import (  # noqa: E402
     BLUES_SCALE,
     BOOGIE_PATTERNS,
+    TWELVE_BAR,
     CLAVE_PATTERNS,
     TUMBAO_OFFSETS,
     make_blues_scale,
@@ -367,11 +368,15 @@ class TestBoogie(HarmonyFamilyCase):
                 seen[finger] = offset
 
     def test_the_four_bars_are_the_blues_the_app_teaches(self) -> None:
-        # Not a literal `(0, 0, 5, 0)` beside a `TWELVE_BAR` that opens
-        # I-IV-I-I. One statement about where the four arrives.
+        # One statement about where the four arrives, and this test had it
+        # wrong. It asserted I-IV-I-I because `TWELVE_BAR` opened with the quick
+        # change, and `blues.4` — the rung where a learner first meets the form
+        # — says "Four bars of C7", which is also what the authored shuffle on
+        # that same rung plays. The lesson and the music a learner is given are
+        # the statement; a table that disagreed with both was the thing to move.
         sc, _ = make_boogie("C", "pinetop")
         symbols = [cs.figure for cs in sc.parts[0].recurse().getElementsByClass("ChordSymbol")]
-        self.assertEqual(symbols, ["C7", "F7", "C7", "C7"])
+        self.assertEqual(symbols, ["C7", "C7", "C7", "C7"])
 
     def test_every_pattern_in_every_key(self) -> None:
         for tonic in HARMONY_KEYS:
@@ -379,6 +384,35 @@ class TestBoogie(HarmonyFamilyCase):
                 sc, entry = make_boogie(tonic, pattern)
                 self.assertReadable(sc, entry["id"])
                 self.assertCharted(sc, entry["id"], 4)
+
+
+class TestOneTwelveBarForm(unittest.TestCase):
+    """
+    The app says the twelve bars three times. They have to agree.
+
+    `blues.4` states the form in words — "Four bars of C7, two of F7, two of C7,
+    one of G7, one of F7, then two of C7" — and it is the first rung where a
+    learner meets it. `blues_forms.py` writes the authored shuffle that rung
+    offers. `TWELVE_BAR` drives the generated boogie and walking bass on the two
+    rungs above it.
+
+    The generator used to open I-IV, the "quick change", while the other two
+    opened with four bars of I. Nothing in the app teaches the quick change or
+    mentions it, so the only thing a learner could conclude was that one of the
+    three was wrong. A common variant nobody is told about is not a variant.
+    """
+
+    def test_the_generator_and_the_authored_shuffle_agree(self) -> None:
+        import blues_forms
+
+        self.assertEqual([degree for degree, _quality in TWELVE_BAR], blues_forms.DEGREES)
+
+    def test_it_is_four_bars_of_one(self) -> None:
+        # The specific thing blues.4 says, and the specific thing that was wrong.
+        self.assertEqual([degree for degree, _q in TWELVE_BAR[:4]], [0, 0, 0, 0])
+
+    def test_every_chord_of_the_form_is_a_dominant_seventh(self) -> None:
+        self.assertEqual({quality for _d, quality in TWELVE_BAR}, {"7"})
 
 
 class TestLatin(HarmonyFamilyCase):

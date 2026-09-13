@@ -302,8 +302,22 @@ def run(
     timeout: int = 900,
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess:
+    """
+    A child process, with its output read as UTF-8 whatever the machine thinks.
+
+    `text=True` on its own decodes with `locale.getpreferredencoding()`, which
+    on this laptop is cp1252 — so a step whose output happened to contain a
+    UTF-8 byte cp1252 has no character for died with a UnicodeDecodeError
+    before it could report anything. A build printing a score title with an
+    accent in it is not an error condition, and the content pipeline is full of
+    accented titles.
+
+    `errors="replace"` because this output is diagnostic. A byte nobody can
+    decode should cost one character in a log line, not a build.
+    """
     return subprocess.run(
-        cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True, check=False, env=env
+        cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True, check=False,
+        env=env, encoding="utf-8", errors="replace",
     )
 
 

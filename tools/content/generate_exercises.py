@@ -2737,7 +2737,23 @@ def make_slash_bass(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict
 
 
 #: The twelve-bar blues, as (scale degree, quality) per bar.
-TWELVE_BAR = ((0, "7"), (5, "7"), (0, "7"), (0, "7"),
+#:
+#: Four bars of I, which is the form `blues.4` states in words — "Four bars of
+#: C7, two of F7, two of C7, one of G7, one of F7, then two of C7 (the last of
+#: which is often G7)" — and the form `tools/content/blues_forms.py` writes into
+#: the authored shuffle a learner meets on that same rung.
+#:
+#: This used to put IV in bar two, the "quick change", and nothing in the app
+#: teaches the quick change or mentions it. So a learner read the form on
+#: blues.4, played the shuffle that matches it, and then met a walking bass and
+#: a boogie on the next two rungs whose second bar had moved to the four, with
+#: nothing anywhere saying why. Three statements of the same twelve bars, and
+#: one of them disagreed.
+#:
+#: The quick change is a real and common variant. It is not in the app because
+#: no lesson introduces it, and a variant nobody is told about is not a variant,
+#: it is an inconsistency.
+TWELVE_BAR = ((0, "7"), (0, "7"), (0, "7"), (0, "7"),
               (5, "7"), (5, "7"), (0, "7"), (0, "7"),
               (7, "7"), (5, "7"), (0, "7"), (7, "7"))
 
@@ -3449,6 +3465,68 @@ def make_clave(pattern: str = "son-3-2", bars: int = 8, bpm: int = 88) -> tuple[
     return sc, entry
 
 
+def vamp_plan(bars: int) -> list[tuple[int, str]]:
+    """The chord of each bar, for `bars` bars of the vamp."""
+    return [LATIN_VAMP[i % len(LATIN_VAMP)] for i in range(bars)]
+
+
+def write_tumbao(lh: stream.PartStaff, tonic: str, plan: list[tuple[int, str]]) -> None:
+    """
+    One bar of tumbao per entry in `plan`, appended to `lh`.
+
+    Extracted so the figure exists once. `make_tumbao` teaches it alone and
+    `make_latin_groove` puts it under the montuno, and if the two ever wrote it
+    out separately they would eventually disagree — which is how a boogie came
+    to play different bars from the twelve-bar table it was supposed to follow.
+    """
+    for index, (degree, _quality) in enumerate(plan):
+        root = pitch.Pitch(_transpose_name(tonic, degree) + "2")
+        # The chord the *next* bar turns into, which is the note beat four takes.
+        nxt_degree, _nxt = plan[(index + 1) % len(plan)]
+        nxt_root = pitch.Pitch(_transpose_name(tonic, nxt_degree) + "2")
+        lh.append(note.Rest(quarterLength=TUMBAO_OFFSETS[0]))
+        add_notes(lh, [up(root, 7)], [2], TUMBAO_OFFSETS[1] - TUMBAO_OFFSETS[0] - 0.5)
+        lh.append(note.Rest(quarterLength=0.5))
+        add_notes(lh, [nxt_root], [5], 1.0)
+
+
+def write_montuno(rh: stream.PartStaff, tonic: str, offsets: list[float],
+                  voices: int, repetitions: int) -> None:
+    """
+    The guajeo on the clave's own strokes, appended to `rh`, two bars at a time.
+
+    Same reason as `write_tumbao`: one copy of the figure. The attacks are
+    `offsets` and nothing else, because playing against the clave is the one
+    error `latin.md` calls unmistakable.
+    """
+    for _ in range(repetitions):
+        cursor = 0.0
+        for hit in offsets:
+            degree, quality = LATIN_VAMP[int(hit // 4.0) % len(LATIN_VAMP)]
+            root = pitch.Pitch(_transpose_name(tonic, degree) + "4")
+            tones = [up(root, i) for i in triad({"m": "minor", "maj": "major"}[quality])]
+            voiced = tones[1:] if voices == 2 else [tones[1], tones[2], up(root, 12)]
+            if hit > cursor:
+                rh.append(note.Rest(quarterLength=hit - cursor))
+                cursor = hit
+            rh.append(fingered_chord(voiced, [1, 3, 5][: len(voiced)], 0.5))
+            cursor += 0.5
+        if cursor < 8.0:
+            rh.append(note.Rest(quarterLength=8.0 - cursor))
+
+
+def write_vamp_symbols(rh: stream.PartStaff, tonic: str, plan: list[tuple[int, str]]) -> None:
+    """
+    The chord symbols, inserted last.
+
+    `add_symbol` inserts at an absolute offset, which moves the part's end to
+    that offset, so anything appended afterwards starts from there — the first
+    draft of these makers wrote its notes into bar four.
+    """
+    for index, (degree, quality) in enumerate(plan):
+        add_symbol(rh, _figure(_transpose_name(tonic, degree), quality), 4.0 * index)
+
+
 def make_tumbao(tonic: str = "C", bars: int = 8, bpm: int = 88) -> tuple[stream.Score, dict]:
     """
     The bass tumbao alone, over a two-bar vamp.
@@ -3466,23 +3544,10 @@ def make_tumbao(tonic: str = "C", bars: int = 8, bpm: int = 88) -> tuple[stream.
         "Nothing on beat one. The note on four belongs to the next bar's chord"
     ))
 
-    plan = [LATIN_VAMP[i % len(LATIN_VAMP)] for i in range(bars)]
-    for index, (degree, quality) in enumerate(plan):
-        root_name = _transpose_name(tonic, degree)
-        root = pitch.Pitch(root_name + "2")
-        # The chord the *next* bar turns into, which is the note beat four takes.
-        nxt_degree, _nxt_quality = plan[(index + 1) % len(plan)]
-        nxt_root = pitch.Pitch(_transpose_name(tonic, nxt_degree) + "2")
-        lh.append(note.Rest(quarterLength=TUMBAO_OFFSETS[0]))
-        add_notes(lh, [up(root, 7)], [2], TUMBAO_OFFSETS[1] - TUMBAO_OFFSETS[0] - 0.5)
-        lh.append(note.Rest(quarterLength=0.5))
-        add_notes(lh, [nxt_root], [5], 1.0)
+    plan = vamp_plan(bars)
+    write_tumbao(lh, tonic, plan)
     silent(rh, 4.0 * bars)
-    # The symbols go on last. `add_symbol` inserts at an absolute offset, which
-    # moves the part's end to that offset, so anything appended afterwards
-    # starts from there — the first draft wrote its notes into bar four.
-    for index, (degree, quality) in enumerate(plan):
-        add_symbol(rh, _figure(_transpose_name(tonic, degree), quality), 4.0 * index)
+    write_vamp_symbols(rh, tonic, plan)
     finalize(sc)
 
     item_id = f"exercise.tumbao.{key_slug(tonic)}"
@@ -3527,25 +3592,9 @@ def make_montuno(
 
     # The vamp is a bar a chord; the clave is two bars. Four bars is two claves
     # and two turns of the vamp, which is the smallest unit where both line up.
-    for _repetition in range(2):
-        cursor = 0.0
-        for hit in offsets:
-            # Which bar of the two this stroke falls in decides its chord.
-            degree, quality = LATIN_VAMP[int(hit // 4.0) % len(LATIN_VAMP)]
-            root = pitch.Pitch(_transpose_name(tonic, degree) + "4")
-            tones = [up(root, i) for i in triad({"m": "minor", "maj": "major"}[quality])]
-            voiced = tones[1:] if voices == 2 else [tones[1], tones[2], up(root, 12)]
-            if hit > cursor:
-                rh.append(note.Rest(quarterLength=hit - cursor))
-                cursor = hit
-            rh.append(fingered_chord(voiced, [1, 3, 5][: len(voiced)], 0.5))
-            cursor += 0.5
-        if cursor < 8.0:
-            rh.append(note.Rest(quarterLength=8.0 - cursor))
+    write_montuno(rh, tonic, offsets, voices, repetitions=2)
     silent(lh, 16.0)
-    # Symbols last, for the reason `make_tumbao` gives.
-    for index, (degree, quality) in enumerate(LATIN_VAMP * 2):
-        add_symbol(rh, _figure(_transpose_name(tonic, degree), quality), 4.0 * index)
+    write_vamp_symbols(rh, tonic, vamp_plan(4))
     finalize(sc)
 
     item_id = f"exercise.montuno.{key_slug(tonic)}.{voices}note.{clave}"
@@ -3554,6 +3603,56 @@ def make_montuno(
         ["montuno", "latin", "right-hand", "clave", "syncopation"],
         "right", bpm, "montuno",
         {"key": tonic, "voices": voices, "clave": clave, "offsets": offsets},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["latin", "chords-pop"],
+    )
+    return sc, entry
+
+
+def make_latin_groove(
+    tonic: str = "C", clave: str = "son-3-2", bpm: int = 88,
+) -> tuple[stream.Score, dict]:
+    """
+    Tumbao and montuno together — what the rung asks you to be able to do.
+
+    `latin.md` ends "Tumbao in the left hand and a two-note montuno in the
+    right, together, for sixteen bars, with the clave audible in your head", and
+    until this existed there was nothing in the app where both hands play at
+    once. Every other rung has something to practise its own target on.
+
+    The lesson also says this is the hardest coordination in the app, and the
+    reason is worth stating: neither hand is on the beat. The left is on the
+    "and" of two and on four, the right is on the clave, and the two coincide
+    only on the first stroke of the 3-side. There is no downbeat anywhere to
+    hold on to, which is exactly why it is built last and two notes at a time.
+
+    Eight bars: four turns of the vamp and four claves. Sixteen is the target to
+    hold, not the length of the page — a groove is repeated, and a page that
+    ends is a page you stop at.
+    """
+    one_of("clave", clave, tuple(CLAVE_PATTERNS))
+    level = 6.4
+    offsets = CLAVE_PATTERNS[clave]
+    title = (f"Latin groove — tumbao and montuno on {clave.replace('-', ' ')} "
+             f"in {tonic.replace('-', '♭')} minor")
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
+    rh.insert(0, expressions.TextExpression(
+        "Neither hand is on the beat. Left hand alone first, then two notes on top"
+    ))
+
+    bars = 8
+    plan = vamp_plan(bars)
+    write_montuno(rh, tonic, offsets, voices=2, repetitions=bars // 2)
+    write_tumbao(lh, tonic, plan)
+    write_vamp_symbols(rh, tonic, plan)
+    finalize(sc)
+
+    item_id = f"exercise.latin-groove.{key_slug(tonic)}.{clave}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["tumbao", "montuno", "clave", "latin", "coordination", "syncopation"],
+        "both", bpm, "latin-groove",
+        {"key": tonic, "clave": clave, "offsets": offsets, "bars": bars},
         f"scores/generated/{item_id}.mxl",
         tracks=["latin", "chords-pop"],
     )
@@ -3799,6 +3898,7 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
         items.append(make_tumbao(k))
         for voices in (2, 3):
             items.append(make_montuno(k, voices))
+        items.append(make_latin_groove(k))
     return items
 
 

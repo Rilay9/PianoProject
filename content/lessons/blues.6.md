@@ -1,5 +1,5 @@
 ---
-title: "Blues, Stage 6 — Pinetop, Yancey, and a bass line that walks"
+title: "Blues, Stage 6 — Pinetop, the root-and-fifth bass, and a line that walks"
 stage: 6
 unit: "blues.6.1"
 concepts: [boogie, shuffle, walking-bass, left-hand, turnaround, twelve-bar]
@@ -13,11 +13,23 @@ readingTime: 2
 The twelve-bar form is settled. What changes now is the left hand, which stops
 holding chords and starts driving.
 
-**The boogie patterns have names because they belong to players.** The Yancey
-bass alternates root and fifth in eighths and asks nothing of you but stamina.
-Pinetop's climbs root, third, fifth, sixth, flat seventh and comes back down —
-eight eighths a bar, the same shape moved to each chord of the blues. That
-"moved to each chord" is the hard part: the shape is easy and the shift is not.
+**Start with the plainest one.** The root-and-fifth bass alternates those two
+notes in eighths and asks nothing of you but stamina, which is exactly why it is
+first: there is nothing to work out, so the only thing you are practising is
+keeping eight eighths a bar going without the arm seizing up.
+
+**Then Pinetop's.** It climbs root, third, fifth, sixth, flat seventh and comes
+back down — eight eighths a bar, the same shape moved to each chord of the
+blues. That "moved to each chord" is the hard part: the shape is easy and the
+shift is not. Clarence "Pinetop" Smith recorded it in 1928 and every boogie bass
+since is a variation on it.
+
+**A note on names.** Boogie figures get called after players, and the labels are
+often wrong. What is usually posted online as a "Yancey bass" is the plain
+root-and-fifth alternation above; Jimmy Yancey's own left hand was a dotted
+habanera figure, closer to a tango than to eight even eighths, and he ended
+almost everything in E flat whatever key he started in. Worth knowing so you are
+not surprised when a recording does not match the label.
 
 **Stamina is the skill.** Eight eighths a bar for twelve bars is ninety-six notes
 with no rest, and the left arm will tell you when it is doing this with the
