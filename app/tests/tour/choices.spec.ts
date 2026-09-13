@@ -50,11 +50,22 @@ async function openScore(page: Page): Promise<void> {
   );
 }
 
-/** Sets the window to `bars` through the buttons, as a person would. */
+/**
+ * Sets the window to `bars` through the buttons, as a person would.
+ *
+ * Stopping when the button goes dead is part of "as a person would": at one bar
+ * `#score-bars-down` is disabled, because there is no half bar to go to. This
+ * used to click it eight times regardless, and Playwright does not treat a
+ * click on a disabled button as a no-op — it waits for it to become enabled,
+ * for the full three-minute test timeout. Both "how much music in the window"
+ * tests failed that way at any number of workers.
+ */
 async function setBars(page: Page, bars: number): Promise<void> {
   await withScoreMenu(page, async () => {
-    for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
-    for (let i = 1; i < bars; i += 1) await page.locator('#score-bars-up').click();
+    const down = page.locator('#score-bars-down');
+    for (let i = 0; i < 8 && (await down.isEnabled()); i += 1) await down.click();
+    const up = page.locator('#score-bars-up');
+    for (let i = 1; i < bars && (await up.isEnabled()); i += 1) await up.click();
     await expect(page.locator('#score-bars')).toHaveText(
       `${String(bars)} bar${bars === 1 ? '' : 's'}`,
     );
