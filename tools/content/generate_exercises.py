@@ -169,11 +169,12 @@ def scale_level(tonic: str, mode: str, hands: str, octaves: int, motion: str, rh
         # Hands together, one or two octaves, similar or contrary: the same
         # three key bands, because what makes B major hard is the key and not
         # the direction.
-        if octaves == 2:
-            if tonic in SHARP_SIDE:
-                return 4.1
-            return 4.2 if tonic in FLAT_SIDE else 5.1
-        if tonic in ("C", "G", "D", "A"):
+        # One and two octaves take the same bands, which is what the paragraph
+        # above says and what the code did not do: the one-octave path had a
+        # narrower easy set, `("C", "G", "D", "A")`, so E and B major scored 5.1
+        # at one octave and 4.1 at two — the same scale, in the same key, rated
+        # harder for being shorter.
+        if tonic in SHARP_SIDE:
             return 4.1
         return 4.2 if tonic in FLAT_SIDE else 5.1
     # Minors: harmonic, melodic and natural share a table.
@@ -449,11 +450,56 @@ def confirm_not_silent(sc: stream.Score, label: str = "") -> stream.Score:
     )
 
 
+def pad_final_bar(sc: stream.Score) -> stream.Score:
+    """
+    Fill out the last bar of each staff with rest, so a piece ends on a barline.
+
+    Nine hundred of the two thousand staves stopped part-way through their last
+    bar — a one-octave scale is fifteen eighths, which is a bar and seven
+    eighths, so the final bar was drawn a beat short with nothing saying why.
+    Every note keeps its place; this only says where the bar ends, which is what
+    a printed edition does.
+    """
+    for part in sc.parts:
+        measures = list(part.getElementsByClass('Measure'))
+        if not measures:
+            continue
+        signatures = part.recurse().getElementsByClass(meter.TimeSignature)
+        bar_len = float(signatures[0].barDuration.quarterLength) if signatures else 4.0
+        last = measures[-1]
+        short = bar_len - float(last.duration.quarterLength)
+        if 0 < short < bar_len:
+            last.append(note.Rest(quarterLength=short))
+    return sc
+
+
+def confirm_playable(sc: stream.Score, label: str = "") -> stream.Score:
+    """
+    Every note has to be a key that exists: A0 to C8.
+
+    Forty-four items asked for keys that are not there — the four-octave scales
+    and arpeggios in D, E, F sharp, G, A and B, two hundred and six notes above
+    the top of the instrument — because every run started at `tonic4` whatever
+    its span, and G4 plus four octaves is G8. Nothing could see it: the
+    MusicXML is valid, the pitches are spelled correctly, the fingering is
+    right, and a renderer will draw D8 on as many ledger lines as it takes.
+    """
+    for part in sc.parts:
+        for n in part.recurse().notes:
+            for pp in n.pitches:
+                if not (KEYBOARD_BOTTOM <= pp.midi <= KEYBOARD_TOP):
+                    raise WrongNotes(
+                        f"{label or sc.metadata.title}: {pp.nameWithOctave} is not on a "
+                        "piano — the run needs to start lower, not stop early"
+                    )
+    return sc
+
+
 def finalize(sc: stream.Score) -> stream.Score:
     for p in sc.parts:
         p.makeMeasures(inPlace=True)
         p.makeTies(inPlace=True)
-    return confirm_not_silent(confirm_fingering(confirm(sc)))
+    return confirm_playable(confirm_not_silent(confirm_fingering(confirm(pad_final_bar(sc)))))
 
 
 def write(sc: stream.Score, out_dir: str, item_id: str) -> str:
@@ -585,11 +631,12 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
 
     one_of("motion", spec.motion, ("similar", "contrary"))
     one_of("hands", spec.hands, ("both", "right", "left"))
-    rh_start = pitch.Pitch(spec.tonic + "4")
-    lh_start = pitch.Pitch(spec.tonic + "3")
+    rh_start = fits_on_the_keyboard(spec.tonic, spec.octaves, 4)
+    lh_preferred = 3
     if spec.tonic in ("A", "B", "B-", "A-", "G", "G-"):
         # keep the LH inside the bass staff without excessive ledger lines
-        lh_start = pitch.Pitch(spec.tonic + "2")
+        lh_preferred = 2
+    lh_start = fits_on_the_keyboard(spec.tonic, spec.octaves, lh_preferred)
 
     def run(start: pitch.Pitch, direction: str) -> list[pitch.Pitch]:
         top = start.transpose(12 * spec.octaves)
@@ -645,7 +692,8 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
         up = [start.transpose(12 * o + i) for o in range(octaves) for i in intervals] + [start.transpose(12 * octaves)]
         return up + list(reversed(up))[1:]
 
-    rh_p, lh_p = run(pitch.Pitch(root + "4")), run(pitch.Pitch(root + "2"))
+    rh_p = run(fits_on_the_keyboard(root, octaves, 4))
+    lh_p = run(fits_on_the_keyboard(root, octaves, 2))
     n_up = 3 * octaves + 1
     rh_f = (ARPEGGIO_FINGERING_RH[:3] * octaves + [5])
     rh_f = rh_f + list(reversed(rh_f))[1:]
@@ -1152,9 +1200,15 @@ def make_broken_seventh(
     def figure(start: pitch.Pitch) -> list[pitch.Pitch]:
         tones = [start.transpose(i) for i in shape] + [start.transpose(12)]
         cell = tones + list(reversed(tones))[1:-1]
-        # Two octaves of the same figure, so it lasts long enough to be an
-        # exercise rather than a gesture (docs/03 §3's five-second floor).
-        return cell + [p.transpose(12) for p in cell]
+        # Two octaves of the same figure, twice.
+        #
+        # The comment here used to claim the two octaves were what cleared
+        # docs/03 §3's five-second floor, and they were not: sixteen sixteenths
+        # at 63 is 3.8 seconds, and every one of the thirty-six items in this
+        # family was under it. Sixteenths are the point of the family, so the
+        # figure repeats rather than slowing down. 7.6 seconds.
+        two_octaves = cell + [up(p, 12) for p in cell]
+        return two_octaves + two_octaves
 
     # The figure spans an octave and the hand stays over it, so the fingers run
     # straight out and straight back: 1-2-3-4-5 in the right hand and 5-4-3-2-1
@@ -2400,6 +2454,32 @@ def place_near(tones: list[pitch.Pitch], anchor_ps: float | None) -> list[pitch.
     return best
 
 
+#: The lowest and highest keys on a piano, as MIDI numbers: A0 and C8.
+KEYBOARD_BOTTOM, KEYBOARD_TOP = 21, 108
+
+
+def fits_on_the_keyboard(tonic: str, octaves: int, preferred: int) -> pitch.Pitch:
+    """
+    The starting pitch for a run of `octaves`, dropped until the top of it exists.
+
+    Every scale and arpeggio started its right hand at `tonic4` whatever the
+    span, which is fine up to three octaves and walks off the end of the
+    instrument at four: G4 plus four octaves is G8, and a piano stops at C8. The
+    four-octave scales and arpeggios in D, E, F sharp, G, A and B — 44 items,
+    206 notes — asked for keys that are not there.
+
+    Dropping the start by whole octaves is the same fix a player makes: a
+    four-octave scale is begun lower, not abandoned.
+    """
+    octave = preferred
+    while octave > 0:
+        start = pitch.Pitch(f"{tonic}{octave}")
+        if start.midi + 12 * octaves <= KEYBOARD_TOP and start.midi >= KEYBOARD_BOTTOM:
+            return start
+        octave -= 1
+    raise ValueError(f"{tonic}: {octaves} octaves do not fit on a piano from any octave")
+
+
 def one_of(name: str, value: str, allowed: tuple[str, ...]) -> str:
     """
     `value` if the generator knows it, and a loud failure if it does not.
@@ -3325,17 +3405,28 @@ def make_clave(pattern: str = "son-3-2", bars: int = 8, bpm: int = 88) -> tuple[
         "One two-bar unit, not two bars — clap it until it stops needing counting"
     ))
 
-    # Two bars per repetition, written as attacks and the rests between them.
+    # One bar at a time, so nothing crosses a barline.
+    #
+    # Written as two bars' worth in one pass, the rest between the third stroke
+    # and the fourth is 1.5 long and starts at 3.5 — `makeMeasures` puts a whole
+    # element in the bar it begins in, so the first bar came out holding five
+    # quarters and the second four. The strokes were still at the right offsets,
+    # which is why a test on their offsets passed: what was wrong was the
+    # barring, and the learner counting the bar is exactly who that breaks.
     for repetition in range(bars // 2):
-        cursor = 0.0
-        for hit in offsets:
-            if hit > cursor:
-                part.append(note.Rest(quarterLength=hit - cursor))
-                cursor = hit
-            part.append(note.Note("B4", quarterLength=0.5))
-            cursor += 0.5
-        if cursor < 8.0:
-            part.append(note.Rest(quarterLength=8.0 - cursor))
+        for bar in range(2):
+            cursor = 0.0
+            for hit in offsets:
+                within = hit - 4.0 * bar
+                if not 0.0 <= within < 4.0:
+                    continue
+                if within > cursor:
+                    part.append(note.Rest(quarterLength=within - cursor))
+                    cursor = within
+                part.append(note.Note("B4", quarterLength=0.5))
+                cursor += 0.5
+            if cursor < 4.0:
+                part.append(note.Rest(quarterLength=4.0 - cursor))
     part.makeMeasures(inPlace=True)
     sc.insert(0, part)
 
