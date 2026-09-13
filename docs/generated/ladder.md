@@ -145,7 +145,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 4 | `blues.4` | 5 | 3 | 3.2–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
-| 5 | `blues.5` | 6 | 3 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 5 | `blues.5` | 7 | 3 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
 | 6 | `blues.6` *(song-optional)* | 5 | 0 | 5.4–6.4 | — |
 | 7 | `blues.7` *(song-optional)* | 5 | 0 | 6.1–7.3 | — |
 | 8 | `blues.8` *(song-optional)* | 5 | 0 | 6.2–8.3 | — |
