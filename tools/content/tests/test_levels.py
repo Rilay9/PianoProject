@@ -36,16 +36,26 @@ def minor(tonic, hands="both", octaves=1, mode="harmonic", rhythm=0.5):
 
 
 class TestMajorScales(unittest.TestCase):
-    def test_hands_separately_one_octave_follows_the_three_key_bands(self) -> None:
+    def test_hands_separately_one_octave_follows_the_key_bands(self) -> None:
+        # E and B used to sit at 4.2 here, with everything past D and A, which
+        # put them *above* their own hands-together score of 4.1: the same
+        # scale, in the same key, rated harder for using one hand. They follow
+        # the sharp-side band a step lower now. The flat and remote keys are
+        # unchanged.
         for tonic in ("C", "G", "F"):
             self.assertEqual(major(tonic, hands="right"), 2.5, tonic)
         for tonic in ("D", "A"):
             self.assertEqual(major(tonic, hands="right"), 3.1, tonic)
-        for tonic in ("E", "B", "A-", "G-"):
+        for tonic in ("E", "B"):
+            self.assertEqual(major(tonic, hands="right"), 3.2, tonic)
+        for tonic in ("A-", "G-", "B-", "E-", "D-"):
             self.assertEqual(major(tonic, hands="right"), 4.2, tonic)
 
     def test_hands_together_one_octave(self) -> None:
-        for tonic in ("C", "G", "D", "A"):
+        # One and two octaves take the same bands. The one-octave path used to
+        # have a narrower easy set, so E and B scored 5.1 at one octave and 4.1
+        # at two — rated harder for being shorter.
+        for tonic in ("C", "G", "D", "A", "E", "B"):
             self.assertEqual(major(tonic), 4.1, tonic)
         for tonic in ("F", "B-", "E-"):
             self.assertEqual(major(tonic), 4.2, tonic)
@@ -173,3 +183,50 @@ class TestTheShapeOfThePlan(unittest.TestCase):
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
+
+class TestTheLadderOnlyGoesUp(unittest.TestCase):
+    """
+    A harder input may never score lower than an easier one.
+
+    Both faults above were inversions, and neither was visible from the numbers
+    a test asserts one at a time — each individual band looked reasonable. What
+    catches them is asking the question across the whole space at once, which
+    is cheap here because these are pure functions.
+    """
+
+    KEYS = ("C", "G", "D", "A", "E", "B", "F", "B-", "E-", "A-", "D-", "G-")
+    MINORS = ("A", "E", "D", "G", "C", "B", "F", "F#", "C#", "G#", "B-", "E-")
+
+    def test_more_octaves_is_never_easier(self) -> None:
+        for tonic in self.KEYS:
+            for hands in ("right", "left", "both"):
+                for rhythm in (1.0, 0.5, 0.25):
+                    got = [major(tonic, hands=hands, octaves=o, rhythm=rhythm)
+                           for o in (1, 2, 3, 4)]
+                    self.assertEqual(got, sorted(got), f"{tonic} {hands} {rhythm}")
+
+    def test_faster_notes_are_never_easier(self) -> None:
+        for tonic in self.KEYS:
+            for octaves in (1, 2, 3, 4):
+                got = [major(tonic, octaves=octaves, rhythm=r) for r in (1.0, 0.5, 0.25)]
+                self.assertEqual(got, sorted(got), f"{tonic} {octaves}oct")
+
+    def test_two_hands_is_never_easier_than_one(self) -> None:
+        for tonic in self.KEYS:
+            for octaves in (1, 2, 3, 4):
+                both = major(tonic, hands="both", octaves=octaves)
+                for hands in ("right", "left"):
+                    self.assertLessEqual(
+                        major(tonic, hands=hands, octaves=octaves), both,
+                        f"{tonic} {octaves}oct {hands}")
+
+    def test_a_minor_is_never_easier_than_its_major(self) -> None:
+        for tonic in self.MINORS:
+            for hands in ("right", "left", "both"):
+                for octaves in (1, 2, 3):
+                    for mode in ("harmonic", "melodic", "natural"):
+                        self.assertGreaterEqual(
+                            minor(tonic, hands=hands, octaves=octaves, mode=mode),
+                            major(tonic, hands=hands, octaves=octaves),
+                            f"{tonic} {mode} {hands} {octaves}oct")
+

@@ -72,6 +72,67 @@ describe('parseHarmony', () => {
   });
 });
 
+describe('added and altered degrees', () => {
+  // MusicXML has no "add9" kind. An added ninth is a major triad plus a
+  // `<degree>`, which is exactly what the generator writes for its add9
+  // studies, and a reader that stops at `<kind>` sees a plain triad. This one
+  // did: the chart printed "C" over C-E-G-D, and `pitchClasses` is also what
+  // the learner's playing is scored against, so the ninth they were told to
+  // play was not in the chord they were judged on.
+  const ADD9 =
+    '<harmony><root><root-step>C</root-step></root><kind>major</kind>' +
+    '<degree><degree-value>9</degree-value><degree-alter>0</degree-alter>' +
+    '<degree-type>add</degree-type></degree></harmony>';
+
+  it('names an added ninth and puts it in the chord', () => {
+    const [symbol] = parseHarmony(score(`<measure number="1">${ADD9}</measure>`));
+    expect(symbol?.text).toBe('Cadd9');
+    expect(symbol?.pitchClasses).toEqual([0, 4, 7, 2]);
+  });
+
+  it('takes a subtracted degree out', () => {
+    const noFifth =
+      '<harmony><root><root-step>C</root-step></root><kind>major</kind>' +
+      '<degree><degree-value>5</degree-value><degree-alter>0</degree-alter>' +
+      '<degree-type>subtract</degree-type></degree></harmony>';
+    const [symbol] = parseHarmony(score(`<measure number="1">${noFifth}</measure>`));
+    expect(symbol?.pitchClasses).toEqual([0, 4]);
+    expect(symbol?.text).toBe('Cno5');
+  });
+
+  it('replaces an altered degree rather than adding to it', () => {
+    const flatFive =
+      '<harmony><root><root-step>C</root-step></root><kind>dominant</kind>' +
+      '<degree><degree-value>5</degree-value><degree-alter>-1</degree-alter>' +
+      '<degree-type>alter</degree-type></degree></harmony>';
+    const [symbol] = parseHarmony(score(`<measure number="1">${flatFive}</measure>`));
+    expect(symbol?.pitchClasses).toEqual([0, 4, 10, 6]);
+    expect(symbol?.text).toBe('C7♭5');
+  });
+
+  it('keeps an engraver’s own text when the file states one', () => {
+    const stated =
+      '<harmony><root><root-step>C</root-step></root><kind text="add9">major</kind>' +
+      '<degree><degree-value>9</degree-value><degree-alter>0</degree-alter>' +
+      '<degree-type>add</degree-type></degree></harmony>';
+    const [symbol] = parseHarmony(score(`<measure number="1">${stated}</measure>`));
+    expect(symbol?.text).toBe('Cadd9');
+    // The degree still shapes the notes even when the printed name came from
+    // the file.
+    expect(symbol?.pitchClasses).toEqual([0, 4, 7, 2]);
+  });
+
+  it('knows the extended kinds the generator writes', () => {
+    // The quartal studies are m11 chords. An unlisted kind keeps its own
+    // MusicXML name, so these printed "Cminor-11th" above the stave.
+    const [symbol] = parseHarmony(
+      score(`<measure number="1">${CHORD('C', 'minor-11th')}</measure>`),
+    );
+    expect(symbol?.text).toBe('Cm11');
+    expect(symbol?.pitchClasses).toEqual([0, 3, 7, 10, 2, 5]);
+  });
+});
+
 describe('chartBars', () => {
   it('repeats the last chord through bars that print none', () => {
     const symbols = parseHarmony(

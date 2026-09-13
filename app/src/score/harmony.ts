@@ -44,8 +44,64 @@ const KINDS: Record<string, { suffix: string; intervals: number[] }> = {
   'suspended-fourth': { suffix: 'sus4', intervals: [0, 5, 7] },
   'suspended-second': { suffix: 'sus2', intervals: [0, 2, 7] },
   'dominant-ninth': { suffix: '9', intervals: [0, 4, 7, 10, 2] },
+  'minor-ninth': { suffix: 'm9', intervals: [0, 3, 7, 10, 2] },
+  'major-ninth': { suffix: 'maj9', intervals: [0, 4, 7, 11, 2] },
+  'minor-11th': { suffix: 'm11', intervals: [0, 3, 7, 10, 2, 5] },
+  'dominant-11th': { suffix: '11', intervals: [0, 4, 7, 10, 2, 5] },
+  'dominant-13th': { suffix: '13', intervals: [0, 4, 7, 10, 2, 5, 9] },
   power: { suffix: '5', intervals: [0, 7] },
 };
+
+/**
+ * A chord degree as semitones above the root: the major scale, continued past
+ * the octave so a 9th is 14 and not 2.
+ */
+const DEGREE_SEMITONES: Record<number, number> = {
+  1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11,
+  9: 14, 11: 17, 13: 21,
+};
+
+/**
+ * `<degree>` elements: what a chord adds to, alters in, or takes out of its kind.
+ *
+ * MusicXML writes an added ninth as `<kind>major</kind>` plus a `<degree>` of
+ * add 9 — there is no "add9" kind — so a reader that stops at `<kind>` sees a
+ * plain major triad. This one did, and the generator's four add9 studies
+ * printed "C" over C-E-G-D in the chart view. `pitchClasses` is also what the
+ * chart scores the learner against, so the ninth they were told to play was
+ * not in the chord they were judged on.
+ */
+function applyDegrees(block: string, intervals: number[], suffix: string): {
+  intervals: number[];
+  suffix: string;
+} {
+  let out = [...intervals];
+  let text = suffix;
+  for (const match of block.matchAll(/<degree(?:\s[^>]*)?>([\s\S]*?)<\/degree>/g)) {
+    const body = match[1] ?? '';
+    const value = Number.parseInt(/<degree-value>(\d+)<\/degree-value>/.exec(body)?.[1] ?? '', 10);
+    if (!Number.isFinite(value)) continue;
+    const alter = Number(/<degree-alter>(-?\d+)<\/degree-alter>/.exec(body)?.[1] ?? '0');
+    const type = (/<degree-type>(\w+)<\/degree-type>/.exec(body)?.[1] ?? '').trim();
+    const base = DEGREE_SEMITONES[value];
+    if (base === undefined) continue;
+    const pc = (((base + alter) % 12) + 12) % 12;
+    const name = `${alterSymbol(alter)}${String(value)}`;
+    if (type === 'add') {
+      if (!out.includes(pc)) out.push(pc);
+      text += `add${name}`;
+    } else if (type === 'subtract') {
+      out = out.filter((interval) => interval !== pc);
+      text += `no${String(value)}`;
+    } else if (type === 'alter') {
+      const plain = (((base % 12) + 12) % 12);
+      out = out.filter((interval) => interval !== plain);
+      if (!out.includes(pc)) out.push(pc);
+      text += name;
+    }
+  }
+  return { intervals: out, suffix: text };
+}
 
 function alterSymbol(alter: number): string {
   if (alter > 0) return '♯'.repeat(alter);
@@ -85,13 +141,16 @@ export function parseHarmony(xml: string): ChordSymbol[] {
       const bass = bassStep ? stepToPc(bassStep, bassAlter) : null;
 
       const rootName = `${step.toUpperCase()}${alterSymbol(alter)}`;
-      const suffix = printed ?? kind.suffix;
+      const degreed = applyDegrees(block, kind.intervals, kind.suffix);
+      // An explicit `text=` on the kind is what the engraver wanted printed, so
+      // it wins over anything derived — but the degrees still shape the notes.
+      const suffix = printed ?? degreed.suffix;
       const bassName = bassStep ? `/${bassStep.toUpperCase()}${alterSymbol(bassAlter)}` : '';
 
       out.push({
         measure,
         text: `${rootName}${suffix}${bassName}`,
-        pitchClasses: kind.intervals.map((interval) => (root + interval) % 12),
+        pitchClasses: degreed.intervals.map((interval) => (root + interval) % 12),
         root,
         ...(bass === null ? {} : { bass }),
       });
