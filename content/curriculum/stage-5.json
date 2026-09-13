@@ -33,7 +33,15 @@
                 "song.folk.greensleeves",
                 "song.holiday.carol-of-the-bells.easy",
                 "song.classical.pachelbel-canon-d.easy",
-                "song.classical.schubert-ave-maria"
+                "song.classical.schubert-ave-maria",
+                "song.classical.debussy-clair-de-lune-beginner-version.pdmx",
+                "song.classical.chopin-chopin-waltz-in-a-minor-piano-solo.pdmx",
+                "song.classical.oh-canada.pdmx",
+                "song.beautiful.hungarian-sonata",
+                "song.classical.bach-aria-notebook-anna-magdalena-bach.pdmx",
+                "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
+                "song.classical.handel-georg-friedrich-handel-sarabande.pdmx",
+                "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -105,7 +113,15 @@
               "songOptions": [
                 "song.folk.greensleeves",
                 "song.folk.row-row-row-your-boat",
-                "song.folk.greensleeves.68"
+                "song.folk.greensleeves.68",
+                "song.pop.misc-soundtrack-lavender-s-blue.pdmx",
+                "song.pop.misc-television-lowenzahn-thema-piano.pdmx",
+                "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx",
+                "song.pop.misc-christmas-joy-to-the-world.pdmx",
+                "song.pop.teresa-teng-anh-trang-noi-ha-long-toi-the-moon-represents-my-heart.pdmx",
+                "song.pop.toby-fox-sans-from-undertale-for-piano.pdmx",
+                "song.pop.misc-cartoons-giant-woman.pdmx",
+                "song.pop.misc-christmas-silent-night-trombone-duet.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -158,7 +174,9 @@
                 "drill.improv.blues-backing",
                 "drill.blues.lh-patterns",
                 "exercise.arpeggio7.f-dominant7.2oct.both",
-                "exercise.rhythm.shuffle-quarter-eighths.4bar"
+                "exercise.rhythm.shuffle-quarter-eighths.4bar",
+                "exercise.turnaround.c.i-vi-ii-v.intro",
+                "exercise.walking-bass.c.blues.intro"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.f",
@@ -217,12 +235,16 @@
                 "drill.jazz.ii-v-i-shells",
                 "drill.ear.seventh-qualities",
                 "exercise.arpeggio7.c-dominant7.2oct.both",
-                "exercise.rhythm.shuffle-eighths.4bar"
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "exercise.ii-v-i.c.shells",
+                "exercise.comping.c.anticipated.intro"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.f",
                 "exercise.blues.twelve-bar-shuffle.c",
-                "song.folk.greensleeves.68"
+                "song.folk.greensleeves.68",
+                "song.jazz.bart-howard-fly-me-to-the-moon.pdmx",
+                "song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -281,12 +303,19 @@
               "exerciseOptions": [
                 "exercise.rhythm.syncopated.4bar",
                 "exercise.rhythm.sixteenths.4bar",
-                "drill.pattern.lh-accompaniment"
+                "drill.pattern.lh-accompaniment",
+                "exercise.syncopation.tied-across-bar"
               ],
               "songOptions": [
                 "song.ragtime.joplin-entertainer",
                 "song.ragtime.joplin-entertainer.alt",
-                "song.folk.greensleeves.waltz"
+                "song.folk.greensleeves.waltz",
+                "song.ragtime.joplin-augustan-club-waltz",
+                "song.ragtime.joplin-combination-march",
+                "song.ragtime.joplin-crush-collision-march",
+                "song.ragtime.joplin-harmony-club-waltz",
+                "song.ragtime.joplin-binks-waltz",
+                "song.ragtime.joplin-rose-bud-march"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -469,7 +498,8 @@
                 "drill.pattern.lh-accompaniment",
                 "exercise.rhythm.shuffle-eighths.4bar",
                 "exercise.comping.c.off-beats",
-                "exercise.walking-bass.c.ii-v-i"
+                "exercise.walking-bass.c.ii-v-i",
+                "exercise.syncopation.tied-across-bar"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",

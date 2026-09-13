@@ -168,7 +168,10 @@
               "songOptions": [
                 "song.folk.greensleeves.chords",
                 "song.folk.greensleeves",
-                "song.folk.greensleeves.simple"
+                "song.folk.greensleeves.simple",
+                "song.folk.carioquinha.pdmx",
+                "song.folk.before-you-go-lewis-capaldi.pdmx",
+                "song.folk.uti-var-hage-swedish-traditional-song.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -434,7 +437,16 @@
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
                 "song.classical.petzold-minuet-g-bwv-anh114.alt",
-                "song.classical.pachelbel-canon-d.easy"
+                "song.classical.pachelbel-canon-d.easy",
+                "song.classical.tchaikovsky-swan-lake.pdmx",
+                "song.classical.composer-rodolphe-kreutzer-etude-no-2.pdmx",
+                "song.classical.hisaishi-totoro-path-of-the-wind.pdmx",
+                "song.classical.beethoven-inno-alla-gioia.pdmx",
+                "song.classical.simple-gifts-2-part-round.pdmx",
+                "song.classical.beethoven-ode-a-alegria-nona-sinfonia.pdmx",
+                "song.classical.foster-oh-susanna.pdmx",
+                "song.classical.vivaldi-vivaldi-spring-simple-arrangement.pdmx",
+                "song.classical.duvernoy-elementary-studies-op-176-etude-1-by-jean-baptiste-duvernoy.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -507,7 +519,11 @@
                 "song.folk.when-the-saints.f",
                 "song.holiday.jingle-bells.g",
                 "song.folk.happy-birthday.simple",
-                "song.folk.greensleeves.chords"
+                "song.folk.greensleeves.chords",
+                "song.pop.duo-dinamico-resistire-duo-dinamico.pdmx",
+                "song.pop.tom-dooley.pdmx",
+                "song.pop.misc-computer-games-a-brotherhood-of-heroes-call-of-duty-wwii-theme-song.pdmx",
+                "song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,

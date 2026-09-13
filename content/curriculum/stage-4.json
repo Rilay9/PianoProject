@@ -545,7 +545,10 @@
                 "song.classical.chopin-prelude-op28-7.nifc",
                 "song.classical.chopin-prelude-op28-20.nifc",
                 "song.classical.chopin-prelude-op28-6.nifc",
-                "song.classical.chopin-nocturne-op9-2.easy"
+                "song.classical.chopin-nocturne-op9-2.easy",
+                "song.classical.satie-erik-satie-gnossienne-n1.pdmx",
+                "song.classical.mozart-mozart-minuet-in-f-major-k2-easy.pdmx",
+                "song.classical.debussy-clair-de-lune-easy.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -606,7 +609,15 @@
                 "song.folk.greensleeves.chords",
                 "song.folk.greensleeves.waltz",
                 "song.folk.when-the-saints.f",
-                "song.folk.happy-birthday"
+                "song.folk.happy-birthday",
+                "song.pop.canciones-populares-feliz-cumpleanos-piano.pdmx",
+                "song.pop.misc-cartoons-les-mysterieuses-cites-d-or-generique.pdmx",
+                "song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx",
+                "song.pop.sammy-fain-and-irving-kahal-i-ll-be-seeing-you.pdmx",
+                "song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx",
+                "song.pop.kevin-sherwood-damned.pdmx",
+                "song.pop.koji-kondo-song-of-storms-easy.pdmx",
+                "song.pop.misc-computer-games-coconut-mall-trombone-solo.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -828,7 +839,8 @@
               "exerciseOptions": [
                 "drill.jam.form-tracker",
                 "drill.blues.lh-patterns",
-                "exercise.rhythm.shuffle-eighths.4bar"
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "exercise.comping.c.anticipated.intro"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",

@@ -281,11 +281,122 @@ def fingered_chord(pitches: Iterable[pitch.Pitch], fingers: Iterable[int], ql: f
     return c
 
 
+class WrongNotes(AssertionError):
+    """A generated score whose notes contradict its own chord symbol."""
+
+
+def confirm(sc: stream.Score, label: str = "") -> stream.Score:
+    """
+    Checks that a chord does not carry the third its symbol did not ask for.
+
+    **What this is not.** It is not a check that an exercise is musically right,
+    and it cannot be one. Both the symbol and the notes are derived from the
+    same `quality`, so if the underlying table is wrong they are wrong together
+    and this passes. Correctness of the *music* comes from the tables —
+    `SEVENTH_VOICINGS`, `TRIAD_INTERVALS`, `TURNAROUNDS`, `TWELVE_BAR` — small
+    enough to read and are the one place each musical fact is written down.
+
+    **What it is.** A guard against deriving the same fact twice by different
+    routes. `make_turnaround` looked its symbol up and then worked its third out
+    inline with `quality.startswith("m")`, which is true of "maj7", so twelve
+    keys of major sevenths were engraved as minor triads under major symbols.
+    Everything else passed: valid MusicXML, right symbols, right item count, no
+    doubled accidental. Only the pitches disagreed, and nothing was reading them.
+
+    Those two routes are now one table lookup, so this can no longer fire on
+    anything that ships. It stays because the next person to inline a musical
+    fact will be told, at the moment they do it, rather than after a learner has
+    practised the wrong chord for a week.
+
+    A cluster check was tried here too and removed the same afternoon: it failed
+    on `['C5', 'E5', 'F5', 'A5']`, which is a Dm7 rootless B voicing with the
+    ninth a semitone under the third, and that semitone *is* the voicing. A rule
+    that cannot tell a cluster from a colour has no business in a build.
+    """
+    from music21 import chord as m21chord, harmony as m21harmony
+
+    for part in sc.parts:
+        symbol = None
+        for element in part.flatten().notesAndRests:
+            if isinstance(element, m21harmony.ChordSymbol):
+                symbol = element
+                continue
+            if symbol is None or not isinstance(element, m21chord.Chord):
+                continue
+            root = symbol.root().pitchClass
+            minorish = symbol.quality == "minor"
+            unwanted = {(root + (4 if minorish else 3)) % 12}
+            if {pp.pitchClass for pp in element.pitches} & unwanted:
+                raise WrongNotes(
+                    f"{label or sc.metadata.title}: {symbol.figure} sounds "
+                    f"{[pp.nameWithOctave for pp in element.pitches]}, which carries the "
+                    f"{'major' if minorish else 'minor'} third"
+                )
+    return sc
+
+
+class ImpossibleFingering(AssertionError):
+    """A chord whose printed fingering no hand could take."""
+
+
+def confirm_fingering(sc: stream.Score, label: str = "") -> stream.Score:
+    """
+    Checks that each chord's printed fingering describes a hand.
+
+    Two facts, and neither is a matter of taste. A finger is one place, so it
+    cannot be on two notes of the same chord. And fingers lie across the hand in
+    order, so within a chord they have to run with the pitches: 1 at the bottom
+    climbing to 5 in the right hand, 5 at the bottom down to 1 in the left. A
+    hand cannot cross itself.
+
+    Every fingered chord in the whole plan is checked here rather than in a test
+    because a test over 4,700 chords takes ten minutes and would be run once.
+    This costs nothing and runs on every build, including `--full`, where the
+    flat keys live and where most of what it found was hiding.
+
+    What it found, on the run that introduced it: 150 chords. Every left-hand
+    octave scale in the shipped set printed the thumb on the *bottom* note and
+    the fifth on top, which is a right hand — the maker wrote one fingering rule
+    and used it for both hands, and its own docstring said "in both hands".
+
+    It says nothing about *which* fingering is best. 1-3-5 or 1-2-5 on a triad
+    is a judgement and belongs in the tables. Only the impossible is an error.
+    """
+    from music21 import chord as m21chord
+
+    for part in sc.parts:
+        # `grand_staff` names them; anything else is not a two-hand score.
+        if part.id not in ("RH", "LH"):
+            continue
+        for element in part.recurse().getElementsByClass(m21chord.Chord):
+            fingers = [
+                a.fingerNumber for a in element.articulations
+                if isinstance(a, articulations.Fingering)
+            ]
+            if len(fingers) != len(element.pitches):
+                # Partly fingered chords are legitimate: some makers mark only
+                # the note the exercise is about.
+                continue
+            where = f"{label or sc.metadata.title} ({part.id})"
+            notes = [pp.nameWithOctave for pp in element.pitches]
+            if len(set(fingers)) != len(fingers):
+                raise ImpossibleFingering(
+                    f"{where}: {notes} asks one finger for two notes — {fingers}"
+                )
+            wanted = sorted(fingers, reverse=part.id == "LH")
+            if fingers != wanted:
+                raise ImpossibleFingering(
+                    f"{where}: {notes} fingered {fingers} low to high, which "
+                    f"crosses the hand; it wants {wanted}"
+                )
+    return sc
+
+
 def finalize(sc: stream.Score) -> stream.Score:
     for p in sc.parts:
         p.makeMeasures(inPlace=True)
         p.makeTies(inPlace=True)
-    return sc
+    return confirm_fingering(confirm(sc))
 
 
 def write(sc: stream.Score, out_dir: str, item_id: str) -> str:
@@ -445,8 +556,7 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
 
 def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octaves: int = 2, bpm: int = 60) -> tuple[stream.Score, dict]:
     level = arpeggio_level(root, quality, hands, octaves)
-    third = 4 if quality == "major" else 3
-    intervals = [0, third, 7]
+    intervals = triad(quality)
     title = f"{note_name(root)} {quality} arpeggio — {octaves} oct, {hands}"
     ks = key.Key(root if quality == "major" else root.lower())
     sc, rh, lh = grand_staff(title, bpm, ks=ks)
@@ -482,8 +592,8 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
     # minor)" at stage 4 without splitting them by key, and the shape really is
     # the same work in all of them.
     """Root position, 1st inversion, 2nd inversion, root (octave up), then back down — as block chords."""
-    third = 4 if quality == "major" else 3
-    base = [0, third, 7]
+    base = triad(quality)
+    third = base[1]
     title = f"{root} {quality} triad inversions — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(root if quality == "major" else root.lower()))
     shapes = [base, [base[1], base[2], 12], [base[2], 12, 12 + third], [12, 12 + third, 19]]
@@ -856,6 +966,11 @@ def make_octave_scale(
     Fingering is the one rule that matters and it is safe to print: thumb and
     fifth on the white keys, thumb and fourth on the black ones, in both hands.
     A hand that plays every octave 1–5 will not survive D flat.
+
+    "In both hands" is the part this got wrong for as long as it existed. The
+    left thumb plays the *upper* note of an octave and the fifth the lower; both
+    branches here printed the thumb on the bottom, and the broken branch printed
+    the thumb on both notes. It read as a right hand written twice.
     """
     level = 7.2
     kind_label = "broken octaves" if broken else "octave scale"
@@ -867,21 +982,29 @@ def make_octave_scale(
 
     def build(part_: stream.PartStaff, start: pitch.Pitch, is_right: bool) -> float:
         run = _diatonic_run(tonic, "major", start, octaves)
+        # `up(p, 12)` and not `p.transpose(12)`: twelve semitones is a number,
+        # and music21 respells it — a D flat octave came back as D flat under C
+        # sharp, the two halves of one octave printed in different alphabets.
+        # `up` asks for a perfect octave, which cannot respell. Only reachable
+        # with `--full`, where the flat keys are, which is why nothing saw it.
         if broken:
             # Lower note then upper note, so the wrist rotates rather than the
             # arm lifting — which is the whole point of the broken form.
             for p in run:
-                low, high = p, p.transpose(12)
-                for tone, finger in ((low, 1), (high, top_finger(high))):
+                low, high = p, up(p, 12)
+                # The thumb takes the note nearer the middle of the keyboard:
+                # the low note in the right hand, the high note in the left.
+                pairs = ((low, 1), (high, top_finger(high))) if is_right else                         ((low, top_finger(low)), (high, 1))
+                for tone, finger in pairs:
                     n = note.Note(tone, quarterLength=0.25)
-                    n.articulations.append(
-                        articulations.Fingering(finger if is_right else (1 if tone is high else finger))
-                    )
+                    n.articulations.append(articulations.Fingering(finger))
                     part_.append(n)
             return 0.5 * len(run)
         for p in run:
-            fingers = [1, top_finger(p.transpose(12))]
-            part_.append(fingered_chord([p, p.transpose(12)], fingers, 0.5))
+            high = up(p, 12)
+            # `fingered_chord` pairs these with the pitches low to high.
+            fingers = [1, top_finger(high)] if is_right else [top_finger(p), 1]
+            part_.append(fingered_chord([p, high], fingers, 0.5))
         return 0.5 * len(run)
 
     span = 0.0
@@ -1965,6 +2088,36 @@ SEVENTH_VOICINGS: dict[str, dict[str, list[int]]] = {
     "rootless-b":  {"maj7": [11, 14, 16, 19], "7": [10, 14, 16, 19], "m7": [10, 14, 15, 19]},
 }
 
+#: A triad in semitones from its root, by quality.
+#:
+#: One place where this fact is written down, in the same shape as
+#: `SEVENTH_VOICINGS` and for the same reason. Three call sites used to work it
+#: out inline instead, and one of them — `quality.startswith("m")`, true of
+#: "maj7" as well as "m7" — engraved a minor triad under every major-seventh
+#: symbol in twelve keys, shipped, unnoticed by anybody reading the source.
+#:
+#: A lookup cannot get that wrong. It also *fails* on a quality nobody wrote
+#: down, where `4 if quality == "major" else 3` quietly returns a minor triad
+#: for "diminished" — the failure that is worse than a crash, because the build
+#: is green and the learner practises the wrong chord.
+TRIAD_INTERVALS: dict[str, list[int]] = {
+    "major": [0, 4, 7],
+    "minor": [0, 3, 7],
+    "diminished": [0, 3, 6],
+    "augmented": [0, 4, 8],
+}
+
+#: The triad a seventh-chord quality is built on. `m7` is a minor triad with a
+#: minor seventh; `7` and `maj7` are both major triads and differ only above.
+TRIAD_OF_SEVENTH: dict[str, str] = {"maj7": "major", "7": "major", "m7": "minor"}
+
+
+def triad(quality: str) -> list[int]:
+    """The triad for a quality named either way — "major" or "maj7"."""
+    if quality in TRIAD_INTERVALS:
+        return TRIAD_INTERVALS[quality]
+    return TRIAD_INTERVALS[TRIAD_OF_SEVENTH[quality]]
+
 VOICING_LABELS = {
     "close": "close position",
     "shell": "shell (root, 3rd, 7th)",
@@ -2228,7 +2381,8 @@ TWELVE_BAR = ((0, "7"), (5, "7"), (0, "7"), (0, "7"),
 
 
 def make_walking_bass(
-    tonic: str = "C", form: str = "blues", bpm: int = 92,
+    tonic: str = "C", form: str = "blues", tier: str = "standard",
+    bpm: int | None = None,
 ) -> tuple[stream.Score, dict]:
     """
     A walking bass line in quarters, over a blues or over a ii-V-I.
@@ -2236,8 +2390,15 @@ def make_walking_bass(
     Four notes to the bar, root-third-fifth-approach: the approach note is a
     semitone below the next bar's root, which is the whole trick and the reason
     a walking line sounds inevitable rather than random.
+
+    **intro** is the left hand alone and slower. `blues.5` introduces the
+    walking line at band 3.4-5.2 and the only studies were at 6.2 and 6.4, so
+    the rung that teaches it could not offer it. Taking the right hand away is
+    the honest way to make it easier: the line is the exercise, and comping a
+    shell on top of it is a second skill the learner does not have yet.
     """
-    level = 6.2 if form == "blues" else 6.4
+    level = (4.5 if tier == "intro" else (6.2 if form == "blues" else 6.4))
+    bpm = bpm if bpm is not None else (72 if tier == "intro" else 92)
     bars = list(TWELVE_BAR) if form == "blues" else [(2, "m7"), (7, "7"), (0, "maj7"), (0, "maj7")]
     title = (f"Walking bass over a 12-bar blues in {tonic.replace('-', '♭')}"
              if form == "blues"
@@ -2248,7 +2409,11 @@ def make_walking_bass(
     for index, (degree, quality) in enumerate(bars):
         root_name = _transpose_name(tonic, degree)
         add_symbol(rh, _figure(root_name, quality), offset)
-        third = 3 if quality.startswith("m") else 4
+        # Looked up, not worked out. "maj7".startswith("m") is true, so this
+        # line used to walk a *minor* third through every major-seventh bar and
+        # comp a minor triad under a major symbol — shipped since the harmony
+        # families landed, and found by the confirmation in `finalize`.
+        third = triad(quality)[1]
         root = pitch.Pitch(root_name + "2")
         next_degree = bars[(index + 1) % len(bars)][0]
         next_root = pitch.Pitch(_transpose_name(tonic, next_degree) + "2")
@@ -2257,21 +2422,27 @@ def make_walking_bass(
         approach = _readable(next_root.transpose(interval.Interval("-m2")))
         line = [root, up(root, third), up(root, 7), approach]
         add_notes(lh, line, [5, 3, 2, 1], 1.0)
-        # The right hand comps the shell so the line has something to walk under.
-        top = pitch.Pitch(root_name + "4")
-        rh.append(fingered_chord(
-            [top, up(top, third), up(top, 10 if quality != "maj7" else 11)], [1, 2, 5], 4.0))
+        # The right hand comps the shell so the line has something to walk under —
+        # except at the intro tier, where the line is the whole exercise.
+        if tier == "intro":
+            rh.append(note.Rest(quarterLength=4.0))
+        else:
+            top = pitch.Pitch(root_name + "4")
+            rh.append(fingered_chord(
+                [top, up(top, third), up(top, 10 if quality != "maj7" else 11)], [1, 2, 5], 4.0))
         offset += 4.0
     finalize(sc)
 
     # `slug`, not the form verbatim: "ii-V-I" is how the progression is written
     # and an id may not carry a capital letter.
     item_id = f"exercise.walking-bass.{key_slug(tonic)}.{slug(form)}"
+    if tier != "standard":
+        item_id = f"{item_id}.{tier}"
     entry = catalog_entry(
         item_id, title, level,
         ["walking-bass", "bass-line", "swing", f"form-{form}"],
-        "both", bpm, "walking-bass",
-        {"key": tonic, "form": form, "notesPerBar": 4},
+        "left" if tier == "intro" else "both", bpm, "walking-bass",
+        {"key": tonic, "form": form, "notesPerBar": 4, "tier": tier},
         f"scores/generated/{item_id}.mxl",
         tracks=["jazz", "blues-boogie"],
     )
@@ -2287,25 +2458,47 @@ COMPING_PATTERNS: dict[str, list[float]] = {
 }
 
 
+#: Comping at two amounts of hand. `jazz.5` meets comping at band 3.4-5.2 and
+#: `jam` at 3.4-4.5, and the only comping study was at 6.3 — so the two rungs
+#: that introduce the skill could not offer it. The rhythm is the same; what
+#: changes is what the hand has to think about while playing it.
+COMPING_TIERS: tuple[tuple[str, float, int], ...] = (
+    ("intro", 4.4, 88),
+    ("standard", 6.3, 132),
+)
+
+
 def make_comping(
-    tonic: str = "C", pattern: str = "charleston", bpm: int = 132,
+    tonic: str = "C", pattern: str = "charleston", tier: str = "standard",
+    bpm: int | None = None,
 ) -> tuple[stream.Score, dict]:
     """
     A ii-V-I comped in one rhythm, so the rhythm is the exercise.
 
     Chord voicings are the shell, held short: comping is a rhythmic skill and
     practising it on a voicing you have to think about teaches neither.
+
+    **intro** takes that further — plain triads, slower — because the first time
+    somebody comps, the seventh is one thing too many. **standard** is the shell
+    form, which is what a player actually uses.
     """
-    level = 6.3
+    spec = next((t for t in COMPING_TIERS if t[0] == tier), COMPING_TIERS[1])
+    _, level, default_bpm = spec
+    bpm = bpm if bpm is not None else default_bpm
     offsets = COMPING_PATTERNS[pattern]
+    words = "triads" if tier == "intro" else pattern.replace("-", " ")
     title = f"Comping — {pattern.replace('-', ' ')} in {tonic.replace('-', '♭')}"
+    if tier == "intro":
+        title = f"Comping — {pattern.replace('-', ' ')} on triads in {tonic.replace('-', '♭')}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     bar = 0.0
     for quality, degree, _roman in II_V_I + (("maj7", 0, "I"),):
         root_name = _transpose_name(tonic, degree)
         add_symbol(rh, _figure(root_name, quality), bar)
-        shape = SEVENTH_VOICINGS["shell"][quality]
+        # A triad at the intro tier: the quality the numeral asks for, looked up
+        # rather than worked out, and no seventh to place.
+        shape = triad(quality) if tier == "intro" else SEVENTH_VOICINGS["shell"][quality]
         base = pitch.Pitch(root_name + "4")
         tones = [up(base, i) for i in shape]
         cursor = 0.0
@@ -2322,11 +2515,13 @@ def make_comping(
     finalize(sc)
 
     item_id = f"exercise.comping.{key_slug(tonic)}.{pattern}"
+    if tier != "standard":
+        item_id = f"{item_id}.{tier}"
     entry = catalog_entry(
         item_id, title, level,
         ["comping", "rhythm", f"comping-{pattern}", "swing", "jazz-harmony"],
         "both", bpm, "comping",
-        {"key": tonic, "pattern": pattern, "offsets": offsets},
+        {"key": tonic, "pattern": pattern, "offsets": offsets, "tier": tier},
         f"scores/generated/{item_id}.mxl",
         tracks=["jazz", "chords-pop"],
     )
@@ -2382,7 +2577,8 @@ TURNAROUNDS: dict[str, list[tuple[int, str]]] = {
 
 
 def make_turnaround(
-    tonic: str = "C", variant: str = "I-vi-ii-V", bpm: int = 88,
+    tonic: str = "C", variant: str = "I-vi-ii-V", tier: str = "standard",
+    bpm: int | None = None,
 ) -> tuple[stream.Score, dict]:
     """
     The two bars that send a chorus back to the top.
@@ -2391,8 +2587,14 @@ def make_turnaround(
     two bars with the tonic replaced by the chord a third above and the vi made
     dominant, which is what a player reaches for when the tune has already sat
     on the tonic for eight bars.
+
+    **intro** plays them as plain triads, slower. `blues.5` is where a learner
+    first meets a turnaround, at band 3.4-5.2, and the shell-voiced studies sat
+    at 6.4 and 7.1 — so the rung that teaches the turnaround could not offer
+    one. The shape of the progression is the lesson; the sevenths come later.
     """
-    level = 6.4 if variant == "I-vi-ii-V" else 7.1
+    level = (4.6 if tier == "intro" else (6.4 if variant == "I-vi-ii-V" else 7.1))
+    bpm = bpm if bpm is not None else (72 if tier == "intro" else 88)
     plan = TURNAROUNDS[variant]
     title = f"Turnaround in {tonic.replace('-', '♭')} — {variant}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
@@ -2401,7 +2603,7 @@ def make_turnaround(
     for degree, quality in plan:
         root_name = _transpose_name(tonic, degree)
         add_symbol(rh, _figure(root_name, quality), offset)
-        shape = SEVENTH_VOICINGS["shell"][quality]
+        shape = triad(quality) if tier == "intro" else SEVENTH_VOICINGS["shell"][quality]
         base = pitch.Pitch(root_name + "4")
         rh.append(fingered_chord([up(base, i) for i in shape], [1, 2, 5], 2.0))
         add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 2.0)
@@ -2409,20 +2611,35 @@ def make_turnaround(
     finalize(sc)
 
     item_id = f"exercise.turnaround.{key_slug(tonic)}.{slug(variant)}"
+    if tier != "standard":
+        item_id = f"{item_id}.{tier}"
     entry = catalog_entry(
         item_id, title, level,
         ["turnaround", "jazz-harmony", "chord-progression"],
         "both", bpm, "turnaround",
-        {"key": tonic, "variant": variant},
+        {"key": tonic, "variant": variant, "tier": tier},
         f"scores/generated/{item_id}.mxl",
         tracks=["jazz", "blues-boogie"],
     )
     return sc, entry
 
 
-def make_ii_v_i(tonic: str = "C", bpm: int = 60) -> tuple[stream.Score, dict]:
+#: The three difficulties a ii-V-I is worth practising at, and the level each
+#: earns. `jazz.5` meets the progression at band 3.4-5.2 and `jazz.6` works on
+#: it at 6.1-6.4; one specimen at 5.4 sat outside both, so the rung that teaches
+#: ii-V-I could not offer a ii-V-I. Same music, three amounts of hand.
+II_V_I_SHAPES: tuple[tuple[str, float, int, str], ...] = (
+    ("shells", 4.2, 54, "shells"),
+    ("guide-tones", 5.4, 60, "guide tones"),
+    ("rootless", 6.3, 72, "rootless voicings"),
+)
+
+
+def make_ii_v_i(
+    tonic: str = "C", shape: str = "guide-tones", bpm: int | None = None
+) -> tuple[stream.Score, dict]:
     """
-    ii-V-I with the guide tones written out, in one key.
+    ii-V-I in one key, at one of three difficulties (`II_V_I_SHAPES`).
 
     The reason a ii-V-I is *the* progression: the seventh of one chord is the
     third of the next, a semitone lower. Dm7's C becomes G7's B; G7's F becomes
@@ -2430,9 +2647,17 @@ def make_ii_v_i(tonic: str = "C", bpm: int = 60) -> tuple[stream.Score, dict]:
     starts hearing where they are going, which is why this is a family of its
     own rather than a voicing study — `make_seventh_voicing` teaches the shape,
     this teaches the motion.
+
+    **shells** is the same motion with the root underneath and only the third
+    and seventh above it: two notes a hand, which is what `jazz.5` asks for the
+    first time it meets the progression. **guide-tones** is the standard form.
+    **rootless** drops the root entirely — the bass player's note — and voices
+    third-seventh-ninth over it, which is what `jazz.6` and `jazz.7` are for.
     """
-    level = 5.4
-    title = f"ii-V-I in {tonic.replace('-', '♭')} — guide tones"
+    spec = next((s for s in II_V_I_SHAPES if s[0] == shape), II_V_I_SHAPES[1])
+    _, level, default_bpm, words = spec
+    bpm = bpm if bpm is not None else default_bpm
+    title = f"ii-V-I in {tonic.replace('-', '♭')} — {words}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     offset = 0.0
@@ -2443,19 +2668,47 @@ def make_ii_v_i(tonic: str = "C", bpm: int = 60) -> tuple[stream.Score, dict]:
         third = 3 if quality == "m7" else 4
         seventh = 11 if quality == "maj7" else 10
         base = pitch.Pitch(root_name + "4")
-        rh.append(fingered_chord(
-            [in_guide_tone_window(up(base, third)),
-             in_guide_tone_window(up(base, seventh))], [1, 5], 4.0 * bars))
-        add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0 * bars)
+        if shape == "shells":
+            # One hand, two notes: root and seventh, which is what a player
+            # means by a shell. The right hand rests — the first time somebody
+            # meets this progression the motion is the lesson, and a second
+            # hand is a second problem. This has to be *different music* from
+            # the guide-tone form, not the same notes at a lower level: the
+            # first draft changed only the tempo and shipped two identical
+            # exercises at 4.2 and 5.4.
+            root = pitch.Pitch(root_name + "2")
+            add_notes(lh, [root, up(root, seventh)], [5, 1], 4.0 * bars)
+            rh.append(note.Rest(quarterLength=4.0 * bars))
+        elif shape == "rootless":
+            # Third, seventh and ninth, stacked upward from the third: the root
+            # is the bass player's job. Not folded one note at a time into the
+            # guide-tone window — doing that dropped the ninth an octave and put
+            # it a semitone *below* the third, which is a muddy cluster and not
+            # the voicing anybody plays.
+            bottom = in_guide_tone_window(up(base, third))
+            voiced = [bottom]
+            for semitones in (seventh - third, 14 - third):
+                nxt = bottom.transpose(interval.Interval(semitones))
+                voiced.append(nxt)
+            rh.append(fingered_chord(voiced, [1, 3, 5], 4.0 * bars))
+            # A staff of nothing renders as a staff of nothing; say "rest".
+            lh.append(note.Rest(quarterLength=4.0 * bars))
+        else:
+            voiced = [in_guide_tone_window(up(base, third)),
+                      in_guide_tone_window(up(base, seventh))]
+            rh.append(fingered_chord(voiced, [1, 5], 4.0 * bars))
+            add_notes(lh, [pitch.Pitch(root_name + "2")], [5], 4.0 * bars)
         offset += 4.0 * bars
     finalize(sc)
 
     item_id = f"exercise.ii-v-i.{key_slug(tonic)}"
+    if shape != "guide-tones":
+        item_id = f"{item_id}.{shape}"
     entry = catalog_entry(
         item_id, title, level,
         ["ii-V-I", "guide-tones", "voice-leading", "seventh-chord", "jazz-harmony"],
-        "both", bpm, "ii-V-I",
-        {"key": tonic, "progression": ["ii7", "V7", "Imaj7"]},
+        {"shells": "left", "rootless": "right"}.get(shape, "both"), bpm, "ii-V-I",
+        {"key": tonic, "progression": ["ii7", "V7", "Imaj7"], "shape": shape},
         f"scores/generated/{item_id}.mxl",
         tracks=["jazz", "chords-pop", "theory-ear"],
     )
@@ -2549,14 +2802,29 @@ def make_open_voicing(
     return sc, entry
 
 
-#: Boogie left-hand figures, as semitone offsets per eighth over one bar.
+#: Boogie left-hand figures: eight eighths a bar as semitones from the chord
+#: root, and the fingering that shape is actually played with.
 #:
-#: Named after the players the shapes are associated with, which is how every
-#: blues method refers to them and how the owner will hear them named.
-BOOGIE_PATTERNS: dict[str, list[int]] = {
-    "pinetop": [0, 4, 7, 9, 10, 9, 7, 4],
-    "yancey": [0, 7, 0, 7, 0, 7, 0, 7],
-    "walking-eighths": [0, 4, 7, 10, 12, 10, 7, 4],
+#: The fingering belongs *in* the table. It used to be one constant
+#: `[5, 4, 3, 2, 1, 2, 3, 4]` shared by all three, which is right for the two
+#: that climb — thumb at the top of the figure, and each finger gets one note —
+#: and nonsense for the one that alternates two notes, where it printed the same
+#: C under fingers 5, 3 and 1 in the same bar. Nothing could catch it:
+#: `add_notes` takes `fingers[i % len(fingers)]`, so a fingering list of the
+#: wrong length does not fail, it *repeats*, and one of the right length that
+#: describes a different shape does not fail at all.
+#:
+#: Naming: "pinetop" is Pinetop Smith's figure and every blues method calls it
+#: that. The alternating one was called "yancey" here, and it is not — Jimmy
+#: Yancey's left hand is a dotted habanera figure, not eight even eighths. It is
+#: the plain root-and-fifth alternation, which is the right *first* boogie and
+#: is now named for what it is. A learner should not carry away a wrong
+#: attribution from a drill title.
+BOOGIE_PATTERNS: dict[str, tuple[list[int], list[int], float]] = {
+    #                  offsets                        fingers                   level
+    "root-fifth":      ([0, 7, 0, 7, 0, 7, 0, 7],     [5, 1, 5, 1, 5, 1, 5, 1], 5.4),
+    "pinetop":         ([0, 4, 7, 9, 10, 9, 7, 4],    [5, 4, 3, 2, 1, 2, 3, 4], 6.2),
+    "walking-eighths": ([0, 4, 7, 10, 12, 10, 7, 4],  [5, 4, 3, 2, 1, 2, 3, 4], 6.2),
 }
 
 
@@ -2569,18 +2837,23 @@ def make_boogie(
     Eight eighths a bar, the same shape transposed to each chord — which is
     exactly how it is played, and why the exercise is about stamina and the
     shift rather than about reading.
+
+    The four bars come from `TWELVE_BAR`, not from a literal written here. They
+    were written here, as `(0, 0, 5, 0)`, and `TWELVE_BAR` opens I-IV-I-I: the
+    same file said two different things about the first four bars of a blues,
+    and a learner who practised the boogie and then the twelve-bar met the
+    change to the four in a different place each time.
     """
-    level = 5.4 if pattern == "yancey" else 6.2
-    offsets = BOOGIE_PATTERNS[pattern]
+    offsets, fingers, level = BOOGIE_PATTERNS[pattern]
     title = f"Boogie left hand — {pattern.replace('-', ' ')} in {tonic.replace('-', '♭')}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     bar = 0.0
-    for degree in (0, 0, 5, 0):
+    for degree, quality in TWELVE_BAR[:4]:
         root_name = _transpose_name(tonic, degree)
-        add_symbol(rh, f"{root_name}7", bar)
+        add_symbol(rh, f"{root_name}{quality}", bar)
         root = pitch.Pitch(root_name + "2")
-        add_notes(lh, [up(root, i) for i in offsets], [5, 4, 3, 2, 1, 2, 3, 4], 0.5)
+        add_notes(lh, [up(root, i) for i in offsets], fingers, 0.5)
         top = pitch.Pitch(root_name + "4")
         rh.append(fingered_chord([top, up(top, 4), up(top, 10)], [1, 2, 5], 4.0))
         bar += 4.0
@@ -2800,7 +3073,8 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
     for k in harmony_keys:
         for voicing in SEVENTH_VOICINGS:
             items.append(make_seventh_voicing(k, voicing))
-        items.append(make_ii_v_i(k))
+        for shape, *_ in II_V_I_SHAPES:
+            items.append(make_ii_v_i(k, shape))
         for inversions in (False, True):
             items.append(make_four_chord_loop(k, inversions))
     for k in narrow:
@@ -2809,10 +3083,13 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
         items.append(make_stride(k))
         for form in ("blues", "ii-V-I"):
             items.append(make_walking_bass(k, form))
+            items.append(make_walking_bass(k, form, "intro"))
         for variant in TURNAROUNDS:
             items.append(make_turnaround(k, variant))
+        items.append(make_turnaround(k, "I-vi-ii-V", "intro"))
         for pattern in COMPING_PATTERNS:
-            items.append(make_comping(k, pattern))
+            for tier, *_ in COMPING_TIERS:
+                items.append(make_comping(k, pattern, tier))
         for flavour in ("quartal", "sus2", "sus4", "add9"):
             items.append(make_open_voicing(k, flavour))
         for pattern in BOOGIE_PATTERNS:

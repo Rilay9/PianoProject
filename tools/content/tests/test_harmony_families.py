@@ -325,12 +325,46 @@ class TestBoogie(HarmonyFamilyCase):
             self.assertEqual(len(left), 32, pattern)
             self.assertTrue(all(n.quarterLength == 0.5 for n in left), pattern)
 
-    def test_yancey_alternates_root_and_fifth(self) -> None:
-        self.assertEqual(BOOGIE_PATTERNS["yancey"], [0, 7, 0, 7, 0, 7, 0, 7])
+    def test_root_fifth_alternates_root_and_fifth(self) -> None:
+        # Named for the shape, not for Jimmy Yancey, whose left hand this is
+        # not. The test that stood here was called
+        # `test_yancey_alternates_root_and_fifth` — it knew what the figure was
+        # and asserted it under the wrong name anyway.
+        self.assertEqual(BOOGIE_PATTERNS["root-fifth"][0], [0, 7, 0, 7, 0, 7, 0, 7])
 
     def test_pinetop_climbs_to_the_flat_seventh_and_comes_back(self) -> None:
-        self.assertEqual(BOOGIE_PATTERNS["pinetop"][0], 0)
-        self.assertEqual(max(BOOGIE_PATTERNS["pinetop"]), 10)
+        self.assertEqual(BOOGIE_PATTERNS["pinetop"][0][0], 0)
+        self.assertEqual(max(BOOGIE_PATTERNS["pinetop"][0]), 10)
+
+    def test_no_finger_plays_two_different_notes_in_a_bar(self) -> None:
+        """
+        A finger is a place on the keyboard. If the same finger is printed under
+        two different pitches inside one bar of eight eighths, the fingering is
+        not describing a hand that could play it.
+
+        This is what a shared fingering constant did to the root-and-fifth
+        figure: fingers 5-4-3-2-1-2-3-4 over C-G-C-G-C-G-C-G, so the same C
+        carried 5, then 3, then 1. `add_notes` only checks the two lists are the
+        same length, which they were.
+        """
+        for pattern, (offsets, fingers, _level) in BOOGIE_PATTERNS.items():
+            self.assertEqual(len(offsets), len(fingers), pattern)
+            seen: dict[int, int] = {}
+            for offset, finger in zip(offsets, fingers):
+                if finger in seen:
+                    self.assertEqual(
+                        seen[finger], offset,
+                        f"{pattern}: finger {finger} is asked for two pitches "
+                        f"({seen[finger]} and {offset} semitones up)",
+                    )
+                seen[finger] = offset
+
+    def test_the_four_bars_are_the_blues_the_app_teaches(self) -> None:
+        # Not a literal `(0, 0, 5, 0)` beside a `TWELVE_BAR` that opens
+        # I-IV-I-I. One statement about where the four arrives.
+        sc, _ = make_boogie("C", "pinetop")
+        symbols = [cs.figure for cs in sc.parts[0].recurse().getElementsByClass("ChordSymbol")]
+        self.assertEqual(symbols, ["C7", "F7", "C7", "C7"])
 
     def test_every_pattern_in_every_key(self) -> None:
         for tonic in HARMONY_KEYS:
@@ -338,6 +372,93 @@ class TestBoogie(HarmonyFamilyCase):
                 sc, entry = make_boogie(tonic, pattern)
                 self.assertReadable(sc, entry["id"])
                 self.assertCharted(sc, entry["id"], 4)
+
+
+class TestTheNotesAgreeWithTheSymbols(unittest.TestCase):
+    """
+    What is played under a chord symbol has to be that chord.
+
+    Every other test here reads the code or counts the items. This one reads the
+    *pitches*, because the code can be plausible and the music wrong — and it
+    was. `make_turnaround`'s intro tier chose its third with
+    `quality.startswith("m")`, which is true of "maj7" as well as "m7", so every
+    major-seventh chord in the family came out as a minor triad under a major
+    symbol. Twelve keys of it. Nothing caught it: the symbols were right, the
+    engraving was valid, no accidental was doubled, and the item count was
+    correct.
+
+    The rule is the narrow one that would have caught it. A chord sounding under
+    a symbol must contain that symbol's third, and must not contain the other
+    one — you cannot have the major and the minor third of the same chord and
+    mean it.
+    """
+
+    #: The families whose right hand spells the symbol out. Walking bass and
+    #: boogie are lines rather than chords and are judged elsewhere.
+    def _chorded(self):
+        from generate_exercises import (
+            make_comping, make_ii_v_i, make_turnaround, make_seventh_voicing,
+        )
+        from generate_exercises import COMPING_TIERS, II_V_I_SHAPES, TURNAROUNDS
+        for shape, *_ in II_V_I_SHAPES:
+            yield f"ii-V-I {shape}", make_ii_v_i("C", shape)[0]
+        for tier, *_ in COMPING_TIERS:
+            yield f"comping {tier}", make_comping("C", "charleston", tier)[0]
+        for variant in TURNAROUNDS:
+            yield f"turnaround {variant}", make_turnaround("C", variant)[0]
+        yield "turnaround intro", make_turnaround("C", "I-vi-ii-V", "intro")[0]
+        for voicing in ("shell", "rootless-a"):
+            yield f"seventh {voicing}", make_seventh_voicing("C", voicing)[0]
+
+    def test_every_sounding_chord_has_the_third_its_symbol_names(self) -> None:
+        from music21 import chord as m21chord
+
+        for label, score in self._chorded():
+            for part in score.parts:
+                symbol = None
+                for element in part.flatten().notesAndRests:
+                    if isinstance(element, harmony.ChordSymbol):
+                        symbol = element
+                        continue
+                    if symbol is None or not isinstance(element, m21chord.Chord):
+                        continue
+                    root = symbol.root().pitchClass
+                    wanted = {(root + i) % 12 for i in ([3] if symbol.quality == "minor" else [4])}
+                    other = {(root + i) % 12 for i in ([4] if symbol.quality == "minor" else [3])}
+                    sounding = {p.pitchClass for p in element.pitches}
+                    if not sounding & wanted and not sounding & other:
+                        # A two-note shell may leave the third out entirely;
+                        # what it may not do is print the wrong one.
+                        continue
+                    self.assertFalse(
+                        sounding & other,
+                        f"{label}: {symbol.figure} sounds "
+                        f"{[p.nameWithOctave for p in element.pitches]}, which carries the "
+                        f"{'major' if symbol.quality == 'minor' else 'minor'} third",
+                    )
+
+    def test_no_chord_stacks_two_notes_a_semitone_apart(self) -> None:
+        """
+        A cluster in a voicing is a bug, not a colour.
+
+        `make_ii_v_i`'s rootless tier folded each note into the guide-tone
+        window one at a time, which dropped the ninth an octave and left it a
+        semitone *below* the third. It read fine in the source.
+        """
+        from music21 import chord as m21chord
+
+        for label, score in self._chorded():
+            for part in score.parts:
+                for element in part.flatten().notesAndRests:
+                    if isinstance(element, harmony.ChordSymbol) or not isinstance(element, m21chord.Chord):
+                        continue
+                    steps = sorted(p.ps for p in element.pitches)
+                    for lower, upper in zip(steps, steps[1:]):
+                        self.assertGreater(
+                            upper - lower, 1.0,
+                            f"{label}: {[p.nameWithOctave for p in element.pitches]} has two "
+                            "notes a semitone apart",
+                        )
 
 
 class TestTheFamiliesAreInThePlan(unittest.TestCase):
@@ -364,7 +485,12 @@ class TestTheFamiliesAreInThePlan(unittest.TestCase):
             self.assertIn(kind, allowed)
 
     def test_the_twelve_key_families_really_are_in_twelve_keys(self) -> None:
-        for kind, per_key in (("seventh-voicing", 4), ("ii-V-I", 1), ("progression", 2)):
+        # ii-V-I is three per key, not one: shells, guide tones and rootless.
+        # One specimen sat at level 5.4 and the two rungs that teach the
+        # progression are banded 3.4-5.2 and 6.1-6.4, so neither could offer a
+        # ii-V-I drill. Twelve keys is still twelve keys; what changed is that
+        # each key exists at the three difficulties the ladder asks for.
+        for kind, per_key in (("seventh-voicing", 4), ("ii-V-I", 3), ("progression", 2)):
             count = sum(1 for _, e in self.plan if e["drill"]["kind"] == kind)
             self.assertEqual(count, 12 * per_key, kind)
 

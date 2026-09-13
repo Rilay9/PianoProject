@@ -125,7 +125,8 @@
                 "exercise.rhythm.syncopated.4bar",
                 "exercise.scale.d-flat-major.2oct.similar.both.2",
                 "exercise.hanon.15.both",
-                "exercise.arpeggio.a-flat-major.2oct.both"
+                "exercise.arpeggio.a-flat-major.2oct.both",
+                "exercise.syncopation.tied-across-bar"
               ],
               "songOptions": [
                 "song.ragtime.joplin-maple-leaf-rag.kern",
@@ -138,7 +139,8 @@
                 "song.ragtime.joplin-fig-leaf-rag",
                 "song.ragtime.joplin-paragon-rag",
                 "song.ragtime.joplin-search-light-rag",
-                "song.ragtime.joplin-pleasant-moments"
+                "song.ragtime.joplin-pleasant-moments",
+                "song.ragtime.joplin-antoinette"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -274,7 +276,10 @@
                 "drill.jazz.chord-scale",
                 "drill.jazz.extended-chords"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx",
+                "song.jazz.vince-guaraldi-skating.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,
@@ -390,9 +395,23 @@
                 "exercise.open-voicing.f.add9",
                 "exercise.open-voicing.c.sus2",
                 "drill.jazz.extended-chords",
-                "exercise.open-voicing.b-flat.add9"
+                "exercise.open-voicing.b-flat.add9",
+                "exercise.voicing.a"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.pop.alexandre-desplat-the-danish-girl-theme.pdmx",
+                "song.pop.dustin-o-halloran-the-lion-theme.pdmx",
+                "song.pop.misc-computer-games-never-forget-by-martin-o-donnell.pdmx",
+                "song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx",
+                "song.pop.muse-isolated-system.pdmx",
+                "song.pop.the-weeknd-the-weekend-blinding-lights-easy-piano.pdmx",
+                "song.pop.eiffel-65-i-m-blue.pdmx",
+                "song.pop.ri-jeong-hyeok-ri-jeong-hyeok-s-piano.pdmx",
+                "song.pop.coldplay-fix-you-coldplay.pdmx",
+                "song.pop.laura-shigihara-loonboon.pdmx",
+                "song.pop.misc-soundtrack-light-the-world.pdmx",
+                "song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,

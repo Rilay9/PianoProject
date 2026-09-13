@@ -119,7 +119,8 @@
                 "exercise.rhythm.sixteenths.4bar",
                 "exercise.scale.a-flat-major.2oct.similar.both.2",
                 "exercise.scale.e-flat-major.2oct.similar.both.2",
-                "exercise.hanon.11.both"
+                "exercise.hanon.11.both",
+                "exercise.syncopation.tied-across-bar"
               ],
               "songOptions": [
                 "song.ragtime.joplin-entertainer.kern",
@@ -273,7 +274,8 @@
                 "exercise.walking-bass.c.blues",
                 "exercise.walking-bass.f.ii-v-i",
                 "exercise.voicing7.c.shell",
-                "drill.theory.harmonic-dictation"
+                "drill.theory.harmonic-dictation",
+                "exercise.ii-v-i.c.rootless"
               ],
               "songOptions": [],
               "songOptional": true,
@@ -339,7 +341,7 @@
                 "exercise.boogie.f.walking-eighths",
                 "exercise.walking-bass.c.blues",
                 "exercise.turnaround.c.i-vi-ii-v",
-                "exercise.boogie.c.yancey"
+                "exercise.boogie.c.root-fifth"
               ],
               "songOptions": [],
               "songOptional": true,
@@ -400,7 +402,20 @@
                 "drill.theory.roman-numerals",
                 "exercise.loop4.b.inversions"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.pop.misc-soundtrack-how-to-train-your-dragon-flying-theme.pdmx",
+                "song.pop.coldplay-clocks-coldplay.pdmx",
+                "song.pop.misc-computer-games-lazy-afternoons-kingdom-hearts-ii-piano.pdmx",
+                "song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx",
+                "song.pop.misc-soundtrack-westworld-sweetwater.pdmx",
+                "song.pop.abba-dancing-queen.pdmx",
+                "song.pop.sampha-sampha-no-one-knows-me-like-the-piano.pdmx",
+                "song.pop.misc-christmas-mary-did-you-know.pdmx",
+                "song.pop.chancho-en-piedra-mandinga.pdmx",
+                "song.pop.toby-fox-fallen-down-reprise-undertale-easy.pdmx",
+                "song.pop.yojiro-noda-fireworks-festival-weathering-with-you.pdmx",
+                "song.pop.misc-television-the-lonely-man-theme.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,

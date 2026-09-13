@@ -172,7 +172,15 @@
                 "song.folk.happy-birthday.simple",
                 "song.folk.happy-birthday",
                 "song.folk.happy-birthday.alt",
-                "song.holiday.jingle-bells.g"
+                "song.holiday.jingle-bells.g",
+                "song.folk.was-wollen-wir-trinken.pdmx",
+                "song.folk.dark-eyes.pdmx",
+                "song.folk.como-e-grande-meu-amor-por-voce.pdmx",
+                "song.folk.insensatez-how-insensitive-jobim.pdmx",
+                "song.folk.so-danco-samba.pdmx",
+                "song.folk.suo-gan-welsh-traditional-lullaby.pdmx",
+                "song.folk.de-brabanconne.pdmx",
+                "song.folk.auld-lang-syne.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -239,7 +247,16 @@
               "songOptions": [
                 "song.folk.greensleeves.simple",
                 "song.folk.greensleeves",
-                "song.folk.greensleeves.chords"
+                "song.folk.greensleeves.chords",
+                "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
+                "song.folk.tuyo-narcos-intro-theme.pdmx",
+                "song.folk.petit-papa-noeil.pdmx",
+                "song.folk.hallelujah-easy.pdmx",
+                "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
+                "song.folk.happy-birthday-piano.pdmx",
+                "song.folk.oh-my-darling-clementine.pdmx",
+                "song.folk.the-flute-tune-soulpride-remix.pdmx",
+                "song.folk.i-remember-you.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,

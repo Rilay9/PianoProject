@@ -115,7 +115,12 @@
                 "exercise.walking-bass.b-flat.ii-v-i",
                 "exercise.stride.e-flat"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.jazz.the-dave-brubeck-quartet-take-five.pdmx",
+                "song.jazz.fats-waller-ain-t-misbehavin.pdmx",
+                "song.jazz.george-shearing-lullaby-of-birdland.pdmx",
+                "song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,
@@ -231,9 +236,23 @@
                 "exercise.comping.c.anticipated",
                 "drill.ear.tune-long",
                 "exercise.open-voicing.e-flat.add9",
-                "exercise.voicing7.f.shell"
+                "exercise.voicing7.f.shell",
+                "exercise.voicing.a"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.pop.harry-styles-falling-by-harry-styles.pdmx",
+                "song.pop.honne-location-unknown-brooklyn-session-honne.pdmx",
+                "song.pop.thomasclarke11-joy-to-the-world.pdmx",
+                "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx",
+                "song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx",
+                "song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx",
+                "song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx",
+                "song.pop.yugo-kanno-yoshikage-kira-s-theme-piano.pdmx",
+                "song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx",
+                "song.pop.camille-le-festin-piano-arr-kno.pdmx",
+                "song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx",
+                "song.pop.wowaka-vocaloid-rolling-girl-aa1-4aaa3aa1-4a.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,
@@ -349,7 +368,8 @@
                 "exercise.slash-bass.e-flat",
                 "exercise.open-voicing.f.quartal",
                 "drill.theory.roman-numerals-secondary",
-                "exercise.open-voicing.c.sus2"
+                "exercise.open-voicing.c.sus2",
+                "exercise.voicing.a"
               ],
               "songOptions": [],
               "songOptional": true,
