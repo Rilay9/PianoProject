@@ -39,7 +39,14 @@
  * predicted 44 px and drew 74. A floor applied to a number that wrong is not a
  * floor. Deciding the arrangement honestly needs measure-decide-remeasure, not
  * a better constant. Written up in `08-score-render-states.md` under
- * "§3.2 the arrangement is decided by a race", with the numbers.
+ * "§3.2 the arrangement is decided by a race".
+ *
+ * A second attempt (2026-09-12) instrumented the fit and forced every count, and
+ * found the blocker exactly: the honest ink measurement exists only after a slot
+ * is re-engraved for the new count, and no fit happens between that re-engrave
+ * and the freeze. `handoff` §5af has what each count actually draws for nine
+ * pieces, and rules out three cheaper fixes by measurement rather than argument.
+ * Start there.
  *
  * Remove the `fixme` when that lands. If it starts passing for any other
  * reason, that is worth knowing about too.
