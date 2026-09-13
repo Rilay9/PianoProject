@@ -7,7 +7,7 @@ videos:
   - label: "Ragtime Piano CRASH COURSE - Intermediate/Advanced! Rag Rolls, Stride Bass, & more w/ Jonny May"
     url: "https://www.youtube.com/watch?v=XEh613qjnXg"
     teacher: "Piano With Jonny"
-readingTime: 4
+readingTime: 3
 ---
 
 Joplin's last rags are harder than his first ones in a specific way: the

@@ -201,10 +201,23 @@ V:2 clef=bass
 ## 6. Lesson text conventions (`content/lessons/<lessonId>.md`)
 
 Front-matter: `title`, `stage`, `unit`, `concepts[]`, `videos[]` (`{label, url, teacher}`),
-`readingTime`. Body: ≤ 400 words, written for an adult engineer who is a musical beginner:
+`readingTime` — which is computed from the body at 200 words a minute, not written by hand.
+It used to be written by hand and meant nothing: across the eighty-six lessons it implied
+anywhere from 43 to 272 words a minute, and no code has ever read it.
+
+Body: **read in three minutes or less** (600 words at that rate), written for an adult
+engineer who is a musical beginner:
 define every term the first time (e.g. "a *triad* is three notes stacked in thirds — every
 other letter name"), give the intuition, then the rule, then "what to do at the piano".
 Include one "Common mistake" and one "How you'll know you've got it".
+
+This was "≤ 400 words" from the repository's first commit, written before any lesson
+existed, with no reason recorded and nothing enforcing it — seven lessons had been over it
+for as long as they had existed. Three minutes is the same intent measured in the unit the
+line above it already carries: a lesson is read once before you play, not studied. Two
+lessons are longer and named in `lessonShape.test.ts`, both because their rung is several
+ideas rather than one: `ragtime.6` (a whole rag, with a trio and a key change) and
+`classical.6` (twenty-one Romantic miniatures).
 
 ### 6a. Drill tips (`content/tips/<kind>.md`, P17)
 

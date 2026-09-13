@@ -7,7 +7,7 @@ videos:
   - label: "Rotation Technique on the piano explained -- Playground Sessions"
     url: "https://www.youtube.com/watch?v=kgEG3_ebGsQ"
     teacher: "Playground Sessions"
-readingTime: 5
+readingTime: 2
 ---
 
 **Seventh arpeggios** are the shapes the next four stages of music are made of.

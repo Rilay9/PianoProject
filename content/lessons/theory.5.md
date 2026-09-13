@@ -7,7 +7,7 @@ videos:
   - label: "Modes Explained on the Piano [tutorial lesson]"
     url: "https://www.youtube.com/watch?v=pCfV-i20olM"
     teacher: "Bitesize Piano"
-readingTime: 3
+readingTime: 2
 ---
 
 **Four seventh-chord qualities** cover nearly everything:

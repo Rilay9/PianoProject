@@ -7,7 +7,7 @@ videos:
   - label: "Compose Your Own Piano Music: A TOTAL Beginner's Guide"
     url: "https://www.youtube.com/watch?v=JPtBDJgY22M"
     teacher: "MangoldProject"
-readingTime: 4
+readingTime: 1
 ---
 
 One piece, finished. Two or three minutes. Written down well enough that

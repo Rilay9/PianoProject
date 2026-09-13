@@ -7,7 +7,7 @@ videos:
   - label: "C. Petzold: Minuet in G Major BWV Anh. 114 | Slow Piano Tutorial | Late Beginner"
     url: "https://www.youtube.com/watch?v=fVbPrKuc2F4"
     teacher: "Classical Piano Made Playable"
-readingTime: 3
+readingTime: 2
 ---
 
 The classical track starts with dances, because a dance has a fixed pulse, short
@@ -31,12 +31,10 @@ A little space between phrases is worth more than any dynamic.
 
 **Repeats and ornaments.** Each half repeats. On the repeat, change something —
 softer, or with one added ornament. A **mordent** is the main note, a
-neighbour, and the main note again, played fast and *on* the beat rather than
-before it. Which neighbour depends on the sign: the zigzag with a vertical line
-through it goes to the note below, the plain zigzag to the note above. Editions
-are not consistent about this, so when an edition does not say, take the upper
-one — that is what the Classical style assumes, and Stage 5's trills start there
-for the same reason.
+neighbour and the main note again, fast and *on* the beat. Which neighbour
+depends on the sign: the zigzag with a line through it takes the note below, the
+plain zigzag the note above. Editions differ, so when one does not say, take the
+upper — as Stage 5's trills do.
 
 **Repertoire for this rung.** Petzold *Minuet in G*, BWV Anh. 114, in either
 edition in the library; the same minuet's alternative setting; and the easy

@@ -7,7 +7,7 @@ videos:
   - label: "How to Play Ornaments: Trills, Mordents and More"
     url: "https://www.youtube.com/watch?v=Hx_-ZWk0sy0"
     teacher: "pianoTV"
-readingTime: 3
+readingTime: 2
 ---
 
 Two different worlds at this rung, and the contrast between them is the lesson.

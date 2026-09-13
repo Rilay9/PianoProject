@@ -10,7 +10,7 @@ videos:
   - label: "Music Theory: Authentic Cadences"
     url: "https://www.youtube.com/watch?v=mJQP9TTDYLo"
     teacher: "Scott Watson"
-readingTime: 3
+readingTime: 2
 ---
 
 **The circle of fifths** arranges the twelve keys so each is a fifth above the

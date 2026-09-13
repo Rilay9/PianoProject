@@ -7,7 +7,7 @@ videos:
   - label: "8 Easy Blues Licks for Beginners (Simple Piano Tutorial)"
     url: "https://www.youtube.com/watch?v=g_S5CMWyovM"
     teacher: "MangoldProject"
-readingTime: 3
+readingTime: 2
 ---
 
 Nothing new is added here. This rung is the point of the other four.
@@ -25,7 +25,9 @@ bars back a phrase at a time. What it trains is the loop between hearing
 something and finding it, which is the only loop improvising uses.
 
 **What to practise.** One chorus a day, recorded, over your own left hand. Listen
-to it once and then delete it.
+to it once and then delete it. The app's **Listen back** is on the backing-track
+drills at Stages 4 and 5, and you are past those now — here the left hand is
+yours, so record it on whatever is in your pocket.
 
 **Repertoire for this rung.** Yours.
 

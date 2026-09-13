@@ -7,7 +7,7 @@ videos:
   - label: "Ragtime & Jazz Stride Piano for BEGINNERS Part 1.1, LEFT HAND | Piano Lesson Tutorial"
     url: "https://www.youtube.com/watch?v=iPuMhcommkM"
     teacher: "Vladimir Uspenskii"
-readingTime: 3
+readingTime: 2
 ---
 
 Ragtime is written-out music, not improvised, and it is built from one idea: a

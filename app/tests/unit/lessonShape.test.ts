@@ -119,6 +119,21 @@ describe('every lesson keeps its shape', () => {
     expect(named, `lesson prose naming a module by its slug: ${named.join('; ')}`).toEqual([]);
   });
 
+  it('does not name a field, a flag or a file at a learner', () => {
+    // The third shape of the same rule. `theory.6.md` explained why a rung had
+    // no repertoire with "which is what `songOptional` means on the plan" — a
+    // curriculum field name, in front of somebody who has never seen the
+    // curriculum file. `camelCase` is the giveaway: English does not have it,
+    // so anything written that way in a lesson came out of the code.
+    const named: string[] = [];
+    for (const { name, text } of bodies()) {
+      for (const m of text.replace(/\s+/g, ' ').matchAll(/\b[a-z]+[A-Z][A-Za-z]{2,}\b/g)) {
+        named.push(`${name}: ${m[0]}`);
+      }
+    }
+    expect(named, `lesson prose naming something from the code: ${named.join('; ')}`).toEqual([]);
+  });
+
   it('does not cite the repository at a learner', () => {
     // Same rule, other shape. `ragtime.8.md` explained what was missing from the
     // rung with "`docs/02` names three more pieces for this rung" — true, and
@@ -134,6 +149,64 @@ describe('every lesson keeps its shape', () => {
       }
     }
     expect(cited, `lesson prose citing the repository: ${cited.join('; ')}`).toEqual([]);
+  });
+
+  it('states a reading time that matches the text', () => {
+    // `readingTime` was written by hand and meant nothing: across the
+    // eighty-six it implied anywhere from 43 to 272 words a minute, and no code
+    // has ever read it. It is computed now, at the 200 wpm `03` §6 names.
+    //
+    // Worth a test because it rotted inside one sitting: three lessons were
+    // trimmed after the times were computed and all three were immediately
+    // wrong again. A number derived from a file has to be checked against that
+    // file or it is decoration.
+    const wrong: string[] = [];
+    for (const name of readdirSync(LESSONS).filter((n) => n.endsWith('.md'))) {
+      const raw = readFileSync(join(LESSONS, name), 'utf8');
+      const split = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/.exec(raw);
+      if (!split) continue;
+      const claimed = /^readingTime:\s*(\d+)/m.exec(split[1] ?? '');
+      if (!claimed) continue;
+      const words = (split[2] ?? '').split(/\s+/).filter(Boolean).length;
+      const want = Math.max(1, Math.ceil(words / 200));
+      if (Number(claimed[1]) !== want) {
+        wrong.push(`${name} says ${String(claimed[1])} min for ${String(words)} words (${String(want)})`);
+      }
+    }
+    expect(wrong, `reading times that do not match the text: ${wrong.join('; ')}`).toEqual([]);
+  });
+
+  it('keeps a lesson to the three minutes `03` §6 asks for', () => {
+    // A reading time, not a word count.
+    //
+    // `03` §6 said 400 words from the first commit of the repository, written
+    // before a single lesson existed, with no reason beside it and nothing
+    // anywhere enforcing it. Seven of the eighty-six had been over it for as
+    // long as they had existed. That is a guess, not a limit.
+    //
+    // What it was evidently reaching for is on the line above it in the same
+    // spec: `readingTime`. A lesson is read once before you play, not studied.
+    // So the rule is three minutes at 200 words a minute, which is the same
+    // intent measured in the unit that carries it — and it takes the exceptions
+    // from seven to two, because the five in between are long paragraphs rather
+    // than long lessons.
+    //
+    // The two that remain cover rungs that are several ideas: a whole rag with
+    // a trio and a key change, and the Romantic miniature rung with
+    // twenty-one pieces on it. The list is named so it cannot grow quietly.
+    const MINUTES = 3;
+    const WPM = 200;
+    const KNOWN_LONG = new Set(['ragtime.6.md', 'classical.6.md']);
+    const over = bodies()
+      .map(({ name, text }) => ({
+        name,
+        minutes: Math.ceil(text.split(/\s+/).filter(Boolean).length / WPM),
+      }))
+      .filter(({ name, minutes }) => minutes > MINUTES && !KNOWN_LONG.has(name))
+      .map(({ name, minutes }) => `${name} reads in ${String(minutes)} min`);
+    expect(over, `lessons over ${String(MINUTES)} minutes and not on the list: ${over.join('; ')}`).toEqual(
+      [],
+    );
   });
 
   // There is deliberately no test that every lesson names a mistake.

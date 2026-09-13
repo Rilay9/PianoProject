@@ -22,6 +22,7 @@ import { findItem, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem } from '../../curriculum/types';
 import {
   ChordDictationDrill,
+  BackingTrackDrill,
   RhythmDrill,
   drillFromCatalog,
   isChecklist,
@@ -166,6 +167,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let disposed = false;
   let finished = false;
   /** What the last finished set came to, so the summary's button can record it. */
+  /** The notes of the last improvisation, for `Listen back`; not persisted. */
+  let lastRecording: { midi: number; velocity: number; tMs: number }[] = [];
   let lastResult: {
     result: DrillResult;
     outcome: ReturnType<typeof drillOutcome>;
@@ -249,6 +252,48 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function clearPlayback(): void {
     for (const timer of playbackTimers) clearTimeout(timer);
     playbackTimers = [];
+  }
+
+  /**
+   * Plays back what the learner just improvised.
+   *
+   * The improvisation lessons rest on this and the app did not have it. `improv.5`
+   * told the learner "the app records MIDI and shows it as a piano roll", and
+   * `improv.3` "records what you play so you can listen back" — neither was true,
+   * and the track's whole method is built on it: *what felt inspired and what
+   * actually sounded good are two different sets, and only playback tells you
+   * which is which.*
+   *
+   * Almost all of it already existed. `BackingTrackDrill` has kept every note
+   * with its timestamp since it was written — the getter even says "for the
+   * sessions row" — and nothing but a unit test had ever read it. `Piano.start`
+   * already schedules a note at a time. This is the wire between them.
+   *
+   * Not persisted, on purpose: the lesson's own instruction is "listen to it
+   * once and then delete it", and a recording that outlives the session would be
+   * a library of takes nobody asked for.
+   */
+  function playRecording(notes: readonly { midi: number; velocity: number; tMs: number }[]): void {
+    clearPlayback();
+    if (notes.length === 0) return;
+    const start = notes[0]?.tMs ?? 0;
+    void getPiano()
+      .then((piano) => {
+        if (disposed) return;
+        for (const note of notes) {
+          playbackTimers.push(
+            setTimeout(
+              () => {
+                if (!disposed) piano.start({ midi: note.midi, velocity: note.velocity, durationSec: 0.9 });
+              },
+              Math.max(0, note.tMs - start),
+            ),
+          );
+        }
+      })
+      .catch(() => {
+        status.textContent = 'The piano samples are not loaded, so there is nothing to play it back with.';
+      });
   }
 
   /**
@@ -834,6 +879,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     const outcome = drillOutcome(result, settings.passAccuracyPct);
     const durationMs = Date.now() - startedAtMs;
     lastResult = { result, outcome, durationMs };
+    // What the learner improvised, if this was a kind that keeps it.
+    lastRecording = drill instanceof BackingTrackDrill ? [...drill.recording] : [];
 
     // Built before the sheet so its own handler can disable it: `button`'s
     // callback takes no event, and reading `currentTarget` off one would be a
@@ -873,6 +920,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         'div.row',
         {},
         button('Again', () => restart(), { id: 'drill-again', variant: 'primary' }),
+        // Only where there is something to hear. A drill that judges every
+        // answer has nothing to play back that the learner did not just hear.
+        ...(lastRecording.length > 0
+          ? [
+              button('Listen back', () => playRecording(lastRecording), { id: 'drill-listen' }),
+            ]
+          : []),
         // Only on a set that was stopped. A set that ran to its end has already
         // been recorded, and a button offering to do it again would be asking a
         // question that has no answer.

@@ -7,7 +7,7 @@ videos:
   - label: "Piano improvisation with pentatonic scale"
     url: "https://www.youtube.com/watch?v=1W8TjulBrHM"
     teacher: "Play By Ear Music School"
-readingTime: 3
+readingTime: 2
 ---
 
 **The pentatonic scale** is five notes: in C major, **C D E G A** — the major

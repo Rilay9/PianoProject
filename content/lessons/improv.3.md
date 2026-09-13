@@ -7,7 +7,7 @@ videos:
   - label: "Beginners, Start Here to Improvise Piano"
     url: "https://www.youtube.com/watch?v=YTYpGUSBBc8"
     teacher: "Piano With Jonny"
-readingTime: 3
+readingTime: 2
 ---
 
 Improvising is not composing quickly. It is a much smaller skill than it sounds
@@ -35,9 +35,11 @@ than noodling.
 it, play it again a step higher, play it again with the last note longer. Almost
 every memorable melody in Western music is a motif repeated with small changes.
 
-**Nothing is scored.** The app records what you play so you can listen back and
-does not grade it. The only measure is whether you kept time and whether you
-would play any of it again.
+**Nothing is scored.** The app keeps what you played and gives you **Listen
+back** at the end; it does not grade any of it. The only measure is whether you
+kept time and whether you would play any of it again. The recording lasts as
+long as you stay on the screen and is not saved anywhere, which is deliberate —
+it is for hearing once, not for building a collection of takes.
 
 **Common mistake.** Playing continuously because silence feels like failure.
 Silence is where the listener catches up. Count four empty bars and mean it.

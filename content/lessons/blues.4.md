@@ -7,7 +7,7 @@ videos:
   - label: "12 BAR BLUES on Piano - Boogie Woogie Basslines Tutorial"
     url: "https://www.youtube.com/watch?v=H-PqMj7Lgc8"
     teacher: "Bitesize Piano"
-readingTime: 3
+readingTime: 2
 ---
 
 The blues is a **form** before it is a style: twelve bars, three chords, repeated

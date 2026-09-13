@@ -7,7 +7,7 @@ videos:
   - label: "Ragtime Piano CRASH COURSE for Beginners! Rag Rolls, Stride Bass, & More w/ Jonny May"
     url: "https://www.youtube.com/watch?v=PZt-GA_8F2A"
     teacher: "Piano With Jonny"
-readingTime: 4
+readingTime: 3
 ---
 
 Stage 6 was about form and flat keys. This rung is about the left hand growing

@@ -7,7 +7,7 @@ videos:
   - label: "Easy slash chords tutorial on the piano!"
     url: "https://www.youtube.com/watch?v=cQY7iOkQj-Y"
     teacher: "Play Piano In A Flash"
-readingTime: 4
+readingTime: 2
 ---
 
 You know the loop. This rung is about knowing it in the twelve keys and about

@@ -7,7 +7,7 @@ videos:
   - label: "How to play a Salsa montuno (tumbao) on the piano - tutorial #1"
     url: "https://www.youtube.com/watch?v=wC3Iq5ImTXE"
     teacher: "Vanessa Rodrigues"
-readingTime: 3
+readingTime: 2
 ---
 
 Latin music is organised by rhythm the way European music is organised by

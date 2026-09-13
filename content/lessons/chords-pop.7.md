@@ -7,7 +7,7 @@ videos:
   - label: "Sound Amazing at the Piano With SUS CHORDS"
     url: "https://www.youtube.com/watch?v=lPJQfvm39jw"
     teacher: "Piano With Jonny"
-readingTime: 4
+readingTime: 2
 ---
 
 Four chords played plainly are four chords. The same four with the right colour

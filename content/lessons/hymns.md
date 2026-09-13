@@ -7,7 +7,7 @@ videos:
   - label: "Passing Chords | Gospel Piano Tutorial for Beginners to Advanced"
     url: "https://www.youtube.com/watch?v=D78jyasHY2s"
     teacher: "PrettySimpleMusic"
-readingTime: 3
+readingTime: 2
 ---
 
 Hymn playing is the most efficient harmony training available, because every

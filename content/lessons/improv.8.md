@@ -7,7 +7,7 @@ videos:
   - label: "Tritone Substitution: the one jazz piano trick you need to know"
     url: "https://www.youtube.com/watch?v=3z8a0Z7K6ag"
     teacher: "PianoGroove"
-readingTime: 5
+readingTime: 2
 ---
 
 Reharmonising is composition with the melody already written, which makes it the

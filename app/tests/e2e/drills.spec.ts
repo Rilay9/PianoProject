@@ -237,6 +237,37 @@ test.describe('the drill screen', () => {
     await expect(page.locator('#progress-history')).toContainText('Chord drill');
   });
 
+  test('you can listen back to what you improvised', async ({ page }) => {
+    // The improvisation lessons rest on this: "what felt inspired and what
+    // actually sounded good are two different sets, and only playback tells you
+    // which is which". `improv.3` and `improv.5` both said the app did it, and
+    // it did not — though `BackingTrackDrill` had kept every note with its
+    // timestamp since it was written, read by nothing but a unit test.
+    //
+    // Offered only where there is something to hear: a drill that judges every
+    // answer has nothing to play back that the learner did not just play.
+    const midi = await openDrill(page, 'drill.improv.loop-i-iv-v');
+    await midi.noteOn(64, 90);
+    await midi.noteOff(64);
+    await midi.noteOn(67, 95);
+    await midi.noteOff(67);
+    await page.locator('#drill-next').click();
+    await expect(page.locator('#drill-outcome')).toBeVisible();
+    await expect(page.locator('#drill-listen')).toBeVisible();
+    await page.locator('#drill-listen').click();
+    // It does not throw, and it does not claim the samples are missing: the
+    // status line is where that failure would show.
+    await expect(page.locator('#drill-status')).not.toContainText('nothing to play it back with');
+  });
+
+  test('and offers nothing to listen back to when there is nothing', async ({ page }) => {
+    const midi = await openDrill(page, 'drill.chord.c-f-g');
+    await playChord(midi, [60, 64, 67]);
+    await page.locator('#drill-end').click();
+    await expect(page.locator('#drill-outcome')).toBeVisible();
+    await expect(page.locator('#drill-listen')).toHaveCount(0);
+  });
+
   test('a set that runs to its end still records itself', async ({ page }) => {
     // The other side of the same rule, on the shortest set there is: a backing
     // track has one card, so `Done` ends it, and ending it is the choosing.

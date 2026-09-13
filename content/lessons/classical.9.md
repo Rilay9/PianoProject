@@ -7,7 +7,7 @@ videos:
   - label: "How I Learn a New Piece at the Piano [3 Steps!]"
     url: "https://www.youtube.com/watch?v=YG9kdmY7iVI"
     teacher: "The Piano Prof | Kate Boyd"
-readingTime: 4
+readingTime: 2
 ---
 
 There is no rung above this one, and nothing here is meant to be passed. These

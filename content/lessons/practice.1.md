@@ -3,7 +3,7 @@ title: Chunking, and the loop
 stage: 1
 unit: "practice.1.1"
 concepts: [chunking, looping, slow-practice]
-readingTime: 3
+readingTime: 2
 ---
 
 Most practice is spent playing the parts you can already play. You start at the

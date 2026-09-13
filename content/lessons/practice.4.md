@@ -3,7 +3,7 @@ title: When to stop — warm-up, tension and pain
 stage: 1
 unit: "practice.1.1"
 concepts: [warm-up, tension, injury, endurance]
-readingTime: 3
+readingTime: 2
 ---
 
 Piano injuries are real and they are almost always the result of practising

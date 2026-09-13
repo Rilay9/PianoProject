@@ -7,7 +7,7 @@ videos:
   - label: "Stride piano - basics of the left hand stride"
     url: "https://www.youtube.com/watch?v=zdHZ-RkF4L0"
     teacher: "Bill Hilton"
-readingTime: 4
+readingTime: 2
 ---
 
 **Stride.** Bass note, chord, tenth, chord. Two leaps a bar, both of them

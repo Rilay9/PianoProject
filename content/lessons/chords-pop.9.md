@@ -7,7 +7,7 @@ videos:
   - label: "Create Your Own Piano Arrangements - PERFECT for any level!"
     url: "https://www.youtube.com/watch?v=oq3v8SpWCi0"
     teacher: "Piano and Voice with Brenda"
-readingTime: 4
+readingTime: 2
 ---
 
 A chart gives you the harmony and nothing else. Everything that makes it sound

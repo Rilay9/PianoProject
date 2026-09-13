@@ -27,7 +27,18 @@
     "",
     "Measured on the first real run: 28 of the 34 have at least one candidate in the archive,",
     "and 25 of those were below the quota line, which is why they need a list of their own.",
-    "Admitted outside the quotas, like the wants."
+    "Admitted outside the quotas, like the wants.",
+    "",
+    "A third group, added 2026-09-12: four jazz standards the jazz ladder is written around.",
+    "jazz.5 names them as repertoire and jazz.6 says outright 'nothing in the catalog yet ...",
+    "import a lead sheet of one', which leaves four rungs of a repertoire track with no music",
+    "on them. Unlike the two groups above these are genuinely public domain in the US - Some",
+    "of These Days 1910, Ja-Da and After You've Gone 1918, Avalon 1920 - so a kept file",
+    "survives --strict-license and reaches the public build too.",
+    "",
+    "No placeholder rows were added for them. A catalog row with no file behind it is what the",
+    "seven rock rungs were, and they were struck for it: a rung whose music never arrives is",
+    "not a rung. These are wants until a file exists, and the lessons already say so honestly."
   ],
   "wants": [
     {
@@ -164,6 +175,52 @@
       ],
       "artist": [
         "hisaishi"
+      ]
+    },
+    {
+      "id": "song.jazz.ja-da",
+      "title": [
+        "ja-da",
+        "ja da"
+      ],
+      "artist": [
+        "bob carleton",
+        "carleton"
+      ]
+    },
+    {
+      "id": "song.jazz.after-youve-gone",
+      "title": [
+        "after you've gone",
+        "after youve gone",
+        "after you have gone"
+      ],
+      "artist": [
+        "turner layton",
+        "layton",
+        "creamer"
+      ]
+    },
+    {
+      "id": "song.jazz.avalon",
+      "title": [
+        "avalon"
+      ],
+      "artist": [
+        "vincent rose",
+        "al jolson",
+        "jolson"
+      ]
+    },
+    {
+      "id": "song.jazz.some-of-these-days",
+      "title": [
+        "some of these days"
+      ],
+      "artist": [
+        "shelton brooks",
+        "brooks",
+        "sophie tucker"
       ]
     }
   ],

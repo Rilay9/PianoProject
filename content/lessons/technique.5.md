@@ -10,7 +10,7 @@ videos:
   - label: "How To Crescendo & Diminuendo On Piano"
     url: "https://www.youtube.com/watch?v=he_huVwMRsg"
     teacher: "Musician's Addition"
-readingTime: 4
+readingTime: 2
 ---
 
 Stage 4 was about getting the notes under the hand. This rung is about what they

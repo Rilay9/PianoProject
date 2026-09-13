@@ -7,7 +7,7 @@ videos:
   - label: "Voicing in Piano Explained: How to Bring Out Melody over Accompaniment"
     url: "https://www.youtube.com/watch?v=MUEyZfxUC6o"
     teacher: "Akira Ikegami"
-readingTime: 3
+readingTime: 2
 ---
 
 The three skills below are what Romantic piano writing asks for, and they are

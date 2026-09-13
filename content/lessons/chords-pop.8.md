@@ -7,7 +7,7 @@ videos:
   - label: "The Easiest Way to Transpose a Song to ANY key on piano!"
     url: "https://www.youtube.com/watch?v=Ri9N5mH7YUE"
     teacher: "Piano With Jonny"
-readingTime: 4
+readingTime: 2
 ---
 
 The most useful thing a chord-player can do, and the thing that separates

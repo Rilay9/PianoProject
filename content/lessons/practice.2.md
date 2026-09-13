@@ -3,7 +3,7 @@ title: Slow practice and the tempo ladder
 stage: 1
 unit: "practice.1.1"
 concepts: [slow-practice, tempo-ladder, evenness]
-readingTime: 3
+readingTime: 2
 ---
 
 Everyone is told to practise slowly and almost nobody does it slowly enough.

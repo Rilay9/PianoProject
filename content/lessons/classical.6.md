@@ -7,7 +7,7 @@ videos:
   - label: "Rubato in Romantic Piano Music"
     url: "https://www.youtube.com/watch?v=fUVQL4vBVks"
     teacher: "University of Sydney Library"
-readingTime: 5
+readingTime: 4
 ---
 
 Up to now, playing the right notes at the right time was most of the job. From

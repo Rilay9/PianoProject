@@ -7,7 +7,7 @@ videos:
   - label: "Ultimate Guide to Jazz Piano Quartal Voicings"
     url: "https://www.youtube.com/watch?v=XYSEQhwsEz0"
     teacher: "Josh Walsh"
-readingTime: 4
+readingTime: 2
 ---
 
 This rung is about what a piece sounds like rather than what it does.

@@ -7,7 +7,7 @@ videos:
   - label: "How To Form & Play Dominant 9th Chords On The Piano"
     url: "https://www.youtube.com/watch?v=zwlReOAa9KE"
     teacher: "PlayPiano"
-readingTime: 4
+readingTime: 2
 ---
 
 A blues you can play in C is a blues you can play. A blues you can play in E

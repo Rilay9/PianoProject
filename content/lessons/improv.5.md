@@ -7,7 +7,7 @@ videos:
   - label: "How To Improvise On Blues Scale: Piano Lesson"
     url: "https://www.youtube.com/watch?v=RJu-wptS6Ng"
     teacher: "London Contemporary School of Piano"
-readingTime: 3
+readingTime: 2
 ---
 
 **The blues scale** is the minor pentatonic with one extra note: **C E♭ F G♭ G
@@ -30,9 +30,11 @@ and keeping the two bars that were good. Then build the other six around them:
 bar 1–2 the idea, 3–4 the idea varied, 5–6 something contrasting, 7–8 the idea
 returning with an ending.
 
-**Record everything.** The app records MIDI and shows it as a piano roll. What
+**Listen back to everything.** At the end of a backing-track run the app plays
+your own notes back to you, at the speed and the dynamics you played them. What
 felt inspired and what actually sounded good are two different sets, and only
-playback tells you which is which.
+hearing it from the outside tells you which is which. Listen once, then play
+another chorus — there is nothing to save and nothing to tidy up afterwards.
 
 **Common mistake.** Playing the blues scale fast to hide uncertainty. Play four
 notes in a bar and mean all four.

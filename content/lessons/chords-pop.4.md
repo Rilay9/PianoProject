@@ -7,7 +7,7 @@ videos:
   - label: "I vi IV V: Easy And Fun Chord Progression Tutorial"
     url: "https://www.youtube.com/watch?v=ZPabFqOPrkg"
     teacher: "PianoLessonsOnline.com"
-readingTime: 3
+readingTime: 2
 ---
 
 Three chords get you folk songs. Two more get you most of pop music.

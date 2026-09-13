@@ -7,7 +7,7 @@ videos:
   - label: "The Roman Numeral System Explained: Build Any Chord Progression by Number"
     url: "https://www.youtube.com/watch?v=mxVzktPGxaY"
     teacher: "Jason Zac - Nathaniel School of Music"
-readingTime: 4
+readingTime: 2
 ---
 
 Two skills that look like different subjects and are the same one: naming a
@@ -33,8 +33,8 @@ nothing let you play them. Now something does.
 **What to practise.** Four numerals in three keys, then four progressions taken
 down by ear.
 
-**Repertoire for this rung.** Not applicable — this rung is finished on drills,
-which is what `songOptional` means on the plan.
+**Repertoire for this rung.** None, and none is wanted: this rung is finished on
+its drills alone, and the plan will not hold you here waiting for a piece.
 
 **Common mistake.** Naming chords by ear from their top note. The bass is what
 tells you the chord.

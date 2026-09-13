@@ -10,7 +10,7 @@ videos:
   - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
     url: "https://www.youtube.com/watch?v=sfty1bjShBI"
     teacher: "PianoTips"
-readingTime: 4
+readingTime: 2
 ---
 
 This rung is not repertoire. It is the set of shapes every piece after it is

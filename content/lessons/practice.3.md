@@ -3,7 +3,7 @@ title: Interleaving, and what a session should look like
 stage: 1
 unit: "practice.1.1"
 concepts: [interleaving, session-planning, review-queue]
-readingTime: 3
+readingTime: 2
 ---
 
 Practising one thing for forty minutes feels productive and is one of the least

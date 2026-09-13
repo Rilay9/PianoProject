@@ -7,7 +7,7 @@ videos:
   - label: "Guide Tones: Start Here to Play Jazz Piano Chords"
     url: "https://www.youtube.com/watch?v=XJ42wPHMuK0"
     teacher: "Piano With Jonny"
-readingTime: 4
+readingTime: 2
 ---
 
 Improvising over a blues is improvising over one chord that moves. Improvising

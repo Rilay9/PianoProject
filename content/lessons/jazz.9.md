@@ -7,7 +7,7 @@ videos:
   - label: "Intro to STRIDE PIANO (solo jazz piano)"
     url: "https://www.youtube.com/watch?v=aXuytElotSQ"
     teacher: "Piano Fluency"
-readingTime: 4
+readingTime: 2
 ---
 
 Everything on this track has been a piece of a tune. This rung is the tune.

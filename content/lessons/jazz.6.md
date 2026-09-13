@@ -7,7 +7,7 @@ videos:
   - label: "How to Play Left Hand Jazz Piano Walking Bass Techniques"
     url: "https://www.youtube.com/watch?v=9QtvnbuGjUs"
     teacher: "Sweetwater"
-readingTime: 4
+readingTime: 2
 ---
 
 Stage 5 gave you the shells and the ii–V–I. This rung is about what the two

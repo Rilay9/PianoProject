@@ -7,7 +7,7 @@ videos:
   - label: "How To Read Chord Charts (Piano Lesson)"
     url: "https://www.youtube.com/watch?v=8UNcTn435cE"
     teacher: "Pianote"
-readingTime: 3
+readingTime: 2
 ---
 
 This track is the other way of playing the piano. Instead of reading every note,

@@ -7,7 +7,7 @@ videos:
   - label: "Rootless Voicings for Jazz Piano – Sound Pro Instantly"
     url: "https://www.youtube.com/watch?v=-Q0413UQjrs"
     teacher: "Jazz Tutorial | Julian Bradley"
-readingTime: 5
+readingTime: 2
 ---
 
 Shells say the chord in two notes. This rung is about the four-note voicings

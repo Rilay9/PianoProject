@@ -7,7 +7,7 @@ videos:
   - label: "How to Play Blues Piano - Scales, Licks, Turnarounds, Techniques, Left Hand Patterns"
     url: "https://www.youtube.com/watch?v=S3YRSVBjUH0"
     teacher: "Walk That Bass"
-readingTime: 3
+readingTime: 2
 ---
 
 The form is now automatic. This rung is about what you put inside it.

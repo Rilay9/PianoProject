@@ -7,7 +7,7 @@ videos:
   - label: "Shell Voicings Explained Clearly (Beginner Jazz Piano)"
     url: "https://www.youtube.com/watch?v=_ldxtscmCpo"
     teacher: "Julian Bradley"
-readingTime: 3
+readingTime: 2
 ---
 
 Jazz needs the chord vocabulary from chords-and-pop Stage 5 first. Given that,

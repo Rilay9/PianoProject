@@ -7,7 +7,7 @@ videos:
   - label: "Secondary Dominants: The Complete Guide"
     url: "https://www.youtube.com/watch?v=32G6cIiZ3sI"
     teacher: "Piano With Jonny"
-readingTime: 5
+readingTime: 2
 ---
 
 Every key has seven chords. Music uses more than seven, and this is how the

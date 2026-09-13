@@ -7,7 +7,7 @@ videos:
   - label: "Secret Key To Pinetop's Boogie Woogie (Right Hand Boogie Pattern)"
     url: "https://www.youtube.com/watch?v=z6Ytf2EdOQM"
     teacher: "Brendan Kavanagh"
-readingTime: 4
+readingTime: 2
 ---
 
 The twelve-bar form is settled. What changes now is the left hand, which stops

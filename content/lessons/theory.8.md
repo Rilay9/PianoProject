@@ -7,7 +7,7 @@ videos:
   - label: "How to change key with a pivot chord"
     url: "https://www.youtube.com/watch?v=AqY0om_QFA0"
     teacher: "Write A Song"
-readingTime: 4
+readingTime: 2
 ---
 
 **A modulation is a change of home.** Not a chord from outside the key — a

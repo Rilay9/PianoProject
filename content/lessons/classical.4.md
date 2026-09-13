@@ -7,7 +7,7 @@ videos:
   - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
     url: "https://www.youtube.com/watch?v=sfty1bjShBI"
     teacher: "PianoTips"
-readingTime: 3
+readingTime: 2
 ---
 
 At this rung the notes stop being the problem and the *touch* becomes the

@@ -7,7 +7,7 @@ videos:
   - label: "The 3 Essential 7th Chords Explained on Piano: Major 7, Minor 7 & Dominant 7 (Step-by-Step)"
     url: "https://www.youtube.com/watch?v=Ku-kFUSMWw4"
     teacher: "Olympia Piano"
-readingTime: 3
+readingTime: 2
 ---
 
 Triads are three notes and they are slightly plain. Adding a fourth note is what

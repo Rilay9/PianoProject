@@ -7,7 +7,7 @@ videos:
   - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
     url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"
     teacher: "Danae Dörken"
-readingTime: 3
+readingTime: 2
 ---
 
 Four octaves, in sixteenths, at a quarter-note pulse of 120. That is sixteen

@@ -7,7 +7,7 @@ videos:
   - label: "How to Transcribe Songs by Ear on Piano for Beginners"
     url: "https://www.youtube.com/watch?v=5rNStzsnR_M"
     teacher: "Shane's Queen Site"
-readingTime: 4
+readingTime: 2
 ---
 
 The last theory rung is not more theory. It is using all of it at once on

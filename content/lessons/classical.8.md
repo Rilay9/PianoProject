@@ -7,7 +7,7 @@ videos:
   - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
     url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"
     teacher: "Danae Dörken"
-readingTime: 5
+readingTime: 3
 ---
 
 This is the rung where the pieces are longer than your concentration and faster

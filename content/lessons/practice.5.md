@@ -3,7 +3,7 @@ title: The plateau, and the three things to change
 stage: 1
 unit: "practice.1.1"
 concepts: [plateau, motivation, session-planning]
-readingTime: 3
+readingTime: 2
 ---
 
 Sooner or later something stops improving. Three runs at the same score, a
