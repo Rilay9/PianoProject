@@ -103,8 +103,18 @@ async function firstRowFits(page: import('@playwright/test').Page): Promise<{
   fold: number;
   line: number;
 }> {
+  // The count line first, and with room in it.
+  //
+  // Reading a listing is real work — a manifest is parsed and split into a
+  // record per score — and this asked for the first row on the default five
+  // seconds. That is not a tolerance, it is a bet on the machine: the test
+  // passed alone and failed whenever anything else was running, and on
+  // 2026-09-12 it took CI down twice in a row while passing three times in a
+  // row locally. Waiting on the screen's own signal that the listing is drawn
+  // is the fix `00` §2 asks for — observe the thing, do not poll for it.
+  await expect(page.locator('#folder-count')).toContainText('match', { timeout: 60_000 });
   const first = page.locator('#folder-list .list-row').first();
-  await expect(first).toBeVisible();
+  await expect(first).toBeVisible({ timeout: 30_000 });
   const box = await first.boundingBox();
   expect(box, 'no first row').not.toBeNull();
   const wider = await page.evaluate(() => {
