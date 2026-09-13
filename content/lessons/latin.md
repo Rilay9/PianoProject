@@ -7,7 +7,7 @@ videos:
   - label: "How to play a Salsa montuno (tumbao) on the piano - tutorial #1"
     url: "https://www.youtube.com/watch?v=wC3Iq5ImTXE"
     teacher: "Vanessa Rodrigues"
-readingTime: 2
+readingTime: 3
 ---
 
 Latin music is organised by rhythm the way European music is organised by
@@ -33,12 +33,16 @@ that it does not change.
 
 **Putting them together.** Tumbao and montuno are independent and neither is on
 the beat, which makes this the hardest coordination in the app. Build it in
-order: clap clave; play tumbao alone with clave clapped by the app; add montuno
-two notes at a time.
+order: clap the clave until it is automatic; play the tumbao alone while you count
+the clave out loud; then add the montuno two notes at a time. The app has a clave
+to play and read, but it cannot clap one behind you while you play something else.
 
-**Repertoire.** *La Cucaracha*, *Cielito Lindo*, *El Choclo* (1903), *La
-Cumparsita* (1916) and *Tico-Tico* (1917) — all public domain, added as their
-melodies can be verified against an edition.
+**Repertoire.** *La Cumparsita* (1916), the tango, in two parts — it is the one
+piece on this rung that is actually Latin, and it is worth the rung on its own.
+*Carioquinha* is a Brazilian choro, melody only, so play it with the tumbao
+underneath once the left hand is steady. *La Cucaracha*, *Cielito Lindo*, *El
+Choclo* (1903) and *Tico-Tico* (1917) are all public domain and none of them is
+here yet; import any of them and they will fit this rung.
 
 **Common mistake.** Counting the two clave bars as two separate bars. It is one
 two-bar unit; lose that and the pattern flips.

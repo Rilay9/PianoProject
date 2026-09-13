@@ -163,9 +163,16 @@ def scale_level(tonic: str, mode: str, hands: str, octaves: int, motion: str, rh
         return 6.1 if octaves >= 2 else 4.4
     if mode == "major":
         if separately and octaves == 1:
+            # The same key order as the hands-together bands below, a step
+            # lower, because one hand is the easier version of the same work.
+            # This used to lump every key past D and A into one 4.2, which put
+            # E and B major *above* their own hands-together score: the same
+            # scale, in the same key, rated harder for using one hand.
             if tonic in FIRST_THREE:
                 return 2.5
-            return 3.1 if tonic in ("D", "A") else 4.2
+            if tonic in ("D", "A"):
+                return 3.1
+            return 3.2 if tonic in SHARP_SIDE else 4.2
         # Hands together, one or two octaves, similar or contrary: the same
         # three key bands, because what makes B major hard is the key and not
         # the direction.

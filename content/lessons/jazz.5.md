@@ -38,9 +38,12 @@ with the shells barely moving.
 **Comping.** Accompanying: chords played in rhythm, in the gaps, not on every
 beat. Start with a chord on beat 1 and the "and" of 2, and leave the rest alone.
 
-**Repertoire for this rung.** *Ja-Da* (1918), *After You've Gone* (1918),
-*Avalon* (1920), *Bill Bailey* (1902), *Some of These Days* (1910) — all US
-public domain, all short forms.
+**Repertoire for this rung.** The twelve-bar blues shuffles in C and F, which
+are the shortest form you can comp shells through; *Greensleeves* in 6/8 for the
+swung feel; and *Fly Me to the Moon*, which is a chain of ii-V-Is and almost
+nothing else. If you want a standard of the period to import yourself, *Ja-Da*
+(1918), *After You've Gone* (1918), *Avalon* (1920), *Bill Bailey* (1902) and
+*Some of These Days* (1910) are all short forms and all US public domain.
 
 **Common mistake.** Playing four-note rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tune moves fast.
