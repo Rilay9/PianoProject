@@ -7,16 +7,18 @@ videos:
   - label: "C. Petzold: Minuet in G Major BWV Anh. 114 | Slow Piano Tutorial | Late Beginner"
     url: "https://www.youtube.com/watch?v=fVbPrKuc2F4"
     teacher: "Classical Piano Made Playable"
-readingTime: 2
+readingTime: 3
 ---
 
 The classical track starts with dances, because a dance has a fixed pulse, short
 repeated sections and a clear shape — everything a new reader needs.
 
-**The Minuet** is a French court dance in 3/4 at a moderate walking speed. Its
-defining feature is that the phrase is three bars long as often as four, and the
-weight is on beat one with beats two and three lighter. Play it as a dance and
-it works; play it evenly and it plods.
+**The Minuet** is a French court dance in 3/4 at a moderate walking speed. The
+weight is on beat one, with beats two and three lighter — that is what makes it
+a dance rather than three equal taps, and playing it evenly is what makes it
+plod. The dance step itself spans two bars, which is why the phrases come in
+twos and fours: the Petzold below is thirty-two bars and comes to rest at bars
+8, 16, 24 and 32, and hearing those landings is most of playing it well.
 
 **Two voices, not two hands.** The Petzold *Minuet in G* (long attributed to
 Bach, and printed in his wife's notebook) is written as two independent melodic

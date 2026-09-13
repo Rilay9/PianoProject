@@ -26,9 +26,10 @@ step below the octave) floats, a *minor* seventh (a whole step below) leans.
 **sus2** replaces it with the second (C–D–G). With no third, the chord is neither
 major nor minor and sounds open and unresolved. Play sus4 then the plain triad
 and you have the most-used gesture in pop piano. **add9** keeps the third and adds
-the ninth: C–E–G–D with the added note on top, or C–D–E–G with it tucked inside,
-which is the closer and more usual piano voicing — this is the shimmer in most modern ballad
-writing.
+the ninth: C–E–G–D with the added note on top, which is what the drill plays, or
+C–D–E–G with it tucked inside — closer under the hand, and the one you will hear
+in most modern ballad writing. Learn the drill's, then find the other; they are
+the same four notes and they do not sound alike.
 
 **Textures.** With sevenths available, the left hand can stop playing blocks:
 try root on beat one, then the upper three notes broken across the bar; or the

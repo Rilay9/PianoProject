@@ -21,7 +21,7 @@ stage, and that is the point of a shelf.
 no. 1*; Pachelbel *Canon in D* (easy and full); Bach *Air on the G String* and
 *Prelude in C*; Chopin *Préludes* op. 28 nos. 4, 7 and 20, the *Nocturne* op. 9
 no. 2 and the *Waltz in A minor*; Beethoven *Moonlight* first movement and *Für
-Elise*; Debussy *Clair de Lune* and *Arabesque no. 1*; Brahms–Halvorsen
+Elise*; Debussy *Clair de Lune* and *Arabesque no. 1*; Handel–Halvorsen
 *Passacaglia*; Schubert–Liszt *Ständchen*; Liszt *Liebestraum no. 3*;
 Tchaikovsky's *Swan Lake* and *Nutcracker* themes.
 

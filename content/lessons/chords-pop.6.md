@@ -14,8 +14,8 @@ You know the loop. This rung is about knowing it in the twelve keys and about
 what happens underneath it.
 
 **Inversions are the whole difference.** I–V–vi–IV in root position makes the
-hand jump a fifth, a second and a fourth; the same four chords with the top
-voices held still barely move at all. Play both. The second is what every
+hand jump a fifth, then a second, then a third — C to G, G to A, A down to F;
+the same four chords with the top voices held still barely move at all. Play both. The second is what every
 recording actually does, and it is why the loop sounds like one thing rather
 than four.
 
