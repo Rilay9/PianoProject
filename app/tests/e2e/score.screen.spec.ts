@@ -7,6 +7,7 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
+
 import {
   closeScoreMenu,
   inkBox,
@@ -248,18 +249,52 @@ test.describe('score screen', () => {
     await openScoreMenu(page);
     // ＋ grows the sheet and － shrinks it back: the buttons are monotonic
     // (`08` §9.3) — a press of "bigger" never yields a smaller sheet.
-    const scaleNow = () =>
-      page.evaluate(() => {
-        const el = document.querySelector<HTMLElement>('#score-stage .score-buffer.is-cursor');
-        return el ? new DOMMatrixReadOnly(getComputedStyle(el).transform).a : 0;
+    //
+    // Measured as drawn ink, not as the buffer's CSS scale. The drawn size is
+    // the engraving zoom *times* that scale, so raising the engraving zoom
+    // lowers the CSS transform while the sheet on the glass gets bigger: the
+    // number this used to read is not monotonic and was never meant to be. It
+    // passed because the re-engrave usually landed after the assertion, and
+    // under four workers it lands before — 0.656 where the first reading was
+    // 0.991, reported as "bigger made it smaller".
+    //
+    // `08` §9.3 is about what the owner sees, and what the owner sees is ink.
+    const settledInk = async (): Promise<number> => {
+      await page.evaluate(() => {
+        const holder = window as unknown as { __inkW?: number | null; __inkN?: number };
+        holder.__inkW = null;
+        holder.__inkN = 0;
       });
-    const before = await scaleNow();
+      await page.waitForFunction(
+        () => {
+          let left = Infinity;
+          let right = -Infinity;
+          for (const el of document.querySelectorAll('#score-stage .is-front svg *')) {
+            const box = el.getBoundingClientRect();
+            if (box.width === 0 && box.height === 0) continue;
+            left = Math.min(left, box.left);
+            right = Math.max(right, box.right);
+          }
+          const width = Math.round((right - left) * 10) / 10;
+          const holder = window as unknown as { __inkW?: number | null; __inkN?: number };
+          if (holder.__inkW === width) holder.__inkN = (holder.__inkN ?? 0) + 1;
+          else {
+            holder.__inkW = width;
+            holder.__inkN = 0;
+          }
+          return Number.isFinite(width) && (holder.__inkN ?? 0) >= 4;
+        },
+        null,
+        { timeout: 30_000, polling: 100 },
+      );
+      return (await inkBox(page)).width;
+    };
+
+    const before = await settledInk();
     await page.locator('#score-zoom-in').click();
-    await page.waitForTimeout(200);
-    expect(await scaleNow()).toBeGreaterThan(before);
+    expect(await settledInk()).toBeGreaterThan(before);
     await page.locator('#score-zoom-out').click();
-    await page.waitForTimeout(200);
-    expect(await scaleNow()).toBeCloseTo(before, 2);
+    expect(await settledInk()).toBeCloseTo(before, 0);
 
     await expect(page.locator('#score-strip')).toBeVisible();
     await page.locator('#score-keys-off').click();
