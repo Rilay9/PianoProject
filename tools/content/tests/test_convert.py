@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from convert import ConversionError, convert_file  # noqa: E402
+from convert import ConversionError, convert_file, prepare_kern  # noqa: E402
 from tests.mxlutil import read_mxl  # noqa: E402
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -260,3 +260,103 @@ class TestDeclaredClefs(ConvertCase):
         )
         self.assertEqual(written.clef_of_staff(1), "G")
         self.assertEqual(written.clef_of_staff(2), "F")
+
+
+class TestShadowedKeySignature(ConvertCase):
+    """
+    Humdrum's `*kcancel`, and the key signature it hid.
+
+    `*kcancel` asks an engraver to print the naturals that cancel the *previous*
+    signature. music21 reads it as a key signature of its own — C major — and
+    inserts it at offset 0, in front of the `*k[...]` record on the next line.
+    Two key signatures at one instant, and the MusicXML writer emits the first,
+    so the score is engraved with no key signature at all and every accidental
+    of the home key is printed inline for the whole piece.
+
+    Three scores in the built catalogue read that way, and they are not
+    obscure: Chopin's Ballade no. 3 — which is on the Stage 9 classical rung —
+    his Scherzo no. 4, and a movement of the B minor sonata. Ballade no. 3 is
+    in A flat and printed 1,840 accidentals; the source, `047-1-BH.krn` line
+    17, is `*k[b-e-a-d-]` and was right all along.
+
+    The fixture is that header, down to the `*kcancel`, because a simpler kern
+    file does not reproduce it: without the cancel record music21 writes one
+    key signature and the test passes while proving nothing.
+    """
+
+    def test_the_real_signature_reaches_the_page(self) -> None:
+        result, written = self.convert("shadowed-key.krn")
+        self.assertEqual(
+            written.fifths, [-4],
+            "the A flat signature was shadowed by the cancel that precedes it",
+        )
+        self.assertTrue(
+            any("key signature" in note for note in result.warnings),
+            f"the conversion did not report removing one: {result.warnings}",
+        )
+
+    def test_a_cancel_after_the_signature_does_not_replace_it_either(self) -> None:
+        # The record can sit on either side of the one it refers to — before it
+        # in `047-1-BH.krn` and after it in `015-1a-BH-001.krn` — so a rule of
+        # "keep the first" and a rule of "keep the last" are each right about
+        # half the corpus, and the first attempt at this fix broke eight scores
+        # in the other direction while mending three. Neutralising the record
+        # is what makes the ordering stop mattering.
+        _, written = self.convert("cancel-after-key.krn")
+        self.assertEqual(
+            written.fifths, [-1],
+            "a cancel record after the signature wiped it out",
+        )
+
+    def test_the_edition_keeps_its_own_signature(self) -> None:
+        # The half of this that is easy to get wrong. `key.Key` is a subclass
+        # of `key.KeySignature`, and Humdrum's two records are different
+        # claims: `*k[...]` is what the engraver printed and `*g#:` is an
+        # analysis of the key. music21 gives the second a `sharps` derived from
+        # the tonic, so on Chopin's Mazurka op. 33 no. 1 — G sharp minor, five
+        # sharps, printed by its first edition with four — "keep the last one"
+        # silently replaces the edition's signature with the analysis, on
+        # eleven scores. The printed signature is the one that survives.
+        _, written = self.convert("under-signed-key.krn")
+        self.assertEqual(
+            written.fifths, [4],
+            "the analytical *g#: record overwrote the printed four-sharp signature",
+        )
+
+    def test_a_score_without_a_cancel_is_left_alone(self) -> None:
+        # The guard against a fix that removes signatures it should not.
+        result, _ = self.convert("two-spines.krn")
+        self.assertFalse(
+            any("key signature" in note for note in result.warnings),
+            f"nothing should have been removed here: {result.warnings}",
+        )
+
+
+class TestPrepareKern(unittest.TestCase):
+    """The text transformation on its own, spine by spine."""
+
+    def test_a_file_without_a_cancel_is_returned_unchanged(self) -> None:
+        text = "**kern\t**kern\n*k[f#]\t*k[f#]\n=1\t=1\n4c\t4e\n*-\t*-\n"
+        self.assertIs(prepare_kern(text), text)
+
+    def test_the_token_becomes_a_null_interpretation(self) -> None:
+        # `*` and not a deleted line: every spine has to keep its place or the
+        # file stops parsing.
+        text = "**kern\t**kern\t**dynam\n*kcancel\t*kcancel\t*kcancel\n=1\t=1\t=1\n"
+        out = prepare_kern(text)
+        self.assertEqual(out.splitlines()[1], "*\t*\t*")
+        self.assertEqual(len(out.splitlines()), len(text.splitlines()))
+
+    def test_the_other_tokens_on_the_line_are_left_alone(self) -> None:
+        # The real files carry it on the kern spines only, with nulls between.
+        self.assertEqual(prepare_kern("*kcancel\t*\t*kcancel\t*\t*\n"),
+                         "*\t*\t*\t*\t*\n")
+
+    def test_a_key_record_is_never_touched(self) -> None:
+        text = "*k[b-e-a-d-]\t*\t*k[b-e-a-d-]\n*kcancel\t*\t*kcancel\n"
+        out = prepare_kern(text).splitlines()
+        self.assertEqual(out[0], "*k[b-e-a-d-]\t*\t*k[b-e-a-d-]")
+        self.assertEqual(out[1], "*\t*\t*")
+
+    def test_line_endings_survive(self) -> None:
+        self.assertEqual(prepare_kern("*kcancel\t*kcancel\r\n"), "*\t*\r\n")

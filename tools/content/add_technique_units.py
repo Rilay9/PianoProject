@@ -16,7 +16,15 @@ lists are *representative and not exhaustive* on purpose: a rung offering three
 hundred scales is not a rung. The concepts do the reaching; the named options
 are what the screen shows first.
 
-Idempotent: run it twice and the second run changes nothing.
+Idempotent, and it was not: `units[existing] = unit` replaced the whole unit,
+so every field added to these rungs *after* the first run was deleted by the
+second. Running it on the curriculum as it stands cost `levelBand` and
+`finder` on all five technique rungs — 131 lines — while printing "updated"
+five times and reporting success. The docstring said it was safe, which is
+what made it dangerous.
+
+It now writes only the keys it owns and leaves the rest of the rung alone, so
+the promise is true: run it twice and the second run changes nothing.
 
 Usage:
     python3 tools/content/add_technique_units.py
@@ -105,6 +113,10 @@ UNITS: dict[int, dict] = {
 NAMED_PER_UNIT = 12
 
 
+#: Days a rung at each stage is reckoned to take, matching the other tracks.
+DAYS_PER_STAGE: dict[int, int] = {4: 45, 5: 90, 6: 90, 7: 120, 8: 150}
+
+
 def representative(catalog: list[dict], low: float, high: float) -> list[str]:
     """
     A spread of exercises inside a level band, one per family before seconds.
@@ -155,11 +167,37 @@ def build_unit(stage: int, catalog: list[dict]) -> dict:
                 "textFile": f"lessons/{spec['lesson_id']}.md",
                 "exerciseOptions": options,
                 "songOptions": [],
+                # Each rung needs the one below it. Left out of the first
+                # version of this tool, which is how the technique track came
+                # to be the only ladder in the curriculum with no order
+                # written down — every other one chains every rung. The
+                # lessons always said it: technique.5 opens "Stage 4 was about
+                # getting the notes under the hand". Strict prerequisites are
+                # opt-in (`00` D17) and this is the hint they show, so the cost
+                # of the omission was a learner turning the setting on and
+                # getting guidance on every ladder except this one.
+                #
+                # The first rung has none, as theory.3 and improv.3 have none:
+                # a ladder's foot points at a core rung only where it shares
+                # something with it, and technique.4 shares no exercise and no
+                # concept with core 4.1.
+                **({"prerequisites": [f"technique.{stage - 1}"]} if stage > min(UNITS) else {}),
                 # Technique rungs have no repertoire of their own: the songs that
                 # need this work live on the classical, jazz and ragtime rungs at
                 # the same stage. `00` D21's three-alternatives rule is satisfied
                 # by the exercises, which is exactly what `songOptional` is for.
                 "songOptional": True,
+                # What the plan screen prints beside the rung. Left out with
+                # the prerequisites, so the technique ladder was the only part
+                # of the plan showing no estimate at all.
+                #
+                # The figure is the one every other single-track rung at the
+                # same stage carries — 45 days at stage 4, 90 at 5 and 6, 120
+                # at 7, 150 at 8 — which five to seven of the seven or eight
+                # rungs there agree on. Classical and ragtime run longer
+                # because they are the repertoire tracks; this is a drill
+                # track, like theory and blues and jazz.
+                "estimatedDays": DAYS_PER_STAGE[stage],
                 "mastery": {
                     "exercisesRequired": 2,
                     "songsRequired": 0,
@@ -169,6 +207,51 @@ def build_unit(stage: int, catalog: list[dict]) -> dict:
             }
         ],
     }
+
+
+def merge_unit(existing: dict, built: dict) -> dict:
+    """
+    The built unit's own keys, over the one already there.
+
+    This function is the whole of the idempotence claim. Everything this tool
+    knows how to write — the title, the concepts, the exercise list — is its to
+    replace. Everything else on the rung was put there by somebody who knew
+    something this tool does not: `levelBand` is measured from the options,
+    `finder` is written for a learner going looking for a piece, and neither is
+    derivable from the generated catalog. Overwriting the unit wholesale threw
+    both away on every re-run.
+
+    Nested one level deep, because the lesson has the same problem as the unit.
+    """
+    merged = dict(existing)
+    for key, value in built.items():
+        if key == "lessons":
+            continue
+        merged[key] = value
+
+    old_lessons = {lesson.get("id"): lesson for lesson in existing.get("lessons", [])}
+    lessons = []
+    for lesson in built.get("lessons", []):
+        kept = dict(old_lessons.get(lesson.get("id"), {}))
+        fresh = dict(lesson)
+        # `representative` picks by level band and round-robins by drill kind.
+        # That is the right way to *start* a rung and the wrong way to keep one:
+        # it cannot see what the rung teaches, so once the catalog grew it
+        # replaced technique.5's mordent, crescendo and tied-across-the-bar
+        # exercises — the three its lesson is written about — with a montuno, a
+        # ii-V-I and a boogie, all in the band and none of them technique.
+        #
+        # So a rung that already names its exercises keeps them. This tool
+        # exists to bring a rung into being; choosing which twelve of three
+        # hundred to show is a judgement it does not have the information to
+        # make, and its own docstring says so: "the concepts do the reaching;
+        # the named options are what the screen shows first."
+        if kept.get("exerciseOptions"):
+            fresh.pop("exerciseOptions", None)
+        kept.update(fresh)
+        lessons.append(kept)
+    merged["lessons"] = lessons
+    return merged
 
 
 def main() -> None:
@@ -191,7 +274,7 @@ def main() -> None:
             units.append(unit)
             action = "added"
         else:
-            units[existing] = unit
+            units[existing] = merge_unit(units[existing], unit)
             action = "updated"
         write_json(path, data)
         print(f"  {action} {unit['id']} ({len(unit['lessons'][0]['exerciseOptions'])} options)")

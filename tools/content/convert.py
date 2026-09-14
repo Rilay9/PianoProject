@@ -48,6 +48,7 @@ from music21 import (  # noqa: E402
     dynamics,
     harmony,
     instrument,
+    key,
     layout,
     metadata,
     note,
@@ -87,6 +88,42 @@ class ConversionResult:
 # parsing
 # ---------------------------------------------------------------------------
 
+def prepare_kern(text: str) -> str:
+    """
+    Neutralises Humdrum's `*kcancel`, which music21 reads as a key signature.
+
+    `*kcancel` asks an engraver to print the naturals that cancel the key
+    signature *before* it. It carries no pitch of its own, and music21's
+    Humdrum parser turns it into `KeySignature(0)` — C major — inserted at the
+    same instant as the real `*k[...]` record. The MusicXML writer then emits
+    whichever it meets first, and on Chopin's Ballade no. 3 that was the
+    phantom: the score was engraved with no key signature at all and every one
+    of A flat major's four flats printed inline, 1,840 accidentals, on a piece
+    that sits on the Stage 9 classical rung.
+
+    Removing it here rather than picking between them afterwards, because
+    afterwards there is nothing to pick on. The two objects are identical in
+    type and in every attribute except `sharps`, and the cancel can sit either
+    side of the real record — before it in `047-1-BH.krn`, after it in
+    `015-1a-BH-001.krn` — so "keep the first" and "keep the last" are each
+    right about half the corpus. Forty-seven of the 1,267 kern files carry one.
+
+    The token becomes `*`, the null interpretation, rather than the line being
+    dropped: every spine has to keep its place or the file stops parsing.
+    """
+    if "*kcancel" not in text:
+        return text
+    out = []
+    for line in text.splitlines(keepends=True):
+        if "*kcancel" not in line:
+            out.append(line)
+            continue
+        body = line.rstrip("\r\n")
+        out.append("\t".join("*" if token == "*kcancel" else token
+                            for token in body.split("\t")) + line[len(body):])
+    return "".join(out)
+
+
 def parse_source(path: Path) -> stream.Score:
     """Parses any supported source into a music21 Score."""
     suffix = path.suffix.lower()
@@ -101,6 +138,12 @@ def parse_source(path: Path) -> stream.Score:
         parsed = converter.parse(prepare_abc(text), format="abc")
         apply_fingerings(parsed, extract_fingerings(text))
         apply_voice_clefs(parsed, parse_voice_clefs(text))
+    elif suffix == ".krn":
+        # Read as text so `*kcancel` can be taken out before music21 sees it.
+        parsed = converter.parse(
+            prepare_kern(path.read_text(encoding="utf-8", errors="replace")),
+            format="humdrum",
+        )
     else:
         parsed = converter.parse(str(path))
     if isinstance(parsed, stream.Opus):
@@ -274,6 +317,62 @@ def align_voice_offsets(score: stream.Score) -> int:
 UNBEAMABLE_TYPES = frozenset({"quarter", "half", "whole", "breve", "longa", "maxima"})
 
 
+def drop_superseded_key_signatures(score: stream.Score) -> int:
+    """
+    Removes a key signature another one replaces at the same instant.
+
+    A bar cannot have two key signatures, and music21's Humdrum parser writes
+    three into the first bar of some Chopin first editions: a default C at
+    offset 0 and then the real `*k[...]` twice behind it. The MusicXML writer
+    emits the first one it finds, so the score is engraved with **no key
+    signature at all** and every accidental of the home key is printed inline
+    for the whole piece.
+
+    Three of the 1,199 scores in the built catalogue were like this, and they
+    are not obscure: Chopin's Ballade no. 3, which is on the Stage 9 classical
+    rung, his Scherzo no. 4, and the third movement of the B minor sonata. The
+    source is right — `047-1-BH.krn` line 17 is `*k[b-e-a-d-]`, four flats —
+    so nothing was wrong with the edition, only with what reached the page.
+    Ballade no. 3 printed 1,840 accidentals where a key signature would have
+    carried four of them.
+
+    Which of them to keep is the whole subtlety, and "the last one" is wrong.
+    `key.Key` is a subclass of `key.KeySignature`, and the two Humdrum records
+    mean different things: `*k[...]` is the signature **printed on the page**
+    and `*g#:` is an analysis of what key the music is in. music21 turns the
+    second into a `Key` whose `sharps` comes from the tonic, which need not be
+    what the engraver printed — Chopin's Mazurka op. 33 no. 1 is in G sharp
+    minor, five sharps, and the first edition prints four. Keeping the last
+    element there would replace the edition's own signature with a
+    musicologist's reading of it, on eleven scores.
+
+    So: the engraved signature is the last plain `KeySignature`, and a `Key` is
+    only used when there is no plain one. A signature that another supersedes
+    at the same instant could not have been seen, and goes.
+
+    Returns the number removed.
+    """
+    removed = 0
+    for holder in [score, *score.recurse().getElementsByClass(stream.Stream)]:
+        signatures = list(holder.getElementsByClass(key.KeySignature))
+        if len(signatures) < 2:
+            continue
+        by_offset: dict[float, list] = {}
+        for signature in signatures:
+            by_offset.setdefault(float(holder.elementOffset(signature)), []).append(signature)
+        for together in by_offset.values():
+            if len(together) < 2:
+                continue
+            engraved = [s for s in together if not isinstance(s, key.Key)]
+            keep = engraved[-1] if engraved else together[-1]
+            for superseded in together:
+                if superseded is keep:
+                    continue
+                holder.remove(superseded)
+                removed += 1
+    return removed
+
+
 def clean_beams(score: stream.Score) -> int:
     """
     Removes beams the engraver will refuse, keeping every note.
@@ -365,6 +464,10 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
     unbeamed = clean_beams(out)
     if unbeamed:
         notes.append(f"dropped unrenderable beams from {unbeamed} note(s)")
+
+    shadowed = drop_superseded_key_signatures(out)
+    if shadowed:
+        notes.append(f"removed {shadowed} key signature(s) replaced at the same instant")
 
     stripped = 0
     if not keep_lyrics:

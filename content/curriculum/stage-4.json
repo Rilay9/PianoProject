@@ -953,7 +953,8 @@
                   }
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "estimatedDays": 45
             }
           ]
         }

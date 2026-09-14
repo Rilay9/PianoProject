@@ -678,7 +678,7 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
 
     item_id = f"exercise.scale.{key_slug(spec.tonic)}-{slug(mode_label)}.{spec.octaves}oct.{spec.motion}.{spec.hands}.{int(spec.rhythm*4)}"
     entry = catalog_entry(item_id, title, spec.level,
-                          ["scale", f"{spec.tonic}-{mode_label}", spec.motion, f"hands:{spec.hands}"],
+                          ["scale", f"{note_name(spec.tonic)}-{mode_label}", spec.motion, f"hands:{spec.hands}"],
                           spec.hands, spec.bpm, "scale",
                           {"key": spec.tonic, "mode": spec.mode, "octaves": spec.octaves, "motion": spec.motion,
                            "rhythm": spec.rhythm, "fingeringVerified": fing is not None},
@@ -717,7 +717,7 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
         lh.append(note.Rest(quarterLength=0.5 * len(lh_p)))
     finalize(sc)
     item_id = f"exercise.arpeggio.{key_slug(root)}-{quality}.{octaves}oct.{hands}"
-    entry = catalog_entry(item_id, title, level, ["arpeggio", f"{root}-{quality}", f"hands:{hands}"], hands, bpm,
+    entry = catalog_entry(item_id, title, level, ["arpeggio", f"{note_name(root)}-{quality}", f"hands:{hands}"], hands, bpm,
                           "arpeggio", {"key": root, "quality": quality, "octaves": octaves}, f"scores/generated/{item_id}.mxl")
     return sc, entry
 
@@ -758,7 +758,7 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
             )
     finalize(sc)
     item_id = f"exercise.inversions.{key_slug(root)}-{quality}.{hands}"
-    entry = catalog_entry(item_id, title, level, ["triad", "inversions", f"{root}-{quality}"], hands, bpm, "inversion",
+    entry = catalog_entry(item_id, title, level, ["triad", "inversions", f"{note_name(root)}-{quality}"], hands, bpm, "inversion",
                           {"key": root, "quality": quality}, f"scores/generated/{item_id}.mxl")
     return sc, entry
 
@@ -782,7 +782,7 @@ def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm
         part_.append(note.Rest(quarterLength=3.0))
     finalize(sc)
     item_id = f"exercise.five-finger.{key_slug(root)}-{quality}.{hands}"
-    entry = catalog_entry(item_id, title, level, ["five-finger", f"{root}-{quality}", f"hands:{hands}"], hands, bpm,
+    entry = catalog_entry(item_id, title, level, ["five-finger", f"{note_name(root)}-{quality}", f"hands:{hands}"], hands, bpm,
                           "five-finger", {"key": root, "quality": quality}, f"scores/generated/{item_id}.mxl")
     return sc, entry
 
@@ -994,7 +994,7 @@ def make_seventh_arpeggio(
     finalize(sc)
     item_id = f"exercise.arpeggio7.{key_slug(root)}-{quality}.{octaves}oct.{hands}"
     entry = catalog_entry(
-        item_id, title, level, ["arpeggio", "seventh-chord", f"{root}-{label}", f"hands:{hands}"],
+        item_id, title, level, ["arpeggio", "seventh-chord", f"{note_name(root)}-{label}", f"hands:{hands}"],
         hands, bpm, "arpeggio", {"key": root, "quality": quality, "octaves": octaves},
         f"scores/generated/{item_id}.mxl",
     )
@@ -1246,7 +1246,7 @@ def make_broken_seventh(
     item_id = f"exercise.broken7.{key_slug(root)}-{quality}.{hands}"
     entry = catalog_entry(
         item_id, title, level,
-        ["broken-chord", "seventh-chord", f"{root}-{label}", f"hands:{hands}"],
+        ["broken-chord", "seventh-chord", f"{note_name(root)}-{label}", f"hands:{hands}"],
         hands, bpm, "broken-seventh",
         {"key": root, "quality": quality, "fingeringVerified": False},
         f"scores/generated/{item_id}.mxl",
@@ -1410,7 +1410,7 @@ def make_coordination(root: str, variant: str = "hold", bpm: int = 60, level: fl
     item_id = f"exercise.coordination.{key_slug(root)}.{variant}"
     entry = catalog_entry(
         item_id, title, level,
-        ["hands-together", "held-LH", "vertical-alignment", f"{root}-major"], "both", bpm,
+        ["hands-together", "held-LH", "vertical-alignment", f"{note_name(root)}-major"], "both", bpm,
         "coordination", {"key": root, "variant": variant, "leftHand": variant},
         f"scores/generated/{item_id}.mxl",
     )
@@ -1507,7 +1507,7 @@ def make_position_shift(root: str, hands: str = "right", bpm: int = 66, level: f
     finalize(sc)
     item_id = f"exercise.position-shift.{key_slug(root)}.{hands}"
     entry = catalog_entry(
-        item_id, title, level, ["position-shift", "hand-position", f"{root}-major"], hands, bpm,
+        item_id, title, level, ["position-shift", "hand-position", f"{note_name(root)}-major"], hands, bpm,
         "position-shift", {"key": root, "shift": "fifth"}, f"scores/generated/{item_id}.mxl",
     )
     return sc, entry
@@ -1550,7 +1550,7 @@ def make_cadence(root: str, voicing: str = "root", bpm: int = 60, level: float =
     finalize(sc)
     item_id = f"exercise.cadence.{key_slug(root)}.{voicing}"
     entry = catalog_entry(
-        item_id, title, level, ["I-IV-V7", "cadence", "voice-leading", f"{root}-major"], "left", bpm,
+        item_id, title, level, ["I-IV-V7", "cadence", "voice-leading", f"{note_name(root)}-major"], "left", bpm,
         "cadence", {"key": root, "voicing": voicing, "progression": ["I", "IV", "V7", "I"]},
         f"scores/generated/{item_id}.mxl", tracks=["technique", "core", "chords-pop"],
     )
@@ -1616,7 +1616,7 @@ def make_accompaniment(root: str, mode: str, pattern: str, hands: str = "left",
     item_id = f"exercise.accompaniment.{pattern}.{key_slug(root)}-{mode}.{hands}"
     entry = catalog_entry(
         item_id, title, level,
-        [pattern, "accompaniment-pattern", "broken-chords", f"{root}-{mode}"], hands, bpm,
+        [pattern, "accompaniment-pattern", "broken-chords", f"{note_name(root)}-{mode}"], hands, bpm,
         "accompaniment",
         {"key": root, "quality": mode, "pattern": pattern, "timeSig": time_sig,
          "progression": ["I", "IV", "V", "I"]},
@@ -3981,8 +3981,9 @@ def engraved_key(sc: stream.Score, declared: str | None) -> str | None:
     shape is spelled in accidentals — this returns nothing rather than claiming
     the piece is in C major. The root is in the title, where it belongs.
 
-    ASCII, not ``♭``: this field follows the chord-symbol convention the kern
-    importer documents, and titles are the place for the typographic sign.
+    ASCII, and lower case for a minor key: this field follows the chord-symbol
+    convention `import_kern.key_name` documents and the 217 kern rows carry —
+    "Ab major", "c# minor". Titles are the place for the typographic flat.
     """
     if declared is None:
         return None
@@ -3993,7 +3994,8 @@ def engraved_key(sc: stream.Score, declared: str | None) -> str | None:
     if tonic != declared:
         return None
     mode = signature.mode or "major"
-    return f"{tonic.replace('-', 'b').replace('#', '#')} {mode}"
+    spelled = tonic.replace("-", "b")
+    return f"{spelled.lower() if mode == 'minor' else spelled} {mode}"
 
 
 def main() -> None:

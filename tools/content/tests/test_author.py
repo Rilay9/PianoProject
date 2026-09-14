@@ -106,8 +106,9 @@ class TestKeyName(unittest.TestCase):
         self.assertEqual(key_name("G"), "G major")
 
     def test_the_m_suffix_is_minor(self) -> None:
-        self.assertEqual(key_name("Am"), "A minor")
-        self.assertEqual(key_name("F#m"), "F# minor")
+        # Lower case for the minor tonic, as `import_kern.key_name` documents.
+        self.assertEqual(key_name("Am"), "a minor")
+        self.assertEqual(key_name("F#m"), "f# minor")
 
     def test_an_accidental_survives(self) -> None:
         self.assertEqual(key_name("Bb"), "Bb major")

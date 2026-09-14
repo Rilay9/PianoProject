@@ -238,7 +238,11 @@
                   "expressive markings"
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "prerequisites": [
+                "technique.7"
+              ],
+              "estimatedDays": 150
             }
           ]
         },

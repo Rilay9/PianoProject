@@ -32,8 +32,9 @@ looked at and listened to now and played in a year or two, which is a normal way
 to use a library and not a detour.
 
 1. **Minor-key ostinato** — a short repeated figure over a held or pedal bass.
-   See it in: Chopin *Prelude* op. 28 no. 4, whose whole left hand is one
-   repeated chord under a line that barely moves. (Stage 6.)
+   See it in: Chopin *Prelude* op. 28 no. 4, whose left hand repeats one chord
+   shape and shifts it a semitone at a time under a line that barely moves.
+   (Stage 6.)
 2. **Power-chord left hand** — root, fifth and octave, played with weight.
    See it in: Chopin *Prelude* op. 28 no. 20. (Stage 6.)
 3. **Suspended and add9 open voicings** — the modern ballad sound, chords with

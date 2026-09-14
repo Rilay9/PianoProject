@@ -25,6 +25,11 @@ class WrittenScore:
         return [int(f) for f in re.findall(r"<fingering[^>]*>(\d)</fingering>", self.xml)]
 
     @property
+    def fifths(self) -> list[int]:
+        """Every key signature written, in order: the first is the one in force."""
+        return [int(f) for f in re.findall(r"<fifths>(-?\d+)</fifths>", self.xml)]
+
+    @property
     def harmonies(self) -> int:
         return self.xml.count("<harmony")
 

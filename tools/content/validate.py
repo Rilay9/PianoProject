@@ -25,6 +25,7 @@ import argparse
 import json
 import re
 import sys
+import zipfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -225,6 +226,62 @@ MANGLED_LETTER = re.compile(
 #: title in any language this catalogue holds; a threshold would only let the
 #: short cases through.
 MOJIBAKE = re.compile(r"[\u00C0-\u00FF][\u0080-\u00BF]")
+
+
+#: The keys an 88-note piano has: A0 to C8.
+KEYBOARD_BOTTOM, KEYBOARD_TOP = 21, 108
+
+_PITCH_RE = re.compile(
+    r"<step>([A-G])</step>\s*(?:<alter>(-?\d+)</alter>\s*)?<octave>(-?\d+)</octave>"
+)
+_STEP_SEMITONES = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+
+
+def notes_off_the_keyboard(content_dir: Path, catalog: list) -> list[tuple[str, str, int]]:
+    """
+    Scores asking for keys the instrument does not have.
+
+    `generate_exercises.confirm_playable` already refuses this, and its
+    docstring is the argument: "the MusicXML is valid, the pitches are spelled
+    correctly, the fingering is right, and a renderer will draw D8 on as many
+    ledger lines as it takes." It caught forty-four generated items once. The
+    rule was never applied to anything imported, so the same fault in a
+    third-party transcription ships: two do today, one reaching D8 and one
+    G sharp 0, either side of the eighty-eight.
+
+    A note, not an error. The generator can be told to start its run lower; an
+    imported edition cannot be argued with, and what to do about one — drop it,
+    transpose it, leave it — is a decision about that piece rather than
+    something a build should make on its own. So this counts them out loud on
+    every build, which is what the licence notes do for the same reason.
+    """
+    found: list[tuple[str, str, int]] = []
+    for item in catalog:
+        rel = item.get("file")
+        if not rel or not str(rel).endswith(".mxl"):
+            continue
+        path = content_dir / rel
+        if not path.is_file():
+            continue
+        try:
+            with zipfile.ZipFile(path) as archive:
+                name = next(
+                    (n for n in archive.namelist()
+                     if not n.startswith("META-INF") and not n.endswith("/")),
+                    None,
+                )
+                if name is None:
+                    continue
+                text = archive.read(name).decode("utf-8", "replace")
+        except (zipfile.BadZipFile, OSError, StopIteration):
+            continue
+        for step, alter, octave in _PITCH_RE.findall(text):
+            midi = (int(octave) + 1) * 12 + _STEP_SEMITONES[step] + int(alter or 0)
+            if not (KEYBOARD_BOTTOM <= midi <= KEYBOARD_TOP):
+                sign = {"-1": "b", "1": "#"}.get(alter or "", "")
+                found.append((item["id"], f"{step}{sign}{octave}", midi))
+                break
+    return found
 
 
 def validate_catalog(
@@ -948,6 +1005,16 @@ def main() -> None:
             f"NOTE: {len(personal)} item(s) are CC BY-NC and bundled for a personal build "
             "(docs/00 D10a). Do not deploy this build publicly."
         )
+
+    off_keyboard = notes_off_the_keyboard(args.dir, catalog)
+    if off_keyboard:
+        print(
+            f"NOTE: {len(off_keyboard)} imported score(s) ask for keys an 88-note piano "
+            "does not have; the generator refuses this and the importers do not:"
+        )
+        for item_id, name, midi in off_keyboard:
+            edge = "above C8" if midi > KEYBOARD_TOP else "below A0"
+            print(f"  {item_id}: {name} (midi {midi}), {edge}")
 
     # Last, so the build's one-line summary of this step is the verdict and the
     # item count rather than whichever detail happened to print last — the same

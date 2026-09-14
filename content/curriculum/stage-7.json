@@ -245,7 +245,11 @@
                   "expressive rubato"
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "prerequisites": [
+                "technique.6"
+              ],
+              "estimatedDays": 120
             }
           ]
         },

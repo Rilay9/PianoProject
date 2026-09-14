@@ -41,6 +41,24 @@ from generate_exercises import (  # noqa: E402
 )
 
 
+#: The plan that actually ships, built once for the whole module.
+#:
+#: Two tests here have to walk every generated item rather than a sample,
+#: because both faults they guard were per-key and invisible in any one maker.
+#: `--quick` is no use for either: it produces 184 items and **not one of them
+#: is in a flat key**, which is the only place the bugs lived. The shipping
+#: plan is 1,012 items and about two minutes, so it is computed once and both
+#: tests read it.
+_SHIPPING_PLAN: list | None = None
+
+
+def shipping_plan() -> list:
+    global _SHIPPING_PLAN
+    if _SHIPPING_PLAN is None:
+        _SHIPPING_PLAN = default_plan(quick=False)
+    return _SHIPPING_PLAN
+
+
 class TestKeySlug(unittest.TestCase):
     def test_flats_and_naturals_are_different(self) -> None:
         self.assertNotEqual(key_slug("E-"), key_slug("E"))
@@ -528,7 +546,9 @@ class TestKeySignatureInTheRow(unittest.TestCase):
     def test_a_minor_exercise_is_not_labelled_with_its_relative_major(self) -> None:
         score, entry = make_scale(ScaleSpec("A", "harmonic", "both", 1, "similar", 0.5, 60))
         declared = entry["drill"]["params"]["key"]
-        self.assertEqual(engraved_key(score, declared), "A minor")
+        # Lower case for a minor key: the convention `import_kern.key_name`
+        # documents and every kern row carries.
+        self.assertEqual(engraved_key(score, declared), "a minor")
 
     def test_a_flat_key_is_spelled_the_way_a_reader_writes_it(self) -> None:
         score, entry = make_scale(ScaleSpec("E-", "major", "both", 1, "similar", 0.5, 60))
@@ -544,10 +564,11 @@ class TestKeySignatureInTheRow(unittest.TestCase):
         self.assertIsNone(engraved_key(score, declared))
 
     def test_no_generated_row_ships_a_hyphen_flat_or_a_bare_root(self) -> None:
-        # The whole family, not a sample: this is the check that would have
-        # caught it, and it costs one plan.
+        # The whole shipping family, not a sample and not `--quick`: the fault
+        # was a music21 flat spelling, so a plan with no flat key in it — which
+        # is what `--quick` is — cannot see it.
         bad = []
-        for score, entry in default_plan(quick=True):
+        for score, entry in shipping_plan():
             value = engraved_key(score, (entry.get("drill") or {}).get("params", {}).get("key"))
             if value is None:
                 continue
@@ -583,3 +604,31 @@ class FlatSpelling(unittest.TestCase):
         for title in titles:
             self.assertIn("♭", title, title)
             self.assertNotIn("- ", title, title)
+
+    def test_no_generated_concept_spells_a_flat_as_a_hyphen(self):
+        # The same leak, one field over, and it outlived the title fix by long
+        # enough to ship: every per-key concept tag is `<root>-<label>` built
+        # from a music21 root, so the five flat keys produced "A--major",
+        # "B--harmonic minor", "E--dominant 7th" — thirty-five distinct tags.
+        # The Library prints an item's concepts on the same panel as its title,
+        # and searches them, so "A flat major" found none of the A flat
+        # exercises and the panel showed a double hyphen.
+        for score, entry in shipping_plan():
+            for concept in entry["concepts"]:
+                self.assertNotIn(
+                    "--", concept,
+                    f"{entry['id']} carries the concept {concept!r}",
+                )
+
+    def test_a_flat_key_concept_names_the_key(self):
+        # Not just "no double hyphen": the tag has to still say which key.
+        tags = dict(
+            arpeggio=make_arpeggio("A-", "major", "both", 2)[1]["concepts"],
+            seventh=make_seventh_arpeggio("E-", "dominant7", "both")[1]["concepts"],
+            scale=make_scale(ScaleSpec("B-", "harmonic", "both", 1, "similar", 0.5, 60))[1]["concepts"],
+        )
+        self.assertIn("A♭-major", tags["arpeggio"])
+        self.assertIn("E♭-dominant 7th", tags["seventh"])
+        self.assertIn("B♭-harmonic minor", tags["scale"])
+        # A natural key is untouched.
+        self.assertIn("A-major", make_arpeggio("A", "major", "both", 2)[1]["concepts"])

@@ -178,7 +178,10 @@ def key_name(abc_key: str | None) -> str | None:
         return None
     tonic, accidental, mode = match.group(1).upper(), match.group(2), (match.group(3) or "").lower()
     minor = mode in {"m", "min", "minor"}
-    return f"{tonic}{accidental} {'minor' if minor else 'major'}"
+    # Lower case for a minor key, as `import_kern.key_name` documents and the
+    # kern rows carry: "Ab major", "c# minor".
+    spelled = f"{tonic}{accidental}"
+    return f"{spelled.lower()} minor" if minor else f"{spelled} major"
 
 
 def compile_abc(path: Path, out_root: Path) -> dict:

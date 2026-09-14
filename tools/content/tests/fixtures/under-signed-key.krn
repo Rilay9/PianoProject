@@ -1,0 +1,19 @@
+!!!COM: Test fixture
+!!!OTL: An edition whose printed signature is not the key it declares
+**kern	**kern
+*part1	*part1
+*staff2	*staff1
+*clefF4	*clefG2
+*k[f#c#g#d#]	*k[f#c#g#d#]
+*g#:	*g#:
+*M3/4	*M3/4
+=1	=1
+4GG#	4b
+4DD#	4d#
+4GG#	4g#
+=2	=2
+4GG#	4b
+4DD#	4d#
+4GG#	4g#
+==	==
+*-	*-
