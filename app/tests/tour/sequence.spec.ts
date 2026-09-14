@@ -77,6 +77,8 @@ interface Probe {
     width: number;
     left: number;
     bars: number[];
+    /** Each drawn bar's first note, in screen pixels. */
+    firstNote: Record<number, { left: number; right: number }>;
   }[];
 }
 
@@ -163,9 +165,18 @@ async function probe(page: Page): Promise<Probe> {
       (el) => {
         const r = el.getBoundingClientRect();
         const bars = new Set<number>();
+        // Where each bar's first note is, on the glass. Sideways the sheet is
+        // engraved wider than the stage and slides, so a bar being on the
+        // sheet says nothing about it being on the screen.
+        const firstNote: Record<number, { left: number; right: number }> = {};
         for (const note of el.querySelectorAll<HTMLElement>('.score-note')) {
           const m = measureOf(note);
-          if (m !== null) bars.add(m);
+          if (m === null) continue;
+          bars.add(m);
+          const box = note.getBoundingClientRect();
+          if (box.width <= 0) continue;
+          const seen = firstNote[m];
+          if (!seen || box.left < seen.left) firstNote[m] = { left: Math.round(box.left), right: Math.round(box.right) };
         }
         return {
           slot: el.dataset.slot ?? null,
@@ -176,6 +187,7 @@ async function probe(page: Page): Promise<Probe> {
           width: Math.round(r.width),
           left: Math.round(r.left),
           bars: [...bars].sort((x, y) => x - y),
+          firstNote,
         };
       },
     );
@@ -202,13 +214,22 @@ async function probe(page: Page): Promise<Probe> {
   });
 }
 
-/** The bar the run plays next is drawn somewhere on the screen. */
+/**
+ * The bar the run plays next has its first note on the screen.
+ *
+ * The *note*, not the sheet. This used to ask whether the slot holding the
+ * bar overlapped the stage, and sideways the slot is a chunk engraved wider
+ * than the stage that always overlaps it — so a next bar 400 px past the
+ * right edge counted as visible, and the owner found the read-ahead missing
+ * on a screen this had passed.
+ */
 function nextBarVisible(p: Probe, wanted: number): boolean {
   return p.slots.some((slot) => {
     if (!slot.drawn || !slot.bars.includes(wanted)) return false;
     if (!p.stage) return true;
-    // Sideways the slot is wider than the stage; the bar has to be inside it.
-    return slot.left < p.stage.left + p.stage.width && slot.left + slot.width > p.stage.left;
+    const first = slot.firstNote[wanted];
+    if (!first) return false;
+    return first.left >= p.stage.left - 1 && first.right <= p.stage.left + p.stage.width + 1;
   });
 }
 

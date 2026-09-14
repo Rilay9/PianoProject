@@ -107,6 +107,8 @@ export class OsmdView {
   private readonly timingLabel: string;
   private range: MeasureRange | null = null;
   private loaded = false;
+  /** The engraver's own cap on stretching a last system, kept to restore it. */
+  private readonly lastSystemStretchCap: number;
 
   constructor(container: HTMLElement, options: OsmdViewOptions = {}) {
     this.container = container;
@@ -130,6 +132,7 @@ export class OsmdView {
       followCursor: false,
     });
     applyPhoneEngraving(this.osmd, options);
+    this.lastSystemStretchCap = this.osmd.EngravingRules.LastSystemMaxScalingFactor;
     if (options.hideCursor !== false) this.osmd.enableOrDisableCursors(false);
   }
 
@@ -240,6 +243,23 @@ export class OsmdView {
    */
   set stretchLastSystem(value: boolean) {
     this.osmd.EngravingRules.StretchLastSystemLine = value;
+  }
+
+  /**
+   * Whether a last system that is *not* stretched to the page keeps its bars
+   * at their natural widths.
+   *
+   * "Not stretched" was never quite true: the engraver still widens the last
+   * system by up to `LastSystemMaxScalingFactor`, 1.4 by default, and the
+   * sliding chunk always got the full 1.4 — measured on Twinkle sideways, a
+   * bar of 207 units of notes drawn 289 wide. That is forty per cent of
+   * space between notes that nobody asked for, and forty per cent of the
+   * stage the next bar could have been on. The chunk sets this; a slot
+   * keeps the engraver's own cap, which is the look every upright picture
+   * was approved with.
+   */
+  set naturalLastSystem(value: boolean) {
+    this.osmd.EngravingRules.LastSystemMaxScalingFactor = value ? 1 : this.lastSystemStretchCap;
   }
 
   set zoom(value: number) {

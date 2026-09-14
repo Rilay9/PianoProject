@@ -7,9 +7,117 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
+import { installMidiMock, type MidiMock } from './fixtures/midiMock';
 import { closeScoreMenu, inkBox, openScoreMenu } from './scoreControls';
 
 const ITEM = 'song.folk.twinkle.rh';
+/**
+ * The piece with a bar of eight quavers among bars of four crotchets: the
+ * one whose widest bar is wide enough to push the next bar off a phone held
+ * sideways when the fit reads only the height. Twinkle's bars are all about
+ * the same width and it passes by the luck of its proportions; this one is
+ * the case the read-ahead rule exists for.
+ */
+const DENSE_ITEM = 'song.folk.hot-cross-buns';
+
+type Run = { step: number; expected: number[]; bar: number; nextBar: number | null; lastBar: number } | null;
+type Hooked = Window & { __pianopath?: { scoreRun?: () => Run } };
+
+/**
+ * Where a bar's notes are on the glass, and where the next bar starts.
+ *
+ * Note heads, in screen pixels: the sheet carries a CSS transform, so the
+ * only honest measurement is `getBoundingClientRect` on the drawn notes. The
+ * page and the `.vf-measure` groups are engraved wider than the stage on
+ * purpose and say nothing about what a person can see.
+ */
+async function barsOnGlass(
+  page: Page,
+  bar: number,
+): Promise<{
+  stage: { left: number; right: number };
+  current: { left: number; right: number; notes: number } | null;
+  nextFirst: { left: number; right: number } | null;
+  nextDrawn: boolean;
+}> {
+  return page.evaluate((current) => {
+    const stage = document.querySelector('#score-stage')?.getBoundingClientRect();
+    const notes = [...document.querySelectorAll<HTMLElement>('#score-stage .score-buffer.is-front .score-note')];
+    const of = (which: number): { left: number; right: number; notes: number } | null => {
+      let left = Infinity;
+      let right = -Infinity;
+      let count = 0;
+      for (const note of notes) {
+        if (Number(note.dataset.bar) !== which) continue;
+        const box = note.getBoundingClientRect();
+        if (box.width <= 0) continue;
+        left = Math.min(left, box.left);
+        right = Math.max(right, box.right);
+        count += 1;
+      }
+      return count > 0 ? { left, right, notes: count } : null;
+    };
+    let first: { left: number; right: number } | null = null;
+    for (const note of notes) {
+      if (Number(note.dataset.bar) !== current + 1) continue;
+      const box = note.getBoundingClientRect();
+      if (box.width <= 0) continue;
+      if (!first || box.left < first.left) first = { left: box.left, right: box.right };
+    }
+    return {
+      stage: stage ? { left: stage.left, right: stage.right } : { left: 0, right: 0 },
+      current: of(current),
+      nextFirst: first,
+      nextDrawn: first !== null,
+    };
+  }, bar);
+}
+
+/** Plays one step's notes through the mock piano and waits for the score to move on. */
+async function playStep(page: Page, midi: MidiMock, run: NonNullable<Run>): Promise<boolean> {
+  for (const note of run.expected) await midi.noteOn(note, 78);
+  await page.waitForTimeout(80);
+  for (const note of run.expected) await midi.noteOff(note);
+  return page
+    .waitForFunction(
+      (was) => {
+        const now = (window as Hooked).__pianopath?.scoreRun?.() ?? null;
+        return now === null || now.step !== was;
+      },
+      run.step,
+      { timeout: 4_000 },
+    )
+    .then(() => true)
+    .catch(() => false);
+}
+
+/**
+ * The owner's requirement, as an assertion: while a bar is being played, at
+ * least the beginning of the next bar is on the glass.
+ *
+ * The first note of the next bar, whole, inside the stage — and the bar being
+ * played inside it too, since a bar that runs off the right edge has lost its
+ * own ending before the next bar was ever the question.
+ */
+async function expectNextBarOnGlass(page: Page, bar: number, when: string): Promise<void> {
+  const seen = await barsOnGlass(page, bar);
+  const px = (n: number): string => String(Math.round(n));
+  expect(seen.current, `${when}: bar ${String(bar + 1)} has no notes on the sheet`).not.toBeNull();
+  if (!seen.current) return;
+  expect(
+    seen.current.right,
+    `${when}: bar ${String(bar + 1)} runs off the right of the stage — its notes span ${px(seen.current.left)}..${px(seen.current.right)} px on a stage ending at ${px(seen.stage.right)}`,
+  ).toBeLessThanOrEqual(seen.stage.right + 1);
+  expect(seen.nextDrawn, `${when}: bar ${String(bar + 2)} is not drawn at all`).toBe(true);
+  if (!seen.nextFirst) return;
+  expect(
+    seen.nextFirst.right,
+    `${when}: the first note of bar ${String(bar + 2)} is at ${px(seen.nextFirst.left)}..${px(seen.nextFirst.right)} px, past the stage's right edge at ${px(seen.stage.right)} — the read-ahead is off the glass`,
+  ).toBeLessThanOrEqual(seen.stage.right + 1);
+  expect(seen.nextFirst.left, `${when}: the first note of bar ${String(bar + 2)} is left of the stage`).toBeGreaterThanOrEqual(
+    seen.stage.left - 1,
+  );
+}
 
 async function open(page: Page): Promise<void> {
   await page.goto(`/#/score/${ITEM}`);
@@ -96,6 +204,69 @@ test.describe('score screen in landscape', () => {
       );
       expect(sheet.width, 'the sheet does not fill the stage').toBeGreaterThan(stage!.width * 0.6);
     });
+  }
+
+  /**
+   * What the counting test cannot see. It counts `.vf-measure` in the SVG,
+   * and sideways the chunk is engraved wider than the stage on purpose, so
+   * every extra measure is present and counted whether or not a person can
+   * see it. This asks the question the owner asked: while playing this bar,
+   * can I see the start of the next one?
+   *
+   * At rest and through a run, because the two are different pictures. At
+   * rest the sheet has not slid and the first bar has the clef beside it; in
+   * a run the slide holds each bar a third of the way across, the control bar
+   * has folded and the stage is taller, and the size is the one the run
+   * froze. Each bar played is a separate case: the widest bar of the piece is
+   * the one that decides, and it is not the first.
+   */
+  for (const item of [DENSE_ITEM, ITEM]) {
+    for (const bars of [1, 2, 4]) {
+      test(`${item}: the next bar is on the glass while a bar is played, ${String(bars)} per window`, async ({ page }) => {
+        const midi = await installMidiMock(page, { permission: 'granted' });
+        await page.goto(`/#/score/${item}`);
+        await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, {
+          timeout: 60_000,
+        });
+        await page.waitForFunction(
+          () => {
+            const svg = document.querySelector('#score-stage .is-front svg');
+            return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+          },
+          undefined,
+          { timeout: 60_000 },
+        );
+        await setBars(page, bars);
+        // The size the read-ahead is judged at is the one the probe's
+        // measurement of the piece gives; before it lands the fit is working
+        // from the first window alone.
+        await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
+        await page.waitForTimeout(300);
+        await expectNextBarOnGlass(page, 0, 'at rest');
+
+        await page.locator('#score-mode').selectOption('wait');
+        await page.locator('#score-play').click();
+        await page.waitForTimeout(800);
+        let lastBar = -1;
+        let checked = 0;
+        for (let i = 0; i < 80; i += 1) {
+          const run = await page.evaluate(() => (window as Hooked).__pianopath?.scoreRun?.() ?? null);
+          if (run === null) break;
+          if (run.bar !== lastBar) {
+            lastBar = run.bar;
+            // Bars with a bar after them; a piece's last bar has nothing to read ahead to.
+            if (run.bar < run.lastBar) {
+              await expectNextBarOnGlass(page, run.bar, `playing bar ${String(run.bar + 1)}`);
+              checked += 1;
+            }
+            // Six bars is every kind of bar these two pieces have.
+            if (run.bar >= 5) break;
+          }
+          if (!(await playStep(page, midi, run))) break;
+        }
+        expect(checked, 'the run never reached a bar with a bar after it').toBeGreaterThan(1);
+      });
+    }
   }
 
   test('the window really holds more bars as the setting goes up', async ({ page }) => {

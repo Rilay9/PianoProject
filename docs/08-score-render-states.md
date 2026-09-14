@@ -379,8 +379,18 @@ the bar being played.
   walks the last bars to the right — there is nothing left to slide towards.
 - The next chunk is pre-rendered **in the same shape**, so the same bars sit at the same x on
   both sheets and the swap is invisible.
-- Width is deliberately **not** a fit constraint here: the read-ahead bars run off the right
-  edge, which is what there is to slide towards.
+- The chunk's width is deliberately **not** a fit constraint: the read-ahead bars run off the
+  right edge, which is what there is to slide towards. The **bar being played** is: with its
+  first note a third of the way across, the rest of that bar and the first beat of the next
+  (`NEXT_BAR_PEEK`, a quarter of the piece's widest bar) must fit in what is left of the width,
+  or the read-ahead is a promise nothing keeps. The height chooses the size and this caps it
+  (`readAheadScale`), never below the readable staff (`MIN_STAFF_PX`). Added 2026-09-13: on Hot
+  Cross Buns sideways the bar of eight quavers was drawn 876 px wide on an 880 px stage — the
+  bar being played ran off the edge and the next started 427 px past it — and nothing in the
+  fit could see it, because the height alone had decided.
+- The chunk is engraved at the bars' **natural widths**: the engraver's "unstretched" last
+  system is still widened by up to 1.4 (`LastSystemMaxScalingFactor`), and a bar 40 % wider
+  than its notes need is 40 % of the read-ahead spent on air (`OsmdView.naturalLastSystem`).
 
 #### SCROLL — the whole piece
 

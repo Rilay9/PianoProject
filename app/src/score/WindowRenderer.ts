@@ -95,6 +95,27 @@ const MIN_STAFF_PX = 40;
 const SLIDE_READ_AHEAD_BARS = 2;
 
 /**
+ * How much of the *next* bar must be on the glass while a bar is played,
+ * sideways, as a share of a bar's natural width.
+ *
+ * The owner's requirement, in his words: the learner must be able to see at
+ * least the beginning of the next music while playing the current bar,
+ * "otherwise this is all useless". The slide holds the bar being played a
+ * third of the way across (`SLIDE_TARGET_FRACTION`), so what is to its
+ * right is the rest of that bar and then the next — and nothing in the fit
+ * said the next bar had to reach the glass at all. Height alone chose the
+ * size, and on Hot Cross Buns at 880 px the bar of eight quavers came out
+ * 876 px wide: the bar being played ran off the right edge, and the next
+ * bar started 427 px past it.
+ *
+ * A quarter of a bar is its first beat: the note the eye needs next, and
+ * enough of the bar to see what kind of bar it is. Against the *widest* bar
+ * the piece has, so the size is decided once and holds for the whole run
+ * (`08` §9 P1), and every narrower bar shows more.
+ */
+const NEXT_BAR_PEEK = 0.25;
+
+/**
  * Bars drawn to the *left* of the window, sideways (P21e A3).
  *
  * Without them a fresh chunk starts at the bar being played, so every swap
@@ -472,9 +493,10 @@ export class WindowRenderer {
    * sheet can only ever get smaller during a run — and only until the probe
    * has measured, which is one frame after the first draw.
    */
-  private held: { height: number; width: number; above: number; zoom: number } = {
+  private held: { height: number; width: number; bar: number; above: number; zoom: number } = {
     height: 0,
     width: 0,
+    bar: 0,
     above: 0,
     zoom: -1,
   };
@@ -1518,6 +1540,7 @@ export class WindowRenderer {
           staffTop: staffTopOf(slot.view),
           pageWidth: slot.wrapper.style.width,
           transform: slot.wrapper.style.transform,
+          bar: Math.round(widestBarOf(slot.view)),
         };
       }),
     };
@@ -1551,7 +1574,7 @@ export class WindowRenderer {
     if (width > 0) {
       if (this.measuredWidth >= 0 && Math.abs(width - this.measuredWidth) > 2) {
         turned = true;
-        this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
+        this.held = { height: 0, width: 0, bar: 0, above: 0, zoom: this.zoomLevel };
         this.pieceInk = null;
         this.pieceInkZoom = -1;
         delete this.el.dataset.measured;
@@ -1698,6 +1721,11 @@ export class WindowRenderer {
     // A slot fills the width; a sliding chunk keeps its bars' natural widths,
     // and so does a slot with more room than the music can justify.
     buffer.view.stretchLastSystem = !this.sliding && this.mayStretch(range);
+    // *Natural*, sideways: not the engraver's "unstretched", which still
+    // widens the chunk by up to 1.4. The read-ahead is paid for out of the
+    // width to the right of the bar being played, and a bar stretched by 40 %
+    // spends that on air between its own notes (`NEXT_BAR_PEEK`).
+    buffer.view.naturalLastSystem = this.sliding;
     buffer.view.setRange(range);
     buffer.view.render();
     buffer.range = range;
@@ -1742,7 +1770,7 @@ export class WindowRenderer {
     if (available.width <= 0 || available.height <= 0) return;
     this.stageHeight = Math.round(available.height);
 
-    const boxes: { slot: Buffer; box: { x: number; y: number; width: number; height: number } }[] =
+    const boxes: { slot: Buffer; box: { x: number; y: number; width: number; height: number; bar: number } }[] =
       [];
     for (const slot of slots) {
       const svg = slot.view.svg;
@@ -1752,18 +1780,24 @@ export class WindowRenderer {
       if (rect.width <= 0 || rect.height <= 0) continue;
       boxes.push({
         slot,
-        box: inkBox(svg) ?? { x: 0, y: 0, width: rect.width, height: rect.height },
+        box: {
+          ...(inkBox(svg) ?? { x: 0, y: 0, width: rect.width, height: rect.height }),
+          bar: widestBarOf(slot.view),
+        },
       });
     }
     if (boxes.length === 0) return;
 
     // Each slot gets its share of the height, and all of the width.
     //
-    // Sideways the width is deliberately *not* a limit: the drawn range is the
-    // window plus bars to read into, and fitting all of that across the stage
-    // would shrink the music to buy bars nobody is playing yet. Height fills
-    // the stage, the extra bars run off the right, and the sheet slides (P21c
-    // A2).
+    // Sideways the *chunk's* width is deliberately not a limit: the drawn
+    // range is the window plus bars to read into, and fitting all of that
+    // across the stage would shrink the music to buy bars nobody is playing
+    // yet. Height fills the stage, the extra bars run off the right, and the
+    // sheet slides (P21c A2). The one width term sideways is the bar being
+    // played and the first beat of the next, which must fit to the right of
+    // the slide target or the read-ahead is nothing but a promise
+    // (`readAheadScale`, `NEXT_BAR_PEEK`).
     // Half the stage each in the slot arrangement, whether or not both are
     // drawn: the last window of a piece leaves the other slot blank, and
     // fitting the one that is left to the whole height doubled it — a pop
@@ -2197,7 +2231,7 @@ export class WindowRenderer {
     // The same scale the slots use, from the same measurement of the piece:
     // this is the pre-render's fit, and a spare fitted to its own ink came
     // forward at a different size from the sheet it replaced.
-    const fill = this.scaleFor([box], available);
+    const fill = this.scaleFor([{ ...box, bar: widestBarOf(buffer.view) }], available);
     if (fill === null) return;
     // Times what the owner asked for. Filling the stage on its own *cancels*
     // the Size control: the engraving search already carries `userZoom`, so a
@@ -2294,14 +2328,15 @@ export class WindowRenderer {
   }
 
   private scaleFor(
-    boxes: { width: number; height: number }[],
+    boxes: { width: number; height: number; bar?: number }[],
     available: { width: number; height: number },
   ): number | null {
     if (boxes.length === 0) return null;
-    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
+    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, bar: 0, above: 0, zoom: this.zoomLevel };
     for (const box of boxes) {
       this.held.height = Math.max(this.held.height, box.height);
       this.held.width = Math.max(this.held.width, box.width);
+      this.held.bar = Math.max(this.held.bar, box.bar ?? 0);
     }
     this.scheduleMeasure();
     const piece = this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null;
@@ -2327,9 +2362,11 @@ export class WindowRenderer {
     // ceiling from ink that has gone.
     let nowHeight = 0;
     let nowWidth = 0;
+    let nowBar = 0;
     for (const box of boxes) {
       nowHeight = Math.max(nowHeight, box.height);
       nowWidth = Math.max(nowWidth, box.width);
+      nowBar = Math.max(nowBar, box.bar ?? 0);
     }
     //
     // Both sides of the freeze have to be measured the same way. Gating this on
@@ -2344,8 +2381,14 @@ export class WindowRenderer {
     const width = piece ? Math.max(piece.width, nowWidth) : this.held.width;
     if (!(height > 0) || !(width > 0)) return null;
     const byHeight = (available.height - FIT_MARGIN_PX) / height;
+    // Sideways the height chooses the size, and the read-ahead caps it: the
+    // widest bar and a beat of the next have to fit right of the slide target
+    // (`NEXT_BAR_PEEK`). The widest bar the piece has once the probe has
+    // measured, the widest drawn so far until then — the same rule as the
+    // height, and for the same reason: one size, decided at the start.
+    const bar = piece ? Math.max(piece.bar, nowBar) : this.held.bar;
     const fitted = this.sliding
-      ? byHeight
+      ? Math.min(byHeight, readAheadScale(available.width, bar, piece?.staff ?? 0))
       : Math.min((available.width - FIT_MARGIN_PX) / width, byHeight);
     if (!Number.isFinite(fitted) || fitted <= 0) return null;
     // During a run, the size it started at. A chunk a little taller than the
@@ -2426,7 +2469,7 @@ export class WindowRenderer {
     // held like the sizes are. Anchoring on the ink instead moved the stave
     // of the Scherzo by 37 px between a window with a dynamic over it and
     // one without.
-    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, above: 0, zoom: this.zoomLevel };
+    if (this.held.zoom !== this.zoomLevel) this.held = { height: 0, width: 0, bar: 0, above: 0, zoom: this.zoomLevel };
     this.held.above = Math.max(this.held.above, staffTop - box.y);
     return place({ x: box.x, y: staffTop - this.held.above }, scale, inset);
   }
@@ -2729,6 +2772,13 @@ interface PieceInk {
    * decides how much music the screen may be asked to hold.
    */
   staff: number;
+  /**
+   * The widest bar in the piece at its natural spacing — the engraver's
+   * minimum width for its notes, before any stretch — in CSS pixels at the
+   * probe's zoom. What the read-ahead sideways is measured against
+   * (`readAheadScale`).
+   */
+  bar: number;
 }
 
 /** CSS pixels per SVG user unit, from what OSMD wrote on the element. */
@@ -2931,7 +2981,62 @@ function pieceInkOf(view: OsmdView, staves: number): PieceInk | null {
   // The typical staff's own height, from the stave-line boxes themselves.
   const staffHeights = lines.map((l) => l.bottom - l.top).filter((h) => h > 0).sort((a, b) => a - b);
   const staff = staffHeights[Math.floor(staffHeights.length / 2)] ?? 0;
-  return { above, below, height, width, staff };
+  return { above, below, height, width, staff, bar: widestBarOf(view) };
+}
+
+/**
+ * The widest bar this engraver has laid out, at its natural spacing, in CSS
+ * pixels at its zoom; 0 when it has drawn nothing.
+ *
+ * `minimumStaffEntriesWidth` is the engraver's own figure for a bar's notes
+ * without overlap, before the system is stretched to any page — the width a
+ * bar *is*, where the drawn box is the width the page made it. It is in
+ * units, so it is the same number at every zoom and on every page, and the
+ * graphic sheet keeps it for every measure this engraver has ever formatted,
+ * which makes this a running maximum over what the view has drawn — held,
+ * like the other sizes, so a wide bar met at bar 60 of a long piece shrinks
+ * the sheet once rather than letting it grow back at bar 61.
+ */
+function widestBarOf(view: OsmdView): number {
+  const svg = view.svg;
+  if (!(svg instanceof SVGSVGElement)) return 0;
+  const unit = svgUnit(svg) * OSMD_UNIT;
+  let widest = 0;
+  try {
+    for (const staffMeasures of view.instance.GraphicSheet?.MeasureList ?? []) {
+      for (const measure of staffMeasures ?? []) {
+        const width = measure?.minimumStaffEntriesWidth;
+        if (typeof width === 'number' && width > widest) widest = width;
+      }
+    }
+  } catch {
+    return 0;
+  }
+  return widest * unit;
+}
+
+/**
+ * The largest scale at which the bar being played and the first beat of the
+ * next both fit on the glass, sideways (`08` §4.1 CHUNK).
+ *
+ * The slide puts the first note of each bar `SLIDE_TARGET_FRACTION` of the
+ * way across, so the room for the bar is what lies to the right of that,
+ * less the inset. The bar needs its own natural width and `NEXT_BAR_PEEK`
+ * of it again for the start of the next one. Never below the size at which
+ * a staff stops being readable: `MIN_STAFF_PX` is the floor everything
+ * gives way to, the read-ahead included — a bar of demisemiquavers on a
+ * phone is drawn readable and slid past.
+ *
+ * `Infinity` when nothing is known — no bar measured yet, or no stage — so a
+ * caller taking the minimum with the height's answer gets the height's.
+ */
+export function readAheadScale(stageWidth: number, widestBar: number, staff: number): number {
+  if (!(stageWidth > 0) || !(widestBar > 0)) return Infinity;
+  const room = stageWidth * (1 - SLIDE_TARGET_FRACTION) - FIT_INSET_PX;
+  if (!(room > 0)) return Infinity;
+  const cap = room / (widestBar * (1 + NEXT_BAR_PEEK));
+  const floor = staff > 0 ? MIN_STAFF_PX / staff : 0;
+  return Math.max(cap, floor);
 }
 
 /** One system of the probe's page: its stave lines, and how far its ink reaches. */
