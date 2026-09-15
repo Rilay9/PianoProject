@@ -18,6 +18,12 @@ async function openScore(page: Page): Promise<void> {
     { timeout: 60_000 },
   );
   await expect(page.locator('#score-bar')).toHaveAttribute('data-visible', 'true');
+  // The settled sheet. The piece's measurement lands on idle shortly after the
+  // first draw and the slots are re-engraved once for it, which detaches every
+  // `.vf-measure` on the page: a box taken from the first engraving is a box
+  // of an element that is about to be gone. On the runner that landed between
+  // `toBeVisible` and `boundingBox`, and the box came back null.
+  await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
 }
 
 /** Holds a finger on the first drawn measure for longer than the threshold. */
