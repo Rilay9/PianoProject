@@ -29,6 +29,7 @@ import {
   FolderError,
   MANIFEST_NAME,
   addFromFolder,
+  folderKind,
   directoryPickerAvailable,
   fold,
   folderFilesByTitle,
@@ -606,6 +607,9 @@ export function FolderScreen(router: Router): HTMLElement {
     // app and the damage is lossy — there is no repairing it here, only saying
     // so, and pointing at the one place the real title still exists.
     if (score.garbled) badges.push(badge('title garbled', 'warn'));
+    // Pages, not notes: it opens in the PDF screen and the app cannot follow
+    // it, which is worth knowing before tapping Add.
+    if (folderKind(score.file) === 'pdf') badges.push(badge('PDF'));
 
     const added = alreadyAdded.has(score.file);
     const imported = importIndex.get(score.file);
@@ -682,7 +686,16 @@ export function FolderScreen(router: Router): HTMLElement {
       title: score.title || score.file,
       meta: meta || undefined,
       badges,
-      actions: [details, add],
+      // An added PDF has one more thing worth a tap: seeing it. A score opens
+      // from the Library once it is on a rung; a PDF opens from here.
+      actions:
+        imported && folderKind(score.file) === 'pdf'
+          ? [
+              details,
+              button('Open', () => router.navigatePdf(imported.id), { variant: 'secondary' }),
+              add,
+            ]
+          : [details, add],
       dataset: { 'data-file': score.file },
     });
   }
@@ -1198,7 +1211,10 @@ export function FolderScreen(router: Router): HTMLElement {
       // way to use this screen and five sheets would be five interruptions;
       // the row now carries `Assign`, and this sentence says the row is
       // worth going back to. See the report for why this shape and not that.
-      folderStatus.textContent = `Added ${score.title || score.file} to your library. It is on no rung yet — Assign, on its row, puts it on one.`;
+      folderStatus.textContent =
+        folderKind(score.file) === 'pdf'
+          ? `Added ${score.title || score.file} to your library as a PDF. Open, on its row, shows the pages.`
+          : `Added ${score.title || score.file} to your library. It is on no rung yet — Assign, on its row, puts it on one.`;
       list.querySelectorAll('.folder-row-note').forEach((old) => old.remove());
       redrawRow(score);
     } catch (cause) {
@@ -1285,8 +1301,8 @@ export function FolderScreen(router: Router): HTMLElement {
       // "Pick the folder again", which is the wrong advice if the folder was
       // right.
       folderStatus.textContent =
-        `Nothing in ${library.id}${where} could be read as a score. The app reads .mxl, ` +
-        '.musicxml and .xml files; a PDF goes through Import instead.';
+        `Nothing in ${library.id}${where} could be read as a score. The app lists .mxl, ` +
+        '.musicxml, .xml and .pdf files.';
       // Nothing to add from, so "the folder is not open" is not the thing to
       // say — an empty listing left the notice showing whatever it said last.
       updateSavedNotice();

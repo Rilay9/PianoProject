@@ -17,6 +17,7 @@ import {
   buildFolderIndex,
   connectForTest,
   disconnectForTest,
+  folderKind,
   folderNameOf,
   isScoreFile,
   looksUnnamed,
@@ -100,7 +101,10 @@ describe('reading a folder', () => {
   it('knows a score file from anything else', () => {
     expect(isScoreFile('a.mxl')).toBe(true);
     expect(isScoreFile('A.MusicXML')).toBe(true);
-    expect(isScoreFile('a.pdf')).toBe(false);
+    // A PDF is listed beside the scores since 2026-09-15; the kind says which.
+    expect(isScoreFile('a.pdf')).toBe(true);
+    expect(folderKind('a.pdf')).toBe('pdf');
+    expect(folderKind('a.mxl')).toBe('score');
     expect(isScoreFile('library.json')).toBe(false);
   });
 
@@ -204,13 +208,29 @@ describe('reading a folder', () => {
   });
 
   it('says so when the folder holds no scores', async () => {
-    await expect(readFolder([folderFile('Photos/holiday.jpg', 'x')])).rejects.toThrow(/no MusicXML/);
+    await expect(readFolder([folderFile('Photos/holiday.jpg', 'x')])).rejects.toThrow(/no scores/);
   });
 });
 
 describe('adding one score out of a folder', () => {
   beforeEach(() => {
     useFakeIndexedDb();
+  });
+
+  it('lists a PDF beside the scores and adds it as a PDF import', async () => {
+    const library = await readFolder([
+      folderFile('Library/bb/Qm1.mxl', mxlBytes()),
+      folderFile('Library/pages/Sonatina.pdf', '%PDF-1.4 not really a document'),
+    ]);
+    const kinds = library.scores.map((score) => [score.file, folderKind(score.file)]);
+    expect(kinds).toContainEqual(['pages/Sonatina.pdf', 'pdf']);
+    expect(kinds).toContainEqual(['bb/Qm1.mxl', 'score']);
+    const pdf = library.scores.find((score) => folderKind(score.file) === 'pdf');
+    expect(pdf).toBeDefined();
+    const row = await addFromFolder(library.id, pdf!);
+    expect(row.kind).toBe('pdf');
+    expect(row.title).toBe('Sonatina');
+    clearFakeIndexedDb();
   });
 
   it('falls back to the manifest title when the score has none of its own', async () => {

@@ -66,8 +66,19 @@ export const MANIFEST_VERSION = 1;
 
 const MANIFEST_KIND = 'pianopath-score-folder';
 
-/** What counts as a score worth listing. PDFs are imported, not browsed. */
-const SCORE_SUFFIXES = ['.mxl', '.musicxml', '.xml'];
+/**
+ * What counts as a file worth listing. A PDF is listed beside the scores
+ * since 2026-09-15 (`docs/decisions/2026-09-15-score-folder-index.md`): the
+ * owner's folder holds both, and the index has no reason to care about the
+ * extension. `Add` gives each to the import store under its own name, so a
+ * PDF becomes a PDF import and opens in the PDF screen.
+ */
+const SCORE_SUFFIXES = ['.mxl', '.musicxml', '.xml', '.pdf'];
+
+/** What a listed file is: notes the app can follow, or pages it can show. */
+export function folderKind(file: string): 'score' | 'pdf' {
+  return file.toLowerCase().endsWith('.pdf') ? 'pdf' : 'score';
+}
 
 /**
  * A folder past this many files is refused rather than half-read.
@@ -595,7 +606,7 @@ async function buildLibrary(
   checkCancelled(options.signal);
   if (byPath.size === 0) {
     throw new FolderError(
-      'That folder has no MusicXML in it. The app reads .mxl, .musicxml and .xml files; a PDF goes through Import instead.',
+      'That folder has no scores in it. The app lists .mxl, .musicxml, .xml and .pdf files.',
     );
   }
 
@@ -1113,7 +1124,7 @@ async function walkLibrary(
 
   if (scores.length === 0) {
     throw new FolderError(
-      'That folder has no MusicXML in it. The app reads .mxl, .musicxml and .xml files; a PDF goes through Import instead.',
+      'That folder has no scores in it. The app lists .mxl, .musicxml, .xml and .pdf files.',
     );
   }
   return snapshot('walk');
@@ -2226,7 +2237,10 @@ export async function addFromFolder(folderId: string, score: FolderScore) {
   // the importer prefers the score's own `<work-title>` when it has one, and
   // that is the right preference: the manifest's titles came through a CSV
   // that mangled 236 of them, while the file inside was never touched.
-  const named = new File([file], `${score.title || file.name}.mxl`, { type: file.type });
+  const kind = folderKind(score.file);
+  const named = new File([file], `${score.title || file.name}${kind === 'pdf' ? '.pdf' : '.mxl'}`, {
+    type: kind === 'pdf' ? 'application/pdf' : file.type,
+  });
   const row = await addImport(named);
 
   // Recorded whatever else changes: this is how the browse list knows the row

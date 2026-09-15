@@ -39,31 +39,32 @@ read that avoids the walk entirely for the owner's archive; a resumable, checkpo
 for a folder without a manifest; and a `missingAt` mark rather than a deletion when a listed
 file is gone. That is the standard design, not a bespoke one, and it stands.
 
-Three things are missing, and they are the whole of the next piece of work:
+Two corrections to the first draft of this record, made on reading the code rather than
+the docs: the walk **already** runs in a worker (`folderWalk.worker.ts`, with a main-thread
+fallback), and a rescan **already** diffs at the store — a path that has gone is marked
+`missingAt`, a new one is added, and nothing is opened. What the platform does *not* offer
+is a cheap stat: the File System Access API has no size or modified time without
+`getFile()`, a round trip per file, so the "compare size and mtime" half of the standard
+recipe would cost on the archive exactly what the manifest-first read was built to avoid.
+The diff is by path, and a file rewritten in place under the same name is not noticed
+until it is opened. That is the honest limit and it is recorded on the screen.
 
-- **A rescan re-walks everything.** The rows do not record size or last-modified time, so a
-  rescan cannot tell an unchanged file from a changed one and opens nothing either way; it
-  rebuilds the listing from names. Recording `size` and `lastModified` on the row (both come
-  free with `getFile()`, and the manifest can carry them) turns a rescan into a diff: new
-  paths are opened and added, vanished paths are marked, everything else is left alone.
-  On the archive that is one directory listing per shard and no file reads.
-- **PDFs are not in the folder.** The folder lists MusicXML only; a PDF "goes through Import
-  instead" and lands on the shelf as a book. The owner's folder holds both, and the standard
-  index has no reason to care about the extension: a PDF row is a row with `kind: 'pdf'`,
-  listed beside the scores, opening in the PDF screen from the folder rather than after an
-  import. Adding one to the shelf stays a deliberate act, as adding a score to the library
-  does today.
-- **The walk runs on the main thread.** Handles are structured-cloneable, so the walk and the
-  per-file reads can move to a worker with no change to what is stored. This matters only for
-  a folder without a manifest, and only for the first read of it; it is third on the list.
+One thing was missing:
+
+- **PDFs were not in the folder.** The folder listed MusicXML only; a PDF "went through
+  Import instead" and landed on the shelf as a book. The owner's folder holds both, and the
+  index has no reason to care about the extension. Done the same day: `.pdf` is a listed
+  suffix, `folderKind(file)` says which a row is, the row carries a `PDF` badge, `Add` hands
+  the file to the import store under its own name so it becomes a PDF import, and an added
+  PDF's row carries **Open**, which goes straight to the PDF screen. Nothing changes in what
+  is stored.
 
 ## What was decided
 
-Keep the design; finish it. In order: size and last-modified on every row and a rescan that
-diffs; PDFs as rows of their own kind; the walk in a worker. The manifest writer
-(`tools/content/pdmx/manifest.py`) gains the two fields so the archive's rescan is a diff too.
-The screen's seven situations in §5ac do not change; "Rescan folder" becomes cheap enough to
-run after every copy.
+Keep the design. PDFs are listed beside scores (done). The rescan stays a diff by path; the
+one improvement left is to skip rewriting rows a rescan found unchanged, which is a cost
+not a correctness question and can wait for the phone to show it matters. The screen's seven
+situations in §5ac do not change.
 
 The five-minute check on the phone comes first, before any of it: pick the folder, close the
 app, reopen it, and note whether the top line says the folder is open and whether Chrome
