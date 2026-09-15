@@ -28,7 +28,9 @@ import csv
 import hashlib
 import json
 import math
+import re
 import sys
+import unicodedata
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -251,6 +253,133 @@ def score_row(rating: float, n_ratings: int, n_views: int, official: bool, lyric
     return bayesian * reach * (1.25 if official else 1.0) * (0.8 if lyrics else 1.0)
 
 
+# --- which uploads are the same piece ---------------------------------------
+
+#: Catalogue labels, after `_plain`. Single letters only where a number follows
+#: directly, which is how every catalogue writes them (K. 545, D. 960, L. 66).
+_CATALOGUE = re.compile(
+    r"\b(op|opus|bwv|kv|k|hob|woo|hwv|rv|twv|sz|bb|d|l|s|b)\s?(\d{1,4}[a-z]?)\b"
+    r"(?:\s(?:no|nr|n|number)\s?(\d{1,3})\b)?"
+)
+_HOBOKEN = re.compile(r"\bhob\s?([ivx]+[a-z]?)\s?(\d{1,3})\b")
+_NUMBERED = re.compile(r"\b(?:no|nr|number)\s?(\d{1,3})\b")
+
+#: Genre words, each with the one spelling it is filed under. A title's first
+#: genre word is its genre: "Prelude and Fugue" is a prelude.
+_GENRES = {
+    "etude": "etude", "etudes": "etude", "study": "etude", "studie": "etude",
+    "waltz": "waltz", "valse": "waltz", "vals": "waltz", "walzer": "waltz",
+    "minuet": "minuet", "menuet": "minuet", "minuetto": "minuet", "menuetto": "minuet",
+    "nocturne": "nocturne", "notturno": "nocturne",
+    "prelude": "prelude", "preludio": "prelude", "praeludium": "prelude", "praludium": "prelude",
+    "sonata": "sonata", "sonate": "sonata", "sonatina": "sonatina", "sonatine": "sonatina",
+    "mazurka": "mazurka", "polonaise": "polonaise", "fugue": "fugue", "fuga": "fugue",
+    "scherzo": "scherzo", "ballade": "ballade", "impromptu": "impromptu", "invention": "invention",
+    "rondo": "rondo", "berceuse": "berceuse", "barcarolle": "barcarolle", "bagatelle": "bagatelle",
+    "gymnopedie": "gymnopedie", "gnossienne": "gnossienne", "arabesque": "arabesque",
+    "rhapsody": "rhapsody", "fantasia": "fantasia", "fantaisie": "fantasia", "fantasy": "fantasia",
+    "intermezzo": "intermezzo", "capriccio": "capriccio", "toccata": "toccata", "partita": "partita",
+    "rag": "rag", "march": "march", "marche": "march", "polka": "polka", "variations": "variations",
+}
+
+#: Words that say how an upload was made rather than what it is. Not the
+#: articles: "a" is also the key of "Waltz in A minor", and stripping it made
+#: that waltz the same piece as every other waltz in a minor key with no number.
+_EDITION_WORDS = frozenset(
+    "easy very simple simplified beginner beginners intermediate advanced piano solo for "
+    "arr arranged arrangement version ver sheet music tutorial cover full original complete "
+    "transcription transcribed by from musescore official score with s".split()
+)
+
+
+#: What tells movements of one catalogue number apart: K. 545's Allegro and its
+#: Rondo are one number and two pieces to learn.
+_MOVEMENT_WORDS = frozenset(
+    "allegro allegretto adagio andante andantino largo larghetto lento grave presto vivace "
+    "moderato rondo menuetto minuetto finale first second third fourth 1st 2nd 3rd 4th".split()
+)
+_MOVEMENT_NUMBER = re.compile(r"\b(?:movement|mvt|mov|mvmt|satz)\s?([ivx]+|\d)\b")
+
+
+def _movement(plain: str) -> str:
+    words = sorted({w for w in plain.split() if w in _MOVEMENT_WORDS})
+    numbers = sorted(set(_MOVEMENT_NUMBER.findall(plain)))
+    return " ".join(words + [f"mvt{n}" for n in numbers])
+
+
+def _plain(text: str) -> str:
+    """Accents off, lower case, every non-alphanumeric run a single space."""
+    decomposed = unicodedata.normalize("NFKD", text or "")
+    stripped = "".join(ch for ch in decomposed if not unicodedata.combining(ch)).lower()
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", stripped).split())
+
+
+def work_key(title: str, composer: str | None, artist: str = "") -> str:
+    """
+    What piece an upload is, as a string two uploads of it share.
+
+    Deliberately conservative: two keys that differ may still be the same piece
+    ("Prelude in C" and "Prelude BWV 846"), and that costs one extra edition in
+    review. Two keys that match must not be different pieces, because that costs
+    a piece — the fault this replaces. So for a known composer the key is the
+    catalogue numbers where the title has any, which is where formulaic titles
+    differ, and the whole remaining title where it has none.
+    """
+    plain = _plain(title)
+    words = plain.split()
+    genre = next((_GENRES[w] for w in words if w in _GENRES), "")
+    if composer:
+        numbers = [f"hob{a}-{b}" for a, b in _HOBOKEN.findall(plain)]
+        if not numbers:
+            found = [({"opus": "op", "k": "kv"}.get(label, label), number, sub)
+                     for label, number, sub in _CATALOGUE.findall(plain)]
+            # "Prelude No. 15 in D flat, Op. 28": the number is in front of the
+            # opus, not after it, and without it all twenty-four preludes would
+            # be one piece. It belongs to an opus that has no number of its own;
+            # a K., BWV or D. number is already the whole identity.
+            loose = _NUMBERED.findall(plain)
+            for label, number, sub in found:
+                if label == "op" and not sub and len(loose) == 1:
+                    sub = loose[0]
+                numbers.append(f"{label}{number}" + (f"-{sub}" if sub else ""))
+        if not numbers:
+            numbers = [f"no{n}" for n in _NUMBERED.findall(plain)]
+        who = _plain(composer)
+        if numbers:
+            return f"{who}|{genre}|{' '.join(numbers)}|{_movement(plain)}"
+        names = set(who.split()) | set(_plain(artist).split())
+        rest = [w for w in words if w not in names and w not in _EDITION_WORDS]
+        return f"{who}|{' '.join(rest)}"
+    rest = [w for w in words if w not in _EDITION_WORDS]
+    by = _plain(artist) if artist and artist.strip().lower() not in ("na", "") else ""
+    return f"{' '.join(rest)}|{by}"
+
+
+def best_editions(candidates: list["Candidate"]) -> tuple[list["Candidate"], int]:
+    """
+    One upload per piece per band: the one our ranking puts first.
+
+    Per band, not per piece, because an easy arrangement and the full score of
+    the same work are two different things to learn and both belong in review.
+    A named want or a Part F reference goes to the front of its group, so the
+    piece somebody asked for is the edition kept — but it is one edition. The
+    first version exempted them entirely and every upload whose title matched a
+    want's pattern came through: references went from 119 files to 339 and wants
+    from 6 to 23 on the real archive. Ties go to the lower CID so a re-run
+    chooses the same file.
+    """
+    groups: dict[tuple[str, str], list[Candidate]] = defaultdict(list)
+    for candidate in candidates:
+        groups[(candidate.work, candidate.band)].append(candidate)
+    kept: list[Candidate] = []
+    superseded = 0
+    for group in groups.values():
+        ranked = sorted(group, key=lambda c: (not c.want, not c.verifies, -c.score, c.cid))
+        kept.append(ranked[0])
+        superseded += len(ranked) - 1
+    return kept, superseded
+
+
 @dataclass
 class Candidate:
     cid: str
@@ -288,6 +417,11 @@ class Candidate:
     verifies: str | None = None
     #: Set when the row is over its bucket's quota but otherwise fine.
     over_quota: bool = False
+    #: `work_key` — which piece this is, for `best_editions`.
+    work: str = ""
+    #: PDMX's own `subset:deduplicated` said this was not the copy to keep. A
+    #: label only; see `gate_subsets` for why it no longer decides anything.
+    pdmx_duplicate: bool = False
 
 
 @dataclass
@@ -319,10 +453,25 @@ def gate_piano_tracks(row: dict) -> str | None:
 
 
 def gate_subsets(row: dict) -> str | None:
+    """
+    The dataset's licence recommendation — and no longer its deduplication.
+
+    `subset:deduplicated` was a gate until 2026-09-15 and rejected 142,078 rows,
+    more than every other gate together. PDMX built it for training generative
+    models (the paper's §III-C): titles are clustered by text-embedding
+    similarity at 80 %, arrangements within 5 % of each other's note count are
+    one arrangement, and the cluster keeps its highest *raw* rating. For
+    repertoire each step is wrong. Formulaic titles cluster — "Chopin Nocturne
+    Op. 15 No. 1" was a duplicate of Op. 27 No. 2 because both have about 1,850
+    notes, and Search-Light Rag of a different composer's rag. And one five-star
+    vote beats 3,706 ratings at 4.78, which is how Bach's C major prelude (511,539
+    views), Maple Leaf Rag, K. 545 and the first Ballade were all rejected, their
+    places taken by copies that then failed another gate. So the flag is kept on
+    the candidate as information and the choice between editions is made by
+    `best_editions`, by work and by our own ranking.
+    """
     if not truthy(row.get("subset:no_license_conflict")):
         return "licence conflict (the dataset's own recommendation)"
-    if not truthy(row.get("subset:deduplicated")):
-        return "not the deduplicated copy"
     return None
 
 
@@ -488,13 +637,17 @@ def select(
                     score=score_row(rating, n_ratings, n_views, official, lyrics),
                     want=match_want(title, artist, wants),
                     verifies=match_want(title, artist, verifications or []),
+                    work=work_key(title, match.canonical, artist),
+                    pdmx_duplicate=not truthy(row.get("subset:deduplicated")),
                 )
             )
 
-    chosen = apply_quotas(passed, quotas)
+    editions, superseded = best_editions(passed)
+    chosen = apply_quotas(editions, quotas)
     summary = {
         "rowsRead": rows_read,
         "passedGates": len(passed),
+        "supersededEditions": superseded,
         "chosen": sum(1 for c in chosen if not c.over_quota),
         "overQuota": sum(1 for c in chosen if c.over_quota),
         "namedWants": sum(1 for c in chosen if c.want),

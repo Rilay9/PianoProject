@@ -480,18 +480,27 @@ class TestLatin(HarmonyFamilyCase):
     def test_the_tumbao_is_never_on_a_downbeat(self) -> None:
         # "not on beat one ... which is why Latin music feels like it is leaning
         # forward". A tumbao with a note on beat one is not a tumbao.
+        # Beat one is not *struck*: from the second bar on it is covered by the
+        # anticipation held across the barline, so a tie's continuation is not
+        # an attack.
         sc, entry = make_tumbao("C", bars=4)
+        notes = list(sc.parts[1].recurse().notes)
         attacks = [float(n.getOffsetInHierarchy(sc))
-                   for n in sc.parts[1].recurse().notes]
+                   for n in notes if not (n.tie and n.tie.type == "stop")]
         self.assertEqual(attacks, [bar * 4.0 + o for bar in range(4) for o in TUMBAO_OFFSETS])
         self.assertTrue(all(a % 4.0 != 0.0 for a in attacks), attacks)
+        held = [float(n.getOffsetInHierarchy(sc))
+                for n in notes if n.tie and n.tie.type == "stop"]
+        self.assertEqual(held, [bar * 4.0 for bar in range(1, 4)],
+                         "the anticipation is held into every bar after the first")
 
     def test_the_tumbao_takes_the_next_chord_early(self) -> None:
         # The note on beat four is the root of the bar that has not started yet.
         # That anticipation is the figure; without it this is just an off-beat
         # bass line.
         sc, _ = make_tumbao("C", bars=4)
-        notes = list(sc.parts[1].recurse().notes)
+        notes = [n for n in sc.parts[1].recurse().notes
+                 if not (n.tie and n.tie.type == "stop")]
         fours = notes[1::2]
         symbols = [cs for cs in sc.parts[0].recurse().getElementsByClass("ChordSymbol")]
         for index, note_on_four in enumerate(fours):

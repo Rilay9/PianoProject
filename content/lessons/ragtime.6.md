@@ -2,7 +2,6 @@
 title: "Ragtime track, Stage 6 — multi-strain form and the leaping left hand"
 stage: 6
 unit: "ragtime.6.1"
-concepts: [oom-pah-bass, syncopation, multi-strain-form, trio-key-change, not-fast]
 videos:
   - label: "(1/3) How to play Maple Leaf Rag, left hand | Cory Hall, pianist-composer"
     url: "https://www.youtube.com/watch?v=W6qPyhTaiK8"

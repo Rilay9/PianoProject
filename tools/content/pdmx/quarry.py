@@ -65,7 +65,11 @@ FINAL_GATES = frozenset({"convert", "round-trip", "structure", "truncation", "ex
 
 #: Structure gate bounds (replan §2.3 item 3).
 MIN_BARS = 8
-MIN_TEMPO, MAX_TEMPO = 30, 220
+#: The tempo bounds are for garbage — a tempo of 8, or 1,000 — not for fast
+#: music. 220 rejected three files across the last two runs, all of them real: a boogie
+#: bass at 300, a swing tune at 250 and Chopin's Presto prelude Op. 28 No. 12
+#: at 230, every one of them the tempo the piece is played at.
+MIN_TEMPO, MAX_TEMPO = 30, 320
 LOWEST_PIANO_MIDI, HIGHEST_PIANO_MIDI = 21, 108
 MAX_EMPTY_BAR_RATIO = 0.20
 

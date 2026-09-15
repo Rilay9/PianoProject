@@ -2,7 +2,6 @@
 title: "Technique, Stage 5 — evenness, independence and the shape of a line"
 stage: 5
 unit: "technique.5.1"
-concepts: [repeated-notes, evenness, hand-independence, "polyrhythm-2:1", dynamics, shaping, crescendo, diminuendo, phrasing, rhythm, syncopation, tied-across-bar, odd-meter, meter-5-4, mordent, ornamentation, hanon]
 videos:
   - label: "Piano Hand Independence Exercises (for Beginners)"
     url: "https://www.youtube.com/watch?v=G78DQpEDDWE"

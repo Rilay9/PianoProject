@@ -2,7 +2,6 @@
 title: "Jazz, Stage 6 — Comping, walking bass, and hearing the changes"
 stage: 6
 unit: "jazz.6.1"
-concepts: [comping, walking-bass, shell-voicings, swing-eighths, harmonic-dictation, ii-V-I]
 videos:
   - label: "How to Play Left Hand Jazz Piano Walking Bass Techniques"
     url: "https://www.youtube.com/watch?v=9QtvnbuGjUs"
@@ -35,10 +34,11 @@ and it should.
 automatic, then the same pattern in a second key. A walking line over the blues
 in C, hands separately, then together with shells on top.
 
-**Repertoire for this rung.** Nothing in the catalog yet — the jazz repertoire
-that is public domain in the US is not yet imported. *Ja-Da*, *After You've
-Gone*, *Avalon* and *Some of These Days* are all 1918–1920 and all free; import
-a lead sheet of one and comp through it.
+**Repertoire for this rung.** *After You've Gone* (1918), *Darktown Strutters'
+Ball* (1917), *Baby, Won't You Please Come Home* (1919), *Rose Room* (1917),
+*Royal Garden Blues* (1919), *The Memphis Blues* (1912), *Tiger Rag* (1917) and
+*Muskrat Ramble* — all lead sheets, all public domain. Comp one pattern through
+a whole chorus, then walk a line under it.
 
 **Common mistake.** Comping on every beat. The gaps are what make it comping;
 filling them makes it an accompaniment pattern.

@@ -2,7 +2,6 @@
 title: "Chords & pop, Stage 9 — Turning a chord chart into an arrangement"
 stage: 9
 unit: "chords-pop.9.1"
-concepts: [arranging, texture, voicing, comping, playing-by-ear, open-voicing]
 videos:
   - label: "Create Your Own Piano Arrangements - PERFECT for any level!"
     url: "https://www.youtube.com/watch?v=oq3v8SpWCi0"

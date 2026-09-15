@@ -59,7 +59,9 @@ from pdmx.shortlist import (  # noqa: E402
     member_name,
     musescore_id,
     number,
+    score_row,
     truthy,
+    work_key,
 )
 
 MODEL_FILE = REPO_ROOT / "content" / "sources" / "pdmx-csv-level.json"
@@ -320,11 +322,38 @@ def build_index(csv_path: Path, table: ComposerTable, model: dict, limit: int = 
                     "museScore": musescore_id(row.get("metadata", "")),
                     "want": match_want(title, artist, wants),
                     "verifies": match_want(title, artist, verifications),
+                    # Only for choosing between editions below; not written out.
+                    "_work": work_key(title, match.canonical, artist),
+                    "_score": score_row(number(row.get("rating")), integer(row.get("n_ratings")),
+                                        integer(row.get("n_views")), truthy(row.get("is_official")),
+                                        truthy(row.get("has_lyrics"))),
                 }
             )
 
+    # One upload per piece per band, as the shortlist chooses (`best_editions`):
+    # PDMX's own deduplication is no longer a gate, and without this the index
+    # would carry every copy of Für Elise anyone ever uploaded.
+    groups: dict[tuple[str, str], list[dict]] = {}
+    for entry in rows:
+        groups.setdefault((entry["_work"], entry["band"]), []).append(entry)
+    kept: list[dict] = []
+    superseded = 0
+    for group in groups.values():
+        ranked = sorted(group, key=lambda e: (-e["_score"], e["cid"]))
+        kept.append(ranked[0])
+        for other in ranked[1:]:
+            if other["want"] or other["verifies"]:
+                kept.append(other)
+            else:
+                superseded += 1
+    chosen = {id(entry) for entry in kept}
+    rows = [entry for entry in rows if id(entry) in chosen]  # CSV order, as before
+    for entry in rows:
+        del entry["_work"], entry["_score"]
+
     summary = {
         "rowsRead": read,
+        "supersededEditions": superseded,
         "indexed": len(rows),
         "byBand": dict(sorted(Counter(r["band"] for r in rows).items())),
         "byBucket": dict(Counter(r["bucket"] for r in rows).most_common()),

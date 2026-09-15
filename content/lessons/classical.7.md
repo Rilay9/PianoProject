@@ -2,7 +2,6 @@
 title: "Classical track, Stage 7 — two voices at once, and a line that sings"
 stage: 7
 unit: "classical.7.1"
-concepts: [counterpoint, sonata-form, cantabile, ornamented-melody, rubato]
 videos:
   - label: "Piano Lesson - How to approach Bach's Two Part Inventions - Part 1"
     url: "https://www.youtube.com/watch?v=WV4aKBla10M"
@@ -46,10 +45,11 @@ hear.
 inaudible as a pattern and audible as a harmony. Play it with a flat, still hand
 and almost no finger action; if you hear four separate notes, it is too loud.
 
-**What to play.** Twenty-two options. The Chopin group is the widest: four
-preludes at this level, five nocturnes — including the E minor Op. 72, the one
-he wrote as a teenager and the gentlest way into the style — three waltzes and
-three mazurkas. Beside them: Mozart's K. 545 first movement for sonata form,
+**What to play.** 49 options. The Chopin group is the widest: ten
+preludes at this level, including the *Raindrop*; five nocturnes — Op. 15 Nos. 2
+and 3, Op. 37 No. 1 and Op. 55 Nos. 1 and 2; seven waltzes and eleven mazurkas.
+A Scarlatti sonata, K. 346, is here for the two-voice work this rung is about.
+Beside them: Mozart's K. 545 first movement for sonata form,
 the C minor prelude from the Forty-Eight for finger evenness, the first movement
 of the *Moonlight* and the *Pathétique* slow movement for sustained voicing, and
 Satie's first Gnossienne, which has no bar lines at all and is a good cure for

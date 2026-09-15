@@ -2,7 +2,6 @@
 title: "Holiday music — carols and how to make them sound festive"
 stage: 2
 unit: "holiday.2.1"
-concepts: [carols, chord-symbols, transposing-for-singers, simple-arranging]
 videos:
   - label: "One Simple Trick To Play 5 Christmas Carols BEAUTIFULLY On Piano"
     url: "https://www.youtube.com/watch?v=UE3dIteGuL0"
@@ -16,8 +15,13 @@ ask you to play one.
 
 **The bundled set.** *Jingle Bells* in three settings — right hand alone, hands
 together, and in G with block chords — plus *Carol of the Bells* (melody only;
-the familiar English words are still in copyright, the tune is not). More will
-be added as their melodies can be checked against an edition.
+the familiar English words are still in copyright, the tune is not). Then the
+carols from the archive, most of them a melody with chord symbols: *Silent
+Night*, *O Holy Night*, *Hark! The Herald Angels Sing*, *Deck the Halls*, *Away
+in a Manger*, *The First Noel*, *Good King Wenceslas*, *We Three Kings*, *God
+Rest Ye Merry, Gentlemen*, *Joy to the World*, *We Wish You a Merry Christmas*,
+*O Christmas Tree*, *Angels We Have Heard on High*, *Jolly Old Saint Nicholas*
+and *Up on the Housetop*, with fuller piano settings of several beside them.
 
 **Playing for singers.** Two things matter more than the arrangement:
 

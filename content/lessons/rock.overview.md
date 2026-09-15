@@ -2,7 +2,6 @@
 title: "Reducing a band arrangement to one piano"
 stage: 3
 unit: "rock-metal.3.1"
-concepts: [reduction, ostinato, power-chords, sus-and-add9, pedal-textures, importing]
 videos:
   - label: "Rock Piano for Beginners: Riffs, Power Chords & Rock Solos"
     url: "https://www.youtube.com/watch?v=o3JEVliBpN0"
@@ -45,9 +44,9 @@ to use a library and not a detour.
    pedal changing only at the harmony. See it in: Beethoven *Moonlight* I.
    (Stage 7.)
 5. **Building intensity by register and density** — the same material low and
-   sparse, then high and thick. Nothing in the library does this plainly enough
-   to point at; Grieg's *In the Hall of the Mountain King* is the example
-   everyone knows, and it is not here. Import it if you want it on the page.
+   sparse, then high and thick. See it in: Grieg's *In the Hall of the Mountain
+   King*, which is nothing but this device for two and a half minutes. (Stage
+   8, on the classical track.)
 
 **The reduction rule.** A band arrangement on one piano is **melody, bass, and
 one texture** — three things, not five. Choosing which is the real skill here.

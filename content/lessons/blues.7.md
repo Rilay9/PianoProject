@@ -2,7 +2,6 @@
 title: "Blues, Stage 7 — The leaping left hand and the two bars that send you back"
 stage: 7
 unit: "blues.7.1"
-concepts: [stride, turnaround, boogie, shuffle, shell-voicings, leaps]
 videos:
   - label: "Stride piano - basics of the left hand stride"
     url: "https://www.youtube.com/watch?v=zdHZ-RkF4L0"
@@ -30,8 +29,9 @@ one.
 turnaround in three keys. Then the boogie from Stage 6 with the turnaround on the
 end.
 
-**Repertoire for this rung.** The form again, with your own turnaround. If you
-have imported a rag, its left hand is this left hand.
+**Repertoire for this rung.** The form again, with your own turnaround, and
+*Pinetop's Boogie Woogie* for a left hand that never stops. If you play a rag,
+its left hand is this left hand.
 
 **Common mistake.** Practising stride at the tempo you want it. The leap is a
 motion, and a motion learned fast is learned wrong.

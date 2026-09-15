@@ -2,12 +2,11 @@
 title: "Blues, Stage 6 — Pinetop, the root-and-fifth bass, and a line that walks"
 stage: 6
 unit: "blues.6.1"
-concepts: [boogie, shuffle, walking-bass, left-hand, turnaround, twelve-bar]
 videos:
   - label: "Secret Key To Pinetop's Boogie Woogie (Right Hand Boogie Pattern)"
     url: "https://www.youtube.com/watch?v=z6Ytf2EdOQM"
     teacher: "Brendan Kavanagh"
-readingTime: 2
+readingTime: 3
 ---
 
 The twelve-bar form is settled. What changes now is the left hand, which stops
@@ -43,8 +42,10 @@ motion.
 **What to practise.** One boogie pattern through all twelve bars in C, then the
 same in F. The walking line over the same twelve bars.
 
-**Repertoire for this rung.** No boogie in the catalog is out of copyright and
-imported yet. Play the form; the tunes are the form.
+**Repertoire for this rung.** Two short boogies to play the form on, and the
+real thing: Clarence "Pinetop" Smith's own *Pinetop's Boogie Woogie* (1928),
+which is above this rung and is here to be read and listened to. Its left hand
+is the bass this lesson names.
 
 **Common mistake.** Speeding up when the left hand gets comfortable. A boogie
 that accelerates is a boogie nobody can play over.

@@ -2,7 +2,6 @@
 title: "Chords & pop, Stage 8 — Playing a song in the key the singer needs"
 stage: 8
 unit: "chords-pop.8.1"
-concepts: [transposition, roman-numerals, secondary-dominants, four-chord-loop, sight-reading, seventh-chord]
 videos:
   - label: "The Easiest Way to Transpose a Song to ANY key on piano!"
     url: "https://www.youtube.com/watch?v=Ri9N5mH7YUE"

@@ -2,7 +2,6 @@
 title: Interleaving, and what a session should look like
 stage: 1
 unit: "practice.1.1"
-concepts: [interleaving, session-planning, review-queue]
 readingTime: 2
 ---
 

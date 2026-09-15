@@ -2,7 +2,6 @@
 title: "Theory and ear, Stage 5 — seventh qualities, progressions and modes"
 stage: 5
 unit: "theory-ear.5.1"
-concepts: [seventh-qualities, progressions-by-ear, modes, transposition]
 videos:
   - label: "Modes Explained on the Piano [tutorial lesson]"
     url: "https://www.youtube.com/watch?v=pCfV-i20olM"

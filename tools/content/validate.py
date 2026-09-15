@@ -380,6 +380,7 @@ def validate_curriculum(curriculum: dict, catalog: list, min_options: int = MIN_
                         errors.append(f"lesson {lesson['id']}: {field} repeats an item")
                 errors += thin_lesson_errors(lesson, exercises, songs, min_options)
                 errors += level_band_errors(lesson, exercises + songs, catalog)
+    errors += core_reach_errors(curriculum, catalog)
     return errors
 
 
@@ -456,6 +457,100 @@ def level_band_errors(lesson: dict, options: list, catalog: list) -> list[str]:
                 f"lesson {lesson['id']}: {option} is level {level:g}, outside the rung's "
                 f"stated band {low:g}–{high:g} (replan §1.7)"
             )
+    return out
+
+
+#: How far above its stage a core-path rung may reach for a song.
+#:
+#: A rung's `levelBand` is honest by construction — it is the range its options
+#: span — so it cannot say whether the options *belong*. On the core path they
+#: have to: "First chords: C, F and G" is a Stage 2 rung, and it offered two
+#: Jobim bossa novas at level 3.0 and "Ties, dotted rhythms and dynamics" a
+#: film theme at 3.7 and a remix at 4.4, because the archive quarry attached
+#: pieces by nearest band and the bands then widened to fit them. Two levels
+#: above the stage is the reach the hand-placed repertoire actually uses —
+#: the Petzold minuet at 5.1 on the Stage 3 ledger-line rung is the widest —
+#: and everything past it was a piece nobody had looked at on that rung.
+CORE_SONG_REACH = 2.0
+
+#: Placements the plan makes by name (docs/02, Stages 2–3) where the only
+#: arrangement the library holds is judged further above the stage than the
+#: reach allows. Each is the piece the rung is written around, so it stays; the
+#: real cure is an easier arrangement of the same tune, at which point the row
+#: comes off this list because the family rule below covers it.
+CORE_REACH_PLAN: frozenset[tuple[str, str]] = frozenset({
+    ("2.5", "song.classical.beethoven-ode-to-joy.easy"),
+    ("3.4", "song.classical.petzold-minuet-g-bwv-anh114"),
+    ("3.4", "song.classical.petzold-minuet-g-bwv-anh114.alt"),
+    ("3.5", "song.classical.pachelbel-canon-d.easy"),
+    ("3.6", "song.classical.pachelbel-canon-d.easy"),
+})
+
+
+def variant_families(catalog: list) -> dict[str, int]:
+    """
+    Each item's family: the connected component of `variantOf` links.
+
+    `song.folk.happy-birthday.simple` says it is a variant of
+    `song.folk.happy-birthday`, and so does `.alt`; all three are one tune, and
+    a rung that offers the simple one at its level may offer the full one
+    beside it as the place the tune goes next.
+    """
+    parent: dict[str, str] = {}
+
+    def find(x: str) -> str:
+        while parent.setdefault(x, x) != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for item in catalog:
+        other = item.get("variantOf")
+        if other:
+            parent[find(item["id"])] = find(other)
+    roots = {item["id"]: find(item["id"]) for item in catalog}
+    index = {root: n for n, root in enumerate(dict.fromkeys(roots.values()))}
+    return {item_id: index[root] for item_id, root in roots.items()}
+
+
+def core_reach_errors(curriculum: dict, catalog: list) -> list[str]:
+    """
+    A core-path song more than `CORE_SONG_REACH` above its rung's stage.
+
+    Exempt: a song whose variant family has another option on the same rung
+    within reach (the full arrangement offered beside the simple one), and the
+    plan's own placements in `CORE_REACH_PLAN`.
+    """
+    levels = {item["id"]: float(item["level"]) for item in catalog if item.get("level") is not None}
+    family = variant_families(catalog)
+    out: list[str] = []
+    for stage in curriculum.get("stages", []):
+        number = stage.get("number")
+        if not isinstance(number, int) or number < 1:
+            continue
+        ceiling = number + CORE_SONG_REACH + 1e-9
+        for unit in stage.get("units", []):
+            if unit.get("track") != "core":
+                continue
+            for lesson in unit.get("lessons", []):
+                options = lesson.get("songOptions", [])
+                within = {
+                    family[o] for o in options
+                    if o in family and levels.get(o) is not None and levels[o] <= ceiling
+                }
+                for option in options:
+                    level = levels.get(option)
+                    if level is None or level <= ceiling:
+                        continue
+                    if (lesson["id"], option) in CORE_REACH_PLAN:
+                        continue
+                    if family.get(option) in within:
+                        continue
+                    out.append(
+                        f"lesson {lesson['id']}: {option} is level {level:g}, more than "
+                        f"{CORE_SONG_REACH:g} above a Stage {number} core rung — it belongs on a "
+                        "track rung, or on the Library only"
+                    )
     return out
 
 

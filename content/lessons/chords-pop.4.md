@@ -2,7 +2,6 @@
 title: "Chords and pop, Stage 4 — inversions, vi and ii, the four-chord song"
 stage: 4
 unit: "chords-pop.4.1"
-concepts: [inversions, minor-chords-in-major, four-chord-progression, slash-chords]
 videos:
   - label: "I vi IV V: Easy And Fun Chord Progression Tutorial"
     url: "https://www.youtube.com/watch?v=ZPabFqOPrkg"
@@ -35,7 +34,7 @@ walking bass line under static harmony: C, C/E, F, C/G. The bass moves by step
 while the chords barely change, and that stepwise bass is what makes an
 arrangement sound composed rather than blocked out.
 
-**Repertoire for this rung.** Ten options. *Greensleeves* is here twice, with
+**Repertoire for this rung.** 16 options. *Greensleeves* is here twice, with
 chords and with a waltz bass — one song, two left hands, and the plainest
 demonstration on this rung of what arranging actually is. *When the Saints* in
 F, *Jingle Bells* with block chords in G and *Happy Birthday* carry their

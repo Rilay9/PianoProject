@@ -2,7 +2,6 @@
 title: "Classical track, Stage 8 — étude technique, and pieces that need a plan"
 stage: 8
 unit: "classical.8.1"
-concepts: [etude, velocity, voicing-melody, large-form, pedalling]
 videos:
   - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
     url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"
@@ -17,10 +16,10 @@ improves.
 
 **An étude is a piece about one problem.** Chopin's are famous because they are
 music and not drills, but each one still isolates a single difficulty and
-repeats it for three minutes. Op. 10 No. 3 is about voicing a melody in a hand
-that is also playing an inner line; Op. 25 No. 1 is about keeping a melody
-audible on top of a continuous arpeggiated wash; Op. 25 No. 7 puts the tune in
-the left hand and asks the right to accompany it. **Name the problem before you
+repeats it for three minutes. Op. 25 No. 9 is about a light wrist that
+bounces octaves without tiring; Op. 25 No. 1 is about keeping a melody
+audible on top of a continuous arpeggiated wash; Op. 10 No. 6 is a slow study
+in a chromatic inner voice under a long line. **Name the problem before you
 start.** If you cannot say in one sentence what an étude is for, you will
 practise the notes and not the skill.
 
@@ -40,13 +39,13 @@ usually easy.
 one a name and a bar range. Then practise them out of order — a piece you can
 only play from the beginning is a piece you cannot play.
 
-**Cross-rhythm.** The Op. 42 waltz puts a two-beat melody over a three-beat
-bass and keeps it there. Do not try to work out where the notes coincide; learn
+**Cross-rhythm.** When a piece puts a two-beat melody over a three-beat bass
+and keeps it there, do not try to work out where the notes coincide; learn
 each hand until it is independent, then put them together and let them
 disagree. Counting will not save you, and it is not supposed to.
 
-**What to play.** Twenty-three options across five kinds: five Chopin preludes
-at full difficulty, three nocturnes (including the C minor Op. 48 No. 1, the
+**What to play.** 37 options, across five kinds of Chopin and a shelf of others: four Chopin preludes
+at full difficulty, four nocturnes (including the C minor Op. 48 No. 1, the
 most dramatic he wrote), four waltzes, three études, the Berceuse — sixty-nine
 bars of variation over a left hand that barely changes — and the *Military*
 polonaise. Beside those, Debussy's *Clair de lune* and first Arabesque, Liszt's

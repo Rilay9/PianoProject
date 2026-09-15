@@ -2,7 +2,6 @@
 title: "Theory and ear, Stage 4 — circle of fifths, inversions and cadences"
 stage: 4
 unit: "theory-ear.4.1"
-concepts: [circle-of-fifths, inversions-by-ear, melodic-dictation, cadences]
 videos:
   - label: "Circle of 5ths: Easiest Way to Memorize and Understand It"
     url: "https://www.youtube.com/watch?v=sWAaJF9Wk0w"

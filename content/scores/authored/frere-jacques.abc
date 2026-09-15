@@ -14,5 +14,5 @@ K:C
 V:1 clef=treble
 V:2 clef=bass
 [V:1] !1!C !2!D !3!E !1!C | C D E C | !3!E !4!F !5!G2 | E F G2 |
-[V:1] !5!G/!4!F/!3!E/!2!D/ !3!E !1!C | G/F/E/D/ E C | !1!C !5!G !1!C2 | C G C2 |]
+[V:1] !5!G/!4!F/!3!E/!2!D/ !3!E !1!C | G/F/E/D/ E C | !4!C !1!G, !4!C2 | C G, C2 |]
 [V:2] z4 | z4 | z4 | z4 | z4 | z4 | z4 | z4 |]

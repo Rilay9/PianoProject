@@ -2,7 +2,6 @@
 title: "Classical track, Stage 5 — Sonatina form and Romantic miniatures"
 stage: 5
 unit: "classical.5.1"
-concepts: [sonatina-form, alberti-bass-HT, trills, pedal-in-romantic, binary-form]
 videos:
   - label: "How to Play Ornaments: Trills, Mordents and More"
     url: "https://www.youtube.com/watch?v=Hx_-ZWk0sy0"
@@ -20,12 +19,11 @@ return, this time both in the home key. Knowing that structure changes how you
 practise: you learn the second theme once and get it twice, and you know that
 the development is where the memory slips will be.
 
-**The sonatina you have to bring yourself.** Nothing in the library is one, and
-that is worth saying outright rather than letting you search. Three are worth
-looking for, all out of copyright and all short enough to finish: Clementi's
-Sonatina in C, op. 36 no. 1; Beethoven's Sonatina in F, Anh. 5; Diabelli's op.
-168 no. 1. Bring one in through the import screen and it is scored like anything
-else. Before you play a note of it, mark the three sections on the page.
+**The sonatinas.** Five are on this rung, all short enough to finish:
+Clementi's op. 36 no. 1 (all three movements), Beethoven's Sonatina in G,
+Anh. 5, Kuhlau's op. 20 no. 1, Diabelli's op. 168 no. 1, and Attwood's little
+Sonatina in G, the gentlest. Before you play a note of one, mark the three
+sections on the page.
 
 **Alberti bass hands together.** Stage 3 taught the pattern; here it runs
 continuously under a melody for pages. The problem is balance. The left hand
@@ -48,13 +46,12 @@ memorise the rule now.
 3.5) is the technique. The test is whether the harmony stays clean; if two
 chords blur, you changed late.
 
-**Repertoire for this rung.** Ten options, and every one of them is a miniature
-rather than a sonatina — the form above is the reading, these are the playing.
-Bach's *Aria* from the Anna Magdalena notebook and Handel's *Sarabande* for a
-steady Baroque line; Schubert's *Ave Maria*, the beginner *Clair de lune* and
-Chopin's *Waltz in A minor* for a melody carried over an accompaniment with
-pedal; then the easy *Canon in D*, *Greensleeves*, *Carol of the Bells*,
-*Hungarian Sonata* and *Oh Canada*.
+**Repertoire for this rung.** The sonatinas, and beside them the Romantic
+miniatures: five from Schumann's *Album for the Young*, Tchaikovsky's *Old
+French Song* and *March of the Wooden Soldiers*, a Schubert German dance and
+Grieg's *Morning Mood*; Bach's *Aria* and Handel's *Sarabande* for a steady
+Baroque line; Schubert's *Ave Maria*, the beginner *Clair de lune* and Chopin's
+*Waltz in A minor* for a melody carried over a pedalled accompaniment.
 
 **Common mistake.** Learning the exposition beautifully and the development
 badly, because the development is harder and less rewarding. Start a practice

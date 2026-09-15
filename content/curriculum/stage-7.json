@@ -35,28 +35,55 @@
                 "exercise.chromatic.d.1oct.both"
               ],
               "songOptions": [
-                "song.classical.chopin-prelude-op28-1.nifc",
-                "song.classical.chopin-prelude-op28-9.nifc",
+                "song.classical.chopin-prelude-no-1-in-c-major-op-28.pdmx",
                 "song.classical.chopin-prelude-op28-11.nifc",
-                "song.classical.chopin-prelude-op28-15.nifc",
+                "song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx",
                 "song.classical.chopin-nocturne-op37-1.nifc",
                 "song.classical.chopin-nocturne-op15-3.nifc",
-                "song.classical.chopin-nocturne-op32-1.nifc",
                 "song.classical.chopin-nocturne-op55-1.nifc",
-                "song.classical.chopin-nocturne-op37-2.nifc",
                 "song.classical.chopin-waltz-op69-2.nifc",
                 "song.classical.chopin-waltz-op34-2.nifc",
                 "song.classical.chopin-waltz-op70-2.nifc",
                 "song.classical.chopin-mazurka-op7-1.nifc",
                 "song.classical.chopin-mazurka-op6-1.nifc",
-                "song.classical.chopin-mazurka-op33-2.nifc",
-                "song.classical.chopin-allegretto.nifc",
                 "song.classical.mozart-k545-i",
                 "song.classical.bach-wtc1-prelude-2",
                 "song.classical.beethoven-moonlight-i",
                 "song.classical.beethoven-pathetique-ii",
                 "song.classical.satie-gnossienne-1",
-                "song.classical.brahms-hungarian-dance-5"
+                "song.classical.brahms-hungarian-dance-5",
+                "song.classical.scarlatti-d-scarlatti-sonata-d-major-k-346.pdmx",
+                "song.classical.debussy-children-s-corner-the-little-shepherd.pdmx",
+                "song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx",
+                "song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx",
+                "song.classical.haydn-haydn-sonata-in-e-minor-hob-xvi-34-movement-i.pdmx",
+                "song.classical.mozart-rondo-alla-turca.pdmx",
+                "song.classical.chopin-marche-funebre-op72.nifc",
+                "song.classical.chopin-mazurka-op17-4.nifc",
+                "song.classical.chopin-mazurka-op33-4.nifc",
+                "song.classical.chopin-mazurka-op50-1.nifc",
+                "song.classical.chopin-mazurka-op50-2.nifc",
+                "song.classical.chopin-mazurka-op56-2.nifc",
+                "song.classical.chopin-mazurka-op59-2.nifc",
+                "song.classical.chopin-mazurka-op59-3.nifc",
+                "song.classical.chopin-mazurka-op63-2.nifc",
+                "song.classical.chopin-mazurka-op7-3.nifc",
+                "song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx",
+                "song.classical.chopin-nocturne-op55-2.nifc",
+                "song.classical.chopin-polonaise-g-minor.nifc",
+                "song.classical.chopin-polonaise-g-sharp-minor.nifc",
+                "song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx",
+                "song.classical.chopin-prelude-op28-14.nifc",
+                "song.classical.chopin-prelude-op28-17.nifc",
+                "song.classical.chopin-prelude-op28-18.nifc",
+                "song.classical.chopin-prelude-op28-21.nifc",
+                "song.classical.chopin-prelude-op28-22.nifc",
+                "song.classical.chopin-prelude-op28-23.nifc",
+                "song.classical.chopin-rondo-op1.nifc",
+                "song.classical.chopin-waltz-e-minor.nifc",
+                "song.classical.chopin-waltz-op34-1.nifc",
+                "song.classical.chopin-waltz-op34-3.nifc",
+                "song.classical.chopin-waltz-op70-1.nifc"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -70,7 +97,7 @@
               "estimatedDays": 150,
               "levelBand": [
                 4.2,
-                8.4
+                8.7
               ],
               "finder": {
                 "skill": "holding two voices apart in one pair of hands while the upper one sings",
@@ -138,9 +165,17 @@
                 "song.ragtime.joplin-heliotrope-bouquet",
                 "song.ragtime.joplin-fig-leaf-rag",
                 "song.ragtime.joplin-paragon-rag",
-                "song.ragtime.joplin-search-light-rag",
+                "song.classical.joplin-search-light-rag.pdmx",
                 "song.ragtime.joplin-pleasant-moments",
-                "song.ragtime.joplin-antoinette"
+                "song.ragtime.joplin-antoinette",
+                "song.ragtime.joplin-leola",
+                "song.ragtime.joplin-lily-queen",
+                "song.ragtime.joplin-march-majestic",
+                "song.ragtime.joplin-palm-leaf-rag",
+                "song.ragtime.joplin-sugar-cane",
+                "song.ragtime.joplin-chrysanthemum",
+                "song.ragtime.joplin-nonpareil",
+                "song.ragtime.joplin-rose-leaf-rag"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -154,7 +189,7 @@
               "estimatedDays": 150,
               "levelBand": [
                 3.2,
-                7.4
+                8.0
               ],
               "finder": {
                 "skill": "stretching the left hand towards stride while the rag stays unhurried",
@@ -201,7 +236,8 @@
                 "forearm",
                 "polyrhythm-2:3",
                 "polyrhythm-3:2",
-                "half-pedal"
+                "half-pedal",
+                "melody-in-octaves"
               ],
               "textFile": "lessons/technique.7.md",
               "exerciseOptions": [
@@ -282,7 +318,11 @@
               ],
               "songOptions": [
                 "song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx",
-                "song.jazz.vince-guaraldi-skating.pdmx"
+                "song.jazz.vince-guaraldi-skating.pdmx",
+                "song.pop.avalon.pdmx",
+                "song.pop.after-you-ve-gone.pdmx",
+                "song.jazz.django-reinhardt-tiger-rag.pdmx",
+                "song.classical.i-got-rythm.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -296,7 +336,7 @@
               ],
               "estimatedDays": 120,
               "levelBand": [
-                7.1,
+                2.7,
                 7.4
               ],
               "finder": {
@@ -342,7 +382,10 @@
                 "exercise.voicing7.f.shell",
                 "exercise.walking-bass.f.blues"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.folk.boogie-woogie.pdmx",
+                "song.pop.boogie-easy-for-beginners.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,
@@ -355,8 +398,8 @@
               ],
               "estimatedDays": 120,
               "levelBand": [
-                6.1,
-                7.3
+                4.9,
+                7.5
               ],
               "finder": {
                 "skill": "leaping the left hand into stride while the turnaround stays in place",
@@ -414,7 +457,12 @@
                 "song.pop.coldplay-fix-you-coldplay.pdmx",
                 "song.pop.laura-shigihara-loonboon.pdmx",
                 "song.pop.misc-soundtrack-light-the-world.pdmx",
-                "song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx"
+                "song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx",
+                "song.folk.lost-without-you-freya-ridings.pdmx",
+                "song.folk.wake-me-up-avicii.pdmx",
+                "song.folk.scarborough-fair-canticle.pdmx",
+                "song.folk.scarborough-fair-piano-solo.pdmx",
+                "song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -429,7 +477,7 @@
               "estimatedDays": 120,
               "levelBand": [
                 5.3,
-                7.3
+                7.7
               ],
               "finder": {
                 "skill": "colouring a chord with a suspension or a ninth instead of a plain triad",

@@ -2,7 +2,6 @@
 title: "Improvisation, Stage 4 — pentatonic and answering the phrase"
 stage: 4
 unit: "improv-compose.4.1"
-concepts: [pentatonic-scale, call-and-response, four-chord-loop, motif-development]
 videos:
   - label: "Piano improvisation with pentatonic scale"
     url: "https://www.youtube.com/watch?v=1W8TjulBrHM"

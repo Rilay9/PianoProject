@@ -181,7 +181,12 @@ class TestGates(unittest.TestCase):
 
     def test_gate_3_subsets(self) -> None:
         self.assertIn("licence conflict", shortlist_mod.gate_subsets(self.row("Conflicted")) or "")
-        self.assertIn("deduplicated", shortlist_mod.gate_subsets(self.row("A duplicate upload")) or "")
+
+    def test_pdmx_dedup_flag_is_no_longer_a_gate(self) -> None:
+        # PDMX clusters titles by text similarity and note count, which made a
+        # Chopin nocturne a duplicate of a different one; `best_editions` chooses
+        # between uploads of the same piece instead. See `gate_subsets`.
+        self.assertIsNone(shortlist_mod.gate_subsets(self.row("A duplicate upload")))
 
     def test_gate_4_draft_and_paywall(self) -> None:
         self.assertEqual(shortlist_mod.gate_not_draft(self.row("Work in progress")), "draft")
@@ -225,9 +230,12 @@ class TestSelection(unittest.TestCase):
         cls.by_cid = {c.cid: c for c in cls.chosen}
 
     def test_every_gate_rejected_exactly_the_row_written_for_it(self) -> None:
+        # Twenty-one pass: the "duplicate upload" row was written for the dedup
+        # gate, which is a label now, and it is a unique title in the fixture.
         self.assertEqual(self.summary["rowsRead"], 30)
-        self.assertEqual(self.summary["passedGates"], 20)
-        self.assertEqual(sum(self.rejections.counts.values()), 10)
+        self.assertEqual(self.summary["passedGates"], 21)
+        self.assertEqual(sum(self.rejections.counts.values()), 9)
+        self.assertTrue(self.by_cid["QmFixtureNotDeduplicated"].pdmx_duplicate)
 
     def test_composition_status_is_a_label_and_not_a_gate(self) -> None:
         # The decoys are chosen, and labelled. Rejecting them here would drop
@@ -794,8 +802,8 @@ class TestArchiveIndex(unittest.TestCase):
             FIXTURE / "PDMX.csv", ComposerTable.load(), self.model
         )
         self.assertEqual(summary["rowsRead"], 30)
-        # The same twenty rows shortlist.py keeps — the gates are shared, not copied.
-        self.assertEqual(summary["indexed"], 20)
+        # The same twenty-one rows shortlist.py keeps — the gates are shared, not copied.
+        self.assertEqual(summary["indexed"], 21)
         by_cid = {row["cid"]: row for row in rows}
         self.assertEqual(by_cid["QmFixtureDecoyBartok"]["status"], "in-copyright")
         self.assertEqual(by_cid["QmFixtureWantRiverFlows"]["want"],
@@ -1232,6 +1240,96 @@ class TestZenodoRecord(unittest.TestCase):
         header = json.loads(candidates.read_text(encoding="utf-8"))["header"]
         self.assertEqual(header["csvBytes"], 209_574_867)
         self.assertEqual(commit_mod.zenodo_record_for(header), "14648209")
+
+
+class TestWorkKey(unittest.TestCase):
+    """
+    `shortlist.work_key`: which uploads are the same piece.
+
+    Every title here is a real PDMX title. The direction of the errors is the
+    point: a different key for the same piece costs an extra edition in review;
+    the same key for different pieces costs a piece, which is what PDMX's own
+    deduplication did.
+    """
+
+    CHOPIN = "Fryderyk Chopin"
+
+    def key(self, title: str, composer: str | None = CHOPIN, artist: str = "NA") -> str:
+        return shortlist_mod.work_key(title, composer, artist)
+
+    def test_two_nocturnes_with_the_same_note_count_are_two_pieces(self) -> None:
+        self.assertNotEqual(self.key("Nocturne in F-sharp major Op.15 No.2"),
+                            self.key("Chopin Nocturne in D-Flat Major Op. 27 No. 2"))
+
+    def test_the_number_before_the_opus_still_tells_the_preludes_apart(self) -> None:
+        raindrop = self.key("Prelude No. 15 in D flat major Op. 28 The Raindrop Prelude")
+        self.assertEqual(raindrop, self.key("Chopin Prélude Op 28 No 15"))
+        self.assertNotEqual(raindrop, self.key("Chopin Prelude Op. 28 No. 4"))
+
+    def test_a_catalogue_number_is_the_identity_however_it_is_written(self) -> None:
+        mozart = "Wolfgang Amadeus Mozart"
+        self.assertEqual(self.key("Sonata K 545", mozart), self.key("Piano Sonata No. 16 in C, K. 545", mozart))
+        bach = "Johann Sebastian Bach"
+        self.assertEqual(self.key("Prelude I in C major BWV 846 - Well Tempered Clavier", bach),
+                         self.key("Bach Prelude in C BWV846", bach))
+        self.assertIn("hobxvi-34", self.key("Haydn - Sonata in E minor Hob XVI/34 Movement I", "Joseph Haydn"))
+
+    def test_the_words_about_the_upload_are_not_part_of_the_piece(self) -> None:
+        joplin = "Scott Joplin"
+        self.assertEqual(self.key("Maple Leaf Rag (Scott Joplin)", joplin),
+                         self.key("Maple Leaf Rag - Scott Joplin - Easy Piano", joplin))
+        self.assertEqual(self.key("Amazing Grace (easy piano)", None), self.key("Amazing Grace", None))
+
+    def test_two_movements_of_one_catalogue_number_are_two_pieces(self) -> None:
+        mozart = "Wolfgang Amadeus Mozart"
+        self.assertNotEqual(self.key("Piano Sonata No. 16 (K 545) Allegro by W.A. Mozart", mozart),
+                            self.key("Sonata No. 16 K 545 3rd Movement", mozart))
+
+    def test_the_key_of_a_waltz_is_not_an_article(self) -> None:
+        self.assertNotEqual(self.key("Waltz in A minor"), self.key("Waltz in E minor"))
+        self.assertNotEqual(self.key("Search Light Rag", None), self.key("That Eccentric Rag", None))
+
+
+class TestBestEditions(unittest.TestCase):
+    """`shortlist.best_editions`: one upload per piece per band, by our ranking."""
+
+    def candidate(self, cid: str, work: str = "w", band: str = "5", rating: float = 4.5,
+                  n_ratings: int = 10, n_views: int = 1000, want: str | None = None):
+        return types.SimpleNamespace(
+            cid=cid, work=work, band=band, want=want, verifies=None,
+            score=shortlist_mod.score_row(rating, n_ratings, n_views, False, False),
+        )
+
+    def test_thousands_of_ratings_beat_one_perfect_vote(self) -> None:
+        # PDMX kept the higher raw rating. This is Bach's C major prelude: 3,706
+        # ratings at 4.78 and half a million views against a single 5.0.
+        crowd = self.candidate("QmCrowd", rating=4.78, n_ratings=3706, n_views=511_539)
+        lone = self.candidate("QmLone", rating=5.0, n_ratings=1, n_views=40)
+        kept, superseded = shortlist_mod.best_editions([lone, crowd])
+        self.assertEqual([c.cid for c in kept], ["QmCrowd"])
+        self.assertEqual(superseded, 1)
+
+    def test_an_easy_arrangement_and_the_full_score_are_both_kept(self) -> None:
+        easy = self.candidate("QmEasy", band="3")
+        full = self.candidate("QmFull", band="7-9")
+        kept, superseded = shortlist_mod.best_editions([easy, full])
+        self.assertEqual({c.cid for c in kept}, {"QmEasy", "QmFull"})
+        self.assertEqual(superseded, 0)
+
+    def test_a_named_want_is_the_edition_kept_and_the_only_one(self) -> None:
+        # Exempting wants altogether let every upload matching a want's title
+        # through: 6 wants became 23 on the real archive.
+        better = self.candidate("QmBetter", n_ratings=500)
+        wanted = self.candidate("QmWanted", n_ratings=1, want="song.beautiful.x")
+        also = self.candidate("QmAlsoWanted", n_ratings=2, want="song.beautiful.x")
+        kept, superseded = shortlist_mod.best_editions([better, wanted, also])
+        self.assertEqual([c.cid for c in kept], ["QmAlsoWanted"])
+        self.assertEqual(superseded, 2)
+
+    def test_a_tie_is_broken_the_same_way_every_run(self) -> None:
+        a, b = self.candidate("QmB"), self.candidate("QmA")
+        self.assertEqual(shortlist_mod.best_editions([a, b])[0][0].cid, "QmA")
+        self.assertEqual(shortlist_mod.best_editions([b, a])[0][0].cid, "QmA")
 
 
 class TestAttestation(unittest.TestCase):

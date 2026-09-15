@@ -2,7 +2,6 @@
 title: "Classical track, Stage 4 — Grade 1 pieces and articulation"
 stage: 4
 unit: "classical.4.1"
-concepts: [staccato, legato, articulation-contrast, phrase-shaping, ornaments]
 videos:
   - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
     url: "https://www.youtube.com/watch?v=sfty1bjShBI"

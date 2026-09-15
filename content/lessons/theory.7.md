@@ -2,7 +2,6 @@
 title: "Theory & ear, Stage 7 — Secondary dominants, tonicisation, and the chord-scale"
 stage: 7
 unit: "theory.7.1"
-concepts: [secondary-dominants, tonicisation, roman-numerals, modes, chord-scale, ear-training]
 videos:
   - label: "Secondary Dominants: The Complete Guide"
     url: "https://www.youtube.com/watch?v=32G6cIiZ3sI"

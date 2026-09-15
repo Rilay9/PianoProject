@@ -2,7 +2,6 @@
 title: "Improv & composition, Stage 9 — Something finished, with your name on it"
 stage: 9
 unit: "improv.9.1"
-concepts: [composition, form, arranging, playing-by-ear, voicing, improvisation]
 videos:
   - label: "Compose Your Own Piano Music: A TOTAL Beginner's Guide"
     url: "https://www.youtube.com/watch?v=JPtBDJgY22M"

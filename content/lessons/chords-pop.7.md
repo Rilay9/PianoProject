@@ -2,7 +2,6 @@
 title: "Chords & pop, Stage 7 — sus2, sus4, add9 and the ninth chord"
 stage: 7
 unit: "chords-pop.7.1"
-concepts: [open-voicing, sus-chords, add9, extended-chords, voicing, texture]
 videos:
   - label: "Sound Amazing at the Piano With SUS CHORDS"
     url: "https://www.youtube.com/watch?v=lPJQfvm39jw"

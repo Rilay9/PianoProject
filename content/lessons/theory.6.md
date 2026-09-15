@@ -2,7 +2,6 @@
 title: "Theory & ear, Stage 6 — Roman numerals, and writing down what you hear"
 stage: 6
 unit: "theory.6.1"
-concepts: [roman-numerals, harmonic-dictation, modes, transposition, ear-training, chord-progression]
 videos:
   - label: "The Roman Numeral System Explained: Build Any Chord Progression by Number"
     url: "https://www.youtube.com/watch?v=mxVzktPGxaY"

@@ -2,12 +2,11 @@
 title: "Classical track, Stage 6 — voicing, rubato and the Romantic miniature"
 stage: 6
 unit: "classical.6.1"
-concepts: [voicing-melody, rubato, pedalling, romantic-miniature]
 videos:
   - label: "Rubato in Romantic Piano Music"
     url: "https://www.youtube.com/watch?v=fUVQL4vBVks"
     teacher: "University of Sydney Library"
-readingTime: 4
+readingTime: 3
 ---
 
 Up to now, playing the right notes at the right time was most of the job. From
@@ -43,7 +42,7 @@ section first, then the one before it. You will always be playing *into*
 familiar ground rather than off a cliff, and the end of the piece will not be
 the part you have practised least.
 
-**What to play.** There are twenty-one options on this rung and they fall into
+**What to play.** There are 50 options on this rung and they fall into
 three groups:
 
 - **The four easy Chopin preludes** — No. 7 (sixteen bars, a mazurka in
@@ -52,7 +51,7 @@ three groups:
   No. 4 (a right-hand tune over a chromatic left-hand descent). Two editions of
   No. 4 are in the library: the scholarly first edition and a MuseScore
   transcription. Comparing them is worth ten minutes.
-- **Three easy mazurkas** — Op. 67 No. 2, Op. 68 Nos. 2 and 3. Short, and the
+- **Two easy mazurkas** — Op. 68 Nos. 2 and 3. Short, and the
   best introduction to a rhythm that leans on beat two or three rather than one.
 - **The familiar pieces** — Für Elise, Gymnopédie No. 1, the Bach Air, the
   Prelude in C from the Forty-Eight, Canon in D, two Tchaikovsky ballet

@@ -2,7 +2,6 @@
 title: "Blues track, Stage 5 — turnarounds, blue notes and walking bass"
 stage: 5
 unit: "blues-boogie.5.1"
-concepts: [turnaround, tremolo-thirds, call-and-response, walking-bass, blues-in-F-and-G]
 videos:
   - label: "How to Play Blues Piano - Scales, Licks, Turnarounds, Techniques, Left Hand Patterns"
     url: "https://www.youtube.com/watch?v=S3YRSVBjUH0"

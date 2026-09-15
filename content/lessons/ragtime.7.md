@@ -2,7 +2,6 @@
 title: "Ragtime track, Stage 7 — stride precursors, wider leaps and the slow drag"
 stage: 7
 unit: "ragtime.7.1"
-concepts: [oom-pah-bass, stride-bass, syncopation, trio-key-change, not-fast]
 videos:
   - label: "Ragtime Piano CRASH COURSE for Beginners! Rag Rolls, Stride Bass, & More w/ Jonny May"
     url: "https://www.youtube.com/watch?v=PZt-GA_8F2A"
@@ -45,7 +44,7 @@ and a MuseScore transcription. They differ in small ways — beaming, a few
 accidentals, some dynamics. When they disagree, the first edition is the better
 guess about what Joplin wrote.
 
-**What to play.** Twelve options. Beyond the four above there are *Original
+**What to play.** Twenty options. Beyond the four above there are *Original
 Rags* (his first published rag, a string of unrelated strains), *Fig Leaf*,
 *Paragon*, *Search-Light*, *Antoinette* — a march rather than a rag, and easier
 than most of this list — and *Pleasant Moments*, a ragtime waltz that is the

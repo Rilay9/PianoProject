@@ -2,7 +2,6 @@
 title: "Technique, Stage 4 — scales, arpeggios and the two ways to touch a key"
 stage: 4
 unit: "technique.4.1"
-concepts: [scale, arpeggio, five-finger, similar, contrary, chromatic, semitones, coordination, finger-independence, inversions, articulation, staccato, legato, note-length]
 videos:
   - label: "2-1-6 Chromatic and Contrary Motions Scales for Grade 1 Piano - Free Piano Lesson with Lisa"
     url: "https://www.youtube.com/watch?v=OSnuTvk_OgA"

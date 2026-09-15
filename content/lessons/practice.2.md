@@ -2,7 +2,6 @@
 title: Slow practice and the tempo ladder
 stage: 1
 unit: "practice.1.1"
-concepts: [slow-practice, tempo-ladder, evenness]
 readingTime: 2
 ---
 

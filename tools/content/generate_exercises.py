@@ -113,6 +113,29 @@ MINOR_KEYS = ("A", "E", "D", "G", "C", "B", "F", "F#", "C#", "G#", "B-", "E-")
 
 ARPEGGIO_FINGERING_RH = [1, 2, 3, 5]   # root-position major/minor triad, white-key roots
 ARPEGGIO_FINGERING_LH = [5, 3, 2, 1]
+#: The same triad from a black-key root. The thumb does not take the black
+#: key: the second finger starts, the thumb takes the next chord tone, and
+#: the top note is the fourth finger — 2-1-2-4 in the right hand and its
+#: mirror 2-1-4-2 in the left, which is the shape Hanon prints for every
+#: black-key arpeggio (No. 41) and the one the graded syllabuses give for
+#: D♭, E♭, A♭, B♭ and G♭ major and the black-root minors. Sixty items shipped
+#: with the white-key table on these roots, thumb on the black key in every
+#: one, and `confirm_fingering` cannot see it: a melodic line is not a chord.
+ARPEGGIO_FINGERING_RH_BLACK = [2, 1, 2, 4]
+ARPEGGIO_FINGERING_LH_BLACK = [2, 1, 4, 2]
+#: A four-note seventh arpeggio from a white-key root: one finger a note,
+#: thumb under after the fourth, 5 on the last note — 1-2-3-4 and 5-4-3-2.
+#: The old `[1, 2, 3, 5]` put the little finger on the seventh and then
+#: passed the thumb under *it*, which no hand does. Black-key roots print no
+#: fingering at all and say so in the catalog (`fingeringVerified`), the
+#: policy `make_blues_scale` set: better none than one this file invented.
+SEVENTH_ARPEGGIO_FINGERING_RH = [1, 2, 3, 4]
+SEVENTH_ARPEGGIO_FINGERING_LH = [5, 4, 3, 2]
+
+
+def is_black_root(name: str) -> bool:
+    """Whether a root name is a black key, spelled either way."""
+    return pitch.Pitch(name + "4").pitchClass in BLACK_PITCH_CLASSES
 
 # --------------------------------------------------------------------------------------
 # levels
@@ -702,9 +725,12 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
     rh_p = run(fits_on_the_keyboard(root, octaves, 4))
     lh_p = run(fits_on_the_keyboard(root, octaves, 2))
     n_up = 3 * octaves + 1
-    rh_f = (ARPEGGIO_FINGERING_RH[:3] * octaves + [5])
+    black = is_black_root(root)
+    rh_table = ARPEGGIO_FINGERING_RH_BLACK if black else ARPEGGIO_FINGERING_RH
+    lh_table = ARPEGGIO_FINGERING_LH_BLACK if black else ARPEGGIO_FINGERING_LH
+    rh_f = rh_table[:3] * octaves + [rh_table[3]]
     rh_f = rh_f + list(reversed(rh_f))[1:]
-    lh_f = (ARPEGGIO_FINGERING_LH[:3] * octaves + [1])
+    lh_f = lh_table[:3] * octaves + [lh_table[3]]
     lh_f = lh_f + list(reversed(lh_f))[1:]
     assert len(rh_f) == len(rh_p) == 2 * n_up - 1
     if hands in ("both", "right"):
@@ -718,7 +744,8 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
     finalize(sc)
     item_id = f"exercise.arpeggio.{key_slug(root)}-{quality}.{octaves}oct.{hands}"
     entry = catalog_entry(item_id, title, level, ["arpeggio", f"{note_name(root)}-{quality}", f"hands:{hands}"], hands, bpm,
-                          "arpeggio", {"key": root, "quality": quality, "octaves": octaves}, f"scores/generated/{item_id}.mxl")
+                          "arpeggio", {"key": root, "quality": quality, "octaves": octaves, "fingeringVerified": True},
+                          f"scores/generated/{item_id}.mxl")
     return sc, entry
 
 
@@ -869,23 +896,30 @@ def make_hanon(
 BLACK_PITCH_CLASSES = {1, 3, 6, 8, 10}
 
 
-def chromatic_finger(midi: int, first: bool) -> int:
+def chromatic_finger(midi: int, first: bool, hand: str = "right") -> int:
     """
     The modern chromatic fingering: 3 on every black key, 1 on every white,
-    and 2 on the white that follows a white (F after E, C after B).
+    and 2 on one white of each adjacent white pair.
 
-    Both hands use this shape. It is *not* what Clementi Op. 42 prints — his
-    1801 chromatic runs 1-2-3-4 across the keys — and that is a deliberate
-    departure from the chart the scale fingerings were verified against: the
-    1-3 shape is what every modern method teaches and what the learner will
-    see everywhere else.
+    Which one is the hand. The thumb is the *lower* finger of the right hand
+    and the *upper* finger of the left, so the right hand puts 2 on the upper
+    white of the pair — F and C — and the left on the lower, E and B. Written
+    out, the left hand ascending from C is 1 3 1 3 2 1 3 1 3 1 3 2 1. One
+    rule was used for both hands, so the left was told E1 F2 going up: the
+    second finger climbing over the thumb by a semitone, which is not a
+    fingering anybody plays. Twelve items.
+
+    It is *not* what Clementi Op. 42 prints — his 1801 chromatic runs 1-2-3-4
+    across the keys — and that is a deliberate departure from the chart the
+    scale fingerings were verified against: the 1-3 shape is what every
+    modern method teaches and what the learner will see everywhere else.
     """
     pitch_class = midi % 12
     if pitch_class in BLACK_PITCH_CLASSES:
         return 3
-    if pitch_class == 5:  # F, which follows E
-        return 2
-    if pitch_class == 0:  # C, which follows B — except at the very start
+    seconds = (4, 11) if hand == "left" else (5, 0)
+    if pitch_class in seconds:
+        # Except at the very start, where the thumb begins the run.
         return 1 if first else 2
     return 1
 
@@ -911,15 +945,15 @@ def make_chromatic(
         up = [first.transpose(i) for i in range(12 * octaves + 1)]
         return up + list(reversed(up))[1:]
 
-    def fingers_for(pitches: list[pitch.Pitch]) -> list[int]:
-        return [chromatic_finger(int(p.midi), index == 0) for index, p in enumerate(pitches)]
+    def fingers_for(pitches: list[pitch.Pitch], hand: str) -> list[int]:
+        return [chromatic_finger(int(p.midi), index == 0, hand) for index, p in enumerate(pitches)]
 
-    for part_, base in ((rh, f"{start}4"), (lh, f"{start}3")):
+    for part_, base, hand in ((rh, f"{start}4", "right"), (lh, f"{start}3", "left")):
         if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
             part_.append(note.Rest(quarterLength=0.5 * (2 * (12 * octaves + 1) - 1)))
             continue
         pitches = run(base)
-        add_notes(part_, pitches, fingers_for(pitches), 0.5)
+        add_notes(part_, pitches, fingers_for(pitches, hand), 0.5)
     finalize(sc)
     item_id = f"exercise.chromatic.{key_slug(start)}.{octaves}oct.{hands}"
     entry = catalog_entry(
@@ -981,10 +1015,13 @@ def make_seventh_arpeggio(
         return up + list(reversed(up))[1:]
 
     rh_pitches, lh_pitches = run(pitch.Pitch(root + "4")), run(pitch.Pitch(root + "3"))
-    rh_fingers = [1, 2, 3, 5] * octaves + [1]
-    rh_fingers = rh_fingers + list(reversed(rh_fingers))[1:]
-    lh_fingers = [5, 3, 2, 1] * octaves + [5]
-    lh_fingers = lh_fingers + list(reversed(lh_fingers))[1:]
+    fingered = not is_black_root(root)
+    rh_fingers = lh_fingers = None
+    if fingered:
+        rh_fingers = SEVENTH_ARPEGGIO_FINGERING_RH * octaves + [5]
+        rh_fingers = rh_fingers + list(reversed(rh_fingers))[1:]
+        lh_fingers = SEVENTH_ARPEGGIO_FINGERING_LH * octaves + [1]
+        lh_fingers = lh_fingers + list(reversed(lh_fingers))[1:]
 
     for part_, pitches, fingers in ((rh, rh_pitches, rh_fingers), (lh, lh_pitches, lh_fingers)):
         if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
@@ -995,7 +1032,8 @@ def make_seventh_arpeggio(
     item_id = f"exercise.arpeggio7.{key_slug(root)}-{quality}.{octaves}oct.{hands}"
     entry = catalog_entry(
         item_id, title, level, ["arpeggio", "seventh-chord", f"{note_name(root)}-{label}", f"hands:{hands}"],
-        hands, bpm, "arpeggio", {"key": root, "quality": quality, "octaves": octaves},
+        hands, bpm, "arpeggio",
+        {"key": root, "quality": quality, "octaves": octaves, "fingeringVerified": fingered},
         f"scores/generated/{item_id}.mxl",
     )
     return sc, entry
@@ -1231,8 +1269,11 @@ def make_broken_seventh(
     # of that in the left. `confirm_fingering` cannot see this one, because it
     # is a melodic line rather than a chord, and a melodic rule would have to
     # allow the thumb-under that every scale depends on.
-    rh_fingers = [1, 2, 3, 4, 5, 4, 3, 2]
-    lh_fingers = [5, 4, 3, 2, 1, 2, 3, 4]
+    # Only from a white root: from a black one the thumb would take the
+    # root, and the honest shape for those is not in any chart this file has.
+    fingered = not is_black_root(root)
+    rh_fingers = [1, 2, 3, 4, 5, 4, 3, 2] if fingered else None
+    lh_fingers = [5, 4, 3, 2, 1, 2, 3, 4] if fingered else None
     if hands in ("both", "right"):
         add_notes(rh, figure(pitch.Pitch(root + "3")), rh_fingers, 0.25)
     else:
@@ -2806,6 +2847,33 @@ TWELVE_BAR = ((0, "7"), (0, "7"), (0, "7"), (0, "7"),
               (7, "7"), (5, "7"), (0, "7"), (7, "7"))
 
 
+def walking_bass_fingers(line: list[pitch.Pitch]) -> list[int]:
+    """
+    Fingers for one bar of root–third–fifth–approach in the left hand.
+
+    Root, third and fifth are 5-3-1: the hand sits over the chord. The
+    approach note is a semitone under the *next* root and lands wherever
+    that is — under this bar's root more often than not (C E G then B, F A C
+    then B) — so its finger follows its place in the hand rather than a
+    fixed fourth entry. `[5, 3, 2, 1]` gave the approach the thumb, which put
+    finger 1 below finger 2 on every bar whose next root was lower: a left
+    hand crossing itself, sixteen items, on the rungs that introduce the
+    line. Melodic, so `confirm_fingering` never saw it.
+    """
+    root, third, fifth, approach = line
+    if approach.ps >= fifth.ps:
+        last = 1
+    elif approach.ps == third.ps:
+        last = 3
+    elif approach.ps > third.ps:
+        last = 2
+    elif approach.ps > root.ps:
+        last = 4
+    else:
+        last = 5
+    return [5, 3, 1, last]
+
+
 def make_walking_bass(
     tonic: str = "C", form: str = "blues", tier: str = "standard",
     bpm: int | None = None,
@@ -2847,7 +2915,7 @@ def make_walking_bass(
         # like it was going there all along.
         approach = _readable(next_root.transpose(interval.Interval("-m2")))
         line = [root, up(root, third), up(root, 7), approach]
-        add_notes(lh, line, [5, 3, 2, 1], 1.0)
+        add_notes(lh, line, walking_bass_fingers(line), 1.0)
         # The right hand comps the shell so the line has something to walk under —
         # except at the intro tier, where the line is the whole exercise.
         if tier == "intro":
@@ -3538,10 +3606,17 @@ def write_tumbao(lh: stream.PartStaff, tonic: str, plan: list[tuple[int, str]]) 
         # The chord the *next* bar turns into, which is the note beat four takes.
         nxt_degree, _nxt = plan[(index + 1) % len(plan)]
         nxt_root = pitch.Pitch(_transpose_name(tonic, nxt_degree) + "2")
-        lh.append(note.Rest(quarterLength=TUMBAO_OFFSETS[0]))
+        # The downbeat is empty only in the first bar: from the second on it
+        # is covered by the note beat four started, held through the barline
+        # to the next figure — the anticipation *is* the tumbao, and a note
+        # that stopped at the barline left the next bar opening with the
+        # rest the style is built on not having. `finalize` ties it across.
+        if index == 0:
+            lh.append(note.Rest(quarterLength=TUMBAO_OFFSETS[0]))
         add_notes(lh, [up(root, 7)], [2], TUMBAO_OFFSETS[1] - TUMBAO_OFFSETS[0] - 0.5)
         lh.append(note.Rest(quarterLength=0.5))
-        add_notes(lh, [nxt_root], [5], 1.0)
+        last = index == len(plan) - 1
+        add_notes(lh, [nxt_root], [5], 1.0 if last else 1.0 + TUMBAO_OFFSETS[0])
 
 
 def write_montuno(rh: stream.PartStaff, tonic: str, offsets: list[float],
@@ -3820,6 +3895,18 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
     for seed in (range(1, 3) if quick else range(1, 9)):
         for hands in ("right", "left"):
             items.append(make_interval_reading(seed, hands))
+
+    # Arpeggios hands separately, in the keys unit 4.3 names: "arpeggios
+    # hands separately, two octaves, in C, G, F, A minor, D minor and E
+    # minor". `arpeggio_level` has rated them 4.3 since the replan and nothing
+    # ever asked for one, so the rung offered hands-together arpeggios at 5.1
+    # and the lesson described exercises that did not exist.
+    for k in beginner_keys[:3]:
+        for hands in ("right", "left"):
+            items.append(make_arpeggio(k, "major", hands, 2))
+    for k in (["A"] if quick else ["A", "D", "E"]):
+        for hands in ("right", "left"):
+            items.append(make_arpeggio(k, "minor", hands, 2))
 
     for k in (["C"] if quick else list(MAJOR_KEYS)):
         for voicing in ("root", "voice-led"):

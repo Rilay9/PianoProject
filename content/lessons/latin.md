@@ -2,7 +2,6 @@
 title: "Latin — clave, tumbao and montuno"
 stage: 5
 unit: "latin.5.1"
-concepts: [clave, tumbao, montuno, syncopation, two-three-and-three-two]
 videos:
   - label: "How to play a Salsa montuno (tumbao) on the piano - tutorial #1"
     url: "https://www.youtube.com/watch?v=wC3Iq5ImTXE"
@@ -37,12 +36,14 @@ order: clap the clave until it is automatic; play the tumbao alone while you cou
 the clave out loud; then add the montuno two notes at a time. The app has a clave
 to play and read, but it cannot clap one behind you while you play something else.
 
-**Repertoire.** *La Cumparsita* (1916), the tango, in two parts — it is the one
-piece on this rung that is actually Latin, and it is worth the rung on its own.
-*Carioquinha* is a Brazilian choro, melody only, so play it with the tumbao
-underneath once the left hand is steady. *La Cucaracha*, *Cielito Lindo*, *El
-Choclo* (1903) and *Tico-Tico* (1917) are all public domain and none of them is
-here yet; import any of them and they will fit this rung.
+**Repertoire.** *La Cumparsita* (1916), the tango, in two parts, and *El Choclo*
+(1903), the other tango everybody knows. *Cielito Lindo* and *Guantanamera* for
+the clave under a tune you can sing; *Tico-Tico* (1917) for a choro at speed, and
+*Carioquinha*, another choro, melody only, so play it with the tumbao underneath
+once the left hand is steady. Then three bossa novas — *Insensatez*, *Só Danço
+Samba* and *Por Toda Minha Vida* — and *Recado Bossa Nova*, which are where the
+syncopation goes quiet and the chords do the work. *Malagueña* (1928) sits at
+the top of the rung for later. *La Cucaracha* is not in the library yet.
 
 **Common mistake.** Counting the two clave bars as two separate bars. It is one
 two-bar unit; lose that and the pattern flips.

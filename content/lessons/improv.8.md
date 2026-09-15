@@ -2,7 +2,6 @@
 title: "Improv & composition, Stage 8 — Changing the chords under a melody you did not write"
 stage: 8
 unit: "improv.8.1"
-concepts: [reharmonisation, tritone-substitution, secondary-dominants, modulation, extended-chords, turnaround]
 videos:
   - label: "Tritone Substitution: the one jazz piano trick you need to know"
     url: "https://www.youtube.com/watch?v=3z8a0Z7K6ag"

@@ -26,8 +26,11 @@ import { pressControl } from './scoreControls';
 const PHONE = { width: 342, height: 740 };
 
 const PIECES = [
-  // Two hands an octave apart: the case that failed.
-  'song.classical.chopin-nocturne-op27-1.nifc',
+  // Notes an octave apart on one step: the shape of the case that failed. The
+  // Op. 27 No. 1 nocturne it was found on left the catalog on 2026-09-15 (its
+  // Humdrum import loses notes); Op. 48 No. 1 opens on octaves and double
+  // octaves, so the rule is asked the same question from the first step.
+  'song.classical.chopin-nocturne-op48-1.nifc',
   // Two hands two octaves apart, which already worked — it must keep working.
   'song.folk.twinkle.ht',
   // One hand, dense: nothing to frame, and it must not start scrolling about.

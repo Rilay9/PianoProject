@@ -105,7 +105,11 @@
               "songOptions": [
                 "song.folk.london-bridge",
                 "song.folk.old-macdonald",
-                "song.folk.merrily-we-roll-along"
+                "song.folk.merrily-we-roll-along",
+                "song.pop.michael-row-the-boat-ashore.pdmx",
+                "song.folk.danny-boy-c-major.pdmx",
+                "song.folk.traditional-music-when-johnny-comes-marching-home.pdmx",
+                "song.folk.sakura.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -119,7 +123,7 @@
               "estimatedDays": 12,
               "levelBand": [
                 1.1,
-                2.2
+                2.5
               ],
               "finder": {
                 "skill": "playing eighth notes evenly and counting the off-beats",
@@ -175,9 +179,6 @@
                 "song.holiday.jingle-bells.g",
                 "song.folk.was-wollen-wir-trinken.pdmx",
                 "song.folk.dark-eyes.pdmx",
-                "song.folk.como-e-grande-meu-amor-por-voce.pdmx",
-                "song.folk.insensatez-how-insensitive-jobim.pdmx",
-                "song.folk.so-danco-samba.pdmx",
                 "song.folk.suo-gan-welsh-traditional-lullaby.pdmx",
                 "song.folk.de-brabanconne.pdmx",
                 "song.folk.auld-lang-syne.pdmx"
@@ -248,15 +249,7 @@
                 "song.folk.greensleeves.simple",
                 "song.folk.greensleeves",
                 "song.folk.greensleeves.chords",
-                "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
-                "song.folk.tuyo-narcos-intro-theme.pdmx",
-                "song.folk.petit-papa-noeil.pdmx",
-                "song.folk.hallelujah-easy.pdmx",
-                "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
-                "song.folk.happy-birthday-piano.pdmx",
-                "song.folk.oh-my-darling-clementine.pdmx",
-                "song.folk.the-flute-tune-soulpride-remix.pdmx",
-                "song.folk.i-remember-you.pdmx"
+                "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -397,7 +390,38 @@
                 "song.holiday.jingle-bells.rh",
                 "song.holiday.jingle-bells.ht",
                 "song.holiday.jingle-bells.g",
-                "song.holiday.carol-of-the-bells.easy"
+                "song.holiday.carol-of-the-bells.easy",
+                "song.pop.misc-christmas-silent-night.pdmx",
+                "song.classical.1818-franz-xaver-gruber-silent-night.pdmx",
+                "song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx",
+                "song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx",
+                "song.folk.deck-the-halls.pdmx",
+                "song.classical.away-in-a-manger.pdmx",
+                "song.pop.misc-christmas-traditional-music-first-noel.pdmx",
+                "song.pop.misc-christmas-good-king-wenceslas.pdmx",
+                "song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx",
+                "song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx",
+                "song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx",
+                "song.folk.we-wish-you-a-merry-christmas.pdmx",
+                "song.pop.misc-christmas-o-christmas-tree.pdmx",
+                "song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx",
+                "song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx",
+                "song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx",
+                "song.pop.misc-christmas-silent-night-trombone-duet.pdmx",
+                "song.pop.misc-christmas-joy-to-the-world.pdmx",
+                "song.pop.thomasclarke11-joy-to-the-world.pdmx",
+                "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx",
+                "song.pop.misc-christmas-we-wish-you-a-merry-christmas.pdmx",
+                "song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx",
+                "song.pop.misc-christmas-mary-did-you-know.pdmx",
+                "song.classical.ondrus-silent-night.pdmx",
+                "song.folk.petit-papa-noeil.pdmx",
+                "song.holiday.carol-of-the-bells",
+                "song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx",
+                "song.folk.o-holy-night-piano-solo.pdmx",
+                "song.folk.happy-xmas.pdmx",
+                "song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx",
+                "song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -408,7 +432,7 @@
               "estimatedDays": 14,
               "levelBand": [
                 1.2,
-                5.1
+                7.9
               ],
               "finder": {
                 "skill": "playing carols from chord symbols and moving them into a singable key",

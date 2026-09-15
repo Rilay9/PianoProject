@@ -41,13 +41,14 @@ const PIECES: { id: string; why: string; maxSteps?: number; layout?: 'scroll' }[
   { id: 'song.classical.chopin-scherzo-2.nifc', why: 'the longest in the library, 780 bars', maxSteps: 60 },
   { id: 'song.classical.satie-gnossienne-1', why: 'words written under the notes, which the score screen does not draw' },
   {
-    // The piece the owner photographed loading compressed, and the one the
-    // piece measurement is wrong about: its systems are genuinely tall — 307
-    // to 463 px at zoom 1.69 on a 342 px screen — so it is the case where the
+    // The dense nocturne: genuinely tall systems, so it is the case where the
     // difference between the typical system and the tallest is worth real
     // pixels. Every other piece here is four to twelve easy bars, which is
-    // exactly why none of them ever showed it.
-    id: 'song.classical.chopin-nocturne-op27-1.nifc',
+    // exactly why none of them ever showed it. This was Op. 27 No. 1, the piece
+    // the owner photographed loading compressed, until its Humdrum import was
+    // found to lose notes (2026-09-15); Op. 48 No. 1 is denser and wider in
+    // range, so the fit has more to get wrong, not less.
+    id: 'song.classical.chopin-nocturne-op48-1.nifc',
     why: 'a dense grand staff with a long title, where the fit has something to get wrong',
     maxSteps: 40,
   },

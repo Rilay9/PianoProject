@@ -2,7 +2,6 @@
 title: "A singing melody, and the shelf to aim at"
 stage: 4
 unit: "classical.4.1"
-concepts: [repertoire-collection, tone, pedalling, voicing, patience]
 videos:
   - label: "Voicing in Piano Explained: How to Bring Out Melody over Accompaniment"
     url: "https://www.youtube.com/watch?v=MUEyZfxUC6o"

@@ -2,7 +2,6 @@
 title: "Theory & ear, Stage 8 — Changing key, and hearing the moment it happens"
 stage: 8
 unit: "theory.8.1"
-concepts: [modulation, pivot-chord, harmonic-dictation, transposition, extended-chords, ear-training]
 videos:
   - label: "How to change key with a pivot chord"
     url: "https://www.youtube.com/watch?v=AqY0om_QFA0"

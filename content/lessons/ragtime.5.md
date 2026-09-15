@@ -2,7 +2,6 @@
 title: "Ragtime track, Stage 5 — the oom-pah and the syncopated right hand"
 stage: 5
 unit: "ragtime.5.1"
-concepts: [oom-pah-bass, syncopation, secondary-rag, not-fast]
 videos:
   - label: "Ragtime & Jazz Stride Piano for BEGINNERS Part 1.1, LEFT HAND | Piano Lesson Tutorial"
     url: "https://www.youtube.com/watch?v=iPuMhcommkM"
@@ -38,7 +37,7 @@ pieces; there is no development to worry about.
 Right hand alone, counting sixteenths out loud. Hands together at half tempo,
 four bars at a time. This is a style where slow practice is not optional.
 
-**Repertoire for this rung.** Nine options, and they split in two. *The
+**Repertoire for this rung.** Ten options, and they split in two. *The
 Entertainer* is here in two editions and is the only actual rag on the rung —
 the syncopation and the oom-pah at once, which is the thing being built towards.
 The other seven are the oom-pah on its own, which is the better place to start:

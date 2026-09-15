@@ -2,7 +2,6 @@
 title: "Classical track, Stage 9 — choosing one piece and staying with it"
 stage: 9
 unit: "classical.9.1"
-concepts: [large-form, virtuoso-technique, dramatic-contrast, interpretation]
 videos:
   - label: "How I Learn a New Piece at the Piano [3 Steps!]"
     url: "https://www.youtube.com/watch?v=YG9kdmY7iVI"
@@ -37,11 +36,11 @@ not for learning the notes — you know them — but for checking that the hand 
 still doing what you think it is doing. One slow, quiet run-through a day,
 listening for anything you have started to fake.
 
-**What to play.** Seventeen options, and they are all long. Four ballades, three
-scherzos, the Barcarolle, the F minor Fantaisie, the *Heroic* polonaise, the
-Polonaise-fantaisie, the "Revolutionary" étude, three sonata movements — the
-first and the funeral march from the B-flat minor, the finale of the B minor —
-and Liszt's *La campanella* if you want a piece that is purely about the hands.
+**What to play.** 32 options, and they are all long. Four ballades, the
+second scherzo, the *Heroic* polonaise, the Polonaise-fantaisie, the
+Fantaisie-impromptu, fifteen études including the "Revolutionary", five sonata
+movements — all four of the B-flat minor and the finale of the B minor — and
+Liszt's *La campanella* if you want a piece that is purely about the hands.
 
 **Common mistake.** Playing it through from the top, every day, at whatever
 tempo it happens to come out. That is performing, not practising, and it is how

@@ -2,7 +2,6 @@
 title: "Jazz, Stage 9 — Comping, walking and soloing on one tune"
 stage: 9
 unit: "jazz.9.1"
-concepts: [comping, walking-bass, stride, improvisation, playing-by-ear, secondary-dominants]
 videos:
   - label: "Intro to STRIDE PIANO (solo jazz piano)"
     url: "https://www.youtube.com/watch?v=aXuytElotSQ"

@@ -2,7 +2,6 @@
 title: "Improvisation, Stage 5 — the blues scale and writing eight bars"
 stage: 5
 unit: "improv-compose.5.1"
-concepts: [blues-scale, twelve-bar-improv, melody-writing, recording]
 videos:
   - label: "How To Improvise On Blues Scale: Piano Lesson"
     url: "https://www.youtube.com/watch?v=RJu-wptS6Ng"
@@ -10,8 +9,9 @@ videos:
 readingTime: 2
 ---
 
-**The blues scale** is the minor pentatonic with one extra note: **C E♭ F G♭ G
-B♭ C**. That G flat — the flattened fifth — is the "blue note"; used as a
+**The blues scale** is the minor pentatonic with one extra note: **C E♭ F F♯ G
+B♭ C**. That F sharp — the flattened fifth, which the app spells as a raised
+fourth for the reason the blues track gives — is the "blue note"; used as a
 passing note between F and G it is the sound of the style, and leaned on it is
 almost unbearable, which is the point.
 

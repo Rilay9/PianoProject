@@ -2,7 +2,6 @@
 title: "Technique, Stage 8 — speed, and what it costs"
 stage: 8
 unit: "technique.8.1"
-concepts: [scale, velocity, endurance]
 videos:
   - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
     url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"

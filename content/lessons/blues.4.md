@@ -2,7 +2,6 @@
 title: "Blues track, Stage 4 — the twelve-bar form and the shuffle"
 stage: 4
 unit: "blues-boogie.4.1"
-concepts: [twelve-bar-blues, dominant-7-chords, shuffle, boogie-bass, blues-scale]
 videos:
   - label: "12 BAR BLUES on Piano - Boogie Woogie Basslines Tutorial"
     url: "https://www.youtube.com/watch?v=H-PqMj7Lgc8"

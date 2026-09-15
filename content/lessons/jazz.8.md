@@ -2,7 +2,6 @@
 title: "Jazz, Stage 8 — Ninths, elevenths, thirteenths, and music that changes key"
 stage: 8
 unit: "jazz.8.1"
-concepts: [extended-chords, modulation, rootless-voicings, tritone-substitution, modes, harmonic-dictation]
 videos:
   - label: "Jazz Chord Extensions Explained: How to Find 9ths, 11ths, 13ths, b9s & #11s"
     url: "https://www.youtube.com/watch?v=8VWktDGNqmM"
@@ -31,7 +30,8 @@ the modulating dictation until you can name where the key changed rather than
 only that it did.
 
 **Repertoire for this rung.** A standard with a bridge that modulates. Most
-1920s standards do, and the bridge is where the tune stops being easy.
+1920s standards do, and the bridge is where the tune stops being easy;
+*Stardust* (1927) is the one on this rung, and it is all bridge.
 
 **Common mistake.** Playing every extension every time. An extension is a choice
 about colour; playing all of them is the same as playing none of them.

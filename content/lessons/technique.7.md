@@ -2,7 +2,6 @@
 title: "Technique, Stage 7 — double notes, octaves, and a pedal that is not a switch"
 stage: 7
 unit: "technique.7.1"
-concepts: [double-notes, scale-in-3rds, scale-in-6ths, octaves, octave-scale, broken-octaves, tremolo, forearm, "polyrhythm-2:3", "polyrhythm-3:2", half-pedal]
 videos:
   - label: "How to Play Octaves on Piano (2 Ways!) | Kate Boyd - The Piano Prof"
     url: "https://www.youtube.com/watch?v=E8q-CWA3nis"

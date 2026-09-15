@@ -2,7 +2,6 @@
 title: "Chords and pop, Stage 3 — playing from chord symbols"
 stage: 3
 unit: "chords-pop.3.1"
-concepts: [chord-symbols, I-IV-V, LH-rhythms, melody-with-chords, transposing]
 videos:
   - label: "How To Read Chord Charts (Piano Lesson)"
     url: "https://www.youtube.com/watch?v=8UNcTn435cE"
@@ -37,7 +36,7 @@ out what the IV of D is, you have stopped playing. D: D, G, A7. A: A, D, E7.
 to another key is a matter of renaming three chords. This is worth practising
 explicitly: play *When the Saints* in C, then F, then G, from the same page.
 
-**Repertoire for this rung.** Six options, in three kinds. Four carry their
+**Repertoire for this rung.** Nine options, in three kinds. Four carry their
 chord symbols above the staff and are the ones to read from: *When the Saints*
 in F, *Jingle Bells* with block chords in G, *Happy Birthday* and *Greensleeves*
 with chords. *Let It Snow* is a bare lead sheet — one line of melody, sixty-four

@@ -32,15 +32,10 @@
                 "exercise.chromatic.g.1oct.both"
               ],
               "songOptions": [
-                "song.classical.chopin-ballade-1.nifc",
                 "song.classical.chopin-ballade-2.nifc",
                 "song.classical.chopin-ballade-3.nifc",
                 "song.classical.chopin-ballade-4.nifc",
-                "song.classical.chopin-scherzo-1.nifc",
                 "song.classical.chopin-scherzo-2.nifc",
-                "song.classical.chopin-scherzo-3.nifc",
-                "song.classical.chopin-barcarolle.nifc",
-                "song.classical.chopin-fantaisie.nifc",
                 "song.classical.chopin-polonaise-op53.nifc",
                 "song.classical.chopin-polonaise-fantaisie.nifc",
                 "song.classical.chopin-etude-op10-12.nifc",
@@ -48,7 +43,27 @@
                 "song.classical.chopin-sonata-2-3.nifc",
                 "song.classical.chopin-sonata-3-4.nifc",
                 "song.classical.chopin-ballade-1",
-                "song.classical.liszt-la-campanella"
+                "song.classical.liszt-la-campanella",
+                "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx",
+                "song.classical.chopin-etude-op10-1.nifc",
+                "song.classical.chopin-etude-op10-10.nifc",
+                "song.classical.chopin-etude-op10-11.nifc",
+                "song.classical.chopin-etude-op10-2.nifc",
+                "song.classical.chopin-etude-op10-4.nifc",
+                "song.classical.chopin-etude-op10-5.nifc",
+                "song.classical.chopin-etude-op10-7.nifc",
+                "song.classical.chopin-etude-op10-9.nifc",
+                "song.classical.chopin-etude-op25-11.nifc",
+                "song.classical.chopin-etude-op25-12.nifc",
+                "song.classical.chopin-etude-op25-2.nifc",
+                "song.classical.chopin-etude-op25-4.nifc",
+                "song.classical.chopin-etude-op25-6.nifc",
+                "song.classical.chopin-etude-op25-8.nifc",
+                "song.classical.chopin-fantaisie-impromptu.nifc",
+                "song.classical.chopin-polonaise-op44.nifc",
+                "song.classical.chopin-prelude-op28-16.nifc",
+                "song.classical.chopin-sonata-2-2.nifc",
+                "song.classical.chopin-sonata-2-4.nifc"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -119,7 +134,9 @@
                 "song.jazz.the-dave-brubeck-quartet-take-five.pdmx",
                 "song.jazz.fats-waller-ain-t-misbehavin.pdmx",
                 "song.jazz.george-shearing-lullaby-of-birdland.pdmx",
-                "song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx"
+                "song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx",
+                "song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx",
+                "song.pop.after-you-ve-gone.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -133,7 +150,7 @@
               ],
               "estimatedDays": 180,
               "levelBand": [
-                6.3,
+                3.9,
                 8.4
               ],
               "finder": {
@@ -242,8 +259,6 @@
               "songOptions": [
                 "song.pop.harry-styles-falling-by-harry-styles.pdmx",
                 "song.pop.honne-location-unknown-brooklyn-session-honne.pdmx",
-                "song.pop.thomasclarke11-joy-to-the-world.pdmx",
-                "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx",
                 "song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx",
                 "song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx",
                 "song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx",

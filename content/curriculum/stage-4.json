@@ -153,7 +153,19 @@
                 "exercise.inversions.c-major.both",
                 "exercise.arpeggio.c-major.2oct.both",
                 "exercise.arpeggio.a-minor.2oct.both",
-                "exercise.arpeggio.d-minor.2oct.both"
+                "exercise.arpeggio.d-minor.2oct.both",
+                "exercise.arpeggio.c-major.2oct.right",
+                "exercise.arpeggio.c-major.2oct.left",
+                "exercise.arpeggio.g-major.2oct.right",
+                "exercise.arpeggio.g-major.2oct.left",
+                "exercise.arpeggio.f-major.2oct.right",
+                "exercise.arpeggio.f-major.2oct.left",
+                "exercise.arpeggio.a-minor.2oct.right",
+                "exercise.arpeggio.a-minor.2oct.left",
+                "exercise.arpeggio.d-minor.2oct.right",
+                "exercise.arpeggio.d-minor.2oct.left",
+                "exercise.arpeggio.e-minor.2oct.right",
+                "exercise.arpeggio.e-minor.2oct.left"
               ],
               "songOptions": [
                 "song.classical.pachelbel-canon-d.easy",
@@ -355,7 +367,10 @@
                 "song.classical.petzold-minuet-g-bwv-anh114",
                 "song.classical.beethoven-fur-elise.easy",
                 "song.classical.pachelbel-canon-d.easy",
-                "song.holiday.carol-of-the-bells.easy"
+                "song.holiday.carol-of-the-bells.easy",
+                "song.folk.uti-var-hage-swedish-traditional-song.pdmx",
+                "song.folk.auld-lang-syne-anonymous-traditional.pdmx",
+                "song.folk.nnin-katyusha.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -372,7 +387,7 @@
               "estimatedDays": 30,
               "levelBand": [
                 1.5,
-                5.1
+                5.3
               ],
               "finder": {
                 "skill": "reading a new piece straight through while shaping the phrases",
@@ -476,7 +491,20 @@
                 "song.classical.beethoven-fur-elise.easy",
                 "song.classical.beethoven-fur-elise.beginner",
                 "song.classical.beethoven-ode-to-joy.easy",
-                "song.folk.bella-ciao"
+                "song.folk.bella-ciao",
+                "song.classical.mozart-w-a-mozart-minuet-in-c-major-k1f.pdmx",
+                "song.classical.mozart-w-a-mozart-minuet-in-f-major-k5.pdmx",
+                "song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx",
+                "song.classical.bach-march-in-d-major.pdmx",
+                "song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx",
+                "song.classical.burgmuller-le-courant-limpide-the-crystal-clear-stream.pdmx",
+                "song.classical.satie-valses-distinguees-no-2-son-binocle-satie.pdmx",
+                "song.pop.sonatina-in-g.pdmx",
+                "song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx",
+                "song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx",
+                "song.classical.bach-gavotte-en-rondo-from-partita-e-major-for-violin-bach.pdmx",
+                "song.classical.czerny-a-study-in-double-notes-thirds-by-carl-czerny.pdmx",
+                "song.classical.fikrimin-ince-gulu-piyano-notlara.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -490,7 +518,7 @@
               "estimatedDays": 45,
               "levelBand": [
                 4.1,
-                4.4
+                5.8
               ],
               "finder": {
                 "skill": "playing a Grade 1 classical piece with staccato, legato and ornaments in the right places",
@@ -548,7 +576,67 @@
                 "song.classical.chopin-nocturne-op9-2.easy",
                 "song.classical.satie-erik-satie-gnossienne-n1.pdmx",
                 "song.classical.mozart-mozart-minuet-in-f-major-k2-easy.pdmx",
-                "song.classical.debussy-clair-de-lune-easy.pdmx"
+                "song.classical.debussy-clair-de-lune-easy.pdmx",
+                "song.beautiful.hungarian-sonata",
+                "song.classical.grieg-morgenstimmung.pdmx",
+                "song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx",
+                "song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx",
+                "song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx",
+                "song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx",
+                "song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx",
+                "song.classical.anonymous-romance-anonimo-romanza.pdmx",
+                "song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx",
+                "song.beautiful.g-minor-bach",
+                "song.beautiful.g-minor-bach.alt",
+                "song.beautiful.mariage-damour",
+                "song.beautiful.mariage-damour.alt",
+                "song.beautiful.mariage-damour.alt2",
+                "song.beautiful.merry-christmas-mr-lawrence",
+                "song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx",
+                "song.classical.bach-toccata-fugue-bwv565",
+                "song.classical.beethoven-moonlight-iii.alt",
+                "song.classical.beethoven-symphony-5-i-piano",
+                "song.classical.bennet-rosemary-s-waltz.pdmx",
+                "song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx",
+                "song.classical.c418-minecraft-nether.pdmx",
+                "song.classical.chopin-nocturne-20.alt",
+                "song.classical.chopin-nocturne-op9-2",
+                "song.classical.chopin-prelude-op28-4.alt",
+                "song.classical.chopin-waltz-op64-2",
+                "song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx",
+                "song.classical.crue-home-sweet-home-motley-crue.pdmx",
+                "song.classical.debussy-clair-de-lune.alt",
+                "song.classical.djawadi-light-of-the-seven.pdmx",
+                "song.classical.einaudi-questa-notte.pdmx",
+                "song.classical.elgar-pomp-and-circumstance.pdmx",
+                "song.classical.glass-dead-things.pdmx",
+                "song.classical.handel-halvorsen-passacaglia",
+                "song.classical.handel-halvorsen-passacaglia.alt",
+                "song.classical.handel-passacaglia-handel-halvorsen-piano-solo.pdmx",
+                "song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx",
+                "song.classical.hurwitz-the-armstrongs-first-man.pdmx",
+                "song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx",
+                "song.classical.mozart-k545-i.alt",
+                "song.classical.mozart-rondo-alla-turca.fingered",
+                "song.classical.mozart-twinkle-variations-k265",
+                "song.classical.offenbach-cancan-offenbach.pdmx",
+                "song.classical.palmer-days-in-the-sun.pdmx",
+                "song.classical.passacaglia-handel-halvorsen.pdmx",
+                "song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx",
+                "song.classical.radetzky-march-for-easy-piano.pdmx",
+                "song.classical.rimsky-flight-bumblebee",
+                "song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx",
+                "song.classical.sakamoto-andata.pdmx",
+                "song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx",
+                "song.classical.satie-gymnopedie-1.alt",
+                "song.classical.schubert-liszt-standchen",
+                "song.classical.spiteri-travelling.pdmx",
+                "song.classical.tchaikovsky-swan-lake-theme-tchaikovsky.pdmx",
+                "song.classical.uematsu-at-zanarkand-ffx-hd-remaster.pdmx",
+                "song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx",
+                "song.classical.vivaldi-spring-vivaldi.pdmx",
+                "song.classical.zimmer-maestro-the-holiday.pdmx",
+                "song.classical.zimmer-time-hans-zimmer-inception.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -563,7 +651,7 @@
               "estimatedDays": 60,
               "levelBand": [
                 3.5,
-                6.2
+                8.6
               ],
               "finder": {
                 "skill": "voicing a melody above a quiet accompaniment and pedalling it cleanly",
@@ -615,7 +703,13 @@
                 "song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx",
                 "song.pop.sammy-fain-and-irving-kahal-i-ll-be-seeing-you.pdmx",
                 "song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx",
-                "song.pop.koji-kondo-song-of-storms-easy.pdmx"
+                "song.pop.koji-kondo-song-of-storms-easy.pdmx",
+                "song.folk.tuyo-narcos-intro-theme.pdmx",
+                "song.folk.hallelujah-easy.pdmx",
+                "song.folk.happy-birthday-piano.pdmx",
+                "song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx",
+                "song.pop.scarborough-fair.pdmx",
+                "song.pop.misc-computer-games-coconut-mall-trombone-solo.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -629,7 +723,7 @@
               "estimatedDays": 45,
               "levelBand": [
                 3.2,
-                4.3
+                4.4
               ],
               "finder": {
                 "skill": "playing the four-chord song with inversions so the hand stops jumping",
@@ -675,7 +769,10 @@
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
                 "exercise.blues.twelve-bar-shuffle.f",
-                "exercise.blues.twelve-bar-shuffle.g"
+                "exercise.blues.twelve-bar-shuffle.g",
+                "song.pop.careless-love-blues.pdmx",
+                "song.classical.12-bar-blues.pdmx",
+                "song.classical.st-louis-blues.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -688,7 +785,7 @@
               ],
               "estimatedDays": 45,
               "levelBand": [
-                3.2,
+                2.4,
                 5.2
               ],
               "finder": {

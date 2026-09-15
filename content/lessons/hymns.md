@@ -2,12 +2,11 @@
 title: "Hymns and gospel — four-part texture and walk-ups"
 stage: 3
 unit: "hymns-gospel.3.1"
-concepts: [four-part-harmony, SATB-reading, passing-chords, walk-ups, plagal-cadence]
 videos:
   - label: "Passing Chords | Gospel Piano Tutorial for Beginners to Advanced"
     url: "https://www.youtube.com/watch?v=D78jyasHY2s"
     teacher: "PrettySimpleMusic"
-readingTime: 2
+readingTime: 3
 ---
 
 Hymn playing is the most efficient harmony training available, because every
@@ -39,11 +38,14 @@ fills the gap. The two simplest devices:
 Both are decorations on a harmony that is already correct. Get the hymn right
 first; add the passing chords afterwards.
 
-**Repertoire.** Three options. *When the Saints* in F is the one to read as four
-parts; the hands-alternating setting of the same tune is far easier and is there
-to get the melody in your ear first. *Greensleeves* with chords gives you the
-same job in a minor key. Beyond those, the hymn tunes you bring in yourself —
-a hymnal is the cheapest large book of four-part harmony there is.
+**Repertoire.** *Amazing Grace* in four parts is the one to read as SATB; *When
+the Saints* in F and its hands-alternating setting get the melody into your ear
+first. Then the hymns themselves: *Abide with Me*, *Rock of Ages*, *What a
+Friend We Have in Jesus*, *Be Thou My Vision*, *Come Thou Fount*, *Swing Low,
+Sweet Chariot*, *Joyful, Joyful, We Adore Thee*, *Jesus Loves Me*, *Holy, Holy,
+Holy*, *Just a Closer Walk with Thee* and *As the Deer*. *Greensleeves* with
+chords gives you the same job in a minor key. Beyond those, a hymnal is the
+cheapest large book of four-part harmony there is.
 
 **Common mistake.** Playing four parts at equal volume, which produces a wash.
 Balance: soprano loudest, bass next, inner voices quiet.

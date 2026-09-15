@@ -2,12 +2,11 @@
 title: "Jazz track, Stage 5 — swing, shell voicings and ii-V-I"
 stage: 5
 unit: "jazz.5.1"
-concepts: [swing-eighths, seventh-chords, shell-voicings, ii-V-I, comping]
 videos:
   - label: "Shell Voicings Explained Clearly (Beginner Jazz Piano)"
     url: "https://www.youtube.com/watch?v=_ldxtscmCpo"
     teacher: "Julian Bradley"
-readingTime: 2
+readingTime: 3
 ---
 
 Jazz needs the chord vocabulary from chords-and-pop Stage 5 first. Given that,
@@ -40,10 +39,12 @@ beat. Start with a chord on beat 1 and the "and" of 2, and leave the rest alone.
 
 **Repertoire for this rung.** The twelve-bar blues shuffles in C and F, which
 are the shortest form you can comp shells through; *Greensleeves* in 6/8 for the
-swung feel; and *Fly Me to the Moon*, which is a chain of ii-V-Is and almost
-nothing else. If you want a standard of the period to import yourself, *Ja-Da*
-(1918), *After You've Gone* (1918), *Avalon* (1920), *Bill Bailey* (1902) and
-*Some of These Days* (1910) are all short forms and all US public domain.
+swung feel; *Fly Me to the Moon*, which is a chain of ii-V-Is and almost
+nothing else; and the standards of the period, all public domain and all in the
+library as lead sheets: *Avalon* (1920), *Bill Bailey* (1902), *Some of These
+Days* (1910), *Whispering* (1920), *Margie* (1920), *Bye Bye Blackbird* (1926),
+*Limehouse Blues* (1922), *Alexander's Ragtime Band* (1911) and the *St. Louis
+Blues* (1914). *Ja-Da* is not among them; if you find one, import it.
 
 **Common mistake.** Playing four-note rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tune moves fast.

@@ -2,7 +2,6 @@
 title: "Theory and ear, Stage 3 — intervals, key signatures and I-IV-V by ear"
 stage: 3
 unit: "theory-ear.3.1"
-concepts: [intervals, key-signatures, rhythm-dictation, chord-identification]
 videos:
   - label: "Identifying Intervals (Perfect, Major, Minor, Augmented, Diminished) - Music Theory for Beginners"
     url: "https://www.youtube.com/watch?v=Hwx7KSEi4z8"

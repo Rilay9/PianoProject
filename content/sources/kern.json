@@ -1160,7 +1160,8 @@
         "song.ragtime.joplin-school-of-ragtime",
         "song.ragtime.joplin-something-doing",
         "song.ragtime.joplin-stoptime-rag"
-      ]
+      ],
+      "exclude": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj). Replaced by song.classical.joplin-search-light-rag.pdmx."
     },
     "joplin/kern/something.krn": {
       "id": "song.ragtime.joplin-something-doing",
@@ -1355,7 +1356,8 @@
       "works": {
         "001": {
           "level": 7.4,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj). Replaced by song.classical.chopin-prelude-no-1-in-c-major-op-28.pdmx."
         },
         "002": {
           "level": 6.6,
@@ -1408,11 +1410,13 @@
         },
         "009": {
           "level": 7.0,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "010": {
           "level": 7.8,
-          "abrsmGradeApprox": 7
+          "abrsmGradeApprox": 7,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "011": {
           "level": 7.0,
@@ -1420,11 +1424,13 @@
         },
         "012": {
           "level": 8.4,
-          "abrsmGradeApprox": 8
+          "abrsmGradeApprox": 8,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "013": {
           "level": 7.6,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj). Replaced by song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx."
         },
         "014": {
           "level": 8.2,
@@ -1432,7 +1438,8 @@
         },
         "015": {
           "level": 7.4,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj). Replaced by song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx."
         },
         "016": {
           "level": 9.0,
@@ -1492,7 +1499,12 @@
         "pedalling"
       ],
       "level": 7.8,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -1543,11 +1555,13 @@
       "works": {
         "001": {
           "level": 7.8,
-          "abrsmGradeApprox": 7
+          "abrsmGradeApprox": 7,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "002": {
           "level": 8.2,
-          "abrsmGradeApprox": 7
+          "abrsmGradeApprox": 7,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj). Replaced by song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx."
         },
         "003": {
           "level": 7.4,
@@ -1575,7 +1589,8 @@
       "works": {
         "001": {
           "level": 8.4,
-          "abrsmGradeApprox": 8
+          "abrsmGradeApprox": 8,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "002": {
           "level": 8.6,
@@ -1603,11 +1618,13 @@
       "works": {
         "001": {
           "level": 7.4,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "002": {
           "level": 7.8,
-          "abrsmGradeApprox": 7
+          "abrsmGradeApprox": 7,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -1635,7 +1652,8 @@
         },
         "002": {
           "level": 8.4,
-          "abrsmGradeApprox": 8
+          "abrsmGradeApprox": 8,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -1714,7 +1732,8 @@
       "works": {
         "001": {
           "level": 8.4,
-          "abrsmGradeApprox": 8
+          "abrsmGradeApprox": 8,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "002": {
           "skip": "OpenSheetMusicDisplay's engraver refuses it: \"Invalid note initialization object: {}\". Not the licence, not the conversion — the file converts cleanly and music21 round-trips it note for note; VexFlow will not draw it. Grace notes and beams were both ruled out. See docs/decisions/2026-09-06-p10-chopin-and-breadth.md §5."
@@ -1747,11 +1766,13 @@
           "abrsmGradeApprox": 6
         },
         "003": {
-          "level": 7.4
+          "level": 7.4,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "004": {
           "level": 6.8,
-          "abrsmGradeApprox": 5
+          "abrsmGradeApprox": 5,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "005": {
           "level": 6.0,
@@ -1817,6 +1838,9 @@
         "004": {
           "level": 7.6,
           "abrsmGradeApprox": 6
+        },
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -1889,11 +1913,15 @@
       "works": {
         "002": {
           "level": 7.2,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "004": {
           "level": 7.8,
           "abrsmGradeApprox": 7
+        },
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -1916,7 +1944,11 @@
       "works": {
         "002": {
           "level": 7.0,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -1935,7 +1967,12 @@
         "chromatic-harmony"
       ],
       "level": 7.8,
-      "abrsmGradeApprox": 6
+      "abrsmGradeApprox": 6,
+      "works": {
+        "003": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -1952,7 +1989,15 @@
         "chromatic-harmony"
       ],
       "level": 8.0,
-      "abrsmGradeApprox": 6
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "003": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -1969,7 +2014,12 @@
         "chromatic-harmony"
       ],
       "level": 8.0,
-      "abrsmGradeApprox": 6
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -1991,6 +2041,9 @@
         "003": {
           "level": 7.2,
           "abrsmGradeApprox": 6
+        },
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -2013,7 +2066,8 @@
       "works": {
         "002": {
           "level": 6.6,
-          "abrsmGradeApprox": 5
+          "abrsmGradeApprox": 5,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "004": {
           "level": 7.0,
@@ -2067,7 +2121,8 @@
         "ornamented-melody"
       ],
       "level": 8.0,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2118,7 +2173,12 @@
         "ornamented-melody"
       ],
       "level": 8.6,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2147,7 +2207,8 @@
         },
         "003": {
           "level": 8.0,
-          "abrsmGradeApprox": 7
+          "abrsmGradeApprox": 7,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -2204,7 +2265,8 @@
         },
         "003": {
           "level": 7.6,
-          "abrsmGradeApprox": 6
+          "abrsmGradeApprox": 6,
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -2223,7 +2285,8 @@
         "ornamented-melody"
       ],
       "level": 7.8,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2253,7 +2316,8 @@
             "voicing-melody",
             "double-notes",
             "rubato"
-          ]
+          ],
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         },
         "005": {
           "level": 9.2,
@@ -2266,7 +2330,8 @@
             "cantabile",
             "chromatic-harmony",
             "voicing-melody"
-          ]
+          ],
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj). Replaced by song.classical.chopin-etude-in-e-flat-minor-op-10-no-6.pdmx."
         },
         "009": {
           "level": 9.0,
@@ -2275,6 +2340,9 @@
         "012": {
           "level": 9.4,
           "abrsmGradeApprox": 8
+        },
+        "008": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -2322,6 +2390,15 @@
         "009": {
           "level": 8.8,
           "abrsmGradeApprox": 8
+        },
+        "003": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "005": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "010": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
       }
     },
@@ -2340,7 +2417,12 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2357,7 +2439,8 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2374,7 +2457,8 @@
         "rubato"
       ],
       "level": 9.2,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2391,7 +2475,8 @@
         "rubato"
       ],
       "level": 9.6,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2408,7 +2493,12 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2425,7 +2515,8 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2442,7 +2533,12 @@
         "rubato"
       ],
       "level": 9.5,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2459,7 +2555,12 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2476,7 +2577,21 @@
         "dramatic-contrast"
       ],
       "level": 8.6,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "002": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "003": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "004": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2523,7 +2638,18 @@
         "dramatic-contrast"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "002": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        },
+        "003": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2540,7 +2666,8 @@
         "ornamented-melody"
       ],
       "level": 8.2,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2557,7 +2684,8 @@
         "ornamented-melody"
       ],
       "level": 8.4,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2574,7 +2702,8 @@
         "ornamented-melody"
       ],
       "level": 8.8,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2590,7 +2719,8 @@
         "ornamented-melody"
       ],
       "level": 8.4,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2627,7 +2757,8 @@
         "dramatic-contrast"
       ],
       "level": 8.6,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2688,7 +2819,12 @@
         "rubato"
       ],
       "level": 9.0,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2705,7 +2841,8 @@
         "rubato"
       ],
       "level": 9.0,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2721,7 +2858,8 @@
         "cross-rhythm"
       ],
       "level": 8.8,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2760,7 +2898,12 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2777,7 +2920,8 @@
         "pedalling"
       ],
       "level": 8.8,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2794,7 +2938,12 @@
         "rubato"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2811,7 +2960,8 @@
         "rubato"
       ],
       "level": 9.6,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2850,7 +3000,8 @@
         "dramatic-contrast"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2867,7 +3018,8 @@
         "dramatic-contrast"
       ],
       "level": 9.4,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2884,7 +3036,8 @@
         "dramatic-contrast"
       ],
       "level": 8.4,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2901,7 +3054,8 @@
         "dramatic-contrast"
       ],
       "level": 7.6,
-      "abrsmGradeApprox": 6
+      "abrsmGradeApprox": 6,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2918,7 +3072,8 @@
         "dramatic-contrast"
       ],
       "level": 8.2,
-      "abrsmGradeApprox": 7
+      "abrsmGradeApprox": 7,
+      "works": {}
     },
     {
       "repo": "chopin-first-editions",
@@ -2934,7 +3089,12 @@
         "voicing-melody"
       ],
       "level": 7.4,
-      "abrsmGradeApprox": 6
+      "abrsmGradeApprox": 6,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",
@@ -2951,7 +3111,12 @@
         "dramatic-contrast"
       ],
       "level": 8.8,
-      "abrsmGradeApprox": 8
+      "abrsmGradeApprox": 8,
+      "works": {
+        "001": {
+          "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
+        }
+      }
     },
     {
       "repo": "chopin-first-editions",

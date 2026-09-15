@@ -2,7 +2,6 @@
 title: "Blues, Stage 9 — Improvising over the form, and making it yours"
 stage: 9
 unit: "blues.9.1"
-concepts: [improvisation, twelve-bar, call-response, boogie, stride, playing-by-ear]
 videos:
   - label: "8 Easy Blues Licks for Beginners (Simple Piano Tutorial)"
     url: "https://www.youtube.com/watch?v=g_S5CMWyovM"

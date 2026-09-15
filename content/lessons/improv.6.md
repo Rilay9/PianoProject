@@ -2,7 +2,6 @@
 title: "Improv & composition, Stage 6 — Modes, guide tones, and playing over a progression"
 stage: 6
 unit: "improv.6.1"
-concepts: [improvisation, modes, ii-V-I, guide-tones, comping, chord-scale]
 videos:
   - label: "Guide Tones: Start Here to Play Jazz Piano Chords"
     url: "https://www.youtube.com/watch?v=XJ42wPHMuK0"

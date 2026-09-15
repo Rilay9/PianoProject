@@ -2,7 +2,6 @@
 title: "Theory & ear, Stage 9 — From a phrase to a form"
 stage: 9
 unit: "theory.9.1"
-concepts: [ear-training, playing-by-ear, form, harmonic-dictation, modulation, sight-reading]
 videos:
   - label: "How to Transcribe Songs by Ear on Piano for Beginners"
     url: "https://www.youtube.com/watch?v=5rNStzsnR_M"

@@ -2,7 +2,6 @@
 title: "Chords & pop, Stage 6 — I–V–vi–IV everywhere, and the bass that walks under it"
 stage: 6
 unit: "chords-pop.6.1"
-concepts: [four-chord-loop, voice-leading, slash-chord, roman-numerals, inversions, transposition]
 videos:
   - label: "Easy slash chords tutorial on the piano!"
     url: "https://www.youtube.com/watch?v=cQY7iOkQj-Y"

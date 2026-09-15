@@ -2,7 +2,6 @@
 title: "Jazz, Stage 7 — Rootless voicings, quartal colour, and the tritone substitution"
 stage: 7
 unit: "jazz.7.1"
-concepts: [rootless-voicings, quartal, tritone-substitution, stride, chord-scale, extended-chords, voicing]
 videos:
   - label: "Rootless Voicings for Jazz Piano – Sound Pro Instantly"
     url: "https://www.youtube.com/watch?v=-Q0413UQjrs"
@@ -40,8 +39,9 @@ stride, and it is the leap you will miss.
 progression with the tritone substitution; a quartal voicing moved through three
 roots without renaming it each time.
 
-**Repertoire for this rung.** Import a standard from 1920 or earlier and
-reharmonise its dominants with the substitution. *Avalon* takes it well.
+**Repertoire for this rung.** Take a standard from 1920 or earlier and
+reharmonise its dominants with the substitution. *Avalon* takes it well, and
+*After You've Gone* and *Tiger Rag* are here for the same job.
 
 **Common mistake.** Reaching for rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tempo goes up.

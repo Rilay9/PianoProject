@@ -2,7 +2,6 @@
 title: "Chords and pop, Stage 5 — seventh chords and accompaniment textures"
 stage: 5
 unit: "chords-pop.5.1"
-concepts: [maj7, min7, dom7, sus2, sus4, add9, broken-chord-accompaniment, lead-sheets]
 videos:
   - label: "The 3 Essential 7th Chords Explained on Piano: Major 7, Minor 7 & Dominant 7 (Step-by-Step)"
     url: "https://www.youtube.com/watch?v=Ku-kFUSMWw4"

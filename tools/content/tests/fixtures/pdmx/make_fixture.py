@@ -137,7 +137,7 @@ ROWS: list[tuple[str, str | None, dict, str]] = [
     ("QmFixtureNotDeduplicated", "good",
      {"composer_name": "Traditional", "title": "A duplicate upload",
       "subset:deduplicated": "False"},
-     "GATE 3: not the deduplicated copy"),
+     "not a gate since 2026-09-15: PDMX's own dedup flag, carried as a label"),
     ("QmFixtureDraft", "good",
      {"composer_name": "Traditional", "title": "Work in progress", "is_draft": "True"},
      "GATE 4: a draft"),

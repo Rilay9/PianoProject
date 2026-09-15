@@ -2,7 +2,6 @@
 title: "Jam with a friend — playing with a guitarist"
 stage: 4
 unit: "jam.4.1"
-concepts: [head-and-chorus, counting-in, guitar-keys, comping, trading-fours, form-tracker]
 videos:
   - label: "Jazz Piano Comping Made Simple for Absolute Beginners"
     url: "https://www.youtube.com/watch?v=Dx1W77_mdpI"

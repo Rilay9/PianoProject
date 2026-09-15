@@ -2,7 +2,6 @@
 title: Chunking, and the loop
 stage: 1
 unit: "practice.1.1"
-concepts: [chunking, looping, slow-practice]
 readingTime: 2
 ---
 

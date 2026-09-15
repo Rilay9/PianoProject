@@ -36,7 +36,7 @@ const SIZES = [
 const PIECES = [
   'song.classical.satie-gnossienne-1',
   'song.classical.chopin-scherzo-2.nifc',
-  'song.classical.chopin-nocturne-op27-1.nifc',
+  'song.classical.chopin-nocturne-op48-1.nifc',
   'song.classical.petzold-minuet-g-bwv-anh114',
   'song.classical.ode-to-joy.full',
   'song.folk.greensleeves.68',

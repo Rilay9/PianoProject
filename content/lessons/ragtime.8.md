@@ -2,7 +2,6 @@
 title: "Ragtime track, Stage 8 — the late rags, and where ragtime was going"
 stage: 8
 unit: "ragtime.8.1"
-concepts: [syncopation, secondary-rag, stride-bass, chromatic-harmony, not-fast]
 videos:
   - label: "Ragtime Piano CRASH COURSE - Intermediate/Advanced! Rag Rolls, Stride Bass, & more w/ Jonny May"
     url: "https://www.youtube.com/watch?v=XEh613qjnXg"
@@ -36,20 +35,19 @@ you cannot keep time without hearing yourself.
 more happening per bar. If the syncopation is not audible as syncopation, the
 tempo is wrong.
 
-**What to play.** Twelve options. The late ones first: *Pine Apple*,
+**What to play.** Thirteen options. The late ones first: *Pine Apple*,
 *Magnetic*, *Gladiolus*, *The Cascades*, *Scott Joplin's New Rag*, *Stoptime*,
 *Wall Street Rag*, and *Reflection Rag*, published in 1917, the year he died.
 Then four earlier and lighter ones to sit beside them — *A Breeze from Alabama*,
 *Country Club*, *Eugenia* and *Felicity Rag* — which are worth playing straight
 after a late rag to hear how far the writing moved.
 
-**What is missing, and why.** Three more pieces belong on this rung —
-Joplin's *Euphonic Sounds*, James Scott's *Frog Legs Rag* and Joseph Lamb's
-*Ragtime Nightingale*. None of them is in the public-domain Joplin edition this
-library was built from: it holds 47 rags and *Euphonic Sounds* is not among
-them, and Scott and Lamb were not Joplin. They are on the list to find
-elsewhere; until then this rung is Joplin only, and the twelve above are enough
-for a year.
+**Not only Joplin.** James Scott's *Frog Legs Rag* (1906) is here from the
+archive — the other great rag of the Sedalia school, and a good test of whether
+the habits above transfer to a hand that is not Joplin's. Two more belong on
+this rung and are still missing: Joplin's *Euphonic Sounds*, which is not in the
+public-domain edition this library was built from, and Joseph Lamb's *Ragtime
+Nightingale*. The thirteen here are enough for a year.
 
 **Common mistake.** Treating these as harder versions of *The Entertainer*. They
 are not — they are later music, and the difficulty is in hearing the harmony,

@@ -2,7 +2,6 @@
 title: "Improvisation, Stage 3 — playing over a loop"
 stage: 3
 unit: "improv-compose.3.1"
-concepts: [improvisation, I-IV-V-loop, phrasing, motif]
 videos:
   - label: "Beginners, Start Here to Improvise Piano"
     url: "https://www.youtube.com/watch?v=YTYpGUSBBc8"

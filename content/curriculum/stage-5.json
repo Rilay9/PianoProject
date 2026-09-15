@@ -36,10 +36,31 @@
                 "song.classical.schubert-ave-maria",
                 "song.classical.debussy-clair-de-lune-beginner-version.pdmx",
                 "song.classical.chopin-chopin-waltz-in-a-minor-piano-solo.pdmx",
-                "song.classical.oh-canada.pdmx",
-                "song.beautiful.hungarian-sonata",
                 "song.classical.bach-aria-notebook-anna-magdalena-bach.pdmx",
-                "song.classical.handel-georg-friedrich-handel-sarabande.pdmx"
+                "song.classical.handel-georg-friedrich-handel-sarabande.pdmx",
+                "song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx",
+                "song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx",
+                "song.pop.clementi-opus-36-no-1-first-movement.pdmx",
+                "song.classical.beethoven-sonatina-in-g-major-ahn-5.pdmx",
+                "song.classical.beethoven-ludwig-van-beethoven-sonatina.pdmx",
+                "song.pop.sonatina-in-g.pdmx",
+                "song.classical.kuhlau-kuhlau-sonatina-op-20-nr-1-c-major-allegro.pdmx",
+                "song.classical.diabelli-diabelli-sonatina-in-f-major-op-168-no-1-1st-movement.pdmx",
+                "song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx",
+                "song.classical.schumann-schumann-album-for-the-young-op-68-no-6-the-poor-orphan-child.pdmx",
+                "song.classical.schumann-schumann-album-for-the-young-op-68-no-11-sicilienne.pdmx",
+                "song.classical.schumann-schumann-album-for-the-young-op-68-no-18-the-little-reaper-s-song.pdmx",
+                "song.folk.old-french-song.pdmx",
+                "song.classical.tchaikovsky-march-of-the-wooden-soldiers-op-39-no5.pdmx",
+                "song.classical.schubert-deutscher-tanz-no-2-in-a-major.pdmx",
+                "song.classical.czerny-czerny-air-napolitain-santa-lucia.pdmx",
+                "song.classical.czerny-carl-czerny-waltz-op-32-no-1.pdmx",
+                "song.classical.handel-handel-g-f-menuet-hwv-434-4.pdmx",
+                "song.classical.mozart-polonaise-w-a-mozart.pdmx",
+                "song.classical.grieg-morgenstimmung.pdmx",
+                "song.classical.chopin-mazurka-op6-5.nifc",
+                "song.classical.chopin-mazurka-op7-5.nifc",
+                "song.classical.home-on-the-range-secondary-dominants.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -53,7 +74,7 @@
               "estimatedDays": 90,
               "levelBand": [
                 3.6,
-                5.2
+                6.6
               ],
               "finder": {
                 "skill": "sustaining a sonatina movement with an Alberti bass under both hands",
@@ -114,12 +135,15 @@
                 "song.folk.greensleeves.68",
                 "song.pop.misc-soundtrack-lavender-s-blue.pdmx",
                 "song.pop.misc-television-lowenzahn-thema-piano.pdmx",
-                "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx",
-                "song.pop.misc-christmas-joy-to-the-world.pdmx",
                 "song.pop.teresa-teng-anh-trang-noi-ha-long-toi-the-moon-represents-my-heart.pdmx",
                 "song.pop.toby-fox-sans-from-undertale-for-piano.pdmx",
                 "song.pop.misc-cartoons-giant-woman.pdmx",
-                "song.pop.misc-christmas-silent-night-trombone-duet.pdmx"
+                "song.folk.the-flute-tune-soulpride-remix.pdmx",
+                "song.folk.i-remember-you.pdmx",
+                "song.folk.before-you-go-lewis-capaldi.pdmx",
+                "song.folk.octobre-francis-cabrel.pdmx",
+                "song.folk.your-song-elton-john-easy-piano.pdmx",
+                "song.pop.banjo-paterson-waltzing-matilda.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -132,8 +156,8 @@
               ],
               "estimatedDays": 90,
               "levelBand": [
-                4.5,
-                5.2
+                4.3,
+                5.6
               ],
               "finder": {
                 "skill": "playing seventh chords and choosing an accompaniment texture that fits the song",
@@ -180,7 +204,10 @@
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.f",
                 "exercise.blues.twelve-bar-shuffle.g",
-                "exercise.blues.twelve-bar-shuffle.c"
+                "exercise.blues.twelve-bar-shuffle.c",
+                "song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx",
+                "song.pop.the-memphis-blues.pdmx",
+                "song.classical.royal-garden-blues.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -243,7 +270,17 @@
                 "exercise.blues.twelve-bar-shuffle.c",
                 "song.folk.greensleeves.68",
                 "song.jazz.bart-howard-fly-me-to-the-moon.pdmx",
-                "song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx"
+                "song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx",
+                "song.pop.avalon.pdmx",
+                "song.pop.whispering.pdmx",
+                "song.pop.bill-bailey.pdmx",
+                "song.pop.ray-henderson-bye-bye-blackbird.pdmx",
+                "song.pop.margie.pdmx",
+                "song.pop.sophie-tucker-some-of-these-days.pdmx",
+                "song.classical.alexander-s-ragtime-band.pdmx",
+                "song.jazz.django-reinhardt-limehouse-blues.pdmx",
+                "song.classical.st-louis-blues.pdmx",
+                "song.classical.foster-oh-susanna-simple-lead-sheet.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -256,7 +293,7 @@
               ],
               "estimatedDays": 90,
               "levelBand": [
-                3.4,
+                2.7,
                 5.2
               ],
               "finder": {
@@ -314,7 +351,8 @@
                 "song.ragtime.joplin-crush-collision-march",
                 "song.ragtime.joplin-harmony-club-waltz",
                 "song.ragtime.joplin-binks-waltz",
-                "song.ragtime.joplin-rose-bud-march"
+                "song.ragtime.joplin-rose-bud-march",
+                "song.pop.12th-street-rag.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -510,7 +548,18 @@
               "songOptions": [
                 "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
                 "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx",
-                "song.folk.carioquinha.pdmx"
+                "song.folk.carioquinha.pdmx",
+                "song.folk.exercise-cielito-lindo.pdmx",
+                "song.pop.guantanamera.pdmx",
+                "song.classical.el-choclo-piano.pdmx",
+                "song.pop.misc-tunes-tico-tico-no-fub-a.pdmx",
+                "song.pop.marr11317-recado-bossa-nova.pdmx",
+                "song.classical.por-toda-minha-vida.pdmx",
+                "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx",
+                "song.folk.insensatez-how-insensitive-jobim.pdmx",
+                "song.folk.so-danco-samba.pdmx",
+                "song.folk.como-e-grande-meu-amor-por-voce.pdmx",
+                "song.folk.el-condor-pasa-if-i-could.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -523,8 +572,8 @@
               ],
               "estimatedDays": 45,
               "levelBand": [
-                3.2,
-                6.4
+                1.9,
+                9.0
               ],
               "finder": {
                 "skill": "locking a montuno to the clave with a tumbao bass underneath",
@@ -570,7 +619,8 @@
                 "meter-5-4",
                 "mordent",
                 "ornamentation",
-                "hanon"
+                "hanon",
+                "two-hand-independence"
               ],
               "textFile": "lessons/technique.5.md",
               "exerciseOptions": [

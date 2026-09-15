@@ -2,7 +2,6 @@
 title: When to stop — warm-up, tension and pain
 stage: 1
 unit: "practice.1.1"
-concepts: [warm-up, tension, injury, endurance]
 readingTime: 2
 ---
 
