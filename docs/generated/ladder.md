@@ -204,7 +204,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-217 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
+219 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
@@ -243,6 +243,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.classical.ondrus-silent-night.pdmx` | Silent night | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.palmer-days-in-the-sun.pdmx` | Days In The Sun | 7.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.passacaglia-handel-halvorsen.pdmx` | Passacaglia Handel/Halvorsen | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.pieczonka-tarantella-in-a-minor.pdmx` | Tarantella in A minor | 7.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.por-toda-minha-vida.pdmx` | Por Toda Minha Vida | 3.9 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx` | O Mio Babbino Caro for solo piano | 6.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx` | Rachmaninoff - Piano Concerto No. 2 | 7.0 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
@@ -259,6 +260,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.classical.zimmer-maestro-the-holiday.pdmx` | Maestro - The Holiday | 5.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.classical.zimmer-time-hans-zimmer-inception.pdmx` | Time - Hans Zimmer - Inception | 6.5 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.folk.10000-reasons-matt-redman.pdmx` | 10000 Reasons Matt Redman | 6.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.amazing-grace-easy-piano.pdmx` | Amazing Grace (easy piano) | 4.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.before-you-go-lewis-capaldi.pdmx` | Before You Go - Lewis Capaldi | 4.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.bruno-major-nothing-wip.pdmx` | Bruno Major - Nothing [WIP] | 5.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.carioquinha.pdmx` | Carioquinha | 4.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
@@ -286,7 +288,5 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.wake-me-up-avicii.pdmx` | Wake Me Up Avicii | 7.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.your-song-elton-john-easy-piano.pdmx` | Your Song - Elton John - Easy Piano | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.jazz.bart-howard-fly-me-to-the-moon.pdmx` | Fly me to the moon | 5.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.jazz.fats-waller-ain-t-misbehavin.pdmx` | Ain't Misbehavin' | 6.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.jazz.george-shearing-lullaby-of-birdland.pdmx` | Lullaby of Birdland | 6.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| … | and 137 more | | |
+| … | and 139 more | | |
 

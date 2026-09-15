@@ -21924,6 +21924,1656 @@
         "decision": "keep",
         "note": "Replaces the Humdrum first edition, which the music21 importer converts with notes missing. Machine gates passed; key and metre checked against the work; not reviewed by ear."
       }
+    },
+    {
+      "id": "song.folk.red-river-valley.pdmx",
+      "cid": "QmY4rmYbmrS3zmyjcYXUsrZXynavkzZPJfavXk2Qr8y7j9",
+      "file": "QmY4rmYbmrS3zmyjcYXUsrZXynavkzZPJfavXk2Qr8y7j9.mxl",
+      "title": "Red River Valley",
+      "composer": "Traditional (American)",
+      "artist": "Misc tunes",
+      "rawSha256": "7acc4f3fb4d3af17cd83f299cdf4c5adbc45d4d816dd128a609150b64fab1148",
+      "convertedSha256": "36462af64466c60bb2274a3260e833a7535f1113c2b81cc0c26cb4d319626429",
+      "musescoreId": "6404875",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 17,
+      "notes": 42,
+      "tempoBpm": 108.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 17.0,
+        "notesPerBar": 2.4705882352941178,
+        "notesPerSecond": 1.111764705882353,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 8.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.047619047619047616,
+        "keyAccidentals": 1.0,
+        "shortestValue": 1.0,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 1.61,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.641
+        ],
+        [
+          "notesPerBar",
+          -0.615
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.folk.alouette.pdmx",
+      "cid": "QmQrQGpXBsF8exusKg66yVxsXwcRPmtu1p6ayd88LCexre",
+      "file": "QmQrQGpXBsF8exusKg66yVxsXwcRPmtu1p6ayd88LCexre.mxl",
+      "title": "Alouette",
+      "composer": "Traditional (French-Canadian)",
+      "artist": "Misc tunes",
+      "rawSha256": "3dc496d93a9b0dde35cc54893bd9dc9a77fee28429d415a0613a63bc3f3fca19",
+      "convertedSha256": "b8830d39a6094b00198de498103ddd52be749a6828c47e75c1ab39608c90ea66",
+      "musescoreId": "6404873",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 24,
+      "notes": 66,
+      "tempoBpm": 152.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 24.0,
+        "notesPerBar": 2.75,
+        "notesPerSecond": 1.161111111111111,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 14.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.045454545454545456,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 2.34,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.58
+        ],
+        [
+          "bars",
+          -0.415
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.folk.amazing-grace-easy-piano.pdmx",
+      "cid": "QmcAYpPLdEUiDiE5wXWTbYR3E2A7cdbWya8APYgfz8SGxr",
+      "file": "QmcAYpPLdEUiDiE5wXWTbYR3E2A7cdbWya8APYgfz8SGxr.mxl",
+      "title": "Amazing Grace (easy piano)",
+      "composer": "John Newton (words); traditional tune",
+      "artist": "John Newton",
+      "rawSha256": "3ed9fff8ef40e0b0469e253e0bed7919ffa43dede100c605bfbf10cd7ad626d9",
+      "convertedSha256": "59cd2a51b97ca823f49bcaa18e56a2f4811a7683707b1e805a28f93d7b226ab4",
+      "musescoreId": "1937",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "1-2",
+      "bars": 17,
+      "notes": 103,
+      "tempoBpm": 80.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 17.0,
+        "notesPerBar": 8.176470588235293,
+        "notesPerSecond": 3.633986928104575,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 7.0,
+        "maxSpanLeft": 7.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 12.0,
+        "rangeRight": 26.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.05755395683453238,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.07913669064748201,
+        "distinctRhythms": 4.0
+      },
+      "level": 4.63,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.641
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "notesPerBar",
+          -0.177
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.folk.the-itsy-bitsy-spider.pdmx",
+      "cid": "QmNR8R4g3MJYDxTEPzSR9W4baosPFtMMTM6iZWtjpkDnDq",
+      "file": "QmNR8R4g3MJYDxTEPzSR9W4baosPFtMMTM6iZWtjpkDnDq.mxl",
+      "title": "The Itsy Bitsy Spider",
+      "composer": "Traditional",
+      "artist": "Misc tunes",
+      "rawSha256": "7bed00835ae9cee48f6a4b3a855514c86f1ea064872a93b95a8494d8c2981dcb",
+      "convertedSha256": "8791b8226ed8cc04e550deecdfa925d036934e2756a4c763f4363b93120e34c6",
+      "musescoreId": "6404868",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 17,
+      "notes": 47,
+      "tempoBpm": 150.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 17.0,
+        "notesPerBar": 2.764705882352941,
+        "notesPerSecond": 0.7679738562091503,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 5.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.0,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 2.0,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.641
+        ],
+        [
+          "notesPerBar",
+          -0.578
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.pieczonka-tarantella-in-a-minor.pdmx",
+      "cid": "QmUBasXf1LQQ3vEBoGQgh3r6AquJHtrg1kHKYeqNM5YqN2",
+      "file": "QmUBasXf1LQQ3vEBoGQgh3r6AquJHtrg1kHKYeqNM5YqN2.mxl",
+      "title": "Tarantella in A minor",
+      "composer": "Albert Pieczonka",
+      "artist": "Albert Pieczonka",
+      "rawSha256": "066b83bdeafa02f4593c2d570d815ab1e8dabbc9cf02e238fed8d37f1d5b99c6",
+      "convertedSha256": "bc58b482952df0db1d0abb230159796fa2b03672ab807d46a91eb4eb2d3f4a30",
+      "musescoreId": "5881904",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "3",
+      "bars": 208,
+      "notes": 1380,
+      "tempoBpm": 240.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 208.0,
+        "notesPerBar": 8.125,
+        "notesPerSecond": 5.416666666666667,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 26.0,
+        "maxLeapLeft": 28.0,
+        "rangeRight": 53.0,
+        "rangeLeft": 38.0,
+        "blackKeyRatio": 0.09349112426035502,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.17988165680473372,
+        "distinctRhythms": 4.0
+      },
+      "level": 7.12,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          1.048
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "rangeLeft",
+          0.209
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.bach-prelude-in-c-minor-bwv-999.pdmx",
+      "cid": "QmeDoXZNneuM5tn1Qvv8oVYRWWStjZ2tuodvctXRsBppN8",
+      "file": "QmeDoXZNneuM5tn1Qvv8oVYRWWStjZ2tuodvctXRsBppN8.mxl",
+      "title": "Prelude in C minor, BWV 999",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "c1d16578bd2c7bbf50285e8bd00b650e140a415033c371a719f9fb2bba119dd1",
+      "convertedSha256": "df49c54e6bf9c72d13697a0cd0f40134712acc3a74c8d440a929f53ae9d30ede",
+      "musescoreId": "4526",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "4",
+      "bars": 43,
+      "notes": 506,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 43.0,
+        "notesPerBar": 11.813953488372093,
+        "notesPerSecond": 6.30077519379845,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 8.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 9.0,
+        "maxLeapLeft": 19.0,
+        "rangeRight": 18.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.2677165354330709,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 2.0,
+        "ledgerRatio": 0.03740157480314961,
+        "distinctRhythms": 3.0
+      },
+      "level": 5.88,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "keyAccidentals",
+          0.184
+        ],
+        [
+          "maxSpanLeft",
+          -0.145
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.bach-little-prelude-in-c-minor-bwv-934.pdmx",
+      "cid": "QmeTdWF5JtGYEiKvickgYrz2fL5YvHfSQ9uT1o5oBRZ2QF",
+      "file": "QmeTdWF5JtGYEiKvickgYrz2fL5YvHfSQ9uT1o5oBRZ2QF.mxl",
+      "title": "Little Prelude in C minor, BWV 934",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "e1bbe39756f79daf44b67cd55c363f76d04306a0327d35aed157da27ba5587eb",
+      "convertedSha256": "faf2ab495619eca95e7893b71f2a077bf7ad9c61b0306a5889749868b9164dce",
+      "musescoreId": "541001",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "4",
+      "bars": 40,
+      "notes": 366,
+      "tempoBpm": 144.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 40.0,
+        "notesPerBar": 9.15,
+        "notesPerSecond": 5.083333333333333,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 12.0,
+        "rangeRight": 27.0,
+        "rangeLeft": 25.0,
+        "blackKeyRatio": 0.3907103825136612,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.0625,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 7.0,
+        "ledgerRatio": 0.04371584699453552,
+        "distinctRhythms": 7.0
+      },
+      "level": 6.43,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "shortestValue",
+          0.25
+        ],
+        [
+          "keyAccidentals",
+          0.184
+        ],
+        [
+          "maxSpanLeft",
+          -0.145
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.chopin-waltz-in-c-sharp-minor-op-64-no-2.pdmx",
+      "cid": "QmSDGxRMt2LhJv5veNu9WtNDKmq86NWPtfp8Pehi4rs2Xt",
+      "file": "QmSDGxRMt2LhJv5veNu9WtNDKmq86NWPtfp8Pehi4rs2Xt.mxl",
+      "title": "Waltz in C-sharp minor, Op. 64 No. 2",
+      "composer": "Fryderyk Chopin",
+      "artist": "Frédéric Chopin",
+      "rawSha256": "45806ee1ac104935943b83035fe30c066e9f080fda0e9873cbce728087596052",
+      "convertedSha256": "22009932c27af43056fe67bdeb877c765b0900ad405175587513af4d7448d816",
+      "musescoreId": "6110150",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Fryderyk Chopin died 1849 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1919",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "4",
+      "bars": 194,
+      "notes": 1423,
+      "tempoBpm": 110.00000000000001,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 194.0,
+        "notesPerBar": 9.804123711340207,
+        "notesPerSecond": 5.991408934707904,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 9.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 32.0,
+        "maxLeapLeft": 22.0,
+        "rangeRight": 41.0,
+        "rangeLeft": 44.0,
+        "blackKeyRatio": 0.6161934805467929,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 2.0,
+        "ornaments": 3.0,
+        "ledgerRatio": 0.09779179810725552,
+        "distinctRhythms": 8.0
+      },
+      "level": 8.2,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          1.0
+        ],
+        [
+          "rangeLeft",
+          0.28
+        ],
+        [
+          "keyAccidentals",
+          0.27
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.haydn-sonata-in-g-major-hob-xvi-8.pdmx",
+      "cid": "QmYA4uMA2vMmmMSJEozhxDoFpLH9urfAr2RXgNiWak4qcE",
+      "file": "QmYA4uMA2vMmmMSJEozhxDoFpLH9urfAr2RXgNiWak4qcE.mxl",
+      "title": "Sonata in G major, Hob. XVI:8",
+      "composer": "Joseph Haydn",
+      "artist": "Joseph Haydn",
+      "rawSha256": "a684ee5f53bf0072528fa0d9c6556f9ba8390746f5849fe67baca6bb22175860",
+      "convertedSha256": "32d05f0d43afc3174925422427875ec0de790631ca316d60b233eb8cccdb2ec7",
+      "musescoreId": "4867936",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Joseph Haydn died 1809 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1879",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "4",
+      "bars": 97,
+      "notes": 852,
+      "tempoBpm": 110.00000000000001,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 97.0,
+        "notesPerBar": 9.123711340206185,
+        "notesPerSecond": 7.603092783505154,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 14.0,
+        "maxLeapRight": 20.0,
+        "maxLeapLeft": 29.0,
+        "rangeRight": 24.0,
+        "rangeLeft": 41.0,
+        "blackKeyRatio": 0.08813559322033898,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.125,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 16.0,
+        "ledgerRatio": 0.09265536723163842,
+        "distinctRhythms": 10.0
+      },
+      "level": 7.13,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.526
+        ],
+        [
+          "rangeLeft",
+          0.246
+        ],
+        [
+          "shortestValue",
+          0.195
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx",
+      "cid": "QmQ7dQTkFbV7E6hpqVgqDa6SuK6nR7NpXEHQMv61cbcwoc",
+      "file": "QmQ7dQTkFbV7E6hpqVgqDa6SuK6nR7NpXEHQMv61cbcwoc.mxl",
+      "title": "Intermezzo in A major, Op. 118 No. 2",
+      "composer": "Johannes Brahms",
+      "artist": "Johannes Brahms",
+      "rawSha256": "c7234975c72c3d722cb366a65a5d70f9e298c5f8f880f0f6beabde6486b09798",
+      "convertedSha256": "0595371f98dc882242728c42a72757bc1fabdd0ef37091e64c9fc8c9068f9e5f",
+      "musescoreId": "3378576",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Johannes Brahms died 1897 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1967",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 117,
+      "notes": 1400,
+      "tempoBpm": 75.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 117.0,
+        "notesPerBar": 14.717948717948717,
+        "notesPerSecond": 8.176638176638177,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 15.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 21.0,
+        "maxLeapLeft": 29.0,
+        "rangeRight": 30.0,
+        "rangeLeft": 41.0,
+        "blackKeyRatio": 0.3710801393728223,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 10.0,
+        "ornaments": 13.0,
+        "ledgerRatio": 0.1091753774680604,
+        "distinctRhythms": 7.0
+      },
+      "level": 7.93,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.654
+        ],
+        [
+          "rangeLeft",
+          0.246
+        ],
+        [
+          "voicesPerStaff",
+          0.188
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.debussy-reverie.pdmx",
+      "cid": "Qme9Mjr7ESP67pjnBHjfiXJhnvXeZUYucorTLQnwsNmNCP",
+      "file": "Qme9Mjr7ESP67pjnBHjfiXJhnvXeZUYucorTLQnwsNmNCP.mxl",
+      "title": "Rêverie",
+      "composer": "Claude Debussy",
+      "artist": "Claude Debussy",
+      "rawSha256": "052d669f938e06f1573254b9080bc8df4e26f61f5de6e4cf5b35241ee74bb41c",
+      "convertedSha256": "8121f81e8b1ba4a7ca60b3520adb6e1e16944d6b90d63dadd75057fec83cb6cc",
+      "musescoreId": "2749626",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Claude Debussy died 1918 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1988",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 101,
+      "notes": 1136,
+      "tempoBpm": 76.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 101.0,
+        "notesPerBar": 13.01980198019802,
+        "notesPerSecond": 5.4249174917491745,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 15.0,
+        "maxLeapRight": 27.0,
+        "maxLeapLeft": 35.0,
+        "rangeRight": 41.0,
+        "rangeLeft": 53.0,
+        "blackKeyRatio": 0.21368821292775667,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.3333333333333333,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 3.0,
+        "ornaments": 3.0,
+        "ledgerRatio": 0.15361216730038021,
+        "distinctRhythms": 7.0
+      },
+      "level": 7.47,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.554
+        ],
+        [
+          "rangeLeft",
+          0.371
+        ],
+        [
+          "voicesPerStaff",
+          0.188
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx",
+      "cid": "QmfL5ffiKPto33RkaHmypncAM1cEqtdTVFJv8d9yN6PJMC",
+      "file": "QmfL5ffiKPto33RkaHmypncAM1cEqtdTVFJv8d9yN6PJMC.mxl",
+      "title": "Carnaval, Op. 9 No. 12 \"Chopin\"",
+      "composer": "Robert Schumann",
+      "artist": "Robert Schumann",
+      "rawSha256": "156ee4966e079949d23ce6d7db8252955b9185e1c15a35706aac283a0641286f",
+      "convertedSha256": "3d608c36610ff0699b2b897e3cc9c4c31dd7a95a0c3105e2242dcb918cc648bf",
+      "musescoreId": "1116201",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Robert Schumann died 1856 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1926",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 15,
+      "notes": 242,
+      "tempoBpm": 152.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 15.0,
+        "notesPerBar": 16.133333333333333,
+        "notesPerSecond": 6.811851851851852,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 19.0,
+        "maxLeapLeft": 25.0,
+        "rangeRight": 27.0,
+        "rangeLeft": 33.0,
+        "blackKeyRatio": 0.5495867768595041,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.05785123966942149,
+        "distinctRhythms": 5.0
+      },
+      "level": 6.03,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.722
+        ],
+        [
+          "keyAccidentals",
+          0.27
+        ],
+        [
+          "maxSpanLeft",
+          -0.145
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.schumann-the-happy-farmer-op-68-no-10.pdmx",
+      "cid": "QmUjLViyrL4YTakw284DWbAKEBJKtWED9F8aQJYfpGm4hW",
+      "file": "QmUjLViyrL4YTakw284DWbAKEBJKtWED9F8aQJYfpGm4hW.mxl",
+      "title": "The Happy Farmer, Op. 68 No. 10",
+      "composer": "Robert Schumann",
+      "artist": "Robert Schumann",
+      "rawSha256": "2b9c609b04ce9417524d7fff199835042f6089d88fd6770939dbce5055c09a62",
+      "convertedSha256": "41518148ba0f9d82ba1d920b974b9ef8877272e02592daaa5f12b90122bf1e4c",
+      "musescoreId": "948631",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Robert Schumann died 1856 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1926",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 21,
+      "notes": 238,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 21.0,
+        "notesPerBar": 16.857142857142858,
+        "notesPerSecond": 6.742857142857143,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 9.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 10.0,
+        "rangeRight": 20.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.11864406779661017,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 3.0
+      },
+      "level": 5.31,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.503
+        ],
+        [
+          "maxSpanLeft",
+          -0.145
+        ],
+        [
+          "shortestValue",
+          -0.134
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.bach-prelude-no-1-in-c-major-bwv-846.pdmx",
+      "cid": "QmbHzrXuDGNG3HyzLpeBNeZ9wAj4bTDGWsZ5xz56abM8D8",
+      "file": "QmbHzrXuDGNG3HyzLpeBNeZ9wAj4bTDGWsZ5xz56abM8D8.mxl",
+      "title": "Prelude No. 1 in C major, BWV 846",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "b11bdb7fe924ab82e29dcf9b91ed92bb203d0159f50019e61c0a5527cbb082af",
+      "convertedSha256": "5530c0b871973e2b0e1fce7f91049cc67b85edaf3ce71c5e65b452279141746a",
+      "musescoreId": "117279",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 34,
+      "notes": 598,
+      "tempoBpm": 72.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 34.0,
+        "notesPerBar": 17.676470588235293,
+        "notesPerSecond": 7.3651960784313735,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 8.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 17.0,
+        "maxLeapLeft": 14.0,
+        "rangeRight": 31.0,
+        "rangeLeft": 28.0,
+        "blackKeyRatio": 0.07321131447587355,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 2.0,
+        "ledgerRatio": 0.024958402662229616,
+        "distinctRhythms": 5.0
+      },
+      "level": 6.08,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "bars",
+          -0.183
+        ],
+        [
+          "notesPerBar",
+          0.142
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.ragtime.joplin-maple-leaf-rag.pdmx",
+      "cid": "QmQivFenf7PzC4UiXgYbzx3G11yvQaCXWeuwvTDMMpr6Nk",
+      "file": "QmQivFenf7PzC4UiXgYbzx3G11yvQaCXWeuwvTDMMpr6Nk.mxl",
+      "title": "Maple Leaf Rag",
+      "composer": "Scott Joplin",
+      "artist": "Scott Joplin",
+      "rawSha256": "068fb1c6b1f590542c938fd1a54d7c04a9c3a4394394f57ad277f7006efa6cd2",
+      "convertedSha256": "5deb5d00de0663c2bd260f84691d74502dde8e45dcd9457f4aedb3bb94874647",
+      "musescoreId": "145724",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Scott Joplin died 1917 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1987",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 85,
+      "notes": 813,
+      "tempoBpm": 100.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 85.0,
+        "notesPerBar": 18.6,
+        "notesPerSecond": 15.5,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 16.0,
+        "maxLeapLeft": 36.0,
+        "rangeRight": 32.0,
+        "rangeLeft": 41.0,
+        "blackKeyRatio": 0.6261859582542695,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.14864010120177104,
+        "distinctRhythms": 4.0
+      },
+      "level": 8.16,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.436
+        ],
+        [
+          "keyAccidentals",
+          0.27
+        ],
+        [
+          "notesPerSecond",
+          0.259
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.mozart-piano-sonata-no-16-in-c-major-k-545-first-movement.pdmx",
+      "cid": "QmXaLndsVZvGL5n1saWern2cbW1Ze1kEKpeUofRBBmhT1D",
+      "file": "QmXaLndsVZvGL5n1saWern2cbW1Ze1kEKpeUofRBBmhT1D.mxl",
+      "title": "Piano Sonata No. 16 in C major, K. 545 (first movement)",
+      "composer": "Wolfgang Amadeus Mozart",
+      "artist": "Wolfgang Amadeus Mozart",
+      "rawSha256": "c624e13b3944d9439628cee5608085562d29a66e2a8a43d8d14a679fe9a3f64b",
+      "convertedSha256": "da99cc200a47d51a60aeaa9973e04f65c83dc5ef7f6cfb19f20e41f349693bc3",
+      "musescoreId": "539",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Wolfgang Amadeus Mozart died 1791 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1861",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 73,
+      "notes": 1182,
+      "tempoBpm": 132.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 73.0,
+        "notesPerBar": 17.575342465753426,
+        "notesPerSecond": 7.3230593607305945,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 9.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 19.0,
+        "maxLeapLeft": 24.0,
+        "rangeRight": 34.0,
+        "rangeLeft": 38.0,
+        "blackKeyRatio": 0.07872174590802807,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.125,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 8.0,
+        "ledgerRatio": 0.11691348402182385,
+        "distinctRhythms": 8.0
+      },
+      "level": 6.97,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "bars",
+          0.333
+        ],
+        [
+          "rangeLeft",
+          0.209
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx",
+      "cid": "QmW3YQV2KfPNYR1ZSEPx5qj1B3iNbsX2kqfmXPUDkyh4se",
+      "file": "QmW3YQV2KfPNYR1ZSEPx5qj1B3iNbsX2kqfmXPUDkyh4se.mxl",
+      "title": "Symphony No. 7, second movement (piano transcription)",
+      "composer": "Ludwig van Beethoven",
+      "artist": "Ludwig van Beethoven",
+      "rawSha256": "f5c6e13a40a461905838d014bc70b6de1f7c31576a9d0b93f28dfedd8376bb13",
+      "convertedSha256": "0ce71951c893d60b9e72ab7c932859b55f0aa11d23e725b3bc3d7bd8bd15d3ed",
+      "musescoreId": "296446",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Ludwig van Beethoven died 1827 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1897",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 278,
+      "notes": 2807,
+      "tempoBpm": 72.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 278.0,
+        "notesPerBar": 13.284172661870503,
+        "notesPerSecond": 11.070143884892085,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 15.0,
+        "maxLeapRight": 32.0,
+        "maxLeapLeft": 29.0,
+        "rangeRight": 46.0,
+        "rangeLeft": 50.0,
+        "blackKeyRatio": 0.1619279718386136,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.125,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 6.0,
+        "ornaments": 6.0,
+        "ledgerRatio": 0.1933387489845654,
+        "distinctRhythms": 9.0
+      },
+      "level": 8.31,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          1.247
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "rangeLeft",
+          0.343
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.bach-adagio-bwv-974-after-marcello.pdmx",
+      "cid": "QmcYdVAdoqPzSreBT2Aihn5XKTNFDreFh9mbuSgeRkEGoZ",
+      "file": "QmcYdVAdoqPzSreBT2Aihn5XKTNFDreFh9mbuSgeRkEGoZ.mxl",
+      "title": "Adagio, BWV 974 (after Marcello)",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "74f10d6c3bb70859cc4f606900c157e5df282feb724d26cd20cba69a32c54b90",
+      "convertedSha256": "2b1447a3a6528f6d197dfd14b42a15de81172aaf47f8a407e9e8c284437c358f",
+      "musescoreId": "53267",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 41,
+      "notes": 840,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 41.0,
+        "notesPerBar": 23.926829268292682,
+        "notesPerSecond": 12.760975609756098,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 5.0,
+        "maxSpanLeft": 9.0,
+        "maxLeapRight": 17.0,
+        "maxLeapLeft": 16.0,
+        "rangeRight": 29.0,
+        "rangeLeft": 34.0,
+        "blackKeyRatio": 0.1783893985728848,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.0625,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 0.0,
+        "ornaments": 25.0,
+        "ledgerRatio": 0.06422018348623854,
+        "distinctRhythms": 10.0
+      },
+      "level": 7.17,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          0.272
+        ],
+        [
+          "shortestValue",
+          0.25
+        ],
+        [
+          "notesPerSecond",
+          0.2
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.vivaldi-summer-from-the-four-seasons-third-movement-piano-transcription.pdmx",
+      "cid": "QmVCyFhS2bCYTxPnCMLX3D5hMXBxKHT1Gt3J9GchhbcyiQ",
+      "file": "QmVCyFhS2bCYTxPnCMLX3D5hMXBxKHT1Gt3J9GchhbcyiQ.mxl",
+      "title": "Summer, from The Four Seasons (third movement, piano transcription)",
+      "composer": "Antonio Vivaldi",
+      "artist": "Antonio Vivaldi",
+      "rawSha256": "71582d7f61e440dfe5af6a340d4dda44d7566a2bc86a8d4ae26f153314776b52",
+      "convertedSha256": "ed98423940dca6596faa5e26141ae9b29b99c6f3a55af35b6f09c8a9db0a9685",
+      "musescoreId": "5889290",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Antonio Vivaldi died 1741 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1811",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 131,
+      "notes": 2147,
+      "tempoBpm": 150.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 131.0,
+        "notesPerBar": 20.16793893129771,
+        "notesPerSecond": 16.806615776081426,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 15.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 24.0,
+        "rangeRight": 40.0,
+        "rangeLeft": 36.0,
+        "blackKeyRatio": 0.21385314155942467,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 8.0,
+        "ledgerRatio": 0.15972747918243754,
+        "distinctRhythms": 5.0
+      },
+      "level": 8.12,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.732
+        ],
+        [
+          "notesPerSecond",
+          0.283
+        ],
+        [
+          "notesPerBar",
+          0.199
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.bach-cello-suite-no-1-prelude-piano-transcription.pdmx",
+      "cid": "QmdvfmiTwJbZuu2hVpxWAWyxjiNn4ei6vrohijLySetaQ4",
+      "file": "QmdvfmiTwJbZuu2hVpxWAWyxjiNn4ei6vrohijLySetaQ4.mxl",
+      "title": "Cello Suite No. 1, Prelude (piano transcription)",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "884ef1e0c69540bcaef71c2e30c4901dea437955baf707a54b67baffdca65f5c",
+      "convertedSha256": "30a3ab38af394e9e2939339d07dcfda77edc1c941b92a6e7fca7620d7fbbefc7",
+      "musescoreId": "2184946",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "7-9",
+      "bars": 42,
+      "notes": 1098,
+      "tempoBpm": 70.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 42.0,
+        "notesPerBar": 26.88095238095238,
+        "notesPerSecond": 7.840277777777778,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 8.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 22.0,
+        "maxLeapLeft": 13.0,
+        "rangeRight": 31.0,
+        "rangeLeft": 31.0,
+        "blackKeyRatio": 0.183348095659876,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 3.0,
+        "ledgerRatio": 0.2993799822852081,
+        "distinctRhythms": 3.0
+      },
+      "level": 7.08,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          0.323
+        ],
+        [
+          "ledgerRatio",
+          0.21
+        ],
+        [
+          "rangeLeft",
+          0.111
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx",
+      "cid": "QmUkCd5kX3tLNtrCNzmMgNSLJ7GGFsjfGbMBsNgq7612ox",
+      "file": "QmUkCd5kX3tLNtrCNzmMgNSLJ7GGFsjfGbMBsNgq7612ox.mxl",
+      "title": "Ballade No. 4 in F minor, Op. 52",
+      "composer": "Fryderyk Chopin",
+      "artist": "Frédéric Chopin",
+      "rawSha256": "286dcc2d1226bcdbc9d3913194b7a6ea380ce49b46fdb41d3608561d6d7b380c",
+      "convertedSha256": "bc2773fa3f53e65dfecdd014e3492b0c397c286c6cb2d4f0b93afa68b51c68a6",
+      "musescoreId": "970761",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Fryderyk Chopin died 1849 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1919",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "7-9",
+      "bars": 242,
+      "notes": 4596,
+      "tempoBpm": 40.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 242.0,
+        "notesPerBar": 25.946280991735538,
+        "notesPerSecond": 7.207300275482093,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 15.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 36.0,
+        "maxLeapLeft": 52.0,
+        "rangeRight": 53.0,
+        "rangeLeft": 61.0,
+        "blackKeyRatio": 0.4968944099378882,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.00625,
+        "voicesPerStaff": 4.0,
+        "handCrossings": 9.0,
+        "ornaments": 22.0,
+        "ledgerRatio": 0.15384615384615385,
+        "distinctRhythms": 18.0
+      },
+      "level": 9.0,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          1.152
+        ],
+        [
+          "rangeLeft",
+          0.44
+        ],
+        [
+          "notesPerBar",
+          0.307
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.bach-fugue-in-g-minor-bwv-578-piano-transcription.pdmx",
+      "cid": "QmUx9b8AB8eFp7hoX99ss9GHk5pSCkKL33zXrenFvhvJbW",
+      "file": "QmUx9b8AB8eFp7hoX99ss9GHk5pSCkKL33zXrenFvhvJbW.mxl",
+      "title": "Fugue in G minor, BWV 578 (piano transcription)",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "0a32955cc823ae299a86a29b2c2358adba0101c8f3a78aa3dfb759e97654a9f5",
+      "convertedSha256": "aac8ec1d8653922b000371a715b93bcf7db152793fd71e91dffe3695e806abea",
+      "musescoreId": "633296",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "7-9",
+      "bars": 68,
+      "notes": 1685,
+      "tempoBpm": 92.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 68.0,
+        "notesPerBar": 28.191176470588236,
+        "notesPerSecond": 11.746323529411766,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 17.0,
+        "maxLeapLeft": 41.0,
+        "rangeRight": 27.0,
+        "rangeLeft": 50.0,
+        "blackKeyRatio": 0.22535211267605634,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.125,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 11.0,
+        "ledgerRatio": 0.09389671361502347,
+        "distinctRhythms": 9.0
+      },
+      "level": 7.85,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          0.343
+        ],
+        [
+          "rangeLeft",
+          0.343
+        ],
+        [
+          "bars",
+          0.285
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx",
+      "cid": "QmX4y9HqzeCv1rTcbd5dCjkJKEC5yyjNagY3VRm6MPqyHp",
+      "file": "QmX4y9HqzeCv1rTcbd5dCjkJKEC5yyjNagY3VRm6MPqyHp.mxl",
+      "title": "Fantaisie-impromptu in C-sharp minor, Op. 66",
+      "composer": "Fryderyk Chopin",
+      "artist": "Frédéric Chopin",
+      "rawSha256": "8c3cde79a382bae1a8f117fc26d4259a338efed28914e1c0b52c504359cc4d1a",
+      "convertedSha256": "6a8184d4b832e7fff8148e95d38ce69fcb0f833ff763b0b83038fdf328214861",
+      "musescoreId": "4997558",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Fryderyk Chopin died 1849 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1919",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "7-9",
+      "bars": 138,
+      "notes": 3323,
+      "tempoBpm": 168.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 138.0,
+        "notesPerBar": 24.463768115942027,
+        "notesPerSecond": 17.12463768115942,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 9.0,
+        "maxSpanLeft": 14.0,
+        "maxLeapRight": 37.0,
+        "maxLeapLeft": 32.0,
+        "rangeRight": 47.0,
+        "rangeLeft": 51.0,
+        "blackKeyRatio": 0.6792061611374408,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.08333333333333333,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 0.0,
+        "ornaments": 15.0,
+        "ledgerRatio": 0.13151658767772512,
+        "distinctRhythms": 16.0
+      },
+      "level": 9.0,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.767
+        ],
+        [
+          "rangeLeft",
+          0.352
+        ],
+        [
+          "notesPerSecond",
+          0.289
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.chopin-nocturne-in-e-flat-major-op-9-no-2.pdmx",
+      "cid": "QmYg5Aw4cC4wQBgTsxe1UqfzSJoMy3UGiTBoeFWqkfHvAq",
+      "file": "QmYg5Aw4cC4wQBgTsxe1UqfzSJoMy3UGiTBoeFWqkfHvAq.mxl",
+      "title": "Nocturne in E-flat major, Op. 9 No. 2",
+      "composer": "Fryderyk Chopin",
+      "artist": "Frédéric Chopin",
+      "rawSha256": "e7497c10a2e91031360a4b13b28050282c1569624d85a30bd2d26a133093b56b",
+      "convertedSha256": "6d948967d95769fc91fd3673577d77a2c31bf4e919c6e8be3230bb6f2f9bcde2",
+      "musescoreId": "122967",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Fryderyk Chopin died 1849 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1919",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "7-9",
+      "bars": 38,
+      "notes": 909,
+      "tempoBpm": 66.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 38.0,
+        "notesPerBar": 36.05263157894737,
+        "notesPerSecond": 3.3048245614035086,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 35.0,
+        "rangeRight": 44.0,
+        "rangeLeft": 42.0,
+        "blackKeyRatio": 0.4554744525547445,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.0625,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.16569343065693432,
+        "distinctRhythms": 6.0
+      },
+      "level": 7.22,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          0.451
+        ],
+        [
+          "rangeLeft",
+          0.258
+        ],
+        [
+          "shortestValue",
+          0.25
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
+    },
+    {
+      "id": "song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx",
+      "cid": "QmemwP73tZHAVDyP81DutePDjdXsPWVJr1iFD86THdinmA",
+      "file": "QmemwP73tZHAVDyP81DutePDjdXsPWVJr1iFD86THdinmA.mxl",
+      "title": "Fugue in G minor, BWV 542 (piano transcription)",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "927884d9d0488ae452a0fa03e5ed1c4a1c03e824e53392c950c3203483797181",
+      "convertedSha256": "01c3d3eca4afb14e4cfb7c2480c353a9aa96e76af6b7c79498dfe1cd384f3f4e",
+      "musescoreId": "705011",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "7-9",
+      "bars": 115,
+      "notes": 3302,
+      "tempoBpm": 92.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 115.0,
+        "notesPerBar": 31.782608695652176,
+        "notesPerSecond": 13.242753623188406,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 25.0,
+        "maxLeapLeft": 24.0,
+        "rangeRight": 29.0,
+        "rangeLeft": 46.0,
+        "blackKeyRatio": 0.2714090287277702,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.125,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 0.0,
+        "ornaments": 7.0,
+        "ledgerRatio": 0.0694938440492476,
+        "distinctRhythms": 9.0
+      },
+      "level": 8.33,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.642
+        ],
+        [
+          "notesPerBar",
+          0.396
+        ],
+        [
+          "rangeLeft",
+          0.302
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "kept on the archive record and the machine gates, 2026-09-15"
+      }
     }
   ]
 }
