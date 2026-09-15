@@ -142,7 +142,6 @@ async function openAndPlay(page: Page, piece: string, patient: boolean): Promise
 test('a run started at once is arranged the same as one started after the measurement', async ({
   page,
 }) => {
-  test.fixme(true, 'the freeze beats the piece measurement; see the header for why the fix is not one line');
   test.setTimeout(300_000);
   const differ: string[] = [];
   const blind: string[] = [];

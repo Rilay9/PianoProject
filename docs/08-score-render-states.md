@@ -249,8 +249,24 @@ not drawn here because the bar says the bpm.
 | A different piece | Yes. |
 
 **Freezing.** Starting a run freezes the scale, after a short wait for the stage to settle into
-the height the control bar leaves it. A probe measurement arriving mid-run is held and applied
-at the next fit *after* the run — a measurement arriving late is the size change again, later.
+the height the control bar leaves it — **and, since 2026-09-14, after the piece has been
+measured**, if that can be done within a bounded wait (`FREEZE_WAIT_FOR_MEASURE_MS`). The
+arrangement a run keeps comes from the probe's measurement of the piece, and freezing before it
+landed was the race of §13a: the count pinned at the two-system default on most opens, and the
+same piece drawn two ways on consecutive taps. The freeze now asks for the measurement directly
+rather than leaving it to idle, applies it once before the first note, and takes its size then.
+A piece whose probe takes longer than the wait is frozen at the first window's size, as before.
+A probe measurement arriving mid-run is held and applied at the next fit *after* the run — a
+measurement arriving late is the size change again, later.
+
+**The count is checked against the drawn stave, not only the predicted one.** `chooseSlotCount`
+predicts the stave from the probe's measurement times the fit's scale, and the engraver sizes a
+system to the page it is laid on, so the prediction is off by up to 40 % either way. After each
+re-engrave the fit measures the stave as drawn (`staffHeightOf`) and how much of the width the
+piece uses at that scale; a stave under `MIN_STAFF_PX`, or systems height-bound to under
+`SLOT_WIDTH_FLOOR` of the width, lower the count by one, remember the ceiling for that zoom and
+stage width, and redraw. It can only go down, so it settles. This is the measure-decide-remeasure
+that §13a said the race needed.
 
 ### 3.4 Is it legible?
 
@@ -372,8 +388,11 @@ the bar being played.
 - Slides **left only, by bar, at the barline**. A sheet that moves under a note being read is
   worse than one that jumps once a bar.
 - **At the first note of each bar** the cursor is between **25 % and 45 %** of the stage width,
-  targeting a third; within the bar the cursor walks right over a still sheet and may reach
-  two-thirds before the next barline brings it back.
+  targeting a third; within the bar the cursor walks right over a still sheet and is brought
+  back once it drifts past 45 %. A bar too wide for a third — one whose first note there would
+  leave the *next* bar's first note off the right edge — starts further left, as far as the
+  quarter (`SLIDE_TARGET_MIN`); a narrow bar keeps the third. (2026-09-14: the quarter was a
+  number the renderer exported and nothing read; it is now the floor of the slide target.)
 - Never slides past the start: bar 1 sits where it was engraved. Never slides past the end
   either: once the sheet's last bar has reached the right edge the sheet stops, and the cursor
   walks the last bars to the right — there is nothing left to slide towards.
@@ -381,13 +400,20 @@ the bar being played.
   both sheets and the swap is invisible.
 - The chunk's width is deliberately **not** a fit constraint: the read-ahead bars run off the
   right edge, which is what there is to slide towards. The **bar being played** is: with its
-  first note a third of the way across, the rest of that bar and the first beat of the next
-  (`NEXT_BAR_PEEK`, a quarter of the piece's widest bar) must fit in what is left of the width,
-  or the read-ahead is a promise nothing keeps. The height chooses the size and this caps it
-  (`readAheadScale`), never below the readable staff (`MIN_STAFF_PX`). Added 2026-09-13: on Hot
-  Cross Buns sideways the bar of eight quavers was drawn 876 px wide on an 880 px stage — the
-  bar being played ran off the edge and the next started 427 px past it — and nothing in the
-  fit could see it, because the height alone had decided.
+  first note a quarter of the way across, the rest of that bar and the first note of the next
+  (`NEXT_NOTE_PEEK_STAVES`, half a staff — the barline, its padding and a note head) must fit
+  in what is left of the width, or the read-ahead is a promise nothing keeps. The height chooses
+  the size and this caps it (`readAheadScale`), never below the readable staff (`MIN_STAFF_PX`).
+  Added 2026-09-13: on Hot Cross Buns sideways the bar of eight quavers was drawn 876 px wide on
+  an 880 px stage — the bar being played ran off the edge and the next started 427 px past it —
+  and nothing in the fit could see it, because the height alone had decided. **Re-priced
+  2026-09-14:** the first version asked for the bar *and a quarter of it* to the right of the
+  third, which cost Hot Cross Buns sideways nearly half its height (55 % of the stage, and the
+  rotation cases said so on CI). The next note is a fixed size on the staff, not a share of the
+  bar it starts, and the bar may start at the quarter; priced so, the same guarantee costs that
+  piece about a fifth of its height and Twinkle nothing. The stage says which term decided in
+  `data-fit` — `height`, `read-ahead` or `width` — so a test can tell a sheet short of the
+  height on purpose from one short by mistake.
 - The chunk is engraved at the bars' **natural widths**: the engraver's "unstretched" last
   system is still widened by up to 1.4 (`LastSystemMaxScalingFactor`), and a bar 40 % wider
   than its notes need is 40 % of the read-ahead spent on air (`OsmdView.naturalLastSystem`).
@@ -1025,7 +1051,7 @@ diagnoses of the first one earlier in the week.
 | §3.2 the piece's height | The fit reserved the *tallest stave span in the piece* plus the upper quartile of the overhangs above plus the upper quartile of the overhangs below — three different systems' worst cases added together, so the number was a height no system in the piece has. Chopin's Nocturne op. 27 no. 1 at 342 x 740: 505 px reserved, tallest system 463, typical 458; the sheet drawn at 0.56 where 0.71 fits, the staves covering 54 % of the screen. It is also half of "58 % on one run and 90 % on the next" — until the probe answers the tallest window *seen* stands in (313 px here), so its arrival was a 39 % shrink rather than a small correction | **done** — `pieceExtent`, the upper quartile of the systems' own extents, which is what §3.2 step 3 always said. Measured after: 63 % of the width at 342 and 64 % at 360, identical over three runs at each size; Hot Cross Buns unchanged at 96 % and 97 % |
 | §3.3 / §10 a turn at one bar per window | `updateReadAhead` answers "have the slots changed", and at one bar per window the answer is no whichever way up the phone is — so `stageChanged` only re-fitted and the sheet stayed the sideways sliding chunk. Hot Cross Buns turned upright while paused kept its three-bar 2,340 px page and drew **34 px of music into a 662 px stage**, and stayed there, because in Wait mode paused there is no next note to redraw it. Four of the ten rotation cases passed anyway: they asserted the ink filled 80 % of the *width*, and a chunk squeezed to fit the width does fill the width | **done** — a width change redraws from the current step, so the range a step wants (`slideRangeFor` sideways, `windowFor` upright) is engraved for the stage that exists. The assertion now names what was engraved, not only how wide the ink came out |
 | §3.3 the frozen scale after a turn | Released only when the *arrangement* changed, which at one bar per window never happens — so a run frozen sideways kept that scale as a ceiling through the turn. And nothing anywhere put a freeze *back*: `updateReadAhead` set it to null with a comment saying the next render would take a new one, and no code did, so every run turned mid-piece finished with its scale free to move from window to window | **done** — released on any width change and re-taken 150 ms later while a run is on (`freezeAfterSettle`) |
-| §3.2 the arrangement is decided by a race | The count of systems comes from the probe's measurement, and `fitSlots` will not revisit it once the run has frozen — but the probe's *load* is deferred to idle and the freeze lands 150 ms after the run starts, so the freeze normally wins and the count is pinned at the two-system default. Twenty-eight of the corpus's forty-eight upright legs froze without a measurement. Twinkle at 342x740 then used 48 % of the height with the bottom half of the phone black, while the same piece at 360x760 used 84 % because the measurement happened to land one step earlier. The same piece looked different on consecutive opens | **open** — `score.arrange-race.spec.ts` states it and is `fixme`. Making the freeze wait for its measurement turns it green and roughly doubles the music on the screen for beginner pieces (Twinkle 48 %→83 %, Ode to Joy →86 %, Greensleeves →78 %), but it takes Satie's Gnossienne from two systems to four at 43 px staves and 53 % of the width, which `score.fill.spec` rejects. `chooseSlotCount` guards readability with a *predicted* drawn staff that is wrong by up to 40 % either way (Satie predicted 49 px and drew 43; the Petzold minuet predicted 44 px and drew 74), so the floor cannot be trusted to hold a bigger count. This wants measure-decide-remeasure, not a better constant |
+| §3.2 the arrangement is decided by a race | The count of systems comes from the probe's measurement, and `fitSlots` will not revisit it once the run has frozen — but the probe's *load* is deferred to idle and the freeze lands 150 ms after the run starts, so the freeze normally wins and the count is pinned at the two-system default. Twenty-eight of the corpus's forty-eight upright legs froze without a measurement. Twinkle at 342x740 then used 48 % of the height with the bottom half of the phone black, while the same piece at 360x760 used 84 % because the measurement happened to land one step earlier. The same piece looked different on consecutive opens | **done (2026-09-14)** — the freeze waits for the measurement, bounded (`FREEZE_WAIT_FOR_MEASURE_MS`), and asks for it directly rather than leaving it to idle; a pending freeze pins the count only once a note has been played. The Satie problem that blocked the one-line fix — a predicted 49 px stave drawn at 43 across 53 % of the width — is answered by measuring after the re-engrave: a drawn stave under the floor, or systems height-bound to under `SLOT_WIDTH_FLOOR` of the width, lower the count by one and remember it (`slotCeiling`). `score.arrange-race.spec.ts` runs; `score.fill.spec` still holds the width floor |
 | §3.2 a narrow system sits hard left | `centredInset` refused to centre any window `mayStretch` permitted, reasoning that music allowed to fill the width already sits where it should. Permission is not the same as having filled it: OSMD may decline the stretch and engrave the bar at its natural width, which is what the owner asked for, and the leftover then goes entirely to the right margin. The 6/8 tuplet fixture upright drew 209 px of music on a 338 px stage with 7 px before it and 122 px after it | **done** — the guard is gone, and `CENTRE_WHEN_SPARE` alone decides, which is what it was written for. Purely positional: the ink is 209 px wide either way. One `score.spec` screenshot moves, and it is the same fixture; a first reading of this claimed the *engraving* changed (324 px of ink to 209 px) and that was wrong — the comparison was against a local `-win32.png` artefact written before the size machine was fixed, three renderer commits stale. `score.density.spec.ts` now asserts the position structurally, so the proof does not depend on one machine's fonts and runs in CI where the screenshots do not |
 
 Two further things the walk turned up and did **not** fix, both left for the owner:

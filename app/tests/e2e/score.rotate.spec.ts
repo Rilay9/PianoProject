@@ -54,6 +54,8 @@ const SIZES = [
 const FILLS_WIDTH = 0.8;
 /** And of its height, sideways, where the height is the only limit. */
 const FILLS_HEIGHT_SIDEWAYS = 0.7;
+/** The renderer's own floor for a drawn stave (`08` §4, `MIN_STAFF_PX`). */
+const MIN_STAFF_PX = 40;
 /** The handoff's allowance for the refit to land after a turn. */
 const AFTER_TURN_MS = 30_000;
 /** How long one step may take to be judged and drawn. */
@@ -96,6 +98,10 @@ interface Shot {
   stage: { left: number; right: number; width: number; height: number } | null;
   readAhead: string | null;
   layout: string | null;
+  /** Which term of the fit decided the size: `height`, `read-ahead` or `width`. */
+  fit: string | null;
+  /** The shortest stave drawn in the front slot, in pixels on the glass. */
+  staff: number;
   slots: SlotShot[];
   viewport: { width: number; height: number };
 }
@@ -213,12 +219,20 @@ async function shoot(page: Page): Promise<Shot> {
           ink: inkOf(el),
         };
       });
+    // The stave's own height, from the five lines: the floor the fit keeps.
+    let staff = Infinity;
+    for (const stave of fronts[0]?.querySelectorAll<SVGGraphicsElement>('.staffline') ?? []) {
+      const r = stave.getBoundingClientRect();
+      if (r.height > 0) staff = Math.min(staff, r.height);
+    }
     return {
       stage: box
         ? { left: box.left, right: box.right, width: box.width, height: box.height }
         : null,
       readAhead: view?.dataset.readAhead ?? null,
       layout: view?.dataset.layout ?? null,
+      fit: view?.dataset.fit ?? null,
+      staff: Number.isFinite(staff) ? staff : 0,
       slots,
       viewport: { width: window.innerWidth, height: window.innerHeight },
     };
@@ -305,8 +319,19 @@ const sidewaysSliding: Verdict = (shot) => {
         `the engraver's page is ${px(front.pageWidth)} on a ${px(stage.width)} stage, ` +
           'so there is nothing to slide',
       );
-    if (front.ink.height < stage.height * FILLS_HEIGHT_SIDEWAYS)
-      notes.push(`the ink fills ${pct(front.ink.height, stage.height)} of the height`);
+    // The height, unless the read-ahead priced it. A wide bar has to fit on
+    // the glass with the next bar's first note after it (`readAheadScale`),
+    // and on a piece whose widest bar is most of the stage that costs
+    // height — Hot Cross Buns' bar of eight quavers, sideways, is drawn short
+    // of the stage's top and bottom *on purpose*. What must then hold is that
+    // the fit says so, and that the stave has not gone under the readable
+    // floor the cap gives way to (`08` §4, `MIN_STAFF_PX`).
+    if (front.ink.height < stage.height * FILLS_HEIGHT_SIDEWAYS) {
+      if (shot.fit !== 'read-ahead')
+        notes.push(`the ink fills ${pct(front.ink.height, stage.height)} of the height and the fit says ${String(shot.fit)} decided it`);
+      else if (shot.staff < MIN_STAFF_PX)
+        notes.push(`the read-ahead drew the stave ${px(shot.staff)} tall, under the ${px(MIN_STAFF_PX)} floor`);
+    }
   }
   return notes.length === 0 ? 'ok' : notes.join('; ');
 };

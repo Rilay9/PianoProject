@@ -310,6 +310,11 @@ test.describe('score screen in landscape', () => {
       test(`${bars} bar${bars === 1 ? '' : 's'} per window, drawn`, async ({ page }) => {
         await open(page);
         await setBars(page, bars);
+        // The settled size, not the one the first chunk was fitted to: the
+        // piece's measurement lands on idle and re-fits once, and a picture
+        // taken before it is of a sheet that is about to change.
+        await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
+        await page.waitForTimeout(300);
         await expect(page.locator('section[data-screen="score"]')).toHaveScreenshot(
           `score-landscape-${bars}bar.png`,
           { maxDiffPixelRatio: 0.02 },

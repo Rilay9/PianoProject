@@ -109,29 +109,18 @@ test.describe('score screen', () => {
     // It does not vanish while the learner is still setting up…
     await page.waitForTimeout(4_000);
     await expect(bar).toHaveAttribute('data-visible', 'true');
-    // …but it gets out of the way once the piece is running (docs/04 §5) —
-    // *if* the music reaches its row. One size for the piece (P21e A2) means a
-    // piece whose tallest window is taller than this one is drawn short of
-    // the stage's bottom, and then the bar covers nothing and rightly stays.
+    // …but it gets out of the way once the piece is running (docs/04 §5).
+    //
+    // Whether or not the music reaches its row. This used to fold only when
+    // the music did, and skip the assertion otherwise — which left the test
+    // asserting the *opposite* of decision 5 whenever the sheet stopped short
+    // of the bar, and the read-ahead cap (`readAheadScale`) made that the
+    // ordinary case for this piece sideways. Decision 5 is "just always fade
+    // it", and the test after this one is its other half.
     await page.locator('#score-play').click();
-    await page.waitForTimeout(1_500);
-    const reaches = await page.evaluate(() => {
-      // The bar's top, not the stage's bottom — the same edge the screen
-      // measures. During a run the stage is extended underneath the bar to
-      // win the room, so its bottom edge is behind the bar: asking whether
-      // the music reached *that* said no while the bass staff was already
-      // covered, here and in the app.
-      const stage = document.querySelector('#score-stage')?.getBoundingClientRect();
-      const bar = document.querySelector('#score-bar')?.getBoundingClientRect();
-      const music = document.querySelector('#score-stage .score-buffer.is-cursor svg')?.getBoundingClientRect();
-      if (!stage || !music) return false;
-      const bottom = bar && bar.height > 0 ? Math.min(stage.bottom, bar.top) : stage.bottom;
-      return music.bottom >= bottom - 24;
-    });
-    if (reaches) {
-      await expect(bar).toHaveAttribute('data-visible', 'false', { timeout: 8_000 });
-      await page.locator('#score-stage').click({ position: { x: 5, y: 5 } });
-    }
+    await expect(bar).toHaveAttribute('data-visible', 'false', { timeout: HIDE_MS + 8_000 });
+    // §9.34: one tap on the sheet brings it back, always.
+    await page.locator('#score-stage').click({ position: { x: 5, y: 5 } });
     await expect(bar).toHaveAttribute('data-visible', 'true');
   });
 

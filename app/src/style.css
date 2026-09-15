@@ -832,7 +832,13 @@ body {
     white-space: nowrap;
   }
 
-  .screen--score .score-strip:not([data-keys='ribbon']) {
+  /* On the *host*, not on the strip. The bar floats `bottom: var(--strip-height)`
+     above the strip and the stage stops `--score-bar-h` above that, and both
+     read the variable from the screen, not from a sibling — so a value set on
+     the strip alone left the bar 72 px up over a 56 px strip: a 16 px gap
+     under the bar, and 16 px of stage behind it. At rest the fit fills the
+     stage, so Twinkle's ledger-line C4s were drawn under the control bar. */
+  .screen--score:has(.score-strip:not([data-keys='ribbon'])) {
     --strip-height: 56px;
   }
 
@@ -3177,8 +3183,10 @@ input[type='checkbox'] {
   color: var(--key-wrong);
 }
 
-/* The host gives the ribbon its 32 px and the strip its 72 (56 sideways). */
-.score-strip[data-keys='ribbon'] {
+/* The host gives the ribbon its 32 px and the strip its 72 (56 sideways) —
+   set on the host, for the reason given beside the sideways rule: the bar and
+   the stage read this too, and a variable on the strip never reaches them. */
+.screen--score:has(.score-strip[data-keys='ribbon']) {
   --strip-height: 32px;
 }
 

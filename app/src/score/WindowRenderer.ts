@@ -71,6 +71,12 @@ export const SCROLL_TARGET_MAX = 0.4;
  * A third of the way across, so about two bars of what is coming stay to its
  * right. The same fraction the scroll layout holds vertically, for the same
  * reason: reading happens ahead of playing.
+ *
+ * A third is where a bar *starts* when there is room for it. A bar wide
+ * enough that a third of the way across leaves the next bar's first note off
+ * the glass starts further left, as far as `SLIDE_TARGET_MIN`, so that the
+ * next note stays on (`slideToStep`). The band the cursor is held in is
+ * therefore `MIN`..`MAX`, and `sequence.spec` asserts the same two numbers.
  */
 const SLIDE_TARGET_FRACTION = 0.34;
 export const SLIDE_TARGET_MIN = 0.25;
@@ -96,7 +102,8 @@ const SLIDE_READ_AHEAD_BARS = 2;
 
 /**
  * How much of the *next* bar must be on the glass while a bar is played,
- * sideways, as a share of a bar's natural width.
+ * sideways, in staff heights: the barline, the padding after it, and the
+ * first note head.
  *
  * The owner's requirement, in his words: the learner must be able to see at
  * least the beginning of the next music while playing the current bar,
@@ -108,12 +115,23 @@ const SLIDE_READ_AHEAD_BARS = 2;
  * 876 px wide: the bar being played ran off the right edge, and the next
  * bar started 427 px past it.
  *
- * A quarter of a bar is its first beat: the note the eye needs next, and
- * enough of the bar to see what kind of bar it is. Against the *widest* bar
- * the piece has, so the size is decided once and holds for the whole run
- * (`08` §9 P1), and every narrower bar shows more.
+ * The first attempt asked for a *quarter of the bar* on top of the bar
+ * itself, all of it to the right of the one-third target. On Hot Cross Buns
+ * that priced the read-ahead at nearly half the height — the sheet fell to
+ * 55 % of the stage sideways, and the rotation cases that ask the music to
+ * fill the screen said so on CI. What the eye needs is the next *note*, and
+ * a note is a fixed size on the staff, not a share of the bar it starts; and
+ * the bar may start as far left as `SLIDE_TARGET_MIN`, which is what that
+ * number is for. Priced that way the cap costs Hot Cross Buns a fifth of its
+ * height rather than half, and Twinkle nothing. Against the *widest* bar the
+ * piece has, so the size is decided once and holds for the whole run (`08`
+ * §9 P1), and every narrower bar shows more.
+ *
+ * Half a staff: the engraver's padding after a barline is under a staff
+ * space, a note head is a little over one, and the barline itself a hair.
+ * Measured on the drawn chunk rather than derived, see `readAheadScale`.
  */
-const NEXT_BAR_PEEK = 0.25;
+const NEXT_NOTE_PEEK_STAVES = 0.5;
 
 /**
  * Bars drawn to the *left* of the window, sideways (P21e A3).
@@ -191,6 +209,46 @@ const MAX_BAR_WIDTH_IN_STAVES = 8;
 const CENTRE_WHEN_SPARE = 0.25;
 
 const SLOT_GAP_PX = 24;
+
+/**
+ * How long a run's freeze waits for the piece to be measured before taking
+ * whatever size the first window gave, in milliseconds.
+ *
+ * The arrangement — how many systems, at what size — comes from the probe's
+ * measurement of the piece, and the probe loads on idle, after the first
+ * draw. A run used to freeze 150 ms after Play whether or not that had
+ * happened, and it mostly had not: twenty-eight of the corpus's forty-eight
+ * upright legs froze blind, at the two-system default, and Twinkle opened
+ * at 48 % of the phone's height on one tap and 84 % on the next (`08` §3.2).
+ * So the freeze now waits for the measurement — bounded, because a piece
+ * whose probe takes longer than this on the phone is better frozen at the
+ * first window's size than left free to change while it is being played.
+ */
+const FREEZE_WAIT_FOR_MEASURE_MS = 3_000;
+
+/** The settle before a freeze: the stage takes the bar's row when a run starts. */
+const FREEZE_SETTLE_MS = 150;
+
+/** The longest the piece's measurement waits for an idle moment (`scheduleMeasure`). */
+const MEASURE_IDLE_TIMEOUT_MS = 600;
+
+/**
+ * The least of the stage's width a system may use before the count of
+ * systems is one too many.
+ *
+ * More systems is more music only while the width has a say in their size.
+ * Once the height alone sizes them, every extra system shrinks all of them
+ * into a column with black either side: on Satie's Gnossienne upright, four
+ * systems used 55 % of the width and three used 93 %, at a stave twice the
+ * height (`08` §3.2, the table). So a count whose systems are height-bound
+ * to under six tenths of the width gives way to the count below it. Six
+ * tenths, not more: the owner's rule is that more music on the screen is
+ * worth more than bigger notes, so two systems at two thirds of a tablet's
+ * width are kept, and only the column — Satie's 55 against 78 and up for
+ * every other piece in that table — is refused. `score.fill.spec`'s own
+ * floor is 55.
+ */
+const SLOT_WIDTH_FLOOR = 0.6;
 
 /** Manual scrolling suspends auto-scroll for this long (docs §5). */
 export const MANUAL_SCROLL_PAUSE_MS = 5000;
@@ -481,6 +539,19 @@ export class WindowRenderer {
   /** The MusicXML, kept so the probe can load it lazily. */
   private probeSource = '';
   private probeLoading = false;
+  /** The probe's load in flight, so two callers share one rather than racing two. */
+  private probeLoad: Promise<boolean> | null = null;
+  /**
+   * The most systems the *drawn* stave has proved readable, for one zoom and
+   * one stage width; `chooseSlotCount` predicts the stave from the probe and
+   * the prediction is wrong by up to 40 % either way (`08` §3.2), so the
+   * count it names is a ceiling that the drawn stave can lower, once, and
+   * the lowered count is remembered here so the prediction cannot raise it
+   * back on the next fit.
+   */
+  private slotCeiling: { count: number; zoom: number; width: number } | null = null;
+  /** The width the last fit sized against — the piece's, once measured — in view pixels. */
+  private fitWidth = 0;
   /** The widest window in the current fit, so every slot shares one offset. */
   private slotSpan = 0;
   /** What the probe measured, at `pieceInkZoom`; null until it has run. */
@@ -1085,12 +1156,24 @@ export class WindowRenderer {
     // `SLIDE_TARGET_MAX` was exported and never read: `sequence.spec` asserts
     // the same 0.45 from a local constant of its own, so the renderer and the
     // test agreed on a number neither of them shared. This is the first code
-    // that enforces it. `SLIDE_TARGET_MIN` is still referenced nowhere — the
-    // cursor drifting *left* of the band has never been a complaint, and a
-    // number nothing reads is worth deleting rather than keeping as a promise.
+    // that enforces it.
     const drifted = at > host.width * SLIDE_TARGET_MAX;
     if (step.sourceMeasureIndex === this.slidBar && !drifted) return;
-    const delta = host.width * SLIDE_TARGET_FRACTION - at;
+    // A third of the way across — unless that leaves the first note of the
+    // *next* bar off the right edge, in which case the bar starts further
+    // left, as far as `SLIDE_TARGET_MIN`. This is the other half of the
+    // read-ahead rule: `readAheadScale` sizes the sheet so the widest bar
+    // and the next note fit right of `MIN`, and this is what puts a wide bar
+    // there. A narrow bar keeps the third and the two bars of read-ahead
+    // beyond it; only the bar that needs the room takes it.
+    let target = host.width * SLIDE_TARGET_FRACTION;
+    const next = this.nextBarFirstElement(step);
+    if (next) {
+      const nextRight = this.measure(next).right - host.left;
+      const edge = host.width - FIT_INSET_PX;
+      target = Math.max(host.width * SLIDE_TARGET_MIN, Math.min(target, at + edge - nextRight));
+    }
+    const delta = target - at;
     // Never past the start: bar 1 sits where it was engraved rather than
     // being pushed into the middle of an otherwise empty stage.
     this.slideX = Math.min(0, this.slideX + delta);
@@ -1255,14 +1338,22 @@ export class WindowRenderer {
     // A run keeps the count it started with, whatever it was — including one.
     // The old `Math.max(2, …)` here would have forced a second system back on
     // during a run over a dense piece, which is the size change P1 forbids.
-    if (this.frozen || this.freezeHandle !== null) return Math.min(most, Math.max(1, this.slotCount));
+    //
+    // A *pending* freeze pins the count only once the learner has played
+    // something. The freeze waits for the piece's measurement (`FREEZE_WAIT_FOR_MEASURE_MS`),
+    // and the whole point of waiting is that the count can still change when
+    // it lands — before the first note, which is the one moment `08` §9.6
+    // allows a re-plan.
+    if (this.frozen || (this.freezeHandle !== null && this.currentStep > 0))
+      return Math.min(most, Math.max(1, this.slotCount));
     const stage = this.measure(this.el);
+    const ceiling = this.slotCeilingNow(stage.width);
     const height = this.held.zoom === this.zoomLevel ? Math.max(this.held.height, this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0) : 0;
     const width = Math.max(
       this.held.zoom === this.zoomLevel ? this.held.width : 0,
       this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.width ?? 0) : 0,
     );
-    if (!(height > 0) || !(width > 0) || stage.height <= 0 || stage.width <= 0) return 2;
+    if (!(height > 0) || !(width > 0) || stage.height <= 0 || stage.width <= 0) return Math.min(2, ceiling);
     // Show as much of the piece as the screen can hold, and let the size be
     // whatever that costs — down to the point where a staff stops being
     // readable, and no further.
@@ -1282,15 +1373,22 @@ export class WindowRenderer {
     // which is exactly the measurement that let this go unnoticed.
     const byWidth = (stage.width - FIT_MARGIN_PX) / width;
     const staff = this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.staff ?? 0) : 0;
-    for (let count = most; count > 1; count -= 1) {
+    for (let count = Math.min(most, ceiling); count > 1; count -= 1) {
       const perSlot = (stage.height - SLOT_GAP_PX * (count - 1)) / count;
       const scale = Math.min(byWidth, (perSlot - FIT_MARGIN_PX) / height);
       // Before the probe has measured, there is no staff to judge; two systems
       // is the old default and the fit is redone the moment it lands.
-      if (staff <= 0) return Math.min(2, most);
-      if (staff * scale >= MIN_STAFF_PX) return count;
+      if (staff <= 0) return Math.min(2, most, ceiling);
+      // Readable, and using the width (`SLOT_WIDTH_FLOOR`).
+      if (staff * scale >= MIN_STAFF_PX && scale * width >= SLOT_WIDTH_FLOOR * stage.width) return count;
     }
     return 1;
+  }
+
+  /** The ceiling the drawn stave set on the count, if it was set for this zoom and stage. */
+  private slotCeilingNow(stageWidth: number): number {
+    const c = this.slotCeiling;
+    return c && c.zoom === this.zoomLevel && c.width === Math.round(stageWidth) ? c.count : Infinity;
   }
 
   private blank(slot: Buffer): void {
@@ -1724,7 +1822,7 @@ export class WindowRenderer {
     // *Natural*, sideways: not the engraver's "unstretched", which still
     // widens the chunk by up to 1.4. The read-ahead is paid for out of the
     // width to the right of the bar being played, and a bar stretched by 40 %
-    // spends that on air between its own notes (`NEXT_BAR_PEEK`).
+    // spends that on air between its own notes (`NEXT_NOTE_PEEK_STAVES`).
     buffer.view.naturalLastSystem = this.sliding;
     buffer.view.setRange(range);
     buffer.view.render();
@@ -1797,7 +1895,7 @@ export class WindowRenderer {
     // sheet slides (P21c A2). The one width term sideways is the bar being
     // played and the first beat of the next, which must fit to the right of
     // the slide target or the read-ahead is nothing but a promise
-    // (`readAheadScale`, `NEXT_BAR_PEEK`).
+    // (`readAheadScale`, `NEXT_NOTE_PEEK_STAVES`).
     // Half the stage each in the slot arrangement, whether or not both are
     // drawn: the last window of a piece leaves the other slot blank, and
     // fitting the one that is left to the whole height doubled it — a pop
@@ -1825,7 +1923,37 @@ export class WindowRenderer {
     this.packSlots(boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX })));
     // The first fit is what tells the count: the widest and tallest window
     // are known now. A different answer redraws once, from the current step.
-    if (this.readAhead === 'slots' && !this.frozen && this.freezeHandle === null) {
+    // A pending freeze does not close this while the run is still at its
+    // first step: the freeze is waiting for the measurement precisely so
+    // that this can act on it (`FREEZE_WAIT_FOR_MEASURE_MS`).
+    if (this.readAhead === 'slots' && !this.frozen && (this.freezeHandle === null || this.currentStep <= 0)) {
+      // The stave as it was actually drawn, at this fit's scale. The count
+      // is chosen from a *prediction* — the probe's stave times the fit's
+      // scale — and the engraver sizes a system to the page it is laid on,
+      // so the prediction is off by up to 40 % either way: Satie's
+      // Gnossienne predicted 49 px at four systems and drew 39, under the
+      // floor, across half the width. This is the measurement after the
+      // re-engrave that `08` §3.2 said the fix needed: a drawn stave under
+      // the floor lowers the count by one, the lowered count is remembered
+      // (`slotCeiling`) so the prediction cannot put it back, and the redraw
+      // below measures again. It can only go down, so it settles.
+      if (this.currentStep <= 0 && this.slotCount > 1) {
+        let drawnStaff = Infinity;
+        for (const { slot } of boxes) {
+          const staff = staffHeightOf(slot.view);
+          if (staff > 0) drawnStaff = Math.min(drawnStaff, staff * scale);
+        }
+        // And the width, by the same measure `chooseSlotCount` predicts it
+        // with: the piece's own width at this scale, not a window's ink —
+        // a sparse window drawn at its natural width is narrow by choice
+        // (`mayStretch`), and that is no fault of the count.
+        const widthUsed = this.fitWidth * scale;
+        const tooSmall = Number.isFinite(drawnStaff) && drawnStaff < MIN_STAFF_PX - 0.5;
+        const tooNarrow = this.fitWidth > 0 && widthUsed < SLOT_WIDTH_FLOOR * available.width - 0.5;
+        if (tooSmall || tooNarrow) {
+          this.slotCeiling = { count: this.slotCount - 1, zoom: this.zoomLevel, width: Math.round(available.width) };
+        }
+      }
       const count = this.chooseSlotCount();
       // The page a slot was engraved on, against the page it should be on now.
       //
@@ -2308,16 +2436,32 @@ export class WindowRenderer {
    */
   private freezeAfterSettle(): void {
     if (this.frozen || this.freezeHandle !== null) return;
-    this.freezeHandle = window.setTimeout(() => {
+    const startedAt = performance.now();
+    const attempt = (): void => {
       this.freezeHandle = null;
       if (this.disposed || !this.running) return;
+      // Not before the piece has been measured, if that can be soon: the
+      // arrangement the run keeps should come from the piece, not from
+      // whichever window happened to be drawn first (`FREEZE_WAIT_FOR_MEASURE_MS`).
+      // The measurement is asked for directly rather than left to idle —
+      // a run is not idle — and applied by `fitSlots` when it lands, which
+      // may re-plan the systems once, before the first note.
+      const unmeasured = this.probe !== null && this.pieceInkZoom !== this.zoomLevel;
+      if (unmeasured && performance.now() - startedAt < FREEZE_WAIT_FOR_MEASURE_MS) {
+        void this.measurePiece().then(() => {
+          if (!this.disposed && this.running && !this.frozen && this.pieceInkZoom === this.zoomLevel) this.fitSlots();
+        });
+        this.freezeHandle = window.setTimeout(attempt, FREEZE_SETTLE_MS);
+        return;
+      }
       this.fitSlots();
       this.frozen = {
         scale: this.currentScale(),
         piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
         zoom: this.zoomLevel,
       };
-    }, 150);
+    };
+    this.freezeHandle = window.setTimeout(attempt, FREEZE_SETTLE_MS);
   }
 
   /** The scale the cursor slot is drawn at, from its transform; 0 if none. */
@@ -2380,17 +2524,23 @@ export class WindowRenderer {
     const height = piece ? Math.max(piece.height, nowHeight) : this.held.height;
     const width = piece ? Math.max(piece.width, nowWidth) : this.held.width;
     if (!(height > 0) || !(width > 0)) return null;
+    this.fitWidth = width;
     const byHeight = (available.height - FIT_MARGIN_PX) / height;
     // Sideways the height chooses the size, and the read-ahead caps it: the
-    // widest bar and a beat of the next have to fit right of the slide target
-    // (`NEXT_BAR_PEEK`). The widest bar the piece has once the probe has
-    // measured, the widest drawn so far until then — the same rule as the
-    // height, and for the same reason: one size, decided at the start.
+    // widest bar and the first note of the next have to fit right of the
+    // slide's leftmost target (`NEXT_NOTE_PEEK_STAVES`). The widest bar the
+    // piece has once the probe has measured, the widest drawn so far until
+    // then — the same rule as the height, and for the same reason: one size,
+    // decided at the start.
     const bar = piece ? Math.max(piece.bar, nowBar) : this.held.bar;
-    const fitted = this.sliding
-      ? Math.min(byHeight, readAheadScale(available.width, bar, piece?.staff ?? 0))
-      : Math.min((available.width - FIT_MARGIN_PX) / width, byHeight);
+    const byReadAhead = this.sliding ? readAheadScale(available.width, bar, piece?.staff ?? 0) : Infinity;
+    const byWidth = this.sliding ? Infinity : (available.width - FIT_MARGIN_PX) / width;
+    const fitted = Math.min(byHeight, byReadAhead, byWidth);
     if (!Number.isFinite(fitted) || fitted <= 0) return null;
+    // Which term decided, for the tests that ask why the music is the size
+    // it is: a sideways sheet short of the height is a fault unless the
+    // read-ahead priced it, and only the fit knows which.
+    this.el.dataset.fit = fitted === byHeight ? 'height' : fitted === byReadAhead ? 'read-ahead' : 'width';
     // During a run, the size it started at. A chunk a little taller than the
     // piece's measure — a fingering the engraver set higher over one high
     // note, a rare ledger line — keeps the size and lets that ink run into
@@ -2537,10 +2687,18 @@ export class WindowRenderer {
         if (!this.disposed && this.pieceInkZoom === this.zoomLevel) this.fitSlots();
       });
     };
+    // Idle, but not long: the first chunk is fitted to its own ink until the
+    // measurement lands, and a piece with a taller system elsewhere is then
+    // drawn smaller — Twinkle sideways at 4.9 then 3.2, a third smaller, and
+    // with a 1.5 s cap that jump came two seconds after the sheet appeared,
+    // on every open. Six tenths of a second keeps it out of the way of the
+    // first pre-render and brings the settled size in before the eye has
+    // finished reading the first bar. A run does not wait on this: its
+    // freeze asks for the measurement itself (`freezeAfterSettle`).
     this.measureHandle =
       typeof w.requestIdleCallback === 'function'
-        ? w.requestIdleCallback(run, { timeout: 1500 })
-        : window.setTimeout(run, 400);
+        ? w.requestIdleCallback(run, { timeout: MEASURE_IDLE_TIMEOUT_MS })
+        : window.setTimeout(run, MEASURE_IDLE_TIMEOUT_MS);
   }
 
   /**
@@ -2557,24 +2715,30 @@ export class WindowRenderer {
     if (!probe || this.pieceInkZoom === this.zoomLevel) return;
     if (!probe.isLoaded) {
       if (!this.probeSource) return;
-      this.probeLoading = true;
-      try {
-        const started = performance.now();
-        const source =
-          this.model.sourceMeasureCount > PROBE_MAX_BARS
-            ? trimMusicXml(this.probeSource, PROBE_MAX_BARS)
-            : this.probeSource;
-        recordRenderTiming('osmd.probe.trim', performance.now() - started);
-        await probe.load(source);
-      } catch {
-        // A piece the probe cannot load is measured the slow way, window by
-        // window, held and never released.
-        this.probe = null;
-        return;
-      } finally {
-        this.probeLoading = false;
-      }
-      if (this.disposed) return;
+      // One load, shared: the idle path and a run's freeze can both ask
+      // while it is in flight, and two `load`s on one engraver is a race.
+      this.probeLoad ??= (async (): Promise<boolean> => {
+        this.probeLoading = true;
+        try {
+          const started = performance.now();
+          const source =
+            this.model.sourceMeasureCount > PROBE_MAX_BARS
+              ? trimMusicXml(this.probeSource, PROBE_MAX_BARS)
+              : this.probeSource;
+          recordRenderTiming('osmd.probe.trim', performance.now() - started);
+          await probe.load(source);
+          return true;
+        } catch {
+          // A piece the probe cannot load is measured the slow way, window by
+          // window, held and never released.
+          this.probe = null;
+          return false;
+        } finally {
+          this.probeLoading = false;
+        }
+      })();
+      const loaded = await this.probeLoad;
+      if (!loaded || this.disposed) return;
     }
     this.measureLoaded();
   }
@@ -2690,6 +2854,24 @@ export class WindowRenderer {
       band.style.top = `${box.top - host.top + this.el.scrollTop - pad}px`;
       band.style.height = `${box.height + pad * 2}px`;
     }
+  }
+
+  /**
+   * The first drawn note of the bar after this step's, or nothing when that
+   * bar has no note on the sheet — the last bar of the piece, or a bar past
+   * the drawn range. Looks *forward* only: a neighbour borrowed from behind
+   * would be a bar the learner has already played.
+   */
+  private nextBarFirstElement(step: ScoreStep): SVGGElement | undefined {
+    const bar = step.sourceMeasureIndex + 1;
+    for (let i = step.index + 1; i < this.model.steps.length; i += 1) {
+      const candidate = this.model.steps[i];
+      if (!candidate || candidate.sourceMeasureIndex < bar) continue;
+      if (candidate.sourceMeasureIndex > bar) return undefined;
+      const found = this.firstElementOf(candidate);
+      if (found) return found;
+    }
+    return undefined;
   }
 
   private anchorElementFor(step: ScoreStep): SVGGElement | undefined {
@@ -2856,6 +3038,20 @@ function staffTopOf(view: OsmdView): number | null {
   return Number.isFinite(top) ? top : null;
 }
 
+/**
+ * The shortest stave this engraver drew, in CSS pixels at its zoom — the
+ * five lines, from the engraver's own boxes — or 0 when nothing is drawn.
+ * Times the fit's scale, this is the stave a person sees.
+ */
+function staffHeightOf(view: OsmdView): number {
+  let shortest = Infinity;
+  for (const line of staffLineBoxes(view)) {
+    const height = line.bottom - line.top;
+    if (height > 0) shortest = Math.min(shortest, height);
+  }
+  return Number.isFinite(shortest) ? shortest : 0;
+}
+
 /** How many staves a system has — two for a grand staff — from the engraver. */
 function stavesPerSystem(view: OsmdView): number {
   try {
@@ -3019,22 +3215,28 @@ function widestBarOf(view: OsmdView): number {
  * The largest scale at which the bar being played and the first beat of the
  * next both fit on the glass, sideways (`08` §4.1 CHUNK).
  *
- * The slide puts the first note of each bar `SLIDE_TARGET_FRACTION` of the
- * way across, so the room for the bar is what lies to the right of that,
- * less the inset. The bar needs its own natural width and `NEXT_BAR_PEEK`
- * of it again for the start of the next one. Never below the size at which
- * a staff stops being readable: `MIN_STAFF_PX` is the floor everything
- * gives way to, the read-ahead included — a bar of demisemiquavers on a
- * phone is drawn readable and slid past.
+ * The slide puts the first note of a bar that needs the room
+ * `SLIDE_TARGET_MIN` of the way across (`slideToStep`), so the room for the
+ * bar is what lies to the right of that, less the inset. The bar needs its
+ * own natural width and `NEXT_NOTE_PEEK_STAVES` of the staff's height for
+ * the first note of the next one. Never below the size at which a staff
+ * stops being readable: `MIN_STAFF_PX` is the floor everything gives way to,
+ * the read-ahead included — a bar of demisemiquavers on a phone is drawn
+ * readable and slid past.
+ *
+ * `staff` is the piece's staff height in the same pixels as `widestBar`;
+ * with no staff measured yet the peek is a quarter of the bar instead, a
+ * beat, which is what the rule asked for before the staff was known.
  *
  * `Infinity` when nothing is known — no bar measured yet, or no stage — so a
  * caller taking the minimum with the height's answer gets the height's.
  */
 export function readAheadScale(stageWidth: number, widestBar: number, staff: number): number {
   if (!(stageWidth > 0) || !(widestBar > 0)) return Infinity;
-  const room = stageWidth * (1 - SLIDE_TARGET_FRACTION) - FIT_INSET_PX;
+  const room = stageWidth * (1 - SLIDE_TARGET_MIN) - FIT_INSET_PX;
   if (!(room > 0)) return Infinity;
-  const cap = room / (widestBar * (1 + NEXT_BAR_PEEK));
+  const peek = staff > 0 ? staff * NEXT_NOTE_PEEK_STAVES : widestBar * 0.25;
+  const cap = room / (widestBar + peek);
   const floor = staff > 0 ? MIN_STAFF_PX / staff : 0;
   return Math.max(cap, floor);
 }
