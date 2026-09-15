@@ -71,9 +71,17 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
 4. **Chords and reading are two literacies.** Classical reading (notes on staff) and chord-
    symbol literacy (C, Am, F, G7…) are taught side by side from Stage 2. This is Bill Hilton's
    core argument and it is right: a pianist who can do both can play anything.
-5. **Many options, one requirement.** Each lesson offers ≥ 3 songs and ≥ 2 exercises; the
-   learner passes the lesson by mastering **any one song + any one exercise** (configurable to
-   "two songs" for thoroughness). Options span genres so the learner stays motivated.
+5. **A few right options, one requirement.** Each lesson offers three to six songs and at
+   least two exercises; the learner passes the lesson by mastering **any one song + any one
+   exercise** (configurable to "two songs" for thoroughness). The songs on a rung are chosen —
+   named in the rung's row below, checked to convert without losing notes, and at the rung's
+   level — not accumulated: a rung is a short list, the **Library** is the long one, filtered
+   by track and level, and a lesson that wants more says "more at this level under X in the
+   Library". Three module rungs are lists by nature and stay so — the holiday songs, the hymns
+   and the classical shelf. (Revised 2026-09-15: for a day the build had placed every song in
+   the library on some rung, which put thirty to seventy pieces on the classical rungs; see
+   `handoff-2026-09-09.md` §5aj–§5ak. The per-rung tables below name the plan's intended
+   pieces; `docs/generated/ladder.md` is what the build offers today.)
 6. **Spaced review.** Passed items come back in a "Review" queue (1 day, 3 days, 1 week,
    3 weeks). Mastered items appear in "Repertoire" for occasional replay.
 7. **Ear before theory before name.** Every theory concept has an ear-training drill the

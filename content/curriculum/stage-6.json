@@ -35,56 +35,12 @@
                 "drill.pedal.changes"
               ],
               "songOptions": [
-                "song.classical.chopin-prelude-op28-7.nifc",
-                "song.classical.chopin-prelude-op28-6.nifc",
-                "song.classical.chopin-prelude-op28-20.nifc",
-                "song.classical.chopin-prelude-op28-4.nifc",
-                "song.classical.chopin-prelude-op28-4",
-                "song.classical.chopin-prelude-op28-2.nifc",
-                "song.classical.chopin-mazurka-op68-3.nifc",
-                "song.classical.chopin-mazurka-op68-2.nifc",
-                "song.classical.chopin-ecossaise-op72-1.nifc",
-                "song.classical.chopin-ecossaise-op72-2.nifc",
-                "song.classical.bach-air-on-g-string",
                 "song.classical.bach-wtc1-prelude-1",
-                "song.classical.chopin-nocturne-op9-2.easy",
-                "song.classical.satie-gymnopedie-1",
-                "song.classical.tchaikovsky-swan-lake",
-                "song.classical.mozart-lacrimosa",
-                "song.classical.pachelbel-canon-d",
-                "song.classical.beethoven-fur-elise",
+                "song.classical.chopin-prelude-op28-4",
+                "song.classical.chopin-prelude-op28-7.nifc",
                 "song.classical.chopin-waltz-a-minor",
-                "song.classical.tchaikovsky-sugar-plum",
-                "song.classical.grieg-arietta-from-lyric-pieces-op-12-no-1-by-edvard-grieg.pdmx",
-                "song.classical.grieg-grieg-lyric-pieces-book-1-op-12-no-5-folk-melody.pdmx",
-                "song.classical.grieg-ase-s-tod.pdmx",
-                "song.classical.scarlatti-d-scarlatti-sonata-a-major-k-323.pdmx",
-                "song.classical.satie-erik-satie-gnossienne-no-3.pdmx",
-                "song.classical.tchaikovsky-waltz-flowers",
-                "song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx",
-                "song.classical.chopin-ecossaise-op72-3.nifc",
-                "song.classical.chopin-mazurka-op17-2.nifc",
-                "song.classical.chopin-mazurka-op17-3.nifc",
-                "song.classical.chopin-mazurka-op24-1.nifc",
-                "song.classical.chopin-mazurka-op24-2.nifc",
-                "song.classical.chopin-mazurka-op24-3.nifc",
-                "song.classical.chopin-mazurka-op24-4.nifc",
-                "song.classical.chopin-mazurka-op30-1.nifc",
-                "song.classical.chopin-mazurka-op30-2.nifc",
-                "song.classical.chopin-mazurka-op30-3.nifc",
-                "song.classical.chopin-mazurka-op30-4.nifc",
-                "song.classical.chopin-mazurka-op33-3.nifc",
-                "song.classical.chopin-mazurka-op41-3.nifc",
-                "song.classical.chopin-mazurka-op41-4.nifc",
-                "song.classical.chopin-mazurka-op6-2.nifc",
-                "song.classical.chopin-mazurka-op63-3.nifc",
-                "song.classical.chopin-mazurka-op67-1.nifc",
-                "song.classical.chopin-mazurka-op67-3.nifc",
-                "song.classical.chopin-mazurka-op67-4.nifc",
-                "song.classical.chopin-mazurka-op68-1.nifc",
-                "song.classical.chopin-mazurka-op68-4.nifc",
-                "song.classical.chopin-mazurka-op7-2.nifc",
-                "song.classical.chopin-mazurka-op7-4.nifc"
+                "song.classical.satie-gymnopedie-1",
+                "song.classical.beethoven-fur-elise"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -98,7 +54,7 @@
               "estimatedDays": 120,
               "levelBand": [
                 3.2,
-                7.4
+                6.4
               ],
               "finder": {
                 "skill": "bringing a melody out above its own accompaniment and stretching the time",
@@ -152,16 +108,12 @@
                 "exercise.syncopation.tied-across-bar"
               ],
               "songOptions": [
-                "song.ragtime.joplin-entertainer.kern",
-                "song.ragtime.joplin-peacherine-rag",
-                "song.ragtime.joplin-easy-winners",
                 "song.ragtime.joplin-school-of-ragtime",
+                "song.ragtime.joplin-easy-winners",
+                "song.ragtime.joplin-peacherine-rag",
                 "song.ragtime.joplin-swipesy-cakewalk",
                 "song.ragtime.joplin-sunflower-slow-drag",
-                "song.ragtime.joplin-weeping-willow",
-                "song.ragtime.joplin-the-favorite",
-                "song.ragtime.joplin-cleopha",
-                "song.ragtime.joplin-something-doing"
+                "song.ragtime.joplin-entertainer"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -311,15 +263,12 @@
                 "exercise.ii-v-i.c.rootless"
               ],
               "songOptions": [
-                "song.pop.after-you-ve-gone.pdmx",
-                "song.pop.darktown-strutter-s-ball.pdmx",
-                "song.pop.darlene-love-baby-won-t-you-please-come-home.pdmx",
-                "song.pop.benny-goodman-louis-prima-rose-room.pdmx",
-                "song.classical.royal-garden-blues.pdmx",
-                "song.pop.the-memphis-blues.pdmx",
+                "song.pop.ray-henderson-bye-bye-blackbird.pdmx",
+                "song.jazz.django-reinhardt-limehouse-blues.pdmx",
                 "song.jazz.django-reinhardt-tiger-rag.pdmx",
-                "song.folk.muskrat-ramble.pdmx",
-                "song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx"
+                "song.pop.benny-goodman-louis-prima-rose-room.pdmx",
+                "song.pop.darktown-strutter-s-ball.pdmx",
+                "song.classical.royal-garden-blues.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -333,7 +282,7 @@
               ],
               "estimatedDays": 90,
               "levelBand": [
-                3.8,
+                3.2,
                 6.4
               ],
               "finder": {
@@ -450,21 +399,12 @@
                 "exercise.loop4.b.inversions"
               ],
               "songOptions": [
-                "song.pop.misc-soundtrack-how-to-train-your-dragon-flying-theme.pdmx",
                 "song.pop.coldplay-clocks-coldplay.pdmx",
-                "song.pop.misc-computer-games-lazy-afternoons-kingdom-hearts-ii-piano.pdmx",
                 "song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx",
-                "song.pop.misc-soundtrack-westworld-sweetwater.pdmx",
                 "song.pop.abba-dancing-queen.pdmx",
-                "song.pop.sampha-sampha-no-one-knows-me-like-the-piano.pdmx",
-                "song.pop.chancho-en-piedra-mandinga.pdmx",
+                "song.pop.misc-soundtrack-how-to-train-your-dragon-flying-theme.pdmx",
                 "song.pop.toby-fox-fallen-down-reprise-undertale-easy.pdmx",
-                "song.pop.yojiro-noda-fireworks-festival-weathering-with-you.pdmx",
-                "song.pop.misc-television-the-lonely-man-theme.pdmx",
-                "song.folk.je-te-laisserai-des-mots-patrick-watson.pdmx",
-                "song.folk.bruno-major-nothing-wip.pdmx",
-                "song.folk.john-denver-annie-s-song.pdmx",
-                "song.folk.margaritaville-keyboard-part.pdmx"
+                "song.folk.john-denver-annie-s-song.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -479,7 +419,7 @@
               "estimatedDays": 90,
               "levelBand": [
                 5.4,
-                6.6
+                6.4
               ],
               "finder": {
                 "skill": "voicing the four-chord loop so the bass line walks between the chords",

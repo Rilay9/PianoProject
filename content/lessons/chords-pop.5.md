@@ -6,7 +6,7 @@ videos:
   - label: "The 3 Essential 7th Chords Explained on Piano: Major 7, Minor 7 & Dominant 7 (Step-by-Step)"
     url: "https://www.youtube.com/watch?v=Ku-kFUSMWw4"
     teacher: "Olympia Piano"
-readingTime: 2
+readingTime: 3
 ---
 
 Triads are three notes and they are slightly plain. Adding a fourth note is what
@@ -38,8 +38,11 @@ rung where you become useful to a singer.
 **Playing while singing.** Simplify the piano until you can do both. A held
 chord and a clear bass note beats an intricate part you cannot sing over.
 
-**Repertoire for this rung.** *Greensleeves* with jazzier chords; *Row Row Row
-Your Boat* in 6/8 as an arpeggio study; and imported lead sheets of your own.
+**Repertoire for this rung.** Six options. *Greensleeves* in 6/8 with its
+jazzier chords, and the full setting beside it; *Row Row Row Your Boat* as an
+arpeggio study; *Lavender's Blue* for a broken-chord accompaniment under a
+slow tune; and two ballads that live on seventh chords, *Your Song* and
+*Before You Go*. And imported lead sheets of your own.
 
 **Common mistake.** Adding sevenths to every chord because they sound
 sophisticated. A plain triad in the right place is stronger; save the colour for

@@ -44,14 +44,12 @@ and keeps it there, do not try to work out where the notes coincide; learn
 each hand until it is independent, then put them together and let them
 disagree. Counting will not save you, and it is not supposed to.
 
-**What to play.** 37 options, across five kinds of Chopin and a shelf of others: four Chopin preludes
-at full difficulty, four nocturnes (including the C minor Op. 48 No. 1, the
-most dramatic he wrote), four waltzes, three études, the Berceuse — sixty-nine
-bars of variation over a left hand that barely changes — and the *Military*
-polonaise. Beside those, Debussy's *Clair de lune* and first Arabesque, Liszt's
-third *Liebestraum*, the *Rondo alla turca*, and the *Moonlight* finale, which
-is the fastest thing on the rung and the best argument for the metronome method
-above.
+**What to play.** Six options: the *Rondo alla turca*; the *Moonlight* finale,
+which is the fastest thing on the rung and the best argument for the metronome
+method above; Chopin's Waltz Op. 64 No. 2 and Nocturne Op. 9 No. 1; and
+Debussy's *Clair de lune* and first Arabesque. The full-difficulty preludes,
+the polonaises, the Berceuse and the études are under Classical in the
+Library.
 
 **Common mistake.** Starting an étude at half tempo hands together. Hands
 separately, short figures, at the tempo you actually want — that is the whole

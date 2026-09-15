@@ -29,6 +29,7 @@ import warnings
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
+from xml.etree import ElementTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -82,6 +83,191 @@ class ConversionResult:
     fingerings: int
     harmonies: int
     warnings: list[str] = field(default_factory=list)
+    #: Note events counted in the source file itself, or None for a format
+    #: this module cannot count without music21. See `source_note_events`.
+    source_notes: int | None = None
+    #: Note events in the written score. Unlike `notes` above, a chord symbol
+    #: printed over the staff is not one of them, so this is the number the
+    #: source count can be compared against.
+    note_events: int = 0
+
+
+# ---------------------------------------------------------------------------
+# counting note events
+# ---------------------------------------------------------------------------
+#
+# Nothing in the pipeline used to count notes, so two ways of losing them ran
+# for months without being seen: music21's Humdrum parser drops most of a file
+# whose spines split inside a split, and `collapse_to_two` below used to drop
+# every note of a third part. The source is therefore counted here, without
+# music21, and compared with what came out. See docs/03 §3.
+
+#: How much of a source may go missing before the conversion is refused rather
+#: than merely noted. Measured across every imported score: the files that lose
+#: a note or two at a spine split lose well under one percent, and the two
+#: mechanisms that lose real music lose a third of the file and more. The limit
+#: sits in the empty gap between the two populations.
+NOTE_LOSS_LIMIT = 0.02
+
+#: A pitch letter in a `**kern` token. An `r` is a rest and never a pitch.
+KERN_PITCH = re.compile(r"[a-gA-G]")
+
+#: Humdrum spine-path records: a split, a merge, an exchange, a new spine, an end.
+KERN_SPINE_PATH = frozenset({"*^", "*v", "*-", "*+", "*x"})
+
+
+def kern_note_events(text: str) -> int:
+    """
+    Note events in the `**kern` spines of a Humdrum file.
+
+    One per data token that carries a pitch: a chord — pitches separated by a
+    space inside one token — is one event, and a rest or a null token is none.
+    A rest may carry a position letter (`8rff`), which is not a pitch, so the
+    `r` decides and not the letters around it.
+
+    Spine paths are followed so that the interpretation of each column is
+    known: a `**dynam` or `**text` spine's tokens are full of the letters a–g
+    and none of them is a note.
+    """
+    types: list[str] = []
+    count = 0
+    for line in text.splitlines():
+        if not line or line.startswith("!"):
+            continue
+        tokens = line.split("\t")
+        if line.startswith("**"):
+            types = tokens
+            continue
+        if line.startswith("*"):
+            if any(token in KERN_SPINE_PATH for token in tokens):
+                moved: list[str] = []
+                index = 0
+                while index < len(tokens):
+                    token = tokens[index]
+                    kind = types[index] if index < len(types) else "**?"
+                    if token == "*^":
+                        moved += [kind, kind]
+                    elif token == "*v":
+                        # A run of `*v` on one line merges into a single spine.
+                        moved.append(kind)
+                        while index + 1 < len(tokens) and tokens[index + 1] == "*v":
+                            index += 1
+                    elif token == "*-":
+                        pass
+                    elif token.startswith("**"):
+                        moved.append(token)
+                    else:
+                        moved.append(kind)
+                    index += 1
+                types = moved
+            continue
+        if line.startswith("="):
+            continue
+        for index, token in enumerate(tokens):
+            if index < len(types) and types[index] != "**kern":
+                continue
+            if token in (".", ""):
+                continue
+            if any("r" not in part and KERN_PITCH.search(part) for part in token.split()):
+                count += 1
+    return count
+
+
+def musicxml_note_events(data: bytes) -> int:
+    """
+    Note events in a MusicXML document: every `<note>` that is neither a rest
+    nor a continuation of the chord before it.
+    """
+    root = ElementTree.fromstring(data)
+    count = 0
+    for element in root.iter():
+        if element.tag.split("}")[-1] != "note":
+            continue
+        children = {child.tag.split("}")[-1] for child in element}
+        if "rest" in children or "chord" in children:
+            continue
+        count += 1
+    return count
+
+
+def musicxml_bytes(path: Path) -> bytes:
+    """The MusicXML of a `.xml`/`.musicxml` file, or of an `.mxl`'s rootfile."""
+    if path.suffix.lower() != ".mxl":
+        return path.read_bytes()
+    with zipfile.ZipFile(path) as archive:
+        names = [
+            name for name in archive.namelist()
+            if not name.startswith("META-INF/") and name.lower().endswith((".xml", ".musicxml"))
+        ]
+        try:
+            container = ElementTree.fromstring(archive.read("META-INF/container.xml"))
+        except (KeyError, ElementTree.ParseError):
+            pass
+        else:
+            rootfile = container.find(".//{*}rootfile")
+            named = rootfile.get("full-path") if rootfile is not None else None
+            if named and named in archive.namelist():
+                names = [named]
+        if not names:
+            raise ConversionError(f"{path}: no MusicXML inside the archive")
+        return archive.read(names[0])
+
+
+def source_note_events(path: Path) -> int | None:
+    """
+    Note events in the source file, counted without music21, or None when the
+    format is not one this can count.
+
+    `.abc`, `.ly` and `.mid` return None and are therefore never gated: ABC's
+    note count depends on how its voices and repeats are read, LilyPond reaches
+    the pipeline through a converter of its own, and a MIDI file has no notion
+    of a written note at all.
+    """
+    suffix = path.suffix.lower()
+    try:
+        if suffix == ".krn":
+            return kern_note_events(path.read_text(encoding="utf-8", errors="replace"))
+        if suffix in (".mxl", ".musicxml", ".xml"):
+            return musicxml_note_events(musicxml_bytes(path))
+    except (OSError, ConversionError, zipfile.BadZipFile, ElementTree.ParseError):
+        # A source this cannot read is the parser's problem to report. Saying
+        # "unknown" leaves the file ungated rather than refusing it for a
+        # reason that has nothing to do with its notes.
+        return None
+    return None
+
+
+def count_note_events(score: stream.Stream) -> int:
+    """
+    Sounding note events in a stream: a chord is one, a rest is none.
+
+    `harmony.ChordSymbol` is a Chord as far as music21 is concerned and so is
+    in `.notes`, but it is a letter name printed over the staff rather than
+    something the source counted as a note, and including it would let a lead
+    sheet's chord symbols paper over notes that had gone missing.
+    """
+    return len([n for n in score.recurse().notes if not isinstance(n, harmony.ChordSymbol)])
+
+
+def note_loss(source_notes: int | None, note_events: int) -> tuple[str, str]:
+    """
+    What a conversion's two note counts mean: `ok`, `warn` or `refuse`.
+
+    Returns the verdict and the sentence to say, empty when there is nothing to
+    say. A *gain* is `ok` and deliberately so: normalisation splits a tie that
+    crosses a barline into two written notes, so a dozen of the imported scores
+    come out with a few more events than they went in with. That is the tie
+    being spelled out, not music being invented.
+    """
+    if not source_notes or source_notes <= 0 or note_events >= source_notes:
+        return ("ok", "")
+    lost = source_notes - note_events
+    fraction = lost / source_notes
+    sentence = (
+        f"{source_notes} note events in the source, {note_events} in the conversion: "
+        f"{lost} lost ({fraction:.1%})"
+    )
+    return ("refuse" if fraction > NOTE_LOSS_LIMIT else "warn", sentence)
 
 
 # ---------------------------------------------------------------------------
@@ -215,6 +401,131 @@ def order_as_grand_staff(parts: list[stream.Part]) -> list[stream.Part]:
     return sorted(parts, key=rank)
 
 
+def note_strands(container: stream.Stream) -> list[tuple[stream.Stream, list[tuple[float, note.GeneralNote]]]]:
+    """
+    The note-bearing strands of a measure, and where each of them lives.
+
+    A measure's own notes are one strand and each of its voices is another, so
+    two notes that sound together stay in separate strands instead of being
+    flattened into a single line the writer would have to express as one. Each
+    row is `(offset within the measure, element)`; the stream beside the rows
+    is the one to take them out of.
+    """
+    strands: list[tuple[stream.Stream, list[tuple[float, note.GeneralNote]]]] = []
+    loose = [
+        (float(container.elementOffset(element)), element)
+        for element in container.getElementsByClass(note.GeneralNote)
+    ]
+    if loose:
+        strands.append((container, loose))
+    for voice in container.getElementsByClass(stream.Voice):
+        start = float(container.elementOffset(voice))
+        rows = [
+            (start + float(voice.elementOffset(element)), element)
+            for element in voice.getElementsByClass(note.GeneralNote)
+        ]
+        if rows:
+            strands.append((voice, rows))
+    return strands
+
+
+def as_voice(rows: list[tuple[float, note.GeneralNote]]) -> stream.Voice:
+    """
+    One strand re-homed into a Voice, at the offsets it held in its measure.
+
+    A strand that starts after the barline is padded with an invisible rest,
+    for the reason `align_voice_offsets` gives: music21's writer backs up to
+    the barline before writing a voice, so a voice whose first note is on beat
+    three has to say so in its own contents.
+    """
+    voice = stream.Voice()
+    start = min(offset for offset, _ in rows)
+    if start > 0:
+        padding = note.Rest(quarterLength=start)
+        padding.style.hideObjectOnPrint = True
+        voice.insert(0.0, padding)
+    for offset, element in rows:
+        voice.insert(offset, element)
+    return voice
+
+
+def number_voices(part: stream.Stream) -> None:
+    """
+    Numbers each measure's voices 1, 2, 3.
+
+    music21 mints a voice id from the object's memory address when the source
+    did not name one, and writes that id straight into `<voice>`. Two staves
+    merged into one can then hand two different strands numbers no reader will
+    make sense of; a measure with a single voice is left as it was.
+    """
+    for measure in part.getElementsByClass(stream.Measure):
+        voices = list(measure.getElementsByClass(stream.Voice))
+        if len(voices) < 2:
+            continue
+        for index, voice in enumerate(voices):
+            voice.id = str(index + 1)
+
+
+def merge_part_into(target: stream.Part, extra: stream.Part) -> None:
+    """
+    Moves every note and rest of `extra` onto `target`'s staff.
+
+    This used to ask `extra` for the offset of a note that lives inside one of
+    `extra`'s *measures*. music21 answers that only for a stream the element is
+    directly in, so every insert raised, every raise was swallowed by the
+    `except` around it, and the entire part disappeared without a word. Two
+    scores in the corpus were shipping with a hand missing: a rag lost 194 of
+    its 502 note events and an arrangement lost 967 of 1,727.
+
+    Bars are matched on the offset of the measure within its part rather than
+    on its number, because the two staves agree about time and need not agree
+    about numbering. Each strand of the source becomes a voice of its own on
+    the target staff.
+    """
+    extra_measures = list(extra.getElementsByClass(stream.Measure))
+    if not extra_measures:
+        # An unbarred part: there are no bars to match on, so the notes go on
+        # at the offsets they hold in the part itself and `normalise` bars the
+        # staff afterwards.
+        flat = extra.flatten()
+        for element in list(flat.getElementsByClass(note.GeneralNote)):
+            target.insert(float(flat.elementOffset(element)), element)
+        return
+
+    homes: dict[float, stream.Measure] = {}
+    for measure in target.getElementsByClass(stream.Measure):
+        homes.setdefault(round(float(target.elementOffset(measure)), 4), measure)
+
+    for measure in extra_measures:
+        strands = note_strands(measure)
+        if not strands:
+            continue
+        offset = round(float(extra.elementOffset(measure)), 4)
+        home = homes.get(offset)
+        if home is None:
+            # The staves do not agree about where the bars are. A bar of its
+            # own keeps the music rather than dropping it, and is rare enough
+            # to be worth seeing in the output when it happens.
+            home = stream.Measure(number=measure.number)
+            target.insert(offset, home)
+            homes[offset] = home
+        else:
+            # The staff's own notes become a voice too, so that a measure is
+            # never half loose notes and half voices.
+            for source, rows in note_strands(home):
+                if isinstance(source, stream.Voice):
+                    continue
+                for _, element in rows:
+                    source.remove(element)
+                home.insert(0.0, as_voice(rows))
+        for source, rows in strands:
+            for _, element in rows:
+                source.remove(element)
+            home.insert(0.0, as_voice(rows))
+
+    number_voices(target)
+
+
 def collapse_to_two(parts: list[stream.Part], notes: list[str]) -> list[stream.Part]:
     """
     Reduces a score to two staves.
@@ -222,7 +533,9 @@ def collapse_to_two(parts: list[stream.Part], notes: list[str]) -> list[stream.P
     Sources with more than two parts are usually a piano reduction that kept a
     separate spine for dynamics, or an ensemble score. Empty parts are dropped;
     beyond that the extra parts are merged into the nearest staff by register,
-    because dropping notes silently would be worse than a crowded staff.
+    because a crowded staff is better than a lost one. `merge_part_into` does
+    the merging and says what used to go wrong with it; the note-loss gate in
+    `convert_file` is what would now catch it if anything did.
     """
     if len(parts) <= 2:
         # A part of nothing but rests is kept here: a right-hand-only beginner
@@ -240,12 +553,7 @@ def collapse_to_two(parts: list[stream.Part], notes: list[str]) -> list[stream.P
     notes.append(f"merged {len(ordered)} parts into 2 staves by register")
     treble, bass = ordered[0], ordered[-1]
     for extra in ordered[1:-1]:
-        target = treble if average_pitch(extra) >= 60 else bass
-        for element in extra.recurse().notesAndRests:
-            try:
-                target.insert(extra.elementOffset(element, returnSpecial=False), element)
-            except Exception:  # noqa: BLE001 - a stray element is not worth failing on
-                continue
+        merge_part_into(treble if average_pitch(extra) >= 60 else bass, extra)
     return [treble, bass]
 
 
@@ -511,7 +819,11 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
     if renumbered:
         notes.append("first bar was numbered 0 without being a pickup; bars renumbered from 1")
 
+    # `notes` counts every element music21 calls a note, chord symbols
+    # included, and other tools read it with that meaning; `note_events` is the
+    # sounding count the note-loss gate compares against the source.
     note_count = len([n for n in out.recurse().notes])
+    event_count = count_note_events(out)
     fingerings = count_fingerings(out)
     harmonies = len(list(out.recurse().getElementsByClass(harmony.ChordSymbol)))
 
@@ -528,6 +840,7 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         fingerings=fingerings,
         harmonies=harmonies,
         warnings=notes,
+        note_events=event_count,
     )
     return out, result
 
@@ -774,6 +1087,8 @@ def record_from_result(result: ConversionResult) -> dict:
         "fingerings": result.fingerings,
         "harmonies": result.harmonies,
         "warnings": result.warnings,
+        "source_notes": result.source_notes,
+        "note_events": result.note_events,
     }
 
 
@@ -791,6 +1106,12 @@ def result_from_record(record: dict, dest: Path) -> ConversionResult:
         fingerings=record["fingerings"],
         harmonies=record["harmonies"],
         warnings=list(record.get("warnings") or []),
+        # Defaulted: a sidecar written before the note-loss gate existed still
+        # loads. The fingerprint hashes this file, so in practice there are no
+        # such entries left, but a cache that cannot be read is a build that
+        # cannot start.
+        source_notes=record.get("source_notes"),
+        note_events=record.get("note_events") or 0,
     )
 
 
@@ -877,6 +1198,20 @@ def convert_file(
 ) -> ConversionResult:
     score = parse_source(src)
     normalised, result = normalise(score, keep_lyrics=keep_lyrics, tempo_bpm=tempo_bpm)
+
+    # The note-loss gate. Nothing downstream can tell a score that was engraved
+    # thinly from one that arrived with half its notes missing, so the count is
+    # taken here, from the source's own bytes, and compared with what came out.
+    # Refusal is the loud answer and every importer already has one: kern
+    # excludes the file with the reason, MuseTrainer falls back to copying the
+    # original, the PDMX quarry records the gate it failed.
+    result.source_notes = source_note_events(src)
+    verdict, sentence = note_loss(result.source_notes, result.note_events)
+    if verdict == "refuse":
+        raise ConversionError(f"{src}: {sentence}")
+    if verdict == "warn":
+        result.warnings.append(sentence)
+
     if title or composer:
         meta = normalised.metadata
         if meta is None:

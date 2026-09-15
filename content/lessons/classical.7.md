@@ -45,15 +45,13 @@ hear.
 inaudible as a pattern and audible as a harmony. Play it with a flat, still hand
 and almost no finger action; if you hear four separate notes, it is too loud.
 
-**What to play.** 49 options. The Chopin group is the widest: ten
-preludes at this level, including the *Raindrop*; five nocturnes — Op. 15 Nos. 2
-and 3, Op. 37 No. 1 and Op. 55 Nos. 1 and 2; seven waltzes and eleven mazurkas.
-A Scarlatti sonata, K. 346, is here for the two-voice work this rung is about.
-Beside them: Mozart's K. 545 first movement for sonata form,
-the C minor prelude from the Forty-Eight for finger evenness, the first movement
-of the *Moonlight* and the *Pathétique* slow movement for sustained voicing, and
-Satie's first Gnossienne, which has no bar lines at all and is a good cure for
-counting instead of listening.
+**What to play.** Six options. Mozart's K. 545 first movement for sonata form;
+the first movement of the *Moonlight* and the *Pathétique* slow movement for
+sustained voicing; Chopin's Mazurka Op. 7 No. 1 and the B minor Waltz, Op. 69
+No. 2, for a singing line over a leaning left hand; and Satie's first
+Gnossienne, which has no bar lines at all and is a good cure for counting
+instead of listening. The other preludes, nocturnes, waltzes and mazurkas at
+this level are under Classical in the Library.
 
 **Common mistake.** Taking the nocturnes too slowly. They are marked *Andante*
 and *Larghetto*, not *Adagio*; below a certain tempo the long melody notes stop

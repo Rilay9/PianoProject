@@ -6,7 +6,7 @@ videos:
   - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
     url: "https://www.youtube.com/watch?v=sfty1bjShBI"
     teacher: "PianoTips"
-readingTime: 2
+readingTime: 3
 ---
 
 At this rung the notes stop being the problem and the *touch* becomes the
@@ -36,9 +36,13 @@ takes time from the main note and is played on the beat. An **acciaccatura**
 **trill** at this level is four notes: main, upper, main, lower-or-main — do not
 attempt a long trill, attempt a clean short one.
 
-**Repertoire for this rung.** The easy *Für Elise* settings, *Ode to Joy (easy
-variation)*, *Bella Ciao* for a minor-key piece with a strong pulse, and the
-Petzold minuet again with articulation added.
+**Repertoire for this rung.** Six options at Grade 1: Attwood's *Sonatina in
+G*, the first sonatina most learners meet; C. P. E. Bach's *March in D* from
+the Anna Magdalena notebook, for staccato in both hands; two of the child
+Mozart's minuets, K. 1e in G and K. 1f in C, four-bar phrases with the
+articulation written in; Schumann's *Chorale* from the *Album for the Young*,
+all legato, for the opposite touch; and a Gurlitt study with the two side by
+side. More Grade 1 pieces under Classical in the Library.
 
 **Common mistake.** Playing staccato loudly. Short and soft is much harder than
 short and loud, and much more useful.

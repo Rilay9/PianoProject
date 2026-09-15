@@ -61,7 +61,7 @@ degrade gracefully: skip unreachable sources with a warning and continue.
 | `[PDMX]` | **Zenodo, on the owner's machine only** — `PDMX.csv` (254,077 rows) and `mxl.tar.gz`; `data.tar.gz`, `pdf.tar.gz` and `subset_paths` are not needed. Never fetched by CI, never committed. | MXL | `tools/content/pdmx/` — `select.py` (CSV → shortlist), `extract.py` (streams the tar once), `quarry.py` (convert, round-trip, features, level estimate, render), `review.py` (a static page + `review.csv` the owner fills), `commit.py` (the `keep` rows → `content/scores/pdmx/*.mxl` + `content/sources/pdmx.json`); the build's `import_pdmx.py` reads only the committed files and verifies their checksums | **Measured 2026-09-05:** the CSV's `license` column is the uploader's claim about the *edition* (every row is `publicdomain` or `cc-zero`, including Yiruma and Billie Eilish arrangements). The composition test runs on `composer_name` against `content/sources/composers.json` and finds about 4,200 public-domain compositions among 36,150 deduplicated solo-piano rows (2,764 traditional, 191 Bach, 138 Beethoven, 135 Mozart, 91 Chopin, 37 Czerny, 13 Clementi, 4 Burgmüller, 1 *Frog Legs Rag*, 0 *Euphonic Sounds*). **Under `00` D23 the result is a label, not a gate**: the personal build takes any PDMX row the dataset marks public domain and the strict build takes only `compositionStatus: pd`. Ranking by rating and the per-band, per-genre quotas in the replan decision §2.2 do the selecting; the machine quality gates in §2.3 and a human review decide admission, and nothing is committed without a `keep`. Its best uses for this owner: the *reference* against which Part F folk tunes are authored (the verification P5 lacked), small-form classical at Stages 3–5, the well-rated easy pop and film arrangements, and the rock-module and *Beautiful* wish-list songs by title. **Measured for real 2026-09-06 (P14):** 254,077 rows in, 37,499 past the gates. The dataset's own deduplication flag removes 142,078 of them — 56 % of the archive — and its licence-conflict flag another 19,582; most of the remainder are files with more than two tracks or a non-piano program. What survives is not the classical library the ladder was written around: the unmatched-composer list is dominated by the Scottish and Irish fiddle corpus (Marshall 353, Alexander Walker 170, the Gows, Skinner, O'Carolan) and by Densmore's ethnographic transcriptions. `composer_name` is `NA` for 59 of the 306 rows the quotas chose and every one of those has an `artist_name`, so the composition label falls back to it. Titles and composer strings in the archive can be mojibake — one row's composer is 坂本龍一 encoded twice. |
 | `[MUTO]` | Mutopia Project (mutopiaproject.org; GitHub mirror `MutopiaProject/MutopiaProject`) | LilyPond (+PDF/MIDI) | `ly musicxml file.ly > out.xml` (python-ly) for simple pieces; else `lilypond --midi` → music21 from MIDI (lossy: loses articulation; acceptable for exercises only) | Has Anna Magdalena Notebook, Burgmüller op.100, Czerny, Clementi sonatinas, Beyer, Hanon, many Bach/Mozart/Beethoven. |
 | `[IMSLP]` | imslp.org | PDF, some MusicXML/MIDI | manual: only take files explicitly tagged MusicXML with a CC/PD edition license | Slow and manual — last resort. |
-| `[AUTH]` | our own | ABC (`content/scores/authored/*.abc`) or music21 tinyNotation in `authored/*.py` | `music21.converter.parse(abcText)` → MusicXML; add fingering/lyrics/chord symbols in ABC (`"C"` chord symbols, `!1!` fingering) | For folk/hymn/holiday/lead sheets (Part F of the curriculum). ABC is 1–10 lines per tune; Sonnet can author 60–100 of these in one session. |
+| `[AUTH]` | our own | ABC (`content/scores/authored/*.abc`) or music21 tinyNotation in `authored/*.py` | `music21.converter.parse(abcText)` → MusicXML; add fingering/lyrics/chord symbols in ABC (`"C"` chord symbols, `!1!` fingering) | For folk/hymn/holiday/lead sheets (Part F of the curriculum). ABC is 1–10 lines per tune; an agent can author 60–100 of these in one session. |
 | `[GEN]` | `tools/content/generate_exercises.py` | music21 streams | run at build time | scales, arpeggios, chords/inversions, Hanon 1–20, five-finger patterns, rhythm drills, sight-reading generator *seeds* (the app also has a runtime sight-reading generator in TS that emits MusicXML directly — see 05 §8) |
 
 **Easy arrangements (2026-09-06).** When a ladder asks for an "easy arr." of a public-domain
@@ -163,6 +163,59 @@ score file moved. `render_check.py --full` ignores the manifest, and
 `build.py --if-missing` used to skip the whole content build whenever a catalog already
 existed. It is gone: it made an edited source silently stale in `npm run build`, and with
 the cache the build is cheap enough to always run.
+
+### 3b. The note-loss gate (step 2, inside `convert.py`)
+
+Nothing in the pipeline counted notes, so two ways of losing them ran unseen: music21's
+Humdrum parser drops most of a file whose spines split *inside* a split, and
+`collapse_to_two` used to drop every note of a third part while reporting "merged N parts
+into 2 staves by register". A score can lose a hand and still open, still render, still
+pass every schema — it is simply no longer the piece. `convert_file` therefore counts both
+sides and compares them.
+
+**What is counted.** A *note event*: a chord is one event, a rest is none, a tied note is
+one per written note. The source is counted from its own bytes, without music21, by
+`source_note_events`:
+
+- `.krn` — data tokens in the `**kern` spines. Spine paths (`*^`, `*v`) are followed so
+  that a `**dynam` or `**text` column, whose tokens are full of the letters a–g, is never
+  counted; a rest may carry a position letter (`8rff`) and is still a rest.
+- `.xml`, `.musicxml`, `.mxl` — every `<note>` that is neither a `<rest/>` nor a `<chord/>`
+  continuation. An `.mxl` is read through its container's rootfile.
+- `.abc`, `.ly`, `.mid` — **unknown**, and therefore never gated. ABC's count depends on how
+  its voices and repeats are read, LilyPond arrives through a converter of its own, and MIDI
+  has no notion of a written note.
+
+The output is counted from the normalised score, excluding `harmony.ChordSymbol` — which
+music21 files under "notes" but is a letter name printed over the staff, not something the
+source counted. `ConversionResult.notes` keeps its old meaning (chord symbols included,
+read by the PDMX quarry); the gate uses the new `note_events` beside it.
+
+**The decision** is `note_loss(source_notes, note_events)`, a pure function returning
+`ok`, `warn` or `refuse`:
+
+- a **gain** is `ok`. Normalisation splits a tie that crosses a barline into two written
+  notes, so a number of imported scores honestly come out with a few more events than they
+  went in with.
+- a loss **at or under `NOTE_LOSS_LIMIT`** (2 %) is a warning appended to
+  `result.warnings`, naming both counts. This is the file that loses a note or two at a
+  spine split.
+- a loss **above** it raises `ConversionError`. The limit sits in an empty gap: when it was
+  chosen, every ordinary kern import lost well under one percent and the two real
+  mechanisms lost a third of the file and more, with nothing in between.
+
+**What refusal means to each importer** — none of them needed changing, because all three
+already treat a `ConversionError` as "this file does not ship":
+
+| Importer | On refusal |
+| --- | --- |
+| `import_kern.py` | excludes the item, recording the gate's sentence as the reason |
+| `import_musetrainer.py` | falls back to copying the original file unconverted |
+| `import_pdmx.py` (quarry) | records the row as having failed the `convert` gate |
+
+The gate is not free of its own blind spot: a source format it cannot count is never gated,
+and a conversion that keeps every note but puts it in the wrong bar still passes. It answers
+one question only — is all the music still here.
 
 ## 4. Catalog and curriculum schemas
 

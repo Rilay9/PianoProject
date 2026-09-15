@@ -34,14 +34,12 @@ walking bass line under static harmony: C, C/E, F, C/G. The bass moves by step
 while the chords barely change, and that stepwise bass is what makes an
 arrangement sound composed rather than blocked out.
 
-**Repertoire for this rung.** 16 options. *Greensleeves* is here twice, with
+**Repertoire for this rung.** Six options. *Greensleeves* is here twice, with
 chords and with a waltz bass — one song, two left hands, and the plainest
-demonstration on this rung of what arranging actually is. *When the Saints* in
-F, *Jingle Bells* with block chords in G and *Happy Birthday* carry their
-symbols too, and *I'll Be Seeing You* is a lead sheet with nothing but melody
-and symbols, which is where the inversions above start to earn their keep. The
-rest — *Feliz Cumpleaños*, *Twinkle Twinkle Little Star*, *Solanum's Theme* and
-*Song of Storms* — are written out in both hands with no symbols: play them as
+demonstration on this rung of what arranging actually is. *Scarborough Fair*
+and *Shenandoah* are the modal tunes where vi and ii do the work;
+*Hallelujah*, in its easy setting, is the four-chord song itself; and the
+*Skye Boat Song* is written out in both hands with no symbols, so play it as
 printed, then name the chord under each bar and try your own left hand against
 it. Plus any lead sheet you bring in yourself through the import screen.
 

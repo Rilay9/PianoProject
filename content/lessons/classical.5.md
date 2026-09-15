@@ -19,11 +19,10 @@ return, this time both in the home key. Knowing that structure changes how you
 practise: you learn the second theme once and get it twice, and you know that
 the development is where the memory slips will be.
 
-**The sonatinas.** Five are on this rung, all short enough to finish:
-Clementi's op. 36 no. 1 (all three movements), Beethoven's Sonatina in G,
-Anh. 5, Kuhlau's op. 20 no. 1, Diabelli's op. 168 no. 1, and Attwood's little
-Sonatina in G, the gentlest. Before you play a note of one, mark the three
-sections on the page.
+**The sonatinas.** Two are on this rung, both short enough to finish:
+Clementi's Op. 36 No. 1, all three movements, and Beethoven's Sonatina in G,
+Anh. 5. Kuhlau's, Diabelli's and Attwood's are in the Library when you want a
+third. Before you play a note of one, mark the three sections on the page.
 
 **Alberti bass hands together.** Stage 3 taught the pattern; here it runs
 continuously under a melody for pages. The problem is balance. The left hand
@@ -41,17 +40,16 @@ written-out drill is on the technique track a stage later; here the ornaments
 arrive inside the pieces, which is the harder way round — and the reason to
 memorise the rule now.
 
-**Pedal in Romantic miniatures.** The beginner *Clair de lune* and Chopin's
-*Waltz in A minor* both want the pedal for warmth, and legato pedalling (Stage
+**Pedal in Romantic miniatures.** Schumann's *First Loss* and Tchaikovsky's
+*Old French Song* both want the pedal for warmth, and legato pedalling (Stage
 3.5) is the technique. The test is whether the harmony stays clean; if two
 chords blur, you changed late.
 
-**Repertoire for this rung.** The sonatinas, and beside them the Romantic
-miniatures: five from Schumann's *Album for the Young*, Tchaikovsky's *Old
-French Song* and *March of the Wooden Soldiers*, a Schubert German dance and
-Grieg's *Morning Mood*; Bach's *Aria* and Handel's *Sarabande* for a steady
-Baroque line; Schubert's *Ave Maria*, the beginner *Clair de lune* and Chopin's
-*Waltz in A minor* for a melody carried over a pedalled accompaniment.
+**Repertoire for this rung.** Six options. The two sonatinas, and beside them
+the Romantic miniatures: Burgmüller's *Arabesque*, Tchaikovsky's *Old French
+Song* and Schumann's *First Loss* from the *Album for the Young*, each a
+melody carried over an accompaniment that has to stay underneath it. More
+sonatinas and miniatures under Classical in the Library.
 
 **Common mistake.** Learning the exposition beautifully and the development
 badly, because the development is harder and less rewarding. Start a practice

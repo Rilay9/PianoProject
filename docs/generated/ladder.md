@@ -27,11 +27,11 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 1 | `1.4` | 5 | 3 | 1.2–1.4 | Lightly Row (1.2), Ode to Joy (hands alternating) (1.4), Oh When the Saints Go Marching In (hands alternating) (1.4) |
 | 1 | `1.5` *(song-optional)* | 6 | 3 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), Old MacDonald Had a Farm (2.2) |
 | 2 | `2.1` | 5 | 4 | 2.1–2.1 | Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
-| 2 | `2.2` | 4 | 7 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael row the boat ashore (1.9), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Danny Boy (Londonderry Air) (2.4), … and 1 more |
-| 2 | `2.3` | 4 | 9 | 2.3–4.3 | Happy Birthday to You (2.3), Was wollen wir trinken (2.7), Dark Eyes (2.8), Suo Gan - Welsh Traditional Lullaby (3.1), De Brabançonne (3.1), Jingle Bells (chorus, in G major with block chords) (3.2), … and 3 more |
+| 2 | `2.2` | 4 | 6 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael row the boat ashore (1.9), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Danny Boy (Londonderry Air) (2.4) |
+| 2 | `2.3` | 4 | 6 | 2.3–4.3 | Happy Birthday to You (2.3), Was wollen wir trinken (2.7), Dark Eyes (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), Auld Lang Syne (3.3), Happy Birthday to You (4.1) |
 | 2 | `2.4` | 4 | 4 | 2.2–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
 | 2 | `2.5` *(song-optional)* | 6 | 2 | 2.5–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
-| 3 | `3.1` | 6 | 11 | 1.1–3.7 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.8), Shenandoah (2.9), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), … and 5 more |
+| 3 | `3.1` | 6 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.8), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
 | 3 | `3.3` | 4 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
 | 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (beginner) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
@@ -42,7 +42,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 4 | `4.3` | 17 | 3 | 3.3–5.1 | Greensleeves (with chords) (3.3), Canon in D (easy) (5.1), Greensleeves (5.1) |
 | 4 | `4.4` | 5 | 3 | 4.1–5.1 | Ode to Joy (easy variation) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 4 | `4.5` | 7 | 3 | 2.2–4.5 | London Bridge Is Falling Down (2.2), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5) |
-| 4 | `4.6` | 4 | 7 | 1.5–5.2 | Für Elise (easy) (4.1), Uti vår hage swedish traditional song (5.0), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1), Carol of the Bells (easy) (5.1), Auld Lang Syne - Anonymous (Traditional) (5.1), … and 1 more |
+| 4 | `4.6` | 4 | 6 | 1.5–5.1 | Für Elise (easy) (4.1), Uti vår hage swedish traditional song (5.0), Canon in D (easy) (5.1), Minuet in G major, BWV Anh. 114 (5.1), Carol of the Bells (easy) (5.1), Auld Lang Syne - Anonymous (Traditional) (5.1) |
 | 4 | `4.7` | 3 | 3 | 1.5–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1) |
 
 ## How to practise (`practice`)
@@ -71,13 +71,13 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `chords-pop.3` | 5 | 9 | 2.0–3.3 | In the summertime (2.0), Happy Birthday to You (2.3), Resistiré (Dúo Dinámico) (2.3), Tom Dooley (3.1), Oh! Susanna (Simple Lead Sheet) (3.1), Oh When the Saints Go Marching In (in F major) (3.2), … and 3 more |
-| 4 | `chords-pop.4` | 4 | 16 | 3.2–4.4 | Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), Greensleeves (with chords) (3.3), Feliz Cumpleaños (Piano) (3.4), Twinkle Twinkle Little Star (Easy) (3.5), I'll Be Seeing You (3.5), … and 10 more |
-| 5 | `chords-pop.5` | 3 | 14 | 4.4–5.5 | The Flute Tune Soulpride Remix (4.4), I Remember You (4.4), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5), Lavender's Blue (4.6), Löwenzahn Thema (Piano) (4.7), … and 8 more |
-| 6 | `chords-pop.6` *(song-optional)* | 5 | 15 | 5.4–6.5 | How to Train Your Dragon: Flying Theme (5.5), Clocks Coldplay (5.5), Lazy Afternoons (Kingdom Hearts II) [Piano] (5.5), All of Me (John Legend) - easy piano (5.6), Westworld - Sweetwater (5.6), Dancing Queen (5.7), … and 9 more |
-| 7 | `chords-pop.7` *(song-optional)* | 6 | 17 | 5.3–7.6 | The Danish Girl (theme) (6.1), The Lion theme (6.1), Never Forget by Martin O'Donnell (6.1), For the damaged coda Blonde Redhead (6.2), Isolated System (6.2), The Weekend - Blinding Lights - Easy Piano (6.3), … and 11 more |
-| 8 | `chords-pop.8` *(song-optional)* | 5 | 19 | 5.4–8.3 | Silhouette - KANA-BOON (Naruto shippuden Opening/OP 16) (6.7), Minecraft Calm (6.8), Levi's Choice (ThanksAT/T-KT) - Attack on Titan (6.8), Resonance(Soul Eater Opening 1) (6.9), Fallout 4- Trailer soundtrack (6.9), All I want - Kodaline (6.9), … and 13 more |
-| 9 | `chords-pop.9` *(song-optional)* | 6 | 10 | 5.3–8.4 | Falling by Harry Styles (7.2), Location Unknown (Brooklyn Session) - HONNE (7.2), Platinum Disco by Yuka Iguchi (7.3), Rousseau: Billy Joel - Piano Man (7.4), Fire Emblem Three Houses - Apex of the World (7.4), Yoshikage Kira's Theme (Piano) (7.5), … and 4 more |
+| 3 | `chords-pop.3` | 5 | 6 | 2.3–3.3 | Happy Birthday to You (2.3), Tom Dooley (3.1), Oh! Susanna (Simple Lead Sheet) (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), Greensleeves (with chords) (3.3) |
+| 4 | `chords-pop.4` | 4 | 6 | 2.9–4.4 | Shenandoah (2.9), Greensleeves (with chords) (3.3), Greensleeves (waltz bass) (3.6), Hallelujah (easy) (3.8), The Skye boat song (Outlander theme song) (4.1), Scarborough Fair (4.4) |
+| 5 | `chords-pop.5` | 3 | 6 | 4.5–5.5 | Greensleeves (in 6/8) (4.5), Row, Row, Row Your Boat (4.5), Lavender's Blue (4.6), Before You Go - Lewis Capaldi (4.7), Greensleeves (5.1), Your Song - Elton John - Easy Piano (5.5) |
+| 6 | `chords-pop.6` *(song-optional)* | 5 | 6 | 5.4–6.4 | How to Train Your Dragon: Flying Theme (5.5), Clocks Coldplay (5.5), All of Me (John Legend) - easy piano (5.6), Dancing Queen (5.7), Fallen Down (Reprise) - Undertale - Easy (6.0), John Denver - Annie's Song (6.4) |
+| 7 | `chords-pop.7` *(song-optional)* | 6 | 6 | 5.3–7.6 | For the damaged coda Blonde Redhead (6.2), The Weekend - Blinding Lights - Easy Piano (6.3), Fix You Coldplay (6.5), Welcome to Wonderland by Anson Seabra (6.7), Scarborough fair piano solo (6.8), Wake Me Up Avicii (7.6) |
+| 8 | `chords-pop.8` *(song-optional)* | 5 | 6 | 5.4–8.3 | Silhouette - KANA-BOON (Naruto shippuden Opening/OP 16) (6.7), Levi's Choice (ThanksAT/T-KT) - Attack on Titan (6.8), All I want - Kodaline (6.9), Isabella's Lullaby (The Promised Neverland) Emotional Anime on Piano Vol. 2 (7.1), Undertale: Undertale (Piano) (7.8), If I Had a Chicken (7.8) |
+| 9 | `chords-pop.9` *(song-optional)* | 6 | 6 | 5.3–8.4 | Falling by Harry Styles (7.2), Rousseau: Billy Joel - Piano Man (7.4), Fire Emblem Three Houses - Apex of the World (7.4), ELO - Mr Blue Sky (Hard) - Piano (7.5), Le Festin Piano (arr. KNO) (7.6), Rolling Girl (VOCALOID) (7.7) |
 
 ## Classical (`classical`)
 
@@ -85,14 +85,14 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `classical.3` | 3 | 23 | 2.3–5.2 | Het Wilhelmus (2.3), Kum Ba Yah (2.4), Thème du 1er mouvement de la sonate K.331 (2.5), Camptown Races (2.9), Écossaise in G major, WoO 23 (2.9), Das Deutschlandlied (3.2), … and 17 more |
-| 4 | `classical.4` | 3 | 17 | 4.1–5.8 | Für Elise (easy) (4.1), Für Elise (beginner) (4.1), Ode to Joy (easy variation) (4.1), Bella Ciao (4.2), Study, Op. 82 (4.5), Son binocle (Valses distinguées No. 2) (4.5), … and 11 more |
+| 3 | `classical.3` | 3 | 6 | 2.5–5.2 | Thème du 1er mouvement de la sonate K.331 (2.5), Écossaise in G major, WoO 23 (2.9), Minuet in G minor, BWV Anh. 115 (4.4), Minuet in G major, BWV Anh. 114 (5.1), Minuet in D minor, BWV Anh. 132 (5.1), Minuet in F major, BWV Anh. 113 (5.2) |
+| 4 | `classical.4` | 3 | 6 | 4.3–5.8 | Study, Op. 82 (4.5), Album for the Young, Op. 68 No. 4 "Chorale" (4.6), Sonatina in G major (4.8), Minuet in C major, K. 1f (5.1), March in D major, BWV Anh. 122 (5.5), Minuet in G major, K. 1e (5.8) |
 | 4 | `classical.4.shelf` | 3 | 72 | 3.5–8.5 | Für Elise (easy) (4.1), Erik Satie - Gnossienne n1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Hungarian Sonata (5.0), Canon in D (easy) (5.1), … and 66 more |
-| 5 | `classical.5` | 4 | 31 | 3.6–6.5 | clair de lune beginner version (4.7), Chopin - Waltz in A Minor (Piano Solo) (4.8), Sonatina in G major (4.8), Aria Notebook Anna Magdalena Bach (5.0), Greensleeves (5.1), Carol of the Bells (easy) (5.1), … and 25 more |
-| 6 | `classical.6` | 9 | 50 | 3.2–7.4 | Prelude No. 7 in A major, Op. 28 (5.4), Sonata in A major, K. 323 (5.9), Erik Satie - Gnossienne No.3 (5.9), Prelude No. 6 in B minor, Op. 28 (6.0), Prelude No. 20 in C minor, Op. 28 (6.0), Prélude in E minor, Op. 28 No. 4 (6.1), … and 44 more |
-| 7 | `classical.7` | 8 | 49 | 4.2–8.7 | Prelude No. 1 in C major, Op. 28 (6.4), Sonata in D major, K. 346 (6.8), Prelude No. 11 in B major, Op. 28 (7.0), Mazurka in B-flat major, Op. 7 No. 1 (7.0), Children's Corner - The Little Shepherd (7.0), Grieg Anitra's Dance (Piano solo) (7.0), … and 43 more |
-| 8 | `classical.8` | 8 | 37 | 4.3–8.8 | Children's Corner - Doctor Gradus ad Parnassum (7.2), Étude in E-flat minor, Op. 10 No. 6 (7.4), Waltz in B minor (7.7), La fille aux cheveux de lin (7.8), La cathédrale engloutie (7.8), Waltz in C-sharp minor, Op. 64 No. 2 (7.8), … and 31 more |
-| 9 | `classical.9` | 6 | 32 | 4.3–9.6 | Piano Sonata No. 2, Op. 35 — Marche funèbre (8.4), Malagueña (1928) (9.0), Étude in F minor, Op. 10 No. 9 (9.0), Étude in F minor, Op. 25 No. 2 (9.0), Fantaisie-impromptu in C-sharp minor, Op. 66 (9.0), Prelude No. 16 in B-flat minor, Op. 28 (9.0), … and 26 more |
+| 5 | `classical.5` | 4 | 6 | 3.6–5.7 | Sonatina in G major, Anh. 5 No. 1 (5.3), Sonatina in C major, Op. 36 No. 1 (first movement, short edition) (5.3), Sonatina in C major, Op. 36 No. 1 (second and third movements) (5.3), Burgmüller: Arabesque - Op. 100 No. 2 (5.5), Old French Song, Op. 39 No. 16 (5.6), Album for the Young, Op. 68 No. 16 "First Loss" (5.7) |
+| 6 | `classical.6` | 9 | 6 | 3.2–6.4 | Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 1 in C major, BWV 846 (6.1), Prélude in E minor, Op. 28 No. 4 (6.1), Gymnopédie No. 1 (6.2), Waltz in A minor, B. 150 (6.4), Für Elise, WoO 59 (6.4) |
+| 7 | `classical.7` | 8 | 6 | 4.2–7.2 | Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), Gnossienne No. 1 (7.1), Piano Sonata No. 8 “Pathétique”, II. Adagio cantabile (7.2), Waltz in B minor, Op. 69 No. 2 (7.2) |
+| 8 | `classical.8` | 8 | 6 | 4.3–8.4 | Waltz in C-sharp minor, Op. 64 No. 2 (7.8), Piano Sonata No. 11, K. 331, III. Rondo alla Turca (8.1), Nocturne in B-flat minor, Op. 9 No. 1 (8.1), Arabesque No. 1, L. 66 (8.1), Clair de Lune (Suite bergamasque, L. 75 No. 3) (8.3), Piano Sonata No. 14 “Moonlight”, III. Presto agitato (8.4) |
+| 9 | `classical.9` | 6 | 6 | 4.3–9.4 | Piano Sonata No. 2, Op. 35 — Marche funèbre (8.4), Fantaisie-impromptu in C-sharp minor, Op. 66 (9.0), Ballade No. 1 in G minor, Op. 23 (9.1), La Campanella (Grandes études de Paganini No. 3) (9.2), Polonaise in A-flat major, Op. 53 (“Heroic”) (9.4), Étude in C-sharp minor, Op. 10 No. 4 (9.4) |
 
 ## Hymns & gospel (`hymns-gospel`)
 
@@ -177,8 +177,8 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `jazz.5` | 6 | 15 | 2.7–5.2 | Avalon (1920) (2.7), Oh! Susanna (Simple Lead Sheet) (3.1), Limehouse Blues (1922) (3.2), Bye Bye Blackbird (1926) (3.3), Whispering (1920) (3.3), Alexander's Ragtime Band (1911) (3.4), … and 9 more |
-| 6 | `jazz.6` *(song-optional)* | 7 | 9 | 3.8–6.4 | Darktown Strutters' Ball (1917) (3.8), After You've Gone (1918) (4.0), Baby, Won't You Please Come Home (1919) (4.0), The Memphis Blues (1912) (4.0), Rose Room (1917) (4.1), Royal Garden Blues (1919) (4.2), … and 3 more |
+| 5 | `jazz.5` | 6 | 8 | 2.7–5.2 | Avalon (1920) (2.7), Whispering (1920) (3.3), Twelve-bar blues shuffle in C (3.4), Bill Bailey, Won't You Please Come Home (1902) (3.4), Margie (1920) (3.5), Some of These Days (1910) (3.8), … and 2 more |
+| 6 | `jazz.6` *(song-optional)* | 7 | 6 | 3.2–6.4 | Limehouse Blues (1922) (3.2), Bye Bye Blackbird (1926) (3.3), Darktown Strutters' Ball (1917) (3.8), Rose Room (1917) (4.1), Royal Garden Blues (1919) (4.2), Tiger Rag (1917) (4.4) |
 | 7 | `jazz.7` *(song-optional)* | 7 | 6 | 2.7–7.4 | Avalon (1920) (2.7), After You've Gone (1918) (4.0), Tiger Rag (1917) (4.4), I Got Rythm (5.5), Jingle Bells - Jazz Piano (7.2), Skating (7.3) |
 | 8 | `jazz.8` *(song-optional)* | 6 | 3 | 5.5–8.2 | I Got Rythm (5.5), Stardust (1927) (6.0), Uncle Ben's Cakewalk Tom Brier (7.6) |
 | 9 | `jazz.9` *(song-optional)* | 5 | 6 | 4.0–8.4 | After You've Gone (1918) (4.0), Stardust (1927) (6.0), Take Five (6.6), Ain't Misbehavin' (6.9), Lullaby of Birdland (6.9), Linus and Lucy (Fixed) Piano only (8.3) |
@@ -189,7 +189,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `latin` | 12 | 14 | 1.9–9.0 | Cielito Lindo (1.9), Como é grande meu amor por você (3.0), Insensatez (How Insensitive) Jobim (3.0), Só Danço Samba (3.0), Guantanamera (3.2), Recado Bossa Nova (3.7), … and 8 more |
+| 5 | `latin` | 12 | 6 | 1.9–6.4 | Cielito Lindo (1.9), Insensatez (How Insensitive) Jobim (3.0), Só Danço Samba (3.0), Guantanamera (3.2), Tico-Tico no Fubá (3.7), Tango La Cumparsita - Piano Solo (Tutorial Parte A) (5.1) |
 
 ## Ragtime (`ragtime`)
 
@@ -197,10 +197,10 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `ragtime.5` | 4 | 10 | 3.2–7.1 | Greensleeves (waltz bass) (3.6), 12th Street Rag (1914) (4.1), Augustan Club Waltz (6.8), Combination March (6.8), The Crush Collision March (6.8), Harmony Club Waltz (6.8), … and 4 more |
-| 6 | `ragtime.6` | 6 | 10 | 3.3–7.1 | School of Ragtime (6.4), Swipsey (6.8), Peacherine Rag (7.0), The Easy Winners (7.0), Sunflower Slow Drag (7.0), Weeping Willow (7.0), … and 4 more |
-| 7 | `ragtime.7` | 6 | 20 | 3.2–8.0 | Solace (6.8), Maple Leaf Rag (7.2), Maple Leaf Rag (7.2), Elite Syncopations (7.2), Original Rags (7.2), Pleasant Moments (7.2), … and 14 more |
-| 8 | `ragtime.8` | 6 | 13 | 3.3–7.9 | Wall Street Rag (7.2), A Breeze from Alabama (7.2), Country Club (7.2), Eugenia (7.2), Felicity Rag (7.2), Pine Apple Rag (7.4), … and 7 more |
+| 5 | `ragtime.5` | 4 | 6 | 3.2–7.1 | Greensleeves (waltz bass) (3.6), 12th Street Rag (1914) (4.1), Augustan Club Waltz (6.8), Combination March (6.8), The Rose-bud March (7.0), The Entertainer (7.1) |
+| 6 | `ragtime.6` | 6 | 6 | 3.3–7.1 | School of Ragtime (6.4), Swipsey (6.8), The Easy Winners (7.0), Peacherine Rag (7.0), Sunflower Slow Drag (7.0), The Entertainer (7.1) |
+| 7 | `ragtime.7` | 6 | 6 | 3.2–7.4 | Solace (6.8), Maple Leaf Rag (7.2), Elite Syncopations (7.2), Sugar Cane (7.2), Bethena (7.3), Heliotrope Bouquet (7.4) |
+| 8 | `ragtime.8` | 6 | 6 | 3.3–7.9 | Pine Apple Rag (7.4), Gladiolus Rag (7.6), Magnetic Rag (7.6), The Cascades (7.6), Scott Joplin's New Rag (7.6), Frog Legs Rag (1906) (7.9) |
 
 ## Wanted, and not bundled
 

@@ -42,21 +42,14 @@ section first, then the one before it. You will always be playing *into*
 familiar ground rather than off a cliff, and the end of the piece will not be
 the part you have practised least.
 
-**What to play.** There are 50 options on this rung and they fall into
-three groups:
-
-- **The four easy Chopin preludes** — No. 7 (sixteen bars, a mazurka in
-  miniature), No. 20 (a chorale, all chords, the purest voicing exercise here),
-  No. 6 (the melody is in the *left* hand, which is the whole lesson), and
-  No. 4 (a right-hand tune over a chromatic left-hand descent). Two editions of
-  No. 4 are in the library: the scholarly first edition and a MuseScore
-  transcription. Comparing them is worth ten minutes.
-- **Two easy mazurkas** — Op. 68 Nos. 2 and 3. Short, and the
-  best introduction to a rhythm that leans on beat two or three rather than one.
-- **The familiar pieces** — Für Elise, Gymnopédie No. 1, the Bach Air, the
-  Prelude in C from the Forty-Eight, Canon in D, two Tchaikovsky ballet
-  numbers, and the A minor Waltz. These are the ones you already hear in your
-  head, which makes them easier to correct by ear.
+**What to play.** Six options, in two groups. Two easy Chopin preludes — No. 7
+(sixteen bars, a mazurka in miniature) and No. 4 (a right-hand tune over a
+chromatic left-hand descent; the first edition and a modern transcription are
+both in the Library, and comparing them is worth ten minutes) — and the pieces
+you already hear in your head, which makes them easier to correct by ear: *Für
+Elise* complete, *Gymnopédie No. 1*, the Prelude in C from the Forty-Eight,
+and the A minor Waltz. Preludes 6 and 20, the easy mazurkas and the rest of
+the shelf are under Classical in the Library.
 
 **Common mistake.** Practising the whole piece at one tempo, hands together,
 every time. Ten minutes on the four bars that do not work is worth an hour of

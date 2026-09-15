@@ -34,11 +34,10 @@ and it should.
 automatic, then the same pattern in a second key. A walking line over the blues
 in C, hands separately, then together with shells on top.
 
-**Repertoire for this rung.** *After You've Gone* (1918), *Darktown Strutters'
-Ball* (1917), *Baby, Won't You Please Come Home* (1919), *Rose Room* (1917),
-*Royal Garden Blues* (1919), *The Memphis Blues* (1912), *Tiger Rag* (1917) and
-*Muskrat Ramble* — all lead sheets, all public domain. Comp one pattern through
-a whole chorus, then walk a line under it.
+**Repertoire for this rung.** *Bye Bye Blackbird* (1926), *Limehouse Blues*
+(1922), *Tiger Rag* (1917), *Rose Room* (1917), *Darktown Strutters' Ball*
+(1917) and *Royal Garden Blues* (1919) — all lead sheets, all public domain.
+Comp one pattern through a whole chorus, then walk a line under it.
 
 **Common mistake.** Comping on every beat. The gaps are what make it comping;
 filling them makes it an accompaniment pattern.

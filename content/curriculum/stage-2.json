@@ -104,12 +104,11 @@
               ],
               "songOptions": [
                 "song.folk.london-bridge",
-                "song.folk.old-macdonald",
                 "song.folk.merrily-we-roll-along",
+                "song.folk.old-macdonald",
                 "song.pop.michael-row-the-boat-ashore.pdmx",
-                "song.folk.danny-boy-c-major.pdmx",
-                "song.folk.traditional-music-when-johnny-comes-marching-home.pdmx",
-                "song.folk.sakura.pdmx"
+                "song.folk.sakura.pdmx",
+                "song.folk.danny-boy-c-major.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -175,12 +174,9 @@
               "songOptions": [
                 "song.folk.happy-birthday.simple",
                 "song.folk.happy-birthday",
-                "song.folk.happy-birthday.alt",
                 "song.holiday.jingle-bells.g",
                 "song.folk.was-wollen-wir-trinken.pdmx",
                 "song.folk.dark-eyes.pdmx",
-                "song.folk.suo-gan-welsh-traditional-lullaby.pdmx",
-                "song.folk.de-brabanconne.pdmx",
                 "song.folk.auld-lang-syne.pdmx"
               ],
               "mastery": {

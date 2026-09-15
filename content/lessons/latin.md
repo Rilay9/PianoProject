@@ -36,14 +36,12 @@ order: clap the clave until it is automatic; play the tumbao alone while you cou
 the clave out loud; then add the montuno two notes at a time. The app has a clave
 to play and read, but it cannot clap one behind you while you play something else.
 
-**Repertoire.** *La Cumparsita* (1916), the tango, in two parts, and *El Choclo*
-(1903), the other tango everybody knows. *Cielito Lindo* and *Guantanamera* for
-the clave under a tune you can sing; *Tico-Tico* (1917) for a choro at speed, and
-*Carioquinha*, another choro, melody only, so play it with the tumbao underneath
-once the left hand is steady. Then three bossa novas — *Insensatez*, *Só Danço
-Samba* and *Por Toda Minha Vida* — and *Recado Bossa Nova*, which are where the
-syncopation goes quiet and the chords do the work. *Malagueña* (1928) sits at
-the top of the rung for later. *La Cucaracha* is not in the library yet.
+**Repertoire.** Six options. *Cielito Lindo* and *Guantanamera* for the clave
+under a tune you can sing; *Tico-Tico* (1917) for a choro at speed; two bossa
+novas — *Insensatez* and *Só Danço Samba* — where the syncopation goes quiet
+and the chords do the work; and the first part of *La Cumparsita* (1916), the
+tango. Its second part, *El Choclo*, *Malagueña* and the other bossas are
+under Latin in the Library. *La Cucaracha* is not in the library yet.
 
 **Common mistake.** Counting the two clave bars as two separate bars. It is one
 two-bar unit; lose that and the pattern flips.

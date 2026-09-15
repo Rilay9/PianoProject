@@ -35,43 +35,12 @@
                 "exercise.chromatic.e.1oct.both"
               ],
               "songOptions": [
-                "song.classical.chopin-prelude-op28-3.nifc",
-                "song.classical.chopin-prelude-op28-5.nifc",
-                "song.classical.chopin-prelude-op28-8.nifc",
-                "song.classical.chopin-prelude-op28-19.nifc",
-                "song.classical.chopin-nocturne-op27-2.nifc",
-                "song.classical.chopin-nocturne-op48-1.nifc",
-                "song.classical.chopin-waltz-op18.nifc",
-                "song.classical.chopin-waltz-op64-1.nifc",
-                "song.classical.chopin-waltz-op64-2.nifc",
-                "song.classical.chopin-etude-op25-1.nifc",
-                "song.classical.chopin-etude-in-e-flat-minor-op-10-no-6.pdmx",
-                "song.classical.chopin-berceuse.nifc",
-                "song.classical.chopin-polonaise-op40-1.nifc",
-                "song.classical.chopin-nocturne-20",
-                "song.classical.debussy-arabesque-1",
                 "song.classical.mozart-rondo-alla-turca",
                 "song.classical.debussy-clair-de-lune",
-                "song.classical.liszt-liebestraum-3",
                 "song.classical.beethoven-moonlight-iii",
-                "song.classical.debussy-debussy-la-fille-aux-cheveux-de-lin.pdmx",
-                "song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx",
-                "song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx",
-                "song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx",
-                "song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx",
-                "song.classical.chopin-waltz-in-b-minor.pdmx",
+                "song.classical.chopin-waltz-op64-2.nifc",
                 "song.classical.chopin-nocturne-op9-1",
-                "song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx",
-                "song.classical.chopin-bolero.nifc",
-                "song.classical.chopin-etude-op25-9.nifc",
-                "song.classical.chopin-polonaise-op26-2.nifc",
-                "song.classical.chopin-polonaise-op40-2.nifc",
-                "song.classical.chopin-polonaise-op71-1.nifc",
-                "song.classical.chopin-rondo-mazur.nifc",
-                "song.classical.chopin-rondo-op16.nifc",
-                "song.classical.chopin-tarantelle.nifc",
-                "song.classical.chopin-variations-op12.nifc",
-                "song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx"
+                "song.classical.debussy-arabesque-1"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -85,7 +54,7 @@
               "estimatedDays": 180,
               "levelBand": [
                 4.3,
-                8.8
+                8.4
               ],
               "finder": {
                 "skill": "playing an etude fast and evenly, and holding a long piece together",
@@ -145,17 +114,10 @@
               ],
               "songOptions": [
                 "song.ragtime.joplin-pine-apple-rag",
-                "song.ragtime.joplin-magnetic-rag",
                 "song.ragtime.joplin-gladiolus-rag",
+                "song.ragtime.joplin-magnetic-rag",
                 "song.ragtime.joplin-cascades",
                 "song.ragtime.joplin-new-rag",
-                "song.ragtime.joplin-stoptime-rag",
-                "song.ragtime.joplin-reflection-rag",
-                "song.ragtime.joplin-wall-street-rag",
-                "song.ragtime.joplin-breeze-from-alabama",
-                "song.ragtime.joplin-country-club",
-                "song.ragtime.joplin-eugenia",
-                "song.ragtime.joplin-felicity-rag",
                 "song.classical.scott-frog-legs-rag.pdmx"
               ],
               "mastery": {
@@ -411,25 +373,12 @@
                 "exercise.slash-bass.f"
               ],
               "songOptions": [
-                "song.pop.kana-boon-silhouette-kana-boon-naruto-shippuden-opening-op-16.pdmx",
-                "song.pop.misc-computer-games-minecraft-calm.pdmx",
-                "song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx",
-                "song.pop.misc-cartoons-resonance-soul-eater-opening-1.pdmx",
-                "song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx",
-                "song.pop.kodaline-all-i-want-kodaline.pdmx",
-                "song.pop.league-of-legends-league-of-legends-awaken-ft-valerie-broussard.pdmx",
-                "song.pop.jay-chou-a-a-jay-chou-with-ca-aca1-2aea2-waiting-for-youa.pdmx",
-                "song.pop.misc-television-title-theme-from-good-omens.pdmx",
                 "song.pop.takihiro-obata-isabella-s-lullaby-the-promised-neverland-emotional-anime-on-piano-vol-2.pdmx",
-                "song.pop.ellie-goulding-ellie-goulding-s-love-me-like-you-do-cover.pdmx",
-                "song.folk.3-variations-on-happy-birthday.pdmx",
-                "song.folk.chicken-reel.pdmx",
-                "song.pop.kevin-macleod-if-i-had-a-chicken.pdmx",
-                "song.pop.league-of-legends-phoenix-league-of-legends.pdmx",
-                "song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx",
-                "song.pop.the-weeknd-the-weeknd-call-out-my-name.pdmx",
                 "song.pop.toby-fox-undertale-undertale-piano.pdmx",
-                "song.pop.yanni-one-man-s-dream-by-yanni.pdmx"
+                "song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx",
+                "song.pop.kana-boon-silhouette-kana-boon-naruto-shippuden-opening-op-16.pdmx",
+                "song.pop.kevin-macleod-if-i-had-a-chicken.pdmx",
+                "song.pop.kodaline-all-i-want-kodaline.pdmx"
               ],
               "songOptional": true,
               "mastery": {

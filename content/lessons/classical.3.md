@@ -39,9 +39,12 @@ the note above — the plain sign is much the commoner one in print. The drill o
 the technique track at Stage 5 is deliberately the other one, the stroked sign
 going below, so that you end up with both under the hand.
 
-**Repertoire for this rung.** Petzold *Minuet in G*, BWV Anh. 114, in either
-edition in the library; the same minuet's alternative setting; and the easy
-*Canon in D* for a longer piece in a steady pulse.
+**Repertoire for this rung.** Six options, all dances from the notebooks the
+Bach and Mozart children learned from: Petzold's *Minuet in G*, BWV Anh. 114,
+and its companions in G minor (Anh. 115), D minor (Anh. 132) and F major (Anh.
+113); the theme of Mozart's K. 331, a minuet-length tune over the plainest
+accompaniment; and Beethoven's *Écossaise* in G for a quick 2/4 with hand
+shifts. More at this level under Classical in the Library.
 
 **How to practise it.** Four bars at a time, hands separately, both hands
 musical. Then hands together at half tempo. Then join four-bar chunks into

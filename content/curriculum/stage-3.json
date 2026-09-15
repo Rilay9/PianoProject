@@ -35,14 +35,9 @@
                 "song.classical.ode-to-joy.g",
                 "song.folk.twinkle.f",
                 "song.folk.when-the-saints.f",
-                "song.pop.kevin-sherwood-damned.pdmx",
-                "song.pop.misc-cartoons-les-mysterieuses-cites-d-or-generique.pdmx",
-                "song.pop.misc-computer-games-a-brotherhood-of-heroes-call-of-duty-wwii-theme-song.pdmx",
-                "song.folk.traditional-music-home-on-the-range.pdmx",
-                "song.folk.traditional-music-shenandoah.pdmx",
-                "song.folk.scarborough-fair.pdmx",
+                "song.folk.korobeiniki.pdmx",
                 "song.folk.loch-lomond.pdmx",
-                "song.folk.korobeiniki.pdmx"
+                "song.folk.scarborough-fair.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -56,7 +51,7 @@
               "estimatedDays": 16,
               "levelBand": [
                 1.1,
-                3.8
+                3.2
               ],
               "finder": {
                 "skill": "reading in a key that has sharps or flats in the signature",
@@ -444,28 +439,11 @@
               ],
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
-                "song.classical.petzold-minuet-g-bwv-anh114.alt",
-                "song.classical.pachelbel-canon-d.easy",
-                "song.classical.tchaikovsky-swan-lake.pdmx",
-                "song.classical.composer-rodolphe-kreutzer-etude-no-2.pdmx",
-                "song.classical.hisaishi-totoro-path-of-the-wind.pdmx",
-                "song.classical.beethoven-inno-alla-gioia.pdmx",
-                "song.classical.simple-gifts-2-part-round.pdmx",
-                "song.classical.beethoven-ode-a-alegria-nona-sinfonia.pdmx",
-                "song.classical.foster-oh-susanna.pdmx",
-                "song.classical.vivaldi-vivaldi-spring-simple-arrangement.pdmx",
-                "song.classical.duvernoy-elementary-studies-op-176-etude-1-by-jean-baptiste-duvernoy.pdmx",
-                "song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx",
                 "song.pop.minuet-in-g-minor-bach-piano.pdmx",
+                "song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx",
                 "song.classical.bach-menuet-bwv-anh-113.pdmx",
-                "song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx",
-                "song.classical.mozart-w-a-mozart-allegro-in-ba-major-k3.pdmx",
-                "song.classical.satie-erik-satie-enfantillages-pittoresques-berceuse.pdmx",
                 "song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx",
-                "song.classical.haydn-das-deutschlandlied.pdmx",
-                "song.classical.het-wilhelmus.pdmx",
-                "song.classical.foster-stephen-foster-camptown-races.pdmx",
-                "song.classical.anon-kum-ba-yah.pdmx"
+                "song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -478,7 +456,7 @@
               ],
               "estimatedDays": 30,
               "levelBand": [
-                2.2,
+                2.4,
                 5.3
               ],
               "finder": {
@@ -535,15 +513,12 @@
                 "exercise.cadence.f.voice-led"
               ],
               "songOptions": [
+                "song.folk.happy-birthday.simple",
                 "song.folk.when-the-saints.f",
                 "song.holiday.jingle-bells.g",
-                "song.folk.happy-birthday.simple",
                 "song.folk.greensleeves.chords",
-                "song.pop.tom-dooley.pdmx",
-                "song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx",
-                "song.folk.in-the-summertime.pdmx",
                 "song.classical.foster-oh-susanna-simple-lead-sheet.pdmx",
-                "song.pop.duo-dinamico-resistire-duo-dinamico.pdmx"
+                "song.pop.tom-dooley.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -556,7 +531,7 @@
               ],
               "estimatedDays": 30,
               "levelBand": [
-                1.9,
+                2.3,
                 3.3
               ],
               "finder": {

@@ -35,12 +35,11 @@ you cannot keep time without hearing yourself.
 more happening per bar. If the syncopation is not audible as syncopation, the
 tempo is wrong.
 
-**What to play.** Thirteen options. The late ones first: *Pine Apple*,
-*Magnetic*, *Gladiolus*, *The Cascades*, *Scott Joplin's New Rag*, *Stoptime*,
-*Wall Street Rag*, and *Reflection Rag*, published in 1917, the year he died.
-Then four earlier and lighter ones to sit beside them — *A Breeze from Alabama*,
-*Country Club*, *Eugenia* and *Felicity Rag* — which are worth playing straight
-after a late rag to hear how far the writing moved.
+**What to play.** Six options. The late ones first: *Pine Apple*, *Gladiolus*,
+*Magnetic*, *The Cascades* and *Scott Joplin's New Rag*; then James Scott's
+*Frog Legs Rag* (1906), the other great ragtime writer, to hear where the
+idiom went without Joplin. *Stoptime*, *Wall Street*, *Reflection Rag* and the
+lighter early rags are under Ragtime in the Library.
 
 **Not only Joplin.** James Scott's *Frog Legs Rag* (1906) is here from the
 archive — the other great rag of the Sedalia school, and a good test of whether
