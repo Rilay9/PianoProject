@@ -77,7 +77,10 @@ class TestCoreReach(unittest.TestCase):
         from pathlib import Path
         import json
         root = Path(__file__).resolve().parents[3]
-        catalog = json.loads((root / "app/public/content/catalog.json").read_text(encoding="utf-8"))
+        built = root / "app/public/content/catalog.json"
+        if not built.exists():
+            self.skipTest("no built content; run tools/content/build.py")
+        catalog = json.loads(built.read_text(encoding="utf-8"))
         items = catalog["items"] if isinstance(catalog, dict) else catalog
         ids = {item["id"] for item in items}
         lessons: dict[str, list[str]] = {}
