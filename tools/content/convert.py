@@ -17,6 +17,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import copy
 import functools
 import hashlib
 import json
@@ -28,6 +29,7 @@ import time
 import warnings
 import zipfile
 from dataclasses import dataclass, field
+from fractions import Fraction
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -46,6 +48,7 @@ from music21 import (  # noqa: E402
     chord,
     clef,
     converter,
+    duration,
     dynamics,
     harmony,
     instrument,
@@ -588,6 +591,316 @@ def to_part_staff(part: stream.Part, staff_clef: clef.Clef | None) -> stream.Par
     return staff
 
 
+#: Printed note values music21's MusicXML writer refuses (`typeToMusicXMLType`).
+#: `2048th` and `duplex-maxima` fall off the ends of MusicXML's `<type>`
+#: vocabulary; `inexpressible` and `zero` are music21 saying it could not find a
+#: printed note value for the length at all.
+UNWRITABLE_TYPES = frozenset({"2048th", "duplex-maxima", "inexpressible", "zero"})
+
+#: The shortest note MusicXML can name, as a fraction of a quarter: a 1024th.
+#: Nothing below may lengthen or shorten a note by as much as this.
+SMALLEST_WRITABLE_QL = Fraction(1, 256)
+
+
+def exact_quarter_length(value) -> Fraction:
+    """A duration or an offset as an exact fraction, float noise removed."""
+    return Fraction(value).limit_denominator(1_000_000)
+
+
+def unwritable_type(unit: duration.Duration) -> str:
+    """
+    The first printed value inside `unit` the MusicXML writer would refuse.
+
+    Both halves matter. The note's own value is written as `<type>`, and the
+    tuplet around it is written as `<time-modification>` naming the value it is
+    a tuplet *of* — so an ordinary 32nd note refuses to be written when the
+    tuplet on it says "sixty in the time of forty-three 2048ths". Returns "" when
+    nothing in it would be refused.
+    """
+    for component in unit.components:
+        if component.type in UNWRITABLE_TYPES:
+            return component.type
+    for tuplet in unit.tuplets:
+        for side in (tuplet.durationNormal, tuplet.durationActual):
+            if side is not None and side.type in UNWRITABLE_TYPES:
+                return side.type
+    return ""
+
+
+def writable_quarter_length(unit: duration.Duration) -> Fraction | None:
+    """
+    The length `unit`'s own printed notation says it has, when that is not the
+    length it claims to last. None when there is nothing to correct.
+
+    Almost every one of these is an editor's rounding. MusicXML counts time in
+    integer ticks (`<divisions>`, commonly 480 to the quarter), so an irregular
+    tuplet — seven in the time of six, thirty-nine in the time of thirty-two —
+    does not divide evenly into ticks, and the editor writes each note of the
+    run as the nearest whole tick. The notes then do not add up to the beat they
+    fill: fourteen notes of 103 ticks come to 1,442 where the run is three
+    quarters, 1,440. The engraving is right and the arithmetic is two ticks out.
+
+    So this is not a quantisation onto a grid of our choosing; it is taking the
+    note at its own printed word. Value, dots and tuplet ratio are left exactly
+    as the editor wrote them and the sounding length is made to agree with them.
+
+    When the printed notation is itself unusable there is no word to take, so
+    nothing is returned and `refuse_unwritable` reports the note instead.
+    Rounding it to the nearest value that *can* be printed was tried and is
+    wrong: the shortest MusicXML can name is a 1024th, so a sliver can only be
+    rounded *up*, which pushes the bar past its own barline and fails at the
+    writer anyway — having changed a note on the way.
+    """
+    if unit.isGrace or len(unit.components) != 1 or unwritable_type(unit):
+        # A grace has no sounding length to correct, and a length written as
+        # several tied notes is split by the writer before it is typed.
+        return None
+    actual = exact_quarter_length(unit.quarterLength)
+    printed = exact_quarter_length(
+        duration.convertTypeToQuarterLength(unit.type, unit.dots, unit.tuplets)
+    )
+    return None if printed == actual else printed
+
+
+def rewrite_duration(element: note.GeneralNote) -> None:
+    """
+    Makes `element` last exactly what it is printed as.
+
+    Rebuilt from the printed value rather than assigned a quarterLength,
+    because assigning one makes music21 look for a notation that expresses it —
+    which is how the unusable tuplets got there in the first place.
+    """
+    unit = element.duration
+    fresh = duration.Duration(type=unit.type, dots=unit.dots)
+    if unit.tuplets:
+        # Fresh copies: one Tuplet is shared by every note of its run, and
+        # setting it on a new Duration freezes it.
+        fresh.tuplets = tuple(copy.deepcopy(tuplet) for tuplet in unit.tuplets)
+    element.duration = fresh
+
+
+def settle_durations(score: stream.Score) -> int:
+    """
+    Makes every note last what its own notation says, so the score can be written.
+
+    music21's MusicXML writer raises rather than guessing when it is handed a
+    length it cannot name, and the three sentences it raised on the PDMX
+    shortlist — `Cannot convert "2048th" duration to MusicXML`, `inexpressible
+    durations`, and a bare `KeyError` out of `makeTies` — are one fault seen
+    from three sides. A run whose tick counts were rounded (see
+    `writable_quarter_length`) leaves its bar a tick or two too long; the note
+    that then overhangs the barline is tied across it and the remainder is a
+    sliver no note value names. Sometimes the sliver is written as a 2048th,
+    sometimes as a tuplet of 2048ths, and sometimes the tie lands in a voice
+    number the next bar does not have and `makeTies` looks it up anyway.
+    Correcting the lengths before the writer sees them removes all three.
+
+    Nothing about the engraving changes: no pitch is touched, no note is added
+    or dropped, and every note keeps the printed value, dots and tuplet ratio it
+    arrived with. Each note's length moves by less than a 1024th, the shortest
+    note MusicXML can name. A length further from its notation than that is not
+    a rounding at all — it is a note deliberately written as one value and held
+    for another, which MusicXML expresses and this must not touch.
+
+    Within a bar the notes after a corrected one move with it, by the same few
+    ticks. That is what makes the bar add up again, and it is why the step runs
+    before `align_voice_offsets`, which measures a voice's start.
+
+    A bar is taken across both staves at once, because a run can be. The first
+    Ballade's bar 247 is a single cadenza of thirty-nine notes written
+    twenty-two in the right hand and seventeen in the left: correcting the
+    hands separately would leave the left hand starting where the *uncorrected*
+    right hand ended, which is how far the two are apart. So each voice keeps
+    its own running correction — that is what holds its notes end to end — and
+    a voice that starts mid-bar is led in by the largest correction any other
+    voice of the same bar has accumulated by then. Where two hands play the
+    same run in parallel, the largest is one hand's, not both added.
+
+    One correction is never made: one that would push a voice past the end of
+    its bar when it did not already reach it. A bar that falls a tick short is
+    written — the writer fills the gap and says nothing — while a bar a tick
+    long is tied across the barline, which is the fault this step exists to
+    avoid. Liszt's transcription of *Ständchen*, which converted perfectly
+    well, went from seven ticks under one of its bars to one tick over and
+    stopped converting; that is how this was found.
+
+    Returns the number of notes whose length was corrected.
+    """
+    settled = 0
+    for bar in bar_groups(score):
+        holders: list[stream.Stream] = []
+        for measure in bar:
+            holders.append(measure)
+            holders.extend(measure.voices)
+        planned = {id(holder): plan_corrections(holder) for holder in holders}
+        room = bar_room(bar, holders)
+        for holder in holders:
+            corrections = planned[id(holder)]
+            if not corrections:
+                continue
+            shift = lead_in(holder, holders, planned)
+            if projected_end(holder, corrections, shift) > room:
+                continue
+            for element in sorted(holder, key=holder.elementOffset):
+                if isinstance(element, stream.Stream):
+                    # A voice is corrected as its own holder, from its own start.
+                    continue
+                if shift:
+                    holder.setElementOffset(
+                        element, exact_quarter_length(holder.elementOffset(element)) + shift
+                    )
+                planned_here = corrections.get(id(element))
+                if planned_here is None:
+                    continue
+                _at, actual, target = planned_here
+                shift += target - actual
+                rewrite_duration(element)
+                settled += 1
+            holder.coreElementsChanged()
+    return settled
+
+
+def bar_room(bar: list[stream.Measure], holders: list[stream.Stream]) -> Fraction:
+    """
+    How far into the bar a corrected voice may reach.
+
+    Its own length, or how far the bar already reaches if that is further —
+    an irregular bar that holds more than its time signature says is the
+    editor's decision and not this step's to change.
+    """
+    room = Fraction(0)
+    for measure in bar:
+        try:
+            room = max(room, exact_quarter_length(measure.barDuration.quarterLength))
+        except Exception:  # noqa: BLE001 — no time signature in scope
+            pass
+    for holder in holders:
+        room = max(room, exact_quarter_length(holder.highestTime))
+    return room
+
+
+def lead_in(
+    holder: stream.Stream,
+    holders: list[stream.Stream],
+    planned: dict[int, dict[int, tuple[Fraction, Fraction, Fraction]]],
+) -> Fraction:
+    """How far a voice that starts mid-bar has to move with the bar around it."""
+    ordered = sorted(holder, key=holder.elementOffset)
+    if not ordered:
+        return Fraction(0)
+    start = exact_quarter_length(holder.elementOffset(ordered[0]))
+    if start <= 0:
+        return Fraction(0)
+    return max(
+        (accumulated(planned[id(other)], start) for other in holders if other is not holder),
+        default=Fraction(0),
+    )
+
+
+def projected_end(
+    holder: stream.Stream,
+    corrections: dict[int, tuple[Fraction, Fraction, Fraction]],
+    lead: Fraction,
+) -> Fraction:
+    """Where `holder` would end if its corrections were applied."""
+    shift = lead
+    end = Fraction(0)
+    for element in sorted(holder, key=holder.elementOffset):
+        if isinstance(element, stream.Stream):
+            continue
+        at = exact_quarter_length(holder.elementOffset(element)) + shift
+        planned_here = corrections.get(id(element))
+        if planned_here is None:
+            length = exact_quarter_length(element.duration.quarterLength)
+        else:
+            _at, actual, target = planned_here
+            length = target
+            shift += target - actual
+        end = max(end, at + length)
+    return end
+
+
+def bar_groups(score: stream.Score) -> list[list[stream.Measure]]:
+    """The score's measures, one list per bar, both staves of a bar together."""
+    bars: dict[Fraction, list[stream.Measure]] = {}
+    for measure in score.recurse().getElementsByClass(stream.Measure):
+        at = exact_quarter_length(measure.getOffsetInHierarchy(score))
+        bars.setdefault(at, []).append(measure)
+    return [bars[at] for at in sorted(bars)]
+
+
+def plan_corrections(holder: stream.Stream) -> dict[int, tuple[Fraction, Fraction, Fraction]]:
+    """
+    Which of `holder`'s own notes need a corrected length, and what it is.
+
+    Each entry is where the note sits, what it claims to last and what its own
+    notation says it lasts. Keyed by identity rather than by offset, because
+    the offsets move as the corrections are applied and two notes can share one.
+    """
+    corrections: dict[int, tuple[Fraction, Fraction, Fraction]] = {}
+    for element in holder.notesAndRests:
+        target = writable_quarter_length(element.duration)
+        if target is None:
+            continue
+        actual = exact_quarter_length(element.duration.quarterLength)
+        if abs(target - actual) >= SMALLEST_WRITABLE_QL:
+            # Further out than the shortest note MusicXML can name, so this is
+            # a note deliberately held for something other than its printed
+            # value, not an editor's rounding of one.
+            continue
+        corrections[id(element)] = (
+            exact_quarter_length(holder.elementOffset(element)),
+            actual,
+            target,
+        )
+    return corrections
+
+
+def accumulated(
+    corrections: dict[int, tuple[Fraction, Fraction, Fraction]], before: Fraction
+) -> Fraction:
+    """How far a holder's own corrections have moved it by the offset `before`."""
+    return sum(
+        (target - actual for at, actual, target in corrections.values() if at < before),
+        Fraction(0),
+    )
+
+
+def refuse_unwritable(score: stream.Score) -> str:
+    """
+    The sentence to refuse a score with, or "" when it can be written.
+
+    `settle_durations` corrects what it can recognise as a rounding. What it
+    cannot, the MusicXML writer would raise on later with a measure number and
+    no way back, so it is said here instead, in a sentence naming the bar and
+    the length. Refusing is the point: the alternative is a note silently
+    dropped or squashed to nothing.
+
+    A rest the writer itself lets through is not counted — it skips a hidden
+    rest it cannot name rather than raising, and a whole-bar rest is written
+    with no `<type>` at all.
+    """
+    for measure in score.recurse().getElementsByClass(stream.Measure):
+        for element in measure.recurse().notesAndRests:
+            if element.duration.isGrace:
+                continue
+            if isinstance(element, note.Rest) and (
+                element.style.hideObjectOnPrint
+                or exact_quarter_length(element.duration.quarterLength)
+                == exact_quarter_length(measure.barDuration.quarterLength)
+            ):
+                continue
+            refused = unwritable_type(element.duration)
+            if refused:
+                return (
+                    f"bar {measure.number} has a {element.classes[0].lower()} lasting "
+                    f"{exact_quarter_length(element.duration.quarterLength)} of a quarter, "
+                    f"which no printed note value expresses ({refused}); it cannot be "
+                    "written as MusicXML without dropping it"
+                )
+    return ""
+
+
 def align_voice_offsets(score: stream.Score) -> int:
     """
     Moves every voice to the start of its measure, padding with a rest.
@@ -765,6 +1078,13 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
     if len(staves) > 1:
         out.insert(0, layout.StaffGroup(staves, name="Piano", abbreviation="Pno.", symbol="brace", barTogether=True))
 
+    # Before `align_voice_offsets`, which pads a voice with a rest as long as
+    # the voice's own start: a start measured off lengths that do not add up is
+    # a rest no note value names.
+    settled = settle_durations(out)
+    if settled:
+        notes.append(f"{settled} durations quantised to the printed note value")
+
     displaced = align_voice_offsets(out)
     if displaced:
         notes.append(f"moved {displaced} mid-bar voice(s) to the barline with a hidden rest")
@@ -818,6 +1138,12 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
     renumbered = renumber_measures(staves)
     if renumbered:
         notes.append("first bar was numbered 0 without being a pickup; bars renumbered from 1")
+
+    # Said here, with the bar and the length, rather than by the MusicXML
+    # writer minutes later with neither.
+    unwritable = refuse_unwritable(out)
+    if unwritable:
+        raise ConversionError(unwritable)
 
     # `notes` counts every element music21 calls a note, chord symbols
     # included, and other tools read it with that meaning; `note_events` is the

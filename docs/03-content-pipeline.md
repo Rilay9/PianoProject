@@ -217,6 +217,48 @@ The gate is not free of its own blind spot: a source format it cannot count is n
 and a conversion that keeps every note but puts it in the wrong bar still passes. It answers
 one question only — is all the music still here.
 
+### 3c. Lengths the writer cannot name (step 2, `settle_durations`)
+
+The gate above runs *after* a step that exists because the PDMX re-run lost its best
+classical admissions at the export end rather than the parsing end. music21's MusicXML
+writer raises rather than guessing when it is handed a length it cannot name, and the
+three sentences the re-run collected — `Cannot convert "2048th" duration to MusicXML`,
+`Cannot convert inexpressible durations`, and a bare `KeyError` out of `makeTies` — are
+one fault seen from three sides.
+
+The fault is an editor's arithmetic. MusicXML counts time in integer ticks
+(`<divisions>`, commonly 480 to the quarter) and an irregular tuplet does not divide
+evenly into them, so the editor writes each note of the run as the nearest whole tick.
+Fourteen notes of 103 ticks come to 1,442 where the run is three quarters, 1,440. The
+engraving is right and the arithmetic is two ticks out — so the last note of the run
+overhangs the barline, `makeTies` ties it across, and the sliver left over is a length no
+printed note value expresses. Sometimes that sliver is written as a 2048th, sometimes as a
+tuplet *of* 2048ths, and sometimes the tie lands in a voice number the next bar does not
+have and `makeTies` looks it up anyway.
+
+`settle_durations` therefore takes each note at its own printed word: value, dots and
+tuplet ratio stay exactly as the editor wrote them and the sounding length is made to
+agree with them. It is not a quantisation onto a grid of our choosing — no pitch is
+touched, no note is added or dropped, and each length moves by less than a 1024th, the
+shortest note MusicXML can name. Within a bar the notes after a corrected one move with
+it, which is what makes the bar add up again; a bar is taken across both staves at once,
+because a cadenza run can be written twenty-two notes in the right hand and seventeen in
+the left. The count goes into `result.warnings` as "N durations quantised to the printed
+note value", and the note-loss gate still runs afterwards.
+
+Two things it will not do. It will not push a voice **past** the end of its bar when the
+voice did not already reach it: a bar a tick short is written and filled silently, while a
+bar a tick long is tied across the barline, which is the whole fault. And it will not
+round a length that has no printed value at all — the shortest MusicXML can name is a
+1024th, so a sliver can only be rounded *up*, which moves a barline. Those are refused by
+`refuse_unwritable` with a sentence naming the bar and the length, rather than left for
+the writer to raise on with a measure number and no way back.
+
+What it does **not** fix, and what still costs the re-run its Ballades: a bar that
+genuinely holds more than its time signature — a written-out cadenza — which `makeTies`
+splits at the notional barline whatever the lengths are. That is a bar-length fault, not a
+duration one, and it is still open.
+
 ## 4. Catalog and curriculum schemas
 
 Authoritative JSON Schemas are `content/catalog.schema.json` and
