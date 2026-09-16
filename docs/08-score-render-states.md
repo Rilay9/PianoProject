@@ -1105,7 +1105,7 @@ stretched and nothing redrew it.
 
 Replaced by a rule measured on the engraving itself (`drawInto`): on a stage at least
 `WIDE_STAGE_MIN_PX` (900) wide, a slot is engraved unstretched and `drawnShare` reads how much
-of the page its ink spans; at or above `1 / STRETCH_LIMIT` (a half) it is engraved again
+of the page its ink spans; at or above `FILL_SHARE` (three quarters) it is engraved again
 stretched, otherwise it keeps its spacing, `natural` is set on the buffer, and `centredInset`
 centres it as it already centred any slot narrower than the stage. Below 900 px nothing
 changed: a phone stretches in one engraving, and the dev screen's snapshots at 390 px are the
@@ -1114,5 +1114,5 @@ and refused the stretch on the dev screen at phone width because its zoom made t
 staff small (`chords-ties` snapshots), which is what sent the rule to the engraving.
 
 Cost: one extra engraving per window, only on a wide stage and only when the first pass spans
-at least half the page. `wide.spec` › *a sparse bar is not stretched* holds both ends: under
+at least three quarters of the page — a half let Suo Gân's first bar through, clef and all. `wide.spec` › *a sparse bar is not stretched* holds both ends: under
 0.8 of the stage at 1366 × 768, over 0.8 at 342 × 740.

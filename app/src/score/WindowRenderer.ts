@@ -200,16 +200,19 @@ const WIDE_STAGE_MIN_PX = 900;
 const MAX_BAR_WIDTH_IN_STAVES = 8;
 
 /**
- * On a wide stage, the most a system may be stretched past its natural width.
+ * On a wide stage, how much of its page a system must already span, drawn at
+ * its natural width, before it is stretched to fill the page.
  *
- * Measured on the engraving itself: the slot is drawn unstretched first, and
- * if its ink already spans at least this fraction of the page it is drawn
- * again stretched — the notes move a little and the page is full. If not, it
- * keeps its natural spacing and is centred (`centredInset`). Two, because a
- * bar spread to twice its spacing still reads as a bar while one at three
- * times reads as a diagram of one: Suo Gân's four-note first bar was given
- * the whole of a 1,040 px stage (2026-09-16, the tour and the wide spec both
- * photographed it).
+ * Measured on the engraving itself: the slot is drawn unstretched first and
+ * `drawnShare` reads what its ink spans; at or above this it is drawn again
+ * stretched — the notes move a little and the page is full. Below it the
+ * system keeps its natural spacing and is centred (`centredInset`). Three
+ * quarters, from the two ends it has to separate: Suo Gân's four-note first
+ * bar, with its clef, key and time, spans half a 1,040 px stage at natural
+ * width, and stretched to the whole of it was the "giant stretching" the
+ * owner named (2026-09-16); a bar of sixteenths spans nearly all of it and
+ * loses nothing by filling the rest. A limit of a half let the first bar
+ * through — the wide spec caught it as `filled` beside a `natural` bar 2.
  *
  * This replaced a rule stated in staff heights, which compared the page with
  * the *system's* ink height — near 150 px for a single staff with chord
@@ -218,7 +221,7 @@ const MAX_BAR_WIDTH_IN_STAVES = 8;
  * stage, and only by a window dense enough to be worth filling; a phone
  * never pays it.
  */
-const STRETCH_LIMIT = 2;
+const FILL_SHARE = 0.75;
 
 /**
  * How much of its page a drawn sheet's ink spans, on screen: 1 is a system
@@ -1881,8 +1884,8 @@ export class WindowRenderer {
     // A slot fills the width; a sliding chunk keeps its bars' natural widths,
     // and so does a slot with more room than the music can justify.
     // On a wide stage a slot is engraved at its natural width first and
-    // stretched only if it nearly fills the page anyway (`stretchFirst`,
-    // `STRETCH_LIMIT`, and the second pass below).
+    // stretched only if it nearly fills the page anyway (`FILL_SHARE` and the
+    // second pass below).
     const page = this.measure(this.el).width;
     // Drawn before the stage had a width — the first frame — so the wide-stage
     // question could not be asked; the width handler asks it once it can.
@@ -1899,7 +1902,7 @@ export class WindowRenderer {
     buffer.natural = false;
     if (wide) {
       const share = drawnShare(buffer.wrapper);
-      if (share >= 1 / STRETCH_LIMIT) {
+      if (share >= FILL_SHARE) {
         // Dense enough that stretching moves nothing far: fill the page.
         buffer.view.stretchLastSystem = true;
         buffer.view.render();

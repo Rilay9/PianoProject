@@ -1446,12 +1446,12 @@ The phone is untouched: every cap is wider than 740 px (and than 915), so at 342
 The cap does not change how many bars a system holds; what it changed, the same day, is
 whether a sparse bar is stretched to it. On a stage at least 900 px wide (the tablet number,
 which is also a laptop's capped stage) the renderer engraves each slot at its natural width
-first and stretches it only if its ink already spans at least half the page; a sparser one
+first and stretches it only if its ink already spans three quarters of the page; a sparser one
 keeps its spacing and is centred, so Suo Gân's four-note bar sits in the middle of the stage
 with page either side rather than across the whole of it. A phone never enters this path — it
 stretches, one engraving, as before. The rule that was meant to do this (eight staff heights
 of page per bar) compared the page with the system's ink height and never fired on any
-screen; `WindowRenderer` `STRETCH_LIMIT` and `wide.spec` hold the new one.
+screen; `WindowRenderer` `FILL_SHARE` and `wide.spec` hold the new one.
 
 E2E: `tests/e2e/wide.spec.ts` — seven shapes from 342 × 740 to 1920 × 1080, every screen,
 gutters symmetric, content no wider at 1920 than at 1366, pictures under `build/wide/`.
