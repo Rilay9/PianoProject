@@ -39,6 +39,25 @@
   --tab-bar-bg: #ffffff;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
+
+  /* How wide a screen is allowed to get before the room left over becomes
+     gutter (`04` §7a). Three numbers, because three things are being sized.
+
+     `--page-max` is a browsing screen: two columns of rows, each column about
+     as wide as the one column a phone gets. `--column-max` is one column of
+     prose, settings or a form, and is the width the sub-screen cards already
+     used — a settings row is a label and a control on one line, and past this
+     they stop being one line and become a label at one end of the room and a
+     control at the other. `--stage-max` is the engraving surface: more than a
+     reading column because staff width *is* legibility, and finite because a
+     system stretched past its natural note spacing is harder to read than a
+     smaller one (`00` §1).
+
+     They are here rather than in the rules that use them so that the three
+     can be compared, and changed, in one place. */
+  --page-max: 1040px;
+  --column-max: 720px;
+  --stage-max: 1040px;
 }
 
 [data-theme='dark'] {
@@ -763,6 +782,50 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+   Wide screens: a column that stops growing, centred (`04` §7a)
+
+   The owner, on a tablet and a laptop: "No giant stretching, just centering
+   and side to side bars if there's extra room."
+
+   Until this, the app had exactly one rule for a screen wider than a phone —
+   the tablet breakpoint, which asks for 900 CSS px on *both* sides. A laptop
+   is 1366 x 768 and fails the height half, so it fell through to the phone
+   layout stretched across the whole glass: a Settings row with `Setup tour`
+   at the far left and `Run again` at the far right with a thousand pixels of
+   nothing between them, the same on the accompaniment lab, and a Library of
+   single-column rows 1,230 px wide with `Details` marooned at the edge.
+
+   One rule, and it is not a breakpoint: a screen is as wide as its content
+   wants up to a cap, and centred. A phone is narrower than every cap here, so
+   nothing below changes anything at 342 x 740 or 740 x 342 — which is the
+   point. `.screen` is the box the shell scrolls, so this is one place rather
+   than one rule per screen.
+
+   Not the score: it is a fixed full-bleed route and the thing that must stop
+   growing there is the engraving surface, not the screen. See `.score-stage`.
+   --------------------------------------------------------------------------- */
+.screen:not(.screen--score) {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+}
+
+/* The screens that are one column of settings or prose rather than a list of
+   rows to browse. The number is the sub-screen card's own, so the Lab and
+   Settings come out the width MIDI and Diagnostics already were — the app has
+   one answer to "a label and a control on a line", not two.
+
+   The Lab's jam grid and its keys are inside this column too, deliberately:
+   they are read while the settings above them are being changed, and a chart
+   that is three times the width of the controls that produced it reads as two
+   screens rather than one. */
+.screen[data-screen='settings'],
+.screen[data-screen='lab'],
+.screen[data-screen='paper'] {
+  max-width: var(--column-max);
+}
+
+/* ---------------------------------------------------------------------------
    R5 — sideways on a phone, the header is one line (`04` §0, P21d §A)
 
    "The landscape on phone I feel like could be way better use of the space."
@@ -1084,6 +1147,18 @@ body {
   display: flex;
   height: var(--key-h);
   width: calc(var(--white-count, 52) * var(--key-w));
+  /* Centred in the strip when the keys do not fill it.
+   *
+   * `fitKeysToWidth` widens a key until it hits its cap and then stops, so a
+   * two-octave piece on anything wider than a phone leaves room over — and it
+   * was all on the right. On a 1366 px laptop Suo Gan's keyboard ended two
+   * thirds of the way across with the transport bar centred above it, which
+   * reads as a strip that has failed to draw rather than as a range.
+   *
+   * Auto margins collapse to zero when the content is wider than the box, so
+   * the 88-key case on a phone still starts at the left edge and still
+   * scrolls. */
+  margin-inline: auto;
 }
 
 .key {
@@ -2605,7 +2680,38 @@ input[type='checkbox'] {
    The height itself is measured and written by ScoreScreen, because the bar
    wraps to two rows on a narrow screen and a guessed constant would be wrong
    exactly when it matters. */
+/* And the width it stops growing at (`04` §7a).
+ *
+ * The stage is the element `WindowRenderer` measures and engraves against, so
+ * capping it here is the only place a cap has any effect: the engraver lays a
+ * window out on a page as wide as it is given and inks it, and given a metre
+ * it inks a metre. On a 1366 px laptop that was one bar per system with its
+ * four notes spread across the whole screen — "never stretch a system past
+ * natural note spacing" (`00` §1), broken by the layout rather than by the
+ * renderer.
+ *
+ * Wider than a reading column, because the staff's width is its legibility and
+ * the owner would rather have the notes large. `margin-inline: auto` is what
+ * turns the room left over into a bar of page either side rather than a bar of
+ * page on the right, which is what a stage pinned to the left gives.
+ *
+ * On a tablet with the lesson panel open the stage is the grid's first track
+ * and is already narrower than this, so the cap does nothing and the panel
+ * keeps its column. */
 .score-stage {
+  /* `width: 100%` and not merely `max-width`. An auto margin across the cross
+   * axis stops a flex item stretching and stops a grid item filling its track,
+   * and the item then takes its *content* width — which here is the buffer,
+   * whose width the renderer writes from the stage it last measured. The stage
+   * grew to the cap on a 740 px phone held sideways, the renderer engraved a
+   * 1,040 px page for it, and the next fit measured 1,040 again: the sheet came
+   * back 300 px off the right of the screen, and on the narrower shapes it came
+   * back `width="0"` and drew nothing at all. A definite width breaks the loop —
+   * the stage is as wide as what it is in, up to the cap, and the auto margins
+   * only share out what the cap leaves. */
+  width: 100%;
+  max-width: var(--stage-max);
+  margin-inline: auto;
   margin-bottom: var(--score-bar-h, 0px);
 }
 
@@ -3784,12 +3890,34 @@ input[type='checkbox'] {
 }
 
 /* docs/04 §7a: ≥ 900 CSS px on the shortest side is a tablet — two columns
-   for the browsing screens, everything else identical. */
-@media (min-width: 900px) and (min-height: 900px) {
+   for the browsing screens, everything else identical.
+
+   The second clause is the laptop. "Shortest side" is the right test for the
+   score's side panel, which needs height to be worth having, and the wrong one
+   for a list of rows: a 1366 x 768 laptop has 768 px of height and no more
+   need of 1,230 px-wide rows than a tablet has. So the browsing grid asks the
+   width on its own past the point where two columns are each still wider than
+   a phone's one — with `--page-max` capping the column, that is two columns of
+   about 500 px at every width from here up.
+
+   Deliberately clear of a phone held sideways: the widest is 915 px with a
+   larger Display size, and 915 px of two columns is two 440 px columns on a
+   412 px-tall screen, which is not browsing, it is squinting. */
+@media (min-width: 900px) and (min-height: 900px), (min-width: 1100px) {
   /* Not Skills. Its rows nest drill rows of varying height, so a two-column
      grid leaves a 330 px void beside every tall one — a grid whose cells are
-     not the same height is worse than a list (P21d A3). */
-  .list:not(:has(.skill-concept)) {
+     not the same height is worse than a list (P21d A3).
+
+     Not the folder or the shelf either. Both lists live inside a sub-screen
+     card that stops at 640 px, so two columns there is two columns of 300 —
+     and the folder row clipped its composer line mid-word at that width
+     (`Composer 0 · 16 bars · l`, photographed on a tablet sideways and then
+     on the laptop the clause above brought in), while the shelf's one book,
+     which is a block of rows and not a row, sat in the left half of its card
+     with the right half empty. The same exclusion the phone-sideways grid
+     already makes, for the same measured reason: two columns is only better
+     when the rows keep the shape they had. */
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     /* Each row its own height. A grid item stretches to its track by default,
@@ -3801,12 +3929,19 @@ input[type='checkbox'] {
 
   /* A stage row is a heading for the lessons under it: it spans (C2). So is
      the line naming the track a group of rungs belongs to. */
-  .list:not(:has(.skill-concept)) > .list-row[data-stage],
-  .list:not(:has(.skill-concept)) > .plan-track,
-  .list:not(:has(.skill-concept)) > .plan-stage-summary,
-  .list:not(:has(.skill-concept)) > .today-break,
-  .list:not(:has(.skill-concept)) > .today-prompt,
-  .list:not(:has(.skill-concept)) > .plan-unit {
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > .list-row[data-stage],
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > .plan-track,
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > .plan-stage-summary,
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > .today-break,
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > .today-prompt,
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > .plan-unit,
+  /* And an empty list's sentence and the one control under it (R4): drawn as
+     two grid cells, the sentence sat in the left column with the button
+     beside it in the right, which the laptop clause brought to every desktop
+     window — `empty-states.spec` caught it at 1280 px on 2026-09-16. */
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > #library-empty,
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > #library-show-everything,
+  .list:not(:has(.skill-concept)):not(#folder-list):not(#shelf-list) > #library-empty-import {
     grid-column: 1 / -1;
   }
 

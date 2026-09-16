@@ -17,9 +17,9 @@ V major, vi minor, vii diminished**. In C: C, Dm, Em, F, G, Am, B°. That patter
 is the same in every key, which means "vi" always means the minor chord a minor
 third below the tonic, and you never have to work one out twice.
 
-**vi and ii are the two you need.** **vi** (Am in C) is the relative minor — the
-same notes as I with a darker centre, and the chord that makes a progression
-sound wistful. **ii** (Dm in C) is the smoothest approach to V, which is why
+**vi and ii are the two you need.** **vi** (Am in C) is the relative minor — it
+shares two of its three notes with I (A–C–E against C–E–G) and has a darker
+centre, which is why it is the chord that makes a progression sound wistful. **ii** (Dm in C) is the smoothest approach to V, which is why
 **ii–V–I** is the most common cadence in Western music and the doorway into the
 jazz track.
 

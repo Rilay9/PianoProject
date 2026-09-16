@@ -757,7 +757,7 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
     one_of("hands", hands, HANDS)
     base = triad(quality)
     third = base[1]
-    title = f"{root} {quality} triad inversions — {hands}"
+    title = f"{note_name(root)} {quality} triad inversions — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(root if quality == "major" else root.lower()))
     shapes = [base, [base[1], base[2], 12], [base[2], 12, 12 + third], [12, 12 + third, 19]]
     seq = shapes + list(reversed(shapes))[1:]
@@ -797,7 +797,7 @@ def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm
     level = 1.1 if hands != "both" else 2.1
     steps = [0, 2, 4, 5, 7] if quality == "major" else [0, 2, 3, 5, 7]
     seq = steps + list(reversed(steps))[1:]
-    title = f"{root} {quality} five-finger pattern — {hands}"
+    title = f"{note_name(root)} {quality} five-finger pattern — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(root if quality == "major" else root.lower()))
     rh_f = [1, 2, 3, 4, 5, 4, 3, 2, 1]
     lh_f = [5, 4, 3, 2, 1, 2, 3, 4, 5]
@@ -1176,7 +1176,7 @@ def make_octave_scale(
     one_of("hands", hands, HANDS)
     level = 7.2
     kind_label = "broken octaves" if broken else "octave scale"
-    title = f"{tonic.replace('-', '♭')} {kind_label} — {octaves} oct, {hands}"
+    title = f"{note_name(tonic)} {kind_label} — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     def top_finger(p: pitch.Pitch) -> int:
@@ -1246,7 +1246,7 @@ def make_broken_seventh(
     level = broken_seventh_level(root)
     shape = SEVENTH_SHAPES[quality]
     label = SEVENTH_LABELS[quality]
-    title = f"{root.replace('-', '♭')} broken {label} — {hands}"
+    title = f"{note_name(root)} broken {label} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
 
     def figure(start: pitch.Pitch) -> list[pitch.Pitch]:
@@ -1430,7 +1430,7 @@ COORDINATION_VARIANTS = ("hold", "change")
 def make_coordination(root: str, variant: str = "hold", bpm: int = 60, level: float = 2.1):
     """RH five-finger walk over a LH that holds (or changes I/V every bar)."""
     k = key.Key(root)
-    title = f"Hands together in {root} — left hand {'holds' if variant == 'hold' else 'changes'}"
+    title = f"Hands together in {note_name(root)} — left hand {'holds' if variant == 'hold' else 'changes'}"
     sc, rh, lh = grand_staff(title, bpm, ks=k)
 
     walk = [1, 2, 3, 4, 5, 4, 3, 2]          # C D E F G F E D, then a whole-note tonic
@@ -1530,7 +1530,7 @@ def make_position_shift(root: str, hands: str = "right", bpm: int = 66, level: f
     """
     one_of("hands", hands, HANDS)
     k = key.Key(root)
-    title = f"Position shift in {root} — {hands}"
+    title = f"Position shift in {note_name(root)} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=k)
 
     lower = [1, 2, 3, 4, 5, 4, 3, 2]      # tonic position
@@ -1581,7 +1581,7 @@ def make_cadence(root: str, voicing: str = "root", bpm: int = 60, level: float =
     """I-IV-V7-I as whole-note left-hand chords, in one of the two standard voicings."""
     k = key.Key(root)
     label = "root position" if voicing == "root" else "smooth voicing"
-    title = f"I-IV-V7-I in {root} — {label}"
+    title = f"I-IV-V7-I in {note_name(root)} — {label}"
     sc, rh, lh = grand_staff(title, bpm, ks=k)
 
     for degrees, fingers in CADENCE_VOICINGS[voicing]:
@@ -1602,7 +1602,7 @@ def make_cadence(root: str, voicing: str = "root", bpm: int = 60, level: float =
 #: index 0 is the lowest note of the triad, 2 the highest. Written as indices rather than
 #: intervals so the same table works for a minor chord.
 ACCOMPANIMENT_PATTERNS: dict[str, tuple[str, list[tuple[int, float]], str]] = {
-    "broken":  ("Broken chord", [(0, 1.0), (2, 1.0), (1, 1.0), (2, 1.0)], "4/4"),
+    "broken":  ("Broken chord", [(0, 1.0), (1, 1.0), (2, 1.0), (1, 1.0)], "4/4"),
     "alberti": ("Alberti bass",
                 [(0, 0.5), (2, 0.5), (1, 0.5), (2, 0.5)] * 2, "4/4"),
     "waltz":   ("Waltz bass", [(0, 1.0), (-1, 1.0), (-1, 1.0)], "3/4"),
@@ -1624,7 +1624,7 @@ def make_accompaniment(root: str, mode: str, pattern: str, hands: str = "left",
     k = key.Key(root if mode == "major" else root.lower())
     label, steps, time_sig = ACCOMPANIMENT_PATTERNS[pattern]
     hands_label = "left hand" if hands == "left" else "hands together"
-    title = f"{label} in {root} {mode} — {hands_label}"
+    title = f"{label} in {note_name(root)} {mode} — {hands_label}"
     sc, rh, lh = grand_staff(title, bpm, ts=time_sig, ks=k)
     beats_per_bar = 4.0 if time_sig == "4/4" else 3.0
 
@@ -1677,7 +1677,7 @@ def make_pedal(root: str, bpm: int = 54, level: float = 3.5):
     from music21 import expressions
 
     k = key.Key(root)
-    title = f"Pedal changes on I-IV-V7-I in {root}"
+    title = f"Pedal changes on I-IV-V7-I in {note_name(root)}"
     sc, rh, lh = grand_staff(title, bpm, ks=k)
 
     chords = []
@@ -1755,7 +1755,7 @@ def make_repeated_notes(
     one_of("hands", hands, HANDS)
     fingers = [3, 2, 1] if per_note == 3 else [4, 3, 2, 1]
     level = 5.3 if per_note == 3 else 6.3
-    title = f"Repeated notes {per_note}-to-a-note in {tonic.replace('-', '♭')} — {hands}"
+    title = f"Repeated notes {per_note}-to-a-note in {note_name(tonic)} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     steps = _walk(tonic, bars=4, per_bar=2)
     ql = 1.0 / per_note
@@ -1807,7 +1807,7 @@ def make_trill(
 
     level = 6.3 if ornament == "trill" else 5.3
     label = "Measured trill" if ornament == "trill" else "Mordents"
-    title = f"{label} in {tonic.replace('-', '♭')} — {notes_per_beat} per beat, {hands}"
+    title = f"{label} in {note_name(tonic)} — {notes_per_beat} per beat, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     scale_obj = scale.MajorScale(tonic)
     starts = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "5"))[:4]
@@ -1921,7 +1921,7 @@ def make_tremolo_octaves(
     one_of("shape", shape, tuple(TREMOLOS))
     semitones, lower_finger, upper_finger, level = TREMOLOS[shape]
     label = "Octave tremolo" if shape == "octave" else "Tremolo in 3rds"
-    title = f"{label} in {tonic.replace('-', '♭')} — {hands}"
+    title = f"{label} in {note_name(tonic)} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     scale_obj = scale.MajorScale(tonic)
     roots = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "5"))[:4]
@@ -1989,7 +1989,7 @@ def make_rotation(
     """
     one_of("hands", hands, HANDS)
     level = 6.3
-    title = f"Wrist rotation (Alberti at speed) in {tonic.replace('-', '♭')} — {hands}"
+    title = f"Wrist rotation (Alberti at speed) in {note_name(tonic)} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     k = key.Key(tonic)
 
@@ -2050,7 +2050,7 @@ def make_articulation(
     one_of("articulation", articulation, ("staccato", "legato"))
     level = 4.5 if articulation == "legato" else 4.4
     label = articulation.capitalize()
-    title = f"{label} phrase in {tonic.replace('-', '♭')} — {hands}"
+    title = f"{label} phrase in {note_name(tonic)} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     steps = _walk(tonic, bars=4, per_bar=4)
     rh.insert(0, expressions.TextExpression(
@@ -2114,7 +2114,7 @@ def make_hand_independence(
     one doing the work, and it matters which one it is.
     """
     right_n, left_n, level = next((r, l, lv) for name, r, l, lv in INDEPENDENCE_RATIOS if name == ratio)
-    title = f"Hand independence {ratio} in {tonic.replace('-', '♭')}"
+    title = f"Hand independence {ratio} in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     k = key.Key(tonic)
     bars = 4
@@ -2159,7 +2159,7 @@ def make_shaping(
 
     one_of("shape", shape, ("crescendo", "diminuendo"))
     level = 5.2
-    title = f"{shape.capitalize()} over a scale in {tonic.replace('-', '♭')}"
+    title = f"{shape.capitalize()} over a scale in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     run = _diatonic_run(tonic, "major", pitch.Pitch(tonic + "4"), 2)
     if shape == "diminuendo":
@@ -2197,7 +2197,7 @@ def make_voicing(tonic: str = "C", bpm: int = 54) -> tuple[stream.Score, dict]:
     from music21 import expressions
 
     level = 6.2
-    title = f"Voicing the top note in {tonic.replace('-', '♭')}"
+    title = f"Voicing the top note in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     k = key.Key(tonic)
     rh.insert(0, expressions.TextExpression("The top note sings; the rest accompany it"))
@@ -2322,7 +2322,7 @@ def make_pedal_variant(
     level = 6.4 if variant == "held-melody" else 7.4
     k = key.Key(root)
     title = ("Held melody over changing harmony" if variant == "held-melody"
-             else "Half pedal — the damper part-way down") + f" in {root.replace('-', '♭')}"
+             else "Half pedal — the damper part-way down") + f" in {note_name(root)}"
     sc, rh, lh = grand_staff(title, bpm, ks=k)
     rh.insert(0, expressions.TextExpression(
         "Change the pedal under the held note — it must not break"
@@ -2679,7 +2679,7 @@ def make_seventh_voicing(
     """
     level = 6.1 if voicing in ("close", "shell") else 7.1
     label = VOICING_LABELS[voicing]
-    title = f"ii-V-I in {tonic.replace('-', '♭')} — {label}"
+    title = f"ii-V-I in {note_name(tonic)} — {label}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     # A rootless drill alternates its two forms; the close and shell voicings do
@@ -2734,7 +2734,7 @@ def make_four_chord_loop(
     """
     level = 4.4 if not inversions else 5.4
     kind_label = "with inversions" if inversions else "root position"
-    title = f"I-V-vi-IV in {tonic.replace('-', '♭')} — {kind_label}"
+    title = f"I-V-vi-IV in {note_name(tonic)} — {kind_label}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     offset = 0.0
@@ -2782,7 +2782,7 @@ def make_slash_bass(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict
     skill.
     """
     level = 5.4
-    title = f"Slash chords — a walking bass under held harmony in {tonic.replace('-', '♭')}"
+    title = f"Slash chords — a walking bass under held harmony in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     # I  I/7  vi  I/5  IV  IV/3  ii  V — the descending line.
     plan = [(0, "maj", 0), (0, "maj", 11), (9, "m", 9), (0, "maj", 7),
@@ -2894,9 +2894,9 @@ def make_walking_bass(
     level = (4.5 if tier == "intro" else (6.2 if form == "blues" else 6.4))
     bpm = bpm if bpm is not None else (72 if tier == "intro" else 92)
     bars = list(TWELVE_BAR) if form == "blues" else [(2, "m7"), (7, "7"), (0, "maj7"), (0, "maj7")]
-    title = (f"Walking bass over a 12-bar blues in {tonic.replace('-', '♭')}"
+    title = (f"Walking bass over a 12-bar blues in {note_name(tonic)}"
              if form == "blues"
-             else f"Walking bass over ii-V-I in {tonic.replace('-', '♭')}")
+             else f"Walking bass over ii-V-I in {note_name(tonic)}")
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     offset = 0.0
@@ -2982,9 +2982,9 @@ def make_comping(
     bpm = bpm if bpm is not None else default_bpm
     offsets = COMPING_PATTERNS[pattern]
     words = "triads" if tier == "intro" else pattern.replace("-", " ")
-    title = f"Comping — {pattern.replace('-', ' ')} in {tonic.replace('-', '♭')}"
+    title = f"Comping — {pattern.replace('-', ' ')} in {note_name(tonic)}"
     if tier == "intro":
-        title = f"Comping — {pattern.replace('-', ' ')} on triads in {tonic.replace('-', '♭')}"
+        title = f"Comping — {pattern.replace('-', ' ')} on triads in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     bar = 0.0
@@ -3031,7 +3031,7 @@ def make_stride(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
     the hand has to leap and land, twice a bar, without looking.
     """
     level = 7.3
-    title = f"Stride left hand in {tonic.replace('-', '♭')}"
+    title = f"Stride left hand in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     offset = 0.0
@@ -3101,7 +3101,7 @@ def make_turnaround(
     level = (4.6 if tier == "intro" else (6.4 if variant == "I-vi-ii-V" else 7.1))
     bpm = bpm if bpm is not None else (72 if tier == "intro" else 88)
     plan = TURNAROUNDS[variant]
-    title = f"Turnaround in {tonic.replace('-', '♭')} — {variant}"
+    title = f"Turnaround in {note_name(tonic)} — {variant}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     offset = 0.0
@@ -3170,7 +3170,7 @@ def make_ii_v_i(
     spec = next(s for s in II_V_I_SHAPES if s[0] == shape)
     _, level, default_bpm, words = spec
     bpm = bpm if bpm is not None else default_bpm
-    title = f"ii-V-I in {tonic.replace('-', '♭')} — {words}"
+    title = f"ii-V-I in {note_name(tonic)} — {words}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     # A rootless tier alternates the two forms so the hand stays put; the others
@@ -3251,7 +3251,7 @@ def make_tritone_sub(tonic: str = "C", bpm: int = 76) -> tuple[stream.Score, dic
     changes the bass and almost nothing else.
     """
     level = 7.4
-    title = f"Tritone substitution in {tonic.replace('-', '♭')} — ii-sub V-I"
+    title = f"Tritone substitution in {note_name(tonic)} — ii-sub V-I"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     offset = 0.0
@@ -3301,7 +3301,7 @@ def make_open_voicing(
     }
     labels = {"quartal": "quartal (stacked 4ths)", "sus2": "sus2", "sus4": "sus4", "add9": "add9"}
     intervals = shapes[flavour]
-    title = f"{labels[flavour]} voicings in {tonic.replace('-', '♭')}"
+    title = f"{labels[flavour]} voicings in {note_name(tonic)}"
     # Quartal stacks are m11 chords on i, iv and v, so the music is in the minor
     # and the signature has to say so. Written in the major it printed sixteen
     # accidentals in four bars -- every E flat, A flat and B flat spelled out --
@@ -3381,7 +3381,7 @@ def make_boogie(
     same rung, and what `blues.4` tells the learner to expect.
     """
     offsets, fingers, level = BOOGIE_PATTERNS[pattern]
-    title = f"Boogie left hand — {pattern.replace('-', ' ')} in {tonic.replace('-', '♭')}"
+    title = f"Boogie left hand — {pattern.replace('-', ' ')} in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     bar = 0.0
@@ -3667,7 +3667,7 @@ def make_tumbao(tonic: str = "C", bars: int = 8, bpm: int = 88) -> tuple[stream.
     on.
     """
     level = 5.2
-    title = f"Tumbao — latin bass in {tonic.replace('-', '♭')} minor"
+    title = f"Tumbao — latin bass in {note_name(tonic)} minor"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
     rh.insert(0, expressions.TextExpression(
         "Nothing on beat one. The note on four belongs to the next bar's chord"
@@ -3713,7 +3713,7 @@ def make_montuno(
         raise ValueError(f"voices={voices!r}: the montuno is built two or three notes at a time")
     offsets = CLAVE_PATTERNS[clave]
     level = 5.6 if voices == 2 else 6.2
-    title = f"Montuno — {voices} notes on {clave.replace('-', ' ')} in {tonic.replace('-', '♭')} minor"
+    title = f"Montuno — {voices} notes on {clave.replace('-', ' ')} in {note_name(tonic)} minor"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
     rh.insert(0, expressions.TextExpression(
         "Every note is a clave stroke. It repeats without changing"
@@ -3763,7 +3763,7 @@ def make_latin_groove(
     level = 6.4
     offsets = CLAVE_PATTERNS[clave]
     title = (f"Latin groove — tumbao and montuno on {clave.replace('-', ' ')} "
-             f"in {tonic.replace('-', '♭')} minor")
+             f"in {note_name(tonic)} minor")
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
     rh.insert(0, expressions.TextExpression(
         "Neither hand is on the beat. Left hand alone first, then two notes on top"

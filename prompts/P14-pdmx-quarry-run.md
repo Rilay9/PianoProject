@@ -1,4 +1,4 @@
-# P14 — The quarry run, the levelling model, and the ladder rewrite  ·  Intended model: **Opus 5**, **on the owner's machine with the archive on disk**  ·  Branch: `feat/p14-pdmx-quarry`
+# P14 — The quarry run, the levelling model, and the ladder rewrite  ·  **On the owner's machine with the archive on disk**  ·  Branch: `feat/p14-pdmx-quarry`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

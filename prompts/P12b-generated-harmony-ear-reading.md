@@ -1,4 +1,4 @@
-# P12b — The generated backbone, part 2: harmony, ear, reading, and the rungs that stop at Stage 5  ·  Intended model: **Opus 5**  ·  Branch: `feat/p12b-harmony-ear`
+# P12b — The generated backbone, part 2: harmony, ear, reading, and the rungs that stop at Stage 5  ·  Branch: `feat/p12b-harmony-ear`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

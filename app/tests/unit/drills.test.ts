@@ -16,7 +16,13 @@ import {
   PedalDrill,
   RhythmDrill,
 } from '../../src/engine/drills/special';
-import { pitchClass, sameSequence, sameSet, type Drill } from '../../src/engine/drills/types';
+import {
+  pitchClass,
+  sameSequence,
+  sameSet,
+  worthRecording,
+  type Drill,
+} from '../../src/engine/drills/types';
 import { FakeClock } from './helpers/engineHarness';
 
 function answer(drill: Drill, midis: number[], clock?: FakeClock, gapMs = 0): void {
@@ -314,6 +320,49 @@ describe('backing-track drill', () => {
     const drill = new BackingTrackDrill();
     drill.feed({ kind: 'noteOn', midi: 60, velocity: 90, tMs: 0 });
     expect(drill.recording).toHaveLength(0);
+  });
+});
+
+/**
+ * Whether a finished set belongs in the practice history (`08` §16, *a stop is
+ * not a finish*).
+ *
+ * A drill whose first `next()` is null — an empty pool, a builder that produced
+ * nothing — never showed a card, and the screen recorded `accuracy: 0, passed:
+ * false` against the item all the same: a failure at something nobody was
+ * asked to do, in the one store that cannot be regenerated.
+ */
+describe('worthRecording', () => {
+  function resultWith(total: number, answered: number) {
+    return {
+      kind: 'note-flash' as const,
+      total,
+      answered,
+      correct: 0,
+      accuracy: 0,
+      meanReactionMs: 0,
+      answers: [],
+    };
+  }
+
+  it('refuses a set that never had a card in it', () => {
+    expect(worthRecording(resultWith(0, 0))).toBe(false);
+  });
+
+  it('keeps a set that had cards, however it went', () => {
+    expect(worthRecording(resultWith(5, 0))).toBe(true);
+    expect(worthRecording(resultWith(5, 5))).toBe(true);
+  });
+
+  it('keeps a backing-track jam something was played over', () => {
+    // A backing track has no prompts by design — `total` is nought for every
+    // jam ever played — so a rule on `total` alone would have refused all of
+    // them. What it counts is the notes played.
+    const drill = new BackingTrackDrill();
+    drill.next();
+    expect(worthRecording(drill.result())).toBe(false);
+    drill.feed({ kind: 'noteOn', midi: 60, velocity: 90, tMs: 0 });
+    expect(worthRecording(drill.result())).toBe(true);
   });
 });
 

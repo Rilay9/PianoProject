@@ -7,7 +7,9 @@ FIXED is fixed; it stays on the page because the road to it went through two or
 three confident wrong theories, and those are the expensive part.
 
 Both prompts in this directory reference it. Read it before running the suite
-for the first time.
+for the first time. Any count below (files, items, lessons, tests) is as of the
+date in the heading; the live figures are `docs/generated/ladder.md` and, for
+the precache, `npm run pwa:audit` from `app/`.
 
 ---
 

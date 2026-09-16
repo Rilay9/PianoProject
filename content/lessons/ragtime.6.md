@@ -83,7 +83,7 @@ three whose trios this lesson walks through:
   most work of the three and the most rewarding; its name is a joke.
 
 Two more sit behind them, both in 2/4 and within a hair of the same
-difficulty, for when you want a fourth: *Swipsey*, written with Arthur
+difficulty, for when you want a fourth: *Swipesy Cake Walk*, written with Arthur
 Marshall, and *Sunflower Slow Drag*, with Scott Hayden — worth knowing when
 one of them feels slightly unlike the rest. *Weeping Willow* and the other
 early rags are under Ragtime in the Library.

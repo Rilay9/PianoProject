@@ -117,9 +117,16 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
 | 8 | Advanced | 9–12 months | ≈ Grade 7–8: WTC preludes & fugues, Chopin Nocturnes/Waltzes, Debussy, Beethoven sonatas, full Joplin; bebop vocabulary |
 | 9 | Open repertoire & specialisation | ongoing | Learner-chosen projects; the app becomes a practice tool with the full library and imports |
 
-**Tracks (from Stage 3):** `classical`, `chords-pop`, `blues-boogie`, `jazz`, `ragtime`,
-`theory-ear`, `improv-compose`, plus optional mini-modules `hymns-gospel`, `latin`, `holiday`,
-`film-game` (import-only). Each track has its own ladder inside stages 3–9 (Part D).
+**Tracks.** Fifteen, defined in `content/curriculum/00-tracks.json`, each starting at the
+stage its first rung sits on: `core` (Stage 0), `practice` (Stage 1), `holiday` (Stage 2),
+`classical`, `chords-pop`, `theory-ear`, `improv-compose`, `hymns-gospel` and `rock-metal`
+(Stage 3), `blues-boogie`, `jam` and `technique` (Stage 4), `jazz`, `ragtime` and `latin`
+(Stage 5). Six start active on a fresh install — `core`, `classical`, `chords-pop`,
+`theory-ear`, `technique` and `practice`; the other nine are switched on by the learner from
+the Plan screen — so that Today has a spine to recommend from before anyone has chosen a
+genre. `film-game` is a label on items rather than a track, because its repertoire
+is taught inside the classical and chords-pop ladders. Each track has its own ladder inside
+stages 3–9 (Part D); the core path is Part C.
 
 ---
 
@@ -170,10 +177,10 @@ completed.
 > catalog item's `drill.params.steps`; an id the catalog names and the app does not know is
 > skipped rather than drawn blank.
 
-**0.4 Placement test (optional).** A branching set of 8 short items (read a note, clap a
-rhythm, play a 5-finger pattern HT, play a C major scale HT, sight-read a 4-bar grand-staff
-phrase, play I–IV–V in G from symbols, play a swung 12-bar blues LH, play Bach Minuet Anh 114
-at 60 %). The first failure sets the starting stage/unit. Absolute beginners skip this.
+**0.4 Placement test (optional).** A branching set of 8 short items, asked in the order their targets come on the
+ladder (read a note, clap a rhythm, play a 5-finger pattern HT, play I–IV–V in G from symbols,
+sight-read a 4-bar grand-staff phrase, play Petzold's Minuet at 60 %, play a C major scale HT,
+play a swung 12-bar blues LH). The first failure sets the starting stage/unit. Absolute beginners skip this.
 
 ### Stage 1 — First notes
 
@@ -181,18 +188,18 @@ at 60 %). The first failure sets the starting stage/unit. Absolute beginners ski
 per key, quarter note = 1 beat, the staff (5 lines, 4 spaces), treble clef, Middle C on a ledger
 line, D–G stepping up, bar lines, 4/4, counting "1 2 3 4". Exercises: `[GEN]` RH 5-finger
 walk up/down (quarter notes, 60 bpm), `[GEN]` "note-name flash" (treble C4–G4), rhythm clap
-drill (quarters/rests; learner taps any key). Songs: *Hot Cross Buns* `[AUTH]`, *Mary Had a Little Lamb* `[AUTH]`, *Merrily We Roll Along* `[AUTH]`, *Au Clair de la Lune* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`. Videos: Bill Hilton (right-hand first tune), Hoffman Unit 1,
+drill (quarters/rests; learner taps any key). Songs: *Hot Cross Buns* `[AUTH]`, *Mary Had a Little Lamb* `[AUTH]`, *Merrily We Roll Along* `[AUTH]`, *Au Clair de la Lune* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *Kum Ba Yah* `[PDMX]`. Videos: Bill Hilton (right-hand first tune), Hoffman Unit 1,
 Lypur lesson 2. Mastery: one song, Wait mode ≥ 95 %, then Tempo mode ≥ 90 % at 60 bpm.
 
 **1.2 Half notes, whole notes, rests.** Concepts: half = 2 beats, whole = 4, quarter/half/whole
 rests, ties preview, phrasing (breathing between phrases). Exercises: `[GEN]` rhythm reading
-(mixed q/h/w on one pitch), `[GEN]` RH melodies with long notes. Songs: *Lightly Row* `[AUTH]`, *Jingle Bells (chorus)* `[AUTH]`, *Twinkle, Twinkle, Little Star* `[AUTH]`, *Frère Jacques* `[AUTH]`, *Ah! vous dirais-je Maman* `[PDMX]`. Mastery: as 1.1.
+(mixed q/h/w on one pitch), `[GEN]` RH melodies with long notes. Songs: *Lightly Row* `[AUTH]`, *Jingle Bells (chorus)* `[AUTH]`, *Twinkle, Twinkle, Little Star* `[AUTH]`, *Frère Jacques* `[AUTH]`, *Ah! vous dirai-je, Maman* `[PDMX]`. Mastery: as 1.1.
 
 **1.3 Left hand C position (C3–G3 with fingers 5–1) and the bass clef.** Concepts: bass clef,
 Bass F, C3 & G3 landmarks, mirror-image fingering, LH reading practice. Exercises: `[GEN]` LH
-5-finger walk, `[GEN]` bass-clef note flash (F2–C4), `[GEN]` LH melodies. Songs `[AUTH]`
-(LH-only versions): *Hot Cross Buns*, *Mary Had a Little Lamb*, *Ode to Joy* (LH), *Old
-MacDonald* (LH). Videos: Bill Hilton (left hand), Hoffman Unit 2, Lypur "bass clef".
+5-finger walk, `[GEN]` bass-clef note flash (F2–C4), `[GEN]` LH melodies, `[GEN]` left-hand
+sight-reading (a fresh phrase each time). Songs `[AUTH]` (left-hand versions, as on the rung
+2026-09-16): *Hot Cross Buns*, *Mary Had a Little Lamb*, *Ode to Joy*. Videos: Bill Hilton (left hand), Hoffman Unit 2, Lypur "bass clef".
 Mastery: one LH song at 60 bpm ≥ 90 %.
 
 **1.4 The grand staff; hands alternating.** Concepts: grand staff joined by a brace; RH and LH
@@ -205,33 +212,33 @@ one song HT-alternating at 70 bpm ≥ 90 %.
 on the staff (line→space vs line→line), reading by interval not by name, looking ahead one
 beat. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
 position, quarters/halves; new one each time — this is the app's killer practice feature),
-`[GEN]` interval ear drill (2nd vs 3rd; learner plays back). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`. Mastery: 5 generated melodies at ≥ 90 % first
+`[GEN]` interval ear drill (2nd vs 3rd; learner plays back). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *The Water Is Wide* `[PDMX]`. Mastery: 5 generated melodies at ≥ 90 % first
 attempt.
 
 ### Stage 2 — Two hands
 
 **2.1 Hands together: LH holds, RH moves.** Concepts: LH whole/half notes under RH melody;
 vertical alignment; "LH is the floor". Exercises: `[GEN]` HT pattern drills (LH C hold, RH
-5-finger), `[GEN]` HT with LH changing every bar (C / G). Songs: *Ode to Joy (hands together)* `[AUTH]`, *Twinkle, Twinkle, Little Star (hands together)* `[AUTH]`, *Jingle Bells (chorus, hands together)* `[AUTH]`, *Mary Had a Little Lamb (hands together)* `[AUTH]`. Videos: Bill Hilton (hands together), Hoffman Unit 3–4. Mastery: HT ≥ 90 % at
+5-finger), `[GEN]` HT with LH changing every bar (C / G). Songs: *Ode to Joy (hands together)* `[AUTH]`, *Twinkle, Twinkle, Little Star (hands together)* `[AUTH]`, *Jingle Bells (chorus, hands together)* `[AUTH]`, *Mary Had a Little Lamb (hands together)* `[AUTH]`, *Simple Gifts* `[PDMX]`. Videos: Bill Hilton (hands together), Hoffman Unit 3–4. Mastery: HT ≥ 90 % at
 60 bpm Tempo mode.
 
 **2.2 Eighth notes and counting "1 & 2 &".** Concepts: eighths, beams, subdivision, keeping a
 steady pulse (metronome on). Exercises: `[GEN]` rhythm reading with eighths, `[GEN]` RH
-melodies with eighths. Songs: *London Bridge Is Falling Down* `[AUTH]`, *Merrily We Roll Along* `[AUTH]`, *Old MacDonald Had a Farm* `[AUTH]`, *Michael row the boat ashore* `[PDMX]`, *Sakura* `[PDMX]`, *Danny Boy (Londonderry Air)* `[PDMX]`. Mastery: one song HT at 72 bpm.
+melodies with eighths. Songs: *London Bridge Is Falling Down* `[AUTH]`, *Merrily We Roll Along* `[AUTH]`, *Old MacDonald Had a Farm* `[AUTH]`, *Michael, Row the Boat Ashore* `[PDMX]`, *Sakura* `[PDMX]`, *Danny Boy (Londonderry Air)* `[PDMX]`, *Alouette* `[PDMX]`. Mastery: one song HT at 72 bpm.
 
 **2.3 First chords: C, F, G as block triads (and what a chord *is*).** Concepts: a triad =
 root+3rd+5th; C major chord (C-E-G), F (F-A-C), G (G-B-D); chord symbols above the staff;
 LH plays chords, RH melody; I, IV, V naming. Exercises: `[GEN]` chord drill (app names/shows
 chord, learner plays all 3 notes together — MIDI verifies), `[GEN]` C–F–G changes at 60 bpm.
-Songs `[AUTH]`: *Amazing Grace* (melody + block chords), *Oh When the Saints* (chords),
-*Kum Ba Yah*, *He's Got the Whole World*, *Down in the Valley* (3/4 chords), *Happy Birthday*
-(3/4). Videos: **Bill Hilton (C, F, G chords — the heart of his beginner course)**, Hoffman
+Songs (as on the rung 2026-09-16): *Happy Birthday to You* `[AUTH]` and its fuller setting
+`[PDMX]`, *Jingle Bells (chorus, in G with block chords)* `[AUTH]`, *Was wollen wir trinken*
+`[PDMX]`, *Dark Eyes* `[PDMX]`, *Auld Lang Syne* `[PDMX]`, *Skip to My Lou* `[PDMX]`. Videos: **Bill Hilton (C, F, G chords — the heart of his beginner course)**, Hoffman
 "chords". Mastery: chord drill 20 changes ≥ 95 %; one song HT.
 
 **2.4 Ties, dotted quarter, dynamics, tempo words.** Concepts: tie vs slur, dotted quarter +
 eighth, p/mp/mf/f, crescendo/diminuendo, Andante/Moderato/Allegro, ritardando. Exercises:
 `[GEN]` dotted-rhythm reading, dynamics drill (MIDI velocity: app shows a meter; play a
-phrase p then f). Songs: *Greensleeves (simple)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (with chords)* `[AUTH]`, *Ga je mee op zoek naar het Koningskind* `[PDMX]`. Mastery: one song; dynamics drill ≥ 80 % contrast (avg velocity f ≥ 1.6× p).
+phrase p then f). Songs: *Greensleeves (simple)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (with chords)* `[AUTH]`, *Ga je mee op zoek naar het Koningskind* `[PDMX]`, *Streets of Laredo* `[PDMX]`. Mastery: one song; dynamics drill ≥ 80 % contrast (avg velocity f ≥ 1.6× p).
 
 **2.5 Moving out of C position: thumb-under and finger-crossing preview; the octave leap.**
 Concepts: extending the hand, shifting positions marked by fingering numbers, reading
@@ -250,17 +257,12 @@ note-flash with sharps/flats. Songs: *Ode to Joy (in G major)* `[AUTH]`, *Twinkl
 **3.2 Primary chords in G and F; V7; chord changes with smooth voice leading.** Concepts:
 I–IV–V7 in C, G, F; G7 = G-B-D-F; "keep common tones" (C → F/C → G7/B); LH chord shapes
 with inversions previewed; playing from a chord chart. Exercises: `[GEN]` I–IV–V7 drills in
-C/G/F (root position and smooth versions), `[GEN]` chord-symbol flash. Songs `[AUTH]`:
-*Amazing Grace* (G, smooth chords), *When the Saints* (F), *Tom Dooley*, *Clementine*, *Michael
-Row the Boat*, *Banks of the Ohio*. Videos: Bill Hilton (chord inversions/smooth changes),
+C/G/F (root position and smooth versions), `[GEN]` chord-symbol flash. Songs: *Jingle Bells (chorus, in G major with block chords)* `[AUTH]`, *Oh When the Saints Go Marching In (in F major)* `[AUTH]`, *Happy Birthday to You* `[AUTH]`, *Oh My Darling Clementine* `[PDMX]`, *Yankee Doodle* `[PDMX]`. Videos: Bill Hilton (chord inversions/smooth changes),
 Hoffman "V7". Mastery: chord-chart song at 80 bpm HT.
 
 **3.3 A minor & the relative minor; natural/harmonic minor; minor chords.** Concepts:
 relative minor shares key sig; raised 7th; Am, Dm, Em, E7. Exercises: `[GEN]` A harmonic minor
-scale HS, `[GEN]` Am–Dm–E7 changes, `[GEN]` major-vs-minor chord ear drill. Songs `[AUTH]`:
-*Greensleeves* (Am, full), *House of the Rising Sun* (Am, arpeggiated LH — classic), *Scarborough
-Fair* (Dm/Am), *Wayfaring Stranger*, *Hava Nagila* (E harmonic-minor flavour), *Erev Shel
-Shoshanim*. Videos: Bill Hilton (minor chords), Lypur "minor scales". Mastery: one song HT.
+scale HS, `[GEN]` Am–Dm–E7 changes, `[GEN]` major-vs-minor chord ear drill. Songs: *Greensleeves (with chords)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (simple)* `[AUTH]`. Videos: Bill Hilton (minor chords), Lypur "minor scales". Mastery: one song HT.
 
 **3.4 Reading ledger lines and wider ranges; 8va; both hands away from Middle C.** Concepts:
 ledger lines above treble/below bass, landmark notes (Treble G, Bass F, high C, low C), 8va.
@@ -274,12 +276,11 @@ Exercises: `[GEN]` pedal-change drill on I–IV–V (the app reads CC64 and show
 scores the change timing), broken-chord LH with pedal. Songs: *Pachelbel — Canon in D (easy)* `[MT]`, *Greensleeves (waltz bass)* `[AUTH]`, *Ode to Joy (full theme)* `[AUTH]`. Videos: Bill Hilton (pedal), Josh Wright (pedalling). Mastery: pedal drill ≥ 90 %
 "clean changes" (no chord overlaps > 120 ms).
 
-**3.6 Broken chords, Alberti bass, waltz bass; accompaniment patterns.** Concepts: root-5th-
-3rd patterns, Alberti (C-G-E-G), waltz "oom-pah-pah", 8th-note arpeggio in 4/4. Exercises:
+**3.6 Broken chords, Alberti bass, waltz bass; accompaniment patterns.** Concepts: the broken
+chord in quarters (root–3rd–5th–3rd, C-E-G-E), Alberti in eighths (lowest–highest–middle–highest,
+C-G-E-G), waltz "oom-pah-pah", 8th-note arpeggio in 4/4. Exercises:
 `[GEN]` LH pattern drills in C/G/F/Am at 60→90 bpm, HT drills with RH scale over them. Songs
-`[AUTH]`: *Beautiful Dreamer* (waltz bass), *Streets of Laredo* (waltz), *Oh Shenandoah*
-(arpeggio), *Clementi — Sonatina op. 36 no. 1, bars 1–8 as Alberti drill* (preview),
-*Lavender's Blue* (waltz). Videos: Bill Hilton (LH patterns/arpeggios). Mastery: two patterns
+(the rung is song-optional): *Greensleeves (waltz bass)* `[AUTH]`, *Pachelbel — Canon in D (easy)* `[MT]`. Videos: Bill Hilton (LH patterns/arpeggios). Mastery: two patterns
 in two keys at 80 bpm; one song.
 
 ### Stage 4 — Fluency & technique (≈ Grade 1)
@@ -301,7 +302,7 @@ random inversions ≥ 95 % within 3 s each.
 **4.4 Hanon-style finger patterns (1–10) and independence.** Concepts: what Hanon does and
 doesn't do (evenness, finger strength perception, but keep the wrist loose; never play through
 pain), transposition of patterns. Exercises: `[GEN]` Hanon nos. 1–10 (generated, any key,
-40→108 bpm; the generator builds the ascending/descending forms exactly). Mastery: 1–5 at 80
+40→108 bpm; the generator builds the ascending/descending forms exactly). Songs: *Petzold — Minuet in G major, BWV Anh. 114* `[MT]`, *Petzold — Minuet in G major, BWV Anh. 114 (alternative edition)* `[MT]`, *Beethoven — Ode to Joy (easy variation)* `[MT]`. Mastery: 1–5 at 80
 bpm HT ≥ 97 %.
 
 **4.5 Compound time (6/8), triplets, swing preview, syncopation.** Concepts: 6/8 = 2 dotted-
@@ -311,7 +312,7 @@ one 6/8 song + one syncopated song.
 
 **4.6 Sight-reading & phrasing capstone; performance habit.** Concepts: reading ahead, keeping
 going after mistakes, phrase shaping, dynamics plan, memorising a short piece, "performance
-mode" in the app (no stopping, scored). Songs: *Beethoven — Für Elise (easy)* `[MT]`, *Pachelbel — Canon in D (easy)* `[MT]`, *Petzold — Minuet in G major, BWV Anh. 114* `[MT]`, *Air — Auld Lang Syne - Anonymous (Traditional)* `[PDMX]`, *Uti vår hage swedish traditional song* `[PDMX]`, *Leontovych — Carol of the Bells (easy)* `[MT]`.
+mode" in the app (no stopping, scored). Songs: *Beethoven — Für Elise (easy)* `[MT]`, *Pachelbel — Canon in D (easy)* `[MT]`, *Petzold — Minuet in G major, BWV Anh. 114* `[MT]`, *Auld Lang Syne* `[PDMX]`, *Uti vår hage* `[PDMX]`, *Leontovych — Carol of the Bells (easy)* `[MT]`.
 Mastery: two pieces in Performance mode ≥ 90 % at 90 % tempo.
 
 **4.7 Learning it from memory.** *Added after this section was written; described here in P19.*
@@ -320,7 +321,7 @@ Concepts: memorising, performance mode, phrase shaping. The core path used to en
 memorise (the shape and the harmony, not the finger sequence), how to test it (start from any
 phrase, hands separately, away from the keys), and why a piece you can only play from the top
 is not memorised. **This is the end of the core path**, and it is the last rung Today
-recommends before it moves on to the tracks.
+recommends before it moves on to the tracks. Songs: *Beethoven — Für Elise (easy)* `[MT]`, *Petzold — Minuet in G major, BWV Anh. 114* `[MT]`, *Pachelbel — Canon in D (easy)* `[MT]`.
 
 ### The technique rungs (Stages 4–8)
 
@@ -372,9 +373,10 @@ the two or three tracks the learner marked active.
   order, and why.
 - **The *repertoire wanted* column below is a wish list**, not a fact. It was written from
   what the owner hoped existed, and P10 measured the cost of that: *Euphonic Sounds*,
-  *Frog Legs Rag*, *Ragtime Nightingale* and Scarlatti K.32/K.9/K.380 are in no reachable
-  source, and Bach's Inventions and the Well-Tempered Clavier exist only in editions that
-  reserve all rights. It is kept because a piece the ladder wanted and no source has becomes
+  *Ragtime Nightingale* and Scarlatti K.32/K.9/K.380 are in no reachable source, and the
+  Well-Tempered Clavier exists only in editions that reserve all rights. (Two of the
+  inventions and James Scott's *Frog Legs Rag* were quarried later and sit on `classical.7`
+  and `ragtime.8` today.) It is kept because a piece the ladder wanted and no source has becomes
   an example in that rung's finder (P15, see the terminology section) — a wish is worth
   something, as long as nobody mistakes it for the library.
 
@@ -386,7 +388,7 @@ The library wins every disagreement with this table.
 |------:|-------|-------------------|
 | 3 | Baroque/Classical dances in 5-finger + shifts | *Petzold — Minuet in G major, BWV Anh. 114* `[MT]`; *Petzold — Minuet in G minor, BWV Anh. 115* `[PDMX]`; *Minuet in D minor, BWV Anh. 132* `[PDMX]`; *Minuet in F major, BWV Anh. 113* `[PDMX]`; *Mozart — Thème du 1er mouvement de la sonate K.331* `[PDMX]`; *Beethoven — Écossaise in G major, WoO 23* `[PDMX]` |
 | 4 | Grade-1 pieces, articulation (staccato/legato), simple ornaments | *Attwood — Sonatina in G major* `[PDMX]`; *Bach — March in D major, BWV Anh. 122* `[PDMX]`; *Mozart — Minuet in G major, K. 1e* `[PDMX]`; *Mozart — Minuet in C major, K. 1f* `[PDMX]`; *Schumann — Album for the Young, Op. 68 No. 4 "Chorale"* `[PDMX]`; *Gurlitt — Study, Op. 82* `[PDMX]` |
-| 5 | Sonatina form, Alberti bass HT, mordents/trills, pedal in Romantic miniatures | *Clementi — Sonatina in C major, Op. 36 No. 1 (first movement, short edition)* `[PDMX]`; *Clementi — Sonatina in C major, Op. 36 No. 1 (second and third movements)* `[PDMX]`; *Beethoven — Sonatina in G major, Anh. 5 No. 1* `[PDMX]`; *Burgmüller: Arabesque - Op. 100 No. 2* `[PDMX]`; *Tchaikovsky — Old French Song, Op. 39 No. 16* `[PDMX]`; *Schumann — Album for the Young, Op. 68 No. 16 "First Loss"* `[PDMX]` |
+| 5 | Sonatina form, Alberti bass HT, mordents/trills, pedal in Romantic miniatures | *Clementi — Sonatina in C major, Op. 36 No. 1 (first movement, short edition)* `[PDMX]`; *Clementi — Sonatina in C major, Op. 36 No. 1 (second and third movements)* `[PDMX]`; *Beethoven — Sonatina in G major, Anh. 5 No. 1* `[PDMX]`; *Burgmüller — Arabesque, Op. 100 No. 2* `[PDMX]`; *Tchaikovsky — Old French Song, Op. 39 No. 16* `[PDMX]`; *Schumann — Album for the Young, Op. 68 No. 16 "First Loss"* `[PDMX]` |
 | 6 | Grade 4–5; voicing melody over accompaniment, rubato, longer forms | *Bach — Prelude No. 1 in C major, BWV 846* `[MT]`; *Chopin — Prélude in E minor, Op. 28 No. 4* `[MT]`; *Chopin — Prelude No. 7 in A major, Op. 28* `[NIFC]`; *Chopin — Waltz in A minor, B. 150* `[MT]`; *Satie — Gymnopédie No. 1* `[MT]`; *Beethoven — Für Elise, WoO 59* `[MT]` |
 | 7 | Grade 6; counterpoint, sonata-allegro, octaves | *Mozart — Piano Sonata No. 16 in C, K. 545, I. Allegro* `[MT]`; *Beethoven — Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto* `[MT]`; *Beethoven — Piano Sonata No. 8 “Pathétique”, II. Adagio cantabile* `[MT]`; *Chopin — Mazurka in B-flat major, Op. 7 No. 1* `[NIFC]`; *Chopin — Waltz in B minor, Op. 69 No. 2* `[NIFC]`; *Satie — Gnossienne No. 1* `[MT]` |
 | 8 | Grade 7–8; fugue, virtuoso Romantic, Impressionism | *Mozart — Piano Sonata No. 11, K. 331, III. Rondo alla Turca* `[MT]`; *Debussy — Clair de Lune (Suite bergamasque, L. 75 No. 3)* `[MT]`; *Beethoven — Piano Sonata No. 14 “Moonlight”, III. Presto agitato* `[MT]`; *Chopin — Waltz in C-sharp minor, Op. 64 No. 2* `[NIFC]`; *Chopin — Nocturne in B-flat minor, Op. 9 No. 1* `[MT]`; *Debussy — Arabesque No. 1, L. 66* `[MT]` |
@@ -405,10 +407,11 @@ lesson prose: Wikipedia composer/piece articles (CC BY-SA, attribute), IMSLP wor
 |------:|-------|-------------------------------------------------------------|
 | 3 | I–IV–V(7) in C/G/F/D/A; strum-like LH rhythms; melody + chords | *Happy Birthday to You* `[AUTH]`; *Oh When the Saints Go Marching In (in F major)* `[AUTH]`; *Jingle Bells (chorus, in G major with block chords)* `[AUTH]`; *Greensleeves (with chords)* `[AUTH]`; *Foster — Oh! Susanna (Simple Lead Sheet)* `[PDMX]`; *Folksong — Tom Dooley* `[PDMX]` |
 | 4 | Inversions, vi & ii chords, the "four-chord song" (I–V–vi–IV), slash chords | *Greensleeves (with chords)* `[AUTH]`; *Greensleeves (waltz bass)* `[AUTH]`; *Scarborough Fair* `[PDMX]`; *Shenandoah* `[PDMX]`; *Chin — Hallelujah (easy)* `[PDMX]`; *The Skye boat song (Outlander theme song)* `[PDMX]` |
-| 5 | 7th chords (maj7, min7, dom7), sus2/sus4, add9; arpeggiated & broken-chord accompaniments; lead-sheet reading; playing while singing | *Greensleeves (in 6/8)* `[AUTH]`; *Row, Row, Row Your Boat* `[AUTH]`; *Greensleeves* `[MT]`; *Blecher — Lavender's Blue* `[PDMX]`; *Your Song - Elton John - Easy Piano* `[PDMX]`; *Before You Go - Lewis Capaldi* `[PDMX]` |
-| 6 | Reharmonisation basics, secondary dominants, borrowed iv, pedal points, riffs/hooks, ballad style, "Coldplay/Elton/Adele" piano textures (taught on PD melodies) | *Clocks Coldplay* `[PDMX]`; *All of Me (John Legend) - easy piano* `[PDMX]`; *Abba — Dancing Queen* `[PDMX]`; *Harmony — How to Train Your Dragon: Flying Theme* `[PDMX]`; *Fox — Fallen Down (Reprise) - Undertale - Easy* `[PDMX]`; *John Denver - Annie's Song* `[PDMX]` |
-| 7 | Playing by ear (chord recognition drills on the keyboard), transposing songs, gospel passing chords, rhythmic comping, syncopated LH octaves | *Fix You Coldplay* `[PDMX]`; *The Weekend - Blinding Lights - Easy Piano* `[PDMX]`; *Welcome to Wonderland by Anson Seabra* `[PDMX]`; *For the damaged coda Blonde Redhead* `[PDMX]`; *Scarborough fair piano solo* `[PDMX]`; *Hung — Wake Me Up Avicii* `[PDMX]` |
-| 8–9 | Arranging: intro/outro, modulation, countermelody, solo piano covers | projects |
+| 5 | 7th chords (maj7, min7, dom7), sus2/sus4, add9; arpeggiated & broken-chord accompaniments; lead-sheet reading; playing while singing | *Greensleeves (in 6/8)* `[AUTH]`; *Row, Row, Row Your Boat* `[AUTH]`; *Greensleeves* `[MT]`; *Blecher — Lavender's Blue* `[PDMX]`; *Elton John — Your Song (easy)* `[PDMX]`; *Capaldi — Before You Go* `[PDMX]` |
+| 6 | Reharmonisation basics, secondary dominants, borrowed iv, pedal points, riffs/hooks, ballad style, "Coldplay/Elton/Adele" piano textures (taught on PD melodies) | *Coldplay — Clocks* `[PDMX]`; *Legend — All of Me (easy)* `[PDMX]`; *Abba — Dancing Queen* `[PDMX]`; *How to Train Your Dragon: Flying Theme* `[PDMX]`; *Fox — Fallen Down (Reprise), from Undertale (easy)* `[PDMX]`; *Denver — Annie's Song* `[PDMX]` |
+| 7 | Playing by ear (chord recognition drills on the keyboard), transposing songs, gospel passing chords, rhythmic comping, syncopated LH octaves | *Coldplay — Fix You* `[PDMX]`; *The Weeknd — Blinding Lights (easy)* `[PDMX]`; *Seabra — Welcome to Wonderland* `[PDMX]`; *Blonde Redhead — For the Damaged Coda* `[PDMX]`; *Scarborough Fair (piano solo)* `[PDMX]`; *Avicii — Wake Me Up* `[PDMX]` |
+| 8 | Transposing a song into the key the singer needs, by numerals and by ear; secondary dominants surviving transposition | *Obata — Isabella's Lullaby, from The Promised Neverland* `[PDMX]`; *Fox — Undertale, from Undertale* `[PDMX]`; *Sawano — Levi's Choice, from Attack on Titan* `[PDMX]`; *KANA-BOON — Silhouette* `[PDMX]`; *MacLeod — If I Had a Chicken* `[PDMX]`; *Kodaline — All I Want* `[PDMX]` |
+| 9 | Arranging: intro/outro, modulation, countermelody, solo piano covers — a chart turned into an arrangement of your own | *Giacchino — Le Festin* `[PDMX]`; *Styles — Falling* `[PDMX]`; *Electric Light Orchestra — Mr. Blue Sky* `[PDMX]`; *Joel — Piano Man* `[PDMX]`; *wowaka — Rolling Girl* `[PDMX]`; *Kanazaki — Apex of the World, from Fire Emblem: Three Houses* `[PDMX]` |
 
 Teachers: **Bill Hilton** (beginner course → "How To Really Play The Piano" material; his
 chord/improv/accompaniment videos), Pianote free YouTube (Lisa Witt), Piano With Jonny free
@@ -422,8 +425,9 @@ Music Theory "Pop/Rock" chapters.
 | 4 | 12-bar blues form in C (I7 IV7 V7), shuffle feel, LH "boogie" bass (root-5-6-b7), simple RH riffs, blues scale | *Twelve-bar blues shuffle in C* `[GEN]`; *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Careless Love* `[PDMX]`; *12 Bar Blues* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]` |
 | 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, walking bass | *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Twelve-bar blues shuffle in C* `[GEN]`; *Swanstone — Blues My Naughty Sweetie Gives to Me (1919)* `[PDMX]`; *Handy — The Memphis Blues (1912)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
 | 6 | Boogie-woogie LH patterns (Pinetop, Yancey, "Honky Tonk Train" style), RH chorus building, slow blues 12/8, minor blues | *Boogie (easy, for beginners)* `[PDMX]`; *Boogie-woogie and blues piano exercises* `[PDMX]`; *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]` |
-| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes) | *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]`; *Boogie (easy, for beginners)* `[PDMX]` |
-| 8–9 | Fast boogie, stride-blues hybrids, transcription projects | import/transcribe |
+| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes) | *Boogie (easy, for beginners)* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
+| 8 | The form in twelve keys, ninths on every dominant, comping over your own walking bass | none set — song-optional; the piece is the learner's own written chorus in two keys |
+| 9 | Improvising over the form and making it yours; fast boogie, stride-blues hybrids, transcription projects | none set — song-optional; import/transcribe |
 
 Teachers: Bill Hilton (blues tutorials playlist, "12 bar blues for beginners"), Arthur
 Migliazza (boogie), Christian Fuchs, Piano With Jonny (free blues lessons), the free "Blues
@@ -433,11 +437,11 @@ Piano Bootcamp" (Kevin Castro), Jonny May.
 
 | Stage | Focus | Repertoire wanted (US public-domain standards; the bundled options are in `docs/generated/ladder.md`) |
 |------:|-------|--------------------------------------------------------------------|
-| 5 | Swing 8ths, 7th chords in all keys, shell voicings (3rd+7th), ii–V–I in C/F/Bb/G, comping rhythms | *Twelve-bar blues shuffle in C* `[GEN]`; *Twelve-bar blues shuffle in F* `[GEN]`; *Cannon — Bill Bailey, Won't You Please Come Home (1902)* `[PDMX]`; *Brooks — Some of These Days (1910)* `[PDMX]`; *Rose — Avalon (1920)* `[PDMX]`; *Layton — After You've Gone (1918)* `[PDMX]`; *Robinson — Margie (1920)* `[PDMX]`; *Schonberger — Whispering (1920)* `[PDMX]` |
+| 5 | Swing 8ths, 7th chords in all keys, shell voicings (root+3rd+7th), ii–V–I in C/F/Bb/G, comping rhythms | *Cannon — Bill Bailey, Won't You Please Come Home (1902)* `[PDMX]`; *Brooks — Some of These Days (1910)* `[PDMX]`; *Rose — Avalon (1920)* `[PDMX]`; *Layton — After You've Gone (1918)* `[PDMX]`; *Robinson — Margie (1920)* `[PDMX]`; *Schonberger — Whispering (1920)* `[PDMX]` |
 | 6 | Rootless A/B voicings, guide-tone lines, walking bass LH, chord-scale basics, rhythm changes intro | *Henderson — Bye Bye Blackbird (1926)* `[PDMX]`; *Braham — Limehouse Blues (1922)* `[PDMX]`; *Band — Tiger Rag (1917)* `[PDMX]`; *Hickman — Rose Room (1917)* `[PDMX]`; *Brooks — Darktown Strutters' Ball (1917)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
-| 7 | Bebop scales, enclosures, tritone subs, ballad playing with block chords, stride LH intro | *Jingle Bells - Jazz Piano* `[PDMX]`; *Guaraldi — Skating* `[PDMX]`; *Rose — Avalon (1920)* `[PDMX]`; *Layton — After You've Gone (1918)* `[PDMX]`; *Band — Tiger Rag (1917)* `[PDMX]`; *Gershwin — I Got Rythm* `[PDMX]` |
-| 8 | Upper-structure triads, quartal voicings, reharmonisation, solo piano arranging, Latin jazz (bossa/clave) | *Uncle Ben's Cakewalk Tom Brier* `[PDMX]`; *Carmichael — Stardust (1927)* `[PDMX]`; *Gershwin — I Got Rythm* `[PDMX]` |
-| 9 | Transcription, modern voicings, odd meters | *Bubeck — Take Five* `[PDMX]`; *Waller — Ain't Misbehavin'* `[PDMX]`; *George-Shearing — Lullaby of Birdland* `[PDMX]`; *Linus and Lucy (Fixed) Piano only* `[PDMX]`; *Carmichael — Stardust (1927)* `[PDMX]`; *Layton — After You've Gone (1918)* `[PDMX]` |
+| 7 | Bebop scales, enclosures, tritone subs, ballad playing with block chords, stride LH intro | *Pierpont — Jingle Bells (jazz piano)* `[PDMX]`; *Guaraldi — Skating* `[PDMX]`; *Rose — Avalon (1920)* `[PDMX]`; *Howard — Fly Me to the Moon* `[PDMX]`; *Band — Tiger Rag (1917)* `[PDMX]`; *Gershwin — I Got Rhythm* `[PDMX]` |
+| 8 | Upper-structure triads, quartal voicings, reharmonisation, solo piano arranging, Latin jazz (bossa/clave) | *Brier — Uncle Ben's Cakewalk* `[PDMX]`; *Carmichael — Stardust (1927)* `[PDMX]`; *Gershwin — I Got Rhythm* `[PDMX]` |
+| 9 | Transcription, modern voicings, odd meters | *Desmond — Take Five* `[PDMX]`; *Waller — Ain't Misbehavin'* `[PDMX]`; *Shearing — Lullaby of Birdland* `[PDMX]`; *Guaraldi — Linus and Lucy* `[PDMX]`; *Carmichael — Stardust (1927)* `[PDMX]`; *When the Saints Go Marching In (jazz)* `[PDMX]` |
 
 Teachers: Aimee Nolte (jazz piano lessons), Open Studio free videos (Peter Martin), Jazz
 Tutorial (Julian Bradley, free videos), "Jeremy Siskind" YouTube, Bill Hilton (jazz for
@@ -453,11 +457,14 @@ James Scott *Frog Legs Rag*, Joseph Lamb *Ragtime Nightingale*. All Joplin via t
 `craigsapp/joplin` kern repository (verified reachable). Concepts: oom-pah LH with leaps,
 syncopated RH, "not fast" (Joplin's own instruction), stride precursor.
 
-### D6. Theory & ear track (runs the whole way; each item is a `[GEN]` drill + short text)
+### D6. Theory & ear track (rungs `theory.3`–`theory.9`; each item is a `[GEN]` drill + short text)
 
-Stage 1: note names, steps/skips, high/low. Stage 2: intervals 2nd–5th by ear and on staff,
-major/minor triads by ear. Stage 3: all intervals within the octave; key signatures to 3
-sharps/flats; I–IV–V identification by ear; rhythm dictation (tap back). Stage 4: circle of
+The track's own rungs run from Stage 3 to Stage 9; the Stage 1 and 2 material below is
+taught inside the core path (1.5's interval drill, 2.3's chord drills) rather than on a rung
+of this track. Stage 1: note names, steps/skips, high/low. Stage 2: intervals 2nd–5th by ear and on staff,
+major/minor triads by ear. Stage 3: all intervals within the octave by ear; key signatures to 3
+sharps/flats (named from the rule — no drill); I–IV–V heard in songs (the progression drill
+arrives at Stage 5); rhythm dictation (tap back); Simon on the white keys. Stage 4: circle of
 fifths; triad inversions by ear; melodic dictation (play back a 2-bar melody); cadences
 (authentic/half/plagal/deceptive). Stage 5: 7th chord qualities by ear; chord progressions
 (I–vi–IV–V, ii–V–I) by ear; modes intro (Ionian/Dorian/Mixolydian/Aeolian); transposition.
@@ -501,7 +508,7 @@ Each is a real rung with three options from existing material, not a reading
 list: `optionsExempt` would have been the easy way to ship five essays, and the
 point of the module is that the method gets applied to something.
 
-### D8. Mini-modules (optional, any time after Stage 3)
+### D8. Mini-modules (optional; `holiday` opens at Stage 2, `hymns-gospel` and `rock-metal` at Stage 3, `jam` at Stage 4, `latin` at Stage 5)
 
 - **Hymns & gospel** `[AUTH]`: Amazing Grace, Be Thou My Vision, It Is Well, Great Is Thy
   Faithfulness (1923), Holy Holy Holy, Come Thou Fount, What a Friend, Swing Low, Wade in the
@@ -641,7 +648,7 @@ breadth.
 
 ## Part F — Master song list for `[AUTH]` authoring (public-domain melodies)
 
-Builders (Sonnet, Phase P5) author each of these as a tiny ABC or music21 tinyNotation file
+Builders (Phase P5) author each of these as a tiny ABC or music21 tinyNotation file
 with: melody, suggested fingering, a `simple` LH (single notes or block chords) and where
 marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* version's level.
 
@@ -659,10 +666,10 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | Frère Jacques | French trad. | C | 1.2 | canon later |
 | Old MacDonald | US trad. | C | 1.3/2.2 | |
 | Lavender's Blue | English 17th c. | C/F | 1.4/3.6 | 3/4 |
-| Kum Ba Yah | US spiritual | C | 1.4/2.3 | |
-| Alouette | French-Canadian | C | 1.4 | |
+| Kum Ba Yah | US spiritual | C | 1.1 | `[PDMX]` quarried 2026-09-16, level 1.0; on 1.1 |
+| Alouette | French-Canadian | C | 2.2 | `[PDMX]` level 2.3; on 2.2 |
 | Oh When the Saints | US trad. | C/F | 1.4/2.3/3.2 | |
-| Skip to My Lou | US trad. | C | 1.5 | |
+| Skip to My Lou | US trad. | C | 2.3 | `[PDMX]` quarried 2026-09-16, level 2.9; on 2.3 |
 | Yankee Doodle | US 18th c. | C/G | 1.5 | |
 | Aura Lee | Poulton 1861 | C/F | 1.5 | "Love Me Tender" melody |
 | This Old Man | English trad. | C | 2.2 | |
@@ -678,7 +685,7 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | Greensleeves | English 16th c. | Am/Em | 2.4/3.3/4.5 | 6/8 version |
 | Auld Lang Syne | Scottish trad. | C/F/G | 2.4 | |
 | Shenandoah | US trad. | C/F | 2.5/3.6 | |
-| The Water Is Wide | Scottish trad. | C/G | 2.5 | |
+| The Water Is Wide | Scottish trad. | C/G | 1.5 | `[PDMX]` quarried 2026-09-16, level 1.9; on 1.5 |
 | Oh Susanna | Foster 1848 | F/C | 3.1 | |
 | Red River Valley | US 1870s | G | 3.1 | |
 | Home on the Range | US 1873 | F | 3.1 | 3/4 |
@@ -693,8 +700,8 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | Danny Boy / Londonderry Air | Irish trad.; lyrics 1913 | C/F/Eb | 3.5/6 | |
 | The Ash Grove | Welsh trad. | G/F | 3.5 | |
 | Beautiful Dreamer | Foster 1864 | C/F | 3.6 | waltz |
-| Streets of Laredo | US trad. | G | 3.6 | waltz |
-| Simple Gifts | Shaker 1848 | C/G/F | 4.3 | |
+| Streets of Laredo | US trad. | G | 2.4 | waltz; `[PDMX]` quarried 2026-09-16, level 2.2; on 2.4 |
+| Simple Gifts | Shaker 1848 | C/G/F | 2.1 | `[PDMX]` quarried 2026-09-16, level 2.1; on 2.1 |
 | Morning Has Broken (Bunessan) | Scottish trad. | C/D | 4.3 | 3/4 |
 | Loch Lomond | Scottish trad. | F/G | 4.3 | |
 | Skye Boat Song | Scottish 1870s | G/F | 5 | 6/8 |

@@ -311,9 +311,7 @@
                 "drill.jazz.extended-chords",
                 "drill.reading.transposition-hard"
               ],
-              "songOptions": [
-                "song.folk.boogie-woogie.pdmx"
-              ],
+              "songOptions": [],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,

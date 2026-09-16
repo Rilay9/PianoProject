@@ -14,7 +14,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from convert import ConversionError, convert_file, prepare_kern  # noqa: E402
+from music21 import meter, note, stream  # noqa: E402
+
+from convert import ConversionError, convert_file, merge_part_into, prepare_kern  # noqa: E402
 from tests.mxlutil import read_mxl  # noqa: E402
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -330,6 +332,49 @@ class TestShadowedKeySignature(ConvertCase):
             any("key signature" in note for note in result.warnings),
             f"nothing should have been removed here: {result.warnings}",
         )
+
+
+class TestMergeLoosePart(unittest.TestCase):
+    """
+    `merge_part_into` with a barred target and an unbarred extra.
+
+    The old unbarred branch inserted the extra's notes at part level, which in
+    a part that has measures is outside every bar — and the writer only writes
+    what is inside one. The `note_loss` gate would refuse the file, but by
+    then the music was gone. Checked on the stream rather than on a written
+    file because the fault is in where the notes land, and a written file
+    would only show that they had not.
+    """
+
+    def test_loose_notes_land_inside_the_bars_at_the_offsets_they_held(self) -> None:
+        target = stream.Part()
+        for number, start in ((1, 0.0), (2, 4.0)):
+            bar = stream.Measure(number=number)
+            if number == 1:
+                bar.insert(0.0, meter.TimeSignature("4/4"))
+            # A bar left three beats long, as a staff that was rest-stripped is.
+            bar.insert(0.0, note.Note("C4", quarterLength=3))
+            target.insert(start, bar)
+
+        extra = stream.Part()
+        wanted = {(0.0, "E3"), (3.0, "F3"), (4.5, "G3"), (9.0, "A3")}
+        for offset, name in sorted(wanted):
+            extra.insert(offset, note.Note(name, quarterLength=1))
+
+        merge_part_into(target, extra)
+
+        # Nothing loose at part level: every note of both parts is in a bar.
+        self.assertEqual(len(target.getElementsByClass(note.GeneralNote)), 0)
+        measures = list(target.getElementsByClass(stream.Measure))
+        inside = sum(len(measure.recurse().notes) for measure in measures)
+        self.assertEqual(inside, 2 + len(wanted))
+        # At the offsets they held, read back through the bars they landed in.
+        flat = target.flatten()
+        placed = {(float(flat.elementOffset(n)), n.nameWithOctave) for n in flat.notes}
+        self.assertTrue(wanted <= placed, f"lost or moved: {wanted - placed}")
+        # The note past the last barline got a bar of its own rather than nothing.
+        self.assertEqual(len(measures), 3)
+        self.assertEqual(float(target.elementOffset(measures[-1])), 8.0)
 
 
 class TestPrepareKern(unittest.TestCase):

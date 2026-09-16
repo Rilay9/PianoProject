@@ -28,6 +28,7 @@ import {
   updateSettings,
   type FollowInput,
   type KeysView,
+  type PlaybackHands,
 } from '../../data/settingsStore';
 import { evaluateOutcome } from '../../engine/Scoring';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
@@ -287,6 +288,19 @@ export function ScoreScreen(router: Router): HTMLElement {
    * undo a decision made with a hand on the slider.
    */
   let ladderCeilingPct = tempoPct;
+  /**
+   * What the duet plays when its row is switched back on (`04` §5).
+   *
+   * `playbackHands` has three values and the row is a toggle. Off writes
+   * `none`; on used to write `non-focused` whatever had been there, so a
+   * learner who had chosen `both` in Settings lost it on the first Off/On of
+   * the row and had to go three screens back to find out why the sound had
+   * changed. The value that was playing is remembered here and comes back.
+   * `non-focused` is the setting's own default, and what a learner who has
+   * never been to Settings gets.
+   */
+  let duetWhenOn: PlaybackHands =
+    settings.playbackHands === 'none' ? 'non-focused' : settings.playbackHands;
   /**
    * What the run's totals stood at when the previous pass ended.
    *
@@ -876,7 +890,10 @@ export function ScoreScreen(router: Router): HTMLElement {
   );
   const rhythmRow = menuRow(
     'Rhythm only',
-    'Tap the rhythm on any key. Early and late are marked as usual; the notes are not, and the run is not counted as playing the piece.',
+    // The last sentence is the one `05` §3a calls a consequence: the first
+    // strike closes the step, so a chord played where one note is written
+    // leaves two strikes with no window open and both are marked as extra.
+    'Tap the rhythm on any key. Early and late are marked as usual; the notes are not, and the run is not counted as playing the piece. One tap per written note or chord; extra keys are wrong.',
     rhythmToggle,
   );
   rhythmRow.id = 'score-rhythm-row';
@@ -920,7 +937,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   const duetToggle = button(
     'Off',
     () => {
-      const next = settings.playbackHands === 'none' ? 'non-focused' : 'none';
+      const next: PlaybackHands = settings.playbackHands === 'none' ? duetWhenOn : 'none';
+      if (next === 'none') duetWhenOn = settings.playbackHands;
       settings.playbackHands = next;
       updateSettings({ playbackHands: next });
       // The status line says which hand is played once per run; turning the
@@ -1542,6 +1560,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     loopBars = null;
     loopAnchor = null;
     loopSection = null;
+    // The ladder is a property of the loop (`05` §6), and it goes with it.
+    // Left on, the row disappeared from the sheet with the toggle still
+    // pressed underneath, and the next loop set a week later started moving
+    // the tempo by itself with nothing on screen having asked.
+    ladderOn = false;
     const control = document.getElementById('score-section');
     if (control instanceof HTMLSelectElement) control.value = '';
     if (session?.running) startRun();

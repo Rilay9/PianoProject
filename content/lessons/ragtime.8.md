@@ -35,18 +35,17 @@ you cannot keep time without hearing yourself.
 more happening per bar. If the syncopation is not audible as syncopation, the
 tempo is wrong.
 
-**What to play.** Six options. The late ones first: *Pine Apple*, *Gladiolus*,
-*Magnetic*, *The Cascades* and *Scott Joplin's New Rag*; then James Scott's
-*Frog Legs Rag* (1906), the other great ragtime writer, to hear where the
-idiom went without Joplin. *Stoptime*, *Wall Street*, *Reflection Rag* and the
+**What to play.** Six options. Five late Joplin rags — *Pine Apple*,
+*Gladiolus*, *Magnetic*, *The Cascades* and *Scott Joplin's New Rag* — and one
+that is not Joplin's. *Stoptime*, *Wall Street*, *Reflection Rag* and the
 lighter early rags are under Ragtime in the Library.
 
-**Not only Joplin.** James Scott's *Frog Legs Rag* (1906) is here from the
-archive — the other great rag of the Sedalia school, and a good test of whether
-the habits above transfer to a hand that is not Joplin's. Two more belong on
-this rung and are still missing: Joplin's *Euphonic Sounds*, which is not in the
+**Not only Joplin.** James Scott's *Frog Legs Rag* (1906) is the sixth — the
+other great rag of the Sedalia school, and a good test of whether the habits
+above transfer to a hand that is not Joplin's. Two more belong on this rung
+and are still missing: Joplin's *Euphonic Sounds*, which is not in the
 public-domain edition this library was built from, and Joseph Lamb's *Ragtime
-Nightingale*. The thirteen here are enough for a year.
+Nightingale*. The six here are enough for a year.
 
 **Common mistake.** Treating these as harder versions of *The Entertainer*. They
 are not — they are later music, and the difficulty is in hearing the harmony,

@@ -26,8 +26,8 @@ arrived for 120 milliseconds, or when you play a note that belongs to the next
 chord. So play chords, not notes: a triad picked out one finger at a time will
 be read as three chords, and it should be.
 
-**Modes are on this rung** because the theory.5 lesson taught four of them and
-nothing let you play them. Now something does.
+**Modes are on this rung** because the previous theory lesson taught four of
+them and nothing let you play them. Now something does.
 
 **What to practise.** Four numerals in three keys, then four progressions taken
 down by ear.

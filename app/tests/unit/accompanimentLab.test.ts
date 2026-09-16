@@ -112,6 +112,31 @@ describe('roman numerals in a key', () => {
     expect(parseRomanList('   ')).toEqual([]);
   });
 
+  it('keeps a slash inside a numeral, because that is a secondary dominant', () => {
+    // Splitting on `/` turned `I V/V V I` into five readable bars with the
+    // borrowed chord gone and nothing said — the one failure the "name the
+    // numeral you could not read" path cannot catch, because every piece it
+    // was handed could be read.
+    expect(parseRomanList('I V/V V I')).toEqual(['I', 'V/V', 'V', 'I']);
+    expect(parseRomanList('I V/V V I')).toHaveLength(4);
+    // And the bar that survives is D major in C, not G: the F sharp is the
+    // point of the chord.
+    const bars = chordsForProgression(parseRomanList('I V/V V I'), labKey('c-major'));
+    expect(bars.map((c) => c?.label)).toEqual(['C', 'D', 'G', 'C']);
+    expect(bars[1]?.pitchClasses).toEqual([2, 6, 9]);
+  });
+
+  it('prints the two diminished sevenths as the chords it built', () => {
+    // `vii°7` was built half-diminished and then printed back as `ø7`, so the
+    // page named a chord nobody had typed. The label is derived from the
+    // intervals, so it is the intervals that are checked through it.
+    const key = labKey('c-major');
+    expect(romanToLabChord('vii°7', key)?.label).toBe('B°7');
+    expect(romanToLabChord('vii°7', key)?.pitchClasses).toEqual([11, 2, 5, 8]);
+    expect(romanToLabChord('viiø7', key)?.label).toBe('Bø7');
+    expect(romanToLabChord('viiø7', key)?.pitchClasses).toEqual([11, 2, 5, 9]);
+  });
+
   it('holds twelve major keys and no pitch class twice', () => {
     const majors = LAB_KEYS.filter((key) => key.mode === 'major');
     expect(majors).toHaveLength(12);

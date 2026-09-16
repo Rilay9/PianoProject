@@ -1,4 +1,4 @@
-# P4 — Content pipeline  ·  Intended model: **Sonnet 5** (escalate convert.py edge cases to Opus)  ·  Branch: `feat/p4-content-pipeline`
+# P4 — Content pipeline  ·  Branch: `feat/p4-content-pipeline`
 
 (Include `_COMMON-HEADER.md`.)
 

@@ -2,16 +2,24 @@
 The licence gate (docs/03-content-pipeline.md §1).
 
 §1 is written as hard rules, so it is code rather than a checklist a builder is
-trusted to remember: nothing reaches the catalog without passing `verdict()`.
+trusted to remember. Two independent questions have to be answered for every
+file, one function each:
 
-Two independent questions have to be answered for every file, and both have to
-be yes:
+  1. `composition_verdict` — is the **composition** in the public domain in the
+     US? (published 1930 or earlier as of 2026, or traditional/anonymous)
+  2. `license_verdict` — is the **edition or arrangement** public domain or
+     under a licence that permits redistribution? CC BY-NC and CC BY-ND are
+     *not* such licences, however convenient the file is (`--allow-nc`, and the
+     personal build that implies it, relax the NC half for the owner's phone —
+     docs/00 D10a).
 
-  1. Is the **composition** in the public domain in the US? (published 1930 or
-     earlier as of 2026, or traditional/anonymous)
-  2. Is the **edition or arrangement** public domain or under a licence that
-     permits redistribution? CC BY-NC and CC BY-ND are *not* such licences,
-     however convenient the file is.
+Who asks: `import_kern.py` and `import_musetrainer.py` at import time,
+`validate.py` over the merged catalog (the licence half, under
+`--strict-license`), and `pdmx/composers.py`, which turns PDMX's free-text
+composer strings into a composition label. The PDMX path does *not* gate on
+that label — docs/00 D23: the personal build carries everything the dataset
+marks public domain, the label rides on the item as `compositionStatus`, and
+`import_pdmx.py` refuses the non-`pd` rows only under `--strict-license`.
 
 The second question is where this pipeline lost most of its expected sources —
 see docs/decisions/2026-09-05-p4-content-licensing.md.

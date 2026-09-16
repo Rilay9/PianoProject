@@ -34,9 +34,19 @@ only ever reads `app/public/content/catalog.json`, `curriculum.json`, `scores/**
    `--allow-nc` as the owner's flag and implies it), and refused by `--strict-license`.
    The Pages deploy keeps `--strict-license` until the repository is private, exactly as
    for NC editions.
-2. Every catalog item has a `source` block: `name`, `url`, `license`, `pd_region`
-   (`worldwide` / `US`), `fetchedAt`, and `checksum`. `tools/content/validate.py` rejects
-   items without it.
+   **Fourth amendment 2026-09-12 (owner: *"just forget about the personal flag thing. It
+   should always treat the app as my personal app"*):** `build.py` treats `--personal` as
+   its **default**, so the owner's build needs no flag at all. `--no-personal` opts out, and
+   `--strict-license` — or `PIANOPATH_STRICT_LICENSE=1`, which is how the Pages workflow asks
+   for it inside `npm run build` — is the public build. `--allow-nc` survives as the
+   narrower older spelling. The sentences above that call the flag opt-in describe the
+   dates they carry.
+2. Every catalog item has a `source` block. The schema (`content/catalog.schema.json`)
+   requires `name`, `license` and `pd_region` (`worldwide` / `US`); `url`, `fetchedAt` and
+   `checksum` are carried where the source has them — an importer records the checksum of
+   the file it shipped, a generated exercise has no URL. `tools/content/validate.py` rejects
+   an item with no licence and, under `--strict-license`, one whose shipped file is not
+   redistributable; it reads nothing else out of the block.
 3. **Teaching videos are links** (`media[]` entries), never downloaded, never embedded beyond
    a YouTube link opened in the browser. Course PDFs (e.g. Bill Hilton's notes) are linked too.
 4. Text quoted from **Open Music Theory** (CC BY-SA 4.0) or **Wikipedia** (CC BY-SA 4.0) must
@@ -58,7 +68,7 @@ degrade gracefully: skip unreachable sources with a warning and continue.
 | `[MT]` | **GitHub** `musetrainer/library` (`scores/*.mxl`, 69 files) | MXL | `git clone --depth 1` | Public-domain MusicXML library used by the MuseTrainer app; contains Bach Minuet Anh 114, Musette-like pieces, Für Elise (3 editions), Canon in D (3), Gymnopédie 1 (2), Gnossienne 1, Clair de Lune (2), Moonlight 1 & 3, Pathétique 2, K.545, K.331 Rondo, WTC I Prelude 1 & 2, Chopin Preludes 4 & 20, Nocturnes 9/1, 9/2 (+easy), 20, Waltzes 64/2 & A minor, Ballade 1, Joplin Entertainer (2) & Maple Leaf Rag, Greensleeves (easy), Happy Birthday, Ode to Joy (easy variation), Carol of the Bells (2), Twinkle variations (Mozart K.265), Air on G, Ave Maria, Lacrimosa, Swan Lake, Sugar Plum Fairy, Waltz of the Flowers, Hungarian Dance 5, Liebestraum 3, La Campanella, Flight of the Bumblebee, Arabesque 1, Bella Ciao. **Check the repo's stated license per file** (`index.html`/README list) before use; treat as verified-PD arrangements from MuseScore contributors, and record each in SOURCES.md. |
 | `[KERN]` | **GitHub** `craigsapp/*` Humdrum repos: `mozart-piano-sonatas`, `beethoven-piano-sonatas`, `chopin-preludes`, `chopin-mazurkas`, `scarlatti-keyboard-sonatas`, `joplin`, `bach-370-chorales`, `haydn-piano-sonatas` (all eight verified reachable; `bach-wtc` and `bach-inventions` do not exist under `craigsapp/`) | `**kern` | `tools/content/import_kern.py`, per-file table in `content/sources/kern.json` | **Measured, not assumed** (2026-09-05): five carry a `LICENSE.txt` stating CC BY-NC-SA 4.0 and every file repeats it in a `!!!YEM` record — bundled only under `--allow-nc` (`00` D10a). `beethoven-piano-sonatas`, `chopin-mazurkas` and `chopin-preludes` state **no licence at all**; the Chopin preludes carry a bare `!!!YEC` copyright line, which is a claim rather than a grant. Those three stay excluded whatever the flag says, and `import_kern.assert_excluded()` re-proves it on every build. |
 | `[NIFC]` | **GitHub** `pl-wnifc/humdrum-chopin-first-editions` (512 files) and `pl-wnifc/humdrum-polish-scores` (8,918 files) | `**kern` | `tools/content/import_kern.py`, groups in `content/sources/kern.json` | The Fryderyk Chopin Institute's *Chopin Heritage in Open Access* encodings of the 19th-century first editions, **CC BY 4.0** — redistributable, so no `--allow-nc`, attribution carried in each item's `source` block. 191 solo-piano works after choosing one publisher per piece. This is what fills the Chopin rungs `craigsapp/chopin-preludes` and `chopin-mazurkas` cannot. The Polish-scores repository is the same licence and is opt-in in `fetch.py`; nothing in `02` asks for it yet. |
-| `[PDMX]` | **Zenodo, on the owner's machine only** — `PDMX.csv` (254,077 rows) and `mxl.tar.gz`; `data.tar.gz`, `pdf.tar.gz` and `subset_paths` are not needed. Never fetched by CI, never committed. | MXL | `tools/content/pdmx/` — `select.py` (CSV → shortlist), `extract.py` (streams the tar once), `quarry.py` (convert, round-trip, features, level estimate, render), `review.py` (a static page + `review.csv` the owner fills), `commit.py` (the `keep` rows → `content/scores/pdmx/*.mxl` + `content/sources/pdmx.json`); the build's `import_pdmx.py` reads only the committed files and verifies their checksums | **Measured 2026-09-05:** the CSV's `license` column is the uploader's claim about the *edition* (every row is `publicdomain` or `cc-zero`, including Yiruma and Billie Eilish arrangements). The composition test runs on `composer_name` against `content/sources/composers.json` and finds about 4,200 public-domain compositions among 36,150 deduplicated solo-piano rows (2,764 traditional, 191 Bach, 138 Beethoven, 135 Mozart, 91 Chopin, 37 Czerny, 13 Clementi, 4 Burgmüller, 1 *Frog Legs Rag*, 0 *Euphonic Sounds*). **Under `00` D23 the result is a label, not a gate**: the personal build takes any PDMX row the dataset marks public domain and the strict build takes only `compositionStatus: pd`. Ranking by rating and the per-band, per-genre quotas in the replan decision §2.2 do the selecting; the machine quality gates in §2.3 and a human review decide admission, and nothing is committed without a `keep`. Its best uses for this owner: the *reference* against which Part F folk tunes are authored (the verification P5 lacked), small-form classical at Stages 3–5, the well-rated easy pop and film arrangements, and the rock-module and *Beautiful* wish-list songs by title. **Measured for real 2026-09-06 (P14):** 254,077 rows in, 37,499 past the gates. The dataset's own deduplication flag removes 142,078 of them — 56 % of the archive — and its licence-conflict flag another 19,582; most of the remainder are files with more than two tracks or a non-piano program. What survives is not the classical library the ladder was written around: the unmatched-composer list is dominated by the Scottish and Irish fiddle corpus (Marshall 353, Alexander Walker 170, the Gows, Skinner, O'Carolan) and by Densmore's ethnographic transcriptions. `composer_name` is `NA` for 59 of the 306 rows the quotas chose and every one of those has an `artist_name`, so the composition label falls back to it. Titles and composer strings in the archive can be mojibake — one row's composer is 坂本龍一 encoded twice. |
+| `[PDMX]` | **Zenodo, on the owner's machine only** — `PDMX.csv` (254,077 rows) and `mxl.tar.gz`; `data.tar.gz`, `pdf.tar.gz` and `subset_paths` are not needed. Never fetched by CI, never committed. | MXL | `tools/content/pdmx/` — `shortlist.py` (CSV → shortlist; it was named `select` until that shadowed the standard library's module of the same name, P14), `extract.py` (streams the tar once), `quarry.py` (convert, round-trip, features, level estimate, render), `review.py` (a static page + `review.csv` the owner fills), `commit.py` (the `keep` rows → `content/scores/pdmx/*.mxl` + `content/sources/pdmx.json`; at most `MAX_EDITIONS` — two — editions of one work, the Zenodo record written into the table's header, and `convertedSha256` re-hashed *after* the copy into the repository, since that is the file the build verifies); the build's `import_pdmx.py` reads only the committed files and verifies their checksums | **Measured 2026-09-05:** the CSV's `license` column is the uploader's claim about the *edition* (every row is `publicdomain` or `cc-zero`, including Yiruma and Billie Eilish arrangements). The composition test runs on `composer_name` against `content/sources/composers.json` and finds about 4,200 public-domain compositions among 36,150 deduplicated solo-piano rows (2,764 traditional, 191 Bach, 138 Beethoven, 135 Mozart, 91 Chopin, 37 Czerny, 13 Clementi, 4 Burgmüller, 1 *Frog Legs Rag*, 0 *Euphonic Sounds*). **Under `00` D23 the result is a label, not a gate**: the personal build takes any PDMX row the dataset marks public domain and the strict build takes only `compositionStatus: pd`. Ranking by rating and the per-band, per-genre quotas in the replan decision §2.2 do the selecting; the machine quality gates in §2.3 and a human review decide admission, and nothing is committed without a `keep`. Its best uses for this owner: the *reference* against which Part F folk tunes are authored (the verification P5 lacked), small-form classical at Stages 3–5, the well-rated easy pop and film arrangements, and the rock-module and *Beautiful* wish-list songs by title. **Measured for real 2026-09-06 (P14):** 254,077 rows in, 37,499 past the gates. The dataset's own deduplication flag removes 142,078 of them — 56 % of the archive — and its licence-conflict flag another 19,582; most of the remainder are files with more than two tracks or a non-piano program. What survives is not the classical library the ladder was written around: the unmatched-composer list is dominated by the Scottish and Irish fiddle corpus (Marshall 353, Alexander Walker 170, the Gows, Skinner, O'Carolan) and by Densmore's ethnographic transcriptions. `composer_name` is `NA` for 59 of the 306 rows the quotas chose and every one of those has an `artist_name`, so the composition label falls back to it. Titles and composer strings in the archive can be mojibake — one row's composer is 坂本龍一 encoded twice. |
 | `[MUTO]` | Mutopia Project (mutopiaproject.org; GitHub mirror `MutopiaProject/MutopiaProject`) | LilyPond (+PDF/MIDI) | `ly musicxml file.ly > out.xml` (python-ly) for simple pieces; else `lilypond --midi` → music21 from MIDI (lossy: loses articulation; acceptable for exercises only) | Has Anna Magdalena Notebook, Burgmüller op.100, Czerny, Clementi sonatinas, Beyer, Hanon, many Bach/Mozart/Beethoven. |
 | `[IMSLP]` | imslp.org | PDF, some MusicXML/MIDI | manual: only take files explicitly tagged MusicXML with a CC/PD edition license | Slow and manual — last resort. |
 | `[AUTH]` | our own | ABC (`content/scores/authored/*.abc`) or music21 tinyNotation in `authored/*.py` | `music21.converter.parse(abcText)` → MusicXML; add fingering/lyrics/chord symbols in ABC (`"C"` chord symbols, `!1!` fingering) | For folk/hymn/holiday/lead sheets (Part F of the curriculum). ABC is 1–10 lines per tune; an agent can author 60–100 of these in one session. |
@@ -103,7 +113,8 @@ caught by the merge rather than by whichever wrote last:
    `content/sources/pdmx.json`, checksummed against what was reviewed. `--personal` bundles the
    ones whose composition is not public domain; a strict build placeholders them.
 5. **generate [GEN]** (`generate_exercises.py`) — scales, arpeggios, Hanon-style cells, harmony
-   families, rhythm rows: 934 items, levelled from a table.
+   families, rhythm rows, levelled from one table (`02` Part E amendment); how many there are
+   is in `docs/generated/ladder.md`.
 6. **author [AUTH]** (`author.py`) — the hand-written ABC and music21 sources, with metadata
    from each file's YAML front-matter.
 7. **merge catalog** — the fragments into one `catalog.json`, with `content/sources/sections.json`
@@ -124,10 +135,40 @@ caught by the merge rather than by whichever wrote last:
 Output is `app/public/content/`: `catalog.json`, `curriculum.json`, `scores/**.mxl`,
 `lessons/**.md`, `tips/*.md`, `level-model.json`, `audio/<soundfont>`.
 
-Two flavours come out of the same table (`00` D10a, D23): `--personal` is the owner's and
-carries everything; `--strict-license` is what CI and the Pages deploy run and turns the rest
-into placeholders. They differ in four fields — `file`, `importHint`, `tags` and
-`source.checksum` — and in nothing else, which is checked.
+Two flavours come out of the same table (`00` D10a, D23): the personal build — the default
+since 2026-09-12, §1 — is the owner's and carries everything; `--strict-license` is what CI
+and the Pages deploy run and turns the rest into placeholders. They differ in four fields —
+`file`, `importHint`, `tags` and `source.checksum` — and in nothing else, which is checked.
+
+**The rest of `tools/content/`**, which the steps above do not name, one line each so nothing
+in the directory is a mystery:
+
+- `common.py` — shared plumbing (paths, hashing, the provenance ledger, the catalog writer),
+  dependency-free so the parts that need no music21 keep working without it.
+- `licensing.py` — the §1 rules as code: `license_verdict` for the edition, `composition_verdict`
+  for the composition; called by the importers and `validate.py`.
+- `difficulty.py` — `features(score)` and `estimate(...)`: the one levelling model, ported to
+  `app/src/score/difficulty.ts` for imports on the phone.
+- `fit_level_model.py` — fits `content/sources/level-model.json` on the songs a person levelled.
+- `export_levelling_fixture.py` — writes what `difficulty.py` makes of the score fixtures, so
+  `app/tests/unit/difficulty.test.ts` can hold the two implementations to one formula.
+- `finder.py` — turns a lesson's `finder` block into the search line and chat prompt (`04` §3).
+- `ladder_report.py` — writes `docs/generated/ladder.md`; `validate.py` fails a build whose
+  committed copy is stale.
+- `add_technique_units.py` — the one-off that gave the technique track a rung per stage (P12a);
+  not part of the build.
+- `truncation_scan.py` — the grace-16th truncation scan over every converted file (P2 §8).
+- `bisect_render.py` — narrows a score OSMD refuses down to the measure that breaks it.
+- `abc_tools.py` — the `%%pianopath` header and the inline-voice fix for ABC (§5).
+- `blues_forms.py` — the twelve-bar blues built once and transposed for the authored blues exercises.
+- `extract_hanon.py`, `extract_fingering.py` — read Hanon 1–20 and Clementi's scale fingerings
+  out of the Mutopia editions, so neither comes from memory.
+- `python.cjs` — finds a Python that answers (`py -3.11` on Windows, `python3` elsewhere) for
+  `npm run content:build`.
+- `pdmx/` — beside the five programs in §2's table: `paths.py` (where the archive is, and the
+  refusal when it is not), `composers.py` (a free-text composer string → a composition label),
+  `index.py` (every candidate past the gates as one browsable page), `manifest.py` (writes
+  `library.json` into a folder of scores and, with `--zip`, the archive for the phone).
 
 ### 3a. What the build remembers between runs (P11)
 
@@ -154,11 +195,13 @@ hash it has not seen and reuses the recorded numbers for the rest, so `apply_dur
 still writes a complete catalog. It is flushed every 20 fresh renders, so a run that
 crashes half way through costs at most twenty rather than everything.
 
-The manifest has one blind spot by construction: a change in OpenSheetMusicDisplay, in the
-ScoreModel extractor or in the browser leaves every remembered result standing, because no
-score file moved. `render_check.py --full` ignores the manifest, and
-`render_check.py --full` closes it, either locally or through
-`.github/workflows/render-full.yml`, which is dispatched by hand.
+The manifest's key is the file's sha256 **and the installed OpenSheetMusicDisplay version**
+(`OSMD_VERSION` in the spec, read from the installed package rather than `package.json`'s
+range, so a lockfile bump that resolves differently invalidates too) — an engraver upgrade
+therefore re-renders everything by itself. What still leaves every remembered result standing
+is a change in the ScoreModel extractor or in the browser, because no score file and no
+package moved; `render_check.py --full` ignores the manifest and closes that, either locally
+or through `.github/workflows/render-full.yml`, which is dispatched by hand.
 
 `build.py --if-missing` used to skip the whole content build whenever a catalog already
 existed. It is gone: it made an edited source silently stale in `npm run build`, and with
@@ -293,8 +336,9 @@ Which side of the bar is missing is a reading of what the bar is, and `makeBeams
 the first bar of a piece, and the remainder of a bar split in two, are short at the front;
 everything else — a closing bar that completes the opening anacrusis, a bar an editor wrote
 irregular — is short at the end. The remainder of a split bar is also marked
-`implicit="yes"`, because an engraver gives it no number and the alternative was a "0"
-printed in the middle of the piece.
+`implicit="yes"` — when the parser numbered it 0, which is what music21 does with the
+unnumbered bar after a mid-bar barline — because an engraver gives it no number and the
+alternative was a "0" printed in the middle of the piece.
 
 The same `=||` falls *on* a barline as often as inside one — `4a 4b / =|| / *k[d-] /
 =70!|:` — and then what stands between the two records is a measure holding no note, no

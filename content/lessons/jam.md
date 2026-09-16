@@ -6,7 +6,7 @@ videos:
   - label: "Jazz Piano Comping Made Simple for Absolute Beginners"
     url: "https://www.youtube.com/watch?v=Dx1W77_mdpI"
     teacher: "South Shore Piano School"
-readingTime: 2
+readingTime: 3
 ---
 
 Everything so far has been you and the app. This module is about the moment
@@ -14,9 +14,13 @@ someone else is in the room — specifically a guitarist, which decides the keys
 
 **Guitar keys.** Guitars are built around open strings in E, A, D and G, so
 those keys plus C are where a guitarist is comfortable and where the instrument
-rings. Blues in **E** and **A** first, then **G** and **D**. If a standard is
-written in a flat key, transpose it — a guitar-friendly variant is worth more
-than an authentic one nobody enjoys playing.
+rings. Blues in **E** and **A** first, then **G** and **D**. The twelve-bar
+shuffles on this rung are written in C, F and G: take the G one as it stands,
+and move the C one up to E and to A — the shape does not change, only where
+the hand sits, which is the whole point of knowing the form as I, IV and V. If
+a standard is written in a flat key, transpose it the same way — a
+guitar-friendly variant is worth more than an authentic one nobody enjoys
+playing.
 
 **The head and the chorus.** The **head** is the tune, played at the start and
 again at the end. A **chorus** is one time through the form — twelve bars for a
@@ -28,8 +32,8 @@ the form, and everyone has to be counting.
 speed up.
 
 **Comping.** Accompanying the soloist. Three rules: play in the gaps, not over
-the melody; keep the voicings small (shells — root and seventh, or third and
-seventh); and leave whole bars empty. If the guitarist is playing chords too,
+the melody; keep the voicings small (shells — root, third and seventh, or just
+third and seventh once the guitar has the root); and leave whole bars empty. If the guitarist is playing chords too,
 you take the higher voicings and let the guitar have the middle, or you drop out
 altogether.
 

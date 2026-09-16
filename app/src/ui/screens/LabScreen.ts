@@ -54,6 +54,18 @@ import './LabScreen.css';
 /** The tag every lab build carries, so Library can tell them from real imports. */
 const LAB_IMPORT_TAG = 'Accompaniment lab';
 
+/**
+ * How many lab builds the Library keeps (`04` §3c).
+ *
+ * *Read it* replaces the build of the *same* settings, which is what stops
+ * twenty presses leaving twenty rows — but a settings combination is a key, so
+ * every new combination kept a row of its own for ever. An evening of trying
+ * progressions silently filled the Library with scratch exercises nobody would
+ * open again. The newest few are the ones worth coming back to; the rest go
+ * when the next one is written.
+ */
+const LAB_IMPORTS_KEPT = 5;
+
 const LEFT_HANDS: { value: LabLeftHand; label: string }[] = [
   { value: 'none', label: 'None' },
   { value: 'whole', label: 'Held roots' },
@@ -179,7 +191,38 @@ export function LabScreen(router: Router): HTMLElement {
    * previous build of the *same* settings is deleted first, so pressing Read
    * it twenty times leaves one row and not twenty.
    */
+  /**
+   * The `Read it` button, so the write can switch it off while it runs.
+   *
+   * Bound here rather than where the button is built because `readIt` is
+   * written above the layout and the guard belongs to the write, not to the
+   * click: a keyboard repeat and a double tap arrive the same way.
+   */
+  let readButton: HTMLButtonElement | null = null;
+  /** True from the first await to the last, so a second press does nothing. */
+  let writing = false;
+
+  /**
+   * Drops the oldest lab builds, keeping `LAB_IMPORTS_KEPT` of them.
+   *
+   * By `addedAt`, which is what "newest" means to every other Library screen,
+   * with the id as a tie-break so two rows written in the same millisecond are
+   * still ordered the same way twice.
+   */
+  async function pruneLabBuilds(): Promise<void> {
+    const builds = (await importSummaries())
+      .filter((row) => row.tags.includes(LAB_IMPORT_TAG))
+      .sort((a, b) => b.addedAt.localeCompare(a.addedAt) || b.id.localeCompare(a.id));
+    for (const row of builds.slice(LAB_IMPORTS_KEPT)) await deleteImport(row.id);
+  }
+
   async function readIt(): Promise<void> {
+    // Two fast taps both reached `importSummaries()` before either had written
+    // anything, so the delete found nothing, two rows went in for one press and
+    // `navigateScore` fired twice — the second over a screen the first had just
+    // opened. The button goes dead for the duration as well, because a control
+    // that looks pressable and does nothing is the wrong half of the fix.
+    if (writing) return;
     const { chords, unreadable } = currentChords();
     if (unreadable.length > 0) {
       status.textContent = `Not a numeral this can read: ${unreadable.join(', ')}.`;
@@ -194,6 +237,19 @@ export function LabScreen(router: Router): HTMLElement {
       status.textContent = 'Give one hand something to play: a pattern, a melody or chord tones.';
       return;
     }
+    writing = true;
+    if (readButton) readButton.disabled = true;
+    try {
+      await writeAndOpen();
+    } finally {
+      writing = false;
+      if (readButton) readButton.disabled = false;
+    }
+  }
+
+  /** The write itself, with the guard above it holding the door. */
+  async function writeAndOpen(): Promise<void> {
+    const { chords } = currentChords();
     status.textContent = 'Writing it out…';
     const key = labKey(keyId);
     const title = exerciseTitle();
@@ -220,6 +276,8 @@ export function LabScreen(router: Router): HTMLElement {
       level: 3,
       levelSource: 'estimated',
     });
+    // After the row is tagged, so the newest build is one of the ones counted.
+    await pruneLabBuilds();
     router.navigateScore(row.id);
   }
 
@@ -532,21 +590,23 @@ export function LabScreen(router: Router): HTMLElement {
 
   // --- layout -------------------------------------------------------------
 
+  readButton = button(
+    'Read it',
+    () => {
+      void readIt().catch((cause: unknown) => {
+        status.textContent = `That could not be written out: ${
+          cause instanceof Error ? cause.message : String(cause)
+        }`;
+        status.classList.add('status--error');
+      });
+    },
+    { id: 'lab-read', variant: 'primary' },
+  );
+
   const actions = el(
     'div.row.lab-actions',
     { id: 'lab-actions' },
-    button(
-      'Read it',
-      () => {
-        void readIt().catch((cause: unknown) => {
-          status.textContent = `That could not be written out: ${
-            cause instanceof Error ? cause.message : String(cause)
-          }`;
-          status.classList.add('status--error');
-        });
-      },
-      { id: 'lab-read', variant: 'primary' },
-    ),
+    readButton,
     button(
       'Jam it',
       () => {

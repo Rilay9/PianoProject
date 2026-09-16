@@ -2,7 +2,7 @@
 """
 Validates a built content directory.
 
-docs/03-content-pipeline.md §3 step 5. The JSON Schemas answer "is this the
+docs/03-content-pipeline.md §3 step 9. The JSON Schemas answer "is this the
 right shape?"; the checks after them answer the questions a schema cannot:
 
   * does every file a catalog item points at actually exist?

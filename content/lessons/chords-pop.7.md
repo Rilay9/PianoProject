@@ -31,8 +31,12 @@ voicings on this rung are written the second way on purpose.
 with the first chord `sus4` resolving. Then the ninth chords from the jazz drill,
 so you can hear what you are *not* doing.
 
-**Repertoire for this rung.** A ballad you already play, re-voiced. Same chords,
-different arrangement.
+**Repertoire for this rung.** Six options. *Fix You* and *Blinding Lights* are
+sus and add9 colour over a bass that barely moves; *Welcome to Wonderland* and
+*For the Damaged Coda* are the open, spread voicings this rung is about; the
+solo setting of *Scarborough Fair* is a modal tune re-voiced; and *Wake Me Up*
+is the loop with a syncopated left hand under it. Take one, play it plainly,
+then re-voice it the way the exercises do — same chords, different arrangement.
 
 **Common mistake.** Adding colour to every chord. A sus that resolves is a
 moment; a whole song of them is a drone.

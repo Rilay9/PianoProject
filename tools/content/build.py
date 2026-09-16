@@ -2,26 +2,38 @@
 """
 Builds `app/public/content/` from `content/` and the fetched sources.
 
-docs/03-content-pipeline.md §3. The order matters and the failure modes differ
-at each step, so each is reported separately:
+docs/03-content-pipeline.md §3 lists the ten steps in the order they run here.
+The order matters and the failure modes differ at each step, so each is
+reported separately:
 
-  1. fetch     — clone what is reachable; skipping a source is not a failure
-  2. import    — the [MT] library and the [KERN] tier, per-file licence decisions
-  3. generate  — scales, arpeggios, Hanon, rhythm drills
-  4. author    — our own ABC and music21 sources
-  5. curriculum/lessons — copied through from content/
-  6. validate  — schema, cross-references, licences, durations
-  7. render    — optional; every item loaded in a real browser (slow)
+  1. fetch            — clone what is reachable; skipping a source is not a failure
+  2. import [MT]      — the MuseTrainer library, per-file licence decisions
+  3. import [KERN]    — the Humdrum editions, per-file licence decisions
+  4. import [PDMX]    — the reviewed quarry slice, checksummed (step_import_pdmx)
+  5. generate         — scales, arpeggios, Hanon, harmony families, rhythm rows
+  6. author           — our own ABC and music21 sources
+  7. merge            — the fragments into one catalog, sections attached
+  8. curriculum, lessons, tips — copied through from content/
+  9. validate         — schema, cross-references, licences, durations, the ladder report
+ 10. render           — optional; every item loaded in a real browser (slow);
+                        validate runs again after it, since it writes durations back
 
-Steps 2–4 each write their own catalog fragment; the merge is one place, so a
+Steps 2–6 each write their own catalog fragment; the merge is one place, so a
 duplicate id between an authored tune and a generated exercise is caught by
 validation rather than by whichever wrote last.
 
-Usage:
+Usage (the personal build is the default — docs/00 D23, owner 2026-09-12):
     python3 tools/content/build.py                 # everything but the render check
     python3 tools/content/build.py --offline       # no network
     python3 tools/content/build.py --render        # …and render every item
+    python3 tools/content/build.py --render-limit N  # …only the first N
     python3 tools/content/build.py --quick         # a small generator subset
+    python3 tools/content/build.py --skip-fetch    # keep what is fetched, do not refresh it
+    python3 tools/content/build.py --no-cache      # reconvert every source (docs/03 §3a)
+    python3 tools/content/build.py --strict-license  # the public build (or PIANOPATH_STRICT_LICENSE=1)
+    python3 tools/content/build.py --no-personal   # a build without the owner's extra items
+    python3 tools/content/build.py --allow-nc      # the older, narrower spelling of --personal
+    python3 tools/content/build.py --out DIR       # somewhere other than app/public/content
 """
 from __future__ import annotations
 

@@ -6,7 +6,7 @@ videos:
   - label: "Modes Explained on the Piano [tutorial lesson]"
     url: "https://www.youtube.com/watch?v=pCfV-i20olM"
     teacher: "Bitesize Piano"
-readingTime: 2
+readingTime: 3
 ---
 
 **Four seventh-chord qualities** cover nearly everything:
@@ -40,6 +40,11 @@ home and can circle indefinitely.
 **Transposition.** Take a progression written in C and play it in E flat by
 thinking in numerals, not letters. This is the practical payoff of everything on
 this track.
+
+**Simon, on every key.** The chain game from Stage 3 again — hear a chain of
+notes, play it back, and it grows by one each round — but now drawn from all
+twelve keys around middle C rather than the white ones. Without a scale to lean
+on, the only thing that holds the chain is having heard it: sing it first.
 
 **Common mistake.** Learning modes as scale fingerings. They are harmonic
 colours; play a Dorian vamp (Dm to G) for two minutes and you will learn more

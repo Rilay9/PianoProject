@@ -104,7 +104,7 @@ pushes.
 **and every `style.css` rule for the score, the stage, the control bar and the
 strip.**
 
-**Agent A — Opus — the tour, calibration and the sync click**
+**Agent A — the stronger model — the tour, calibration and the sync click**
 `src/audio/latency.ts` · `src/audio/latencyTest.ts` · `src/audio/tapTempo.ts` ·
 `src/audio/pitch/calibration.ts` · `src/audio/pitch/calibrationRun.ts` ·
 `src/ui/screens/SetupScreen.ts` · `src/ui/screens/MicScreen.ts` ·
@@ -112,7 +112,7 @@ strip.**
 `tests/e2e/mic.spec.ts` · `tests/unit/latency.test.ts` ·
 **`style.css` only inside `[data-screen='setup']` and `[data-screen='mic']`.**
 
-**Agent B — Sonnet — Library, import and the score folder**
+**Agent B — the faster model — Library, import and the score folder**
 `src/ui/screens/LibraryScreen.ts` · `src/ui/screens/FolderScreen.ts` ·
 `src/ui/screens/ShelfScreen.ts` · `src/data/folderLibrary.ts` · `src/ui/openItem.ts` ·
 `content/catalog.static.json` · `tests/e2e/library.spec.ts` · `tests/e2e/folder.spec.ts` ·
@@ -140,8 +140,8 @@ runs it in phase 3.
 
 ### Keeping the token cost down
 
-- Two agents, not four. Sonnet unless the work needs judgement — only the tour
-  and the click do.
+- Two agents, not four. The faster model unless the work needs judgement — only
+  the tour and the click do.
 - No agent runs Playwright. Those runs were the single largest cost, and two at
   once produced results that were not even real.
 - Each agent is handed its file list above, so it does not re-explore the repo to
@@ -261,7 +261,7 @@ caught by an assertion today. Every one is a priority.
   long-titled piece and the Nocturne. Three faults this week were invisible only
   because every fixture uses round 360x780 / 780x360 and easy four-bar tunes.
 
-## Task 2 — the sync click: make it honest or delete it (delegate, Opus)
+## Task 2 — the sync click: make it honest or delete it (delegate, the stronger model)
 
 **The click must never appear for a MIDI user. Not shortened, not skipped by
 default — not built for them at all.** Over USB MIDI both halves of the round
@@ -300,7 +300,7 @@ so rather than shipping something that looks like a measurement and is not.
 Do not revert the `latency.ts` rework; the matcher is still needed to pair
 detected clicks with emitted ones. Its unit tests pass.
 
-## Task 2b — the setup tour's layout (delegate, Opus, same agent)
+## Task 2b — the setup tour's layout (delegate, the stronger model, same agent)
 
 The owner's words: "poor UX design, inefficient use of space, and overlapping
 stuff for phone landscape and portrait. Previews should be better and separate
@@ -320,7 +320,7 @@ and not on top or squeezed in."
 - Drive the tour step by step and judge whether a first-time user can finish it.
   It was only ever reviewed for looks.
 
-## Task 3 — Library, import and the score folder (delegate, Sonnet)
+## Task 3 — Library, import and the score folder (delegate, the faster model)
 
 Not optional and not last-if-there-is-room. The owner raised every one of these
 and none is fixed.

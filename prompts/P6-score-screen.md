@@ -1,4 +1,4 @@
-# P6 — Score screen  ·  Intended model: **Sonnet 5**, then an **Opus 5** review pass  ·  Branch: `feat/p6-score-screen`
+# P6 — Score screen  ·  then a second-session review pass  ·  Branch: `feat/p6-score-screen`
 
 (Include `_COMMON-HEADER.md`.)
 
@@ -19,7 +19,7 @@ E2E: every control has a test; a scripted `ReplaySource` run in Wait and in Temp
 the summary sheet with the expected numbers; screenshot tests in landscape at bars-per-window
 1/2/4.
 
-## Opus review pass (second session, same branch)
+## Review pass (second session, same branch)
 Review the diff against `04` §5 and `05`; verify no rendering happens on the input path,
 cursor updates are rAF-batched, window pre-render is used, and engine events are consumed
 completely. Fix what you find; report.

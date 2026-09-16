@@ -30,8 +30,13 @@ about where the notes are rather than about what the chords were.
 **What to practise.** The loop with inversions in three keys, then the descending
 slash-bass line in one.
 
-**Repertoire for this rung.** Any song you like that uses the loop, which is most
-of them. Play it from the chord symbols, not from a transcription.
+**Repertoire for this rung.** Six options, every one of them a song built on a
+loop. *Clocks* and *Dancing Queen* are the four chords driven by a rhythm;
+*All of Me* and *Annie's Song* are the same kind of chords under a ballad; the
+*Flying Theme* from How to Train Your Dragon and *Fallen Down* from Undertale
+are a loop under a melody nobody sings. Play each from its chord symbols before
+you play it from the page, and any other loop song you like from the import
+screen.
 
 **Common mistake.** Learning the loop in five keys as five separate things.
 

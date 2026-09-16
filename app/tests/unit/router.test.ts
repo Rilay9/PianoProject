@@ -381,3 +381,68 @@ describe('the score route carries a mode, a loop and a way back', () => {
     expect(routeToHash({ tab: DEFAULT_TAB, score: 'song.a' })).toBe('#/score/song.a');
   });
 });
+
+/**
+ * The two routes that ride on `tab: 'library'` with every other field absent.
+ *
+ * `paper` and `importFor` were left out of `setRoute`'s comparison, so a
+ * navigation that changed only one of them was a no-op: the hash moved and
+ * the screen did not. Three real taps were lost that way — the Library tab
+ * from a paper piece, the second piece of a book, and a second *Import for
+ * this rung* — and none of them failed anywhere a test could see.
+ */
+describe('paper and import-for routes are real changes', () => {
+  it('re-renders when the Library tab is tapped from a paper piece', () => {
+    const { win } = fakeWindow('#/paper/book.czerny-599/no-1');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigate('library');
+    expect(seen).toEqual(['#/paper/book.czerny-599/no-1', '#/library']);
+  });
+
+  it('re-renders when a second piece of the same book is opened', () => {
+    const { win } = fakeWindow('#/library');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigatePaper('book.czerny-599', 'no-1');
+    router.navigatePaper('book.czerny-599', 'no-2');
+    router.navigatePaper('book.czerny-100', 'no-2');
+    expect(seen).toEqual([
+      '#/library',
+      '#/paper/book.czerny-599/no-1',
+      '#/paper/book.czerny-599/no-2',
+      '#/paper/book.czerny-100/no-2',
+    ]);
+  });
+
+  it('does not re-render when the same paper piece is asked for twice', () => {
+    // `paper` is an object, so an identity comparison would call every repeat
+    // a change and rebuild the screen under the learner's hands.
+    const { win } = fakeWindow('#/library');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigatePaper('book.czerny-599', 'no-1');
+    router.navigatePaper('book.czerny-599', 'no-1');
+    expect(seen).toEqual(['#/library', '#/paper/book.czerny-599/no-1']);
+  });
+
+  it('re-renders when the rung an import is for changes', () => {
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(routeToHash(route)));
+    router.navigateImportFor('classical.1');
+    router.navigateImportFor('classical.2');
+    // …and leaving the picker for plain Library is a change too.
+    router.navigate('library');
+    expect(seen).toEqual([
+      '#/plan',
+      '#/library?for=classical.1',
+      '#/library?for=classical.2',
+      '#/library',
+    ]);
+  });
+});

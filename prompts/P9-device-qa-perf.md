@@ -1,4 +1,4 @@
-# P9 — On-device QA, performance, offline, packaging  ·  Intended model: **Opus 5**  ·  Branch: `feat/p9-qa`
+# P9 — On-device QA, performance, offline, packaging  ·  Branch: `feat/p9-qa`
 
 (Include `_COMMON-HEADER.md`.)
 

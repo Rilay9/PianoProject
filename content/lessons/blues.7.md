@@ -29,9 +29,10 @@ one.
 turnaround in three keys. Then the boogie from Stage 6 with the turnaround on the
 end.
 
-**Repertoire for this rung.** The form again, with your own turnaround, and
-*Pinetop's Boogie Woogie* for a left hand that never stops. If you play a rag,
-its left hand is this left hand.
+**Repertoire for this rung.** The form again, with your own turnaround, and the
+short *Boogie* from Stage 6 for a left hand that never stops. *Pinetop's Boogie
+Woogie* stays on the Stage 6 rung and is worth another look now that the stride
+leap is in your hand. If you play a rag, its left hand is this left hand.
 
 **Common mistake.** Practising stride at the tempo you want it. The leap is a
 motion, and a motion learned fast is learned wrong.

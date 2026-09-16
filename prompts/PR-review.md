@@ -1,4 +1,4 @@
-# PR-review — Independent review of a phase  ·  Intended model: **Opus 5**
+# PR-review — Independent review of a phase
 
 (Include `_COMMON-HEADER.md`.)
 

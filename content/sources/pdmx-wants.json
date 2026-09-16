@@ -1319,6 +1319,50 @@
       "artist": [
         "schubert"
       ]
+    },
+    {
+      "id": "song.folk.skip-to-my-lou.pdmx",
+      "title": [
+        "skip to my lou"
+      ],
+      "note": "docs/02 Part F [AUTH] tune, quarried from the archive instead of authored, 2026-09-16"
+    },
+    {
+      "id": "song.folk.alouette.pdmx",
+      "title": [
+        "alouette"
+      ],
+      "note": "docs/02 Part F [AUTH] tune, quarried from the archive instead of authored, 2026-09-16"
+    },
+    {
+      "id": "song.folk.kum-ba-yah.pdmx",
+      "title": [
+        "kum ba yah",
+        "kumbaya",
+        "kumbayah"
+      ],
+      "note": "docs/02 Part F [AUTH] tune, quarried from the archive instead of authored, 2026-09-16"
+    },
+    {
+      "id": "song.folk.the-water-is-wide.pdmx",
+      "title": [
+        "water is wide"
+      ],
+      "note": "docs/02 Part F [AUTH] tune, quarried from the archive instead of authored, 2026-09-16"
+    },
+    {
+      "id": "song.folk.simple-gifts.pdmx",
+      "title": [
+        "simple gifts"
+      ],
+      "note": "docs/02 Part F [AUTH] tune, quarried from the archive instead of authored, 2026-09-16"
+    },
+    {
+      "id": "song.folk.streets-of-laredo.pdmx",
+      "title": [
+        "streets of laredo"
+      ],
+      "note": "docs/02 Part F [AUTH] tune, quarried from the archive instead of authored, 2026-09-16"
     }
   ],
   "verify": [

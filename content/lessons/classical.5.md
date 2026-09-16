@@ -21,8 +21,9 @@ the development is where the memory slips will be.
 
 **The sonatinas.** Two are on this rung, both short enough to finish:
 Clementi's Op. 36 No. 1, all three movements, and Beethoven's Sonatina in G,
-Anh. 5. Kuhlau's, Diabelli's and Attwood's are in the Library when you want a
-third. Before you play a note of one, mark the three sections on the page.
+Anh. 5. Attwood's, on the Stage 4 rung of this track, is the gentler one to go
+back to; Kuhlau's and Diabelli's are in the Library when you want a third.
+Before you play a note of one, mark the three sections on the page.
 
 **Alberti bass hands together.** Stage 3 taught the pattern; here it runs
 continuously under a melody for pages. The problem is balance. The left hand

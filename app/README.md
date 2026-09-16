@@ -7,16 +7,29 @@ npm run dev        # http://localhost:5173/PianoProject/
 
 ## Scripts
 
-| Script                  | What                                                                                                   |
-| ----------------------- | ------------------------------------------------------------------------------------------------------ |
-| `npm run dev`           | Vite dev server (regenerates icons first via `predev`)                                                 |
-| `npm run build`         | Full production build: content build + icon generation (`prebuild`), typecheck, `vite build` → `dist/` |
-| `npm run preview`       | Serve `dist/` locally (used by the e2e webServer)                                                      |
-| `npm run lint`          | ESLint (typescript-eslint recommended-type-checked), zero warnings allowed                             |
-| `npm run typecheck`     | `tsc -b --noEmit`                                                                                      |
-| `npm run test`          | Vitest unit tests (`tests/unit/`)                                                                      |
-| `npm run e2e`           | Playwright e2e tests (`tests/e2e/`), headless Chromium                                                 |
-| `npm run content:build` | Runs `tools/content/build.py` → `public/content/{catalog,curriculum}.json`                             |
+| Script                   | What                                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `npm run dev`            | Vite dev server (regenerates icons first via `predev`)                                                 |
+| `npm run build`          | Full production build: content build + icon generation (`prebuild`), typecheck, `vite build` → `dist/` |
+| `npm run build:app`      | The app alone — icons, typecheck, `vite build` — with the content already built (the owner's route, `docs/OWNER-GUIDE.md` §1) |
+| `npm run preview`        | Serve `dist/` locally on port 4173 (the e2e webServer)                                                 |
+| `npm run preview:states` | Serve `dist/` on port 4183 for the state gallery                                                      |
+| `npm run lint`           | ESLint (typescript-eslint recommended-type-checked), zero warnings allowed                             |
+| `npm run typecheck`      | `tsc -b --noEmit` (`tsc --noEmit -p` checks nothing — `docs/00-invariants.md` §3)                      |
+| `npm run test`           | Vitest unit tests (`tests/unit/`)                                                                      |
+| `npm run e2e`            | Playwright e2e tests (`tests/e2e/`), headless Chromium, `playwright.config.ts`                         |
+| `npm run tour`           | The UX tour and the whole-song sequence (`tests/tour/`, `playwright.tour.config.ts`) → `build/tour/`   |
+| `npm run tour:sequence`  | The sequence alone; `SEQ_SONG` and `SEQ_FACTORS` choose the song and the sizes                         |
+| `npm run choices`        | The same screen shot several ways, for the owner to pick between                                       |
+| `npm run review`         | `tour`, then `choices`, then opens the contact sheet                                                   |
+| `npm run corpus`         | Thirteen pieces on six form factors (`playwright.corpus.config.ts`) → `build/corpus/`; `CORPUS=`, `CORPUS_FACTORS=` narrow it |
+| `npm run states`         | Builds the app, then the score screen's state gallery (`tests/states/`, `playwright.states.config.ts`) |
+| `npm run states:only`    | The gallery without the build                                                                          |
+| `npm run pwa:audit`      | Lighthouse's PWA checks plus the precache's file count and size (`scripts/pwa-audit.mjs`)              |
+| `npm run content:build`  | Runs `tools/content/build.py` through `tools/content/python.cjs` → `public/content/`                   |
+
+One Playwright suite at a time: every config shares port 4173 and `test-results/`, and local
+runs are pinned to four workers (`docs/00-invariants.md` §3).
 
 ## Generated, not committed
 
@@ -36,11 +49,22 @@ without running the Python pipeline first. `.gitignore` un-ignores that one dire
 
 | Route | What |
 | --- | --- |
-| `#/settings/midi` | Connect a piano, pick an input, test it |
-| `#/settings/diagnostics` | Raw MIDI log, latency test, copyable debug report |
-| `#/dev/score` | Notation renderer harness (below) |
+| `#/today`, `#/plan`, `#/library`, `#/progress`, `#/settings` | The five tabs |
+| `#/today/metronome` | The standalone metronome (`04` §2a) |
+| `#/plan/skills` | Skills review (`04` §3a) |
+| `#/library/folder`, `#/library/shelf` | The score folder (`04` §4b) and the shelf (`04` §4c) |
+| `#/settings/midi`, `#/settings/mic`, `#/settings/diagnostics` | Connect a piano, the microphone, the debug report (`04` §7f, §7g, §7b) |
+| `#/settings/setup`, `#/settings/guide` | The setup tour and the in-app guide (`04` §7d, §7e) |
+| `#/score/<itemId>` | The Score screen; `?blind=1`, `?performance=1`, `?mode=`, `?loop=1-2`, `?tour=<drill>`, `?seed=<n>` |
+| `#/pdf/<importId>?page=<n>` | The PDF viewer (`04` §5b) |
+| `#/paper/<bookId>/<pieceId>` | Paper practice on a shelf piece (`04` §5d) |
+| `#/lesson/<lessonId>`, `#/drill/<itemId>` | A lesson page; a drill |
+| `#/lab` | The accompaniment lab (`04` §3c), highlighted under Library |
+| `#/library?for=<lessonId>` | Library with the assign sheet pre-set to that rung |
+| `#/dev/score` | Notation renderer harness (below); not in the navigation |
 
-All three are linked from the Settings screen.
+The sub-screens are the `SUB_IDS` list in `src/router.ts`; every one has a section in `docs/04-ui-spec.md`,
+which `tests/unit/docsConsistency.test.ts` checks.
 
 ## /dev/score
 
@@ -112,9 +136,12 @@ server-side rewrite available).
 
 ## Deploying
 
-Pushing to this repo's default branch (`claude/piano-teaching-app-bo19td` — see
-`docs/decisions/2026-09-05-default-branch.md`) runs `.github/workflows/pages.yml`, which
-builds the app and deploys `app/dist` to GitHub Pages. **One-time owner step:** in the
-repository, go to **Settings → Pages → Source: GitHub Actions**. After that the app is
-live at `https://<owner>.github.io/PianoProject/` and can be installed from Chrome on
-Android via "Add to Home screen" — no app-store account of any kind is needed.
+The app is delivered from the owner's own laptop over the house Wi-Fi (`docs/00` D25,
+`docs/OWNER-GUIDE.md` §1): `npm run build:app` with `VITE_BASE=/`, then `packaging/serve-lan.py`,
+and the phone installs from that address. There is no public address.
+
+While the repository is public, pushing to its default branch (`claude/piano-teaching-app-bo19td`
+— see `docs/decisions/2026-09-05-default-branch.md`) also runs `.github/workflows/pages.yml`,
+which builds the strict-licence content and deploys `app/dist` to GitHub Pages as a **test**
+target only (`docs/01` §9). It stops the moment the repository goes private, and the workflow
+is deleted then.

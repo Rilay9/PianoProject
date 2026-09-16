@@ -41,7 +41,8 @@ nothing in between, and that is worth knowing about your instrument.
 
 **An étude to put it in.** Czerny Op. 299 No. 5, No. 8 and No. 10, the faster
 ones: scales in both hands, broken chords across the keyboard, and the double-
-note figures the trill and repeated-note exercises above prepare.
+note figures the trill and repeated-note exercises on the previous technique
+rung prepare.
 
 **How you'll know you've got it.** The same inner fingering in thirds twice
 running without deciding it again. An octave in D flat that takes the fourth

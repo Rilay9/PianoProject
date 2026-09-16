@@ -1,4 +1,4 @@
-# P8 — Drills UI  ·  Intended model: **Sonnet 5** (Opus for ear/rhythm scoring bugs)  ·  Branch: `feat/p8-drills`
+# P8 — Drills UI  ·  Branch: `feat/p8-drills`
 
 (Include `_COMMON-HEADER.md`.)
 

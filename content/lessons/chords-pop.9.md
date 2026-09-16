@@ -27,8 +27,13 @@ the one you can copy. The eight-bar ear drill is on this rung for that reason.
 **What to practise.** One song, arranged twice: once sparse, once full. Play them
 back to back and keep the half of each that worked.
 
-**Repertoire for this rung.** Your own arrangement, written down as a chart with
-your own notes on it.
+**Repertoire for this rung.** Six options, each already somebody's arrangement
+— which is the point: play it as written once, then strip it back to its chord
+symbols and build your own. *Piano Man* and *Falling* are ballads where the
+left hand decides everything; *Mr. Blue Sky* and *Le Festin* are full textures
+to thin out; *Rolling Girl* and *Apex of the World* are the fast ones, where an
+arrangement has to leave something out to stay playable. What you hand in is
+your own version, written down as a chart with your notes on it.
 
 **Common mistake.** Arranging by adding. Most arrangements get better when
 something comes out.

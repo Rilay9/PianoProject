@@ -1,4 +1,4 @@
-# P1 — MIDI + audio foundation  ·  Intended model: **Opus 5**  ·  Branch: `feat/p1-midi-audio`
+# P1 — MIDI + audio foundation  ·  Branch: `feat/p1-midi-audio`
 
 (Include `_COMMON-HEADER.md`.)
 

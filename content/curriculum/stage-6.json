@@ -199,7 +199,10 @@
                 "exercise.trill.c.4pb.left",
                 "exercise.voicing.a",
                 "exercise.arpeggio.a-major.4oct.both",
-                "exercise.independence.f.3v1"
+                "exercise.independence.f.3v1",
+                "exercise.arpeggio7.c-major7.2oct.both",
+                "exercise.arpeggio7.c-minor7.2oct.both",
+                "exercise.arpeggio7.c-half-diminished7.2oct.both"
               ],
               "songOptions": [
                 "song.classical.czerny-the-school-of-velocity-op-299-no-1.pdmx",

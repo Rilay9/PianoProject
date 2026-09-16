@@ -8,6 +8,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  CHORD_QUALITIES,
   buildRhythm,
   intervalNameToSemitones,
   noteNameToMidi,
@@ -110,6 +111,19 @@ describe('romanToChord', () => {
 
   it('handles the diminished seventh degree', () => {
     expect(romanToChord('vii°', 0)?.pitches).toEqual([71, 74, 77]);
+  });
+
+  it('tells the two diminished sevenths apart', () => {
+    // `°` and `ø` agree about the triad and part company at the seventh: fully
+    // diminished is a minor third above the flattened fifth, half-diminished a
+    // major third. One flag for both handed `vii°7` the half-diminished set,
+    // so the drill asked for a chord it had not named. The two interval sets
+    // are the catalog's own `dim7` and `m7b5`.
+    expect(romanToChord('vii°7', 0)?.pitches).toEqual([71, 74, 77, 80]);
+    expect(romanToChord('viidim7', 0)?.pitches).toEqual([71, 74, 77, 80]);
+    expect(romanToChord('viiø7', 0)?.pitches).toEqual([71, 74, 77, 81]);
+    expect(romanToChord('vii°7', 0)?.pitches.map((p) => p - 71)).toEqual(CHORD_QUALITIES.dim7);
+    expect(romanToChord('viiø7', 0)?.pitches.map((p) => p - 71)).toEqual(CHORD_QUALITIES.m7b5);
   });
 
   it('returns null for a numeral it cannot read', () => {

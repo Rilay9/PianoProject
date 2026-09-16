@@ -1,4 +1,4 @@
-# P7 — Today / Plan / Library / Progress / Settings + storage  ·  Intended model: **Sonnet 5**  ·  Branch: `feat/p7-screens`
+# P7 — Today / Plan / Library / Progress / Settings + storage  ·  Branch: `feat/p7-screens`
 
 (Include `_COMMON-HEADER.md`.)
 

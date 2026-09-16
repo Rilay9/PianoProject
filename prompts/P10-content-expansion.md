@@ -1,4 +1,4 @@
-# P10 — Stages 5–9 content expansion  ·  Intended model: **Sonnet 5**  ·  Branch: `feat/p10-content-<n>` (repeatable)
+# P10 — Stages 5–9 content expansion  ·  Branch: `feat/p10-content-<n>` (repeatable)
 
 (Include `_COMMON-HEADER.md`.)
 

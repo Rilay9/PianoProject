@@ -36,21 +36,28 @@ app/                     – the PWA (Vite + TypeScript)
     content/             – BUILD OUTPUT of the content pipeline (scores, catalog.json, curriculum.json, soundfont)
   src/
     main.ts              – bootstrap, router
+    router.ts            – the hash router: tabs, sub-screens, and the payload routes (score, pdf, paper, lesson, drill, lab, dev)
+    app/                 – boot.ts (mount sequencing), services.ts (the shared sources and piano), updates.ts (the service-worker prompt), testHooks.ts
     ui/                  – screens and components (see 04-ui-spec.md)
     score/               – OSMD wrapper, ScoreModel extraction, windowed renderer, cursor/overlay
     pdf/                 – systems.ts (page → staff systems), systemPlan.ts (fractional cut storage + corrections), PdfDocument.ts (pdfjs wrapper)
-    engine/              – practice-mode state machines, matcher, scorer, clock (pure TS, no DOM)
-    input/               – InputSource interface + WebMidiSource, ScreenKeyboardSource, ReplaySource, MicSource facade
-    audio/               – Web Audio player (smplr piano), metronome scheduler
+    engine/              – practice-mode state machines, matcher, scorer, clock (pure TS, no DOM); sightReading.ts, steadiness.ts
+    engine/drills/       – the drill plugins (05 §7): PromptDrill, fromCatalog (params → drills), theory, harmony, simon, feedback, review, answerSheet, coaching
+    midi/                – InputSource types + WebMidiSource, ScreenKeyboardSource, ReplaySource, parseMidiMessage, errorHelp (§4.3; MicSource lives under audio/pitch/)
+    audio/               – Web Audio player (smplr piano), metronome scheduler, backing loop, latency
     audio/pitch/         – AudioWorklet + score-informed note/chord detector + calibration
     data/                – IndexedDB (db.ts) + one store module each: progressStore, planStore, skillsStore, importStore,
-                           folderLibrary (a folder of scores on the phone, 04 §4b), settingsStore/persist, backup (export/import)
+                           booksStore (the shelf), folderLibrary + folderWalk.worker (a folder of scores on the phone, 04 §4b),
+                           levelOverrides, micCalibrationStore, midiSettings, setupStore, settingsStore/persist, backup (export/import)
     curriculum/          – loaders + selectors over curriculum.json/catalog.json, and session.ts (today's session from the Part A §8 templates)
     util/
   tests/
-    unit/                – Vitest (engine, ScoreModel, curriculum selectors)
+    unit/                – Vitest (engine, ScoreModel, curriculum selectors, stores, screens in jsdom)
     e2e/                 – Playwright (headless Chromium; mocked Web MIDI)
-  vite.config.ts, tsconfig.json, package.json
+    states/              – the score screen's state gallery (08-score-render-states), `npm run states`
+    tour/                – the UX tour, the whole-song sequence, the corpus, the choices; `npm run tour` / `corpus`
+    fixtures/            – scores (with golden models), audio, imports, levelling.json
+  vite.config.ts, tsconfig.json, package.json, playwright.{,tour.,corpus.,states.}config.ts
 content/                 – SOURCE content (not the build output)
   catalog.schema.json, curriculum.schema.json
   curriculum/            – stage-*.json (human-editable)
@@ -66,7 +73,8 @@ content/                 – SOURCE content (not the build output)
   lessons/               – markdown lesson text (one file per lesson id)
 tools/content/           – Python: fetch, convert, generate, validate, build catalog.json
 docs/, prompts/
-.github/workflows/       – ci.yml (lint, typecheck, unit, e2e), pages.yml (build content + app → Pages)
+.github/workflows/       – ci.yml (lint, typecheck, unit, e2e), pages.yml (build content + app → Pages, while the
+                           repository is public), render-full.yml (the full render check, dispatched by hand — §7)
 ```
 
 ## 3. Core dependencies (pin exact versions in package.json; verified available Sept 2026)
@@ -173,7 +181,10 @@ export class PracticeEngine {
 
 `Clock` is injectable (`performance.now` in the browser, a fake in tests).
 
-### 4.3 `input/` — input adapters (MIDI, microphone, screen keyboard, replay)
+### 4.3 `midi/` — input adapters (MIDI, microphone, screen keyboard, replay)
+
+(The directory was planned as `input/`; it was built as `src/midi/`, with `MicSource` under
+`audio/pitch/` beside the detector it wraps.)
 
 All note input reaches the engine through one interface. `MidiSource` below is the MIDI
 flavour; `MicSource` (see `audio/pitch/`, §4.7) and `ScreenKeyboardSource` implement the same
@@ -238,7 +249,7 @@ IndexedDB stores (via `idb`):
 |-------|-----|-------|
 | `settings` | `'app'` | all settings (see 04-ui-spec.md §7) |
 | `progress` | itemId | `{ itemId, status:'new'|'started'|'passed'|'mastered', bestAccuracy, bestTempoPct, attempts, lastPracticedAt, minutes }` |
-| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, timing stats, date, durationMs |
+| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, timing stats, date, durationMs; `performance: true` for a Perform run (`04` §5e), `rhythmOnly: true` for a rhythm run, which can never be a pass (`04` §5) |
 | `imports` | id | user-imported score: name, MusicXML text (or mxl bytes) **or PDF bytes**, `kind: 'musicxml' \| 'pdf'`, tags, addedAt, and for a PDF `cuts` — the corrected system boundaries. A PDF item is viewable and followable but not playable or judgeable — it has no notes (`04` §5b). |
 | `plan` | `'current'` | current stage/unit, chosen track order, placement-test result |
 | `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
@@ -426,7 +437,7 @@ criteria. Schema at `content/curriculum.schema.json`.
 - First render of a 2-bar window: < 150 ms on S25 (OSMD 2.x manages ~10× that for a full page).
 - Window swap (pre-rendered): < 16 ms (one frame).
 - MIDI-in to note-coloured: < 30 ms.
-- Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`). That rule is about putting *sound* in the future. The engine's `tick()` is not audio and is driven by a 25 ms interval as well as by animation frames, because frames stop in a page that is not being drawn (`05` §3, decision 9).
+- Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).
   That rule is about *scheduling audio*. The engine's `tick()` is not audio — it reads a clock
   and advances a cursor — and it is driven by a timer as well as by animation frames, so a run
   keeps time when the page is not being drawn (`05` §3, `00` D26).
@@ -603,7 +614,7 @@ changes it is an environment variable rather than a rewrite.
 3. On-device check (owner does it): open the Pages URL on the S25, open Chrome's
    `chrome://inspect` from a laptop over USB for console logs when something misbehaves.
    The app also has a **Diagnostics** screen (MIDI raw log, render timings, storage size,
-   "copy debug report") so the owner can paste a report back into a Claude session.
+   "copy debug report") so the owner can paste a report into a chat with his assistant.
 
 ## 11. Coding standards
 

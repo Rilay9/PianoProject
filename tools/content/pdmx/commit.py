@@ -13,6 +13,13 @@ deterministic build possible at all.
 
 A row with no decision stops the commit. That is not pedantry: the whole design
 rests on nothing being bundled that a person has not looked at.
+
+Three details the table above does not spell out: at most `MAX_EDITIONS` (two)
+editions of one work are committed, counted through `duplicate_of`, which the
+quarry only labels; the table's header carries `zenodoRecord`, so the archive
+version the rows came from is written down; and `convertedSha256` is re-hashed
+*after* the copy into the repository, because what the build verifies is the
+file in the repository and not the one in build/.
 """
 from __future__ import annotations
 

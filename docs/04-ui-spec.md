@@ -48,7 +48,7 @@ phone on its side has.
 screens. The trade the owner asked for is "the buttons **and** the full names",
 so it buys a row nothing when the row has one text link on it, and every bundled
 catalog row has exactly that: a single *Details* beside a title somebody chose
-and wrote down, in a list of 1,533. Measured at 342 px those stood at 101 px
+and wrote down, in a list the size of the catalog. Measured at 342 px those stood at 101 px
 each with about 45 of them a blank band under the words, which is four and a half
 rows a screenful. So in the **Library** the exception applies only to rows
 carrying more than one action — an imported score, which is where the archive
@@ -342,7 +342,10 @@ exists for notation the app did not ship. The exercise's **title is its settings
 I–V–vi–IV in G major · alberti + melody · 8 bars at 92` — so the same choices give the same
 title, the same id and the same row, replaced where it stands; a different combination is a
 different exercise and gets its own. The rows are tagged `Accompaniment lab`, filed at level 3
-marked estimated. **The cleaner hook, when somebody is next in that file:** two lines in
+marked estimated. The Library keeps only the newest few lab builds (`LAB_IMPORTS_KEPT` in
+`LabScreen.ts`; the oldest go when the next is written), because every new combination is
+a row of its own and an evening of trying progressions was filling the Library with scratch
+exercises nobody would open again. **The cleaner hook, when somebody is next in that file:** two lines in
 `ScoreScreen.ts` reading a lab build out of a module the lab writes — `#/score/lab` resolving
 against a single in-memory exercise — which would cost no library row at all and no delete on
 the way in. The import was chosen because `ScoreScreen.ts` could not be edited in the change
@@ -370,7 +373,7 @@ transport is more than a 342 px-tall body has (R5).
 
 **§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder · Accompaniment lab* sit as one line of text in the header, above the search box — text rather than boxes (R3), but at the top: at the foot of the list they were 4,325 px down with the default sixty rows drawn. The header does not scroll, so the list runs under them. The fourth (§3c, added 2026-09-15) does not fit on that line upright and takes a second one; it is kept at its full name anyway, because a shorter label would be a second name for the screen it opens.
 
-**Ranked, 2026-09-12.** Two faults, both "the same thing on every row". The detail line said `Hands together` on very nearly all 1,533 of them — three words in the middle of the line that is supposed to tell rows apart, which never tell any two apart, and which pushed the type off the end; it is `RH`/`LH` where the fact is news and silent otherwise, with the full sentence still on the item's detail sheet. And **the drop target is the list itself**: when the import heading and its buttons moved into the header they left an empty `div.block` under the list — no text, no control, but a rule across the screen and seventeen pixels of nothing (R4: no furniture), for a gesture that does not exist on a phone. The listeners moved onto the list, which is also the better desktop target: you drop the file on the thing you are dropping it into.
+**Ranked, 2026-09-12.** Two faults, both "the same thing on every row". The detail line said `Hands together` on very nearly every row of the catalog — three words in the middle of the line that is supposed to tell rows apart, which never tell any two apart, and which pushed the type off the end; it is `RH`/`LH` where the fact is news and silent otherwise, with the full sentence still on the item's detail sheet. And **the drop target is the list itself**: when the import heading and its buttons moved into the header they left an empty `div.block` under the list — no text, no control, but a rule across the screen and seventeen pixels of nothing (R4: no furniture), for a gesture that does not exist on a phone. The listeners moved onto the list, which is also the better desktop target: you drop the file on the thing you are dropping it into.
 
 **The letter rail** (`ui/alphaRail.ts`, the same component the score folder uses) sits beside the
 list **only under the title sort** and only when there is more than one page: the default sort is
@@ -513,6 +516,13 @@ Library → **Browse a score folder** (`#/library/folder`):
 - **The only action on a row is "Add"**, and Add is the ordinary import (§4). After it, the
   piece is a catalog item like any other: levelled, searchable, sessionable, in the backup,
   and working with the folder long gone. Browsing is borrowed; adding is keeping.
+- **A PDF in the folder is listed beside the scores** (2026-09-15,
+  `docs/decisions/2026-09-15-score-folder-index.md`; `folderKind` in `folderLibrary.ts`). The
+  owner's folder holds both, and the index has no reason to care about the extension. The row
+  carries a *PDF* badge — pages, not notes, worth knowing before tapping Add — and Add hands it
+  to the import store as a PDF import, so it opens in §5b; once added, the row gains an **Open**
+  beside Add, because a score opens from the Library once it is on a rung and a PDF opens from
+  here.
 - **Levels from a manifest are estimates and say so** on the row (`level 3.3 est.`). They come
   from the CSV proxy, not from the score.
 - **A title the manifest got wrong is never written over a good one.** The score's own
@@ -673,7 +683,11 @@ holds and already scrolls.
 **Rhythm only** (P21f, `05` §3a). Tap the piece's rhythm on any key at all — the strip, or
 whatever is under your hand — and be judged on timing alone. Early and late are marked as
 they always are; a chord is one tap; a strike outside the window is still wrong, because
-rhythm-first forgives the note and never the moment. The cursor, the keys and the summary
+rhythm-first forgives the note and never the moment. The row's hint says the last part in
+the learner's terms — *One tap per written note or chord; extra keys are wrong* — because a
+chord played where one note is written earns two extra-note reds (`05` §3a: the first strike
+closes the step, and the other two find no window open), and that surprised on the strip
+before anything had explained it. The cursor, the keys and the summary
 work exactly as they do in an ordinary `Keep tempo` run, because it *is* one: the only
 difference is that the engine stops asking which key. The summary is headed **Rhythm run**
 and says so under `Judged`, and the recorded result is tagged so it can never become a pass
@@ -697,10 +711,14 @@ that decide which hand it means. The row is the same setting (`playbackHands`), 
 second time where the question is actually asked, and it names the hand in its own words:
 *Duet: the app plays the left hand*. In the label rather than in the hint, because sideways
 the sheet hides every hint and a row reading only `Duet` there would have moved the problem
-rather than fixed it. No new state and no new setting. `playbackHands` has three values and
-this is a toggle, so the row reads *both hands* when Settings has been set to `both` and
-says what will actually be heard; off writes `none` and on writes `non-focused`, which is
-what the sentence beside it promises.
+rather than fixed it. No new setting. `playbackHands` has three values and this is a
+toggle, so the row reads *both hands* when Settings has been set to `both` and says what
+will actually be heard; off writes `none`, and on writes back whatever was playing before
+it was switched off — `both` stays `both`, and a learner who has never been to Settings
+gets `non-focused`, the setting's own default. (It used to write `non-focused` whatever had
+been there, so one Off/On of the row silently undid a choice made in Settings.) That
+remembered value is the one piece of state the row keeps, and it is the screen's rather
+than a setting: it is what the sentence beside the row promises to bring back.
 
 **Fill the width with music, not with space (owner, 2026-09-12).** *"We don't want
 to stretch the music bar out to where it doesn't look natural. At the extreme, when
@@ -1029,7 +1047,11 @@ learner looks at.
 - **Result sheet:** pass/master against the same accuracy setting a piece uses (§7), the
   kind's own numbers (mean reaction, clean changes, velocity ratio), "Again" for a fresh set,
   *Go over the ones you missed* where there were any, and the run recorded through the P7
-  stores. **Simon is scored on its chain, not on an accuracy**: breaking at the sixth round is
+  stores. After a backing-track run — the one kind that records what was played — the sheet
+  also offers **Listen back**, which plays the learner's own notes through the piano at the
+  timing and velocity they were played and keeps nothing afterwards (`DrillScreen`
+  `playRecording`; a drill that judges every answer has nothing to play back that the learner
+  did not just hear). **Simon is scored on its chain, not on an accuracy**: breaking at the sixth round is
   five chains right out of six, which as a percentage says the same thing as breaking at the
   twelfth, so the sheet says the longest chain and the best chain this item has seen, and the
   pass is a chain rather than a share of the cards (`engine/drills/simon.ts`).
@@ -1143,12 +1165,16 @@ beginning.
 minutes [150]; default mode with MIDI or mic [Wait], without [Tempo]; bars per window [2];
 layout [Window]; default tempo % for new items [70]; count-in
 [1 bar]; metronome sound [wood]; wait-mode strictness [lenient: wrong notes don't block];
+rhythm only [off] (`rhythmOnly` — the `⋯` sheet's row in §5, remembered as a preference because
+a learner who works this way does so on every piece; Blind and Perform ignore it);
 tempo-mode timing tolerance ms [±150]; pass criteria (accuracy % [90], tempo % [80]); require 2 songs per
 lesson [off]; strict prerequisites [off]; daily goal minutes [30].
 
 **Display** — theme [system]; landscape lock on score screen [on]; zoom [1.0]; show
-fingering [on]; show note names in note heads [off; auto-on for Stage ≤ 1]; show chord
-symbols [on]; keys under the score [keyboard | ribbon | off, default keyboard]; keys guide
+fingering [on]; *Name the note I am waiting for* [off] (`showNoteNames`; it was written here as
+"show note names in note heads, auto-on for Stage ≤ 1" and never did either — it names the
+waited-for note in Wait mode's status line, `08-score-render-states` §11.19); show chord
+symbols [on]; keys under the score [strip | ribbon | off, default strip] (`keys`, §5); keys guide
 [next | next-two | off, default next]; finger numbers on the keys [on]; flash a hit green and a
 miss red [on]; keep screen awake [on]; left-handed layout [off].
 
@@ -1171,6 +1197,9 @@ the section is not built for a MIDI user at all.)
 item count — it counts as it goes, offers **Stop** beside itself while it runs, says so and
 fetches nothing when there is no network, gives up after ten refusals in a row, and ends when
 the screen is left); **offline only** [off] (stops the app checking for updates at all — `00` D20);
+**remember the score folder** [on] (`folderHandles`, §4b — keeps the picked folder's handle so
+Add does not re-ask; the hint says so, or says the browser cannot, and the toggle's own sentence
+says what the next pick will do);
 storage used, with a breakdown by scores / audio / lessons / your imports; **whether that
 storage is safe** (2026-09-12) — one sentence under the usage figure saying what
 `navigator.storage.persist()` answered, because everything the app holds is local with no copy
@@ -1179,7 +1208,7 @@ lot; the same line is where a *blocked database* is reported, since another copy
 holding the old version open means the app is running and saving nothing, and no one could
 guess that from anywhere else; reset progress (double confirm).
 
-### 7c. What §7 actually ships (as of P18, 2026-09-06)
+### 7c. What §7 actually ships (as of P18, 2026-09-06; later entries carry their own dates)
 
 The list above is the target. This is the state, so nobody has to read the code to find out:
 
@@ -1211,8 +1240,8 @@ chart's bass-and-drums loop (§3b), and the tablet side panel (§7a; the four-ba
 ### 7d. The setup tour (`#/settings/setup`)
 
 The first launch of a fresh install lands here rather than on Today — a launch, not a deep
-link: a piece, a lesson or a drill opened by its address is left alone. Nine steps, one
-screen each, in the order a person meets the app; every control writes straight through to
+link: a piece, a lesson or a drill opened by its address is left alone. Eight steps, one
+screen each (nine as first built; the latency step went, see the table), in the order a person meets the app; every control writes straight through to
 the same stores Settings writes, so leaving half-way loses nothing and Settings shows what the
 tour set. **Skip for now** is on every step and is remembered, as is **Finish**; after either,
 the tour is the first row of Settings — *Setup tour · Run again*, with the date it was last
@@ -1301,6 +1330,70 @@ it on the clipboard as text.
   (`00` D21) — so a thin unit is visible here rather than discovered mid-practice.
 - **Errors**: uncaught errors and unhandled rejections this session, with counts.
 
+## 7f. MIDI (`#/settings/midi`)
+
+The *MIDI devices* row under Settings → Input; `MidiScreen.ts`. One screen whose job is to
+get the cable working and prove it, in the order a person meets the problem — and the
+explainer comes *before* the button that raises the prompt, because since Chrome 124 every
+`requestMIDIAccess()` call prompts, and a prompt the owner was not expecting gets dismissed,
+after which the way back is buried in Chrome's site settings.
+
+- **Connecting your piano**: two sentences (the cable into MIDI OUT and the phone's adapter;
+  what Chrome will ask and why it is Chrome's prompt, not the app's), then **Connect piano**
+  — the screen's one filled box (R3). Under it the status line (`webMidiSource.state.detail`)
+  and, on a refusal, a notice naming the error with the recovery text from `midi/errorHelp.ts`.
+  Where Web MIDI is not supported at all the button is disabled and the notice says so.
+- **Inputs**: a radio group — *Listen to all inputs*, then one row per input port, named with
+  its manufacturer. The app listens to every input by default because cheap adapters report
+  names like "USB MIDI Interface"; pinning one is for when something else is sending notes.
+  A pinned id that is not plugged in (§8, `05` §9) leaves *Listen to all inputs* selected and a
+  line saying why. With nothing plugged in the list is one sentence, and it is a different
+  sentence before Connect has been tapped ("tap Connect piano, then plug the cable in") and
+  after ("plugging one in is picked up live"), because hot-plug only works once there is an
+  access object to hear it.
+- **Test**: the keyboard strip, live from the cable *and* tappable, so the screen works with
+  no cable at all; a log of the last ten notes (name, velocity, source); **Test sound (C major)**
+  with its own status line. A tapped key sounds through the phone as a bonus — the light is
+  the test.
+- **Open diagnostics →** at the foot, for the raw log and the debug report (§7b).
+- Leaving releases the screen keys and the strip; the Web MIDI connection itself is the app's,
+  not the screen's, and stays.
+
+## 7g. Microphone (`#/settings/mic`)
+
+The *Microphone* row under Settings → Input; `MicScreen.ts`, `05` §11.5. Connect, watch it
+listen, calibrate — and everything the owner needs when it does *not* work, because the
+level meter and the noise floor answer "is it hearing anything at all?" before any question
+about wrong notes is worth asking. The opening sentence says what the microphone is: the
+backup for a piano with no usable MIDI out, never as certain as a cable, so anything it is
+unsure about is amber and never counted against you.
+
+- **Connection**: the status line; the input picker (*Default input*, then every device,
+  built-in ones marked); the **Line input preset** toggle, for a cable from the piano rather
+  than a room mic (lower thresholds, no room noise), switched on by itself when a non-built-in
+  device is chosen and not yet touched; **Connect microphone** (filled; reads *Reconnect* once
+  connected) and **Disconnect**, drawn only while there is something to disconnect from (R4).
+- **A refusal is answered by what can still be done** (§8). A prompt that closed without an
+  answer, or a browser that will not say, keeps the button and asks for another tap. A denied
+  permission, no microphone at all, or no microphone API is *settled*: the meter, the
+  calibration and Connect are taken away and one control remains, **Set up MIDI instead**,
+  because a Connect button that can never work over a meter reading `Level: —` is the
+  furniture R4 forbids.
+- **What it hears**: a level bar and a line — RMS, noise floor, peak — with *clipping, move
+  further away* past the peak.
+- **Calibration**: what the routine does (silence, every C, a slow chromatic scale with the
+  metronome, three chords — how loud each part of the keyboard is to this microphone, how
+  sharp the strings are, how late the sound arrives), **Length** (*Full*, about a minute, or
+  *Quick*, about fifteen seconds, which measures fewer notes and is enough to prove the
+  microphone works), the stage line, **Start calibration** (outlined: connecting is what the
+  screen is for, calibrating is what comes after), and what is stored for this input — date,
+  latency, noise floor, chords heard, notes not heard. The routine is
+  `audio/pitch/calibrationRun`, the same one Diagnostics and the setup tour run, so a number
+  measured here is the number measured there.
+- **Leaving closes the microphone** (§8): the track, the worklet and the graph — not only the
+  raw-audio tap — because this is the screen most likely to be opened to test something and
+  walked away from.
+
 ## 7a. Tablet layout
 
 Breakpoint ≥ 900 CSS px shortest side: bars-per-window default 4; a side panel (collapsible)
@@ -1318,6 +1411,50 @@ for a screen with room for it, not an opinion about what he wants.
 
 E2E at 1024×1000 for the panel and the default, and at 412×915 for the phone, which gets
 neither.
+
+**Wide screens: a column that stops growing, centred (2026-09-16).** The owner, on a tablet
+and a laptop: "No giant stretching, just centering and side to side bars if there's extra
+room." Until this the shortest-side breakpoint above was the app's only rule for anything
+wider than a phone, and a laptop (1366 × 768) fails its height half — so it fell through to
+the phone layout stretched across the whole glass: a Settings row with its label at one edge
+and its control at the other, a Library of single-column rows 1,230 px wide, and a bar of
+Suo Gân engraved across the screen.
+
+The rule is a cap, not a breakpoint. Three tokens in `style.css` `:root`, kept together so
+they can be compared: `--page-max` (1040 px) is a browsing screen — two columns of rows, each
+about as wide as a phone's one; `--column-max` (720 px) is one column of settings or prose
+(Settings, the Lab, paper practice), the width the sub-screen cards already used; `--stage-max`
+(1040 px) is the score's engraving surface, wider than a reading column because staff width is
+legibility, and finite because a system stretched past its natural note spacing is harder to
+read than a smaller one (`00` §1). Each box is as wide as its container up to its cap and
+centred, so the room left over is a bar of page either side, never a bar on the right alone.
+The score's cap is on the stage, not the screen, because the stage is the box the renderer
+measures and engraves against. The keyboard strip's keys row is centred in its strip for the
+same reason: a two-octave range on a laptop used to end two thirds of the way across.
+
+The laptop clause: the two-column browsing grid also applies from 1,100 px wide whatever the
+height, because a list of rows needs width and not height, while the side panel and the
+bars-per-window default keep the shortest-side test above — a panel is only worth having
+with height to put it in. 1,100 is clear of a phone held sideways (915 px at the largest
+Display size). The folder and the shelf are excluded from the grid, as the phone-sideways
+grid already excludes them: both live in a 640 px card, and two columns of 300 clipped the
+folder's composer line mid-word and squeezed the shelf's one book into half its card.
+
+The phone is untouched: every cap is wider than 740 px (and than 915), so at 342 × 740 and
+740 × 342 nothing here applies — `wide.spec.ts` carries both as controls.
+
+The cap does not change how many bars a system holds; what it changed, the same day, is
+whether a sparse bar is stretched to it. On a stage at least 900 px wide (the tablet number,
+which is also a laptop's capped stage) the renderer engraves each slot at its natural width
+first and stretches it only if its ink already spans at least half the page; a sparser one
+keeps its spacing and is centred, so Suo Gân's four-note bar sits in the middle of the stage
+with page either side rather than across the whole of it. A phone never enters this path — it
+stretches, one engraving, as before. The rule that was meant to do this (eight staff heights
+of page per bar) compared the page with the system's ink height and never fired on any
+screen; `WindowRenderer` `STRETCH_LIMIT` and `wide.spec` hold the new one.
+
+E2E: `tests/e2e/wide.spec.ts` — seven shapes from 342 × 740 to 1920 × 1080, every screen,
+gutters symmetric, content no wider at 1920 than at 1366, pictures under `build/wide/`.
 
 ## 8. Empty/edge states
 

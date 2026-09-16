@@ -1,4 +1,4 @@
-# P3b — Microphone note/chord detection  ·  Intended model: **Opus 5**  ·  Branch: `feat/p3b-mic`
+# P3b — Microphone note/chord detection  ·  Branch: `feat/p3b-mic`
 
 (Include `_COMMON-HEADER.md`.)
 

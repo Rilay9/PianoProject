@@ -99,6 +99,28 @@ export interface DrillResult {
   detail?: Record<string, number>;
 }
 
+/**
+ * Is there a set here to write to the practice history?
+ *
+ * A drill whose very first `next()` is null — an empty Simon pool, a prompt
+ * list a builder produced nothing for — never showed a card, and the screen
+ * still ended it the way a completed set ends and recorded `accuracy: 0,
+ * passed: false` against the item. That is a failure at something nobody was
+ * asked to do, in the one store that cannot be regenerated, and it is the same
+ * mistake `08` §16 calls *a stop is not a finish* wearing different clothes.
+ * `total` is the number of prompts the drill was built with, so nought means
+ * the set never existed rather than that it went badly.
+ *
+ * `answered` is the other half. A backing track has no prompts at all — its
+ * `total` is nought by design (`special.ts`) and what it counts is the notes
+ * played over the loop — so on `total` alone every jam would have been the
+ * set that never existed. Something was drilled if there were cards, or if
+ * anything was played.
+ */
+export function worthRecording(result: DrillResult): boolean {
+  return result.total > 0 || result.answered > 0;
+}
+
 export interface Drill {
   readonly kind: DrillKind;
   /**

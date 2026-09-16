@@ -4,28 +4,33 @@ kind: pedal
 
 ## What it's for
 
-Changing the sustain pedal cleanly, so the harmony connects without smearing.
-The rule is counter-intuitive — change just *after* the new chord sounds, not
-with it — and it is the one pedal habit everything else depends on.
+Making the pedal change land in the right place — just after the new chord —
+and finding out from a number, not a feeling, whether it did.
 
 ## How to practise it
 
-Listen, do not watch your foot. Play the chord, and a moment later lift and put
-the pedal straight back down. If you hear the old chord bleed into the new one
-you were late; if you hear a gap you were early.
+Read the card. The lamp follows your foot, and under it the app says how many
+milliseconds after the chord the lift came: a small positive number is a clean
+change, a negative one is a hole, and anything past the overlap window is the
+old chord bleeding into the new.
 
-Keep the heel on the floor and the ball of the foot in contact with the pedal at
-all times. Lifting the foot off makes noise and loses control.
+Start with the pedal already down before the first chord, so the first change
+is a real change and not a first press.
 
-Practise it once with the pedal deliberately held through the change, so you
-know exactly what you are trying to avoid.
+Move the foot on the *bass* note. The right hand may roll or arrive late; the
+left hand's low note is the chord's floor, and pedalling to it keeps the harmony
+clean even when the top is untidy.
+
+Then do a set with your eyes closed. Once the lamp has taught you what a clean
+change feels like in the ankle, the eyes only get in the way.
 
 ## Common mistake
 
-Holding the pedal down through a change because it sounds fuller. It does, for
-about a second, and then it sounds like mud.
+Pumping the pedal on every beat. A change belongs where the harmony changes and
+nowhere else; four changes a bar over one chord is noise, and the app scores the
+extra lifts as early ones.
 
 ## How you'll know you've got it
 
-Clean changes at 90 %, with no overlap longer than 120 ms — and you can hear the
-overlap yourself before the app tells you.
+Every change in the set reads as a small positive number, and you could have
+said which two were the worst before the sheet told you.

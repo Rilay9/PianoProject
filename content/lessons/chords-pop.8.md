@@ -29,7 +29,12 @@ letters.
 **What to practise.** Four bars up a tone, then a minor third, then down a
 fourth. Then one whole song, one key away, without notation.
 
-**Repertoire for this rung.** Anything with a singer in it.
+**Repertoire for this rung.** Six options, and the task on each is the same:
+play it as written, then a tone lower, then a minor third higher, without a
+transposed copy. *All I Want* and *Silhouette* are songs with a singer, so the
+new key is the singer's; *Isabella's Lullaby*, *Levi's Choice* and *Undertale*
+are themes whose keys were chosen for an orchestra, not a voice; *If I Had a
+Chicken* is the fastest of them and the one to try last.
 
 **Common mistake.** Transposing the shapes rather than the harmony. It works in
 the white keys and falls apart in the flat ones.

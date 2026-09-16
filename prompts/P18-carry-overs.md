@@ -1,4 +1,4 @@
-# P18 — Carry-overs: the small things earlier phases left open  ·  Intended model: **Sonnet 5** (Opus for item 5)  ·  Branch: `feat/p18-carry-overs`
+# P18 — Carry-overs: the small things earlier phases left open  ·  Branch: `feat/p18-carry-overs`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

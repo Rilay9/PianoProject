@@ -24,15 +24,18 @@ and inventing your own here will cost you later in a key you have not met yet.
 
 **Contrary motion** is easier than it sounds and worth doing early: both thumbs
 move at the same time, so the hands mirror each other and you can feel the
-passage rather than track two different ones.
+passage rather than track two different ones. The two-octave C major here is
+the one to start on.
 
-**Arpeggios and inversions** are the same shape reached three ways. Play the
-inversions until you stop reading them and start recognising them, because that
-is what lets you read a chord symbol later instead of spelling it out.
+**Arpeggios and inversions** are the same shape reached three ways. The C major
+arpeggio hands together is the arpeggio; play the inversions until you stop
+reading them and start recognising them, because that is what lets you read a
+chord symbol later instead of spelling it out.
 
-**Staccato and legato.** The pair of articulation exercises on this rung is the
-same four bars written twice. Playing either alone is easy; playing them one
-after the other and hearing the difference is the point. The app scores these on
+**Staccato and legato.** The articulation exercises on this rung come in pairs
+— the same four bars written twice, once legato and once staccato, in C and
+again in D. Playing either alone is easy; playing them one after the other and
+hearing the difference is the point. The app scores these on
 how long you actually hold each key rather than on which notes you played, so a
 staccato phrase full of right notes held too long will say so.
 

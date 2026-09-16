@@ -1,4 +1,4 @@
-# P16 — The shelf: books he owns, practice against paper, blind mode  ·  Intended model: **Opus 5**  ·  Branch: `feat/p16-shelf-paper`
+# P16 — The shelf: books he owns, practice against paper, blind mode  ·  Branch: `feat/p16-shelf-paper`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

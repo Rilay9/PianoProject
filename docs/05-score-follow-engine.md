@@ -193,6 +193,13 @@ cursor set from a dead engine.
 The ladder is ignored during `Hear it`: a demonstration judges nothing, so every lap of one
 is trivially clean and the ladder would climb on playing nobody did.
 
+**Clearing the loop switches the ladder off.** It is a property of the loop it climbs, and
+run state for the same reason the loop is (`04` §5). Left on, the Ladder row disappeared
+from the sheet with the toggle still pressed underneath it, and the next loop set — later
+that session, on the same piece — started moving the tempo by itself with nothing on screen
+having asked. The one control that acts without being asked each time has to be off
+whenever nothing shows it on.
+
 ## 7. Drills that are not scores (`type: 'drill'`)
 
 Two different things are easy to confuse and are not the same:
@@ -245,6 +252,23 @@ The last one is the only drill whose answer is a *series* of pitch sets arriving
 stream of note-ons, so it is a class of its own rather than a `PromptDrill`, and the screen
 has to tick it: the final chord of a progression is followed by no note at all, so the
 silence half of the rule needs something other than the next input to notice it.
+
+**Added since**, and in `RUNTIME_DRILL_KINDS` (`engine/drills/fromCatalog.ts`), which is the
+list `validate.py` reads for the tips check (`03` §6a):
+
+| kind | behaviour | scoring |
+|------|-----------|---------|
+| `simon` (2026-09-15, `04` §5c-2, `engine/drills/simon.ts`) | plays one note, waits for it back; then the same note and one more; then three — until the chain breaks. Notes drawn up front from the seed, from a key's degrees or the chromatic scale, never the same note twice running; judged in order *and in the octave played* | the longest chain echoed, as a share of `SIMON_ROUNDS`; the pass is a chain length, not a percentage, and the best chain is read back from the item's best accuracy |
+
+**Two kinds that are not in that list and still run.** `five-finger` and `arpeggio` are
+*notation families* — the names `generate_exercises.py` gives exercises that have a file — and
+a few catalog rows carry them as `drill.kind` with no file. `fromCatalog.ts` treats any
+notation-family kind on a file-less drill row as a **technique pattern** (`buildTechniquePattern`):
+a five-finger walk or an accompaniment shape in the row's key and hand, demonstrated and then
+played back in order, up to four prompts, scored like `call-response`. They are deliberately
+*not* in `RUNTIME_DRILL_KINDS`, so no tips file is required for them and the tips check skips
+them; the P8 decision note records the two as probable data mistakes kept alive because a
+drill that works beats a dead row.
 
 Drills also listen to the microphone (§11.4). The screen offers it when the owner has put
 `mic` in the follow-input priority — never automatically, because opening it raises a

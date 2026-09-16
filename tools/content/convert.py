@@ -471,6 +471,55 @@ def number_voices(part: stream.Stream) -> None:
             voice.id = str(index + 1)
 
 
+def bar_against(loose: stream.Part, measures: list[stream.Measure], holder: stream.Part) -> stream.Part:
+    """
+    An unbarred part, barred where `holder`'s measures are.
+
+    Each note goes into the bar whose span holds its offset, at the offset it
+    has inside that bar — what `place_loose_attributes` does for a key
+    signature, done for notes. A bar's span runs to the start of the bar after
+    it rather than to the end of its own contents, so a note on the fourth
+    beat of a bar the other staff left three beats long still has a home. The
+    last bar runs for what its time signature says; a note past that gets a
+    bar of its own, as long again, so nothing is dropped for arriving late —
+    `merge_part_into` finds no home for such a bar and gives it one of its
+    own on the target, which is the same answer it gives a barred part whose
+    bars disagree.
+    """
+    starts = sorted(
+        ((exact_quarter_length(holder.elementOffset(measure)), measure) for measure in measures),
+        key=lambda pair: pair[0],
+    )
+    spans: list[tuple[Fraction, Fraction, int]] = []
+    for index, (start, measure) in enumerate(starts):
+        if index + 1 < len(starts):
+            end = starts[index + 1][0]
+        else:
+            end = start + exact_quarter_length(measure.barDuration.quarterLength)
+        spans.append((start, end, measure.number))
+    bar_length = spans[-1][1] - spans[-1][0] if spans and spans[-1][1] > spans[-1][0] else Fraction(4)
+
+    barred = stream.Part()
+    bars: dict[Fraction, stream.Measure] = {}
+    flat = loose.flatten()
+    for element in list(flat.getElementsByClass(note.GeneralNote)):
+        at = exact_quarter_length(flat.elementOffset(element))
+        while spans and at >= spans[-1][1]:
+            start, end, number = spans[-1]
+            spans.append((end, end + bar_length, number + 1))
+        holds = next((span for span in spans if span[0] <= at < span[1]), None)
+        if holds is None:
+            continue  # before the first bar, which a part cannot be
+        start, _end, number = holds
+        bar = bars.get(start)
+        if bar is None:
+            bar = stream.Measure(number=number)
+            bars[start] = bar
+            barred.insert(start, bar)
+        bar.insert(at - start, element)
+    return barred
+
+
 def merge_part_into(target: stream.Part, extra: stream.Part) -> None:
     """
     Moves every note and rest of `extra` onto `target`'s staff.
@@ -487,18 +536,28 @@ def merge_part_into(target: stream.Part, extra: stream.Part) -> None:
     about numbering. Each strand of the source becomes a voice of its own on
     the target staff.
     """
+    target_measures = list(target.getElementsByClass(stream.Measure))
     extra_measures = list(extra.getElementsByClass(stream.Measure))
     if not extra_measures:
-        # An unbarred part: there are no bars to match on, so the notes go on
-        # at the offsets they hold in the part itself and `normalise` bars the
-        # staff afterwards.
-        flat = extra.flatten()
-        for element in list(flat.getElementsByClass(note.GeneralNote)):
-            target.insert(float(flat.elementOffset(element)), element)
-        return
+        if not target_measures:
+            # Neither side is barred: the notes go on at the offsets they hold
+            # in the part itself and `normalise` bars the staff afterwards.
+            flat = extra.flatten()
+            for element in list(flat.getElementsByClass(note.GeneralNote)):
+                target.insert(float(flat.elementOffset(element)), element)
+            return
+        # The target is barred and the extra is not. Inserting a loose note
+        # into a part that has measures puts it outside every bar, and the
+        # writer only ever writes what is inside one: the note-loss gate would
+        # refuse the file, but the music was already gone. So the loose part
+        # is barred against the target's own bars first — its spans rather
+        # than a fresh `makeMeasures`, which counts from nought and would
+        # disagree with a pickup — and then merged like any other.
+        extra = bar_against(extra, target_measures, target)
+        extra_measures = list(extra.getElementsByClass(stream.Measure))
 
     homes: dict[float, stream.Measure] = {}
-    for measure in target.getElementsByClass(stream.Measure):
+    for measure in target_measures:
         homes.setdefault(round(float(target.elementOffset(measure)), 4), measure)
 
     for measure in extra_measures:

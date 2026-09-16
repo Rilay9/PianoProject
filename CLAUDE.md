@@ -22,7 +22,7 @@ The three that are broken most often, so they are repeated here:
 | What the app is and why | `docs/00-overview.md` |
 | Screen contracts, `§0` R1–R6 | `docs/04-ui-spec.md` |
 | The curriculum and its tracks | `docs/02-curriculum.md` |
-| What each test covers | `docs/08-test-map.md` |
+| Which test proves which state machine, and an index of every spec file | `docs/08-test-map.md` |
 | The running record of this work | `docs/handoff-2026-09-09.md` |
 
 ## Commands

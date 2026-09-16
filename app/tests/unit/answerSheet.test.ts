@@ -28,7 +28,15 @@ describe('the sheet', () => {
     expect((xml.match(/<measure /g) ?? []).length).toBe(1);
     expect(xml).toContain('<type>eighth</type>');
     expect(xml).not.toContain('<chord/>');
-    expect(xml).not.toContain('<accidental>');
+    // "No accidentals" is a claim about spelling, and the writer spells with
+    // `<alter>`, never `<accidental>` — so the old `not.toContain('<accidental>')`
+    // could not fail. What five flats mean: nothing is sharpened, and every
+    // black key in the scale is written as a flat — one `<alter>-1</alter>`
+    // per black key, counted from the notes rather than typed.
+    expect(xml).not.toContain('<alter>1</alter>');
+    const blackKeys = B_FLAT_AEOLIAN.filter((midi) => [1, 3, 6, 8, 10].includes(midi % 12)).length;
+    expect(blackKeys).toBeGreaterThan(0);
+    expect((xml.match(/<alter>-1<\/alter>/g) ?? []).length).toBe(blackKeys);
   });
 
   it('writes a chord as one whole note with chord members', () => {

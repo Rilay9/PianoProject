@@ -276,24 +276,24 @@
             "failUnit": "2.1"
           },
           {
-            "text": "Play a C major scale hands together.",
-            "failUnit": "3.1"
-          },
-          {
-            "text": "Sight-read a four-bar phrase on the grand staff.",
-            "failUnit": "3.1"
-          },
-          {
             "text": "Play I–IV–V in G from chord symbols.",
             "failUnit": "3.2"
           },
           {
-            "text": "Play a swung twelve-bar blues left hand.",
-            "failUnit": "blues-boogie.4.1"
+            "text": "Sight-read a four-bar phrase on the grand staff.",
+            "failUnit": "3.4"
           },
           {
             "text": "Play the Petzold Minuet in G at 60% tempo.",
-            "failUnit": "4.2"
+            "failUnit": "3.4"
+          },
+          {
+            "text": "Play a C major scale hands together.",
+            "failUnit": "4.1"
+          },
+          {
+            "text": "Play a swung twelve-bar blues left hand.",
+            "failUnit": "blues-boogie.4.1"
           }
         ],
         "passUnit": "4.3"
@@ -772,6 +772,63 @@
           "M2",
           "m3",
           "M3"
+        ]
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.intervals-within-octave",
+    "type": "drill",
+    "title": "Ear drill — every interval within the octave",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear",
+      "core"
+    ],
+    "level": 3.3,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "intervals",
+      "ear-training"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "ear-interval",
+      "params": {
+        "intervals": [
+          "m2",
+          "M2",
+          "m3",
+          "M3",
+          "P4",
+          "TT",
+          "P5",
+          "m6",
+          "M6",
+          "m7",
+          "M7",
+          "P8"
         ]
       }
     },
@@ -1494,7 +1551,7 @@
   {
     "id": "drill.pedal.changes",
     "type": "drill",
-    "title": "Pedal-change drill on I-IV-V",
+    "title": "Pedal-change drill on I-IV-V7-I",
     "composer": null,
     "arranger": "PianoPath",
     "genre": [
@@ -1526,7 +1583,7 @@
         "progression": [
           "I",
           "IV",
-          "V",
+          "V7",
           "I"
         ],
         "maxOverlapMs": 120

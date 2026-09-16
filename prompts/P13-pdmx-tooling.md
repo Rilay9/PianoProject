@@ -1,4 +1,4 @@
-# P13 — PDMX quarry tooling, built and tested without the archive  ·  Intended model: **Opus 5**  ·  Branch: `feat/p13-pdmx-tooling`
+# P13 — PDMX quarry tooling, built and tested without the archive  ·  Branch: `feat/p13-pdmx-tooling`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

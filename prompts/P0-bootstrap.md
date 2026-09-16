@@ -1,4 +1,4 @@
-# P0 — Repository bootstrap  ·  Intended model: **Sonnet 5**  ·  Branch: `feat/p0-bootstrap`
+# P0 — Repository bootstrap  ·  Branch: `feat/p0-bootstrap`
 
 (Include `_COMMON-HEADER.md` above this.)
 

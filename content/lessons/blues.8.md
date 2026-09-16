@@ -30,8 +30,10 @@ and is where the feel lives.
 **What to practise.** The form in two new keys. Then the same form with ninths
 throughout, in the key you started in.
 
-**Repertoire for this rung.** Your own chorus, written down. Twelve bars, in two
-keys.
+**Repertoire for this rung.** None is set, on purpose. The piece is your own
+chorus, written down — twelve bars, in two keys — and the rung is finished on
+its exercises. The boogies and blues from the earlier rungs are under Blues in
+the Library if you want a page to transpose from.
 
 **Common mistake.** Transposing by moving your hands the same distance. That is
 how the flat keys stay unlearned; read the numerals and find the notes.

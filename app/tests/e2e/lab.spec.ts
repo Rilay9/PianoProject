@@ -243,7 +243,9 @@ test.describe("Today's sight-read", () => {
         itemId: id,
         mode: 'tempo',
         tempoPct: 100,
-        accuracy: 95,
+        // A fraction, as every recorded run's accuracy is (`SessionScore`):
+        // 95 here was ninety-five hundred per cent.
+        accuracy: 0.95,
         accuracyEstimated: false,
         wrongNotes: 0,
         missed: 0,

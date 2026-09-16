@@ -190,7 +190,10 @@ const ROMAN_VALUES: Record<string, number> = { i: 1, ii: 2, iii: 3, iv: 4, v: 5,
  * `"IV"`, `"V7"`, `"ii"`, `"vii°"` in a key → a chord.
  *
  * Case carries the quality, as it does on the page: upper case is major, lower
- * case minor, and a trailing `7`, `°` or `ø` adds the seventh or the fifth.
+ * case minor, `°`/`dim` and `ø` flatten the fifth, and a trailing `7` adds the
+ * seventh. The two diminished signs part company at that seventh — `vii°7` is
+ * fully diminished and `viiø7` half-diminished — which is why they are read as
+ * two flags and not one.
  */
 export function romanToChord(roman: string, keyPitchClass: number, octaveRoot = 60): ParsedChord | null {
   const match = /^([ivIV]+)(.*)$/.exec(roman.trim());
@@ -200,11 +203,18 @@ export function romanToChord(roman: string, keyPitchClass: number, octaveRoot = 
   if (degree === undefined) return null;
   const suffix = match[2] ?? '';
   const minor = numeral === numeral.toLowerCase();
-  const diminished = suffix.includes('°') || suffix.includes('dim') || suffix.includes('ø');
+  const halfDiminished = suffix.includes('ø');
+  const diminished = halfDiminished || suffix.includes('°') || suffix.includes('dim');
   const seventh = suffix.includes('7');
 
   let intervals: number[];
-  if (diminished) intervals = seventh ? [0, 3, 6, 10] : [0, 3, 6];
+  // The two signs agree about the triad and disagree about the seventh: a
+  // fully diminished seventh is a minor third above the diminished fifth and a
+  // half-diminished one a major third above it. One flag for both gave `vii°7`
+  // the half-diminished set — `CHORD_QUALITIES.m7b5` — and `suffixFor` then
+  // printed the chord back as `ø7`, so the drill asked for a chord it had not
+  // named. These two sets are `CHORD_QUALITIES.dim7` and `.m7b5`.
+  if (diminished) intervals = seventh ? (halfDiminished ? [0, 3, 6, 10] : [0, 3, 6, 9]) : [0, 3, 6];
   else if (minor) intervals = seventh ? [0, 3, 7, 10] : [0, 3, 7];
   else intervals = seventh ? [0, 4, 7, 10] : [0, 4, 7];
 

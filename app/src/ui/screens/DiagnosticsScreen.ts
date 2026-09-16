@@ -249,7 +249,7 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   addParagraph(
     reportBlock,
     'Everything above as plain text: browser, devices, settings, and the last ' +
-      `${DEBUG_REPORT_MESSAGES} messages. Paste it into a Claude session.`,
+      `${DEBUG_REPORT_MESSAGES} messages. Paste it into a chat with your assistant.`,
     'muted',
   );
   addButton(reportBlock, 'Copy debug report', () => void copyReport(), {

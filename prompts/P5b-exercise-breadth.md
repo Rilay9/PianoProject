@@ -1,4 +1,4 @@
-# P5b — Exercise breadth, alternatives, offline-first content  ·  Intended model: **Sonnet 5** (Opus for the fingering rules)  ·  Branch: `feat/p5b-exercises`
+# P5b — Exercise breadth, alternatives, offline-first content  ·  Branch: `feat/p5b-exercises`
 
 (Include `_COMMON-HEADER.md`.)
 

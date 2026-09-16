@@ -2,7 +2,7 @@
 
 Date: 2026-09-05 · Phase: P5 (`feat/p5-content`) · Status: accepted
 
-`prompts/P5-content.md` asks for every entry in `docs/02-curriculum.md` Part F
+`prompts/P5-authored-content.md` asks for every entry in `docs/02-curriculum.md` Part F
 to be authored as ABC, and for anything that cannot be verified to be skipped
 with a note. This records which way each judgement went and the two rule
 changes the work needed.

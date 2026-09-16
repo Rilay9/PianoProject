@@ -907,19 +907,22 @@ Numbered for citation. Each is falsifiable; most are already testable.
     **Recommend: a one-off "start here" mark, cleared by the first matched note.**
 11. **Chord symbols and stave placement.** §3.2 places on the stave, so a chord symbol may sit
     closer to the top edge in one window than another. Accepted: the staff is what is read.
-12. **The beat dot is in the header, which is not drawn sideways** (§5.3): a Tempo run held
-    sideways has no beat indicator. **Build: the dot in the stage's top-left corner, every form
-    factor; the header's copy goes.**
-13. **`Hear it` during a run only stops the run** (§7.1). **Build: it ends the run and starts the
-    demonstration.**
+12. ~~The beat dot is in the header, which is not drawn sideways~~ (§5.3). **Done:** the dot
+    is a child of the stage and is drawn every form factor (`04` §5, the blind-mode note of
+    2026-09-12 names it among the stage's children; `score.countin.spec.ts` checks it both ways up).
+13. ~~`Hear it` during a run only stops the run~~ (§7.1). **Done:** it interrupts the run,
+    plays, and puts back what it interrupted when it ends; `▶` during one ends it and starts
+    the run chosen (`04` §5).
 14. **Only Wait refuses a hand with no notes** (§8.2). **Build: Tempo refuses too.**
 15. **The tablet rule** (§3.2, P21d): bars per window from the space rather than a fixed setting.
     Upright on a tablet with the lesson panel, two bars a slot are width-limited and the stave sits
     small. **Build when a tablet exists; until then the setting.**
 16. **Lyrics** (§3.4.1): **decided, not drawn on this screen.** Build: the engraver's lyrics off
     for the score screen's views; the PDF viewer is unaffected.
-17. **Free play** (§7.4) is specified to change and has not: build the matching-advance, remove
-    the band, the keys' marks and the record in Free, and the one-off start mark (§11.10).
+17. ~~Free play (§7.4) is specified to change and has not.~~ **Done as far as `04` §5 and the guide
+    describe it:** Free judges nothing and turns the page on the learner's own notes. Whether
+    the one-off start mark (§11.10) was built is not recorded here; read the screen before
+    relying on it.
 18. **A running loop is invisible on the stage** (§11.6). **Decided: the bars outside the loop are
     dimmed the way the other hand is dimmed under a hand focus** — the same mechanism, the same
     look, and the loop reads from the sheet without a word.
@@ -937,7 +940,7 @@ Numbered for citation. Each is falsifiable; most are already testable.
 3. §7.4 — the mode matrix, and Free in particular: it is specified to change.
 4. §4.1 — whether the arrangement is derived from height rather than orientation.
 5. §3.3 — the table of what may change the scale, against every write of a transform.
-6. §11 — the eleven known divergences, before hunting for new ones.
+6. §11 — the known divergences (the list has grown since eleven; the struck and **Done** ones say so), before hunting for new ones.
 7. §3.1, §8.3–§8.5, §10 — the states that only appear when something has gone wrong.
 
 ---
@@ -1089,3 +1092,27 @@ was right to stay. The test now checks the criterion the bar uses rather than as
 Items 2 to 8 of the earlier list — the pickup bar count, the summary's weakest bars and master
 title, the paint after a rotation, the three assertions, the walk's real clicks, the sideways
 sheet test, the no-notes state — were built the same evening.
+
+## 13b. The wide stage (2026-09-16)
+
+**A sparse bar on a wide stage is drawn at its natural width, then centred.** The tour and
+`wide.spec` photographed Suo Gân's four-note first bar justified across a 1,040 px laptop stage
+with the stretch guard (`MAX_BAR_WIDTH_IN_STAVES`, eight staff heights) in place. The guard
+compared the page with `pieceInk.height`, which is the *system's* ink — near 150 px for one
+staff with chord symbols — so its threshold was 1,200 px and it never fired; and it needed the
+piece measurement, which lands after the first sheet is drawn, so the first frame always
+stretched and nothing redrew it.
+
+Replaced by a rule measured on the engraving itself (`drawInto`): on a stage at least
+`WIDE_STAGE_MIN_PX` (900) wide, a slot is engraved unstretched and `drawnShare` reads how much
+of the page its ink spans; at or above `1 / STRETCH_LIMIT` (a half) it is engraved again
+stretched, otherwise it keeps its spacing, `natural` is set on the buffer, and `centredInset`
+centres it as it already centred any slot narrower than the stage. Below 900 px nothing
+changed: a phone stretches in one engraving, and the dev screen's snapshots at 390 px are the
+proof. Zoom does not enter the rule — a mid-session redraw of a measured piece was tried first
+and refused the stretch on the dev screen at phone width because its zoom made the measured
+staff small (`chords-ties` snapshots), which is what sent the rule to the engraving.
+
+Cost: one extra engraving per window, only on a wide stage and only when the first pass spans
+at least half the page. `wide.spec` › *a sparse bar is not stretched* holds both ends: under
+0.8 of the stage at 1366 × 768, over 0.8 at 342 × 740.

@@ -1,4 +1,4 @@
-# P17 — Tips for every drill, coaching rules, and the how-to-practise module  ·  Intended model: **Opus 5** (Sonnet 5 acceptable for the prose)  ·  Branch: `feat/p17-tips-practice`
+# P17 — Tips for every drill, coaching rules, and the how-to-practise module  ·  Branch: `feat/p17-tips-practice`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

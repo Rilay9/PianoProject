@@ -815,10 +815,19 @@ export function romansForProgression(
   return Array.from({ length: count }, (_, bar) => pattern[bar % pattern.length] as string);
 }
 
-/** `"I - V | vi IV"` → `['I', 'V', 'vi', 'IV']`. Bars are separated by anything. */
+/**
+ * `"I - V | vi IV"` → `['I', 'V', 'vi', 'IV']`.
+ *
+ * Bars are separated by space, comma, bar line or dash — but **not** by a
+ * slash. A slash inside a numeral is the one thing it can mean here: `V/V` is
+ * a secondary dominant, which `anyRomanToChord` reads. Splitting on it turned
+ * `I V/V V I` into five readable bars with the borrowed chord gone and nothing
+ * said, which is the one failure the "name the numeral you could not read"
+ * path cannot catch.
+ */
 export function parseRomanList(text: string): string[] {
   return text
-    .split(/[\s,|/–—-]+/)
+    .split(/[\s,|–—-]+/)
     .map((token) => token.trim())
     .filter((token) => token.length > 0);
 }

@@ -43,6 +43,10 @@ the whole exercise, and the only way to place it is to keep counting through it.
 **5/4** is here rather than later because odd meters are easier than they look
 once you stop counting to five and start counting three-plus-two.
 
+**Sight-reading** is on this rung at the generator's fourth level: a fresh
+phrase every time you open it, written for this stage, because reading only
+trains on music you have not seen before.
+
 **Mordents.** Three notes in the time of one: the main note, the note below it,
 and the main note again. Two things go wrong and both are fixable. It belongs
 *on* the beat, not before it — the first of the three lands where the beat

@@ -195,7 +195,8 @@
                 "exercise.broken-octaves.a.1oct.right",
                 "exercise.broken7.a-flat-dominant7.both",
                 "exercise.double-sixth.c.1oct.right",
-                "exercise.double-third.c.1oct.right"
+                "exercise.double-third.c.1oct.right",
+                "exercise.independence.c.3v2"
               ],
               "songOptions": [
                 "song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx",
@@ -267,9 +268,9 @@
                 "song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx",
                 "song.jazz.vince-guaraldi-skating.pdmx",
                 "song.pop.avalon.pdmx",
-                "song.pop.after-you-ve-gone.pdmx",
                 "song.jazz.django-reinhardt-tiger-rag.pdmx",
-                "song.classical.i-got-rythm.pdmx"
+                "song.classical.i-got-rythm.pdmx",
+                "song.jazz.bart-howard-fly-me-to-the-moon.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -330,7 +331,6 @@
                 "exercise.walking-bass.f.blues"
               ],
               "songOptions": [
-                "song.folk.boogie-woogie.pdmx",
                 "song.pop.boogie-easy-for-beginners.pdmx"
               ],
               "songOptional": true,
@@ -346,7 +346,7 @@
               "estimatedDays": 120,
               "levelBand": [
                 4.9,
-                7.5
+                7.3
               ],
               "finder": {
                 "skill": "leaping the left hand into stride while the turnaround stays in place",

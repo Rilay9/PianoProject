@@ -23,7 +23,8 @@ and the build stays deterministic.
 
 ### 2. Composition status is a label, and `--personal` is one flag
 
-`docs/00` D23. `select.py` records `pd` / `unknown` / `in-copyright` on every
+`docs/00` D23. `select.py` (renamed `shortlist.py` the same day, P14 — it shadowed the
+standard library's `select`; the old name stands in this note as written) records `pd` / `unknown` / `in-copyright` on every
 candidate and rejects nothing for it; `--strict-license` refuses anything that is
 not `pd`, which is what the public Pages deploy runs.
 

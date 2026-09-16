@@ -85,6 +85,7 @@ const SECTIONS: Section[] = [
     body: [
       'PianoPath is a piano teacher on your phone, on the music stand. It holds a library of pieces and exercises, a plan that climbs from the first five-finger position to real repertoire, and a score screen that listens to what you play and follows along on the page.',
       'Today builds a session for you every day: a warm-up, something new, a review of what is due, a piece you know, and a minute of free play. The line at the top is minutes this week against a weekly goal — there is no daily streak, on purpose.',
+      'Under the session card is Today’s sight-read: three minutes of music you have never seen, the same phrase all day and a new one tomorrow. It is the one thing on the screen counted in days in a row rather than minutes, and a tick appears once today’s is done.',
       'Nothing is locked. Every lesson opens whenever you like, and “I already know this” marks one done without playing it.',
       'The sections below are in the order you need them: connect the piano, learn the score screen and the plan, then the five ways of getting your own music in, then keeping your history safe.',
     ],
@@ -100,7 +101,7 @@ const SECTIONS: Section[] = [
         items: [
           {
             term: 'A USB cable',
-            text: 'The sure way: every key is heard exactly, as soon as you press it. Run the cable from the piano’s MIDI OUT into the phone, then Settings → MIDI → Connect piano. Chrome asks once, and from then on the app reconnects on its own.',
+            text: 'The sure way: every key is heard exactly, as soon as you press it. Run the cable from the piano’s MIDI OUT into the phone, then Settings → MIDI devices → Connect piano. Chrome asks once, and from then on the app reconnects on its own.',
           },
           {
             term: 'The on-screen keys',
@@ -145,6 +146,7 @@ const SECTIONS: Section[] = [
         ],
       },
       'Hear it plays the piece to you. Long-press a bar to hear that bar; double-tap two bars to loop them. R, L and Both choose the hand; the phone can play the other one.',
+      'Behind ⋯ are the settings you change once — the input, the metronome, bars in window, size, the keys — and three rows that come and go. Rhythm only, in Keep tempo, judges your timing and not your notes: one tap per written note or chord, on any key at all, and extra keys are wrong. Its summary is headed Rhythm run and never counts as a pass of the piece. Ladder, once a loop is set, raises the tempo a notch after each clean pass and lowers it after a mistake, and underlines the tempo figure while it is on. Duet, with R or L chosen, has the app play the other hand; turned off and on again it comes back exactly as it was.',
       'Under the notes, the keys: the note it is waiting for is blue, with its finger number; a hit flashes green and a miss red for a moment. Settings → Display chooses how much the keys show ahead, and the ribbon is the same information at a third of the height.',
       'Two more that sit alongside the modes. Blind hides the score and changes nothing else, so a run from memory scores the same way. Perform is one pass through with no restart, kept on its own list in Progress.',
     ],
@@ -161,6 +163,8 @@ const SECTIONS: Section[] = [
     body: [
       'Plan is the curriculum: stages, units, lessons, each a rung with a few options — an exercise, a song, sometimes a drill. Any of them finishes the rung; two songs per lesson is a stricter rule you can turn on.',
       'Drills are prompt-and-answer: name the note, play the interval, find the chord, keep the rhythm. They score on the same accuracy setting a piece does, and their tips fold out under the prompt.',
+      'Where the answer is a set of keys — a mode, a chord, a numeral, a note on the staff — two quiet buttons under the hint let you in: Show me lights the answer on the keys and writes it on a small staff, Hear it plays it. Either forfeits that card’s mark, so the score keeps meaning what it says. A miss holds its card — the keys you played in red, the ones wanted lit, the answer on the staff — until you tap to move on, and a set that ends with misses offers to go over exactly those cards again, which scores nothing and records nothing.',
+      'Simon is the ear drill with nothing to guess between: the app plays one note, then the same note and one more, then three, until the chain breaks. The score is the longest chain you echoed, in the octave it was played.',
       'Skills review, from Today or Plan, lists every skill with its drills, so you can practise the one thing rather than the rung it belongs to.',
     ],
     figures: [
@@ -194,16 +198,20 @@ const SECTIONS: Section[] = [
       'Library → Import a score takes .musicxml, .mxl and .pdf. MusicXML and .mxl become first-class: searchable, playable, and the music follows your playing exactly as it does for anything built in. You can also share a file into PianoPath from Files or Drive — long-press the file, choose PianoPath.',
       'From a lesson, Import for this rung opens a sheet with the rung, a level estimated from the notes and what it trains already filled in; Save is the only tap left. Importing from the Library just files the piece; Assign on its row puts it on a rung whenever you want.',
       'A level marked ≈ is the app’s guess. Type over it and it stops being a guess. A piece on a rung counts towards finishing it, turns up in swaps, and can be picked for a session; a piece with no rung is still playable, the plan just does not know about it.',
+      'One score you never have to find: Library → Accompaniment lab. Pick a key, a progression, a left-hand pattern, a right hand, bars and a tempo. Read it writes it out as an exercise and opens it on the score screen; Jam it keeps the chords in time over a bass-and-drums bed, marks the bar you are in and lights its chord tones on the keys, and judges nothing.',
     ],
     figures: [{ file: 'library', caption: 'The Library: search, the filters behind one chip, and Import a score at the foot.' }],
-    opens: [{ label: 'Open the Library', tab: 'library' }],
+    opens: [
+      { label: 'Open the Library', tab: 'library' },
+      { label: 'Accompaniment lab', tab: 'library', hash: '#/lab' },
+    ],
   },
   {
     id: 'folder',
     title: 'A whole folder of scores',
     body: [
-      'One at a time is fine for a score you bought. For a folder of thousands — the public-domain MusicXML archive from the laptop, or your own — there is Library → Browse a score folder. The app reads what is in there and lists it: search by title or composer, narrow by level or style, or tick “rated 4+ by 5+ people”.',
-      'Tap Add on anything you want. That copies it into your library for good, exactly as if you had imported it, and it keeps working whether or not the folder is still there. The listing is saved, so browsing works any time, offline; only adding needs the folder in hand, and Android lends a picked folder to an app for one visit, so you may be asked for it again. Settings → Content → Remember the score folder tries to hold on to it.',
+      'One at a time is fine for a score you bought. For a folder of thousands — the public-domain MusicXML archive from the laptop, or your own — there is Library → Score folder. The app reads what is in there and lists it: search by title or composer, narrow by level or style, or tick “rated 4+ by 5+ people”.',
+      'Tap Add on anything you want. That copies it into your library for good, exactly as if you had imported it, and it keeps working whether or not the folder is still there. The listing is saved, so browsing works any time, offline; only adding needs the folder in hand. Settings → Content → Remember the score folder is on from the start and keeps the folder across visits where Chrome allows it; where it does not, Android lends a picked folder for one visit and you are asked for it again.',
       'A folder from the archive carries a library.json with titles, composers and estimated levels; levels marked est. are guesses to sort by, not verdicts. A folder of your own scores with no such file works too — each one is listed by its filename and takes its real title from inside the file when you add it.',
       'The archive itself comes as one zip, pianopath-library.zip, because thirty-seven thousand files over a cable take hours and one file takes minutes. To get it onto the phone:',
       {
@@ -211,7 +219,7 @@ const SECTIONS: Section[] = [
           'Copy pianopath-library.zip onto the phone — internal storage or an SD card, anywhere the file picker can see it.',
           'Unzip it there, with the phone’s own files app. On a Samsung that is My Files: hold the zip, then Extract.',
           'You now have a folder called pianopath-library, with a library.json in it and the scores in folders inside.',
-          'In the app: Library → Browse a score folder → Pick a folder.',
+          'In the app: Library → Score folder → Pick a folder.',
           'Choose the pianopath-library folder that has the library.json in it — not one that only holds another folder of the same name. Some files apps wrap the extracted folder in one of their own, and if you pick the wrapper the app looks a level down for the library.json rather than give up, so either does in fact work.',
           'Wait for the listing to build, once. After that it is saved and browsing is instant, offline.',
         ],

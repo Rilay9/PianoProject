@@ -1,9 +1,11 @@
 """
 raw/<cid>.mxl -> converted + features + level + a render verdict (replan §2.3).
 
-Six machine gates, in order, first failure recorded. Everything here is a
-question a person should never have to be asked, because the answer is a fact
-about the file:
+Five machine gates, in order, first failure recorded — after a zeroth that is
+not a judgement about the file but about whether it is here at all (`extract`:
+a candidate never pulled out of the tarball). Everything here is a question a
+person should never have to be asked, because the answer is a fact about the
+file:
 
   1. parse and normalise    through convert_file: one part, two staves, tempo,
                             lyrics stripped. An exception rejects.
@@ -18,7 +20,11 @@ about the file:
   5. render                 through the app's own loader, with cursor-step
                             parity — the P2 invariant that has never been run
                             over content.
-  6. duplicates             against the catalog, folded title + composer.
+
+Between 4 and 5 the row is checked for a duplicate against the catalog (folded
+title + composer). That is not a gate: it only sets `duplicate_of`, and it runs
+*before* the render so a duplicate does not cost a browser. The refusal, if any,
+is `commit.py`'s — at most `MAX_EDITIONS` editions of one work are committed.
 
 The order matters: each gate is cheaper than the one after it, and gate 5 costs
 a browser. The per-band rejection rate is printed and written into the run

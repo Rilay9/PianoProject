@@ -2,7 +2,8 @@
 """
 Renders every catalog item in a real browser and reports what came back.
 
-docs/03-content-pipeline.md §3 steps 5–6. The check itself is a Playwright
+docs/03-content-pipeline.md §3 step 10 (validate runs again after it, since
+it writes durations back into the catalog). The check itself is a Playwright
 test (app/tests/e2e/content-render.spec.ts) rather than Python, for one
 reason: "does this file render?" has to mean "does *the app* render it?", and
 the app's loader, its OSMD wrapper and the P2 ScoreModel extractor are all

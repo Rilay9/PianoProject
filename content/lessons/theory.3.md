@@ -6,7 +6,7 @@ videos:
   - label: "Identifying Intervals (Perfect, Major, Minor, Augmented, Diminished) - Music Theory for Beginners"
     url: "https://www.youtube.com/watch?v=Hwx7KSEi4z8"
     teacher: "Online Piano Learning"
-readingTime: 2
+readingTime: 3
 ---
 
 **An interval** is the distance between two notes, named by counting letter names
@@ -36,14 +36,22 @@ needs two flats to point at: one flat is F major.
 hear. **I** is home and settled. **IV** feels like stepping away — it is the
 "amen" chord. **V** is unstable and pulls back. Listen to a folk song and put
 your hand up at each change; you will be right more often than you expect within
-a week.
+a week. Nothing drills it yet — the progression drill arrives on the Stage 5
+rung of this track — so this one is homework for your listening.
 
 **Rhythm dictation.** The app taps a two-bar rhythm and you tap it back. Count
 the beats aloud while listening — do not try to memorise it as a shape.
 
+**Simon.** The app plays one note and you play it back; then the same note and
+one more; then three. The chain grows by one each round until it breaks, and
+the score is how long a chain you kept. On this rung it is the white keys
+around middle C. Sing the chain before you touch a key — a chain you can sing
+is a chain you can find.
+
 **Common mistake.** Learning interval names without ever singing them. Theory
 that never reaches your ear stays a filing system.
 
-**How you'll know you've got it.** All intervals within the octave named on the
-staff and identified by ear at 80 %, key signatures to three accidentals named
-instantly, and I–IV–V changes heard in a song you do not know.
+**How you'll know you've got it.** Every interval within the octave identified
+by ear at 80 % in the interval drill, a key signature of up to three sharps or
+flats named from the two rules above without pausing, and a chain of five notes
+played back in Simon.

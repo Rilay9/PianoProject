@@ -33,7 +33,8 @@
                 "song.classical.ode-to-joy.ht",
                 "song.folk.twinkle.ht",
                 "song.holiday.jingle-bells.ht",
-                "song.folk.mary-had-a-little-lamb.ht"
+                "song.folk.mary-had-a-little-lamb.ht",
+                "song.folk.simple-gifts.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -46,7 +47,7 @@
               ],
               "estimatedDays": 14,
               "levelBand": [
-                2.1,
+                2.0,
                 2.1
               ],
               "finder": {
@@ -109,7 +110,8 @@
                 "song.folk.old-macdonald",
                 "song.pop.michael-row-the-boat-ashore.pdmx",
                 "song.folk.sakura.pdmx",
-                "song.folk.danny-boy-c-major.pdmx"
+                "song.folk.danny-boy-c-major.pdmx",
+                "song.folk.alouette.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -178,7 +180,8 @@
                 "song.holiday.jingle-bells.g",
                 "song.folk.was-wollen-wir-trinken.pdmx",
                 "song.folk.dark-eyes.pdmx",
-                "song.folk.auld-lang-syne.pdmx"
+                "song.folk.auld-lang-syne.pdmx",
+                "song.folk.skip-to-my-lou.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -246,7 +249,8 @@
                 "song.folk.greensleeves.simple",
                 "song.folk.greensleeves",
                 "song.folk.greensleeves.chords",
-                "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx"
+                "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
+                "song.folk.streets-of-laredo.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -260,7 +264,7 @@
               ],
               "estimatedDays": 12,
               "levelBand": [
-                2.2,
+                2.1,
                 5.1
               ],
               "finder": {
@@ -405,7 +409,6 @@
                 "song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx",
                 "song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx",
                 "song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx",
-                "song.pop.misc-christmas-silent-night-trombone-duet.pdmx",
                 "song.pop.misc-christmas-joy-to-the-world.pdmx",
                 "song.pop.thomasclarke11-joy-to-the-world.pdmx",
                 "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx",

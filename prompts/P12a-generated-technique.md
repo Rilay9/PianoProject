@@ -1,4 +1,4 @@
-# P12a — The generated backbone, part 1: technique families at every level  ·  Intended model: **Opus 5**  ·  Branch: `feat/p12a-technique`
+# P12a — The generated backbone, part 1: technique families at every level  ·  Branch: `feat/p12a-technique`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

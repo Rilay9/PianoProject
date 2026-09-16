@@ -1,4 +1,4 @@
-# P19 — The final pass: fix what the once-over found, hunt for the rest, and prove the build before the owner touches it  ·  Intended model: **Opus 5**  ·  Branch: `feat/p19-final-pass`
+# P19 — The final pass: fix what the once-over found, hunt for the rest, and prove the build before the owner touches it  ·  Branch: `feat/p19-final-pass`
 
 Work on branch `feat/p19-final-pass`, created from `claude/piano-teaching-app-bo19td` (there is
 no `main`). Commit early and often with conventional-commit messages. Never mention AI model

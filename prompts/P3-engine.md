@@ -1,4 +1,4 @@
-# P3 — Practice engine  ·  Intended model: **Opus 5**  ·  Branch: `feat/p3-engine`
+# P3 — Practice engine  ·  Branch: `feat/p3-engine`
 
 (Include `_COMMON-HEADER.md`.)
 

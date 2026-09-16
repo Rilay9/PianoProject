@@ -6,7 +6,7 @@ videos:
   - label: "How To Improvise On Blues Scale: Piano Lesson"
     url: "https://www.youtube.com/watch?v=RJu-wptS6Ng"
     teacher: "London Contemporary School of Piano"
-readingTime: 2
+readingTime: 3
 ---
 
 **The blues scale** is the minor pentatonic with one extra note: **C E♭ F F♯ G
@@ -23,6 +23,11 @@ That single fact is what makes the blues the best place to learn to improvise.
 land on a chord tone at bar 5 (where the IV arrives) and bar 9 (the V); leave
 space in bars 3–4 and 7–8; and play something at bar 12 that sends you round
 again. The form gives you landmarks, so you are never lost.
+
+**Repertoire for this rung.** Three options, and they are the same twelve bars
+in C, F and G: the shuffle you met on the blues track, here as the form to
+improvise over once the backing track is familiar. Play the left hand as
+written and make up the right.
 
 **Writing eight bars.** Improvisation and composition differ mainly in how long
 you get to decide. Write a melody by improvising, recording it, listening back

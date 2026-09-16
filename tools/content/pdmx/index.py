@@ -4,8 +4,9 @@ The whole archive, browsable — every candidate, not just the quota's pick.
 `shortlist.py` answers "which three hundred should I review next". This answers a
 different question: **what is in there at all, at my level, in the style I feel
 like today**. It applies the same gates and then keeps *everything* that
-passes — 37,499 rows — with a level on each one, and writes a static page that
-searches and filters them.
+passes — tens of thousands of rows; the run's own header says how many, and the
+number moved when the deduplication gate went (shortlist.py) — with a level on
+each one, and writes a static page that searches and filters them.
 
 No conversion, no browser, no music21. The level comes from a small model
 fitted on the candidates the quarry has already levelled properly: given the

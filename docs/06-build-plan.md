@@ -2,9 +2,12 @@
 
 ## 1. How to run this plan
 
-**The plan is finished. P0 through P19 are built and there are no phases left**; what remains
-is in `docs/OWNER-GUIDE.md` §8 and needs the phone and the piano, not a prompt. The rest of this
-file is the record of how it was run.
+**The plan is finished. P0 through P19 are built, and so are the rounds after them** — P20 (the
+setup tour, `docs/decisions/2026-09-09-setup-tour.md`), P21 and its tour rounds P21b–P21e (§2),
+and P21f (rhythm only, the tempo ladder and the duet row, `04` §5) — **and there are no phases
+left**; what remains is in `docs/OWNER-GUIDE.md` §8 and needs the phone and the piano, not a
+prompt. Work since is recorded in `docs/handoff-2026-09-09.md` and the dated decision notes.
+The rest of this file is the record of how it was run.
 
 One phase = one session (sometimes two). Paste the matching `prompts/P<n>-*.md` into a fresh
 session on a feature branch — the default branch is `claude/piano-teaching-app-bo19td` and
@@ -13,16 +16,17 @@ model what to read, what to build, how to prove it works, and what to report. Ru
 order; P4/P5 (content) can run in parallel with P2/P3 (engine) because they touch different
 directories.
 
-**Model choice rule of thumb**
+**Model choice rule of thumb** (no model is named, here or in the prompts — `00-invariants.md`
+§4; the phase headings below say *the stronger model* or *the faster model*)
 
-| Use **Opus 5** when… | Use **Sonnet 5** when… |
-|----------------------|------------------------|
+| Use **the stronger model** when… | Use **the faster model** when… |
+|----------------------------------|--------------------------------|
 | the task has design freedom or hidden edge cases (ScoreModel extraction, engine matching, windowed rendering sync, MIDI robustness, performance debugging, on-device bug hunts from logs) | the spec is precise and the work is volume (screens from `04-ui-spec.md`, settings plumbing, tests from a listed matrix, CI/workflows, ABC tune authoring, lesson prose from outlines, curriculum JSON entry, catalog metadata, review of preview PNGs) |
-| a Sonnet phase produced something that doesn't pass acceptance after one retry | you need many similar items (60 tunes, 30 lessons) |
+| a faster-model phase produced something that doesn't pass acceptance after one retry | you need many similar items (60 tunes, 30 lessons) |
 | reviewing/refactoring a large diff for correctness before merge | polishing copy, docs, README |
 
-Both models get the same prompts; the prompt header states the intended model. If Sonnet
-stalls on a phase, hand the same prompt plus its partial branch to Opus.
+Both get the same prompts. If the faster model stalls on a phase, hand the same prompt plus
+its partial branch to the stronger one.
 
 **Every session must** (these lines are in every prompt): read `docs/00-overview.md` and the
 docs named in the prompt; work on the named branch; run the checks; commit with conventional
@@ -30,7 +34,7 @@ messages; end with a report (what was done, what was verified how, what is left,
 
 ## 2. Phases
 
-### P0 — Repository bootstrap · Sonnet · ~1 session
+### P0 — Repository bootstrap · the faster model · ~1 session
 Deliverables: `app/` Vite + TypeScript + strict ESLint/Prettier; Vitest; Playwright (Chromium
 from `/opt/pw-browsers` if present, else installed); `vite-plugin-pwa` with manifest/icons;
 app shell with the five tabs and routing; theme; `.github/workflows/ci.yml` (lint, typecheck,
@@ -40,7 +44,7 @@ instructions. Acceptance: `npm run lint && npm run typecheck && npm run test && 
 npm run build` all pass locally and in CI; Pages workflow succeeds (owner enables Pages once);
 the shell opens on the phone and installs.
 
-### P1 — MIDI + audio foundation · Opus · 1 session
+### P1 — MIDI + audio foundation · the stronger model · 1 session
 Deliverables per `01-architecture.md` §4.3–4.4 and `05` §9: `MidiSource` + `WebMidiSource`,
 `ScreenKeyboardSource`, `ReplaySource`; `audio/Piano` (smplr with a **bundled** soundfont —
 choose, vendor, license file), `audio/Metronome`; **Diagnostics screen** (device list, raw
@@ -51,7 +55,7 @@ sequences, CC64, all-notes-off), e2e shows injected notes on the strip, audio pl
 gesture; owner test on the phone: Diagnostics shows messages when keys are pressed (or shows
 "no inputs" — either way the report is useful; see `07-midi-hp130-notes.md`).
 
-### P2 — Score rendering + ScoreModel · Opus · 1–2 sessions
+### P2 — Score rendering + ScoreModel · the stronger model · 1–2 sessions
 Deliverables per `01` §4.1: OSMD wrapper; `extractScoreModel(osmd)` with golden tests on ≥ 10
 fixtures (use `tools/content/generate_exercises.py --quick` output + hand-written edge cases:
 ties, chords, 2 voices, grace notes, repeats with endings, pickup, cross-staff, tempo change,
@@ -62,14 +66,14 @@ Acceptance: golden tests pass; step count == OSMD cursor count for every fixture
 screenshot tests for window sizes 1/2/4 in landscape+portrait; render timing logged < 150 ms
 for 2 bars on desktop Chromium (phone verified in P9).
 
-### P3 — Practice engine · Opus · 1–2 sessions
+### P3 — Practice engine · the stronger model · 1–2 sessions
 Deliverables per `05`: `PracticeEngine` with Wait/Tempo/Listen/Free, loops, scoring, drills
 framework (§7) and the runtime sight-reading generator (§8, levels 1–4 minimum), all with the
 §10 test matrix. Wire to the P2 dev route so a mocked MIDI script can drive a run end-to-end.
 Acceptance: all §10 tests; e2e: scripted perfect run in Wait mode reaches `finished`; scripted
 late run in Tempo mode reports the expected timing stats.
 
-### P3b — Microphone note/chord detection · Opus · 1–2 sessions
+### P3b — Microphone note/chord detection · the stronger model · 1–2 sessions
 Deliverables per `05` §11 and `01` §4.7: `AudioWorklet` DSP (FFT, spectral flux, harmonic
 templates with inharmonicity, octave guard) as pure functions + worklet wrapper; `MicSource`
 implementing `InputSource` with `setExpectations()`; calibration routine and storage; device
@@ -79,7 +83,7 @@ latency, 20-s WAV capture for owner recordings. Acceptance: the §11.6 threshold
 fixtures; e2e: a synthetic recording drives a Wait-mode run to `finished` through the mic path
 (Playwright with a fake `getUserMedia` fed from a WAV); CPU per hop measured and reported.
 
-### P4 — Content pipeline · Sonnet (convert edge cases → Opus) · 1–2 sessions
+### P4 — Content pipeline · the faster model (convert edge cases → the stronger one) · 1–2 sessions
 Deliverables per `03`: `fetch.py` (GitHub sources first; graceful offline), `convert.py`
 (kern/ABC/LilyPond/MusicXML → normalised 2-staff MXL), `author.py`, `validate.py`,
 `render_check.py`, `build.py`; extend `generate_exercises.py` (Hanon 2–20 from a PD edition,
@@ -89,7 +93,7 @@ the curriculum with provenance in `SOURCES.md`. Acceptance: `python tools/conten
 produces a schema-valid catalog; every item renders (headless OSMD) and yields ≥ 1 step;
 preview PNGs reviewed and broken files excluded with a note.
 
-### P5 — Authored content & curriculum data · Sonnet · 2–3 sessions
+### P5 — Authored content & curriculum data · the faster model · 2–3 sessions
 Deliverables: ABC files for **all** Part F tunes (simple + full variants where specified),
 lead sheets for the jazz/blues/latin lists (melody + chord symbols + a written-out simple LH),
 `content/lessons/*.md` for every lesson in Stages 0–4 and for track rungs 3–5, `content/
@@ -98,7 +102,7 @@ curriculum/stage-0..4.json` + track files, all validated. Videos: find the actua
 Acceptance: `validate.py` passes; every lesson has ≥ 2 exercise and ≥ 3 song options that
 exist; spot-check 10 random tunes by rendering and by listening (Listen mode) for wrong notes.
 
-### P5b — Exercise breadth, alternatives, offline-first content · Sonnet (Opus for fingering) · 1 session
+### P5b — Exercise breadth, alternatives, offline-first content · the faster model (the stronger one for fingering) · 1 session
 Deliverables: the `02` Part E2 generator families (coordination, cadence, accompaniment
 patterns, interval reading, position shift, pedal, shuffle, rhythm in 3/4 and 6/8, five-finger
 hands-separately, 2-octave contrary); `alternatives[]` in the catalog schema and `songOptional`
@@ -108,7 +112,7 @@ and the eleven thin units backfilled; a unit test per family; the curriculum sel
 `--render` clean, `validate.py` green with the rule on, app tests green, and an offline e2e that
 opens a score, a generated exercise and a lesson with the network off.
 
-### P5c — Standalone metronome · Sonnet · part of a session
+### P5c — Standalone metronome · the faster model · part of a session
 Deliverables: the metronome screen in `04` §2a on top of P1's `audio/Metronome` — bpm
 readout, slider, ±5, tap tempo, meter buttons with beat dots, sound picker, start/stop —
 reached from Today's Tools block. Acceptance: unit tests for the tap-tempo arithmetic, e2e
@@ -116,14 +120,14 @@ for the screen including that starting it really runs the scheduler and that lea
 it. **Done 2026-09-05**, out of order because the owner asked for it and the engine already
 existed.
 
-### P6 — Score screen · Sonnet (Opus review) · 1–2 sessions
+### P6 — Score screen · the faster model (a stronger-model review) · 1–2 sessions
 Deliverables per `04` §5: full Score screen on top of P2+P3(+P3b), control bar with the input
 selector (MIDI / Mic / Screen / None) and the four follow options, amber mic feedback and level
 meter, gestures, manual tap-to-advance, summary sheet, settings persistence, landscape lock,
 wake lock, playback destination (phone / piano / both). Acceptance: e2e covers every control;
-manual checklist in the prompt; Opus reviews the diff for rendering/engine misuse.
+manual checklist in the prompt; a second session reviews the diff for rendering/engine misuse.
 
-### P7 — Today / Plan / Library / Progress / Settings + storage · Sonnet · 1–2 sessions
+### P7 — Today / Plan / Library / Progress / Settings + storage · the faster model · 1–2 sessions
 Deliverables per `04` §2–4 (incl. 3a Skills review and 3b Chord-chart view), §6–7 and `01`
 §4.5–4.6: IndexedDB stores, review queue (spaced intervals from curriculum Part G), weekly
 goal, session builder with 15/30/60/120 templates, "I already know this" + quick checks,
@@ -135,14 +139,14 @@ systems. **Done 2026-09-06** — see `docs/decisions/2026-09-06-p7-screens-stora
 phone-side manual checks (a real share-target intent from Android, a bought PDF from Downloads,
 an APK install) are P9's, since they need the packaged app.
 
-### P8 — Drills UI · Sonnet (+ Opus for ear/rhythm scoring) · 1 session
+### P8 — Drills UI · the faster model (the stronger one for ear/rhythm scoring) · 1 session
 Deliverables: UI for every drill kind in `05` §7 on top of the P3 framework; audio prompts
 for ear drills; result sheets. Acceptance: e2e per drill with scripted input.
 **Done 2026-09-06** — see `docs/decisions/2026-09-06-p8-drills-ui.md`. All 43 runtime drills in
 the catalog build and honour their parameters, checked by a unit test that reads the shipped
 `catalog.json` so a new drill item with an unimplemented parameter fails at build time.
 
-### P9 — On-device QA, performance, offline, packaging · Opus · 1–2 sessions
+### P9 — On-device QA, performance, offline, packaging · the stronger model · 1–2 sessions
 Deliverables: performance pass to hit `01` §6 budgets on the S25 (measure via the
 Diagnostics timing log the owner pastes back), service-worker precache verified offline,
 "update available" toast, **full-library precache verified item by item (`00` D20) and an
@@ -159,7 +163,7 @@ whole packaging toolchain host-agnostically. **Not done, and not doable here:** 
 signing the APK (needs the owner's keystore, which must never leave his machine), installing it
 on the S25, and every on-device check. Those are the checklist in `docs/OWNER-GUIDE.md` §1.
 
-### P10 — Stages 5–9 content expansion · Sonnet · ongoing
+### P10 — Stages 5–9 content expansion · the faster model · ongoing
 Deliverables: repertoire from Part D ladders imported/authored and slotted into curriculum
 JSON for stages 5–9 and all tracks; more sight-reading levels; Hanon 21–60; Czerny op. 599
 selections authored; theory lessons from Open Music Theory outlines with attribution.
@@ -221,7 +225,7 @@ ships content without its check is not done.
   turn the network off for good and lose nothing but the video links (`00` D20).
 - **Every skill the curriculum names has a generated exercise, and every rung offers at least
   three alternatives** (`00` D21), checked by `validate.py` rather than by eye.
-- Stages 0–4 fully populated; tracks populated to Stage 5 including the Rock & metal, Jam, and Beautiful-pieces modules; library ≥ 250 items (573 after P5b); mic follow works on the owner's HP-130 + S25 in a quiet room (measured on his recordings).
+- Stages 0–4 fully populated; tracks populated to Stage 5 including the Rock & metal and Jam modules (the "Beautiful pieces" module was struck as a branch on 2026-09-12 and is the lesson `classical.4.shelf`, `00` §1); library ≥ 250 items (573 after P5b); mic follow works on the owner's HP-130 + S25 in a quiet room (measured on his recordings).
 - **Added 2026-09-06 (replan):** every track reaches Stage 9 with ≥ 3 options per rung;
   generated exercises exist at every level 1–8 with no level holding more than a third of
   them; every lesson carries a `finder` and a `levelBand`; the catalog carries a

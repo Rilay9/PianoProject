@@ -6,7 +6,7 @@ videos:
   - label: "Rootless Voicings for Jazz Piano – Sound Pro Instantly"
     url: "https://www.youtube.com/watch?v=-Q0413UQjrs"
     teacher: "Jazz Tutorial | Julian Bradley"
-readingTime: 2
+readingTime: 3
 ---
 
 Shells say the chord in two notes. This rung is about the four-note voicings
@@ -39,9 +39,12 @@ stride, and it is the leap you will miss.
 progression with the tritone substitution; a quartal voicing moved through three
 roots without renaming it each time.
 
-**Repertoire for this rung.** Take a standard from 1920 or earlier and
-reharmonise its dominants with the substitution. *Avalon* takes it well, and
-*After You've Gone* and *Tiger Rag* are here for the same job.
+**Repertoire for this rung.** Six options. Take a standard and reharmonise its
+dominants with the substitution: *Avalon* and *Tiger Rag* take it well, *Fly
+Me to the Moon* is a chain of ii–V–Is and the place to put the rootless
+voicings, and *I Got Rhythm* is the changes half of jazz is built on. The jazz
+setting of *Jingle Bells* and Guaraldi's *Skating* are here to show what these
+voicings sound like when somebody has already done the work.
 
 **Common mistake.** Reaching for rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tempo goes up.

@@ -16,6 +16,14 @@ them:
                      checksum, writes build/catalog.pdmx.json. Needs nothing
                      but the repository.
 
+Beside those five, and above the line with them:
+
+  paths.py     where the archive is, and the refusal when it is not there
+  composers.py a free-text composer string -> a composition label (never a gate)
+  index.py     every candidate past the gates, as one browsable page
+  manifest.py  writes library.json into a folder of scores, and --zip packs
+               the folder for the phone (docs/04 §4b)
+
 Everything above the line runs once, on one machine, with a person watching.
 Everything below it runs on every build, everywhere, and is deterministic.
 

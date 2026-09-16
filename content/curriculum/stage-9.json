@@ -110,7 +110,7 @@
                 "song.jazz.george-shearing-lullaby-of-birdland.pdmx",
                 "song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx",
                 "song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx",
-                "song.pop.after-you-ve-gone.pdmx"
+                "song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -124,7 +124,7 @@
               ],
               "estimatedDays": 180,
               "levelBand": [
-                3.9,
+                5.1,
                 8.4
               ],
               "finder": {

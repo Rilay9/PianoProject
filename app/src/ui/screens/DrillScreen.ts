@@ -46,7 +46,7 @@ import {
 import { Metronome } from '../../audio/Metronome';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
-import { noteLabel } from '../../engine/drills/types';
+import { noteLabel, worthRecording } from '../../engine/drills/types';
 import type { EngineInput, Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
@@ -1287,7 +1287,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     void showCoaching(result);
 
-    // A set that ran out records itself; one that was stopped waits to be asked.
+    // A set that ran out records itself; one that was stopped waits to be
+    // asked. A set with no cards in it records nothing either way: `worthRecording`
+    // says why, and the sentence below is what is owed instead — an empty
+    // sheet reading "Not passed yet" over a set nobody was shown is the screen
+    // blaming the learner for the builder's empty list.
+    if (!worthRecording(result)) {
+      status.textContent = 'There was nothing to drill here, so nothing was recorded.';
+      return;
+    }
     if (how === 'ran-out') keep();
   }
 

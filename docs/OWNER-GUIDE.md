@@ -67,19 +67,22 @@ certificate it issues is trusted there.
 ### B. Once: build your app
 
 ```bash
-# From the repository folder. --personal is your build: it carries the
-# CC BY-NC editions and every quarried score, whatever its composition's status.
-py -3.11 tools/content/build.py --offline --personal
+# From the repository folder. Your build is the default (since 2026-09-12):
+# it carries the CC BY-NC editions and every quarried score, whatever its
+# composition's status. --no-personal or --strict-license is the public
+# build CI makes, and nothing you do here needs either.
+py -3.11 tools/content/build.py --offline
 
-# The app itself, served from the root of the laptop's address.
+# The app itself, served from the root of the laptop's address (Git Bash;
+# the variable goes on the same line as the command).
 cd app
-set VITE_BASE=/
-npm run build:app
+VITE_BASE=/ npm run build:app
 cd ..
 ```
 
-`build:app`, not `build`: `npm run build` rebuilds the content first through
-`python3`, which on Windows is not Python.
+`build:app`, not `build`: `npm run build` rebuilds the content first, through
+whichever Python `tools/content/python.cjs` finds, and you have just built it
+with the flags you wanted.
 
 ### C. Each time: serve, then install or update on the phone
 
@@ -90,8 +93,10 @@ py -3.11 packaging/serve-lan.py
 It prints the addresses to open — use the one it prints. Leave it running,
 and on the phone, on the same Wi-Fi, open `https://<laptop-wifi-ip>/` in
 Chrome. The first launch
-downloads about 1,600 files (17 MB) into the phone's cache; give it a minute
-and watch the progress on Settings → Diagnostics if it seems slow.
+downloads the whole library into the phone's cache — Settings → Diagnostics
+says how many files there are and how many have landed, and `npm run pwa:audit`
+from `app/` prints the same figures for a build; give it a minute and watch
+that line if it seems slow.
 
 > **Windows Firewall.** The first time Python listens on the network Windows
 > asks whether to allow it; tick *both* boxes (private and public — this
@@ -113,7 +118,7 @@ for an app you have not opened in months — export a backup now and then (§5) 
 that costs nothing.
 
 **To update** either kind of install: rebuild (step B), run the server, open the
-app while the laptop is reachable, and accept the "update available" toast. If
+app while the laptop is reachable, and accept the *A new version is ready.* toast. If
 "offline only" is on in Settings → Content, turn it off for that one visit.
 
 Then stop the server with Ctrl+C. The phone does not need it again.
@@ -165,21 +170,23 @@ py -3.11 packaging/serve-lan.py
 > **Do not lose the keystore.** Android refuses to update an app signed with a
 > different key. If the key is gone, the only way to install a new version is
 > to uninstall the old one — and that takes your practice history with it.
-> Export a backup from Progress first (§5).
+> **Progress → Export everything** first (§5).
 
 **There is a guide in the app**: Settings → *How PianoPath works* — what it can do and how to
 get music into it, with pictures. This document is for installing and building it; that one is
 for playing.
 
-**The first launch opens the setup tour** — nine short steps: which way the
-phone will sit, the piano, how late it is, the sound, the screen, the four
-modes, your practice. It shows the score screen both ways up in your phone's
-own proportions, connects the cable, and runs the latency test.
+**The first launch opens the setup tour** — eight short steps: welcome, which
+way the phone will sit, the piano, the sound, the screen, the four modes, your
+practice, and a summary. It shows the score screen both ways up in your phone's
+own proportions and connects the cable. (There is no latency test for a MIDI
+user: over the cable there is nothing left to measure. A microphone user gets
+one on Settings → Diagnostics, with the machine timing itself.)
 Skip it and it stays as the first row of Settings, *Setup tour · Run again*.
 
 **The first thing to check after installing** is that the piano works inside
 the APK. Plug in the cable, tap Connect on the tour's piano step (or in
-Settings → MIDI), play a key. If the key lights up, the whole approach is
+Settings → MIDI devices), play a key. If the key lights up, the whole approach is
 sound. If it does not, stop and say so — everything else can be worked
 around, that cannot.
 
@@ -193,30 +200,34 @@ push.
 
 ### The scores only your own build has
 
-`--personal` is your build, and it admits two kinds of thing a public build
-could not:
+The personal build is the default — `build.py` behaves as if `--personal` were
+passed, since your word of 2026-09-12 that the app should always be treated as
+yours — and it admits two kinds of thing a public build could not:
 
 - **Editions licensed CC BY-NC-SA** — Craig Sapp's Humdrum editions of Joplin,
   Mozart, Haydn, Scarlatti and the Bach chorales. The music is out of
   copyright; the typesetting is not free to redistribute.
-- **Scores whose composition is not public domain** — the 153 quarried from
+- **Scores whose composition is not public domain** — the ones quarried from
   PDMX under the dataset's own "public domain" label (film, game and pop
-  arrangements, and the folk tunes nobody could date), and the six MuseTrainer
-  files P4 had excluded for the same reason. This is `docs/00` D23, your
-  decision of 2026-09-06.
+  arrangements, and the folk tunes nobody could date), and the handful of
+  MuseTrainer files P4 had excluded for the same reason. This is `docs/00` D23,
+  your decision of 2026-09-06.
 
-Without the flag all of those still appear in the library, as rows that say
-where to get the score instead of carrying it. With it they are real scores.
-The 169 Chopin first editions are CC BY and are there either way.
+The public build — `--no-personal`, or `--strict-license`, which is what CI
+runs (`PIANOPATH_STRICT_LICENSE=1` is the same thing as an environment
+variable) — keeps all of those in the library as rows that say where to get
+the score instead of carrying it. In yours they are real scores. The Chopin
+first editions are CC BY and are there either way. How many items each kind
+comes to is in `docs/generated/ladder.md`, which the build regenerates.
 
-Two things the flag does **not** do. It does not open the three `craigsapp`
-repositories — the Beethoven sonatas and both Chopin sets — that state no
-licence at all: a missing licence grants nothing, so those stay out whatever
-you pass; import your own copy through **Library → Import a score**. And it
-does not change what the tests build in CI, which stays strict.
+Two things the personal build does **not** do. It does not open the three
+`craigsapp` repositories — the Beethoven sonatas and both Chopin sets — that
+state no licence at all: a missing licence grants nothing, so those stay out
+whatever you pass; import your own copy through **Library → Import a score**.
+And it does not change what the tests build in CI, which stays strict.
 
 (`--allow-nc` still works as an older spelling, but it admits only the first
-kind, so use `--personal`.)
+kind, and you no longer need to pass anything.)
 
 ---
 
@@ -226,7 +237,7 @@ The HP-130 talks MIDI over the DIN cable to a USB interface, and the S25 takes
 that through the OTG adapter.
 
 1. Plug it in **before** opening the app, if you can.
-2. Settings → **MIDI** → **Connect piano**. Chrome asks once; say yes.
+2. Settings → **MIDI devices** → **Connect piano**. Chrome asks once; say yes.
 3. Play a key. The log fills in and the keyboard strip lights up.
 
 After that first yes, the app reconnects on its own every time it opens — you
@@ -255,13 +266,51 @@ Open the app. **Today** has already built you a session.
 - **Swap** on any row offers something else that trains the same thing, and the
   "not a song" filter on that sheet is there because plenty of skills are
   better practised without a tune attached.
+- **Today's sight-read** sits under the session card, whatever length you
+  chose: three minutes of music you have never seen, the same phrase all day
+  and a new one tomorrow. It is the one thing on the screen counted in days in
+  a row rather than minutes, a tick appears once today's is done, and a day
+  that is not over yet does not break the run.
 
 On the **Score screen**: the music follows you. It waits for you by default when
 the piano is connected, and moves on a clock when it is not. The control bar
-hides while you play and comes back on a tap.
+hides while you play and comes back on a tap. **Hear it** plays the piece to
+you and puts back whatever you were doing when it ends; long-press a bar to
+hear just that bar.
+
+Behind **⋯** are the settings you change once — the input, the metronome,
+bars in window, size, the keys — and three rows that appear only when they
+apply:
+
+- **Rhythm only** (in *Keep tempo*) judges your timing and not your notes: one
+  tap per written note or chord, on any key at all, and extra keys are wrong.
+  The summary is headed *Rhythm run* and it never counts as a pass of the
+  piece. It is remembered, because someone who works this way does on every
+  piece.
+- **Ladder** (once a loop is set) raises the tempo a notch after each clean
+  pass and lowers it after a mistake, from wherever the tempo was when you
+  switched it on and never above 100 % unless you had already asked for more.
+  The tempo figure on the bar is underlined while it is on.
+- **Duet** (with *R* or *L* chosen) has the app play the other hand. It is the
+  same setting as *Sound → playback plays* in Settings, bound where the
+  question is actually asked; turned off and on again it comes back exactly
+  as it was.
 
 When you finish, you get a summary and it is recorded. An item you passed comes
 back for review after 1, 3, 7 and 21 days.
+
+**Drills** are prompt-and-answer: name the note, play the chord, keep the
+rhythm. Where the answer is a set of keys — a mode, a chord, a numeral, a note
+on the staff — two quiet buttons under the hint let you in: **Show me** lights
+the answer on the keys and writes it on a small staff, **Hear it** plays it.
+Either forfeits that card's mark, so the score keeps meaning what it says. A
+miss holds its card — the keys you played in red, the ones wanted lit, the
+answer on the staff — until you tap to move on; and a set that ends with any
+misses offers **Go over the ones you missed**, a short round of exactly those
+cards that scores nothing and records nothing. **Simon** is the ear drill with
+nothing to guess between: the app plays one note, then the same note and one
+more, then three, until the chain breaks; the score is the longest chain you
+echoed, in the octave it was played.
 
 ---
 
@@ -318,7 +367,7 @@ the first choice in the list.
 
 ### What it takes
 
-**Library → Import a score** takes `.musicxml`, `.mxl` and `.pdf`.
+**Library → Import a score** takes `.musicxml`, `.mxl`, `.xml` and `.pdf`.
 
 - **MusicXML and .mxl** become first-class: searchable, playable, and the music
   follows your playing exactly as it does for anything built in.
@@ -392,7 +441,7 @@ that it has not.
 ### A whole folder of scores
 
 One at a time is fine for a score you bought. For a folder of thousands there is
-**Library → Browse a score folder**.
+**Library → Score folder**.
 
 Copy the folder onto the phone first — internal storage or an SD card, anywhere the
 file picker can see it. Then tap **Pick a folder** and choose it. The app reads what
@@ -405,13 +454,16 @@ backup, and it keeps working whether or not the folder is still there.
 
 Two things that will otherwise look like bugs:
 
-- **You have to pick the folder again each time you want to add something.** Android
-  lends a picked folder to an app for one visit. Turn on **Settings -> Content -> Remember
-  the score folder** and it may not have to: MDN says Chrome for Android has been able to
-  hold onto a folder since version 132, which nothing has yet tried on your phone. If it does
-  not work the app quietly goes back to asking. The
-  *listing* is saved, so browsing works any time, offline, with nothing plugged in —
-  it is only adding that needs the folder in hand.
+- **You may be asked for the folder again when you add something.** Android lends a
+  picked folder to an app for one visit. **Settings → Content → Remember the score
+  folder** is on from the start and keeps a handle to it: MDN says Chrome for Android
+  has been able to hold onto a folder since version 132, and an installed app keeps
+  the grant without a prompt — but whether your S25 keeps it across a relaunch is the
+  one fact nobody has been able to check without your phone. If it does not, the app
+  quietly goes back to asking. The *listing* is saved either way, so browsing works any
+  time, offline, with nothing plugged in — it is only adding that needs the folder in
+  hand. A PDF in the folder is listed too, badged *PDF*, and Add makes it a PDF import
+  that opens in the viewer.
 - **Levels marked `est.` are guesses**, made from the file's statistics rather than
   from anyone playing it. Treat them as a way to sort the shelf, not as a verdict.
   Re-level anything that feels wrong: it is one tap on the item.
@@ -420,6 +472,21 @@ If the folder came from the archive on the laptop it will have a `library.json` 
 it, which is where the titles and composers come from. A folder of your own scores
 with no such file works too — each one is listed by its filename, and takes its real
 title from inside the file when you add it.
+
+### A score you make instead of finding
+
+**Library → Accompaniment lab** is for a progression rather than a piece. Pick a key,
+a progression (I–IV–V–I, I–V–vi–IV, ii–V–I, I–vi–IV–V, the 12-bar blues, or roman
+numerals you type; a minor key gets its own numerals), a left-hand pattern, a right hand
+(chord tones, melody or none), bars and a tempo.
+
+- **Read it** writes the exercise out and opens it on the Score screen, where every mode
+  works on it. It is filed in the Library under *Accompaniment lab*; the same choices
+  give the same row, and only the newest few builds are kept, so an evening of trying
+  progressions does not fill the Library with scratch.
+- **Jam it** keeps the same chords in time over the chord chart's bass-and-drums bed,
+  marks the bar you are in and lights its chord tones on the keys. Nothing is judged and
+  nothing is recorded; changing a setting under a running loop stops it and says so.
 
 ---
 
@@ -471,8 +538,9 @@ If something breaks mid-practice, a red banner appears at the bottom with
 - **Nothing is locked.** Every lesson is openable whenever you like. "I already
   know this" marks one done without playing it, and keeps its own badge so you
   can tell later what you actually measured.
-- **The metronome** works on its own (Today → Tools) and on top of the sheet
-  music (the 🥁 button on the Score screen).
+- **The metronome** works on its own (the *Metronome* link under Today's session
+  card) and on top of the sheet music (the *Metronome* row in the Score screen's
+  ⋯ sheet).
 
 ## 8. Three things only you can check
 
@@ -589,11 +657,11 @@ the moment you do (it needs a paid plan on a private repo, and its only job was
 this test). The URL is the one the Pages workflow prints — `Settings → Pages`
 shows it, and the run's "deploy" step links straight to it.
 
-**One thing to know first.** The Pages build is the **strict** one: the 159
-scores whose composition is not public domain are *placeholders* there, showing
+**One thing to know first.** The Pages build is the **strict** one: the scores
+whose composition is not public domain are *placeholders* there, showing
 "import needed" and a line saying what to do instead. That is correct and is
-not a fault to report. Those 159 appear only in the build you install from the
-laptop, which is made with `--personal`.
+not a fault to report. Those appear as real scores only in the build you install
+from the laptop, which is the personal build (§1).
 
 Ten checks, in the order that finds the worst failure first. Each is one screen
 and one expected result. If a check fails, stop and send me the Diagnostics
@@ -608,11 +676,11 @@ you were on.
 
 2. **Diagnostics says the library is complete.** Open the app from the home
    screen, then **Settings → Diagnostics**. **Right:** *Precached n of n*, with
-   the two numbers equal and n over 1,400. **Wrong:** a smaller first number
+   the two numbers equal. **Wrong:** a smaller first number
    that does not catch up after a minute on Wi-Fi. *Send:* that line.
 
 3. **The piano connects.** Plug the HP-130 in with the USB cable and open
-   **Settings → MIDI**. Play a few keys. **Right:** the device is named, and
+   **Settings → MIDI devices**. Play a few keys. **Right:** the device is named, and
    the keyboard strip lights the keys you press with no lag you can feel.
    **Wrong:** no device listed (usually the cable or the phone's USB mode), or
    keys that light late or stick down. *Send:* the MIDI section of the debug
@@ -647,11 +715,14 @@ you were on.
    MusicXML file, or a browser error page. *This is the one thing about the
    import that no test here could check.*
 
-9. **Browse the score folder.** Copy `build/pdmx/pianopath-library.zip` to the
-   phone and unzip it, then **Library → Browse a score folder → Pick a folder**
+9. **Browse the score folder.** Make the archive if it is not already there —
+   `py -3.11 tools/content/pdmx/manifest.py --zip` writes
+   `build/pdmx/pianopath-library.zip`, which is gitignored — copy it to the
+   phone and unzip it, then **Library → Score folder → Pick a folder**
    and choose `pianopath-library` (either one, if the phone made two — unzipping
    on Samsung's My Files puts a `pianopath-library` inside a `pianopath-library`,
-   and the reader finds `library.json` either way). **Right:** it lists 37,261 scores, the
+   and the reader finds `library.json` either way). **Right:** it lists every score
+   in the archive (the count line at the top says how many), the
    search box filters them as you type, and **Add** on one of them puts it in
    your library. **Wrong:** a long freeze while picking (tell me roughly how
    long — this is the one number nobody could measure without your phone), or
@@ -664,7 +735,7 @@ you were on.
     mode on, open it again. **Right:** everything works — Today, a score, a
     drill, a lesson — with no network at all. **Wrong:** anything blank, any
     "could not load", any spinner that does not end. Then turn airplane mode
-    off and, last, **Progress → Export a backup**, so you have one before you
+    off and, last, **Progress → Export everything**, so you have one before you
     change anything else.
 
 When all ten are right: make the repository private (**Settings → General →

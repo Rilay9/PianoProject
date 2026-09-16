@@ -29,8 +29,13 @@ otherwise memorise separately every time the tune moved.
 **What to practise.** One tune, twenty minutes at a time, in the four ways
 above. Then the same tune a fourth higher.
 
-**Repertoire for this rung.** Whichever standard you have been carrying since
-Stage 7. Changing it now would restart the clock.
+**Repertoire for this rung.** Six options, and the instruction is to pick one
+and stay with it: *Stardust* if you carried it up from Stage 8; *Ain't
+Misbehavin'* for stride; *Lullaby of Birdland* for a fast tune made of
+ii–V–Is; *When the Saints Go Marching In* in its jazz setting, for a tune you
+can already hear; *Linus and Lucy* for a left-hand ostinato that never stops;
+and *Take Five* for the 5/4 you counted on the technique track. Changing tune
+partway through restarts the clock.
 
 **Common mistake.** Learning six tunes badly instead of one properly. The second
 tune takes a fifth of the time the first one did, and only if the first one is

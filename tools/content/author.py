@@ -2,7 +2,7 @@
 """
 Compiles the scores we write ourselves into the app's format.
 
-docs/03-content-pipeline.md §3 step 4 and §5. Two kinds of source live in
+docs/03-content-pipeline.md §3 step 6 and §5. Two kinds of source live in
 content/scores/authored/:
 
   * `*.abc` — a tune in ABC with a `%%pianopath` metadata header. ABC is

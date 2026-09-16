@@ -1,4 +1,4 @@
-# P5 — Authored tunes, lessons, curriculum data  ·  Intended model: **Sonnet 5**  ·  Branch: `feat/p5-content`
+# P5 — Authored tunes, lessons, curriculum data  ·  Branch: `feat/p5-content`
 
 (Include `_COMMON-HEADER.md`.)
 

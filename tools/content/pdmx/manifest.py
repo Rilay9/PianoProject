@@ -4,8 +4,8 @@ Writes `library.json` into a folder of scores, so the folder describes itself.
 The scores live on the phone, not in the app and not on this machine's network
 (see `docs/decisions/2026-09-06-p14-folder-library.md`). The app points at a
 folder and reads what is in it — which works for any folder of MusicXML, but
-means that a folder of PDMX files would otherwise show 37,261 rows called
-`QmbyQiyHS….mxl`, because a CID is not a title.
+means that a folder of PDMX files would otherwise show tens of thousands of rows
+called `QmbyQiyHS….mxl`, because a CID is not a title.
 
 So the metadata travels *with* the files. This writes one small file next to
 them holding what the browse list needs: title, composer, estimated level,
@@ -19,8 +19,8 @@ rather than merely present.
     py -3.11 tools\\content\\pdmx\\manifest.py
 
 Rows are arrays, not objects, and the field names are given once at the top.
-For 37,261 scores that is the difference between a 13 MB file and a 6 MB one,
-on a phone, parsed on every folder pick.
+Over the whole archive that roughly halves the file, on a phone, parsed on
+every folder pick.
 """
 from __future__ import annotations
 

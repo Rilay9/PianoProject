@@ -15,7 +15,7 @@ directly.
 The member name is the thing that goes wrong. The CSV writes
 `./mxl/1/11/<cid>.mxl`; the tarball's members are `mxl/1/11/<cid>.mxl` with no
 leading `./`. A mismatch extracts nothing at all and reads like a corrupt
-archive, so `select.member_name` normalises it in one place, both this and the
+archive, so `shortlist.member_name` normalises it in one place, both this and the
 tests use that, and the summary below says how many members were wanted and how
 many were found.
 """

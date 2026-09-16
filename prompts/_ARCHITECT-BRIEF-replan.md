@@ -1,6 +1,6 @@
-# Brief for Fable — replan PianoPath around a real library
+# Brief for the architect session — replan PianoPath around a real library
 
-You are architecting, not implementing. Everything you produce is **input for Opus**, which
+You are architecting, not implementing. Everything you produce is **input for the implementing model**, which
 does the work in a separate session against this repository. Your output is prompt files and
 one decision document; you write no application code and no content.
 
@@ -10,7 +10,7 @@ Read this whole brief, then read the repository, then produce what §7 asks for.
 
 ## 1. How this project works, and how your output has to fit it
 
-PianoPath is built by feeding numbered prompts to Opus, one phase at a time. The convention is
+PianoPath is built by feeding numbered prompts to the implementing model, one phase at a time. The convention is
 already established and you must follow it exactly:
 
 - `prompts/_COMMON-HEADER.md` is included in every prompt and is **binding**: the branch is
@@ -291,7 +291,7 @@ Four things, all as files in this repository, on a branch you name.
 
 1. **`docs/decisions/<date>-p11-replan.md`** — your architectural decisions. Every item in §5
    gets a ruling. Every design in §6 gets its shape, its data model and its failure modes. Say
-   what you rejected and why. This is the document Opus will be held to, so ambiguity in it
+   what you rejected and why. This is the document the implementer will be held to, so ambiguity in it
    becomes wasted work later.
 
 2. **A revised phase plan**, as an edit to `docs/06-build-plan.md`. P10 is not finished and
@@ -300,7 +300,7 @@ Four things, all as files in this repository, on a branch you name.
 
 3. **The prompt files themselves**, `prompts/P11-*.md`, `P12-*.md`, … — one per phase, in the
    house format described in §1, each naming its branch and the doc sections to read. These
-   are what the owner pastes into Opus. Write them so that a competent implementer who has not
+   are what the owner pastes into the implementing session. Write them so that a competent implementer who has not
    read this brief can execute them from the repository alone. Size them so that one is a
    session's work, not a week's: P7 was too big and had to be run in seven parts, and that is
    recorded in its decision doc as a mistake.

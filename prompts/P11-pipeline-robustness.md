@@ -1,4 +1,4 @@
-# P11 — Pipeline robustness: cache, incremental render, the blind spots, one track list  ·  Intended model: **Opus 5**  ·  Branch: `feat/p11-robustness`
+# P11 — Pipeline robustness: cache, incremental render, the blind spots, one track list  ·  Branch: `feat/p11-robustness`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

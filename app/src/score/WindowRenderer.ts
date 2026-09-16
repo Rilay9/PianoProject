@@ -181,22 +181,65 @@ const MAX_SLOTS = 4;
  * spare space at the bottom; so does this, when there is spare space.
  */
 /**
- * The widest a single bar may be drawn, in multiples of one staff's height.
+ * The stages that may refuse to stretch a system, by width (`04` §7a).
  *
- * A guardrail, not a typesetter: it exists to catch the absurd case, not to
- * pick a width. Expressed against the engraving rather than in pixels, because
- * a pixel count is right on one screen and nonsense on the next — and against
- * one *staff* rather than the whole system, because the system's height
- * depends on how many staves the music has while the screen's width does not.
- *
- * Eight, from the two ends it has to separate. A phone drawing one bar has
- * roughly four staff-heights of width to give it, and the phone must always
- * stretch: that is what took the fill from 58 % to 96 %. A laptop drawing one
- * bar has nearer eighteen, which is the case that reads as a diagram of a bar
- * rather than a bar. Eight sits clear of both, so the rule never fires on the
- * screen it exists to help.
+ * A phone always stretches. Its one bar nearly fills the width at natural
+ * spacing already, and stretching is what took a sparse exercise's fill from
+ * 58 % to 96 %; nothing below applies under this width. Nine hundred is the
+ * tablet breakpoint's own number — the shortest side of a tablet, the width
+ * of a laptop's capped stage — kept as a literal here rather than imported
+ * from the UI layer, which the engraving does not otherwise know about.
+ */
+const WIDE_STAGE_MIN_PX = 900;
+
+/**
+ * Under that width, the widest a single bar may be drawn, in multiples of one
+ * staff's height (`mayStretch`). Eight: on a phone a bar is a few staff
+ * heights wide and always stretches; the rule catches only the absurd case.
  */
 const MAX_BAR_WIDTH_IN_STAVES = 8;
+
+/**
+ * On a wide stage, the most a system may be stretched past its natural width.
+ *
+ * Measured on the engraving itself: the slot is drawn unstretched first, and
+ * if its ink already spans at least this fraction of the page it is drawn
+ * again stretched — the notes move a little and the page is full. If not, it
+ * keeps its natural spacing and is centred (`centredInset`). Two, because a
+ * bar spread to twice its spacing still reads as a bar while one at three
+ * times reads as a diagram of one: Suo Gân's four-note first bar was given
+ * the whole of a 1,040 px stage (2026-09-16, the tour and the wide spec both
+ * photographed it).
+ *
+ * This replaced a rule stated in staff heights, which compared the page with
+ * the *system's* ink height — near 150 px for a single staff with chord
+ * symbols, so its "eight staff heights" was 1,200 px and it never fired on
+ * any screen the app runs on. The second engraving is paid only on a wide
+ * stage, and only by a window dense enough to be worth filling; a phone
+ * never pays it.
+ */
+const STRETCH_LIMIT = 2;
+
+/**
+ * How much of its page a drawn sheet's ink spans, on screen: 1 is a system
+ * justified to the page's right edge. Every stroke's box against the SVG's
+ * own, so the wrapper's scale cancels out.
+ */
+function drawnShare(wrapper: HTMLElement): number {
+  const svg = wrapper.querySelector('svg');
+  if (!svg) return 1;
+  const page = svg.getBoundingClientRect();
+  if (!(page.width > 0)) return 1;
+  let left = Number.POSITIVE_INFINITY;
+  let right = Number.NEGATIVE_INFINITY;
+  for (const stroke of svg.querySelectorAll('path, rect')) {
+    const box = stroke.getBoundingClientRect();
+    if (!(box.width > 0)) continue;
+    left = Math.min(left, box.left);
+    right = Math.max(right, box.right);
+  }
+  return right > left ? (right - left) / page.width : 1;
+}
 
 /**
  * How much of the stage must be going spare before the music is centred.
@@ -295,6 +338,13 @@ interface Buffer {
   wrapper: HTMLElement;
   /** The range currently drawn, or null when nothing has been drawn yet. */
   range: MeasureRange | null;
+  /**
+   * Drawn at its natural width on a wide stage (`drawInto`): the system ends
+   * where its notes do, and the fit centres it instead of pinning it left.
+   */
+  natural?: boolean;
+  /** Drawn while the stage had no width yet (`drawInto`); redrawn once it has one. */
+  blind?: boolean;
   /**
    * The stage height and scale this sheet was last fitted for.
    *
@@ -1685,6 +1735,18 @@ export class WindowRenderer {
         this.frozen = null;
         // And every sheet drawn for the old width, the spare included.
         this.dropDrawnSheets();
+      } else if (
+        this.measuredWidth < 0 &&
+        width >= WIDE_STAGE_MIN_PX &&
+        this.buffers.some((buffer) => buffer.range !== null && buffer.blind)
+      ) {
+        // The first width a wide stage reports, with a sheet already drawn
+        // blind: that sheet was stretched because there was no page to judge
+        // it against (`drawInto`), and on a laptop it stayed that way — the
+        // wide spec photographed the first slot stretched beside a second one
+        // at its natural width (2026-09-16). One redraw, once.
+        turned = true;
+        this.dropDrawnSheets();
       }
       this.measuredWidth = width;
     }
@@ -1818,7 +1880,15 @@ export class WindowRenderer {
     buffer.wrapper.hidden = false;
     // A slot fills the width; a sliding chunk keeps its bars' natural widths,
     // and so does a slot with more room than the music can justify.
-    buffer.view.stretchLastSystem = !this.sliding && this.mayStretch(range);
+    // On a wide stage a slot is engraved at its natural width first and
+    // stretched only if it nearly fills the page anyway (`stretchFirst`,
+    // `STRETCH_LIMIT`, and the second pass below).
+    const page = this.measure(this.el).width;
+    // Drawn before the stage had a width — the first frame — so the wide-stage
+    // question could not be asked; the width handler asks it once it can.
+    buffer.blind = !(page > 0);
+    const wide = !this.sliding && page >= WIDE_STAGE_MIN_PX;
+    buffer.view.stretchLastSystem = !this.sliding && !wide && this.mayStretch(range);
     // *Natural*, sideways: not the engraver's "unstretched", which still
     // widens the chunk by up to 1.4. The read-ahead is paid for out of the
     // width to the right of the bar being played, and a bar stretched by 40 %
@@ -1826,6 +1896,27 @@ export class WindowRenderer {
     buffer.view.naturalLastSystem = this.sliding;
     buffer.view.setRange(range);
     buffer.view.render();
+    buffer.natural = false;
+    if (wide) {
+      const share = drawnShare(buffer.wrapper);
+      if (share >= 1 / STRETCH_LIMIT) {
+        // Dense enough that stretching moves nothing far: fill the page.
+        buffer.view.stretchLastSystem = true;
+        buffer.view.render();
+      } else {
+        buffer.natural = true;
+      }
+    }
+    // Written for the tests and the pane: which of the four ways this sheet
+    // was drawn, and whether the stage had a width when it was.
+    buffer.wrapper.dataset.stretch = wide
+      ? buffer.natural
+        ? 'natural'
+        : 'filled'
+      : buffer.view.stretchLastSystem
+        ? 'stretched'
+        : 'guarded';
+    buffer.wrapper.dataset.blind = buffer.blind ? 'true' : 'false';
     buffer.range = range;
     this.annotate(buffer);
   }
@@ -1946,7 +2037,7 @@ export class WindowRenderer {
         // And the width, by the same measure `chooseSlotCount` predicts it
         // with: the piece's own width at this scale, not a window's ink —
         // a sparse window drawn at its natural width is narrow by choice
-        // (`mayStretch`), and that is no fault of the count.
+        // (`stretchFirst` and the natural-width pass in `drawInto`), and that is no fault of the count.
         const widthUsed = this.fitWidth * scale;
         const tooSmall = Number.isFinite(drawnStaff) && drawnStaff < MIN_STAFF_PX - 0.5;
         const tooNarrow = this.fitWidth > 0 && widthUsed < SLOT_WIDTH_FLOOR * available.width - 0.5;
@@ -2292,17 +2383,20 @@ export class WindowRenderer {
    * against, so it stretches, exactly as it did before this existed. That
    * fallback matters: it is the state every window is in for the first frame.
    */
+  /**
+   * On a narrow stage, whether a slot's one system is stretched to its page —
+   * the rule as it stood before the wide stage had one of its own, kept
+   * unchanged so that nothing under 900 px draws differently (the dev screen's
+   * committed snapshots are engraved by it). A guardrail against the absurd
+   * case, in multiples of one staff's height (`MAX_BAR_WIDTH_IN_STAVES`);
+   * without the piece's measurement it stretches, which is the state every
+   * window is in for its first frame.
+   */
   private mayStretch(range: MeasureRange): boolean {
     const systemHeight = this.pieceInkZoom === this.zoomLevel ? (this.pieceInk?.height ?? 0) : 0;
     if (!(systemHeight > 0)) return true;
     const page = this.measure(this.el).width;
     if (!(page > 0)) return true;
-    // Per *staff*, not per system. A grand staff is twice as tall as a single
-    // one while the screen is exactly as wide either way, so a reference taken
-    // from the system halved the allowance for one-staff music and refused the
-    // stretch to a treble-only tuplet piece on a phone — the one place the
-    // stretch is the whole point. One staff is the same size in both, so it is
-    // the reference that means the same thing in both.
     const staves = Math.max(1, stavesPerSystem(this.frontBuffer.view));
     const staffHeight = systemHeight / staves;
     const span = range.toMeasure - range.fromMeasure + 1;
@@ -2627,7 +2721,7 @@ export class WindowRenderer {
   /**
    * Where a system that does not fill the stage sits across it.
    *
-   * Centred, not pinned left. Once `mayStretch` stops stretching a sparse bar
+   * Centred, not pinned left. Once the natural-width pass stops stretching a sparse bar
    * on a wide screen, the system keeps its natural width — which is the point
    * — and left-aligned that put a 380 px system at the left edge of a 1512 px
    * display with eleven hundred pixels of nothing beside it. Compact music in
@@ -2643,7 +2737,7 @@ export class WindowRenderer {
     if (this.readAhead !== 'slots' || this.sliding) return FIT_INSET_PX;
     // What the ink *is*, not what it was allowed to be.
     //
-    // This used to return early for any window `mayStretch` had permitted,
+    // This used to return early for any window the stretch rule had permitted,
     // reasoning that music allowed to fill the width already sits where it
     // should. Permission is not the same as having filled it: a slot's page is
     // sized so that a stretched system would reach both edges, and OSMD is free

@@ -9,7 +9,7 @@ matters because everything that can drift apart lives on one side of it: the ren
 practice engine, the piano and the metronome are joined inside `ScoreSession`, and the screen
 holds no timing, judging or scheduling at all.
 
-The four rules the Opus review pass in the prompt asks about, and where they are kept:
+The four rules the review pass in the prompt asks about, and where they are kept:
 
 1. **Nothing renders on the input path.** `feed()` calls the engine and returns; the engine's
    events set a `dirty` flag and stash the pending step; `paint()` runs in the animation

@@ -1,4 +1,4 @@
-# P15 — Finders on every rung, and the two-tap import  ·  Intended model: **Opus 5**  ·  Branch: `feat/p15-finder-import`
+# P15 — Finders on every rung, and the two-tap import  ·  Branch: `feat/p15-finder-import`
 
 (Include `_COMMON-HEADER.md`. The default branch is `claude/piano-teaching-app-bo19td`; there is no `main`.)
 

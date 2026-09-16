@@ -530,6 +530,16 @@ export class Router {
       // of a navigation that changed nothing.
       route.scoreLoop?.from === this.current.scoreLoop?.from &&
       route.scoreLoop?.to === this.current.scoreLoop?.to &&
+      route.importFor === this.current.importFor &&
+      // By value for the same reason, and for a sharper one: `paper` and
+      // `importFor` both ride on `tab: 'library'` with every other field
+      // absent, so leaving them out of this comparison made three different
+      // navigations no-ops. Tapping the Library tab from `#/paper/<book>/<no>`
+      // changed the hash and left the Paper screen standing; the second piece
+      // of a book never replaced the first; and a second `Import for this rung`
+      // opened the picker on the rung before it.
+      route.paper?.bookId === this.current.paper?.bookId &&
+      route.paper?.pieceId === this.current.paper?.pieceId &&
       route.lesson === this.current.lesson &&
       route.chart === this.current.chart &&
       route.drill === this.current.drill

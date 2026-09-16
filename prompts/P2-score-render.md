@@ -1,4 +1,4 @@
-# P2 — Score rendering + ScoreModel  ·  Intended model: **Opus 5**  ·  Branch: `feat/p2-score`
+# P2 — Score rendering + ScoreModel  ·  Branch: `feat/p2-score`
 
 (Include `_COMMON-HEADER.md`.)
 
