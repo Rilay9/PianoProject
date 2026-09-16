@@ -314,6 +314,15 @@ def _plain(text: str) -> str:
     return " ".join(re.sub(r"[^a-z0-9]+", " ", stripped).split())
 
 
+#: An artist string that is a shelf label, not a name. The archive files most of
+#: its traditional music under `Misc tunes`, `Misc Christmas`, `Misc Traditional`
+#: and the like — 125,038 rows under the first alone — and two uploads of one carol
+#: under two labels were two pieces, which is how seven *Joy to the World*s came
+#: through the rerun of 2026-09-15. A label says nothing about which piece it is.
+def _shelf_label(artist: str) -> bool:
+    return artist.strip().lower().startswith("misc ")
+
+
 def work_key(title: str, composer: str | None, artist: str = "") -> str:
     """
     What piece an upload is, as a string two uploads of it share.
@@ -351,7 +360,7 @@ def work_key(title: str, composer: str | None, artist: str = "") -> str:
         rest = [w for w in words if w not in names and w not in _EDITION_WORDS]
         return f"{who}|{' '.join(rest)}"
     rest = [w for w in words if w not in _EDITION_WORDS]
-    by = _plain(artist) if artist and artist.strip().lower() not in ("na", "") else ""
+    by = _plain(artist) if artist and artist.strip().lower() not in ("na", "") and not _shelf_label(artist) else ""
     return f"{' '.join(rest)}|{by}"
 
 

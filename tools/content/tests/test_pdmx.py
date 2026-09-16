@@ -1274,6 +1274,17 @@ class TestWorkKey(unittest.TestCase):
                          self.key("Bach Prelude in C BWV846", bach))
         self.assertIn("hobxvi-34", self.key("Haydn - Sonata in E minor Hob XVI/34 Movement I", "Joseph Haydn"))
 
+    def test_a_shelf_label_is_not_an_artist(self) -> None:
+        # `Misc tunes`, `Misc Christmas` and `Misc Traditional` are where the
+        # archive files its folk music, not who wrote it; one carol under two
+        # labels is one carol, and a real artist still tells two songs apart.
+        self.assertEqual(self.key("Joy to the World", None, "Misc Christmas"),
+                         self.key("Joy to the World", None, "Misc tunes"))
+        self.assertEqual(self.key("Joy to the World", None, "Misc Christmas"),
+                         self.key("Joy to the World", None, "NA"))
+        self.assertNotEqual(self.key("Hallelujah", None, "Leonard Cohen"),
+                            self.key("Hallelujah", None, "Handel"))
+
     def test_the_words_about_the_upload_are_not_part_of_the_piece(self) -> None:
         joplin = "Scott Joplin"
         self.assertEqual(self.key("Maple Leaf Rag (Scott Joplin)", joplin),
