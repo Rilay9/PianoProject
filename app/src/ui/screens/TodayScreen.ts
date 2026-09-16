@@ -567,8 +567,11 @@ export function TodayScreen(router: Router): HTMLElement {
   });
 
   const stopWatchingProgress = onProgressChange(() => {
-    void allProgress().then((rows) => {
+    // The daily days too: the store ticks the day when a seeded run is
+    // recorded, and the tick has to reach the card without a reload.
+    void Promise.all([allProgress(), dailyReadDays()]).then(([rows, days]) => {
       progress = rows;
+      dailyDays = days;
       rebuild();
     });
   });

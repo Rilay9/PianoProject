@@ -7,6 +7,8 @@
  */
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  dailyReadDays,
+  dayKey,
   REVIEW_INTERVALS_DAYS,
   addMinutes,
   getProgress,
@@ -18,6 +20,7 @@ import {
   weekSoFar,
   type RunResult,
 } from '../../src/data/progressStore';
+import { dailySeed } from '../../src/engine/sightReading';
 import type { ProgressRow } from '../../src/data/db';
 
 const RUN: RunResult = {
@@ -161,5 +164,25 @@ describe('the weekly goal', () => {
 
   it('starts at the default goal', async () => {
     expect((await getStreak()).weeklyGoalMinutes).toBe(150);
+  });
+});
+
+describe("Today's read is the run that carries the day's seed", () => {
+  // The day used to be read off the item's `lastPracticedAt`, so the same
+  // exercise opened from Plan (a different phrase) ticked it, and a day
+  // already ticked came untick when the stage moved on and Today picked
+  // another item. The seed is the one thing only Today's card sends.
+  it('ticks the day when the run carries the day\'s seed', async () => {
+    const now = new Date();
+    expect(await dailyReadDays()).not.toContain(dayKey(now));
+    await recordRun({ ...RUN, seed: dailySeed(dayKey(now)) }, now);
+    expect(await dailyReadDays()).toContain(dayKey(now));
+  });
+
+  it('leaves the day alone for a run with no seed or another seed', async () => {
+    const now = new Date();
+    await recordRun({ ...RUN }, now);
+    await recordRun({ ...RUN, seed: dailySeed(dayKey(now)) + 1 }, now);
+    expect(await dailyReadDays()).not.toContain(dayKey(now));
   });
 });

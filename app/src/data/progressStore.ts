@@ -7,11 +7,19 @@
  * failed write is reported rather than swallowed — a silent failure here is
  * the worst bug this app could have.
  */
+import { dailySeed } from '../engine/sightReading';
 import { openDatabase, type ProgressRow, type SessionRow, type StreakRow } from './db';
 
 export interface RunResult {
   itemId: string;
   lessonId?: string;
+  /**
+   * The generated phrase's seed, when the run was of one (`04` §2). Today's
+   * read is the run whose seed is the day's, and that is how the day is
+   * ticked — here, so that every path that records a run (the Score screen,
+   * the test hook) ticks it the same way.
+   */
+  seed?: number;
   mode: string;
   tempoPct: number;
   accuracy: number;
@@ -116,6 +124,11 @@ export async function allProgress(): Promise<ProgressRow[]> {
 export async function recordRun(result: RunResult, now = new Date()): Promise<ProgressRow> {
   const row = { ...(await getProgress(result.itemId)) };
   const date = today(now);
+  // The same exercise opened from Plan or the Library is a different phrase
+  // and does not tick the day; a day already ticked stays ticked when the
+  // stage moves on and Today picks another item. It used to be read off the
+  // item's `lastPracticedAt`, which had both faults (2026-09-16).
+  if (result.seed !== undefined && result.seed === dailySeed(dayKey(now))) await markDailyRead(now);
 
   row.attempts += 1;
   row.lastPracticedAt = now.toISOString();

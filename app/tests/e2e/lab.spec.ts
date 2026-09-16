@@ -228,11 +228,15 @@ test.describe("Today's sight-read", () => {
     await expect(row).toBeVisible({ timeout: 30_000 });
     const itemId = await row.getAttribute('data-daily');
     expect(itemId).toBeTruthy();
+    // The run that ticks the day is the one carrying the day's seed (`04`
+    // §2); the row publishes it, so the test records what a tap would.
+    const seed = Number(await row.getAttribute('data-seed'));
+    expect(Number.isFinite(seed)).toBe(true);
 
     // A finished run, through the storage hook rather than by playing one:
     // the streak's question is what a *recorded* run does to the card, and
     // playing a generated exercise note by note would be testing the engine.
-    await page.evaluate(async (id) => {
+    await page.evaluate(async ({ id, seed }) => {
       await (
         window as unknown as {
           __pianopath: {
@@ -241,6 +245,7 @@ test.describe("Today's sight-read", () => {
         }
       ).__pianopath.recordRun({
         itemId: id,
+        seed,
         mode: 'tempo',
         tempoPct: 100,
         // A fraction, as every recorded run's accuracy is (`SessionScore`):
@@ -253,7 +258,7 @@ test.describe("Today's sight-read", () => {
         passed: true,
         masterEligible: false,
       });
-    }, itemId as string);
+    }, { id: itemId as string, seed });
 
     await expect(row).toHaveAttribute('data-done', 'true', { timeout: 30_000 });
     await expect(row).toHaveAttribute('data-streak', '1');
