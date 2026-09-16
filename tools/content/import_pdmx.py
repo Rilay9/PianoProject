@@ -135,7 +135,10 @@ def build_item(entry: dict, *, bundled: bool, checksum: str | None) -> dict:
         # Always estimated: difficulty.py computed it, not a person (replan §1.4).
         level_source="estimated",
         hands=entry.get("hands", "both"),
-        tracks=BUCKET_TRACKS.get(bucket, ["core"]),
+        # A row may say its own genre and tracks (`genre`, `tracks` in the source
+        # table); the bucket is the fallback, not the verdict - the archive filed
+        # a Petzold minuet under pop and a Gershwin song under classical.
+        tracks=entry.get("tracks") or BUCKET_TRACKS.get(bucket, ["core"]),
         concepts=concepts_for(entry),
         source=SourceBlock(
             name=SOURCE_NAME,
@@ -149,7 +152,7 @@ def build_item(entry: dict, *, bundled: bool, checksum: str | None) -> dict:
             ),
         ),
         composer=entry.get("composer"),
-        genre=BUCKET_GENRE.get(bucket, ["pop"]),
+        genre=entry.get("genre") or BUCKET_GENRE.get(bucket, ["pop"]),
         file=f"scores/pdmx/{entry['file']}" if bundled else None,
         importHint=None if bundled else IMPORT_HINT.format(status=status),
         alternatives=[entry["duplicateOf"]] if entry.get("duplicateOf") else None,

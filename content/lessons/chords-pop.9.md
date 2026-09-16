@@ -31,9 +31,11 @@ back to back and keep the half of each that worked.
 — which is the point: play it as written once, then strip it back to its chord
 symbols and build your own. *Piano Man* and *Falling* are ballads where the
 left hand decides everything; *Mr. Blue Sky* and *Le Festin* are full textures
-to thin out; *Rolling Girl* and *Apex of the World* are the fast ones, where an
-arrangement has to leave something out to stay playable. What you hand in is
-your own version, written down as a chart with your notes on it.
+to thin out; *Rolling Girl* and *Apex of the World* are the fast ones, where
+an arrangement has to leave something out to stay playable. What you hand in
+is your own version, written down as a chart with your notes on it. All six
+are personal-library songs: the public build shows the rows and where to get
+the scores, and the rung is complete on its exercises there.
 
 **Common mistake.** Arranging by adding. Most arrangements get better when
 something comes out.

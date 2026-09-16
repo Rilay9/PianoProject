@@ -586,9 +586,9 @@
                 "exercise.hanon.11.left"
               ],
               "songOptions": [
-                "song.classical.duvernoy-etude-op-176-no-16.pdmx",
-                "song.classical.duvernoy-etude-op-176-no-18.pdmx",
-                "song.classical.lemoine-etude-op-37-no-4.pdmx"
+                "song.classical.duvernoy-etude-op-176-no-4.pdmx",
+                "song.classical.duvernoy-etude-op-176-no-5.pdmx",
+                "song.classical.duvernoy-etude-op-176-no-6.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -598,7 +598,7 @@
                 "minTempoPct": 0.8
               },
               "levelBand": [
-                5.0,
+                4.7,
                 5.4
               ],
               "finder": {

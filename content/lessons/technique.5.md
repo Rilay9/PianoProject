@@ -56,10 +56,10 @@ slow to be an ornament. Printed at two per beat here so that you can count it
 before you speed it up, and in the left hand, which is where a mordent is
 hardest and where the music of Stage 6 will ask for it.
 
-**An étude to put it in.** Duvernoy's Op. 176 (No. 16 and No. 18) and
-Lemoine's Op. 37 (No. 4) are the studies every teacher's Grade 2–3 pupil
-plays, and three sit on this rung at its level: one page each, the exercise
-above with a melody on it.
+**An étude to put it in.** Duvernoy's Op. 176 Nos. 4, 5 and 6 are on this
+rung, in the order the collection grades them: one page each, the exercise
+above with a melody on it. For the 2:1 exercise, *Duet* lets the app hold the
+steady hand while you play the moving one, then swap.
 
 **How you'll know you've got it.** The 2:1 exercise gone boring. A tie across
 the bar line where the pulse does not hesitate on either side of it. And a

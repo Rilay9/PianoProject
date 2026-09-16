@@ -216,7 +216,7 @@ and a daily read you can swap for something else is not a daily read.
   store under `pianopath.dailyRead` rather than in `StreakRow`, which would have cost a schema
   version bump for one array of date strings.
 - With no reading exercises in the build there is no card at all, rather than an empty one
-  (R4).
+  (R4). The day is ticked by the Score screen when the run carrying the day's seed is recorded (`markDailyRead`), so the same exercise opened from Plan or the Library — a different phrase — does not count, and a day already ticked stays ticked when the stage moves on (2026-09-16).
 
 ## 2a. Metronome (standalone)
 

@@ -6,7 +6,7 @@ videos:
   - label: "Easy slash chords tutorial on the piano!"
     url: "https://www.youtube.com/watch?v=cQY7iOkQj-Y"
     teacher: "Play Piano In A Flash"
-readingTime: 2
+readingTime: 3
 ---
 
 You know the loop. This rung is about knowing it in the twelve keys and about
@@ -34,9 +34,11 @@ slash-bass line in one.
 loop. *Clocks* and *Dancing Queen* are the four chords driven by a rhythm;
 *All of Me* and *Annie's Song* are the same kind of chords under a ballad; the
 *Flying Theme* from How to Train Your Dragon and *Fallen Down* from Undertale
-are a loop under a melody nobody sings. Play each from its chord symbols before
-you play it from the page, and any other loop song you like from the import
-screen.
+are a loop under a melody nobody sings. Play each from its chord symbols
+before you play it from the page, and any other loop song you like from the
+import screen. All six are personal-library songs: the public build shows the
+rows and where to get the scores, and the rung is complete on its exercises
+there.
 
 **Common mistake.** Learning the loop in five keys as five separate things.
 

@@ -57,7 +57,6 @@ import {
   dailyReadStreak,
   dayKey,
   getStreak,
-  markDailyRead,
   onProgressChange,
   readToday,
   reviewQueue,
@@ -404,26 +403,6 @@ export function TodayScreen(router: Router): HTMLElement {
     );
   }
 
-  /**
-   * Notices that today's read happened, and writes the day down.
-   *
-   * Read off the exercise's own progress row rather than hooked into the run:
-   * the Score screen records every run through `recordRun`, which notifies
-   * this screen, so "the daily item was last practised today" is a fact
-   * already on its way here. Nothing else had to learn about the streak.
-   */
-  function syncDailyRead(): void {
-    const item = dailyTarget;
-    if (!item || readToday(dailyDays, now)) return;
-    const row = progress.find((candidate) => candidate.itemId === item.id);
-    if (!row?.lastPracticedAt) return;
-    if (dayKey(new Date(row.lastPracticedAt)) !== dayKey(now)) return;
-    void markDailyRead(now).then((days) => {
-      dailyDays = days;
-      drawDaily();
-    });
-  }
-
   function drawActions(): void {
     actions.replaceChildren(
       button(
@@ -531,8 +510,9 @@ export function TodayScreen(router: Router): HTMLElement {
       // The daily read hangs off the same stage number the session card does,
       // so the two cannot disagree about where the learner is.
       dailyTarget = dailyItemFor(position ? position.stageNumber : 1);
+      // The day itself is written by the Score screen when the seeded run
+      // is recorded (`markDailyRead` there), not read off the item's row.
       drawDaily();
-      syncDailyRead();
     });
   }
 

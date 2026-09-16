@@ -1925,7 +1925,13 @@
       "review": {
         "decision": "keep",
         "note": "melody only (right hand), but well attested: 4.5 from 19"
-      }
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
     },
     {
       "id": "song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx",
@@ -3509,7 +3515,13 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.8 by 45"
-      }
+      },
+      "genre": [
+        "pop"
+      ],
+      "tracks": [
+        "chords-pop"
+      ]
     },
     {
       "id": "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
@@ -11891,7 +11903,13 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.5 by 65; note names printed over 19 notes"
-      }
+      },
+      "genre": [
+        "jazz"
+      ],
+      "tracks": [
+        "jazz"
+      ]
     },
     {
       "id": "song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx",
@@ -17699,7 +17717,13 @@
       "review": {
         "decision": "keep",
         "note": "Tchaikovsky op.39 Old French Song"
-      }
+      },
+      "genre": [
+        "classical"
+      ],
+      "tracks": [
+        "classical"
+      ]
     },
     {
       "id": "song.classical.tchaikovsky-march-of-the-wooden-soldiers-op-39-no5.pdmx",
@@ -17897,7 +17921,13 @@
       "review": {
         "decision": "keep",
         "note": "Minuet in G minor BWV Anh.115"
-      }
+      },
+      "genre": [
+        "classical"
+      ],
+      "tracks": [
+        "classical"
+      ]
     },
     {
       "id": "song.classical.bach-menuet-bwv-anh-113.pdmx",
@@ -18887,7 +18917,13 @@
       "review": {
         "decision": "keep",
         "note": "Attwood Sonatina in G"
-      }
+      },
+      "genre": [
+        "classical"
+      ],
+      "tracks": [
+        "classical"
+      ]
     },
     {
       "id": "song.classical.grieg-arietta-from-lyric-pieces-op-12-no-1-by-edvard-grieg.pdmx",
@@ -21131,7 +21167,13 @@
       "review": {
         "decision": "keep",
         "note": "Pinetop's Boogie Woogie (Smith 1928)"
-      }
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
     },
     {
       "id": "song.pop.boogie-easy-for-beginners.pdmx",

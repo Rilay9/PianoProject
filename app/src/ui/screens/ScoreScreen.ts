@@ -19,7 +19,7 @@ import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
-import { generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
+import { dailySeed, generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
 import type { CatalogItem } from '../../curriculum/types';
 import { getMidiSettings } from '../../data/midiSettings';
 import {
@@ -32,7 +32,7 @@ import {
 } from '../../data/settingsStore';
 import { evaluateOutcome } from '../../engine/Scoring';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
-import { recordRun } from '../../data/progressStore';
+import { dayKey, markDailyRead, recordRun } from '../../data/progressStore';
 import type { Mode, SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
 import { toMusicXml } from '../../score/mxl';
@@ -1895,6 +1895,14 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (item !== undefined) sightReadAttempts += 1;
 
     if (item && !sightReadRepeat && mode !== 'listen' && mode !== 'free') {
+      // Today's read is the run that carries the day's seed (`04` §2): the
+      // same exercise opened from Plan or the Library is a different phrase
+      // and does not tick the day, and a day already ticked stays ticked when
+      // the stage moves on and Today picks a different item. It used to be
+      // credited from the item's `lastPracticedAt`, which had both faults.
+      if (router.route.seed !== undefined && router.route.seed === dailySeed(dayKey(new Date()))) {
+        void markDailyRead();
+      }
       void recordRun({
         itemId: item.id,
         mode,

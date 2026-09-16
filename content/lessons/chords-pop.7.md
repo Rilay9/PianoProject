@@ -6,7 +6,7 @@ videos:
   - label: "Sound Amazing at the Piano With SUS CHORDS"
     url: "https://www.youtube.com/watch?v=lPJQfvm39jw"
     teacher: "Piano With Jonny"
-readingTime: 2
+readingTime: 3
 ---
 
 Four chords played plainly are four chords. The same four with the right colour
@@ -36,7 +36,10 @@ sus and add9 colour over a bass that barely moves; *Welcome to Wonderland* and
 *For the Damaged Coda* are the open, spread voicings this rung is about; the
 solo setting of *Scarborough Fair* is a modal tune re-voiced; and *Wake Me Up*
 is the loop with a syncopated left hand under it. Take one, play it plainly,
-then re-voice it the way the exercises do — same chords, different arrangement.
+then re-voice it the way the exercises do — same chords, different
+arrangement. All six are personal-library songs: the public build shows the
+rows and where to get the scores, and the rung is complete on its exercises
+there.
 
 **Common mistake.** Adding colour to every chord. A sus that resolves is a
 moment; a whole song of them is a drone.

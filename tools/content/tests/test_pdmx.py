@@ -1457,3 +1457,33 @@ class TestAttestation(unittest.TestCase):
         source = (TOOLS / "pdmx" / "shortlist.py").read_text(encoding="utf-8")
         quotas = source[source.index("def apply_quotas("):]
         self.assertIn("attested(c)", quotas)
+
+
+class TestBuildItemOverrides(unittest.TestCase):
+    """A source-table row may name its own genre and tracks (2026-09-16).
+
+    The bucket is a guess from the archive's metadata, and it filed a Petzold
+    minuet under pop and a Gershwin song under classical; the row's own field
+    wins when it is there and the bucket stands in when it is not.
+    """
+
+    def entry(self, **extra: object) -> dict:
+        base = {"id": "song.pop.x.pdmx", "title": "X", "level": 3.0, "file": "x.mxl", "bucket": "pop-film-game"}
+        base.update(extra)
+        return base
+
+    def test_the_bucket_stands_in_when_the_row_is_silent(self) -> None:
+        import import_pdmx
+
+        item = import_pdmx.build_item(self.entry(), bundled=True, checksum="0")
+        self.assertEqual(item["genre"], ["pop"])
+        self.assertEqual(item["tracks"], ["chords-pop"])
+
+    def test_the_row_wins_when_it_speaks(self) -> None:
+        import import_pdmx
+
+        item = import_pdmx.build_item(
+            self.entry(genre=["classical"], tracks=["classical"]), bundled=True, checksum="0"
+        )
+        self.assertEqual(item["genre"], ["classical"])
+        self.assertEqual(item["tracks"], ["classical"])

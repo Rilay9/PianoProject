@@ -6,7 +6,7 @@ videos:
   - label: "Voicing in Piano Explained: How to Bring Out Melody over Accompaniment"
     url: "https://www.youtube.com/watch?v=MUEyZfxUC6o"
     teacher: "Akira Ikegami"
-readingTime: 2
+readingTime: 3
 ---
 
 The three skills below are what Romantic piano writing asks for, and they are
@@ -16,17 +16,25 @@ the piano *for*, collected in one place so you can see what you are working
 towards and take one down when you are ready — most of them sit above this
 stage, and that is the point of a shelf.
 
-**What is on the shelf and bundled.** Satie *Gymnopédie no. 1* and *Gnossienne
-no. 1*; Pachelbel *Canon in D* (easy and full); Bach *Air on the G String* and
-*Prelude in C*; Chopin *Préludes* op. 28 nos. 4, 7 and 20, the *Nocturne* op. 9
-no. 2 and the *Waltz in A minor*; Beethoven *Moonlight* first movement and *Für
-Elise*; Debussy *Clair de Lune* and *Arabesque no. 1*; Handel–Halvorsen
-*Passacaglia*; Schubert–Liszt *Ständchen*; Liszt *Liebestraum no. 3*;
-Tchaikovsky's *Swan Lake* and *Nutcracker* themes.
+**What is on the shelf.** 50 pieces, one edition each, from a Stage 4 *Für
+Elise* and *Clair de Lune* in their easy settings up to the Chopin nocturnes,
+the Schubert–Liszt *Ständchen* and the Handel–Halvorsen *Passacaglia* at Stage
+8: Satie's *Gymnopédie* and *Gnossienne*, Pachelbel's *Canon*, Bach's *Air on
+the G String*, three Chopin *Préludes* and a waltz, Grieg's *Morning Mood*,
+Elgar's *Salut d'amour* and *Nimrod*, Puccini's *O mio babbino caro*, the
+*Romanza*, Tchaikovsky's *Swan Lake*, Vivaldi's *Spring* — and, on the
+personal build only, the film and game pieces the owner asked for by name:
+Einaudi, Zimmer, Sakamoto, Uematsu, Djawadi, Hurwitz, Glass, de Senneville,
+Clayderman. The Library's Classical filter holds what came off this shelf: the
+*Toccata and Fugue*, the *Bumblebee*, the *Rondo alla Turca*, the *Moonlight*
+finale and every second edition.
 
-**What is not, and never will be.** Einaudi, Yiruma, Tiersen, Zimmer, Sakamoto,
-Hisaishi — all in copyright. Buy the MusicXML or transcribe it, and import it;
-it will sit on the same shelf.
+**What is bundled and what is not.** Everything public domain is bundled. The
+film and game pieces are in copyright: they are on the personal build because
+the archive holds free editions of them, and the public build shows the row
+and says where to get the score. Anything else you love — Yiruma, Tiersen,
+Hisaishi — buy the MusicXML or transcribe it and import it; it will sit on the
+same shelf.
 
 **The three skills these pieces need**, none of which are speed:
 

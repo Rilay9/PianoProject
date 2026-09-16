@@ -409,16 +409,11 @@
                 "song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx",
                 "song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx",
                 "song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx",
-                "song.pop.misc-christmas-joy-to-the-world.pdmx",
-                "song.pop.thomasclarke11-joy-to-the-world.pdmx",
                 "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx",
                 "song.pop.misc-christmas-we-wish-you-a-merry-christmas.pdmx",
-                "song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx",
                 "song.pop.misc-christmas-mary-did-you-know.pdmx",
-                "song.classical.ondrus-silent-night.pdmx",
                 "song.folk.petit-papa-noeil.pdmx",
                 "song.holiday.carol-of-the-bells",
-                "song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx",
                 "song.folk.o-holy-night-piano-solo.pdmx",
                 "song.folk.happy-xmas.pdmx",
                 "song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx",
@@ -433,7 +428,7 @@
               "estimatedDays": 14,
               "levelBand": [
                 1.2,
-                7.9
+                7.3
               ],
               "finder": {
                 "skill": "playing carols from chord symbols and moving them into a singable key",

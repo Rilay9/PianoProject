@@ -34,7 +34,9 @@ play it as written, then a tone lower, then a minor third higher, without a
 transposed copy. *All I Want* and *Silhouette* are songs with a singer, so the
 new key is the singer's; *Isabella's Lullaby*, *Levi's Choice* and *Undertale*
 are themes whose keys were chosen for an orchestra, not a voice; *If I Had a
-Chicken* is the fastest of them and the one to try last.
+Chicken* is the fastest of them and the one to try last. All six are personal-
+library songs: the public build shows the rows and where to get the scores,
+and the rung is complete on its exercises there.
 
 **Common mistake.** Transposing the shapes rather than the harmony. It works in
 the white keys and falls apart in the flat ones.

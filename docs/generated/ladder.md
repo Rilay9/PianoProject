@@ -63,7 +63,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 2 | `holiday` | 5 | 34 | 1.2–7.8 | Jingle Bells (chorus) (1.2), Jingle Bells (chorus, hands together) (2.1), Silent Night (melody) (2.3), Jolly Old Saint Nicholas (2.4), Good King Wenceslas (2.5), We Three Kings of Orient Are (2.8), … and 28 more |
+| 2 | `holiday` | 5 | 29 | 1.2–7.3 | Jingle Bells (chorus) (1.2), Jingle Bells (chorus, hands together) (2.1), Silent Night (melody) (2.3), Jolly Old Saint Nicholas (2.4), Good King Wenceslas (2.5), We Three Kings of Orient Are (2.8), … and 23 more |
 
 ## Chords & pop (`chords-pop`)
 
@@ -87,7 +87,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 |---|---|---:|---:|---|---|
 | 3 | `classical.3` | 3 | 6 | 2.5–5.2 | Thème du 1er mouvement de la sonate K.331 (2.5), Écossaise in G major, WoO 23 (2.9), Minuet in G minor, BWV Anh. 115 (4.4), Minuet in G major, BWV Anh. 114 (5.1), Minuet in D minor, BWV Anh. 132 (5.1), Minuet in F major, BWV Anh. 113 (5.2) |
 | 4 | `classical.4` | 3 | 6 | 4.3–5.8 | Study, Op. 82 (4.5), Album for the Young, Op. 68 No. 4 "Chorale" (4.6), Sonatina in G major (4.8), Minuet in C major, K. 1f (5.1), March in D major, BWV Anh. 122 (5.5), Minuet in G major, K. 1e (5.8) |
-| 4 | `classical.4.shelf` | 3 | 72 | 3.5–8.5 | Für Elise (easy) (4.1), Gnossienne No. 1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Hungarian Sonata (5.0), Canon in D (easy) (5.1), … and 66 more |
+| 4 | `classical.4.shelf` | 3 | 50 | 3.5–8.5 | Für Elise (easy) (4.1), Gnossienne No. 1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Hungarian Sonata (5.0), Canon in D (easy) (5.1), … and 44 more |
 | 5 | `classical.5` | 4 | 6 | 3.6–5.7 | Sonatina in G major, Anh. 5 No. 1 (5.3), Sonatina in C major, Op. 36 No. 1 (first movement, short edition) (5.3), Sonatina in C major, Op. 36 No. 1 (second and third movements) (5.3), Arabesque, Op. 100 No. 2 (5.5), Old French Song, Op. 39 No. 16 (5.6), Album for the Young, Op. 68 No. 16 "First Loss" (5.7) |
 | 6 | `classical.6` | 9 | 6 | 3.2–6.4 | Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 1 in C major, BWV 846 (6.1), Prélude in E minor, Op. 28 No. 4 (6.1), Gymnopédie No. 1 (6.2), Waltz in A minor, B. 150 (6.4), Für Elise, WoO 59 (6.4) |
 | 7 | `classical.7` | 8 | 6 | 4.2–7.2 | Invention No. 1 in C major, BWV 772 (5.5), Invention No. 4 in D minor, BWV 775 (6.0), Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), Piano Sonata No. 8 “Pathétique”, II. Adagio cantabile (7.2) |
@@ -166,7 +166,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 4 | `technique.4` *(song-optional)* | 13 | 3 | 4.1–5.1 | Étude, Op. 37 No. 2 (4.8), Étude, Op. 37 No. 35 (4.8), Étude, Op. 37 No. 1 (5.0) |
-| 5 | `technique.5` *(song-optional)* | 13 | 3 | 5.0–5.4 | Étude, Op. 176 No. 18 (5.2), Étude, Op. 176 No. 16 (5.2), Étude, Op. 37 No. 4 (5.3) |
+| 5 | `technique.5` *(song-optional)* | 13 | 3 | 4.8–5.4 | Étude, Op. 176 No. 6 (4.8), Étude, Op. 176 No. 5 (4.8), Étude, Op. 176 No. 4 (5.0) |
 | 6 | `technique.6` *(song-optional)* | 15 | 3 | 6.0–6.4 | The School of Velocity, Op. 299 No. 3 (6.0), The School of Velocity, Op. 299 No. 1 (6.1), The School of Velocity, Op. 299 No. 4 (6.4) |
 | 7 | `technique.7` *(song-optional)* | 13 | 3 | 7.1–7.4 | The School of Velocity, Op. 299 No. 8 (7.3), The School of Velocity, Op. 299 No. 10 (7.3), The School of Velocity, Op. 299 No. 5 (7.4) |
 | 8 | `technique.8` *(song-optional)* | 12 | 0 | 8.1–8.1 | — |
