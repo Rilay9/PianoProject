@@ -50,5 +50,10 @@ cheapest large book of four-part harmony there is.
 **Common mistake.** Playing four parts at equal volume, which produces a wash.
 Balance: soprano loudest, bass next, inner voices quiet.
 
+**Tools for this rung.** A hymn is four voices and your hands take two each.
+Switch *Duet* on with the left hand chosen and soprano and alto arrive over
+the tenor and bass you are playing; swap, and the inner voices turn out to
+be the ones you had been guessing at.
+
 **How you'll know you've got it.** A hymn played with the tune clearly on top,
 plus one verse with a bass walk-up into each new chord.

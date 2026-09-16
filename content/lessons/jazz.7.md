@@ -49,5 +49,10 @@ voicings sound like when somebody has already done the work.
 **Common mistake.** Reaching for rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tempo goes up.
 
+**Tools for this rung.** The lab's typed numerals take flats and sevenths,
+so `ii7 V7 I` and `ii7 ♭II7 I` can be built as two loops and played one
+after the other until the second stops sounding like a mistake. That is this
+rung's comparison, with the bass line audible under both.
+
 **How you'll know you've got it.** A ii–V–I in four keys with rootless voicings,
 and one chorus where you substitute every dominant without stopping.

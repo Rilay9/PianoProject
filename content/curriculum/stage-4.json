@@ -805,7 +805,8 @@
               "exerciseOptions": [
                 "drill.ear.cadences",
                 "drill.ear.melodic-dictation",
-                "drill.chord.inversions"
+                "drill.chord.inversions",
+                "drill.ear.simon-chromatic"
               ],
               "songOptions": [],
               "mastery": {
@@ -822,7 +823,7 @@
               "songOptional": true,
               "levelBand": [
                 4.3,
-                4.4
+                5.0
               ],
               "finder": {
                 "skill": "hearing an inversion and a cadence, and placing a key on the circle of fifths",

@@ -6,7 +6,7 @@ videos:
   - label: "Beginners, Start Here to Improvise Piano"
     url: "https://www.youtube.com/watch?v=YTYpGUSBBc8"
     teacher: "Piano With Jonny"
-readingTime: 2
+readingTime: 3
 ---
 
 Improvising is not composing quickly. It is a much smaller skill than it sounds
@@ -42,6 +42,11 @@ it is for hearing once, not for building a collection of takes.
 
 **Common mistake.** Playing continuously because silence feels like failure.
 Silence is where the listener catches up. Count four empty bars and mean it.
+
+**Tools for this rung.** The loop you play over is the accompaniment lab's
+*Jam it*: four bars of C, two of F, two of G, at whatever tempo you set,
+with the bar you are in lit so you never have to count. Nothing there is
+judged or kept, which is what makes it safe to play badly over.
 
 **How you'll know you've got it.** Three choruses over the loop where each
 phrase is answered, there is at least one full bar of silence, and you can hum

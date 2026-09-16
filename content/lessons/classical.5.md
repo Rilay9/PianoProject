@@ -56,6 +56,11 @@ sonatinas and miniatures under Classical in the Library.
 badly, because the development is harder and less rewarding. Start a practice
 session in the development at least twice a week.
 
+**Tools for this rung.** Loop the development — the section that costs
+people the piece — and turn the *Ladder* on. It will hold a tempo until a
+pass has nothing wrong in it, so the twice-a-week visit above supervises
+itself.
+
 **How you'll know you've got it.** On the pieces here: a melody clearly above
 its accompaniment for a whole piece, and a pedal change you cannot hear. On a
 sonatina you have imported: one movement to tempo, and you can say out loud

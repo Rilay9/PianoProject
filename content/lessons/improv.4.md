@@ -6,7 +6,7 @@ videos:
   - label: "Piano improvisation with pentatonic scale"
     url: "https://www.youtube.com/watch?v=1W8TjulBrHM"
     teacher: "Play By Ear Music School"
-readingTime: 2
+readingTime: 3
 ---
 
 **The pentatonic scale** is five notes: in C major, **C D E G A** — the major
@@ -44,6 +44,11 @@ notes into a line.
 
 **Common mistake.** Playing the pentatonic scale up and down. A scale played in
 order is a scale, not a melody; break the order.
+
+**Tools for this rung.** Set I–vi–IV–V in the lab and start it — one chord a
+bar is twice the work of the last rung's loop, and the grid moving under you
+is what makes that obvious. Change the key when the pentatonic starts
+playing itself: the numerals do not move and your hand has to.
 
 **How you'll know you've got it.** Four two-bar answers to four different calls,
 each matching the call's rhythm and ending settled, and one chorus built entirely

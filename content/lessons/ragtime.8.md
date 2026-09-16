@@ -51,6 +51,11 @@ Nightingale*. The six here are enough for a year.
 are not — they are later music, and the difficulty is in hearing the harmony,
 not in moving the hands faster.
 
+**Tools for this rung.** Naming a figure is easier once it is a rhythm and
+nothing else. Play a strain in *Rhythm only* and the dense syncopation comes
+back as four or five placings you can count, after which finding every bar
+they occur in is reading rather than hearing.
+
 **How you'll know you've got it.** One late rag played at a tempo where every
 syncopation lands as a surprise, and where you could name the four figures it is
 built from.

@@ -51,5 +51,10 @@ Entertainer*.
 **Common mistake.** Rushing into hands together. The left hand must be
 automatic first — you cannot think about a leap and a syncopation at once.
 
+**Tools for this rung.** Ragtime is played dead straight, and *Rhythm only*
+is where you can prove your right hand is: it judges the moment of each
+strike and asks nothing about the key, so anything that comes out swung is
+marked late before your ear has caught it.
+
 **How you'll know you've got it.** One strain hands together at a moderate,
 unhurried tempo, with the left hand dead even.

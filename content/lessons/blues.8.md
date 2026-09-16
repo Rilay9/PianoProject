@@ -38,5 +38,10 @@ the Library if you want a page to transpose from.
 **Common mistake.** Transposing by moving your hands the same distance. That is
 how the flat keys stay unlearned; read the numerals and find the notes.
 
+**Tools for this rung.** Typed numerals carry their sevenths, so `I7 IV7 V7`
+set in E flat builds the whole form in the new key and *Read it* prints it
+out. That is the numerals turned back into notes, which is the direction
+this rung is short of.
+
 **How you'll know you've got it.** Twelve bars in a flat key, with ninths, from
 memory.

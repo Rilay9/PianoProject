@@ -51,5 +51,11 @@ understood it.
 Stage 3.2's voice leading applies here immediately — use inversions to keep the
 left hand still.
 
+**Tools for this rung.** The accompaniment lab is a chord chart that keeps
+time. Pick D, take I–IV–V–I, and *Jam it* names the chord in every bar while
+a bass and drums hold the tempo; then pick A and do it again. Playing *When
+the Saints* over the two of those is this lesson's transposing exercise with
+nothing written down.
+
 **How you'll know you've got it.** You can play a song you know from a chord
 chart, in two different keys, without written-out notation.

@@ -34,5 +34,10 @@ progression with three notes a bar, chosen freely.
 **Common mistake.** Playing continuously. Leave a bar empty and see what you play
 in the next one.
 
+**Tools for this rung.** Put `ii7 V7 I` in the lab and run it. The notes of
+each bar's chord come up lit on the keys, and the third and the seventh are
+two of them, so what this lesson asks you to find is pointed at while the
+changes go past. Play only those two a chord for the first few times round.
+
 **How you'll know you've got it.** You can play through a ii–V–I and land on a
 chord tone at the start of each bar without planning it.

@@ -41,5 +41,11 @@ partway through restarts the clock.
 tune takes a fifth of the time the first one did, and only if the first one is
 finished.
 
+**Tools for this rung.** Being inside the form rather than reading it has a
+switch. *Blind* takes the lead sheet away and changes nothing else about the
+run, so the thirty-two bars have to come from you; comp a chorus that way
+before you try walking one, and you will find out quickly which of the four
+ways you actually know.
+
 **How you'll know you've got it.** You can start the tune in a key you have not
 practised it in, and get through the form.

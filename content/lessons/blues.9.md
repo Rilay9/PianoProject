@@ -33,5 +33,10 @@ yours, so record it on whatever is in your pocket.
 **Common mistake.** Waiting until you are good enough. The first hundred choruses
 are how you get good enough.
 
+**Tools for this rung.** *Jam it* in the accompaniment lab is a rhythm
+section that judges nothing and keeps nothing: set the twelve bars and a
+tempo, and play chorus after chorus over it. It records none of them either,
+which is the same instruction as the one above about deleting the take.
+
 **How you'll know you've got it.** You can play three choruses that are different
 from each other and none of them run out of ideas in bar five.

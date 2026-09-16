@@ -46,5 +46,10 @@ it. Plus any lead sheet you bring in yourself through the import screen.
 **Common mistake.** Learning the four-chord loop only in C. Its whole value is
 that it transposes; play it in five keys.
 
+**Tools for this rung.** I–V–vi–IV is one of the accompaniment lab's own
+progressions, so the loop is two taps away in whichever key you want it in.
+Its grid lights the bar's chord tones on the keyboard strip, which is worth
+having while you are still choosing inversions rather than remembering them.
+
 **How you'll know you've got it.** I–V–vi–IV in three keys, with inversions, at
 a steady tempo, plus one song arranged with a stepwise bass line.

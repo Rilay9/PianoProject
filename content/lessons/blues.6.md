@@ -50,5 +50,10 @@ is the bass this lesson names.
 **Common mistake.** Speeding up when the left hand gets comfortable. A boogie
 that accelerates is a boogie nobody can play over.
 
+**Tools for this rung.** Loop twelve bars and switch the *Ladder* on: it
+will not let the tempo rise on a pass with a mistake in it. That is the
+honest version of the stamina test, because a boogie that speeds up never
+gets past the first notch of it.
+
 **How you'll know you've got it.** Twelve bars of Pinetop's bass in two keys,
 even, at a tempo you could hold for three choruses.

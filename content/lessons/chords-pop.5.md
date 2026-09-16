@@ -48,5 +48,10 @@ slow tune; and two ballads that live on seventh chords, *Your Song* and
 sophisticated. A plain triad in the right place is stronger; save the colour for
 where the harmony is standing still.
 
+**Tools for this rung.** Type `ii7 V7 I` into the lab, choose a broken left
+hand, and *Read it* hands you the seventh voicings and the arpeggiated
+accompaniment written out in the key you asked for. Read it once, then close
+it and play the same thing off the symbols.
+
 **How you'll know you've got it.** A lead sheet played with seventh voicings and
 a broken-chord accompaniment, keeping time while singing or humming the melody.

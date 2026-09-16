@@ -55,5 +55,11 @@ the shelf are under Classical in the Library.
 every time. Ten minutes on the four bars that do not work is worth an hour of
 playing through.
 
+**Tools for this rung.** None of these is long and you have half of each in
+your ear already, so once the notes are secure, run one with *Blind* on.
+With nothing to read, the only questions left are which hand is louder and
+whether the pedal change was late — and both are questions your eyes had
+been answering for you.
+
 **How you'll know you've got it.** One of these pieces played so that someone
 listening could hum the tune back — which they can only do if you voiced it.

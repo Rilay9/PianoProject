@@ -34,5 +34,10 @@ you start counting again — not because that is a punishment, but because
 know whether you meant it; you are practising whatever you actually play. If you
 cannot get it right at all, the chunk is too big or the tempo is too high.
 
+**Tools for this rung.** The drills do this to themselves now. When a set
+ends, the app offers a round of only the prompts you missed, with the answer
+up from the first moment and nothing scored — this lesson in miniature,
+because the cards you can already do stop taking the repetitions.
+
 **How you'll know you've got it.** You can play the chunk five times running,
 starting cold, and join it to the bar on either side.

@@ -48,5 +48,10 @@ is not among them; if you find one, import it.
 and seventh above it: a shell is a bass-up shape, and with the root on top it
 stops saying the chord.
 
+**Tools for this rung.** Swing is an accent and a placing, and *Rhythm only*
+will check both with the notes set aside. Play a scale in eighths in it,
+leaning on every "and", and the marks say whether the off-beat is where you
+think you are putting it.
+
 **How you'll know you've got it.** ii–V–I in four keys with shell voicings, and
 one standard comped through twice while you sing the melody.

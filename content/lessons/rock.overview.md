@@ -61,5 +61,9 @@ worth reading as one.
 **Common mistake.** Trying to play the guitar part, the bass part and the vocal
 line at once. It will not fit, and the result sounds like none of them.
 
+**Tools for this rung.** *Duet* is a reduction with one part removed: choose
+a hand on the easy *Canon in D* and hear the texture underneath the melody
+you are playing.
+
 **How you'll know you've got it.** You can hear a rock track and say which of
 the five textures its piano part would need.

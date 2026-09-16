@@ -32,6 +32,12 @@ work of two, and the first thing to fail is not accuracy but the wrist. If it
 aches, stop. There is no version of this rung worth an injury, and every piece
 it prepares you for will still be there next week.
 
+**Tools for this rung.** Moving it up a few beats at a time is what the
+*Ladder* does with a loop set, and it drops back the moment a pass is not
+clean — the half of the method nobody does by hand. Loop one octave while
+you are finding the tempo; the endurance is a separate question and a
+separate run.
+
 **How you'll know you've got it.** Four octaves hands together, sixteenths at
 120, with the turn at the top sounding like the rest of the run rather than a
 seam in it. And a wrist that feels the same at the end as it did at the start.

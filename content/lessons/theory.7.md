@@ -37,5 +37,11 @@ not a calculation, and one chord-scale a day played through two octaves.
 **Common mistake.** Analysing every chromatic chord as a secondary dominant. Some
 of them are borrowed from the minor and some are just chromatic.
 
+**Tools for this rung.** The accompaniment lab reads `V/V` as a numeral, so
+a tonicisation can be built as a loop and listened to rather than worked
+out: put `I V/V V I` in C and the D major in the second bar is the whole
+lesson in one bar. Then take it round three keys, changing nothing but the
+key.
+
 **How you'll know you've got it.** You hear a chord that is not in the key and
 know which chord it is pointing at.

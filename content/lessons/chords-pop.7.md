@@ -41,5 +41,10 @@ then re-voice it the way the exercises do — same chords, different arrangement
 **Common mistake.** Adding colour to every chord. A sus that resolves is a
 moment; a whole song of them is a drone.
 
+**Tools for this rung.** The lesson asks you to hear what you are *not*
+doing, and the drill will do that for you: *Hear it* sounds the ninth chord,
+so C, Cadd9 and C9 can be compared in one breath, and *Show me* prints it if
+it is the spelling you are after.
+
 **How you'll know you've got it.** You can take a plain chord chart and make it
 sound like a record, without changing a single chord symbol.

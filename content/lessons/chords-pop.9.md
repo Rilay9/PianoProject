@@ -38,5 +38,11 @@ your own version, written down as a chart with your notes on it.
 **Common mistake.** Arranging by adding. Most arrangements get better when
 something comes out.
 
+**Tools for this rung.** Four decisions are quicker to make against
+something that will not wait. Put the chart in the lab, start it, and try
+three different left hands over the same sixteen bars; nothing is judged and
+nothing is kept, so the only thing left to compare is which one you would
+rather hear.
+
 **How you'll know you've got it.** Two arrangements of the same song that sound
 like different pieces of music.

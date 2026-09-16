@@ -6,7 +6,7 @@ videos:
   - label: "(1/3) How to play Maple Leaf Rag, left hand | Cory Hall, pianist-composer"
     url: "https://www.youtube.com/watch?v=W6qPyhTaiK8"
     teacher: "BachScholar"
-readingTime: 5
+readingTime: 6
 ---
 
 Stage 5 taught the two ideas ragtime is made of: a metronomic left hand and a
@@ -91,6 +91,11 @@ early rags are under Ragtime in the Library.
 **Common mistake.** Playing hands together from bar one. At this length that
 means learning four strains badly at once. Left hand alone, one strain, until it
 is automatic — every time.
+
+**Tools for this rung.** With a loop set, the *Ladder* does the taking-up
+for you and drops the tempo the moment a leap is missed, so the speed you
+can actually hold is found rather than guessed. Loop one strain, not the
+rag.
 
 **How you'll know you've got it.** One complete rag, all its strains, hands
 together, at the tempo printed on the music, with the left hand steady enough

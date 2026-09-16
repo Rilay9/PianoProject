@@ -47,6 +47,11 @@ No. 1, No. 2 and No. 35 — are on this rung as pieces: one page each, one
 figure each, the same finger work as the exercises above with a tune over it.
 Play one after the exercises; it is where the drill turns into music.
 
+**Tools for this rung.** The Lemoine study is one figure for a page, which
+is what the *Ladder* is for: loop a line and let it decide when you have
+earned the next notch. Take the scales the same way, and the thumb will stop
+the climb long before your fingers do.
+
 **How you'll know you've got it.** A scale hands together at a tempo where you
 cannot hear the thumb arrive — not quieter, *inaudible* as an event. And the
 staccato and legato versions of the same four bars sounding like two different

@@ -37,5 +37,10 @@ suggests something is usually the day before you would have forgotten it.
 run out of time, the last item is dropped, and the first item is where all the
 attention went. Vary the order.
 
+**Tools for this rung.** *Today*'s sight-read sits outside the session card
+on purpose: three minutes of something else, every day, whatever else you
+had planned. One item that interleaves itself is worth a good deal of
+resolving to vary the order.
+
 **How you'll know you've got it.** A week after learning something, it is still
 there.

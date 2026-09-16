@@ -469,7 +469,8 @@
                 "drill.theory.harmonic-dictation",
                 "drill.theory.modes",
                 "drill.reading.transposition",
-                "drill.reading.sight-reading-5"
+                "drill.reading.sight-reading-5",
+                "drill.ear.simon-chromatic"
               ],
               "songOptions": [],
               "songOptional": true,
@@ -484,7 +485,7 @@
               ],
               "estimatedDays": 90,
               "levelBand": [
-                5.5,
+                5.0,
                 6.4
               ],
               "finder": {

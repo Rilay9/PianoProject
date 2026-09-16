@@ -37,5 +37,10 @@ leap is in your hand. If you play a rag, its left hand is this left hand.
 **Common mistake.** Practising stride at the tempo you want it. The leap is a
 motion, and a motion learned fast is learned wrong.
 
+**Tools for this rung.** Stride is a rhythm and a leap at the same time, and
+*Rhythm only* takes them apart: tap bass, chord, tenth, chord wherever your
+hands happen to be, and the leap stops being part of the question. Get the
+shuffle right there, then put the leaps back.
+
 **How you'll know you've got it.** Twelve bars of stride with a turnaround, and
 your eyes on the right hand throughout.

@@ -55,6 +55,11 @@ Library.
 separately, short figures, at the tempo you actually want — that is the whole
 technique.
 
+**Tools for this rung.** The method above is on the score screen: loop two
+beats of the étude, switch the *Ladder* on, and the raising and the dropping
+back happen while your attention stays on the hand. The summary says where
+the ladder finished, which is the figure to beat tomorrow.
+
 **How you'll know you've got it.** One étude at its written tempo without the
 skill it teaches breaking down, and one long piece you can start from any
 section.

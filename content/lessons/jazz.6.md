@@ -6,7 +6,7 @@ videos:
   - label: "How to Play Left Hand Jazz Piano Walking Bass Techniques"
     url: "https://www.youtube.com/watch?v=9QtvnbuGjUs"
     teacher: "Sweetwater"
-readingTime: 2
+readingTime: 3
 ---
 
 Stage 5 gave you the shells and the ii–V–I. This rung is about what the two
@@ -40,6 +40,11 @@ Comp one pattern through a whole chorus, then walk a line under it.
 
 **Common mistake.** Comping on every beat. The gaps are what make it comping;
 filling them makes it an accompaniment pattern.
+
+**Tools for this rung.** A comping pattern needs something to be in the gaps
+of. Set the tune's key in the accompaniment lab, start *Jam it*, and play
+one pattern against a bass and drums that will not adjust to you — which is
+the condition the pattern has to work under anyway.
 
 **How you'll know you've got it.** A twelve-bar blues comped in one pattern with
 a walking line underneath, at a tempo where neither hand has to think.

@@ -33,6 +33,11 @@ never spend a week grinding at a tempo you cannot hold.
 satisfying, and treating the wreckage as the learning. It is not; it is the
 wreckage.
 
+**Tools for this rung.** The score screen will run the ladder for you. Set a
+loop, switch the *Ladder* on in the ⋯ menu, and a clean pass takes the tempo
+up a notch while a pass with a mistake takes it down — the rule above, with
+the counting done and the tempo figure underlined so you can watch it move.
+
 **How you'll know you've got it.** You can play it at three tempos on request —
 half, three-quarters and full — and the slow one is genuinely clean rather than
 merely slow.

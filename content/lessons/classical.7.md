@@ -58,6 +58,11 @@ in the Library.
 and *Larghetto*, not *Adagio*; below a certain tempo the long melody notes stop
 connecting to each other and the piece stops being a line.
 
+**Tools for this rung.** *Duet* is the invention's own control: choose a
+hand and the app plays the other line at a level it never varies, so you
+hear whether yours answers it or covers it. The way round you find harder is
+the voice you have not learned.
+
 **How you'll know you've got it.** A Bach piece where a listener can follow
 either hand by choice — and a nocturne where the ornament sounds like one
 gesture rather than a scale.

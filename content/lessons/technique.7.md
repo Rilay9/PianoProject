@@ -44,6 +44,11 @@ ones: scales in both hands, broken chords across the keyboard, and the double-
 note figures the trill and repeated-note exercises on the previous technique
 rung prepare.
 
+**Tools for this rung.** Two against three is two pulses, and *Duet* will
+hold one of them: choose the hand playing the three, let the app play the
+two, and the disagreement is something you hear rather than something you
+are also producing. Then swap hands, because that is the other exercise.
+
 **How you'll know you've got it.** The same inner fingering in thirds twice
 running without deciding it again. An octave in D flat that takes the fourth
 finger unprompted. Two against three where you can stop anywhere and say which

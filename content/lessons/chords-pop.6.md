@@ -40,5 +40,10 @@ screen.
 
 **Common mistake.** Learning the loop in five keys as five separate things.
 
+**Tools for this rung.** Knowing the loop in twelve keys means playing it in
+twelve keys, and the lab's key setting is the cheapest way to get there:
+same progression, a different tonic each day, nothing to rewrite. A key is
+one choice on that screen, which is exactly the claim this rung is making.
+
 **How you'll know you've got it.** Someone names a key and you play the loop in
 it, with inversions, without working it out.

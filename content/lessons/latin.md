@@ -46,6 +46,11 @@ under Latin in the Library. *La Cucaracha* is not in the library yet.
 **Common mistake.** Counting the two clave bars as two separate bars. It is one
 two-bar unit; lose that and the pattern flips.
 
+**Tools for this rung.** The app cannot clap a clave behind you, but it can
+tell you whether your tumbao is where you think it is: *Rhythm only* scores
+the placing of every strike and nothing else, so the "and" of two and beat
+four are either right or marked. Left hand alone, that way, first.
+
 **How you'll know you've got it.** Tumbao in the left hand and a two-note
 montuno in the right, together, for sixteen bars, with the clave audible in your
 head.

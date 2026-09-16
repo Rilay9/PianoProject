@@ -53,5 +53,11 @@ are under Ragtime in the Library.
 recordings. Those rolls were cut fast and often sped up in transfer; the printed
 marking is *Tempo di marcia*, which is a march, not a race.
 
+**Tools for this rung.** Left hand alone is the instruction, and *Duet* lets
+you follow it without losing the piece: choose the left hand, and the right
+one is played over you, so the leaps are practised at the tempo and in the
+company they will have to work in. *Solace* first, which has the fewest of
+them.
+
 **How you'll know you've got it.** One rag with the left hand steady enough
 that you could turn the right hand off and still hear the piece.

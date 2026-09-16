@@ -2,7 +2,7 @@
 title: The plateau, and the three things to change
 stage: 1
 unit: "practice.1.1"
-readingTime: 2
+readingTime: 3
 ---
 
 Sooner or later something stops improving. Three runs at the same score, a
@@ -47,6 +47,11 @@ time).
 
 **Common mistake.** Doing the same practice more intensely. A plateau is
 information about the method, not about the effort.
+
+**Tools for this rung.** There is a fourth thing you can change, which is
+what you are attending to. *Rhythm only* leaves the timing and drops the
+pitch; *Blind* removes the reading and leaves only the playing. Either one
+puts a passage you have automated wrong back where you can hear it.
 
 **How you'll know you've got it.** You recognise a plateau within a few days
 rather than a few weeks, and you have a change to make rather than a reason to

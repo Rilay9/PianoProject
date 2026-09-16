@@ -6,7 +6,7 @@ videos:
   - label: "How to Play Blues Piano - Scales, Licks, Turnarounds, Techniques, Left Hand Patterns"
     url: "https://www.youtube.com/watch?v=S3YRSVBjUH0"
     teacher: "Walk That Bass"
-readingTime: 2
+readingTime: 3
 ---
 
 The form is now automatic. This rung is about what you put inside it.
@@ -42,6 +42,11 @@ by step through the chord tones, arriving on the root of the next chord on beat
 one. This is the bridge into the jazz track.
 
 **Common mistake.** Filling every bar. The blues is mostly space.
+
+**Tools for this rung.** Four bars of nothing are the hard ones. The
+accompaniment lab's *Jam it* takes the twelve bars in F, plays the changes
+with a bass and a drum under them and lights the bar you are in, so the
+silence has somewhere to happen and you cannot lose count of it.
 
 **How you'll know you've got it.** Three choruses in F with a different
 right-hand idea each time, a turnaround at the end of each, and at least four

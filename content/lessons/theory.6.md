@@ -38,5 +38,12 @@ its drills alone, and the plan will not hold you here waiting for a piece.
 **Common mistake.** Naming chords by ear from their top note. The bass is what
 tells you the chord.
 
+**Tools for this rung.** Two things here. The chain game drawn from all
+twelve keys is an option on this rung, and it is the plainest test of what
+dictation runs on — a bass note you heard four chords ago is no use unless
+you kept it. And on the modes drill, *Show me* engraves the answer in the
+key signature that fits it, so B flat aeolian prints five flats and no
+accidentals.
+
 **How you'll know you've got it.** You can hear a four-chord progression once and
 play it back, in a key nobody told you.

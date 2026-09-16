@@ -34,5 +34,10 @@ things you have composed that have a subject.
 **Common mistake.** Reharmonising until nothing is recognisable. The tune has to
 survive, or you wrote a different piece.
 
+**Tools for this rung.** A secondary dominant is a numeral the accompaniment
+lab will read, so an approach chord can be typed in and heard against the
+tune before any of it is written down. Build your three versions there one
+at a time; the one that survives is the one the melody still fits.
+
 **How you'll know you've got it.** Three versions of eight bars that each sound
 deliberate.

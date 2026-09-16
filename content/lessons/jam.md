@@ -50,5 +50,11 @@ form and which chorus you are on, which is the thing beginners lose first.
 **Common mistake.** Playing through the guitarist's solo at full volume. Your
 job during someone else's solo is to be quieter than you think necessary.
 
+**Tools for this rung.** The guitarist is not always in the room. The
+accompaniment lab's *Jam it* will hold twelve bars in E or in A over a bass
+line and a kick that do not stop, which is where to get the comping quiet
+enough and the gaps wide enough before there is somebody else to leave them
+for.
+
 **How you'll know you've got it.** Twelve-bar blues in E and A, two choruses
 each, trading fours, without either of you losing the form.

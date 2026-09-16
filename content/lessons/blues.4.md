@@ -52,5 +52,10 @@ riff on top.
 yourself and listen; the difference is obvious on playback and invisible while
 playing.
 
+**Tools for this rung.** Shuffle is a claim about timing, and the app will
+check it: in *Rhythm only* the long-short pair is judged where it falls and
+nowhere else, so you can test the feel on the boogie bass alone, long before
+the right hand is anywhere near it.
+
 **How you'll know you've got it.** Twelve bars in C, boogie bass, shuffled, at a
 steady tempo, twice round without losing your place in the form.

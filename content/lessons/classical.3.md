@@ -54,5 +54,12 @@ it through is testing, not practising.
 **Common mistake.** Treating the left hand as filler. If you cannot hum it, you
 have not learned it.
 
+**Tools for this rung.** Two things help here. *Duet* in the ⋯ menu plays
+the hand you are not: choose the right hand and the left line arrives as a
+tune rather than as something you are producing, which is the point this
+lesson keeps making. And a few minutes of unseen music from the card
+*Today* puts up each morning is a sensible warm-up before a piece of this
+length: read that first, then start on the minuet.
+
 **How you'll know you've got it.** The minuet hands together at tempo, with the
 two halves clearly shaped and the repeats varied.

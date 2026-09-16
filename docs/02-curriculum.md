@@ -212,7 +212,8 @@ one song HT-alternating at 70 bpm ≥ 90 %.
 on the staff (line→space vs line→line), reading by interval not by name, looking ahead one
 beat. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
 position, quarters/halves; new one each time — this is the app's killer practice feature),
-`[GEN]` interval ear drill (2nd vs 3rd; learner plays back). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *The Water Is Wide* `[PDMX]`. Mastery: 5 generated melodies at ≥ 90 % first
+`[GEN]` interval ear drill (2nd vs 3rd; learner plays back), `[GEN]` **Simon** on the
+white keys around middle C (hear a chain, play it back, one note longer each round). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *The Water Is Wide* `[PDMX]`. Mastery: 5 generated melodies at ≥ 90 % first
 attempt.
 
 ### Stage 2 — Two hands
@@ -466,13 +467,20 @@ major/minor triads by ear. Stage 3: all intervals within the octave by ear; key 
 sharps/flats (named from the rule — no drill); I–IV–V heard in songs (the progression drill
 arrives at Stage 5); rhythm dictation (tap back); Simon on the white keys. Stage 4: circle of
 fifths; triad inversions by ear; melodic dictation (play back a 2-bar melody); cadences
-(authentic/half/plagal/deceptive). Stage 5: 7th chord qualities by ear; chord progressions
-(I–vi–IV–V, ii–V–I) by ear; modes intro (Ionian/Dorian/Mixolydian/Aeolian); transposition.
+(authentic/half/plagal/deceptive); Simon on every key. Stage 5: 7th chord qualities by ear;
+chord progressions (I–vi–IV–V, ii–V–I) by ear; modes intro
+(Ionian/Dorian/Mixolydian/Aeolian); transposition; Simon on every key.
 Stage 6: secondary dominants, modulation to V/relative; figured-bass/Roman-numeral reading;
-harmonic dictation. Stage 7: extended chords (9/11/13), chord-scale relationships, form
+harmonic dictation; Simon on every key. Stage 7: extended chords (9/11/13), chord-scale relationships, form
 analysis (binary/ternary/rondo/sonata). Stage 8–9: chromatic harmony, counterpoint species,
 jazz reharmonisation, composition. Text: **Open Music Theory** (CC BY-SA 4.0 — may be quoted
 with attribution), musictheory.net (link), teoria.com (link), Lypur theory playlist.
+
+**Simon sits on four of these rungs** — the white keys around middle C on `theory.3`, every
+key around it on `theory.4`, `theory.5` and `theory.6` — because dictation, cadences and
+hearing a bass note four chords back all rest on holding what you heard, and a chain is that
+memory with nothing else attached; it is scored on the longest chain rather than on an
+accuracy, so the rung is passed with a chain and not with a share of the cards.
 
 ### D7. Improvisation & composition track (Stage 3+)
 
