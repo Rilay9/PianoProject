@@ -257,7 +257,98 @@ the writer to raise on with a measure number and no way back.
 What it does **not** fix, and what still costs the re-run its Ballades: a bar that
 genuinely holds more than its time signature — a written-out cadenza — which `makeTies`
 splits at the notional barline whatever the lengths are. That is a bar-length fault, not a
-duration one, and it is still open.
+duration one, and it is still open. The other half of that fault — a bar that holds
+**less** than its time signature — is §3d.
+
+### 3d. A bar the edition wrote short (step 2, `drop_seam_bars`, `declare_partial_bars`)
+
+music21's MusicXML writer fills every measure out to the length its time signature says
+*before* it writes a note of it: `GeneralObjectExporter` calls
+`makeRests(timeRangeFromBarDuration=True, fillGaps=True)` on the copy it exports. A bar an
+edition wrote short therefore comes back with a rest on the end, the bar is now a full bar
+long, and every note after it in the file is late by what was added. Nothing warns. The
+score simply says something the edition does not, and the fault is invisible to every
+check that counts notes rather than placing them — the note-loss gate above passes it,
+because none of the notes are missing.
+
+`**kern` writes a change of strain exactly that way. In craigsapp's Joplin edition,
+*Cleopha*'s bar 54 is `4F FF / 8FF FFF / =|| / *k[b-e-] / 8r 8f / =55!|:` — a 2/4 bar whose
+last eighth stands *after* a mid-bar double barline as the pickup into the next strain,
+with the key change at the double bar. music21 reads the page as written: a bar of three
+eighths, then an unnumbered bar of one. Filled out, those two became four beats where the
+edition has two, and the whole second half of the rag played a bar late behind a beat and a
+half of silence Joplin never wrote.
+
+What says otherwise is the `paddingLeft`/`paddingRight` pair that already makes an opening
+anacrusis survive the writer, and the two cases are the same case. `declare_partial_bars`
+sets it per *bar*, across both staves at once, and only when the bar is short in all of
+them: one hand resting through the end of a bar the other hand fills is not a short bar,
+and the rest the writer adds there is the right engraving and moves nothing. A bar shorter
+than the shortest note MusicXML can name is left alone for the same reason — there is no
+rest to draw. A count goes into `result.warnings` as "N bar(s) shorter than the time
+signature kept as written".
+
+Which side of the bar is missing is a reading of what the bar is, and `makeBeams` asks:
+`paddingLeft` beams the notes as the *end* of a bar, `paddingRight` as its beginning. So
+the first bar of a piece, and the remainder of a bar split in two, are short at the front;
+everything else — a closing bar that completes the opening anacrusis, a bar an editor wrote
+irregular — is short at the end. The remainder of a split bar is also marked
+`implicit="yes"`, because an engraver gives it no number and the alternative was a "0"
+printed in the middle of the piece.
+
+The same `=||` falls *on* a barline as often as inside one — `4a 4b / =|| / *k[d-] /
+=70!|:` — and then what stands between the two records is a measure holding no note, no
+rest, nothing but the barline: a seam between two strains rather than a bar of silence,
+since silence is written with rests. `drop_seam_bars` removes it, moving whatever it
+carried into the bar it introduces and its barline to whichever neighbour has none, so the
+piece does not grow a silent bar at every change of strain. Only a seam **both** staves
+agree on is dropped: the two are written into one `<part>` measure by measure at the end,
+so a bar removed from one hand and not the other would set the hands a bar apart. It runs
+before the key signatures are deduplicated, because the signature a seam hands forward may
+meet one the next bar already has — which is exactly what happens in Chopin's op. 18 waltz,
+where the turn to D flat sits at a seam.
+
+A third thing Humdrum states between two bars is the new strain's key signature itself, and
+music21 hands *that* back in the part, outside every measure, at the offset the record
+stood at. The MusicXML writer has one rescue for a loose attribute and only one:
+`fixupNotationMeasured` lifts them into the **first** measure, so an opening signature
+survives and every later one is dropped without a word. What reached the page was a strain
+engraved in the key of the strain before it — *Cleopha*'s second half printed with one flat
+where Joplin wrote two, every B flat of it spelled out as an accidental, which is the fault
+`drop_superseded_key_signatures` was written for arriving by the other door. So
+`place_loose_attributes` puts each loose key signature, time signature or clef into the
+measure that holds its offset, at the offset it has inside that measure — a mid-measure
+`<attributes>` tag if that is where it falls — on every staff, because the signature is
+printed on both. A record standing exactly on a barline belongs to the bar it opens rather
+than the one it closes, so a measure that *starts* there is preferred; one falling past the
+last barline has no bar to go in and is left where it is. It runs before the signatures are
+deduplicated, so one placed into a bar that already states the same thing is settled by the
+same-instant rule that was already there. Where a placed signature lands away from the
+barline, the writer states it once per staff instead of once for the part: identical tags at
+one instant, which set the same key twice and change nothing on the page.
+
+Merging a split pair into one full bar with the double barline drawn inside it was the
+other candidate, and MusicXML can express a mid-measure `<barline>`. music21 cannot write one:
+its `MeasureExporter` lists `Barline` in `ignoreOnParseClasses` and emits only a measure's
+own left and right barlines, so Joplin's double bar and the repeat sign after it would have
+been dropped on the way out. Keeping the two measures keeps both.
+
+Two neighbouring faults this does not touch, both found while measuring it:
+
+- A bar that holds **more** than its time signature *in one staff and not the other*. The
+  staves then disagree about where the next bar starts, and joining them back into one
+  `<part>` pads both — which moves notes, exactly as the short bar did. Every case seen is
+  a source contradicting itself: the PDMX copy of *Jimbo's Lullaby* backs up past the start
+  of bar 12 and then runs a `<forward>` past its end, and the PDMX copy of *El Choclo*
+  writes both hands in one `<voice>` whose cursor runs a bar and a half past the barline.
+  Whether to refuse those with a sentence naming the bar, or to leave them, is a catalogue
+  decision and is still open.
+- A bar holding an irregular tuplet ends a tick or two short of its own barline in the
+  written file, because MusicXML counts in whole ticks and eleven notes do not divide into
+  them (§3c is the same arithmetic, seen in the source instead of on the way out). Nothing
+  audible or visible moves — it is a thousandth of a quarter — but it moves *every*
+  instant after it, so a comparison of where notes fall will report most of such a piece as
+  displaced. Read the size of the displacement, not the count, before believing it.
 
 ## 4. Catalog and curriculum schemas
 

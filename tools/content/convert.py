@@ -44,6 +44,7 @@ warnings.filterwarnings("ignore")
 from abc_tools import (apply_fingerings, apply_voice_clefs, extract_fingerings,  # noqa: E402
                        parse_voice_clefs, prepare_abc)
 from music21 import (  # noqa: E402
+    bar,
     beam,
     chord,
     clef,
@@ -55,6 +56,7 @@ from music21 import (  # noqa: E402
     key,
     layout,
     metadata,
+    meter,
     note,
     stream,
     tempo,
@@ -934,6 +936,240 @@ def align_voice_offsets(score: stream.Score) -> int:
     return moved
 
 
+#: What a `<measure>` may state about itself at an instant, in the order the
+#: MusicXML writer wants them inside an `<attributes>` tag.
+LOOSE_ATTRIBUTE_CLASSES = (clef.Clef, key.KeySignature, meter.TimeSignature)
+
+
+def place_loose_attributes(score: stream.Score) -> int:
+    """
+    Puts a key signature, time signature or clef into the bar it falls in.
+
+    Humdrum states a change of key between two bars — `=54 … =|| *k[b-e-]
+    =55` — and music21's parser hands that back as a `KeySignature` sitting in
+    the *part*, outside every measure, at the offset the record stood at. The
+    MusicXML writer has one rescue for that and only one: `fixupNotationMeasured`
+    lifts loose attributes into the **first** measure, so an opening signature
+    survives and every later one is dropped without a word.
+
+    What reaches the page then is a strain engraved in the key of the strain
+    before it. *Cleopha* modulates at bar 54 and the second half of the rag was
+    printed with one flat where Joplin wrote two, every B flat of it spelled
+    out as an accidental. That is the fault `drop_superseded_key_signatures`
+    was written for, arriving by the other door: there, two signatures at one
+    instant and the wrong one printed; here, the right one and nowhere to
+    print it.
+
+    So each loose attribute is moved into the measure that holds its offset, at
+    the offset it has inside that measure — which the writer knows how to
+    write, as an `<attributes>` tag in the middle of a bar if that is where it
+    falls. A record standing exactly on a barline belongs to the bar it opens,
+    not to the one it closes, so a measure that *starts* there is preferred to
+    the one that ends there.
+
+    Every staff is done, because the signature has to be printed on both. One
+    that falls past the last barline has no bar to go in and is left where it
+    is, for the writer to ignore as it does now.
+
+    Returns the number of attributes placed.
+    """
+    placed = 0
+    for staff in score.getElementsByClass(stream.Stream):
+        measures = list(staff.getElementsByClass(stream.Measure))
+        if not measures:
+            continue
+        spans = [
+            (
+                exact_quarter_length(staff.elementOffset(measure)),
+                exact_quarter_length(measure.duration.quarterLength),
+                measure,
+            )
+            for measure in measures
+        ]
+        for element in list(staff.getElementsByClass(LOOSE_ATTRIBUTE_CLASSES)):
+            at = exact_quarter_length(staff.elementOffset(element))
+            opens = next((span for span in spans if span[0] == at and span[1] > 0), None)
+            holds = opens or next(
+                (span for span in spans if span[0] <= at < span[0] + span[1]), None
+            )
+            if holds is None:
+                continue  # after the last barline: nothing to put it in
+            start, _length, measure = holds
+            staff.remove(element)
+            measure.insert(at - start, element)
+            placed += 1
+    return placed
+
+
+def is_seam(measure: stream.Measure) -> bool:
+    """True when a measure holds no music at all — not a note, not a rest."""
+    return not measure.recurse().notesAndRests and exact_quarter_length(measure.highestTime) == 0
+
+
+def drop_seam_bars(score: stream.Score) -> int:
+    """
+    Removes a "bar" that holds nothing but the barline that made it.
+
+    The `=||` that splits a bar in two (see `declare_partial_bars`) as often
+    falls *on* a barline as inside one — `4a 4b / =|| / *k[d-] / =70!|:` — and
+    music21 makes a measure out of what stands between the two records: no
+    note, no rest, nothing but the barline and the interpretations that came
+    with it. It is not a bar of silence; silence is written with rests. It is
+    the seam between two strains.
+
+    The MusicXML writer cannot tell the difference and fills it out like any
+    other short bar, so the piece grows a whole silent bar at every change of
+    strain, and everything after the first one is late by a bar. Chopin's op. 18
+    waltz grows one where it turns to D flat.
+
+    Whatever the seam carries — the key signature of the new strain, a repeat
+    mark — moves to the bar it introduces, which is where it takes effect, and
+    the barline itself is given to whichever neighbour has none of its own;
+    both usually have it already, since the seam is drawn between two barlines
+    that are themselves recorded. Then the measure goes.
+
+    Only a seam both staves agree on is dropped. The two are written into one
+    `<part>` measure by measure at the end, so a bar removed from one hand and
+    not the other would set the hands a bar apart for the rest of the piece.
+
+    Returns the number of measures removed, counted once per bar.
+    """
+    staves = [
+        staff
+        for staff in score.getElementsByClass(stream.Stream)
+        if staff.getElementsByClass(stream.Measure)
+    ]
+    runs = [list(staff.getElementsByClass(stream.Measure)) for staff in staves]
+    if not runs or len({len(run) for run in runs}) != 1:
+        # The staves already disagree about how many bars there are; lining
+        # them up is not this step's to attempt.
+        return 0
+    dropped = 0
+    gone: set[int] = set()
+    for position in range(len(runs[0])):
+        if not all(is_seam(run[position]) for run in runs):
+            continue
+        # Two seams in a row: the neighbour to hand a barline back to is the
+        # last bar still standing, not the one just removed.
+        back = position - 1
+        while back in gone:
+            back -= 1
+        for staff, run in zip(staves, runs):
+            measure = run[position]
+            following = run[position + 1] if position + 1 < len(run) else None
+            previous = run[back] if back >= 0 else None
+            for element in list(measure.elements):
+                if isinstance(element, bar.Barline):
+                    continue
+                measure.remove(element)
+                if following is not None:
+                    following.insert(0, element)
+                elif previous is not None:
+                    previous.insert(exact_quarter_length(previous.highestTime), element)
+            barline = measure.rightBarline or measure.leftBarline
+            if barline is not None:
+                if previous is not None and previous.rightBarline is None:
+                    previous.rightBarline = barline
+                elif following is not None and following.leftBarline is None:
+                    following.leftBarline = barline
+            staff.remove(measure)
+        gone.add(position)
+        dropped += 1
+    return dropped
+
+
+def declare_partial_bars(score: stream.Score) -> int:
+    """
+    Says of a bar the edition wrote short that it is meant to be short.
+
+    music21's MusicXML writer fills every measure out to the length its time
+    signature says *before* it writes a note of it: `GeneralObjectExporter`
+    calls `makeRests(timeRangeFromBarDuration=True, fillGaps=True)` on the copy
+    it exports. A bar the edition wrote short therefore comes back with a rest
+    on the end, the bar is now a full bar long, and every note after it in the
+    file is late by what was added. Nothing warns; the score simply says
+    something the edition does not.
+
+    `**kern` writes a change of strain exactly that way. In craigsapp's Joplin
+    edition, *Cleopha*'s bar 54 is
+
+        4F FF / 8FF FFF / =|| / *k[b-e-] / 8r 8f / =55!|:
+
+    — a 2/4 bar whose last eighth stands *after* a mid-bar double barline as
+    the pickup into the next strain, with the key change at the double bar.
+    music21 reads the page as written: a bar of three eighths, then an
+    unnumbered bar of one. Filled out, the two became four beats where the
+    edition has two, and the whole second half of the rag played a bar late
+    behind a beat and a half of silence Joplin never wrote.
+
+    What says otherwise is the same `paddingLeft` that makes an opening
+    anacrusis survive the writer, and the two cases are the same case. It is
+    decided here per *bar*, across both staves at once, and only when the bar
+    is short in all of them: one hand resting through the end of a bar the
+    other hand fills is not a short bar, and the rest the writer adds there is
+    the right engraving and moves nothing.
+
+    Which side of the bar is missing is a reading of what the bar is, and
+    `makeBeams` asks — `paddingLeft` beams the notes as the *end* of a bar,
+    `paddingRight` as its beginning. So the first bar of a piece, and the
+    second half of a bar split in two, are short at the front; everything else
+    — a closing bar that completes the opening anacrusis, a bar an editor
+    wrote irregular — is short at the end.
+
+    Merging such a pair into one full bar with the double barline inside it was
+    the other candidate, and MusicXML can express a mid-measure `<barline>`.
+    music21 cannot write one: its `MeasureExporter` lists `Barline` in
+    `ignoreOnParseClasses` and emits only a measure's own left and right
+    barlines, so Joplin's double bar and the repeat sign after it would have
+    been dropped on the way out. Keeping the two measures keeps both.
+
+    Returns the number of measures told that they are short.
+    """
+    declared = 0
+    #: How much the bar before this one was missing, when it was short at all.
+    before: Fraction | None = None
+    for position, bar in enumerate(bar_groups(score)):
+        full = Fraction(0)
+        for measure in bar:
+            try:
+                full = max(full, exact_quarter_length(measure.barDuration.quarterLength))
+            except Exception:  # noqa: BLE001 — no time signature in scope
+                pass
+        reach = max(
+            (exact_quarter_length(measure.highestTime) for measure in bar), default=Fraction(0)
+        )
+        missing = full - reach
+        if not full or reach <= 0 or missing < SMALLEST_WRITABLE_QL:
+            # An empty bar is a bar's rest and the writer should draw it; a bar
+            # short by less than the shortest note MusicXML can name has no
+            # rest to draw at all.
+            before = None
+            continue
+        # Short at the front when it opens the piece, or when it is what is
+        # left of the bar before — the half bar after a mid-bar double barline.
+        at_front = position == 0 or before == reach
+        for measure in bar:
+            already = exact_quarter_length(measure.paddingLeft) + exact_quarter_length(
+                measure.paddingRight
+            )
+            if already >= missing:
+                continue  # the parser already said so: an anacrusis it recognised
+            if at_front:
+                measure.paddingLeft = exact_quarter_length(measure.paddingLeft) + missing - already
+                if position and measure.number == 0:
+                    # The remainder of a split bar is not a bar of its own, and
+                    # an engraver gives it no number: `implicit="yes"` says so,
+                    # rather than printing a "0" in the middle of the piece.
+                    measure.showNumber = stream.enums.ShowNumber.NEVER
+            else:
+                measure.paddingRight = (
+                    exact_quarter_length(measure.paddingRight) + missing - already
+                )
+            declared += 1
+        before = missing
+    return declared
+
+
 #: Printed note values a beam may not be attached to (VexFlow enforces it).
 UNBEAMABLE_TYPES = frozenset({"quarter", "half", "whole", "breve", "longa", "maxima"})
 
@@ -1093,6 +1329,18 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
     if unbeamed:
         notes.append(f"dropped unrenderable beams from {unbeamed} note(s)")
 
+    # Before the key signatures are deduplicated, because a seam hands the one
+    # it carries to the bar it introduces, which may have its own.
+    seams = drop_seam_bars(out)
+    if seams:
+        notes.append(f"removed {seams} bar(s) holding nothing but a barline record")
+
+    # Also before the deduplication below, so a signature put into a bar that
+    # already has one at the same instant is settled by the same rule.
+    placed = place_loose_attributes(out)
+    if placed:
+        notes.append(f"moved {placed} key/time signature(s) or clef(s) into the bar they fall in")
+
     shadowed = drop_superseded_key_signatures(out)
     if shadowed:
         notes.append(f"removed {shadowed} key signature(s) replaced at the same instant")
@@ -1138,6 +1386,13 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
     renumbered = renumber_measures(staves)
     if renumbered:
         notes.append("first bar was numbered 0 without being a pickup; bars renumbered from 1")
+
+    # Last, because it reads the bars as they will be written: after the
+    # lengths are settled, after a mid-bar voice has been led in, and after a
+    # source with no barlines has been given some.
+    partial = declare_partial_bars(out)
+    if partial:
+        notes.append(f"{partial} bar(s) shorter than the time signature kept as written")
 
     # Said here, with the bar and the length, rather than by the MusicXML
     # writer minutes later with neither.
