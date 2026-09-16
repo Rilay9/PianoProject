@@ -743,6 +743,20 @@ suggestions** with a note on where to buy/obtain MusicXML.
   the learner self-reports after a Tempo-mode run — the app shows a "How did it go?" 3-button
   prompt and records it as self-assessed).
 - `master` = accuracy ≥ 97 % at 100 % tempo, twice on different days.
+- **What a drill run counts (2026-09-16, `04` §5c).** *Show me* draws the answer on a staff
+  and *Hear it* plays it; either forfeits the mark for that prompt, so a set you revealed your
+  way through cannot pass. A missed card pauses until you tap it on. When the set ends the app
+  offers to *go over* the ones you missed, one at a time; that round records nothing. A Simon
+  run's accuracy is the chain it reached over the cap, so its personal best is the longest
+  chain. The sight-reading drills (1.3, 1.4, 2.2, 2.5, technique.5, and the daily read on
+  Today) generate a fresh phrase every time and score it like any other run.
+- **Which Score-screen runs count (`04` §5, `05` §3a).** *Rhythm only* judges timing and not
+  pitch and can never pass or master an item — it is for learning a passage as a rhythm first.
+  The *Ladder* raises a looped section's tempo a notch each time it is played cleanly, up to
+  the piece's own tempo; a run at the top of the ladder counts as any run does. *Duet* has
+  the app play the hand you are not, and counts for the hand you are. The accompaniment lab
+  (Library → Lab) writes its exercises into the Library as imports; they are practised there
+  and never sit on a rung.
 - Lesson complete = **1 exercise passed + 1 item passed**, where the second item may be a song
   *or* another exercise (`00` D21). A unit whose skill no song tests — 1.5 reading by
   interval, 2.5 the first scale, 3.6 accompaniment patterns, the whole theory-and-ear track —
