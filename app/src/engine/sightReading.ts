@@ -22,6 +22,10 @@ import {
   type WriterMeasure,
   type WriterNote,
 } from './musicXmlWriter';
+// The accompaniment lab's numerals, read by the same function the
+// roman-numeral drill reads them with. `drills/theory` imports nothing, so
+// there is no cycle back through the drill layer.
+import { anyRomanToChord } from './drills/theory';
 
 export type SightReadingLevel = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -566,12 +570,22 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   const harmony = spec.chordTones ? pickHarmony(rng, bars) : undefined;
 
   const wantsLeft = options.hands !== 'R' && spec.hands === 'both';
-  const rightBars = options.hands === 'L' && spec.leftHand !== 'none'
-    ? Array.from({ length: bars }, () => [])
-    : buildRightHand(rng, spec, fifths, bars, divisionsPerBar, harmony);
-  const leftBars = wantsLeft
-    ? buildLeftHand(rng, spec, fifths, bars, divisionsPerBar, harmony)
-    : Array.from({ length: bars }, () => []);
+  // A level with no left-hand part of its own (level 1) can still be read by
+  // the left hand alone: the same melody, drawn in the left hand's five-finger
+  // range and written on the bass staff, with the treble staff resting. That
+  // is the reading lesson 1.3 asks for — the bass clef, C3 to G3, one finger
+  // per key — and it costs no new music, only where the tune is put.
+  const leftOnlyMelody = options.hands === 'L' && spec.leftHand === 'none';
+  const empty = (): WriterNote[][] => Array.from({ length: bars }, () => []);
+  const rightBars =
+    options.hands === 'L' && (spec.leftHand !== 'none' || leftOnlyMelody)
+      ? empty()
+      : buildRightHand(rng, spec, fifths, bars, divisionsPerBar, harmony);
+  const leftBars = leftOnlyMelody
+    ? buildRightHand(rng, { ...spec, rhKey: spec.lhKey }, fifths, bars, divisionsPerBar, harmony)
+    : wantsLeft
+      ? buildLeftHand(rng, spec, fifths, bars, divisionsPerBar, harmony)
+      : empty();
 
   const staves: 1 | 2 = leftBars.some((b) => b.length > 0) ? 2 : 1;
   const measures: WriterMeasure[] = Array.from({ length: bars }, (_, bar) => {
@@ -597,7 +611,7 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   const title = `Sight-reading level ${level} · seed ${seed}`;
   // A tied note is one note held, not two played, so only the tie's start
   // counts — a learner transposing this plays the key once.
-  const melody = rightBars
+  const melody = (leftOnlyMelody ? leftBars : rightBars)
     .flat()
     .filter((note) => note.midi !== null && note.tie !== 'stop')
     .map((note) => note.midi as number);
@@ -631,4 +645,592 @@ function stripStaff(note: WriterNote): WriterNote {
   const rest = { ...note };
   delete rest.staff;
   return rest;
+}
+
+// ---------------------------------------------------------------------------
+// The accompaniment lab (docs/04 §3c)
+// ---------------------------------------------------------------------------
+//
+// Everything above this line writes music the *app* chose. Everything below
+// writes music the *owner* chose: a key, a progression, a left-hand pattern
+// and a number of bars, with nothing random left except the melody's walk.
+//
+// It lives here rather than in the screen because it is the same writer — the
+// same `WriterNote`, the same voicing rules, the same accompaniment shapes an
+// exercise at level 5 asks for — and a second copy of those in a UI module is
+// how the lab and the sight-reads would come to disagree about what "Alberti"
+// means. Nothing here is called by `generateSightReading`, and nothing here
+// changes what it produces: these are additions, and the goldens above are
+// untouched.
+
+/** One bar's harmony, named three ways: as written, as played, as printed. */
+export interface LabChord {
+  /** The roman numeral it was asked for — `ii`, `V7`, `♭VII`. */
+  roman: string;
+  /** What is printed on the jam chart — `Am`, `G7`, `B♭`. */
+  label: string;
+  /** Pitch classes 0–11, root first. What the keys light and the bass follows. */
+  pitchClasses: number[];
+}
+
+export interface LabKey {
+  id: string;
+  /** `G major`, `C minor`. */
+  label: string;
+  /** Pitch class of the tonic. */
+  tonic: number;
+  mode: 'major' | 'minor';
+  /** Sharps positive, flats negative, as in MusicXML `<fifths>`. */
+  fifths: number;
+}
+
+/**
+ * The twelve majors and the nine minors anybody writes a progression in.
+ *
+ * The majors are the whole circle from six flats to five sharps, so every
+ * pitch class has exactly one entry and the list never offers the same twelve
+ * notes twice under two names. The minors stop at four either way: C♯ minor is
+ * where a pop song's relative minor gets to and A♭ minor is where nothing
+ * does.
+ */
+export const LAB_KEYS: readonly LabKey[] = [
+  { id: 'gb-major', label: 'G♭ major', tonic: 6, mode: 'major', fifths: -6 },
+  { id: 'db-major', label: 'D♭ major', tonic: 1, mode: 'major', fifths: -5 },
+  { id: 'ab-major', label: 'A♭ major', tonic: 8, mode: 'major', fifths: -4 },
+  { id: 'eb-major', label: 'E♭ major', tonic: 3, mode: 'major', fifths: -3 },
+  { id: 'bb-major', label: 'B♭ major', tonic: 10, mode: 'major', fifths: -2 },
+  { id: 'f-major', label: 'F major', tonic: 5, mode: 'major', fifths: -1 },
+  { id: 'c-major', label: 'C major', tonic: 0, mode: 'major', fifths: 0 },
+  { id: 'g-major', label: 'G major', tonic: 7, mode: 'major', fifths: 1 },
+  { id: 'd-major', label: 'D major', tonic: 2, mode: 'major', fifths: 2 },
+  { id: 'a-major', label: 'A major', tonic: 9, mode: 'major', fifths: 3 },
+  { id: 'e-major', label: 'E major', tonic: 4, mode: 'major', fifths: 4 },
+  { id: 'b-major', label: 'B major', tonic: 11, mode: 'major', fifths: 5 },
+  { id: 'f-minor', label: 'F minor', tonic: 5, mode: 'minor', fifths: -4 },
+  { id: 'c-minor', label: 'C minor', tonic: 0, mode: 'minor', fifths: -3 },
+  { id: 'g-minor', label: 'G minor', tonic: 7, mode: 'minor', fifths: -2 },
+  { id: 'd-minor', label: 'D minor', tonic: 2, mode: 'minor', fifths: -1 },
+  { id: 'a-minor', label: 'A minor', tonic: 9, mode: 'minor', fifths: 0 },
+  { id: 'e-minor', label: 'E minor', tonic: 4, mode: 'minor', fifths: 1 },
+  { id: 'b-minor', label: 'B minor', tonic: 11, mode: 'minor', fifths: 2 },
+  { id: 'fs-minor', label: 'F♯ minor', tonic: 6, mode: 'minor', fifths: 3 },
+  { id: 'cs-minor', label: 'C♯ minor', tonic: 1, mode: 'minor', fifths: 4 },
+];
+
+export function labKey(id: string): LabKey {
+  return LAB_KEYS.find((key) => key.id === id) ?? (LAB_KEYS[6] as LabKey);
+}
+
+export interface LabProgression {
+  id: string;
+  /** How the progression is *named* — always in its major form, as people say it. */
+  label: string;
+  /** The numerals in a major key. */
+  major: readonly string[];
+  /**
+   * The numerals in a minor key, which are not the same numerals.
+   *
+   * `I–V–vi–IV` has no minor-key form at all: the chords that make it are the
+   * major scale's. What a minor key does with the same *sound* is
+   * `i–♭VII–♭VI–♭VII`, and writing that down is more honest than transposing
+   * numerals that would name three chords nobody plays there.
+   */
+  minor: readonly string[];
+  /** Bar counts the form divides into. Twelve bars do not fit into eight. */
+  barChoices: readonly number[];
+}
+
+const BAR_CHOICES = [4, 8, 16] as const;
+
+/** I7–IV7–V7 in the shape everybody means by "the blues". */
+const BLUES_MAJOR = [
+  'I7', 'I7', 'I7', 'I7',
+  'IV7', 'IV7', 'I7', 'I7',
+  'V7', 'IV7', 'I7', 'V7',
+] as const;
+
+const BLUES_MINOR = [
+  'i7', 'i7', 'i7', 'i7',
+  'iv7', 'iv7', 'i7', 'i7',
+  'V7', 'iv7', 'i7', 'V7',
+] as const;
+
+export const LAB_PROGRESSIONS: readonly LabProgression[] = [
+  {
+    id: 'i-iv-v-i',
+    label: 'I–IV–V–I',
+    major: ['I', 'IV', 'V', 'I'],
+    minor: ['i', 'iv', 'V', 'i'],
+    barChoices: BAR_CHOICES,
+  },
+  {
+    id: 'i-v-vi-iv',
+    label: 'I–V–vi–IV',
+    major: ['I', 'V', 'vi', 'IV'],
+    minor: ['i', '♭VII', '♭VI', '♭VII'],
+    barChoices: BAR_CHOICES,
+  },
+  {
+    id: 'ii-v-i',
+    label: 'ii–V–I',
+    // Two bars of tonic, so the turn lands on a downbeat when it repeats.
+    major: ['ii', 'V7', 'I', 'I'],
+    minor: ['iiø7', 'V7', 'i', 'i'],
+    barChoices: BAR_CHOICES,
+  },
+  {
+    id: 'i-vi-iv-v',
+    label: 'I–vi–IV–V',
+    major: ['I', 'vi', 'IV', 'V'],
+    minor: ['i', '♭VI', 'iv', 'V'],
+    barChoices: BAR_CHOICES,
+  },
+  {
+    id: 'blues',
+    label: '12-bar blues',
+    major: BLUES_MAJOR,
+    minor: BLUES_MINOR,
+    barChoices: [12, 24],
+  },
+];
+
+export function labProgression(id: string): LabProgression {
+  return LAB_PROGRESSIONS.find((p) => p.id === id) ?? (LAB_PROGRESSIONS[0] as LabProgression);
+}
+
+/**
+ * The numerals for one run of `bars` bars.
+ *
+ * The pattern repeats rather than stretching: eight bars of a four-bar
+ * progression is that progression twice, which is what "eight bars of
+ * I–V–vi–IV" means to anybody who has played one.
+ */
+export function romansForProgression(
+  progression: LabProgression,
+  mode: 'major' | 'minor',
+  bars: number,
+): string[] {
+  const pattern = mode === 'minor' ? progression.minor : progression.major;
+  const count = Math.max(1, Math.trunc(bars));
+  return Array.from({ length: count }, (_, bar) => pattern[bar % pattern.length] as string);
+}
+
+/** `"I - V | vi IV"` → `['I', 'V', 'vi', 'IV']`. Bars are separated by anything. */
+export function parseRomanList(text: string): string[] {
+  return text
+    .split(/[\s,|/–—-]+/)
+    .map((token) => token.trim())
+    .filter((token) => token.length > 0);
+}
+
+const SHARP_NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'] as const;
+const FLAT_NAMES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'] as const;
+
+/** Chord intervals above the root → the suffix printed after the note name. */
+const LAB_SUFFIXES: { intervals: number[]; suffix: string }[] = [
+  { intervals: [0, 4, 7], suffix: '' },
+  { intervals: [0, 3, 7], suffix: 'm' },
+  { intervals: [0, 3, 6], suffix: '°' },
+  { intervals: [0, 4, 8], suffix: '+' },
+  { intervals: [0, 4, 7, 10], suffix: '7' },
+  { intervals: [0, 3, 7, 10], suffix: 'm7' },
+  { intervals: [0, 4, 7, 11], suffix: 'maj7' },
+  { intervals: [0, 3, 6, 10], suffix: 'ø7' },
+  { intervals: [0, 3, 6, 9], suffix: '°7' },
+];
+
+function suffixFor(intervals: readonly number[]): string {
+  const found = LAB_SUFFIXES.find(
+    (entry) =>
+      entry.intervals.length === intervals.length &&
+      entry.intervals.every((value, i) => value === intervals[i]),
+  );
+  return found?.suffix ?? '';
+}
+
+/**
+ * `"♭VI"` in a key → the chord.
+ *
+ * The numeral itself is read by `drills/theory`, which the roman-numeral drill
+ * already uses — one reading of what `vii°` means, not two. What is added here
+ * is the flat and sharp prefix, which that reader has no need of and a minor
+ * key cannot do without: `♭VI` in A minor is F, and there is no way to say F
+ * from A with an unaltered numeral. A prefix moves the whole chord a semitone
+ * and leaves its quality alone, which is exactly what the accidental means.
+ *
+ * `null` when the numeral cannot be read at all — the lab names the one it
+ * could not rather than quietly substituting a chord nobody typed.
+ */
+export function romanToLabChord(roman: string, key: LabKey): LabChord | null {
+  const text = roman.trim();
+  const match = /^([b♭#♯])?(.+)$/.exec(text);
+  if (!match) return null;
+  const accidental = match[1];
+  const chord = anyRomanToChord(match[2] as string, key.tonic, 60);
+  if (!chord) return null;
+  const shift = accidental === undefined ? 0 : accidental === 'b' || accidental === '♭' ? -1 : 1;
+  const root = chord.root + shift;
+  const pitchClasses = chord.pitches.map((midi) => (((midi + shift) % 12) + 12) % 12);
+  const intervals = pitchClasses.map((pc) => (((pc - root) % 12) + 12) % 12);
+  // A flattened numeral is spelt with a flat whatever the key — ♭VII in C is
+  // B♭, not A♯ — and a sharpened one with a sharp; only a plain numeral takes
+  // the key's own spelling.
+  const names =
+    accidental === 'b' || accidental === '♭'
+      ? FLAT_NAMES
+      : accidental === '#' || accidental === '♯'
+        ? SHARP_NAMES
+        : key.fifths < 0
+          ? FLAT_NAMES
+          : SHARP_NAMES;
+  const rootClass = (((root % 12) + 12) % 12);
+  return {
+    roman: text,
+    label: `${names[rootClass] ?? 'C'}${suffixFor(intervals)}`,
+    pitchClasses,
+  };
+}
+
+/**
+ * Every bar's chord, or `null` where a numeral could not be read.
+ *
+ * The nulls are kept rather than dropped: the lab has to be able to say
+ * *which* bar it did not understand, and a list silently one shorter than the
+ * one that was typed cannot.
+ */
+export function chordsForProgression(
+  romans: readonly string[],
+  key: LabKey,
+): (LabChord | null)[] {
+  return romans.map((roman) => romanToLabChord(roman, key));
+}
+
+export type LabLeftHand = 'none' | 'whole' | 'chord' | 'alberti' | 'broken' | 'walking';
+export type LabRightHand = 'chord-tones' | 'melody' | 'none';
+
+export interface LabExerciseOptions {
+  title: string;
+  fifths: number;
+  /** One chord per bar. The length of this is the length of the exercise. */
+  harmony: readonly LabChord[];
+  leftHand: LabLeftHand;
+  rightHand: LabRightHand;
+  bpm?: number;
+  timeSig?: { beats: number; beatType: number };
+  /** Only the melody uses it; every other choice here is fully determined. */
+  seed?: number;
+}
+
+export interface LabExerciseResult {
+  musicXml: string;
+  title: string;
+  bars: number;
+  bpm: number;
+  fifths: number;
+  seed: number;
+}
+
+/**
+ * Where each hand sits: the left from A2, the right from C4.
+ *
+ * A2 rather than C3, which is where this started. A voicing that stacks
+ * upwards from its floor puts a chord rooted near the top of that floor's
+ * octave a whole octave high: from C3, a B chord is B3–D♯4–F♯4 and the
+ * walking bass's sixth above it lands past middle C, which is not a left
+ * hand's business. From A2 the roots run A2–G♯3 and only the two chords that
+ * were highest move, down where they belong.
+ */
+const LAB_LEFT_FLOOR = 45;
+const LAB_RIGHT_FLOOR = 60;
+const LAB_RIGHT_CEILING = 81;
+
+/**
+ * A chord as ascending MIDI from `floor`, root first, each note above the last.
+ *
+ * Pitch classes have no octave, so a chord written `[9, 0, 4]` has to be told
+ * where to sit before it can be played; doing it by "the next one above the
+ * previous" keeps the shape closed, which is what a left hand wants and what
+ * stacking every note in one octave would not give.
+ */
+function voiceChord(pitchClasses: readonly number[], floor: number): number[] {
+  const out: number[] = [];
+  let low = floor;
+  for (const pitchClass of pitchClasses) {
+    const midi = low + ((((pitchClass - low) % 12) + 12) % 12);
+    out.push(midi);
+    low = midi + 1;
+  }
+  return out;
+}
+
+/** Root, fifth, third, fifth — the Alberti order, as indices into a voicing. */
+const ALBERTI_ORDER = [0, 2, 1, 2];
+
+function labLeftBar(
+  chord: LabChord,
+  pattern: Exclude<LabLeftHand, 'none'>,
+  divisionsPerBar: number,
+): WriterNote[] {
+  const voiced = voiceChord(chord.pitchClasses, LAB_LEFT_FLOOR);
+  const root = voiced[0] ?? LAB_LEFT_FLOOR;
+  const at = (index: number): number => voiced[index] ?? voiced[voiced.length - 1] ?? root;
+
+  if (pattern === 'whole' || pattern === 'chord') {
+    const { type, dotted } = durationToType(divisionsPerBar);
+    const base: WriterNote = {
+      midi: root,
+      duration: divisionsPerBar,
+      type,
+      staff: 2,
+      voice: 5,
+      ...(dotted ? { dotted } : {}),
+    };
+    if (pattern === 'whole') return [base];
+    // Chord members, not a sequence: without `<chord/>` the bar is three times
+    // as long as the time signature allows.
+    return [base, ...voiced.slice(1).map((midi) => ({ ...base, midi, chord: true }))];
+  }
+
+  const step = pattern === 'alberti' ? DIVISIONS / 2 : DIVISIONS;
+  const count = Math.max(1, Math.round(divisionsPerBar / step));
+  const { type, dotted } = durationToType(step);
+  return Array.from({ length: count }, (_, i) => {
+    // Walking takes a sixth above the root for its fourth note, which is the
+    // one that walks: root, third, fifth, six, and back down to the next
+    // chord's root. The other two cycle the chord's own tones.
+    const midi =
+      pattern === 'walking'
+        ? [at(0), at(1), at(2), root + 9][i % 4] ?? root
+        : at(ALBERTI_ORDER[i % ALBERTI_ORDER.length] ?? 0);
+    return {
+      midi,
+      duration: step,
+      type,
+      staff: 2 as const,
+      voice: 5,
+      ...(dotted ? { dotted } : {}),
+    };
+  });
+}
+
+/** The notes a melody over this chord may use: the key, plus the chord itself. */
+function labMelodyPool(fifths: number, pitchClasses: readonly number[]): number[] {
+  const pool = new Set(scalePitches(fifths, LAB_RIGHT_FLOOR, LAB_RIGHT_CEILING));
+  for (let midi = LAB_RIGHT_FLOOR; midi <= LAB_RIGHT_CEILING; midi += 1) {
+    // A secondary dominant's third is not in the key and is still the note the
+    // bar is about, so the chord widens the pool rather than being filtered by
+    // it.
+    if (pitchClasses.includes(((midi % 12) + 12) % 12)) pool.add(midi);
+  }
+  return [...pool].sort((a, b) => a - b);
+}
+
+function nearestIndex(pool: readonly number[], midi: number): number {
+  let best = 0;
+  let bestDistance = Infinity;
+  pool.forEach((candidate, index) => {
+    const distance = Math.abs(candidate - midi);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = index;
+    }
+  });
+  return best;
+}
+
+function nearestChordTone(
+  pool: readonly number[],
+  midi: number,
+  pitchClasses: readonly number[],
+): number {
+  let best = midi;
+  let bestDistance = Infinity;
+  for (const candidate of pool) {
+    if (!pitchClasses.includes(((candidate % 12) + 12) % 12)) continue;
+    const distance = Math.abs(candidate - midi);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = candidate;
+    }
+  }
+  return best;
+}
+
+/** The lengths a lab melody is written in. No ties, no rests: this is a study. */
+const LAB_RHYTHMS = [DIVISIONS / 2, DIVISIONS, DIVISIONS * 1.5, DIVISIONS * 2];
+
+function labRhythm(rng: () => number, divisionsPerBar: number): number[] {
+  const out: number[] = [];
+  let remaining = divisionsPerBar;
+  while (remaining > 0) {
+    const affordable = LAB_RHYTHMS.filter((duration) => duration <= remaining);
+    const duration = affordable.length > 0 ? pick(rng, affordable) : remaining;
+    out.push(duration);
+    remaining -= duration;
+  }
+  return out;
+}
+
+/**
+ * A melody over a harmony that is already decided.
+ *
+ * The one rule that makes a written-out accompaniment exercise readable rather
+ * than merely legal, and it is the generator's own (`05` §8, levels 3 and up):
+ * a strong beat lands on a chord tone, and between them the line steps. The
+ * difference from `buildRightHand` is only that the harmony is the owner's and
+ * not a draw from `pickHarmony`.
+ */
+function labMelodyBars(
+  rng: () => number,
+  fifths: number,
+  harmony: readonly LabChord[],
+  divisionsPerBar: number,
+): WriterNote[][] {
+  let pitch = LAB_RIGHT_FLOOR;
+  return harmony.map((chord) => {
+    const pool = labMelodyPool(fifths, chord.pitchClasses);
+    const notes: WriterNote[] = [];
+    let offset = 0;
+    for (const duration of labRhythm(rng, divisionsPerBar)) {
+      const strong = offset === 0 || offset === divisionsPerBar / 2;
+      if (strong) pitch = nearestChordTone(pool, pitch, chord.pitchClasses);
+      const { type, dotted } = durationToType(duration);
+      notes.push({
+        midi: pitch,
+        duration,
+        type,
+        staff: 1,
+        voice: 1,
+        ...(dotted ? { dotted } : {}),
+      });
+      offset += duration;
+      // Step, never leap: the leaps in this exercise belong to the left hand.
+      const index = nearestIndex(pool, pitch);
+      const move = rng() < 0.5 ? -1 : 1;
+      pitch = pool[Math.min(pool.length - 1, Math.max(0, index + move))] ?? pitch;
+    }
+    return notes;
+  });
+}
+
+function labChordToneBars(
+  harmony: readonly LabChord[],
+  divisionsPerBar: number,
+): WriterNote[][] {
+  const count = Math.max(1, Math.round(divisionsPerBar / DIVISIONS));
+  const { type, dotted } = durationToType(DIVISIONS);
+  return harmony.map((chord) => {
+    const voiced = voiceChord(chord.pitchClasses, LAB_RIGHT_FLOOR);
+    return Array.from({ length: count }, (_, i) => {
+      // Up and back: root, third, fifth, third. A line that only climbs walks
+      // off the top of the hand by the fourth bar.
+      const order = [0, 1, 2, 1];
+      const index = order[i % order.length] ?? 0;
+      return {
+        midi: voiced[Math.min(index, voiced.length - 1)] ?? LAB_RIGHT_FLOOR,
+        duration: DIVISIONS,
+        type,
+        staff: 1 as const,
+        voice: 1,
+        ...(dotted ? { dotted } : {}),
+      };
+    });
+  });
+}
+
+function restBar(divisionsPerBar: number, staff: 1 | 2, voice: number): WriterNote[] {
+  const { type, dotted } = durationToType(divisionsPerBar);
+  return [
+    {
+      midi: null,
+      duration: divisionsPerBar,
+      type,
+      staff,
+      voice,
+      ...(dotted ? { dotted } : {}),
+    },
+  ];
+}
+
+/**
+ * Writes the exercise the accompaniment lab was asked for (`04` §3c).
+ *
+ * Takes the harmony rather than choosing it — that is the whole difference
+ * between this and `generateSightReading`, and the reason it is a second
+ * entry point rather than an option on the first: a sight-read whose chords
+ * the reader picked is not a sight-read, and an accompaniment study whose
+ * chords the app picked is not the pattern anybody wanted to practise.
+ */
+export function buildLabExercise(options: LabExerciseOptions): LabExerciseResult {
+  const harmony = options.harmony.length > 0 ? options.harmony : [];
+  const bars = harmony.length;
+  const seed = options.seed ?? Math.floor(Math.random() * 0xffffffff);
+  const rng = makeRng(seed);
+  const timeSig = options.timeSig ?? { beats: 4, beatType: 4 };
+  const bpm = options.bpm ?? 92;
+  const divisionsPerBar = (timeSig.beats * DIVISIONS * 4) / timeSig.beatType;
+
+  const rightBars: WriterNote[][] =
+    options.rightHand === 'melody'
+      ? labMelodyBars(rng, options.fifths, harmony, divisionsPerBar)
+      : options.rightHand === 'chord-tones'
+        ? labChordToneBars(harmony, divisionsPerBar)
+        : harmony.map(() => restBar(divisionsPerBar, 1, 1));
+
+  const leftHand = options.leftHand;
+  const leftBars: WriterNote[][] =
+    leftHand === 'none'
+      ? harmony.map(() => [])
+      : harmony.map((chord) => labLeftBar(chord, leftHand, divisionsPerBar));
+
+  // One staff only when there is nothing under it. A right hand that is all
+  // rests still gets its staff, because the exercise is then a left-hand
+  // study and a pianist reads those on a grand staff like everything else.
+  const staves: 1 | 2 = options.leftHand === 'none' ? 1 : 2;
+  const measures: WriterMeasure[] = Array.from({ length: bars }, (_, bar) => {
+    const right = rightBars[bar] ?? restBar(divisionsPerBar, 1, 1);
+    const left = leftBars[bar] ?? [];
+    const filledLeft = staves === 2 && left.length === 0 ? restBar(divisionsPerBar, 2, 5) : left;
+    return {
+      notes:
+        staves === 2
+          ? [...withStaff(right, 1), ...withStaff(filledLeft, 2)]
+          : right.map(stripStaff),
+    };
+  });
+
+  return {
+    musicXml: writeMusicXml({
+      title: options.title,
+      fifths: options.fifths,
+      beats: timeSig.beats,
+      beatType: timeSig.beatType,
+      bpm,
+      staves,
+      measures,
+    }),
+    title: options.title,
+    bars,
+    bpm,
+    fifths: options.fifths,
+    seed,
+  };
+}
+
+/**
+ * The seed for one calendar day (`04` §2, the daily sight-read).
+ *
+ * A hash of the local date string rather than the date's number, so
+ * consecutive days give unrelated music: `seed + 1` through `makeRng` is a
+ * near neighbour of `seed`, and a week of daily reads would have come out as
+ * seven takes of the same phrase. FNV-1a, written out for the same reason
+ * `makeRng` is — a stored seed has to reproduce its day months later.
+ */
+export function dailySeed(dayKey: string): number {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < dayKey.length; i += 1) {
+    hash ^= dayKey.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
 }

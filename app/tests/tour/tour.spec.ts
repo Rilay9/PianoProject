@@ -438,8 +438,15 @@ for (const { orientation, size } of FORM_FACTORS) {
         // To four, not up by two: this way it does not depend on where the
         // form factor happens to start.
         await withScoreMenu(page, async () => {
-          for (let i = 0; i < 8; i += 1) await page.locator('#score-bars-down').click();
-          for (let i = 0; i < 3; i += 1) await page.locator('#score-bars-up').click();
+          // The buttons disable at the floor and the ceiling, and a click on a
+          // disabled button is something Playwright waits for rather than
+          // skips — with no action timeout in this config, forever. That was
+          // the upright tour's half-hour stall (2026-09-16): eight downs from
+          // a two-bar window reach the floor after one.
+          const down = page.locator('#score-bars-down');
+          const up = page.locator('#score-bars-up');
+          for (let i = 0; i < 8 && (await down.isEnabled()); i += 1) await down.click();
+          for (let i = 0; i < 3 && (await up.isEnabled()); i += 1) await up.click();
         });
         await page.waitForTimeout(1200);
       }, async (p) => (await p.locator('#score-bars').textContent()) === '4 bars');
@@ -488,9 +495,15 @@ for (const { orientation, size } of FORM_FACTORS) {
           timeout: 60_000,
         });
         // Answered wrong, quickly: the sheet is the subject here, not the score.
+        // A miss holds the card since 2026-09-15, so each wrong answer is
+        // followed by the tap that moves on.
         for (let i = 0; i < 30; i += 1) {
           if (await page.locator('#drill-summary').isVisible()) break;
           await midi.noteOn(48, 70);
+          await page.waitForTimeout(150);
+          if ((await page.locator('[data-screen="drill"]').getAttribute('data-paused')) === 'miss') {
+            await page.locator('#drill-stage').click();
+          }
           await midi.noteOff(48);
           await page.waitForTimeout(160);
         }
@@ -498,6 +511,58 @@ for (const { orientation, size } of FORM_FACTORS) {
       }, '#drill-summary');
 
       // ------------------------------------------------------- other screens
+      // The 2026-09-15 additions: a miss that pauses, the going-over, Simon,
+      // the accompaniment lab and its jam, the daily read, and duet in the
+      // score sheet. Drills are answered wrong through the MIDI mock so the
+      // pictures show the state, not a score.
+      await scene('42-drill-miss', 'A miss, held', 'Wrong keys red, the answer lit and engraved, and a tap moves on.', async () => {
+        await go(page, '/drill/drill.theory.modes-all', 'drill');
+        await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-drill', 'running', {
+          timeout: 60_000,
+        });
+        for (let i = 0; i < 8; i += 1) await midi.noteOn(60, 80);
+        await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-paused', 'miss', {
+          timeout: 10_000,
+        });
+        await page.waitForTimeout(600);
+      }, '#drill-answer svg');
+      await scene('43-drill-going-over', 'Going over the misses', 'The missed cards again, answer shown, nothing counted.', async () => {
+        await page.locator('#drill-end').click();
+        await expect(page.locator('#drill-summary')).toBeVisible({ timeout: 10_000 });
+        await page.getByRole('button', { name: /go over/i }).click();
+        await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-review', 'going-over', {
+          timeout: 10_000,
+        });
+        await page.waitForTimeout(1500);
+      }, '#drill-answer svg');
+      await scene('44-drill-simon', 'Simon on the piano', 'One note, then two, then three; the chain is the score.', async () => {
+        await go(page, '/drill/drill.ear.simon-c-major', 'drill');
+        await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-drill', 'running', {
+          timeout: 60_000,
+        });
+        await page.waitForTimeout(1500);
+      }, '#drill-how');
+      await scene('45-lab', 'The accompaniment lab', 'A key, a progression, a left hand, and two ways to use them.', async () => {
+        await go(page, '/lab', 'lab');
+      }, async (p) => (await p.getByRole('button', { name: 'Read it' }).isVisible()));
+      await scene('46-lab-jam', 'Chord DJ', 'The bed plays, the chart lights up, nothing is judged.', async () => {
+        await page.getByRole('button', { name: 'Jam it' }).click();
+        await page.waitForTimeout(2500);
+      }, async (p) => (await p.getByRole('button', { name: 'Stop' }).isVisible()));
+      await page.getByRole('button', { name: 'Stop' }).click().catch(() => undefined);
+      await scene('47-today-daily', "Today's sight-read", 'One phrase a day, seeded from the date, with a streak.', async () => {
+        await go(page, '/today', 'today');
+      }, async (p) => (await p.getByText(/Today's sight-read/).first().isVisible()));
+      await scene('48-score-duet', 'Duet, where the choice is made', 'R chosen: the sheet says the app plays the left hand, with the switch beside it.', async () => {
+        // A two-hand piece: the duet line only appears when there is another
+        // hand for the app to play.
+        await go(page, '/score/song.folk.twinkle.ht', 'score');
+        await waitForSheet(page);
+        await page.locator('#score-hands-R').click();
+        await page.locator('#score-more').click();
+        await page.waitForTimeout(600);
+      }, async (p) => (await p.getByText(/Duet: the app plays/).first().isVisible()));
+
       await scene('50-skills', 'Skills review', 'Every concept, with what to practise for it.', async () => {
         await go(page, '/plan/skills', 'skills');
       }, '[data-screen="skills"] .list-row');

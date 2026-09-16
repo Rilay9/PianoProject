@@ -10,6 +10,7 @@
  * `#/score/<catalog id>` — the id is in the hash so reload and the back
  * gesture work with no extra state (docs/04 §1).
  */
+import './ScoreScreen.css';
 import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
@@ -29,6 +30,7 @@ import {
   type KeysView,
 } from '../../data/settingsStore';
 import { evaluateOutcome } from '../../engine/Scoring';
+import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { recordRun } from '../../data/progressStore';
 import type { Mode, SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
@@ -142,7 +144,7 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
  * sheet re-runs the *loaded* score rather than regenerating, which is what
  * docs/05 §8 means by retrying a failed sight-read identically.
  */
-function generateSightReadingFor(item: CatalogItem): string {
+function generateSightReadingFor(item: CatalogItem, seed?: number): string {
   const params = item.drill?.params ?? {};
   const hands = params.hands === 'left' ? 'L' : params.hands === 'both' ? 'both' : 'R';
   const level = (typeof params.level === 'number' ? params.level : 1) as SightReadingLevel;
@@ -150,6 +152,9 @@ function generateSightReadingFor(item: CatalogItem): string {
     level,
     hands,
     ...(typeof params.bars === 'number' ? { bars: params.bars } : {}),
+    // Today's sight-read carries the day's seed in the route (`04` §2), so
+    // the day has one phrase; every other open is fresh.
+    ...(seed === undefined ? {} : { seed }),
   }).musicXml;
 }
 
@@ -260,6 +265,39 @@ export function ScoreScreen(router: Router): HTMLElement {
   let hands: HandsFocus = 'both';
   let tempoPct = settings.defaultTempoPct;
   let metronomeOn = false;
+  /**
+   * Rhythm first (`04` §5, `05` §3a): tap the piece's rhythm on any key.
+   *
+   * A remembered preference rather than run state, so it comes back on the
+   * next piece; the engine still refuses it outside Keep tempo, and a blind or
+   * performance run ignores it because both are claims about the piece itself.
+   */
+  let rhythmOnly = settings.rhythmOnly;
+  /**
+   * The tempo ladder on a loop (`04` §5, `05` §6).
+   *
+   * Run state, deliberately, and for the same reason the loop it belongs to is
+   * run state: a ladder without a loop is nothing, and a loop set on one piece
+   * does not follow you to the next.
+   */
+  let ladderOn = false;
+  /**
+   * The highest tempo the learner has asked for since the ladder was switched
+   * on — the ceiling, when it is above the written tempo. A ladder must not
+   * undo a decision made with a hand on the slider.
+   */
+  let ladderCeilingPct = tempoPct;
+  /**
+   * What the run's totals stood at when the previous pass ended.
+   *
+   * A looping engine keeps one set of totals for the whole run, so the score
+   * handed to a lap's `finished` is everything since the run started. Judging
+   * the ladder on that would mean one stumble in the first pass followed the
+   * learner for the rest of the session — and at the floor, where the tempo
+   * stops moving and the run is never restarted, it could never be climbed out
+   * of again. The pass is the difference.
+   */
+  let ladderPassBase = { missed: 0, wrong: 0 };
   let loopBars: { from: number; to: number } | null = null;
   let loopAnchor: number | null = null;
   let sections: { label: string; fromMeasure: number; toMeasure: number }[] = [];
@@ -730,6 +768,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   tempo.value = String(tempoPct);
   tempo.addEventListener('input', () => {
     tempoPct = Number(tempo.value);
+    raiseLadderCeiling();
     if (session?.running) startRun();
     render();
   });
@@ -813,6 +852,91 @@ export function ScoreScreen(router: Router): HTMLElement {
     },
     'score-metronome',
   );
+
+  /**
+   * Rhythm first (`04` §5): the piece's rhythm, tapped on any key at all.
+   *
+   * The smallest honest version of "learn the rhythm before the notes". It is
+   * not a fifth mode and not a separate screen: Keep tempo already has the
+   * timetable, the count-in, the cursor, the strip and the summary, and the
+   * only thing a rhythm-first run does differently is stop asking which key.
+   */
+  const rhythmToggle = button(
+    'Off',
+    () => {
+      rhythmOnly = !rhythmOnly;
+      settings.rhythmOnly = rhythmOnly;
+      updateSettings({ rhythmOnly });
+      // What is judged has changed, so what is being measured has changed: a
+      // run cannot carry half of each.
+      if (session?.running) startRun();
+      render();
+    },
+    'score-rhythm',
+  );
+  const rhythmRow = menuRow(
+    'Rhythm only',
+    'Tap the rhythm on any key. Early and late are marked as usual; the notes are not, and the run is not counted as playing the piece.',
+    rhythmToggle,
+  );
+  rhythmRow.id = 'score-rhythm-row';
+
+  /**
+   * The tempo ladder on a loop (`04` §5, `05` §6).
+   *
+   * The loop already repeats the hard bars; this is what turns repetition into
+   * practice — a clean pass earns a rung, a pass with a mistake in it gives one
+   * back, and the learner never has to take a hand off the keys to move the
+   * slider. `nextLadderTempo` is the whole rule and it is pure; this button
+   * only says whether it is being asked.
+   */
+  const ladderToggle = button(
+    'Off',
+    () => {
+      ladderOn = !ladderOn;
+      // From here, not from the written tempo: the ladder starts where the
+      // learner already is (`05` §6).
+      if (ladderOn) ladderCeilingPct = tempoPct;
+      render();
+    },
+    'score-ladder',
+  );
+  const ladderRow = menuRow(
+    'Ladder',
+    'Each clean pass of the loop speeds up a notch; a pass with a mistake in it slows down one.',
+    ladderToggle,
+  );
+  ladderRow.id = 'score-ladder-row';
+
+  /**
+   * The duet, where the choice is made (`04` §5).
+   *
+   * The app has played the other hand under the learner since P6, and nobody
+   * could find it: it lives in Settings, three screens from the R/L buttons
+   * that decide which hand it means. No new state and no new setting — this is
+   * `playbackHands`, bound a second time where the question is actually asked,
+   * and the row names the hand so the sentence answers itself.
+   */
+  const duetToggle = button(
+    'Off',
+    () => {
+      const next = settings.playbackHands === 'none' ? 'non-focused' : 'none';
+      settings.playbackHands = next;
+      updateSettings({ playbackHands: next });
+      // The status line says which hand is played once per run; turning the
+      // duet on mid-run should get that sentence, not silence.
+      forgetPlayingHand();
+      if (session?.running) startRun();
+      render();
+    },
+    'score-duet',
+  );
+  const duetRow = menuRow(
+    'Duet',
+    'Turn it off to practise against silence.',
+    duetToggle,
+  );
+  duetRow.id = 'score-duet-row';
 
   const barsDown = button('−', () => setBars(settings.barsPerWindow - 1), 'score-bars-down');
   barsDown.setAttribute('aria-label', 'One bar fewer in the window');
@@ -923,14 +1047,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     // be offering to make it not a performance (replan §8).
     ...(performanceRun ? [] : [menuRow('Start again', 'Back to bar 1 without leaving this screen.', restart)]),
     menuRow('Input', 'What the app listens to while you play: the piano over its cable, the microphone, or nothing.', inputSelect),
+    // Beside Input, because both answer the same question: what is being
+    // judged. The Loop and the Ladder are the next pair, in that order.
+    rhythmRow,
     sectionRow,
     menuRow('Loop', 'Repeat a few bars over and over until they are yours. Double-tap the sheet to mark them.', loopButton),
+    ladderRow,
     menuRow('Metronome', 'The click, on or off.', metronomeButton),
     menuRow('Bars in window', 'How much music is on the screen at once. Fewer bars means bigger notes.', barsDown, barsLabel, barsUp),
     menuRow('Size', 'Bigger or smaller notes, around whatever already fits.', zoomOut, zoomLabel, zoomIn),
     menuRow('Layout', 'A screenful at a time, or one long sheet you scroll through.', layoutGroup),
     menuRow('Keys', 'The keyboard under the score: the full strip, a thin ribbon that names the note, or nothing.', keysGroup),
     menuRow('Sound', 'Whether the phone or the piano plays the hand you are not practising.', destinationButton),
+    // Under Sound, which is where it comes out, and next to the hand buttons'
+    // consequence rather than three screens away in Settings.
+    duetRow,
     menuRow('Blind', 'Hides the notation so you play from memory. The app still follows you and still marks what you play.', blindToggle),
     menuRow('Perform', 'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.', performanceToggle),
   );
@@ -1070,8 +1201,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (!Number.isFinite(wanted) || wanted <= 0) return;
     tempoPct = Math.min(130, Math.max(30, Math.round((wanted / writtenBpm()) * 100)));
     tempo.value = String(tempoPct);
+    raiseLadderCeiling();
     if (session?.running) startRun();
     render();
+  }
+
+  /**
+   * The ladder may climb back to wherever the learner has been, never past it.
+   *
+   * Called from the two places the learner sets a tempo by hand. Without it a
+   * learner who dropped to 50 % for a hard bar and then asked for 110 % would
+   * find the ladder quietly capping them at the written tempo, which is a
+   * control overruling a person.
+   */
+  function raiseLadderCeiling(): void {
+    ladderCeilingPct = Math.max(ladderCeilingPct, tempoPct);
   }
 
   function cyclePlaybackDestination(): void {
@@ -1159,6 +1303,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   function startRun(): void {
     if (!session || !model) return;
     summaryUp(false);
+    // A new run keeps its own totals, so the ladder's first pass is measured
+    // from nought again.
+    ladderPassBase = { missed: 0, wrong: 0 };
     const midi = getMidiSettings();
     // A performance is one pass through. Looping a section mid-performance is
     // practising, and the flag would then be recording something that did not
@@ -1188,6 +1335,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         settings.metronomeSound,
       ),
       metronomeVolume: midi.metronomeVolume,
+      ...(rhythmRunFor(runMode) ? { rhythmOnly: true } : {}),
       playbackHands: runMode === 'listen' ? 'both' : settings.playbackHands,
       ...(input === 'mic'
         ? {
@@ -1215,6 +1363,76 @@ export function ScoreScreen(router: Router): HTMLElement {
     void requestWakeLock();
     // Starting a run is what arms the auto-hide.
     showBar(CONTROL_BAR_START_HIDE_MS);
+    render();
+  }
+
+  /**
+   * Whether *this* run judges the rhythm alone (`04` §5, `05` §3a).
+   *
+   * Three refusals, each for its own reason. Keep tempo is the only mode with
+   * a timetable, so it is the only one where ignoring the pitches leaves
+   * anything to judge. A **blind** run is "play it from memory", and a
+   * memorised rhythm is not the claim it makes. A **performance** is the piece,
+   * played through, for somebody. Both of those are settled by the route
+   * rather than by a toggle, so the toggle does not get a say.
+   */
+  function rhythmRunFor(runMode: Mode): boolean {
+    return rhythmOnly && runMode === 'tempo' && !blind && !performanceRun;
+  }
+
+  /**
+   * Whether the Ladder has anything to act on: a loop, in the mode with a
+   * tempo to move. A performance neither loops nor repeats.
+   */
+  function ladderApplies(): boolean {
+    return mode === 'tempo' && loopBars !== null && !performanceRun;
+  }
+
+  /**
+   * One pass of the loop has ended; the ladder decides the next one (`05` §6).
+   *
+   * Clean means nothing missed *and* nothing wrong **in this pass**: a bar
+   * played at the right moments with the wrong notes in it is not a pass of
+   * that bar, and the ladder is the one control that acts without being asked
+   * each time, so it has to read the stricter of the two. The engine's totals
+   * run for the whole run, which is why the comparison is against
+   * `ladderPassBase` rather than against nought.
+   *
+   * The restart is deferred by a microtask. The engine emits this finish from
+   * the middle of `completeLap`, and it still has the new lap's clock to rebase
+   * afterwards; tearing it down from inside its own event would leave the next
+   * run's cursor set from a dead engine. A microtask runs as soon as the frame
+   * that emitted it is done, which is before the next one paints.
+   */
+  function climbLadder(score: SessionScore): void {
+    // Not during a demonstration: `Hear it` judges nothing, so every lap of one
+    // is trivially clean and the ladder would climb on playing nobody did.
+    if (!ladderOn || hearing || !ladderApplies()) return;
+    const clean =
+      score.missedTotal === ladderPassBase.missed && score.wrongNotesTotal === ladderPassBase.wrong;
+    ladderPassBase = { missed: score.missedTotal, wrong: score.wrongNotesTotal };
+    const next = nextLadderTempo({
+      enabled: true,
+      tempoPct,
+      startedAtPct: ladderCeilingPct,
+      clean,
+    });
+    const verdict = clean ? 'Clean' : 'A mistake';
+    status.textContent =
+      next === tempoPct
+        ? `${verdict} — staying at ${String(tempoPct)} %`
+        : `${verdict} — ${clean ? 'up' : 'down'} to ${String(next)} %`;
+    // Nothing to re-time, so the lap the engine has already begun is left to
+    // run: a restart here would cost a count-in and buy an identical pass.
+    if (next === tempoPct) {
+      render();
+      return;
+    }
+    tempoPct = next;
+    tempo.value = String(tempoPct);
+    queueMicrotask(() => {
+      if (session?.running === true) startRun();
+    });
     render();
   }
 
@@ -1620,12 +1838,25 @@ export function ScoreScreen(router: Router): HTMLElement {
     // (`08` §6.3).
     status.textContent = '';
     sheet.replaceChildren();
-    const outcome = evaluateOutcome(score, {
+    /**
+     * A rhythm run is not a run of the piece (`05` §3a).
+     *
+     * Read off the score rather than off the screen's own toggle, because the
+     * score is what gets recorded and the toggle can have been moved since the
+     * run started. The accuracy still stands — it is a true measurement of how
+     * much of the piece the learner was in time for — and pass and mastery do
+     * not: those are claims about playing the notes, and the notes were not
+     * judged. Refused here, in one place, rather than by leaving the numbers
+     * out of the history, because the practice is real and the minutes count.
+     */
+    const rhythmRun = score.rhythmOnly === true;
+    const measured = evaluateOutcome(score, {
       passAccuracy: settings.passAccuracyPct / 100,
       passTempoPct: settings.passTempoPct,
       masterAccuracy: 0.97,
       masterTempoPct: 100,
     });
+    const outcome = rhythmRun ? { ...measured, passed: false, masterEligible: false } : measured;
 
     // Recorded before the sheet is drawn, and not awaited: the numbers are
     // already final, and a slow write should not delay the learner seeing
@@ -1653,13 +1884,22 @@ export function ScoreScreen(router: Router): HTMLElement {
         passed: outcome.passed,
         masterEligible: outcome.masterEligible,
         ...(performanceRun ? { performance: true } : {}),
+        ...(rhythmRun ? { rhythmOnly: true } : {}),
       }).catch((cause: unknown) => {
         status.textContent = `Could not save this run: ${String(cause)}`;
       });
     }
 
     const title = document.createElement('h2');
-    title.textContent = outcome.masterEligible ? 'Mastered' : outcome.passed ? 'Passed' : 'Run finished';
+    // Named for what it was, not for what it was not: "Run finished" over a
+    // rhythm run reads as a piece that failed to pass.
+    title.textContent = rhythmRun
+      ? 'Rhythm run'
+      : outcome.masterEligible
+        ? 'Mastered'
+        : outcome.passed
+          ? 'Passed'
+          : 'Run finished';
     sheet.appendChild(title);
 
     const lines = document.createElement('dl');
@@ -1676,8 +1916,24 @@ export function ScoreScreen(router: Router): HTMLElement {
     // `correctSteps` and can finish a clean run with `hits` at nought, while
     // Tempo counts `hits` against the expected pitches (`engine/types.ts`).
     const heard = score.hits > 0 || score.correctSteps > 0 || score.wrongNotesTotal > 0;
+    // First, so it is read before the accuracy it qualifies.
+    if (rhythmRun) {
+      addStat(lines, 'Judged', 'Rhythm only — the notes were not, so this does not count as playing the piece');
+    }
     addStat(lines, 'Accuracy', `${Math.round(score.accuracy * 100)}%${score.accuracyEstimated === true ? ' (estimated)' : ''}`);
     addStat(lines, 'Tempo', `${Math.round(score.tempoPct)}% of written`);
+    // Where the ladder got to. The Tempo line above is the tempo of the *last*
+    // pass, which is the same number — said again, under its own name, because
+    // "did the ladder go up or down over the session?" is the question the
+    // learner switched it on to ask.
+    //
+    // On `ladderOn` alone, not on `ladderApplies()`: a looped run only ever
+    // reaches a summary once the loop has been let go, and by then the test
+    // for "is there a loop" is false while the tempo in front of the learner is
+    // entirely the ladder's doing. The toggle cannot be reached without a loop
+    // in the first place, so this cannot say "ended at" about a ladder that
+    // never ran.
+    if (ladderOn) addStat(lines, 'Ladder', `ended at ${String(tempoPct)} % of written`);
     if (heard) {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
     }
@@ -1901,6 +2157,58 @@ export function ScoreScreen(router: Router): HTMLElement {
     where.hidden = status.textContent !== '' && window.innerHeight > window.innerWidth;
   }
 
+  /** The words on one `⋯` row, when the row has something to say that changes. */
+  function setRowLabel(row: HTMLElement, text: string): void {
+    const label = row.querySelector('.score-menu-row__label');
+    if (label) label.textContent = text;
+  }
+
+  /**
+   * The three rows that come and go: Rhythm only, Ladder and Duet.
+   *
+   * Each is hidden when there is nothing for it to act on, which is `04` §0 R4
+   * rather than tidiness — a Ladder with no loop, a Rhythm only in a mode with
+   * no clock, and a Duet on a piece with one hand are all live controls over
+   * nothing. The sheet is a two-column grid when the phone is sideways, so a
+   * row that is not applicable has to be *gone* and not merely empty; `hidden`
+   * is `display: none` app-wide, which is what takes it out of the grid.
+   */
+  function drawRunRows(): void {
+    const rhythmAvailable = mode === 'tempo' && !blind && !performanceRun;
+    rhythmRow.hidden = !rhythmAvailable;
+    rhythmToggle.textContent = rhythmOnly ? 'On' : 'Off';
+    rhythmToggle.classList.toggle('is-selected', rhythmOnly);
+    rhythmToggle.setAttribute('aria-pressed', String(rhythmOnly));
+    section.dataset.rhythm = String(rhythmAvailable && rhythmOnly);
+
+    ladderRow.hidden = !ladderApplies();
+    ladderToggle.textContent = ladderOn ? 'On' : 'Off';
+    ladderToggle.classList.toggle('is-selected', ladderOn);
+    ladderToggle.setAttribute('aria-pressed', String(ladderOn));
+    // On the screen element, so "is the ladder climbing" can be asked without
+    // opening the sheet — and so the bar's tempo label can say that a number
+    // moving on its own is meant to (ScoreScreen.css).
+    section.dataset.ladder = ladderOn && ladderApplies() ? 'on' : 'off';
+
+    // The duet is the hand you are *not* practising, so with Both chosen there
+    // is no such hand, and on a piece written for one hand there is no such
+    // part. Either way the row would be promising something nothing can do.
+    const other: 'R' | 'L' = hands === 'R' ? 'L' : 'R';
+    const otherExists = hands !== 'both' && model?.handsPresent[other] === true;
+    duetRow.hidden = !otherExists;
+    if (otherExists) {
+      const played =
+        settings.playbackHands === 'both'
+          ? 'both hands'
+          : `the ${other === 'L' ? 'left' : 'right'} hand`;
+      setRowLabel(duetRow, `Duet: the app plays ${played}`);
+    }
+    const duetOn = settings.playbackHands !== 'none';
+    duetToggle.textContent = duetOn ? 'On' : 'Off';
+    duetToggle.classList.toggle('is-selected', duetOn);
+    duetToggle.setAttribute('aria-pressed', String(duetOn));
+  }
+
   function render(): void {
     drawWaitingFor();
     drawWhere();
@@ -1960,6 +2268,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         ? `Bars ${String(shownBar(loopBars.from))}–${String(shownBar(loopBars.to))} ✕`
         : 'Off';
     loopButton.classList.toggle('is-selected', loopBars !== null);
+    drawRunRows();
     // The bars being looped, on the screen element, so "did it open looping"
     // is a question that can be asked without opening the ⋯ sheet first — the
     // bar folds three seconds into a run and the sheet is two taps away.
@@ -2079,7 +2388,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // that the learner has not seen it before.
       let musicXml: string;
       if (sightReading) {
-        musicXml = generateSightReadingFor(item);
+        musicXml = generateSightReadingFor(item, router.route.seed);
       } else if (item.imported) {
         const row = await getImport(item.id);
         if (typeof row?.data !== 'string') throw new Error('the imported file is missing');
@@ -2189,7 +2498,12 @@ export function ScoreScreen(router: Router): HTMLElement {
           return;
         }
         // An ordinary loop run keeps going; only a real ending is a summary.
-        if (looped) return;
+        // The ladder, though, lives exactly here: a lap boundary is the one
+        // moment a pass can be judged as a whole (`05` §6).
+        if (looped) {
+          climbLadder(score);
+          return;
+        }
         // `Hear it` reaching the end is the end of a demonstration: nothing
         // was judged and nothing is recorded. It went to the summary, which
         // wrote a nought-accuracy run into the history under whichever mode

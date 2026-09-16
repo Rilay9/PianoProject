@@ -9,7 +9,7 @@ videos:
   - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
     url: "https://www.youtube.com/watch?v=sfty1bjShBI"
     teacher: "PianoTips"
-readingTime: 2
+readingTime: 3
 ---
 
 This rung is not repertoire. It is the set of shapes every piece after it is
@@ -38,6 +38,11 @@ staccato phrase full of right notes held too long will say so.
 
 Two exercises pass this rung. Take the scales at a tempo where the thumb is
 silent.
+
+**An étude to put it in.** Three of Lemoine's *Études enfantines*, Op. 37 —
+No. 1, No. 2 and No. 35 — are on this rung as pieces: one page each, one
+figure each, the same finger work as the exercises above with a tune over it.
+Play one after the exercises; it is where the drill turns into music.
 
 **How you'll know you've got it.** A scale hands together at a tempo where you
 cannot hear the thumb arrive — not quieter, *inaudible* as an event. And the

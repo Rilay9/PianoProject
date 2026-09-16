@@ -39,8 +39,8 @@
                 "song.classical.beethoven-moonlight-i",
                 "song.classical.beethoven-pathetique-ii",
                 "song.classical.chopin-mazurka-op7-1.nifc",
-                "song.classical.chopin-waltz-op69-2.nifc",
-                "song.classical.satie-gnossienne-1"
+                "song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx",
+                "song.classical.bach-invention-no-4-in-d-minor-bwv-775.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -197,7 +197,11 @@
                 "exercise.double-sixth.c.1oct.right",
                 "exercise.double-third.c.1oct.right"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx",
+                "song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx",
+                "song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 2,

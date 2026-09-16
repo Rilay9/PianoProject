@@ -576,7 +576,8 @@
               "exerciseOptions": [
                 "drill.ear.interval-2nd-3rd",
                 "drill.ear.rhythm-dictation",
-                "drill.reading.note-flash-accidentals"
+                "drill.reading.note-flash-accidentals",
+                "drill.ear.simon-c-major"
               ],
               "songOptions": [],
               "mastery": {

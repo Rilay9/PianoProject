@@ -1,7 +1,7 @@
 /**
  * The drill screen (docs/04 §5 visual language, docs/05 §7, P8).
  *
- * One screen, twelve faces. Every drill in the framework is the same three
+ * One screen, a face for every drill kind. Every drill in the framework is the same three
  * calls — `next()`, `feed()`, `result()` — so the chrome (prompt counter,
  * input, progress, result sheet, progress recording) is written once, and each
  * kind supplies only what the learner actually looks at: a note on a staff, a
@@ -17,18 +17,28 @@
  *   as it is complete, so there is no "next" button to press between cards —
  *   which is the whole point of a flash card.
  */
+import './DrillScreen.css';
 import type { Router } from '../../router';
 import { findItem, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem } from '../../curriculum/types';
 import {
   ChordDictationDrill,
   BackingTrackDrill,
+  PromptDrill,
+  REVEALABLE_KINDS,
   RhythmDrill,
   drillFromCatalog,
+  feedbackDelayMs,
+  goOverDrill,
   isChecklist,
   isPlacement,
   isSightReading,
   isWalkthrough,
+  promptsToGoOver,
+  showsAnswerAfter,
+  simonBestChain,
+  simonOutcome,
+  systemClock,
   type Drill,
   type DrillPrompt,
   type DrillResult,
@@ -40,10 +50,11 @@ import { noteLabel } from '../../engine/drills/types';
 import type { EngineInput, Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
-import { recordRun, sessionsForItem } from '../../data/progressStore';
+import { getProgress, recordRun, sessionsForItem } from '../../data/progressStore';
 import { recordPlacement } from '../../data/planStore';
 import { tipsFor, type Tips } from '../../curriculum/tips';
 import { coach, type Coaching } from '../../engine/drills/coaching';
+import { answerSheet } from '../../engine/drills/answerSheet';
 import { renderMarkdown } from '../markdown';
 import {
   audioEngine,
@@ -60,8 +71,18 @@ import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 
-/** How long a right/wrong flash stays up before the next card. */
-const FEEDBACK_MS = 450;
+/** The answer staff's size: a reference line under the words, not a page of music. */
+const ANSWER_ZOOM = 0.65;
+/** Between the notes of a revealed scale or arpeggio, played back one at a time. */
+const REVEAL_STEP_MS = 350;
+/**
+ * What the status line says while a missed card is being held.
+ *
+ * Kept as a constant because the pause clears it again: a sentence that
+ * belongs to one card must not still be on the screen two cards later, and the
+ * only honest way to remove it is to know it is still ours.
+ */
+const TAP_TO_CONTINUE = 'Tap the card to move on.';
 
 /**
  * How sure the detector has to be before a heard note counts as an answer.
@@ -101,6 +122,11 @@ export function drillOutcome(
   // fail; it is recorded as time spent and nothing more.
   if (result.kind === 'backing-track') return { passed: false, masterEligible: false };
   if (result.answered === 0) return { passed: false, masterEligible: false };
+  // Simon is scored by how far the chain got, not by a share of the cards:
+  // breaking at the sixth round is five chains right out of six, which as an
+  // accuracy would say the same thing as breaking at the twelfth. The chain
+  // is the score, so the chain is what passes it.
+  if (result.kind === 'simon') return simonOutcome(result.detail?.longestChain ?? 0);
   return {
     passed: result.accuracy >= passAccuracyPct / 100,
     masterEligible: result.accuracy >= 0.97,
@@ -111,8 +137,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   const { section, header, body } = screenFrame('drill', 'Drill');
   section.dataset.drill = 'loading';
   // Always present, so "no feedback showing" is a state a test can wait for
-  // rather than the absence of an attribute.
+  // rather than the absence of an attribute. Same for the pause a missed card
+  // is held in, and for whether this is the going-over round.
   section.dataset.feedback = '';
+  section.dataset.paused = '';
+  section.dataset.review = '';
   /**
    * Where the header's Back goes.
    *
@@ -133,6 +162,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   const stage = el('div.drill-stage', { id: 'drill-stage' });
   const prompt = el('div.drill-prompt', { id: 'drill-prompt' });
   const hint = el('p.drill-hint.muted', { id: 'drill-hint' });
+  // What to *do* — the one sentence the card was missing. "Play B♭ aeolian"
+  // names the task; it does not say that eight notes are wanted, in order, at
+  // any speed, or that the app is listening for each. A learner meeting the
+  // kind for the first time was left guessing (owner, 2026-09-15).
+  const how = el('p.drill-how.muted', { id: 'drill-how' });
   const controls = el('div.row', { id: 'drill-controls' });
   const stripHost = el('div.drill-strip', { id: 'drill-strip' });
   const sheet = el('div.drill-summary', { id: 'drill-summary', hidden: true });
@@ -155,7 +189,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   // count-in nobody can see is a count-in that has not happened. Between the
   // hint and the buttons it sits under the prompt it is about, in the same
   // column as the prompt when the screen is sideways.
-  body.append(counter, stage, prompt, hint, status, controls, tipsBlock, sheet);
+  body.append(counter, stage, prompt, hint, how, status, controls, tipsBlock, sheet);
   section.append(stripHost);
 
   let item: CatalogItem | undefined;
@@ -198,6 +232,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   let notationHost: HTMLElement | null = null;
   let notationFor = '';
+  /** The answer engraved behind Show me, and the prompt it belongs to. */
+  let answerView: OsmdView | null = null;
+  let answerHost: HTMLElement | null = null;
+  let answerFor = '';
   /**
    * Which set of cards is on screen. Bumped by `restart()`.
    *
@@ -206,6 +244,23 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * previous run's engraving. The run counter makes every card its own card.
    */
   let runSeq = 0;
+  /**
+   * The prompts this set has issued, in order.
+   *
+   * A `Drill` hands its prompts out one at a time and does not offer them
+   * back, so going over the ones that were missed needs them kept as they go
+   * past. Cleared by `restart()` and by the going-over itself, because each is
+   * a new set of cards.
+   */
+  let seen: DrillPrompt[] = [];
+  /** True while the second round — the going-over — is the drill on screen. */
+  let reviewing = false;
+  /** The longest Simon chain recorded for this item before today's run. */
+  let bestChain = 0;
+  /** The pending right/wrong pause, so a tap can end it early exactly once. */
+  let feedbackTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Removes the tap-to-continue listener; null when no card is being held. */
+  let stopPauseTaps: (() => void) | null = null;
 
   // --- input ---------------------------------------------------------------
 
@@ -423,43 +478,113 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
   function advance(): void {
     if (!drill) return;
+    // Whatever the last card was showing goes with it — including a pause
+    // still running on it. *Skip* during one used to leave the timer pending,
+    // and it then advanced a second time over the card after this one.
+    cancelFeedback();
+    section.dataset.feedback = '';
+    strip?.clear();
     stopMetronome();
     stopDictationTicker();
+    disposeAnswer();
     current = drill.next();
     if (!current) {
       finish();
       return;
     }
+    seen.push(current);
     draw();
     publishExpectations();
+    // A going-over shows its answer from the first moment of the card: that is
+    // what makes it a going-over rather than a second test, and the drill
+    // itself has already forfeited the mark (`review.ts`).
+    if (drill instanceof PromptDrill && drill.revealed) showAnswer(current);
     if (drill instanceof RhythmDrill) startCountIn(drill);
     if (drill instanceof ChordDictationDrill) startDictationTicker(drill);
     playPrompt(current);
+  }
+
+  /** The answer on the keys and on the staff, for one card. */
+  function showAnswer(target: DrillPrompt): void {
+    const notes = target.expected;
+    if (notes.length === 0) return;
+    strip?.setState({ expected: notes });
+    strip?.scrollToSpan(Math.min(...notes), Math.max(...notes));
+    drawAnswer(target);
+  }
+
+  /** Drops a pending right/wrong pause and everything that belongs to it. */
+  function cancelFeedback(): void {
+    if (feedbackTimer !== null) clearTimeout(feedbackTimer);
+    feedbackTimer = null;
+    stopPauseTaps?.();
+    stopPauseTaps = null;
+    section.dataset.paused = '';
+    if (status.textContent === TAP_TO_CONTINUE) status.textContent = '';
+  }
+
+  /**
+   * Ends the pause after an answer and moves on — from the timer, or a tap.
+   *
+   * One function for both, so the two cannot both fire: there is nothing to
+   * end unless a pause is actually pending, and `advance()` clears it.
+   */
+  function endFeedback(): void {
+    if (feedbackTimer === null || disposed || finished) {
+      cancelFeedback();
+      return;
+    }
+    advance();
+  }
+
+  /**
+   * A tap anywhere on the card ends the pause early.
+   *
+   * Not on the buttons and not on the keys: *Skip* and *End drill* are their
+   * own actions during the pause, and a key press is an answer the next card
+   * should be allowed to keep rather than a request to hurry up.
+   */
+  function takeTapsToContinue(): void {
+    const onTap = (event: Event): void => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('#drill-controls, #drill-strip')) return;
+      endFeedback();
+    };
+    // Never two at once, whatever order the calls come in.
+    stopPauseTaps?.();
+    section.addEventListener('pointerdown', onTap);
+    stopPauseTaps = () => {
+      section.removeEventListener('pointerdown', onTap);
+    };
   }
 
   function settled(): void {
     if (!drill) return;
     const answers = drill.result().answers;
     const last = answers[answers.length - 1];
-    section.dataset.feedback = last?.correct === true ? 'correct' : 'wrong';
+    const correct = last?.correct === true;
+    section.dataset.feedback = correct ? 'correct' : 'wrong';
     if (last && current) {
       strip?.setState(
-        last.correct
-          ? { correct: current.expected }
-          : { wrong: last.played, expected: current.expected },
+        correct ? { correct: current.expected } : { wrong: last.played, expected: current.expected },
       );
     }
     draw();
-    // A beat to see whether it was right, then the next card. Short, because
-    // the drill is about recall speed and a long pause teaches waiting.
-    playbackTimers.push(
-      setTimeout(() => {
-        if (disposed || finished) return;
-        section.dataset.feedback = '';
-        strip?.clear();
-        advance();
-      }, FEEDBACK_MS),
-    );
+    // A miss is the one moment in a drill there is something to learn from,
+    // and it was going past at the speed of a right answer: the expected keys
+    // lit for a few hundred milliseconds and the next card arrived. Where
+    // there is an answer to show — a set of keys, and therefore a staff — the
+    // card is held long enough to read it (`engine/drills/feedback.ts`). A
+    // right answer is untouched: the drill is about recall speed.
+    if (current && showsAnswerAfter(drill.kind, correct)) {
+      showAnswer(current);
+      section.dataset.paused = 'miss';
+      status.textContent = TAP_TO_CONTINUE;
+      takeTapsToContinue();
+    }
+    feedbackTimer = setTimeout(() => {
+      endFeedback();
+    }, feedbackDelayMs(drill.kind, correct));
   }
 
   // --- per-kind faces ------------------------------------------------------
@@ -515,7 +640,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       case 'ear-interval':
       case 'ear-chord':
       case 'ear-progression':
+      case 'simon':
         // Deliberately blank: naming it on screen would answer the question.
+        // Simon belongs here for the same reason — how long the chain is, is
+        // on the counter and in the hint; what is *in* it is the question.
         stage.append(el('div.ear-card', { id: 'drill-ear-card', text: '🎧' }));
         break;
       case 'backing-track':
@@ -563,6 +691,66 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         stage.append(symbol);
       }
     }
+  }
+
+  /** Drops the engraved answer; the next prompt starts with nothing shown. */
+  function disposeAnswer(): void {
+    answerView?.dispose();
+    answerView = null;
+    answerHost?.remove();
+    answerHost = null;
+    answerFor = '';
+  }
+
+  /**
+   * The answer as a line of notation, under the card, behind Show me.
+   *
+   * A name, the lit keys and the staff are the same fact three ways, and the
+   * staff is the one that shows the shape: a mode is engraved in its parent
+   * key, so B♭ aeolian prints five flats and no accidentals. Failure is
+   * reported on the status line rather than thrown, as for the prompt's own
+   * notation above.
+   */
+  function drawAnswer(target: DrillPrompt): void {
+    if (!drill) return;
+    const key = `${String(runSeq)}:${String(target.index)}`;
+    if (answerFor === key && answerHost) return;
+    disposeAnswer();
+    const xml = answerSheet({
+      title: target.label,
+      notes: target.expected,
+      ordered: target.ordered === true,
+    });
+    if (!xml) return;
+    const host = el('div.drill-notation.drill-answer', { id: 'drill-answer' });
+    answerHost = host;
+    answerFor = key;
+    // Under the words, not in the card row: the stage centres one card, and a
+    // staff beside the name squeezed both.
+    body.insertBefore(host, status);
+    void import('../../score/OsmdView')
+      .then(async ({ OsmdView }) => {
+        if (disposed || answerFor !== key || answerView) return;
+        const view = new OsmdView(host, {
+          drawFingerings: false,
+          drawMetronomeMarks: false,
+          timingLabel: 'drill.answer',
+        });
+        answerView = view;
+        await view.load(xml);
+        if (disposed || answerFor !== key) {
+          view.dispose();
+          if (answerView === view) answerView = null;
+          return;
+        }
+        // A reference line, not a page: smaller than the score screen draws.
+        // Set after the load, which is where the engraver takes its scale.
+        view.zoom = ANSWER_ZOOM;
+        view.render();
+      })
+      .catch(() => {
+        status.textContent = 'The keys are lit; the notation could not be drawn.';
+      });
   }
 
   /** Drops the engraver and the host it drew into. */
@@ -654,6 +842,95 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     );
   }
 
+  /**
+   * How to answer, for the kinds whose card does not make it obvious.
+   *
+   * The prompt says *what*; this says *how* — how many notes, in what order,
+   * and that the app is listening. Kinds that draw their own instructions
+   * (rhythm, pedal, dynamics, the backing track) say nothing here.
+   */
+  function howText(): string {
+    if (!drill || !current) return '';
+    const count = current.expected.length;
+    switch (drill.kind) {
+      case 'mode':
+      case 'chord-scale':
+        return `Play its ${String(count)} notes from the bottom up, one at a time, at any speed. Each one is heard as it lands; the run is marked when the last arrives.`;
+      case 'chord':
+      case 'inversion':
+      case 'extended-chord':
+      case 'roman-numeral':
+        return `Play the ${String(count)} notes together, in any octave. Show me lights them on the keys; Hear it plays them.`;
+      case 'note-flash':
+        return 'Play the note shown, in any octave.';
+      case 'find-key':
+        return 'Press that key on the piano, or on the keys below.';
+      case 'ear-interval':
+      case 'ear-chord':
+      case 'ear-progression':
+      case 'ear-tune':
+      case 'harmonic-dictation':
+        return 'Listen, then play it back. Play again repeats it as often as you like.';
+      case 'simon':
+        return count === 1
+          ? 'Play the note back, in the octave you heard it. One more is added each time; a wrong note ends the chain.'
+          : `Play the ${String(count)} notes back in order, in the octave you heard them. One more is added each time; a wrong note ends the chain.`;
+      case 'transposition':
+        return 'Play the phrase in the key it names, from the notation.';
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Shows or plays the current answer, and forfeits its mark.
+   *
+   * A drill that can only test cannot teach: before this, the keys lit only
+   * after a wrong answer, so a learner who did not know B♭ aeolian had no way
+   * in except to fail it. Now the answer is a tap away, at the price of that
+   * prompt's mark — the score still means what it says.
+   */
+  function reveal(way: 'show' | 'hear'): void {
+    if (!drill || !current) return;
+    drill.reveal?.();
+    const notes = current.expected;
+    if (way === 'show') {
+      showAnswer(current);
+      status.textContent = 'Shown on the keys and the staff — this one will not count as right.';
+      return;
+    }
+    if (
+      shouldMuteExpectedPlayback({
+        micActive,
+        destination: getSettings().playbackDestination,
+      })
+    ) {
+      status.textContent =
+        'Playback is muted while the microphone is listening — use headphones, or send playback to the piano.';
+      return;
+    }
+    status.textContent = 'Played — this one will not count as right.';
+    const ordered = current.ordered === true;
+    void getPiano()
+      .then((piano) => {
+        if (disposed) return;
+        if (!ordered) {
+          piano.playChord(notes, 0.9);
+          return;
+        }
+        notes.forEach((midi, index) => {
+          playbackTimers.push(
+            setTimeout(() => {
+              if (!disposed) piano.playChord([midi], 0.9);
+            }, index * REVEAL_STEP_MS),
+          );
+        });
+      })
+      .catch(() => {
+        status.textContent = 'The piano samples are not loaded, so this drill has no sound.';
+      });
+  }
+
   function promptText(): string {
     if (!drill || !current) return '';
     // A drill that knows better than its kind says so itself.
@@ -696,6 +973,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         return 'Play the phrase back';
       case 'harmonic-dictation':
         return 'Play the progression back, as chords';
+      case 'simon':
+        return 'Play the chain back';
     }
   }
 
@@ -724,6 +1003,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (!micActive && micSource.supported && getSettings().inputPriority.includes('mic')) {
       controls.append(
         button('🎤 Listen', () => openMicrophone(), { id: 'drill-mic', variant: 'secondary' }),
+      );
+    }
+    if (current && current.expected.length > 0 && REVEALABLE_KINDS.has(drill.kind)) {
+      controls.append(
+        button('Show me', () => reveal('show'), { id: 'drill-show', variant: 'quiet' }),
+        button('Hear it', () => reveal('hear'), { id: 'drill-hear', variant: 'quiet' }),
       );
     }
     // One group, so they wrap together. Loose in the row, "Skip" fitted beside
@@ -795,9 +1080,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         }.`;
       }
     }
-    counter.textContent =
-      result.total > 0
-        ? `${String(Math.min(result.answered + 1, result.total))} of ${String(result.total)} · ${String(result.correct)} right`
+    const at = String(Math.min(result.answered + 1, result.total));
+    counter.textContent = reviewing
+      ? // No score in the going-over, so no score in its counter: nothing here
+        // is being marked and a "0 right" would say the opposite.
+        `${at} of ${String(result.total)} to go over`
+      : result.total > 0
+        ? `${at} of ${String(result.total)} · ${String(result.correct)} right`
         : `${String(result.answered)} answered`;
     prompt.textContent = promptText();
     // The hint is the second line the card is allowed: the key a numeral is in,
@@ -805,6 +1094,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // answer — an ear drill with the answer written under it is a reading drill.
     hint.textContent = current?.hint ?? '';
     hint.hidden = !current?.hint;
+    how.textContent = howText();
+    how.hidden = how.textContent === '';
     drawStage();
     drawControls();
     section.dataset.kind = drill.kind;
@@ -872,8 +1163,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (!drill || finished) return;
     finished = true;
     clearPlayback();
+    cancelFeedback();
     stopMetronome();
     stopDictationTicker();
+    // The going-over has its own, much smaller ending: it counts nothing, so
+    // there is no outcome to judge and nothing to record.
+    if (reviewing) {
+      finishGoingOver();
+      return;
+    }
     const result = drill.result();
     const settings = getSettings();
     const outcome = drillOutcome(result, settings.passAccuracyPct);
@@ -881,6 +1179,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     lastResult = { result, outcome, durationMs };
     // What the learner improvised, if this was a kind that keeps it.
     lastRecording = drill instanceof BackingTrackDrill ? [...drill.recording] : [];
+    // The prompts that did not count as right, for the going-over. Offered
+    // only where the round can be rebuilt as a drill — a rhythm, a pedal
+    // change and a backing track are not prompts with an answer to re-ask
+    // (`engine/drills/review.ts`).
+    const goOver = drill instanceof PromptDrill ? promptsToGoOver(result, seen) : [];
 
     // Built before the sheet so its own handler can disable it: `button`'s
     // callback takes no event, and reading `currentTarget` off one would be a
@@ -902,6 +1205,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // goes now rather than sitting on the megabyte it holds until the owner
     // leaves the screen.
     disposeNotation();
+    disposeAnswer();
     prompt.textContent = '';
     sheet.hidden = false;
     sheet.replaceChildren(
@@ -912,6 +1216,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         outcome.passed ? badge('passed', 'passed') : badge('keep going'),
       ),
       statSheet(result),
+      // The one number a Simon run is about, said in words: the stat list can
+      // print "longest chain 5" from `detail`, and it cannot say that five is
+      // further than you have ever got.
+      ...(result.kind === 'simon' ? [chainLine(result)] : []),
       // The coaching line goes in before the buttons, because it is the thing
       // worth reading and a sentence under a "Back to the plan" button is a
       // sentence nobody sees.
@@ -920,6 +1228,21 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         'div.row',
         {},
         button('Again', () => restart(), { id: 'drill-again', variant: 'primary' }),
+        // The three you got wrong are the only three worth playing again, and
+        // until this the sheet's only offer was a fresh set of ten. Outlined
+        // rather than filled: *Again* is what most sheets end with, and `04`
+        // §0 R3 allows one filled box (docs/04 §5c).
+        ...(goOver.length > 0
+          ? [
+              button(
+                goOver.length === 1
+                  ? 'Go over the one you missed'
+                  : `Go over the ${String(goOver.length)} you missed`,
+                () => startGoingOver(),
+                { id: 'drill-review' },
+              ),
+            ]
+          : []),
         // Only where there is something to hear. A drill that judges every
         // answer has nothing to play back that the learner did not just hear.
         ...(lastRecording.length > 0
@@ -951,6 +1274,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       // learner has time to read, which is exactly when advice lands.
       ...(tips ? [el('div.drill-tips-full', { id: 'drill-tips-full' }, renderMarkdown(tips.markdown))] : []),
     );
+    // After the sheet has been drawn, so "a new best" on it is measured
+    // against what the best was before this run.
+    if (result.kind === 'simon') {
+      bestChain = Math.max(bestChain, Math.round(result.detail?.longestChain ?? 0));
+    }
     // Bring it into view. The sheet is appended to the bottom of a body that
     // has a keyboard under it, so on a phone held sideways the whole result —
     // the score, the advice, and both buttons — landed below the fold with
@@ -1013,12 +1341,106 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     return list;
   }
 
+  /**
+   * What a Simon run came to, in the one sentence it is about.
+   *
+   * The chain and the best are the whole result of a memory game — an accuracy
+   * of 42 % says the same thing in a language nobody thinks in — so they are
+   * said in words, with both numbers also on the element for a test to read.
+   */
+  function chainLine(result: DrillResult): HTMLElement {
+    const chain = Math.round(result.detail?.longestChain ?? 0);
+    const best = Math.max(bestChain, chain);
+    const notes = `${String(chain)} ${chain === 1 ? 'note' : 'notes'}`;
+    return el('p.drill-chain', {
+      id: 'drill-chain',
+      'data-chain': chain,
+      'data-best': best,
+      text:
+        chain > bestChain && chain > 0
+          ? `Longest chain: ${notes} — further than you have got here before.`
+          : `Longest chain: ${notes}. Your best here is ${String(best)}.`,
+    });
+  }
+
+  /**
+   * The second round: the ones that did not count, and nothing else.
+   *
+   * It is a drill, not a mode of this screen — a `PromptDrill` over those
+   * prompts with every one of them revealed from the start (`review.ts`), so
+   * the engine already knows that nothing here can count as right and the
+   * screen's only extra jobs are the words on the counter and not recording a
+   * thing. `lastResult` is deliberately left alone: the drill's recorded
+   * result is what the first round came to, whatever happens in this one.
+   */
+  function startGoingOver(): void {
+    if (!(drill instanceof PromptDrill) || !lastResult) return;
+    const prompts = promptsToGoOver(lastResult.result, seen);
+    if (prompts.length === 0) return;
+    const round = goOverDrill(
+      {
+        kind: drill.kind,
+        anyOctave: drill.anyOctave,
+        ...(drill.promptText === undefined ? {} : { promptText: drill.promptText }),
+        clock: systemClock,
+      },
+      prompts,
+    );
+    reviewing = true;
+    finished = false;
+    sheet.hidden = true;
+    sheet.replaceChildren();
+    section.dataset.drill = 'running';
+    section.dataset.review = 'going-over';
+    // A new set of cards, so card 1 of it is not card 1 of the set it came
+    // out of — the engraving is keyed on that.
+    runSeq += 1;
+    seen = [];
+    drill = round;
+    advance();
+  }
+
+  /** The going-over's own small ending: what was covered, and nothing recorded. */
+  function finishGoingOver(): void {
+    const went = drill?.result().answered ?? 0;
+    section.dataset.drill = 'finished';
+    section.dataset.review = 'finished';
+    controls.replaceChildren();
+    stage.replaceChildren();
+    disposeAnswer();
+    prompt.textContent = '';
+    hint.hidden = true;
+    how.hidden = true;
+    counter.textContent = '';
+    strip?.clear();
+    sheet.hidden = false;
+    sheet.replaceChildren(
+      el('div.row', {}, el('h2', { id: 'drill-review-outcome', text: 'Gone over' })),
+      el('p', {
+        id: 'drill-review-result',
+        'data-count': went,
+        text: `Went over ${String(went)}. Nothing was counted, so the result you recorded for this drill is unchanged.`,
+      }),
+      el(
+        'div.row',
+        {},
+        button('Again', () => restart(), { id: 'drill-again', variant: 'primary' }),
+        button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
+      ),
+    );
+    sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
   function restart(): void {
     if (!item) return;
     finished = false;
+    reviewing = false;
+    section.dataset.review = '';
+    cancelFeedback();
     sheet.hidden = true;
     section.dataset.drill = 'running';
     startedAtMs = Date.now();
+    seen = [];
     // A new set of cards, so card 1 of it is not card 1 of the last one.
     runSeq += 1;
     // A fresh seed, so "again" is a new set of cards rather than the same
@@ -1719,6 +2141,23 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       return;
     }
 
+    // The personal best, for a kind whose whole result is one number. Read
+    // from the progress row this screen's own runs write — a Simon run's
+    // accuracy *is* its chain as a share of the cap, so the best accuracy
+    // already stored for the item is the longest chain it has seen, and the
+    // best needed no new place to live (`engine/drills/simon.ts`).
+    if (drill.kind === 'simon') {
+      const rounds = drill.result().total;
+      const forItem = item.id;
+      // Not awaited: nothing before the result sheet reads it, and the first
+      // card must not wait on a database.
+      void getProgress(forItem)
+        .then((row) => {
+          if (!disposed) bestChain = simonBestChain(row.bestAccuracy, rounds);
+        })
+        .catch(() => undefined);
+    }
+
     strip = new KeyboardStrip({
       interactive: true,
       onNoteOn: (midi, velocity) => screenKeyboardSource.noteOn(midi, velocity),
@@ -1743,6 +2182,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   onScreenDispose(section, () => {
     disposed = true;
     clearPlayback();
+    cancelFeedback();
     stopMetronome();
     stopDictationTicker();
     stopMidiNotes();
@@ -1751,6 +2191,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     stopMicNotes?.();
     if (micActive) micSource.disconnect();
     disposeNotation();
+    disposeAnswer();
     strip?.destroy();
   });
 

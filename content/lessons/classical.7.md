@@ -47,11 +47,12 @@ and almost no finger action; if you hear four separate notes, it is too loud.
 
 **What to play.** Six options. Mozart's K. 545 first movement for sonata form;
 the first movement of the *Moonlight* and the *Pathétique* slow movement for
-sustained voicing; Chopin's Mazurka Op. 7 No. 1 and the B minor Waltz, Op. 69
-No. 2, for a singing line over a leaning left hand; and Satie's first
-Gnossienne, which has no bar lines at all and is a good cure for counting
-instead of listening. The other preludes, nocturnes, waltzes and mazurkas at
-this level are under Classical in the Library.
+sustained voicing; Chopin's Mazurka Op. 7 No. 1 for a singing line over a
+leaning left hand; and two of Bach's two-part inventions, No. 1 in C and No. 4
+in D minor, which are the two-voice work this rung is named for — one hand
+answers the other, and neither may be louder than the line demands. The other
+inventions, the waltzes, the nocturnes and the Gnossienne are under Classical
+in the Library.
 
 **Common mistake.** Taking the nocturnes too slowly. They are marked *Andante*
 and *Larghetto*, not *Adagio*; below a certain tempo the long melody notes stop

@@ -19,6 +19,7 @@ from __future__ import annotations
 import csv
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -1242,6 +1243,57 @@ class TestZenodoRecord(unittest.TestCase):
         self.assertEqual(commit_mod.zenodo_record_for(header), "14648209")
 
 
+class TestMatchWant(unittest.TestCase):
+    """
+    `shortlist.match_want`: which rows the wants file can reach.
+
+    `artist_name` is `NA` on a great many classical rows and the surname is
+    only in `composer_name`. While this read `artist_name` alone, a want gated
+    by artist could not reach those rows at all.
+    """
+
+    WANTS = [
+        {
+            "id": "song.classical.gurlitt-the-little-scholar",
+            "title": ["the little scholar"],
+            "artist": ["gurlitt"],
+        }
+    ]
+
+    def test_the_composer_column_answers_for_a_missing_artist(self) -> None:
+        self.assertEqual(
+            shortlist_mod.match_want("The Little Scholar", "NA", self.WANTS, "Cornelius Gurlitt"),
+            "song.classical.gurlitt-the-little-scholar",
+        )
+
+    def test_the_artist_column_still_answers_on_its_own(self) -> None:
+        self.assertEqual(
+            shortlist_mod.match_want("The Little Scholar", "Cornelius Gurlitt", self.WANTS),
+            "song.classical.gurlitt-the-little-scholar",
+        )
+
+    def test_a_row_naming_neither_is_still_unreachable(self) -> None:
+        # The artist constraint is what keeps a want off somebody else's piece;
+        # reading a second column must not turn it off.
+        self.assertIsNone(shortlist_mod.match_want("The Little Scholar", "NA", self.WANTS))
+        self.assertIsNone(shortlist_mod.match_want("The Little Scholar", "NA", self.WANTS, "NA"))
+        self.assertIsNone(
+            shortlist_mod.match_want("The Little Scholar", "NA", self.WANTS, "Franz Schubert")
+        )
+
+    def test_every_caller_hands_over_the_composer_column(self) -> None:
+        # A column no caller passes is a column not read.
+        calls = []
+        for name in ("shortlist.py", "index.py"):
+            source = (TOOLS / "pdmx" / name).read_text(encoding="utf-8")
+            body = source[source.index("def select(") if name == "shortlist.py" else 0:]
+            calls += [(name, call) for call in
+                      re.findall(r"match_want\((?:[^()]|\([^()]*\))*\)", body)]
+        self.assertTrue(calls)
+        for name, call in calls:
+            self.assertIn("composer_name", call, f"{name}: {call}")
+
+
 class TestWorkKey(unittest.TestCase):
     """
     `shortlist.work_key`: which uploads are the same piece.
@@ -1253,6 +1305,8 @@ class TestWorkKey(unittest.TestCase):
     """
 
     CHOPIN = "Fryderyk Chopin"
+    DUVERNOY = "Jean-Baptiste Duvernoy"
+    LEMOINE = "Henry Lemoine"
 
     def key(self, title: str, composer: str | None = CHOPIN, artist: str = "NA") -> str:
         return shortlist_mod.work_key(title, composer, artist)
@@ -1299,6 +1353,28 @@ class TestWorkKey(unittest.TestCase):
     def test_the_key_of_a_waltz_is_not_an_article(self) -> None:
         self.assertNotEqual(self.key("Waltz in A minor"), self.key("Waltz in E minor"))
         self.assertNotEqual(self.key("Search Light Rag", None), self.key("That Eccentric Rag", None))
+
+    def test_two_etudes_of_one_opus_are_two_pieces_without_a_no(self) -> None:
+        # The archive titles Duvernoy's Op. 176 this way, with the number after
+        # *Etude*. All sixteen keyed to `op176`, `best_editions` kept one per
+        # band, and the rest of the book was lost before it reached review.
+        first = self.key("Elementary Studies (op 176) Etude 1", self.DUVERNOY)
+        second = self.key("Elementary Studies (op 176) Etude 2", self.DUVERNOY)
+        self.assertNotEqual(first, second)
+        self.assertNotEqual(second, self.key("Elementary Studies (op 176) Etude 16", self.DUVERNOY))
+
+    def test_two_uploads_of_one_etude_are_one_piece(self) -> None:
+        self.assertEqual(
+            self.key("Elementary Studies (op 176) Etude 1", self.DUVERNOY),
+            self.key("Duvernoy - Elementary Studies Op. 176 - Etude 1", self.DUVERNOY),
+        )
+        # And the opus's own digits are never read back as the piece's number.
+        self.assertNotIn("op176-176", self.key("Etude Op. 176", self.DUVERNOY))
+
+    def test_a_volume_number_is_not_a_piece_number(self) -> None:
+        book = self.key("Etudes Enfantines Op. 37 Book 1", self.LEMOINE)
+        self.assertEqual(book, self.key("Etudes Enfantines Op. 37", self.LEMOINE))
+        self.assertNotEqual(book, self.key("Etude Op. 37 No. 1", self.LEMOINE))
 
 
 class TestBestEditions(unittest.TestCase):

@@ -1,0 +1,110 @@
+/*
+ * The accompaniment lab (`04` §3c). Only what is new to this screen.
+ *
+ * Everything that already had a shape keeps it: `.setting-row` and `field()`
+ * for the two selects and the tempo, `.filter-row` and `.chip` for the three
+ * short choices, `.row` for the two buttons, and the chord chart's own
+ * `.chart-grid` / `.chart-cell` for the bars — the jam is the same thing the
+ * chart view is doing, and a second set of cells that drifted from those
+ * would be two answers to one question.
+ */
+
+/* What the two buttons will act on, in a line, above them. Not a heading:
+   it changes every time a chip is pressed, and a heading that moves is not a
+   heading. */
+.lab-summary {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.lab-actions {
+  margin-bottom: 4px;
+}
+
+.lab-jam[hidden] {
+  display: none;
+}
+
+.lab-jam {
+  margin: 8px 0 12px;
+}
+
+/* Shorter than the chord chart's own cells. The chart view draws one chorus of
+   a tune, usually four or eight bars; the lab draws up to twenty-four, and at
+   the chart's 64 px those filled a phone screen on their own and pushed the
+   keys — the thing the bar is telling you about — off the bottom. */
+.lab-jam .chart-cell {
+  min-height: 44px;
+  font-size: 1.1rem;
+}
+
+/* The keys scroll inside their own box, so a jam never widens the screen. */
+.lab-strip {
+  overflow-x: hidden;
+  margin-bottom: 8px;
+}
+
+/* `[hidden]` sets `display: none` at a specificity any class rule beats, and
+   `.setting-row` is `display: grid` — so the "custom numerals" row told to
+   hide stayed on the screen under every progression that is not custom. The
+   same fault `.filter-row[hidden]` and `.chart-grid[hidden]` already carry a
+   rule for in `style.css`. */
+.lab-settings .setting-row[hidden] {
+  display: none;
+}
+
+.lab-group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.lab-group__label {
+  font-size: 0.95rem;
+}
+
+/* The chips already carry the padding; a second helping under a label of their
+   own is a gap that reads as a missing row. */
+.lab-group .filter-row {
+  padding-top: 4px;
+  padding-bottom: 0;
+}
+
+.lab-settings input[type='text'] {
+  min-height: 36px;
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  padding: 4px 8px;
+}
+
+/* A phone held sideways: 740 x 342 with the tab bar down the side, so the body
+   is about 300 px tall and the chart, the keys and seven rows of pickers
+   cannot all be on it at once. The width is the thing a phone on its side has,
+   so the settings run in two columns and the jam keeps the full width — it is
+   what is being read while it is there. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .lab-settings {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+
+  /* Its own row across both columns: the numerals are typed and a text field
+     half the width of a landscape phone is more than enough, but the hint
+     under it is a sentence. */
+  .lab-settings > .lab-group {
+    grid-column: span 2;
+  }
+
+  /* Shorter keys, not fewer and not clipped ones: 108 px of key plus the
+     chart plus the transport is more than a 342 px-tall body has, and a
+     `max-height` on the wrapper would have cut the bottom off the keys rather
+     than making them smaller. 72 px is still a thumb's worth. */
+  .lab-strip .keyboard-strip {
+    --key-h: 72px;
+  }
+}

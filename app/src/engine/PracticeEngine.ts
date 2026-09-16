@@ -30,7 +30,7 @@ import {
   type RecordedNote,
   type SessionScore,
 } from './types';
-import { nextPlayableStep, prepareSession } from './prepareSession';
+import { MAX_TEMPO_PCT, MIN_TEMPO_PCT, nextPlayableStep, prepareSession } from './prepareSession';
 import { buildScore } from './Scoring';
 import type { ScoreModel } from '../score/types';
 
@@ -39,6 +39,66 @@ const CC_SUSTAIN = 64;
 
 /** Wait mode restarts a loop after this many beats of silence (docs/05 §6). */
 const LOOP_GAP_BEATS = 1;
+
+// --- the tempo ladder on a loop (docs/05 §6) --------------------------------
+//
+// A rule about what the *next* pass of a loop should be played at, so it lives
+// beside `LOOP_GAP_BEATS`, the other rule about a lap boundary. The engine does
+// not apply it — a tempo change re-times the whole session, which means a new
+// run, and starting runs is the Score screen's job — so it is exported as a
+// pure function the screen calls and a unit test can pin down on its own.
+
+/**
+ * One rung of the ladder, in percentage points of the written tempo.
+ *
+ * Ten, because the summary sheet's `Slower (−10 %)` and `Faster (+10 %)` have
+ * been one rung of this same ladder since the sheet was written. Two different
+ * steps for the same idea would mean the automatic route and the manual one
+ * disagreed about what "a bit faster" is, and the learner would be the one
+ * holding both numbers.
+ */
+export const LADDER_NOTCH_PCT = 10;
+
+/**
+ * Where a climbing ladder stops: the tempo the piece is written at.
+ *
+ * Above this the learner is no longer learning the piece, they are racing it,
+ * and nothing should decide that for them. The one exception is a learner who
+ * had already asked for more before switching the ladder on — see
+ * `nextLadderTempo`, which takes that as the ceiling instead.
+ */
+export const LADDER_CEILING_PCT = 100;
+
+export interface LadderPass {
+  /** Off, and the tempo is whatever it was — the rule is a no-op, not a clamp. */
+  enabled: boolean;
+  /** The tempo the pass just played was at. */
+  tempoPct: number;
+  /**
+   * The highest tempo the learner has chosen for this run themselves.
+   *
+   * The ceiling, when it is above `LADDER_CEILING_PCT`. A ladder must not undo
+   * a decision the learner made with their own hands on the slider.
+   */
+  startedAtPct: number;
+  /** Nothing missed and nothing wrong in the pass. */
+  clean: boolean;
+}
+
+/**
+ * The tempo for the next pass of a loop.
+ *
+ * Clean goes up a rung, a pass with anything wrong in it goes down one, and
+ * both stop at the ends of the range the tempo slider already has (docs/04 §5,
+ * `MIN_TEMPO_PCT`/`MAX_TEMPO_PCT`). Pure: given the same pass it returns the
+ * same number, and it never reads a clock, a score or a setting.
+ */
+export function nextLadderTempo(pass: LadderPass): number {
+  if (!pass.enabled) return pass.tempoPct;
+  const ceiling = Math.min(MAX_TEMPO_PCT, Math.max(LADDER_CEILING_PCT, pass.startedAtPct));
+  const wanted = pass.tempoPct + (pass.clean ? LADDER_NOTCH_PCT : -LADDER_NOTCH_PCT);
+  return Math.min(ceiling, Math.max(MIN_TEMPO_PCT, wanted));
+}
 
 interface StepProgress {
   /** Expected pitches struck since this step became current. */
@@ -80,6 +140,15 @@ export class PracticeEngine {
   private readonly session: PreparedSession;
   private readonly clock: Clock;
   private readonly handlers = new Set<EngineEventHandler>();
+  /**
+   * Judging timing alone (docs/05 §3a).
+   *
+   * Read off the caller's options rather than out of `PreparedSession.options`:
+   * that object is the resolved *timetable*, and nothing about rhythm-first
+   * changes a step's pitches, its time or its length. Only how a note is
+   * matched against them changes, which is this class's business alone.
+   */
+  private readonly rhythmOnly: boolean;
 
   private step = 0;
   private running = false;
@@ -127,6 +196,15 @@ export class PracticeEngine {
     this.session = prepareSession(model, options);
     this.clock = clock;
     this.step = this.session.firstStep;
+    // Tempo only. Wait has no window to be inside, Listen judges nothing and
+    // Free marks nothing, so anywhere else the toggle would be a setting that
+    // changes nothing — and a control that does nothing is a bug (`04` §0 R4).
+    this.rhythmOnly = options.mode === 'tempo' && options.rhythmOnly === true;
+  }
+
+  /** Whether this run is judging timing alone (docs/05 §3a). */
+  get judgingRhythmOnly(): boolean {
+    return this.rhythmOnly;
   }
 
   get prepared(): PreparedSession {
@@ -489,7 +567,7 @@ export class PracticeEngine {
     // that is precisely what playing early means, and §3 says to match it.
     this.openUpcomingSlots(Math.max(music, at));
 
-    const match = this.findSlot(midi, at);
+    const match = this.rhythmOnly ? this.findRhythmSlot(at) : this.findSlot(midi, at);
     if (match === null) {
       const certain = confidence >= this.session.options.wrongNoteConfidence;
       this.record(midi, velocity, rawTMs, null, false);
@@ -509,9 +587,38 @@ export class PracticeEngine {
     }
 
     const slot = this.openSlots.get(match);
+    const target = this.session.steps[match];
+    if (this.rhythmOnly) {
+      // One strike settles the step. A chord is one tap — the learner was
+      // asked for the rhythm, and a rhythm has one event where the score has
+      // three notes — so the whole slot closes here rather than a pitch at a
+      // time, and the step's every note is called right: the cursor, the
+      // colours and the strip then behave exactly as they do in an ordinary
+      // Tempo run, which is the point of not building a second mode.
+      //
+      // `hits` goes up by the slots the strike filled, not by one, so the
+      // accuracy this produces is still "the share of the piece you were in
+      // time for" and is the same kind of number an ordinary run reports. One
+      // delta is recorded, because one thing was played: three would make a
+      // chord count three times over in the timing histogram.
+      const deltaMs = at - (target?.tMs ?? at);
+      this.hits += slot?.size ?? 0;
+      this.openSlots.delete(match);
+      this.deltas.push(deltaMs);
+      this.record(midi, velocity, rawTMs, match, true, deltaMs);
+      this.emit({
+        kind: 'noteJudged',
+        ok: true,
+        midi,
+        noteIds: target ? [...target.noteIdsByMidi.values()].flat() : [],
+        stepIndex: match,
+        deltaMs,
+        tMs: rawTMs,
+      });
+      return;
+    }
     slot?.delete(midi);
     if (slot && slot.size === 0) this.openSlots.delete(match);
-    const target = this.session.steps[match];
     const deltaMs = at - (target?.tMs ?? at);
     this.hits += 1;
     this.deltas.push(deltaMs);
@@ -536,6 +643,32 @@ export class PracticeEngine {
     let bestDistance = Infinity;
     for (const [index, pitches] of this.openSlots) {
       if (!pitches.has(midi)) continue;
+      const step = this.session.steps[index];
+      if (!step) continue;
+      const distance = Math.abs(atMs - step.tMs);
+      if (distance <= this.session.options.toleranceMs && distance < bestDistance) {
+        bestDistance = distance;
+        best = index;
+      }
+    }
+    return best;
+  }
+
+  /**
+   * The step this strike was meant for when only the timing is being judged:
+   * the nearest one still waiting, whatever pitch arrived (docs/05 §3a).
+   *
+   * The same nearest-within-the-tolerance rule `findSlot` uses, with the pitch
+   * test taken out — so early and late are measured exactly as they always
+   * were, and a strike that lands between two steps still belongs to the one
+   * it is closer to. A strike outside every open window matches nothing and is
+   * a wrong note, which is what makes "rejects a late one" true: rhythm-first
+   * forgives the *note*, never the moment.
+   */
+  private findRhythmSlot(atMs: number): number | null {
+    let best: number | null = null;
+    let bestDistance = Infinity;
+    for (const index of this.openSlots.keys()) {
       const step = this.session.steps[index];
       if (!step) continue;
       const distance = Math.abs(atMs - step.tMs);
@@ -783,7 +916,11 @@ export class PracticeEngine {
   }
 
   private buildScore(): SessionScore {
-    return buildScore({
+    // The tag rides out with the numbers rather than beside them: whoever ends
+    // up holding this score — the summary sheet, the practice history, a
+    // recomputation from a stored row — has to be able to tell what was
+    // actually measured without being told separately (docs/05 §3a).
+    const score = buildScore({
       mode: this.mode,
       tempoPct: this.session.options.tempoPct,
       steps: this.session.steps,
@@ -803,6 +940,7 @@ export class PracticeEngine {
       lenientChordSteps: this.lenientChordSteps,
       notes: this.recorded,
     });
+    return this.rhythmOnly ? { ...score, rhythmOnly: true } : score;
   }
 
   private emit(event: EngineEvent): void {

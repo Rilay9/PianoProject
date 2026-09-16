@@ -34,6 +34,7 @@ import {
   romanNumeralDrill,
   transpositionDrill,
 } from './harmony';
+import { SIMON_ROUNDS, SimonDrill } from './simon';
 import {
   callResponseDrill,
   chordDrill,
@@ -79,6 +80,7 @@ export const RUNTIME_DRILL_KINDS: readonly DrillKind[] = [
   'transposition',
   'roman-numeral',
   'ear-tune',
+  'simon',
 ];
 
 export interface BuildOptions {
@@ -215,6 +217,8 @@ export function drillFromCatalog(item: CatalogItem, options: BuildOptions = {}):
       return buildRomanNumeral(p, base);
     case 'ear-tune':
       return buildEarTune(p, base);
+    case 'simon':
+      return buildSimon(p, base, rng);
     default:
       // A five-finger walk or an accompaniment pattern with no file is a
       // technique pattern: demonstrate it, then play it back. See the P8
@@ -448,6 +452,35 @@ function buildEarTune(p: Params, base: Required<BuildOptions>): Drill {
     barsPerPhrase: num(p.barsPerPhrase, 2),
     ...(key !== undefined ? { key } : {}),
     ...(typeof p.bpm === 'number' ? { bpm: p.bpm } : {}),
+  });
+}
+
+/**
+ * `kind: 'simon'` — a chain that grows by a note a round.
+ *
+ * `low`/`high` are note names or MIDI numbers, as the reading drills take
+ * them; `steps` is either the word `chromatic` or a list of scale degrees of
+ * `key`, so "the white keys around middle C" is written as the seven degrees
+ * of C rather than as a list of MIDI numbers nobody can read.
+ */
+function buildSimon(p: Params, base: Required<BuildOptions>, rng: () => number): Drill {
+  const edge = (value: unknown, fallback: number): number => {
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+    return (typeof value === 'string' ? noteNameToMidi(value) : null) ?? fallback;
+  };
+  const degrees = Array.isArray(p.steps)
+    ? p.steps.filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
+    : [];
+  const key = noteNameToPitchClass(typeof p.key === 'string' ? p.key : 'C') ?? 0;
+  return new SimonDrill({
+    low: edge(p.low, 60),
+    high: edge(p.high, 72),
+    ...(degrees.length > 0 ? { degrees } : {}),
+    key,
+    rounds: Math.round(num(p.rounds, SIMON_ROUNDS)),
+    ...(typeof p.stepMs === 'number' ? { stepMs: p.stepMs } : {}),
+    clock: base.clock,
+    rng,
   });
 }
 

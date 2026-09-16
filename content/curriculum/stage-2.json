@@ -97,6 +97,7 @@
               ],
               "textFile": "lessons/2.2.md",
               "exerciseOptions": [
+                "drill.reading.sight-reading-2-right",
                 "drill.rhythm.eighths",
                 "exercise.rhythm.eighths.4bar",
                 "exercise.rhythm.quarter-eighths.4bar",
@@ -304,6 +305,7 @@
               ],
               "textFile": "lessons/2.5.md",
               "exerciseOptions": [
+                "drill.reading.sight-reading-2-right",
                 "drill.technique.position-shifts",
                 "exercise.scale.c-major.1oct.similar.right.2",
                 "exercise.scale.c-major.1oct.similar.left.2",
@@ -329,7 +331,7 @@
               "estimatedDays": 16,
               "songOptional": true,
               "levelBand": [
-                2.5,
+                2.2,
                 4.1
               ],
               "finder": {

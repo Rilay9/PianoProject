@@ -5,3 +5,6 @@ export * from './special';
 export * from './theory';
 export * from './harmony';
 export * from './fromCatalog';
+export * from './feedback';
+export * from './review';
+export * from './simon';

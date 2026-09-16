@@ -372,7 +372,8 @@
               "exerciseOptions": [
                 "drill.ear.seventh-qualities",
                 "drill.ear.progressions",
-                "drill.ear.melodic-dictation"
+                "drill.ear.melodic-dictation",
+                "drill.ear.simon-chromatic"
               ],
               "songOptions": [],
               "mastery": {
@@ -572,6 +573,7 @@
               ],
               "textFile": "lessons/technique.5.md",
               "exerciseOptions": [
+                "drill.reading.sight-reading-4",
                 "exercise.arpeggio.a-flat-major.2oct.both",
                 "exercise.independence.c.2v1",
                 "exercise.hanon.11.both",
@@ -585,7 +587,11 @@
                 "exercise.independence.f.2v1",
                 "exercise.hanon.11.left"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.classical.duvernoy-etude-op-176-no-16.pdmx",
+                "song.classical.duvernoy-etude-op-176-no-18.pdmx",
+                "song.classical.lemoine-etude-op-37-no-4.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 2,
@@ -594,7 +600,7 @@
                 "minTempoPct": 0.8
               },
               "levelBand": [
-                5.1,
+                5.0,
                 5.4
               ],
               "finder": {

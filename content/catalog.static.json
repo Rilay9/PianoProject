@@ -1843,6 +1843,148 @@
     }
   },
   {
+    "id": "drill.reading.sight-reading-1-left",
+    "type": "drill",
+    "title": "Sight-reading generator, level 1, left hand",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 1.6,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "bass-clef",
+      "C-position",
+      "steps"
+    ],
+    "hands": "left",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 1,
+        "bars": 4,
+        "hands": "left"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.sight-reading-2-right",
+    "type": "drill",
+    "title": "Sight-reading generator, level 2, right hand",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 2.2,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "eighths",
+      "skips"
+    ],
+    "hands": "right",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 2,
+        "bars": 4,
+        "hands": "right"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.reading.sight-reading-4",
+    "type": "drill",
+    "title": "Sight-reading generator, level 4",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "core",
+      "theory-ear"
+    ],
+    "level": 5.0,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "sight-reading",
+      "two-hands",
+      "accidentals"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "sight-reading",
+      "params": {
+        "level": 4,
+        "bars": 8,
+        "hands": "both"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
     "id": "drill.ear.seventh-qualities",
     "type": "drill",
     "title": "Ear drill — seventh-chord qualities",
@@ -3472,6 +3614,107 @@
           "G"
         ],
         "bpm": 92
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.simon-c-major",
+    "type": "drill",
+    "title": "Simon — the white keys around middle C",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear"
+    ],
+    "level": 2.0,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "ear",
+      "memory"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "simon",
+      "params": {
+        "low": "C4",
+        "high": "C5",
+        "key": "C",
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "rounds": 12
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
+    "id": "drill.ear.simon-chromatic",
+    "type": "drill",
+    "title": "Simon — every key around middle C",
+    "composer": null,
+    "arranger": "PianoPath",
+    "genre": [
+      "drill"
+    ],
+    "tracks": [
+      "theory-ear"
+    ],
+    "level": 5.0,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "ear",
+      "memory"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "simon",
+      "params": {
+        "low": "G3",
+        "high": "G4",
+        "steps": "chromatic",
+        "rounds": 12
       }
     },
     "source": {

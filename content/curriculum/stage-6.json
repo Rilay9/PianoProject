@@ -201,7 +201,11 @@
                 "exercise.arpeggio.a-major.4oct.both",
                 "exercise.independence.f.3v1"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.classical.czerny-the-school-of-velocity-op-299-no-1.pdmx",
+                "song.classical.czerny-the-school-of-velocity-op-299-no-3.pdmx",
+                "song.classical.czerny-the-school-of-velocity-op-299-no-4.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 2,
@@ -210,7 +214,7 @@
                 "minTempoPct": 0.8
               },
               "levelBand": [
-                6.1,
+                6.0,
                 6.4
               ],
               "finder": {

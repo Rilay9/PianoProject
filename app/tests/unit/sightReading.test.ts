@@ -168,6 +168,22 @@ describe('generated exercises load and extract', () => {
     }
   });
 
+  it('level 1 can be read by the left hand alone, on the bass staff, inside C3–G3', async () => {
+    for (const seed of [1, 2, 3, 77, 4096]) {
+      const result = generateSightReading({ level: 1, seed, bars: 4, hands: 'L' });
+      expect(result.musicXml).toContain('<sign>F</sign>');
+      const model = await toModel(result.musicXml, `l1-left-${seed}`);
+      const pitches = model.steps.flatMap((s) => s.notes.map((n) => n.midi));
+      expect(pitches.length).toBeGreaterThan(0);
+      expect(Math.min(...pitches)).toBeGreaterThanOrEqual(48);
+      expect(Math.max(...pitches)).toBeLessThanOrEqual(55);
+      expect(model.handsPresent).toEqual({ R: false, L: true });
+      // The same seed reads the same tune in either hand, an octave apart.
+      const right = generateSightReading({ level: 1, seed, bars: 4 });
+      expect(result.melody.map((m) => m + 12)).toEqual(right.melody);
+    }
+  });
+
   it('level 1 starts and ends on the tonic', async () => {
     for (const seed of [5, 50, 500]) {
       const result = generateSightReading({ level: 1, seed, bars: 4 });

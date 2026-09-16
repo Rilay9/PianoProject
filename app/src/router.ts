@@ -158,6 +158,22 @@ export interface Route {
    * walkthrough gets the same ride with no second mechanism.
    */
   tour?: string;
+  /**
+   * `#/score/<id>?seed=1234` — generate *this* exercise rather than a new one.
+   *
+   * Only a generated item reads it, and only one screen writes it: Today's
+   * daily sight-read, whose seed is a hash of the date, so the day has one
+   * phrase and tomorrow has another. It rides in the hash for the same reason
+   * `blind` and `mode` do — it survives a reload, a back gesture and an icon
+   * on the home screen — and because the alternative was a catalog item per
+   * day, which is 365 rows a year for one number.
+   *
+   * Any 32-bit unsigned integer; anything else is dropped rather than carried,
+   * since a generator handed rubbish would silently pick its own.
+   */
+  seed?: number;
+  /** The accompaniment lab (`04` §3c), addressed as `#/lab`. */
+  lab?: boolean;
 }
 
 /**
@@ -182,6 +198,13 @@ function parseLoopParam(value: string | null | undefined): { from: number; to: n
   // Backwards is not a range, and a screen asked for one would loop nothing
   // and say nothing about why.
   return to < from ? undefined : { from, to };
+}
+
+/** `?seed=` — a 32-bit unsigned integer, and nothing else. */
+function parseSeedParam(value: string | null | undefined): number | undefined {
+  if (value === null || value === undefined || !/^\d{1,10}$/.test(value)) return undefined;
+  const seed = Number(value);
+  return Number.isSafeInteger(seed) && seed <= 0xffffffff ? seed : undefined;
 }
 
 function isTabId(value: string): value is TabId {
@@ -211,6 +234,7 @@ export function parseHash(hash: string): Route {
   const wantedMode = params?.get('mode');
   const scoreMode = looksLikeMode(wantedMode) ? wantedMode : undefined;
   const scoreLoop = parseLoopParam(params?.get('loop'));
+  const seed = parseSeedParam(params?.get('seed'));
   const wantedTour = params?.get('tour');
   // An unrecognised one is dropped rather than carried: it would only ever be
   // used as a navigation target, and a Back that goes nowhere is worse than a
@@ -245,8 +269,14 @@ export function parseHash(hash: string): Route {
       ...(scoreMode ? { scoreMode } : {}),
       ...(scoreLoop ? { scoreLoop } : {}),
       ...(tour === undefined ? {} : { tour }),
+      ...(seed === undefined ? {} : { seed }),
     };
   }
+  // The accompaniment lab (`04` §3c). Not a tab and not a sub-screen of one:
+  // it is opened from Library and from a lesson's finder, and it keeps
+  // whichever tab the learner came from highlighted, exactly as the lesson
+  // page and the chord chart do.
+  if (tab === 'lab') return { tab: 'library', lab: true };
   if (tab === 'paper') {
     // `#/paper/book.czerny-599/no-1`. A book id contains no slash and a piece
     // id contains no slash, so the split is unambiguous.
@@ -320,6 +350,7 @@ export function parseHash(hash: string): Route {
 }
 
 export function routeToHash(route: Route): string {
+  if (route.lab) return '#/lab';
   if (route.paper) {
     return `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
   }
@@ -333,6 +364,7 @@ export function routeToHash(route: Route): string {
         ? [`loop=${String(route.scoreLoop.from)}-${String(route.scoreLoop.to)}`]
         : []),
       ...(route.tour === undefined ? [] : [`tour=${encodeURIComponent(route.tour)}`]),
+      ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
     return flags.length ? `${base}?${flags.join('&')}` : base;
@@ -410,6 +442,8 @@ export class Router {
       loop?: { from: number; to: number };
       /** The walkthrough that opened it, which Back returns to. */
       tour?: string;
+      /** Generate this exercise rather than a new one (Today's daily read). */
+      seed?: number;
     } = {},
   ): void {
     const route: Route = {
@@ -420,6 +454,7 @@ export class Router {
       ...(options.mode ? { scoreMode: options.mode } : {}),
       ...(options.loop ? { scoreLoop: options.loop } : {}),
       ...(options.tour === undefined ? {} : { tour: options.tour }),
+      ...(options.seed === undefined ? {} : { seed: options.seed }),
     };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
@@ -445,6 +480,13 @@ export class Router {
   /** Runs a drill (`#/drill/<itemId>`). */
   navigateDrill(itemId: string): void {
     const route: Route = { tab: this.current.tab, drill: itemId };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
+  /** Opens the accompaniment lab (`#/lab`, `04` §3c). */
+  navigateLab(): void {
+    const route: Route = { tab: 'library', lab: true };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -481,6 +523,8 @@ export class Router {
       route.performance === this.current.performance &&
       route.scoreMode === this.current.scoreMode &&
       route.tour === this.current.tour &&
+      route.seed === this.current.seed &&
+      route.lab === this.current.lab &&
       // By value: two loop ranges naming the same bars are the same route, and
       // comparing the objects would remount the Score screen on every repeat
       // of a navigation that changed nothing.

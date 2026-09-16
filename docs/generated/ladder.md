@@ -23,14 +23,14 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 0 | `0.4` *(exempt)* | 1 | 0 | 0.4–0.4 | — |
 | 1 | `1.1` | 6 | 5 | 1.1–2.1 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1) |
 | 1 | `1.2` | 4 | 5 | 1.1–1.9 | Lightly Row (1.2), Jingle Bells (chorus) (1.2), Twinkle, Twinkle, Little Star (1.2), Frère Jacques (1.2), Ah! vous dirais-je Maman (1.9) |
-| 1 | `1.3` | 5 | 3 | 1.1–2.1 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
-| 1 | `1.4` | 5 | 3 | 1.2–1.4 | Lightly Row (1.2), Ode to Joy (hands alternating) (1.4), Oh When the Saints Go Marching In (hands alternating) (1.4) |
-| 1 | `1.5` *(song-optional)* | 6 | 3 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), Old MacDonald Had a Farm (2.2) |
+| 1 | `1.3` | 6 | 3 | 1.1–2.1 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
+| 1 | `1.4` | 6 | 3 | 1.2–1.6 | Lightly Row (1.2), Ode to Joy (hands alternating) (1.4), Oh When the Saints Go Marching In (hands alternating) (1.4) |
+| 1 | `1.5` *(song-optional)* | 7 | 3 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), Old MacDonald Had a Farm (2.2) |
 | 2 | `2.1` | 5 | 4 | 2.1–2.1 | Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
-| 2 | `2.2` | 4 | 6 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael row the boat ashore (1.9), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Danny Boy (Londonderry Air) (2.4) |
+| 2 | `2.2` | 5 | 6 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael row the boat ashore (1.9), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Danny Boy (Londonderry Air) (2.4) |
 | 2 | `2.3` | 4 | 6 | 2.3–4.3 | Happy Birthday to You (2.3), Was wollen wir trinken (2.7), Dark Eyes (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), Auld Lang Syne (3.3), Happy Birthday to You (4.1) |
 | 2 | `2.4` | 4 | 4 | 2.2–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
-| 2 | `2.5` *(song-optional)* | 6 | 2 | 2.5–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
+| 2 | `2.5` *(song-optional)* | 7 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
 | 3 | `3.1` | 6 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.8), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
 | 3 | `3.3` | 4 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
@@ -90,7 +90,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 4 | `classical.4.shelf` | 3 | 72 | 3.5–8.5 | Für Elise (easy) (4.1), Erik Satie - Gnossienne n1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Hungarian Sonata (5.0), Canon in D (easy) (5.1), … and 66 more |
 | 5 | `classical.5` | 4 | 6 | 3.6–5.7 | Sonatina in G major, Anh. 5 No. 1 (5.3), Sonatina in C major, Op. 36 No. 1 (first movement, short edition) (5.3), Sonatina in C major, Op. 36 No. 1 (second and third movements) (5.3), Burgmüller: Arabesque - Op. 100 No. 2 (5.5), Old French Song, Op. 39 No. 16 (5.6), Album for the Young, Op. 68 No. 16 "First Loss" (5.7) |
 | 6 | `classical.6` | 9 | 6 | 3.2–6.4 | Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 1 in C major, BWV 846 (6.1), Prélude in E minor, Op. 28 No. 4 (6.1), Gymnopédie No. 1 (6.2), Waltz in A minor, B. 150 (6.4), Für Elise, WoO 59 (6.4) |
-| 7 | `classical.7` | 8 | 6 | 4.2–7.2 | Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), Gnossienne No. 1 (7.1), Piano Sonata No. 8 “Pathétique”, II. Adagio cantabile (7.2), Waltz in B minor, Op. 69 No. 2 (7.2) |
+| 7 | `classical.7` | 8 | 6 | 4.2–7.2 | Invention No. 1 in C major, BWV 772 (5.5), Invention No. 4 in D minor, BWV 775 (6.0), Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), Piano Sonata No. 8 “Pathétique”, II. Adagio cantabile (7.2) |
 | 8 | `classical.8` | 8 | 6 | 4.3–8.4 | Waltz in C-sharp minor, Op. 64 No. 2 (7.8), Piano Sonata No. 11, K. 331, III. Rondo alla Turca (8.1), Nocturne in B-flat minor, Op. 9 No. 1 (8.1), Arabesque No. 1, L. 66 (8.1), Clair de Lune (Suite bergamasque, L. 75 No. 3) (8.3), Piano Sonata No. 14 “Moonlight”, III. Presto agitato (8.4) |
 | 9 | `classical.9` | 6 | 6 | 4.3–9.4 | Piano Sonata No. 2, Op. 35 — Marche funèbre (8.4), Fantaisie-impromptu in C-sharp minor, Op. 66 (9.0), Ballade No. 1 in G minor, Op. 23 (9.1), La Campanella (Grandes études de Paganini No. 3) (9.2), Polonaise in A-flat major, Op. 53 (“Heroic”) (9.4), Étude in C-sharp minor, Op. 10 No. 4 (9.4) |
 
@@ -130,9 +130,9 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `theory.3` *(song-optional)* | 3 | 0 | 1.5–3.3 | — |
+| 3 | `theory.3` *(song-optional)* | 4 | 0 | 1.5–3.3 | — |
 | 4 | `theory.4` *(song-optional)* | 3 | 0 | 4.3–4.4 | — |
-| 5 | `theory.5` *(song-optional)* | 3 | 0 | 4.4–5.1 | — |
+| 5 | `theory.5` *(song-optional)* | 4 | 0 | 4.4–5.1 | — |
 | 6 | `theory.6` *(song-optional)* | 5 | 0 | 5.5–6.4 | — |
 | 7 | `theory.7` *(song-optional)* | 5 | 0 | 6.4–7.5 | — |
 | 8 | `theory.8` *(song-optional)* | 5 | 0 | 6.5–8.3 | — |
@@ -165,10 +165,10 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 4 | `technique.4` *(song-optional)* | 12 | 0 | 4.3–4.5 | — |
-| 5 | `technique.5` *(song-optional)* | 12 | 0 | 5.1–5.4 | — |
-| 6 | `technique.6` *(song-optional)* | 12 | 0 | 6.1–6.4 | — |
-| 7 | `technique.7` *(song-optional)* | 12 | 0 | 7.1–7.4 | — |
+| 4 | `technique.4` *(song-optional)* | 12 | 3 | 4.3–5.0 | Étude, Op. 37 No. 2 (4.8), Étude, Op. 37 No. 35 (4.8), Étude, Op. 37 No. 1 (5.0) |
+| 5 | `technique.5` *(song-optional)* | 13 | 3 | 5.0–5.4 | Étude, Op. 176 No. 18 (5.2), Étude, Op. 176 No. 16 (5.2), Étude, Op. 37 No. 4 (5.3) |
+| 6 | `technique.6` *(song-optional)* | 12 | 3 | 6.0–6.4 | The School of Velocity, Op. 299 No. 3 (6.0), The School of Velocity, Op. 299 No. 1 (6.1), The School of Velocity, Op. 299 No. 4 (6.4) |
+| 7 | `technique.7` *(song-optional)* | 12 | 3 | 7.1–7.4 | The School of Velocity, Op. 299 No. 8 (7.3), The School of Velocity, Op. 299 No. 10 (7.3), The School of Velocity, Op. 299 No. 5 (7.4) |
 | 8 | `technique.8` *(song-optional)* | 12 | 0 | 8.1–8.1 | — |
 
 ## Jazz (`jazz`)

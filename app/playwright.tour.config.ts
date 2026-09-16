@@ -23,6 +23,10 @@ export default defineConfig({
   reporter: 'list',
   timeout: 180_000,
   use: {
+    // No single action may wait forever: a click on a button that never
+    // enables stalled a whole orientation for its thirty-minute test timeout
+    // (2026-09-16).
+    actionTimeout: 30_000,
     ...devices['Desktop Chrome'],
     launchOptions: { ...chromiumExecutable },
     baseURL: 'http://localhost:4173/PianoProject/',

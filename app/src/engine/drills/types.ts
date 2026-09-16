@@ -36,7 +36,11 @@ export type DrillKind =
   | 'harmonic-dictation'
   | 'transposition'
   | 'roman-numeral'
-  | 'ear-tune';
+  | 'ear-tune'
+  // A chain that grows by a note each round until the learner breaks it. Every
+  // other ear kind asks for a name out of a small set; this one asks the
+  // learner to have held what they heard, which is what playing by ear is.
+  | 'simon';
 
 /** What the UI has to show for one question. */
 export interface DrillPrompt {
@@ -70,6 +74,13 @@ export interface DrillPrompt {
 export interface DrillAnswer {
   promptIndex: number;
   correct: boolean;
+  /**
+   * The learner asked to see or hear the answer before playing it. The
+   * answer is still judged — the keys go green when it is right — but it is
+   * not counted as right, or a drill could be passed by pressing Show me
+   * ten times.
+   */
+  revealed?: boolean;
   /** Milliseconds from the prompt to the answer being complete. */
   reactionMs: number | null;
   played: number[];
@@ -104,6 +115,12 @@ export interface Drill {
   /** The prompt currently awaiting an answer, if any. */
   readonly current: DrillPrompt | null;
   feed(input: EngineInput): void;
+  /**
+   * The learner was shown or played the current answer. Kinds that judge a
+   * played answer forfeit the mark for that prompt; kinds with nothing to
+   * reveal leave this out.
+   */
+  reveal?(): void;
   result(): DrillResult;
 }
 

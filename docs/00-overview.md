@@ -30,7 +30,7 @@ dependency except the teaching-video links, which say so before you tap them.
 through the piece as you play. It hears you three ways: the MIDI cable (exact), the microphone
 (score-informed, amber when unsure), or nothing, in which case a clock drives the cursor. It
 scores a run, keeps the result, and brings a passed piece back at 1, 3, 7 and 21 days. It plays
-pieces back, has a metronome that works on its own and over the music, and nineteen kinds of
+pieces back, has a metronome that works on its own and over the music, and a shelf of kinds of
 drill, each with the same four-section advice a lesson ends with.
 
 **What it teaches.** 93 lessons across ten stages: a core path from first notes to Grade 1, then

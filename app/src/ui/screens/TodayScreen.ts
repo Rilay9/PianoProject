@@ -53,11 +53,17 @@ import {
 } from '../../curriculum/session';
 import {
   allProgress,
+  dailyReadDays,
+  dailyReadStreak,
+  dayKey,
   getStreak,
+  markDailyRead,
   onProgressChange,
+  readToday,
   reviewQueue,
   weekSoFar,
 } from '../../data/progressStore';
+import { dailySeed } from '../../engine/sightReading';
 import { getPlan } from '../../data/planStore';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import type { ProgressRow } from '../../data/db';
@@ -134,6 +140,10 @@ export function TodayScreen(router: Router): HTMLElement {
   let slots: SessionSlot[] = [];
   let actionsDrawn = false;
   let breakAfter: number | undefined;
+  /** The days the daily sight-read has been finished on, newest last. */
+  let dailyDays: string[] = [];
+  /** Which generated reading exercise today's phrase comes out of. */
+  let dailyTarget: CatalogItem | null = null;
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
   const inputChip = chip('…', {
@@ -160,6 +170,17 @@ export function TodayScreen(router: Router): HTMLElement {
   }
 
   const card = el('div.list', { id: 'today-card' });
+  /**
+   * Today's sight-read (`04` §2): one card, one phrase, one run of days.
+   *
+   * A card of its own rather than a sixth row of the session card, because it
+   * is not part of the session: it is there whatever length was chosen, it is
+   * the same three minutes every day, and it is the one thing on this screen
+   * measured in *days in a row* rather than minutes this week. Putting it in
+   * the card would also have made it swappable, and a daily read you can swap
+   * for something else is not a daily read.
+   */
+  const dailyCard = el('div.list', { id: 'today-daily' });
   const actions = el('div.row.today-start-row', { id: 'today-actions' });
   // The three that change the day rather than start it. Below the card, the
   // way Plan's placement test and how-to-practise links moved below its list:
@@ -183,7 +204,7 @@ export function TodayScreen(router: Router): HTMLElement {
   // screen the app opens on (`04` §0 R3) was the one thing you had to scroll
   // to find. The card still starts inside the first screenful (R1) — the
   // button is one row of 40 px, and the card was starting at 198.
-  body.append(actions, card, status, tools);
+  body.append(actions, card, dailyCard, status, tools);
 
   // --- rows ---------------------------------------------------------------
 
@@ -323,6 +344,86 @@ export function TodayScreen(router: Router): HTMLElement {
     });
   }
 
+  // --- today's sight-read (`04` §2) ---------------------------------------
+
+  /**
+   * The reading exercise for the learner's stage.
+   *
+   * The hardest one at or below the stage, and the easiest one if the stage is
+   * below all of them — deliberately *not* a random pick, because the day's
+   * variation is the seed's job and an item that also moved would make two
+   * things change at once for no reason. `drill.kind` rather than the
+   * `sight-reading` concept tag, which the transposition drills also carry and
+   * which open on a different screen.
+   */
+  function dailyItemFor(stageNumber: number): CatalogItem | null {
+    const readers = items
+      .filter((item) => item.drill?.kind === 'sight-reading')
+      .sort((a, b) => a.level - b.level);
+    const reachable = readers.filter((item) => item.level <= stageNumber);
+    return reachable[reachable.length - 1] ?? readers[0] ?? null;
+  }
+
+  function drawDaily(): void {
+    dailyCard.replaceChildren();
+    // `04` §0 R4: no furniture. A build with no reading exercises in it has
+    // nothing to offer here, and an empty card saying so would be a hole.
+    const item = dailyTarget;
+    if (!item) return;
+    const seed = dailySeed(dayKey(now));
+    const done = readToday(dailyDays, now);
+    const streak = dailyReadStreak(dailyDays, now);
+    const bars = item.drill?.params?.bars;
+    const open = (): void => {
+      router.navigateScore(item.id, { seed });
+    };
+    dailyCard.append(
+      listRow({
+        title: "Today's sight-read",
+        subtitle: 'One phrase you have never seen, once, slowly',
+        meta: [
+          streak > 0 ? `Day ${String(streak)}` : 'Start a run',
+          levelLabel(item.level, item.levelSource),
+          typeof bars === 'number' ? `${String(bars)} bars` : '',
+        ]
+          .filter(Boolean)
+          .join(' · '),
+        // The one thing the line above does not say, and only once it is news.
+        badges: done ? [badge('✓ read today', 'passed')] : [],
+        actions: [
+          button('▶', open, { ariaLabel: "Open today's sight-read" }),
+        ],
+        onClick: open,
+        dataset: {
+          'data-daily': item.id,
+          'data-seed': String(seed),
+          'data-streak': String(streak),
+          'data-done': String(done),
+        },
+      }),
+    );
+  }
+
+  /**
+   * Notices that today's read happened, and writes the day down.
+   *
+   * Read off the exercise's own progress row rather than hooked into the run:
+   * the Score screen records every run through `recordRun`, which notifies
+   * this screen, so "the daily item was last practised today" is a fact
+   * already on its way here. Nothing else had to learn about the streak.
+   */
+  function syncDailyRead(): void {
+    const item = dailyTarget;
+    if (!item || readToday(dailyDays, now)) return;
+    const row = progress.find((candidate) => candidate.itemId === item.id);
+    if (!row?.lastPracticedAt) return;
+    if (dayKey(new Date(row.lastPracticedAt)) !== dayKey(now)) return;
+    void markDailyRead(now).then((days) => {
+      dailyDays = days;
+      drawDaily();
+    });
+  }
+
   function drawActions(): void {
     actions.replaceChildren(
       button(
@@ -426,20 +527,28 @@ export function TodayScreen(router: Router): HTMLElement {
       // that reads one is not depending on wording.
       if (position) status.dataset.lesson = position.lesson.id;
       else delete status.dataset.lesson;
+
+      // The daily read hangs off the same stage number the session card does,
+      // so the two cannot disagree about where the learner is.
+      dailyTarget = dailyItemFor(position ? position.stageNumber : 1);
+      drawDaily();
+      syncDailyRead();
     });
   }
 
   async function load(): Promise<void> {
-    const [loadedCurriculum, loadedItems, rows, streak] = await Promise.all([
+    const [loadedCurriculum, loadedItems, rows, streak, readDays] = await Promise.all([
       loadCurriculum(),
       allItems(),
       allProgress(),
       getStreak(),
+      dailyReadDays(),
     ]);
     curriculum = loadedCurriculum;
     items = loadedItems;
     catalog = indexCatalog(loadedItems);
     progress = rows;
+    dailyDays = readDays;
 
     const week = weekSoFar(streak);
     // Short enough not to wrap at 360 px (`04` §0 R2). Progress says it in

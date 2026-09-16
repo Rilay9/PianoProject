@@ -106,6 +106,20 @@ export interface EngineOptions {
   toleranceMs?: number;
   countInBars?: number;
   /**
+   * Judge *when*, not *what* (docs/05 §3a).
+   *
+   * Tempo mode only, and ignored everywhere else: it is the one mode with a
+   * timetable to be judged against, so it is the only one where "the notes do
+   * not matter" leaves anything to measure. With it on, a note-on lands on the
+   * nearest step still waiting inside the timing window whatever pitch it
+   * carries, and that one strike settles the whole step — a chord is one tap,
+   * because tapping a rhythm is what the learner was asked to do.
+   *
+   * The run it produces is not a run of the piece, so `SessionScore.rhythmOnly`
+   * carries the fact out to whoever records it.
+   */
+  rhythmOnly?: boolean;
+  /**
    * The whole of the input path's delay, in ms — and the only place it is
    * ever removed.
    *
@@ -185,6 +199,7 @@ export const ENGINE_DEFAULTS = {
   chordWindowMs: 80,
   toleranceMs: 150,
   countInBars: 1,
+  rhythmOnly: false,
   inputLatencyMs: 0,
   minConfidence: 0.5,
   wrongNoteConfidence: 1,
@@ -308,6 +323,20 @@ export interface SessionScore {
    * the summary sheet must label the accuracy "estimated" (docs/05 §11.4).
    */
   accuracyEstimated: boolean;
+  /**
+   * The run judged timing alone (docs/05 §3a).
+   *
+   * Its own field rather than a flavour of `accuracyEstimated`, because the two
+   * say opposite things: an estimated accuracy is the *same* claim measured
+   * less certainly, while this is a *different* claim measured exactly. The
+   * accuracy of a rhythm run is how much of the piece the learner was in time
+   * for, and it is not evidence that they can play the notes — so whoever
+   * records the run reads this and refuses it a pass and mastery of the piece.
+   *
+   * Absent on an ordinary run rather than `false`, so a stored score written
+   * before this existed reads the same as one written after it.
+   */
+  rhythmOnly?: boolean;
   /** Steps completed by the microphone chord leniency rather than in full. */
   lenientChordSteps: number;
   timing: TimingStats;

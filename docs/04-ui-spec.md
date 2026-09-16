@@ -189,6 +189,35 @@ Score screen is a full-screen route pushed on top (back gesture returns).
   Review and repertoire fall back the same way when nothing is due and nothing is mastered,
   which is what the first week always looks like.
 
+**Today's sight-read** (added 2026-09-15). One card under the session card, its own row and
+not a sixth row of that one: it is there whatever session length was chosen, it is the same
+three minutes every day, and it is the only thing on this screen counted in **days in a row**
+rather than minutes this week. Putting it inside the card would also have made it swappable,
+and a daily read you can swap for something else is not a daily read.
+
+- It opens the reading exercise for the learner's stage — the hardest one at or below it, the
+  easiest one if the stage is below all of them. Deliberately not a random pick: the day's
+  variation is the seed's job, and an item that moved as well would change two things at once
+  for no reason.
+- **The seed is a hash of the local date**, so the day has one phrase and tomorrow has another,
+  and re-opening today's card gives the same phrase back rather than a fresh one. It reaches
+  the generator as `#/score/<id>?seed=<n>` — the same mechanism `blind`, `mode` and `loop`
+  already use, and the alternative was a catalog item per day, which is 365 rows a year for one
+  number. A hash of the date string rather than the date's number, because `seed + 1` through
+  `makeRng` is a near neighbour of `seed` and a week of daily reads would have been seven takes
+  of one phrase.
+- **The run of days** is on the detail line — `Day 4 · L2.2 · 4 bars` — and a tick badge
+  appears once today's is done. A day that is *not over yet* does not break the run: three days
+  behind and nothing read this morning still reads `Day 3`, because the alternative is the
+  daily-streak guilt the weekly header exists to avoid. A real gap resets it to nought.
+- **Nothing new records it.** The Score screen records every run through `recordRun`, which
+  notifies Today; the card reads "the daily item was last practised today" off the progress row
+  that is already on its way, and writes the day down itself. The days live in the `settings`
+  store under `pianopath.dailyRead` rather than in `StreakRow`, which would have cost a schema
+  version bump for one array of date strings.
+- With no reading exercises in the build there is no card at all, rather than an empty one
+  (R4).
+
 ## 2a. Metronome (standalone)
 
 A metronome you can switch on without a score in front of you — for scales, for
@@ -275,9 +304,71 @@ count-off, optional backing loop, and swing toggle — used for jamming practice
 not the point. Any item with `<harmony>` data can open in this view; the input chip still
 works (mic/MIDI can highlight the chord you actually play vs the chart, amber if different).
 
+### 3c. Accompaniment lab — `#/lab` (added 2026-09-15)
+
+§3b plays the chords a *piece* already has. This is the other half: pick the chords yourself,
+and either have them written out to read or have them kept in time to play over. Two things a
+learner wants from a progression, and the app could do neither — while the generator already
+knew every accompaniment shape (`05` §8, levels 4–7) and the chart already knew how to hold a
+bar count against a drum loop.
+
+**Reached from Library**, in the line of doors beside *Import a score · Shelf · Score folder* —
+it belongs to the same question those three answer, *where does something to play come from*,
+and it is the one that makes a score rather than finding one. It does not fit on that line at
+342 px and takes a second one; the full name is kept anyway, because the screen it opens is
+called the accompaniment lab and a shorter label here would be a second name for one thing.
+
+**The settings.** Key (the twelve majors and nine minors), progression (I–IV–V–I, I–V–vi–IV,
+ii–V–I, I–vi–IV–V, the 12-bar blues, or roman numerals typed), left-hand pattern (the five the
+generator writes, plus none), right hand (chord tones, melody, none), bars and tempo.
+
+- **A minor key gets its own numerals, not the major set transposed.** I–V–vi–IV has no
+  minor-key form: the chords that make it are the major scale's. What a minor key does with
+  the same sound is i–♭VII–♭VI–♭VII, and writing that down is more honest than naming three
+  chords nobody plays there. The flat and sharp prefixes are the lab's own addition to the
+  numeral reader the roman-numeral drill already uses — `♭VI` in A minor is F, and there is no
+  unaltered numeral that says F from A.
+- **The blues brings its own bar counts.** Twelve does not divide into eight, so choosing it
+  replaces the 4 · 8 · 16 chips with 12 · 24 rather than leaving chips that are pressable and
+  impossible (R4). A form shorter than the bar count repeats rather than stretching: eight bars
+  of a four-bar progression is that progression twice.
+- **A numeral it cannot read is named**, on the status line beside the button that found it
+  (R6), and nothing is built.
+
+**Read it** writes the exercise out and opens it on the Score screen. It goes in as an
+**import**: the Score screen builds a sight-read from the catalog row's own drill parameters
+and knows nothing about a harmony somebody typed, and an import is the door that already
+exists for notation the app did not ship. The exercise's **title is its settings** — `Lab:
+I–V–vi–IV in G major · alberti + melody · 8 bars at 92` — so the same choices give the same
+title, the same id and the same row, replaced where it stands; a different combination is a
+different exercise and gets its own. The rows are tagged `Accompaniment lab`, filed at level 3
+marked estimated. **The cleaner hook, when somebody is next in that file:** two lines in
+`ScoreScreen.ts` reading a lab build out of a module the lab writes — `#/score/lab` resolving
+against a single in-memory exercise — which would cost no library row at all and no delete on
+the way in. The import was chosen because `ScoreScreen.ts` could not be edited in the change
+that built this, not because it is the better door.
+
+**Jam it** — the chord DJ — starts the chart's own bass-and-drums bed for the same progression
+and tempo, shows the chord symbols bar by bar with the current one marked, and lights the
+bar's chord tones on the keyboard strip as a guide. **Nothing is judged and nothing is
+recorded**: playing along is the whole point and the app is only keeping time and saying where
+you are. Changing a setting under a running loop *stops* it and says so, rather than leaving a
+chart on the screen whose bars are not the bars it is playing. Stop leaves the chart standing —
+it is a chord chart, and reading one is what somebody stopped the loop to do.
+
+**§0:** a hand screen (R2). Its one filled box (R3) is **Read it**; *Jam it* and *Stop* are
+outlined. The line saying what the settings currently are, and the two buttons that act on it,
+sit **above** the pickers — the same ranking Today's *Start session* got, and the pickers still
+begin inside the first screenful (R1). The three short choices are chips with their label
+*above* them rather than beside: `field()` gives a control a column of `max-content` next to a
+label keeping 9 rem, which is right for a select and leaves six chips about half a phone to
+wrap into, three lines tall and well past R2's 56 px. Sideways the pickers run in two columns
+and the keys shrink to about two thirds their height, because 108 px of key plus a chart plus a
+transport is more than a 342 px-tall body has (R5).
+
 ## 4. Library
 
-**§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder* sit as one line of text in the header, above the search box — text rather than boxes (R3), but at the top: at the foot of the list they were 4,325 px down with the default sixty rows drawn. The header does not scroll, so the list runs under them.
+**§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder · Accompaniment lab* sit as one line of text in the header, above the search box — text rather than boxes (R3), but at the top: at the foot of the list they were 4,325 px down with the default sixty rows drawn. The header does not scroll, so the list runs under them. The fourth (§3c, added 2026-09-15) does not fit on that line upright and takes a second one; it is kept at its full name anyway, because a shorter label would be a second name for the screen it opens.
 
 **Ranked, 2026-09-12.** Two faults, both "the same thing on every row". The detail line said `Hands together` on very nearly all 1,533 of them — three words in the middle of the line that is supposed to tell rows apart, which never tell any two apart, and which pushed the type off the end; it is `RH`/`LH` where the fact is news and silent otherwise, with the full sentence still on the item's detail sheet. And **the drop target is the list itself**: when the import heading and its buttons moved into the header they left an empty `div.block` under the list — no text, no control, but a rule across the screen and seventeen pixels of nothing (R4: no furniture), for a gesture that does not exist on a phone. The listeners moved onto the list, which is also the better desktop target: you drop the file on the thing you are dropping it into.
 
@@ -558,14 +649,58 @@ bar is *do you need it while your hands are on the keys?*
 
 With `R` or `L` chosen and `playbackHands: non-focused`, the status line says `Playing the
 left hand for you` **once** when the run starts. The sound is otherwise a note arriving from
-nowhere, which on a stand with no piano connected reads as a fault.
+nowhere, which on a stand with no piano connected reads as a fault. Saying it once was the
+half of the fix that fitted on the bar; the other half is the **Duet** row in the `⋯` sheet
+below, which is where the thing can be turned off.
 
 `⋯` opens a sheet holding everything else, each with its word beside it: **Input**
-(MIDI / Mic / Screen keys / None) · **Section** (only when the piece has named sections) ·
-**Loop** (set A/B by tapping bars, or pick a section) · **Metronome** · **Bars in window**
-(1–8) · **Size** (zoom ±, with the percentage between the buttons) · **Layout** (`Window` |
-`Scroll`, a segment: it is a state, not a verb) · **Keys** (`Keys` | `Ribbon` | `Off`, a
-segment) · **Sound** (Phone / Piano / Both) · **Blind** · **Perform**.
+(MIDI / Mic / Screen keys / None) · **Rhythm only** (only in `Keep tempo`) · **Section**
+(only when the piece has named sections) · **Loop** (set A/B by tapping bars, or pick a
+section) · **Ladder** (only when a loop is set, in `Keep tempo`) · **Metronome** ·
+**Bars in window** (1–8) · **Size** (zoom ±, with the percentage between the buttons) ·
+**Layout** (`Window` | `Scroll`, a segment: it is a state, not a verb) · **Keys**
+(`Keys` | `Ribbon` | `Off`, a segment) · **Sound** (Phone / Piano / Both) · **Duet** (only
+with `R` or `L` chosen, on a piece that has the other hand) · **Blind** · **Perform**.
+
+Three of those come and go. That is `04` §0 R4 and not tidiness — a Ladder with no loop, a
+Rhythm only in a mode with no clock and a Duet on a piece written for one hand are all live
+controls over nothing. Sideways the sheet is a two-column grid, so a row that does not apply
+has to be *gone* rather than empty. **Nothing here is on the bar**: the bar holds the six
+things that change while your hands are on the keys and it may not grow (R4/R5, and the
+bar's own comments in `style.css`); the sheet is full-screen, explains every control it
+holds and already scrolls.
+
+**Rhythm only** (P21f, `05` §3a). Tap the piece's rhythm on any key at all — the strip, or
+whatever is under your hand — and be judged on timing alone. Early and late are marked as
+they always are; a chord is one tap; a strike outside the window is still wrong, because
+rhythm-first forgives the note and never the moment. The cursor, the keys and the summary
+work exactly as they do in an ordinary `Keep tempo` run, because it *is* one: the only
+difference is that the engine stops asking which key. The summary is headed **Rhythm run**
+and says so under `Judged`, and the recorded result is tagged so it can never become a pass
+or mastery of the piece — the minutes and the attempt count, the claim does not. Remembered
+as a setting, because a learner who works this way works this way on every piece. Blind and
+performance runs ignore it: both are claims about playing the piece.
+
+**Ladder** (P21f, `05` §6). With a loop set, each clean pass speeds up one notch and each
+pass with a mistake slows down one, from wherever the tempo is when it is switched on,
+within the slider's own 30–130 % and never above 100 % unless the learner had already asked
+for more. The status line says what happened at each pass boundary — *Clean — up to 70 %*,
+*A mistake — down to 50 %*, *Clean — staying at 100 %* — and the summary reports where the
+ladder ended. The number it moves is the tempo label on the bar, which is underlined while
+the ladder is on: a figure that changes by itself reads as a fault unless something says it
+is meant to, and the mark belongs on the figure rather than on a second readout competing
+for the bar's width.
+
+**Duet** (P21f). The app has played the other hand under the learner since P6 and nobody
+could find it, because it lives in Settings — three screens away from the `R`/`L` buttons
+that decide which hand it means. The row is the same setting (`playbackHands`), bound a
+second time where the question is actually asked, and it names the hand in its own words:
+*Duet: the app plays the left hand*. In the label rather than in the hint, because sideways
+the sheet hides every hint and a row reading only `Duet` there would have moved the problem
+rather than fixed it. No new state and no new setting. `playbackHands` has three values and
+this is a toggle, so the row reads *both hands* when Settings has been set to `both` and
+says what will actually be heard; off writes `none` and on writes `non-focused`, which is
+what the sentence beside it promises.
 
 **Fill the width with music, not with space (owner, 2026-09-12).** *"We don't want
 to stretch the music bar out to where it doesn't look natural. At the extreme, when
@@ -664,6 +799,14 @@ Notation area:
 - End-of-run summary sheet: accuracy, timing (early/late histogram), tempo achieved, wrong-note
   hot spots (bars), pass/master badge, buttons "Again", "Slower (−10 %)", "Faster (+10 %)",
   "Loop the weak bars", "Done". Without MIDI: "How did it go?" (Rough / OK / Clean) self-report.
+  A rhythm run is headed **Rhythm run** and carries a `Judged` line saying what was and was
+  not measured; a run with the ladder on carries a `Ladder` line saying where it ended. The
+  ±10 % buttons are one rung of that same ladder, which is where its notch came from.
+
+**The screen's own stylesheet** is `src/ui/screens/ScoreScreen.css`, imported by
+`ScoreScreen.ts`. `src/style.css` stays the app's shared sheet with one owner; what belongs
+to this screen alone — the two rules the `⋯` rows above needed — lives beside the screen, so
+the two files never have to be edited in the same change.
 
 Gestures: single tap toggles control bar; double-tap a bar sets loop start/end; **long-press a
 bar (400 ms) plays that bar**, both hands, once, at the current tempo, band moving, nothing
@@ -814,7 +957,8 @@ accuracy.**
 
 
 Drills are not scores (`05` §7), so they get their own screen rather than a mode on §5. One
-screen with nineteen faces: the chrome — prompt counter, keyboard strip, right/wrong feedback,
+screen with a face for every drill kind — twenty of them, and the number is written here for
+orientation, not as a count anything checks: the chrome — prompt counter, keyboard strip, right/wrong feedback,
 result sheet, progress recording — is written once, and each kind supplies only the thing the
 learner looks at.
 
@@ -826,6 +970,43 @@ learner looks at.
   listening" and a microphone that would not open, and at the foot of the body sideways all
   three were below the fold. Sideways it is in the words column and scrolls inside its own
   three lines, because a hundred-character sentence there must not push the buttons out.
+- **How to answer, and a way in (2026-09-15).** Under the hint, one quiet sentence says
+  *how* — how many notes, in what order, that the app is listening — for the kinds whose
+  card does not make it obvious; "Play B♭ aeolian" named the task and a learner meeting the
+  kind for the first time was left guessing. And for the kinds whose answer is a set of
+  keys (modes, chord scales, chords, inversions, numerals, note flash, find the key), two
+  quiet buttons, **Show me** and **Hear it**, light the answer on the strip or play it —
+  a drill that can only test cannot teach. Show me also engraves the answer as one small
+  staff under the words (`engine/drills/answerSheet.ts`): a scale as eighths in one bar, a
+  chord as a whole note, in the key signature that fits it, so B♭ aeolian prints five flats
+  and no accidentals — the name, the lit keys and the staff being the same fact three ways.
+  It is a reference line, not a page, so it is drawn smaller than the score screen draws
+  and without a tempo mark, and it goes with the prompt. Either forfeits that prompt's mark: the keys
+  still go green when it is then played right, and the count does not move, so the score
+  keeps meaning what it says. The ear kinds have no Show me; their answer is the sound,
+  and *Play again* already repeats it.
+- **A miss pauses (2026-09-15).** For those same kinds — the ones with a set of keys to light
+  — a wrong answer *keeps* its card: the keys that were played in red, the keys that were
+  wanted lit, and the answer on the same small staff *Show me* draws. A tap anywhere on the
+  card or the stage moves on sooner, and the status line says so. Before this, the one moment
+  in a drill with something to learn from went past at the speed of a right answer — the same
+  few hundred milliseconds, and the next card. A right answer is untouched, because a flash
+  card is about recall speed and a pause after a hit teaches waiting. The two lengths are one
+  decision in `engine/drills/feedback.ts`, not a constant in the screen, and the ear kinds and
+  the kinds with a flow of their own (rhythm, pedal, dynamics, the backing track, dictation,
+  transposition) are unchanged: there is nothing to draw on their card.
+- **Going over the ones you missed (2026-09-15).** When a set ends with anything that did not
+  count as right, the result sheet offers a second, short round of exactly those prompts —
+  outlined, not filled, since *Again* is the sheet's one filled box (§0 R3). It is modelled as
+  **a drill, not a mode of the screen**: a `PromptDrill` over the missed prompts with
+  `revealed` set from the start (`engine/drills/review.ts`), which is what "this one does not
+  count" already means in the engine, so the staff and the keys are up from the first moment of
+  each card and nothing in the round can score. The counter reads *"1 of 3 to go over"* and
+  carries no score, and the round ends with a line of its own — *"Went over 3"* — and **no
+  recording at all**: what was written to the practice history is what the first round came
+  to, and a going-over cannot change it. Offered only where the round can be rebuilt as
+  prompts, which is every kind the engine drives through `PromptDrill` and none of the four
+  that measure something other than pitch.
 - **The card is engraved once.** A transposition prompt is four bars of music, so its host
   element is kept across the redraws of that card and re-appended — `draw()` runs at least
   twice per card, and rebuilding the host meant the bars blanking and re-parsing 450 ms after
@@ -837,15 +1018,21 @@ learner looks at.
   again". *rhythm*: a one-line staff of tap heads, filling in as they are caught. *pedal*: a
   lamp that follows CC64 and a line saying how many ms after the chord the lift came. *dynamics*:
   two velocity meters and the ratio against the 1.6× target. *backing-track*: the bar count.
-- **It advances itself.** An answer settles the moment it is complete, feedback shows for
-  450 ms, and the next card appears — no button between cards, which is the point of a flash
+  *simon*: the same headphone glyph, with how *many* notes on the counter and in the hint and
+  never which ones.
+- **It advances itself.** An answer settles the moment it is complete, feedback shows for a
+  beat (longer on a miss that has an answer to show — see above), and the next card appears — no button between cards, which is the point of a flash
   card. The kinds with no per-answer settle (rhythm, pedal, dynamics, backing-track) get an
   explicit Next/Done.
 - **Right and wrong differ by shape, not only colour** (§9): the card's outline goes solid on
   a right answer and dashed on a wrong one.
 - **Result sheet:** pass/master against the same accuracy setting a piece uses (§7), the
   kind's own numbers (mean reaction, clean changes, velocity ratio), "Again" for a fresh set,
-  and the run recorded through the P7 stores.
+  *Go over the ones you missed* where there were any, and the run recorded through the P7
+  stores. **Simon is scored on its chain, not on an accuracy**: breaking at the sixth round is
+  five chains right out of six, which as a percentage says the same thing as breaking at the
+  twelfth, so the sheet says the longest chain and the best chain this item has seen, and the
+  pass is a chain rather than a share of the cards (`engine/drills/simon.ts`).
 - **Sight-reading is not here.** It is generated notation and opens on the Score screen in
   Tempo mode (`05` §8), scored on the first attempt only — after that the material has been
   seen and a second run measures something else.
@@ -858,6 +1045,28 @@ learner looks at.
   `flex: 1` upright and spans the words column's five rows sideways, because every other kind
   puts the thing to look at in it — an empty one started the sentence a walkthrough step exists
   to be read three-quarters of the way down a 342x740 screen, under a void.
+
+### 5c-2. Simon (2026-09-15)
+
+`drill.ear.simon-c-major` and `drill.ear.simon-chromatic`. The app plays one note and the
+learner echoes it; then the same note and one more; then three, until the chain breaks. The
+score is the longest chain echoed, and the sheet says it beside the best this item has seen.
+
+- **Why it earns a kind of its own.** Every other ear drill asks for a name out of a small set
+  — major or minor, a fourth or a fifth — and a good guesser gets a long way on them. A chain
+  has nothing to choose from: the only way to play back five notes is to have kept five notes.
+- **The notes** come from a range around middle C and either the degrees of a key (the white
+  keys of C, in the first item) or the chromatic scale (the second), drawn up front from the
+  seed so that the same seed is the same game; no note immediately repeats the one before it,
+  because two of the same note in a row are heard as one held note. It is played through the
+  same piano the ear drills use, one note at a time.
+- **Judged in order and in the octave it was played.** Everywhere else in the engine the shape
+  is the point and the register is the learner's choice; here the register is part of what was
+  heard. A wrong note ends the chain where it fell rather than letting the learner finish a
+  chain already lost.
+- **The personal best has no store of its own.** A run's accuracy *is* its chain as a share of
+  the cap, so the best accuracy `recordRun` already keeps for the item is the longest chain it
+  has seen, read back when the screen opens.
 
 ### 5c-1. The guided tour of the practice modes
 

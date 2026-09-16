@@ -67,6 +67,49 @@ setting) through the Web Audio piano, scheduled ahead on the AudioContext clock 
 `tStep` table so audio and cursor never drift (both derive from `t0 + tStep[k]`; cursor moves
 are scheduled via `requestAnimationFrame` comparing `audioContext.currentTime` to targets).
 
+## 3a. Rhythm first — "any key, the right moment"
+
+**Ships as of P21f.** A way to practise the rhythm of a piece before its notes:
+`EngineOptions.rhythmOnly`, the Score screen's **Rhythm only** toggle in the `⋯` sheet
+(`04` §5). Tempo mode only.
+
+The rule is one line: *a note-on lands on the nearest step still waiting inside
+`toleranceMs`, whatever pitch it carries, and that one strike settles the whole step.*
+Everything else in §3 is unchanged — the clock still drives the cursor, early and late are
+still `deltaMs` from `tStep[j]`, a strike outside every open window is still an extra note,
+and a slot whose window closes unsatisfied is still `missed`.
+
+Three consequences, each deliberate:
+
+- **A chord is one tap.** The learner was asked for the rhythm and a rhythm has one event
+  where the score has three notes, so the strike closes the slot rather than removing one
+  pitch from it. `hits` rises by the number of slots the strike filled, not by one, so the
+  accuracy this produces is the same kind of number an ordinary run reports — the share of
+  the piece the learner was in time for — and the two are comparable. One `deltaMs` is
+  recorded, because one thing was played: three would let a chord shout down the rest of
+  the timing histogram.
+- **`noteJudged` carries the step's own note ids**, not the pitch that was pressed, so the
+  cursor, the colours and the keyboard strip behave exactly as they do in an ordinary Tempo
+  run. This is not a fifth mode and not a second screen; the only thing it does differently
+  is stop asking which key.
+- **It forgives the note, never the moment.** That is what makes the run worth recording at
+  all: something real was measured. What was *not* measured is whether the learner can play
+  the piece.
+
+**`SessionScore.rhythmOnly`** carries that last fact out. Its own field rather than a
+flavour of `accuracyEstimated`, because the two say opposite things — an estimated accuracy
+is the same claim measured less certainly, this is a different claim measured exactly. The
+Score screen reads it and refuses the run `passed` and `masterEligible` whatever the
+numbers came out at (`04` §5); the minutes and the attempt are recorded as normal, because
+the practice was real. The field is absent rather than `false` on an ordinary run, so a
+score written before it existed reads the same as one written after.
+
+**Why Tempo only.** Wait has no clock to be inside, Listen judges nothing and Free marks
+nothing, so anywhere else the toggle would be a control that changes nothing (`04` §0 R4).
+The engine refuses it at construction rather than trusting the caller. A **blind** run and
+a **performance** ignore it for a different reason: both are claims about playing the
+piece, and they are settled by the route rather than by a toggle, so the toggle gets no say.
+
 ## 4. Listen mode
 
 Tempo mode with all input ignored and both hands played back; the learner watches/listens. Loop
@@ -107,6 +150,48 @@ with the raw event list) for the improvisation track. A backing-track drill (`[G
 On reaching `toStep` the engine emits `finished{loop:true}` and restarts at `fromStep` after a
 one-beat gap (Wait) or immediately on the grid (Tempo). "Loop the weak bars" builds a loop from
 the bars with the most misses in the last run.
+
+### The tempo ladder (P21f)
+
+The loop repeats the hard bars; the ladder is what turns repetition into practice. With it
+on, **each clean pass raises the tempo one notch and each pass with a mistake in it lowers
+one**, starting from whatever the tempo is when the toggle is pressed.
+
+The rule is the pure function **`nextLadderTempo`** in `engine/PracticeEngine.ts` — beside
+`LOOP_GAP_BEATS`, the other rule about what happens at a lap boundary. The engine does not
+apply it: a tempo change re-times the whole session, which means a new run, and starting
+runs is the Score screen's business. So the engine states the rule and the screen calls it
+at `finished{loop:true}`.
+
+- **The notch is `LADDER_NOTCH_PCT`, ten points.** It came from the summary sheet, whose
+  `Slower (−10 %)` and `Faster (+10 %)` have been one rung of this same ladder since the
+  sheet was written. Two different steps for one idea would mean the automatic route and
+  the manual one disagreed about what "a bit faster" is, and the learner would be the one
+  holding both numbers.
+- **The range is the tempo slider's own**, `MIN_TEMPO_PCT`..`MAX_TEMPO_PCT` (30–130), not a
+  second range invented here.
+- **A climbing ladder stops at `LADDER_CEILING_PCT`, the written tempo** — above it the
+  learner is racing the piece rather than learning it, and nothing should decide that for
+  them. The one exception: a learner who had already asked for more keeps what they asked
+  for, so the ceiling is the highest tempo they have chosen for this run by hand. A ladder
+  must not overrule a hand on the slider.
+- **Clean means nothing missed *and* nothing wrong, in that pass.** A bar played at the right
+  moments with the wrong notes in it is not a pass of that bar, and the ladder is the one
+  control that acts without being asked each time, so it reads the stricter of the two. The
+  engine's totals run for the whole run, not for the lap, so the screen compares each lap's
+  finish against the previous one's. Judging on the run's totals instead would let one
+  stumble in the first pass follow the learner for the session — and at the floor, where the
+  tempo stops moving and the run is never restarted, it could never be climbed out of again.
+
+A pass that cannot move the tempo — at the floor, at the ceiling — leaves the run alone
+rather than restarting it, so it costs no count-in and buys an identical pass. A pass that
+does move it restarts the run at the new tempo, deferred by a microtask: the engine emits
+the lap's `finished` from the middle of `completeLap` and still has the next lap's clock to
+rebase afterwards, so tearing it down from inside its own event would leave the new run's
+cursor set from a dead engine.
+
+The ladder is ignored during `Hear it`: a demonstration judges nothing, so every lap of one
+is trivially clean and the ladder would climb on playing nobody did.
 
 ## 7. Drills that are not scores (`type: 'drill'`)
 

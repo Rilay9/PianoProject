@@ -1,0 +1,44 @@
+/* The Score screen's own rules (docs/04 §5).
+   ==========================================
+
+   `src/style.css` is the app's shared sheet and one agent owns it. What is
+   here is what belongs to this screen alone — the `⋯` rows it grew for
+   rhythm-first practice, the tempo ladder and the duet — so the two files
+   never have to be edited in the same change. Everything the screen shares
+   with the rest of the app (`.score-menu-row`, `.score-button`, the sheet's
+   two-column layout sideways) stays where it is.
+
+   Small on purpose. Three rows in a sheet do not need a design; they need the
+   one thing the existing rules cannot do, which is say that a number changing
+   on its own is meant to. */
+
+/* A tempo that moves by itself reads as a fault.
+
+   The ladder's whole visible effect is the figure on the control bar going up
+   or down between passes, and the bar is the one place the learner is looking
+   while their hands are on the keys — the sheet that holds the toggle has been
+   closed since they switched it on. The status line says what happened at each
+   pass boundary, but it says it once and then the next sentence replaces it.
+   So while the ladder is on, the number it moves is underlined in the accent
+   colour: the mark belongs on the thing that changes, not on a second readout
+   competing with it for the bar's width (`04` §5 — the bar must not grow). */
+[data-screen='score'][data-ladder='on'] #score-tempo-label {
+  text-decoration: underline;
+  text-decoration-color: var(--accent, #4c8bf5);
+  text-underline-offset: 0.2em;
+}
+
+/* The one row in the sheet whose label is a sentence.
+
+   Every other row is a word — Input, Loop, Metronome — with the explanation in
+   the hint underneath. Duet names the hand it will play in the label instead,
+   because sideways the sheet hides every hint (the two-column rule in
+   style.css) and this row exists precisely because nobody could find the
+   setting: a row reading only `Duet` sideways would have moved the problem
+   rather than fixed it. So its words wrap where the one-word labels never do,
+   and the toggle stays beside them rather than being pushed onto a line of its
+   own. */
+#score-duet-row .score-menu-row__label {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

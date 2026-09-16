@@ -467,6 +467,15 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       id: 'library-folder',
       variant: 'quiet',
     }),
+    el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
+    // The one door in this line that makes a score rather than finding one
+    // (`04` §3c). It is here because it belongs to the same question the other
+    // three answer — *where does something to play come from* — and because a
+    // progression written out is a library item the moment it exists.
+    button('Accompaniment lab', () => router.navigateLab(), {
+      id: 'library-lab',
+      variant: 'quiet',
+    }),
     picker,
   );
 
@@ -478,6 +487,14 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   // wide, not 360 — the first row starts 182 px down instead of 158, still
   // well inside the first screenful (R1), and the links end at 237 px of the
   // 326 available, so there is nothing for them to wrap over.
+  //
+  // The fourth, *Accompaniment lab*, does not fit on that line upright and
+  // takes a second one, which costs the list one more link-row. It is kept at
+  // its full name anyway: the screen it opens is called the accompaniment lab,
+  // and a shorter label here would be a second name for one thing — which is
+  // worse than a row of words wrapping, and is the fault `00` D "never say the
+  // same thing twice" is the other half of. The list still starts far inside
+  // the first screenful.
   header.append(ownScores, search);
   body.append(
     el('div.library-countrow', {}, filterToggle, mineChip, count),

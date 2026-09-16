@@ -126,7 +126,12 @@ describe('the catalog’s runtime drills', () => {
   it('only claims the kinds that have a screen', () => {
     expect(RUNTIME_DRILL_KINDS).not.toContain('sight-reading');
     // Twelve in P8, plus the seven harmony and ear kinds P12b added.
-    expect(RUNTIME_DRILL_KINDS).toHaveLength(19);
+    // A relationship, not a count of today's kinds (`00` §2): every runtime
+    // kind is listed once, and the kinds the screen is known to draw are in it.
+    expect(new Set(RUNTIME_DRILL_KINDS).size).toBe(RUNTIME_DRILL_KINDS.length);
+    for (const kind of ['note-flash', 'find-key', 'chord', 'mode', 'simon']) {
+      expect(RUNTIME_DRILL_KINDS).toContain(kind);
+    }
   });
 
   it('runs every kind the shipped catalog names', () => {
@@ -378,9 +383,10 @@ describe('checklist, placement and walkthrough sit outside the Drill interface',
  * checks the whole thing, not a sample: 71 items, 64 of them
  * generator-sourced, none of them allowed to be unplayable.
  *
- * The counts are deliberate, not decoration — they are what makes an item
- * added without a thought about playability show up here. The 71st is
- * `drill.improv.loop-four-chord`, added because `improv.4` told the learner
+ * Every generator-sourced item is checked, whatever today's count is — an
+ * exact count here was a machine-measured number (`00` §2) that turned red on
+ * every honest addition to the catalog. `drill.improv.loop-four-chord` is the
+ * kind of item this exists to catch: added because `improv.4` told the learner
  * "the app loops C-Am-F-G" and the only backing track on that rung was the
  * I-IV-V loop from the stage before.
  */
@@ -389,13 +395,15 @@ describe('every generator-sourced item in the static catalog is playable (P19 Ta
     readFileSync(resolve('../content/catalog.static.json'), 'utf8'),
   ) as CatalogItem[];
 
-  it('is the 71-item catalog this test was written against', () => {
-    expect(STATIC_CATALOG.length).toBe(71);
+  it('has an id on every item and no id twice', () => {
+    expect(STATIC_CATALOG.length).toBeGreaterThan(0);
+    const ids = STATIC_CATALOG.map((item) => item.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('no item whose source is "PianoPath generator" is ever unplayable', () => {
     const generatorSourced = STATIC_CATALOG.filter((item) => item.source?.name === 'PianoPath generator');
-    expect(generatorSourced.length).toBe(64);
+    expect(generatorSourced.length).toBeGreaterThan(0);
     const unplayable = generatorSourced.filter((item) => targetFor(item) === 'none');
     expect(
       unplayable.map((item) => item.id),

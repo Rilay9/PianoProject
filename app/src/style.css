@@ -4634,6 +4634,18 @@ input[type='checkbox'] {
   min-height: 1.2em;
 }
 
+/* The answer as notation, behind Show me: under the words, above the status. */
+.drill-answer {
+  margin: 0 0 8px;
+}
+
+/* How to answer — one sentence under the hint, quieter than the prompt. */
+.drill-how {
+  text-align: center;
+  font-size: 0.85rem;
+  margin: 0 0 8px;
+}
+
 /* A prompt that is four bars of music rather than a symbol (transposition).
    Scrolls sideways rather than shrinking: unreadable notation is not a
    sight-reading exercise. */
@@ -4740,6 +4752,8 @@ input[type='checkbox'] {
   [data-screen='drill'] #drill-counter,
   [data-screen='drill'] #drill-prompt,
   [data-screen='drill'] #drill-hint,
+  [data-screen='drill'] #drill-how,
+  [data-screen='drill'] #drill-answer,
   [data-screen='drill'] #drill-status,
   [data-screen='drill'] #drill-controls {
     grid-column: 2;

@@ -37,6 +37,32 @@ function fakeClock(): { now: () => number; set: (ms: number) => void } {
   return { now: () => t, set: (ms) => { t = ms; } };
 }
 
+describe('a revealed answer is judged but not counted', () => {
+  it('forfeits the mark for that prompt and no other', () => {
+    const drill = modeDrill({ count: 2, seed: 7 });
+    const first = drill.next()!;
+    drill.reveal?.();
+    first.expected.forEach((midi, i) => drill.feed(noteOn(midi, 100 + i * 100)));
+    const second = drill.next()!;
+    second.expected.forEach((midi, i) => drill.feed(noteOn(midi, 2000 + i * 100)));
+    drill.next();
+    const result = drill.result();
+    expect(result.answers[0]).toMatchObject({ correct: true, revealed: true });
+    expect(result.answers[1]).toMatchObject({ correct: true });
+    expect(result.answers[1]?.revealed).toBeUndefined();
+    expect(result.correct).toBe(1);
+    expect(result.answered).toBe(2);
+  });
+
+  it('does nothing once the prompt is answered', () => {
+    const drill = modeDrill({ count: 1, seed: 7 });
+    const first = drill.next()!;
+    first.expected.forEach((midi, i) => drill.feed(noteOn(midi, 100 + i * 100)));
+    drill.reveal?.();
+    expect(drill.result().correct).toBe(1);
+  });
+});
+
 describe('modes', () => {
   it('asks for one octave, ascending, ending on the root', () => {
     const drill = modeDrill({ modes: ['dorian'], roots: [2], count: 1, seed: 1 });

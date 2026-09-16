@@ -562,6 +562,16 @@ point of the module is that the method gets applied to something.
 
 ## Part E — Technique syllabus (what the `[GEN]` generator must produce)
 
+> **Études on the technique rungs (2026-09-15).** Each technique rung from Stage 4 to 7 now
+> carries three studies as its pieces, chosen by level from the teaching collections the
+> archive holds in usable form: Lemoine's *Études enfantines* Op. 37 at Stages 4 and 5,
+> Duvernoy's Op. 176 at Stage 5, Czerny's *School of Velocity* Op. 299 at Stages 6 and 7.
+> The Czerny Op. 599 and Op. 849 this table names are not in the archive in usable form;
+> the Op. 599 studies stay `[AUTH]` work for later. The two-part inventions the D1 table
+> names for Stage 7 are on that rung now (Nos. 1 and 4). The rest of the quarry — the child
+> Mozart's notebooks, thirteen more of Schumann's Op. 68, the Little Preludes, the other
+> inventions and études — is in the Library (`decisions/2026-09-15-pedagogical-quarry.md`).
+
 | Stage | Scales | Arpeggios / chords | Studies |
 |------:|--------|--------------------|---------|
 | 1 | 5-finger patterns C, G (HS) | — | — |

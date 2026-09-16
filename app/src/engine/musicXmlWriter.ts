@@ -64,6 +64,8 @@ export interface WriterOptions {
   beatType: number;
   bpm: number;
   staves: 1 | 2;
+  /** A one-staff part's clef; G unless a bass-register answer asks for F. */
+  clef?: 'G' | 'F';
   measures: WriterMeasure[];
 }
 
@@ -187,6 +189,8 @@ export function writeMusicXml(options: WriterOptions): string {
         lines.push('        <staves>2</staves>');
         lines.push('        <clef number="1"><sign>G</sign><line>2</line></clef>');
         lines.push('        <clef number="2"><sign>F</sign><line>4</line></clef>');
+      } else if (options.clef === 'F') {
+        lines.push('        <clef><sign>F</sign><line>4</line></clef>');
       } else {
         lines.push('        <clef><sign>G</sign><line>2</line></clef>');
       }

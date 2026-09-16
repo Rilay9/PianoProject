@@ -40,6 +40,16 @@ export interface PracticeSettings {
   metronomeSound: MetronomeSound;
   /** Lenient (default) does not reset a chord on a wrong note. */
   waitStrict: boolean;
+  /**
+   * Keep-tempo runs judge the timing and ignore the pitches (`04` §5, `05` §3a).
+   *
+   * A preference and not per-run state, unlike the loop above it: a learner who
+   * works this way works this way on every piece, and having to find the toggle
+   * again on each one is how a feature goes back to being undiscoverable. The
+   * Score screen still refuses it outside Keep tempo, and blind and performance
+   * runs ignore it — those are claims about playing the piece.
+   */
+  rhythmOnly: boolean;
   toleranceMs: number;
   passAccuracyPct: number;
   passTempoPct: number;
@@ -122,6 +132,7 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   countInBars: 1,
   metronomeSound: 'wood',
   waitStrict: false,
+  rhythmOnly: false,
   toleranceMs: 150,
   passAccuracyPct: 90,
   passTempoPct: 80,
@@ -187,6 +198,7 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   out.countInBars = Math.round(num(v.countInBars, out.countInBars, 0, 4));
   out.metronomeSound = oneOf(v.metronomeSound, ['wood', 'beep', 'high'] as const, out.metronomeSound);
   out.waitStrict = bool(v.waitStrict, out.waitStrict);
+  out.rhythmOnly = bool(v.rhythmOnly, out.rhythmOnly);
   out.keysGuide = oneOf(v.keysGuide, ['next', 'next-two', 'off'] as const, out.keysGuide);
   out.keysFingerNumbers = bool(v.keysFingerNumbers, out.keysFingerNumbers);
   out.keysFlash = bool(v.keysFlash, out.keysFlash);

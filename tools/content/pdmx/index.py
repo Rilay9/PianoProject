@@ -320,8 +320,9 @@ def build_index(csv_path: Path, table: ComposerTable, model: dict, limit: int = 
                     "lyrics": truthy(row.get("has_lyrics")),
                     "tracks": integer(row.get("n_tracks")),
                     "museScore": musescore_id(row.get("metadata", "")),
-                    "want": match_want(title, artist, wants),
-                    "verifies": match_want(title, artist, verifications),
+                    "want": match_want(title, artist, wants, row.get("composer_name", "")),
+                    "verifies": match_want(title, artist, verifications,
+                                           row.get("composer_name", "")),
                     # Only for choosing between editions below; not written out.
                     "_work": work_key(title, match.canonical, artist),
                     "_score": score_row(number(row.get("rating")), integer(row.get("n_ratings")),

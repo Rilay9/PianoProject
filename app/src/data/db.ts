@@ -83,6 +83,11 @@ export interface SessionRow {
    * lists them separately so the owner can see he has actually done it.
    */
   performance?: boolean;
+  /**
+   * A rhythm-only run (`05` §3a): timing judged, pitches not, so the row is
+   * practice but never a pass, and the history can say so.
+   */
+  rhythmOnly?: boolean;
 }
 
 export type ImportKind = 'musicxml' | 'pdf';

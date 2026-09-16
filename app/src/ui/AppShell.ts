@@ -18,6 +18,7 @@ import { ShelfScreen } from './screens/ShelfScreen';
 import { PaperScreen } from './screens/PaperScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ChordChartScreen } from './screens/ChordChartScreen';
+import { LabScreen } from './screens/LabScreen';
 import { DrillScreen } from './screens/DrillScreen';
 import { GuideScreen } from './screens/GuideScreen';
 
@@ -68,6 +69,8 @@ function screenFor(route: Route): ScreenFactory {
     const chartId = route.chart;
     return (router) => ChordChartScreen(router, chartId);
   }
+  // The accompaniment lab (`04` §3c), pushed over Library the way the chart is.
+  if (route.lab) return LabScreen;
   if (route.drill) {
     const drillId = route.drill;
     return (router) => DrillScreen(router, drillId);

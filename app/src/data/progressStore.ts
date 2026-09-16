@@ -28,6 +28,8 @@ export interface RunResult {
   bpm?: number;
   /** A performance run (replan §8): no restarts, no loop. */
   performance?: boolean;
+  /** A rhythm-only run (`05` §3a): the notes were not judged, so it never passes. */
+  rhythmOnly?: boolean;
   /** The pass is the owner's word, not a measurement. */
   selfPassed?: boolean;
 }
@@ -147,6 +149,7 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
     ...(result.notesHeard === undefined ? {} : { notesHeard: result.notesHeard }),
     ...(result.bpm === undefined ? {} : { bpm: result.bpm }),
     ...(result.performance ? { performance: true } : {}),
+    ...(result.rhythmOnly ? { rhythmOnly: true } : {}),
   };
 
   const db = await openDatabase();
@@ -376,6 +379,85 @@ export function weekSoFar(streak: StreakRow, now = new Date()): { minutes: numbe
   return { minutes, days };
 }
 
+// --- the daily sight-read (docs/04 §2) ------------------------------------
+
+/**
+ * Which days the daily sight-read was finished on.
+ *
+ * A *daily* streak, deliberately, and deliberately not the one the header
+ * carries: `02` Part A §8 is explicit that a missed weekday breaks nothing,
+ * and the minutes on Today are weekly for exactly that reason. This counts one
+ * three-minute habit — read a phrase you have never seen — where a run of days
+ * is the whole point and the thing being measured costs almost nothing to
+ * keep. Two different numbers about two different things, not one number in
+ * two places.
+ *
+ * Kept in the `settings` store under its own key rather than in `StreakRow`,
+ * which would have meant a schema version bump for one array of date strings.
+ * Cached in memory the way the streak row is, and cleared by the same call a
+ * restore makes.
+ */
+const DAILY_READ_KEY = 'pianopath.dailyRead';
+
+/** About a year and a bit. Older days cannot lengthen a run that reaches today. */
+const DAILY_READ_DAYS_KEPT = 400;
+
+let dailyReadMemory: string[] | null = null;
+
+function coerceDays(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return [...new Set(raw.filter((day): day is string => typeof day === 'string'))].sort();
+}
+
+export async function dailyReadDays(): Promise<string[]> {
+  if (dailyReadMemory) return dailyReadMemory;
+  const db = await openDatabase();
+  dailyReadMemory = coerceDays(await db?.get('settings', DAILY_READ_KEY));
+  return dailyReadMemory;
+}
+
+/**
+ * Records that today's sight-read is done. Idempotent: a second read on the
+ * same day is the same day.
+ */
+export async function markDailyRead(now = new Date()): Promise<string[]> {
+  const days = await dailyReadDays();
+  const date = today(now);
+  if (days.includes(date)) return days;
+  const next = [...days, date].sort().slice(-DAILY_READ_DAYS_KEPT);
+  dailyReadMemory = next;
+  const db = await openDatabase();
+  await db?.put('settings', next, DAILY_READ_KEY);
+  notify();
+  return next;
+}
+
+/** Has today's been read? */
+export function readToday(days: readonly string[], now = new Date()): boolean {
+  return days.includes(today(now));
+}
+
+/**
+ * Days in a row, ending today or yesterday.
+ *
+ * Today counts only once it is done, but a day that is not over yet does not
+ * break the run: a learner who opens the app at breakfast on the fourth
+ * morning is on a three-day run and has not lost it, and telling them
+ * otherwise would be the "daily-streak guilt" `04` §2 exists to avoid. A real
+ * gap — a day with nothing, with days behind it — resets to nought.
+ */
+export function dailyReadStreak(days: readonly string[], now = new Date()): number {
+  const done = new Set(days);
+  const cursor = new Date(now);
+  if (!done.has(today(cursor))) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  while (done.has(today(cursor))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
 // --- review queue (docs/02 Part G) ----------------------------------------
 
 export interface ReviewItem {
@@ -430,6 +512,7 @@ export function reviewQueue(rows: ProgressRow[], now = new Date()): ReviewItem[]
 export function forgetCachedProgress(): void {
   memory.clear();
   streakMemory = null;
+  dailyReadMemory = null;
 }
 
 /** Test hook. */

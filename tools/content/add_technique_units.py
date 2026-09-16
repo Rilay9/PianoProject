@@ -248,6 +248,11 @@ def merge_unit(existing: dict, built: dict) -> dict:
         # the named options are what the screen shows first."
         if kept.get("exerciseOptions"):
             fresh.pop("exerciseOptions", None)
+        # And its pieces: since 2026-09-15 the technique rungs carry études
+        # (Lemoine, Duvernoy, Czerny) chosen by level from the archive, which
+        # this tool knows nothing about. A rung that names songs keeps them.
+        if kept.get("songOptions"):
+            fresh.pop("songOptions", None)
         kept.update(fresh)
         lessons.append(kept)
     merged["lessons"] = lessons

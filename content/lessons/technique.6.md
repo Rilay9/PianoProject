@@ -40,6 +40,11 @@ trust your ear over the number when the two disagree.
 problem this rung adds. The pedal has to lift and fall without breaking the held
 note. Slowly, and listen to the note rather than watching the foot.
 
+**An étude to put it in.** Czerny's *School of Velocity*, Op. 299 — No. 1, No.
+3 and No. 4 are here. They are what the chromatic scale and the 3:1
+independence exercise are for: a page of sixteenths that stays even only if
+the hand does.
+
 **How you'll know you've got it.** A seventh chord you recognise rather than
 spell. An Alberti figure at speed with a hand that is not tired afterwards — if
 it is, you played it with the fingers. And a voiced chord where you hear a tune

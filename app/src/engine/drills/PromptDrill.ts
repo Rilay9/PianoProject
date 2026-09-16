@@ -25,13 +25,26 @@ export interface PromptDrillConfig {
   prompts: DrillPrompt[];
   anyOctave: boolean;
   clock: Clock;
+  /**
+   * Every prompt starts revealed, so nothing in this drill can count as right.
+   *
+   * Going over the ones you missed (`review.ts`): the answer is on the staff
+   * and on the keys before the learner plays a note, which is what makes it a
+   * going-over rather than a second test — and a round whose answers were
+   * shown must not add to a score. One flag, because `reveal()` already means
+   * exactly this for one prompt.
+   */
+  revealed?: boolean;
 }
 
 export class PromptDrill implements Drill {
   readonly kind: DrillKind;
   readonly promptText?: string;
+  /** Read by the going-over, which has to judge its prompts the same way. */
+  readonly anyOctave: boolean;
+  /** True when this drill is a going-over: shown from the start, counting nothing. */
+  readonly revealed: boolean;
   private readonly prompts: DrillPrompt[];
-  private readonly anyOctave: boolean;
   private readonly clock: Clock;
 
   private index = -1;
@@ -39,6 +52,7 @@ export class PromptDrill implements Drill {
   private held: number[] = [];
   private readonly answers: DrillAnswer[] = [];
   private answeredCurrent = false;
+  private revealedCurrent = false;
 
   constructor(config: PromptDrillConfig) {
     this.kind = config.kind;
@@ -46,6 +60,7 @@ export class PromptDrill implements Drill {
     this.prompts = config.prompts;
     this.anyOctave = config.anyOctave;
     this.clock = config.clock;
+    this.revealed = config.revealed ?? false;
   }
 
   get current(): DrillPrompt | null {
@@ -68,6 +83,9 @@ export class PromptDrill implements Drill {
     this.index += 1;
     this.held = [];
     this.answeredCurrent = false;
+    // A going-over starts every card revealed; an ordinary drill starts it
+    // hidden and `reveal()` is the learner's own decision.
+    this.revealedCurrent = this.revealed;
     this.promptAtMs = this.clock.now();
     return this.current;
   }
@@ -93,6 +111,10 @@ export class PromptDrill implements Drill {
     if (distinct >= prompt.expected.length) this.settle(false, input.tMs);
   }
 
+  reveal(): void {
+    if (this.current && !this.answeredCurrent) this.revealedCurrent = true;
+  }
+
   private settle(correct: boolean, tMs: number): void {
     this.answeredCurrent = true;
     this.answers.push({
@@ -101,12 +123,13 @@ export class PromptDrill implements Drill {
       // The input's own timestamp where it is on the same clock, else now.
       reactionMs: Math.max(0, (Number.isFinite(tMs) ? tMs : this.clock.now()) - this.promptAtMs),
       played: [...this.held],
+      ...(this.revealedCurrent ? { revealed: true } : {}),
     });
   }
 
   result(): DrillResult {
     const answered = this.answers.length;
-    const correct = this.answers.filter((a) => a.correct).length;
+    const correct = this.answers.filter((a) => a.correct && a.revealed !== true).length;
     const reactions = this.answers
       .map((a) => a.reactionMs)
       .filter((r): r is number => r !== null && Number.isFinite(r));

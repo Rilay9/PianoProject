@@ -1,0 +1,52 @@
+/* The drill screen's own additions (docs/04 §5c).
+ *
+ * The screen's layout lives in `style.css` — the two-column grid a phone held
+ * sideways uses, the stage, the strip pinned to the bottom. Only what is new
+ * is here, and nothing here adds a row or a column to that grid: the held
+ * card, the going-over and the Simon result all reuse elements the grid
+ * already places (`#drill-answer` in the words column, `#drill-summary`
+ * across both). */
+
+/* A missed card, held.
+ *
+ * The card already goes dashed red on a wrong answer (`[data-feedback]` in
+ * `style.css`); while it is *held* there is also something to read on it, so
+ * the outline stays put and the words under it say what ends the wait. The
+ * whole screen takes the pointer because the tap is "anywhere on the card",
+ * and a cursor that changes is the only hint a desktop reader gets. */
+.screen[data-screen='drill'][data-paused='miss'] .drill-stage {
+  cursor: pointer;
+}
+
+/* The one sentence a held card adds. It is written into the status line,
+ * which already sits under the card and above the buttons (`04` §0 R6), so it
+ * costs no new row — this only makes it read as an instruction rather than as
+ * a report. */
+.screen[data-screen='drill'][data-paused='miss'] #drill-status {
+  font-weight: 600;
+}
+
+/* The going-over.
+ *
+ * A second round that counts nothing must not look like the drill: the counter
+ * says "2 of 3 to go over" and this is the other half of saying so, a quiet
+ * rule down the side of the card so a glance can tell the two rounds apart.
+ * `border-inline-start` rather than `border-left` so it stays on the reading
+ * side if the app is ever mirrored. */
+.screen[data-screen='drill'][data-review='going-over'] .drill-stage {
+  border-inline-start: 3px solid var(--border);
+  padding-inline-start: 10px;
+}
+
+.screen[data-screen='drill'][data-review='going-over'] .drill-counter {
+  font-style: italic;
+}
+
+/* The Simon result: the chain is the whole point of the run, so it is the one
+ * line on the sheet that is not at list size. Sits between the stat list and
+ * the buttons, inside `#drill-summary`, which the sideways grid already spans
+ * across both columns. */
+.drill-chain {
+  margin: 4px 0 12px;
+  font-size: 1.1rem;
+}

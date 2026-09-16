@@ -246,8 +246,10 @@ function fillSlot(
       // Nothing due and nothing mastered is what the first week looks like.
       // Playing something at this level a second time is still review.
       pick(
+        // One level above the stage, not two: a Stage 6 learner was handed the
+        // all-seven-modes drill from Stage 7 to "keep warm" (owner, 2026-09-15).
         items.filter(
-          (item) => free(item.id) && playable(item) && item.type !== 'song' && item.level < level + 2,
+          (item) => free(item.id) && playable(item) && item.type !== 'song' && item.level <= level + 1,
         ),
         seed,
       );

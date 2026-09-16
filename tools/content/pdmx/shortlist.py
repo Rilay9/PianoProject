@@ -264,6 +264,25 @@ _CATALOGUE = re.compile(
 _HOBOKEN = re.compile(r"\bhob\s?([ivx]+[a-z]?)\s?(\d{1,3})\b")
 _NUMBERED = re.compile(r"\b(?:no|nr|number)\s?(\d{1,3})\b")
 
+#: The piece's number where the uploader did not write `no.` — the fault this
+#: was added for. The archive titles Duvernoy's études `Elementary Studies (op
+#: 176) Etude 1`; the number sits after *Etude*, `_NUMBERED` never saw it, and
+#: all sixteen keyed to `op176`, so `best_editions` kept one per band and the
+#: rest of the book was lost. Two shapes are read: an integer directly after a
+#: study word, and a bare integer the title ends on.
+_AFTER_STUDY_WORD = re.compile(
+    r"\b(?:etude|etudes|study|studies|studie|exercise|exercises|exercice|"
+    r"lesson|piece|no|nr|number)\s?(\d{1,3})\b"
+)
+_TRAILING_NUMBER = re.compile(r"(?<!\d)(\d{1,3})$")
+
+#: Words after which a trailing integer counts something other than the piece:
+#: a volume, a movement already read by `_movement`, or four hands.
+_NOT_A_PIECE_NUMBER = frozenset(
+    "book books vol volume volumes part parts heft livre cahier page pages bar bars "
+    "hand hands movement mvt mov mvmt satz for in".split()
+)
+
 #: Genre words, each with the one spelling it is filed under. A title's first
 #: genre word is its genre: "Prelude and Fugue" is a prelude.
 _GENRES = {
@@ -307,6 +326,34 @@ def _movement(plain: str) -> str:
     return " ".join(words + [f"mvt{n}" for n in numbers])
 
 
+def _piece_number(plain: str, taken: list[tuple[int, int]]) -> str:
+    """
+    The number of the piece within its opus, where the title omits `no.`.
+
+    `taken` is the span of every catalogue match, so the opus's own digits are
+    never read back as the piece's number: `Etude op 176` must stay `op176`,
+    not become `op176-176`.
+
+    Only ever *splits* a group — an upload that says which étude it is stops
+    sharing a key with one that does not — so it errs in the direction
+    `work_key`'s docstring asks for. The cost is one extra edition in review
+    when one upload numbers itself and another does not.
+    """
+
+    def free(span: tuple[int, int]) -> bool:
+        return not any(start < span[1] and span[0] < end for start, end in taken)
+
+    for match in _AFTER_STUDY_WORD.finditer(plain):
+        if free(match.span(1)):
+            return match.group(1)
+    trailing = _TRAILING_NUMBER.search(plain)
+    if trailing and free(trailing.span(1)):
+        before = plain[: trailing.start(1)].split()
+        if not before or before[-1] not in _NOT_A_PIECE_NUMBER:
+            return trailing.group(1)
+    return ""
+
+
 def _plain(text: str) -> str:
     """Accents off, lower case, every non-alphanumeric run a single space."""
     decomposed = unicodedata.normalize("NFKD", text or "")
@@ -332,7 +379,10 @@ def work_key(title: str, composer: str | None, artist: str = "") -> str:
     review. Two keys that match must not be different pieces, because that costs
     a piece — the fault this replaces. So for a known composer the key is the
     catalogue numbers where the title has any, which is where formulaic titles
-    differ, and the whole remaining title where it has none.
+    differ, and the whole remaining title where it has none. An opus with no
+    `no.` beside it takes its piece number from the title itself; see
+    `_piece_number`, which is what stopped sixteen Duvernoy études sharing one
+    key.
     """
     plain = _plain(title)
     words = plain.split()
@@ -340,16 +390,23 @@ def work_key(title: str, composer: str | None, artist: str = "") -> str:
     if composer:
         numbers = [f"hob{a}-{b}" for a, b in _HOBOKEN.findall(plain)]
         if not numbers:
-            found = [({"opus": "op", "k": "kv"}.get(label, label), number, sub)
-                     for label, number, sub in _CATALOGUE.findall(plain)]
+            matches = list(_CATALOGUE.finditer(plain))
+            found = [({"opus": "op", "k": "kv"}.get(m.group(1), m.group(1)), m.group(2), m.group(3))
+                     for m in matches]
             # "Prelude No. 15 in D flat, Op. 28": the number is in front of the
             # opus, not after it, and without it all twenty-four preludes would
             # be one piece. It belongs to an opus that has no number of its own;
             # a K., BWV or D. number is already the whole identity.
             loose = _NUMBERED.findall(plain)
+            spans = [m.span() for m in matches]
             for label, number, sub in found:
                 if label == "op" and not sub and len(loose) == 1:
                     sub = loose[0]
+                if label == "op" and not sub:
+                    # An opus with no `no.` anywhere: the number may still be in
+                    # the title, after *Etude* or at the end of it. Only for an
+                    # opus, for the same reason as above.
+                    sub = _piece_number(plain, spans)
                 numbers.append(f"{label}{number}" + (f"-{sub}" if sub else ""))
         if not numbers:
             numbers = [f"no{n}" for n in _NUMBERED.findall(plain)]
@@ -533,20 +590,32 @@ def load_verifications(path: Path = WANTS_FILE) -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8")).get("verify", [])
 
 
-def match_want(title: str, artist: str, wants: list[dict]) -> str | None:  # noqa: D401
+def match_want(title: str, artist: str, wants: list[dict], composer: str = "") -> str | None:  # noqa: D401
     """
     A named want (`02` Part D8 and the *Beautiful* suggestions).
 
-    Folded substring on the title, and on the artist when the want names one.
+    Folded substring on the title, and on the artist when the want names one —
+    where "the artist" is either column. `artist_name` is `NA` on a great many
+    classical rows and the surname is only in `composer_name`, and until
+    2026-09-15 this read `artist_name` alone, so a bare-titled upload whose
+    composer was named only in that column could not be reached from the wants
+    file at all: several Gurlitt pieces, Türk's *Das Rondo im Kleinen* and one
+    Burgmüller were unreachable for exactly that reason.
+
     These are admitted outside the quotas: the point of the list is that these
     particular pieces are wanted whatever the ranking says.
     """
     folded_title = fold(title)
     folded_artist = fold(artist)
+    folded_composer = fold(composer) if (composer or "").strip().upper() != "NA" else ""
     for want in wants:
         title_ok = any(fold(pattern) in folded_title for pattern in want.get("title", []))
         artists = want.get("artist", [])
-        artist_ok = not artists or any(fold(pattern) in folded_artist for pattern in artists)
+        artist_ok = not artists or any(
+            fold(pattern) in folded_artist
+            or (folded_composer and fold(pattern) in folded_composer)
+            for pattern in artists
+        )
         if title_ok and artist_ok:
             # A verification entry has no id — the tune's own title is what
             # identifies it, because nothing in the catalog is waiting for it.
@@ -644,8 +713,9 @@ def select(
                     n_tracks=integer(row.get("n_tracks")),
                     tracks=parse_tracks(row.get("tracks")),
                     score=score_row(rating, n_ratings, n_views, official, lyrics),
-                    want=match_want(title, artist, wants),
-                    verifies=match_want(title, artist, verifications or []),
+                    want=match_want(title, artist, wants, row.get("composer_name", "")),
+                    verifies=match_want(title, artist, verifications or [],
+                                        row.get("composer_name", "")),
                     work=work_key(title, match.canonical, artist),
                     pdmx_duplicate=not truthy(row.get("subset:deduplicated")),
                 )

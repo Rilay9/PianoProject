@@ -77,7 +77,30 @@
     "  Beethoven WoO Anh. 5 F  level 5.5  71 bars, 4.78 from 25 ratings             -> classical.6",
     "  Diabelli op. 168 no. 1  level 6.6  53 bars, 4.85 from 71 ratings             -> classical.6/.7",
     "Until a quarry run brings them in, the lessons say plainly that a sonatina has to be",
-    "imported and name these three, rather than claiming pieces the library does not have."
+    "imported and name these three, rather than claiming pieces the library does not have.",
+    "",
+    "Fourth group, 2026-09-15: the graded teaching collections. Every piano teacher's middle",
+    "shelf was missing from the catalog - 3 Czerny, 2 Burgmuller, 1 Duvernoy, 1 Gurlitt, one",
+    "of Clementi's six sonatinas, and nothing at all of Kohler, Lemoine, Le Couppey,",
+    "Streabbog, Schytte, Heller, Bertini, Loeschhorn, Beyer or Turk - which is exactly the",
+    "material stages 3 to 6 are taught from. Like the sonatinas above, none of it would ever",
+    "win a quota: the classical bucket is the most crowded in the archive and a teaching",
+    "etude loses every ranking to a nocturne.",
+    "",
+    "Every pattern here was checked against the archive's own titles before it was written,",
+    "and those titles are uploader text: `Burgmuller Op.100 No.2 Arabesque`, `Lemoine:",
+    "Etudes enfantines op. 37 no. 4`, `Czerny - School Of Velocity - Op. 299 No. 1`. Two",
+    "things about the folding decide the shape of these entries. `fold` strips `op.` as a",
+    "credit word, so `op 100` and `Op. 100` both fold to `100`: an opus pattern is really a",
+    "bare number, and is safe only with an `artist` beside it. And `no. 2` folds to `no2`,",
+    "so a pattern has to be written the way the fold leaves it or it matches nothing.",
+    "",
+    "Where a collection's pattern is a bare opus number the entry carries an `artist`; where",
+    "the uploader puts the surname in the title a second, broader entry catches it without",
+    "one. `match_want` reads the title and `artist_name` only, never `composer_name`, so an",
+    "upload titled `Traeumerei` with an artist of `NA` and Gurlitt in the composer column is",
+    "not reachable from this file at all. That is a real limit of the matcher, not an",
+    "oversight here."
   ],
   "wants": [
     {
@@ -472,6 +495,829 @@
       ],
       "artist": [
         "diabelli"
+      ]
+    },
+    {
+      "id": "song.classical.burgmuller-op100",
+      "title": [
+        "op 100",
+        "opus 100",
+        "25 easy",
+        "25 leichte",
+        "25 etudes faciles",
+        "etudes faciles et progressives",
+        "candeur",
+        "frankness",
+        "candour",
+        "openness",
+        "arabesque",
+        "pastorale",
+        "pastoral",
+        "petite reunion",
+        "little party",
+        "little gathering",
+        "innocence",
+        "progres",
+        "progress",
+        "courant limpide",
+        "limpid stream",
+        "clear stream",
+        "gracieuse",
+        "gracefulness",
+        "graceful",
+        "la chasse",
+        "the chase",
+        "the hunt",
+        "tendre fleur",
+        "tender flower",
+        "bergeronnette",
+        "wagtail",
+        "adieu",
+        "farewell",
+        "consolation",
+        "styrienne",
+        "styrian",
+        "ballade",
+        "ballad",
+        "douce plainte",
+        "sweet complaint",
+        "sweet sorrow",
+        "babillarde",
+        "chatterbox",
+        "prattler",
+        "inquietude",
+        "restlessness",
+        "uneasiness",
+        "ave maria",
+        "tarentelle",
+        "tarantella",
+        "harmonie des anges",
+        "harmony of the angels",
+        "angelus",
+        "barcarolle",
+        "le retour",
+        "the return",
+        "hirondelle",
+        "the swallow",
+        "chevaleresque",
+        "knight errant",
+        "horsewoman"
+      ],
+      "artist": [
+        "burgmuller",
+        "burgmueller"
+      ]
+    },
+    {
+      "id": "song.classical.burgmuller-op109",
+      "title": [
+        "op 109",
+        "opus 109",
+        "18 etudes",
+        "etudes de genre",
+        "characteristic studies"
+      ],
+      "artist": [
+        "burgmuller",
+        "burgmueller"
+      ]
+    },
+    {
+      "id": "song.classical.burgmuller-studies",
+      "title": [
+        "burgmuller",
+        "burgmueller"
+      ]
+    },
+    {
+      "id": "song.classical.czerny-op599",
+      "title": [
+        "op 599",
+        "opus 599",
+        "practical method for beginners",
+        "erster lehrmeister"
+      ],
+      "artist": [
+        "czerny"
+      ]
+    },
+    {
+      "id": "song.classical.czerny-op849",
+      "title": [
+        "op 849",
+        "opus 849",
+        "30 etudes de mecanisme",
+        "school of mechanism",
+        "studies of mechanism"
+      ],
+      "artist": [
+        "czerny"
+      ]
+    },
+    {
+      "id": "song.classical.czerny-op299",
+      "title": [
+        "op 299",
+        "opus 299",
+        "school of velocity",
+        "schule der gelaufigkeit"
+      ],
+      "artist": [
+        "czerny"
+      ]
+    },
+    {
+      "id": "song.classical.czerny-studies",
+      "title": [
+        "czerny"
+      ]
+    },
+    {
+      "id": "song.classical.duvernoy-op176",
+      "title": [
+        "duvernoy",
+        "elementary studies op 176",
+        "elementary studies",
+        "ecole primaire",
+        "opus 176"
+      ]
+    },
+    {
+      "id": "song.classical.kohler-op190",
+      "title": [
+        "op 190",
+        "opus 190",
+        "practical method"
+      ],
+      "artist": [
+        "kohler",
+        "koehler"
+      ]
+    },
+    {
+      "id": "song.classical.kohler-op300",
+      "title": [
+        "op 300",
+        "opus 300",
+        "sonatina",
+        "sonatine"
+      ],
+      "artist": [
+        "kohler",
+        "koehler"
+      ]
+    },
+    {
+      "id": "song.classical.kohler-studies",
+      "title": [
+        "kohler",
+        "koehler"
+      ],
+      "artist": [
+        "kohler",
+        "koehler"
+      ]
+    },
+    {
+      "id": "song.classical.lemoine-op37",
+      "title": [
+        "lemoine",
+        "etudes enfantines",
+        "childrens etudes"
+      ]
+    },
+    {
+      "id": "song.classical.lecouppey-op17",
+      "title": [
+        "couppey",
+        "alphabet op 17",
+        "l alphabet",
+        "25 etudes primaires"
+      ]
+    },
+    {
+      "id": "song.classical.gurlitt-op117",
+      "title": [
+        "op 117",
+        "opus 117",
+        "der erste vortrag"
+      ],
+      "artist": [
+        "gurlitt"
+      ]
+    },
+    {
+      "id": "song.classical.gurlitt-op140",
+      "title": [
+        "op 140",
+        "opus 140",
+        "albumleaves for the young",
+        "albumblatter fur die jugend"
+      ],
+      "artist": [
+        "gurlitt"
+      ]
+    },
+    {
+      "id": "song.classical.gurlitt-op82",
+      "title": [
+        "op 82",
+        "opus 82",
+        "sammlung",
+        "sonatina",
+        "sonatine"
+      ],
+      "artist": [
+        "gurlitt"
+      ]
+    },
+    {
+      "id": "song.classical.gurlitt-pieces",
+      "title": [
+        "gurlitt"
+      ]
+    },
+    {
+      "id": "song.classical.streabbog-op63",
+      "title": [
+        "op 63",
+        "opus 63",
+        "12 very easy",
+        "12 sehr leichte"
+      ],
+      "artist": [
+        "streabbog",
+        "streabog",
+        "gobbaerts"
+      ]
+    },
+    {
+      "id": "song.classical.streabbog-op64",
+      "title": [
+        "op 64",
+        "opus 64",
+        "12 easy and melodious"
+      ],
+      "artist": [
+        "streabbog",
+        "streabog",
+        "gobbaerts"
+      ]
+    },
+    {
+      "id": "song.classical.streabbog-pieces",
+      "title": [
+        "violette",
+        "karussell",
+        "distant bells",
+        "cloches lointaines",
+        "first steps",
+        "premiers pas"
+      ],
+      "artist": [
+        "streabbog",
+        "streabog",
+        "gobbaerts"
+      ]
+    },
+    {
+      "id": "song.classical.streabbog-titled",
+      "title": [
+        "streabbog",
+        "streabog"
+      ]
+    },
+    {
+      "id": "song.classical.schytte-op108",
+      "title": [
+        "op 108",
+        "opus 108",
+        "melodious studies",
+        "25 etuder"
+      ],
+      "artist": [
+        "schytte"
+      ]
+    },
+    {
+      "id": "song.classical.schytte-titled",
+      "title": [
+        "schytte"
+      ]
+    },
+    {
+      "id": "song.classical.heller-op45",
+      "title": [
+        "op 45",
+        "opus 45",
+        "25 etudes melodiques",
+        "avalanche"
+      ],
+      "artist": [
+        "heller"
+      ]
+    },
+    {
+      "id": "song.classical.heller-op46",
+      "title": [
+        "op 46",
+        "opus 46",
+        "30 etudes progressives",
+        "fluttering leaves",
+        "curious story"
+      ],
+      "artist": [
+        "heller"
+      ]
+    },
+    {
+      "id": "song.classical.heller-op47",
+      "title": [
+        "op 47",
+        "opus 47",
+        "25 etudes pour former"
+      ],
+      "artist": [
+        "heller"
+      ]
+    },
+    {
+      "id": "song.classical.heller-studies",
+      "title": [
+        "heller"
+      ]
+    },
+    {
+      "id": "song.classical.bertini-op100",
+      "title": [
+        "op 100",
+        "opus 100",
+        "25 etudes faciles"
+      ],
+      "artist": [
+        "bertini"
+      ]
+    },
+    {
+      "id": "song.classical.bertini-studies",
+      "title": [
+        "bertini"
+      ]
+    },
+    {
+      "id": "song.classical.loeschhorn-op65",
+      "title": [
+        "op 65",
+        "opus 65",
+        "studien fur klavier"
+      ],
+      "artist": [
+        "loeschhorn",
+        "loschhorn"
+      ]
+    },
+    {
+      "id": "song.classical.loeschhorn-op66",
+      "title": [
+        "op 66",
+        "opus 66"
+      ],
+      "artist": [
+        "loeschhorn",
+        "loschhorn"
+      ]
+    },
+    {
+      "id": "song.classical.loeschhorn-studies",
+      "title": [
+        "loeschhorn",
+        "loschhorn"
+      ]
+    },
+    {
+      "id": "song.classical.beyer-op101",
+      "title": [
+        "beyer",
+        "vorschule im klavierspiel",
+        "elementary instruction book"
+      ]
+    },
+    {
+      "id": "song.classical.turk-handstucke",
+      "title": [
+        "kleine handstucke",
+        "handstucke",
+        "handstuck",
+        "rondo im kleinen",
+        "60 handstucke"
+      ]
+    },
+    {
+      "id": "song.classical.clementi-op36",
+      "title": [
+        "op 36",
+        "opus 36",
+        "sonatina",
+        "sonatine",
+        "sonata",
+        "sonate"
+      ],
+      "artist": [
+        "clementi"
+      ]
+    },
+    {
+      "id": "song.classical.clementi-op36-titled",
+      "title": [
+        "clementi sonatina",
+        "clementi opus 36",
+        "clementi op 36",
+        "sonatina no 1 muzio clementi",
+        "sonatina no1 2 muzio clementi",
+        "six sonatinas"
+      ]
+    },
+    {
+      "id": "song.classical.kuhlau-op55",
+      "title": [
+        "op 55",
+        "opus 55"
+      ],
+      "artist": [
+        "kuhlau"
+      ]
+    },
+    {
+      "id": "song.classical.kuhlau-op20",
+      "title": [
+        "op 20",
+        "opus 20"
+      ],
+      "artist": [
+        "kuhlau"
+      ]
+    },
+    {
+      "id": "song.classical.kuhlau-sonatinas",
+      "title": [
+        "kuhlau"
+      ]
+    },
+    {
+      "id": "song.classical.diabelli-op168",
+      "title": [
+        "op 168",
+        "opus 168"
+      ],
+      "artist": [
+        "diabelli"
+      ]
+    },
+    {
+      "id": "song.classical.diabelli-op151",
+      "title": [
+        "op 151",
+        "opus 151"
+      ],
+      "artist": [
+        "diabelli"
+      ]
+    },
+    {
+      "id": "song.classical.diabelli-pieces",
+      "title": [
+        "diabelli"
+      ]
+    },
+    {
+      "id": "song.classical.schumann-op68",
+      "title": [
+        "op 68",
+        "opus 68",
+        "album for the young",
+        "album fur die jugend",
+        "jugendalbum"
+      ],
+      "artist": [
+        "schumann"
+      ]
+    },
+    {
+      "id": "song.classical.tchaikovsky-op39",
+      "title": [
+        "op 39",
+        "opus 39",
+        "childrens album",
+        "children s album",
+        "album for the young",
+        "album pour enfants",
+        "kinderalbum",
+        "detskiy albom"
+      ],
+      "artist": [
+        "tchaikovsky",
+        "tschaikowsky",
+        "chaikovsky",
+        "aikovski"
+      ]
+    },
+    {
+      "id": "song.classical.bach-anna-magdalena",
+      "title": [
+        "bwv anh",
+        "anna magdalena",
+        "notenbuchlein",
+        "notenbuch fur anna"
+      ]
+    },
+    {
+      "id": "song.classical.bach-little-preludes",
+      "title": [
+        "little prelude",
+        "kleine praludien",
+        "kleine praeludien",
+        "sechs kleine praludien",
+        "pequeno preludio",
+        "bwv 924",
+        "bwv 925",
+        "bwv 926",
+        "bwv 927",
+        "bwv 928",
+        "bwv 929",
+        "bwv 930",
+        "bwv 931",
+        "bwv 932",
+        "bwv 933",
+        "bwv 934",
+        "bwv 935",
+        "bwv 936",
+        "bwv 937",
+        "bwv 938",
+        "bwv 939",
+        "bwv 940",
+        "bwv 941",
+        "bwv 942",
+        "bwv 943",
+        "bwv924",
+        "bwv925",
+        "bwv926",
+        "bwv927",
+        "bwv928",
+        "bwv929",
+        "bwv930",
+        "bwv931",
+        "bwv932",
+        "bwv933",
+        "bwv934",
+        "bwv935",
+        "bwv936",
+        "bwv937",
+        "bwv938",
+        "bwv939",
+        "bwv940",
+        "bwv941",
+        "bwv942",
+        "bwv943"
+      ]
+    },
+    {
+      "id": "song.classical.bach-inventions",
+      "title": [
+        "invention",
+        "inventio",
+        "two part invention",
+        "zweistimmige inventionen",
+        "bwv 772",
+        "bwv 773",
+        "bwv 774",
+        "bwv 775",
+        "bwv 776",
+        "bwv 777",
+        "bwv 778",
+        "bwv 779",
+        "bwv 780",
+        "bwv 781",
+        "bwv 782",
+        "bwv 783",
+        "bwv 784",
+        "bwv 785",
+        "bwv 786",
+        "bwv772",
+        "bwv773",
+        "bwv774",
+        "bwv775",
+        "bwv776",
+        "bwv777",
+        "bwv778",
+        "bwv779",
+        "bwv780",
+        "bwv781",
+        "bwv782",
+        "bwv783",
+        "bwv784",
+        "bwv785",
+        "bwv786"
+      ],
+      "artist": [
+        "bach"
+      ]
+    },
+    {
+      "id": "song.classical.scarlatti-easy-sonatas",
+      "title": [
+        "k 32",
+        "k32",
+        "k 34",
+        "k34",
+        "k 40",
+        "k40",
+        "k 63",
+        "k63",
+        "k 73",
+        "k73",
+        "k 95",
+        "k95",
+        "k 322",
+        "k322",
+        "k 431",
+        "k431"
+      ],
+      "artist": [
+        "scarlatti"
+      ]
+    },
+    {
+      "id": "song.classical.mozart-nannerl-notebook",
+      "title": [
+        "nannerl",
+        "notenbuch fur nannerl",
+        "nannerl notenbuch",
+        "london sketchbook",
+        "k 1",
+        "k1",
+        "kv 1",
+        "kv1",
+        "k 2",
+        "k2",
+        "kv 2",
+        "kv2",
+        "k 3",
+        "k3",
+        "kv 3",
+        "kv3",
+        "k 4",
+        "k4",
+        "kv 4",
+        "kv4",
+        "k 5",
+        "k5",
+        "kv 5",
+        "kv5",
+        "k 6",
+        "k6",
+        "kv 6",
+        "kv6",
+        "k 1a",
+        "k 1b",
+        "k 1c",
+        "k 1d",
+        "k 1e",
+        "k 1f",
+        "k1a",
+        "k1b",
+        "k1c",
+        "k1d",
+        "k1e",
+        "k1f",
+        "k 15",
+        "k15"
+      ],
+      "artist": [
+        "mozart"
+      ]
+    },
+    {
+      "id": "song.classical.beethoven-ecossaises",
+      "title": [
+        "ecossaise",
+        "ecossaises",
+        "schottische tanze"
+      ],
+      "artist": [
+        "beethoven"
+      ]
+    },
+    {
+      "id": "song.classical.beethoven-op119",
+      "title": [
+        "op 119",
+        "opus 119",
+        "11 bagatelles"
+      ],
+      "artist": [
+        "beethoven"
+      ]
+    },
+    {
+      "id": "song.classical.beethoven-op126",
+      "title": [
+        "op 126",
+        "opus 126",
+        "6 bagatelles",
+        "sechs bagatellen"
+      ],
+      "artist": [
+        "beethoven"
+      ]
+    },
+    {
+      "id": "song.classical.beethoven-sonatinas-anh5",
+      "title": [
+        "anh 5",
+        "ahn 5",
+        "woo anh 5",
+        "sonatine in f",
+        "sonatina in f",
+        "sonatine in g",
+        "sonatina in g",
+        "sonatina",
+        "sonatine"
+      ],
+      "artist": [
+        "beethoven"
+      ]
+    },
+    {
+      "id": "song.classical.grieg-op12",
+      "title": [
+        "op 12",
+        "opus 12",
+        "lyric piece",
+        "lyric pieces",
+        "lyrische stucke",
+        "arietta",
+        "albumblatt",
+        "album leaf",
+        "folk melody",
+        "elfin dance",
+        "elves dance",
+        "watchmans song",
+        "national song"
+      ],
+      "artist": [
+        "grieg"
+      ]
+    },
+    {
+      "id": "song.classical.grieg-op38",
+      "title": [
+        "op 38",
+        "opus 38",
+        "berceuse",
+        "norwegian dance",
+        "elegie",
+        "melodie"
+      ],
+      "artist": [
+        "grieg"
+      ]
+    },
+    {
+      "id": "song.classical.mendelssohn-songs-without-words",
+      "title": [
+        "song without words",
+        "songs without words",
+        "lieder ohne worte",
+        "op 19 no 6",
+        "op 30 no 3",
+        "op 62 no 6",
+        "op 67 no 2",
+        "venetian",
+        "gondola song",
+        "spring song"
+      ],
+      "artist": [
+        "mendelssohn"
+      ]
+    },
+    {
+      "id": "song.classical.schubert-dances",
+      "title": [
+        "landler",
+        "ecossaise",
+        "german dance",
+        "deutsche tanze",
+        "d 365",
+        "d365",
+        "d 783",
+        "d783",
+        "d 366",
+        "d366",
+        "valses nobles",
+        "valses sentimentales"
+      ],
+      "artist": [
+        "schubert"
       ]
     }
   ],

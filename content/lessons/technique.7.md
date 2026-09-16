@@ -6,7 +6,7 @@ videos:
   - label: "How to Play Octaves on Piano (2 Ways!) | Kate Boyd - The Piano Prof"
     url: "https://www.youtube.com/watch?v=E8q-CWA3nis"
     teacher: "The Piano Prof | Kate Boyd"
-readingTime: 2
+readingTime: 3
 ---
 
 Everything on this rung is one hand doing two things at once.
@@ -38,6 +38,10 @@ is actually pedalled. This exercise is scored on the pedal *value* rather than
 its timing: the app wants it somewhere in the middle of its travel, and will
 tell you if your pedal only ever reports 0 or 127 — some digital pianos send
 nothing in between, and that is worth knowing about your instrument.
+
+**An étude to put it in.** Czerny Op. 299 No. 5, No. 8 and No. 10, the faster
+ones: scales in both hands, broken chords across the keyboard, and the double-
+note figures the trill and repeated-note exercises above prepare.
 
 **How you'll know you've got it.** The same inner fingering in thirds twice
 running without deciding it again. An octave in D flat that takes the fourth

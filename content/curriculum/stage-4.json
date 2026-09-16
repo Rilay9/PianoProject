@@ -994,7 +994,11 @@
                 "exercise.articulation.d.legato.right",
                 "exercise.hanon.01.right"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.classical.lemoine-etude-op-37-no-1.pdmx",
+                "song.classical.lemoine-etude-op-37-no-2.pdmx",
+                "song.classical.lemoine-etude-op-37-no-35.pdmx"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 2,
@@ -1004,7 +1008,7 @@
               },
               "levelBand": [
                 4.3,
-                4.5
+                5.0
               ],
               "finder": {
                 "skill": "playing scales and arpeggios in similar and contrary motion with a controlled touch",
