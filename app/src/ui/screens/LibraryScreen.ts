@@ -56,7 +56,8 @@ import {
   openSheet,
   shortHandsLabel,
 } from '../widgets';
-import { isPlayable, openItem } from '../openItem';
+import { isPlayable, openItem, targetFor } from '../openItem';
+import { getSettings, updateSettings } from '../../data/settingsStore';
 import { screenFrame, statusLine } from './screenFrame';
 import { openAssignSheet } from '../assignSheet';
 import { loadCurriculum } from '../../curriculum/load';
@@ -127,6 +128,108 @@ export function sortItems(items: CatalogItem[], sort: SortKey): CatalogItem[] {
   } else sorted.sort((a, b) => a.level - b.level || a.title.localeCompare(b.title));
   return sorted;
 }
+
+/**
+ * The seven ways a piece can be opened, from the row rather than from the
+ * Score screen's `⋯` (`04` §4, "Open as…").
+ *
+ * The owner: *"from the library you should be able to choose what mode you're
+ * going to open a song in."* Every one of these is something §5's sheet can
+ * already do — what is new is only that the choice can be made *before* the
+ * screen opens, which is when a learner actually makes it.
+ *
+ * Where a choice is carried by the route it is carried by the route (the mode,
+ * the hand, blind); where it is a remembered setting it is written before the
+ * navigation (`rhythmOnly`, `playbackHands`), because that is where §5 keeps
+ * it and a second copy would be a second answer.
+ *
+ * **`rhythmOnly` is written by every one of them**, not only by *Rhythm only*.
+ * It is a remembered preference, so once it had been chosen once every later
+ * *Keep tempo* from this sheet would silently have been a rhythm run — the
+ * learner asking for one thing and getting another, from a control that says
+ * nothing about it.
+ */
+interface OpenAs {
+  id: string;
+  title: string;
+  /** What it does, in the learner's words — the same sentence §5 uses. */
+  meta: string;
+  open: (router: Router, itemId: string) => void;
+}
+
+/** What the Duet door puts back: what was playing, or the setting's default. */
+function duetHands(): 'non-focused' | 'both' {
+  return getSettings().playbackHands === 'both' ? 'both' : 'non-focused';
+}
+
+const OPEN_AS: readonly OpenAs[] = [
+  {
+    id: 'wait',
+    title: 'Wait for me',
+    meta: 'Holds the page until you play the note',
+    open: (router, itemId) => {
+      updateSettings({ rhythmOnly: false });
+      router.navigateScore(itemId, { mode: 'wait' });
+    },
+  },
+  {
+    id: 'tempo',
+    title: 'Keep tempo',
+    meta: 'Clicks and moves on — the mode that scores',
+    open: (router, itemId) => {
+      updateSettings({ rhythmOnly: false });
+      router.navigateScore(itemId, { mode: 'tempo' });
+    },
+  },
+  {
+    id: 'listen',
+    title: 'Play it to me',
+    meta: 'Plays it to you while you watch',
+    open: (router, itemId) => {
+      updateSettings({ rhythmOnly: false });
+      router.navigateScore(itemId, { mode: 'listen' });
+    },
+  },
+  {
+    id: 'free',
+    title: 'Free play',
+    meta: 'Turns the page on your notes, judges nothing',
+    open: (router, itemId) => {
+      updateSettings({ rhythmOnly: false });
+      router.navigateScore(itemId, { mode: 'free' });
+    },
+  },
+  {
+    id: 'rhythm',
+    title: 'Rhythm only',
+    meta: 'Keep tempo, judged on timing alone',
+    open: (router, itemId) => {
+      updateSettings({ rhythmOnly: true });
+      router.navigateScore(itemId, { mode: 'tempo' });
+    },
+  },
+  {
+    id: 'duet',
+    title: 'Duet',
+    meta: 'Keep tempo; you play the right hand',
+    open: (router, itemId) => {
+      // A duet is the hand you are *not* playing, so it needs a hand chosen:
+      // with `both` there is no other hand and the app plays nothing. And the
+      // app only plays under a clock, so Keep tempo rather than Wait.
+      updateSettings({ rhythmOnly: false, playbackHands: duetHands() });
+      router.navigateScore(itemId, { mode: 'tempo', hands: 'R' });
+    },
+  },
+  {
+    id: 'blind',
+    title: 'Blind',
+    meta: 'Hidden score, judged as a sighted run',
+    open: (router, itemId) => {
+      updateSettings({ rhythmOnly: false });
+      router.navigateScore(itemId, { blind: true });
+    },
+  },
+];
 
 export interface LibraryOptions {
   /** The rung an import is being made for, from `#/library?for=<lessonId>`. */
@@ -707,6 +810,34 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     });
   }
 
+  /**
+   * "Open as…": the mode chosen before the piece opens (`04` §4).
+   *
+   * A sheet rather than seven controls on the row, for the reason `04` §0 R3
+   * gives: a rare action needing several controls lives behind one link. The
+   * rows are the same shape Today's swap sheet uses, and one tap opens the
+   * piece — choosing the mode and then pressing Open would be two taps for one
+   * decision.
+   */
+  function showOpenAs(item: CatalogItem): void {
+    const sheet = openSheet(`Open “${item.title}” as…`, { id: 'library-openas' });
+    const list = el('div.list');
+    for (const choice of OPEN_AS) {
+      list.append(
+        listRow({
+          title: choice.title,
+          meta: choice.meta,
+          dataset: { 'data-openas': choice.id },
+          onClick: () => {
+            sheet.close();
+            choice.open(router, item.id);
+          },
+        }),
+      );
+    }
+    sheet.body.append(list);
+  }
+
   function rowFor(item: CatalogItem): HTMLElement {
     const badges: HTMLElement[] = [];
     const progressBadge = statusBadge(progress.get(item.id));
@@ -731,6 +862,22 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       );
     }
     actions.push(button('Details', () => showDetail(item), { variant: 'quiet' }));
+    // Last, where the Score screen's own `⋯` is, and only where the modes mean
+    // something: a PDF has pages and not notes, a drill is a prompt loop, and
+    // an import placeholder has nothing to open at all (`04` §0 R4). A glyph
+    // rather than the words, because it is the app's sign for "the other
+    // things you can do with this" — it opens the very same list §5 does — and
+    // because at 342 px the words would take the room the title needs (R2).
+    if (targetFor(item) === 'score') {
+      actions.push(
+        button('⋯', () => showOpenAs(item), {
+          variant: 'quiet',
+          className: 'library-openas',
+          title: 'Open as…',
+          ariaLabel: `Open ${item.title} as…`,
+        }),
+      );
+    }
 
     return listRow({
       title: item.title,
@@ -747,7 +894,17 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       badges,
       actions,
       onClick: () => open(item),
-      dataset: { 'data-item': item.id, 'data-kind': item.kind ?? 'catalog' },
+      dataset: {
+        'data-item': item.id,
+        'data-kind': item.kind ?? 'catalog',
+        // Which rows take the portrait tall-row exception (`04` §0 R2, and the
+        // note beside the rule in `style.css`). It used to be read off the
+        // buttons — "more than one action" — and that stopped being the same
+        // question the moment every playable row gained a `⋯`. The exception
+        // was written for the rows carrying archive titles *and* a strip of
+        // actions, which is the imports; said here, it cannot drift again.
+        ...(item.imported ? { 'data-tall': 'true' } : {}),
+      },
     });
   }
 

@@ -86,11 +86,15 @@ const SECTIONS: Section[] = [
       'PianoPath is a piano teacher on your phone, on the music stand. It holds a library of pieces and exercises, a plan that climbs from the first five-finger position to real repertoire, and a score screen that listens to what you play and follows along on the page.',
       'Today builds a session for you every day: a warm-up, something new, a review of what is due, a piece you know, and a minute of free play. The line at the top is minutes this week against a weekly goal — there is no daily streak, on purpose.',
       'Under the session card is Today’s sight-read: three minutes of music you have never seen, the same phrase all day and a new one tomorrow. It is the one thing on the screen counted in days in a row rather than minutes, and a tick appears once today’s is done.',
+      'Under that is a line of five doors, for the things you open without starting a session: the Metronome, Free play, today’s Sight-read, Simon, and the Accompaniment lab.',
       'Nothing is locked. Every lesson opens whenever you like, and “I already know this” marks one done without playing it.',
       'The sections below are in the order you need them: connect the piano, learn the score screen and the plan, then the five ways of getting your own music in, then keeping your history safe.',
     ],
     figures: [{ file: 'today', caption: 'Today: the session it built, with ▶ on every row and Swap for something else.' }],
-    opens: [{ label: 'Open Today', tab: 'today' }],
+    opens: [
+      { label: 'Open Today', tab: 'today' },
+      { label: 'Free play', tab: 'today', hash: '#/play' },
+    ],
   },
   {
     id: 'piano',
@@ -149,6 +153,7 @@ const SECTIONS: Section[] = [
       'Behind ⋯ are the settings you change once — the input, the metronome, bars in window, size, the keys — and three rows that come and go. Rhythm only, in Keep tempo, judges your timing and not your notes: one tap per written note or chord, on any key at all, and extra keys are wrong. Its summary is headed Rhythm run and never counts as a pass of the piece. Ladder, once a loop is set, raises the tempo a notch after each clean pass and lowers it after a mistake, and underlines the tempo figure while it is on. Duet, with R or L chosen, has the app play the other hand; turned off and on again it comes back exactly as it was.',
       'Under the notes, the keys: the note it is waiting for is blue, with its finger number; a hit flashes green and a miss red for a moment. Settings → Display chooses how much the keys show ahead, and the ribbon is the same information at a third of the height.',
       'Two more that sit alongside the modes. Blind hides the score and changes nothing else, so a run from memory scores the same way. Perform is one pass through with no restart, kept on its own list in Progress.',
+      'You can also choose the mode before the piece opens. Every Library row that opens here has a ⋯ after Details, offering the same seven ways in — Wait for me, Keep tempo, Play it to me, Free play, Rhythm only, Duet, Blind — and opening the piece in that one. Tapping the row itself opens it as it always did, and nothing is locked in afterwards.',
     ],
     figures: [
       { file: 'score-upright', caption: 'Upright: the bar being played and the ones coming, one under the other.' },
@@ -165,6 +170,7 @@ const SECTIONS: Section[] = [
       'Drills are prompt-and-answer: name the note, play the interval, find the chord, keep the rhythm. They score on the same accuracy setting a piece does, and their tips fold out under the prompt.',
       'Where the answer is a set of keys — a mode, a chord, a numeral, a note on the staff — two quiet buttons under the hint let you in: Show me lights the answer on the keys and writes it on a small staff, Hear it plays it. Either forfeits that card’s mark, so the score keeps meaning what it says. A miss holds its card — the keys you played in red, the ones wanted lit, the answer on the staff — until you tap to move on, and a set that ends with misses offers to go over exactly those cards again, which scores nothing and records nothing.',
       'Simon is the ear drill with nothing to guess between: the app plays one note, then the same note and one more, then three, until the chain breaks. The score is the longest chain you echoed, in the octave it was played.',
+      'Three chips on the Simon card say how much help it gives: the keys lit and named as the chain plays, the keys lit on a replay after a wrong note — which then asks you for the same chain again instead of ending the game — or sound alone. Each drill remembers the one you chose for it, and none of them discounts the score: the chain is gone by the time it is your turn either way.',
       'Skills review, from Today or Plan, lists every skill with its drills, so you can practise the one thing rather than the rung it belongs to.',
     ],
     figures: [

@@ -480,7 +480,10 @@ with attribution), musictheory.net (link), teoria.com (link), Lypur theory playl
 key around it on `theory.4`, `theory.5` and `theory.6` — because dictation, cadences and
 hearing a bass note four chords back all rest on holding what you heard, and a chain is that
 memory with nothing else attached; it is scored on the longest chain rather than on an
-accuracy, so the rung is passed with a chain and not with a share of the cards.
+accuracy, so the rung is passed with a chain and not with a share of the cards. It gives three
+levels of help, chosen on the card and remembered per item — the keys lit and named as the
+chain plays, the keys lit on a replay after a wrong note, or sound alone — so that the white-key
+game is playable by somebody who cannot yet find a heard note on the keyboard (`04` §5c-2).
 
 ### D7. Improvisation & composition track (Stage 3+)
 

@@ -63,6 +63,7 @@ import {
   weekSoFar,
 } from '../../data/progressStore';
 import { dailySeed } from '../../engine/sightReading';
+import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import type { ProgressRow } from '../../data/db';
@@ -181,10 +182,30 @@ export function TodayScreen(router: Router): HTMLElement {
    */
   const dailyCard = el('div.list', { id: 'today-daily' });
   const actions = el('div.row.today-start-row', { id: 'today-actions' });
-  // The three that change the day rather than start it. Below the card, the
+  // The two that change the day rather than start it. Below the card, the
   // way Plan's placement test and how-to-practise links moved below its list:
-  // read occasionally, and none of them the reason the screen is open.
+  // read occasionally, and neither of them the reason the screen is open.
   const tools = el('div.plan-links', { id: 'today-tools' });
+  /**
+   * The doors: the things you can open without a session (`04` §2).
+   *
+   * The owner, on the modes built this week: *"how are people going to open it
+   * up? There's got to be a link somewhere."* They are here because Today is
+   * the screen the app opens on and the only one you reach without deciding
+   * anything first. A second line rather than seven links on one, because the
+   * two above act on the card directly over them and these five do not — one
+   * row of seven `·`-separated words is a wall, and the wall would have hidden
+   * exactly the new thing it exists to advertise.
+   */
+  const doors = el('div.plan-links', { id: 'today-doors' });
+  /**
+   * Which Simon this learner gets — the white keys of C, or every key.
+   *
+   * `simonForStage` decides it from the same stage number the session card is
+   * built against, so the door offers whichever of the two the plan would
+   * have offered at this rung (`04` §5c-2).
+   */
+  let simonId = simonForStage(1);
 
   // Title and the input chip share a line; the goal and the length chips take
   // one each under it. Three short rows rather than four wrapping ones, so the
@@ -196,14 +217,14 @@ export function TodayScreen(router: Router): HTMLElement {
   header.prepend(titleRow);
   header.append(goalLine, lengthRow);
   // The thing you came to do, then the card that says what it will be, then
-  // the message about it, then the three ways to change the day.
+  // the message about it, then the two ways to change the day, then the doors.
   //
   // `Start session` used to be under the card: 679 px down a 740 px phone
   // upright, and off the bottom entirely sideways. The one filled box on the
   // screen the app opens on (`04` §0 R3) was the one thing you had to scroll
   // to find. The card still starts inside the first screenful (R1) — the
   // button is one row of 40 px, and the card was starting at 198.
-  body.append(actions, card, dailyCard, status, tools);
+  body.append(actions, card, dailyCard, status, tools, doors);
 
   // --- rows ---------------------------------------------------------------
 
@@ -363,19 +384,32 @@ export function TodayScreen(router: Router): HTMLElement {
     return reachable[reachable.length - 1] ?? readers[0] ?? null;
   }
 
+  /**
+   * Opens today's phrase — the same phrase, from wherever it is asked for.
+   *
+   * One function rather than a closure in the card, because the tools row
+   * below has a *Sight-read* door of its own now and the two must be the same
+   * open: the day's seed is what makes the card repeatable, and a second
+   * caller that forgot it would hand the reader a different phrase and then
+   * fail to tick the day (`04` §2, `markDailyRead`).
+   */
+  function openDailyRead(): void {
+    if (!dailyTarget) return;
+    router.navigateScore(dailyTarget.id, { seed: dailySeed(dayKey(now)) });
+  }
+
   function drawDaily(): void {
     dailyCard.replaceChildren();
     // `04` §0 R4: no furniture. A build with no reading exercises in it has
-    // nothing to offer here, and an empty card saying so would be a hole.
+    // nothing to offer here, and an empty card saying so would be a hole. The
+    // door in the tools row goes with it, for the same reason (`drawDoors`).
     const item = dailyTarget;
     if (!item) return;
     const seed = dailySeed(dayKey(now));
     const done = readToday(dailyDays, now);
     const streak = dailyReadStreak(dailyDays, now);
     const bars = item.drill?.params?.bars;
-    const open = (): void => {
-      router.navigateScore(item.id, { seed });
-    };
+    const open = openDailyRead;
     dailyCard.append(
       listRow({
         title: "Today's sight-read",
@@ -420,7 +454,10 @@ export function TodayScreen(router: Router): HTMLElement {
     // which is where they belong and where they already are — six boxes of
     // equal weight is no weighting. `Shuffle options` was the last of these
     // still drawn as a box; it is done once in a while, on a card you have
-    // already been given, so it reads as text like the other two.
+    // already been given, so it reads as text like the rest.
+    //
+    // Two links here and not three: `Metronome` opens a screen rather than
+    // changing the day, so it went to the row of doors below (`drawDoors`).
     tools.replaceChildren(
       button(
         'Shuffle options',
@@ -432,11 +469,58 @@ export function TodayScreen(router: Router): HTMLElement {
       ),
       el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
       button('Jump to…', () => router.navigate('plan'), { id: 'today-jump', variant: 'quiet' }),
-      el('span.plan-sep', { text: '·', 'aria-hidden': 'true' }),
+    );
+  }
+
+  /**
+   * The doors, and only the ones that lead somewhere (`04` §0 R4).
+   *
+   * Rebuilt rather than hidden in place, because the row is `·`-separated:
+   * a door taken away on its own leaves its separator behind, and two dots
+   * with nothing between them read as a word that failed to draw.
+   *
+   * Each separator is tied to the door *before* it, in one flex item that
+   * cannot break inside. Five doors do not fit one line at 342 px, and loose
+   * separators wrap wherever they fall — at 100 % the second line opened with
+   * a full stop of its own, which reads as a bullet for a list that has none.
+   *
+   * *Accompaniment lab* keeps the name the Library gives it and the name the
+   * screen wears. "Chord lab" would have been shorter and would have been a
+   * second name for one thing, which is the fault `00` §1 "never say the same
+   * thing twice" is the other half of.
+   */
+  function drawDoors(): void {
+    const open: HTMLElement[] = [
       button('Metronome', () => router.navigate('today', 'metronome'), {
         id: 'today-metronome',
         variant: 'quiet',
       }),
+      button('Free play', () => router.navigatePlay(), { id: 'today-play', variant: 'quiet' }),
+    ];
+    // The same phrase the card above opens, seed and all — never a second one.
+    if (dailyTarget) {
+      open.push(button('Sight-read', openDailyRead, { id: 'today-read', variant: 'quiet' }));
+    }
+    if (items.some((item) => item.id === simonId)) {
+      open.push(
+        button('Simon', () => router.navigateDrill(simonId), {
+          id: 'today-simon',
+          variant: 'quiet',
+        }),
+      );
+    }
+    open.push(
+      button('Accompaniment lab', () => router.navigateLab(), {
+        id: 'today-lab',
+        variant: 'quiet',
+      }),
+    );
+    doors.replaceChildren(
+      ...open.map((door, index) =>
+        index === open.length - 1
+          ? door
+          : el('span.plan-pair', {}, door, el('span.plan-sep', { text: '·', 'aria-hidden': 'true' })),
+      ),
     );
   }
 
@@ -513,6 +597,11 @@ export function TodayScreen(router: Router): HTMLElement {
       // The day itself is written by the Score screen when the seeded run
       // is recorded (`markDailyRead` there), not read off the item's row.
       drawDaily();
+      // The doors hang off the same stage and the same daily item, so they are
+      // drawn here rather than with the buttons above: until this line there is
+      // no stage to choose a Simon by and no phrase for *Sight-read* to open.
+      simonId = simonForStage(position ? position.stageNumber : 1);
+      drawDoors();
     });
   }
 

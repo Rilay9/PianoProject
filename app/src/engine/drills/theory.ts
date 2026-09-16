@@ -82,6 +82,113 @@ export const CHORD_QUALITIES: Record<string, number[]> = {
 };
 
 /**
+ * The commonest spelling of each pitch class *as the root of a chord*.
+ *
+ * One table rather than a key-aware speller, because free play (`04` §2b) has
+ * no key: somebody is holding four keys and nothing on the screen knows what
+ * piece they are from. Sharps for the sharp roots and flats for the flat ones
+ * is how a chord symbol is written when there is nothing else to go on —
+ * C♯ minor and E♭ major, never D♭ minor or D♯ major.
+ */
+const CHORD_ROOT_NAMES = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'] as const;
+
+/**
+ * The qualities free play can name, in the order it prefers them.
+ *
+ * The intervals are `CHORD_QUALITIES`' own — this adds the words and the
+ * ranking, and nothing else, so there is one table of what a chord *is*. The
+ * order settles the ambiguities that have no other answer: {C E G A} is both
+ * C6 and Am7 and only the bass can say which, so the bass is asked first (see
+ * `nameHeldChord`) and this order decides the rest.
+ */
+const NAMED_QUALITIES: { quality: string; words: string }[] = [
+  { quality: 'maj', words: 'major' },
+  { quality: 'm', words: 'minor' },
+  { quality: '7', words: 'dominant 7th' },
+  { quality: 'maj7', words: 'major 7th' },
+  { quality: 'm7', words: 'minor 7th' },
+  { quality: '6', words: '6th' },
+  { quality: 'dim', words: 'diminished' },
+  { quality: 'aug', words: 'augmented' },
+  { quality: 'sus4', words: 'sus4' },
+  { quality: 'sus2', words: 'sus2' },
+  { quality: 'm7b5', words: 'half-diminished 7th' },
+  { quality: 'dim7', words: 'diminished 7th' },
+  { quality: 'mMaj7', words: 'minor-major 7th' },
+  { quality: 'add9', words: 'add9' },
+  { quality: '9', words: '9th' },
+  { quality: 'maj9', words: 'major 9th' },
+  { quality: 'm9', words: 'minor 9th' },
+];
+
+/** A quality's intervals as pitch classes above the root, ascending, deduped. */
+function pitchClassesOf(quality: string): number[] {
+  const intervals = CHORD_QUALITIES[quality] ?? [];
+  return [...new Set(intervals.map((interval) => ((interval % 12) + 12) % 12))].sort((a, b) => a - b);
+}
+
+export interface HeldChord {
+  /** Pitch class of the root. */
+  root: number;
+  /** The key in `CHORD_QUALITIES` the held notes matched. */
+  quality: string;
+  /** The root and the quality in words: `C major`, `F♯ minor 7th`. */
+  name: string;
+  /** 0 in root position, 1 with the third at the bottom, and so on. */
+  inversion: number;
+  /** `C major`, or `C major / E` when the root is not the lowest note. */
+  label: string;
+}
+
+/**
+ * What a handful of held keys adds up to, or `null` when it is not a chord.
+ *
+ * Free play's one piece of reasoning (`04` §2b). Three or more keys at once is
+ * somebody trying a chord, and the useful answer is its name — so every note
+ * held is tried as the root and the first quality that accounts for all of
+ * them wins.
+ *
+ * **The lowest key is asked first.** Several chords are genuinely the same set
+ * of notes — {C E G A} is C6 and A minor 7th, {C D G} is Csus2 and Gsus4 — and
+ * what decides between them is what is underneath. Only when nothing rooted on
+ * the bass fits does it try the other notes, which is what names a chord
+ * played in an inversion.
+ *
+ * Octaves and doublings are ignored: the pitch classes are what a chord is,
+ * and a learner playing the root twice has not played a different chord.
+ */
+export function nameHeldChord(midis: readonly number[]): HeldChord | null {
+  if (midis.length < 3) return null;
+  const pitchClasses = [...new Set(midis.map((midi) => ((midi % 12) + 12) % 12))].sort((a, b) => a - b);
+  if (pitchClasses.length < 3) return null;
+  const bass = ((Math.min(...midis) % 12) + 12) % 12;
+
+  for (const bassFirst of [true, false]) {
+    for (const entry of NAMED_QUALITIES) {
+      const wanted = pitchClassesOf(entry.quality);
+      if (wanted.length !== pitchClasses.length) continue;
+      for (const root of pitchClasses) {
+        if (bassFirst && root !== bass) continue;
+        const held = pitchClasses
+          .map((pitchClass) => (pitchClass - root + 12) % 12)
+          .sort((a, b) => a - b);
+        if (!held.every((interval, index) => interval === wanted[index])) continue;
+        const name = `${CHORD_ROOT_NAMES[root] ?? 'C'} ${entry.words}`;
+        const inversion = wanted.indexOf((bass - root + 12) % 12);
+        return {
+          root,
+          quality: entry.quality,
+          name,
+          inversion: Math.max(0, inversion),
+          label: inversion > 0 ? `${name} / ${CHORD_ROOT_NAMES[bass] ?? 'C'}` : name,
+        };
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Semitones above the tonic, per mode.
  *
  * The seven modes of the major scale and nothing else. A "mode" drill that

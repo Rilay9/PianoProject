@@ -6,7 +6,7 @@ videos:
   - label: "The Roman Numeral System Explained: Build Any Chord Progression by Number"
     url: "https://www.youtube.com/watch?v=mxVzktPGxaY"
     teacher: "Jason Zac - Nathaniel School of Music"
-readingTime: 2
+readingTime: 3
 ---
 
 Two skills that look like different subjects and are the same one: naming a
@@ -41,7 +41,9 @@ tells you the chord.
 **Tools for this rung.** Two things here. The chain game drawn from all
 twelve keys is an option on this rung, and it is the plainest test of what
 dictation runs on — a bass note you heard four chords ago is no use unless
-you kept it. And on the modes drill, *Show me* engraves the answer in the
+you kept it. It plays by ear and shows you nothing; a wrong note brings the
+chain back over the lit keys and asks you for the same chain again, and by this
+rung you should be taking even that away on the card. And on the modes drill, *Show me* engraves the answer in the
 key signature that fits it, so B flat aeolian prints five flats and no
 accidentals.
 

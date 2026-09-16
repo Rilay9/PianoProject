@@ -171,6 +171,16 @@ describe('sub-routes', () => {
     expect('sub' in parseHash('#/settings')).toBe(false);
   });
 
+  /**
+   * Free play (`04` §2b) is pushed over Today the way the lab is pushed over
+   * Library: its own hash, no tab of its own, and the tab it came from left
+   * highlighted.
+   */
+  it('parses `#/play` as free play over Today', () => {
+    expect(parseHash('#/play')).toEqual({ tab: 'today', play: true });
+    expect(routeToHash({ tab: 'today', play: true })).toBe('#/play');
+  });
+
   it('degrades an unknown sub-route to the tab, not to the default tab', () => {
     expect(parseHash('#/settings/nope')).toEqual({ tab: 'settings' });
   });
@@ -294,6 +304,26 @@ describe('the score route carries a mode, a loop and a way back', () => {
     expect(parseHash('#/score/song.a?mode=slowly').scoreMode).toBeUndefined();
     expect(parseHash('#/score/song.a?mode=').scoreMode).toBeUndefined();
     expect(parseHash('#/score/song.a?mode=toString').scoreMode).toBeUndefined();
+  });
+
+  /**
+   * `?hands=` — the Library's Duet door (`04` §4).
+   *
+   * The hand has to survive the hash, because the Score screen reads it where
+   * it picks its focus and every route off that screen (Blind, Perform) is
+   * rebuilt from the hash: a hand dropped there takes the app's half of the
+   * duet with it, silently.
+   */
+  it('carries a hand, and only one of the three', () => {
+    for (const hands of ['R', 'L', 'both'] as const) {
+      expect(parseHash(`#/score/song.a?hands=${hands}`).scoreHands, hands).toBe(hands);
+    }
+    expect(parseHash('#/score/song.a?hands=left').scoreHands).toBeUndefined();
+    expect(parseHash('#/score/song.a?hands=').scoreHands).toBeUndefined();
+    expect(parseHash('#/score/song.a?hands=toString').scoreHands).toBeUndefined();
+    expect(routeToHash({ tab: 'today', score: 'song.a', scoreMode: 'tempo', scoreHands: 'R' })).toBe(
+      '#/score/song.a?mode=tempo&hands=R',
+    );
   });
 
   it('refuses a loop that is not two bar numbers in order', () => {

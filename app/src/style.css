@@ -366,6 +366,19 @@ body {
   color: var(--text-muted);
 }
 
+/* A link and the separator after it, as one thing that cannot break in two.
+
+   A row of `·`-separated links wraps wherever the words run out, and a loose
+   separator is as likely to start the next line as to end the last one —
+   Today's five doors opened their second line with a dot, which reads as a
+   bullet for a list that has none. Tying each separator to the link before it
+   makes the wrap the same shape every time. */
+.plan-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* What is being shown, and how to change it, on one line (`04` §4). */
 .library-countrow {
   display: flex;
@@ -550,15 +563,22 @@ body {
    that: a single `Details`, beside a title somebody chose and wrote down, in a
    list of 1,533. Measured at 342 px they stood at 101 px each with about 45 of
    those a blank band under the words holding one word, which is four and a
-   half rows a screenful. So in the *library* the drop happens on rows with
-   more than one action — an imported score, which is where the archive titles
-   and the `Edit`/`Assign`/`Details` strip both are — and an ordinary row keeps
-   its words on the same line as its one link. The score folder is untouched:
-   every one of its rows carries two buttons, so the condition is always true
-   there and writing it in would only be a way to get it wrong later. */
+   half rows a screenful. So in the *library* the drop happens on the imported
+   rows — which is where the archive titles and the `Edit`/`Assign`/`Details`
+   strip both are — and an ordinary row keeps its words on the same line as its
+   links. The score folder is untouched: every one of its rows carries two
+   buttons, so the condition is always true there and writing it in would only
+   be a way to get it wrong later.
+
+   **Said by the row, not counted off its buttons (2026-09-16).** This used to
+   read `:has(.list-row__actions > button + button)` — "more than one action" —
+   which was the same question as "is this an import" only for as long as an
+   ordinary row had exactly one link. `Open as…` (§4) gives every playable row
+   a `⋯`, and with the old selector all 1,533 would have grown 35 px each for a
+   glyph 24 px wide. `LibraryScreen` marks the rows the exception is *for*. */
 @media (orientation: portrait) {
   #folder-list .list-row,
-  #library-list .list-row:has(.list-row__actions > button + button) {
+  #library-list .list-row[data-tall] {
     row-gap: 8px;
   }
 
@@ -566,12 +586,12 @@ body {
      competing for the width. `flex-wrap: wrap` on the row already allows it;
      the basis is what decides whether it happens. */
   #folder-list .list-row__text,
-  #library-list .list-row:has(.list-row__actions > button + button) .list-row__text {
+  #library-list .list-row[data-tall] .list-row__text {
     flex-basis: 100%;
   }
 
   #folder-list .list-row__actions,
-  #library-list .list-row:has(.list-row__actions > button + button) .list-row__actions {
+  #library-list .list-row[data-tall] .list-row__actions {
     margin-left: auto;
   }
 
@@ -617,6 +637,75 @@ body {
     white-space: nowrap;
     min-width: 0;
   }
+}
+
+/* The `Open as…` sheet's rows say what each mode does, and a sentence in a
+   sheet may take a second line.
+
+   `.list-row__meta` is one line that clips, which is right in a list of 1,533
+   rows and wrong here: these seven lines are the whole content of the sheet,
+   there is no scrolling past them, and at 115 % text every one of them ended
+   mid-word. The sentences are short enough to fit on a phone at 100 % anyway;
+   this is what stops the longest one being cut at any other size. */
+#library-openas .list-row__meta {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+#library-openas .list-row__metatext {
+  white-space: normal;
+}
+
+/* Sideways on a phone, the names and not the sentences.
+
+   The same trade the Score screen's own `⋯` sheet makes (`04` §5: sideways it
+   hides every hint), for the same reason: 342 px of height holds the header and
+   six of the seven rows, and the seventh — Blind — was cut in half at the
+   bottom of the panel. The seven names are the four modes plus three words
+   that are their own explanation, and they are the words §5 uses. */
+@media (orientation: landscape) and (max-height: 500px) {
+  #library-openas .list-row__meta {
+    display: none;
+  }
+
+  /* And the panel takes the height it is allowed, the way the score's own `⋯`
+     sheet does at this size: at 85 vh the seventh row sat half off the bottom
+     of the screen, and a sheet you have to discover a scroll in is a sheet
+     that looks as though it has six choices. */
+  #library-openas .sheet__panel {
+    max-height: 100vh;
+    padding-top: 8px;
+    padding-bottom: max(8px, var(--safe-bottom));
+  }
+
+  #library-openas .list-row {
+    padding-block: 6px;
+  }
+}
+
+/* `Open as…` on a Library row (`04` §4).
+
+   A glyph, so it needs to be given the target the words would have carried:
+   `⋯` is about twelve pixels of ink and `04` §0 R4 asks for forty. Upright the
+   rules above already give every action on this screen 40 px; this is for the
+   orientations they do not cover, and for the width, which nothing else sets.
+
+   And an edge, which none of this screen's other actions has. `Details ⋯` set
+   as two bare text links reads as one link ending in an ellipsis — the box is
+   what says there are two controls there, and it is the same thing the score
+   folder's rows needed for the same reason (see the note above on padding).
+
+   Written against `.link-button` rather than on its own, because that is what
+   it has to beat: the quiet variant's reset is further down this file and sets
+   both the border and the minimum height, so a bare `.library-openas` lost
+   every property it shares with it — the box did not draw at all. */
+.link-button.library-openas {
+  min-width: 40px;
+  min-height: 40px;
+  font-size: 1.15rem;
+  line-height: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
 .folder-row-note__aside {
@@ -4584,14 +4673,25 @@ input[type='checkbox'] {
   color: var(--text-muted);
 }
 
-/* The three that change the day, under the card (R3). Quiet in weight, still
-   a thumb in height — the same treatment Plan's link row has. */
-#today-tools {
+/* The two that change the day and the five doors under them (R3). Quiet in
+   weight, still a thumb in height — the same treatment Plan's link row has.
+
+   `.plan-links` already wraps, which is what a phone held sideways needs: the
+   five doors take two lines there rather than shrinking below a thumb. The
+   owner's rule for exactly this row: "I wouldn't freak out about sizes as long
+   as they're pressable." */
+#today-tools,
+#today-doors {
   margin-top: 12px;
   gap: 4px;
 }
 
-#today-tools .link-button {
+#today-doors {
+  margin-top: 4px;
+}
+
+#today-tools .link-button,
+#today-doors .link-button {
   min-height: 40px;
   padding: 0 6px;
 }

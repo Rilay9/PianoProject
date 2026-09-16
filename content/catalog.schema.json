@@ -232,7 +232,17 @@
               "description": "on a type=drill item this selects the runtime screen; on a type=exercise item it records what generated the notation and needs no screen (docs/05 §7)"
             },
             "params": {
-              "type": "object"
+              "type": "object",
+              "properties": {
+                "help": {
+                  "enum": [
+                    "show-keys",
+                    "keys-after-miss",
+                    "ear-only"
+                  ],
+                  "description": "kind: simon only (docs/04 §5c-2) — which rung of the help ladder the item opens on: keys lit and named as the chain plays, keys lit on a replay after a wrong note, or sound alone. The learner switches it on the card and the choice is then remembered per item."
+                }
+              }
             }
           },
           "required": [

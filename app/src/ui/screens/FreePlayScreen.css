@@ -1,0 +1,90 @@
+/*
+ * Free play (`04` §2b). Only what is new to this screen.
+ *
+ * The keys are `.keyboard-strip` exactly as the Score screen and the drills
+ * draw them, the two links are `.plan-links`, and the frame is the ordinary
+ * `.screen--list` one. What is left is the readout — the one thing this screen
+ * has that no other screen does.
+ */
+
+/* What is being held, in words. The chord is the biggest thing on the screen
+   because it is the only thing here the piano cannot tell you itself.
+
+   A panel, with the same surface and border as the keys under it, because the
+   two lines inside it are a *readout*: the chord line is deliberately empty
+   until three keys are down (see below), and an empty line floating on the
+   page reads as something that failed to draw, where an empty line inside a
+   display reads as a display waiting. */
+.play-readout {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+.play-chord {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  /* Reserved, not grown into: the line is empty until three keys are down, and
+     a readout that pushes the keyboard down the screen on the third note of a
+     chord is a keyboard that moves under your hand. */
+  min-height: 2.4rem;
+}
+
+.play-notes {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  min-height: 1.6rem;
+}
+
+/* Beside the keys it is about, not at the foot of the body (`04` §0 R6). */
+.play-device {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+#play-device-links[hidden] {
+  display: none;
+}
+
+/* The 88 keys scroll inside their own box, so the screen itself never widens.
+   `scrollToMiddleC` is what puts the useful end of them on the screen. */
+.play-strip {
+  margin-top: 8px;
+  overflow-x: hidden;
+}
+
+/* Taller than the strip is anywhere else, because here it is not a strip.
+
+   Under a score it is a feedback surface squeezed into whatever the notation
+   can spare, and the app-wide rule shrinks it to 56 px on a phone for exactly
+   that reason. On this screen the keys are the whole of the screen: nothing is
+   competing for the room, and a 26 x 56 key on a phone left two thirds of the
+   page empty under it. This is about the proportion of a real white key. */
+.play-strip .keyboard-strip {
+  --key-h: 148px;
+}
+
+/* A phone held sideways is 740 x 342 with the nav down one side, so the body
+   is about 300 px tall: the readout and the keys are all that fit, and both
+   have to. The chord drops to the size of a heading rather than a display
+   line, which is still the largest thing here. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .play-chord {
+    font-size: 1.5rem;
+    min-height: 1.8rem;
+  }
+
+  .play-readout {
+    padding: 2px 0;
+  }
+
+  /* Shorter keys, not fewer: a 342 px-tall body holds the readout, the line
+     saying what is being listened to, and this. */
+  .play-strip .keyboard-strip {
+    --key-h: 96px;
+  }
+}

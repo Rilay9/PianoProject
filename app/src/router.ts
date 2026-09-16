@@ -9,6 +9,7 @@
 // unnecessary here since the app has no deep content to link externally.
 
 import type { Mode } from './engine/types';
+import type { HandsFocus } from './score/WindowRenderer';
 
 export const TAB_IDS = ['today', 'plan', 'library', 'progress', 'settings'] as const;
 export type TabId = (typeof TAB_IDS)[number];
@@ -172,8 +173,22 @@ export interface Route {
    * since a generator handed rubbish would silently pick its own.
    */
   seed?: number;
+  /**
+   * `#/score/<id>?hands=R` — open with that hand chosen (`04` §4, Open as…).
+   *
+   * The hand focus is run state on the Score screen and starts at `both`,
+   * which is right when the screen is opened to play a piece and useless to
+   * the Library's **Duet** door: the duet is *the hand you are not playing*,
+   * so with no hand chosen there is no hand for the app to take and the row
+   * would open a screen where nothing happens (`04` §0 R4). The same
+   * mechanism `mode`, `blind` and `loop` already use, applied at the one line
+   * where this screen sets its focus.
+   */
+  scoreHands?: HandsFocus;
   /** The accompaniment lab (`04` §3c), addressed as `#/lab`. */
   lab?: boolean;
+  /** Free play (`04` §2b), addressed as `#/play`. */
+  play?: boolean;
 }
 
 /**
@@ -187,6 +202,13 @@ const SCORE_MODES: Record<Mode, true> = { wait: true, tempo: true, listen: true,
 
 function looksLikeMode(value: string | null | undefined): value is Mode {
   return value !== null && value !== undefined && Object.hasOwn(SCORE_MODES, value);
+}
+
+/** The three hand focuses, as a lookup, for the same reason `SCORE_MODES` is one. */
+const SCORE_HANDS: Record<HandsFocus, true> = { R: true, L: true, both: true };
+
+function looksLikeHands(value: string | null | undefined): value is HandsFocus {
+  return value !== null && value !== undefined && Object.hasOwn(SCORE_HANDS, value);
 }
 
 /** `1-2`: two printed bar numbers. A pickup bar is printed 0, so 0 is allowed. */
@@ -233,6 +255,8 @@ export function parseHash(hash: string): Route {
   const performance = params?.get('performance') === '1';
   const wantedMode = params?.get('mode');
   const scoreMode = looksLikeMode(wantedMode) ? wantedMode : undefined;
+  const wantedHands = params?.get('hands');
+  const scoreHands = looksLikeHands(wantedHands) ? wantedHands : undefined;
   const scoreLoop = parseLoopParam(params?.get('loop'));
   const seed = parseSeedParam(params?.get('seed'));
   const wantedTour = params?.get('tour');
@@ -267,6 +291,7 @@ export function parseHash(hash: string): Route {
       ...(blind ? { blind: true } : {}),
       ...(performance ? { performance: true } : {}),
       ...(scoreMode ? { scoreMode } : {}),
+      ...(scoreHands ? { scoreHands } : {}),
       ...(scoreLoop ? { scoreLoop } : {}),
       ...(tour === undefined ? {} : { tour }),
       ...(seed === undefined ? {} : { seed }),
@@ -277,6 +302,9 @@ export function parseHash(hash: string): Route {
   // whichever tab the learner came from highlighted, exactly as the lesson
   // page and the chord chart do.
   if (tab === 'lab') return { tab: 'library', lab: true };
+  // Free play (`04` §2b), pushed over Today the way the lab is pushed over
+  // Library: it is reached from Today's tools and is not a tab of its own.
+  if (tab === 'play') return { tab: 'today', play: true };
   if (tab === 'paper') {
     // `#/paper/book.czerny-599/no-1`. A book id contains no slash and a piece
     // id contains no slash, so the split is unambiguous.
@@ -351,6 +379,7 @@ export function parseHash(hash: string): Route {
 
 export function routeToHash(route: Route): string {
   if (route.lab) return '#/lab';
+  if (route.play) return '#/play';
   if (route.paper) {
     return `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
   }
@@ -360,6 +389,7 @@ export function routeToHash(route: Route): string {
       ...(route.blind ? ['blind=1'] : []),
       ...(route.performance ? ['performance=1'] : []),
       ...(route.scoreMode ? [`mode=${route.scoreMode}`] : []),
+      ...(route.scoreHands ? [`hands=${route.scoreHands}`] : []),
       ...(route.scoreLoop
         ? [`loop=${String(route.scoreLoop.from)}-${String(route.scoreLoop.to)}`]
         : []),
@@ -438,6 +468,8 @@ export class Router {
       performance?: boolean;
       /** Open in this practice mode rather than the learner's default. */
       mode?: Mode;
+      /** Open with this hand chosen rather than both (the Duet door, `04` §4). */
+      hands?: HandsFocus;
       /** Open with these printed bars already looping. */
       loop?: { from: number; to: number };
       /** The walkthrough that opened it, which Back returns to. */
@@ -452,6 +484,7 @@ export class Router {
       ...(options.blind ? { blind: true } : {}),
       ...(options.performance ? { performance: true } : {}),
       ...(options.mode ? { scoreMode: options.mode } : {}),
+      ...(options.hands ? { scoreHands: options.hands } : {}),
       ...(options.loop ? { scoreLoop: options.loop } : {}),
       ...(options.tour === undefined ? {} : { tour: options.tour }),
       ...(options.seed === undefined ? {} : { seed: options.seed }),
@@ -491,6 +524,13 @@ export class Router {
     this.setRoute(route);
   }
 
+  /** Opens free play (`#/play`, `04` §2b). */
+  navigatePlay(): void {
+    const route: Route = { tab: 'today', play: true };
+    this.win.location.hash = routeToHash(route);
+    this.setRoute(route);
+  }
+
   /** Opens an item in the chord-chart view (`#/chart/<itemId>`). */
   navigateChart(itemId: string): void {
     const route: Route = { tab: 'library', chart: itemId };
@@ -522,9 +562,11 @@ export class Router {
       route.blind === this.current.blind &&
       route.performance === this.current.performance &&
       route.scoreMode === this.current.scoreMode &&
+      route.scoreHands === this.current.scoreHands &&
       route.tour === this.current.tour &&
       route.seed === this.current.seed &&
       route.lab === this.current.lab &&
+      route.play === this.current.play &&
       // By value: two loop ranges naming the same bars are the same route, and
       // comparing the objects would remount the Score screen on every repeat
       // of a navigation that changed nothing.

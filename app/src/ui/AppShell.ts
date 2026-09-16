@@ -19,6 +19,7 @@ import { PaperScreen } from './screens/PaperScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ChordChartScreen } from './screens/ChordChartScreen';
 import { LabScreen } from './screens/LabScreen';
+import { FreePlayScreen } from './screens/FreePlayScreen';
 import { DrillScreen } from './screens/DrillScreen';
 import { GuideScreen } from './screens/GuideScreen';
 
@@ -71,6 +72,8 @@ function screenFor(route: Route): ScreenFactory {
   }
   // The accompaniment lab (`04` §3c), pushed over Library the way the chart is.
   if (route.lab) return LabScreen;
+  // Free play (`04` §2b), pushed over Today the same way.
+  if (route.play) return FreePlayScreen;
   if (route.drill) {
     const drillId = route.drill;
     return (router) => DrillScreen(router, drillId);

@@ -3725,7 +3725,8 @@
           6,
           7
         ],
-        "rounds": 12
+        "rounds": 12,
+        "help": "show-keys"
       }
     },
     "source": {
@@ -3771,7 +3772,8 @@
         "low": "G3",
         "high": "G4",
         "steps": "chromatic",
-        "rounds": 12
+        "rounds": 12,
+        "help": "keys-after-miss"
       }
     },
     "source": {

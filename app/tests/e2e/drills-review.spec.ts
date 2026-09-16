@@ -42,12 +42,71 @@ interface Transition {
   wrongLit: number[];
 }
 
+/** One reading of the Simon card and the keys under it, taken by the sampler. */
+interface CardSample {
+  /** What `#drill-ear-card` was showing — the glyph, or a note name. */
+  name: string;
+  /** The notes lit as *expected* on the strip at that moment. */
+  expectedLit: number[];
+}
+
 declare global {
   interface Window {
     __drillTransitions?: Transition[];
     __drillTapOnMiss?: boolean;
     __drillObserver?: MutationObserver;
+    __simonSamples?: CardSample[];
+    __simonSampler?: number;
   }
+}
+
+/**
+ * Starts sampling the Simon card and the lit keys.
+ *
+ * The chain lights one key at a time and names it, and every one of those is a
+ * transient: by the time a `toHaveClass` reached the second note the first had
+ * gone. So the page records what it was showing, continuously, from before the
+ * chain is asked to play — and the assertions read the record. Nothing here
+ * asserts how long anything lasted; the claims are about *what* was seen and
+ * in what order.
+ */
+async function watchSimonCard(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    window.clearInterval(window.__simonSampler);
+    window.__simonSamples = [];
+    window.__simonSampler = window.setInterval(() => {
+      const card = document.querySelector('#drill-ear-card');
+      window.__simonSamples?.push({
+        name: card?.textContent ?? '',
+        expectedLit: Array.from(
+          document.querySelectorAll('.keyboard-strip .is-expected[data-midi]'),
+        ).map((key) => Number((key as HTMLElement).dataset.midi)),
+      });
+    }, 25);
+  });
+}
+
+/** Everything sampled so far, with the sampler left running. */
+async function simonSoFar(page: Page): Promise<CardSample[]> {
+  return page.evaluate(() => window.__simonSamples ?? []);
+}
+
+/** Stops the sampler and hands back everything it saw. */
+async function simonSeen(page: Page): Promise<CardSample[]> {
+  return page.evaluate(() => {
+    window.clearInterval(window.__simonSampler);
+    return window.__simonSamples ?? [];
+  });
+}
+
+/** Which rung of the help ladder the card is on, as the chips report it. */
+async function pressedRung(page: Page): Promise<string> {
+  return (
+    (await page
+      .locator('#drill-simon-help .chip[aria-pressed="true"]')
+      .first()
+      .getAttribute('data-help')) ?? ''
+  );
 }
 
 /**
@@ -303,6 +362,13 @@ test.describe('Simon', () => {
     const midi = await openDrill(page, 'drill.ear.simon-c-major');
     const drill = page.locator('[data-screen="drill"]');
     await expect(drill).toHaveAttribute('data-kind', 'simon');
+    // The bottom rung of the help ladder, because that is the rung this test's
+    // claims are about: no lights, no replay, and a wrong note ends the game.
+    // The white-key item opens on the top rung, where the card names each note
+    // as it sounds on purpose (`04` §5c-2) — asserting "the card must not name
+    // the notes" there would be asserting against the help.
+    await page.locator('#drill-simon-help-ear-only').click();
+    await expect(page.locator('#drill-simon-help-ear-only')).toHaveAttribute('aria-pressed', 'true');
 
     const chains: number[][] = [];
     for (let round = 1; round <= 3; round += 1) {
@@ -345,5 +411,175 @@ test.describe('Simon', () => {
     await expect(chainLine).toHaveAttribute('data-best', String(chains.length));
     await expect(chainLine).toContainText('Longest chain');
     await expect(page.locator('[data-stat="answered"]')).toContainText(String(chains.length));
+  });
+
+  /** Plays back whatever the card is waiting for, correctly. */
+  /**
+   * Waits for the card to be ready for an answer, then plays the chain back.
+   *
+   * Ready means two things the first version of this helper skipped: the new
+   * card's chain is the one the drill will judge (`length` notes — it grows
+   * by one a card, and the counter says "2 of" a beat before `current` has
+   * moved), and the chain has finished playing on the keys, because on the
+   * lit rung the keys and the name are still being shown while it sounds.
+   */
+  async function echoChain(page: Page, midi: MidiMock, length?: number): Promise<number[]> {
+    if (length !== undefined) {
+      await expect.poll(async () => (await expectedNow(page)).length, { timeout: 15_000 }).toBe(length);
+    }
+    await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'glyph', { timeout: 20_000 });
+    await expect(page.locator('#drill-strip .is-expected')).toHaveCount(0, { timeout: 20_000 });
+    const chain = await expectedNow(page);
+    for (const note of chain) {
+      await midi.noteOn(note, 90);
+      await midi.noteOff(note);
+    }
+    return chain;
+  }
+
+  /**
+   * Was each note lit at the moment its own name was on the card?
+   *
+   * The claim the top rung of the ladder makes is not "a key lit at some
+   * point" and not "a name appeared at some point" — it is that the two say
+   * the same thing at the same time, which is the whole of what makes the
+   * lights teach anything.
+   */
+  function litWithItsName(seen: CardSample[], note: number): boolean {
+    return seen.some(
+      (sample) => sample.name === noteLabel(note) && sample.expectedLit.includes(note),
+    );
+  }
+
+  test('shows the chain on the keys, one at a time, with its name on the card', async ({
+    page,
+  }) => {
+    const midi = await openDrill(page, 'drill.ear.simon-c-major');
+    // The rung the catalog chose for the white-key game, on the card without
+    // anybody asking for it: this is the item a beginner meets first.
+    expect(await pressedRung(page)).toBe('show-keys');
+
+    // Two rounds in, so "one at a time, in order" is a claim about something.
+    await echoChain(page, midi, 1);
+    await expect(page.locator('#drill-counter')).toContainText('2 of');
+    await echoChain(page, midi, 2);
+    await expect(page.locator('#drill-counter')).toContainText('3 of');
+    await expect.poll(async () => (await expectedNow(page)).length, { timeout: 15_000 }).toBe(3);
+    const chain = await expectedNow(page);
+
+    await watchSimonCard(page);
+    await page.locator('#drill-replay').click();
+    // The recording is complete when every note of the chain has been named.
+    await expect
+      .poll(
+        async () =>
+          new Set(
+            (await simonSoFar(page)).map((sample) => sample.name).filter((name) => name !== '🎧'),
+          ).size,
+        { timeout: 20_000 },
+      )
+      .toBe(chain.length);
+    const seen = await simonSeen(page);
+
+    // Each key lit while its own name was on the card.
+    for (const note of chain) {
+      expect(litWithItsName(seen, note), `${noteLabel(note)} was never lit under its own name`).toBe(
+        true,
+      );
+    }
+    // A sequence, not a chord: never two of them lit at once.
+    for (const sample of seen) {
+      expect(sample.expectedLit.length, 'the chain lit as a chord').toBeLessThan(2);
+    }
+    // And in the order they were played, which is the thing being remembered.
+    // `toContain` rather than an equality, because the sampler is running from
+    // before the click and the card may still have been finishing the play it
+    // started on its own: what is claimed is that the whole chain went by in
+    // order, not that nothing preceded it.
+    const order: number[] = [];
+    for (const sample of seen) {
+      const note = sample.expectedLit[0];
+      if (note !== undefined && order[order.length - 1] !== note) order.push(note);
+    }
+    expect(order.join(','), 'the chain did not light in order').toContain(chain.join(','));
+  });
+
+  test('plays a missed chain back lit, then asks for the same chain again', async ({ page }) => {
+    const midi = await openDrill(page, 'drill.ear.simon-chromatic');
+    const drill = page.locator('[data-screen="drill"]');
+    // The chromatic game is met years later, so it starts ear-first.
+    expect(await pressedRung(page)).toBe('keys-after-miss');
+
+    await echoChain(page, midi, 1);
+    await expect(page.locator('#drill-counter')).toContainText('2 of');
+    await expect.poll(async () => (await expectedNow(page)).length, { timeout: 15_000 }).toBe(2);
+    await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'glyph', { timeout: 20_000 });
+    const chain = await expectedNow(page);
+
+    await watchTransitions(page);
+    await watchSimonCard(page);
+    const wrong = (chain[0] ?? 60) + 1;
+    await midi.noteOn(wrong, 90);
+    await midi.noteOff(wrong);
+
+    // The same chain, over the keys, named as it goes.
+    await expect
+      .poll(
+        async () =>
+          new Set(
+            (await simonSoFar(page)).map((sample) => sample.name).filter((name) => name !== '🎧'),
+          ).size,
+        { timeout: 20_000 },
+      )
+      .toBe(chain.length);
+    const seen = await simonSeen(page);
+    for (const note of chain) {
+      expect(litWithItsName(seen, note), `${noteLabel(note)} was never lit under its own name`).toBe(
+        true,
+      );
+    }
+
+    // The card was held while that happened, and said how to leave it early.
+    const record = await transitions(page);
+    expect(record.some((t) => t.name === 'data-feedback' && t.value === 'wrong')).toBe(true);
+    expect(missMoment(record).statusText).toContain('Tap');
+
+    // And then the *same* chain is asked for again — not one note longer, and
+    // not a result sheet: a miss on this rung does not end the game.
+    await expect(drill).toHaveAttribute('data-paused', '', { timeout: 20_000 });
+    await expect(page.locator('#drill-summary')).toBeHidden();
+    expect(await expectedNow(page)).toEqual(chain);
+
+    // Played right, it grows again.
+    await echoChain(page, midi);
+    await expect
+      .poll(async () => (await expectedNow(page)).length, { timeout: 20_000 })
+      .toBe(chain.length + 1);
+  });
+
+  test('remembers the rung for that item, and only for that item', async ({ page }) => {
+    const drill = page.locator('[data-screen="drill"]');
+    await openDrill(page, 'drill.ear.simon-c-major');
+    expect(await pressedRung(page)).toBe('show-keys');
+
+    // The chip is not a label: the card's own sentence about how to answer
+    // changes with it, because what happens after a wrong note is different.
+    const how = page.locator('#drill-how');
+    const before = (await how.textContent()) ?? '';
+    expect(before.length).toBeGreaterThan(0);
+    await page.locator('#drill-simon-help-ear-only').click();
+    await expect(page.locator('#drill-simon-help-ear-only')).toHaveAttribute('aria-pressed', 'true');
+    await expect(how).not.toHaveText(before);
+
+    await page.reload();
+    await expect(drill).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });
+    expect(await pressedRung(page)).toBe('ear-only');
+
+    // Per item, not for Simon everywhere: the white-key game is where a
+    // beginner needs the lights and the chromatic one is not, so a choice made
+    // on one must not follow the learner onto the other.
+    await page.goto('/#/drill/drill.ear.simon-chromatic');
+    await expect(drill).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });
+    expect(await pressedRung(page)).toBe('keys-after-miss');
   });
 });

@@ -196,10 +196,13 @@ export function ScoreScreen(router: Router): HTMLElement {
    *
    * Blind and Perform are routes, so pressing either rebuilds the screen from
    * the hash — and without these the learner would be silently dropped out of
-   * the tour by a control that has nothing to do with it.
+   * the tour by a control that has nothing to do with it. The hand rides here
+   * for the same reason: a duet opened from the Library (`04` §4) would lose
+   * its hand — and so the app's half of it — on a tap of Blind.
    */
   const tourRoute = {
     ...(routeMode ? { mode: routeMode } : {}),
+    ...(router.route.scoreHands ? { hands: router.route.scoreHands } : {}),
     ...(routeLoop ? { loop: routeLoop } : {}),
     ...(tourId === undefined ? {} : { tour: tourId }),
   };
@@ -263,7 +266,14 @@ export function ScoreScreen(router: Router): HTMLElement {
   /** Runs finished since this exercise was generated (see the summary sheet). */
   let sightReadAttempts = 0;
   let input: FollowInput = 'none';
-  let hands: HandsFocus = 'both';
+  /**
+   * Which hand the learner is playing.
+   *
+   * `both` unless the hash asked for one (`04` §4, the Library's Duet door),
+   * and read here rather than after the load because the renderer is built
+   * with it: a hand applied later would re-engrave the sheet for nothing.
+   */
+  let hands: HandsFocus = router.route.scoreHands ?? 'both';
   let tempoPct = settings.defaultTempoPct;
   let metronomeOn = false;
   /**

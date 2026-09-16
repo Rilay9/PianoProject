@@ -44,7 +44,10 @@ this track.
 **Simon, on every key.** The chain game from Stage 3 again — hear a chain of
 notes, play it back, and it grows by one each round — but now drawn from all
 twelve keys around middle C rather than the white ones. Without a scale to lean
-on, the only thing that holds the chain is having heard it: sing it first.
+on, the only thing that holds the chain is having heard it: sing it first. It
+plays by ear with nothing lit; miss a note and it plays the chain again over
+the lit keys and asks you for that same chain, so the chain never grows until
+you have played it right.
 
 **Common mistake.** Learning modes as scale fingerings. They are harmonic
 colours; play a Dorian vamp (Dm to G) for two minutes and you will learn more

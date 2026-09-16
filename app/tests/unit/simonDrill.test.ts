@@ -10,13 +10,24 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  SIMON_CHROMATIC_ITEM,
+  SIMON_C_MAJOR_ITEM,
+  SIMON_DEFAULT_HELP,
+  SIMON_HELP_LEVELS,
   SIMON_MASTER_CHAIN,
   SIMON_PASS_CHAIN,
+  SIMON_STEP_MS,
   SimonDrill,
   simonBestChain,
   simonChain,
+  simonForStage,
+  simonHelpLevel,
+  simonMissPauseMs,
   simonOutcome,
   simonPool,
+  simonReplayAfterMiss,
+  toSimonHelp,
+  type SimonHelp,
 } from '../../src/engine/drills/simon';
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { makeRng } from '../../src/engine/sightReading';
@@ -28,7 +39,7 @@ function noteOn(midi: number, tMs = 0): EngineInput {
   return { kind: 'noteOn', midi, velocity: 80, tMs, confidence: 1 };
 }
 
-function aGame(seed: number, rounds = 6): SimonDrill {
+function aGame(seed: number, rounds = 6, help?: SimonHelp): SimonDrill {
   return new SimonDrill({
     low: 60,
     high: 72,
@@ -36,6 +47,7 @@ function aGame(seed: number, rounds = 6): SimonDrill {
     key: 0,
     rounds,
     rng: makeRng(seed),
+    ...(help ? { help } : {}),
   });
 }
 
@@ -66,6 +78,22 @@ describe('the chain grows by one and keeps what came before', () => {
       expect(prompt?.label).toBe(`${String(round)} ${round === 1 ? 'note' : 'notes'}`);
       previous = prompt?.expected ?? [];
       if (prompt) echo(drill, prompt);
+    }
+  });
+
+  it('opens on a chain nobody could fail to hold, whatever rung it is on', () => {
+    // A game that opened deep in the chain would be a memory test nobody has
+    // been given anything to remember for. The claim is a ceiling, not a
+    // measurement: the first card asks for no more than two notes and every
+    // card after it for exactly one more than the card before.
+    for (const level of SIMON_HELP_LEVELS) {
+      const drill = aGame(17, 5, level.id);
+      const first = drill.next();
+      expect(first?.expected.length, level.id).toBeLessThanOrEqual(2);
+      expect(first?.expected.length, level.id).toBeGreaterThan(0);
+      if (first) echo(drill, first);
+      const second = drill.next();
+      expect(second?.expected.length, level.id).toBe((first?.expected.length ?? 0) + 1);
     }
   });
 
@@ -144,6 +172,182 @@ describe('a wrong note ends the chain', () => {
     const result = drill.result();
     expect(result.detail?.longestChain).toBe(rounds);
     expect(result.accuracy).toBe(1);
+  });
+});
+
+/**
+ * The three levels of help (`04` §5c-2).
+ *
+ * The pure half: the ladder itself, what each rung shows, and the rule that
+ * decides whether a missed chain is played again. Nothing here measures a
+ * duration — where a wait is claimed it is claimed as a *comparison* between
+ * two waits the rule itself produced.
+ */
+describe('the help ladder', () => {
+  it('runs from most help to least, with every rung a step down', () => {
+    // How much help a rung gives, counted from what it does rather than
+    // written down twice: lighting the keys as the chain plays is more help
+    // than lighting them after a miss, which is more than nothing.
+    const help = (id: SimonHelp): number => {
+      const level = simonHelpLevel(id);
+      return (level.lightsWhilePlaying ? 2 : 0) + (level.replayAfterMiss ? 1 : 0);
+    };
+    const rungs = SIMON_HELP_LEVELS.map((level) => help(level.id));
+    expect(rungs.length).toBeGreaterThan(2);
+    for (let i = 1; i < rungs.length; i += 1) {
+      expect(rungs[i], `rung ${String(i)}`).toBeLessThan(rungs[i - 1] as number);
+    }
+    // The bottom rung is the plain game: no lights at any moment.
+    const bottom = SIMON_HELP_LEVELS[SIMON_HELP_LEVELS.length - 1];
+    expect(bottom?.lightsWhilePlaying).toBe(false);
+    expect(bottom?.replayAfterMiss).toBe(false);
+    expect(bottom?.retryAfterMiss).toBe(false);
+    // Three chips have to fit across a phone, so no rung's word may be as long
+    // as its own explanation.
+    for (const level of SIMON_HELP_LEVELS) {
+      expect(level.label.length, level.id).toBeLessThan(level.meaning.length);
+      expect(level.how.length, level.id).toBeGreaterThan(0);
+    }
+  });
+
+  it('reveals the chain only where it says it does', () => {
+    const lit = SIMON_HELP_LEVELS.filter((level) => level.lightsWhilePlaying);
+    const replayed = SIMON_HELP_LEVELS.filter((level) => level.replayAfterMiss);
+    // Exactly one rung shows the chain as it plays — the whole question the
+    // learner is answering with the chips is "before, after, or not at all".
+    expect(lit.map((level) => level.id)).toEqual(['show-keys']);
+    expect(replayed.map((level) => level.id)).toEqual(['keys-after-miss']);
+    // Showing it up front and showing it after a miss are different rungs: a
+    // learner who saw the keys as it played has nothing to be shown again.
+    for (const level of SIMON_HELP_LEVELS) {
+      expect(level.lightsWhilePlaying && level.replayAfterMiss, level.id).toBe(false);
+      // And only a replay can ask for the same chain again: being asked again
+      // with nothing new shown would be the same test twice.
+      expect(!level.replayAfterMiss && level.retryAfterMiss, level.id).toBe(false);
+    }
+  });
+
+  it('falls back rather than throwing on a rung it does not know', () => {
+    for (const level of SIMON_HELP_LEVELS) expect(toSimonHelp(level.id)).toBe(level.id);
+    // A typo in the catalog, junk in storage, and nothing at all.
+    expect(toSimonHelp('show keys')).toBe(SIMON_DEFAULT_HELP);
+    expect(toSimonHelp(null)).toBe(SIMON_DEFAULT_HELP);
+    expect(toSimonHelp(undefined, 'show-keys')).toBe('show-keys');
+    expect(toSimonHelp(7, 'keys-after-miss')).toBe('keys-after-miss');
+    // The engine's own default is the plain game: a drill built by a test or a
+    // tool behaves as Simon did before the ladder existed.
+    expect(simonHelpLevel(SIMON_DEFAULT_HELP).lightsWhilePlaying).toBe(false);
+    expect(simonHelpLevel(SIMON_DEFAULT_HELP).retryAfterMiss).toBe(false);
+  });
+
+  it('replays a missed chain on one rung, and only after a miss', () => {
+    for (const level of SIMON_HELP_LEVELS) {
+      expect(simonReplayAfterMiss(level.id, true), `${level.id} answered right`).toBe(false);
+      expect(simonReplayAfterMiss(level.id, false), level.id).toBe(level.replayAfterMiss);
+    }
+  });
+
+  it('holds the card for as long as the replay takes, and no longer elsewhere', () => {
+    const replaying = SIMON_HELP_LEVELS.find((level) => level.replayAfterMiss)?.id as SimonHelp;
+    // A longer chain takes longer to play, so it is held longer. The claim is
+    // the relationship, not either number.
+    expect(simonMissPauseMs(replaying, 6)).toBeGreaterThan(simonMissPauseMs(replaying, 3));
+    expect(simonMissPauseMs(replaying, 3)).toBeGreaterThan(simonMissPauseMs(replaying, 1));
+    // And a chain played more slowly is held longer than the same chain played
+    // quickly, or the card would cut its own help off mid-chain.
+    expect(simonMissPauseMs(replaying, 4, SIMON_STEP_MS * 2)).toBeGreaterThan(
+      simonMissPauseMs(replaying, 4, SIMON_STEP_MS),
+    );
+    for (const level of SIMON_HELP_LEVELS) {
+      if (level.replayAfterMiss) {
+        // Even the shortest replay is given more room than the beat a card
+        // with nothing to show gets.
+        expect(simonMissPauseMs(level.id, 1)).toBeGreaterThan(simonMissPauseMs('ear-only', 1));
+        continue;
+      }
+      // Nothing to replay, so nothing to wait for: the same beat whatever the
+      // chain has grown to.
+      expect(simonMissPauseMs(level.id, 1), level.id).toBe(simonMissPauseMs(level.id, 9));
+    }
+  });
+});
+
+describe('a missed chain comes back, on the ear-first rung', () => {
+  /** The rung whose whole point is that a miss is not the end. */
+  const EAR_FIRST: SimonHelp = 'keys-after-miss';
+
+  it('asks for the same chain again rather than ending the game', () => {
+    const drill = aGame(101, 6, EAR_FIRST);
+    const first = drill.next();
+    if (first) echo(drill, first);
+    const second = drill.next();
+    expect(second?.expected.length).toBe(2);
+    drill.feed(noteOn((second?.expected[0] ?? 60) + 1, 10));
+    expect(drill.result().answers[1]?.correct).toBe(false);
+
+    // The same chain, note for note — not a new draw, and not one note longer.
+    const again = drill.next();
+    expect(again, 'the game ended on a rung where a miss should not end it').not.toBeNull();
+    expect(again?.expected).toEqual(second?.expected);
+
+    // And it does not grow until it is played right.
+    if (again) echo(drill, again);
+    expect(drill.next()?.expected.length).toBe(3);
+  });
+
+  it('scores the chain it reached, not the number of tries it took', () => {
+    const drill = aGame(202, 6, EAR_FIRST);
+    const first = drill.next();
+    if (first) echo(drill, first);
+    for (let miss = 0; miss < 2; miss += 1) {
+      const prompt = drill.next();
+      drill.feed(noteOn((prompt?.expected[0] ?? 60) + 1, 10));
+    }
+    const retried = drill.next();
+    if (retried) echo(drill, retried);
+    // Two chains were played right — one note and then two — whatever the two
+    // failed attempts in between cost.
+    expect(drill.result().detail?.longestChain).toBe(2);
+    expect(drill.result().correct).toBe(2);
+  });
+
+  it('still ends: the game has as many cards as the chain has notes', () => {
+    // "The chain does not grow until it is played right" needs a floor, or a
+    // learner who never plays it right is in a drill with no end. The cards
+    // are the floor, and there are exactly as many as the game was drawn with.
+    const rounds = 4;
+    const drill = aGame(303, rounds, EAR_FIRST);
+    let cards = 0;
+    for (let prompt = drill.next(); prompt; prompt = drill.next()) {
+      cards += 1;
+      // Every single one wrong, for ever, if it were allowed.
+      drill.feed(noteOn((prompt.expected[0] ?? 60) + 1, cards * 10));
+      expect(cards, 'the game did not end').toBeLessThanOrEqual(rounds);
+    }
+    expect(cards).toBe(rounds);
+    expect(drill.result().detail?.longestChain).toBe(0);
+  });
+
+  it('leaves the other rungs ending on the note that broke them', () => {
+    for (const level of SIMON_HELP_LEVELS) {
+      if (level.retryAfterMiss) continue;
+      const drill = aGame(404, 6, level.id);
+      const first = drill.next();
+      drill.feed(noteOn((first?.expected[0] ?? 60) + 1, 10));
+      expect(drill.next(), level.id).toBeNull();
+    }
+  });
+
+  it('follows the rung the learner is standing on when the note is played', () => {
+    // The chips are on the card, during the game, so the rung is read at the
+    // moment of the miss and not at the moment the drill was built.
+    const drill = aGame(505, 6, 'ear-only');
+    const first = drill.next();
+    if (first) echo(drill, first);
+    drill.help = EAR_FIRST;
+    const second = drill.next();
+    drill.feed(noteOn((second?.expected[0] ?? 60) + 1, 10));
+    expect(drill.next()?.expected).toEqual(second?.expected);
   });
 });
 
@@ -228,6 +432,28 @@ describe('the two catalog items play what they say', () => {
     expect(notes.some((midi) => [61, 63, 66, 68, 70].includes(midi))).toBe(false);
   });
 
+  it('starts each of the two on the rung its learner needs', () => {
+    // Not the same rung, and that is the point: the white-key game is met in
+    // Stage 3 by somebody who cannot yet find a heard note on the keyboard,
+    // and the chromatic one years later by somebody who can. The catalog says
+    // which, and it has to survive being read back as a rung rather than as a
+    // string nobody checks.
+    const helpOf = (id: string): SimonHelp => {
+      const item = STATIC.find((entry) => entry.id === id);
+      expect(item, `${id} is not in the static catalog`).toBeDefined();
+      return toSimonHelp((item as CatalogItem).drill?.params?.help);
+    };
+    const plain = helpOf('drill.ear.simon-c-major');
+    const chromatic = helpOf('drill.ear.simon-chromatic');
+    expect(simonHelpLevel(plain).lightsWhilePlaying).toBe(true);
+    expect(simonHelpLevel(chromatic).lightsWhilePlaying).toBe(false);
+    expect(simonHelpLevel(chromatic).replayAfterMiss).toBe(true);
+    // Neither is authored as the engine's fallback, or the field would be
+    // doing nothing and nobody would notice if it stopped being read.
+    expect(plain).not.toBe(SIMON_DEFAULT_HELP);
+    expect(chromatic).not.toBe(SIMON_DEFAULT_HELP);
+  });
+
   it('lets the chromatic game use the black keys, and sits above it', () => {
     const plain = STATIC.find((entry) => entry.id === 'drill.ear.simon-c-major');
     const { item, notes } = build('drill.ear.simon-chromatic');
@@ -246,5 +472,56 @@ describe('the two catalog items play what they say', () => {
       });
     }
     expect(drawn.some((midi) => [1, 3, 6, 8, 10].includes(((midi % 12) + 12) % 12))).toBe(true);
+  });
+});
+
+/**
+ * Which Simon Today's door opens (`04` §2).
+ *
+ * The rule is not this function's to invent: the curriculum already puts the
+ * two items on rungs, so what is checked here is that the door agrees with the
+ * plan. Derived from the built curriculum rather than written down again — the
+ * one way a shortcut and the ladder it is a shortcut to can drift apart is if
+ * each states the stage for itself.
+ */
+describe('simonForStage', () => {
+  const CURRICULUM = JSON.parse(
+    readFileSync(resolve('public/content/curriculum.json'), 'utf8'),
+  ) as {
+    stages: {
+      number: number;
+      units: { lessons: { exerciseOptions?: string[]; songOptions?: string[] }[] }[];
+    }[];
+  };
+
+  /** The lowest stage the curriculum offers `id` on. */
+  function firstStageOf(id: string): number {
+    const stages = CURRICULUM.stages
+      .filter((stage) =>
+        stage.units.some((unit) =>
+          unit.lessons.some((lesson) =>
+            [...(lesson.exerciseOptions ?? []), ...(lesson.songOptions ?? [])].includes(id),
+          ),
+        ),
+      )
+      .map((stage) => stage.number);
+    expect(stages.length, `${id} is on no rung`).toBeGreaterThan(0);
+    return Math.min(...stages);
+  }
+
+  it('offers whichever of the two the plan would offer at that stage', () => {
+    const plainFrom = firstStageOf(SIMON_C_MAJOR_ITEM);
+    const chromaticFrom = firstStageOf(SIMON_CHROMATIC_ITEM);
+    // The chromatic game is the later of the two, or there is nothing to choose.
+    expect(chromaticFrom).toBeGreaterThan(plainFrom);
+    for (let stage = 0; stage <= 9; stage += 1) {
+      expect(simonForStage(stage), `stage ${String(stage)}`).toBe(
+        stage >= chromaticFrom ? SIMON_CHROMATIC_ITEM : SIMON_C_MAJOR_ITEM,
+      );
+    }
+  });
+
+  it('gives a learner below both of them the one they will meet first', () => {
+    expect(simonForStage(0)).toBe(SIMON_C_MAJOR_ITEM);
   });
 });

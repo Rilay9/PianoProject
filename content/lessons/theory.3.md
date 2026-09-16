@@ -45,8 +45,10 @@ the beats aloud while listening — do not try to memorise it as a shape.
 **Simon.** The app plays one note and you play it back; then the same note and
 one more; then three. The chain grows by one each round until it breaks, and
 the score is how long a chain you kept. On this rung it is the white keys
-around middle C. Sing the chain before you touch a key — a chain you can sing
-is a chain you can find.
+around middle C, and the keys light up and name themselves as the chain plays,
+so the only thing you have to hold is the order; take that help away with the
+chips on the card once you no longer need it. Sing the chain before you touch a
+key — a chain you can sing is a chain you can find.
 
 **Common mistake.** Learning interval names without ever singing them. Theory
 that never reaches your ear stays a filing system.

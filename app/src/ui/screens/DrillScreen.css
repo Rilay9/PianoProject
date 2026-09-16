@@ -42,6 +42,67 @@
   font-style: italic;
 }
 
+/* The Simon card: the glyph, or the note that is sounding, and the ladder.
+ *
+ * One column inside the stage, which already centres a single card — so this
+ * adds no row and no column to the screen's grid (see the note at the top),
+ * and sideways it sits in the picture column where the ear glyph was already
+ * the only thing. */
+.simon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Smaller than the other ear cards' glyph, and one size whether it is showing
+ * the glyph or a note name.
+ *
+ * Two reasons for both halves. The card now has three chips under it and
+ * sideways the stage is capped at 42vh, so a glyph at 18vmin plus two rows of
+ * chips would have been taller than that cap and clipped by it. And a name
+ * drawn at a different size from the glyph it replaces would move the chips
+ * under it on every note of the chain — the fixed `min-height` is what stops
+ * the card twitching five times a round. */
+.screen[data-screen='drill'][data-kind='simon'] .ear-card {
+  font-size: clamp(2.25rem, 12vmin, 3.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+  min-height: 1.15em;
+  letter-spacing: 0.02em;
+}
+
+/* Three chips, wrapping together and centred under the card. No filled box
+ * among them: `04` §0 R3 allows the screen one and a running drill spends it
+ * on nothing, so the pressed chip is the accent and the other two are quiet. */
+.simon-help {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* A phone held sideways, where the stage is capped at 42vh and clips what does
+ * not fit (`style.css`, the two-column drill grid).
+ *
+ * The three chips wrap to two rows in the picture column and, with the glyph
+ * at the size it takes upright, the card came to about the whole of that cap
+ * with no room to be wrong in — and the half that would have been clipped is
+ * the chips, which are the controls. So sideways the glyph gives way, as it
+ * does everywhere else on this screen when the height is the scarce thing; a
+ * note name is still the largest text on the card. The 520 px is the same
+ * breakpoint the drill grid itself turns on at. */
+@media (max-height: 520px) {
+  .screen[data-screen='drill'][data-kind='simon'] .ear-card {
+    font-size: clamp(1.75rem, 9vmin, 2.5rem);
+  }
+
+  .simon-card {
+    gap: 6px;
+  }
+}
+
 /* The Simon result: the chain is the whole point of the run, so it is the one
  * line on the sheet that is not at list size. Sits between the stat list and
  * the buttons, inside `#drill-summary`, which the sideways grid already spans

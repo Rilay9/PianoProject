@@ -225,6 +225,12 @@ const SCENES: Scene[] = [
   },
   { slug: 'lab', open: (p) => go(p, '/lab', 'lab'), prove: '#lab-settings', content: '[data-screen="lab"]' },
   {
+    slug: 'play',
+    open: (p) => go(p, '/play', 'play'),
+    prove: '#play-strip .keyboard-strip',
+    content: '[data-screen="play"]',
+  },
+  {
     slug: 'lab-jam',
     open: async (p) => {
       await go(p, '/lab', 'lab');

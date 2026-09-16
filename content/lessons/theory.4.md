@@ -9,7 +9,7 @@ videos:
   - label: "Music Theory: Authentic Cadences"
     url: "https://www.youtube.com/watch?v=mJQP9TTDYLo"
     teacher: "Scott Watson"
-readingTime: 2
+readingTime: 3
 ---
 
 **The circle of fifths** arranges the twelve keys so each is a fifth above the
@@ -49,7 +49,9 @@ first, then detail — the same order in which you would sketch a face.
 you can play any of them, and the chain game is that memory on its own, one
 note longer each round. The version drawn from every key is an option here
 now: no scale to fall back on, and the note has to come back in the octave
-it was played in.
+it was played in. That one plays by ear and lights nothing — until you miss,
+when it plays the chain again over the lit keys and asks you for the same chain
+rather than ending the game.
 
 **How you'll know you've got it.** Cadences identified at 80 % by ear, triad
 inversions identified by their bass, and a two-bar melody played back correctly

@@ -50,10 +50,13 @@ so it buys a row nothing when the row has one text link on it, and every bundled
 catalog row has exactly that: a single *Details* beside a title somebody chose
 and wrote down, in a list the size of the catalog. Measured at 342 px those stood at 101 px
 each with about 45 of them a blank band under the words, which is four and a half
-rows a screenful. So in the **Library** the exception applies only to rows
-carrying more than one action — an imported score, which is where the archive
-titles and the *Edit · Assign · Details* strip both are — and an ordinary row
-keeps its words on the same line as its one link. The **score folder** stays
+rows a screenful. So in the **Library** the exception applies only to the
+**imported** rows — which is where the archive titles and the *Edit · Assign ·
+Details* strip both are — and an ordinary row keeps its words on the same line
+as its links. (Until 2026-09-16 that was written as "rows carrying more than one
+action", which was the same question only while an ordinary row had exactly one
+link; §4's *Open as…* gave every playable row a `⋯`, so the row says which it is
+instead of the stylesheet counting its buttons.) The **score folder** stays
 unconditional: every one of its rows carries two buttons. And the **Shelf's
 piece rows** join the exception for the reason it was written — a piece carries
 up to four ways in (*Practise*, *With the score*, *Open the PDF*, *Edit*), which
@@ -139,7 +142,15 @@ Score screen is a full-screen route pushed on top (back gesture returns).
 
 ## 2. Today
 
-**§0:** a hand screen (R2) — rows ≤ 96 px. Its one filled box (R3) is **Start session**; *Shuffle options*, *Jump to…* and *Metronome* are text. The session card is the subject and starts within the first screenful (R1).
+**§0:** a hand screen (R2) — rows ≤ 96 px. Its one filled box (R3) is **Start session**; the two lines of links under the card — *Shuffle options · Jump to…*, and the five doors below them — are text. The session card is the subject and starts within the first screenful (R1).
+
+**The doors (added 2026-09-16).** The owner, after a week in which Simon, the accompaniment lab and the free-play screen were built: *"We'd want to have some way of accessing these new modes… how are people going to open it up? There's got to be a link somewhere."* They are on Today because it is the screen the app opens on and the only one reached without deciding anything first. **Two rows, not one:** the first holds the two actions that act on the card directly above it (*Shuffle options*, *Jump to…*) and the second the five that open something else — *Metronome · Free play · Sight-read · Simon · Accompaniment lab*. Seven `·`-separated links on one line is a wall, and the wall would have hidden exactly the new things it exists to advertise.
+
+- **Each separator belongs to the link before it** (`.plan-pair`). Five doors do not fit one line at 342 px, and a loose separator is as likely to start the next line as to end the last: at 100 % the second line opened with a dot, which reads as a bullet for a list that has none.
+- ***Sight-read* is the daily card's own open**, seed and all (`openDailyRead`), not a second reading exercise. A door that gave a fresh phrase would be a second daily read, and it would not tick the day. With no reading exercise in the build there is no card and no door (R4).
+- ***Simon* is `simonForStage`**: `drill.ear.simon-c-major` below Stage 4 and `drill.ear.simon-chromatic` from Stage 4 on. That is not a rule this door invents — it is where the curriculum already puts the two items, and `simonDrill.test.ts` derives the stage from the built curriculum rather than restating it. The door is not drawn if the item is not in the build.
+- ***Accompaniment lab* keeps its full name here too**, for the reason §3c and §4 give: "Chord lab" is shorter, and it would be a second name for one screen.
+- None of them is filled. *Start session* is still the screen's one box (R3).
 
 **Ranked, 2026-09-12** (the pass the Plan screen had; see `TodayScreen.ts`). The card said everything at one volume: five identical rows, each badged with the slot kind — a mark on every row, which distinguishes nothing — over a reason line opening with the same word, and each with the *title* cut to `Posture and hand-shape …` so that *Swap* and *▶* could sit beside it. So:
 
@@ -222,7 +233,7 @@ and a daily read you can swap for something else is not a daily read.
 
 A metronome you can switch on without a score in front of you — for scales, for
 counting a piece you are reading from paper, for anything the app does not know about.
-Reached from Today's Tools block and, later, from the Score screen's control bar (§5),
+Reached from Today's row of doors (§2) and, later, from the Score screen's control bar (§5),
 which drives the same `audio/Metronome`.
 
 - **Tempo:** a large tabular-numeral bpm readout, a 30–240 slider, ±5 buttons and **tap
@@ -249,6 +260,45 @@ which drives the same `audio/Metronome`.
 - Volume follows the metronome setting in §7. Leaving the screen stops it.
 - No count-in here: a count-in belongs to a run of a piece, not to a metronome you are
   using as a clock.
+
+## 2b. Free play — `#/play` (added 2026-09-16)
+
+The owner: *"you could have a button somewhere that says free play that just tracks your
+notes."* That is the whole screen. The keys you are holding light up, they are named, and
+three or more of them are named as a chord. Nothing is judged, nothing is recorded, and
+there is no run to start or stop.
+
+**Not the same thing as the Score screen's `Free play` mode**, which turns the pages of a
+piece on your own notes. This has no piece. The two share a name because they are the same
+promise — the app is not marking you — and the name is the owner's word for it.
+
+- **Reached from Today's tools row** (§2), and pushed over Today the way the lab is pushed
+  over Library: not a tab, and Back returns to Today.
+- **The readout is a panel**: the chord large, the note names under it. The chord line is
+  empty until three keys are down and its height is *reserved*, because a readout that
+  grows on the third note of a chord moves the keyboard under the hand playing it. The
+  panel carries the same surface and border as the keys below, so an empty line inside it
+  reads as a display waiting rather than as something that failed to draw.
+- **The chord naming is `nameHeldChord`** (`engine/drills/theory.ts`), over
+  `CHORD_QUALITIES`' own intervals — one table of what a chord is, with the words and a
+  preference order added. The lowest key is asked first, because several chords are
+  genuinely the same set of notes and only the bass decides: {C E G A} is C6 over a C and
+  A minor 7th over an A. An inversion is named after its root and says what is underneath
+  — `C major / E`. Fewer than three different pitch classes is not a chord and gets no
+  name rather than a guess.
+- **The keys are the strip the Score screen and the drills use**, full 88, scrolled to
+  middle C one frame after mount — before that every key is at offset 0 and "middle C"
+  resolves to the bottom of the keyboard. They are **taller here than anywhere else**
+  (148 px, 96 sideways): under a score the strip is squeezed into what the notation can
+  spare, and on this screen it is the subject.
+- **Every input at once**: MIDI, the microphone if something already has it open, and taps
+  on the strip. A tap *sounds* through the piano samples; a note arriving over MIDI does
+  not, because it has already been played on a real instrument.
+- **R4, with nothing connected**: the line under the readout says *"No piano and no
+  microphone — tap the keys below, or connect one:"* and offers **MIDI settings** and
+  **Microphone**. The strip stays, and stays playable — for a learner with no cable it is
+  the instrument, which is why the drill screen draws one too. With something connected
+  the same line names what is being listened to.
 
 ## 3. Plan (curriculum browser)
 
@@ -312,7 +362,8 @@ learner wants from a progression, and the app could do neither — while the gen
 knew every accompaniment shape (`05` §8, levels 4–7) and the chart already knew how to hold a
 bar count against a drum loop.
 
-**Reached from Library**, in the line of doors beside *Import a score · Shelf · Score folder* —
+**Reached from Library**, in the line of doors beside *Import a score · Shelf · Score folder*, and
+from Today's own row of doors since 2026-09-16 (§2), under the same name in both places —
 it belongs to the same question those three answer, *where does something to play come from*,
 and it is the one that makes a score rather than finding one. It does not fit on that line at
 342 px and takes a second one; the full name is kept anyway, because the screen it opens is
@@ -374,6 +425,45 @@ transport is more than a 342 px-tall body has (R5).
 **§0:** the list is the subject and starts within the first screenful (R1). The six filters live behind a **Filter ▾** chip; the count line names any filter that is set, so a hidden filter cannot silently empty the list. *Import a score · Shelf · Score folder · Accompaniment lab* sit as one line of text in the header, above the search box — text rather than boxes (R3), but at the top: at the foot of the list they were 4,325 px down with the default sixty rows drawn. The header does not scroll, so the list runs under them. The fourth (§3c, added 2026-09-15) does not fit on that line upright and takes a second one; it is kept at its full name anyway, because a shorter label would be a second name for the screen it opens.
 
 **Ranked, 2026-09-12.** Two faults, both "the same thing on every row". The detail line said `Hands together` on very nearly every row of the catalog — three words in the middle of the line that is supposed to tell rows apart, which never tell any two apart, and which pushed the type off the end; it is `RH`/`LH` where the fact is news and silent otherwise, with the full sentence still on the item's detail sheet. And **the drop target is the list itself**: when the import heading and its buttons moved into the header they left an empty `div.block` under the list — no text, no control, but a rule across the screen and seventeen pixels of nothing (R4: no furniture), for a gesture that does not exist on a phone. The listeners moved onto the list, which is also the better desktop target: you drop the file on the thing you are dropping it into.
+
+### Open as… (added 2026-09-16)
+
+The owner: *"from the library you should be able to choose what mode you're going to open a
+song in."* Every row that opens on the Score screen carries a **`⋯`** after *Details*, and
+it opens a sheet of seven: **Wait for me · Keep tempo · Play it to me · Free play · Rhythm
+only · Duet · Blind**, each with the sentence §5 uses for it. One tap opens the piece —
+choosing a mode and then pressing Open would be two taps for one decision. A plain tap on
+the row opens it exactly as it always did.
+
+- **A glyph, and a boxed one.** `⋯` is the app's own sign for "the other things you can do
+  with this" — it opens a subset of the very list §5's own `⋯` holds — and the words would
+  have taken the room the title needs (R2). It is the last action, where §5 puts it. It
+  carries a border, which no other action on this screen does: `Details ⋯` set as two bare
+  text links reads as one link ending in an ellipsis.
+- **Only where the modes mean something** (R4): a PDF is pages and not notes, a drill is a
+  prompt loop. The test is `targetFor(item) === 'score'`, so a sight-reading drill — which
+  *is* notation — gets one.
+- **Route fields where the route carries them, the setting where it is a setting.** The
+  mode, the hand and blind ride in the hash (`?mode=`, `?hands=`, `?blind=1`), which is the
+  mechanism the guided tour already uses. `rhythmOnly` and `playbackHands` are written to
+  `settingsStore` *before* the navigation, because that is where §5 keeps them and a second
+  copy would be a second answer.
+- **`?hands=` is new** (2026-09-16). The hand focus is run state on §5 and starts at `both`;
+  a duet is the hand you are *not* playing, so with `both` there is no hand for the app to
+  take and the row would have opened a screen where nothing happens. Duet therefore opens
+  in Keep tempo — the app only plays under a clock — with `R` chosen and the app on the
+  left. The parameter rides through Blind and Perform with the tour's, or either would drop
+  the learner's duet silently.
+- **Every choice writes `rhythmOnly`, not just *Rhythm only*.** It is a remembered
+  preference, so once chosen, every later *Keep tempo* from this sheet would have been a
+  rhythm run — the learner asking for one thing and being judged on another, with nothing
+  saying so.
+- **The portrait tall-row exception is now said by the row, not counted off its buttons.**
+  The rule above ("rows with more than one action") was the same question as "is this an
+  import" only while an ordinary row had exactly one link. With `⋯` on every playable row
+  it would have grown all 1,533 by about 35 px for a glyph 24 px wide. `LibraryScreen`
+  marks the rows the exception is *for* (`data-tall`), which is the imports — where the
+  archive titles and the *Edit · Assign · Details* strip both are.
 
 **The letter rail** (`ui/alphaRail.ts`, the same component the score folder uses) sits beside the
 list **only under the title sort** and only when there is more than one page: the default sort is
@@ -651,6 +741,15 @@ The modes are named for what they do to *you*, not for the mechanism. `Listen` i
 beside `R`, `L` and an input setting read as something done with your playing, which is how
 the owner came to ask for a way to hear a piece while looking straight at the control that
 does it. The ids are unchanged (`wait`, `tempo`, `listen`, `free`).
+
+**A mode can also be chosen before this screen opens** (§4's *Open as…*, 2026-09-16). The
+mode, the hand and blind arrive on the route — `?mode=`, `?hands=`, `?blind=1`, the
+mechanism the guided tour already uses — and `rhythmOnly` and `playbackHands` are written
+to the settings first, because on this screen they *are* settings. Nothing here behaves
+differently afterwards: the select is live, every `⋯` row is live, and a piece opened as a
+duet can be turned into anything else without leaving the stand. `?hands=` is applied where
+the screen picks its focus, which is before the renderer is built — a hand applied later
+would re-engrave the sheet for nothing.
 
 `⏮ Start again` is **in the `⋯` sheet**, not on the bar. Eight controls come to 444 px of a
 390 px row and wrap it onto a second line, taking 40 px off the music; `▶` from stopped
@@ -1037,7 +1136,8 @@ learner looks at.
   lamp that follows CC64 and a line saying how many ms after the chord the lift came. *dynamics*:
   two velocity meters and the ratio against the 1.6× target. *backing-track*: the bar count.
   *simon*: the same headphone glyph, with how *many* notes on the counter and in the hint and
-  never which ones.
+  never which ones — unless the help ladder's top rung is chosen, where the glyph gives way to
+  the name of the note that is sounding while the key it is on lights (§5c-2).
 - **It advances itself.** An answer settles the moment it is complete, feedback shows for a
   beat (longer on a miss that has an answer to show — see above), and the next card appears — no button between cards, which is the point of a flash
   card. The kinds with no per-answer settle (rhythm, pedal, dynamics, backing-track) get an
@@ -1089,6 +1189,55 @@ score is the longest chain echoed, and the sheet says it beside the best this it
 - **The personal best has no store of its own.** A run's accuracy *is* its chain as a share of
   the cap, so the best accuracy `recordRun` already keeps for the item is the longest chain it
   has seen, read back when the screen opens.
+
+**Three levels of help, on the card (2026-09-16).** Simon by ear is the hardest drill in the
+list to *start*: a beginner who cannot yet find a heard pitch on the keyboard fails at the
+first note and learns nothing from failing, because what beat them was the translation and not
+the memory. So the memory task is kept whole and the translation is lent out, in three rungs
+(`engine/drills/simon.ts`, `SIMON_HELP_LEVELS`):
+
+1. **Keys shown.** As the chain plays, each key lights on the strip in time with its own sound
+   and its name replaces the glyph on the card. Lit with the strip's existing **expected**
+   state — the blue the Score screen already uses for "this is the key that is wanted", because
+   that is exactly what it means here and a second blue would be a second thing to learn — one
+   key at a time, because the chain is a sequence and a strip showing five at once is a chord.
+   The default for `drill.ear.simon-c-major`.
+2. **Ear first, keys after a miss.** The chain plays with no lights; a wrong note brings the
+   same chain back over the lit, named keys and then **asks for it again**. The chain does not
+   grow until it is played right, and the wrong key stays red under the replay — the point of
+   it is the difference between what was wanted and what was done. The default for
+   `drill.ear.simon-chromatic`.
+3. **Ear only.** Sound alone, no lights, no replay: Simon as it was.
+
+- **The rung does not discount the score**, and deliberately so. With the keys lit the chain is
+  still gone by the time it is the learner's turn: the lights say which key that sound was, and
+  nothing at all about how to hold five of them in order, which is the whole of what this drill
+  trains. Scoring the top rung lower would have priced the ease-in out of existence for the only
+  people it is for.
+- **Three chips on the card**, in ladder order, none filled and the active one pressed (§0 R3 —
+  a running drill spends its one filled box on nothing, and a filled chip would make a setting
+  look like the thing to press). On the card rather than in the button row because that is where
+  the learner is looking when they decide the game is too hard, and because sideways the card has
+  its column to itself while the buttons do not. Pressing one replays the current chain under the
+  new rung, so the control is never a label; a tap on the chips during a held card does *not*
+  also move the card on. The card's "how to answer" line says what the rung does, rather than
+  stating "a wrong note ends the chain", which is now true on two rungs of three.
+- **The choice is remembered per item**, in `localStorage` beside the checklist's ticks and the
+  tour's step — the same shape, for the same reasons. Not `settingsStore`, which is global:
+  "keys shown" is right for the white-key game and wrong for the chromatic one on the same day.
+  The catalog carries each item's *default* in `drill.params.help`.
+- **A miss on the ear-first rung holds the card for as long as the replay takes**, not for the
+  fixed beat in `engine/drills/feedback.ts` — a chain of six at half a second a note is three
+  seconds of sound, and the fixed beat would cut the help off mid-chain. A tap still ends it
+  early, like every other miss pause.
+- **The game still ends.** "The chain does not grow until it is played right" needs a floor or a
+  learner who never plays it right is in a drill with no end, and the cap already existed: a game
+  drawn with twelve notes has twelve *cards* to spend, so four tries at the third chain end the
+  game four chains short. That is what the counter has said all along.
+- **Rejected: showing the answer on a staff**, which is what every other missed card gets. Here
+  the answer *is* the chain, so a staff of it is the question written down — and a learner who
+  could read four notes off a staff and play them was never the person this drill was hard for.
+  The replay over the keys is the same information in the medium the drill is actually in.
 
 ### 5c-1. The guided tour of the practice modes
 

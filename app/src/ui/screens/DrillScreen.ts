@@ -36,8 +36,16 @@ import {
   isWalkthrough,
   promptsToGoOver,
   showsAnswerAfter,
+  SIMON_HELP_LEVELS,
+  SIMON_STEP_MS,
+  SimonDrill,
   simonBestChain,
+  simonHelpLevel,
+  simonMissPauseMs,
   simonOutcome,
+  simonReplayAfterMiss,
+  toSimonHelp,
+  type SimonHelp,
   systemClock,
   type Drill,
   type DrillPrompt,
@@ -68,7 +76,7 @@ import type { OsmdView } from '../../score/OsmdView';
 import { KeyboardStrip } from '../KeyboardStrip';
 import { rhythmRow, staffCard } from '../StaffCard';
 import { onScreenDispose } from '../screenLifecycle';
-import { badge, button, el } from '../widgets';
+import { badge, button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 
 /** The answer staff's size: a reference line under the words, not a page of music. */
@@ -83,6 +91,16 @@ const REVEAL_STEP_MS = 350;
  * only honest way to remove it is to know it is still ours.
  */
 const TAP_TO_CONTINUE = 'Tap the card to move on.';
+
+/**
+ * The ear drills' card, and what a Simon card shows when it is not naming a
+ * note. One constant because two places have to agree about it: the stage
+ * builds it, and the note-name flash puts it back.
+ */
+const EAR_GLYPH = '🎧';
+
+/** What a Simon card says while it plays the chain back over the lit keys. */
+const SIMON_REPLAY_NOTICE = `Here it is again, on the keys. ${TAP_TO_CONTINUE}`;
 
 /**
  * How sure the detector has to be before a heard note counts as an answer.
@@ -261,6 +279,20 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let feedbackTimer: ReturnType<typeof setTimeout> | null = null;
   /** Removes the tap-to-continue listener; null when no card is being held. */
   let stopPauseTaps: (() => void) | null = null;
+  /**
+   * The sentence *this screen* put on the status line for a held card.
+   *
+   * The pause has to take its own sentence away again — a line belonging to
+   * one card must not still be up two cards later — and it can only do that if
+   * it knows the line is still the one it wrote. It used to compare against
+   * the single tap-to-continue constant; now that a held Simon card says
+   * something else as well, the comparison is against whatever was written.
+   */
+  let heldStatus = '';
+  /** Which rung of Simon's help ladder this item is on (`04` §5c-2). */
+  let simonHelp: SimonHelp = toSimonHelp(undefined);
+  /** The note name on the Simon card right now, or '' for the glyph. */
+  let simonFlash = '';
 
   // --- input ---------------------------------------------------------------
 
@@ -391,6 +423,77 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       });
   }
 
+  /**
+   * The note the Simon card is showing instead of its glyph.
+   *
+   * Written straight onto the element as well as into `simonFlash`, because
+   * this runs on a timer between two draws: a full `draw()` per note would
+   * rebuild the stage, the chips and the controls five times a chain to change
+   * three characters. `drawStage` reads `simonFlash` so a redraw for any other
+   * reason keeps whatever is on the card.
+   */
+  function flashNoteName(name: string): void {
+    simonFlash = name;
+    const card = stage.querySelector('#drill-ear-card');
+    if (!(card instanceof HTMLElement)) return;
+    card.textContent = name === '' ? EAR_GLYPH : name;
+    card.dataset.showing = name === '' ? 'glyph' : 'name';
+  }
+
+  /**
+   * The chain on the keys, in time with its own sound (`04` §5c-2, rung 1).
+   *
+   * Lit with the strip's **expected** state — the blue the score screen uses
+   * for "this is the key that is wanted" — rather than a state of its own,
+   * because that is exactly what it means here and a second blue would be a
+   * second thing to learn. One key at a time: the chain is a sequence and a
+   * strip showing all five at once is a chord.
+   *
+   * The timers go in `playbackTimers`, so everything that stops the sound —
+   * moving on, leaving the screen, switching rung — stops the lights with it.
+   */
+  function showChainOnKeys(target: DrillPrompt): void {
+    const steps = target.playback ?? [];
+    const first = steps[0]?.atMs ?? 0;
+    const gap = Math.max(60, (steps[1]?.atMs ?? first + SIMON_STEP_MS) - first);
+    for (const step of steps) {
+      const midi = step.midi[0];
+      if (midi === undefined) continue;
+      playbackTimers.push(
+        setTimeout(() => {
+          if (disposed) return;
+          strip?.setState({ expected: [midi] });
+          // Instant, not smooth: a chain moves faster than a smooth scroll
+          // finishes, and the strip would still be sliding towards note two
+          // when note four sounded.
+          strip?.scrollToNote(midi, 'auto');
+          flashNoteName(noteLabel(midi));
+        }, step.atMs),
+      );
+    }
+    playbackTimers.push(
+      setTimeout(
+        () => {
+          if (disposed) return;
+          strip?.setState({ expected: [] });
+          flashNoteName('');
+        },
+        (steps[steps.length - 1]?.atMs ?? 0) + gap,
+      ),
+    );
+  }
+
+  /** Is this card a Simon card, on a rung that lights the keys as it plays? */
+  function simonLightsNow(): boolean {
+    return drill?.kind === 'simon' && simonHelpLevel(simonHelp).lightsWhilePlaying;
+  }
+
+  /** The prompt's sound, plus whatever help the current rung adds to it. */
+  function playPromptWithHelp(target: DrillPrompt | null): void {
+    playPrompt(target);
+    if (target && simonLightsNow()) showChainOnKeys(target);
+  }
+
   function stopDictationTicker(): void {
     if (dictationTimer !== null) clearInterval(dictationTimer);
     dictationTimer = null;
@@ -484,6 +587,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     cancelFeedback();
     section.dataset.feedback = '';
     strip?.clear();
+    // The note the last chain ended on goes with it, or the next card opens
+    // showing the answer to the one before.
+    simonFlash = '';
     stopMetronome();
     stopDictationTicker();
     disposeAnswer();
@@ -501,7 +607,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (drill instanceof PromptDrill && drill.revealed) showAnswer(current);
     if (drill instanceof RhythmDrill) startCountIn(drill);
     if (drill instanceof ChordDictationDrill) startDictationTicker(drill);
-    playPrompt(current);
+    playPromptWithHelp(current);
   }
 
   /** The answer on the keys and on the staff, for one card. */
@@ -520,7 +626,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     stopPauseTaps?.();
     stopPauseTaps = null;
     section.dataset.paused = '';
-    if (status.textContent === TAP_TO_CONTINUE) status.textContent = '';
+    if (heldStatus !== '' && status.textContent === heldStatus) status.textContent = '';
+    heldStatus = '';
+  }
+
+  /** Holds the card, with the one sentence that says how to leave it. */
+  function holdCard(sentence: string): void {
+    section.dataset.paused = 'miss';
+    heldStatus = sentence;
+    status.textContent = sentence;
+    takeTapsToContinue();
   }
 
   /**
@@ -540,14 +655,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   /**
    * A tap anywhere on the card ends the pause early.
    *
-   * Not on the buttons and not on the keys: *Skip* and *End drill* are their
-   * own actions during the pause, and a key press is an answer the next card
-   * should be allowed to keep rather than a request to hurry up.
+   * Not on the buttons, not on the keys, and not on Simon's help chips: *Skip*
+   * and *End drill* are their own actions during the pause, a key press is an
+   * answer the next card should be allowed to keep rather than a request to
+   * hurry up, and the chips are on the card itself — choosing more help is
+   * exactly the thing a learner does while looking at a chain they just got
+   * wrong, and it must not also throw the chain away.
    */
   function takeTapsToContinue(): void {
     const onTap = (event: Event): void => {
       const target = event.target as HTMLElement | null;
-      if (target?.closest('#drill-controls, #drill-strip')) return;
+      if (target?.closest('#drill-controls, #drill-strip, #drill-simon-help')) return;
       endFeedback();
     };
     // Never two at once, whatever order the calls come in.
@@ -578,13 +696,40 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // right answer is untouched: the drill is about recall speed.
     if (current && showsAnswerAfter(drill.kind, correct)) {
       showAnswer(current);
-      section.dataset.paused = 'miss';
-      status.textContent = TAP_TO_CONTINUE;
-      takeTapsToContinue();
+      holdCard(TAP_TO_CONTINUE);
+    }
+    // Simon's own answer to a miss, on the ear-first rung: the chain is not a
+    // set of keys to light all at once — it is a sequence, and the only honest
+    // way to show it is to play it again over the keys, in order. So the card
+    // is held for as long as that takes rather than for the fixed beat every
+    // other miss gets (`engine/drills/simon.ts`).
+    let holdMs = feedbackDelayMs(drill.kind, correct);
+    if (drill.kind === 'simon' && current && simonReplayAfterMiss(simonHelp, correct)) {
+      replayChainLit(current);
+      holdMs = simonMissPauseMs(
+        simonHelp,
+        current.expected.length,
+        drill instanceof SimonDrill ? drill.stepMsBetweenNotes : SIMON_STEP_MS,
+      );
     }
     feedbackTimer = setTimeout(() => {
       endFeedback();
-    }, feedbackDelayMs(drill.kind, correct));
+    }, holdMs);
+  }
+
+  /**
+   * The chain the learner just lost, played again with the keys lit and named.
+   *
+   * The red key they actually played is left where it is: the point of the
+   * replay is the difference between what was wanted and what was done, and
+   * clearing the wrong note would take half of that away. `expected` is cleared
+   * because `showChainOnKeys` is about to drive it one note at a time.
+   */
+  function replayChainLit(target: DrillPrompt): void {
+    strip?.setState({ expected: [] });
+    holdCard(SIMON_REPLAY_NOTICE);
+    playPrompt(target);
+    showChainOnKeys(target);
   }
 
   // --- per-kind faces ------------------------------------------------------
@@ -640,11 +785,29 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       case 'ear-interval':
       case 'ear-chord':
       case 'ear-progression':
-      case 'simon':
         // Deliberately blank: naming it on screen would answer the question.
-        // Simon belongs here for the same reason — how long the chain is, is
-        // on the counter and in the hint; what is *in* it is the question.
-        stage.append(el('div.ear-card', { id: 'drill-ear-card', text: '🎧' }));
+        stage.append(el('div.ear-card', { id: 'drill-ear-card', text: EAR_GLYPH }));
+        break;
+      case 'simon':
+        // The same glyph, for the same reason — how long the chain is, is on
+        // the counter and in the hint; what is *in* it is the question — and
+        // it is the glyph that gives way when a rung of the help ladder names
+        // the note that is sounding. The three chips go on the card rather
+        // than in the button row because that is where the learner is looking
+        // when they decide the game is too hard, and because sideways the card
+        // has the column to itself while the buttons do not.
+        stage.append(
+          el(
+            'div.simon-card',
+            { id: 'drill-simon-card' },
+            el('div.ear-card', {
+              id: 'drill-ear-card',
+              'data-showing': simonFlash === '' ? 'glyph' : 'name',
+              text: simonFlash === '' ? EAR_GLYPH : simonFlash,
+            }),
+            simonHelpChips(),
+          ),
+        );
         break;
       case 'backing-track':
         stage.append(
@@ -842,6 +1005,91 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     );
   }
 
+  // --- Simon's help ladder (`04` §5c-2) --------------------------------------
+  //
+  // Where the choice lives. Not `settingsStore`, which is the app's persisted
+  // *preferences* and is global — "keys shown" is true of the white-key game
+  // and false of the chromatic one on the same day, so a single setting would
+  // be wrong on one of them whichever way it was left. Not a new store either:
+  // this screen already keeps two per-item choices exactly this way, the
+  // checklist's ticks and the tour's step, for the same reasons that apply
+  // here — one small value, per item, no use to anything but this screen, and
+  // losing it costs the learner one tap.
+
+  function simonHelpStorageKey(id: string): string {
+    return `pianopath:simon-help:${id}`;
+  }
+
+  /** The stored rung for this item, or the one the catalog chose for it. */
+  function loadSimonHelp(target: CatalogItem): SimonHelp {
+    const authored = toSimonHelp(target.drill?.params?.help);
+    try {
+      return toSimonHelp(localStorage.getItem(simonHelpStorageKey(target.id)), authored);
+    } catch {
+      // Private browsing or a full quota: the item opens on its own default,
+      // which is what it does the first time anyone opens it anyway.
+      return authored;
+    }
+  }
+
+  function saveSimonHelp(id: string, help: SimonHelp): void {
+    try {
+      localStorage.setItem(simonHelpStorageKey(id), help);
+    } catch {
+      // The choice then lasts this visit and not the next, which is worse than
+      // remembering it and better than refusing to change it.
+    }
+  }
+
+  /**
+   * The three rungs, on the card, the active one pressed.
+   *
+   * Chips rather than buttons, and none of them filled: `04` §0 R3 allows the
+   * screen one filled box and a drill in progress spends it on nothing —
+   * *Play again* is the action here, and a filled chip would have made a
+   * setting look like the thing to press.
+   */
+  function simonHelpChips(): HTMLElement {
+    const row = el('div.simon-help', {
+      id: 'drill-simon-help',
+      role: 'group',
+      'aria-label': 'How much help this game gives',
+    });
+    for (const level of SIMON_HELP_LEVELS) {
+      row.append(
+        chip(level.label, {
+          pressed: level.id === simonHelp,
+          onClick: () => setSimonHelp(level.id),
+          id: `drill-simon-help-${level.id}`,
+          // The label is two words and the meaning is a sentence; the sentence
+          // is what a screen reader should hear and what a pointer should
+          // reveal, or the ladder reads as three unrelated words.
+          dataset: { 'data-help': level.id, 'aria-label': level.meaning, title: level.meaning },
+        }),
+      );
+    }
+    return row;
+  }
+
+  /**
+   * Moves this item up or down the ladder, now rather than next round.
+   *
+   * The chain is played again under the new rung: a chip that only changed how
+   * the *next* chain sounds would look dead on the card it is on, and *Play
+   * again* is a button on this same screen, so nothing is being given away
+   * that the learner could not already take.
+   */
+  function setSimonHelp(next: SimonHelp): void {
+    if (!item || simonHelp === next) return;
+    simonHelp = next;
+    saveSimonHelp(item.id, next);
+    if (drill instanceof SimonDrill) drill.help = next;
+    flashNoteName('');
+    strip?.setState({ expected: [] });
+    draw();
+    if (current && !finished) playPromptWithHelp(current);
+  }
+
   /**
    * How to answer, for the kinds whose card does not make it obvious.
    *
@@ -871,10 +1119,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       case 'ear-tune':
       case 'harmonic-dictation':
         return 'Listen, then play it back. Play again repeats it as often as you like.';
-      case 'simon':
-        return count === 1
-          ? 'Play the note back, in the octave you heard it. One more is added each time; a wrong note ends the chain.'
-          : `Play the ${String(count)} notes back in order, in the octave you heard them. One more is added each time; a wrong note ends the chain.`;
+      case 'simon': {
+        // What happens after a wrong note is no longer one fact: it is the
+        // rung's, so the rung says it rather than this line stating something
+        // that is true on two of the three (`engine/drills/simon.ts`).
+        const back =
+          count === 1
+            ? 'Play the note back, in the octave you heard it.'
+            : `Play the ${String(count)} notes back in order, in the octave you heard them.`;
+        return `${back} One more is added each time. ${simonHelpLevel(simonHelp).how}`;
+      }
       case 'transposition':
         return 'Play the phrase in the key it names, from the notation.';
       default:
@@ -984,7 +1238,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
     if ((current?.playback?.length ?? 0) > 0 && drill.kind !== 'rhythm') {
       controls.append(
-        button('▶ Play again', () => playPrompt(current), { id: 'drill-replay', variant: 'secondary' }),
+        button('▶ Play again', () => playPromptWithHelp(current), {
+          id: 'drill-replay',
+          variant: 'secondary',
+        }),
       );
     }
     if (MANUAL_ADVANCE.has(drill.kind) || drill.kind === 'dynamics' || drill.kind === 'pedal') {
@@ -1454,6 +1711,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // A fresh seed, so "again" is a new set of cards rather than the same
     // ones memorised in order.
     drill = drillFromCatalog(item, { seed: (Date.now() & 0x7fffffff) >>> 0 });
+    // A fresh drill starts on the engine's own default, so the rung the
+    // learner chose has to be put back on it — *Again* is another go at the
+    // same item, not a reset of how it is being practised.
+    if (drill instanceof SimonDrill) drill.help = simonHelp;
+    simonFlash = '';
     advance();
   }
 
@@ -2155,6 +2417,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // already stored for the item is the longest chain it has seen, and the
     // best needed no new place to live (`engine/drills/simon.ts`).
     if (drill.kind === 'simon') {
+      // Which rung this item opens on: what the learner last chose for *this*
+      // item, or the default its catalog entry carries — the white-key game
+      // starts with the keys shown and the chromatic one ear-first, because
+      // the two are met years apart.
+      simonHelp = loadSimonHelp(item);
+      if (drill instanceof SimonDrill) drill.help = simonHelp;
       const rounds = drill.result().total;
       const forItem = item.id;
       // Not awaited: nothing before the result sheet reads it, and the first

@@ -272,6 +272,20 @@ Open the app. **Today** has already built you a session.
   a row rather than minutes, a tick appears once today's is done, and a day
   that is not over yet does not break the run.
 
+Under all of that is a line of five doors — the things you can open without
+starting a session:
+
+- **Metronome** — a click with no score in front of it.
+- **Free play** — the keyboard, and nothing else. It lights the keys you are
+  holding, names them, and names the chord once three are down. Nothing is
+  scored and nothing is recorded; it is for trying something and seeing what it
+  is called. With no piano connected the keys on the screen still work, and the
+  screen says so and offers the way to connect one.
+- **Sight-read** — today's phrase, the same one the card above offers.
+- **Simon** — the memory game, at whichever of its two levels your stage is up
+  to.
+- **Accompaniment lab** — the same screen the Library's line reaches.
+
 On the **Score screen**: the music follows you. It waits for you by default when
 the piano is connected, and moves on a clock when it is not. The control bar
 hides while you play and comes back on a tap. **Hear it** plays the piece to
@@ -296,6 +310,13 @@ apply:
   question is actually asked; turned off and on again it comes back exactly
   as it was.
 
+**Choosing the mode before you open a piece.** Every row in the Library that
+opens on the score screen has a **⋯** after *Details*. It offers the seven ways
+in — *Wait for me*, *Keep tempo*, *Play it to me*, *Free play*, *Rhythm only*,
+*Duet*, *Blind* — and opens the piece in that one straight away. Tapping the row
+itself opens it the way it always did. Nothing is locked in afterwards: the mode
+selector and every ⋯ row on the score screen are still yours to change.
+
 When you finish, you get a summary and it is recorded. An item you passed comes
 back for review after 1, 3, 7 and 21 days.
 
@@ -310,7 +331,12 @@ misses offers **Go over the ones you missed**, a short round of exactly those
 cards that scores nothing and records nothing. **Simon** is the ear drill with
 nothing to guess between: the app plays one note, then the same note and one
 more, then three, until the chain breaks; the score is the longest chain you
-echoed, in the octave it was played.
+echoed, in the octave it was played. Three chips on the Simon card set how much
+help it gives — the keys lit and named as the chain plays, the keys lit on a
+replay after a wrong note (which then asks you for the same chain again rather
+than ending the game), or sound alone. Each drill remembers the one you chose
+for it, and neither setting discounts the score: the chain is gone by the time
+it is your turn either way.
 
 ---
 
