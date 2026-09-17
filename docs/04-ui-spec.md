@@ -1196,8 +1196,9 @@ first note and learns nothing from failing, because what beat them was the trans
 the memory. So the memory task is kept whole and the translation is lent out, in three rungs
 (`engine/drills/simon.ts`, `SIMON_HELP_LEVELS`):
 
-1. **Keys shown.** As the chain plays, each key lights on the strip in time with its own sound
-   and its name replaces the glyph on the card. Lit with the strip's existing **expected**
+1. **Keys shown.** As the chain plays, each key lights on the strip in time with its own sound,
+   its name replaces the glyph on the card, and the note lands on a one-bar staff between the
+   two. Lit with the strip's existing **expected**
    state — the blue the Score screen already uses for "this is the key that is wanted", because
    that is exactly what it means here and a second blue would be a second thing to learn — one
    key at a time, because the chain is a sequence and a strip showing five at once is a chord.
@@ -1208,6 +1209,39 @@ the memory. So the memory task is kept whole and the translation is lent out, in
    it is the difference between what was wanted and what was done. The default for
    `drill.ear.simon-chromatic`.
 3. **Ear only.** Sound alone, no lights, no replay: Simon as it was.
+
+**And the chain on a staff, where the keys are lit (2026-09-16).** "Does Simon show the notes on
+the staff too?" — it did not, and on the lit rungs it now does. As each note sounds, the key
+lights, the card names it and the note is engraved on a staff that builds up left to right, so
+sound, key, name and staff position are met as one thing rather than as four facts to be joined
+up later — which is the translation this ladder exists to lend out, and the staff is the half of
+it a learner will still need when the lights are gone. It is drawn by the same machinery as the
+*Show me* answer (`engine/drills/answerSheet.ts`), at the same reference size, with the key
+signature, the clef and the note value settled from the finished chain rather than from the notes
+on it so far (`wholeRun`) — a staff that re-engraved itself at the fourth note would not be one
+staff filling up. It is **one bar, whatever the chain reaches**: past eight notes a growing run is
+written in sixteenths rather than spread over bars of quarters, because three bars wrap into two
+systems in a host the width of a phone card and the card would grow taller half way through a
+chain. The box it is drawn into is a fixed height at both ends as well, so nothing the engraver
+does can move the buttons. It sits **on the card, beside the name rather than under it**: this screen has
+no spare row — upright at 342x740 the drill body already fills its box to the pixel — and a staff
+under the name pushed *Play again*, *Listen*, *Skip* and *End drill* off the bottom four times a
+round, with them coming back the moment the chain ended. Beside it the staff costs thirteen
+pixels, because an engraved line is shorter than the name is tall, and the name and the note then
+say the same thing side by side, which is the teaching. **Under 520 px of height there is no staff
+at all**, and the room is not the glyph's to give: the drill grid caps the stage at 42 vh, about
+128 px of card, and the three chips take 88 of them in two rows because those three words do not
+fit across the picture column in one — so what is left will not hold a stave however small the
+name is made, and the half that would be clipped is the chips, which are the controls. A short
+screen keeps the lights and the name, which are the drill (`DrillScreen.ts`, `chainStaffFits`),
+and the card's *how to answer* line therefore does not mention the staff — a card promising one
+that is not there is worse than one that lets it speak for itself. **The staff goes exactly where
+the lit, named keys go** — the same timer takes all three away at the end of the chain, so it is up while
+the app is playing and gone before the learner's turn. That is what keeps it a teaching display
+and not a crib: the memory task is untouched, and it is drawn on the top rung's chain and on the
+ear-first rung's lit replay after a miss, and nowhere else. One rule rather than two, and one
+walk of the chain (`simonChainSteps`) drives the light, the name and the staff, so the three
+cannot drift apart.
 
 - **The rung does not discount the score**, and deliberately so. With the keys lit the chain is
   still gone by the time it is the learner's turn: the lights say which key that sound was, and
@@ -1234,10 +1268,13 @@ the memory. So the memory task is kept whole and the translation is lent out, in
   learner who never plays it right is in a drill with no end, and the cap already existed: a game
   drawn with twelve notes has twelve *cards* to spend, so four tries at the third chain end the
   game four chains short. That is what the counter has said all along.
-- **Rejected: showing the answer on a staff**, which is what every other missed card gets. Here
-  the answer *is* the chain, so a staff of it is the question written down — and a learner who
-  could read four notes off a staff and play them was never the person this drill was hard for.
-  The replay over the keys is the same information in the medium the drill is actually in.
+- **Still rejected: the held answer staff**, which is what every other missed card gets — the
+  chain engraved under the card and left there while the card is held. Here the answer *is* the
+  chain, so a staff standing on screen at the moment the learner is being asked for it is the
+  question written down. The play-along staff above is the opposite case and the distinction is
+  the whole of it: it is up only while the app is playing, and the same timer that puts the
+  lights out takes it away. A staff that is gone before your turn has told you what you heard; a
+  staff that is still there has answered for you.
 
 ### 5c-1. The guided tour of the practice modes
 

@@ -20,6 +20,7 @@ import {
   SimonDrill,
   simonBestChain,
   simonChain,
+  simonChainSteps,
   simonForStage,
   simonHelpLevel,
   simonMissPauseMs,
@@ -269,6 +270,65 @@ describe('the help ladder', () => {
       // chain has grown to.
       expect(simonMissPauseMs(level.id, 1), level.id).toBe(simonMissPauseMs(level.id, 9));
     }
+  });
+});
+
+/**
+ * The walk the screen makes down a chain as it plays (docs/04 §5c-2).
+ *
+ * One list drives three things at once — the key that lights, the name on the
+ * card, and the staff filling up under it — so what is checked here is that
+ * every moment carries all three facts and that they agree.
+ */
+describe('the chain as it plays, a moment at a time', () => {
+  it('gives one moment per note, each carrying everything heard so far', () => {
+    // Three rounds in, so "one longer each time" is a claim about something.
+    const drill = aGame(7, 6, 'show-keys');
+    let prompt = drill.next();
+    for (let round = 0; round < 3; round += 1) {
+      expect(prompt).not.toBeNull();
+      if (prompt) echo(drill, prompt);
+      prompt = drill.next();
+    }
+    expect(prompt?.expected.length).toBeGreaterThan(3);
+    const steps = simonChainSteps(prompt?.playback ?? []);
+    expect(steps.length).toBe(prompt?.expected.length);
+    steps.forEach((step, at) => {
+      // The note that sounds is the note the chain wanted there.
+      expect(step.midi, `note ${String(at + 1)}`).toBe(prompt?.expected[at]);
+      // And what the staff shows is the chain up to it — one longer each time,
+      // ending on the note that has just sounded.
+      expect(step.soFar.length).toBe(at + 1);
+      expect(step.soFar[step.soFar.length - 1]).toBe(step.midi);
+      expect(step.soFar).toEqual(prompt?.expected.slice(0, at + 1));
+      expect(step.atMs).toBe(prompt?.playback?.[at]?.atMs);
+    });
+    // The last moment holds the whole chain, which is what the staff is shaped
+    // for before the first note lands.
+    expect(steps[steps.length - 1]?.soFar).toEqual(prompt?.expected);
+  });
+
+  it('hands back a list nothing else can edit', () => {
+    const steps = simonChainSteps([
+      { midi: [60], atMs: 0 },
+      { midi: [64], atMs: 500 },
+    ]);
+    steps[0]?.soFar.push(99);
+    expect(steps[1]?.soFar).toEqual([60, 64]);
+  });
+
+  it('counts only the steps that sound something', () => {
+    const steps = simonChainSteps([
+      { midi: [60], atMs: 0 },
+      { midi: [], atMs: 500 },
+      { midi: [64], atMs: 1000 },
+    ]);
+    // Nothing sounds in the silent step, so nothing lights and nothing is
+    // added to the staff: two moments, and the second knows about both notes.
+    expect(steps.map((step) => step.midi)).toEqual([60, 64]);
+    expect(steps[1]?.soFar).toEqual([60, 64]);
+    expect(steps[1]?.atMs).toBe(1000);
+    expect(simonChainSteps([])).toEqual([]);
   });
 });
 

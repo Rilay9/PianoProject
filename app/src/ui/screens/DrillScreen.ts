@@ -40,6 +40,7 @@ import {
   SIMON_STEP_MS,
   SimonDrill,
   simonBestChain,
+  simonChainSteps,
   simonHelpLevel,
   simonMissPauseMs,
   simonOutcome,
@@ -293,6 +294,41 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let simonHelp: SimonHelp = toSimonHelp(undefined);
   /** The note name on the Simon card right now, or '' for the glyph. */
   let simonFlash = '';
+  /**
+   * Simon's play-along staff — the chain so far, filling up as it sounds.
+   *
+   * One engraver per chain, re-loaded a note at a time. It is a teaching
+   * display and not a crib: `chainFor` is cleared and the host removed by the
+   * same timer that puts the lights out, so by the time it is the learner's
+   * turn there is nothing on screen but the glyph (`04` §5c-2).
+   */
+  let chainView: OsmdView | null = null;
+  let chainHost: HTMLElement | null = null;
+  /**
+   * The chain this staff is drawing; `''` when no staff is up.
+   *
+   * Every staff gets its own key, counted rather than described: the ear-first
+   * rung replays *the same chain of the same card*, so a key made of what the
+   * chain is would be the same string twice, and a load still in flight from
+   * the staff just torn down would pass for the new one and engrave itself
+   * into a host nobody can see.
+   */
+  let chainFor = '';
+  let chainSeq = 0;
+  /** The whole chain, so the staff is shaped for it before it is full. */
+  let chainNotes: number[] = [];
+  /** How many notes the staff shows, and how many the lights have reached. */
+  let chainShown = 0;
+  let chainWant = 0;
+  /**
+   * The chain a load is in flight for, so two never overlap on one engraver.
+   *
+   * The *key*, not a boolean: a plain flag belonged to no chain in particular,
+   * so a chain torn down mid-load — *Play again* during one, a rung change, a
+   * slow render running past the end gap — left the flag set and the next
+   * chain's first prefix was refused. Empty when nothing is being drawn.
+   */
+  let chainDrawingFor = '';
 
   // --- input ---------------------------------------------------------------
 
@@ -339,6 +375,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function clearPlayback(): void {
     for (const timer of playbackTimers) clearTimeout(timer);
     playbackTimers = [];
+    // The play-along staff is part of the chain sounding, not part of the card
+    // (`04` §5c-2), so it goes wherever the sound goes. Declared below.
+    disposeChainStaff();
   }
 
   /**
@@ -441,6 +480,152 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   /**
+   * Takes the play-along staff down.
+   *
+   * Called by everything that stops the chain — the timer that puts the lights
+   * out, the next card, a rung change, leaving the screen — because the staff
+   * is part of the chain playing and not part of the card.
+   */
+  function disposeChainStaff(): void {
+    chainView?.dispose();
+    chainView = null;
+    chainHost?.remove();
+    chainHost = null;
+    chainFor = '';
+    chainNotes = [];
+    chainShown = 0;
+    chainWant = 0;
+  }
+
+  /**
+   * Puts the staff's host back in the card, wherever the card came from.
+   *
+   * `drawStage()` rebuilds the Simon card on every `draw()` and a chain can be
+   * playing while that happens — a key pressed early settles the card and
+   * redraws it. The host is kept out of the rebuild and re-appended, the same
+   * arrangement a transposition prompt uses, so the engraved staff survives a
+   * redraw rather than blanking half way through the chain.
+   *
+   * Beside the name, in the card's own row: the point of drawing it at all is
+   * that the sound, the key, the name and the place on the staff are one
+   * thing, and a staff down in the words column would have been somewhere else
+   * to look.
+   */
+  function attachChainHost(): void {
+    if (!chainHost) return;
+    const row = stage.querySelector('#drill-simon-now');
+    if (!(row instanceof HTMLElement)) {
+      // No Simon card to put it in — the card changed kind under the chain.
+      // Dropping it rather than returning: a host left detached is an engraver
+      // drawing into nothing, and it would outlive the card it belonged to.
+      disposeChainStaff();
+      return;
+    }
+    row.append(chainHost);
+  }
+
+  /**
+   * Is there room on this screen for a staff on the card?
+   *
+   * Not sideways, and the room is not the glyph's to give. Under 520 px of
+   * height the drill grid caps the stage at 42 vh — about 128 px of card — and
+   * the three chips take 88 of them in two rows, because three of those words
+   * do not fit across the picture column in one. What is left will not hold a
+   * stave however small the name is made, and a control clipped by the cap is
+   * the one outcome that rule exists to prevent. So on a short screen the rung
+   * keeps the lights and the name, which are the drill, and drops the staff
+   * (`04` §5c-2). Read at the start of each chain, so turning the phone is one
+   * chain out of date and never wrong for longer than that.
+   */
+  function chainStaffFits(): boolean {
+    return !window.matchMedia('(max-height: 520px)').matches;
+  }
+
+  /**
+   * Starts a staff for this chain: an empty box, in place, ready to draw into.
+   *
+   * Attached before the engraver is asked for, because OSMD measures the width
+   * it is drawing into — and sized from the start (`.drill-chain-staff` has a
+   * floor in the CSS) so the card does not jump when the first note lands.
+   */
+  function startChainStaff(target: DrillPrompt, notes: readonly number[]): void {
+    disposeChainStaff();
+    if (!chainStaffFits()) return;
+    chainNotes = [...notes];
+    if (chainNotes.length === 0) return;
+    chainSeq += 1;
+    chainFor = `${String(runSeq)}:${String(target.index)}:${String(chainSeq)}`;
+    chainHost = el('div.drill-notation.drill-chain-staff', {
+      id: 'drill-simon-staff',
+      // What is engraved on it, so a test can read the staff without counting
+      // noteheads in somebody else's SVG. Written after the render, so it is
+      // the number of notes actually drawn.
+      'data-notes': '0',
+    });
+    attachChainHost();
+  }
+
+  /**
+   * Draws the chain so far, catching up to whatever the lights have reached.
+   *
+   * One engraver for the chain, re-loaded per note rather than one per note:
+   * the sheets are a bar of eighths and every prefix is shaped for the finished
+   * chain (`answerSheet`'s `wholeRun`), so the notes already on the staff stay
+   * where they are and the new one lands to the right of them.
+   *
+   * Never two loads at once, and never a queue: a phone too slow to keep up
+   * skips a prefix and draws the chain as it stands, which is a staff a note
+   * behind for a moment rather than one still filling in after the chain has
+   * finished sounding.
+   */
+  function pumpChainStaff(key: string): void {
+    if (chainDrawingFor !== '' || chainFor !== key || !chainHost || chainWant === chainShown) return;
+    const want = chainWant;
+    const host = chainHost;
+    const xml = answerSheet({
+      title: 'The chain so far',
+      notes: chainNotes.slice(0, want),
+      ordered: true,
+      wholeRun: chainNotes,
+    });
+    if (!xml) return;
+    chainDrawingFor = key;
+    void (async () => {
+      try {
+        let view = chainView;
+        if (!view) {
+          const { OsmdView } = await import('../../score/OsmdView');
+          if (disposed || chainFor !== key) return;
+          view = new OsmdView(host, {
+            drawFingerings: false,
+            drawMetronomeMarks: false,
+            timingLabel: 'drill.simon-staff',
+          });
+          chainView = view;
+        }
+        await view.load(xml);
+        if (disposed || chainFor !== key || chainView !== view) return;
+        // A reference line, not a page — the same size the answer staff is
+        // drawn at, set after the load, which is where OSMD takes its scale.
+        view.zoom = ANSWER_ZOOM;
+        view.render();
+        chainShown = want;
+        host.dataset.notes = String(want);
+      } catch {
+        // The lights and the name are the drill; the staff is the extra. A
+        // renderer that cannot draw one loses the staff and nothing else —
+        // this chain's staff, and only if it is still the one on screen.
+        if (chainFor === key) disposeChainStaff();
+      } finally {
+        chainDrawingFor = '';
+        // Whatever is on screen *now*, which after a tear-down mid-load is the
+        // next chain rather than the one this load belonged to.
+        pumpChainStaff(chainFor);
+      }
+    })();
+  }
+
+  /**
    * The chain on the keys, in time with its own sound (`04` §5c-2, rung 1).
    *
    * Lit with the strip's **expected** state — the blue the score screen uses
@@ -451,23 +636,36 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    *
    * The timers go in `playbackTimers`, so everything that stops the sound —
    * moving on, leaving the screen, switching rung — stops the lights with it.
+   *
+   * **And the staff goes exactly where the lights go** (`04` §5c-2, 2026-09-16).
+   * The learner is being shown which key that sound was; showing where it sits
+   * on a staff at the same moment is the same sentence in the medium they will
+   * be reading music in, and costs nothing extra to keep honest — one walk of
+   * `simonChainSteps` drives the light, the name and the staff, and the timer
+   * that puts the lights out takes the staff down with them. Which is why this
+   * is not a crib: by the time it is the learner's turn there is nothing left
+   * on screen at all.
    */
   function showChainOnKeys(target: DrillPrompt): void {
-    const steps = target.playback ?? [];
+    const steps = simonChainSteps(target.playback ?? []);
     const first = steps[0]?.atMs ?? 0;
     const gap = Math.max(60, (steps[1]?.atMs ?? first + SIMON_STEP_MS) - first);
-    for (const step of steps) {
-      const midi = step.midi[0];
-      if (midi === undefined) continue;
+    // The notes that will actually sound, which is what the staff is shaped
+    // for — the chain's last moment carries all of them.
+    startChainStaff(target, steps[steps.length - 1]?.soFar ?? []);
+    const key = chainFor;
+    for (const [at, step] of steps.entries()) {
       playbackTimers.push(
         setTimeout(() => {
           if (disposed) return;
-          strip?.setState({ expected: [midi] });
+          strip?.setState({ expected: [step.midi] });
           // Instant, not smooth: a chain moves faster than a smooth scroll
           // finishes, and the strip would still be sliding towards note two
           // when note four sounded.
-          strip?.scrollToNote(midi, 'auto');
-          flashNoteName(noteLabel(midi));
+          strip?.scrollToNote(step.midi, 'auto');
+          flashNoteName(noteLabel(step.midi));
+          chainWant = at + 1;
+          pumpChainStaff(key);
         }, step.atMs),
       );
     }
@@ -477,6 +675,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           if (disposed) return;
           strip?.setState({ expected: [] });
           flashNoteName('');
+          disposeChainStaff();
         },
         (steps[steps.length - 1]?.atMs ?? 0) + gap,
       ),
@@ -588,8 +787,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     section.dataset.feedback = '';
     strip?.clear();
     // The note the last chain ended on goes with it, or the next card opens
-    // showing the answer to the one before.
+    // showing the answer to the one before — and so does the staff it was
+    // landing on, before the redraw below can re-append it to the new card.
     simonFlash = '';
+    disposeChainStaff();
     stopMetronome();
     stopDictationTicker();
     disposeAnswer();
@@ -800,14 +1001,25 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           el(
             'div.simon-card',
             { id: 'drill-simon-card' },
-            el('div.ear-card', {
+            // The note that is sounding, as a name and — where there is room
+            // for it — as a note on a staff, side by side: the two say the
+            // same thing, and beside each other they say it at the same width
+            // rather than at the cost of another row. The screen has no spare
+            // row: upright at 342x740 the body already fills its box exactly,
+            // and a staff *under* the name pushed "Play again", "Listen",
+            // "Skip" and "End drill" off the bottom four times a round.
+            el('div.simon-now', { id: 'drill-simon-now' }, el('div.ear-card', {
               id: 'drill-ear-card',
               'data-showing': simonFlash === '' ? 'glyph' : 'name',
               text: simonFlash === '' ? EAR_GLYPH : simonFlash,
-            }),
+            })),
             simonHelpChips(),
           ),
         );
+        // A chain may be sounding while this runs — a key pressed early
+        // settles the card and redraws it — so the staff it is filling goes
+        // back beside the name rather than being lost.
+        attachChainHost();
         break;
       case 'backing-track':
         stage.append(
@@ -1085,6 +1297,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     saveSimonHelp(item.id, next);
     if (drill instanceof SimonDrill) drill.help = next;
     flashNoteName('');
+    // Before the redraw, or the staff from the rung being left would be
+    // re-appended to the card the new rung is about to draw.
+    disposeChainStaff();
     strip?.setState({ expected: [] });
     draw();
     if (current && !finished) playPromptWithHelp(current);

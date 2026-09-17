@@ -13,7 +13,13 @@
  * is the honest picture of why it sounds the way it does. An answer that
  * sits below middle C is written in the bass clef.
  */
-import { DIVISIONS, writeMusicXml, type WriterMeasure, type WriterNote } from '../musicXmlWriter';
+import {
+  DIVISIONS,
+  writeMusicXml,
+  type NoteType,
+  type WriterMeasure,
+  type WriterNote,
+} from '../musicXmlWriter';
 
 /** Pitch classes of the major scale whose key signature has `fifths`. */
 function majorPitchClasses(fifths: number): Set<number> {
@@ -49,14 +55,39 @@ export interface AnswerSheetOptions {
   notes: readonly number[];
   /** A scale or arpeggio (one note after another) rather than a chord. */
   ordered: boolean;
+  /**
+   * The finished run these notes are the beginning of, when the same staff is
+   * drawn again and again as the run grows (Simon's play-along staff, `04`
+   * §5c-2).
+   *
+   * Three things are chosen here to fit the notes given — the key signature,
+   * the clef and the note value — and all three would otherwise change under
+   * the learner part-way through: a chain gains a flat at its fourth note, or
+   * dips below middle C at its sixth, and the staff re-engraves itself with
+   * everything already on it in a different place. A staff that does that is
+   * not one building up left to right, so the three are settled once, from the
+   * whole run, and only the notes drawn grow.
+   *
+   * It also asks for **one bar**, whatever the run reaches: past eight notes a
+   * growing run is written in sixteenths rather than spread over bars of
+   * quarters, because the host it is drawn into is the width of a phone card
+   * and three bars wrap into two systems there — which would make the card
+   * taller half way through the run, which is the one thing this staff must
+   * never do.
+   */
+  wholeRun?: readonly number[];
 }
 
 /** MusicXML for the answer, or null when there is nothing to draw. */
 export function answerSheet(options: AnswerSheetOptions): string | null {
   const notes = options.notes.filter((m) => Number.isFinite(m));
   if (notes.length === 0) return null;
-  const fifths = fifthsFor(notes);
-  const clef: 'G' | 'F' = Math.min(...notes) < 60 ? 'F' : 'G';
+  // What the page is *shaped* for, which is the whole run when there is one
+  // and otherwise exactly the notes on it.
+  const whole = (options.wholeRun ?? notes).filter((m) => Number.isFinite(m));
+  const shape = whole.length > 0 ? whole : notes;
+  const fifths = fifthsFor(shape);
+  const clef: 'G' | 'F' = Math.min(...shape) < 60 ? 'F' : 'G';
   const beatsPerBar = 4;
   const barLength = DIVISIONS * beatsPerBar;
 
@@ -64,8 +95,18 @@ export function answerSheet(options: AnswerSheetOptions): string | null {
   if (options.ordered) {
     // Up to eight notes fit one bar as eighths, which keeps a scale on one
     // line of a phone; a longer run (two octaves) takes quarters over bars.
-    const step = notes.length <= 8 ? DIVISIONS / 2 : DIVISIONS;
-    const type = notes.length <= 8 ? 'eighth' : 'quarter';
+    let step = DIVISIONS / 2;
+    let type: NoteType = 'eighth';
+    if (shape.length > 8) {
+      // A run drawn *as it grows* stays on one bar however long it gets:
+      // sixteen sixteenths are one bar, and Simon's chain caps at twelve. The
+      // alternative — quarters over three bars, which is right for a
+      // two-octave scale drawn once — is three bars OSMD wraps into two or
+      // three systems in a card-width host, and the card would then grow
+      // taller half way through a chain and push the buttons off the screen.
+      step = options.wholeRun === undefined ? DIVISIONS : DIVISIONS / 4;
+      type = options.wholeRun === undefined ? 'quarter' : '16th';
+    }
     const perBar = barLength / step;
     for (let at = 0; at < notes.length; at += perBar) {
       const played: WriterNote[] = notes
@@ -108,6 +149,9 @@ function rests(duration: number): WriterNote[] {
     [DIVISIONS * 2, 'half'],
     [DIVISIONS, 'quarter'],
     [DIVISIONS / 2, 'eighth'],
+    // A run of sixteenths does not have to end on a beat — nine of them leave
+    // three divisions — so the filler goes down to the value the run is in.
+    [DIVISIONS / 4, '16th'],
   ] as const) {
     while (left >= size) {
       out.push({ midi: null, duration: size, type, voice: 1 });

@@ -8,7 +8,9 @@
  *   on sooner, so nobody who has already seen it is made to wait.
  * - **Going over the ones you missed.** A second round built from exactly those
  *   prompts, shown from the start, counting nothing.
- * - **Simon.** One note, then two, then three, until it breaks.
+ * - **Simon.** One note, then two, then three, until it breaks — and, on the
+ *   rung that lights the keys, the chain filling up on a staff as it sounds
+ *   and gone again before the learner's turn.
  *
  * No duration is asserted anywhere here, and no pixel. Where the claim is
  * about time it is made as a *comparison* between two waits this test itself
@@ -25,9 +27,17 @@
  * Where the test has to act *during* the pause — the tap that moves the card
  * on — the observer does the tapping, from inside the page, on seeing it.
  */
+import { mkdirSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { installMidiMock, type MidiMock } from './fixtures/midiMock';
 import { noteLabel } from '../../src/engine/drills/types';
+
+/** Where the Simon pictures go, for looking at rather than for asserting on. */
+const SIMON_PICTURES = resolve('../build/simon');
+
+/** What the ear card shows when it is not naming a note (`DrillScreen`). */
+const EAR_GLYPH = '🎧';
 
 /** One recorded change of `data-feedback` or `data-paused`. */
 interface Transition {
@@ -48,6 +58,14 @@ interface CardSample {
   name: string;
   /** The notes lit as *expected* on the strip at that moment. */
   expectedLit: number[];
+  /**
+   * How many notes were engraved on the play-along staff, or −1 for no staff.
+   *
+   * The screen publishes the count on the host rather than the test counting
+   * noteheads in OSMD's SVG: what is being claimed is "the chain so far", and
+   * the chain is data the test already knows.
+   */
+  staff: number;
 }
 
 declare global {
@@ -76,11 +94,13 @@ async function watchSimonCard(page: Page): Promise<void> {
     window.__simonSamples = [];
     window.__simonSampler = window.setInterval(() => {
       const card = document.querySelector('#drill-ear-card');
+      const staff = document.querySelector('#drill-simon-staff');
       window.__simonSamples?.push({
         name: card?.textContent ?? '',
         expectedLit: Array.from(
           document.querySelectorAll('.keyboard-strip .is-expected[data-midi]'),
         ).map((key) => Number((key as HTMLElement).dataset.midi)),
+        staff: staff instanceof HTMLElement ? Number(staff.dataset.notes ?? 0) : -1,
       });
     }, 25);
   });
@@ -429,6 +449,9 @@ test.describe('Simon', () => {
     }
     await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'glyph', { timeout: 20_000 });
     await expect(page.locator('#drill-strip .is-expected')).toHaveCount(0, { timeout: 20_000 });
+    // The staff goes with the lights, so it is part of "the chain has finished
+    // playing" and not a fourth thing to wait for.
+    await expect(page.locator('#drill-simon-staff')).toHaveCount(0, { timeout: 20_000 });
     const chain = await expectedNow(page);
     for (const note of chain) {
       await midi.noteOn(note, 90);
@@ -449,6 +472,43 @@ test.describe('Simon', () => {
     return seen.some(
       (sample) => sample.name === noteLabel(note) && sample.expectedLit.includes(note),
     );
+  }
+
+  /**
+   * The staff followed the chain and never ran ahead of it, in one walk.
+   *
+   * What the top rung claims about the staff is that it is the chain *so
+   * far* — so at the moment the card is naming the third note, the staff may
+   * hold three notes and may hold two (a phone too slow to keep up skips a
+   * prefix rather than queueing them, which is the screen's own rule), but it
+   * must never hold four. A note it has not played yet is the question
+   * written down, and that is the thing this staff must not be.
+   *
+   * Asserting the stronger "exactly `at + 1` in the same reading as the name"
+   * is asserting the machine kept up, which under four workers it sometimes
+   * does not. Returns the highest count seen, for the caller to judge.
+   */
+  function staffFollowedTheChain(seen: CardSample[]): number {
+    let named = 0;
+    let previous = '';
+    let highest = 0;
+    for (const sample of seen) {
+      const naming = sample.name !== '' && sample.name !== EAR_GLYPH;
+      if (naming && sample.name !== previous) named += 1;
+      previous = sample.name;
+      if (sample.staff < 0) continue;
+      highest = Math.max(highest, sample.staff);
+      expect(
+        sample.staff,
+        `the staff held ${String(sample.staff)} notes with ${String(named)} played`,
+      ).toBeLessThanOrEqual(named);
+    }
+    return highest;
+  }
+
+  /** Was a staff ever on screen while this was sampled? */
+  function everStaffed(seen: CardSample[]): boolean {
+    return seen.some((sample) => sample.staff >= 0);
   }
 
   test('shows the chain on the keys, one at a time, with its name on the card', async ({
@@ -474,19 +534,32 @@ test.describe('Simon', () => {
       .poll(
         async () =>
           new Set(
-            (await simonSoFar(page)).map((sample) => sample.name).filter((name) => name !== '🎧'),
+            (await simonSoFar(page)).map((sample) => sample.name).filter((name) => name !== EAR_GLYPH),
           ).size,
         { timeout: 20_000 },
       )
       .toBe(chain.length);
     const seen = await simonSeen(page);
 
-    // Each key lit while its own name was on the card.
+    // Each key lit while its own name was on the card, and landed on the
+    // staff in the same moment: sound, key, name and staff position are one
+    // fact seen four ways, which is the whole of why the staff is drawn.
     for (const note of chain) {
       expect(litWithItsName(seen, note), `${noteLabel(note)} was never lit under its own name`).toBe(
         true,
       );
     }
+    // And the staff followed the chain note for note, never running ahead of
+    // it: a note it has not played yet is the question written down.
+    const highest = staffFollowedTheChain(seen);
+    expect(highest, 'nothing was ever engraved on the staff').toBeGreaterThan(0);
+    // It ended full, or it ended gone — the teardown and the last prefix race,
+    // and the teardown winning is the staff doing its job, not a failure.
+    const staffAtTheEnd = seen[seen.length - 1]?.staff ?? -1;
+    expect(
+      highest === chain.length || staffAtTheEnd < 0,
+      'the staff stopped short of the chain and stayed up',
+    ).toBe(true);
     // A sequence, not a chord: never two of them lit at once.
     for (const sample of seen) {
       expect(sample.expectedLit.length, 'the chain lit as a chord').toBeLessThan(2);
@@ -502,6 +575,68 @@ test.describe('Simon', () => {
       if (note !== undefined && order[order.length - 1] !== note) order.push(note);
     }
     expect(order.join(','), 'the chain did not light in order').toContain(chain.join(','));
+
+    // And when the lights go, the staff goes with them. This is the line that
+    // keeps it a teaching display rather than a crib: by the time it is the
+    // learner's turn the chain is gone from the screen exactly as it always
+    // was, so the memory task is untouched (`04` §5c-2).
+    await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'glyph', {
+      timeout: 20_000,
+    });
+    await expect(page.locator('#drill-simon-staff')).toHaveCount(0);
+    await expect(page.locator('#drill-strip .is-expected')).toHaveCount(0);
+  });
+
+  /**
+   * Watches the same chain under another rung, for as long as it took to be
+   * drawn under the rung that draws it.
+   *
+   * "No staff appeared" is a claim about a stretch of time, and on a rung with
+   * no lights the screen publishes nothing to mark the end of a chain — so the
+   * stretch is borrowed from the lit rung's own chain, counted in the
+   * sampler's readings rather than in milliseconds. Pressing a chip replays
+   * the chain by itself, so the sampler goes in before the press.
+   */
+  async function watchRung(page: Page, rung: string, readings: number): Promise<CardSample[]> {
+    await watchSimonCard(page);
+    await page.locator(`#drill-simon-help-${rung}`).click();
+    await expect(page.locator(`#drill-simon-help-${rung}`)).toHaveAttribute('aria-pressed', 'true');
+    await expect
+      .poll(async () => (await simonSoFar(page)).length, { timeout: 30_000 })
+      .toBeGreaterThanOrEqual(readings);
+    return simonSeen(page);
+  }
+
+  test('draws no staff on the rungs that do not light the keys', async ({ page }) => {
+    const midi = await openDrill(page, 'drill.ear.simon-c-major');
+    // Two notes, so all three rungs are being watched over the same chain of
+    // the same game — the only thing that differs is the rung.
+    await echoChain(page, midi, 1);
+    await expect(page.locator('#drill-counter')).toContainText('2 of');
+    await expect.poll(async () => (await expectedNow(page)).length, { timeout: 15_000 }).toBe(2);
+    await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'glyph', {
+      timeout: 20_000,
+    });
+
+    // First the rung that does draw one, to find out how long that takes.
+    await watchSimonCard(page);
+    await page.locator('#drill-replay').click();
+    await expect(page.locator('#drill-simon-staff')).toHaveCount(1, { timeout: 20_000 });
+    await expect(page.locator('#drill-simon-staff')).toHaveCount(0, { timeout: 20_000 });
+    const lit = await simonSeen(page);
+    expect(everStaffed(lit), 'the top rung drew no staff to compare against').toBe(true);
+
+    // Sound alone is what the bottom rung says it is: no lights, no names, and
+    // now no staff either, for at least as long as the top rung needed one.
+    const earOnly = await watchRung(page, 'ear-only', lit.length);
+    expect(everStaffed(earOnly), 'the ear-only rung drew a staff').toBe(false);
+    expect(earOnly.every((sample) => sample.expectedLit.length === 0)).toBe(true);
+
+    // And the middle rung is ear-first too: nothing while the chain plays.
+    // What it does *after a miss* is the next test, and is on purpose.
+    const earFirst = await watchRung(page, 'keys-after-miss', lit.length);
+    expect(everStaffed(earFirst), 'the ear-first rung drew a staff as it played').toBe(false);
+    expect(earFirst.every((sample) => sample.expectedLit.length === 0)).toBe(true);
   });
 
   test('plays a missed chain back lit, then asks for the same chain again', async ({ page }) => {
@@ -527,7 +662,7 @@ test.describe('Simon', () => {
       .poll(
         async () =>
           new Set(
-            (await simonSoFar(page)).map((sample) => sample.name).filter((name) => name !== '🎧'),
+            (await simonSoFar(page)).map((sample) => sample.name).filter((name) => name !== EAR_GLYPH),
           ).size,
         { timeout: 20_000 },
       )
@@ -538,6 +673,15 @@ test.describe('Simon', () => {
         true,
       );
     }
+    // The staff goes wherever the lit, named keys go — including here, and on
+    // the same terms: it follows the chain and never runs ahead of it. The
+    // replay is the same chain in the same three mediums, and it is gone
+    // before that chain is asked for again, so it is no more a crib than the
+    // lights are (`04` §5c-2).
+    expect(
+      staffFollowedTheChain(seen),
+      'the replay engraved nothing',
+    ).toBeGreaterThan(0);
 
     // The card was held while that happened, and said how to leave it early.
     const record = await transitions(page);
@@ -548,6 +692,7 @@ test.describe('Simon', () => {
     // not a result sheet: a miss on this rung does not end the game.
     await expect(drill).toHaveAttribute('data-paused', '', { timeout: 20_000 });
     await expect(page.locator('#drill-summary')).toBeHidden();
+    await expect(page.locator('#drill-simon-staff')).toHaveCount(0);
     expect(await expectedNow(page)).toEqual(chain);
 
     // Played right, it grows again.
@@ -555,6 +700,105 @@ test.describe('Simon', () => {
     await expect
       .poll(async () => (await expectedNow(page)).length, { timeout: 20_000 })
       .toBe(chain.length + 1);
+  });
+
+  test('keeps the card whole on a screen with no room for a staff', async ({ page }) => {
+    // A phone held sideways: the drill grid caps the stage and clips what does
+    // not fit, and what would be clipped is the row of chips — the controls.
+    await page.setViewportSize({ width: 740, height: 342 });
+    const midi = await openDrill(page, 'drill.ear.simon-c-major');
+    expect(await pressedRung(page)).toBe('show-keys');
+    await echoChain(page, midi, 1);
+    await expect.poll(async () => (await expectedNow(page)).length, { timeout: 15_000 }).toBe(2);
+
+    await watchSimonCard(page);
+    await page.locator('#drill-replay').click();
+    // The chain still lights and still names itself — that is the rung, and it
+    // is untouched here. It is only the staff that has nowhere to go.
+    await expect
+      .poll(async () => (await simonSoFar(page)).some((sample) => sample.expectedLit.length > 0), {
+        timeout: 20_000,
+      })
+      .toBe(true);
+    await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'glyph', {
+      timeout: 20_000,
+    });
+    const seen = await simonSeen(page);
+    expect(everStaffed(seen), 'a staff was drawn where there is no room for one').toBe(false);
+    expect(seen.some((sample) => sample.name !== EAR_GLYPH)).toBe(true);
+
+    // And the three chips are inside the card, not clipped by the cap. A
+    // relationship between two elements, not a number of pixels (`00` §2).
+    const stage = await page.locator('#drill-stage').boundingBox();
+    const chips = await page.locator('#drill-simon-help').boundingBox();
+    expect(stage && chips).toBeTruthy();
+    if (!stage || !chips) throw new Error('no card to measure');
+    expect(chips.y, 'the chips start above the card').toBeGreaterThanOrEqual(stage.y);
+    expect(chips.y + chips.height, 'the chips run past the bottom of the card').toBeLessThanOrEqual(
+      stage.y + stage.height,
+    );
+  });
+
+  /**
+   * The card with a chain half drawn on it, to be looked at (`00` §3).
+   *
+   * Both themes, both shapes, and a long chain as well as a short one — the
+   * two places this card can go wrong are the short screen, where the stage is
+   * capped and clips what does not fit, and the ninth note, where the run
+   * changes note value and a wrapped system would make the card grow. Nothing
+   * here asserts anything about the picture; it is taken so a person can open
+   * it.
+   */
+  test.describe('pictures', () => {
+    test.describe.configure({ timeout: 300_000 });
+
+    const SHAPES = [
+      { name: 'phone-portrait', width: 342, height: 740, scheme: 'light' as const, staff: true, rounds: 4 },
+      { name: 'phone-portrait', width: 342, height: 740, scheme: 'dark' as const, staff: true, rounds: 4 },
+      // Past the eighth note, where a growing run changes note value.
+      { name: 'phone-portrait-long', width: 342, height: 740, scheme: 'light' as const, staff: true, rounds: 9 },
+      { name: 'phone-landscape', width: 740, height: 342, scheme: 'dark' as const, staff: false, rounds: 4 },
+    ];
+
+    /** How many notes the staff has engraved, or −1 when there is no staff. */
+    async function staffNotes(page: Page): Promise<number> {
+      return page.evaluate(() => {
+        const staff = document.querySelector('#drill-simon-staff');
+        return staff instanceof HTMLElement ? Number(staff.dataset.notes ?? 0) : -1;
+      });
+    }
+
+    for (const shape of SHAPES) {
+      test(`the Simon card mid-chain, ${shape.name} ${shape.scheme}`, async ({ page }) => {
+        await page.emulateMedia({ colorScheme: shape.scheme });
+        await page.setViewportSize({ width: shape.width, height: shape.height });
+        const midi = await openDrill(page, 'drill.ear.simon-c-major');
+        expect(await pressedRung(page)).toBe('show-keys');
+        // Rounds echoed until the chain being drawn is long enough to be
+        // caught half way through and long enough to be worth looking at.
+        for (let round = 1; round <= shape.rounds; round += 1) await echoChain(page, midi, round);
+        const chain = shape.rounds + 1;
+        await expect
+          .poll(async () => (await expectedNow(page)).length, { timeout: 40_000 })
+          .toBe(chain);
+        await page.locator('#drill-replay').click();
+        if (shape.staff) {
+          await expect
+            .poll(async () => staffNotes(page), { timeout: 40_000 })
+            .toBeGreaterThanOrEqual(Math.ceil(chain / 2));
+        } else {
+          // No staff on a short screen (`04` §5c-2), so mid-chain here is the
+          // card naming the note that is sounding — which is what there is to
+          // look at, and the picture is taken to show that nothing else moved.
+          await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'name', {
+            timeout: 20_000,
+          });
+        }
+        const file = join(SIMON_PICTURES, `${shape.name}-${shape.scheme}.png`);
+        mkdirSync(dirname(file), { recursive: true });
+        await page.screenshot({ path: file, animations: 'disabled' });
+      });
+    }
   });
 
   test('remembers the rung for that item, and only for that item', async ({ page }) => {

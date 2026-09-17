@@ -332,7 +332,9 @@ cards that scores nothing and records nothing. **Simon** is the ear drill with
 nothing to guess between: the app plays one note, then the same note and one
 more, then three, until the chain breaks; the score is the longest chain you
 echoed, in the octave it was played. Three chips on the Simon card set how much
-help it gives — the keys lit and named as the chain plays, the keys lit on a
+help it gives — the keys lit and named as the chain plays, with each note landing
+on a staff on the card as it sounds where the screen is tall enough to hold one,
+the keys lit on a
 replay after a wrong note (which then asks you for the same chain again rather
 than ending the game), or sound alone. Each drill remembers the one you chose
 for it, and neither setting discounts the score: the chain is gone by the time

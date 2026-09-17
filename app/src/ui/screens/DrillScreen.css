@@ -73,6 +73,56 @@
   letter-spacing: 0.02em;
 }
 
+/* What is sounding: the note's name, and the note on a staff beside it.
+ *
+ * One row, not two. This screen has no spare row — upright at 342x740 the
+ * drill body already fills its box to the pixel — and a staff *under* the name
+ * pushed "Play again", "Listen", "Skip" and "End drill" off the bottom of the
+ * screen four times a round, with them coming back the moment the chain ended.
+ * Beside it the staff costs thirteen pixels, because the engraved line is
+ * shorter than the name is tall.
+ *
+ * Centred with nothing beside it, which is the card between chains and on the
+ * two rungs that draw no staff at all: the glyph then sits exactly where it
+ * always sat. */
+.simon-now {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* The play-along staff: the chain so far, filling up as it sounds.
+ *
+ * `flex: 1` because the name is the fixed thing and the staff takes what is
+ * left; `min-width: 0` so a long chain shrinks its own line rather than
+ * widening the card. */
+.drill-chain-staff {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* A shade more air than the other engravings get, above and below: the clef
+   * is the tallest thing on a one-bar line and at this size it reached both
+   * edges of the box. */
+  padding: 8px 6px;
+  /* One height, fixed at both ends, and nothing the engraver does can change
+   * it. The floor is so the box does not grow under the first note — it
+   * appears at the size it will keep — and the ceiling is so it cannot grow
+   * under the ninth either: a run's own rules keep it to one bar
+   * (`answerSheet`'s `wholeRun`), and this is what holds if they ever do not.
+   * A card that grows mid-chain pushes the buttons off the screen. */
+  height: 60px;
+  overflow: hidden;
+  /* No panel of its own. The name beside it sits on the page, and a surface
+   * behind only one of the two made them read as a name and a picture rather
+   * than as one thing said twice. The class stays for the dark-mode inversion
+   * `.drill-notation svg` carries. */
+  background: none;
+}
+
 /* Three chips, wrapping together and centred under the card. No filled box
  * among them: `04` §0 R3 allows the screen one and a running drill spends it
  * on nothing, so the pressed chip is the accent and the other two are quiet. */
@@ -101,6 +151,13 @@
   .simon-card {
     gap: 6px;
   }
+
+  /* No play-along staff at all down here — the screen decides, not this file
+   * (`DrillScreen.ts`, `chainStaffFits`). The cap leaves about 128 px of card
+   * and the two rows of chips take 88 of them, so what is left will not hold a
+   * stave however small the name is made; and the half that would have been
+   * clipped is the chips, which are the controls. The lights and the name are
+   * the drill and they are untouched. */
 }
 
 /* The Simon result: the chain is the whole point of the run, so it is the one

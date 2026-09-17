@@ -63,3 +63,111 @@ describe('the sheet', () => {
     expect(answerSheet({ title: 'none', notes: [], ordered: true })).toBeNull();
   });
 });
+
+/**
+ * A staff drawn again and again as a run grows (Simon's play-along staff,
+ * docs/04 §5c-2).
+ *
+ * The claim is not about any one of these sheets: it is that the *sequence* of
+ * them is one staff filling up, which it only is if everything but the notes
+ * stays put. So each prefix is checked against the finished run's signature,
+ * clef and note value rather than against its own.
+ */
+describe('a run drawn as it grows', () => {
+  // The sixth note is the one below middle C and the third is the black key:
+  // drawn on their own, the first two notes would be in C and in the treble.
+  const CHAIN = [64, 67, 70, 72, 65, 55];
+
+  it('keeps the key signature the finished run needs from the first note', () => {
+    const alone = answerSheet({ title: 'first', notes: CHAIN.slice(0, 1), ordered: true })!;
+    expect(alone).toContain('<fifths>0</fifths>');
+    const whole = answerSheet({ title: 'whole', notes: CHAIN, ordered: true })!;
+    const growing = answerSheet({
+      title: 'first',
+      notes: CHAIN.slice(0, 1),
+      ordered: true,
+      wholeRun: CHAIN,
+    })!;
+    const fifths = /<fifths>(-?\d+)<\/fifths>/.exec(whole)?.[1];
+    expect(fifths).toBeDefined();
+    expect(growing).toContain(`<fifths>${String(fifths)}</fifths>`);
+    expect(fifths).not.toBe('0');
+  });
+
+  it('keeps the clef the finished run needs, before the run goes low', () => {
+    const growing = answerSheet({
+      title: 'first',
+      notes: CHAIN.slice(0, 2),
+      ordered: true,
+      wholeRun: CHAIN,
+    })!;
+    // Every note so far is above middle C, and the run still ends below it.
+    expect(Math.min(...CHAIN.slice(0, 2))).toBeGreaterThan(60);
+    expect(Math.min(...CHAIN)).toBeLessThan(60);
+    expect(growing).toContain('<sign>F</sign>');
+  });
+
+  it('keeps the note value the finished run needs, past the eighth note', () => {
+    const long = Array.from({ length: 11 }, (_, at) => 60 + at);
+    const growing = answerSheet({
+      title: 'so far',
+      notes: long.slice(0, 3),
+      ordered: true,
+      wholeRun: long,
+    })!;
+    // On its own a three-note run is eighths; as the start of an eleven-note
+    // one it is the value that run is in, so nothing already drawn moves when
+    // the run passes eight.
+    expect(answerSheet({ title: 'so far', notes: long.slice(0, 3), ordered: true })!).toContain(
+      '<type>eighth</type>',
+    );
+    expect(growing).not.toContain('<type>eighth</type>');
+    expect(growing).toContain('<type>16th</type>');
+  });
+
+  it('stays on one bar however long the growing run gets', () => {
+    // The host it is drawn into is the width of a phone card, and bars past
+    // the first wrap onto a second line there — which would make the card
+    // taller half way through a chain. So a growing run past eight notes is
+    // written in sixteenths, sixteen of which are one bar, rather than spread
+    // over bars of quarters the way a run drawn once is.
+    for (let length = 1; length <= 16; length += 1) {
+      const run = Array.from({ length }, (_, at) => 60 + at);
+      for (let count = 1; count <= length; count += 1) {
+        const xml = answerSheet({
+          title: 'so far',
+          notes: run.slice(0, count),
+          ordered: true,
+          wholeRun: run,
+        })!;
+        expect((xml.match(/<measure /g) ?? []).length, `${String(count)} of ${String(length)}`).toBe(
+          1,
+        );
+      }
+    }
+    // And the run drawn once is unchanged: a two-octave scale still spreads.
+    const twoOctaves = [60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84];
+    expect(
+      (answerSheet({ title: 'C major', notes: twoOctaves, ordered: true })!.match(/<measure /g) ?? [])
+        .length,
+    ).toBeGreaterThan(1);
+  });
+
+  it('draws only the notes so far, one more each time', () => {
+    for (let count = 1; count <= CHAIN.length; count += 1) {
+      const xml = answerSheet({
+        title: 'so far',
+        notes: CHAIN.slice(0, count),
+        ordered: true,
+        wholeRun: CHAIN,
+      })!;
+      expect((xml.match(/<pitch>/g) ?? []).length, `${String(count)} notes`).toBe(count);
+    }
+  });
+
+  it('is the plain sheet again when the run given is the whole of it', () => {
+    const plain = answerSheet({ title: 'x', notes: CHAIN, ordered: true });
+    const explicit = answerSheet({ title: 'x', notes: CHAIN, ordered: true, wholeRun: CHAIN });
+    expect(explicit).toBe(plain);
+  });
+});

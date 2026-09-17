@@ -103,7 +103,13 @@ export const SIMON_HELP_LEVELS: readonly SimonHelpLevel[] = [
   {
     id: 'show-keys',
     label: 'Keys shown',
-    meaning: 'The keys light and are named as the chain plays',
+    // "Where there is room" because there is not always: a screen too short
+    // for a staff still lights and names the keys, which is the rung (`04`
+    // §5c-2, `DrillScreen.ts` `chainStaffFits`).
+    meaning: 'The keys light and are named as the chain plays, and land on the staff where there is room',
+    // `how` is the sentence drawn on the card itself, and the staff is
+    // deliberately *not* in it: a card promising a staff that this screen has
+    // no room for is worse than one that lets the staff speak for itself.
     how: 'Each key lights and names itself as it sounds — copy back what you saw and heard.',
     lightsWhilePlaying: true,
     replayAfterMiss: false,
@@ -152,6 +158,43 @@ export function simonHelpLevel(help: SimonHelp): SimonHelpLevel {
  */
 export function toSimonHelp(value: unknown, fallback: SimonHelp = SIMON_DEFAULT_HELP): SimonHelp {
   return SIMON_HELP_LEVELS.find((level) => level.id === value)?.id ?? fallback;
+}
+
+/** One note of a chain as it plays back. */
+export interface SimonChainStep {
+  /** Milliseconds after the start of the chain, from the prompt's playback. */
+  atMs: number;
+  /** The note that sounds then. */
+  midi: number;
+  /** The chain up to and including it — what the staff shows at that moment. */
+  soFar: number[];
+}
+
+/**
+ * The chain as a list of moments, each carrying everything heard so far.
+ *
+ * The screen lights one key, names one note and draws one staff off a single
+ * walk of this, so the three cannot drift apart — and the staff being the
+ * chain *so far* is the whole of why it is drawn (`04` §5c-2): it fills up
+ * left to right in time with the sound, rather than standing there as a
+ * written-down answer.
+ *
+ * A playback step with no note in it is left out rather than counted: nothing
+ * sounds, so nothing lights and nothing is added to the staff. Simon never
+ * writes one, but `DrillPrompt.playback` allows it and the chord drills use it.
+ */
+export function simonChainSteps(
+  playback: readonly { midi: readonly number[]; atMs: number }[],
+): SimonChainStep[] {
+  const steps: SimonChainStep[] = [];
+  const soFar: number[] = [];
+  for (const step of playback) {
+    const midi = step.midi[0];
+    if (midi === undefined) continue;
+    soFar.push(midi);
+    steps.push({ atMs: step.atMs, midi, soFar: [...soFar] });
+  }
+  return steps;
 }
 
 /** Is this the moment to play the chain again with the keys lit? */
