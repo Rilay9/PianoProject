@@ -33942,6 +33942,1520 @@
       "tracks": [
         "core"
       ]
+    },
+    {
+      "id": "song.blues.black-bottom-stomp",
+      "cid": "QmUxWVHCkkJuUxqhKei7ZUEPuU1eaomiq2nBFCkgNj8a3d",
+      "file": "QmUxWVHCkkJuUxqhKei7ZUEPuU1eaomiq2nBFCkgNj8a3d.mxl",
+      "title": "Black Bottom Stomp",
+      "composer": "Jelly Roll Morton",
+      "artist": "Jelly Roll Morton",
+      "rawSha256": "6e45a16b3baa788f8ddaedf6b89e5eb53575df566d7df6fc81d47447652e4d2f",
+      "convertedSha256": "6584c3c172a8c15b7c3ce12f77e86e0c0cffdd3b1cffba653e373f7937bd53b5",
+      "musescoreId": "2266421",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1926",
+      "traditional": false,
+      "bucket": "jazz-latin",
+      "band": "7-9",
+      "bars": 101,
+      "notes": 1584,
+      "tempoBpm": 175.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 101.0,
+        "notesPerBar": 25.366336633663366,
+        "notesPerSecond": 18.496287128712872,
+        "maxSimultaneousRight": 7.0,
+        "maxSimultaneousLeft": 6.0,
+        "maxSpanRight": 40.0,
+        "maxSpanLeft": 43.0,
+        "maxLeapRight": 43.0,
+        "maxLeapLeft": 46.0,
+        "rangeRight": 54.0,
+        "rangeLeft": 51.0,
+        "blackKeyRatio": 0.32162373145979706,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.03125,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 72.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.1647150663544106,
+        "distinctRhythms": 20.0
+      },
+      "level": 8.62,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.554
+        ],
+        [
+          "rangeLeft",
+          0.352
+        ],
+        [
+          "notesPerSecond",
+          0.313
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Morton 1926 - blues.8 and blues.9"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.jazz-me-blues",
+      "cid": "Qmf6z3Xw9KtGD5eLovubwUr6PJwEpy2hraHLKwV8injib1",
+      "file": "Qmf6z3Xw9KtGD5eLovubwUr6PJwEpy2hraHLKwV8injib1.mxl",
+      "title": "Jazz Me Blues",
+      "composer": "Tom Delaney",
+      "artist": "Tom Delaney",
+      "rawSha256": "fa1d3a89e445a36dd62a60886220229cec0f62c1cfc7a3de1c1d5ecd7827300f",
+      "convertedSha256": "918cb4948c024f1b22e71c4fea45bc1861dead546c79f388cd889e55a092808d",
+      "musescoreId": "1308846",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1921",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "3",
+      "bars": 41,
+      "notes": 255,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 41.0,
+        "notesPerBar": 8.829268292682928,
+        "notesPerSecond": 3.5317073170731708,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 31.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 34.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.4198895027624309,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.013812154696132596,
+        "distinctRhythms": 5.0
+      },
+      "level": 4.0,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "keyAccidentals",
+          0.184
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Delaney 1921 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.jazz.chevy-chase",
+      "cid": "QmUEusgeXTc9PuL6CW1fVrwKp1a4AST34xYtUUBeWZ2g7K",
+      "file": "QmUEusgeXTc9PuL6CW1fVrwKp1a4AST34xYtUUBeWZ2g7K.mxl",
+      "title": "The Chevy Chase",
+      "composer": "Eubie Blake",
+      "artist": null,
+      "rawSha256": "1256e7f50c8676d7f205b16c73786dd2c161ba020e910a18f57b657b2e2ab2a6",
+      "convertedSha256": "dd3fea04cb96c35f0eb446afb080adb0de622b6b8460e5f2c370bfcc889d1500",
+      "musescoreId": "5660613",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1914",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "5",
+      "bars": 107,
+      "notes": 897,
+      "tempoBpm": 199.00000000000003,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 107.0,
+        "notesPerBar": 16.327102803738317,
+        "notesPerSecond": 13.537889408099687,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 16.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 26.0,
+        "rangeRight": 36.0,
+        "rangeLeft": 46.0,
+        "blackKeyRatio": 0.16771608471665714,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 6.0,
+        "ledgerRatio": 0.13394390383514596,
+        "distinctRhythms": 8.0
+      },
+      "level": 7.72,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.593
+        ],
+        [
+          "rangeLeft",
+          0.302
+        ],
+        [
+          "notesPerSecond",
+          0.218
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Blake 1914 - blues.8"
+      },
+      "genre": [
+        "jazz"
+      ],
+      "tracks": [
+        "jazz",
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.singin-the-blues",
+      "cid": "QmWb1M68oQe5XE1eQpa1x5tGXM9cFvFPs9VxjDCoSsPQxS",
+      "file": "QmWb1M68oQe5XE1eQpa1x5tGXM9cFvFPs9VxjDCoSsPQxS.mxl",
+      "title": "Singin' the Blues",
+      "composer": "Con Conrad and J. Russel Robinson",
+      "artist": null,
+      "rawSha256": "9701c75a5a3d736fe7aa2478d96df12dcb7cf5607e3c14aaa3fb09f41f13c86d",
+      "convertedSha256": "fc4e8b90f6737fb950b9e915e960f40d4709988bed475da78599f3709e93a3f9",
+      "musescoreId": "1434226",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1920",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 35,
+      "notes": 195,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 35.0,
+        "notesPerBar": 7.914285714285715,
+        "notesPerSecond": 3.165714285714286,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 11.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 34.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 36.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.37184115523465705,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.021660649819494584,
+        "distinctRhythms": 8.0
+      },
+      "level": 4.04,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "notesPerBar",
+          -0.19
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Conrad and Robinson 1920 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.satanic-blues",
+      "cid": "QmYjVpijybWSCAsmbk3kAfY6YeGAGviH3VPts8M9siKjsq",
+      "file": "QmYjVpijybWSCAsmbk3kAfY6YeGAGviH3VPts8M9siKjsq.mxl",
+      "title": "Satanic Blues",
+      "composer": "Original Dixieland Jazz Band",
+      "artist": null,
+      "rawSha256": "36bf00734b48a4ada91e822719989d34144634f22e7b8c557bba9c4c429d64c9",
+      "convertedSha256": "2425ef268dae7e12000fea64e0e096d47022c07de3a94ca9e3c0a4e05ea00c8e",
+      "musescoreId": "1434161",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1918",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 47,
+      "notes": 329,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 47.0,
+        "notesPerBar": 10.23404255319149,
+        "notesPerSecond": 4.093617021276596,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 14.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 45.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 47.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.26403326403326405,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.24116424116424118,
+        "distinctRhythms": 4.0
+      },
+      "level": 4.31,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "ledgerRatio",
+          0.149
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "ODJB 1918 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.st-james-infirmary",
+      "cid": "Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs",
+      "file": "Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs.mxl",
+      "title": "St. James Infirmary",
+      "composer": "Traditional",
+      "artist": "Misc Traditional",
+      "rawSha256": "cffce9542f7982f73082449cab59b0341012cbef96c6bf23b70fc9c940a203b8",
+      "convertedSha256": "2bbbf3128c76d58b4fa9c237a7b2e385ee5e131e9e656d77d090224f6439eedb",
+      "musescoreId": "1434401",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 24,
+      "notes": 136,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 24.0,
+        "notesPerBar": 10.0,
+        "notesPerSecond": 4.0,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 28.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 33.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.15,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.004166666666666667,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.53,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.415
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "traditional minor blues - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.weary-blues",
+      "cid": "QmcFYo1tzXKkVyVhWeRgNUmEuTz3brex5krHc5ipK8yu5W",
+      "file": "QmcFYo1tzXKkVyVhWeRgNUmEuTz3brex5krHc5ipK8yu5W.mxl",
+      "title": "Weary Blues",
+      "composer": "Artie Matthews",
+      "artist": null,
+      "rawSha256": "9193306c55fb3d0b8880117147eb1580b91c08400ebb292c4df6b1d87720b0fc",
+      "convertedSha256": "fe5a56cb1ebfde19b3d8bc56c7a594f70b7bc9e15895a97e61280979dac3ff05",
+      "musescoreId": "1430036",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1915",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 43,
+      "notes": 214,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 43.0,
+        "notesPerBar": 6.837209302325581,
+        "notesPerSecond": 2.7348837209302324,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 43.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 48.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.08843537414965986,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.5136054421768708,
+        "distinctRhythms": 5.0
+      },
+      "level": 4.04,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "ledgerRatio",
+          0.436
+        ],
+        [
+          "notesPerBar",
+          -0.248
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Matthews 1915 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.jazz.stumbling",
+      "cid": "QmdwpjgwnxF2KN84BtNwExkHXAvZAMVm32WZers3u7s8Sd",
+      "file": "QmdwpjgwnxF2KN84BtNwExkHXAvZAMVm32WZers3u7s8Sd.mxl",
+      "title": "Stumbling",
+      "composer": "Zez Confrey",
+      "artist": null,
+      "rawSha256": "23a0ad573143f17d204c818292b36cac14e37410a88f58ad0e7921fa504c0e2a",
+      "convertedSha256": "8d3bc80694415054527ea8846ab8cb480555725ddd724ef86f66b40cfca2d709",
+      "musescoreId": "4865827",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1922",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "7-9",
+      "bars": 105,
+      "notes": 1380,
+      "tempoBpm": 178.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 105.0,
+        "notesPerBar": 26.34285714285714,
+        "notesPerSecond": 19.53761904761905,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 16.0,
+        "maxSpanLeft": 17.0,
+        "maxLeapRight": 40.0,
+        "maxLeapLeft": 34.0,
+        "rangeRight": 50.0,
+        "rangeLeft": 52.0,
+        "blackKeyRatio": 0.195589298626175,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.2,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.19016630513376717,
+        "distinctRhythms": 8.0
+      },
+      "level": 7.94,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.58
+        ],
+        [
+          "rangeLeft",
+          0.362
+        ],
+        [
+          "notesPerSecond",
+          0.329
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Confrey 1922 - blues.9"
+      },
+      "genre": [
+        "jazz"
+      ],
+      "tracks": [
+        "jazz",
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.storyville-blues",
+      "cid": "QmQjvJNRnH4txqUT4ta7FpCqZfeEkquYaoFqXpdM13DWPq",
+      "file": "QmQjvJNRnH4txqUT4ta7FpCqZfeEkquYaoFqXpdM13DWPq.mxl",
+      "title": "Storyville Blues",
+      "composer": "Traditional",
+      "artist": null,
+      "rawSha256": "86e50c9bcbb3d9dbfddb2d65219076217bc55bcd905fc3450a7567312edc7e90",
+      "convertedSha256": "d31d167ee2267a7b39c34c35e60f27ff067555027fd442adf8dc4151e4ba78e7",
+      "musescoreId": "1434421",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "3",
+      "bars": 56,
+      "notes": 285,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 56.0,
+        "notesPerBar": 8.267857142857142,
+        "notesPerSecond": 3.307142857142857,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 34.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 34.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.6241900647948164,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.004319654427645789,
+        "distinctRhythms": 6.0
+      },
+      "level": 4.68,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          0.27
+        ],
+        [
+          "notesPerSecond",
+          -0.176
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "traditional - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.boogie-en-sol",
+      "cid": "QmeMcNMp66WReUt467S33B4Jkw99MyuJEpUmY7ysQ1rhR1",
+      "file": "QmeMcNMp66WReUt467S33B4Jkw99MyuJEpUmY7ysQ1rhR1.mxl",
+      "title": "Boogie-Boogie en Sol",
+      "composer": "Miguel Ángel Breña",
+      "artist": null,
+      "rawSha256": "174a4d56e6717f7bc81f39c13d5e2ee036679fca8d6a8d3de75b575bf64e32b8",
+      "convertedSha256": "5c99d0c73d440b43256491718169cff22bcb0e7f72e903684708f004e816cfb1",
+      "musescoreId": "1227151",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "a living composer",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "6",
+      "bars": 21,
+      "notes": 243,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 21.0,
+        "notesPerBar": 18.666666666666668,
+        "notesPerSecond": 7.466666666666667,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 8.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 9.0,
+        "maxLeapLeft": 17.0,
+        "rangeRight": 20.0,
+        "rangeLeft": 24.0,
+        "blackKeyRatio": 0.08163265306122448,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.20918367346938777,
+        "distinctRhythms": 3.0
+      },
+      "level": 5.55,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.503
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "notesPerBar",
+          0.166
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "blues.7"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.boogie-and-blues-bass-lines",
+      "cid": "QmVA3u1y5X7efnruukvX1m3ZhP66gnPWbRXwvSWo5jXf1B",
+      "file": "QmVA3u1y5X7efnruukvX1m3ZhP66gnPWbRXwvSWo5jXf1B.mxl",
+      "title": "Boogie and Blues Bass Lines",
+      "composer": null,
+      "artist": "louisf365",
+      "rawSha256": "7cb0d18ea34804181c0b75fcddcf5ef5d7ac9af6b04627a0e0c1d30abaab8aee",
+      "convertedSha256": "8182752738e6d0662c36a7b6f0fd138999ab49dc4c909eb393c4ca447a5e7bf9",
+      "musescoreId": "5976863",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 54,
+      "notes": 276,
+      "tempoBpm": 300.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 54.0,
+        "notesPerBar": 6.592592592592593,
+        "notesPerSecond": 8.24074074074074,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 24.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.21067415730337077,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.09831460674157304,
+        "distinctRhythms": 3.0
+      },
+      "level": 3.69,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "notesPerBar",
+          -0.263
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "bass-line studies, reads easier than the plan expected - library only"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.handful-of-keys",
+      "cid": "QmSWekc6GcVehxhxUdijtozPNGFYkGhZ5c7bkxSQ1F9Qmr",
+      "file": "QmSWekc6GcVehxhxUdijtozPNGFYkGhZ5c7bkxSQ1F9Qmr.mxl",
+      "title": "Handful of Keys",
+      "composer": "Fats Waller",
+      "artist": "Fats Waller",
+      "rawSha256": "f860846c7ae1822e0aece5ceb7f7987f44d066096c87576fa416952d0c4995ad",
+      "convertedSha256": "fe794da78e42ccad637e5d972d46caa3f4999d3b5b9bfff91ad5b8528bb2e087",
+      "musescoreId": "6401667",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1929",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 176,
+      "notes": 1623,
+      "tempoBpm": 240.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 176.0,
+        "notesPerBar": 19.59659090909091,
+        "notesPerSecond": 19.59659090909091,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 5.0,
+        "maxSpanRight": 14.0,
+        "maxSpanLeft": 22.0,
+        "maxLeapRight": 41.0,
+        "maxLeapLeft": 27.0,
+        "rangeRight": 76.0,
+        "rangeLeft": 41.0,
+        "blackKeyRatio": 0.22963177732676138,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 4.0,
+        "handCrossings": 1.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.3041461293128443,
+        "distinctRhythms": 10.0
+      },
+      "level": 8.73,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.934
+        ],
+        [
+          "notesPerSecond",
+          0.33
+        ],
+        [
+          "voicesPerStaff",
+          0.255
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Waller 1929 - blues.9, not blues.7: it reads a full band above the plan's estimate"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.riverside-blues",
+      "cid": "QmWrMZiUQFGr7ntjiLXRnbyTb6DP7j4BbRrANntqNC4T5o",
+      "file": "QmWrMZiUQFGr7ntjiLXRnbyTb6DP7j4BbRrANntqNC4T5o.mxl",
+      "title": "Riverside Blues",
+      "composer": "Thomas A. Dorsey and Richard M. Jones",
+      "artist": null,
+      "rawSha256": "63b6f3cd41afbbeb3c2964cf8b520b1874d8c3328466b670a23c77ca82876bd9",
+      "convertedSha256": "fff3042c5f5a464da4679e4d2e52d42c1896d2f113d5a9c9b813c2aaf33bcb7b",
+      "musescoreId": "1429126",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1923",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 41,
+      "notes": 236,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 41.0,
+        "notesPerBar": 8.975609756097562,
+        "notesPerSecond": 3.5902439024390245,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 34.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 34.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.6358695652173914,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.3333333333333333,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.008152173913043478,
+        "distinctRhythms": 7.0
+      },
+      "level": 4.26,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "keyAccidentals",
+          0.184
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Dorsey and Jones 1923 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.rhythm-and-boogie",
+      "cid": "QmR9irNmXzcCoXLCFhLDW3RmagjbVFZrKfYavFk8aLCYrL",
+      "file": "QmR9irNmXzcCoXLCFhLDW3RmagjbVFZrKfYavFk8aLCYrL.mxl",
+      "title": "Rhythm and Boogie",
+      "composer": null,
+      "artist": null,
+      "rawSha256": "f0b9355c064141139a4c13e2f36cacdc9140fe033d72cfd8a12ec8c57154389c",
+      "convertedSha256": "45a8923ade65f9691adef4251eefef531025a857596aa411729c17ac457e7744",
+      "musescoreId": "3323846",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 40,
+      "notes": 263,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 40.0,
+        "notesPerBar": 7.225,
+        "notesPerSecond": 2.89,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 7.0,
+        "maxSpanLeft": 7.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 7.0,
+        "rangeRight": 20.0,
+        "rangeLeft": 14.0,
+        "blackKeyRatio": 0.20069204152249134,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.1453287197231834,
+        "distinctRhythms": 4.0
+      },
+      "level": 5.03,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -0.266
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "notesPerBar",
+          -0.227
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "blues.7"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.livery-stable-blues",
+      "cid": "QmaqesMCv9LuRp1f68fzscAPp2PLgdyjRwoLn2soprLEW3",
+      "file": "QmaqesMCv9LuRp1f68fzscAPp2PLgdyjRwoLn2soprLEW3.mxl",
+      "title": "Livery Stable Blues",
+      "composer": "Original Dixieland Jazz Band",
+      "artist": "Misc tunes",
+      "rawSha256": "1ee38b0030d1e9adbfbd5c7ed7784195b42b9201ed55e538ff6cac7bf1347ec4",
+      "convertedSha256": "0b267132d79ed032af546cf5f353fa28b9b438820a14592b9657bcd7d1035e1d",
+      "musescoreId": "1350256",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1917",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 37,
+      "notes": 227,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 37.0,
+        "notesPerBar": 9.27027027027027,
+        "notesPerSecond": 3.708108108108108,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 31.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 34.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.5422740524781341,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.008746355685131196,
+        "distinctRhythms": 5.0
+      },
+      "level": 4.02,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "keyAccidentals",
+          0.184
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "ODJB 1917 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.wabash-blues",
+      "cid": "QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt",
+      "file": "QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl",
+      "title": "Wabash Blues",
+      "composer": "Dave Ringle and Fred Meinken",
+      "artist": null,
+      "rawSha256": "b4b47922a473afcde8b196d3dcb43c4900f779aa50c5b13d92344796b439906a",
+      "convertedSha256": "60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208",
+      "musescoreId": "1429571",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1921",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 57,
+      "notes": 267,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 57.0,
+        "notesPerBar": 8.017543859649123,
+        "notesPerSecond": 3.2070175438596493,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 33.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 36.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.49015317286652077,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0087527352297593,
+        "distinctRhythms": 6.0
+      },
+      "level": 4.09,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "notesPerBar",
+          -0.185
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Ringle and Meinken 1921 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.tishomingo-blues",
+      "cid": "Qmb4ajXAjTv3vVkZmx1qtSEuUmRMVM8qbpEVPLsLM53WYA",
+      "file": "Qmb4ajXAjTv3vVkZmx1qtSEuUmRMVM8qbpEVPLsLM53WYA.mxl",
+      "title": "Tishomingo Blues",
+      "composer": "Spencer Williams",
+      "artist": null,
+      "rawSha256": "77985b1577e4aff55d6bec4a0d5287a51f83b487d0ed98f3d992b398236e2f0c",
+      "convertedSha256": "afa635593b2772f7d202792e0657a39990299ddef25ee7196ba5ad92a42a04f2",
+      "musescoreId": "1438331",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1917",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 48,
+      "notes": 228,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 48.0,
+        "notesPerBar": 7.645833333333333,
+        "notesPerSecond": 3.058333333333333,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 14.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 31.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 31.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.6403269754768393,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 6.0
+      },
+      "level": 4.18,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          0.27
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Spencer Williams 1917 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.ole-miss",
+      "cid": "QmZkTYcfh1tfTpXQNpJnb3YupnMGdAxNcH53Xm9NYzA8tE",
+      "file": "QmZkTYcfh1tfTpXQNpJnb3YupnMGdAxNcH53Xm9NYzA8tE.mxl",
+      "title": "Ole Miss",
+      "composer": "W. C. Handy",
+      "artist": null,
+      "rawSha256": "b2652c0419fde8dc58e16ede6a0a770fdc3314931c8fe7743a110d6b9f95a343",
+      "convertedSha256": "6267699fc25e0893fbe883997f797cb20e1301683654470b49013be799a5d10b",
+      "musescoreId": "1351021",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1916",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 64,
+      "notes": 364,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 64.0,
+        "notesPerBar": 7.8125,
+        "notesPerSecond": 3.125,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 31.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 36.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.174,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.008,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.84,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          0.243
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Handy 1916 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.hesitating-blues",
+      "cid": "QmPwTjLQCR8fxN4eFaKywCUbYwmmwu29FizMECRdLYzDmQ",
+      "file": "QmPwTjLQCR8fxN4eFaKywCUbYwmmwu29FizMECRdLYzDmQ.mxl",
+      "title": "Hesitating Blues",
+      "composer": "W. C. Handy",
+      "artist": null,
+      "rawSha256": "81de68c060ef3a29c9c55b5e8384568d94fcf2fddb1c9ee4d663dc62f803f2dd",
+      "convertedSha256": "846169efd0c08401c9ea1a276e7771953cbc3bb88fd2c999f4ee471295d2650c",
+      "musescoreId": "1305626",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1915",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 48,
+      "notes": 227,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 48.0,
+        "notesPerBar": 7.166666666666667,
+        "notesPerSecond": 2.8666666666666667,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 29.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 35.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.2703488372093023,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.014534883720930232,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.64,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.23
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Handy 1915 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.aunt-hagars-blues",
+      "cid": "QmbF48Dqkw36z8Ahuns8L3WBpc1u8bWDFY4ZNT2yVY8zUM",
+      "file": "QmbF48Dqkw36z8Ahuns8L3WBpc1u8bWDFY4ZNT2yVY8zUM.mxl",
+      "title": "Aunt Hagar's Blues",
+      "composer": "W. C. Handy",
+      "artist": null,
+      "rawSha256": "c650081f6e4807210252f5fd6490a6dbcd85efe3209e6c7ba47fbb32d7504b82",
+      "convertedSha256": "8cc063ec1e88b2a6d1d0f6e8837bf6d823b2ea82fdaadc3983fb4a9e02892979",
+      "musescoreId": "1288761",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1921",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 52,
+      "notes": 274,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 52.0,
+        "notesPerBar": 8.538461538461538,
+        "notesPerSecond": 3.4153846153846152,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 30.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 34.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.6081081081081081,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0045045045045045045,
+        "distinctRhythms": 6.0
+      },
+      "level": 4.22,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ],
+        [
+          "keyAccidentals",
+          0.184
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Handy 1921 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
+    },
+    {
+      "id": "song.blues.long-gone",
+      "cid": "QmNhQfHNaHK6EM868G4CUsY5pybjXLszDP3dNn4TzcS5xh",
+      "file": "QmNhQfHNaHK6EM868G4CUsY5pybjXLszDP3dNn4TzcS5xh.mxl",
+      "title": "Long Gone",
+      "composer": "W. C. Handy and Chris Smith",
+      "artist": null,
+      "rawSha256": "a6c97bfc996baf39a9e1efbfb1597faecc523a616f8305658fe9530af65ae386",
+      "convertedSha256": "34c60c749f7208c476977b39c5805da37e783edd5cf3751c255b393189197cbb",
+      "musescoreId": "1350306",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "published 1920",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "3",
+      "bars": 41,
+      "notes": 262,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 41.0,
+        "notesPerBar": 10.707317073170731,
+        "notesPerSecond": 4.282926829268293,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 34.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 38.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.6514806378132119,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.018223234624145785,
+        "distinctRhythms": 4.0
+      },
+      "level": 4.35,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          0.27
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Handy and Smith 1920 - library"
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ]
     }
   ]
 }

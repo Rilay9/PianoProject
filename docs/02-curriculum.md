@@ -425,12 +425,13 @@ Music Theory "Pop/Rock" chapters.
 
 | Stage | Focus | Repertoire wanted (see `docs/generated/ladder.md` for what is bundled) |
 |------:|-------|------------|
+| 3 | The blue notes before the form: flat third, flat seventh and the crushed fourth; the published blues as melody with chord symbols, right hand on the tune and left hand holding the symbol; one of them in the minor | *12 Bar Blues* `[PDMX]`; *Careless Love* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]`; *St. James Infirmary (traditional, minor)* `[PDMX]`; *Ringle & Meinken — Wabash Blues (1921)* `[PDMX]`; *Williams — Tishomingo Blues (1917)* `[PDMX]` |
 | 4 | 12-bar blues form in C (I7 IV7 V7), shuffle feel, LH "boogie" bass (root-5-6-b7), simple RH riffs, blues scale | *Twelve-bar blues shuffle in C* `[GEN]`; *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Careless Love* `[PDMX]`; *12 Bar Blues* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]` |
 | 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, walking bass | *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Twelve-bar blues shuffle in C* `[GEN]`; *Swanstone — Blues My Naughty Sweetie Gives to Me (1919)* `[PDMX]`; *Handy — The Memphis Blues (1912)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
 | 6 | Boogie-woogie LH patterns (Pinetop, Yancey, "Honky Tonk Train" style), RH chorus building, slow blues 12/8, minor blues | *Boogie (easy, for beginners)* `[PDMX]`; *Boogie-woogie and blues piano exercises* `[PDMX]`; *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]` |
-| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes) | *Boogie (easy, for beginners)* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
-| 8 | The form in twelve keys, ninths on every dominant, comping over your own walking bass | none set — song-optional; the piece is the learner's own written chorus in two keys |
-| 9 | Improvising over the form and making it yours; fast boogie, stride-blues hybrids, transcription projects | none set — song-optional; import/transcribe |
+| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes) | *Boogie (easy, for beginners)* `[PDMX]`; *Rhythm and Boogie* `[PDMX]`; *Boogie-Boogie en Sol* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
+| 8 | The form in twelve keys, ninths on every dominant, comping over your own walking bass | song-optional — the piece is the learner's own written chorus in two keys, and these are what to read while writing it: *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]`; *Blake — The Chevy Chase (1914)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]` |
+| 9 | Improvising over the form and making it yours; fast boogie, stride-blues hybrids, transcription projects | song-optional — yours first, then three written choruses: *Confrey — Stumbling (1922)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]`; *Waller — Handful of Keys (1929)* `[PDMX]` |
 
 Teachers: Bill Hilton (blues tutorials playlist, "12 bar blues for beginners"), Arthur
 Migliazza (boogie), Christian Fuchs, Piano With Jonny (free blues lessons), the free "Blues
@@ -758,6 +759,27 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | Memphis Blues | Handy 1912 | F | 5 (blues) | |
 | Trouble in Mind | Jones 1924 | C/F | 5 (blues) | |
 | Pinetop's Boogie Woogie | Smith 1928 | C | 6 (blues) | |
+| St. James Infirmary | US trad. | — | 3.5 | `[PDMX]` quarried 2026-09-17; on `blues.3` — the minor blues that rung's lesson names |
+| Hesitating Blues | Handy 1915 | — | 3.6 | `[PDMX]` quarried 2026-09-17; Library |
+| Boogie and Blues Bass Lines | uploader, undated | — | 3.7 | `[PDMX]` quarried 2026-09-17; Library — bass-line studies, not a piece |
+| Ole Miss | Handy 1916 | — | 3.8 | `[PDMX]` quarried 2026-09-17; Library |
+| Jazz Me Blues | Delaney 1921 | — | 4.0 | `[PDMX]` quarried 2026-09-17; Library |
+| Livery Stable Blues | ODJB 1917 | — | 4.0 | `[PDMX]` quarried 2026-09-17; Library |
+| Singin' the Blues | Conrad & Robinson 1920 | — | 4.0 | `[PDMX]` quarried 2026-09-17; Library |
+| Weary Blues | Matthews 1915 | — | 4.0 | `[PDMX]` quarried 2026-09-17; Library |
+| Wabash Blues | Ringle & Meinken 1921 | — | 4.1 | `[PDMX]` quarried 2026-09-17; on `blues.3` |
+| Tishomingo Blues | Williams 1917 | — | 4.2 | `[PDMX]` quarried 2026-09-17; on `blues.3` |
+| Aunt Hagar's Blues | Handy 1921 | — | 4.2 | `[PDMX]` quarried 2026-09-17; Library |
+| Riverside Blues | Dorsey & Jones 1923 | — | 4.3 | `[PDMX]` quarried 2026-09-17; Library |
+| Satanic Blues | ODJB 1918 | — | 4.3 | `[PDMX]` quarried 2026-09-17; Library |
+| Long Gone | Handy & Smith 1920 | — | 4.4 | `[PDMX]` quarried 2026-09-17; Library |
+| Storyville Blues | US trad. | — | 4.7 | `[PDMX]` quarried 2026-09-17; Library — a band above `blues.3`, which is why it is not on it |
+| Rhythm and Boogie | uploader, undated | — | 5.0 | `[PDMX]` quarried 2026-09-17; on `blues.7` |
+| Boogie-Boogie en Sol | Breña, undated | — | 5.6 | `[PDMX]` quarried 2026-09-17; on `blues.7` |
+| The Chevy Chase | Blake 1914 | — | 7.7 | `[PDMX]` quarried 2026-09-17; on `blues.8` |
+| Stumbling | Confrey 1922 | — | 7.9 | `[PDMX]` quarried 2026-09-17; on `blues.9` |
+| Black Bottom Stomp | Morton 1926 | — | 8.6 | `[PDMX]` quarried 2026-09-17; on `blues.8` and `blues.9` |
+| Handful of Keys | Waller 1929 | — | 8.7 | `[PDMX]` quarried 2026-09-17; on `blues.9` — the hardest music on the track |
 | Beale Street Blues / Royal Garden Blues / Tin Roof Blues / Wabash Blues / Yellow Dog Blues / Basin Street Blues | 1917–1928 | var. | 6–7 (blues/jazz) | lead sheets |
 | Ja-Da; After You've Gone; Avalon; Some of These Days; Indiana; Rose Room; Darktown Strutters' Ball; Tiger Rag | 1910–1920 | var. | 5 (jazz) | lead sheets |
 | Limehouse Blues; The Man I Love; It Had to Be You; Tea for Two; Sweet Georgia Brown; Dinah; Bye Bye Blackbird; Someone to Watch Over Me; Ain't She Sweet; Stardust; Sweet Sue; I Can't Give You Anything but Love; Makin' Whoopee; When You're Smiling | 1922–1928 | var. | 6–7 (jazz) | lead sheets |

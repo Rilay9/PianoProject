@@ -585,7 +585,10 @@
               "songOptions": [
                 "song.classical.12-bar-blues.pdmx",
                 "song.pop.careless-love-blues.pdmx",
-                "song.classical.st-louis-blues.pdmx"
+                "song.classical.st-louis-blues.pdmx",
+                "song.blues.st-james-infirmary",
+                "song.blues.wabash-blues",
+                "song.blues.tishomingo-blues"
               ],
               "mastery": {
                 "exercisesRequired": 1,

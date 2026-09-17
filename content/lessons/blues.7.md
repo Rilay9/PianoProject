@@ -6,7 +6,7 @@ videos:
   - label: "Stride piano - basics of the left hand stride"
     url: "https://www.youtube.com/watch?v=zdHZ-RkF4L0"
     teacher: "Bill Hilton"
-readingTime: 2
+readingTime: 3
 ---
 
 **Stride.** Bass note, chord, tenth, chord. Two leaps a bar, both of them
@@ -29,10 +29,14 @@ one.
 turnaround in three keys. Then the boogie from Stage 6 with the turnaround on the
 end.
 
-**Repertoire for this rung.** The form again, with your own turnaround, and the
-short *Boogie* from Stage 6 for a left hand that never stops. *Pinetop's Boogie
-Woogie* stays on the Stage 6 rung and is worth another look now that the stride
-leap is in your hand. If you play a rag, its left hand is this left hand.
+**Repertoire for this rung.** Three, and all of them are a left hand that never
+stops. *Boogie (easy, for beginners)* is the one from Stage 6 and is still the
+warm-up. *Rhythm and Boogie* is forty bars of shuffle with the turnaround
+written out, so you can see the two bars rather than invent them. *Boogie-Boogie
+en Sol* is short and sits in G, which puts the bass figure under a different set
+of fingers — the fastest way to find out whether you learned the pattern or the
+key. None of the three is required: the rung is finished on its exercises, and
+these are what to read while you do them.
 
 **Common mistake.** Practising stride at the tempo you want it. The leap is a
 motion, and a motion learned fast is learned wrong.

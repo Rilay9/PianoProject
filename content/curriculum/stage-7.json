@@ -331,7 +331,9 @@
                 "exercise.walking-bass.f.blues"
               ],
               "songOptions": [
-                "song.pop.boogie-easy-for-beginners.pdmx"
+                "song.pop.boogie-easy-for-beginners.pdmx",
+                "song.blues.rhythm-and-boogie",
+                "song.blues.boogie-en-sol"
               ],
               "songOptional": true,
               "mastery": {

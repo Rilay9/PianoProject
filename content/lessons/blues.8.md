@@ -6,7 +6,7 @@ videos:
   - label: "How To Form & Play Dominant 9th Chords On The Piano"
     url: "https://www.youtube.com/watch?v=zwlReOAa9KE"
     teacher: "PlayPiano"
-readingTime: 2
+readingTime: 3
 ---
 
 A blues you can play in C is a blues you can play. A blues you can play in E
@@ -30,10 +30,14 @@ and is where the feel lives.
 **What to practise.** The form in two new keys. Then the same form with ninths
 throughout, in the key you started in.
 
-**Repertoire for this rung.** None is set, on purpose. The piece is your own
-chorus, written down — twelve bars, in two keys — and the rung is finished on
-its exercises. The boogies and blues from the earlier rungs are under Blues in
-the Library if you want a page to transpose from.
+**Repertoire for this rung.** The piece is still your own chorus, written down —
+twelve bars, in two keys — and the rung is finished on its exercises. What is on
+it now is what to read while you write that. *Pinetop's Boogie Woogie* is the
+1928 original, the record every boogie bass since is a copy of, and it is the
+same file you met a rung ago. *The Chevy Chase* is Eubie Blake in 1914, a
+left hand that strides rather than walks. *Black Bottom Stomp* is Jelly Roll
+Morton in 1926 and is the hardest page here: it changes key inside the form,
+which is the exact thing this rung is asking you to be able to do.
 
 **Common mistake.** Transposing by moving your hands the same distance. That is
 how the flat keys stay unlearned; read the numerals and find the notes.

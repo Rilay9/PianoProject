@@ -71,13 +71,13 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `blues.3` | 6 | 3 | 2.4–4.5 | 12 Bar Blues (2.4), Careless Love (2.6), St. Louis Blues (1914) (3.5) |
+| 3 | `blues.3` | 6 | 6 | 2.4–4.5 | 12 Bar Blues (2.4), Careless Love (2.6), St. Louis Blues (1914) (3.5), St. James Infirmary (3.5), Wabash Blues (4.1), Tishomingo Blues (4.2) |
 | 4 | `blues.4` | 5 | 6 | 2.4–5.2 | 12 Bar Blues (2.4), Careless Love (2.6), Twelve-bar blues shuffle in C (3.4), St. Louis Blues (1914) (3.5), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
 | 5 | `blues.5` | 7 | 6 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Blues My Naughty Sweetie Gives to Me (1919) (4.0), The Memphis Blues (1912) (4.0), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1), Royal Garden Blues (1919) (4.2) |
 | 6 | `blues.6` *(song-optional)* | 5 | 3 | 3.5–7.5 | Boogie-woogie and blues piano exercises (3.5), Boogie (easy, for beginners) (5.0), Pinetop's Boogie Woogie (1928) (7.5) |
-| 7 | `blues.7` *(song-optional)* | 5 | 1 | 5.0–7.3 | Boogie (easy, for beginners) (5.0) |
-| 8 | `blues.8` *(song-optional)* | 5 | 0 | 6.2–8.3 | — |
-| 9 | `blues.9` *(song-optional)* | 5 | 0 | 6.2–8.4 | — |
+| 7 | `blues.7` *(song-optional)* | 5 | 3 | 5.0–7.3 | Boogie (easy, for beginners) (5.0), Rhythm and Boogie (5.0), Boogie-Boogie en Sol (5.5) |
+| 8 | `blues.8` *(song-optional)* | 5 | 3 | 6.2–8.6 | Pinetop's Boogie Woogie (1928) (7.5), The Chevy Chase (7.7), Black Bottom Stomp (8.6) |
+| 9 | `blues.9` *(song-optional)* | 5 | 3 | 6.2–8.7 | Stumbling (7.9), Black Bottom Stomp (8.6), Handful of Keys (8.7) |
 
 ## Chords & pop (`chords-pop`)
 
@@ -205,7 +205,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-220 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
+223 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
@@ -216,6 +216,9 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.beautiful.mariage-damour.alt` | Mariage d’Amour (“Spring Waltz”) — second edition | 5.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.beautiful.mariage-damour.alt2` | Mariage d’Amour — third edition | 5.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.beautiful.merry-christmas-mr-lawrence` | Merry Christmas Mr. Lawrence | 8.0 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
+| `song.blues.boogie-and-blues-bass-lines` | Boogie and Blues Bass Lines | 3.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.blues.boogie-en-sol` | Boogie-Boogie en Sol | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.blues.rhythm-and-boogie` | Rhythm and Boogie | 5.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.12-bar-blues.pdmx` | 12 Bar Blues | 2.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx` | Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2 | 7.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.bennet-rosemary-s-waltz.pdmx` | Rosemary's Waltz | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
@@ -286,8 +289,5 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.simple-gifts.pdmx` | Simple Gifts | 2.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.so-danco-samba.pdmx` | Só Danço Samba | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.the-flute-tune-soulpride-remix.pdmx` | The Flute Tune Soulpride Remix | 4.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.tuyo-narcos-intro-theme.pdmx` | Tuyo Narcos intro theme | 3.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.wake-me-up-avicii.pdmx` | Wake Me Up | 7.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.your-song-elton-john-easy-piano.pdmx` | Your Song (easy) | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| … | and 140 more | | |
+| … | and 143 more | | |
 

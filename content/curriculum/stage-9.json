@@ -170,7 +170,11 @@
                 "exercise.stride.b-flat",
                 "exercise.comping.c.anticipated"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.jazz.stumbling",
+                "song.blues.black-bottom-stomp",
+                "song.blues.handful-of-keys"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,
@@ -184,7 +188,7 @@
               "estimatedDays": 180,
               "levelBand": [
                 6.2,
-                8.4
+                8.8
               ],
               "finder": {
                 "skill": "improvising over the whole form until it sounds like you and not like an exercise",

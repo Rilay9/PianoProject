@@ -29,6 +29,12 @@ the letter names and holds it for as long as the symbol lasts. No boogie bass
 yet — the left hand of the next rung is a full-time job, and it would take all
 your attention away from listening.
 
+**Repertoire for this rung.** Six, and every one of them is a melody with letter
+names over it. *12 Bar Blues* and *Careless Love* are the two shortest and are
+where to begin. *St. James Infirmary* is the minor one. *Wabash Blues* and
+*Tishomingo Blues* are full published songs with a verse before the chorus, so
+read the chorus first. *St. Louis Blues* is the famous one and is the longest.
+
 **One of these is in the minor**, and it is the one to start with. With the
 third already flat in the chord, the flat third in the tune stops being a
 surprise and starts being the tune, which is the clearest way in for an ear

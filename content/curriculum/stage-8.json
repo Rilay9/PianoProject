@@ -311,7 +311,11 @@
                 "drill.jazz.extended-chords",
                 "drill.reading.transposition-hard"
               ],
-              "songOptions": [],
+              "songOptions": [
+                "song.folk.boogie-woogie.pdmx",
+                "song.jazz.chevy-chase",
+                "song.blues.black-bottom-stomp"
+              ],
               "songOptional": true,
               "mastery": {
                 "exercisesRequired": 1,
@@ -325,7 +329,7 @@
               "estimatedDays": 150,
               "levelBand": [
                 6.2,
-                8.3
+                8.7
               ],
               "finder": {
                 "skill": "playing the twelve-bar form in any key and colouring it with ninths",

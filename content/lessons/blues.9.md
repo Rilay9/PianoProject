@@ -6,7 +6,7 @@ videos:
   - label: "8 Easy Blues Licks for Beginners (Simple Piano Tutorial)"
     url: "https://www.youtube.com/watch?v=g_S5CMWyovM"
     teacher: "MangoldProject"
-readingTime: 2
+readingTime: 3
 ---
 
 Nothing new is added here. This rung is the point of the other four.
@@ -28,7 +28,15 @@ to it once and then delete it. The app's **Listen back** is on the backing-track
 drills at Stages 4 and 5, and you are past those now — here the left hand is
 yours, so record it on whatever is in your pocket.
 
-**Repertoire for this rung.** Yours.
+**Repertoire for this rung.** Yours, first — nothing here is required. Then
+three written choruses by people who improvised them before they wrote them, so
+you can read what the thing you are reaching for looks like on paper. *Stumbling*
+is Zez Confrey in 1922, a three-beat figure laid over four and never once
+losing the bar. *Black Bottom Stomp* is Jelly Roll Morton in 1926, and it is
+the same page the rung below points at; here, read it for how he answers his own
+phrases. *Handful of Keys* is Fats Waller in 1929 and is the hardest music on
+the whole track: a stride left hand at speed under a right hand that never
+repeats a chorus.
 
 **Common mistake.** Waiting until you are good enough. The first hundred choruses
 are how you get good enough.
