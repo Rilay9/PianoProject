@@ -119,9 +119,11 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
 
 **Tracks.** Fifteen, defined in `content/curriculum/00-tracks.json`, each starting at the
 stage its first rung sits on: `core` (Stage 0), `practice` (Stage 1), `holiday` (Stage 2),
-`classical`, `chords-pop`, `theory-ear`, `improv-compose`, `hymns-gospel` and `rock-metal`
-(Stage 3), `blues-boogie`, `jam` and `technique` (Stage 4), `jazz`, `ragtime` and `latin`
-(Stage 5). Six start active on a fresh install — `core`, `classical`, `chords-pop`,
+`classical`, `chords-pop`, `blues-boogie`, `theory-ear`, `improv-compose`, `hymns-gospel`
+and `rock-metal` (Stage 3), `jam` and `technique` (Stage 4), `jazz`, `ragtime` and `latin`
+(Stage 5). `blues-boogie` moved from Stage 4 to Stage 3 on 2026-09-16: the twelve-bar
+tunes as they were published — a melody with chord symbols over it — are Stage 3 reading,
+and the form and the boogie bass stay where they were on Stage 4. Six start active on a fresh install — `core`, `classical`, `chords-pop`,
 `theory-ear`, `technique` and `practice`; the other nine are switched on by the learner from
 the Plan screen — so that Today has a spine to recommend from before anyone has chosen a
 genre. `film-game` is a label on items rather than a track, because its repertoire
@@ -648,12 +650,38 @@ key and per hand where that means anything, with fingering:
 | `rhythm` in other meters | 1.4 (3/4), 4.5 (6/8) | 1–4 | `make_rhythm` currently hardcodes 4/4; the meter becomes a parameter. |
 | `shuffle` | 4.5, blues track | 4 | Straight eighths written, swung played; the notation carries the "shuffle" instruction. |
 | `contrary` 2-octave, minors | 4.1, 4.2 | 4 | Contrary motion exists at one octave in majors only. |
+| the **guitar keys** for `boogie`, `blues-scale`, `walking-bass`, `comping` | D3 blues, and the whole `jam` module | 4–6 | `JAM_KEYS` is E, A, G and D — what a guitarist calls — and the default harmony set is C, F, B♭, E♭, which is what a horn section reads. So `jam`, whose lesson asks for "a boogie bass in E", offered a boogie in C. Four families in four keys, not `--full`'s four hundred items. |
+| `walking-bass` and `boogie` over a **minor blues** | D3 Stage 6's "minor blues" | 6 | `TWELVE_BAR_MINOR`: minor sevenths on the i and the iv, and the ♭VI7–V7 at bars nine and ten. A band above the major form, because that pair is the only place the form leaves the key. The boogie figure's third flattens; its sixth does not — a minor blues is Dorian. |
+| `meter` in **12/8** | D3 Stage 6's "slow blues 12/8" | 6 | `ODD_METERS` held 5/4 and 7/8. 12/8 is compound rather than odd and is in that table because it is the same problem — a bar `make_rhythm` cannot write — so the row carries its own concepts and is not filed under "odd meter". It is a **blues**, not a scale in a new signature: twelve bars of `TWELVE_BAR`, the shuffle bass long-short in the left hand (which is what 12/8 *does* to the music), the shell twice a bar in the right. A learner sent to "slow blues 12/8" and handed a C major walk has been told something untrue by the catalog. |
+| `oompah` | D5 ragtime, on every one of its rungs | 4–5 | Bass on 1 and 3, chord on 2 and 4, I–IV–V–I in 2/4. Two spans: the chord an octave above the bass, and a tenth above it. The span is the whole difficulty. Ragtime had **no generated family at all** — its rung's four exercises were borrowed accompaniment and syncopation rows. |
+| `secondary-rag` | `ragtime.8`; the `secondary-rag` concept id | 6 | A three-sixteenth cell — short, long — over a beat of four, tied across the barline, with an oom-pah underneath so the beat it slips against is audible. Levelled with `syncopation`'s sixteenth variant: three-against-four at the sixteenth is the hardest rhythm the generator writes, and a level that puts an item on rungs it cannot be played on is worse than none. `concepts.json` has carried the id since it was written with nothing behind it. |
+| `cadence` in a **plagal** voicing | `hymns`' plagal cadence | 3 | IV–I in every major key, a third voicing on an existing family. Same level as the other two: the hand shapes are unit 3.2's either way, and what is being learnt is the sound. |
+| `walkup`, `passing-chord` | `hymns` — its title is "Four-part texture and walk-ups" | 4–5 | The diatonic and chromatic bass walk *into* the next chord, and the chord a semitone above the one you meant. `make_slash_bass` is the nearest thing the generator had and it walks a bass *down* under a chord that does not move. |
+| `intro` | `holiday`'s own "how you'll know you've got it" | 3 | "Play the last four bars of the tune before you start" — four bars of I–V–vi–IV as a vamp, the last one blocked so it hands over. |
+| `power-chord`, `ostinato` | two of `rock.overview`'s five textures | 4 | Root–fifth–octave with weight, and an eighth-note figure over a pedal bass in a minor key. `concepts.json` carries `ostinato` and `eighth-note-ostinato` and neither had any music. |
+| `clave` **with a pulse**, and the **bossa** | `latin` | 4–6 | The lesson says "clap it for a week" and admits the app cannot clap behind you: the clave alone is a rhythm nothing can mark. A quarter-note pulse on a second line gives the drift something to be wrong against. `bossa` joins `CLAVE_PATTERNS` — the son with its last stroke moved to beat 4 of the second bar, and no 3-2/2-3 pair, so its name is one word — and `COMPING_PATTERNS` reads *the same list object*, because a bossa is comped on the clave and two statements of one rhythm disagree. Its figure is the first here that is **two bars long**. Tumbao and montuno gain A and F. |
 
 **Built 2026-09-05 (P5b), 154 new items:** coordination 10, position-shift 10,
 interval-reading 16, cadence 24, accompaniment 30, pedal 6, rhythm in 3/4, 6/8 and shuffle
 10, five-finger hands-separately 24, two-octave and minor contrary motion 24. The keys are
 the ones each unit teaches rather than all twelve: 288 exercises nobody opens is not
 breadth.
+
+**Built 2026-09-16 (genre expansion, phase 1), 133 new items:** the four guitar keys 44,
+the minor blues 16, plagal cadences 12, bossa clave / comping / montuno 16, latin in A and
+F 8, oom-pah 8, ostinato 6, the four-bar introduction 5, clave against a pulse 5, walk-ups
+4, passing chords 4, power chords 3, secondary rag 1, 12/8 1. Plus one authored file,
+`blues-12-bar-d.py`, because the `jam` module names D and had shuffles in the other four
+keys only.
+
+Every one of these is reachable **through a concept a lesson already teaches** —
+`oom-pah-bass`, `secondary-rag`, `passing-chords`, `plagal-cadence`, `ostinato`,
+`eighth-note-ostinato`, `open-voicings`, `four-chord-loop`, `clave`, `comping`, `boogie`,
+`walking-bass`, `blues-scale` — so `validate.py`'s `orphan_exercises` rule passes without
+a single new rung. That was the choice: the alternative was a plan flag holding the makers
+back until Phase 2 turns them on, and a family nobody can reach is a family nobody
+reviews. The rungs that will *name* these families are Phase 2; the exercises are
+reachable, levelled and in the Library now.
 
 ---
 

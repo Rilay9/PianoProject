@@ -328,7 +328,19 @@ Either forfeits that card's mark, so the score keeps meaning what it says. A
 miss holds its card — the keys you played in red, the ones wanted lit, the
 answer on the staff — until you tap to move on; and a set that ends with any
 misses offers **Go over the ones you missed**, a short round of exactly those
-cards that scores nothing and records nothing. **Simon** is the ear drill with
+cards that scores nothing and records nothing. **Every card whose answer is a
+chord shows you that chord on a staff the moment it is judged** — right or
+wrong, costing nothing, with the card held while you read it. The chord and
+inversion cards, the seventh voicings, the roman numerals, and the ear drills
+that play you a progression: you play it from the symbol or from what you heard,
+and then you see it written, one chord to the bar with its numeral over it, so
+the numerals and the notes line up bar by bar. Nothing before you answer — a
+chord with its notes printed under it is a card you cannot get wrong, and a
+heard progression with its notes printed under it is a reading drill. *Show me*
+still works before you answer on the cards that offer it, at the usual price.
+The two drills that name a chord without asking you to find it — the pedal
+changes and the backing-track jams — print theirs from the first moment of the
+card, since the notes are not what is being judged. **Simon** is the ear drill with
 nothing to guess between: the app plays one note, then the same note and one
 more, then three, until the chain breaks; the score is the longest chain you
 echoed, in the octave it was played. Three chips on the Simon card set how much

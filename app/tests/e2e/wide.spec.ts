@@ -100,10 +100,83 @@ async function settle(page: Page): Promise<void> {
   await page.waitForLoadState('networkidle', { timeout: 4000 }).catch(() => undefined);
 }
 
+/**
+ * Waits for a screen to be on, lazy ones included.
+ *
+ * The score, the PDF viewer and the setup tour are fetched on demand
+ * (`ui/AppShell.ts`, `mountLazyScreen`), so until the chunk lands the shell
+ * holds a `data-screen="loading"` placeholder and the screen element **does not
+ * exist**. That is the difference between the two things a runner can say, and
+ * on 2026-09-17 it said the first: `[data-screen="score"]` "element(s) not
+ * found" after a minute at tablet-portrait, on a scene that passed on its
+ * retry and at every other size.
+ *
+ * Nothing had been left behind by the scene before it — the two score scenes
+ * after this one open exactly the same way and were fine. What is different
+ * about this one is that it is the *first* visit to the largest chunk in the
+ * app, on a profile whose service worker is still pulling the entire catalog
+ * into its cache off the same preview server (see `stocked` below).
+ *
+ * And if that fetch fails rather than merely queues, the shell says so and
+ * draws its own way out — a "Try again" button nothing here was pressing,
+ * while the wait sat in front of it until the clock ran down. So this watches
+ * the placeholder resolve either way, and takes the way out when it is
+ * offered. A bigger number would only have made the same blind wait longer.
+ */
+async function mounted(page: Page, screen: string): Promise<void> {
+  const wanted = page.locator(`[data-screen="${screen}"]`);
+  const retry = page.locator('#screen-retry');
+  // Two goes: one press of the shell's own retry, and a second failure is a
+  // failure worth reporting rather than a loop.
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    await page
+      .waitForFunction(
+        (sel) => {
+          const button = document.querySelector('#screen-retry');
+          return document.querySelector(sel) !== null || (button instanceof HTMLElement && !button.hidden);
+        },
+        `[data-screen="${screen}"]`,
+        { timeout: 60_000 },
+      )
+      // The assertion below is what reports, so it keeps its own message.
+      .catch(() => undefined);
+    if (!(await retry.isVisible())) break;
+    await retry.click();
+  }
+  await expect(wanted).toBeVisible({ timeout: 60_000 });
+}
+
 async function go(page: Page, hash: string, screen: string): Promise<void> {
   await page.goto(`/#${hash}`);
-  await expect(page.locator(`[data-screen="${screen}"]`)).toBeVisible({ timeout: 60_000 });
+  await mounted(page, screen);
   await settle(page);
+}
+
+/**
+ * Waits until the worker that keeps the app offline has stocked its cache.
+ *
+ * Everything is precached — the app shell, every screen's chunk, and every
+ * score in the catalog (`vite.config.ts`, `workbox.globPatterns`) — which on a
+ * fresh profile is a couple of thousand requests aimed at the same preview
+ * server this test is reading from. `clientsClaim` means the page is taken the
+ * moment that finishes, so `navigator.serviceWorker.controller` is the
+ * observable for "the cache is stocked", and past it a screen's chunk comes out
+ * of the cache instead of out of that queue.
+ *
+ * This is the thing that was slow under the failure `mounted` describes, so
+ * this is the thing to wait on. It is waited on *here*, once, where the cost
+ * belongs — the walk below opens twenty-odd screens and should not be paying
+ * for the install halfway through it.
+ *
+ * A miss costs a beat, not a scene: a profile with no worker registered has
+ * nothing to wait for and the walk is no worse off than it was.
+ */
+async function stocked(page: Page): Promise<void> {
+  await page
+    .waitForFunction(() => Boolean(navigator.serviceWorker.controller), undefined, {
+      timeout: 60_000,
+    })
+    .catch(() => undefined);
 }
 
 /**
@@ -130,6 +203,7 @@ async function prepare(page: Page): Promise<void> {
     await page.locator('#library-file').setInputFiles(file);
     await expect(page.locator(`.list-row[data-item="${id}"]`)).toBeVisible({ timeout: 60_000 });
   }
+  await stocked(page);
 }
 
 /** Waits for the engraver to have actually drawn something. */

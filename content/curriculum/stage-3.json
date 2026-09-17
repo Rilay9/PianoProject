@@ -560,6 +560,67 @@
           ]
         },
         {
+          "id": "blues-boogie.3.1",
+          "title": "Blues: the blue notes, before the twelve bars",
+          "track": "blues-boogie",
+          "lessons": [
+            {
+              "id": "blues.3",
+              "title": "The blue notes, before the twelve bars",
+              "concepts": [
+                "blues-scale",
+                "chord-symbols",
+                "twelve-bar-blues",
+                "shuffle"
+              ],
+              "textFile": "lessons/blues.3.md",
+              "exerciseOptions": [
+                "drill.chord.symbol-flash",
+                "exercise.cadence.c.voice-led",
+                "exercise.blues-scale.c.1oct.right",
+                "exercise.blues-scale.g.1oct.right",
+                "exercise.blues-scale.f.1oct.right",
+                "exercise.rhythm.shuffle-eighths.4bar"
+              ],
+              "songOptions": [
+                "song.classical.12-bar-blues.pdmx",
+                "song.pop.careless-love-blues.pdmx",
+                "song.classical.st-louis-blues.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "3.2"
+              ],
+              "estimatedDays": 21,
+              "levelBand": [
+                2.4,
+                4.5
+              ],
+              "finder": {
+                "skill": "playing a blues as a melody with chord symbols, and hearing the blue notes in it",
+                "levelWords": "easy, elementary, up to moderate, Grade 2 to 3",
+                "constraints": [
+                  "blues melody with chord symbols printed above it",
+                  "flattened third and seventh in the tune",
+                  "twelve-bar blues form",
+                  "a singable range"
+                ],
+                "avoid": [
+                  "boogie bass lines",
+                  "written-out piano solos",
+                  "straight eighths"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            }
+          ]
+        },
+        {
           "id": "theory-ear.3.1",
           "title": "Theory & ear: intervals and key signatures",
           "track": "theory-ear",

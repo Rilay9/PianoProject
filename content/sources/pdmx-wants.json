@@ -100,7 +100,29 @@
     "one. `match_want` reads the title and `artist_name` only, never `composer_name`, so an",
     "upload titled `Traeumerei` with an artist of `NA` and Gurlitt in the composer column is",
     "not reachable from this file at all. That is a real limit of the matcher, not an",
-    "oversight here."
+    "oversight here.",
+    "",
+    "Fifth group, 2026-09-16: the blues ladder, end to end. `blues-boogie` started at",
+    "Stage 4 and dried up above it - blues.7 carried one song, blues.8 and blues.9 none -",
+    "while the archive's 1912-1925 blues shelf sits at levels 2.1 to 4.9, two stages below",
+    "where the track opened, and its boogie shelf at 5.0 to 8.4, which is exactly what the",
+    "top three rungs were short of. Three rows are jazz-titled and wanted for a blues rung:",
+    "Chevy Chase and Handful of Keys are stride blues, Stumbling and Black Bottom Stomp are",
+    "what the form turned into.",
+    "",
+    "Every row was found in the index before it was written here, with the level the index",
+    "gives it, and every one was published in 1930 or earlier, so all of them are public",
+    "domain in the US and survive --strict-license.",
+    "",
+    "Three of them wait on a date ruling from the owner and are held `later` rather than",
+    "committed: The Crave (Morton - recorded 1939, composition claimed 1910), and beside",
+    "this group El Condor Pasa and Hilarity Rag, which belong to other tracks.",
+    "",
+    "Two of these patterns are shadowed by earlier entries and cannot win a row on their",
+    "own: `careless love blues` is inside the older `careless love`, and `boogie woogie` is",
+    "already the third pattern of `pinetops-boogie-woogie`. `match_want` returns the first",
+    "want that matches, so those rows arrive under the older id and are renamed in the",
+    "merge. They are kept here because they say which edition the rung wants."
   ],
   "wants": [
     {
@@ -1363,6 +1385,223 @@
         "streets of laredo"
       ],
       "note": "docs/02 Part F [AUTH] tune, quarried from the archive instead of authored, 2026-09-16"
+    },
+    {
+      "id": "song.blues.hesitating-blues",
+      "title": [
+        "hesitating blues"
+      ],
+      "artist": [
+        "handy"
+      ],
+      "note": "Handy 1915, lv4.3, 72 bars, solo piano - blues.5"
+    },
+    {
+      "id": "song.blues.aunt-hagars-blues",
+      "title": [
+        "aunt hagar"
+      ],
+      "artist": [
+        "handy"
+      ],
+      "note": "Handy 1921, lv4.3, 64 bars - blues.5"
+    },
+    {
+      "id": "song.blues.ole-miss",
+      "title": [
+        "ole miss"
+      ],
+      "artist": [
+        "handy"
+      ],
+      "note": "Handy 1916, lv4.7, 80 bars - blues.5/6"
+    },
+    {
+      "id": "song.blues.long-gone",
+      "title": [
+        "long gone"
+      ],
+      "artist": [
+        "handy",
+        "chris smith"
+      ],
+      "note": "Handy & Smith 1920, lv4.4, 57 bars - blues.5"
+    },
+    {
+      "id": "song.blues.jazz-me-blues",
+      "title": [
+        "jazz me blues"
+      ],
+      "artist": [
+        "delaney"
+      ],
+      "note": "Tom Delaney 1921, lv4.6, 62 bars, 4.87 from 13 - blues.5"
+    },
+    {
+      "id": "song.blues.wabash-blues",
+      "title": [
+        "wabash blues"
+      ],
+      "note": "Ringle/Meinken 1921, lv3.8, 57 bars - blues.3"
+    },
+    {
+      "id": "song.blues.tishomingo-blues",
+      "title": [
+        "tishomingo blues"
+      ],
+      "artist": [
+        "spencer williams"
+      ],
+      "note": "Spencer Williams 1917, lv4.0, 48 bars - blues.3"
+    },
+    {
+      "id": "song.blues.livery-stable-blues",
+      "title": [
+        "livery stable blues"
+      ],
+      "note": "ODJB 1917, lv4.7, 74 bars - blues.4"
+    },
+    {
+      "id": "song.blues.weary-blues",
+      "title": [
+        "weary blues"
+      ],
+      "note": "Matthews 1915, lv4.7, 96 bars - blues.5"
+    },
+    {
+      "id": "song.blues.singin-the-blues",
+      "title": [
+        "singin the blues",
+        "singin' the blues"
+      ],
+      "note": "Conrad/Robinson 1920, lv4.5, 66 bars - blues.5"
+    },
+    {
+      "id": "song.blues.satanic-blues",
+      "title": [
+        "satanic blues"
+      ],
+      "note": "ODJB 1918, lv4.9, 71 bars - blues.5"
+    },
+    {
+      "id": "song.blues.riverside-blues",
+      "title": [
+        "riverside blues"
+      ],
+      "artist": [
+        "dorsey",
+        "richard m jone"
+      ],
+      "note": "Dorsey & Jones 1923, lv4.8, 93 bars - blues.6"
+    },
+    {
+      "id": "song.blues.storyville-blues",
+      "title": [
+        "storyville blues"
+      ],
+      "note": "traditional, lv4.0, 56 bars, pd - blues.3/4"
+    },
+    {
+      "id": "song.blues.st-james-infirmary",
+      "title": [
+        "st james infirmary",
+        "st. james infirmary"
+      ],
+      "note": "traditional, lv3.5, 32 bars, pd, 4.48 from 20 - blues.3; a minor blues, which blues.6's lesson names and nothing on the ladder has"
+    },
+    {
+      "id": "song.blues.careless-love-blues",
+      "title": [
+        "careless love blues"
+      ],
+      "note": "traditional, lv2.1, 8 bars - blues.3 (an easier setting than the 2.6 already committed)"
+    },
+    {
+      "id": "song.blues.rhythm-and-boogie",
+      "title": [
+        "rhythm and boogie"
+      ],
+      "note": "lv5.0 and lv5.3, 40 bars each - blues.7, which has one song"
+    },
+    {
+      "id": "song.blues.boogie-and-blues-bass-lines",
+      "title": [
+        "boogie and blues bass lines"
+      ],
+      "note": "lv5.9, 107 bars, 4.61 from 10 - blues.6/7"
+    },
+    {
+      "id": "song.blues.boogie-en-sol",
+      "title": [
+        "boogie boogie en sol"
+      ],
+      "note": "lv6.6, 42 bars - blues.7"
+    },
+    {
+      "id": "song.blues.pinetop-boogie-woogie.full",
+      "title": [
+        "boogie woogie"
+      ],
+      "artist": [
+        "pinetop smith",
+        "clarence pinetop"
+      ],
+      "note": "Pinetop Smith 1928, lv8.4, 97 bars, pd - blues.8; a fuller edition than the 7.5 already on blues.6"
+    },
+    {
+      "id": "song.blues.black-bottom-stomp",
+      "title": [
+        "black bottom stomp"
+      ],
+      "artist": [
+        "jelly roll morton",
+        "morton"
+      ],
+      "note": "Morton 1926, lv8.4, 101 bars - blues.8/9 and ragtime.9"
+    },
+    {
+      "id": "song.blues.handful-of-keys",
+      "title": [
+        "handfull of keys",
+        "handful of keys"
+      ],
+      "artist": [
+        "waller"
+      ],
+      "note": "Waller 1929, lv7.9, 176 bars, two staves - blues.7 stride-blues hybrid, and jazz.8"
+    },
+    {
+      "id": "song.jazz.chevy-chase",
+      "title": [
+        "chevy chase"
+      ],
+      "artist": [
+        "eubie blake",
+        "blake"
+      ],
+      "note": "Eubie Blake 1914, lv7.9, 152 bars, 4.85 from 4 - blues.8 and jazz.8, stride"
+    },
+    {
+      "id": "song.jazz.stumbling",
+      "title": [
+        "stumbling"
+      ],
+      "artist": [
+        "zez confrey",
+        "confrey"
+      ],
+      "note": "Confrey 1922; lv3.5 (32 bars) and lv8.5 (105 bars) - blues.9, jazz.4 and jazz.8"
+    },
+    {
+      "id": "song.jazz.the-crave",
+      "title": [
+        "the crave"
+      ],
+      "artist": [
+        "jelly roll morton",
+        "morton"
+      ],
+      "note": "Morton, lv7.6, 68 bars, 4.80 from 204 - blues.9 and jazz.8; a Spanish-tinge habanera, so it also serves latin.6. CHECK THE DATE: recorded 1939, claimed composed 1910. Held until the owner rules on it."
     }
   ],
   "verify": [

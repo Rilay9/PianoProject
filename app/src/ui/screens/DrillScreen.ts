@@ -34,8 +34,10 @@ import {
   isPlacement,
   isSightReading,
   isWalkthrough,
+  MISS_PAUSE_MS,
   promptsToGoOver,
   showsAnswerAfter,
+  staffPolicy,
   SIMON_HELP_LEVELS,
   SIMON_STEP_MS,
   SimonDrill,
@@ -63,7 +65,7 @@ import { getProgress, recordRun, sessionsForItem } from '../../data/progressStor
 import { recordPlacement } from '../../data/planStore';
 import { tipsFor, type Tips } from '../../curriculum/tips';
 import { coach, type Coaching } from '../../engine/drills/coaching';
-import { answerSheet } from '../../engine/drills/answerSheet';
+import { answerSheet, sheetForPrompt } from '../../engine/drills/answerSheet';
 import { renderMarkdown } from '../markdown';
 import {
   audioEngine,
@@ -82,6 +84,43 @@ import { screenFrame, statusLine } from './screenFrame';
 
 /** The answer staff's size: a reference line under the words, not a page of music. */
 const ANSWER_ZOOM = 0.65;
+/**
+ * And its size on a sideways phone, where the words column has to hold the
+ * staff *and* the buttons under it (`04` §5c). Small, and deliberately so:
+ * the alternative is not a bigger staff, it is a staff with the controls
+ * pushed under the keyboard.
+ */
+const SHORT_ANSWER_ZOOM = 0.45;
+/**
+ * The reading staff's size (`04` §5c).
+ *
+ * Bigger than the answer staff, because it is not the same kind of thing. The
+ * answer staff is a reference line under the words, read once after a card is
+ * over; this one is the card's own content and the only place the chord is
+ * named — a pedal card at the answer staff's size drew a bass clef, a time
+ * signature and a chord inside a hundred pixels, on a laptop, in the middle of
+ * an otherwise empty card. A staff you have to lean in to read is not one you
+ * can correlate anything against.
+ */
+const READING_ZOOM = 1;
+
+/**
+ * How big to draw an answer of `bars` bars.
+ *
+ * One bar is not a smaller version of four, it is a different thing to look at.
+ * Four bars of a progression are a line to refer to and 0.65 fills a phone's
+ * width with them; *one* bar is a single chord, drawn because the owner asked
+ * to know what chords look like — and at 0.65 a chord came to a stack of
+ * noteheads an inch wide at the left-hand end of a full-width panel, which is
+ * not something anyone is going to learn to read from. So a lone bar is drawn
+ * at the size the reading staff uses, and anything longer at the reference
+ * size. Sideways every case comes down one step again, because there the staff
+ * is sharing a card 42 vh tall (`attachAnswerHost`).
+ */
+function answerZoomFor(bars: number, short: boolean): number {
+  if (bars <= 1) return short ? ANSWER_ZOOM : READING_ZOOM;
+  return short ? SHORT_ANSWER_ZOOM : ANSWER_ZOOM;
+}
 /** Between the notes of a revealed scale or arpeggio, played back one at a time. */
 const REVEAL_STEP_MS = 350;
 /**
@@ -256,6 +295,18 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let answerHost: HTMLElement | null = null;
   let answerFor = '';
   /**
+   * The reading staff an `always` kind carries on its card (`04` §5c).
+   *
+   * Its own engraver rather than the answer's, because it is a different
+   * claim in a different place: the answer staff appears under the words when
+   * a card is over, this one is part of the card from its first frame and has
+   * to survive the stage being rebuilt — `draw()` runs on every pedal message.
+   * Same arrangement as the transposition prompt's host above.
+   */
+  let readingView: OsmdView | null = null;
+  let readingHost: HTMLElement | null = null;
+  let readingFor = '';
+  /**
    * Which set of cards is on screen. Bumped by `restart()`.
    *
    * The card key used to be `index:xml.length`, which is the same string for
@@ -294,6 +345,19 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let simonHelp: SimonHelp = toSimonHelp(undefined);
   /** The note name on the Simon card right now, or '' for the glyph. */
   let simonFlash = '';
+  /**
+   * How far along its chain the card is: 0 for the glyph, 1 for the first
+   * note, and one more for each note after it.
+   *
+   * Published on the card as `data-step` because the name alone cannot say
+   * this. A name is up for one step and then the next replaces it, so anything
+   * watching from outside — a test, most of all — counts *the names it caught*,
+   * and on a loaded machine it catches fewer than were shown. The staff beside
+   * it publishes an exact count, and comparing an exact count against a lossy
+   * one reports a staff that ran ahead when nothing did (CI, 2026-09-17). Both
+   * numbers come off the same walk of `simonChainSteps`, so both are exact.
+   */
+  let simonStep = 0;
   /**
    * Simon's play-along staff — the chain so far, filling up as it sounds.
    *
@@ -340,6 +404,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
   function onNote(event: InputNoteEvent): void {
     if (!drill || finished || disposed) return;
+    // A card the learner has said *Done* on is showing its answer and is
+    // waiting to go. Playing along with the staff there — which is exactly
+    // what a staff invites — must not feed more chords into the progression
+    // that has just been judged. Only the manual-advance kinds can be in this
+    // state with the drill still accepting input.
+    if (feedbackTimer !== null && MANUAL_ADVANCE.has(drill.kind)) return;
     if ((event.confidence ?? 1) < MIC_ANSWER_CONFIDENCE) return;
     const before = drill.result().answered;
     drill.feed(toEngineInput(event));
@@ -465,18 +535,23 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   /**
    * The note the Simon card is showing instead of its glyph.
    *
+   * `step` is which note of the chain that is — 0 when the card is back to
+   * its glyph — and travels with the name because it is the same fact.
+   *
    * Written straight onto the element as well as into `simonFlash`, because
    * this runs on a timer between two draws: a full `draw()` per note would
    * rebuild the stage, the chips and the controls five times a chain to change
    * three characters. `drawStage` reads `simonFlash` so a redraw for any other
    * reason keeps whatever is on the card.
    */
-  function flashNoteName(name: string): void {
+  function flashNoteName(name: string, step = 0): void {
     simonFlash = name;
+    simonStep = step;
     const card = stage.querySelector('#drill-ear-card');
     if (!(card instanceof HTMLElement)) return;
     card.textContent = name === '' ? EAR_GLYPH : name;
     card.dataset.showing = name === '' ? 'glyph' : 'name';
+    card.dataset.step = String(step);
   }
 
   /**
@@ -654,7 +729,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // for — the chain's last moment carries all of them.
     startChainStaff(target, steps[steps.length - 1]?.soFar ?? []);
     const key = chainFor;
-    for (const [at, step] of steps.entries()) {
+    for (const step of steps) {
       playbackTimers.push(
         setTimeout(() => {
           if (disposed) return;
@@ -663,8 +738,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           // finishes, and the strip would still be sliding towards note two
           // when note four sounded.
           strip?.scrollToNote(step.midi, 'auto');
-          flashNoteName(noteLabel(step.midi));
-          chainWant = at + 1;
+          // The name and the step number together, before the staff is asked
+          // for: the card says which note of the chain this is and the staff
+          // then catches up to it, so the staff can lag and can never lead.
+          flashNoteName(noteLabel(step.midi), step.soFar.length);
+          chainWant = step.soFar.length;
           pumpChainStaff(key);
         }, step.atMs),
       );
@@ -790,10 +868,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // showing the answer to the one before — and so does the staff it was
     // landing on, before the redraw below can re-append it to the new card.
     simonFlash = '';
+    simonStep = 0;
     disposeChainStaff();
     stopMetronome();
     stopDictationTicker();
     disposeAnswer();
+    disposeReading();
     current = drill.next();
     if (!current) {
       finish();
@@ -820,6 +900,19 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     drawAnswer(target);
   }
 
+  /**
+   * The staff, and not the keys.
+   *
+   * `showAnswer` above lights the strip as well, which is right when the
+   * learner asked to be shown and right on a miss. After a *judged* answer the
+   * strip is already saying what happened — green where it was right, red
+   * where it was not, beside the keys that were wanted — and re-lighting it as
+   * "the answer" would throw that away. Only the staff is new.
+   */
+  function showAnswerStaffOnly(target: DrillPrompt): void {
+    drawAnswer(target);
+  }
+
   /** Drops a pending right/wrong pause and everything that belongs to it. */
   function cancelFeedback(): void {
     if (feedbackTimer !== null) clearTimeout(feedbackTimer);
@@ -831,9 +924,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     heldStatus = '';
   }
 
-  /** Holds the card, with the one sentence that says how to leave it. */
-  function holdCard(sentence: string): void {
-    section.dataset.paused = 'miss';
+  /**
+   * Holds the card, with the one sentence that says how to leave it.
+   *
+   * `why` is on the element because the two reasons are different states and
+   * an attribute that said `miss` over a right answer would be a lie in the
+   * one place a test reads: a miss is being held because something went wrong,
+   * an `answer` hold is being held because there is a staff to read and 450 ms
+   * is not long enough to read one.
+   */
+  function holdCard(sentence: string, why: 'miss' | 'answer' = 'miss'): void {
+    section.dataset.paused = why;
     heldStatus = sentence;
     status.textContent = sentence;
     takeTapsToContinue();
@@ -889,15 +990,35 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       );
     }
     draw();
+    // What a judged card shows, in one decision rather than two, because a
+    // kind can now be in both halves of it and holding a card twice is how a
+    // pause ends up belonging to nobody.
+    //
     // A miss is the one moment in a drill there is something to learn from,
     // and it was going past at the speed of a right answer: the expected keys
     // lit for a few hundred milliseconds and the next card arrived. Where
     // there is an answer to show — a set of keys, and therefore a staff — the
-    // card is held long enough to read it (`engine/drills/feedback.ts`). A
-    // right answer is untouched: the drill is about recall speed.
+    // card is held long enough to read it, with the keys lit
+    // (`engine/drills/feedback.ts`).
+    //
+    // And where the kind draws `after-answer`, the staff goes up whether the
+    // answer was right or wrong, forfeiting nothing: the question has been
+    // answered, so there is nothing left to give away, and *"know what chords
+    // look like"* is a thing to be shown on the cards you got right as much as
+    // on the ones you did not (the owner's ruling, 2026-09-16). The keys are
+    // left as `settled()` set them — green where it was right, red beside the
+    // wanted ones where it was not — because relighting them as "the answer"
+    // would throw that away. A right answer is held too, which is the one
+    // place this departs from the flash-card rule: a staff on screen for the
+    // length of a right answer's tick has not been shown to anybody. A tap
+    // moves on, so nobody who has already read it is made to wait.
+    const drawsWhenJudged = staffPolicy(drill.kind) === 'after-answer';
     if (current && showsAnswerAfter(drill.kind, correct)) {
       showAnswer(current);
       holdCard(TAP_TO_CONTINUE);
+    } else if (current && drawsWhenJudged) {
+      showAnswerStaffOnly(current);
+      holdCard(TAP_TO_CONTINUE, correct ? 'answer' : 'miss');
     }
     // Simon's own answer to a miss, on the ear-first rung: the chain is not a
     // set of keys to light all at once — it is a sequence, and the only honest
@@ -905,6 +1026,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // is held for as long as that takes rather than for the fixed beat every
     // other miss gets (`engine/drills/simon.ts`).
     let holdMs = feedbackDelayMs(drill.kind, correct);
+    // The same length a miss is given, for the same reason: it is how long
+    // reading a staff takes. `feedback.ts` decides it; this only says that an
+    // `after-answer` card is one of the cards with something to read.
+    if (drawsWhenJudged) holdMs = MISS_PAUSE_MS;
     if (drill.kind === 'simon' && current && simonReplayAfterMiss(simonHelp, correct)) {
       replayChainLit(current);
       holdMs = simonMissPauseMs(
@@ -916,6 +1041,44 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     feedbackTimer = setTimeout(() => {
       endFeedback();
     }, holdMs);
+  }
+
+  /**
+   * *Done*, on a card that has an answer to show before it goes.
+   *
+   * Harmonic dictation is the only `after-answer` kind with no per-answer
+   * settle: the learner says when the progression is finished, and until this
+   * that press went straight to the next card — so the one drill whose whole
+   * subject is *what those numerals sound like* never showed what they look
+   * like either. Now the first press judges what was played and puts the staff
+   * up beside the numerals; the card is then held exactly as a miss is, and a
+   * tap, or *Done* again, moves on.
+   *
+   * The drill is not consumed here. `result()` scores the prompt in flight
+   * without ending it (`ChordDictationDrill`), which is the whole reason that
+   * contract exists, so the card can be judged and still be the card `next()`
+   * settles when the pause ends.
+   */
+  function doneWithCard(): void {
+    if (!drill) return;
+    const held = feedbackTimer !== null;
+    if (held || staffPolicy(drill.kind) !== 'after-answer' || !current) {
+      advance();
+      return;
+    }
+    const answers = drill.result().answers;
+    const last = answers[answers.length - 1];
+    const correct = last?.correct === true;
+    section.dataset.feedback = correct ? 'correct' : 'wrong';
+    strip?.setState(
+      correct ? { correct: current.expected } : { wrong: last?.played ?? [], expected: current.expected },
+    );
+    draw();
+    showAnswerStaffOnly(current);
+    holdCard(TAP_TO_CONTINUE, correct ? 'answer' : 'miss');
+    feedbackTimer = setTimeout(() => {
+      endFeedback();
+    }, MISS_PAUSE_MS);
   }
 
   /**
@@ -937,6 +1100,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
   function drawStage(): void {
     stage.replaceChildren();
+    // Put back below by whichever staff this card carries; every other card
+    // must not keep the column layout a staff asks for.
+    stage.classList.remove('drill-stage--staff');
     if (!drill || !current) return;
 
     switch (drill.kind) {
@@ -1011,6 +1177,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
             el('div.simon-now', { id: 'drill-simon-now' }, el('div.ear-card', {
               id: 'drill-ear-card',
               'data-showing': simonFlash === '' ? 'glyph' : 'name',
+              // A redraw can land mid-chain, so how far along the chain is
+              // goes back on the card with the name it belongs to.
+              'data-step': String(simonStep),
               text: simonFlash === '' ? EAR_GLYPH : simonFlash,
             })),
             simonHelpChips(),
@@ -1066,6 +1235,140 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         stage.append(symbol);
       }
     }
+    drawReadingStaff();
+    // A staff already up for this card goes back into it: sideways it lives in
+    // the stage, and `replaceChildren()` above has just taken it out.
+    attachAnswerHost();
+  }
+
+  /**
+   * Is there room on this screen for a staff on the card?
+   *
+   * The same 520 px the Simon staff and the sideways drill grid both turn on
+   * at, and the same answer, for a reason this card measures out exactly.
+   * Sideways the stage is capped at 42 vh — about 143 px on a 342-high phone —
+   * and the pedal card spends about all of it: the lamp is 48 of them and the
+   * readout, which is the drill's own verdict on the last change, wraps to
+   * three lines and takes 54 more. A staff put in after those is a staff
+   * scrolled out of sight, and one that is there but cannot be seen is worse
+   * than one that is honestly not there: it costs the layout and pays nothing.
+   *
+   * So sideways the card keeps the lamp and the verdict, which are the drill,
+   * and the picture gives way — the third time this screen has made that trade
+   * and the same way both of the others went (`04` §5c, §5c-2). Upright, and on
+   * anything with height, the staff is there. Read as the card is drawn, so
+   * turning the phone is one card out of date and never longer than that.
+   */
+  function readingStaffFits(): boolean {
+    return !shortScreen();
+  }
+
+  /**
+   * A screen with no height to spare — the sideways phone the drill grid is
+   * for. One reading, so the staff that gives way and the staff that shrinks
+   * are answering the same question.
+   */
+  function shortScreen(): boolean {
+    return window.matchMedia('(max-height: 520px)').matches;
+  }
+
+  /** Drops the reading staff and the engraver behind it. */
+  function disposeReading(): void {
+    readingView?.dispose();
+    readingView = null;
+    readingHost?.remove();
+    readingHost = null;
+    readingFor = '';
+  }
+
+  /**
+   * The staff an `always` kind carries under its card, from the first frame.
+   *
+   * The pedal drill's card says *"Chord 1 — change the pedal cleanly"* and the
+   * chord it means is nowhere on the screen; the backing track says *"8 bars"*
+   * and the loop those bars are is nowhere either. Neither is a pitch test —
+   * one scores the lift, the other scores nothing — so there is nothing to give
+   * away and everything to gain by printing the chords: it is the owner's ask
+   * on the two cards where it costs nothing at all (`04` §5c, `STAFF_POLICY`).
+   *
+   * Engraved once per card and re-appended on every redraw, like the
+   * transposition prompt: `draw()` runs on every pedal message, and a host
+   * built per draw would re-parse the music under a learner who is pedalling.
+   */
+  function drawReadingStaff(): void {
+    if (!drill || !current || staffPolicy(drill.kind) !== 'always') return;
+    if (!readingStaffFits()) {
+      disposeReading();
+      return;
+    }
+    const key = `${String(runSeq)}:${String(current.index)}`;
+    stage.classList.add('drill-stage--staff');
+    if (readingHost && readingFor === key) {
+      stage.append(readingHost);
+      return;
+    }
+    disposeReading();
+    const xml = sheetForPrompt(current);
+    if (!xml) return;
+    const host = el('div.drill-notation.drill-reading', { id: 'drill-reading' });
+    readingHost = host;
+    readingFor = key;
+    // Attached before the engraver is asked for: OSMD measures the width it is
+    // drawing into.
+    stage.append(host);
+    void import('../../score/OsmdView')
+      .then(async ({ OsmdView }) => {
+        if (disposed || readingFor !== key || readingView) return;
+        const view = new OsmdView(host, {
+          drawFingerings: false,
+          drawMetronomeMarks: false,
+          timingLabel: 'drill.reading',
+        });
+        readingView = view;
+        await view.load(xml);
+        if (disposed || readingFor !== key) {
+          view.dispose();
+          if (readingView === view) readingView = null;
+          return;
+        }
+        // Set after the load, which is where OSMD takes its scale.
+        view.zoom = READING_ZOOM;
+        view.render();
+      })
+      .catch(() => {
+        // The lamp and the readout are the drill; this is the extra. Losing it
+        // costs the card its chord names and nothing else.
+        status.textContent = 'The chords could not be drawn.';
+      });
+  }
+
+  /**
+   * Puts the answer staff where this screen has room for it.
+   *
+   * **Under the words** when the screen has height: the stage centres one card
+   * and a staff beside the name squeezed both, and under the words the staff
+   * reads with the prompt it answers.
+   *
+   * **In the card** when it does not — the sideways phone. The words column
+   * there already holds the counter, the prompt, the status line and the
+   * buttons, and a staff added to it pushed "Play again", "Done", "Skip" and
+   * "End drill" under the keyboard, which is the fault the two-column grid was
+   * built to fix. The picture column beside it is holding one chord symbol in
+   * a box 42 vh tall and has most of that box spare, so the staff goes where
+   * the room is. It also puts the numerals and the notes side by side in one
+   * column, which is what the learner is trying to read against each other.
+   *
+   * Called again from `drawStage()`, because that rebuilds the stage on every
+   * draw and a host it detached is an engraver drawing into nothing.
+   */
+  function attachAnswerHost(): void {
+    if (!answerHost) return;
+    if (shortScreen()) {
+      stage.classList.add('drill-stage--staff');
+      stage.append(answerHost);
+      return;
+    }
+    if (answerHost.parentElement !== body) body.insertBefore(answerHost, status);
   }
 
   /** Drops the engraved answer; the next prompt starts with nothing shown. */
@@ -1085,24 +1388,29 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * key, so B♭ aeolian prints five flats and no accidentals. Failure is
    * reported on the status line rather than thrown, as for the prompt's own
    * notation above.
+   *
+   * On the kinds whose prompt is a *progression* it draws one chord to the bar
+   * with its numeral over it (`sheetForPrompt`), which is the whole of the
+   * owner's 2026-09-16 ask: a row of numerals says which chords, the staff
+   * under it says what they are, and the two line up bar by bar.
    */
   function drawAnswer(target: DrillPrompt): void {
     if (!drill) return;
+    // The one gate. A kind that draws its own notes (note flash, transposition,
+    // Simon) or has none to draw (rhythm, dynamics) gets no staff here however
+    // it was asked for, and a kind that carries one on its card already has it
+    // (`04` §5c, `STAFF_POLICY`).
+    const policy = staffPolicy(drill.kind);
+    if (policy === 'never' || policy === 'always') return;
     const key = `${String(runSeq)}:${String(target.index)}`;
     if (answerFor === key && answerHost) return;
     disposeAnswer();
-    const xml = answerSheet({
-      title: target.label,
-      notes: target.expected,
-      ordered: target.ordered === true,
-    });
+    const xml = sheetForPrompt(target);
     if (!xml) return;
     const host = el('div.drill-notation.drill-answer', { id: 'drill-answer' });
     answerHost = host;
     answerFor = key;
-    // Under the words, not in the card row: the stage centres one card, and a
-    // staff beside the name squeezed both.
-    body.insertBefore(host, status);
+    attachAnswerHost();
     void import('../../score/OsmdView')
       .then(async ({ OsmdView }) => {
         if (disposed || answerFor !== key || answerView) return;
@@ -1120,7 +1428,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         }
         // A reference line, not a page: smaller than the score screen draws.
         // Set after the load, which is where the engraver takes its scale.
-        view.zoom = ANSWER_ZOOM;
+        //
+        // How big depends on how much music there is and how much screen
+        // there is; `answerZoomFor` holds both reasons.
+        view.zoom = answerZoomFor((xml.match(/<measure /g) ?? []).length, shortScreen());
         view.render();
       })
       .catch(() => {
@@ -1462,10 +1773,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (MANUAL_ADVANCE.has(drill.kind) || drill.kind === 'dynamics' || drill.kind === 'pedal') {
       // These have no per-answer settle, so the learner says when they are done.
       controls.append(
-        button(drill.kind === 'dynamics' || drill.kind === 'pedal' ? 'Next' : 'Done', () => advance(), {
-          id: 'drill-next',
-          variant: 'primary',
-        }),
+        button(
+          drill.kind === 'dynamics' || drill.kind === 'pedal' ? 'Next' : 'Done',
+          () => doneWithCard(),
+          { id: 'drill-next', variant: 'primary' },
+        ),
       );
     }
     // Offered only when the owner has put the microphone in the follow-input
@@ -1678,6 +1990,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // leaves the screen.
     disposeNotation();
     disposeAnswer();
+    disposeReading();
     prompt.textContent = '';
     sheet.hidden = false;
     sheet.replaceChildren(
@@ -1888,6 +2201,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     controls.replaceChildren();
     stage.replaceChildren();
     disposeAnswer();
+    disposeReading();
     prompt.textContent = '';
     hint.hidden = true;
     how.hidden = true;
@@ -1931,6 +2245,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // same item, not a reset of how it is being practised.
     if (drill instanceof SimonDrill) drill.help = simonHelp;
     simonFlash = '';
+    simonStep = 0;
     advance();
   }
 
@@ -2683,6 +2998,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (micActive) micSource.disconnect();
     disposeNotation();
     disposeAnswer();
+    disposeReading();
     strip?.destroy();
   });
 

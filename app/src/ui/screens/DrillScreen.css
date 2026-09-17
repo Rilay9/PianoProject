@@ -14,7 +14,8 @@
  * the outline stays put and the words under it say what ends the wait. The
  * whole screen takes the pointer because the tap is "anywhere on the card",
  * and a cursor that changes is the only hint a desktop reader gets. */
-.screen[data-screen='drill'][data-paused='miss'] .drill-stage {
+.screen[data-screen='drill'][data-paused='miss'] .drill-stage,
+.screen[data-screen='drill'][data-paused='answer'] .drill-stage {
   cursor: pointer;
 }
 
@@ -22,8 +23,75 @@
  * which already sits under the card and above the buttons (`04` §0 R6), so it
  * costs no new row — this only makes it read as an instruction rather than as
  * a report. */
-.screen[data-screen='drill'][data-paused='miss'] #drill-status {
+.screen[data-screen='drill'][data-paused='miss'] #drill-status,
+.screen[data-screen='drill'][data-paused='answer'] #drill-status {
   font-weight: 600;
+}
+
+/* The staff an `always` kind carries on its card (`04` §5c, 2026-09-16).
+ *
+ * The stage centres one card; with a staff under it there are two things and
+ * they stack, the card first and the notes under it, because the card is the
+ * question and the staff is what the question is about. `max-height` rather
+ * than a fixed one: a four-chord loop is one system and a twelve-bar blues is
+ * three, and the card must not grow to three systems tall and push "Skip" and
+ * "End drill" under the keyboard — the fault the sideways grid exists to fix.
+ * Past the cap the staff scrolls inside itself, which is the one outcome that
+ * loses nothing: every bar is still reachable and nothing else on the screen
+ * moves. */
+.drill-stage--staff {
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Wherever there is a staff, the two help lines give way to it.
+ *
+ * "one octave, ascending" and "Play its 8 notes from the bottom up, one at a
+ * time, at any speed" are the card saying in words what the staff is now
+ * saying in notes — and on a question that has just been answered they are
+ * instructions for something that is over. They are exactly what the staff is
+ * drawn *instead of*, and keeping them cost about sixty pixels, which upright
+ * was the difference between "Skip · End drill" being on the screen and being
+ * behind the keyboard painted over it. The card keeps every word until a staff
+ * arrives; `:has` is the rule, so it does not matter which of the four ways the
+ * staff got there. */
+.screen[data-screen='drill'] .screen-body:has(#drill-answer) #drill-hint,
+.screen[data-screen='drill'] .screen-body:has(#drill-answer) #drill-how {
+  display: none;
+}
+
+.drill-reading {
+  width: 100%;
+  max-height: 30vh;
+  overflow: auto;
+  /* Not squeezed by the card above it. The stage is a flex column here, and a
+   * flex item shrinks before it overflows — so the staff gave up its own
+   * height to the lamp and the verdict and was drawn as a band with the clef
+   * cut off at both ends. `flex: none` is what says "this one keeps the height
+   * it engraved at"; the cap above is what stops it taking more than a third
+   * of the screen when the loop is twelve bars. */
+  flex: none;
+  /* No panel of its own, for the reason the play-along staff has none: on the
+   * pedal card the music is one chord, and one bar in a full-width surface
+   * reads as a panel that failed to fill rather than as a chord. The lamp
+   * above it sits on the page, so this does too, and the class stays for the
+   * dark-mode inversion `.drill-notation svg` carries. */
+  background: none;
+}
+
+/* Both engraved staves, on a screen wider than any music they hold.
+ *
+ * Four whole-note bars are about four hundred pixels at this zoom, and on a
+ * laptop they were four hundred pixels of music at the left-hand end of a
+ * thousand-pixel panel. `00` §1: fill the width with music or centre the
+ * narrower system — never stretch it. Capping the host does both at once,
+ * because the engraver lays out to the width it is given, so the bars take the
+ * room they want and the panel stops where they stop. No effect on a phone,
+ * where the cap is wider than the screen. */
+.screen[data-screen='drill'] #drill-answer,
+.screen[data-screen='drill'] #drill-reading {
+  max-width: 560px;
+  margin-inline: auto;
 }
 
 /* The going-over.
@@ -158,6 +226,35 @@
    * stave however small the name is made; and the half that would have been
    * clipped is the chips, which are the controls. The lights and the name are
    * the drill and they are untouched. */
+
+  /* The reading staff, sideways, where the stage is capped at 42vh and clips
+   * (`style.css`). Simon's staff is dropped down here and this one is not, and
+   * the difference is what each is for: Simon's staff repeats something the
+   * lights and the name are already saying, while this one is the *only* place
+   * the chord is named — the pedal card says "Chord 1" and nothing else. So it
+   * keeps its place and the stage scrolls instead of clipping. Nothing in the
+   * stage is a control (the buttons are in the words column beside it), so a
+   * scroll here cannot hide one, which is the rule the cap exists to keep. */
+  /* No reading staff down here either, and again the screen decides rather
+   * than this file (`DrillScreen.ts`, `readingStaffFits`). The cap leaves
+   * about 143 px of card; the pedal lamp takes 48 and its verdict on the last
+   * change — the only thing on the screen that says whether it was clean —
+   * wraps to three lines and takes 54 more. A staff after those is a staff
+   * scrolled out of sight, which costs the layout and pays nothing. */
+
+  /* The *answer* staff does not give way — it moves. Sideways the screen puts
+   * it inside the card rather than under the words (`DrillScreen.ts`,
+   * `attachAnswerHost`), because the words column already holds the counter,
+   * the prompt, the status line and the buttons and a staff added to it pushed
+   * "Play again", "Done", "Skip" and "End drill" under the keyboard, while the
+   * picture column beside it was holding one chord symbol in a box 42 vh tall
+   * with most of that box spare. Nothing to declare here; the rules above
+   * (`.drill-stage--staff`) already stack the card and the staff, and this
+   * note is where a reader of this file would look for the reason.
+   *
+   * The hint and the how-to sentence give way whenever a staff is up, and that
+   * rule is not in here — it is above, because it turned out to be true at
+   * every size and not only at this one. */
 }
 
 /* The Simon result: the chain is the whole point of the run, so it is the one

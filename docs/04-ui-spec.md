@@ -1102,6 +1102,67 @@ learner looks at.
   still go green when it is then played right, and the count does not move, so the score
   keeps meaning what it says. The ear kinds have no Show me; their answer is the sound,
   and *Play again* already repeats it.
+- **When each kind draws a staff (2026-09-16).** The owner, on a harmonic-dictation card
+  reading `C:I – C:V7/V – G:V – G:I`: *"These kinds of drills can also use a staff. Any time
+  you're showing note progressions or chord progressions in these drills, it's useful to
+  show it on the staff so I can correlate the notes on the staff with the chord
+  progressions — know what chords look like. It's very hard to read chords."* A staff is
+  worth having on nearly every card; **when** it may be drawn is a different answer on
+  different kinds, because on some of them the staff *is* the answer. That answer is given
+  once, per kind, in one table — `STAFF_POLICY` in `engine/drills/types.ts`, exhaustive by
+  type so a new kind cannot be added without one — and the screen only obeys it.
+  - `never`: **note-flash**, **transposition**, **simon** (each already draws its own notes,
+    and a second staff saying the same thing is what §0 and `00` §1 forbid outright);
+    **rhythm**, **dynamics** (no pitch in them to draw).
+  - `on-reveal`: **find-key**, **mode**, **chord-scale** — naming a key, and the two scale
+    kinds. Drawing the notes *is* telling the learner what to play, so it costs what
+    *Show me* costs: that prompt's mark. Drawn again on a miss, when the card is held.
+    (`mode` and `chord-scale` are the two rows worth arguing about: the ruling below reads
+    across to a scale as easily as to a chord, and moving them is one word each.)
+  - `after-answer`: **chord**, **inversion**, **extended-chord**, **roman-numeral**,
+    **harmonic-dictation**, **ear-progression**, **ear-chord**, **ear-interval**,
+    **ear-tune**, **call-response**. Two families, one rule. The ear kinds were heard and
+    not seen; the four chord-reading kinds were seen as a symbol and have to be *found* on
+    the keys. In both cases the staff drawn before the answer would **be** the answer — an
+    ear drill with its notes printed under it is a reading drill, and a chord symbol with
+    its notes printed under it is a card that cannot be got wrong — so nothing is drawn
+    until the answer is judged. The moment it is, right or wrong, the staff goes up,
+    forfeiting nothing, and the card is held so there is time to read it. **Every card, not
+    only the ones that were paid for** (the owner's ruling, 2026-09-16): *"know what chords
+    look like"* is a thing to be shown each time, and a staff behind a button is a staff
+    nobody sees on the cards they got right. The chord kinds keep *Show me* as well — before
+    the answer the staff is still the answer, and it still forfeits. A right answer is held
+    too, which is the one place this departs from the flash-card rule: a staff on screen for
+    the length of a right answer's tick has not been shown to anybody. A tap moves on, as on
+    a miss, so nobody who has read it waits. Harmonic dictation has no per-answer settle —
+    the learner says when the progression is finished — so its first *Done* judges the card
+    and draws the staff, and the second (or a tap) moves on.
+  - `always`: **pedal**, **backing-track** — the card names a chord it does not draw and the
+    notes are not what is judged. The pedal card said *"Chord 1 — change the pedal cleanly"*
+    and the chord it meant was nowhere on the screen; the backing track says *"8 bars"* and
+    the loop is nowhere either. Drawn under the card from its first frame, at full size
+    rather than the answer staff's, because here it is the card's content and not a
+    footnote.
+- **A progression is drawn as a progression (2026-09-16).** One chord to the bar as whole
+  notes, in the order they sound, with the numeral over the bar it belongs to —
+  `progressionSheet` in `engine/drills/answerSheet.ts`. The label goes on as a
+  `<direction>`/`<words>` and not as a `<harmony>`, because `V7/V` and `C:I` are analysis and
+  MusicXML's `<harmony>` can only say a letter name and a kind: a card that had to print
+  `D7` where the lesson says `V7/V` would be teaching something the lesson is not. Two
+  staves when the chords cross middle C, split there, and one when they do not — a
+  progression written entirely in the bass on a grand staff is a treble stave holding four
+  whole rests, and the empty half is then the loudest thing on the card. The key signature
+  is chosen from the whole progression, not from its first chord.
+- **Sideways, the staff moves rather than pushing the buttons off.** The words column holds
+  the counter, the prompt, the status line and the buttons and has nothing spare; the
+  picture column beside it is holding one chord symbol in a box 42 vh tall with most of that
+  box unused. So on a screen under 520 px high the answer staff is drawn *inside the card*,
+  under the symbols, at a smaller size again — which also puts the numerals and the notes in
+  one column, which is what the learner is reading against each other. The `always` staff
+  has no such room (the pedal lamp and its verdict spend the whole cap) and gives way there
+  entirely, the same trade Simon's play-along staff makes (§5c-2). And while a card is held,
+  the hint and the how-to sentence give way at every size: they are how to answer a question
+  that has just been answered, and they are what the staff is drawn instead of.
 - **A miss pauses (2026-09-15).** For those same kinds — the ones with a set of keys to light
   — a wrong answer *keeps* its card: the keys that were played in red, the keys that were
   wanted lit, and the answer on the same small staff *Show me* draws. A tap anywhere on the
@@ -1109,9 +1170,13 @@ learner looks at.
   in a drill with something to learn from went past at the speed of a right answer — the same
   few hundred milliseconds, and the next card. A right answer is untouched, because a flash
   card is about recall speed and a pause after a hit teaches waiting. The two lengths are one
-  decision in `engine/drills/feedback.ts`, not a constant in the screen, and the ear kinds and
-  the kinds with a flow of their own (rhythm, pedal, dynamics, the backing track, dictation,
-  transposition) are unchanged: there is nothing to draw on their card.
+  decision in `engine/drills/feedback.ts`, not a constant in the screen, and the kinds with a
+  flow of their own (rhythm, pedal, dynamics, the backing track, transposition) are
+  unchanged: there is nothing on their card to hold it for. Since 2026-09-16 every
+  `after-answer` kind is held on a **right** answer too — not because there are keys to
+  compare, but because there is now a staff on the card, and a staff is the one thing that
+  cannot be read in the length of a tick. The screen decides that from the policy table; the
+  two lengths themselves are still `feedback.ts`'s.
 - **Going over the ones you missed (2026-09-15).** When a set ends with anything that did not
   count as right, the result sheet offers a second, short round of exactly those prompts —
   outlined, not filled, since *Again* is the sheet's one filled box (§0 R3). It is modelled as
@@ -1641,6 +1706,16 @@ screen; `WindowRenderer` `FILL_SHARE` and `wide.spec` hold the new one.
 
 E2E: `tests/e2e/wide.spec.ts` — seven shapes from 342 × 740 to 1920 × 1080, every screen,
 gutters symmetric, content no wider at 1920 than at 1366, pictures under `build/wide/`.
+
+The walk waits for the offline cache to be stocked before it starts, and its wait for a screen
+knows about the ones that are fetched on demand. The score, the PDF viewer and the setup tour are
+lazy (`ui/AppShell.ts`), so until the chunk lands the screen element does not exist at all and a
+wait on it reports "element(s) not found" — which is what CI reported on 2026-09-17, on the first
+visit to the largest chunk in the app while the worker was still pulling the whole catalog off the
+same server. If that fetch fails rather than queues, the shell draws its own way out and the test
+now takes it. Neither half is a bigger number: one waits on the thing that was slow
+(`navigator.serviceWorker.controller`, which `clientsClaim` sets when the precache is done), the
+other on the thing the shell actually says.
 
 ## 8. Empty/edge states
 

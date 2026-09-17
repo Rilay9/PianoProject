@@ -36,6 +36,9 @@ import { noteLabel } from '../../src/engine/drills/types';
 /** Where the Simon pictures go, for looking at rather than for asserting on. */
 const SIMON_PICTURES = resolve('../build/simon');
 
+/** And the drill-staff ones (`04` §5c), for the same reason: to be looked at. */
+const STAFF_PICTURES = resolve('../build/staff');
+
 /** What the ear card shows when it is not naming a note (`DrillScreen`). */
 const EAR_GLYPH = '🎧';
 
@@ -56,6 +59,16 @@ interface Transition {
 interface CardSample {
   /** What `#drill-ear-card` was showing — the glyph, or a note name. */
   name: string;
+  /**
+   * Which note of the chain the card was on, or 0 for the glyph.
+   *
+   * The card's own count (`data-step`), not one derived from the names this
+   * sampler caught. A name is up for one step and then the next replaces it,
+   * so a sampler on a loaded machine misses some of them; the staff beside it
+   * publishes an exact count, and comparing the exact against the lossy is how
+   * CI came to report a staff that had run ahead when it had not.
+   */
+  step: number;
   /** The notes lit as *expected* on the strip at that moment. */
   expectedLit: number[];
   /**
@@ -97,6 +110,7 @@ async function watchSimonCard(page: Page): Promise<void> {
       const staff = document.querySelector('#drill-simon-staff');
       window.__simonSamples?.push({
         name: card?.textContent ?? '',
+        step: card instanceof HTMLElement ? Number(card.dataset.step ?? 0) : 0,
         expectedLit: Array.from(
           document.querySelectorAll('.keyboard-strip .is-expected[data-midi]'),
         ).map((key) => Number((key as HTMLElement).dataset.midi)),
@@ -295,18 +309,25 @@ test.describe('a miss keeps the card up', () => {
 
     expect(tapped, 'a tap did not move the card on any sooner than waiting').toBeLessThan(held);
 
-    // And a right answer is quicker than either: the drill is about recall
-    // speed, and only the miss has anything to read.
+    // And a right answer is quicker than either — asked on a kind that has
+    // nothing to read on a right answer. A chord card has had a staff on every
+    // judged card since 2026-09-16 (`STAFF_POLICY`), so the flash-card rule is
+    // asked where it is still the whole truth: note flash draws its own note on
+    // its own card and a second staff would be the same note twice, so a right
+    // answer there still flashes and goes.
+    const flash = await openDrill(page, 'drill.reading.note-flash-treble-c4-g4');
     await watchTransitions(page);
     const wanted = await expectedNow(page);
-    await playChord(midi, wanted);
+    expect(wanted.length).toBeGreaterThan(0);
+    await flash.noteOn(wanted[0] ?? 60, 90);
+    await flash.noteOff(wanted[0] ?? 60);
     await expect(drill).toHaveAttribute('data-feedback', '', { timeout: 15_000 });
     const record = await transitions(page);
     const right = heldFor(record, 'data-feedback', 'correct');
     expect(right, 'a right answer was held as long as a miss').toBeLessThan(held);
     // Nothing to read on a right answer, so nothing was paused and nothing
     // was drawn.
-    expect(record.some((t) => t.name === 'data-paused' && t.value === 'miss')).toBe(false);
+    expect(record.some((t) => t.name === 'data-paused' && t.value !== '')).toBe(false);
     expect(record.some((t) => t.answerShown)).toBe(false);
     await expect(page.locator('#drill-answer')).toHaveCount(0);
   });
@@ -484,24 +505,29 @@ test.describe('Simon', () => {
    * must never hold four. A note it has not played yet is the question
    * written down, and that is the thing this staff must not be.
    *
-   * Asserting the stronger "exactly `at + 1` in the same reading as the name"
-   * is asserting the machine kept up, which under four workers it sometimes
-   * does not. Returns the highest count seen, for the caller to judge.
+   * Asserting the stronger "exactly the step it is naming, in the same
+   * reading" is asserting the machine kept up, which under four workers it
+   * sometimes does not. Returns the highest count seen, for the caller to
+   * judge.
+   *
+   * Both numbers in the comparison are the card's own and both are exact: the
+   * step it is on (`data-step`) and the notes on the staff (`data-notes`) come
+   * off one walk of `simonChainSteps`, and the step is written before the
+   * staff is asked to catch up to it. The first version of this counted the
+   * *names this sampler caught* instead, and a sampler that misses a flash
+   * undercounts — which on a slow runner reported a staff that had run ahead
+   * when nothing had (CI, 2026-09-17). A lossy sample is not a thing to
+   * compare an exact count against.
    */
   function staffFollowedTheChain(seen: CardSample[]): number {
-    let named = 0;
-    let previous = '';
     let highest = 0;
     for (const sample of seen) {
-      const naming = sample.name !== '' && sample.name !== EAR_GLYPH;
-      if (naming && sample.name !== previous) named += 1;
-      previous = sample.name;
       if (sample.staff < 0) continue;
       highest = Math.max(highest, sample.staff);
       expect(
         sample.staff,
-        `the staff held ${String(sample.staff)} notes with ${String(named)} played`,
-      ).toBeLessThanOrEqual(named);
+        `the staff held ${String(sample.staff)} notes on step ${String(sample.step)}`,
+      ).toBeLessThanOrEqual(sample.step);
     }
     return highest;
   }
@@ -825,5 +851,258 @@ test.describe('Simon', () => {
     await page.goto('/#/drill/drill.ear.simon-chromatic');
     await expect(drill).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });
     expect(await pressedRung(page)).toBe('keys-after-miss');
+  });
+});
+
+/**
+ * The staff on a drill card (docs/04 §5c, `STAFF_POLICY`).
+ *
+ * The owner, on a harmonic-dictation card: *"Any time you're showing note
+ * progressions or chord progressions in these drills, it's useful to show it on
+ * the staff so I can correlate the notes on the staff with the chord
+ * progressions — know what chords look like. It's very hard to read chords."*
+ *
+ * One test per bucket of the policy table, each driven through the real screen,
+ * because the table's whole value is that *when* is a different answer on
+ * different kinds and the wrong answer on an ear kind turns it into a reading
+ * drill. Nothing here measures a pixel: the claims are that a staff is there,
+ * or that it is not, at a named moment.
+ */
+test.describe('when a card draws a staff', () => {
+  test('harmonic dictation: nothing until the answer is judged, then the progression', async ({
+    page,
+  }) => {
+    // Triads throughout, so the progression can be played back exactly as
+    // `drills-harmony.spec.ts` plays it — three notes to a chord, with a gap.
+    const midi = await openDrill(page, 'drill.theory.harmonic-dictation');
+    const drill = page.locator('[data-screen="drill"]');
+    await expect(drill).toHaveAttribute('data-kind', 'harmonic-dictation');
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+
+    // Played back, chord by chord. Still nothing: the question is not over
+    // until the learner says it is, and a heard progression with its notes
+    // printed under it is a reading drill.
+    const pitches = await expectedNow(page);
+    expect(pitches.length).toBeGreaterThan(0);
+    for (let at = 0; at < pitches.length; at += 3) {
+      await playChord(midi, pitches.slice(at, at + 3));
+      await page.waitForTimeout(250);
+    }
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+
+    // *Done* judges it — right, here — and puts the staff up, and the card is
+    // held so there is time to read it. The first press no longer throws the
+    // card away, which is why the drill about what numerals *sound* like never
+    // showed what they look like.
+    await page.locator('#drill-next').click();
+    await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+    await expect(drill).not.toHaveAttribute('data-paused', '');
+    await expect(page.locator('#drill-status')).toContainText('Tap');
+    await expect(page.locator('#drill-counter')).toContainText('1 right');
+    // The numerals the card is showing are over the bars they belong to, so
+    // the two can be read against each other — which is the whole of the ask.
+    await expect(page.locator('#drill-answer')).toContainText('IV');
+
+    // And it goes with the card: the next one starts with nothing shown.
+    await page.locator('#drill-next').click();
+    await expect(drill).toHaveAttribute('data-paused', '', { timeout: 15_000 });
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+  });
+
+  test('the modulating card draws the numerals it is showing, keys and all', async ({ page }) => {
+    // The owner's own card: `C:I – C:V7/V – G:V – G:I`. The numerals are what
+    // he was looking at and `V7/V` is exactly the one that cannot be written as
+    // a chord symbol, which is why the label goes on as words and not as a
+    // `<harmony>` (`musicXmlWriter`).
+    await openDrill(page, 'drill.theory.harmonic-dictation-modulation');
+    await expect(page.locator('#drill-symbol')).toContainText('V7/V');
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+    await page.locator('#drill-next').click();
+    await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#drill-answer')).toContainText('V7/V');
+  });
+
+  test('a chord card draws nothing until the answer, then the chord — right or wrong', async ({
+    page,
+  }) => {
+    // The owner's ruling, 2026-09-16: play it from the symbol, and the moment
+    // it is judged the chord is on the staff with its label, forfeiting
+    // nothing. Not before — a chord symbol with its notes printed under it is a
+    // card that cannot be got wrong — and not only behind *Show me*, because a
+    // staff behind a button is a staff nobody sees on the cards they got right.
+    const midi = await openDrill(page, 'drill.chord.c-f-g');
+    const drill = page.locator('[data-screen="drill"]');
+    await expect(drill).toHaveAttribute('data-kind', 'chord');
+    await expect(page.locator('#drill-symbol')).toHaveText('C');
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+
+    // Right: the staff, and the card held long enough to read it. The keys
+    // stay as the answer left them — green — rather than being relit.
+    await playChord(midi, await expectedNow(page));
+    await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+    await expect(drill).toHaveAttribute('data-paused', 'answer');
+    await expect(page.locator('#drill-counter')).toContainText('1 right');
+    await expect(page.locator('#drill-status')).toContainText('Tap');
+
+    // A tap moves on, and the next card starts with nothing shown again.
+    await page.locator('#drill-stage').dispatchEvent('pointerdown');
+    await expect(drill).toHaveAttribute('data-paused', '', { timeout: 15_000 });
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+
+    // Wrong: the same staff, and the keys played in red beside the ones
+    // wanted, which is what a miss has always shown.
+    await watchTransitions(page);
+    const wanted = await expectedNow(page);
+    await playChord(midi, WRONG_CHORD);
+    await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+    const held = missMoment(await transitions(page));
+    for (const note of wanted) expect(held.expectedLit, `expected ${String(note)}`).toContain(note);
+    for (const note of WRONG_CHORD) expect(held.wrongLit, `wrong ${String(note)}`).toContain(note);
+  });
+
+  test('the pedal card carries its chord from the first frame', async ({ page }) => {
+    // `always`: the card says "Chord 1" and what is judged is the lift, not the
+    // notes — so there is nothing to give away and no reason to make the
+    // learner guess which chord they are pedalling.
+    await page.setViewportSize({ width: 342, height: 740 });
+    await openDrill(page, 'drill.pedal.changes');
+    await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-kind', 'pedal');
+    await expect(page.locator('#drill-reading svg')).toBeVisible({ timeout: 30_000 });
+    // In the card, under the lamp it belongs to, not down among the words.
+    await expect(page.locator('#drill-stage #drill-reading')).toBeVisible();
+    // And drawn, not an empty box: the chord is there to be read.
+    expect(await page.locator('#drill-reading svg').count()).toBe(1);
+  });
+
+  test('and keeps the card whole on a screen with no room for one', async ({ page }) => {
+    // Sideways the stage is capped at 42vh and the lamp and the verdict spend
+    // it. The staff gives way rather than being drawn somewhere nobody can see
+    // it — `readingStaffFits`, and the same trade Simon's staff makes. Asserted
+    // as *absent* rather than "not visible", because an element clipped by an
+    // ancestor's overflow is still visible to a locator, which is how a staff
+    // scrolled off the card could pass for one on it.
+    await page.setViewportSize({ width: 740, height: 342 });
+    await openDrill(page, 'drill.pedal.changes');
+    await expect(page.locator('#drill-pedal-lamp')).toBeVisible();
+    await expect(page.locator('#drill-reading')).toHaveCount(0);
+    // The controls are what the cap protects, and they are still on the card.
+    await expect(page.locator('#drill-next')).toBeVisible();
+    await expect(page.locator('#drill-end')).toBeVisible();
+  });
+
+  test('a note-flash card never draws a second staff, even when it is missed', async ({ page }) => {
+    // `never`: the card *is* a staff. A second one under it would be the same
+    // note twice, which is the one thing `00` §1 forbids outright.
+    const midi = await openDrill(page, 'drill.reading.note-flash-treble-c4-g4');
+    const drill = page.locator('[data-screen="drill"]');
+    await expect(page.locator('.staff-card .staff-note')).toBeVisible();
+    await expect(page.locator('#drill-reading')).toHaveCount(0);
+
+    await watchTransitions(page, { tapOnMiss: true });
+    const wanted = await expectedNow(page);
+    // A note that is certainly not the one asked for, in the drill's range.
+    await midi.noteOn((wanted[0] ?? 60) + 1, 90);
+    await midi.noteOff((wanted[0] ?? 60) + 1);
+    await expect(drill).toHaveAttribute('data-paused', '', { timeout: 15_000 });
+    const record = await transitions(page);
+    // The miss still pauses and still lights the keys — only the staff is gone.
+    expect(missMoment(record).expectedLit).toContain(wanted[0]);
+    expect(record.some((t) => t.answerShown)).toBe(false);
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+  });
+
+  test('Show me still draws it and still forfeits, and the ear kinds have none', async ({
+    page,
+  }) => {
+    // `on-reveal`: the staff *is* the answer on a chord card, so it costs what
+    // the answer costs. Unchanged — this is here so that moving a kind between
+    // buckets cannot quietly take the price off.
+    const midi = await openDrill(page, 'drill.chord.c-f-g');
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+    await page.locator('#drill-show').click();
+    await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#drill-status')).toContainText('not count as right');
+    await playChord(midi, await expectedNow(page));
+    await expect(page.locator('#drill-counter')).toContainText('0 right');
+
+    // And an ear kind is not offered the button at all: its answer is the
+    // sound, and *Play again* already repeats it.
+    await openDrill(page, 'drill.ear.cadences');
+    await expect(page.locator('#drill-show')).toHaveCount(0);
+    await expect(page.locator('#drill-answer')).toHaveCount(0);
+  });
+
+  /**
+   * The three cards at every shape, to be looked at.
+   *
+   * No assertion about how any of this looks — `00` §2 — and no pixel counted.
+   * The picture is the evidence a person reads; the tests above are the ones a
+   * runner reads. The three shapes are phone upright, phone sideways (where the
+   * stage is capped at 42vh) and a laptop, in both schemes.
+   */
+  test.describe('pictures', () => {
+    const SHAPES = [
+      { name: 'phone-portrait', width: 342, height: 740 },
+      { name: 'phone-landscape', width: 740, height: 342 },
+      { name: 'laptop', width: 1366, height: 768 },
+    ];
+
+    for (const shape of SHAPES) {
+      for (const scheme of ['light', 'dark'] as const) {
+        test(`the judged dictation card, ${shape.name} ${scheme}`, async ({ page }) => {
+          await page.emulateMedia({ colorScheme: scheme });
+          await page.setViewportSize({ width: shape.width, height: shape.height });
+          await openDrill(page, 'drill.theory.harmonic-dictation-modulation');
+          await page.locator('#drill-next').click();
+          await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+          const file = join(STAFF_PICTURES, `dictation-${shape.name}-${scheme}.png`);
+          mkdirSync(dirname(file), { recursive: true });
+          await page.screenshot({ path: file, animations: 'disabled' });
+        });
+
+        test(`the judged chord card, ${shape.name} ${scheme}`, async ({ page }) => {
+          // The card the 2026-09-16 ruling is about: a chord played from its
+          // symbol, and the chord on the staff the moment it is judged.
+          await page.emulateMedia({ colorScheme: scheme });
+          await page.setViewportSize({ width: shape.width, height: shape.height });
+          const midi = await openDrill(page, 'drill.chord.c-f-g');
+          await playChord(midi, await expectedNow(page));
+          await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+          const file = join(STAFF_PICTURES, `chord-${shape.name}-${scheme}.png`);
+          mkdirSync(dirname(file), { recursive: true });
+          await page.screenshot({ path: file, animations: 'disabled' });
+        });
+
+        test(`the shown scale card, ${shape.name} ${scheme}`, async ({ page }) => {
+          // The bucket that did *not* move: a mode behind Show me, shot so a
+          // change made for the chord cards cannot quietly ruin it.
+          await page.emulateMedia({ colorScheme: scheme });
+          await page.setViewportSize({ width: shape.width, height: shape.height });
+          await openDrill(page, 'drill.theory.modes');
+          await page.locator('#drill-show').click();
+          await expect(page.locator('#drill-answer svg')).toBeVisible({ timeout: 30_000 });
+          const file = join(STAFF_PICTURES, `scale-${shape.name}-${scheme}.png`);
+          mkdirSync(dirname(file), { recursive: true });
+          await page.screenshot({ path: file, animations: 'disabled' });
+        });
+
+        test(`the reading card, ${shape.name} ${scheme}`, async ({ page }) => {
+          await page.emulateMedia({ colorScheme: scheme });
+          await page.setViewportSize({ width: shape.width, height: shape.height });
+          await openDrill(page, 'drill.pedal.changes');
+          if (shape.height > 520) {
+            await expect(page.locator('#drill-reading svg')).toBeVisible({ timeout: 30_000 });
+          } else {
+            // Sideways there is none, and the picture is taken to show what the
+            // card is instead — the lamp and the verdict, with the buttons
+            // beside them (`readingStaffFits`).
+            await expect(page.locator('#drill-reading')).toHaveCount(0);
+          }
+          const file = join(STAFF_PICTURES, `reading-${shape.name}-${scheme}.png`);
+          mkdirSync(dirname(file), { recursive: true });
+          await page.screenshot({ path: file, animations: 'disabled' });
+        });
+      }
+    }
   });
 });

@@ -42,6 +42,101 @@ export type DrillKind =
   // learner to have held what they heard, which is what playing by ear is.
   | 'simon';
 
+/**
+ * When a drill kind draws a staff (docs/04 §5c, 2026-09-16).
+ *
+ * The owner, on a harmonic-dictation card: *"These kinds of drills can also use
+ * a staff. Any time you're showing note progressions or chord progressions in
+ * these drills, it's useful to show it on the staff so I can correlate the
+ * notes on the staff with the chord progressions — know what chords look like.
+ * It's very hard to read chords."*
+ *
+ * A staff is worth having everywhere, and *when* it may be drawn is not the
+ * same question on every kind, because on some of them the staff is the answer.
+ * So the question is answered once, per kind, in one table below, and the
+ * screen only obeys it.
+ *
+ * - `never` — the card already draws the notes (note flash draws one on its own
+ *   staff, transposition prints four bars, Simon fills a staff as the chain
+ *   sounds), or there are no pitches to draw (rhythm, dynamics). A second staff
+ *   saying the same thing is the one thing `00` §1 forbids outright.
+ * - `on-reveal` — the staff *is* the answer and the answer is one key, so it is
+ *   worth what it costs and no more: behind *Show me*, forfeiting that prompt's
+ *   mark, and drawn again on a miss when the card is held.
+ * - `after-answer` — the staff must not be drawn before the answer, because it
+ *   would *be* the answer: an ear drill with its notes printed under it is a
+ *   reading drill, and a chord card with its notes printed under it cannot be
+ *   got wrong. So it is drawn the moment the answer is judged — right or wrong,
+ *   forfeiting nothing — and the card is then held so there is time to read it.
+ *   Every card, not only the ones the learner pays for: *"know what chords look
+ *   like"* is a thing to be shown each time, and a staff behind a button is a
+ *   staff nobody sees on the cards they got right (the owner's ruling,
+ *   2026-09-16). Where the kind also offers *Show me* the earlier picture is
+ *   still available at the usual price, which is what that button has always
+ *   been for.
+ * - `always` — the card names a chord it does not draw, and what is judged is
+ *   not the notes: the pedal drill's card says *"Chord 1"* and scores the lift,
+ *   the backing track scores nothing at all. Drawn from the card's first frame.
+ */
+export type StaffPolicy = 'never' | 'on-reveal' | 'after-answer' | 'always';
+
+/**
+ * Every kind's answer to "when is a staff drawn".
+ *
+ * Exhaustive by type: adding a `DrillKind` without a row here does not compile,
+ * which is the point of the table — the alternative is a default, and a default
+ * is how a new ear kind quietly starts printing its answer over the question.
+ */
+export const STAFF_POLICY: Readonly<Record<DrillKind, StaffPolicy>> = {
+  // The card is a staff already.
+  'note-flash': 'never',
+  transposition: 'never',
+  simon: 'never',
+  // Nothing with a pitch in it to draw.
+  rhythm: 'never',
+  dynamics: 'never',
+  // The answer is one key and the card is its name: a staff for it is worth
+  // what Show me costs and no more.
+  'find-key': 'on-reveal',
+  // A scale: seven or eight notes in order, drawn behind Show me and on a miss
+  // as they have been since 2026-09-15. The chord kinds below moved on from
+  // this and these two did not, because the ruling that moved them was about
+  // chords — see the note under the table.
+  mode: 'on-reveal',
+  'chord-scale': 'on-reveal',
+  // Not before the answer, because the staff would be the answer; every card
+  // once it is judged, because that is what "know what chords look like" needs.
+  // The four chord-reading kinds: play it from the symbol, then see it.
+  chord: 'after-answer',
+  inversion: 'after-answer',
+  'extended-chord': 'after-answer',
+  'roman-numeral': 'after-answer',
+  // And the kinds that were heard rather than seen, for the same reason said
+  // the other way round.
+  'ear-interval': 'after-answer',
+  'ear-chord': 'after-answer',
+  'ear-progression': 'after-answer',
+  'ear-tune': 'after-answer',
+  'harmonic-dictation': 'after-answer',
+  'call-response': 'after-answer',
+  // Named but not drawn, and not what is being judged.
+  pedal: 'always',
+  'backing-track': 'always',
+};
+
+/**
+ * When this kind may draw a staff.
+ *
+ * `mode` and `chord-scale` are the two rows worth arguing about. The ruling of
+ * 2026-09-16 moved the four chord-reading kinds to `after-answer` and named
+ * chords; the same reasoning reads across to a scale, and moving those two is
+ * one word each if the owner wants it. They are left where they were rather
+ * than extended to on an argument nobody made.
+ */
+export function staffPolicy(kind: DrillKind): StaffPolicy {
+  return STAFF_POLICY[kind];
+}
+
 /** What the UI has to show for one question. */
 export interface DrillPrompt {
   index: number;

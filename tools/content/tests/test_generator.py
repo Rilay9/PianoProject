@@ -16,7 +16,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from generate_exercises import (  # noqa: E402
     ACCOMPANIMENT_PATTERNS,
+    CADENCE_VOICINGS,
+    ODD_METERS,
+    make_meter,
     make_triad_inversions,
+    meter_spec,
     RHYTHM_PATTERNS,
     RHYTHM_PATTERNS_EXTRA,
     chromatic_finger,
@@ -302,6 +306,143 @@ class TestCadence(unittest.TestCase):
             for n in c.notes
         }
         self.assertFalse({n for n in names if "#" in n}, names)
+
+    def test_the_plagal_cadence_is_the_amen_and_nothing_else(self) -> None:
+        # IV to I, with the tonic on either side of it to say where home is.
+        # The `hymns` rung names the plagal cadence and `concepts.json` has
+        # carried the id since it was written; nothing in the app played one, so
+        # the rung described a sound it could not make.
+        from music21 import chord
+
+        score, entry = make_cadence("C", "plagal")
+        chords = list(score.parts[1].recurse().getElementsByClass(chord.Chord))
+        self.assertEqual([c.root().name for c in chords], ["C", "F", "C"])
+        # No dominant anywhere: a plagal cadence that passes through V is a
+        # perfect cadence with an extra chord in it.
+        self.assertNotIn("G", [c.root().name for c in chords])
+        self.assertEqual(entry["drill"]["params"]["progression"], ["I", "IV", "I"])
+        self.assertIn("plagal-cadence", entry["concepts"])
+
+    def test_each_voicing_fills_exactly_its_own_number_of_bars(self) -> None:
+        # The rest in the right hand used to be a literal sixteen quarters,
+        # which is four bars — right for the two four-chord voicings and a bar
+        # too long for the three-chord one, so the staves would not have lined up.
+        for voicing, chords in CADENCE_VOICINGS.items():
+            score, _ = make_cadence("C", voicing)
+            for part in score.parts:
+                self.assertEqual(
+                    len(part.getElementsByClass("Measure")), len(chords), voicing)
+
+    def test_the_title_names_the_progression_it_plays(self) -> None:
+        self.assertIn("I-IV-V7-I", make_cadence("C", "root")[1]["title"])
+        self.assertIn("I-IV-I", make_cadence("C", "plagal")[1]["title"])
+
+    def test_a_voicing_nobody_wrote_down_stops_the_build(self) -> None:
+        with self.assertRaises(ValueError):
+            make_cadence("C", "imperfect")
+
+
+class TestMeters(unittest.TestCase):
+    """
+    `ODD_METERS` — the bar lengths `make_rhythm` cannot write, it being 4/4 only.
+
+    The table is named for the two rows that are genuinely odd. The third is
+    12/8, which is compound and perfectly ordinary, and is here because `02`
+    Part D3 names "slow blues 12/8" at stage 6 and nothing in the app could
+    write a bar of it.
+    """
+
+    def test_every_row_fills_the_bar_its_signature_names(self) -> None:
+        for spec in ODD_METERS:
+            beats, unit = (int(part) for part in spec.signature.split("/"))
+            self.assertAlmostEqual(
+                sum(spec.pattern), beats * 4.0 / unit, places=6, msg=spec.signature)
+
+    def test_the_twelve_eight_bar_is_written_long_short(self) -> None:
+        # Four beats of three eighths, and the bass takes two of them and then
+        # one. That long-short *is* the shuffle, written out rather than asked
+        # for in words the way `make_rhythm`'s 4/4 shuffle rows have to ask.
+        spec = meter_spec("12/8")
+        self.assertEqual(spec.pattern, [1.0, 0.5] * 4)
+        self.assertEqual(spec.grouping, "4 groups of 3")
+        for long, short in zip(spec.pattern[::2], spec.pattern[1::2]):
+            self.assertEqual(long, 2 * short)
+
+    def test_twelve_eight_is_not_filed_as_an_odd_meter(self) -> None:
+        # A learner searching "odd meter" should not be handed the most ordinary
+        # meter in the blues. The concepts are per row for exactly this.
+        self.assertNotIn("odd-meter", meter_spec("12/8").concepts)
+        for signature in ("5/4", "7/8"):
+            self.assertIn("odd-meter", meter_spec(signature).concepts)
+
+    def test_the_slow_blues_row_is_a_blues(self) -> None:
+        """
+        The row claims a style, so it has to *be* one.
+
+        For one draft it was the same stepwise C major walk over the same held
+        open fifth as 5/4 and 7/8, titled "slow blues", tagged `shuffle` and
+        `twelve-bar-blues`, and levelled where the blues rungs reach it. A
+        learner sent to "slow blues 12/8" and handed a scale has been told
+        something untrue by the catalog, and no test on bars or beats could see
+        it: the counting was right.
+        """
+        from music21 import harmony
+
+        score, entry = make_meter("12/8")
+        # Twelve bars, not four, and every one of them carries a chord.
+        for part in score.parts:
+            self.assertEqual(len(part.getElementsByClass("Measure")), 12)
+        figures = [cs.figure for cs in
+                   score.recurse().getElementsByClass(harmony.ChordSymbol)]
+        self.assertEqual(len(figures), 12)
+        self.assertEqual({figure[-1] for figure in figures}, {"7"})
+        # …and the left hand plays the shuffle, not a scale: root, fifth, sixth,
+        # fifth, over the chord of the bar.
+        left = [n for n in score.parts[1].recurse().notes]
+        first_bar = [n.pitch.ps - left[0].pitch.ps for n in left[:4]]
+        self.assertEqual(first_bar, [0.0, 7.0, 9.0, 7.0])
+        self.assertEqual(entry["drill"]["params"]["form"], "blues")
+        # …and it says which key it is in, which a counting drill cannot.
+        self.assertEqual(engraved_key(score, "C"), "C major")
+        # A counting row declares no key, and must not claim one.
+        self.assertIsNone(engraved_key(make_meter("5/4")[0], None))
+
+    def test_the_slow_blues_is_on_the_blues_track(self) -> None:
+        # It is reachable from the blues rungs, so it says so — a blues study
+        # filed only under `technique` is a study the blues ladder cannot see.
+        self.assertIn("blues-boogie", make_meter("12/8")[1]["tracks"])
+        self.assertNotIn("blues-boogie", make_meter("5/4")[1]["tracks"])
+
+    def test_every_signature_writes_its_own_bars_on_both_staves(self) -> None:
+        from music21 import meter as m21meter
+
+        for spec in ODD_METERS:
+            score, entry = make_meter(spec.signature)
+            expected = 12 if spec.form else 4
+            for part in score.parts:
+                self.assertEqual(
+                    len(part.getElementsByClass("Measure")), expected, spec.signature)
+                signature = part.recurse().getElementsByClass(m21meter.TimeSignature)[0]
+                self.assertEqual(signature.ratioString, spec.signature)
+            self.assertEqual(entry["timeSig"], spec.signature)
+            self.assertEqual(entry["drill"]["params"]["grouping"], spec.grouping)
+
+    def test_the_direction_is_written_on_the_page(self) -> None:
+        from music21 import expressions
+
+        for spec in ODD_METERS:
+            score, _ = make_meter(spec.signature)
+            said = [e.content for e in score.recurse().getElementsByClass(
+                expressions.TextExpression)]
+            self.assertIn(spec.direction, said, spec.signature)
+
+    def test_the_slow_blues_says_so_in_its_title(self) -> None:
+        self.assertIn("slow blues", make_meter("12/8")[1]["title"])
+        self.assertNotIn("slow blues", make_meter("5/4")[1]["title"])
+
+    def test_a_signature_nobody_wrote_down_stops_the_build(self) -> None:
+        with self.assertRaises(ValueError):
+            make_meter("9/8")
 
 
 class TestAccompaniment(unittest.TestCase):

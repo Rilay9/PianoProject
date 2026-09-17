@@ -54,6 +54,17 @@ export interface WriterNote {
 export interface WriterMeasure {
   /** Notes for each staff, in order. A `backup` is written between staves. */
   notes: WriterNote[];
+  /**
+   * A word printed above the bar — a Roman numeral, a chord name (docs/04 §5c).
+   *
+   * Written as a `<direction>`/`<words>` rather than as a `<harmony>`, and the
+   * reason is the thing being printed: `V7/V` and `C:I` are analysis, not chord
+   * symbols, and MusicXML's `<harmony>` can only say a letter name plus a kind.
+   * A drill that had to print `D7` where the lesson says `V7/V` would be
+   * teaching something the lesson is not. OSMD draws a `<words>` direction as
+   * text over the stave, which is exactly what is wanted.
+   */
+  text?: string;
 }
 
 export interface WriterOptions {
@@ -204,6 +215,19 @@ export function writeMusicXml(options: WriterOptions): string {
       );
       lines.push('        </direction-type>');
       lines.push(`        <sound tempo="${options.bpm}"/>`);
+      lines.push('      </direction>');
+    }
+
+    // The word above this bar, before its notes. `<staff>` goes after
+    // `<direction-type>` per the DTD, and only on a two-staff part — it pins
+    // the numeral over the treble rather than letting it float between the
+    // staves of a grand staff.
+    if (measure.text !== undefined && measure.text !== '') {
+      lines.push('      <direction placement="above">');
+      lines.push('        <direction-type>');
+      lines.push(`          <words>${escapeXml(measure.text)}</words>`);
+      lines.push('        </direction-type>');
+      if (options.staves === 2) lines.push('        <staff>1</staff>');
       lines.push('      </direction>');
     }
 

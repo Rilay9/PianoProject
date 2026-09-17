@@ -65,6 +65,20 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 |---|---|---:|---:|---|---|
 | 2 | `holiday` | 5 | 29 | 1.2–7.3 | Jingle Bells (chorus) (1.2), Jingle Bells (chorus, hands together) (2.1), Silent Night (melody) (2.3), Jolly Old Saint Nicholas (2.4), Good King Wenceslas (2.5), We Three Kings of Orient Are (2.8), … and 23 more |
 
+## Blues & boogie (`blues-boogie`)
+
+7 rung(s), stages 3–9.
+
+| stage | rung | exercises | songs | level | options |
+|---|---|---:|---:|---|---|
+| 3 | `blues.3` | 6 | 3 | 2.4–4.5 | 12 Bar Blues (2.4), Careless Love (2.6), St. Louis Blues (1914) (3.5) |
+| 4 | `blues.4` | 5 | 6 | 2.4–5.2 | 12 Bar Blues (2.4), Careless Love (2.6), Twelve-bar blues shuffle in C (3.4), St. Louis Blues (1914) (3.5), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 5 | `blues.5` | 7 | 6 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Blues My Naughty Sweetie Gives to Me (1919) (4.0), The Memphis Blues (1912) (4.0), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1), Royal Garden Blues (1919) (4.2) |
+| 6 | `blues.6` *(song-optional)* | 5 | 3 | 3.5–7.5 | Boogie-woogie and blues piano exercises (3.5), Boogie (easy, for beginners) (5.0), Pinetop's Boogie Woogie (1928) (7.5) |
+| 7 | `blues.7` *(song-optional)* | 5 | 1 | 5.0–7.3 | Boogie (easy, for beginners) (5.0) |
+| 8 | `blues.8` *(song-optional)* | 5 | 0 | 6.2–8.3 | — |
+| 9 | `blues.9` *(song-optional)* | 5 | 0 | 6.2–8.4 | — |
+
 ## Chords & pop (`chords-pop`)
 
 7 rung(s), stages 3–9.
@@ -137,19 +151,6 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 7 | `theory.7` *(song-optional)* | 5 | 0 | 6.4–7.5 | — |
 | 8 | `theory.8` *(song-optional)* | 5 | 0 | 6.5–8.3 | — |
 | 9 | `theory.9` *(song-optional)* | 5 | 0 | 6.5–8.4 | — |
-
-## Blues & boogie (`blues-boogie`)
-
-6 rung(s), stages 4–9.
-
-| stage | rung | exercises | songs | level | options |
-|---|---|---:|---:|---|---|
-| 4 | `blues.4` | 5 | 6 | 2.4–5.2 | 12 Bar Blues (2.4), Careless Love (2.6), Twelve-bar blues shuffle in C (3.4), St. Louis Blues (1914) (3.5), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
-| 5 | `blues.5` | 7 | 6 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Blues My Naughty Sweetie Gives to Me (1919) (4.0), The Memphis Blues (1912) (4.0), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1), Royal Garden Blues (1919) (4.2) |
-| 6 | `blues.6` *(song-optional)* | 5 | 3 | 3.5–7.5 | Boogie-woogie and blues piano exercises (3.5), Boogie (easy, for beginners) (5.0), Pinetop's Boogie Woogie (1928) (7.5) |
-| 7 | `blues.7` *(song-optional)* | 5 | 1 | 5.0–7.3 | Boogie (easy, for beginners) (5.0) |
-| 8 | `blues.8` *(song-optional)* | 5 | 0 | 6.2–8.3 | — |
-| 9 | `blues.9` *(song-optional)* | 5 | 0 | 6.2–8.4 | — |
 
 ## Jam with a friend (`jam`)
 
