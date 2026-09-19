@@ -149,6 +149,35 @@ export interface Mastery {
   custom?: string;
 }
 
+/**
+ * One mode a rung recommends, and what to open it on.
+ *
+ * `item` is optional and names a catalog row the mode should open — a rung says
+ * "play *this* one as a duet" or leaves the choice open and the button offers
+ * the mode on the rung's first playable option. A tool naming an item the rung
+ * does not offer is a lesson pointing somewhere its own options do not go, so
+ * `validate.py` refuses it.
+ */
+export interface LessonTool {
+  /**
+   * Only the modes that have an address.
+   *
+   * `rhythm` and `ladder` are deliberately absent: rhythm-only is a remembered
+   * setting the Library writes before navigating, and the tempo ladder is run
+   * state scoped to a loop (`05` §6) — neither can be reached by a route, so a
+   * button for either would be a control that looks pressable and opens the
+   * wrong thing. `00-invariants` §1 calls that a bug rather than a cosmetic.
+   * Both stay in the prose, which is where they can be explained.
+   */
+  kind: 'lab' | 'duet' | 'blind' | 'simon' | 'play';
+  /** For `kind: 'lab'` — which preset (`engine/sightReading.ts`'s `LAB_PRESETS`). */
+  preset?: string;
+  /** For the Score-screen modes — which of this rung's options to open. */
+  item?: string;
+  /** Overrides the default label where the rung wants to say something shorter. */
+  label?: string;
+}
+
 export interface Lesson {
   id: string;
   title: string;
@@ -165,6 +194,22 @@ export interface Lesson {
   songOptional?: boolean;
   /** Orientation lessons that are a single thing by nature: the placement test, the tour. */
   optionsExempt?: boolean;
+  /**
+   * The modes this rung's material suits, as controls rather than as prose
+   * (`04` §3d, added 2026-09-18).
+   *
+   * Sixty lessons gained a "Tools for this rung" paragraph in `b4fb15b` and a
+   * paragraph cannot be tapped. `chords-pop.3` tells the learner to *"Pick D,
+   * take I–IV–V–I"* in the accompaniment lab — which is now one preset chip the
+   * lesson has no way to open. Duet, rhythm-only, blind, the tempo ladder,
+   * Simon and the five lab presets are all built and no lesson links to any of
+   * them.
+   *
+   * Each entry becomes a button that opens the thing, using the route
+   * parameters the Score screen and the lab already take. The prose stays: it
+   * says *why* the mode suits this rung, which a button cannot.
+   */
+  tools?: LessonTool[];
   prerequisites?: string[];
   estimatedDays?: number;
   /** How to go and find more for this rung. Absent only on an exempt rung. */

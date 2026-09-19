@@ -799,6 +799,132 @@ export function labProgression(id: string): LabProgression {
 }
 
 /**
+ * A named starting point for the lab (`04` §3c).
+ *
+ * The owner, 2026-09-17: *"as opposed to just messing around in the lab,
+ * you're like, all right, we're doing jazz here — this is some jazz backing,
+ * without all the options to start from scratch."*
+ *
+ * Six pickers with no starting point is a screen that asks a beginner to know
+ * the answer before they arrive. A preset answers the ones that *make it that
+ * style* and leaves the ones that are the learner's own.
+ *
+ * **`locks` is the whole design.** A preset that fixed every setting would be
+ * an exercise with a lab's chrome; a preset that fixed none would be a
+ * bookmark. So each one locks exactly the settings it is *about* — the
+ * progression and the left-hand pattern are what make a blues a blues — and
+ * leaves key, tempo and bar count free, because transposing it and slowing it
+ * down is practising, not wandering off.
+ *
+ * A rung reaches one as `#/lab?preset=<id>`, the same query-parameter idiom the
+ * Score screen already uses for `mode`, `loop`, `hands` and `tour`.
+ */
+export interface LabPreset {
+  id: string;
+  label: string;
+  /** One line saying what this is for; the screen prints it. */
+  blurb: string;
+  keyId: string;
+  progressionId: string;
+  leftHand: LabLeftHand;
+  rightHand: LabRightHand;
+  bars: number;
+  bpm: number;
+  /** Which of the settings above the learner may not change here. */
+  locks: readonly ('key' | 'progression' | 'leftHand' | 'rightHand' | 'bars')[];
+}
+
+export const LAB_PRESETS: readonly LabPreset[] = [
+  {
+    // Added 2026-09-18 because `chords-pop.3` needed it. That lesson teaches
+    // I-IV-V-I and its tool was pointed at the four-chord preset, which plays
+    // I-V-vi-IV — a button that opens the wrong progression is worse than the
+    // paragraph telling you to set the pickers yourself. The key is left free
+    // on purpose: the rung's exercise is to play the same progression in D and
+    // then in A, and a preset that locked the key would prevent the lesson.
+    id: 'primary-chords',
+    label: 'Primary chords — one four five',
+    blurb: 'The three chords most songs are made of, in any key you like.',
+    keyId: 'd-major',
+    progressionId: 'i-iv-v-i',
+    leftHand: 'chord',
+    rightHand: 'melody',
+    bars: 8,
+    bpm: 84,
+    locks: ['progression', 'leftHand'],
+  },
+  {
+    id: 'pop-four-chord',
+    label: 'Pop — the four-chord song',
+    blurb: 'The loop under more pop records than any other. Block chords, melody on top.',
+    keyId: 'c-major',
+    progressionId: 'i-v-vi-iv',
+    leftHand: 'chord',
+    rightHand: 'melody',
+    bars: 8,
+    bpm: 88,
+    locks: ['progression', 'leftHand'],
+  },
+  {
+    id: 'ballad',
+    label: 'Ballad — broken chords',
+    blurb: 'The same four chords, spread out. This is the accompaniment, not the tune.',
+    keyId: 'f-major',
+    progressionId: 'i-vi-iv-v',
+    leftHand: 'broken',
+    rightHand: 'none',
+    bars: 8,
+    bpm: 72,
+    locks: ['progression', 'leftHand', 'rightHand'],
+  },
+  {
+    id: 'blues-shuffle',
+    label: 'Blues — twelve bars',
+    blurb: 'Three chords, twelve bars, round and round. Play anything over it.',
+    keyId: 'c-major',
+    progressionId: 'blues',
+    leftHand: 'walking',
+    rightHand: 'none',
+    bars: 12,
+    bpm: 84,
+    // Bars are locked because twelve does not divide into eight and the form is
+    // the lesson: a "12-bar blues" of eight bars is not one.
+    locks: ['progression', 'leftHand', 'bars'],
+  },
+  {
+    id: 'jazz-comping',
+    label: 'Jazz — two five one',
+    blurb: 'The turn every standard is built from. Comp it, do not read it.',
+    keyId: 'c-major',
+    progressionId: 'ii-v-i',
+    leftHand: 'walking',
+    rightHand: 'chord-tones',
+    bars: 8,
+    bpm: 100,
+    locks: ['progression', 'leftHand'],
+  },
+  {
+    id: 'minor-vamp',
+    label: 'Rock — the minor vamp',
+    blurb: 'Four chords that never resolve. Held roots underneath, so the hand can stay put.',
+    // A minor key turns `I-V-vi-IV` into `i-bVII-bVI-bVII` (see the type above),
+    // which is the rock vamp — and is the same progression the generator writes
+    // as `exercise.modal-vamp.*`. One sound, one statement of it.
+    keyId: 'a-minor',
+    progressionId: 'i-v-vi-iv',
+    leftHand: 'whole',
+    rightHand: 'chord-tones',
+    bars: 8,
+    bpm: 80,
+    locks: ['key', 'progression', 'leftHand'],
+  },
+];
+
+export function labPreset(id: string): LabPreset | null {
+  return LAB_PRESETS.find((p) => p.id === id) ?? null;
+}
+
+/**
  * The numerals for one run of `bars` bars.
  *
  * The pattern repeats rather than stretching: eight bars of a four-bar

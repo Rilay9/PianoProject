@@ -187,6 +187,16 @@ export interface Route {
   scoreHands?: HandsFocus;
   /** The accompaniment lab (`04` §3c), addressed as `#/lab`. */
   lab?: boolean;
+  /**
+   * A named starting point for the lab (`04` §3c), as `#/lab?preset=blues-shuffle`.
+   *
+   * A route field rather than a setting, for the reason `scoreHands` is one: a
+   * rung links to a preset and the learner is meant to arrive *in* it, but what
+   * they change afterwards is theirs and must not become the next visit's
+   * default. An id the lab does not know is dropped, like a `loop` for bars a
+   * piece does not have.
+   */
+  labPreset?: string;
   /** Free play (`04` §2b), addressed as `#/play`. */
   play?: boolean;
 }
@@ -301,7 +311,10 @@ export function parseHash(hash: string): Route {
   // it is opened from Library and from a lesson's finder, and it keeps
   // whichever tab the learner came from highlighted, exactly as the lesson
   // page and the chord chart do.
-  if (tab === 'lab') return { tab: 'library', lab: true };
+  if (tab === 'lab') {
+    const preset = params?.get('preset') ?? undefined;
+    return { tab: 'library', lab: true, ...(preset ? { labPreset: preset } : {}) };
+  }
   // Free play (`04` §2b), pushed over Today the way the lab is pushed over
   // Library: it is reached from Today's tools and is not a tab of its own.
   if (tab === 'play') return { tab: 'today', play: true };
@@ -378,7 +391,7 @@ export function parseHash(hash: string): Route {
 }
 
 export function routeToHash(route: Route): string {
-  if (route.lab) return '#/lab';
+  if (route.lab) return route.labPreset ? `#/lab?preset=${encodeURIComponent(route.labPreset)}` : '#/lab';
   if (route.play) return '#/play';
   if (route.paper) {
     return `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
@@ -517,9 +530,9 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Opens the accompaniment lab (`#/lab`, `04` §3c). */
-  navigateLab(): void {
-    const route: Route = { tab: 'library', lab: true };
+  /** Opens the accompaniment lab (`#/lab`, `04` §3c), optionally in a preset. */
+  navigateLab(preset?: string): void {
+    const route: Route = { tab: 'library', lab: true, ...(preset ? { labPreset: preset } : {}) };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -566,6 +579,7 @@ export class Router {
       route.tour === this.current.tour &&
       route.seed === this.current.seed &&
       route.lab === this.current.lab &&
+      route.labPreset === this.current.labPreset &&
       route.play === this.current.play &&
       // By value: two loop ranges naming the same bars are the same route, and
       // comparing the objects would remount the Score screen on every repeat

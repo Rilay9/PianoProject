@@ -24,6 +24,15 @@
  * A `node` environment and the built content, not a fixture: the fault was in
  * `content/curriculum/stage-4.json` and `stage-5.json`, and a fixture would
  * have agreed with whatever the test author believed was there.
+ *
+ * **Amended 2026-09-18.** The last check here used to assert the rock module
+ * was exactly one rung, which read the 2026-09-12 deletion as being about a
+ * count. It was not: the owner clarified on 2026-09-17 that the seven named
+ * songs were a style he liked rather than repertoire he wanted lessons built
+ * around, and a rock ladder made of *textures* — the power chord, the ostinato,
+ * the open voicing, the build — is the thing that deletion was clearing space
+ * for. The rule survives unchanged and is now stated without a number: every
+ * rock rung offers a song, and every song it offers is in this build.
  */
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -93,14 +102,29 @@ describe('the plan', () => {
     expect(dead, dead.join('\n')).toEqual([]);
   });
 
-  it('keeps the rock module, as the one rung that teaches on music you have', () => {
-    // The deletion was of the seven song-specific briefs, not of the track:
-    // the overview teaches five textures on Bach, Chopin, Satie, Beethoven and
-    // Grieg, every one of them bundled.
+  it('teaches every rock rung on music that is in the build', () => {
+    // **Amended 2026-09-18, and the amendment is the point.** This asserted
+    // that the rock module was *exactly* `['rock.overview']`, which was true
+    // when the seven song-specific briefs were struck and is no longer what the
+    // owner wants: on 2026-09-17 he said the named songs were a style he liked
+    // rather than repertoire he wanted taught — *"I just meant that style of
+    // music… you shouldn't cater lessons to them"* — and a rock ladder built on
+    // textures is not what was deleted.
+    //
+    // So the count goes and the rule stays, because the rule was never about
+    // the number of rungs. What made those seven briefs wrong was that each one
+    // could only be started by buying a MusicXML export first. Every rock rung
+    // must therefore offer at least one song, and every song it offers must
+    // have a file in this build — which is the same thing the deleted briefs
+    // could not do, checked without counting anything.
     const rock = [...everyRung()].filter(({ lesson }) => lesson.id?.startsWith('rock.'));
-    expect(rock.map(({ lesson }) => lesson.id)).toEqual(['rock.overview']);
-    const options = rock[0]?.lesson.songOptions ?? [];
-    expect(options.length).toBeGreaterThan(0);
-    for (const id of options) expect(byId.get(id)?.file ?? null).not.toBeNull();
+    expect(rock.length, 'the rock module has no rungs at all').toBeGreaterThan(0);
+    for (const { lesson } of rock) {
+      const options = lesson.songOptions ?? [];
+      expect(options.length, `${lesson.id ?? '?'} offers no song`).toBeGreaterThan(0);
+      for (const id of options) {
+        expect(byId.get(id)?.file ?? null, `${lesson.id ?? '?'} offers ${id}, which has no file`).not.toBeNull();
+      }
+    }
   });
 });

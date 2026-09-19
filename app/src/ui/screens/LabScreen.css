@@ -108,3 +108,39 @@
     --key-h: 72px;
   }
 }
+
+/* --- a preset, and the settings it takes charge of (`04` §3c) ------------- */
+
+/* The subject of a preset visit, so it is the loud thing and the settings
+   summary underneath is the detail (R1). A panel rather than a heading,
+   because it is a state the screen is in and not a section of it. */
+.lab-preset {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2, var(--surface));
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.lab-preset__label {
+  font-weight: 600;
+}
+
+.lab-preset__blurb {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+/* A locked control stays legible — the learner is meant to read what the
+   preset chose — but must not read as pressable. Opacity alone would leave a
+   chip that still looks like a chip, so the cursor and the pointer events go
+   with it; `disabled` on the element is what actually stops the tap. */
+.lab-settings [data-locked='true'] {
+  opacity: 0.62;
+}
+
+.lab-settings [data-locked='true'] .chip,
+.lab-settings select:disabled,
+.lab-settings .chip:disabled {
+  cursor: default;
+}

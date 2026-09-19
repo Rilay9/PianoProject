@@ -15,7 +15,7 @@ import type { Router } from '../../router';
 import { allItems, loadCurriculum, fetchMarkdown } from '../../curriculum/load';
 import { findLesson, idsToCompleteLesson, lessonComplete } from '../../curriculum/selectors';
 import { lessonShortfall } from '../../curriculum/needs';
-import type { CatalogItem, Curriculum, Lesson, PassRecord } from '../../curriculum/types';
+import type { CatalogItem, Curriculum, Lesson, LessonTool, PassRecord } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
 import { getSettings } from '../../data/settingsStore';
 import { markLessonLearnt, markSkill } from '../../data/skillsStore';
@@ -30,6 +30,7 @@ import { confirmMessage, lockState, type LockState } from '../../curriculum/prer
 import { openPieceSheet } from './ShelfScreen';
 import { allBooks, addBook, allShelfPieces, type BookRow, type ShelfPiece } from '../../data/booksStore';
 import { plural } from '../../util/plural';
+import { simonForStage } from '../../engine/drills/simon';
 
 interface VideoLink {
   label?: string;
@@ -55,6 +56,22 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const actions = el('div.row.lesson-actions', { id: 'lesson-actions' });
   const needsLine = el('p.needs', { id: 'lesson-needs' });
   const lockLine = el('p.lesson-lock', { id: 'lesson-lock', hidden: true });
+  /**
+   * The modes this rung recommends, as controls (`04` §3d).
+   *
+   * Above the options rather than below them, and deliberately: a mode is a way
+   * of playing what is on this rung, so it is read *before* choosing which
+   * option to play, not after. Hidden entirely when the rung names none, which
+   * is most of them — an empty block headed "Ways to play this" would be the
+   * dead space `00-invariants` §1 and `04` §0 R4 both forbid.
+   */
+  const toolRow = el('div.row', { id: 'lesson-tools' });
+  const toolsBlock = el(
+    'section.block',
+    { id: 'lesson-tools-block', hidden: true },
+    el('h2', { text: 'Ways to play this' }),
+    toolRow,
+  );
   const findRow = el('div.row', { id: 'lesson-find' });
   // Where the paper hint lives on a rung with no books behind it (P19 A8).
   const paperHintLine = el('p.paper-hint.muted', { id: 'lesson-paper-hint', hidden: true });
@@ -69,6 +86,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     status,
     actions,
     lockLine,
+    toolsBlock,
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
     el('section.block', {}, el('h2', { text: 'Song options' }), songs),
     el('section.block', { id: 'lesson-paper-block' }, el('h2', { text: 'From your own books' }), paper),
@@ -373,8 +391,79 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     }
   }
 
+  /**
+   * A tool's button, or nothing where it cannot open anything.
+   *
+   * The Score-screen modes need a piece. A rung may name one with `item`; where
+   * it does not, the button takes the rung's first playable song, because "play
+   * this rung's material as a duet" is the instruction and any of its songs
+   * satisfies it. Where the rung has no playable song at all the button is not
+   * drawn — a duet with nothing to duet against is a dead control.
+   */
+  function toolButton(tool: LessonTool, rung: Lesson): HTMLElement | null {
+    const scorePiece = (): string | null => {
+      if (tool.item) return rung.songOptions.includes(tool.item) ? tool.item : null;
+      return (
+        rung.songOptions.find((id) => {
+          const item = items.get(id);
+          return item !== undefined && isPlayable(item) && item.type === 'song';
+        }) ?? null
+      );
+    };
+    const make = (label: string, onClick: () => void): HTMLElement => {
+      const node = button(tool.label ?? label, onClick, {
+        variant: 'quiet',
+        id: `lesson-tool-${tool.kind}`,
+      });
+      // What this button says it will open, on the button. The e2e compares it
+      // against where the tap actually lands, so the assertion is "the control
+      // goes where it claims" rather than a preset id copied into a test — a
+      // copy that failed the day a rung was repointed, reporting a correct
+      // change as a broken test.
+      if (tool.preset) node.dataset.preset = tool.preset;
+      return node;
+    };
+
+    switch (tool.kind) {
+      case 'lab':
+        return make('Accompaniment lab', () => { router.navigateLab(tool.preset); });
+      case 'play':
+        return make('Free play', () => { router.navigatePlay(); });
+      case 'simon': {
+        // The stage is the leading number of the rung's unit id, which is how
+        // `placementTargets` reads it too; a rung id that does not start with
+        // one (`blues.3`) takes its second segment.
+        const digits = /(\d+)/.exec(rung.id);
+        const id = simonForStage(digits ? Number(digits[1]) : 1);
+        return items.has(id) ? make('Simon', () => { router.navigateDrill(id); }) : null;
+      }
+      case 'duet': {
+        const id = scorePiece();
+        return id === null
+          ? null
+          : make('Play it as a duet', () => {
+              router.navigateScore(id, { mode: 'tempo', hands: 'R' });
+            });
+      }
+      case 'blind': {
+        const id = scorePiece();
+        return id === null
+          ? null
+          : make('Play it blind', () => { router.navigateScore(id, { blind: true }); });
+      }
+      default:
+        return null;
+    }
+  }
+
   function draw(): void {
     if (!lesson) return;
+    const rung = lesson;
+    const tools = (rung.tools ?? [])
+      .map((tool) => toolButton(tool, rung))
+      .filter((node): node is HTMLElement => node !== null);
+    toolRow.replaceChildren(...tools);
+    toolsBlock.hidden = tools.length === 0;
     exercises.replaceChildren(...lesson.exerciseOptions.map(optionRow));
     songs.replaceChildren(
       ...(lesson.songOptions.length > 0

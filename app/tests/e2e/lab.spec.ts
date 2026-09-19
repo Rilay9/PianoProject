@@ -273,3 +273,72 @@ test.describe("Today's sight-read", () => {
     await expect(again).toHaveAttribute('data-streak', '1');
   });
 });
+
+/**
+ * Presets (`04` §3c, added 2026-09-18).
+ *
+ * A preset is proved through its chip rather than by deep-linking, for the
+ * reason the rest of this file gives: "you cannot get there" is how it would
+ * actually fail, and the chip is the only door a learner has to one.
+ *
+ * What has to be true is the part that is easy to get wrong. Setting the
+ * pickers is not interesting — it is one assignment. **Locking them is**: a
+ * control that looks pressable and is not is a bug by `00-invariants` §1, and
+ * a lock that is only a CSS opacity leaves a chip that still changes the thing
+ * the preset exists to fix. So the test presses a locked control and asserts
+ * the setting did not move, which fails against styling alone and passes only
+ * against `disabled`.
+ */
+test('a preset sets the lab up, locks what it is about, and leaves the rest', async ({ page }) => {
+  await openLab(page);
+
+  // The row of ways in, and Free is the one that is on before any is chosen.
+  await expect(page.locator('#lab-presets')).toBeVisible();
+  await expect(page.locator('#lab-preset-none')).toHaveAttribute('aria-pressed', 'true');
+
+  await page.locator('#lab-preset-blues-shuffle').click();
+
+  // It is in the address, so a lesson can link to exactly this screen.
+  await expect(page).toHaveURL(/preset=blues-shuffle/);
+  await expect(page.locator('#lab-preset')).toHaveAttribute('data-preset', 'blues-shuffle');
+
+  // The settings it chose.
+  await expect(page.locator('#lab-progression')).toHaveValue('blues');
+  await expect(page.locator('#lab-left-walking')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#lab-bars-12')).toHaveAttribute('aria-pressed', 'true');
+
+  // The settings it locked: disabled, and pressing one changes nothing. The
+  // twelve-bar form is the lesson, so the bar count is not the learner's here.
+  await expect(page.locator('#lab-progression')).toBeDisabled();
+  await expect(page.locator('#lab-left-alberti')).toBeDisabled();
+  await page.locator('#lab-left-alberti').click({ force: true });
+  await expect(page.locator('#lab-left-walking')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#lab-left-alberti')).toHaveAttribute('aria-pressed', 'false');
+
+  // And the settings it left alone: key and tempo are still the learner's,
+  // because transposing it and slowing it down is practising, not wandering.
+  await expect(page.locator('#lab-key')).toBeEnabled();
+  await expect(page.locator('#lab-bpm')).toBeEnabled();
+  await page.locator('#lab-key').selectOption('f-major');
+  await expect(page.locator('#lab-summary')).toContainText('F major');
+
+  // Free gives every picker back.
+  await page.locator('#lab-preset-none').click();
+  await expect(page.locator('#lab-preset')).toHaveCount(0);
+  await expect(page.locator('#lab-progression')).toBeEnabled();
+});
+
+/**
+ * An id nothing answers to is dropped, not drawn.
+ *
+ * The same rule `?loop=` follows for a bar range a piece does not have: a
+ * banner with no name in it is worse than no banner, and the screen still has
+ * to work.
+ */
+test('an unknown preset id leaves an ordinary lab', async ({ page }) => {
+  await page.goto('/#/lab?preset=not-a-preset');
+  await expect(page.locator('section[data-screen="lab"]')).toBeVisible();
+  await expect(page.locator('#lab-preset')).toHaveCount(0);
+  await expect(page.locator('#lab-progression')).toBeEnabled();
+  await expect(page.locator('#lab-preset-none')).toHaveAttribute('aria-pressed', 'true');
+});

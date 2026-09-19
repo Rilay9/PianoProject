@@ -34,6 +34,8 @@ import {
   buildLabExercise,
   chordsForProgression,
   labKey,
+  LAB_PRESETS,
+  labPreset,
   labProgression,
   parseRomanList,
   romansForProgression,
@@ -110,13 +112,19 @@ export function LabScreen(router: Router): HTMLElement {
 
   // --- the settings -------------------------------------------------------
 
-  let keyId = 'c-major';
-  let progressionId = 'i-v-vi-iv';
+  // A preset (`04` §3c) answers the pickers that make a style what it is and
+  // leaves the rest. An id the lab does not know is dropped rather than drawn
+  // as an empty banner, the way `?loop=` drops a range a piece does not have.
+  const preset = router.route.labPreset ? labPreset(router.route.labPreset) : null;
+  const locked = new Set(preset?.locks ?? []);
+
+  let keyId = preset?.keyId ?? 'c-major';
+  let progressionId = preset?.progressionId ?? 'i-v-vi-iv';
   let customText = 'I V vi IV';
-  let leftHand: LabLeftHand = 'alberti';
-  let rightHand: LabRightHand = 'melody';
-  let bars = 8;
-  let bpm = 92;
+  let leftHand: LabLeftHand = preset?.leftHand ?? 'alberti';
+  let rightHand: LabRightHand = preset?.rightHand ?? 'melody';
+  let bars = preset?.bars ?? 8;
+  let bpm = preset?.bpm ?? 92;
 
   /** The numerals for the run as it stands, one per bar. */
   function currentRomans(): string[] {
@@ -523,6 +531,9 @@ export function LabScreen(router: Router): HTMLElement {
         }),
       );
     }
+    // The chips are rebuilt here, so a lock on them has to be re-applied or a
+    // progression change would hand back a control the preset had taken away.
+    applyLocks();
   }
   drawBarChips();
 
@@ -560,6 +571,36 @@ export function LabScreen(router: Router): HTMLElement {
     chipGroup('Bars', barRow),
     field('Tempo', bpmInput, 'Beats per minute.'),
   );
+
+  /**
+   * A locked setting is *disabled*, not hidden and not merely dimmed.
+   *
+   * Dimming alone leaves a control that still takes a tap and still changes
+   * the thing the preset exists to fix — a control that looks pressable and is
+   * not, which `00-invariants` §1 calls a bug rather than a cosmetic. Hiding it
+   * instead would leave the learner unable to see what the preset chose, which
+   * is half of what a preset is for. So it is visible, greyed, states why, and
+   * does nothing.
+   */
+  function applyLocks(): void {
+    if (!preset) return;
+    const rows: [typeof preset.locks[number], HTMLElement[]][] = [
+      ['key', [keySelect]],
+      ['progression', [progressionSelect]],
+      ['leftHand', [...leftRow.children] as HTMLElement[]],
+      ['rightHand', [...rightRow.children] as HTMLElement[]],
+      ['bars', [...barRow.children] as HTMLElement[]],
+    ];
+    for (const [name, nodes] of rows) {
+      if (!locked.has(name)) continue;
+      for (const node of nodes) {
+        (node as HTMLInputElement).disabled = true;
+        node.setAttribute('aria-disabled', 'true');
+        node.title = `${preset.label} sets this`;
+      }
+      (nodes[0]?.closest('.lab-group, .field') ?? nodes[0])?.setAttribute('data-locked', 'true');
+    }
+  }
 
   /** Repaints everything the settings decide. Cheap: no notation is written. */
   function redraw(): void {
@@ -624,7 +665,56 @@ export function LabScreen(router: Router): HTMLElement {
   // The summary says what the two buttons will act on, the buttons are what
   // the screen is for, the chart is what a jam draws, and the pickers — long,
   // read once, changed rarely — are under all three (`04` §0 R1, R3).
+  /**
+   * A way in, before the pickers.
+   *
+   * Six settings and no starting point asks a learner to know the answer before
+   * they arrive — the same fault *Show me* and *Hear it* fixed on the drill
+   * screen, where a drill that can only test cannot teach. These are one word
+   * each because the row has to fit 342 px, and the full name and what it is
+   * for appear once the preset is on.
+   *
+   * Tapping one *navigates* rather than mutating the state in place, so the
+   * preset is in the address, the back gesture leaves it, and a lesson that
+   * links to `#/lab?preset=blues-shuffle` arrives at exactly the screen the
+   * chip produces.
+   */
+  const presetRow = el('div.filter-row.lab-presets', { id: 'lab-presets' });
+  presetRow.append(
+    chip('Free', {
+      id: 'lab-preset-none',
+      pressed: preset === null,
+      onClick: () => { router.navigateLab(); },
+    }),
+  );
+  for (const entry of LAB_PRESETS) {
+    presetRow.append(
+      chip(entry.label.split(' — ')[0] as string, {
+        id: `lab-preset-${entry.id}`,
+        pressed: preset?.id === entry.id,
+        onClick: () => { router.navigateLab(entry.id); },
+      }),
+    );
+  }
+
+  body.append(el('div.lab-group', {},
+    el('div.lab-group__label', { text: 'Start from' }), presetRow));
+
+  // The preset's name and what it is for, above the summary of the settings it
+  // chose — R1, the subject first: a learner who arrived from a rung came for
+  // "jazz", and the settings line underneath is the detail of it.
+  if (preset) {
+    body.append(
+      el(
+        'div.lab-preset',
+        { id: 'lab-preset', 'data-preset': preset.id },
+        el('div.lab-preset__label', { text: preset.label }),
+        el('p.lab-preset__blurb', { text: preset.blurb }),
+      ),
+    );
+  }
   body.append(summary, actions, status, jam, settings);
+  applyLocks();
   drawSummary();
   section.dataset.jam = 'idle';
 
