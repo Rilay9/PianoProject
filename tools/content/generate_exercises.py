@@ -4157,9 +4157,11 @@ def make_blues_scale(
 #: which. Two of the latin rung's six songs are bossas and `CLAVE_PATTERNS` had
 #: son and rumba only, so the rung could not clap either of them.
 #:
-#: It is the son with its last stroke moved from beat 3 of the second bar to
-#: beat 4 — one eighth-note pair of differences from the son, exactly as the
-#: rumba is one stroke from the son in the *first* bar. The first draft of this
+#: It is the son with its last stroke delayed by one eighth, from beat 3 of the
+#: second bar to the "and" of 3 — one stroke's difference from the son, exactly
+#: as the rumba is one stroke from the son in the *first* bar. (This row was
+#: `[…, 7.0]` until a review, 2026-09-18: that moved the stroke a whole beat, to
+#: beat 4, which is no standard clave — the bossa's delay is the eighth.) The first draft of this
 #: row was `[0.0, 1.5, 4.0, 5.5, 7.0]`, which put a stroke on the downbeat of
 #: both bars and only two strokes in the first: a clave has a three-side and a
 #: two-side, and that is not either of them. `TestTheBossaAndThePulse` now
@@ -4170,7 +4172,7 @@ CLAVE_PATTERNS: dict[str, list[float]] = {
     "son-2-3":   [1.0, 2.0, 4.0, 5.5, 7.0],
     "rumba-3-2": [0.0, 1.5, 3.5, 5.0, 6.0],
     "rumba-2-3": [1.0, 2.0, 4.0, 5.5, 7.5],
-    "bossa":     [0.0, 1.5, 3.0, 5.0, 7.0],
+    "bossa":     [0.0, 1.5, 3.0, 5.0, 6.5],
 }
 
 #: A bossa is comped **on the clave**, so the comping table reads the clave
@@ -4264,7 +4266,13 @@ def make_clave(
     offsets = CLAVE_PATTERNS[pattern]
     style, side = clave_words(pattern)
     label = " ".join(word for word in (style, "clave", side) if word)
-    level = 4.4 if with_pulse else 4.2
+    # Levelled against the core path's own rhythm ladder (2026-09-17): quarters
+    # and rests 1.1, mixed values 1.2, 3/4 at 1.4, eighths 2.2, dotted rhythms
+    # 2.4, 6/8 at 4.5. A clave is five strokes on one note — one hand, nothing to
+    # read but the rhythm — so it sits just past the dotted rhythms it is harder
+    # than, and nowhere near 6/8. Against a pulse it becomes two parts at once,
+    # which is a different and genuinely later skill.
+    level = 3.6 if with_pulse else 2.8
     name = " ".join(word for word in (style, side) if word)
     title = f"Clave — {name}" + (" over a quarter-note pulse" if with_pulse else "")
     sc = stream.Score()
@@ -4809,7 +4817,12 @@ def make_power_chord(tonic: str = "A", bpm: int = 92) -> tuple[stream.Score, dic
     from music21 import dynamics as m21dynamics
     from music21 import expressions
 
-    level = 4.1
+    # Levelled against the core path (2026-09-17). There is nothing to read after
+    # the first bar and the shape never changes, so the reading load is lower than
+    # the C-F-G triads of core 2.3; what makes it harder than those is the octave
+    # span and the stamina of continuous eighths, which is core 2.2. It was 4.1
+    # because it was written beside the open-voicing families and took their band.
+    level = 2.8
     title = f"Power chords in {note_name(tonic)} minor — root, fifth, octave"
     sc, rh, lh = grand_staff(title, bpm, ks=minor_key(tonic))
     rh.insert(0, expressions.TextExpression(
@@ -4854,12 +4867,343 @@ def make_power_chord(tonic: str = "A", bpm: int = 92) -> tuple[stream.Score, dic
 #: third at all, so it will sit under any chord the other hand finds. `arpeggio`
 #: names the mode and is a wider reach, which is the whole difference between
 #: them and the reason they are two rows and not two makers.
+#: Levelled against the core path rather than against the other genre families
+#: (2026-09-17). An ostinato over a held bass is *exactly* what core 2.1 teaches —
+#: "the left hand holds, the right hand moves" — in eighths, which is 2.2. So the
+#: root-and-fifth figure belongs beside those rungs and not two stages above them;
+#: it was 4.4 because it was written next to the boogie families and took their
+#: band. The arpeggio form is a wider span and a real minor triad broken across
+#: four notes, which is core 3.3's material.
 OSTINATO_SHAPES: dict[str, tuple[list[int], list[int], float, str]] = {
-    "fifths":   ([0, 7, 0, 7, 0, 7, 0, 7], [1, 5, 1, 5, 1, 5, 1, 5], 4.4,
+    "fifths":   ([0, 7, 0, 7, 0, 7, 0, 7], [1, 5, 1, 5, 1, 5, 1, 5], 2.6,
                  "root and fifth"),
-    "arpeggio": ([0, 3, 7, 12, 7, 3, 0, 3], [1, 2, 3, 5, 3, 2, 1, 2], 4.6,
+    "arpeggio": ([0, 3, 7, 12, 7, 3, 0, 3], [1, 2, 3, 5, 3, 2, 1, 2], 3.4,
                  "broken minor triad"),
 }
+
+
+#: The riff cells, as scale degrees of a five-finger position and the fingering
+#: that plays them without moving the hand. Each is two bars of quarters and a
+#: half — a hook, not a scale — and each repeats, because repeating is what makes
+#: a figure a riff rather than a phrase.
+#:
+#: Both positions are **all white keys**: C-D-E-F-G is core 1.1's own position,
+#: and A-B-C-D-E is the same five fingers a third lower and is naturally minor,
+#: which is where the rock character comes from. A riff that needed a black key
+#: would need a hand position core Stage 1 has not taught.
+#: The cell names say what the *shape* does and not what mode it is in, because
+#: the same degrees are read against a major position in C and a minor one in A:
+#: a cell called "minor" would be a lie in half the keys it is generated in.
+RIFF_CELLS: dict[str, tuple[list[int], list[float], list[int], str]] = {
+    "falling":  ([0, 0, 2, 3, 2, 0], [1, 1, 1, 1, 1, 2], [1, 1, 3, 4, 3, 1],
+                 "the hook falls back to where it started"),
+    "rocking":  ([0, 4, 0, 4, 3, 2, 0], [1, 1, 1, 0.5, 0.5, 1, 2], [1, 5, 1, 5, 4, 3, 1],
+                 "two notes rocking, then a walk home"),
+}
+
+
+def make_riff(
+    tonic: str = "A", cell: str = "minor-hook", bars: int = 8, bpm: int = 76,
+) -> tuple[stream.Score, dict]:
+    """
+    A figure in a five-finger position, repeated until it is a riff.
+
+    The earliest genre material the app can honestly offer. Core 1.1 teaches one
+    finger per key in a fixed position and quarter notes; this is that, and
+    nothing more — but arranged so the repetition is the point, which is the one
+    idea a riff has and the reason rock is playable long before rock repertoire
+    is readable.
+
+    Written in **A** it is the natural minor five-finger position, all white
+    keys, and it sounds like the thing it is imitating. Written in **C** it is
+    core 1.1's own position exactly. There is no accidental in either, because a
+    Stage 1 hand does not move.
+
+    The right hand plays alone. A left hand under this would make it core 2.1's
+    exercise, which already exists as `make_ostinato`.
+    """
+    one_of("cell", cell, tuple(RIFF_CELLS))
+    degrees, rhythm, fingers, blurb = RIFF_CELLS[cell]
+    minor = tonic == "A"
+    # A-B-C-D-E and C-D-E-F-G are the two five-finger positions with no black key
+    # in them; the degree table is read against whichever was asked for.
+    steps = [0, 2, 3, 5, 7] if minor else [0, 2, 4, 5, 7]
+    level = 1.3 if cell == "falling" else 1.6
+    quality = "minor" if minor else "major"
+    title = f"Riff in {note_name(tonic)} {quality} — {blurb}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic if not minor else tonic.lower()))
+    base = pitch.Pitch(tonic + "4")
+
+    # Whole cells only, and enough of them to fill the bars asked for rather than
+    # to fall just short: a riff that stops mid-figure is a phrase that was cut
+    # off. `bars` is therefore a floor, and the score is as many complete cells
+    # as cover it.
+    cell_beats = sum(rhythm)
+    repeats = max(2, -(-(bars * 4) // int(cell_beats)) if float(cell_beats).is_integer()
+                  else max(2, int((bars * 4) // cell_beats) + 1))
+    for _ in range(repeats):
+        for degree, ql, finger in zip(degrees, rhythm, fingers):
+            n = note.Note(base.transpose(steps[degree]), quarterLength=ql)
+            n.articulations.append(articulations.Fingering(finger))
+            rh.append(n)
+    lh.append(note.Rest(quarterLength=repeats * cell_beats))
+    rh.insert(0, expressions.TextExpression(
+        "Keep the hand still"
+    ))
+    finalize(sc)
+
+    item_id = f"exercise.riff.{key_slug(tonic)}.{cell}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["riff", "ostinato", "five-finger", "repetition", f"hands:right"],
+        "right", bpm, "five-finger", {"key": tonic, "cell": cell},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["rock-metal", "core", "improv-compose"],
+    )
+    return sc, entry
+
+
+#: The two scales blues and rock improvise on, as degrees from the tonic.
+#:
+#: The minor pentatonic in **A is every white key** — A C D E G — which is the
+#: whole reason it can be taught at core 2.5 rather than after the black keys
+#: arrive at 3.1. Adding the flat fifth makes it the blues scale and costs
+#: exactly one accidental, so that variant waits for 3.1 and is levelled there.
+#: Spelled as **intervals, not semitones**. Six semitones above D is A flat or
+#: G sharp depending on who is asked, and music21 answers G sharp — which is a
+#: raised fourth, a different degree that happens to sound the same. A blues
+#: scale has a *lowered fifth*: it must sit on the fifth's own line or space
+#: with a flat in front of it, or a learner reads a sharp fourth and the drill
+#: that names notes disagrees with the scale that plays them. `d5` says which
+#: one is meant and the spelling follows in every key.
+BLUES_SCALE_FORMS: dict[str, tuple[list[str], float, str]] = {
+    "pentatonic": (["P1", "m3", "P4", "P5", "m7"], 2.6, "minor pentatonic"),
+    "blues": (["P1", "m3", "P4", "d5", "P5", "m7"], 3.2, "blues scale"),
+}
+
+
+def make_pentatonic(
+    tonic: str = "A", form: str = "pentatonic", bpm: int = 72,
+) -> tuple[stream.Score, dict]:
+    """
+    The scale every blues and rock solo is built from, one octave, thumb under.
+
+    Core 2.5 is "moving out of C position": the thumb passes under and the hand
+    arrives somewhere new. That is a technique, and the app teaches it on the C
+    major scale alone. This is the same technique on the scale a learner
+    actually wants — and in A it needs no black key at all, so it costs nothing
+    extra to read.
+
+    **Five notes over an octave will not fit five fingers**, which is the point:
+    A to G is a minor seventh and the hand has to move. The fingering is
+    1-2-3 then the thumb under for 1-2-3, the standard shape, and it is written
+    on the page because a scale without a fingering is a scale practised
+    differently every time.
+
+    The blues form adds the flat fifth and nothing else. It is one accidental,
+    so it is levelled after core 3.1 where accidentals are taught, and it is a
+    separate item rather than a parameter nobody sees.
+    """
+    one_of("form", form, tuple(BLUES_SCALE_FORMS))
+    degrees, level, label = BLUES_SCALE_FORMS[form]
+    title = f"{note_name(tonic)} {label} — one octave, thumb under"
+    # A minor is the key signature that spells these white; the flat fifth is an
+    # accidental against it rather than a key of its own.
+    sc, rh, lh = grand_staff(title, bpm, ks=minor_key(tonic))
+    base = pitch.Pitch(tonic + "4")
+
+    up_ = [base.transpose(interval.Interval(d)) for d in degrees] + [
+        base.transpose(interval.Interval("P8"))]
+    seq = up_ + list(reversed(up_))[1:]
+    # 1-2-3 | 1-2-3 ascending for the six-note blues form, 1-2-3 | 1-2-3 for the
+    # five-note one plus the octave: in both the thumb passes under once.
+    n = len(up_)
+    up_fingers = [1, 2, 3, 1, 2, 3, 4][:n] if n <= 7 else [1, 2, 3, 1, 2, 3, 4, 5][:n]
+    fingers = up_fingers + list(reversed(up_fingers))[1:]
+    add_notes(rh, seq, fingers, 0.5)
+    lh.append(note.Rest(quarterLength=len(seq) * 0.5))
+    rh.insert(0, expressions.TextExpression("Thumb under, no bump"))
+    finalize(sc)
+
+    item_id = f"exercise.pentatonic.{key_slug(tonic)}.{form}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["blues-scale", "pentatonic", "thumb-under", "scale", "improvisation"],
+        "right", bpm, "blues-scale", {"key": tonic, "form": form},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["blues-boogie", "rock-metal", "improv-compose", "core"],
+    )
+    return sc, entry
+
+
+def make_tresillo(tonic: str = "C", bars: int = 8, bpm: int = 84) -> tuple[stream.Score, dict]:
+    """
+    Three, three, two — the bass figure under most latin music.
+
+    Core 3.6 teaches the left hand as a pattern: broken chords, Alberti, the
+    waltz "oom-pah-pah". The tresillo is the same family's latin member and the
+    rung has no latin in it. Eight eighths grouped 3+3+2 rather than 4+4, which
+    is one idea, is countable out loud, and is the thing every habanera, tango
+    and reggaeton bass is a decoration of.
+
+    **Written as dotted quarters**, which is how every published tresillo is
+    written and what a learner will meet everywhere else. Tying eighths across
+    the groups would show the 3+3+2 arithmetic on the page, and it was tempting
+    for exactly that reason — but it would teach a notation nobody uses to read
+    a rhythm everybody plays, and the counting line under the staff already says
+    where the eighths are. The page matches the world; the text does the
+    teaching.
+    """
+    level = 3.6
+    title = f"Tresillo bass in {note_name(tonic)} — three, three, two"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    root = pitch.Pitch(tonic + "3")
+    top = pitch.Pitch(tonic + "4")
+    shape = chord_shape("maj")
+
+    for _ in range(bars):
+        # 3 + 3 + 2 eighths, as quarterLengths: 1.5, 1.5, 1.0.
+        for ql in (1.5, 1.5, 1.0):
+            n = note.Note(root, quarterLength=ql)
+            n.articulations.append(articulations.Fingering(5))
+            lh.append(n)
+        # The right hand holds the chord so the bar's shape is the bass's alone.
+        rh.append(fingered_chord(
+            [top, top.transpose(shape[1]), top.transpose(shape[2])], [1, 3, 5], 4.0))
+
+    lh.insert(0, expressions.TextExpression("Count: 1 . . 2 . . 3 ."))
+    finalize(sc)
+
+    item_id = f"exercise.tresillo.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["tresillo", "latin", "syncopation", "left-hand", "accompaniment"],
+        "both", bpm, "accompaniment", {"key": tonic},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["latin", "chords-pop", "core"],
+    )
+    return sc, entry
+
+
+def make_swing_pair(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
+    """
+    Four bars of eighths straight, then the same four bars swung.
+
+    Core 2.2 is where eighth notes arrive, and swing is the *same notation* read
+    differently — which is precisely why it can be taught the moment eighths can
+    be read, and why it cannot be taught before. The learner plays the phrase
+    twice and changes one thing.
+
+    **The eighths are written straight in both halves.** Swing is a performance
+    instruction, not a rhythm: writing the second half as dotted-eighth-sixteenth
+    is the standard way of getting this wrong, and it teaches a rhythm nobody
+    plays — a swung pair is nearer two-thirds and one-third than three-quarters
+    and one-quarter, and a good player varies it. So the notes are identical and
+    a `Swing` direction over bar five is the whole difference. If the two halves
+    ever stop being identical, this exercise is teaching the wrong thing.
+    """
+    level = 2.2
+    title = f"Straight, then swung — the same four bars in {note_name(tonic)}"
+    sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
+    base = pitch.Pitch(tonic + "4")
+    # A plain diatonic phrase in the five-finger position: the subject is the
+    # eighths, so the pitches stay where core 2.2's own drills put them.
+    phrase = [0, 2, 4, 2, 0, 2, 4, 5, 4, 2, 4, 2, 0, 0]
+    rhythm = [0.5] * 12 + [1.0, 1.0]
+    fingers = [1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 3, 2, 1, 1]
+
+    # The phrase is eight beats, so each half plays it twice to make the four
+    # bars this exercise says it has. The two halves are the *same* notes; if
+    # that ever stops being true the exercise is no longer about the feel.
+    for half in (0, 1):
+        for _ in range(2):
+            for degree, ql, finger in zip(phrase, rhythm, fingers):
+                n = note.Note(base.transpose([0, 2, 4, 5, 7][degree % 5] + 12 * (degree // 5)),
+                              quarterLength=ql)
+                n.articulations.append(articulations.Fingering(finger))
+                rh.append(n)
+        if half == 0:
+            rh.append(note.Rest(quarterLength=4.0))
+    lh.append(note.Rest(quarterLength=sum(rhythm) * 4 + 4.0))
+
+    rh.insert(0, expressions.TextExpression("Straight"))
+    swing_at = sum(rhythm) * 2 + 4.0
+    rh.insert(swing_at, expressions.TextExpression(
+        "Swing: long, then late"
+    ))
+    finalize(sc)
+
+    item_id = f"exercise.swing-pair.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["swing", "eighth-notes", "subdivision", "feel", "hands:right"],
+        "right", bpm, "rhythm", {"key": tonic},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["jazz", "blues-boogie", "core"],
+    )
+    return sc, entry
+
+
+def make_modal_vamp(tonic: str = "A", bars: int = 8, bpm: int = 80) -> tuple[stream.Score, dict]:
+    """
+    i-bVII-bVI-bVII: the minor loop most rock and metal is built on.
+
+    **The same four chords the accompaniment lab writes for a minor key**
+    (`04` §3c), and deliberately so: the lab's minor form of the four-chord
+    song is `i-bVII-bVI-bVII` because a minor key does not simply transpose
+    `I-V-vi-IV`, and two statements of one progression that disagree is how a
+    learner ends up holding two numbers for one sound.
+
+    In A minor those chords are **A minor, G, F, G — every one of them white
+    keys**, which is why this can sit on core 3.3 where the minor triad is
+    taught rather than waiting for a rock rung three stages later.
+
+    The left hand takes root and fifth rather than the full triad: an open
+    fifth under a minor chord is the rock voicing, it keeps the bass out of the
+    right hand's way, and it is the shape `make_power_chord` drills.
+    """
+    # i, bVII, bVI, bVII — as the intervals they are actually played at, which is
+    # **downward**. Spelling them up (+10, +8) is arithmetically the same chord
+    # and musically a different thing: every change would leap up a seventh, the
+    # left hand would climb above middle C by the second bar, and the hand would
+    # move on every chord. A vamp is a hand that stays where it is while the
+    # harmony moves underneath it, so the flat seven is a whole step *down* and
+    # the flat six a major third down.
+    degrees = (0, -2, -4, -2)
+    level = 3.0
+    title = f"Minor vamp in {note_name(tonic)} — i, flat seven, flat six"
+    sc, rh, lh = grand_staff(title, bpm, ks=minor_key(tonic))
+    root = pitch.Pitch(tonic + "3")
+    top = pitch.Pitch(tonic + "4")
+
+    for bar in range(bars):
+        step = degrees[bar % len(degrees)]
+        low = root.transpose(step)
+        # Left hand: the open fifth, held for the bar.
+        lh.append(fingered_chord([low, low.transpose(7)], [5, 1], 4.0))
+        # Right hand: the triad on beats 1 and 3. Minor on i, major on the two
+        # flat degrees — that is what the progression *is*, and a blanket minor
+        # third here would have made it a modal drone instead.
+        third = 3 if step == 0 else 4
+        chord_root = top.transpose(step)
+        shape = [chord_root, chord_root.transpose(third), chord_root.transpose(7)]
+        for _ in range(2):
+            rh.append(fingered_chord(shape, [1, 3, 5], 2.0))
+
+    rh.insert(0, expressions.TextExpression(
+        "Four chords, round and round"
+    ))
+    finalize(sc)
+
+    item_id = f"exercise.modal-vamp.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        ["modal-minor", "minor-triad", "open-voicings", "four-chord-loop", "pedal-bass"],
+        "both", bpm, "progression", {"key": tonic},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["rock-metal", "chords-pop", "core"],
+    )
+    return sc, entry
 
 
 def make_ostinato(
@@ -5209,6 +5553,33 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
         items.append(make_power_chord(k))
         for shape in OSTINATO_SHAPES:
             items.append(make_ostinato(k, shape))
+
+    # ---- genre, early (2026-09-17) ----------------------------------------------------
+    #
+    # The library has no genre repertoire below level 4: read from the notation
+    # rather than the titles, the blues holdings are 1915-1925 lead sheets in E
+    # flat and A flat with diminished and augmented chords, and every other
+    # genre's songs start higher still. So the first three stages' genre content
+    # is generated or it does not exist.
+    #
+    # The keys are chosen so that every one of these is playable **without a
+    # black key**: A minor and C major are the two five-finger positions core
+    # Stages 1-3 actually teach, and a riff that needed a hand position the
+    # learner has not met would be genre content they cannot reach.
+    for k in (["A"] if quick else ["A", "C"]):
+        for cell in RIFF_CELLS:
+            items.append(make_riff(k, cell))
+    for k in (["C"] if quick else ["C", "G", "F"]):
+        items.append(make_swing_pair(k))
+    for k in (["A"] if quick else ["A", "E", "D"]):
+        items.append(make_modal_vamp(k))
+    # A and E minor pentatonic are white-key shapes; D needs one flat and is
+    # generated anyway because the blues rungs are in flat keys.
+    for k in (["A"] if quick else ["A", "E", "D"]):
+        for form in BLUES_SCALE_FORMS:
+            items.append(make_pentatonic(k, form))
+    for k in (["C"] if quick else ["C", "F", "G"]):
+        items.append(make_tresillo(k))
 
     # ---- latin (`02` Part D) ----------------------------------------------------------
     #

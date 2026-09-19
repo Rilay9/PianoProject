@@ -897,6 +897,140 @@ def unknown_concepts(curriculum: dict) -> list[str]:
     ]
 
 
+#: Concepts whose rung is making a claim about what the music *is*, and which
+#: therefore may not leave `requires` off. Each of these named a fault that
+#: shipped: a rung teaching chord symbols whose only new song printed none, a
+#: rung teaching the minor whose song was in F major, a rung teaching the waltz
+#: bass whose song was in 4/4.
+CLAIMING_CONCEPTS = {
+    "chord-symbols": {"chordSymbols": True},
+    "four-part-harmony": {"staves": 2},
+    "waltz-bass": {"meter": ["3/4"]},
+    "relative-minor": {"mode": "minor"},
+    "minor-triad": {"mode": "minor"},
+}
+
+
+def notation_requirements(curriculum: dict, catalog: list) -> list[str]:
+    """
+    A rung that says what its music is must offer music that is it.
+
+    `requires` is checked against the catalog's `notation` block, which
+    `build.py` reads out of each MusicXML file. Nothing here reads a title, a
+    level or an id — those are the fields that were asserted rather than
+    measured, and choosing from them is how four songs landed on rungs they did
+    not belong on (`docs/pending-review.md`, Entry 3).
+
+    **At least one option, not all of them.** A rung offers alternatives and
+    needs one that demonstrates the thing; requiring every option to be in the
+    minor would empty every rung that teaches it.
+
+    A rung whose `concepts` include one of `CLAIMING_CONCEPTS` and which has no
+    `requires` at all is an error in itself, so the rungs most likely to make a
+    claim cannot quietly opt out of being checked.
+    """
+    rows = {item["id"]: item for item in catalog}
+    errors: list[str] = []
+
+    def satisfied(option_ids: list, need: str, value) -> bool:
+        for item_id in option_ids:
+            notation = (rows.get(item_id) or {}).get("notation")
+            if not notation:
+                continue
+            if need == "chordSymbols":
+                if bool(notation.get("chordCount", 0)) == bool(value):
+                    return True
+            elif need == "meter":
+                if any(sig in notation.get("times", []) for sig in value):
+                    return True
+            elif need == "mode":
+                if any(key.get("mode") == value for key in notation.get("keys", [])):
+                    return True
+            elif need == "staves":
+                if int(notation.get("staves", 1)) >= int(value):
+                    return True
+        return False
+
+    for stage in curriculum.get("stages", []):
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                lesson_id = lesson.get("id", "?")
+                requires = lesson.get("requires") or {}
+                claimed = [c for c in lesson.get("concepts", []) if c in CLAIMING_CONCEPTS]
+                if claimed and not requires:
+                    wanted = {}
+                    for concept in claimed:
+                        wanted.update(CLAIMING_CONCEPTS[concept])
+                    errors.append(
+                        f"{lesson_id}: teaches {', '.join(sorted(claimed))} and has no "
+                        f"`requires` — it is claiming something about its music that "
+                        f"nothing checks (suggested: {wanted})"
+                    )
+                    continue
+                options = list(lesson.get("songOptions", [])) + list(
+                    lesson.get("exerciseOptions", [])
+                )
+                for need, value in requires.items():
+                    if satisfied(options, need, value):
+                        continue
+                    errors.append(
+                        f"{lesson_id}: requires {need}={value!r} and no option on the rung "
+                        f"has it, read from the score rather than from a title"
+                    )
+    return errors
+
+
+#: The lab's presets, as `engine/sightReading.ts` declares them. Duplicated here
+#: rather than parsed out of the TypeScript, and the test that keeps the two in
+#: step is `labPresets.test.ts` — a regex over a source file is a worse coupling
+#: than a list with a test on it.
+LAB_PRESET_IDS = {
+    "primary-chords",
+    "pop-four-chord",
+    "ballad",
+    "blues-shuffle",
+    "jazz-comping",
+    "minor-vamp",
+}
+
+
+def tool_errors(curriculum: dict) -> list[str]:
+    """
+    A rung's tools must open something the rung actually has.
+
+    Two ways to point at nothing, and both would draw a button that lands the
+    learner somewhere wrong rather than failing loudly: a lab preset the lab has
+    never heard of, and an `item` that is not among this rung's own song
+    options. The second is the important one — a lesson that sends you to a
+    piece it does not offer is the `blues.3` fault wearing a control.
+    """
+    errors: list[str] = []
+    for stage in curriculum.get("stages", []):
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                songs = set(lesson.get("songOptions", []))
+                for tool in lesson.get("tools", []) or []:
+                    kind = tool.get("kind")
+                    where = f"{lesson.get('id', '?')}: tool {kind!r}"
+                    if kind == "lab":
+                        preset = tool.get("preset")
+                        if preset is not None and preset not in LAB_PRESET_IDS:
+                            errors.append(
+                                f"{where} names preset {preset!r}, which the lab does not have"
+                            )
+                    if tool.get("item") and tool["item"] not in songs:
+                        errors.append(
+                            f"{where} opens {tool['item']!r}, which is not one of this "
+                            f"rung's song options"
+                        )
+                    if kind in {"duet", "blind"} and not tool.get("item") and not songs:
+                        errors.append(
+                            f"{where} needs a piece and the rung offers no song, so the "
+                            f"button would open nothing"
+                        )
+    return errors
+
+
 def write_needs(curriculum: dict, catalog: list, out_dir: Path, min_options: int) -> int:
     """
     replan §4.2: each built lesson gets a `needs` block.
@@ -997,6 +1131,8 @@ def main() -> None:
         errors += validate_curriculum(curriculum, catalog, args.min_options)
         errors += finder_errors(curriculum)
         errors += unknown_concepts(curriculum)
+        errors += notation_requirements(curriculum, catalog)
+        errors += tool_errors(curriculum)
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
         errors += section_errors(catalog, args.dir)

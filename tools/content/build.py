@@ -182,11 +182,165 @@ def merge_catalog(out_dir: Path) -> Step:
         entries.extend(fragment)
     entries.sort(key=lambda item: item["id"])
     sections = attach_sections(entries)
+    tracked = attach_rung_tracks(entries)
+    read = attach_notation(entries, out_dir)
     write_json(out_dir / "catalog.json", entries)
     detail = f"{len(entries)} items"
     if sections:
         detail += f", {sections} with named sections"
+    if tracked:
+        detail += f", {tracked} given a track by their rung"
+    if read:
+        detail += f", {read} read from the score"
     return Step("merge catalog", ok=True, detail=detail)
+
+
+def attach_notation(entries: list[dict], out_dir: Path) -> int:
+    """
+    What the score actually says, on the row the app reads (2026-09-18).
+
+    **The cause this is here to remove.** Everything downstream of the catalog —
+    which song goes on which rung, what a lesson may claim about it, what the
+    Library filters show, which items `alternativesFor` offers — was decided
+    from `title`, `level`, `genre` and `tracks`. Not one of those is read from
+    the music: `level` is a constant in a maker or a regression on features,
+    `tracks` came from the import bucket, `genre` from the id's prefix. So the
+    only way to choose a song was to guess from its name, and guessing from a
+    name is exactly how a right-hand-only melody of eleven bars with no chord
+    symbols came to sit on the rung that teaches left-hand chords, and how two
+    tangos came to be called bossas in a lesson.
+
+    The facts were being computed and thrown away. `content/sources/pdmx.json`
+    already carries nineteen measured `features` per quarried row, and
+    `levelDrivers` even records which of them set the level — none of it reaches
+    `catalog.json`. And the three questions that actually get asked of a piece
+    when placing it — *is it minor, is it a waltz, has it got chords* — were
+    computed nowhere at all, because `features` measures difficulty rather than
+    identity.
+
+    So: one pass over every score file, and the answers go on the row. This is
+    not the guessing `import_pdmx` refuses to do — nothing here reads a title.
+
+    Cached on (size, mtime) in `build/notation-cache.json`, because the second
+    build of a day should not re-read two thousand scores to learn what it
+    already knows.
+    """
+    # The parser lives in `notation.py` so that `archive_notation.py` can read a
+    # score straight out of the archive with the same code. Two copies of a
+    # parser is two things that can drift.
+    from notation import describe, read_musicxml
+
+    cache_path = BUILD_DIR / "notation-cache.json"
+    cache: dict = read_json(cache_path) if cache_path.exists() else {}
+    assert isinstance(cache, dict)
+    fresh: dict = {}
+
+    touched = 0
+    for entry in entries:
+        rel = entry.get("file")
+        if not rel:
+            continue
+        path = out_dir / rel
+        if not path.exists():
+            continue
+        stat = path.stat()
+        token = f"{stat.st_size}:{int(stat.st_mtime)}"
+        cached = cache.get(rel)
+        if isinstance(cached, dict) and cached.get("token") == token:
+            fresh[rel] = cached
+            entry["notation"] = cached["notation"]
+            touched += 1
+            continue
+        text = read_musicxml(path)
+        if text is None:
+            continue
+        try:
+            described = describe(text)
+        except Exception:  # a file that will not parse is data, not a crash
+            continue
+        fresh[rel] = {"token": token, "notation": described}
+        entry["notation"] = described
+        touched += 1
+
+    write_json(cache_path, fresh)
+
+    # A derived field that came out empty everywhere is a broken reader, not a
+    # library of scores without time signatures. This exists because the first
+    # version of `describe` used `ElementTree.iter("{*}time")` — `iter()` does
+    # not parse the `{*}` wildcard, only `find`/`findall` do — so every row got
+    # `times: []`, `keys: []`, `chordCount: 0`, `staves: 1`, and the step
+    # cheerfully reported "1975 read from the score". Only `bars` was right,
+    # because it happened to use `findall`, and that was enough to make the
+    # output look plausible. Counting the rows written is not the same as
+    # looking at what was written in them.
+    if touched:
+        with_time = sum(1 for e in entries if (e.get("notation") or {}).get("times"))
+        if with_time < touched * 0.5:
+            raise SystemExit(
+                f"attach_notation: {touched} rows read but only {with_time} carry a time "
+                f"signature. Nearly every score has one, so this is the reader failing "
+                f"silently rather than the library being strange. Delete "
+                f"build/notation-cache.json after fixing it — the cache stores the wrong "
+                f"answers too."
+            )
+    return touched
+
+
+def attach_rung_tracks(entries: list[dict]) -> int:
+    """
+    A song on a genre rung carries that genre's track (2026-09-18).
+
+    **The fault this fixes.** The Library filters by track, and a song's track
+    came from its import bucket: a tango quarried into the classical bucket was
+    `classical` and nothing else. So every song on the latin rung, every song on
+    the rock rung and every "song" on the jam rung lacked the tag of the track
+    whose rung offered it — the Latin and Rock & metal filters held **no songs
+    at all**, only generated exercises, while their own lessons said "under
+    Latin in the Library". Measured before the fix: latin 6 of 6 missing, rock 3
+    of 3, jam 5 of 5, hymns 18 of 19, holiday 24 of 29, jazz 11 across its rungs.
+
+    **Why this is not the guessing `import_pdmx` refuses to do.** That module's
+    comment — "guessing tracks from a title is how the library fills with
+    mislabelled rows" — is right, and this is not that. Nothing here reads a
+    title. The curriculum has already *stated* that this song serves this track,
+    by putting it on that track's rung; this only carries the statement to the
+    row the Library reads. One fact, asserted in one place, propagated rather
+    than repeated.
+
+    The track is **added, not replaced**: *Greensleeves (with chords)* is on the
+    hymns rung and is still a core and a classical piece, and a filter that
+    stopped showing it under Classical would have traded one missing row for
+    another.
+    """
+    curriculum_dir = CONTENT_SRC / "curriculum"
+    if not curriculum_dir.exists():
+        return 0
+    wanted: dict[str, set[str]] = {}
+    for path in sorted(curriculum_dir.glob("stage-*.json")):
+        data = read_json(path)
+        assert isinstance(data, dict)
+        for stage in data.get("stages", []):
+            for unit in stage.get("units", []):
+                track = unit.get("track")
+                # `core` is not a genre and every item would collect it; the
+                # rung's own track is the claim worth carrying.
+                if not track or track in {"core", "practice", "technique", "theory-ear"}:
+                    continue
+                for lesson in unit.get("lessons", []):
+                    for item_id in lesson.get("songOptions", []):
+                        wanted.setdefault(item_id, set()).add(track)
+    touched = 0
+    for entry in entries:
+        extra = wanted.get(entry["id"])
+        if not extra:
+            continue
+        tracks = list(entry.get("tracks") or [])
+        missing = [t for t in sorted(extra) if t not in tracks]
+        if not missing:
+            continue
+        entry["tracks"] = tracks + missing
+        touched += 1
+    return touched
 
 
 def attach_sections(entries: list[dict]) -> int:

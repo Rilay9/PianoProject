@@ -930,10 +930,12 @@ class TestTheBossaAndThePulse(HarmonyFamilyCase):
         # One stroke of difference, in the second bar, exactly as the rumba is
         # one stroke from the son in the first. If more than one differs, one of
         # the two rows has been invented rather than written down.
+        # The move is one eighth, to the "and" of 3 — not a whole beat to 4,
+        # which this test used to pin along with the table's wrong value.
         son = CLAVE_PATTERNS["son-3-2"]
         bossa = CLAVE_PATTERNS["bossa"]
         differences = [(a, b) for a, b in zip(son, bossa) if a != b]
-        self.assertEqual(differences, [(6.0, 7.0)])
+        self.assertEqual(differences, [(6.0, 6.5)])
 
     def test_the_bossa_comping_row_is_the_bossa_clave(self) -> None:
         # One object, not two equal lists: a bossa is comped *on* the clave, and

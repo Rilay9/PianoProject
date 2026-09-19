@@ -120,6 +120,80 @@
             "null"
           ]
         },
+        "notation": {
+          "type": "object",
+          "description": "What the score file actually says, read from the MusicXML at build time by build.py's attach_notation and never from a title. Absent where the file could not be parsed. This exists because every other field describing a piece is asserted rather than measured - level is a constant or a regression, tracks came from the import bucket, genre from the id prefix - so choosing a song for a rung, or writing a sentence about one, had nothing but a name to go on.",
+          "additionalProperties": false,
+          "properties": {
+            "bars": {
+              "type": "integer",
+              "description": "Counted inside one part. Counting across the document multiplies by the number of parts."
+            },
+            "staves": {
+              "type": "integer"
+            },
+            "keys": {
+              "type": "array",
+              "description": "Every key signature the score carries, in order. Two entries means it changes key.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "fifths": {
+                    "type": "integer"
+                  },
+                  "mode": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "fifths"
+                ]
+              }
+            },
+            "times": {
+              "type": "array",
+              "description": "Every time signature, as written, e.g. \"3/4\". A waltz says so here and nowhere else.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "chordCount": {
+              "type": "integer",
+              "description": "How many chord symbols are printed. Zero means a rung about chord symbols cannot use this piece to teach them."
+            },
+            "chords": {
+              "type": "array",
+              "description": "The distinct chord symbols, capped at 24. This is what says whether a piece is I-IV-V or ii-V-I with sevenths.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "swungMark": {
+              "type": "boolean",
+              "description": "Whether a direction in the score says swing or shuffle."
+            },
+            "finalBass": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "Pitch class (0-11, C=0) of the lowest note in the final measure. A fact about the file, not a claim about the key - but since <mode> is absent from 705 of 792 songs, a key signature alone cannot tell A minor from C major, and this is what distinguishes them. requires.mode stays strict and believes only an explicit tag; candidates.py uses this to widen a search. Null where the last measure has no pitched note."
+            }
+          },
+          "required": [
+            "bars",
+            "staves",
+            "keys",
+            "times",
+            "chordCount",
+            "chords",
+            "swungMark"
+          ]
+        },
         "keySig": {
           "type": [
             "string",
