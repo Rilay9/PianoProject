@@ -27,15 +27,81 @@ import type {
   HandsFilter,
   LoopRange,
   Mode,
+  PreparedSession,
   SessionScore,
 } from '../engine/types';
-import { loopFromMeasures, loopFromPrintedBars } from '../engine/prepareSession';
+import {
+  loopFromMeasures,
+  loopFromPrintedBars,
+  nextPlayableStep,
+  prepareSession,
+} from '../engine/prepareSession';
 import type { ScoreModel } from './types';
 import { WindowRenderer, type HandsFocus, type NoteState, type ScoreLayout } from './WindowRenderer';
 import type { KeyView } from '../ui/KeyboardStrip';
 import type { Piano } from '../audio/Piano';
 import { Metronome, type MetronomeSound } from '../audio/Metronome';
+import { captureAudioClockAnchor } from '../audio/clock';
 import { recordRenderTiming } from '../util/renderTiming';
+
+export type PlaybackHands = 'none' | 'non-focused' | 'both';
+
+/**
+ * Which pitches of a step the app plays.
+ *
+ * "non-focused" means the hand the learner is *not* practising, which is the
+ * default and the useful one: it is the accompaniment they would otherwise
+ * have to imagine. With no hand focus set there is no non-focused hand, so
+ * nothing plays rather than everything — playing the learner's own part
+ * under their fingers is the fastest way to stop hearing your own mistakes.
+ *
+ * One function for both questions asked of it — what to play, and whether
+ * the app plays before the learner — so the two can never disagree.
+ */
+export function appPitches(
+  model: ScoreModel,
+  stepIndex: number,
+  which: PlaybackHands,
+  focus: HandsFilter,
+): number[] {
+  if (which === 'none') return [];
+  const step = model.steps[stepIndex];
+  if (!step) return [];
+  const notes = step.notes.filter((note) => {
+    if (which === 'both') return true;
+    if (focus === 'R') return note.hand === 'L';
+    if (focus === 'L') return note.hand === 'R';
+    return false;
+  });
+  return [...new Set(notes.map((note) => note.midi))];
+}
+
+/**
+ * Whether the learner plays first in this run — the test T8 turns on.
+ *
+ * The learner leads when their first note comes before anything the app
+ * plays, or with it. Then the run can wait for their first key. When the app
+ * sounds first — a left-hand intro while the right is practised, or `both`,
+ * which plays the learner's own part — it must start by itself: the learner
+ * joins what they can hear, and a run waiting on them would never begin.
+ */
+export function learnerLeads(
+  model: ScoreModel,
+  prepared: PreparedSession,
+  which: PlaybackHands,
+  fromStep: number = prepared.firstStep,
+): boolean {
+  const learner = nextPlayableStep(prepared.steps, fromStep, prepared.lastStep);
+  if (learner === null) return false;
+  if (which === 'both') return false;
+  const learnerMs = prepared.steps[learner]?.tMs ?? 0;
+  for (let i = fromStep; i <= prepared.lastStep; i += 1) {
+    const at = prepared.steps[i]?.tMs ?? 0;
+    if (at >= learnerMs) break;
+    if (appPitches(model, i, which, prepared.options.hands).length > 0) return false;
+  }
+  return true;
+}
 
 /**
  * How often the clock is advanced when frames are not arriving (decision 9).
@@ -78,11 +144,32 @@ export interface RunOptions extends Omit<Partial<EngineOptions>, 'mode'> {
   metronomeSound?: MetronomeSound;
   metronomeVolume?: number;
   /** Which hand the app plays back; `05` §3. */
-  playbackHands?: 'none' | 'non-focused' | 'both';
+  playbackHands?: PlaybackHands;
+  /**
+   * `false` skips holding for the first note at *this* start only — the
+   * ladder restarting between passes, where the practice carries on. Unlike
+   * `latchStart: false` (never hold: no input to hold for), a later pause and
+   * resume may still hold.
+   */
+  holdAtStart?: boolean;
 }
 
 /** How far ahead playback is scheduled, in milliseconds of music time. */
 export const PLAYBACK_LOOKAHEAD_MS = 250;
+/**
+ * A resume's count back in begins this long after the tap, so its first
+ * click can still be scheduled rather than landing in the past — the same
+ * lead the metronome gives itself when it starts.
+ */
+const RESUME_LEAD_MS = 100;
+/**
+ * A note this far overdue is played at once rather than dropped.
+ *
+ * The scheduler only queued notes still ahead of the clock, and by the first
+ * frame of a run with no count-in the clock is already past 0 — so the app's
+ * opening note was never played. A frame, and a little over, of grace (T8).
+ */
+const PLAYBACK_LATE_GRACE_MS = 50;
 /** Seconds a played-back note sounds for when the step has no duration. */
 const FALLBACK_NOTE_SEC = 0.4;
 
@@ -176,6 +263,13 @@ export class ScoreSession {
 
   /** Steps whose playback has already been scheduled, so none plays twice. */
   private scheduledSteps = new Set<number>();
+  /**
+   * How to silence each scheduled step's notes, so a pause can take back the
+   * ones handed to the audio clock and not yet heard. They used to play into
+   * the pause and then count as played, so the note a resume counted in to
+   * never sounded (T8 review 2, M1).
+   */
+  private scheduledStops = new Map<number, (() => void)[]>();
   private runOptions: RunOptions = { mode: 'wait' };
   private lastScore: SessionScore | null = null;
   /**
@@ -210,6 +304,30 @@ export class ScoreSession {
 
   get running(): boolean {
     return this.engine !== null && this.engine.state.running;
+  }
+
+  /** Holding for the learner's first note (T8); the screen must say so. */
+  get armed(): boolean {
+    return this.engine?.state.armed === true;
+  }
+
+  /** The step a latched run is waiting to start on, or `null`. */
+  get holdingFrom(): number | null {
+    return this.engine?.holdingFrom ?? null;
+  }
+
+  /**
+   * Whether the chosen hand has anything to play in this run at all.
+   *
+   * Not "at the cursor": a Tempo run starts with the cursor on the run's first
+   * step, and when the other hand opens the piece that step has nothing for
+   * the learner — which the screen used to read as "nothing for the right hand
+   * in this piece" and refuse the run (T8 review, H1).
+   */
+  get learnerHasNotes(): boolean {
+    const prepared = this.engine?.prepared;
+    if (!prepared) return false;
+    return nextPlayableStep(prepared.steps, prepared.firstStep, prepared.lastStep) !== null;
   }
 
   get mode(): Mode | null {
@@ -283,6 +401,7 @@ export class ScoreSession {
     this.wrongKeys = new Set();
     this.clearFlashes();
     this.scheduledSteps = new Set();
+    this.scheduledStops = new Map();
     this.lastScore = null;
     this.freeMoved = false;
 
@@ -294,7 +413,20 @@ export class ScoreSession {
     delete (engineOptions as Record<string, unknown>).metronomeSound;
     delete (engineOptions as Record<string, unknown>).metronomeVolume;
     delete (engineOptions as Record<string, unknown>).playbackHands;
-    const engine = new PracticeEngine(this.options.model, { ...engineOptions, mode: run.mode });
+    // T8: a Tempo run the learner leads waits for their first key; one the app
+    // leads starts itself. Decided here because only the session knows what
+    // the app will play. `latchStart: false` from the caller opts out.
+    delete (engineOptions as Record<string, unknown>).holdAtStart;
+    const latchStart =
+      run.mode === 'tempo' &&
+      run.latchStart !== false &&
+      run.holdAtStart !== false &&
+      learnerLeads(
+        this.options.model,
+        prepareSession(this.options.model, { ...engineOptions, mode: run.mode }),
+        run.playbackHands ?? 'non-focused',
+      );
+    const engine = new PracticeEngine(this.options.model, { ...engineOptions, mode: run.mode, latchStart });
     this.engine = engine;
     engine.on((event) => {
       this.handle(event);
@@ -303,22 +435,112 @@ export class ScoreSession {
     this.pendingStep = engine.state.step;
     this.dirty = true;
 
-    if (run.metronome === true && run.mode !== 'free') this.startMetronome(run);
+    // Not when the run is already holding: with no count-in it holds from its
+    // first moment, and the `armed` that would have stopped the click came
+    // before there was a click to stop (T8).
+    if (run.metronome === true && run.mode !== 'free' && !engine.state.armed) this.startMetronome(run);
     this.loop();
     this.ticker = window.setInterval(this.beat, TICK_INTERVAL_MS);
     this.options.onChange?.();
   }
 
   pause(): void {
-    this.engine?.pause();
+    const engine = this.engine;
+    engine?.pause();
     this.metronome?.stop();
+    if (engine) {
+      // Anything scheduled for after the pause point has not been heard: take
+      // it back, and forget it was scheduled, so it plays after the resume.
+      const at = engine.musicMs;
+      for (const [index, stops] of this.scheduledStops) {
+        if ((engine.prepared.steps[index]?.tMs ?? Number.NEGATIVE_INFINITY) < at) continue;
+        for (const stop of stops) stop();
+        this.scheduledStops.delete(index);
+        this.scheduledSteps.delete(index);
+      }
+    }
     this.options.onChange?.();
   }
 
+  /** The step a resume is counting back in to, or `null` (for tests and the screen). */
+  get countingBackTo(): number | null {
+    return this.engine?.countingBackTo ?? null;
+  }
+
+  /**
+   * Carries on after a pause (T8).
+   *
+   * A clock-driven run counts back in: one bar on its own beat grid, into the
+   * next note still to be played, and — when the learner plays first from
+   * there — holds for their first note like a new run. It used to carry on
+   * cold, mid-bar, with the metronome restarted on a fresh grid of its own, so
+   * after every pause the clicks and the judging were out of step.
+   */
   resume(): void {
-    this.engine?.resume();
-    if (this.runOptions.metronome === true) this.startMetronome(this.runOptions);
+    const engine = this.engine;
+    if (!engine) return;
+    const mode = engine.mode;
+    if (mode !== 'tempo' && mode !== 'listen') {
+      engine.resume();
+      this.options.onChange?.();
+      return;
+    }
+    const prepared = engine.prepared;
+    const barMs = prepared.options.beatsPerBar * prepared.msPerBeat;
+    const learnerNext = engine.resumesAt;
+    // Who plays first *from where the music stopped* — not from the learner's
+    // next note, which answered "the learner" every time and made an app-led
+    // resume skip part of the app's part, play a bar of it as a count, and
+    // then freeze waiting for the learner (T8 review, H2).
+    // During a resume's own count the clock is rewound; where the music
+    // stopped is where that count was heading (T8 review 2, M2).
+    const back = engine.countingBackTo;
+    const stoppedAt = back !== null ? (prepared.steps[back]?.tMs ?? engine.musicMs) : engine.musicMs;
+    let nextSounding: number | null = null;
+    for (let i = prepared.firstStep; i <= prepared.lastStep; i += 1) {
+      if ((prepared.steps[i]?.tMs ?? -Infinity) >= stoppedAt) {
+        nextSounding = i;
+        break;
+      }
+    }
+    const from = Math.min(learnerNext ?? Infinity, nextSounding ?? Infinity);
+    const leads =
+      learnerNext !== null &&
+      Number.isFinite(from) &&
+      learnerLeads(this.options.model, prepared, this.runOptions.playbackHands ?? 'non-focused', from);
+    // The ladder's opt-out is for its own restart; a pause is a new entry and
+    // may hold. No input at all never holds (`latchStart: false`).
+    const latch = mode === 'tempo' && this.runOptions.latchStart !== false && leads;
+    // Nothing holding: count back to whichever sounds first — an untouched
+    // note of the learner's just behind the stop is offered again rather than
+    // closed as missed (T8 review 2, L12).
+    const earliest = Number.isFinite(from) ? from : null;
+    const toStep = latch ? learnerNext : earliest;
+    engine.resume({
+      recountMs: barMs + RESUME_LEAD_MS,
+      latch,
+      ...(toStep === null ? {} : { toStep }),
+    });
+    // Nothing clicks while a run is still holding for its first note — a
+    // pause taken while holding resumes holding (T8 review, M2).
+    if (this.runOptions.metronome === true && !engine.state.armed) this.startMetronomeOnGrid(engine);
     this.options.onChange?.();
+  }
+
+  /** The metronome picked up on the engine's grid, from the next beat. */
+  private startMetronomeOnGrid(engine: PracticeEngine): void {
+    const context = this.options.audioContext;
+    if (!context) {
+      this.startMetronome(this.runOptions);
+      return;
+    }
+    const musicNow = engine.musicMs;
+    const next = engine.nextBeatAfter(musicNow);
+    const clock = captureAudioClockAnchor(context);
+    const heardAtPerfMs = performance.now() + (next.musicMs - musicNow);
+    const startSec =
+      clock.contextTimeSec + (heardAtPerfMs - clock.performanceMs) / 1000 - clock.outputLatencySec;
+    this.startMetronome(this.runOptions, Math.max(context.currentTime, startSec), next.beatInBar);
   }
 
   stop(): void {
@@ -406,7 +628,7 @@ export class ScoreSession {
 
   // --- internals -----------------------------------------------------------
 
-  private startMetronome(run: RunOptions): void {
+  private startMetronome(run: RunOptions, startTimeSec?: number, firstBeatInBar?: number): void {
     const context = this.options.audioContext;
     if (!context) return;
     this.metronome?.dispose();
@@ -421,7 +643,7 @@ export class ScoreSession {
       volume: run.metronomeVolume ?? 0.6,
       ...(this.options.destination ? { destination: this.options.destination } : {}),
     });
-    this.metronome.start();
+    this.metronome.start(startTimeSec, firstBeatInBar);
   }
 
   /**
@@ -478,6 +700,19 @@ export class ScoreSession {
           isCountIn: event.isCountIn,
         });
         break;
+      case 'armed':
+        // Nothing sounds while the run holds for the first note: no grid the
+        // learner could be judged against, and nothing a microphone could
+        // hear and mistake for them (T8).
+        this.metronome?.stop();
+        this.dirty = true;
+        this.options.onChange?.();
+        break;
+      case 'latched':
+        this.onLatched(event.stepIndex, event.tMs);
+        this.dirty = true;
+        this.options.onChange?.();
+        break;
       case 'paused':
       case 'resumed':
         break;
@@ -492,6 +727,7 @@ export class ScoreSession {
           this.judgements = new Map();
           this.clearFlashes();
           this.scheduledSteps = new Set();
+          this.scheduledStops = new Map();
           // Told, not hidden. A lap is a finish, and "play this once and stop"
           // — hearing one bar (P21c B4) — is exactly a caller that wants to
           // act on the first one. The screen decides whether a lap matters.
@@ -708,38 +944,62 @@ export class ScoreSession {
     const musicNow = engine.musicMs;
     const horizon = musicNow + PLAYBACK_LOOKAHEAD_MS;
     const focus = prepared.options.hands;
+    // A latched run that has not started yet: from its first note on, nothing
+    // is scheduled — not even inside the look-ahead, which would otherwise put
+    // the app's note on the timer a quarter-second before the learner's (T8).
+    const holdingFrom = engine.holdingFrom;
 
     for (const step of prepared.steps) {
       if (step.index < prepared.firstStep || step.index > prepared.lastStep) continue;
-      if (step.tMs < musicNow || step.tMs > horizon) continue;
+      if (holdingFrom !== null && step.index >= holdingFrom) continue;
+      if (step.tMs < musicNow - PLAYBACK_LATE_GRACE_MS || step.tMs > horizon) continue;
       if (this.scheduledSteps.has(step.index)) continue;
       this.scheduledSteps.add(step.index);
-      const whenSec = context.currentTime + (step.tMs - musicNow) / 1000;
+      const whenSec = Math.max(context.currentTime, context.currentTime + (step.tMs - musicNow) / 1000);
       const durationSec = Math.max(0.05, (step.durMs || FALLBACK_NOTE_SEC * 1000) / 1000);
+      const stops: (() => void)[] = [];
       for (const midi of this.pitchesToPlay(step.index, which, focus)) {
-        piano.start({ midi, velocity: 70, timeSec: whenSec, durationSec });
+        stops.push(piano.start({ midi, velocity: 70, timeSec: whenSec, durationSec }));
       }
+      this.scheduledStops.set(step.index, stops);
     }
   }
 
   /**
-   * Which pitches of a step the app plays.
+   * The learner's first note has set the clock (T8).
    *
-   * "non-focused" means the hand the learner is *not* practising, which is the
-   * default and the useful one: it is the accompaniment they would otherwise
-   * have to imagine. With no hand focus set there is no non-focused hand, so
-   * nothing plays rather than everything — playing the learner's own part
-   * under their fingers is the fastest way to stop hearing your own mistakes.
+   * The app's notes on that same step were held back (`holdingFrom`) and play
+   * now, on the learner's key — a duet partner who waits for you to breathe
+   * in. They sound input and output latency after the key, not with it. The
+   * metronome comes back on the next beat, where the engine's grid now is.
    */
-  private pitchesToPlay(stepIndex: number, which: 'non-focused' | 'both', focus: HandsFilter): number[] {
-    const step = this.options.model.steps[stepIndex];
-    if (!step) return [];
-    const notes = step.notes.filter((note) => {
-      if (which === 'both') return true;
-      if (focus === 'R') return note.hand === 'L';
-      if (focus === 'L') return note.hand === 'R';
-      return false;
-    });
-    return [...new Set(notes.map((note) => note.midi))];
+  private onLatched(stepIndex: number, latchPerfMs: number): void {
+    const engine = this.engine;
+    const context = this.options.audioContext;
+    if (!engine) return;
+    const which = this.runOptions.playbackHands ?? 'non-focused';
+    const piano = this.piano;
+    if (piano && context && !this.scheduledSteps.has(stepIndex)) {
+      this.scheduledSteps.add(stepIndex);
+      const step = engine.prepared.steps[stepIndex];
+      const durationSec = Math.max(0.05, ((step?.durMs ?? 0) || FALLBACK_NOTE_SEC * 1000) / 1000);
+      for (const midi of this.pitchesToPlay(stepIndex, which, engine.prepared.options.hands)) {
+        piano.start({ midi, velocity: 70, timeSec: context.currentTime, durationSec });
+      }
+    }
+    if (this.runOptions.metronome !== true || !context) return;
+    const anchorMs = engine.prepared.steps[stepIndex]?.tMs ?? 0;
+    const next = engine.nextBeatAfter(anchorMs);
+    // Heard at the beat's time on the learner's timeline, so scheduled that
+    // much earlier than the audio clock would place it.
+    const clock = captureAudioClockAnchor(context);
+    const heardAtPerfMs = latchPerfMs + (next.musicMs - anchorMs);
+    const startSec =
+      clock.contextTimeSec + (heardAtPerfMs - clock.performanceMs) / 1000 - clock.outputLatencySec;
+    this.startMetronome(this.runOptions, Math.max(context.currentTime, startSec), next.beatInBar);
+  }
+
+  private pitchesToPlay(stepIndex: number, which: PlaybackHands, focus: HandsFilter): number[] {
+    return appPitches(this.options.model, stepIndex, which, focus);
   }
 }

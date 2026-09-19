@@ -74,6 +74,17 @@ export type EngineEvent =
       tMs: number;
     }
   | { kind: 'tempoTick'; beat: number; bar: number; isCountIn: boolean; tMs: number }
+  /**
+   * A latched run reached the learner's first note with nothing played: the
+   * music clock is holding on `stepIndex` until a key is struck.
+   */
+  | { kind: 'armed'; stepIndex: number; tMs: number }
+  /**
+   * The learner's first note set the clock. `tMs` is that note's time with the
+   * input latency removed — the moment `stepIndex` is now defined to sound —
+   * so a host can put the metronome and the app's own notes in phase with it.
+   */
+  | { kind: 'latched'; stepIndex: number; tMs: number }
   | { kind: 'paused'; tMs: number }
   | { kind: 'resumed'; tMs: number }
   | { kind: 'finished'; loop: boolean; tMs: number; score: SessionScore };
@@ -119,6 +130,22 @@ export interface EngineOptions {
    * carries the fact out to whoever records it.
    */
   rhythmOnly?: boolean;
+  /**
+   * Start the clock on the learner's first note, not on the timer (T8).
+   *
+   * Tempo mode only. The count-in still plays, but its end does not fix when
+   * the first note is due: the first note-on inside that note's window — or
+   * any note-on once the clock has reached it and is holding — defines the
+   * moment it sounds, and everything after is timed from there. A late
+   * entry therefore cannot shift every judgement after it. Notes before that
+   * window are strays and are ignored rather than marked wrong.
+   *
+   * The host decides whether a run is learner-led; the engine does not know
+   * which notes the app will play. A run where the app sounds first must not
+   * set this, or the app's lead-in would wait for a learner who is waiting
+   * for it.
+   */
+  latchStart?: boolean;
   /**
    * The whole of the input path's delay, in ms — and the only place it is
    * ever removed.
@@ -200,6 +227,7 @@ export const ENGINE_DEFAULTS = {
   toleranceMs: 150,
   countInBars: 1,
   rhythmOnly: false,
+  latchStart: false,
   inputLatencyMs: 0,
   minConfidence: 0.5,
   wrongNoteConfidence: 1,

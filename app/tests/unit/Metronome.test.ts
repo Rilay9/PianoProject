@@ -180,3 +180,32 @@ describe('Metronome', () => {
     expect(started).toHaveLength(before);
   });
 });
+
+describe('Metronome — stopping cancels what is queued (T8)', () => {
+  it('stop() silences a click already handed to the audio clock but not yet heard', () => {
+    const { ctx } = fakeContext();
+    const m = new Metronome(ctx, { bpm: 120, countInBars: 0, sound: 'beep' });
+    ctx.currentTime = 0.95;
+    m.start(1);
+    // The 1.0 s click is inside the look-ahead, so it is already scheduled.
+    const click = ctx.createOscillator.mock.results[0]?.value as { stop: ReturnType<typeof vi.fn> };
+    expect(click).toBeDefined();
+    m.stop();
+    // Stopped now, before it starts: it never sounds.
+    expect(click.stop).toHaveBeenLastCalledWith(0.95);
+    m.dispose();
+  });
+
+  it('leaves a click that has already been heard alone', () => {
+    const { ctx } = fakeContext();
+    const m = new Metronome(ctx, { bpm: 120, countInBars: 0, sound: 'beep' });
+    ctx.currentTime = 0.95;
+    m.start(1);
+    const click = ctx.createOscillator.mock.results[0]?.value as { stop: ReturnType<typeof vi.fn> };
+    ctx.currentTime = 1.02;
+    const callsBefore = click.stop.mock.calls.length;
+    m.stop();
+    expect(click.stop.mock.calls.length).toBe(callsBefore);
+    m.dispose();
+  });
+});

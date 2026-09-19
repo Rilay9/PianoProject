@@ -75,6 +75,12 @@ export class Metronome {
   private countInBars: number;
   private sound: MetronomeSound;
   private dropped = 0;
+  /**
+   * Clicks handed to the audio clock and not yet heard. `stop()` used to leave
+   * them to play, so a metronome stopped as a run began holding for its first
+   * note (T8) clicked once more into the hold.
+   */
+  private readonly pending = new Set<{ node: AudioScheduledSourceNode; whenSec: number }>();
 
   constructor(context: BaseAudioContext, options: MetronomeOptions = {}) {
     this.context = context;
@@ -105,7 +111,7 @@ export class Metronome {
    * first click is never scheduled in the past (which browsers play
    * immediately, making the count-in sound like a stumble).
    */
-  start(startTimeSec?: number): void {
+  start(startTimeSec?: number, firstBeatInBar?: number): void {
     this.stop();
     this.dropped = 0;
     const begin = startTimeSec ?? this.context.currentTime + 0.1;
@@ -114,6 +120,7 @@ export class Metronome {
       beatsPerBar: this.beatsPerBar,
       countInBars: this.countInBars,
       startTimeSec: begin,
+      ...(firstBeatInBar === undefined ? {} : { firstBeatInBar }),
     });
     this.tick();
     this.timer = setInterval(() => this.tick(), SCHEDULER_INTERVAL_MS);
@@ -125,6 +132,25 @@ export class Metronome {
       this.timer = null;
     }
     this.scheduler = null;
+    const now = this.context.currentTime;
+    for (const click of this.pending) {
+      if (click.whenSec <= now) continue;
+      try {
+        click.node.stop(now);
+      } catch {
+        /* already stopped */
+      }
+    }
+    this.pending.clear();
+  }
+
+  /** Remembers a click until it has been heard, so `stop()` can cancel it. */
+  private track(node: AudioScheduledSourceNode, whenSec: number): void {
+    // Pruned by time rather than by an ended event: past clicks have been
+    // heard and cannot be cancelled, so they have nothing left to be kept for.
+    const now = this.context.currentTime;
+    for (const click of this.pending) if (click.whenSec <= now) this.pending.delete(click);
+    this.pending.add({ node, whenSec });
   }
 
   /** Fires once per scheduled click, ahead of the sound (`beat.timeSec`). */
@@ -215,6 +241,7 @@ export class Metronome {
     gain.connect(this.output);
     osc.start(whenSec);
     osc.stop(whenSec + 0.04);
+    this.track(osc, whenSec);
     osc.onended = () => {
       osc.disconnect();
       gain.disconnect();
@@ -243,6 +270,7 @@ export class Metronome {
     gain.connect(this.output);
     source.start(whenSec);
     source.stop(whenSec + 0.06);
+    this.track(source, whenSec);
     source.onended = () => {
       source.disconnect();
       filter.disconnect();
@@ -261,6 +289,7 @@ export class Metronome {
     gain.connect(this.output);
     osc.start(whenSec);
     osc.stop(whenSec + 0.05);
+    this.track(osc, whenSec);
     osc.onended = () => {
       osc.disconnect();
       gain.disconnect();

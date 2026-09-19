@@ -313,3 +313,38 @@ describe('Wait mode — pedal and transport', () => {
     expect(finished[0]?.score.correctSteps).toBe(1);
   });
 });
+
+// --- T8: practice time starts at the first note ------------------------------
+
+const firstNoteTune = makeModel([
+  { onset: 0, notes: [note({ midi: 60 })] },
+  { onset: 1, notes: [note({ midi: 62 })] },
+]);
+
+describe('Wait mode — practice time starts at the first note (T8)', () => {
+  it('does not count the time before the first key as practice', () => {
+    const h = harness(firstNoteTune, { mode: 'wait' });
+    h.engine.start();
+    h.clock.set(5 * BEAT_MS);
+    expect(h.engine.elapsedMs).toBe(0);
+    const first = h.clock.now();
+    h.play(60);
+    h.clock.set(first + 2 * BEAT_MS);
+    h.play(62);
+    const finished = h.of('finished')[0];
+    expect(finished?.score.durationMs).toBe(2 * BEAT_MS);
+  });
+
+  it('a pause before the first note is not subtracted from the playing after it', () => {
+    const h = harness(firstNoteTune, { mode: 'wait' });
+    h.engine.start();
+    h.engine.pause();
+    h.clock.set(3 * BEAT_MS);
+    h.engine.resume();
+    const first = h.clock.now();
+    h.play(60);
+    h.clock.set(first + BEAT_MS);
+    h.play(62);
+    expect(h.of('finished')[0]?.score.durationMs).toBe(BEAT_MS);
+  });
+});

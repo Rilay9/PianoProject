@@ -259,6 +259,13 @@ export function ScoreScreen(router: Router): HTMLElement {
    * Holds what the run was doing so it can be put back afterwards.
    */
   let hearingBar: { mode: Mode; loop: { from: number; to: number } | null } | null = null;
+  /**
+   * A run has finished by itself since the last one was started (T8). Keys do
+   * not start a run then — people carry on playing after the last bar — until
+   * ▶ or Space starts one. Every finish counts, not only the ones that open a
+   * summary: Free, Listen and `Hear it` end without one (T8 review, M3).
+   */
+  let endedSinceLastStart = false;
   /** The pending long-press, if a finger is down on the stage. */
   let pressHold: number | null = null;
   /** Where that finger went down, so a wobble can be told from a drag. */
@@ -1277,9 +1284,48 @@ export function ScoreScreen(router: Router): HTMLElement {
   /** Routes one input source into the session. Note events only — see §5. */
   function feedNote(event: InputNoteEvent): void {
     if (event.kind === 'noteOn') {
+      if (session && !session.running) {
+        startFromKey(event);
+        return;
+      }
       session?.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
     } else {
       session?.feedOff(event.midi, event.tMs);
+    }
+  }
+
+  /**
+   * The keyboard is the start button (T8): a key pressed with no run going
+   * starts one, so nobody has to take a hand off the piano for a small ▶.
+   *
+   * With no count-in to play first — Wait, Free, or Tempo counted in from
+   * nothing — the key is the run's first note and is played into it. With a
+   * count-in it is the nod to the drummer: it starts the count and is not a
+   * note of the piece, so it is not judged and cannot start the clock.
+   *
+   * Not after a run has finished, until ▶ or Space starts the next: people
+   * carry on playing after the last bar, and that would restart the run under
+   * them — with or without a summary on screen. Not from the microphone, which
+   * hears the room. Not while `Hear it` is playing, nor under an open sheet.
+   */
+  /** A sheet (the ⋯ controls, the tempo) is open over the score. */
+  function sheetOpen(): boolean {
+    return document.querySelector('.sheet__panel[role="dialog"]') !== null;
+  }
+
+  function startFromKey(event: InputNoteEvent): void {
+    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return;
+    if (endedSinceLastStart) return;
+    if (input !== 'midi' && input !== 'keys') return;
+    startRun();
+    if (!session.running) return;
+    // The key is the first note only where the learner plays first: Wait and
+    // Free, or a Keep tempo run holding for them. When the app leads, the key
+    // only starts it — played in, it was marked a wrong note before anything
+    // had been played (T8 review 2).
+    const learnerFirst = mode === 'wait' || mode === 'free' || session.armed;
+    if ((session.prepared?.countInMs ?? 0) === 0 && learnerFirst) {
+      session.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
     }
   }
 
@@ -1319,8 +1365,13 @@ export function ScoreScreen(router: Router): HTMLElement {
         }),
       );
       void micSource.connect().catch((cause: unknown) => {
-        status.textContent = `Microphone unavailable: ${String(cause)} — using the clock instead.`;
         input = 'none';
+        // A run already going was set up to hold for a first note the
+        // microphone would have heard. With no input nothing can play it, so
+        // it would hold for ever: start it again, following the clock, which
+        // is what the line below promises (T8 review, M1).
+        if (session?.running === true) startRun();
+        status.textContent = `Microphone unavailable: ${String(cause)} — using the clock instead.`;
         render();
       });
     }
@@ -1328,8 +1379,15 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   // --- run -----------------------------------------------------------------
 
-  function startRun(): void {
+  /**
+   * `latch: false` for a restart that continues the practice rather than
+   * beginning it — the ladder moving the tempo between passes. Anything else
+   * that starts a run lets the session decide whether it waits for the
+   * learner's first note (T8).
+   */
+  function startRun(options: { latch?: boolean } = {}): void {
     if (!session || !model) return;
+    endedSinceLastStart = false;
     summaryUp(false);
     // A new run keeps its own totals, so the ladder's first pass is measured
     // from nought again.
@@ -1365,6 +1423,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       metronomeVolume: midi.metronomeVolume,
       ...(rhythmRunFor(runMode) ? { rhythmOnly: true } : {}),
       playbackHands: runMode === 'listen' ? 'both' : settings.playbackHands,
+      // No input, no first note: a run following nothing must keep time by
+      // the clock, which is the whole point of Tempo without a piano.
+      ...(input === 'none' ? { latchStart: false } : {}),
+      ...(options.latch === false ? { holdAtStart: false } : {}),
       ...(input === 'mic'
         ? {
             micChordLeniency: true,
@@ -1377,7 +1439,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Nothing to wait for: the hand chosen has no notes in this piece, and a
     // Wait run would sit on its first step for ever (the random walk found
     // it, with L on a right-hand song).
-    if ((runMode === 'wait' || runMode === 'tempo') && session.expectedNow.length === 0) {
+    // Anything in the run, not at the cursor: a Tempo run starts on the run's
+    // first step, and when the other hand opens the piece that step is empty
+    // for the learner (T8 review, H1).
+    if ((runMode === 'wait' || runMode === 'tempo') && !session.learnerHasNotes) {
       session.stop();
       status.textContent =
         hands === 'both'
@@ -1458,8 +1523,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     tempoPct = next;
     tempo.value = String(tempoPct);
+    // The practice carries on at the new tempo: no holding for a first note
+    // between passes (T8), or every rung of the ladder would stop and wait.
     queueMicrotask(() => {
-      if (session?.running === true) startRun();
+      if (session?.running === true) startRun({ latch: false });
     });
     render();
   }
@@ -1666,6 +1733,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   function endBarPreview(): void {
     const was = hearingBar;
     if (!was) return;
+    // A preview is a finish too: a learner who hears a bar and then plays it
+    // must not start a whole run by doing so (T8 review 2, L9).
+    endedSinceLastStart = true;
     // Stopped while the flag is still set, because stopping is itself a finish
     // and it arrives back through `onFinished`. Cleared first, that finish
     // looked like the end of an ordinary run and opened the summary sheet over
@@ -2099,12 +2169,40 @@ export function ScoreScreen(router: Router): HTMLElement {
    * a line saying otherwise would be describing a different app.
    */
   function drawWaitingFor(): void {
-    const wanted =
+    const named =
       getSettings().showNoteNames && mode === 'wait' && session?.running === true
         ? waitingForLine(session.expectedNow)
         : '';
+    const wanted = session?.armed === true ? firstNoteLine() : named || readyLine();
     waitingLine.textContent = wanted;
     waitingLine.hidden = wanted === '';
+  }
+
+  /**
+   * A run holding for the learner's first note says so (T8). Without it a
+   * waiting run looks exactly like a frozen one — the state a control must
+   * never be in unseen (`05` §6).
+   */
+  function firstNoteLine(): string {
+    if (hands === 'R') return 'Your right hand starts — play its first note';
+    if (hands === 'L') return 'Your left hand starts — play its first note';
+    return 'Play your first note to start';
+  }
+
+  /**
+   * With a piano connected, the keyboard is the start button (T8): said on
+   * the ready screen, in the words that fit the count-in setting.
+   *
+   * MIDI only. The screen keys are on screen already, and the microphone does
+   * not start runs at all. Kept to the one input where it matters because this
+   * line's weight was a question put to the owner on the tour.
+   */
+  function readyLine(): string {
+    if (!session || session.running || input !== 'midi' || !sheet.hidden || hearing) return '';
+    if (endedSinceLastStart) return '';
+    if (mode === 'listen') return '';
+    const noCountIn = mode !== 'tempo' || settings.countInBars === 0;
+    return noCountIn ? 'Play the first note to start' : 'Press any key to count in';
   }
 
   /** The loop's bars by source measure index, for the dimming (`08` §11.18). */
@@ -2247,6 +2345,14 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   function render(): void {
     drawWaitingFor();
+    // Holding for the first note (T8): the count is over, and its wash must
+    // not stay over the notes the learner now has to read to start. Only a
+    // beat outside the count-in cleared it before, and a run that is holding
+    // sends none — so it sat there, frozen on the last number.
+    if (session?.armed === true && !countIn.hidden) {
+      countIn.hidden = true;
+      countIn.replaceChildren();
+    }
     drawWhere();
     syncLoopDim();
     // Belt and braces with the observer: every render is a moment the copy
@@ -2489,6 +2595,9 @@ export function ScoreScreen(router: Router): HTMLElement {
             // nothing and still turns the page on these.
             pitches: [...new Set((model.steps[state.step]?.notes ?? []).map((n) => n.midi))],
             paused: state.paused,
+            // Holding for the first note (T8), so a test can tell a run that
+            // is waiting from one that has stopped moving.
+            armed: state.armed,
             engineMode: state.mode,
             input,
           };
@@ -2540,6 +2649,7 @@ export function ScoreScreen(router: Router): HTMLElement {
           climbLadder(score);
           return;
         }
+        endedSinceLastStart = true;
         // `Hear it` reaching the end is the end of a demonstration: nothing
         // was judged and nothing is recorded. It went to the summary, which
         // wrote a nought-accuracy run into the history under whichever mode
@@ -2607,6 +2717,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       // broken rather than deliberate.
       status.textContent = blind ? 'Blind — ⋯ shows the score' : '';
       if (sections.length > 0) sectionRow.hidden = false;
+      // Listening before the first run, so a key can start it (T8). Not the
+      // microphone: attaching it asks for permission, and opening a score
+      // must not put up a prompt nobody asked for.
+      if (input === 'midi' || input === 'keys') attachInput();
       showBar();
       render();
       // Now that there is a drawn sheet to measure, grow it to fill the
@@ -2685,9 +2799,29 @@ export function ScoreScreen(router: Router): HTMLElement {
   };
   document.addEventListener('visibilitychange', onVisibilityChange);
 
+  /**
+   * Space starts a run from the ready screen (T8) — the start button for a
+   * laptop beside the piano, whatever the input.
+   *
+   * Only when nothing has focus that Space already means something to: the
+   * browser presses a focused button on Space, so a handler here as well
+   * would start a run twice from a focused *Start again*.
+   */
+  const onKeyDown = (event: KeyboardEvent): void => {
+    if (event.key !== ' ' || event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
+    const target = event.target instanceof Element ? event.target : null;
+    if (target?.closest('button, input, select, textarea, a, summary, details, [contenteditable], [role="button"]')) return;
+    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return;
+    event.preventDefault();
+    startRun();
+    render();
+  };
+  document.addEventListener('keydown', onKeyDown);
+
   onScreenDispose(section, () => {
     window.removeEventListener('resize', onResize);
     document.removeEventListener('visibilitychange', onVisibilityChange);
+    document.removeEventListener('keydown', onKeyDown);
     if (hideTimer !== null) window.clearTimeout(hideTimer);
     detachInput();
     releaseWakeLock();

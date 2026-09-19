@@ -28,6 +28,12 @@ export interface BeatSchedulerOptions {
   countInBars?: number;
   /** AudioContext time of beat 0 (the first count-in click, if any). */
   startTimeSec: number;
+  /**
+   * Where in the bar beat 0 falls, 1-based; 1 when omitted. For a metronome
+   * picked up mid-bar — the Score screen restarts it on the beat after the
+   * learner's first note (T8), and the accent must stay on the downbeat.
+   */
+  firstBeatInBar?: number;
 }
 
 /**
@@ -59,6 +65,9 @@ export class BeatScheduler {
     const countInBars = Math.max(0, Math.trunc(options.countInBars ?? 0));
     this.countInBeats = countInBars * this.beatsPerBar;
     this.barOriginBar = 1 - countInBars;
+    // A downbeat that is `firstBeatInBar − 1` beats before beat 0.
+    const into = Math.max(1, Math.min(this.beatsPerBar, Math.trunc(options.firstBeatInBar ?? 1))) - 1;
+    this.barOriginIndex = -into;
     this.secondsPerBeat = 60 / options.bpm;
     this.nextTimeSec = options.startTimeSec;
   }

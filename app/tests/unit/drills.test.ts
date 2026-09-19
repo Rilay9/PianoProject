@@ -219,6 +219,73 @@ describe('rhythm drill', () => {
   });
 });
 
+describe('rhythm drill — the first tap starts it (T8)', () => {
+  const pattern = [0, 500, 1000, 1500];
+  const tap = (drill: RhythmDrill, tMs: number): void =>
+    drill.feed({ kind: 'noteOn', midi: 60, velocity: 90, tMs });
+
+  it('a late first tap is on time, and every tap after it is measured from it', () => {
+    const drill = new RhythmDrill({ pattern, toleranceMs: 150, clock: new FakeClock(0) });
+    drill.next();
+    drill.startAt(1000);
+    drill.latchOnFirstTap();
+    // 300 ms late: without the latch this is an extra tap and the rest are off.
+    for (const at of pattern) tap(drill, 1300 + at);
+    const result = drill.result();
+    expect(result.correct).toBe(4);
+    expect(result.detail?.extraTaps).toBe(0);
+    expect(result.detail?.meanOffsetMs).toBeCloseTo(0, 6);
+    expect(drill.firstTapAt).toBe(1300);
+  });
+
+  it('taps before the count-in has found the downbeat are strays, not extras', () => {
+    const drill = new RhythmDrill({ pattern, toleranceMs: 150, clock: new FakeClock(0) });
+    drill.next();
+    drill.latchOnFirstTap({ awaitCountIn: true });
+    tap(drill, 200);
+    tap(drill, 700);
+    expect(drill.result().answered).toBe(0);
+    expect(drill.firstTapAt).toBeNull();
+    drill.startAt(2000);
+    tap(drill, 2050);
+    expect(drill.firstTapAt).toBe(2050);
+    expect(drill.result().correct).toBe(1);
+  });
+
+  it('a pattern that opens on a rest starts on its first sounding onset', () => {
+    const drill = new RhythmDrill({ pattern: [500, 1000], toleranceMs: 150, clock: new FakeClock(0) });
+    drill.next();
+    drill.startAt(0);
+    drill.latchOnFirstTap();
+    tap(drill, 900);
+    tap(drill, 1400);
+    expect(drill.result().correct).toBe(2);
+    expect(drill.result().detail?.meanOffsetMs).toBeCloseTo(0, 6);
+  });
+
+  it('the stray line is the tolerance before the first onset: just outside waits, just inside starts', () => {
+    const drill = new RhythmDrill({ pattern, toleranceMs: 150, clock: new FakeClock(0) });
+    drill.next();
+    drill.startAt(1000);
+    drill.latchOnFirstTap();
+    tap(drill, 1000 - 151);
+    expect(drill.firstTapAt).toBeNull();
+    expect(drill.result().answered).toBe(0);
+    tap(drill, 1000 - 149);
+    expect(drill.firstTapAt).toBe(851);
+    expect(drill.result().correct).toBe(1);
+  });
+
+  it('without the latch a late first tap is still an extra, as before', () => {
+    const drill = new RhythmDrill({ pattern, toleranceMs: 150, clock: new FakeClock(0) });
+    drill.next();
+    drill.startAt(1000);
+    tap(drill, 1300);
+    expect(drill.result().detail?.extraTaps).toBe(1);
+    expect(drill.firstTapAt).toBeNull();
+  });
+});
+
 describe('pedal drill', () => {
   const chords = [
     [60, 64, 67],

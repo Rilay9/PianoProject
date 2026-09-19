@@ -55,7 +55,7 @@ import {
   type DrillResult,
 } from '../../engine/drills';
 import { Metronome } from '../../audio/Metronome';
-import { audioTimeToPerformanceMs, captureAudioClockAnchor } from '../../audio/clock';
+import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
 import { noteLabel, worthRecording } from '../../engine/drills/types';
 import type { EngineInput, Mode } from '../../engine/types';
@@ -275,6 +275,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   /** The click the rhythm drill counts in and plays along with. */
   let metronome: Metronome | null = null;
   let stopMetronomeTicks: (() => void) | null = null;
+  /** The count-in's reading of both clocks, kept to put the click back in phase (T8). */
+  let clickAnchor: AudioClockAnchor | null = null;
+  /** The drill whose click has been put back after its first tap, so it is done once. */
+  let clickResumedFor: RhythmDrill | null = null;
   /** True once the learner has opened the microphone on this screen. */
   let micActive = false;
   let stopMicNotes: (() => void) | null = null;
@@ -413,6 +417,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if ((event.confidence ?? 1) < MIC_ANSWER_CONFIDENCE) return;
     const before = drill.result().answered;
     drill.feed(toEngineInput(event));
+    if (drill instanceof RhythmDrill && drill.firstTapAt !== null && clickResumedFor !== drill) {
+      clickResumedFor = drill;
+      resumeClickAfterFirstTap(drill);
+    }
     if (event.kind === 'noteOn') strip?.setState({ pressed: [event.midi] });
     if (MANUAL_ADVANCE.has(drill.kind)) {
       // No per-note answer to settle: repaint and wait for "Done".
@@ -835,23 +843,71 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // Taken once, before the first click: both clocks drift, and the whole
         // point is that the drill and the metronome share one reading.
         const anchor = captureAudioClockAnchor(context);
+        clickAnchor = anchor;
+        // T8: the count-in teaches the tempo, and the learner's first tap then
+        // sets the start. Taps before the downbeat is known are strays.
+        target.latchOnFirstTap({ awaitCountIn: true });
+        const beatsPerBar = Math.max(1, target.countInBeats);
+        let downbeatKnown = false;
         stopMetronomeTicks = metronome.onTick((beat) => {
           if (beat.isCountIn) {
             status.textContent = `Count-in — ${String(beat.beatInBar)}`;
+            // The downbeat is known a whole beat ahead, at the last click of the
+            // count. Waiting for the downbeat's own tick — scheduled only a
+            // tenth of a second ahead — refused an early tap that was inside
+            // the tolerance as a stray (T8 review, L1).
+            if (beat.index === beatsPerBar - 1 && !downbeatKnown) {
+              downbeatKnown = true;
+              target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec + 60 / target.bpm));
+            }
             return;
           }
           if (beat.bar === 1 && beat.beatInBar === 1) {
-            target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec));
-            status.textContent = 'Tap the rhythm on any key.';
+            if (!downbeatKnown) {
+              downbeatKnown = true;
+              target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec));
+            }
+            status.textContent = 'Tap the rhythm on any key — your first tap starts it.';
+            // Quiet until that tap: a click still going would be a grid the
+            // learner is judged against by a clock they have not set yet. The
+            // downbeat, already scheduled, still sounds.
+            if (target.firstTapAt === null) metronome?.stop();
           }
         });
         metronome.start();
       })
       .catch(() => {
-        // No audio is a reason to lose the click, not the drill: without a
-        // start time the drill falls back to its own clock, exactly as before.
-        status.textContent = 'No metronome — the count-in is silent on this device.';
+        // No audio is a reason to lose the click, not the drill. There is no
+        // downbeat to wait for, so the first tap starts it (T8).
+        target.latchOnFirstTap();
+        status.textContent = 'No metronome — the count-in is silent on this device. Your first tap starts it.';
       });
+  }
+
+  /**
+   * The first tap has set the start (T8): the click comes back on the next
+   * beat of the learner's grid, accented where that beat falls in the bar.
+   *
+   * The count-in's listener goes first. It sets the start on whatever it
+   * numbers bar 1 beat 1, and a restarted metronome numbers from bar 1.
+   */
+  function resumeClickAfterFirstTap(target: RhythmDrill): void {
+    const start = target.startedAt;
+    const tap = target.firstTapAt;
+    const context = audioEngine.contextOrNull;
+    if (!metronome || !clickAnchor || !context || start === null || tap === null) return;
+    stopMetronomeTicks?.();
+    stopMetronomeTicks = null;
+    // A first tap inside the last beat of the count came before the downbeat
+    // tick that would have changed this line.
+    status.textContent = 'Tap the rhythm on any key.';
+    const beatsPerBar = Math.max(1, target.countInBeats);
+    const beat = Math.floor((tap - start) / target.beatMs + 1e-6) + 1;
+    const heardAtPerfMs = start + beat * target.beatMs;
+    const startSec =
+      clickAnchor.contextTimeSec + (heardAtPerfMs - clickAnchor.performanceMs) / 1000 - clickAnchor.outputLatencySec;
+    metronome.setCountInBars(0);
+    metronome.start(Math.max(context.currentTime, startSec), (beat % beatsPerBar) + 1);
   }
 
   // --- the loop ------------------------------------------------------------

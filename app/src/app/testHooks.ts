@@ -54,6 +54,8 @@ export interface TestHooks {
     noteIds: string[];
     pitches: number[];
     paused: boolean;
+    /** Holding for the learner's first note (T8). */
+    armed: boolean;
     engineMode: string;
     input: string;
   } | null;

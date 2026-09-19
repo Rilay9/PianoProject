@@ -430,3 +430,461 @@ describe('the clock survives two drivers', () => {
     expect(h.engine.state.step).toBe(step);
   });
 });
+
+// --- T8: the learner's first note starts the clock --------------------------
+
+/** Right hand on beats 1 and 2; the left hand alone on beat 0. */
+const leftHandFirst = makeModel([
+  { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+  { onset: 1, notes: [note({ midi: 60 })] },
+  { onset: 2, notes: [note({ midi: 62 })] },
+]);
+
+describe('Tempo mode — the latch (T8)', () => {
+  const latched = { mode: 'tempo', countInBars: 1, latchStart: true } as const;
+  const countInMs = 4 * BEAT_MS;
+
+  it('holds on the first note when the count-in ends with nothing played', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs + 3 * BEAT_MS);
+    expect(h.of('armed')).toHaveLength(1);
+    expect(h.engine.state.armed).toBe(true);
+    // Nothing moved and nothing was marked missed while it held.
+    expect(h.engine.state.step).toBe(0);
+    expect(h.of('missed')).toEqual([]);
+    expect(h.engine.musicMs).toBe(0);
+  });
+
+  it('a late first note is on time, and so is every note measured from it', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs + 700);
+    h.play(60);
+    expect(h.of('latched')).toHaveLength(1);
+    h.clock.set(h.clock.now() + BEAT_MS);
+    h.engine.tick();
+    h.play(62);
+    const deltas = h.of('noteJudged').map((e) => e.deltaMs);
+    expect(deltas).toEqual([0, 0]);
+    expect(h.engine.state.armed).toBe(false);
+  });
+
+  it('a first note inside its window while counting in sets the clock without holding', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs - 100);
+    h.play(60);
+    h.clock.set(h.clock.now() + BEAT_MS);
+    h.engine.tick();
+    h.play(62);
+    expect(h.of('armed')).toEqual([]);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.deltaMs])).toEqual([
+      [true, 0],
+      [true, 0],
+    ]);
+  });
+
+  it('a note before the first note’s window is a stray: not judged, and the latch still waits', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(2 * BEAT_MS);
+    h.play(64);
+    expect(h.of('noteJudged')).toEqual([]);
+    expect(h.engine.state.score.wrongNotesTotal).toBe(0);
+    expect(h.engine.holdingFrom).toBe(0);
+  });
+
+  it('any key starts it once it is holding, and a wrong one is still marked wrong', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs + 200);
+    h.play(61);
+    expect(h.of('latched')).toHaveLength(1);
+    expect(h.of('noteJudged').map((e) => e.ok)).toEqual([false]);
+  });
+
+  it('with no count-in it holds from the start, on the first note the learner plays', () => {
+    const h = harness(leftHandFirst, { mode: 'tempo', countInBars: 0, hands: 'R', latchStart: true });
+    h.engine.start();
+    expect(h.of('armed')).toHaveLength(1);
+    // The cursor waits on the right hand's note, not on the left hand's beat.
+    expect(h.engine.state.step).toBe(1);
+    h.advance(2 * BEAT_MS);
+    h.play(60);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.deltaMs])).toEqual([[true, 0]]);
+  });
+
+  it('removes the input latency from the latching note, as from every other', () => {
+    const h = harness(melody, { ...latched, inputLatencyMs: 40 });
+    h.engine.start();
+    h.advance(countInMs + 500);
+    h.play(60);
+    h.clock.set(h.clock.now() + BEAT_MS);
+    h.engine.tick();
+    h.play(62);
+    expect(h.of('noteJudged').map((e) => e.deltaMs)).toEqual([0, 0]);
+    expect(h.of('latched')[0]?.tMs).toBe(h.clock.now() - BEAT_MS - 40);
+  });
+
+  it('does not count time spent holding as practice', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs);
+    const heldFor = 5 * BEAT_MS;
+    h.advance(heldFor);
+    const beforeLatch = h.clock.now();
+    h.play(60);
+    h.advance(4.5 * BEAT_MS);
+    const finished = h.of('finished')[0];
+    expect(finished).toBeDefined();
+    // Count-in plus the music, and not the holding.
+    expect(finished!.score.durationMs).toBe(finished!.tMs - beforeLatch + countInMs);
+  });
+
+  it('a loop latches once; later laps keep time without holding again', () => {
+    const h = harness(melody, { ...latched, loop: { fromStep: 0, toStep: 3 } });
+    h.engine.start();
+    h.advance(countInMs + 300);
+    h.play(60);
+    h.advance(20 * BEAT_MS);
+    expect(h.engine.state.loops).toBeGreaterThanOrEqual(2);
+    expect(h.of('armed')).toHaveLength(1);
+    expect(h.of('latched')).toHaveLength(1);
+  });
+
+  it('a run that is never latched moves on the timer exactly as before', () => {
+    const h = harness(melody, { mode: 'tempo', countInBars: 1 });
+    h.engine.start();
+    h.advance(countInMs + 1.5 * BEAT_MS);
+    expect(h.of('armed')).toEqual([]);
+    expect(h.of('stepAdvanced').map((e) => e.to)).toEqual([1]);
+    expect(h.engine.holdingFrom).toBeNull();
+  });
+
+  it('puts the next beat, and its place in the bar, where the engine’s own ticks fall', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    // Step 1 sounds on beat 2 of bar 1; the beat after it is beat 3.
+    expect(h.engine.nextBeatAfter(1 * BEAT_MS)).toEqual({ musicMs: 2 * BEAT_MS, beatInBar: 3 });
+    expect(h.engine.nextBeatAfter(3 * BEAT_MS)).toEqual({ musicMs: 4 * BEAT_MS, beatInBar: 1 });
+  });
+});
+
+// --- The clock under a loop that starts mid-piece ---------------------------
+
+/** Eight beats, one note each, so step N sounds at N seconds. */
+const eightBeats = makeModel(
+  [0, 1, 2, 3, 4, 5, 6, 7].map((beat) => ({ onset: beat, notes: [note({ midi: 60 + beat })] })),
+);
+
+describe('Tempo mode — a loop that starts partway through the piece', () => {
+  it('counts in straight to the loop, not to bar 1', () => {
+    const h = harness(eightBeats, { mode: 'tempo', countInBars: 1, loop: { fromStep: 6, toStep: 7 } });
+    h.engine.start();
+    // Four beats of count-in, then the loop's first note — not the six
+    // seconds bars 1 and 2 would have taken first.
+    h.advance(4 * BEAT_MS);
+    h.play(66);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.deltaMs])).toEqual([[true, 0]]);
+  });
+
+  it('numbers the count-in and the loop’s own bar from the loop', () => {
+    const h = harness(eightBeats, { mode: 'tempo', countInBars: 1, loop: { fromStep: 4, toStep: 7 } });
+    h.engine.start();
+    h.advance(4 * BEAT_MS + 10);
+    const ticks = h.of('tempoTick');
+    expect(ticks.map((t) => t.isCountIn)).toEqual([true, true, true, true, false]);
+    expect(ticks[4]).toMatchObject({ bar: 1, beat: 1 });
+  });
+
+  it('keeps counting the run’s duration across laps', () => {
+    const h = harness(melody, { mode: 'tempo', countInBars: 0, loop: { fromStep: 0, toStep: 3 } });
+    h.engine.start();
+    const wall = 30 * BEAT_MS;
+    h.advance(wall);
+    expect(h.engine.state.loops).toBeGreaterThanOrEqual(2);
+    h.engine.stop();
+    const final = h.of('finished').filter((e) => !e.loop).pop();
+    // It used to restart at every lap, and came out negative.
+    expect(final?.score.durationMs).toBe(wall);
+  });
+});
+
+// --- T8: resuming counts back in, on the grid --------------------------------
+
+describe('Tempo mode — resuming after a pause (T8)', () => {
+  const bar = 4 * BEAT_MS;
+
+  /** Plays C on time, lets D go by, and pauses half a beat after it. */
+  function pausedAfterD() {
+    const h = harness(melody, { mode: 'tempo', countInBars: 0 });
+    h.engine.start();
+    h.play(60);
+    h.advance(1.5 * BEAT_MS);
+    h.engine.pause();
+    h.clock.set(h.clock.now() + 5 * BEAT_MS);
+    return h;
+  }
+
+  it('counts one bar back in to the next note still to be played, on the grid', () => {
+    const h = pausedAfterD();
+    // D went by unplayed and its window has closed, so the run resumes at E.
+    expect(h.engine.resumesAt).toBe(2);
+    const ticksBefore = h.of('tempoTick').length;
+    h.engine.resume({ recountMs: bar });
+    h.advance(bar - 1);
+    const recount = h.of('tempoTick').slice(ticksBefore);
+    // Four clicks of count-in, numbered where they fall in the bar: E is beat 3.
+    expect(recount.map((t) => [t.beat, t.isCountIn])).toEqual([
+      [3, true],
+      [4, true],
+      [1, true],
+      [2, true],
+    ]);
+    h.advance(1);
+    h.play(64);
+    expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, deltaMs: 0 });
+  });
+
+  it('resumes at the note under the cursor when it has not been played yet', () => {
+    const h = harness(melody, { mode: 'tempo', countInBars: 0 });
+    h.engine.start();
+    h.play(60);
+    h.advance(1.1 * BEAT_MS);
+    h.engine.pause();
+    // D's window is still open and nothing has been struck in it.
+    expect(h.engine.resumesAt).toBe(1);
+  });
+
+  it('holds for the first note after the count, when asked to latch', () => {
+    const h = pausedAfterD();
+    h.engine.resume({ recountMs: bar, latch: true });
+    h.advance(bar + 2 * BEAT_MS);
+    expect(h.engine.state.armed).toBe(true);
+    expect(h.engine.state.step).toBe(2);
+    h.play(64);
+    expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, deltaMs: 0 });
+    expect(h.engine.state.armed).toBe(false);
+  });
+
+  it('a plain resume carries on exactly as before', () => {
+    const h = pausedAfterD();
+    h.engine.resume();
+    // Half a beat later E is due, with no count.
+    h.advance(0.5 * BEAT_MS);
+    h.play(64);
+    expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, deltaMs: 0 });
+  });
+});
+
+// --- T8 review: holding, pausing, stopping, ticking, resuming ----------------
+
+describe('Tempo mode — the latch, reviewed (T8)', () => {
+  const latched = { mode: 'tempo', countInBars: 1, latchStart: true } as const;
+  const countInMs = 4 * BEAT_MS;
+  const bar = 4 * BEAT_MS;
+
+  it('holds as the count ends and skips a silent opening, rather than counting through it', () => {
+    const h = harness(leftHandFirst, { ...latched, hands: 'R', playbackHands: 'none' } as never);
+    h.engine.start();
+    h.advance(countInMs);
+    expect(h.engine.state.armed).toBe(true);
+    // The cursor is on the right hand's note, a beat into the piece.
+    expect(h.engine.state.step).toBe(1);
+    h.play(60);
+    h.clock.set(h.clock.now() + BEAT_MS);
+    h.engine.tick();
+    h.play(62);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.deltaMs])).toEqual([
+      [true, 0],
+      [true, 0],
+    ]);
+  });
+
+  it('practice time does not grow while holding', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs);
+    const atHold = h.engine.elapsedMs;
+    h.advance(3 * BEAT_MS);
+    expect(h.engine.elapsedMs).toBe(atHold);
+  });
+
+  it('a pause while holding is idle once, and the run is still holding after it', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs + 1000);
+    h.engine.pause();
+    h.clock.set(h.clock.now() + 5000);
+    h.engine.resume({ recountMs: bar });
+    expect(h.engine.state.armed).toBe(true);
+    // Resuming while holding counts nothing back in: the hold carries on.
+    const ticksBefore = h.of('tempoTick').length;
+    h.advance(2000);
+    expect(h.of('tempoTick').length).toBe(ticksBefore);
+    expect(h.engine.elapsedMs).toBe(countInMs);
+    const latchAt = h.clock.now();
+    h.play(60);
+    h.advance(4.5 * BEAT_MS);
+    const finished = h.of('finished')[0];
+    expect(finished!.score.durationMs).toBe(countInMs + (finished!.tMs - latchAt));
+  });
+
+  it('a stop while holding records only the count-in, and leaves nothing waiting', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs + 3000);
+    h.engine.stop();
+    expect(h.of('finished')[0]!.score.durationMs).toBe(countInMs);
+    expect(h.engine.holdingFrom).toBeNull();
+    expect(h.engine.state.armed).toBe(false);
+  });
+
+  it('ticks every beat once around the hold: none twice, none skipped', () => {
+    const h = harness(melody, latched);
+    h.engine.start();
+    h.advance(countInMs + 2000);
+    // Holding: the count's four beats, and not the first note's own.
+    expect(h.of('tempoTick').map((t) => [t.bar, t.beat])).toEqual([
+      [0, 1],
+      [0, 2],
+      [0, 3],
+      [0, 4],
+    ]);
+    h.play(60);
+    h.advance(2.5 * BEAT_MS);
+    expect(h.of('tempoTick').slice(4).map((t) => [t.bar, t.beat])).toEqual([
+      [1, 1],
+      [1, 2],
+      [1, 3],
+    ]);
+  });
+
+  it('a beat skipped with a silent opening is never ticked, and the first note’s beat is ticked once', () => {
+    // No count-in: the run holds at once, on the right hand's beat 2, and the
+    // left hand's silent beat 1 is skipped — so it must not tick afterwards.
+    const h = harness(leftHandFirst, { mode: 'tempo', countInBars: 0, hands: 'R', latchStart: true });
+    h.engine.start();
+    h.advance(2000);
+    expect(h.of('tempoTick')).toEqual([]);
+    h.play(60);
+    h.advance(1.5 * BEAT_MS);
+    expect(h.of('tempoTick').map((t) => [t.bar, t.beat])).toEqual([
+      [1, 2],
+      [1, 3],
+    ]);
+  });
+
+  it('a resume closes a half-played chord as missed and picks up at the next note', () => {
+    const chordTune = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 1, notes: [note({ midi: 62 }), note({ midi: 65 })] },
+      { onset: 2, notes: [note({ midi: 64 })] },
+    ]);
+    const h = harness(chordTune, { mode: 'tempo', countInBars: 0 });
+    h.engine.start();
+    h.play(60);
+    h.advance(BEAT_MS);
+    h.play(62);
+    h.advance(50);
+    h.engine.pause();
+    expect(h.engine.resumesAt).toBe(2);
+    h.engine.resume({ recountMs: bar });
+    expect(h.of('missed').map((e) => e.midi)).toEqual([65]);
+  });
+
+  it('a resume skips a note the learner already played early', () => {
+    const h = harness(melody, { mode: 'tempo', countInBars: 0 });
+    h.engine.start();
+    h.play(60);
+    // D played 100 ms early, inside its window, with the cursor still on C.
+    h.advance(BEAT_MS - 100);
+    h.play(62);
+    h.engine.pause();
+    expect(h.engine.state.step).toBe(0);
+    expect(h.engine.resumesAt).toBe(2);
+  });
+
+  it('counts back in to the step it is given, without holding, when the app leads', () => {
+    const h = harness(melody, { mode: 'tempo', countInBars: 0 });
+    h.engine.start();
+    h.play(60);
+    h.advance(1.5 * BEAT_MS);
+    h.engine.pause();
+    h.engine.resume({ recountMs: bar, latch: false, toStep: 2 });
+    expect(h.engine.holdingFrom).toBeNull();
+    h.advance(bar);
+    h.play(64);
+    expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, deltaMs: 0 });
+    expect(h.of('armed')).toEqual([]);
+  });
+});
+
+// --- T8 review 2 --------------------------------------------------------------
+
+describe('Tempo mode — the latch, reviewed again (T8)', () => {
+  const bar = 4 * BEAT_MS;
+
+  it('a note just before the count ends starts it over a silent opening, at no error', () => {
+    const h = harness(leftHandFirst, { mode: 'tempo', countInBars: 1, hands: 'R', latchStart: true });
+    h.engine.start();
+    h.advance(4 * BEAT_MS - 100);
+    h.play(60);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.deltaMs])).toEqual([[true, 0]]);
+    expect(h.of('armed')).toEqual([]);
+  });
+
+  it('a first note off the beat does not tick the beat that went by before it', () => {
+    const offBeat = makeModel([
+      { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+      { onset: 0.5, notes: [note({ midi: 60 })] },
+      { onset: 1.5, notes: [note({ midi: 62 })] },
+    ]);
+    const h = harness(offBeat, { mode: 'tempo', countInBars: 0, hands: 'R', latchStart: true });
+    h.engine.start();
+    h.play(60);
+    h.advance(0.7 * BEAT_MS);
+    // The note is at beat 1.5: the next tick is beat 2, and beat 1 is not
+    // ticked half a beat after it was due.
+    expect(h.of('tempoTick').map((t) => [t.bar, t.beat])).toEqual([[1, 2]]);
+  });
+
+  it('resumes at an untouched note the cursor has already passed, while its window is open', () => {
+    // Two notes a tenth of a beat apart: closer than the tolerance, so the
+    // cursor reaches the second while the first is still open.
+    const close = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 0.1, notes: [note({ midi: 62 })] },
+      { onset: 1, notes: [note({ midi: 64 })] },
+    ]);
+    const h = harness(close, { mode: 'tempo', countInBars: 0 });
+    h.engine.start();
+    h.advance(120);
+    h.engine.pause();
+    expect(h.engine.state.step).toBe(1);
+    expect(h.engine.resumesAt).toBe(0);
+  });
+
+  it('counts back in to the step it is given, when that is earlier than the learner’s next', () => {
+    // Right hand, then the other hand's note (the app's), then the right hand.
+    const appBetween = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 1, notes: [note({ midi: 48, hand: 'L' })] },
+      { onset: 2, notes: [note({ midi: 62 })] },
+    ]);
+    const h = harness(appBetween, { mode: 'tempo', countInBars: 0, hands: 'R' });
+    h.engine.start();
+    h.play(60);
+    h.advance(0.5 * BEAT_MS);
+    h.engine.pause();
+    expect(h.engine.resumesAt).toBe(2);
+    h.engine.resume({ recountMs: bar, latch: false, toStep: 1 });
+    expect(h.engine.countingBackTo).toBe(1);
+    // A bar of count to the app's note, then a beat to the learner's.
+    h.advance(bar + BEAT_MS);
+    expect(h.engine.countingBackTo).toBeNull();
+    h.play(62);
+    expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, deltaMs: 0 });
+  });
+});

@@ -8,7 +8,17 @@
  * Wait mode never asks for a warning mark, and a natural end is reported once.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DEFAULT_STRIP_OPTIONS, KEY_FLASH_MS, ScoreSession, type StripOptions } from '../../src/score/ScoreSession';
+import {
+  DEFAULT_STRIP_OPTIONS,
+  KEY_FLASH_MS,
+  ScoreSession,
+  appPitches,
+  learnerLeads,
+  type StripOptions,
+} from '../../src/score/ScoreSession';
+import { prepareSession } from '../../src/engine/prepareSession';
+import type { Piano } from '../../src/audio/Piano';
+import { Metronome } from '../../src/audio/Metronome';
 import type { KeyboardStripState, KeyView } from '../../src/ui/KeyboardStrip';
 import type { WindowRenderer } from '../../src/score/WindowRenderer';
 import type { SessionScore } from '../../src/engine/types';
@@ -331,6 +341,282 @@ describe('what the keys show ahead of time', () => {
     flushFrame();
     expect([...(last().wrong ?? [])]).toEqual([]);
     expect([...(last().expected ?? [])]).toEqual([60]);
+    s.dispose();
+  });
+});
+
+// --- T8: who plays first, and holding for the learner ------------------------
+
+/** Left hand alone on beat 0, right hand from beat 1. */
+const leftIntro = makeModel([
+  { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+  { onset: 1, notes: [note({ midi: 60 })] },
+  { onset: 2, notes: [note({ midi: 62 })] },
+]);
+
+/** Both hands together on beat 0. */
+const together = makeModel([
+  { onset: 0, notes: [note({ midi: 48, hand: 'L' }), note({ midi: 60 })] },
+  { onset: 1, notes: [note({ midi: 62 })] },
+]);
+
+function leads(m: typeof model, hands: 'R' | 'L' | 'both', which: 'none' | 'non-focused' | 'both'): boolean {
+  return learnerLeads(m, prepareSession(m, { mode: 'tempo', hands }), which);
+}
+
+describe('who plays first (T8)', () => {
+  it('the app leads when its hand sounds before the learner’s first note', () => {
+    expect(leads(leftIntro, 'R', 'non-focused')).toBe(false);
+  });
+
+  it('the learner leads when the app’s first note comes after theirs', () => {
+    expect(leads(leftIntro, 'L', 'non-focused')).toBe(true);
+  });
+
+  it('the learner leads when they start together — the app waits and plays on their key', () => {
+    expect(leads(together, 'R', 'non-focused')).toBe(true);
+  });
+
+  it('the learner leads when the app plays nothing', () => {
+    expect(leads(leftIntro, 'R', 'none')).toBe(true);
+    // No hand focus: there is no other hand, so `non-focused` plays nothing.
+    expect(leads(leftIntro, 'both', 'non-focused')).toBe(true);
+  });
+
+  it('the app leads when it plays everything, the learner’s part included', () => {
+    expect(leads(together, 'R', 'both')).toBe(false);
+  });
+
+  it('decides with the same pitches the app actually plays', () => {
+    expect(appPitches(together, 0, 'non-focused', 'R')).toEqual([48]);
+    expect(appPitches(together, 0, 'non-focused', 'both')).toEqual([]);
+    expect(appPitches(together, 0, 'none', 'R')).toEqual([]);
+  });
+});
+
+describe('a Tempo run the learner leads holds for their first key (T8)', () => {
+  function sessionWith(m: typeof model) {
+    const played: number[] = [];
+    const piano = {
+      start: (n: { midi: number }) => {
+        played.push(n.midi);
+        return () => undefined;
+      },
+      stop: () => undefined,
+    } as unknown as Piano;
+    const s = new ScoreSession({
+      model: m,
+      renderer: fakeRenderer().renderer,
+      piano,
+      audioContext: { currentTime: 0 } as unknown as AudioContext,
+    });
+    return { s, played };
+  }
+
+  it('holds from the start with no count-in, and only in Tempo', () => {
+    const { s } = sessionWith(model);
+    s.start({ mode: 'tempo', countInBars: 0 });
+    expect(s.armed).toBe(true);
+    expect(s.holdingFrom).toBe(0);
+    for (const mode of ['wait', 'listen', 'free'] as const) {
+      s.start({ mode, countInBars: 0 });
+      expect(s.armed).toBe(false);
+      expect(s.holdingFrom).toBeNull();
+    }
+    s.dispose();
+  });
+
+  it('does not hold when the app leads, or when the caller opts out', () => {
+    const { s } = sessionWith(leftIntro);
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R' });
+    expect(s.holdingFrom).toBeNull();
+    s.start({ mode: 'tempo', countInBars: 0, latchStart: false });
+    expect(s.holdingFrom).toBeNull();
+    s.dispose();
+  });
+
+  it('plays none of the app’s notes while holding, and the held one on the learner’s key', () => {
+    const { s, played } = sessionWith(together);
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R' });
+    flushFrame();
+    flushFrame();
+    expect(s.armed).toBe(true);
+    expect(played).toEqual([]);
+    s.feed(60, 80, performance.now());
+    expect(s.armed).toBe(false);
+    expect(played).toEqual([48]);
+    s.dispose();
+  });
+});
+
+// --- T8 review: the guard, resuming, and the click while holding -------------
+
+/** The left hand alone for three beats, then the right hand. */
+const appIntro = makeModel([
+  { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+  { onset: 1, notes: [note({ midi: 50, hand: 'L' })] },
+  { onset: 2, notes: [note({ midi: 52, hand: 'L' })] },
+  { onset: 3, notes: [note({ midi: 60 })] },
+  { onset: 4, notes: [note({ midi: 62 })] },
+]);
+
+function fakeAudio(): AudioContext {
+  const node = { gain: { value: 0 }, connect: () => undefined, disconnect: () => undefined };
+  return { currentTime: 0, destination: {}, createGain: () => node } as unknown as AudioContext;
+}
+
+describe('the T8 review’s fixes, in the session', () => {
+  it('knows the right hand has notes when the left hand opens the piece (H1)', () => {
+    const s = new ScoreSession({ model: appIntro, renderer: fakeRenderer().renderer });
+    s.start({ mode: 'tempo', countInBars: 1, hands: 'R' });
+    // The cursor is on the left hand's beat: nothing for the right hand there…
+    expect(s.expectedNow).toEqual([]);
+    // …but plenty in the run, which is what the screen must ask.
+    expect(s.learnerHasNotes).toBe(true);
+    s.start({ mode: 'tempo', countInBars: 1, hands: 'L' });
+    expect(s.learnerHasNotes).toBe(true);
+    s.dispose();
+  });
+
+  it('an app-led resume counts back in without holding (H2)', () => {
+    const s = new ScoreSession({ model: appIntro, renderer: fakeRenderer().renderer });
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R' });
+    expect(s.holdingFrom).toBeNull();
+    s.pause();
+    s.resume();
+    // The next thing to sound is the app's left hand: it leads, nobody waits.
+    expect(s.holdingFrom).toBeNull();
+    expect(s.armed).toBe(false);
+    s.dispose();
+  });
+
+  it('a learner-led resume holds for the learner’s next note', () => {
+    const s = new ScoreSession({ model, renderer: fakeRenderer().renderer });
+    s.start({ mode: 'tempo', countInBars: 0 });
+    s.feed(60, 80, performance.now());
+    expect(s.holdingFrom).toBeNull();
+    s.pause();
+    s.resume();
+    expect(s.holdingFrom).toBe(1);
+    s.dispose();
+  });
+
+  it('no run that is holding starts the metronome — at the start or on resume (M2)', () => {
+    const starts = vi.spyOn(Metronome.prototype, 'start').mockImplementation(() => undefined);
+    vi.spyOn(Metronome.prototype, 'stop').mockImplementation(() => undefined);
+    vi.spyOn(Metronome.prototype, 'dispose').mockImplementation(() => undefined);
+    const s = new ScoreSession({ model, renderer: fakeRenderer().renderer, audioContext: fakeAudio() });
+    s.start({ mode: 'tempo', countInBars: 0, metronome: true });
+    expect(s.armed).toBe(true);
+    expect(starts).not.toHaveBeenCalled();
+    s.pause();
+    s.resume();
+    expect(s.armed).toBe(true);
+    expect(starts).not.toHaveBeenCalled();
+    // Latched: now it clicks.
+    s.feed(60, 80, performance.now());
+    expect(starts).toHaveBeenCalledTimes(1);
+    s.dispose();
+    vi.restoreAllMocks();
+  });
+});
+
+describe('the ladder’s opt-out is for its own restart only (T8 review, L3)', () => {
+  it('a run started with holdAtStart: false does not hold, and still holds after a pause', () => {
+    const s = new ScoreSession({ model, renderer: fakeRenderer().renderer });
+    s.start({ mode: 'tempo', countInBars: 0, holdAtStart: false });
+    expect(s.armed).toBe(false);
+    expect(s.holdingFrom).toBeNull();
+    s.pause();
+    s.resume();
+    // A pause is a new entry: the learner leads from here, so it holds.
+    expect(s.holdingFrom).not.toBeNull();
+    s.dispose();
+  });
+
+  it('latchStart: false — no input — never holds, not even after a pause', () => {
+    const s = new ScoreSession({ model, renderer: fakeRenderer().renderer });
+    s.start({ mode: 'tempo', countInBars: 0, latchStart: false });
+    s.pause();
+    s.resume();
+    expect(s.holdingFrom).toBeNull();
+    s.dispose();
+  });
+});
+
+describe('the T8 review’s second round, in the session', () => {
+  it('the guard’s question can answer no', () => {
+    const s = new ScoreSession({ model, renderer: fakeRenderer().renderer });
+    // A right-hand piece, practised with the left.
+    s.start({ mode: 'tempo', countInBars: 1, hands: 'L' });
+    expect(s.learnerHasNotes).toBe(false);
+    s.dispose();
+  });
+
+  it('an app-led resume counts back in to the app’s next note, not the learner’s', () => {
+    const s = new ScoreSession({ model: appIntro, renderer: fakeRenderer().renderer });
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R' });
+    s.pause();
+    s.resume();
+    const back = s.countingBackTo;
+    expect(back).not.toBeNull();
+    // Steps 0–2 are the left hand's, which the app plays; 3 is the learner's.
+    expect(back).toBeLessThan(3);
+    s.dispose();
+  });
+
+  it('a pause takes back the app’s notes that were queued and not yet heard', () => {
+    const quick = makeModel([
+      { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+      { onset: 0.2, notes: [note({ midi: 50, hand: 'L' })] },
+      { onset: 1, notes: [note({ midi: 60 })] },
+    ]);
+    const stops = new Map<number, ReturnType<typeof vi.fn>>();
+    const piano = {
+      start: (n: { midi: number }) => {
+        const stop = vi.fn();
+        stops.set(n.midi, stop);
+        return stop;
+      },
+      stop: () => undefined,
+    } as unknown as Piano;
+    const s = new ScoreSession({
+      model: quick,
+      renderer: fakeRenderer().renderer,
+      piano,
+      audioContext: { currentTime: 0 } as unknown as AudioContext,
+    });
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R' });
+    flushFrame();
+    // Both of the app's notes fall inside the look-ahead and are queued.
+    expect([...stops.keys()].sort()).toEqual([48, 50]);
+    s.pause();
+    // The one still ahead is taken back; the one already due is left alone.
+    expect(stops.get(50)).toHaveBeenCalled();
+    expect(stops.get(48)).not.toHaveBeenCalled();
+    s.dispose();
+  });
+
+  it('a second pause, during a resume’s count, keeps the learner-led decision', async () => {
+    // The app's note first, then the learner's two.
+    const tune = makeModel([
+      { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+      { onset: 0.5, notes: [note({ midi: 60 })] },
+      { onset: 1, notes: [note({ midi: 62 })] },
+    ]);
+    const s = new ScoreSession({ model: tune, renderer: fakeRenderer().renderer });
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R' });
+    // Let the app's note and the learner's first window go by on the clock.
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    s.pause();
+    s.resume();
+    const holding = s.holdingFrom;
+    expect(holding).not.toBeNull();
+    // Paused again mid-count, where the rewound clock is back before the app's
+    // note. Measured from there, the app would seem to lead and nothing hold.
+    s.pause();
+    s.resume();
+    expect(s.holdingFrom).toBe(holding);
     s.dispose();
   });
 });

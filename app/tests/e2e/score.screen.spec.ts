@@ -611,9 +611,11 @@ test.describe('naming the note it is waiting for', () => {
     await press(64);
     await expect(page.locator('#score-waiting')).toContainText('Waiting for F♯4');
 
-    // Tempo mode drives from the clock, so nothing is ever waited for.
+    // Tempo mode drives from the clock, so no note is ever named as waited
+    // for. Since T8 a Tempo run can hold for the learner's *first* note, and
+    // this line then says so — but it never names a note.
     await page.locator('#score-mode').selectOption('tempo');
-    await expect(page.locator('#score-waiting')).toBeHidden();
+    await expect(page.locator('#score-waiting')).not.toContainText('Waiting for');
   });
 });
 

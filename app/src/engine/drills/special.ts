@@ -46,6 +46,11 @@ export class RhythmDrill implements Drill {
   private readonly clock: Clock;
   private startedAtMs: number | null = null;
   private plannedStartMs: number | null = null;
+  /** T8: the first tap sets the start, rather than the count-in's end. */
+  private latchPending = false;
+  /** …and taps are strays until the count-in has said where the downbeat is. */
+  private waitingForStart = false;
+  private firstTapMs: number | null = null;
   private readonly matched = new Set<number>();
   private readonly deltas: number[] = [];
   private extras = 0;
@@ -96,6 +101,7 @@ export class RhythmDrill implements Drill {
   startAt(tMs: number): void {
     this.plannedStartMs = tMs;
     this.startedAtMs = tMs;
+    this.waitingForStart = false;
   }
 
   /** Where the pattern's first onset sits, once it is known. */
@@ -103,8 +109,38 @@ export class RhythmDrill implements Drill {
     return this.startedAtMs;
   }
 
+  /**
+   * Lets the learner's first tap set the start (T8).
+   *
+   * The count-in teaches the tempo; it no longer fixes the moment the first
+   * onset is due. A tap inside that onset's window — or any tap after it —
+   * *is* the first onset, and every later tap is measured from it, so coming
+   * in late cannot push the whole pattern off. With `awaitCountIn`, taps
+   * before `startAt` are strays: until then the drill's clock is the moment
+   * the card appeared, which no click marked.
+   */
+  latchOnFirstTap(options: { awaitCountIn?: boolean } = {}): void {
+    this.latchPending = true;
+    this.waitingForStart = options.awaitCountIn === true && this.plannedStartMs === null;
+  }
+
+  /** When the first tap set the start, or `null` until one has. */
+  get firstTapAt(): number | null {
+    return this.firstTapMs;
+  }
+
   feed(input: EngineInput): void {
     if (input.kind !== 'noteOn' || this.startedAtMs === null) return;
+    if (this.latchPending) {
+      if (this.waitingForStart) return;
+      const first = this.pattern.length > 0 ? Math.min(...this.pattern) : 0;
+      // A hand finding its place during the count: not a tap of the rhythm,
+      // and not an extra one either.
+      if (input.tMs - this.startedAtMs < first - this.toleranceMs) return;
+      this.startedAtMs = input.tMs - first;
+      this.latchPending = false;
+      this.firstTapMs = input.tMs;
+    }
     const at = input.tMs - this.startedAtMs;
     let best = -1;
     let bestDistance = Infinity;

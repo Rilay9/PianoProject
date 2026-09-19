@@ -118,3 +118,24 @@ describe('Tempo mode, rhythm only — the note is forgiven', () => {
     expect(h.engine.state.step).toBe(0);
   });
 });
+
+describe('rhythm first — with the latch (T8)', () => {
+  const tune = makeModel([
+    { onset: 0, notes: [note({ midi: 60 })] },
+    { onset: 1, notes: [note({ midi: 62 })] },
+  ]);
+
+  it('any key latches the first step and is on time, and the next tap is timed from it', () => {
+    const h = harness(tune, { mode: 'tempo', countInBars: 0, rhythmOnly: true, latchStart: true });
+    h.engine.start();
+    h.advance(3 * BEAT_MS);
+    h.play(41);
+    h.clock.set(h.clock.now() + BEAT_MS);
+    h.engine.tick();
+    h.play(90);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.deltaMs])).toEqual([
+      [true, 0],
+      [true, 0],
+    ]);
+  });
+});

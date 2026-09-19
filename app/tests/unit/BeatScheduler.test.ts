@@ -154,3 +154,22 @@ describe('BeatScheduler', () => {
     });
   });
 });
+
+describe('BeatScheduler — picked up mid-bar (T8)', () => {
+  it('gives beat 0 the place in the bar it was asked for, and accents the next downbeat', () => {
+    const s = new BeatScheduler({ bpm: 60, beatsPerBar: 4, startTimeSec: 10, firstBeatInBar: 3 });
+    const beats = s.pull(10, 4.5);
+    expect(beats.map((b) => [b.beatInBar, b.isAccent])).toEqual([
+      [3, false],
+      [4, false],
+      [1, true],
+      [2, false],
+      [3, false],
+    ]);
+  });
+
+  it('starts on a downbeat when not told otherwise', () => {
+    const s = new BeatScheduler({ bpm: 60, beatsPerBar: 3, startTimeSec: 0 });
+    expect(s.pull(0, 0.5).map((b) => [b.beatInBar, b.isAccent])).toEqual([[1, true]]);
+  });
+});

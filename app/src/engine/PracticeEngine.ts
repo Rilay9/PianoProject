@@ -40,6 +40,13 @@ const CC_SUSTAIN = 64;
 /** Wait mode restarts a loop after this many beats of silence (docs/05 §6). */
 const LOOP_GAP_BEATS = 1;
 
+/**
+ * Nudges a time just under a beat boundary it sits on. Step times and beat
+ * times are computed by different arithmetic and can disagree in the last
+ * few bits; a microsecond is far below anything audible and far above that.
+ */
+const BEAT_EPSILON_MS = 1e-3;
+
 // --- the tempo ladder on a loop (docs/05 §6) --------------------------------
 //
 // A rule about what the *next* pass of a loop should be played at, so it lives
@@ -129,6 +136,12 @@ export interface EngineState {
   running: boolean;
   paused: boolean;
   finished: boolean;
+  /**
+   * Holding on the learner's first note until it is played (T8). Running, but
+   * the music clock is not moving — a screen must say so, or a waiting run
+   * looks exactly like a frozen one.
+   */
+  armed: boolean;
   /** Keys currently held, as far as the input source has told us. */
   pressed: ReadonlySet<number>;
   sustain: boolean;
@@ -156,13 +169,56 @@ export class PracticeEngine {
   private finished = false;
   private loopsCompleted = 0;
 
-  /** Clock reading when the run (including count-in) started. */
-  private startedAtMs = 0;
-  /** Total time spent paused, subtracted from elapsed. */
-  private pausedTotalMs = 0;
+  /**
+   * The music clock's origin: `musicMs` is `now − clockOriginMs − countInMs`.
+   *
+   * Moved by whatever re-times the music — a resume, a lap, the latch — and by
+   * nothing else. It used to be one field with the run's start time, so every
+   * lap that rebased the clock also restarted the run's duration: thirty
+   * seconds of looping came out as −40 ms.
+   */
+  private clockOriginMs = 0;
+  /** Clock reading when the run (count-in included) started, for its duration. */
+  private runStartedAtMs = 0;
+  /** Time inside the run that was not practice: paused, or holding for the first note. */
+  private idleTotalMs = 0;
   /** When the run ended, so its duration stops growing with the clock. */
   private finishedAtMs: number | null = null;
   private pausedAtMs = 0;
+  /**
+   * Where tick 0 — the count-in's first beat — sits on the music timeline.
+   * The count-in leads into the bar the run starts on, so this is that bar's
+   * time less the count-in, not a fixed −countIn from bar 1.
+   */
+  private tickOriginMusicMs = 0;
+  /**
+   * A resume's count back in (T8): beats before this music time are count-in
+   * beats, though they fall inside the piece rather than before it.
+   */
+  private recountUntilMusicMs = Number.NEGATIVE_INFINITY;
+  /** The step a resume is counting back in to, while it is. */
+  private recountTargetStep: number | null = null;
+
+  // --- the latch (T8) -------------------------------------------------------
+  private readonly latchStart: boolean;
+  /** The first step the learner plays in this run, which the latch anchors. */
+  private anchorStep: number | null = null;
+  /** True until the learner's first note has set the clock. */
+  private latchPending = false;
+  /**
+   * Where the music clock stops to hold: the end of the count-in, not the
+   * first note itself. A run whose first note comes after a silence — a rest,
+   * or the other hand's intro with nothing playing it — holds as the count
+   * ends and skips the silence, rather than asking the learner to count bars
+   * of nothing (the brief's Part 4). For a resume it is the note counted back
+   * in to.
+   */
+  private holdAtMusicMs = 0;
+  /** Holding on `anchorStep` for that note. */
+  private armed = false;
+  private armedSinceMs = 0;
+  /** Wait and Free: practice time starts at the first note, not at Start. */
+  private awaitingFirstNote = false;
 
   private readonly pressed = new Set<number>();
   private sustainDown = false;
@@ -200,6 +256,9 @@ export class PracticeEngine {
     // Free marks nothing, so anywhere else the toggle would be a setting that
     // changes nothing — and a control that does nothing is a bug (`04` §0 R4).
     this.rhythmOnly = options.mode === 'tempo' && options.rhythmOnly === true;
+    // Tempo only, for the same reason: Wait has no clock to set, Listen has
+    // no learner, and Free marks nothing.
+    this.latchStart = options.mode === 'tempo' && options.latchStart === true;
   }
 
   /** Whether this run is judging timing alone (docs/05 §3a). */
@@ -215,6 +274,34 @@ export class PracticeEngine {
     return this.session.options.mode;
   }
 
+  /**
+   * The step a latched run is waiting to be started on, or `null` once it has
+   * started (or when it never latches). Nothing the app plays may sound at or
+   * after this step until then: the microphone would hear it and start the run
+   * on the app's own note, and a note the learner is meant to start with the
+   * app would sound on the timer instead of on their key.
+   */
+  get holdingFrom(): number | null {
+    return this.latchPending ? this.anchorStep : null;
+  }
+
+  /**
+   * The first beat strictly after `musicMs`, on the run's grid (tick 0 is the
+   * count-in's first beat), with its place in the bar — so a metronome
+   * restarted mid-bar clicks and accents where the engine's own ticks fall.
+   */
+  nextBeatAfter(musicMs: number): { musicMs: number; beatInBar: number } {
+    const beatMs = this.session.msPerBeat;
+    const { beatsPerBar } = this.session.options;
+    if (!(beatMs > 0)) return { musicMs, beatInBar: 1 };
+    const index = Math.floor((musicMs - this.tickOriginMusicMs) / beatMs + BEAT_EPSILON_MS / beatMs) + 1;
+    const musicBeat = index - Math.round(this.session.countInMs / beatMs);
+    return {
+      musicMs: this.tickOriginMusicMs + index * beatMs,
+      beatInBar: (((musicBeat % beatsPerBar) + beatsPerBar) % beatsPerBar) + 1,
+    };
+  }
+
 
   get state(): EngineState {
     return {
@@ -223,6 +310,7 @@ export class PracticeEngine {
       running: this.running,
       paused: this.paused,
       finished: this.finished,
+      armed: this.armed,
       pressed: this.pressed,
       sustain: this.sustainDown,
       loops: this.loopsCompleted,
@@ -237,20 +325,31 @@ export class PracticeEngine {
 
   /**
    * Begins a run. In Wait mode nothing happens until the learner plays; in
-   * Tempo and Listen the clock starts, after the count-in.
+   * Tempo and Listen the clock starts, after the count-in — and in a latched
+   * Tempo run (`latchStart`) the learner's first note then sets it.
    */
   start(fromStep?: number): void {
     const start =
       fromStep === undefined
         ? this.session.firstStep
         : Math.max(this.session.firstStep, Math.min(fromStep, this.session.lastStep));
+    const now = this.clock.now();
     this.running = true;
     this.paused = false;
     this.finished = false;
-    this.startedAtMs = this.clock.now();
-    this.pausedTotalMs = 0;
+    this.runStartedAtMs = now;
+    this.idleTotalMs = 0;
     this.finishedAtMs = null;
     this.loopsCompleted = 0;
+    // The count-in leads into the bar the run starts on. It used to lead into
+    // bar 1 wherever the run started, so the first pass of a loop at bar 20
+    // waited in silence for bars 1–19 and marked its own first note wrong
+    // (step times are measured from the top of the piece, not the loop).
+    const regionStartMs = this.session.steps[start]?.tMs ?? 0;
+    this.clockOriginMs = now - regionStartMs;
+    this.tickOriginMusicMs = regionStartMs - this.session.countInMs;
+    this.recountUntilMusicMs = Number.NEGATIVE_INFINITY;
+    this.recountTargetStep = null;
     this.step =
       this.mode === 'wait' || this.mode === 'free'
         ? (nextPlayableStep(this.session.steps, start, this.session.lastStep) ?? start)
@@ -259,34 +358,144 @@ export class PracticeEngine {
     this.openSlots.clear();
     this.nextSlotToOpen = this.step;
     this.lastTickIndex = -1;
-    this.emit({ kind: 'started', tMs: this.startedAtMs, fromStep: this.step });
+    this.anchorStep = nextPlayableStep(this.session.steps, start, this.session.lastStep);
+    this.holdAtMusicMs = regionStartMs;
+    this.latchPending = this.latchStart && this.anchorStep !== null;
+    this.armed = false;
+    this.awaitingFirstNote = this.mode === 'wait' || this.mode === 'free';
+    this.emit({ kind: 'started', tMs: now, fromStep: this.step });
     if (this.mode === 'tempo' || this.mode === 'listen') this.openUpcomingSlots(this.musicMs);
+    // No count-in, nothing to count through: hold on the first note at once,
+    // even when the run opens on a rest. The first key pressed is the start.
+    if (this.latchPending && this.session.countInMs <= 0) this.arm();
   }
 
   pause(): void {
     if (!this.running || this.paused) return;
+    const now = this.clock.now();
     this.paused = true;
-    this.pausedAtMs = this.clock.now();
-    this.emit({ kind: 'paused', tMs: this.pausedAtMs });
+    this.pausedAtMs = now;
+    // Holding and paused are both idle; counted once, up to the pause.
+    if (this.armed) this.idleTotalMs += now - this.armedSinceMs;
+    this.emit({ kind: 'paused', tMs: now });
   }
 
-  resume(): void {
+  /**
+   * Carries on after a pause.
+   *
+   * With `recountMs`, a clock-driven run does not carry on cold mid-bar (T8):
+   * it goes back that far before the next note still to be played and counts
+   * in to it on the run's own beat grid, and — with `latch` — holds there for
+   * the learner's first note exactly as a new run does. Notes whose windows
+   * were still open when the pause came are closed as missed first: they were
+   * not played, and a count-in running back over them must not let a note of
+   * the count be matched to one.
+   */
+  resume(options: { recountMs?: number; latch?: boolean; toStep?: number } = {}): void {
     if (!this.running || !this.paused) return;
+    const now = this.clock.now();
+    const gap = now - this.pausedAtMs;
     this.paused = false;
-    this.pausedTotalMs += this.clock.now() - this.pausedAtMs;
-    this.emit({ kind: 'resumed', tMs: this.clock.now() });
+    this.idleTotalMs += gap;
+    this.clockOriginMs += gap;
+    if (this.armed) this.armedSinceMs = now;
+    const recountMs = options.recountMs ?? 0;
+    // Still holding for the first note: there is nothing to count back in to,
+    // and the hold simply carries on.
+    if (recountMs > 0 && (this.mode === 'tempo' || this.mode === 'listen') && !this.armed) {
+      this.recountFrom(now, recountMs, options.latch === true, options.toStep);
+    }
+    this.emit({ kind: 'resumed', tMs: now });
+  }
+
+  /**
+   * The learner's next note still to be played — what a learner-led resume
+   * counts back in to. Meaningful while paused.
+   */
+  get resumesAt(): number | null {
+    return this.resumeStep();
+  }
+
+  /**
+   * The step a resume is still counting back in to, or `null` when no count is
+   * running. While it is, `musicMs` is the rewound count, not where the music
+   * stopped — so a second pause must measure from here (T8 review 2, M2).
+   */
+  get countingBackTo(): number | null {
+    if (this.recountTargetStep === null) return null;
+    return this.musicMs < this.recountUntilMusicMs ? this.recountTargetStep : null;
+  }
+
+  /**
+   * The first step with something for the learner whose window is not over.
+   *
+   * Over means opened and then either played in full (its slot deleted — which
+   * happens *early* too, when a note lands inside the window before the cursor
+   * gets there) or begun: a chord partly played is finished by the resume
+   * closing the rest. A window still open and untouched, or not yet opened, is
+   * where the learner picks up.
+   */
+  private resumeStep(): number | null {
+    // From the earliest window still open, not the cursor: with notes closer
+    // together than the tolerance the cursor can be past a note whose window
+    // is still open and untouched (T8 review 2, L10).
+    let from = this.step;
+    for (const index of this.openSlots.keys()) from = Math.min(from, index);
+    for (let index = from; index <= this.session.lastStep; index += 1) {
+      const step = this.session.steps[index];
+      if (!step || step.isEmpty) continue;
+      const open = this.openSlots.get(index);
+      const opened = index < this.nextSlotToOpen;
+      const over = opened && (!open || open.size < step.expected.length);
+      if (!over) return index;
+    }
+    return null;
+  }
+
+  /**
+   * Goes back one count before `toStep` — or, by default, the learner's next
+   * note — and counts in to it on the run's own grid. With `latch` it then
+   * holds there for the learner's first note, as a new run does.
+   */
+  private recountFrom(now: number, recountMs: number, latch: boolean, toStep?: number): void {
+    const learnerNext = this.resumeStep();
+    const target = toStep ?? learnerNext;
+    if (target === null) return;
+    const targetMs = this.session.steps[target]?.tMs ?? 0;
+    for (const index of [...this.openSlots.keys()]) {
+      if (index < target) this.closeSlotAsMissed(index);
+    }
+    const startMusicMs = targetMs - recountMs;
+    this.clockOriginMs = now - startMusicMs - this.session.countInMs;
+    this.recountUntilMusicMs = targetMs;
+    this.recountTargetStep = target;
+    const beatMs = this.session.msPerBeat;
+    if (beatMs > 0) {
+      this.lastTickIndex = Math.ceil((startMusicMs - this.tickOriginMusicMs) / beatMs - BEAT_EPSILON_MS / beatMs) - 1;
+    }
+    this.anchorStep = learnerNext;
+    this.holdAtMusicMs = targetMs;
+    this.latchPending = latch && this.mode === 'tempo' && learnerNext !== null;
   }
 
   stop(): void {
     if (!this.running) return;
-    this.finishedAtMs = this.paused ? this.pausedAtMs : this.clock.now();
+    const now = this.clock.now();
+    this.finishedAtMs = this.paused ? this.pausedAtMs : now;
+    if (this.armed && !this.paused) this.idleTotalMs += now - this.armedSinceMs;
+    this.armed = false;
+    this.latchPending = false;
     this.running = false;
     this.finished = true;
-    this.emit({ kind: 'finished', loop: false, tMs: this.clock.now(), score: this.buildScore() });
+    this.emit({ kind: 'finished', loop: false, tMs: now, score: this.buildScore() });
   }
 
   /**
-   * Milliseconds into the piece, count-in included, pauses excluded.
+   * How long this run has been practice, in ms: count-in included; pauses, and
+   * time spent holding for the first note, excluded.
+   *
+   * Not the music clock — that is `musicMs`, and the two used to be one
+   * number, which is why a looped run's duration restarted at every lap.
    *
    * A finished run keeps its length. It used to return 0 the moment the run
    * ended — `running` goes false before `buildScore()` reads this — so every
@@ -297,13 +506,23 @@ export class PracticeEngine {
    */
   get elapsedMs(): number {
     if (!this.running && this.finishedAtMs === null) return 0;
+    // Wait and Free: sitting in front of a piece is not yet practising it.
+    if (this.awaitingFirstNote) return 0;
     const now = this.paused ? this.pausedAtMs : (this.finishedAtMs ?? this.clock.now());
-    return now - this.startedAtMs - this.pausedTotalMs;
+    const holding = this.armed && !this.paused ? now - this.armedSinceMs : 0;
+    return now - this.runStartedAtMs - this.idleTotalMs - holding;
   }
 
-  /** Milliseconds into the *music*: negative during the count-in. */
+  /**
+   * Milliseconds into the *music*, on the score's own timeline (step 0 at 0):
+   * below the run's first step during the count-in, and fixed on the first
+   * note while a latched run is holding for it.
+   */
   get musicMs(): number {
-    return this.elapsedMs - this.session.countInMs;
+    if (!this.running && this.finishedAtMs === null) return -this.session.countInMs;
+    if (this.armed && this.anchorStep !== null) return this.session.steps[this.anchorStep]?.tMs ?? 0;
+    const now = this.paused ? this.pausedAtMs : (this.finishedAtMs ?? this.clock.now());
+    return now - this.clockOriginMs - this.session.countInMs;
   }
 
   /**
@@ -317,7 +536,16 @@ export class PracticeEngine {
       return;
     }
     if (this.mode !== 'tempo' && this.mode !== 'listen') return;
+    // Holding for the first note: the clock waits, so nothing else does.
+    if (this.armed) return;
     const music = this.musicMs;
+    if (this.latchPending && this.anchorStep !== null && music >= this.holdAtMusicMs) {
+      // Every beat of the count; the first note's own beat is ticked when the
+      // note arrives, from wherever the learner put it.
+      this.emitTicksUpTo(this.holdAtMusicMs - BEAT_EPSILON_MS);
+      this.arm();
+      return;
+    }
     // Open before closing: a very short step could do both within one frame.
     this.openUpcomingSlots(music);
     this.emitTicksUpTo(music);
@@ -352,12 +580,92 @@ export class PracticeEngine {
     const confidence = input.confidence ?? 1;
     if (confidence < this.session.options.minConfidence) return;
     if (this.mode === 'listen') return;
+    if (this.awaitingFirstNote) {
+      // Practice time starts here, not at Start (T8, case 4). Pauses before
+      // this moment belonged to the waiting and go with it.
+      this.awaitingFirstNote = false;
+      this.runStartedAtMs = this.clock.now();
+      this.idleTotalMs = 0;
+    }
+    if (this.latchPending && !this.latch(input.tMs)) return;
     if (this.mode === 'free') {
       this.feedFree(input.midi);
       return;
     }
     if (this.mode === 'wait') this.feedWait(input.midi, input.velocity, input.tMs, confidence);
     else this.feedTempo(input.midi, input.velocity, input.tMs, confidence, alreadyDown);
+  }
+
+  // --- The latch (T8) --------------------------------------------------------
+
+  /**
+   * Holds the music clock on the first note until it is played.
+   *
+   * The cursor goes to that note — not to bar 1 when the run opens on a rest —
+   * and its window opens, so the note that ends the hold is judged in it.
+   */
+  private arm(): void {
+    const anchor = this.anchorStep;
+    if (anchor === null) return;
+    this.armed = true;
+    this.armedSinceMs = this.clock.now();
+    if (this.step < anchor) {
+      const from = this.step;
+      this.step = anchor;
+      this.emit({ kind: 'stepAdvanced', from, to: anchor, tMs: this.armedSinceMs });
+    }
+    this.openUpcomingSlots(this.session.steps[anchor]?.tMs ?? 0);
+    this.emit({ kind: 'armed', stepIndex: anchor, tMs: this.armedSinceMs });
+  }
+
+  /**
+   * Lets the learner's first note set the clock, or refuses it as a stray.
+   *
+   * Taken while holding, any note sets it. Taken while still counting in, a
+   * note inside the tolerance before the count's end sets it — the note the
+   * learner chose to start on *is* the start, so every later note is timed
+   * from theirs rather than from the timer — and a note before that window
+   * is a hand finding its place: not judged, not a wrong note, and it leaves
+   * the latch waiting. Returns whether the note should go on to be judged.
+   *
+   * Either way the note becomes the learner's first note (`anchorStep`), not
+   * the count's end: any silence between the two is skipped.
+   *
+   * The time is the note's own with the input latency removed — the same
+   * correction `feedTempo` applies, so the latching note comes out at
+   * exactly zero from its step rather than off by the equipment.
+   */
+  private latch(rawTMs: number): boolean {
+    const anchor = this.anchorStep;
+    if (anchor === null) return true;
+    const anchorMs = this.session.steps[anchor]?.tMs ?? 0;
+    const now = this.clock.now();
+    let t = rawTMs - this.session.options.inputLatencyMs;
+    // Same rule as `toMusicTime`: a timestamp from some other origin is
+    // replaced by the clock rather than trusted.
+    if (!Number.isFinite(t) || Math.abs(t - now) > 1000) t = now;
+    if (!this.armed) {
+      // Still counting: a note inside the window at the count's end starts the
+      // music; anything earlier is a hand finding its place.
+      const at = t - this.clockOriginMs - this.session.countInMs;
+      if (at < this.holdAtMusicMs - this.session.options.toleranceMs) return false;
+    } else {
+      this.idleTotalMs += now - this.armedSinceMs;
+      this.armed = false;
+    }
+    this.clockOriginMs = t - this.session.countInMs - anchorMs;
+    this.latchPending = false;
+    // The first note's beat has not been ticked (see `tick`); any beats the
+    // clock skipped to reach it — a rest the run opened on — never will be.
+    const beatMs = this.session.msPerBeat;
+    if (beatMs > 0) {
+      // The first beat at or after the note: on a beat, that beat; off it, the
+      // next — the one before has gone by unplayed (T8 review 2, L8).
+      const anchorBeat = Math.ceil((anchorMs - this.tickOriginMusicMs) / beatMs - BEAT_EPSILON_MS / beatMs);
+      this.lastTickIndex = Math.max(this.lastTickIndex, anchorBeat - 1);
+    }
+    this.emit({ kind: 'latched', stepIndex: anchor, tMs: t });
+    return true;
   }
 
   // --- Wait mode (docs/05 §2) ----------------------------------------------
@@ -758,7 +1066,7 @@ export class PracticeEngine {
    * limit still counts and one played later does not.
    */
   private closeWindowsUpTo(musicMs: number): void {
-    for (const [index, pitches] of [...this.openSlots]) {
+    for (const index of [...this.openSlots.keys()]) {
       const step = this.session.steps[index];
       if (!step) {
         this.openSlots.delete(index);
@@ -767,20 +1075,28 @@ export class PracticeEngine {
       // Strictly greater: docs/05 §3 makes the tolerance inclusive, so a note
       // landing exactly on the limit still counts.
       if (musicMs <= step.tMs + this.session.options.toleranceMs) continue;
-      for (const midi of pitches) {
-        this.missedTotal += 1;
-        this.bump(this.missesByMeasure, step.measureIndex);
-        this.emit({
-          kind: 'missed',
-          stepIndex: index,
-          midi,
-          noteIds: step.noteIdsByMidi.get(midi) ?? [],
-          tMs: this.clock.now(),
-        });
-      }
-      this.openSlots.delete(index);
-      if (pitches.size === 0) this.correctSteps += 1;
+      this.closeSlotAsMissed(index);
     }
+  }
+
+  /** Closes one window: whatever it still expected was missed. */
+  private closeSlotAsMissed(index: number): void {
+    const pitches = this.openSlots.get(index);
+    const step = this.session.steps[index];
+    this.openSlots.delete(index);
+    if (!pitches || !step) return;
+    for (const midi of pitches) {
+      this.missedTotal += 1;
+      this.bump(this.missesByMeasure, step.measureIndex);
+      this.emit({
+        kind: 'missed',
+        stepIndex: index,
+        midi,
+        noteIds: step.noteIdsByMidi.get(midi) ?? [],
+        tMs: this.clock.now(),
+      });
+    }
+    if (pitches.size === 0) this.correctSteps += 1;
   }
 
   /** Emits one tempoTick per beat, count-in included (docs/05 §3). */
@@ -789,12 +1105,14 @@ export class PracticeEngine {
     const beatMs = this.session.msPerBeat;
     if (!(beatMs > 0)) return;
     const countInBeats = Math.round(this.session.countInMs / beatMs);
-    // Tick index 0 is the first count-in beat; countInBeats is bar 1 beat 1.
-    const elapsedBeats = Math.floor((musicMs + this.session.countInMs) / beatMs);
+    // Tick index 0 is the first count-in beat; countInBeats is bar 1 beat 1
+    // of the run — the bar it starts on, which for a loop is not the piece's.
+    const elapsedBeats = Math.floor((musicMs - this.tickOriginMusicMs) / beatMs);
     while (this.lastTickIndex < elapsedBeats) {
       this.lastTickIndex += 1;
       const musicBeat = this.lastTickIndex - countInBeats;
-      const isCountIn = musicBeat < 0;
+      const beatAtMs = this.tickOriginMusicMs + this.lastTickIndex * beatMs;
+      const isCountIn = musicBeat < 0 || beatAtMs < this.recountUntilMusicMs - BEAT_EPSILON_MS;
       const bar = Math.floor(musicBeat / beatsPerBar) + 1;
       const beat = (((musicBeat % beatsPerBar) + beatsPerBar) % beatsPerBar) + 1;
       this.emit({ kind: 'tempoTick', beat, bar, isCountIn, tMs: this.clock.now() });
@@ -810,7 +1128,7 @@ export class PracticeEngine {
    * value would be nonsense, so anything implausible falls back to "now".
    */
   private toMusicTime(tMs: number, nowMusicMs: number): number {
-    const converted = tMs - this.startedAtMs - this.pausedTotalMs - this.session.countInMs;
+    const converted = tMs - this.clockOriginMs - this.session.countInMs;
     const drift = Math.abs(converted - nowMusicMs);
     // One second of slack: enough for scheduling jitter, far short of the
     // difference an unrelated clock origin would produce.
@@ -847,13 +1165,13 @@ export class PracticeEngine {
     }
     this.emit({ kind: 'stepAdvanced', from, to: this.step, tMs });
     // Tempo restarts on the grid: rebase the clock so step 0 is now, after a
-    // one-beat gap so the lap does not run into itself.
-    this.startedAtMs =
+    // one-beat gap so the lap does not run into itself. The music clock only:
+    // the run's duration carries on across laps.
+    this.clockOriginMs =
       this.clock.now() +
       LOOP_GAP_BEATS * this.session.msPerBeat -
       this.session.countInMs -
       (this.session.steps[this.session.firstStep]?.tMs ?? 0);
-    this.pausedTotalMs = 0;
     this.lastTickIndex = -1;
     this.nextSlotToOpen = this.step;
     this.openUpcomingSlots(this.musicMs);
