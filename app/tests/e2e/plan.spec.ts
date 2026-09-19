@@ -290,11 +290,20 @@ test.describe('the lesson page obeys 04 §0', () => {
   test.use({ viewport: { width: 360, height: 780 } });
 
   test('the options start inside the first screenful (R1)', async ({ page }) => {
+    // R1 as `04` §0 writes it: the subject *starts within the first screenful*
+    // — here, the first option row is on screen without scrolling. This test
+    // used to say "the heading is above 260 px", a stricter stand-in that held
+    // until 2.1 gained a *Ways to play this* block (§3d, which puts a rung's
+    // tools above its options on purpose) and the heading moved to about 330
+    // of 780. The owner chose (2026-09-19) to keep the tools where §3d puts
+    // them and hold the options to R1's own words.
     await page.goto('/#/lesson/2.1');
-    await expect(page.locator('#lesson-exercises .list-row').first()).toBeVisible();
-    const heading = page.getByRole('heading', { name: 'Exercise options' });
-    const box = await heading.boundingBox();
-    expect(box?.y ?? 0).toBeLessThan(260);
+    const first = page.locator('#lesson-exercises .list-row').first();
+    await expect(first).toBeVisible();
+    const box = await first.boundingBox();
+    const viewport = page.viewportSize();
+    expect(box, 'no option row was drawn').not.toBeNull();
+    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport?.height ?? 0);
   });
 
   test('one filled button per option card and none in the chrome (R3)', async ({ page }) => {

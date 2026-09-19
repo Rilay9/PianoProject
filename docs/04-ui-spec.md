@@ -368,6 +368,11 @@ play this*.
 - **Above the options, not below.** A mode is a way of playing what is on this rung, so it
   is read *before* choosing which option to play. It sits under the status line and the
   rung's own actions, and above *Exercise options*.
+- **It costs the options some height, and R1 still holds.** On a 360×780 phone one tool
+  moves *Exercise options* from about 250 to about 330 px. R1 asks that the options *start
+  within the first screenful*, and the first option row still does; the e2e checks exactly
+  that (`plan.spec.ts`), not a pixel line. Chosen by the owner on 2026-09-19 over moving the
+  tools below the options or into the actions row.
 - **Hidden entirely when the rung names none**, which is most of them. An empty heading
   would be dead space above the thing the page is for (`00-invariants` §1, §0 R4).
 - **The prose stays.** A button opens a mode; it cannot say *why* that mode suits this
