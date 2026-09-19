@@ -670,6 +670,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       notes: chainNotes.slice(0, want),
       ordered: true,
       wholeRun: chainNotes,
+      ...(drill instanceof SimonDrill && drill.staffSpelling ? { spelling: drill.staffSpelling } : {}),
     });
     if (!xml) return;
     chainDrawingFor = key;
@@ -749,7 +750,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           // The name and the step number together, before the staff is asked
           // for: the card says which note of the chain this is and the staff
           // then catches up to it, so the staff can lag and can never lead.
-          flashNoteName(noteLabel(step.midi), step.soFar.length);
+          // A seeded chain names each note as its scale does (`nameOf`): the
+          // A blues scale's D♯, which the plain labels would call E♭.
+          flashNoteName(
+            drill instanceof SimonDrill ? drill.nameOf(step.midi) : noteLabel(step.midi),
+            step.soFar.length,
+          );
           chainWant = step.soFar.length;
           pumpChainStaff(key);
         }, step.atMs),

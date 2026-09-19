@@ -491,6 +491,20 @@ levels of help, chosen on the card and remembered per item — the keys lit and 
 chain plays, the keys lit on a replay after a wrong note, or sound alone — so that the white-key
 game is playable by somebody who cannot yet find a heard note on the keyboard (`04` §5c-2).
 
+**And one Simon seeded from a genre's own scale (2026-09-19).** `drill.ear.simon-blues-c` is
+the chain drawn from the C blues scale, offered on `blues.3` and `improv.5` and named on their
+Simon button, so the blue note is held by ear before the rung writes it down — Part A item 7,
+ear before theory before name, true on a genre rung for the first time. It opens ear-first
+(keys after a miss). It names the blue note F sharp, on the card and on the staff, as the
+written C blues scale on the same rungs does: the flattened fifth is spelled as a raised fourth
+in every key (the owner's decision, 2026-09-19; `BLUES_SCALE_FORMS`, `blues.4`, `improv.5`). Three other seeds the genre plans asked for were
+**not** built, because none of them is a pool of pitches for a chain to draw from: the **clave**
+is a rhythm with no pitches, and a chain judged by pitch cannot hold it (the existing rhythm
+tap-back is the drill that fits); **guide tones over a two-five-one** mean something only with
+the chords sounding under them, and Simon plays single notes; a **gospel walk-up** is a fixed
+figure, and a chain drawn at random from its notes is not a walk-up (`pending-review.md`
+Entry 22).
+
 ### D7. Improvisation & composition track (Stage 3+)
 
 Stage 3: improvise RH over a looping I–IV–V using only C-position notes (app plays the loop,

@@ -1893,3 +1893,69 @@ feature decision, and the owner's records were not inspected.
 lessons `jazz.4` (new), `jazz.5`, `rock.overview`, `rock.4`, `holiday`, `holiday.4` (new);
 `content/sources/pdmx.json`; `app/tests/unit/lessonClaimsAboutMusic.test.ts`;
 `docs/02-curriculum.md`; `docs/generated/ladder.md`.
+
+---
+
+### Entry 22 — T3: Simon seeded from the blues scale, and the blue note's spelling (2026-09-19)
+
+**Built.** `drill.ear.simon-blues-c` (static catalog, level 3.5 `estimated`, opens on *keys
+after a miss*): Simon's chain drawn from the C blues scale, C4–C5. Offered on `blues.3` and
+`improv.5` as an exercise and named on their Simon button (`tools[].item`). Catalog `steps`
+may now be interval names (`P1 m3 P4 A4 P5 m7`), no schema change (the schema constrains
+only `help`). The card names notes from the scale's spelling (`SimonDrill.nameOf`); the staff
+is written in the tonic's minor key with each black key spelled as the scale spells it
+(`answerSheet` `spelling`, writer `blackKeys`). Today's door still chooses by stage.
+`validate.py` `tool_errors` now checks a Simon tool's item against the rung's **exercises**
+(it checked songs only).
+
+**Rejected seeds, and why.** The **clave** is a rhythm with no pitches; Simon's chain is
+judged by pitch and cannot hold it — the rhythm tap-back is the drill that fits, so the clave
+**does not fit the chain model** and was not forced into it. **Guide tones over a
+two-five-one** mean something only with the chords sounding under them; Simon plays single
+notes. A **gospel walk-up** is a fixed figure; a chain drawn at random from its notes is not a
+walk-up. `improv.5` asked for the blues scale, which is what was built.
+
+**The blue note's spelling — owner's decision.** Two decisions in the repository
+contradicted each other: `make_blues_scale` and the lessons `blues.4` and `improv.5` (from
+2026-09-13) wrote a **raised fourth** in every key; `BLUES_SCALE_FORMS` (2026-09-18) said
+`d5`, so `exercise.pentatonic.{a,d,e}.blues` wrote E flat, A flat and B flat. The owner chose
+**raised fourth in every key** (2026-09-19). Now: `BLUES_SCALE_FORMS` says `A4`;
+`make_blues_scale` spells from that table (its output in the eight shipped keys is unchanged —
+F♯ C♯ B D♯ G♯ A♯ E A — but by this file's choice rather than music21's); the three pentatonic
+blues exercises change to **D♯, G♯, A♯**; Simon names the note F♯. `blues.3`'s lesson says F
+sharp, as it did. During the session I first built a hybrid (flat fifth except in F, B♭, E♭)
+before finding the lessons that explain the other rule — that version never shipped.
+
+**Tests, each proven red.** Python: the blue note is a raised fourth in all twelve keys of
+`make_blues_scale` and in the three pentatonic blues (red with `d5`); `tool_errors` accepts a
+Simon item among exercises and refuses one that is not (2 of 3 red against the old rule; the
+third guards Duet and passes both ways). Unit (`simonDrill.test.ts`, 7 new): pool, names
+(F♯4 in C, D♯5 in A, B♯4 in F♯), staff with E♭ F♯ B♭ on one line, agreement with the built
+`exercise.blues-scale.c` score, rung wiring — mutations of `nameOf`, the pool, the staff's
+signature, its per-key spelling, the catalog parser and the rung tool each fail a test.
+Browser: `lesson-tools.spec.ts` — `blues.3`'s Simon opens the blues Simon (red without the
+LessonScreen change); `drills-review.spec.ts` — the card names F♯4, E♭4, B♭4 over their keys.
+**That browser test cannot catch a naming break in C**, where the plain labels happen to
+agree; the A-key unit test carries it. Not proven red: `spellInterval`'s general test.
+
+**Verification.** `build.py --offline`, `ladder_report.py`, `validate.py` OK at 2,054 items;
+harmony-family tests 129 OK; unit 2,239; `tsc -b` 0; lint 0; Playwright one at a time:
+`drills-review` 44 then its Simon subset 11, `drills` 27, `drills-harmony` 7, `doors` 22,
+`lesson-tools` 4. A screenshot of the staff at the eighth note was read (C minor signature,
+the blue note with its accidental); it was taken before the spelling decision and showed G♭,
+and **was not retaken after** — the staff's F♯ is proven in the MusicXML only.
+
+**Unverified.** The chain heard as music; whether level 3.5 is right (`estimated`); whether
+opening ear-first is the right default for a Stage 3 learner; the F♯ on the rendered staff
+(see above). `blues.3` is 590 words (the lesson-test count), `readingTime` 3. A "600 words" limit that I
+trimmed lessons to this session is **enforced nowhere I could find**: the lesson tests were
+searched for a numeric word limit and `MAX_WORDS`, and a second search for "600" across the
+unit tests and content tools found no word-limit use. The owner has also said not to worry
+about it.
+
+**Files.** `app/src/engine/drills/simon.ts`, `fromCatalog.ts`, `answerSheet.ts`,
+`app/src/engine/musicXmlWriter.ts`, `app/src/ui/screens/DrillScreen.ts`, `LessonScreen.ts`;
+`content/catalog.static.json`; `content/curriculum/stage-3.json`, `stage-5.json`;
+`content/lessons/blues.3.md`; `tools/content/generate_exercises.py`, `validate.py`; tests
+`test_harmony_families.py`, `test_validate_tools.py` (new), `simonDrill.test.ts`,
+`lesson-tools.spec.ts`, `drills-review.spec.ts`; `docs/02`, `docs/04`, `docs/generated/ladder.md`.

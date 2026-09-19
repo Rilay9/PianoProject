@@ -433,8 +433,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         // The stage is the leading number of the rung's unit id, which is how
         // `placementTargets` reads it too; a rung id that does not start with
         // one (`blues.3`) takes its second segment.
+        // A rung may name its Simon (`tool.item`): the blues rungs name the one
+        // seeded from the blues scale, which no stage rule would choose.
         const digits = /(\d+)/.exec(rung.id);
-        const id = simonForStage(digits ? Number(digits[1]) : 1);
+        const id =
+          tool.item && items.has(tool.item) ? tool.item : simonForStage(digits ? Number(digits[1]) : 1);
         return items.has(id) ? make('Simon', () => { router.navigateDrill(id); }) : null;
       }
       case 'duet': {

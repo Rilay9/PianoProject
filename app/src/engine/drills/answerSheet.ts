@@ -76,6 +76,13 @@ export interface AnswerSheetOptions {
    * never do.
    */
   wholeRun?: readonly number[];
+  /**
+   * The signature and spelling to write with, instead of choosing them from the
+   * notes. A chain seeded from a genre's scale knows its key and how it names
+   * each black key, and a guess from six pitch classes knows neither: C blues
+   * was guessed as B flat major, whose flats would write its F sharp as G flat.
+   */
+  spelling?: { fifths: number; blackKeys: Partial<Record<number, 'flat' | 'sharp'>> };
 }
 
 /** MusicXML for the answer, or null when there is nothing to draw. */
@@ -86,7 +93,7 @@ export function answerSheet(options: AnswerSheetOptions): string | null {
   // and otherwise exactly the notes on it.
   const whole = (options.wholeRun ?? notes).filter((m) => Number.isFinite(m));
   const shape = whole.length > 0 ? whole : notes;
-  const fifths = fifthsFor(shape);
+  const fifths = options.spelling?.fifths ?? fifthsFor(shape);
   const clef: 'G' | 'F' = Math.min(...shape) < 60 ? 'F' : 'G';
   const beatsPerBar = 4;
   const barLength = DIVISIONS * beatsPerBar;
@@ -136,6 +143,7 @@ export function answerSheet(options: AnswerSheetOptions): string | null {
     bpm: 80,
     staves: 1,
     clef,
+    ...(options.spelling ? { blackKeys: options.spelling.blackKeys } : {}),
     measures,
   });
 }

@@ -1340,6 +1340,17 @@ score is the longest chain echoed, and the sheet says it beside the best this it
   seed so that the same seed is the same game; no note immediately repeats the one before it,
   because two of the same note in a row are heard as one held note. It is played through the
   same piano the ear drills use, one note at a time.
+- **Or from a genre's own scale (2026-09-19).** `drill.ear.simon-blues-c` writes its `steps` as
+  intervals above its key — `P1 m3 P4 A4 P5 m7` — rather than as degrees, because an interval
+  says which name a black key has and a degree number cannot: six semitones above C is F sharp
+  as a raised fourth and G flat as a lowered fifth. The blue note is the raised fourth in every
+  key (the owner's decision; `BLUES_SCALE_FORMS`), as the written blues scales and the lessons
+  have it. The card names each note from that spelling (in A, **D♯**, where the plain label
+  says E♭), and the chain's staff is written in the tonic's minor key with each black key
+  spelled as the scale spells it — E flat, F sharp and B flat on one staff in C — rather than
+  one preference for flats or sharps, which cannot write that. A rung opens this Simon by naming it on
+  its Simon button (`tools[].item`, which `validate.py` requires to be one of the rung's
+  exercises); Today's door still chooses by stage (`simonForStage`).
 - **Judged in order and in the octave it was played.** Everywhere else in the engine the shape
   is the point and the register is the learner's choice; here the register is part of what was
   heard. A wrong note ends the chain where it fell rather than letting the learner finish a

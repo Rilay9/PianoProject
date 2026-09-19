@@ -29,10 +29,59 @@
  */
 import { systemClock, type Clock, type EngineInput } from '../types';
 import { FEEDBACK_MS } from './feedback';
-import type { Drill, DrillAnswer, DrillPrompt, DrillResult } from './types';
+import { noteLabel, type Drill, type DrillAnswer, type DrillPrompt, type DrillResult } from './types';
 
 /** Semitones above the tonic of each degree of a major scale, 1 to 7. */
 export const MAJOR_DEGREE_SEMITONES = [0, 2, 4, 5, 7, 9, 11] as const;
+
+const LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
+const LETTER_PC = [0, 2, 4, 5, 7, 9, 11] as const;
+
+/**
+ * An interval name — `P1`, `m3`, `d5`, `m7` — as its number and semitones.
+ *
+ * The genre seeds are written this way and not as semitone counts for the
+ * reason `generate_exercises.py` gives at `BLUES_SCALE_FORMS`: six semitones
+ * above C is G flat or F sharp, a lowered fifth or a raised fourth, and only
+ * the interval says which. The written blues scale and this chain must name
+ * the blue note the same way or the ear drill and the page disagree about it.
+ */
+export function parseInterval(name: string): { number: number; semitones: number } | null {
+  const match = /^(P|M|m|d|A)([1-7])$/.exec(name);
+  if (!match) return null;
+  const quality = match[1] as 'P' | 'M' | 'm' | 'd' | 'A';
+  const number = Number(match[2]);
+  const base = LETTER_PC[number - 1] ?? 0;
+  const perfect = number === 1 || number === 4 || number === 5;
+  const shift = perfect
+    ? ({ P: 0, d: -1, A: 1 } as Record<string, number | undefined>)[quality]
+    : ({ M: 0, m: -1, d: -2, A: 1 } as Record<string, number | undefined>)[quality];
+  if (shift === undefined) return null;
+  return { number, semitones: base + shift };
+}
+
+/**
+ * The note `interval` above `tonic`, spelled — `('C', 'd5')` is `G♭`.
+ *
+ * The letter comes from the interval's number and the accidental from the
+ * semitones, which is what spelling by interval means. Null for a tonic or an
+ * interval this cannot read, and for anything needing a double accidental.
+ */
+export function spellInterval(tonic: string, interval: string): string | null {
+  const root = /^([A-G])(♭|♯|b|#)?$/.exec(tonic);
+  const parsed = parseInterval(interval);
+  if (!root || !parsed) return null;
+  const rootIndex = LETTERS.indexOf(root[1] as (typeof LETTERS)[number]);
+  const rootAlter = root[2] === '♭' || root[2] === 'b' ? -1 : root[2] === '♯' || root[2] === '#' ? 1 : 0;
+  const rootPc = (LETTER_PC[rootIndex] ?? 0) + rootAlter;
+  const letterIndex = (rootIndex + parsed.number - 1) % 7;
+  const target = (((rootPc + parsed.semitones) % 12) + 12) % 12;
+  let alter = target - (LETTER_PC[letterIndex] ?? 0);
+  if (alter > 6) alter -= 12;
+  if (alter < -6) alter += 12;
+  if (Math.abs(alter) > 1) return null;
+  return `${LETTERS[letterIndex] ?? 'C'}${alter === -1 ? '♭' : alter === 1 ? '♯' : ''}`;
+}
 
 /**
  * How long a chain can get.
@@ -261,6 +310,15 @@ export interface SimonOptions {
   degrees?: readonly number[];
   /** Pitch class of the key those degrees are counted from. */
   key?: number;
+  /**
+   * A genre's own scale, as intervals above `tonic` — `['P1', 'm3', 'P4',
+   * 'A4', 'P5', 'm7']` for the blues scale, whose blue note is written as a
+   * raised fourth in every key (`BLUES_SCALE_FORMS`). Takes the place of `degrees`, and
+   * names each note the way the written scale does (`spellInterval`).
+   */
+  intervals?: readonly string[];
+  /** The spelled tonic those intervals are counted from: `C`, `B♭`. */
+  tonic?: string;
   rounds?: number;
   seed?: number;
   clock?: Clock;
@@ -269,14 +327,75 @@ export interface SimonOptions {
   help?: SimonHelp;
 }
 
+/**
+ * Pitch class to spelled name, for a game seeded from a genre's scale.
+ *
+ * Null when the game is not seeded that way, or when a tonic or interval does
+ * not read — which falls back to the plain game rather than to a chain of
+ * notes nobody meant.
+ */
+export function simonSpelling(
+  options: Pick<SimonOptions, 'intervals' | 'tonic'>,
+): Map<number, string> | null {
+  const intervals = options.intervals ?? [];
+  if (intervals.length === 0 || !options.tonic) return null;
+  const names = new Map<number, string>();
+  for (const interval of intervals) {
+    const name = spellInterval(options.tonic, interval);
+    const parsed = parseInterval(interval);
+    const root = spellInterval(options.tonic, 'P1');
+    if (!name || !parsed || !root) return null;
+    const rootPc = noteNamePc(root);
+    if (rootPc === null) return null;
+    names.set((rootPc + parsed.semitones + 12) % 12, name);
+  }
+  return names;
+}
+
+function noteNamePc(name: string): number | null {
+  const match = /^([A-G])(♭|♯)?$/.exec(name);
+  if (!match) return null;
+  const letter = LETTER_PC[LETTERS.indexOf(match[1] as (typeof LETTERS)[number])] ?? 0;
+  return (letter + (match[2] === '♭' ? -1 : match[2] === '♯' ? 1 : 0) + 12) % 12;
+}
+
+/**
+ * The key signature and accidentals the chain's staff is written with, for a
+ * seeded game: the tonic's **minor** key, as the written pentatonic family
+ * uses (`make_pentatonic`, `minor_key`), and each black key spelled as the
+ * scale names it — E flat and F sharp on one staff in C blues. Null for the
+ * plain game, whose staff chooses its own (`fifthsFor`).
+ */
+export function simonStaffSpelling(
+  options: Pick<SimonOptions, 'intervals' | 'tonic'>,
+): { fifths: number; blackKeys: Partial<Record<number, 'flat' | 'sharp'>> } | null {
+  const names = simonSpelling(options);
+  const root = options.tonic ? spellInterval(options.tonic, 'P1') : null;
+  const rootPc = root ? noteNamePc(root) : null;
+  if (!names || rootPc === null) return null;
+  // The relative major is a minor third up; its signature is its place on
+  // the circle of fifths, taken on the flat side from six.
+  const major = (rootPc + 3) % 12;
+  let fifths = (major * 7) % 12;
+  if (fifths > 6) fifths -= 12;
+  const blackKeys: Partial<Record<number, 'flat' | 'sharp'>> = {};
+  for (const [pc, name] of names) {
+    if (name.endsWith('♭')) blackKeys[pc] = 'flat';
+    else if (name.endsWith('♯')) blackKeys[pc] = 'sharp';
+  }
+  return { fifths, blackKeys };
+}
+
 /** Every note in the range this drill is allowed to play. */
 export function simonPool(options: SimonOptions): number[] {
   const low = Math.min(options.low ?? 60, options.high ?? 72);
   const high = Math.max(options.low ?? 60, options.high ?? 72);
   const degrees = options.degrees ?? [];
   const key = (((options.key ?? 0) % 12) + 12) % 12;
-  const allowed =
-    degrees.length === 0
+  const spelled = simonSpelling(options);
+  const allowed = spelled
+    ? new Set(spelled.keys())
+    : degrees.length === 0
       ? null
       : new Set(
           degrees.map((degree) => {
@@ -348,8 +467,15 @@ export class SimonDrill implements Drill {
   private retryPending = false;
   private readonly answers: DrillAnswer[] = [];
 
+  /** Names for a seeded game's notes, or null for the plain game. */
+  private readonly spelling: Map<number, string> | null;
+  /** The staff's signature and accidentals for a seeded game. */
+  readonly staffSpelling: { fifths: number; blackKeys: Partial<Record<number, 'flat' | 'sharp'>> } | null;
+
   constructor(options: SimonOptions & { rng: () => number }) {
     const rounds = Math.max(1, Math.min(64, options.rounds ?? SIMON_ROUNDS));
+    this.spelling = simonSpelling(options);
+    this.staffSpelling = simonStaffSpelling(options);
     this.chain = simonChain(simonPool(options), rounds, options.rng);
     this.stepMs = options.stepMs ?? SIMON_STEP_MS;
     this.clock = options.clock ?? systemClock;
@@ -359,6 +485,21 @@ export class SimonDrill implements Drill {
   /** How far apart the notes of the chain are played, for the screen's replay. */
   get stepMsBetweenNotes(): number {
     return this.stepMs;
+  }
+
+  /**
+   * What the card calls a note of this chain: the seeded scale's own name
+   * (`D♯4` in the A blues scale, where the plain label says `E♭4`), or the
+   * plain label.
+   */
+  nameOf(midi: number): string {
+    const name = this.spelling?.get(((midi % 12) + 12) % 12);
+    if (!name) return noteLabel(midi);
+    // The octave is the written note's: B♯ is written in the octave below the
+    // C it sounds as, and C♭ in the octave above the B.
+    const sounding = Math.floor(midi / 12) - 1;
+    const octave = name === 'B♯' ? sounding - 1 : name === 'C♭' ? sounding + 1 : sounding;
+    return `${name}${String(octave)}`;
   }
 
   /** The notes of this game, for a test and for nothing else. */

@@ -69,6 +69,21 @@ test('the duet tool opens a piece from the rung with one hand chosen', async ({ 
   ).toBe(true);
 });
 
+test('a rung that names its Simon opens that one, not the stage’s', async ({ page }) => {
+  // blues.3 is a Stage 3 rung, where the stage rule would open the white-key
+  // game. It names the Simon seeded from the blues scale, which is one of its
+  // own exercises, and the button has to go there.
+  await page.goto('/#/lesson/blues.3');
+  await expect(page.locator('#lesson-tools-block')).toBeVisible();
+  const offered = await page.locator('#lesson-exercises .list-row[data-item]').evaluateAll((rows) =>
+    rows.map((row) => row.getAttribute('data-item')),
+  );
+  expect(offered).toContain('drill.ear.simon-blues-c');
+  await page.locator('#lesson-tool-simon').click();
+  await expect(page).toHaveURL(/#\/drill\/drill\.ear\.simon-blues-c/);
+  await expect(page.locator('section[data-screen="drill"]')).toBeVisible();
+});
+
 test('a rung that names no tool draws no block', async ({ page }) => {
   // 1.1 is the first rung of the core path and names none.
   await page.goto('/#/lesson/1.1');

@@ -34,7 +34,7 @@ import {
   romanNumeralDrill,
   transpositionDrill,
 } from './harmony';
-import { SIMON_ROUNDS, SimonDrill } from './simon';
+import { SIMON_ROUNDS, SimonDrill, parseInterval } from './simon';
 import {
   callResponseDrill,
   chordDrill,
@@ -462,6 +462,11 @@ function buildEarTune(p: Params, base: Required<BuildOptions>): Drill {
  * them; `steps` is either the word `chromatic` or a list of scale degrees of
  * `key`, so "the white keys around middle C" is written as the seven degrees
  * of C rather than as a list of MIDI numbers nobody can read.
+ *
+ * A genre's own scale is written as intervals instead — `["P1", "m3", "P4",
+ * "A4", "P5", "m7"]` with `key: "C"` is the C blues scale — because an interval
+ * says which of two names a black key has, and a degree number cannot
+ * (`simon.ts` `parseInterval`).
  */
 function buildSimon(p: Params, base: Required<BuildOptions>, rng: () => number): Drill {
   const edge = (value: unknown, fallback: number): number => {
@@ -471,11 +476,15 @@ function buildSimon(p: Params, base: Required<BuildOptions>, rng: () => number):
   const degrees = Array.isArray(p.steps)
     ? p.steps.filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
     : [];
+  const intervals = Array.isArray(p.steps)
+    ? p.steps.filter((value): value is string => typeof value === 'string' && parseInterval(value) !== null)
+    : [];
   const key = noteNameToPitchClass(typeof p.key === 'string' ? p.key : 'C') ?? 0;
   return new SimonDrill({
     low: edge(p.low, 60),
     high: edge(p.high, 72),
     ...(degrees.length > 0 ? { degrees } : {}),
+    ...(intervals.length > 0 ? { intervals, tonic: typeof p.key === 'string' ? p.key : 'C' } : {}),
     key,
     rounds: Math.round(num(p.rounds, SIMON_ROUNDS)),
     ...(typeof p.stepMs === 'number' ? { stepMs: p.stepMs } : {}),

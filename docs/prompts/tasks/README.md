@@ -11,7 +11,7 @@ Dispatch one at a time. They are ordered by dependency, not by size.
 | ~~T4~~ | ~~The findings the last session left against its own work~~ | — | — | **done 2026-09-18**, Entry 20 |
 | ~~T1~~ | ~~A mode on every rung where one fits~~ | — | — | **done 2026-09-18** |
 | ~~T1b~~ | ~~Build the four rungs that need no new music~~ | — | — | **done 2026-09-19**, Entry 21; trading fours waits on T2 |
-| **T3** | Seed Simon from a genre's own scale | nothing | `simon.ts`, catalog rows, two docs | none |
+| ~~T3~~ | ~~Seed Simon from a genre's own scale~~ | — | — | **done 2026-09-19**, Entry 22; blues scale built, clave/guide tones/walk-up rejected |
 | **T2** | Build trading fours | T3 is a good warm-up for it | a drill kind, a schema enum, a screen | none |
 | **T7** | Review the concepts added, and decide four silent genres | nothing | a read, then a content decision | **a musical ear** |
 | **T6** | Make the tempo ladder addressable | nothing | a route, two enums, one screen | none |

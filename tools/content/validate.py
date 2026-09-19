@@ -1003,12 +1003,17 @@ def tool_errors(curriculum: dict) -> list[str]:
     never heard of, and an `item` that is not among this rung's own song
     options. The second is the important one — a lesson that sends you to a
     piece it does not offer is the `blues.3` fault wearing a control.
+
+    A `simon` tool opens a drill, not a piece, and a rung offers its drills as
+    exercises, so its `item` is checked against those (2026-09-19, when the
+    blues rungs began naming the Simon seeded from the blues scale).
     """
     errors: list[str] = []
     for stage in curriculum.get("stages", []):
         for unit in stage.get("units", []):
             for lesson in unit.get("lessons", []):
                 songs = set(lesson.get("songOptions", []))
+                exercises = set(lesson.get("exerciseOptions", []))
                 for tool in lesson.get("tools", []) or []:
                     kind = tool.get("kind")
                     where = f"{lesson.get('id', '?')}: tool {kind!r}"
@@ -1018,7 +1023,13 @@ def tool_errors(curriculum: dict) -> list[str]:
                             errors.append(
                                 f"{where} names preset {preset!r}, which the lab does not have"
                             )
-                    if tool.get("item") and tool["item"] not in songs:
+                    if kind == "simon":
+                        if tool.get("item") and tool["item"] not in exercises:
+                            errors.append(
+                                f"{where} opens {tool['item']!r}, which is not one of this "
+                                f"rung's exercise options"
+                            )
+                    elif tool.get("item") and tool["item"] not in songs:
                         errors.append(
                             f"{where} opens {tool['item']!r}, which is not one of this "
                             f"rung's song options"

@@ -82,7 +82,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `blues.3` | 6 | 5 | 2.6–4.5 | Careless Love (2.6), St. Louis Blues (1914) (3.5), St. James Infirmary (3.5), Wabash Blues (4.1), Tishomingo Blues (4.2) |
+| 3 | `blues.3` | 7 | 5 | 2.6–4.5 | Careless Love (2.6), St. Louis Blues (1914) (3.5), St. James Infirmary (3.5), Wabash Blues (4.1), Tishomingo Blues (4.2) |
 | 4 | `blues.4` | 5 | 7 | 2.4–5.2 | 12 Bar Blues (2.4), Careless Love (2.6), Twelve-bar blues shuffle in C (3.4), St. Louis Blues (1914) (3.5), Hesitating Blues (3.6), Twelve-bar blues shuffle in F (4.1), … and 1 more |
 | 5 | `blues.5` | 7 | 6 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Blues My Naughty Sweetie Gives to Me (1919) (4.0), The Memphis Blues (1912) (4.0), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1), Royal Garden Blues (1919) (4.2) |
 | 6 | `blues.6` *(song-optional)* | 5 | 3 | 3.5–7.5 | Boogie-woogie and blues piano exercises (3.5), Boogie (easy, for beginners) (5.0), Pinetop's Boogie Woogie (1928) (7.5) |
@@ -127,7 +127,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 |---|---|---:|---:|---|---|
 | 3 | `improv.3` *(song-optional)* | 3 | 0 | 3.1–3.2 | — |
 | 4 | `improv.4` *(song-optional)* | 4 | 0 | 3.1–4.1 | — |
-| 5 | `improv.5` *(song-optional)* | 4 | 3 | 3.4–5.1 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 5 | `improv.5` *(song-optional)* | 5 | 3 | 3.4–5.1 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
 | 6 | `improv.6` *(song-optional)* | 5 | 0 | 5.4–7.2 | — |
 | 7 | `improv.7` *(song-optional)* | 5 | 0 | 7.1–7.3 | — |
 | 8 | `improv.8` *(song-optional)* | 5 | 0 | 7.1–8.2 | — |

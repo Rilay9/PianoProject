@@ -635,7 +635,8 @@
                 "exercise.blues-scale.c.1oct.right",
                 "exercise.blues-scale.g.1oct.right",
                 "exercise.blues-scale.f.1oct.right",
-                "exercise.rhythm.shuffle-eighths.4bar"
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "drill.ear.simon-blues-c"
               ],
               "songOptions": [
                 "song.pop.careless-love-blues.pdmx",
@@ -661,6 +662,10 @@
                 {
                   "kind": "lab",
                   "preset": "blues-shuffle"
+                },
+                {
+                  "kind": "simon",
+                  "item": "drill.ear.simon-blues-c"
                 }
               ],
               "levelBand": [

@@ -466,7 +466,8 @@
                 "drill.improv.blues-backing",
                 "drill.improv.call-response",
                 "exercise.rhythm.shuffle-eighths.4bar",
-                "exercise.blues-scale.c.1oct.right"
+                "exercise.blues-scale.c.1oct.right",
+                "drill.ear.simon-blues-c"
               ],
               "songOptions": [
                 "exercise.blues.twelve-bar-shuffle.c",
@@ -489,6 +490,10 @@
                 {
                   "kind": "lab",
                   "preset": "blues-shuffle"
+                },
+                {
+                  "kind": "simon",
+                  "item": "drill.ear.simon-blues-c"
                 }
               ],
               "levelBand": [

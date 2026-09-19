@@ -28,8 +28,13 @@ import {
   simonPool,
   simonReplayAfterMiss,
   toSimonHelp,
+  parseInterval,
+  simonStaffSpelling,
+  spellInterval,
   type SimonHelp,
 } from '../../src/engine/drills/simon';
+import { answerSheet } from '../../src/engine/drills/answerSheet';
+import { unzipSync, strFromU8 } from 'fflate';
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { makeRng } from '../../src/engine/sightReading';
 import type { CatalogItem } from '../../src/curriculum/types';
@@ -583,5 +588,136 @@ describe('simonForStage', () => {
 
   it('gives a learner below both of them the one they will meet first', () => {
     expect(simonForStage(0)).toBe(SIMON_C_MAJOR_ITEM);
+  });
+});
+
+/**
+ * Simon seeded from a genre's own scale (T3, `04` §5c-2).
+ *
+ * The chain is the blues scale, heard before it is read — `02` Part A item 7,
+ * ear before theory before name. Three things have to hold for that to be
+ * true and not a chain of arbitrary notes: it draws only the scale's notes, it
+ * names them as the scale does, and the name agrees with the written scale
+ * the same rung offers, so the ear drill and the page never disagree about
+ * the blue note.
+ */
+describe('a Simon seeded from the blues scale', () => {
+  const STATIC = JSON.parse(
+    readFileSync(resolve('../content/catalog.static.json'), 'utf8'),
+  ) as CatalogItem[];
+  const ITEM = 'drill.ear.simon-blues-c';
+  const item = (): CatalogItem => {
+    const found = STATIC.find((entry) => entry.id === ITEM);
+    expect(found, `${ITEM} is not in the static catalog`).toBeDefined();
+    return found as CatalogItem;
+  };
+  const played = (drill: ReturnType<typeof drillFromCatalog>): number[] => {
+    const drawn: number[] = [];
+    for (let prompt = drill?.next() ?? null; prompt; prompt = drill?.next() ?? null) {
+      drawn.push(...prompt.expected);
+      prompt.expected.forEach((midi, at) => {
+        drill?.feed(noteOn(midi, at * 10));
+      });
+    }
+    return drawn;
+  };
+
+  it('spells by interval, so the same key has two names', () => {
+    expect(spellInterval('C', 'd5')).toBe('G♭');
+    expect(spellInterval('C', 'A4')).toBe('F♯');
+    expect(spellInterval('C', 'm3')).toBe('E♭');
+    expect(spellInterval('A', 'd5')).toBe('E♭');
+    expect(spellInterval('B♭', 'm3')).toBe('D♭');
+    // Six semitones either way; the interval says which note it is.
+    expect(parseInterval('d5')?.semitones).toBe(parseInterval('A4')?.semitones);
+    // A double flat is refused rather than written.
+    expect(spellInterval('E♭', 'd5')).toBeNull();
+    expect(parseInterval('x9')).toBeNull();
+  });
+
+  it('draws only the six notes of the C blues scale, and the blue note turns up', () => {
+    const drawn = new Set<number>();
+    for (const seed of [1, 2, 3, 4, 5]) {
+      for (const midi of played(drillFromCatalog(item(), { seed }))) drawn.add(midi);
+    }
+    const classes = new Set([...drawn].map((midi) => midi % 12));
+    expect([...classes].every((pc) => [0, 3, 5, 6, 7, 10].includes(pc))).toBe(true);
+    expect(classes.has(6)).toBe(true);
+    expect([...drawn].every((midi) => midi >= 60 && midi <= 72)).toBe(true);
+  });
+
+  it('names each note as the scale spells it: F sharp in C, D sharp in A', () => {
+    const drill = drillFromCatalog(item(), { seed: 1 });
+    expect(drill).toBeInstanceOf(SimonDrill);
+    const simon = drill as SimonDrill;
+    expect(simon.nameOf(66)).toBe('F♯4');
+    expect(simon.nameOf(63)).toBe('E♭4');
+    expect(simon.nameOf(70)).toBe('B♭4');
+    expect(simon.nameOf(72)).toBe('C5');
+    // In C the scale's names happen to match the plain labels; in A they do
+    // not, which is what `nameOf` is for: D sharp, where the label says E flat.
+    const inA = new SimonDrill({
+      low: 69, high: 81, intervals: ['P1', 'm3', 'P4', 'A4', 'P5', 'm7'], tonic: 'A', rng: makeRng(1),
+    });
+    expect(inA.nameOf(75)).toBe('D♯5');
+    // And a B sharp is written in the octave below the C it sounds as.
+    const inFSharp = new SimonDrill({
+      low: 66, high: 78, intervals: ['P1', 'm3', 'P4', 'A4', 'P5', 'm7'], tonic: 'F♯', rng: makeRng(1),
+    });
+    expect(inFSharp.nameOf(72)).toBe('B♯4');
+    // The plain game is untouched: no spelling, and its old labels.
+    const plain = STATIC.find((entry) => entry.id === SIMON_C_MAJOR_ITEM) as CatalogItem;
+    const white = drillFromCatalog(plain, { seed: 1 }) as SimonDrill;
+    expect(white.staffSpelling).toBeNull();
+    expect(white.nameOf(66)).toBe('F♯4');
+  });
+
+  it('writes the staff in C minor with E flat, F sharp and B flat on one line', () => {
+    const spelling = simonStaffSpelling({ intervals: ['P1', 'm3', 'P4', 'A4', 'P5', 'm7'], tonic: 'C' });
+    expect(spelling).toEqual({ fifths: -3, blackKeys: { 3: 'flat', 6: 'sharp', 10: 'flat' } });
+    const chain = [60, 63, 65, 66, 67, 70];
+    const xml = answerSheet({ title: 't', notes: chain, ordered: true, wholeRun: chain, spelling: spelling ?? undefined }) ?? '';
+    expect(xml).toContain('<fifths>-3</fifths>');
+    // A flat signature alone would write every black key as a flat, F sharp
+    // included: the scale's own spelling has to reach the staff note by note.
+    expect(xml).toMatch(/<step>F<\/step>\s*<alter>1<\/alter>/);
+    expect(xml).not.toMatch(/<step>G<\/step>\s*<alter>-1<\/alter>/);
+    expect(xml).toMatch(/<step>E<\/step>\s*<alter>-1<\/alter>/);
+    expect(xml).toMatch(/<step>B<\/step>\s*<alter>-1<\/alter>/);
+    // Without it the staff guesses, and the guess is the fault this fixes.
+    const guessed = answerSheet({ title: 't', notes: chain, ordered: true, wholeRun: chain }) ?? '';
+    expect(guessed).not.toContain('<fifths>-3</fifths>');
+  });
+
+  it('names the blue note as the written C blues scale on the same rungs does', () => {
+    // The written scale is generated in Python (`make_blues_scale`) and the
+    // chain is spelled here; this reads the built score so the two cannot
+    // drift apart without a test going red.
+    const zip = unzipSync(readFileSync(resolve('public/content/scores/generated/exercise.blues-scale.c.1oct.right.mxl')));
+    const name = Object.keys(zip).find(
+      (key) => !key.startsWith('META-INF') && (key.endsWith('.xml') || key.endsWith('.musicxml')),
+    );
+    expect(name, 'no score inside the .mxl').toBeDefined();
+    const xml = strFromU8(zip[name ?? ''] ?? new Uint8Array());
+    const pitches = [...xml.matchAll(/<step>([A-G])<\/step>\s*(?:<alter>(-?\d)<\/alter>)?\s*<octave>(\d)<\/octave>/g)].map(
+      (match) => `${match[1] ?? ''}${match[2] === '-1' ? '♭' : match[2] === '1' ? '♯' : ''}`,
+    );
+    expect(pitches.length).toBeGreaterThan(5);
+    const drill = drillFromCatalog(item(), { seed: 1 }) as SimonDrill;
+    // The fourth note of the written scale is the blue note.
+    expect(drill.nameOf(66)).toBe(`${pitches[3] ?? ''}4`);
+    expect(pitches[3]).toBe('F♯');
+  });
+
+  it('is offered on the two rungs that teach the blue note, and named on their Simon button', () => {
+    const curriculum = JSON.parse(readFileSync(resolve('public/content/curriculum.json'), 'utf8')) as {
+      stages: { units: { lessons: { id: string; exerciseOptions: string[]; tools?: { kind: string; item?: string }[] }[] }[] }[];
+    };
+    const lessons = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons));
+    for (const id of ['blues.3', 'improv.5']) {
+      const lesson = lessons.find((entry) => entry.id === id);
+      expect(lesson?.exerciseOptions, id).toContain(ITEM);
+      expect(lesson?.tools?.some((tool) => tool.kind === 'simon' && tool.item === ITEM), id).toBe(true);
+    }
   });
 });

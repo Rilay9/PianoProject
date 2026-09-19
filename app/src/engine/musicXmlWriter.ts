@@ -77,6 +77,14 @@ export interface WriterOptions {
   staves: 1 | 2;
   /** A one-staff part's clef; G unless a bass-register answer asks for F. */
   clef?: 'G' | 'F';
+  /**
+   * How particular black keys are spelled, by pitch class, whatever the
+   * signature says: `{ 3: 'flat', 6: 'sharp' }` writes E flat and F sharp on
+   * one staff. Absent for a key, a flat signature means flats and anything else
+   * sharps. Simon's blues chain sets it — C blues is E flat, F sharp and B flat
+   * (`BLUES_SCALE_FORMS`), which no single preference can write.
+   */
+  blackKeys?: Partial<Record<number, 'flat' | 'sharp'>>;
   measures: WriterMeasure[];
 }
 
@@ -94,13 +102,15 @@ const IS_SHARP = [false, true, false, true, false, false, true, false, true, fal
 export function midiToPitch(
   midi: number,
   preferFlats: boolean,
+  blackKeys?: Partial<Record<number, 'flat' | 'sharp'>>,
 ): { step: string; alter: number; octave: number } {
   const pitchClass = ((midi % 12) + 12) % 12;
   const octave = Math.floor(midi / 12) - 1;
   if (!IS_SHARP[pitchClass]) {
     return { step: STEP_NAMES[pitchClass] ?? 'C', alter: 0, octave };
   }
-  if (preferFlats) {
+  const chosen = blackKeys?.[pitchClass];
+  if (chosen === 'flat' || (chosen === undefined && preferFlats)) {
     // Spell as the flat of the note above: C# -> Db.
     const above = (pitchClass + 1) % 12;
     return { step: STEP_NAMES[above] ?? 'C', alter: -1, octave: above === 0 ? octave + 1 : octave };
@@ -116,7 +126,12 @@ function escapeXml(value: string): string {
     .replace(/"/g, '&quot;');
 }
 
-function noteXml(note: WriterNote, preferFlats: boolean, indent: string): string {
+function noteXml(
+  note: WriterNote,
+  preferFlats: boolean,
+  indent: string,
+  blackKeys?: Partial<Record<number, 'flat' | 'sharp'>>,
+): string {
   const lines: string[] = [];
   lines.push(`${indent}<note>`);
   // <chord/> must come before <pitch>, per the MusicXML DTD.
@@ -124,7 +139,7 @@ function noteXml(note: WriterNote, preferFlats: boolean, indent: string): string
   if (note.midi === null) {
     lines.push(`${indent}  <rest/>`);
   } else {
-    const { step, alter, octave } = midiToPitch(note.midi, preferFlats);
+    const { step, alter, octave } = midiToPitch(note.midi, preferFlats, blackKeys);
     lines.push(`${indent}  <pitch>`);
     lines.push(`${indent}    <step>${step}</step>`);
     if (alter !== 0) lines.push(`${indent}    <alter>${alter}</alter>`);
@@ -248,7 +263,7 @@ export function writeMusicXml(options: WriterOptions): string {
         if (back > 0) lines.push(`      <backup><duration>${back}</duration></backup>`);
       }
       for (const note of byStaff.get(staff) ?? []) {
-        lines.push(noteXml(note, preferFlats, '      '));
+        lines.push(noteXml(note, preferFlats, '      ', options.blackKeys));
       }
     });
 

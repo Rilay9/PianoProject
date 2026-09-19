@@ -26,6 +26,7 @@ from music21 import harmony  # noqa: E402
 
 from generate_exercises import (  # noqa: E402
     BLUES_SCALE,
+    make_pentatonic,
     BOOGIE_MINOR_LEVELS,
     BOOGIE_PATTERNS,
     COMPING_BARS,
@@ -641,6 +642,37 @@ class TestBluesScale(HarmonyFamilyCase):
             root = sc.parts[0].recurse().notes[0].pitch.pitchClass
             self.assertEqual(classes, {(root + i) % 12 for i in BLUES_SCALE}, tonic)
             self.assertReadable(sc, entry["id"])
+
+    def test_the_blue_note_is_written_as_a_raised_fourth_in_every_key(self) -> None:
+        # The owner's rule (2026-09-19, `BLUES_SCALE_FORMS`): the flattened
+        # fifth is *spelled* as a raised fourth everywhere, because the flat
+        # spelling runs out (C flat in F, B double flat in E flat), and
+        # `blues.4` and `improv.5` tell the learner so. Both families and the
+        # Simon seeded from this scale read the one table; this is the check
+        # that the two written families actually agree.
+        for tonic in HARMONY_KEYS:
+            sc, entry = make_blues_scale(tonic, "right")
+            notes = list(sc.parts[0].recurse().notes)
+            root = notes[0].pitch
+            fourth = root.transpose("A4")
+            blue = [n.pitch for n in notes if (n.pitch.pitchClass - root.pitchClass) % 12 == 6]
+            self.assertTrue(blue, entry["id"])
+            for p in blue:
+                self.assertEqual(p.name, fourth.name, f"{entry['id']}: {p.nameWithOctave}")
+        for tonic in ("A", "D", "E"):
+            sc, entry = make_pentatonic(tonic, "blues")
+            notes = list(sc.parts[0].recurse().notes)
+            root = notes[0].pitch
+            blue = [n.pitch for n in notes if (n.pitch.pitchClass - root.pitchClass) % 12 == 6]
+            self.assertTrue(blue, entry["id"])
+            for p in blue:
+                self.assertEqual(p.name, root.transpose("A4").name, f"{entry['id']}: {p.nameWithOctave}")
+        # The keys the rungs teach, by name, so a change of HARMONY_KEYS
+        # cannot quietly drop them: C, G and F on blues.3, A on core 3.1.
+        self.assertEqual(make_blues_scale("C", "right")[0].parts[0].recurse().notes[3].pitch.name, "F#")
+        self.assertEqual(make_blues_scale("G", "right")[0].parts[0].recurse().notes[3].pitch.name, "C#")
+        self.assertEqual(make_blues_scale("F", "right")[0].parts[0].recurse().notes[3].pitch.name, "B")
+        self.assertEqual(make_pentatonic("A", "blues")[0].parts[0].recurse().notes[3].pitch.name, "D#")
 
     def test_it_prints_no_fingering(self) -> None:
         # Deliberate: there is no published chart for this scale in

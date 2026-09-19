@@ -613,6 +613,58 @@ test.describe('Simon', () => {
     await expect(page.locator('#drill-strip .is-expected')).toHaveCount(0);
   });
 
+  test('names the blues scale as the written scale does: F sharp, E flat, B flat', async ({ page }) => {
+    // The Simon seeded from the C blues scale (T3). The claim is the one no
+    // unit test can make: that the name on the card, lit over the key, is the
+    // scale's own — the blue note as a raised fourth, as `BLUES_SCALE_FORMS`
+    // and the blues lessons have it, and the other black keys as flats.
+    const midi = await openDrill(page, 'drill.ear.simon-blues-c');
+    // It opens ear-first, as its catalog row says; the lights are one tap away.
+    expect(await pressedRung(page)).toBe('keys-after-miss');
+    await page.locator('#drill-simon-help-show-keys').click();
+    await expect(page.locator('#drill-simon-help-show-keys')).toHaveAttribute('aria-pressed', 'true');
+
+    // Echo rounds until the chain holds the blue note itself, the one name
+    // this seed exists to settle. The chain is drawn from the item's own
+    // seed, so this is the same number of rounds every run.
+    const BLUE = 66;
+    let chain: number[] = [];
+    for (let round = 1; round <= 12; round += 1) {
+      await expect.poll(async () => (await expectedNow(page)).length, { timeout: 15_000 }).toBe(round);
+      chain = await expectedNow(page);
+      if (chain.includes(BLUE)) break;
+      await echoChain(page, midi, round);
+    }
+    expect(chain.includes(BLUE), 'twelve rounds and no blue note').toBe(true);
+
+    await watchSimonCard(page);
+    await page.locator('#drill-replay').click();
+    await expect
+      .poll(
+        async () =>
+          new Set(
+            (await simonSoFar(page)).map((sample) => sample.name).filter((name) => name !== EAR_GLYPH),
+          ).size,
+        { timeout: 20_000 },
+      )
+      .toBe(new Set(chain).size);
+    const seen = await simonSeen(page);
+    const SPELLED: Record<number, string> = {
+      60: 'C4', 63: 'E♭4', 65: 'F4', 66: 'F♯4', 67: 'G4', 70: 'B♭4', 72: 'C5',
+    };
+    for (const note of chain) {
+      const name = SPELLED[note];
+      expect(name, `${String(note)} is not in the C blues scale`).toBeDefined();
+      expect(
+        seen.some((sample) => sample.name === name && sample.expectedLit.includes(note)),
+        `${String(note)} was never lit as ${name ?? '?'}`,
+      ).toBe(true);
+    }
+    // And the blue note was never named as a flat fifth, which is the other
+    // spelling and the one the written scale does not use.
+    expect(seen.some((sample) => sample.name.startsWith('G♭')), 'G flat was named').toBe(false);
+  });
+
   /**
    * Watches the same chain under another rung, for as long as it took to be
    * drawn under the rung that draws it.

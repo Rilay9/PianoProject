@@ -4070,6 +4070,7 @@ def make_boogie(
 BLUES_SCALE = (0, 3, 5, 6, 7, 10, 12)
 
 
+
 def make_blues_scale(
     tonic: str = "C", hands: str = "right", octaves: int = 1, bpm: int = 76,
 ) -> tuple[stream.Score, dict]:
@@ -4097,9 +4098,15 @@ def make_blues_scale(
         "The flat fifth is passed through, not landed on"
     ))
 
+    # Spelled by interval from `BLUES_SCALE_FORMS`, the one table both blues
+    # families and Simon read: the blue note is a raised fourth in every key.
+    # It was built from semitones until 2026-09-19, which gave the same notes
+    # by music21's choice rather than by this file's.
+    blues_intervals = BLUES_SCALE_FORMS["blues"][0]
+
     def run(start: pitch.Pitch) -> list[pitch.Pitch]:
-        climb = [up(start, 12 * o + i)
-                 for o in range(octaves) for i in BLUES_SCALE[:-1]]
+        climb = [by_octaves(start, o).transpose(interval.Interval(d))
+                 for o in range(octaves) for d in blues_intervals]
         climb.append(by_octaves(start, octaves))
         return climb + list(reversed(climb))[1:]
 
@@ -4969,16 +4976,22 @@ def make_riff(
 #: whole reason it can be taught at core 2.5 rather than after the black keys
 #: arrive at 3.1. Adding the flat fifth makes it the blues scale and costs
 #: exactly one accidental, so that variant waits for 3.1 and is levelled there.
-#: Spelled as **intervals, not semitones**. Six semitones above D is A flat or
-#: G sharp depending on who is asked, and music21 answers G sharp — which is a
-#: raised fourth, a different degree that happens to sound the same. A blues
-#: scale has a *lowered fifth*: it must sit on the fifth's own line or space
-#: with a flat in front of it, or a learner reads a sharp fourth and the drill
-#: that names notes disagrees with the scale that plays them. `d5` says which
-#: one is meant and the spelling follows in every key.
+#: Spelled as **intervals, not semitones**, so the spelling is chosen here and
+#: not by whatever music21 answers for six semitones.
+#:
+#: **The blue note is written as a raised fourth, in every key** (the owner's
+#: decision, 2026-09-19): F sharp in C, G sharp in D, D sharp in A. It sounds a
+#: flattened fifth and the lessons call it that; it is *spelled* sharp because
+#: the flat spelling runs out — the flattened fifth of F is C flat, of B flat F
+#: flat, of E flat B double flat, and no edition prints those — and one rule in
+#: every key beats a rule with exceptions. `blues.4` and `improv.5` explain this
+#: to the learner, and `make_blues_scale` and Simon (`app/src/engine/drills/
+#: simon.ts`, `drill.ear.simon-blues-c`) spell it from this table. From
+#: 2026-09-18 to 2026-09-19 this form said `d5`, and the A, D and E blues scales
+#: wrote E flat, A flat and B flat while the rest of the app wrote sharps.
 BLUES_SCALE_FORMS: dict[str, tuple[list[str], float, str]] = {
     "pentatonic": (["P1", "m3", "P4", "P5", "m7"], 2.6, "minor pentatonic"),
-    "blues": (["P1", "m3", "P4", "d5", "P5", "m7"], 3.2, "blues scale"),
+    "blues": (["P1", "m3", "P4", "A4", "P5", "m7"], 3.2, "blues scale"),
 }
 
 
