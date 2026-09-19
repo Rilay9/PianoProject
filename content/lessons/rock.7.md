@@ -29,7 +29,8 @@ within a page. The interesting moment is usually just after the top, where the
 texture drops back to almost nothing, and that drop is what makes the height
 audible in retrospect.
 
-**The exercises are small and the pieces are not.** The shaping exercises are
+**The exercises are small and the pieces are not** — which is why the rung's
+range runs from level 5 to beyond 8. The shaping exercises are
 four bars of one line getting louder and then quieter, which is where you find
 out whether your crescendo is even or whether it happens all at once in the last
 bar. The octave scale is the density half: the same notes, twice the weight,

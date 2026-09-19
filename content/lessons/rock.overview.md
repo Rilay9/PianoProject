@@ -12,59 +12,54 @@ readingTime: 3
 This rung exists because the songs you actually want to play are still in
 copyright, and PianoPath will never ship a transcription of them. What it can do
 is teach the techniques those parts are made of, on music that is free to
-bundle.
-
-This used to be seven further rungs, one per named song, each of them a written
-brief about a score that had to be bought or transcribed before a note could be
-played. They were removed: a rung whose music never arrives is not a rung. What
-they taught is here, in the five textures, on music you have.
-
-**If you do bring a score in.** Some retailers of digital sheet music let you
-download MusicXML rather than only PDF; failing that, transcribe it yourself in
-MuseScore and export MusicXML — slow, and the best ear training there is. The
-Library import screen takes it from there, and you can assign it to whichever
-rung it belongs on.
-
-**The five textures this rung covers.** Each names where you can see it written
-down, and each has a rung of its own further up this track. This rung is the
-map: most of the pieces below are above it, so listen now and play them when
-their rung comes round.
-
-1. **Minor-key ostinato** — a short repeated figure over a held or pedal bass.
-   See it in: Chopin *Prelude* op. 28 no. 4, whose left hand repeats one chord
-   shape and shifts it a semitone at a time under a line that barely moves.
-   (Stage 6.)
-2. **Power-chord left hand** — root, fifth and octave, played with weight.
-   No classical piece in the library is built on it; rock.4's exercises are
-   where it lives. (Stage 4.)
-3. **Suspended and add9 open voicings** — the modern ballad sound, chords with
-   the third removed or the ninth added and spread over two hands. See it in
-   the accompaniment work in chords-and-pop 5.
-   This is the one within reach now.
-4. **Ambient arpeggio over a pedal bass** — slow broken chords with the sustain
-   pedal changing only at the harmony. See it in: Beethoven *Moonlight* I.
-   (Stage 7.)
-5. **Building intensity by register and density** — the same material low and
-   sparse, then high and thick. See it in: Grieg's *In the Hall of the Mountain
-   King*, which is nothing but this device for two and a half minutes. (Stage
-   8, on the classical track.)
+bundle. This rung teaches the one they all rest on: the reduction.
 
 **The reduction rule.** A band arrangement on one piano is **melody, bass, and
-one texture** — three things, not five. Choosing which is the real skill here.
+one texture** — three things, not the whole band. The singer's line in the right
+hand, the bass player's root at the bottom of the left, and of everything else
+you keep one layer. Choosing which is the real skill.
 
-**Repertoire for this rung.** Three options, none of them rock, and that is the
-point: you are practising the reduction, not the repertoire. *Ode to Joy* is a
-melody with nothing under it, so you supply the bass and the texture yourself;
-*Greensleeves* with chords hands you the harmony and asks the same question; the
-easy *Canon in D* is already a reduction, of a piece written for four parts, and
-worth reading as one.
+**Doing it from a chord symbol.** Read the symbol, put its root low in the left
+hand, and fill the beat with one pattern: a held chord, a broken chord, or the
+chord repeated on the beats. Keep it for the whole section: changing it every
+bar sounds busy, not full. The left-hand patterns drill and the A-minor
+broken chord are that one layer, practised on its own.
+
+**Repertoire for this rung.** Four options, none of them rock, on purpose: you
+are practising the reduction, not the repertoire.
+
+- *Ode to Joy*, the full theme, gives you two of the three: the tune, and a bass
+  of plain held roots under C and G symbols. Add the third — a broken chord or a
+  held one — and you have a reduction.
+- *Greensleeves* with chords gives you all three, and too much of one: a full
+  triad in the left hand. Thin it to a root and one texture and hear what changes.
+- *Scarborough Fair* gives you only the tune and its symbols — one staff. You
+  supply the bass and the texture. It is in E minor with a C sharp in it — the A
+  major chord in the middle of the tune — which makes it the Dorian mode, a
+  sound rock uses often.
+- The easy *Canon in D* is above this rung, and already a reduction of a piece
+  for four parts: read it as one now, play it later.
+
+**Where the textures go next.** Each one has a rung further up this track:
+
+1. **The riff over a held bass,** and the power chord (Stage 4).
+2. **Open voicings** — the third taken out or a ninth added (Stage 5).
+3. **An arpeggio over a pedal bass,** as in Beethoven's *Moonlight* I (Stage 6).
+4. **Building by register and density** — low and sparse, then high and thick,
+   as in Grieg's *In the Hall of the Mountain King* (Stage 7).
 
 **Common mistake.** Trying to play the guitar part, the bass part and the vocal
 line at once. It will not fit, and the result sounds like none of them.
 
-**Tools for this rung.** *Duet* is a reduction with one part removed: choose
-a hand on the easy *Canon in D* and hear the texture underneath the melody
-you are playing.
+**If you do bring a score in,** get MusicXML rather than PDF, or transcribe it in
+MuseScore — slow, and the best ear training there is — and import it in the
+Library.
 
-**How you'll know you've got it.** You can hear a rock track and say which of
-the five textures its piano part would need.
+**Tools for this rung.** The accompaniment lab's *Rock — the minor vamp* preset
+is a reduction with the tune taken out: held roots in the left hand, chord tones
+in the right, over A minor, G, F and G. *Duet* takes one hand out instead: play
+one hand of the easy *Canon in D* and hear the texture under it.
+
+**How you'll know you've got it.** You can hear a rock track and say which one
+texture its piano part would keep — and play *Scarborough Fair* from its symbols
+with a bass and that one texture, without stopping.

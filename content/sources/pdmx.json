@@ -143,7 +143,11 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.7 by 966"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.folk.scarborough-fair-piano-solo.pdmx",
@@ -671,7 +675,11 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.6 by 42"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.folk.oh-my-darling-clementine.pdmx",
@@ -803,7 +811,11 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.6 by 50"
-      }
+      },
+      "tracks": [
+        "core",
+        "holiday"
+      ]
     },
     {
       "id": "song.classical.foster-oh-susanna.pdmx",
@@ -1463,7 +1475,11 @@
       "review": {
         "decision": "keep",
         "note": "melody only (right hand), but well attested: 4.9 from 7"
-      }
+      },
+      "tracks": [
+        "classical",
+        "holiday"
+      ]
     },
     {
       "id": "song.folk.auld-lang-syne.pdmx",
@@ -2591,7 +2607,11 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.6 by 109"
-      }
+      },
+      "tracks": [
+        "core",
+        "holiday"
+      ]
     },
     {
       "id": "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
@@ -3119,7 +3139,11 @@
       "review": {
         "decision": "keep",
         "note": "melody only (right hand), but well attested: 4.6 from 131"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.pop.sammy-fain-and-irving-kahal-i-ll-be-seeing-you.pdmx",
@@ -8144,7 +8168,11 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.7 by 124"
-      }
+      },
+      "tracks": [
+        "core",
+        "holiday"
+      ]
     },
     {
       "id": "song.folk.el-condor-pasa-if-i-could.pdmx",
@@ -8936,7 +8964,11 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.5 by 346"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.pop.abba-dancing-queen.pdmx",
@@ -15212,7 +15244,11 @@
       "review": {
         "decision": "keep",
         "note": "O Holy Night (Adam 1847)"
-      }
+      },
+      "tracks": [
+        "classical",
+        "holiday"
+      ]
     },
     {
       "id": "song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx",
@@ -15674,7 +15710,11 @@
       "review": {
         "decision": "keep",
         "note": "God Rest Ye Merry Gentlemen"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx",
@@ -15872,7 +15912,11 @@
       "review": {
         "decision": "keep",
         "note": "O Christmas Tree"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx",
@@ -15938,7 +15982,11 @@
       "review": {
         "decision": "keep",
         "note": "Angels We Have Heard on High"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx",
@@ -16070,7 +16118,11 @@
       "review": {
         "decision": "keep",
         "note": "Up on the Housetop"
-      }
+      },
+      "tracks": [
+        "chords-pop",
+        "holiday"
+      ]
     },
     {
       "id": "song.pop.misc-tunes-yankee-doodle.pdmx",

@@ -2,7 +2,7 @@
 title: "Walking bass, when there is no bass player"
 stage: 6
 unit: "jam.6.1"
-readingTime: 2
+readingTime: 3
 ---
 
 Two people playing is a thin sound if both of them are playing chords. If your
@@ -33,7 +33,9 @@ have on the night.
 
 **Tools for this rung.** *Free play* is worth five minutes here: play a walking
 line and watch it name the chord you are implying. It is a quick way to find out
-whether your line is outlining the harmony or just moving.
+whether your line is outlining the harmony or just moving. The lab's *Blues — twelve
+bars* preset walks a bass under the form itself: set it to E, A or D, the keys
+here, listen to one chorus of its line, then play your own.
 
 **Common mistake.** Walking too high. The line belongs below the guitar, and a
 bass part that wanders up into the middle of the keyboard turns into a second

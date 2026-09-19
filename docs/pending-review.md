@@ -1709,3 +1709,187 @@ corrected; the bossa exercises regenerated. **Not heard.**
   (`comping-charleston` beside `charleston`, and so on), whose effect on swaps was not measured.
 - **A content gap the review named:** the rock track has no groove or backbeat lesson.
 - **Nothing here has been heard or played.**
+
+---
+
+### Entry 20 — T4: the findings left against the new rungs (2026-09-18)
+
+**Judgement.** The three HIGH findings of `rung_audit.py` are resolved (**3 HIGH → 0**); the
+two lab buttons are explained; `rock.7`'s span is tied to its own argument; `pdmx.json` was
+made reviewable before the last commit. Nothing here has been played.
+
+**`rock.4` — which home, and why.** Its four exercises also sat on core `2.1` and `3.3`.
+**They stay on core**, and `rock.4` now offers the generator's **D-minor and E-minor**
+versions of the same four families, which were on no rung. The reason is the owner's own
+goal: easier genre material at *earlier* levels, which is exactly what the A-minor copies do on
+the core path; and the brief's own observation that `rock.4`'s band (2.6–3.4) is Stage 2–3
+material, so it was never Stage 4 material to own. Moving the shapes to keys with a flat and a
+sharp is a real Stage 4 step, and the lesson now says so ("how a riff actually lives — a band
+plays it in whatever key the singer needs"). The lab's *minor vamp* preset is locked to A
+minor, so the lesson says the lab plays the loop "where you first met it". Keys confirmed from
+the catalog: D minor (−1), E minor (+1).
+
+**`hymns.2` — a placement fix justifies the rung.** Its four songs (levels 1.4–2.85) also sat on
+`hymns` (Stage 3). The rung stays — it is gospel from Stage 2, which is the owner's goal — and
+**the four songs leave `hymns`**, which keeps 15. `hymns`' band narrows from 1.4 to 3.2 at its
+low end. Its lesson now names the three easier hymns as on the Stage 2 rung "and under *Hymns
+& gospel* in the Library" — true: all three carry the `hymns-gospel` track in the catalog.
+`hymns.2` still shares 5 of 7 options, mostly with core; it drops from HIGH to MED.
+
+**`4.7` "Learning it from memory" offered three reading drills.** Now: a 12-bar shuffle in D
+and an 8-bar oom-pah in C, **both on no rung before**, and a 12-bar walking bass in D (also on
+`jam.6`) — levels 4.1–4.5, inside the band. The reason is the lesson itself: it teaches
+memorising *in four-bar pieces* and *from several starting points*, and a twelve-bar is three
+four-bar pieces with natural entries at bars 5 and 9. The lesson now says that in one
+paragraph. The only memory-tagged items in the catalog are the two Simon drills; Simon trains
+holding a chain in the ear, which is adjacent but not this skill, so it was not used.
+
+**Two lab buttons explained.** `rock.6`: the minor-vamp preset gives the arpeggio "a floor".
+`jam.6`: the blues preset **walks a bass line itself** (its left hand is locked to `walking`,
+its key is not), so the lesson says to set it to E, A or D, hear a chorus of its line, then
+play your own — which is what the button was for and nothing said.
+
+**`rock.7`'s span.** The brief said the lesson did not argue for it. **It did** — "The exercises
+are small and the pieces are not" (line 32). What was missing was the link to the band; one
+clause adds it. `rung_audit.py` still reports the span, because it cannot read prose.
+
+**`pdmx.json`.** Done before the commit of this period: the 8,186-line diff was key order and
+`160.0` rewritten as `160`; rewritten in the committed order and number format it is 17
+lines, values checked identical. `CLAUDE.md` records the cause.
+
+**Faults caught by tests, both mine.** `hymns` named three pieces its rung no longer offers —
+`lessonClaims.test.ts` accepts a pointer to the Library, not to another rung, and the fix was
+to add the (true) Library pointer. `4.7` and `jam.6` grew past 400 words and their stated
+reading time was wrong.
+
+**Verification.** `build.py --offline` (its one failure the ladder report, stale because the
+curriculum changed; regenerated) · `validate.py` OK at 2,053 items · `rung_audit.py` **0 HIGH,
+31 MED, 1 LOW, 12 INFO** · unit **2,233 passed** · `tsc -b` 0 · lint 0. Browser tests not run
+for this chunk — it changed content and lesson prose, no code.
+
+**Files.** `content/curriculum/stage-3.json`, `stage-4.json`; lessons `rock.4`, `4.7`, `hymns`,
+`rock.6`, `jam.6`, `rock.7`; `docs/generated/ladder.md`.
+
+---
+
+### Entry 21 — T1b: jazz.4, rock.3, holiday.2 and holiday.4 (2026-09-19)
+
+**Judgement.** Four rungs from music already in the catalog. `jazz.4` is new; `rock.3` is
+`rock.overview` narrowed; `holiday.2` is the existing `holiday` rung re-scoped from 29 songs
+to six; `holiday.4` is new. Ids of the two existing rungs are **kept** (`rock.overview`,
+`holiday`), as `build/genre-plan.md` specifies, so saved progress and `rock.4`'s prerequisite
+do not move. **Nothing here has been played or heard.**
+
+**Evidence lines.** `<id> → <rung> | fields read from the built catalog | why`
+
+*jazz.4* (Stage 4, after `blues-boogie.4.1`; band 2.74–4.5; `requires.chordSymbols`)
+- `exercise.comping.f.charleston.intro` → jazz.4 | key −1 (F), 4/4, 2 staves, 4 bars, symbols C F Gminor | triads only, the Charleston rhythm; on no rung before
+- `exercise.comping.f.off-beats.intro` → jazz.4 | same fields | the off-beat rhythm on the same three chords; on no rung before
+- `exercise.comping.f.four-on-the-floor.intro` → jazz.4 | same fields | four to the bar; on no rung before
+- `exercise.rhythm.shuffle-eighths.4bar` → jazz.4 | 4/4, 1 staff, 4 bars, swung mark, no symbols | swung eighths alone; moved down from jazz.5
+- `song.pop.avalon.pdmx` → jazz.4 | −1, 2/2, 1 staff, 33 bars, 22 symbols (C7, B♭m6 …), ends F | a lead sheet in the exercises' key; moved from jazz.5
+- `song.pop.whispering.pdmx` → jazz.4 | −3, 4/4, 1 staff, 48 bars, 37 symbols (Cm7 …), ends E♭ | lead sheet, level 3.34; moved from jazz.5
+- `song.pop.margie.pdmx` → jazz.4 | −1, 4/4, 1 staff, 48 bars, 50 symbols, **ends on C** | lead sheet, level 3.51; moved from jazz.5. The key is **not confirmed** (one flat, ends on the dominant), so the lesson claims only "the same one flat"
+
+`jazz.5` keeps four songs and five exercises; its band narrows to 3.25–5.2 at the low end and
+its lesson points the three 1920 tunes to the Stage 4 rung and the Library. **Trading fours,
+the third thing the brief lists for jazz.4, is not taught**: it needs T2's mode, which does
+not exist. The lesson does not mention it.
+
+*rock.3 = `rock.overview`* (Stage 3; band unchanged 2.5–5.1)
+- concepts **13 → 1** (`reduction`). The other twelve are taught on `rock.4`–`rock.7`, checked per concept; the only consumers of a rung's concepts are `validate.py`'s orphan check (every dropped concept is still taught elsewhere) and the Skills screen's stage list, where Stage 3 correctly disappears from those twelve
+- `song.folk.scarborough-fair.pdmx` → rock.overview | +2, 3/4, 1 staff, 19 bars, 13 symbols (Em D G A B), ends on E, C♯ in the tune | a lead sheet: the learner supplies bass and texture, which is the reduction itself. **E Dorian**, read from the notes
+- kept `song.classical.ode-to-joy.full` | 2 staves, symbols C and G only; left hand read bar by bar — **plain roots, one or two per bar** | melody and bass given, the texture is the learner's
+- kept `song.folk.greensleeves.chords` | 2 staves, 15 symbols; left hand read — **block triads in half notes** | all three layers given, one too full
+- kept `song.classical.pachelbel-canon-d.easy` (5.1) and the three exercises
+
+The old lesson said *Ode to Joy* "is a melody with nothing under it"; **false** — it has a
+bass. Its five stage numbers were stale (ostinato "Stage 6", now `rock.4` at 4; arpeggio
+"Stage 7", now `rock.6` at 6; building "Stage 8, classical track", now `rock.7` at 7). All
+corrected. `rock.4`'s opening line ("named five textures and showed you what they sound
+like") now says what the rung before it does. MED remains: **6 of 7 options shared** — the
+point of the rung is doing a different thing to familiar material, so the sharing is kept.
+
+*holiday.2 = `holiday`* (Stage 2; band **1.2–7.3 → 1.2–3.2**; concepts carols, hands-together, chord-symbols)
+- `song.holiday.jingle-bells.rh` → holiday | C, 4/4, 1 staff, 8 bars, judged 1.2 | the first carol
+- `song.holiday.jingle-bells.ht` → holiday | C, 4/4, 2 staves, symbols C F G; left hand read — **single roots**, not chords | the lesson says roots
+- `song.classical.1818-franz-xaver-gruber-silent-night.pdmx` → holiday | C, **6/8**, 1 staff, 12 bars, C F G G7 | primary chords; the 6/8 is explained in one sentence
+- `song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx` → holiday | B♭ (−2), 2/4, 1 staff, 16 bars, no symbols | a tune alone, with flats
+- `song.pop.misc-christmas-good-king-wenceslas.pdmx` → holiday | G, 4/4, 1 staff, 13 bars, 30 symbols incl. Em D7 B7 | easy tune; the lesson says to play only the chords you know
+- `song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx` → holiday | E minor, 6/8, 1 staff, 17 bars | the minor carol
+- **rejected** `song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx` | symbols Am7 Bm7 C♯dim | beyond the three chords the rung teaches
+- exercises `exercise.coordination.c.hold` (2.1, left hand holds), `drill.chord.c-f-g` (2.3), `exercise.cadence.c.root` (3.2) — the band's top is the cadence
+- dropped exercises: `drill.chord.symbol-flash` (still on six rungs), `exercise.loop4.c.root` and `.f.root` (level 4.4; on no rung now, still reachable by `four-chord-loop`, taught on `hymns.2`, `chords-pop.6`, `chords-pop.8`)
+
+*holiday.4* (Stage 4, new, after `jazz.4.1`; band 3.6–4.94; `requires.staves: 2`)
+- `song.pop.misc-christmas-silent-night.pdmx` → holiday.4 | C, 3/4, 2 staves, 24 bars; left hand read — **a broken triad in nearly every bar** | block it the second time: device three
+- `song.folk.we-wish-you-a-merry-christmas.pdmx` → holiday.4 | F, 3/4, 2 staves, 17 bars; left hand — **held two-note chords** most of the way | break them: device three
+- `song.folk.deck-the-halls.pdmx` → holiday.4 | C, 4/4, 2 staves, 16 bars; left hand — **a bass line**, chords only in bars 4 and 8 | device two
+- `song.classical.away-in-a-manger.pdmx` → holiday.4 | F, 3/4, 2 staves, 17 bars; **four voices, two per staff** | the chorale the plan asked for; the lesson says leave the parts and add only the low octave
+- **rejected** `song.folk.petit-papa-noeil.pdmx` | C, but the last bass note is **G** | ends off the tonic; not safe without hearing it
+- exercises `exercise.accompaniment.broken.c-major.both`, `…broken.f-major.both` (3.6, the carols' two keys), `exercise.oompah.f.octave` (4.2). The oom-pah is a low bass then the chord an octave up — **not** an octave in the bass, and the lesson says it is the jump that device needs, not the device. The plan's ids `broken.c.left` and `alberti.g.both` **do not exist**; the real ids are `…c-major…`, `…g-major…`
+- tools: lab `ballad` (key unlocked, left hand broken, no tune) and Free play. Two lab buttons on one rung would share the DOM id `lesson-tool-lab`, so only one; Duet was not used because it would score an added octave as a wrong note
+
+**A fault I made and caught.** Re-scoping `holiday` took 14 carols off every rung, and I told
+the lesson they were "under *Holiday* in the Library" having checked the catalog **before**
+the rebuild. `build.py`'s `attach_rung_tracks` gives a song its genre track **from the rung
+it sits on**; after the rebuild 13 of the 14 had lost `holiday`. Fixed at the source: each of
+the 13 rows in `content/sources/pdmx.json` now states `tracks: [<its bucket track>, "holiday"]`,
+the field `import_pdmx.py` already honours (five rows used it). Text splice, 65 lines added,
+13 `}` → `},`. After the rebuild **all 29 former holiday songs carry `holiday`**, and the
+Library filter reads `item.tracks` (`LibraryScreen.ts:105`). This was the checklist's item 7:
+I grepped the readers of `concepts` and not of `songOptions`.
+
+**Carols on no rung now** (Library, *Holiday* filter): O Holy Night (3.4), God Rest Ye (2.87),
+O Christmas Tree (3.38), Angels We Have Heard on High (3.49), Up on the Housetop (2.87), Let It
+Snow (3.24), Petit Papa Noël (3.76), Hark! jazz lead sheet (5.4), Mary Did You Know? (5.81),
+Carol of the Bells (Shchedryk, 6.1), O Holy Night solo (6.85), Happy Xmas (7.05), We Wish You
+solo (7.06), Joy to the World solo (7.3). The plan homes God Rest Ye and Let It Snow on
+`holiday.3` and the level-5-and-up carols on `holiday.5`/`holiday.6`, which do not exist.
+`holiday.3` was **not** changed: it is outside T1b. *Carol of the Bells (easy)* is still on core
+`4.6`.
+
+**Specs changed with the code.** `docs/02` §A said the holiday songs are one of three list
+rungs "by nature" that "stay so"; it now says two, with the reason. The Plan screen groups a
+track by its unit count, so holiday moves from *Mini-modules* to *Style ladders* on its own.
+
+**Claims under test.** 16 rows and 2 comparisons for jazz.4, 4 for rock.overview, 18 rows
+and 2 comparisons for holiday and holiday.4. They run inside existing tests, so the count
+stayed 2,233; **four mutations were run** (a jazz.4 key, a holiday key, a holiday.4
+comparison, a rock.overview staves claim) and each failed naming its own claim.
+
+**Verification.** `build.py --offline` · `ladder_report.py` · `validate.py` OK at 2,053 items ·
+`rung_audit.py` per rung: jazz.4, holiday, holiday.4, holiday.3 no findings; rock.overview 1
+MED (above) · whole audit **0 HIGH**, 29 MED, 1 LOW, 12 INFO · unit **2,233 passed** · `tsc -b`
+0 · lint 0 · `lesson-tools.spec.ts` 3 passed (it opens `chords-pop.3`, not these rungs).
+
+**For the reviewer: what re-reading the lessons against the scores caught.** Sixteen false or
+stale statements, all corrected before this entry: jazz.4 "Margie is the longest" (it ties
+Whispering at 48 bars); rock.overview Ode to Joy "has nothing under it" (it has a bass), five
+stale stage numbers, a Dorian/Aeolian conflation, "bar 7" (file numbering, pickup unknown),
+"one root per bar", "a triad under every bar", "three things, not five"; rock.4's opening
+line; holiday Jingle Bells "chords" (single roots); holiday.4 Silent Night "every bar", We
+Wish You's held chords, Deck the Halls "bass line rather than chords", "the last verse" (each
+arrangement is one verse), device two's beat, and the oom-pah "jump device two needs". The
+session's report also miscounted these as eight and the claims as 40 (42). **Worth a second
+reader on every lesson in this entry**, since that many first-draft faults means more may remain.
+
+**Saved progress.** A rung's completion is recomputed from pass records against its *current*
+options (`selectors.ts` `lessonComplete`), and prerequisites gate on it (`prerequisites.ts:75`).
+So a rung completed only with an option that has since left it shows incomplete again, and what
+it gates locks: `holiday` (23 songs and 3 exercises left), `jazz.5` (three songs and an
+exercise), and — from Entry 20, not noted there — `hymns` (four songs), `rock.4` and `4.7` (all
+exercises replaced). Not changed: keeping a pass that no longer names a current option is a
+feature decision, and the owner's records were not inspected.
+
+**Unverified.**
+- **Whether any of the four lessons teaches.** No check can decide it.
+- **Every piece, unheard.** In particular: *Silent Night*'s arrangement puts A minor under bars 7–8 and 19–20 where the tune usually has the tonic; *Margie*'s key; *Away in a Manger*'s four voices read as a setting of Kirkpatrick's *Cradle Song* from the first bars only.
+- **6/8 at Stage 2.** Two of the six carols are in 6/8, which core does not teach until 4.5. One sentence of the lesson handles it; whether that is enough is a judgement.
+- **The holiday.4 lab button** has not been seen on that rung's page; the code path is the one five other rungs use and one spec covers.
+- **The level estimates**: all the carols but the two *Jingle Bells* are estimated, not judged.
+
+**Files.** `content/curriculum/stage-2.json`, `stage-3.json`, `stage-4.json`, `stage-5.json`;
+lessons `jazz.4` (new), `jazz.5`, `rock.overview`, `rock.4`, `holiday`, `holiday.4` (new);
+`content/sources/pdmx.json`; `app/tests/unit/lessonClaimsAboutMusic.test.ts`;
+`docs/02-curriculum.md`; `docs/generated/ladder.md`.

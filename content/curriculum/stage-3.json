@@ -828,16 +828,12 @@
               ],
               "songOptions": [
                 "song.folk.when-the-saints.f",
-                "song.folk.when-the-saints.alternating",
                 "song.folk.greensleeves.chords",
                 "song.folk.amazing-grace-satb.pdmx",
                 "song.classical.abide-with-me-william-henry-monk.pdmx",
                 "song.classical.rock-of-ages-cleft-for-me.pdmx",
                 "song.folk.what-a-friend-we-have-in-jesus.pdmx",
-                "song.folk.be-thou-my-vision.pdmx",
                 "song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx",
-                "song.folk.anonymous-swing-low-sweet-chariot.pdmx",
-                "song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx",
                 "song.classical.jesus-loves-me.pdmx",
                 "song.classical.william-holy-holy-holy.pdmx",
                 "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx",
@@ -870,7 +866,7 @@
                 }
               ],
               "levelBand": [
-                1.4,
+                3.2,
                 7.3
               ],
               "finder": {
@@ -901,19 +897,7 @@
               "id": "rock.overview",
               "title": "Reducing a band arrangement to one piano",
               "concepts": [
-                "reduction",
-                "ostinato",
-                "open-voicings",
-                "eighth-note-ostinato",
-                "pedal-bass",
-                "modal-minor",
-                "arpeggio-texture",
-                "sustained-chords",
-                "dynamic-build",
-                "build-and-release",
-                "register",
-                "half-time-feel",
-                "power-chord"
+                "reduction"
               ],
               "textFile": "lessons/rock.overview.md",
               "exerciseOptions": [
@@ -924,7 +908,8 @@
               "songOptions": [
                 "song.classical.pachelbel-canon-d.easy",
                 "song.folk.greensleeves.chords",
-                "song.classical.ode-to-joy.full"
+                "song.classical.ode-to-joy.full",
+                "song.folk.scarborough-fair.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,

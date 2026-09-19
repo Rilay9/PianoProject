@@ -43,7 +43,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 4 | `4.4` | 5 | 3 | 4.1–5.1 | Ode to Joy (easy variation) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 4 | `4.5` | 9 | 4 | 2.2–4.5 | London Bridge Is Falling Down (2.2), When Johnny Comes Marching Home (2.4), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5) |
 | 4 | `4.6` | 4 | 6 | 3.4–5.1 | Für Elise (easy) (4.1), Uti vår hage (5.0), Canon in D (easy) (5.1), Minuet in G major, BWV Anh. 114 (5.1), Carol of the Bells (easy) (5.1), Auld Lang Syne (5.1) |
-| 4 | `4.7` | 3 | 3 | 3.4–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1) |
+| 4 | `4.7` | 3 | 3 | 4.1–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1) |
 
 ## How to practise (`practice`)
 
@@ -59,12 +59,13 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Holiday (`holiday`)
 
-2 rung(s), stages 2–3.
+3 rung(s), stages 2–4.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 2 | `holiday` | 5 | 29 | 1.2–7.3 | Jingle Bells (chorus) (1.2), Jingle Bells (chorus, hands together) (2.1), Silent Night (melody) (2.3), Jolly Old Saint Nicholas (2.4), Good King Wenceslas (2.5), We Three Kings of Orient Are (2.8), … and 23 more |
+| 2 | `holiday` | 3 | 6 | 1.2–3.2 | Jingle Bells (chorus) (1.2), Jingle Bells (chorus, hands together) (2.1), Silent Night (melody) (2.3), Jolly Old Saint Nicholas (2.4), Good King Wenceslas (2.5), We Three Kings of Orient Are (2.8) |
 | 3 | `holiday.3` | 4 | 4 | 3.2–3.3 | Jingle Bells (chorus, in G major with block chords) (3.2), Joy to the World (3.2), The First Noel (3.3), Hark! The Herald Angels Sing (3.3) |
+| 4 | `holiday.4` | 3 | 4 | 3.6–4.9 | We Wish You a Merry Christmas (3.8), Silent Night (3.9), Deck the Halls (4.2), Away in a Manger (4.9) |
 
 ## Hymns & gospel (`hymns-gospel`)
 
@@ -73,7 +74,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 2 | `hymns.2` | 3 | 4 | 1.4–3.2 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Joyful, Joyful, We Adore Thee (2.5), Swing Low, Sweet Chariot (2.9) |
-| 3 | `hymns` | 5 | 19 | 1.4–7.3 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Joyful, Joyful, We Adore Thee (2.5), Swing Low, Sweet Chariot (2.9), Oh When the Saints Go Marching In (in F major) (3.2), What a Friend We Have in Jesus (3.2), … and 13 more |
+| 3 | `hymns` | 5 | 15 | 3.2–7.3 | Oh When the Saints Go Marching In (in F major) (3.2), What a Friend We Have in Jesus (3.2), Greensleeves (with chords) (3.3), Come Thou Fount of Every Blessing (3.5), Simple Gifts (2-Part Round) (3.9), Just a Closer Walk with Thee (4.0), … and 9 more |
 
 ## Blues & boogie (`blues-boogie`)
 
@@ -138,7 +139,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `rock.overview` | 3 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (with chords) (3.3), Canon in D (easy) (5.1) |
+| 3 | `rock.overview` | 3 | 4 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Scarborough Fair (2.8), Greensleeves (with chords) (3.3), Canon in D (easy) (5.1) |
 | 4 | `rock.4` *(song-optional)* | 4 | 1 | 2.6–3.4 | Greensleeves (with chords) (3.3) |
 | 5 | `rock.5` *(song-optional)* | 4 | 2 | 5.3–6.8 | Annie's Song (6.4), andata (6.8) |
 | 6 | `rock.6` | 4 | 3 | 3.4–7.4 | Gnossienne No. 1 (4.6), Prelude No. 20 in C minor, Op. 28 (6.0), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1) |
@@ -182,11 +183,12 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Jazz (`jazz`)
 
-5 rung(s), stages 5–9.
+6 rung(s), stages 4–9.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `jazz.5` | 6 | 7 | 2.7–5.2 | Avalon (1920) (2.7), Limehouse Blues (1922) (3.2), Whispering (1920) (3.3), Bill Bailey, Won't You Please Come Home (1902) (3.4), Margie (1920) (3.5), Some of These Days (1910) (3.8), … and 1 more |
+| 4 | `jazz.4` | 4 | 3 | 2.7–4.5 | Avalon (1920) (2.7), Whispering (1920) (3.3), Margie (1920) (3.5) |
+| 5 | `jazz.5` | 5 | 4 | 3.2–5.2 | Limehouse Blues (1922) (3.2), Bill Bailey, Won't You Please Come Home (1902) (3.4), Some of These Days (1910) (3.8), After You've Gone (1918) (4.0) |
 | 6 | `jazz.6` *(song-optional)* | 7 | 6 | 3.2–6.4 | Limehouse Blues (1922) (3.2), Bye Bye Blackbird (1926) (3.3), Darktown Strutters' Ball (1917) (3.8), Rose Room (1917) (4.1), Royal Garden Blues (1919) (4.2), Tiger Rag (1917) (4.4) |
 | 7 | `jazz.7` *(song-optional)* | 7 | 6 | 2.7–7.4 | Avalon (1920) (2.7), Tiger Rag (1917) (4.4), Fly Me to the Moon (5.2), I Got Rhythm (5.5), Jingle Bells (jazz piano) (7.2), Skating (7.3) |
 | 8 | `jazz.8` *(song-optional)* | 6 | 3 | 5.5–8.2 | I Got Rhythm (5.5), Stardust (1927) (6.0), Uncle Ben's Cakewalk (7.6) |

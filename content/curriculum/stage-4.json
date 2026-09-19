@@ -432,9 +432,9 @@
               ],
               "textFile": "lessons/4.7.md",
               "exerciseOptions": [
-                "drill.reading.sight-reading-3",
-                "drill.reading.note-flash-extended",
-                "drill.reading.sight-reading-4"
+                "exercise.blues.twelve-bar-shuffle.d",
+                "exercise.oompah.c.octave",
+                "exercise.walking-bass.d.blues.intro"
               ],
               "songOptions": [
                 "song.classical.beethoven-fur-elise.easy",
@@ -812,6 +812,147 @@
           ]
         },
         {
+          "id": "jazz.4.1",
+          "title": "Jazz: swing, and comping on triads",
+          "track": "jazz",
+          "lessons": [
+            {
+              "id": "jazz.4",
+              "title": "Swung eighths, and comping on plain triads",
+              "concepts": [
+                "swing-eighths",
+                "comping",
+                "charleston",
+                "four-to-the-bar",
+                "chord-symbols",
+                "triads"
+              ],
+              "textFile": "lessons/jazz.4.md",
+              "exerciseOptions": [
+                "exercise.comping.f.charleston.intro",
+                "exercise.comping.f.off-beats.intro",
+                "exercise.comping.f.four-on-the-floor.intro",
+                "exercise.rhythm.shuffle-eighths.4bar"
+              ],
+              "songOptions": [
+                "song.pop.avalon.pdmx",
+                "song.pop.whispering.pdmx",
+                "song.pop.margie.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "chords-pop.4"
+              ],
+              "estimatedDays": 30,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "jazz-comping"
+                }
+              ],
+              "requires": {
+                "chordSymbols": true
+              },
+              "levelBand": [
+                2.74,
+                4.5
+              ],
+              "finder": {
+                "skill": "swinging the eighths and comping plain triads from chord symbols",
+                "levelWords": "moderate, Grade 2 to 3, swing-era lead sheet",
+                "constraints": [
+                  "a lead sheet with chord symbols",
+                  "swing-era standard",
+                  "simple triad harmony"
+                ],
+                "avoid": [
+                  "dense extended harmony",
+                  "straight eighths throughout"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            }
+          ]
+        },
+        {
+          "id": "holiday.4.1",
+          "title": "Holiday: making a carol sound finished",
+          "track": "holiday",
+          "lessons": [
+            {
+              "id": "holiday.4",
+              "title": "Three cheap devices that sound expensive",
+              "concepts": [
+                "carols",
+                "arranging",
+                "register",
+                "broken-chords",
+                "block-chords",
+                "octaves"
+              ],
+              "textFile": "lessons/holiday.4.md",
+              "exerciseOptions": [
+                "exercise.accompaniment.broken.c-major.both",
+                "exercise.accompaniment.broken.f-major.both",
+                "exercise.oompah.f.octave"
+              ],
+              "songOptions": [
+                "song.pop.misc-christmas-silent-night.pdmx",
+                "song.folk.we-wish-you-a-merry-christmas.pdmx",
+                "song.folk.deck-the-halls.pdmx",
+                "song.classical.away-in-a-manger.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "holiday"
+              ],
+              "estimatedDays": 14,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "ballad"
+                },
+                {
+                  "kind": "play"
+                }
+              ],
+              "requires": {
+                "staves": 2
+              },
+              "levelBand": [
+                3.6,
+                4.94
+              ],
+              "finder": {
+                "skill": "making a two-hand carol arrangement sound finished: register, bass octaves, broken against blocked chords",
+                "levelWords": "moderate, Grade 2 to 3, carol arranged for two hands",
+                "constraints": [
+                  "carol or Christmas tune",
+                  "written for two hands on two staves",
+                  "a left hand of chords or a bass line, not a single held note",
+                  "16 to 32 bars"
+                ],
+                "avoid": [
+                  "four-stave choral scores",
+                  "lead sheets with no left hand written",
+                  "concert arrangements with runs across the keyboard"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
           "id": "theory-ear.4.1",
           "title": "Theory & ear: circle of fifths and cadences",
           "track": "theory-ear",
@@ -1104,10 +1245,10 @@
               ],
               "textFile": "lessons/rock.4.md",
               "exerciseOptions": [
-                "exercise.power-chord.a",
-                "exercise.ostinato.a.fifths",
-                "exercise.ostinato.a.arpeggio",
-                "exercise.modal-vamp.a"
+                "exercise.power-chord.d",
+                "exercise.ostinato.e.fifths",
+                "exercise.ostinato.d.arpeggio",
+                "exercise.modal-vamp.e"
               ],
               "songOptions": [
                 "song.folk.greensleeves.chords"

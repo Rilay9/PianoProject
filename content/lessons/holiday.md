@@ -1,48 +1,55 @@
 ---
-title: "Holiday music — carols and how to make them sound festive"
+title: "Holiday music — carols you can play this year"
 stage: 2
 unit: "holiday.2.1"
 videos:
   - label: "One Simple Trick To Play 5 Christmas Carols BEAUTIFULLY On Piano"
     url: "https://www.youtube.com/watch?v=UE3dIteGuL0"
     teacher: "Matt Hodge Music"
-readingTime: 2
+readingTime: 3
 ---
 
 Carols are the most useful repertoire a beginner can own: everyone knows them,
 they are short, they are almost all public domain, and once a year people will
 ask you to play one.
 
-**The bundled set.** *Jingle Bells* in three settings — right hand alone, hands
-together, and in G with block chords — plus *Carol of the Bells* (melody only;
-the familiar English words are still in copyright, the tune is not). Then the
-carols from the archive, most of them a melody with chord symbols: *Silent
-Night*, *O Holy Night*, *Hark! The Herald Angels Sing*, *Deck the Halls*, *Away
-in a Manger*, *The First Noel*, *Good King Wenceslas*, *We Three Kings*, *God
-Rest Ye Merry, Gentlemen*, *Joy to the World*, *We Wish You a Merry Christmas*,
-*O Christmas Tree*, *Angels We Have Heard on High*, *Jolly Old Saint Nicholas*
-and *Up on the Housetop*, with fuller piano settings of several beside them.
+**Melody first, then three chords.** Learn the tune in the right hand until it
+sings on its own. Then put a chord under it in the left: most carols need only
+three, the chords on the first, fourth and fifth notes of the scale — in C, that
+is C, F and G. The left hand holds each chord while the right hand moves, and
+changes only where the symbol changes.
 
-**Playing for singers.** Two things matter more than the arrangement:
+**The exercises are those two steps.** *Hands together in C — left hand holds*
+is the right hand moving over a left hand that stays put. The C, F and G chord
+drill is finding the three shapes without looking. The I–IV–V7–I cadence is the
+same three chords in the order carols end with.
 
-- **The key.** Most people cannot sing a carol pitched where the piano solo
-  version puts it. Being able to move a carol down a tone or a third is the
-  single most valuable skill here, and it is why these pieces are provided with
-  chord symbols. Chords-and-pop Stage 3 covers transposing.
-- **The introduction.** Play the last four bars of the tune before you start, so
-  everyone knows the key, the tempo and when to come in. Nothing else works.
+**Repertoire for this rung.** Six options.
 
-**Making it sound festive.** Three cheap devices, all from Stage 3.6:
+- *Jingle Bells*, the chorus, twice: the right hand alone, then hands together
+  with just the roots — C, F and G, one note at a time — in the left. Start here.
+- *Silent Night*, the melody, in C over the same three chords and a G7. It is
+  written in 6/8: six quick counts in a bar, felt as two slow ones.
+- *Jolly Old Saint Nicholas* has no chord symbols — a tune to play on its own,
+  in B flat, with two flats to remember.
+- *Good King Wenceslas* is in G, and its symbols go past three chords: E minor,
+  D7 and B7 as well. Play the tune, and in the left hand only the chords you
+  know.
+- *We Three Kings* is the minor one, in E minor and in 6/8 like *Silent Night*.
 
-1. Move the melody up an octave for the last verse.
-2. Add an octave in the left-hand bass on the strong beats.
-3. Play the chords as broken patterns in the verse and as blocks in the chorus.
+**Where the rest are.** The carols with more written into them, and the fuller
+piano settings, are under *Holiday* in the Library. Playing for people who are
+singing is the next holiday rung, at Stage 3; making a carol sound finished is
+the one after, at Stage 4.
 
-None of these is difficult and together they are the difference between "someone
-is practising" and "someone is playing".
+**Tools for this rung.** The accompaniment lab's *Primary chords* preset plays
+one–four–five with a tune on top, and leaves the key free: set it to C and hear
+the three chords you are learning, then to G for *Good King Wenceslas*. *Free
+play* is for finding the chord under a tune by ear — play the first note of a
+bar and try C, F and G under it until one fits.
 
 **Common mistake.** Playing carols too fast. They are sung, and singers need
-time to breathe at the phrase ends. Follow the words in your head.
+time to breathe at the ends of phrases. Follow the words in your head.
 
-**How you'll know you've got it.** One carol played from chord symbols in two
-different keys, with a four-bar introduction, at a speed people can sing to.
+**How you'll know you've got it.** You can play one carol hands together, the
+left hand holding C, F and G under the tune, at a speed people could sing to.

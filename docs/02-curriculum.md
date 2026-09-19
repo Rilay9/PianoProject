@@ -77,8 +77,11 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    named in the rung's row below, checked to convert without losing notes, and at the rung's
    level — not accumulated: a rung is a short list, the **Library** is the long one, filtered
    by track and level, and a lesson that wants more says "more at this level under X in the
-   Library". Three module rungs are lists by nature and stay so — the holiday songs, the hymns
-   and the classical shelf. (Revised 2026-09-15: for a day the build had placed every song in
+   Library". Two module rungs are lists by nature and stay so — the hymns and the classical
+   shelf. (Revised 2026-09-18: the holiday list was the third, and at 29 songs from level 1.2
+   to 7.3 it was not a list but several rungs in a heap. It is now `holiday` at Stage 2 with
+   six carols, `holiday.3` and `holiday.4`, with every other carol under *Holiday* in the
+   Library; `pending-review.md` Entry 21.) (Revised 2026-09-15: for a day the build had placed every song in
    the library on some rung, which put thirty to seventy pieces on the classical rungs; see
    `handoff-2026-09-09.md` §5aj–§5ak. The per-rung tables below name the plan's intended
    pieces; `docs/generated/ladder.md` is what the build offers today.)

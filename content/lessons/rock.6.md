@@ -45,7 +45,9 @@ moves about once a bar.
 **Tools for this rung.** *Play it as a duet* is worth more here than almost
 anywhere: let the app hold the arpeggio while you play the melody and the bass,
 then swap and play the figure alone against the app. Hearing your own arpeggio
-next to a steady one is faster than any amount of counting.
+next to a steady one is faster than any amount of counting. The lab's *Rock — the
+minor vamp* preset gives the figure a floor: the A-minor loop with held roots, so
+the arpeggio has chords to sit on while you keep it even.
 
 **Common mistake.** Pedalling to the bar line. The pedal follows the harmony,
 and in this texture the harmony often changes in the middle of a bar or not at

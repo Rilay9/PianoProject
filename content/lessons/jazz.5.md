@@ -37,11 +37,12 @@ with the shells barely moving.
 **Comping.** Accompanying: chords played in rhythm, in the gaps, not on every
 beat. Start with a chord on beat 1 and the "and" of 2, and leave the rest alone.
 
-**Repertoire for this rung.** Seven options, standards of the period, all public
+**Repertoire for this rung.** Four options, standards of the period, all public
 domain and all in the library as lead sheets: *Bill Bailey* (1902), *Some of
-These Days* (1910), *Avalon* (1920), *After You've Gone* (1918), *Whispering*
-(1920), *Margie* (1920) and *Limehouse Blues* (1922), which changes key under
-you halfway through. The shortest form you can comp shells through is
+These Days* (1910), *After You've Gone* (1918) and *Limehouse Blues* (1922),
+which changes key under you halfway through. The three easier 1920 tunes —
+*Avalon*, *Whispering* and *Margie* — are on the Stage 4 jazz rung, and under
+Jazz in the Library. The shortest form you can comp shells through is
 the twelve-bar blues, and the shuffles are under Blues in the Library. *Ja-Da*
 is not among them; if you find one, import it.
 

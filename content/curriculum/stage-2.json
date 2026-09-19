@@ -394,52 +394,25 @@
           "lessons": [
             {
               "id": "holiday",
-              "title": "Carols and how to make them sound festive",
+              "title": "Carols you can play this year",
               "concepts": [
                 "carols",
-                "chord-symbols",
-                "transposing-for-singers",
-                "four-chord-loop",
-                "roman-numerals"
+                "hands-together",
+                "chord-symbols"
               ],
               "textFile": "lessons/holiday.md",
               "exerciseOptions": [
+                "exercise.coordination.c.hold",
                 "drill.chord.c-f-g",
-                "drill.chord.symbol-flash",
-                "exercise.cadence.c.root",
-                "exercise.loop4.c.root",
-                "exercise.loop4.f.root"
+                "exercise.cadence.c.root"
               ],
               "songOptions": [
                 "song.holiday.jingle-bells.rh",
                 "song.holiday.jingle-bells.ht",
-                "song.holiday.jingle-bells.g",
-                "song.holiday.carol-of-the-bells.easy",
-                "song.pop.misc-christmas-silent-night.pdmx",
                 "song.classical.1818-franz-xaver-gruber-silent-night.pdmx",
-                "song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx",
-                "song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx",
-                "song.folk.deck-the-halls.pdmx",
-                "song.classical.away-in-a-manger.pdmx",
-                "song.pop.misc-christmas-traditional-music-first-noel.pdmx",
-                "song.pop.misc-christmas-good-king-wenceslas.pdmx",
-                "song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx",
-                "song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx",
-                "song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx",
-                "song.folk.we-wish-you-a-merry-christmas.pdmx",
-                "song.pop.misc-christmas-o-christmas-tree.pdmx",
-                "song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx",
                 "song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx",
-                "song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx",
-                "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx",
-                "song.pop.misc-christmas-we-wish-you-a-merry-christmas.pdmx",
-                "song.pop.misc-christmas-mary-did-you-know.pdmx",
-                "song.folk.petit-papa-noeil.pdmx",
-                "song.holiday.carol-of-the-bells",
-                "song.folk.o-holy-night-piano-solo.pdmx",
-                "song.folk.happy-xmas.pdmx",
-                "song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx",
-                "song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx"
+                "song.pop.misc-christmas-good-king-wenceslas.pdmx",
+                "song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -462,16 +435,16 @@
               ],
               "levelBand": [
                 1.2,
-                7.3
+                3.2
               ],
               "finder": {
-                "skill": "playing carols from chord symbols and moving them into a singable key",
-                "levelWords": "easy to moderate, carols, lead sheet with chords",
+                "skill": "playing a carol melody, then adding the three primary chords under it",
+                "levelWords": "easy, carols, melody first, chords C F and G",
                 "constraints": [
                   "carol or Christmas tune",
-                  "chord symbols above the melody",
-                  "singable key such as C, F or G",
-                  "16 to 48 bars"
+                  "a melody that fits one hand position or close to it",
+                  "chord symbols mostly I, IV and V",
+                  "8 to 24 bars"
                 ],
                 "avoid": [
                   "orchestral arrangements",

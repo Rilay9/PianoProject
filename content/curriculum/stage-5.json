@@ -252,17 +252,13 @@
                 "drill.jazz.ii-v-i-shells",
                 "drill.ear.seventh-qualities",
                 "exercise.arpeggio7.c-dominant7.2oct.both",
-                "exercise.rhythm.shuffle-eighths.4bar",
                 "exercise.ii-v-i.c.shells",
                 "exercise.comping.c.anticipated.intro"
               ],
               "songOptions": [
                 "song.pop.bill-bailey.pdmx",
                 "song.pop.sophie-tucker-some-of-these-days.pdmx",
-                "song.pop.avalon.pdmx",
                 "song.pop.after-you-ve-gone.pdmx",
-                "song.pop.margie.pdmx",
-                "song.pop.whispering.pdmx",
                 "song.jazz.django-reinhardt-limehouse-blues.pdmx"
               ],
               "mastery": {
@@ -282,7 +278,7 @@
                 }
               ],
               "levelBand": [
-                2.7,
+                3.25,
                 5.2
               ],
               "finder": {

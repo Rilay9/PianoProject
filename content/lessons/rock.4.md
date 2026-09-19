@@ -5,8 +5,8 @@ unit: "rock-metal.4.1"
 readingTime: 3
 ---
 
-The rung before this one named five textures and showed you what they sound
-like. This is the first of them under your hands, and it is the one almost
+The rung before this one taught the reduction — melody, bass and one texture —
+and named the textures. This is the first of them under your hands, and it is the one almost
 every heavy piano part is built from: a shape with no third in it, and a figure
 that does not change.
 
@@ -23,14 +23,15 @@ never moves. Nothing in it gets louder, later or faster. That is harder than it
 sounds and it is the point: the interest in this music comes from what happens
 *around* a part that stays the same, so the part has to actually stay the same.
 
-**Why everything here is in A minor.** Three of the four exercises are, and in A
-minor the notes are all white keys — root and fifth, the broken triad, and the
-loop of A minor, G and F that most of this music lives on. You met that loop as
-a minor key on the chord track; here it is the bed the riff sits over.
+**The same shapes, in new keys.** You met these figures in A minor on the core
+rungs, where every note is a white key. Here they move: D minor, with one flat,
+and E minor, with one sharp. That is how a riff actually lives — a band plays it
+in whatever key the singer needs — and the shape under your hand is the thing
+that carries across, not the white keys.
 
 **Tools for this rung.** The accompaniment lab's *Rock — the minor vamp* preset
-opens on those four chords with held roots underneath, so you can play a right
-hand over them without reading anything. And *Play it as a duet* takes one hand
+plays the loop in A minor, where you first met it — A minor, G and F with held
+roots underneath — so you can play a right hand over it without reading anything. And *Play it as a duet* takes one hand
 away: let the app hold the tune while you drill the left hand alone, then swap.
 
 **Repertoire.** One option, and it is a vehicle rather than a rock song — the
