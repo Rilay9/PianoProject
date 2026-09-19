@@ -5105,7 +5105,10 @@
       "review": {
         "decision": "keep",
         "note": "melody only (right hand), but well attested: 4.8 from 11"
-      }
+      },
+      "tracks": [
+        "latin"
+      ]
     },
     {
       "id": "song.folk.muskrat-ramble.pdmx",
@@ -17057,7 +17060,11 @@
       "review": {
         "decision": "keep",
         "note": "El Choclo (Villoldo 1903)"
-      }
+      },
+      "tracks": [
+        "latin",
+        "classical"
+      ]
     },
     {
       "id": "song.pop.misc-tunes-tico-tico-no-fub-a.pdmx",
@@ -21569,7 +21576,11 @@
       "review": {
         "decision": "keep",
         "note": "Lecuona Malaguena (1928)"
-      }
+      },
+      "tracks": [
+        "latin",
+        "classical"
+      ]
     },
     {
       "id": "song.classical.chopin-prelude-no-1-in-c-major-op-28.pdmx",

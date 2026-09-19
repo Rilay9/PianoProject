@@ -46,6 +46,15 @@ voicings, and *I Got Rhythm* is the changes half of jazz is built on. The jazz
 setting of *Jingle Bells* and Guaraldi's *Skating* are here to show what these
 voicings sound like when somebody has already done the work.
 
+**Rhythm changes.** *I Got Rhythm* (1930) gave jazz its second standard form after
+the blues: thirty-two bars, AABA. The A sections go round I–vi–ii–V, two beats a
+chord — in B flat, B♭–Gm7–Cm7–F7. The bridge is four dominants, two bars each,
+each falling a fifth to the next: D7–G7–C7–F7, which lands back on the tonic for
+the last A. A great many bebop tunes are new melodies over these chords, so
+learning the changes once is learning a repertoire. The copy in the Library is
+shortened — one A section before the bridge — so take the whole form from a
+chart.
+
 **Common mistake.** Reaching for rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tempo goes up.
 

@@ -52,6 +52,14 @@
                 "classical.7"
               ],
               "estimatedDays": 180,
+              "tools": [
+                {
+                  "kind": "blind"
+                },
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 4.3,
                 8.4
@@ -101,7 +109,8 @@
                 "secondary-rag",
                 "stride-bass",
                 "chromatic-harmony",
-                "not-fast"
+                "not-fast",
+                "stop-time"
               ],
               "textFile": "lessons/ragtime.8.md",
               "exerciseOptions": [
@@ -130,6 +139,11 @@
                 "ragtime.7"
               ],
               "estimatedDays": 180,
+              "tools": [
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 3.3,
                 7.9
@@ -283,7 +297,16 @@
                   "written-out solos"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "play"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "jazz-comping"
+                }
+              ]
             }
           ]
         },
@@ -301,7 +324,8 @@
                 "walking-bass",
                 "extended-chords",
                 "comping",
-                "transposition"
+                "transposition",
+                "four-to-the-bar"
               ],
               "textFile": "lessons/blues.8.md",
               "exerciseOptions": [
@@ -327,6 +351,15 @@
                 "blues.7"
               ],
               "estimatedDays": 150,
+              "tools": [
+                {
+                  "kind": "blind"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                }
+              ],
               "levelBand": [
                 6.2,
                 8.7
@@ -393,6 +426,15 @@
                 "chords-pop.7"
               ],
               "estimatedDays": 150,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "primary-chords"
+                },
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 5.4,
                 8.3
@@ -471,7 +513,12 @@
                   "dense textures"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "simon"
+                }
+              ]
             }
           ]
         },
@@ -511,6 +558,12 @@
                 "improv.7"
               ],
               "estimatedDays": 150,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "jazz-comping"
+                }
+              ],
               "levelBand": [
                 7.1,
                 8.2

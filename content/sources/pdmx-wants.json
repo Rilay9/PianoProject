@@ -1602,6 +1602,36 @@
         "morton"
       ],
       "note": "Morton, lv7.6, 68 bars, 4.80 from 204 - blues.9 and jazz.8; a Spanish-tinge habanera, so it also serves latin.6. CHECK THE DATE: recorded 1939, claimed composed 1910. Held until the owner rules on it."
+    },
+    {
+      "id": "song.folk.house-of-the-rising-sun",
+      "title": [
+        "house of the rising sun"
+      ],
+      "artist": [
+        "misc traditional"
+      ],
+      "note": "VERIFIED FROM THE ARCHIVE 2026-09-18, not from a title: cid Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR reads D minor, 3/4, one staff, 17 bars, 16 chord symbols (Dm F A7 Bb7 C7). A lead sheet, so the learner supplies the left hand — which is what rock.4 asks for. docs/02 rung 3.3 has named this piece since it was written and it was never obtained."
+    },
+    {
+      "id": "song.folk.wayfaring-stranger",
+      "title": [
+        "wayfaring stranger"
+      ],
+      "artist": [
+        "misc traditional"
+      ],
+      "note": "VERIFIED FROM THE ARCHIVE 2026-09-18: cid QmWSZBozoVKxNWJvoX1BH8JEq7DA9MrnagpVFsoNLDsWCR, 4/4, one staff, 18 bars, 14 chord symbols (Dm F Gm Bb A C7) — a modal minor lead sheet. Also named by docs/02 rung 3.3 and never obtained."
+    },
+    {
+      "id": "song.folk.korobeiniki-traditional",
+      "title": [
+        "korobeiniki"
+      ],
+      "artist": [
+        "misc traditional"
+      ],
+      "note": "VERIFIED FROM THE ARCHIVE 2026-09-18: cid QmWqrfJmQoZZwVJtisMSEuzztCPGCE3nXuJEU3x9rFuWxZ, D minor, 2/4, one staff, 16 bars, no chord symbols. A minor tune with a repeating shape; needs a left hand written or improvised."
     }
   ],
   "verify": [

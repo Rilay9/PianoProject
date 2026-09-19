@@ -29,13 +29,13 @@ the letter names and holds it for as long as the symbol lasts. No boogie bass
 yet — the left hand of the next rung is a full-time job, and it would take all
 your attention away from listening.
 
-**Repertoire for this rung.** Six, and every one of them is a melody with letter
-names over it. *12 Bar Blues* and *Careless Love* are the two shortest and are
-where to begin. *St. James Infirmary* is the minor one. *Wabash Blues* and
+**Repertoire for this rung.** Five. Start with *St. James Infirmary*, for the
+reason below. *Careless Love* is the shortest — eight bars with chords — and has
+no blue notes as written, which makes it the place to add your own. *Wabash Blues* and
 *Tishomingo Blues* are full published songs with a verse before the chorus, so
 read the chorus first. *St. Louis Blues* is the famous one and is the longest.
 
-**One of these is in the minor**, and it is the one to start with. With the
+**Why the minor one first.** *St. James Infirmary* is in D minor. With the
 third already flat in the chord, the flat third in the tune stops being a
 surprise and starts being the tune, which is the clearest way in for an ear
 that has not heard much of this.
@@ -51,9 +51,9 @@ time and the weight the melody gives it.
 **Tools for this rung.** Two of them. The shuffle is a claim about timing
 rather than about notes, so *Rhythm only* will judge it with no melody in the
 way: tap the long-short pair on any key you like and get the feel settled long
-before the tune needs it. And the accompaniment lab holds the blues changes
-underneath you — set the twelve bars, let it play the harmony, and pick blue
-notes over the top until you can hear which ones bite.
+before the tune needs it. And the button above opens the accompaniment lab on
+*Blues — twelve bars*, which holds the changes underneath you: let it play the
+harmony and pick blue notes over the top until you can hear which ones bite.
 
 **How you'll know you've got it.** One of these tunes, melody in the right hand
 and chords in the left, with the flat third landing where you meant it to land

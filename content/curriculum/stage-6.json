@@ -52,6 +52,11 @@
                 "classical.5"
               ],
               "estimatedDays": 120,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 3.2,
                 6.4
@@ -125,6 +130,11 @@
                 "ragtime.5"
               ],
               "estimatedDays": 120,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 3.3,
                 7.1
@@ -217,7 +227,7 @@
                 "minTempoPct": 0.8
               },
               "levelBand": [
-                6.0,
+                6,
                 6.4
               ],
               "finder": {
@@ -257,7 +267,10 @@
                 "shell-voicings",
                 "swing-eighths",
                 "harmonic-dictation",
-                "ii-V-I"
+                "ii-V-I",
+                "charleston",
+                "four-to-the-bar",
+                "approach-note"
               ],
               "textFile": "lessons/jazz.6.md",
               "exerciseOptions": [
@@ -288,6 +301,15 @@
                 "jazz.5"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "jazz-comping"
+                },
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 3.2,
                 6.4
@@ -332,7 +354,8 @@
                 "walking-bass",
                 "left-hand",
                 "turnaround",
-                "twelve-bar"
+                "twelve-bar",
+                "approach-note"
               ],
               "textFile": "lessons/blues.6.md",
               "exerciseOptions": [
@@ -358,6 +381,15 @@
                 "blues.5"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "duet"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                }
+              ],
               "levelBand": [
                 3.5,
                 7.5
@@ -424,6 +456,15 @@
                 "chords-pop.5"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "ballad"
+                },
+                {
+                  "kind": "play"
+                }
+              ],
               "levelBand": [
                 5.4,
                 6.4
@@ -484,8 +525,13 @@
                 "theory.5"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "simon"
+                }
+              ],
               "levelBand": [
-                5.0,
+                5,
                 6.4
               ],
               "finder": {
@@ -560,6 +606,147 @@
                   "one static chord",
                   "written-out solos",
                   "fast tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "minor-vamp"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.6.1",
+          "title": "Rock & metal: arpeggio over a pedal bass",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.6",
+              "title": "Arpeggio over a pedal bass, and a pedal that is a colour",
+              "concepts": [
+                "arpeggio-texture",
+                "pedal-bass",
+                "half-time-feel",
+                "sustained-chords"
+              ],
+              "textFile": "lessons/rock.6.md",
+              "exerciseOptions": [
+                "exercise.ostinato.a.arpeggio",
+                "exercise.accompaniment.broken.a-minor.both",
+                "exercise.pedal.a",
+                "exercise.pedal.half-pedal.a"
+              ],
+              "songOptions": [
+                "song.classical.satie-erik-satie-gnossienne-n1.pdmx",
+                "song.classical.chopin-prelude-op28-20.nifc",
+                "song.classical.beethoven-moonlight-i"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "rock.4"
+              ],
+              "estimatedDays": 21,
+              "tools": [
+                {
+                  "kind": "duet"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "minor-vamp"
+                }
+              ],
+              "requires": {
+                "staves": 2
+              },
+              "levelBand": [
+                3.4,
+                7.4
+              ],
+              "finder": {
+                "skill": "keeping a slow arpeggio even while the bass under it does not move",
+                "levelWords": "intermediate, arpeggiated accompaniment, pedal point, ambient piano, minor key",
+                "constraints": [
+                  "a broken chord figure that runs through whole bars",
+                  "a bass note held or repeated under it",
+                  "the pedal used for colour rather than to join chords",
+                  "minor or modal"
+                ],
+                "avoid": [
+                  "pieces whose interest is in the right hand alone",
+                  "anything needing a hand span over a tenth",
+                  "guitar tablature"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "jam.6.1",
+          "title": "Jam: walking bass when there is no bass player",
+          "track": "jam",
+          "lessons": [
+            {
+              "id": "jam.6",
+              "title": "Walking bass, when there is no bass player",
+              "concepts": [
+                "walking-bass",
+                "guitar-keys",
+                "twelve-bar",
+                "approach-note"
+              ],
+              "textFile": "lessons/jam.6.md",
+              "exerciseOptions": [
+                "exercise.walking-bass.e.blues.intro",
+                "exercise.walking-bass.a.blues.intro",
+                "exercise.walking-bass.d.blues.intro",
+                "exercise.walking-bass.a.blues",
+                "exercise.blues.twelve-bar-shuffle.e"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.85,
+                "minTempoPct": 0.75
+              },
+              "prerequisites": [
+                "jam.5"
+              ],
+              "estimatedDays": 18,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                },
+                {
+                  "kind": "play"
+                }
+              ],
+              "levelBand": [
+                4.1,
+                6.2
+              ],
+              "songOptional": true,
+              "finder": {
+                "skill": "keeping a walking bass line going in the left hand while the right hand comps",
+                "levelWords": "intermediate to advanced, walking bass, blues form, two-handed comping",
+                "constraints": [
+                  "a bass line written in crotchets under chord symbols",
+                  "a twelve-bar or thirty-two-bar form",
+                  "keys a guitarist calls"
+                ],
+                "avoid": [
+                  "bass parts written on their own stave for another instrument",
+                  "stride left hands"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
               }

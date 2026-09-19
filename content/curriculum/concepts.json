@@ -4269,6 +4269,284 @@
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }
+    },
+    {
+      "id": "blue-note",
+      "display": "The blue note",
+      "finder": {
+        "skill": "bending a note against the harmony: a flattened third, fifth or seventh sounded over a chord that has the natural one",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 5 to 6",
+        "constraints": [
+          "a flattened third, fifth or seventh against a major or dominant chord",
+          "blues or blues-inflected melody"
+        ],
+        "avoid": [
+          "strict classical harmony",
+          "melodies with no flattened degrees"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "crushed-note",
+      "display": "The crushed note",
+      "finder": {
+        "skill": "striking a blue note with the natural one beside it and letting the flat one go — how a piano imitates a bent string",
+        "levelWords": "moderate, Grade 2 to 3, up to advanced, Grade 5",
+        "constraints": [
+          "crushed blue notes: a flat third or fifth into the natural above it",
+          "blues, boogie or early jazz piano"
+        ],
+        "avoid": [
+          "classical ornaments",
+          "long appoggiaturas written out as full notes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "stop-time",
+      "display": "Stop-time",
+      "finder": {
+        "skill": "keeping time through bars where the accompaniment drops out",
+        "levelWords": "moderate to advancing, Grade 3 to 5",
+        "constraints": [
+          "stop-time or break choruses",
+          "ragtime, blues or early jazz"
+        ],
+        "avoid": [
+          "continuous accompaniment from first bar to last"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "power-chord",
+      "display": "The power chord",
+      "finder": {
+        "skill": "playing a root-and-fifth chord with no third in it, with weight behind it",
+        "levelWords": "moderate, Grade 2 to 3, up to advancing, Grade 4",
+        "constraints": [
+          "open fifths or root-fifth-octave shapes in the left hand",
+          "rock or metal arrangement"
+        ],
+        "avoid": [
+          "full triads — any third in the chord",
+          "delicate dynamics throughout"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "riff",
+      "display": "The riff",
+      "finder": {
+        "skill": "repeating one short, catchy figure as the backbone of a piece, often moved to follow the chords",
+        "levelWords": "easy to moderate, Grade 1 to 3, up to advancing, Grade 5",
+        "constraints": [
+          "a short melodic figure repeated many times",
+          "rock, blues or funk"
+        ],
+        "avoid": [
+          "through-composed melody that never repeats a figure"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "vamp",
+      "display": "The vamp",
+      "finder": {
+        "skill": "holding a short chord loop steady while something else happens over it",
+        "levelWords": "easy to moderate, Grade 1 to 3, up to advancing, Grade 5",
+        "constraints": [
+          "a two- or four-bar chord loop that repeats",
+          "room to improvise over the loop"
+        ],
+        "avoid": [
+          "harmony that changes continuously and never settles"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tresillo",
+      "display": "The tresillo",
+      "finder": {
+        "skill": "playing the three-note figure that fills four beats unevenly, three-three-two",
+        "levelWords": "easy to moderate, Grade 1 to 3",
+        "constraints": [
+          "tresillo, a 3+3+2 grouping of eighth notes",
+          "Latin, Caribbean, New Orleans or R&B"
+        ],
+        "avoid": [
+          "swing feel",
+          "evenly spaced eighth notes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "habanera",
+      "display": "The habanera bass",
+      "finder": {
+        "skill": "playing the dotted Latin bass figure underneath a melody",
+        "levelWords": "moderate, Grade 2 to 3, up to advancing, Grade 5",
+        "constraints": [
+          "habanera or tango bass: a dotted eighth, a sixteenth and two eighths in each 2/4 bar"
+        ],
+        "avoid": [
+          "walking bass",
+          "plain oom-pah accompaniment"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "bossa-nova",
+      "display": "Bossa nova",
+      "finder": {
+        "skill": "comping the syncopated Brazilian pattern against a steady bass",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "bossa nova style",
+          "syncopated chords over a two-feel bass"
+        ],
+        "avoid": [
+          "swing eighths",
+          "a heavy backbeat"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "tango",
+      "display": "Tango",
+      "finder": {
+        "skill": "playing the marked, angular rhythm of the Argentine tango",
+        "levelWords": "moderate to advancing, Grade 3 to 5",
+        "constraints": [
+          "tango style",
+          "strongly marked rhythm with dotted figures"
+        ],
+        "avoid": [
+          "rubato from beginning to end",
+          "swing feel"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "charleston",
+      "display": "The Charleston",
+      "finder": {
+        "skill": "comping on beat one and the and of two, and nowhere else",
+        "levelWords": "moderate to advancing, Grade 3 to 5",
+        "constraints": [
+          "Charleston comping figure",
+          "jazz or swing style"
+        ],
+        "avoid": [
+          "chords struck on every beat"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "approach-note",
+      "display": "The approach note",
+      "finder": {
+        "skill": "landing on a chord tone by stepping into it — from a semitone away, or a scale step above or below",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 6 to 7",
+        "constraints": [
+          "walking bass or bebop line",
+          "chord tones approached by step or by semitone"
+        ],
+        "avoid": [
+          "arpeggios alone, with no passing motion between them"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "anticipation",
+      "display": "The anticipation",
+      "finder": {
+        "skill": "playing a note or chord just before the beat it belongs to",
+        "levelWords": "advancing, Grade 4 to 5, up to advanced, Grade 6",
+        "constraints": [
+          "notes or chords pushed ahead of the beat",
+          "syncopated comping or bass"
+        ],
+        "avoid": [
+          "everything placed squarely on the beat"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "four-to-the-bar",
+      "display": "Four to the bar",
+      "finder": {
+        "skill": "comping a short, light chord on every beat — the rhythm-guitar sound of swing",
+        "levelWords": "moderate to advancing, Grade 3 to 5",
+        "constraints": [
+          "short chords on all four beats",
+          "swing comping in the rhythm-guitar or Basie style"
+        ],
+        "avoid": [
+          "off-beat-only comping",
+          "heavy sustained chords on every beat"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "rhythm-changes",
+      "display": "Rhythm changes",
+      "finder": {
+        "skill": "playing the thirty-two-bar AABA sequence a great deal of bebop is built on",
+        "levelWords": "advanced, Grade 6 to 7, up to virtuoso, Grade 8",
+        "constraints": [
+          "rhythm changes: A sections on I–vi–ii–V, a bridge of dominants III7–VI7–II7–V7, two bars each"
+        ],
+        "avoid": [
+          "twelve-bar blues form"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "bass-walk-up",
+      "display": "The bass walk-up",
+      "finder": {
+        "skill": "walking the left hand from one chord to the next instead of holding the root",
+        "levelWords": "easy to moderate, Grade 1 to 3",
+        "constraints": [
+          "stepwise bass motion connecting the chords",
+          "hymn, gospel, country or ragtime style"
+        ],
+        "avoid": [
+          "a static held bass note under every chord"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "mazurka-rhythm",
+      "display": "The mazurka rhythm",
+      "finder": {
+        "skill": "leaning on the second or third beat of a triple-time dance",
+        "levelWords": "moderate to advancing, Grade 3 to 5",
+        "constraints": [
+          "mazurka rhythm",
+          "accent falling on beat two or beat three"
+        ],
+        "avoid": [
+          "waltz accompaniment accented on beat one"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
     }
   ]
 }

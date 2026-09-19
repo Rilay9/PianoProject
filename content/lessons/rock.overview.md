@@ -25,20 +25,21 @@ MuseScore and export MusicXML — slow, and the best ear training there is. The
 Library import screen takes it from there, and you can assign it to whichever
 rung it belongs on.
 
-**The five textures this rung covers.** Each one names where you can see it
-written down. Most of those pieces are above this rung — they are there to be
-looked at and listened to now and played in a year or two, which is a normal way
-to use a library and not a detour.
+**The five textures this rung covers.** Each names where you can see it written
+down, and each has a rung of its own further up this track. This rung is the
+map: most of the pieces below are above it, so listen now and play them when
+their rung comes round.
 
 1. **Minor-key ostinato** — a short repeated figure over a held or pedal bass.
    See it in: Chopin *Prelude* op. 28 no. 4, whose left hand repeats one chord
    shape and shifts it a semitone at a time under a line that barely moves.
    (Stage 6.)
 2. **Power-chord left hand** — root, fifth and octave, played with weight.
-   See it in: Chopin *Prelude* op. 28 no. 20. (Stage 6.)
+   No classical piece in the library is built on it; rock.4's exercises are
+   where it lives. (Stage 4.)
 3. **Suspended and add9 open voicings** — the modern ballad sound, chords with
-   the third removed or the ninth added and spread over two hands. See it in:
-   Satie *Gnossienne no. 1*, and the accompaniment work in chords-and-pop 5.
+   the third removed or the ninth added and spread over two hands. See it in
+   the accompaniment work in chords-and-pop 5.
    This is the one within reach now.
 4. **Ambient arpeggio over a pedal bass** — slow broken chords with the sustain
    pedal changing only at the harmony. See it in: Beethoven *Moonlight* I.

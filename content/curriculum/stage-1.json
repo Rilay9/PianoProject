@@ -29,7 +29,8 @@
                 "drill.rhythm.quarters-rests",
                 "exercise.five-finger.c-major.both",
                 "exercise.five-finger.c-major.right",
-                "exercise.five-finger.g-major.right"
+                "exercise.five-finger.g-major.right",
+                "exercise.riff.c.falling"
               ],
               "songOptions": [
                 "song.folk.hot-cross-buns",
@@ -320,7 +321,8 @@
                 "exercise.interval-reading.c-position.right.01",
                 "exercise.interval-reading.c-position.right.02",
                 "exercise.interval-reading.c-position.right.03",
-                "drill.ear.simon-c-major"
+                "drill.ear.simon-c-major",
+                "exercise.riff.a.falling"
               ],
               "songOptions": [
                 "song.folk.old-macdonald",

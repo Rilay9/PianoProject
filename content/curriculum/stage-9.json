@@ -49,6 +49,11 @@
                 "classical.8"
               ],
               "estimatedDays": 365,
+              "tools": [
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 4.3,
                 9.4
@@ -142,7 +147,16 @@
                   "beginner lead sheets"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "jazz-comping"
+                },
+                {
+                  "kind": "blind"
+                }
+              ]
             }
           ]
         },
@@ -186,6 +200,15 @@
                 "blues.8"
               ],
               "estimatedDays": 180,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                },
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 6.2,
                 8.8
@@ -253,6 +276,15 @@
                 "chords-pop.8"
               ],
               "estimatedDays": 180,
+              "tools": [
+                {
+                  "kind": "blind"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "ballad"
+                }
+              ],
               "levelBand": [
                 5.3,
                 8.4
@@ -331,7 +363,12 @@
                   "through-composed pieces"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "simon"
+                }
+              ]
             }
           ]
         },
@@ -372,6 +409,11 @@
                 "improv.8"
               ],
               "estimatedDays": 180,
+              "tools": [
+                {
+                  "kind": "play"
+                }
+              ],
               "levelBand": [
                 5.3,
                 8.4

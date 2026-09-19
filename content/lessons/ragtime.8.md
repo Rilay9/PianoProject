@@ -26,10 +26,12 @@ goes through four keys and spends a whole strain in the minor. It is the piece
 where ragtime is visibly turning into something else, and it repays being
 learned strain by strain more than any other rag in the library.
 
-**Stop-time.** *Stoptime Rag* has bars where the piano drops out and the pulse
-is kept by the player stamping a heel on the floor — Joplin printed the
-instruction. It is not a joke and it is not optional: the piece is unplayable if
-you cannot keep time without hearing yourself.
+**Stop-time.** Bars where the accompaniment stops and the pulse is kept by what
+is left. In *Stoptime Rag* the left hand drops out under the tune and the player
+stamps a heel on the floor — Joplin printed the instruction, though the copy in
+this app's Library does not show it. It is not a joke and it is not optional:
+those bars fall apart if you cannot keep time without hearing the beat.
+*Stoptime Rag* is in the Library rather than on this rung.
 
 **Still not fast.** Late rags reward being slower, not faster, because there is
 more happening per bar. If the syncopation is not audible as syncopation, the

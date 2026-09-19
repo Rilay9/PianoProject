@@ -21,27 +21,27 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 0 | `0.2` *(exempt)* | 2 | 0 | 0.2–0.2 | — |
 | 0 | `0.3` *(exempt)* | 1 | 1 | 0.3–1.1 | Hot Cross Buns (1.1) |
 | 0 | `0.4` *(exempt)* | 1 | 0 | 0.4–0.4 | — |
-| 1 | `1.1` | 6 | 6 | 1.0–2.1 | Kum Ba Yah (1.0), Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1) |
+| 1 | `1.1` | 7 | 6 | 1.0–2.1 | Kum Ba Yah (1.0), Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1) |
 | 1 | `1.2` | 4 | 5 | 1.1–1.9 | Lightly Row (1.2), Jingle Bells (chorus) (1.2), Twinkle, Twinkle, Little Star (1.2), Frère Jacques (1.2), Ah! vous dirai-je, Maman (1.9) |
 | 1 | `1.3` | 6 | 3 | 1.1–2.1 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
 | 1 | `1.4` | 6 | 3 | 1.2–1.6 | Lightly Row (1.2), Ode to Joy (hands alternating) (1.4), Oh When the Saints Go Marching In (hands alternating) (1.4) |
-| 1 | `1.5` *(song-optional)* | 7 | 4 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), The Water Is Wide (1.9), Old MacDonald Had a Farm (2.2) |
-| 2 | `2.1` | 5 | 5 | 2.1–2.1 | Simple Gifts (2.1), Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
-| 2 | `2.2` | 5 | 7 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael, Row the Boat Ashore (1.9), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Alouette (2.3), … and 1 more |
+| 1 | `1.5` *(song-optional)* | 8 | 4 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), The Water Is Wide (1.9), Old MacDonald Had a Farm (2.2) |
+| 2 | `2.1` | 6 | 5 | 2.1–2.6 | Simple Gifts (2.1), Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
+| 2 | `2.2` | 6 | 8 | 1.1–2.9 | Merrily We Roll Along (1.1), Michael, Row the Boat Ashore (1.9), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Alouette (2.3), … and 2 more |
 | 2 | `2.3` | 4 | 7 | 2.3–4.3 | Happy Birthday to You (2.3), Was wollen wir trinken (2.7), Dark Eyes (2.8), Skip to My Lou (2.9), Jingle Bells (chorus, in G major with block chords) (3.2), Auld Lang Syne (3.3), … and 1 more |
-| 2 | `2.4` | 4 | 5 | 2.2–5.1 | Streets of Laredo (2.2), Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
-| 2 | `2.5` *(song-optional)* | 7 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
-| 3 | `3.1` | 6 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.8), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
+| 2 | `2.4` | 4 | 6 | 2.2–5.1 | Streets of Laredo (2.2), Greensleeves (simple) (2.4), Careless Love (2.6), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
+| 2 | `2.5` *(song-optional)* | 8 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
+| 3 | `3.1` | 7 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.8), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
-| 3 | `3.3` | 4 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
+| 3 | `3.3` | 7 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
 | 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (beginner) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 3 | `3.5` | 5 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
-| 3 | `3.6` *(song-optional)* | 7 | 2 | 3.6–5.1 | Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
+| 3 | `3.6` *(song-optional)* | 8 | 2 | 3.6–5.1 | Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
 | 4 | `4.1` | 6 | 3 | 3.1–4.1 | Ode to Joy (in G major) (3.1), Für Elise (easy) (4.1), Ode to Joy (easy variation) (4.1) |
 | 4 | `4.2` | 10 | 3 | 3.1–4.2 | Twinkle, Twinkle, Little Star (in F major) (3.1), Für Elise (beginner) (4.1), Bella Ciao (4.2) |
 | 4 | `4.3` | 17 | 3 | 3.3–5.1 | Greensleeves (with chords) (3.3), Canon in D (easy) (5.1), Greensleeves (5.1) |
 | 4 | `4.4` | 5 | 3 | 4.1–5.1 | Ode to Joy (easy variation) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
-| 4 | `4.5` | 7 | 3 | 2.2–4.5 | London Bridge Is Falling Down (2.2), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5) |
+| 4 | `4.5` | 9 | 4 | 2.2–4.5 | London Bridge Is Falling Down (2.2), When Johnny Comes Marching Home (2.4), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5) |
 | 4 | `4.6` | 4 | 6 | 3.4–5.1 | Für Elise (easy) (4.1), Uti vår hage (5.0), Canon in D (easy) (5.1), Minuet in G major, BWV Anh. 114 (5.1), Carol of the Bells (easy) (5.1), Auld Lang Syne (5.1) |
 | 4 | `4.7` | 3 | 3 | 3.4–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Canon in D (easy) (5.1) |
 
@@ -59,11 +59,21 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Holiday (`holiday`)
 
-1 rung(s), stages 2–2.
+2 rung(s), stages 2–3.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 2 | `holiday` | 5 | 29 | 1.2–7.3 | Jingle Bells (chorus) (1.2), Jingle Bells (chorus, hands together) (2.1), Silent Night (melody) (2.3), Jolly Old Saint Nicholas (2.4), Good King Wenceslas (2.5), We Three Kings of Orient Are (2.8), … and 23 more |
+| 3 | `holiday.3` | 4 | 4 | 3.2–3.3 | Jingle Bells (chorus, in G major with block chords) (3.2), Joy to the World (3.2), The First Noel (3.3), Hark! The Herald Angels Sing (3.3) |
+
+## Hymns & gospel (`hymns-gospel`)
+
+2 rung(s), stages 2–3.
+
+| stage | rung | exercises | songs | level | options |
+|---|---|---:|---:|---|---|
+| 2 | `hymns.2` | 3 | 4 | 1.4–3.2 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Joyful, Joyful, We Adore Thee (2.5), Swing Low, Sweet Chariot (2.9) |
+| 3 | `hymns` | 5 | 19 | 1.4–7.3 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Joyful, Joyful, We Adore Thee (2.5), Swing Low, Sweet Chariot (2.9), Oh When the Saints Go Marching In (in F major) (3.2), What a Friend We Have in Jesus (3.2), … and 13 more |
 
 ## Blues & boogie (`blues-boogie`)
 
@@ -71,8 +81,8 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `blues.3` | 6 | 6 | 2.4–4.5 | 12 Bar Blues (2.4), Careless Love (2.6), St. Louis Blues (1914) (3.5), St. James Infirmary (3.5), Wabash Blues (4.1), Tishomingo Blues (4.2) |
-| 4 | `blues.4` | 5 | 6 | 2.4–5.2 | 12 Bar Blues (2.4), Careless Love (2.6), Twelve-bar blues shuffle in C (3.4), St. Louis Blues (1914) (3.5), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1) |
+| 3 | `blues.3` | 6 | 5 | 2.6–4.5 | Careless Love (2.6), St. Louis Blues (1914) (3.5), St. James Infirmary (3.5), Wabash Blues (4.1), Tishomingo Blues (4.2) |
+| 4 | `blues.4` | 5 | 7 | 2.4–5.2 | 12 Bar Blues (2.4), Careless Love (2.6), Twelve-bar blues shuffle in C (3.4), St. Louis Blues (1914) (3.5), Hesitating Blues (3.6), Twelve-bar blues shuffle in F (4.1), … and 1 more |
 | 5 | `blues.5` | 7 | 6 | 3.4–5.2 | Twelve-bar blues shuffle in C (3.4), Blues My Naughty Sweetie Gives to Me (1919) (4.0), The Memphis Blues (1912) (4.0), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1), Royal Garden Blues (1919) (4.2) |
 | 6 | `blues.6` *(song-optional)* | 5 | 3 | 3.5–7.5 | Boogie-woogie and blues piano exercises (3.5), Boogie (easy, for beginners) (5.0), Pinetop's Boogie Woogie (1928) (7.5) |
 | 7 | `blues.7` *(song-optional)* | 5 | 3 | 5.0–7.3 | Boogie (easy, for beginners) (5.0), Rhythm and Boogie (5.0), Boogie-Boogie en Sol (5.5) |
@@ -86,7 +96,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `chords-pop.3` | 5 | 6 | 2.3–3.3 | Happy Birthday to You (2.3), Tom Dooley (3.1), Oh! Susanna (Simple Lead Sheet) (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Jingle Bells (chorus, in G major with block chords) (3.2), Greensleeves (with chords) (3.3) |
-| 4 | `chords-pop.4` | 4 | 6 | 2.9–4.4 | Shenandoah (2.9), Greensleeves (with chords) (3.3), Greensleeves (waltz bass) (3.6), Hallelujah (easy) (3.8), The Skye Boat Song (Outlander theme) (4.1), Scarborough Fair (4.4) |
+| 4 | `chords-pop.4` | 4 | 7 | 2.9–4.4 | Shenandoah (2.9), Greensleeves (with chords) (3.3), Alexander's Ragtime Band (1911) (3.4), Greensleeves (waltz bass) (3.6), Hallelujah (easy) (3.8), The Skye Boat Song (Outlander theme) (4.1), … and 1 more |
 | 5 | `chords-pop.5` | 3 | 6 | 4.5–5.5 | Greensleeves (in 6/8) (4.5), Row, Row, Row Your Boat (4.5), Lavender's Blue (4.6), Before You Go (4.7), Greensleeves (5.1), Your Song (easy) (5.5) |
 | 6 | `chords-pop.6` *(song-optional)* | 5 | 6 | 5.4–6.4 | How to Train Your Dragon: Flying Theme (5.5), Clocks (5.5), All of Me (easy) (5.6), Dancing Queen (5.7), Fallen Down (Reprise), from Undertale (easy) (6.0), Annie's Song (6.4) |
 | 7 | `chords-pop.7` *(song-optional)* | 6 | 6 | 5.3–7.6 | For the Damaged Coda (6.2), Blinding Lights (easy) (6.3), Fix You (6.5), Welcome to Wonderland (6.7), Scarborough Fair (piano solo) (6.8), Wake Me Up (7.6) |
@@ -108,14 +118,6 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 8 | `classical.8` | 8 | 6 | 4.3–8.4 | Waltz in C-sharp minor, Op. 64 No. 2 (7.8), Piano Sonata No. 11, K. 331, III. Rondo alla Turca (8.1), Nocturne in B-flat minor, Op. 9 No. 1 (8.1), Arabesque No. 1, L. 66 (8.1), Clair de Lune (Suite bergamasque, L. 75 No. 3) (8.3), Piano Sonata No. 14 “Moonlight”, III. Presto agitato (8.4) |
 | 9 | `classical.9` | 6 | 6 | 4.3–9.4 | Piano Sonata No. 2, Op. 35 — Marche funèbre (8.4), Fantaisie-impromptu in C-sharp minor, Op. 66 (9.0), Ballade No. 1 in G minor, Op. 23 (9.1), La Campanella (Grandes études de Paganini No. 3) (9.2), Polonaise in A-flat major, Op. 53 (“Heroic”) (9.4), Étude in C-sharp minor, Op. 10 No. 4 (9.4) |
 
-## Hymns & gospel (`hymns-gospel`)
-
-1 rung(s), stages 3–3.
-
-| stage | rung | exercises | songs | level | options |
-|---|---|---:|---:|---|---|
-| 3 | `hymns` | 5 | 19 | 1.4–7.3 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Joyful, Joyful, We Adore Thee (2.5), Swing Low, Sweet Chariot (2.9), Oh When the Saints Go Marching In (in F major) (3.2), What a Friend We Have in Jesus (3.2), … and 13 more |
-
 ## Improvisation & composition (`improv-compose`)
 
 7 rung(s), stages 3–9.
@@ -132,11 +134,15 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Rock & metal (`rock-metal`)
 
-1 rung(s), stages 3–3.
+5 rung(s), stages 3–7.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `rock.overview` | 3 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (with chords) (3.3), Canon in D (easy) (5.1) |
+| 4 | `rock.4` *(song-optional)* | 4 | 1 | 2.6–3.4 | Greensleeves (with chords) (3.3) |
+| 5 | `rock.5` *(song-optional)* | 4 | 2 | 5.3–6.8 | Annie's Song (6.4), andata (6.8) |
+| 6 | `rock.6` | 4 | 3 | 3.4–7.4 | Gnossienne No. 1 (4.6), Prelude No. 20 in C minor, Op. 28 (6.0), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1) |
+| 7 | `rock.7` | 4 | 3 | 5.2–8.4 | Rachmaninoff - Piano Concerto No. 2 (7.0), In the Hall of the Mountain King (Peer Gynt) (8.4), Piano Sonata No. 14 “Moonlight”, III. Presto agitato (8.4) |
 
 ## Theory & ear (`theory-ear`)
 
@@ -154,11 +160,13 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Jam with a friend (`jam`)
 
-1 rung(s), stages 4–4.
+3 rung(s), stages 4–6.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 4 | `jam` | 4 | 5 | 3.4–4.5 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in E (4.1), Twelve-bar blues shuffle in A (4.1), Twelve-bar blues shuffle in G (4.1), Twelve-bar blues shuffle in F (4.1) |
+| 5 | `jam.5` *(song-optional)* | 5 | 0 | 4.1–4.4 | — |
+| 6 | `jam.6` *(song-optional)* | 5 | 0 | 4.1–6.2 | — |
 
 ## Technique (`technique`)
 
@@ -178,7 +186,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 5 | `jazz.5` | 6 | 6 | 2.7–5.2 | Avalon (1920) (2.7), Whispering (1920) (3.3), Bill Bailey, Won't You Please Come Home (1902) (3.4), Margie (1920) (3.5), Some of These Days (1910) (3.8), After You've Gone (1918) (4.0) |
+| 5 | `jazz.5` | 6 | 7 | 2.7–5.2 | Avalon (1920) (2.7), Limehouse Blues (1922) (3.2), Whispering (1920) (3.3), Bill Bailey, Won't You Please Come Home (1902) (3.4), Margie (1920) (3.5), Some of These Days (1910) (3.8), … and 1 more |
 | 6 | `jazz.6` *(song-optional)* | 7 | 6 | 3.2–6.4 | Limehouse Blues (1922) (3.2), Bye Bye Blackbird (1926) (3.3), Darktown Strutters' Ball (1917) (3.8), Rose Room (1917) (4.1), Royal Garden Blues (1919) (4.2), Tiger Rag (1917) (4.4) |
 | 7 | `jazz.7` *(song-optional)* | 7 | 6 | 2.7–7.4 | Avalon (1920) (2.7), Tiger Rag (1917) (4.4), Fly Me to the Moon (5.2), I Got Rhythm (5.5), Jingle Bells (jazz piano) (7.2), Skating (7.3) |
 | 8 | `jazz.8` *(song-optional)* | 6 | 3 | 5.5–8.2 | I Got Rhythm (5.5), Stardust (1927) (6.0), Uncle Ben's Cakewalk (7.6) |
@@ -186,10 +194,11 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Latin (`latin`)
 
-1 rung(s), stages 5–5.
+2 rung(s), stages 3–5.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
+| 3 | `latin.3` | 5 | 3 | 1.9–3.6 | Cielito Lindo (1.9), Só Danço Samba (3.0), Guantanamera (3.2) |
 | 5 | `latin` | 12 | 6 | 1.9–6.4 | Cielito Lindo (1.9), Insensatez (How Insensitive) (3.0), Só Danço Samba (3.0), Guantanamera (3.2), Tico-Tico no Fubá (3.7), La Cumparsita (part A) (5.1) |
 
 ## Ragtime (`ragtime`)

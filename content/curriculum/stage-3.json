@@ -29,7 +29,8 @@
                 "drill.reading.note-flash-accidentals",
                 "drill.theory.build-major-scale",
                 "exercise.five-finger.g-major.right",
-                "exercise.five-finger.f-major.right"
+                "exercise.five-finger.f-major.right",
+                "exercise.pentatonic.a.blues"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.g",
@@ -119,6 +120,15 @@
                 "3.1"
               ],
               "estimatedDays": 16,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "primary-chords"
+                },
+                {
+                  "kind": "play"
+                }
+              ],
               "levelBand": [
                 2.3,
                 4.4
@@ -168,7 +178,10 @@
                 "exercise.scale.a-harmonic-minor.1oct.similar.both.2",
                 "drill.chord.minor-changes",
                 "drill.ear.major-minor",
-                "exercise.arpeggio.a-minor.2oct.both"
+                "exercise.arpeggio.a-minor.2oct.both",
+                "exercise.ostinato.a.arpeggio",
+                "exercise.power-chord.a",
+                "exercise.modal-vamp.a"
               ],
               "songOptions": [
                 "song.folk.greensleeves.chords",
@@ -185,6 +198,18 @@
                 "3.2"
               ],
               "estimatedDays": 16,
+              "requires": {
+                "mode": "minor"
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "minor-vamp"
+                },
+                {
+                  "kind": "play"
+                }
+              ],
               "levelBand": [
                 2.4,
                 5.1
@@ -345,7 +370,12 @@
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
               },
-              "paperHint": "Or your book's first pedal page — the one with the pedal marks printed under the bass staff and a slow, chordal piece to try them on."
+              "paperHint": "Or your book's first pedal page — the one with the pedal marks printed under the bass staff and a slow, chordal piece to try them on.",
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ]
             }
           ]
         },
@@ -371,7 +401,8 @@
                 "exercise.accompaniment.broken.c-major.left",
                 "exercise.accompaniment.alberti.c-major.left",
                 "exercise.accompaniment.waltz.c-major.left",
-                "exercise.accompaniment.broken.a-minor.both"
+                "exercise.accompaniment.broken.a-minor.both",
+                "exercise.tresillo.c"
               ],
               "songOptions": [
                 "song.folk.greensleeves.waltz",
@@ -388,6 +419,16 @@
               ],
               "estimatedDays": 16,
               "songOptional": true,
+              "requires": {
+                "meter": [
+                  "3/4"
+                ]
+              },
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 3.6,
                 5.1
@@ -530,6 +571,18 @@
                 "3.2"
               ],
               "estimatedDays": 30,
+              "requires": {
+                "chordSymbols": true
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "primary-chords"
+                },
+                {
+                  "kind": "play"
+                }
+              ],
               "levelBand": [
                 2.3,
                 3.3
@@ -571,7 +624,9 @@
                 "blues-scale",
                 "chord-symbols",
                 "twelve-bar-blues",
-                "shuffle"
+                "shuffle",
+                "blue-note",
+                "crushed-note"
               ],
               "textFile": "lessons/blues.3.md",
               "exerciseOptions": [
@@ -583,7 +638,6 @@
                 "exercise.rhythm.shuffle-eighths.4bar"
               ],
               "songOptions": [
-                "song.classical.12-bar-blues.pdmx",
                 "song.pop.careless-love-blues.pdmx",
                 "song.classical.st-louis-blues.pdmx",
                 "song.blues.st-james-infirmary",
@@ -600,6 +654,15 @@
                 "3.2"
               ],
               "estimatedDays": 21,
+              "requires": {
+                "chordSymbols": true
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                }
+              ],
               "levelBand": [
                 2.4,
                 4.5
@@ -648,13 +711,18 @@
                 "exercisesRequired": 2,
                 "songsRequired": 0,
                 "minAccuracy": 0.8,
-                "minTempoPct": 0.0,
+                "minTempoPct": 0,
                 "custom": "intervals-by-ear>=0.8"
               },
               "estimatedDays": 30,
               "songOptional": true,
+              "tools": [
+                {
+                  "kind": "simon"
+                }
+              ],
               "levelBand": [
-                2.0,
+                2,
                 3.3
               ],
               "finder": {
@@ -705,8 +773,8 @@
               "mastery": {
                 "exercisesRequired": 2,
                 "songsRequired": 0,
-                "minAccuracy": 0.0,
-                "minTempoPct": 0.0,
+                "minAccuracy": 0,
+                "minTempoPct": 0,
                 "custom": "three-choruses-recorded"
               },
               "estimatedDays": 30,
@@ -747,7 +815,8 @@
                 "passing-chords",
                 "plagal-cadence",
                 "slash-chord",
-                "voice-leading"
+                "voice-leading",
+                "bass-walk-up"
               ],
               "textFile": "lessons/hymns.md",
               "exerciseOptions": [
@@ -788,6 +857,18 @@
                 "3.2"
               ],
               "estimatedDays": 21,
+              "requires": {
+                "staves": 2
+              },
+              "tools": [
+                {
+                  "kind": "duet"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "primary-chords"
+                }
+              ],
               "levelBand": [
                 1.4,
                 7.3
@@ -831,7 +912,8 @@
                 "dynamic-build",
                 "build-and-release",
                 "register",
-                "half-time-feel"
+                "half-time-feel",
+                "power-chord"
               ],
               "textFile": "lessons/rock.overview.md",
               "exerciseOptions": [
@@ -847,11 +929,20 @@
               "mastery": {
                 "exercisesRequired": 1,
                 "songsRequired": 0,
-                "minAccuracy": 0.0,
-                "minTempoPct": 0.0,
+                "minAccuracy": 0,
+                "minTempoPct": 0,
                 "custom": "textures-identified"
               },
               "estimatedDays": 7,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "minor-vamp"
+                },
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 2.5,
                 5.1
@@ -869,6 +960,127 @@
                   "note-for-note vocal transcriptions",
                   "guitar tablature",
                   "arrangements needing three hands"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "latin.3.1",
+          "title": "Latin: the clave, and a tune to hear it under",
+          "track": "latin",
+          "lessons": [
+            {
+              "id": "latin.3",
+              "title": "The clave, and a tune to hear it under",
+              "concepts": [
+                "clave",
+                "syncopation",
+                "tresillo"
+              ],
+              "textFile": "lessons/latin.3.md",
+              "exerciseOptions": [
+                "exercise.clave.son-2-3",
+                "exercise.clave.rumba-3-2",
+                "exercise.clave.bossa",
+                "exercise.clave.son-3-2.pulse",
+                "exercise.tresillo.c"
+              ],
+              "songOptions": [
+                "song.folk.exercise-cielito-lindo.pdmx",
+                "song.pop.guantanamera.pdmx",
+                "song.folk.so-danco-samba.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "estimatedDays": 12,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
+              "levelBand": [
+                1.9,
+                3.6
+              ],
+              "finder": {
+                "skill": "feeling a two-bar clave under a tune instead of counting it",
+                "levelWords": "easy, clave, son, rumba, bossa, latin rhythm, singable melody",
+                "constraints": [
+                  "a tune simple enough to sing while clapping",
+                  "a clear two-bar rhythmic pattern",
+                  "latin american folk or popular"
+                ],
+                "avoid": [
+                  "pieces that are hard to read rather than hard to feel",
+                  "arrangements in four flats or more"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "holiday.3.1",
+          "title": "Holiday: playing for people who are singing",
+          "track": "holiday",
+          "lessons": [
+            {
+              "id": "holiday.3",
+              "title": "Playing for people who are singing",
+              "concepts": [
+                "carols",
+                "transposing-for-singers",
+                "chord-symbols"
+              ],
+              "textFile": "lessons/holiday.3.md",
+              "exerciseOptions": [
+                "exercise.cadence.c.root",
+                "exercise.cadence.g.root",
+                "exercise.cadence.f.root",
+                "drill.chord.symbol-flash"
+              ],
+              "songOptions": [
+                "song.holiday.jingle-bells.g",
+                "song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx",
+                "song.pop.misc-christmas-traditional-music-first-noel.pdmx",
+                "song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.88,
+                "minTempoPct": 0.8
+              },
+              "estimatedDays": 10,
+              "tools": [
+                {
+                  "kind": "play"
+                }
+              ],
+              "requires": {
+                "chordSymbols": true
+              },
+              "levelBand": [
+                3.2,
+                3.4
+              ],
+              "finder": {
+                "skill": "accompanying a room full of people singing a carol they half remember",
+                "levelWords": "easy, carol, lead sheet, melody and chords, singable key",
+                "constraints": [
+                  "chord symbols printed above the tune",
+                  "a key that suits untrained voices",
+                  "a tune people already know"
+                ],
+                "avoid": [
+                  "piano solo arrangements",
+                  "settings with the melody buried inside the texture"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
               }

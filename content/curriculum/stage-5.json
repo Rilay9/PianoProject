@@ -47,6 +47,11 @@
                 "classical.4"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 3.6,
                 5.7
@@ -122,6 +127,12 @@
                 "chords-pop.4"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "ballad"
+                }
+              ],
               "levelBand": [
                 4.5,
                 5.6
@@ -156,7 +167,10 @@
               "concepts": [
                 "turnaround",
                 "tremolo-thirds",
-                "walking-bass"
+                "walking-bass",
+                "blue-note",
+                "crushed-note",
+                "call-and-response"
               ],
               "textFile": "lessons/blues.5.md",
               "exerciseOptions": [
@@ -205,7 +219,16 @@
                   "fast stride"
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                },
+                {
+                  "kind": "blind"
+                }
+              ]
             }
           ]
         },
@@ -221,7 +244,8 @@
                 "swing-eighths",
                 "shell-voicings",
                 "ii-V-I",
-                "comping"
+                "comping",
+                "charleston"
               ],
               "textFile": "lessons/jazz.5.md",
               "exerciseOptions": [
@@ -238,7 +262,8 @@
                 "song.pop.avalon.pdmx",
                 "song.pop.after-you-ve-gone.pdmx",
                 "song.pop.margie.pdmx",
-                "song.pop.whispering.pdmx"
+                "song.pop.whispering.pdmx",
+                "song.jazz.django-reinhardt-limehouse-blues.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -250,6 +275,12 @@
                 "chords-pop.5"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "jazz-comping"
+                }
+              ],
               "levelBand": [
                 2.7,
                 5.2
@@ -318,6 +349,11 @@
                 "4.5"
               ],
               "estimatedDays": 90,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 3.2,
                 7.1
@@ -364,7 +400,8 @@
               "concepts": [
                 "seventh-qualities",
                 "progressions-by-ear",
-                "modes"
+                "modes",
+                "vamp"
               ],
               "textFile": "lessons/theory.5.md",
               "exerciseOptions": [
@@ -378,7 +415,7 @@
                 "exercisesRequired": 2,
                 "songsRequired": 0,
                 "minAccuracy": 0.8,
-                "minTempoPct": 0.0,
+                "minTempoPct": 0,
                 "custom": "sevenths-by-ear>=0.8"
               },
               "prerequisites": [
@@ -405,7 +442,12 @@
                   "atonal writing"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "simon"
+                }
+              ]
             }
           ]
         },
@@ -420,7 +462,8 @@
               "concepts": [
                 "blues-scale",
                 "twelve-bar-improv",
-                "melody-writing"
+                "melody-writing",
+                "blue-note"
               ],
               "textFile": "lessons/improv.5.md",
               "exerciseOptions": [
@@ -437,8 +480,8 @@
               "mastery": {
                 "exercisesRequired": 2,
                 "songsRequired": 0,
-                "minAccuracy": 0.0,
-                "minTempoPct": 0.0,
+                "minAccuracy": 0,
+                "minTempoPct": 0,
                 "custom": "eight-bar-melody-written"
               },
               "prerequisites": [
@@ -446,6 +489,12 @@
               ],
               "estimatedDays": 90,
               "songOptional": true,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                }
+              ],
               "levelBand": [
                 3.4,
                 5.1
@@ -483,7 +532,9 @@
                 "montuno",
                 "syncopation",
                 "comping",
-                "walking-bass"
+                "walking-bass",
+                "bossa-nova",
+                "tango"
               ],
               "textFile": "lessons/latin.md",
               "exerciseOptions": [
@@ -518,6 +569,11 @@
                 "4.5"
               ],
               "estimatedDays": 45,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 1.9,
                 6.4
@@ -597,6 +653,11 @@
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 4.7,
                 5.4
@@ -621,6 +682,136 @@
                 "technique.4"
               ],
               "estimatedDays": 90
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.5.1",
+          "title": "Rock & metal: the chord with the third taken out",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.5",
+              "title": "Open voicings: the chord with the third taken out",
+              "concepts": [
+                "open-voicings",
+                "sustained-chords"
+              ],
+              "textFile": "lessons/rock.5.md",
+              "exerciseOptions": [
+                "exercise.open-voicing.c.sus2",
+                "exercise.open-voicing.c.sus4",
+                "exercise.open-voicing.c.add9",
+                "exercise.open-voicing.f.sus4"
+              ],
+              "songOptions": [
+                "song.folk.john-denver-annie-s-song.pdmx",
+                "song.classical.sakamoto-andata.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "rock.4"
+              ],
+              "estimatedDays": 14,
+              "tools": [
+                {
+                  "kind": "play"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "minor-vamp"
+                }
+              ],
+              "requires": {
+                "chordSymbols": true
+              },
+              "levelBand": [
+                5.3,
+                6.8
+              ],
+              "songOptional": true,
+              "finder": {
+                "skill": "playing chords with the third left out, or replaced by the note next to it",
+                "levelWords": "intermediate, sus2 sus4 add9, open voicings, ambient piano, pop ballad",
+                "constraints": [
+                  "suspended or added-note chords written as symbols",
+                  "wide spacing in the left hand",
+                  "a texture that stays still under a melody"
+                ],
+                "avoid": [
+                  "close four-part harmony",
+                  "jazz voicings with alterations",
+                  "guitar tablature"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "jam.5.1",
+          "title": "Jam: comping behind somebody else",
+          "track": "jam",
+          "lessons": [
+            {
+              "id": "jam.5",
+              "title": "Comping behind somebody else",
+              "concepts": [
+                "comping",
+                "guitar-keys",
+                "head-and-chorus",
+                "charleston",
+                "anticipation"
+              ],
+              "textFile": "lessons/jam.5.md",
+              "exerciseOptions": [
+                "exercise.comping.e.charleston.intro",
+                "exercise.comping.a.charleston.intro",
+                "exercise.comping.g.off-beats.intro",
+                "exercise.comping.d.anticipated.intro",
+                "drill.jam.form-tracker"
+              ],
+              "songOptions": [],
+              "mastery": {
+                "exercisesRequired": 2,
+                "songsRequired": 0,
+                "minAccuracy": 0.85,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "jam"
+              ],
+              "estimatedDays": 14,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                }
+              ],
+              "levelBand": [
+                3.4,
+                4.5
+              ],
+              "songOptional": true,
+              "finder": {
+                "skill": "playing chords behind a soloist without getting in the way",
+                "levelWords": "intermediate, comping, rhythm changes, chord chart, guitar keys",
+                "constraints": [
+                  "chord symbols with no written right hand",
+                  "a form that repeats",
+                  "keys a guitarist calls: E, A, G or D"
+                ],
+                "avoid": [
+                  "fully written piano parts",
+                  "arrangements with the melody in the right hand"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         }

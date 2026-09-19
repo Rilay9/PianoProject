@@ -11,7 +11,8 @@ readingTime: 3
 
 **The blues scale** is the minor pentatonic with one extra note: **C E♭ F F♯ G
 B♭ C**. That F sharp — the flattened fifth, which the app spells as a raised
-fourth for the reason the blues track gives — is the "blue note"; used as a
+fourth for the reason the blues track gives — is one of the three "blue notes",
+with the flat third and the flat seventh already in the scale; used as a
 passing note between F and G it is the sound of the style, and leaned on it is
 almost unbearable, which is the point.
 

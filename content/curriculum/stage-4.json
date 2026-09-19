@@ -305,12 +305,15 @@
                 "exercise.rhythm.triplet-quarters.4bar",
                 "exercise.rhythm.six-eight-eighths.4bar",
                 "exercise.rhythm.shuffle-eighths.4bar",
-                "exercise.rhythm.six-eight-dotted-quarters.4bar"
+                "exercise.rhythm.six-eight-dotted-quarters.4bar",
+                "exercise.clave.rumba-3-2",
+                "exercise.clave.son-3-2.pulse"
               ],
               "songOptions": [
                 "song.folk.row-row-row-your-boat",
                 "song.folk.greensleeves.68",
-                "song.folk.london-bridge"
+                "song.folk.london-bridge",
+                "song.folk.traditional-music-when-johnny-comes-marching-home.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -322,6 +325,11 @@
                 "4.2"
               ],
               "estimatedDays": 24,
+              "requires": {
+                "meter": [
+                  "6/8"
+                ]
+              },
               "levelBand": [
                 2.2,
                 4.5
@@ -407,7 +415,12 @@
                 ],
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
               },
-              "paperHint": "Or the sight-reading pieces at the back of your book, played once through without stopping. Choose ones you have never opened."
+              "paperHint": "Or the sight-reading pieces at the back of your book, played once through without stopping. Choose ones you have never opened.",
+              "tools": [
+                {
+                  "kind": "blind"
+                }
+              ]
             },
             {
               "id": "4.7",
@@ -436,6 +449,11 @@
                 "custom": "two clean passes, then blind at >=0.9"
               },
               "estimatedDays": 21,
+              "tools": [
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 3.4,
                 5.1
@@ -507,6 +525,11 @@
                 "classical.3"
               ],
               "estimatedDays": 45,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 4.3,
                 5.8
@@ -668,7 +691,8 @@
                 "song.pop.scarborough-fair.pdmx",
                 "song.folk.traditional-music-shenandoah.pdmx",
                 "song.folk.hallelujah-easy.pdmx",
-                "song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx"
+                "song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx",
+                "song.classical.alexander-s-ragtime-band.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -699,7 +723,16 @@
                   "written-out solos"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "pop-four-chord"
+                },
+                {
+                  "kind": "play"
+                }
+              ]
             }
           ]
         },
@@ -715,7 +748,9 @@
                 "twelve-bar-blues",
                 "shuffle",
                 "boogie-bass",
-                "blues-scale"
+                "blues-scale",
+                "blue-note",
+                "crushed-note"
               ],
               "textFile": "lessons/blues.4.md",
               "exerciseOptions": [
@@ -731,7 +766,8 @@
                 "exercise.blues.twelve-bar-shuffle.g",
                 "song.pop.careless-love-blues.pdmx",
                 "song.classical.12-bar-blues.pdmx",
-                "song.classical.st-louis-blues.pdmx"
+                "song.classical.st-louis-blues.pdmx",
+                "song.blues.hesitating-blues"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -743,6 +779,15 @@
                 "3.2"
               ],
               "estimatedDays": 45,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                },
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
                 2.4,
                 5.2
@@ -791,7 +836,7 @@
                 "exercisesRequired": 2,
                 "songsRequired": 0,
                 "minAccuracy": 0.8,
-                "minTempoPct": 0.0,
+                "minTempoPct": 0,
                 "custom": "cadences-by-ear>=0.8"
               },
               "prerequisites": [
@@ -799,9 +844,14 @@
               ],
               "estimatedDays": 45,
               "songOptional": true,
+              "tools": [
+                {
+                  "kind": "simon"
+                }
+              ],
               "levelBand": [
                 4.3,
-                5.0
+                5
               ],
               "finder": {
                 "skill": "hearing an inversion and a cadence, and placing a key on the circle of fifths",
@@ -846,8 +896,8 @@
               "mastery": {
                 "exercisesRequired": 2,
                 "songsRequired": 0,
-                "minAccuracy": 0.0,
-                "minTempoPct": 0.0,
+                "minAccuracy": 0,
+                "minTempoPct": 0,
                 "custom": "four-answers-recorded"
               },
               "prerequisites": [
@@ -855,6 +905,12 @@
               ],
               "estimatedDays": 45,
               "songOptional": true,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "pop-four-chord"
+                }
+              ],
               "levelBand": [
                 3.1,
                 4.1
@@ -916,6 +972,12 @@
                 "blues.4"
               ],
               "estimatedDays": 21,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                }
+              ],
               "levelBand": [
                 3.4,
                 4.5
@@ -1019,6 +1081,80 @@
                 "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
               },
               "estimatedDays": 45
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.4.1",
+          "title": "Rock & metal: the figure that repeats",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.4",
+              "title": "The power chord, and the figure that repeats",
+              "concepts": [
+                "ostinato",
+                "eighth-note-ostinato",
+                "pedal-bass",
+                "modal-minor",
+                "open-voicings",
+                "power-chord",
+                "riff",
+                "vamp"
+              ],
+              "textFile": "lessons/rock.4.md",
+              "exerciseOptions": [
+                "exercise.power-chord.a",
+                "exercise.ostinato.a.fifths",
+                "exercise.ostinato.a.arpeggio",
+                "exercise.modal-vamp.a"
+              ],
+              "songOptions": [
+                "song.folk.greensleeves.chords"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 0,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "rock.overview"
+              ],
+              "estimatedDays": 10,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "minor-vamp"
+                },
+                {
+                  "kind": "duet"
+                }
+              ],
+              "requires": {
+                "mode": "minor"
+              },
+              "levelBand": [
+                2.6,
+                3.4
+              ],
+              "songOptional": true,
+              "finder": {
+                "skill": "holding one repeating left-hand figure steady while the right hand moves over it",
+                "levelWords": "easy to moderate, minor key, ostinato, pedal bass, rock piano",
+                "constraints": [
+                  "a left-hand figure that repeats without changing",
+                  "a bass note that stays put under it",
+                  "minor key",
+                  "two hands, no wider than an octave in the left"
+                ],
+                "avoid": [
+                  "pieces whose left hand changes every bar",
+                  "guitar tablature",
+                  "note-for-note band transcriptions"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
             }
           ]
         }

@@ -34,10 +34,11 @@ in eighth notes — for C7 that is C–G–A–G, repeated, and it moves up to F
 for the IV chord. Some versions add the flat seventh: root–5–6–♭7–6–5. Learn it
 in C first until the hand does it without you.
 
-**The blues scale.** C–E♭–F–F♯–G–B♭–C. The E flat and that black key between F
-and G are the "blue notes" — they sit between the major and minor versions of
-those degrees, and on a piano, which cannot bend, you get the effect by grinding
-the two adjacent keys together or sliding off the flat onto the natural.
+**The blues scale.** C–E♭–F–F♯–G–B♭–C. Three of those are the "blue notes": the
+flat third (E flat, against the E natural in a C chord), the flat seventh (B
+flat), and the black key between F and G, a flattened fifth. On a piano, which
+cannot bend, you get the effect by grinding a blue note together with the key
+above it, or sliding off the flat onto the natural.
 
 It is the same key whether you call it F sharp or G flat, and you will see both.
 The app writes it as a sharp, because the flat spelling runs out: the flattened

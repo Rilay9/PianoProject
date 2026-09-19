@@ -14,8 +14,9 @@ hands do *around* them while a tune goes past.
 
 **Comping is a rhythm, not a chord.** You already know which notes to play; the
 question is when. Four patterns cover most of it: the Charleston (beat 1 and the
-"and" of 2), off-beats only, an anticipation into the bar, and four to the floor
-when the music wants weight. Practise one pattern through a whole ii–V–I before
+"and" of 2), off-beats only, an anticipation into the bar, and four to the bar —
+a short, light chord on every beat, the rhythm-guitar sound of swing — when the
+music wants drive. Practise one pattern through a whole ii–V–I before
 you try another. Mixing them comes later and comes by itself.
 
 **Walking bass.** Four notes to the bar, and the fourth one is the trick: a
@@ -38,8 +39,9 @@ in C, hands separately, then together with shells on top.
 (1917) and *Royal Garden Blues* (1919) — all lead sheets, all public domain.
 Comp one pattern through a whole chorus, then walk a line under it.
 
-**Common mistake.** Comping on every beat. The gaps are what make it comping;
-filling them makes it an accompaniment pattern.
+**Common mistake.** Comping on every beat by default. The gaps are what make it
+comping; four to the bar is the one pattern without them, and it only works
+short, light and chosen.
 
 **Tools for this rung.** A comping pattern needs something to be in the gaps
 of. Set the tune's key in the accompaniment lab, start *Jam it*, and play

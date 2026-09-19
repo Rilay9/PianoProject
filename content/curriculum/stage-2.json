@@ -27,7 +27,8 @@
                 "exercise.five-finger.c-major.both",
                 "exercise.coordination.c.hold",
                 "exercise.coordination.c.change",
-                "exercise.coordination.g.hold"
+                "exercise.coordination.g.hold",
+                "exercise.ostinato.a.fifths"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.ht",
@@ -46,9 +47,14 @@
                 "1.5"
               ],
               "estimatedDays": 14,
+              "tools": [
+                {
+                  "kind": "duet"
+                }
+              ],
               "levelBand": [
-                2.0,
-                2.1
+                2,
+                2.6
               ],
               "finder": {
                 "skill": "playing hands together with the left hand holding long notes",
@@ -102,7 +108,8 @@
                 "drill.rhythm.eighths",
                 "exercise.rhythm.eighths.4bar",
                 "exercise.rhythm.quarter-eighths.4bar",
-                "exercise.rhythm.waltz-quarter-eighths.4bar"
+                "exercise.rhythm.waltz-quarter-eighths.4bar",
+                "exercise.swing-pair.c"
               ],
               "songOptions": [
                 "song.folk.london-bridge",
@@ -111,7 +118,8 @@
                 "song.pop.michael-row-the-boat-ashore.pdmx",
                 "song.folk.sakura.pdmx",
                 "song.folk.danny-boy-c-major.pdmx",
-                "song.folk.alouette.pdmx"
+                "song.folk.alouette.pdmx",
+                "song.folk.anonymous-swing-low-sweet-chariot.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -125,7 +133,7 @@
               "estimatedDays": 12,
               "levelBand": [
                 1.1,
-                2.5
+                2.85
               ],
               "finder": {
                 "skill": "playing eighth notes evenly and counting the off-beats",
@@ -194,6 +202,18 @@
                 "2.1"
               ],
               "estimatedDays": 14,
+              "requires": {
+                "chordSymbols": true
+              },
+              "tools": [
+                {
+                  "kind": "play"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "primary-chords"
+                }
+              ],
               "levelBand": [
                 2.3,
                 4.3
@@ -250,7 +270,8 @@
                 "song.folk.greensleeves",
                 "song.folk.greensleeves.chords",
                 "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
-                "song.folk.streets-of-laredo.pdmx"
+                "song.folk.streets-of-laredo.pdmx",
+                "song.pop.careless-love-blues.pdmx"
               ],
               "mastery": {
                 "exercisesRequired": 1,
@@ -315,7 +336,8 @@
                 "exercise.scale.c-major.1oct.similar.left.2",
                 "exercise.position-shift.c.right",
                 "exercise.position-shift.c.left",
-                "exercise.position-shift.g.right"
+                "exercise.position-shift.g.right",
+                "exercise.pentatonic.a.pentatonic"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.full",
@@ -426,6 +448,18 @@
                 "minTempoPct": 0.8
               },
               "estimatedDays": 14,
+              "requires": {
+                "chordSymbols": true
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "primary-chords"
+                },
+                {
+                  "kind": "play"
+                }
+              ],
               "levelBand": [
                 1.2,
                 7.3
@@ -453,6 +487,66 @@
                     "title": "Silent Night",
                     "note": "bundled"
                   }
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "hymns-gospel.2.1",
+          "title": "Hymns: the tune, and the four chords under it",
+          "track": "hymns-gospel",
+          "lessons": [
+            {
+              "id": "hymns.2",
+              "title": "The tune, and the four chords under it",
+              "concepts": [
+                "chord-symbols",
+                "four-chord-loop"
+              ],
+              "textFile": "lessons/hymns.2.md",
+              "exerciseOptions": [
+                "drill.chord.c-f-g",
+                "exercise.cadence.c.root",
+                "drill.chord.symbol-flash"
+              ],
+              "songOptions": [
+                "song.folk.when-the-saints.alternating",
+                "song.folk.be-thou-my-vision.pdmx",
+                "song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx",
+                "song.folk.anonymous-swing-low-sweet-chariot.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "estimatedDays": 10,
+              "tools": [
+                {
+                  "kind": "play"
+                }
+              ],
+              "requires": {
+                "chordSymbols": true
+              },
+              "levelBand": [
+                1.4,
+                3.2
+              ],
+              "finder": {
+                "skill": "playing a hymn tune with simple chords under it rather than four written parts",
+                "levelWords": "easy, hymn, melody and chords, lead sheet, congregational",
+                "constraints": [
+                  "the tune in the right hand",
+                  "chord symbols above the stave",
+                  "no more than four different chords"
+                ],
+                "avoid": [
+                  "four-part vocal score on two staves",
+                  "organ arrangements with a pedal line"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
               }

@@ -32,9 +32,11 @@ right hand legato scale, left hand staccato chords, and then swap.
 
 **Ornaments.** An **appoggiatura** (small note, no stroke through the stem)
 takes time from the main note and is played on the beat. An **acciaccatura**
-(with a stroke) is crushed in as fast as possible, just before the beat. A
-**trill** at this level is four notes: main, upper, main, lower-or-main — do not
-attempt a long trill, attempt a clean short one.
+(with a stroke) is crushed in as fast as possible — on the beat or just before
+it, depending on the period. A **trill** alternates the main note with the note
+above it, never below; at this level it is four notes, and in music of Mozart's
+time it usually starts on the upper one: upper, main, upper, main. Do not attempt
+a long trill, attempt a clean short one.
 
 **Repertoire for this rung.** Six options at Grade 1: Attwood's *Sonatina in
 G*, the first sonatina most learners meet; C. P. E. Bach's *March in D* from

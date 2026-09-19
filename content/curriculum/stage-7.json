@@ -21,7 +21,8 @@
                 "sonata-form",
                 "cantabile",
                 "ornamented-melody",
-                "rubato"
+                "rubato",
+                "mazurka-rhythm"
               ],
               "textFile": "lessons/classical.7.md",
               "exerciseOptions": [
@@ -52,6 +53,14 @@
                 "classical.6"
               ],
               "estimatedDays": 150,
+              "tools": [
+                {
+                  "kind": "duet"
+                },
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 4.2,
                 7.2
@@ -101,7 +110,8 @@
                 "stride-bass",
                 "syncopation",
                 "trio-key-change",
-                "not-fast"
+                "not-fast",
+                "habanera"
               ],
               "textFile": "lessons/ragtime.7.md",
               "exerciseOptions": [
@@ -130,6 +140,14 @@
                 "ragtime.6"
               ],
               "estimatedDays": 150,
+              "tools": [
+                {
+                  "kind": "duet"
+                },
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 3.2,
                 7.4
@@ -252,7 +270,8 @@
                 "stride",
                 "chord-scale",
                 "extended-chords",
-                "voicing"
+                "voicing",
+                "rhythm-changes"
               ],
               "textFile": "lessons/jazz.7.md",
               "exerciseOptions": [
@@ -302,7 +321,15 @@
                   "straight eighths"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
-              }
+              },
+              "tools": [
+                {
+                  "kind": "play"
+                },
+                {
+                  "kind": "duet"
+                }
+              ]
             }
           ]
         },
@@ -346,6 +373,14 @@
                 "blues.6"
               ],
               "estimatedDays": 120,
+              "tools": [
+                {
+                  "kind": "duet"
+                },
+                {
+                  "kind": "blind"
+                }
+              ],
               "levelBand": [
                 4.9,
                 7.3
@@ -413,6 +448,15 @@
                 "chords-pop.6"
               ],
               "estimatedDays": 120,
+              "tools": [
+                {
+                  "kind": "play"
+                },
+                {
+                  "kind": "lab",
+                  "preset": "ballad"
+                }
+              ],
               "levelBand": [
                 5.3,
                 7.7
@@ -472,6 +516,11 @@
                 "theory.6"
               ],
               "estimatedDays": 120,
+              "tools": [
+                {
+                  "kind": "simon"
+                }
+              ],
               "levelBand": [
                 6.4,
                 7.5
@@ -548,6 +597,72 @@
                   "triadic harmony",
                   "written-out solos",
                   "fast bebop tempos"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              },
+              "tools": [
+                {
+                  "kind": "play"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rock-metal.7.1",
+          "title": "Rock & metal: building it",
+          "track": "rock-metal",
+          "lessons": [
+            {
+              "id": "rock.7",
+              "title": "Building it: register, density, and knowing when",
+              "concepts": [
+                "dynamic-build",
+                "build-and-release",
+                "register"
+              ],
+              "textFile": "lessons/rock.7.md",
+              "exerciseOptions": [
+                "exercise.shaping.a.crescendo",
+                "exercise.shaping.a.diminuendo",
+                "exercise.octave-scale.a.1oct.both",
+                "exercise.shaping.c.crescendo"
+              ],
+              "songOptions": [
+                "song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx",
+                "song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx",
+                "song.classical.beethoven-moonlight-iii"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.88,
+                "minTempoPct": 0.75
+              },
+              "prerequisites": [
+                "rock.6"
+              ],
+              "estimatedDays": 24,
+              "tools": [
+                {
+                  "kind": "blind"
+                }
+              ],
+              "levelBand": [
+                5.2,
+                8.4
+              ],
+              "finder": {
+                "skill": "making a passage grow without simply playing it louder",
+                "levelWords": "advanced, dynamic build, register, octaves, climax",
+                "constraints": [
+                  "one idea repeated while the register widens",
+                  "a written build over many bars",
+                  "octaves or doubling used to add weight"
+                ],
+                "avoid": [
+                  "pieces whose dynamics change every bar",
+                  "anything needing a hand span over a tenth"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
               }

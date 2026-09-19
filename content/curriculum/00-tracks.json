@@ -60,7 +60,7 @@
       "id": "hymns-gospel",
       "title": "Hymns & gospel",
       "description": "Mini-module: four-part texture, passing chords and walk-ups.",
-      "startsAtStage": 3,
+      "startsAtStage": 2,
       "defaultActive": false
     },
     {
