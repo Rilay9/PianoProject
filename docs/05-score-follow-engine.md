@@ -48,7 +48,11 @@ with zero wrong notes *and* ≤ 1 retry. Also report `wrongNotesTotal`.
 ## 3. Tempo mode (default without MIDI; also the "performance" mode) — "the clock drives"
 
 The clock advances the cursor: at `tStep[k]` emit `stepAdvanced` regardless of input. A count-in
-of one bar (metronome clicks) precedes step 0. Metronome ticks emitted as `tempoTick{beat, bar}`.
+of one bar (metronome clicks) precedes **the run's first step** — for a loop, the loop's own first
+step, not step 0. Metronome ticks emitted as `tempoTick{beat, bar}`, numbered from the run's
+first bar. (Until T8 the count-in led into step 0 wherever the run began, so the first pass of
+a loop at bar 20 sat silent through bars 1–19 and marked its own first note wrong: `tStep` is
+measured from the top of the piece.)
 
 Judging input (only if any input source is active):
 - A `noteOn(m)` at time `t` is matched to the nearest step `j` with `m ∈ expected[j]` and
@@ -109,6 +113,79 @@ nothing, so anywhere else the toggle would be a control that changes nothing (`0
 The engine refuses it at construction rather than trusting the caller. A **blind** run and
 a **performance** ignore it for a different reason: both are claims about playing the
 piece, and they are settled by the route rather than by a toggle, so the toggle gets no say.
+
+## 3b. The first note starts the clock (T8)
+
+**Ships as of T8** (`docs/prompts/tasks/T8-latch-the-start.md`). A Tempo run the learner
+leads does not start its clock at the end of the count-in: the count-in teaches the tempo,
+and the learner's first note then *defines* when the first step sounds. Everything after is
+timed from that note, so a late entry cannot displace every judgement behind it.
+
+`EngineOptions.latchStart`, Tempo only. The engine does not decide whether a run is
+learner-led — it does not know what the app will play — so `ScoreSession` does, with
+`learnerLeads`, from the same `appPitches` the playback uses:
+
+| Case | Start |
+|---|---|
+| The learner's first note comes before anything the app plays, or with it | **holds** for the first note |
+| The app sounds first (a left-hand intro while the right is practised; `playbackHands: both`) | starts itself, as before — the learner joins what they can hear |
+| Listen, Wait, Free | never latch |
+| No input source | never latches — nothing could play the first note, and Tempo is the mode meant to work without one. A microphone that fails to connect restarts the run with no input, for the same reason |
+| A ladder restart between passes | never latches — the practice is continuing, not starting |
+
+The mechanism, all in `PracticeEngine`:
+
+- **Holding (`armed`).** When the count-in ends with nothing played, the clock stops: `musicMs`
+  is fixed on the learner's first note, no ticks, no windows close, the cursor sits on that note
+  and `armed` is emitted. It holds at the **count's end**, not at the note, so a silence before
+  the learner's first note — a rest, or the other hand's intro with nothing playing it — is
+  skipped rather than counted through. A screen must say so — a holding run looks exactly like
+  a frozen one.
+- **The latch.** Any note-on while holding, or a note-on within the tolerance before the
+  count's end, sets the clock so that note *is* the first step, latency removed
+  exactly as `feedTempo` removes it; the note is then judged normally, at `deltaMs` 0.
+  `latched` is emitted with the note's corrected time.
+- **Strays.** A note before the first note's window, while counting in, is ignored — not
+  judged, not a wrong note — and the latch keeps waiting. (Before T8 it was a wrong note.)
+- **No click while holding** — including a run that holds from its first moment (no
+  count-in), and one resumed while holding.
+- **Nothing pitched sounds while holding.** `holdingFrom` gates playback from the first note
+  on, so the app's note on that beat sounds on the learner's key (`ScoreSession.onLatched`),
+  and a microphone — echo cancellation is deliberately off — cannot start the run on the
+  app's own sound. The metronome stops at `armed` and restarts at `latched` on the next beat
+  of the run's grid, with the accent where that beat falls (`BeatScheduler.firstBeatInBar`).
+- **Practice time** does not include holding. The music clock and the run's duration are
+  separate fields: `clockOriginMs` is moved by laps, resumes and the latch; `durationMs`
+  counts from the run's start less pauses and holding. They used to be one field, so every
+  lap restarted the duration — thirty seconds of looping recorded −40 ms.
+- **Loops latch once.** Later laps keep time; re-arming would stop a loop being a loop.
+- **Wait and Free** have no clock to set, but their practice time now starts at the first
+  note rather than at Start.
+
+**Resuming** (`resume({ recountMs, latch, toStep })`, called by `ScoreSession.resume`): a
+clock-driven run counts one bar back in, on its own beat grid, closing as missed any window
+left open at the pause. Who leads is decided **from where the music stopped**: if the learner's
+next note comes before anything the app plays, the count leads to that note and the run holds
+for it; if the app sounds first, the count leads to the app's next note and nothing holds.
+(Deciding it from the learner's next note answered "the learner" every time, so an app-led
+resume skipped part of the app's part and then froze — found by review.) A pause taken while
+holding resumes holding, with no count and no click. A pause takes back the app's notes that
+were queued on the audio clock and not yet heard, so they play after the resume rather than
+into the pause; and a second pause during a resume's own count measures "where the music
+stopped" from where that count was heading, not from its rewound clock. It used to carry on cold, mid-bar, with the
+metronome restarted on a fresh grid of its own — so after every pause the clicks and the
+judging were out of step.
+
+**Deliberately unchanged:** Paper (it measures each onset against the nearest *audible*
+click, so there is no timeline for a late entry to shift), the chord chart (it judges the
+held chord against the bar at each moment, and the bar is marked by audible clicks and, with
+comping on, the app's own playing), Simon (its answer is judged on pitch order, not time),
+the lab, the metronome and free play.
+
+**The rhythm drill** latches too (`RhythmDrill.latchOnFirstTap`): the first tap inside the
+first onset's window, or any later one, sets the pattern's start; taps before the count-in
+has found the downbeat are strays. The click stops after the count-in's downbeat and comes
+back in phase after the first tap.
 
 ## 4. Listen mode
 

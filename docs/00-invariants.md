@@ -60,6 +60,53 @@ a considered decision gets read as a bug; it happened here on 2026-09-12.
 
 ---
 
+## 1a. Claims
+
+**Never state an absence. State the search and its result.** "There is no tempo ladder"
+is a claim about the repository; "grep for `tempoLadder|autoTempo` under `app/src` returned
+nothing" is a claim about a command, and it is the true one. The difference is not
+pedantry — the second shows the reader the hole. The ladder exists and is spelled
+`LADDER_*`; it was reported missing to the owner twice off that grep. On the same pattern,
+a filter over genre-tagged songs returned zero and became "the library has no early-stage
+genre repertoire", which sent a session writing generators; and the same filter said core
+`4.5` had nothing in compound time when it already had four things in 6/8, two of them
+songs. **Three wrong absences in one working period, each one expensive.**
+
+A search that returns nothing means the search returned nothing. Before it means anything
+more, run a second one shaped differently — a different spelling, a different field, no
+filter — or say plainly that you only ran the one.
+
+**Never infer a property of a piece of music from its name, its id or its level.** Those
+are asserted; `notation` on the catalog row is measured. An eleven-bar right-hand melody
+with no chord symbols went onto the rung teaching left-hand chords because it was called
+*12 Bar Blues*, a piece in F major onto the rung teaching the minor, and a 4/4 carol onto
+the rung teaching the waltz bass — four wrong placements out of eight, all from titles.
+`requires` on a rung and `validate.py`'s `notation_requirements` now refuse this; do not
+work around them.
+
+**A claim about several things is several claims.** When you write "X and Y are Z",
+"all N are Z", or a bare plural, you have almost certainly checked one of them. Name
+which, check the rest, or say in the same sentence that the rest are unchecked. Joining
+two things in one clause is how an unchecked thing borrows a verified thing's
+credibility, and it happened three times in one day: `genres` was measured unreliable —
+the Library's filters held no songs at all — and the sentence "genres and tags are
+uploader-written" carried `tags` across without a single check (tags are on 8% of rows
+with 16,619 distinct values, so the conclusion was right and the method was not); seven
+generated families were proposed for re-levelling after two were examined, and three of
+the seven turned out not to need it; and "the Phase 1 families are levelled 4.1–4.5" was
+two families, asserted of all of them.
+
+The tell is grammatical, which is what makes it checkable by someone who knows neither
+the music nor the code: if the sentence contains *and*, *both*, *all*, *every* or a
+plural, the evidence must be enumerated per item, or the claim must admit it is partial.
+
+**Never describe what your own code produced without looking at what it produced.** Not
+the exit code, not the count, the artefact. A build reported "1975 read from the score"
+while every field it wrote was empty, because `ElementTree.iter()` does not support the
+`{*}` wildcard and only `bars` had been computed with `findall`. A generated cell named
+"minor-hook" rendered in C major. A docstring promised four bars over music that was two.
+All four passed every mechanical guard.
+
 ## 2. Tests
 
 **Never assert a number measured on this machine.** Not a pixel, not a duration, not

@@ -354,6 +354,41 @@ count-off, optional backing loop, and swing toggle — used for jamming practice
 not the point. Any item with `<harmony>` data can open in this view; the input chip still
 works (mic/MIDI can highlight the chord you actually play vs the chart, amber if different).
 
+### 3d. Ways to play this — a rung's tools, as controls (added 2026-09-18)
+
+Sixty lessons gained a **Tools for this rung** paragraph in `b4fb15b` and a paragraph
+cannot be tapped. `chords-pop.3` tells the learner to *"Pick D, take I–IV–V–I"* in the
+accompaniment lab — which is now a single preset chip the lesson had no way to open — and
+duet, blind, Simon and free play were in the same position: built, described, unreachable
+from the rung whose material they suit.
+
+A lesson may now carry a **`tools`** array, drawn as a block of controls headed *Ways to
+play this*.
+
+- **Above the options, not below.** A mode is a way of playing what is on this rung, so it
+  is read *before* choosing which option to play. It sits under the status line and the
+  rung's own actions, and above *Exercise options*.
+- **Hidden entirely when the rung names none**, which is most of them. An empty heading
+  would be dead space above the thing the page is for (`00-invariants` §1, §0 R4).
+- **The prose stays.** A button opens a mode; it cannot say *why* that mode suits this
+  rung, and that sentence is the teaching.
+- **Only modes with an address.** `lab` (with a preset), `duet`, `blind`, `simon` and
+  `play`. **Rhythm-only and the tempo ladder are deliberately absent**: rhythm-only is a
+  remembered setting the Library writes before navigating, and the ladder is run state
+  scoped to a loop (`05` §6). Neither can be reached by a route, so a button for either
+  would be a control that opens the wrong thing. Both keep their paragraph.
+- **A Score-screen mode needs a piece.** A rung may name one with `item`; otherwise the
+  button takes the rung's **first playable song**, because "play this rung's material as a
+  duet" is the instruction and any of its songs satisfies it. Where the rung has no playable
+  song the button is not drawn at all.
+- **`validate.py` refuses two ways of pointing at nothing**: a lab preset the lab does not
+  have, and an `item` that is not among this rung's own song options — a lesson sending the
+  learner to a piece it does not offer is the `blues.3` fault wearing a control.
+
+The e2e asserts the *destination*, not the button: the lab tool must arrive with
+`data-preset` set and the locked pickers disabled, and the duet tool must open a piece the
+rung actually lists. Proved red by making the duet open a fixed off-rung piece.
+
 ### 3c. Accompaniment lab — `#/lab` (added 2026-09-15)
 
 §3b plays the chords a *piece* already has. This is the other half: pick the chords yourself,
@@ -409,6 +444,46 @@ recorded**: playing along is the whole point and the app is only keeping time an
 you are. Changing a setting under a running loop *stops* it and says so, rather than leaving a
 chart on the screen whose bars are not the bars it is playing. Stop leaves the chart standing —
 it is a chord chart, and reading one is what somebody stopped the loop to do.
+
+**Presets — a way in, before the pickers (added 2026-09-18).** The owner: *"as opposed to
+just messing around in the lab, you're like, all right, we're doing jazz here — this is
+some jazz backing, without all the options to start from scratch."* Six pickers and no
+starting point asks a beginner to know the answer before they arrive, which is the fault
+*Show me* and *Hear it* fixed on §5c: a lab you can only configure cannot start you.
+
+- **A row of chips, `Start from`, above everything else** — *Free · Primary chords · Pop ·
+  Ballad · Blues · Jazz · Rock*, one label each because the row has to fit 342 px. The full
+  name and a line saying what it is for appear once one is on, above the settings summary
+  (R1: a learner who arrived from a rung came for "jazz"; the settings line is the detail).
+- **Six presets**, all on progressions the lab already had: *Primary chords* (I–IV–V–I,
+  block chords, opening in D), *Pop* (I–V–vi–IV), *Ballad* (I–vi–IV–V, broken), *Blues*
+  (twelve bars, walking), *Jazz* (ii–V–I, walking), *Rock* (i–♭VII–♭VI–♭VII, held roots,
+  which is what this screen already makes of I–V–vi–IV in a minor key).
+  **Primary chords was added on 2026-09-18 for a reason worth recording**: `chords-pop.3`
+  teaches I–IV–V–I and its tool had been pointed at *Pop*, which plays I–V–vi–IV. A button
+  that opens the wrong progression is worse than a paragraph telling the learner to set the
+  pickers themselves, so the preset was added rather than the lesson reworded. Its key is
+  deliberately **unlocked** — that rung's exercise is to play the progression in D and then
+  in A, and a preset that locked the key would prevent the lesson it exists for.
+- **A preset is a route, `#/lab?preset=<id>`**, the idiom the Score screen already uses for
+  `mode`, `loop`, `hands` and `tour`. A chip navigates rather than mutating in place, so
+  the preset is in the address, the back gesture leaves it, and a lesson that links to one
+  arrives at exactly the screen the chip produces. An id the lab does not know is **dropped
+  rather than drawn as an empty banner**, exactly as a `loop` for bars a piece does not have.
+- **`locks` is the design, not the settings.** A preset that fixed everything would be an
+  exercise wearing the lab's chrome; one that fixed nothing would be a bookmark. Each locks
+  only what makes it that style — the progression and the left-hand pattern are what make a
+  blues a blues — and leaves key, tempo and bar count alone, because transposing it and
+  slowing it down is practising. The blues preset also locks the bar count, because twelve
+  does not divide into eight and a "twelve-bar blues" of eight bars is not one.
+- **A locked control is `disabled`, visible and greyed — not hidden, and not dimmed only.**
+  Hidden, the learner cannot see what the preset chose, which is half of what a preset is
+  for. Dimmed only, it is a control that looks pressable and is not, which `00` §1 calls a
+  bug rather than a cosmetic. The e2e test presses a locked chip and asserts the setting did
+  not move, so a lock that were only an opacity would fail it.
+- **The rock preset is `I–V–vi–IV` in a minor key**, which this screen already turns into
+  `i–♭VII–♭VI–♭VII` — the same progression the generator writes as `exercise.modal-vamp.*`.
+  One sound, stated once.
 
 **§0:** a hand screen (R2). Its one filled box (R3) is **Read it**; *Jam it* and *Stop* are
 outlined. The line saying what the settings currently are, and the two buttons that act on it,
@@ -755,6 +830,24 @@ would re-engrave the sheet for nothing.
 390 px row and wrap it onto a second line, taking 40 px off the music; `▶` from stopped
 already starts from the beginning, so the glyph was the mid-run case only. The test for the
 bar is *do you need it while your hands are on the keys?*
+
+**The keys start a run too** (T8, 2026-09-18) — the same test applied to `▶` itself. With no
+run going and the summary closed, a note-on from the piano or the screen keys starts one: with
+no count-in to play first (Wait, Free, or Keep tempo counted in from nothing) and the learner
+playing first, that key is the run's first note and is played into it — when the app leads,
+it only starts the run; with a count-in it starts the count and is not a note
+of the piece. `Space` does the same for any input, except while a control or a disclosure
+(`summary`) has focus — Space already presses those. **Not after a run has finished by itself** —
+a one-bar preview included — until `▶` or `Space` starts the next — people carry on playing after the last bar, and Free,
+Listen and `Hear it` end with no summary to stand in the way. **Not under an open sheet** (`⋯`,
+tempo). **Not** from the microphone, which hears the room; `▶` stays for all of these. With a
+MIDI piano connected, `#score-waiting` says so on the ready screen, in the words the count-in
+setting calls for (*Play the first note to start* / *Press any key to count in*); it says
+nothing for the other inputs, deliberately — that line's weight was a question put to the
+owner. A Keep tempo run the learner leads **holds on its first note** after the count-in
+(`05` §3b), and the same line says so; the count-in's wash is cleared as it starts to hold, so
+it never sits over the notes the first one is read from. *Pedal-to-start is not built*: it
+wants a setting, off by default, because a pedal put down in preparation would start the run.
 
 With `R` or `L` chosen and `playbackHands: non-focused`, the status line says `Playing the
 left hand for you` **once** when the run starts. The sound is otherwise a note arriving from
