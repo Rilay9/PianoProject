@@ -6,7 +6,7 @@ videos:
   - label: "Create Your Own Piano Arrangements - PERFECT for any level!"
     url: "https://www.youtube.com/watch?v=oq3v8SpWCi0"
     teacher: "Piano and Voice with Brenda"
-readingTime: 2
+readingTime: 3
 ---
 
 A chart gives you the harmony and nothing else. Everything that makes it sound
@@ -28,11 +28,12 @@ the one you can copy. The eight-bar ear drill is on this rung for that reason.
 back to back and keep the half of each that worked.
 
 **Repertoire for this rung.** Six options, each already somebody's arrangement
-— which is the point: play it as written once, then strip it back to its chord
-symbols and build your own. *Piano Man* and *Falling* are ballads where the
+— which is the point: play it as written once, then work its chords out from
+the notes (none of the six prints chord symbols) and build your own. *Piano Man* and *Falling* are ballads where the
 left hand decides everything; *Mr. Blue Sky* and *Le Festin* are full textures
-to thin out; *Rolling Girl* and *Apex of the World* are the fast ones, where
-an arrangement has to leave something out to stay playable. What you hand in
+to thin out, and the fastest by their printed tempos, where an arrangement has
+to leave something out to stay playable; *Rolling Girl* and *Apex of the World*
+complete the six. What you hand in
 is your own version, written down as a chart with your notes on it. All six
 are personal-library songs: the public build shows the rows and where to get
 the scores, and the rung is complete on its exercises there.
@@ -41,8 +42,10 @@ the scores, and the rung is complete on its exercises there.
 something comes out.
 
 **Tools for this rung.** Four decisions are quicker to make against
-something that will not wait. Put the chart in the lab, start it, and try
-three different left hands over the same sixteen bars; nothing is judged and
+something that will not wait. This rung's lab button opens a ballad whose
+chords and left hand are fixed, so type the chart into the lab opened from the
+Library instead, start it, and try three different left hands over the same
+sixteen bars; nothing is judged and
 nothing is kept, so the only thing left to compare is which one you would
 rather hear.
 

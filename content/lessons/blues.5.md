@@ -14,7 +14,9 @@ The form is now automatic. This rung is about what you put inside it.
 **The turnaround** is the last two bars, and its job is to make the form circle
 round rather than stop. The classic move is a chromatic line descending from the
 tonic to the fifth in one hand while the other holds the chord, ending on the V7
-so the ear is pulled back to bar one. Learn two of them and use them
+so the ear is pulled back to bar one. The turnaround exercise on this rung is
+a different one, I–vi–ii–V in block chords (C–Am–Dm–G), and the Library has it
+in other keys along with a iii–VI–ii–V. Learn two of them and use them
 alternately; a repeated turnaround is what makes twelve bars sound like a chorus
 rather than a loop.
 
@@ -37,9 +39,9 @@ nothing, and count through the nothing.
 bass shape transposes exactly; the fingering does not, because of the black
 keys.
 
-**Walking bass.** Instead of the boogie pattern, one note per beat moving mostly
-by step through the chord tones, arriving on the root of the next chord on beat
-one. This is the bridge into the jazz track.
+**Walking bass.** Instead of the boogie pattern, one note per beat — in the
+exercise here, the chord's root, third and fifth, then the note a half step
+below the next root — arriving on the root of the next chord on beat one. This is the bridge into the jazz track.
 
 **Common mistake.** Filling every bar. The blues is mostly space.
 

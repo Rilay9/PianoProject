@@ -43,8 +43,8 @@ the Saints* in F gets the melody into your ear first. Then the hymns themselves:
 *Abide with Me*, *Rock of Ages*, *What a Friend We Have in Jesus*, *Come Thou
 Fount*, *Jesus Loves Me*, *Holy, Holy, Holy*, *Just a Closer Walk with Thee* and
 *As the Deer*. The easier settings — *Be Thou My Vision*, *Swing Low*, *Joyful,
-Joyful* — are on the Stage 2 hymns rung, and under *Hymns & gospel* in the
-Library. *Greensleeves* with
+Joyful* — are on the Stage 2 hymns rung, and the Library's track filter for hymns
+and gospel lists them too. *Greensleeves* with
 chords gives you the same job in a minor key. Beyond those, a hymnal is the
 cheapest large book of four-part harmony there is.
 
@@ -52,7 +52,8 @@ cheapest large book of four-part harmony there is.
 Balance: soprano loudest, bass next, inner voices quiet.
 
 **Tools for this rung.** A hymn is four voices and your hands take two each.
-Switch *Duet* on with the left hand chosen and soprano and alto arrive over
+Open *Amazing Grace* in four parts from its own row — the *Play it as a duet*
+button opens *When the Saints*, which has no inner voices. Switch *Duet* on with the left hand chosen and soprano and alto arrive over
 the tenor and bass you are playing; swap, and the inner voices turn out to
 be the ones you had been guessing at.
 

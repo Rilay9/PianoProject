@@ -17,8 +17,9 @@ triad is enough, and a single bass note is enough to start with.
 
 **Three chords will get you through most of a hymnbook.** You met C, F and G on
 the core path. That is I, IV and V, and it is the whole harmonic vocabulary of a
-surprising number of these tunes. The drills here are the same three shapes
-against the clock, because the thing that makes an accompaniment work is not
+surprising number of these tunes. The drills here are the same three shapes,
+and then a flash of other chord symbols, minors and sevenths among them, to
+find as quickly as you can (no clock runs), because the thing that makes an accompaniment work is not
 knowing the chord but finding it in time.
 
 **Change the chord where the tune changes, not where the bar changes.** Hymn
@@ -29,8 +30,9 @@ downbeat it will fight the tune about once a line.
 **Repertoire.** Four options, from easiest up. *Oh When the Saints* is
 hands-alternating and is barely harmony at all, which makes it the one to start
 with. *Be Thou My Vision* is in 3/4 and moves slowly enough to think. *Joyful,
-Joyful* is Beethoven's tune and will be familiar, which helps — you will hear
-when a chord is wrong. *Swing Low, Sweet Chariot* is the only one here with its
+Joyful* is Beethoven's tune, but this score writes it on D with every F
+natural, a grace note before nearly every note and a tempo of 40, so read what
+is written rather than playing it from memory. *Swing Low, Sweet Chariot* is the only one here with its
 chord symbols printed, so it is where you stop guessing and start reading them.
 
 **Tools for this rung.** *Free play* names whatever chord you are holding. Play a

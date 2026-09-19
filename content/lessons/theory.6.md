@@ -44,7 +44,7 @@ dictation runs on — a bass note you heard four chords ago is no use unless
 you kept it. It plays by ear and shows you nothing; a wrong note brings the
 chain back over the lit keys and asks you for the same chain again, and by this
 rung you should be taking even that away on the card. And on the modes drill, *Show me* engraves the answer in the
-key signature that fits it, so B flat aeolian prints five flats and no
+key signature that fits it, so F aeolian prints four flats and no
 accidentals.
 
 **How you'll know you've got it.** You can hear a four-chord progression once and

@@ -38,9 +38,10 @@ Right hand alone, counting sixteenths out loud. Hands together at half tempo,
 four bars at a time. This is a style where slow practice is not optional.
 
 **Repertoire for this rung.** Six options, and they split in two. *The
-Entertainer* is the only actual rag on the rung — the syncopation and the oom-
-pah at once, which is the thing being built towards — with *12th Street Rag*
-beside it for a right hand that is one figure repeated. The other four are the
+Entertainer* is the only rag on the rung written out for both hands — the
+syncopation and the oom-pah at once, which is the thing being built towards —
+with *12th Street Rag*, a rag given here as a one-staff lead sheet, beside it
+for a right hand that is one figure repeated. The other four are the
 oom-pah on its own, which is the better place to start: *Greensleeves* with a
 waltz bass, and three of Joplin's own marches and waltzes — the *Augustan Club
 Waltz* in 3/4, the *Combination March* in 4/4 and *The Rose-bud March* in 6/8.
@@ -51,10 +52,12 @@ Entertainer*.
 **Common mistake.** Rushing into hands together. The left hand must be
 automatic first — you cannot think about a leap and a syncopation at once.
 
-**Tools for this rung.** Ragtime is played dead straight, and *Rhythm only*
-is where you can prove your right hand is: it judges the moment of each
-strike and asks nothing about the key, so anything that comes out swung is
-marked late before your ear has caught it.
+**Tools for this rung.** *Play it as a duet* opens *Greensleeves* with its
+waltz bass, you on the tune and the app on the left hand; switch hands and the
+app holds the tune while you drill the leaps. Ragtime is played dead straight,
+but the app cannot prove your right hand is: *Rhythm only* judges each strike
+against the written time within a fixed window and has no idea of swing, so a
+lightly swung right hand can still pass. That check is your ear's.
 
 **How you'll know you've got it.** One strain hands together at a moderate,
 unhurried tempo, with the left hand dead even.

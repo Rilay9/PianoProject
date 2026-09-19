@@ -6,13 +6,13 @@ videos:
   - label: "Rubato in Romantic Piano Music"
     url: "https://www.youtube.com/watch?v=fUVQL4vBVks"
     teacher: "University of Sydney Library"
-readingTime: 3
+readingTime: 4
 ---
 
 Up to now, playing the right notes at the right time was most of the job. From
 here it stops being enough. The pieces on this rung are short and none of them
-is fast; what makes them hard is that **both hands are playing at once and only
-one of them is the tune.**
+is fast; what makes them hard is that **both hands are playing at once and,
+in all but the Prelude in C, only one of them is the tune.**
 
 **Voicing.** In a Romantic miniature the right hand usually holds a melody in
 the top note and an accompaniment underneath it, in the same hand. Play them at

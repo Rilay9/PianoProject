@@ -16,8 +16,8 @@ is about the right.
 
 **Denser syncopation.** *Pine Apple Rag* and *Gladiolus Rag* put the ragtime
 figure on nearly every beat instead of once a bar, and the secondary rag —
-three-note groups across a four-beat bar — turns up in whole strains rather than
-in passing. The practice that works is unglamorous: **name the figure, play it
+groups three sixteenths long running across the bar line — fills a whole strain
+of *Pine Apple* rather than turning up in passing. The practice that works is unglamorous: **name the figure, play it
 alone until it is automatic, then find every place it occurs.** Most late rags
 are four or five figures in different clothes.
 
@@ -46,7 +46,7 @@ lighter early rags are under Ragtime in the Library.
 other great rag of the Sedalia school, and a good test of whether the habits
 above transfer to a hand that is not Joplin's. Two more belong on this rung
 and are still missing: Joplin's *Euphonic Sounds*, which is not in the
-public-domain edition this library was built from, and Joseph Lamb's *Ragtime
+edition these Joplin rags come from, and Joseph Lamb's *Ragtime
 Nightingale*. The six here are enough for a year.
 
 **Common mistake.** Treating these as harder versions of *The Entertainer*. They
@@ -54,7 +54,8 @@ are not — they are later music, and the difficulty is in hearing the harmony,
 not in moving the hands faster.
 
 **Tools for this rung.** Naming a figure is easier once it is a rhythm and
-nothing else. Play a strain in *Rhythm only* and the dense syncopation comes
+nothing else. Play a strain with the score screen's *Rhythm only* setting on,
+in Keep tempo, and the dense syncopation comes
 back as four or five placings you can count, after which finding every bar
 they occur in is reading rather than hearing.
 

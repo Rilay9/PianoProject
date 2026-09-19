@@ -33,7 +33,8 @@ your attention away from listening.
 reason below. *Careless Love* is the shortest — eight bars with chords — and has
 no blue notes as written, which makes it the place to add your own. *Wabash Blues* and
 *Tishomingo Blues* are full published songs with a verse before the chorus, so
-read the chorus first. *St. Louis Blues* is the famous one and is the longest.
+read the chorus first. *St. Louis Blues* is the famous one; *Wabash Blues* is
+the longest.
 
 **Why the minor one first.** *St. James Infirmary* is in D minor. With the
 third already flat in the chord, the flat third in the tune stops being a
@@ -41,18 +42,19 @@ surprise and starts being the tune, which is the clearest way in for an ear
 that has not heard much of this.
 
 **The form is the next rung**, and you will arrive knowing how it should sound.
-You are already playing pieces built on it; nothing here asks you to count yet.
+*St. Louis Blues* opens with twelve bars of it; nothing here asks you to count
+yet.
 
 **Common mistake.** Playing the flat third as though it were a wrong note —
 quickly, quietly, to get past it. It is the note the tune is about. Give it the
 time and the weight the melody gives it.
 
-**Tools for this rung.** Three. *Simon* plays the C blues scale as a memory
-game — one note, then two, then three, for you to play back — by sound, with the
-keys lit only after a miss, so F sharp is in your ear before you read it. The
-shuffle is timing rather than notes, so *Rhythm only* judges it with no melody
-in the way: tap the long-short pair on any key. And the lab button opens *Blues
-— twelve bars*, which holds the changes underneath you: pick blue notes over
+**Tools for this rung.** Two, and a score-screen row. *Simon* plays the C
+blues scale as a memory game — one note, then two, then three, for you to play
+back — by sound, with the keys lit only after a miss, so F sharp is in your ear
+before you read it. The shuffle is timing rather than notes, so *Rhythm only*,
+in the ⋯ menu, judges it with no melody in the way: tap the long-short pair on
+any key. And the lab button opens *Blues — twelve bars*, which holds the changes underneath you: pick blue notes over
 the top until you can hear which ones bite.
 
 **How you'll know you've got it.** One of these tunes, melody in the right hand

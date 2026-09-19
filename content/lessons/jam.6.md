@@ -31,11 +31,14 @@ whole.
 line in B flat is a different fingering problem and it is not the one you will
 have on the night.
 
-**Tools for this rung.** *Free play* is worth five minutes here: play a walking
-line and watch it name the chord you are implying. It is a quick way to find out
+**Tools for this rung.** *Free play* is worth five minutes here: it names a
+chord only from three or more notes held down together, so a line played one
+note at a time names nothing — hold a bar's notes down at once and watch it name
+the chord you are implying. It is a quick way to find out
 whether your line is outlining the harmony or just moving. The lab's *Blues — twelve
-bars* preset walks a bass under the form itself: set it to E, A or D, the keys
-here, listen to one chorus of its line, then play your own.
+bars* preset writes a walking bass under the form itself: set it to E, A or D, the keys
+here, press *Read it* and listen to one chorus of its line in the score, then
+play your own. *Jam it* plays a plainer bass, root and fifth.
 
 **Common mistake.** Walking too high. The line belongs below the guitar, and a
 bass part that wanders up into the middle of the keyboard turns into a second

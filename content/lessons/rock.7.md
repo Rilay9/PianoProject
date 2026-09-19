@@ -6,7 +6,7 @@ readingTime: 3
 ---
 
 Every texture on this track so far has been something to hold steady. This rung
-is about the opposite: making a passage grow. It is the last of the five things
+is about the opposite: making a passage grow. It is the last of the four things
 the overview named, and it is the one people get wrong most reliably, because
 the obvious way to build is to play louder and the obvious way is the weakest
 one available.
@@ -31,14 +31,18 @@ audible in retrospect.
 
 **The exercises are small and the pieces are not** — which is why the rung's
 range runs from level 5 to beyond 8. The shaping exercises are
-four bars of one line getting louder and then quieter, which is where you find
+four bars of one line and a last note, each going one way only, louder or
+quieter, which is where you find
 out whether your crescendo is even or whether it happens all at once in the last
 bar. The octave scale is the density half: the same notes, twice the weight,
 without the wrist locking up.
 
-**Repertoire.** Three options, all bundled, all of them builds of different
-kinds. Grieg's *In the Hall of the Mountain King* is the most literal — one
-sixteen-bar idea repeated while the register widens and the tempo grows, and it
+**Repertoire.** Three options, all of them builds of different kinds; the
+Rachmaninoff is a personal-library score, so the public build shows its row and
+where to get it. Grieg's *In the Hall of the Mountain King* is the most literal — one
+sixteen-bar idea repeated while the register widens under a crescendo marked
+again and again (this copy asks for no speeding up, and the app keeps one
+tempo), and it
 teaches restraint better than anything else here because the first half must
 stay small. The *Rachmaninoff* concerto opening is a build made almost entirely
 of density: the chords thicken bar by bar and the dynamic follows rather than

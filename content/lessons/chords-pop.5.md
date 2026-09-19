@@ -25,9 +25,10 @@ step below the octave) floats, a *minor* seventh (a whole step below) leans.
 **sus2** replaces it with the second (C–D–G). With no third, the chord is neither
 major nor minor and sounds open and unresolved. Play sus4 then the plain triad
 and you have the most-used gesture in pop piano. **add9** keeps the third and adds
-the ninth: C–E–G–D with the added note on top, which is what the drill plays, or
-C–D–E–G with it tucked inside — closer under the hand, and the one you will hear
-in most modern ballad writing. Learn the drill's, then find the other; they are
+the ninth: C–E–G–D with the added note on top, which is how the add9 exercises write it
+(they are on the rock track at this stage, and in the Library), or C–D–E–G with
+it tucked inside — closer under the hand, and the one you will hear in most
+modern ballad writing. Learn the written one, then find the other; they are
 the same four notes and they do not sound alike.
 
 **Textures.** With sevenths available, the left hand can stop playing blocks:
@@ -38,8 +39,8 @@ rung where you become useful to a singer.
 **Playing while singing.** Simplify the piano until you can do both. A held
 chord and a clear bass note beats an intricate part you cannot sing over.
 
-**Repertoire for this rung.** Six options. *Greensleeves* in 6/8 with its
-jazzier chords, and the full setting beside it; *Row Row Row Your Boat* as an
+**Repertoire for this rung.** Six options. *Greensleeves* in 6/8, on the
+same Am, G and E7 as the 3/4 chord setting, and the full setting beside it; *Row Row Row Your Boat* as an
 arpeggio study; *Lavender's Blue* for a broken-chord accompaniment under a
 slow tune; and two ballads that live on seventh chords, *Your Song* and
 *Before You Go*. And imported lead sheets of your own.
@@ -48,10 +49,12 @@ slow tune; and two ballads that live on seventh chords, *Your Song* and
 sophisticated. A plain triad in the right place is stronger; save the colour for
 where the harmony is standing still.
 
-**Tools for this rung.** Type `ii7 V7 I` into the lab, choose a broken left
-hand, and *Read it* hands you the seventh voicings and the arpeggiated
-accompaniment written out in the key you asked for. Read it once, then close
-it and play the same thing off the symbols.
+**Tools for this rung.** The lab opens on its *Ballad — broken chords*
+preset: I–vi–IV–V with a broken left hand, both fixed, in whatever key you
+pick, and *Read it* writes that accompaniment out. For `ii7 V7 I`, open the
+accompaniment lab from the Library instead, where the numerals and the left
+hand are yours to choose. Read it once, then close it and play the same thing
+off the symbols.
 
 **How you'll know you've got it.** A lead sheet played with seventh voicings and
 a broken-chord accompaniment, keeping time while singing or humming the melody.

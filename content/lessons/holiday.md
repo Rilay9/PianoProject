@@ -35,7 +35,8 @@ same three chords in the order carols end with.
 - *Good King Wenceslas* is in G, and its symbols go past three chords: E minor,
   D7 and B7 as well. Play the tune, and in the left hand only the chords you
   know.
-- *We Three Kings* is the minor one, in E minor and in 6/8 like *Silent Night*.
+- *We Three Kings* is the minor one, in 6/8 like *Silent Night*: its verse is
+  in E minor, and its refrain turns to G major and ends there.
 
 **Where the rest are.** The carols with more written into them, and the fuller
 piano settings, are under *Holiday* in the Library. Playing for people who are

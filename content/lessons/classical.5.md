@@ -20,8 +20,8 @@ practise: you learn the second theme once and get it twice, and you know that
 the development is where the memory slips will be.
 
 **The sonatinas.** Two are on this rung, both short enough to finish:
-Clementi's Op. 36 No. 1, all three movements, and Beethoven's Sonatina in G,
-Anh. 5. Attwood's, on the Stage 4 rung of this track, is the gentler one to go
+Clementi's Op. 36 No. 1 — the first movement, plus one later movement in 3/8 —
+and Beethoven's Sonatina in G, Anh. 5. Attwood's, on the Stage 4 rung of this track, is the gentler one to go
 back to; Kuhlau's and Diabelli's are in the Library when you want a third.
 Before you play a note of one, mark the three sections on the page.
 
@@ -30,14 +30,15 @@ continuously under a melody for pages. The problem is balance. The left hand
 should be a background wash — perhaps a third of the volume of the right — and
 the way to get there is to practise the melody with the left hand playing its
 pattern *silently on the key surface*, then let it sound at that same weight.
-The Alberti exercise on this rung is that figure with nothing on top, which is
-where to set the weight before there is a tune competing for your attention.
+The Alberti exercise on this rung puts that figure under a plain scale, which
+is where to set the weight before a tune competes for it.
 
 **Trills and mordents.** A trill in Classical style starts on the **upper**
 note, not the main one, and finishes on the main note — unless the melody has
 just come from above. Count it: decide how many notes fit and play that many
 evenly. An unmeasured trill at this level always comes out as a panic. The
-written-out drill is on the technique track a stage later; here the ornaments
+written-out drills are on the technique track, mordents at this stage and
+trills a stage later; here the ornaments
 arrive inside the pieces, which is the harder way round — and the reason to
 memorise the rule now.
 
@@ -57,9 +58,9 @@ badly, because the development is harder and less rewarding. Start a practice
 session in the development at least twice a week.
 
 **Tools for this rung.** Loop the development — the section that costs
-people the piece — and turn the *Ladder* on. It will hold a tempo until a
-pass has nothing wrong in it, so the twice-a-week visit above supervises
-itself.
+people the piece — and turn the *Ladder* on. It climbs a notch for each clean
+pass and drops one for a pass with a mistake, so the twice-a-week visit above
+supervises itself.
 
 **How you'll know you've got it.** On the pieces here: a melody clearly above
 its accompaniment for a whole piece, and a pedal change you cannot hear. On a

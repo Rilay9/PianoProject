@@ -41,10 +41,11 @@ a long trill, attempt a clean short one.
 **Repertoire for this rung.** Six options at Grade 1: Attwood's *Sonatina in
 G*, the first sonatina most learners meet; C. P. E. Bach's *March in D* from
 the Anna Magdalena notebook, for staccato in both hands; two of the child
-Mozart's minuets, K. 1e in G and K. 1f in C, four-bar phrases with the
-articulation written in; Schumann's *Chorale* from the *Album for the Young*,
-all legato, for the opposite touch; and a Gurlitt study with the two side by
-side. More Grade 1 pieces under Classical in the Library.
+Mozart's minuets, K. 1e in G (its file carries K. 1f as the Trio) and K. 1f
+in C on its own, four-bar phrases with the articulation written in; Schumann's
+*Chorale* from the *Album for the Young*, all legato, for the opposite touch;
+and a Gurlitt study that slurs the right hand and leaves the left unmarked, so
+the contrast is yours to supply. More Grade 1 pieces under Classical in the Library.
 
 **Common mistake.** Playing staccato loudly. Short and soft is much harder than
 short and loud, and much more useful.

@@ -19,13 +19,15 @@ have to think about in a scale is a shape you cannot think about in a piece.
 **Scales.** The work is the thumb. Everything else is fingers stepping; the
 thumb passing under is the only moment where the hand changes shape, and it is
 the only moment worth watching. Play slowly enough that it never jerks. The
-fingering printed on each exercise is the standard one — it is not a suggestion,
+fingering printed on the scale, arpeggio, chromatic and inversion exercises is
+the standard one — it is not a suggestion,
 and inventing your own here will cost you later in a key you have not met yet.
 
 **Contrary motion** is easier than it sounds and worth doing early: both thumbs
 move at the same time, so the hands mirror each other and you can feel the
 passage rather than track two different ones. The two-octave C major here is
-the one to start on.
+the one to start on; it is written with the left hand starting on the C above
+the right hand's, so in the first bar the hands pass through each other.
 
 **Arpeggios and inversions** are the same shape reached three ways. The C major
 arpeggio hands together is the arpeggio; play the inversions until you stop
@@ -35,16 +37,19 @@ chord symbol later instead of spelling it out.
 **Staccato and legato.** The articulation exercises on this rung come in pairs
 — the same four bars written twice, once legato and once staccato, in C and
 again in D. Playing either alone is easy; playing them one after the other and
-hearing the difference is the point. The app scores these on
-how long you actually hold each key rather than on which notes you played, so a
-staccato phrase full of right notes held too long will say so.
+hearing the difference is the point. The app scores these like
+everything else, on which notes you played and when, and does not measure how
+long you hold each key — so a staccato phrase full of right notes held too long
+will pass, and only your ear will say so.
 
 Two exercises pass this rung. Take the scales at a tempo where the thumb is
 silent.
 
 **An étude to put it in.** Three of Lemoine's *Études enfantines*, Op. 37 —
 No. 1, No. 2 and No. 35 — are on this rung as pieces: one page each, one
-figure each, the same finger work as the exercises above with a tune over it.
+figure each, the same finger work as the exercises above: No. 1 runs a scale in the right
+hand over left-hand chords, No. 2 gives the scale to the left hand under
+right-hand chords, and No. 35 is repeated and broken triads in 6/8.
 Play one after the exercises; it is where the drill turns into music.
 
 **Tools for this rung.** The Lemoine study is one figure for a page, which

@@ -6,7 +6,8 @@ readingTime: 3
 ---
 
 The rung before this one taught the reduction — melody, bass and one texture —
-and named the textures. This is the first of them under your hands, and it is the one almost
+and named three textures for that layer. This is the first rock texture under
+your hands, and it is the one almost
 every heavy piano part is built from: a shape with no third in it, and a figure
 that does not change.
 
@@ -18,8 +19,8 @@ arm weight landing on a shape the hand is already holding; play it with the
 fingers and you get a thin clatter and no idea why.
 
 **The figure that repeats is called an ostinato, and repeating is the whole
-idea.** The exercises put a two-note figure in the right hand over a bass that
-never moves. Nothing in it gets louder, later or faster. That is harder than it
+idea.** The ostinato exercises put a figure in the right hand — two notes in E minor,
+a broken triad in D minor — over a bass that never moves. Nothing in it gets louder, later or faster. That is harder than it
 sounds and it is the point: the interest in this music comes from what happens
 *around* a part that stays the same, so the part has to actually stay the same.
 
@@ -32,7 +33,8 @@ that carries across, not the white keys.
 **Tools for this rung.** The accompaniment lab's *Rock — the minor vamp* preset
 plays the loop in A minor, where you first met it — A minor, G and F with held
 roots underneath — so you can play a right hand over it without reading anything. And *Play it as a duet* takes one hand
-away: let the app hold the tune while you drill the left hand alone, then swap.
+away: it opens *Greensleeves* with you on the tune; switch to the left hand
+and the app holds the tune while you drill it.
 
 **Repertoire.** One option, and it is a vehicle rather than a rock song — the
 rung teaches a texture and this is free music to put it on. *Greensleeves (with

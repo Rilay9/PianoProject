@@ -36,8 +36,8 @@ needs two flats to point at: one flat is F major.
 hear. **I** is home and settled. **IV** feels like stepping away — it is the
 "amen" chord. **V** is unstable and pulls back. Listen to a folk song and put
 your hand up at each change; you will be right more often than you expect within
-a week. Nothing drills it yet — the progression drill arrives on the Stage 5
-rung of this track — so this one is homework for your listening.
+a week. Nothing drills it yet — the cadence drill arrives on the next rung of
+this track, at Stage 4 — so this one is homework for your listening.
 
 **Rhythm dictation.** The app taps a two-bar rhythm and you tap it back. Count
 the beats aloud while listening — do not try to memorise it as a shape.
@@ -55,5 +55,5 @@ that never reaches your ear stays a filing system.
 
 **How you'll know you've got it.** Every interval within the octave identified
 by ear at 80 % in the interval drill, a key signature of up to three sharps or
-flats named from the two rules above without pausing, and a chain of five notes
+flats named from the two rules above without pausing, and a chain of eight notes
 played back in Simon.

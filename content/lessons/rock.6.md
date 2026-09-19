@@ -17,9 +17,9 @@ sit under a vocal for two minutes without getting boring, and why it collapses
 the moment the left hand starts following the chords politely.
 
 **The arpeggio has to be even, and that is the hard part.** A broken chord
-played expressively is an accompaniment with opinions. The exercises here run
-the figure in A minor, first as a bare ostinato and then as the fuller broken
-chord, and the thing being practised in both is that nothing inside the bar gets
+played expressively is an accompaniment with opinions. The exercises are
+in A minor: the figure as a bare ostinato over a held A, then a broken-chord left
+hand under a scale, and the thing being practised in both is that nothing inside the bar gets
 louder or later than anything else.
 
 **The pedal is a colour here, not a joiner.** Everywhere else in this app the
@@ -28,8 +28,8 @@ clean. This texture wants the opposite some of the time: the blur is the sound.
 The half-pedal exercise is where that becomes controllable rather than accidental
 — the damper half down thins the ring instead of stopping it.
 
-**The band is wide on purpose.** The exercises start well below the pieces,
-because the figure is simple to describe and the pieces are where it has to hold
+**The band is wide on purpose.** The exercises, bar the half-pedal one, start well
+below the pieces, because the figure is simple to describe and the pieces are where it has to hold
 up for pages. Play the exercises at the tempo the pieces need, not at the tempo
 the exercises allow.
 
@@ -43,9 +43,11 @@ preparing you for: triplet arpeggios, all the way through, over a bass that
 moves about once a bar.
 
 **Tools for this rung.** *Play it as a duet* is worth more here than almost
-anywhere: let the app hold the arpeggio while you play the melody and the bass,
-then swap and play the figure alone against the app. Hearing your own arpeggio
-next to a steady one is faster than any amount of counting. The lab's *Rock — the
+anywhere: the app plays one hand while you play the other, then swap. In
+*Gnossienne* it keeps the left hand going under your tune, then the tune
+while you hold the figure. It takes a hand, not a voice:
+*Moonlight*'s melody and arpeggio share the right hand, so it cannot hold the
+arpeggio alone. The lab's *Rock — the
 minor vamp* preset gives the figure a floor: the A-minor loop with held roots, so
 the arpeggio has chords to sit on while you keep it even.
 

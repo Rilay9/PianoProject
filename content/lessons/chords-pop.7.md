@@ -31,11 +31,12 @@ voicings on this rung are written the second way on purpose.
 with the first chord `sus4` resolving. Then the ninth chords from the jazz drill,
 so you can hear what you are *not* doing.
 
-**Repertoire for this rung.** Six options. *Fix You* and *Blinding Lights* are
-sus and add9 colour over a bass that barely moves; *Welcome to Wonderland* and
+**Repertoire for this rung.** Six options. *Fix You* is sus colour over a bass
+that barely moves, and *Blinding Lights* four plain chords over two-note shells,
+the colour left for you to add; *Welcome to Wonderland* and
 *For the Damaged Coda* are the open, spread voicings this rung is about; the
 solo setting of *Scarborough Fair* is a modal tune re-voiced; and *Wake Me Up*
-is the loop with a syncopated left hand under it. Take one, play it plainly,
+is the loop with a bass-and-chord left hand on every beat under it. Take one, play it plainly,
 then re-voice it the way the exercises do — same chords, different
 arrangement. All six are personal-library songs: the public build shows the
 rows and where to get the scores, and the rung is complete on its exercises
@@ -45,9 +46,11 @@ there.
 moment; a whole song of them is a drone.
 
 **Tools for this rung.** The lesson asks you to hear what you are *not*
-doing, and the drill will do that for you: *Hear it* sounds the ninth chord,
-so C, Cadd9 and C9 can be compared in one breath, and *Show me* prints it if
-it is the spelling you are after.
+doing. In the ninth-chord drill *Hear it* sounds the chord it has asked for —
+a ninth, minor ninth or major ninth — and *Show me* prints it if it is the
+spelling you are after; C, Cadd9 and C9 in a row are for *Free play*. The
+accompaniment lab here loops I–vi–IV–V in broken chords, fixed, in any key
+you set: something to try the colours over.
 
 **How you'll know you've got it.** You can take a plain chord chart and make it
 sound like a record, without changing a single chord symbol.

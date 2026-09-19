@@ -41,9 +41,9 @@ home and can circle indefinitely.
 thinking in numerals, not letters. This is the practical payoff of everything on
 this track.
 
-**Simon, on every key.** The chain game from Stage 3 again — hear a chain of
-notes, play it back, and it grows by one each round — but now drawn from all
-twelve keys around middle C rather than the white ones. Without a scale to lean
+**Simon, on every key.** The every-key chain game from Stage 4 again — hear a chain of
+notes, play it back, and it grows by one each round — drawn from all
+twelve keys around middle C rather than the white ones of Stage 3. Without a scale to lean
 on, the only thing that holds the chain is having heard it: sing it first. It
 plays by ear with nothing lit; miss a note and it plays the chain again over
 the lit keys and asks you for that same chain, so the chain never grows until

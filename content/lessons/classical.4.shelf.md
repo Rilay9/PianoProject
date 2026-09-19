@@ -17,24 +17,27 @@ towards and take one down when you are ready — most of them sit above this
 stage, and that is the point of a shelf.
 
 **What is on the shelf.** 50 pieces, one edition each, from a Stage 4 *Für
-Elise* and *Clair de Lune* in their easy settings up to the Chopin nocturnes,
-the Schubert–Liszt *Ständchen* and the Handel–Halvorsen *Passacaglia* at Stage
-8: Satie's *Gymnopédie* and *Gnossienne*, Pachelbel's *Canon*, Bach's *Air on
-the G String*, three Chopin *Préludes* and a waltz, Grieg's *Morning Mood*,
-Elgar's *Salut d'amour* and *Nimrod*, Puccini's *O mio babbino caro*, the
-*Romanza*, Tchaikovsky's *Swan Lake*, Vivaldi's *Spring* — and, on the
-personal build only, the film and game pieces the owner asked for by name:
-Einaudi, Zimmer, Sakamoto, Uematsu, Djawadi, Hurwitz, Glass, de Senneville,
-Clayderman. The Library's Classical filter holds what came off this shelf: the
-*Toccata and Fugue*, the *Bumblebee*, the *Rondo alla Turca*, the *Moonlight*
-finale and every second edition.
+Elise* and *Clair de Lune* in their easy settings up to Chopin's C-sharp
+minor nocturne and waltz and the Schubert–Liszt *Ständchen* at Stage 8:
+Satie's *Gymnopédie* and *Gnossienne*, Pachelbel's *Canon*, Bach's *Air on
+the G String*, the Handel–Halvorsen *Passacaglia*, four Chopin *Préludes*,
+Grieg's *Morning Mood*, the *Romanza*, Tchaikovsky's *Swan Lake*, Vivaldi's
+*Spring* — and, on the personal build only, Elgar's *Salut d'amour* and
+*Nimrod*, Puccini's *O mio babbino caro*, pieces by Mascagni, Kreisler, Holst,
+Mahler and Rachmaninoff, the film and game pieces the owner asked for by name
+— Einaudi, Zimmer, Sakamoto, Uematsu, Djawadi, Hurwitz, Glass, de Senneville,
+Clayderman — and seven other film, game and modern pieces. The Library's
+Classical filter holds what came off this shelf: the *Toccata and Fugue*, the
+*Bumblebee*, the *Rondo alla Turca*, the *Moonlight* finale and other
+editions of shelf pieces — for the nocturne and the E minor prélude the shelf keeps the
+alternative edition and the Library the first.
 
 **What is bundled and what is not.** Everything public domain is bundled. The
-film and game pieces are in copyright: they are on the personal build because
-the archive holds free editions of them, and the public build shows the row
-and says where to get the score. Anything else you love — Yiruma, Tiersen,
-Hisaishi — buy the MusicXML or transcribe it and import it; it will sit on the
-same shelf.
+rest is in copyright or of unknown status: it is on the personal build because
+the archive holds free editions of it, and the public build shows the row and
+says to import your own copy of the score. Anything else you love — Yiruma,
+Tiersen, more Hisaishi than the Library's *Totoro: Path of the Wind* — buy
+the MusicXML or transcribe it and import it; it will sit on the same shelf.
 
 **The three skills these pieces need**, none of which are speed:
 

@@ -18,8 +18,8 @@ or absent, right hand two or three notes, and gaps.
 **Start with the chord on beat one and the "and" of two.** That figure is called
 the Charleston and it is the first thing every comping player learns, because it
 states the harmony, marks the bar, and then gets out of the way for two and a
-half beats. The exercises here write it in E, A, G and D, which are the keys a
-guitarist actually calls — the reason the earlier rung made a point of them.
+half beats. The exercises here write it in E and A, and the figures below in G
+and D, which are the keys a guitarist actually calls — the reason the earlier rung made a point of them.
 
 **Then move it off the beat.** The off-beat and anticipated patterns push the
 chord ahead of where the ear expects it. Played well this is what makes an

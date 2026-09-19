@@ -18,7 +18,8 @@ the same four chords with the top voices held still barely move at all. Play bot
 recording actually does, and it is why the loop sounds like one thing rather
 than four.
 
-**Slash chords.** The chords stay put and the bass walks down the scale: C, C/B,
+**Slash chords.** The bass walks down the scale; some chords stay put over it
+and the others change: C, C/B,
 Am, C/G, F, F/E, Dm, G. Half the ballads ever written are that line. Reading
 `C/B` and knowing it is still a C chord is the skill; the bass note is a bass
 note, not a new harmony.
@@ -30,21 +31,23 @@ about where the notes are rather than about what the chords were.
 **What to practise.** The loop with inversions in three keys, then the descending
 slash-bass line in one.
 
-**Repertoire for this rung.** Six options, every one of them a song built on a
-loop. *Clocks* and *Dancing Queen* are the four chords driven by a rhythm;
-*All of Me* and *Annie's Song* are the same kind of chords under a ballad; the
-*Flying Theme* from How to Train Your Dragon and *Fallen Down* from Undertale
-are a loop under a melody nobody sings. Play each from its chord symbols
-before you play it from the page, and any other loop song you like from the
-import screen. All six are personal-library songs: the public build shows the
+**Repertoire for this rung.** Six options. *All of Me* is a four-chord loop
+under a ballad, *Clocks* a three-chord loop driven by a rhythm, and *Fallen
+Down* from Undertale a loop under a melody nobody sings. *Dancing Queen*,
+*Annie's Song* and the *Flying Theme* from How to Train Your Dragon move
+through their chords without one fixed loop. Only *Annie's Song* prints chord
+symbols: play it from them before you play it from the page, and any other
+loop song you like from the import screen. All six are personal-library songs: the public build shows the
 rows and where to get the scores, and the rung is complete on its exercises
 there.
 
 **Common mistake.** Learning the loop in five keys as five separate things.
 
 **Tools for this rung.** Knowing the loop in twelve keys means playing it in
-twelve keys, and the lab's key setting is the cheapest way to get there:
-same progression, a different tonic each day, nothing to rewrite. A key is
+twelve keys, and the lab's key setting is the cheapest way to get there. The
+lab preset on this rung, *Ballad — broken chords*, fixes its progression at
+I–vi–IV–V rather than this rung's loop, but its key is free: same
+progression, a different tonic each day, nothing to rewrite. A key is
 one choice on that screen, which is exactly the claim this rung is making.
 
 **How you'll know you've got it.** Someone names a key and you play the loop in

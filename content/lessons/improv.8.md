@@ -36,8 +36,9 @@ survive, or you wrote a different piece.
 
 **Tools for this rung.** A secondary dominant is a numeral the accompaniment
 lab will read, so an approach chord can be typed in and heard against the
-tune before any of it is written down. Build your three versions there one
-at a time; the one that survives is the one the melody still fits.
+tune before any of it is written down. Type them into the lab opened from the
+Library: this rung's lab button opens a ii–V–I whose chords are fixed. Build
+your three versions there one at a time; the one that survives is the one the melody still fits.
 
 **How you'll know you've got it.** Three versions of eight bars that each sound
 deliberate.

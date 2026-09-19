@@ -32,8 +32,8 @@ Play ii–V–I and ii–subV–I back to back until the second stops sounding l
 mistake.
 
 **Stride** is on this rung because the left hand needs somewhere to go when it is
-not walking: bass, chord, tenth, chord. The tenth on beat three is what makes it
-stride, and it is the leap you will miss.
+not walking: bass, chord, tenth, chord. The leap you will miss is the one back
+down to the bass on beat one.
 
 **What to practise.** One ii–V–I in rootless A and again in rootless B; the same
 progression with the tritone substitution; a quartal voicing moved through three
@@ -51,15 +51,14 @@ the blues: thirty-two bars, AABA. The A sections go round I–vi–ii–V, two b
 chord — in B flat, B♭–Gm7–Cm7–F7. The bridge is four dominants, two bars each,
 each falling a fifth to the next: D7–G7–C7–F7, which lands back on the tonic for
 the last A. A great many bebop tunes are new melodies over these chords, so
-learning the changes once is learning a repertoire. The copy in the Library is
-shortened — one A section before the bridge — so take the whole form from a
-chart.
+learning the changes once is learning a repertoire. The copy in the Library
+writes the first two A sections once, with a repeat and two endings.
 
 **Common mistake.** Reaching for rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tempo goes up.
 
-**Tools for this rung.** The lab's typed numerals take flats and sevenths,
-so `ii7 V7 I` and `ii7 ♭II7 I` can be built as two loops and played one
+**Tools for this rung.** The accompaniment lab — opened from the Library, not
+from this rung — takes typed numerals with flats and sevenths, so `ii7 V7 I` and `ii7 ♭II7 I` can be built as two loops and played one
 after the other until the second stops sounding like a mistake. That is this
 rung's comparison, with the bass line audible under both.
 

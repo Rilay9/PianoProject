@@ -37,7 +37,7 @@ are practising the reduction, not the repertoire.
   supply the bass and the texture. It is in E minor with a C sharp in it — the A
   major chord in the middle of the tune — which makes it the Dorian mode, a
   sound rock uses often.
-- The easy *Canon in D* is above this rung, and already a reduction of a piece
+- The easy *Canon in D* is the hardest of the four, and already a reduction of a piece
   for four parts: read it as one now, play it later.
 
 **Where the textures go next.** Each one has a rung further up this track:

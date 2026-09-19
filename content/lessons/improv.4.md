@@ -20,10 +20,13 @@ keys alone (an F sharp pentatonic) sound good over almost anything.
 pentatonic throughout — all five notes fit all four chords. Now the ear is free
 and the only questions left are rhythm, shape and where you stop. Stage 3's
 I–IV–V loop is still on this rung and is the easier of the two; the four-chord
-one moves twice as often, which is the whole difference.
+one changes chord every bar, where that one changes three times in eight bars,
+which is the whole difference.
 
-**Answering the phrase.** The app plays a two-bar call; you play a two-bar
-answer. Rules that make an answer sound like an answer rather than a new
+**Answering the phrase.** The app's *Answer the phrase* drill plays four notes
+and marks you right only if you play the same four back, so it trains the ear
+rather than the answer. The answer you practise over the loop: a two-bar call
+of your own, then a two-bar answer. Rules that make an answer sound like an answer rather than a new
 sentence:
 
 - **Match the rhythm** of the call, at least at the start.
@@ -45,9 +48,10 @@ notes into a line.
 **Common mistake.** Playing the pentatonic scale up and down. A scale played in
 order is a scale, not a melody; break the order.
 
-**Tools for this rung.** Set I–vi–IV–V in the lab and start it — one chord a
-bar is twice the work of the last rung's loop, and the grid moving under you
-is what makes that obvious. Change the key when the pentatonic starts
+**Tools for this rung.** The lab opens on I–V–vi–IV — the same four chords
+in another order, and fixed there; the loop drill above is the I–vi–IV–V one.
+Start it — one chord a bar is far more changes than the last rung's loop, and
+the grid moving under you is what makes that obvious. Change the key when the pentatonic starts
 playing itself: the numerals do not move and your hand has to.
 
 **How you'll know you've got it.** Four two-bar answers to four different calls,

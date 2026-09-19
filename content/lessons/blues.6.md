@@ -39,13 +39,16 @@ that leads somewhere: root, third, fifth, then a semitone below the next bar's
 root. Learn both; use the boogie when you want weight and the walk when you want
 motion.
 
-**What to practise.** One boogie pattern through all twelve bars in C, then the
-same in F. The walking line over the same twelve bars.
+**What to practise.** The boogie exercises give each pattern four bars on one
+chord — Pinetop and root-and-fifth in C, walking eighths in F. Take one through
+all twelve bars in C, moving it to each chord yourself, then the same in F. The
+walking line over the same twelve bars.
 
 **Repertoire for this rung.** Two short boogies to play the form on, and the
 real thing: Clarence "Pinetop" Smith's own *Pinetop's Boogie Woogie* (1928),
-which is above this rung and is here to be read and listened to. Its left hand
-is the bass this lesson names.
+which is levelled above everything else on this rung and is here to be
+read and listened to. Its left hand in this edition is not the climb above: from
+bar 7 it is two-note chords over the root in a dotted rhythm.
 
 **Common mistake.** Speeding up when the left hand gets comfortable. A boogie
 that accelerates is a boogie nobody can play over.

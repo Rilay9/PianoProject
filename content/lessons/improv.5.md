@@ -36,8 +36,9 @@ and keeping the two bars that were good. Then build the other six around them:
 bar 1–2 the idea, 3–4 the idea varied, 5–6 something contrasting, 7–8 the idea
 returning with an ending.
 
-**Listen back to everything.** At the end of a backing-track run the app plays
-your own notes back to you, at the speed and the dynamics you played them. What
+**Listen back to everything.** At the end of a backing-track run, tap *Listen
+back* and the app plays your own notes back to you, with the timing and the
+dynamics you played them, though every note is held for the same short length. What
 felt inspired and what actually sounded good are two different sets, and only
 hearing it from the outside tells you which is which. Listen once, then play
 another chorus — there is nothing to save and nothing to tidy up afterwards.

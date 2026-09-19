@@ -36,7 +36,7 @@ not for learning the notes — you know them — but for checking that the hand 
 still doing what you think it is doing. One slow, quiet run-through a day,
 listening for anything you have started to fake.
 
-**What to play.** Six options, and they are all long: the first Ballade, the
+**What to play.** Six options, and all but the étude are long: the first Ballade, the
 *Heroic* polonaise, the Fantaisie-impromptu, the C-sharp minor étude Op. 10
 No. 4, the *Marche funèbre* from the B-flat minor sonata, and Liszt's *La
 campanella* if you want a piece that is purely about the hands. The other

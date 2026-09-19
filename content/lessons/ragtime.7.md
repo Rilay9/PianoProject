@@ -14,9 +14,9 @@ up, and about the rags that are not two-steps.
 
 **From oom-pah to stride.** *Maple Leaf Rag* is where the left hand stops being
 a bass note and a chord and starts being a genuine leap: a tenth or more down to
-a single note, back up to a chord, twice a bar, at tempo, while the right hand
-is doing something entirely different. This is the direct ancestor of stride
-piano, and the practice is the same as it was at Stage 5 and will be at Stage 8:
+a bass octave, back up to a chord, twice a bar in the second strain, at tempo,
+while the right hand is doing something entirely different. This is the direct
+ancestor of stride piano, and the practice is the same as it was at Stage 5:
 **left hand alone, eyes on the chord you are travelling to, at a tempo where you
 never miss.** There is no shortcut and nobody has ever found one.
 
@@ -33,15 +33,15 @@ never miss.** There is no shortcut and nobody has ever found one.
   tempo marking is the point, and the harmony wanders further than anything else
   Joplin published.
 
-**The secondary rag.** *Elite Syncopations* has a passage where a three-note
-figure repeats against a four-beat bar, so the accent moves each time and only
-comes back round after three bars. Count it out once on paper, then stop
-counting and learn it as a shape. It is the single most characteristic ragtime
+**The secondary rag.** *Elite Syncopations* has passages where the right hand
+groups its sixteenths in threes against a two-beat bar — three, three, two,
+starting again at each bar line. Count it out once on paper, then stop counting
+and learn it as a shape. It is the single most characteristic ragtime
 device and it is what makes the style sound like it is falling forwards.
 
-**Two editions of Maple Leaf.** The library has the scholarly Humdrum edition
-and a MuseScore transcription. They differ in small ways — beaming, a few
-accidentals, some dynamics. When they disagree, the first edition is the better
+**Three editions of Maple Leaf.** Besides the one on this rung, the library
+has the scholarly Humdrum edition and a MuseScore transcription. They differ in
+small ways — beaming, a few accidentals, some dynamics. When they disagree, the first edition is the better
 guess about what Joplin wrote.
 
 **What to play.** Six options. Beyond the five above there is *Sugar Cane*, a

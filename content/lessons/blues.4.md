@@ -53,10 +53,13 @@ riff on top.
 yourself and listen; the difference is obvious on playback and invisible while
 playing.
 
-**Tools for this rung.** Shuffle is a claim about timing, and the app will
-check it: in *Rhythm only* the long-short pair is judged where it falls and
-nowhere else, so you can test the feel on the boogie bass alone, long before
-the right hand is anywhere near it.
+**Tools for this rung.** The accompaniment lab opens on the twelve bars with
+a walking bass locked in the left hand — not the boogie bass, but the same
+form to try a right-hand riff over. *Play it as a duet* opens one of the
+rung's songs with the app on the left hand while you play the right. The
+shuffle itself the app does not check: *Rhythm only* judges each strike
+against the written straight eighths within a fixed window and has no idea of
+swing, so the feel is for your ear and the recording.
 
 **How you'll know you've got it.** Twelve bars in C, boogie bass, shuffled, at a
 steady tempo, twice round without losing your place in the form.

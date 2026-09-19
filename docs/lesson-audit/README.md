@@ -21,6 +21,48 @@ By kind: **202 FALSE**, 14 STALE, 8 WRONG-COUNT, 13 UNOFFERED, 18 THEORY, 47 JUD
 the other three handled it was not checked).
 Counted from the files' checkboxes, and each file's own summary line agrees with its count.
 
+## Fix pass (2026-09-19)
+
+The owner asked for the findings that need a **correction, not a build** to be fixed, with a
+line on each saying what the fix did and why ([`FIX-BRIEF.md`](FIX-BRIEF.md)). Every ticked
+box now has a `Fixed:` line under it.
+
+| batch | fixed | found wrong | left open |
+|---|---|---|---|
+| 1 | 57 | 0 | 17 |
+| 2 | 34 | 0 | 9 |
+| 3 | 53 | 1 | 23 |
+| 4 | 43 | 0 | 14 |
+| 5 | 49 | 0 | 23 |
+| **total** | **236** | **1** | **86** |
+
+236 + 1 + 86 = 323, every finding; 236 is also the number of ticked boxes, counted. The one
+found wrong is chords-pop.5:44 (*Your Song* does sound seventh chords, between the hands),
+re-filed as JUDGEMENT. Left open: THEORY, JUDGEMENT, HISTORY and UNVERIFIED, which need a
+musician or a source.
+
+**Checked after the pass:** content build and `validate.py` OK (2,054 items); unit suite
+2,239 passed, which includes the three-minute reading cap (`lessonShape.test.ts`) and the
+Library-pointer rule (`lessonClaims.test.ts`); no file outside the lessons and this folder
+changed; the seven edited lessons that carry rows in `lessonClaimsAboutMusic.test.ts` were read
+against their rows and none contradicts one. **Six fixes drawn at random were checked against
+the source and held** (chords-pop.6 slash bass, chords-pop.5 add9 pointer, ragtime.7 Maple
+Leaf — its bars read by the fixer only, blues.3's longest song, blues.3's tool count, 3.4's
+reading range). **Not checked:** the other 230 fixes beyond the fixers' own re-reading, and
+nothing has been heard.
+
+**Where a lesson promised what the app does not do, the lesson now describes the app as it
+is.** Each such finding says so. Whether to build the feature instead remains the owner's
+decision — the list under *Decide before fixing* below still stands, now as features to
+consider rather than errors in the lessons.
+
+**Found during the pass, not in any lesson:** the placement drill's status line says "Today
+will build from here" (`DrillScreen.ts:2659`, `LessonScreen.ts:559`); `1.2.md:53` and
+`technique.8.md:26–28` still use the old names "Tempo mode" and "Wait mode" (no finding
+covered them); the *I Got Rhythm* score has its backward repeat after the second ending
+(batch 5); the chord-chart screen has no route that opens it (batch 3); `lessonShape.test.ts`
+pins `technique.6`'s "1.4 times" wording although nothing measures it (batch 4).
+
 ## How far to trust this list
 
 The auditors can be wrong too. **Ten FALSE findings were drawn at random** (two per batch,

@@ -9,7 +9,7 @@ videos:
 readingTime: 3
 ---
 
-Nothing new is added here. This rung is the point of the other four.
+Nothing new is added here. This rung is the point of the other six.
 
 **A chorus is a sentence.** Twelve bars: four to say something, four to say it
 again slightly differently, four to answer it. That call-and-response shape is

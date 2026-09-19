@@ -42,10 +42,10 @@ and the rung is complete on its exercises there.
 the white keys and falls apart in the flat ones.
 
 **Tools for this rung.** The accompaniment lab is numerals first and a key
-second, which is this whole lesson in the shape of a screen. Build the
-song's changes once as numerals, move the key down a tone and start the
-loop: if what you play by ear agrees with the chart it is naming, you
-transposed rather than translated.
+second, which is this whole lesson in the shape of a screen. Here it loops
+I–IV–V–I and leaves the key to you: play along, move the key down a tone
+and start the loop again. If what you play by ear agrees with the chart it is
+naming, you transposed rather than translated.
 
 **How you'll know you've got it.** Someone says "a bit lower" and you do it in
 the next bar.

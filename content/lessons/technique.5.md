@@ -27,13 +27,13 @@ the slow one in; the way through is the opposite, keeping the slow hand
 absolutely steady and letting the fast one fill the gaps.
 
 **Shaping.** A crescendo is not two dynamics, it is a journey between them.
-These exercises are scored on the slope: the app checks that the velocity rises
-across the run and covers real ground, so a line that wobbles will not pass.
+The exercise here opens as an ordinary score, judged on the notes and their
+timing; the app does not measure the velocity, so the slope is yours to judge.
 Play it as one gesture rather than as eight decisions.
 
 One honest limit, since the app will tell you it passed: a line that stays quiet
-and then jumps at the end also satisfies the rule. Your ear knows the difference
-between that and a crescendo even though the number does not, so listen as well
+and then jumps at the end passes just the same. Your ear knows the difference
+between that and a crescendo even though the score does not, so listen as well
 as read the score.
 
 **Ties across the bar line** are where a steady pulse goes to die. Count out
@@ -54,7 +54,7 @@ lands, so the note it decorates is not late. And it is a flick from the hand,
 not three separate finger strokes; if you can hear three even notes it is too
 slow to be an ornament. Printed at two per beat here so that you can count it
 before you speed it up, and in the left hand, which is where a mordent is
-hardest and where the music of Stage 6 will ask for it.
+hardest.
 
 **An étude to put it in.** Duvernoy's Op. 176 Nos. 4, 5 and 6 are on this
 rung, in the order the collection grades them: one page each, the exercise

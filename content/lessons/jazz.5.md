@@ -20,8 +20,9 @@ eighths and lean on every "and".
 **Shell voicings.** A seventh chord has four notes; the two that define it are
 the **third and the seventh**. The fifth says almost nothing, so it goes. What
 is left — **root, third and seventh** — is a shell: three notes, unambiguous
-harmony, and room for the right hand. That is how the exercise on this rung
-writes it. When a bass player has the root, the shell drops to two notes.
+harmony, and room for the right hand. The exercise on this rung writes
+the barest version, root and seventh only; add the third once that is under
+the hand. When a bass player has the root, the shell drops to two notes.
 
 Why it works: the third tells you major or minor, the seventh tells you whether
 it is a dominant. Between them they identify the chord; everything else is
@@ -32,7 +33,8 @@ shells and watch what happens — the seventh of Dm7 (C) falls a half step to th
 third of G7 (B), and the seventh of G7 (F) falls a half step to the third of
 Cmaj7 (E). Those two falling half steps are **guide-tone resolution**, and they
 are why the progression sounds inevitable. Learn ii–V–I in C, F, B flat and G,
-with the shells barely moving.
+with the shells barely moving. The ii–V–I drill here runs those four keys but
+asks for plain triads, so the shells are yours to add.
 
 **Comping.** Accompanying: chords played in rhythm, in the gaps, not on every
 beat. Start with a chord on beat 1 and the "and" of 2, and leave the rest alone.
@@ -50,10 +52,11 @@ is not among them; if you find one, import it.
 and seventh above it: a shell is a bass-up shape, and with the root on top it
 stops saying the chord.
 
-**Tools for this rung.** Swing is an accent and a placing, and *Rhythm only*
-will check both with the notes set aside. Play a scale in eighths in it,
-leaning on every "and", and the marks say whether the off-beat is where you
-think you are putting it.
+**Tools for this rung.** The lab's *Jazz — two five one* preset plays ii–V7–I
+over a walking bass, both fixed, in whatever key you pick: comp shells against
+it. Swing itself the app does not judge. *Rhythm only* times each strike
+against the written straight eighths within a fixed window and ignores how
+hard you play, so the accent and the placing are for your ear.
 
 **How you'll know you've got it.** ii–V–I in four keys with shell voicings, and
 one standard comped through twice while you sing the melody.

@@ -15,9 +15,9 @@ can sit on one and still feel like it is going somewhere. An add9 keeps the
 third and puts the second on top of the chord as well, which is the brighter,
 more open version of the same idea.
 
-**Spacing is most of the sound.** The exercises write these voicings wide: root
-low, the rest of the chord well above it, nothing bunched in the middle of the
-keyboard where it turns to mud. Play the same four notes close together and you
+**Spacing is most of the sound.** The exercises write these voicings wide: the root
+low in the left hand, two octaves below the right, which holds the rest of the
+chord together from middle C up. Play all of it close together in one hand and you
 will hear why the spacing is written the way it is rather than left to taste.
 
 **Why these chords and not richer ones.** The jazz track builds chords by adding
@@ -25,11 +25,11 @@ notes to them. This one builds them by taking a note out and moving the rest
 apart, and the two sound nothing alike. Keep them separate in your head for now.
 
 **Repertoire.** Two options, and neither is a rock song — this rung teaches a
-sound, and these are the two pieces in the library that actually print it.
+sound, and both of these print it in their chord symbols.
 *Annie's Song* uses a sus4 as a hinge in a plain folk progression, which is the
 clearest possible illustration of the chord not settling. Sakamoto's *andata*
 is the whole texture at once: open spacing, suspensions that never resolve where
-you expect, and a great deal of silence. It is harder than the level suggests,
+you expect, and chords held for whole bars. It is harder than the level suggests,
 and it is worth sitting with rather than finishing.
 
 **Tools for this rung.** *Free play* names whatever chord you are holding, which

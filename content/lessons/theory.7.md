@@ -27,7 +27,8 @@ The difference is length, and your ear knows it long before your analysis does.
 mixolydian, a minor seventh dorian, a half-diminished chord locrian. Those three
 are not opinions — they are what the chord tones already spell. Where there is a
 choice (a major seventh takes ionian or lydian depending on what it is doing),
-the app names one and says so, and you should trust your ear over it.
+the drill names one — ionian — and marks only the scale it named, so a lydian
+answer counts as wrong there; trust your ear over it everywhere else.
 
 **What to practise.** The secondary-dominant ear drill until `V/V` is a sound and
 not a calculation, and one chord-scale a day played through two octaves.
@@ -37,7 +38,8 @@ not a calculation, and one chord-scale a day played through two octaves.
 **Common mistake.** Analysing every chromatic chord as a secondary dominant. Some
 of them are borrowed from the minor and some are just chromatic.
 
-**Tools for this rung.** The accompaniment lab reads `V/V` as a numeral, so
+**Tools for this rung.** The accompaniment lab — opened from the Library, not
+from this rung — reads `V/V` as a numeral, so
 a tonicisation can be built as a loop and listened to rather than worked
 out: put `I V/V V I` in C and the D major in the second bar is the whole
 lesson in one bar. Then take it round three keys, changing nothing but the

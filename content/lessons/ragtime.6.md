@@ -33,7 +33,7 @@ commonest wrong note in a whole rag.
 
 **Flat keys are the real new skill here.** *The Entertainer* stays on the easy
 side of the key signature — C, with one flat in the trio. The other two live in
-three to five flats, and reading fluently in E flat and A flat is a different
+two to five flats, and reading fluently in E flat and A flat is a different
 job from transposing into them. The scale
 exercises on this rung exist for that reason: play the A flat and E flat scales
 hands together, two octaves, until the black keys stop being a surprise, and
@@ -44,9 +44,9 @@ mostly a reading problem, not a hand problem.
 **The left hand travels further now.** Stage 5's oom-pah was a bass note and a
 chord about an octave apart. In a full rag you will meet:
 
-- **tenths** instead of octaves in the bass note, sometimes rolled;
+- **octaves** for the bass note instead of a single key;
 - **walk-ups** — a scale or chromatic run in the bass between chords;
-- **octave leaps of a tenth or more** in the second and fourth strains, where the
+- **leaps of a tenth or more** — in *The Entertainer* mostly in the trio — where the
   bass note drops and the chord has to land in the same half-beat.
 
 The technique is the same one Stage 5 named and it does not change: **the arm
@@ -55,14 +55,14 @@ the left hand alone at a tempo where you never miss, then take it up by
 five clicks at a time. If you are missing leaps at speed, you took it up too
 fast; there is no other cause.
 
-**"Not fast" is printed on the music.** These editions carry Joplin's own
-markings — *Not fast* on *The Entertainer*, *Not too fast* on *Peacherine Rag*,
-*Not fast* on *The Easy Winners* — and the app takes its default tempo from
+**The tempo is printed on the music.** These editions carry a metronome
+mark — 70 on *The Entertainer*, which also says *Moderato*, 100 on *Peacherine
+Rag*, 72 on *The Easy Winners* — and the app takes its default tempo from
 them. Ragtime played fast stops sounding syncopated, because syncopation is
 only audible against a pulse you can hear. Play them slower than you think you
 should. **And never swing them:** the eighths and sixteenths are dead even.
 
-**Reading the printed page.** Rags use repeat marks and *D.C.* far more than
+**Reading the printed page.** Rags use repeat marks far more than
 anything you have played so far, and the road map matters — a rag played in the
 wrong order is not the piece. Before you play a note, trace the route through
 the page with a finger and say the strain letters out loud.
@@ -72,8 +72,8 @@ the page with a finger and say the strain letters out loud.
 and the shortest thing on the rung. Then any of the three below, which are the
 three whose trios this lesson walks through:
 
-- ***The Entertainer*** (1902) — the one you already half know from Stage 5,
-  now complete: intro, A, A, B, B, A, then the trio in F and a last strain
+- ***The Entertainer*** (1902) — the same complete score Stage 5 offered,
+  now read as a whole: intro, A, A, B, B, A, then the trio in F and a last strain
   back in C. The easiest way in, because the form is the only thing that is
   new.
 - ***Peacherine Rag*** (1901) — E flat, with a strain in B flat and a trio in
@@ -93,8 +93,8 @@ means learning four strains badly at once. Left hand alone, one strain, until it
 is automatic — every time.
 
 **Tools for this rung.** With a loop set, the *Ladder* does the taking-up
-for you and drops the tempo the moment a leap is missed, so the speed you
-can actually hold is found rather than guessed. Loop one strain, not the
+for you — a clean pass goes up a notch, a pass with a missed leap comes down
+one — so the speed you can actually hold is found rather than guessed. Loop one strain, not the
 rag.
 
 **How you'll know you've got it.** One complete rag, all its strains, hands

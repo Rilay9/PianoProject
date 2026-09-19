@@ -15,7 +15,7 @@ three-side first, son 2-3 the other way round. The commonest mistake is to count
 the two bars separately. It is one unit; lose that and the pattern flips, which
 sounds like the band turning over.
 
-**Clap it before you play it.** The exercises here are written on a single line
+**Clap it before you play it.** The clave exercises here are written on a single line
 with nothing to read but the rhythm, which is the point — there are no notes in
 the way. Clap along until you stop counting, then keep clapping while you say
 the beat numbers out loud, then stop saying them and see if it survives.
@@ -36,9 +36,11 @@ four, so play it for the tune rather than clapping under it. *Só Danço Samba* 
 the first bossa on this track and a gentler rhythm than its name suggests — the
 syncopation goes quiet and the chords do the work.
 
-**Tools for this rung.** *Play it as a duet* lets the app take one hand while you
-hold the other, which is the easiest way into the two-part clave without doing
-both at once on day one.
+**Tools for this rung.** *Play it as a duet* opens *Cielito Lindo*, which is
+written on one staff, so there is no second hand for the app to take. For the
+two-part clave, open the version over a pulse from its own row and choose the
+right hand: *Duet* in the ⋯ menu plays the pulse while you hold the clave, which
+is the easiest way in without doing both at once on day one.
 
 **Common mistake.** Speeding up on the three-side. It has more strokes so it
 feels busier, and busier feels faster. A metronome on beats two and four catches

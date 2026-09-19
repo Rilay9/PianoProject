@@ -1947,11 +1947,12 @@ and **was not retaken after** — the staff's F♯ is proven in the MusicXML onl
 
 **Unverified.** The chain heard as music; whether level 3.5 is right (`estimated`); whether
 opening ear-first is the right default for a Stage 3 learner; the F♯ on the rendered staff
-(see above). `blues.3` is 590 words (the lesson-test count), `readingTime` 3. A "600 words" limit that I
-trimmed lessons to this session is **enforced nowhere I could find**: the lesson tests were
-searched for a numeric word limit and `MAX_WORDS`, and a second search for "600" across the
-unit tests and content tools found no word-limit use. The owner has also said not to worry
-about it.
+(see above). `blues.3` is 590 words (the lesson-test count), `readingTime` 3. **Correction (same day):** this
+entry first said a 600-word limit was "enforced nowhere I could find". That was false. I
+searched for the number 600 and not for the limit in the unit it is written in:
+`app/tests/unit/lessonShape.test.ts:224` caps every lesson at three minutes at 200 words a
+minute — 600 words — with a list of known-long exceptions. Found by the lesson-fix pass,
+not by me. The owner has said not to worry about the limit; the test still enforces it.
 
 **Files.** `app/src/engine/drills/simon.ts`, `fromCatalog.ts`, `answerSheet.ts`,
 `app/src/engine/musicXmlWriter.ts`, `app/src/ui/screens/DrillScreen.ts`, `LessonScreen.ts`;

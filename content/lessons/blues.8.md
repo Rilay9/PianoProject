@@ -34,7 +34,7 @@ throughout, in the key you started in.
 twelve bars, in two keys — and the rung is finished on its exercises. What is on
 it now is what to read while you write that. *Pinetop's Boogie Woogie* is the
 1928 original, the record every boogie bass since is a copy of, and it is the
-same file you met a rung ago. *The Chevy Chase* is Eubie Blake in 1914, a
+same file you met at Stage 6. *The Chevy Chase* is Eubie Blake in 1914, a
 left hand that strides rather than walks. *Black Bottom Stomp* is Jelly Roll
 Morton in 1926 and is the hardest page here: it changes key inside the form,
 which is the exact thing this rung is asking you to be able to do.
@@ -42,9 +42,9 @@ which is the exact thing this rung is asking you to be able to do.
 **Common mistake.** Transposing by moving your hands the same distance. That is
 how the flat keys stay unlearned; read the numerals and find the notes.
 
-**Tools for this rung.** Typed numerals carry their sevenths, so `I7 IV7 V7`
-set in E flat builds the whole form in the new key and *Read it* prints it
-out. That is the numerals turned back into notes, which is the direction
+**Tools for this rung.** The lab opens on its twelve-bar blues, the form fixed
+and every chord already a seventh; set the key to E flat and *Read it* prints
+the whole form in the new key. That is the numerals turned back into notes, which is the direction
 this rung is short of.
 
 **How you'll know you've got it.** Twelve bars in a flat key, with ninths, from

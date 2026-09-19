@@ -43,10 +43,9 @@ it is for hearing once, not for building a collection of takes.
 **Common mistake.** Playing continuously because silence feels like failure.
 Silence is where the listener catches up. Count four empty bars and mean it.
 
-**Tools for this rung.** The loop you play over is the accompaniment lab's
-*Jam it*: four bars of C, two of F, two of G, at whatever tempo you set,
-with the bar you are in lit so you never have to count. Nothing there is
-judged or kept, which is what makes it safe to play badly over.
+**Tools for this rung.** The loop you play over is the rung's loop drill, on
+the drill screen: four bars of C, two of F, two of G, at 72 bpm. Nothing there
+is judged or kept, which is what makes it safe to play badly over.
 
 **How you'll know you've got it.** Three choruses over the loop where each
 phrase is answered, there is at least one full bar of silence, and you can hum

@@ -12,7 +12,7 @@ readingTime: 2
 Everything on this track has been a piece of a tune. This rung is the tune.
 
 **One standard, four ways.** Comp it. Walk the bass and comp on top. Stride it.
-Then play the melody with your own harmony underneath. The same 32 bars each
+Then play the melody with your own harmony underneath. The same form each
 time; the point is that the form becomes something you are inside rather than
 something you are reading.
 
@@ -31,9 +31,9 @@ above. Then the same tune a fourth higher.
 
 **Repertoire for this rung.** Six options, and the instruction is to pick one
 and stay with it: *Stardust* if you carried it up from Stage 8; *Ain't
-Misbehavin'* for stride; *Lullaby of Birdland* for a fast tune made of
+Misbehavin'* for stride; *Lullaby of Birdland* for a medium-swing tune made of
 ii–V–Is; *When the Saints Go Marching In* in its jazz setting, for a tune you
-can already hear; *Linus and Lucy* for a left-hand ostinato that never stops;
+can already hear; *Linus and Lucy* for a left-hand ostinato that keeps coming back;
 and *Take Five* for the 5/4 you counted on the technique track. Changing tune
 partway through restarts the clock.
 
@@ -42,8 +42,8 @@ tune takes a fifth of the time the first one did, and only if the first one is
 finished.
 
 **Tools for this rung.** Being inside the form rather than reading it has a
-switch. *Blind* takes the lead sheet away and changes nothing else about the
-run, so the thirty-two bars have to come from you; comp a chorus that way
+switch. *Blind* takes the lead sheet away while the app still follows and
+marks the run, so the form has to come from you; comp a chorus that way
 before you try walking one, and you will find out quickly which of the four
 ways you actually know.
 
