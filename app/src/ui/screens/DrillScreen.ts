@@ -145,6 +145,19 @@ const EAR_GLYPH = '🎧';
 const SIMON_REPLAY_NOTICE = `Here it is again, on the keys. ${TAP_TO_CONTINUE}`;
 
 /**
+ * Whose turn it is, in Simon, said on the status line (`04` §5c-2, T17-2).
+ *
+ * The chain's lights, name and staff go out together so the display cannot be
+ * a crib, which left the learner's turn signalled by nothing but that absence
+ * — and the prompt line, the one positive cue on the screen, reads *Play the
+ * chain back* for the whole card and so says the same thing in both halves.
+ * These two say which half it is and **name no note**, which is what keeps the
+ * crib rule (`pending-review` Entry 38, FAULT 7b).
+ */
+const SIMON_LISTENING = 'Listen — the app is playing.';
+const SIMON_YOUR_TURN = 'Your turn — play it back.';
+
+/**
  * How sure the detector has to be before a heard note counts as an answer.
  *
  * `05` §11.4. The microphone is guessing, and a guess it is not confident
@@ -758,10 +771,51 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * is not a crib: by the time it is the learner's turn there is nothing left
    * on screen at all.
    */
-  function showChainOnKeys(target: DrillPrompt): void {
-    const steps = simonChainSteps(target.playback ?? []);
+  /**
+   * When the chain has finished sounding, in the prompt's own milliseconds.
+   *
+   * One walk of `simonChainSteps` already drives the light, the name and the
+   * staff; this is the moment all three go out, and it is also the moment the
+   * turn changes hands — so the cue below and the clear-down above take it
+   * from the same function rather than computing it twice and drifting.
+   */
+  function chainEndsAtMs(steps: readonly { atMs: number }[]): number {
     const first = steps[0]?.atMs ?? 0;
     const gap = Math.max(60, (steps[1]?.atMs ?? first + SIMON_STEP_MS) - first);
+    return (steps[steps.length - 1]?.atMs ?? 0) + gap;
+  }
+
+  /**
+   * Which half of Simon we are in, said on the status line (`04` §5c-2).
+   *
+   * The lights, the name and the staff all go out together at the end of the
+   * chain so the display cannot be a crib — which is right, and left the
+   * learner's turn announced by **the absence of everything else**. The only
+   * positive cue was the prompt line, and it reads *Play the chain back* from
+   * the first moment of the card to the last, so it says the same thing while
+   * the app is playing as it does when it is your go (`pending-review` Entry
+   * 38, FAULT 7b).
+   *
+   * So the status line — which on this screen sits under the prompt and above
+   * the buttons for exactly this kind of thing (`04` §0 R6), and already says
+   * *Tap the rhythm on any key* for the rhythm drill — says which half we are
+   * in. **It names no note**, so the crib rule is untouched: it says that it
+   * is your turn, never what to play.
+   */
+  function cueSimonTurn(target: DrillPrompt): void {
+    const steps = simonChainSteps(target.playback ?? []);
+    if (steps.length === 0) return;
+    status.textContent = SIMON_LISTENING;
+    playbackTimers.push(
+      setTimeout(() => {
+        if (disposed) return;
+        status.textContent = SIMON_YOUR_TURN;
+      }, chainEndsAtMs(steps)),
+    );
+  }
+
+  function showChainOnKeys(target: DrillPrompt): void {
+    const steps = simonChainSteps(target.playback ?? []);
     // The notes that will actually sound, which is what the staff is shaped
     // for — the chain's last moment carries all of them.
     startChainStaff(target, steps[steps.length - 1]?.soFar ?? []);
@@ -797,7 +851,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           flashNoteName('');
           disposeChainStaff();
         },
-        (steps[steps.length - 1]?.atMs ?? 0) + gap,
+        chainEndsAtMs(steps),
       ),
     );
   }
@@ -810,6 +864,18 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   /** The prompt's sound, plus whatever help the current rung adds to it. */
   function playPromptWithHelp(target: DrillPrompt | null): void {
     playPrompt(target);
+    // **Before** the help, not after it. On every rung of the help ladder, not
+    // only the lit ones — the ear-only rung is the one with nothing at all on
+    // the screen, so it most needs to be told whose turn it is — and whose
+    // turn it is is the drill, while the lit keys and the staff are the extra
+    // (`showChainOnKeys`'s own catch says the same of the staff). Ordered the
+    // other way round, anything that threw while drawing the help took the
+    // hand-over cue with it, and the two lit rungs then had no cue at all.
+    // Found by naming the three rungs one at a time in `simonTurnCue.test.ts`
+    // instead of arguing from `drill.kind`; jsdom has no `matchMedia`, which
+    // `chainStaffFits` asks for, and that is a real throw on a real screen
+    // that happens not to have one.
+    if (target && drill?.kind === 'simon') cueSimonTurn(target);
     if (target && simonLightsNow()) showChainOnKeys(target);
   }
 

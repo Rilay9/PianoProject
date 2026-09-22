@@ -20,10 +20,13 @@
  *  - the exercise is playable from the on-screen keys at all, which is the
  *    difference between a measure and a measure you need a cable to take.
  *
- * **Nothing here is heard**, and one thing is recorded rather than tested: the
- * on-screen strip sends a fixed velocity, so the *voicing* and *shaping*
- * measures on `technique.5` and `technique.6` cannot be taken from it at all.
- * That is in Entry 38, not in an assertion here.
+ * **Nothing here is heard.** And the thing Entry 38 recorded rather than
+ * tested — the on-screen strip sends a fixed velocity, so the *voicing* and
+ * *shaping* measures on `technique.5` and `technique.6` cannot be taken from
+ * it at all — is now the second test below: the sheet has to **say** it could
+ * not measure, rather than printing 0 % of fifteen chords, which reads as
+ * *you played it flat* when what happened is that the glass could not say
+ * (FAULT 8, half-fixed by T17-2; the other half is the owner's).
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -32,6 +35,8 @@ import { setTempoPercent, withScoreMenu } from './scoreControls';
 const PHONE = { width: 342, height: 740 };
 /** The exercise this rung leads with for the articulation it teaches. */
 const STACCATO = 'exercise.articulation.c.staccato.right';
+/** `technique.6`'s voicing study — chords, and a velocity measure over them. */
+const VOICING = 'exercise.voicing.a';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -94,13 +99,13 @@ async function playToTheSummary(page: Page): Promise<void> {
   }
 }
 
-/** The rung's own row for the staccato study, tapped the ordinary way. */
-async function openFromTheRung(page: Page): Promise<void> {
+/** A rung's own row for one of its exercises, tapped the ordinary way. */
+async function openFromTheRung(page: Page, rung = 'technique.4', item = STACCATO): Promise<void> {
   await page.setViewportSize(PHONE);
-  await page.goto('/#/lesson/technique.4');
+  await page.goto(`/#/lesson/${rung}`);
   await expect(page.locator('section[data-screen="lesson"]')).toBeVisible();
-  const row = page.locator(`#lesson-exercises .list-row[data-item="${STACCATO}"]`);
-  await expect(row, `technique.4 no longer offers ${STACCATO}`).toBeVisible();
+  const row = page.locator(`#lesson-exercises .list-row[data-item="${item}"]`);
+  await expect(row, `${rung} no longer offers ${item}`).toBeVisible();
   await row.click();
   await expect(page.locator('section[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
   await expect(page.locator('#score-stage svg').first()).toBeVisible({ timeout: 60_000 });
@@ -153,5 +158,34 @@ test('the staccato study is playable from the keys and the summary says how shor
   // The sheet is headed for what the run *was* — `Mastered`, `Passed`, or
   // `Run finished` — and the technique line is on it either way, because it
   // is a measurement and not a verdict.
+  await expect(sheet.locator('h2')).toHaveText(/Mastered|Passed|Run finished/);
+});
+
+test('a measure the glass cannot take says so, rather than printing a nought', async ({ page }) => {
+  test.setTimeout(240_000);
+  // `technique.6`'s voicing study: does the top of each chord sing 1.4× the
+  // rest of it? `KeyboardStrip.ts` sends one fixed velocity for every touch,
+  // with the reason beside it — Android reports `pressure` as 0 or 1 — so
+  // played from the glass every chord comes out at a ratio of exactly 1.
+  await openFromTheRung(page, 'technique.6', VOICING);
+  await page.locator('#score-play').click();
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+
+  const sheet = page.locator('#score-summary');
+  await playToTheSummary(page);
+  await expect(sheet).toBeVisible({ timeout: 60_000 });
+
+  const measure = sheet.locator('[data-stat="top-note"]');
+  await expect(measure, 'the voicing study’s summary has no Top note line on it').toHaveCount(1);
+  // The line is there, and it says the measurement could not be taken — the
+  // same shape the articulation line already uses when the microphone never
+  // says when a key came up.
+  await expect(measure).toContainText('not measured');
+  // And specifically not the arithmetic on one repeated number, which is what
+  // it printed before: "0% of N chords sang the top note at least 1.4 times".
+  await expect(measure).not.toContainText('sang the top note');
+  // Not a pass it quietly failed, either: no technique rung states a rule in
+  // `mastery.custom`, so nothing here decides the verdict.
+  await expect(measure).not.toContainText('this rung requires it');
   await expect(sheet.locator('h2')).toHaveText(/Mastered|Passed|Run finished/);
 });

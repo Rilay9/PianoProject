@@ -1171,7 +1171,13 @@ def main(argv: list[str] | None = None) -> int:
     if failed:
         print("The file was written; read it before trusting it.", file=sys.stderr)
         return 2
-    print(f"checked: all {result['notes_in']} notes kept, every bar adds up")
+    # What was compared, not what is hoped: `notes_in` is the reader's own
+    # count of struck notes and `lost`/`added` compare those with the written
+    # score, so this line is about the quantiser and the writing — not about
+    # the bytes on disk, which only `test_converter`'s independent Note-On
+    # count reads (2026-09-22 review).
+    print(f"checked: all {result['notes_in']} notes the reader found are in the score, "
+          f"every bar adds up")
     return 0
 
 

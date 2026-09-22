@@ -826,6 +826,18 @@ export function LabScreen(router: Router): HTMLElement {
     passNotes = [];
     tradeLine.hidden = true;
     tradeLine.dataset.side = '';
+    // The verdicts go with the jam that earned them, for the reason the line
+    // above is hidden: `redraw()` calls this whenever a picker moves, so
+    // "Time round 3 · 6 of 9 in the blues scale" would otherwise stand over a
+    // chart that has just been redrawn from different chords, about a scale
+    // the learner may have changed. A verdict is about a run, and the run is
+    // over.
+    bedVerdict.textContent = '';
+    tradeVerdict.textContent = '';
+    tradeVerdict.dataset.cameIn = '';
+    // The app's own right hand was written for the bars that have just been
+    // dropped; `jamIt` writes it again from whatever the pickers now say.
+    bedBars = [];
     strip?.clear();
   }
 

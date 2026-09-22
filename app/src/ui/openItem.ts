@@ -32,8 +32,19 @@ export function targetFor(item: CatalogItem): OpenTarget {
   return 'none';
 }
 
-/** Navigates to wherever the item belongs. Returns false when nothing opened. */
-export function openItem(router: Router, item: CatalogItem): boolean {
+/**
+ * Navigates to wherever the item belongs. Returns false when nothing opened.
+ *
+ * `from` is the rung this was opened from, and it rides into the Score screen
+ * so that Back goes back to the rung rather than to the tab (`04` §5). Only
+ * the score door carries it: the drill screen and the PDF viewer have their
+ * own way out and neither was reported lost.
+ */
+export function openItem(
+  router: Router,
+  item: CatalogItem,
+  options: { from?: string } = {},
+): boolean {
   switch (targetFor(item)) {
     case 'pdf':
       router.navigatePdf(item.id);
@@ -42,7 +53,11 @@ export function openItem(router: Router, item: CatalogItem): boolean {
       router.navigateDrill(item.id);
       return true;
     case 'score':
-      router.navigateScore(item.id);
+      // The bare call where there is no rung, rather than one with an empty
+      // options object: three screens open items through here and their tests
+      // read the call, so "nothing was asked for" should look like nothing.
+      if (options.from === undefined) router.navigateScore(item.id);
+      else router.navigateScore(item.id, { from: options.from });
       return true;
     default:
       return false;

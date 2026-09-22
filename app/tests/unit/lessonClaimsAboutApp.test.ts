@@ -1189,7 +1189,11 @@ const T12_APP: [string, string, () => boolean][] = [
         tools.length === 1 &&
         tools[0]?.kind === 'duet' &&
         screen.includes("make('Play it as a duet'") &&
-        screen.includes("navigateScore(id, { mode: 'tempo', hands: 'R' })") &&
+        // The mode and the hand, and whatever else the call carries: T17-2
+        // added `from: rung.id` so Back returns to the rung (`04` §5), and an
+        // exact-string match would have read that as the duet breaking. The
+        // claim is the mode and the hand; it is not the argument list.
+        /navigateScore\(id, \{ mode: 'tempo', hands: 'R'/.test(screen) &&
         screen.includes('setDuetPlayback()')
       );
     },
@@ -1654,7 +1658,9 @@ const T12_APP: [string, string, () => boolean][] = [
         tools.length === 1 &&
         tools[0]?.kind === 'blind' &&
         screen.includes("make('Play it blind'") &&
-        screen.includes('navigateScore(id, { blind: true })')
+        // The blind flag, and whatever else the call carries: T17-2 added
+        // `from: rung.id` so Back returns to the rung (`04` §5).
+        /navigateScore\(id, \{ blind: true/.test(screen)
       );
     },
   ],

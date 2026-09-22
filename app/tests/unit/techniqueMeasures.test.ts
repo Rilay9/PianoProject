@@ -159,9 +159,14 @@ describe('shaping', () => {
   });
 
   it('misses a line that is loud and level, however accurate it was', () => {
-    const score = perfect(line([90, 90, 90, 90, 90]));
+    // Level, and not *identical*: a run in which every note is the same
+    // number to the unit has no dynamics in it at all and is refused rather
+    // than missed (see below). This one was played, and played flat.
+    const score = perfect(line([90, 90, 90, 90, 89]));
     expect(score.accuracy).toBe(1);
-    expect(techniqueMeasureFor(SHAPING, score, [])?.met).toBe(false);
+    const measure = techniqueMeasureFor(SHAPING, score, []);
+    expect(measure?.met).toBe(false);
+    expect(measure?.text).not.toMatch(/not measured/);
   });
 
   it('misses a line that wanders, which is the rule this one does catch', () => {
@@ -178,6 +183,96 @@ describe('shaping', () => {
     // again here so that wiring the scorer in did not quietly claim more than
     // the scorer measures.
     expect(techniqueMeasureFor(SHAPING, perfect(line([40, 40, 40, 40, 90])), [])?.met).toBe(true);
+  });
+});
+
+/**
+ * Two of the three cannot be taken from the on-screen keys (T17-2; Entry 38,
+ * FAULT 8).
+ *
+ * `KeyboardStrip.ts` sends a fixed `TOUCH_VELOCITY`, with the reason written
+ * beside it — Android reports touch `pressure` as 0 or 1, so there is nothing
+ * honest to derive a velocity from. Voicing and shaping are velocity measures,
+ * so from the glass they were arithmetic on one number repeated: every chord
+ * at a ratio of exactly 1, reported as **0 % of 15 chords**, and a line that
+ * **travelled 0 of the 30 asked for**. A learner reads that as *you played it
+ * flat*, when what happened is that the instrument could not say.
+ *
+ * The articulation measure is not here because it **is** reachable: held
+ * length is a timing fact and the glass reports key-up.
+ *
+ * What is tested is a fact about the run — every note at one velocity — and
+ * not a guess about the device, which is why these do not mention MIDI.
+ */
+describe('a measure that cannot be taken says so', () => {
+  /** What a chord struck on the glass looks like: one velocity, three notes. */
+  const flatChord = (velocity: number): RecordedNote[] => [
+    note({ midi: 60, velocity, stepIndex: 0 }),
+    note({ midi: 64, velocity, stepIndex: 0 }),
+    note({ midi: 72, velocity, stepIndex: 0 }),
+  ];
+  const flatLine = (velocity: number, n: number): RecordedNote[] =>
+    Array.from({ length: n }, (_, i) => note({ velocity, tMs: i * 400, stepIndex: i }));
+
+  it('refuses the voicing measure rather than reporting nought', () => {
+    const measure = techniqueMeasureFor(VOICING, perfect(flatChord(90)), []);
+    expect(measure?.label).toBe('Top note');
+    expect(measure?.text).toMatch(/not measured/);
+    expect(measure?.text).toMatch(/same velocity/);
+    expect(measure?.judged).toBe(0);
+    // And it does not quietly become a pass either: nothing was measured.
+    expect(measure?.met).toBe(false);
+  });
+
+  it('refuses the shaping measure for the same reason', () => {
+    const measure = techniqueMeasureFor(SHAPING, perfect(flatLine(90, 6)), []);
+    expect(measure?.label).toBe('Crescendo');
+    expect(measure?.text).toMatch(/not measured/);
+    expect(measure?.judged).toBe(0);
+    expect(measure?.met).toBe(false);
+  });
+
+  it('is about the velocities and not about the number 90', () => {
+    // Any single velocity, because the claim is "one number repeated" — a
+    // source that sent 64 for everything would be exactly as unreadable.
+    for (const velocity of [1, 64, 90, 127]) {
+      expect(techniqueMeasureFor(SHAPING, perfect(flatLine(velocity, 5)), [])?.text).toMatch(
+        /not measured/,
+      );
+    }
+  });
+
+  it('still measures a run with real dynamics in it', () => {
+    // The guard must not swallow the measure on a piano: one note different
+    // is enough for the scorers to have something to read.
+    const played = [
+      note({ midi: 60, velocity: 68, stepIndex: 0 }),
+      note({ midi: 64, velocity: 72, stepIndex: 0 }),
+      note({ midi: 72, velocity: 99, stepIndex: 0 }),
+    ];
+    const measure = techniqueMeasureFor(VOICING, perfect(played), []);
+    expect(measure?.text).not.toMatch(/not measured/);
+    expect(measure?.judged).toBe(1);
+  });
+
+  it('leaves the articulation measure alone, which the glass can take', () => {
+    // Held length is a timing fact, so a staccato study played on the screen
+    // keys is judged exactly as one played on a piano.
+    const steps = [step(0), step(1), step(2), step(3)];
+    const clipped = steps.map((s) =>
+      note({ tMs: s.tMs, releasedAtMs: s.tMs + 90, stepIndex: s.index, velocity: 90 }),
+    );
+    const measure = techniqueMeasureFor(STACCATO, perfect(clipped), steps);
+    expect(measure?.text).not.toMatch(/not measured/);
+    expect(measure?.met).toBe(true);
+    expect(measure?.judged).toBe(4);
+  });
+
+  it('says the more specific thing where both are true', () => {
+    // One note at one velocity is "no chord was struck", which is a truer
+    // answer than "no dynamics", so the count is checked first.
+    const measure = techniqueMeasureFor(VOICING, perfect([note({ velocity: 90 })]), []);
+    expect(measure?.text).toMatch(/no chord was struck/);
   });
 });
 

@@ -124,10 +124,15 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    * thinks and leaves the decision where it belongs. Cancelling does nothing
    * and costs one tap; there is no second warning and no tone of disapproval,
    * because skipping ahead is a legitimate thing to do.
+   *
+   * The rung rides along (`04` §5, `?from=`), so `← Back` on the Score screen
+   * comes back to this page rather than dropping the learner on Plan at
+   * whatever stage it was scrolled to. This page is where the rung's other
+   * options, its lesson and its *Know it* buttons are; the tab is not.
    */
   const open = (target: CatalogItem): void => {
     if (lock.locked && !window.confirm(confirmMessage(lock))) return;
-    void openItem(router, target);
+    void openItem(router, target, { from: lessonId });
   };
 
   function optionRow(id: string): HTMLElement {
@@ -166,7 +171,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
             // appears over a piece that has none.
             ...(hasChordSymbols(item)
               ? [
-                  button('Chart', () => { router.navigateChart(item.id); }, {
+                  // The rung rides along here too (`04` §3b, `?from=`), for
+                  // the reason `open` above carries it: a chart opened from
+                  // this row came out on the Library, which is not where the
+                  // learner was.
+                  button('Chart', () => { router.navigateChart(item.id, { from: lessonId }); }, {
                     variant: 'quiet',
                     ariaLabel: `Open the chord chart for ${item.title}`,
                   }),
@@ -293,7 +302,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         }),
       ];
       if (twin) {
-        actions.push(button('With the score', () => router.navigateScore(twin), { variant: 'quiet' }));
+        // The rung rides along here too (`04` §5): this is a door on the
+        // lesson page like any other, and it was the one nearly missed.
+        actions.push(
+          button('With the score', () => router.navigateScore(twin, { from: current.id }), {
+            variant: 'quiet',
+          }),
+        );
       }
       return listRow({
         title: entry.piece.title,
@@ -515,14 +530,14 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
           ? null
           : make('Play it as a duet', () => {
               setDuetPlayback();
-              router.navigateScore(id, { mode: 'tempo', hands: 'R' });
+              router.navigateScore(id, { mode: 'tempo', hands: 'R', from: rung.id });
             });
       }
       case 'blind': {
         const id = scorePiece();
         return id === null
           ? null
-          : make('Play it blind', () => { router.navigateScore(id, { blind: true }); });
+          : make('Play it blind', () => { router.navigateScore(id, { blind: true, from: rung.id }); });
       }
       case 'ladder': {
         // An *exercise*, not a song: the ladder loops the whole item, which is
@@ -539,7 +554,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
           }) ?? null;
         if (id === null) return null;
         const node = make('Climb the ladder', () => {
-          router.navigateScore(id, { mode: 'tempo', ladder: true });
+          router.navigateScore(id, { mode: 'tempo', ladder: true, from: rung.id });
         });
         // Which exercise it claims it will open, on the button, so the e2e can
         // compare the claim against where the tap lands.

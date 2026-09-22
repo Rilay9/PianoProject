@@ -452,6 +452,42 @@ function numberParam(params: Record<string, unknown> | undefined, name: string):
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
 }
 
+/**
+ * Did this run carry any dynamic information at all? (T17-2, Entry 38 FAULT 8.)
+ *
+ * The on-screen keys send a fixed velocity — `TOUCH_VELOCITY` in
+ * `ui/KeyboardStrip.ts`, with the reason beside it: Android reports touch
+ * `pressure` as 0 or 1, so there is nothing honest to derive one from. Two of
+ * the three technique measures are velocity measures: **voicing** asks whether
+ * the top of a chord sang above the rest of it, and **shaping** asks the line
+ * to travel a velocity range. Played from the glass, both are arithmetic on
+ * one number repeated — voicing reports every chord at a ratio of exactly 1
+ * and calls it 0 % of them, shaping reports a travel of 0 out of 30 — and a
+ * learner reads that as *you played it flat* when what happened is that the
+ * instrument could not say.
+ *
+ * So the measure refuses, in the same words the other unmeasurable cases
+ * already use (Entry 24 item 2: *not measured — the input did not say when the
+ * keys came up*, *not measured — no pedal message arrived*). **A fact about
+ * the run, not a guess about the device**: what is tested is that every note
+ * arrived at the same velocity, which is true of the glass and of any source
+ * that sends one number. Fewer than two notes is not flatness — the callers
+ * handle that case above with their own sentence.
+ *
+ * The honest full fix is still the owner's, and is in `pending-review`: a
+ * cable, or a measure those rungs do not take without one. This is the half
+ * that belongs on the summary sheet.
+ */
+export function velocityIsFlat(notes: readonly RecordedNote[]): boolean {
+  if (notes.length < 2) return false;
+  const first = notes[0]?.velocity;
+  return notes.every((note) => note.velocity === first);
+}
+
+/** What the sheet says where a velocity measure has no velocities to read. */
+const NO_DYNAMICS =
+  'not measured — every note arrived at the same velocity, which is what the on-screen keys send';
+
 export function techniqueMeasureFor(
   drill: { kind: string; params?: Record<string, unknown> } | null | undefined,
   score: SessionScore,
@@ -502,6 +538,11 @@ export function techniqueMeasureFor(
         judged: 0,
       };
     }
+    // After the count, because "no chord was struck" is the more specific
+    // answer where both are true.
+    if (velocityIsFlat(score.notes)) {
+      return { kind: drill.kind, label: 'Top note', text: NO_DYNAMICS, met: false, judged: 0 };
+    }
     return {
       kind: drill.kind,
       label: 'Top note',
@@ -524,6 +565,17 @@ export function techniqueMeasureFor(
         text: 'not measured — too few notes were heard to have a slope',
         met: false,
         judged: score.notes.length,
+      };
+    }
+    // A line of one velocity has no slope to read, and reporting it as a
+    // travel of nought blames the player for the instrument.
+    if (velocityIsFlat(score.notes)) {
+      return {
+        kind: drill.kind,
+        label: shape === 'diminuendo' ? 'Diminuendo' : 'Crescendo',
+        text: NO_DYNAMICS,
+        met: false,
+        judged: 0,
       };
     }
     return {
@@ -551,23 +603,38 @@ export function techniqueMeasureFor(
         judged: 0,
       };
     }
+    if (result.held === 0) {
+      return {
+        kind: drill.kind,
+        label: 'Half pedal',
+        // Messages arrived and every one of them was 0. That is not a switch —
+        // a switch has been seen to send 127 — and it is not a nought either:
+        // the exercise asks how the pedal was held and it was never put down.
+        text: 'not measured — the pedal never left the top',
+        met: false,
+        judged: 0,
+      };
+    }
     if (result.binaryPedal) {
       return {
         kind: drill.kind,
         label: 'Half pedal',
         text: 'not measured — this pedal is a switch, sending only 0 and 127',
         met: false,
-        judged: result.total,
+        judged: result.held,
       };
     }
     return {
       kind: drill.kind,
       label: 'Half pedal',
+      // "with the pedal down" is in the sentence because it is in the sum: the
+      // lifts are not counted and the learner is told so rather than left to
+      // wonder why the number is not the number of times the pedal moved.
       text: `${String(Math.round(result.share * 100))}% of ${String(
-        result.total,
-      )} pedal messages were between ${String(range[0])} and ${String(range[1])}`,
+        result.held,
+      )} pedal messages with the pedal down were between ${String(range[0])} and ${String(range[1])}`,
       met: result.share >= minShare,
-      judged: result.total,
+      judged: result.held,
     };
   }
 
@@ -630,7 +697,17 @@ export function accentScore(
 export const DEFAULT_HALF_PEDAL_RANGE: [number, number] = [32, 96];
 
 export interface HalfPedalResult {
+  /** Every CC64 message the run recorded, whatever the value. */
   total: number;
+  /**
+   * Those sent inside a pedal-down span, which is what `share` divides by.
+   *
+   * The rule: a message counts from the one that first takes the pedal off the
+   * top until the one that puts it back, that last one excluded. A value of 0
+   * is the only "damper fully up" a pedal has, so that set is exactly the
+   * messages above 0 and no span bookkeeping is needed to find it.
+   */
+  held: number;
   inRange: number;
   /**
    * How often the pedal was anything but fully up or fully down, which is the
@@ -660,23 +737,39 @@ export interface HalfPedalResult {
  * arithmetic would be the two-lists-of-one-fact shape this repository keeps
  * paying for.
  *
- * The denominator is every CC64 message rather than every chord: this is the
- * value held, not the timing of a change.
+ * The denominator is a count of CC64 messages rather than of chords: this is
+ * the value held, not the timing of a change.
+ *
+ * **Which messages** (2026-09-22 review): the ones inside a pedal-down span,
+ * from the message that takes the pedal off the top to the one that returns
+ * it there, that last one excluded — `held`, and equivalently every value
+ * above 0. It used to be all of them, and since `met` asks for nine in ten
+ * inside the range, **lifting the pedal counted against the pedalling**: a
+ * clean change is a lift and a return, so a run that half-pedalled perfectly
+ * through four phrases arrived at the sheet under the pass with a 0 for every
+ * lift in the denominator. The exercise asks how the pedal was held, and a
+ * message with it up is not an answer to that.
  */
 export function halfPedalScore(
   values: readonly number[],
   range: [number, number],
 ): HalfPedalResult {
   const [low, high] = range;
+  const down = values.filter((v) => v > 0);
   const total = values.length;
-  const inRange = values.filter((v) => v >= low && v <= high).length;
-  const partial = values.filter((v) => v > 0 && v < 127).length;
-  const binaryPedal = total > 0 && partial === 0;
+  const held = down.length;
+  const inRange = down.filter((v) => v >= low && v <= high).length;
+  const partial = down.filter((v) => v < 127).length;
+  // Judged on the messages that said something: a run whose pedal never left
+  // the top is not a switch — it only ever sent one of the two values — and
+  // `techniqueMeasureFor` says so in its own sentence.
+  const binaryPedal = held > 0 && partial === 0;
   return {
     total,
+    held,
     inRange,
     partial,
-    share: total > 0 && !binaryPedal ? inRange / total : 0,
+    share: held > 0 && !binaryPedal ? inRange / held : 0,
     binaryPedal,
   };
 }

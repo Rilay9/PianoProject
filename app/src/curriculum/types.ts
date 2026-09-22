@@ -211,11 +211,14 @@ export interface LessonTool {
   /**
    * For the Score-screen modes — which of this rung's options to open.
    *
-   * A rung's **song** options, which is what `validate.py`'s `tool_errors`
-   * checks it against (a `simon` is the exception and takes an exercise). A
-   * `ladder` opens an exercise and therefore takes no `item` at all: it uses
-   * the rung's first exercise that opens as notation, and an `item` written on
-   * one would fail validation rather than be honoured.
+   * One of the rung's **own** options, song or exercise, which is what
+   * `validate.py`'s `tool_errors` checks it against — a `simon` opens a drill
+   * and so takes an exercise, and since 2026-09-22 a `duet` or a `blind` may
+   * take one too (`04` §3d: `technique.7`'s sentence is about its exercise).
+   * A `ladder` takes no `item` at all: it uses the rung's first exercise that
+   * opens as notation, and one written on a `ladder` is refused by name —
+   * `tool_errors` says so in its own branch rather than leaving it to the
+   * song-option rule, which is what made this sentence false for a day.
    */
   item?: string;
   /** Overrides the default label where the rung wants to say something shorter. */

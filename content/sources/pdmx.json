@@ -35585,6 +35585,534 @@
         "decision": "keep",
         "note": "F major (1 flat), 4/4, 2 staves, 16 bars, 0 chord symbols; four independent single-line voices, none of them containing a chord - soprano 56 attacks (C4-D5), alto 45 (A3-G4), tenor 49 (F2-C4), bass 50 (F2-A3) - and the last bar closes C3 D3 E3 back to the tonic | plan hymns Stage 6 'The hymn as an arrangement', modes performance mode and lab; that rung is not built. It also satisfies hymns-gospel.3.1's requires staves 2 with 5.34 inside 3.2-7.3 | keep: the same arrangement as row 32 but with the voices written apart, which is what a duet or hand-focus mode reads, and sixteen bars that end rather than stop. compositionStatus pd. Nothing heard."
       }
+    },
+    {
+      "id": "song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx",
+      "cid": "QmScHzTHJGxJ2ifd6WBM6UJMX3t8P3CcHU4AnH3iaEhxkZ",
+      "file": "QmScHzTHJGxJ2ifd6WBM6UJMX3t8P3CcHU4AnH3iaEhxkZ.mxl",
+      "title": "At a Georgia camp meeting Mills 1897 Kerry Mills",
+      "composer": "Kerry Mills",
+      "artist": "Kerry Mills",
+      "rawSha256": "43fb9d93bb9d699d6d6eb35de0cccb6ebf5cd85e7021e67add439f47b135300d",
+      "convertedSha256": "fcb57e9a2403695b38b90616d80eba44ada2a47995d44756a149cdb58d11df11",
+      "musescoreId": "131463",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "5",
+      "bars": 92,
+      "notes": 738,
+      "tempoBpm": 100.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 92.0,
+        "notesPerBar": 15.228260869565217,
+        "notesPerSecond": 12.690217391304348,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 15.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 29.0,
+        "maxLeapLeft": 22.0,
+        "rangeRight": 46.0,
+        "rangeLeft": 46.0,
+        "blackKeyRatio": 0.07708779443254818,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.16274089935760172,
+        "distinctRhythms": 5.0
+      },
+      "level": 7.59,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.49
+        ],
+        [
+          "rangeLeft",
+          0.302
+        ],
+        [
+          "notesPerSecond",
+          0.198
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "G major then C, 2/4, 2 staves, 92 bars, 0 chord symbols; every bar of the lower staff counted - a single bass note answered by a chord above it in 62 of 92 bars, bar 5 reading G2 - B3+D4+G4 - D2 - B3+D4+G4 | ragtime.4 (the cakewalk) | fits: Kerry Mills 1897, the piece the ragtime plan names first for this rung, and its left hand is the oom-pah the eight exercises drill. Level 7.59, which is three levels above Stage 4"
+      }
+    },
+    {
+      "id": "song.pop.mederic-niot-summer-road-s-cakewalk.pdmx",
+      "cid": "QmVmQG3JbLJp2mapSZpY8i2dm9gSciiPz17cgVbhpsd23X",
+      "file": "QmVmQG3JbLJp2mapSZpY8i2dm9gSciiPz17cgVbhpsd23X.mxl",
+      "title": "Summer Road's Cakewalk",
+      "composer": "NA",
+      "artist": "Médéric Niot",
+      "rawSha256": "f72c8194ae00762cf579ae17616aa6546fd0d849fcb58c11b66ca61d934531ad",
+      "convertedSha256": "302fa969b6b575ab6ced9d341d4b479aa0adf0f70bed523a58ccd34a2f140ead",
+      "musescoreId": "5981759",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "6",
+      "bars": 61,
+      "notes": 927,
+      "tempoBpm": 120.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 61.0,
+        "notesPerBar": 19.934426229508198,
+        "notesPerSecond": 9.967213114754099,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 32.0,
+        "maxLeapLeft": 14.0,
+        "rangeRight": 49.0,
+        "rangeLeft": 29.0,
+        "blackKeyRatio": 0.22286184210526316,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.15049342105263158,
+        "distinctRhythms": 5.0
+      },
+      "level": 7.35,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.211
+        ],
+        [
+          "notesPerBar",
+          0.194
+        ],
+        [
+          "notesPerSecond",
+          0.126
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "B flat, 4/4, 2 staves, 58 bars with a left hand, 0 chord symbols; every bar counted - bass-then-chord in 26 of 58, bar 3 reading Bb2 - F3+A3 - F2 - Eb3 - D3 - F3+A3 - Bb2 - D3+F3, so the figure is at eighth rate with a walking bass rather than a static one | ragtime.4 (the cakewalk) | fits the figure, not the period: it is a living composer's own cakewalk released cc-zero, compositionStatus unknown, and at 7.35 it is three levels above Stage 4"
+      }
+    },
+    {
+      "id": "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx",
+      "cid": "QmVwLkktZ9vQDNhuy8Z857L7BRqAGqUeEZduRjwJNu2zze",
+      "file": "QmVwLkktZ9vQDNhuy8Z857L7BRqAGqUeEZduRjwJNu2zze.mxl",
+      "title": "L'amour est un oiseau rebelle",
+      "composer": "Georges Bizet",
+      "artist": "Georges Bizet",
+      "rawSha256": "710fac7a5e7f358f9bc9c5cba3bf0dee6b58f88c96eb53a43b00aae9081dfaee",
+      "convertedSha256": "cada0fcbce1b12e79d8fe0d1eab9afd5bb986e71c0e55a06e67969a1093a52aa",
+      "musescoreId": "2473441",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Georges Bizet died 1875 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1945",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "4",
+      "bars": 90,
+      "notes": 747,
+      "tempoBpm": 60.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 90.0,
+        "notesPerBar": 8.477777777777778,
+        "notesPerSecond": 4.238888888888889,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 8.0,
+        "maxSpanLeft": 7.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 11.0,
+        "rangeRight": 40.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.18086500655307994,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.125,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 5.0,
+        "ledgerRatio": 0.4233289646133683,
+        "distinctRhythms": 9.0
+      },
+      "level": 6.63,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.475
+        ],
+        [
+          "ledgerRatio",
+          0.341
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "D minor, 2/4, 2 staves, 90 bars, 0 chord symbols; left hand D2 - A2 on the last sixteenth of beat 1 - F3 - A2, the habanera figure exactly, in 85 of 90 bars and the dotted kick in 86 | latin.4 (the habanera) | fits: the rung is a left hand that plays the figure and this one plays nothing else. Bizet, compositionStatus pd. Level 6.63 is two levels above a Stage 4 band; that is a fact about the piece, not about the reading"
+      }
+    },
+    {
+      "id": "song.pop.los-tres-golpes-the-three-strikes.pdmx",
+      "cid": "Qmed1VTFgj2tuPmyAY4innVceBRXycchJQgF55gzQzgb2z",
+      "file": "Qmed1VTFgj2tuPmyAY4innVceBRXycchJQgF55gzQzgb2z.mxl",
+      "title": "Los Tres Golpes (The Three Strikes)",
+      "composer": "Ignacio Cervantes",
+      "artist": "NA",
+      "rawSha256": "38a4e0d1d595ce48a7b55844de161fe14a5d5b773e2d7cf8aad0d9836c77717c",
+      "convertedSha256": "b4f827238943ceb50cb3f8e7fcabf3eb88df44286b34dfb677513e5382014e82",
+      "musescoreId": "2420121",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "5",
+      "bars": 33,
+      "notes": 296,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 33.0,
+        "notesPerBar": 12.121212121212121,
+        "notesPerSecond": 9.696969696969697,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 16.0,
+        "maxLeapLeft": 22.0,
+        "rangeRight": 31.0,
+        "rangeLeft": 32.0,
+        "blackKeyRatio": 0.2525,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 4.0,
+        "ledgerRatio": 0.1125,
+        "distinctRhythms": 5.0
+      },
+      "level": 6.5,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.203
+        ],
+        [
+          "rangeLeft",
+          0.126
+        ],
+        [
+          "notesPerSecond",
+          0.118
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "E minor, 2/4, 2 staves, 33 bars, 0 chord symbols; every bar of the lower staff counted - the habanera figure exactly in 4 bars, the dotted kick in 10, a bass-then-chord oom-pah in 11 and four even eighths in 8 | latin.4 (the habanera) | fits, weakly: it is a Cuban danza by Cervantes and the figure is in it, but the left hand varies rather than holds it, so it is the piece the rung teaches the figure ON, not the piece that drills it. Level 6.5"
+      }
+    },
+    {
+      "id": "song.classical.nazareth-carioca-1913.pdmx",
+      "cid": "QmYH1DJQdxPZabqsHWojoQRXzqj3NEvm4XWa5YiNfgtMHW",
+      "file": "QmYH1DJQdxPZabqsHWojoQRXzqj3NEvm4XWa5YiNfgtMHW.mxl",
+      "title": "Carioca (1913)",
+      "composer": "ERNESTO NAZARETH",
+      "artist": "Ernesto Nazareth",
+      "rawSha256": "09a8e44386c45aad04551f3ae1f16bb6dc8e5ec7eb185158f71b8eabcbbbab96",
+      "convertedSha256": "2253d9b6bd4f54f257a11f6bb9c26854c5f01155ef5ebc8a8b5e815c949a122d",
+      "musescoreId": "5713491",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 78,
+      "notes": 837,
+      "tempoBpm": 70.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 78.0,
+        "notesPerBar": 14.987179487179487,
+        "notesPerSecond": 12.48931623931624,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 14.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 22.0,
+        "rangeRight": 44.0,
+        "rangeLeft": 38.0,
+        "blackKeyRatio": 0.6099230111206159,
+        "keyAccidentals": 5.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 0.0,
+        "ornaments": 12.0,
+        "ledgerRatio": 0.20444824636441403,
+        "distinctRhythms": 5.0
+      },
+      "level": 8.17,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.378
+        ],
+        [
+          "keyAccidentals",
+          0.34
+        ],
+        [
+          "rangeLeft",
+          0.209
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "B major (five sharps) then E, 2/4, 2 staves, 76 bars with a left hand, 0 chord symbols; every bar counted - the habanera figure exactly in 22 bars, the dotted kick in 50, an oom-pah in 24 | latin.4 (the habanera), or a latin rung above it | fits as music and not as level: Nazareth's Brazilian tango is the habanera bass under a different name, but 8.17 is four levels above Stage 4 and five sharps is the hardest key on this page"
+      }
+    },
+    {
+      "id": "song.classical.rodriguez-la-cumparsita.pdmx",
+      "cid": "QmVk7Me2CRhrct17L4D8SiMBaHdpL2jYxCVaJJpTQDnVxj",
+      "file": "QmVk7Me2CRhrct17L4D8SiMBaHdpL2jYxCVaJJpTQDnVxj.mxl",
+      "title": "La cumparsita",
+      "composer": "Música de Gerardo Matos Rodríguez",
+      "artist": "Gerardo Matos Rodríguez",
+      "rawSha256": "de2eb7b4d96b6eafb30356e95b015f78f67972b5915bde2204b57acd172f906c",
+      "convertedSha256": "19cfc2446406cda76c8fd84ed4f845c0df156cefe7eeaa3f3dedf6726a8c65de",
+      "musescoreId": "5893007",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 63,
+      "notes": 680,
+      "tempoBpm": 48.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 63.0,
+        "notesPerBar": 15.793650793650794,
+        "notesPerSecond": 6.317460317460317,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 19.0,
+        "maxLeapLeft": 17.0,
+        "rangeRight": 33.0,
+        "rangeLeft": 31.0,
+        "blackKeyRatio": 0.31758793969849247,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.125,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.10050251256281408,
+        "distinctRhythms": 6.0
+      },
+      "level": 7.2,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.233
+        ],
+        [
+          "shortestValue",
+          0.195
+        ],
+        [
+          "rangeLeft",
+          0.111
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "G minor, 2/4, 2 staves, 63 bars, 0 chord symbols; every bar counted - the marcato four (bass, chord, bass, chord on the four eighths of a 2/4 bar) in 24 bars, bar 2 reading D2 - A2 - F#3 - A2, and the habanera figure in 7 | latin.8 (modern tango) | fits the band and not the word modern: 7.2 sits inside 6.5-8.0 and the left hand is the tango bass written out, but La Cumparsita is 1916. The catalog's other copy (on latin.6) is a 16-bar second-strain tutorial, so this is a fuller edition of the same work and not a repeat"
+      }
+    },
+    {
+      "id": "song.pop.hans-otto-borgmann-tango-notturno.pdmx",
+      "cid": "QmdVUPP8RphroBWSK7FpsbWxLoyp6kQQuGA6KG9EPdDZc7",
+      "file": "QmdVUPP8RphroBWSK7FpsbWxLoyp6kQQuGA6KG9EPdDZc7.mxl",
+      "title": "Tango Notturno",
+      "composer": "Hans - Otto Borgmann",
+      "artist": "Hans-Otto Borgmann",
+      "rawSha256": "856926f3ad73232501bc1ad339f664a5aa62b1f40e9367a1917b4b79f900d553",
+      "convertedSha256": "8cd32e8e7b7f3c6ff9e140305542c4784b09c7519e672ac20f583db781fe33cb",
+      "musescoreId": "5943628",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "5",
+      "bars": 54,
+      "notes": 569,
+      "tempoBpm": 108.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 54.0,
+        "notesPerBar": 20.09259259259259,
+        "notesPerSecond": 9.041666666666666,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 18.0,
+        "maxLeapRight": 29.0,
+        "maxLeapLeft": 19.0,
+        "rangeRight": 32.0,
+        "rangeLeft": 31.0,
+        "blackKeyRatio": 0.2,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 21.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.07649769585253456,
+        "distinctRhythms": 7.0
+      },
+      "level": 6.97,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          0.197
+        ],
+        [
+          "bars",
+          0.128
+        ],
+        [
+          "rangeLeft",
+          0.111
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "D minor, 4/4, 2 staves, 54 bars, 47 chord symbols over ten chords including Bbdim7 and Eb7; every bar counted - a chord on all four quarters in 26 of 54, bar 2 reading Eb2+Eb3 four times | latin.8 (modern tango) | fits the band at 6.97 and the bass is the four-square tango marcato; it is a 1937 German film tango, so like La Cumparsita it answers tango and not modern. Its chord symbols also give it a Chart button, which nothing else on this page has"
+      }
+    },
+    {
+      "id": "song.folk.el-gordo-triste-piazzolla-ferrer.pdmx",
+      "cid": "QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG",
+      "file": "QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG.mxl",
+      "title": "El gordo triste (Piazzolla-Ferrer)",
+      "composer": "Astor Piazzolla",
+      "artist": "Astor Piazzolla",
+      "rawSha256": "e66397a1e9c8101fcced60bc80c747dde8be750503083cffe32c30d3030a6f24",
+      "convertedSha256": "de6af53d2e3965f6c718f2a027784ed11358ed93cc9b00c23248b51e1aeb6591",
+      "musescoreId": "336476",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "5",
+      "bars": 41,
+      "notes": 530,
+      "tempoBpm": 57.99999999999999,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 41.0,
+        "notesPerBar": 22.975609756097562,
+        "notesPerSecond": 5.552439024390243,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 24.0,
+        "maxLeapRight": 37.0,
+        "maxLeapLeft": 17.0,
+        "rangeRight": 37.0,
+        "rangeLeft": 31.0,
+        "blackKeyRatio": 0.31210191082802546,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.3333333333333333,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 20.0,
+        "ornaments": 2.0,
+        "ledgerRatio": 0.03503184713375796,
+        "distinctRhythms": 7.0
+      },
+      "level": 6.85,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          0.255
+        ],
+        [
+          "rangeLeft",
+          0.111
+        ],
+        [
+          "voicesPerStaff",
+          0.101
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "D, 4/4, 2 staves, 40 bars with a left hand, 56 chord symbols over 22 distinct chords; every bar counted - a full chord on all four quarters in 16 of 40 and a single oom-pah bar, bar 1 reading B3+D4+F#4 struck four times | latin.8 (modern tango) | fits, and it is the only Piazzolla on this page that converted: 6.85 is inside 6.5-8.0 and the left hand is the marcato four. compositionStatus unknown - a 1974 composition under an uploader's cc-zero, which 00 D23 admits to the personal build as a label"
+      }
     }
   ]
 }

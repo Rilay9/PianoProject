@@ -112,6 +112,28 @@ test('a rung whose duet names an exercise opens the exercise', async ({ page }) 
   ).toBe(true);
 });
 
+/**
+ * FAULT 9 (Entry 38), fixed by T17-2: `← Back` went to the tab.
+ *
+ * The duet button is one of the rung's own doors, so the whole path is here:
+ * press it, land on the Score screen, press Back, and be on the rung again —
+ * the page with the rung's other options, its lesson and its *Know it*
+ * buttons on it. Before the fix this landed on Plan, at whatever stage it
+ * happened to be scrolled to.
+ */
+test('Back from a run opened by the rung’s button returns to the rung', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize(PHONE);
+  await duetFromTheRung(page, '2.1');
+  expect(new URL(page.url()).hash, 'the rung is not in the route').toMatch(/from=2\.1/);
+  await page.locator('#score-back').click();
+  await expect(page.locator('section[data-screen="lesson"]')).toBeVisible();
+  expect(new URL(page.url()).hash).toBe('#/lesson/2.1');
+  // And the rung's own button is there to be pressed again, which is what
+  // "back to the rung" is for.
+  await expect(page.locator('#lesson-tool-duet')).toBeVisible();
+});
+
 test('sideways the Duet row survives, and it still names the hand', async ({ page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize(SIDEWAYS);

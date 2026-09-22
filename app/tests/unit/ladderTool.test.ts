@@ -155,7 +155,12 @@ describe('the button on a rung', () => {
     // copied into a test — the copy that failed the day a rung was repointed.
     expect(node?.dataset.item).toBe(SCALE);
     node?.click();
-    expect(router.navigateScore).toHaveBeenCalledWith(SCALE, { mode: 'tempo', ladder: true });
+    // The rung rides along so Back returns to it (`04` §5, T17-2).
+    expect(router.navigateScore).toHaveBeenCalledWith(SCALE, {
+      mode: 'tempo',
+      ladder: true,
+      from: '4.1',
+    });
   });
 
   it('skips an option that is a prompt loop rather than notation', async () => {

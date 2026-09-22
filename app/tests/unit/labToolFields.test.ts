@@ -225,7 +225,13 @@ describe('a duet may open one of the rung’s exercises', () => {
     await mount([{ kind: 'duet', item: EXERCISE }]);
     expect(toolButtons()).toEqual(['Play it as a duet']);
     document.querySelector<HTMLButtonElement>('#lesson-tool-duet')?.click();
-    expect(router.navigateScore).toHaveBeenCalledWith(EXERCISE, { mode: 'tempo', hands: 'R' });
+    // And the rung, so `← Back` returns to it rather than to the tab
+    // (`04` §5, T17-2).
+    expect(router.navigateScore).toHaveBeenCalledWith(EXERCISE, {
+      mode: 'tempo',
+      hands: 'R',
+      from: 'technique.7',
+    });
   });
 
   it('draws nothing for an option that opens as a drill rather than as notation', async () => {
@@ -244,6 +250,10 @@ describe('a duet may open one of the rung’s exercises', () => {
   it('takes the rung’s first playable song when no item is named', async () => {
     await mount([{ kind: 'duet' }]);
     document.querySelector<HTMLButtonElement>('#lesson-tool-duet')?.click();
-    expect(router.navigateScore).toHaveBeenCalledWith(SONG, { mode: 'tempo', hands: 'R' });
+    expect(router.navigateScore).toHaveBeenCalledWith(SONG, {
+      mode: 'tempo',
+      hands: 'R',
+      from: 'technique.7',
+    });
   });
 });

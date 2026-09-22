@@ -208,31 +208,48 @@ export function ScoreScreen(router: Router): HTMLElement {
   const routeLadder = router.route.ladder === true;
   const tourId = router.route.tour;
   /**
+   * The rung that opened this screen, if one did (`04` §5, `?from=`).
+   *
+   * Read once, like the tour, because it is a property of how the screen was
+   * opened and not of anything that happens on it.
+   */
+  const fromRung = router.route.scoreFrom;
+  /**
    * The tour's parameters, for a navigation that has to keep them.
    *
    * Blind and Perform are routes, so pressing either rebuilds the screen from
    * the hash — and without these the learner would be silently dropped out of
    * the tour by a control that has nothing to do with it. The hand rides here
    * for the same reason: a duet opened from the Library (`04` §4) would lose
-   * its hand — and so the app's half of it — on a tap of Blind.
+   * its hand — and so the app's half of it — on a tap of Blind. And the rung,
+   * for the same reason again: Blind on a piece opened from `2.1` must not
+   * turn Back into a tab.
    */
   const tourRoute = {
     ...(routeMode ? { mode: routeMode } : {}),
     ...(router.route.scoreHands ? { hands: router.route.scoreHands } : {}),
     ...(routeLoop ? { loop: routeLoop } : {}),
     ...(tourId === undefined ? {} : { tour: tourId }),
+    ...(fromRung === undefined ? {} : { from: fromRung }),
   };
   /**
-   * Where Back goes: the tour that opened this, or the tab it came from.
+   * Where Back goes: the tour that opened this, the rung that opened it, or
+   * the tab it came from.
    *
    * All three ways off this screen — the header's Back, its twin at the bar's
    * left end when the phone is sideways, and Done on the summary sheet — go
    * through here, because a tour that can only be resumed from one of the
    * three is a tour the learner loses by finishing a run.
+   *
+   * **The tour wins over the rung** where both are in the hash. The tour is a
+   * walkthrough with a next step in it and the learner is inside it; the rung
+   * is still there when the walkthrough ends. A Back that dropped somebody out
+   * of a tour is the fault `?tour=` was added to fix.
    */
   function leaveScore(): void {
-    if (tourId === undefined) router.navigate(router.route.tab);
-    else router.navigateDrill(tourId);
+    if (tourId !== undefined) router.navigateDrill(tourId);
+    else if (fromRung !== undefined) router.navigateLesson(fromRung);
+    else router.navigate(router.route.tab);
   }
   let item: CatalogItem | undefined;
   /**
@@ -276,6 +293,14 @@ export function ScoreScreen(router: Router): HTMLElement {
    * starts, not on every render — a line that keeps reappearing is noise.
    */
   let saidPlayingHand = false;
+  /**
+   * Whether this visit has already said the run judges rhythm alone (T17-2).
+   *
+   * Once, like the hand, and reset when the `⋯` row is touched — a learner who
+   * switches it on mid-visit is told the next time a run starts, and a ladder
+   * restarting the run between passes says nothing at all.
+   */
+  let saidRhythmRun = false;
   /**
    * A bar being played back on its own (P21c B4).
    *
@@ -924,6 +949,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       rhythmOnly = !rhythmOnly;
       settings.rhythmOnly = rhythmOnly;
       updateSettings({ rhythmOnly });
+      // Worth saying again: what the next run judges has just changed, and
+      // the sentence that says so is said once per visit (T17-2).
+      saidRhythmRun = false;
       // What is judged has changed, so what is being measured has changed: a
       // run cannot carry half of each.
       if (session?.running) startRun();
@@ -1116,7 +1144,11 @@ export function ScoreScreen(router: Router): HTMLElement {
    * a piece with none is a screen of empty bars.
    */
   const chartButton = button('Open the chart', () => {
-    router.navigateChart(itemId);
+    // The rung rides on where this screen was opened from one, so the chart's
+    // own Back reaches it rather than the Library (`04` §3b). Bare where there
+    // is none, the way `openItem` calls `navigateScore`.
+    if (fromRung === undefined) router.navigateChart(itemId);
+    else router.navigateChart(itemId, { from: fromRung });
   }, 'score-chart');
   const chartRow = menuRow(
     'Chord chart',
@@ -1505,7 +1537,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       render();
       return;
     }
-    sayWhichHandIsPlayed(runMode);
+    sayWhatThisRunIs(runMode);
     attachInput();
     void requestWakeLock();
     // Starting a run is what arms the auto-hide.
@@ -1631,23 +1663,55 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
-   * Says, once per run, that the sound is the app playing the other hand.
+   * Which hand the app is about to play under the learner, or nothing.
    *
    * Only when there is another hand to play: with `Both` chosen nothing is
    * played under you, and in a Listen or `Hear it` run the whole point is
    * that the app is playing, which the button already said.
    */
-  function sayWhichHandIsPlayed(runMode: Mode): void {
-    if (saidPlayingHand) return;
-    if (runMode === 'listen' || runMode === 'free') return;
-    if (hands === 'both') return;
-    if (settings.playbackHands !== 'non-focused') return;
+  function handPlayedFor(runMode: Mode): 'left' | 'right' | null {
+    if (runMode === 'listen' || runMode === 'free') return null;
+    if (hands === 'both') return null;
+    if (settings.playbackHands !== 'non-focused') return null;
     // Only when that hand has notes: "playing the left hand for you" over a
     // right-hand tune is a sentence about nothing.
-    if (model?.handsPresent[hands === 'R' ? 'L' : 'R'] !== true) return;
-    const other = hands === 'R' ? 'left' : 'right';
-    status.textContent = `Playing the ${other} hand for you`;
-    saidPlayingHand = true;
+    if (model?.handsPresent[hands === 'R' ? 'L' : 'R'] !== true) return null;
+    return hands === 'R' ? 'left' : 'right';
+  }
+
+  /**
+   * Says, once per run, what is different about this run.
+   *
+   * Two things can be, and both are the same class of thing: something the
+   * screen is doing that the learner did not ask for *on this screen, now*.
+   * The app playing the other hand is a sound arriving from nowhere (P21c B3).
+   * A **rhythm-only** run is the other one, and it was silent — the mode
+   * selector on the bar reads *Keep tempo*, which is exactly what the run is
+   * not, and `rhythmOnly` is a remembered setting (§5), so somebody who chose
+   * it a week ago met it again with nothing in front of them saying so until
+   * the summary. Two searches on 2026-09-22 found the state on the section
+   * element, the row inside the `⋯` sheet and the summary's heading, and
+   * nothing on the screen while the run was going (`pending-review` Entry 38,
+   * FAULT 7).
+   *
+   * One line, because there is one status line: where both apply they are
+   * joined rather than one overwriting the other, and each is said once so a
+   * ladder restarting the run between passes does not repeat them.
+   */
+  function sayWhatThisRunIs(runMode: Mode): void {
+    const parts: string[] = [];
+    if (!saidRhythmRun && rhythmRunFor(runMode)) {
+      // The learner's terms, and the same words the `⋯` row's hint opens
+      // with, because it is the same setting said in the place it now acts.
+      parts.push('Rhythm only — tap the rhythm on any key');
+      saidRhythmRun = true;
+    }
+    const other = saidPlayingHand ? null : handPlayedFor(runMode);
+    if (other !== null) {
+      parts.push(`Playing the ${other} hand for you`);
+      saidPlayingHand = true;
+    }
+    if (parts.length > 0) status.textContent = parts.join(' · ');
   }
 
   /** `Hear it`: start a Listen run, or stop the one this button started. */

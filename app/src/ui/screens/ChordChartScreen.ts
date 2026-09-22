@@ -47,7 +47,31 @@ export function barAt(beatBar: number, barsLength: number): { bar: number; choru
 export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   const { section, header, body } = screenFrame('chart', 'Chord chart');
   const status = statusLine('chart-status');
-  header.prepend(button('← Library', () => router.navigate('library'), { variant: 'quiet', id: 'chart-back' }));
+  /**
+   * The rung that opened this chart, if one did (`04` §3b, `?from=`).
+   *
+   * Read once, like the Score screen's, because it is a property of how the
+   * screen was opened and not of anything that happens on it. Entry 42 gave
+   * the Score screen this mechanism and recorded that the chart had the same
+   * fault one screen over: a hard-coded `← Library`, so *Chart* on `jazz.5`'s
+   * song row came out on the Library rather than on the rung whose lesson
+   * describes the chart, and whose other songs are the ones to try next.
+   */
+  const fromRung = router.route.chartFrom;
+  /** Back: the rung that opened this, or the Library it is a view of. */
+  function leaveChart(): void {
+    if (fromRung === undefined) router.navigate('library');
+    else router.navigateLesson(fromRung);
+  }
+  header.prepend(
+    // The label still says where it goes (`00` §1: a control says what it
+    // does). It names the screen rather than the rung, because a rung is an
+    // id and an id in a label is room the words need.
+    button(fromRung === undefined ? '← Library' : '← Lesson', leaveChart, {
+      variant: 'quiet',
+      id: 'chart-back',
+    }),
+  );
 
   const grid = el('div.chart-grid', { id: 'chart-grid' });
   const form = el('div.chart-form', { id: 'chart-form' });
@@ -305,6 +329,22 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   // --- load ---------------------------------------------------------------
 
   /**
+   * The way out a dead end offers: back to the rung, where one opened this.
+   *
+   * Same reasoning as the header's Back. A learner who pressed *Chart* on a
+   * rung and met "there are no chord symbols in this" wants that rung back —
+   * its other songs are the ones to try next — rather than a library to find
+   * their way through again. With no rung in the route each branch keeps the
+   * offer it had, which is why the label and the action are arguments and not
+   * a constant: *Import a copy* is the right words for the unbundled case and
+   * the wrong ones for the rung.
+   */
+  function wayOut(label: string, act: () => void, id: string): [string, () => void, string] {
+    if (fromRung === undefined) return [label, act, id];
+    return ['Back to the lesson', () => { router.navigateLesson(fromRung); }, 'chart-open-lesson'];
+  }
+
+  /**
    * The sentence, then the one control that does what it suggests (`04` §0 R4).
    *
    * Every way this screen can fail ends here, because every one of them ends
@@ -334,9 +374,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       if (!item) {
         deadEnd(
           `There is nothing in the library called “${itemId}”.`,
-          'Open the library',
-          () => router.navigate('library'),
-          'chart-open-library',
+          ...wayOut('Open the library', () => { router.navigate('library'); }, 'chart-open-library'),
         );
         return;
       }
@@ -356,9 +394,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         // copy is the only way to get the notes — and therefore the chords.
         deadEnd(
           `${item.title} is not bundled, so there is no file to read chords from — import your own copy.`,
-          'Import a copy',
-          () => router.navigate('library'),
-          'chart-open-library',
+          ...wayOut('Import a copy', () => { router.navigate('library'); }, 'chart-open-library'),
         );
         return;
       }
@@ -374,7 +410,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         deadEnd(
           `${item.title} has no chord symbols in it.`,
           'Open on the Score screen',
-          () => router.navigateScore(itemId),
+          // The rung rides on, so Back from *that* screen comes here as well
+          // rather than dropping the learner on a tab (`04` §5).
+          () => {
+            if (fromRung === undefined) router.navigateScore(itemId);
+            else router.navigateScore(itemId, { from: fromRung });
+          },
           'chart-open-score',
         );
         return;
@@ -395,9 +436,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     } catch (cause) {
       deadEnd(
         `That chart could not be opened: ${cause instanceof Error ? cause.message : String(cause)}`,
-        'Open the library',
-        () => router.navigate('library'),
-        'chart-open-library',
+        ...wayOut('Open the library', () => { router.navigate('library'); }, 'chart-open-library'),
       );
       status.classList.add('status--error');
     }

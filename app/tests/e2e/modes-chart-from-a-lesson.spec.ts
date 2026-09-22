@@ -134,6 +134,44 @@ test('a count-off runs it, what is played is answered, and Stop stops', async ({
   await expect(page.locator('#chart-grid .chart-cell').first()).toBeVisible();
 });
 
+test('Back from a chart opened by a lesson row returns to that rung', async ({ page }) => {
+  // The fault Entry 42 recorded and did not fix: `ChordChartScreen` had a
+  // hard-coded `← Library`, so pressing *Chart* on a rung's song row and then
+  // Back left the learner on the Library — not on the page holding the piece's
+  // alternatives, the rung's lesson and its *Know it* buttons. The Score
+  // screen's `?from=` is the mechanism; this is the same one, one screen over.
+  test.setTimeout(120_000);
+  await chartFromTheLesson(page);
+  const back = page.locator('#chart-back');
+  await expect(back).toHaveText('← Lesson');
+  await back.click();
+  await expect(page.locator('section[data-screen="lesson"]')).toBeVisible();
+  expect(new URL(page.url()).hash).toBe('#/lesson/jazz.5');
+  // And the door is there to press again, which is what "back where I was"
+  // means on this page.
+  await expect(
+    page.locator('#lesson-songs button[aria-label^="Open the chord chart"]').first(),
+  ).toBeVisible();
+});
+
+test('a chart opened from the Library still says Library, and goes there', async ({ page }) => {
+  // The other half of the rule, so the test above is about the rung and not
+  // about the button's words: with no rung in the hash nothing changed.
+  await page.setViewportSize(PHONE);
+  await page.goto('/#/lesson/jazz.5');
+  await expect(page.locator('section[data-screen="lesson"]')).toBeVisible();
+  const row = page
+    .locator('#lesson-songs .list-row[data-item]')
+    .filter({ has: page.locator('button[aria-label^="Open the chord chart"]') })
+    .first();
+  const itemId = (await row.getAttribute('data-item')) ?? '';
+  await page.goto(`/#/chart/${encodeURIComponent(itemId)}`);
+  await expect(page.locator('section[data-screen="chart"]')).toBeVisible({ timeout: 60_000 });
+  await expect(page.locator('#chart-back')).toHaveText('← Library');
+  await page.locator('#chart-back').click();
+  await expect(page.locator('section[data-screen="library"]')).toBeVisible();
+});
+
 test('a piece the build measured no chords in is offered no door', async ({ page }) => {
   // The negative case, which is what keeps the door off pieces where it would
   // open four empty bars: `1.1`'s songs are single-line tunes with no harmony.

@@ -143,6 +143,14 @@ vi.mock('../../src/score/ScoreSession', () => ({
     state = null;
     prepared = null;
     expectedNow: number[] = [];
+    /**
+     * The screen refuses to start a run the learner has nothing to play in —
+     * a Wait run on a hand this piece does not use would sit on its first step
+     * for ever. The fixture is two hands of quarter notes, so the stub says
+     * what the real session would say of it; without this every `▶` in this
+     * file would stop at "Nothing to play in this piece".
+     */
+    learnerHasNotes = true;
     constructor(options: { onFinished?: (score: SessionScore, looped: boolean) => void }) {
       onFinishedRef.current = options.onFinished ?? null;
     }
@@ -206,7 +214,9 @@ interface FakeRouter {
   route: Route;
   navigate: ReturnType<typeof vi.fn>;
   navigateDrill: ReturnType<typeof vi.fn>;
+  navigateLesson: ReturnType<typeof vi.fn>;
   navigateScore: ReturnType<typeof vi.fn>;
+  navigateChart: ReturnType<typeof vi.fn>;
 }
 
 function routerFor(hash: string): FakeRouter {
@@ -216,7 +226,9 @@ function routerFor(hash: string): FakeRouter {
     route: { ...parseHash(hash), tab: 'plan' },
     navigate: vi.fn(),
     navigateDrill: vi.fn(),
+    navigateLesson: vi.fn(),
     navigateScore: vi.fn(),
+    navigateChart: vi.fn(),
   };
 }
 
@@ -486,6 +498,176 @@ describe('the way back out', () => {
     const { router } = await open(`#/score/${SONG_ID}?tour=../../etc/passwd`);
     click('score-back');
     expect(router.navigate).toHaveBeenCalledWith('plan');
+  });
+});
+
+/**
+ * A rhythm run says what it is, on the screen, while it is running (T17-2,
+ * Entry 38 FAULT 7).
+ *
+ * `rhythmOnly` is a remembered setting, and during a run the bar's mode
+ * selector reads *Keep tempo* — which is exactly what the run is not. The
+ * state was on the section element, in the `⋯` sheet and in the summary's
+ * heading, and nowhere in front of the learner while the run was going. The
+ * screen already had the shape for it: *Playing the left hand for you*, said
+ * once at the start of a run, for the same class of reason.
+ */
+describe('a rhythm run says so while it is running', () => {
+  afterEach(() => {
+    updateSettings({ rhythmOnly: DEFAULT_SETTINGS.rhythmOnly });
+  });
+
+  it('says it once, at the start of the run, not only in the sheet', async () => {
+    updateSettings({ rhythmOnly: true });
+    const { section } = await open(`#/score/${SONG_ID}?mode=tempo`);
+    expect(section.dataset.rhythm).toBe('true');
+    // Nothing yet: it is a line about the run, and no run has started.
+    expect(document.querySelector('#score-status')?.textContent).toBe('');
+    click('score-play');
+    expect(document.querySelector('#score-status')?.textContent).toContain('Rhythm only');
+  });
+
+  it('and says nothing in a mode that has no rhythm run in it', async () => {
+    // Wait has no timetable, so `rhythmRunFor` refuses it and the run is an
+    // ordinary one — a line saying otherwise would be false.
+    updateSettings({ rhythmOnly: true });
+    const { section } = await open(`#/score/${SONG_ID}?mode=wait`);
+    expect(section.dataset.rhythm).toBe('false');
+    click('score-play');
+    expect(document.querySelector('#score-status')?.textContent).not.toContain('Rhythm only');
+  });
+
+  it('and nothing at all when the setting is off', async () => {
+    const { section } = await open(`#/score/${SONG_ID}?mode=tempo`);
+    expect(section.dataset.rhythm).toBe('false');
+    click('score-play');
+    expect(document.querySelector('#score-status')?.textContent).not.toContain('Rhythm only');
+  });
+
+  it('says it once, not at every restart the ladder makes', async () => {
+    updateSettings({ rhythmOnly: true });
+    await open(`#/score/${SONG_ID}?mode=tempo`);
+    click('score-play');
+    expect(document.querySelector('#score-status')?.textContent).toContain('Rhythm only');
+    // Something else writes the line, the way the ladder's own verdict does…
+    const status = document.querySelector('#score-status');
+    if (status) status.textContent = 'Clean — up to 70 %';
+    click('score-play');
+    click('score-play');
+    expect(document.querySelector('#score-status')?.textContent).toBe('Clean — up to 70 %');
+  });
+
+  it('and is worth saying again once the row itself has been touched', async () => {
+    // Once per visit is right for a run restarting under the ladder and wrong
+    // for a learner who has just changed what the next run judges.
+    updateSettings({ rhythmOnly: true });
+    const { section } = await open(`#/score/${SONG_ID}?mode=tempo`);
+    click('score-play');
+    expect(document.querySelector('#score-status')?.textContent).toContain('Rhythm only');
+    click('score-rhythm');
+    expect(section.dataset.rhythm).toBe('false');
+    click('score-rhythm');
+    expect(section.dataset.rhythm).toBe('true');
+    const status = document.querySelector('#score-status');
+    if (status) status.textContent = 'Clean — up to 70 %';
+    click('score-play');
+    expect(document.querySelector('#score-status')?.textContent).toContain('Rhythm only');
+  });
+});
+
+/**
+ * `?from=<rung>` — Back returns to the rung that opened this (T17-2, FAULT 9).
+ *
+ * `leaveScore()` had two answers, the tour and `route.tab`, so a learner who
+ * pressed *Play it as a duet* on `2.1` — or tapped one of the rung's own song
+ * rows — came out of the run on **Plan**, at whatever stage it happened to be
+ * scrolled to, rather than on the page holding the rung's other options, its
+ * lesson and its *Know it* buttons.
+ *
+ * All three exits, for the reason the tour has all three: a way back that
+ * works from the header and not from the summary is one the learner loses by
+ * finishing a run.
+ */
+describe('a rung in the hash', () => {
+  const RUNG = '2.1';
+
+  it('Back returns to the rung that opened it, not to the tab', async () => {
+    const { router } = await open(`#/score/${SONG_ID}?from=${RUNG}`);
+    click('score-back');
+    expect(router.navigateLesson).toHaveBeenCalledWith(RUNG);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('so does the copy of Back the phone shows sideways', async () => {
+    const { router } = await open(`#/score/${SONG_ID}?from=${RUNG}`);
+    click('score-back-side');
+    expect(router.navigateLesson).toHaveBeenCalledWith(RUNG);
+  });
+
+  it('and so does Done on the summary sheet at the end of a run', async () => {
+    const { router } = await open(`#/score/${SONG_ID}?from=${RUNG}`);
+    expect(onFinishedRef.current).not.toBeNull();
+    onFinishedRef.current?.(emptyScore(), false);
+    click('summary-done');
+    expect(router.navigateLesson).toHaveBeenCalledWith(RUNG);
+  });
+
+  it('a track rung is a lesson id too, and is carried', async () => {
+    // `classical.3` and `blues.7` start with a letter; the first version of
+    // the lesson-id pattern required a leading digit and silently made 61 of
+    // the 92 lesson pages unreachable by URL (`router.ts`).
+    const { router } = await open(`#/score/${SONG_ID}?from=blues.7`);
+    click('score-back');
+    expect(router.navigateLesson).toHaveBeenCalledWith('blues.7');
+  });
+
+  it('the tour wins when both are in the hash', async () => {
+    // The learner is inside a walkthrough with a next step in it; the rung is
+    // still there when the walkthrough ends. Dropping somebody out of a tour
+    // is the fault `?tour=` was added to fix.
+    const { router } = await open(`#/score/${SONG_ID}?tour=${TOUR_ID}&from=${RUNG}`);
+    click('score-back');
+    expect(router.navigateDrill).toHaveBeenCalledWith(TOUR_ID);
+    expect(router.navigateLesson).not.toHaveBeenCalled();
+  });
+
+  it('does not strand the learner on a from that is not a lesson id', async () => {
+    const { router } = await open(`#/score/${SONG_ID}?from=../../etc/passwd`);
+    click('score-back');
+    expect(router.navigate).toHaveBeenCalledWith('plan');
+    expect(router.navigateLesson).not.toHaveBeenCalled();
+  });
+
+  it('rides on into the chord chart, whose Back had the same fault', async () => {
+    // The ⋯ sheet's *Open the chart* is the other door into `04` §3b, and
+    // the chart's own Back is now `?from=` as well — so a chart opened from a
+    // run that was opened from a rung comes back to that rung rather than to
+    // the Library. The row is hidden unless the piece carries chord symbols
+    // and this fixture does not, so the handler is called directly: what is
+    // being tested is what the button *does*, and `chartDoor.test.ts` and
+    // `doors.spec.ts` are what test whether it is drawn.
+    const { router } = await open(`#/score/${SONG_ID}?from=${RUNG}`);
+    click('score-chart');
+    expect(router.navigateChart).toHaveBeenCalledWith(SONG_ID, { from: RUNG });
+  });
+
+  it('and opens the chart bare where no rung opened the run', async () => {
+    const { router } = await open(`#/score/${SONG_ID}`);
+    click('score-chart');
+    expect(router.navigateChart).toHaveBeenCalledWith(SONG_ID);
+  });
+
+  it('rides along with Blind, which rebuilds the screen from the hash', async () => {
+    // The same reason the hand rides: a control that has nothing to do with
+    // where you came from must not change where Back goes.
+    const { router } = await open(`#/score/${SONG_ID}?mode=wait&from=${RUNG}`);
+    click('score-blind');
+    expect(router.navigateScore).toHaveBeenCalledWith(SONG_ID, {
+      mode: 'wait',
+      from: RUNG,
+      blind: true,
+      performance: false,
+    });
   });
 });
 

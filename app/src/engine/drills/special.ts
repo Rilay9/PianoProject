@@ -334,23 +334,28 @@ export class PedalDrill implements Drill {
    * Half pedal: how much of the run was spent with the damper part-way.
    *
    * Not the timing of a change but the *value* held, so the denominator is
-   * every CC64 message rather than every chord. A run with no pedal messages
-   * at all scores zero and says so — the alternative, treating silence as a
-   * pass, would give full marks to a piano with no pedal connected.
+   * counted in CC64 messages rather than in chords — the ones sent with the
+   * pedal off the top, which is the rule `Scoring.halfPedalScore` states and
+   * both callers take. A run with no pedal messages at all scores zero and
+   * says so — the alternative, treating silence as a pass, would give full
+   * marks to a piano with no pedal connected.
    */
   private halfPedalResult(range: [number, number]): DrillResult {
     const [low, high] = range;
     // The arithmetic is `Scoring.halfPedalScore`'s, asked rather than repeated
     // (T16 item 6): the same exercise is judged here on the drill screen and
     // there on the Score screen, and two copies of the rule would drift.
-    const { total, inRange, partial, share: accuracy, binaryPedal } = halfPedalScore(
+    const { total, held, inRange, partial, share: accuracy, binaryPedal } = halfPedalScore(
       this.pedalValues,
       range,
     );
     return {
       kind: this.kind,
       total: this.chords.length,
-      answered: total,
+      // The messages `accuracy` divides by, so `correct of answered` is the
+      // fraction the screen prints. The lifts are counted in `pedalMessages`
+      // below and are not part of the judgement — see `halfPedalScore`.
+      answered: held,
       correct: inRange,
       accuracy,
       meanReactionMs: 0,
@@ -359,6 +364,9 @@ export class PedalDrill implements Drill {
         halfPedalLow: low,
         halfPedalHigh: high,
         pedalMessages: total,
+        // Of those, the ones sent with the pedal off the top, which is what
+        // the share is taken over (`Scoring.halfPedalScore`).
+        heldMessages: held,
         inRange,
         // How often the pedal was anything but fully up or fully down, which is
         // the habit this exercise exists to build. A count rather than a flag:

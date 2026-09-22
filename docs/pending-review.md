@@ -6908,3 +6908,1281 @@ lesson, `named after` against the working tree. A dash is a rung that carries no
 | `theory.9` | simon | none (no paragraph) | simon | — |
 | `improv.9` | play | none (no paragraph) | play | — |
 | `ragtime.9` | blind | blind | blind | — |
+
+---
+
+### Entry 42 — T17-2: the six faults Entry 38 recorded and did not fix (2026-09-22)
+
+Entry 38 drove every mode in the browser and left nine FAULT lines, six of them unfixed.
+This entry takes those six in the order the brief set — 9, 2, 7, 7b, 6, 8 — and gives each
+one a **fixed** line or a **not-fixed** line with the reason. **Nothing here was heard**, in
+exactly the sense Entry 38 meant it: every verdict below is what the screen said back, and
+not one assertion in the tests named here is about sound.
+
+Files: `app/src/**`, `app/tests/**`, `docs/04-ui-spec.md`, this entry. `content/` and
+`tools/` untouched.
+
+#### FAULT 9 — `← Back` went to the tab, not to the rung. **Fixed.**
+
+`leaveScore()` had two answers: the walkthrough in `?tour=`, or `router.route.tab`. So a
+learner who pressed *Play it as a duet* on `2.1` — or tapped one of the rung's own song rows —
+came out of the run on **Plan**, scrolled wherever Plan happened to be, rather than on the
+page holding that piece's alternatives, the rung's lesson and its *Know it* buttons.
+
+**The change.** A third answer on the same mechanism the tour already uses: `?from=<lesson
+id>`, parsed by `looksLikeLessonId` and dropped when it is not one, written by every door the
+lesson page opens a score through (`open()` → `openItem`, and the `duet`, `blind` and `ladder`
+tool buttons), read once by the Score screen and used by all three exits. It rides through
+Blind and Perform with the mode, the hand and the tour. **The tour wins where both are
+present** — the learner is inside a walkthrough that has a next step; the rung is still there
+when it ends.
+
+Files: `src/router.ts` (the route field, the parse, the serialise, the `navigateScore`
+option, and the route comparison), `src/ui/openItem.ts` (an options argument, score door
+only), `src/ui/screens/LessonScreen.ts` (**five** call sites), `src/ui/screens/ScoreScreen.ts`
+(`leaveScore`, and the ride-along set). `docs/04-ui-spec.md` §5 gained the paragraph in the
+same step.
+
+**Two of those came out of the self-audit, not out of the first pass** (`00` §2.15, a change
+has more than one consumer), and both are worth naming because the work read as finished
+without them:
+
+* **`Router.setRoute` compares routes field by field** and did not compare `scoreFrom`. The
+  same piece opened from `2.1` and then from the Library would have been "the same route",
+  so the second visit would have kept the first one's Back and never redrawn. One line, and
+  `router.test.ts`'s new *treats the same piece opened from somewhere else as a different
+  route* is red without it: `expected [ undefined, '2.1' ] to deeply equal [ undefined,
+  '2.1', undefined ]`.
+* **A shelf piece's *With the score*** is a fifth door on the lesson page, three hundred
+  lines from the other four, inside `drawPaper`. The sentence "every door the lesson page
+  opens a score through" was written before that door was found, and was false when written.
+  `lessonPaperBookPicker.test.ts` now drives it against a fake IndexedDB with a book, a
+  piece and a catalog twin, and is red without the change.
+
+**Seen red first**, `tests/unit/scoreTourRoute.test.ts`, seven new cases in *a rung in the
+hash*:
+
+* Reverting `leaveScore()`'s body to `if (tourId === undefined) router.navigate(router.route.tab);`
+  — the line that was there — turns four of them red: *Back returns to the rung that opened
+  it, not to the tab*, its sideways twin, *Done on the summary sheet*, and *a track rung is a
+  lesson id too* (`blues.7`, which starts with a letter). `AssertionError: expected "vi.fn()"
+  to be called with arguments: [ '2.1' ]`.
+* Removing the one line `...(fromRung === undefined ? {} : { from: fromRung }),` from
+  `tourRoute` turns the seventh red on its own: *rides along with Blind, which rebuilds the
+  screen from the hash*. The other six stay green, which is what makes it that line's test.
+* The two that stayed green either way are the refusals — the tour winning, and a `from` that
+  is not a lesson id falling back to the tab — and they are green because the parser and the
+  branch order are the same code the tour's own cases already covered.
+
+**And the other half, in the browser**: `tests/e2e/modes-duet.spec.ts`, *Back from a run
+opened by the rung's button returns to the rung* — `2.1` → *Play it as a duet* → `← Back` →
+`#/lesson/2.1` with the button there to press again. The unit test proves the screen; this
+proves the lesson page actually writes the rung into the route.
+
+**One test of somebody else's was loosened, deliberately.**
+`tests/unit/lessonClaimsAboutApp.test.ts`'s `2.1` claim asserted the exact string
+`navigateScore(id, { mode: 'tempo', hands: 'R' })`. The claim it stands for is "the duet
+opens the rung's first playable song with the right hand chosen", which is still true; the
+argument list is not the claim. It is now the regex `/navigateScore\(id, \{ mode: 'tempo',
+hands: 'R'/`, which fails for the same reasons and tolerates a further option. The `hymns.4`
+claim next to it already matched that way (`[\s\S]{0,160}?hands: 'R'`) and needed no change.
+
+**Not changed, and worth saying:** the Library's *Open as…* doors, Today's daily read and the
+chord chart still open a score with no rung in the route, so Back from those is the tab it has
+always been. Only the lesson page knows which rung it is.
+
+#### FAULT 2 — the lab's trade row and pickers below the fold at 342 px. **Not fixed**, and now measured per element.
+
+Entry 38 said "what to drop from the six things above the pickers is a design decision" and
+struck the spec's claim instead. This pass re-measured it properly before deciding, because
+"six things" is not a number anybody can act on. Driven at **342×740**, the app built from
+this tree, with a throwaway spec that read `getBoundingClientRect()` off every block on the
+screen and then threw the list as its failure message. The fold is at 740 and the first block
+starts at 98.
+
+| block | from the Library door | arriving from a rung (`?preset=blues-shuffle`) |
+|---|---:|---:|
+| `Start from` group (label, help, chips) | 98 → 261 | 98 → 261 |
+| the preset's name and blurb | — | 261 → 346 |
+| the lede (what the two buttons do) | 261 → 321 | 356 → 416 |
+| the settings summary | 327 → 367 | 422 → 462 |
+| **Read it · Jam it** | 375 → 423 | 470 → 518 |
+| `What the app plays` group | 431 → 634 | 526 → 773 |
+| `Trading fours` group | 642 → 757 | 781 → 896 |
+| the pickers (`#lab-settings`) | **790** | **929** |
+
+So arriving from a rung the *Trading fours* row is **entirely** below the fold and the
+pickers begin **189 px** below it; from the Library door the trade row is clipped and the
+pickers miss by 50.
+
+**Why it is not fixed rather than fixed.** 189 px have to come from somewhere above, and
+every candidate is a decision somebody has already made on the record:
+
+* **the ranking** — lede, summary, buttons, then the two chip rows, then the pickers — is the
+  owner's, 2026-09-19, and §3c states it;
+* **the documentation** — the `Start from` line (45 px), the preset blurb (part of 85), the
+  lede (60), the `What the app plays` line and the `Trading fours` line (about 45 each) — is
+  the owner's ask of 2026-09-22 (*"doesn't have enough documentation"*), built four days
+  after the ranking. Together they are roughly the 189 px, which is the whole of the fault;
+* the two `bed`/`trade` groups' own words are `LAB_HELP` and `labHelp.test.ts` holds the spec
+  table to them, so shortening them is a spec change, not a layout one.
+
+Three candidates, sized, for whoever decides:
+
+1. **Merge the two chip rows into one.** They are already exclusive — §3c: "Pressing either
+   turns the other off" — so *Bed only · Hold the chords · Play the tune · 2 bars each · 4
+   bars each* is one control saying one true thing, and it buys a label, a help paragraph and
+   a chip row, about **115 px**. Cost: `LabScreen.ts`'s two draw functions merged, one
+   `LAB_HELP` entry instead of two, §3c's table and three paragraphs, and four e2e files that
+   name `#lab-trade-row`, `#lab-trade-0` and `#lab-bed-row` (`lab-both-ways`,
+   `modes-trading-fours`, `modes-hold-the-chords`, `modes-play-the-tune`). It does **not** on
+   its own bring the pickers up — it brings the trade options up.
+2. **Drop the `Start from` help line while a preset is on** (45 px). Cheap and arguable both
+   ways: the preset's own blurb is directly under it saying the specific version of the same
+   thing (`00` §1, never say it twice) — but its second sentence, *Free leaves every setting
+   to you*, is the only thing on the screen that says how to get **out** of a preset, and it
+   is most needed exactly when one is on. Not done for that reason.
+3. **Put the help lines behind one disclosure**, which is what §0 R1 literally prescribes
+   ("the long version lives behind or below the thing it explains … never above it") and
+   would buy the lot. It also puts four days-old owner-requested documentation behind a tap.
+
+**What R1 actually asks of this screen, said plainly.** `LabScreen.ts`'s own comment ranks
+the pickers last on purpose — "the pickers — long, read once, changed rarely — are under all
+three" — so on this screen the *subject* is the preset and the two buttons, and both are in
+the first screenful on both paths. The remaining true complaint is narrower than "the pickers
+are below the fold": **two chip rows that change what *Jam it* does sit below the button they
+change**, and on a phone the learner can press it having never seen them. That is option 1's
+case, and it is the one worth putting to the owner.
+
+**No test.** A test asserting the present layout would pin the fault; a test asserting the
+fixed one would be red on purpose. Nothing was added.
+
+#### FAULT 7 — a rhythm run said nothing about itself outside the `⋯` sheet. **Fixed.**
+
+`rhythmOnly` is a remembered setting, so a learner who chose it a week ago meets it again
+with the bar's mode selector reading *Keep tempo* — which is exactly what the run is not.
+Entry 38's two searches found the state on the section element, on the row inside the sheet
+and in the summary's heading, and nothing in front of the learner while the run was going.
+
+**The change.** The shape the screen already had: `sayWhichHandIsPlayed` became
+`sayWhatThisRunIs`, which composes the one status line out of the things this run is doing
+that nobody asked for on this screen now. A rhythm run adds **Rhythm only — tap the rhythm on
+any key**; where the app is also playing a hand the two are **joined** with ` · ` rather than
+one overwriting the other, which is why the hand's own sentence moved into the same function
+rather than being called beside it. Said **once**, so a ladder restarting the run between
+passes repeats nothing, and again after the `⋯` row itself has been touched, because what the
+next run judges has just changed. `docs/04-ui-spec.md` §5 gained the paragraph under *Rhythm
+only* and a clause on the *Playing the left hand* sentence, in the same step.
+
+**Seen red first**, `tests/unit/scoreTourRoute.test.ts`, five new cases in *a rhythm run says
+so while it is running* — the Score screen mounts there, so this did not need a browser:
+
+* Removing the four-line block `if (!saidRhythmRun && rhythmRunFor(runMode)) { … }` from
+  `sayWhatThisRunIs` turns three red — *says it once, at the start of the run, not only in
+  the sheet*, *says it once, not at every restart the ladder makes*, and *is worth saying
+  again once the row itself has been touched*: `AssertionError: expected '' to contain
+  'Rhythm only'`.
+* Removing the one line `saidRhythmRun = false;` from the `⋯` row's own handler turns the
+  last of those red on its own: `expected 'Clean — up to 70 %' to contain 'Rhythm only'`.
+  **This test was rewritten to get there.** The first version toggled the row on from *off*
+  and passed with the line removed, because the flag is only ever set when a rhythm run
+  actually starts; it proved nothing, and it is now the off-and-on-again case, which is the
+  one the line is for.
+* The two that assert the line is **absent** — in Wait, which has no timetable, and with the
+  setting off — stay green either way, as an absence test should.
+
+One thing the stub needed: `learnerHasNotes = true` on this file's `ScoreSession` double, or
+every `▶` in it stops at *Nothing to play in this piece*. The fixture is two hands of quarter
+notes, so that is what the real session would say of it.
+
+**And in the browser**: `tests/e2e/modes-rhythm-only.spec.ts`, inside *it opens judged on
+timing, answers any key, and says what the run was* — one assertion on `#score-status` right
+after `▶`, with the `⋯` sheet shut. The spec's header paragraph, which recorded this as
+"recorded rather than asserted", was rewritten to say what is now asserted.
+
+#### FAULT 7b — Simon's "your turn" was the absence of everything else. **Fixed.**
+
+By design the lights, the note name and the play-along staff go out on one timer so the
+display cannot be a crib, and Entry 38 called the result correct and thin: the only positive
+cue was the prompt line, and it reads *Play the chain back* from the first moment of the card
+to the last, so it says the same thing in both halves of the exchange.
+
+**The change.** The status line — which on this screen sits under the prompt and above the
+buttons for exactly this class of message (`04` §0 R6), and which already says *Tap the
+rhythm on any key* for the rhythm drill — says which half we are in: **Listen — the app is
+playing.** as the chain starts, **Your turn — play it back.** on the same moment the lights
+go out. That moment is now one function, `chainEndsAtMs`, used by the clear-down and by the
+cue, rather than the same arithmetic written twice. On **every** rung of the help ladder,
+including *Ear only*, which is the rung with nothing else on the screen at all. `04` §5c-2
+gained the paragraph in the same step.
+
+**It names no note**, which is the whole of what keeps the crib rule, and that is asserted
+rather than asserted-about: both the unit test and the browser test read the run's own
+expected pitches off the screen and check none of their letter names is in the line.
+
+**The first version of this was broken on two of the three help rungs, and the checklist
+caught it** (`00` §1a, a plural is several claims). The cue was scheduled **after**
+`showChainOnKeys`, and the report said "every rung of the help ladder" on the strength of
+the call being keyed on `drill.kind` rather than on the help level — an argument, not
+evidence. Naming the three rungs one at a time turned *show-keys* red: `chainStaffFits()`
+asks `window.matchMedia`, jsdom has none, so drawing the help **threw** and took the
+hand-over cue with it. The two tests written first had both landed on `ear-only`, which is
+`SIMON_DEFAULT_HELP`, so "three rungs" had been one rung tested twice.
+
+Fixed by ordering, not by a guard: `cueSimonTurn` now runs **before** the help. Whose turn
+it is is the drill; the lit keys and the staff are the extra, which is what
+`showChainOnKeys`'s own catch already says of the staff. The browser never showed this —
+a real screen has `matchMedia` — which is the point: the cue must not depend on the help
+display succeeding.
+
+**Seen red first**, `tests/unit/simonTurnCue.test.ts` (new; the drill screen mounts, the way
+`dictationCard.test.ts` mounts it), five cases — two about the cue and one for each rung of
+the ladder, each checking its own chip is the pressed one because an unrecognised `help`
+falls back rather than throwing. Removing the one line
+`if (target && drill?.kind === 'simon') cueSimonTurn(target);` from `playPromptWithHelp`
+turns all five red: `AssertionError: expected 'The piano samples are not loaded, so …' to
+contain 'Your turn'` — which is also the reason those assertions are about the cue arriving
+and not about the line being empty first: jsdom has no audio, the piano load fails, and the
+screen says so on the same line.
+
+**And in the browser**: `tests/e2e/modes-simon.spec.ts`, inside *the keys answer the chain,
+and the counter says so* — after the card goes back to its glyph, `#drill-status` says *Your
+turn*, and none of the chain's own note letters is in it. The comment there that called the
+going-out "the only 'your turn' this mode has" was removed, because it no longer is.
+
+#### FAULT 6 — the chord chart subscribes to the on-screen keyboard and draws no keyboard. **Not fixed: it is a feature.** The spec was corrected instead.
+
+Confirmed, not taken on trust: `grep -n "KeyboardStrip\|KeyView" ui/screens/ChordChartScreen.ts`
+returns nothing, and `grep -n "screenKeyboardSource" ui/screens/ChordChartScreen.ts` returns
+one line — the `onNote` subscription at `:299`. So the amber/green chord matching `04` §3b
+promises is reachable with a cable and unreachable from the glass, on the one screen in the
+app whose subject is "play this chord".
+
+**Why not fixed.** Adding a keyboard to a screen is not a fix in the screen; it is a feature,
+and this task's rule was to fix a fault only where the fix is small and in the screen. Sized
+against the two screens that already do it:
+
+* the construction itself is small — `LabScreen.ts` spends about **25 lines** on host,
+  `new KeyboardStrip({ interactive: true, … })`, wiring `onNoteOn`/`onNoteOff` to
+  `screenKeyboardSource`, and a `destroy()` on dispose; `FreePlayScreen.ts` is the same shape
+  in fewer;
+* the **design** is not small, and it is the real cost. What do the keys show when nothing is
+  being played? The lab lights the current bar's chord tones (`showChordOnKeys`), which on
+  this screen would be a second answer to the question the chart is already answering, and a
+  chart that lights the chord for you is a different exercise from one that checks what you
+  played. That is the owner's call, not a code decision.
+* the **height** is not small either. This screen prints the whole form at once, and T17 had
+  to move `#chart-controls` above the grid three days ago because *Count off ▶* was hundreds
+  of pixels below the fold at 342 px. A strip is 72 px of key plus its own margin
+  (`.lab-strip .keyboard-strip { --key-h: 72px }`), and where it sits relative to a chart you
+  scroll is the same question again.
+* plus `04` §3b's own paragraph, and a sideways rule (`05`/§0 R5) the lab needed.
+
+**What was done instead**, because a spec that has drifted is worse than none (`00` §4):
+§3b's sentence "the input chip still works (mic/MIDI can highlight the chord you actually
+play vs the chart, amber if different)" now carries a paragraph saying it is a **MIDI**
+feature and not reachable from the glass, why, and what building it would cost. The dead
+subscription was **left in place**: it is not a control, nothing on screen offers it, and
+deleting it would only have to be written again the day the strip lands.
+
+#### FAULT 8 — two of the three technique measures cannot be taken from the on-screen keys. **Half fixed** — the sheet now says so. The other half is the owner's.
+
+`KeyboardStrip.ts` sends `TOUCH_VELOCITY = 90` for every touch, with the reason beside it:
+Android reports `pressure` as 0 or 1, so there is nothing honest to derive a velocity from.
+Voicing and shaping are velocity measures, so played from the glass they were arithmetic on
+one number repeated. The two sentences the sheet printed, taken from the failing assertions
+when the guard was removed:
+
+* `0% of 1 chords sang the top note at least 1.4 times the rest (mean 1.00×)`
+* `travelled 0 of the 30 asked for, 100% of it in the right direction`
+
+A learner reads those as *you played it flat*. What happened is that the instrument could not
+say, and `technique.5` and `technique.6` are the rungs those exercises are options of.
+
+**The change** is the honest half the brief named, and it is the shape Entry 24 item 2
+already built for the other unmeasurable cases (*not measured — the input did not say when
+the keys came up*; *not measured — no pedal message arrived*; *this pedal is a switch*).
+`techniqueMeasureFor` refuses the voicing and shaping measures where **every note of the run
+arrived at the same velocity**, with the line *not measured — every note arrived at the same
+velocity, which is what the on-screen keys send*. It is a **fact about the run and not a
+guess about the device** (`00` §1a), so any source sending one number is caught, and the
+device is named as the likely cause rather than as the test. Order matters and is
+deliberate: voicing checks "no chord was struck with more than one note" **first**, because
+where both are true that is the more specific answer. **Articulation is untouched** — held
+length is a timing fact and the glass reports key-up, so the staccato study is measured from
+the screen keys exactly as it is from a piano, which is what `modes-technique-measure.spec.ts`
+has proved since T17.
+
+**Seen red first**, `tests/unit/techniqueMeasures.test.ts`, a new block *a measure that
+cannot be taken says so* (seven cases). Removing the two guards
+(`if (velocityIsFlat(score.notes)) { … }` in the voicing branch and in the shaping branch)
+turns three of them red with exactly the two sentences quoted above. The other four stay
+green by design: they are the ones that say the guard must **not** fire — a run with real
+dynamics in it, a staccato study, and the single-note case whose truer answer is "no chord
+was struck".
+
+**One existing test was corrected, not loosened.** *misses a line that is loud and level,
+however accurate it was* used `line([90, 90, 90, 90, 90])` — every note identical, which is
+now the refused case rather than a missed one. It is `line([90, 90, 90, 90, 89])`: level, and
+played. Its assertion gained `expect(measure?.text).not.toMatch(/not measured/)`, so it now
+states which of the two it is testing.
+
+**And in the browser**: `tests/e2e/modes-technique-measure.spec.ts` gained *a measure the
+glass cannot take says so, rather than printing a nought* — `technique.6` → its own row for
+`exercise.voicing.a` → played to the summary off the keys the strip lights → the *Top note*
+line reads *not measured* and does **not** read *sang the top note*. `openFromTheRung` now
+takes the rung and the item, defaulting to the staccato pair it had, so the two tests share
+one door.
+
+**The half that is still the owner's**, unchanged from Entry 38: either a cable, or a measure
+those two rungs can take without one. Nothing here makes `technique.5` or `technique.6`
+completable from a phone; it stops them lying about why.
+
+#### What was run
+
+* `npx tsc -b` — clean. (`tsc --noEmit -p` checks nothing; `00` §3.)
+* `npm run lint` — clean, after one of its own findings: the new browser assertion in
+  `modes-simon.spec.ts` carried an `as string` the rule calls unnecessary.
+* `npx vitest run` — **179 files, 2,816 tests, all passing.**
+* `npm run build:app`, then Playwright **one spec at a time** on port 4173 against one
+  preview server, with no build running (`00` §3; the service worker swaps under a run
+  otherwise). Eight spec files, **66 tests**, all passing:
+
+| spec | tests | why it was run |
+|---|---:|---|
+| `modes-duet.spec.ts` | 5 | changed — the new Back-to-the-rung test |
+| `modes-rhythm-only.spec.ts` | 4 | changed — the new *Rhythm only* assertion |
+| `modes-simon.spec.ts` | 3 | changed — the new turn-cue assertion |
+| `modes-technique-measure.spec.ts` | 2 | changed — the new refusal test |
+| `modes-ladder.spec.ts` | 4 | unchanged, but the ladder button's route gained `from=` |
+| `lesson-tools.spec.ts` | 4 | unchanged, but every lesson door's route gained `from=` |
+| `tour-practice-modes.spec.ts` | 10 | unchanged, and it owns the other branch of `leaveScore` |
+| `score.screen.spec.ts` | 34 | unchanged, and it owns the status line the two new sentences share (*says once that the app is playing the left hand*, B3) |
+
+#### Counts
+
+Six faults: **four fixed** (9, 7, 7b, and the half of 8 that belongs on the sheet), **two
+not** (2, 6), each with its reason and its size above. **Four source areas** changed —
+`router.ts` + `openItem.ts` + `LessonScreen.ts` + `ScoreScreen.ts` (FAULT 9),
+`ScoreScreen.ts` (7), `DrillScreen.ts` (7b), `engine/Scoring.ts` (8). **Five spec sections**
+changed in the same steps as the behaviour: §3b (6, corrected), §5 twice (9 and 7), §5's
+summary-sheet list (8), §5c-2 (7b).
+
+**Twenty-eight new unit tests and two new browser tests**, plus two assertions added inside
+browser tests that already existed:
+
+| fault | new unit tests | in the browser |
+|---|---:|---|
+| 9 | 7 (`scoreTourRoute.test.ts`, *a rung in the hash*) + 3 (`router.test.ts`) + 1 (`lessonPaperBookPicker.test.ts`) | 1 new test in `modes-duet.spec.ts` |
+| 7 | 5 (`scoreTourRoute.test.ts`, *a rhythm run says so while it is running*) | 1 assertion inside `modes-rhythm-only.spec.ts`'s existing run |
+| 7b | 5 (`simonTurnCue.test.ts`, new file) | 2 assertions inside `modes-simon.spec.ts`'s existing chain |
+| 8 | 7 (`techniqueMeasures.test.ts`, *a measure that cannot be taken says so*) | 1 new test in `modes-technique-measure.spec.ts` |
+| 2, 6 | none — not fixed | none |
+
+**Five existing tests were changed**, all of them assertions that had pinned an argument list
+rather than the claim they were named for, and all of them because `from:` joined the call:
+
+1. `lessonClaimsAboutApp.test.ts`, `2.1`'s duet claim — exact string to a regex prefix.
+2. `lessonClaimsAboutApp.test.ts`, `4.6`'s blind claim — the same.
+3. `labToolFields.test.ts` ×2 — now assert `from: 'technique.7'` as well, which is stronger
+   than what they had.
+4. `ladderTool.test.ts` — now asserts `from: '4.1'`.
+5. `techniqueMeasures.test.ts`, *misses a line that is loud and level* — its fixture was
+   every note identical, which is now the refused case; it is level-but-played, and says so.
+
+`openItem` was also changed so that it calls `navigateScore(id)` bare where there is no rung,
+rather than `navigateScore(id, {})`: three screens open items through it and their tests read
+the call, and `progressRanking.test.ts` and `everyOptionOpens.test.ts` were both red for that
+reason before the second shape.
+
+#### What is unverified
+
+* **Nothing was heard**, in Entry 38's sense and for the same reason. The Simon cue, the
+  rhythm line and the technique refusal are all assertions about text on a screen.
+* **The technique refusal was driven on one exercise**, `exercise.voicing.a` from
+  `technique.6`. `exercise.shaping.a.crescendo` on `technique.5` is the other rung's case and
+  it is **unit-tested only** — the same code path, the same guard, but not driven.
+* **One size, one orientation** for everything new: 342×740 upright. Nothing below was driven
+  at 740×342, on the tablet, or at 115 % text. The rhythm line and the Simon cue both land on
+  a status line that §0 R5 and §0 R6 lay out differently sideways.
+* **FAULT 2's measurement is one build of one screen at one size.** It was taken with a
+  throwaway spec that has been deleted; the numbers are in the table above and are not under
+  test, so they will rot. What is not in question is the ordering, which is in the code.
+* **The chord chart has the same Back fault one screen over, and it is not fixed.**
+  `grep -n "Back\|navigate(" ui/screens/ChordChartScreen.ts` returns a hard-coded
+  `← Library` at `:50` and three dead-end branches that go to Library as well — so *Chart*
+  pressed on `jazz.5`'s song row lands on Library, not on `jazz.5`. Entry 38's FAULT 9 named
+  `leaveScore()` and only that, so this is outside what was recorded; found while checking
+  the plural above. Its label at least says where it goes, which the Score screen's bare
+  `← Back` did not. The same `?from=` would fix it.
+* **The `from=` route was driven from the duet button only.** The same line writes it for
+  *Play it blind*, *Climb the ladder* and every option row, and those are covered by unit
+  tests reading the call rather than by a browser pressing them.
+* **`docs/08-test-map.md` still has neither Entry 38's fifteen files nor this entry's new
+  one** (`simonTurnCue.test.ts`). It is outside this task's file list, and it is the same
+  follow-up Entry 38 already recorded.
+* **The chord chart's dead subscription is still there** (FAULT 6). Nothing on screen offers
+  it and nothing was added that could.
+
+#### The self-audit, run against `docs/prompts/working-rules.md` and the `CLAUDE.md` checklist
+
+Run before writing the report, not after being asked. Four of the eight items found
+something.
+
+1. **Did I state an absence?** FAULT 6's "draws no keyboard" is two searches over
+   `ChordChartScreen.ts` and what each returned, named in that section. And one claim was
+   being **inherited rather than searched**: "no rung binds a technique measure" came from an
+   existing code comment. Searched: the built curriculum has **28** rungs with
+   `mastery.custom`, `technique.*` has **none** of them, and none of the 28 matches
+   `demandsTechniqueMeasure`'s pattern for `voicing|articulation|shaping|half-pedal`. The
+   claim holds; it now rests on a search.
+2. **Did I write a plural?** Twice, and both were wrong.
+   * "every door the lesson page opens a score through" covered four doors and there are
+     **five**. `grep -n "navigateScore\|openItem(" src/ui/screens/LessonScreen.ts` returns
+     `:135` (the option rows, via `openItem`), `:304` (a shelf piece's *With the score*),
+     `:529` (duet), `:536` (blind), `:553` (ladder) — all five now carry the rung, and the
+     fifth was the one nearly missed.
+   * "on every rung of the Simon help ladder" was **one rung tested twice** and **broken on
+     the other two**. Written up under FAULT 7b above; it is the most useful thing this pass
+     produced, and neither the unit tests as first written nor the browser would have found
+     it.
+3. **What proxy did I use?** The unit tests mount the screen, which is a proxy for the
+   browser — so each of the four fixed faults was **also** driven through Playwright, and
+   FAULT 8's browser test is the one that proves the sheet actually prints the refusal.
+   FAULT 2's element table is the one place a proxy is load-bearing: it is one build, one
+   size, one orientation, and it is named as such above.
+4. **Green is not done.** *What is unverified* is above and is longer than the counts.
+5. **Did I check the reason, not just the outcome?** FAULT 2's reason — "the 189 px are all
+   ranking or documentation" — is partly **derived** and not all measured: the group heights
+   in the table are measured, but splitting a group into label, help line and chips is
+   arithmetic on those totals, not a separate measurement of each line. Said here rather than
+   left to look like a reading.
+6. **Did I re-open the artefact?** Entry 38 and `04` §0/§3c/§5/§5c-2 were re-read in full
+   before deciding, not recalled — which is how FAULT 2 turned out to be a decision rather
+   than a bug, and how the `LabScreen.ts` comment ranking the pickers last was found.
+7. **Who else reads the field I changed?** `scoreFrom`: `parseHash`, `routeToHash`,
+   `navigateScore`, `setRoute`, and `ScoreScreen`'s two reads. `setRoute` is the one that was
+   missed and is item 1 of the FAULT 9 list above. `velocityIsFlat`: only
+   `techniqueMeasureFor`'s two branches, and it is exported so its own test can name it.
+   `status.textContent` on the Score screen has many writers, which is why the rhythm line
+   and the hand line are composed in one function rather than written in two places.
+8. **Am I reading the letter?** Restated without the brief's words: *make the app say what it
+   is doing and where the learner came from, and stop it reporting numbers it had no way to
+   measure.* Checked against that, FAULT 2 is the only one of the six that the restatement
+   does not reach — nothing about it is the app saying something untrue, it is a screen that
+   is too long — which is consistent with it being the one that needs a decision rather than
+   a fix.
+
+
+### Entry 43 — T20: the code review's seven findings, and the chart's Back (2026-09-22)
+
+`docs/lesson-audit/code-review-2026-09-22.md` left seven findings with file, line, evidence
+and severity; Entry 42's *what is unverified* left an eighth — the chord chart's hard-coded
+`← Library`, which the `?from=` mechanism Entry 42 built for the Score screen was already the
+answer to. **All eight are fixed**, each with a test seen red first and the failure line
+quoted. **Nothing here was heard**: every assertion below is about a number, a string on a
+screen or a file on disk.
+
+Files: `app/src/**`, `app/tests/**`, `tools/content/build.py`, `score_checks.py`,
+`validate.py` and their tests, `tools/midi-cleanup/**`, `content/curriculum.schema.json`,
+`docs/04-ui-spec.md`, `docs/05-score-follow-engine.md`, this entry.
+
+#### 1. The pedal values were not a run total. **Fixed.**
+
+`PracticeEngine.feed` pushed every CC64 value with no `running`/`paused`/`finished` guard —
+the note path has had that exact line since it was written — and `resetRunTotals` cleared
+`recorded` and left `pedalValues` standing. The list goes into `buildScore` beside `notes`
+and the sheet divides by its length, so a pedal moved while the run was paused sat in that
+denominator.
+
+**The change.** The switch and the total are separated, which is the division `pressed`
+already makes against `recorded`: `sustainDown` is set whatever the transport is doing,
+because the renderer and the keys ask "is the damper down *now*"; the value is pushed only
+while the run is going, and the list is emptied in `resetRunTotals` beside `recorded.length = 0`.
+
+**Seen red first**, `tests/unit/halfPedalDepth.test.ts`, five new cases in *the pedal list is
+a run total, exactly as the notes are*: before ▶, while paused, after `stop()`, across a
+restart, and the one that says the switch is **not** gated. All five red without the two
+changes — *still reports the damper as down while paused*: `AssertionError: expected [ 127 ]
+to deeply equal []`; *empties the list when the run starts again*: `expected [ 40, 60 ] to
+deeply equal [ 60 ]`.
+
+**Who else reads it.** `SessionScore.pedal` is declared in `engine/Scoring.ts:100` and
+`engine/types.ts:431`, copied by `makeScore` (`Scoring.ts:141`), and read in exactly one
+place — `techniqueMeasureFor`'s `half-pedal` branch. Nothing writes it to a store, and that
+absence rests on two searches shaped differently: `grep -rn "\.pedal|pedal?:" app/src
+app/tests` returns the two declarations, the copy, and tests; `grep -rn "pedal" app/src/data`
+returns **nothing at all**, so no row in the progress or session store carries it.
+
+**And the comment beside it was a claim, so it was checked** (§2.17, §2.16 — a right action
+with a wrong reason). `pedalValues`' own docstring said the switch "is what the renderer and
+the strip read", and my first version of the new comment repeated it. `grep -rn "\.sustain"
+app/src` returns **nothing**; a second search for `sustain` across `app/src` returns
+`Piano.ts` (a note's own sustain), `parseMidiMessage.ts` (a message kind), `special.ts`
+(`PedalDrill`'s own copy of the switch) and two comments — the drill screen's pedal lamp
+derives `pedalDown` from the CC message itself. So `state.sustain` is read by the unit tests
+and by no screen today. Both comments now say that, and the gate's reason is stated as what
+it is: the switch is physical state, not a total.
+
+#### 2. The build's score-check step ignored the directory it was handed. **Fixed.**
+
+`step_score_checks(out_dir)` never used `out_dir`; the script read
+`app/public/content/catalog.json` off a constant and took no option. Every other step is
+given the directory the build wrote, `--out DIR` is documented usage, and `build/p19-personal/`
+and `build/p19-strict/` are on disk — so such a run gated a catalog other than the one
+`merge_catalog(out_dir)` wrote one step earlier.
+
+**The change**, the option the finding offered: `score_checks.py --catalog`, taking the
+catalog file **or** the content directory holding it (`catalog_path_for`), with the rows'
+files read from beside it (`content_dir_for`). `load_catalog(path)`, `scored_rows(rows,
+content)` and `run(..., content=)` take it rather than a module constant; `build.py` passes
+`--catalog <out_dir>/catalog.json`.
+
+**Seen red first**, `tools/content/tests/test_score_checks.py`, class *TestTheCatalogItChecks*,
+one test per half: `TypeError: load_catalog() takes 0 positional arguments but 1 was given`,
+and `AssertionError: '--catalog' not found in ('score_checks.py', '--gate', '--no-analysis',
+'--quiet')`.
+
+**Who else calls it.** `grep -rn "score_checks" tools/` outside the script itself returns
+`build.py:142`/`:151`/`:787` and this test file, and nothing imports `load_catalog`,
+`scored_rows` or `run` from elsewhere. The default path is unchanged and was exercised:
+`python tools/content/score_checks.py --item song.folk.so-danco-samba.pdmx --no-analysis
+--quiet` still reads the built catalog.
+
+#### 3. The widened `item` rule let a `ladder` name one. **Fixed by refusing it**, which is what the spec supports.
+
+`validate.py`'s `item` rule was widened on 2026-09-22 from "one of the rung's song options"
+to "song or exercise", and the refusal of `{"kind": "ladder", "item": …}` had been a *side
+effect* of the narrow rule — a ladder's exercise is never a song. So the widening made three
+documents false at once: `04` §3d ("It takes no `item`"), `curriculum/types.ts` ("an `item`
+written on one would fail validation rather than be honoured") and the schema's `item`
+description.
+
+**Why refuse rather than honour**, which was the choice the brief left open: `04` §3d states
+it twice and gives the reason — the ladder is for rungs where the whole item *is* the loop,
+it opens the rung's **first exercise that is notation** and skips an option that opens as a
+drill (`4.3` leads with `drill.chord.inversions`, which has no file), and a rung wanting the
+ladder over a named piece "must name bars, and that is a different feature". Honouring an
+`item` would mean a second way to choose the exercise with no rule about what happens when it
+opens as a drill. `LessonScreen.ts` ignores `tool.item` for `ladder` today, so refusing keeps
+the code, three documents and the checker saying one thing.
+
+**Seen red first**, `tools/content/tests/test_validate_tools.py`, *a ladder may not name an
+item at all*: `AssertionError: 0 != 1`. Its sibling, *a ladder naming nothing is what the
+seven rungs write*, was green before and after, which is what makes the first one the test of
+the new branch.
+
+**Nothing today is refused by it**, and that was enumerated rather than counted: every
+`tools` entry of kind `ladder` was read one at a time — `content/curriculum/stage-4.json`
+(five: `4.1`, `4.2`, `4.3`, `4.4`, `technique.4`), `stage-6.json` (`technique.6`),
+`stage-7.json` (`technique.7`), and the seven they build into
+`app/public/content/curriculum.json`. All fourteen are exactly `{"kind": "ladder"}`.
+
+**The three documents corrected in the same step**, since the rule they described is now
+stated rather than inherited: `04` §3d's *It takes no `item`* bullet and its `validate.py`
+bullet (which still said *song* options), `curriculum/types.ts`'s `item` comment, and the
+schema's `item` description.
+
+#### 4. The converter test compared two readings of the same reader. **Fixed.**
+
+`test_no_note_is_invented_between_the_file_and_the_score` compared `sum(len(t["events"]) for
+t in read_midi(f)["tracks"])` with `convert(...)["notes_in"]` — and `notes_in` is
+`expected_pitches` counted over events that same `read_midi` call produced. Both sides moved
+together, while the docstring and Entry 35 both claimed a file-to-score comparison.
+
+**The change.** `note_ons_in_the_file` in the test file reads the bytes itself — header chunk,
+each `MTrk`, variable-length delta times, running status, meta and SysEx skipped by their own
+lengths — and counts `0x9n` with a velocity. The test (renamed *no note is lost or invented…*)
+asserts `notes_in` against it **and** `lost`/`added` empty beside it, so the chain the
+docstring describes is the chain under test. A second case asserts the two counters agree,
+because a reader that disagreed with the bytes would make the first one a lie.
+
+**Seen red first, by breaking the link the old test could not see.** `read_midi`'s
+`events = [e for e in events if e.end > e.start]` was temporarily made `[...][1:]`, dropping
+one note per track between the file and the reader. The new assertion goes red on all three
+performances — `AssertionError: 128 != 129`, `404 != 405`, `881 != 882` — and **the old form
+stays green** on the same faulty reader (`read_midi 128 == notes_in 128 -> True`). The file
+was restored from a copy and `git diff --stat tools/midi-cleanup/midi_to_musicxml.py` reports
+no change.
+
+**The CLI stated the same proxy** and now says what it compared: *checked: all N notes the
+reader found are in the score, every bar adds up*.
+
+#### 5. `settle_key_signatures`'s docstring described a rule it does not follow. **Fixed.**
+
+It said its rule was "`keyOf` … and `key_name` … written once more". `key_name`
+(`notation.py:138-160`) differs on two of its three branches: it believes `mode == "major"`,
+which this function deliberately does not, and where the final bass matches neither the tonic
+nor its relative it returns `major + "?"` where this names no mode at all. **The plural hid a
+second wrong claim**: `keyOf` in `lessonClaimsAboutMusic.test.ts:59-67` is the same rule in
+TypeScript — `if (first.mode === 'major') return major;` and the same `?` fallback — so the
+docstring was wrong about both things it named, not one.
+
+**The change.** The rule is stated on its own, and a paragraph names where the two part and
+why both readings are deliberate: `key_name` reports what one file says; this decides what the
+Library prints over a catalogue of them. The code was not touched (`00` §4: when the code and
+the comment disagree, the code is usually right).
+
+**Seen red first**, `tools/content/tests/test_score_checks.py`, class
+*TestSettleKeySignaturesSaysWhatItDoes*, four cases: three comparing the two functions branch
+by branch — a stated major with the bass on the relative (`B minor` here, `D` there), no
+stated mode with the bass on neither (`2 sharps` here, `D?` there), and the stated minor they
+share — and one on the docstring itself: `AssertionError: 'written once more' unexpectedly
+found in …`. The three behavioural cases were green before and after; they are what the new
+paragraph rests on.
+
+#### 6. The half-pedal share counted the lifts. **Fixed, and the rule is now stated.**
+
+`met` asks for `share >= minShare` (`0.9` by default) and the denominator was **every** CC64
+message of the run — so a 0 sent when the pedal came up counted against the exercise, and a
+clean change is a lift and a return. A run that half-pedalled perfectly through four phrases
+could arrive at the sheet under the pass on its own lifts.
+
+**The rule, said plainly:** a message counts toward the share when it is inside a
+**pedal-down span** — from the message that first takes the pedal off the top until the one
+that puts it back, that last one excluded. 0 is the only fully-up value a damper pedal has,
+so that set is exactly the messages above 0 and no span bookkeeping is needed to find it.
+`HalfPedalResult` gained `held` for it; `total` still counts every message, because the
+"no pedal message arrived" sentence is about the instrument and must stay true to its words.
+
+Two sentences on the sheet follow from it: the share now reads *N% of M pedal messages **with
+the pedal down** were between 32 and 96*, said that way because the lifts are not in the sum;
+and a run whose messages were all 0 reads *not measured — the pedal never left the top*, which
+is neither the switch sentence (a switch has been seen to send 127) nor a nought.
+
+**Seen red first**, `tests/unit/halfPedalDepth.test.ts`, five cases: three on `halfPedalScore`
+(*counts the share of the messages sent with the pedal down*, *does not count the lift at the
+end of a phrase*, *says the pedal never went down*) — `AssertionError: expected undefined to
+be 3` — and two through `techniqueMeasureFor`: *passes a run whose held values are all in
+range but which lifts between phrases* (`expected false to be true`) and the never-went-down
+sentence (`expected 3 to be +0`).
+
+**One existing test changed, and it is the finding.** *counts the share of messages inside the
+range* asserted `halfPedalScore([0, 40, 64, 127]).share` as `0.5`; the leading 0 is a lift, so
+it is `2/3` over three held messages. It is renamed to say which denominator it is about.
+
+**Who else reads it.** `halfPedalScore` has two callers: `techniqueMeasureFor` (changed above)
+and `PedalDrill.halfPedalResult` (`drills/special.ts:346`). `grep -rn "HalfPedalResult"
+app/src app/tests` returns only the interface and that function's return type, so the new
+`held` field has no other reader. The drill's `answered` is now `held`, so `correct of
+answered` is the fraction its own `accuracy` is, and its `detail` gained `heldMessages` beside
+`pedalMessages` — `DrillScreen.statSheet` prints every `detail` key, so the drill sheet gains
+one row and loses none.
+
+`answered` is read in nine places outside the drills that write it, each checked rather than
+counted: `coaching.ts:94` (no coaching line when nothing was answered — a run whose pedal
+never left the top now takes that branch, and it had nothing to say about one anyway);
+`drills/types.ts:234` and `DrillScreen.ts:2390` (both `total || answered`, and `total` is
+`chords.length`, so neither moves); `DrillScreen.ts:207` (`answered === 0` is not a pass — an
+all-zero run scored 0 before and does not pass now either); `:455`/`:467` (a before/after
+comparison inside `onNote`, and a pedal message arrives through `onControl`, which does not
+compare — unaffected); `:2126`, `:2133`, `:2376`, `:2377` and `:2469` (the counter, the
+"N answered" line, `wrongNotes = answered - correct`, `missed = total - answered` and the
+leave-early check — all of which now count the held messages, which is the pair `accuracy` is
+taken over). `lessonClaimsAboutApp.test.ts:2519` asserts
+`halfPedalScore([40, 50, 60, 127]).share === 0.75`, which has no lift in it and is unchanged.
+`docs/05`'s *The half pedal* gained a bullet for this and one for finding 1.
+
+#### 7. The lab's verdict outlived the jam it described. **Fixed.**
+
+`stopJam` cleared `passNotes` and hid `tradeLine` and left the verdict standing, and
+`redraw()` stops a running jam whenever a picker moves — so *Time round 3 · 6 of 9 in the
+blues scale* sat over a chart that had just been redrawn from other chords, counted against a
+scale the learner may have just changed.
+
+**The change.** `stopJam` clears `bedVerdict.textContent`, and `bedBars` with it (the app's
+own right hand was written for the bars that have just been dropped; `jamIt` writes it again).
+**The finding named `bedVerdict` and `bedBars`; the plural check found a third** —
+`tradeVerdict` and its `data-came-in` are the same fault one line up, the trade's own
+verdict under the same class, and they are cleared too.
+
+**Seen red first**, `tests/unit/labVerdictOnStop.test.ts` (new file: nothing under
+`tests/unit` mounted `LabScreen` — `labHelp.test.ts` reads it as text). Three cases, two red:
+`AssertionError: expected 'Time round 3 · 6 of 9 in the blues scale' to be ''` and the same
+for the trade line. The third — *still hides the trade line, which was already right* — is
+green either way, as a test of the line that was not the fault should be.
+
+#### 8. The chord chart's Back went to the Library, not to the rung. **Fixed.**
+
+Entry 42's own *what is unverified*: `ChordChartScreen.ts:50` had a hard-coded `← Library` and
+three dead ends that went there too, so *Chart* pressed on `jazz.5`'s song row landed on the
+Library rather than on the rung whose lesson describes the chart. The `?from=` mechanism Entry
+42 built for the Score screen is the fix, and this is it on the same parameter with the same
+parser and the same refusal of anything that is not a lesson id.
+
+**The change.** `Route.chartFrom`, parsed from the one `from=` parser both screens share
+(the local is now `fromLesson`, since it serves two fields), serialised onto `#/chart/<id>`,
+compared in `setRoute` — the lesson Entry 42 learned as its item 1: the same chart opened from
+a rung and from the Library must be two routes or the second keeps the first one's Back.
+`navigateChart(itemId, { from })`. The screen reads it once, like the Score screen's, and the
+button **says where it goes**: `← Lesson` with a rung, `← Library` without, naming the screen
+rather than the rung because an id in a label takes the room the words need. The three
+Library dead ends offer *Back to the lesson* where a rung opened the chart and keep their own
+words otherwise (*Import a copy* is right for the unbundled case and wrong for the rung); the
+fourth, a piece with no chord symbols, still offers the Score screen and now hands the rung on
+to it.
+
+**Every door into the chart, enumerated** (`00` §2.15 — the plural that cost Entry 42 its
+fifth door): `grep -rn "navigateChart" app/src` returns the definition (`router.ts:687`), the
+lesson row (`LessonScreen.ts:178`) and the Score screen's `⋯` row (`ScoreScreen.ts:1150`).
+The lesson row writes the rung; the `⋯` row passes on whatever rung opened *that* run and
+calls bare otherwise; the Library has no chart door of its own. `AppShell.ts:69` is the only
+reader of `route.chart` and it chooses the screen, so the route comparison is what makes a
+second visit redraw.
+
+**Seen red first**, in four files:
+
+* `tests/unit/router.test.ts`, three new cases — *carries the rung a chart was opened from*
+  (`AssertionError: expected undefined to be 'jazz.5'`), *treats the same chart opened from
+  somewhere else as a different route* (`expected [ undefined, undefined ] to deeply equal
+  [ undefined, 'jazz.5', undefined ]`), and the refusal of a `from` that is not a lesson id.
+* `tests/unit/chordChart.test.ts`, three new cases in *the chart's Back*: `expected '← Library'
+  to be '← Lesson'`, the Library case that is green either way, and the no-chords dead end
+  handing the rung to the Score screen. Its router double gained `route` and `navigateLesson`.
+* `tests/unit/chartDoor.test.ts`, the existing door test's assertion is now
+  `toHaveBeenCalledWith(WITH_CHORDS, { from: LESSON.id })`: `expected "vi.fn()" to be called
+  with arguments: [ 'song.with.chords', { from: 'jam' } ]`.
+* `tests/unit/scoreTourRoute.test.ts`, two new cases for the `⋯` door in *a rung in the hash*:
+  `expected "vi.fn()" to be called with arguments: [ 'song.folk.hot-cross-buns', …(1) ]`, and
+  its bare twin, which is green either way.
+
+**And in the browser**: `tests/e2e/modes-chart-from-a-lesson.spec.ts` gained *Back from a
+chart opened by a lesson row returns to that rung* — `jazz.5` → the row's *Chart* → `← Lesson`
+→ `#/lesson/jazz.5` with the door there to press again — and its negative twin, *a chart
+opened from the Library still says Library, and goes there*, so the first test is about the
+rung and not about the button's words.
+
+`04` §3b gained the paragraph in the same step.
+
+#### What was run
+
+* `npx tsc -b` — clean. (`tsc --noEmit -p` checks nothing; `00` §3.)
+* `npm run lint` — clean, first time.
+* `npx vitest run` — **180 files, 2,836 tests, all passing.**
+* `python -m unittest discover -s tools/content/tests -t tools/content` — **895 tests,
+  passing.**
+* `python -m unittest test_converter` from `tools/midi-cleanup/tests` — **25 tests, passing**,
+  which is the whole file and not only the two that changed.
+* `npm run build:app`, then `modes-chart-from-a-lesson.spec.ts` **alone** on port 4173 with no
+  build running (`00` §3) — **6 tests, passing**, the four that existed and the two new ones.
+  A `vite preview` left listening on 4173 by something outside this session had to be stopped
+  first; Playwright refuses to start its own server otherwise.
+
+#### Counts
+
+**Eight findings, eight fixed, none left.** The source files changed:
+`engine/PracticeEngine.ts` (1), `engine/Scoring.ts` and `engine/drills/special.ts` (6),
+`ui/screens/LabScreen.ts` (7), `ui/screens/ChordChartScreen.ts`, `router.ts`,
+`ui/screens/LessonScreen.ts` and `ui/screens/ScoreScreen.ts` (8), `tools/content/build.py`
+(2 and 5), `tools/content/score_checks.py` (2), `tools/content/validate.py` (3),
+`tools/midi-cleanup/midi_to_musicxml.py` (4, the CLI's own sentence).
+
+**Twenty new unit tests in TypeScript** — 9 in `halfPedalDepth.test.ts`, 3 in `router.test.ts`,
+3 in `chordChart.test.ts`, 2 in `scoreTourRoute.test.ts`, 3 in `labVerdictOnStop.test.ts`
+(new file) — **eight new tests in Python** (6 in `test_score_checks.py`, 2 in
+`test_validate_tools.py`), **one rewritten and one new** in `test_converter.py`, and **two new
+browser tests** in `modes-chart-from-a-lesson.spec.ts`.
+
+**Three existing tests changed**, each because the fact it pinned has moved:
+`halfPedalDepth.test.ts`'s share case (the denominator is the finding), `chartDoor.test.ts`'s
+call assertion (the door now carries the rung), and `test_converter.py`'s equality (the count
+is now independent). Two doubles were widened rather than changed —
+`chordChart.test.ts`'s router gained `route` and `navigateLesson`, `scoreTourRoute.test.ts`'s
+gained `navigateChart`.
+
+**Four spec sections** changed in the same steps as the behaviour: `04` §3b (the chart's
+Back), `04` §3c (a verdict goes when the jam does), `04` §3d (two bullets, the `ladder`'s
+`item`), `05`'s *The half pedal* (two bullets). Two more documents were corrected where they
+stated the same fact: `curriculum/types.ts`'s `item` comment and
+`content/curriculum.schema.json`'s `item` description.
+
+#### What is unverified
+
+* **Nothing was heard**, and nothing was looked at as engraving.
+* **The half-pedal change is unit-tested only.** No browser test plays CC64 into
+  `exercise.pedal.half-pedal.a`, and the four catalog rows that carry
+  `drill.kind == 'half-pedal'` were not opened on a screen. The new sheet sentences are
+  assertions about strings returned by a function, not about text a run printed.
+* **The drill screen's stat sheet gains a row** (`held messages`) because it prints every
+  `detail` key. `drills.spec.ts` was not run and no picture was taken of that sheet.
+* **The lab fix is driven through *Stop*, not through a picker.** `redraw()` calls the same
+  `stopJam`, and the test sets the verdict text by hand rather than earning it in a jam —
+  jsdom has no AudioContext. The picker path and a real verdict are both unverified.
+* **One browser spec was run.** `chart.spec.ts`, `modes-chart-from-the-score.spec.ts`,
+  `lesson-tools.spec.ts` and `doors.spec.ts` all touch the chart or the lesson doors and were
+  not run; `tsc`, lint and the unit suite cover the call shapes only. The `⋯` door's new
+  `from` is unit-tested with the button's handler called directly, because the row is hidden
+  unless the piece carries chord symbols and that fixture does not.
+* **`--catalog` was exercised on a two-row temporary directory** and on the default path with
+  `--item`. No `--gate` run was made over `build/p19-strict/`, and **`build.py` itself was not
+  run**: `step_score_checks` is proved by a stub that captures its arguments. Running
+  `score_checks.py --item …` to check the default path overwrote `build/score-checks.json`
+  and `.md` with a one-item report; `build/` is gitignored and the next build rewrites them.
+* **`settle_key_signatures` was not re-run over the corpus.** The three behavioural cases are
+  synthetic rows; the docstring now describes the code, which is what the finding was about.
+* **The converter's red demonstration deliberately broke `read_midi`** and restored the file
+  from a copy taken first; `git diff` reports it unchanged, which is the only evidence given
+  for that.
+* **`docs/08-test-map.md` still has neither Entry 42's new file nor this entry's
+  (`labVerdictOnStop.test.ts`)**, and it is outside this task's file list — the same follow-up
+  Entries 38 and 42 already recorded.
+* **Nothing was committed**, as the brief asked.
+
+#### The self-audit, run against `docs/prompts/working-rules.md` and the `CLAUDE.md` checklist
+
+Run before writing this, not after being asked. Five of the eight items found something.
+
+1. **Did I state an absence?** Two are load-bearing and each names its search: no test asserts
+   the old half-pedal sentence (`grep -rn "pedal messages" app/tests docs` returned nothing,
+   and a second search shaped differently, for `partial pedal|in range` over the same trees,
+   returned only the two `articulationVoicingShaping.test.ts` lines, which assert counts and
+   not the sentence); and no rung names a `ladder` with an `item` — that one is an enumeration
+   of all fourteen entries rather than a grep count, listed under finding 3.
+2. **Did I write a plural?** Twice, and both were wrong before they were checked.
+   * The docstring in finding 5 named **two** functions and I had read one. `keyOf` turned out
+     to be wrong in exactly the same two branches, which is now in the entry.
+   * Finding 7 named `bedVerdict` and `bedBars`; `tradeVerdict` is the same fault one line up
+     and was not in the finding. Fixed and tested with them.
+   * A third, caught by item 5 rather than by this one: the comment I wrote for finding 1
+     repeated the engine's own "the renderer and the strip read it" about `state.sustain`,
+     which two searches say nothing on a screen does. Both comments corrected; the gate's
+     reason is now the true one.
+3. **What proxy did I use?** Three, each named where it is used: the lab test sets the verdict
+   text by hand instead of earning it in a jam; the `⋯` chart door's handler is called on a
+   hidden button; and `step_score_checks` is checked against a stub rather than a build. A
+   fourth was refused rather than accepted — finding 4's whole point is that a test compared a
+   proxy with itself, and the fix is an independent reader, proved by breaking the link the old
+   one could not see.
+4. **Green is not done.** *What is unverified* is above and names six things the suites do not
+   cover.
+5. **Did I check the reason, not just the outcome?** Finding 3's choice between refusing an
+   `item` and honouring it was made by re-reading `04` §3d rather than by taking the review's
+   preference: the spec states the refusal twice *and* gives the reason (the ladder opens the
+   first exercise that is notation and skips one that opens as a drill), which honouring would
+   have had no rule for.
+6. **Did I re-open the artefact?** `04` §3b, §3c, §3d and `05`'s pedal section were read in
+   full before deciding, and Entry 42's own *what is unverified* is where finding 8 came from —
+   it was in the record and not in the review.
+7. **Who else reads the field I changed?** Enumerated per finding: `SessionScore.pedal` (one
+   reader), `halfPedalScore`/`HalfPedalResult` (two callers, one of which prints every `detail`
+   key), `navigateChart` (three call sites), `route.chart`/`chartFrom` (`AppShell` chooses the
+   screen; `setRoute` decides whether it redraws), `score_checks.load_catalog`/`scored_rows`/
+   `run` (one caller, the script's own `main`).
+8. **Am I reading the letter?** Restated with none of the brief's words: *make each tool judge
+   the thing it was pointed at, and make each sentence about the code true of the code.* All
+   eight fit that — the `--catalog` and `?from=` findings are "the tool was pointed at the
+   wrong thing", the two denominators are "the sum counted the wrong events", and the three
+   prose findings are the second half of the restatement.
+
+---
+
+### Entry 44 — The three not-built rungs searched by title (not T12; mislabelled by the run), and eight pieces quarried (2026-09-22)
+
+Appended after Entry 43 so this file stays ascending, which is the convention Entry 25
+records. **Entry 43 was not in the file when this entry was drafted and was when it was
+appended** — T20 wrote it while this run was quarrying — so the append re-read the file
+rather than writing back the copy it had held, and both entries are intact.
+
+The owner's instruction was the method, not a preference: **do not scan the archive's
+notation; be smart about titles first.** So this run spent its search budget on *what a
+piece of this kind is called* — 75 title variants in the first pass, 79 more in a second,
+and 35 composer and repertoire names in a third — and read notation on **44 archive files
+and no others**. Entry 36 and Entry 37 left three rungs not built for want of music:
+`latin.4` (the habanera and the tresillo), `latin.8` (modern tango) and `ragtime.4` (the
+cakewalk, the oom-pah before the syncopation). All three were searched again this way.
+
+**The headline, before the tables.** The archive has the music for all three rungs and
+**the level model puts it two to four levels above the stage that teaches it**, which is
+the same finding Entry 36 recorded for `latin.4` and Entry 37 for `ragtime.4` — reached
+here from different evidence and against a much wider net. *That sentence rests on an
+estimate and not on a measurement*, and the estimator is argued below to be wrong for a
+cakewalk in a stated direction; every number in this entry with a decimal point is
+`levelSource: estimated`, `levelFrom: model`, and none of it was played. Eight pieces were quarried, rendered and spliced
+into `content/sources/pdmx.json`; **nothing was placed on a rung and no stage file was
+touched**, by instruction.
+
+---
+
+#### The variants, per rung, with the hit count each returned
+
+Matching is `archive_search.py`'s: lowercased substring of `song_name` + `title`, over all
+**254,077** rows of `PDMX.csv`. Two deviations from that tool, both deliberate and both
+named: accents were stripped from each side before matching, and the pass tallies every
+variant in one read of the 209 MB file rather than one read per variant. `candidates.py`
+was **not** used — it searches the *built catalog*, which is the 2,053-row proxy the brief
+is trying to get past; the archive-title tool is `archive_search.py` and this pass is that
+tool's matching, run 75 ways at once.
+
+**Pass 1, `latin.4` — 25 variants, 83 distinct rows.**
+
+| n | variant | n | variant | n | variant |
+|--:|---|--:|---|--:|---|
+| 36 | carmen | 3 | contradanza | 1 | peanut vendor |
+| 18 | bizet | 3 | guajira | 1 | siboney |
+| 12 | habanera | 2 | perfidia | 1 | maria elena |
+| 6 | la paloma | 2 | tres golpes | 1 | cervantes |
+| 6 | paloma | 1 | danzon | 1 | amapola |
+| 5 | aloha oe | 1 | lecuona | 1 | quizas |
+| 0 | habanera bass · danza cubana · el manisero · saumell · la comparsa · la bella cubana · adios a cuba | | | | |
+
+**Pass 1, `ragtime.4` — 25 variants, 224 distinct rows.**
+
+| n | variant | n | variant | n | variant |
+|--:|---|--:|---|--:|---|
+| 100 | bunch o | 11 | whistling rufus | 1 | eli green |
+| 48 | two step | 6 | cakewalk | 1 | blackberries |
+| 34 | two-step | 4 | cake walk | 1 | creole belle |
+| 15 | kerry mills | 3 | georgia camp | 1 | hiawatha |
+| 3 | harlem rag | 3 | ragtime dance | 1 | rastus |
+| 0 | cake-walk · golliwog · smoky moke · smokey moke · holzmann · coon band contest · cake walk in the sky · happy heine · hunky dory · patrol comique | | | | |
+
+`bunch o` is noise (it matches *bunch of*…); `two step` and `two-step` are mostly Scottish
+country-dance tunes from one uploader's collection.
+
+**Pass 1, `latin.8` — 25 variants, 306 distinct rows.**
+
+| n | variant | n | variant | n | variant |
+|--:|---|--:|---|--:|---|
+| 161 | astor | 12 | libertango | 3 | el dia que me quieras |
+| 91 | tango | 8 | piazzolla | 2 | milonga |
+| 15 | por una cabeza | 8 | jalousie | 2 | balada para un loco |
+| 14 | oblivion | 5 | la cumparsita | 2 | volver |
+| 4 | el choclo · choclo · gardel | 3 | adios nonino · nonino | 1 | a media luz |
+| 0 | villoldo · invierno porteno · verano porteno · otono porteno · primavera portena · muerte del angel · tanguera | | | | |
+
+`astor` is noise — 161 hits and most of them are *pastorale*, which is the same false
+positive Entry 36 recorded from the other direction.
+
+**Pass 2 — 79 more variants, shaped differently.** `latin.4` got the Cervantes and Saumell
+danza titles, the Debussy and Chabrier habaneras and the Spanish-dance names: 17 rows, and
+the only non-zero counts were `chabrier` 4, `guantanamera` 7, `andalucia` 2, `st. louis
+blues` 3, `puerta del vino` 1, everything else **0** (fourteen names). `ragtime.4` got the
+Holzmann and Mills cakewalk catalogue and the period march titles: 200 rows, of which the
+one find is `children's corner` 3 — Debussy, for *Golliwogg's Cake-walk*, which `golliwog`
+and `golliwogg` both return **0** for. `latin.8` got the Piazzolla work list: 27 rows,
+`primavera` 18 (noise), `chiquilin` 1, `naranjo en flor` 1, `caminito` 1, `soledad` 2,
+`el tango` 2, `vuelvo al sur` 1, `buenos aires hora cero` 1, and **0** for
+`decarisimo`, `michelangelo`, `escualo`, `fuga y misterio`, `tanguedia`, `kicho`,
+`revirado`, `malena`, `nostalgias`, `adios muchachos`, `tres minutos`, `tango argentino`,
+`verano porteno`, `invierno`, `otono`, `chau paris`, `pajaros perdidos`.
+
+**Pass 3 — the composer field, which passes 1 and 2 never looked at.** `artist_name` +
+`composer_name`, 16 names, plus 19 Brazilian-tango and Gottschalk titles: 121 rows.
+`albeniz` 26, `gottschalk` 19, `granados` 19, `ponce` 10, `nazareth` 8, `simons` 6,
+`lecuona` 5, `matos rodriguez` 5, `villoldo` 4, `iradier` 3, `cervantes` 2, `yradier` 1,
+`roig` 1, and **0** for `saumell`, `grenet` and `anckermann`. Of the title list only
+`odeon` 8 (all of them *Melodeon*), `bambino` 5, `le bananier` 2 and `corta jaca` 1 — so
+`brejeiro`, `apanhei`, `escorregando`, `turuna`, `ameno reseda`, `tango brasileiro`,
+`maxixe`, `sarambeque`, `faceira`, `travesso`, `confidencias`, `la bamboula`, `souvenir de
+porto rico`, `ojos criollos` and `la gallina` are **0** each. `granados` and `simons` are
+noise: they match a footballer's hymn, a Mötley Crüe arrangement and *All of Me*.
+
+---
+
+#### Gate one: the title hits put through `shortlist.py`'s own `GATES`
+
+Not a new rule — `gate_has_mxl`, `gate_piano_tracks`, `gate_subsets`, `gate_not_draft` and
+`gate_size`, imported from `shortlist.py` and applied to the CSV rows as they stand.
+
+| rung | pass | title hits | passed the gates |
+|---|---|--:|--:|
+| latin.4 | 1 | 83 | **12** |
+| latin.4 | 2 | 17 | 5 |
+| latin.4 | 3 | 121 | 32 |
+| ragtime.4 | 1 | 224 | 177 |
+| ragtime.4 | 2 | 200 | 149 |
+| latin.8 | 1 | 306 | 79 |
+| latin.8 | 2 | 27 | 7 |
+
+**`piano tracks` is again the gate that decides, and Entry 25's sentence holds.** Of
+`latin.4`'s 71 pass-1 refusals, **65** are `piano tracks` (a three-or-more-track file, or a
+non-piano program) and 6 are `subsets`; every archive copy of *La Paloma*, *Siboney*,
+*Maria Elena*, *Perfidia*, *Quizás* and the Carmen *Habanera* as a vocal score is stopped
+there, which is the same list Entry 25 reported refusing and the same reason. The
+`ragtime.4` counts are large and mean little: the survivors are dominated by one uploader's
+Scottish two-steps, which are one-stave fiddle tunes.
+
+**A second gate decides `ragtime.4`, and this is the run's largest finding.** Across passes
+1 and 2, **47 distinct rows** with cakewalk, two-step or rag titles are stopped by
+`subsets` — the dataset's own licence-conflict recommendation — and by nothing musical.
+They are not junk. Named from their `composer_name` column, one row at a time: **Scott
+Joplin** four times (*The Ragtime Dance* 155 bars, *Country Club* 155, *Leola* 149, and two
+more he is credited as having *picked*), **Tom Turpin** three times (the three *Harlem Rag*
+copies, 130, 130 and 147), **William Krell** (*The Cakewalk Patrol*, 186), **Sadie
+Koninsky** (*Eli Green's Cake Walk*, 148), **Edward B. Claypoole** three times (*Cake Walk
+Lindy* 150, *Thielin* 150, *Fascination* 147), **Jean Schwartz** (*The Pop Corn Man*, 145),
+**Marius Cairanne** (*King of the Cake Walk*, 247), and some thirty more period
+march-and-two-steps between 16 and 247 bars. **The cakewalk and early-rag repertoire is in
+the archive behind a licence flag, not absent from it.** Entry 37 searched the *catalog* and
+found nothing at this level; this run searched the archive and found the corpus sitting
+behind one boolean. The gate was respected and not argued with — whether
+`subset:no_license_conflict` should stop a scan of an 1897 print is a question for the
+owner, and it is the single largest thing standing between `ragtime.4` and its music.
+
+---
+
+#### Gate two: notation read, on the hits and nothing else
+
+44 archive files. `archive_notation.py` for key, metre, staves, bars and chord symbols;
+then a scratch left-hand scan, `scratchpad/T12/lhscan.py`, for the figure. **That scan is a
+proxy and is named as one**: it measures onset positions and chord sizes on the lowest
+stream, which is not the same as "the left hand plays the figure", so every count below was
+printed bar by bar and read, not taken from the total. It counts a bar as *habanera* when
+the lower stream's onsets are exactly dotted-eighth, sixteenth, then two eighths; as
+*tresillo* when they are exactly 3+3+2; as *oom-pah* when the bar holds at least one single
+note and at least one chord above it; and separately as a *kick* — looser, and said so —
+when the bar merely opens 0 + 3/4, which both figures share.
+
+**`ragtime.4` — the cakewalk. 21 files read.**
+
+- `QmScHzTHJGxJ2ifd6WBM6UJMX3t8P3CcHU4AnH3iaEhxkZ` | At a Georgia camp meeting, Kerry Mills 1897 | G then C, 2/4, 2 staves, 92 bars, 0 symbols; **62 of 92** bars are a single bass note answered by a chord above it, bar 5 reading G2 · B3+D4+G4 · D2 · B3+D4+G4 | ragtime.4 | **fits** — the piece the plan names first, and its left hand is the figure the eight `oompah` exercises drill
+- `QmcqcurPf7cLf2kPqAjaFJGKvNBtrM93K7oTzN8tG28M2M` | Cakewalk Parade, Brainard's 1899 | C then F, 4/4, 2 staves, 72 bars (56 carry a left hand), 0 symbols; **36 of 56** oom-pah, bar 1 reading C3 · E3+G3 · G2 · E3+G3 | ragtime.4 | **fits musically and was refused at the quarry** — see the gate table
+- `QmToK1yhG8zrfaMk4smwtSfufuiYbRtYkm5mYKDqvxu9rW` | Sillyâss (Two-Step), J. B. LaFrenière | C then G then F, 2/4, 2 staves, 56 bars, three key signatures, 0 symbols; **40 of 56** oom-pah | ragtime.4 | **fits, and dropped for its title** — below
+- `QmVmQG3JbLJp2mapSZpY8i2dm9gSciiPz17cgVbhpsd23X` | Summer Road's Cakewalk, Médéric Niot | B flat, 4/4, 2 staves, 58 bars with a left hand, 0 symbols; **26 of 58** oom-pah, but at eighth rate over a walking bass rather than a static one | ragtime.4 | **fits the figure, not the period** — a living composer's own cakewalk released cc-zero
+- `QmPSN2TnRH1hx3fAje4fabZYgPvAEb3sfdieKyACCoerwE` | Uncle Ben's Cakewalk, Tom Brier | F then B flat, 2/4, 2 staves, 111 bars; oom-pah **4 of 111** — the left hand plays chords on *both* halves of the bar and almost never a bare bass | **does not fit**: the highest-rated cakewalk in the archive and the wrong texture for a rung about bass-then-chord
+- `Qmbs6AsQ1EcraYkW8kJK6RxdrYGU2R1qA4iCV87Lg32MDD` | Children's Corner, Debussy | C then B flat then A flat, 4/4, 2 staves, 76 bars; oom-pah 8 of 76 | **does not fit**: three key signatures and no *Golliwogg's* — the file is other movements
+- `QmXyiyQ9XGzMjmE4XWK5qJXdQeDsrsGi9gfLNAcbcFaoyK` | Children's Corner, Debussy | B flat, 2/2, 2 staves, 81 bars; oom-pah 18 of 81, the left hand a single-note bass line | **does not fit**: *Golliwogg's* is in E flat and this is not it
+- `QmTobBbb6pruvSbYGAGkq5mA735jihqP5kBsGZ95zMs1D3` | Children's Corner, Debussy | A, 4/4, 2 staves, 31 bars | **does not fit**: too short to be the cake-walk movement
+- **Eleven one-stave files, each read and each refused for the same reason — a rung about
+  the left hand cannot be built on music with no left hand** (`00` §1a's own example):
+  `QmTDDEyusnxSqpskTxEWz8zLSgBHZ6A1XRshJ7xLiA4qb7` Whistling Rufus (G then C, 2/2, 86 bars),
+  `QmTwEnrHAChpsBedMG4aKWxbVUZokCqDbACuXfJ9QTYjbu` Whistling Rufus (G, 4/4, 86 bars),
+  `QmVzagtgoV1qkKyYSQYEKN895Uq6uo3xrBfWjnrkoFp8yC` Whistling Rufus (G, 4/4, 38 bars),
+  `QmQiUJZTS6rGpgqQJxthN2Bzckf9oZvpTw8bN3y8oxWAkp` Creole Belles (F, 4/4, 70 bars, 61
+  symbols — **this is the cid `docs/genre-plans/ragtime.md` names for this rung**),
+  `Qme3vDrh4eg9Gk4FSqeuSag3Ft5LdbrrZzWgsRphr2CuLB` Cosgrove's Cakewalk (G, 4/4, 17 bars),
+  `QmaVDHVcaoptT1FM6yeJTE4waPYXzAUuDw3kxuThXotT54` Cuban Two-Step (B flat, 2/2+3/2+4/4, 35),
+  `QmbjymEDZXYhRis6NXyBfKRSpkkDbAJDrmWdb9gmApNJYK` Three in One Two-Step (F, 2/2, 55),
+  `QmRTn6MWDqAUcg6g2ikpWucUjVkaDEki2Udthnwb1qJkmC` Medley Two-Step (G, 2/4, 139),
+  `QmNvE52vXWX1XWpdmVXSNBF73ETbSHHZCYQnCrF1nj911M` Bugle Call Two-Step (G then C, **6/8**, 46),
+  `QmXAdj2GYy9PWCuL48yd7E3Mb7QcdUdmpQWgdH6ftie6aQ` Rufus Rastus (C, 2/2+2/4, 20),
+  `QmdSRtEBHxjuj5xqwL28xTiqHwJb1yrE299LXjETXiwkXQ` a Georgia-camp lead sheet (B flat, 4/4, 37,
+  34 symbols), `QmbYv5RXmxsqUz2ZTBweLriCZThx8DMybrdGkKzmuH9cTq` Three Little Blackberries
+  (D, 4/4, 18) and `Qme5c1A4wEH2TXyEEpMpNG4mrq192Lb4nDKAoZDofL8Zms` Darktown Strutter's
+  Ball (B flat, 4/4, 36, 47 symbols). That is thirteen, not eleven — the count is written
+  out because a bare plural is several claims (`working-rules` §2.2).
+
+**`latin.4` — the habanera and the tresillo. 10 files read.**
+
+- `QmVwLkktZ9vQDNhuy8Z857L7BRqAGqUeEZduRjwJNu2zze` | L'amour est un oiseau rebelle — Carmen's *Habanera*, Bizet | D minor, 2/4, 2 staves, 90 bars, 0 symbols; the left hand is D2, A2 on the last sixteenth of beat one, F3, A2, and it is **that figure exactly in 85 of 90 bars**, the kick in 86 | latin.4 | **fits** — the rung is *a left hand that plays the figure* and this one plays nothing else. `compositionStatus: pd`
+- `Qmed1VTFgj2tuPmyAY4innVceBRXycchJQgF55gzQzgb2z` | Los Tres Golpes, Ignacio Cervantes | E minor, 2/4, 2 staves, 33 bars, 0 symbols; **every bar counted** — the figure exactly in 4, the kick in 10, an oom-pah in 11, four even eighths in 8 | latin.4 | **fits weakly**: a real Cuban danza with the figure in it, but a left hand that varies rather than holds
+- `QmYH1DJQdxPZabqsHWojoQRXzqj3NEvm4XWa5YiNfgtMHW` | Carioca (1913), Ernesto Nazareth | B major (five sharps) then E, 2/4, 2 staves, 76 bars with a left hand, 0 symbols; the figure exactly in **22 of 76** and the kick in **50** | latin.4 | **fits as music and not as level** — a Brazilian tango is the habanera bass under another name
+- `QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs` | Contradanza, anon. | E flat then A flat, 2/4 and 6/8, 2 staves, 50 bars; oom-pah **38 of 50**, habanera **0** | **does not fit**: an oom-pah wearing a Cuban title, which is exactly the inference §2.3 forbids
+- `QmVN4hg2ZhSz9ciAcCJUoAVdrK1zCmTZdp2BeKjDFChfuB` | Contradanza, Pacific Coast | C then F, 4/4 and 6/8, 2 staves, 47 bars; habanera **0**, the left hand a block chord on beats 1, 2 and 3 | **does not fit**
+- `QmceUd7T4GgvzX3Mr39Dfi21xmVRtcw6FEtRCPELBWy25f` | Carmen, Bizet | A then F, 2/4, 2 staves, 116 bars; habanera **0**, two bare bass notes a bar | **does not fit**: a suite, not the *Habanera*
+- `QmePMZG99vKwzeFiQY5vD1JSohQk3ypPqNY8jSkU2cHTa1` | Carmen, Bizet | A, 2/4, 2 staves, 119 bars; habanera **0**, oom-pah 30, four-to-the-bar 53 | **does not fit**: same
+- `QmPYfxoGp86jNZYhA73L93zQ4nyGdpiF5NxupQxxunC5Ce` | La Paloma Blanca, Kilenyi | F, **6/8**, 2 staves, 16 bars; habanera 0 | **does not fit**: the habanera is a 2/4 figure
+- `QmPdbME7nqyiVJx9xq2HhJna9NAcVXVMF3H4x6zBt7CYeS` | Guantanamera | E flat, 4/4, 2 staves, 61 bars; tresillo **2 of 61**, habanera 0 | **does not fit**
+- `QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG` | St. Louis Blues, W. C. Handy | E, 4/4, **1 stave**, 28 bars, 23 symbols | **does not fit**: the tango strain is a lead sheet here
+- `QmZ2XRr489YtJVYSs5HUV8G89nKjqXbMUUh6o9eZhc5n51` | Aloha oe | G, 4/4, 1 stave, 18 bars, 19 symbols | **does not fit**
+
+**`latin.8` — modern tango. 13 files read.**
+
+- `QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG` | El gordo triste, Piazzolla–Ferrer | D, 4/4, 2 staves, 40 bars with a left hand, **56 chord symbols over 22 distinct chords**; a full chord on all four quarters in **16 of 40**, bar 1 four strikes of B3+D4+F#4 | latin.8 | **fits** — the only Piazzolla on the page that survived conversion, and 6.85 is inside the 6.5–8.0 the brief names
+- `QmdVUPP8RphroBWSK7FpsbWxLoyp6kQQuGA6KG9EPdDZc7` | Tango Notturno, Hans-Otto Borgmann 1937 | D minor, 4/4, 2 staves, 54 bars, 47 symbols; four-to-the-bar in **26 of 54** | latin.8 | **fits the band and the bass; it is 1937, so it answers *tango* and not *modern***
+- `QmVk7Me2CRhrct17L4D8SiMBaHdpL2jYxCVaJJpTQDnVxj` | La cumparsita, Matos Rodríguez | G minor, 2/4, 2 staves, 63 bars, 0 symbols; the marcato four (bass, chord, bass, chord on the four eighths) in **24 of 63**, bar 2 reading D2 · A2 · F#3 · A2, the habanera figure in 7 | latin.8 | **fits the band, 1916** — and it is a much fuller edition than the 16-bar second-strain tutorial already on `latin.6`
+- `QmRBbFh2xydWTfdHTDGBnzGYY1e31wtrTey2QRW4gLZsqJ` | Le Grand Tango, Piazzolla | A minor, **8/8 and 4/8**, 2 staves, 298 bars; the 3+3+2 tresillo bass in **71 of 248** bars, bar 1 reading C2 · G2 · G2 | latin.8 | **does not fit, and it is the loss of this run**: the plan's Stage 8 is *the piece that changes meter* and this is that piece, but the uploader's own title says **Cello/Accordion Duo**, so the two staves are two players and not two hands. It then failed conversion anyway
+- `QmPXmLSpTWKzxfvSJfYQK6BPujz2zQnE2Aj1SADeBXgzo5` | **Peaceful Oblivion**, Przemyslaw Kowalski | C, 2/4, 2 staves, 88 bars; four-to-the-bar in **77 of 88** | **does not fit**: it matched the variant `oblivion` and it is *not* Piazzolla's *Oblivión* — an original piece by a living uploader. Calling a four-beat bass a tango would be inferring the music from a title, which is the thing this method exists to avoid. It failed the structure gate as well
+- `QmQzVZ1WCCMVBtzDNwm9pH2K7qZSYqxA1Fxh6MKYdokgsW` | El Choclo, Villoldo | D then F, 2/4, 2 staves, 49 bars; habanera exactly in **20 of 49**, the kick in 33 | **does not fit — it is already committed**, and it is the copy Entry 36 put on `latin.7`. Checked by cid against `pdmx.json`, which holds it
+- `Qme3HzhbR5A5Tab5QJ684kcd9EdH4iaKiN8vbQLLYuoNWQ` | Por una cabeza, The Piano Passion | C, 4/4, 2 staves, 72 bars with a left hand, two key signatures; the left hand is **one whole-bar dyad in most bars**, oom-pah 16 of 72, no tango figure at all | **does not fit**, and the Gardel copy Entry 25 quarried and Entry 36 placed on `latin.6` writes the accompaniment out where this one does not
+- `QmWGTwTWmfBr63fU3crPi6q69hJiVaw7caEMs9cJeMHErQ` | Chiquilín de Bachín, Piazzolla | A minor, **3/4**, **1 stave**, 64 bars, 55 symbols | **does not fit**: a vals, a lead sheet, and no left hand
+- `QmUS1ehRwM6YSGHY35UXsoYLQxqGXPc3mEizKq32gexoHf` | Naranjo en flor, Virgilio Expósito | F, 4/4, 2 staves, 49 bars with a left hand; four-to-the-bar **1 of 49**, oom-pah 2 — the left hand is one held bass note a bar | **does not fit**
+- `QmYH1DJQdxPZabqsHWojoQRXzqj3NEvm4XWa5YiNfgtMHW` | Carioca — counted under `latin.4` above; it is one file answering two rungs
+- `QmTjuW8sWKxLdsomyNkQR2yjm36a6R9W3ZwmYMTcXNVDAy` | Tango, Seth Farber | A minor, 4/4, 2 staves, 52 bars; four-to-the-bar **0 of 52**, oom-pah 1 | **does not fit**
+- `QmX6h2bMsbEtsxGunS9pDhD46ZDpLwYVtoNuUnvLJLjF7m` | a Manfred Schmitz tango | G minor, 4/4, 2 staves, 20 bars | **does not fit**: twenty bars is a teaching piece, not a Stage 8 rung's repertoire
+- `QmUcTQKCewABZcAPWJgVUFFmeA8j49PhGAEtihZ8VzEdXo` | Divina romanza en tango canción, Joaquín Mora | F minor then D minor, 2/4, 2 staves, 33 bars | **does not fit**: same reason, and it is a song
+
+---
+
+#### The quarry, gate by gate
+
+`build/pdmx-p24/`. Twelve candidates — the fits above plus the four whose level was the
+open question — pulled by `extract.py` from `mxl.tar.gz`.
+
+| step | offered | passed | what stopped the rest |
+|---|--:|--:|---|
+| three title passes over `PDMX.csv` | 254,077 rows × 3 | 978 title hits (per pass, overlapping) | — |
+| `shortlist.py` `GATES` | 978 | **461** | `piano tracks` overwhelmingly |
+| notation read | 461 available | **44 read** | the rest were not read: the method is titles first, and these were the titled hits worth opening |
+| `extract.py` | 18 | **18** | — |
+| `quarry.py`, render included | 12 | **9** | round-trip 1, structure 1, convert 1 |
+| `review.py` sheet | 9 | 9 decided | **8 `keep`, 1 `drop`, 0 left open** |
+
+Per band at the quarry gate: band 3 offered 1 passed 0; band 4 offered 3 passed 1; band 5
+offered 7 passed 7; band 6 offered 1 passed 1.
+
+The three refusals, each with the gate's own words: *Cakewalk Parade* —
+`round-trip: round trip lost 348 note(s) and gained 348`; *Peaceful Oblivion* —
+`structure: 40/176 bars empty`; *Le Grand Tango* —
+`convert: PitchException: Cannot make a step out of '?'`.
+
+**The render ran and was checked rather than assumed.** All **9** `ok` rows carry
+`render_steps` equal to `render_cursor_steps`, none zero, from **173** to **1,159**.
+Entry 25's trap was avoided in advance: `npm run build:app && npm run preview` would have
+rebuilt the app while another task is editing `app/`, so `vite preview --port 4173` was
+started on its own against the existing `dist/`, probed (`200` on
+`http://localhost:4173/PianoProject/`), and `reuseExistingServer` picked it up. The server
+was stopped afterwards and port 4173 is free. **No content build was run**, by instruction.
+
+**The rejection rate is 1 of 9, 11 %, against the earlier runs' 89 % and Entry 25's 95 % and
+69 %** — and the reason is that this page is not a page. Entry 25 reviewed 41 and 35 rows
+that a quota had selected; this run read 44 scores first and quarried only twelve, so the
+reviewing was done before the quarry and the rate measures the reading, not the source. The
+number is reported because the brief asks for it, and it should not be compared with the
+others.
+
+---
+
+#### The eight keeps, spliced
+
+`content/sources/pdmx.json` went **534 items to 542**, `git diff --stat` **528 insertions,
+0 deletions** — a text splice, not a re-serialisation. The file round-trips byte-identically
+under `json.dumps(indent=2, ensure_ascii=False)` plus a newline (measured immediately before
+the edit, 1,087,688 bytes in and out), so the new items were rendered the same way and
+inserted before the closing `]`; the script refused unless every byte before the insertion
+point was unchanged and the 534 existing items parsed back identical. **`commit.py` was not
+run**, by instruction; the item shape it builds — the same twenty-eight keys in the same
+order, `item_id_for`, and `convertedSha256` re-hashed *after* the copy into the repository —
+was reproduced and each of the 8 checksums re-verified from the file now in
+`content/scores/pdmx/`. No duplicate id and no duplicate cid among the 542. Ids and cids
+were also checked against `content/catalog.static.json` (78 items) and against
+`content/sources/pdmx-wants.json` (128 wants), which is Entry 25 finding 1 made a habit.
+
+| level | id | for |
+|--:|---|---|
+| 6.5 | `song.pop.los-tres-golpes-the-three-strikes.pdmx` | latin.4 |
+| 6.63 | `song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx` | latin.4 |
+| 6.85 | `song.folk.el-gordo-triste-piazzolla-ferrer.pdmx` | latin.8 |
+| 6.97 | `song.pop.hans-otto-borgmann-tango-notturno.pdmx` | latin.8 |
+| 7.2 | `song.classical.rodriguez-la-cumparsita.pdmx` | latin.8 |
+| 7.35 | `song.pop.mederic-niot-summer-road-s-cakewalk.pdmx` | ragtime.4 |
+| 7.59 | `song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx` | ragtime.4 |
+| 8.17 | `song.classical.nazareth-carioca-1913.pdmx` | latin.4 |
+
+**The one drop, and it is not about the music.** `QmToK1…` is a 1900s Québécois two-step
+whose left hand is a bass-then-chord oom-pah in 40 of 56 bars through three key signatures
+— by the scan, the second-best cakewalk left hand on the page. Its archive title is
+**Sillyâss (Two-Step)**, a single circumflex and not mojibake, and `commit.py` copies the
+title verbatim into the Library and slugs the id from it:
+`song.classical.sillyass-two-step.pdmx`. Entry 25 finding 5 is this exact case, and its
+advice — quarry a different copy rather than hand-edit this one — cannot be taken, because
+the archive holds **one** copy. **This is an owner decision and it is the only row on the
+page whose music was not the reason.**
+
+---
+
+#### What this settles about the three rungs, and what it does not
+
+**None of the three rungs can be built from what is here, and the reason is the same for all
+three and is now measured twice.**
+
+1. **`latin.4` has its music and it is at the wrong level.** The Carmen *Habanera* holds the
+   figure in 85 of 90 bars — nothing in this repository comes near that — and the level
+   model puts it at **6.63**. Los Tres Golpes is **6.5** and Carioca is **8.17**. The rungs
+   either side are `latin.3` at band 1.9–3.6 and `latin` (Stage 5) at 1.9–6.4, so a Stage 4
+   rung holding these would sit *above the Stage 5 rung*, which is not a band that is too
+   wide but an order that is backwards.
+2. **`ragtime.4` has its music and it is at the wrong level**, at **7.59** and **7.35**, with
+   the 6.83 third dropped for its title. That is a smaller gap than it looks: `ragtime.5`'s
+   band is 3.2–7.1, `.6` 3.3–7.1, `.7` 3.2–7.4 and `.8` 3.3–7.9, so these two are inside the
+   *range* of every ragtime rung above them — but a Stage 4 rung whose floor is 7.3 teaches
+   nothing that Stage 4 is.
+3. **`latin.8` is the one that could go either way, and it turns on a word.** Three pieces
+   sit inside the 6.5–8.0 the brief names, all three with the tango bass written out:
+   El gordo triste 6.85, Tango Notturno 6.97, La cumparsita 7.2. **Only the first is
+   modern**, and the plan's title for Stage 8 is *"Modern tango and the piece that changes
+   meter"*. The piece that changes meter exists in the archive — Le Grand Tango, 8/8 against
+   4/8 — and it is a cello-and-accordion duo that does not convert. Whether a Stage 8 rung
+   built on a 1916 tango, a 1937 film tango and one Piazzolla song is the rung the plan
+   meant is a judgement for whoever builds it, and **nothing was placed**.
+
+**A finding that is not about any one row: the level model reads a cakewalk as a rag.**
+*At a Georgia Camp Meeting* comes out at 7.59, and its three `level_drivers` are `bars`
+0.49, `rangeLeft` 0.302 and `notesPerSecond` 0.198 — length, left-hand span and speed. A
+cakewalk is long, leaps in the left hand and moves quickly, and it is *easier* than a rag
+because the right hand is not syncopated against it. That is the one property the feature
+set does not carry. Recorded, not acted on: re-tuning the model is not this task and the
+number is the model's honest output from its own inputs.
+
+---
+
+#### What is unverified
+
+- **Nothing on this page has been heard.** All nine decisions were made from the notation —
+  key, metre, staves, bars, chord symbols, and the lower stream's onsets and chord sizes
+  printed bar by bar. Whether any of the eight committed items is a good transcription to
+  practise is exactly the question none of this answers.
+- **The left-hand scan is mine and is not one of the repository's tools.** It lives in the
+  scratch folder, it has no test, and it is a proxy for the figure rather than the figure.
+  The per-bar dumps in this entry are what should be trusted; the totals are what pointed at
+  them.
+- **Nothing was placed on a rung and no file under `content/curriculum/` was opened for
+  writing.** The eight rows therefore carry no `tracks` and no `genre`, so — by the
+  mechanism Entry 25's last section sets out, which was read there and not re-derived here —
+  they reach the Library under their bucket's default track (`song.classical.*` under
+  `classical`, `song.pop.*` under `chords-pop`, `song.folk.*` under `core`) and will get
+  their real track the moment something puts them on a rung.
+- **The content build was not run**, by instruction, so none of the eight reaches the app
+  yet; `validate.py`, `rung_audit.py`, `vitest` and Playwright were not run either. The
+  checksum re-hash, the id and cid uniqueness check and the 528-insertion diff are local
+  checks on the table, not the build's verdict.
+- **`compositionStatus` is `unknown` on seven of the eight** and `pd` only on the Bizet.
+  `00` D23 makes that a label and not a gate, and the strict public build already refuses
+  everything that is not `pd`; the exposure is the owner's own, as D23 says. Named because
+  one of the seven — *El gordo triste* — is a 1974 composition under an uploader's cc-zero
+  dedication, which is the shape D23 was written about.
+- **44 files were read and 417 gate-passing title hits were not.** Most are the Scottish
+  two-step collection and the *astor*/*bunch o*/*cake* noise, but that is a judgement from
+  their titles, which is the thing a title cannot settle. If a fourth pass is ever run,
+  those are where it should start.
+- **The 47 rows behind the `subsets` licence flag had no notation read.** Their titles and
+  composer columns are all that was looked at, so *this entry's claim that they are period
+  cakewalks and rags rests on a title and a name* — which is the proxy §2.3 forbids
+  believing. Four of them carry Scott Joplin's name and three Tom Turpin's; none of the 47
+  was opened, because the gate refuses them and routing around a gate was not this task.
+
+**Files.** `build/pdmx-p24/` (candidates, raw, converted, previews, `quarried.json`,
+`render-report.json`, `review/index.html`, `review/review.csv` with 9 decisions and notes),
+`content/sources/pdmx.json` (8 items spliced; `_comment` and `header` untouched),
+`content/scores/pdmx/` (8 `.mxl` files), this entry. **Nothing under `app/`,
+`tools/content/` or `content/curriculum/` was written**; `tools/content/build.py`,
+`score_checks.py` and `validate.py` were not touched, another task being in them.
+
+---
+
+#### The `CLAUDE.md` checklist, run against this entry, with what it caught
+
+1. **Did I state an absence?** Every zero above is written as *this variant, over these
+   254,077 rows, returned this many*. Three passes shaped differently — title, title again
+   with a second repertoire list, then the composer column — and the third is what found
+   Nazareth. `el manisero` is still 0 and Entry 25's open disagreement about it stands
+   unresolved: this run did not settle it either.
+2. **Did I write a plural?** It caught one. "Eleven one-stave files" was written and the
+   list under it has thirteen entries; the sentence now says so and counts them out. It
+   also caught "six of the best-named cakewalks", which was a guess from the five or six
+   titles I happened to remember — the real number, counted, is **47**, and rewriting that
+   paragraph changed what this entry's largest finding is.
+3. **What proxy did I use?** Three, all named in the text: a *title* for the music (the
+   owner's instruction, and the reason notation was then read on all 44 hits); the
+   *left-hand onset scan* for "plays the figure", which is why every count has its bars
+   printed; and the *level model* for difficulty, which the Georgia Camp note argues is
+   wrong for a cakewalk in a stated direction.
+4. **Green is not done.** Nine `ok` rows, nine decisions, 528 insertions and eight verified
+   checksums say nothing about whether any of it is worth practising. Nothing was heard.
+5. **Did I check the reason?** It caught one. *Peaceful Oblivion* would have been kept for
+   a four-to-the-bar bass in 77 of 88 bars under a title that matched `oblivion` — a right
+   outcome (it failed the structure gate anyway) for the wrong reason, which is §2.16. It
+   is now refused on the reason and not on the gate.
+6. **Did I re-open the artefact?** Entry 25's refusal table, Entry 36's `latin.4` and
+   `latin.8` paragraphs and Entry 37's `ragtime.4` paragraph were re-read before the
+   searches were designed, which is why the variant lists start where those three stop.
+7. **Who else reads the field I changed?** `content/sources/pdmx.json` `items` is read by
+   `import_pdmx.py` (checksums verified every build, and `BUCKET_TRACKS` fills the missing
+   `tracks`), by `build.py`'s `attach_rung_tracks` (which adds nothing until a rung names
+   the row), and by `ladder_report.py` (which reads `compositionStatus`). None of the three
+   is affected by eight appended rows beyond the rows themselves.
+8. **Am I reading the letter?** Restated without the brief's words: *find out whether these
+   three lessons can have real pieces yet, by guessing what such pieces are called rather
+   than by reading 37,000 scores.* Checked against that, the answer is no for all three and
+   the reason is the same one twice over — the music exists and sits two to four levels too
+   high — plus, for the cakewalk, one licence flag nobody has decided about.

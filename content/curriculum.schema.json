@@ -192,7 +192,7 @@
                             },
                             "item": {
                               "type": "string",
-                              "description": "For the Score-screen modes: which of this rung's own song options to open. Omitted, the button takes the rung's first playable song. validate.py refuses an id the rung does not offer, because a lesson may not point outside its own options. A 'simon' names one of the rung's exercises instead, since it opens a drill. A 'ladder' takes no item at all: it opens the rung's first exercise that is notation, and an item written on one is refused by the song-option rule."
+                              "description": "For the Score-screen modes: which of this rung's own options to open. Omitted, the button takes the rung's first playable song. validate.py refuses an id the rung does not offer, because a lesson may not point outside its own options. Song options was the rule until 2026-09-22 and it is now songs or exercises, since technique.7's duet is about its two-against-three exercise. A 'simon' names one of the rung's exercises, since it opens a drill. A 'ladder' takes no item at all: it opens the rung's first exercise that is notation, and an item written on one is refused by name — tool_errors has its own branch for it, because the song-option rule that used to refuse it no longer does."
                             },
                             "label": {
                               "type": "string",

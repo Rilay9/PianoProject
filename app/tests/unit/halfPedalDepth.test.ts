@@ -40,12 +40,41 @@ function engineOver(values: number[]): PracticeEngine {
 }
 
 describe('the rule, in one place', () => {
-  it('counts the share of messages inside the range', () => {
+  /**
+   * **What the share divides by** (2026-09-22 review). The denominator is the
+   * messages sent *inside a pedal-down span* — from the one that first takes
+   * the pedal off the top to the one that puts it back, that last one
+   * excluded — and not every CC64 message of the run. A value of 0 is the only
+   * "damper fully up" there is, so that set is exactly the messages above 0.
+   *
+   * It used to be all of them, and `met` asks for nine in ten inside `[32,
+   * 96]`: so lifting the pedal between phrases, which is the other half of
+   * pedalling, counted against the exercise. Four lifts in a forty-message run
+   * put it under the pass with every held value perfect.
+   */
+  it('counts the share of the messages sent with the pedal down', () => {
     const result = halfPedalScore([0, 40, 64, 127], RANGE);
     expect(result.total).toBe(4);
+    expect(result.held).toBe(3);
     expect(result.inRange).toBe(2);
-    expect(result.share).toBeCloseTo(0.5);
+    expect(result.share).toBeCloseTo(2 / 3);
     expect(result.binaryPedal).toBe(false);
+  });
+
+  it('does not count the lift at the end of a phrase against the pedalling', () => {
+    // Held part-way three times, lifted between each: the lifts are the
+    // playing, not a failure of it.
+    const result = halfPedalScore([50, 0, 60, 0, 70, 0], RANGE);
+    expect(result.held).toBe(3);
+    expect(result.inRange).toBe(3);
+    expect(result.share).toBe(1);
+  });
+
+  it('says the pedal never went down, rather than calling that a switch', () => {
+    const result = halfPedalScore([0, 0, 0], RANGE);
+    expect(result.total).toBe(3);
+    expect(result.held).toBe(0);
+    expect(result.share).toBe(0);
   });
 
   it('calls a pedal that only ever sends 0 or 127 a switch, and scores nothing', () => {
@@ -81,6 +110,77 @@ describe('the engine keeps the value, not only the switch', () => {
   });
 });
 
+describe('the pedal list is a run total, exactly as the notes are', () => {
+  /**
+   * What the 2026-09-22 review found: `feed` pushed every CC64 value with no
+   * `running`/`paused`/`finished` guard — the note branch has had one at the
+   * line below since it was written — and `resetRunTotals` cleared `recorded`
+   * and left `pedalValues` standing. The list goes into `buildScore` beside
+   * the notes and the sheet divides by its length, so a pedal moved while the
+   * run was paused, or before ▶, or after the last bar, sat in that
+   * denominator and counted against the learner.
+   *
+   * The switch is not gated, and that is the point of the last case here:
+   * `state.sustain` answers "is the damper down *now*", which is true whatever
+   * the transport is doing — the same division `pressed` makes against
+   * `recorded` one line below. Who reads it: `grep -rn "\.sustain\b" app/src`
+   * returns nothing, so it is these tests and no screen today; the engine's
+   * own comment claimed the renderer and the strip until 2026-09-22.
+   */
+  function started(): PracticeEngine {
+    const model = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 1, notes: [note({ midi: 62 })] },
+    ]);
+    const engine = new PracticeEngine(model, { mode: 'tempo', countInBars: 0 });
+    engine.start();
+    return engine;
+  }
+
+  it('keeps nothing the learner did before the run started', () => {
+    const model = makeModel([{ onset: 0, notes: [note({ midi: 60 })] }]);
+    const engine = new PracticeEngine(model, { mode: 'tempo', countInBars: 0 });
+    engine.feed({ kind: 'cc', cc: 64, value: 70, tMs: 0 });
+    engine.start();
+    engine.feed({ kind: 'cc', cc: 64, value: 40, tMs: 10 });
+    expect(engine.state.score.pedal).toEqual([40]);
+  });
+
+  it('keeps nothing moved while the run is paused', () => {
+    const engine = started();
+    engine.feed({ kind: 'cc', cc: 64, value: 40, tMs: 0 });
+    engine.pause();
+    engine.feed({ kind: 'cc', cc: 64, value: 127, tMs: 10 });
+    engine.resume();
+    engine.feed({ kind: 'cc', cc: 64, value: 50, tMs: 20 });
+    expect(engine.state.score.pedal).toEqual([40, 50]);
+  });
+
+  it('keeps nothing moved after the run has finished', () => {
+    const engine = started();
+    engine.feed({ kind: 'cc', cc: 64, value: 40, tMs: 0 });
+    engine.stop();
+    engine.feed({ kind: 'cc', cc: 64, value: 127, tMs: 10 });
+    expect(engine.state.score.pedal).toEqual([40]);
+  });
+
+  it('empties the list when the run starts again', () => {
+    const engine = started();
+    engine.feed({ kind: 'cc', cc: 64, value: 40, tMs: 0 });
+    engine.start();
+    engine.feed({ kind: 'cc', cc: 64, value: 60, tMs: 10 });
+    expect(engine.state.score.pedal).toEqual([60]);
+  });
+
+  it('still reports the damper as down while paused, because that is not a total', () => {
+    const engine = started();
+    engine.pause();
+    engine.feed({ kind: 'cc', cc: 64, value: 127, tMs: 0 });
+    expect(engine.state.sustain).toBe(true);
+    expect(engine.state.score.pedal).toEqual([]);
+  });
+});
+
 describe('the Score screen judges the half-pedal exercise', () => {
   const drill = { kind: 'half-pedal', params: { ccRange: RANGE } };
 
@@ -106,6 +206,25 @@ describe('the Score screen judges the half-pedal exercise', () => {
     const measure = techniqueMeasureFor(drill, engine.state.score, [], 0.7);
     expect(measure?.judged).toBe(0);
     expect(measure?.text).toContain('not measured');
+  });
+
+  it('passes a run whose held values are all in range but which lifts between phrases', () => {
+    // The run the old denominator failed: every held value is exactly what the
+    // exercise asks for, and a third of the messages are the lifts.
+    const engine = engineOver([50, 0, 60, 0, 70, 0]);
+    const measure = techniqueMeasureFor(drill, engine.state.score, [], 0.9);
+    expect(measure?.met).toBe(true);
+    expect(measure?.judged).toBe(3);
+    expect(measure?.text).toContain('100%');
+    expect(measure?.text).toContain('with the pedal down');
+  });
+
+  it('says the pedal never went down, which is not a switch and not a nought', () => {
+    const engine = engineOver([0, 0, 0]);
+    const measure = techniqueMeasureFor(drill, engine.state.score, [], 0.7);
+    expect(measure?.met).toBe(false);
+    expect(measure?.judged).toBe(0);
+    expect(measure?.text).toContain('never left the top');
   });
 
   it('leaves every other exercise alone', () => {

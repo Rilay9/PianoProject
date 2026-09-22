@@ -1028,6 +1028,14 @@ def tool_errors(curriculum: dict, catalog: list | None = None) -> list[str]:
     exercises, so its `item` is checked against those (2026-09-19, when the
     blues rungs began naming the Simon seeded from the blues scale).
 
+    **A `ladder` takes no `item` at all**, and that is now said here rather
+    than left to fall out of another rule (2026-09-22 review). The lesson page
+    ignores `tool.item` on a ladder and opens the rung's first exercise that
+    opens as notation; `04` §3d, `curriculum/types.ts` and the schema each
+    state that an `item` written on one is refused. All three rested on the
+    narrow rule below — an `item` had to be a *song*, which a ladder's exercise
+    never is — so widening that rule made three documents false in one hunk.
+
     **Every other kind's `item` may be a song or an exercise** (widened
     2026-09-22). It used to have to be a song, and `technique.7` is what that
     was wrong about: its sentence is about the two-against-three exercise and
@@ -1086,7 +1094,23 @@ def tool_errors(curriculum: dict, catalog: list | None = None) -> list[str]:
                                 errors.append(
                                     f"{where} carries {field!r}, which only a 'lab' entry has"
                                 )
-                    if kind == "simon":
+                    if kind == "ladder":
+                        # Stated, not inherited. `LessonScreen.ts` ignores
+                        # `tool.item` on a ladder and opens the rung's first
+                        # exercise that opens as notation, and `04` §3d,
+                        # `curriculum/types.ts` and the schema all say an
+                        # `item` written on one is refused. That refusal used
+                        # to fall out of the narrow rule — an `item` had to be
+                        # a *song*, and a ladder's exercise never is — and
+                        # widening that rule to songs *or* exercises on
+                        # 2026-09-22 quietly let it through, so a rung could
+                        # name a piece the screen would not open.
+                        if tool.get("item"):
+                            errors.append(
+                                f"{where} names {tool['item']!r}, and a ladder takes no item: "
+                                f"it opens this rung's first exercise that is notation"
+                            )
+                    elif kind == "simon":
                         if tool.get("item") and tool["item"] not in exercises:
                             errors.append(
                                 f"{where} opens {tool['item']!r}, which is not one of this "

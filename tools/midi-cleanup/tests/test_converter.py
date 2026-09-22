@@ -61,6 +61,71 @@ real_reason = (
 )
 
 
+def note_ons_in_the_file(path: Path) -> int:
+    """Note-On messages with a velocity, read straight off the bytes.
+
+    **Independent of the converter on purpose** (2026-09-22 review). The test
+    below used to compare `read_midi`'s own events with `notes_in`, which is
+    `expected_pitches` counted over events `read_midi` produced — both sides of
+    one assertion came from the same reader, so a note lost *between the file
+    and `read_midi`* was invisible to it. `read_midi` has exactly such a filter
+    (`events = [e for e in events if e.end > e.start]`, which drops a Note-On
+    and Note-Off landing on the same tick), and that was the half of the chain
+    nothing covered: `lost`/`added` compare the quantiser's events with the
+    written score, and the sibling tests assert those.
+
+    So this walks the chunks itself — header, then each `MTrk`, variable-length
+    delta times, running status, meta and SysEx skipped by their own lengths —
+    and counts `0x9n` with velocity above zero. A Note-On of velocity 0 is a
+    release and is not a struck note, which is the one convention this shares
+    with the reader it is checking.
+    """
+    data = path.read_bytes()
+    if data[0:4] != b"MThd":
+        raise AssertionError(f"{path} does not begin with a MIDI header chunk")
+
+    def varlen(body: bytes, i: int) -> tuple[int, int]:
+        value = 0
+        while body[i] & 0x80:
+            value = (value << 7) | (body[i] & 0x7F)
+            i += 1
+        return (value << 7) | body[i], i + 1
+
+    total = 0
+    at = 8 + int.from_bytes(data[4:8], "big")
+    while at < len(data):
+        chunk = data[at:at + 4]
+        length = int.from_bytes(data[at + 4:at + 8], "big")
+        body = data[at + 8:at + 8 + length]
+        at += 8 + length
+        if chunk != b"MTrk":
+            continue
+        i = 0
+        status = 0
+        while i < len(body):
+            _, i = varlen(body, i)
+            if body[i] & 0x80:
+                status = body[i]
+                i += 1
+            if status == 0xFF:  # meta: type byte, then a length
+                i += 1
+                size, i = varlen(body, i)
+                i += size
+                continue
+            if status in (0xF0, 0xF7):  # SysEx, likewise
+                size, i = varlen(body, i)
+                i += size
+                continue
+            if status & 0xF0 in (0xC0, 0xD0):  # one data byte
+                i += 1
+                continue
+            velocity = body[i + 1]
+            i += 2
+            if status & 0xF0 == 0x90 and velocity > 0:
+                total += 1
+    return total
+
+
 def ev(start: float, end: float, midi: int, velocity: int = 64) -> Event:
     """One note event, in the converter's own shape."""
     return Event(Fraction(start).limit_denominator(1000), Fraction(end).limit_denominator(1000),
@@ -399,7 +464,7 @@ class TestRealRecordings(unittest.TestCase):
         self.assertEqual(result["broken_bars"], [])
         self.assertEqual(len(result["parts"]), 2)
 
-    def test_no_note_is_invented_between_the_file_and_the_score(self) -> None:
+    def test_no_note_is_lost_or_invented_between_the_file_and_the_score(self) -> None:
         """The score holds exactly as many struck notes as the file holds Note-Ons.
 
         Not a spot check: reading the performance through music21's own MIDI
@@ -408,12 +473,38 @@ class TestRealRecordings(unittest.TestCase):
         can be bars apart, so no adjacency rule can tell one from a note struck
         again. Counting the messages is the only reading that cannot invent a
         note, and this is the assertion that says so.
+
+        **The count is taken off the bytes, not through `read_midi`**
+        (2026-09-22 review). This compared `sum(len(t["events"]) …)` from
+        `read_midi` against `notes_in`, which `expected_pitches` counts over
+        events built by that same call — a tautology in the middle of the
+        chain, while the docstring and Entry 35 both claimed a file-to-score
+        comparison. `note_ons_in_the_file` is the independent reader; with it,
+        and with `lost`/`added` empty beside it, the sentence above is what is
+        actually asserted: file → `read_midi` → quantiser → written score, with
+        no link taken on trust.
         """
         for name in REAL_FILES:
             with self.subTest(name):
-                messages = sum(len(t["events"]) for t in read_midi(REAL_DIR / name)["tracks"])
-                self.assertGreater(messages, 100)
-                self.assertEqual(self.one(name)["notes_in"], messages)
+                struck = note_ons_in_the_file(REAL_DIR / name)
+                self.assertGreater(struck, 100)
+                result = self.one(name)
+                self.assertEqual(result["notes_in"], struck)
+                # And the other half of the chain, so the assertion above is
+                # about the score and not only about the quantiser's input.
+                self.assertEqual(result["lost"], [])
+                self.assertEqual(result["added"], [])
+
+    def test_the_independent_count_agrees_with_the_reader_it_checks(self) -> None:
+        """A reader that disagreed with the bytes would make the test above a lie.
+
+        Said as its own case rather than folded in: this one is about the two
+        counters, and the one above is about the converter.
+        """
+        for name in REAL_FILES:
+            with self.subTest(name):
+                through = sum(len(t["events"]) for t in read_midi(REAL_DIR / name)["tracks"])
+                self.assertEqual(through, note_ons_in_the_file(REAL_DIR / name))
 
     def test_a_rubato_recording_is_not_called_swung(self) -> None:
         """None of the three is jazz, and the windows are what decides it.

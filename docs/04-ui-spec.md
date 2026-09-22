@@ -377,6 +377,18 @@ count-off, optional backing loop, and swing toggle — used for jamming practice
 not the point. Any item with `<harmony>` data can open in this view; the input chip still
 works (mic/MIDI can highlight the chord you actually play vs the chart, amber if different).
 
+**And it needs a piano** (corrected 2026-09-22, T17-2; `pending-review` Entry 38 FAULT 6).
+The sentence above is true of a MIDI instrument and **not reachable from the glass**:
+`ChordChartScreen.ts` subscribes to the screen-keyboard source and **draws no keyboard**, so
+on a phone with nothing plugged in there is no instrument on this screen that could feed it.
+The lab and free play both draw a `KeyboardStrip` and both say why. Not built here, because a
+keyboard on this screen is a feature and not a one-line fix — it wants a host and a dispose
+(about the twenty-five lines `LabScreen.ts` spends on the same thing), a decision about what
+the keys *show* when nothing is being played (the bar's chord tones, as the lab lights them,
+or nothing), and a height budget on a screen whose transport was itself below the fold until
+this week. Entry 42 sizes it. Until it exists, the matching is a MIDI feature and this
+paragraph says so rather than promising it to everybody.
+
 **Two doors, added 2026-09-21.** Until then there were none: `#/chart/<itemId>` parsed and
 `router.navigateChart` compiled, and nothing in the app called either — the screen was
 reachable only by typing its URL, while `jam`'s lesson described it. So:
@@ -394,6 +406,26 @@ screen reads the chords out of the imported bytes itself and the build never saw
 The door is on the *piece*, not in the rung's `tools`: `jam` and `jazz.5` are rungs of
 chord-symbol songs, and a tool entry would have to name one of them and be silent about the
 rest.
+
+**Back returns to the rung that opened it** (2026-09-22, `?from=<lesson id>`). The chart's
+Back was a hard-coded `← Library`, and its three dead ends offered the Library too — so
+*Chart* pressed on `jazz.5`'s song row came out on the Library rather than on the page
+holding that piece's alternatives, the rung's lesson and its *Know it* buttons. It is the
+mechanism §5 gave the Score screen, on the same `from=` parameter with the same parser and
+the same refusal of anything that is not a lesson id: `#/chart/<id>?from=jazz.5`, read once,
+and part of the route, so the same chart opened from a rung and from the Library are two
+routes rather than one. Only the lesson page writes it — the Library's door opens a chart
+from somewhere that is not a rung, and the Score screen's `⋯` row passes on whatever rung
+*it* was opened from.
+
+- The button **says where it goes**: `← Lesson` with a rung, `← Library` without. It names
+  the screen and not the rung, because a rung is an id and an id in a label takes the room
+  the words need.
+- The dead ends follow it. *There is nothing in the library called…*, *not bundled* and
+  *that chart could not be opened* each offer **Back to the lesson** where a rung opened the
+  chart, and keep their own words (*Open the library*, *Import a copy*) where none did. The
+  fourth — a piece with **no chord symbols** — still offers the Score screen, and now hands
+  the rung on to it, so Back from there comes to the rung as well.
 
 **The transport sits above the chart** (changed 2026-09-22, T17). The whole form is printed at
 once, which is what a lead sheet is — so on a 342 px phone a thirty-two bar tune is more than a
@@ -468,8 +500,10 @@ play this*.
   duet" is the instruction and any of its songs satisfies it. Where the rung has no playable
   song the button is not drawn at all.
 - **`validate.py` refuses two ways of pointing at nothing**: a lab preset the lab does not
-  have, and an `item` that is not among this rung's own song options — a lesson sending the
-  learner to a piece it does not offer is the `blues.3` fault wearing a control.
+  have, and an `item` that is not among this rung's own options — a lesson sending the
+  learner to a piece it does not offer is the `blues.3` fault wearing a control. *Song*
+  options was the rule until the widening above; **it is now songs or exercises**, and a
+  `simon` still takes an exercise and a `ladder` still takes nothing.
 
 #### `ladder`, and why it was absent until it was not (2026-09-22)
 
@@ -503,9 +537,12 @@ Four things keep it that way rather than clever:
   exception is the fault `05` §6 describes.
 - **It takes no `item`.** It opens the rung's **first exercise that is notation** — `4.3` leads
   with `drill.chord.inversions`, which has no file and opens as a drill, so the button skips it
-  — and where a rung offers no such exercise the button is not drawn. `validate.py` checks an
-  `item` against a rung's *song* options, so one written on a `ladder` tool is refused rather
-  than honoured.
+  — and where a rung offers no such exercise the button is not drawn. `validate.py` **refuses
+  an `item` on a `ladder` outright**, and says so in those words (2026-09-22 review). It used
+  to be refused as a side effect: an `item` had to be one of the rung's *song* options and a
+  ladder's exercise is never one, so widening that rule to songs or exercises the same day
+  left the entry accepted by validation and ignored by the screen. A rule this sentence, the
+  `types.ts` comment and the schema all assert is a rule the checker has to state.
 
 The e2e asserts the *destination*, not the button: the lab tool must arrive with
 `data-preset` set and the locked pickers disabled, and the duet tool must open a piece the
@@ -642,6 +679,13 @@ trading-fours row: *Bed only · Hold the chords · Play the tune*.
   comping is. **Nothing is written to the practice history and nothing here can be passed or
   failed.** The bar a note counts against is the bar the loop was on when the key went down,
   which is coarse by a fraction of a beat and is the reason this is a count and not a score.
+- **A verdict goes when the jam does** (2026-09-22 review). Stopping — by *Stop*, or by moving
+  a picker, which stops the loop for the reason above — clears the time-round line and the
+  trade's line with it. It used to leave them standing, so *Time round 3 · 6 of 9 in the blues
+  scale* sat over a chart that had just been redrawn from other chords, counted against a
+  scale the learner may have changed on the way. The chart stays and the verdict does not:
+  the chart is what somebody stopped the loop to read, and the verdict is about a run that is
+  over.
 - **Reached from a rung through the preset its `lab` tool already names.**
   `curriculum.schema.json` closes a `tools` item to `kind`, `preset`, `item` and `label` with
   `additionalProperties: false`, so a `bed` field on the tool entry is not available today;
@@ -1077,6 +1121,22 @@ duet can be turned into anything else without leaving the stand. `?hands=` is ap
 the screen picks its focus, which is before the renderer is built — a hand applied later
 would re-engrave the sheet for nothing.
 
+**`← Back` goes where the learner came from** (added 2026-09-22, T17-2; `pending-review`
+Entry 38 FAULT 9). `leaveScore()` had two answers — the walkthrough named by `?tour=`, or
+`route.tab` — so a learner who arrived from a rung's *Play it as a duet*, *Play it blind*,
+*Climb the ladder* or one of the rung's own option rows came out of the run on **Plan**, at
+whatever stage it happened to be scrolled to, rather than on the page they were reading. The
+rung is where that piece's alternatives, its lesson and its *Know it* buttons are. So a third
+answer: **`?from=<lesson id>`**, written by every door the lesson page opens a score through,
+and Back — all three of it, the header's, its twin at the bar's left end sideways, and *Done*
+on the summary — returns to that rung. It rides with `?mode=`, `?hands=` and `?tour=` through
+Blind and Perform, because a control that has nothing to do with where you came from must not
+change where Back goes. **The tour wins where both are in the hash**: a walkthrough has a next
+step and the learner is inside it, and the rung is still there when it ends. An id that is not
+a lesson id is dropped and Back is the tab again, which is what `?tour=` already says about
+itself. Nothing else changed: the Library, Today and the chord chart still open a score with
+no rung in the route, and Back from those is the tab it always was.
+
 `⏮ Start again` is **in the `⋯` sheet**, not on the bar. Eight controls come to 444 px of a
 390 px row and wrap it onto a second line, taking 40 px off the music; `▶` from stopped
 already starts from the beginning, so the glyph was the mid-run case only. The test for the
@@ -1101,7 +1161,8 @@ it never sits over the notes the first one is read from. *Pedal-to-start is not 
 wants a setting, off by default, because a pedal put down in preparation would start the run.
 
 With `R` or `L` chosen and `playbackHands: non-focused`, the status line says `Playing the
-left hand for you` **once** when the run starts. The sound is otherwise a note arriving from
+left hand for you` **once** when the run starts, joined by ` · ` to *Rhythm only* above where
+that applies as well. The sound is otherwise a note arriving from
 nowhere, which on a stand with no piano connected reads as a fault. Saying it once was the
 half of the fix that fitted on the bar; the other half is the **Duet** row in the `⋯` sheet
 below, which is where the thing can be turned off.
@@ -1137,6 +1198,19 @@ and says so under `Judged`, and the recorded result is tagged so it can never be
 or mastery of the piece — the minutes and the attempt count, the claim does not. Remembered
 as a setting, because a learner who works this way works this way on every piece. Blind and
 performance runs ignore it: both are claims about playing the piece.
+
+**And the run says so, once, as it starts** (added 2026-09-22, T17-2; `pending-review`
+Entry 38 FAULT 7). Because it is remembered, a learner who chose it a week ago meets it again
+with the bar's mode selector reading *Keep tempo* — which is exactly what the run is not —
+and nothing else in front of them: the state was on the section element, on the row inside
+the `⋯` sheet and in the summary's heading, and none of those is on the screen while the run
+is going. So the status line says **Rhythm only — tap the rhythm on any key** at the start of
+the run, which is the same shape, in the same place, for the same class of reason as *Playing
+the left hand for you* below: something the screen is doing that nobody asked it for on this
+screen, now. **Once**, not at every restart the ladder makes — and again after the `⋯` row
+itself has been touched, because what the next run judges has just changed. Where both
+sentences apply they are **joined** on the one status line (`Rhythm only … · Playing the left
+hand for you`) rather than one silently overwriting the other.
 
 **Ladder** (P21f, `05` §6). With a loop set, each clean pass speeds up one notch and each
 pass with a mistake slows down one, from wherever the tempo is when it is switched on,
@@ -1269,6 +1343,22 @@ Notation area:
   exercise's own `ccRange`; a pedal that only ever sends 0 and 127 is reported as **a switch**
   rather than as a nought, because scoring that as a failure would blame the player for the
   instrument.
+  **The same rule for the two measures the on-screen keys cannot take** (added 2026-09-22,
+  T17-2; `pending-review` Entry 38 FAULT 8). `KeyboardStrip.ts` sends one fixed velocity, with
+  the reason beside it — Android reports touch `pressure` as 0 or 1 — so *Top note* (does the
+  top of the chord sing 1.4× the rest?) and *Crescendo* (does the line travel a velocity range
+  of 30?) are, from the glass, arithmetic on one number repeated: every chord at a ratio of
+  exactly 1, printed as **0 % of 15 chords**, and a line that **travelled 0 of the 30 asked
+  for**. That reads as *you played it flat* when what happened is that the instrument could
+  not say. So where **every note of the run arrived at the same velocity** the line reads
+  *not measured — every note arrived at the same velocity, which is what the on-screen keys
+  send*, exactly as the articulation line already says *not measured — the input did not say
+  when the keys came up* for a microphone. It is a fact about the run and not a guess about
+  the device, so a source that sends one number is caught whatever it is. *Legato* and
+  *Staccato* are **not** covered, because held length is a timing fact and the glass reports
+  key-up: the articulation measure is reachable from the screen keys and is taken. Whether
+  `technique.5` and `technique.6` should ask for a measure that needs no cable, or should say
+  they need one, is the owner's and is open in Entry 42.
   A run of **any** piece whose score prints an `<accent>` or a `<strong-accent>` carries an
   *Accents* line: how many of the marked notes were played harder than the rest of that same
   run. Against the learner's own playing and not a MIDI velocity, because a light player and a
@@ -1738,6 +1828,22 @@ cannot drift apart.
   the whole of it: it is up only while the app is playing, and the same timer that puts the
   lights out takes it away. A staff that is gone before your turn has told you what you heard; a
   staff that is still there has answered for you.
+
+**Whose turn it is, said in words (added 2026-09-22, T17-2; `pending-review` Entry 38
+FAULT 7b).** Everything above goes out on one timer so the display cannot be a crib — and
+that left the hand-over signalled by **nothing but that absence**. The one positive cue on
+the screen was the prompt line, and it reads *Play the chain back* from the first moment of
+the card to the last, so it says the same thing while the app is playing as it does when it
+is your go. Driven, that is correct and it is thin. So the **status line** — under the prompt
+and above the buttons, which is where §0 R6 puts this screen's messages, and where the rhythm
+drill already says *Tap the rhythm on any key* — says which half of the exchange this is:
+**Listen — the app is playing.** while the chain sounds, and **Your turn — play it back.** on
+the same timer that takes the lights, the name and the staff away. It is one line and no new
+furniture, so nothing moves and the card's height is untouched (the chips under it must not
+twitch, which is why the note name is drawn at the glyph's own size). **On every rung of the
+help ladder**, including *Ear only*, which is the rung where nothing else is on the screen at
+all and therefore the one that most needs it. **It names no note**, which is the whole of
+what keeps it a cue and not a crib: it says that it is your turn, never what to play.
 
 ### 5c-1. The guided tour of the practice modes
 

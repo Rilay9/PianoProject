@@ -227,7 +227,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-228 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
+235 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
@@ -265,6 +265,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx` | Kreisler's Liebesleid - Piano Solo | 7.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx` | Mahler Symphony No. 5 (4th Movement Excerpt) Piano Solo | 6.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx` | Cavalleria Rusticana Intermezzo | 7.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.nazareth-carioca-1913.pdmx` | Carioca (1913) | 8.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.offenbach-cancan-offenbach.pdmx` | Cancan - Offenbach | 8.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.oh-canada.pdmx` | Oh Canada | 4.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.ondrus-silent-night.pdmx` | Silent Night (Ondruš setting) | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
@@ -274,6 +275,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx` | O Mio Babbino Caro for solo piano | 6.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx` | Rachmaninoff - Piano Concerto No. 2 | 7.0 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.classical.radetzky-march-for-easy-piano.pdmx` | Radetzky March for easy piano | 6.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.rodriguez-la-cumparsita.pdmx` | La cumparsita | 7.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx` | Super Mario Land 2 Ending Theme as played by Tom Brier | 8.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.sakamoto-andata.pdmx` | andata | 6.8 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx` | Shining Boy And Little Randy - Ryuichi Sakamoto | 7.2 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
@@ -291,6 +293,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.bruno-major-nothing-wip.pdmx` | Bruno Major - Nothing [WIP] | 5.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.carioquinha.pdmx` | Carioquinha | 4.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.como-e-grande-meu-amor-por-voce.pdmx` | Como é grande meu amor por você | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.el-gordo-triste-piazzolla-ferrer.pdmx` | El gordo triste (Piazzolla-Ferrer) | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx` | Ga je mee op zoek naar het Koningskind | 3.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.hallelujah-easy.pdmx` | Hallelujah (easy) | 3.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.happy-xmas.pdmx` | Happy Xmas (War Is Over) | 7.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
@@ -308,8 +311,5 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.por-una-cabeza-carlos-gardel.pdmx` | Por Una Cabeza - Carlos Gardel | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.scarborough-fair-piano-solo.pdmx` | Scarborough Fair (piano solo) | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.simple-gifts.pdmx` | Simple Gifts | 2.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.so-danco-samba.pdmx` | Só Danço Samba | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| … | and 148 more | | |
+| … | and 155 more | | |
 

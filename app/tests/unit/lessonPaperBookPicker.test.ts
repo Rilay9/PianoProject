@@ -14,7 +14,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
-import { addBook, allShelfPieces } from '../../src/data/booksStore';
+import { addBook, addPiece, allShelfPieces } from '../../src/data/booksStore';
 import type { Router } from '../../src/router';
 import type { CatalogItem, Lesson } from '../../src/curriculum/types';
 
@@ -52,7 +52,7 @@ vi.mock('../../src/curriculum/load', () => ({
 
 const { LessonScreen } = await import('../../src/ui/screens/LessonScreen');
 
-const router = { navigate: vi.fn() } as unknown as Router;
+const router = { navigate: vi.fn(), navigateScore: vi.fn(), navigatePaper: vi.fn() } as unknown as Router;
 
 async function mount(): Promise<HTMLElement> {
   const section = LessonScreen(router, LESSON.id);
@@ -139,5 +139,55 @@ describe('"I have this on paper"', () => {
     const [entry] = await allShelfPieces();
     expect(entry?.book.id).toBe(zebra.id);
     expect(entry?.piece.title).toBe('No. 3');
+  });
+});
+
+/**
+ * A shelf piece's *With the score* is a door on the lesson page too (T17-2).
+ *
+ * It opens the Score screen on the piece's catalog twin, and it was the one
+ * door that nearly kept the old Back — `00` §2.15, a change has more than
+ * one consumer: the four obvious ones (the option rows, the duet, the blind
+ * and the ladder buttons) were done in one pass and this one was three
+ * hundred lines away in the shelf block.
+ */
+describe('the rung rides out of every door on this page', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+  });
+  afterEach(() => {
+    clearFakeIndexedDb();
+    document.body.replaceChildren();
+    vi.clearAllMocks();
+  });
+
+  it('carries the rung out of a shelf piece’s "With the score"', async () => {
+    const TWIN = 'song.folk.twinkle.rh';
+    // A twin the catalog actually has: the button is only drawn when the id on
+    // the piece is still in the library, so a fixture with no item would draw
+    // no button and the test would pass by drawing nothing.
+    allItemsSpy.mockResolvedValue([
+      { id: TWIN, type: 'song', title: 'Twinkle', level: 1, tracks: ['core'], concepts: [] },
+    ] as unknown as CatalogItem[]);
+    const book = await addBook({ title: 'Only Book', kind: 'method' });
+    await addPiece(book.id, {
+      title: 'Twinkle',
+      lessonIds: [LESSON.id],
+      itemId: TWIN,
+    } as never);
+
+    const section = LessonScreen(router, LESSON.id);
+    document.body.replaceChildren(section);
+    const withScore = await vi.waitFor(() => {
+      const nodes = [...document.querySelectorAll('button')].filter(
+        (node) => node.textContent === 'With the score',
+      );
+      expect(nodes).toHaveLength(1);
+      return nodes[0] as HTMLButtonElement;
+    });
+
+    withScore.click();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(router.navigateScore).toHaveBeenCalledWith(TWIN, { from: LESSON.id });
   });
 });

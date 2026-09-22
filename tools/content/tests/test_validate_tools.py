@@ -66,6 +66,30 @@ class TestToolItems(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         self.assertIn("no notation", errors[0])
 
+    def test_a_ladder_may_not_name_an_item_at_all(self) -> None:
+        """Closed 2026-09-22, and the widening above is what opened it.
+
+        A `ladder` takes no `item`: `LessonScreen.ts` ignores `tool.item` for
+        that kind entirely and opens the rung's first exercise that `targetFor`
+        calls a score. Three places say so — `04` §3d ("It takes no `item`"),
+        `curriculum/types.ts` ("an `item` written on one would fail validation
+        rather than be honoured") and the schema's `item` description — and all
+        three rested on the rule that an `item` had to be a *song*, because a
+        ladder's exercise would never be one. Widening that rule to songs *or*
+        exercises let `{"kind": "ladder", "item": …}` through, so a rung could
+        name an exercise the button would silently not open. The refusal is now
+        stated rather than inherited.
+        """
+        errors = tool_errors(
+            curriculum({"kind": "ladder", "item": "exercise.y"}, ["song.x"], ["exercise.y"])
+        )
+        self.assertEqual(len(errors), 1)
+        self.assertIn("takes no item", errors[0])
+
+    def test_a_ladder_naming_nothing_is_what_the_seven_rungs_write(self) -> None:
+        errors = tool_errors(curriculum({"kind": "ladder"}, ["song.x"], ["exercise.y"]))
+        self.assertEqual(errors, [])
+
     def test_the_catalog_check_passes_an_exercise_that_has_a_file(self) -> None:
         errors = tool_errors(
             curriculum({"kind": "duet", "item": "exercise.y"}, ["song.x"], ["exercise.y"]), CATALOG

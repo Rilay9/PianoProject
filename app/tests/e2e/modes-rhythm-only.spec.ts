@@ -17,9 +17,11 @@
  *  - the remembered setting does not leak: a later *Keep tempo* from the same
  *    sheet is not silently a rhythm run.
  *
- * And one thing recorded rather than asserted: while a rhythm run is going,
- * the bar says *Keep tempo* and nothing on the screen outside the `⋯` sheet
- * says the notes are not being judged. That is in Entry 38.
+ * And the thing Entry 38 recorded rather than asserted, now asserted (T17-2,
+ * FAULT 7): while a rhythm run is going the bar still says *Keep tempo*, which
+ * is what the run is not, so the status line says *Rhythm only — tap the
+ * rhythm on any key* once as the run starts. The `⋯` sheet is shut by then and
+ * the summary comes afterwards; those were the only two places that said it.
  *
  * **Nothing here is heard.**
  */
@@ -89,6 +91,14 @@ test('it opens judged on timing, answers any key, and says what the run was', as
 
   await page.locator('#score-play').click();
   await expect(screen).toHaveAttribute('data-running', 'true');
+  // And the run says what it is, on the screen (`04` §5, Entry 38 FAULT 7).
+  // The bar's selector reads *Keep tempo*, which is what this run is not, and
+  // before T17-2 the only places the mode was stated were the `⋯` sheet — shut
+  // — and the summary, which comes after.
+  await expect(
+    page.locator('#score-status'),
+    'a rhythm run said nothing about itself while it ran',
+  ).toContainText('Rhythm only');
   // Tapped on one key, and not one the tune asks for: "any key, the right
   // moment" is the mode, and a run that only accepted the written note would
   // be an ordinary run with a different name.

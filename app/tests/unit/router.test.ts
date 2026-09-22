@@ -265,6 +265,71 @@ describe('score routes', () => {
     router.navigateScore('c.d');
     expect(seen).toEqual([undefined, 'a.b', 'c.d']);
   });
+
+  /**
+   * `?from=` — the rung Back returns to (`04` §5, T17-2).
+   *
+   * Where Back goes is part of *which screen this is*: the same piece opened
+   * from `2.1` and opened from the Library are two routes, and a comparison
+   * that left this field out would hand the second one the first one's Back
+   * and never redraw.
+   */
+  it('carries the rung it was opened from, and reads it back', () => {
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    router.navigateScore('song.a', { from: '2.1' });
+    expect(router.route.scoreFrom).toBe('2.1');
+    expect(win.location.hash).toContain('from=2.1');
+    expect(parseHash(win.location.hash).scoreFrom).toBe('2.1');
+  });
+
+  it('treats the same piece opened from somewhere else as a different route', () => {
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    const seen: (string | undefined)[] = [];
+    router.subscribe((route) => seen.push(route.scoreFrom));
+    router.navigateScore('song.a', { from: '2.1' });
+    router.navigateScore('song.a');
+    expect(seen).toEqual([undefined, '2.1', undefined]);
+  });
+
+  it('drops a from that is not a lesson id, the way it drops a bad tour', () => {
+    expect(parseHash('#/score/song.a?from=../../etc/passwd').scoreFrom).toBeUndefined();
+    expect(parseHash('#/score/song.a?from=blues.7').scoreFrom).toBe('blues.7');
+  });
+
+  /**
+   * The same parameter on the chord chart (`04` §3b, 2026-09-22).
+   *
+   * Entry 42 built `?from=` for the Score screen and recorded in its own
+   * *what is unverified* that the chart had the identical fault one screen
+   * over — a hard-coded `← Library`, so *Chart* on `jazz.5`'s song row landed
+   * on the Library. One parser, one spelling, a field each.
+   */
+  it('carries the rung a chart was opened from, and reads it back', () => {
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    router.navigateChart('song.a', { from: 'jazz.5' });
+    expect(router.route.chartFrom).toBe('jazz.5');
+    expect(win.location.hash).toContain('from=jazz.5');
+    expect(parseHash(win.location.hash).chartFrom).toBe('jazz.5');
+    expect(parseHash(win.location.hash).chart).toBe('song.a');
+  });
+
+  it('treats the same chart opened from somewhere else as a different route', () => {
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    const seen: (string | undefined)[] = [];
+    router.subscribe((route) => seen.push(route.chartFrom));
+    router.navigateChart('song.a', { from: 'jazz.5' });
+    router.navigateChart('song.a');
+    expect(seen).toEqual([undefined, 'jazz.5', undefined]);
+  });
+
+  it('drops a chart from that is not a lesson id', () => {
+    expect(parseHash('#/chart/song.a?from=../../etc/passwd').chartFrom).toBeUndefined();
+    expect(parseHash('#/chart/song.a?from=jazz.5').chartFrom).toBe('jazz.5');
+  });
 });
 
 /**

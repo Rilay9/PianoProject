@@ -147,8 +147,18 @@ def step_score_checks(out_dir: Path) -> Step:
     produces only medium and low rows, which never fail a build. The allow-file
     is `content/score-checks.allow.json`: a reason per row, and a high row with
     no entry stops the build naming it.
+
+    **`--catalog` names the catalog this build just wrote** (2026-09-22 review).
+    The step took `out_dir` and never used it: the script read
+    `app/public/content/catalog.json` off a constant, so a `--out DIR` run —
+    documented usage, and `build/p19-personal/` and `build/p19-strict/` are on
+    disk — gated a catalog other than the one `merge_catalog(out_dir)` had
+    written one step earlier. Every other step is handed the same directory.
     """
-    code, output = python("score_checks.py", "--gate", "--no-analysis", "--quiet")
+    code, output = python(
+        "score_checks.py", "--gate", "--no-analysis", "--quiet",
+        "--catalog", str(out_dir / "catalog.json"),
+    )
     lines = [line for line in output.splitlines() if line.strip()]
     detail = next((line for line in lines if line.startswith("score-checks gate:")), summary_line(output))
     return Step(
@@ -256,11 +266,22 @@ def settle_key_signatures(entries: list[dict]) -> int:
     BWV 565, *Für Elise* read C major, the Moonlight read E major, and the
     coordinator confirmed the same on six more rows on 2026-09-22.
 
-    **The rule**, which is `keyOf` in `app/tests/unit/lessonClaimsAboutMusic.
-    test.ts` and `key_name` in `tools/content/notation.py` written once more:
-    a stated mode is believed; with no stated mode the last bass note decides
-    between the signature's major and its relative minor; and when it is
-    neither, no mode is claimed at all and the signature alone is printed.
+    **The rule.** A stated *minor* is believed; otherwise the last bass note
+    decides between the signature's major and its relative minor; and when it
+    is neither, no mode is claimed at all and the signature alone is printed
+    (`_signature_words` — "2 sharps").
+
+    **It is not `key_name`, and the two part twice** (2026-09-22 review; §2.17,
+    a comment is a claim). `key_name` in `tools/content/notation.py` — and
+    `keyOf` in `app/tests/unit/lessonClaimsAboutMusic.test.ts`, which is the
+    same rule in TypeScript — **differs from this one** on two of its three
+    branches: it believes `mode == "major"` (`if first.get("mode") ==
+    "major": return major`), which the paragraph below says this function
+    deliberately does not; and where the final bass matches neither the tonic
+    nor its relative it still names a tonic with a query (`return major +
+    "?"`), where this names none. Only the stated-minor branch is shared. Both
+    readings are deliberate: `key_name` reports what one file says, and this
+    decides what the Library prints over a catalogue of them.
 
     **`<mode>major</mode>` is not a statement.** `Nocturne_in_C_sharp_Minor.mxl`
     under `content/scores/imported/musetrainer/scores` contains no `<mode>` tag

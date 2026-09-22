@@ -89,6 +89,21 @@ export interface Route {
   lesson?: string;
   /** Catalog id open in the chord-chart view (docs/04 §3b). */
   chart?: string;
+  /**
+   * `#/chart/<id>?from=<lesson id>` — the chart's Back returns to that rung.
+   *
+   * The same mechanism and the same `from=` parameter as `scoreFrom`, and a
+   * separate field because they are separate screens: a chart opened from the
+   * Library must not inherit the Back of the score somebody was on before it,
+   * and `setRoute` compares them one at a time.
+   *
+   * Why the chart needed it too (Entry 42's *what is unverified*, closed
+   * 2026-09-22): `ChordChartScreen` had a hard-coded `← Library`, so *Chart*
+   * pressed on `jazz.5`'s song row landed the learner on the Library rather
+   * than on the rung whose lesson describes the chart. Only the lesson page
+   * knows which rung it is, so only the lesson page writes this.
+   */
+  chartFrom?: string;
   /** Catalog id of the drill being run (docs/05 §7). */
   drill?: string;
   /**
@@ -174,6 +189,22 @@ export interface Route {
    * walkthrough gets the same ride with no second mechanism.
    */
   tour?: string;
+  /**
+   * `#/score/<id>?from=<lesson id>` — Back returns to that rung.
+   *
+   * `leaveScore()` had exactly two answers: the tour, or `route.tab`. So a
+   * learner who pressed *Play it as a duet* on `2.1`, or tapped a song in the
+   * rung's own list, left the Score screen on **Plan** — the tab, at whatever
+   * stage it was scrolled to — rather than on the page they were reading. The
+   * rung is where the other options, the lesson and the *Know it* buttons are,
+   * and it is the thing they were half way through.
+   *
+   * A lesson id, on the same mechanism `tour` already uses, so the two are one
+   * idea with one parser rather than two. An id that is not a lesson id is
+   * dropped: a Back that goes nowhere is worse than a Back that goes to the
+   * tab, which is what `tour` says about itself for the same reason.
+   */
+  scoreFrom?: string;
   /**
    * `#/score/<id>?seed=1234` — generate *this* exercise rather than a new one.
    *
@@ -314,6 +345,15 @@ export function parseHash(hash: string): Route {
     wantedTour !== null && wantedTour !== undefined && looksLikeCatalogId(wantedTour)
       ? wantedTour
       : undefined;
+  const wantedFrom = params?.get('from');
+  // Dropped rather than carried, for the reason `tour` above is: it is only
+  // ever a navigation target. One parser for both screens that take a `from=`
+  // — the Score screen and the chord chart — because one spelling of "the rung
+  // that opened this" is what keeps the two Backs the same idea.
+  const fromLesson =
+    wantedFrom !== null && wantedFrom !== undefined && looksLikeLessonId(wantedFrom)
+      ? wantedFrom
+      : undefined;
   if (query) {
     const value = new URLSearchParams(query).get('for');
     // A lesson id, or nothing. An unrecognised one is dropped rather than
@@ -342,6 +382,7 @@ export function parseHash(hash: string): Route {
       ...(scoreHands ? { scoreHands } : {}),
       ...(scoreLoop ? { scoreLoop } : {}),
       ...(tour === undefined ? {} : { tour }),
+      ...(fromLesson === undefined ? {} : { scoreFrom: fromLesson }),
       ...(seed === undefined ? {} : { seed }),
     };
   }
@@ -421,7 +462,12 @@ export function parseHash(hash: string): Route {
     } catch {
       return { tab: DEFAULT_TAB };
     }
-    return looksLikeCatalogId(id) ? { tab: 'library', chart: id } : { tab: DEFAULT_TAB };
+    if (!looksLikeCatalogId(id)) return { tab: DEFAULT_TAB };
+    return {
+      tab: 'library',
+      chart: id,
+      ...(fromLesson === undefined ? {} : { chartFrom: fromLesson }),
+    };
   }
   if (tab === 'lesson') {
     let id: string;
@@ -470,6 +516,7 @@ export function routeToHash(route: Route): string {
         ? [`loop=${String(route.scoreLoop.from)}-${String(route.scoreLoop.to)}`]
         : []),
       ...(route.tour === undefined ? [] : [`tour=${encodeURIComponent(route.tour)}`]),
+      ...(route.scoreFrom === undefined ? [] : [`from=${encodeURIComponent(route.scoreFrom)}`]),
       ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
@@ -480,7 +527,10 @@ export function routeToHash(route: Route): string {
     return route.pdfPage === undefined ? base : `${base}?page=${String(route.pdfPage)}`;
   }
   if (route.lesson) return `#/lesson/${encodeURIComponent(route.lesson)}`;
-  if (route.chart) return `#/chart/${encodeURIComponent(route.chart)}`;
+  if (route.chart) {
+    const base = `#/chart/${encodeURIComponent(route.chart)}`;
+    return route.chartFrom === undefined ? base : `${base}?from=${encodeURIComponent(route.chartFrom)}`;
+  }
   if (route.drill) return `#/drill/${encodeURIComponent(route.drill)}`;
   if (route.dev) return `#/dev/${route.dev}`;
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
@@ -552,6 +602,8 @@ export class Router {
       loop?: { from: number; to: number };
       /** The walkthrough that opened it, which Back returns to. */
       tour?: string;
+      /** The rung that opened it, which Back returns to (`04` §5). */
+      from?: string;
       /** Generate this exercise rather than a new one (Today's daily read). */
       seed?: number;
     } = {},
@@ -566,6 +618,7 @@ export class Router {
       ...(options.hands ? { scoreHands: options.hands } : {}),
       ...(options.loop ? { scoreLoop: options.loop } : {}),
       ...(options.tour === undefined ? {} : { tour: options.tour }),
+      ...(options.from === undefined ? {} : { scoreFrom: options.from }),
       ...(options.seed === undefined ? {} : { seed: options.seed }),
     };
     this.win.location.hash = routeToHash(route);
@@ -623,9 +676,20 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Opens an item in the chord-chart view (`#/chart/<itemId>`). */
-  navigateChart(itemId: string): void {
-    const route: Route = { tab: 'library', chart: itemId };
+  /**
+   * Opens an item in the chord-chart view (`#/chart/<itemId>`).
+   *
+   * `from` is the rung that opened it, and the chart's Back returns there
+   * instead of to the Library (`04` §3b). Only the lesson page passes it: the
+   * Library's own door and the Score screen's ⋯ sheet open a chart from
+   * somewhere that is not a rung.
+   */
+  navigateChart(itemId: string, options: { from?: string } = {}): void {
+    const route: Route = {
+      tab: 'library',
+      chart: itemId,
+      ...(options.from === undefined ? {} : { chartFrom: options.from }),
+    };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -657,6 +721,10 @@ export class Router {
       route.scoreMode === this.current.scoreMode &&
       route.scoreHands === this.current.scoreHands &&
       route.tour === this.current.tour &&
+      // Where Back goes is part of which screen this is: the same piece opened
+      // from a rung and opened from the Library are two routes, and leaving
+      // this out would have the second one silently keep the first one's Back.
+      route.scoreFrom === this.current.scoreFrom &&
       route.seed === this.current.seed &&
       route.lab === this.current.lab &&
       route.labPreset === this.current.labPreset &&
@@ -682,6 +750,11 @@ export class Router {
       route.paper?.pieceId === this.current.paper?.pieceId &&
       route.lesson === this.current.lesson &&
       route.chart === this.current.chart &&
+      // Where Back goes is part of which screen this is, exactly as
+      // `scoreFrom` is above: the same chart opened from a rung and from the
+      // Library are two routes, and the second would otherwise keep the
+      // first one's Back and never redraw.
+      route.chartFrom === this.current.chartFrom &&
       route.drill === this.current.drill
     ) {
       return;

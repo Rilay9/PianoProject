@@ -36,6 +36,7 @@ Usage:
     python tools/content/score_checks.py --only bar-duration repeat-structure
     python tools/content/score_checks.py --item song.folk.so-danco-samba.pdmx
     python tools/content/score_checks.py --no-analysis   # skip music21
+    python tools/content/score_checks.py --catalog build/p19-strict/catalog.json
 """
 from __future__ import annotations
 
@@ -1451,17 +1452,43 @@ def tempo_floors(tempos_by_metre: dict[str, list[float]]) -> dict[str, float]:
 # --------------------------------------------------------------------------
 
 
-def load_catalog() -> list[dict]:
-    return json.loads(CATALOG.read_text(encoding="utf-8"))
+def load_catalog(path: Path = CATALOG) -> list[dict]:
+    """
+    The catalog to check. `--catalog` names it; the default is the built one.
+
+    A path rather than the constant, because `build.py` gates the catalog it
+    has **just written** and `--out DIR` puts that somewhere else (2026-09-22
+    review). Before this the step ran the script bare and the script read
+    `app/public/content/catalog.json`, so a `--out build/p19-strict` build
+    gated a different catalog one step after merging its own.
+    """
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
-def scored_rows(catalog: list[dict]) -> list[dict]:
+def content_dir_for(catalog: Path) -> Path:
+    """
+    The directory a catalog's `file` paths are relative to: its own.
+
+    `--catalog` may name the catalog file or the content directory holding it,
+    because both spellings appear in the pipeline's own usage lines.
+    """
+    return catalog.parent
+
+
+def catalog_path_for(given: Path | None) -> Path:
+    """`--catalog`'s argument as a catalog file, directory or file alike."""
+    if given is None:
+        return CATALOG
+    return given / "catalog.json" if given.is_dir() else given
+
+
+def scored_rows(catalog: list[dict], content: Path = CONTENT) -> list[dict]:
     out = []
     for row in catalog:
         rel = row.get("file")
         if not rel:
             continue
-        if (CONTENT / rel).exists():
+        if (content / rel).exists():
             out.append(row)
     return out
 
@@ -1497,7 +1524,8 @@ def load_cache() -> dict:
     return {}
 
 
-def run(rows: list[dict], *, only: set[str], analysis: bool, verbose: bool) -> tuple[list[Flag], dict]:
+def run(rows: list[dict], *, only: set[str], analysis: bool, verbose: bool,
+        content: Path = CONTENT) -> tuple[list[Flag], dict]:
     index = ArchiveIndex.load() if "truncation" in only else ArchiveIndex()
     cache = load_cache() if analysis else {}
     fresh: dict = {}
@@ -1520,7 +1548,7 @@ def run(rows: list[dict], *, only: set[str], analysis: bool, verbose: bool) -> t
     # One read of every file, because the tempo floors need the whole corpus
     # before the per-item checks can use them.
     for row in rows:
-        path = CONTENT / row["file"]
+        path = content / row["file"]
         text = read_musicxml(path)
         if text is None:
             stats["unreadable"].append(row["id"])
@@ -1559,7 +1587,7 @@ def run(rows: list[dict], *, only: set[str], analysis: bool, verbose: bool) -> t
         if "key-consistency" in only:
             found = None
             if analysis:
-                path = CONTENT / row["file"]
+                path = content / row["file"]
                 stat = path.stat()
                 token = f"{stat.st_size}:{int(stat.st_mtime)}"
                 cached = cache.get(row["file"])
@@ -1818,6 +1846,12 @@ def main() -> int:
     parser.add_argument("--no-analysis", action="store_true", help="skip the music21 key analysis")
     parser.add_argument("--quiet", action="store_true")
     parser.add_argument(
+        "--catalog",
+        type=Path,
+        help="the catalog.json to check, or the content directory holding it "
+             "(default app/public/content); its rows' files are read from beside it",
+    )
+    parser.add_argument(
         "--gate",
         action="store_true",
         help="fail (exit 1) on any high row not listed in content/score-checks.allow.json",
@@ -1826,7 +1860,9 @@ def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
 
     only = set(args.only) if args.only else set(CHECKS)
-    rows = scored_rows(load_catalog())
+    catalog_path = catalog_path_for(args.catalog)
+    content = content_dir_for(catalog_path)
+    rows = scored_rows(load_catalog(catalog_path), content)
     if args.item:
         wanted = set(args.item)
         rows = [r for r in rows if r["id"] in wanted]
@@ -1834,7 +1870,8 @@ def main() -> int:
         for item in sorted(missing):
             print(f"{item}: not in the catalog, or has no file on disk", file=sys.stderr)
 
-    flags, stats = run(rows, only=only, analysis=not args.no_analysis, verbose=not args.quiet)
+    flags, stats = run(rows, only=only, analysis=not args.no_analysis, verbose=not args.quiet,
+                       content=content)
 
     if args.stats:
         print_stats(stats)

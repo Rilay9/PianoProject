@@ -525,6 +525,20 @@ nothing on the Score screen to be judged against. Every CC64 value now rides out
 - **One rule, two callers.** `Scoring.halfPedalScore` is the arithmetic; `special.ts`'s
   `PedalDrill.halfPedalResult` asks it too, so the drill screen and the Score screen cannot
   disagree about what a half pedal is.
+- **The share is taken over the messages sent with the pedal down** (2026-09-22 review): from
+  the message that takes it off the top to the one that puts it back, that last one excluded,
+  which is every value above 0 since 0 is the only fully-up there is. It was every CC64
+  message of the run, and `met` asks for nine in ten inside the range — so **lifting the pedal
+  counted against the pedalling**, and a clean change is a lift and a return. A run that
+  half-pedalled perfectly through four phrases could reach the sheet under the pass on its own
+  lifts. Where messages arrived and every one was 0 the sheet says *the pedal never left the
+  top*, which is neither the switch sentence nor a nought.
+- **The list of values is a run total, gated and cleared like `recorded`** (same review). The
+  CC64 branch of `feed` had no `running`/`paused`/`finished` guard and `resetRunTotals` left
+  the list standing, so a pedal moved while the run was paused — or before ▶, or after the
+  last bar — sat in that denominator. `state.sustain`, the switch the renderer and the keys
+  read, is **not** gated: "is the damper down now" is true whatever the transport is doing,
+  which is the division `pressed` already makes against `recorded`.
 - **A pedal that only ever sends 0 and 127 is a switch**, and many digital actions are. It is
   its own state and the sheet says so, rather than showing a permanent nought.
 - `pedal` is optional on `SessionScore` for the reason `rhythmOnly` is: a row stored before the

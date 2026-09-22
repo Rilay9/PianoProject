@@ -225,11 +225,22 @@ export class PracticeEngine {
   /**
    * Every CC64 value this run has seen, in order (T16 item 6).
    *
-   * `sustainDown` above is the switch and it is what the renderer and the
-   * strip read; this is the depth, and until it existed the half-pedal
-   * exercise - which opens here as notation - had nothing to be judged
-   * against. Kept as a list rather than folded into a share, because what
-   * counts as a half pedal is the exercise's own `ccRange`.
+   * `sustainDown` above is the switch, published as `state.sustain`; this is
+   * the depth, and until it existed the half-pedal exercise - which opens here
+   * as notation - had nothing to be judged against. Kept as a list rather than
+   * folded into a share, because what counts as a half pedal is the exercise's
+   * own `ccRange`.
+   *
+   * This used to say the switch "is what the renderer and the strip read",
+   * and that was not checked (2026-09-22 review, working rules §2.17).
+   * `grep -rn "\.sustain\b" app/src` returns **nothing**, and a second search
+   * for `sustain` across `app/src` returns only `Piano.ts` (a note's own
+   * sustain), `parseMidiMessage.ts` (a message kind), `special.ts`
+   * (`PedalDrill`'s own copy of the switch) and two comments — the drill
+   * screen's pedal lamp derives `pedalDown` from the CC itself. So
+   * `state.sustain` is read by the unit tests and by nothing on a screen
+   * today. It is still the switch rather than a total, which is the reason it
+   * is set whatever the transport is doing.
    */
   private readonly pedalValues: number[] = [];
 
@@ -567,8 +578,17 @@ export class PracticeEngine {
   feed(input: EngineInput): void {
     if (input.kind === 'cc') {
       if (input.cc === CC_SUSTAIN) {
-        this.pedalValues.push(input.value);
+        // The switch is physical state and is kept whatever the transport is
+        // doing, the way `pressed` is below: it answers "is the damper down
+        // *now*", which is true of a paused run as much as of a running one.
         this.sustainDown = input.value >= 64;
+        // The list of values is a **run total**. It rides out on
+        // `SessionScore.pedal` beside `notes` and the summary sheet divides by
+        // its length, so it is gated and cleared exactly as `recorded` is (the
+        // guard on the note path is the identical line below). Ungated, a
+        // pedal moved while the run was paused — or before ▶, or after the
+        // last bar — sat in that denominator and counted against the learner.
+        if (this.running && !this.paused && !this.finished) this.pedalValues.push(input.value);
       }
       return;
     }
@@ -1196,6 +1216,9 @@ export class PracticeEngine {
     this.progress = freshProgress();
     this.earlyBuffer = new Set();
     this.recorded.length = 0;
+    // A run total like `recorded`, and cleared with it: a second run of the
+    // same piece must not be judged on the first run's pedalling.
+    this.pedalValues.length = 0;
     this.correctSteps = 0;
     this.wrongNotesTotal = 0;
     this.missedTotal = 0;

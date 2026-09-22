@@ -94,13 +94,27 @@ test('the keys answer the chain, and the counter says so', async ({ page }) => {
   await simonFromTheRung(page);
   const section = page.locator('section[data-screen="drill"]');
   // The chain is over when the card has stopped naming notes: the light, the
-  // name and the staff all go out together, which is the only "your turn"
-  // this mode has.
+  // name and the staff all go out together.
   await expect(page.locator('#drill-simon-now')).toHaveText('🎧', { timeout: 30_000 });
+  // And the hand-over is said in words as well, which it was not until T17-2:
+  // the going-out was the only cue there was, and the prompt line reads *Play
+  // the chain back* in both halves (Entry 38, FAULT 7b). It names no note —
+  // asserted below, because a cue that named one would be a crib.
+  const turn = page.locator('#drill-status');
+  await expect(turn, 'nothing said whose turn it was').toContainText('Your turn', {
+    timeout: 30_000,
+  });
   const expects = ((await section.getAttribute('data-expects')) ?? '').split(',').filter(Boolean);
   expect(expects.length, 'the Simon card expects nothing, so this proves nothing').toBeGreaterThan(
     0,
   );
+  const cue = (await turn.textContent()) ?? '';
+  for (const midi of expects) {
+    const letter = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'][
+      Number(midi) % 12
+    ];
+    expect(cue, `${letter} is in the turn cue`).not.toContain(letter);
+  }
   for (const midi of expects) await press(page, Number(midi));
   await expect(page.locator('#drill-counter')).toContainText('1 right', { timeout: 30_000 });
   // The chain grows, which is what makes it Simon rather than a note flash.

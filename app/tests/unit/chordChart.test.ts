@@ -92,7 +92,12 @@ vi.mock('../../src/curriculum/load', () => ({
 
 const { ChordChartScreen } = await import('../../src/ui/screens/ChordChartScreen');
 
-const router = { navigate: vi.fn(), navigateScore: vi.fn() } as unknown as Router;
+const router = {
+  route: {},
+  navigate: vi.fn(),
+  navigateScore: vi.fn(),
+  navigateLesson: vi.fn(),
+} as unknown as Router;
 
 function measure(number: number, root: string): string {
   return `<measure number="${String(number)}"><harmony><root><root-step>${root}</root-step></root><kind>major</kind></harmony></measure>`;
@@ -197,5 +202,69 @@ describe("a catalog tempo outside the bpm field's own 40-240 range", () => {
     await vi.waitFor(() => {
       expect(section.querySelector<HTMLInputElement>('#chart-bpm')?.value).toBe(expected);
     });
+  });
+});
+
+/**
+ * Where the chart's Back goes (`04` §3b, `?from=`, 2026-09-22).
+ *
+ * Entry 42 gave the Score screen `?from=<rung>` and recorded in its own *what
+ * is unverified* that the chart had the same fault one screen over: a
+ * hard-coded `← Library` and three dead ends that went there too, so *Chart*
+ * pressed on `jazz.5`'s song row left the learner on the Library rather than
+ * on the rung whose lesson describes the chart.
+ */
+describe('the chart’s Back', () => {
+  afterEach(() => {
+    document.body.replaceChildren();
+  });
+
+  function mountFrom(from?: string): { section: HTMLElement; router: Router; spies: {
+    navigate: ReturnType<typeof vi.fn>;
+    navigateLesson: ReturnType<typeof vi.fn>;
+    navigateScore: ReturnType<typeof vi.fn>;
+  } } {
+    const spies = { navigate: vi.fn(), navigateLesson: vi.fn(), navigateScore: vi.fn() };
+    const local = {
+      route: from === undefined ? {} : { chartFrom: from },
+      ...spies,
+    } as unknown as Router;
+    currentXml = `<score-partwise><part id="P1">${measure(1, 'C')}</part></score-partwise>`;
+    const section = ChordChartScreen(local, 'demo');
+    document.body.replaceChildren(section);
+    return { section, router: local, spies };
+  }
+
+  it('is the Library when nothing says otherwise, which is every other door in', () => {
+    const { section, spies } = mountFrom();
+    const back = section.querySelector<HTMLButtonElement>('#chart-back');
+    expect(back?.textContent).toBe('← Library');
+    back?.click();
+    expect(spies.navigate).toHaveBeenCalledWith('library');
+    expect(spies.navigateLesson).not.toHaveBeenCalled();
+  });
+
+  it('is the rung when a rung opened it, and says so on the button', () => {
+    const { section, spies } = mountFrom('jazz.5');
+    const back = section.querySelector<HTMLButtonElement>('#chart-back');
+    expect(back?.textContent).toBe('← Lesson');
+    back?.click();
+    expect(spies.navigateLesson).toHaveBeenCalledWith('jazz.5');
+    expect(spies.navigate).not.toHaveBeenCalled();
+  });
+
+  it('carries the rung on through the no-chords dead end, so that Back comes here too', async () => {
+    const spies = { navigate: vi.fn(), navigateLesson: vi.fn(), navigateScore: vi.fn() };
+    const local = { route: { chartFrom: 'jazz.5' }, ...spies } as unknown as Router;
+    // A part with no `<harmony>` at all: the dead end that offers the Score
+    // screen instead, which is the one branch that does not offer a way back.
+    currentXml = '<score-partwise><part id="P1"><measure number="1"/></part></score-partwise>';
+    const section = ChordChartScreen(local, 'demo');
+    document.body.replaceChildren(section);
+    await vi.waitFor(() => {
+      expect(section.querySelector('#chart-open-score')).not.toBeNull();
+    });
+    section.querySelector<HTMLButtonElement>('#chart-open-score')?.click();
+    expect(spies.navigateScore).toHaveBeenCalledWith('demo', { from: 'jazz.5' });
   });
 });

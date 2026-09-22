@@ -168,7 +168,10 @@ describe('the door on a lesson page', () => {
     )].find((node) => node.textContent === 'Chart');
     expect(button).toBeDefined();
     (button as HTMLButtonElement).click();
-    expect(router.navigateChart).toHaveBeenCalledWith(WITH_CHORDS);
+    // With the rung, so the chart's Back comes back here (`04` §3b, T17-2's
+    // *what is unverified*): the door used to open a screen whose only way
+    // out was a hard-coded `← Library`.
+    expect(router.navigateChart).toHaveBeenCalledWith(WITH_CHORDS, { from: LESSON.id });
   });
 
   it('draws none on a song that has not', async () => {

@@ -853,5 +853,130 @@ class KnownItems(unittest.TestCase):
         self.assertEqual(repeat_faults(clean), [])
 
 
+class TestSettleKeySignaturesSaysWhatItDoes(unittest.TestCase):
+    """
+    `build.settle_key_signatures`'s docstring, against its code (2026-09-22
+    review; working rules §2.17 — prose about your own code is a claim).
+
+    It said its rule was "`keyOf` in `lessonClaimsAboutMusic.test.ts` and
+    `key_name` in `tools/content/notation.py` written once more". Those two are
+    one rule in two languages, and the function **differs from both** on two of
+    the three branches: they believe `<mode>major</mode>` and it deliberately
+    does not, and where the final bass matches neither the tonic nor its
+    relative they still name a mode with a `?` where it names none.
+
+    Here rather than in a file of its own because this file already owns the
+    `keySig` corpus case above, and `score_checks.check_key_consistency` is
+    what reads the field this writes.
+    """
+
+    def settle(self, **notation) -> str | None:
+        import build
+
+        entry = {
+            "id": "song.test",
+            "type": "song",
+            "keySig": "D major",
+            "notation": {"keys": [{"fifths": 2, "mode": notation["mode"]}],
+                         "finalBass": notation["final_bass"]},
+        }
+        build.settle_key_signatures([entry])
+        return entry.get("keySig")
+
+    def named(self, **notation) -> str:
+        from notation import key_name
+
+        return key_name({"keys": [{"fifths": 2, "mode": notation["mode"]}],
+                         "finalBass": notation["final_bass"]})
+
+    def test_a_stated_major_is_a_statement_to_key_name_and_not_to_this(self):
+        # Two sharps, the file says major, the bass ends on B: the relative
+        # minor. `key_name` stops at the tag; this reads the music.
+        self.assertEqual(self.settle(mode="major", final_bass=11), "B minor")
+        self.assertEqual(self.named(mode="major", final_bass=11), "D")
+
+    def test_an_ending_on_neither_names_no_mode_here_and_a_mode_there(self):
+        # No `<mode>` at all, and the bass ends on F: neither D nor B. This
+        # prints the signature and claims nothing; `key_name` still answers
+        # with a tonic and a question mark.
+        self.assertEqual(self.settle(mode=None, final_bass=5), "2 sharps")
+        self.assertEqual(self.named(mode=None, final_bass=5), "D?")
+
+    def test_a_stated_minor_is_the_one_branch_the_two_share(self):
+        self.assertEqual(self.settle(mode="minor", final_bass=5), "B minor")
+        self.assertEqual(self.named(mode="minor", final_bass=5), "Bm")
+
+    def test_the_docstring_does_not_claim_the_two_are_one_rule(self):
+        import build
+
+        doc = build.settle_key_signatures.__doc__ or ""
+        self.assertNotIn("written once more", doc)
+        # And it says where they part, rather than only dropping the claim.
+        self.assertIn("differs from", doc)
+
+
+class TestTheCatalogItChecks(unittest.TestCase):
+    """
+    The gate reads the catalog it is handed, not always the default one
+    (2026-09-22 review, `build.py:142`).
+
+    `step_score_checks(out_dir)` never used `out_dir`: it ran the script bare
+    and the script read `app/public/content/catalog.json` off a constant. Every
+    other step of the build is handed the directory the build wrote — `--out
+    str(out_dir)` five times, `step_validate(args.out, …)` twice — and
+    `--out DIR` is documented usage, with `build/p19-personal/` and
+    `build/p19-strict/` on disk. So `--out` gated the high rows of a catalog
+    that was not the one `merge_catalog(out_dir)` had just written.
+
+    Two halves, one per test: the script can be pointed at a directory, and the
+    build points it at the one it wrote.
+    """
+
+    def _tree(self, tmp: Path) -> Path:
+        """A content directory with one catalog row and the file it names."""
+        (tmp / "scores").mkdir(parents=True)
+        (tmp / "scores" / "one.musicxml").write_text(score(measure(1, note(4))), encoding="utf-8")
+        (tmp / "catalog.json").write_text(
+            json.dumps([
+                {"id": "song.one", "file": "scores/one.musicxml"},
+                {"id": "song.gone", "file": "scores/missing.musicxml"},
+            ]),
+            encoding="utf-8",
+        )
+        return tmp
+
+    def test_the_catalog_and_its_files_come_from_the_directory_it_is_given(self):
+        import tempfile
+
+        from score_checks import load_catalog, scored_rows
+
+        with tempfile.TemporaryDirectory() as raw:
+            content = self._tree(Path(raw))
+            rows = scored_rows(load_catalog(content / "catalog.json"), content)
+        # The row whose file is on disk *there*, and not the row whose is not.
+        self.assertEqual([r["id"] for r in rows], ["song.one"])
+
+    def test_the_build_hands_the_step_the_directory_it_just_wrote(self):
+        import build
+
+        seen: list[tuple[str, ...]] = []
+
+        def fake(script: str, *args: str) -> tuple[int, str]:
+            seen.append((script, *args))
+            return 0, "score-checks gate: nothing to report"
+
+        original = build.python
+        build.python = fake
+        try:
+            build.step_score_checks(Path("build") / "p19-strict")
+        finally:
+            build.python = original
+
+        self.assertEqual(len(seen), 1)
+        call = seen[0]
+        self.assertIn("--catalog", call)
+        self.assertEqual(call[call.index("--catalog") + 1], str(Path("build") / "p19-strict" / "catalog.json"))
+
+
 if __name__ == "__main__":
     unittest.main()
