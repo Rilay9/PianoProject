@@ -50,7 +50,8 @@ order is a scale, not a melody; break the order.
 
 **Tools for this rung.** The lab opens on I–vi–IV–V, the loop drill's own four
 chords, with the left hand spread out under them and no right hand at all —
-that part is yours.
+that part is yours. It opens on *Hold the chords*, so the loop holds them and the
+line is yours.
 Start it — one chord a bar is far more changes than the last rung's loop, and
 the grid moving under you is what makes that obvious. Change the key when the pentatonic starts
 playing itself: the numerals do not move and your hand has to. *Trading fours*

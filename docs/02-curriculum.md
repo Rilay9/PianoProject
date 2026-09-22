@@ -81,7 +81,12 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    shelf. (Revised 2026-09-18: the holiday list was the third, and at 29 songs from level 1.2
    to 7.3 it was not a list but several rungs in a heap. It is now `holiday` at Stage 2 with
    six carols, `holiday.3` and `holiday.4`, with every other carol under *Holiday* in the
-   Library; `pending-review.md` Entry 21.) (Revised 2026-09-15: for a day the build had placed every song in
+   Library; `pending-review.md` Entry 21. Revised 2026-09-22: the ladder was carried up to
+   the stages the genre plan already described — `holiday.5` (a carol as a written-out piano
+   piece), `holiday.6` (the concert settings) and `holiday.7` (winter repertoire that is not
+   a carol) — so the track now runs 2, 3, 4, 5, 6, 7. It stays under *Style ladders* on
+   the Plan screen, which splits tracks at one unit rather than ranking them by count;
+   `pending-review.md` Entry 31.) (Revised 2026-09-15: for a day the build had placed every song in
    the library on some rung, which put thirty to seventy pieces on the classical rungs; see
    `handoff-2026-09-09.md` §5aj–§5ak. The per-rung tables below name the plan's intended
    pieces; `docs/generated/ladder.md` is what the build offers today.)

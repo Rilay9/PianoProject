@@ -26,7 +26,7 @@
  */
 import type { Router } from '../../router';
 import { audioEngine, getPiano, screenKeyboardSource, webMidiSource } from '../../app/services';
-import { DrumKit, barSchedule } from '../../audio/backingLoop';
+import { DrumKit, barSchedule, type CompPattern } from '../../audio/backingLoop';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
 import type { Piano } from '../../audio/Piano';
@@ -44,14 +44,20 @@ import {
   LAB_PROGRESSIONS,
   buildLabExercise,
   chordsForProgression,
+  judgeLabPass,
+  labHelp,
   labKey,
   LAB_PRESETS,
   labPreset,
   labProgression,
+  labRightHandBars,
   parseRomanList,
   romansForProgression,
+  type LabBed,
+  type LabBedNote,
   type LabChord,
   type LabLeftHand,
+  type LabPassNote,
   type LabRightHand,
 } from '../../engine/sightReading';
 import { addImport, deleteImport, importSummaries, updateImport } from '../../data/importStore';
@@ -191,6 +197,18 @@ export function LabScreen(router: Router): HTMLElement {
       .replace(/^-+|-+$/g, '');
   }
 
+  /**
+   * The seed the melody is drawn from — the settings, hashed.
+   *
+   * One function rather than two so that *Read it* and *Play the tune* draw
+   * the same tune from the same pickers: a screen that wrote one melody on the
+   * page and played a different one under the learner's hands would be two
+   * answers to one question.
+   */
+  function melodySeed(): number {
+    return [...`lab:${slug()}`].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7);
+  }
+
   const summary = el('p.lab-summary', { id: 'lab-summary' });
   function drawSummary(): void {
     const { chords, unreadable } = currentChords();
@@ -283,7 +301,7 @@ export function LabScreen(router: Router): HTMLElement {
       bpm,
       // The melody is the only thing left to chance, and it is seeded from the
       // settings so the same choices give the same page twice.
-      seed: [...tag].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7),
+      seed: melodySeed(),
     });
     for (const row of await importSummaries()) {
       if (row.tags.includes(tag)) await deleteImport(row.id);
@@ -321,6 +339,57 @@ export function LabScreen(router: Router): HTMLElement {
   let running = false;
   let disposed = false;
 
+  // --- both ways round (docs/04 §3c, 2026-09-22) ---------------------------
+
+  /**
+   * Which way round the bed is playing.
+   *
+   * The owner asked for the lab to *"play chords while the user plays the
+   * melody, so it'd go both ways"*. `hold` is that; `tune` is the reverse, the
+   * app taking the right hand while the learner comps. Both are settings on
+   * *Jam it* and not buttons of their own, for the reason trading fours is:
+   * it is the same loop, the same bed, the same chart and the same keys, and a
+   * third transport button would have been a third name for one thing.
+   */
+  let bed: LabBed = preset?.bed ?? 'off';
+  /** The right hand the app plays under `tune`, one array per bar. */
+  let bedBars: LabBedNote[][] = [];
+  /** What the learner played this time round, against the bar it was played over. */
+  let passNotes: LabPassNote[] = [];
+  /**
+   * Whether the chips exist yet.
+   *
+   * `redraw()` is written above the row it repaints, and the row is a `const`
+   * — so a redraw during setup would reach it in its temporal dead zone. The
+   * flag says "there is something to repaint" rather than relying on nobody
+   * ever calling `redraw()` one line too early.
+   */
+  let bedDrawn = false;
+
+  /**
+   * Why a way round is refused, or `null` when it is available.
+   *
+   * Fail closed (`04` §0 R4): *Play the tune* with the right hand set to
+   * *None* has nothing to play, and *Hold the chords* with the left hand set
+   * to *None* has no pattern to comp in. Either would be a chip that starts a
+   * loop indistinguishable from the one it replaced, which is worse than a
+   * refusal because the learner would conclude the feature does not work.
+   */
+  function bedRefusal(which: LabBed): string | null {
+    if (which === 'tune' && rightHand === 'none') {
+      return 'Play the tune needs a right hand — set Right hand to Melody or Chord tones.';
+    }
+    if (which === 'hold' && leftHand === 'none') {
+      return 'Hold the chords needs a left-hand pattern — set Left hand to anything but None.';
+    }
+    return null;
+  }
+
+  /** The bed's comp pattern. `LabLeftHand` assigns here, so the compiler joins them. */
+  function compPattern(): CompPattern {
+    return bed === 'hold' ? leftHand : 'none';
+  }
+
   // --- trading fours (docs/04 §3c) ------------------------------------------
 
   /**
@@ -345,7 +414,9 @@ export function LabScreen(router: Router): HTMLElement {
   let piano: Piano | null = null;
   const tradeLine = el('p.lab-trade', { id: 'lab-trade', hidden: true });
   const tradeVerdict = el('p.lab-trade__verdict', { id: 'lab-trade-verdict' });
-  jamForm.after(tradeLine, tradeVerdict);
+  /** What the last time round was worth, in the same quiet voice as a trade's. */
+  const bedVerdict = el('p.lab-trade__verdict', { id: 'lab-bed-verdict' });
+  jamForm.after(tradeLine, tradeVerdict, bedVerdict);
 
   function drawJamGrid(): void {
     jamGrid.replaceChildren();
@@ -391,9 +462,62 @@ export function LabScreen(router: Router): HTMLElement {
     // A hair ahead, so the bar's first event is scheduled rather than already
     // in the past by the time this runs.
     const barStart = context.currentTime + 0.02;
-    for (const event of barSchedule({ pitchClasses: chord.pitchClasses, beatsPerBar: 4 })) {
-      kit.play(event, barStart + event.atBeat * secondsPerBeat);
+    for (const event of barSchedule({
+      pitchClasses: chord.pitchClasses,
+      beatsPerBar: 4,
+      comp: compPattern(),
+    })) {
+      kit.play(event, barStart + event.atBeat * secondsPerBeat, secondsPerBeat);
     }
+  }
+
+  /**
+   * The app's own right hand for one bar, under *Play the tune*.
+   *
+   * On the piano rather than the kit, for the same reason the trading-fours
+   * call is: the kit is three synthesised noises and a plucked sine, which is
+   * a rhythm section and not a melody to comp under. Scheduled off the beat's
+   * own audio time, so it sits on the bed rather than a look-ahead ahead of it.
+   */
+  function playBedBar(index: number, beatTimeSec: number): void {
+    const notes = bedBars[index];
+    if (!piano || !notes || notes.length === 0) return;
+    const secondsPerBeat = 60 / bpm;
+    for (const note of notes) {
+      piano.start({
+        midi: note.midi,
+        velocity: 80,
+        timeSec: beatTimeSec + note.atBeat * secondsPerBeat,
+        durationSec: Math.max(0.12, note.beats * secondsPerBeat * 0.92),
+      });
+    }
+  }
+
+  /**
+   * What one time round was worth, said before the next one covers it.
+   *
+   * The same contract as a trade's verdict (`04` §3c): two counts, no mark,
+   * nothing written to the practice history. Which count is *said* depends on
+   * which way round the bed is, because only one of them is honest: under
+   * *Hold the chords* the learner is playing a line, so the scale is the
+   * measurement; under *Play the tune* they are comping the bar they are in,
+   * so the bar's own chord is.
+   */
+  function reportPass(pass: number): void {
+    if (bed === 'off' || passNotes.length === 0) {
+      passNotes = [];
+      return;
+    }
+    const judged = judgeLabPass({
+      notes: passNotes,
+      harmony: jamChords,
+      scale: currentTradeScale(),
+    });
+    bedVerdict.textContent =
+      bed === 'hold'
+        ? `Time round ${String(pass)} · ${String(judged.inScale)} of ${String(judged.notes)} in the ${currentTradeScaleName()} scale`
+        : `Time round ${String(pass)} · ${String(judged.onChord)} of ${String(judged.notes)} on the bar’s chord`;
+    passNotes = [];
   }
 
   /** The pitch classes this rung's notes are counted against. */
@@ -520,6 +644,10 @@ export function LabScreen(router: Router): HTMLElement {
     if (disposed || beat.isCountIn) return;
     const next = barAt(beat.bar, jamChords.length);
     if (barStarted && next.bar === bar && next.chorus === chorus) return;
+    // A time round has ended when the pass number moves, which is the moment
+    // the verdict is read: after that the next pass's notes start arriving and
+    // the two would be counted together.
+    if (barStarted && next.chorus !== chorus) reportPass(chorus);
     barStarted = true;
     bar = next.bar;
     chorus = next.chorus;
@@ -527,6 +655,7 @@ export function LabScreen(router: Router): HTMLElement {
     showChordOnKeys();
     const chord = jamChords[bar];
     if (chord) scheduleBacking(chord);
+    if (bed === 'tune') playBedBar(bar, beat.timeSec);
     // T8, case 2: the app leads, so there is no first-note latch anywhere in
     // this mode. The learner's window opens where the bar opens, because
     // coming in on time is the thing being practised.
@@ -547,8 +676,30 @@ export function LabScreen(router: Router): HTMLElement {
     // Pressing Jam it again is "start from the top", not "start a second
     // loop": the kit schedules a bar ahead on the audio clock, so one left
     // running under another would play the old bar's bass over the new one.
+    // A way round whose hand has since been set to None is refused here as
+    // well as at the chip: the chip could have been pressed first.
+    const refusal = bed === 'off' ? null : bedRefusal(bed);
+    if (refusal) {
+      bed = 'off';
+      drawBedChips();
+      status.textContent = refusal;
+      status.classList.add('status--error');
+      return;
+    }
     if (running) stopJam();
     jamChords = chords;
+    bedBars =
+      bed === 'tune'
+        ? labRightHandBars({
+            fifths: labKey(keyId).fifths,
+            harmony: chords,
+            rightHand,
+            beatsPerBar: 4,
+            seed: melodySeed(),
+          })
+        : [];
+    passNotes = [];
+    bedVerdict.textContent = '';
     bar = 0;
     chorus = 1;
     barStarted = false;
@@ -592,6 +743,15 @@ export function LabScreen(router: Router): HTMLElement {
     // is what the learner's window is measured from, and `onTick` fires ahead
     // of the sound rather than on it.
     clockAnchor = captureAudioClockAnchor(context);
+    if (bed === 'tune') {
+      // Same reason as the call below: the app takes the first bar, so the
+      // samples have to be there before the metronome starts.
+      piano = await getPiano().catch(() => null);
+      if (disposed) return;
+      if (!piano) {
+        status.textContent = 'The piano samples are not loaded, so the app’s right hand will be silent.';
+      }
+    }
     if (trading) {
       // The app takes the first trade, so the samples have to be there before
       // the metronome starts or the opening call is silent.
@@ -618,9 +778,14 @@ export function LabScreen(router: Router): HTMLElement {
     running = true;
     section.dataset.jam = 'running';
     section.dataset.trading = String(trading);
+    section.dataset.bed = bed;
     status.textContent = trading
       ? `The app takes ${String(tradeBars)} bars, then you take ${String(tradeBars)}. Nothing is recorded and nothing can be passed or failed.`
-      : 'Nothing is being judged or recorded — play over it.';
+      : bed === 'hold'
+        ? 'The app is holding the chords — play the tune over them. Nothing is recorded and nothing can be passed or failed.'
+        : bed === 'tune'
+          ? 'The app has the right hand — comp the chords underneath. Nothing is recorded and nothing can be passed or failed.'
+          : 'Nothing is being judged or recorded — play over it.';
   }
 
   function stopJam(): void {
@@ -635,6 +800,7 @@ export function LabScreen(router: Router): HTMLElement {
     running = false;
     section.dataset.jam = 'stopped';
     section.dataset.trading = 'false';
+    passNotes = [];
     tradeLine.hidden = true;
     tradeLine.dataset.side = '';
     strip?.clear();
@@ -654,8 +820,12 @@ export function LabScreen(router: Router): HTMLElement {
    * so nothing here outlives the two trades it describes.
    */
   function collectNote(event: InputNoteEvent): void {
-    if (!trading || !running || event.kind !== 'noteOn') return;
-    answerNotes.push({ midi: event.midi, tMs: event.tMs });
+    if (!running || event.kind !== 'noteOn') return;
+    if (trading) answerNotes.push({ midi: event.midi, tMs: event.tMs });
+    // The bar the loop is on when the key goes down. Coarse on purpose — see
+    // `judgeLabPass` — and emptied at the end of every time round, so nothing
+    // here outlives the pass it describes.
+    if (bed !== 'off') passNotes.push({ midi: event.midi, bar });
   }
   const stopMidi = webMidiSource.onNote(collectNote);
   const stopKeys = screenKeyboardSource.onNote(collectNote);
@@ -685,7 +855,7 @@ export function LabScreen(router: Router): HTMLElement {
     customText = customInput.value;
     redraw();
   });
-  const customRow = field('Your numerals', customInput, 'One per bar — I, vi, V7, ♭VII, iiø7.');
+  const customRow = field('Your numerals', customInput, labHelp('custom'));
   customRow.hidden = true;
 
   const progressionSelect = selectControl(
@@ -782,18 +952,23 @@ export function LabScreen(router: Router): HTMLElement {
    * tall, well past R2's 56. Full width, label above — the shape Today's
    * session-length chips already use.
    */
-  function chipGroup(label: string, row: HTMLElement): HTMLElement {
-    return el('div.lab-group', {}, el('div.lab-group__label', { text: label }), row);
+  function chipGroup(label: string, row: HTMLElement, help?: string, ...rest: HTMLElement[]): HTMLElement {
+    const group = el('div.lab-group', {}, el('div.lab-group__label', { text: label }));
+    // Under the label and above the chips: it says what the row is for, and a
+    // line under the chips would be read as a note about the last one.
+    if (help) group.append(el('p.lab-group__help', { text: help }));
+    group.append(row, ...rest);
+    return group;
   }
 
   settings.append(
-    field('Key', keySelect),
-    field('Progression', progressionSelect),
+    field('Key', keySelect, labHelp('key')),
+    field('Progression', progressionSelect, labHelp('progression')),
     customRow,
-    chipGroup('Left hand', leftRow),
-    chipGroup('Right hand', rightRow),
-    chipGroup('Bars', barRow),
-    field('Tempo', bpmInput, 'Beats per minute.'),
+    chipGroup('Left hand', leftRow, labHelp('leftHand')),
+    chipGroup('Right hand', rightRow, labHelp('rightHand')),
+    chipGroup('Bars', barRow, labHelp('bars')),
+    field('Tempo', bpmInput, labHelp('tempo')),
   );
 
   /**
@@ -843,6 +1018,9 @@ export function LabScreen(router: Router): HTMLElement {
         .getElementById(`lab-bars-${String(count)}`)
         ?.setAttribute('aria-pressed', String(count === bars));
     }
+    // The two ways round depend on the hand pickers, so a hand set to None has
+    // to grey its chip here and not at the next press.
+    if (bedDrawn) drawBedChips();
     drawSummary();
     // A chart on the screen describing settings that have moved on is worse
     // than no chart: the bars are not the bars it would play. Stop rather than
@@ -909,14 +1087,71 @@ export function LabScreen(router: Router): HTMLElement {
           onClick: () => {
             trading = option.value !== 0;
             if (option.value !== 0) tradeBars = option.value;
+            // Exclusive with the two ways round: trading fours *is* the bed
+            // playing its own bars, so "hold the chords as well" would be two
+            // settings claiming the same four bars.
+            if (trading) bed = 'off';
             drawTradeChips();
+            drawBedChips();
             redraw();
           },
         }),
       );
     }
   }
+
+  /**
+   * Which way round the bed plays, beside the trading-fours row and exclusive
+   * with it (`04` §3c).
+   *
+   * Rebuilt rather than re-pressed, because the two settings that can be
+   * *refused* depend on the hand pickers underneath: a right hand set to None
+   * has to grey *Play the tune* the moment it is set, not the next time the
+   * screen is opened.
+   */
+  const bedRow = el('div.filter-row', { id: 'lab-bed-row' });
+  const bedWhy = el('p.lab-why', { id: 'lab-bed-why', hidden: true });
+  function drawBedChips(): void {
+    // A preset may open on a way round whose hand the learner then sets to
+    // None. Fail closed rather than keeping a pressed chip that cannot run.
+    if (bed !== 'off' && bedRefusal(bed)) bed = 'off';
+    bedRow.replaceChildren();
+    const options: { value: LabBed; label: string }[] = [
+      { value: 'off', label: 'Bed only' },
+      { value: 'hold', label: 'Hold the chords' },
+      { value: 'tune', label: 'Play the tune' },
+    ];
+    const refusals: string[] = [];
+    for (const option of options) {
+      const refused = option.value === 'off' ? null : bedRefusal(option.value);
+      const node = chip(option.label, {
+        id: `lab-bed-${option.value}`,
+        pressed: option.value === bed,
+        onClick: () => {
+          bed = option.value;
+          if (bed !== 'off') trading = false;
+          drawBedChips();
+          drawTradeChips();
+          redraw();
+        },
+      });
+      if (refused) {
+        node.disabled = true;
+        node.setAttribute('aria-disabled', 'true');
+        node.title = refused;
+        refusals.push(refused);
+      }
+      bedRow.append(node);
+    }
+    // R4: a control that cannot act says why, on the screen and not only in a
+    // tooltip — a tooltip is not a thing a phone has.
+    bedWhy.textContent = refusals.join(' ');
+    bedWhy.hidden = refusals.length === 0;
+    bedDrawn = true;
+    section.dataset.bed = bed;
+  }
   drawTradeChips();
+  drawBedChips();
 
   // The summary says what the two buttons will act on, the buttons are what
   // the screen is for, the chart is what a jam draws, and the pickers — long,
@@ -953,8 +1188,7 @@ export function LabScreen(router: Router): HTMLElement {
     );
   }
 
-  body.append(el('div.lab-group', {},
-    el('div.lab-group__label', { text: 'Start from' }), presetRow));
+  body.append(chipGroup('Start from', presetRow, labHelp('presets')));
 
   // The preset's name and what it is for, above the summary of the settings it
   // chose — R1, the subject first: a learner who arrived from a rung came for
@@ -969,10 +1203,23 @@ export function LabScreen(router: Router): HTMLElement {
       ),
     );
   }
-  body.append(summary, actions, chipGroup('Trading fours', tradeRow), status, jam, settings);
+  // One line saying what the two buttons do, above the summary of what they
+  // would act on: the summary answers "on what", and until 2026-09-22 nothing
+  // on the screen answered "and then what happens".
+  body.append(
+    el('p.lab-lede', { id: 'lab-lede', text: labHelp('lede') }),
+    summary,
+    actions,
+    chipGroup('What the app plays', bedRow, labHelp('bed'), bedWhy),
+    chipGroup('Trading fours', tradeRow, labHelp('trade')),
+    status,
+    jam,
+    settings,
+  );
   applyLocks();
   drawSummary();
   section.dataset.jam = 'idle';
+  section.dataset.bed = bed;
 
   onScreenDispose(section, () => {
     disposed = true;

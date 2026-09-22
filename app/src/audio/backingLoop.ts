@@ -14,17 +14,95 @@
  * `barSchedule` is pure and returns *what* to play at *which beat offset*, so
  * the pattern can be tested without an AudioContext — which is the half of
  * this that would otherwise only be checkable by ear.
+ *
+ * **The chord voice (2026-09-22).** Until now the bed had none: root and fifth
+ * in the bass and three drums, so "play the tune over it" left the learner
+ * supplying the harmony they were meant to be playing over. `comp` adds one,
+ * in the pattern the lab's left-hand picker names, and `none` is the bed
+ * exactly as it was — the chord chart passes nothing and sounds unchanged.
  */
+import { voiceChord } from '../engine/sightReading';
 
-/** What the loop plays. `bass` carries a pitch; the drums do not. */
+/** What the loop plays. `bass` and `chord` carry a pitch; the drums do not. */
 export interface BackingEvent {
-  kind: 'kick' | 'snare' | 'hat' | 'bass';
+  kind: 'kick' | 'snare' | 'hat' | 'bass' | 'chord';
   /** Beats from the start of the bar. Fractional for a swung off-beat. */
   atBeat: number;
-  /** MIDI note, for `bass` only. */
+  /** MIDI note, for `bass` and `chord` only. */
   midi?: number;
   /** 0..1. The hat is quiet, the backbeat is not. */
   gain: number;
+  /** How long a `chord` note rings, in beats. The drums decay on their own. */
+  holdBeats?: number;
+}
+
+/**
+ * How the chord voice comps, named after the lab's own left-hand picker.
+ *
+ * The same six words the learner chose from, so a bed that says it holds the
+ * chords plays the pattern the screen says it will rather than a second
+ * vocabulary that could drift from it. `LabLeftHand` assigns to this, and the
+ * compiler is what checks that — see `LabScreen`'s `compPattern`.
+ */
+export type CompPattern = 'none' | 'whole' | 'chord' | 'alberti' | 'broken' | 'walking';
+
+/** Root, fifth, third, fifth, as indices into a voicing — the Alberti order. */
+const COMP_ALBERTI_ORDER = [0, 2, 1, 2];
+
+/**
+ * How loud the chord voice is, against the bass's 0.5 and the backbeat's 0.5.
+ *
+ * A bed that holds the chords is a floor to play over. One as loud as the
+ * piano is a duet nobody asked for, and the thing being practised is the part
+ * the learner is playing on top.
+ */
+const COMP_GAIN = 0.2;
+
+/**
+ * The chord voice for one bar: what the bed plays above the bass.
+ *
+ * `walking` is the one that is not the left-hand pattern of the same name, and
+ * deliberately: the walk is already the bass's, and a comp that walked as well
+ * would be two bass lines a minor ninth apart. What a walking bass asks for
+ * above it is the chord on the backbeat, which is what this plays.
+ */
+function compEvents(
+  pitchClasses: readonly number[],
+  pattern: CompPattern,
+  beats: number,
+  compBase: number,
+): BackingEvent[] {
+  if (pattern === 'none' || pitchClasses.length === 0) return [];
+  const voiced = voiceChord(pitchClasses, compBase);
+  const root = voiced[0] ?? compBase;
+  const at = (index: number): number => voiced[index] ?? voiced[voiced.length - 1] ?? root;
+  const block = (atBeat: number, holdBeats: number): BackingEvent[] =>
+    voiced.map((midi) => ({ kind: 'chord' as const, atBeat, midi, gain: COMP_GAIN, holdBeats }));
+
+  switch (pattern) {
+    case 'whole':
+      return [{ kind: 'chord', atBeat: 0, midi: root, gain: COMP_GAIN, holdBeats: beats }];
+    case 'chord':
+      return block(0, beats);
+    case 'alberti':
+      return Array.from({ length: beats * 2 }, (_, i) => ({
+        kind: 'chord' as const,
+        atBeat: i / 2,
+        midi: at(COMP_ALBERTI_ORDER[i % COMP_ALBERTI_ORDER.length] ?? 0),
+        gain: COMP_GAIN,
+        holdBeats: 0.5,
+      }));
+    case 'broken':
+      return Array.from({ length: beats }, (_, i) => ({
+        kind: 'chord' as const,
+        atBeat: i,
+        midi: at(i % voiced.length),
+        gain: COMP_GAIN,
+        holdBeats: 1,
+      }));
+    case 'walking':
+      return [1, 3].filter((beat) => beat < beats).flatMap((beat) => block(beat, 1));
+  }
 }
 
 /**
@@ -56,6 +134,8 @@ export function barSchedule(options: {
   swing?: boolean;
   /** The octave the comp is in; the bass sits an octave below it. */
   compOctaveMidi?: number;
+  /** Whether the bed also voices the chord, and in what pattern. */
+  comp?: CompPattern;
 }): BackingEvent[] {
   const beats = Math.max(1, Math.trunc(options.beatsPerBar ?? 4));
   const offbeat = options.swing ? SWING_OFFBEAT : STRAIGHT_OFFBEAT;
@@ -74,6 +154,9 @@ export function barSchedule(options: {
       events.push({ kind: 'bass', atBeat: 2, midi: compBase - 12 + fifth, gain: 0.45 });
     }
   }
+
+  // --- the chord voice ------------------------------------------------------
+  events.push(...compEvents(options.pitchClasses, options.comp ?? 'none', beats, compBase));
 
   // --- drums --------------------------------------------------------------
   for (let beat = 0; beat < beats; beat += 1) {
@@ -116,11 +199,29 @@ export class DrumKit {
     this.output.gain.value = Math.max(0, Math.min(1, value));
   }
 
-  play(event: BackingEvent, whenSec: number): void {
+  /**
+   * `secondsPerBeat` is only read by `chord`, whose length is written in beats:
+   * a held chord is "this bar" and not "1.6 seconds", so the caller's tempo is
+   * what turns one into the other. Everything else decays on its own and the
+   * two existing callers pass nothing.
+   */
+  play(event: BackingEvent, whenSec: number, secondsPerBeat = 0.5): void {
     switch (event.kind) {
       case 'kick':
         this.tone(whenSec, 110, 45, 0.18, event.gain);
         break;
+      case 'chord': {
+        const hz = midiToHz(event.midi ?? 60);
+        // Just short of its own length, so a held bar stops before the next
+        // bar's harmony starts rather than sounding over it; floored so that a
+        // fast Alberti eighth is still a note and not a click.
+        const seconds = Math.max(
+          0.12,
+          Math.min(2.4, (event.holdBeats ?? 1) * secondsPerBeat * 0.95),
+        );
+        this.tone(whenSec, hz, hz, seconds, event.gain);
+        break;
+      }
       case 'bass':
         // A short plucked sine. The pitch is the point, the timbre is not.
         this.tone(whenSec, midiToHz(event.midi ?? 36), midiToHz(event.midi ?? 36), 0.35, event.gain);

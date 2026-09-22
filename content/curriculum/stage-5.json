@@ -312,6 +312,68 @@
           ]
         },
         {
+          "id": "holiday.5.1",
+          "title": "Holiday: a carol as a piano piece",
+          "track": "holiday",
+          "lessons": [
+            {
+              "id": "holiday.5",
+              "title": "A carol as a piano piece",
+              "concepts": [
+                "carols",
+                "ostinato",
+                "looping",
+                "tempo-ladder"
+              ],
+              "textFile": "lessons/holiday.5.md",
+              "exerciseOptions": [
+                "exercise.ostinato.a.arpeggio",
+                "exercise.arpeggio.e-major.2oct.both",
+                "exercise.independence.c.2v1"
+              ],
+              "songOptions": [
+                "song.holiday.carol-of-the-bells.easy",
+                "song.folk.auld-lang-syne-anonymous-traditional.pdmx",
+                "song.pop.misc-christmas-mary-did-you-know.pdmx",
+                "song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "holiday.4"
+              ],
+              "estimatedDays": 21,
+              "requires": {
+                "staves": 2
+              },
+              "levelBand": [
+                3.4,
+                5.91
+              ],
+              "finder": {
+                "skill": "holding one repeated figure steady while the other hand carries the carol",
+                "levelWords": "intermediate, Grade 3 to 4, carol arranged as a piano solo",
+                "constraints": [
+                  "a carol of the season, written for piano on two staves",
+                  "a repeating figure in one hand that runs through whole bars",
+                  "one passage harder than the rest",
+                  "25 to 70 bars"
+                ],
+                "avoid": [
+                  "lead sheets with no left hand written",
+                  "four-stave choral scores",
+                  "medleys of several carols"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
           "id": "ragtime.5.1",
           "title": "Ragtime: oom-pah and syncopation",
           "track": "ragtime",

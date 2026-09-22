@@ -566,6 +566,74 @@ jazz. The five decisions behind it, because each could have gone another way:
   on a machine with no MIDI attached the on-screen keys are the only instrument there is. Notes
   go through the shared input source, the shape `#/play` already uses.
 
+**Both ways round (added 2026-09-22).** The owner: the lab *"doesn't have enough
+documentation"*, and he wants it to *"play chords while the user plays the melody, so it'd go
+both ways"*. Until now *Jam it* played bass and drums and nothing else — so "play the tune
+over it" asked the learner to supply the harmony they were meant to be playing over, and the
+other direction did not exist at all. A row of chips, **What the app plays**, sits beside the
+trading-fours row: *Bed only · Hold the chords · Play the tune*.
+
+- **Hold the chords** adds a chord voice to the bed, in the pattern the **left-hand picker**
+  names — the same six words, so the loop comps in the shape the screen says it will.
+  `barSchedule` had no chord voice before this and one was added to it; the chord chart passes
+  nothing and its bed is unchanged, note for note. `walking` is the one pattern that is not
+  its left-hand namesake: the walk is already the bass's, so the comp takes the chord on the
+  backbeat rather than laying a second walking line on top of the first.
+- **Play the tune** is the reverse — the app takes the right hand and the learner comps
+  underneath. It plays **the right hand these settings write**, from the same generator and
+  the same seed as *Read it*, so the tune under the learner's hands is the tune the page would
+  have shown. That means *Chord tones* is what it plays when the right hand is set to chord
+  tones; it is the picker's answer and not a second one.
+- **Exclusive with trading fours**, in both directions: trading fours *is* the bed taking its
+  own bars, so "and hold the chords as well" would be two settings claiming the same four
+  bars. Pressing either turns the other off.
+- **Fail closed** (§0 R4). *Play the tune* with the right hand set to *None* has nothing to
+  play, and *Hold the chords* with the left hand set to *None* has no pattern to comp in.
+  Both are `disabled`, visibly greyed, with the reason **on the screen** under the row rather
+  than in a `title` — a phone has no tooltip. A preset that opens on one and a picker later
+  set to *None* falls back to *Bed only* rather than keeping a pressed chip that cannot run.
+- **Two counts and no mark**, the same contract trading fours has. At the end of every time
+  round a quiet line says what it was worth: under *Hold the chords* how many of the notes
+  were in the scale the progression teaches, under *Play the tune* how many were a chord tone
+  of the bar they were played over. Which one is *said* differs because only one of them is
+  honest per mode — a learner playing a line is not aiming at the bar's chord, and a learner
+  comping is. **Nothing is written to the practice history and nothing here can be passed or
+  failed.** The bar a note counts against is the bar the loop was on when the key went down,
+  which is coarse by a fraction of a beat and is the reason this is a count and not a score.
+- **Reached from a rung through the preset its `lab` tool already names.**
+  `curriculum.schema.json` closes a `tools` item to `kind`, `preset`, `item` and `label` with
+  `additionalProperties: false`, so a `bed` field on the tool entry is not available today;
+  the preset carries the default instead. That means every rung on one preset gets the same
+  answer, and where a rung's lesson wants the other way round it says so in prose and waits
+  for a field of its own.
+
+**What every control says it does (added 2026-09-22).** A grep of `LabScreen.ts` for
+`help|explain|tip|hint` on 2026-09-21 returned the file comment and nothing else: six
+pickers, two buttons and two chip rows stood on the screen with only their labels. Each now
+carries one line under it, in the learner's terms. **The lines live in one table in the
+code** — `LAB_HELP` in `engine/sightReading.ts` — and the table below is that table;
+`labHelp.test.ts` fails when the two stop agreeing, so the screen and this section cannot
+drift the way a sentence copied into a spec does.
+
+| control | the line under it |
+|---|---|
+| The two buttons | Read it writes these settings out as a score you can read. Jam it plays them as a loop you can play over. |
+| Start from | A style to start from, instead of six empty pickers. Free leaves every setting to you. |
+| What the app plays | Bed only is bass and drums. Hold the chords adds the harmony underneath, so the tune is yours. Play the tune gives the app the right hand, so the chords are yours. |
+| Trading fours | The app plays a few bars, then leaves you the same number, round and round. |
+| Key | Which key it is all written and played in. |
+| Progression | Which chords, written as numerals so the same choice works in any key. |
+| Your numerals | One per bar — I, vi, V7, ♭VII, iiø7. |
+| Left hand | The shape the left hand plays the chords in, and the shape Hold the chords comps in. |
+| Right hand | What goes above the chords, and what Play the tune plays for you. |
+| Bars | How long one time round is. A shorter progression repeats rather than stretching. |
+| Tempo | Beats per minute. |
+
+A **preset's** own line is its `blurb`, and it is drawn under the preset's name once that
+preset is on. The six are not all printed under the chip row at once on purpose: six lines
+above the two buttons would push the subject of the screen out of the first screenful, which
+is the rule (R1) the preset panel was placed to satisfy in the first place.
+
 **Presets — a way in, before the pickers (added 2026-09-18).** The owner: *"as opposed to
 just messing around in the lab, you're like, all right, we're doing jazz here — this is
 some jazz backing, without all the options to start from scratch."* Six pickers and no
@@ -607,8 +675,11 @@ starting point asks a beginner to know the answer before they arrive, which is t
   One sound, stated once.
 
 **§0:** a hand screen (R2). Its one filled box (R3) is **Read it**; *Jam it* and *Stop* are
-outlined. The line saying what the settings currently are, and the two buttons that act on it,
-sit **above** the pickers — the same ranking Today's *Start session* got, and the pickers still
+outlined. One line saying what the two buttons *do*, the line saying what the settings
+currently *are*, and the two buttons themselves sit **above** the pickers, in that order — the
+first answers "and then what happens", the second answers "to what", and until 2026-09-22 only
+the second was on the screen. The two chip rows that change what *Jam it* does (*What the app
+plays*, *Trading fours*) sit under the buttons and above the pickers — the same ranking Today's *Start session* got, and the pickers still
 begin inside the first screenful (R1). The three short choices are chips with their label
 *above* them rather than beside: `field()` gives a control a column of `max-content` next to a
 label keeping 9 rem, which is right for a select and leaves six chips about half a phone to

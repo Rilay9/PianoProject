@@ -34,7 +34,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { LAB_PRESETS, labPreset } from '../../src/engine/sightReading';
+import { LAB_PRESETS, labPreset, type LabBed } from '../../src/engine/sightReading';
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { masteryCriteriaFor } from '../../src/curriculum/selectors';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
@@ -113,6 +113,16 @@ function labTools(id: string): (string | null)[] {
   return (written(id).tools ?? [])
     .filter((tool) => tool.kind === 'lab')
     .map((tool) => tool.preset ?? null);
+}
+
+/** Which way round a rung's own lab button opens on, or `undefined`. */
+function bedOf(id: string): LabBed | undefined {
+  for (const preset of labTools(id)) {
+    if (preset === null) continue;
+    const bed = labPreset(preset)?.bed;
+    if (bed) return bed;
+  }
+  return undefined;
 }
 
 /** `[lesson, the sentence in words, the test]` */
@@ -304,6 +314,48 @@ const CLAIMS: [string, string, () => boolean][] = [
       );
     },
   ],
+  // --- both ways round in the lab (T18) ----------------------------------
+  //
+  // A rung reaches a way round through the preset its `lab` tool already
+  // names, because `curriculum.schema.json` closes a `tools` item to `kind`,
+  // `preset`, `item` and `label`. So each row asks the same question of a
+  // different rung: does the button this lesson describes open on the way
+  // round the sentence promises?
+  [
+    'blues.9',
+    'the lab opens holding the chords, so the harmony is under you',
+    () => bedOf('blues.9') === 'hold',
+  ],
+  [
+    'chords-pop.3',
+    'the lab plays the harmony and the tune is the learner’s',
+    () => bedOf('chords-pop.3') === 'hold',
+  ],
+  [
+    'chords-pop.7',
+    'the colours are tried over a bed that is holding the chords',
+    () => bedOf('chords-pop.7') === 'hold',
+  ],
+  [
+    'improv.4',
+    'the loop holds the chords and the line is the learner’s',
+    () => bedOf('improv.4') === 'hold',
+  ],
+  [
+    'jazz.4',
+    'the app takes the right hand, so the Charleston has gaps to find',
+    () => bedOf('jazz.4') === 'tune',
+  ],
+  [
+    'jazz.5',
+    'there is a right hand above the shells rather than silence',
+    () => bedOf('jazz.5') === 'tune',
+  ],
+  [
+    'jazz.6',
+    'the app takes the right hand and leaves the chords to the learner',
+    () => bedOf('jazz.6') === 'tune',
+  ],
   [
     'chords-pop.9',
     'the ballad’s chords and left hand are fixed, so the chart goes in the other one',
@@ -355,6 +407,69 @@ const CLAIMS: [string, string, () => boolean][] = [
     'theory.7',
     '*Accompaniment lab* opens it with nothing fixed',
     () => labTools('theory.7').includes(null),
+  ],
+  [
+    'holiday.5',
+    'the Ladder is a control the learner turns on, not a button this rung carries',
+    () => {
+      // `04` §3d: the ladder tool is for the scale and Hanon rungs, where the
+      // whole item is the loop. This rung is repertoire, so the lesson sends
+      // the learner to the Score screen's own two rows instead of drawing a
+      // button that would loop a forty-bar carol end to end.
+      const tools = written('holiday.5').tools ?? [];
+      return !tools.some((tool) => tool.kind === 'ladder');
+    },
+  ],
+  [
+    'holiday.5',
+    '*Loop* is a score-screen control, and double-tapping the sheet marks the bars',
+    () => source('ui/screens/ScoreScreen.ts').includes('Double-tap the sheet to mark them'),
+  ],
+  [
+    'holiday.5',
+    '*Ladder* raises the tempo after a clean pass and drops it after a pass with a mistake',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'Each clean pass of the loop speeds up a notch; a pass with a mistake in it slows down one.',
+      ),
+  ],
+  [
+    'holiday.6',
+    '*Perform* is one pass with no restarts and no loop, kept as a performance',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.',
+      ),
+  ],
+  [
+    'holiday.6',
+    '*Play it blind* hides the notation and keeps following you',
+    () =>
+      (written('holiday.6').tools ?? []).some((tool) => tool.kind === 'blind') &&
+      source('ui/screens/LessonScreen.ts').includes("'Play it blind'") &&
+      source('ui/screens/ScoreScreen.ts').includes(
+        'Hides the notation so you play from memory. The app still follows you',
+      ),
+  ],
+  [
+    'holiday.7',
+    '*Perform* is one pass, start to finish, with no restarts and no loop',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.',
+      ),
+  ],
+  [
+    'holiday.7',
+    '*Hands* chooses which hand the app waits for',
+    () => source('ui/screens/ScoreScreen.ts').includes('Which hand the app waits for'),
+  ],
+  [
+    'holiday.7',
+    'the rotation and four-to-a-note studies are left-hand exercises',
+    () =>
+      item('exercise.rotation.c.left').hands === 'left' &&
+      item('exercise.repeated-notes.c.4x.left').hands === 'left',
   ],
 
   // --- the chord chart (item 8) -------------------------------------------

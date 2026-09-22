@@ -342,6 +342,68 @@
           ]
         },
         {
+          "id": "holiday.7.1",
+          "title": "Holiday: winter repertoire that is not a carol",
+          "track": "holiday",
+          "lessons": [
+            {
+              "id": "holiday.7",
+              "title": "Winter repertoire that is not a carol",
+              "concepts": [
+                "performance-mode",
+                "left-hand",
+                "rotation",
+                "stride",
+                "repeated-notes"
+              ],
+              "textFile": "lessons/holiday.7.md",
+              "exerciseOptions": [
+                "exercise.rotation.c.left",
+                "exercise.repeated-notes.c.4x.left",
+                "exercise.stride.c"
+              ],
+              "songOptions": [
+                "song.classical.tchaikovsky-waltz-flowers",
+                "song.classical.tchaikovsky-sugar-plum",
+                "song.jazz.vince-guaraldi-skating.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "holiday.6"
+              ],
+              "estimatedDays": 28,
+              "requires": {
+                "staves": 2
+              },
+              "levelBand": [
+                6.3,
+                7.32
+              ],
+              "finder": {
+                "skill": "the left hand of an orchestral reduction: a bass note and a chord, at speed",
+                "levelWords": "upper intermediate, Grade 5 to 6, ballet or film music arranged for piano",
+                "constraints": [
+                  "written for piano on two staves",
+                  "a left hand that jumps between a bass note and a chord",
+                  "winter concert repertoire rather than a carol",
+                  "40 to 140 bars"
+                ],
+                "avoid": [
+                  "carols and hymn tunes",
+                  "orchestral scores on more than two staves",
+                  "a hand span over a tenth"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
           "id": "blues.7.1",
           "title": "Blues: stride, turnarounds and the shuffle at speed",
           "track": "blues-boogie",

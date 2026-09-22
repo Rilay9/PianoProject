@@ -346,6 +346,74 @@
           ]
         },
         {
+          "id": "holiday.6.1",
+          "title": "Holiday: carols played for a room that is listening",
+          "track": "holiday",
+          "lessons": [
+            {
+              "id": "holiday.6",
+              "title": "The ones people stop talking for",
+              "concepts": [
+                "carols",
+                "performance-mode",
+                "voicing-melody",
+                "held-melody",
+                "memorising"
+              ],
+              "textFile": "lessons/holiday.6.md",
+              "exerciseOptions": [
+                "exercise.voicing.d",
+                "exercise.pedal.held-melody.c",
+                "exercise.arpeggio.d-minor.4oct.both"
+              ],
+              "songOptions": [
+                "song.holiday.carol-of-the-bells",
+                "song.classical.ondrus-silent-night.pdmx",
+                "song.folk.o-holy-night-piano-solo.pdmx",
+                "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "holiday.5"
+              ],
+              "estimatedDays": 28,
+              "tools": [
+                {
+                  "kind": "blind"
+                }
+              ],
+              "requires": {
+                "staves": 2
+              },
+              "levelBand": [
+                6.1,
+                7.3
+              ],
+              "finder": {
+                "skill": "playing a carol as one unbroken performance, the tune sung out of the chord under it",
+                "levelWords": "upper intermediate, Grade 5 to 6, carol as a concert piano solo",
+                "constraints": [
+                  "a carol set for piano on two staves",
+                  "the melody inside a right-hand chord, not a single line",
+                  "the pedal needed to join the harmony",
+                  "short enough to memorise, under 100 bars"
+                ],
+                "avoid": [
+                  "medleys of several carols",
+                  "lead sheets with no left hand written",
+                  "a hand span over a tenth"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
           "id": "blues.6.1",
           "title": "Blues: boogie patterns and the walking bass",
           "track": "blues-boogie",

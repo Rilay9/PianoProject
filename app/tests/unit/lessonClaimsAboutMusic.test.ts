@@ -36,6 +36,7 @@ interface Notation {
   times: string[];
   chordCount: number;
   chords: string[];
+  swungMark: boolean;
   finalBass: number | null;
 }
 interface Row {
@@ -175,6 +176,60 @@ const CLAIMS: [string, string, string, (n: Notation) => boolean][] = [
     (n) => keyOf(n).startsWith('F')],
   ['holiday.4', 'the oom-pah bass is in F', 'exercise.oompah.f.octave',
     (n) => keyOf(n).startsWith('F')],
+  ['holiday.5', 'Carol of the Bells is in A minor', 'song.holiday.carol-of-the-bells.easy',
+    (n) => keyOf(n).startsWith('Am')],
+  ['holiday.5', 'Carol of the Bells is in three, forty bars', 'song.holiday.carol-of-the-bells.easy',
+    (n) => n.times.includes('3/4') && n.bars === 40],
+  ['holiday.5', 'We Wish You a Merry Christmas is in E major, four sharps', 'song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx',
+    (n) => n.keys[0]?.fifths === 4],
+  ['holiday.5', '…in three, twenty-five bars', 'song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx',
+    (n) => n.times.includes('3/4') && n.bars === 25],
+  ['holiday.5', '…with the chord symbols printed above it as well', 'song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx',
+    (n) => n.chordCount > 0],
+  ['holiday.5', 'Auld Lang Syne is in F', 'song.folk.auld-lang-syne-anonymous-traditional.pdmx',
+    (n) => keyOf(n).startsWith('F')],
+  ['holiday.5', 'Auld Lang Syne is in four, twenty bars', 'song.folk.auld-lang-syne-anonymous-traditional.pdmx',
+    (n) => n.times.includes('4/4') && n.bars === 20],
+  ['holiday.5', 'Mary Did You Know is sixty-two bars in B minor', 'song.pop.misc-christmas-mary-did-you-know.pdmx',
+    (n) => n.bars === 62 && keyOf(n).startsWith('Bm')],
+  ['holiday.5', 'the A minor ostinato is eight bars in A minor', 'exercise.ostinato.a.arpeggio',
+    (n) => n.bars === 8 && keyOf(n).startsWith('Am')],
+  ['holiday.5', 'the E major arpeggio is in E, hands together on two staves', 'exercise.arpeggio.e-major.2oct.both',
+    (n) => keyOf(n).startsWith('E') && n.staves === 2],
+  ['holiday.5', 'two-against-one is in C', 'exercise.independence.c.2v1',
+    (n) => keyOf(n).startsWith('C')],
+  ['holiday.6', 'Silent Night here is thirty bars', 'song.classical.ondrus-silent-night.pdmx',
+    (n) => n.bars === 30],
+  ['holiday.6', '…in A flat, four flats, in three', 'song.classical.ondrus-silent-night.pdmx',
+    (n) => n.keys[0]?.fifths === -4 && n.times.includes('3/4')],
+  ['holiday.6', 'Carol of the Bells here is in D minor, sixty-five bars', 'song.holiday.carol-of-the-bells',
+    (n) => keyOf(n).startsWith('Dm') && n.bars === 65],
+  ['holiday.6', 'O Holy Night is ninety-six bars in six-eight', 'song.folk.o-holy-night-piano-solo.pdmx',
+    (n) => n.bars === 96 && n.times.includes('6/8')],
+  ['holiday.6', '…starting in E major with four sharps and going to five', 'song.folk.o-holy-night-piano-solo.pdmx',
+    (n) => n.keys[0]?.fifths === 4 && n.keys.some((k) => k.fifths === 5)],
+  ['holiday.6', 'Joy to the World has two sharps, is in two, seventy-three bars', 'song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx',
+    (n) => n.keys[0]?.fifths === 2 && n.times.includes('2/4') && n.bars === 73],
+  ['holiday.6', 'the voicing exercise in D is four chords', 'exercise.voicing.d',
+    (n) => keyOf(n).startsWith('D') && n.bars === 4],
+  ['holiday.6', 'the held-melody exercise is in C', 'exercise.pedal.held-melody.c',
+    (n) => keyOf(n).startsWith('C')],
+  ['holiday.6', 'the four-octave arpeggio is in D minor, hands together on two staves', 'exercise.arpeggio.d-minor.4oct.both',
+    (n) => keyOf(n).startsWith('Dm') && n.staves === 2],
+  ['holiday.7', 'Waltz of the Flowers is in D, eighty bars in three', 'song.classical.tchaikovsky-waltz-flowers',
+    (n) => keyOf(n).startsWith('D') && n.bars === 80 && n.times.includes('3/4')],
+  ['holiday.7', 'Dance of the Sugar Plum Fairy is in E minor', 'song.classical.tchaikovsky-sugar-plum',
+    (n) => keyOf(n).startsWith('Em')],
+  ['holiday.7', '…in two, fifty-three bars', 'song.classical.tchaikovsky-sugar-plum',
+    (n) => n.times.includes('2/4') && n.bars === 53],
+  ['holiday.7', 'Skating is C major, a hundred and thirty-seven bars in three', 'song.jazz.vince-guaraldi-skating.pdmx',
+    (n) => keyOf(n).startsWith('C') && n.bars === 137 && n.times.includes('3/4')],
+  ['holiday.7', 'Skating is marked to be swung', 'song.jazz.vince-guaraldi-skating.pdmx',
+    (n) => n.swungMark === true],
+  ['holiday.7', '…with chord symbols printed over the whole of it', 'song.jazz.vince-guaraldi-skating.pdmx',
+    (n) => n.chordCount > 0],
+  ['holiday.7', 'the stride study is over three chords in C', 'exercise.stride.c',
+    (n) => keyOf(n).startsWith('C') && n.chords.length === 3],
 ];
 
 /** Claims that compare several pieces, which do not fit the table above. */
@@ -187,6 +242,42 @@ const COMPARISONS: [string, string, () => boolean][] = [
     const arranged = byId.get('song.pop.misc-christmas-silent-night.pdmx')?.notation?.keys[0]?.fifths;
     const melody = byId.get('song.classical.1818-franz-xaver-gruber-silent-night.pdmx')?.notation?.keys[0]?.fifths;
     return arranged !== undefined && arranged === melody;
+  }],
+  ['holiday.5', 'all four have both hands written out: two staves', () =>
+    ['song.holiday.carol-of-the-bells.easy', 'song.folk.auld-lang-syne-anonymous-traditional.pdmx',
+      'song.pop.misc-christmas-mary-did-you-know.pdmx',
+      'song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx']
+      .every((id) => byId.get(id)?.notation?.staves === 2)],
+  ['holiday.5', 'Mary Did You Know is the long one of the four', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const mary = bars('song.pop.misc-christmas-mary-did-you-know.pdmx');
+    return mary > 0 && ['song.holiday.carol-of-the-bells.easy',
+      'song.folk.auld-lang-syne-anonymous-traditional.pdmx',
+      'song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx']
+      .every((id) => bars(id) < mary);
+  }],
+  ['holiday.6', 'Silent Night is the short one of the four', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const silent = bars('song.classical.ondrus-silent-night.pdmx');
+    return silent > 0 && ['song.holiday.carol-of-the-bells',
+      'song.folk.o-holy-night-piano-solo.pdmx',
+      'song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx']
+      .every((id) => bars(id) > silent);
+  }],
+  ['holiday.6', 'Carol of the Bells here is in a different key from the setting on the rung below', () => {
+    const here = byId.get('song.holiday.carol-of-the-bells')?.notation?.keys[0]?.fifths;
+    const below = byId.get('song.holiday.carol-of-the-bells.easy')?.notation?.keys[0]?.fifths;
+    return here !== undefined && below !== undefined && here !== below;
+  }],
+  ['holiday.7', 'each of the three has its left hand written out: two staves', () =>
+    ['song.classical.tchaikovsky-waltz-flowers', 'song.classical.tchaikovsky-sugar-plum',
+      'song.jazz.vince-guaraldi-skating.pdmx']
+      .every((id) => byId.get(id)?.notation?.staves === 2)],
+  ['holiday.7', 'Skating is by far the longest of the three', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const skating = bars('song.jazz.vince-guaraldi-skating.pdmx');
+    return skating > 0 && ['song.classical.tchaikovsky-waltz-flowers',
+      'song.classical.tchaikovsky-sugar-plum'].every((id) => bars(id) < skating);
   }],
   ['jazz.4', 'Avalon is the shortest of the three', () => {
     const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;

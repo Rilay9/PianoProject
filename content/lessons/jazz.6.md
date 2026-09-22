@@ -46,7 +46,9 @@ short, light and chosen.
 **Tools for this rung.** A comping pattern needs something to be in the gaps
 of. Set the tune's key in the accompaniment lab, start *Jam it*, and play
 one pattern against a bass and drums that will not adjust to you — which is
-the condition the pattern has to work under anyway.
+the condition the pattern has to work under anyway. It opens on *Play the tune*,
+which is where the gaps come from: the app takes the right hand and leaves the
+chords to you. Nothing there is recorded or marked.
 
 **How you'll know you've got it.** A twelve-bar blues comped in one pattern with
 a walking line underneath, at a tempo where neither hand has to think.

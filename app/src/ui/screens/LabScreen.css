@@ -22,6 +22,44 @@
   margin-bottom: 4px;
 }
 
+/* What the two buttons do, above the line saying what they would act on. The
+   summary answers "on what"; until 2026-09-22 nothing answered "and then". It
+   is the lede, so it is ordinary text weight and the summary under it stays
+   muted — two quiet lines in a row read as one paragraph nobody finishes. */
+.lab-lede {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+}
+
+/* One line under a chip row's label saying what the row is for (`04` §3c).
+   Under the label and above the chips: below them it reads as a note about
+   the last chip rather than about the row. */
+.lab-group__help {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Why a chip is greyed. R4 says a control that cannot act says so; a `title`
+   is not a thing a phone has, so the reason is on the screen. */
+.lab-why {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.lab-why[hidden] {
+  display: none;
+}
+
+/* The refused chip: legible, so the learner can see which way round is not
+   available and read why underneath, and plainly not pressable. Same shape as
+   a preset's locked control, which is the same idea. */
+#lab-bed-row .chip:disabled {
+  opacity: 0.62;
+  cursor: default;
+}
+
 .lab-jam[hidden] {
   display: none;
 }

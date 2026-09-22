@@ -54,7 +54,8 @@ stops saying the chord.
 
 **Tools for this rung.** The lab's *Jazz — two five one* preset plays ii–V7–I
 over a walking bass, both fixed, in whatever key you pick: comp shells against
-it. Swing the app judges only where the score writes the word,
+it. It opens on *Play the tune*, so there is a right hand above your shells
+rather than silence. Swing the app judges only where the score writes the word,
 and none of this rung's pieces does — so here every eighth is timed where it is
 printed and the placing is still for your ear. The accent it does not judge
 anywhere: nothing measures how hard you play.

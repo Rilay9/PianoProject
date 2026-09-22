@@ -56,7 +56,8 @@ and the button above opens it on *Primary chords* with these three already set.
 *Jam it* names the chord in every bar while a bass and drums hold the tempo. It
 opens in D; change the key to A and do it again, because that preset fixes only
 the chords and the left hand, and leaves the key to you. Playing *When the Saints* over the two of those is
-this lesson's transposing exercise with nothing written down.
+this lesson's transposing exercise with nothing written down. It opens on *Hold
+the chords*, so the lab plays the harmony and the tune is yours.
 
 **How you'll know you've got it.** You can play a song you know from a chord
 chart, in two different keys, without written-out notation.

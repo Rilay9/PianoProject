@@ -2883,3 +2883,537 @@ above.
 `app/tests/unit/scoreTourRoute.test.ts`; `content/curriculum.schema.json`;
 `content/curriculum/stage-4.json`, `stage-6.json`, `stage-7.json` (`tools` only, spliced);
 `docs/04-ui-spec.md` §3d and `docs/05-score-follow-engine.md` §6; this entry.
+
+### Entry 30 — T18: the lab both ways round, and explained on the screen (2026-09-22)
+
+**Nothing here has been heard.** No claim in this entry is about how the chord voice sounds,
+whether it sits under the bass, whether the app's right hand is a thing worth comping under,
+or whether an Alberti comp at a fast tempo turns to mud. That needs a piano and it is the
+first thing to check. Everything below is about numbers, elements and files.
+
+**The two claims in the brief, checked before anything was planned.**
+
+- *"the controls themselves explain nothing"* — **holds, and more completely than the brief
+  said.** `git show ddd7f09:app/src/ui/screens/LabScreen.ts | grep -niE "help|explain|tip|hint"`
+  returns **nothing at all** — not the file comment the brief reported, which does not contain
+  any of those four words. A second search shaped differently, for `muted` in the same file,
+  returns **one** line: the *"Nothing here is scored"* text beside Stop. Six pickers, two
+  buttons and a chip row stood on the screen with only their labels.
+- *"`backingLoop.ts` — read it first: if it has no chord voice, one has to be added"* —
+  **it had none.** `BackingEvent.kind` was `'kick' | 'snare' | 'hat' | 'bass'` and `barSchedule`
+  pushed root on 1, fifth on 3 and the kit. So "play the tune over it" asked the learner to
+  supply the harmony they were meant to be playing over, and that addition is the real work of
+  item 1.
+
+**1. Hold the chords — built.** `barSchedule` gains `comp: CompPattern`, a `'chord'` event kind
+carrying `midi` and `holdBeats`, and `DrumKit.play` a third argument, `secondsPerBeat` — a held
+chord is "this bar" and not a number of seconds, so the caller's tempo is what turns one into
+the other, and both existing callers pass nothing and are unchanged. **`comp` defaults to
+`'none'` and the chord chart passes nothing**, so §3b's bed is the bed it was.
+
+**That last sentence was first written off one case, and the checklist caught it.** The test
+compared a comped bar against an uncomped one at four beats with swing off — and
+`ChordChartScreen.ts` calls `barSchedule({ pitchClasses, beatsPerBar: 4, swing })`, where
+`swing` moves the off-beat hat. A comparison that never ran swung said nothing about the path
+the chart actually takes, which is `§1` of the working rules: one case's output reported as the
+property. The test now runs **four shapes × five comp patterns**, asserting each time that the
+non-chord events are `toEqual` the whole of the uncomped schedule — straight at four beats,
+**swung at four beats (the chart's own call)**, three beats, and the two-note chord
+`barSchedule`'s own bass comment names. Twenty comparisons rather than one, and the claim above
+is what they measure.
+
+Three decisions worth disagreeing with:
+
+- **The pattern is the left-hand picker's**, the same six words, so the loop comps in the shape
+  the screen says it will. `LabLeftHand` assigns to `CompPattern`, so **the compiler is the
+  check** that the two vocabularies have not drifted — there is no test, because a test would
+  be weaker than the assignment.
+- **`walking` is the one that is not its namesake.** The walk is already the bass's; a comp
+  that walked as well would be two bass lines a minor ninth apart. So it takes the chord on the
+  backbeat instead. That is a judgement about music made without hearing it, and it is the one
+  most likely to be wrong.
+- **`voiceChord` is exported from `sightReading.ts` and imported by `backingLoop.ts`** rather
+  than copied. It is the same six lines the written-out left hand is voiced with, so the page
+  and the loop cannot disagree about what a chord's shape is. The cost is that the audio module
+  now imports the engine; a grep of the imports of `app/src/audio/*.ts` shows `loopbackRun.ts`
+  already importing `../data/midiSettings`, so this is not a new direction.
+
+**2. Play the tune — built.** `labRightHandBars` returns the bed's own right hand, one array
+per bar, in beats. **It is the same right hand `buildLabExercise` writes** — the same two
+functions, and the screen passes the same seed to both through one `melodySeed()`. Two
+generators over one set of pickers would have meant *Read it* showed one tune and *Play the
+tune* played another from the same screen, and the learner comping under it would have had no
+way to tell which was the exercise. The join is the test: the notes the bed plays are read back
+out of the notation the same settings write, through OSMD and `extractScoreModel`.
+
+It plays **what the right-hand picker says**, so *Chord tones* gets the chord-tone line and not
+a melody. That is the picker's own answer rather than a second one, and it is why
+`jazz-comping` — whose right hand is `chord-tones` — gives a comper a chord-tone line to sit
+under rather than a tune. **A reviewer should push on that first**: `jazz.6` says *"a comping
+pattern needs something to be in the gaps of"*, and a chord-tone line has fewer gaps than a
+melody. Changing that preset's `rightHand` to `melody` would also change what *Read it* writes
+for six rungs, which is outside this task.
+
+**3. Chips, not a new screen — built.** A row *Bed only · Hold the chords · Play the tune*
+beside the trading-fours row, under the two buttons. **Exclusive in both directions**: trading
+fours *is* the bed taking its own bars, so "and hold the chords as well" would be two settings
+claiming the same four bars. **Fail closed**, and symmetrically: *Play the tune* with the right
+hand on *None* has nothing to play, and *Hold the chords* with the left hand on *None* has no
+pattern to comp in. Both are `disabled`, greyed, and **the reason is text under the row** — a
+`title` is not a thing a phone has. A preset that opens on one and a picker then set to *None*
+stands the chip down rather than leaving it pressed and dead.
+
+**4. Explained on the screen — built.** `LAB_HELP` in `engine/sightReading.ts`: one line per
+control, in the learner's terms, plus one line above the summary saying what the two buttons
+do. `04` §3c prints the same table and `labHelp.test.ts` is the join, in three directions —
+every id the screen asks for has a line, every line in the table is drawn by some control, and
+every line appears verbatim in §3c. **The six preset blurbs are not all printed under the chip
+row**, and that is a decision rather than an omission: six lines above the two buttons would
+push the subject of the screen out of the first screenful, which is the rule (R1) the preset
+panel exists to satisfy. A preset's line shows under its name once it is on.
+
+**5. Reached from rungs — built for the rungs whose preset agrees, and the rest waits.**
+`curriculum.schema.json` closes a `tools` item to `kind`, `preset`, `item` and `label` with
+`additionalProperties: false`, so **a `bed` field on the tool entry is not available today**;
+that is T16's `unlock`/`mode` change. The minimum the schema allows is for **the preset to
+carry the default**, which it now does, and a rung reaches it through the `lab` tool it already
+has — no curriculum file was touched. A new preset id was the other option and is refused by
+`labPresets.test.ts`, which joins `LAB_PRESETS` to `LAB_PRESET_IDS` in `validate.py`, and
+neither of those is this task's.
+
+The lessons were searched twice, differently shaped: a grep for `ccompaniment lab` over
+`content/lessons/*.md` returns **24** files, and one for the word `lab` on its own returns
+**34**. Of those, **24 *Tools for this rung* paragraphs were read in full**, in two batches of
+nine and fifteen — 0.3, chords-pop.5, chords-pop.6, chords-pop.8, jam, rock.overview, holiday
+and holiday.4 were seen **only as their matching grep line**, and no default below rests on
+one of those. **One default per preset**, with the sentence it comes from:
+
+| preset | opens on | the sentence, and the rungs it serves |
+|---|---|---|
+| `primary-chords` | Hold the chords | `chords-pop.3`: *"Playing When the Saints over the two of those"*. Also 2.3, 3.2, hymns, holiday, chords-pop.8 |
+| `ballad` | Hold the chords | `chords-pop.7`: *"something to try the colours over"*; `improv.4`: *"no right hand at all — that part is yours"*. Also chords-pop.5, chords-pop.6, chords-pop.9, holiday.4 |
+| `blues-shuffle` | Hold the chords | `blues.3`: *"holds the changes underneath you"*; `blues.4`: *"a right-hand riff over"*; `blues.9`: *"chorus after chorus over it"*. Also blues.5–8, improv.5, jam, jam.5, jam.6 |
+| `minor-vamp` | Hold the chords | `rock.4`: *"play a right hand over it"*; `rock.6`: *"the arpeggio has chords to sit on"*. Also 3.3, rock.overview, rock.5, improv.6 |
+| `jazz-comping` | Play the tune | `jazz.4`: *"comp the Charleston over it"*; `jazz.5`: *"comp shells against it"*; `jazz.6`: *"something to be in the gaps of"*. Also jazz.8, jazz.9, improv.8 |
+| `pop-four-chord` | — | **No default, deliberately.** Its one rung, `chords-pop.4`, asks for neither way round; it is about which inversion to take. A default asserted from nothing is the inference `00` §1a forbids |
+
+**Three rungs want the other way round from the preset they share**, and each is named rather
+than quietly left: `jam.5` (*"Comp through eight choruses of it"*, on `blues-shuffle`, which
+opens holding), `3.2` (*"the smooth voicing has to be found in time"*, on `primary-chords`) and
+`chords-pop.9` (*"try three different left hands"*, on `ballad`). All three want *Play the
+tune*; the chip is one tap away and the lesson does not say so. **That is what waits on T16's
+tool field**, and it is the honest cost of putting the default on the preset.
+
+**The lessons touched — seven, and four more that could not take a sentence.** One sentence
+each, `readingTime` recomputed from the text by the same rule `lessonShape.test.ts` applies:
+`blues.9` (460 words), `chords-pop.3` (563), `chords-pop.7` (496), `improv.4` (587), `jazz.4`
+(539), `jazz.5` (561), `jazz.6` (461) — all still 3 minutes and all still inside the cap.
+**`blues.3`, `blues.4` and `rock.6` are at exactly 600 words and `rock.4` at 598**, which is
+the three-minute ceiling: a sentence added to any of them would fail `lessonShape.test.ts`'s
+cap, and trimming a lesson to fit a sentence about a chip is the wrong trade. Their chip is
+preselected all the same; only their prose does not mention it. **No holiday lesson was
+touched** — `holiday` and `holiday.4` sit on `primary-chords` and `ballad` and therefore now
+open on *Hold the chords*, which is a change to those rungs that this task did not write a
+sentence for, and the coordinator should decide whether that work wants one.
+
+**Two counts and no mark**, the same contract trading fours has. `judgeLabPass` counts notes in
+the scale and notes on the bar's own chord; the screen *says* the first under *Hold the chords*
+and the second under *Play the tune*, because only one is honest per mode — a learner playing a
+line is not aiming at the bar's chord and a learner comping is. **Nothing is written to the
+practice history and nothing here can be passed or failed.** The bar a note counts against is
+the bar the loop was on when the key went down, which is coarse by a fraction of a beat; that
+is written into `judgeLabPass`'s own comment and is the reason this is a count rather than a
+score.
+
+**The tests, and the line that made each red.**
+
+- `app/tests/unit/labBothWays.test.ts` (new, 14 assertions). **Item 1:** removing
+  `events.push(...compEvents(options.pitchClasses, options.comp ?? 'none', beats, compBase));`
+  from `barSchedule` — **7 of 14 failed**, re-measured against the widened version of the test
+  rather than carried over from the narrower one it was first run against. **Item 2:** replacing
+  `makeRng(options.seed ?? 21)`
+  with `makeRng(21)` in `labRightHandBars` — **1 of 14 failed**, the join against the notation.
+  Both restored and re-run green.
+- `app/tests/e2e/lab-both-ways.spec.ts` (new, 7 tests). **Item 3, exclusivity:** removing
+  `if (bed !== 'off') trading = false;` from the bed chip's handler — **1 of 7 failed**.
+  **Item 3, fail closed:** removing `node.disabled = true;` from `drawBedChips` — and this is
+  the part worth reading, because **the first version of that test stayed green**. Playwright
+  reads `aria-disabled="true"` as disabled, so `toBeDisabled()` passed against a chip the
+  browser would still have fired a click on — an assertion standing in for the thing it was
+  meant to prove, which is `§1` of the working rules in its usual costume. Rewritten to
+  `toHaveJSProperty('disabled', true)`, the same revert fails **1 of 7**. Each revert was
+  rebuilt with `npm run build:app` before the run; a spec run against a stale `dist` proves
+  nothing, which is Entry 28's own lesson.
+- `app/tests/unit/labHelp.test.ts` (new, 4 assertions). Changing one word of one line in
+  `LAB_HELP` and leaving `04` §3c alone — **1 of 4 failed**, the drift test.
+- `app/tests/unit/lessonClaimsAboutApp.test.ts` gains seven rows, one per edited lesson, each
+  asking whether the button that lesson describes opens on the way round its sentence promises.
+
+**Verification.** From `app/`: `npx tsc -b` clean; `npm run lint` clean.
+`npx playwright test tests/e2e/lab-both-ways.spec.ts --workers=4`: **7 passed**, run alone on
+port 4173 after `npm run build:app`. **A stale preview server was listening on 4173 from the
+previous evening** and was stopped before the first run; left alone, `reuseExistingServer`
+would have served yesterday's build, which is exactly how Entry 28's first run failed.
+
+`npx vitest run` is **not clean, and not from this work**: the run taken partway through this
+task was **174 files passing, 2,400 tests passing, 1 failing** — `ladderTool.test.ts`, because
+`holiday.5` has gained a `ladder` tool that its `LADDER_RUNGS` list does not name. A later run
+was 3 failing, the two new ones being `lessonClaimsAboutApp.test.ts`'s own `holiday.5` row and
+`simonDrill.test.ts`'s read of a generated blues-scale score; the generated scores under
+`app/public/content` were rewritten **between the two runs**, against a curriculum built
+twenty-five minutes earlier, so a content build was in flight. All three are the holiday work,
+not this task's: `git status` shows `content/curriculum/stage-5.json`, `stage-6.json`,
+`stage-7.json` and three new `content/lessons/holiday.*.md` modified by another hand, and none
+of those is a file this task touched. The lab files were run on their own and are green:
+`labBothWays`, `labHelp`, `labPresets`, `accompanimentLab`, `lessonShape`, `labRoute` and
+`tradingFours` — **7 files, 89 tests**; `lessonClaimsAboutApp` is 48 of 49, the one failure
+being the `holiday.5` row above.
+
+**Who else reads what changed.** `barSchedule`, `BackingEvent` and `DrumKit` have five readers
+besides their own file, named one at a time rather than counted:
+`app/src/ui/screens/ChordChartScreen.ts` (passes no `comp`, so its bed is unchanged),
+`app/src/ui/screens/LabScreen.ts` (this task's), `app/tests/unit/backingLoop.test.ts` and
+`app/tests/unit/chordChart.test.ts` — **both run, 2 files, 17 tests, green**, and again beside
+`labBothWays.test.ts` afterwards: **3 files, 31 tests, green**. `LabPreset` gained an optional field only, and its readers are
+`app/src/router.ts`, `app/src/curriculum/types.ts`, `app/src/ui/screens/LabScreen.ts`,
+`labPresets.test.ts`, `lessonClaimsAboutApp.test.ts` and the new `labHelp.test.ts`; an optional
+key breaks none of them and `npx tsc -b` is the check. `voiceChord` was private and is now
+exported; the only reader outside `sightReading.ts` is `backingLoop.ts`.
+
+**What is unverified.**
+
+- **Nothing has been heard**, as the first line says. The chord voice's gain against the bass,
+  its decay, whether an Alberti comp at a fast tempo is mud, and whether the app's right hand
+  and the bed sit together are all unchecked.
+- **The content build has not been run by this task**, and none of these lesson edits needs it
+  to be true — but they do not reach the app until `build.py` copies them.
+  `lessonClaims.test.ts` and `curriculumIntegrity.test.ts` read the built copy and say nothing
+  about the seven edited lessons.
+- **`lab.spec.ts`, `trading-fours.spec.ts` and `landscape.spec.ts` were not run** — this task's
+  Playwright allowance was its own new spec. The new chip row sits between the buttons and the
+  status line, on top of the row Entry 28 added, so **`04` §0 R1 on a 342 px phone is the thing
+  to look at**: two chip rows and their help lines now stand between the buttons and the
+  pickers.
+- **The judging has never seen a real performance.** `judgeLabPass` is tested on a list of
+  `{midi, bar}` pairs written by hand; no note has reached it from a key or a MIDI cable.
+- **`docs/genre-plans/` was not read or edited**, so whatever those files say about the lab is
+  unchecked against this.
+
+**Playwright specs the coordinator should run, and what each should show:**
+
+| spec | what to look for |
+|---|---|
+| `lab.spec.ts` | the existing jam and *Read it* are unchanged with both new chips off |
+| `trading-fours.spec.ts` | the trade chips still work beside a second row that can turn them off |
+| `landscape.spec.ts`, and the lab at 342 px | R1 — the pickers still begin inside the first screenful with a second chip row and the help lines added above them |
+| `chart.spec.ts` (§3b) | the chord chart's bed is unchanged: it passes no `comp` |
+
+**Files.** `app/src/audio/backingLoop.ts`, `app/src/engine/sightReading.ts`,
+`app/src/ui/screens/LabScreen.ts`, `app/src/ui/screens/LabScreen.css`;
+`app/tests/unit/labBothWays.test.ts`, `app/tests/unit/labHelp.test.ts`,
+`app/tests/e2e/lab-both-ways.spec.ts` (all new); `app/tests/unit/lessonClaimsAboutApp.test.ts`;
+`content/lessons/blues.9.md`, `chords-pop.3.md`, `chords-pop.7.md`, `improv.4.md`, `jazz.4.md`,
+`jazz.5.md`, `jazz.6.md`; `docs/04-ui-spec.md` §3c; this entry.
+---
+
+### Entry 31 — T14: the holiday track carried up to Stages 5, 6 and 7 (2026-09-22)
+
+The brief gave this entry the number **30**, and T18 had already appended one with that
+number while this work was in progress. Renumbered to **31** so the file stays ascending,
+which is the convention Entry 25 records.
+
+**Nothing here has been heard.** Every judgement below was made from the built catalog's
+`notation` block and from `dump_score.py`, which prints the `.mxl` the app plays bar by bar,
+staff by staff. Whether any of these eleven pieces is a transcription worth practising is the
+one question none of it answers.
+
+**Judgement.** Three rungs, from music the catalog already held. `holiday.5` is the carol as
+a written-out piano piece and is about one repeated figure and the bar that is not it;
+`holiday.6` is the concert settings, played through once; `holiday.7` is the winter
+repertoire that is not a carol, and is about the left hand an orchestral reduction hides its
+difficulty in. The track now runs `holiday` · `.3` · `.4` · `.5` · `.6` · `.7`. **It does
+not move group on the Plan screen**, and the first draft of this paragraph said it did, on
+Entry 21's sentence recalled rather than `PlanScreen.ts` read: `familyOf` is
+`units > 1 ? 'ladder' : 'module'`, a split at one unit and not an ordering by count, so
+holiday became a *Style ladder* when Entry 21 took it from one unit to three and stays one at
+six. `docs/02` was corrected with this.
+
+**Option counts.** `holiday.5` 3 exercises + 4 songs · `holiday.6` 3 + 4 · `holiday.7` 3 + 3.
+None is song-optional; all three clear the floor of three of each on songs alone.
+
+---
+
+**Evidence lines.** `<id> → <rung> | fields read | why it fits`. Each item was read on its
+own — the catalog row, then the score dumped bar by bar — before it was placed. The *splice*
+is one call per rung, because a stage file is edited as text and a unit is one object; the
+reading and the deciding were per item, which is what `working-rules` §2.4 is protecting.
+
+*`holiday.5`* (Stage 5, after `holiday.4`; band 3.4–5.91; `requires.staves: 2`)
+
+- `song.holiday.carol-of-the-bells.easy` → holiday.5 | 5.1 judged; A minor, 3/4, 40 bars, 2
+  staves, 0 symbols; **all 40 bars dumped** — the same four notes (C5 B4 C5 A4) in 33 of them,
+  left hand one dotted half a bar, bars 25 and 27 the only running-eighths bars | a carol that
+  *is* a loop, and the two bars that are not it are the rung's subject. Also on core `4.6` and
+  `classical.4.shelf`; it stays on both
+- `song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx` → holiday.5 | 5.91 estimated;
+  E major (4 sharps), 3/4, 25 bars, 2 staves, 48 symbols; **all bars dumped** — left hand a
+  six-eighth broken chord (root–3rd–5th–octave–5th–3rd) in 15 bars and a held triad in the
+  other 9 | the same shape as the E major arpeggio exercise, in the piece's own key; on no rung
+  before
+- `song.folk.auld-lang-syne-anonymous-traditional.pdmx` → holiday.5 | 5.11 estimated; F major
+  (mode in the file), 4/4, 20 bars, 2 staves, 0 symbols; **all bars dumped** — both hands in
+  thirds and sixths nearly throughout, a pickup quarter before bar 1 | **not a carol**, and the
+  lesson says so: it is the New Year one, and it is the rung's example of a texture with no
+  figure to loop. Also on core `4.6`
+- `song.pop.misc-christmas-mary-did-you-know.pdmx` → holiday.5 | 5.81 estimated; B minor, 4/4,
+  62 bars, 2 staves; bars 1–14 dumped — a single-line right hand with occasional thirds over a
+  left hand of broken chords and held basses | the long, slow one, which is what the Ladder is
+  for. **`personal-build`**: its composition status is `unknown`, so the public build carries
+  an import hint rather than the file
+- `exercise.ostinato.a.arpeggio` → holiday.5 | 3.4, A minor, 8 bars, 2 staves; the figure is
+  identical in all eight and the score's own text says *"The figure does not change. Nothing in
+  it gets louder, later or faster"* | the rung's figure with the music taken away, in *Carol of
+  the Bells*' key. Also on `3.3` and `rock.6`
+- `exercise.arpeggio.e-major.2oct.both` → holiday.5 | 5.1, E major, 2 bars, hands together —
+  E G# B E G# B E up and back | the left hand of the *We Wish You* setting, spelled out; on no
+  rung before
+- `exercise.independence.c.2v1` → holiday.5 | 5.3, C major, 4 bars — right hand in eighths
+  against left hand in quarters | one hand steady while the other is not, which is the whole
+  problem. Also on `technique.5`
+
+*`holiday.6`* (Stage 6, after `holiday.5`; band 6.1–7.3; `requires.staves: 2`)
+
+- `song.holiday.carol-of-the-bells` → holiday.6 | 6.1 judged; D minor, 3/4, 65 bars, 2 staves;
+  bars 1–26 dumped — the same figure a fifth away and much fuller, chords in both hands from
+  bar 13, a raised C♯ at bars 21–23, low octaves at 17–20 | the rung-below piece grown up. On
+  no rung before. **The first draft of the lesson said "moved down to D minor"; the figure is
+  written F5 E5 F5 D5 against the easier setting's C5 B4 C5 A4, so it is written *higher*.
+  Corrected to "now in D minor", and the comparison row asks only that the keys differ**
+- `song.classical.ondrus-silent-night.pdmx` → holiday.6 | 6.76 estimated; A flat major (4
+  flats), 3/4, 30 bars, 2 staves; **all 30 bars dumped** — the right hand is a two-, three- or
+  four-note chord on essentially every attack, the melody its top note | the voicing lesson,
+  and the shortest thing here to memorise. **`personal-build`** (composition `unknown`); the
+  1818 tune is public domain and this setting's status is not stated by the source
+- `song.folk.o-holy-night-piano-solo.pdmx` → holiday.6 | 6.85 estimated; 6/8, 96 bars, 2
+  staves, key signatures 4 → 5 → 4 sharps (E major to B major and back); **all 96 bars dumped**
+  in four passes — the left hand is a six-eighth broken chord bar after bar to about bar 54,
+  becomes repeated eighths at 55–62, and a dotted-quarter figure from 74 | the big one; on no
+  rung before
+- `song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx` → holiday.6 | 7.3 estimated; two
+  sharps, 2/4, 73 bars, 2 staves; bars 1–18 dumped — octave doublings in both hands and
+  sixteenth runs; **it ends on A, the dominant, not on D**, so the lesson says "two sharps"
+  rather than naming a final key | the loud one. A level-7 piece on a Stage 6 rung is the
+  honest case a rung's band is allowed to be — the rule is `validate.py`'s
+  `level_band_errors`, which refuses only a band its own options fall outside, and
+  `docs/generated/ladder.md`'s header restates it citing replan §1.7. The first draft cited
+  `02` Part D, which does not say it. On no rung before
+- `exercise.voicing.d` → holiday.6 | 6.2, D major, 4 bars of four-note right-hand chords over
+  single bass notes; the score's text is *"The top note sings; the rest accompany it"* | the
+  Ondruš setting's problem, and D is the *Joy to the World* key. On no rung before
+- `exercise.pedal.held-melody.c` → holiday.6 | 6.4, C major, 4 bars — one held C5 over four
+  changing left-hand triads; the score says *"Change the pedal under the held note — it must not
+  break"* | the only pedal technique these four need. On no rung before
+- `exercise.arpeggio.d-minor.4oct.both` → holiday.6 | 6.2, D minor, 4 bars, four octaves hands
+  together | the Shchedryk setting's key and its left hand's shape. On no rung before
+
+*`holiday.7`* (Stage 7, after `holiday.6`; band 6.3–7.32; `requires.staves: 2`; **no tools** —
+see below)
+
+- `song.classical.tchaikovsky-waltz-flowers` → holiday.7 | 6.3 judged; D major, 3/4, 80 bars, 2
+  staves; bars 1–17 dumped — the first four bars are left hand alone (D2, then D3+F♯3+A3
+  twice), and that pattern continues under the tune | the reduction whose difficulty is
+  entirely in the left hand. On no rung before
+- `song.classical.tchaikovsky-sugar-plum` → holiday.7 | 6.3 judged; E minor (one sharp, ends on
+  E), 2/4, 53 bars, 2 staves; bars 1–15 dumped — the left hand is E2+E3 struck against rests
+  for four bars, then alternates a bass note with a mid-register chord at eighth speed, with
+  32nd-note runs at bars 8 and 12 | the same lesson, harder. On no rung before
+- `song.jazz.vince-guaraldi-skating.pdmx` → holiday.7 | 7.32 estimated; C major, 3/4, 137 bars,
+  2 staves, 268 symbols, **swing direction in the file**; bars 1–14 dumped — the left hand is a
+  bass note on one and a chord on two and three | winter repertoire that is unambiguously not a
+  carol, and a stride left hand in three. Already on `jazz.7`; it keeps that place and gains
+  the `holiday` track for the Library. **`personal-build`** (composition `unknown`)
+- `exercise.rotation.c.left` → holiday.7 | 6.3, C major, 2 bars, `hands: left`, sixteenths
+  rocking C3 G3 E3 G3 | the wrist the Sugar Plum left hand needs. Also on `technique.6`
+- `exercise.repeated-notes.c.4x.left` → holiday.7 | 6.3, C major, 2 bars, `hands: left`, four
+  sixteenths on each note of a scale | the Sugar Plum opening is one octave struck again and
+  again. Also on `technique.6`
+- `exercise.stride.c` → holiday.7 | 7.3, C major, 4 bars, symbols C, F and G dominant; left
+  hand C2 then E3+G3, right hand holding the chord | the *Skating* left hand, in *Skating*'s
+  key. Also on `jazz.7`
+
+---
+
+**What was looked at and not placed, with the reason.** Each of these was read the same way.
+
+- `song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx` (3.4) — the genre plan names *O
+  Holy Night* for Stage 6. The catalog row says **1 staff, 50 bars, 32 chord symbols**: it is a
+  lead sheet, not a piano setting, and putting it on `holiday.6` would take that rung's band to
+  3.4–7.3 and force a level-3 tune among level-6 solos. **Not placed.** Its honest home is
+  `holiday.3`, which is the lead-sheet rung — outside this run's files, and named as a
+  follow-up. The plan's Stage 6 line was written from the title.
+- `song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx`
+  (5.4) — 1 staff, 80 bars, 194 symbols, swing direction, two key signatures (2 flats then 1
+  sharp). A jazz lead sheet, so it fails `holiday.5`'s two-staff point and is not a concert
+  setting either. **Not placed.**
+- `song.pop.misc-christmas-we-wish-you-a-merry-christmas.pdmx` (7.06) — B flat, 3/4, 59 bars, 2
+  staves. A fine solo setting, and *We Wish You a Merry Christmas* is not a carol a room stops
+  talking for, which is what `holiday.6` is. **Not placed**, rather than widening the rung's
+  idea to fit it.
+- `song.folk.happy-xmas.pdmx` (7.05) — 3/4, 163 bars, 2 staves, seven key-signature changes
+  alternating A and D; bars 1–13 dumped: the left hand is a three-note chord on **every beat**,
+  a guitar strum written out. `holiday.7`'s second mode is about the left hand of an orchestral
+  reduction, and this left hand hides nothing. **Not placed.**
+- `song.classical.tchaikovsky-march-of-the-wooden-soldiers-op-39-no5.pdmx` (5.62) — D major,
+  2/4, 48 bars, 2 staves, public domain. The plan lists *march of the toy soldiers* for Stage 7
+  as `NOT FOUND`. This is Op. 39 No. 5 from the children's album, **a different piece from the
+  Nutcracker march** that the English title usually means; nothing in the file or the catalog
+  makes it winter repertoire, and it is not an orchestral reduction. **Not placed** — the match
+  is a title, which is the proxy `00` §1a forbids.
+- `song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx` (7.84) and
+  `song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx` (7.15) — both read, both public
+  domain, neither placed: the first is a 216-bar medley and `holiday.6` is about one carol
+  played through; the second is a jazz treatment with no rung yet describing that.
+- `song.pop.misc-christmas-silent-night-trombone-duet.pdmx` (5.17) — 2 staves, but both of them
+  are trombone parts. **Not placed.**
+
+---
+
+**The carols Entry 21 listed on no rung.** That entry named fourteen. This run was scoped to
+the ones the plan homes at Stages 5–7, and the count now stands:
+
+| carol | level | where it went |
+|---|---|---|
+| Mary Did You Know? | 5.81 | `holiday.5` |
+| Carol of the Bells (Shchedryk) | 6.1 | `holiday.6` |
+| O Holy Night (piano solo) | 6.85 | `holiday.6` |
+| Joy to the World (piano solo) | 7.3 | `holiday.6` |
+| O Holy Night (lead sheet) | 3.4 | **still unhomed** — belongs on `holiday.3`, outside this run |
+| Hark! The Herald (jazz lead sheet) | 5.4 | **still unhomed** — a jazz lead sheet, no rung describes it |
+| Happy Xmas (War Is Over) | 7.05 | **still unhomed** — reason above |
+| We Wish You a Merry Christmas (solo) | 7.06 | **still unhomed** — reason above |
+| God Rest Ye Merry, Gentlemen | 2.87 | **still unhomed** — the plan homes it on `holiday.3` |
+| Up on the Housetop | 2.87 | **still unhomed** — Entry 21 rejected it from `holiday` |
+| Let It Snow (lead sheet) | 3.24 | **still unhomed** — the plan homes it on `holiday.3` |
+| O Christmas Tree | 3.38 | **still unhomed** — a Stage 3 lead sheet |
+| Angels We Have Heard on High | 3.49 | **still unhomed** — a Stage 3 lead sheet |
+| Petit Papa Noël | 3.76 | **still unhomed** — Entry 21 rejected it from `holiday.4` |
+
+**Four homed, ten still on no rung**, and nine of the ten are Stage 2–5 material whose home is
+`holiday.3` or `holiday.4`. Adding to `holiday.3` means rewriting its repertoire paragraph —
+that lesson says "Four options" and a test checks the number against the rung — so it is a
+change to an existing lesson rather than to a new one, and it was left for whoever owns that
+rung next.
+
+**Six more pieces that were never on Entry 21's list** are now homed, enumerated one by one
+because a bare plural hides how many were checked. **Four carried no `holiday` track** and so
+could not appear in the Library filter that list was taken from: *We Wish You a Merry
+Christmas (piano)* (5.91), *Silent Night (Ondruš setting)* (6.76), *Auld Lang Syne* (5.11)
+and *Skating* (7.32). **Two did carry it** and are not carols, so were not on a carol list:
+*Waltz of the Flowers* and *Dance of the Sugar Plum Fairy* (6.3 each). The Library filter was
+a proxy for "holiday music in the catalog"; a regex over the id, title, composer, arranger,
+genre and tags of all 2,067 rows, run twice with different patterns, is what found the four.
+`build.py`'s `attach_rung_tracks` gives each of them the `holiday` track now that it sits on
+a holiday rung, which is the mechanism Entry 21 records: the shelf went from **36 rows to
+40**, counted from the rebuilt catalog.
+
+---
+
+**Modes: what the plan marks `BUILT` and what a rung can actually carry.**
+
+The plan marks *Loops* and *Tempo ladder* for Stage 5, *Performance mode* and *Blind* for
+Stage 6, *Performance mode* and *Hand focus* for Stage 7. A rung's `tools` may only be `lab`,
+`duet`, `blind`, `simon`, `play` or `ladder` — checked against `curriculum.schema.json`'s
+closed enum and `LessonScreen.toolButton`, both read. So:
+
+- **`holiday.6` carries `blind`**, which is the plan's mode and opens the rung's first playable
+  song.
+- **`holiday.5` carries no tool.** The first draft gave it `ladder`, and the whole suite caught
+  it: `ladderTool.test.ts` keeps a closed list of the seven rungs allowed to carry it, and
+  `04` §3d says why — *"A whole-piece loop is sensible for a scale and absurd for a prelude…
+  A future rung wanting the ladder over repertoire must name bars, and that is a different
+  feature."* The tool was removed rather than the list widened. The lesson teaches *Loop* and
+  *Ladder* as the two Score-screen rows the learner sets for himself, which is what they are.
+- **`holiday.7` carries no tool.** Neither *Perform* nor *Hand focus* is a rung tool kind; both
+  are Score-screen controls (`Perform` and `Hands`), and the lesson names them. Adding a kind
+  would mean editing the app, the schema and a third test file, none of which are this task's.
+- Both show as `rung_audit` **INFO "names no mode"**, which is the honest reading: the rung
+  points at no button because the app has no button for what the plan asks.
+
+---
+
+**Claims under test.** **33 rows** added to `lessonClaimsAboutMusic.test.ts` (27 per-item, 6
+comparisons) and **8** to `lessonClaimsAboutApp.test.ts`. The music file runs its rows inside
+two tests, so the suite's count rises by the eight app rows only.
+
+**Five mutations were run, each restored**, and every one went red naming its own claim:
+*Carol of the Bells* `Am` → `Cm`; *O Holy Night* 96 bars → 95; *Skating*'s swing mark `true` →
+`false`; the "longest of the three" comparison pointed at Sugar Plum; and the rotation
+exercise's `hands` `left` → `right`. The last is in the app file — 1 failed of 49; the other
+four are in the music file — 1 failed of 2 each time.
+
+`swungMark` was missing from that file's `Notation` interface and was added, because a claim
+about a swing direction is the one thing `Skating` is unusual for.
+
+---
+
+**Verification.** `build.py --offline` ok · `ladder_report.py` rewrote
+`docs/generated/ladder.md` (307 lines; Holiday now **6 rungs, stages 2–7**) · `validate.py`
+**OK at 2,067 catalog items** · `rung_audit.py` whole tree **0 HIGH**, 30 MED, 1 LOW, 11 INFO ·
+per rung: `holiday.6` **no findings**, `holiday.5` 1 INFO, `holiday.7` 1 MED and 1 INFO ·
+`npx tsc -b --noEmit` clean · `npx vitest run` **175 files, 2,409 tests, all passing**.
+**No Playwright**, by instruction. The whole-tree figures are not a before-and-after: the
+audit was first run after the three rungs were already spliced, so what these three
+contribute is the per-rung reading above and not a delta.
+
+Two runs of the build were needed: the first failed validation on two finder constraints over
+the schema's 60-character limit, which is a check doing its job.
+
+**The one MED, and why it stays.** `holiday.7`: 4 of its 6 options are shared — the three
+left-hand studies are the technique track's, and *Skating* is already on `jazz.7`. That is the
+rung: it is about putting the technique rungs' left hand into winter repertoire, so sharing
+the studies is the design rather than a shortage. Swapping `exercise.stride.c` for the F major
+one would clear the flag and would break the only key match on the rung.
+
+---
+
+**What is unverified.**
+
+- **Every piece, unheard.** In particular: *Mary Did You Know?* and *Skating* are
+  `personal-build` rows whose composition status the dataset does not state, and the
+  arrangements have not been judged; the Ondruš *Silent Night* is a named setting nobody here
+  has played; *Joy to the World (piano solo)* carries text in the file about alternative bars
+  and an alternate ending, which the app will not offer as a choice.
+- **Whether any of the three lessons teaches.** No check decides it.
+- **The levels.** All eleven songs but the four `judged` ones (*Carol of the Bells* twice, and
+  the two Nutcracker numbers) are `estimated`.
+- **The public build.** Three of the eleven songs (*Mary Did You Know?*, *Silent Night
+  (Ondruš)*, *Skating*) are `personal-build`, so a public build shows an import hint on those
+  rows. `holiday.5` then offers three playable songs of four, `holiday.6` three of four and
+  `holiday.7` two of three — the last is **below the floor of three for a public build**, and
+  nothing in the repository measures that. It is the thing on this entry most worth a decision.
+- **No screen was opened.** The rungs have not been seen on the Plan screen, the lesson pages
+  have not been rendered, and `holiday.6`'s *Play it blind* button has not been observed on its
+  page; the code path is the one fifteen other rungs use.
+- **`holiday.5` and `holiday.7` showing no tools** has not been seen either — a lesson page
+  with an empty tools block hides it, read in `LessonScreen.draw`, not observed.
+- **Saved progress.** Nothing was taken off an existing rung, so no rung's completion changes.
+  *Carol of the Bells (easy)* and *Auld Lang Syne* gain a second rung and keep their first.
+
+**Files.** `content/curriculum/stage-5.json`, `stage-6.json`, `stage-7.json` (one unit spliced
+into each as text; the three files round-trip byte-identically under
+`json.dumps(indent=2, ensure_ascii=False)` plus a newline, measured before the edit, so the
+new units were rendered that way and every other byte is unchanged — asserted by the splice);
+`content/lessons/holiday.5.md`, `holiday.6.md`, `holiday.7.md` (all new);
+`app/tests/unit/lessonClaimsAboutMusic.test.ts`, `app/tests/unit/lessonClaimsAboutApp.test.ts`;
+`docs/02-curriculum.md` Part A item 5; `docs/generated/ladder.md` (regenerated); this entry.
+
+**Follow-ups.**
+
+1. The ten carols still on no rung, nine of which want `holiday.3` or `holiday.4` and a
+   rewritten repertoire paragraph on each.
+2. The public-build floor above: `holiday.7` offers two playable songs in a public build.
+3. `holiday.5` and `holiday.7` point at no mode. *Loop*, *Ladder*, *Perform* and *Hands* are
+   all real controls with no rung-level address; giving them one is an app change.
+4. The genre plan's Stage 5 repertoire is still entirely `IN ARCHIVE` — six carols nobody has
+   quarried. `holiday.5` was built from what the catalog holds instead, and those six would
+   make it a better rung than the one built here.

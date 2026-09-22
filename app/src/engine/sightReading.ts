@@ -819,6 +819,18 @@ export function labProgression(id: string): LabProgression {
  * A rung reaches one as `#/lab?preset=<id>`, the same query-parameter idiom the
  * Score screen already uses for `mode`, `loop`, `hands` and `tour`.
  */
+/**
+ * What *Jam it* plays besides the bass and the drums (`04` §3c, 2026-09-22).
+ *
+ * The owner: the lab should *"play chords while the user plays the melody, so
+ * it'd go both ways"*. `hold` is that — the bed voices the progression and the
+ * tune is the learner's. `tune` is the reverse: the bed plays the right hand
+ * the generator writes and the learner comps underneath. `off` is the bed as
+ * it has always been, and is what every jam opens on unless a preset says
+ * otherwise.
+ */
+export type LabBed = 'off' | 'hold' | 'tune';
+
 export interface LabPreset {
   id: string;
   label: string;
@@ -830,6 +842,16 @@ export interface LabPreset {
   rightHand: LabRightHand;
   bars: number;
   bpm: number;
+  /**
+   * Which of the two ways round this preset opens on.
+   *
+   * A rung reaches it through the `lab` tool it already has, because
+   * `curriculum.schema.json` closes the `tools` item to `kind`, `preset`,
+   * `item` and `label` — so the preset is the only thing a rung can say. That
+   * means every rung on one preset gets the same answer; where a rung's lesson
+   * wants the other one it says so in prose and waits on a field of its own.
+   */
+  bed?: LabBed;
   /** Which of the settings above the learner may not change here. */
   locks: readonly ('key' | 'progression' | 'leftHand' | 'rightHand' | 'bars')[];
 }
@@ -851,6 +873,10 @@ export const LAB_PRESETS: readonly LabPreset[] = [
     rightHand: 'melody',
     bars: 8,
     bpm: 84,
+    // `chords-pop.3`: "Playing *When the Saints* over the two of those is this
+    // lesson's transposing exercise" — a tune over the chords, so the bed holds
+    // them. `3.2` wants the other way round and says so in prose.
+    bed: 'hold',
     locks: ['progression', 'leftHand'],
   },
   {
@@ -863,6 +889,9 @@ export const LAB_PRESETS: readonly LabPreset[] = [
     rightHand: 'melody',
     bars: 8,
     bpm: 88,
+    // No bed default: `chords-pop.4` is this preset's only rung and its lesson
+    // asks for neither way round — it is about which inversion to take. A
+    // default asserted from nothing is `00` §1a's inference from a name.
     locks: ['progression', 'leftHand'],
   },
   {
@@ -875,6 +904,10 @@ export const LAB_PRESETS: readonly LabPreset[] = [
     rightHand: 'none',
     bars: 8,
     bpm: 72,
+    // `chords-pop.7`: "something to try the colours over"; `improv.4`: "no right
+    // hand at all — that part is yours". This preset writes no right hand, so
+    // *Play the tune* has nothing to play here and is refused.
+    bed: 'hold',
     locks: ['progression', 'leftHand', 'rightHand'],
   },
   {
@@ -887,6 +920,11 @@ export const LAB_PRESETS: readonly LabPreset[] = [
     rightHand: 'none',
     bars: 12,
     bpm: 84,
+    // `blues.3`: "holds the changes underneath you: pick blue notes over the
+    // top"; `blues.4`: "the same form to try a right-hand riff over"; `blues.9`:
+    // "play chorus after chorus over it". `jam.5` says "comp through eight
+    // choruses" and is the one this default is wrong for.
+    bed: 'hold',
     // Bars are locked because twelve does not divide into eight and the form is
     // the lesson: a "12-bar blues" of eight bars is not one.
     locks: ['progression', 'leftHand', 'bars'],
@@ -901,6 +939,11 @@ export const LAB_PRESETS: readonly LabPreset[] = [
     rightHand: 'chord-tones',
     bars: 8,
     bpm: 100,
+    // The three rungs on this preset all ask the learner to comp: `jazz.4`
+    // "comp the Charleston over it", `jazz.5` "comp shells against it",
+    // `jazz.6` "a comping pattern needs something to be in the gaps of". So
+    // the bed takes the right hand and the learner takes the chords.
+    bed: 'tune',
     locks: ['progression', 'leftHand'],
   },
   {
@@ -916,12 +959,108 @@ export const LAB_PRESETS: readonly LabPreset[] = [
     rightHand: 'chord-tones',
     bars: 8,
     bpm: 80,
+    // `rock.4`: "so you can play a right hand over it without reading
+    // anything"; `rock.6`: "gives the figure a floor … so the arpeggio has
+    // chords to sit on".
+    bed: 'hold',
     locks: ['key', 'progression', 'leftHand'],
   },
 ];
 
 export function labPreset(id: string): LabPreset | null {
   return LAB_PRESETS.find((p) => p.id === id) ?? null;
+}
+
+/**
+ * What every control on the lab says it does, written down once (`04` §3c).
+ *
+ * The owner, 2026-09-21: the lab *"doesn't have enough documentation"*. It had
+ * none: a grep of `LabScreen.ts` for `help|explain|tip|hint` on 2026-09-21
+ * returned the file comment and nothing else, so six pickers, two buttons and
+ * two chip rows stood on the screen with only their labels.
+ *
+ * **One table, not one line per control at the point of use.** A sentence
+ * written beside the markup is a sentence the spec has to copy, and two copies
+ * of a sentence drift — which is the failure `§2.8` of the working rules is
+ * about. So the lines live here, the screen reads them by id, `04` §3c lists
+ * them, and `labHelp.test.ts` fails when the two disagree.
+ *
+ * They are in the learner's terms on purpose: "which chords, in numerals" and
+ * not "the progression", because somebody who knew what a progression was would
+ * not need the line.
+ */
+export interface LabHelpLine {
+  /** Which control. The screen looks its line up by this. */
+  id:
+    | 'lede'
+    | 'presets'
+    | 'bed'
+    | 'trade'
+    | 'key'
+    | 'progression'
+    | 'custom'
+    | 'leftHand'
+    | 'rightHand'
+    | 'bars'
+    | 'tempo';
+  /** The control's own label on the screen, so the table can be read beside it. */
+  label: string;
+  help: string;
+}
+
+export const LAB_HELP: readonly LabHelpLine[] = [
+  {
+    id: 'lede',
+    label: 'The two buttons',
+    help: 'Read it writes these settings out as a score you can read. Jam it plays them as a loop you can play over.',
+  },
+  {
+    id: 'presets',
+    label: 'Start from',
+    help: 'A style to start from, instead of six empty pickers. Free leaves every setting to you.',
+  },
+  {
+    id: 'bed',
+    label: 'What the app plays',
+    help: 'Bed only is bass and drums. Hold the chords adds the harmony underneath, so the tune is yours. Play the tune gives the app the right hand, so the chords are yours.',
+  },
+  {
+    id: 'trade',
+    label: 'Trading fours',
+    help: 'The app plays a few bars, then leaves you the same number, round and round.',
+  },
+  { id: 'key', label: 'Key', help: 'Which key it is all written and played in.' },
+  {
+    id: 'progression',
+    label: 'Progression',
+    help: 'Which chords, written as numerals so the same choice works in any key.',
+  },
+  {
+    id: 'custom',
+    label: 'Your numerals',
+    help: 'One per bar — I, vi, V7, ♭VII, iiø7.',
+  },
+  {
+    id: 'leftHand',
+    label: 'Left hand',
+    help: 'The shape the left hand plays the chords in, and the shape Hold the chords comps in.',
+  },
+  {
+    id: 'rightHand',
+    label: 'Right hand',
+    help: 'What goes above the chords, and what Play the tune plays for you.',
+  },
+  {
+    id: 'bars',
+    label: 'Bars',
+    help: 'How long one time round is. A shorter progression repeats rather than stretching.',
+  },
+  { id: 'tempo', label: 'Tempo', help: 'Beats per minute.' },
+];
+
+/** The line for one control, so a missing id is a build error and not a blank. */
+export function labHelp(id: LabHelpLine['id']): string {
+  return LAB_HELP.find((line) => line.id === id)?.help ?? '';
 }
 
 /**
@@ -1087,7 +1226,7 @@ const LAB_RIGHT_CEILING = 81;
  * previous" keeps the shape closed, which is what a left hand wants and what
  * stacking every note in one octave would not give.
  */
-function voiceChord(pitchClasses: readonly number[], floor: number): number[] {
+export function voiceChord(pitchClasses: readonly number[], floor: number): number[] {
   const out: number[] = [];
   let low = floor;
   for (const pitchClass of pitchClasses) {
@@ -1350,6 +1489,112 @@ export function buildLabExercise(options: LabExerciseOptions): LabExerciseResult
     fifths: options.fifths,
     seed,
   };
+}
+
+/** One note of the bed's own right hand: what to play, when, and for how long. */
+export interface LabBedNote {
+  midi: number;
+  /** Beats from the first beat of its bar. */
+  atBeat: number;
+  /** How long it sounds, in beats. */
+  beats: number;
+}
+
+/**
+ * The right hand the bed plays under *Play the tune* (`04` §3c).
+ *
+ * **It is the same right hand `buildLabExercise` writes**, taken from the same
+ * two functions with the same seed, rather than a second melody generator for
+ * the loop. Two generators over one set of settings would mean *Read it* and
+ * *Play the tune* showed and played different tunes from the same screen, which
+ * is the drift `§1` of the working rules is about — and the learner comping
+ * under it would have no way to tell which was the exercise.
+ *
+ * Durations come back in beats rather than in divisions because the caller has
+ * a tempo and not a time signature: the screen turns a beat into a second, and
+ * nothing outside the writer should have to know that `DIVISIONS` is twelve.
+ */
+export function labRightHandBars(options: {
+  fifths: number;
+  harmony: readonly LabChord[];
+  rightHand: LabRightHand;
+  beatsPerBar?: number;
+  seed?: number;
+}): LabBedNote[][] {
+  const beats = Math.max(1, Math.trunc(options.beatsPerBar ?? 4));
+  const divisionsPerBar = beats * DIVISIONS;
+  if (options.rightHand === 'none') return options.harmony.map(() => []);
+  const bars =
+    options.rightHand === 'melody'
+      ? labMelodyBars(
+          makeRng(options.seed ?? 21),
+          options.fifths,
+          options.harmony,
+          divisionsPerBar,
+        )
+      : labChordToneBars(options.harmony, divisionsPerBar);
+  return bars.map((notes) => {
+    const out: LabBedNote[] = [];
+    let offset = 0;
+    for (const note of notes) {
+      if (note.midi !== null) {
+        out.push({ midi: note.midi, atBeat: offset / DIVISIONS, beats: note.duration / DIVISIONS });
+      }
+      offset += note.duration;
+    }
+    return out;
+  });
+}
+
+/** One note the learner played, and the bar the loop was on when they played it. */
+export interface LabPassNote {
+  midi: number;
+  /** Index into `harmony`. */
+  bar: number;
+}
+
+export interface LabPassJudgement {
+  /** How many notes were played at all. */
+  notes: number;
+  /** ...of which are in the scale the progression teaches. */
+  inScale: number;
+  /** ...of which are a chord tone of the bar they were played over. */
+  onChord: number;
+}
+
+/**
+ * What one time round was worth — two counts and no mark.
+ *
+ * The same contract trading fours already has (`04` §3c): this is a
+ * measurement said out loud while the loop keeps going, nothing is written to
+ * the practice history and nothing here can be passed or failed. It is counted
+ * rather than scored for the reason Entry 28 gives — *six of eight in the blues
+ * scale* is something a learner can act on, and a percentage over an
+ * improvisation is a number pretending to be one.
+ *
+ * The bar a note is attributed to is the bar the loop was on when the key went
+ * down, which is coarse: a note played a hair before the bar line counts
+ * against the bar before it. That is honest about what the screen can know and
+ * is why `onChord` is only ever *said* for the mode where the learner is
+ * comping the bar they are in.
+ */
+export function judgeLabPass(options: {
+  notes: readonly LabPassNote[];
+  harmony: readonly LabChord[];
+  scale: readonly number[];
+}): LabPassJudgement {
+  const wanted = new Set(options.scale.map((value) => (((value % 12) + 12) % 12)));
+  let inScale = 0;
+  let onChord = 0;
+  for (const note of options.notes) {
+    const pitchClass = (((note.midi % 12) + 12) % 12);
+    if (wanted.has(pitchClass)) inScale += 1;
+    const chord = options.harmony[note.bar];
+    if (chord?.pitchClasses.some((value) => (((value % 12) + 12) % 12) === pitchClass)) {
+      onChord += 1;
+    }
+  }
+  return { notes: options.notes.length, inScale, onChord };
 }
 
 /**

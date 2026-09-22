@@ -39,7 +39,10 @@ the pattern.
 
 **Tools for this rung.** The accompaniment lab's *Jazz — two five one* preset
 walks a bass line under a two-five-one. Set its key to F and comp the Charleston
-over it: the bass keeps the time, so your chords only have to find the gaps.
+over it: the bass keeps the time, so your chords only have to find the gaps. It
+opens on *Play the tune*, so the app takes the right hand and the gaps are real
+ones; afterwards a quiet line counts how many of your notes were chord tones of
+the bar. Nothing is recorded.
 Then turn *Trading fours* on for the other half of this rung: the app plays two
 bars over that bass and leaves you the next two, round and round, and afterwards
 says whether you came in inside your own bars and how many of your notes were in
