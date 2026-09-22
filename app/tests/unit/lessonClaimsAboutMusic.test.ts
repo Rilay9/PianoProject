@@ -529,3 +529,158 @@ describe('a lesson tells the truth about the music it names', () => {
     expect(missing, `claims about items no longer in the catalog: ${missing.join(', ')}`).toEqual([]);
   });
 });
+
+/**
+ * The three rungs T14's last run built — `jazz.3`, `jam.7` and `ragtime.9`.
+ *
+ * Kept in a block of their own rather than folded into `CLAIMS` above so that
+ * the rows and the lessons they came from land together and can be read as one
+ * thing. What they check is the same: a sentence in the lesson, against the
+ * `notation` block the build read out of the MusicXML.
+ *
+ * **Several sentences in those three lessons cannot be checked here and are not
+ * pretended to be.** "Eleven of its sixteen bars have a run of eighths", "a
+ * bass doubled at the octave in seventy-three of ninety bars", and every
+ * quotation of a direction printed on a score — *Solos at "C"*, *Slow March
+ * Tempo*, *Break 1 Bar* — come from counting passes over the MusicXML and from
+ * `dump_score.py`. `notation` holds key, metre, staves, bars and chord symbols
+ * and nothing else, so a wrong count in one of those sentences would pass this
+ * file. `pending-review.md` Entry 37 says so in the same words.
+ */
+const JAZZ_3 = [
+  'song.folk.anonymous-swing-low-sweet-chariot.pdmx',
+  'song.pop.ray-henderson-bye-bye-blackbird.pdmx',
+  'song.classical.alexander-s-ragtime-band.pdmx',
+  'song.blues.ole-miss',
+];
+const RAGTIME_9 = [
+  'song.ragtime.joplin-original-rags',
+  'song.ragtime.joplin-breeze-from-alabama',
+  'song.ragtime.joplin-chrysanthemum',
+  'song.classical.joplin-search-light-rag.pdmx',
+];
+const JAM_7 = [
+  'song.pop.after-you-ve-gone.pdmx',
+  'song.blues.jazz-me-blues',
+  'song.blues.weary-blues',
+  'song.blues.riverside-blues',
+  'song.blues.storyville-blues',
+];
+
+/** `[lesson, the claim in words, the item, the test]` — the same shape as above. */
+const T14_CLAIMS: [string, string, string, (n: Notation) => boolean][] = [
+  ['jazz.3', 'Swing Low, Sweet Chariot is in G', 'song.folk.anonymous-swing-low-sweet-chariot.pdmx',
+    (n) => keyOf(n).startsWith('G')],
+  ['jazz.3', '…sixteen bars of it', 'song.folk.anonymous-swing-low-sweet-chariot.pdmx',
+    (n) => n.bars === 16],
+  ['jazz.3', '…over three chords', 'song.folk.anonymous-swing-low-sweet-chariot.pdmx',
+    (n) => n.chords.length === 3],
+  ['jazz.3', "Alexander's Ragtime Band is thirty-three bars", 'song.classical.alexander-s-ragtime-band.pdmx',
+    (n) => n.bars === 33],
+  ['jazz.3', 'Bye Bye Blackbird has fifty-seven chord symbols in sixty-three bars',
+    'song.pop.ray-henderson-bye-bye-blackbird.pdmx',
+    (n) => n.bars === 63 && n.chordCount === 57],
+  ['jazz.3', 'Ole Miss is sixty-four bars', 'song.blues.ole-miss', (n) => n.bars === 64],
+
+  ['ragtime.9', 'Original Rags is a hundred and nine bars', 'song.ragtime.joplin-original-rags',
+    (n) => n.bars === 109],
+  ['ragtime.9', '…across three key signatures', 'song.ragtime.joplin-original-rags',
+    (n) => n.keys.length === 3],
+  ['ragtime.9', 'A Breeze from Alabama opens with no sharps or flats', 'song.ragtime.joplin-breeze-from-alabama',
+    (n) => n.keys[0]?.fifths === 0],
+  ['ragtime.9', '…and one of its three key signatures is four flats', 'song.ragtime.joplin-breeze-from-alabama',
+    (n) => n.keys.length === 3 && n.keys.some((k) => k.fifths === -4)],
+  ['ragtime.9', 'The Chrysanthemum is a hundred and four bars', 'song.ragtime.joplin-chrysanthemum',
+    (n) => n.bars === 104],
+  ['ragtime.9', '…in three key signatures', 'song.ragtime.joplin-chrysanthemum',
+    (n) => n.keys.length === 3],
+  ['ragtime.9', 'Search-Light Rag is ninety bars', 'song.classical.joplin-search-light-rag.pdmx',
+    (n) => n.bars === 90],
+  ['ragtime.9', '…in two keys rather than three', 'song.classical.joplin-search-light-rag.pdmx',
+    (n) => n.keys.length === 2],
+
+  ['jam.7', "After You've Gone is thirty-six bars", 'song.pop.after-you-ve-gone.pdmx', (n) => n.bars === 36],
+  ['jam.7', 'Weary Blues is the one that changes key', 'song.blues.weary-blues', (n) => n.keys.length === 2],
+  ['jam.7', '…and the one written with a sharp in the signature', 'song.blues.weary-blues',
+    (n) => (n.keys[0]?.fifths ?? 0) > 0],
+  ['jam.7', 'Storyville Blues is fifty-six bars', 'song.blues.storyville-blues', (n) => n.bars === 56],
+  ['jam.7', '…in four flats', 'song.blues.storyville-blues', (n) => n.keys[0]?.fifths === -4],
+  ['jam.7', '…with seventy-five chord changes', 'song.blues.storyville-blues', (n) => n.chordCount === 75],
+];
+
+/** `[lesson, the claim in words, the test]` — claims over a whole rung. */
+const T14_COMPARISONS: [string, string, () => boolean][] = [
+  ['jazz.3', 'every one a melody on a single stave', () =>
+    JAZZ_3.every((id) => byId.get(id)?.notation?.staves === 1)],
+  ['jazz.3', 'all four tunes print chord symbols', () =>
+    JAZZ_3.every((id) => (byId.get(id)?.notation?.chordCount ?? 0) > 0)],
+  ['jazz.3', 'Bye Bye Blackbird is the one with the most chord changes over it', () => {
+    const count = (id: string): number => byId.get(id)?.notation?.chordCount ?? 0;
+    const blackbird = count('song.pop.ray-henderson-bye-bye-blackbird.pdmx');
+    return blackbird > 0 && JAZZ_3.filter((id) => !id.includes('blackbird')).every((id) => count(id) < blackbird);
+  }],
+  ['ragtime.9', 'all four in two-four', () =>
+    RAGTIME_9.every((id) => byId.get(id)?.notation?.times.includes('2/4') === true)],
+  ['ragtime.9', 'none of them printing a single chord symbol', () =>
+    RAGTIME_9.every((id) => byId.get(id)?.notation?.chordCount === 0)],
+  ['ragtime.9', 'a rag is two staves, so every option here is', () =>
+    RAGTIME_9.every((id) => byId.get(id)?.notation?.staves === 2)],
+  ['ragtime.9', 'Original Rags is the longest of the four', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const longest = bars('song.ragtime.joplin-original-rags');
+    return longest > 0 && RAGTIME_9.filter((id) => !id.includes('original')).every((id) => bars(id) < longest);
+  }],
+  ['ragtime.9', 'Search-Light Rag is the short one', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const shortest = bars('song.classical.joplin-search-light-rag.pdmx');
+    return shortest > 0 && RAGTIME_9.filter((id) => !id.includes('search-light')).every((id) => bars(id) > shortest);
+  }],
+  ['jam.7', 'every one a lead sheet on a single stave', () =>
+    JAM_7.every((id) => byId.get(id)?.notation?.staves === 1)],
+  ['jam.7', '…with its chords printed, which is what puts a Chart on every row', () =>
+    JAM_7.every((id) => (byId.get(id)?.notation?.chordCount ?? 0) > 0)],
+  ['jam.7', "After You've Gone is the shortest of the five", () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const shortest = bars('song.pop.after-you-ve-gone.pdmx');
+    return shortest > 0 && JAM_7.filter((id) => !id.includes('after-you')).every((id) => bars(id) > shortest);
+  }],
+  ['jam.7', 'four of these five sit in flat keys', () =>
+    JAM_7.filter((id) => (byId.get(id)?.notation?.keys[0]?.fifths ?? 0) < 0).length === 4],
+  ['jam.7', 'Storyville Blues is the biggest of the five', () => {
+    const count = (id: string): number => byId.get(id)?.notation?.chordCount ?? 0;
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const others = JAM_7.filter((id) => !id.includes('storyville'));
+    return others.every((id) => bars(id) < bars('song.blues.storyville-blues'))
+      && others.every((id) => count(id) < count('song.blues.storyville-blues'));
+  }],
+];
+
+describe('the three rungs T14 built last tell the truth about their music', () => {
+  it('states nothing about a piece that the piece does not do', () => {
+    const wrong: string[] = [];
+    for (const [lesson, claim, id, test] of T14_CLAIMS) {
+      const notation = byId.get(id)?.notation;
+      if (!notation) {
+        wrong.push(`${lesson}: "${claim}" — ${id} has no notation to check it against`);
+        continue;
+      }
+      if (!test(notation)) {
+        wrong.push(
+          `${lesson}: "${claim}" is false — ${id} is ${keyOf(notation)}, ` +
+            `${notation.times.join(',') || 'no metre'}, ${String(notation.staves)} staves, ` +
+            `${String(notation.bars)} bars, ${String(notation.chordCount)} chord symbols`,
+        );
+      }
+    }
+    for (const [lesson, claim, test] of T14_COMPARISONS) {
+      if (!test()) wrong.push(`${lesson}: "${claim}" is false`);
+    }
+    expect(wrong, `lessons claiming things their music does not do:\n${wrong.join('\n')}`).toEqual([]);
+  });
+
+  it('names only pieces that are still in the catalog', () => {
+    const named = [...JAZZ_3, ...RAGTIME_9, ...JAM_7, ...T14_CLAIMS.map(([, , id]) => id)];
+    const missing = [...new Set(named)].filter((id) => !byId.has(id));
+    expect(missing, `options no longer in the catalog: ${missing.join(', ')}`).toEqual([]);
+  });
+});

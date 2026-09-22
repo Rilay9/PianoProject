@@ -17,7 +17,7 @@ import { findLesson, idsToCompleteLesson, lessonComplete } from '../../curriculu
 import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, LessonTool, PassRecord } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
-import { getSettings } from '../../data/settingsStore';
+import { getSettings, updateSettings } from '../../data/settingsStore';
 import { markLessonLearnt, markSkill } from '../../data/skillsStore';
 import { recordPlacement } from '../../data/planStore';
 import type { ProgressRow } from '../../data/db';
@@ -443,6 +443,26 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         }) ?? null
       );
     };
+    /**
+     * What *Play it as a duet* does, and why it writes a setting first (T17).
+     *
+     * A duet is the hand you are *not* playing, and which hands the app plays
+     * is a **setting** (`playbackHands`), not a route field. The Library's own
+     * *Duet* door writes it for exactly that reason (`04` §4); this one did
+     * not — so a learner who had ever switched the Score screen's Duet row
+     * off, which is one tap and a thing people do, got a button labelled *Play
+     * it as a duet* that opened a screen where the app played nothing at all.
+     * Driven from `2.1` on 2026-09-22 and it did.
+     *
+     * `both` is left alone, the same way the Library door leaves it: a learner
+     * who asked for both hands is already hearing the one they are not
+     * playing.
+     */
+    const setDuetPlayback = (): void => {
+      updateSettings({
+        playbackHands: getSettings().playbackHands === 'both' ? 'both' : 'non-focused',
+      });
+    };
     const make = (label: string, onClick: () => void): HTMLElement => {
       const node = button(tool.label ?? label, onClick, {
         variant: 'quiet',
@@ -494,6 +514,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         return id === null
           ? null
           : make('Play it as a duet', () => {
+              setDuetPlayback();
               router.navigateScore(id, { mode: 'tempo', hands: 'R' });
             });
       }

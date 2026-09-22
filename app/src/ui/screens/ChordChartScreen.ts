@@ -52,7 +52,23 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   const grid = el('div.chart-grid', { id: 'chart-grid' });
   const form = el('div.chart-form', { id: 'chart-form' });
   const controls = el('div.row', { id: 'chart-controls' });
-  body.append(form, grid, controls, status);
+  /**
+   * The transport above the chart, not under it (`04` §0 R1, R3; T17).
+   *
+   * The whole form is printed at once, which is what a lead sheet is — and on
+   * a 342 px phone a thirty-two bar tune is more than a screenful of chord
+   * cells, so *Count off ▶* opened hundreds of pixels below the fold and the
+   * learner had to scroll past the chart to start it. Worse once it was
+   * running: scrolling back to watch the sounding bar took *Stop* off the
+   * screen with it. It is the same ranking the lab's two buttons were given
+   * over its pickers (§3c) and the one Today's *Start session* has — the
+   * control that starts the thing goes above the thing.
+   *
+   * The status line stays under the chart, where the message about the chart
+   * belongs (R6); `deadEnd` still lifts it above the controls when there is no
+   * chart for it to sit under.
+   */
+  body.append(form, controls, grid, status);
 
   let bars: (ChordSymbol | null)[] = [];
   let bar = 0;

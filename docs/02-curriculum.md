@@ -98,7 +98,15 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    `latin.7` (the concert showpieces, and the hand that hides their difficulty) — so the
    track now runs 3, 5, 6, 7. `latin.4`, the habanera and tresillo rung, and `latin.8`,
    the modern tango, were **not built**: neither has a single song option in the catalog.
-   `pending-review.md` Entry 36.) (Revised 2026-09-15: for a day the build had placed every song in
+   `pending-review.md` Entry 36. Revised 2026-09-22: the last four rungs the genre plans
+   still lacked — `jazz.3` (the swing feel, before any chords, with four tunes chosen for
+   having eighth notes in them to swing), `jam.7` (trading fours, over five period charts
+   that print where the solos start) and `ragtime.9` (the whole rag from memory, four long
+   multi-strain Joplin rags). So `jazz` now runs 3 to 9, `jam` 4 to 7 and `ragtime` 5 to 9.
+   `ragtime.4`, the cakewalk rung, was **not built**: the catalog holds no cakewalk and no
+   rag with a written left hand anywhere near Stage 4, and eight oom-pah exercises without
+   a piece to use them on is the style rung with no music on it that this item exists to
+   refuse. `pending-review.md` Entry 37.) (Revised 2026-09-15: for a day the build had placed every song in
    the library on some rung, which put thirty to seventy pieces on the classical rungs; see
    `handoff-2026-09-09.md` §5aj–§5ak. The per-rung tables below name the plan's intended
    pieces; `docs/generated/ladder.md` is what the build offers today.)
@@ -140,10 +148,13 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
 **Tracks.** Fifteen, defined in `content/curriculum/00-tracks.json`, each starting at the
 stage its first rung sits on: `core` (Stage 0), `practice` (Stage 1), `holiday` (Stage 2),
 `classical`, `chords-pop`, `blues-boogie`, `theory-ear`, `improv-compose`, `hymns-gospel`
-`rock-metal` and `latin` (Stage 3), `jam` and `technique` (Stage 4), `jazz` and `ragtime`
-(Stage 5). `latin` is listed here at the stage its first rung sits on, which is where this
-sentence says it belongs; the track file still says 5 and is a follow-up on
-`pending-review.md` Entry 36. `blues-boogie` moved from Stage 4 to Stage 3 on 2026-09-16: the twelve-bar
+`rock-metal`, `latin` and `jazz` (Stage 3), `jam` and `technique` (Stage 4), and `ragtime`
+(Stage 5). `latin` and `jazz` are listed here at the stage their first rung sits on, which
+is where this sentence says they belong; the track file still says 5 for both and is a
+follow-up on `pending-review.md` Entry 36 and Entry 37. `jazz` was already wrong there
+before `jazz.3` existed — `jazz.4.1` has been in `stage-4.json` since Entry 21 and the
+track file said 5 — and `ragtime` is right at 5, because a track starts at its *first* rung
+and `ragtime.5` still is that one. `blues-boogie` moved from Stage 4 to Stage 3 on 2026-09-16: the twelve-bar
 tunes as they were published — a melody with chord symbols over it — are Stage 3 reading,
 and the form and the boogie bass stay where they were on Stage 4. Six start active on a fresh install — `core`, `classical`, `chords-pop`,
 `theory-ear`, `technique` and `practice`; the other nine are switched on by the learner from
@@ -459,7 +470,14 @@ Teachers: Bill Hilton (blues tutorials playlist, "12 bar blues for beginners"), 
 Migliazza (boogie), Christian Fuchs, Piano With Jonny (free blues lessons), the free "Blues
 Piano Bootcamp" (Kevin Castro), Jonny May.
 
-### D4. Jazz track (starts Stage 5; needs D2 stage 5 chords first)
+### D4. Jazz track (starts Stage 3; Stage 4 up needs D2 stage 4–5 chords first)
+
+*(Corrected 2026-09-22: this heading said Stage 5. `jazz.4` has been on the ladder since
+`pending-review.md` Entry 21, so it was already wrong by one; `jazz.3`, built by Entry 37,
+makes it wrong by two. Stage 3 asks for no chords at all — the tune, the long-short and a
+phrase played back — so the chord prerequisite starts where the comping does, at `jazz.4`,
+whose own prerequisite is and stays `chords-pop.4`. The table below starts at Stage 5
+because that is where the wish list was written; the ladder report is the repertoire.)*
 
 | Stage | Focus | Repertoire wanted (US public-domain standards; the bundled options are in `docs/generated/ladder.md`) |
 |------:|-------|--------------------------------------------------------------------|
@@ -482,6 +500,13 @@ Stage 5: *The Entertainer* (easy arr.) `[MT]`; Stage 6: *The Entertainer* (origi
 James Scott *Frog Legs Rag*, Joseph Lamb *Ragtime Nightingale*. All Joplin via the
 `craigsapp/joplin` kern repository (verified reachable). Concepts: oom-pah LH with leaps,
 syncopated RH, "not fast" (Joplin's own instruction), stride precursor.
+
+*(Extended 2026-09-22: the track now runs Stage 5 to Stage 9. `ragtime.9` is the memory and
+performance rung — four long multi-strain Joplin rags nothing else offers, played without
+the page. `ragtime.4`, the cakewalk before the syncopation, was **not built**: see Part A
+item 5 and `pending-review.md` Entry 37 for the searches that came back empty. The Stage 8
+line above wants *Euphonic Sounds* and Lamb's *Ragtime Nightingale* and neither is in any
+reachable source, which is the same hole Entry 37 found one stage higher.)*
 
 ### D6. Theory & ear track (rungs `theory.3`–`theory.9`; each item is a `[GEN]` drill + short text)
 
@@ -606,6 +631,12 @@ Stages 3, 5, 6 and 7.)*
   leaving space, shell voicings); walking bass when there is no bass player; trading fours;
   following a lead sheet and the form tracker; endings and turnarounds; a shared set list of
   PD tunes from the jazz/blues ladders; recording a jam in Free mode.
+  *(Extended 2026-09-22: the module runs Stages 4 to 7. `jam.7` is the trading-fours and
+  set-list rung, and it is the first rung on this track to offer **songs** rather than
+  generated twelve-bar shuffles — before it, no song in the catalog carried this track at
+  all, so the Library's jam shelf held none. Its five charts each print where the solos
+  start; four of the five are in flat keys, which is the "guitar-friendly key variant" this
+  bullet wants and nobody has made. `pending-review.md` Entry 37.)*
 - **The shelf** (`classical.4.shelf`, the second lesson on the classical stage-4 rung — a curated
   collection, not a track; the owner's "all beautiful songs"). It was a track of its own until
   2026-09-12, when the owner struck it: the branches are genres, skills and methods, and this was

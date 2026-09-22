@@ -5187,3 +5187,752 @@ Nothing under `app/src/`, `tools/` or `content/sources/` was touched. Nothing wa
    controls with no rung-level address. Entry 31 named this once; it has now happened three
    more times, which is the argument for giving them one.
 6. **Two upload titles the Library will print verbatim**, in the last bullet of "What is unverified".
+
+---
+
+### Entry 37 — T14: the last four rungs the genre plans lacked — jazz 3, jam 7 and ragtime 9 built, ragtime 4 not (2026-09-22)
+
+Appended after Entry 36 so this file stays ascending, which is the convention Entry 25
+records. The brief gave this entry the number **37**.
+
+**Nothing here has been heard.** Every judgement below was made from the built catalog's
+`notation` block, from `dump_score.py`, which prints the `.mxl` the app plays bar by bar and
+staff by staff, and from four counting passes written for this run over the MusicXML itself —
+an eighth-note-run scan, a dotted-pair scan, a left-hand oom-pah scan and an octave-doubling
+scan, each described where it is used. Whether any of these thirteen pieces is a
+transcription worth practising is the one question none of that answers.
+
+**Judgement.** The brief named four rungs. **Three were built and one was not**, and the one
+that was not has no cakewalk and no rag at its level at all.
+
+- **`jazz.3`** is the swing feel before any chords: four tunes chosen because they have
+  eighth notes in them to swing, three studies that play four bars straight and then the same
+  four swung, and the phrase-back drill. The jazz track now runs 3 to 9.
+- **`jam.7`** is trading fours and a set list: five period charts that **print on the page
+  where the solos start**, and the lab's twelve-bar bed to trade against alone. The jam
+  module now runs 4 to 7 — and it is the first rung on that track to offer songs at all.
+- **`ragtime.9`** is the whole rag from memory: four long multi-strain Joplin rags that no
+  other rung offers, and the blind mode. The ragtime track now runs 5 to 9.
+
+**Option counts.** `jazz.3` 5 exercises + 4 songs · `jam.7` 5 + 5 · `ragtime.9` 4 + 4. None
+is song-optional; each clears the floor of three on songs alone.
+
+**Not built, with the count.**
+
+- **`ragtime.4`** — the cakewalk, the oom-pah before the syncopation. **0 song options; 8
+  oom-pah exercises exist** (`exercise.oompah.{c,f,b-flat,e-flat}.{octave,tenth}`, 4.2 and
+  5.6, of which only `.c.octave` and `.f.octave` are on a rung). Three differently-shaped
+  searches, each stated with what it returned:
+
+  1. **The plan's own Stage 4 repertoire, one name at a time over the whole JSON of all 2,053
+     catalog rows** — `georgia camp` 0, `whistling rufus` 0, `smoky moke` 0, `harlem rag` 0,
+     `creole belle` 0, `coon band contest` 0, `cake walk in the sky` 0. Seven names, seven
+     zeros. The genre plan already recorded five of the seven as archive-only and two as not
+     found anywhere; nothing has been quarried since.
+  2. **A mechanical left-hand scan of every two-staff song between level 3.2 and 6.6 whose
+     metre is duple** — counting bars whose lower staff alternates a single note below every
+     chord it plays with a chord above it, which is what an oom-pah is. **Fourteen rows** have
+     that figure in at least 30 % of their bars and in at least six bars. Thirteen of the
+     fourteen are not ragtime — three Satie, two Chopin écossaises, two Lemoine studies,
+     *Bella Ciao*, *Yankee Doodle*, *Katyusha*, a Czerny study, a Tchaikovsky and a boogie —
+     and the fourteenth is **`song.jazz.twelfth-street-rag` at 6.29**, forty-three oom-pah
+     bars of seventy-four, which is over two levels above the rung and whose tune is already
+     on `ragtime.5` as the 4.13 lead sheet. The nearest non-rag with the figure at the level
+     is `song.classical.foster-oh-susanna.pdmx` (4.3, twelve bars of seventeen), a Foster
+     parlour song and not a cakewalk.
+  3. **Every ragtime-ish row in the catalog, by id prefix, title and genre** — 57 rows. The
+     lowest-levelled one written on two staves is `song.jazz.twelfth-street-rag` at 6.29,
+     then `song.ragtime.joplin-school-of-ragtime` at 6.4. **Everything below 6.29 that the
+     word "rag" appears on is a one-stave lead sheet** — *12th Street Rag* (4.13),
+     *Alexander's Ragtime Band* (3.36), *Tiger Rag* (4.4) — and a rung about the left hand
+     cannot be built on music that has no left hand. That is `00` §1a's own example.
+
+  Eight oom-pah exercises and no piece to use them on is the style rung with no music on it
+  that `02` Part A item 5 exists to refuse, and it is the same shape as `latin.4` in Entry 36.
+
+---
+
+**Evidence lines.** `<id> → <rung> | fields read | why it fits`. Each item was read on its
+own before it was placed — the catalog row, then the score dumped, and for the four scans the
+MusicXML parsed directly. The *splice* is one call per rung, because a stage file is edited
+as text and a unit is one object; the reading and the deciding were per item.
+
+*`jazz.3`* (Stage 3, first rung of the jazz track; band 2.2–4.5; `requires.chordSymbols`;
+prerequisite `3.2`, the same one `blues.3` and `chords-pop.3` take; **no tools** — see below)
+
+- `song.folk.anonymous-swing-low-sweet-chariot.pdmx` → jazz.3 | 2.85 estimated, public
+  domain; G major, 4/4, 16 bars, **1 stave**, 20 chord symbols over exactly three distinct
+  chords (G, C, D7); **all 16 bars dumped, and every bar scanned for runs of two or more
+  plain eighths — 11 of 16 have one** | the shortest thing on the rung and the densest in the
+  material the rung is about. Already on `2.2` and `hymns.2`; this is its third rung
+- `song.pop.ray-henderson-bye-bye-blackbird.pdmx` → jazz.3 | 3.3 estimated; key signature
+  with no sharps or flats and an opening on A minor harmony, 4/4, 63 bars, 1 stave, **57
+  chord symbols, the most of the four**; bars 1–12 dumped, eighth-run scan **13 of 63** | a
+  swing standard with eighth-note runs in it, offered here as a tune and on `jazz.6` as
+  changes. Second rung
+- `song.classical.alexander-s-ragtime-band.pdmx` → jazz.3 | 3.36 estimated, public domain;
+  no sharps or flats, 4/4, 33 bars, 1 stave, 55 chord symbols; bars 0–13 dumped and **every
+  bar scanned for a dotted eighth followed by a sixteenth — 21 of 33 carry one** | the
+  long-short already written out on the page at 3:1, against the roughly 2:1 a player swings;
+  the one piece here that shows the idea rather than asking for it. Was on `chords-pop.4`
+  only; second rung
+- `song.blues.ole-miss` → jazz.3 | 3.84 estimated, public domain, W. C. Handy; F major, 4/4,
+  64 bars, 1 stave, 55 chord symbols; bars 1–12 dumped, eighth-run scan **49 of 64, the
+  highest count of any candidate at this level** — and the runs are chromatic (C C♯ D D♯ E in
+  bars 1 and 9, F F♯ G G♯ A in bars 3 and 11) | the workout of the rung. **On no rung before**
+- `exercise.swing-pair.c`, `.f` and `.g` → jazz.3 | 2.2 judged each; C, F and G major, 4/4,
+  **9 bars, `swungMark` true**, right hand only; **all three dumped in full, note for note** —
+  bars 1–4 even, **bar 5 a whole-bar rest in both staves**, bars 6–9 identical to 1–4, and the
+  score prints *Straight* and *Swing: long, then late* | the rung's whole subject as one
+  exercise. `.c` was on `2.2`; **`.f` and `.g` were on no rung**
+- `exercise.rhythm.shuffle-eighths.4bar` → jazz.3 | 4.5 judged; 4 bars, 1 stave, `swungMark`
+  true, right hand | the placing with the notes taken away. On seven rungs already
+- `drill.improv.call-response` → jazz.3 | 4.1 judged; no file, `kind: call-response`, params
+  **`bars: 2`, `scale: pentatonic`**; the factory read rather than the title — it builds each
+  prompt with `labelIsAnswer: true` and `ordered: true`, so the phrase must come back **in
+  order, note for note** | the stage's "answering a phrase", and the lesson calls it
+  imitation rather than invention **because that is what the code does** (Entry 28 makes the
+  same distinction in the other direction). On `improv.4` and `improv.5`
+
+*`jam.7`* (Stage 7, after `jam.6`; band 3.98–6.4; `requires.chordSymbols`; `lab` on the
+`blues-shuffle` preset)
+
+- `song.pop.after-you-ve-gone.pdmx` → jam.7 | 3.98 estimated, public domain, 1918; B♭ major,
+  4/4, 36 bars — **the shortest of the five** — 1 stave, 48 chord symbols; bars 1–12 dumped
+  and the score's own text read: it prints **`Solos at "B"`** | the plan names this piece for
+  this rung, and the chart says where the hand-over is. On `jazz.5`; second rung
+- `song.blues.jazz-me-blues` → jam.7 | 4.0 estimated, public domain, 1921; E♭ major, 4/4, 41
+  bars, 1 stave, 41 chord symbols; bars 1–14 dumped and the text read — **`Break 1 Bar` three
+  times and `Solos at "C"`** | a head with breaks printed in it, which is the form this rung
+  teaches. **On no rung before**
+- `song.blues.weary-blues` → jam.7 | 4.04 estimated, public domain, Artie Matthews 1915;
+  **two key signatures — one sharp, then one flat** — 4/4, 43 bars, 1 stave, 34 chord
+  symbols; bars 1–14 dumped and the text read: **`= 200`, `D.C. al Coda`, `Solos at "C"`** |
+  the only one of the five not written in a flat key throughout, and the one that asks the
+  form tracker to earn its keep. **On no rung before**
+- `song.blues.riverside-blues` → jam.7 | 4.26 estimated, public domain; E♭ major, 4/4, 41
+  bars, 1 stave, 55 chord symbols; bars 1–10 dumped and the text read — **`2 bar unison
+  break`, `2 bar clarinet break`, `everybody plays this figure behind clarinet lead`, `Play 2
+  bar unison on out-chorus`, `Solos at "C"`** | a band part with the band's instructions still
+  on it. **On no rung before**
+- `song.blues.storyville-blues` → jam.7 | 4.68 estimated, public domain; **A♭ major, four
+  flats**, 4/4, 56 bars and **75 chord symbols — the most and the longest of the five** —
+  1 stave; bars 1–8 dumped and the text read: **`= 132`, `Drum Roll - Piano Roll - Sustained
+  Bass`, `Back to "B" for Solos`, `rit.`, `Tag`** | the stretch option, and the only one of
+  the five that prints an ending. **On no rung before**
+- `drill.jam.form-tracker` → jam.7 | 4.1 judged; no file | you cannot come in on your own bar
+  without knowing which bar it is. On `jam` and `jam.5`
+- `exercise.blues-scale.e-flat.1oct.both` and `.b-flat.1oct.both` → jam.7 | 5.2 judged each;
+  E♭ and B♭, 4/4, 2 bars, both hands; **both dumped** | the two keys the five charts actually
+  sit in — three of them in E♭ or A♭, one in B♭ — and the scale the lab counts your trade
+  against. **Both on no rung before**
+- `exercise.turnaround.e-flat.i-vi-ii-v` and `.b-flat.i-vi-ii-v` → jam.7 | 6.4 judged each;
+  E♭ and B♭, 4/4, 2 bars, both hands, 4 chord symbols; **both dumped** | the two bars that
+  send the form round again, which is what *Storyville Blues*' printed tag is the other end
+  of. **Both on no rung before**
+
+*`ragtime.9`* (Stage 9, after `ragtime.8`; band 5.6–8.4; `requires` two staves and 2/4;
+`blind`)
+
+- `song.ragtime.joplin-original-rags` → ragtime.9 | 7.2 estimated; **109 bars, the longest**,
+  2 staves, 2/4, 0 chord symbols, **three distinct key signatures**; bars 1–12 dumped **and
+  every measure scanned for key changes and repeat marks** — G at bar 1, C at 42, G at 58, D
+  at 78, G at 94, with **five pairs of repeat marks** at 9–24, 26–41, 42–57, 78–93 and
+  94–109, and an introduction of four bars with both hands on the same line two octaves apart
+  | five sections and three keys is the most form of anything in the Library. **On no rung
+  before**
+- `song.ragtime.joplin-breeze-from-alabama` → ragtime.9 | 7.2 estimated; 101 bars, 2 staves,
+  2/4, 0 symbols, three key signatures; bars 0–8, 42–48 and 63–68 dumped, and the key scan
+  gives **C at bar 1, A♭ at 43, F at 64, C at 85** | four flats away from where it started is
+  the furthest step of the four, measured on the circle and not assumed. **On no rung before**
+- `song.ragtime.joplin-chrysanthemum` → ragtime.9 | 7.4 estimated; 104 bars, 2 staves, 2/4,
+  0 symbols, three key signatures; bars 1–10, 23–29 and 57–61 dumped — **B♭ at bar 1, F at 22,
+  B♭ at 39, E♭ at 55**, and bars 1–2 are both hands on the same descending line an octave
+  apart before the oom-pah starts in bar 3 | the middle of the rung in every measure taken.
+  **On no rung before**
+- `song.classical.joplin-search-light-rag.pdmx` → ragtime.9 | 7.98 estimated, **public
+  domain** and from the other source; 90 bars — the shortest — 2 staves, 2/4, 0 symbols,
+  **two** key signatures (B♭, then E♭ at bar 56); bars 1–8, 54–60 and 72–76 dumped, and
+  **every bar scanned for a left-hand event holding two notes exactly an octave apart —
+  84 of 90**, against 33, 32 and 25 for the other three | the heaviest left hand on the rung,
+  and the one row here a public build could ship. **On no rung before**
+- `exercise.oompah.c.tenth` → ragtime.9 | 5.6 judged; C major, 2/4, 8 bars, `hands: left`;
+  **dumped** — C2 then E3+G3+C4, so the bottom of the chord is a **major tenth** above the
+  bass, over I–IV–V–I | the reach, with nothing else to think about. **On no rung before**
+- `exercise.secondary-rag.c.4bar` → ragtime.9 | 6.4 judged; C major, 4/4, 4 bars, both hands;
+  **dumped** — the right hand is sixteenth, eighth, sixteenth, eighth in groups of three
+  against a beat of four, over an oom-pah left hand, and the score's own text is *"The figure
+  is three sixteenths; the beat is four. Count the beat, not the figure"* | the figure
+  `ragtime.8` names in every late rag, isolated. **On no rung before**
+- `exercise.stride.c` → ragtime.9 | 7.3 judged; C major, 4/4, 4 bars, both hands; **dumped** —
+  the left hand plays C2, then E3+G3, then E3 alone, then the chord again: **four events a
+  bar where the oom-pah has two** | the same leap at twice the rate. On `jazz.7` and
+  `holiday.7`
+- `drill.ear.tune-long` → ragtime.9 | 8.4 judged; no file, `kind: ear-tune`, params
+  **`bars: 8`, `barsPerPhrase: 2`** | the drill every other Stage 9 rung carries
+  (`jazz.9`, `blues.9`, `chords-pop.9`, `theory.9`, `improv.9` — grepped, all five), and the
+  one thing on the rung that is memory rather than hands. On those five
+
+---
+
+**Three disagreements with the plans and one refusal, recorded because they are judgements.**
+
+1. **`jazz.3` is not the repertoire the plan lists, and the reason is the notation.**
+   `docs/genre-plans/jazz.md` names *swing low sweet chariot*, *when the saints* and *bill
+   bailey* for Stage 3. Swing Low is on the rung. The other two are **not**, and the
+   eighth-run scan is why: `song.folk.when-the-saints.f` has **0 bars** containing a run of
+   two plain eighths — every note in its nine bars is a quarter, a half or a whole — and
+   `song.pop.bill-bailey.pdmx` has **4 of 56**. A rung about swinging the eighths, built on a
+   piece with no eighths, is the twelve-bar fault in `00` §1a with a different title on it.
+   The same scan cleared *Avalon* (**0 of 33**), *Whispering* (**0 of 48**) and *Limehouse
+   Blues* (**0 of 64**) off the candidate list as well. **It also found something that is not
+   mine to fix and is written down here rather than acted on: `jazz.4` is the rung called
+   "swung eighths", and two of its three songs — *Avalon* and *Whispering* — have no run of
+   two plain eighths anywhere in them.** That is a follow-up, below.
+
+2. **`ragtime.9` is not the generation the plan wants.** The plan's Stage 9 list is James
+   Scott and Joseph Lamb — *Grace and Beauty*, *Ragtime Nightingale*, *Climax Rag*, *Dill
+   Pickles*, *Hilarity Rag*, *American Beauty Rag*, *Kansas City Rag*, *Frog Legs Rag*. A
+   whole-JSON substring pass over all 2,053 rows for each name in turn returns **one hit in
+   eight**, and it is *Frog Legs Rag*, which Entry 21 put on `ragtime.8`. So the rung the plan
+   describes cannot be built from the Library. What the Library does hold is **twenty-two
+   unhomed Joplin rags between 6.8 and 7.98**, which is far more than three — so this is not
+   a not-built case, and the honest rung is a different one. The plan's own modes for the
+   stage say what it is: *Blind* — "memorising is the only way these become playable at
+   speed" — and *Performance mode*. Stage 6 already teaches the multi-strain form and Stage 8
+   the late-rag figures; **taking the page away is the step neither of them takes**, and the
+   four chosen are the four that give memory the most to hold.
+
+3. **`jam.7`'s set list is not in the guitarist's keys, and the module says it should be.**
+   `02` Part D8 says jazz standards get a guitar-friendly key variant where the original is in
+   a flat key. No such variant exists. Four of the five charts are in B♭, E♭, E♭ and A♭; the
+   fifth, *Weary Blues*, opens with one sharp and moves to one flat. The alternative was to
+   build the rung out of the guitar-key material the Library does hold at this level — *St.
+   Louis Blues* in E (3.5), *Swing Low* in G, *Oh! Susanna* in G, *Home on the Range* in D.
+   **Checked one at a time rather than as a group, because the first draft of this sentence
+   said "every one of those is already on another rung" and that was a plural covering an
+   unchecked member** (`00` §1a): *St. Louis Blues* is on `blues.3` and `blues.4`, *Swing Low*
+   was on `2.2` and `hymns.2`, *Oh! Susanna (Simple Lead Sheet)* is on `chords-pop.3` — and
+   **`song.folk.traditional-music-home-on-the-range.pdmx` is on no rung at all**. Its own
+   reason for not being here is its notation and not its address: 3/4, 32 bars, one stave,
+   and **trading fours over a waltz is not what this rung teaches**. None of the four prints
+   a direction saying where the solos start. The five that are here were chosen on that one
+   measured property instead: a mechanical pass over the `<words>` of **every row in the
+   catalog that has a file — 1,974 of the 2,053** — found **seventeen** whose engraving
+   prints *solo*, *break* or *last time*, of which **thirteen are songs**; the other four are
+   `exercise.pedal.held-melody.{a,c,f,g}`, matching on *"Change the pedal under the held note
+   — it must not break"*, which is the word in another sense. **Five of the thirteen songs
+   were on no rung**, and those five plus *After You've Gone* are this rung. The lesson says
+   the key problem out loud rather than hiding it.
+
+4. **`song.classical.foster-stephen-foster-camptown-races.pdmx` (2.89, unhomed, public
+   domain) was read and refused.** It is a call-and-response song and would have suited the
+   stage's second half. **Not placed**: it is a blackface-minstrel number, and that is a
+   decision about what the app puts in front of somebody, not about music — it belongs to the
+   owner and not to this run. The eighth-run scan independently gives it **2 bars of 17**,
+   so it would have been the weakest of the four on the rung's own test as well.
+
+---
+
+**What else was read and not placed, with the reason.**
+
+- `song.ragtime.joplin-stoptime-rag` (7.4) — scanned and dumped: 87 bars, **one key
+  signature**, 2/4, 36 tuplets and 117 ties, and **eight pairs of repeat marks, more than any
+  other rag here**. Its own edition note says Joplin asks the player to stamp a heel through
+  the stop-time breaks. **Not placed on `ragtime.9`**: the rung is about holding several keys
+  in the memory and this rag never leaves C, so it would have been the one piece the lesson's
+  sentence was not true of. `ragtime.8`'s lesson already teaches stop-time on it and says it
+  is in the Library rather than on that rung, which is still true.
+- `song.ragtime.joplin-rose-leaf-rag` (7.4), `-paragon-rag` (7.4), `-fig-leaf-rag` (7.4),
+  `-nonpareil` (7.4), `-reflection-rag` (7.4) and fifteen more — all unhomed, all scanned for
+  sixteenth-note density and secondary-rag figures. **Not placed**: each has two key
+  signatures and 86 to 90 bars, which is `ragtime.8`'s shape rather than this rung's, and a
+  Stage 9 rung of twenty rags is the heap `02` Part A item 5 forbids.
+- `song.ragtime.joplin-pleasant-moments` (7.2, 3/4), `-march-majestic` (7.2, 6/8),
+  `-antoinette` (7.2, 6/8) and `-harmony-club-waltz` (6.8, 4/4 **and** 3/4) — all unhomed,
+  all scanned. **Not placed**: an earlier draft of this rung was "the rags that are not
+  two-steps", built on exactly these. It was dropped because `ragtime.7` already owns that
+  idea — its lesson's second paragraph is headed *"Not everything is a rag"* and offers
+  *Bethena* and *Solace* under it — and a second rung saying the same thing is `00` §1's
+  repetition.
+- `song.pop.bill-bailey.pdmx` (3.42) and `song.folk.when-the-saints.f` (3.2) — read, scanned,
+  refused for `jazz.3` for the reason in disagreement 1 above. Both keep the rungs they have.
+- `song.pop.sammy-fain-and-irving-kahal-i-ll-be-seeing-you.pdmx` (3.54) and
+  `song.folk.i-remember-you.pdmx` (4.4) — both unhomed lead sheets with chords, both scanned:
+  5 of 32 and 3 of 46 bars with an eighth run, and both carry `personal-build` with a
+  composition status of `unknown`. **Not placed** on either count.
+- `song.blues.singin-the-blues` (4.04), `-aunt-hagars-blues` (4.22), `-satanic-blues` (4.31),
+  `-long-gone` (4.35) and `song.pop.darlene-love-baby-won-t-you-please-come-home.pdmx` (3.99)
+  — five more unhomed public-domain lead sheets of the same period and level. **Not placed**:
+  only *Singin' the Blues* prints a band direction and it is a bare `2 - Bar Break` with no
+  solo letter, so none of them shows the thing `jam.7` is about. They are the obvious content
+  for a rung between `jam` and `jam.5`, which this run did not build.
+- `song.classical.foster-oh-susanna.pdmx` (4.3, unhomed) — the oom-pah scan's only
+  level-appropriate hit, twelve bars of seventeen. **Not placed** on `ragtime.4`, which was
+  not built at all: it is a parlour song with an oom-pah, not a cakewalk, and one piece is
+  not three.
+
+---
+
+**Modes: what the plans mark `BUILT` and what a rung can carry.** A rung's `tools` may only
+be `lab`, `duet`, `blind`, `simon`, `play` or `ladder` — read in
+`content/curriculum.schema.json`'s closed enum and in `LessonScreen.toolButton`.
+
+- **`jazz.3` carries no tool.** The plan marks *Rhythm only* `BUILT` for the stage, and it is
+  — but it is a **remembered setting the Library writes before navigating**, which the schema
+  says in as many words is why it has no button. *Straight against swung*, the plan's other
+  mode, is marked `NOT BUILT` and still is; what exists is the three `swing-pair` exercises,
+  which are that idea as notation rather than as a drill, and they are on the rung. The
+  lesson names *Rhythm only* and *Tempo* as score-screen controls the learner sets himself.
+  `rung_audit` therefore reports **1 INFO, "names no mode"** against it — the fifth rung in
+  this task to land there.
+- **`jam.7` carries one `lab`, on `blues-shuffle`.** Trading fours is a **setting on that
+  lab's *Jam it***, not a tool kind — Entry 28 — so the rung reaches it through the lab
+  button it has, and the lesson says which chip to press. The plan's other mode, *Chord
+  chart*, has no `tools` kind either and does not need one: the lesson page already draws a
+  **Chart** button on every option row whose file has chord symbols, and **all five of this
+  rung's songs do**. That is checked by a row rather than described.
+- **`ragtime.9` carries one `blind`.** The plan's other mode, *Performance mode*, is the
+  score screen's *Perform* row and has no rung-level address; the lesson names it, with a
+  claim row against the row's own wording.
+
+---
+
+**Claims under test.** **33 rows** added — **20** per-item and **13** comparisons in
+`lessonClaimsAboutMusic.test.ts`, and **17** in `lessonClaimsAboutApp.test.ts`. Each file
+gained **one new `describe` block at its end** rather than rows scattered through the
+existing tables, which is what the brief asked for and is also easier to read against the
+three lessons they came from. The music file runs its rows inside two tests, so the suite's
+count rises by the seventeen app rows plus three.
+
+**Eight mutations were run, each restored, and every one went red naming its own claim**:
+*Original Rags*' 109 bars → 108; *Swing Low*'s key G → F; *Bye Bye Blackbird*'s 57 chord
+symbols → 58; "four of jam.7's five are in flat keys" → five; "*Search-Light Rag* is the
+short one" repointed at *The Chrysanthemum*; "`jazz.3` names no mode" → names one; the lab
+preset's label with a hyphen in place of its dash; and "*Answer the phrase* plays two bars"
+→ four. Each took the two files from **1 failed of 91** to **2 failed of 91**, and the
+restore put them back to 1 — which is the pre-existing failure described under Verification,
+not mine.
+
+**Faults in my own drafts, caught by re-reading the dumps against the prose before this entry
+was written, one the suite caught afterwards and two the closing checklist caught in this
+entry.** Nine, all corrected:
+
+1. *Search-Light Rag* — I wrote "a bass doubled at the octave in seventy-three of its ninety
+   bars". **Seventy-three was a different measurement**: bars whose left hand *spans* more
+   than sixteen semitones, which counts the chord above the bass as well. Counting the thing
+   the sentence claims — a left-hand event holding two notes exactly twelve semitones apart —
+   gives **84 of 90**. Corrected, and the comparison against the other three (33, 32, 25) was
+   added because it is what makes "heaviest" mean anything.
+2. *Search-Light Rag* again — "it gives its tempo in words rather than a number". The score
+   prints *Slow March Tempo* at bar 1 **and the bold numbers 75, 65 and 86 at bars 69 to 72**,
+   with a `<sound tempo="86"/>` beside them. The sentence was false in its second half. It now
+   says it is the only one of the four with a tempo written on it in words, which is what the
+   `<words>` scan actually shows.
+3. `ragtime.9`'s opening — "each of these four spends sixteen bars on an idea and then leaves
+   it, in a different key, and never refers to it again". **Three of the four return to an
+   earlier key** (*Original Rags* to G twice, *Breeze* to C, *Chrysanthemum* to B♭). Rewritten
+   to say what the repeat marks and key changes show and nothing more.
+4. *Original Rags* — "five strains". Five is the number of **repeat-mark pairs**; bars 58–77
+   carry no repeat marks and are a return. It now says "five repeated sections".
+5. `jam.7` — "*Riverside Blues* has the most detailed part of the five". Counted: *Riverside*
+   prints five directions and *Storyville* prints six. Replaced with what *Riverside* actually
+   has, which is two named breaks and an instruction about what to play behind the lead.
+6. `jazz.3` — "on four tunes and two games". The rung offers **five** exercises. Rewritten to
+   count them.
+7. `ragtime.9` — "Eight bars of either" said of the oom-pah study (8 bars) and the stride
+   study (**4**). Corrected to name both lengths.
+8. **`ragtime.9.md` was 606 words and said it read in 3 minutes**, and I had the number
+   606 printed in front of me and read it as being under 600. `lessonShape.test.ts` caught it
+   twice over — the stated reading time against 200 words a minute, and the three-minute cap
+   — which is `00` §2.8's argument in one line: the mechanical check fired where the eye did
+   not. Trimmed to 599 words and the suite rerun. The other two lessons are 579 and 597.
+9. **Two faults in this entry itself, caught by the closing checklist after the work was
+   reported**, both in disagreement 3 above and both corrected there. First, *"every one of
+   those is already on another rung"* was a bare plural over four pieces; three are homed and
+   **`song.folk.traditional-music-home-on-the-range.pdmx` is on none**, so the sentence gave
+   a true conclusion a false reason — `working-rules` §2.16 exactly, and the reason would
+   have survived into the record. Second, the score-text scan was described as covering
+   *"every score in the catalog"*; it skipped every row that is not a song and every row with
+   no file, so it read **791 of 2,053**. Re-run over **all 1,974 rows that have a file**: it
+   finds seventeen rather than thirteen, and the four extra are pedal exercises matching the
+   word *break* in another sense. Neither correction changes which pieces are on the rung.
+
+---
+
+**Who else reads what these units changed** — grepped over `app/src` and the tools, not
+recalled.
+
+- **`prerequisites`** (new: `jazz.3` ← `3.2`, `jam.7` ← `jam.6`, `ragtime.9` ← `ragtime.8`).
+  `grep -rln prerequisites app/src` returns ten files: `prerequisites.ts` holds `lockState`,
+  which returns open unless the strict setting is on and `settingsStore.ts` defaults
+  `strictPrerequisites` to `false`; `selectors.ts`, `session.ts`, `LessonScreen.ts`,
+  `PlanScreen.ts`, `SettingsScreen.ts` and `SetupScreen.ts` read it for the recommender, the
+  badge and the confirmation; `types.ts` and `style.css` are the declaration and the styling.
+  **`jazz.4`'s prerequisite was deliberately not changed** — it is and stays `chords-pop.4`,
+  because `jazz.3` teaches no chords and `jazz.4` needs them, so making the new rung a gate on
+  the old one would have added a requirement the track did not have.
+- **`concepts` on a rung.** `SkillsScreen.ts` collects, per concept, the stage and track of
+  every rung naming it, so **thirteen** concepts gain an entry: `swing-eighths`,
+  `call-and-response` and `chord-symbols` gain Stage 3 **and the jazz track**;
+  `trading-fours`, `head-and-chorus`, `chord-charts`, `turnaround` and `guitar-keys` gain
+  Stage 7; `memorising`, `multi-strain-form`, `performance-mode`, `secondary-rag` and `leaps`
+  gain Stage 9 **and the ragtime track**. Every one of the thirteen already exists in
+  `concepts.json` and is taught by a paragraph of the lesson that names it — **no concept was
+  invented**, and `validate.py`'s orphan check is unaffected because nothing was removed.
+  `selectors.ts`'s `alternativesFor` reads `concepts` on a catalog *item*, not on a lesson,
+  so none of this touches it.
+- **`songOptions`, and the Library shelves.** `build.py`'s `attach_rung_tracks` gives each
+  song its rung's track, and the before-and-after was **measured per row against the
+  pre-merge import catalogs** rather than inferred: **the jam shelf goes from 0 songs to 5**
+  — no song in the catalog carried the `jam` track at all before this run, while `jam`'s own
+  lesson has pointed at the Library since Entry 21 — the jazz shelf from 27 to 30 (*Swing
+  Low*, *Alexander's Ragtime Band* and *Ole Miss*; *Bye Bye Blackbird* already carried `jazz`
+  from `jazz.6`), and the ragtime shelf from 52 to 53 (*Search-Light Rag* only; the three
+  kern rags carried `ragtime` from their import bucket already). `selectors.ts`'s
+  `lessonComplete` recomputes a rung's completion from its current options and **nothing was
+  removed from any existing rung**, so no existing rung's completion moves.
+- **`tools`, `requires`, `levelBand`.** `LessonScreen.toolButton` draws the buttons;
+  `validate.py`'s `tool_errors`, `notation_requirements` and `level_band_errors` check them;
+  `ladder_report.py` prints the band on the lesson page. All ran clean. `jazz.3` has no
+  `tools` key, so `tool_errors` has nothing to check on it.
+- **`startsAtStage`.** Grepped: `app/src/curriculum/types.ts` declares it and **no screen
+  reads it**; the only consumer in the repository is `ladder_report.py`, which sorts the
+  track sections by it. So the stale `5` on `jazz` costs a sort order in one generated
+  document and nothing on any screen. See the follow-ups.
+
+**Corrections to `02-curriculum.md`.** Part D4's heading said the jazz track starts at Stage
+5; `jazz.4` has been on the ladder since Entry 21, so it was already wrong by one before
+`jazz.3` made it wrong by two. Part B's track list moved `jazz` to Stage 3 with the same
+note. Part A item 5 gains the revision for all three tracks **and the not-built line for
+`ragtime.4`**. Part D5 gains the ragtime extension and Part D8's jam bullet the jam one.
+**The authored data is still wrong and was not touched**: `content/curriculum/00-tracks.json`
+carries `startsAtStage: 5` for `jazz` as well as for `latin`, and that file is not in this
+run's list.
+
+---
+
+**Verification.** `build.py --offline` ok · `ladder_report.py` rewrote
+`docs/generated/ladder.md` (**315 lines**; Jazz now **7 rungs, stages 3–9**, Jam **4 rungs,
+stages 4–7**, Ragtime **5 rungs, stages 5–9**) · `validate.py` **OK at 2,053 catalog items**
+· `rung_audit.py` whole tree **0 HIGH**, 30 MED, 1 LOW, 14 INFO — unchanged from Entry 36's
+counts but for **one new INFO, `jazz.3` "names no mode"**; `jam.7` and `ragtime.9` draw
+nothing at all, and **no new MED**: `jazz.3` shares 6 of its 9 options with another rung,
+against the 7 that would have flagged it · `npx tsc -b --noEmit` clean · `npx vitest run`
+**178 files, 2,499 tests, 2,498 passing and 1 failing**.
+
+**The one failure is not this work and is not mine to fix.** It is
+`lessonClaimsAboutApp.test.ts > hymns.4: …and gives you the right-hand staff while the app
+plays the other one`, whose row is a regex allowing **160 characters** between
+`'Play it as a duet'` and `hands: 'R'` in `app/src/ui/screens/LessonScreen.ts`. **Measured
+both ways rather than assumed**: at `HEAD` that gap is **85 characters** and the regex
+matches; in this working copy, where T17 has the file open and has inserted a comment
+explaining which hand the app takes, it is **1,040** and the regex does not. Nothing in
+`jazz.3`, `jam.7` or `ragtime.9` is involved, and `app/src` is not this run's to edit.
+
+---
+
+**What is unverified.**
+
+- **Every piece, unheard.** In particular: the five `jam.7` charts are uploads of band parts
+  and nobody here has judged the transcriptions; *Weary Blues* carries a key signature of one
+  sharp while its printed chords are C, F and G7, so **its signature and its harmony disagree
+  in the file** and no claim row asks about that; *Original Rags* at 109 bars and *The
+  Chrysanthemum* at 104 were read in three and four passes each, not end to end.
+- **The counted claims are mine, not the catalog's.** "Eleven of sixteen", "twenty-one of
+  thirty-three", "forty-nine of sixty-four", "thirteen of sixty-three", "eighty-four of
+  ninety", the thirty-three, thirty-two and twenty-five it is compared against, the
+  fourteen-row oom-pah scan and the thirteen-row score-text scan all come from four short
+  scripts written for this run that parse the MusicXML directly. **They are not fields and no
+  claim row can check them** — the rows check what `notation` holds: key, metre, staves, bars,
+  chord symbols. **A wrong count in one of these lessons would pass the suite.** The same is
+  true of every direction quoted off a score — *Solos at "C"*, *Break 1 Bar*, *D.C. al Coda*,
+  *Tag*, *Slow March Tempo*, *Straight*, *Swing: long, then late* — and of the bar-level
+  statements taken from `dump_score.py`.
+- **`dump_score.py` does not print ties, tuplets or grace notes**, which Entry 36 recorded.
+  It matters most for `song.ragtime.joplin-stoptime-rag`, which has 36 tuplets and 117 ties
+  and which this run **did not place**; of the four rags that were placed, the tuplet counts
+  are 0, 0, 0 and 0 and the grace-note counts 10, 14, 8 and 0, read from the MusicXML.
+- **The public build.** `jam.7` is the good case: **five of five are public domain**.
+  `jazz.3` likewise, four of four. **`ragtime.9` is three of four short**: *Original Rags*,
+  *A Breeze from Alabama* and *The Chrysanthemum* are the non-commercial Joplin edition and
+  carry `nc-personal-build`, so a public build offers that rung **one** playable song,
+  *Search-Light Rag*. That is better than the zero Entry 36 left on `latin.6`, it is the same
+  shape, and it is why *Search-Light Rag* is on the rung at all. `ragtime.8` above it has the
+  same one-of-six arithmetic and always has.
+- **Whether any of the three lessons teaches.** No check decides it.
+- **The levels.** All thirteen songs are `estimated`; all nine exercises and drills placed are
+  `judged`.
+- **No screen was opened.** None of the three rungs has been seen on the Plan screen, no
+  lesson page has been rendered, the **Chart** buttons on `jam.7`'s five rows have not been
+  looked at, and a lesson page with an empty tools block has not been observed — read in
+  `LessonScreen.draw`, not looked at. **No Playwright**, by instruction.
+- **Saved progress.** Nothing was taken off an existing rung, so no rung's completion changes.
+  Four songs gain a second or third rung — *Swing Low* (third), *Bye Bye Blackbird* (second),
+  *Alexander's Ragtime Band* (second) and *After You've Gone* (second) — and the other nine
+  were on none.
+
+**Files.** `content/curriculum/stage-3.json`, `stage-7.json` and `stage-9.json` (one unit
+spliced into each as text; each round-trips byte-identically under
+`json.dumps(indent=2, ensure_ascii=False)` plus a newline, measured before the edit, and the
+splice asserted that every byte before the insertion point was unchanged, that the parsed
+result is the old document plus exactly one unit, and that the existing units compare equal);
+`content/lessons/jazz.3.md`, `jam.7.md` and `ragtime.9.md` (all new);
+`app/tests/unit/lessonClaimsAboutMusic.test.ts` and `lessonClaimsAboutApp.test.ts` (one
+appended `describe` block each); `docs/02-curriculum.md` Part A item 5, Part B's track list,
+Part D4's heading, Part D5 and Part D8's jam bullet; `docs/generated/ladder.md` (regenerated);
+this entry. Nothing under `app/src/`, `tools/` or `content/sources/` was touched. Nothing was
+committed.
+
+**Follow-ups.**
+
+1. **`jazz.4` is the swung-eighths rung and two of its three songs have no eighths to swing.**
+   Measured above: *Avalon* 0 bars of 33 and *Whispering* 0 of 48 contain a run of two plain
+   eighth notes; only *Margie* has any, and it has 2 of 48. The rung's lesson is about
+   swinging the "ands" and its repertoire mostly cannot demonstrate it. `jazz.3`'s four songs
+   are all better on that test and are a rung below. This is the largest thing this run found
+   and it is outside its file list.
+2. **`content/curriculum/00-tracks.json` says `jazz` starts at Stage 5** and its first rung is
+   now at Stage 3. One field, outside this run's list, and the same follow-up Entry 36 left
+   open for `latin`. Grepped: nothing on any screen reads the field, so the cost today is the
+   order of the sections in the ladder report.
+3. **`ragtime.4` wants music, not a looser rule.** It needs a cakewalk or an early rag with a
+   written oom-pah at around level 4. The genre plan names five that are archive-only —
+   *At a Georgia Campmeeting*, *Whistling Rufus*, *Harlem Rag*, *Creole Belles*, *The
+   Strenuous Life* — and quarrying two or three of them would build the rung immediately. The
+   exercises are already there and mostly unhomed.
+4. **A rung between `jam` and `jam.5`.** Five unhomed public-domain lead sheets of the same
+   period sit at 3.99 to 4.35 with chord symbols and no home, listed above. They are also the
+   obvious spare options for `jam.7` if the owner wants it wider.
+5. **Five rungs in this task now point at no mode** — `holiday.5`, `holiday.7`, `latin.6`,
+   `latin.7` and now `jazz.3` — for the same reason: *Loop*, *Ladder*, *Perform*, *Hands* and
+   *Rhythm only* are real controls with no rung-level address. Entry 31 named it, Entry 36
+   counted four, and this is the fifth.
+6. **The guitar-key variants `02` Part D8 promises do not exist**, which is why `jam.7`'s set
+   list is four-fifths in flat keys. Transposing four charts into E, A, G or D is a content
+   job, not a code one.
+
+
+### Entry 38 — T17: every mode driven in the browser, and judged for playability (2026-09-22)
+
+**Nothing here was heard.** Every mode below was driven end to end and judged on what the
+screen said back; not one assertion in the fifteen new spec files is about sound. Trading fours
+can hand over on the beat and the call can be unplayable; *Hold the chords* can comp in the
+wrong voicing or against the drums; Simon *is* the sound and this file only checked that the
+right key answered it. That is the largest unverified thing in this entry and it is first
+because it is.
+
+Each mode was met the way a learner meets it: from the rung page that offers it (or, for the
+two that have no rung tool, from the door that does), through the button, into the mode,
+playing something on the on-screen strip or the test MIDI source, and reading what came back.
+Sizes: 342×740 upright for every mode, and 740×342 sideways for the score-screen ones.
+
+#### The verdict table
+
+| mode | driven from | what came back | verdict |
+|---|---|---|---|
+| Trading fours | `blues.7` → *Accompaniment lab* (its own button, preset `blues-shuffle`) → 240 bpm → *2 bars each* → *Jam it* | `data-trading="true"`; the turn line read *Listen — 2 bars*, then *Your turn*; a C on the strip inside the learner's bars came back at the hand-over as *In on your own bars* and a count against the scale, with no mark; Stop cleared the state and the line | **works — after a fix.** The turn cue and the keys were below the fold on a phone |
+| Hold the chords | `blues.3` → its lab button (the preset opens on this way round) → *Jam it* | `data-bed="hold"`; *The app is holding the chords … nothing can be passed or failed*; chart, `Bar n of 12 · pass n` and keys all on the screen at once; at the top of the second pass, `Time round 1 · x of y in the … scale` | **works** (same fix) |
+| Play the tune | `3.2` → its lab button (`preset: primary-chords`, `mode: tune`) → *Jam it* | `data-bed="tune"`; *The app has the right hand — comp the chords underneath*; the bar counter moved; `Time round 1 · x of y on the bar's chord` | **works** |
+| The ladder route | `4.1` → *Tempo ladder* | opened the exercise the button's `data-item` claimed, which is one of the rung's own; `data-ladder="on"`, `data-mode="tempo"`, a non-empty `data-loop`; the tempo label carried an underline it does not carry with the ladder off; Ladder row *On*, Loop naming bars; clearing the loop took both away; the lit keys moved on when they were played | **works** |
+| A lab button with `unlock` | `3.3` → its lab button (`minor-vamp`, `unlock: ["progression"]`) | the progression select live, the key select and the left-hand chips `disabled` as a DOM property; a click on the locked select did not move it; changing the freed one moved the settings line **and** the chords the loop charted | **works** |
+| The chord-chart door from a lesson row | `jazz.5` → *Chart* on the first song row that carries it | that row's piece, chords drawn, `Bar 1 of N`; the count-off moved the tracker; three notes over MIDI marked the sounding cell; `1.1`'s rows carry no *Chart* at all | **works — after a fix.** *Count off ▶* was below the whole printed form |
+| The chord-chart door from the score menu | `jazz.5` song → Score screen → `⋯` → *Chord chart* | the same piece's chart, with chords; over `hot-cross-buns` the row is hidden upright **and** sideways | **works** |
+| A technique exercise's measure line | `technique.4` → `exercise.articulation.c.staccato.right` → Wait mode, played off the keys the strip lit | summary headed *Run finished*, and beside `Accuracy`: **Staccato — 100 % of 15 notes held the right length (mean 0 % of the written value)**; no *— this rung requires it*, because `technique.4` states no rule in `mastery.custom` | **works, for one of the three measures** — see FAULT 8 |
+| Melodic dictation | `theory.4` → `drill.ear.melodic-dictation` | the headphone card and no `#drill-symbol` at all; no note name of the phrase anywhere in the card's text; *▶ Play again* present and *Show me* / *Hear it* absent; the phrase played back on the strip → `1 right`; a replay left the counter at `0 right` | **works** |
+| Placement, then the plan | Plan → *Placement test* → `0.4` → `drill.placement.stage-0` → Pass through → *Start here* | *Start here: <the unit's title>*, with the unit id only in `data-unit`; *Placement recorded. Today will build from here.*; Plan's *Next up* moved off the rung it had been on | **fault found and fixed** — Today's own sentence had not moved |
+| A rung's Simon (blues) | `blues.3` → *Simon* | `drill.ear.simon-blues-c`, which is one of that rung's own exercises; *Play the chain back*; the three help levels as chips on the drill's own screen; the expected note on the strip → `1 right`, and the chain then grew | **works; the cue is thin** — see FAULT 7b |
+| Duet from a rung | `2.1` → *Play it as a duet*; and `technique.7`, whose duet names an exercise | `?mode=tempo&hands=R` on one of the rung's own options; `⋯` *Duet* row *On*, labelled *Duet: the app plays the left hand*, sideways as well; `technique.7` opened its two-against-three study and not a Czerny | **fault found and fixed** — the button stopped meaning it once the Duet row had been switched off |
+| Rhythm only | the Library row's `⋯` → *Rhythm only* (deliberately not a rung tool, `04` §3d) | `data-mode="tempo"`, `data-rhythm="true"`; taps on a key the tune never asks for reached the judging; summary headed **Rhythm run** and never *Passed*; a later *Keep tempo* from the same sheet came up with `data-rhythm="false"`; the row is gone in Wait | **works, with a fault recorded** — see FAULT 7 |
+| Free play | `2.3` → *Free play*, and Today's own door | `#/play` with no transport at all; readout and keys both on a 342 px phone; a held C read `C4` and named no chord; C–E–G named a C chord **without the panel changing height**; with nothing connected, the R4 sentence and the two links; Back → Today | **works** |
+
+Fourteen modes, fourteen verdicts, none skipped.
+
+#### FAULT lines
+
+**FAULT 1 — `#lab-jam`, `#lab-trade`, `#lab-strip`: a running jam opened below the fold.**
+Expected: while a loop is running, the chart, the turn line and the keys are on the screen.
+Measured at 342×740, arriving from `blues.7`'s button: the preset chip row, the preset panel
+and its blurb, the lede, the settings summary, the two buttons and the *What the app plays* row
+come to more than a screenful on their own, so `#lab-jam` began past the bottom and `#lab-trade`
+and `#lab-strip` were further down still. In trading fours that is the *Your turn* cue and, with
+no cable, the only instrument there is, both off screen at the moment they mattered. **Fixed**
+(see below).
+
+**FAULT 2 — `#lab-trade-row` and `#lab-settings` are below the fold on arrival. Recorded, not
+fixed.** `04` §3c claimed "the pickers still begin inside the first screenful (R1)". Measured
+at 342×740: from the Library door the pickers begin below the fold; from a rung's button, with
+the preset panel drawn, the *Trading fours* row is below it as well and the pickers are further
+again. The claim has been struck from the spec. What to drop from the six things above the
+pickers is a design decision — the ranking itself was the owner's, on 2026-09-19 — so the
+sentence was corrected rather than the layout changed.
+
+**FAULT 3 — `#chart-controls` sat under the whole printed form.** Expected: the control that
+starts the thing is reachable without scrolling past the thing. Measured on a 56-bar tune at
+342 px: 32 of 56 cells fit the screen and *Count off ▶* was several hundred pixels below it;
+scrolling back to watch the sounding bar then took *Stop* with it. **Fixed.**
+
+**FAULT 4 — `#today-status` did not move after a placement.** Expected: Plan, Today and Skills
+agree about where the learner is (`04` §3). Measured: after passing the placement and pressing
+*Start here*, Plan's *Next up* read one rung and Today's sentence still read the first rung of
+the plan, and stayed there. `buildSession` was given the `startAt`; the `nextRecommended` call
+three lines below it that writes the sentence was not. Today disagreed with Plan **and with its
+own session card** in the same paint. **Fixed.**
+
+**FAULT 5 — `#lesson-tool-duet` stopped meaning what it said.** Expected: *Play it as a duet*
+opens a run in which the app plays the other hand. Measured: switch the Score screen's *Duet*
+row off once (one tap, and the thing somebody does when they want to hear themselves), go back
+to `2.1`, press the button — it opened a Keep tempo run with `playbackHands: none`, the app
+playing nothing. The hand rides in the route and the setting does not, and the Library's *Open
+as…* door had been writing the setting since it was built for exactly this reason. **Fixed.**
+
+**FAULT 6 — the chord chart subscribes to the on-screen keyboard and never draws one.
+Recorded.** `ChordChartScreen.ts` holds `screenKeyboardSource.onNote(…)`, and two searches —
+`grep -n "KeyboardStrip" ui/screens/ChordChartScreen.ts` and `grep -n "keyboard\|keys"` over the
+same file — return no strip, only that subscription and two comments. So on a machine with no
+MIDI there is nothing that can feed it, and §3b's "the input chip still works … amber if
+different" is true of a piano and unreachable from the glass. The lab and free play both draw a
+strip and both say why. Not fixed: adding a keyboard to a screen is a feature, and this task's
+rule was to fix a fault only when the fix is in the screen and small.
+
+**FAULT 7 — a rhythm run says nothing about itself outside the `⋯` sheet. Recorded.** During
+one, the bar's mode selector reads *Keep tempo*, which is what the run is not. Two searches —
+`grep -n "rhythm" ui/screens/ScoreScreen.ts` and `grep -rn "data-rhythm" --include=*.css` —
+find the state on the section element, the row inside the sheet, and the summary's heading, and
+nothing in front of the learner while the run is going. It is a remembered setting (`04` §5), so
+a learner who chose it a week ago meets it with nothing saying so until the summary. The screen
+already has the shape for this: *Playing the left hand for you*, said once at the start of a
+run, for the same class of reason. Not built here.
+
+**FAULT 7b — Simon's "your turn" is the absence of everything else.** By design: the lights,
+the name and the staff go out together so the display cannot be a crib (`04` §5c-2, and the
+reasoning is written into `showChainOnKeys`). Driven, it is correct and it is thin — the only
+positive cue is the prompt line, which never changes. Recorded as a judgement, not a fault.
+
+**FAULT 8 — two of the three technique measures cannot be taken from the on-screen keys.**
+`keyboardStrip.ts` sends a fixed `TOUCH_VELOCITY = 90`, with the reason written beside it
+(Android reports `pressure` as 0 or 1). So `voicing` — which asks whether the top note sang
+1.4× the rest — and `shaping` — which asks for a velocity range of 30 — can never be met from
+the glass, and `technique.5` and `technique.6` are the rungs those exercises are options of. The
+articulation measure **is** reachable, because held length is a timing fact and the glass
+reports it. Recorded: the honest fix is either a cable or a measure those rungs do not take
+without one, and both are the owner's call.
+
+**FAULT 9 — `← Back` on the Score screen goes to the tab, not to the rung.** `leaveScore()`
+navigates to `router.route.tab`, so a learner who arrived from a rung's button lands on Plan
+rather than on the rung they were reading. Not a mode fault and not touched; noted because
+every "does Back leave the mode off" check ran through it.
+
+#### The fixes, each with the line that was removed to see it red
+
+1. **`LabScreen.ts` — `jam.scrollIntoView({ block: 'start' })` when a jam starts.**
+   Test: `modes-trading-fours.spec.ts`, *the app leads, the turn cue is unmistakable and on
+   screen*. Red without the line: *the turn line is off the screen while the trade is running*.
+   `modes-hold-the-chords.spec.ts` and `modes-play-the-tune.spec.ts` assert the same three
+   elements. Stop deliberately does not scroll back.
+2. **`ChordChartScreen.ts` — `body.append(form, controls, grid, status)`.**
+   Test: `modes-chart-from-a-lesson.spec.ts`, *the chart, the tracker and the transport are in
+   one glance on a phone*. Proved red by putting the one line back as
+   `body.append(form, grid, controls, status)` and rebuilding: *#chart-start is below the fold
+   on a 342 px phone*.
+3. **`TodayScreen.ts` — the `startAt` argument on `nextRecommended`.**
+   Test: `modes-placement.spec.ts`, *answering it records a starting point, and Plan and Today
+   both move to it*. Red before the change, with the two screens printed: Plan `4.3`, Today
+   `0.1`, held for the full poll.
+4. **`LessonScreen.ts` — `setDuetPlayback()` before the duet tool navigates.**
+   Test: `modes-duet.spec.ts`, *the button still means it after the Duet row has been switched
+   off once*. Proved red by taking the call and its import out and rebuilding: *the rung's duet
+   button opened a screen with the app playing nothing* — `#score-duet` read *Off*.
+   **Two consumers, and the second was nearly missed** (`00` §2.15): the first shape of this
+   fix put a long comment inside the callback and pushed `hands: 'R'` more than 160 characters
+   from `'Play it as a duet',`, which broke `lessonClaimsAboutApp.test.ts`'s `hymns.4` claim —
+   a test that reads the *shape* of the source. The comment was moved out and the callback kept
+   short; that file was not edited (it belongs to T14).
+5. **`OsmdView.ts` — `rules.PercussionUseXMLDisplayStep = false`.**
+   Test: `modes-engraving.spec.ts`. Proved red by commenting the line out and rebuilding: *a
+   notehead sits 202 px off the single line, which is more than its own 33 px of head*.
+
+#### The three engraving faults from Entry 33
+
+Entry 33 read these off `build/previews` crops and concluded that none could be fixed from the
+generator. The question T17 asked is different — is there an **OSMD option or a writer setting**
+that fixes each — so each was rendered again, through the app's own engraving rules, with the
+candidates applied and the picture looked at.
+
+**1. Noteheads below a one-line staff — fixed, in the app.** `PercussionUseXMLDisplayStep`
+defaults to `true`, and under a percussion clef with `staff-lines=1` OSMD places the head from
+the written pitch. Set to `false`, every notehead of `exercise.rhythm.quarters.4bar` and
+`exercise.clave.son-3-2` sits on the line, stems down, no ledger lines. `PercussionOneLineCutoff
+= 0` gives the same picture; the first was chosen because it says the thing that is true — a
+rhythm staff has no pitch to place from. **What it costs, stated rather than assumed:** a
+genuine multi-instrument drum part, where the written pitch is which drum, would collapse onto
+one line; nothing in this app ships one. **Measured, not assumed:** rendered
+`mary-had-a-little-lamb.ht`, `exercise.scale.c-major.2oct.similar.both.2`,
+`exercise.trill.c.4pb.right` and `exercise.pedal.c` with and without the rule — the SVG is
+identical in all four once OSMD's per-render element ids are normalised. Only the two
+one-line families move.
+
+**2. The pedal blob — partly reachable, not applied.** The blob is three things at one x: the
+`Ped.`, its release, and the left hand's three-digit fingering stack. `FingeringPosition =
+PlacementEnum.Above` takes the fingering out of it, and the picture confirms it: the digits move
+into the gap between the staves and the pedal band is left to the pedal. **The pedal mark itself
+is unchanged** — `Ped.` and the release still land on top of each other, because the file spans
+one chord, which is Entry 33's finding and is in the MusicXML, not in any rule. Two searches
+for a rule that would move them apart: `grep -in "ped" EngravingRules.d.ts` returns
+`RenderPedals` and two slur comments, and a scan of the bundle for every `this.*Pedal*=` and
+`this.*Sustain*=` assignment returns `RenderPedals` and three non-rule identifiers
+(`getPedal`, `Pedals`, `openPedal`). So the only pedal rule is the one that removes them. And
+`FingeringPosition` is global: it would move the fingering on every piece in the app on the
+evidence of one picture, which is the fix `00-invariants` §1 refuses. Recorded for the owner
+with the two pictures.
+
+**3. Text directions between the staves, with a barline through the words — a route exists, and
+it needs the generator.** Two searches over `EngravingRules.d.ts` (`grep Unknown|Placement|Offset`
+and `grep Metronome|Tempo`) find exactly one rule about unknown expressions:
+`UnknownExpressionTextAlignment`, default `CenterBottom`. Setting it to `CenterTop` or `LeftTop`
+changes **nothing** — rendered both, and both pictures are the base picture: it aligns the text
+inside its box and does not choose the box. A barline is drawn through the whole system, so any
+text between the staves has one through it; the only cure is to move the text out.
+`placement="above"` in the MusicXML does move it out — and confirms Entry 33's rejection
+exactly: the words then run straight through `♩= 60`. **But the pair works.**
+`placement="above"` in the file *and* `MetronomeMarkYShift = -4` in the app renders clean: the
+tempo mark on its own line, the direction above the top staff, no barline through anything. Not
+applied, for two reasons: the first half is a generator change and `tools/` is not this task's
+to edit, and the second half costs every piece with a tempo mark four units of stage height.
+That is the trade the owner should see, and the picture is the evidence that there is one.
+
+#### What is unverified
+
+* **Nothing was heard.** Said again because it is the biggest hole: fourteen modes driven and
+  not one note listened to.
+* **One rung per mode.** Each verdict is one rung's button — `blues.7`, `blues.3`, `3.2`,
+  `4.1`, `3.3`, `jazz.5`, `technique.4`, `theory.4`, `blues.3`, `2.1` and `technique.7`, `2.3`.
+  The built curriculum carries 116 `tools` entries across 80 rungs, and eleven buttons were
+  pressed. What is proved is the mode, not every rung that names it.
+* **Landscape was driven for the score-screen modes only** — the ladder, the duet row, the
+  chart door from the `⋯` sheet and the chart screen itself. The lab, the drill screen and free
+  play were driven upright only.
+* **The tablet and the 115 % text size were not driven at all.**
+* **The two lab counts were read, not checked.** `Time round n · x of y …` was asserted to be a
+  count with no mark on it; whether x is the right x is `labBothWays.test.ts`'s claim.
+* **The engraving variants were rendered through a copy of the app's rules, not through
+  `OsmdView`.** The probe page set the same twenty `EngravingRules` by hand and loaded the
+  MusicXML directly, because the Score screen engraves two-bar windows and the question was
+  about a whole page. That is a **proxy for the app's own engraver** and it is named here
+  because of it: the one change actually applied — the percussion rule — was then driven
+  through the real Score screen by `modes-engraving.spec.ts`, so it does not rest on the
+  proxy. The pedal and text-direction findings do.
+* **No screenshot was compared against a baseline.** The engraving work was done by rendering
+  into a scratch page and opening the PNGs, which is looking; the app's own gallery was not
+  re-shot, and `docs/08-test-map.md` has not been given the fifteen new files — both are
+  follow-ups for whoever owns those files next.
+* **`app/public/content` changed under this work.** T14 ran the content build partway through,
+  and one `npm run build:app` copied it mid-write, which produced a score fetch failure that
+  looked exactly like a regression and was not. Everything in the table above was re-driven
+  against the finished content afterwards; the run order is the reason this is worth saying.
+* **Two specs were flaky before they were made honest, and the flake was a fault in the
+  test, not the app.** Driving a run through `window.__pianopath.scoreRun` polls `null` for a
+  moment after `▶`, and pressing a key faster than the strip redraws plays the same step twice.
+  Both were rewritten to drive off the keys the strip lights — which is also what a learner
+  has — and then run five times and three times respectively without a failure. A test that
+  needs a hook to know what the screen is asking for was the wrong test.

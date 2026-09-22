@@ -573,6 +573,15 @@ export function TodayScreen(router: Router): HTMLElement {
       const position = nextRecommended(curriculum as Curriculum, records, active, {
         requireTwoSongs: getSettings().requireTwoSongs,
         strictPrerequisites: getSettings().strictPrerequisites,
+        // The same `startAt` the session above was built with (T17).
+        //
+        // It was missing here and nowhere else — `buildSession` had it, Plan's
+        // *Next up* had it, Skills had it — so after a placement this screen
+        // built a session from the placed rung and then printed *Working on
+        // Stage 0 · …* over the top of it. `04` §3 says the three screens
+        // cannot disagree about where the learner is; Today disagreed with
+        // Plan, and with itself, in the same paint.
+        ...(plan.placement === undefined ? {} : { startAt: plan.placement.unitId }),
       });
       // The rung's name, not its id. `lesson 0.1` is an internal key that means
       // nothing to a person, and it was printed here beside the unit's title —

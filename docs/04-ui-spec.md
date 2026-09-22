@@ -334,6 +334,14 @@ promise — the app is not marking you — and the name is the owner's word for 
   carried on recommending `0.1`. Now `nextRecommended` takes a `startAt` and Plan, Today and
   Skills all pass it, so the three screens cannot disagree about where the learner is.
 
+  **Today passed it to the session and not to its own sentence** — found by driving the
+  placement on 2026-09-22 (T17). `buildSession` had the `startAt`, Plan's *Next up* had it,
+  Skills had it, and the one call that writes *Working on Stage n · …* did not: after a
+  placement, Today built the day from the placed rung and then printed Stage 0 over the top of
+  it. The screen disagreed with Plan, and with itself, in the same paint. One argument added
+  where the other three already had it; the claim above is true now and was three-quarters
+  true when it was written.
+
   Rungs **behind** the placement are held back, not discarded: the learner said where to
   start, not what they have done. If everything from the placement onwards is complete the
   first incomplete rung behind it is recommended after all — an empty plan would be a worse
@@ -387,6 +395,16 @@ The door is on the *piece*, not in the rung's `tools`: `jam` and `jazz.5` are ru
 chord-symbol songs, and a tool entry would have to name one of them and be silent about the
 rest.
 
+**The transport sits above the chart** (changed 2026-09-22, T17). The whole form is printed at
+once, which is what a lead sheet is — so on a 342 px phone a thirty-two bar tune is more than a
+screenful of chord cells, and *Count off ▶* opened hundreds of pixels below the fold. Worse
+once it was running: scrolling back to watch the sounding bar took *Stop* off the screen with
+it. It is the ranking §3c's two buttons have over its pickers and Today's *Start session* has
+over the day — the control that starts the thing goes above the thing — and the chart is still
+the subject and still starts inside the first screenful (R1). The status line stays **under**
+the chart, where a message about the chart belongs (R6); with no chart to sit under, the
+dead-end branch still lifts it above the one control it is explaining.
+
 ### 3d. Ways to play this — a rung's tools, as controls (added 2026-09-18)
 
 Sixty lessons gained a **Tools for this rung** paragraph in `b4fb15b` and a paragraph
@@ -438,6 +456,13 @@ play this*.
   a remembered setting the Library writes before navigating, so it cannot be reached by a
   route and a button for it would be a control that opens the wrong thing. It keeps its
   paragraph.
+- **A `duet` writes `playbackHands` before it navigates** (2026-09-22, T17). The hand focus
+  rides in the route (`?hands=R`) and which hands the app plays is a **setting**, so the
+  button needed both and carried only one: a learner who had ever switched the Score screen's
+  *Duet* row off — one tap — then got a button labelled *Play it as a duet* that opened a
+  Keep tempo run with the app playing nothing. §4's *Open as…* door had written the setting
+  since it was built, for exactly this reason; this is the same two lines on the other door.
+  `both` is left alone, as there.
 - **A Score-screen mode needs a piece.** A rung may name one with `item`; otherwise the
   button takes the rung's **first playable song**, because "play this rung's material as a
   duet" is the instruction and any of its songs satisfies it. Where the rung has no playable
@@ -696,8 +721,25 @@ outlined. One line saying what the two buttons *do*, the line saying what the se
 currently *are*, and the two buttons themselves sit **above** the pickers, in that order — the
 first answers "and then what happens", the second answers "to what", and until 2026-09-22 only
 the second was on the screen. The two chip rows that change what *Jam it* does (*What the app
-plays*, *Trading fours*) sit under the buttons and above the pickers — the same ranking Today's *Start session* got, and the pickers still
-begin inside the first screenful (R1). The three short choices are chips with their label
+plays*, *Trading fours*) sit under the buttons and above the pickers — the same ranking Today's *Start session* got.
+
+**What R1 actually gets on a phone, measured 2026-09-22 (T17).** This paragraph used to end
+"and the pickers still begin inside the first screenful (R1)", and that is **not true**. Driven
+at 342×740 from the Library door, the pickers begin below the fold; arriving from a rung's
+button, with the preset panel and its blurb drawn as well, the *Trading fours* row is below it
+too, and the pickers are further still. The ranking above is the owner's (2026-09-19) and is not
+in question — the cost of it is, and the sentence claiming there was none has been removed
+rather than the layout changed, because what to drop from the six things above the pickers is a
+design decision and not a bug. `pending-review` Entry 38 has the measurement.
+
+**While a jam is running, the jam takes the top of the screen** (added 2026-09-22, T17). The
+chart, the turn line and the keys are what a running loop *is*, and on a phone they all began
+below everything listed above — so in trading fours the *Your turn* cue and, with no cable, the
+only instrument there is were both off screen at the moment they mattered. *Jam it* now scrolls
+the jam into view as it starts. **Stop does not scroll back**: the chart stays where it is,
+because reading one is what somebody stopped the loop to do.
+
+The three short choices are chips with their label
 *above* them rather than beside: `field()` gives a control a column of `max-content` next to a
 label keeping 9 rem, which is right for a select and leaves six chips about half a phone to
 wrap into, three lines tall and well past R2's 56 px. Sideways the pickers run in two columns

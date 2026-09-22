@@ -1079,6 +1079,68 @@
               }
             }
           ]
+        },
+        {
+          "id": "jazz.3.1",
+          "title": "Jazz: the swing feel, before any chords",
+          "track": "jazz",
+          "lessons": [
+            {
+              "id": "jazz.3",
+              "title": "Long, short, and playing a phrase back",
+              "concepts": [
+                "swing-eighths",
+                "call-and-response",
+                "chord-symbols"
+              ],
+              "textFile": "lessons/jazz.3.md",
+              "exerciseOptions": [
+                "exercise.swing-pair.c",
+                "exercise.swing-pair.f",
+                "exercise.swing-pair.g",
+                "exercise.rhythm.shuffle-eighths.4bar",
+                "drill.improv.call-response"
+              ],
+              "songOptions": [
+                "song.folk.anonymous-swing-low-sweet-chariot.pdmx",
+                "song.pop.ray-henderson-bye-bye-blackbird.pdmx",
+                "song.classical.alexander-s-ragtime-band.pdmx",
+                "song.blues.ole-miss"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "3.2"
+              ],
+              "estimatedDays": 21,
+              "requires": {
+                "chordSymbols": true
+              },
+              "levelBand": [
+                2.2,
+                4.5
+              ],
+              "finder": {
+                "skill": "playing a written tune with the eighths long-short instead of even",
+                "levelWords": "easy to moderate, Grade 1 to 2, early jazz or spiritual melody",
+                "constraints": [
+                  "a single-line melody with chord symbols above it",
+                  "runs of plain eighth notes to swing",
+                  "a tune from before 1930"
+                ],
+                "avoid": [
+                  "written-out piano arrangements",
+                  "melodies made only of quarter notes",
+                  "dense extended harmony"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            }
+          ]
         }
       ]
     }

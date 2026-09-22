@@ -748,3 +748,145 @@ describe('the presets a lesson may point at', () => {
     );
   });
 });
+
+/**
+ * The three rungs T14's last run built — `jazz.3`, `jam.7` and `ragtime.9`.
+ *
+ * A block of their own for the reason the music file's matching block gives:
+ * the rows and the lesson they came from are easier to read together than
+ * scattered through a table of ninety.
+ *
+ * Two of the three name **no mode at all**, and that is checked here rather
+ * than merely described. `jazz.3` wants *Rhythm only* and *Tempo*, which are
+ * score-screen controls with no address a rung can point at, so its lesson
+ * names them in prose and the rung carries no tools — the shape Entry 31 and
+ * Entry 36 settled for `holiday.5`, `holiday.7`, `latin.6` and `latin.7`.
+ */
+const T14_APP_CLAIMS: [string, string, () => boolean][] = [
+  [
+    'jazz.3',
+    'Rhythm only judges your timing and not your notes, one tap per written note or chord',
+    () =>
+      source('ui/screens/GuideScreen.ts').includes(
+        'judges your timing and not your notes: one tap per written note or chord, on any key at all',
+      ) && source('ui/screens/ScoreScreen.ts').includes("'Rhythm only'"),
+  ],
+  [
+    'jazz.3',
+    '…and Tempo is the other control it asks for',
+    () => source('ui/screens/ScoreScreen.ts').includes("openStashedSheet('Tempo'"),
+  ],
+  [
+    'jazz.3',
+    'Answer the phrase plays two bars from a five-note scale',
+    () => params('drill.improv.call-response').bars === 2
+      && params('drill.improv.call-response').scale === 'pentatonic',
+  ],
+  [
+    'jazz.3',
+    '…and wants them back note for note, which is imitation and not invention',
+    () => {
+      const factory = source('engine/drills/factories.ts');
+      return factory.includes('labelIsAnswer: true') && factory.includes('ordered: true');
+    },
+  ],
+  [
+    'jazz.3',
+    'no button on this rung opens anything',
+    () => (written('jazz.3').tools ?? []).length === 0,
+  ],
+
+  [
+    'ragtime.9',
+    'Play it blind hides the notation, and the app still follows you and still marks what you play',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'Hides the notation so you play from memory. The app still follows you and still marks what you play.',
+      ),
+  ],
+  [
+    'ragtime.9',
+    '…and that is what the button on the lesson page says',
+    () => source('ui/screens/LessonScreen.ts').includes("make('Play it blind'"),
+  ],
+  [
+    'ragtime.9',
+    'Perform is one pass start to finish, no restarts and no loop, kept as a performance rather than practice',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.',
+      ),
+  ],
+  [
+    'ragtime.9',
+    'the rung carries the blind mode and nothing else',
+    () => {
+      const tools = written('ragtime.9').tools ?? [];
+      return tools.length === 1 && tools[0]?.kind === 'blind';
+    },
+  ],
+
+  [
+    'jam.7',
+    'the lab preset this rung opens is called Blues — twelve bars',
+    () => labPreset('blues-shuffle')?.label === 'Blues — twelve bars',
+  ],
+  ['jam.7', '…and it is the one the rung points at', () => {
+    const tools = labTools('jam.7');
+    return tools.length === 1 && tools[0] === 'blues-shuffle';
+  }],
+  [
+    'jam.7',
+    'Jam it is what starts it, and Trading fours is a setting on it',
+    () => {
+      const lab = source('ui/screens/LabScreen.ts');
+      return lab.includes("'Jam it'") && lab.includes("chipGroup('Trading fours'");
+    },
+  ],
+  [
+    'jam.7',
+    '…and 2 bars each is one of the two choices it offers',
+    () => source('ui/screens/LabScreen.ts').includes('TRADE_BAR_CHOICES = [2, 4]'),
+  ],
+  [
+    'jam.7',
+    'it says whether you came in inside your own bars',
+    () => source('ui/screens/LabScreen.ts').includes("'In on your own bars'"),
+  ],
+  [
+    'jam.7',
+    '…and counts your notes against the blues scale, because this preset plays the twelve-bar form',
+    () =>
+      labPreset('blues-shuffle')?.progressionId === 'blues'
+      && source('engine/tradingFours.ts').includes(
+        "return progressionId === 'blues' ? 'blues' : mode;",
+      ),
+  ],
+  [
+    'jam.7',
+    'nothing there is recorded and nothing can be passed or failed',
+    () => source('ui/screens/LabScreen.ts').includes('nothing here can be passed or failed'),
+  ],
+  [
+    'jam.7',
+    'every option on this rung gets a Chart beside it',
+    () => {
+      const drawn = source('ui/screens/LessonScreen.ts').includes("button('Chart'");
+      const rows = (written('jam.7').songOptions ?? []).map((id) => item(id));
+      return drawn && rows.length === 5 && rows.every((row) => hasChordSymbols(row));
+    },
+  ],
+];
+
+describe('the three rungs T14 built last say only what the app does', () => {
+  it('has a row for every sentence those lessons make about the app', () => {
+    const lessons = new Set(T14_APP_CLAIMS.map(([lesson]) => lesson));
+    expect(lessons.size).toBe(3);
+  });
+
+  for (const [lesson, says, holds] of T14_APP_CLAIMS) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});

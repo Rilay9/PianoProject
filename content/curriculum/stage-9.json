@@ -441,6 +441,77 @@
               }
             }
           ]
+        },
+        {
+          "id": "ragtime.9.1",
+          "title": "Ragtime: the whole rag, without the page",
+          "track": "ragtime",
+          "lessons": [
+            {
+              "id": "ragtime.9",
+              "title": "The whole rag, without the page",
+              "concepts": [
+                "memorising",
+                "multi-strain-form",
+                "performance-mode",
+                "secondary-rag",
+                "leaps"
+              ],
+              "textFile": "lessons/ragtime.9.md",
+              "exerciseOptions": [
+                "exercise.oompah.c.tenth",
+                "exercise.secondary-rag.c.4bar",
+                "exercise.stride.c",
+                "drill.ear.tune-long"
+              ],
+              "songOptions": [
+                "song.ragtime.joplin-original-rags",
+                "song.ragtime.joplin-breeze-from-alabama",
+                "song.ragtime.joplin-chrysanthemum",
+                "song.classical.joplin-search-light-rag.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "ragtime.8"
+              ],
+              "estimatedDays": 365,
+              "tools": [
+                {
+                  "kind": "blind"
+                }
+              ],
+              "requires": {
+                "staves": 2,
+                "meter": [
+                  "2/4"
+                ]
+              },
+              "levelBand": [
+                5.6,
+                8.4
+              ],
+              "finder": {
+                "skill": "holding a rag of four or five strains in the memory, in three keys",
+                "levelWords": "advanced, Grade 7 to 8, classic ragtime",
+                "constraints": [
+                  "a rag of ninety bars or more",
+                  "strains in more than one key",
+                  "two staves"
+                ],
+                "avoid": [
+                  "single-strain arrangements",
+                  "simplified editions",
+                  "lead sheets"
+                ],
+                "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+              }
+            }
+          ]
         }
       ]
     }

@@ -99,6 +99,25 @@ function applyPhoneEngraving(osmd: OpenSheetMusicDisplay, options: OsmdViewOptio
   rules.MinimumDistanceBetweenSystems = 4;
   rules.FingeringPositionFromXML = false;
   if (options.drawFingerings === false) rules.RenderFingerings = false;
+  /**
+   * A one-line rhythm staff puts its noteheads **on** the line (T17).
+   *
+   * `pending-review` Entry 33 found every notehead of `exercise.rhythm.*` and
+   * `exercise.clave.*` hanging three ledger lines below the single line, and
+   * proved it was not the generator: the same four bars written as E4, F4,
+   * G4, A4, B4, C5, D5 and E5 all rendered byte-for-byte the same picture. It
+   * is this rule. Under a percussion clef OSMD places the head from the
+   * written pitch, and a rhythm staff has no pitch to mean anything — the
+   * line *is* the note.
+   *
+   * What it costs: a genuine multi-instrument drum part, where the written
+   * pitch is which drum, would collapse onto one line. Nothing in this app
+   * ships one; every percussion clef here is a rhythm exercise on a single
+   * line, which is exactly the case this fixes. Measured: rendering
+   * `mary-had-a-little-lamb.ht`, the two-octave C major scale, the trill
+   * study and the pedal study with and without it gives identical SVG.
+   */
+  rules.PercussionUseXMLDisplayStep = false;
 }
 
 export class OsmdView {

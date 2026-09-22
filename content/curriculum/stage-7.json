@@ -811,6 +811,77 @@
               }
             }
           ]
+        },
+        {
+          "id": "jam.7.1",
+          "title": "Jam: trading fours, and a set list you both know",
+          "track": "jam",
+          "lessons": [
+            {
+              "id": "jam.7",
+              "title": "Trading fours, and a set list you both know",
+              "concepts": [
+                "trading-fours",
+                "head-and-chorus",
+                "chord-charts",
+                "turnaround",
+                "guitar-keys"
+              ],
+              "textFile": "lessons/jam.7.md",
+              "exerciseOptions": [
+                "drill.jam.form-tracker",
+                "exercise.blues-scale.e-flat.1oct.both",
+                "exercise.blues-scale.b-flat.1oct.both",
+                "exercise.turnaround.e-flat.i-vi-ii-v",
+                "exercise.turnaround.b-flat.i-vi-ii-v"
+              ],
+              "songOptions": [
+                "song.pop.after-you-ve-gone.pdmx",
+                "song.blues.jazz-me-blues",
+                "song.blues.weary-blues",
+                "song.blues.riverside-blues",
+                "song.blues.storyville-blues"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.85,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "jam.6"
+              ],
+              "estimatedDays": 21,
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                }
+              ],
+              "requires": {
+                "chordSymbols": true
+              },
+              "levelBand": [
+                3.98,
+                6.4
+              ],
+              "finder": {
+                "skill": "swapping four-bar solos over a tune you have both agreed to play",
+                "levelWords": "moderate to advancing, Grade 3 to 4, early jazz lead sheet",
+                "constraints": [
+                  "a lead sheet with chord symbols",
+                  "the chart says where the solos start",
+                  "a repeating chorus to trade over"
+                ],
+                "avoid": [
+                  "written-out piano arrangements",
+                  "written-out solos",
+                  "through-composed pieces"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
         }
       ]
     }

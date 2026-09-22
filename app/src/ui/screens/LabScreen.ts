@@ -742,6 +742,23 @@ export function LabScreen(router: Router): HTMLElement {
       stripHost.append(strip.el);
     }
     showChordOnKeys();
+    /**
+     * The jam takes the top of the screen while it is running (`04` §0 R1).
+     *
+     * Driven on a 342 px phone from the rung's own button, everything a
+     * running jam *is* opened below the fold: the preset panel, the lede, the
+     * settings summary, the two buttons and the two chip rows come to more
+     * than a screenful on their own, so the chart, the turn line and the keys
+     * were all under it. In trading fours that put the *Your turn* cue and —
+     * on a machine with no cable — the only instrument there is off the
+     * screen at the moment both of them mattered: the mode was driveable and
+     * not playable.
+     *
+     * While a jam is running the jam is the subject, which is what R1 is
+     * about. Stopping does not scroll back: the chart stays where it is,
+     * because reading one is what somebody stopped the loop to do (§3c).
+     */
+    jam.scrollIntoView({ block: 'start' });
 
     const context = await audioEngine.ensureStarted();
     if (disposed) return;

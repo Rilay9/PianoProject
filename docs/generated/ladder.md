@@ -167,13 +167,14 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Jam with a friend (`jam`)
 
-3 rung(s), stages 4–6.
+4 rung(s), stages 4–7.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 4 | `jam` | 4 | 5 | 3.4–4.5 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in E (4.1), Twelve-bar blues shuffle in A (4.1), Twelve-bar blues shuffle in G (4.1), Twelve-bar blues shuffle in F (4.1) |
 | 5 | `jam.5` *(song-optional)* | 5 | 0 | 4.1–4.4 | — |
 | 6 | `jam.6` *(song-optional)* | 5 | 0 | 4.1–6.2 | — |
+| 7 | `jam.7` | 5 | 5 | 4.0–6.4 | After You've Gone (1918) (4.0), Jazz Me Blues (4.0), Weary Blues (4.0), Riverside Blues (4.3), Storyville Blues (4.7) |
 
 ## Technique (`technique`)
 
@@ -189,10 +190,11 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Jazz (`jazz`)
 
-6 rung(s), stages 4–9.
+7 rung(s), stages 3–9.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
+| 3 | `jazz.3` | 5 | 4 | 2.2–4.5 | Swing Low, Sweet Chariot (2.9), Bye Bye Blackbird (1926) (3.3), Alexander's Ragtime Band (1911) (3.4), Ole Miss (3.8) |
 | 4 | `jazz.4` | 4 | 3 | 2.7–4.5 | Avalon (1920) (2.7), Whispering (1920) (3.3), Margie (1920) (3.5) |
 | 5 | `jazz.5` | 5 | 4 | 3.2–5.2 | Limehouse Blues (1922) (3.2), Bill Bailey, Won't You Please Come Home (1902) (3.4), Some of These Days (1910) (3.8), After You've Gone (1918) (4.0) |
 | 6 | `jazz.6` *(song-optional)* | 7 | 6 | 3.2–6.4 | Limehouse Blues (1922) (3.2), Bye Bye Blackbird (1926) (3.3), Darktown Strutters' Ball (1917) (3.8), Rose Room (1917) (4.1), Royal Garden Blues (1919) (4.2), Tiger Rag (1917) (4.4) |
@@ -213,7 +215,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Ragtime (`ragtime`)
 
-4 rung(s), stages 5–8.
+5 rung(s), stages 5–9.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
@@ -221,6 +223,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 6 | `ragtime.6` | 6 | 6 | 3.3–7.1 | School of Ragtime (6.4), Swipesy Cake Walk (6.8), The Easy Winners (7.0), Peacherine Rag (7.0), Sunflower Slow Drag (7.0), The Entertainer (7.1) |
 | 7 | `ragtime.7` | 6 | 6 | 3.2–7.4 | Solace (6.8), Maple Leaf Rag (7.2), Elite Syncopations (7.2), Sugar Cane (7.2), Bethena (7.3), Heliotrope Bouquet (7.4) |
 | 8 | `ragtime.8` | 6 | 6 | 3.3–7.9 | Pine Apple Rag (7.4), Gladiolus Rag (7.6), Magnetic Rag (7.6), The Cascades (7.6), Scott Joplin's New Rag (7.6), Frog Legs Rag (1906) (7.9) |
+| 9 | `ragtime.9` | 4 | 4 | 5.6–8.4 | Original Rags (7.2), A Breeze from Alabama (7.2), The Chrysanthemum (7.4), Search-Light Rag (8.0) |
 
 ## Wanted, and not bundled
 
