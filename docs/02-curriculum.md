@@ -146,10 +146,15 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
 | 9 | Open repertoire & specialisation | ongoing | Learner-chosen projects; the app becomes a practice tool with the full library and imports |
 
 **Tracks.** Fifteen, defined in `content/curriculum/00-tracks.json`, each starting at the
-stage its first rung sits on: `core` (Stage 0), `practice` (Stage 1), `holiday` (Stage 2),
-`classical`, `chords-pop`, `blues-boogie`, `theory-ear`, `improv-compose`, `hymns-gospel`
-`rock-metal`, `latin` and `jazz` (Stage 3), `jam` and `technique` (Stage 4), and `ragtime`
-(Stage 5). `latin` and `jazz` are listed here at the stage their first rung sits on, which
+stage its first rung sits on: `core` (Stage 0), `practice` (Stage 1), `holiday` and
+`hymns-gospel` (Stage 2), `classical`, `chords-pop`, `blues-boogie`, `theory-ear`,
+`improv-compose`, `rock-metal`, `latin` and `jazz` (Stage 3), `jam` and `technique`
+(Stage 4), and `ragtime`
+(Stage 5). *(Corrected 2026-09-22: this line had `hymns-gospel` in the Stage 3 group, with
+no comma after it. `hymns-gospel.2.1` has been in `content/curriculum/stage-2.json` since
+Entry 20 built `hymns.2`, and `00-tracks.json` carries `startsAtStage: 2` for it — so the
+track file and Part D8's heading were both already right and this list was the one place
+left saying 3.)* `latin` and `jazz` are listed here at the stage their first rung sits on, which
 is where this sentence says they belong; the track file still says 5 for both and is a
 follow-up on `pending-review.md` Entry 36 and Entry 37. `jazz` was already wrong there
 before `jazz.3` existed — `jazz.4.1` has been in `stage-4.json` since Entry 21 and the

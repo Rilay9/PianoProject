@@ -1,5 +1,5 @@
 ---
-title: "Improvisation, Stage 4 — pentatonic and answering the phrase"
+title: "Pentatonic and answering the phrase"
 stage: 4
 unit: "improv-compose.4.1"
 videos:

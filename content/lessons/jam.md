@@ -1,5 +1,5 @@
 ---
-title: "Jam with a friend — playing with a guitarist"
+title: "Playing with a guitarist"
 stage: 4
 unit: "jam.4.1"
 videos:

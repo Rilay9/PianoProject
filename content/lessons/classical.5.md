@@ -1,5 +1,5 @@
 ---
-title: "Classical track, Stage 5 — Sonatina form and Romantic miniatures"
+title: "Sonatina form and Romantic miniatures"
 stage: 5
 unit: "classical.5.1"
 videos:

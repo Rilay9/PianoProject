@@ -14,11 +14,10 @@ worse while you are doing it: you make more mistakes, and progress feels
 slower. It also produces markedly better retention a week later, which is the
 only timescale that matters.
 
-## What a session looks like
-
-Warm up — five minutes, slow, something you know. Then two or three different
-things in short blocks rather than one thing for the whole time: a technical
-item, a piece you are learning, and something you already play.
+**What a session looks like.** Warm up — five minutes, slow, something you
+know. Then two or three different things in short blocks rather than one thing
+for the whole time: a technical item, a piece you are learning, and something
+you already play.
 
 Come back to the hard thing twice in the session rather than staying on it. The
 second visit, after something else has intervened, is where the learning
@@ -27,11 +26,10 @@ happens.
 Finish with something you enjoy playing. Ending on failure teaches you to dread
 the piano stool.
 
-## The review queue
-
-The app's review queue is this idea applied across days: an item comes back one,
-three, seven and twenty-one days after you passed it. Trust it — the day it
-suggests something is usually the day before you would have forgotten it.
+**The review queue.** The app's review queue is this idea applied across days:
+an item comes back one, three, seven and twenty-one days after you passed it.
+Trust it — the day it suggests something is usually the day before you would
+have forgotten it.
 
 **Common mistake.** Treating a session as a to-do list to be completed. If you
 run out of time, the last item is dropped, and the first item is where all the

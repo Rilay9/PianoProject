@@ -128,12 +128,19 @@ from the before-and-after pictures of one song on the phone: a silent staff of r
 of every window; the bar over the lower staff at the start of a run sideways; half the screen
 black at the end of a song. The walks and the pictures find different things; both are run.
 
-## Every spec file, one line each (2026-09-16)
+## Every spec file, one line each (2026-09-16; brought level 2026-09-22)
 
 The table above is a map of state machines; this is the index of files, so that a spec can be
 found by name and nothing in the tree is a mystery. One line each, from the file's own header.
 When a file is added, add its line; the table above gets a row only when the file proves a
 transition.
+
+**Forty-six files had been added without one** between 2026-09-16 and 2026-09-22 — the
+fifteen `modes-*` specs, the lab and ladder work, the lesson-claim suites, the score checks
+and the converter's harness. They are in below. The rule that let that happen is that
+nothing enforces it: `docsConsistency.test.ts` checks the documents against the *code*,
+and no test checks this index against the directory. The one-line version, for anyone who
+wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/tests/test_*.py | xargs -n1 basename); do grep -q -- "$f" docs/08-test-map.md || echo "$f"; done`
 
 ### `app/tests/e2e/` — Playwright, headless Chromium, mocked Web MIDI (`playwright.config.ts`)
 
@@ -143,6 +150,7 @@ transition.
 - `carry-overs.spec.ts` — the six P18 carry-overs on screen: the control exists, the gesture works, the layout changes at the breakpoint.
 - `chart.spec.ts` — the chord-chart view (`04` §3b) and the tablet breakpoint (§7a).
 - `content-render.spec.ts` — every catalog item through the app's loader (`03` §3 step 10); writes `build/render-manifest.json`, keyed by file hash and OSMD version.
+- `converted-import.spec.ts` — a file the MIDI converter wrote, through the Library's own import door and onto the Score screen; the fixture is this repository's own exercise rendered to MIDI and back, not a real recording.
 - `dark-ink.spec.ts` — notation readable in the dark wherever an `OsmdView` is on screen, the drill card included.
 - `drills-harmony.spec.ts` — the seven P12b drill kinds, each answered with scripted input.
 - `drills-review.spec.ts` — a miss pauses, going over the missed ones, Simon and its three levels of help, the chain building up on a staff as it sounds, and which kinds draw a staff and when; observed with a `MutationObserver` and, for the lit chain, a sampler that reads the card, the keys and the staff together (`04` §5c, §5c-2). It also writes the drill-staff pictures to `build/staff/` — the judged dictation card and a reading card at three shapes in both schemes, taken to be looked at and asserted on only for what is present.
@@ -162,14 +170,38 @@ transition.
 - `guide.spec.ts` — the guide: every section in order, every picture shipped, every button landing.
 - `keyboard-strip.spec.ts` — an update touches only the keys that changed and never rebuilds the DOM.
 - `keys-guide.spec.ts` — the keys' three settings, each on its own: the guide ahead, finger numbers, the flash.
+- `lab-both-ways.spec.ts` — the lab's two chip rows in a browser (`04` §3c): the three ways round are exclusive with trading fours, a way round with nothing to play is `disabled` as a DOM property and says why, and every control carries its line.
 - `lab.spec.ts` — the accompaniment lab from the Library line, and Today's daily sight-read (`04` §2, §3c).
 - `landscape.spec.ts` — R5: sideways on a phone the header is one line and the first content is within 48 px.
 - `lesson-flow.spec.ts` — Today → Score → screen keys → summary → Progress → the review queue, joined.
+- `lesson-tools.spec.ts` — a rung's tools are controls and each lands somewhere specific (`04` §3d); and a rung naming none draws no block at all.
 - `library.spec.ts` — Library and own-score import: pick a file, see it, open it, keep it after a reload.
 - `metronome.spec.ts` — the standalone metronome: reachable, the controls change what they say, Start runs the scheduler, leaving stops it.
 - `mic.spec.ts` — the microphone path end to end through a real AudioWorklet, fed from a WAV.
 - `midi.spec.ts` — the MIDI screen with the mock: connect, the strip lights, the log fills.
 - `midi.unplug.spec.ts` — the cable pulled and put back in the real DOM; the pinned input that is not there.
+
+  **The `modes-*` files (T17, 2026-09-22)** are one per practice mode, each driven the way a
+  learner meets it — from the rung page that offers it, or from the door that does where the
+  mode has no rung tool — and judged for playability as well as for arrival: is the cue on the
+  screen at 342 px, does the run answer, does Back leave the mode off. **Not one assertion in
+  any of them is about sound.**
+
+- `modes-chart-from-a-lesson.spec.ts` — *Chart* on a `jazz.5` song row: the chart, the form tracker and the transport in one glance at 342 px, and Back returning to the rung.
+- `modes-chart-from-the-score.spec.ts` — the same screen from the Score screen's `⋯` sheet, upright and sideways, and the row absent over a piece the build measured no chords in.
+- `modes-dictation.spec.ts` — melodic dictation from `theory.4`'s own row: the card gives nothing away, the phrase is played back on the strip, and the screen answers.
+- `modes-duet.spec.ts` — *Play it as a duet* still means it after the Score screen's *Duet* row has been switched off once; a duet may name an exercise; and Back returns to the rung.
+- `modes-engraving.spec.ts` — the one-line rhythm staff draws its noteheads on the line, asserted as a relationship, and nothing else re-engraves.
+- `modes-free-play.spec.ts` — `#/play` from a rung and from Today: the readout and the keys both on a phone, the chord line's height reserved, the R4 sentence with nothing connected.
+- `modes-hold-the-chords.spec.ts` — the lab met from `blues.3`, the loop started, a note played over it and the time-round count read back.
+- `modes-lab-unlock.spec.ts` — a lab button that hands one picker back: the freed one live, the locked ones `disabled`, and changing the freed one changing what the loop charts.
+- `modes-ladder.spec.ts` — *Tempo ladder* from `4.1`: the exercise the button claims, the loop set, the ladder armed, and the tempo figure marked as one that moves by itself.
+- `modes-placement.spec.ts` — the placement test walked, *Start here* pressed, and Plan **and** Today both moving to the recorded rung.
+- `modes-play-the-tune.spec.ts` — the reverse way round from `3.2`: the app takes the right hand, the bar counter moves, one time round is counted and not marked.
+- `modes-rhythm-only.spec.ts` — the Library's `⋯` door: any key answers, the summary is headed as what it was, and the run says *Rhythm only* on the status line while it is going.
+- `modes-simon.spec.ts` — a rung's own Simon from `blues.3`: the chain, the keys answering, and the turn cue that names no note of it.
+- `modes-technique-measure.spec.ts` — the staccato study played to a summary that reports how short the notes were; and the voicing measure refusing rather than printing a nought where every note arrived at one velocity.
+- `modes-trading-fours.spec.ts` — the whole path from `blues.7`'s button: the turn cue on the screen without scrolling, Stop taking the turn line with it, Back leaving the mode off.
 - `offline.report.spec.ts` — what Diagnostics says about the offline story: the worker line, precached *n* of *m*.
 - `offline.spec.ts` — the app works with the network off; Workbox's silent size skip is the fault it catches.
 - `pdf-paper.spec.ts` — dark paper under the dark theme, and the one-off "turn the phone" sentence.
@@ -187,6 +219,8 @@ transition.
 - `score.fill.spec.ts` — the music uses the screen it is on: a width floor on the dense pieces.
 - `score.fuzz.spec.ts` — the seeded random walk over the whole Score screen, invariants after every action.
 - `score.hearbar.spec.ts` — long-press a bar to hear it: one bar, both hands, once, the run put back.
+- `score.ladder-route.spec.ts` — `?ladder=1` lands where it says (`04` §3d, `05` §6): one of the rung's own exercises, the whole of it looped, the Ladder row pressed — and the three refusals that leave both controls alone.
+- `score.latch.spec.ts` — the learner's first note starts the clock (T8): a Tempo run holds on its first note, the keys and Space start one, and a run with no input keeps time by the clock.
 - `score.layout.spec.ts` — screenshots at 1, 2 and 4 bars per window, and "the next bar is on the glass".
 - `score.pickup-numbers.spec.ts` — one bar, one number everywhere: the pickup piece's bar 0 through the loop machinery.
 - `score.readahead.spec.ts` — a beat of warning: the next-step mark and the paler next key, Tempo and Listen only.
@@ -209,6 +243,7 @@ transition.
 - `tips.spec.ts` — the right tips file for a drill's parameters, open the first time and collapsed after; the practice module's rungs.
 - `today.spec.ts` — Today: the session from the templates, Swap on every row with the "not a song" filter.
 - `tour-practice-modes.spec.ts` — the guided tour's three steps opening the real Score screen and coming back.
+- `trading-fours.spec.ts` — the mode from the Library's own lab door: the chips are off until asked for and exclusive, *Jam it* hands the bars over, a setting changed under a trade stops it, and a key played inside the learner's own bars reaches the judging.
 - `update.tab-nav.spec.ts` — the tab bar survives a service-worker update.
 - `wide.spec.ts` — wide screens (`04` §7a): seven shapes, gutters symmetric, content no wider at 1920 than at 1366. Waits for the precache to be stocked before the walk and watches the lazy screens' own placeholder, so a chunk that queues or fails is not read as a screen that never mounted.
 - `scoreControls.ts`, `fixtures/` — not specs: the shared helpers for the `⋯` and tempo sheets, and the MIDI mock.
@@ -221,6 +256,7 @@ transition.
 - `Piano.test.ts` — the soundfont URL against every base path, and inside the precache glob.
 - `RingBuffer.test.ts` — oldest-first under capacity, oldest overwritten when full.
 - `WebMidiSource.test.ts` — the cable pulled and put back, against a fake that models a disconnect in place.
+- `accents.test.ts` — `<accent>` and `<strong-accent>` read onto `ScoreNote`, carried to `PreparedStep.accents`, and judged against the run's own unaccented mean rather than a MIDI number.
 - `accompanimentLab.test.ts` — the lab's harmony as pitch classes in every key, the fixed-harmony builder through OSMD, the day's seed.
 - `alphaRail.test.ts` — which letter a title files under, and what the rail does with a list.
 - `answerSheet.test.ts` — the staff behind *Show me*: the answer as notation with a key signature that fits, a run drawn again as it grows without re-engraving what is already on it, and a chord progression written one chord to the bar with its numeral over it.
@@ -231,7 +267,8 @@ transition.
 - `backup.test.ts` — export and restore: a PDF's bytes through base64, a merge that keeps later progress, a newer file refused.
 - `backupStreaming.test.ts` — the backup never exists as one string.
 - `boot.test.ts` — the shell's mount sequenced against `hydratePersisted()`, so the tab bar survives an update.
-- `chordChart.test.ts` — the chart's beat handler: the first bar of every run drawn.
+- `chartDoor.test.ts` — the chord chart has a way in (`04` §3b): a *Chart* action on the rows whose file the build measured chord symbols in, and none on the rest — unknown is not yes.
+- `chordChart.test.ts` — the chart's beat handler: the first bar of every run drawn; and the chart's Back, which names where it goes.
 - `coaching.test.ts` — five coaching rules and one silence, the silence tested first.
 - `compositionStatus.test.ts` — what the Library sheet says about a song's copyright, apart from its edition's licence.
 - `contentFetchTimeout.test.ts` — a content read that stalls fails rather than hangs.
@@ -242,8 +279,10 @@ transition.
 - `dbUpgrades.test.ts` — every database version this app has shipped, upgraded, including skipped ones.
 - `devicePreview.test.ts` — the tour's miniature stands for a phone even when not running on one.
 - `diagnosticsMicRelease.test.ts` — Diagnostics closes the microphone it opened for a clip.
+- `dictationCard.test.ts` — the melodic-dictation card names nothing until the attempt is judged (`04` §5c), driven on the real drill screen in jsdom.
 - `difficulty.test.ts` — the two levelling implementations agree within 0.2 stages over the fixtures.
 - `drillAfterAMiss.test.ts` — how long a missed card stays up, and which prompts the going-over round is built from.
+- `drillParamsRead.test.ts` — the six drill settings the catalog carried and nothing read, asserted against the real catalog rows rather than fixtures.
 - `drillFromCatalog.test.ts` — every runtime drill in the shipped catalog builds and honours its parameters.
 - `drillNotation.test.ts` — the transposition drill engraves each card once.
 - `drillPrompts.test.ts` — every drill says what to do in words that are not its own name.
@@ -271,6 +310,7 @@ transition.
 - `folderStorage.test.ts` — what a listing costs to read and change: relationships between a small folder and one twenty times its size.
 - `folderWalkWorker.test.ts` — the walk goes to a worker, comes home when it cannot, and resumes when interrupted.
 - `harmony.test.ts` — chord symbols out of MusicXML: root, kind, measure number.
+- `halfPedalDepth.test.ts` — every CC64 value carried through the engine and judged: the share is taken over the messages sent with the pedal *down*, the list is a run total gated and cleared like `recorded`, and a pedal that only sends 0 and 127 is reported as a switch.
 - `harmonyDrills.test.ts` — the seven P12b harmony and ear drills, the chord-boundary rule most of all; a revealed prompt judged but not counted.
 - `heldChord.test.ts` — naming a chord from the keys that are down: the bass decides between two names for one set of notes, an inversion keeps its root.
 - `importOverlay.test.ts` — an imported piece becomes an option of the rung.
@@ -278,11 +318,21 @@ transition.
 - `importSummaries.test.ts` — the catalog overlay stops reading every score's bytes on every screen.
 - `inputPolicy.test.ts` — the microphone's effect on playback, metronome and scoring.
 - `inputSources.test.ts` — `ScreenKeyboardSource` and `ReplaySource`, and the replay script parser.
+- `labBothWays.test.ts` — the lab's chord voice added to `barSchedule` without moving one other event of the bed, and the app's right hand read back out of the notation the same settings write.
+- `labHelp.test.ts` — the join between `LAB_HELP` and `04` §3c's table, in three directions, so the screen and the spec cannot drift.
+- `labPresets.test.ts` — `validate.py` and the lab agree about which presets exist, and what each one locks.
 - `labRoute.test.ts` — `?seed=` and `#/lab`: parse, round-trip, refusals.
+- `labToolFields.test.ts` — `unlock` and `mode` on a rung's lab entry, and the duet that may open an exercise.
+- `labVerdictOnStop.test.ts` — the lab's verdict lines do not outlive the jam they describe; the trade's line goes with them.
+- `ladderTool.test.ts` — the tempo ladder has an address: `?ladder=1` parses, the seven rungs allowed to carry the tool and **no others**, and what the button opens on each.
 - `latency.test.ts` — pairing taps with clicks and signing the delta.
+- `lessonClaims.test.ts` — a lesson may not promise music its rung does not offer (the `blues.3` fault, made mechanical). Reads the **built** lessons, so it is stale until the content build runs.
+- `lessonClaimsAboutApp.test.ts` — a lesson may not say a thing about the *app* that the app does not do: the authored rungs, the catalog's `drill` blocks, the lab presets and the engine's own constants, plus four sweeps over all 109 lessons.
+- `lessonClaimsAboutMusic.test.ts` — the harder half: what a lesson says *about* a piece, read out of the built `.mxl` rather than off the `notation` summary.
 - `lessonCompletePerf.test.ts` — `lessonComplete` no longer rebuilds two Sets over the whole history per call.
 - `lessonPaperBookPicker.test.ts` — "I have this on paper" asks which book when there is more than one.
-- `lessonShape.test.ts` — what every lesson owes a learner, and the numbers it is allowed to quote.
+- `lessonShape.test.ts` — what every lesson owes a learner, and the numbers it is allowed to quote: the reading time against the text, the three-minute cap, and the three shapes of the repository talking to itself in front of a learner.
+- `lessonSongEmpty.test.ts` — the same rule applied to the *screen*: a rung with no songs says which kind of empty it is, and none of the three sentences cites this repository or promises a song to a rung that will never have one (`04` §3, §0 R4).
 - `lessonVideos.test.ts` — every lesson's video links are links to a video, not a channel page.
 - `levelOverrides.test.ts` — the owner's own difficulty numbers reach every reader of a level and survive a backup.
 - `levelSource.test.ts` — what the app does with `levelSource`: how a level prints, which alternative comes first.
@@ -299,6 +349,7 @@ transition.
 - `midiConnectInFlight.test.ts` — two callers asking for the piano at once is one prompt.
 - `midiScreenDevices.test.ts` — the Inputs list when the pinned input is not there.
 - `needs.test.ts` — the rung's shortfall counted at runtime, in step with `validate.py`'s `write_needs`.
+- `noGenreSelection.test.ts` — no tool selects music by `genres` or `tags`, the two fields whoever uploaded the score wrote (`00` §1a).
 - `offlineStatus.test.ts` — what Diagnostics is told about the offline story.
 - `paperScreenTwin.test.ts` — a shelf piece's twin checked before "Practise with the score" is offered.
 - `parseMidiMessage.test.ts` — the MIDI parser: velocity-0, the CCs, note names.
@@ -312,6 +363,7 @@ transition.
 - `pieceExtent.test.ts` — how much room a system of a piece needs: no height that no system has.
 - `pitchDetector.test.ts` — the detector against real piano audio, the `05` §11.6 thresholds.
 - `pitchDsp.test.ts` — the DSP pure functions: spectrum, harmonic score, background, confusion guards.
+- `placementStartsThePlan.test.ts` — "Placement recorded. Today will build from here", and now it does: `nextRecommended` honours a `startAt`, and a rung behind the placement is held back rather than discarded.
 - `placementTargets.test.ts` — every placement outcome names a unit that exists.
 - `planHierarchy.test.ts` — what the Plan screen says first, second and last.
 - `planNoUnobtainableRungs.test.ts` — no rung is built around music the owner can never get.
@@ -330,6 +382,7 @@ transition.
 - `rhythmCountIn.test.ts` — the rhythm drill's count-in and clock.
 - `router.test.ts` — every route shape parses, refuses rubbish, and round-trips; every real lesson id.
 - `rungFor.test.ts` — an estimated level turned into the rung it refers to.
+- `rungMastery.test.ts` — the pass thresholds are the rung's, not the app's (`02` Part G, `05` §9a); the units are half of it, since the curriculum writes `0.85` and the scorer writes `85`.
 - `scoreModel.test.ts` — the golden models for every fixture.
 - `scoreModelKnownIssues.test.ts` — upstream OSMD defects asserted *broken* on purpose, so an upgrade says when a workaround can go.
 - `scoreSession.test.ts` — the session's state machine with a fake renderer and a hand-cranked frame.
@@ -352,6 +405,7 @@ transition.
 - `shelfTwinSearch.test.ts` — the twin search debounced, bounded at six, matching the composer too.
 - `sightReading.test.ts` — the generator through OSMD and the extractor, including the left hand alone.
 - `simonDrill.test.ts` — Simon: the chain grows, breaks, is scored, the two catalog items played, the three levels of help and the missed chain that comes back, the chain as a list of moments the screen lights, names and engraves from, and `simonForStage` checked against where the curriculum puts them.
+- `simonTurnCue.test.ts` — Simon says whose turn it is (`04` §5c-2), on every rung of the help ladder, and names no note of the chain while doing it.
 - `skillsFromPractice.test.ts` — finishing a lesson by playing it teaches its concepts.
 - `slots.test.ts` — the two slots' arithmetic, including what "next" means at a repeat.
 - `spaFallback.test.ts` — a static host's `index.html` for a missing path is not a tips file.
@@ -359,15 +413,18 @@ transition.
 - `stats.test.ts` — mean, sample sigma, range, median.
 - `statusLine.test.ts` — the error colour belongs to the message, not the line.
 - `steadiness.test.ts` — tempo steadiness on scripted onsets: chords once, orphans excluded.
+- `swingJudging.test.ts` — a swung score is judged where it swings: the flag comes from the piece's measured `notation.swungMark` and moves only a written off-beat eighth.
 - `storagePersistence.test.ts` — whether the browser promised to keep the storage, a blocked open, and the owner told.
 - `stripRange.test.ts` — how much keyboard the strip shows.
 - `systemPlan.test.ts` — detected staff bands into steppable systems, corrected by hand, in fractions of the page.
 - `tablet.test.ts` — the tablet breakpoint on the shortest side.
 - `tapTempo.test.ts` — tap tempo: the average of the last four, a restart after silence, a duplicate tap dropped.
+- `techniqueMeasures.test.ts` — the three scorers that were written and never called, wired and asserted; and the measure that **cannot** be taken saying so, rather than printing a nought, where every note of the run arrived at one velocity.
 - `tempoLadder.test.ts` — the tempo ladder as one pure rule.
 - `tips.test.ts` — the tips index after a launch that lost the network.
 - `toastStack.test.ts` — the error banner and the update toast stack rather than overlap.
 - `todayCardRanking.test.ts` — Today's card ranked.
+- `tradingFours.test.ts` — whose bars these are, what the app plays, and what the learner's bars were worth, driven by a synthetic performance on the screen's own timeline.
 - `todayInputChip.test.ts` — the input chip follows a piano that connects late.
 - `todaySessionLength.test.ts` — the session-length picker remembers which day it belongs to.
 - `tracks.test.ts` — one answer to "which tracks are on".
@@ -405,6 +462,7 @@ transition.
 - `test_fingering.py` — the generator's fingering tables against Clementi's chart: the thumb positions.
 - `test_generator.py` — the exercise generator's catalog output; ids that must not collide.
 - `test_generator_fingering.py` — fingerings on melodic lines the chord check cannot see.
+- `test_generator_invariants.py` — one row per maker in `generate_exercises.py` and what each family *promises* (length, key, hand range, spelling, rhythm, text, and that the docstrings are true), plus a census that no family escapes every mutation. `TestEveryMakerIsHere` fails if a maker is added without a row, so the table is the module rather than a sample of it.
 - `test_hanon.py` — Hanon 1–20 against the printed score.
 - `test_harmony_families.py` — the P12b harmony families, one class per family.
 - `test_import_kern.py` — the `[KERN]` importer's licence gate on tiny fixture repositories.
@@ -416,6 +474,7 @@ transition.
 - `test_pdmx.py` — the PDMX quarry gate by gate and once end to end, on a fixture archive.
 - `test_render_check.py` — the judgements `render_check.py` makes about a render report.
 - `test_renumber.py` — bars numbered from 1 unless the first bar is a pickup.
+- `test_score_checks.py` — the seven score checks, each red on the fault it was written for and green on a named clean control; the catalog the gate is handed; and that `settle_key_signatures` says what it does.
 - `test_serve_lan.py` — the laptop as the app's origin: the manifest type, `Service-Worker-Allowed`, the certificate.
 - `test_silent_staff.py` — a staff with nothing to play is left out.
 - `test_technique_units.py` — `add_technique_units.py` is idempotent.
@@ -425,4 +484,11 @@ transition.
 - `test_validate_p11.py` — one track list, orphans, estimated levels.
 - `test_validate_reach.py` — a core rung may not reach too far above its stage for a song.
 - `test_validate_sections.py` — named sections name bars the piece has, from either bar-count source.
+- `test_validate_tools.py` — a rung's `tools` open something the rung has: a lab preset the lab knows, an `unlock` its preset really locks, a `mode` the lab has, an `item` among the rung's own options — songs **or** exercises since 2026-09-22 — and no `item` at all on a `ladder`.
 - `mxlutil.py`, `fixtures/` — helpers and fixtures, not tests.
+
+### `tools/midi-cleanup/tests/` — Python, `python -m unittest discover -s tools/midi-cleanup/tests -t tools/midi-cleanup/tests`
+
+Outside the content pipeline, because the converter is (`03` §3's source table says so).
+
+- `test_converter.py` — the committed harness for `midi_to_musicxml.py`: the hand split and the three places it is provably wrong, one quantisation grid per bar, a length that is not a rhythm cut and tied, the swing gate, the two hands written as one braced grand staff, and — counted from the file's own bytes rather than from the reader under test — that no note is lost or invented. The cases that need the three real Disklavier recordings are `skipUnless`, because `build/` is gitignored; the skip message names the files.

@@ -1,5 +1,5 @@
 ---
-title: "Improv & composition, Stage 9 — Something finished, with your name on it"
+title: "Something finished, with your name on it"
 stage: 9
 unit: "improv.9.1"
 videos:

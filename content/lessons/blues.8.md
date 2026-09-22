@@ -1,5 +1,5 @@
 ---
-title: "Blues, Stage 8 — The form in twelve keys, and what the ninth chord adds"
+title: "The form in twelve keys, and what the ninth chord adds"
 stage: 8
 unit: "blues.8.1"
 videos:

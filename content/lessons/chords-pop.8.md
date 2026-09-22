@@ -1,5 +1,5 @@
 ---
-title: "Chords & pop, Stage 8 — Playing a song in the key the singer needs"
+title: "Playing a song in the key the singer needs"
 stage: 8
 unit: "chords-pop.8.1"
 videos:

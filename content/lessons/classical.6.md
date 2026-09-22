@@ -1,5 +1,5 @@
 ---
-title: "Classical track, Stage 6 — voicing, rubato and the Romantic miniature"
+title: "Voicing, rubato and the Romantic miniature"
 stage: 6
 unit: "classical.6.1"
 videos:

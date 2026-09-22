@@ -36,15 +36,16 @@ beat one, and the note on four already belongs to the next bar's chord. The
 groove study puts them together, two notes on top of the bass, and neither hand
 is on the beat. Left hand alone first, then the two notes.
 
+**Repertoire for this rung.** Three options — the three pieces above — and all
+three are written on two staves, which is what this rung is for: the
+accompaniment is printed rather than left to you to invent.
+
 **Tools for this rung.** There is no button on this page, and that is
 deliberate: the two controls you want are on the score itself. *Loop* takes the
 bars you mark — double-tap the sheet to mark them — and *Ladder* raises the
 tempo a notch after each clean pass and drops it a notch after a pass with a
 mistake in it. Four bars of a tango left hand on the ladder are worth more than
 one slow read of the whole piece.
-
-**Three options**, all three written on two staves, which is what this rung is
-for: the accompaniment is printed rather than left to you to invent.
 
 **Common mistake.** Practising the right hand because it has the tune. In all
 three of these the right hand is the easier half; the difficulty is a left hand

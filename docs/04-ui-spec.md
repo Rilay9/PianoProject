@@ -308,10 +308,34 @@ promise — the app is not marking you — and the name is the owner's word for 
 - Every lesson is openable regardless of status. Lesson page has **"I already know this"**
   (marks self-passed; distinct badge from a measured pass) and **"Quick check"** (a 2–3 minute
   measured test built from the lesson's drills) so the owner can move on fast or confirm.
-- Lesson page: concept text (markdown), videos (list of link cards opening YouTube), **Exercise
-  options** and **Song options** as cards (title, composer, level, hands, duration, source
-  badge, status badge new/started/passed/mastered, "Import needed" for `[IMPORT]`). Any card
-  → Score screen. "Mark lesson done manually" (with confirmation) for the no-MIDI honour path.
+- Lesson page, **in the order it is drawn** (`LessonScreen.ts`, `body.append`): the status
+  line, the rung's own actions, *Ways to play this* (§3d, hidden where the rung names no
+  tool), **Exercise options** and **Song options** as cards (title, composer, level, hands,
+  duration, source badge, status badge new/started/passed/mastered, "Import needed" for
+  `[IMPORT]`), *From your own books*, *More for this rung*, then **Concept** — the lesson
+  text — and **Videos** (link cards opening YouTube). Any card → Score screen. "Mark lesson
+  done manually" (with confirmation) for the no-MIDI honour path.
+  *(Corrected 2026-09-22: this bullet listed the concept text and the videos **first**, which
+  was the page until the 2026-09-12 ranking pass moved them. The options are the subject and
+  R1 is about them; the file's own comment says so — "then everything that is read once and
+  acted on rarely". The cost is that the prose paragraph a lesson heads **Tools for this
+  rung** now sits several screens below the block headed *Ways to play this* that it
+  explains; that pairing is the one thing about this order worth looking at again.)*
+- **An empty *Song options* block says which kind of empty it is** (R4; added 2026-09-22).
+  Nineteen rungs list no song and they mean three different things by it, so there are three
+  sentences (`noSongsSentence` in `LessonScreen.ts`, and `lessonSongEmpty.test.ts`): a
+  `songOptional` rung is *finished* on its exercises (`02` Part G) and says so; an
+  `optionsExempt` rung — posture, the keyboard's layout, the placement test — says its
+  exercises are the whole of it; and only a rung the quarry has not filled says "yet". The
+  first used to end "(docs/00 D21)", which is this repository citing itself in front of
+  somebody at a piano, and the second used to say "yet" about a song that is never coming.
+  **Videos is the block that still does not do this**: with no video it draws its heading
+  and *No videos listed for this lesson.* on the twenty-seven rungs — every rock, latin and
+  hymns rung, `holiday.3`–`.7`, `jam.5`–`.7`, `jazz.3`, `jazz.4`, `ragtime.9` and the whole
+  practice module — whose front matter names none. R4 asks for the sentence **and the one
+  control it suggests**, and there is no control, so either the block goes where there is
+  nothing in it or those rungs get the free teacher their track already names in `02` Part D.
+  Not decided here.
 - **What this rung still needs** (P15, replan §4.2). One line above the options: "This rung
   wants one more song to reach the floor of 3. Find one, or play what is here." The numbers
   are `needs`, written into the built curriculum by `validate.py` — the lesson page reads

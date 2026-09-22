@@ -1,5 +1,5 @@
 ---
-title: "Hymns and gospel — four-part texture and walk-ups"
+title: "Four-part texture and walk-ups"
 stage: 3
 unit: "hymns-gospel.3.1"
 videos:

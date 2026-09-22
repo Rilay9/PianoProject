@@ -1,5 +1,5 @@
 ---
-title: "Theory & ear, Stage 9 — From a phrase to a form"
+title: "From a phrase to a form"
 stage: 9
 unit: "theory.9.1"
 videos:

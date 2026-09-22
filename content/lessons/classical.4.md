@@ -1,5 +1,5 @@
 ---
-title: "Classical track, Stage 4 — Grade 1 pieces and articulation"
+title: "Grade 1 pieces and articulation"
 stage: 4
 unit: "classical.4.1"
 videos:

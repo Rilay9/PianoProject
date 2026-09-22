@@ -1,5 +1,5 @@
 ---
-title: "Improvisation, Stage 3 — playing over a loop"
+title: "Playing over a loop"
 stage: 3
 unit: "improv-compose.3.1"
 videos:

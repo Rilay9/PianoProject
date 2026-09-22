@@ -1,5 +1,5 @@
 ---
-title: "Technique, Stage 7 — double notes, octaves, and a pedal that is not a switch"
+title: "Two notes at once in one hand, octaves, and a pedal that is not a switch"
 stage: 7
 unit: "technique.7.1"
 videos:

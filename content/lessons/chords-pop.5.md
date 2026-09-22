@@ -1,5 +1,5 @@
 ---
-title: "Chords and pop, Stage 5 — seventh chords and accompaniment textures"
+title: "Seventh chords and accompaniment textures"
 stage: 5
 unit: "chords-pop.5.1"
 videos:

@@ -1,5 +1,5 @@
 ---
-title: "Improv & composition, Stage 8 — Changing the chords under a melody you did not write"
+title: "Changing the chords under a melody you did not write"
 stage: 8
 unit: "improv.8.1"
 videos:

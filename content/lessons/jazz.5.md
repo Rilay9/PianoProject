@@ -1,5 +1,5 @@
 ---
-title: "Jazz track, Stage 5 — swing, shell voicings and ii-V-I"
+title: "Swing, shell voicings and ii-V-I"
 stage: 5
 unit: "jazz.5.1"
 videos:

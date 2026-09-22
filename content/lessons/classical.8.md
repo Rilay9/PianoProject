@@ -1,5 +1,5 @@
 ---
-title: "Classical track, Stage 8 — étude technique, and pieces that need a plan"
+title: "Etude technique, and pieces that need a plan"
 stage: 8
 unit: "classical.8.1"
 videos:

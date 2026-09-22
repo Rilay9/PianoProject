@@ -1,5 +1,5 @@
 ---
-title: "Holiday music — carols you can play this year"
+title: "Carols you can play this year"
 stage: 2
 unit: "holiday.2.1"
 videos:

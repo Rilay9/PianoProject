@@ -524,9 +524,22 @@ numerals you type; a minor key gets its own numerals), a left-hand pattern, a ri
   works on it. It is filed in the Library under *Accompaniment lab*; the same choices
   give the same row, and only the newest few builds are kept, so an evening of trying
   progressions does not fill the Library with scratch.
-- **Jam it** keeps the same chords in time over the chord chart's bass-and-drums bed,
-  marks the bar you are in and lights its chord tones on the keys. Nothing is judged and
-  nothing is recorded; changing a setting under a running loop stops it and says so.
+- **Jam it** keeps the same chords in time over a bass-and-drums bed, marks the bar you are
+  in and lights its chord tones on the keys. Nothing is judged and nothing is recorded;
+  changing a setting under a running loop stops it and says so.
+- **Two chip rows under those buttons change what *Jam it* does** (added 2026-09-22, and
+  this section did not have them). *What the app plays* is **Bed only** (bass and drums, as
+  above), **Hold the chords** (the bed plays the harmony underneath, so the tune is yours)
+  or **Play the tune** (the app takes the right hand, so the chords are yours). *Trading
+  fours* is **Off · 2 bars each · 4 bars each**: the app plays that many bars over the bed
+  and then leaves you the same number, round and round. The two rows are exclusive — trading
+  fours *is* the bed taking its own bars. At the end of a time round a quiet line counts how
+  many of your notes were in the scale, or on the bar's chord; it is a count and not a mark,
+  and still nothing is recorded.
+- **A preset chip row, *Start from*, sits above everything**: Primary chords, Pop, Ballad,
+  Blues, Jazz, Rock, or Free. A preset fixes what makes it that style and leaves the rest —
+  the key and the tempo are yours on all of them. Every control on the screen carries a line
+  under it saying what it does.
 
 ---
 
@@ -565,6 +578,70 @@ It answers, in order:
 
 If something breaks mid-practice, a red banner appears at the bottom with
 **Copy details**. That is the fastest thing to send.
+
+---
+
+## 6a. The four things you might run on the laptop
+
+§1 builds the app. Three other things live on the laptop and are not mentioned
+anywhere else in this guide, which is the reason this section exists. All four
+are run from the repository folder, and on Windows Python is `py -3.11` — the
+launcher, at the version music21 is installed for — rather than `python3`.
+
+**1. Build the content.** `py -3.11 tools/content/build.py --offline`, as in
+§1B. It prints one line per step and stops on the first failure. **Two steps can
+stop it**, and the difference tells you where to look:
+
+- *score checks* — a score file with something wrong in it (a bar that does not
+  add up, a piece filed under two ids, a title naming the wrong key). The line
+  names the row. Known and accepted ones live in
+  `content/score-checks.allow.json` with a reason each.
+- *validate* — the content around the files: a rung under its floor of three
+  options, a missing lesson, a stale `docs/generated/ladder.md`.
+
+`tools/content/README.md` is the fuller version: every step, what to run on its
+own, and how to add a tune of your own in ABC.
+
+**2. Run the checks.** Nothing here needs the phone. From `app/`:
+
+```bash
+npx tsc -b          # typecheck. `tsc --noEmit -p` exits 0 having checked nothing
+npm run lint
+npx vitest run      # the unit suite: no browser, safe to run any time
+npx playwright test --workers=4        # the browser suite — one at a time
+```
+
+Playwright is the only one with a rule attached: **one suite at a time**, because
+every config shares port 4173, and nothing may rebuild the app while one is
+running (a rebuild swaps the service worker under the run and it hangs). The
+Python side is `python3 -m unittest discover -s tools/content/tests -t tools/content`.
+`docs/08-test-map.md` says which test proves which part, and lists every file.
+
+**3. Turn a recording into a score.** `tools/midi-cleanup/midi_to_musicxml.py`
+takes a MIDI file off the piano and writes MusicXML the app can read — it snaps
+the timing to a grid, splits one track of two-hand playing into two staves,
+spells the notes from the key, and rebuilds the bars so each one adds up. It is
+separate from the content pipeline and the build never runs it.
+
+```bash
+py -3.11 tools/midi-cleanup/midi_to_musicxml.py recording.mid -o recording.musicxml
+```
+
+`--time-signature 3/4` if the recording is a waltz — a keyboard usually stamps
+4/4 whatever you played, and the tool does not guess. `--key`, `--hands` and
+`--divisors` are there for the same reason. It reads its own output back before
+it exits and refuses rather than writing a file it cannot verify. Then import
+the result through **Library → Import a score** (§4).
+
+**4. Quarry more music out of the archive.** `tools/content/pdmx/README.md` is
+the whole of it, step by step, with the commands written for PowerShell. The
+short version: point `PIANOPATH_PDMX_DIR` at the folder holding `PDMX.csv` and
+`mxl.tar.gz`, then `index.py` to browse the archive and pick, `extract.py` to
+pull those files out of the tarball, `quarry.py` to run the machine gates and
+render each one, `review.py` to write the page where **you** mark each keep or
+drop, and `commit.py` to copy the keeps into the repository. Nothing is bundled
+that you have not marked `keep`, and the archive itself never enters the
+repository.
 
 ---
 

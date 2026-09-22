@@ -8186,3 +8186,405 @@ number is the model's honest output from its own inputs.
    than by reading 37,000 scores.* Checked against that, the answer is no for all three and
    the reason is the same one twice over — the music exists and sits two to four levels too
    high — plus, for the cakewalk, one licence flag nobody has decided about.
+
+---
+
+### Entry 45 — T20: the whole thing read as one, and the places it says two things (2026-09-22)
+
+Appended after Entry 44 so this file stays ascending, which is the convention Entry 25
+records. The brief gave this entry the number **45**.
+
+**Nothing here was heard, and nothing was played.** Every judgement below is a file read, a
+count taken off the built catalog or the built curriculum, or a sentence read on a screen in
+a headless browser at 342×740. Whether any of the 109 lessons *teaches* is the question none
+of it answers, and no check in this repository decides it.
+
+**The first thing to know, because it is not about the review at all: `build.py --offline`
+exits 1 on the tree at HEAD.** The score-checks gate Entry 34 installed refuses
+`song.classical.nazareth-carioca-1913.pdmx` — `repeat-structure | endings-out-of-order
+['1-3', 2, 1, 2, 1, 2]` — which is one of the eight rows Entry 44 spliced into
+`content/sources/pdmx.json` and whose own entry says "The content build was not run, by
+instruction". So the splice has sat red since it landed. The build writes its output and
+`validate.py` still reports OK afterwards, which is why it is easy to miss. It is one line in
+`content/score-checks.allow.json` with a reason, or a repaired file, and neither is this
+task's to decide. **Everything below was built and checked with that one step failing.**
+
+---
+
+## Part 1 — as the learner
+
+### Continuity: nine places two names are used for one thing, and eight stale references
+
+The brief asks for both, and they are one numbered list because several items are both at
+once. **Items 1–9 are two names for one thing** — a heading, a title, a track name, a mode
+name, a prerequisite chain that disagrees with the prose. **Items 10–17 are stale
+references**: a sentence in a document that has stopped being true of the tree. The heading
+on this section said "seventeen places two names are used for one thing" until the closing
+checklist counted them.
+
+Read mechanically wherever it could be, so that the list is the corpus and not a sample:
+109 lesson files, the built curriculum, and the strings the screens actually draw.
+
+1. **"Tools for this rung" against "Ways to play this".** Ninety-seven of the 109 lessons
+   head a paragraph **Tools for this rung.**; `LessonScreen.ts` heads the block of buttons
+   **Ways to play this**, and `04` §3d calls it that too. The learner meets the block at the
+   top of the page and the paragraph explaining it at the bottom (see the on-screen list).
+   **Not renamed**, and the reason is worth more than the fault: **seventeen** of the
+   ninety-seven paragraphs sit on rungs that draw no block at all — `0.2`, `1.4`, `1.5`,
+   `2.2`, `2.4`, `3.4`, `4.5`, `classical.3`, `improv.3`, `jazz.3`, `latin.6`, `latin.7`,
+   `practice.1`, `.2`, `.3`, `.5` and `technique.8` — because what they describe is a
+   Score-screen row (*Rhythm only*, *Loop*, *Ladder*, *Blind*, *Perform*, *Hands*) or a
+   drill's own *Show me*. A blanket rename would point sixteen of those at a heading the page
+   never prints. Either the block takes the lessons' words, or the seventeen take a different
+   heading; it is one decision and it is the owner's.
+2. **Every rung had two titles.** Sixty-one lesson files carried a front-matter `title:`
+   that is not the rung's title in `content/curriculum/*.json` — fifty-five of them with a
+   "Track, Stage N — " prefix ("Classical track, Stage 6 — voicing, rubato and the Romantic
+   miniature" against the curriculum's "Voicing, rubato and the Romantic miniature"). The
+   screens all use the curriculum's: `LessonScreen.ts` sets the `h1` from `lesson.title`.
+   Nothing reads the front-matter one, on **three** searches — every `parseFrontMatter` call
+   site in `app/src` (`tips.ts` and `ScoreScreen.ts` take the body only; `LessonScreen.ts`
+   reads `data.videos` and nothing else), a grep for the keys over `app/src` and `tools/`,
+   and the pipeline's own handling (`build.py`'s `copy_lessons` is a `shutil.copytree`).
+   **Fixed**: all 61 now carry the curriculum's title. `technique.5` is the one that shows
+   where they came from — its front matter held the *unit* title that
+   `add_technique_units.py` writes, not the rung's.
+3. **The same track spelled four ways inside those prefixes** — "Blues" / "Blues track",
+   "Chords and pop" / "Chords & pop", "Improvisation" / "Improv & composition",
+   "Theory and ear" / "Theory & ear", "Jazz" / "Jazz track" — with the split falling between
+   Stage 5 and Stage 6 on every one of them, which is where one sitting stopped and another
+   began. Gone with item 2.
+4. **"Wait mode" and "Tempo mode" on the Skills screen.** `content/curriculum/concepts.json`
+   `:4184` and `:3656` give those two concepts those display names, and `SkillsScreen.ts`
+   prints a concept's display name as the card's title — **confirmed by driving it**, not
+   read off the file: `#/plan/skills` shows cards headed *Wait mode* and *Tempo mode* while
+   the Score screen's own selector says *Wait for me* and *Keep tempo*. Entry 39 found this
+   and could not act on it; `concepts.json` is not this task's file either. `:2600` is a
+   third of the same shape, *Performance mode*, against the Score screen's *Perform* row —
+   that one did not come back from a `find` for "Performance" on `#/plan/skills`. **That is
+   one search over the drawn page and not over the screen**: `04` §3a says Skills opens on
+   what needs attention and hides the rest behind *Show all*, so the card may simply not
+   have been drawn. It is recorded as the search it was, not as an absence.
+5. **The Library's track filter prints slugs.** `LibraryScreen.ts:1075` writes
+   `el('option', { value: track, text: track })`, so the filter offers *blues-boogie*,
+   *chords-pop*, *hymns-gospel*, *improv-compose*, *rock-metal*, *theory-ear* and
+   *film-game* while the Plan screen's Tracks sheet offers *Blues & boogie*, *Chords & pop*
+   and the rest from `curriculum.json`'s `tracks[].title`. The count line repeats the slug —
+   *61 of 2061 items · latin*. `:622` prints them again on the item detail sheet's *Tracks*
+   row. `00-invariants` §1: no internal identifiers on screen. `film-game` also appears there
+   as a track, which `02` Part B says it is not.
+6. **`rock.overview` numbers its four textures Stage 4, 5, 6, 7 in order and the data does
+   not chain them that way**: `rock.6`'s prerequisite is `rock.4`, so `rock.5` — the open
+   voicings the prose puts second — hangs off the ladder. Read in the built curriculum.
+7. **Four more tracks whose second rung is not chained to their first**: `4.7` (which its
+   own lesson calls "the end of the core path") has **no** prerequisite while `4.6` has
+   three; `holiday.4` takes `holiday` and skips `holiday.3`; `hymns` takes `3.2` rather than
+   `hymns.2`; `latin` takes `4.5` rather than `latin.3`. Only `jazz.4` taking `chords-pop.4`
+   is a stated decision (Entry 37). Nothing is locked by default (`00` D17), so the cost
+   today is the strict-prerequisite setting and the recommender's order, not a wall.
+8. **`00-tracks.json` still says `startsAtStage: 5` for `latin` and `jazz`**, whose first
+   rungs are at Stage 3. Entries 36 and 37 both left this as a follow-up; it is still open.
+   Grepped: the field's only consumer is `ladder_report.py`'s section sort.
+9. **`02` Part B's track list had `hymns-gospel` in the Stage 3 group.** Fixed — see Part 2.
+10. **`03` §6 listed `concepts[]` as lesson front matter.** No lesson carries it (the
+    front-matter keys of all 109 counted: `title` 109, `stage` 109, `unit` 109, `videos` 82,
+    `readingTime` 109). Fixed.
+11. **`00-overview.md` said "fifteen tracks" and listed fourteen.** Fixed.
+12. **`03` §6 called `classical.6` "twenty-one Romantic miniatures"**; the rung offers six
+    songs and nine exercises. Fixed.
+13. **`05` §9a said "ninety-eight rungs"**; there are 109 and every one carries
+    `minTempoPct`. Fixed, as a relationship rather than a new number.
+14. **`04` §3 described the lesson page in the order concept-text-first**, which the
+    2026-09-12 ranking pass reversed. Fixed against `LessonScreen.ts`'s `body.append`.
+15. **`03` §3 had ten steps and the build runs eleven**, and said validate "is the step that
+    fails a build" when the score-checks gate does too. Fixed.
+16. **`03` §3's "so nothing in the directory is a mystery" was false of seven scripts** —
+    `archive_notation.py`, `archive_search.py`, `candidates.py`, `dump_score.py`,
+    `notation.py`, `rung_audit.py`, `score_checks.py`. Fixed.
+17. **`08-test-map.md` was missing forty-six files.** Fixed; the index is complete again and
+    carries the one-liner that finds the next gap.
+
+**Three step-number citations in the code are already stale and were left alone**, being
+outside this task's files: `tools/content/tests/test_author.py:2` cites `03` §3 step 4 for
+`author.py`, which is step 6; `tools/content/validate.py:48` cites step 5 for a duration
+rule that is step 9's; and `app/tests/e2e/content-render.spec.ts` cites steps 5–6 for the
+render check, which is step 10. The new step was lettered **7a** rather than numbered so that
+nothing else moved.
+
+**One thing that looked like a fault and is not**, recorded because the reason survives into
+the record (`working-rules` §2.16): twenty rung options have titles starting in lower case
+(*ii-V-I in C — shells*, *sus4 voicings in F*, *add9 voicings in C*, *quartal (stacked 4ths)
+voicings in F*, and Sakamoto's *andata*). Every one is a musical term or a real title that is
+lower case; a sentence-case sweep would have been wrong.
+
+### Voice: four lessons out of family, and the smallest edit for each
+
+The corpus is remarkably level — 103 of 109 read in two or three minutes, 109 of 109 end
+*How you'll know you've got it*, 103 of 109 carry *Common mistake* (the six that do not are
+the five technique rungs and `4.7`, which `lessonShape.test.ts` records as deliberate). What
+is out of family:
+
+1. **`practice.1` to `.5` used `##` markdown headings** — fourteen of them — where all 104
+   others use a bold run-in. It is the one thing in the corpus that reads as a different
+   hand, and it shows on the screen: a `##` renders as an `h2` inside the lesson text, a
+   second heading level under *Concept*. **Fixed**: the fourteen headings are run-in now,
+   the paragraphs re-wrapped to the corpus's 78 columns, `readingTime` recounted on all five
+   (unchanged at 2, 2, 2, 2, 3). `practice.4`'s "## Pain" became "**Pain — stop.**" rather
+   than "**Pain.** **Stop.**", two bolds in a row.
+2. **`latin.6` and `latin.7` put their repertoire paragraph *after* the tools paragraph**,
+   headed "**Three options**, …" where the other 107 head it *Repertoire for this rung* or
+   *Repertoire* and put it before the tools. **Fixed**; `readingTime` recounted (3 and 3,
+   unchanged).
+3. **`ragtime.6` is 1,082 words — six minutes.** The next longest is `classical.6` at 661 and
+   the median is about 460, so it is two and a half times a lesson and more than half again
+   the next. It is on `lessonShape.test.ts`'s `KNOWN_LONG` list and reads as a chapter rather
+   than a rung. **Not edited**: the smallest edit is to move the trio-by-trio walk-through of
+   the three rags into the pieces' own rows, and every sentence of it is a fact under a claim
+   row from Entries 39–40 — cutting them is a content decision, not a voice one. Recorded in
+   `03` §6 beside the cap it is an exception to.
+4. **Twenty-seven lessons name no teaching video** and eighty-two do, which the learner sees
+   as an empty *Videos* block (below, counted per track). The smallest edit is one video per
+   rung from the free teachers `02` Part D already names for that track; it is content and
+   it is not this task's.
+
+### Clarity on a 342 px phone: what a learner cannot work out, and the sentence for it
+
+Driven in a headless browser at 342×740, from Today, with all fifteen tracks switched on:
+Today, then Plan, then the Tracks sheet, then thirty lesson pages, then the Library and its
+filters, then the Skills screen. **One sentence was changed in `app/src`, with a test proved
+red.**
+
+- **Fixed — the *Song options* block on a rung that has none.** Nineteen rungs list no song
+  and mean three different things by it, and two sentences covered all three.
+  - Sixteen `songOptional` rungs — every theory rung, six improvisation rungs, `jam.5`,
+    `jam.6`, `technique.8` — printed *"No song tests this skill — two exercises complete the
+    lesson **(docs/00 D21)**."* That parenthesis is this repository citing itself in front of
+    somebody at a piano. `lessonShape.test.ts` has three separate rules against a **lesson**
+    doing exactly that (a module slug, a `camelCase` field, a `docs/NN` citation) and nothing
+    said anything about a screen doing it.
+  - Three `optionsExempt` rungs — `0.1` posture, `0.2` the keyboard's layout, `0.4` the
+    placement test — printed *"No songs listed for this lesson **yet**."* There is no song
+    coming; "yet" reads as a shortfall on a rung that is complete by design.
+  - Now: *No song tests this skill — two exercises finish this rung.* ·
+    *No songs on this rung — its exercises are the whole of it.* · and "yet" kept for the
+    only case it is true of, a rung the quarry has not filled.
+  - `noSongsSentence` in `LessonScreen.ts`, tested by `app/tests/unit/lessonSongEmpty.test.ts`
+    (new, 8 tests). **Proved red** by putting the two shipped sentences back: **6 of 8
+    failed**, with *expected 'No song tests this skill — two exerci…' not to contain
+    'docs/'* and *expected 'No songs listed for this lesson yet.' not to contain 'yet'*.
+    Restored and green. Both sentences were then read **on the real screen** at 342 px on
+    `theory.3` and `0.1`. Four of the eight assertions are over the whole built curriculum
+    rather than a fixture, so a rung that gains or loses `songOptional` is covered without
+    anybody coming back here. `04` §3 carries the rule.
+- **Recorded, not fixed — the *Videos* block has the same shape and no control to offer.**
+  With no video it draws its heading and *No videos listed for this lesson.* on the
+  twenty-seven rungs above. **Counted per track, because the first draft of this sentence
+  said "every rock, latin and hymns rung" and in each of those three the track's remaining
+  rung does name one** (`working-rules` §2.2): holiday 5 of 6 (`holiday` has one), hymns 4
+  of 5 (`hymns` has one), latin 3 of 4 (`latin` has one), rock 4 of 5 (`rock.overview` has
+  one), jam 3 of 4 (`jam` has one), jazz 2 of 7 (`jazz.3`, `jazz.4`), ragtime 1 of 5
+  (`ragtime.9`), practice 5 of 5. Every core, classical, chords-pop, blues, theory and
+  improv rung names one. The pattern is the sitting rather than the track: the rung built
+  first got a video and the rungs added later did not. R4 asks for the sentence **and the
+  one control it suggests** and there is none, so it is either a hidden block (the shape
+  *Ways to play this* already uses) or a free teacher from `02` Part D. **The sentence, if it
+  stays:** *"No video for this rung yet — <teacher> covers this on the <track> track."* The
+  decision is the owner's and is written into `04` §3.
+- **Recorded — the lesson text is the last thing on the lesson page.** *Concept* sits under
+  the status line, the actions, *Ways to play this*, the exercise rows, the song rows, *From
+  your own books* and *More for this rung*. That is deliberate and the file says why, and on
+  `latin.3` at 342 px it means the paragraph headed *Tools for this rung* is several screens
+  below the block headed *Ways to play this* that it is about. Item 1 of the continuity list
+  is the same fault seen from the other end.
+- **Recorded — the Library's filters are the one place a learner meets a slug** (item 5).
+  The count line above the list says *61 of 2061 items · latin*.
+- **Recorded — seven rung songs print `NA` where the composer goes**, and thirteen rung
+  titles carry the uploader's own trailing attribution so the title says the composer and the
+  line under it says `NA` or says it again: `hymns.6`'s first row reads *Holy holy holy Lord
+  God of hosts (Hugg) - Geo. C. Hugg* over *NA*, `latin.6`'s reads *Tango La Cumparsita -
+  Piano Solo (Tutorial Parte B)* over *NA*, and *Por Una Cabeza - Carlos Gardel* is on the
+  same rung. Entry 36 named two of these; the `NA` composer is new here. They are rows in
+  `content/sources/pdmx.json`.
+- **Works, and worth saying because it is the question the brief asked:** from Today a
+  learner can read the session card's first row, tap the play button, and get the Score
+  screen; the rung page says *This rung has 8 options — enough to choose between* rather than
+  a bare count; every tool button on every rung opened the thing its lesson named (Entry 41
+  proved that mechanically and eleven of them were pressed in a browser by Entry 38).
+  Nothing in the walk needed a manual except the two empty blocks above.
+
+### The genre story, one line per track
+
+Built stages against the plan's, and the Library shelf behind each — the shelf counted as
+catalog rows carrying that track, songs and items apart, from the catalog this build wrote.
+
+| track | rungs | plan | Library shelf | the line |
+|---|---|---|---|---|
+| Core path | 27, stages 0–4 | — | 115 songs / 1,017 items | The spine, and the only track whose shelf is mostly exercises its own rungs use. Ends at `4.7`, which says so. |
+| How to practise | 5, stage 1 | — | 0 / 0 | Deliberately has no shelf: every option is borrowed from another rung, which `02` D8a argues for. |
+| Holiday | 6, stages 2–7 | 2–7 | 35 / 40 | **Meets its plan exactly.** The shelf is five rows wider than the rungs, and ten carols Entry 31 listed are still on no rung. |
+| Hymns & gospel | 5, stages 2–6 | 2–6 | 25 / 33 | **Meets its plan exactly.** `hymns` at Stage 3 is the long list by design and eight of the fourteen songs above it are drawn from it. |
+| Classical | 8, stages 3–9 | 3–9 | 554 / 554 | The largest shelf by an order of magnitude, and the only track where the shelf *is* the genre rather than a filter over it. `classical.4.shelf` is 49 of those rows. |
+| Chords & pop | 7, stages 3–9 | 3–8 | 135 / 455 | Runs a stage past its plan. Four of its seven rungs are entirely personal-build songs, so a public build finishes them on exercises — the lessons say so. |
+| Blues & boogie | 7, stages 3–9 | 3–9 | 30 / 146 | **Meets its plan exactly**, and is the one track whose Stage 3 rung teaches the sound before the form. Thirty songs is thin for seven rungs; five unhomed period lead sheets sit at 3.99–4.35 (Entry 37). |
+| Theory & ear | 7, stages 3–9 | 3–7 | 0 / 124 | Two stages past its plan, and the only track with **no songs at all** — by design (`02` Part G), which is why the song-block sentence above mattered most here. |
+| Improvisation | 7, stages 3–9 | 3–7 | 0 / 64 | Two stages past its plan; six of its seven rungs carry no song, and its repertoire from Stage 7 up is the learner's own. |
+| Rock & metal | 5, stages 3–7 | 3–7 | 12 / 34 | **Meets its plan exactly** and is the thinnest real shelf: `rock.4` offers one song, with the lesson arguing for why that is honest. The prose chains 4 to 5 to 6 to 7 and the data does not (item 6). |
+| Latin | 4, stages 3–7 | 3–8 | 13 / 61 | **The one track with a hole in the middle.** `latin.4` (habanera, tresillo) and `latin.8` (modern tango) have no song at any level near their rung — Entries 36 and 44 searched three ways each. The learner goes 3, 5, 6, 7. |
+| Jazz | 7, stages 3–9 | 3–9 | 30 / 311 | **Meets its plan exactly** since `jazz.3`. Its open fault is Entry 37's: `jazz.4` is the swung-eighths rung and two of its three songs have no run of two plain eighths in them. |
+| Jam with a friend | 4, stages 4–7 | 4–7 | 5 / 10 | **Meets its plan exactly** and has the smallest shelf in the app. Its own bullet in `02` D8 promises guitar-key variants of the standards and four of `jam.7`'s five charts are in flat keys; the lesson says so out loud. |
+| Technique | 5, stages 4–8 | — | 0 / 879 | 879 items, no songs, and the three études per rung are on the classical shelf rather than this one. `technique.8` is the one rung with no song option at all. |
+| Ragtime | 5, stages 5–9 | 4–9 | 53 / 66 | **One rung short at the bottom**: `ragtime.4`, the cakewalk, has no music at its level (Entry 37 searched three ways, Entry 44 a fourth and found the corpus behind a licence flag). |
+
+Twelve of the fifteen meet the stage their plan names; latin is two rungs short, ragtime one,
+and the Library's filter for each style holds what its rungs promise — with the caveat that
+for theory, improvisation and technique what it holds is exercises, which is the design.
+
+---
+
+## Part 2 — the documents against the code
+
+Every document the brief named, with what was found and what was done.
+
+| document | found | done |
+|---|---|---|
+| `00-overview.md` | "fifteen tracks" over a list of fourteen; the §6 tree listing omits `pending-review.md`, `audit-2026-09-18.md`, `genre-plans/` and `lesson-audit/` | both fixed |
+| `02-curriculum.md` | Part B's track list had `hymns-gospel` at Stage 3 (and no comma after it); `hymns-gospel.2.1` has been in `stage-2.json` since Entry 20 and `00-tracks.json` says 2 | fixed, with the reason beside it |
+| `03-content-pipeline.md` | §3 listed ten steps and the build runs eleven; "validate … is the step that fails a build" is no longer the whole truth; "nothing in the directory is a mystery" was false of seven scripts; §6 named a front-matter field no lesson has and called `classical.6` twenty-one pieces | all four fixed; the new step is lettered **7a** so no existing step citation moved |
+| `04-ui-spec.md` | §3's lesson-page bullet had the drawn order backwards; nothing described the empty *Song options* or *Videos* blocks | both written, the second with the open decision stated |
+| `05-score-follow-engine.md` | §9a asserted "ninety-eight rungs" | fixed as a relationship, not a new count |
+| `08-test-map.md` | forty-six spec and test files had no line — the fifteen `modes-*`, `trading-fours`, `lab-both-ways`, `score.ladder-route`, `converted-import`, `score.latch`, `lesson-tools`, twenty-one unit files and four Python ones | all forty-six added, plus the new one; a new section for `tools/midi-cleanup/tests/`; the check that finds the next gap written into the heading |
+| `OWNER-GUIDE.md` | the owner could run **the build** (§1B) and nothing else: no mention of the checks, the MIDI converter or the quarry, and §4's lab paragraph predated the chips | **§6a added** — the four things on the laptop, what stops a build and which step, the test commands with the one-Playwright rule, the converter with its `--time-signature` caveat, and the quarry pointed at its own README; §4's lab paragraph brought level |
+| `tools/content/README.md` | the step table omitted `import_kern.py`, `import_pdmx.py` and `score_checks.py`, so the gate that can stop a build was undocumented; every command says `python3` on a Windows machine | both fixed, with the two advisory tools named |
+| `01`, `06`, `07`, `08-score-render-states` | not in the brief's list and not read | — |
+
+`docsConsistency.test.ts` pins three relationships — `03`'s section citations, `03`'s module
+names, and `04`'s sub-screen headings. **What it does not pin, and what this pass found in the
+gap:** the order a screen draws its blocks in, a step list against `build.py`'s own, a count
+of anything, the `08` index against the test directory, and any sentence on a screen. The last
+of those now has one test (`lessonSongEmpty.test.ts`) and the `08` one has a shell line in its
+own heading.
+
+---
+
+## What was run
+
+- `py -3.11 tools/content/build.py --offline` — **exit 1**, on the score-checks gate, for the
+  reason at the top. Ten of the eleven steps ok: 2,061 catalog items, 109 lesson files,
+  `validate.py` OK, 628 `keySig` rows corrected by the merge. The built content under
+  `app/public/content` is current, including the seventy edited lessons.
+- From `app/`: `npx tsc -b` clean · `npm run lint` clean (after one of its own findings, an
+  unnecessary type assertion in the new test) · `npx vitest run` **181 files, 2,844 tests,
+  all passing**, against Entry 43's 180 / 2,836 — one new file and eight new tests, which is
+  what was added.
+- The files the brief names, after the build:
+  `npx vitest run tests/unit/lessonClaims*.test.ts tests/unit/lessonShape.test.ts tests/unit/docsConsistency.test.ts`
+  plus the new one — **6 files, 413 tests, all passing**. `lessonShape` passing is what proves
+  the seven recounted reading times and that no edited lesson crossed the cap.
+- `npm run build:app`, then the two new sentences read on the real screen at 342×740.
+- **No Playwright at all.** Port 4173 was held by a `vite preview` serving this build for the
+  browser walk; nothing was rebuilt under a spec run.
+
+## What is unverified
+
+- **Nothing was heard and nothing was played.** No claim here is about music.
+- **The 109 lessons were read as source markdown, not as 109 lesson pages.** Thirty lesson
+  pages were opened in the browser — at least the first and last rung of each of the fifteen
+  tracks, plus `latin.3`, `2.3`, `1.1`, `4.7`, `theory.3`, `improv.3` and `practice.4`. The
+  screen judgements rest on those thirty and on the page being one template; the voice and
+  continuity judgements rest on the files, which is what the learner reads through that
+  template.
+- **The genre story is the built data, not the music.** Rung counts, option counts, stage
+  ranges and shelf sizes come from `app/public/content/curriculum.json` and `catalog.json`.
+  Whether a track's pieces are *good at that stage* is the question Entries 31–37 each left
+  open and this pass does not touch.
+- **The Library's track filter was driven for one track** (latin, 61 of 2,061). The other
+  fourteen counts are the catalog's `tracks` field, not the screen's.
+- **The `00-overview` §1 fix rests on a count of a list**, not on a re-derivation of what a
+  track is. `02` Part B counts the same fifteen with `core` inside them and both are now
+  self-consistent; whether `core` *should* be a track is not asked here.
+- **Sixty-one front-matter titles were rewritten in one pass**, which is the batch
+  `working-rules` §2.4 warns about. What makes it safe rather than lucky: the replacement is
+  the curriculum's own string, the field has no reader, the comparison was re-run afterwards
+  and returns empty, `git diff --numstat` shows sixty-one files with exactly one line changed
+  each, and no `videos:` or `readingTime:` line moved anywhere in `content/lessons`.
+- **`ragtime.6` was left long** and `practice.*` was re-wrapped; neither was read aloud and
+  the second is a judgement about a source file's shape as much as a lesson's.
+- **The empty *Videos* block, the "Tools for this rung" heading, the Library's slugs, the
+  seven `NA` composers and the five broken prerequisite chains were recorded and not fixed**,
+  each for a stated reason: the file is outside this task's set, or the fix is a decision
+  rather than a repair.
+- **No screenshot was compared against a baseline** and no picture was taken. The screen
+  reading was `get_page_text` and `read_page` — the accessibility tree and the text, which is
+  what a sentence lives in and is not what a layout lives in.
+
+## Follow-ups
+
+1. **The build is red.** `song.classical.nazareth-carioca-1913.pdmx`: open it, decide, and
+   either repair the endings or add the row to `content/score-checks.allow.json` with a
+   reason. Until then every build exits 1.
+2. **`concepts.json` `:2600`, `:3656`, `:4184`** — three concept display names that are the
+   old mode names. One line each.
+3. **`LibraryScreen.ts:1075` and `:622`** — the track filter and the detail sheet print the
+   slug. `curriculum.json` already carries `tracks[].title`.
+4. **The *Videos* block on twenty-seven rungs** — hide it, or give those rungs the free
+   teacher `02` Part D already names for their track.
+5. **The "Tools for this rung" / "Ways to play this" pairing**, and the seventeen paragraphs
+   that are not about the block at all.
+6. **`00-tracks.json`'s `startsAtStage` for `latin` and `jazz`** — third entry running.
+7. **The five prerequisite chains** — `4.7`, `holiday.4`, `hymns`, `latin`, `rock.6`.
+8. **Seven rung rows whose composer prints as `NA`** and thirteen whose title carries the
+   uploader's attribution.
+9. **Three stale `03` §3 step citations** in `test_author.py`, `validate.py` and
+   `content-render.spec.ts`.
+
+## Files
+
+`docs/00-overview.md` (§1, §6), `docs/02-curriculum.md` (Part B), `docs/03-content-pipeline.md`
+(§3, §6), `docs/04-ui-spec.md` (§3), `docs/05-score-follow-engine.md` (§9a),
+`docs/08-test-map.md` (forty-seven lines and a new section), `docs/OWNER-GUIDE.md` (§4, new
+§6a), `tools/content/README.md`; `content/lessons/` — sixty-one front-matter titles,
+`practice.1` to `.5`, `latin.6`, `latin.7`; `app/src/ui/screens/LessonScreen.ts`
+(`noSongsSentence`); `app/tests/unit/lessonSongEmpty.test.ts` (new); this entry. Nothing under
+`content/curriculum/`, `content/sources/` or `tools/content/*.py` was touched. Nothing was
+committed.
+
+## The `CLAUDE.md` checklist, run against this entry
+
+1. **Did I state an absence?** Four, each with its searches. "Nothing reads the lesson
+   front-matter title" is three searches, named in continuity item 2. "No lesson carries
+   `concepts[]`" is a count of the front-matter keys of all 109 rather than a grep. "Seven
+   scripts are unnamed in `03`" and "forty-six files are missing from `08`" are set
+   differences over the directories, and the second was re-run after the edit and returns
+   empty.
+2. **Did I write a plural?** Constantly, and every one is counted rather than sampled: 97
+   lessons, 17 of them on rungs with no block; 61 titles; 27 lessons with no video, listed;
+   19 song-less rungs split 16 and 3; 7 `NA` composers and 13 uploader titles, listed; 46
+   test files, listed. **The checklist caught one**: "the Skills screen shows the old mode
+   names" was going to be written from `concepts.json`. Driven, it shows two of the three —
+   and *Performance mode* was not on the screen at all, which the entry now says instead of
+   rounding three up from two.
+3. **What proxy did I use?** Three, named where they are used. The **source markdown** stands
+   in for the lesson page: thirty pages were opened to check that it does. The **built
+   catalog and curriculum** stand in for the Library and the Plan: one track's filter was
+   driven to check that it does. The **accessibility tree** stands in for the screen, which
+   is honest for a sentence and is not evidence about a layout — so no layout claim is made.
+4. **Green is not done.** *What is unverified* is longer than *What was run*, and the first
+   line of the entry is a build that fails.
+5. **Did I check the reason, not just the outcome?** It caught the lower-case titles, which
+   looked like a sweep waiting to happen and turned out to be twenty musical terms. It also
+   caught the "Tools for this rung" rename: the outcome (one name for one thing) was right
+   and the reason would have been wrong for seventeen of the ninety-seven.
+6. **Did I re-open the artefact?** `04` §3d, `04` §0 and `LessonScreen.ts`'s own comments
+   were re-read before deciding each of the three screen questions, rather than recalled —
+   which is how the lesson page's drawn order turned out to be a decision with a comment
+   beside it rather than a bug.
+7. **Who else reads the field I changed?** `noSongsSentence` is new and has one caller.
+   The front-matter `title` has no reader on three searches. `readingTime` is read by
+   `lessonShape.test.ts` and was recounted mechanically on all 109 — zero mismatches. The
+   `videos` block was not touched and `git diff` proves it.
+8. **Am I reading the letter?** Restated with none of the brief's words: *find every place
+   this app or its papers say two different things about one thing, or say something that
+   stopped being true, make them agree, and name what a beginner cannot work out from the
+   screen.* Checked against that, the plan held — and it is what stopped the test-map work
+   being filed as bookkeeping: an index that does not list half the suite is the
+   documentation saying something untrue about itself.

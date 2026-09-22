@@ -1,5 +1,5 @@
 ---
-title: "Classical track, Stage 9 — choosing one piece and staying with it"
+title: "Choosing one piece and staying with it"
 stage: 9
 unit: "classical.9.1"
 videos:

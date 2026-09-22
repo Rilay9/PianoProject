@@ -38,14 +38,15 @@ sixteenths instead of reaching for it; its key matches nothing here, the wrist
 does. The D octave scale is the left hand in octaves, up and back, which is El
 Choclo's bass.
 
+**Repertoire for this rung.** Three options — the three pieces above — and not
+one of them prints a chord symbol. Everything is written; nothing here is left
+to you to voice.
+
 **Tools for this rung.** No button on this page; the two you want are on the
 score. *Hands* chooses which hand the app waits for, so a left-hand-only pass
 is one tap. *Perform* is one pass, start to finish, with no restarts and no
 loop, and it is kept as a performance rather than as practice — which is what
 these three are for. Do the hand work first and the performance last.
-
-**Three options**, and not one of them prints a chord symbol. Everything is
-written; nothing here is left to you to voice.
 
 **Common mistake.** Taking the fast hand for the difficult one. In all three
 the hand that gives out is the one repeating, and in Asturias that hand is not

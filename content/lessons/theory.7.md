@@ -1,5 +1,5 @@
 ---
-title: "Theory & ear, Stage 7 — Secondary dominants, tonicisation, and the chord-scale"
+title: "Secondary dominants, tonicisation, and the chord-scale"
 stage: 7
 unit: "theory.7.1"
 videos:

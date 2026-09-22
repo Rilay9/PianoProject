@@ -1,5 +1,5 @@
 ---
-title: "Jazz, Stage 7 — Rootless voicings, quartal colour, and the tritone substitution"
+title: "Rootless voicings, quartal colour, and the tritone substitution"
 stage: 7
 unit: "jazz.7.1"
 videos:

@@ -1,5 +1,5 @@
 ---
-title: "Ragtime track, Stage 6 — multi-strain form and the leaping left hand"
+title: "Multi-strain form and the leaping left hand"
 stage: 6
 unit: "ragtime.6.1"
 videos:

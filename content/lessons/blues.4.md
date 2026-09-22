@@ -1,5 +1,5 @@
 ---
-title: "Blues track, Stage 4 — the twelve-bar form and the shuffle"
+title: "The twelve-bar form and the shuffle"
 stage: 4
 unit: "blues-boogie.4.1"
 videos:

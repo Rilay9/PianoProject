@@ -1,5 +1,5 @@
 ---
-title: "Latin — clave, tumbao and montuno"
+title: "Clave, tumbao and montuno"
 stage: 5
 unit: "latin.5.1"
 videos:

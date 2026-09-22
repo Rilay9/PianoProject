@@ -1,5 +1,5 @@
 ---
-title: "Theory and ear, Stage 3 — intervals, key signatures and I-IV-V by ear"
+title: "Intervals, key signatures and I-IV-V by ear"
 stage: 3
 unit: "theory-ear.3.1"
 videos:

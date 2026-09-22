@@ -1,5 +1,5 @@
 ---
-title: "Theory and ear, Stage 5 — seventh qualities, progressions and modes"
+title: "Seventh qualities, progressions and modes"
 stage: 5
 unit: "theory-ear.5.1"
 videos:

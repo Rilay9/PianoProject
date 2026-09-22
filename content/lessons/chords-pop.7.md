@@ -1,5 +1,5 @@
 ---
-title: "Chords & pop, Stage 7 — sus2, sus4, add9 and the ninth chord"
+title: "sus2, sus4, add9 and the ninth chord"
 stage: 7
 unit: "chords-pop.7.1"
 videos:

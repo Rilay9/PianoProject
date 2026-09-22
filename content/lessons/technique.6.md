@@ -1,5 +1,5 @@
 ---
-title: "Technique, Stage 6 — seventh shapes, the rotating wrist, and voicing"
+title: "Seventh shapes, the rotating wrist, and voicing"
 stage: 6
 unit: "technique.6.1"
 videos:

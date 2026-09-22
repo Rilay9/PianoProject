@@ -1,5 +1,5 @@
 ---
-title: "Chords & pop, Stage 9 — Turning a chord chart into an arrangement"
+title: "Turning a chord chart into an arrangement"
 stage: 9
 unit: "chords-pop.9.1"
 videos:

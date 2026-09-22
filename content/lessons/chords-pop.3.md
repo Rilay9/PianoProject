@@ -1,5 +1,5 @@
 ---
-title: "Chords and pop, Stage 3 — playing from chord symbols"
+title: "Playing from chord symbols"
 stage: 3
 unit: "chords-pop.3.1"
 videos:

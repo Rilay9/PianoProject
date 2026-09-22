@@ -1,5 +1,5 @@
 ---
-title: "Jazz, Stage 9 — Comping, walking and soloing on one tune"
+title: "Comping, walking and soloing on one tune"
 stage: 9
 unit: "jazz.9.1"
 videos:

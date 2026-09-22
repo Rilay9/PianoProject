@@ -1,5 +1,5 @@
 ---
-title: "Jazz, Stage 8 — Ninths, elevenths, thirteenths, and music that changes key"
+title: "Ninths, elevenths, thirteenths, and music that changes key"
 stage: 8
 unit: "jazz.8.1"
 videos:

@@ -1,5 +1,5 @@
 ---
-title: "Classical track, Stage 3 — Baroque and Classical dances"
+title: "Baroque and Classical dances"
 stage: 3
 unit: "classical.3.1"
 videos:

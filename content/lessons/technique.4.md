@@ -1,5 +1,5 @@
 ---
-title: "Technique, Stage 4 — scales, arpeggios and the two ways to touch a key"
+title: "Scales, arpeggios and the two ways to touch a key"
 stage: 4
 unit: "technique.4.1"
 videos:

@@ -1,5 +1,5 @@
 ---
-title: "Blues, Stage 6 — Pinetop, the root-and-fifth bass, and a line that walks"
+title: "Pinetop, the root-and-fifth bass, and a line that walks"
 stage: 6
 unit: "blues.6.1"
 videos:

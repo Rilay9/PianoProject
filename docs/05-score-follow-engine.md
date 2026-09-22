@@ -485,9 +485,11 @@ no rung uses the defaults.*
   among its options, which is the same lookup the Score screen has always used to choose the
   prose beside a piece.
 - `mastery.minAccuracy` is already a fraction. `mastery.minTempoPct` is written as a fraction
-  in every one of the ninety-eight rungs (measured 2026-09-21: 0, 0.7, 0.75, 0.8, 0.85, 0.9)
-  while the scorer speaks percentages, so a value at or below 1 is read as a fraction and
-  anything above 1 as a percentage already.
+  in **every** rung of the built curriculum (the values in use are 0, 0.7, 0.75, 0.8, 0.85
+  and 0.9) while the scorer speaks percentages, so a value at or below 1 is read as a
+  fraction and anything above 1 as a percentage already. *(This said "ninety-eight rungs",
+  counted on 2026-09-21; eleven rungs have been built since. The rule is "every rung", which
+  is what the code relies on and what does not rot — `00-invariants` §2.)*
 - A rung stating `0` — Stage 0's checklist, the tour, the improvisation rungs judged by a
   recording — is saying "I have no number of my own" and takes the default, rather than
   passing everything at nought.

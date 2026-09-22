@@ -1,5 +1,5 @@
 ---
-title: "Theory and ear, Stage 4 — circle of fifths, inversions and cadences"
+title: "Circle of fifths, inversions and cadences"
 stage: 4
 unit: "theory-ear.4.1"
 videos:

@@ -38,6 +38,30 @@ interface VideoLink {
   teacher?: string;
 }
 
+/**
+ * What the *Song options* block says on a rung that has none (`04` §0 R4).
+ *
+ * Three rungs of the plan mean three different things by an empty list, and
+ * until 2026-09-22 two of them shared a sentence that was wrong for both.
+ *
+ *   - **`songOptional`** — sixteen rungs, the whole of the theory and
+ *     improvisation ladders among them, plus `jam.5`, `jam.6` and
+ *     `technique.8`. The rung is *finished* on its exercises (`02` Part G), so
+ *     the line is not an apology. It used to end "(docs/00 D21)" — the
+ *     repository citing itself in front of somebody at a piano who has no
+ *     `docs/00`. `lessonShape.test.ts` forbids a lesson doing that in three
+ *     different shapes and nothing forbade the screen doing it.
+ *   - **`optionsExempt`** — `0.1`, `0.2` and `0.4`: posture, the keyboard's
+ *     layout, the placement test. These said "No songs listed for this lesson
+ *     **yet**", which promises a song to a rung that will never have one.
+ *   - **Anything else** — a rung the quarry has not filled. "yet" is right
+ *     there, and it is the only place it is.
+ */
+export function noSongsSentence(lesson: Pick<Lesson, 'songOptional' | 'optionsExempt'>): string {
+  if (lesson.songOptional === true) return 'No song tests this skill — two exercises finish this rung.';
+  if (lesson.optionsExempt === true) return 'No songs on this rung — its exercises are the whole of it.';
+  return 'No songs listed for this lesson yet.';
+}
 
 export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const { section, header, body } = screenFrame('lesson', `Lesson ${lessonId}`);
@@ -583,13 +607,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     songs.replaceChildren(
       ...(lesson.songOptions.length > 0
         ? lesson.songOptions.map(optionRow)
-        : [
-            el('p.muted', {
-              text: lesson.songOptional
-                ? 'No song tests this skill — two exercises complete the lesson (docs/00 D21).'
-                : 'No songs listed for this lesson yet.',
-            }),
-          ]),
+        : [el('p.muted', { text: noSongsSentence(lesson) })]),
     );
 
     drawNeeds(lesson);

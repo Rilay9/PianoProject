@@ -1,5 +1,5 @@
 ---
-title: "Chords & pop, Stage 6 — I–V–vi–IV everywhere, and the bass that walks under it"
+title: "I–V–vi–IV everywhere, and the bass that walks under it"
 stage: 6
 unit: "chords-pop.6.1"
 videos:

@@ -1,5 +1,5 @@
 ---
-title: "Blues, Stage 9 — Improvising over the form, and making it yours"
+title: "Improvising over the form, and making it yours"
 stage: 9
 unit: "blues.9.1"
 videos:

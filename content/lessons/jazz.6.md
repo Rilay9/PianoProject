@@ -1,5 +1,5 @@
 ---
-title: "Jazz, Stage 6 — Comping, walking bass, and hearing the changes"
+title: "Comping, walking bass, and hearing the changes"
 stage: 6
 unit: "jazz.6.1"
 videos:

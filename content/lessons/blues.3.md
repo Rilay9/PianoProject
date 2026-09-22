@@ -1,5 +1,5 @@
 ---
-title: "Blues, Stage 3 — the blue notes, before the twelve bars"
+title: "The blue notes, before the twelve bars"
 stage: 3
 unit: "blues-boogie.3.1"
 videos: []

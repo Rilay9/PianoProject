@@ -1,5 +1,5 @@
 ---
-title: "Chords and pop, Stage 4 — inversions, vi and ii, the four-chord song"
+title: "Inversions, vi and ii, and the four-chord song"
 stage: 4
 unit: "chords-pop.4.1"
 videos:

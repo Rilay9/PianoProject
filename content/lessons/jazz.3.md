@@ -1,5 +1,5 @@
 ---
-title: "Jazz track, Stage 3 — long, short, and playing a phrase back"
+title: "Long, short, and playing a phrase back"
 stage: 3
 unit: "jazz.3.1"
 readingTime: 3

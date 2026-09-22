@@ -35,9 +35,14 @@ drill, each with the same four-section advice a lesson ends with.
 
 **What it teaches.** Lessons across ten stages (how many, and what is on each rung, is
 `docs/generated/ladder.md`, which the build regenerates): a core path from first notes to Grade 1, then
-fifteen tracks — classical, chords and pop, blues, jazz, ragtime, theory and ear, improvisation,
+fourteen tracks beside it — classical, chords and pop, blues, jazz, ragtime, theory and ear, improvisation,
 a technique rung per stage, a five-lesson "how to practise" module, and mini-modules for hymns,
 holiday, latin, rock and metal and jamming with a guitarist. Nothing is locked (D17).
+*(Corrected 2026-09-22: this said "fifteen tracks" and then listed fourteen.
+`content/curriculum/00-tracks.json` holds fifteen rows and `core` — the core path this
+sentence has already named — is one of them, so the fifteen and the list were counting two
+different things. `02` Part B counts the same fifteen the other way round, with `core`
+inside them.)*
 
 Every branch is a genre, a skill or a method. There was a sixteenth, "Beautiful pieces", and the
 owner struck it on 2026-09-12: *"It should teach piano across all genres going down the different
@@ -156,10 +161,15 @@ docs/07-midi-hp130-notes.md    – short: what we know, what to try, deferred ch
 docs/08-score-render-states.md – the score screen's state space, invariants, and the walk against the code
 docs/08-test-map.md            – which test proves which state machine, and an index of every spec file
 docs/handoff-2026-09-09.md     – the running record of the work since the phases ended
+docs/pending-review.md         – one numbered entry per finished task: what was built, what is unverified
 docs/night-plan-2026-09-10.md  – one night's plan and its agent briefs
+docs/audit-2026-09-18.md       – the generated content read as music, family by family
 docs/decisions/                – one note per decision taken mid-phase; the honest record (README indexes them)
+docs/genre-plans/              – one file per track: the rungs its plan wants, and which are built
+docs/lesson-audit/             – the lesson read-through: five batch files, the scouts, the code review
 docs/generated/ladder.md       – generated: what is actually on every rung
-docs/prompts/                  – briefs written for somebody else: P20, the design brief, verifying, known problems
+docs/prompts/                  – briefs written for somebody else: the working rules, the plan, P20/P22/P23,
+                                 the design brief, verifying, known problems, and tasks/ (one file per task)
 prompts/P0…P21e-*.md           – paste-ready prompts, one per phase (plus P3b, P5b, P5c, the replan
                                  brief, the common header and PR-review)
 packaging/                     – serve-lan.py (D25), the TWA toolchain, Digital Asset Links

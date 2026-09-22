@@ -1,5 +1,5 @@
 ---
-title: "Classical track, Stage 7 — two voices at once, and a line that sings"
+title: "Two voices at once, and a line that sings"
 stage: 7
 unit: "classical.7.1"
 videos:

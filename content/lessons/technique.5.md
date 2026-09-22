@@ -1,5 +1,5 @@
 ---
-title: "Technique, Stage 5 — evenness, independence and the shape of a line"
+title: "Repeated notes, two hands at different speeds, and a line that travels"
 stage: 5
 unit: "technique.5.1"
 videos:

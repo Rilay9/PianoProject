@@ -1,5 +1,5 @@
 ---
-title: "Improvisation, Stage 5 — the blues scale and writing eight bars"
+title: "The blues scale and writing eight bars"
 stage: 5
 unit: "improv-compose.5.1"
 videos:

@@ -1,5 +1,5 @@
 ---
-title: "Blues track, Stage 5 — turnarounds, blue notes and walking bass"
+title: "Turnarounds, blue notes and walking bass"
 stage: 5
 unit: "blues-boogie.5.1"
 videos:

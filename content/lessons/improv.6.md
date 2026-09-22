@@ -1,5 +1,5 @@
 ---
-title: "Improv & composition, Stage 6 — Modes, guide tones, and playing over a progression"
+title: "Modes, guide tones, and playing over a progression"
 stage: 6
 unit: "improv.6.1"
 videos:

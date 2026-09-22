@@ -1,5 +1,5 @@
 ---
-title: "Ragtime track, Stage 8 — the late rags, and where ragtime was going"
+title: "The late rags, and where ragtime was going"
 stage: 8
 unit: "ragtime.8.1"
 videos:

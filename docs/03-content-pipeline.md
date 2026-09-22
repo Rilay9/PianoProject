@@ -119,14 +119,26 @@ caught by the merge rather than by whichever wrote last:
 6. **author [AUTH]** (`author.py`) — the hand-written ABC and music21 sources, with metadata
    from each file's YAML front-matter.
 7. **merge catalog** — the fragments into one `catalog.json`, with `content/sources/sections.json`
-   attached as `teaching.sections`.
+   attached as `teaching.sections`. This is also where `settle_key_signatures()` decides what
+   the Library prints over "Key" for a score that states a signature and no mode.
+7a. **score checks** (`score_checks.py --gate`, added 2026-09-22) — the seven checks of
+   `08-test-map.md`'s own row (key consistency, grace density, truncation, bar duration,
+   containment, title structure, repeat structure) over the catalog this build just wrote,
+   handed to it as `--catalog <out>/catalog.json`. **It is a gate**: a `high` row with no
+   entry in `content/score-checks.allow.json` — which carries a reason per row — stops the
+   build naming it, and the medium and low rows are reported. `--no-analysis` because the
+   music21 key pass is the minutes in that tool and produces nothing that can fail a build.
+   Lettered rather than numbered so that the step numbers this document's own scripts cite
+   in their docstrings stay true. (`build.py`'s `step_score_checks`, between `merge_catalog`
+   and `copy_curriculum`.)
 8. **curriculum, lessons, tips** — copied through from `content/`, with the schemas and the
    level model.
 9. **validate** (`validate.py`) — everything in §4 and more: schemas, every referenced file
    present, every curriculum option in the catalog, the three-alternative floor, finders, tips
    files, section bar numbers, track definitions, orphan exercises, licences, and the committed
    ladder report. It also writes each rung's `needs` block into the built curriculum. This is
-   the step that fails a build.
+   the step that fails a build on the *content*; step 7a is the one that fails it on the
+   *score files*. (Until 2026-09-22 validate was the only gate and this line said so.)
 10. **render check** (`render_check.py`, only with `--render`) — opens every item in a real
     Chromium through the app's own loader, compares the cursor's step count against the model's,
     captures the console, records the printed bar count and the measured duration, and
@@ -161,6 +173,21 @@ in the directory is a mystery:
 - `truncation_scan.py` — the grace-16th truncation scan over every converted file (P2 §8).
 - `bisect_render.py` — narrows a score OSMD refuses down to the measure that breaks it.
 - `abc_tools.py` — the `%%pianopath` header and the inline-voice fix for ABC (§5).
+- `notation.py` — reads a converted score into the `notation` block every catalog row
+  carries: key, mode, metre, staves, bars, chord-symbol count, final bass. It is the one
+  measured description of a piece, and it is what `validate.py`'s `notation_requirements`
+  and the app's chart door read instead of guessing from a title (`00` §1a).
+- `score_checks.py` — the seven checks of step 7a, on their own (`--item <id>` for one row,
+  `--gate` for the build's verdict); writes `build/score-checks.md` and `.json`.
+- `rung_audit.py` — reads every rung and reports what is thin, shared or pointing at no
+  mode. It is advice rather than a gate and the build does not run it.
+- `dump_score.py` — prints a committed `.mxl` bar by bar, staff by staff, for a person
+  deciding what a piece is. It does **not** print ties, tuplets or grace notes, which is
+  written down here because two entries in `pending-review.md` were wrong from reading it.
+- `candidates.py` — searches the *built catalog* for pieces that fit a rung's finder.
+- `archive_search.py`, `archive_notation.py` — the same two questions asked of the
+  unbuilt PDMX archive instead: a title search over `PDMX.csv`, and the notation of one
+  archive file without converting it.
 - `blues_forms.py` — the twelve-bar blues built once and transposed for the authored blues exercises.
 - `extract_hanon.py`, `extract_fingering.py` — read Hanon 1–20 and Clementi's scale fingerings
   out of the Mutopia editions, so neither comes from memory.
@@ -431,10 +458,20 @@ V:2 clef=bass
 
 ## 6. Lesson text conventions (`content/lessons/<lessonId>.md`)
 
-Front-matter: `title`, `stage`, `unit`, `concepts[]`, `videos[]` (`{label, url, teacher}`),
-`readingTime` — which is computed from the body at 200 words a minute, not written by hand.
-It used to be written by hand and meant nothing: across the eighty-six lessons it implied
-anywhere from 43 to 272 words a minute, and no code has ever read it.
+Front-matter: `title`, `stage`, `unit`, `videos[]` (`{label, url, teacher}`), `readingTime` —
+which is computed from the body at 200 words a minute, not written by hand.
+It used to be written by hand and meant nothing: across the lessons that existed then it
+implied anywhere from 43 to 272 words a minute, and no code has ever read it.
+
+**Two of those five have a reader and three do not**, which is worth knowing before writing
+one. `videos[]` is read by `LessonScreen`, and `readingTime` by `lessonShape.test.ts`.
+`title`, `stage` and `unit` are read by nothing: two searches — every call site of
+`parseFrontMatter` in `app/src`, and a grep for the keys over `app/src` and `tools/` — find
+only the `videos` read. **The rung's title on every screen is the curriculum's**
+(`LessonScreen.ts` sets the `h1` from `lesson.title`), so a front-matter `title` that says
+something else is a second name for one thing rather than a heading anybody sees. This
+section also listed `concepts[]`, which **no lesson carries**: a rung's concepts are in
+`content/curriculum/stage-*.json`, where `SkillsScreen` and `validate.py` read them.
 
 Body: **read in three minutes or less** (600 words at that rate), written for an adult
 engineer who is a musical beginner:
@@ -448,7 +485,12 @@ for as long as they had existed. Three minutes is the same intent measured in th
 line above it already carries: a lesson is read once before you play, not studied. Two
 lessons are longer and named in `lessonShape.test.ts`, both because their rung is several
 ideas rather than one: `ragtime.6` (a whole rag, with a trio and a key change) and
-`classical.6` (twenty-one Romantic miniatures).
+`classical.6` (voicing, rubato and pedalling across six Romantic miniatures). *(Corrected
+2026-09-22: this said "twenty-one Romantic miniatures", which was the classical Stage 6 rung
+before the rungs were cut to a few chosen pieces each — `02` Part A item 5, 2026-09-15. It
+offers six songs and nine exercises in the built curriculum.)* `ragtime.6` is the one real
+outlier in the corpus: at six minutes it reads about two and a half times the length of the
+median lesson and more than half again the length of `classical.6`, the next longest.
 
 ### 6a. Drill tips (`content/tips/<kind>.md`, P17)
 

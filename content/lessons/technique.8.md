@@ -1,5 +1,5 @@
 ---
-title: "Technique, Stage 8 — speed, and what it costs"
+title: "Four octaves in sixteenths, and why the metronome comes last"
 stage: 8
 unit: "technique.8.1"
 videos:

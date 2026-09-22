@@ -1,5 +1,5 @@
 ---
-title: "Ragtime track, Stage 9 — the whole rag, without the page"
+title: "The whole rag, without the page"
 stage: 9
 unit: "ragtime.9.1"
 readingTime: 3

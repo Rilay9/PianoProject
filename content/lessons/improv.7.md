@@ -1,5 +1,5 @@
 ---
-title: "Improv & composition, Stage 7 — Quartal voicings, extensions, and a sound of your own"
+title: "Quartal voicings, extensions, and a sound of your own"
 stage: 7
 unit: "improv.7.1"
 videos:

@@ -14,17 +14,13 @@ repetitions and the bar that needs them gets one.
 bars; sometimes a single hand movement, like the leap from the bass note to the
 chord. Not a line, and never a page.
 
-## How to find the chunk
+**How to find the chunk.** Play through once and notice where it breaks. That
+spot is not the bar you stumbled on — it is usually the bar *before*, where
+the hand ended up somewhere awkward. Take those two bars and nothing else.
 
-Play through once and notice where it breaks. That spot is not the bar you
-stumbled on — it is usually the bar *before*, where the hand ended up somewhere
-awkward. Take those two bars and nothing else.
-
-## How to loop it
-
-Play the chunk, plus the first note of what comes next. That last note matters
-more than it looks: it is what stops you learning a beautiful two-bar fragment
-that cannot join onto anything.
+**How to loop it.** Play the chunk, plus the first note of what comes next.
+That last note matters more than it looks: it is what stops you learning a
+beautiful two-bar fragment that cannot join onto anything.
 
 Then play it again. Five times correct in a row, and if you get it wrong at four
 you start counting again — not because that is a punishment, but because

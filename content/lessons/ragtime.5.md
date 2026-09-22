@@ -1,5 +1,5 @@
 ---
-title: "Ragtime track, Stage 5 — the oom-pah and the syncopated right hand"
+title: "The oom-pah and the syncopated right hand"
 stage: 5
 unit: "ragtime.5.1"
 videos:

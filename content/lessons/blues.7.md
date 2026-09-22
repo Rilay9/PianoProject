@@ -1,5 +1,5 @@
 ---
-title: "Blues, Stage 7 — The leaping left hand and the two bars that send you back"
+title: "The leaping left hand and the two bars that send you back"
 stage: 7
 unit: "blues.7.1"
 videos:

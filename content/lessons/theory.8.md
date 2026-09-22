@@ -1,5 +1,5 @@
 ---
-title: "Theory & ear, Stage 8 — Changing key, and hearing the moment it happens"
+title: "Changing key, and hearing the moment it happens"
 stage: 8
 unit: "theory.8.1"
 videos:

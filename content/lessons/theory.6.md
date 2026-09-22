@@ -1,5 +1,5 @@
 ---
-title: "Theory & ear, Stage 6 — Roman numerals, and writing down what you hear"
+title: "Roman numerals, and writing down what you hear"
 stage: 6
 unit: "theory.6.1"
 videos:

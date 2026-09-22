@@ -1,5 +1,5 @@
 ---
-title: "Jazz track, Stage 4 — swung eighths, and comping on plain triads"
+title: "Swung eighths, and comping on plain triads"
 stage: 4
 unit: "jazz.4.1"
 readingTime: 3

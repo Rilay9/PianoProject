@@ -1,5 +1,5 @@
 ---
-title: "Ragtime track, Stage 7 — stride precursors, wider leaps and the slow drag"
+title: "Stride precursors, wider leaps and the slow drag"
 stage: 7
 unit: "ragtime.7.1"
 videos:
