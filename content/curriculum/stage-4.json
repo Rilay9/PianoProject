@@ -1323,6 +1323,74 @@
               }
             }
           ]
+        },
+        {
+          "id": "hymns-gospel.4.1",
+          "title": "Hymns: four voices, two hands",
+          "track": "hymns-gospel",
+          "lessons": [
+            {
+              "id": "hymns.4",
+              "title": "Four voices, two hands, and the inner parts",
+              "concepts": [
+                "four-part-harmony",
+                "voice-leading",
+                "legato"
+              ],
+              "textFile": "lessons/hymns.4.md",
+              "exerciseOptions": [
+                "exercise.cadence.g.voice-led",
+                "exercise.inversions.g-major.both",
+                "exercise.articulation.g.legato.right"
+              ],
+              "songOptions": [
+                "song.folk.amazing-grace-satb.pdmx",
+                "song.classical.rock-of-ages-cleft-for-me.pdmx",
+                "song.classical.abide-with-me-william-henry-monk.pdmx",
+                "song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx",
+                "song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "hymns"
+              ],
+              "estimatedDays": 21,
+              "requires": {
+                "staves": 2
+              },
+              "tools": [
+                {
+                  "kind": "duet",
+                  "item": "song.folk.amazing-grace-satb.pdmx"
+                }
+              ],
+              "levelBand": [
+                3.2,
+                5.69
+              ],
+              "finder": {
+                "skill": "reading four separate voices, two of them under your thumbs",
+                "levelWords": "intermediate, Grade 2 to 3, hymnal or chorale setting",
+                "constraints": [
+                  "four voices written apart on two staves",
+                  "the melody as the top voice throughout",
+                  "alto and tenor written as their own lines",
+                  "12 to 40 bars"
+                ],
+                "avoid": [
+                  "melody with block chords under it",
+                  "lead sheets with chord symbols only",
+                  "organ scores with a separate pedal stave"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
         }
       ]
     }

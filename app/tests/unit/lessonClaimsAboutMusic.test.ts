@@ -230,6 +230,90 @@ const CLAIMS: [string, string, string, (n: Notation) => boolean][] = [
     (n) => n.chordCount > 0],
   ['holiday.7', 'the stride study is over three chords in C', 'exercise.stride.c',
     (n) => keyOf(n).startsWith('C') && n.chords.length === 3],
+  ['hymns.4', 'Amazing Grace in four parts is in G, in three, nineteen bars', 'song.folk.amazing-grace-satb.pdmx',
+    (n) => keyOf(n).startsWith('G') && n.times.includes('3/4') && n.bars === 19],
+  ['hymns.4', 'Rock of Ages is in B flat and in six-four', 'song.classical.rock-of-ages-cleft-for-me.pdmx',
+    (n) => keyOf(n).startsWith('Bb') && n.times.includes('6/4')],
+  ['hymns.4', 'Abide with Me is in E flat', 'song.classical.abide-with-me-william-henry-monk.pdmx',
+    (n) => keyOf(n).startsWith('Eb')],
+  ['hymns.4', 'the four-part Joyful, Joyful has both hands written out', 'song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx',
+    (n) => n.staves === 2],
+  ['hymns.4', 'O Sacred Head is forty bars with no sharps or flats', 'song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx',
+    (n) => n.bars === 40 && n.keys.every((k) => k.fifths === 0)],
+  ['hymns.4', 'the voice-led cadence is four bars in G', 'exercise.cadence.g.voice-led',
+    (n) => keyOf(n).startsWith('G') && n.bars === 4],
+  ['hymns.4', 'the triad study is two bars in G', 'exercise.inversions.g-major.both',
+    (n) => keyOf(n).startsWith('G') && n.bars === 2],
+  ['hymns.4', 'the legato study is one scale in G', 'exercise.articulation.g.legato.right',
+    (n) => keyOf(n).startsWith('G')],
+  ['hymns.5', 'What a Friend We Have in Jesus is in D, on one stave', 'song.folk.what-a-friend-we-have-in-jesus.pdmx',
+    (n) => keyOf(n).startsWith('D') && n.staves === 1],
+  ['hymns.5', '…and names a G sharp diminished, an E major and a D seventh', 'song.folk.what-a-friend-we-have-in-jesus.pdmx',
+    (n) => n.chords.includes('G#dim') && n.chords.includes('E') && n.chords.includes('D7')],
+  ['hymns.5', '…and the G chord the diminished sits before', 'song.folk.what-a-friend-we-have-in-jesus.pdmx',
+    (n) => n.chords.includes('G')],
+  ['hymns.5', 'Down by the Riverside is a tune on one stave in F, thirty-three bars', 'song.folk.down-by-the-riverside.pdmx',
+    (n) => n.staves === 1 && keyOf(n).startsWith('F') && n.bars === 33],
+  ['hymns.5', '…with only three chords named over it', 'song.folk.down-by-the-riverside.pdmx',
+    (n) => n.chords.length === 3],
+  ['hymns.5', 'This Little Light of Mine is in B flat', 'song.folk.this-little-light-of-mine.pdmx',
+    (n) => keyOf(n).startsWith('Bb')],
+  ['hymns.5', '…and a B flat seventh is one of its chords', 'song.folk.this-little-light-of-mine.pdmx',
+    (n) => n.chords.includes('Bb7')],
+  ['hymns.5', 'Just a Closer Walk has a diminished chord among its symbols', 'song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx',
+    (n) => n.chords.some((c) => /°|dim/i.test(c))],
+  ['hymns.5', 'As the Deer names an E major and the A minor it goes to', 'song.pop.martin-j-nystrom-as-the-deer-piano.pdmx',
+    (n) => n.chords.includes('E') && n.chords.includes('Am')],
+  ['hymns.5', 'the walk-up study is four bars in C over two chords', 'exercise.walkup.c',
+    (n) => keyOf(n).startsWith('C') && n.bars === 4 && n.chords.length === 2],
+  ['hymns.5', 'the half-step study names an E flat minor seventh and a D minor seventh', 'exercise.passing-chord.c',
+    (n) => n.chords.includes('Ebminor-seventh') && n.chords.includes('Dminor-seventh')],
+  ['hymns.5', '…and an A flat seven and a G seven', 'exercise.passing-chord.c',
+    (n) => n.chords.includes('Abdominant') && n.chords.includes('Gdominant')],
+  ['hymns.5', 'the slash-chord study is in B flat', 'exercise.slash-bass.b-flat',
+    (n) => keyOf(n).startsWith('Bb')],
+  ['hymns.6', 'Holy holy holy here is sixteen bars', 'song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx',
+    (n) => n.bars === 16],
+  ['hymns.6', '…and changes from four-four into six-four', 'song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx',
+    (n) => n.times.includes('4/4') && n.times.includes('6/4')],
+  ['hymns.6', '10,000 Reasons is in G, sixty-two bars', 'song.folk.10000-reasons-matt-redman.pdmx',
+    (n) => keyOf(n).startsWith('G') && n.bars === 62],
+  ['hymns.6', 'Amazing Grace in G is eighty-seven bars', 'song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx',
+    (n) => n.bars === 87],
+  ['hymns.6', '…and does not finish on its home note', 'song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx',
+    (n) => n.keys[0]?.fifths === 1 && n.finalBass !== 7],
+  ['hymns.6', 'Down by the Riverside here is sixty-six bars in cut time', 'song.folk.down-by-the-riverside.pdmx.2',
+    (n) => n.bars === 66 && n.times.includes('2/2')],
+  ['hymns.6', '…and is marked to be swung', 'song.folk.down-by-the-riverside.pdmx.2',
+    (n) => n.swungMark === true],
+  ['hymns.6', 'the voicing study is four chords in G', 'exercise.voicing.g',
+    (n) => keyOf(n).startsWith('G') && n.bars === 4],
+  ['hymns.6', 'the held-melody study is in G', 'exercise.pedal.held-melody.g',
+    (n) => keyOf(n).startsWith('G')],
+  ['hymns.6', 'the turnaround study is four chords in two bars in F', 'exercise.turnaround.f.i-vi-ii-v',
+    (n) => keyOf(n).startsWith('F') && n.bars === 2 && n.chords.length === 4],
+];
+
+/** The three hymn rungs' song options, named once for the comparisons below. */
+const HYMNS_4 = [
+  'song.folk.amazing-grace-satb.pdmx',
+  'song.classical.rock-of-ages-cleft-for-me.pdmx',
+  'song.classical.abide-with-me-william-henry-monk.pdmx',
+  'song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx',
+  'song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx',
+];
+const HYMNS_5 = [
+  'song.folk.what-a-friend-we-have-in-jesus.pdmx',
+  'song.folk.down-by-the-riverside.pdmx',
+  'song.folk.this-little-light-of-mine.pdmx',
+  'song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx',
+  'song.pop.martin-j-nystrom-as-the-deer-piano.pdmx',
+];
+const HYMNS_6 = [
+  'song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx',
+  'song.folk.10000-reasons-matt-redman.pdmx',
+  'song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx',
+  'song.folk.down-by-the-riverside.pdmx.2',
 ];
 
 /** Claims that compare several pieces, which do not fit the table above. */
@@ -295,6 +379,45 @@ const COMPARISONS: [string, string, () => boolean][] = [
     ];
     const printed = four.filter((id) => (byId.get(id)?.notation?.chordCount ?? 0) > 0);
     return printed.length === 1 && (printed[0] ?? '').includes('swing-low');
+  }],
+  ['hymns.4', 'not one of the five prints a chord symbol', () =>
+    HYMNS_4.every((id) => byId.get(id)?.notation?.chordCount === 0)],
+  ['hymns.4', 'each of the five is written on two staves', () =>
+    HYMNS_4.every((id) => byId.get(id)?.notation?.staves === 2)],
+  ['hymns.4', 'O Sacred Head is by far the longest of the five', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const bach = bars('song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx');
+    return bach > 0 && HYMNS_4.filter((id) => !id.includes('bach')).every((id) => bars(id) * 2 <= bach);
+  }],
+  ['hymns.4', 'the Joyful, Joyful here has parts the Stage 2 one has not: one stave there, two here', () => {
+    const here = byId.get('song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx')?.notation?.staves;
+    const below = byId.get('song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx')
+      ?.notation?.staves;
+    return here === 2 && below === 1;
+  }],
+  ['hymns.5', 'all five have their chords named above the stave', () =>
+    HYMNS_5.every((id) => (byId.get(id)?.notation?.chordCount ?? 0) > 0)],
+  ['hymns.5', 'As the Deer is the fullest of the five', () => {
+    const count = (id: string): number => byId.get(id)?.notation?.chordCount ?? 0;
+    const deer = count('song.pop.martin-j-nystrom-as-the-deer-piano.pdmx');
+    return deer > 0 && HYMNS_5.filter((id) => !id.includes('as-the-deer')).every((id) => count(id) < deer);
+  }],
+  ['hymns.6', 'not one of the four prints a chord symbol', () =>
+    HYMNS_6.every((id) => byId.get(id)?.notation?.chordCount === 0)],
+  ['hymns.6', 'Holy holy holy is the short one of the four', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const hugg = bars('song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx');
+    return hugg > 0 && HYMNS_6.filter((id) => !id.includes('hugg')).every((id) => bars(id) > hugg);
+  }],
+  ['hymns.6', 'Amazing Grace here is far longer than the four-part setting two rungs below', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    return bars('song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx') >
+      bars('song.folk.amazing-grace-satb.pdmx') * 4;
+  }],
+  ['hymns.6', 'Down by the Riverside here has two staves where the lead sheet below has one', () => {
+    const here = byId.get('song.folk.down-by-the-riverside.pdmx.2')?.notation?.staves;
+    const below = byId.get('song.folk.down-by-the-riverside.pdmx')?.notation?.staves;
+    return here === 2 && below === 1;
   }],
   ['holiday.3', 'Hark! has the most chord changes of the four', () => {
     const four = [

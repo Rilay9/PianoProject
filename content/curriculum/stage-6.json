@@ -829,6 +829,74 @@
               }
             }
           ]
+        },
+        {
+          "id": "hymns-gospel.6.1",
+          "title": "Hymns: the hymn as an arrangement",
+          "track": "hymns-gospel",
+          "lessons": [
+            {
+              "id": "hymns.6",
+              "title": "The hymn as an arrangement",
+              "concepts": [
+                "arranging",
+                "voicing-melody",
+                "reharmonisation"
+              ],
+              "textFile": "lessons/hymns.6.md",
+              "exerciseOptions": [
+                "exercise.voicing.g",
+                "exercise.pedal.held-melody.g",
+                "exercise.turnaround.f.i-vi-ii-v"
+              ],
+              "songOptions": [
+                "song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx",
+                "song.folk.10000-reasons-matt-redman.pdmx",
+                "song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx",
+                "song.folk.down-by-the-riverside.pdmx.2"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "hymns.5"
+              ],
+              "estimatedDays": 21,
+              "requires": {
+                "staves": 2
+              },
+              "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "ballad"
+                }
+              ],
+              "levelBand": [
+                5.36,
+                6.96
+              ],
+              "finder": {
+                "skill": "playing a hymn somebody has arranged as a piano piece",
+                "levelWords": "upper intermediate, Grade 4 to 5, hymn arranged for piano",
+                "constraints": [
+                  "a hymn or spiritual written out for piano",
+                  "the melody inside a right-hand chord",
+                  "a left hand that is more than held roots",
+                  "one statement of the tune, not a medley",
+                  "16 to 100 bars"
+                ],
+                "avoid": [
+                  "four-part vocal scores",
+                  "lead sheets with no left hand written",
+                  "medleys of several hymns"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
         }
       ]
     }

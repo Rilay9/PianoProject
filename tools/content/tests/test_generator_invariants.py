@@ -34,18 +34,44 @@ that passes on the real score fails on the mutant. The mutation's name is in the
 failure message, so a check that cannot fail is visible as one that does not.
 
 **What this file does not do.** It reads the score object, not the page. Three
-faults found in the pictures during the same pass are *recorded here as comments
-beside the check that is deliberately loose* rather than asserted, because
-proving a fix for any of them needs the render step (`build/previews` are the
-first two bars, and re-rendering needs the built app on a server): the direction
-that runs off both edges of the page, the four pedal marks that engrave on top
-of one another, and the one-line rhythm staves whose notes sit below the line.
-Entry 27 of `docs/pending-review.md` has them with the evidence.
+faults live on the page and not in the score, and all three were *re-measured*
+on 2026-09-22 by rendering every family whole — one headless browser on a
+`file://` page, no server and no port — which corrected what this paragraph
+used to say about two of them:
+
+* **the direction that collides.** 22 of the 56 families print a direction at
+  offset 0 of bar 1, and OSMD anchors that to the measure's left edge, which is
+  under the brace: `exercise.intro.c.4bar`, `exercise.walkup.c` and
+  `exercise.pedal.held-melody.c` all have their first letter drawn on top of
+  the brace, and every one of the 22 sits between the staves with a barline
+  through it. Setting `placement="above"` was tried and **rejected**: it is
+  clean on `intro` (which carries chord symbols to push it clear) and puts the
+  words straight through `♩= 60` on `trill`, and `00-invariants` §1 says a fix
+  that improves one picture and ruins another is not one.
+* **the pedal marks.** `make_pedal` gives each chord a `PedalMark` spanning that
+  one chord, so the start, the release *and* the third digit of the fingering
+  print at the same point — one illegible blob a bar, not four marks on top of
+  each other as this file used to say. Spanning each chord to the next, and
+  spanning all four at once, were both rendered: the first moves the collision
+  to the next bar, the second prints one `Ped.` in bar 1 and one release in bar
+  4, which is not the pedalling the drill teaches.
+* **the one-line rhythm staves.** The notes sit below the line rather than on
+  it, and it is **not** the written pitch: the same four bars were rendered
+  with the note written E4, F4, G4, A4, B4, C5, D5 and E5 and all eight pages
+  are identical, so under a percussion clef with `staffLines=1` OSMD ignores
+  the pitch. Nothing in the generator can move them.
+
+Two claims that used to be here were wrong and the render is what showed it:
+`exercise.blues-scale.c.1oct.right`'s direction is **not** clipped at either
+edge of its page, and `exercise.ostinato.a.fifths`'s **is** drawn — above the
+system, and the most legible direction of the 22. Entry 33 of
+`docs/pending-review.md` has the pictures.
 """
 from __future__ import annotations
 
 import copy
 import inspect
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -123,6 +149,20 @@ def onsets(notes, part) -> list[float]:
     return [float(n.getOffsetInHierarchy(part)) for n in notes]
 
 
+#: The words a title uses to say whose hands play, mapped onto the catalog's
+#: own `hands` vocabulary. "hands" maps to "both" because that is the only way
+#: this generator ever writes it ("Hands together in C"), and "right-hand"
+#: splits into `right` and `hand`, so the hyphenated adjective counts as naming
+#: the right hand, which is what a reader takes from it.
+HAND_WORDS = {"left": "left", "right": "right", "both": "both", "hands": "both"}
+
+
+def hands_named_in(title: str) -> set[str]:
+    """Which hands a title names, in the catalog's vocabulary."""
+    return {HAND_WORDS[word] for word in set(re.findall(r"[a-z]+", title.lower()))
+            & set(HAND_WORDS)}
+
+
 MIDDLE_C = 60
 
 #: The stretch a hand takes at once, in semitones, before it stops being a hand
@@ -138,7 +178,7 @@ AN_OCTAVE = 12
 #: `[0, 5, 10, 15]` and an added ninth on top *is* `[0, 4, 7, 14]`. Narrowing
 #: either one changes what the family teaches, and splitting the stack across
 #: the hands — which is how a pianist actually plays it — changes the family's
-#: shape. That is a content decision and it is open: Entry 27.
+#: shape. That is a content decision and it is open: Entry 33.
 STRIKES_WIDER_THAN_A_HAND = {
     "open_voicing": 15,  # quartal, C4-F4-B♭4-E♭5; add9 is 14 in the same maker
 }
@@ -149,8 +189,9 @@ STRIKES_WIDER_THAN_A_HAND = {
 #: holds the corrected state so the next family cannot quietly write a longer
 #: one. It is known to be too generous — `exercise.blues-scale.c.1oct.right`'s
 #: 47 characters are clipped at both edges of its own two-bar page, and
-#: `exercise.ostinato.a.fifths`'s 70 are not drawn at all — and the honest cap
-#: needs the render step. Entry 27.
+#: `exercise.ostinato.a.fifths`'s 70 are drawn above the system and read
+#: perfectly — so the cap is not a page measurement and does not pretend to
+#: be one. Both were read off a whole-page render on 2026-09-22. Entry 33.
 LONGEST_DIRECTION = 80
 
 
@@ -643,6 +684,110 @@ class TestKey(FamilyCase):
             with self.subTest(family="modal_vamp", key=tonic):
                 self.assertEqual(engraved_signature(sc)[1], "minor", entry["title"])
 
+    def test_a_title_that_names_one_hand_is_played_by_that_hand(self) -> None:
+        """
+        The scout's finding, 2026-09-22, and the second half of `hands`.
+
+        Forty rows said "left hand" in the title over two hands of music:
+        `exercise.boogie.*` (thirty-six) and `exercise.stride.*` (four). Both
+        makers call `rh.append(fingered_chord(...))` once a bar, both catalog
+        themselves `"both"`, and the app judges the right hand — so the name on
+        the row promised a one-hand exercise the learner does not get.
+
+        A title that names *both* hands is exempt, which is how
+        `make_coordination`'s "Hands together in C — left hand holds" passes:
+        it names a hand to say what that hand does, not to say it is the only
+        one playing.
+        """
+        for name, _claims, _sc, entry in self.each():
+            named = hands_named_in(entry["title"])
+            if named in ({"left"}, {"right"}):
+                self.assertEqual(entry["hands"], next(iter(named)),
+                                 f"{name}: {entry['title']!r} names one hand and "
+                                 f"the row says hands={entry['hands']!r}")
+
+    def test_the_boogie_and_stride_titles_say_both_hands_in_every_key(self) -> None:
+        """
+        The forty rows themselves, not one of them.
+
+        `working-rules` §2.2: the fault was stated of forty items, so it is
+        checked on forty. `make_boogie` is built in `narrow` and in `JAM_KEYS`
+        for the major form and in `narrow` minus `UNWRITABLE_MINOR` for the
+        minor one; `make_stride` is built in `narrow`. The test walks all twelve
+        `HARMONY_KEYS`, which is `narrow` under `--full` and a superset of both
+        of the others, so no key the plan can reach is left out.
+        """
+        seen = 0
+        for tonic in G.HARMONY_KEYS:
+            for pattern in G.BOOGIE_PATTERNS:
+                forms = ["blues"] if tonic in G.UNWRITABLE_MINOR else ["blues", "minor-blues"]
+                for form in forms:
+                    _sc, entry = G.make_boogie(tonic, pattern, form=form)
+                    seen += 1
+                    with self.subTest(item=entry["id"]):
+                        self.assertEqual(hands_named_in(entry["title"]), {"both"},
+                                         entry["title"])
+                        self.assertEqual(entry["hands"], "both")
+            _sc, entry = G.make_stride(tonic)
+            seen += 1
+            with self.subTest(item=entry["id"]):
+                self.assertEqual(hands_named_in(entry["title"]), {"both"}, entry["title"])
+                self.assertEqual(entry["hands"], "both")
+        unwritable = [k for k in G.HARMONY_KEYS if k in G.UNWRITABLE_MINOR]
+        self.assertEqual(seen, len(G.HARMONY_KEYS) * (1 + 2 * len(G.BOOGIE_PATTERNS))
+                         - len(unwritable) * len(G.BOOGIE_PATTERNS))
+        self.assertGreaterEqual(seen, 40, "the scout counted forty rows")
+
+    def test_a_family_engraved_without_a_signature_names_no_key_on_any_root(self) -> None:
+        """
+        The scout's second finding, measured wider than it was reported.
+
+        Five C-rooted `arpeggio7` rows shipped `keySig: "C major"` under titles
+        reading "C minor 7th arpeggio" and "C diminished 7th arpeggio" while
+        their fifty-five siblings shipped nothing. The same mechanism put it on
+        three `broken7` rows and four `chromatic` rows — `engraved_key` compared
+        the *empty* signature's tonic, which is C, against the declared root,
+        and a root of C matched. Twelve rows in three families, not five in one.
+
+        `make_hanon` also engraves an empty signature and is not in this list:
+        Hanon's first twenty really are in C major and all sixty rows say so.
+        """
+        built_here = {"seventh_arpeggio": 0, "broken_seventh": 0, "chromatic": 0}
+        for tonic in G.MAJOR_KEYS:
+            for quality in ("dominant7", "major7", "minor7", "half-diminished7",
+                            "diminished7"):
+                sc, entry = G.make_seventh_arpeggio(tonic, quality, "both", 2)
+                built_here["seventh_arpeggio"] += 1
+                with self.subTest(item=entry["id"]):
+                    self.assertIsNone(
+                        G.engraved_key(sc, entry["drill"]["params"]["key"]),
+                        f"{entry['title']!r} is not in a key the page carries")
+            for quality in ("dominant7", "major7", "minor7"):
+                sc, entry = G.make_broken_seventh(tonic, quality, "both")
+                built_here["broken_seventh"] += 1
+                with self.subTest(item=entry["id"]):
+                    self.assertIsNone(G.engraved_key(sc, entry["drill"]["params"]["key"]),
+                                      entry["title"])
+        for start in ("C", "D", "E", "G"):
+            for hands, octaves in (("right", 1), ("left", 1), ("both", 1), ("both", 2)):
+                sc, entry = G.make_chromatic(start, hands, octaves)
+                built_here["chromatic"] += 1
+                with self.subTest(item=entry["id"]):
+                    self.assertIsNone(G.engraved_key(sc, entry["drill"]["params"]["key"]),
+                                      entry["title"])
+        self.assertEqual(built_here, {"seventh_arpeggio": 5 * len(G.MAJOR_KEYS),
+                                      "broken_seventh": 3 * len(G.MAJOR_KEYS),
+                                      "chromatic": 16})
+
+    def test_hanon_keeps_the_key_its_titles_name(self) -> None:
+        """The other side of the line: an empty signature that *is* a key."""
+        for number in sorted(int(n) for n in HANON):
+            sc, entry = G.make_hanon(number, "both", data=HANON)
+            with self.subTest(item=entry["id"]):
+                self.assertIn("C major", entry["title"])
+                self.assertEqual(G.engraved_key(sc, entry["drill"]["params"].get("key")),
+                                 "C major")
+
     def test_hands_says_which_staves_sound(self) -> None:
         for name, _claims, sc, entry in self.each():
             parts = list(staves(sc).values())
@@ -733,6 +878,29 @@ class TestSpelling(FamilyCase):
                 self.assertNotEqual(letters[4], letters[3],
                                     "the blue note is sitting on the fifth's letter")
 
+    def test_the_blues_direction_names_the_degree_the_page_engraves(self) -> None:
+        """
+        Found by reading the rendered page, 2026-09-22.
+
+        The direction printed over the scale read "The flat fifth is passed
+        through, not landed on" while the note under it was F sharp in C and G
+        sharp in D — a **raised fourth**, which is what the owner decided on
+        2026-09-19 and what `BLUES_SCALE_FORMS` spells. `working-rules` §2.17:
+        the words were a claim about the music and they were the other degree.
+        Four comments in `generate_exercises.py` said it too, and they are the
+        reason the direction was never read against the staff.
+        """
+        for tonic in ("C", "D", "F"):
+            sc, entry = G.make_blues_scale(tonic)
+            printed = directions(sc)
+            letters = [p.pitch.step for p in sounding(sc.parts[0])]
+            with self.subTest(item=entry["id"]):
+                self.assertEqual(len(printed), 1)
+                self.assertIn("raised fourth", printed[0])
+                self.assertNotIn("flat fifth", printed[0])
+                # and the page agrees: the blue note is on the fourth's letter
+                self.assertEqual(letters[3], letters[2])
+
     def test_no_family_engraves_a_double_accidental_it_does_not_need(self) -> None:
         """
         The only double sharp the plan writes is G sharp minor's leading note.
@@ -756,7 +924,7 @@ class TestSpelling(FamilyCase):
         ascending from C it writes C#, E flat, F#, G#, B flat — sharps and flats
         mixed, because `transpose(i)` by semitone lets music21 choose, which is
         the mechanism behind Entry 4's fifth fault. Sharps up and flats down is
-        what every method prints; choosing it is a content decision (Entry 27),
+        what every method prints; choosing it is a content decision (Entry 33),
         and pinning today's spelling here would enshrine the accident.
         """
         for hands in ("right", "left", "both"):
@@ -1112,6 +1280,32 @@ def sound_the_silent_hand(sc, staff):
     return sc
 
 
+def name_one_hand_in_the_title(entry: dict) -> dict:
+    """
+    The shape the forty rows had: a hand word standing for the whole item.
+
+    Any hand word already in the title is taken out first, so the mutant names
+    one hand and only one — appending to "… — 2 oct, both" would leave a title
+    naming two, which is the case the check is meant to let through.
+    """
+    entry = dict(entry)
+    stripped = re.sub(r"[,—-]?\s*\b(both|hands|right|left)\b[-\s]*(hand)?",
+                      " ", entry["title"], flags=re.I)
+    entry["title"] = f"{' '.join(stripped.split())} left hand"
+    return entry
+
+
+def forget_the_signature_is_empty(sc):
+    """
+    Undoes `no_signature`'s mark, which is exactly the state that shipped.
+
+    The mutation is the missing line rather than a broken score, because that
+    is what the fault was: the page was always right and the row read it wrong.
+    """
+    sc.editorial.noKeySignature = None
+    return sc
+
+
 class TestTheChecksGoRedOnAMutation(FamilyCase):
     """One mutation per family per axis, each required to make its check fail."""
 
@@ -1157,6 +1351,61 @@ class TestTheChecksGoRedOnAMutation(FamilyCase):
             mutant = sound_the_silent_hand(copy.deepcopy(sc), claims["silent"])
             self.assertNotEqual(staves(mutant).get(claims["silent"]), [],
                                 f"{name}: mutation `sound_the_silent_hand` did not go red")
+
+    def test_naming_one_hand_in_a_title_fails_the_title_check(self) -> None:
+        """
+        Every family whose music is not the left hand's alone, mutated.
+
+        A family the row already calls `left` is skipped rather than counted:
+        renaming it after the left hand says something true, so there is no red
+        to prove. Eight families are in that position and the census below is
+        what holds them.
+        """
+        for name, _claims, _sc, entry in self.each():
+            if entry["hands"] == "left":
+                continue
+            mutant = name_one_hand_in_the_title(entry)
+            named = hands_named_in(mutant["title"])
+            self.assertEqual(named, {"left"},
+                             f"{name}: mutation `name_one_hand_in_the_title` produced "
+                             f"{mutant['title']!r}, which does not name one hand")
+            self.assertNotEqual(
+                mutant["hands"], "left",
+                f"{name}: mutation `name_one_hand_in_the_title` did not go red")
+
+    def test_the_check_reddens_on_the_two_titles_that_shipped(self) -> None:
+        """
+        The check has to fail on the exact strings that shipped, or it is a
+        check on some other sentence. These are `generate_exercises.py`'s
+        `make_boogie` and `make_stride` titles as of 2026-09-21, against the
+        `hands` their own `catalog_entry` calls wrote.
+        """
+        for title in ("Boogie left hand — root fifth in C",
+                      "Minor-blues boogie left hand — walking eighths in C minor",
+                      "Stride left hand in C"):
+            with self.subTest(title=title):
+                named = hands_named_in(title)
+                self.assertEqual(named, {"left"})
+                self.assertNotEqual(next(iter(named)), "both",
+                                    "the rows these came off say hands=both")
+
+    def test_forgetting_the_signature_is_empty_fails_the_key_check(self) -> None:
+        """
+        Run on a C root, which is the only root the fault could reach: an empty
+        signature's tonic is C, so it matched nothing else.
+        """
+        for maker, args in ((G.make_seventh_arpeggio, ("C", "diminished7", "both", 2)),
+                            (G.make_broken_seventh, ("C", "minor7", "both")),
+                            (G.make_chromatic, ("C", "both", 1))):
+            sc, entry = maker(*args)
+            declared = entry["drill"]["params"]["key"]
+            with self.subTest(item=entry["id"]):
+                self.assertIsNone(G.engraved_key(sc, declared))
+                mutant = forget_the_signature_is_empty(copy.deepcopy(sc))
+                self.assertEqual(
+                    G.engraved_key(mutant, declared), "C major",
+                    f"{entry['id']}: mutation `forget_the_signature_is_empty` "
+                    "did not go red")
 
     def test_dropping_the_last_bar_fails_hanon_s_length_check(self) -> None:
         """

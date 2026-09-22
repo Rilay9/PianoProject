@@ -3417,3 +3417,624 @@ new units were rendered that way and every other byte is unchanged — asserted 
 4. The genre plan's Stage 5 repertoire is still entirely `IN ARCHIVE` — six carols nobody has
    quarried. `holiday.5` was built from what the catalog holds instead, and those six would
    make it a better rung than the one built here.
+
+---
+
+### Entry 32 — T14: the hymns and gospel track carried up to Stages 4, 5 and 6 (2026-09-22)
+
+Inserted between Entry 31 and Entry 33 to keep this file ascending, which is the convention
+Entry 25 records. T13 appended Entry 33 while this work was in progress; the brief gave this
+one the number **32** and it keeps it.
+
+**Nothing here has been heard.** Every judgement below was made from the built catalog's
+`notation` block and from `dump_score.py`, which prints the `.mxl` the app plays bar by bar
+and voice by voice. Whether any of these fourteen pieces is a transcription worth practising
+is the one question none of it answers.
+
+**Judgement.** Three rungs, from music the catalog already held plus six of the thirteen
+items Entry 25 quarried. `hymns.4` is the hymn as four written-apart voices and is about the
+two lines your thumbs play; `hymns.5` is the lead sheet again, and is about what you add in
+the gaps — the walk-up, the half-step approach, the chord borrowed from outside the key;
+`hymns.6` is the hymn somebody else has already arranged, where the tune is inside a chord
+and the left hand is the arrangement. The track now runs `hymns.2` · `hymns` · `.4` · `.5` ·
+`.6`.
+
+**The Stage 3 list rung is kept.** `02` Part A item 5 says the hymns rung is a list by
+nature, and `hymns` still holds fifteen songs from 3.2 to 7.3. The three new rungs are
+curated — five, five and four songs — and **eight of their fourteen song options are also on
+that list** (three on `hymns.4`, three on `hymns.5`, two on `hymns.6`). That is the list doing
+its job: the long one holds depth, the short ones pick from it for a purpose. It is also why
+`rung_audit` reports nothing against any of the three — the shared share is half or less on
+each. `hymns`' own lesson was **not** edited, so nothing moved off it and no rung's
+completion changes.
+
+**Option counts.** `hymns.4` 3 exercises + 5 songs · `hymns.5` 3 + 5 · `hymns.6` 3 + 4. None
+is song-optional; all three clear the floor of three on songs alone. **Every rung the brief
+named for this track was built**; there is no not-built line.
+
+---
+
+**Evidence lines.** `<id> → <rung> | fields read | why it fits`. Each item was read on its
+own — the catalog row, then the score dumped — in its own tool call before it was placed,
+and each placement was its own call carrying the line. The *splice* is one call per rung,
+because a stage file is edited as text and a unit is one object.
+
+*`hymns.4`* (Stage 4, after `hymns`; band 3.2–5.69; `requires.staves: 2`; `duet`)
+
+- `song.folk.amazing-grace-satb.pdmx` → hymns.4 | 4.64 estimated; G, 3/4, 19 bars, 2 staves,
+  0 symbols; **all 19 bars dumped** — right hand voice 1 over voice 2, left hand voice 1 over
+  voice 2, four written-apart lines throughout, and no `<chord/>` anywhere | the gentlest
+  four-part reading here and the lowest level, so it goes first. Also on `hymns`
+- `song.classical.rock-of-ages-cleft-for-me.pdmx` → hymns.4 | 4.93; B♭ (−2), **6/4**, 13 bars
+  plus a pickup, 2 staves; **all dumped** — four voices apart, moving in whole notes and
+  dotted halves | slow enough to watch each line. The plan names it for this stage. Also on
+  `hymns`
+- `song.classical.abide-with-me-william-henry-monk.pdmx` → hymns.4 | 5.28; E♭ major declared
+  in the file, 4/4, 16 bars; **all dumped** — four voices apart, and **bar 11 puts an E
+  natural in the alto** against three flats | an inner voice doing what the outer two do not.
+  The plan names it for this stage. Also on `hymns`
+- `song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx` → hymns.4 | 5.36; G, 2/2, 16
+  bars; **all dumped** — two notes on nearly every attack of each staff, soprano over alto and
+  tenor over bass, split into named voices at bars 5, 10, 11 and 13 | the catalog's other copy
+  of this tune is the **single-line** lead sheet on `hymns.2`, so the same tune arrives here
+  with three parts under it. Entry 25 quarried it; on no rung before
+- `song.classical.bach-o-sacred-head-...-hans-leo-hassler.pdmx` → hymns.4 | 5.69, public
+  domain; no key signature, 4/4, 40 bars; **bars 1–10 and 27–40 dumped** — four voices apart
+  the whole way, cadencing on A minor at bars 5, 10, 30 and 35 and ending on C; four bass
+  notes are doubled at the octave and nothing else on any staff is a chord | the longest and
+  last. Entry 25 quarried it for exactly this rung; on no rung before
+- `exercise.cadence.g.voice-led` → hymns.4 | 3.2, G, 4 bars; **dumped** — the right-hand staff
+  rests throughout and the left holds G-B-D, G-C-E, F♯-C-D, G-B-D | three voices moving as
+  little as they can, in the key of two of this rung's songs. Also on `3.2` and `chords-pop.3`
+- `exercise.inversions.g-major.both` → hymns.4 | 4.3, G, 2 bars; **dumped** — the G triad up
+  through its inversions and back, the same shape in both hands | why an inner voice sits
+  where it sits. On no rung before
+- `exercise.articulation.g.legato.right` → hymns.4 | 4.5, G, 4 bars; **dumped** — a two-octave
+  scale in the right hand alone, the score's own text *"Joined — hold each key until the next
+  one sounds"* | that instruction is four-part playing applied to one line. On no rung before
+
+*`hymns.5`* (Stage 5, after `hymns.4`; band 3.23–5.4; `requires.chordSymbols`; Free play)
+
+- `song.folk.what-a-friend-we-have-in-jesus.pdmx` → hymns.5 | 3.23; D major, 4/4, 16 bars, 1
+  stave, 32 symbols; **all dumped** — a **G♯ diminished** at bars 6 and 14 sitting between the
+  G chord and the D, an **E major** at bars 4 and 12 whose G♯ is not in D, and a **D seventh**
+  at bars 1, 5 and 13 pulling to the G | three of this rung's devices printed in one lead
+  sheet. Added late, after the public-build count below was measured — the reason is the
+  notation and not the count, and the count is why I went looking. Also on `hymns`
+- `song.folk.down-by-the-riverside.pdmx` → hymns.5 | 3.36; F major, 4/4, 33 bars, **1 stave**,
+  32 symbols over **exactly three chords** (F, B♭, C7); **all dumped** — G♯ in the melody at
+  bars 1, 4, 9 and 12 and an F♯ at bar 6 | three chords and nothing written in the left hand
+  is the cheapest place to start adding one. Entry 25 quarried it; on no rung before
+- `song.folk.this-little-light-of-mine.pdmx` → hymns.5 | 3.48; two flats, ends on B♭, 32 bars,
+  1 stave, 24 symbols over five chords; **all dumped** — **B♭7 at bars 4 and 20**, landing on
+  E♭ at 5 and 21 | a dominant seventh on the tonic, whose A♭ is not in the key: this rung's
+  subject printed rather than added. Entry 25 quarried it; on no rung before
+- `song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx` → hymns.5 | 3.97; C, 4/4, 16 bars,
+  2 staves, 34 symbols including C7, F7 and an **F♯ diminished** at bar 12 between the F and
+  the C; bar 14 walks the left hand **G-F-E-D** under a held G7 | both devices written in. The
+  plan names it for this stage. Also on `hymns`
+- `song.pop.martin-j-nystrom-as-the-deer-piano.pdmx` → hymns.5 | 4.97; no key signature, 2
+  staves, 16 bars, **58 symbols** over six chords; **all dumped** — bar 12 is an **E major**
+  with a G♯ written into the left hand, resolving to A minor; bars 4, 8 and 16 walk the left
+  hand up a whole scale under a held right hand | the fullest of the five. Also on `hymns`
+- `exercise.walkup.c` → hymns.5 | 4.6, C, 4 bars, symbols C and F; **dumped** — the left walks
+  C-D-E to F, then C-D-E♭-E to F, under held triads; the score says *"The same walk twice:
+  inside the key, then through the note between"*. On no rung before
+- `exercise.passing-chord.c` → hymns.5 | 5.4, C, 4 bars, 6 symbols; **dumped** — E♭m7 sliding
+  into Dm7, A♭7 into G7, each approach chord a half step above its target. On no rung before
+- `exercise.slash-bass.b-flat` → hymns.5 | 5.4, B♭, 4 bars, 8 symbols; **dumped** — held
+  triads over a bass walking B♭-A-G-F and E♭-D-C-F | the walk-up's other half, in *This Little
+  Light*'s key. On no rung before
+
+*`hymns.6`* (Stage 6, after `hymns.5`; band 5.36–6.96; `requires.staves: 2`; lab `ballad`)
+
+- `song.classical.holy-holy-holy-...-hugg.pdmx` → hymns.6 | 5.36; F major, 16 bars, 2 staves,
+  **4/4 changing to 6/4 at bar 9**; **all dumped** — the right hand is three-note chords with
+  the tune on top from bar 2, and from bar 9 it alternates a bar of repeated eighths with a
+  bar that holds | not a vocal score set on two staves: somebody wrote it for a piano. The
+  shortest thing here. Entry 25 quarried it; on no rung before
+- `song.folk.10000-reasons-matt-redman.pdmx` → hymns.6 | 6.17; G, 62 bars, one 2/4 bar among
+  the 4/4, ends on G; **bars 0–12 and 58–61 dumped** — melody as the top note of three-note
+  chords, left hand octaves and open fifths, a C-D-E octave walk at bars 6 and 58 |
+  **`personal-build`**: composition status `unknown`. Also on `hymns`
+- `song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx` → hymns.6 | 6.81, public
+  domain; G, 3/4, **87 bars** against 19 for the four-part setting on `hymns.4`; **bars 1–16
+  and 80–87 dumped** — four- and five-note right-hand chords, chromatic bass steps at bars 6
+  and 14, and the last five bars are a run to a **single D6**, so it does not finish on its
+  home chord | most of it is the arranger's, which is the rung. Also on `hymns`
+- `song.folk.down-by-the-riverside.pdmx.2` → hymns.6 | 6.96, public domain; one flat, **2/2**,
+  66 bars, **swing direction in the file**; **bars 1–12 and 63–66 dumped** — from bar 5 a low
+  bass note then a chord off the beat, and **bars 3–4 walk that bass C-C-D-D♯-E** while bar 65
+  walks C-D-E home | the same tune as the lead sheet on the rung below with the walk-up
+  written out. Entry 25 quarried it; on no rung before
+- `exercise.voicing.g` → hymns.6 | 6.2, G, 4 bars; **dumped** — four whole-note right-hand
+  chords over a single bass, the score's text *"The top note sings; the rest accompany it"*.
+  On no rung before
+- `exercise.pedal.held-melody.g` → hymns.6 | 6.4, G, 4 bars; **dumped** — one G held over four
+  changing left-hand chords, the score's text *"Change the pedal under the held note — it must
+  not break"*. On no rung before
+- `exercise.turnaround.f.i-vi-ii-v` → hymns.6 | 6.4, F, 2 bars, 4 symbols; **dumped** — Fmaj7,
+  Dm7, Gm7, C7 | where a hymn holds the tonic for two bars an arranger puts these three in the
+  gap: the smallest reharmonisation there is. On no rung before
+
+---
+
+**A disagreement with Entry 25, recorded because it is a judgement and not a correction.**
+That entry quarried `song.folk.down-by-the-riverside.pdmx.2` for the hymns **Stage 5** rung,
+on the grounds that "the walk-up the hymns Stage 5 rung is named for is written into the
+notation". It is, and that is why it is on **Stage 6** here: Stage 5 is about the learner
+adding the walk-up to a lead sheet, and a walk-up somebody has already written down is not
+that exercise — it is an arrangement to study, which is Stage 6. The two rungs now hold the
+two copies of the same tune, and the lesson says so.
+
+**What was read and not placed, with the reason.** Each was dumped the same way.
+
+- `song.folk.go-tell-it-on-the-mountain.pdmx` (5.34, pd) — **all 16 bars dumped**: four
+  written-apart voices in a one-flat key signature, which is `hymns.4`'s subject exactly. Not
+  placed for two reasons. Its **last bar sounds C, E, G and B♭ together** (soprano B♭4, alto
+  C4, tenor G3, bass E3) — a dominant seventh, written to go round again rather than to end,
+  where the other five options all close on a home chord. And its catalog title is
+  **`Go_Tell_It_On_the_Mountain`**, underscores and all, which is what the rung and the
+  Library would print. The genre plan lists this tune for Stage 6; the notation says chorale,
+  not arrangement, so the plan's line does not survive a reading either way.
+- `song.classical.william-holy-holy-holy.pdmx` (4.91, pd) — **all 16 bars dumped**: the right
+  hand is a single melody line and the left is block triads. **Not four voices.** Stays on
+  `hymns` and is not on `hymns.4`.
+- `song.classical.schubert-ave-maria` (5.2 **judged**, pd) — **all 17 bars dumped**: B♭, and
+  the left hand is a sixteenth-note broken chord bar after bar with the tune inside it, which
+  is the texture `hymns.6` teaches; the catalog row already carries the `hymns-gospel` track.
+  **Not placed**: it is a Lied on a Latin prayer, not a hymn, and the rung is *the hymn as an
+  arrangement*. Placing it would have taken `hymns.6` from two public-domain songs to three,
+  which is a reason to want it and not a reason it belongs — `working-rules` §2.16.
+- `song.folk.i-give-you-my-heart.pdmx` (7.29) — 130 bars, A flat, 3/4, `finalBass` null. **Not
+  placed**: the catalog's composer field for it reads *Lee Ji-eun (IU)*, which is not the
+  composer of the hymn of that title. The row's title and its composer describe two different
+  pieces and nothing here settles which one the file is.
+- `song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx` (5.19) — **all 9 bars
+  dumped**: a written-out jazz chorus of the spiritual, stride left hand, a D♭ at bar 6. **Not
+  placed**: nine bars is one chorus and `hymns.6` is about a hymn played through as a piece.
+  Stays on `jazz.9`.
+- `song.pop.misc-tunes-o-worship-the-king-...-lyons.pdmx` (3.13) — Entry 25 quarried it for
+  `hymns.2` and that rung's band (1.4–3.2) holds it. **Not placed**: `hymns.2`'s lesson says
+  "Four options" and names all four, so a fifth means editing that lesson, which this run's
+  file list does not include. Named as a follow-up.
+- `song.classical.anon-kum-ba-yah.pdmx` (2.37) — on no rung, and below every band built here.
+
+---
+
+**Modes: what the plan marks `BUILT` and what a rung can carry.** A rung's `tools` may only
+be `lab`, `duet`, `blind`, `simon`, `play` or `ladder` — read in `curriculum.schema.json`'s
+closed enum and in `LessonScreen.toolButton`.
+
+- **`hymns.4` carries `duet`**, with `item` naming *Amazing Grace* in four parts. The Stage 3
+  lesson records that an unnamed duet button opens the rung's first playable song, which there
+  is *When the Saints* and has no inner voices; naming the item is the fix, and `validate.py`
+  refuses an item the rung does not offer. The button navigates with `hands: 'R'`, so the
+  learner takes the right-hand staff; the score screen's *Duet* row plays the hand you are not
+  on, and `settingsStore.ts` defaults `playbackHands` to the non-focused one. All three are
+  claim rows.
+- **`hymns.5` carries `play`** — Free play, which the plan marks `BUILT` for this stage.
+  `FreePlayScreen.ts` names a held chord of three or more notes; that is a claim row.
+- **`hymns.6` carries `lab` with the `ballad` preset**: `leftHand: 'broken'`,
+  `rightHand: 'none'`, a four-chord progression, and the key **not** in its `locks`. The
+  lesson says exactly that and no more. The plan also marks *Performance mode* for this stage;
+  *Perform* is a score-screen control and not a tool kind, so the lesson names it in prose
+  with a claim row against the control's own wording, the way `holiday.6` and `holiday.7` do.
+- The plan's Stage 5 *"Simon seeded from a walk-up"* is marked `NOT BUILT` there and is still
+  not built. The lesson does not mention it.
+- None of the three draws a `rung_audit` INFO for naming no mode.
+
+---
+
+**Claims under test.** **41 rows** added to `lessonClaimsAboutMusic.test.ts` (31 per-item —
+8 for `hymns.4`, 13 for `hymns.5`, 10 for `hymns.6` — and 10 comparisons) and **9** to
+`lessonClaimsAboutApp.test.ts` (4, 1 and 4). The music file runs its rows inside two tests,
+so the suite's count rises by the nine app rows only: **2,409 → 2,418**, which matches.
+
+**Six mutations were run, each restored, and every one went red naming its own claim**:
+*Amazing Grace*'s 19 bars → 18; *This Little Light*'s `Bb7` → `Bb9`; *What a Friend*'s `E` →
+`Eb`; the "*Holy holy holy* is the short one" comparison pointed at *Amazing Grace* instead;
+the ballad preset's left hand `broken` → `walking`; and the `hymns.4` duet item pointed at
+*Rock of Ages*. The two app mutations failed by name in the test title; the four music ones
+failed inside the aggregated test, which prints the claim and the row's real key, metre,
+staves, bars and symbol count.
+
+**Faults in my own first draft, caught by re-reading the dumps against the prose before any
+of it was built.** Five, all corrected:
+
+1. *Holy holy holy* — I wrote "from that bar both hands repeat the same chord six times a
+   bar". Bar 9's right hand is **single notes**, and bars 10, 12, 14 and 16 **hold**. The
+   second half alternates a bar of eighths with a bar that holds, and that is what it says now.
+2. The half-step study — "does it four times over two bars". It does it **twice**, in bars 2
+   and 3.
+3. The slash-chord study — "a walking bass under a harmony that does not move at all". The
+   harmony **does** move, in bars 2 and 4; only bars 1 and 3 hold one triad.
+4. *Amazing Grace* in G — "eighty-seven bars grown out of a sixteen-bar tune". The sixteen was
+   an assertion about the tune in general and not about any file here. It now compares against
+   the 19-bar four-part setting on `hymns.4`, which is a comparison row.
+5. *O Sacred Head* — "three verses long". The `1. 2. 3.` in the file is verse **numbering
+   under the words**; what the notes show is that bars 1–5 repeat at 6–10. It now says it is
+   by far the longest of the five, which is a comparison row.
+
+---
+
+**Who else reads what these units changed** — grepped over `app/src`, not reasoned, because
+the first draft of this entry asserted the consumers without opening one of them.
+
+- **`prerequisites`** (new: `hymns.4` ← `hymns`, `hymns.5` ← `hymns.4`, `hymns.6` ← `hymns.5`).
+  Read by `prerequisites.ts`'s `lockState`, which **returns open unless the strict setting is
+  on**, and `settingsStore.ts` defaults `strictPrerequisites` to `false` with the comment that
+  D17's point is that nothing is locked. `session.ts` imports `lockState` for the recommender
+  and `LessonScreen.ts` for the badge and the confirmation. So with the setting on, `hymns.4`
+  sits behind a twenty-option Stage 3 list rung — a badge and a reason, never a disabled card.
+  Nothing else reads the field.
+- **`concepts`** on a rung. `SkillsScreen.ts` collects, per concept, **the stage number and
+  track of every rung that names it**, so nine concepts gain an entry: `four-part-harmony` and
+  `voice-leading` gain Stage 4 (both were already on `hymns` at Stage 3); `legato` gains Stage
+  4 and the hymns track; `bass-walk-up` and `passing-chords` gain Stage 5; `secondary-dominants`
+  gains Stage 5 and the hymns track; `arranging`, `voicing-melody` and `reharmonisation` gain
+  Stage 6 and the hymns track. `LessonScreen.ts` marks a rung's concepts learnt when it is
+  passed and known when *I already know this* is tapped. `validate.py`'s orphan check is
+  unaffected: nothing was removed from any rung. **`selectors.ts`'s `alternativesFor` reads
+  `concepts` on a catalog *item*, not on a lesson**, so none of this touches it — which is
+  worth writing down, because `working-rules` §2.15 is about that exact field being confused.
+- **`songOptions`.** `build.py`'s `attach_rung_tracks` gives each song its rung's track, so the
+  six songs that were on no rung now carry `hymns-gospel` and the Library's hymns shelf goes
+  from **28 rows to 34** — counted from the rebuilt catalog, and the six are the Bach chorale,
+  the four-part *Joyful Joyful*, both *Down by the Riverside* rows, *This Little Light* and the
+  Hugg setting. `selectors.ts`'s `lessonComplete` recomputes a rung's completion from its
+  current options, and **nothing was removed from any existing rung**, so no existing rung's
+  completion moves.
+- **`tools`, `requires`, `levelBand`.** `LessonScreen.toolButton` draws the buttons;
+  `validate.py`'s `tool_errors`, `notation_requirements` and `level_band_errors` check them;
+  `ladder_report.py` prints the band on the lesson page. All four ran clean.
+
+**A correction to `02-curriculum.md` that is older than this work.** Part D8's heading said
+the module opens "`hymns-gospel` and `rock-metal` at Stage 3". `hymns-gospel.2.1` has been in
+`stage-2.json` since Entry 20 built `hymns.2`, so that line had been wrong for as long as the
+rung has existed. Corrected, with the reason beside it. Part A item 5 gains the revision note
+for this track.
+
+**Verification.** `build.py --offline` ok · `ladder_report.py` rewrote
+`docs/generated/ladder.md` (310 lines; Hymns & gospel now **5 rungs, stages 2–6**) ·
+`validate.py` **OK at 2,067 catalog items** · `rung_audit.py` whole tree **0 HIGH**, 30 MED,
+1 LOW, 11 INFO, and **`hymns.4`, `hymns.5` and `hymns.6` each report `no findings`** on their
+own runs · `npx tsc -b --noEmit` clean · `npx vitest run` **175 files, 2,418 tests, all
+passing**. **No Playwright**, by instruction.
+
+Two things about those numbers, both of which make them weaker than they look:
+
+- **The chain was run twice, not once.** The brief asks for one run at the end; the second was
+  caused by adding *What a Friend We Have in Jesus* to `hymns.5` after the public-build count
+  had been measured. Both runs are reported above from the second.
+- **The build ran against another agent's in-progress `tools/content/generate_exercises.py`.**
+  T13 owns that file and was editing it in this tree throughout, so the generated half of the
+  catalog this build produced is not what the committed generator writes. **All 23 placed
+  items** were re-checked against the catalog as it now stands, after the second build —
+  level, `levelSource`, staves, bars and time signatures compared against the values written
+  into the ledger before any build ran — and **none of the 23 changed**. (The first version
+  of this paragraph said 22 and was measured after the *first* build only; *What a Friend We
+  Have in Jesus* was placed after it. Re-run over all 23.) The whole-tree audit and suite
+  figures carry the caveat anyway.
+- The whole-tree audit figures are **not** a before-and-after: it was first run after all
+  three rungs were already spliced, so what these three contribute is the per-rung reading.
+
+---
+
+**What is unverified.**
+
+- **Every piece, unheard.** In particular: the Hugg *Holy holy holy* setting changes metre
+  halfway and nobody here has heard whether that reads as one piece; *Amazing Grace* in G ends
+  on a bare D after an ad-lib run, which is a decision an arranger made and not a mistake, but
+  it has not been listened to; *As the Deer*'s last bar sounds the melody's C over a B-D-G in the left hand
+  under a symbol that says C major.
+- **Whether any of the three lessons teaches.** No check decides it.
+- **The levels.** Thirteen of the fourteen songs are `estimated`; only *Ave Maria*, which was
+  not placed, is `judged`. Every exercise placed is `judged`.
+- **The public build.** Five of the fourteen songs are `personal-build` with composition
+  status `unknown`: *Just a Closer Walk* and *As the Deer* on `hymns.5`, and the Hugg setting
+  and *10,000 Reasons* on `hymns.6`. So a public build offers **`hymns.4` five playable of
+  five, `hymns.5` three of five, and `hymns.6` two of four** — and `hymns.6` is **below the
+  floor of three**, which nothing in the repository measures. This is the same open question
+  Entry 31 left against `holiday.7` and it is the item on this entry most worth a decision.
+  *Ave Maria* would close it and, for the reason above, should not be used to.
+- **No screen was opened.** The rungs have not been seen on the Plan screen, the three lesson
+  pages have not been rendered, and neither *Play it as a duet* nor *Accompaniment lab* has
+  been observed on its page; the code paths are the ones other rungs already use.
+- **The bar-level statements** in the lessons — *Abide with Me*'s alto E natural at bar 11,
+  *This Little Light*'s B♭7 at bar 4, *Just a Closer Walk*'s diminished at bar 12 and its bass
+  walk at bar 14, *As the Deer*'s E major at bar 12, *What a Friend*'s diminished at bars 6
+  and 14 — come from `dump_score.py` and **not** from the `notation` block, so the claim rows
+  can only check that the chord or the key exists in the file, not that it is in that bar. A
+  wrong bar number would pass.
+- **Saved progress.** Nothing was taken off an existing rung, so no rung's completion changes.
+  Eight songs gain a second rung and keep their first.
+
+**Files.** `content/curriculum/stage-4.json`, `stage-5.json`, `stage-6.json` (one unit
+spliced into each as text; each round-trips byte-identically under
+`json.dumps(indent=2, ensure_ascii=False)` plus a newline, measured before the edit, so the
+units were rendered that way and the splice asserted that every byte before the insertion
+point was unchanged and that the parsed result was the old document plus exactly one unit);
+`content/lessons/hymns.4.md`, `hymns.5.md`, `hymns.6.md` (all new);
+`app/tests/unit/lessonClaimsAboutMusic.test.ts`, `app/tests/unit/lessonClaimsAboutApp.test.ts`;
+`docs/02-curriculum.md` Part A item 5 and Part D8's heading; `docs/generated/ladder.md`
+(regenerated); this entry. Nothing under `tools/` was touched.
+
+**Follow-ups.**
+
+1. *O Worship the King* (3.13) wants `hymns.2` and a rewritten repertoire paragraph on that
+   lesson, which this run's file list excluded.
+2. The public-build count above: `hymns.6` offers two playable songs, `hymns.5` three.
+3. `song.folk.go-tell-it-on-the-mountain.pdmx`'s title is `Go_Tell_It_On_the_Mountain` in
+   `content/sources/pdmx.json`, and the Library prints titles verbatim. A one-row fix that
+   would also make the piece usable on `hymns.4` if somebody decides its unresolved last bar
+   is acceptable.
+4. `song.folk.i-give-you-my-heart.pdmx` carries a composer who did not write the hymn of that
+   title. Either the title or the composer is wrong and the file has not been identified.
+5. `song.classical.schubert-ave-maria` carries the concept `6/8` and its file is **4/4
+   throughout**, all 17 bars dumped. The accompaniment is six sixteenths to a beat, which is
+   probably where the tag came from. Not touched.
+6. The genre plan's Stage 6 repertoire is still six spirituals marked `IN ARCHIVE`, of which
+   Entry 25 quarried one and Entry 25's own §5 explains why *Were you there* was dropped. Any
+   of them would make a better `hymns.6` than two worship songs whose licence is unknown.
+
+---
+
+### Entry 33 — T13: every generated family checked as music, by invariant and by picture (2026-09-22)
+
+**The judgement.** Entry 4 found five faults in five families and four of them by opening a
+picture, and nothing in the repository had looked at the other fifty-one families the same
+way. This pass does both halves: `tools/content/tests/test_generator_invariants.py` now has
+one row per maker and asserts what each family promises, and every one of the 56 families
+was rendered **whole** and read. The interesting result is not the test file — it is that
+**three of the four faults still on the page cannot be fixed from the generator**, and
+proving that took rendering eight variants of one page rather than arguing about it.
+
+#### Families counted
+
+`generate_exercises.py` exports **56 makers**. `FAMILIES` in the test file has **56 rows**,
+and `TestEveryMakerIsHere` fails if a maker is added without one — so the table is the
+module, not a sample of it. The plan those makers build is **1,176 items** under 59 id
+prefixes, and the difference is **exactly three** makers that write two prefixes each,
+checked by calling each one both ways: `make_trill` writes `trill` and `mordent`,
+`make_tremolo_octaves` writes `tremolo` and `tremolo-third`, and `make_double_scale`
+writes `double-third` and `double-sixth`. 56 + 3 = 59.
+
+#### Part A — the invariants, and the mutation that reddens each family
+
+**61 tests, all green** (`python -m unittest tools.content.tests.test_generator_invariants`).
+The axes, and the check that carries each: **length** (`TestLength`, the bar count the
+docstring/title/plan states, plus "both staves are the same length" and "every bar is
+full"); **key** (`TestKey`: the two staves agree, `engraved_key` never names a key the page
+does not carry, a title saying minor is in the minor, the minor families in *every* key they
+are written in, `hands` against which staves sound, and two new ones below); **hand range**
+(`TestHandRange`: the register a family claims for its left hand, the hand it says is
+silent, no strike wider than an octave outside the two documented in
+`STRIKES_WIDER_THAN_A_HAND`, every note a key that exists); **spelling** (`TestSpelling`:
+the blue note a raised fourth in seven keys, no gratuitous double accidental, the chromatic
+scale by semitones, and the new blues-direction check); **rhythm** (`TestRhythm`: tresillo
+3+3+2, the clave's strikes against `CLAVE_PATTERNS`, the swung half identical to the
+straight one note for note, a shuffle written straight with the feel in words, every
+`RHYTHM_PATTERNS` row's lengths, the odd meters' bar length, oom-pah alternating, the tumbao
+off the downbeat, the independence ratios, the repeated-note count, the measured trill, the
+rag cell off the beat, the boogie's eight eighths, the riff's four downbeat statements);
+**text** (`TestText`: a ratchet at `LONGEST_DIRECTION`, held in every key a family
+interpolates a key name into, one line, starting at a barline); **the docstrings are true**
+(`TestTheDocstringsAreTrue`, seven checks).
+
+**Proven red, per family.** `TestTheChecksGoRedOnAMutation` runs five named mutations over
+the table — `drop_the_last_bar` (the 55 families with a stated length of two bars or more, plus
+`hanon`, whose length is its data file's and gets a mutation of its own),
+`lift_the_left_hand_two_octaves` (the 10 families that claim a left-hand register),
+`stretch_every_chord_by_an_octave` (every family with a chord in a hand),
+`pad_every_direction` (the 22 that print one), `sound_the_silent_hand` (the 20 that name a
+silent hand) — and
+`test_every_family_has_at_least_one_mutation_that_reddens_it` is the census that asserts no
+family escapes all five. It passes with an empty list, so **every one of the 56 has at least
+one invariant proved red.**
+
+Two mutations were added this pass, each run against the exact state that shipped:
+
+* `name_one_hand_in_the_title` — strips the hand words from a family's title, appends
+  "left hand", and requires the check to go red for every family whose `hands` is not
+  `left`. `test_the_check_reddens_on_the_two_titles_that_shipped` runs it on the three
+  literal strings `make_boogie` and `make_stride` used to produce.
+* `forget_the_signature_is_empty` — clears the mark `no_signature` sets, and requires
+  `engraved_key` to answer `"C major"` again. Reverting the source line makes **exactly
+  twelve** subtests fail, which is the twelve rows that shipped the fault.
+
+Reverting the two source fixes was run as a whole: the titles revert produces **82
+failures**, the `keySig` revert **12**, and the file is green again restored.
+
+#### Part B — one picture per family, whole page
+
+`build/previews/` are the first two bars, so they were not used. Every family was rendered
+by one headless browser on a `file://` page — no server, no port 4173, no Playwright suite —
+with `fullPage: true`, and the tallest page is `exercise.hanon.01.both` at seven systems.
+That matters: the earlier fixed-viewport shots of the same 56 families were all the same
+height and **three of them were crops**.
+
+Each line is `<family> | <item> | <what the page shows> | verdict`. Registers are read off
+the score, bars and hands off the page.
+
+| family | item | the page | verdict |
+|---|---|---|---|
+| scale | `exercise.scale.c-major.1oct.similar.both.2` | 2 bars, both hands, no signature, RH C4–C5 LH C3–C4, eighths up and back, an eighth rest to end, fingering on every note | OK |
+| arpeggio | `exercise.arpeggio.c-major.2oct.both` | 2 bars, both, RH C4–C6 LH C2–C4, dotted-quarter rest to end | OK |
+| triad_inversions | `exercise.inversions.c-major.both` | 2 bars, both, seven chords root–1st–2nd–root and back, fingering stacks above and below | OK |
+| five_finger | `exercise.five-finger.c-major.both` | 3 bars, both, C4–G4 over C3–G3 in quarters, dotted-half rest to end, no block chord | OK |
+| hanon | `exercise.hanon.01.both` | 30 bars over 7 systems, 2/4 sixteenths, bar 30 a half note alone on its own system | OK |
+| chromatic | `exercise.chromatic.c.1oct.both` | 4 bars, both, semitones up and back, 1-3 fingering, the two hands' shapes differ | FAULT (open): the ascending run mixes sharps and flats — C♯ D E♭ E F F♯ G — because `transpose(i)` lets music21 choose. Sharps up, flats down is a content decision, not fixed here |
+| seventh_arpeggio | `exercise.arpeggio7.c-dominant7.2oct.both` | 3 bars, both, C E G B♭ two octaves up and back, no signature, 1-2-3-4 / 5-4-3-2 | OK. The left hand reaches C5 on four ledger lines above the bass staff — legible, and it is what two octaves hands together is |
+| double_scale | `exercise.double-third.c.1oct.right` | 4 bars, right hand only in thirds, left hand whole rests | OK |
+| octave_scale | `exercise.octave-scale.c.1oct.right` | 2 bars, right only, octaves with 5/1 on each | OK |
+| broken_seventh | `exercise.broken7.c-dominant7.both` | 2 bars, both, the 1-3-5-7-5-3 figure twice, no signature | OK |
+| rhythm | `exercise.rhythm.quarters.4bar` | 4 bars, one-line staff, sixteen quarters | FAULT: every notehead hangs below the single line instead of on it. **Not the generator's** — see the note below |
+| coordination | `exercise.coordination.c.hold` | 3 bars, RH quarters C4–G4, LH one held C3 a bar with finger 5 | OK. Title "Hands together in C — left hand holds" names both hands and is exempt from the new title check by design |
+| interval_reading | `exercise.interval-reading.c-position.right.01` | 4 bars, right only, halves and quarters inside C position | OK |
+| position_shift | `exercise.position-shift.c.right` | 4 bars, right only, the shift marked by the 3-1 at bar 3 | OK |
+| cadence | `exercise.cadence.c.root` | 4 bars, left hand only, four whole-note chords I–IV–V7–I, right hand whole rests | OK. Note: root position takes the left hand to F4, a fourth above middle C, on bar 3's V7. The family claims no register and nothing asserts one |
+| accompaniment | `exercise.accompaniment.broken.c-major.left` | 4 bars, left only, broken chord to D4, finger 5 at each bar | OK |
+| oompah | `exercise.oompah.c.octave` | 8 bars 2/4, left only, bass–chord alternating, chord symbols C F G C above | OK |
+| pedal | `exercise.pedal.c` | 4 bars, both, smooth I–IV–V7–I under a held melody | FAULT: each pedal mark is an illegible blob — start, release and the fingering's third digit at the same point. **Not fixable from the generator** — see below |
+| repeated_notes | `exercise.repeated-notes.c.3x.right` | 2 bars, right only, triplet eighths three to a note, 3-2-1 over each group | OK (the groups are tuplets, measured, not six-beat bars) |
+| trill | `exercise.trill.c.4pb.right` | 3 bars, right only, sixteenths four to the beat | FAULT (text): the direction sits between the staves with a barline through the word "hurry" |
+| tremolo_octaves | `exercise.tremolo.c.right` | 2 bars, right only, octave tremolo 1/5 | OK |
+| rotation | `exercise.rotation.c.right` | 2 bars, right only, Alberti at speed, 1-5-3-5 | OK |
+| articulation | `exercise.articulation.c.staccato.right` | 4 bars, right only, a dot on every note | FAULT (text): direction between the staves, barline through "the" |
+| hand_independence | `exercise.independence.c.2v1` | 4 bars, both, two RH eighths to each LH quarter | OK |
+| shaping | `exercise.shaping.c.crescendo` | 5 bars, right only, `pp` and a hairpin over two octaves | FAULT (text): direction between the staves, barline through "first" |
+| voicing | `exercise.voicing.c` | 4 bars, both, four whole-note chords with the top note above, a single bass whole note below the staff | FAULT (text) |
+| syncopation | `exercise.syncopation.tied-across-bar` | 4 bars, both, the tie over the barline visible, LH whole-note chords | FAULT (text) |
+| secondary_rag | `exercise.secondary-rag.c.4bar` | 4 bars over 2 systems, both, the three-sixteenth cell against four, chord symbols C F C G | FAULT (text) |
+| meter | `exercise.meter.5-4` | 4 bars of 5/4, both, LH holds a tied whole+quarter a bar | FAULT (text). Also: the right hand climbs twenty steps to C6, four ledger lines, on an exercise whose subject is counting |
+| pedal_variant | `exercise.pedal.held-melody.c` | 4 bars, both, C5 tied start→continue→continue→stop across all four (checked, not read off the page) | FAULT (text): the first letter is drawn on top of the brace |
+| seventh_voicing | `exercise.voicing7.c.close` | 3 bars, both, Dm7 G7 Cmaj7, RH four-note chords over a single bass note | OK |
+| four_chord_loop | `exercise.loop4.c.root` | 4 bars, both, I–V–vi–IV root position, chord symbols C G Am F | OK |
+| slash_bass | `exercise.slash-bass.c` | 4 bars, both, eight half-bar chords, the bass walking C B A G F E D G under them | OK |
+| walking_bass | `exercise.walking-bass.c.blues` | 12 bars over 2 systems, both, RH shells over a quarter-note walk, chord symbols the twelve-bar form | OK |
+| comping | `exercise.comping.c.charleston` | 4 bars, both, the charleston hits over a whole-note bass | OK |
+| stride | `exercise.stride.c` | 4 bars, both, bass–chord–tenth–chord under RH chords, symbols C G7 C F | OK — and the title now says "both hands" |
+| turnaround | `exercise.turnaround.c.i-vi-ii-v` | 2 bars, both, four half-note chords, symbols Cmaj7 Am7 Dm7 G7 | OK |
+| ii_v_i | `exercise.ii-v-i.c.shells` | 4 bars, left only, shells with the tonic tied over bars 3–4 | OK |
+| tritone_sub | `exercise.tritone-sub.c` | 4 bars, both, Dm7 D♭7 Cmaj7 with the tonic tied | OK |
+| open_voicing | `exercise.open-voicing.c.quartal` | 4 bars, both, four stacked-fourth chords over a bass note | FAULT (open): the title says "in C" and the page carries a **three-flat signature** with symbols Cm11 Fm11 Gm11. The other three flavours of the same maker engrave C major — `sus4` takes an accidental on its B♭ rather than a signature. One family, two conventions |
+| boogie | `exercise.boogie.c.root-fifth` | 4 bars, both, eight LH eighths a bar under an RH C7 shell each bar, symbol C7 | OK — and the title now says "both hands" |
+| blues_scale | `exercise.blues-scale.c.1oct.right` | 2 bars, right only, C E♭ F F♯ G B♭ C up and back | FAULT (text) — the words themselves were wrong and are fixed: see below |
+| clave | `exercise.clave.son-3-2` | 8 bars over 2 systems, one-line staff, son 3-2 | FAULT: the one-line staff again, and the direction under the staff |
+| tumbao | `exercise.tumbao.c` | 8 bars over 2 systems, left only, nothing on beat one, symbols Cm Fm, three-flat signature, title says C minor | FAULT (text) |
+| montuno | `exercise.montuno.c.2note.son-3-2` | 4 bars, right only, two-note chords on the clave | FAULT (text) |
+| latin_groove | `exercise.latin-groove.c.son-3-2` | 8 bars over 2 systems, both, the tumbao under the montuno | FAULT (text) |
+| intro | `exercise.intro.c.4bar` | 4 bars, both, C G Am F, quarters over whole notes, the last bar a chord | FAULT (text): the "F" of "Four bars" is drawn on top of the brace |
+| walkup | `exercise.walkup.c` | 4 bars, both, the diatonic walk then the chromatic one into the IV, symbols C F C F | FAULT (text): first letter on the brace. The two-note right-hand chord in bar 3 is **not** a fault — the maker drops the third while the bass passes through the flat third, and says so in a comment |
+| passing_chord | `exercise.passing-chord.c` | 4 bars, both, Cmaj7 E♭m7 Dm7 A♭7 G7 Cmaj7, the approaches on the half beat | OK |
+| power_chord | `exercise.power-chord.a` | 4 bars, both, `ff`, RH accented fifths over eight LH eighths a bar | FAULT (text). Also: a three-digit fingering stack under every one of the eight eighths a bar is a wall of numbers |
+| riff | `exercise.riff.a.falling` | 8 bars, right only, four two-bar statements each on a downbeat, "Keep the hand still" | OK |
+| pentatonic | `exercise.pentatonic.a.pentatonic` | 2 bars, right only, A C D E G A and back, thumb under | FAULT (text) |
+| tresillo | `exercise.tresillo.c` | 8 bars, both, dotted quarter–dotted quarter–quarter under RH triads | OK — its direction is printed under the lower staff and collides with nothing |
+| swing_pair | `exercise.swing-pair.c` | 9 bars over 2 systems, right only, "Straight" at bar 1, the silent bar 5, "Swing: long, then late" at bar 6, the two halves identical | OK |
+| modal_vamp | `exercise.modal-vamp.a` | 8 bars, both, i–♭VII–♭VI–♭VII twice, the left hand on open fifths below middle C throughout | FAULT (text) |
+| ostinato | `exercise.ostinato.a.fifths` | 8 bars over 2 systems, both, RH eighths over a held fifth | OK — its 70-character direction is drawn **above** the system and is the most legible of the 22 |
+
+**FAULT rows: 22 of 56.** Nineteen of them are the one text fault, one is the one-line
+staff (twice: `rhythm` and `clave`), one is the pedal mark, one is chromatic spelling and
+one is `open_voicing`'s signature. `blues_scale`'s words were wrong as well as badly placed
+and the words are fixed.
+
+#### What was fixed, and which makers changed
+
+1. **Forty titles said "left hand" over two hands of music.** `make_boogie` (36 rows) and
+   `make_stride` (4). Both call `rh.append(fingered_chord(...))` once a bar, both catalog
+   themselves `"both"`, and the app judges the right hand. Now
+   `Boogie — root fifth in C, both hands` and `Stride in C, both hands`. The brief's
+   suggested wording ended `, left hand under chords`; it was **measured against the row it
+   prints on and rejected** — a list row clamps a title to two lines and ellipsises the
+   rest (`style.css`, `-webkit-line-clamp: 2`), so on a phone the clause after the key is
+   the first thing to go and the row would read as the same false claim. `, both hands` is
+   the trailing hand tag every scale and arpeggio title already carries, and every title it
+   writes is **exactly two characters longer** than the one it replaces — 40→42 for the
+   longest major boogie, 58→60 for the longest minor one, 21→23 for stride — so the
+   longest generated title in the catalogue does not move.
+   **Invariant:** a title that names one hand and not the other must have `hands` equal to
+   it, checked on every family's item and on all 12 × 7 boogie/stride items minus the minor
+   form in D♭, which `UNWRITABLE_MINOR` refuses.
+
+2. **Twelve rows claimed a key their page does not carry** — wider than the five the scout
+   reported. `engraved_key` compared the *empty* signature's tonic, which is C, against the
+   declared root, so a root of C matched: five `arpeggio7`, three `broken7` and four
+   `chromatic` rows shipped `keySig: "C major"` under titles reading "C diminished 7th
+   arpeggio" and "Chromatic scale from C", while the same shapes on every other root shipped
+   nothing. `no_signature()` now marks the three makers whose empty signature is not a key —
+   `make_chromatic`, `make_seventh_arpeggio`, `make_broken_seventh` — and `engraved_key`
+   reads the mark. **`make_hanon` also writes an empty signature and is deliberately not
+   marked**: Hanon's first twenty are in C major, their titles say so, and all sixty rows
+   already carry "C major".
+
+   **Who else reads the field** (`working-rules` §2.15, and the search rather than the
+   absence): `keySig` on a *catalog row* is read in one place, `LibraryScreen.ts:628`,
+   which prints it to the learner under "Key". Three searches: `keySig` under `app/src`
+   returns 6 hits — that one, `curriculum/types.ts:69` which types it, and four that are
+   the *score model's* separate field, filled by `extractScoreModel` from the MusicXML;
+   `keySig` under `tools` returns the importers, which write their own rows, and
+   `render_check.write_measured`, which is in Unverified below; `keySig` under
+   `app/tests/unit` returns 23 hits and every one is the score model's field
+   (`difficulty.test.ts`, `scoreModel.test.ts`, `scoreTypes.test.ts`), which this change
+   does not touch because no engraving changed. No golden fixture is an `arpeggio7`,
+   `broken7` or `chromatic` item.
+
+3. **The blues scale's printed direction named the wrong degree.** The page read "The flat
+   fifth is passed through, not landed on" over an F♯ in C and a G♯ in D — a **raised
+   fourth**, which is what the owner decided on 2026-09-19 (Entry 22) and what
+   `BLUES_SCALE_FORMS` spells. `working-rules` §2.17. The direction now says "raised fourth"
+   and four comments in `generate_exercises.py` that said "flat fifth" — the `BLUES_SCALE`
+   table's, `BLUES_SCALE_FORMS`', and two in `make_pentatonic` — were corrected with it.
+   Found by reading the page; no mechanical check could have seen it, and the new one
+   asserts the words and the engraved letter together.
+
+**Makers changed: `make_boogie`, `make_stride`, `make_chromatic`, `make_seventh_arpeggio`,
+`make_broken_seventh`, `make_blues_scale`,** plus the two module-level functions
+`no_signature` (new) and `engraved_key`. **The content build was not run** — the coordinator
+rebuilds.
+
+**What a rebuild changes, measured and not reasoned.** Every one of the 56 makers was run
+twice — against this tree, and against a copy with the three source edits reversed — and the
+MusicXML it writes was diffed, with music21's encoding date, object ids and software stamp
+scrubbed so the comparison is the music and the metadata. **53 of the 56 are
+byte-identical.** The three that move:
+
+| family | changed lines | what |
+|---|--:|---|
+| `stride` | 4 | `<work-title>` and `<movement-title>`, both from "Stride left hand in C" to "Stride in C, both hands" |
+| `boogie` | 4 | the same two elements, "Boogie left hand — root fifth in C" to "Boogie — root fifth in C, both hands" |
+| `blues_scale` | 2 | one `<words>` element, "flat fifth" to "raised fourth" |
+
+So **56 `.mxl` files change bytes** — 36 boogie, 4 stride, 16 blues-scale — and **not one
+note, duration, bar, fingering, chord symbol or key signature changes anywhere.** The
+sentence this replaces said "no `.mxl` should change except the 16 blues-scale files" and
+then contradicted itself in its own parenthesis; the diff is what settled it.
+
+`chromatic`, `seventh_arpeggio` and `broken_seventh` move their `keySig` from `"C major"` to
+`None` with **no MusicXML change at all**, which is the point of the fix: the page was always
+right and only the row was wrong.
+
+#### What could not be fixed, with the evidence
+
+* **The direction that collides — 22 of 56 families.** Every one inserts its text at offset
+  0 of bar 1 and OSMD anchors that to the measure's left edge, under the brace. Entry 4's
+  fourth fault was closed by *shortening* the directions; they are shorter and they still
+  collide. `placement="above"` was rendered and **rejected**: clean on `intro`, and straight
+  through `♩= 60` on `trill`, and `00-invariants` §1 refuses a fix that improves one picture
+  and ruins another. A decision for the owner, not an omission.
+* **The pedal marks.** `mark.addSpannedElements([c])` gives a `PedalMark` one chord, so
+  start and release land at the same x — with the fingering's third digit on top. Spanning
+  each chord to the next was rendered (it moves the collision one bar on) and spanning all
+  four at once was rendered (one `Ped.` in bar 1, one release in bar 4, which is not the
+  pedalling the drill scores). Nothing cheap works.
+* **The one-line rhythm staves.** The same four bars were rendered with the note written
+  E4, F4, G4, A4, B4, C5, D5 and E5, and **all eight pages are byte-for-byte the same
+  picture**: under a percussion clef with `staffLines=1` OSMD ignores the written pitch.
+  This is not a generator fault and no generator change can move those noteheads.
+* **The chromatic scale's spelling** and **`open_voicing`'s signature** are content
+  decisions, written up in the rows above and left open.
+
+#### Unverified
+
+* **Nothing here was heard.** Every judgement is a page read and a score measured.
+* **The content build was not run**, so the 1,176 built rows still carry the old titles and
+  the twelve `keySig` values. Everything claimed about what changes is claimed about the
+  maker's output, measured in memory, not about files on disk.
+* **`render_check.py --write` would put `keySig` back.** `write_measured` fills the field
+  from the rendered score wherever the catalog's is `None`, and the render report holds
+  `"C major"` for every `arpeggio7` row. It has **not** run over the shipped catalog — the
+  evidence is that `app/public/content/catalog.json` has `durationSec: null` and `keySig:
+  null` on `exercise.arpeggio7.g-dominant7.2oct.both`, and `build.py`'s render step passes
+  `--apply`, not the write path. If that ever changes, all 112 rows of those three families
+  will be labelled C major rather than twelve.
+* **No screen was opened.** The titles were measured against `style.css`'s two-line clamp by
+  reading the rule, not by looking at a Library row.
+* **`--full` was not built.** The boogie/stride title invariant walks all twelve
+  `HARMONY_KEYS`, which is a superset of `narrow` and of `JAM_KEYS`, so no key the plan can
+  reach is untested — but the plan itself was not run.
+* **One picture per family is one item per family.** The other 1,120 were not rendered. The
+  invariants that vary by key are held in every key the family is written in; the
+  *pictures* are the C or A version only.

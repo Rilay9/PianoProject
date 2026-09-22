@@ -881,6 +881,73 @@
               }
             }
           ]
+        },
+        {
+          "id": "hymns-gospel.5.1",
+          "title": "Hymns: walk-ups and passing chords",
+          "track": "hymns-gospel",
+          "lessons": [
+            {
+              "id": "hymns.5",
+              "title": "Walk-ups, passing chords, and the chord that is not in the key",
+              "concepts": [
+                "bass-walk-up",
+                "passing-chords",
+                "secondary-dominants"
+              ],
+              "textFile": "lessons/hymns.5.md",
+              "exerciseOptions": [
+                "exercise.walkup.c",
+                "exercise.passing-chord.c",
+                "exercise.slash-bass.b-flat"
+              ],
+              "songOptions": [
+                "song.folk.what-a-friend-we-have-in-jesus.pdmx",
+                "song.folk.down-by-the-riverside.pdmx",
+                "song.folk.this-little-light-of-mine.pdmx",
+                "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
+                "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "hymns.4"
+              ],
+              "estimatedDays": 21,
+              "requires": {
+                "chordSymbols": true
+              },
+              "tools": [
+                {
+                  "kind": "play"
+                }
+              ],
+              "levelBand": [
+                3.23,
+                5.4
+              ],
+              "finder": {
+                "skill": "adding a walking bass and a passing chord to a plain hymn",
+                "levelWords": "intermediate, Grade 2 to 3, gospel hymn with chord symbols",
+                "constraints": [
+                  "chord symbols printed above the tune",
+                  "a seventh or a diminished chord among them",
+                  "a gospel or spiritual tune",
+                  "16 to 40 bars"
+                ],
+                "avoid": [
+                  "four-part vocal scores",
+                  "arrangements with the bass line written out",
+                  "organ scores with a separate pedal stave"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
         }
       ]
     }

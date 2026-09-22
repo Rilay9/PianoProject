@@ -320,6 +320,37 @@ def grand_staff(title: str, bpm: int, ts: str = "4/4", ks: key.Key | None = None
     return sc, rh, lh
 
 
+def no_signature(sc: stream.Score) -> stream.Score:
+    """
+    Marks a score whose empty key signature is not a claim about a key.
+
+    Three families are engraved with no accidentals in the signature and the
+    shape spelled in accidentals instead — `make_chromatic`, whose scale is in
+    no key by construction, and `make_seventh_arpeggio` and
+    `make_broken_seventh`, whose diminished and half-diminished shapes belong
+    to no key at all. `key.Key("C")` is how music21 writes an *empty*
+    signature, and that is all it means here.
+
+    `engraved_key` could not tell the two apart, and for a root of C the empty
+    signature's tonic matched the declared root, so five `arpeggio7` rows,
+    three `broken7` rows and four `chromatic` rows shipped `keySig: "C major"`
+    — under titles reading "C diminished 7th arpeggio" and "Chromatic scale
+    from C" — while the same shapes on every other root shipped nothing. The
+    Library screen prints that field to the learner under "Key"
+    (`LibraryScreen.ts:628`, the only reader of the catalog's `keySig` that
+    three searches found — `app/src`, `tools` and `app/tests/unit`; every
+    other hit is the score model's separate field, read from the MusicXML). A
+    diminished seventh is not in C major, and a chromatic scale is not in a
+    key; the root is in the title, where it belongs.
+
+    `make_hanon` also passes an empty signature and is deliberately **not**
+    marked: Hanon's first twenty are in C major, their titles say so, and all
+    sixty rows carry "C major" already.
+    """
+    sc.editorial.noKeySignature = True
+    return sc
+
+
 def add_notes(part: stream.PartStaff, pitches: Iterable[pitch.Pitch], fingers: Iterable[int] | None, ql: float) -> None:
     fingers = list(fingers) if fingers is not None else None
     for i, p in enumerate(pitches):
@@ -978,6 +1009,7 @@ def make_chromatic(
     level = scale_level(start, "chromatic", hands, octaves, "similar", 0.5)
     title = f"Chromatic scale from {note_name(start)} — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
+    no_signature(sc)
 
     def run(base: str) -> list[pitch.Pitch]:
         first = pitch.Pitch(base)
@@ -1051,6 +1083,7 @@ def make_seventh_arpeggio(
     label = SEVENTH_LABELS[quality]
     title = f"{note_name(root)} {label} arpeggio — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
+    no_signature(sc)
 
     def run(start: pitch.Pitch) -> list[pitch.Pitch]:
         up = [start.transpose(12 * o + i) for o in range(octaves) for i in shape] + [
@@ -1292,6 +1325,7 @@ def make_broken_seventh(
     label = SEVENTH_LABELS[quality]
     title = f"{note_name(root)} broken {label} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
+    no_signature(sc)
 
     def figure(start: pitch.Pitch) -> list[pitch.Pitch]:
         tones = [start.transpose(i) for i in shape] + [start.transpose(12)]
@@ -3649,7 +3683,9 @@ def make_stride(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
     the hand has to leap and land, twice a bar, without looking.
     """
     level = 7.3
-    title = f"Stride left hand in {note_name(tonic)}"
+    # Both hands play: the right takes a chord every bar, below. Same fault
+    # and same cure as `make_boogie` — it read "Stride left hand in C".
+    title = f"Stride in {note_name(tonic)}, both hands"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
 
     offset = 0.0
@@ -4046,9 +4082,22 @@ def make_boogie(
     if minor:
         offsets = flatten_the_third(offsets)
         level = BOOGIE_MINOR_LEVELS[pattern]
-    title = (f"Minor-blues boogie left hand — {pattern.replace('-', ' ')} "
-             f"in {note_name(tonic)} minor" if minor else
-             f"Boogie left hand — {pattern.replace('-', ' ')} in {note_name(tonic)}")
+    # `, both hands`, and not "Boogie left hand — …", which is what all
+    # thirty-six rows said. `rh.append(fingered_chord(…))` below puts a shell
+    # in the right hand every bar, `catalog_entry(…, "both", …)` catalogs the
+    # item as a two-hand one and the app judges the right hand — so the name
+    # promised a one-hand exercise the learner does not get.
+    #
+    # The tail is the trailing hand tag every scale and arpeggio title here
+    # already carries ("— 2 oct, both") rather than a phrase naming what each
+    # hand does: a list row clamps a title to two lines and ellipsises the
+    # rest (`style.css`, `-webkit-line-clamp: 2`), and a phrase appended after
+    # the key is the first thing to go on a phone — which would leave the row
+    # reading as the same false claim it does now. The left hand is still the
+    # subject; `concepts` carries `left-hand` and the drill carries the figure.
+    title = (f"Minor-blues boogie — {pattern.replace('-', ' ')} "
+             f"in {note_name(tonic)} minor, both hands" if minor else
+             f"Boogie — {pattern.replace('-', ' ')} in {note_name(tonic)}, both hands")
     sc, rh, lh = grand_staff(
         title, bpm, ks=minor_key(tonic) if minor else key.Key(tonic))
 
@@ -4084,10 +4133,16 @@ def make_boogie(
 
 #: The blues scale, in semitones from the tonic.
 #:
-#: Six notes and the octave: root, flat third, fourth, flat fifth, fifth, flat
-#: seventh. The flat fifth is the whole point of it — it is the note that is not
-#: in the minor pentatonic, it is passed through rather than landed on, and a
-#: "blues scale" written without it is a minor pentatonic with a different name.
+#: Six notes and the octave: root, flat third, fourth, **raised fourth**,
+#: fifth, flat seventh. That note is the whole point of it — it is the one
+#: that is not in the minor pentatonic, it is passed through rather than
+#: landed on, and a "blues scale" written without it is a minor pentatonic
+#: with a different name.
+#:
+#: It is a **raised fourth and not a flat fifth**: the owner decided that on
+#: 2026-09-19 (`pending-review` Entry 22) and `BLUES_SCALE_FORMS` spells it
+#: `A4`. Six semitones is the same key and a different degree, and the
+#: sentence here said the other one for three days after the decision.
 BLUES_SCALE = (0, 3, 5, 6, 7, 10, 12)
 
 
@@ -4116,7 +4171,12 @@ def make_blues_scale(
     title = f"{note_name(tonic)} blues scale — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     rh.insert(0, expressions.TextExpression(
-        "The flat fifth is passed through, not landed on"
+        # "raised fourth", not "flat fifth": the owner chose the raised
+        # fourth in every key on 2026-09-19 (Entry 22), `BLUES_SCALE_FORMS`
+        # spells `A4`, and the page prints F sharp in C and G sharp in D.
+        # The direction said "flat fifth" over an accidental that said
+        # otherwise — read off the rendered page, 2026-09-22.
+        "The raised fourth is passed through, not landed on"
     ))
 
     # Spelled by interval from `BLUES_SCALE_FORMS`, the one table both blues
@@ -5008,7 +5068,7 @@ def make_riff(
 #:
 #: The minor pentatonic in **A is every white key** — A C D E G — which is the
 #: whole reason it can be taught at core 2.5 rather than after the black keys
-#: arrive at 3.1. Adding the flat fifth makes it the blues scale and costs
+#: arrive at 3.1. Adding the raised fourth makes it the blues scale and costs
 #: exactly one accidental, so that variant waits for 3.1 and is levelled there.
 #: Spelled as **intervals, not semitones**, so the spelling is chosen here and
 #: not by whatever music21 answers for six semitones.
@@ -5047,15 +5107,15 @@ def make_pentatonic(
     on the page because a scale without a fingering is a scale practised
     differently every time.
 
-    The blues form adds the flat fifth and nothing else. It is one accidental,
+    The blues form adds the raised fourth and nothing else. It is one accidental,
     so it is levelled after core 3.1 where accidentals are taught, and it is a
     separate item rather than a parameter nobody sees.
     """
     one_of("form", form, tuple(BLUES_SCALE_FORMS))
     degrees, level, label = BLUES_SCALE_FORMS[form]
     title = f"{note_name(tonic)} {label} — one octave, thumb under"
-    # A minor is the key signature that spells these white; the flat fifth is an
-    # accidental against it rather than a key of its own.
+    # A minor is the key signature that spells these white; the raised fourth
+    # is an accidental against it rather than a key of its own.
     sc, rh, lh = grand_staff(title, bpm, ks=minor_key(tonic))
     base = pitch.Pitch(tonic + "4")
 
@@ -5696,16 +5756,32 @@ def engraved_key(sc: stream.Score, declared: str | None) -> str | None:
     Two things it is not allowed to guess. The mode comes off the engraved
     signature, never off the root, because a minor exercise and its relative
     major share a signature and only the score knows which one it is. And where
-    the engraved key is not the exercise's own — the seventh-chord families are
-    deliberately written with no signature at all, `ks=key.Key("C")`, so the
-    shape is spelled in accidentals — this returns nothing rather than claiming
-    the piece is in C major. The root is in the title, where it belongs.
+    the engraved key is not the exercise's own — `make_seventh_arpeggio`,
+    `make_broken_seventh` and `make_chromatic` are written with no signature at
+    all, so the shape is spelled in accidentals — this returns nothing rather
+    than claiming the piece is in C major. The root is in the title, where it
+    belongs.
+
+    Those three say so by calling `no_signature`, and not by their empty
+    signature, which is written `key.Key("C")` and is indistinguishable from a
+    real C major one. Reading the signature alone was wrong for exactly the
+    roots that *are* C: twelve rows shipped `keySig: "C major"` under titles
+    reading "C diminished 7th arpeggio" and "Chromatic scale from C".
+    `make_hanon` writes the same empty signature and is **not** marked, because
+    Hanon's first twenty really are in C major and their titles say so.
 
     ASCII, and lower case for a minor key: this field follows the chord-symbol
     convention `import_kern.key_name` documents and the 217 kern rows carry —
     "Ab major", "c# minor". Titles are the place for the typographic flat.
     """
     if declared is None:
+        return None
+    # `no_signature` marks the three families whose empty signature is not a
+    # key. Without this the test below is only true of roots that are *not* C:
+    # an empty signature's tonic is C, so a C-rooted diminished seventh matched
+    # its declared root and shipped "C major" while its twenty-three siblings
+    # shipped nothing. See `no_signature`.
+    if sc.editorial.get("noKeySignature"):
         return None
     signature = next(iter(sc.recurse().getElementsByClass(key.Key)), None)
     if signature is None:

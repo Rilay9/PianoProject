@@ -72,12 +72,15 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Hymns & gospel (`hymns-gospel`)
 
-2 rung(s), stages 2–3.
+5 rung(s), stages 2–6.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 2 | `hymns.2` | 3 | 4 | 1.4–3.2 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Joyful, Joyful, We Adore Thee (2.5), Swing Low, Sweet Chariot (2.9) |
 | 3 | `hymns` | 5 | 15 | 3.2–7.3 | Oh When the Saints Go Marching In (in F major) (3.2), What a Friend We Have in Jesus (3.2), Greensleeves (with chords) (3.3), Come Thou Fount of Every Blessing (3.5), Simple Gifts (2-Part Round) (3.9), Just a Closer Walk with Thee (4.0), … and 9 more |
+| 4 | `hymns.4` | 3 | 5 | 3.2–5.7 | Amazing Grace (four parts) (4.6), Rock of Ages (4.9), Abide with Me (5.3), Joyful joyful we adore thee (5.4), O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler (5.7) |
+| 5 | `hymns.5` | 3 | 5 | 3.2–5.4 | What a Friend We Have in Jesus (3.2), Down By The Riverside (3.4), This Little Light of Mine (3.5), Just a Closer Walk with Thee (4.0), As the Deer (5.0) |
+| 6 | `hymns.6` | 3 | 4 | 5.4–7.0 | Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg (5.4), 10,000 Reasons (6.2), Amazing Grace (in G major) (6.8), Down by the Riverside (7.0) |
 
 ## Blues & boogie (`blues-boogie`)
 

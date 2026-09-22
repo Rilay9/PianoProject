@@ -34,7 +34,12 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { LAB_PRESETS, labPreset, type LabBed } from '../../src/engine/sightReading';
+import {
+  LAB_PRESETS,
+  labPreset,
+  labProgression,
+  type LabBed,
+} from '../../src/engine/sightReading';
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { masteryCriteriaFor } from '../../src/curriculum/selectors';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
@@ -470,6 +475,74 @@ const CLAIMS: [string, string, () => boolean][] = [
     () =>
       item('exercise.rotation.c.left').hands === 'left' &&
       item('exercise.repeated-notes.c.4x.left').hands === 'left',
+  ],
+  [
+    'hymns.4',
+    '*Play it as a duet* opens Amazing Grace in four parts, not whichever song comes first',
+    () =>
+      (written('hymns.4').tools ?? []).some(
+        (tool) => tool.kind === 'duet' && tool.item === 'song.folk.amazing-grace-satb.pdmx',
+      ) && rung('hymns.4').songOptions.includes('song.folk.amazing-grace-satb.pdmx'),
+  ],
+  [
+    'hymns.4',
+    '…and gives you the right-hand staff while the app plays the other one',
+    () =>
+      source('ui/screens/LessonScreen.ts').includes("'Play it as a duet'") &&
+      /'Play it as a duet',[\s\S]{0,160}?hands: 'R'/.test(source('ui/screens/LessonScreen.ts')),
+  ],
+  [
+    'hymns.4',
+    'the *Duet* row plays the hand you are not on',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes('`Duet: the app plays ${played}`') &&
+      source('data/settingsStore.ts').includes("playbackHands: 'non-focused'"),
+  ],
+  [
+    'hymns.4',
+    '*Hands* on the score screen chooses which hand the app waits for',
+    () => source('ui/screens/ScoreScreen.ts').includes('Which hand the app waits for'),
+  ],
+  [
+    'hymns.5',
+    '*Free play* prints the chord once three or more notes are down',
+    () =>
+      (written('hymns.5').tools ?? []).some((tool) => tool.kind === 'play') &&
+      source('ui/screens/LessonScreen.ts').includes("'Free play'") &&
+      source('ui/screens/FreePlayScreen.ts').includes(
+        'three or more of them are named as a chord',
+      ),
+  ],
+  [
+    'hymns.6',
+    '*Accompaniment lab* opens the ballad bed',
+    () => labTools('hymns.6').includes('ballad'),
+  ],
+  [
+    'hymns.6',
+    '…four chords with a broken-chord left hand and no right hand at all',
+    () => {
+      const preset = labPreset('ballad');
+      if (!preset) return false;
+      return (
+        preset.leftHand === 'broken' &&
+        preset.rightHand === 'none' &&
+        labProgression(preset.progressionId).major.length === 4
+      );
+    },
+  ],
+  [
+    'hymns.6',
+    '…in whatever key you pick: the preset does not lock the key',
+    () => !(labPreset('ballad')?.locks ?? []).includes('key'),
+  ],
+  [
+    'hymns.6',
+    '*Perform* is one pass, start to finish, with no restarts and no loop',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.',
+      ),
   ],
 
   // --- the chord chart (item 8) -------------------------------------------

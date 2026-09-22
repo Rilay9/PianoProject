@@ -86,7 +86,13 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    piece), `holiday.6` (the concert settings) and `holiday.7` (winter repertoire that is not
    a carol) — so the track now runs 2, 3, 4, 5, 6, 7. It stays under *Style ladders* on
    the Plan screen, which splits tracks at one unit rather than ranking them by count;
-   `pending-review.md` Entry 31.) (Revised 2026-09-15: for a day the build had placed every song in
+   `pending-review.md` Entry 31. Revised 2026-09-22: the same was done for hymns, and the
+   list rung is **kept** — `hymns` at Stage 3 is still the track's long list of fifteen, and
+   `hymns.4` (four voices and the inner parts), `hymns.5` (walk-ups and passing chords) and
+   `hymns.6` (the hymn as an arrangement) are curated rungs of five, five and four songs
+   above it. Eight of their fourteen song options are also on that list — three, three and
+   two — which is the list doing its job rather than duplication; `pending-review.md`
+   Entry 32.) (Revised 2026-09-15: for a day the build had placed every song in
    the library on some rung, which put thirty to seventy pieces on the classical rungs; see
    `handoff-2026-09-09.md` §5aj–§5ak. The per-rung tables below name the plan's intended
    pieces; `docs/generated/ladder.md` is what the build offers today.)
@@ -544,7 +550,11 @@ Each is a real rung with three options from existing material, not a reading
 list: `optionsExempt` would have been the easy way to ship five essays, and the
 point of the module is that the method gets applied to something.
 
-### D8. Mini-modules (optional; `holiday` opens at Stage 2, `hymns-gospel` and `rock-metal` at Stage 3, `jam` at Stage 4, `latin` at Stage 5)
+### D8. Mini-modules (optional; `holiday` and `hymns-gospel` open at Stage 2, `rock-metal` at Stage 3, `jam` at Stage 4, `latin` at Stage 5)
+
+*(Corrected 2026-09-22: this line said `hymns-gospel` opened at Stage 3. `hymns-gospel.2.1`
+has been in `stage-2.json` since `pending-review.md` Entry 20 built `hymns.2`, so the line
+had been wrong since that rung existed. The track now runs Stages 2 to 6; Entry 32.)*
 
 - **Hymns & gospel** `[AUTH]`: Amazing Grace, Be Thou My Vision, It Is Well, Great Is Thy
   Faithfulness (1923), Holy Holy Holy, Come Thou Fount, What a Friend, Swing Low, Wade in the
