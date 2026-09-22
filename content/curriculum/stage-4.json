@@ -46,6 +46,11 @@
                 "3.6"
               ],
               "estimatedDays": 30,
+              "tools": [
+                {
+                  "kind": "ladder"
+                }
+              ],
               "levelBand": [
                 3.1,
                 4.1
@@ -113,6 +118,11 @@
                 "4.1"
               ],
               "estimatedDays": 30,
+              "tools": [
+                {
+                  "kind": "ladder"
+                }
+              ],
               "levelBand": [
                 3.1,
                 4.2
@@ -186,6 +196,11 @@
                 "4.1"
               ],
               "estimatedDays": 24,
+              "tools": [
+                {
+                  "kind": "ladder"
+                }
+              ],
               "levelBand": [
                 3.3,
                 5.1
@@ -247,6 +262,11 @@
                 "4.1"
               ],
               "estimatedDays": 24,
+              "tools": [
+                {
+                  "kind": "ladder"
+                }
+              ],
               "levelBand": [
                 4.1,
                 5.1
@@ -1194,6 +1214,11 @@
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "tools": [
+                {
+                  "kind": "ladder"
+                }
+              ],
               "levelBand": [
                 4.1,
                 5.1

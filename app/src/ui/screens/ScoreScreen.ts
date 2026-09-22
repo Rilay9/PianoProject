@@ -196,6 +196,15 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   const routeMode = router.route.scoreMode;
   const routeLoop = router.route.scoreLoop;
+  /**
+   * `?ladder=1` — open looping the whole item with the ladder on (`04` §3d).
+   *
+   * The rungs that ask for this are scales, arpeggios, Hanon and octaves, where
+   * the whole item *is* the loop: they are short, they repeat by nature, and
+   * looping one is not a choice about which bars matter. Applied at the same
+   * point `?loop=` is, and fails closed — see `applyRouteLadder`.
+   */
+  const routeLadder = router.route.ladder === true;
   const tourId = router.route.tour;
   /**
    * The tour's parameters, for a navigation that has to keep them.
@@ -1526,6 +1535,51 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
+   * `?ladder=1`: the whole item becomes the loop and the ladder climbs it.
+   *
+   * The blocker looked circular — the ladder needs a loop, and clearing the
+   * loop switches it off — and **the circle only exists for repertoire**. A
+   * whole-piece loop is absurd on a prelude and is what a scale, an arpeggio,
+   * a Hanon number and an octave study already are, which is why `04` §3d
+   * permits the tool on those rungs and nowhere else. Two things on screen then
+   * say what is happening: the Loop control names the bars and the Ladder row
+   * shows the toggle pressed. That is the state `05` §6 wants, and the fault it
+   * records is the other one — a ladder on with *nothing having asked*.
+   *
+   * So it **fails closed** three ways rather than turning on and hoping, and
+   * each one leaves the screen exactly as it would have opened:
+   *
+   * - a hash that named a mode other than Tempo gets nothing. The ladder moves
+   *   a clock and the others have none, so where the hash named no mode this
+   *   brings Tempo with it — but only once there is a loop to climb, so a
+   *   refusal below does not leave the learner in a mode they did not ask for;
+   * - a performance gets nothing, being one pass by definition;
+   * - a whole-item range the piece cannot loop gets nothing — not the loop,
+   *   not the mode and not the ladder.
+   *
+   * `?loop=` beats it where both are given: bars somebody named are a stronger
+   * statement about what to repeat than "all of it", and the ladder then climbs
+   * those. Clearing the loop still switches the ladder off — the route gets no
+   * exception from `05` §6's rule, because the exception is the fault.
+   */
+  function applyRouteLadder(loaded: ScoreModel): void {
+    if (!routeLadder || performanceRun || !session) return;
+    if (routeMode !== undefined && routeMode !== 'tempo') return;
+    if (loopBars === null) {
+      if (!session.loopForPrintedBars(1, loaded.sourceMeasureCount)) return;
+      loopBars = { from: 1, to: loaded.sourceMeasureCount };
+      loopSection = null;
+    }
+    mode = 'tempo';
+    // The Ladder row's own condition and nothing else, so the toggle can never
+    // be on underneath a row that is not drawn — which is the whole of `05` §6.
+    if (!ladderApplies()) return;
+    ladderOn = true;
+    // From where the learner is, exactly as the toggle does (`05` §6).
+    ladderCeilingPct = tempoPct;
+  }
+
+  /**
    * One pass of the loop has ended; the ladder decides the next one (`05` §6).
    *
    * Clean means nothing missed *and* nothing wrong **in this pass**: a bar
@@ -2809,6 +2863,7 @@ export function ScoreScreen(router: Router): HTMLElement {
           loopSection = null;
         }
       }
+      applyRouteLadder(loaded);
       // The title is in the header now. The status line is for the app's own
       // messages, and "Loading…" is finished being true.
       //

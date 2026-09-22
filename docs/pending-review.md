@@ -2293,6 +2293,289 @@ technique.6, technique.8, theory.7; `docs/04-ui-spec.md`, `docs/05-score-follow-
 
 ---
 
+### Entry 25 — T11: the latin and hymns quarry, and a reader in place of the ear (2026-09-22)
+
+Placed between Entry 24 and Entry 28 to keep the numbering ascending, which is this file's
+order; `25` was the number the brief gave.
+
+Standing context 5 amended `review.py`'s rule that *"only an ear decides what is worth
+practising"*: **a reader deciding from the notation, with the evidence written down, marks
+`keep` or `drop`.** `drop` is the word — `review.py`'s `DECISIONS` are `keep`, `drop`,
+`later`, and `reject` is not a value it accepts. Two pages were decided this way: 41 rows on
+`build/pdmx-p22b` and 35 on `build/pdmx-p23`, one row per look, each with the fields read
+written into the `note` column. **Nothing on either page has been heard.**
+
+---
+
+**The gates, in order, for p23.**
+
+`docs/genre-plans/latin.md` and `hymns.md` mark **42** pieces `IN ARCHIVE` between them. The
+cids those two files name are in none of the three places a quarry would look for them —
+`build/pdmx-genres/candidates.json` holds 7 of 42, `index.json` 9, `build/pdmx/library` 9 —
+so the shortlist was rebuilt from `PDMX.csv` directly through `shortlist.py`'s own `GATES`,
+best two copies per piece by `score_row`.
+
+| step | offered | passed | what stopped the rest |
+|---|---|---|---|
+| shortlist, by piece | 42 pieces | **26** | 16 pieces produced no candidate at all — below |
+| shortlist, by copy | 43 kept | 43 | `maxPerPiece` 2 |
+| `extract.py` | 43 | **43** | — |
+| `quarry.py`, render included | 43 | **35** | round-trip 4, structure 2, render 1, convert 1 |
+| `review.py` sheet | 35 | 35 decided | 11 `keep`, 24 `drop`, 0 left open |
+
+Per band at the quarry gate: 1–2 offered 14 passed 12; 3 offered 7 passed 6; 4 offered 9
+passed 7; 5 offered 9 passed 8; 6 offered 4 passed 2.
+
+**The render ran and was checked rather than assumed.** All 35 `ok` rows carry
+`render_steps` equal to `render_cursor_steps`, none of them zero, from 43 steps to 1,762.
+The first quarry attempt marked every row `render`: the preview server's command is
+`npm run build:app && npm run preview` and a typecheck failure elsewhere in the tree made it
+exit non-zero, so `vite preview` was started on 4173 first and `reuseExistingServer` picked
+it up. A skipped render is never a pass; this one was verified from the row data.
+
+---
+
+**The 16 refusals, with the gate that stopped each.** 49 copies were stopped by
+`piano tracks` (the row names three or more tracks, or a non-piano program number), 6 by
+`subsets` (licence conflict, the dataset's own recommendation) and 1 by `not a draft`
+(paywalled).
+
+| track / stage | piece | copies in the CSV | stopped by |
+|---|---|---|---|
+| latin 3 | la cucaracha | 5 | piano tracks (7 tracks) |
+| latin 3 | la bamba | 4 | piano tracks (program 40, 58) |
+| latin 4 | **el manisero** | **0** | never offered — see below |
+| latin 4 | siboney | 1 | piano tracks (3 tracks) |
+| latin 4 | maria elena | 1 | piano tracks (4 tracks) |
+| latin 5 | chega de saudade | 3 | piano tracks (program 71) |
+| latin 5 | the girl from ipanema | 7 | piano tracks (4 tracks) |
+| latin 6 | caminito | 1 | piano tracks (3 tracks) |
+| latin 7 | danza de los viejitos | 1 | piano tracks (5 tracks) |
+| latin 7 | cordoba | 1 | piano tracks (program 24) |
+| latin 8 | libertango | 12 | piano tracks 11, not a draft 1 (paywalled) |
+| hymns 4 | great is thy faithfulness | 3 | piano tracks 2, subsets 1 |
+| hymns 5 | wade in the water | 1 | piano tracks (program 52) |
+| hymns 5 | oh happy day | 3 | piano tracks 2, subsets 1 |
+| hymns 6 | deep river | 7 | subsets 2, piano tracks 5 |
+| hymns 6 | balm in gilead | 6 | subsets 2, piano tracks 4 |
+
+**The coverage gap is one gate and one disagreement, not sixteen separate problems.**
+Fifteen of the sixteen were refused wholly or mostly by `piano tracks`: the archive holds
+these tunes as ensemble and vocal scores, and the gate that keeps a one- or two-track piano
+file out of a three-part choral arrangement is the same gate that refuses them. That is the
+gate working, and it is also where the remaining latin and hymns repertoire is — a rung that
+wants *La Bamba* will need a different source, not a looser gate.
+
+The sixteenth, **el manisero**, is a disagreement inside this repository and should be
+followed up: `latin.md` names a cid for it, and the shortlist found **zero** rows in
+`PDMX.csv` under the work key it built from the plan's title. One of the two is wrong — the
+plan's line, or the work-key match — and nothing here settles which.
+
+---
+
+**Rejection rate per band, both pages, against the two earlier runs (89 % overall; 53 % at
+band 7–9).**
+
+| band | p22b reviewed | p22b dropped | p23 reviewed | p23 dropped |
+|---|---|---|---|---|
+| 1–2 | 16 | 16 (100 %) | 12 | 8 (67 %) |
+| 3 | 15 | 15 (100 %) | 6 | 6 (100 %) |
+| 4 | 2 | 2 (100 %) | 7 | 6 (86 %) |
+| 5 | 4 | 4 (100 %) | 8 | 2 (25 %) |
+| 6 | 3 | 1 (33 %) | 2 | 2 (100 %) |
+| 7–9 | 1 | 1 (100 %) | — | — |
+| **all** | **41** | **39 (95 %)** | **35** | **24 (69 %)** |
+
+**Both numbers are far from 89 %, in opposite directions, and the reason is what is on the
+page rather than how good the source is.** Counted here against the 533 rows as they stood
+before this splice, not carried over from the previous session's note: of p22b's 39 drops,
+**18** are cids already committed and **15** more would have taken an id already in
+`pdmx.json` or in `content/catalog.static.json` — **33 of 39** are duplicates, not judgements
+about music, leaving **6** that are. (The handoff said 18 / 14 / 7; the count run again here
+says 18 / 15 / 6, the difference being one id that `catalog.static.json` holds and
+`pdmx.json` does not. The re-count is the number to trust, and the reason to re-count is that
+the first one was a remembered figure.) Of p23's 24 drops only **6** are duplicates (4 by
+cid, 2 by id), and the other **18** are judgements from the notation. So
+the rate measures how much of a page the catalog already held. Quoting either page's rate
+beside the earlier 89 % without that split would be comparing two different things.
+
+Within p23 the direction of the earlier run holds: the higher bands reject less (band 5,
+25 %), as band 7–9's 53 % did against 89 %. Band 6 shows 100 % on **two rows**, which is too
+few to mean anything and is recorded so nobody reads it as a trend.
+
+**The 18 judgement drops, by what the notation said** — title match only 7 (jalousie twice,
+a `Por una Cabeza` ensemble part, the Grimes song sold as Piazzolla's *Oblivion*, a symphony
+reduction sold as *Joyful Joyful*, *Steal Away* twice); wrong texture for the rung 5; barring
+broken 2; the thinner of two editions on the same page 3; corrupted text 1.
+
+---
+
+**Committed — 13 items spliced into `content/sources/pdmx.json`, 533 rows to 546.** The
+file was not re-serialised. It round-trips byte-identically under
+`json.dumps(indent=2, ensure_ascii=False)` plus a newline, measured before the edit, so the
+new items were rendered the same way and inserted before the closing `]`; the splice script
+refused unless every byte before the insertion point was unchanged and the 533 existing
+items parsed back identical. `commit.py` wrote to a scratch table for each page and copied
+the `.mxl` files into `content/scores/pdmx`; all 13 `convertedSha256` values were re-hashed
+from the files in the repository and match, and the 546-row table has no duplicate id and no
+duplicate cid. **The content build was not run — `commit.py` does not require it.**
+
+From **p22b** (2):
+
+- `song.jazz.the-crave` — D minor, 4/4, 2 staves, 53 bars; LH 86 % of 177 attacks are 2+
+  notes, 64 dotted quarters against 56 eighths: a habanera bass held through. 7.46, inside
+  `jazz.8`'s 5.5–8.2.
+- `song.jazz.twelfth-street-rag` — C, 4/4, 2 staves, 74 bars; LH 291 attacks, 204 quarters,
+  53 % 2+ notes, a real oom-pah. 6.29, inside `ragtime.5` and `.6`; the copy already on
+  `ragtime.5` is a 40-bar single-staff lead sheet that cannot show the figure the rung is
+  named for.
+
+From **p23** (11). The first draft of this paragraph said "nine of the eleven are for rungs
+that do not exist" — a bare plural asserted after checking one, which `working-rules` §2.2
+is about. Enumerated: **four** fit a rung that is on disk today — Corcovado on `latin.5.1`,
+the Hugg *Holy Holy Holy* and the four-part *Joyful Joyful* on `hymns-gospel.3.1`, *O Worship
+the King* on `hymns.2` — and **seven** are for rungs the plans name and
+`content/curriculum/` does not have (latin Stages 6, 7; hymns Stages 4, 5, 6), of which the
+Bach chorale and *Go Tell It* would also satisfy `hymns-gospel.3.1`'s `requires` and band.
+latin has only `latin.3.1` and `latin.5.1`; hymns only `hymns-gospel.2.1` and `.3.1`.
+**Nothing was placed on a rung.**
+
+- `song.pop.corcovado.pdmx` (3.38) — 2/2, 1 stave, 36 bars, 31 chord symbols including Ab7,
+  Bb9 and D9 over an Ami6 tonic: real bossa harmony. `latin.5.1` (1.9–6.4), the shape
+  `insensatez` already has there.
+- `song.folk.por-una-cabeza-carlos-gardel.pdmx` (6.83) — A major, 4/4, 2 staves, 66 bars;
+  bars 2–5 hold A2 · rest-then-E3 · A3+C#4 · E3, the tango accompaniment written out rather
+  than left to symbols. For the latin Stage 6 rung; above `latin.5.1`'s 6.4 ceiling.
+- `song.classical.albeniz-asturias.pdmx` (8.36, pd) — 199 bars, 2 staves, ten (staff,voice)
+  streams; 738 of one voice's 903 attacks are sixteenths and the repeated D4 interlocks with
+  the melody on the alternate sixteenths. The latin Stage 7 hand-focus mode is about the left
+  hand of a showpiece, and this piece's left hand is the mechanism.
+- `song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx` (5.36) — F major,
+  4/4, 2 staves, 16 bars; RH 66 % three-note chords, LH over a stepwise bass (Bb2 Bb2 F3 /
+  D3 D3 C3 C3). `hymns-gospel.3.1` (requires `staves` 2, band 3.2–7.3). Hugg's is a different
+  tune to the same text from the Dykes setting already on that rung, so a second option and
+  not a second edition.
+- `song.pop.misc-tunes-o-worship-the-king-all-glorious-above-lyons.pdmx` (3.13) — G major,
+  3/4, 17 bars, 27 chord symbols over four (G C D D7), and **zero `<chord/>` elements**, so
+  the tune is a single line. `hymns.2` asks for exactly that, and its band is 1.4–3.2.
+- `song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx` (5.36) — G major, 2/2, 16 bars,
+  soprano-over-alto on one stave and tenor-over-bass on the other. The catalog's only *Joyful
+  Joyful* is a single-line lead sheet at 2.49 serving `hymns.2`; this is the four-part edition
+  the Stage 3 rung is about, and `quarried.json` marks it `duplicate_of` that id so it counts
+  as the second of the two editions `commit.py` allows.
+- `song.classical.bach-o-sacred-head-...-hans-leo-hassler.pdmx` (5.69, pd) — 4/4 throughout,
+  40 bars, **four voices and not one of them contains a chord**: S 113 attacks, A 136, T 134,
+  B 130. The hymns Stage 4 modes are *let the app take the inner parts* and *alto and tenor
+  alone*; written-apart voices are the one thing they need.
+- `song.folk.down-by-the-riverside.pdmx` (3.36) — F major, 33 bars, 32 symbols over F, Bb,
+  C7 only, with a chromatic G#4 in the tune.
+- `song.folk.down-by-the-riverside.pdmx.2` (6.96) — the same tune as a two-staff swung
+  arrangement; bars 3–4 walk the bass C3 C3 D3 D#3 E3 under E5 F5 F#5 G5. The walk-up the
+  hymns Stage 5 rung is named for is **written into the notation**, which is the uncommon
+  case. The `.2` is `commit.py` numbering two rows that slug to one id, which its own comment
+  says is what that numbering is for.
+- `song.folk.this-little-light-of-mine.pdmx` (3.48) — Bb, 32 bars, Bb7 (the V7 of IV — "the
+  chord that is not in the key") on bar 4, under a melody of five distinct pitches.
+- `song.folk.go-tell-it-on-the-mountain.pdmx` (5.34, pd) — F major, 16 bars, four independent
+  single-line voices, closing C3 D3 E3 to the tonic. The other copy of the same arrangement
+  (row 32) collapses the parts into chords and its 18-bar cut stops on an unresolved V7.
+
+---
+
+**Six findings that are not about any one row.**
+
+1. **`commit.py` cannot see what is already committed.** It numbers colliding ids only
+   within its own run, so the 533 existing rows are invisible to it and a `keep` whose id or
+   `want` is already in `pdmx.json` would produce `catalog: duplicate id` at `validate.py`.
+   Both pages' keeps were checked against committed **cids and ids** before splicing, and
+   against `content/catalog.static.json` as a second, differently shaped search.
+2. **A real loss to that trap.** p23 row 11 is a *Kumbaya* lead sheet — 16 bars, 29 chord
+   symbols over exactly four chords, 2.92 — that fits `hymns.2`'s finder line for line. Its
+   `want` is `song.folk.kum-ba-yah.pdmx`, already committed, and `song.classical.anon-kum-ba-yah.pdmx`
+   is committed too: two editions, which is `MAX_EDITIONS`. Both committed copies are 8 and 9
+   bars **with no chord symbols at all**, so the rung's stated requirement is met by the
+   dropped row and not by either kept one. Swapping one out is a decision for the owner.
+3. **`duplicate_of` is hash-based and missed two pairs.** p23 rows 0/1 (*De Colores*) and
+   28/29 (*Steal Away*) are identical notation — same metre, bars, attack counts, value
+   counts and opening bars — under different `raw_sha256` and `converted_sha256`, and neither
+   pair was flagged. Two uploads of the same music with different metadata are two different
+   files to that check.
+4. **`maxSimultaneousRight` counted symbols, not notes, on at least one row.** The *O Worship
+   the King* row carries `maxSimultaneousRight: 4.0` and its MusicXML contains **no
+   `<chord/>` element at all**. Checked on that row and on one other (*De Colores*, 94
+   `<chord/>`, where the feature is right); not checked across the feature's other consumers.
+   The level estimate is built on these features.
+5. **One row was dropped for its text while its music was the best on the page.** *Were you
+   there* is a true SATB chorale in Eb, four written-apart voices, bass to Ab2 — and its
+   title in `quarried.json` carries seven corrupted characters before the English, and one of
+   its six chord symbols is a `C` followed by Korean text. `commit.py` copies the title
+   verbatim and slugs the item id from it, so a keep would put mojibake in the Library and in
+   the id. Another of that tune's four archive copies should be quarried rather than this one
+   hand-edited.
+6. **Both editions of *The Old Rugged Cross* failed the same way** — six time signatures in
+   19 bars and four in 24, in a hymn in triple time. That is a fact about the source the
+   uploads came from, not about either upload, and it is the shape to watch for: the row
+   passes every machine gate because the file is valid; it is the barring that is wrong.
+7. **A decision that exists only in a session's notes is worth re-deriving, and one of them
+   did not survive.** The previous session's handoff listed seven titles it had decided to
+   keep and said plainly that none of it was on disk. Six were reached again from the
+   notation. The seventh, *All Creatures of our God and King*, was dropped here: one stave,
+   3/2, 31 chord symbols over **seven** distinct chords, quarried for the hymns Stage 4 rung
+   — which is about four voices on two hands — and over `hymns.2`'s four-chord limit. Which
+   of the two readings is right is a judgement; that the note alone could not settle it is
+   the point.
+
+---
+
+**What is unverified.**
+
+- **Nothing on either page has been heard.** Every one of the 76 decisions was made from the
+  notation — key, metre, staves, bars, chord symbols, per-voice attack counts and the first
+  and last bars dumped with the voices kept apart. Whether any of the 13 committed items is a
+  good transcription to practise is exactly the question none of this answers.
+- **Nothing was placed on a rung**, by instruction. Six of the eleven p23 keeps satisfy the
+  `requires` and `levelBand` of a rung that exists today — Corcovado on `latin.5.1`, the Hugg
+  *Holy Holy Holy*, the four-part *Joyful Joyful*, the Bach chorale and *Go Tell It* on
+  `hymns-gospel.3.1`, *O Worship the King* on `hymns.2` — and none of them was put there.
+- **The 13 rows carry no `tracks` and no `genre`, so none of them reaches the `latin` or
+  `hymns-gospel` shelf of the Library.** `commit.py` does not write those two fields (484 of
+  the 533 rows already committed do not have them either), and `import_pdmx.py` falls back to
+  `BUCKET_TRACKS`, which gives one track per bucket: `classical` → `classical`,
+  `folk-hymn-carol` → `core`, `pop-film-game` → `chords-pop`, `jazz-latin` → `jazz`. So
+  Asturias will appear under `classical` and Corcovado under `chords-pop`. The four files the
+  two field names occur in were each read, not inferred from the grep hit — the first draft
+  of this bullet claimed the reading before it had been done, which is §1 in miniature:
+  `import_pdmx.py` has the bucket fallback above; `build.py`'s `attach_rung_tracks` collects
+  `songOptions` from every stage file and adds that rung's track to the row, skipping the
+  tracks `core`, `practice`, `technique` and `theory-ear` — `latin` and `hymns-gospel` are
+  not skipped, so these rows would get their track **the moment they are put on a rung** and
+  get nothing until then; `commit.py` never writes either field; and
+  `tools/content/tests/test_pdmx.py::TestBuildItemOverrides` asserts exactly this fallback —
+  a row with no `genre` and no `tracks` comes out `["pop"]` and `["chords-pop"]`. So the
+  shelf follows the rung, and the rung is the next task: this is a consequence of the
+  instruction not to place anything, not a defect in the rows.
+- **The content build was not run**, so none of the 13 reaches the app or the Library yet;
+  `validate.py` and `rung_audit.py` were not run either. `vitest` and Playwright were not run,
+  by instruction. The checksum re-hash and the id/cid uniqueness check above are local checks
+  on the table, not the build's verdict.
+- **The Zenodo record for the p23 rows is recorded as `14648209` by inheritance, not by
+  measurement.** `pdmx-p23`'s header carries no `csvBytes` — the shortlist was rebuilt by a
+  scratch script — so `commit.py` printed `unknown` for that scratch table. Only the `items`
+  were spliced, and `pdmx.json`'s header still says `14648209` from the runs that did measure
+  it. The p23 files came from the same unpacked archive, so it is almost certainly right; it
+  has not been checked for these rows.
+- **The per-band rates above are over small numbers.** p22b band 4 is two rows, p23 band 6 is
+  two rows. They are reported because the brief asked for the rate per band, not because
+  either is a measurement.
+
+**Files.** `build/pdmx-p23/review/review.csv` (35 decisions and notes),
+`build/pdmx-p22b/review/review.csv` (decided in the previous session),
+`content/sources/pdmx.json` (13 items spliced; header untouched),
+`content/scores/pdmx/` (13 `.mxl` files copied by `commit.py`), this entry. Nothing under
+`app/`, `tools/` or `content/curriculum/` was touched.
+
+---
+
 ### Entry 28 — T2: trading fours, as a mode of the lab rather than a drill (2026-09-21)
 
 The brief's own claim about the two halves is **a proxy, and it half held.** Both files were
@@ -2449,3 +2732,154 @@ spec against a screen they have just changed.
 (both new); `content/curriculum/stage-7.json` (`blues.7` `tools` only, spliced);
 `content/lessons/blues.5.md`, `blues.7.md`, `jazz.4.md`, `improv.4.md`; `docs/04-ui-spec.md`
 §3c and §5c; this entry.
+
+### Entry 29 — T6: the tempo ladder given an address, and the seven rungs that name it (2026-09-22)
+
+**The brief said to check its own reasoning before building on it, and the reasoning held.**
+It rested on one claim about the code: that the loop can be set at route time and that the
+ladder reads it the same way it reads a user-set loop. Read, one at a time:
+
+- `ladderOn` in `ScoreScreen.ts` is a plain closure variable. `grep -rn "ladderOn" app/src`
+  returns twelve lines in one file and **exactly three writes**: the toggle's own click
+  handler, `clearLoop`, and now `applyRouteLadder`. Nothing reads a gesture, a pointer event
+  or an "armed by hand" flag. So the brief's failing case — *"if the ladder arms off a user
+  gesture rather than off loop state, this approach is wrong"* — does not hold here. A second
+  search shaped differently, `grep -rni "ladder" app/src` with `ScoreScreen.ts` and
+  `PracticeEngine.ts` filtered out, turns up no fourth write and one thing worth naming:
+  `GuideScreen.ts` line 153 describes the Ladder row in prose to the learner. Read: it says
+  *"Ladder, once a loop is set, raises the tempo a notch after each clean pass"*, which stays
+  true of a loop the hash set, so it is left alone. Every other hit is the word used of
+  something else — Simon's help ladder, Plan's style ladders, a borrowed key's ladder.
+- `ladderApplies()` is `mode === 'tempo' && loopBars !== null && !performanceRun`, and
+  `climbLadder` refuses on `!ladderOn || hearing || !ladderApplies()`. Both read state, not
+  history.
+- The loop was **already routable**: `?loop=1-2` has been parsed since the guided tour and is
+  applied at load, converting printed bars at the edge. `?ladder=1` sets the same variable at
+  the same point.
+
+So it was built. `applyRouteLadder` in `ScoreScreen.ts` is the whole of it — a dozen lines
+after the `?loop=` block — and it arms the ladder **only when `ladderApplies()` is already
+true**, which is the Ladder row's own condition. The row cannot be hidden with the toggle
+pressed underneath it, which is the fault `05` §6 records.
+
+**Fails closed, three ways**, because the failure being avoided is a control acting unasked:
+no resolvable whole-item loop leaves *both* controls alone (a loop nobody asked for is the
+same fault one step earlier); a mode the hash named that has no tempo to move gets neither;
+a performance gets neither. Where the hash names no mode, `?ladder=1` brings Tempo with it —
+the ladder moves a clock and the other modes have none — and an explicit `?mode=` still wins.
+**Clearing the loop still switches the ladder off**: `clearLoop` was not touched, and the
+route is not special-cased to survive it.
+
+**Blind and Perform do not carry it**, which is a decision and not an omission. The mode, the
+hand and the tour ride along in `tourRoute` because they are things the learner chose and a
+tap of Blind must not drop them. This one arms a control that acts by itself, so re-arming it
+on a tap of something else — possibly after the learner had cleared the loop — is the §6
+shape again. Pinned by a test.
+
+**The tests, and the lines that made them red.** Both unit files were written first and run
+red before any source was touched: **15 of 37 failed**. The three assertions that passed were
+negative cases — no `ladder` in the hash, no button on a rung that offers nothing openable —
+which were vacuously true before the feature existed and are load-bearing after it.
+
+- `app/tests/unit/ladderTool.test.ts` (new, 13 tests): the hash round-trip, the button on a
+  rung, and one case per rung. Red at
+  `expect(parseHash('#/score/…?ladder=1').ladder).toBe(true)` — *expected undefined to be
+  true* — before `router.ts` parsed the flag.
+- `app/tests/unit/scoreTourRoute.test.ts` (8 added): the destination, in the harness that
+  already stubs the engraver and the session. Red at `expect(section.dataset.loop).toBe('1-2')`
+  — *expected '' to be '1-2'* — before `applyRouteLadder` existed.
+- `app/tests/e2e/score.ladder-route.spec.ts` (new, 5 tests): the same destination in a browser,
+  on a real generated exercise. **Never executed** — see below.
+- One assertion was added *after* the code and proved red on its own: that a refusal does not
+  leave the learner in Tempo mode when they did not ask for it. Red by moving `mode = 'tempo'`
+  above the loop guard in `applyRouteLadder` — **1 of 24 failed**, *expected 'tempo' to be
+  'wait'* — then restored. The first draft of that function set the mode before it knew
+  whether there was a loop, which is a smaller version of the same fault the section is about.
+
+**The seven rungs, one at a time.** The button takes the rung's **first exercise option that
+opens as notation**. The rows below are read from the built `public/content/catalog.json`,
+which is a proxy for the MusicXML and is named as one: `notation.bars` is what the build
+measured from the file, and no score file was opened here.
+
+| rung | what the button opens | bars · written bpm | why the whole item is the loop |
+|---|---|---|---|
+| `4.1` | `exercise.scale.c-major.2oct.similar.both.2` | 4 · 72 | two octaves hands together; the rung's own mastery is 0.95 at 80 % of written, which is evenness under speed |
+| `4.2` | `exercise.scale.f-major.2oct.similar.both.2` | 4 · 72 | the same shape in a flat key; the same mastery pair |
+| `4.3` | `exercise.inversions.c-major.both` | 2 · 60 | the rung leads with `drill.chord.inversions`, which has `file: null` and opens as a *drill*, so the button skips it — the case the unit test pins |
+| `4.4` | `exercise.hanon.01.both` | **30** · 60, 2/4 | the long one, and still the whole loop: Hanon No. 1 is one cell taken up and down the keyboard and is played through and again. A pass is about sixty beats, so a rung of the ladder costs roughly a minute — said because it is the one that is not two to eight bars |
+| `technique.4` | `exercise.articulation.c.legato.right` | 4 · 72 | **flagged.** This rung's lesson already names the *Ladder* in prose (`content/lessons/technique.4.md`: "loop a line and let it decide when you have earned the next notch") and had no way to open it. The button takes the legato study because it is first in `exerciseOptions`; the contrary-motion scale and the arpeggio are further down the same list. Four bars of one touch is a legitimate ladder subject, but if the owner wants the scale it is the **option order** that decides, not the tool |
+| `technique.6` | `exercise.arpeggio.a-flat-major.4oct.both` | 4 · 60 | four octaves over four bars; the rung is the rotating wrist under speed |
+| `technique.7` | `exercise.broken-octaves.a.1oct.left` | 2 · 60 | octaves, the brief's own named case |
+
+**No `item` on any of them, and that is mechanical rather than a preference.**
+`validate.py`'s `tool_errors` checks a tool's `item` against the rung's **song** options
+(`simon` is the one exception and takes an exercise), and `tools/` was not this task's to
+edit. So an `item` written on a `ladder` tool would be *refused* rather than honoured, and
+the button's rule is the rung's first exercise that is notation. If a rung should name its
+own, that is one line in `tool_errors` — the follow-up below.
+
+**Consumers of `tools`, grepped rather than recalled.** `grep -rn "\.tools\b" app/src` and
+`grep -rn '"tools"' tools/ --include=*.py` together return five, checked one at a time:
+`LessonScreen.toolButton` (changed here); `validate.py`'s `tool_errors`, where a `ladder` with
+no `preset` and no `item` passes every branch, read line by line — **not run**;
+`rung_audit.py` line 174, whose INFO *"names no mode"* list loses `technique.4`, `.6` and `.7`
+and never held `4.1`–`4.4`, which are track `core` and excluded from it;
+`lessonClaimsAboutApp.test.ts`, which filters `kind === 'lab'` and is untouched; and the closed
+`kind` enum in `content/curriculum.schema.json`, the second of the two lists of one fact,
+updated here. `TodayScreen.ts`'s `tools` is that screen's own row of doors and not this field
+— checked, not assumed from the name.
+
+**A live bug found in passing and deliberately not fixed.** `ScoreScreen.ts` sets
+`mode = 'tempo'` for a sight-read with the comment *"Tempo mode, always: waiting for each note
+is not sight-reading, it is decoding (docs/05 §8)"*, and the line
+`mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput`
+runs **after** it and overwrites it. `defaultModeWithInput` ships as `'wait'`, so Today's daily
+sight-read opens in Wait mode for a learner who has not changed that setting. Out of this
+task's scope and one line; named here rather than fixed.
+
+**What is unverified, and it matters.**
+
+- **Nothing has been played.** No claim here is about whether a ladder over a whole 30-bar
+  Hanon number is a practice a person wants, or whether a notch lands where the hand is. That
+  needs a piano and it is the first thing to check.
+- **Playwright was not run at all.** Port 4173 was already held by a `vite preview` belonging
+  to another agent (`netstat -ano` named the PID, `Get-CimInstance` named the command line),
+  and every config shares that port and `test-results/`. `npm run build:app` was not run
+  either, for the same reason — a build mid-run swaps the service worker under whatever is
+  using it. So `score.ladder-route.spec.ts` has **never executed**: it is written against the
+  ids and `data-` attributes the unit tests exercise, and that is all that can be said for it.
+- **The content build has not been run**, so the seven rungs' new `tools` do not reach the app:
+  `public/content/curriculum.json` still carries none, and until `build.py --offline` copies
+  them the buttons do not exist on a lesson page in a browser. `validate.py` and
+  `rung_audit.py` were not run either. The unit tests read the **authored** stage files for
+  exactly this reason, so they are a claim about what the owner wrote rather than about
+  whether anybody has run the build.
+- **`lesson-tools.spec.ts` was not run and would prove nothing yet** — it reads the built
+  curriculum, where these rungs still carry no tool.
+- **No lesson prose was touched** (`content/lessons/` was not in this task's file set).
+  `technique.4`'s paragraph already describes the Ladder; the other six say nothing about it,
+  and `4.1` still recommends *Duet* — which Entry 16 removed from that rung — while `4.4`
+  recommends *Blind*, which it does not carry as a tool. Both are separate inconsistencies and
+  neither was created here.
+
+**Follow-ups.**
+
+1. Run the content build, then `validate.py`, `rung_audit.py`, `lesson-tools.spec.ts` and
+   `score.ladder-route.spec.ts` — in that order, one Playwright suite at a time.
+2. One line in `validate.py`'s `tool_errors` would let a `ladder` name its own exercise the way
+   a `simon` does. `technique.4` is the rung that wants it.
+3. `docs/08-test-map.md` has no row for `score.ladder-route.spec.ts`; that file was not in this
+   task's set.
+4. The sight-reading mode bug above.
+
+**Verification.** From `app/`: `npx tsc -b` clean; `npm run lint` clean; `npx vitest run`
+**173 files, 2,376 tests, all passing**, against the 172 / 2,355 Entry 28 recorded — one new
+file and twenty-one new tests, which is what was added. Playwright: **none**, for the reason
+above.
+
+**Files.** `app/src/router.ts`, `app/src/ui/screens/ScoreScreen.ts`,
+`app/src/ui/screens/LessonScreen.ts`, `app/src/curriculum/types.ts`;
+`app/tests/unit/ladderTool.test.ts` and `app/tests/e2e/score.ladder-route.spec.ts` (both new),
+`app/tests/unit/scoreTourRoute.test.ts`; `content/curriculum.schema.json`;
+`content/curriculum/stage-4.json`, `stage-6.json`, `stage-7.json` (`tools` only, spliced);
+`docs/04-ui-spec.md` §3d and `docs/05-score-follow-engine.md` §6; this entry.

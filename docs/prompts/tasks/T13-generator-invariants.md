@@ -47,6 +47,21 @@ previews under `build/previews/` — read how they are made) and **look at the w
 not a crop** (`working-rules` §2.5). For each, one line:
 `<family> | <item rendered> | <what the page shows: hands, range, bars, text> | OK / FAULT <what>`
 
+## Confirmed by the coordinator 2026-09-22, from `docs/lesson-audit/scout-surfaces.md`
+
+- **40 titles say "left hand" for two-hand exercises**: `exercise.boogie.*` (36) and
+  `exercise.stride.*` (4). `generate_exercises.py:4051` and `:3652` build the titles;
+  `rh.append(fingered_chord(...))` puts a chord in the right hand every bar and
+  `catalog_entry(..., "both", ...)` catalogs them so, and the app judges the right hand.
+  The title must say what the learner plays: e.g. "Boogie — <pattern> in <key>, left
+  hand under chords". Fix the title in the generator, regenerate, and add the invariant:
+  a title naming one hand ⇔ the item's `hands` is that hand.
+- **Five C-rooted `arpeggio7` items carry `keySig: "C major"`** (the only ones with a
+  non-null `keySig`) while their titles say C minor 7th, C diminished 7th and so on; the
+  other 19 have `keySig` null. Decide what `keySig` should be for an arpeggio family (likely
+  null for all 24) and make it uniform, with a test.
+- "Easy" in five song titles at level 6–7 is not a fault: it is relative to the original.
+
 ## Then
 
 Fix every fault you find in the generator, regenerate only what the fix changes, and say

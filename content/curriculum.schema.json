@@ -168,7 +168,7 @@
                       },
                       "tools": {
                         "type": "array",
-                        "description": "The modes this rung's material suits, drawn as controls on the lesson page (docs/04 §3d, added 2026-09-18). Sixty lessons gained a 'Tools for this rung' paragraph in b4fb15b and a paragraph cannot be tapped: chords-pop.3 tells the learner to pick D and take I-IV-V-I in the accompaniment lab, which is now one preset chip the lesson has no way to open. The prose stays — it says why a mode suits this rung, which a button cannot. Only modes that have an address are listed: rhythm-only is a remembered setting and the tempo ladder is run state scoped to a loop, so neither can be opened by a route and a button for either would be a control that does the wrong thing.",
+                        "description": "The modes this rung's material suits, drawn as controls on the lesson page (docs/04 §3d, added 2026-09-18). Sixty lessons gained a 'Tools for this rung' paragraph in b4fb15b and a paragraph cannot be tapped: chords-pop.3 tells the learner to pick D and take I-IV-V-I in the accompaniment lab, which is now one preset chip the lesson has no way to open. The prose stays — it says why a mode suits this rung, which a button cannot. Only modes that have an address are listed: rhythm-only is a remembered setting the Library writes before navigating, so it cannot be opened by a route and a button for it would be a control that does the wrong thing. 'ladder' was in the same position until 2026-09-22 and is not any more — the tempo ladder is run state scoped to a loop, and on a scale, an arpeggio, a Hanon number or an octave study the whole item IS the loop, so ?ladder=1 sets that loop and turns the ladder on as one action. It is for those rungs only (docs/04 §3d names all seven): a whole-piece loop is absurd on repertoire, and a rung wanting the ladder over a piece would have to name bars, which is a different feature.",
                         "items": {
                           "type": "object",
                           "additionalProperties": false,
@@ -182,7 +182,8 @@
                                 "duet",
                                 "blind",
                                 "simon",
-                                "play"
+                                "play",
+                                "ladder"
                               ]
                             },
                             "preset": {
@@ -191,7 +192,7 @@
                             },
                             "item": {
                               "type": "string",
-                              "description": "For the Score-screen modes: which of this rung's own song options to open. Omitted, the button takes the rung's first playable song. validate.py refuses an id the rung does not offer, because a lesson may not point outside its own options."
+                              "description": "For the Score-screen modes: which of this rung's own song options to open. Omitted, the button takes the rung's first playable song. validate.py refuses an id the rung does not offer, because a lesson may not point outside its own options. A 'simon' names one of the rung's exercises instead, since it opens a drill. A 'ladder' takes no item at all: it opens the rung's first exercise that is notation, and an item written on one is refused by the song-option rule."
                             },
                             "label": {
                               "type": "string",

@@ -23,7 +23,7 @@ import { recordPlacement } from '../../data/planStore';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { badge, button, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
-import { hasChordSymbols, isPlayable, openItem } from '../openItem';
+import { hasChordSymbols, isPlayable, openItem, targetFor } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 import { openFinderSheet } from '../finderSheet';
 import { confirmMessage, lockState, type LockState } from '../../curriculum/prerequisites';
@@ -480,6 +480,28 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         return id === null
           ? null
           : make('Play it blind', () => { router.navigateScore(id, { blind: true }); });
+      }
+      case 'ladder': {
+        // An *exercise*, not a song: the ladder loops the whole item, which is
+        // what a scale or a Hanon number already is and is absurd on a prelude
+        // (`04` §3d). An option that opens as a drill rather than as notation
+        // is skipped — `4.3` leads with `drill.chord.inversions`, which has no
+        // file — and where a rung offers nothing that opens as a score the
+        // button is not drawn, the way a duet with nothing to duet against is
+        // not drawn.
+        const id =
+          rung.exerciseOptions.find((option) => {
+            const found = items.get(option);
+            return found !== undefined && targetFor(found) === 'score';
+          }) ?? null;
+        if (id === null) return null;
+        const node = make('Climb the ladder', () => {
+          router.navigateScore(id, { mode: 'tempo', ladder: true });
+        });
+        // Which exercise it claims it will open, on the button, so the e2e can
+        // compare the claim against where the tap lands.
+        node.dataset.item = id;
+        return node;
       }
       default:
         return null;

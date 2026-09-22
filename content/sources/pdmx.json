@@ -35519,6 +35519,864 @@
       "tracks": [
         "blues-boogie"
       ]
+    },
+    {
+      "id": "song.jazz.the-crave",
+      "cid": "Qme2NAD8io4nVHU8tFnzKoDYT6aT4VUHCNviporkt9Tgqe",
+      "file": "Qme2NAD8io4nVHU8tFnzKoDYT6aT4VUHCNviporkt9Tgqe.mxl",
+      "title": "The Crave",
+      "composer": "NA",
+      "artist": "Jelly Roll Morton",
+      "rawSha256": "6dadace6ff31784a7737eb1d2821971ed992cfb1022a699293a78bca2e4d0d65",
+      "convertedSha256": "1eb6de4c0ece075772b610cc1211bb5da0d443dc11a21a5b4abe351ed085db73",
+      "musescoreId": "152277",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "jazz-latin",
+      "band": "6",
+      "bars": 53,
+      "notes": 647,
+      "tempoBpm": 158.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 53.0,
+        "notesPerBar": 21.37735849056604,
+        "notesPerSecond": 8.907232704402515,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 24.0,
+        "rangeRight": 46.0,
+        "rangeLeft": 39.0,
+        "blackKeyRatio": 0.1615180935569285,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.1,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.2524271844660194,
+        "distinctRhythms": 13.0
+      },
+      "level": 7.46,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "notesPerBar",
+          0.224
+        ],
+        [
+          "rangeLeft",
+          0.222
+        ],
+        [
+          "shortestValue",
+          0.217
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "D minor (1 flat, final bass D), 4/4, 2 staves, 53 bars, 0 chord symbols; LH 86% of 177 attacks are 2+ notes, dotted-quarter 64 against eighth 56 - a habanera bass held through | jazz.8 (band 5.5-8.2, requires null), where genre-plans/jazz.md Stage 8 names it | 7.46 is inside the band and it is a complete two-staff tango, not a lead sheet; searches for 'morton' and 'crave' each returned 0 title- and 0 id-matches in the built catalog. The blues-run sheet held this cid as later over its publication date; standing context 2 and 00 D23 say the licence label is not a gate. Nothing heard."
+      }
+    },
+    {
+      "id": "song.jazz.twelfth-street-rag",
+      "cid": "QmTweiRjwpiqZhaDuKLrPBLeAQX8yd7BHjCeCFx2jg7DRN",
+      "file": "QmTweiRjwpiqZhaDuKLrPBLeAQX8yd7BHjCeCFx2jg7DRN.mxl",
+      "title": "12th Street Rag",
+      "composer": "Euday L. Bowman (1914)",
+      "artist": "Roy Clark",
+      "rawSha256": "1c95e61857ab8c92c8f3a0e944c9d1f2607cd2d9e39657506807fac1ba9db6bc",
+      "convertedSha256": "5cee058486de1ca2af8233fd93014f9322fcd7e3abbdf164a61b5e7a54d91af4",
+      "musescoreId": "61218",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "6",
+      "bars": 74,
+      "notes": 739,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 74.0,
+        "notesPerBar": 19.283783783783782,
+        "notesPerSecond": 7.713513513513513,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 15.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 14.0,
+        "maxLeapLeft": 12.0,
+        "rangeRight": 23.0,
+        "rangeLeft": 29.0,
+        "blackKeyRatio": 0.07288016818500351,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.009810791871058164,
+        "distinctRhythms": 8.0
+      },
+      "level": 6.29,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "bars",
+          0.342
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "C major (0 accidentals, final bass C), 4/4, 2 staves, 74 bars, 0 chord symbols; LH 291 attacks, 204 quarters, 53% 2+ notes - bar 21 D3 | F3+G3+B3 | G2 | F3+G3+B3, an oom-pah; RH 82% harmonised, 89 dotted-eighths against 89 sixteenths | ragtime.5 (band 3.2-7.1) and ragtime.6 (3.3-7.1), requires null on both | 6.29 is inside both bands, and the copy already on ragtime.5 (song.pop.12th-street-rag.pdmx) is a single-staff lead sheet of 40 bars that cannot show the oom-pah the rung is named for. Want id song.jazz.twelfth-street-rag is unused. Nothing heard."
+      }
+    },
+    {
+      "id": "song.pop.corcovado.pdmx",
+      "cid": "QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF",
+      "file": "QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF.mxl",
+      "title": "corcovado",
+      "composer": "NA",
+      "artist": "NA",
+      "rawSha256": "17418f1c5ec24757b7590db580e38012522d7d96d9a2d2f46413dbb1c69305f1",
+      "convertedSha256": "55889a7717ea48ad517a4d13b28f383573ac50d88d662040334f1a832273abe9",
+      "musescoreId": "5693399",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 36,
+      "notes": 156,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 36.0,
+        "notesPerBar": 7.25,
+        "notesPerSecond": 5.8,
+        "maxSimultaneousRight": 5.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 20.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 32.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 40.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.1111111111111111,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.07662835249042145,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.38,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "no key signature written (0 accidentals), 2/2, 1 stave, 36 bars, 31 chord symbols (A7 Ab7 Ami6 Ami7 Bb7 Bb9 C6 C9 D9 Dmi7 Dmi9 E7); 125 RH attacks, 0% simultaneous, range B3-C5 | latin.5.1 'Clave, tumbao and montuno' (band 1.9-6.4, requires null), where genre-plans/latin.md Stage 5 names it; 3.38 is inside the band | keep: the harmony is real bossa - Ab7 and Bb9 and D9 against an Ami6 tonic - and a single-line lead sheet is the shape the rung's duet mode wants, the same shape song.folk.insensatez-how-insensitive-jobim.pdmx (2.98, 1 stave) already has there. Searched pdmx.json by id and by title for 'corcovado' and grepped content/ for the slug: 0 hits both ways, so it is not already in the catalog. compositionStatus unknown, which 00 D23 makes a label and not a gate. Nothing heard."
+      }
+    },
+    {
+      "id": "song.folk.por-una-cabeza-carlos-gardel.pdmx",
+      "cid": "QmNswaWYXpxK1XegKbJVDULwZMjKN6cETGTVfXQKYsYrzs",
+      "file": "QmNswaWYXpxK1XegKbJVDULwZMjKN6cETGTVfXQKYsYrzs.mxl",
+      "title": "Por Una Cabeza - Carlos Gardel",
+      "composer": "Carlos Gardel",
+      "artist": "Carlos Gardel",
+      "rawSha256": "c084604aa5396091cddeaff5daf42d5c1cf1c9dc00a6250bda71a1feb7264b13",
+      "convertedSha256": "2d05ab2a12b835dd221bcb97709ce1fa936afa4f22da9c5bb7fe6293829969fb",
+      "musescoreId": "6420129",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "folk-hymn-carol",
+      "band": "5",
+      "bars": 66,
+      "notes": 574,
+      "tempoBpm": 120.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 66.0,
+        "notesPerBar": 12.606060606060606,
+        "notesPerSecond": 6.303030303030303,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 20.0,
+        "maxLeapLeft": 23.0,
+        "rangeRight": 28.0,
+        "rangeLeft": 41.0,
+        "blackKeyRatio": 0.17307692307692307,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 12.0,
+        "ledgerRatio": 0.07211538461538461,
+        "distinctRhythms": 8.0
+      },
+      "level": 6.83,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.264
+        ],
+        [
+          "rangeLeft",
+          0.246
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "A major (3 sharps, final bass A), 4/4, 2 staves, 66 bars, 0 chord symbols; LH 253 attacks of which 176 are quarters, 21% are 2+ notes, range B0-E4, and bars 2-5 hold one figure - A2 on 1, rest then E3 on the second eighth, A3+C#4 on 3, E3 on 4 - the bass-and-chord tango accompaniment written out; RH 321 attacks, 35% harmonised | plan latin Stage 6 'the montuno in three voices, and the tango at speed', modes tempo ladder and loops; that rung is not built and 6.83 is above latin.5.1's 6.4 ceiling, so this is quarry stock for the Stage 6 rung and not a placement | keep: a complete two-staff tango with the accompaniment written rather than left to chord symbols, which is what a tempo-ladder rung needs. Searched pdmx.json by id and title for 'cabeza' and grepped content/ for the slug: 0 hits both ways. Nothing heard."
+      }
+    },
+    {
+      "id": "song.classical.albeniz-asturias.pdmx",
+      "cid": "Qmb5NuVgSQPhVrei5UwHRAY8DQPHTuWETkqoN9WDyooPyi",
+      "file": "Qmb5NuVgSQPhVrei5UwHRAY8DQPHTuWETkqoN9WDyooPyi.mxl",
+      "title": "Asturias",
+      "composer": "Isaac Albéniz",
+      "artist": "Isaac Albéniz",
+      "rawSha256": "5afa3c5c9f17ee824301f53453d491bb480327b71e4e0b8842777a23eeff8af7",
+      "convertedSha256": "36badaa509e93f7a8185cde32b4bb2f2ab5abb918d4b6c6726772b7bde67576e",
+      "musescoreId": "6098445",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "Isaac Albéniz died 1909 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1979",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 199,
+      "notes": 1976,
+      "tempoBpm": 144.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 199.0,
+        "notesPerBar": 13.633165829145728,
+        "notesPerSecond": 7.5739810161920715,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 15.0,
+        "maxLeapRight": 33.0,
+        "maxLeapLeft": 31.0,
+        "rangeRight": 50.0,
+        "rangeLeft": 62.0,
+        "blackKeyRatio": 0.25912274235164023,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 0.0,
+        "ornaments": 31.0,
+        "ledgerRatio": 0.10394397346111316,
+        "distinctRhythms": 5.0
+      },
+      "level": 8.36,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          1.018
+        ],
+        [
+          "rangeLeft",
+          0.448
+        ],
+        [
+          "voicesPerStaff",
+          0.188
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "no key signature written (0 accidentals), 199 bars, 2 staves, ten (staff,voice) streams, 0 chord symbols; staff 1 voice 1 is 903 attacks of which 738 are sixteenths and bars 1-3 are a repeated D4 on every other sixteenth while staff 2 voice 2 plays G3 D4 Eb4 C4 D4 Bb3 on the alternate sixteenths - the interlocking pedal figure the piece is made of; staff 2 voice 2 spans G1-A6 | plan latin Stage 7 'concert latin', modes performance mode and hand focus ('the left hand of a concert latin piece is usually the part nobody practises'); that rung is not built, so this is quarry stock and not a placement | keep: 8.36, and the left hand is literally the mechanism of the piece, which is what the Stage 7 hand-focus mode is for. Albeniz died 1909 so compositionStatus is pd. Searched pdmx.json by id and title for 'asturias' and grepped content/ for the slug: 0 hits both ways. Nothing heard."
+      }
+    },
+    {
+      "id": "song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx",
+      "cid": "QmTErR15NKs5XS4LngRFQaHHPSVBCrJ4xqHdca3YdJJtgn",
+      "file": "QmTErR15NKs5XS4LngRFQaHHPSVBCrJ4xqHdca3YdJJtgn.mxl",
+      "title": "Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg",
+      "composer": "NA",
+      "artist": "Geo. C. Hugg",
+      "rawSha256": "8cbb86be17bfd39b2789c07daefb8231ed7e37060fa8a2848215dbf0bea2c81e",
+      "convertedSha256": "ae215aa07bb2737ef28e06d8cf2ebfa3ccc58ff05b2dbb9885e1e260120b9f4d",
+      "musescoreId": "5810212",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "no composer named",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 16,
+      "notes": 121,
+      "tempoBpm": 100.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 14.1875,
+        "notesPerSecond": 5.911458333333334,
+        "maxSimultaneousRight": 3.0,
+        "maxSimultaneousLeft": 3.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 17.0,
+        "rangeRight": 21.0,
+        "rangeLeft": 25.0,
+        "blackKeyRatio": 0.14537444933920704,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 6.0
+      },
+      "level": 5.36,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.681
+        ],
+        [
+          "shortestValue",
+          -0.134
+        ],
+        [
+          "ledgerRatio",
+          -0.106
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "F major (1 flat, final bass F), 4/4 with one 6/4 bar, 2 staves, 16 bars, 0 chord symbols; RH 66% of 59 attacks are 3-note chords (A3+D4+F4, C4+E4+G4), LH 40% chords over a bass that moves by step - bar 2 Bb2 Bb2 F3, bar 3 D3 D3 C3 C3 | hymns-gospel.3.1 'Four-part texture and walk-ups' (requires staves 2, band 3.2-7.3); 5.36 is inside and the two staves satisfy requires | keep: homophonic four-part hymn texture with the stepwise bass the rung's bass-walk-up concept names. Hugg's is a different tune to the same text from the Dykes tune already on the rung (song.classical.william-holy-holy-holy.pdmx), so it is a second option and not a second edition; the id it slugs to is in neither pdmx.json nor content/. Nothing heard."
+      }
+    },
+    {
+      "id": "song.pop.misc-tunes-o-worship-the-king-all-glorious-above-lyons.pdmx",
+      "cid": "QmYkyaLXkj6ySi7rDW7agzH31Y8Yd4RwT25nqo1GgdKzpo",
+      "file": "QmYkyaLXkj6ySi7rDW7agzH31Y8Yd4RwT25nqo1GgdKzpo.mxl",
+      "title": "O Worship the King all Glorious Above - LYONS",
+      "composer": "Words:   Robert Grant (1779-1838)\nTune:  Joseph Martin Kraus (1756–1792)",
+      "artist": "Misc tunes",
+      "rawSha256": "01e6c9c5d7f98cad940cc34186a337f0643613764f45201c453d73a10f7c0c2d",
+      "convertedSha256": "40760090a53b5e4d0a88ba6e21a370da78222ed0de421b30718c033cfe2f9f25",
+      "musescoreId": "4546938",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "pop-film-game",
+      "band": "1-2",
+      "bars": 17,
+      "notes": 71,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 17.0,
+        "notesPerBar": 7.647058823529412,
+        "notesPerSecond": 4.078431372549019,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 26.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.1,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 3.13,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "bars",
+          -0.641
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "G major (1 sharp, final bass G), 3/4, 1 stave, 17 bars, 27 chord symbols over four symbols (G C D D7); 44 attacks and zero <chord/> elements in the MusicXML, so the tune is a single line throughout, range D4-D5 | hymns.2 'The tune, and the four chords under it' (requires chordSymbols true, band 1.4-3.2); 3.13 is inside | keep: it matches the rung's finder line for line - tune in the right hand, chord symbols above the stave, no more than four different chords - and the catalog has no O Worship the King (searched pdmx.json by id and title for 'worship' and grepped content/ for the slug: 0 hits both ways). Note that this row's maxSimultaneousRight feature reads 4.0 while the file contains no <chord/> at all, so on this row that feature is counting chord symbols and not played notes. Nothing heard."
+      }
+    },
+    {
+      "id": "song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx",
+      "cid": "QmZwo2Muh2rip4gGET7fkkXFgaLQiK6kc6p89ssZbqysxB",
+      "file": "QmZwo2Muh2rip4gGET7fkkXFgaLQiK6kc6p89ssZbqysxB.mxl",
+      "title": "Joyful joyful we adore thee",
+      "composer": "Ludwig van Beethoven",
+      "artist": "Ludwig van Beethoven",
+      "rawSha256": "c6520b57edc0daa7975cb5b11bd45eca6c2fea899b035cb29ce02b611cfbce22",
+      "convertedSha256": "ff036cec280720016b858a95d28096f0793cbe241b1c32c99066c39edce25626",
+      "musescoreId": "542181",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Ludwig van Beethoven died 1827 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1897",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 16,
+      "notes": 146,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 15.1875,
+        "notesPerSecond": 12.15,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 5.0,
+        "maxLeapLeft": 16.0,
+        "rangeRight": 13.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.07407407407407407,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 4.0
+      },
+      "level": 5.36,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.681
+        ],
+        [
+          "notesPerSecond",
+          0.185
+        ],
+        [
+          "rangeRight",
+          -0.137
+        ]
+      ],
+      "duplicateOf": "song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx",
+      "review": {
+        "decision": "keep",
+        "note": "G major (1 sharp, final bass G), 2/2, 2 staves, 16 bars, 0 chord symbols; staff 1 is soprano over alto - 89% of 62 attacks are 2 notes, a held D4 under B4 C5 D5 - and staff 2 is tenor over bass - 95% of 44 attacks are 2 notes, bar 3 B2 B2 A2 G2 under a held G3: SATB two to a stave | hymns-gospel.3.1 'Four-part texture and walk-ups' (requires staves 2, band 3.2-7.3); 5.36 is inside | keep: the catalog's only Joyful Joyful is song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx, singleLine, level 2.49, which serves hymns.2 - this is the four-part edition the Stage 3 rung is actually about. quarried.json marks it duplicate_of that id, so commit.py counts it as the second of the two editions it allows, and the id it slugs to is not committed. Nothing heard."
+      }
+    },
+    {
+      "id": "song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx",
+      "cid": "QmZ2SsdwgaxdvigPXwbAUwjXvoHU7nigJiH7t9yQqbFHis",
+      "file": "QmZ2SsdwgaxdvigPXwbAUwjXvoHU7nigJiH7t9yQqbFHis.mxl",
+      "title": "O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler",
+      "composer": "Johann Sebastian Bach",
+      "artist": "Johann Sebastian Bach",
+      "rawSha256": "1813ebd70509cbd609992e4f14502319ba1d2121faccf6be5d2c9cad199c1378",
+      "convertedSha256": "1b01d97dbbc13d7851e88cfe86bc381a8b9abf7466ef81c5c27e9338699d6265",
+      "musescoreId": "5783427",
+      "license": "publicdomain",
+      "compositionStatus": "pd",
+      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "5",
+      "bars": 40,
+      "notes": 513,
+      "tempoBpm": 80.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 40.0,
+        "notesPerBar": 13.05,
+        "notesPerSecond": 4.35,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 2.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 12.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 19.0,
+        "rangeRight": 17.0,
+        "rangeLeft": 23.0,
+        "blackKeyRatio": 0.040229885057471264,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 2.0,
+        "ornaments": 10.0,
+        "ledgerRatio": 0.011494252873563218,
+        "distinctRhythms": 5.0
+      },
+      "level": 5.69,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "keyAccidentals",
+          -0.347
+        ],
+        [
+          "blackKeyRatio",
+          -0.137
+        ],
+        [
+          "notesPerSecond",
+          -0.106
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "no key signature written (0 accidentals, final bass C), 4/4 throughout, 2 staves, 40 bars, 0 chord symbols; exactly four voices and not one of them contains a chord - soprano 113 attacks (D4-D5), alto 136 (A3-A4), tenor 134 (D3-E4), bass 130 (F2-A3) - and bar 3 is bass F2 G2 C3 B2 under tenor A3 G3 G3 G#3 | plan hymns Stage 4 'Four voices, two hands, and the inner parts', whose modes are duet ('let the app take the inner parts') and hand focus ('alto and tenor alone'); that rung is not built. It also satisfies hymns-gospel.3.1's requires staves 2 with 5.69 inside 3.2-7.3 | keep: the inner parts are written as separate voices, which is the one thing those two modes need and the thing row 20 does not have. Bach died 1750, compositionStatus pd. Nothing heard."
+      }
+    },
+    {
+      "id": "song.folk.down-by-the-riverside.pdmx",
+      "cid": "QmPW1rJCPXC3tNyBWk5o7bqjNVQHUomcaXLty95dCeYh69",
+      "file": "QmPW1rJCPXC3tNyBWk5o7bqjNVQHUomcaXLty95dCeYh69.mxl",
+      "title": "Down By The Riverside",
+      "composer": "NA",
+      "artist": "Misc Traditional",
+      "rawSha256": "806ae0cccd1a395fabb9a45cd66d3394d10f92296bf4c039aaffc7984443f85c",
+      "convertedSha256": "e5b69e999bff2fc457c5adaee367b96f0038bbfa459050835554dd74d6ad829a",
+      "musescoreId": "1303091",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 33,
+      "notes": 149,
+      "tempoBpm": 180.0,
+      "tempoDefaulted": false,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 33.0,
+        "notesPerBar": 6.696969696969697,
+        "notesPerSecond": 5.0227272727272725,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 24.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 24.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.14027149321266968,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 3.36,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.256
+        ],
+        [
+          "voicesPerStaff",
+          -0.229
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "F major (1 flat, final bass F), 4/4, 1 stave, 33 bars, 32 chord symbols over three chords (F Bb C7); 117 attacks, all single notes, range C4-Bb4, with a chromatic G#4 in bars 1 and 4 | plan hymns Stage 5 'Walk-ups, passing chords, the chord that is not in the key'; that rung is not built, and 3.36 is just above hymns.2's 3.2 ceiling so it is not a fit there either | keep: primary-chord gospel, I-IV-V7 only, with a chromatic neighbour already written into the tune - quarry stock for the Stage 5 rung, not a placement. Searched pdmx.json by id and title for 'riverside' (one hit, song.blues.riverside-blues, a different tune) and grepped content/ for the slug. Nothing heard."
+      }
+    },
+    {
+      "id": "song.folk.down-by-the-riverside.pdmx.2",
+      "cid": "QmcVLsCUT8bZV1K2MYUyHNBDxSJUUK8eDFR3GTZU2ih3xH",
+      "file": "QmcVLsCUT8bZV1K2MYUyHNBDxSJUUK8eDFR3GTZU2ih3xH.mxl",
+      "title": "Down by the Riverside",
+      "composer": "American Folk Song",
+      "artist": "Misc Traditional",
+      "rawSha256": "171bf5641744ffd76ffc49026d81609c632ef75aab72b1a22d9ffb9ad75b77af",
+      "convertedSha256": "838b2e7c069a48de32ffffb18ea32e30cf834e39a4450f18657204fddfefc660",
+      "musescoreId": "6272082",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "4",
+      "bars": 66,
+      "notes": 456,
+      "tempoBpm": 160.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 66.0,
+        "notesPerBar": 10.954545454545455,
+        "notesPerSecond": 14.606060606060606,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 4.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 16.0,
+        "maxLeapRight": 13.0,
+        "maxLeapLeft": 24.0,
+        "rangeRight": 32.0,
+        "rangeLeft": 31.0,
+        "blackKeyRatio": 0.12171507607192254,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.3333333333333333,
+        "voicesPerStaff": 2.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.15352697095435686,
+        "distinctRhythms": 7.0
+      },
+      "level": 6.96,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          0.264
+        ],
+        [
+          "notesPerSecond",
+          0.241
+        ],
+        [
+          "rangeLeft",
+          0.111
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "F major (1 flat, final bass F), 2/2 with a swing mark, 2 staves, 66 bars, 0 chord symbols; LH 232 attacks of which 212 are quarters, 58% 2+ notes, range F1-C4; bar 3 into bar 4 the bass walks C3 C3 D3 D#3 then E3 chromatically while the RH moves E5 F5 F#5 G5 over a held C6 | plan hymns Stage 5 'Walk-ups, passing chords, the chord that is not in the key'; that rung is not built, so this is quarry stock and not a placement | keep: the walk-up the rung is named for is written into bars 3-4, which is the uncommon case where the teaching point is visible in the notation rather than inferred from a title. 6.96. It slugs to the same id as row 25 and commit.py numbers the second, which its own comment says is what that numbering is for. Nothing heard."
+      }
+    },
+    {
+      "id": "song.folk.this-little-light-of-mine.pdmx",
+      "cid": "QmbNy9ivLSgU2miV53wEH6t71RYcBrKDJ1Tm2K53RfLFdL",
+      "file": "QmbNy9ivLSgU2miV53wEH6t71RYcBrKDJ1Tm2K53RfLFdL.mxl",
+      "title": "This Little Light of Mine",
+      "composer": "NA",
+      "artist": "African-American Spiritual",
+      "rawSha256": "d8e7f0eec88ee96abfc032a76eb60ea22bca0d639453c0ffd7a9b5dac2030e09",
+      "convertedSha256": "527524c649e41a8a41db36ec0efd9ffefe1251cfbb586fef00dc5f2cc17ca65a",
+      "musescoreId": "1438291",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "1-2",
+      "bars": 32,
+      "notes": 133,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 32.0,
+        "notesPerBar": 5.78125,
+        "notesPerSecond": 2.3125,
+        "maxSimultaneousRight": 4.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 10.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 33.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 33.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.4864864864864865,
+        "keyAccidentals": 2.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.010810810810810811,
+        "distinctRhythms": 4.0
+      },
+      "level": 3.48,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.614
+        ],
+        [
+          "notesPerBar",
+          -0.313
+        ],
+        [
+          "notesPerSecond",
+          -0.261
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Bb major (2 flats, final bass Bb), 4/4, 1 stave, 32 bars, 24 chord symbols over five chords (Bb Bb7 Eb F7 Gm), with Bb7 - the V7 of IV - on bar 4; 109 attacks, all single notes, over only 5 distinct pitches, range F4-D5 | plan hymns Stage 5 'Walk-ups, passing chords, the chord that is not in the key'; that rung is not built | keep: the chord that is not in the key arrives in the fourth bar, under a melody of five notes - the Stage 5 teaching point at a level the Stage 5 reader can already play. Searched pdmx.json by id and title for 'little light' and grepped content/ for the slug: 0 hits both ways. Nothing heard."
+      }
+    },
+    {
+      "id": "song.folk.go-tell-it-on-the-mountain.pdmx",
+      "cid": "QmQisH7f4B2oVWhNvtnCEV4j7YcyviHXePjfxHGsGN9NSp",
+      "file": "QmQisH7f4B2oVWhNvtnCEV4j7YcyviHXePjfxHGsGN9NSp.mxl",
+      "title": "Go_Tell_It_On_the_Mountain",
+      "composer": "Traditional spiritual",
+      "artist": "NA",
+      "rawSha256": "3e10d19ff1000cd62497e82df4a75b3f6ecabee408abbc38ae5341d47cb2d6cb",
+      "convertedSha256": "6004d668677d7a1e82f4a4c9d632c6335cfc1871efe9519229e24cc08d91a514",
+      "musescoreId": "5900938",
+      "license": "cc-zero",
+      "compositionStatus": "pd",
+      "compositionReason": "traditional or anonymous",
+      "traditional": true,
+      "bucket": "folk-hymn-carol",
+      "band": "5",
+      "bars": 16,
+      "notes": 200,
+      "tempoBpm": 140.0,
+      "tempoDefaulted": false,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 16.0,
+        "notesPerBar": 12.875,
+        "notesPerSecond": 7.510416666666667,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 5.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 10.0,
+        "maxLeapLeft": 14.0,
+        "rangeRight": 17.0,
+        "rangeLeft": 19.0,
+        "blackKeyRatio": 0.06310679611650485,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 3.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.02912621359223301,
+        "distinctRhythms": 7.0
+      },
+      "level": 5.34,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.681
+        ],
+        [
+          "voicesPerStaff",
+          0.188
+        ],
+        [
+          "maxSpanLeft",
+          -0.145
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "F major (1 flat), 4/4, 2 staves, 16 bars, 0 chord symbols; four independent single-line voices, none of them containing a chord - soprano 56 attacks (C4-D5), alto 45 (A3-G4), tenor 49 (F2-C4), bass 50 (F2-A3) - and the last bar closes C3 D3 E3 back to the tonic | plan hymns Stage 6 'The hymn as an arrangement', modes performance mode and lab; that rung is not built. It also satisfies hymns-gospel.3.1's requires staves 2 with 5.34 inside 3.2-7.3 | keep: the same arrangement as row 32 but with the voices written apart, which is what a duet or hand-focus mode reads, and sixteen bars that end rather than stop. compositionStatus pd. Nothing heard."
+      }
     }
   ]
 }

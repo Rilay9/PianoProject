@@ -416,11 +416,11 @@ play this*.
   had disabled. The second button carries no preset, so nothing is locked, and a `label`
   tells the two apart. The first button of a kind keeps the id every test and stylesheet
   already names; the second gets a suffix.
-- **Only modes with an address.** `lab` (with or without a preset), `duet`, `blind`, `simon`
-  and `play`. **Rhythm-only and the tempo ladder are deliberately absent**: rhythm-only is a
-  remembered setting the Library writes before navigating, and the ladder is run state
-  scoped to a loop (`05` §6). Neither can be reached by a route, so a button for either
-  would be a control that opens the wrong thing. Both keep their paragraph.
+- **Only modes with an address.** `lab` (with or without a preset), `duet`, `blind`, `simon`,
+  `play` and, since 2026-09-22, `ladder`. **Rhythm-only is still deliberately absent**: it is
+  a remembered setting the Library writes before navigating, so it cannot be reached by a
+  route and a button for it would be a control that opens the wrong thing. It keeps its
+  paragraph.
 - **A Score-screen mode needs a piece.** A rung may name one with `item`; otherwise the
   button takes the rung's **first playable song**, because "play this rung's material as a
   duet" is the instruction and any of its songs satisfies it. Where the rung has no playable
@@ -429,9 +429,47 @@ play this*.
   have, and an `item` that is not among this rung's own song options — a lesson sending the
   learner to a piece it does not offer is the `blues.3` fault wearing a control.
 
+#### `ladder`, and why it was absent until it was not (2026-09-22)
+
+The tempo ladder is run state scoped to a loop (`05` §6), so it had no address and this list
+excluded it — which left **seven rungs naming no mode at all**: `4.1`–`4.4` and `technique.4`,
+`.6`, `.7`, the scales, arpeggios, Hanon and octaves. What they want is evenness under speed,
+and the ladder is the app's answer to exactly that. (Duet was on them and was removed, because
+duet plays the hand you are *not* playing and masks the thing a scale rung is measuring;
+`pending-review` Entry 16 has that reasoning.)
+
+The blocker looked circular — the ladder needs a loop, and clearing the loop switches it off,
+so opening with it on seemed to need a loop out of nowhere. **The circle only exists for
+repertoire.** On these rungs the whole item *is* the loop: they are two to thirty bars and
+they repeat by nature, so looping one is not a choice about which bars matter, it is what the
+exercise already is. So **`?ladder=1` sets the loop to the whole item and turns the ladder on,
+in that order, as one action**, and both controls then show their state — the Loop control
+names the bars, the Ladder row shows the toggle pressed. That is what `05` §6's invariant is
+protecting; the fault it records is a ladder on with *nothing on screen having asked*.
+
+Four things keep it that way rather than clever:
+
+- **The tool is for exercises.** A whole-piece loop is sensible for a scale and absurd for a
+  prelude, so the seven rungs above are the whole permitted set and are scales-and-Hanon by
+  construction. A future rung wanting the ladder over repertoire must name bars, and that is
+  a different feature.
+- **It fails closed.** No resolvable whole-item loop, a mode the hash named that has no tempo
+  to move, or a performance: the screen does **nothing** rather than turning the ladder on and
+  hoping. Where the hash names no mode it brings Tempo with it, since the ladder moves a clock
+  and the other modes have none.
+- **Clearing the loop still switches the ladder off.** The route gets no exception; the
+  exception is the fault `05` §6 describes.
+- **It takes no `item`.** It opens the rung's **first exercise that is notation** — `4.3` leads
+  with `drill.chord.inversions`, which has no file and opens as a drill, so the button skips it
+  — and where a rung offers no such exercise the button is not drawn. `validate.py` checks an
+  `item` against a rung's *song* options, so one written on a `ladder` tool is refused rather
+  than honoured.
+
 The e2e asserts the *destination*, not the button: the lab tool must arrive with
 `data-preset` set and the locked pickers disabled, and the duet tool must open a piece the
-rung actually lists. Proved red by making the duet open a fixed off-rung piece.
+rung actually lists. Proved red by making the duet open a fixed off-rung piece. The ladder
+button carries `data-item`, the exercise it claims it will open, for the same comparison, and
+its destination is asserted in `score.ladder-route.spec.ts`.
 
 ### 3c. Accompaniment lab — `#/lab` (added 2026-09-15)
 

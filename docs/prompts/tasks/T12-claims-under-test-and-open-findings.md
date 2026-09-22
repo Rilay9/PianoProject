@@ -34,6 +34,15 @@ predicts about a dozen more. So:
    (`dump_score.py` bars, the rung file, the code at the symbol), give it a verdict line
    `- Second read (2026-09-21): HOLDS | OVERREACH (<what is true>) | WRONG (<what is true>)`,
    and correct the sentence where it is not HOLDS.
+2b. **Seven findings rest on `dump_score.py` for a rhythm or duration claim, and that tool
+   hides tuplets, ties and grace notes** (it produced one false finding already, Entry 23).
+   Re-read each at the MusicXML, not the dump, before its verdict: batch-1:435 (hymns.2,
+   *Joyful, Joyful*'s grace notes), batch-3:456 (ragtime.5, the syncopation scan),
+   batch-4:290 (blues.6, the boogie bars), batch-5:33 (ragtime.7, *Elite Syncopations*),
+   batch-5:127 and :130 (blues.7, *Rhythm and Boogie* — "forty bars of shuffle" is a
+   tuplet question), batch-5:259 (ragtime.8, *Magnetic Rag*), batch-5:410 (jazz.9, *Linus
+   and Lucy*'s left hand). Listed by the coordinator 2026-09-22 from a search of the
+   Evidence lines; a differently shaped search may find more, so say what you searched.
 3. **Then the row.** For every ticked finding, in the sample or not, whose sentence rests
    on evidence a test can read, add a row:
 
@@ -53,6 +62,16 @@ predicts about a dozen more. So:
 
 One row per finding, one finding per tool call, with the evidence line. Tick nothing;
 write `- Row: <test file>:<describe/it name>` under the finding.
+
+## Part A2 — the scouts' suspects
+
+`docs/lesson-audit/scout-*.md` are read-only scouting passes (2026-09-22) over surfaces
+the audit did not cover as surfaces; every line in them is a *suspect*, confirmed by
+nobody. Confirm each against the source before touching anything; a confirmed one is
+fixed with the smallest true change and gets a claim row where a test can read it; a
+false one is marked so in the scout file. `scout-spellings.md` found no suspect in the
+lessons but one catalog `editionNotes` (Ode to Joy in G, bar 12 "touches" an F♯ the
+score does not have). **Fixed at the source 2026-09-22** by the coordinator: `content/scores/authored/ode-to-joy-g.abc` — the note now says the tune never sounds the F♯, and the item's untrue `F-sharp` concept tag is removed (the dump shows no F of any kind in any bar; no stage file names that concept). Add a claim row that the piece has no F♯.
 
 ## Part B — the 86 open findings, two readers
 

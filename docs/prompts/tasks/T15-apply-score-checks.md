@@ -41,6 +41,22 @@ For every row not marked FALSE POSITIVE in the list, in severity order (high fir
      and say so in the lesson.
 3. **Consumers.** Before dropping or retitling an id, grep every reader: stage files,
    lessons, `lessonClaimsAboutMusic.test.ts`, `pdmx-wants.json`, tips. Say what each does.
+3b. **A systematic wrong key on screen, confirmed by the coordinator 2026-09-22.** When a
+   score file states a key signature but no mode, the build derives the catalog's `keySig`
+   as the *major* key, and the Library's detail sheet prints it as "Key: …". So
+   `song.classical.bach-toccata-fugue-bwv565` (title "D minor", `notation.keys` fifths −1
+   mode null, `finalBass` 2 = D) shows "Key: F major"; the scout lists six more
+   (`bach-wtc1-prelude-2`, `brahms-hungarian-dance-5`, `chopin-ballade-1`,
+   `chopin-prelude-op28-4` and its `.alt`, `chopin-waltz-a-minor`), and there may be
+   others — search every song row where `notation.keys[0].mode` is null and `keySig` names
+   a major key. Find where `keySig` is derived (grep `keySig` under `tools/content`, and
+   the app under `app/src` for a fallback), grep every reader, and fix at the derivation:
+   with no mode, use `finalBass` against the signature's major and relative minor tonics
+   the way `keyOf` in `lessonClaimsAboutMusic.test.ts` does, and if neither matches, emit
+   the signature only ("1 flat") rather than a mode. Add the check to `score_checks.py`
+   (key-consistency already flags the mazurka Op. 59 No. 3 titled C minor in F♯ minor).
+   Proven red on the Toccata.
+
 4. **Then wire the checks into the build**: `score_checks.py` runs in `build.py` after
    merge, **fails** the build on any high row not listed in an allow-file
    (`content/score-checks.allow.json`, with a reason per id), and reports the rest.

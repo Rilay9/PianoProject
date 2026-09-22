@@ -303,6 +303,32 @@ that session, on the same piece — started moving the tempo by itself with noth
 having asked. The one control that acts without being asked each time has to be off
 whenever nothing shows it on.
 
+### Opening with it on: `?ladder=1` (2026-09-22)
+
+The ladder had no address, so `04` §3d could not list it among a rung's tools and seven
+rungs — the scales, the arpeggios, Hanon and the octaves — named no mode at all. It looked
+circular: the ladder needs a loop, and the rule above turns it off with one.
+
+**The circle only exists for repertoire.** On those seven rungs the whole item *is* the loop:
+two to thirty bars that repeat by nature, where looping the whole thing is not a choice about
+which bars matter. So `?ladder=1` sets that loop and turns the ladder on **in that order, as
+one action**, and the paragraph above is satisfied rather than excepted: the Loop control
+names the bars and the Ladder row shows the toggle pressed, so two things on screen have
+asked.
+
+It **fails closed**, because the failure being avoided is a control acting unasked:
+
+- **no resolvable whole-item loop, no ladder** — and no loop either, since a loop nobody asked
+  for is the same fault one step earlier;
+- **a mode the hash named that has no tempo to move gets neither**. Where the hash names no
+  mode, `?ladder=1` brings Tempo with it, the same way a sight-read is always Tempo (§8);
+- **a performance gets neither**, being one pass by definition.
+
+And **clearing the loop still switches the ladder off**: the route is not special-cased to
+survive, because an exception there reintroduces exactly the state this section describes.
+`ScoreScreen.ts`'s `applyRouteLadder` is the whole of it, and it arms the ladder only when
+`ladderApplies()` — the Ladder row's own condition — is already true.
+
 ## 7. Drills that are not scores (`type: 'drill'`)
 
 Two different things are easy to confuse and are not the same:

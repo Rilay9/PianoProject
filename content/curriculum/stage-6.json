@@ -226,6 +226,11 @@
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "tools": [
+                {
+                  "kind": "ladder"
+                }
+              ],
               "levelBand": [
                 6,
                 6.4

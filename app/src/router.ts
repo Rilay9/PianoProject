@@ -127,6 +127,20 @@ export interface Route {
    */
   performance?: boolean;
   /**
+   * `#/score/<id>?ladder=1` — loop the whole item and climb it (`05` §6).
+   *
+   * The ladder had no address, so `04` §3d could not list it among a rung's
+   * tools and seven rungs — the scales, the arpeggios, Hanon and the octaves —
+   * named no mode at all. It looked circular: the ladder needs a loop and
+   * clearing the loop switches it off. **The circle only exists for
+   * repertoire.** On an exercise the whole item *is* the loop, so this one flag
+   * sets that loop and turns the ladder on as one action, and both controls
+   * then show their state — which is what `05` §6 protects. Where the loop
+   * cannot be built, or the mode has no tempo to move, it does **nothing**:
+   * the failure being avoided is a control acting unasked, so it fails closed.
+   */
+  ladder?: boolean;
+  /**
    * `#/score/<id>?mode=tempo` — open already in that practice mode (`04` §5c-1,
    * the guided tour).
    *
@@ -263,6 +277,7 @@ export function parseHash(hash: string): Route {
   const params = query ? new URLSearchParams(query) : null;
   const blind = params?.get('blind') === '1';
   const performance = params?.get('performance') === '1';
+  const ladder = params?.get('ladder') === '1';
   const wantedMode = params?.get('mode');
   const scoreMode = looksLikeMode(wantedMode) ? wantedMode : undefined;
   const wantedHands = params?.get('hands');
@@ -300,6 +315,7 @@ export function parseHash(hash: string): Route {
       score: id,
       ...(blind ? { blind: true } : {}),
       ...(performance ? { performance: true } : {}),
+      ...(ladder ? { ladder: true } : {}),
       ...(scoreMode ? { scoreMode } : {}),
       ...(scoreHands ? { scoreHands } : {}),
       ...(scoreLoop ? { scoreLoop } : {}),
@@ -401,6 +417,7 @@ export function routeToHash(route: Route): string {
     const flags = [
       ...(route.blind ? ['blind=1'] : []),
       ...(route.performance ? ['performance=1'] : []),
+      ...(route.ladder ? ['ladder=1'] : []),
       ...(route.scoreMode ? [`mode=${route.scoreMode}`] : []),
       ...(route.scoreHands ? [`hands=${route.scoreHands}`] : []),
       ...(route.scoreLoop
@@ -479,6 +496,8 @@ export class Router {
     options: {
       blind?: boolean;
       performance?: boolean;
+      /** Loop the whole item and climb the tempo ladder (`05` §6). */
+      ladder?: boolean;
       /** Open in this practice mode rather than the learner's default. */
       mode?: Mode;
       /** Open with this hand chosen rather than both (the Duet door, `04` §4). */
@@ -496,6 +515,7 @@ export class Router {
       score: itemId,
       ...(options.blind ? { blind: true } : {}),
       ...(options.performance ? { performance: true } : {}),
+      ...(options.ladder ? { ladder: true } : {}),
       ...(options.mode ? { scoreMode: options.mode } : {}),
       ...(options.hands ? { scoreHands: options.hands } : {}),
       ...(options.loop ? { scoreLoop: options.loop } : {}),
@@ -574,6 +594,7 @@ export class Router {
       route.pdfPage === this.current.pdfPage &&
       route.blind === this.current.blind &&
       route.performance === this.current.performance &&
+      route.ladder === this.current.ladder &&
       route.scoreMode === this.current.scoreMode &&
       route.scoreHands === this.current.scoreHands &&
       route.tour === this.current.tour &&

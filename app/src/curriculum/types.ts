@@ -186,17 +186,31 @@ export interface LessonTool {
   /**
    * Only the modes that have an address.
    *
-   * `rhythm` and `ladder` are deliberately absent: rhythm-only is a remembered
-   * setting the Library writes before navigating, and the tempo ladder is run
-   * state scoped to a loop (`05` §6) — neither can be reached by a route, so a
-   * button for either would be a control that looks pressable and opens the
-   * wrong thing. `00-invariants` §1 calls that a bug rather than a cosmetic.
-   * Both stay in the prose, which is where they can be explained.
+   * `rhythm` is deliberately absent: rhythm-only is a remembered setting the
+   * Library writes before navigating, so it cannot be reached by a route and a
+   * button for it would be a control that looks pressable and opens the wrong
+   * thing. `00-invariants` §1 calls that a bug rather than a cosmetic. It stays
+   * in the prose, which is where it can be explained.
+   *
+   * `ladder` was absent for the same reason until 2026-09-22 and is not any
+   * more: the tempo ladder is run state scoped to a loop (`05` §6), and on a
+   * scale, an arpeggio, a Hanon number or an octave study the whole item *is*
+   * the loop, so `?ladder=1` can set both as one action. It is permitted on
+   * those rungs only — `04` §3d has the list and the reason a whole-piece loop
+   * is absurd on repertoire.
    */
-  kind: 'lab' | 'duet' | 'blind' | 'simon' | 'play';
+  kind: 'lab' | 'duet' | 'blind' | 'simon' | 'play' | 'ladder';
   /** For `kind: 'lab'` — which preset (`engine/sightReading.ts`'s `LAB_PRESETS`). */
   preset?: string;
-  /** For the Score-screen modes — which of this rung's options to open. */
+  /**
+   * For the Score-screen modes — which of this rung's options to open.
+   *
+   * A rung's **song** options, which is what `validate.py`'s `tool_errors`
+   * checks it against (a `simon` is the exception and takes an exercise). A
+   * `ladder` opens an exercise and therefore takes no `item` at all: it uses
+   * the rung's first exercise that opens as notation, and an `item` written on
+   * one would fail validation rather than be honoured.
+   */
   item?: string;
   /** Overrides the default label where the rung wants to say something shorter. */
   label?: string;

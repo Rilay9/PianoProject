@@ -1,6 +1,11 @@
 // @vitest-environment jsdom
 /**
- * The Score screen opened by the guided tour (`04` §5, §5c-1).
+ * The Score screen opened by a hash that asks it for something (`04` §5, §5c-1).
+ *
+ * The guided tour is what this was written for and `?ladder=1` joined it on
+ * 2026-09-22 (`04` §3d): the mocks below are what makes a route testable
+ * without a renderer, and a second copy of them would be a second thing to keep
+ * in step.
  *
  * The tour teaches Wait, Tempo and loops on the real screen rather than on an
  * imitation of it inside the drill, so three things have to be true of the
@@ -53,6 +58,20 @@ const PICKUP_MODEL = makeModel(
     onset,
     notes: [note({ midi: 60 + index })],
   })),
+);
+
+/**
+ * A model whose whole-item range cannot be built.
+ *
+ * `?ladder=1` asks for a loop over the whole piece, and `05` §6 says that where
+ * there is no such loop the ladder must do nothing rather than turn on and
+ * hope. `sourceMeasureCount` is what the screen asks the whole item's length
+ * of, so a model that reports none is the shape of every piece the range comes
+ * back empty for, without inventing a second failure in the stub.
+ */
+const UNLOOPABLE_MODEL = makeModel(
+  [64, 62, 60, 62].map((midi, index) => ({ onset: index, notes: [note({ midi })] })),
+  { sourceMeasureCount: 0 },
 );
 
 const { findItemSpy, modelRef, onFinishedRef, recordRunSpy } = vi.hoisted(() => ({
@@ -323,6 +342,96 @@ describe('a loop in the hash', () => {
     const { section } = await open(`#/score/${SONG_ID}?loop=40-41`);
     expect(section.dataset.loop).toBe('');
     expect(document.querySelector('#score-loop')?.textContent).toBe('Off');
+  });
+});
+
+describe('the ladder in the hash', () => {
+  /**
+   * `?ladder=1` — the whole item is the loop, and the ladder climbs it.
+   *
+   * The seven rungs this is for are scales, arpeggios, Hanon and octaves: two
+   * to thirty bars that repeat by nature, where looping the whole thing is not
+   * a choice about which bars matter. Both controls end up showing their state,
+   * which is what `05` §6 is protecting — what it forbids is a ladder left on
+   * with nothing on screen having asked.
+   */
+  it('opens with the whole item looping and the Ladder switched on', async () => {
+    const { section } = await open(`#/score/${SONG_ID}?ladder=1`);
+    // The fixture is two full bars, so the whole of it is bars 1–2.
+    expect(section.dataset.loop).toBe('1-2');
+    expect(section.dataset.ladder).toBe('on');
+    // …and the sheet says so in the same words a finger on the toggle would
+    // leave behind, because it is the same state.
+    expect(document.querySelector('#score-ladder')?.textContent).toBe('On');
+    expect(document.querySelector<HTMLElement>('#score-ladder-row')?.hidden).toBe(false);
+    expect(document.querySelector('#score-loop')?.textContent).not.toBe('Off');
+  });
+
+  it('brings the mode that has a clock to move with it', async () => {
+    updateSettings({ defaultModeWithInput: 'wait', defaultModeWithoutInput: 'wait' });
+    const { section } = await open(`#/score/${SONG_ID}?ladder=1`);
+    expect(section.dataset.mode).toBe('tempo');
+    expect(section.dataset.ladder).toBe('on');
+  });
+
+  it('leaves both alone when the hash does not ask', async () => {
+    const { section } = await open(`#/score/${SONG_ID}`);
+    expect(section.dataset.loop).toBe('');
+    expect(section.dataset.ladder).toBe('off');
+    expect(document.querySelector<HTMLElement>('#score-ladder-row')?.hidden).toBe(true);
+  });
+
+  it('fails closed in a mode the hash asked for that has no tempo to move', async () => {
+    // Not "turn it on and hope": a ladder the Ladder row is not showing is the
+    // fault `05` §6 records. No loop either — a loop nobody asked for is the
+    // same control acting unasked, one step earlier.
+    const { section } = await open(`#/score/${SONG_ID}?mode=wait&ladder=1`);
+    expect(section.dataset.mode).toBe('wait');
+    expect(section.dataset.ladder).toBe('off');
+    expect(section.dataset.loop).toBe('');
+  });
+
+  it('fails closed in a performance, which is one pass and never repeats', async () => {
+    const { section } = await open(`#/score/${SONG_ID}?performance=1&ladder=1`);
+    expect(section.dataset.ladder).toBe('off');
+    expect(section.dataset.loop).toBe('');
+  });
+
+  it('fails closed when the whole item is not a range the piece can loop', async () => {
+    // Wait by default, so "it left the screen alone" is distinguishable from
+    // "the default happened to be the mode the ladder wanted".
+    updateSettings({ defaultModeWithInput: 'wait', defaultModeWithoutInput: 'wait' });
+    modelRef.current = UNLOOPABLE_MODEL;
+    const { section } = await open(`#/score/${SONG_ID}?ladder=1`);
+    expect(section.dataset.loop).toBe('');
+    expect(section.dataset.ladder).toBe('off');
+    // Not the mode either: a refusal must not leave the learner somewhere they
+    // did not ask to be.
+    expect(section.dataset.mode).toBe('wait');
+  });
+
+  it('goes off with the loop, like one set by hand', async () => {
+    // `05` §6's rule is what keeps the two in sync and the route gets no
+    // exception from it: clearing the loop must still switch the ladder off.
+    const { section } = await open(`#/score/${SONG_ID}?ladder=1`);
+    expect(section.dataset.ladder).toBe('on');
+    click('score-loop');
+    expect(section.dataset.loop).toBe('');
+    expect(section.dataset.ladder).toBe('off');
+    expect(document.querySelector('#score-ladder')?.textContent).toBe('Off');
+  });
+
+  it('is not carried by Blind, which rebuilds the screen from the hash', async () => {
+    // Deliberately not in the ride-along set with the mode and the hand: those
+    // are things the learner chose and Blind must not drop. This one arms a
+    // control that acts by itself, and re-arming it on a tap of something else
+    // is the shape `05` §6 forbids.
+    const { router } = await open(`#/score/${SONG_ID}?ladder=1`);
+    click('score-blind');
+    expect(router.navigateScore).toHaveBeenCalledWith(SONG_ID, {
+      blind: true,
+      performance: false,
+    });
   });
 });
 

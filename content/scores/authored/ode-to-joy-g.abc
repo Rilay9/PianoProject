@@ -2,11 +2,11 @@ X:1
 T:Ode to Joy (in G major)
 C:Ludwig van Beethoven, 1824
 %%pianopath id=song.classical.ode-to-joy.g level=3.1 hands=both abrsm=1
-%%pianopath tracks=core,classical concepts=G-major,F-sharp,key-signature,dotted-quarter,4/4
+%%pianopath tracks=core,classical concepts=G-major,key-signature,dotted-quarter,4/4
 %%pianopath license=CC0 arranger=PianoPath genre=classical publishedYear=1824
 %%pianopath sourceName="Symphony No. 9, fourth movement (1824)" composer="Ludwig van Beethoven"
 %%pianopath variantOf=song.classical.ode-to-joy.full variantLabel="in G major"
-%%pianopath editionNotes="The full theme in G, the key Beethoven's own hymn setting uses. Only one black key appears, the F sharp in the key signature; bar 12 is the only place the tune touches it, in the run down to the low D."
+%%pianopath editionNotes="The full theme in G, the key Beethoven's own hymn setting uses. Only one black key appears, the F sharp in the key signature; the tune itself never sounds it, and bar 12 drops from A straight to the low D."
 %%score {1 2}
 L:1/4
 M:4/4

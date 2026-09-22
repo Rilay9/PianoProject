@@ -216,7 +216,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-223 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
+229 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
@@ -247,6 +247,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.classical.het-wilhelmus.pdmx` | Het Wilhelmus | 2.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.hisaishi-totoro-path-of-the-wind.pdmx` | Totoro: Path of the Wind | 3.6 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx` | Jupiter Theme arranged for piano - Gustav Holst | 5.2 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx` | Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg | 5.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.home-on-the-range-secondary-dominants.pdmx` | Home on the Range (Secondary Dominants) | 5.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.hurwitz-the-armstrongs-first-man.pdmx` | The Armstrongs - First Man | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.i-got-rythm.pdmx` | I Got Rhythm | 5.5 | The composition is unknown; the owner's own build carries it (`00` D23). |
@@ -295,10 +296,9 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.muskrat-ramble.pdmx` | Muskrat Ramble | 5.9 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.octobre-francis-cabrel.pdmx` | Octobre - Francis Cabrel | 5.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| `song.folk.por-una-cabeza-carlos-gardel.pdmx` | Por Una Cabeza - Carlos Gardel | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.scarborough-fair-piano-solo.pdmx` | Scarborough Fair (piano solo) | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.simple-gifts.pdmx` | Simple Gifts | 2.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.so-danco-samba.pdmx` | Só Danço Samba | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.folk.the-flute-tune-soulpride-remix.pdmx` | The Flute Tune Soulpride Remix | 4.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| … | and 143 more | | |
+| … | and 149 more | | |
 
