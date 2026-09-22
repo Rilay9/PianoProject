@@ -2,6 +2,10 @@
 title: When to stop — warm-up, tension and pain
 stage: 1
 unit: "practice.1.1"
+videos:
+  - label: "How to Avoid Piano Injuries: Get Rid of Tension and Pain"
+    url: "https://www.youtube.com/watch?v=tf2rbCjOpfA"
+    teacher: "PianoCareer"
 readingTime: 2
 ---
 

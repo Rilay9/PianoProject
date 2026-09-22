@@ -4509,6 +4509,25 @@ input[type='checkbox'] {
   margin-bottom: 8px;
 }
 
+/* The chart's own keys (`04` §3b, T22), between the transport and the form.
+   The same box the lab gives its strip: the keys scroll inside it, so
+   eighty-eight of them never widen the screen. */
+.chart-strip {
+  overflow-x: hidden;
+  margin-bottom: 8px;
+}
+
+/* Shorter keys on a phone, not fewer and not clipped ones — the same 72 px
+   the lab settled on, and for the same reason: a full-height strip plus the
+   transport plus enough chart to read is more than a 342 px-wide phone's
+   body has, and a `max-height` on the wrapper would cut the bottoms off the
+   keys rather than making them smaller. */
+@media (max-width: 699px) {
+  .chart-strip .keyboard-strip {
+    --key-h: 72px;
+  }
+}
+
 /* `[hidden]` sets `display: none` at a specificity a class rule beats, so a
    grid told to hide stayed a grid — empty, but still spending its margin. */
 .chart-grid[hidden] {

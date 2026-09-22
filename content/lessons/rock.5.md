@@ -2,6 +2,10 @@
 title: "Open voicings: the chord with the third taken out"
 stage: 5
 unit: "rock-metal.5.1"
+videos:
+  - label: "Make Simple Piano Chords Sound Beautiful (Open Chord Voicings)"
+    url: "https://www.youtube.com/watch?v=NL2FUEPcST0"
+    teacher: "Pianote"
 readingTime: 3
 ---
 

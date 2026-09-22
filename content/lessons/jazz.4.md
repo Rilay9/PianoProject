@@ -2,6 +2,10 @@
 title: "Swung eighths, and comping on plain triads"
 stage: 4
 unit: "jazz.4.1"
+videos:
+  - label: "5 Comping Rhythms Every Jazz Musician Should Know"
+    url: "https://www.youtube.com/watch?v=Y8iWV65hbLE"
+    teacher: "PianoPig"
 readingTime: 3
 ---
 

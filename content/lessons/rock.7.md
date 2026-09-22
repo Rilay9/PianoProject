@@ -2,6 +2,10 @@
 title: "Building it: register, density, and knowing when"
 stage: 7
 unit: "rock-metal.7.1"
+videos:
+  - label: "Create Drama & Intensity In Your Piano Chord Progressions"
+    url: "https://www.youtube.com/watch?v=Me4maGaS0gs"
+    teacher: "Pianote"
 readingTime: 3
 ---
 

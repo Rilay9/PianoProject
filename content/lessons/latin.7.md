@@ -2,6 +2,10 @@
 title: "The showpiece, and the hand nobody practises"
 stage: 7
 unit: "latin.7.1"
+videos:
+  - label: "Piano Lesson on playing repeated notes"
+    url: "https://www.youtube.com/watch?v=yhC8o7ko9xY"
+    teacher: "Graham Fitch"
 readingTime: 3
 ---
 

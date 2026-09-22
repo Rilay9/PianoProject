@@ -23,7 +23,7 @@ playing the melody alone, then the accompaniment alone, then both — and stop
 the moment you can no longer hear which is which.
 
 **Rubato, and what it is not.** Rubato is *not* slowing down when a passage is
-hard. Chopin's own description was that the left hand keeps time while the
+hard. The old description of it is that the left hand keeps time while the
 right hand is free — borrow a little from one note, give it back on the next,
 so the bar comes out the same length. If your bars are getting longer, that is
 not rubato, that is hesitation. The test: play with the metronome on. Rubato

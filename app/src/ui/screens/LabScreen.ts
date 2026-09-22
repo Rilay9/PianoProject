@@ -687,7 +687,7 @@ export function LabScreen(router: Router): HTMLElement {
     const refusal = bed === 'off' ? null : bedRefusal(bed);
     if (refusal) {
       bed = 'off';
-      drawBedChips();
+      drawPlaysChips();
       status.textContent = refusal;
       status.classList.add('status--error');
       return;
@@ -996,6 +996,49 @@ export function LabScreen(router: Router): HTMLElement {
     return group;
   }
 
+  /**
+   * A group whose explanation is four sentences, not one (T22; `04` §0 R1).
+   *
+   * R1 allows the screen one line of explanation and says the long version
+   * lives *behind or below* the thing it explains — "a `<details>`, a sheet, a
+   * link — never above it". Every other line in `LAB_HELP` is a sentence and
+   * sits above its control, which is within that; *What the app plays* has to
+   * describe five exclusive choices and runs to four sentences, which at 342 px
+   * is six lines of type between the button above and the chips below. Measured
+   * on this tree, that paragraph alone was what kept the chips off a phone's
+   * first screenful after the two rows became one.
+   *
+   * So it is the one that folds: the summary is on the screen and says what is
+   * under it, the chips are directly under the label where the eye goes, and
+   * the owner's documentation is a tap away rather than deleted (`00` §1 —
+   * reorganise rather than delete). The disclosure is **below** the chips
+   * deliberately: above them it would be the same wall of type, closed.
+   *
+   * It carries a fixed id and therefore has exactly one caller, which is the
+   * point: a second group long enough to fold would be a sign the table had
+   * grown a paragraph where it is meant to hold a sentence.
+   */
+  function foldedGroup(
+    label: string,
+    row: HTMLElement,
+    help: string,
+    summary: string,
+    ...rest: HTMLElement[]
+  ): HTMLElement {
+    const group = el('div.lab-group', {}, el('div.lab-group__label', { text: label }));
+    group.append(
+      row,
+      ...rest,
+      el(
+        'details.lab-group__more',
+        { id: 'lab-plays-more' },
+        el('summary', { text: summary }),
+        el('p.lab-group__help', { text: help }),
+      ),
+    );
+    return group;
+  }
+
   settings.append(
     field('Key', keySelect, labHelp('key')),
     field('Progression', progressionSelect, labHelp('progression')),
@@ -1055,7 +1098,7 @@ export function LabScreen(router: Router): HTMLElement {
     }
     // The two ways round depend on the hand pickers, so a hand set to None has
     // to grey its chip here and not at the next press.
-    if (bedDrawn) drawBedChips();
+    if (bedDrawn) drawPlaysChips();
     drawSummary();
     // A chart on the screen describing settings that have moved on is worse
     // than no chart: the bars are not the bars it would play. Stop rather than
@@ -1100,73 +1143,82 @@ export function LabScreen(router: Router): HTMLElement {
   );
 
   /**
-   * Trading fours, as a setting on *Jam it* rather than a button of its own.
+   * What the app plays — one exclusive row of five, not two rows of three (T22).
    *
-   * It is the same loop, the same bed and the same chart — the only difference
+   * Trading fours is a setting on *Jam it* rather than a button of its own: it
+   * is the same loop, the same bed and the same chart, and the only difference
    * is that the app takes every other few bars and says what yours were worth.
    * A second transport button would have been a second name for one thing
    * (`00` §1), and the rung reaches it through the lab tool it already has.
-   */
-  const tradeRow = el('div.filter-row', { id: 'lab-trade-row' });
-  function drawTradeChips(): void {
-    tradeRow.replaceChildren();
-    const options = [
-      { value: 0, label: 'Off' },
-      ...TRADE_BAR_CHOICES.map((count) => ({ value: count, label: `${String(count)} bars each` })),
-    ];
-    for (const option of options) {
-      tradeRow.append(
-        chip(option.label, {
-          id: `lab-trade-${String(option.value)}`,
-          pressed: option.value === 0 ? !trading : trading && tradeBars === option.value,
-          onClick: () => {
-            trading = option.value !== 0;
-            if (option.value !== 0) tradeBars = option.value;
-            // Exclusive with the two ways round: trading fours *is* the bed
-            // playing its own bars, so "hold the chords as well" would be two
-            // settings claiming the same four bars.
-            if (trading) bed = 'off';
-            drawTradeChips();
-            drawBedChips();
-            redraw();
-          },
-        }),
-      );
-    }
-  }
-
-  /**
-   * Which way round the bed plays, beside the trading-fours row and exclusive
-   * with it (`04` §3c).
+   *
+   * It was two rows until 2026-09-22, and they were already exclusive: pressing
+   * a way round turned trading off, and pressing a trade turned the bed off. So
+   * *Bed only* and the trade row's *Off* were **two controls for one state** —
+   * §1's "never say the same thing twice", with the aggravation that pressing
+   * either produced the same screen. One row of five says the one true thing:
+   * these are the five things the app can do while the loop runs, and exactly
+   * one of them is on.
+   *
+   * It is also what `04` §0 R1 asks of this screen. Measured at 342×740 in
+   * Entry 42, arriving from a rung, the *Trading fours* group sat **entirely**
+   * below the fold — so on a phone the learner could press *Jam it* having
+   * never seen two of the settings that decide what it does. One label, one
+   * help paragraph and one chip row fewer is what buys them back; `lab.spec.ts`
+   * holds the screen to it as a relationship rather than as a pixel count.
    *
    * Rebuilt rather than re-pressed, because the two settings that can be
    * *refused* depend on the hand pickers underneath: a right hand set to None
    * has to grey *Play the tune* the moment it is set, not the next time the
    * screen is opened.
    */
-  const bedRow = el('div.filter-row', { id: 'lab-bed-row' });
+  const playsRow = el('div.filter-row', { id: 'lab-plays-row' });
   const bedWhy = el('p.lab-why', { id: 'lab-bed-why', hidden: true });
-  function drawBedChips(): void {
+  /** One option of the row: a way round, or a trade of so many bars. */
+  type PlaysOption =
+    | { kind: 'bed'; value: LabBed; label: string }
+    | { kind: 'trade'; bars: number; label: string };
+  function drawPlaysChips(): void {
     // A preset may open on a way round whose hand the learner then sets to
     // None. Fail closed rather than keeping a pressed chip that cannot run.
     if (bed !== 'off' && bedRefusal(bed)) bed = 'off';
-    bedRow.replaceChildren();
-    const options: { value: LabBed; label: string }[] = [
-      { value: 'off', label: 'Bed only' },
-      { value: 'hold', label: 'Hold the chords' },
-      { value: 'tune', label: 'Play the tune' },
+    playsRow.replaceChildren();
+    const options: PlaysOption[] = [
+      { kind: 'bed', value: 'off', label: 'Bed only' },
+      { kind: 'bed', value: 'hold', label: 'Hold the chords' },
+      { kind: 'bed', value: 'tune', label: 'Play the tune' },
+      ...TRADE_BAR_CHOICES.map((count): PlaysOption => ({
+        kind: 'trade',
+        bars: count,
+        label: `Trade ${String(count)} bars each`,
+      })),
     ];
     const refusals: string[] = [];
     for (const option of options) {
-      const refused = option.value === 'off' ? null : bedRefusal(option.value);
+      // *Bed only* is the pressed chip when nothing else is: no trade, and no
+      // way round. That is the state the old trade row drew a second *Off* for.
+      const pressed =
+        option.kind === 'bed'
+          ? !trading && bed === option.value
+          : trading && tradeBars === option.bars;
+      const refused = option.kind === 'bed' && option.value !== 'off'
+        ? bedRefusal(option.value)
+        : null;
       const node = chip(option.label, {
-        id: `lab-bed-${option.value}`,
-        pressed: option.value === bed,
+        id: option.kind === 'bed' ? `lab-bed-${option.value}` : `lab-trade-${String(option.bars)}`,
+        pressed,
         onClick: () => {
-          bed = option.value;
-          if (bed !== 'off') trading = false;
-          drawBedChips();
-          drawTradeChips();
+          if (option.kind === 'bed') {
+            bed = option.value;
+            trading = false;
+          } else {
+            trading = true;
+            tradeBars = option.bars;
+            // Exclusive: trading fours *is* the bed playing its own bars, so
+            // "hold the chords as well" would be two settings claiming the
+            // same four bars.
+            bed = 'off';
+          }
+          drawPlaysChips();
           redraw();
         },
       });
@@ -1176,7 +1228,7 @@ export function LabScreen(router: Router): HTMLElement {
         node.title = refused;
         refusals.push(refused);
       }
-      bedRow.append(node);
+      playsRow.append(node);
     }
     // R4: a control that cannot act says why, on the screen and not only in a
     // tooltip — a tooltip is not a thing a phone has.
@@ -1184,9 +1236,9 @@ export function LabScreen(router: Router): HTMLElement {
     bedWhy.hidden = refusals.length === 0;
     bedDrawn = true;
     section.dataset.bed = bed;
+    section.dataset.trade = trading ? String(tradeBars) : 'off';
   }
-  drawTradeChips();
-  drawBedChips();
+  drawPlaysChips();
 
   // The summary says what the two buttons will act on, the buttons are what
   // the screen is for, the chart is what a jam draws, and the pickers — long,
@@ -1245,8 +1297,13 @@ export function LabScreen(router: Router): HTMLElement {
     el('p.lab-lede', { id: 'lab-lede', text: labHelp('lede') }),
     summary,
     actions,
-    chipGroup('What the app plays', bedRow, labHelp('bed'), bedWhy),
-    chipGroup('Trading fours', tradeRow, labHelp('trade')),
+    foldedGroup(
+      'What the app plays',
+      playsRow,
+      labHelp('plays'),
+      'What these five do',
+      bedWhy,
+    ),
     status,
     jam,
     settings,

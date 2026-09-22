@@ -2,6 +2,10 @@
 title: "The tune, and the four chords under it"
 stage: 2
 unit: "hymns-gospel.2.1"
+videos:
+  - label: "Play 25 Hymns with 4 Chords"
+    url: "https://www.youtube.com/watch?v=OlKTdH0fbXM"
+    teacher: "Hello Miss Mai"
 readingTime: 3
 ---
 

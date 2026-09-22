@@ -2,6 +2,10 @@
 title: "Comping behind somebody else"
 stage: 5
 unit: "jam.5.1"
+videos:
+  - label: "Rhythmic Syncopation for Comping"
+    url: "https://www.youtube.com/watch?v=o0ElhKNhZsw"
+    teacher: "Peter Martin"
 readingTime: 3
 ---
 

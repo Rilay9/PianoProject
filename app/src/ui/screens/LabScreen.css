@@ -55,7 +55,7 @@
 /* The refused chip: legible, so the learner can see which way round is not
    available and read why underneath, and plainly not pressable. Same shape as
    a preset's locked control, which is the same idea. */
-#lab-bed-row .chip:disabled {
+#lab-plays-row .chip:disabled {
   opacity: 0.62;
   cursor: default;
 }
@@ -217,4 +217,24 @@
   min-height: 1.2em;
   font-size: 0.95rem;
   color: var(--text-muted);
+}
+
+/* The one help line long enough to fold (`04` §0 R1; T22).
+
+   Under the chips, not above them: R1 wants the long version behind or below
+   the thing it explains, and above the chips it would be the same six lines of
+   type at 342 px, closed. The summary is quiet — it is a way in, not a
+   control. */
+.lab-group__more {
+  margin-top: 4px;
+}
+
+.lab-group__more > summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.lab-group__more .lab-group__help {
+  margin-top: 4px;
 }

@@ -100,6 +100,34 @@ function applyPhoneEngraving(osmd: OpenSheetMusicDisplay, options: OsmdViewOptio
   rules.FingeringPositionFromXML = false;
   if (options.drawFingerings === false) rules.RenderFingerings = false;
   /**
+   * **No `MetronomeMarkYShift` here, and the reason is worth keeping** (T22).
+   *
+   * The generated exercises print a direction — *Take it in a hurry*, *Count
+   * out loud; the pulse does not move* — and until 2026-09-22 they printed it
+   * with no `placement`, which OSMD anchors *between* the staves at the
+   * measure's left edge, with the system's barline drawn through the words.
+   * `pending-review` Entry 33 read nineteen families like that. The generator
+   * now writes `placement="above"` (`direction_text`), which is the cure, and
+   * Entry 38 recorded that above the staff the words then run through the
+   * `♩ = 60` mark — so it proposed pairing the writer's `placement` with
+   * `rules.MetronomeMarkYShift = -4` here.
+   *
+   * The pair is **not** applied, because the second half is an engraving rule
+   * for every score in the app and there is no surface in it where the two
+   * meet. Grepped 2026-09-22 for every `new OsmdView(` and every
+   * `drawMetronomeMarks`: the Score screen, the drill's three notation hosts,
+   * the device preview and the dev harness's stage all pass `false` (its own
+   * bar says the bpm, and the mark was the tallest thing above any stave); the
+   * remaining call sites are off-screen probes and one drill host that leaves
+   * the default on. That host engraves `musicXmlWriter`'s output, which has
+   * written `<direction placement="above">` since it was built and has never
+   * carried a generated exercise. So `00-invariants` §1 applies in its usual
+   * direction: a rule costing every piece with a tempo mark four units of
+   * height, applied on one picture nothing in this app draws, is not a fix.
+   * If a page ever prints both, this is the line to add and Entry 38 has the
+   * rendering.
+   */
+  /**
    * A one-line rhythm staff puts its noteheads **on** the line (T17).
    *
    * `pending-review` Entry 33 found every notehead of `exercise.rhythm.*` and

@@ -135,10 +135,12 @@ caught by the merge rather than by whichever wrote last:
    level model.
 9. **validate** (`validate.py`) — everything in §4 and more: schemas, every referenced file
    present, every curriculum option in the catalog, the three-alternative floor, finders, tips
-   files, section bar numbers, track definitions, orphan exercises, licences, and the committed
-   ladder report. It also writes each rung's `needs` block into the built curriculum. This is
-   the step that fails a build on the *content*; step 7a is the one that fails it on the
-   *score files*. (Until 2026-09-22 validate was the only gate and this line said so.)
+   files, section bar numbers, track definitions, orphan exercises, licences, the committed
+   ladder report, and — since 2026-09-22 — **every lesson video URL against
+   `content/video-index.json`** (§6b). It also writes each rung's `needs` block into the built
+   curriculum. This is the step that fails a build on the *content*; step 7a is the one that
+   fails it on the *score files*. (Until 2026-09-22 validate was the only gate and this line
+   said so.)
 10. **render check** (`render_check.py`, only with `--render`) — opens every item in a real
     Chromium through the app's own loader, compares the cursor's step count against the model's,
     captures the console, records the printed bar count and the measured duration, and
@@ -510,3 +512,40 @@ like nothing at all.
 The build copies the directory and writes `content/tips/index.json` (which
 variants exist, and their `when:` blocks) so the app makes one request for the
 index and one for the file it wants.
+
+### 6b. Lesson videos, and the index that says they exist (T21, 2026-09-22)
+
+`videos[]` is `{label, url, teacher}` and the URL is a canonical
+`https://www.youtube.com/watch?v=<11 chars>` and nothing else — no channel page,
+no playlist, no `youtu.be`. `lessonVideos.test.ts` has enforced the shape since
+88 lessons were found pointing at channel *home pages*; what nothing enforced is
+that the link resolves.
+
+**`tools/content/video_check.py` asks, and `content/video-index.json` is the
+committed answer.** It reads every lesson's `videos:`, fetches YouTube's oEmbed
+endpoint for each distinct URL, and writes `url → {title, author, status, http,
+checked}`. `validate.py` (step 9, `video_index_errors`) then fails the build on
+any lesson URL that is not in the index with a `live` status and a checked date,
+so **a newly added link fails the build until somebody has run the fetch once**.
+
+Run it by hand after adding or changing a link:
+
+```bash
+python tools/content/video_check.py            # fetch and rewrite the index
+python tools/content/video_check.py --check    # offline: index against the lessons
+python tools/content/video_check.py --url <watch url>   # one URL, print and exit
+```
+
+**The fetch never runs in the build**, which is what keeps `build.py --offline`
+offline; the build only reads the file. Rows for URLs no lesson names any more
+are dropped on the next fetch, so the index is the corpus and not a graveyard.
+
+**What it cannot tell you.** The index holds the title the uploader typed.
+Nothing in this repository has watched a video, so a *live link to the wrong
+video* passes every check here. `lessonVideos.test.ts` asks the weaker
+mechanical half — that the oEmbed title shares a word with the rung's title, its
+concepts, its track, or one of five written-down synonyms — and that rule
+catches a title with nothing of the rung in it and nothing else. Whether a video
+suits the **stage** is a person's judgement: three videos pitched at beginners
+sat on Stage 9 rungs and passed everything mechanical until somebody read them
+(`pending-review.md` Entry 46).

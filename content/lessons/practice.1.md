@@ -2,6 +2,10 @@
 title: Chunking, and the loop
 stage: 1
 unit: "practice.1.1"
+videos:
+  - label: "Chunking: How to Practice Better Piano (Practice with Me!)"
+    url: "https://www.youtube.com/watch?v=JNaqAvFXV3k"
+    teacher: "Artiden"
 readingTime: 2
 ---
 

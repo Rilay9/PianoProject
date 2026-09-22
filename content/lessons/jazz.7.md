@@ -5,7 +5,7 @@ unit: "jazz.7.1"
 videos:
   - label: "Rootless Voicings for Jazz Piano – Sound Pro Instantly"
     url: "https://www.youtube.com/watch?v=-Q0413UQjrs"
-    teacher: "Jazz Tutorial | Julian Bradley"
+    teacher: "Julian Bradley"
 readingTime: 3
 ---
 
@@ -30,8 +30,8 @@ Play ii–V–I and ii–subV–I back to back until the second stops sounding l
 mistake.
 
 **Stride** is here because the left hand needs somewhere to go when it is not
-walking: bass, chord, tenth, chord. The leap you will miss is the one back down
-to the bass on beat one.
+walking: bass, chord, tenth, chord, the tenth being the chord's own bottom
+note again and not a bass note. Beat one is the leap you will miss.
 
 **What to practise.** One ii–V–I in rootless A and again in B; the same with
 the tritone substitution; a quartal voicing moved through three roots without
@@ -56,7 +56,7 @@ automatic. The shells are what you fall back on when the tempo goes up.
 
 **Tools for this rung.** *Accompaniment lab* opens it with nothing fixed, and
 its typed numerals take flats and sevenths, so `ii7 V7 I` and `ii7 ♭II7 I` can be built as two loops and played one after
-the other — this rung's comparison, with the bass line audible under both.
+the other — this rung's comparison.
 *Play it as a duet* opens the jazz *Jingle Bells* with the right hand yours and
 the app taking the bass, which is these voicings in the company they are
 written for. *Free play* names a chord only from three or more notes held

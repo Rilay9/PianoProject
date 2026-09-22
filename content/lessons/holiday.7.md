@@ -2,6 +2,10 @@
 title: "Winter repertoire that is not a carol"
 stage: 7
 unit: "holiday.7.1"
+videos:
+  - label: "Practicing a left hand waltz accompaniment"
+    url: "https://www.youtube.com/watch?v=REazjGPltqM"
+    teacher: "Dorothy Chia"
 readingTime: 3
 ---
 

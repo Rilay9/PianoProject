@@ -22,25 +22,27 @@ alone until it is automatic, then find every place it occurs.** Most late rags
 are four or five figures in different clothes.
 
 **Chromatic harmony.** *Magnetic Rag* (1914), the last rag Joplin published,
-goes through four keys and spends a whole strain in the minor. It is the piece
-where ragtime is visibly turning into something else, and it repays being
-learned strain by strain more than any other rag in the library.
+changes key signature once and back — two flats, then five for twenty bars —
+and that five-flat strain sits on B flat, the minor. It is the piece where
+ragtime is visibly turning into something else, and it repays being learned
+strain by strain.
 
 **Stop-time.** Bars where the accompaniment stops and the pulse is kept by what
 is left. In *Stoptime Rag* the left hand drops out under the tune and the player
 stamps a heel on the floor — Joplin printed the instruction, though the copy in
 this app's Library does not show it. It is not a joke and it is not optional:
 those bars fall apart if you cannot keep time without hearing the beat.
-*Stoptime Rag* is in the Library rather than on this rung.
+*Stoptime Rag* is in the Library, not on this rung.
 
 **Still not fast.** Late rags reward being slower, not faster, because there is
 more happening per bar. If the syncopation is not audible as syncopation, the
 tempo is wrong.
 
-**What to play.** Six options. Five late Joplin rags — *Pine Apple*,
-*Gladiolus*, *Magnetic*, *The Cascades* and *Scott Joplin's New Rag* — and one
-that is not Joplin's. *Stoptime*, *Wall Street*, *Reflection Rag* and the
-lighter early rags are under Ragtime in the Library.
+**What to play.** Six options. Five Joplin rags — *Gladiolus*, *Pine Apple*,
+*Scott Joplin's New Rag* and *Magnetic* from his last decade, and *The
+Cascades* from a decade before — and one that is not Joplin's. *Stoptime*,
+*Wall Street*, *Reflection Rag* and the lighter early rags are under Ragtime in
+the Library.
 
 **Not only Joplin.** James Scott's *Frog Legs Rag* (1906) is the sixth — the
 other great rag of the Sedalia school, and a good test of whether the habits

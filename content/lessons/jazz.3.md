@@ -2,6 +2,10 @@
 title: "Long, short, and playing a phrase back"
 stage: 3
 unit: "jazz.3.1"
+videos:
+  - label: "3 Steps to Get a Pro Jazz Swing Feel for Piano"
+    url: "https://www.youtube.com/watch?v=MfczGunfjXQ"
+    teacher: "Piano With Jonny"
 readingTime: 3
 ---
 

@@ -28,6 +28,33 @@ from music21 import (chord, clef, instrument, interval, key, layout, meter, meta
 from music21.scale import Direction
 
 
+def direction_text(words: str) -> expressions.TextExpression:
+    """The one way this file writes a printed direction: above the top staff.
+
+    Every direction here is inserted at an offset in the right-hand part, and
+    music21 exports a ``TextExpression`` with no ``placement`` as a bare
+    ``<direction>``. OSMD then anchors an unplaced expression *between* the
+    staves at the measure's left edge, under the brace — and a barline is drawn
+    through the whole system, so the words get one through them. Nineteen of the
+    fifty-six families read on 2026-09-22 had the fault (``pending-review``
+    Entry 33's table), the worst of them with the first letter drawn on top of
+    the brace itself.
+
+    ``placement="above"`` is the cure, and it is the writer's to apply: OSMD
+    offers no rule that moves an unplaced expression out (Entry 38 rendered
+    ``UnknownExpressionTextAlignment`` both ways and got the base picture both
+    times). Above the top staff the words would run through a tempo mark on a
+    page that printed one; no screen in the app prints one over these files,
+    which ``OsmdView`` records where the paired engraving rule would go.
+
+    It is a placement and not a y-offset on purpose: a hard offset would be a
+    number measured on one engraver and wrong on the next.
+    """
+    text = expressions.TextExpression(words)
+    text.placement = "above"
+    return text
+
+
 def note_name(name: str) -> str:
     """A pitch or key name as a reader writes it: A♭, not A-.
 
@@ -1439,9 +1466,8 @@ def make_rhythm(pattern: str, bars: int = 4, bpm: int = 80) -> tuple[stream.Scor
     layout_staff = layout.StaffLayout(staffLines=1)
     part.insert(0, layout_staff)
     if direction is not None:
-        from music21 import expressions
 
-        part.insert(0, expressions.TextExpression(direction))
+        part.insert(0, direction_text(direction))
     for _ in range(bars):
         for length in lengths:
             part.append(note.Note("B4", quarterLength=length))
@@ -2037,7 +2063,6 @@ def make_trill(
     notation matches it exactly.
     """
     one_of("hands", hands, HANDS)
-    from music21 import expressions
 
     level = 6.3 if ornament == "trill" else 5.3
     label = "Measured trill" if ornament == "trill" else "Mordents"
@@ -2047,7 +2072,7 @@ def make_trill(
     starts = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "5"))[:4]
     ql = 1.0 / notes_per_beat
 
-    direction = expressions.TextExpression(
+    direction = direction_text(
         f"{notes_per_beat} notes to the beat — count them, do not hurry"
     )
     rh.insert(0, direction)
@@ -2279,7 +2304,6 @@ def make_articulation(
     engine judges it by how long each note is actually held.
     """
     one_of("hands", hands, HANDS)
-    from music21 import expressions
 
     one_of("articulation", articulation, ("staccato", "legato"))
     level = 4.5 if articulation == "legato" else 4.4
@@ -2287,7 +2311,7 @@ def make_articulation(
     title = f"{label} phrase in {note_name(tonic)} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     steps = _walk(tonic, bars=4, per_bar=4)
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Crisp and short — release each key before the next"
         if articulation == "staccato"
         else "Joined — hold each key until the next one sounds"
@@ -2389,7 +2413,6 @@ def make_shaping(
     least 30, which is the difference between a crescendo and a step.
     """
     from music21 import dynamics as m21dynamics
-    from music21 import expressions
 
     one_of("shape", shape, ("crescendo", "diminuendo"))
     level = 5.2
@@ -2399,7 +2422,7 @@ def make_shaping(
     if shape == "diminuendo":
         run = list(reversed(run))
     rh.insert(0, m21dynamics.Dynamic("pp" if shape == "crescendo" else "ff"))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Grow evenly from the first note to the last" if shape == "crescendo"
         else "Fade evenly from the first note to the last"
     ))
@@ -2428,13 +2451,12 @@ def make_voicing(tonic: str = "C", bpm: int = 54) -> tuple[stream.Score, dict]:
     measurable — the top note's velocity against the mean of the others — which
     is why it can be an exercise rather than a note in a lesson.
     """
-    from music21 import expressions
 
     level = 6.2
     title = f"Voicing the top note in {note_name(tonic)}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     k = key.Key(tonic)
-    rh.insert(0, expressions.TextExpression("The top note sings; the rest accompany it"))
+    rh.insert(0, direction_text("The top note sings; the rest accompany it"))
     for degrees in ([1, 3, 5, 8], [2, 4, 6, 9], [3, 5, 7, 10], [1, 3, 5, 8]):
         tones = scale_pitches(k, 4, degrees)
         rh.append(fingered_chord(tones, [1, 2, 3, 5], 4.0))
@@ -2467,14 +2489,13 @@ def make_syncopation(
     else wrote is a note that *starts* in one bar and belongs to the next,
     which is the thing that makes a learner lose the beat.
     """
-    from music21 import expressions
 
     one_of("variant", variant, ("tied-across-bar", "sixteenth"))
     level = 5.4 if variant == "tied-across-bar" else 6.4
     title = ("Ties across the bar line" if variant == "tied-across-bar"
              else "Sixteenth-note syncopation")
     sc, rh, lh = grand_staff(title, bpm)
-    rh.insert(0, expressions.TextExpression("Count out loud; the pulse does not move"))
+    rh.insert(0, direction_text("Count out loud; the pulse does not move"))
 
     if variant == "tied-across-bar":
         pattern = [1.0, 1.0, 1.0, 1.5, 0.5, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -2556,7 +2577,6 @@ def make_secondary_rag(bars: int = 4, tonic: str = "C", bpm: int = 72):
     it: `alternativesFor` offers an exercise on a rung only when it shares a
     concept with something already there *and* sits within half a level of it.
     """
-    from music21 import expressions
 
     # The level `make_syncopation` gives its sixteenth-note variant: the same
     # subdivision, and this one also crosses the barline.
@@ -2564,7 +2584,7 @@ def make_secondary_rag(bars: int = 4, tonic: str = "C", bpm: int = 72):
     beats = 4.0 * bars
     title = f"Secondary rag in {note_name(tonic)} — three sixteenths against four"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "The figure is three sixteenths; the beat is four. Count the beat, not the figure"
     ))
 
@@ -2691,7 +2711,6 @@ def make_meter(signature: str = "5/4", bpm: int | None = None) -> tuple[stream.S
     takes two of them and then one, and that long-short is the shuffle written
     out instead of asked for in words the way `make_rhythm` has to ask for it.
     """
-    from music21 import expressions
 
     spec = meter_spec(signature)
     bpm = bpm if bpm is not None else (76 if spec.form else 66)
@@ -2701,7 +2720,7 @@ def make_meter(signature: str = "5/4", bpm: int | None = None) -> tuple[stream.S
     if spec.form is None:
         title = f"{name} — counting in {spec.grouping}"
         sc, rh, lh = grand_staff(title, bpm, ts=spec.signature)
-        rh.insert(0, expressions.TextExpression(spec.direction))
+        rh.insert(0, direction_text(spec.direction))
         per_bar = len(spec.pattern)
         tones = _walk("C", bars=4, per_bar=per_bar)
         for bar in range(4):
@@ -2714,7 +2733,7 @@ def make_meter(signature: str = "5/4", bpm: int | None = None) -> tuple[stream.S
         bars = BLUES_FORMS[spec.form]
         title = f"{name} in {note_name(spec.key)} — counting in {spec.grouping}"
         sc, rh, lh = grand_staff(title, bpm, ts=spec.signature, ks=key.Key(spec.key))
-        rh.insert(0, expressions.TextExpression(spec.direction))
+        rh.insert(0, direction_text(spec.direction))
         for index, (degree, quality) in enumerate(bars):
             root_name = _transpose_name(spec.key, degree)
             # Bar by bar, so the symbol goes in before the chord it names.
@@ -2758,7 +2777,6 @@ def make_pedal_variant(
     *value* rather than on its timing: a pedal that is only ever 0 or 127 cannot
     play late Romantic music.
     """
-    from music21 import expressions
 
     one_of("variant", variant, ("held-melody", "half-pedal"))
     level = 6.4 if variant == "held-melody" else 7.4
@@ -2766,7 +2784,7 @@ def make_pedal_variant(
     title = ("Held melody over changing harmony" if variant == "held-melody"
              else "Half pedal — the damper part-way down") + f" in {note_name(root)}"
     sc, rh, lh = grand_staff(title, bpm, ks=k)
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Change the pedal under the held note — it must not break"
         if variant == "held-melody"
         else "Half way down: enough to blur, not enough to smear"
@@ -4170,7 +4188,7 @@ def make_blues_scale(
     level = 4.4 if tonic in ("C", "G", "F") else 5.2
     title = f"{note_name(tonic)} blues scale — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         # "raised fourth", not "flat fifth": the owner chose the raised
         # fourth in every key on 2026-09-19 (Entry 22), `BLUES_SCALE_FORMS`
         # spells `A4`, and the page prints F sharp in C and G sharp in D.
@@ -4373,7 +4391,7 @@ def make_clave(
     # re-do them; "RH"/"LH" when there are two, which is what every other
     # two-staff score in this file calls them.
     part = one_line_staff("RH" if with_pulse else "Rhythm", bpm, staff=1)
-    part.insert(0, expressions.TextExpression(
+    part.insert(0, direction_text(
         "The left hand is the beat. The clave is not on it, and that is the point"
         if with_pulse else
         "One two-bar unit, not two bars — clap it until it stops needing counting"
@@ -4511,7 +4529,7 @@ def make_tumbao(tonic: str = "C", bars: int = 8, bpm: int = 88) -> tuple[stream.
     level = 5.2
     title = f"Tumbao — latin bass in {note_name(tonic)} minor"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Nothing on beat one. The note on four belongs to the next bar's chord"
     ))
 
@@ -4557,7 +4575,7 @@ def make_montuno(
     level = 5.6 if voices == 2 else 6.2
     title = f"Montuno — {voices} notes on {clave.replace('-', ' ')} in {note_name(tonic)} minor"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Every note is a clave stroke. It repeats without changing"
     ))
 
@@ -4607,7 +4625,7 @@ def make_latin_groove(
     title = (f"Latin groove — tumbao and montuno on {clave.replace('-', ' ')} "
              f"in {note_name(tonic)} minor")
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Neither hand is on the beat. Left hand alone first, then two notes on top"
     ))
 
@@ -4665,12 +4683,11 @@ def make_intro(tonic: str = "C", bars: int = 4, bpm: int = 76) -> tuple[stream.S
     `alternativesFor` offers an exercise on a rung only when it shares a concept
     with something already there *and* sits within half a level of it.
     """
-    from music21 import expressions
 
     level = 3.4
     title = f"Four-bar introduction in {note_name(tonic)} — the vamp before the tune"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Four bars, then the tune. The last bar hands over — do not vamp through it"
     ))
 
@@ -4743,12 +4760,11 @@ def make_walkup(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict]:
     `alternativesFor` offers an exercise on a rung only when it shares a concept
     with something already there *and* sits within half a level of it.
     """
-    from music21 import expressions
 
     level = 4.6
     title = f"Walk-ups in {note_name(tonic)} — diatonic, then chromatic"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "The same walk twice: inside the key, then through the note between"
     ))
 
@@ -4903,7 +4919,6 @@ def make_power_chord(tonic: str = "A", bpm: int = 92) -> tuple[stream.Score, dic
     with something already there *and* sits within half a level of it.
     """
     from music21 import dynamics as m21dynamics
-    from music21 import expressions
 
     # Levelled against the core path (2026-09-17). There is nothing to read after
     # the first bar and the shape never changes, so the reading load is lower than
@@ -4913,7 +4928,7 @@ def make_power_chord(tonic: str = "A", bpm: int = 92) -> tuple[stream.Score, dic
     level = 2.8
     title = f"Power chords in {note_name(tonic)} minor — root, fifth, octave"
     sc, rh, lh = grand_staff(title, bpm, ks=minor_key(tonic))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Weight from the arm, not the fingers. The hand keeps its shape"
     ))
     rh.insert(0, m21dynamics.Dynamic("ff"))
@@ -5048,7 +5063,7 @@ def make_riff(
             n.articulations.append(articulations.Fingering(finger))
             rh.append(n)
     lh.append(note.Rest(quarterLength=repeats * cell_beats))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Keep the hand still"
     ))
     finalize(sc)
@@ -5129,7 +5144,7 @@ def make_pentatonic(
     fingers = up_fingers + list(reversed(up_fingers))[1:]
     add_notes(rh, seq, fingers, 0.5)
     lh.append(note.Rest(quarterLength=len(seq) * 0.5))
-    rh.insert(0, expressions.TextExpression("Thumb under, no bump"))
+    rh.insert(0, direction_text("Thumb under, no bump"))
     finalize(sc)
 
     item_id = f"exercise.pentatonic.{key_slug(tonic)}.{form}"
@@ -5178,7 +5193,7 @@ def make_tresillo(tonic: str = "C", bars: int = 8, bpm: int = 84) -> tuple[strea
         rh.append(fingered_chord(
             [top, top.transpose(shape[1]), top.transpose(shape[2])], [1, 3, 5], 4.0))
 
-    lh.insert(0, expressions.TextExpression("Count: 1 . . 2 . . 3 ."))
+    lh.insert(0, direction_text("Count: 1 . . 2 . . 3 ."))
     finalize(sc)
 
     item_id = f"exercise.tresillo.{key_slug(tonic)}"
@@ -5237,9 +5252,9 @@ def make_swing_pair(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict
             rh.append(note.Rest(quarterLength=4.0))
     lh.append(note.Rest(quarterLength=sum(rhythm) * 4 + 4.0))
 
-    rh.insert(0, expressions.TextExpression("Straight"))
+    rh.insert(0, direction_text("Straight"))
     swing_at = sum(rhythm) * 2 + 4.0
-    rh.insert(swing_at, expressions.TextExpression(
+    rh.insert(swing_at, direction_text(
         "Swing: long, then late"
     ))
     finalize(sc)
@@ -5320,7 +5335,7 @@ def make_modal_vamp(tonic: str = "A", bars: int = 8, bpm: int = 80) -> tuple[str
         for _ in range(2):
             rh.append(fingered_chord(shape, [1, 3, 5], 2.0))
 
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "Four chords, round and round"
     ))
     finalize(sc)
@@ -5357,13 +5372,12 @@ def make_ostinato(
     `alternativesFor` offers an exercise on a rung only when it shares a concept
     with something already there *and* sits within half a level of it.
     """
-    from music21 import expressions
 
     one_of("shape", shape, tuple(OSTINATO_SHAPES))
     offsets, fingers, level, label = OSTINATO_SHAPES[shape]
     title = (f"Ostinato over a pedal bass in {note_name(tonic)} minor — {label}")
     sc, rh, lh = grand_staff(title, bpm, ks=minor_key(tonic))
-    rh.insert(0, expressions.TextExpression(
+    rh.insert(0, direction_text(
         "The figure does not change. Nothing in it gets louder, later or faster"
     ))
 

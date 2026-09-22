@@ -38,14 +38,15 @@ above it, never below; at this level it is four notes, and in music of Mozart's
 time it usually starts on the upper one: upper, main, upper, main. Do not attempt
 a long trill, attempt a clean short one.
 
-**Repertoire for this rung.** Five options at Grade 1: Attwood's *Sonatina in
+**Repertoire for this rung.** Five options: Attwood's *Sonatina in
 G*, the first sonatina most learners meet; C. P. E. Bach's *March in D* from
 the Anna Magdalena notebook, for staccato in both hands; the child Mozart's
 minuet K. 1e in G, whose file carries the C major minuet K. 1f as its Trio,
 four-bar phrases with the articulation written in; Schumann's
 *Chorale* from the *Album for the Young*, all legato, for the opposite touch;
 and a Gurlitt study that slurs the right hand and leaves the left unmarked, so
-the contrast is yours to supply. More Grade 1 pieces under Classical in the Library.
+the contrast is yours to supply. More, some of them with a grade printed,
+under Classical in the Library.
 
 **Tools for this rung.** *Play it as a duet* opens the *Sonatina in G*, the
 first of those five, with the right hand yours and the app playing the left —

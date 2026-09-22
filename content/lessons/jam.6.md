@@ -2,6 +2,10 @@
 title: "Walking bass, when there is no bass player"
 stage: 6
 unit: "jam.6.1"
+videos:
+  - label: "Walking Bass line Piano Tutorial"
+    url: "https://www.youtube.com/watch?v=Z5_ZQvr1d7w"
+    teacher: "Pianote"
 readingTime: 3
 ---
 

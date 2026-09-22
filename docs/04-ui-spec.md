@@ -401,17 +401,27 @@ count-off, optional backing loop, and swing toggle — used for jamming practice
 not the point. Any item with `<harmony>` data can open in this view; the input chip still
 works (mic/MIDI can highlight the chord you actually play vs the chart, amber if different).
 
-**And it needs a piano** (corrected 2026-09-22, T17-2; `pending-review` Entry 38 FAULT 6).
-The sentence above is true of a MIDI instrument and **not reachable from the glass**:
-`ChordChartScreen.ts` subscribes to the screen-keyboard source and **draws no keyboard**, so
-on a phone with nothing plugged in there is no instrument on this screen that could feed it.
-The lab and free play both draw a `KeyboardStrip` and both say why. Not built here, because a
-keyboard on this screen is a feature and not a one-line fix — it wants a host and a dispose
-(about the twenty-five lines `LabScreen.ts` spends on the same thing), a decision about what
-the keys *show* when nothing is being played (the bar's chord tones, as the lab lights them,
-or nothing), and a height budget on a screen whose transport was itself below the fold until
-this week. Entry 42 sizes it. Until it exists, the matching is a MIDI feature and this
-paragraph says so rather than promising it to everybody.
+**And there are keys to play it on** (built 2026-09-22, T22; `pending-review` Entry 38
+FAULT 6, Entry 42's sizing). The sentence above used to be true of a MIDI instrument only:
+`ChordChartScreen.ts` subscribed to the screen-keyboard source and **drew no keyboard**, so on
+a phone with nothing plugged in there was no instrument on the one screen in the app whose
+subject is *play this chord*. It now draws the same `KeyboardStrip` the lab and free play
+draw, wired to the same shared source, so a tap and a cable's note arrive by one path. Entry
+42 named the two decisions that made this a feature rather than a one-line fix, and both are
+answered by what the exercise is:
+
+- **The keys light what is *held*, never what is expected.** The lab lights the bar's chord
+  tones; here that would answer the question the chart is already answering in letters an inch
+  high, and a chart that fingers the chord for you is a different exercise from one that checks
+  what you played. Pressed only — feedback, not a hint.
+- **They sit between the transport and the chart**, and they are drawn by the same step that
+  draws the transport, so a dead end has no keys for the same reason it has no *Count off*
+  (§0 R4). Under the form they would have been hundreds of pixels down on a thirty-two bar
+  tune, which is the fault this screen's transport had until three days earlier. On a phone
+  the keys are 72 px tall, the height the lab settled on for the same squeeze.
+
+`modes-chart-from-a-lesson.spec.ts` holds a key down and asserts the sounding bar is marked,
+and that releasing it returns the bar to *idle* — silence is not a mistake.
 
 **Two doors, added 2026-09-21.** Until then there were none: `#/chart/<itemId>` parsed and
 `router.navigateChart` compiled, and nothing in the app called either — the screen was
@@ -630,8 +640,9 @@ you are. Changing a setting under a running loop *stops* it and says so, rather 
 chart on the screen whose bars are not the bars it is playing. Stop leaves the chart standing —
 it is a chord chart, and reading one is what somebody stopped the loop to do.
 
-**Trading fours (added 2026-09-21).** A row of chips under the two buttons — *Off · 2 bars
-each · 4 bars each* — that changes what *Jam it* does: the app plays a phrase over the bed for
+**Trading fours (added 2026-09-21; merged into one row 2026-09-22).** Two chips in the
+*What the app plays* row under the two buttons — *Trade 2 bars each · Trade 4 bars each* — that change
+what *Jam it* does: the app plays a phrase over the bed for
 its bars, then leaves the learner theirs, round and round. Four rungs' plans ask for it
 (`blues.5`, `blues.7`, `jazz.4`, `improv.4`) and it is the teaching device for blues and for
 jazz. The five decisions behind it, because each could have gone another way:
@@ -673,8 +684,8 @@ jazz. The five decisions behind it, because each could have gone another way:
 documentation"*, and he wants it to *"play chords while the user plays the melody, so it'd go
 both ways"*. Until now *Jam it* played bass and drums and nothing else — so "play the tune
 over it" asked the learner to supply the harmony they were meant to be playing over, and the
-other direction did not exist at all. A row of chips, **What the app plays**, sits beside the
-trading-fours row: *Bed only · Hold the chords · Play the tune*.
+other direction did not exist at all. A row of chips, **What the app plays**, sits under the
+two buttons: *Bed only · Hold the chords · Play the tune · Trade 2 bars each · Trade 4 bars each*.
 
 - **Hold the chords** adds a chord voice to the bed, in the pattern the **left-hand picker**
   names — the same six words, so the loop comps in the shape the screen says it will.
@@ -720,7 +731,9 @@ trading-fours row: *Bed only · Hold the chords · Play the tune*.
 **What every control says it does (added 2026-09-22).** A grep of `LabScreen.ts` for
 `help|explain|tip|hint` on 2026-09-21 returned the file comment and nothing else: six
 pickers, two buttons and two chip rows stood on the screen with only their labels. Each now
-carries one line under it, in the learner's terms. **The lines live in one table in the
+carries one line under it, in the learner's terms — all but one of them printed plainly under
+its label, and *What the app plays*, which is four sentences rather than one, under its chips
+in a `<details>` (R1, and the paragraph on it below). **The lines live in one table in the
 code** — `LAB_HELP` in `engine/sightReading.ts` — and the table below is that table;
 `labHelp.test.ts` fails when the two stop agreeing, so the screen and this section cannot
 drift the way a sentence copied into a spec does.
@@ -729,8 +742,7 @@ drift the way a sentence copied into a spec does.
 |---|---|
 | The two buttons | Read it writes these settings out as a score you can read. Jam it plays them as a loop you can play over. |
 | Start from | A style to start from, instead of six empty pickers. Free leaves every setting to you. |
-| What the app plays | Bed only is bass and drums. Hold the chords adds the harmony underneath, so the tune is yours. Play the tune gives the app the right hand, so the chords are yours. |
-| Trading fours | The app plays a few bars, then leaves you the same number, round and round. |
+| What the app plays | Bed only is bass and drums. Hold the chords adds the harmony underneath, so the tune is yours. Play the tune gives the app the right hand, so the chords are yours. Trading fours — 2 or 4 bars each — has it play that many and then leave you the same number to answer with, round and round. |
 | Key | Which key it is all written and played in. |
 | Progression | Which chords, written as numerals so the same choice works in any key. |
 | Your numerals | One per bar — I, vi, V7, ♭VII, iiø7. |
@@ -788,17 +800,49 @@ starting point asks a beginner to know the answer before they arrive, which is t
 outlined. One line saying what the two buttons *do*, the line saying what the settings
 currently *are*, and the two buttons themselves sit **above** the pickers, in that order — the
 first answers "and then what happens", the second answers "to what", and until 2026-09-22 only
-the second was on the screen. The two chip rows that change what *Jam it* does (*What the app
-plays*, *Trading fours*) sit under the buttons and above the pickers — the same ranking Today's *Start session* got.
+the second was on the screen. The **one** chip row that changes what *Jam it* does (*What the
+app plays*) sits under the buttons and above the pickers — the same ranking Today's *Start
+session* got.
 
-**What R1 actually gets on a phone, measured 2026-09-22 (T17).** This paragraph used to end
-"and the pickers still begin inside the first screenful (R1)", and that is **not true**. Driven
-at 342×740 from the Library door, the pickers begin below the fold; arriving from a rung's
-button, with the preset panel and its blurb drawn as well, the *Trading fours* row is below it
-too, and the pickers are further still. The ranking above is the owner's (2026-09-19) and is not
-in question — the cost of it is, and the sentence claiming there was none has been removed
-rather than the layout changed, because what to drop from the six things above the pickers is a
-design decision and not a bug. `pending-review` Entry 38 has the measurement.
+**What R1 actually gets on a phone (T17 measured it; T22 changed it).** The paragraph here used
+to end "and the pickers still begin inside the first screenful (R1)", and that was **not true**.
+Driven at 342×740 from the Library door, the pickers began below the fold; arriving from a
+rung's button, with the preset panel and its blurb drawn as well, the *Trading fours* row was
+below it too, so a learner could press *Jam it* on a phone having never seen two of the settings
+that decide what it does. `pending-review` Entry 42 measured every block on the screen and sized
+three ways out of it.
+
+Two things changed on 2026-09-22, and the first on its own was not enough.
+
+**The two chip rows became one.** They were already exclusive — pressing a way round turned
+trading off and pressing a trade turned the bed off — so *Bed only* and the trade row's *Off*
+were two controls for one state, which is §1's "never say the same thing twice" with the
+aggravation that both produced the same screen. One row of five says the one true thing. Measured
+on the same phone afterwards, it bought about sixty pixels and no more: five chips wrap to three
+lines where three wrapped to two, and the merged paragraph is longer than either it replaced. The
+row still ended two pixels past the fold from the Library door and well past it from a rung's.
+
+**The one paragraph long enough to be "the long version" was folded under its chips.** R1 allows
+a screen one line of explanation and says the rest lives *behind or below* the thing it explains
+— "a `<details>`, a sheet, a link … never above it" — and every help line on this screen is
+drawn above its control. Ten of the eleven are a single sentence and stay where they are. *What
+the app plays* has to describe five exclusive choices, runs to four sentences, and at 342 px is
+six lines of type sitting between the button and the chips; it is now a `<details>` **under** the
+row, summarised *What these five do*. Nothing is deleted — §1, reorganise rather than delete —
+and the owner's documentation is a tap rather than a scroll.
+
+With both, at 342×740: the chip row and all five of its chips are inside the first screenful from
+**both** doors, and from the Library door the pickers begin inside it as well — which is the
+sentence this section struck on 2026-09-22 and can now make again, for that door only.
+
+**What it still costs, said plainly.** Arriving from a **rung**, with the preset panel and its
+blurb drawn above everything, the *pickers* still begin below the fold. That has not changed and
+is not treated as a fault: they are last on purpose (the ranking is the owner's, 2026-09-19) and
+the documentation above them is his too (2026-09-22). The other way out Entry 42 sized — dropping
+the `Start from` help line while a preset is on — is still not taken, because its second sentence
+is the only thing on the screen that says how to get *out* of a preset. `lab.spec.ts` holds the
+row to R1 as a relationship against the viewport the test itself sets, not as a pixel count, and
+asserts the row is still *under* the buttons so R1 cannot be used to overturn the ranking.
 
 **While a jam is running, the jam takes the top of the screen** (added 2026-09-22, T17). The
 chart, the turn line and the keys are what a running loop *is*, and on a phone they all began

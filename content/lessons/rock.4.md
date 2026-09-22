@@ -2,6 +2,10 @@
 title: "The power chord, and the figure that repeats"
 stage: 4
 unit: "rock-metal.4.1"
+videos:
+  - label: "Rock Piano Power Chords With Accents"
+    url: "https://www.youtube.com/watch?v=_QoOmo1QBoc"
+    teacher: "Jason Zac - Nathaniel School of Music"
 readingTime: 3
 ---
 

@@ -2,6 +2,10 @@
 title: "Trading fours, and a set list you both know"
 stage: 7
 unit: "jam.7.1"
+videos:
+  - label: "Trading Fours: a jazz beginner lesson"
+    url: "https://www.youtube.com/watch?v=Auv8q9WoOsI"
+    teacher: "Denis DiBlasio"
 readingTime: 3
 ---
 

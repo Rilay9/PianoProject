@@ -46,7 +46,7 @@ async function openLab(page: Page, preset?: string): Promise<void> {
 }
 
 test.describe('the two ways round', () => {
-  test('are chips beside trading fours, and the jam opens on neither', async ({ page }) => {
+  test('are chips in the same row as trading fours, and the jam opens on neither', async ({ page }) => {
     await openLab(page);
     // Bed only is the lab as it was: a jam is bass and drums unless somebody
     // asks for more, the same way trading fours is off until asked for.
@@ -54,10 +54,18 @@ test.describe('the two ways round', () => {
     await expect(page.locator('#lab-bed-hold')).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('#lab-bed-tune')).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('section[data-screen="lab"]')).toHaveAttribute('data-bed', 'off');
-    // Beside the trading-fours row, not on a screen of its own: both rows are
-    // in the body of the lab, between the buttons and the pickers.
-    await expect(page.locator('#lab-bed-row')).toBeVisible();
-    await expect(page.locator('#lab-trade-row')).toBeVisible();
+    // One row, not two (T22): the ways round and the trades are exclusive, so
+    // they are five chips of one control in the body of the lab, between the
+    // buttons and the pickers.
+    const row = page.locator('#lab-plays-row');
+    await expect(row).toBeVisible();
+    for (const id of ['#lab-bed-off', '#lab-bed-hold', '#lab-bed-tune', '#lab-trade-2', '#lab-trade-4']) {
+      await expect(row.locator(id)).toBeVisible();
+    }
+    // And the old second *Off* is gone with the row it was in: two chips for
+    // one state is `00` §1's "never say the same thing twice".
+    await expect(page.locator('#lab-trade-row')).toHaveCount(0);
+    await expect(page.locator('#lab-trade-0')).toHaveCount(0);
   });
 
   test('are exclusive with trading fours, in both directions', async ({ page }) => {
@@ -70,13 +78,16 @@ test.describe('the two ways round', () => {
     await page.locator('#lab-bed-hold').click();
     await expect(page.locator('#lab-bed-hold')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#lab-trade-2')).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.locator('#lab-trade-0')).toHaveAttribute('aria-pressed', 'true');
 
     // And back the other way.
     await page.locator('#lab-trade-4').click();
     await expect(page.locator('#lab-trade-4')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#lab-bed-hold')).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.locator('#lab-bed-off')).toHaveAttribute('aria-pressed', 'true');
+    // *Bed only* is not pressed here, and that is the point of the merge: while
+    // the app is trading it is not playing a bed only, and the old second row
+    // said both at once. Exactly one of the five is on, whichever it is.
+    await expect(page.locator('#lab-bed-off')).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('#lab-plays-row [aria-pressed="true"]')).toHaveCount(1);
   });
 
   test('refuse a way round with nothing to play, and say why on the screen', async ({ page }) => {

@@ -40,6 +40,35 @@ async function openLab(page: Page): Promise<void> {
   await expect(page.locator('section[data-screen="lab"]')).toBeVisible();
 }
 
+/** The phone `00-invariants` §1 names, upright. */
+const PHONE = { width: 342, height: 740 };
+
+/**
+ * Every setting that changes what *Jam it* does is on the screen before it (R1).
+ *
+ * `pending-review` Entry 42 measured this screen block by block at 342×740 and
+ * found that arriving from a rung — where the preset panel and its blurb are
+ * drawn as well — the *Trading fours* row was **entirely** below the fold, and
+ * the pickers began well past it. So on a phone a learner could press *Jam it*
+ * having never seen two of the five things that decide what it would play.
+ * T22 merged the two exclusive chip rows into one; this is the assertion that
+ * says so, and it was red against the two-row screen.
+ *
+ * It is a **relationship**, not a pixel count (`00` §2): the row's bottom
+ * against the viewport the test itself set, and the row's top against the
+ * buttons it belongs under. The *pickers* are deliberately **not** asserted —
+ * they are last by the owner's ranking (§3c) and they do still begin below the
+ * fold, which §3c says in as many words.
+ */
+async function insideTheFirstScreenful(page: Page, selector: string): Promise<boolean> {
+  return page.evaluate((sel) => {
+    const node = document.querySelector(sel);
+    if (!node) return false;
+    const box = node.getBoundingClientRect();
+    return box.height > 0 && box.top >= 0 && box.bottom <= window.innerHeight;
+  }, selector);
+}
+
 /**
  * How many lab builds are in the library.
  *
@@ -73,6 +102,41 @@ test.describe('the accompaniment lab', () => {
     // Back is the way it came (`04` §1: a pushed screen returns to its tab).
     await page.locator('#lab-back').click();
     await expect(page.locator('#library-list')).toBeVisible();
+  });
+
+  test('what Jam it will play is settable without scrolling, from both doors', async ({ page }) => {
+    await page.setViewportSize(PHONE);
+
+    // The Library door first: no preset panel, so this is the shorter screen.
+    await openLab(page);
+    expect(
+      await insideTheFirstScreenful(page, '#lab-plays-row'),
+      'the Jam it settings are below the fold coming from the Library',
+    ).toBe(true);
+
+    // And the rung's door, which is the one Entry 42 measured: the preset's
+    // name and blurb are drawn above everything, and that is where the second
+    // chip row used to fall off the bottom of the phone entirely.
+    await page.goto('/#/lab?preset=blues-shuffle');
+    await expect(page.locator('#lab-preset')).toBeVisible();
+    expect(
+      await insideTheFirstScreenful(page, '#lab-plays-row'),
+      'the Jam it settings are below the fold arriving from a rung',
+    ).toBe(true);
+
+    // All five choices, not just the row's first line: a chip that wrapped
+    // past the fold would be a setting the learner never sees.
+    for (const id of ['#lab-bed-off', '#lab-bed-hold', '#lab-bed-tune', '#lab-trade-2', '#lab-trade-4']) {
+      expect(await insideTheFirstScreenful(page, id), `${id} is below the fold`).toBe(true);
+    }
+
+    // And it is still *under* the buttons, which is the owner's ranking
+    // (§3c, 2026-09-19) and the thing R1 must not be used to overturn.
+    const order = await page.evaluate(() => {
+      const top = (sel: string) => document.querySelector(sel)?.getBoundingClientRect().top ?? NaN;
+      return { read: top('#lab-read'), plays: top('#lab-plays-row') };
+    });
+    expect(order.plays).toBeGreaterThan(order.read);
   });
 
   test('Read it lands on the Score screen with the bars that were chosen', async ({ page }) => {

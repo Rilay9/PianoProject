@@ -2,6 +2,10 @@
 title: Interleaving, and what a session should look like
 stage: 1
 unit: "practice.1.1"
+videos:
+  - label: "Interleaved Practice: the King of Piano Learning Techniques?"
+    url: "https://www.youtube.com/watch?v=9jpx77DZJYY"
+    teacher: "Bill Hilton"
 readingTime: 2
 ---
 

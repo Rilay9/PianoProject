@@ -44,6 +44,7 @@ from common import CONTENT_SRC, DEFAULT_OUT, load_item_labels, load_tracks, read
 from licensing import NC_PERSONAL_TAG, Verdict, license_verdict  # noqa: E402
 from truncation_scan import scan_dir  # noqa: E402
 import finder  # noqa: E402
+import video_check  # noqa: E402
 
 #: docs/03 §3 step 5: "duration sanity (5 s – 20 min)".
 MIN_DURATION_SEC = 5
@@ -752,6 +753,44 @@ def tip_errors(catalog: list, tips_dir: Path) -> list[str]:
     return errors
 
 
+def video_index_errors(
+    lessons_dir: Path = CONTENT_SRC / "lessons",
+    index_path: Path = CONTENT_SRC / "video-index.json",
+) -> list[str]:
+    """
+    docs/03 §3 step 9: every video a lesson links to has been fetched once.
+
+    The fault this exists for: 80 lessons carried a `videos:` list and not one
+    URL had ever been requested. A video taken down, made private or mistyped
+    looked exactly like a good one — on the phone, in `validate.py` and in
+    `lessonVideos.test.ts`, which says so in its own header. So a learner taps
+    *Watch* and lands on nothing, and the only way anybody finds out is a
+    learner.
+
+    The rule: a URL in a lesson must be in `content/video-index.json` with a
+    `live` status and a checked date. `tools/content/video_check.py` writes
+    that file from YouTube's oEmbed endpoint and is run **by hand**; the build
+    only reads the committed answer, so `build.py --offline` stays offline and
+    a newly added link fails the build until somebody has checked it once.
+
+    What this cannot do: the index holds the title the uploader typed. Nothing
+    here has watched anything, so a live link to the wrong video passes. That
+    judgement is a person's, made once, and `lessonVideos.test.ts` asks the
+    weaker mechanical half of it — that the title shares a word with the rung.
+    """
+    if not lessons_dir.is_dir():
+        return [f"{lessons_dir} does not exist: the lesson video check cannot run"]
+    where = video_check.lesson_urls(lessons_dir)
+    if not where:
+        return [f"no lesson under {lessons_dir} links to a video; the corpus has never been empty"]
+    if not index_path.exists():
+        return [
+            f"{index_path} does not exist: run python tools/content/video_check.py "
+            f"({len(where)} URL(s) to check)"
+        ]
+    return video_check.check(video_check.load_index(index_path), where)
+
+
 #: Where the render check records what it measured about each item.
 RENDER_REPORT = CONTENT_SRC.parents[0] / "build" / "render-report.json"
 
@@ -1241,6 +1280,7 @@ def main() -> None:
         errors += tool_errors(curriculum, catalog)
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
+        errors += video_index_errors()
         errors += section_errors(catalog, args.dir)
         errors += orphan_sections(catalog, CONTENT_SRC / "sources" / "sections.json")
         errors += stale_ladder_report(catalog, curriculum)

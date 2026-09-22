@@ -2,6 +2,10 @@
 title: "The tango accompaniment, and the montuno in three voices"
 stage: 6
 unit: "latin.6.1"
+videos:
+  - label: "Tango Piano 101"
+    url: "https://www.youtube.com/watch?v=hEF4Aq5Q3tw"
+    teacher: "Pianote"
 readingTime: 3
 ---
 

@@ -2,6 +2,10 @@
 title: "The hymn as an arrangement"
 stage: 6
 unit: "hymns-gospel.6.1"
+videos:
+  - label: "5 Hymn Reharmonization Strategies"
+    url: "https://www.youtube.com/watch?v=7rBsWVPwBo8"
+    teacher: "The Church Musician's Assistant"
 readingTime: 3
 ---
 

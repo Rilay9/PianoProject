@@ -2,6 +2,10 @@
 title: The plateau, and the three things to change
 stage: 1
 unit: "practice.1.1"
+videos:
+  - label: "Advice on Overcoming Plateaus When Learning to Play Piano"
+    url: "https://www.youtube.com/watch?v=YI2RS9sabwc"
+    teacher: "Piano Lessons On The Web"
 readingTime: 3
 ---
 

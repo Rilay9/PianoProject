@@ -2,6 +2,10 @@
 title: "Arpeggio over a pedal bass, and a pedal that is a colour"
 stage: 6
 unit: "rock-metal.6.1"
+videos:
+  - label: "Six Piano Broken Chord And Arpeggio Techniques You Need To Know"
+    url: "https://www.youtube.com/watch?v=8AMZph76kqM"
+    teacher: "Bill Hilton"
 readingTime: 3
 ---
 

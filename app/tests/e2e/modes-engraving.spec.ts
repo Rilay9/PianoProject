@@ -119,3 +119,57 @@ test('an ordinary grand staff still has two staves of five lines', async ({ page
   const mids = new Set(heads.map((head) => Math.round(head.mid)));
   expect(mids.size, 'every notehead landed at the same height').toBeGreaterThan(1);
 });
+
+/**
+ * A printed direction is above the top staff, not between the staves (T22).
+ *
+ * `pending-review` Entry 33 opened one page per generated family and found the
+ * same fault on nineteen of them: the direction — *4 notes to the beat, count
+ * them, do not hurry*; *Count out loud; the pulse does not move* — drawn in the
+ * gap between the staves at the measure's left edge, with the system's barline
+ * straight through the words, and on four families with the first letter on top
+ * of the brace. Entry 38 then proved it is not an engraving setting: OSMD's one
+ * rule about unplaced expressions (`UnknownExpressionTextAlignment`) was
+ * rendered both ways and gave the base picture both times, because a barline is
+ * drawn through the *whole system* and anything between the staves has one
+ * through it. The only cure is to move the text out, and that is the writer's:
+ * `generate_exercises.direction_text` now sets `placement="above"` on every one.
+ *
+ * So this is the app's half of the claim — that the file the generator writes
+ * really does engrave clear of the staves — asked as a relationship: the words'
+ * box is entirely above the highest staff line the window drew. Nothing below
+ * is a number measured on this machine.
+ *
+ * **It needs the content rebuilt.** The assertion reads the shipped `.mxl`, so
+ * it fails against a tree whose generated scores predate the change.
+ */
+const WITH_A_DIRECTION = 'exercise.trill.c.4pb.right';
+
+test('a generated exercise prints its direction above the top staff', async ({ page }) => {
+  test.setTimeout(180_000);
+  await openScore(page, WITH_A_DIRECTION);
+  const { lines } = await ink(page);
+  expect(lines.length, 'this window drew no staff lines').toBeGreaterThan(0);
+  const topLine = Math.min(...lines);
+
+  const words = await page.evaluate(() => {
+    const svg = document.querySelector('#score-stage .is-front svg');
+    if (!svg) return null;
+    // The direction is the one run of words over the music: chord symbols are
+    // one token, fingerings are digits, and a tempo mark is off on this screen.
+    const texts = [...svg.querySelectorAll('text')]
+      .map((el) => ({ text: el.textContent ?? '', box: el.getBoundingClientRect() }))
+      .filter((entry) => /\s/.test(entry.text.trim()) && entry.text.trim().length > 8);
+    if (texts.length === 0) return null;
+    const first = texts[0];
+    if (!first) return null;
+    return { text: first.text, top: first.box.top, bottom: first.box.bottom };
+  });
+
+  expect(words, 'no printed direction was drawn on this exercise at all').not.toBeNull();
+  expect(
+    words!.bottom,
+    `the direction “${words!.text}” is drawn at or below the top staff line, which is where ` +
+      'the barline runs through it',
+  ).toBeLessThanOrEqual(topLine);
+});

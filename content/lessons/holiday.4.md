@@ -2,6 +2,10 @@
 title: "Three cheap devices that sound expensive"
 stage: 4
 unit: "holiday.4.1"
+videos:
+  - label: "Turn ANY Christmas Carol Into a Beautiful Piano Arrangement"
+    url: "https://www.youtube.com/watch?v=FPv5ERF87O8"
+    teacher: "The Keys Coach"
 readingTime: 3
 ---
 

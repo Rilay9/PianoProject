@@ -39,13 +39,13 @@ Both are decorations on a harmony that is already correct. Get the hymn right
 first; add the passing chords afterwards.
 
 **Repertoire.** *Amazing Grace* in four parts is the one to read as SATB; *When
-the Saints* in F gets the melody into your ear first. Then the hymns themselves:
-*Abide with Me*, *Rock of Ages*, *What a Friend We Have in Jesus*, *Come Thou
-Fount*, *Jesus Loves Me*, *Just a Closer Walk with Thee* and
-*As the Deer*. The easier settings — *Be Thou My Vision*, *Swing Low*, *Joyful,
-Joyful* — are on the Stage 2 hymns rung, and the Library's track filter for hymns
-and gospel lists them too. *Greensleeves* with
-chords gives you the same job in a minor key. Beyond those, a hymnal is the
+the Saints* in F gets the melody into your ear first. Then the hymns, two ways:
+*Abide with Me*, *Jesus Loves Me* and *Rock of Ages* — that one in six-four —
+are in four parts with no symbols, while *What a Friend*, *Come
+Thou Fount*, *Just a Closer Walk* and *As the Deer* print the chords above the
+tune, which is where a walk-up goes. The easier settings — *Be Thou My Vision*,
+*Swing Low*, *Joyful, Joyful* — are on the Stage 2 hymns rung and in the
+Library. *Greensleeves* with chords gives you the same job in a minor key. Beyond those, a hymnal is the
 cheapest large book of four-part harmony there is.
 
 **Common mistake.** Playing four parts at equal volume, which produces a wash.

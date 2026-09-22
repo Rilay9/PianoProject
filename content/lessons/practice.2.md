@@ -2,6 +2,10 @@
 title: Slow practice and the tempo ladder
 stage: 1
 unit: "practice.1.1"
+videos:
+  - label: "SLOW PRACTICE - Strategies and Tips for Inspiration"
+    url: "https://www.youtube.com/watch?v=UpwHVhrLNlM"
+    teacher: "Josh Wright"
 readingTime: 2
 ---
 

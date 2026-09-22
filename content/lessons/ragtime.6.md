@@ -79,8 +79,8 @@ three whose trios this lesson walks through:
 - ***Peacherine Rag*** (1901) — E flat, with a strain in B flat and a trio in
   A flat. Gentler syncopation than *The Entertainer* but a harder key, so it
   trades one problem for another.
-- ***The Easy Winners*** (1901) — A flat, four strains, a rag two-step. The
-  most work of the three and the most rewarding; its name is a joke.
+- ***The Easy Winners*** (1901) — A flat, four strains. The most work of the
+  three and the most rewarding.
 
 Two more sit behind them, both in 2/4 and within a hair of the same
 difficulty, for when you want a fourth: *Swipesy Cake Walk*, written with Arthur

@@ -2,6 +2,10 @@
 title: "Playing for people who are singing"
 stage: 3
 unit: "holiday.3.1"
+videos:
+  - label: "6 Tips To Accompany A Singer"
+    url: "https://www.youtube.com/watch?v=gDP0vQtGdcM"
+    teacher: "Piano Lesson with Warren"
 readingTime: 3
 ---
 
@@ -30,11 +34,16 @@ enough to follow. Ornament nothing. If you drop a beat they all drop a beat.
 introduction. It tells everybody the key, the speed and — because it is the bit
 they know best — when to come in.
 
-**Repertoire.** Four options, all with the chords printed. *Jingle Bells* is in
+**Repertoire.** Eight options, all with the chords printed. *Jingle Bells* is in
 G with block chords already written, so it is the one to read first. *Joy to the
-World* and *The First Noel* are in D and are lead sheets: tune on top, symbols
-above. *Hark! The Herald Angels Sing* has the most chord changes of the four and
-is the one to take slowest.
+World*, *The First Noel* and *Angels We Have Heard on High* are in D and are
+lead sheets: tune on top, symbols above. *O Christmas Tree* is the one in F,
+which is the third key the cadences drill. *God Rest Ye Merry, Gentlemen* is the
+one that sounds minor — E minor and B seven under a G key signature — and the
+gentlest of the eight. *O Holy Night* climbs higher than anything else here, to
+an F sharp above the treble staff, which is this whole lesson in one note: move
+it down before you start, not halfway through. *Hark! The Herald Angels Sing*
+uses the most different chords — nine — and is the one to take slowest.
 
 **Tools for this rung.** *Free play* names the chord you are holding, which is
 the quickest way to check a transposition — play the shape you think is right

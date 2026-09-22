@@ -2,6 +2,10 @@
 title: "The whole rag, without the page"
 stage: 9
 unit: "ragtime.9.1"
+videos:
+  - label: "How to memorize a piece of music for piano?"
+    url: "https://www.youtube.com/watch?v=FddyRVamBj4"
+    teacher: "Greg Niemczuk"
 readingTime: 3
 ---
 

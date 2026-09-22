@@ -1039,8 +1039,7 @@ export interface LabHelpLine {
   id:
     | 'lede'
     | 'presets'
-    | 'bed'
-    | 'trade'
+    | 'plays'
     | 'key'
     | 'progression'
     | 'custom'
@@ -1065,14 +1064,14 @@ export const LAB_HELP: readonly LabHelpLine[] = [
     help: 'A style to start from, instead of six empty pickers. Free leaves every setting to you.',
   },
   {
-    id: 'bed',
+    // One line for one control (T22). It was two — a *What the app plays* row
+    // and a *Trading fours* row — and they were exclusive, so *Bed only* and
+    // the trade row's *Off* were two chips for one state. The five choices are
+    // now one row and one line, which is also the label, the paragraph and the
+    // row of height `04` §0 R1 wanted back on a 342 px phone.
+    id: 'plays',
     label: 'What the app plays',
-    help: 'Bed only is bass and drums. Hold the chords adds the harmony underneath, so the tune is yours. Play the tune gives the app the right hand, so the chords are yours.',
-  },
-  {
-    id: 'trade',
-    label: 'Trading fours',
-    help: 'The app plays a few bars, then leaves you the same number, round and round.',
+    help: 'Bed only is bass and drums. Hold the chords adds the harmony underneath, so the tune is yours. Play the tune gives the app the right hand, so the chords are yours. Trading fours — 2 or 4 bars each — has it play that many and then leave you the same number to answer with, round and round.',
   },
   { id: 'key', label: 'Key', help: 'Which key it is all written and played in.' },
   {

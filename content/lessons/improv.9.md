@@ -3,9 +3,9 @@ title: "Something finished, with your name on it"
 stage: 9
 unit: "improv.9.1"
 videos:
-  - label: "Compose Your Own Piano Music: A TOTAL Beginner's Guide"
-    url: "https://www.youtube.com/watch?v=JPtBDJgY22M"
-    teacher: "MangoldProject"
+  - label: "The Secrets To Composing Beautiful Piano Music"
+    url: "https://www.youtube.com/watch?v=Gc8Rnv263LQ"
+    teacher: "PianoGroove"
 readingTime: 2
 ---
 

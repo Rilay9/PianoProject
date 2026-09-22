@@ -2736,3 +2736,341 @@ describe('the batch-4 and batch-5 corrections, second-read and under test: the m
     });
   }
 });
+
+/**
+ * The sentences T22 decided, each one now joined to the file it rests on.
+ *
+ * Eleven findings from Entries 39-40 were left UNSURE because the reader had
+ * no source for them. Four of those turned out to have one: `kern.json` carries
+ * a `publishedYear` for forty-seven Joplin pieces, and nobody had looked there
+ * because the *built* catalog drops the field. The rest were rewritten to say
+ * only what a file says, and the rows below are those files.
+ */
+const T22_YEARS: Record<string, number> = Object.fromEntries(
+  Object.values(
+    (
+      JSON.parse(
+        readFileSync(join(process.cwd(), '..', 'content', 'sources', 'kern.json'), 'utf8'),
+      ) as { items: Record<string, { id: string; publishedYear?: number }> }
+    ).items,
+  )
+    .filter((item) => typeof item.publishedYear === 'number')
+    .map((item) => [item.id, item.publishedYear as number]),
+);
+
+/** A catalog row's level, grade and edition notes: fields `Row` does not carry. */
+function t22Row(id: string): { level?: number; abrsmGradeApprox?: number | null; notes?: string } {
+  const row = byId.get(id) as unknown as
+    | { level?: number; abrsmGradeApprox?: number | null; source?: { editionNotes?: string } }
+    | undefined;
+  if (!row) throw new Error(`${id} is not in the catalog`);
+  return { level: row.level, abrsmGradeApprox: row.abrsmGradeApprox, notes: row.source?.editionNotes };
+}
+
+/** The highest sounding pitch of a score's upper staff. */
+function t22Top(id: string): number {
+  const midis = t12Line(id, 1)
+    .map((note) => note.midi)
+    .filter((midi): midi is number => midi !== null);
+  if (midis.length === 0) throw new Error(`${id} has nothing on staff 1`);
+  return Math.max(...midis);
+}
+
+/** Printed accidentals per bar — the page's own chromaticism, not a reading of it. */
+function t22AccidentalsPerBar(id: string): number {
+  return t12Count(id, /<accidental\b/g) / t12Notation(id).bars;
+}
+
+/** Each key signature in written order, and how many bars it lasts. */
+function t22Sections(id: string): { fifths: number; bars: string[] }[] {
+  const out: { fifths: number; bars: string[] }[] = [];
+  for (const measure of t12Xml(id).matchAll(
+    /<measure\b[^>]*number="([^"]*)"[^>]*>([\s\S]*?)<\/measure>/g,
+  )) {
+    const found = /<fifths>(-?\d+)<\/fifths>/.exec(measure[2] ?? '');
+    if (found) {
+      out.push({ fifths: Number(found[1]), bars: [] });
+    }
+    const last = out[out.length - 1];
+    if (last) last.bars.push(measure[1] ?? '');
+  }
+  return out;
+}
+
+const HOLIDAY_3_IN_D = [
+  'song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx',
+  'song.pop.misc-christmas-traditional-music-first-noel.pdmx',
+  'song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx',
+];
+const HOLIDAY_3_HOLY_NIGHT = 'song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx';
+const HOLIDAY_3_GOD_REST = 'song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx';
+const HOLIDAY_3_HARK = 'song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx';
+const HYMNS_FOUR_PART = [
+  'song.classical.abide-with-me-william-henry-monk.pdmx',
+  'song.classical.jesus-loves-me.pdmx',
+  'song.classical.rock-of-ages-cleft-for-me.pdmx',
+];
+const HYMNS_WITH_SYMBOLS = [
+  'song.folk.what-a-friend-we-have-in-jesus.pdmx',
+  'song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx',
+  'song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx',
+  'song.pop.martin-j-nystrom-as-the-deer-piano.pdmx',
+];
+const JAZZ_6_ONE_KEY = [
+  'song.pop.ray-henderson-bye-bye-blackbird.pdmx',
+  'song.pop.darktown-strutter-s-ball.pdmx',
+  'song.pop.benny-goodman-louis-prima-rose-room.pdmx',
+];
+const JAZZ_6_MOVES: [string, number][] = [
+  ['song.jazz.django-reinhardt-limehouse-blues.pdmx', 2],
+  ['song.classical.royal-garden-blues.pdmx', 2],
+  ['song.jazz.django-reinhardt-tiger-rag.pdmx', 3],
+];
+const RAGTIME_8_LAST_DECADE = [
+  'song.ragtime.joplin-gladiolus-rag',
+  'song.ragtime.joplin-pine-apple-rag',
+  'song.ragtime.joplin-new-rag',
+  'song.ragtime.joplin-magnetic-rag',
+];
+
+const T22_MUSIC: [string, string, () => boolean][] = [
+  [
+    'holiday.3',
+    'offers eight options and every one of them prints chord symbols',
+    () => {
+      const songs = t12Songs('holiday.3');
+      return songs.length === 8 && songs.every((id) => t12Notation(id).chordCount > 0);
+    },
+  ],
+  [
+    'holiday.3',
+    'Joy to the World, The First Noel and Angels We Have Heard on High are the three in D, each on one stave',
+    () =>
+      HOLIDAY_3_IN_D.every((id) => {
+        const n = t12Notation(id);
+        return n.keys[0]?.fifths === 2 && n.staves === 1;
+      }),
+  ],
+  [
+    'holiday.3',
+    'O Christmas Tree is the only option in F, and F is one of the three keys the rung drills a cadence in',
+    () => {
+      const songs = t12Songs('holiday.3');
+      const inF = songs.filter((id) => t12Notation(id).keys[0]?.fifths === -1);
+      const keys = t12Exercises('holiday.3').filter((id) => id.startsWith('exercise.cadence.'));
+      return (
+        inF.length === 1 &&
+        (inF[0] ?? '').includes('o-christmas-tree') &&
+        ['c', 'g', 'f'].every((key) => keys.includes(`exercise.cadence.${key}.root`))
+      );
+    },
+  ],
+  [
+    'holiday.3',
+    'God Rest Ye prints E minor and B seven under a one-sharp signature and is the gentlest of the eight',
+    () => {
+      const n = t12Notation(HOLIDAY_3_GOD_REST);
+      const levels = t12Songs('holiday.3').map((id) => t22Row(id).level ?? 9);
+      return (
+        n.keys[0]?.fifths === 1 &&
+        n.chords.includes('Em') &&
+        n.chords.includes('B7') &&
+        (t22Row(HOLIDAY_3_GOD_REST).level ?? 9) === Math.min(...levels)
+      );
+    },
+  ],
+  [
+    'holiday.3',
+    "O Holy Night is in six-eight and its melody climbs higher than any other option's, to an F sharp above the treble staff",
+    () => {
+      const top = t22Top(HOLIDAY_3_HOLY_NIGHT);
+      const others = t12Songs('holiday.3')
+        .filter((id) => id !== HOLIDAY_3_HOLY_NIGHT)
+        .map(t22Top);
+      // MIDI 78 is F sharp 5, a third above the top line of the treble staff.
+      return t12Notation(HOLIDAY_3_HOLY_NIGHT).times.includes('6/8') && top === 78 && others.every((other) => other < top);
+    },
+  ],
+  [
+    'holiday.3',
+    'Hark! The Herald uses nine different chords, more than any other option on the rung',
+    () => {
+      const count = t12Notation(HOLIDAY_3_HARK).chords.length;
+      return (
+        count === 9 &&
+        t12Songs('holiday.3')
+          .filter((id) => id !== HOLIDAY_3_HARK)
+          .every((id) => t12Notation(id).chords.length < count)
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'all six options are a single stave with chords printed above it',
+    () => {
+      const songs = t12Songs('jazz.6');
+      return (
+        songs.length === 6 &&
+        songs.every((id) => t12Notation(id).staves === 1 && t12Notation(id).chordCount > 0)
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Bye Bye Blackbird, Darktown and Rose Room hold one key signature while Limehouse and Royal Garden change once and Tiger Rag twice',
+    () =>
+      JAZZ_6_ONE_KEY.every((id) => t12Notation(id).keys.length === 1) &&
+      JAZZ_6_MOVES.every(([id, count]) => t12Notation(id).keys.length === count),
+  ],
+  [
+    'jazz.6',
+    "Darktown Strutters' Ball is the shortest of the six and Rose Room has the fewest chord symbols",
+    () => {
+      const rows = t12Songs('jazz.6').map((id) => ({ id, n: t12Notation(id) }));
+      const shortest = [...rows].sort((a, b) => a.n.bars - b.n.bars)[0];
+      const fewest = [...rows].sort((a, b) => a.n.chordCount - b.n.chordCount)[0];
+      return (
+        (shortest?.id ?? '').includes('darktown') && (fewest?.id ?? '').includes('rose-room')
+      );
+    },
+  ],
+  [
+    'hymns',
+    'Abide with Me, Jesus Loves Me and Rock of Ages print no chord symbol, Rock of Ages is in six-four, and the four named beside them all print chords',
+    () =>
+      HYMNS_FOUR_PART.every((id) => t12Notation(id).chordCount === 0 && t12Notation(id).staves === 2) &&
+      t12Notation('song.classical.rock-of-ages-cleft-for-me.pdmx').times.includes('6/4') &&
+      HYMNS_WITH_SYMBOLS.every((id) => t12Notation(id).chordCount > 0),
+  ],
+  [
+    'ragtime.7',
+    'Heliotrope Bouquet prints more accidentals to the bar than anything else on the rung',
+    () => {
+      const id = 'song.ragtime.joplin-heliotrope-bouquet';
+      const mine = t22AccidentalsPerBar(id);
+      return t12Songs('ragtime.7')
+        .filter((other) => other !== id)
+        .every((other) => t22AccidentalsPerBar(other) < mine);
+    },
+  ],
+  [
+    'ragtime.8',
+    'Magnetic Rag changes key signature once and back — two flats, then five for twenty bars, then two again',
+    () => {
+      const sections = t22Sections('song.ragtime.joplin-magnetic-rag');
+      return (
+        sections.length === 3 &&
+        sections.map((section) => section.fifths).join(',') === '-2,-5,-2' &&
+        (sections[1]?.bars.length ?? 0) === 20
+      );
+    },
+  ],
+  [
+    'ragtime.8',
+    "the five-flat strain sits on B flat rather than on its signature's D flat",
+    () => {
+      const sections = t22Sections('song.ragtime.joplin-magnetic-rag');
+      const strain = new Set(sections[1]?.bars ?? []);
+      const counts = new Map<number, number>();
+      for (const note of t12Sounded('song.ragtime.joplin-magnetic-rag')) {
+        if (note.staff !== 2 || note.midi === null || !strain.has(note.bar)) continue;
+        const pitchClass = ((note.midi % 12) + 12) % 12;
+        counts.set(pitchClass, (counts.get(pitchClass) ?? 0) + 1);
+      }
+      const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+      // 10 is B flat, 1 is D flat.
+      return ranked[0]?.[0] === 10;
+    },
+  ],
+  [
+    'ragtime.8',
+    'the four rags it calls his last decade are all later than The Cascades, which it does not',
+    () => {
+      const cascades = T22_YEARS['song.ragtime.joplin-cascades'];
+      return (
+        cascades === 1904 &&
+        RAGTIME_8_LAST_DECADE.every((id) => (T22_YEARS[id] ?? 0) > cascades) &&
+        T22_YEARS['song.ragtime.joplin-magnetic-rag'] === 1914
+      );
+    },
+  ],
+  [
+    'ragtime.6',
+    'the three years it prints are the years the imported source records for those rags',
+    () =>
+      T22_YEARS['song.ragtime.joplin-entertainer.kern'] === 1902 &&
+      T22_YEARS['song.ragtime.joplin-peacherine-rag'] === 1901 &&
+      T22_YEARS['song.ragtime.joplin-easy-winners'] === 1901,
+  ],
+  [
+    'ragtime.5',
+    'several bundled Joplin scores print "Not fast." at the head of the music, and the copy on this rung is not one of them but is marked Moderato',
+    () => {
+      const joplin = (rows as unknown as { id: string; file?: string | null }[])
+        .filter((row) => row.id.includes('joplin') && typeof row.file === 'string' && row.file !== '')
+        .map((row) => row.id);
+      const printed = joplin.filter((id) => /Not\s+fast/i.test(t12Xml(id)));
+      const rung = 'song.ragtime.joplin-entertainer';
+      return (
+        printed.length >= 4 &&
+        printed.includes('song.ragtime.joplin-easy-winners') &&
+        printed.includes('song.ragtime.joplin-sunflower-slow-drag') &&
+        !printed.includes(rung) &&
+        t12Songs('ragtime.5').includes(rung) &&
+        /Moderato/.test(t12Xml(rung))
+      );
+    },
+  ],
+  [
+    'classical.4',
+    'none of its five songs carries an ABRSM grade, while the Library holds classical songs that do',
+    () => {
+      const songs = t12Songs('classical.4');
+      const graded = (
+        rows as unknown as { id: string; type?: string; tracks?: string[]; abrsmGradeApprox?: number | null }[]
+      ).filter(
+        (row) =>
+          row.type === 'song' && (row.tracks ?? []).includes('classical') && row.abrsmGradeApprox === 1,
+      );
+      return (
+        songs.length === 5 &&
+        songs.every((id) => (t22Row(id).abrsmGradeApprox ?? null) === null) &&
+        graded.length > 0
+      );
+    },
+  ],
+  [
+    'latin',
+    'no row for La Cumparsita records a year, and Tico-Tico is the one on the rung whose edition notes do',
+    () => {
+      const cumparsita = (rows as unknown as { id: string }[])
+        .filter((row) => row.id.includes('cumparsita'))
+        .map((row) => row.id);
+      return (
+        cumparsita.length > 0 &&
+        cumparsita.every((id) => !/\b1[89]\d\d\b/.test(JSON.stringify(byId.get(id)))) &&
+        /\b1917\b/.test(t22Row('song.pop.misc-tunes-tico-tico-no-fub-a.pdmx').notes ?? '')
+      );
+    },
+  ],
+  [
+    'jazz.7',
+    "the stride exercise's third beat is the beat-two chord's own bottom note, not a bass note",
+    () => {
+      const id = 'exercise.stride.c';
+      return t12Exercises('jazz.7').includes(id) && t12bStrideBars(id);
+    },
+  ],
+];
+
+describe('the open findings T22 decided, under test', () => {
+  it('carries a row for every lesson sentence this run changed or confirmed', () => {
+    expect(new Set(T22_MUSIC.map(([lesson]) => lesson)).size).toBeGreaterThanOrEqual(8);
+  });
+
+  for (const [lesson, says, holds] of T22_MUSIC) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});

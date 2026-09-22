@@ -34,10 +34,14 @@ Here it is for hearing the changes of a tune go past.
 automatic, then the same pattern in a second key. A walking line over the blues
 in C, hands separately, then together with shells on top.
 
-**Repertoire for this rung.** *Bye Bye Blackbird* (1926), *Limehouse Blues*
-(1922), *Tiger Rag* (1917), *Rose Room* (1917), *Darktown Strutters' Ball*
-(1917) and *Royal Garden Blues* (1919) — all lead sheets, all public domain.
-Comp one pattern through a whole chorus, then walk a line under it.
+**Repertoire for this rung.** Six options, every one a single stave with its
+chords printed above it, which is what comping is read from. Three stay in one
+key from end to end — *Bye Bye Blackbird* (1926) in C, *Darktown Strutters'
+Ball* (1917), the shortest chorus here, and *Rose Room* (1917), which has the
+fewest changes to fill. The other three move: *Limehouse Blues* (1922) and
+*Royal Garden Blues* (1919) change key once and *Tiger Rag* (1917) twice, which
+is where a walking line stops being automatic. Comp one pattern through a whole
+chorus, then walk a line under it.
 
 **Common mistake.** Comping on every beat by default. The gaps are what make it
 comping; four to the bar is the one pattern without them, and it only works

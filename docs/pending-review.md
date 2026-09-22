@@ -8588,3 +8588,1174 @@ committed.
    screen.* Checked against that, the plan held — and it is what stopped the test-map work
    being filed as bookkeeping: an index that does not list half the suite is the
    documentation saying something untrue about itself.
+
+---
+
+### Entry 46 — T21: every link fetched, and the one thing fetching cannot tell you (2026-09-22)
+
+Appended after Entry 45, which is the convention Entry 25 records. The brief gave this entry
+the number **46**.
+
+**Nothing here was watched or heard.** Every judgement below rests on two things: the HTTP
+status YouTube's oEmbed endpoint returned for a URL, and the title and channel name the
+uploader typed. A title is a **proxy** for a video's content, and it is the only one this
+task had — `curl` to oEmbed and web search were the whole of the network budget, so where a
+title was generic there was no description to fall back on. Whether any of these 108 videos
+*teaches* is a question nothing here answers.
+
+#### What was found
+
+**Every one of the 81 URLs the lessons already carried resolves. None is dead.** All 81
+returned HTTP 200 from `https://www.youtube.com/oembed?url=<url>&format=json`, and all 81 are
+`watch?v=` URLs, which `lessonVideos.test.ts` has enforced since the channel-home-page fault
+it was written for. So the worry behind this task — links nobody had ever fetched — cost
+nothing in dead links and a good deal in *wrong* ones, which is not where it was expected.
+
+**Where that evidence lives, because it is not all in one place.** 77 of those 81 rows are in
+the committed `content/video-index.json` and can be re-read there. The other four are the
+ones replaced below: their rows were dropped when the index was rewritten, so the only record
+that they answered 200 is the fetch run's own output, quoted per URL in this entry's table.
+Anybody re-checking should expect the index to hold 108 rows and not 112.
+
+**Entry 45's "twenty-seven lessons name no teaching video" was counted off the front-matter
+key, and the true number was twenty-nine.** 82 lessons carried a `videos:` key and 27 did
+not; two of the 82 — `0.4` and `blues.3` — carried `videos: []`, which is a key and no video.
+Entry 45's per-track counts are right about the 27 and silent about the two. Corrected here
+rather than there, because that entry is a record of what was seen then.
+
+**Four videos were wrong for their rung and were replaced.** Three of the four are one
+fault: a video pitched at a beginner sitting on a Stage 9 rung, which is the inverse of the
+brief's "a Grade 1 rung does not get a masterclass" and is just as wrong.
+
+| rung | was | why it was wrong | now |
+|---|---|---|---|
+| `0.2` Keyboard geography | *How to play piano: The basics, Piano Lesson #1* / Andrew Furmanczyk | The rung is the black-key groups, middle C, octaves and letter names; the title names none of them and promises a first lesson in general. This is exactly the case the brief says to read the description for, and oEmbed returns no description — so the choice was to keep a video nothing could check or to replace it. | *Piano Keys and Notes - Middle C and The Piano Keyboard* / Piano Keyboard Guide. Furmanczyk stays in the corpus on `3.6`. |
+| `blues.9` Improvising over the form (S9) | *8 Easy Blues Licks for Beginners (Simple Piano Tutorial)* / MangoldProject | Six blues rungs sit below this one. "Easy ... for Beginners" is the wrong end of the ladder. | *How To Improvise With 2 Blues Scales Over The Entire Tune* / London Contemporary School of Piano, already this corpus's teacher on `4.6` and `improv.5`. |
+| `improv.9` Something finished, with your name on it (S9) | *Compose Your Own Piano Music: A TOTAL Beginner's Guide* / MangoldProject | Same fault. The rung asks for a finished two-to-three-minute piece, written down well enough for somebody else to play. | *The Secrets To Composing Beautiful Piano Music* / PianoGroove, already on `improv.8`. |
+| `theory.9` From a phrase to a form (S9) | *How to Transcribe Songs by Ear on Piano for Beginners* / Shane's Queen Site - Queen Fan Channel | Same fault, and the only channel in the corpus that is a fan page rather than a teacher. | *How To Play By Ear With Chords* / Aimee Nolte, whom `02` Part D names for this material. |
+
+**One label and two teacher names were corrected against what oEmbed returned.** `4.3`'s
+label said *Root, 1st & 2nd Position*; the video is titled *Root Position, 1st & 2nd
+Inversion*, and inversion is the rung's own word. `jazz.7` and `jazz.8` credited *Jazz
+Tutorial | Julian Bradley* (the channel) while `jazz.5` credited *Julian Bradley* (the
+person) for the same teacher — one thing with two names, which is the shape Entry 45 is
+about; all three now say the person. Every one of the 84 labels was then compared against
+the real title mechanically — a similarity ratio over case- and punctuation-normalised text —
+and **none fell below 0.85**, so no label misnames its video. `4.3`'s slip was above that
+threshold and was found by reading the pair, which is the honest note on what a ratio is
+worth. (Labels on the 27 new videos are deliberately shorter than the titles where a channel
+appended its own tail — *Play 25 Hymns with 4 Chords* for *Play 25 Hymns with 4 Chords (how
+to play piano hymn for complete beginners)*. The index holds the real title in every case,
+and it is the index the check reads.) The three teacher-to-channel gaps left alone are
+shortenings that lose nothing
+— `chords-pop.6` (*Play Piano In A Flash* for *Play Piano In A Flash / PianoGuyTV*),
+`classical.6` (*University of Sydney Library* for *UniSydneyLibrary*) and `ragtime.5`
+(*Vladimir Uspenskii* for *Vladimir "ONE MAN JAZZ BAND" Uspenskii*).
+
+**Twenty-seven of the twenty-nine silent rungs now name a video; two do not, on purpose.**
+
+- **`0.4` Placement test.** Two searches, differently shaped: *piano placement test what
+  grade level am I* and *what level piano player are you*. Both return real videos —
+  Pianote's *What Level Piano Player Are You?* and Piano Roadmap's *Find Your Piano Level* —
+  and neither is about this rung. The rung is **this app's** eight-item test in a fixed
+  order, whose instruction is to be strict with yourself; a video about grade labels the app
+  does not use would be padding, which the brief forbids by name. `videos: []` stays.
+- **`holiday.5` A carol as a piano piece.** Two searches: *how to arrange a Christmas carol
+  on piano* and *Carol of the Bells piano lesson how to practise the repeating figure*.
+  Everything returned for the rung's own repertoire is a falling-notes play-along
+  (PHianonize, PlutaX, TutorialsByHugo) rather than a teaching video, and the rung's actual
+  skill — looping a four-note figure up the tempo ladder — is what `practice.1` and
+  `practice.2` teach, both of which now carry one. Recorded as a hole rather than filled with
+  a play-along.
+
+One candidate was refused by the machine rather than by judgement, and it is the argument
+for fetching before adopting: a search result for `holiday.7` — *How to play "WALTZ OF THE
+FLOWERS" (Theme 1) by Tchaikovsky | Smart Classical Piano* — returned **404** from oEmbed.
+A title in a search result is a proxy for a video that exists.
+
+#### Judgements that could go the other way
+
+Written down separately from the outcomes, because a right action with a wrong reason
+survives into the record (`working-rules` §2.16).
+
+1. **`blues.6` keeps a video about the other hand.** *Secret Key To Pinetop's Boogie Woogie
+   (Right Hand Boogie Pattern)* sits on a rung whose first line is "what changes now is the
+   left hand". It names the rung's own piece and teaches the hand the rung does not, which
+   is complementary rather than wrong — and `blues.4` already carries a boogie *bassline*
+   video, so a second left-hand one here would say the same thing twice. Kept, and flagged.
+2. **`ragtime.7` keeps a crash course "for Beginners" on a Stage 7 rung.** It names rag rolls
+   and stride bass, which is what the rung introduces, and `ragtime.8` carries the same
+   series' Intermediate/Advanced episode. The pair reads as a ladder; the word "Beginners"
+   reads as the wrong end. The one existing video judged borderline and left alone.
+3. **`latin.6` and `jam.7` were given videos labelled for beginners, on Stage 6 and Stage 7
+   rungs** (*Tango Piano 101* / Pianote; *Trading Fours: Jazz Beginner Lesson* / Denis
+   DiBlasio). The judgement: "beginner" there describes the *idiom*, not the player — these
+   rungs are the learner's first tango and first trading of fours. That may be too generous,
+   and is written here so it can be disagreed with. `technique.5`'s existing *Piano Hand
+   Independence Exercises (for Beginners)* on a Stage 5 rung is the same call, made before
+   this task and left standing.
+4. **`holiday.4` was given a video its own channel calls a masterclass** (*Turn ANY Christmas
+   Carol Into a Beautiful Piano Arrangement*, The Keys Coach) on a Stage 4 rung. It is on
+   subject — the rung is three cheap arranging devices for a carol — and "masterclass" is the
+   channel's word for a long free lesson. The stage judgement I am least sure of.
+5. **`latin.3` was given a percussion channel's video** (*Clave Explained*, World Drum Club).
+   The rung asks the learner to clap the clave before any left-hand pattern, and `02` Part D
+   already records that the clave is a rhythm with no pitches; a drummer explaining it is the
+   right source rather than a compromise.
+6. **`hymns.4` was given a theory lecture** (*Understanding Four-Part Harmony: Voice Leading,
+   SATB, and Keyboard Format*) rather than a piano tutorial, because the rung is four printed
+   voices divided between two hands and "keyboard format" is that division by name.
+
+#### The check, and what it cannot do
+
+`tools/content/video_check.py` (new) reads every lesson's `videos:`, fetches oEmbed for each
+distinct URL, and writes `content/video-index.json` — url to title, author, status, HTTP code
+and the date checked. **108 rows, 108 live.** It parses the `videos:` block itself rather than
+through `common.read_front_matter`, and the reason is worth keeping: that parser reads a `- `
+list item as an indented pair, so `videos:` comes back as a dict with one mangled key. The
+app's own reader handles the list; nothing on the Python side had ever needed to.
+
+`validate.py` gained `video_index_errors`, called at step 9: a lesson URL that is not in the
+index with a `live` status and a checked date fails the build, so a link added by hand cannot
+ship unfetched. The fetch **never runs in the build** — `build.py --offline` reads the
+committed file and nothing else.
+
+**Who reads the field, enumerated before it was touched** (`working-rules` §2.15). `videos:`
+has three readers and no more, on a grep over `app/src` and `tools/`: `LessonScreen.ts` draws
+the rows (`data.videos`, falling back to *No videos listed for this lesson.*),
+`markdown.ts`'s `parseFrontMatter` is the reader it goes through, and
+`lessonVideos.test.ts` checks it. Nothing reads `label` or `teacher` except that draw, which
+is why correcting a label is safe. The new `content/video-index.json` has exactly two
+readers — `video_check.py` and `validate.py` — and is **not** copied into
+`app/public/content` (checked: that directory holds `audio`, `catalog.json`,
+`catalog.schema.json`, `curriculum.json`, `curriculum.schema.json`, `lessons`,
+`level-model.json`, `scores`, `tips`, and nothing else), so the app never ships or requests
+it.
+
+**Proved red**, on the real tree rather than a fixture: a made-up URL (`watch?v=ZZZZZZZZZZZ`)
+spliced into `theory.3.md` made `validate.py --dir app/public/content` exit **1** with
+
+```
+content validation FAILED (1 error(s)):
+  - theory.3.md: https://www.youtube.com/watch?v=ZZZZZZZZZZZ is in no lesson video index — run tools/content/video_check.py
+```
+
+and made two rows of `lessonVideos.test.ts` fail (2 failed, 7 passed). Restored: exit 0, 9
+passed. `tools/content/tests/test_validate_videos.py` (new, 8 tests) covers the four ways the
+index can be wrong — absent row, dead status, empty checked date, missing file — and a fifth
+the others would have hidden: pointed at an empty lessons directory the check reports an
+error rather than a clean pass, because "no errors" over no input is an exit code standing in
+for the work being done.
+
+`lessonVideos.test.ts` gained three rows: every URL is in the index, live and dated; every
+oEmbed title shares a word with its rung; and the rule itself refuses three deliberately
+mismatched pairs, without which a four-letter-prefix match over two large word sets could be
+vacuous and still look green. **The rule, stated:** a title word and a subject word match
+when they are equal, or when both are four letters or longer and share their first four
+(`memorising` with *Memorize*, `arranging` with *Arrangements*, `extended` with
+*Extensions*); the subject is the rung's curriculum title, its concept ids, its track's name,
+and for five rungs a synonym written into the test beside the pair it stands for — `1.1`
+(reading for treble clef), `classical.3` (minuet for dance), `classical.7` (invention for
+counterpoint), `jam.5` (syncopation for anticipation), `rock.7` (intensity for building).
+
+**What the machine cannot decide, and this is the important sentence:** every one of the four
+videos replaced above would have *passed* the new rule. *How to Transcribe Songs by Ear on
+Piano for Beginners* shares `ear` with `theory.9`'s concepts; *8 Easy Blues Licks* shares
+`blues` with its track. The rule catches a title with nothing of the rung in it and nothing
+else. It cannot catch a video pitched at the wrong stage, a title that promises what the
+video does not deliver, or an id reuploaded with different content. Those four were found by
+reading 109 lessons against 84 titles, and the next one will be too.
+
+The brief also asked for a claim row wherever a lesson's own prose names a video's teacher.
+**Two searches found no such sentence**: a grep of all 109 lessons for the thirteen teacher
+names most used in the corpus matched only `label:` lines in front matter, and a sweep of
+every lesson *body* for a sentence containing "YouTube", "video", "channel" or "watch the"
+returned two sentences, both about watching your own fourth finger and the app's screen. So
+no such row was written.
+
+#### Every rung, before and after
+
+109 rungs, read mechanically so the list is the corpus and not a sample. `S` is the stage.
+The *fetched* column is what oEmbed returned for the video the rung carried **before** this
+run, and `fits (word)` names the word that title and that rung share.
+
+| rung | S | video before | fetched | video now |
+|---|---|---|---|---|
+| `0.1` | 0 | *Hand Position Piano Lesson - Josh Wright Piano TV* / Josh Wright | 200 live · fits (`hand`) | unchanged |
+| `0.2` | 0 | *How to play piano: The basics, Piano Lesson #1* / Andrew Furmanczyk | 200 live · **misfit, replaced** | *Piano Keys and Notes - Middle C and The Piano Keyboard - Beginner Lesson 8* / Piano Keyboard Guide |
+| `0.3` | 0 | *Efficient Practice Piano Lesson - Josh Wright Piano TV* / Josh Wright | 200 live · fits (`practise~practice`) | unchanged |
+| `0.4` | 0 | — | no video to check | **none** (note below) |
+| `1.1` | 1 | *How To Play Piano for Beginners, Lesson 2 \|\| Starting to Read Music* / Bill Hilton | 200 live · fits (`read`) | unchanged |
+| `1.2` | 1 | *Counting rhythms: Whole, half, quarter, eighth notes and rests* / Mrs. Musical Pants | 200 live · fits (`half`) | unchanged |
+| `1.3` | 1 | *Super Easy Bass Lines: Learn Bass Clef Notes for the Left Hand* / Hoffman Academy | 200 live · fits (`bass`) | unchanged |
+| `1.4` | 1 | *How To Read Music for Piano Beginners - Reading the Grand Staff (Treble & Bass clef)* / Online Piano Learning | 200 live · fits (`grand`) | unchanged |
+| `1.5` | 1 | *Introduction to Intervals: Steps, Skips & Leaps \| Music Theory for Piano Beginners* / Online Piano Learning | 200 live · fits (`interval~intervals`) | unchanged |
+| `2.1` | 2 | *EASY HACK FOR USING BOTH HANDS TOGETHER AT THE PIANO* / The Piano Path | 200 live · fits (`hand~hands`) | unchanged |
+| `2.2` | 2 | *Learn How to Play Piano 15: Eighth Notes - Piano Lessons for Beginners* / Piano Lessons On The Web | 200 live · fits (`eighth`) | unchanged |
+| `2.3` | 2 | *How to Play the C, F, and G Chords for Beginner Piano* / Big Universe Music | 200 live · fits (`chord~chords`) | unchanged |
+| `2.4` | 2 | *How to Play Ties and Slurs on the Piano? What is the difference?* / PianoTips<br>*The Secret to Playing Dotted Quarter Notes on Piano* / Piano Lessons On The Web | 200 live · fits (`slur~slurs`)<br>200 live · fits (`dotted`) | unchanged |
+| `2.5` | 2 | *C Major Scale – Thumb Passage & Crossing Over \| Piano Technique Tutorial* / Piano Lessons to Go | 200 live · fits (`major`) | unchanged |
+| `3.1` | 3 | *How to Build A Major Scale (Easy Formula!) - Music Theory for Piano Beginners* / Online Piano Learning | 200 live · fits (`formula`) | unchanged |
+| `3.2` | 3 | *Piano chords: the dominant seventh* / Bill Hilton | 200 live · fits (`chord~chords`) | unchanged |
+| `3.3` | 3 | *How to Play the A Minor Scales - Natural, Harmonic, and Melodic + Chords* / Karen Rock Music | 200 live · fits (`chords`) | unchanged |
+| `3.4` | 3 | *The Trick to Reading Ledger Lines (Piano & Music Reading Made Easy)* / Bach Inventions | 200 live · fits (`ledger`) | unchanged |
+| `3.5` | 3 | *How to use the Sustain Pedal on the Piano (Legato Pedalling)* / Bitesize Piano | 200 live · fits (`legato`) | unchanged |
+| `3.6` | 3 | *Piano Lesson # 33 Piano Chords - Alberti Bass Chord Pattern* / Andrew Furmanczyk | 200 live · fits (`alberti`) | unchanged |
+| `4.1` | 4 | *Circle of 5ths: Easiest Way to Memorize and Understand It* / Gracie Terzian | 200 live · fits (`circle`) | unchanged |
+| `4.2` | 4 | *C Minor Scale Tutorial – Natural, Melodic & Harmonic, Hands Separate & Together* / Piano Lessons to Go | 200 live · fits (`harmonic`) | unchanged |
+| `4.3` | 4 | *Piano Chord Inversions for Beginners: Root Position, 1st & 2nd Inversion (Part 1)* / Jason Zac - Nathaniel School of Music | 200 live · fits (`chord`) | unchanged |
+| `4.4` | 4 | *BEGINNER TECHNIQUE - Hanon Exercises 1-10 Tutorials* / Josh Wright | 200 live · fits (`hanon`) | unchanged |
+| `4.5` | 4 | *What Is 6/8 Time In Music?* / The Piano Keys | 200 live · fits (`time`) | unchanged |
+| `4.6` | 4 | *Master Your Sight Reading Practice On Piano* / London Contemporary School of Piano | 200 live · fits (`reading`) | unchanged |
+| `4.7` | 4 | *How to Memorize Music Quickly and Effectively - Josh Wright Piano TV* / Josh Wright | 200 live · fits (`memorising~memorize`) | unchanged |
+| `blues.3` | 3 | — | no video to check | *Crush notes for blues piano* / Bill Hilton |
+| `blues.4` | 4 | *12 BAR BLUES on Piano - Boogie Woogie Basslines Tutorial* / Bitesize Piano | 200 live · fits (`bar`) | unchanged |
+| `blues.5` | 5 | *How to Play Blues Piano - Scales, Licks, Turnarounds, Techniques, Left Hand Patterns* / Walk That Bass | 200 live · fits (`blue~blues`) | unchanged |
+| `blues.6` | 6 | *Secret Key To Pinetop's Boogie Woogie (Right Hand Boogie Pattern)* / Brendan Kavanagh | 200 live · fits (`boogie`) | unchanged |
+| `blues.7` | 7 | *Stride piano - basics of the left hand stride* / Bill Hilton | 200 live · fits (`hand`) | unchanged |
+| `blues.8` | 8 | *How To Form & Play Dominant 9th Chords On The Piano* / PlayPiano | 200 live · fits (`chord~chords`) | unchanged |
+| `blues.9` | 9 | *8 Easy Blues Licks for Beginners (Simple Piano Tutorial)* / MangoldProject | 200 live · **misfit, replaced** | *How To Improvise With 2 Blues Scales Over The Entire Tune* / London Contemporary School of Piano |
+| `chords-pop.3` | 3 | *How To Read Chord Charts (Piano Lesson)* / Pianote | 200 live · fits (`chord`) | unchanged |
+| `chords-pop.4` | 4 | *I vi IV V: Easy And Fun Chord Progression Tutorial* / PianoLessonsOnline.com | 200 live · fits (`chord`) | unchanged |
+| `chords-pop.5` | 5 | *The 3 Essential 7th Chords Explained on Piano: Major 7, Minor 7 & Dominant 7 (Step-by-Step)* / Olympia Piano | 200 live · fits (`chords`) | unchanged |
+| `chords-pop.6` | 6 | *Easy slash chords tutorial on the piano!* / Play Piano In A Flash / PianoGuyTV | 200 live · fits (`chord~chords`) | unchanged |
+| `chords-pop.7` | 7 | *Sound Amazing at the Piano With SUS CHORDS* / Piano With Jonny | 200 live · fits (`chord~chords`) | unchanged |
+| `chords-pop.8` | 8 | *The Easiest Way to Transpose a Song to ANY key on piano!* / Piano With Jonny | 200 live · fits (`key`) | unchanged |
+| `chords-pop.9` | 9 | *Create Your Own Piano Arrangements - PERFECT for any level!* / Piano and Voice with Brenda | 200 live · fits (`arrangement~arrangements`) | unchanged |
+| `classical.3` | 3 | *C. Petzold: Minuet in G Major BWV Anh. 114 \| Slow Piano Tutorial \| Late Beginner * / Classical Piano Made Playable | 200 live · fits (`minuet`) | unchanged |
+| `classical.4` | 4 | *How to Play Legato & Staccato on the Piano \| Technique Tuesday Tutorial* / PianoTips | 200 live · fits (`legato`) | unchanged |
+| `classical.4.shelf` | 4 | *Voicing in Piano Explained: How to Bring Out Melody over Accompaniment* / Akira Ikegami | 200 live · fits (`melody`) | unchanged |
+| `classical.5` | 5 | *How to Play Ornaments: Trills, Mordents and More* / pianoTV | 200 live · fits (`trills`) | unchanged |
+| `classical.6` | 6 | *Rubato in Romantic Piano Music* / UniSydneyLibrary | 200 live · fits (`romantic`) | unchanged |
+| `classical.7` | 7 | *Piano Lesson - How to approach Bach's Two Part Inventions - Part 1* / Virtual Sheet Music | 200 live · fits (`bach`) | unchanged |
+| `classical.8` | 8 | *MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial* / Danae Dörken | 200 live · fits (`technique`) | unchanged |
+| `classical.9` | 9 | *🎹 How I Learn a New Piece at the Piano [3 Steps!]* / The Piano Prof | Kate Boyd | 200 live · fits (`piece`) | unchanged |
+| `holiday.3` | 3 | — | no video to check | *6 Tips To Accompany A Singer - Always Keep These In Mind!* / Piano Lesson with Warren |
+| `holiday.4` | 4 | — | no video to check | *Turn ANY Christmas Carol Into a Beautiful Piano Arrangement \| Full Masterclass* / The Keys Coach |
+| `holiday.5` | 5 | — | no video to check | **none** (note below) |
+| `holiday.6` | 6 | — | no video to check | *A New Trick To Voice The Melody in Your Piece - Josh Wright Piano TV* / Josh Wright |
+| `holiday.7` | 7 | — | no video to check | *Practicing a left hand waltz accompaniment* / dorothychiapiano |
+| `holiday` | 2 | *One Simple Trick To Play 5 Christmas Carols BEAUTIFULLY On Piano* / Matt Hodge Music | 200 live · fits (`carols`) | unchanged |
+| `hymns.2` | 2 | — | no video to check | *Play 25 Hymns with 4 Chords (how to play piano hymn for complete beginners)* / Hello Miss Mai |
+| `hymns.4` | 4 | — | no video to check | *11. 🎶 Understanding Four-Part Harmony: Voice Leading, SATB, and Keyboard Format* / Music Theory Fundamentals |
+| `hymns.5` | 5 | — | no video to check | *Piano Tutorial - Left Hand Walks and Runs for Hymn-playing and Improvising (Piano Lesson)* / Church Piano Tutorials with Jonathan Hudson |
+| `hymns.6` | 6 | — | no video to check | *5 Hymn Reharmonization Strategies \| How to Reharmonize Hymns on the Keyboard* / The Church Musician's Assistant |
+| `hymns` | 3 | *Passing Chords \| Gospel Piano Tutorial for Beginners to Advanced* / PrettySimpleMusic | 200 live · fits (`chord~chords`) | unchanged |
+| `improv.3` | 3 | *Beginners, Start Here to Improvise Piano* / Piano With Jonny | 200 live · fits (`improvisation~improvise`) | unchanged |
+| `improv.4` | 4 | *Piano improvisation with pentatonic scale* / Play By Ear Music School | 200 live · fits (`improvisation`) | unchanged |
+| `improv.5` | 5 | *How To Improvise On Blues Scale: Piano Lesson* / London Contemporary School of Piano | 200 live · fits (`blue~blues`) | unchanged |
+| `improv.6` | 6 | *Guide Tones: Start Here to Play Jazz Piano Chords* / Piano With Jonny | 200 live · fits (`chord~chords`) | unchanged |
+| `improv.7` | 7 | *Ultimate Guide to Jazz Piano Quartal Voicings* / Josh Walsh | 200 live · fits (`quartal`) | unchanged |
+| `improv.8` | 8 | *Tritone Substitution: the one jazz piano trick you need to know* / PianoGroove | 200 live · fits (`substitution`) | unchanged |
+| `improv.9` | 9 | *Compose Your Own Piano Music: A TOTAL Beginner's Guide* / MangoldProject | 200 live · **misfit, replaced** | *The Secrets To Composing Beautiful Piano Music* / PianoGroove |
+| `jam.5` | 5 | — | no video to check | *Rhythmic Syncopation for Comping - Peter Martin \| 2 Minute Jazz* / Peter Martin |
+| `jam.6` | 6 | — | no video to check | *Walking Bass line Piano Tutorial (Lesson PDF Included!)* / Pianote |
+| `jam.7` | 7 | — | no video to check | *Trading Fours: Jazz Beginner Lesson w/Denis DiBlasio* / Dr. Selfridge Music |
+| `jam` | 4 | *Jazz Piano Comping Made Simple for Absolute Beginners* / South Shore Piano School | 200 live · fits (`comping`) | unchanged |
+| `jazz.3` | 3 | — | no video to check | *3 Steps to Get a Pro Jazz Swing Feel for Piano* / Piano With Jonny |
+| `jazz.4` | 4 | — | no video to check | *5 Comping Rhythms Every Jazz Musician Should Know* / PianoPig |
+| `jazz.5` | 5 | *Shell Voicings Explained Clearly (Beginner Jazz Piano)* / Jazz Tutorial | Julian Bradley | 200 live · fits (`jazz`) | unchanged |
+| `jazz.6` | 6 | *How to Play Left Hand Jazz Piano Walking Bass Techniques* / Sweetwater | 200 live · fits (`bass`) | unchanged |
+| `jazz.7` | 7 | *Rootless Voicings for Jazz Piano – Sound Pro Instantly* / Jazz Tutorial | Julian Bradley | 200 live · fits (`jazz`) | unchanged |
+| `jazz.8` | 8 | *Jazz Chord Extensions Explained: How to Find 9ths, 11ths, 13ths, b9s & #11s* / Jazz Tutorial | Julian Bradley | 200 live · fits (`chords~chord`) | unchanged |
+| `jazz.9` | 9 | *Intro to STRIDE PIANO (solo jazz piano)* / Piano Fluency | 200 live · fits (`jazz`) | unchanged |
+| `latin.3` | 3 | — | no video to check | *Clave Explained / Son, Rumba, 3-2, 2-3 and more* / WORLD DRUM CLUB |
+| `latin.6` | 6 | — | no video to check | *Tango Piano 101 (Beginner Piano Lesson)* / Pianote |
+| `latin.7` | 7 | — | no video to check | *Piano Lesson on playing repeated notes, by Graham Fitch* / Pianist Magazine |
+| `latin` | 5 | *How to play a Salsa montuno (tumbao) on the piano - tutorial #1* / Vanessa Rodrigues | 200 live · fits (`montuno`) | unchanged |
+| `practice.1` | 1 | — | no video to check | *Chunking: How to Practice Better Piano (Practice with Me!)* / Artiden |
+| `practice.2` | 1 | — | no video to check | *SLOW PRACTICE - Strategies and Tips for Inspiration - Josh Wright Piano TV* / Josh Wright |
+| `practice.3` | 1 | — | no video to check | *Interleaved Practice: the King of Piano Learning Techniques?* / Bill Hilton |
+| `practice.4` | 1 | — | no video to check | *How to Avoid Piano Injuries \| Get Rid of Tension and Pain [Hand, Wrist, Elbow, Shoulder & Back]* / PianoCareer |
+| `practice.5` | 1 | — | no video to check | *Advice on Overcoming Plateaus When Learning to Play Piano* / Piano Lessons On The Web |
+| `ragtime.5` | 5 | *Ragtime & Jazz Stride Piano for BEGINNERS Part 1.1, LEFT HAND \| Piano Lesson Tutorial* / Vladimir "ONE MAN JAZZ BAND" Uspenskii | 200 live · fits (`hand`) | unchanged |
+| `ragtime.6` | 6 | *(1/3) How to play Maple Leaf Rag, left hand \| Cory Hall, pianist-composer* / BachScholar | 200 live · fits (`hand`) | unchanged |
+| `ragtime.7` | 7 | *Ragtime Piano CRASH COURSE for Beginners! Rag Rolls, Stride Bass, & More w/ Jonny May* / Piano With Jonny | 200 live · fits (`bass`) | unchanged |
+| `ragtime.8` | 8 | *Ragtime Piano CRASH COURSE - Intermediate/Advanced! Rag Rolls, Stride Bass, & more w/ Jonny May* / Piano With Jonny | 200 live · fits (`bass`) | unchanged |
+| `ragtime.9` | 9 | — | no video to check | *How to memorize a piece of music for piano? - Greg Niemczuk Tutorial - Process of memorization.* / Grzegorz (Greg) Niemczuk |
+| `rock.4` | 4 | — | no video to check | *Rock Piano Power Chords With Accents (Hand Independence Workout)* / Jason Zac - Nathaniel School of Music |
+| `rock.5` | 5 | — | no video to check | *Make Simple Piano Chords Sound Beautiful (Open Chord Voicings)* / Pianote |
+| `rock.6` | 6 | — | no video to check | *Six Piano Broken Chord And Arpeggio Techniques You Need To Know* / Bill Hilton |
+| `rock.7` | 7 | — | no video to check | *Create Drama & Intensity In Your Piano Chord Progressions* / Pianote |
+| `rock.overview` | 3 | *Rock Piano for Beginners: Riffs, Power Chords & Rock Solos* / Birds Piano Academy | 200 live · fits (`rock`) | unchanged |
+| `technique.4` | 4 | *2-1-6 Chromatic and Contrary Motions Scales for Grade 1 Piano - Free Piano Lesson with Lisa* / PianoVideoLessons <br>*How to Play Legato & Staccato on the Piano \| Technique Tuesday Tutorial* / PianoTips | 200 live · fits (`chromatic`)<br>200 live · fits (`legato`) | unchanged |
+| `technique.5` | 5 | *Piano Hand Independence Exercises (for Beginners)* / Become a Piano Superhuman<br>*How To Crescendo & Diminuendo On Piano* / Musician's Addition | 200 live · fits (`hand`)<br>200 live · fits (`crescendo`) | unchanged |
+| `technique.6` | 6 | *Rotation Technique on the piano explained -- Playground Sessions* / Playground Sessions | 200 live · fits (`rotating~rotation`) | unchanged |
+| `technique.7` | 7 | *How to Play Octaves on Piano (2 Ways!) \| Kate Boyd - The Piano Prof* / The Piano Prof | Kate Boyd | 200 live · fits (`octave~octaves`) | unchanged |
+| `technique.8` | 8 | *MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial* / Danae Dörken | 200 live · fits (`technique`) | unchanged |
+| `theory.3` | 3 | *Identifying Intervals (Perfect, Major, Minor, Augmented, Diminished) - Music Theory for Beginners* / Online Piano Learning | 200 live · fits (`identification~identifying`) | unchanged |
+| `theory.4` | 4 | *Circle of 5ths: Easiest Way to Memorize and Understand It* / Gracie Terzian<br>*Music Theory: Authentic Cadences* / Scott Watson | 200 live · fits (`circle`)<br>200 live · fits (`cadences`) | unchanged |
+| `theory.5` | 5 | *Modes Explained on the Piano [tutorial lesson]* / Bitesize Piano | 200 live · fits (`modes`) | unchanged |
+| `theory.6` | 6 | *The Roman Numeral System Explained: Build Any Chord Progression by Number* / Jason Zac - Nathaniel School of Music | 200 live · fits (`chord`) | unchanged |
+| `theory.7` | 7 | *Secondary Dominants: The Complete Guide* / Piano With Jonny | 200 live · fits (`dominants`) | unchanged |
+| `theory.8` | 8 | *How to change key with a pivot chord* / Write A Song | 200 live · fits (`changing~change`) | unchanged |
+| `theory.9` | 9 | *How to Transcribe Songs by Ear on Piano for Beginners* / Shane's Queen Site - Queen Fan Channel | 200 live · **misfit, replaced** | *How To Play By Ear With Chords* / Aimee Nolte Music |
+
+#### Counts
+
+- 109 lessons. **81 distinct URLs before, 108 after; 84 video entries before, 111 after.**
+- **80 rungs named a video before** (82 carried the key, two of them empty); **107 do now.**
+- **55 distinct channels before, 70 after.** Three of Part D's named free teachers are new to
+  the corpus: Peter Martin (`jam.5`), Aimee Nolte (`theory.9`) and Graham Fitch (`latin.7`).
+  "New" was first asserted off the *channel* list, which is a different field from the one a
+  lesson prints; two searches over the tree at HEAD settle it — every `teacher:` line (56
+  distinct strings, against 55 distinct channels, so the two fields really do differ) and
+  every `label:` line, neither of which names any of the three.
+  Already there: Josh Wright, Bill Hilton, Pianote, Piano With Jonny, Julian Bradley,
+  PianoGroove, Hoffman Academy, and Andrew Furmanczyk (whom Part D calls Lypur). Still named
+  in Part D and on no rung, each checked by name against every `teacher:` and every index
+  author: Nahre Sol, Paul Barton, Denis Zhdanov, Rick Beato, Jens Larsen, Jazer Lee, David
+  Bennett, Arthur Migliazza, Christian Fuchs, Kevin Castro, Jeremy Siskind.
+- **0 dead links. 4 replaced as wrong for the rung. 2 rungs deliberately left without.**
+
+#### Unverified
+
+- **Every title is a proxy.** No video was played. A title, a channel name and an HTTP 200
+  are the whole of the evidence for all 108, the 27 new ones included.
+- **Descriptions were not read.** The brief asks for the description where a title is
+  generic; oEmbed returns none and nothing else was fetched, so the one generic title in the
+  corpus (`0.2`) was replaced rather than investigated.
+- **Stage fit is a judgement**, and six of them are listed above as possibly wrong.
+- **The index is a snapshot.** A video can be taken down tomorrow and the committed row will
+  still say `live` until somebody re-runs the fetch. Nothing schedules that, and nothing in
+  the build can, because the build is offline by design.
+- **The 27 new videos have not been seen by the owner.** Each was chosen from a title, a
+  channel and the rung's own text; five of the channels are new to this repository and
+  nothing about their teaching is known here beyond what they called a video.
+
+### Entry 47 — T22 Part B: the four open items decided, three done and one left (2026-09-22)
+
+The brief's four items, each with the decision, the evidence for it, and done or not. Files:
+`app/src/**`, `app/tests/**`, `tools/content/generate_exercises.py` and
+`tools/content/tests/test_generator_invariants.py`, `docs/04-ui-spec.md`,
+`docs/08-test-map.md`, this entry. `content/lessons`, `validate.py` and `lessonVideos.test.ts`
+untouched — another agent owns them and was working in the same tree.
+
+**Nothing here was heard.** Every verdict below is a measurement off a rendered page or a
+screen, and not one assertion named here is about sound.
+
+#### Item 1 — the lab's trade row and pickers below the fold at 342 px. **Done**, and it took two changes, not one.
+
+Entry 42 measured this per block and sized three ways out without taking any of them. The
+same measurement, re-taken on this tree before anything was changed (a throwaway spec reading
+`getBoundingClientRect()` off every block of `.screen-body`, 342×740, fold at 740):
+
+| | from the Library door | arriving from a rung (`?preset=blues-shuffle`) |
+|---|---|---|
+| **Read it · Jam it** | 375 → 423 | 470 → 518 |
+| `What the app plays` row | 542 → 634 | 637 → 729 |
+| `Trading fours` row | **713 → 757** (clipped) | **852 → 896** (entirely below) |
+| the pickers (`#lab-settings`) | 790 | 929 |
+
+So a learner on a phone could press *Jam it* having never seen two of the five settings that
+decide what it would play. That is the complaint R1 actually has about this screen, and it is
+narrower than "the pickers are below the fold" — the pickers are last by the owner's ranking
+(2026-09-19, §3c) and are not in question.
+
+**Change one: the two chip rows became one.** They were already exclusive — pressing a way
+round set `trading = false`, pressing a trade set `bed = 'off'` — so *Bed only* and the trade
+row's *Off* were **two controls for one state**, and pressing either produced the same screen.
+That is `00` §1's "never say the same thing twice" with an aggravation, and it is a fault on
+its own quite apart from the height. One row of five now says the one true thing: *Bed only ·
+Hold the chords · Play the tune · Trade 2 bars each · Trade 4 bars each*, exactly one pressed.
+
+**And on its own it was not enough**, which is the part worth recording. Re-measured: the row
+came to 602 → **742** from the Library door — two pixels past the fold — and 697 → 837 from a
+rung. The merge buys a label and a help paragraph and then gives most of it back, because five
+chips wrap to three lines where three wrapped to two, and one paragraph covering five choices
+is longer than either of the two it replaced. Entry 42's estimate of 115 px was an estimate;
+the measurement is about 60.
+
+**Change two: the one help line long enough to be "the long version" went under its chips, in
+a `<details>`.** R1 says the screen gets one line and the rest lives *behind or below* the
+thing it explains — "a `<details>`, a sheet, a link … never above it" — and every help line on
+this screen is drawn above its control. Nine of the ten are one or two sentences and stay exactly
+where they are. *What the app plays* has to describe five exclusive choices, runs to four
+sentences, and at 342 px is six lines of type wedged between the button and the chips it
+belongs to. It is now a disclosure under the row, summarised *What these five do*. Nothing was
+deleted (`00` §1: reorganise rather than delete) and the owner's documentation of 2026-09-22 is
+a tap rather than a scroll.
+
+Measured after both, 342×740: the row is 460 → 600 from the Library door and 555 → 695 from a
+rung, with all five chips inside; the pickers begin at 655 (inside the fold) and 794 (below
+it). So the sentence §3c struck — "the pickers still begin inside the first screenful" — is
+true again **for the Library door only**, and §3c now says exactly that rather than the old
+unqualified claim.
+
+**The one thing this cost, and how it was paid.** A grep of `content/lessons` for
+`Trading fours|2 bars each|4 bars each` returns **thirteen lines in nine files**. Seven of them
+point the learner at the control by name and would have pointed at nothing: `blues.5`
+("*Trading fours* to two bars each"), `blues.7`, `blues.9` ("Set *Trading fours* to four
+bars"), `improv.5`, `improv.6` (both "Set *Trading fours* to two bars each"), `jam.7` ("to 2
+bars each") and `jazz.4` ("turn *Trading fours* on"). The other six are prose about the idea
+rather than about the control — `improv.4`'s sentence, `jam.7`'s title, its video label and its
+opening line, and two lines of `jam.md`. `content/lessons` is not this task's to edit. So the words
+stayed on the screen: the chips are *Trade 2 bars each* / *Trade 4 bars each* and the folded
+paragraph names *Trading fours* in the sentence about them. Two rows of
+`lessonClaimsAboutApp.test.ts` went red on the merge — `jam.7`'s *"Jam it is what starts it,
+and Trading fours is a setting on it"* and `improv.5`'s exclusivity row — and both were
+**re-pointed rather than loosened**: they now read the help line and the chip label the lesson
+sends the learner to, which is the thing the lesson's sentence is actually a claim about.
+
+**Seen red first.** `lab.spec.ts`, *what Jam it will play is settable without scrolling, from
+both doors* (line 115 of the new file): against the tree at HEAD, built and run, `Expected:
+true / Received: false` — the row it looks for does not exist there, and the throwaway
+measurement above is what the old screen did instead. The assertion is a **relationship** —
+the row's bottom against the viewport the test sets, the row's top against `#lab-read` so R1
+cannot be used to overturn the owner's ranking — and no pixel measured on this machine appears
+in it.
+
+Files: `LabScreen.ts` (`drawPlaysChips` replacing `drawTradeChips`/`drawBedChips`,
+`foldedGroup`, one `chipGroup` call in place of two), `LabScreen.css` (`.lab-group__more`;
+`#lab-bed-row` → `#lab-plays-row`), `sightReading.ts` (`LAB_HELP`: `bed` and `trade` become
+`plays`), five e2e files that named the old rows (`lab.spec.ts`, `lab-both-ways.spec.ts`,
+`modes-trading-fours.spec.ts`, `trading-fours.spec.ts`, `modes-hold-the-chords.spec.ts`) and
+`lessonClaimsAboutApp.test.ts`, `04` §3c, `08` index.
+
+#### Item 2 — the chord chart draws no keyboard. **Done.**
+
+Entry 42 confirmed the fault with two greps and declined it as a feature, sizing the
+construction at about twenty-five lines and calling the *design* the real cost. The design
+questions are answered by what the exercise is, and both answers are in the screen's own
+comment and in §3b:
+
+- **The keys light what is held, never what is expected.** The lab lights the bar's chord
+  tones; here that would answer the question the chart is already answering in letters an inch
+  high, and a chart that fingers the chord for you is a different exercise from one that
+  checks what you played. `markMatch` sets `pressed` and nothing else.
+- **They sit between the transport and the chart**, drawn by the same step that draws the
+  transport — so a dead end has no keys for the same reason it has no *Count off* (§0 R4).
+  Under the form they would have been hundreds of pixels down on a thirty-two bar tune, which
+  is the fault T17 fixed for the transport three days earlier. 72 px of key on a phone, the
+  height the lab settled on for the same squeeze.
+
+A tap goes through `screenKeyboardSource`, so the glass and a cable arrive by one path, and it
+sounds on the first tap the way free play's does — a tap on a picture of a key that stays
+silent is what makes a strip read as a diagram.
+
+**Seen red first.** `modes-chart-from-a-lesson.spec.ts`, *the chart has keys, and a key held on
+them marks the sounding bar* (line 126): against HEAD, `element(s) not found` for
+`#chart-strip .keyboard-strip`, with the message *the chord chart draws no keyboard*. Green
+after. The held key is asserted to mark the bar **no**, and that is derived rather than
+measured: `chordMatch` wants more than half the chord's pitch classes and one key is at most a
+third of a triad, whatever the rung's song opens on. Releasing it returns the bar to `idle`,
+which is the other half of the rule — silence is not a mistake. The existing MIDI test's
+comment, which said in as many words that this screen has no keyboard, was corrected rather
+than left (`working-rules` §2.17).
+
+Files: `ChordChartScreen.ts`, `style.css` (`.chart-strip`), `modes-chart-from-a-lesson.spec.ts`,
+`04` §3b (the "not reachable from the glass" paragraph replaced by what was built and why).
+
+#### Item 3 — text directions between the staves, with a barline through the words. **Done in the generator.** The pedal blob: **left**, with a picture of what is being left.
+
+**One helper, twenty-five call sites.** `direction_text(words)` is now the only way this file
+writes a printed direction and it sets `placement="above"`. Every `expressions.TextExpression(`
+in `generate_exercises.py` went through it (25 call sites, plus the helper's own
+line, which was put back); thirteen now-dead local `from music21 import expressions` imports went with it, the
+one in `make_pedal` staying because it still builds a `PedalMark`.
+
+**Measured on the files, not on the objects.** Regenerated through the generator alone (the
+content build was **not** run by this task — see below), then every `.mxl` in
+`app/public/content/scores/generated` opened and its `<direction …><words>` attributes read:
+**1,176 files, 139 of them print a words direction, across 24 families, and all 139 carry
+`placement="above"`**. The 24: articulation, blues-scale, clave, intro, latin-groove, meter,
+modal-vamp, mordent, ostinato, pedal (the held-melody variant), pentatonic, power-chord,
+rhythm, riff, secondary-rag, shaping, swing-pair, syncopation, tresillo, trill, tumbao,
+voicing, walkup — and the makers behind them are `make_rhythm`, `make_trill`,
+`make_articulation`, `make_shaping`, `make_voicing`, `make_syncopation`, `make_secondary_rag`,
+`make_meter` (two call sites), `make_pedal_variant`, `make_blues_scale`, `make_clave`,
+`make_tumbao`, `make_montuno`, `make_latin_groove`, `make_intro`, `make_walkup`,
+`make_power_chord`, `make_riff`, `make_pentatonic`, `make_tresillo`, `make_swing_pair` (two),
+`make_modal_vamp`, `make_ostinato`. `app/tests/fixtures/scores/generated/` needs no
+regeneration, and that is two searches rather than one: its 33 fixture names are scale,
+arpeggio, five-finger, inversions and hanon, which are not among the 24 families — and then,
+because a name is a proxy for a file, all 33 were opened and their MusicXML read for
+`<direction …><words>`. **Zero hits.**
+
+**Proved with the pictures, read whole.** Eight pages rendered on the Score screen at 740×342
+and opened: `trill.c.4pb.right`, `articulation.c.staccato.right`, `intro.c.4bar`, `walkup.c`,
+`meter.5-4`, `pedal.held-melody.c`, `voicing.c`, `modal-vamp.a`. Five of them are the whole
+piece; the other three are the window holding bar 1, which is where every direction is. On all
+eight the words are clear above the top staff, no barline through them, and nothing on the
+brace — which closes Entry 33's four worst rows by name (`intro` and `walkup`, whose first
+letter was drawn on top of the brace, and `pedal_variant`, the same).
+
+**And a rule that is deliberately absent.** Entry 38 proposed pairing the writer's `placement`
+with `rules.MetronomeMarkYShift = -4`, because above the staff the words run through `♩ = 60`.
+That is **not applied**, and `OsmdView.ts` carries the reason where the line would go: grepped
+every `new OsmdView(` and every `drawMetronomeMarks` in `app/src` — the Score screen, three of
+the drill's four notation hosts, the device preview and the dev harness's stage all pass
+`false`; the rest are off-screen probes; the one host that leaves the default on engraves
+`musicXmlWriter`'s output, which has written `<direction placement="above">` since it was built
+and has never carried a generated exercise. So there is no page in this app where the two meet,
+and a rule costing every piece with a tempo mark four units of height, applied on one picture
+nothing here draws, is the fix `00` §1 refuses. The `♩ = 60` collision is Entry 38's
+measurement and is **not re-verified here**.
+
+**Seen red first, twice.** In Python: `tests/test_generator_invariants.py::TestText` gained *a
+direction is printed above the staff* and *the exported MusicXML carries the placement*. With
+`text.placement = "above"` deleted from `direction_text` and nothing else changed, both fail —
+`AssertionError: Lists differ: ["trill: '4 notes to the beat — count them…"] != []` and
+`['trill: <direction>', 'articulation: <direction>', …] != []` — and the other four of the
+class stay green. They collect and assert once at the end rather than raising inside
+`FamilyCase.each()`, because raising inside that generator abandons the walk at the first fault
+and names one family. In the browser: `modes-engraving.spec.ts`, *a generated exercise prints
+its direction above the top staff* (line 174) — against the same file with the attribute
+stripped, the words' box bottom came back at 166.6 against a top staff line at 36, which is the
+gap between the staves.
+
+**The pedal blob: not fixed, and now pictured.** `exercise.pedal.c` was rendered whole and
+opened. Under each of the four chords the `Ped.`, the release star and the fingering's third
+digit are drawn at one x as a single illegible scribble — Entry 33's reading, unchanged.
+`mark.addSpannedElements([c])` gives a `PedalMark` one chord, and Entry 33 rendered both
+alternatives (span each chord to the next: moves the collision one bar on; span all four: one
+`Ped.` in bar 1 and one release in bar 4, which is not the pedalling the drill scores). No
+renderer rule reaches it — Entry 38's scan of the bundle for `this.*Pedal*=` found only the
+rule that removes pedals altogether. Left, as the brief says.
+
+Files: `generate_exercises.py`, `tools/content/tests/test_generator_invariants.py`,
+`app/src/score/OsmdView.ts` (the comment, no rule), `modes-engraving.spec.ts`, `08` index.
+
+#### Item 4 — the technique measures the on-screen keys cannot take. **Left, as the brief says.**
+
+Re-read rather than recalled: Entry 42's FAULT 8 already built the honest half on the shape
+Entry 24 item 2 set — `techniqueMeasureFor` refuses the voicing and shaping measures when every
+note of the run arrived at the same velocity, and prints *not measured — every note arrived at
+the same velocity, which is what the on-screen keys send* rather than a nought. `KeyboardStrip`
+still sends `TOUCH_VELOCITY = 90` for every touch, with its own reason beside it: Android
+reports `pressure` as 0 or 1, so there is nothing to derive a velocity from. Nothing was
+changed here and nothing should be: the remaining half is either a cable or a measure
+`technique.5` and `technique.6` can take without one, and both are the owner's call about what
+those rungs ask, not a code decision. The chord chart's new strip does **not** change this —
+it sends the same fixed velocity, and nothing on that screen measures dynamics.
+
+#### What was run
+
+* `npx tsc -b` — clean. (`tsc --noEmit -p` checks nothing; `00` §3.)
+* `npm run lint` — clean.
+* `npx vitest run` — **181 files, 2,847 tests, all passing.** Two were red mid-change and are
+  written up under item 1.
+* Python: `python -m unittest tests.test_generator_invariants` — 63 tests, and
+  `tests.test_generator` — 78 tests. Both clean.
+* `npm run build:app`, then Playwright **one spec file at a time** on port 4173 with no build
+  running (`00` §3). Seventeen files, **118 tests** (and two skipped), all passing:
+
+| spec | tests | why it was run |
+|---|---:|---|
+| `lab.spec.ts` | 12 | changed — the new R1 test |
+| `lab-both-ways.spec.ts` | 7 | changed — the merged row, and one assertion rewritten |
+| `modes-trading-fours.spec.ts` | 3 | changed — "off" is now the absence of a pressed trade chip |
+| `trading-fours.spec.ts` | 4 | changed — same |
+| `modes-hold-the-chords.spec.ts` | 3 | changed — the row it names |
+| `modes-play-the-tune.spec.ts` | 3 | unchanged, and it presses the bed chips |
+| `modes-lab-unlock.spec.ts` | 3 | unchanged, and it owns the lab's other route field |
+| `modes-chart-from-a-lesson.spec.ts` | 7 | changed — the new keyboard test |
+| `modes-chart-from-the-score.spec.ts` | 3 | unchanged, and it owns the chart's other door |
+| `chart.spec.ts` | 5 | unchanged, and it owns the chart screen itself |
+| `modes-engraving.spec.ts` | 4 | changed — the new direction test |
+| `modes-technique-measure.spec.ts` | 2 | unchanged, and it is the other spec naming a family that prints a direction |
+| `doors.spec.ts` | 22 | unchanged, and it owns every door into both screens |
+| `lesson-tools.spec.ts` | 4 | unchanged, and it presses the lab's tool buttons |
+| `empty-states.spec.ts` | 13 | unchanged, and it owns the chart's dead ends |
+| `carry-overs.spec.ts` | 12 (2 skipped) | unchanged, and it names both screens |
+| `wide.spec.ts` | 11 | unchanged, and it is where a merged row could have broken sideways |
+
+#### Counts
+
+Four items: **three done** (1, 2, 3's generator half), **one left with its reason** (4), and
+one sub-item left with its reason and its picture (3's pedal blob). **Three source areas**
+changed in the app — `LabScreen` + `sightReading` (item 1), `ChordChartScreen` + `style.css`
+(item 2), `OsmdView` (item 3, a comment and no rule) — and one in the tools,
+`generate_exercises.py`. **Three new browser assertions**, each seen red against the tree at
+HEAD with its line named above; **two new Python invariants**, seen red against the generator
+with one line removed. **139 generated files across 24 families** now print their direction
+above the staff.
+
+#### What is unverified
+
+* **Nothing was heard.** Said again because the chord chart's new keys make a sound and no
+  assertion anywhere checks that they do.
+* **The content build was not run by this task.** The generator was run alone, as the brief
+  said. It then collided with another agent's `build.py` in the same tree — the output
+  directory was removed under a write and the run died with a `FileNotFoundError`, and the app
+  build that followed precached 971 entries instead of 2,185. That agent's build finished, and
+  the audit above (1,176 files, 139 directions, all `above`) was re-run against **its** output,
+  which went through this generator. The app was rebuilt afterwards and precached 2,185 again.
+  The catalog was **not** re-checked against the new scores by this task: no `validate.py`, no
+  `render_check.py`, no score checks. The coordinator should rebuild.
+* **`keySig`, durations and the render manifest.** Moving a direction changes the engraved
+  height of a system, and the render check's manifest is keyed on the file's sha256 — so all
+  139 files will re-engrave on the next check. Nothing was measured about what that does to the
+  reported durations or to `pace`.
+* **One picture per family, and only eight families.** Twenty-four families print a direction;
+  eight were opened. The invariant test covers every family in `FamilyCase`'s sample and the
+  file audit covers all 1,176, but the *pictures* are eight.
+* **Three of the eight pictures are windows, not whole pages.** `trill`, `articulation` and
+  `meter` are longer than the window the Score screen draws. The direction is at bar 1 on every
+  family, so the window holding it is the one that matters, and the rest of each piece was not
+  looked at.
+* **The lab was measured upright at 342×740 only.** Not sideways, not on a tablet, not at
+  115 % text. §3c's sideways rule (two columns of pickers) was not re-driven after the merge,
+  and `wide.spec.ts` passing is a claim about the wide layout, not about 740×342.
+* **The chord chart's keys were driven with one finger.** A mouse is one pointer, so the test
+  holds one key and asserts the bar is marked *no*; the *yes* case is still proved only over
+  MIDI, by the test that was already there.
+* **Seven lesson sentences still send the learner to *Trading fours* by name.** They are true
+  today because the chips and the help line keep the words, but nobody has re-read those seven
+  against the merged row on a screen, and `content/lessons` was out of bounds for this task.
+* **The suite was shared.** At the end of this task `npx vitest run` reported 181 files and
+  2,867 tests with **three failures, none of them in a file this task wrote**: they are
+  `lessonClaimsAboutMusic.test.ts`'s three `holiday.3` rows, and `npm run lint` reported one
+  `no-useless-assignment` in the same file. That file is Part A's and was being edited while
+  this ran. Every file this task touched lints clean and every test in them passes; the shared
+  suite is the coordinator's to see green.
+* **The `♩ = 60` collision is Entry 38's, not re-rendered here**, and the decision not to ship
+  `MetronomeMarkYShift` rests on a grep of every `new OsmdView(` and every `drawMetronomeMarks`
+  in `app/src` rather than on a page that draws both.
+
+#### The `CLAUDE.md` checklist, run against this entry
+
+1. **Did I state an absence?** Three, each with its search. "No page in this app draws a
+   generated exercise under a tempo mark" is `grep -rn "new OsmdView\|OsmdView(" src/` (ten
+   sites) plus `grep -rn "drawMetronomeMarks" src/` (ten lines), read one by one, and the
+   second search is the differently-shaped one. "No fixture needs regenerating" was first a listing of
+   `app/tests/fixtures/scores/generated/` (33 names) checked against the 24 families the file
+   audit found; the differently-shaped second search opened all 33 archives and read the
+   MusicXML for a words direction, which is the one that counts, and returned zero. "No renderer rule reaches the pedal blob" is
+   **Entry 38's** two searches, not mine — flagged as inherited above.
+2. **Did I write a plural?** "All 139 carry `placement="above"`" is enumerated by the script
+   that opened all 1,176 files and counted, and it reports the failures it did not find (`not
+   above: 0`). "Eight lessons name Trading fours" is a grep whose thirteen hits are listed in
+   the file; eight of them are instructions to the learner and five are prose about the idea.
+   "Eight pictures" are named one by one and three are admitted to be windows.
+3. **What proxy did I use?** Three, named where they are load-bearing. The `.mxl` audit is a
+   proxy for what OSMD draws — closed by the eight pictures and the browser test. The eight
+   pictures are a proxy for 139 files — not closed, stated above. Entry 38's `♩ = 60` render is
+   a proxy for a collision I did not reproduce — stated twice, and it is why the engraving rule
+   is a comment rather than a line of code.
+4. **Green is not done.** The unverified list is longer than the counts list, deliberately.
+5. **Did I check the reason, not just the outcome?** Yes, and it changed an outcome: merging
+   the two rows was the reasonable thing for the reason Entry 42 gave (R1), and the
+   measurement afterwards showed that reason was only two-thirds paid — so the entry says the
+   merge bought 60 px and not 115, and a second change was needed. A right action with a wrong
+   reason would have been to stop at the merge and claim R1.
+6. **Did I re-open the artefact?** Entry 42's per-element table was re-measured on this tree
+   rather than quoted, and the two measurements are printed side by side above.
+7. **Who else reads the field I changed?** `LAB_HELP`'s `bed` and `trade` ids: `LabScreen.ts`,
+   `labHelp.test.ts` (both directions — a line nobody draws fails it), `04` §3c's table (the
+   same test joins them), and `lessonClaimsAboutApp.test.ts`, which is how the two red rows
+   were found. `#lab-bed-row` / `#lab-trade-row`: five e2e files and one CSS rule, all listed.
+   `direction_text`: `test_generator.py` and `test_generator_invariants.py`, both run.
+8. **Am I reading the letter?** The restatement, in none of the brief's words: *a learner on a
+   phone must be able to see every switch that changes what the button does before pressing
+   it; the screen whose subject is playing a chord must have something to play it on; and the
+   words printed on a generated exercise must be readable.* Checked against that, item 1's
+   merge alone satisfied the brief's literal "the next control is inside the first screenful"
+   on neither door and the restatement on neither either, which is what sent the work looking
+   for the second change.
+
+---
+
+### Entry 48 — T22 Part A: the eight quarried pieces measured, ten carols read one at a time, and every UNSURE finding closed (2026-09-22)
+
+Appended after Entry 47, which T22 Part B wrote while this ran: the file was re-read at the
+moment of writing rather than written back from a copy held earlier, which is Entry 25's
+convention and Entry 44's practice, and both entries are intact.
+
+Items 5 to 8 of `docs/prompts/tasks/T22-decide-the-open-items.md`. The owner's framing was
+"find out what's reasonable to add and what's fine as is", so each item below is a decision
+with the evidence under it, and the reasonable ones are done here.
+
+**The one-line answers.** No rung was built and no piece was re-levelled — the measurement
+says the level model is right about these eight to within the error it makes on the pieces
+a person *did* grade, and that error is far smaller than the gap. Four of the ten unhomed
+carols are now on `holiday.3` and six are not, each with its reason. All eleven UNSURE
+findings from Entries 39–40 end RIGHT, WRONG or rewritten; none is left disputed, and two
+of them were settled by looking somewhere nobody had looked. `build.py --offline` is green
+for the first time since Entry 44's splice landed, which took one line nobody had written.
+
+---
+
+#### Item 5 — the eight quarried pieces and the three unbuilt rungs
+
+**The instrument, and it is the repository's own.** `tools/content/difficulty.py` measures
+nineteen features of a parsed score and `estimate()` turns them into a level with a model
+fitted on the songs a person graded. The same `features()` was run over the eight quarried
+rows **and over every song on the neighbouring rungs of the same track**, parsing each
+`.mxl` the app ships rather than reading the stored numbers — for the eight, the recompute
+came back **identical to the `features` block on the row**, field for field, which is the
+only reason the stored numbers are quoted below.
+
+**The finding that decides the item, and it is not about any one piece.** A level model can
+only be trusted against the levels a person set, so its residual was measured on all of
+them: the **164** songs in the built catalog with `levelSource: judged` and a file, of
+which **163** parse (`song.classical.mozart-k545-i.alt` raises `MusicXMLImportException`).
+
+| set | n | mean residual | median |
+|---|--:|--:|--:|
+| every judged song | 163 | **+0.15** | +0.15 |
+| the ragtime ones | 12 | **+0.55** | +0.41 |
+| the latin ones | **0** | — | — |
+
+The model reads ragtime about half a level harder than the person did, **and all twelve
+residuals are positive** — *The Entertainer* judged 7.1 against 7.33, *Peacherine* 7.0
+against 7.91, *The Easy Winners* 7.0 against 8.09, *Maple Leaf* 7.2 against 8.16,
+*Solace* 6.8 against 7.29, and so on. That is the correction Entry 44's own closing note
+argued for ("the level model reads a cakewalk as a rag"), now measured instead of argued.
+**It is nowhere near large enough to move these pieces to Stage 4.** And there is no latin
+song in the judged set at all, so no latin-specific correction can be computed here — the
+latin pieces below are compared feature by feature instead, which is the honest substitute.
+
+**`ragtime.4` — the cakewalk. Not built; neither piece re-levelled.**
+
+The rung below it does not exist (the track starts at `ragtime.5`), so the neighbour is
+`ragtime.5`, band 3.2–7.1, and `ragtime.6` above it.
+
+| piece | model | bars | notes/sec | rangeLeft | maxLeapLeft | shortest |
+|---|--:|--:|--:|--:|--:|--:|
+| *At a Georgia Camp Meeting* | **7.59** | 92 | 12.69 | **46** | 22 | 0.25 |
+| *Summer Road's Cakewalk* | **7.35** | 61 | 9.97 | 29 | 14 | 0.25 |
+| `ragtime.5` *Rose-bud March* (committed 7.0) | 6.86 | 94 | 5.70 | 26 | 14 | 0.25 |
+| `ragtime.5` *The Entertainer* (**judged 7.1**) | 7.33 | 92 | 16.43 | 34 | 24 | 0.25 |
+| `ragtime.6` *Swipesy Cake Walk* (committed 6.8) | 7.20 | 88 | 9.95 | 38 | 24 | 0.25 |
+| `ragtime.6` *Easy Winners* (**judged 7.0**) | 8.09 | 94 | 10.49 | 43 | 29 | 0.25 |
+
+*At a Georgia Camp Meeting* is **denser than a piece already committed at 7.0** (12.69
+notes a second against the *Rose-bud March*'s 5.70) and its left hand covers **46
+semitones**, the widest span of any ragtime piece in this comparison — wider than *The
+Easy Winners*, which is what `ragtime.6` calls the leaping left hand. Take the whole
+ragtime residual off its estimate and it lands at **7.0**; take the median off and it lands
+at 7.18. *Summer Road's Cakewalk* is shorter and narrower than *Swipesy* on every
+left-hand measure and lands at **6.8** by the same correction. Both are `ragtime.5`/`.6`
+music by the repository's own scale, honestly judged. **A Stage 4 rung whose floor is
+around 7 teaches nothing Stage 4 is**, so neither row was touched: both keep
+`levelSource: estimated`, and a `judged` re-level would have had to invent a number the
+comparison does not support. Entry 37's follow-up 3 — "quarrying two or three of them would
+build the rung immediately" — is answered: quarrying them was right and it did not build
+the rung.
+
+**`latin.4` — the habanera and the tresillo. Not built; nothing re-levelled.**
+
+Neighbours: `latin.3` (Stage 3, band 1.9–3.6) and `latin` (Stage 5, band 1.9–6.4).
+
+| piece | model | bars | notes/sec | maxSpanLeft | rangeLeft | maxSimLeft | shortest | distinctRhythms |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| *Carmen* **Habanera** | 6.63 | 90 | 4.24 | 7 | 19 | 2 | **0.125** | 9 |
+| *Los Tres Golpes* | 6.50 | 33 | 9.70 | 12 | 32 | 3 | 0.25 | 5 |
+| *Carioca* | 8.17 | 78 | 12.49 | 12 | 38 | 4 | 0.25 | 5 |
+| `latin.3` *Cielito Lindo* (1.9) | 1.90 | 32 | 2.06 | **0** | **0** | **0** | 1.0 | 3 |
+| `latin.3` *Só Danço Samba* (3.03) | 3.03 | 34 | 2.65 | **0** | **0** | **0** | 0.5 | 7 |
+| `latin.3` *Guantanamera* (3.2) | 3.20 | 21 | 3.28 | **0** | **0** | **0** | 0.5 | 5 |
+| `latin` *Insensatez* (2.98) | 2.98 | 32 | 2.73 | **0** | **0** | **0** | 0.5 | 6 |
+| `latin` *Tico-Tico* (3.71) | 3.71 | 45 | 5.07 | **0** | **0** | **0** | 0.5 | 4 |
+| `latin` *La Cumparsita* part A (5.13) | 5.13 | 15 | 5.52 | 10 | 19 | 4 | 0.5 | 3 |
+
+**Five of the six songs on the two neighbouring rungs have no left hand at all** — span 0,
+range 0, never more than one note sounding, because they are lead sheets. The sixth, the
+fifteen-bar *Cumparsita* tutorial, is the only two-handed latin piece below Stage 6 and it
+is committed at 5.13. The Carmen *Habanera*'s left hand is genuinely narrow (span 7,
+range 19, two notes at most) and repeats the figure in 85 of its 90 bars, which the feature
+set does not reward and which is the strongest argument anyone could make for lowering it —
+but its right hand runs 90 bars over a range of 40 semitones with **thirty-second notes**
+(`shortestValue` 0.125, the shortest of any piece in this comparison) and nine distinct
+rhythms. Even a correction the size of the ragtime one leaves it above the Stage 5 rung's
+own repertoire, and a Stage 4 rung sitting above the Stage 5 rung is not a band that is too
+wide but an order that is backwards, which is Entry 44's sentence and it holds. **Nothing
+re-levelled, nothing placed.**
+
+**`latin.8` — modern tango. Not built, and the reason is the content, not the level.**
+
+The neighbour below is `latin.7`, band 6.3–9.0, holding *El Choclo* 7.57, *Asturias* 8.36
+and *Malagueña* 9.0. The three candidates are *El gordo triste* 6.85, *Tango Notturno* 6.97
+and *La cumparsita* 7.2 — all three **below every song on the Stage 7 rung**, and all three
+inside `latin.6`'s band of 5.0–7.46. Three separate things are wrong with building it and
+each is fatal on its own:
+
+1. The rung's subject is *"Modern tango and the piece that changes meter"*. **One of the
+   three is modern** (*El gordo triste*, 1974) and it is the one whose `compositionStatus`
+   is `unknown` under an uploader's cc-zero on a composition of that date — the exposure
+   `00` D23 was written about. *Tango Notturno* is 1937 and *La cumparsita* 1916.
+2. **The piece that changes meter did not convert.** *Le Grand Tango* is 8/8 against 4/8
+   and is a cello-and-accordion duo whose two staves are two players; Entry 44 records it
+   failing `convert` with `PitchException`.
+3. **The track would then carry three copies of one tune.** *La Cumparsita* part A is on
+   `latin` (Stage 5) and part B on `latin.6`; a third, fuller edition on `latin.8` is a
+   rung built on a tune the learner has already met twice.
+
+Three is the floor and three is exactly what is here, which is the shape `00` D21 warns
+about: a rung that reaches the count by taking everything offered. **Not built**, and
+Entry 44's "could go either way" is decided against.
+
+**A build that was red and is now green, from one of these eight rows.** Entry 45 recorded
+that `build.py --offline` exits 1 on the tree at HEAD because the score-checks gate refuses
+`song.classical.nazareth-carioca-1913.pdmx` (`repeat-structure | endings-out-of-order
+['1-3', 2, 1, 2, 1, 2]`), one of Entry 44's eight, and said the cure is one line in
+`content/score-checks.allow.json` "and neither is this task's to decide". It is this
+task's: the row is one of the eight, and the verification this brief asks for cannot run
+past it. **The file was opened.** Bar 16 carries an ending numbered `1,3` with the backward
+repeat on it and bar 17 an ending numbered `2`; bars 49/50 and 68/69 are ordinary
+one-then-two pairs. The score also prints `D.C. al` and `Fine` and holds two `<segno>` and
+four `<coda>` elements — so the first strain really is taken three times and its first-time
+bar really is the bar for passes one and three. Nothing is missing from the music; the
+check reads ending numbers as restarting at 1 at each repeated section, which this
+engraving does not do. **One allow-file row with that reason**, and the build is green.
+`content/score-checks.allow.json` is outside this task's file list and is named here for
+that reason.
+
+---
+
+#### Item 6 — the ten unhomed carols
+
+**First, the brief's own premise, checked.** The brief says "the plan homes seven on
+`holiday.3`". Searched three ways: `docs/genre-plans/holiday.md`'s Stage 3 table names
+**one** of the ten (*Angels We Have Heard on High*) and puts *O Christmas Tree* at Stage 4,
+*Up on the Housetop* at Stage 2 and *O Holy Night* and *Petit Papa Noël* at Stage 6;
+`docs/02-curriculum.md:619` lists *O Holy Night* and *God Rest Ye* among the holiday
+module's tunes with no stage against either; and a grep for `let it snow` over
+`docs/02-curriculum.md`, `docs/genre-plans/holiday.md` and `docs/prompts/plan-2026-09-21.md`
+returns **nothing**. Entry 21's sentence "The plan homes God Rest Ye and Let It Snow on
+`holiday.3`" is not supported by any of the three, and *Let It Snow* is named in none of
+them. So the seven were read against the rung rather than against the plan.
+
+**What `holiday.3` asks.** Band 3.2–3.4, `requires: {chordSymbols: true}`, concepts
+`carols`, `transposing-for-singers`, `chord-symbols`; the lesson is about holding a room
+together and moving a tune down for it, and its exercises are one cadence in **C, G and F**.
+`levelBand` is honest by construction — `validate.py:466` says so in its own docstring — so
+it is recomputed from the options rather than treated as a gate.
+
+**Four homed, one tool call each, with the fields read.**
+
+- `song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx` → `holiday.3` | level 3.4, 1
+  stave, 50 bars, 6/8, two sharps, **32 chord symbols**, `compositionStatus: pd`; melody
+  reaches **F sharp 5**, higher than any other option on the rung | the lesson's own
+  argument in one piece — "untrained voices mostly live between about A below middle C and
+  D above it" and this one goes a fourth past that. Entry 31 read the same row and wrote
+  "Its honest home is `holiday.3`"; this is that follow-up taken.
+- `song.pop.misc-christmas-o-christmas-tree.pdmx` → `holiday.3` | level 3.38, 1 stave, 33
+  bars, 3/4, **one flat**, 38 symbols over F, C7, Gm, `pd` | the rung drills a cadence in C,
+  G **and F**, and until now **nothing on it was in F** — the four incumbents are G, D, D, G.
+  The genre plan puts this row at Stage 4; `holiday.4` requires two staves and this is a
+  one-stave lead sheet, so the plan's line is a level talking, not the page.
+- `song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx` →
+  `holiday.3` | level 3.49, 1 stave, 21 bars, 4/4, two sharps, **47 symbols** over 8 chords,
+  `pd` | the genre plan's own Stage 3 entry, and the densest chord rate on the rung. Takes
+  the band's top from 3.4 to 3.49.
+- `song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx` →
+  `holiday.3` | level 2.87, 1 stave, 20 bars, 4/4, one sharp but `finalBass` **E**, symbols
+  Em ×5, B7 ×3, B ×2, Am, Bm7, C, D, G, `pd` | the only option on the rung that sounds
+  minor, and the one `docs/02` names. Takes the band's floor from 3.2 to 2.87.
+
+`holiday.3` now offers **eight** songs against four, band **2.87–3.49**. Counted across the 109 rungs, eight puts it
+high but not at the top: twenty-six offer six, three offer seven, one other offers eight
+(`2.2`), and two offer more — `hymns` fourteen and the `classical.4` shelf forty-nine. It
+is also the one rung where breadth is the subject rather than a symptom: the skill is playing whatever the room starts singing. Said plainly so the owner
+can cut it back if that reads as hoarding.
+
+**Six not homed, each with the reason.**
+
+- *Let It Snow* (3.24, 1 stave, 64 symbols) — inside the band and satisfies `requires`, and
+  **left off anyway**: it is not a carol, which is what the rung's three concepts and every
+  sentence of its lesson are about; its twelve distinct chords include an A flat diminished
+  and an E flat diminished against a rung whose exercises are three root cadences; and its
+  `compositionStatus` is `unknown` with `compositionReason: "no composer named"` on a 1945
+  Styne and Cahn song. A rung is an offer to play; the Library is where it can stay.
+- *Up on the Housetop* (2.87, 1 stave, 20 symbols) — Entry 21 refused it from Stage 2
+  because Am7, Bm7 and C sharp diminished go past the three chords that rung teaches. That
+  reason does **not** transfer, since *Hark!* already puts nine chords on `holiday.3`. It is
+  left off for a different one: the four above each fill a gap the rung had — the minor,
+  the key of F, the too-high carol, the plan's own name — and this one fills none, so it is
+  the row where adding stops.
+- *Petit Papa Noël* (3.76, 2 staves, **0 chord symbols**) — fails the rung's subject
+  outright: every sentence of `holiday.3` is about reading chords over a tune. Its other
+  home would be `holiday.4` (3.6–4.94, `requires.staves: 2`), where Entry 21 refused it
+  because it is in C and the last bass note is **G**; `finalBass: 7` on the row still says
+  so and nothing has been heard since, so that refusal stands unchanged.
+- *Hark! The Herald* jazz lead sheet (5.4, 1 stave, 194 symbols, swing direction, two key
+  signatures), *We Wish You a Merry Christmas* solo (7.06, 2 staves, 59 bars) and *Happy
+  Xmas* (7.05, 2 staves, 163 bars, a three-note chord on every beat) — all three are Entry
+  31's own refusals at Stages 5, 6 and 7, re-read here against `holiday.3`'s band and
+  subject as well: 5.4, 7.05 and 7.06 are two to four levels above a rung whose top is now
+  3.49, and none of the three is a lead sheet a room sings from. The reasons hold as Entry
+  31 wrote them.
+
+---
+
+#### Item 7 — the UNSURE findings, every one closed
+
+Entry 39's table counts **8** UNSUREs; grepping `UNSURE` over the five batch files returns
+**11** Reader 1 lines, because three findings carry a mixed verdict (`batch-1:536` RIGHT and
+UNSURE, `batch-3:102` WRONG and UNSURE, `batch-5:340` WRONG and UNSURE) and the table files
+each finding under its primary verdict. **All eleven were read and all eleven now carry a
+second-reader line**; the tally below is of the eleven.
+
+| verdict | n | which |
+|---|--:|---|
+| **RIGHT** | 2 | the *Ode to Joy* shift; `ragtime.6`'s three publication years |
+| **WRONG** | 5 | "at Grade 1"; the Joplin cover quotation; *La Cumparsita* (1916); *Magnetic Rag*'s "four keys"; *The Cascades* among the late rags |
+| **rewritten so it no longer asserts the disputed thing** | 4 | the Chopin rubato attribution; Jimmy Yancey's left hand; *Heliotrope Bouquet*'s "wanders further"; whether the stride exercise is stride |
+| left disputed | **0** | — |
+
+**Two of the eleven were settled by searching somewhere nobody had searched, and both
+misses are the same mistake — the built catalog taken as a proxy for the repository.**
+
+1. **Four dates, and they were in the tree the whole time.** Reader 1 called
+   `ragtime.6`'s (1902), (1901), (1901) and `ragtime.8`'s *The Cascades* unsourced because
+   no *catalog row* carries a year. `content/sources/kern.json` carries a `publishedYear`
+   for **47** Joplin pieces, including every date those two lessons print. The field never
+   reaches the app: `content/catalog.schema.json` has no `publishedYear` and **0 of 2,061**
+   built rows carry one, which is why three readings in a row concluded there was no source.
+   So `ragtime.6`'s three years are **RIGHT**, and `ragtime.8`'s grouping is **WRONG** on
+   evidence rather than on anybody's recollection — *The Cascades* is **1904** against
+   *Gladiolus* 1907, *Pine Apple* 1908, *New Rag* 1912 and *Magnetic* 1914.
+2. **"Not fast." is on the music, six times.** Reader 1 searched `<words>` elements only
+   and found one file. Searching the whole MusicXML of all **50** bundled Joplin scores for
+   `Not\s+fast` finds **six**: *A Breeze from Alabama*, *The Easy Winners* ("Introduction.
+   Not fast."), *Something Doing*, *Sunflower Slow Drag* and *Weeping Willow* carry it as a
+   `<movement-title>` out of the original edition, and `song.ragtime.joplin-entertainer.alt`
+   as a printed direction over the first bar. The *sentence* "It is never right to play
+   ragtime fast" and the word "covers" are still unsourced and are gone; what the lesson
+   says now is what the app ships.
+
+**And three of Reader 1's own lines were corrected in passing**, which is what a second
+reader is for:
+
+- *"three of the five are Stage 5"* on `classical.4` counted a row T15 had already taken
+  off the rung. Today's five are 4.48, 4.63, 4.8, 5.55 and 5.8, so it is **two**.
+- *"Tico-Tico 1917 is carried in the catalog"* — in the title, it said. The title is
+  "Tico-Tico no Fubá" and carries no year; the year is in `source.editionNotes`. The
+  conclusion was right and the field was wrong, which matters because the whole question
+  was *where to look*.
+- The replacement sentence offered for `ragtime.7`'s *Heliotrope Bouquet* — "three key
+  signatures in 109 bars, two flats to five flats" — is *Magnetic Rag*, a different piece on
+  a different rung. *Heliotrope Bouquet* has two signatures in 87 bars.
+
+**One UNSURE was about a file rather than a sentence, and the file is wrong.** `2.5.md:18`
+says *Ode to Joy (full theme)* shifts in bar 12 to the G below middle C, and it does: the
+bar is `C4(1) D4(2) G3(5)`. Reader 1 left the *fingering* open. It is decidable — all three
+notes are on **staff 1, voice 1** (the left hand's own G2 is a separate note on staff 2), so
+this is a right-hand 5 on a note a fourth below a right-hand 1, which no hand plays without
+crossing itself. The marking is a fault in the score file and not a fingering to teach. The
+lesson's sentence is exactly what the file prints, so **no lesson edit**; the bad
+`<fingering>` is a follow-up, and `score_checks.py` has no fingering rule to catch it.
+
+**Twelve lessons edited**, each rewrite saying only what a file says: `classical.4`
+(the grade), `classical.6` (the rubato attribution), `ragtime.5` ("Not fast."),
+`ragtime.6` (a subtitle and a joke cut, the years kept), `ragtime.7` (a superlative over
+Joplin's output replaced by printed accidentals per bar — Heliotrope 2.97, *Solace* 2.60,
+*Sugar Cane* 2.00, *Bethena* 1.80, *Maple Leaf* 1.75, *Elite Syncopations* 1.67),
+`ragtime.8` (the key count and the grouping), `blues.6` (Yancey), `jazz.7` (the stride
+shape), `latin` (the year), plus `holiday.3`, `jazz.6` and `hymns` under items 6 and 8.
+
+**Three lessons crossed the three-minute cap when the corrections went in** — `blues.6`,
+`jazz.7` and `ragtime.8` were 582, 599 and 588 words and every correction is longer than
+the sentence it replaces. The cap was met by tightening inside the same paragraphs and
+cutting three genuinely doubled clauses (`jazz.7`'s "with the bass line audible under
+both", which its own sentence had already said; `ragtime.8`'s "more than any other rag in
+the library", an unmeasurable superlative of the same family as the one being fixed; and
+"in the Library rather than on this rung" shortened). **`lessonShape.test.ts`'s
+`KNOWN_LONG` was not grown**: an exception list that absorbs this run's own words is not an
+exception list.
+
+---
+
+#### Item 8 — the lessons Entry 45 left, and the paragraphs that read as lists
+
+Entry 45 named four things out of family. **Two it fixed** (`practice.1`–`.5`'s `##`
+headings, `latin.6` and `latin.7`'s misplaced repertoire paragraph). **Two it left**, and
+here is what happened to each:
+
+- **`ragtime.6` at 1,082 words, six minutes.** Entry 45's reason for leaving it stands and
+  is stronger than it looks: every sentence of the trio-by-trio walk is a fact under a claim
+  row from Entries 39–40, so cutting it deletes tested content, and where it *should* go —
+  onto the three pieces' own rows — is a data change nobody has asked for. This run's own
+  edit took it to **1,074** words, which is not a fix and is not pretended to be one.
+  **Not shortened**, deliberately; it stays on `KNOWN_LONG` and in `03` §6 where Entry 45
+  recorded it.
+- **Twenty-seven lessons naming no video.** T21 was doing exactly that while this ran and
+  its edits are uncommitted in the front matter of the lessons this run also edited. **No
+  `videos:` line was touched by this run.**
+
+**The Repertoire paragraphs that read as lists.** All **55** `**Repertoire…**` paragraphs
+in the 109 lessons were printed and read by length. The great majority attach a reason to
+each piece. **Two are a run of titles with nothing said about any of them**, and both are
+rewritten:
+
+- **`jazz.6`** was six titles and two years apiece — "*Bye Bye Blackbird* (1926),
+  *Limehouse Blues* (1922), *Tiger Rag* (1917)…all lead sheets, all public domain". It now
+  groups them by the thing the rung is about: three hold one key signature end to end (*Bye
+  Bye Blackbird* in C, *Darktown Strutters' Ball*, the shortest at 36 bars, and *Rose Room*,
+  fewest symbols at 37) and three move (*Limehouse* and *Royal Garden* change once, *Tiger
+  Rag* twice), "which is where a walking line stops being automatic". The years stay: all
+  six are printed in the catalog titles.
+- **`hymns`** was "Then the hymns themselves:" followed by seven titles in a row. It now
+  says the two kinds the rung actually holds — *Abide with Me*, *Jesus Loves Me* and *Rock
+  of Ages* (that one in 6/4) written out in four parts with **no** chord symbol, against
+  *What a Friend*, *Come Thou Fount*, *Just a Closer Walk* and *As the Deer*, which print
+  chords over the tune "which is where a walk-up goes".
+- **`holiday.3`** was rewritten anyway for item 6, and the rewrite is the same shape: each
+  of the eight gets the sentence saying why it is there.
+
+**A test caught one of these rewrites and was right to.** Trimming `hymns`'s "and the
+Library's track filter for hymns and gospel lists them too" made
+`lessonClaims.test.ts` go red on three pieces — *Be Thou My Vision*, *Swing Low* and
+*Joyful, Joyful* — because that clause was the rung's "where else to look" and the rule
+requires one in the same sentence. Restored as "and in the Library", four words instead of
+twelve, and the lesson stays inside three minutes.
+
+---
+
+#### The rows, and the mutations
+
+**Nineteen claim rows and one guard** appended to
+`app/tests/unit/lessonClaimsAboutMusic.test.ts`, covering `holiday.3` (6), `jazz.6` (3),
+`hymns` (1), `ragtime.5`, `ragtime.6`, `ragtime.7`, `ragtime.8` (3), `jazz.7`,
+`classical.4` and `latin`. Five helpers were added with them: a row's level, grade and
+edition notes; the highest sounding pitch of a staff; printed accidentals per bar; each key
+signature with the bars it lasts; and a reader for `content/sources/kern.json`'s
+`publishedYear`, which the rows have to read there because the field never reaches the
+catalog. Reading a source file from a test is not new — `difficulty.test.ts` reads
+`level-model.json` and `lessonClaimsAboutApp.test.ts` already reads `kern.json` for a
+different claim.
+
+**Four mutations, each failing with its own claim named.** One in the data (a song taken
+off `holiday.3` in the built curriculum: two rows red) and three in the asserted values
+(`top === 78` → 77, the key-signature sequence, *The Cascades*' year). Every one restored
+byte-for-byte afterwards and the suite re-run green.
+
+---
+
+#### Verification, and what it cost
+
+- **`build.py --offline` ran four times, not once**, and the reason is worth recording.
+  The first run failed two steps: the score-checks gate on the Carioca row (Entry 45's
+  finding, red since Entry 44) and `validate.py` on a stale `docs/generated/ladder.md`. The
+  second, after the allow-file row and `ladder_report.py`, was green. The third and fourth
+  were forced by `lessonClaims.test.ts`, which reads the **built** lessons under
+  `app/public/content/lessons`, so neither the `hymns` fix above nor a re-wrap of two
+  paragraphs to the corpus's column width could be verified without rebuilding — the same
+  debt Entries 39 and 40 both recorded. **A brief that says “build once at the end”
+  and a test that reads the build's output cannot both be obeyed**, and that is the thing to
+  fix, not the count.
+- **Every paragraph this run rewrote was re-wrapped to the corpus's 78 columns**, and two
+  were missed on the first pass — `ragtime.8`'s *What to play* and `hymns`'s Library
+  pointer, both caught by counting lines over 80 characters against the same file at `HEAD`
+  rather than by reading.
+- **`ladder.md` did need regenerating** and now shows `holiday.3` at 8 songs, 2.9–3.5.
+- The build regenerates nothing tracked under `app/`: `.gitignore:12` is
+  `app/public/content/*`.
+- `npx vitest run app/tests/unit/lessonClaims*.test.ts app/tests/unit/lessonShape.test.ts`
+  — **4 files, 422 tests, all passing**. The new `describe` reports **20** of those on its
+  own, so the suite stood at 402 before this run — that is arithmetic off the 20, not a
+  run of the four files made before the block existed.
+- `npx tsc -b` exits 0 and `npm run lint` (`eslint . --max-warnings=0`) is clean over the
+  whole of `app/`. The lint was first run on the one edited file, which caught a
+  `no-useless-assignment` in `t22Sections` and stood in for the suite until the suite was
+  run.
+- **No Playwright**, by instruction.
+
+---
+
+#### What is unverified
+
+- **Nothing here has been heard.** Every comparison in item 5 is nineteen numbers off a
+  parsed file; every carol in item 6 was placed from its key signature, its metre, its bar
+  count, its chord symbols and its highest note. Whether *O Holy Night*'s transcription is
+  worth practising is the question none of this answers.
+- **`holiday.3`'s page is four rows longer and was not looked at.** `LessonScreen` draws one
+  row per option, so eight rows now stand where four did. `04` §0 R1 and R2 were not
+  re-measured, because Playwright was out of scope for this task. If anything on that screen
+  has moved below the fold, this is the change that did it.
+- **The level model's residual was measured on 163 songs and 143 of the 164 judged rows carry
+the classical track.**
+  The ragtime correction rests on twelve, which is enough to see a consistent sign and not
+  enough to trust to two decimal places. The latin comparison has **no** judged anchor at
+  all and is a feature-by-feature reading, which is weaker.
+- **The eight quarried rows still carry no `tracks` and no `genre`**, so they reach the
+  Library under their bucket's default track, exactly as Entry 44 left them. Nothing this
+  run did changes that, because nothing was placed.
+- **The 47 archive rows behind the `subsets` licence flag are still unread** (Entry 44's own
+  last open item), and they are the only place a Stage 4 cakewalk could still come from.
+- **`docs/genre-plans/holiday.md` now disagrees with the curriculum in three places** and
+  was not edited, being outside this task's files — see the follow-ups.
+
+---
+
+#### Follow-ups, named rather than done
+
+1. **Carry `publishedYear` into the catalog.** `content/sources/kern.json` holds 47 of them
+   and `content/catalog.schema.json` has nowhere to put one, which cost three separate
+   readings of the same four dates. `import_kern.py` and the schema are the change.
+2. **`docs/genre-plans/holiday.md` against what the rungs hold.** Its Stage 4 line puts *O
+   Christmas Tree* on a rung that requires two staves, its Stage 6 line puts *O Holy Night*
+   there (Entry 31 already refused that and said `holiday.3`), and its Stage 2 line still
+   carries *Up on the Housetop*. `docs/02-curriculum.md:619` lists the holiday tunes and
+   does not name *O Christmas Tree* or *Angels We Have Heard on High*. Three places, one
+   fact.
+3. **A fingering rule for `score_checks.py`.** A right-hand 5 below a right-hand 1 at the
+   same offset is not playable; `song.classical.ode-to-joy.full` bar 12 prints one and
+   `2.5.md` tells the learner to trust the printed fingering.
+4. **`endings-out-of-order` and the three-pass strain.** The check reads ending numbers as
+   restarting at 1 at each repeated section; an ending marked `1,3` under a `D.C.` is
+   correct engraving and currently a `high` flag. One allow row is in place; the rule could
+   learn it.
+5. **Three of the eight quarried pieces fit rungs that already exist**, and placing them was
+   not this item's question so it was not done: *La cumparsita* (7.2, the full edition) on
+   `latin.6`, whose *Cumparsita* today is a sixteen-bar tutorial excerpt; *At a Georgia Camp
+   Meeting* (7.0 by the corrected reading) on `ragtime.5` or `ragtime.6`, whose subject is
+   the leaping left hand and whose 46-semitone left hand is the widest on the track; and
+   *Summer Road's Cakewalk* (6.8 corrected) beside it. One sentence from the owner and each
+   is a single splice.
+6. **`exercise.stride.*` wears a name its shape may not earn.** Four generated rows, one
+   pattern, the tenth in the middle register rather than in the bass. `jazz.7` no longer
+   asserts it is stride; `generate_exercises.py` still calls it that.
+7. **The 44 REWRITE and 23 WRONG findings of Entries 39–40 are still open.** This run's
+   scope was the UNSUREs. The checkboxes in the batch files were left unticked so those two
+   entries' tallies still read true.
+
+---
+
+#### The `CLAUDE.md` checklist, run against this entry before it was written
+
+1. **Did I state an absence?** Every zero is a search with its result: the three-way search
+   for what "the plan" homes on `holiday.3`; `yancey` over the built catalog *and* over
+   `content/sources/*.json`; a four-digit-year regex over every field of every
+   `cumparsita` row. And the rule earned its keep twice — both of the item-7 discoveries
+   above are absences somebody else stated after one search.
+2. **Did I write a plural?** It caught one, in my own first draft of the `ragtime.5` fix,
+   which said *"one of the two editions of The Entertainer"* on Reader 1's `<words>` search.
+   Widening the search to the whole MusicXML of all fifty Joplin files made it six, named
+   one at a time above, and changed what the lesson says. The paragraph was rewritten and
+   so was the test row.
+3. **What proxy did I use?** Three, all named. The **level model** for difficulty — which is
+   why its residual was measured against 163 human-set levels before any conclusion was
+   drawn from it. The **built catalog** for the repository — the proxy that hid 47
+   publication years and five of six "Not fast." markings. And **notation for music**: nine
+   pieces were compared on nineteen numbers and none was played.
+4. **Green is not done.** 422 passing tests and a green build say nothing about whether
+   *O Holy Night*'s edition is good, whether eight rows still fit on a phone, or whether
+   *At a Georgia Camp Meeting* is 7.0. Those are above, not buried.
+5. **Did I check the reason, not just the outcome?** It caught one, and it is §2.16 exactly.
+   *Up on the Housetop* was about to be left off `holiday.3` on Entry 21's recorded reason —
+   its Am7 and C sharp diminished. That reason is **wrong here**: it was about a rung that
+   teaches three chords, and `holiday.3` already offers a carol with nine. The outcome did
+   not change; the reason in the record did, and now says what it really is.
+6. **Did I re-open the artefact?** Entries 21, 31, 36, 37, 39, 40, 44 and 45 were read
+   before any decision, and Entry 44's own `features` blocks were re-derived from the files
+   rather than quoted.
+7. **Who else reads the field I changed?** `songOptions` on `holiday.3`: `selectors.ts`
+   takes `slice(0, songsRequired)` for a session, and the first option is still *Jingle
+   Bells*, so no session changes; `LessonScreen` draws one row per option (four more rows —
+   see What is unverified) and finds the play tool's piece by the first playable option,
+   still *Jingle Bells*; `needs.ts` and `PlanScreen` count them, and a rung with eight
+   options is further above the floor of three, not nearer it. `levelBand`: `validate.py`
+   checks containment and writes `needs.inBand`, `ShelfScreen.ts:139` uses the band's floor
+   to pre-fill a level when the owner adds a book by hand (2.87 now, and `estimated` until
+   he types over it), `candidates.py --rung` and `rung_audit.py` read it for searching and
+   auditing. **No `level` was changed anywhere**, so `alternativesFor`'s 0.5 window —
+   working-rules §2.15's own example — is untouched.
+8. **Am I reading the letter?** Restated without the brief's words: *decide whether these
+   eight pieces of music are easy enough for the lessons that want them, put the homeless
+   Christmas tunes where they belong, and make sure no lesson still says something nobody
+   could check.* Checked against that, the shape of the answer is: no on all three rungs and
+   the measurement says why; four tunes homed and six named with their reason; and eleven
+   sentences that are now either true or gone.

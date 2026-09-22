@@ -5,7 +5,7 @@ unit: "jazz.8.1"
 videos:
   - label: "Jazz Chord Extensions Explained: How to Find 9ths, 11ths, 13ths, b9s & #11s"
     url: "https://www.youtube.com/watch?v=8VWktDGNqmM"
-    teacher: "Jazz Tutorial | Julian Bradley"
+    teacher: "Julian Bradley"
 readingTime: 3
 ---
 

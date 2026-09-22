@@ -11,6 +11,30 @@
  * chord and the cell goes amber when they disagree. That is the only judgement
  * this screen makes — there is no accuracy score, because a chart says what
  * harmony to play and nothing at all about which notes.
+ *
+ * **And there are keys to play it on** (added 2026-09-22, T22). Until then
+ * this screen subscribed to the on-screen keyboard source and drew no
+ * keyboard, which `pending-review` Entry 38 found by driving it and Entry 42
+ * confirmed with two greps: the amber/green matching was a MIDI feature on the
+ * one screen in the app whose subject is *play this chord*, and a phone with
+ * nothing plugged in had no instrument on it at all. The strip is the same
+ * `KeyboardStrip` the lab and free play draw, wired to the same shared source,
+ * so a tap arrives by the path a cable's note arrives by.
+ *
+ * Two design questions came with it, and Entry 42 was right that they are the
+ * real cost. Both are answered by what the exercise *is*:
+ *
+ *  - **The keys show nothing that is expected.** The lab lights the bar's
+ *    chord tones; here that would answer the question the chart is already
+ *    answering in letters an inch high, and a chart that fingers the chord for
+ *    you is a different exercise from one that checks what you played. They
+ *    light what is *held*, which is feedback and not a hint.
+ *  - **They sit between the transport and the chart.** The instrument belongs
+ *    with the control that starts the run, not at the foot of a form that is
+ *    longer than a phone — which is the fault T17 fixed for *Count off ▶*
+ *    three days earlier and would have rebuilt underneath it. They are drawn
+ *    by `showTransport`, so a dead end has no keys for the same reason it has
+ *    no transport (`04` §0 R4).
  */
 import type { Router } from '../../router';
 import { contentUrl, findItem } from '../../curriculum/load';
@@ -20,8 +44,10 @@ import { getSettings } from '../../data/settingsStore';
 import { audioEngine, getPiano, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
 import { DrumKit, barSchedule } from '../../audio/backingLoop';
+import type { Piano } from '../../audio/Piano';
 import { toMusicXml } from '../../score/mxl';
 import { chartBars, chordMatch, parseHarmony, type ChordSymbol } from '../../score/harmony';
+import { KeyboardStrip } from '../KeyboardStrip';
 import { onScreenDispose } from '../screenLifecycle';
 import { button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
@@ -76,6 +102,11 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   const grid = el('div.chart-grid', { id: 'chart-grid' });
   const form = el('div.chart-form', { id: 'chart-form' });
   const controls = el('div.row', { id: 'chart-controls' });
+  /** The keys, once there is a chart to play against (see `showTransport`). */
+  const stripHost = el('div.chart-strip', { id: 'chart-strip' });
+  let strip: KeyboardStrip | null = null;
+  let piano: Piano | null = null;
+  let pianoAsked = false;
   /**
    * The transport above the chart, not under it (`04` §0 R1, R3; T17).
    *
@@ -92,7 +123,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
    * belongs (R6); `deadEnd` still lifts it above the controls when there is no
    * chart for it to sit under.
    */
-  body.append(form, controls, grid, status);
+  body.append(form, controls, stripHost, grid, status);
 
   let bars: (ChordSymbol | null)[] = [];
   let bar = 0;
@@ -146,6 +177,11 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   }
 
   function markMatch(): void {
+    // What is held, on the keys as well as on the cell. It is feedback and not
+    // a hint: nothing on this strip is ever `expected`, because the chart is
+    // already printing the chord and a strip that fingered it would answer the
+    // question instead of asking it.
+    strip?.setState({ pressed: [...held] });
     const cell = grid.children[bar];
     if (!(cell instanceof HTMLElement)) return;
     const score = chordMatch(bars[bar] ?? null, [...held]);
@@ -311,6 +347,61 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       compChip,
       backingChip,
     );
+    showKeys();
+  }
+
+  /**
+   * The instrument, drawn beside the transport (T22).
+   *
+   * Through `screenKeyboardSource` rather than straight into `held`, so a tap
+   * and a cable's note arrive by one path and the matching below cannot tell
+   * them apart — the shape `FreePlayScreen` and the lab already use.
+   */
+  function showKeys(): void {
+    if (strip) return;
+    strip = new KeyboardStrip({
+      interactive: true,
+      showOctaveLabels: true,
+      onNoteOn: (midi, velocity) => {
+        screenKeyboardSource.noteOn(midi, velocity);
+        sound(midi, velocity);
+      },
+      onNoteOff: (midi) => {
+        screenKeyboardSource.noteOff(midi);
+        piano?.stop(midi);
+      },
+    });
+    stripHost.append(strip.el);
+    // After a paint, for the reason `fitKeysToWidth` waits for one: the screen
+    // is built before the shell puts it in the document, so until the next
+    // frame every key is at offset 0 and "scroll to middle C" resolves to the
+    // left end of an 88-key strip.
+    requestAnimationFrame(() => {
+      if (!disposed) strip?.scrollToMiddleC('auto');
+    });
+  }
+
+  /**
+   * A tapped key sounds; a note over MIDI does not get an echo.
+   *
+   * The same trade the other two strips make: a tap on a picture of a key that
+   * stays silent is what makes a strip read as a diagram, and doubling a note
+   * that has already been played on a real instrument would be the app playing
+   * along uninvited. The samples are asked for on the first tap, so that first
+   * note is silent — a missed note beats a throw inside an input handler.
+   */
+  function sound(midi: number, velocity: number): void {
+    if (!pianoAsked) {
+      pianoAsked = true;
+      void getPiano()
+        .then((loaded) => {
+          if (!disposed) piano = loaded;
+        })
+        .catch(() => {
+          /* No samples, no sound. The matching below still works. */
+        });
+    }
+    piano?.start({ midi, velocity });
   }
 
   // --- input --------------------------------------------------------------
@@ -448,6 +539,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     metronome?.dispose();
     stopMidi();
     stopKeys();
+    strip?.destroy();
   });
 
   return section;

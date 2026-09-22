@@ -16,7 +16,8 @@
  *  - the read-ahead is the whole form printed at once with the sounding bar
  *    marked, so the next chord is legible before it arrives;
  *  - what the learner plays is answered — the sounding bar says whether it
- *    agrees with the chart;
+ *    agrees with the chart, over a cable **and** off the screen's own keys
+ *    (T22; there were none until 2026-09-22);
  *  - Stop stops and leaves the chart standing, and Back leaves nothing on.
  *
  * **Nothing here is heard**: the count-off, the bass and the comp are not
@@ -99,6 +100,58 @@ test('the chart, the tracker and the transport are in one glance on a phone', as
   await expect(cells.nth(1)).not.toBeEmpty();
 });
 
+/**
+ * The chart has an instrument on it, and what is played on it is answered.
+ *
+ * Entry 38 drove this screen and found it subscribing to the on-screen
+ * keyboard source while drawing no keyboard; Entry 42 confirmed it with two
+ * greps and sized the feature rather than building it. So until 2026-09-22 the
+ * amber/green matching `04` §3b promises was reachable with a cable and
+ * unreachable from the glass, on the one screen in the app whose subject is
+ * *play this chord*. This is the test that it is not any more, and it was red
+ * against the screen as it stood: there was no `#chart-strip` to query.
+ *
+ * The held key is asserted to mark the bar **no**, and that is derived rather
+ * than measured: `chordMatch` wants more than half the chord's pitch classes,
+ * and one key is at most a third of a triad, whichever chord the rung's song
+ * happens to open on. Releasing it returns the bar to `idle`, which is the
+ * other half of the rule — silence is not a mistake.
+ */
+test('the chart has keys, and a key held on them marks the sounding bar', async ({ page }) => {
+  test.setTimeout(120_000);
+  await chartFromTheLesson(page);
+  await expect(page.locator('#chart-grid .chart-cell').first()).toBeVisible({ timeout: 60_000 });
+
+  const strip = page.locator('#chart-strip .keyboard-strip');
+  await expect(strip, 'the chord chart draws no keyboard').toBeVisible();
+  // With the transport, not at the foot of a form that is longer than a phone:
+  // the instrument belongs beside the control that starts the run.
+  expect(
+    await withoutScrolling(page, '#chart-strip'),
+    'the keys are below the fold on a 342 px phone',
+  ).toBe(true);
+  expect(await withoutScrolling(page, '#chart-start')).toBe(true);
+
+  const current = page.locator('#chart-grid .chart-cell[data-current="true"]');
+  await expect(current).toHaveCount(1);
+
+  // Held, not clicked: a click is a press and a release, and a released key is
+  // silence. The mouse gives one pointer, which is exactly one finger.
+  const key = page.locator('#chart-strip .key[data-midi="60"]');
+  await key.scrollIntoViewIfNeeded();
+  const box = await key.boundingBox();
+  expect(box, 'middle C is not on the strip').not.toBeNull();
+  await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height - 6);
+  await page.mouse.down();
+
+  await expect(key).toHaveClass(/is-pressed/);
+  await expect(current).toHaveAttribute('data-match', 'no');
+
+  await page.mouse.up();
+  await expect(current).toHaveAttribute('data-match', 'idle');
+  await expect(page.locator('#chart-strip .key.is-pressed')).toHaveCount(0);
+});
+
 test('a count-off runs it, what is played is answered, and Stop stops', async ({ page }) => {
   test.setTimeout(180_000);
   const midi: MidiMock = await installMidiMock(page, { permission: 'granted' });
@@ -116,9 +169,9 @@ test('a count-off runs it, what is played is answered, and Stop stops', async ({
   const first = (await form.textContent()) ?? '';
   await expect(form).not.toHaveText(first, { timeout: 90_000 });
 
-  // The chart answers what is played. There is no keyboard on this screen —
-  // recorded in `pending-review` Entry 38 — so the only instrument a test has
-  // here is a MIDI piano, which is also true of a learner.
+  // The chart answers what is played, over a cable. The test above is the same
+  // claim about the screen's own keys, which it did not have until 2026-09-22;
+  // this one is here because a chord is three notes and a mouse is one finger.
   await midi.noteOn(61, 80);
   await midi.noteOn(63, 80);
   await midi.noteOn(66, 80);

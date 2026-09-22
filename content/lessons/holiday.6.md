@@ -2,6 +2,10 @@
 title: "The ones people stop talking for"
 stage: 6
 unit: "holiday.6.1"
+videos:
+  - label: "A New Trick To Voice The Melody in Your Piece"
+    url: "https://www.youtube.com/watch?v=1R673KztMd4"
+    teacher: "Josh Wright"
 readingTime: 3
 ---
 

@@ -3,9 +3,9 @@ title: "From a phrase to a form"
 stage: 9
 unit: "theory.9.1"
 videos:
-  - label: "How to Transcribe Songs by Ear on Piano for Beginners"
-    url: "https://www.youtube.com/watch?v=5rNStzsnR_M"
-    teacher: "Shane's Queen Site"
+  - label: "How To Play By Ear With Chords"
+    url: "https://www.youtube.com/watch?v=rrIwKiZNFVM"
+    teacher: "Aimee Nolte"
 readingTime: 2
 ---
 

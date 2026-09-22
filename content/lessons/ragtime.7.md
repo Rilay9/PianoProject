@@ -30,8 +30,8 @@ never miss.** There is no shortcut and nobody has ever found one.
 - ***Bethena*** is a concert waltz in 3/4 with five strains, each in a different
   key. The syncopation is gentler; the reading is harder.
 - ***Heliotrope Bouquet***, written with Louis Chauvin, is a "slow drag" — the
-  tempo marking is the point, and the harmony wanders further than anything else
-  Joplin published.
+  tempo marking is the point, and it prints more accidentals to the bar than
+  anything else on this rung.
 
 **The secondary rag.** *Elite Syncopations* has passages where the right hand
 groups its sixteenths in threes against a two-beat bar — three, three, two,

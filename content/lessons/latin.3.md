@@ -2,6 +2,10 @@
 title: "The clave, and a tune to hear it under"
 stage: 3
 unit: "latin.3.1"
+videos:
+  - label: "Clave Explained: Son, Rumba, 3-2, 2-3 and more"
+    url: "https://www.youtube.com/watch?v=OE7X1PgmF54"
+    teacher: "World Drum Club"
 readingTime: 3
 ---
 

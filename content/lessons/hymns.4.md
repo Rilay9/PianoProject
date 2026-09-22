@@ -2,6 +2,10 @@
 title: "Four voices, two hands, and the inner parts"
 stage: 4
 unit: "hymns-gospel.4.1"
+videos:
+  - label: "Understanding Four-Part Harmony: Voice Leading, SATB, and Keyboard Format"
+    url: "https://www.youtube.com/watch?v=GP-DePhEXhw"
+    teacher: "Music Theory Fundamentals"
 readingTime: 3
 ---
 

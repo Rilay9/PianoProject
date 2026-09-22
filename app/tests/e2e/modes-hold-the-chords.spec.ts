@@ -69,7 +69,7 @@ test('the rung’s button opens the lab already holding the chords', async ({ pa
   await expect(page.locator('section[data-screen="lab"]')).toHaveAttribute('data-bed', 'hold');
   // And the chip row says what it does, in the learner's words, on the screen
   // rather than in a tooltip a phone does not have.
-  await expect(page.locator('#lab-bed-row')).toContainText('Hold the chords');
+  await expect(page.locator('#lab-plays-row')).toContainText('Hold the chords');
 });
 
 test('the loop runs with the chart, the counter and the keys in one glance', async ({ page }) => {

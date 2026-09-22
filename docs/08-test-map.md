@@ -171,7 +171,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `keyboard-strip.spec.ts` — an update touches only the keys that changed and never rebuilds the DOM.
 - `keys-guide.spec.ts` — the keys' three settings, each on its own: the guide ahead, finger numbers, the flash.
 - `lab-both-ways.spec.ts` — the lab's two chip rows in a browser (`04` §3c): the three ways round are exclusive with trading fours, a way round with nothing to play is `disabled` as a DOM property and says why, and every control carries its line.
-- `lab.spec.ts` — the accompaniment lab from the Library line, and Today's daily sight-read (`04` §2, §3c).
+- `lab.spec.ts` — the accompaniment lab from the Library line, and Today's daily sight-read (`04` §2, §3c). Also R1 on a 342 px phone from both doors: the one chip row that changes what *Jam it* does, and all five of its chips, inside the first screenful and still under the buttons (T22).
 - `landscape.spec.ts` — R5: sideways on a phone the header is one line and the first content is within 48 px.
 - `lesson-flow.spec.ts` — Today → Score → screen keys → summary → Progress → the review queue, joined.
 - `lesson-tools.spec.ts` — a rung's tools are controls and each lands somewhere specific (`04` §3d); and a rung naming none draws no block at all.
@@ -187,11 +187,11 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
   screen at 342 px, does the run answer, does Back leave the mode off. **Not one assertion in
   any of them is about sound.**
 
-- `modes-chart-from-a-lesson.spec.ts` — *Chart* on a `jazz.5` song row: the chart, the form tracker and the transport in one glance at 342 px, and Back returning to the rung.
+- `modes-chart-from-a-lesson.spec.ts` — *Chart* on a `jazz.5` song row: the chart, the form tracker and the transport in one glance at 342 px, Back returning to the rung, and the screen's own keys — a held key marks the sounding bar and releasing it returns the bar to idle (T22).
 - `modes-chart-from-the-score.spec.ts` — the same screen from the Score screen's `⋯` sheet, upright and sideways, and the row absent over a piece the build measured no chords in.
 - `modes-dictation.spec.ts` — melodic dictation from `theory.4`'s own row: the card gives nothing away, the phrase is played back on the strip, and the screen answers.
 - `modes-duet.spec.ts` — *Play it as a duet* still means it after the Score screen's *Duet* row has been switched off once; a duet may name an exercise; and Back returns to the rung.
-- `modes-engraving.spec.ts` — the one-line rhythm staff draws its noteheads on the line, asserted as a relationship, and nothing else re-engraves.
+- `modes-engraving.spec.ts` — the one-line rhythm staff draws its noteheads on the line, asserted as a relationship, and nothing else re-engraves. Also: a generated exercise prints its direction entirely above the top staff line, which is what takes the system's barline out of the words (T22).
 - `modes-free-play.spec.ts` — `#/play` from a rung and from Today: the readout and the keys both on a phone, the chord line's height reserved, the R4 sentence with nothing connected.
 - `modes-hold-the-chords.spec.ts` — the lab met from `blues.3`, the loop started, a note played over it and the time-round count read back.
 - `modes-lab-unlock.spec.ts` — a lab button that hands one picker back: the freed one live, the locked ones `disabled`, and changing the freed one changing what the loop charts.
@@ -333,7 +333,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `lessonPaperBookPicker.test.ts` — "I have this on paper" asks which book when there is more than one.
 - `lessonShape.test.ts` — what every lesson owes a learner, and the numbers it is allowed to quote: the reading time against the text, the three-minute cap, and the three shapes of the repository talking to itself in front of a learner.
 - `lessonSongEmpty.test.ts` — the same rule applied to the *screen*: a rung with no songs says which kind of empty it is, and none of the three sentences cites this repository or promises a song to a rung that will never have one (`04` §3, §0 R4).
-- `lessonVideos.test.ts` — every lesson's video links are links to a video, not a channel page.
+- `lessonVideos.test.ts` — every lesson's video links are links to a video, not a channel page; and, since T21, every URL is in `content/video-index.json` live and dated, and the title YouTube returned shares a word with the rung (the rule is stated in the file, and a row proves it still says no to a mismatched pair).
 - `levelOverrides.test.ts` — the owner's own difficulty numbers reach every reader of a level and survive a backup.
 - `levelSource.test.ts` — what the app does with `levelSource`: how a level prints, which alternative comes first.
 - `libraryRowRanking.test.ts` — the Library's rows ranked: `RH`/`LH` only where it is news; the drop target is the list.
@@ -484,6 +484,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `test_validate_p11.py` — one track list, orphans, estimated levels.
 - `test_validate_reach.py` — a core rung may not reach too far above its stage for a song.
 - `test_validate_sections.py` — named sections name bars the piece has, from either bar-count source.
+- `test_validate_videos.py` — the lesson-video index gate: an unfetched URL, a dead one, a row with no checked date, a missing index, and an empty lessons directory reported as an error rather than a clean pass. Also the `videos:` parser, which `common.read_front_matter` cannot read.
 - `test_validate_tools.py` — a rung's `tools` open something the rung has: a lab preset the lab knows, an `unlock` its preset really locks, a `mode` the lab has, an `item` among the rung's own options — songs **or** exercises since 2026-09-22 — and no `item` at all on a `ladder`.
 - `mxlutil.py`, `fixtures/` — helpers and fixtures, not tests.
 

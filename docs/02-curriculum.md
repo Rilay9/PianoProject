@@ -185,6 +185,17 @@ billspianopages.com/beginners; Hoffman Academy = free lesson videos on their sit
 Lypur = Andrew Furmanczyk's "Learn Free Piano" and "Learn Free Music Theory" playlists).
 Lesson numbers for Bill Hilton are *topic mappings to be verified* against the playlist.
 
+**"Confirm it" now has a machine behind it (T21, 2026-09-22).** The teacher-and-topic lines
+below are a wish, exactly like the repertoire column in Part D; what a rung actually offers
+is the `videos:` block in `content/lessons/<rung>.md`. Every URL in those blocks has been
+fetched once through YouTube's oEmbed endpoint, and the title and channel that came back are
+committed in `content/video-index.json`; `validate.py` fails the build on a URL that is not
+in that index with a live status, so **a link added by hand cannot ship unchecked**. The
+mechanics are `03` §6b. The limits are worth stating in the same breath: an oEmbed title is
+what the uploader typed, nothing here has been watched, and whether a video suits the
+*stage* — a beginner's lick pack does not belong on a Stage 9 rung — is a judgement no check
+in this repository makes.
+
 ### Stage 0 — Orientation & placement
 
 **0.1 Your instrument and your body.** Concepts: sitting height/distance (forearms level,

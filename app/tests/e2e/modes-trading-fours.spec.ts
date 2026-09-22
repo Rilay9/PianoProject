@@ -79,7 +79,12 @@ test('the rung’s own button reaches it, in its preset, with the mode off', asy
   // (`pending-review` Entry 38). What this file can insist on is that the row
   // is live once it is reached, and that the mode is off until it is asked
   // for — a jam is a jam unless somebody says otherwise.
-  await expect(page.locator('#lab-trade-0')).toHaveAttribute('aria-pressed', 'true');
+  // "Off" is now the absence of a pressed trade chip rather than a chip of its
+  // own (T22): the trade row's *Off* and the bed row's *Bed only* were two
+  // controls for one state, so the row that survived has five choices and the
+  // preset's own way round may be the pressed one.
+  await expect(page.locator('#lab-trade-2')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#lab-trade-4')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('#lab-trade-2')).toBeEnabled();
   await expect(page.locator('#lab-trade-4')).toBeEnabled();
 });
@@ -148,7 +153,7 @@ test('Back leaves the mode off — the same door opens a lab with no trade set',
   // having asked for it. Arriving by the rung's button a second time has to
   // give the lab the rung's preset and no trade.
   await tradeFromTheRung(page);
-  await expect(page.locator('#lab-trade-0')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#lab-trade-2')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('#lab-trade-4')).toHaveAttribute('aria-pressed', 'false');
   // And no jam is running behind it either, which is the other half of "off".
   await expect(page.locator('#lab-trade')).toBeHidden();

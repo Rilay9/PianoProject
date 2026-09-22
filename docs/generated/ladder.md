@@ -64,7 +64,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 2 | `holiday` | 3 | 6 | 1.2–3.2 | Jingle Bells (chorus) (1.2), Jingle Bells (chorus, hands together) (2.1), Silent Night (melody) (2.3), Jolly Old Saint Nicholas (2.4), Good King Wenceslas (2.5), We Three Kings of Orient Are (2.8) |
-| 3 | `holiday.3` | 4 | 4 | 3.2–3.3 | Jingle Bells (chorus, in G major with block chords) (3.2), Joy to the World (3.2), The First Noel (3.3), Hark! The Herald Angels Sing (3.3) |
+| 3 | `holiday.3` | 4 | 8 | 2.9–3.5 | God Rest Ye Merry, Gentlemen (2.9), Jingle Bells (chorus, in G major with block chords) (3.2), Joy to the World (3.2), The First Noel (3.3), Hark! The Herald Angels Sing (3.3), O Christmas Tree (3.4), … and 2 more |
 | 4 | `holiday.4` | 3 | 4 | 3.6–4.9 | We Wish You a Merry Christmas (3.8), Silent Night (3.9), Deck the Halls (4.2), Away in a Manger (4.9) |
 | 5 | `holiday.5` | 3 | 4 | 3.4–5.9 | Carol of the Bells (easy) (5.1), Auld Lang Syne (5.1), Mary Did You Know? (5.8), We Wish You a Merry Christmas (piano) (5.9) |
 | 6 | `holiday.6` | 3 | 4 | 6.1–7.3 | Carol of the Bells (Shchedryk) (6.1), Silent Night (Ondruš setting) (6.8), O Holy Night (piano solo) (6.8), Joy to the World (piano solo) (7.3) |

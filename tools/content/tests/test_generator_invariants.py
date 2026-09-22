@@ -1138,6 +1138,57 @@ class TestText(FamilyCase):
                     offset = float(text.getOffsetInHierarchy(part))
                     self.assertEqual(offset % length, 0.0, f"{name}: {text.content!r}")
 
+    def test_a_direction_is_printed_above_the_staff(self) -> None:
+        """
+        A direction with no `placement` is drawn *between* the staves, at the
+        measure's left edge, with the system's barline through the words — and
+        on four families with the first letter on top of the brace.
+        `pending-review` Entry 33 read nineteen families like that and Entry 38
+        proved `placement="above"` is the only cure OSMD offers, because a
+        barline is drawn through the whole system and anything between the
+        staves has one through it.
+
+        Asserted on every family rather than on the nineteen: a direction added
+        tomorrow is the one that would go back between the staves.
+        """
+        bad: list[str] = []
+        for name, _claims, sc, _entry in self.each():
+            for part in sc.parts:
+                for text in part.recurse().getElementsByClass(expressions.TextExpression):
+                    if text.placement != "above":
+                        bad.append(f"{name}: {text.content!r} is {text.placement!r}")
+        # Collected rather than asserted inside the loop: `each()` is a
+        # generator over every family, and raising inside it abandons the walk
+        # at the first fault, so a failure would name one family and say
+        # nothing about the other fifty-five.
+        self.assertEqual(bad, [], f"{len(bad)} directions are not above the staff")
+
+    def test_the_exported_musicxml_carries_the_placement(self) -> None:
+        """
+        The attribute has to survive the export, which is the only form OSMD
+        ever sees. `placement` is a music21 attribute and the writer is free to
+        drop it; this is the claim about the file rather than about the object
+        (`working-rules` §1 — the score in memory is a proxy for the file).
+        """
+        from music21.musicxml.m21ToXml import GeneralObjectExporter
+
+        seen = 0
+        bad: list[str] = []
+        for name, _claims, sc, _entry in self.each():
+            if not directions(sc):
+                continue
+            xml = GeneralObjectExporter().parse(sc).decode("utf-8")
+            words = re.findall(r"<direction([^>]*)>\s*<direction-type>\s*<words>", xml)
+            if not words:
+                bad.append(f"{name}: the export dropped the direction entirely")
+                continue
+            seen += 1
+            for attrs in words:
+                if 'placement="above"' not in attrs:
+                    bad.append(f"{name}: <direction{attrs}>")
+        self.assertEqual(bad, [], f"{len(bad)} exported directions are not above the staff")
+        self.assertGreater(seen, 0, "no family in the sample prints a direction")
+
 
 # --------------------------------------------------------------------------------------
 # the docstrings are true

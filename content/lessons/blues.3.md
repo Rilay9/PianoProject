@@ -2,7 +2,10 @@
 title: "The blue notes, before the twelve bars"
 stage: 3
 unit: "blues-boogie.3.1"
-videos: []
+videos:
+  - label: "Crush notes for blues piano"
+    url: "https://www.youtube.com/watch?v=l3pKMdTM-rM"
+    teacher: "Bill Hilton"
 readingTime: 3
 ---
 

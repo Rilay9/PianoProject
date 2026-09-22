@@ -25,10 +25,10 @@ since is a variation on it.
 
 **A note on names.** Boogie figures get called after players, and the labels are
 often wrong. What is usually posted online as a "Yancey bass" is the plain
-root-and-fifth alternation above; Jimmy Yancey's own left hand was a dotted
-habanera figure, closer to a tango than to eight even eighths, and he ended
-almost everything in E flat whatever key he started in. Worth knowing so you are
-not surprised when a recording does not match the label.
+root-and-fifth alternation above, and Yancey’s own left hand is usually
+described as a dotted figure closer to a tango. There is no Yancey here to
+check that against, so read the label as a name somebody gave a pattern
+rather than as a description of a player.
 
 **Stamina is the skill.** Eight eighths a bar for twelve bars is ninety-six notes
 with no rest, and the left arm will tell you when it is doing this with the

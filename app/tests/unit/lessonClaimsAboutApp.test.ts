@@ -37,9 +37,11 @@ import { describe, expect, it } from 'vitest';
 import {
   LAB_PRESETS,
   labBedFor,
+  labHelp,
   labPreset,
   labProgression,
   type LabBed,
+  type LabHelpLine,
 } from '../../src/engine/sightReading';
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { masteryCriteriaFor } from '../../src/curriculum/selectors';
@@ -99,6 +101,11 @@ function item(id: string): CatalogItem {
 
 function source(path: string): string {
   return readFileSync(resolve('src', path), 'utf8');
+}
+
+/** The line the lab prints under one of its controls (`04` §3c's table). */
+function labHelpLine(id: LabHelpLine['id']): string {
+  return labHelp(id);
 }
 
 /** The drill params of a catalog row, whatever they are. */
@@ -848,8 +855,19 @@ const T14_APP_CLAIMS: [string, string, () => boolean][] = [
     'jam.7',
     'Jam it is what starts it, and Trading fours is a setting on it',
     () => {
+      // It was its own chip group until 2026-09-22 and is now two chips in the
+      // *What the app plays* row, which is the same claim: a setting on the
+      // button, not a button of its own. The words are still on the screen,
+      // because seven lesson sentences tell the learner to *set Trading fours*
+      // by name — so what is checked is the chip the lesson points at and the
+      // help line the row prints, not the call that used to draw the label.
       const lab = source('ui/screens/LabScreen.ts');
-      return lab.includes("'Jam it'") && lab.includes("chipGroup('Trading fours'");
+      return (
+        lab.includes("'Jam it'")
+        && lab.includes("'What the app plays'")
+        && lab.includes('Trade ${String(count)} bars each')
+        && labHelpLine('plays').includes('Trading fours')
+      );
     },
   ],
   [
@@ -3435,10 +3453,14 @@ const T19_APP: [string, string, () => boolean][] = [
     'improv.5',
     'trading fours is a setting on Jam it and turns the way round off, so the bed does not hold the chords through the learner’s bars',
     () => {
+      // One row since 2026-09-22, so the exclusion is no longer two lines
+      // pointing at each other: pressing a trade sets `bed = 'off'` and
+      // pressing a way round sets `trading = false`, in the one handler.
       const screen = source('ui/screens/LabScreen.ts');
       return (
-        screen.includes("if (trading) bed = 'off';") &&
-        screen.includes("if (bed !== 'off') trading = false;") &&
+        screen.includes("bed = 'off';") &&
+        screen.includes('trading = false;') &&
+        screen.includes('trading = true;') &&
         labTools('improv.5').join(',') === 'blues-shuffle'
       );
     },

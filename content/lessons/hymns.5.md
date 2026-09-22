@@ -2,6 +2,10 @@
 title: "Walk-ups, passing chords, and the chord that is not in the key"
 stage: 5
 unit: "hymns-gospel.5.1"
+videos:
+  - label: "Left Hand Walks and Runs for Hymn-playing and Improvising"
+    url: "https://www.youtube.com/watch?v=bVQUZKnu8PM"
+    teacher: "Jonathan Hudson"
 readingTime: 3
 ---
 

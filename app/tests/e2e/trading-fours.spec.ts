@@ -38,13 +38,14 @@ test.describe('trading fours', () => {
     await openLab(page);
     // A jam is a jam unless somebody says otherwise: the lab's own contract is
     // that nothing is judged, and this mode is the exception you opt into.
-    await expect(page.locator('#lab-trade-0')).toHaveAttribute('aria-pressed', 'true');
+    // Off is *Bed only* since the two chip rows became one (T22).
+    await expect(page.locator('#lab-bed-off')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#lab-trade-2')).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('#lab-trade-4')).toHaveAttribute('aria-pressed', 'false');
 
     await page.locator('#lab-trade-4').click();
     await expect(page.locator('#lab-trade-4')).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('#lab-trade-0')).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('#lab-bed-off')).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('#lab-trade-2')).toHaveAttribute('aria-pressed', 'false');
 
     await page.locator('#lab-trade-2').click();
