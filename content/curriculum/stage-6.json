@@ -685,11 +685,10 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "minor-vamp"
-                },
-                {
-                  "kind": "lab",
-                  "label": "Lab — your own chords"
+                  "preset": "minor-vamp",
+                  "unlock": [
+                    "progression"
+                  ]
                 }
               ]
             }
@@ -892,6 +891,67 @@
                   "four-part vocal scores",
                   "lead sheets with no left hand written",
                   "medleys of several hymns"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "latin.6.1",
+          "title": "Latin: the tango accompaniment, and the montuno in three voices",
+          "track": "latin",
+          "lessons": [
+            {
+              "id": "latin.6",
+              "title": "The tango accompaniment, and the montuno in three voices",
+              "concepts": [
+                "tango",
+                "tumbao",
+                "montuno",
+                "tresillo"
+              ],
+              "textFile": "lessons/latin.6.md",
+              "exerciseOptions": [
+                "exercise.tumbao.g",
+                "exercise.montuno.d.3note.son-3-2",
+                "exercise.latin-groove.d.son-3-2"
+              ],
+              "songOptions": [
+                "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
+                "song.folk.por-una-cabeza-carlos-gardel.pdmx",
+                "song.jazz.the-crave"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "latin"
+              ],
+              "estimatedDays": 30,
+              "requires": {
+                "staves": 2
+              },
+              "levelBand": [
+                5,
+                7.46
+              ],
+              "finder": {
+                "skill": "playing a tango's left-hand pattern in time while the right hand sings",
+                "levelWords": "advanced, Grade 5 to 7, tango, habanera, Latin piano",
+                "constraints": [
+                  "a tango or habanera with the left hand written out",
+                  "two staves",
+                  "a repeating left-hand figure, not block chords",
+                  "Argentine tango, Cuban son or Brazilian choro"
+                ],
+                "avoid": [
+                  "lead sheets with no left hand written",
+                  "rubato from beginning to end",
+                  "swing feel"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
               }

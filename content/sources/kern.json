@@ -1776,7 +1776,8 @@
         },
         "005": {
           "level": 6.0,
-          "abrsmGradeApprox": 4
+          "abrsmGradeApprox": 4,
+          "skip": "Op. 6 is Quatre Mazurkas and has no fifth. The file this resolved to, 006-1b-Sm-005.krn, carries the printed title Cinq Mazurkas (which is Op. 7) and is note-for-note identical over all 20 bars to 007-1-KI-005.krn, which ships as song.classical.chopin-mazurka-op7-5.nifc."
         }
       }
     },
@@ -1969,6 +1970,9 @@
       "level": 7.8,
       "abrsmGradeApprox": 6,
       "works": {
+        "001": {
+          "title": "Mazurka in G major, Op. 50 No. {n}"
+        },
         "003": {
           "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
@@ -2016,6 +2020,9 @@
       "level": 8.0,
       "abrsmGradeApprox": 6,
       "works": {
+        "003": {
+          "title": "Mazurka in F-sharp minor, Op. 59 No. {n}"
+        },
         "001": {
           "skip": "music21's Humdrum importer loses notes from this file — it cannot follow a spine split inside a split, or some merges — so the converted score does not match the edition (docs/handoff-2026-09-09.md §5aj)."
         }
@@ -2610,6 +2617,9 @@
       "level": 9.2,
       "abrsmGradeApprox": 8,
       "works": {
+        "002": {
+          "title": "Piano Sonata No. 2, Op. 35 — mvt {n} in E-flat minor"
+        },
         "003": {
           "level": 8.4,
           "abrsmGradeApprox": 8,

@@ -10,6 +10,7 @@
 
 import type { Mode } from './engine/types';
 import type { HandsFocus } from './score/WindowRenderer';
+import { LAB_BEDS, LAB_LOCKS, type LabBed, type LabLock } from './engine/sightReading';
 
 export const TAB_IDS = ['today', 'plan', 'library', 'progress', 'settings'] as const;
 export type TabId = (typeof TAB_IDS)[number];
@@ -211,6 +212,27 @@ export interface Route {
    * piece does not have.
    */
   labPreset?: string;
+  /**
+   * Which of the preset's locked pickers this visit hands back, as
+   * `#/lab?preset=ballad&unlock=progression`.
+   *
+   * A rung says it (`curriculum.schema.json`, a `lab` tool's `unlock`), and
+   * before this existed the only way to give a learner a control their rung's
+   * preset had taken was a **second lab button with no preset at all** — which
+   * six rungs carried and six lessons had to name (Entry 24 item 5). A name
+   * the lab has no picker for is dropped, like a `preset` the lab does not
+   * know.
+   */
+  labUnlock?: readonly LabLock[];
+  /**
+   * Which way round the lab opens on, as `#/lab?preset=blues-shuffle&mode=tune`.
+   *
+   * The preset carries a default and a preset is shared, so three rungs whose
+   * lesson wants the other one had no way to say it (Entry 30 item 5). Named
+   * `mode` on the tool entry and in the hash because that is what the screen's
+   * own chips are; the value is a `LabBed`.
+   */
+  labBed?: LabBed;
   /** Free play (`04` §2b), addressed as `#/play`. */
   play?: boolean;
 }
@@ -329,7 +351,22 @@ export function parseHash(hash: string): Route {
   // page and the chord chart do.
   if (tab === 'lab') {
     const preset = params?.get('preset') ?? undefined;
-    return { tab: 'library', lab: true, ...(preset ? { labPreset: preset } : {}) };
+    // Each name checked on its own and the unknown ones dropped, rather than
+    // the whole list refused: a rung that frees two pickers and misspells one
+    // should still free the other, and `validate.py` refuses the misspelling
+    // before it is ever written.
+    const unlock = (params?.get('unlock') ?? '')
+      .split(',')
+      .filter((name): name is LabLock => (LAB_LOCKS as readonly string[]).includes(name));
+    const mode = params?.get('mode') ?? '';
+    const bed = (LAB_BEDS as readonly string[]).includes(mode) ? (mode as LabBed) : undefined;
+    return {
+      tab: 'library',
+      lab: true,
+      ...(preset ? { labPreset: preset } : {}),
+      ...(unlock.length > 0 ? { labUnlock: unlock } : {}),
+      ...(bed ? { labBed: bed } : {}),
+    };
   }
   // Free play (`04` §2b), pushed over Today the way the lab is pushed over
   // Library: it is reached from Today's tools and is not a tab of its own.
@@ -407,7 +444,16 @@ export function parseHash(hash: string): Route {
 }
 
 export function routeToHash(route: Route): string {
-  if (route.lab) return route.labPreset ? `#/lab?preset=${encodeURIComponent(route.labPreset)}` : '#/lab';
+  if (route.lab) {
+    const parts = [
+      ...(route.labPreset ? [`preset=${encodeURIComponent(route.labPreset)}`] : []),
+      ...(route.labUnlock && route.labUnlock.length > 0
+        ? [`unlock=${route.labUnlock.join(',')}`]
+        : []),
+      ...(route.labBed ? [`mode=${route.labBed}`] : []),
+    ];
+    return parts.length > 0 ? `#/lab?${parts.join('&')}` : '#/lab';
+  }
   if (route.play) return '#/play';
   if (route.paper) {
     return `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
@@ -550,9 +596,22 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Opens the accompaniment lab (`#/lab`, `04` §3c), optionally in a preset. */
-  navigateLab(preset?: string): void {
-    const route: Route = { tab: 'library', lab: true, ...(preset ? { labPreset: preset } : {}) };
+  /**
+   * Opens the accompaniment lab (`#/lab`, `04` §3c), optionally in a preset and
+   * optionally with some of that preset's pickers handed back or a way round
+   * chosen (`04` §3c, T16).
+   */
+  navigateLab(
+    preset?: string,
+    options: { unlock?: readonly LabLock[]; mode?: LabBed } = {},
+  ): void {
+    const route: Route = {
+      tab: 'library',
+      lab: true,
+      ...(preset ? { labPreset: preset } : {}),
+      ...(options.unlock && options.unlock.length > 0 ? { labUnlock: options.unlock } : {}),
+      ...(options.mode ? { labBed: options.mode } : {}),
+    };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -601,6 +660,10 @@ export class Router {
       route.seed === this.current.seed &&
       route.lab === this.current.lab &&
       route.labPreset === this.current.labPreset &&
+      // By value: two routes freeing the same pickers are the same route, and
+      // comparing the arrays would remount the lab on every repeat.
+      (route.labUnlock ?? []).join(',') === (this.current.labUnlock ?? []).join(',') &&
+      route.labBed === this.current.labBed &&
       route.play === this.current.play &&
       // By value: two loop ranges naming the same bars are the same route, and
       // comparing the objects would remount the Score screen on every repeat

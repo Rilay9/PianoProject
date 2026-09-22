@@ -994,21 +994,57 @@ LAB_PRESET_IDS = {
 }
 
 
-def tool_errors(curriculum: dict) -> list[str]:
-    """
-    A rung's tools must open something the rung actually has.
+#: Which of a preset's pickers each one locks, mirroring `LAB_PRESETS` in
+#: `app/src/engine/sightReading.ts`. A rung's `unlock` names one of *its
+#: preset's* locks, so the check needs the locks and not only the ids.
+#: `labPresets.test.ts` is the join that says when the two copies drift.
+LAB_PRESET_LOCKS = {
+    "primary-chords": {"progression", "leftHand"},
+    "pop-four-chord": {"progression", "leftHand"},
+    "ballad": {"progression", "leftHand", "rightHand"},
+    "blues-shuffle": {"progression", "leftHand", "bars"},
+    "jazz-comping": {"progression", "leftHand"},
+    "minor-vamp": {"key", "progression", "leftHand"},
+}
 
-    Two ways to point at nothing, and both would draw a button that lands the
-    learner somewhere wrong rather than failing loudly: a lab preset the lab has
-    never heard of, and an `item` that is not among this rung's own song
-    options. The second is the important one — a lesson that sends you to a
-    piece it does not offer is the `blues.3` fault wearing a control.
+#: The three ways round the lab opens (`04` §3c): the bed silent, the bed
+#: holding the chords, the bed playing the tune.
+LAB_BED_MODES = {"off", "hold", "tune"}
+
+
+def tool_errors(curriculum: dict, catalog: list | None = None) -> list[str]:
+    """
+    A rung's tools must open something the rung actually has, and say something
+    about that rung's own lab.
+
+    Four ways to point at nothing, and each would draw a button that lands the
+    learner somewhere wrong rather than failing loudly: a lab preset the lab
+    has never heard of, an `item` that is not among this rung's own options, an
+    `unlock` naming a control the rung's preset does not lock, and a `mode` the
+    lab does not have. The second is the important one — a lesson that sends
+    you to a piece it does not offer is the `blues.3` fault wearing a control.
 
     A `simon` tool opens a drill, not a piece, and a rung offers its drills as
     exercises, so its `item` is checked against those (2026-09-19, when the
     blues rungs began naming the Simon seeded from the blues scale).
+
+    **Every other kind's `item` may be a song or an exercise** (widened
+    2026-09-22). It used to have to be a song, and `technique.7` is what that
+    was wrong about: its sentence is about the two-against-three exercise and
+    its only songs are Czerny études, so the rule turned "play the exercise as
+    a duet" into a button that opened a study. What replaced it is not weaker
+    where it counts — the item must still be one of *this rung's* options — and
+    where a catalog is given it is stronger, because an option with no file
+    opens a drill screen and cannot be dueted against whatever its id says.
+
+    `unlock` and `mode` (T16) belong to a `lab` entry and nowhere else. They
+    replace the two-button shape Entry 24 item 5 put on six rungs, where the
+    rung carried the preset once and again with nothing fixed; one button that
+    names what it frees says the same thing and costs the lesson page one
+    control instead of two.
     """
     errors: list[str] = []
+    by_id = {item["id"]: item for item in catalog or []}
     for stage in curriculum.get("stages", []):
         for unit in stage.get("units", []):
             for lesson in unit.get("lessons", []):
@@ -1023,17 +1059,52 @@ def tool_errors(curriculum: dict) -> list[str]:
                             errors.append(
                                 f"{where} names preset {preset!r}, which the lab does not have"
                             )
+                        unlock = tool.get("unlock")
+                        if unlock is not None:
+                            if preset is None:
+                                errors.append(
+                                    f"{where} frees {', '.join(unlock)} and names no preset, so "
+                                    f"nothing is locked to free"
+                                )
+                            else:
+                                locks = LAB_PRESET_LOCKS.get(preset, set())
+                                for name in unlock:
+                                    if name not in locks:
+                                        errors.append(
+                                            f"{where} frees {name!r}, which preset {preset!r} "
+                                            f"does not lock"
+                                        )
+                        mode = tool.get("mode")
+                        if mode is not None and mode not in LAB_BED_MODES:
+                            errors.append(
+                                f"{where} opens on {mode!r}, which is not one of the lab's three "
+                                f"ways round"
+                            )
+                    else:
+                        for field in ("unlock", "mode"):
+                            if tool.get(field) is not None:
+                                errors.append(
+                                    f"{where} carries {field!r}, which only a 'lab' entry has"
+                                )
                     if kind == "simon":
                         if tool.get("item") and tool["item"] not in exercises:
                             errors.append(
                                 f"{where} opens {tool['item']!r}, which is not one of this "
                                 f"rung's exercise options"
                             )
-                    elif tool.get("item") and tool["item"] not in songs:
-                        errors.append(
-                            f"{where} opens {tool['item']!r}, which is not one of this "
-                            f"rung's song options"
-                        )
+                    elif tool.get("item"):
+                        item_id = tool["item"]
+                        if item_id not in songs and item_id not in exercises:
+                            errors.append(
+                                f"{where} opens {item_id!r}, which is not one of this "
+                                f"rung's song or exercise options"
+                            )
+                        elif kind in {"duet", "blind", "play"} and item_id in by_id:
+                            if not by_id[item_id].get("file"):
+                                errors.append(
+                                    f"{where} opens {item_id!r}, which has no notation to open — "
+                                    f"the catalog gives it no file, so it opens as a drill"
+                                )
                     if kind in {"duet", "blind"} and not tool.get("item") and not songs:
                         errors.append(
                             f"{where} needs a piece and the rung offers no song, so the "
@@ -1143,7 +1214,7 @@ def main() -> None:
         errors += finder_errors(curriculum)
         errors += unknown_concepts(curriculum)
         errors += notation_requirements(curriculum, catalog)
-        errors += tool_errors(curriculum)
+        errors += tool_errors(curriculum, catalog)
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
         errors += section_errors(catalog, args.dir)

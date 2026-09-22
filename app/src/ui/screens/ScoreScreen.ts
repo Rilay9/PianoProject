@@ -34,6 +34,7 @@ import {
 import {
   demandsTechniqueMeasure,
   evaluateOutcome,
+  accentScore,
   techniqueMeasureFor,
 } from '../../engine/Scoring';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
@@ -2193,6 +2194,21 @@ export function ScoreScreen(router: Router): HTMLElement {
         techniqueBinds ? `${technique.text} — this rung requires it` : technique.text,
       );
     }
+    // The accent, where the score prints one (T16 item 7). Only then: a piece
+    // with no accent in it gains no row, which is what keeps this off a sheet
+    // that `04` §0 R2 already measures on a 342 px phone. Never part of the
+    // pass — nothing in `mastery.custom` names it, and a leaning that is a
+    // little shy is not a wrong note.
+    const accents = heard ? accentScore(score.notes, session?.prepared?.steps ?? []) : null;
+    if (accents !== null && accents.judged > 0) {
+      addStat(
+        lines,
+        'Accents',
+        `${String(Math.round(accents.accuracy * 100))}% of ${String(
+          accents.judged,
+        )} leaned on, against the rest of your playing`,
+      );
+    }
     // The bars that went worst, by printed number, so the learner knows where
     // to look before choosing `Loop the weak bars` (`08` §6.2).
     const weakest = [...score.hotSpots]
@@ -2764,14 +2780,6 @@ export function ScoreScreen(router: Router): HTMLElement {
       // on the screen, and without it the stage is two empty divs.
       renderer.showStep(0);
 
-      if (sightReading) {
-        // Tempo mode, always: waiting for each note is not sight-reading, it
-        // is decoding (docs/05 §8).
-        mode = 'tempo';
-        const modeSelect = document.getElementById('score-mode');
-        if (modeSelect instanceof HTMLSelectElement) modeSelect.value = 'tempo';
-      }
-
       // The range this piece uses, not all 88 keys. With the full keyboard
       // on a 360 px phone every key is about seven pixels, and the blue key
       // marking the note the app is waiting for is a sliver among eighty-
@@ -2840,6 +2848,19 @@ export function ScoreScreen(router: Router): HTMLElement {
 
       input = pickInput();
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;
+      // Tempo mode, always, for a sight-read: waiting for each note is not
+      // sight-reading, it is decoding (docs/05 §8).
+      //
+      // **After the default above, and that is the whole of the fix.** It used
+      // to be set three hundred lines earlier, where the score finished
+      // loading, and this line then overwrote it — so Today's daily sight-read
+      // opened in Wait mode for every learner whose applicable default is Wait,
+      // which `defaultModeWithInput` ships as. Entry 29 found it in passing and
+      // left it named; the test that was red is the one with both defaults set
+      // to Wait, because with no input attached the *other* default (Tempo) hid
+      // it. The select is set from `mode` by `render()` below, so there is no
+      // second assignment to keep in step any more.
+      if (sightReading) mode = 'tempo';
       // …unless the hash asked for one. A tour step about Wait mode that opens
       // in whatever the learner's default happens to be is a step teaching the
       // wrong thing, and the select is still theirs to change afterwards.

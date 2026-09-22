@@ -197,6 +197,18 @@
                             "label": {
                               "type": "string",
                               "description": "Overrides the button's default wording where the rung wants something shorter or more specific."
+                            },
+                            "unlock": {
+                              "type": "array",
+                              "uniqueItems": true,
+                              "items": {
+                                "enum": ["key", "progression", "leftHand", "rightHand", "bars"]
+                              },
+                              "description": "For kind 'lab' with a preset: which of the controls that preset locks this rung hands back. Added 2026-09-22, replacing the shape Entry 24 item 5 gave six rungs — a second lab entry with no preset at all, so the lesson page drew two buttons opening the same screen and the prose had to name both. One button that says what it frees is the same offer with half the controls. validate.py refuses a name the rung's own preset does not lock, because 'this frees the tempo' about a tempo nothing fixed is a sentence with no referent."
+                            },
+                            "mode": {
+                              "enum": ["off", "hold", "tune"],
+                              "description": "For kind 'lab': which of the three ways round the lab opens on (docs/04 §3c) — bed only, the bed holding the chords, or the bed playing the tune. Added 2026-09-22 for the rungs Entry 30 named as waiting: jam.5, 3.2 and chords-pop.9 each want the opposite of what their shared preset opens on, and until a rung could say so the preset's own default was the only answer and three lessons described a chip the learner had to find."
                             }
                           }
                         }

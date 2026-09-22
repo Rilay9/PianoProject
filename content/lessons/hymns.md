@@ -41,7 +41,7 @@ first; add the passing chords afterwards.
 **Repertoire.** *Amazing Grace* in four parts is the one to read as SATB; *When
 the Saints* in F gets the melody into your ear first. Then the hymns themselves:
 *Abide with Me*, *Rock of Ages*, *What a Friend We Have in Jesus*, *Come Thou
-Fount*, *Jesus Loves Me*, *Holy, Holy, Holy*, *Just a Closer Walk with Thee* and
+Fount*, *Jesus Loves Me*, *Just a Closer Walk with Thee* and
 *As the Deer*. The easier settings — *Be Thou My Vision*, *Swing Low*, *Joyful,
 Joyful* — are on the Stage 2 hymns rung, and the Library's track filter for hymns
 and gospel lists them too. *Greensleeves* with

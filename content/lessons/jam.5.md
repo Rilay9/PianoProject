@@ -2,7 +2,7 @@
 title: "Comping behind somebody else"
 stage: 5
 unit: "jam.5.1"
-readingTime: 2
+readingTime: 3
 ---
 
 The rung before this one got you to the point of counting a tune in and knowing
@@ -29,8 +29,9 @@ the form tracker is for.
 
 **Tools for this rung.** The lab's *Blues — twelve bars* preset gives you a bass
 and drums that keep the form without keeping time *for* you, and nothing on that
-screen is judged. Comp through eight choruses of it. That is a more useful
-twenty minutes than any amount of reading.
+screen is judged. It opens on *Play the tune*, so there is a line to be in the
+gaps of rather than a bed to fill. Comp through eight choruses of it. That is a
+more useful twenty minutes than any amount of reading.
 
 **Common mistake.** Comping the same figure for a whole chorus. It is safe and
 it is dull, and it stops being accompaniment and becomes wallpaper. Change

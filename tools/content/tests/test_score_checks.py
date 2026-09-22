@@ -689,14 +689,46 @@ class KnownItems(unittest.TestCase):
     """
 
     def test_key_consistency(self):
-        red, score_ = built("song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx")
-        found = check_key_consistency(red, score_, None)
+        """
+        **The fault this was written for has been applied** (T15, 2026-09-22).
+        The *Écossaise* was titled "in G major, WoO 23" over a file in F, and
+        `content/sources/pdmx.json` now titles it in F — so the item is green
+        here and the red control is the row it used to be, built in the test
+        instead of read from the catalog. That way the check stays proved red
+        without a wrong title having to stay in the repository to prove it.
+        """
+        fixed, score_ = built("song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx")
+        self.assertIn("F major", fixed["title"])
+        self.assertEqual(check_key_consistency(fixed, score_, None), [])
+
+        was = dict(fixed, title="Écossaise in G major, WoO 23")
+        found = check_key_consistency(was, score_, None)
         self.assertEqual([f.severity for f in found], ["high"])
         self.assertEqual(found[0].numbers["titleKey"], "G major")
         self.assertEqual(found[0].numbers["signature"], "F major")
 
         green, clean = built("song.classical.mozart-minuet-in-f-major-k-1d.pdmx")
         self.assertEqual(check_key_consistency(green, clean, None), [])
+
+    def test_key_signature_on_the_catalog_row(self):
+        """
+        `keySig` is what the Library prints as "Key: …", and both writers of it
+        default to *major* when a file states no `<mode>` — which put **F
+        major** over the D minor Toccata and Fugue (coordinator, 2026-09-22).
+        `build.settle_key_signatures` now derives it from the final bass; this
+        is red on the row as it was and green on the row as it is built.
+        """
+        row, score_ = built("song.classical.bach-toccata-fugue-bwv565")
+        self.assertEqual(row["keySig"], "D minor")
+        self.assertEqual(
+            [f.kind for f in check_key_consistency(row, score_, None)], []
+        )
+
+        was = dict(row, keySig="F major")
+        found = check_key_consistency(was, score_, None)
+        self.assertEqual([f.kind for f in found], ["keysig"])
+        self.assertEqual(found[0].severity, "high")
+        self.assertEqual(found[0].numbers["relativeMinorTonic"], "D")
 
     def test_grace_density(self):
         red, score_ = built(
@@ -775,7 +807,20 @@ class KnownItems(unittest.TestCase):
         )
 
     def test_title_structure(self):
-        red, score_ = built("song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx")
+        """
+        **The fault this was written for has been applied** (T15, 2026-09-22).
+        The Clementi item titled "second and third movements" holds 70 bars of
+        3/8 in C major with one tempo, one key and no metre change — the third
+        movement alone — and it is now titled that, so the corpus holds no
+        red row for this check any more. The red side is kept by putting the
+        old title back on the same score in memory, which is exactly the fault
+        the check looks for: a title naming two movements over one section.
+        """
+        fixed, score_ = built("song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx")
+        self.assertEqual(fixed["title"], "Sonatina in C major, Op. 36 No. 1 (third movement)")
+        self.assertEqual(check_title_structure(fixed, score_), [])
+
+        red = {**fixed, "title": "Sonatina in C major, Op. 36 No. 1 (second and third movements)"}
         found = check_title_structure(red, score_)
         self.assertEqual([f.severity for f in found], ["low"])
         self.assertEqual(found[0].numbers["sections"], 1)
@@ -784,8 +829,20 @@ class KnownItems(unittest.TestCase):
         self.assertEqual(check_title_structure(green, clean), [])
 
     def test_repeat_structure(self):
-        red, score_ = built("song.classical.i-got-rythm.pdmx")
-        faults = repeat_faults(score_)
+        """
+        **The fault this was written for has been applied** (T15, 2026-09-22).
+        *I Got Rhythm* had its backward repeat on the second-time bar, so
+        nothing ever sent the player back; it is now on bar 9 where the first
+        ending ends, and the file is clean. The red control moves to *The Flute
+        Tune*, whose second-time bar repeats as well — a ten-bar loop, left as
+        written and listed in `content/score-checks.allow.json` with that
+        reason.
+        """
+        fixed, score_ = built("song.classical.i-got-rythm.pdmx")
+        self.assertEqual(repeat_faults(score_), [])
+
+        red, loop = built("song.folk.the-flute-tune-soulpride-remix.pdmx")
+        faults = repeat_faults(loop)
         self.assertIn("backward-repeat-in-later-ending", [f["kind"] for f in faults])
         self.assertTrue(
             any(f.get("bar") == "10" for f in faults if f["kind"] == "backward-repeat-in-later-ending"),

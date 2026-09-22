@@ -48,6 +48,8 @@ import {
   labHelp,
   labKey,
   LAB_PRESETS,
+  labBedFor,
+  labLocksFor,
   labPreset,
   labProgression,
   labRightHandBars,
@@ -134,7 +136,10 @@ export function LabScreen(router: Router): HTMLElement {
   // leaves the rest. An id the lab does not know is dropped rather than drawn
   // as an empty banner, the way `?loop=` drops a range a piece does not have.
   const preset = router.route.labPreset ? labPreset(router.route.labPreset) : null;
-  const locked = new Set(preset?.locks ?? []);
+  // The preset's locks, less whatever the rung handed back (`04` 3c, T16).
+  // `labLocksFor` rather than two lines here so the rule is testable without
+  // mounting the screen.
+  const locked = labLocksFor(preset, router.route.labUnlock);
 
   let keyId = preset?.keyId ?? 'c-major';
   let progressionId = preset?.progressionId ?? 'i-v-vi-iv';
@@ -351,7 +356,8 @@ export function LabScreen(router: Router): HTMLElement {
    * it is the same loop, the same bed, the same chart and the same keys, and a
    * third transport button would have been a third name for one thing.
    */
-  let bed: LabBed = preset?.bed ?? 'off';
+  // The rung's answer, then the preset's, then the bed silent.
+  let bed: LabBed = labBedFor(preset, router.route.labBed);
   /** The right hand the app plays under `tune`, one array per bar. */
   let bedBars: LabBedNote[][] = [];
   /** What the learner played this time round, against the bar it was played over. */

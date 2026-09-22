@@ -13,10 +13,14 @@ make sure things are correct."* `docs/prompts/working-rules.md` §2.8 — make t
 correction mechanical — is the rule this implements, for the seven shapes that
 have actually been seen.
 
-**What it is not.** It is a *report*, not a gate. Nothing here is wired into
-`validate.py`; see `main()`'s note. Six of the seven checks read the MusicXML
-directly, the way `truncation_scan.py` and `notation.py` do, because that is
-cheap enough to run over every file; only the key analysis needs music21.
+**A report, and — since T15 — a gate on its `high` rows.** `build.py` runs it
+with `--gate --no-analysis` after the merge: a high row that is not listed in
+`content/score-checks.allow.json`, with a reason, fails the build. Medium and
+low rows are reported and never fail one, because the checks that guess
+(title-structure) and the ones ordinary notation can trip live down there. Six
+of the seven checks read the MusicXML directly, the way `truncation_scan.py`
+and `notation.py` do, because that is cheap enough to run over every file; only
+the key analysis needs music21, and it produces no high rows.
 
 **Every threshold in this file is measured, not guessed.** `--stats` prints the
 corpus distribution each one came from, and the measurement is written beside
@@ -64,6 +68,10 @@ ANALYSIS_CACHE = BUILD / "score-checks.cache.json"
 #: the list — `"<item id>|<check>": "<fix>"`. Kept beside the report rather than
 #: inside it so that re-running the checks does not throw the judgements away.
 FIXES = BUILD / "score-checks.fixes.json"
+#: The high rows the build is allowed to carry, `"<item>|<check>|<kind>":
+#: "<why>"`. Every entry is a row a reader opened and decided about; a high row
+#: that is not in here fails the build. Written by T15, 2026-09-22.
+ALLOW = ROOT / "content" / "score-checks.allow.json"
 
 SEVERITIES = ("high", "medium", "low")
 
@@ -421,8 +429,16 @@ def signature_key(keys: list[tuple[int, str | None]], final_bass: int | None) ->
         return 0, "major", False
     fifths, mode = keys[0]
     major_pc = MAJOR_TONIC_PC[max(-7, min(7, fifths))]
-    if mode in {"major", "minor"}:
-        return (major_pc if mode == "major" else (major_pc + 9) % 12), mode, True
+    # `<mode>minor</mode>` is a statement; `<mode>major</mode>` is not.
+    # `Nocturne_in_C_sharp_Minor.mxl` under `content/scores/imported/
+    # musetrainer/scores` carries no `<mode>` at all and the converted file the
+    # catalog reads carries `<mode>major</mode>` — the conversion writes it. So
+    # a built file saying major carries no more than one saying nothing, and
+    # believing it flagged the C sharp minor Nocturne, Op. 9 No. 1, the Op. 64
+    # No. 2 waltz and the Pachelbel chaconne against their own correct titles.
+    # `build.settle_key_signatures` reads the field the same way.
+    if mode == "minor":
+        return (major_pc + 9) % 12, mode, True
     relative_minor = (major_pc + 9) % 12
     if final_bass is not None and final_bass == relative_minor:
         return relative_minor, "minor", False
@@ -473,6 +489,47 @@ def check_key_consistency(row: dict, score: Score, analysis: dict | None) -> lis
                     f"fifths {keys[0][0]} ({PC_NAMES[sig_pc]} {sig_mode}"
                     f"{'' if mode_read else ', mode inferred from the final bass'})",
                     kind="title",
+                )
+            )
+
+    # The catalog's own `keySig`, which is what the Library's detail sheet
+    # prints as "Key: …" (`app/src/ui/screens/LibraryScreen.ts`, its only
+    # reader in the app). A key signature stands for two keys, and both writers
+    # of the field default to *major* when the file states no `<mode>`:
+    # `keySignatureName` is handed OSMD's `Mode`, where absent and major are
+    # both 0, and `import_musetrainer.py` passes `mode or "major"`. That put
+    # **Key: F major** over the D minor Toccata and Fugue BWV 565 and C major
+    # over *Für Elise* (coordinator, 2026-09-22). `build.py`'s
+    # `settle_key_signatures` now derives it from the final bass instead; this
+    # is the check that says so if it ever stops.
+    # Songs only, for the same reason `build.settle_key_signatures` is: a
+    # generated exercise's `keySig` is the key its maker was asked to engrave,
+    # and the last bass note is the wrong witness for a scale, which ends on
+    # its own last degree — `exercise.articulation.c.legato.right` is C major
+    # and ends on A.
+    key_sig = (row.get("keySig") or "").strip() if row.get("type") == "song" else ""
+    if key_sig and keys and keys[0][1] != "minor":  # see `signature_key` on `major`
+        major_pc = MAJOR_TONIC_PC[max(-7, min(7, keys[0][0]))]
+        relative = (major_pc + 9) % 12
+        claims_major = key_sig.lower().endswith("major")
+        if claims_major and final_bass is not None and final_bass == relative:
+            flags.append(
+                Flag(
+                    item,
+                    title,
+                    "key-consistency",
+                    "high",
+                    {
+                        "keySig": key_sig,
+                        "fifths": keys[0][0],
+                        "modeTag": keys[0][1],
+                        "finalBass": final_bass,
+                        "relativeMinorTonic": PC_NAMES[relative],
+                    },
+                    f"the catalog's keySig says {key_sig}, which the Library prints as "
+                    f"\"Key: {key_sig}\", but the file states no mode and its final bass "
+                    f"is {PC_NAMES[final_bass]} — the relative minor of that signature",
+                    kind="keysig",
                 )
             )
 
@@ -1191,6 +1248,21 @@ def repeat_faults(score: Score) -> list[dict]:
             for number_text, kind in bar.endings:
                 numbers = ending_numbers(number_text)
                 if kind == "start":
+                    # A start that repeats the number the last span opened with
+                    # is that span carrying on, not a second one. MuseScore
+                    # writes `ending 1 start` on **each** bar of a two-bar
+                    # first-time ending — `misc-computer-games-minecraft-calm`
+                    # does it over bars 3 and 4 — and counting those as two
+                    # spans reported the order `1, 1, 2, 2` as out of order and
+                    # the first span as having no repeat, when the repeat sits
+                    # on the second bar of the same ending.
+                    if spans and spans[-1]["numbers"] == numbers and (
+                        bar.index - spans[-1].get("toIndex", spans[-1]["fromIndex"]) <= 1
+                    ):
+                        current = spans[-1]
+                        current.pop("to", None)
+                        current.pop("toIndex", None)
+                        continue
                     current = {
                         "numbers": numbers,
                         "from": bar.number,
@@ -1198,7 +1270,14 @@ def repeat_faults(score: Score) -> list[dict]:
                         "repeats": 0,
                     }
                     spans.append(current)
-                    seen_numbers.append(min(numbers) if numbers else 0)
+                    # Both ends of the range an ending carries. A bar marked
+                    # `1,2` is the first *and* second time and the ending after
+                    # it is the third, so what must follow 1 is 3, not 2.
+                    # Reading one number reported `home-sweet-home` — whose
+                    # endings run `1,2` then `3` — as out of order.
+                    seen_numbers.append(
+                        (min(numbers), max(numbers)) if numbers else (0, 0)
+                    )
                 elif current is not None:
                     current["to"] = bar.number
                     current["toIndex"] = bar.index
@@ -1229,13 +1308,17 @@ def repeat_faults(score: Score) -> list[dict]:
         # that neither restarts nor follows the one before it — `1, 3` means a
         # second-time bar is missing.
         previous = 0
-        for number in seen_numbers:
-            if number != 1 and number != previous + 1:
+        for low, high in seen_numbers:
+            if low != 1 and low != previous + 1:
                 faults.append(
-                    {"kind": "endings-out-of-order", "order": seen_numbers, "part": part.id}
+                    {
+                        "kind": "endings-out-of-order",
+                        "order": [low if low == high else f"{low}-{high}" for low, high in seen_numbers],
+                        "part": part.id,
+                    }
                 )
                 break
-            previous = number
+            previous = high
         for span in spans:
             if span["repeats"] and span["numbers"] and min(span["numbers"]) > 1:
                 faults.append(
@@ -1685,6 +1768,48 @@ def write_reports(flags: list[Flag], stats: dict, only: set[str]) -> None:
     REPORT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def load_allow() -> dict[str, str]:
+    """`"<item>|<check>|<kind>"` → why that high row is allowed to stand."""
+    if not ALLOW.exists():
+        return {}
+    data = json.loads(ALLOW.read_text(encoding="utf-8"))
+    allowed = data.get("allowed", {}) if isinstance(data, dict) else {}
+    return {k: v for k, v in allowed.items() if isinstance(v, str) and v.strip()}
+
+
+def gate(flags: list[Flag]) -> int:
+    """
+    The build's verdict: every **high** row must be in the allow-file.
+
+    Medium and low rows are reported and never fail a build — the checks that
+    guess (title-structure) and the ones a whole genre of ordinary notation can
+    trip live down there. A high row is one a reader has to have looked at, so
+    the allow-file carries a reason per row and removing a reason turns the
+    build red.
+    """
+    highs = [f for f in flags if f.severity == "high"]
+    allowed = load_allow()
+    unallowed = [f for f in highs if f.key() not in allowed]
+    stale = sorted(set(allowed) - {f.key() for f in highs})
+    print(
+        f"score-checks gate: {len(highs)} high row(s), {len(highs) - len(unallowed)} "
+        f"allowed by {ALLOW.relative_to(ROOT)}"
+    )
+    for key in stale:
+        print(f"  allowed but no longer flagged: {key}")
+    if not unallowed:
+        return 0
+    print(f"  {len(unallowed)} high row(s) with no entry in the allow-file:")
+    for flag in unallowed:
+        print(f"  - {flag.key()}")
+        print(f"      {flag.why}")
+    print(
+        "  Open the file, decide, and either fix it or add the row to "
+        f"{ALLOW.relative_to(ROOT)} with the reason."
+    )
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--only", nargs="*", choices=CHECKS, help="run only these checks")
@@ -1692,6 +1817,11 @@ def main() -> int:
     parser.add_argument("--stats", action="store_true", help="print the corpus distributions and stop")
     parser.add_argument("--no-analysis", action="store_true", help="skip the music21 key analysis")
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument(
+        "--gate",
+        action="store_true",
+        help="fail (exit 1) on any high row not listed in content/score-checks.allow.json",
+    )
     args = parser.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
 
@@ -1717,12 +1847,14 @@ def main() -> int:
         if check in only:
             print(f"  {check:<18} {per_check.get(check, 0)}")
     print(f"wrote {REPORT_JSON.relative_to(ROOT)} and {REPORT_MD.relative_to(ROOT)}")
-    # A report, never a gate. `validate.py` stays the thing that fails a build;
-    # a check that guesses (title-structure) or that a whole genre of ordinary
-    # notation can trip must not be able to stop one. The brief asked for it to
-    # be added to `build.py` only if that were cheap, and it is not: the music21
-    # pass is minutes, so this stays standalone and is run on its own.
-    return 0
+    # **A report by default and a gate when asked** (T15, 2026-09-22; this
+    # paragraph replaces the one that said it would never be a gate). What has
+    # changed since is that every high row has been opened and decided about,
+    # so a *new* high row is now news rather than backlog. `build.py` runs this
+    # with `--gate --no-analysis`: the music21 pass is the minutes, and it
+    # produces only medium and low rows, so nothing the gate reads is lost by
+    # skipping it. Medium and low still never fail a build.
+    return gate(flags) if args.gate else 0
 
 
 if __name__ == "__main__":

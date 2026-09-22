@@ -62,6 +62,18 @@ export interface ScoreNote {
   crossStaff?: boolean;
   /** Number of notes in the merged tie chain (1 = untied). */
   tieLength?: number;
+  /**
+   * The score prints an accent or a marcato on this note (T16 item 7).
+   *
+   * Absent rather than `false` where it does not, which is what keeps every
+   * golden model of a score with no accent in it byte-identical. Until this
+   * existed `ScoreNote` carried nothing for a velocity to be compared with,
+   * which is the whole reason Entry 24 item 6 built swing and left the accent.
+   *
+   * The mark lives on OSMD's *voice entry*, so every note of an accented chord
+   * carries it - which is also what a player does with one.
+   */
+  accent?: boolean;
 }
 
 /**

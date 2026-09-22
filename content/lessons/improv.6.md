@@ -34,8 +34,8 @@ progression with three notes a bar, chosen freely.
 **Common mistake.** Playing continuously. Leave a bar empty and see what you play
 in the next one.
 
-**Tools for this rung.** *Accompaniment lab* opens here on the minor vamp, whose
-progression is fixed, so tap *Lab — your own chords*, put `ii7 V7 I` in and run it. The
+**Tools for this rung.** *Accompaniment lab* opens here on the minor vamp with
+its chords left to you, so put `ii7 V7 I` in and run it. The
 notes of each bar's chord come up lit on the keys, and on ii7 and V7 the third
 and the seventh are two of them, so what this lesson asks you to find is pointed at while the
 changes go past. Play only those two a chord for the first few times round.

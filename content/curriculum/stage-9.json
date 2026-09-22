@@ -282,11 +282,12 @@
                 },
                 {
                   "kind": "lab",
-                  "preset": "ballad"
-                },
-                {
-                  "kind": "lab",
-                  "label": "Lab — your own chords"
+                  "preset": "ballad",
+                  "unlock": [
+                    "progression",
+                    "leftHand"
+                  ],
+                  "mode": "tune"
                 }
               ],
               "levelBand": [

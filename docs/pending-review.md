@@ -4038,3 +4038,1152 @@ right and only the row was wrong.
 * **One picture per family is one item per family.** The other 1,120 were not rendered. The
   invariants that vary by key are held in every key the family is written in; the
   *pictures* are the C or A version only.
+
+### Entry 34 — T15: the 247 score-check rows applied, and the key on the detail sheet (2026-09-22)
+
+**Nothing here has been heard.** Not one of the 247 rows was decided by listening. Every
+verdict in this entry is a reading of the file: the MusicXML, the per-bar per-voice duration
+sums against the metre, the repeat marks and endings, the barline styles, the `<words>` and
+`<metronome>` directions, and a grep of the repository for each id. Where a verdict says a
+piece is complete, or that a bar is right, or that two files are the same music, it means
+**the page says so**. A file that "makes no sense as piano music" is a reading of the page
+too. This matters most for the rows left unchanged on the grounds that a short bar is
+uniform across its voices: that is an argument about notation, not about what comes out of
+the speakers.
+
+The list, the verdicts and what was done to each row are in `build/score-checks.applied.md`,
+one line per row. This entry is the summary and the parts that do not fit a line.
+
+#### Where the list went
+
+`score_checks.py` was re-run before any of this and produced **247 flags, byte-identical to
+the list the brief names**. After the work it produces **159 over 1,974 score files**.
+
+| check | was | now | verdict lines written |
+|---|---:|---:|---|
+| bar-duration | 65 | 56 | 67 — 49 confirmed, 18 false positive |
+| containment | 85 | 67 | 19 — 19 confirmed, 0 false positive |
+| key-consistency | 54 | **0** | 10 — 6 confirmed, 4 false positive |
+| repeat-structure | 27 | 21 | 27 — 25 confirmed, 2 false positive |
+| truncation | 10 | 9 | 10 — 2 confirmed, 8 false positive |
+| grace-density | 5 | 5 | 4 — 2 confirmed, 2 false positive |
+| title-structure | 1 | 1 | 1 — 1 confirmed, 0 false positive |
+
+138 verdict lines over 247 rows. The gap is the **63 containment (low) rows**, which are the
+generated exercise families sharing bars across keys, hands and clave directions — the
+generator working. They are named one by one at the end of the applied list, and they are
+left in the report on purpose, as a check on the check: a pair there with different parents
+and an identical run would be a real duplicate.
+
+**Every non-false-positive row now carries a verdict line.** The rows the previous sitting
+left open — 9 bar-duration (medium), 11 containment (medium), 3 truncation (medium), and 8
+low rows that survived the key-consistency fix — were each opened and decided here.
+
+#### The systematic wrong key, which was never a row-by-row job
+
+The brief's §3b was the largest thing in this list and none of its 54 rows was decided
+individually. Where a score states a key signature and no mode, the build used to derive the
+catalog's `keySig` as the **major** key, and the Library's detail sheet prints that as
+"Key: …". `settle_key_signatures()` now sits in `merge_catalog` in `tools/content/build.py`
+as step 3b: with no mode it tests `finalBass` against the signature's major tonic and its
+relative minor tonic, the way `keyOf` in `lessonClaimsAboutMusic.test.ts` does, takes the
+one that matches, and where neither matches emits the **signature alone** ("1 flat") rather
+than inventing a mode. It runs on songs only. The merge step reports **620 rows corrected**
+in the build that closed this work — 627 before the seven duplicate rows below were dropped.
+
+The proven example is the one the brief named. `song.classical.bach-toccata-fugue-bwv565` is
+titled "D minor", its `notation.keys[0]` is `fifths -1, mode null`, and its `finalBass` is 2,
+D. The detail sheet printed **"Key: F major"**. It now derives D minor, and the six others
+the scout listed — `bach-wtc1-prelude-2`, `brahms-hungarian-dance-5`, `chopin-ballade-1`,
+`chopin-prelude-op28-4` and its `.alt`, `chopin-waltz-a-minor` — went the same way, along
+with rows nobody had listed. `score_checks.py` gained a `keysig` kind so the check fails if
+the derivation regresses, and it no longer believes a `<mode>major</mode>` element that
+contradicts the notes. **key-consistency reports 0 flags over 1,974 files.**
+
+#### What was changed, per id
+
+**Dropped** — each spliced out of its source table as text, the JSON re-parsed afterwards
+and the id sets compared; never re-serialised, and `tools/content/pdmx/commit.py` was never
+run, because it rewrites `pdmx.json` whole:
+
+| id dropped | kept instead | why |
+|---|---|---|
+| `song.classical.bach-prelude-no-1-in-c-major-bwv-846.pdmx` | `song.classical.bach-wtc1-prelude-1` | same 34 bars, and stage-6 names the kept id |
+| `song.classical.beethoven-ludwig-van-beethoven-sonatina.pdmx` | `song.classical.beethoven-sonatina-in-g-major-ahn-5.pdmx` | note-identical; the dropped one claimed to be an alternative edition |
+| `song.classical.chopin-mazurka-op6-5.nifc` | — | Op. 6 has no fifth mazurka; the file is Op. 7 No. 5 under a title that names no work |
+| `song.classical.handel-halvorsen-passacaglia.alt` | its own parent | note-identical to it |
+| `song.classical.passacaglia-handel-halvorsen.pdmx` | `song.classical.handel-passacaglia-handel-halvorsen-piano-solo.pdmx` | four copies of one piece; stage-4 names the kept one |
+| `song.classical.tchaikovsky-swan-lake-theme-tchaikovsky.pdmx` | `song.classical.tchaikovsky-swan-lake` | identical; see the correction below |
+| `song.ragtime.joplin-maple-leaf-rag.pdmx` | `song.ragtime.joplin-maple-leaf-rag` | identical; stage-7 and three docs name the kept one |
+| `song.classical.chopin-waltz-in-b-minor.pdmx` | `song.classical.chopin-waltz-op69-2.nifc` | one work; the kept one is the first edition and writes all 177 bars |
+| `song.classical.chopin-waltz-in-c-sharp-minor-op-64-no-2.pdmx` | `song.classical.chopin-waltz-op64-2.nifc` | one work, 194 bars each; stage-8 names the kept one |
+| `song.classical.kuhlau-kuhlau-sonatina-op-20-nr-1-c-major-allegro.pdmx` | `song.classical.kuhlau-sonatina-in-c-major-op-20-no-1-allegro.pdmx` | two uploads of one movement; neither on a rung |
+| `song.classical.mozart-piano-sonata-no-16-in-c-major-k-545-first-movement.pdmx` | `song.classical.mozart-k545-i` and its `.alt` | three copies; stage-7 names the parent, and the `.alt` really is a different edition |
+| `song.classical.mozart-rondo-alla-turca.pdmx` | `song.classical.mozart-rondo-alla-turca` and its `.fingered` | three copies; the dropped row's composer field read "NA" and its tempo was defaulted |
+| `song.classical.petzold-minuet-in-g-major-bwv-anh-114.pdmx` | `song.classical.petzold-minuet-g-bwv-anh114` and its `.alt` | three copies; `validate.py` requires the kept pair on rung 3.4 |
+| `song.classical.schumann-the-merry-peasant-op-68-no-10.pdmx` | `song.classical.schumann-the-happy-farmer-op-68-no-10.pdmx` | one piece under two English renderings of one German title |
+
+**Retitled**, each with the old title and the reason spliced into the row's review note: the
+Beethoven *Écossaise* (titled in G, written in F), Chopin's Mazurka Op. 50 No. 1 and Op. 59
+No. 3 (titled in keys the files are not in), the Beethoven sonata movement, the Laredo item,
+the G minor minuet, and two decided here:
+
+* `song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx` → **"Minuets in G major and
+  C major, K. 1e and K. 1f"**. The file is 36 bars and its second half *is* the K. 1f minuet,
+  which the catalog also carries on its own: the K. 1e file's midpoint bars carry the same
+  pitches as the K. 1f file's opening, both files end on the same two bars, and the K. 1e
+  row's own fields say two metres, 3/4 and 2/4, and two signatures.
+* `song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx` → **"Sonatina in C major,
+  Op. 36 No. 1 (third movement)"**. 70 bars, every one of them 3/8, one key, one tempo, no
+  metre change; Op. 36 No. 1's second movement is an Andante in 3/4 in F and is not in the
+  file. `docs/lesson-audit/README.md` had recorded this and the title had never been changed.
+
+**Files repaired** — the MusicXML edited and `convertedSha256` respliced: Czerny Op. 299
+Nos. 7, 8 and 10, the Mozart K. 2 minuet, *Royal Garden Blues*, *Riverside Blues*, *Super
+Mario Land 2*, *Mandinga*, *Soul Eater*, *I Got Rhythm*, Burgmüller's *Arabesque*, *I
+Remember You* and *Weary Blues*.
+
+**Nothing was replaced from the archive.** The quarry path was not used and port 4173 was
+never taken: no row in this list turned out to be a truncation with a fuller copy to swap in.
+
+#### Consumers, grepped per id
+
+`scratchpad/consumers.json` was built over the 202 flagged items only and matches by
+substring, and **it was wrong twice on one pair**: the unflagged half of a duplicate showed
+as having no readers at all, and the flagged id `song.classical.tchaikovsky-swan-lake`
+matched the line naming `...-swan-lake-theme-tchaikovsky.pdmx`, so the rung was credited to
+the id that was then dropped. `validate.py` caught it — `classical.4.shelf` named the missing
+id — and that one line in `stage-4.json` was repointed to the surviving item, which departs
+from the brief's "keep the id the rungs name" and is recorded here as such.
+
+**Every id in this sitting was grepped live instead**, over `content`, `app/src`,
+`app/tests`, `docs` and `tools`, and an id that returned nothing was searched a second time
+with a shorter substring before "no readers" was written down. That second search changed an
+answer twice: `chopin-rondo-op16.nifc` returned nothing for the exact id and
+`content/sources/kern.json` for `rondo-op16`, and `chopin-prelude-op28-3.nifc` returned
+nothing both times, which is what makes it safe to say it is on no rung.
+
+Two test files read ids touched here, and both were checked before the change, not after.
+`tools/content/tests/test_score_checks.py` uses the K. 1e / K. 1f pair as the containment
+check's red control and passes their titles in **literally**, so the retitle does not reach
+it. It also used the Clementi row as the title-structure check's red control, where the
+retitle *would* have turned that control green. It was repointed: the test now asserts the
+real row is clean and rebuilds the fault in memory by putting the old title back on the same
+score, with a docstring saying why. That was the only red row this check had in the corpus,
+which is why the fault had to be reconstructed rather than moved to another file.
+
+#### The build gate, and its red proof
+
+`step_score_checks()` runs `score_checks.py` in `build.py` after the merge. It **fails the
+build** on any high row not listed in `content/score-checks.allow.json`, which carries 38
+entries with a reason each, and reports the rest. Proven red: the
+`song.blues.singin-the-blues` row was removed from the allow-file and `build.py --offline`
+exited 1 naming it; the allow-file was restored from `scratchpad/allow.backup.json` and the
+build went green. The closing build reports **38 high rows, 38 allowed**.
+
+#### The shape the medium bar-duration rows turned out to have
+
+Nine were opened here and **seven are one fault in the check, not seven faults in seven
+files**: a bar that is short in *every* voice and whose neighbour holds the rest of it.
+Three forms, all of them correct engraving —
+
+* a bar numbered `<n>X1` after a short bar `<n>`, the two summing to the metre — Schumann
+  Op. 68 No. 18, the Happy Birthday variations, and Scarlatti K. 323 among the low rows;
+* a short bar followed by a bar numbered 0 and marked `implicit`, a pickup, with a forward
+  repeat, the two summing to the metre — Joplin's *Country Club*, *Magnetic Rag* and *Palm
+  Leaf Rag*, and Chopin's Mazurka Op. 7 No. 1 among the low rows;
+* a short bar preceded by a short bar, the two summing to the metre — Schubert's German
+  Dance, Schumann Op. 68 No. 6, *Auld Lang Syne*.
+
+The check could recognise all three without opening anything: **a short bar whose voices
+agree with each other and whose immediate neighbour supplies the remainder of the metre is
+not a fault.** That is written down here rather than built, because building it means
+re-running the whole list to see what else it silences, and this sitting's remit was the
+rows.
+
+One medium row was not that shape.
+`song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx` bar 20 holds one beat of 2/4 in
+all three of its voices with full bars on both sides of it. It is left on `stage-6` because
+the bar is uniform — no voice is lost, the file simply has a half-length bar — and no beat
+can be invented for it without hearing the piece.
+
+#### Rung changes for the coordinator
+
+Two, both in `content/curriculum/stage-4.json`, which this task did not touch because T14
+was writing to the stage files at the same time:
+
+1. **`classical.4.shelf` (line 628) names `song.classical.chopin-prelude-op28-4.alt`.** All
+   three copies of the prelude were opened: the plain MuseTrainer id, its `.alt` and the NIFC
+   first edition, 26 bars and 25 distinct bars each. The `.alt` shares 24 of 25 with its
+   parent and differs at bar 17 alone. `docs/lesson-audit/batch-3.md` line 109 had already
+   recorded that a second edition is on that shelf while its first edition is not. Suggested:
+   repoint that line to `song.classical.chopin-prelude-op28-4.nifc`, which is on no rung and
+   is the first edition, after which the `.alt` row can be dropped from
+   `content/sources/musetrainer.json`. Nothing is broken today — `stage-6` names the plain id
+   and no single rung offers the piece twice — so this is an improvement, not a repair.
+2. **`classical.4.1` (lines 533 and 534) names both Mozart minuets**, K. 1e and K. 1f, and
+   the K. 1e file holds the K. 1f minuet as its second half, so that rung offers the same
+   music twice. The K. 1e row is now titled "Minuets in G major and C major, K. 1e and
+   K. 1f", which at least makes the overlap visible on screen. Suggested: drop line 534, the
+   K. 1f id, from that rung. Neither id can be dropped from the catalog —
+   `test_score_checks.py` needs both as the containment check's control pair.
+
+**Applied by the coordinator 2026-09-22:** both rung changes — `classical.4.shelf` repointed to the first edition `…op28-4.nifc`, and the K. 1f id dropped from `classical.4` (the lesson's line now says one option holds both minuets). The `.alt` catalog row was left in place.
+
+#### What is unverified
+
+* **Everything about how any of it sounds.** No file in this entry was played. The duplicates
+  were matched on bar fingerprints and sampled pitches, the completions on final bars and
+  tonics, the short bars on arithmetic.
+* **The Library and the detail sheet were not opened.** "Key: F major" becoming D minor is
+  read from the built catalog row and from the derivation, not from a screen. 620 rows
+  changed; **one** of them was traced end to end.
+* **Seven ids of the key fix were named by the scout and checked; the rest are a class.** The
+  other corrected rows were not read one by one.
+* **Three files state a tempo and never state a marking** —
+  `song.classical.chopin-prelude-op28-6.nifc` (quarter = 48, no `<words>` at all, and the
+  metronome is the only direction in the file), `song.classical.chopin-rondo-op16.nifc`
+  (quarter = 48 governing all 7,557 notes, including the rondo, in a work whose introduction
+  is the only slow part of it) and `song.classical.schubert-ave-maria` (the opposite case: 17
+  metronome directions, six speeds, and it is genuinely slow music). The markings were **not
+  added**: that would change three files' converted checksums for a marking rather than a
+  fault. The Rondo's single tempo is the one of the three most likely to be wrong on screen,
+  and setting a number for music nobody here has heard would be inventing one.
+* **`song.blues.singin-the-blues` keeps its overfull bar 31**, deliberately: Entry 23 uses it
+  as the check's red proof and the allow-file carries it with that reason. *Riverside Blues*
+  had its three bars fixed.
+* **Four bars of Chopin's Ballade No. 1 were flagged and one was opened.** Bar 246 is
+  uniformly double length in every voice — an unmeasured coda run engraved as one bar — and
+  bars 247, 249 and 253 carry the other eight faults and were judged from that reading rather
+  than opened one by one.
+* **`docs/generated/ladder.md` was regenerated** because the catalog changed; its contents
+  were not read line by line.
+* **`content/lessons/classical.3.md` was trimmed by five words** because this task's own
+  earlier edit pushed it from 3 minutes to 4 and `lessonShape.test.ts` failed on it. The
+  sentence it shortened is the one saying the G minor minuet file holds its first sixteen
+  bars; the claim survives, the wording is shorter. Nobody read the lesson end to end again.
+* **A second agent ran `build.py` against this working tree while this work was in
+  progress.** The closing build, `validate.py` and both test suites were run afterwards and
+  are green, but the two sittings' edits were interleaved on disk.
+
+### Entry 35 — T16: the MIDI converter on real recordings, and the app leftovers (2026-09-22)
+
+**Nothing here has been heard.** No claim in this entry is about how anything sounds: not
+whether the hand split puts a note where the hand actually was, not whether a quantised
+Disklavier performance reads as the piece somebody played, not whether a half pedal scored
+75 % felt like a half pedal. Everything below is about messages, elements, counts and files.
+
+---
+
+## Part A — the converter
+
+### The two evidence lines the brief asked for first
+
+**Which track holds the notes.** Read from the messages, one file at a time, with
+`music21.midi` rather than through a parsed `Score`:
+
+| file | format · ticks/quarter · tracks | track 0 | track 1 |
+|---|---|---|---|
+| `bach-bwv885-prelude-2011.mid` | 1 · 384 · 2 | 6 events: set-tempo, time signature, end-of-track. **No notes.** | 129 Note-On, 129 Note-Off, 664 controller messages (663 × CC64, 1 × CC67) |
+| `grieg-op38-7-waltz-2014.mid` | 1 · 384 · 2 | the same 6 events, no notes | 405 Note-On, 405 Note-Off, 1,097 controllers (798 × CC64, 299 × CC67), track name `07/03  1~2` |
+| `scarlatti-k525-2008.mid` | 1 · 384 · 2 | the same 6 events, no notes | 882 Note-On, 882 Note-Off, 395 × CC64, track name `Levitsky14-18.MID` |
+
+So all three are a conductor track and one track of two-hand playing — the case the brief
+calls "a one-track two-hand recording", and the reason the hand split is item 1. All three
+state **4/4** and **120 bpm** and nothing else: no tempo map, no key signature. Grieg's Op. 38
+No. 7 is a waltz and Scarlatti's K. 525 is not in 4/4, so **the metre in the file is a
+placeholder**, which is what `--time-signature` was added for.
+
+`track_with_the_notes` is that reading made mechanical: it returns the index of the one track
+with Note-Ons, or −1 when that is not one track, because "track 1 is the music" is a
+convention and a file that breaks it would otherwise convert to an empty score.
+
+**What the converter produced from each, unchanged.** All three **crashed**, with an uncaught
+traceback and no output file:
+
+```
+music21.musicxml.xmlObjects.MusicXMLExportException:
+  In part (Piano), measure (6): Cannot convert inexpressible durations to MusicXML.       (Bach)
+  In part (07/03  1~2), measure (18): …                                                   (Grieg)
+  In part (Levitsky14-18.MID), measure (9): …                                             (Scarlatti)
+```
+
+The cause is item 2's subject and is named there. Nothing else could be learned from the
+old tool on this input, because it never got as far as writing a file.
+
+### 1. The hand split — built
+
+**The rule.** Not a fixed middle C. Each hand carries a running centre, a smoothed average
+of the notes it has been given (`HAND_MEMORY` = 2/5); notes struck together are one group; a
+group is cut in **one** place, everything below it to the left hand and everything above it
+to the right; and the cut chosen is the one minimising the total distance from each note to
+its hand's centre, plus a penalty for asking either hand to span more than
+`HAND_SPAN_SEMITONES` (14 — a tenth is reachable, a twelfth is not). The boundary that falls
+out is returned per onset, which is what makes "it moves" checkable rather than asserted: on
+the three recordings it takes **11, 29 and 42 distinct values** respectively.
+
+One cut per instant rather than a per-note choice, because two hands cannot interleave within
+one instant on a piano and allowing it produced assignments no hand could play.
+
+- **A moving part was written and then removed.** A running *trend* — the centre plus the
+  smoothed interval between consecutive notes — was in the first version. Reverting it
+  changed the answer on **none** of the tests and on none of the three recordings, so it was
+  taken out: an untested moving part is a control that does nothing (`00` §1). If a case is
+  found that needs it, it comes back with that case beside it. This is written down because
+  the revert-to-red pass is what found it, not review.
+
+**Where it fails, and two of the three are pinned by tests rather than only described.**
+
+- **At a crossing the two lines swap hands.** `test_where_it_fails_the_two_lines_swap_hands_at_the_crossing`
+  drives one line climbing C3→B4 against one falling C5→C#3, alternating in time. Up to the
+  note where they are the same pitch, each line is in its own hand — the other crossing test
+  asserts all twelve. From that note on, **each carries on in the other hand**, and the test
+  asserts exactly that. Nothing in the onsets can prevent it: at the meeting the two voices
+  are one pitch and the rule has no evidence left. A player reading the score knows from the
+  stems; this tool has no stems.
+- **Notes struck together in the same register are cut by pitch alone**, so the lower is
+  always the left. Pinned by `test_where_it_fails_a_simultaneous_crossing_takes_the_lower_as_the_left`.
+- **A left hand that leaps over the right and comes back** — the melody note taken by the left
+  in late Romantic writing — is given to the right, every time. **Not pinned by a test**, and
+  said here so it is not discovered as a surprise.
+- **A third voice is not modelled at all.** Every note goes to one of two hands.
+
+### 2. The quantisation policy — built
+
+**The grid, stated.** The candidates are the multiples of `1/d` of a quarter note for each
+`d` in `--divisors`; the default `4,3` offers sixteenths and eighth-note triplets. **The
+choice is made once per bar**, and the grid a bar takes is the one its own onsets are nearest
+to, totalled over that bar. A release is snapped to the grid of the bar it falls in; a note
+whose release lands on its own onset is given one grid unit rather than being dropped; and
+two strikes of one pitch that the grid would put on one onset are pulled apart, because
+losing a note is the one thing this tool refuses to do.
+
+**Why per bar is the whole of it.** The old version passed two divisors to music21's
+`quantizePost`, which chooses **per note**. A bar holding one onset on a quarter grid and the
+next on a third has slices a twelfth long between them, and a twelfth here and five twelfths
+there is not a rhythm anybody can write — which is the `Cannot convert inexpressible
+durations` above.
+
+**And a second half, because one grid per bar is not sufficient on its own.** A length that
+is on the grid can still not be a rhythm: five thirds of a beat comes back from music21 as a
+**6:5 tuplet** and seven thirds as a **12:7**. `notatable_pieces` cuts such a slice at the
+next beat and then down onto the grid until every piece is one duration type, at most one
+dot, and any tuplet three in the time of two — and the pieces are tied. `is_notatable` is
+that definition; "the exporter did not throw" is not it.
+
+**Swing.** `detect_swing` asks three things and all three must hold: at least
+`SWING_MIN_OFFBEATS` (8) onsets near two thirds of a beat; those outnumbering the ones near a
+half by `SWING_MIN_RATIO` (2); and **at least `SWING_MIN_ON_BEAT` (3/10) of all onsets landing
+on a beat at all**, which is the "where the tempo map implies it" half — a file states where
+its beats are and whether the performance agreed is a separate question. A swung run is then
+written **straight** with a *Swing eighths* marking, because the convention a swing marking
+states is that a written pair of eighths is played as the first and third of a triplet. The
+ratio is `SWING_RATIO` = 2/3 and it is the app's own number, taken from
+`audio/backingLoop.ts` via Entry 24 item 6 rather than written again here.
+
+- **The first version of this called the Bach prelude and the Scarlatti sonata swung**, and
+  that is the most useful thing in this section. Its swung window was a quarter of the beat
+  wide and its straight window a tenth, so it was measuring the windows and not the music.
+  Equal windows (`SWING_HALF_WINDOW` = 1/16 of the beat either side) plus the on-beat gate
+  put all three recordings back where they belong. All three land on a beat **21 %, 12 % and
+  12 %** of the time, against the 12.5 % that scattering onsets at random over the beat would
+  give — they are wall-clock captures at a nominal 120 bpm nobody played to.
+- **Nothing real exercises the swing path**, therefore. It is tested on synthetic onsets only,
+  and is listed under *unverified* below.
+
+### 3. The harness — committed, `tools/midi-cleanup/tests/test_converter.py`
+
+**24 tests.** Two kinds of input and the difference is in the file's own docstring:
+
+- **rendered** — a committed `.mxl` fixture written out as MIDI with every onset and release
+  nudged, then converted back. Always available.
+- **real** — the three Disklavier performances. **`build/` is in `.gitignore`, so they are not
+  in this repository**; those tests are `skipUnless` and the skip message names the three
+  files and where they came from, rather than passing quietly.
+
+Run it with `python -m unittest discover -s tools/midi-cleanup/tests -t tools/midi-cleanup/tests`.
+
+**A second fault the harness found in itself.** The jitter did nothing. `for n in
+part.flatten().notes: n.offset = …` sets the offset in the *flat* stream, which is a view, and
+the measures the MIDI writer walks kept the originals — so the round-trip test was passing on
+unjittered input, which is §1 of the working rules exactly. It was caught by the converter
+reporting *largest onset moved 0.000 quarters*. `render_midi` now copies the notes into a
+fresh stream, and the test asserts `result["moved"] > 0` so it cannot come back.
+
+### 4. The output opened in the app — built
+
+`app/tests/e2e/converted-import.spec.ts` (new, 3 tests) and a committed fixture,
+`app/tests/fixtures/imports/converted-from-midi.musicxml`.
+
+**How it was checked, and where each claim was asked.**
+
+- **The import path** (`docs/03` `[FOUND]`): the file goes in through `#library-file`, appears
+  as a Library row marked *yours*, opens on `#/score/import.converted-from-midi`, and an
+  engraved SVG arrives.
+- **The step count equals the cursor-step count**: that cannot be asked of the Score screen,
+  whose renderer is windowed and whose draw range clamps OSMD's iterator. It is asked of the
+  dev harness, which builds a throwaway instance with a live cursor for exactly this
+  (`DevScoreScreen`'s `cursorStepCount`). Both numbers come from the same bytes, and the
+  assertion is that they are equal — not what either of them is.
+
+**The fixture is not a real recording, and that is a licence decision, not an oversight.** It
+is the converter's output for a jittered rendering of this repository's own
+`exercise.five-finger.c-major.both.mxl`. `build/midi-real/SOURCE.md` says the MAESTRO files
+are test input and not for redistribution.
+
+**The spec found a real defect on its first run.** The converter wrote the two hands as two
+`<part>` elements, and the app reads the hand off the printed staff — so a converted piano
+score imported with **both hands reported as the right one** (`Expected: "both", Received:
+"right"`). Two `PartStaff`s in a braced `StaffGroup` export as one `<part>` with
+`<staves>2</staves>`, which is what a piano score is. That is the whole value of item 4: the
+converter's own check said the file was perfect and it was the wrong shape for the app.
+
+### What the converter makes of the three recordings now
+
+Every one exits 0, having read back what it wrote:
+
+| file | notes kept | Note-Ons in the file | key estimated | grid | largest onset moved | hand boundary values |
+|---|---|---|---|---|---|---|
+| Bach BWV 885 prelude | 129 | 129 | **G minor** | 1/3 and 1/4 quarter, per bar | 0.130 quarters | 11 |
+| Grieg Op. 38 No. 7 | 405 | 405 | **E minor** | 1/3 and 1/4 quarter, per bar | 0.138 quarters | 29 |
+| Scarlatti K. 525 | 882 | 882 | **F major** | 1/3 and 1/4 quarter, per bar | 0.164 quarters | 42 |
+
+**The keys agree with what these pieces are published in — and that agreement is recalled,
+not measured, which is the whole of its weight.** Nothing on disk was consulted: the MAESTRO
+metadata CSV was not fetched with the three files, and no score of BWV 885, Op. 38 No. 7 or
+K. 525 in this repository was opened to compare against. So this is a title read as a proxy
+for the music (`00` §1a), named as one. What *is* measured is that `relative_by_ending` and
+music21's analysis produced G minor, E minor and F major from the notes of these three
+recordings; whether those are right is for somebody with the scores.
+
+**The note counts are the correction that matters.** Reading the performance through
+`converter.parse` gave **152 notes for the Bach's 129 Note-On messages**: music21's MIDI
+reader marks pieces of a split note with ties whose halves can be *bars* apart, so no
+adjacency rule can tell one from a note struck again, and twenty-three invented note-heads
+went into the output while the tool's own check reported "all 152 notes kept". `read_midi`
+counts the messages instead, and `test_no_note_is_invented_between_the_file_and_the_score`
+asserts the equality on all three files.
+
+**Three things the output is still wrong about, and none is fixed here.**
+
+- **The metre.** All three are barred in 4/4 because that is what the file says, and the Grieg
+  is a waltz. `--time-signature 3/4` bars it as one (`checked: all 405 notes kept, every bar
+  adds up`), but choosing it is the reader's job and the tool does not guess.
+- **The tempo.** 120 bpm, likewise from the file, likewise a placeholder.
+- **Nothing has been played or looked at as engraving.** The three converted files were
+  extracted through the app's own `extractScoreModel` under jsdom, which is where the step
+  counts below come from, but no one has opened the notation and read it.
+
+For the record, and measured rather than assumed — the three converted files through
+`extractScoreModel`: Bach **182 steps, 129 notes, 23 bars, both hands**; Grieg **338 steps,
+405 notes, 38 bars, both hands**; Scarlatti **446 steps, 882 notes, 33 bars, both hands**.
+Those files live in a scratch directory and are not committed.
+
+---
+
+## Part B — the app leftovers
+
+### 5. `unlock` and `mode` on a lab tool entry — built
+
+`curriculum.schema.json` closed a `tools` item to `kind`, `preset`, `item` and `label` with
+`additionalProperties: false`, and two entries had been waiting on that:
+
+- Entry 24 item 5 gave **six rungs a second `lab` entry with no preset**, labelled *Lab — your
+  own chords*, because the preset locks the very control the lesson teaches. Two buttons
+  opening one screen, and six lesson paragraphs naming both.
+- Entry 30 item 5 put the *way round* on the preset, which is shared, and named **three rungs
+  that want the other one** and could not say so.
+
+**`unlock`** names the pickers this rung's preset locks and hands back; **`mode`** preselects
+one of §3c's three ways round. `validate.py` refuses an `unlock` the rung's own preset does
+not lock ("this frees the tempo" about a tempo nothing fixed is a sentence with no referent),
+refuses a `mode` outside `off | hold | tune`, refuses `unlock` with no preset, and refuses
+either field on a tool that is not the lab.
+
+**The nine rung edits, one line each. **Spliced as text rather than re-serialised**, and the
+diff of every one of the six touched stage files was read line by line afterwards
+(`stage-3`, `-5`, `-6`, `-7`, `-8`, `-9`): every changed line is inside a `tools` array and
+nothing else moved. The first draft of this entry claimed that having read four of the six:**
+
+| rung | preset | was | now |
+|---|---|---|---|
+| `3.3` | minor-vamp | second lab entry | `unlock: ["progression"]` |
+| `chords-pop.5` | ballad | second lab entry | `unlock: ["progression"]` |
+| `improv.6` | minor-vamp | second lab entry | `unlock: ["progression"]` |
+| `chords-pop.8` | primary-chords | second lab entry | `unlock: ["progression"]` |
+| `improv.8` | jazz-comping | second lab entry | `unlock: ["progression"]` |
+| `chords-pop.9` | ballad | second lab entry | `unlock: ["progression", "leftHand"]`, `mode: "tune"` |
+| `jam.5` | blues-shuffle | — | `mode: "tune"` |
+| `3.2` | primary-chords | — | `mode: "tune"` |
+| `technique.7` | — | — | a `duet` naming its exercise (item 8) |
+
+**`chords-pop.9` frees two, and the reason is its own sentence**: *"try three different left
+hands over the same sixteen bars"*, and `ballad` locks `leftHand`. Freeing only the
+progression there would have left the lesson describing something the screen refuses. The
+other five free the progression alone, because every one of their sentences is about typing
+chords in. **`3.3` and `improv.6` keep their locked key** — `minor-vamp` locks `key`,
+`progression` and `leftHand`, and neither lesson asks to transpose.
+
+- **The rule lives in two functions, not in the screen.** `labLocksFor(preset, unlock)` and
+  `labBedFor(preset, mode)` in `engine/sightReading.ts`; `LabScreen` asks them. A screen is an
+  expensive place to test a rule.
+- **`validate.py` now holds the preset *locks* as well as the ids** (`LAB_PRESET_LOCKS`), which
+  is a third copy of one fact. `labPresets.test.ts` already joins the ids; a new rule in
+  `lessonClaimsAboutApp.test.ts` asks the same question against the real `LAB_PRESETS`, so a
+  preset whose locks move in the TypeScript and not in the Python is caught by whichever of
+  the two suites runs first.
+- **The rule that a rung with two lab buttons must open two different things is kept**, not
+  deleted: nothing stops a rung writing that shape again.
+- `tool_errors` now takes the catalog, and `validate.py` passes it.
+
+**The six lessons were rewritten**, and each sentence was checked against what its rung's
+entry actually frees: 3.3, chords-pop.5, chords-pop.8, chords-pop.9, improv.6, improv.8.
+**chords-pop.5 lost a clause** — it said *"the left hand is yours to choose there"*, which was
+true of a preset-less button and is not true of `unlock: ["progression"]`; the sentence now
+says the left hand stays as the preset sets it. `3.2` and `jam.5` gained a sentence about
+which way round they open. `readingTime` was recomputed from the text by
+`lessonShape.test.ts`'s own rule for every edited lesson; **chords-pop.8 moved from 3 to 2**
+because the rewrite took it from 401 words to 400.
+
+### 6. Half-pedal depth — built
+
+`PracticeEngine.feed` reduced CC64 to `sustainDown = value >= 64` and kept no value, so
+`exercise.pedal.half-pedal.a` — which opens on the Score screen as ordinary notation and
+states `drill: { kind: 'half-pedal', params: { ccRange: [32, 96] } }` — had nothing to be
+judged against. Every CC64 value now rides out on `SessionScore.pedal`, and
+`techniqueMeasureFor` reports the share inside the range as one more summary line.
+
+- **One rule, two callers.** `Scoring.halfPedalScore` is the arithmetic and `special.ts`'s
+  `PedalDrill.halfPedalResult` asks it too, so the drill screen and the Score screen cannot
+  disagree about what a half pedal is.
+- **A pedal that only ever sends 0 and 127 is a switch** and is reported as its own state, not
+  as a nought — scoring it as a failure would blame the player for the instrument. So would a
+  run with no pedal message at all, which says *not measured* for a different reason.
+- **`pedal` is optional on `SessionScore`** for the reason `rhythmOnly` is: a row stored before
+  the field existed must read the same as one stored after it.
+- **`technique.7`'s sentence returns.** It said *"the app … reads the pedal only as down or up,
+  so the depth is for your ear to judge"*; it now says the summary gives the share held
+  part-way, and keeps the sentence about a piano that sends only 0 and 127 — because that is
+  still true and is now the app's own answer rather than a caveat.
+
+### 7. Accents — built
+
+`extractScoreModel` reads `<accent>` and `<strong-accent>` — OSMD's `ArticulationEnum.accent`
+(0) and `.strongaccent` (1) — onto `ScoreNote.accent`. **Staccato and tenuto are deliberately
+not read as accents**: they are about how long a note is held, which `articulationScore`
+already measures, and reading them here would judge a velocity against a length.
+
+The mark lives on OSMD's **voice entry**, not on the note, so every note of an accented chord
+carries it — which is also what a player does with one.
+
+**The golden fixtures, deliberately.** **One golden file was added — `accents.json` — and no
+existing golden changed.** That is because `accent` is written only where the score prints
+one and is *absent* rather than `false` elsewhere; `git diff --stat` over
+`app/tests/fixtures/scores/golden/` after regenerating all forty reports no changed lines.
+The new edge fixture `accents.musicxml` is hand-written, because a search of every `.mxl`
+under `tests/fixtures/scores/generated/` for `<accent` and `<strong-accent` returned **none**
+— no generated exercise in this repository prints one.
+
+**The judging.** `prepareSession` carries the marked pitches onto `PreparedStep.accents` with
+the hand filter and the transposition already applied, and `Scoring.accentScore` compares
+those notes' velocities with the mean of the run's **own** unaccented notes
+(`ACCENT_MIN_RATIO` = 1.15). Against the learner's own playing rather than a MIDI number,
+because a light player and a heavy one accent by the same gesture and land on different
+velocities. The Score screen prints an *Accents* line only where the piece prints one, and it
+never decides a pass.
+
+- **The first version matched on pitch alone and judged five notes where the score marks
+  three**, because the fixture accents E5 in bar 1 and leaves it plain in bar 2. Matching by
+  step and pitch is the fix and there is a test named after the case.
+- **The lesson that said accents are not judged: exactly one.** `grep -rn "accent"
+  content/lessons/*.md` returns eight lines in five files, and a second reading of all eight
+  shows seven are musical prose (4.5's syncopation, classical.7's mazurka, latin, ragtime.5,
+  and jazz.5's own two lines about where the swing accent falls). The one claim about the app
+  is `jazz.5.md`: *"The accent it does not judge anywhere: nothing measures how hard you
+  play."* It now says the app reads the accent where the score prints one **and that none of
+  this rung's pieces prints one** — measured, not assumed: all seven of jazz.5's items with a
+  file were opened (four `.mxl` under `scores/pdmx/`, three under `scores/generated/`) and
+  every one has zero `<accent>` and zero `<strong-accent>`; its other two options are drills
+  with no file.
+
+### 8. The duet rule — built
+
+`tool_errors` refused a `duet` whose `item` was not among the rung's **song** options, and
+`technique.7` is the rung that was wrong about: its sentence is about the two-against-three
+exercise and its only songs are three Czerny études, so Entry 24 item 7 left that paragraph
+unbuilt rather than draw a button that opens a study.
+
+The rule that matters is unchanged — the item must be one of **this rung's** options — and
+what has gone is the assumption that only a song is notation. Where a catalog is given the
+rule is *stronger* than before: an option with no `file` opens the drill screen and cannot be
+dueted against, and that is read off the catalog row rather than off the `drill.` prefix in
+its id, which is the inference `00` §1a forbids. `LessonScreen.toolButton` asks `targetFor`
+the same question, the way the ladder button already did.
+
+**One committed test asserted the old rule and was rewritten**, not deleted:
+`test_a_duet_still_needs_its_item_among_the_songs` is now
+`test_a_duet_may_name_an_exercise_the_rung_offers`, with the reason beside it — `00` §4, the
+spec serves the code.
+
+`technique.7` gains `{"kind": "duet", "item": "exercise.independence.c.2v3"}` and its
+paragraph returns, naming *Play it as a duet* and *Climb the ladder* as the rung's two
+buttons.
+
+### 9. Sight-reading opens in Wait mode — fixed
+
+Entry 29 found it in passing and named it: `ScoreScreen` set `mode = 'tempo'` for a sight-read
+where the score finished loading, with the comment quoting `05` §8, and the line reading the
+learner's default ran **three hundred lines later** and overwrote it. The override now sits
+after the default, and an explicit `?mode=` still wins over both, because a tour step about
+Wait mode must teach Wait mode.
+
+**The test that was red is the one with both defaults set to Wait, and that is worth saying.**
+With no input attached the screen takes `defaultModeWithoutInput`, which ships as Tempo — so
+the obvious test ("a learner who has not changed the setting") **passed without the fix** and
+is only load-bearing after it. The bug bites whenever the applicable default is Wait, which
+`defaultModeWithInput` ships as.
+
+---
+
+**The tests, and the line that made each red.** Every one was written before the source
+changed, or proved red by reverting the source line named.
+
+| test | red at | what failed |
+|---|---|---|
+| `tools/midi-cleanup/tests/test_converter.py` (new, 24) | `:34` | `ImportError: cannot import name 'HAND_SPAN_SEMITONES'` — the module had none of it |
+| …the notatable split | `:183` | replacing `slice_into_chords`'s `filled` loop with `filled = list(boundaries)`: *2 not greater than 2* |
+| …one grid per bar | `:204` | choosing the grid over the whole piece instead of per bar: *Fraction(1, 4) != Fraction(1, 3)* |
+| …the swing windows | `test_a_rubato_recording_is_not_called_swung` | restoring the unequal windows and dropping the on-beat gate: **3 of 24 failed**, *True is not false*, once per recording |
+| …the braced grand staff | `test_the_two_hands_are_written_as_one_braced_grand_staff` | `grand_staff = False`: *2 != 1* |
+| `app/tests/e2e/converted-import.spec.ts` (new, 3) | `:97` | before the grand staff: **1 of 3 failed**, *Expected "both", Received "right"* |
+| `app/tests/unit/labToolFields.test.ts` (new, 15) | `:226` | before any of item 5 or 8: **10 of 15 failed**; *expected [] to deeply equal [ 'Play it as a duet' ]* |
+| …`unlock` alone | — | `labLocksFor` returning `new Set(preset.locks)`: **1 of 15**, *expected true to be false* |
+| `app/tests/unit/halfPedalDepth.test.ts` (new, 10) | — | removing `this.pedalValues.push(input.value)`: **3 of 10**, *expected [] to deeply equal [ 0, 30, 70, 100, 127 ]* |
+| `app/tests/unit/accents.test.ts` (new, 9) | — | removing `...(accented ? { accent: true } : {})`: **5 of 9**, *expected [] to deeply equal [ { midi: 72, onset: 0 }, …(2) ]* |
+| `app/tests/unit/scoreTourRoute.test.ts` (4 added) | `:540` | **1 of 4** before item 9, *expected 'wait' to be 'tempo'* |
+| `tools/content/tests/test_validate_tools.py` (12, 9 added) | — | **8 of 12 failed** before `tool_errors` changed |
+
+**Verification.** From `app/`: `npx tsc -b` clean; `npm run lint` clean.
+`npx vitest run`: **178 files, 2,472 tests, 2 failing** — and the same two fail with this
+task's three new files moved aside, so neither is this task's. Both are
+`lessonShape.test.ts` on `content/lessons/classical.3.md` (603 words, over the three-minute
+cap, reading time 3 where the text wants 4). `git status` shows that file, `2.4.md` and
+`hymns.md` modified **by another hand**; none of the three was opened here.
+
+**Three other failures were seen during this work and are gone, and they are worth recording
+because they would read as regressions.** An earlier run was 5 failing: the two above plus
+`curriculumIntegrity.test.ts` and `everyOptionOpens.test.ts` on
+`classical.4.shelf → song.classical.tchaikovsky-swan-lake-theme-tchaikovsky.pdmx`, and
+`simonDrill.test.ts` on a generated score under `app/public/content`. **A content build was in
+flight**: that directory held **0 files** at one point and 943 twenty minutes later, and the
+three cleared once it finished. A `songOptions` entry and a catalog row are what those two
+name; this task edited `tools` arrays and nothing else.
+
+`python -m unittest discover -s tools/midi-cleanup/tests -t tools/midi-cleanup/tests`: **24
+tests, OK**. `python -m unittest discover -s tools/content/tests -t .`: **886 tests, OK**.
+
+Playwright: **`converted-import.spec.ts` only, 3 passed**, run alone on port 4173 after
+`npm run build:app`, with the port confirmed free first. No other spec was run.
+
+**Who else reads what changed**, grepped rather than recalled.
+
+- `SessionScore` gained `pedal`, optional. `grep -rln "SessionScore" app/src app/tests`
+  returns **seven source files** — `audio/inputPolicy.ts`, `engine/PracticeEngine.ts`,
+  `engine/Scoring.ts`, `engine/types.ts`, `score/ScoreSession.ts`, `ui/screens/DevScoreScreen.ts`,
+  `ui/screens/ScoreScreen.ts` — and **nine test files**. An optional key breaks none of them and
+  `npx tsc -b` is the check. It was **required first** and four test files failed to compile,
+  which is what made it optional.
+- `ScoreNote` gained `accent`, optional, and `PreparedStep` gained `accents`, optional. The
+  golden files are the other reader and none changed.
+- `LessonTool` gained `unlock` and `mode`. Readers: `LessonScreen.toolButton`,
+  `validate.py`'s `tool_errors`, `rung_audit.py` (line 174 asks only whether a rung has any `tools` at all — read, not
+  assumed from the name),
+  `lessonClaimsAboutApp.test.ts` and the schema. `curriculum/types.ts` gained its **first
+  import**, `import type { LabBed, LabLock } from '../engine/sightReading'` — erased at
+  compile time, so that file still has no runtime dependency on the engine.
+- `Route` gained `labUnlock` and `labBed`, and `setRoute`'s comparison compares the array by
+  value, for the reason `scoreLoop` does.
+- `tool_errors`'s signature gained an optional `catalog`; its one caller passes it.
+- `docsConsistency.test.ts`'s "every `*.py` docs/03 names is under `tools/content`" was
+  **widened**, not worked around: `03` now names a script that deliberately lives elsewhere,
+  and a name written with its directory is looked up there.
+
+**What is unverified.**
+
+- **Nothing has been heard and nothing has been looked at as engraving.** The three converted
+  recordings were never opened as notation — not in the app, not in a reader. Every claim
+  about them is about counts.
+- **The three key estimates are unchecked against any source.** They match what these pieces
+  are published in as far as this entry's author recalls, and recall is not a check; see the
+  table above.
+- **The swing path has never run on real input.** All three recordings are judged straight and
+  that is the right answer for them; the swung branch is exercised by synthetic onsets only.
+  A DAW export with genuinely swung eighths is what would test it.
+- **The hand split has no ground truth.** "The left hand's median is below the right's" and
+  "the boundary moves" are what a machine can ask. Whether a given note was played by the hand
+  the split gives it is unchecked, and on a crossing it is provably wrong.
+- **The *Accents* summary row has no test driving the screen.** `accentScore` is tested; the
+  `addStat` call that prints it is not. It is `score.spec.ts`'s to prove, and `04` §0 R2 on a
+  342 px phone is the thing to look at, since it is another `dt`/`dd` on a sheet Entry 24
+  already flagged.
+- **The *Half pedal* summary row likewise** has no screen test, and no pedal has reached it
+  from a cable.
+- **The content build has not been run by this task.** The nine `tools` edits and the ten
+  lesson edits do not reach the app until `build.py` copies them into
+  `app/public/content/curriculum.json`. `lessonClaimsAboutApp.test.ts` reads the **authored**
+  stage files for exactly this reason; `lessonClaims.test.ts` and `curriculumIntegrity.test.ts`
+  read the built copy and are stale until it runs.
+- **`validate.py` and `rung_audit.py` were not run** against the real content, only their own
+  tests. The new `unlock`/`mode` rules are checked on fixtures.
+- **`lab.spec.ts`, `lesson-tools.spec.ts` and `score.spec.ts` were not run.**
+
+**Follow-ups for the coordinator.**
+
+1. Run the content build, then `validate.py`, then `rung_audit.py`. Nine `tools` entries and
+   ten lessons wait on it.
+2. `docs/08-test-map.md` has no row for `converted-import.spec.ts`, `labToolFields.test.ts`,
+   `halfPedalDepth.test.ts` or `accents.test.ts`; that file was not in this task's set. It
+   still has no row for `score.ladder-route.spec.ts` either (Entry 29's follow-up 3).
+3. `content/lessons/classical.3.md` is 603 words and fails `lessonShape.test.ts`. It belongs
+   to whoever is editing it now.
+4. **A decision, not a bug:** the Grieg is barred in 4/4 because its file says so. If converted
+   performances are going to be kept, the tool needs the metre stated at the command line every
+   time, and that is the reader's judgement rather than something to infer.
+
+**Playwright specs the coordinator should run, and what each should show:**
+
+| spec | what to look for |
+|---|---|
+| `lesson-tools.spec.ts` | after the build: six rungs draw **one** lab button, not two; the `data-preset` is on it; `technique.7` draws *Play it as a duet* beside *Climb the ladder* |
+| `lab.spec.ts` | `#/lab?preset=ballad&unlock=progression` opens with the progression picker enabled and the left hand still greyed |
+| `lab-both-ways.spec.ts` | `#/lab?preset=blues-shuffle&mode=tune` opens with *Play the tune* pressed |
+| `score.spec.ts` | the summary sheet gains an *Accents* line on a piece that prints one and none on a piece that does not; R2 still holds at 342 px |
+| `drills.spec.ts` | the pedal drill is unchanged — `halfPedalResult` now calls a shared function |
+
+**Files.** `tools/midi-cleanup/midi_to_musicxml.py`, `tools/midi-cleanup/tests/test_converter.py`
+(new); `tools/content/validate.py`, `tools/content/tests/test_validate_tools.py`;
+`content/curriculum.schema.json`; `content/curriculum/stage-3.json`, `-5`, `-6`, `-7`, `-8`,
+`-9` (`tools` only, spliced); `content/lessons/` 3.2, 3.3, chords-pop.5, chords-pop.8,
+chords-pop.9, improv.6, improv.8, jam.5, jazz.5, technique.7;
+`app/src/curriculum/types.ts`, `app/src/router.ts`, `app/src/engine/PracticeEngine.ts`,
+`Scoring.ts`, `prepareSession.ts`, `sightReading.ts`, `types.ts`, `drills/special.ts`,
+`app/src/score/extractScoreModel.ts`, `app/src/score/types.ts`,
+`app/src/ui/screens/LabScreen.ts`, `LessonScreen.ts`, `ScoreScreen.ts`;
+`app/tests/unit/labToolFields.test.ts`, `halfPedalDepth.test.ts`, `accents.test.ts` (all new),
+`docsConsistency.test.ts`, `lessonClaimsAboutApp.test.ts`, `scoreTourRoute.test.ts`;
+`app/tests/e2e/converted-import.spec.ts` (new);
+`app/tests/fixtures/scores/edge/accents.musicxml` and
+`app/tests/fixtures/scores/golden/accents.json` (both new);
+`app/tests/fixtures/imports/converted-from-midi.musicxml` (new);
+`docs/03-content-pipeline.md` §2, `docs/04-ui-spec.md` §3d and §5,
+`docs/05-score-follow-engine.md` §8 and §9a; this entry.
+
+---
+
+### Entry 36 — T14: the latin track carried up to Stages 6 and 7, and two rungs not built (2026-09-22)
+
+Appended after Entry 35 so this file stays ascending, which is the convention Entry 25
+records. The brief gave this entry the number **36**.
+
+**Nothing here has been heard.** Every judgement below was made from the built catalog's
+`notation` block, from `dump_score.py`, which prints the `.mxl` the app plays bar by bar and
+staff by staff, and from two counting passes over the MusicXML written for this run (a
+left-hand onset scan and a per-bar texture count, both described where they are used).
+Whether any of these six pieces is a transcription worth practising is the one question none
+of it answers.
+
+**Judgement.** The brief named four rungs — latin 4, 6, 7 and 8. **Two were built and two
+were not, and the two that were not have no song at all**, which is the honest outcome the
+brief allows and not a shortfall I worked around.
+
+`latin.6` is the tango with its accompaniment written out: three pieces whose left hand is a
+pattern you can name, and the montuno carried by the exercises because **none of the three
+songs writes one**. `latin.7` is the concert showpiece, and is about the hand that hides the
+difficulty — which in two of its three pieces is the left and in the third is the right. The
+track now runs `latin.3` · `latin` · `latin.6` · `latin.7`.
+
+**Option counts.** `latin.6` 3 exercises + 3 songs · `latin.7` 3 + 3. Neither is
+song-optional; both clear the floor of three on songs alone, and neither has a spare.
+
+**Not built, with the count.**
+
+- **`latin.4`** — the habanera and the tresillo. **0 song options; 3 exercise options exist**
+  (`exercise.tresillo.c`, `.f` and `.g`, 3.6 each, of which only `.c` is on a rung). Three
+  differently-shaped searches, each stated with what it returned: (1) the concept tags —
+  `habanera-rhythm` is on exactly **one** catalog row, `song.ragtime.joplin-solace` at 6.8,
+  and `tresillo` on **three**, all of them the exercises above; (2) a mechanical scan of the
+  left-hand onsets of **all 244 two-staff songs between level 2.5 and 6.0**, looking for a
+  bar whose lower staff strikes on 1, the second half of 2 and 3 and nowhere else (tresillo)
+  or on 1, the last sixteenth of 1, 2 and the second half of 2 (habanera) — five rows have
+  three or more such bars and not one is a habanera at this level: two editions of a Luo Ni
+  ballad, a Mozart Allegro whose three "habanera" bars are an ordinary dotted figure,
+  *All of Me* at 5.6 and *Mandinga* at 5.82, a 1990s Chilean band song whose uploader claims
+  public domain; (3) the plan's own Stage 4 repertoire, searched one name at a time over the
+  whole JSON of every catalog row — `paloma` 0, `manisero` 0, `siboney` 0, `maria elena` 0,
+  `quizas` 0. Entry 25 records why: fifteen of its sixteen refusals were the `piano tracks`
+  gate, and *la paloma*, *siboney* and *maria elena* are three of them. The same scan run
+  over level 6.0–9.9 finds the figure four times — El Choclo (11 bars), The Crave (32),
+  *Solace* (54) and a few rags — so **the catalog holds the habanera, three to five levels
+  above the rung that teaches it**. A Stage 4 rung built on the three exercises alone would
+  be a style rung with no music on it, and `02` Part A item 5 is about exactly that.
+- **`latin.8`** — modern tango. **0 song options.** Two searches: a substring pass over the
+  whole JSON of all 2,053 rows for `piazzolla|libertango|oblivion|milonga|nuevo tango|astor`
+  returned **one** hit, and it is `song.classical.burgmuller-pastorale-op-100-no-3.pdmx`
+  matching `astor` inside *pastorale*; and a pass for songs at level 6.0 or above carrying
+  three or more distinct time signatures — the plan's "the piece that changes meter" —
+  returned eleven, of which none is latin (Chopin, Haydn, a Mario game, *Wake Me Up*, a
+  Desplat theme). Entry 25 records *libertango* refused 12 copies deep and *oblivion*
+  dropped as a Grimes song mis-sold under Piazzolla's title. The plan itself says Stages 7–9
+  may have nothing; Stage 7 turned out to have three and Stage 8 has none.
+
+---
+
+**Evidence lines.** `<id> → <rung> | fields read | why it fits`. Each item was read on its
+own, in its own tool call — the catalog row, then the score dumped — before it was placed.
+The *splice* is one call per rung, because a stage file is edited as text and a unit is one
+object; the reading and the deciding were per item.
+
+*`latin.6`* (Stage 6, after `latin`; band 5–7.46; `requires.staves: 2`; **no tools** — see
+below)
+
+- `song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx` → latin.6 | 5.0
+  estimated; two flats, 4/4, 16 bars, 2 staves, **0 chord symbols**; **all 16 bars dumped** —
+  the left hand walks G3 G♭3 F3 in bar 1 and E3 E♭3 D3 in bar 2, bars 9–11 repeat bars 1–3 an
+  octave higher, and from bar 13 it plays triads on the off-beats | the second strain of the
+  tango whose first strain is on the rung below, and the shortest thing on this rung. On no
+  rung before
+- `song.folk.por-una-cabeza-carlos-gardel.pdmx` → latin.6 | 6.83 estimated; A major, then a
+  signature with no sharps, 4/4, 66 bars, 2 staves, 0 symbols; bars 0–19 dumped — the left
+  hand is A2 · rest-then-E3 · A3+C♯4 · E3, the same four events bar after bar | the tango
+  accompaniment written out and never varied, which is what this rung is. Entry 25 quarried
+  it **for this rung** and said so; on no rung before
+- `song.jazz.the-crave` → latin.6 | 7.46 estimated; one flat, ends on D, 4/4, 53 bars, 2
+  staves, 0 symbols; bars 1–14 dumped, and every bar's lower-staff onsets counted — **32 of
+  53** are a dotted quarter, a dotted quarter and then the rest of the bar, which is the 3+3+2
+  tresillo | Morton's habanera: the figure `latin.3` teaches as two bars of clapping, holding
+  up a whole piece. Entry 25 committed it and placed it nowhere; on no rung before
+- `exercise.tumbao.g` → latin.6 | 5.2 judged; G minor, 4/4, 8 bars, 2 staves; **dumped, then
+  the MusicXML read for ties** — the right staff rests throughout; the left rests for a dotted
+  quarter, strikes D3 on the second half of beat 2 and C2 on beat 4, and **that beat-four note
+  is tied over the barline** (`<tie type="start">` into `<tie type="stop">` on the next
+  downbeat, 14 ties in the file), so the dotted quarter on beat one of every later bar is a
+  continuation and not a strike. The score's own text is *"Nothing on beat one. The note on
+  four belongs to the next bar's chord"*, and it is true | the bass half alone, in the key
+  signature La Cumparsita part B carries. On no rung before
+
+  **`dump_score.py` does not print ties**, which is the one place this run's proxy was thinner
+  than the thing. Read from its output alone the file appears to strike a note on beat one and
+  to contradict its own direction; the XML says otherwise. The first draft of this evidence
+  line said the left hand *"plays a dotted quarter"* — in bar 1 that dotted quarter is a
+  **rest**. Corrected here. `exercise.latin-groove.d.son-3-2` is tied the same way, checked in
+  the same call: G2 on beat 4 of bar 1 tied into the dotted quarter on bar 2, 14 ties.
+- `exercise.montuno.d.3note.son-3-2` → latin.6 | 6.2 judged; D minor, 4/4, 4 bars;
+  **dumped** — the right hand plays F4+A4+D5, three strokes in bars 1 and 3 and two in bars 2
+  and 4, and the left staff rests; the score says *"Every note is a clave stroke. It repeats
+  without changing"* | the montuno in three voices, which is the plan's name for this stage,
+  in The Crave's key signature. On no rung before
+- `exercise.latin-groove.d.son-3-2` → latin.6 | 6.4 judged; D minor, 4/4, 8 bars, both
+  hands; **dumped** — the right hand is **two** notes (F4+A4), not three, over the tumbao;
+  the score says *"Neither hand is on the beat. Left hand alone first, then two notes on
+  top"* | the two halves put together, and the lesson says two notes because the file does.
+  On no rung before
+
+*`latin.7`* (Stage 7, after `latin.6`; band 6.3–9; `requires.staves: 2`; **no tools**)
+
+- `song.classical.el-choclo-piano.pdmx` → latin.7 | 7.57 estimated, public domain; 2/4, 49
+  bars, 2 staves, key signatures 2 sharps → 1 flat → 2 sharps, 0 symbols; bars 1–22 and 38–49
+  dumped **and every bar counted** — the lower staff repeats a pitch name inside the bar (a
+  bass doubled at the octave) in **47 of 49**, and the upper staff carries a sixteenth in
+  **42 of 49**, the first at bar 8 | a concert tango: octaves underneath a right hand that
+  runs and does not stop. **The genre plan lists it at Stage 6 and it is here instead** — see
+  the disagreement below. On no rung before
+- `song.classical.albeniz-asturias.pdmx` → latin.7 | 8.36 estimated, public domain; two
+  flats, ends on G, 3/4, 199 bars, 2 staves, 0 symbols; bars 1–12, 56–68, 126–136 and 192–199
+  dumped **and every bar counted** — in **87 of 199** the upper staff strikes one or two
+  pitches six or more times in the bar (40 of those a single repeated D4) while the lower
+  staff plays the melody on the sixteenths in between | the hand-focus rung's case inverted:
+  the left hand has the tune and the right hand is the ostinato. Entry 25 committed it **for
+  this rung** and said so; on no rung before
+- `song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx` → latin.7 | 9.0 estimated,
+  public domain; four sharps, ends on C♯, 3/4, 141 bars, 2 staves, 0 symbols; bars 1–24,
+  66–76 and 136–141 dumped **and every bar counted** — in **20 of 141** the lower staff
+  strikes four or more times over at most three pitches, alternating G♯2+E♯3 with C♯2 in
+  eighths, and those 20 are the opening section | the showpiece the plan names for this
+  stage, and the lesson says *"in its opening pages"* because 20 of 141 is not the piece. On
+  no rung before
+- `exercise.repeated-notes.g.4x.right` → latin.7 | 6.3 judged; G major, 4/4, 2 bars,
+  `hands: right`; **dumped** — four sixteenths on each note of a one-octave G scale, the left
+  staff resting | Asturias's right hand with the music taken away. The exercise is in G major
+  and Asturias in G minor; the tonic is the same and the mode is not. On no rung before
+- `exercise.rotation.g.left` → latin.7 | 6.3 judged; G major, 4/4, 2 bars, `hands: left`;
+  **dumped** — sixteenths rocking G3 D4 B3 D4, then C4 G4 E4 G4 | Malagueña's opening left
+  hand is that wrist: two positions alternating rather than a reach. **Its key matches
+  nothing on this rung**, the lesson says so, and `g` rather than `c` or `f` was chosen so the
+  two single-hand studies share a key with each other — which is a tie-break between
+  identical mechanisms, not the reason it is here. On no rung before
+- `exercise.octave-scale.d.1oct.left` → latin.7 | 7.2 judged; D major, 4/4, 2 bars,
+  `hands: left`; **dumped** — a one-octave scale in octaves, up and back, in eighths, the
+  right staff resting | El Choclo's left hand, in El Choclo's opening key signature. On no
+  rung before
+
+---
+
+**A disagreement with the genre plan, recorded because it is a judgement and because the
+count is what made me look.** `docs/genre-plans/latin.md` lists *El Choclo* under Stage 6 and
+*Malagueña*, *Carioquinha*, *brazileira*, *danza de los viejitos*, *cordoba* and *Asturias*
+under Stage 7. Of that Stage 7 list the catalog holds two: Malagueña and Asturias
+(*brazileira*, *danza de los viejitos* and *cordoba* return zero rows each on the whole-JSON
+search above, and Entry 25 records the last two refused by `piano tracks`). So with El Choclo
+left on Stage 6, Stage 7 had **two** songs and would have been a not-built line.
+
+**The reason it moved is the notation, and the reason I looked is the count; both belong in
+the record** (`working-rules` §2.16). El Choclo is 7.57, higher than every other tango here;
+its right hand runs in sixteenths in 42 of 49 bars from bar 8 to the end, which is a
+showpiece texture and not an accompaniment study; and its left hand is a doubled octave in 47
+of 49 bars, which is precisely the plan's own Stage 7 mode — *"the left hand of a concert
+latin piece is usually the part nobody practises"*. `latin.6` still has three songs without
+it, so nothing was thinned to make this work. The alternative on the table was *Carioquinha*,
+which the plan names for Stage 7 and which is **4.5, one stave and 63 chord symbols** — a
+choro lead sheet with no left hand at all. Putting it beside an 8.4 and a 9.0 would have taken
+the band to 4.5–9.0 and is the shape `00` §1a forbids: the plan's line was written from a
+title.
+
+**What was read and not placed, with the reason.**
+
+- `song.folk.carioquinha.pdmx` (4.5) — bars 1–10 dumped: **one stave**, D minor, 2/4, repeated
+  A4+D5+F5 chord stabs then a single sixteenth-note line, 63 chord symbols. A choro lead
+  sheet. **Not placed** on `latin.7`, for the reason above; it is the best unhomed latin lead
+  sheet in the catalog and its home is a rung between `latin.3` and `latin`, which this run
+  did not build.
+- `song.pop.chancho-en-piedra-mandinga.pdmx` (5.82) — bars 1–10 dumped: G minor, 4/4, 2
+  staves, and the left hand is `G2 · D2 · G2` as dotted quarter, dotted quarter, quarter — a
+  tresillo, in **54 of its 83 bars**, the highest count in the catalog below level 6. **Not
+  placed**: it is a Chilean funk band's song from the 1990s carrying an uploader's
+  `publicdomain` claim and a composition status of `unknown`, and the tresillo under a funk
+  riff is not the habanera `latin.4` would teach. It is the one row that would have made
+  `latin.4` a two-song rung, and two is not three.
+- `song.ragtime.joplin-solace` (6.8) — the catalog's **only** row carrying the
+  `habanera-rhythm` concept, and the scan counts the figure in **54 of its 88 bars**. **Not
+  placed**: it is on `ragtime.7` already, it is a rag, and `latin.4` — the rung its figure
+  belongs to — is two and a half levels below it.
+- `song.pop.corcovado.pdmx` (3.38) — Entry 25 quarried it for `latin.5.1` and that rung's band
+  (1.9–6.4) holds it. **Not placed**: it is a Stage 5 bossa and `latin` is not in this run's
+  file list for editing — its lesson says "Six options" and names all six, so a seventh means
+  rewriting that lesson. Named as a follow-up, as Entry 32 named *O Worship the King*.
+- `song.classical.chopin-bolero.nifc` (8.6) and
+  `song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx` (7.92) — both
+  at `latin.7`'s level and both rejected. The Bolero is a Pole's Spanish dance and the
+  Carmen overture is a French opera's; the onset scan finds **zero** habanera or tresillo bars
+  in either, so neither has the figure that would have argued past the geography. The Bizet is
+  on `classical.4.shelf` and stays there.
+- `song.folk.el-condor-pasa-if-i-could.pdmx` (5.28) — 2 staves, 4/4, 45 bars, on no rung, and
+  the genre plan lists it at Stage 3. **Not placed**: it is neither a tango nor a habanera and
+  nothing on `latin.6` would be true of it.
+- `song.pop.marr11317-recado-bossa-nova.pdmx` (3.69) and
+  `song.classical.por-toda-minha-vida.pdmx` (3.87) — both single-stave bossa lead sheets and
+  both `in-copyright` in the catalog's own field. **Not placed.**
+
+---
+
+**Modes: what the plan marks `BUILT` and what a rung can actually carry.** A rung's `tools`
+may only be `lab`, `duet`, `blind`, `simon`, `play` or `ladder` — read in
+`content/curriculum.schema.json`'s closed enum and in `LessonScreen.toolButton`.
+
+- The plan marks **Tempo ladder** and **Loops** for Stage 6. Neither is a tool kind. `ladder`
+  was removed from the union for repertoire on 2026-09-22 (Entry 29), and
+  `ladderTool.test.ts` keeps a closed list of the seven rungs allowed to carry it — the
+  scales, the arpeggios, Hanon and the octaves — with `04` §3d's reason: *a whole-piece loop
+  is absurd on repertoire*. **`latin.6` therefore carries no tool**, and its lesson teaches
+  *Loop* and *Ladder* as the two Score-screen rows the learner sets himself. The list was not
+  widened.
+- The plan marks **Performance mode** and **Hand focus** for Stage 7. Neither is a tool kind
+  either; both are Score-screen controls (*Perform* and *Hands*). **`latin.7` carries no
+  tool** and its lesson names both in prose, with a claim row against each control's own
+  wording — the same shape Entry 31 settled for `holiday.7`.
+- Both therefore draw `rung_audit` **INFO "names no mode"**, which is the honest reading: the
+  rung points at no button because the app has no button for what the plan asks. That is the
+  third and fourth rung in this task to land there, and it is now a pattern rather than a
+  one-off — see the follow-ups.
+
+---
+
+**Claims under test.** **21 rows** added to `lessonClaimsAboutMusic.test.ts` (17 per-item —
+8 for `latin.6`, 9 for `latin.7` — and 4 comparisons) and **7** to
+`lessonClaimsAboutApp.test.ts` (4 and 3). The music file runs its rows inside two tests, so
+the suite's count rises by the seven app rows only.
+
+**Six mutations were run, each restored, and every one went red naming its own claim**:
+*The Crave*'s key `Dm` → `Gm`; *Asturias*' 199 bars → 198; the "Asturias is the longest"
+comparison pointed at El Choclo; the tumbao study's 8 bars → 9; the `latin.7` hands row
+pointed at `exercise.rotation.g.right`; and the `latin.6` row about La Cumparsita's two parts
+pointed at part B on the rung below. The two app mutations failed 1 of 69; the four music
+ones failed 1 of 2 each time. Both files were re-run green afterwards.
+
+**Faults in my own drafts, caught by re-reading the dumps against the prose before the units
+were spliced, and one more caught by the closing checklist after the work was reported.**
+Six, all corrected:
+
+1. *Malagueña* — I wrote "a low bass note, then a chord above it". The dump has it the other
+   way: G♯2+E♯3 falls first and C♯2 on the off-eighth under it. Corrected.
+2. *Malagueña* again — "for most of the piece". Counted: **20 bars of 141**. It now says "in
+   its opening pages" and adds that the piece then goes somewhere else.
+3. *El Choclo* — "inner chords on the off-beats". In 2/4 the two inner chords fall on the
+   second and third eighths, which is the second half of beat 1 and beat 2, so "off-beats"
+   was half wrong. It now says "repeated inner chords".
+4. `latin.7`'s common mistake said "in two of these three the repeated hand is the one that
+   will give out". It is **all three** — El Choclo's right, Asturias' right, Malagueña's
+   left. Corrected.
+5. `latin.6`'s common mistake said the left hand "has to stay exactly where it is for sixty
+   bars". Sixty was an assertion about nothing: *Por una Cabeza* is 66 and the other two are
+   53 and 16. It now says "for the length of a piece".
+6. The `exercise.tumbao.g` evidence line said the left hand "plays a dotted quarter". In bar
+   1 that dotted quarter is a **rest**. Found by the closing checklist, which sent me to the
+   MusicXML to settle whether the file's own direction *"Nothing on beat one"* survives a bar
+   that `dump_score.py` prints as starting with a note. It does — the note is tied over the
+   barline — and the tool not printing ties is recorded with the corrected line above.
+
+---
+
+**Who else reads what these units changed** — grepped over `app/src` and the tools, not
+recalled.
+
+- **`prerequisites`** (new: `latin.6` ← `latin`, `latin.7` ← `latin.6`). Read by
+  `prerequisites.ts`'s `lockState`, which returns open unless the strict setting is on, and
+  `settingsStore.ts` defaults `strictPrerequisites` to `false`. `session.ts` imports it for
+  the recommender and `LessonScreen.ts` for the badge and the confirmation. Nothing else
+  reads the field.
+- **`concepts`** on a rung. `SkillsScreen.ts` collects, per concept, the stage number and
+  track of every rung that names it, so nine concepts gain an entry: `tango`, `tumbao`,
+  `montuno` and `tresillo` gain Stage 6 (all four were already on the latin track lower
+  down); `left-hand`, `ostinato`, `octaves`, `repeated-notes` and `performance-mode` gain
+  Stage 7 **and the latin track**. Every one of the nine already exists in `concepts.json`
+  and is taught by a paragraph of the lesson that names it — no concept was invented, and
+  `validate.py`'s orphan check is unaffected because nothing was removed from any rung.
+  `selectors.ts`'s `alternativesFor` reads `concepts` on a catalog *item*, not on a lesson,
+  so none of this touches it.
+- **`songOptions`.** `build.py`'s `attach_rung_tracks` gives each song its rung's track, so
+  the **four** songs that were on no rung now carry `latin` and the Library's latin shelf goes
+  from **9 songs to 13** — counted from the catalog before and after, and the four are La
+  Cumparsita part B, *Por una Cabeza*, *The Crave* and *Asturias*. (*El Choclo* and
+  *Malagueña* already carried the track without being on a rung.) `selectors.ts`'s
+  `lessonComplete` recomputes a rung's completion from its current options and **nothing was
+  removed from any existing rung**, so no existing rung's completion moves.
+- **`tools`, `requires`, `levelBand`.** `LessonScreen.toolButton` draws the buttons;
+  `validate.py`'s `tool_errors`, `notation_requirements` and `level_band_errors` check them;
+  `ladder_report.py` prints the band on the lesson page. All ran clean, and with no `tools`
+  key on either rung `tool_errors` has nothing to check.
+
+**Two corrections to `02-curriculum.md` that are older than this work.** Part D8's heading
+said `latin` opened at Stage 5, and the track list in Part B says the same. `latin.3.1` has
+been in `stage-3.json` since Entry 12 built it on 2026-09-18, so both lines have been wrong
+for as long as that rung has existed — the same shape Entry 32 found in the same heading for
+`hymns-gospel`, one clause along. Both corrected, with the reason beside them. **The
+authored data is still wrong and was not touched**: `content/curriculum/00-tracks.json`
+carries `startsAtStage: 5` for `latin`, and that file is not in this run's list. Part A item 5
+gains the revision note for this track, including both not-built rungs.
+
+---
+
+**Verification.** `build.py --offline` ok · `ladder_report.py` rewrote
+`docs/generated/ladder.md` (312 lines; Latin now **4 rungs, stages 3–7**) · `validate.py`
+**OK at 2,053 catalog items** · `rung_audit.py` whole tree **0 HIGH**, 30 MED, 1 LOW, 13
+INFO, and per rung **`latin.6` 1 INFO and `latin.7` 1 INFO**, both of them "names no mode",
+with no MED and no HIGH on either · `npx tsc -b --noEmit` clean · `npx vitest run` **178
+files, 2,479 tests, 2,477 passing and 2 failing**. **No Playwright**, by instruction.
+
+**The two failures are not this work and are not mine to fix.** Both are in
+`lessonShape.test.ts` and both name `content/lessons/classical.3.md`, which another agent has
+open in this tree: at `HEAD` that file is **597 words** and its stated reading time of 3
+minutes is right; the working copy is **603**, which is four minutes at the 200 words a
+minute the test computes, so it fails the reading-time row and the three-minute cap together.
+Measured both ways rather than assumed. Nothing in `latin.6.md` or `latin.7.md` is involved —
+they are 565 and 541 words.
+
+**The catalog count moved and it was not this run.** The build on disk when this started held
+**2,060** items and the brief said 2,067; this build wrote **2,053**. T16 has
+`tools/content/build.py`, `score_checks.py`, `validate.py` and three files under
+`content/sources/` modified in this tree, and the build now runs a `score-checks` gate that
+reports 38 high rows. **What changed is unmeasured** — the built catalog is not tracked, so
+there was no earlier copy to diff against by the time this was noticed, and that is the
+honest statement. What *was* measured is the part that matters here: **all 12 placed items
+were re-checked against the rebuilt catalog** — level, level source, staves, bars, time
+signatures and chord-symbol count against the values written into the evidence lines before
+any build ran — and **none of the 12 changed**.
+
+---
+
+**What is unverified.**
+
+- **Every piece, unheard.** In particular: *The Crave* and *Por una Cabeza* are uploads with
+  no composer field and no composer match, and nobody here has judged the arrangements;
+  *Asturias* at 199 bars and *Malagueña* at 141 were read in four and three passes
+  respectively and not end to end; La Cumparsita part B carries a `tempo-defaulted` tag, so
+  its written tempo is the importer's default and not the file's.
+- **The public build, and this is the item most worth a decision.** All three of `latin.6`'s
+  songs are `personal-build`, so **a public build offers that rung zero playable songs** —
+  worse than the two-of-three Entry 31 left on `holiday.7` and the two-of-four Entry 32 left
+  on `hymns.6`, and nothing in the repository measures it. The reason is metadata, not
+  licence, and each of the three was read: *Por una Cabeza*'s note says *"composer not in
+  composers.json"* and Carlos Gardel died in 1935; *The Crave*'s and La Cumparsita part B's
+  both say *"no composer named"* and their `composer` field is the literal string `NA`
+  (Jelly Roll Morton died in 1941; *La Cumparsita* is Matos Rodríguez, who died in 1948).
+  A grep of `content/sources/composers.json` for `gardel`, `morton`, `matos`, `rodr` and
+  `villoldo` returns **false for all five**, and El Choclo is `pd` by a title rule
+  (*"El Choclo (Villoldo 1903)"*) rather than by its composer. `latin.7` is the opposite:
+  **three of three are public domain**. Neither `composers.json` nor `pdmx.json` is in this
+  run's file list, and `pdmx.json` is open in front of another agent.
+- **Whether either lesson teaches.** No check decides it.
+- **The levels.** All six songs are `estimated`; every exercise placed is `judged`.
+- **The counted claims are mine, not the catalog's.** "32 of 53", "47 of 49", "42 of 49",
+  "87 of 199", "20 of 141", "54 of 83", "54 of 88" and the 244-row scan all come from two
+  short scripts written for this run that parse the MusicXML directly. They are not fields
+  and **no claim row can check them** — the rows check what `notation` holds: key, metre,
+  staves, bars, chord counts. A wrong count in a lesson would pass the suite. The bar-level
+  statements in the prose (La Cumparsita's G–G♭–F, Por una Cabeza's four events, Malagueña's
+  two positions) come from `dump_score.py` and are in the same position.
+- **No screen was opened.** Neither rung has been seen on the Plan screen, neither lesson
+  page has been rendered, and a lesson page with an empty tools block has not been observed —
+  read in `LessonScreen.draw`, not looked at. The code path is the one `holiday.5` and
+  `holiday.7` already use.
+- **Saved progress.** Nothing was taken off an existing rung, so no rung's completion
+  changes. No song gains a second rung: all six were on none.
+- **The titles the app will print.** La Cumparsita part B appears as *"Tango La Cumparsita -
+  Piano Solo (Tutorial Parte B)"* and *Por una Cabeza* as *"Por Una Cabeza - Carlos Gardel"*
+  — an upload's own wording, composer and all, where part A on the rung below has a curated
+  title. Read off the regenerated ladder report. Not fixed: the titles live in
+  `content/sources/pdmx.json`.
+
+**Files.** `content/curriculum/stage-6.json` and `stage-7.json` (one unit spliced into each
+as text; each round-trips byte-identically under `json.dumps(indent=2, ensure_ascii=False)`
+plus a newline, measured before the edit, and the splice asserted that every byte before the
+insertion point was unchanged, that the parsed result is the old document plus exactly one
+unit, and that the existing units compare equal); `content/lessons/latin.6.md` and
+`latin.7.md` (both new); `app/tests/unit/lessonClaimsAboutMusic.test.ts`,
+`app/tests/unit/lessonClaimsAboutApp.test.ts`; `docs/02-curriculum.md` Part A item 5, Part B's
+track list and Part D8's heading; `docs/generated/ladder.md` (regenerated); this entry.
+Nothing under `app/src/`, `tools/` or `content/sources/` was touched. Nothing was committed.
+
+**Follow-ups.**
+
+1. **The public-build hole on `latin.6`**, above: three rows whose composers are Gardel,
+   Morton and Matos Rodríguez, none of them in `composers.json` and two of them not named in
+   the file at all. Adding the three composers with their death years would move that rung
+   from zero playable to three, and it is a decision about the licence table rather than
+   about the music.
+2. **`content/curriculum/00-tracks.json` says `latin` starts at Stage 5** and its first rung
+   is at Stage 3. One field, outside this run's list.
+3. **`latin.4` and `latin.8` want music, not a looser rule.** `latin.4` needs a habanera or
+   tresillo piece at around level 4 — the figure exists in the catalog only at 6.8 and above
+   — and `latin.8` needs a modern tango, of which Entry 25 records the archive holding
+   ensemble scores the `piano tracks` gate refuses. A rung that wants *La Paloma* needs a
+   different source.
+4. **A rung between `latin.3` and `latin`.** *Carioquinha* (4.5) and *Corcovado* (3.38) are
+   both unhomed lead sheets at that level, and *Corcovado* already satisfies `latin`'s band
+   and requirements — Entry 25 quarried it for that rung and Entry 25 did not place it.
+   Either means rewriting an existing lesson's repertoire paragraph, which is why both were
+   left.
+5. **Four rungs in this task now point at no mode** — `holiday.5`, `holiday.7`, `latin.6` and
+   `latin.7` — for the same two reasons: *Loop*, *Ladder*, *Perform* and *Hands* are real
+   controls with no rung-level address. Entry 31 named this once; it has now happened three
+   more times, which is the argument for giving them one.
+6. **Two upload titles the Library will print verbatim**, in the last bullet of "What is unverified".

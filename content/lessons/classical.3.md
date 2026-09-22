@@ -41,10 +41,11 @@ written out as eighth notes rather than as a sign, so that you end up with both 
 
 **Repertoire for this rung.** Six options, four of them minuets from Anna
 Magdalena Bach's notebook: Petzold's *Minuet in G*, BWV Anh. 114, and its
-companions in G minor (Anh. 115), D minor (Anh. 132) and F major (Anh. 113).
+companions in G minor (Anh. 115, here only its first sixteen bars),
+D minor (Anh. 132) and F major (Anh. 113).
 Then the theme of Mozart's K. 331, set here in C major in 3/4, a minuet-length
-tune over the plainest accompaniment; and Beethoven's *Écossaise*, titled in G
-but written here in F, for the right hand alone — a quick 2/4 with position
+tune over the plainest accompaniment; and Beethoven's *Écossaise*, in F
+for the right hand alone — a quick 2/4 with position
 shifts. More at this level under Classical in the Library.
 
 **How to practise it.** Four bars at a time, hands separately, both hands

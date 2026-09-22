@@ -3417,7 +3417,7 @@
       "composer": "Wolfgang Amadeus Mozart",
       "artist": "Wolfgang Amadeus Mozart",
       "rawSha256": "54a6cacf9b319f2e384794a751e54c4cb4f4dc8d65e65d6169725f2fd8116be9",
-      "convertedSha256": "cc24534c6421dd407e524b6b44c162925a0d7560234e939e32a19a2ab3c6049d",
+      "convertedSha256": "825fcc17bfbd4ce5ed9c00fe37d610a2c44975e6354cbc63b6e8647bc6c45cec",
       "musescoreId": "58882",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -4809,7 +4809,7 @@
       "composer": "Schertzinger-Mercer",
       "artist": "Frank Ifield",
       "rawSha256": "4dcfdbfeb722ef1c724e8ef1206b121df93ca51aebf1433a557d22e13b0786f5",
-      "convertedSha256": "dfd181d74e71a93eeaf419a7e4f87e51ae64bff038f3b5f41cacb86737e9b0a1",
+      "convertedSha256": "a73aef28d7ead0634272ded9ba74818ee49b5137082e79986aecfa0ae904eaad",
       "musescoreId": "171011",
       "license": "cc-zero",
       "compositionStatus": "unknown",
@@ -6066,7 +6066,7 @@
       "composer": "Ruben Gonzales",
       "artist": "Chancho en Piedra",
       "rawSha256": "a6d5b244a09467860e25dfabcdc0294c2488ba11ed7798ff8212622e8b0c710d",
-      "convertedSha256": "54175950c47b135c5e22c8ecbaca9a27070b4c4226a95249bce540b17dffd313",
+      "convertedSha256": "67f615d75cfcc77d136dfe77ed69d2214fda936770bcd848a54121fb56ca009a",
       "musescoreId": "180084",
       "license": "publicdomain",
       "compositionStatus": "unknown",
@@ -6188,72 +6188,6 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.7 by 205"
-      }
-    },
-    {
-      "id": "song.classical.tchaikovsky-swan-lake-theme-tchaikovsky.pdmx",
-      "cid": "QmPgMNcBd5ozzUrUffL8ocPSzTA68EPU2UNqG38zbsfY4L",
-      "file": "QmPgMNcBd5ozzUrUffL8ocPSzTA68EPU2UNqG38zbsfY4L.mxl",
-      "title": "Swan Lake Theme - Tchaikovsky",
-      "composer": "Pyotr Ilyich Tchaikovsky",
-      "artist": "Pyotr Ilyich Tchaikovsky",
-      "rawSha256": "74ff725cb7fb406ad3f2ee81a772049e473937a3264a55ee5b4b637b0f484ee5",
-      "convertedSha256": "d256491e7fbba7fa187107708995c6a3bc780f0c94a8e31fc17082dc986bd8bd",
-      "musescoreId": "5964065",
-      "license": "cc-zero",
-      "compositionStatus": "pd",
-      "compositionReason": "Pyotr Ilyich Tchaikovsky died 1893 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1963",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "4",
-      "bars": 32,
-      "notes": 326,
-      "tempoBpm": 100.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 32.0,
-        "notesPerBar": 10.1875,
-        "notesPerSecond": 4.244791666666667,
-        "maxSimultaneousRight": 1.0,
-        "maxSimultaneousLeft": 1.0,
-        "maxSpanRight": 0.0,
-        "maxSpanLeft": 0.0,
-        "maxLeapRight": 8.0,
-        "maxLeapLeft": 7.0,
-        "rangeRight": 19.0,
-        "rangeLeft": 19.0,
-        "blackKeyRatio": 0.30368098159509205,
-        "keyAccidentals": 2.0,
-        "shortestValue": 0.5,
-        "voicesPerStaff": 0.0,
-        "handCrossings": 0.0,
-        "ornaments": 0.0,
-        "ledgerRatio": 0.05828220858895705,
-        "distinctRhythms": 4.0
-      },
-      "level": 5.22,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "voicesPerStaff",
-          -0.229
-        ],
-        [
-          "bars",
-          -0.224
-        ],
-        [
-          "maxSpanLeft",
-          -0.145
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "grand staff, rated 4.7 by 1220"
       }
     },
     {
@@ -6594,7 +6528,7 @@
       "composer": "Johann Friedrich Burgmüller",
       "artist": "Friedrich Burgmüller",
       "rawSha256": "20d9654533193e878f58fceedf7bd23799d988f7ea4308dcd9b119e3ce9381c2",
-      "convertedSha256": "7e82067879492a973d99926c669f390ca7826ad94f0cdce9d43ec948dc0f4fba",
+      "convertedSha256": "a4d305063194f881650d944e9d1358937a2e0ba7403db95b164ff7a53f82b749",
       "musescoreId": "5849868",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -6650,72 +6584,6 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.8 by 269"
-      }
-    },
-    {
-      "id": "song.classical.chopin-waltz-in-b-minor.pdmx",
-      "cid": "QmWqwAqr8yGcvHzHU6tyLhF2YL6551xx84brEx7uYoK4Z7",
-      "file": "QmWqwAqr8yGcvHzHU6tyLhF2YL6551xx84brEx7uYoK4Z7.mxl",
-      "title": "Waltz in B minor",
-      "composer": "Fryderyk Chopin",
-      "artist": "Frédéric Chopin",
-      "rawSha256": "5d9b9832617d40939ba86e7e04cd8671b91313adf3697c96cf41a3d071f61066",
-      "convertedSha256": "ef4bdb17bfbb9d60def6dfe4c49d2a9ecded81520b7839f7fea9094bea51bc2c",
-      "musescoreId": "1652096",
-      "license": "cc-zero",
-      "compositionStatus": "pd",
-      "compositionReason": "Fryderyk Chopin died 1849 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1919",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "4",
-      "bars": 146,
-      "notes": 1051,
-      "tempoBpm": 152.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 146.0,
-        "notesPerBar": 11.178082191780822,
-        "notesPerSecond": 9.439269406392695,
-        "maxSimultaneousRight": 2.0,
-        "maxSimultaneousLeft": 3.0,
-        "maxSpanRight": 10.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 14.0,
-        "maxLeapLeft": 19.0,
-        "rangeRight": 25.0,
-        "rangeLeft": 32.0,
-        "blackKeyRatio": 0.45955882352941174,
-        "keyAccidentals": 2.0,
-        "shortestValue": 0.25,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 0.0,
-        "ornaments": 0.0,
-        "ledgerRatio": 0.0900735294117647,
-        "distinctRhythms": 7.0
-      },
-      "level": 7.66,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "bars",
-          0.806
-        ],
-        [
-          "rangeLeft",
-          0.126
-        ],
-        [
-          "notesPerSecond",
-          0.111
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "grand staff, rated 4.9 by 35"
       }
     },
     {
@@ -8842,7 +8710,7 @@
       "composer": "NA",
       "artist": "Misc Cartoons",
       "rawSha256": "ee802146db254e7bec0e61dcf56878fcf3d6e67da9d4b5bceb9b32e4166e4d60",
-      "convertedSha256": "0362965fc69983e24d8f9817459fd6a23015e0b4e39d4bfe3c4098fdb2a34f65",
+      "convertedSha256": "06803767be2ca382f9a2a949b477e14ee494278005552960481238a53bc071f2",
       "musescoreId": "111413",
       "license": "cc-zero",
       "compositionStatus": "unknown",
@@ -10291,72 +10159,6 @@
       }
     },
     {
-      "id": "song.classical.passacaglia-handel-halvorsen.pdmx",
-      "cid": "Qme9QyPowPWgPLW5hsyamiBuUP2G3gnTin21M6BcUcnJPQ",
-      "file": "Qme9QyPowPWgPLW5hsyamiBuUP2G3gnTin21M6BcUcnJPQ.mxl",
-      "title": "Passacaglia (Handel/Halvorsen)",
-      "composer": "George Frideric Handel, arr. Johan Halvorsen",
-      "artist": "Johan Halvorsen",
-      "rawSha256": "3aafaa3a7a5113fb522a8a4b75c65fe425a6ad999f1208f14c78892ca611ccca",
-      "convertedSha256": "099ab426c28c0a2d0c05002a4fe585e9d2e41ad6759e1747d5ce74633ff7f95f",
-      "musescoreId": "5889760",
-      "license": "cc-zero",
-      "compositionStatus": "unknown",
-      "compositionReason": "composer not in composers.json",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "5",
-      "bars": 74,
-      "notes": 1022,
-      "tempoBpm": 130.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 74.0,
-        "notesPerBar": 13.91891891891892,
-        "notesPerSecond": 7.539414414414415,
-        "maxSimultaneousRight": 1.0,
-        "maxSimultaneousLeft": 2.0,
-        "maxSpanRight": 0.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 21.0,
-        "maxLeapLeft": 23.0,
-        "rangeRight": 39.0,
-        "rangeLeft": 33.0,
-        "blackKeyRatio": 0.04951456310679612,
-        "keyAccidentals": 0.0,
-        "shortestValue": 0.5,
-        "voicesPerStaff": 0.0,
-        "handCrossings": 0.0,
-        "ornaments": 0.0,
-        "ledgerRatio": 0.2961165048543689,
-        "distinctRhythms": 4.0
-      },
-      "level": 6.37,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "keyAccidentals",
-          -0.347
-        ],
-        [
-          "bars",
-          0.342
-        ],
-        [
-          "voicesPerStaff",
-          -0.229
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "grand staff, rated 4.8 by 1319"
-      }
-    },
-    {
       "id": "song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx",
       "cid": "Qmbs6AsQ1EcraYkW8kJK6RxdrYGU2R1qA4iCV87Lg32MDD",
       "file": "Qmbs6AsQ1EcraYkW8kJK6RxdrYGU2R1qA4iCV87Lg32MDD.mxl",
@@ -11156,7 +10958,7 @@
       "composer": "Kazumi Tokata\nTranscribed by Cezary Sławecki",
       "artist": "Tom Brier",
       "rawSha256": "fd33a977711799bfb5f2423ba5af1cd80a15f8797c7b13215a1f0c1c185eaa9f",
-      "convertedSha256": "390e97eb93c0e25e529dee67203e51b0bc992e581b499aa9f8bf14b0bb6f027e",
+      "convertedSha256": "e0c369830933136bcc8ff209be628b464b4e81e349b456027d9832139f36b1e6",
       "musescoreId": "5161839",
       "license": "cc-zero",
       "compositionStatus": "unknown",
@@ -11410,72 +11212,6 @@
       "review": {
         "decision": "keep",
         "note": "grand staff, rated 4.8 by 107"
-      }
-    },
-    {
-      "id": "song.classical.mozart-rondo-alla-turca.pdmx",
-      "cid": "QmNg5rJJQgdSBGEoDjricmzdDa5vtRdhXRYeAjJwMJi1RM",
-      "file": "QmNg5rJJQgdSBGEoDjricmzdDa5vtRdhXRYeAjJwMJi1RM.mxl",
-      "title": "Rondo Alla Turca",
-      "composer": "NA",
-      "artist": "Wolfgang Amadeus Mozart",
-      "rawSha256": "6b51dd118503d6d63b03d877cba61e989088b4173e584db4df332939a5cac3ae",
-      "convertedSha256": "d59e33dd75c96e3f47a4c8c2f27d29c90722b41c6d1fe3a9beca3b3c8e3bfb9c",
-      "musescoreId": "1050521",
-      "license": "publicdomain",
-      "compositionStatus": "pd",
-      "compositionReason": "Wolfgang Amadeus Mozart died 1791 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1861",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "5",
-      "bars": 223,
-      "notes": 2240,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 223.0,
-        "notesPerBar": 12.565022421524663,
-        "notesPerSecond": 10.05201793721973,
-        "maxSimultaneousRight": 4.0,
-        "maxSimultaneousLeft": 4.0,
-        "maxSpanRight": 12.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 16.0,
-        "maxLeapLeft": 19.0,
-        "rangeRight": 24.0,
-        "rangeLeft": 28.0,
-        "blackKeyRatio": 0.26409707351891504,
-        "keyAccidentals": 0.0,
-        "shortestValue": 0.125,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 0.0,
-        "ornaments": 12.0,
-        "ledgerRatio": 0.23875802997858672,
-        "distinctRhythms": 7.0
-      },
-      "level": 7.69,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "bars",
-          1.096
-        ],
-        [
-          "keyAccidentals",
-          -0.347
-        ],
-        [
-          "shortestValue",
-          0.195
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "grand staff, rated 4.7 by 21"
       }
     },
     {
@@ -11882,7 +11618,7 @@
       "composer": "George Gershwin",
       "artist": "George Gershwin",
       "rawSha256": "c728eceb1de3eb0e0e65caeeac66c0d62c7f4787e7d4904629a6e7ad30ac52e4",
-      "convertedSha256": "5b98c9a76b89af277c96608d431c72a083494ce4a524c4d450c28a3f34928e7a",
+      "convertedSha256": "253e4039a0fa51377982f3bbd0ce87cd644efc48859015f282e9515967e2dd8b",
       "musescoreId": "2152561",
       "license": "cc-zero",
       "compositionStatus": "unknown",
@@ -17920,7 +17656,7 @@
       "id": "song.pop.minuet-in-g-minor-bach-piano.pdmx",
       "cid": "QmVf6RECC5ZyPeEffyXEZtr1eBi6Ljj99NYNfYJC7iBVsv",
       "file": "QmVf6RECC5ZyPeEffyXEZtr1eBi6Ljj99NYNfYJC7iBVsv.mxl",
-      "title": "Minuet in G minor, BWV Anh. 115",
+      "title": "Minuet in G minor, BWV Anh. 115 (first 16 bars)",
       "composer": "Christian Petzold",
       "artist": "NA",
       "rawSha256": "f0603ec62650840c1ec7db0709437cffef4b3c72399fb4142b15969e49af3a58",
@@ -17979,7 +17715,7 @@
       "duplicateOf": null,
       "review": {
         "decision": "keep",
-        "note": "Minuet in G minor BWV Anh.115"
+        "note": "Minuet in G minor BWV Anh.115 Truncated: 16 bars against the 32-bar setting in song.classical.petzold-minuet-in-g-minor-bwv-anh-115.pdmx, 12 of whose first 16 bars match this file bar for bar. Kept on classical.3 at level 4.42 with the length in the title, because the full setting levels at 5.92."
       },
       "genre": [
         "classical"
@@ -18124,7 +17860,7 @@
       "id": "song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx",
       "cid": "Qmbs2gUsobGdZ9EbYb8kR9JCDiMJVpA6ukw9qpK2ifmiH4",
       "file": "Qmbs2gUsobGdZ9EbYb8kR9JCDiMJVpA6ukw9qpK2ifmiH4.mxl",
-      "title": "Écossaise in G major, WoO 23",
+      "title": "Écossaise in F major (after WoO 23)",
       "composer": "Ludwig van Beethoven",
       "artist": "Ludwig van Beethoven",
       "rawSha256": "af40a3225dbbbb0db9402849a6d60a343c5b28658dd36361400595086f8c4134",
@@ -18183,7 +17919,7 @@
       "duplicateOf": null,
       "review": {
         "decision": "keep",
-        "note": "Beethoven Ecossaise WoO 23"
+        "note": "Beethoven Ecossaise WoO 23 Retitled: the upload said G major, the file is in F major - key signature one flat, one staff, first note F4 and last note F5. The original title was 'Ecossaise in G major, WoO 23'."
       }
     },
     {
@@ -18250,72 +17986,6 @@
       "review": {
         "decision": "keep",
         "note": "Beethoven Sonatina in G Anh.5 no.1"
-      }
-    },
-    {
-      "id": "song.classical.beethoven-ludwig-van-beethoven-sonatina.pdmx",
-      "cid": "QmUzDyEd71tM2ncTVN4YzGVg9HB69nRxvsLhhSmXq99ZkY",
-      "file": "QmUzDyEd71tM2ncTVN4YzGVg9HB69nRxvsLhhSmXq99ZkY.mxl",
-      "title": "Sonatina in G major, Anh. 5 No. 1 (alternative edition)",
-      "composer": "Ludwig van Beethoven",
-      "artist": "Ludwig van Beethoven",
-      "rawSha256": "3f765a33ea2bf074457395e2cc05490f944e92ebb001b9b3a751d6a056d075c7",
-      "convertedSha256": "0cb4e803e5d6470f242ad8d00a622a79de21fd6785eeb9a873a87ec5a2847fcc",
-      "musescoreId": "4670960",
-      "license": "publicdomain",
-      "compositionStatus": "pd",
-      "compositionReason": "Beethoven Sonatina Anh.5",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "4",
-      "bars": 34,
-      "notes": 319,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 34.0,
-        "notesPerBar": 10.058823529411764,
-        "notesPerSecond": 4.023529411764706,
-        "maxSimultaneousRight": 2.0,
-        "maxSimultaneousLeft": 2.0,
-        "maxSpanRight": 8.0,
-        "maxSpanLeft": 7.0,
-        "maxLeapRight": 20.0,
-        "maxLeapLeft": 12.0,
-        "rangeRight": 27.0,
-        "rangeLeft": 22.0,
-        "blackKeyRatio": 0.07017543859649122,
-        "keyAccidentals": 1.0,
-        "shortestValue": 0.5,
-        "voicesPerStaff": 0.0,
-        "handCrossings": 0.0,
-        "ornaments": 0.0,
-        "ledgerRatio": 0.03216374269005848,
-        "distinctRhythms": 4.0
-      },
-      "level": 5.23,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "voicesPerStaff",
-          -0.229
-        ],
-        [
-          "bars",
-          -0.183
-        ],
-        [
-          "shortestValue",
-          -0.134
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "Beethoven Sonatina Anh.5"
       }
     },
     {
@@ -18520,7 +18190,7 @@
       "id": "song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx",
       "cid": "QmSSZAHjALT7zf8hpZpLFXaBHB9ytuBETs4QbhvYDFSAaa",
       "file": "QmSSZAHjALT7zf8hpZpLFXaBHB9ytuBETs4QbhvYDFSAaa.mxl",
-      "title": "Minuet in G major, K. 1e",
+      "title": "Minuets in G major and C major, K. 1e and K. 1f",
       "composer": "Wolfgang Amadeus Mozart",
       "artist": "Wolfgang Amadeus Mozart",
       "rawSha256": "cfa9c2d81c4e114e37ecffdf62e5badb6682279bb584aebb90bddb67ee609ad7",
@@ -18579,7 +18249,7 @@
       "duplicateOf": null,
       "review": {
         "decision": "keep",
-        "note": "Mozart Minuet in G K.1e"
+        "note": "Mozart Minuet in G K.1e. Retitled 2026-09-22 from 'Minuet in G major, K. 1e': the file holds 36 bars, of which bars 19-36 are the whole of the Minuet in C major K. 1f, which the catalog also carries on its own as song.classical.mozart-w-a-mozart-minuet-in-c-major-k1f.pdmx. The title now names both."
       }
     },
     {
@@ -18652,7 +18322,7 @@
       "id": "song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx",
       "cid": "Qmbs8bGTAq4UJLeLcyLJjzUzBtXKQRFaU3hQoqKxkfmdbD",
       "file": "Qmbs8bGTAq4UJLeLcyLJjzUzBtXKQRFaU3hQoqKxkfmdbD.mxl",
-      "title": "Sonatina in C major, Op. 36 No. 1 (second and third movements)",
+      "title": "Sonatina in C major, Op. 36 No. 1 (third movement)",
       "composer": "Muzio Clementi",
       "artist": "NA",
       "rawSha256": "f281a25c64aecd525d7eebd54c9c39e7a762abad4e7d5146c7d7186f4328f6c5",
@@ -18711,7 +18381,7 @@
       "duplicateOf": null,
       "review": {
         "decision": "keep",
-        "note": "Clementi Sonatina op.36 no.1 (2)"
+        "note": "Clementi Sonatina op.36 no.1 (2). Retitled 2026-09-22 from 'Sonatina in C major, Op. 36 No. 1 (second and third movements)': the file is 70 bars of 3/8 in C major with one tempo, one key and no metre change, which is the third movement alone; the second movement is an Andante in 3/4 in F and is not in the file. docs/lesson-audit/README.md had already recorded that it holds only the third."
       }
     },
     {
@@ -18778,72 +18448,6 @@
       "review": {
         "decision": "keep",
         "note": "Clementi op.36 no.1 first movement"
-      }
-    },
-    {
-      "id": "song.classical.kuhlau-kuhlau-sonatina-op-20-nr-1-c-major-allegro.pdmx",
-      "cid": "QmQR6PUBEzWWcB7AYyPja37sh6Djg9RPgiPhFHr7jBQrrL",
-      "file": "QmQR6PUBEzWWcB7AYyPja37sh6Djg9RPgiPhFHr7jBQrrL.mxl",
-      "title": "Sonatina in C major, Op. 20 No. 1 (first movement)",
-      "composer": "Friedrich Kuhlau",
-      "artist": "Friedrich Kuhlau",
-      "rawSha256": "b3588a5498a7975d6eb579410a9eba6f5ea529c373708c9003cd14c0cde21d83",
-      "convertedSha256": "7fc311501b50c330f65cd97fc22db3199add8d95270e49f601773cd3afda72a4",
-      "musescoreId": "6091038",
-      "license": "cc-zero",
-      "compositionStatus": "pd",
-      "compositionReason": "Kuhlau Sonatina op.20 no.1",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "5",
-      "bars": 80,
-      "notes": 945,
-      "tempoBpm": 144.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 80.0,
-        "notesPerBar": 13.5375,
-        "notesPerSecond": 8.122499999999999,
-        "maxSimultaneousRight": 3.0,
-        "maxSimultaneousLeft": 3.0,
-        "maxSpanRight": 8.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 32.0,
-        "maxLeapLeft": 24.0,
-        "rangeRight": 44.0,
-        "rangeLeft": 34.0,
-        "blackKeyRatio": 0.08956602031394276,
-        "keyAccidentals": 0.0,
-        "shortestValue": 0.25,
-        "voicesPerStaff": 0.0,
-        "handCrossings": 0.0,
-        "ornaments": 0.0,
-        "ledgerRatio": 0.14958448753462603,
-        "distinctRhythms": 7.0
-      },
-      "level": 6.55,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "bars",
-          0.395
-        ],
-        [
-          "keyAccidentals",
-          -0.347
-        ],
-        [
-          "voicesPerStaff",
-          -0.229
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "Kuhlau Sonatina op.20 no.1"
       }
     },
     {
@@ -20840,7 +20444,7 @@
       "composer": "Clarence and Spencer Williams",
       "artist": "Spencer Williams",
       "rawSha256": "960593eaabbcf09e83b83ae12f5d1333756320bd175836f403ae5d926dba0350",
-      "convertedSha256": "4ad9c87b706470be02488465e80be5b0cb8c4bcfb26dfe6a9d90de0e939bfe9d",
+      "convertedSha256": "ca90245c45239e1c2ac4eeacc5d88a1bb46f7f38d94635caa58cf3bafe2a807d",
       "musescoreId": "1429166",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -22493,72 +22097,6 @@
       }
     },
     {
-      "id": "song.classical.chopin-waltz-in-c-sharp-minor-op-64-no-2.pdmx",
-      "cid": "QmSDGxRMt2LhJv5veNu9WtNDKmq86NWPtfp8Pehi4rs2Xt",
-      "file": "QmSDGxRMt2LhJv5veNu9WtNDKmq86NWPtfp8Pehi4rs2Xt.mxl",
-      "title": "Waltz in C-sharp minor, Op. 64 No. 2",
-      "composer": "Fryderyk Chopin",
-      "artist": "Frédéric Chopin",
-      "rawSha256": "45806ee1ac104935943b83035fe30c066e9f080fda0e9873cbce728087596052",
-      "convertedSha256": "22009932c27af43056fe67bdeb877c765b0900ad405175587513af4d7448d816",
-      "musescoreId": "6110150",
-      "license": "cc-zero",
-      "compositionStatus": "pd",
-      "compositionReason": "Fryderyk Chopin died 1849 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1919",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "4",
-      "bars": 194,
-      "notes": 1423,
-      "tempoBpm": 110.00000000000001,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 194.0,
-        "notesPerBar": 9.804123711340207,
-        "notesPerSecond": 5.991408934707904,
-        "maxSimultaneousRight": 2.0,
-        "maxSimultaneousLeft": 4.0,
-        "maxSpanRight": 9.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 32.0,
-        "maxLeapLeft": 22.0,
-        "rangeRight": 41.0,
-        "rangeLeft": 44.0,
-        "blackKeyRatio": 0.6161934805467929,
-        "keyAccidentals": 4.0,
-        "shortestValue": 0.25,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 2.0,
-        "ornaments": 3.0,
-        "ledgerRatio": 0.09779179810725552,
-        "distinctRhythms": 8.0
-      },
-      "level": 8.2,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "bars",
-          1.0
-        ],
-        [
-          "rangeLeft",
-          0.28
-        ],
-        [
-          "keyAccidentals",
-          0.27
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "kept on the archive record and the machine gates, 2026-09-15"
-      }
-    },
-    {
       "id": "song.classical.haydn-sonata-in-g-major-hob-xvi-8.pdmx",
       "cid": "QmYA4uMA2vMmmMSJEozhxDoFpLH9urfAr2RXgNiWak4qcE",
       "file": "QmYA4uMA2vMmmMSJEozhxDoFpLH9urfAr2RXgNiWak4qcE.mxl",
@@ -22880,204 +22418,6 @@
         [
           "shortestValue",
           -0.134
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "kept on the archive record and the machine gates, 2026-09-15"
-      }
-    },
-    {
-      "id": "song.classical.bach-prelude-no-1-in-c-major-bwv-846.pdmx",
-      "cid": "QmbHzrXuDGNG3HyzLpeBNeZ9wAj4bTDGWsZ5xz56abM8D8",
-      "file": "QmbHzrXuDGNG3HyzLpeBNeZ9wAj4bTDGWsZ5xz56abM8D8.mxl",
-      "title": "Prelude No. 1 in C major, BWV 846",
-      "composer": "Johann Sebastian Bach",
-      "artist": "Johann Sebastian Bach",
-      "rawSha256": "b11bdb7fe924ab82e29dcf9b91ed92bb203d0159f50019e61c0a5527cbb082af",
-      "convertedSha256": "5530c0b871973e2b0e1fce7f91049cc67b85edaf3ce71c5e65b452279141746a",
-      "musescoreId": "117279",
-      "license": "publicdomain",
-      "compositionStatus": "pd",
-      "compositionReason": "Johann Sebastian Bach died 1750 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1820",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "6",
-      "bars": 34,
-      "notes": 598,
-      "tempoBpm": 72.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 34.0,
-        "notesPerBar": 17.676470588235293,
-        "notesPerSecond": 7.3651960784313735,
-        "maxSimultaneousRight": 3.0,
-        "maxSimultaneousLeft": 2.0,
-        "maxSpanRight": 8.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 17.0,
-        "maxLeapLeft": 14.0,
-        "rangeRight": 31.0,
-        "rangeLeft": 28.0,
-        "blackKeyRatio": 0.07321131447587355,
-        "keyAccidentals": 0.0,
-        "shortestValue": 0.25,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 0.0,
-        "ornaments": 2.0,
-        "ledgerRatio": 0.024958402662229616,
-        "distinctRhythms": 5.0
-      },
-      "level": 6.08,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "keyAccidentals",
-          -0.347
-        ],
-        [
-          "bars",
-          -0.183
-        ],
-        [
-          "notesPerBar",
-          0.142
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "kept on the archive record and the machine gates, 2026-09-15"
-      }
-    },
-    {
-      "id": "song.ragtime.joplin-maple-leaf-rag.pdmx",
-      "cid": "QmQivFenf7PzC4UiXgYbzx3G11yvQaCXWeuwvTDMMpr6Nk",
-      "file": "QmQivFenf7PzC4UiXgYbzx3G11yvQaCXWeuwvTDMMpr6Nk.mxl",
-      "title": "Maple Leaf Rag",
-      "composer": "Scott Joplin",
-      "artist": "Scott Joplin",
-      "rawSha256": "068fb1c6b1f590542c938fd1a54d7c04a9c3a4394394f57ad277f7006efa6cd2",
-      "convertedSha256": "5deb5d00de0663c2bd260f84691d74502dde8e45dcd9457f4aedb3bb94874647",
-      "musescoreId": "145724",
-      "license": "publicdomain",
-      "compositionStatus": "pd",
-      "compositionReason": "Scott Joplin died 1917 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1987",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "6",
-      "bars": 85,
-      "notes": 813,
-      "tempoBpm": 100.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 85.0,
-        "notesPerBar": 18.6,
-        "notesPerSecond": 15.5,
-        "maxSimultaneousRight": 4.0,
-        "maxSimultaneousLeft": 4.0,
-        "maxSpanRight": 12.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 16.0,
-        "maxLeapLeft": 36.0,
-        "rangeRight": 32.0,
-        "rangeLeft": 41.0,
-        "blackKeyRatio": 0.6261859582542695,
-        "keyAccidentals": 4.0,
-        "shortestValue": 0.25,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 0.0,
-        "ornaments": 0.0,
-        "ledgerRatio": 0.14864010120177104,
-        "distinctRhythms": 4.0
-      },
-      "level": 8.16,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "bars",
-          0.436
-        ],
-        [
-          "keyAccidentals",
-          0.27
-        ],
-        [
-          "notesPerSecond",
-          0.259
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "kept on the archive record and the machine gates, 2026-09-15"
-      }
-    },
-    {
-      "id": "song.classical.mozart-piano-sonata-no-16-in-c-major-k-545-first-movement.pdmx",
-      "cid": "QmXaLndsVZvGL5n1saWern2cbW1Ze1kEKpeUofRBBmhT1D",
-      "file": "QmXaLndsVZvGL5n1saWern2cbW1Ze1kEKpeUofRBBmhT1D.mxl",
-      "title": "Piano Sonata No. 16 in C major, K. 545 (first movement)",
-      "composer": "Wolfgang Amadeus Mozart",
-      "artist": "Wolfgang Amadeus Mozart",
-      "rawSha256": "c624e13b3944d9439628cee5608085562d29a66e2a8a43d8d14a679fe9a3f64b",
-      "convertedSha256": "da99cc200a47d51a60aeaa9973e04f65c83dc5ef7f6cfb19f20e41f349693bc3",
-      "musescoreId": "539",
-      "license": "cc-zero",
-      "compositionStatus": "pd",
-      "compositionReason": "Wolfgang Amadeus Mozart died 1791 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1861",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "6",
-      "bars": 73,
-      "notes": 1182,
-      "tempoBpm": 132.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 73.0,
-        "notesPerBar": 17.575342465753426,
-        "notesPerSecond": 7.3230593607305945,
-        "maxSimultaneousRight": 3.0,
-        "maxSimultaneousLeft": 4.0,
-        "maxSpanRight": 9.0,
-        "maxSpanLeft": 12.0,
-        "maxLeapRight": 19.0,
-        "maxLeapLeft": 24.0,
-        "rangeRight": 34.0,
-        "rangeLeft": 38.0,
-        "blackKeyRatio": 0.07872174590802807,
-        "keyAccidentals": 0.0,
-        "shortestValue": 0.125,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 0.0,
-        "ornaments": 8.0,
-        "ledgerRatio": 0.11691348402182385,
-        "distinctRhythms": 8.0
-      },
-      "level": 6.97,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "keyAccidentals",
-          -0.347
-        ],
-        [
-          "bars",
-          0.333
-        ],
-        [
-          "rangeLeft",
-          0.209
         ]
       ],
       "duplicateOf": null,
@@ -26262,7 +25602,7 @@
       "composer": "Carl Czerny",
       "artist": "Carl Czerny",
       "rawSha256": "c537fb0620bfff98bd5340faf7f90b2e0e9155b1b24bc282082994685125afbc",
-      "convertedSha256": "ecaea9e9a70b89bfceafe62d4d7134f52045fe2fe86f5125c04c023aae8136f2",
+      "convertedSha256": "8f0f446e0ba427140861a19c41a2fedeee8bc0fc4d6439fad6d9c85d3b59118d",
       "musescoreId": "5982345",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -26328,7 +25668,7 @@
       "composer": "Carl Czerny",
       "artist": "Carl Czerny",
       "rawSha256": "5403cec18a2bbc1b8e77d11c63c5caa7fc36d70cb08a8f9e16b45a55611bc702",
-      "convertedSha256": "d2a5d0faa0d876233dd39ec210011ad19089d5681ce59ef57bace564420319d0",
+      "convertedSha256": "44e3d74b9e0c03c00451bb4e9e9aa34965766295a605b908cf6637c68ad3237e",
       "musescoreId": "5982347",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -26460,7 +25800,7 @@
       "composer": "Carl Czerny",
       "artist": "Carl Czerny",
       "rawSha256": "a5caf4a2e72b9d43d33ced92f3fab99b6999529af5de73cd6ace0f3620f1f01a",
-      "convertedSha256": "36776c2f40a144e1e786928792134d66ced13393e0fad18d84b13324c44060e5",
+      "convertedSha256": "5daecc13ac29095a00f1291ad6656183f2d517f36c7dca566def179d1c2272f3",
       "musescoreId": "5982355",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -32195,72 +31535,6 @@
       }
     },
     {
-      "id": "song.classical.petzold-minuet-in-g-major-bwv-anh-114.pdmx",
-      "cid": "QmR4f53KBMPG6455kcuFdJ99TbZhjtyHKJfyCZ5FtswwS1",
-      "file": "QmR4f53KBMPG6455kcuFdJ99TbZhjtyHKJfyCZ5FtswwS1.mxl",
-      "title": "Minuet in G major, BWV Anh. 114",
-      "composer": "Christian Petzold",
-      "artist": "Johann Sebastian Bach",
-      "rawSha256": "0a5d1f4bdd00f7910a0976a8ae6f78db9877f37c4d9e80cdda3aba31f40a0e29",
-      "convertedSha256": "b9157df4816ba47cde1b55830098f76f2764172f8523fba5498ae5e641065c7c",
-      "musescoreId": "53447",
-      "license": "publicdomain",
-      "compositionStatus": "pd",
-      "compositionReason": "Christian Petzold died 1733 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1803",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "3",
-      "bars": 32,
-      "notes": 201,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 32.0,
-        "notesPerBar": 6.375,
-        "notesPerSecond": 3.4,
-        "maxSimultaneousRight": 2.0,
-        "maxSimultaneousLeft": 3.0,
-        "maxSpanRight": 3.0,
-        "maxSpanLeft": 7.0,
-        "maxLeapRight": 16.0,
-        "maxLeapLeft": 12.0,
-        "rangeRight": 24.0,
-        "rangeLeft": 21.0,
-        "blackKeyRatio": 0.11764705882352941,
-        "keyAccidentals": 1.0,
-        "shortestValue": 0.5,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 0.0,
-        "ornaments": 4.0,
-        "ledgerRatio": 0.0196078431372549,
-        "distinctRhythms": 4.0
-      },
-      "level": 5.26,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "notesPerBar",
-          -0.276
-        ],
-        [
-          "bars",
-          -0.224
-        ],
-        [
-          "notesPerSecond",
-          -0.169
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "kept on the archive record and the machine gates, 2026-09-15 (pedagogical quarry)"
-      }
-    },
-    {
       "id": "song.classical.petzold-minuet-in-g-minor-bwv-anh-115.pdmx",
       "cid": "QmRoSjGbegnLzhnjX4MbD1FdbMbMdJK8VBtYLtCYodwryU",
       "file": "QmRoSjGbegnLzhnjX4MbD1FdbMbMdJK8VBtYLtCYodwryU.mxl",
@@ -32978,72 +32252,6 @@
         [
           "voicesPerStaff",
           -0.229
-        ]
-      ],
-      "duplicateOf": null,
-      "review": {
-        "decision": "keep",
-        "note": "kept on the archive record and the machine gates, 2026-09-15 (pedagogical quarry)"
-      }
-    },
-    {
-      "id": "song.classical.schumann-the-merry-peasant-op-68-no-10.pdmx",
-      "cid": "QmXhXHMhzkHYQujVGM8aTMzrHDh4XDGtt1gHtAB7bzSedP",
-      "file": "QmXhXHMhzkHYQujVGM8aTMzrHDh4XDGtt1gHtAB7bzSedP.mxl",
-      "title": "The Merry Peasant, Op. 68 No. 10",
-      "composer": "Robert Schumann",
-      "artist": "Robert Schumann",
-      "rawSha256": "9dd09332b88c2330bf11f63fe4f601533186817c74b5c70051b448f6be9906df",
-      "convertedSha256": "ea80d11a3dedc20dc5a9381785be26000ea8834c83373e885a77f056348f9cba",
-      "musescoreId": "5860770",
-      "license": "cc-zero",
-      "compositionStatus": "pd",
-      "compositionReason": "Robert Schumann died 1856 ≤ 1930, so nothing was published after 1930 and life+70 expired in 1926",
-      "traditional": false,
-      "bucket": "classical",
-      "band": "5",
-      "bars": 21,
-      "notes": 236,
-      "tempoBpm": 114.0,
-      "tempoDefaulted": false,
-      "singleLine": false,
-      "hands": "both",
-      "features": {
-        "bars": 21.0,
-        "notesPerBar": 16.761904761904763,
-        "notesPerSecond": 6.984126984126984,
-        "maxSimultaneousRight": 3.0,
-        "maxSimultaneousLeft": 1.0,
-        "maxSpanRight": 9.0,
-        "maxSpanLeft": 0.0,
-        "maxLeapRight": 12.0,
-        "maxLeapLeft": 10.0,
-        "rangeRight": 20.0,
-        "rangeLeft": 19.0,
-        "blackKeyRatio": 0.11931818181818182,
-        "keyAccidentals": 1.0,
-        "shortestValue": 0.5,
-        "voicesPerStaff": 2.0,
-        "handCrossings": 0.0,
-        "ornaments": 0.0,
-        "ledgerRatio": 0.0,
-        "distinctRhythms": 3.0
-      },
-      "level": 5.32,
-      "levelSource": "estimated",
-      "levelFrom": "model",
-      "levelDrivers": [
-        [
-          "bars",
-          -0.503
-        ],
-        [
-          "maxSpanLeft",
-          -0.145
-        ],
-        [
-          "shortestValue",
-          -0.134
         ]
       ],
       "duplicateOf": null,
@@ -33794,7 +33002,7 @@
       "id": "song.folk.streets-of-laredo.pdmx",
       "cid": "QmVNSAsNKZ3DMLqoJ2Ddu4BSwLxQjXATazX9qnAaeDUZ3f",
       "file": "QmVNSAsNKZ3DMLqoJ2Ddu4BSwLxQjXATazX9qnAaeDUZ3f.mxl",
-      "title": "Streets of Laredo",
+      "title": "Streets of Laredo (first half, 17 bars)",
       "composer": "Traditional (American)",
       "artist": "Misc Traditional",
       "rawSha256": "d980c6445d14b795c48d395c41fa5b179013846594f20b5fd13cce1c3419ad95",
@@ -33853,7 +33061,7 @@
       "duplicateOf": null,
       "review": {
         "decision": "keep",
-        "note": "Part F tune, easiest clean edition, 2026-09-16"
+        "note": "Part F tune, easiest clean edition, 2026-09-16 Truncated: 17 bars against a 34-bar archive copy (QmaWcEEnePNKgWYMtkuc9q4jZ5kLcRnLCYGBDuUevmxu61), 16 of this file's 17 bars being one unbroken stretch of it, and the last bar holds 20160 of 30240. Not replaced from the archive: the quarry's commit step requires a review decision made by ear, and commit.py rewrites content/sources/pdmx.json whole."
       },
       "genre": [
         "folk"
@@ -34447,7 +33655,7 @@
       "composer": "Artie Matthews",
       "artist": null,
       "rawSha256": "9193306c55fb3d0b8880117147eb1580b91c08400ebb292c4df6b1d87720b0fc",
-      "convertedSha256": "fe5a56cb1ebfde19b3d8bc56c7a594f70b7bc9e15895a97e61280979dac3ff05",
+      "convertedSha256": "cee0d8d29e95e5b6249da08b3f18b63eef6218e7f0612be6b1e917b26c98ff0b",
       "musescoreId": "1430036",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -34880,7 +34088,7 @@
       "composer": "Thomas A. Dorsey and Richard M. Jones",
       "artist": null,
       "rawSha256": "63b6f3cd41afbbeb3c2964cf8b520b1874d8c3328466b670a23c77ca82876bd9",
-      "convertedSha256": "fff3042c5f5a464da4679e4d2e52d42c1896d2f113d5a9c9b813c2aaf33bcb7b",
+      "convertedSha256": "c12d64010e8996e3976c9ee376638a747beffa56c6dd6834101fc57acee920a2",
       "musescoreId": "1429126",
       "license": "cc-zero",
       "compositionStatus": "pd",

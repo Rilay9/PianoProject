@@ -123,7 +123,8 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "primary-chords"
+                  "preset": "primary-chords",
+                  "mode": "tune"
                 },
                 {
                   "kind": "play"
@@ -204,14 +205,13 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "minor-vamp"
+                  "preset": "minor-vamp",
+                  "unlock": [
+                    "progression"
+                  ]
                 },
                 {
                   "kind": "play"
-                },
-                {
-                  "kind": "lab",
-                  "label": "Lab — your own chords"
                 }
               ],
               "levelBand": [
@@ -844,7 +844,6 @@
                 "song.folk.what-a-friend-we-have-in-jesus.pdmx",
                 "song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx",
                 "song.classical.jesus-loves-me.pdmx",
-                "song.classical.william-holy-holy-holy.pdmx",
                 "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx",
                 "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
                 "song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx",

@@ -423,6 +423,15 @@ screen in Tempo mode. Level table (extend as the curriculum grows):
 
 Deterministic from a seed so a failed sight-read can be retried identically once.
 
+**Tempo mode is applied after the learner's default, not before it** (fixed 2026-09-22).
+`ScoreScreen` set `mode = 'tempo'` where the score finished loading and then read
+`settings.defaultModeWithInput` / `defaultModeWithoutInput` three hundred lines later, which
+overwrote it — so Today's daily sight-read opened in **Wait** mode for every learner whose
+applicable default is Wait, and `defaultModeWithInput` ships as Wait.
+`pending-review` Entry 29 found it in passing and named it rather than fixing it. An explicit
+`?mode=` in the hash still wins over both, because a tour step about Wait mode must teach Wait
+mode.
+
 Levels 5–7 originally read "melodic contours from a Markov table trained on the `[AUTH]`
 folk corpus (build-time)". Dropped in P12b, on the P11 replan §3.2: a trained table needs a
 corpus at build time, ships a model with the app, and buys nothing that the chord-tone rule
@@ -507,11 +516,34 @@ A measure that could not be taken says so rather than reporting nought — the m
 sends note-off, and "no note was short enough" is a different answer from "nothing could be
 measured".
 
-**Not built:** the half-pedal value scorer (`special.ts`'s `halfPedalResult`, and the
-`ccRange` param on `exercise.pedal.half-pedal.a`). `PracticeEngine.feed` reduces CC64 to
-`sustainDown = value >= 64` and keeps no value, so measuring depth on the Score screen needs
-the raw CC values carried through the engine into `SessionScore`. `technique.7`'s lesson says
-the depth is for the ear, which remains true.
+**The half pedal, built 2026-09-22.** `PracticeEngine.feed` used to reduce CC64 to
+`sustainDown = value >= 64` and keep no value, so `exercise.pedal.half-pedal.a` — which opens
+here as ordinary notation and states `drill: { kind: 'half-pedal', params: { ccRange } }` — had
+nothing on the Score screen to be judged against. Every CC64 value now rides out on
+`SessionScore.pedal`, and `techniqueMeasureFor` reports the share of them inside the range.
+
+- **One rule, two callers.** `Scoring.halfPedalScore` is the arithmetic; `special.ts`'s
+  `PedalDrill.halfPedalResult` asks it too, so the drill screen and the Score screen cannot
+  disagree about what a half pedal is.
+- **A pedal that only ever sends 0 and 127 is a switch**, and many digital actions are. It is
+  its own state and the sheet says so, rather than showing a permanent nought.
+- `pedal` is optional on `SessionScore` for the reason `rhythmOnly` is: a row stored before the
+  field existed must read the same as one stored after it.
+
+**The accent, built 2026-09-22.** `extractScoreModel` reads `<accent>` and `<strong-accent>`
+off OSMD's voice entry onto `ScoreNote.accent`; `prepareSession` carries the marked pitches
+onto `PreparedStep.accents` with the hand filter and the transposition already applied; and
+`Scoring.accentScore` compares the velocity of those notes with the mean of the run's own
+unaccented ones (`ACCENT_MIN_RATIO`).
+
+- **Against the learner's own playing, not a MIDI number.** A light player and a heavy one
+  accent by the same gesture and land on different velocities.
+- **By step and by pitch, never by pitch alone.** A piece accents its first E and not its
+  fourth; matching on the pitch judged both, which the `accents.musicxml` fixture caught.
+- **It never decides a pass.** Nothing in any rung's `mastery.custom` names it, and a leaning
+  that is a little shy is not a wrong note.
+- Absent rather than `false` where the score prints nothing, which is what keeps every golden
+  model of an unaccented score byte-identical.
 
 ## 10. Test plan for the engine (Vitest)
 

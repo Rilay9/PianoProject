@@ -42,9 +42,10 @@ the scores, and the rung is complete on its exercises there.
 something comes out.
 
 **Tools for this rung.** Four decisions are quicker to make against
-something that will not wait. This rung's *Accompaniment lab* opens a ballad whose
-chords and left hand are fixed, so put the chart into *Lab — your own chords*
-instead, start it, and try three different left hands over the same
+something that will not wait. This rung's *Accompaniment lab* opens a ballad with
+the chords and the left hand handed back to you, and it opens *playing the tune*,
+so the arrangement under it is the only thing you are making: put the chart in,
+start it, and try three different left hands over the same
 sixteen bars; nothing is judged and
 nothing is kept, so the only thing left to compare is which one you would
 rather hear.

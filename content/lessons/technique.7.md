@@ -35,11 +35,11 @@ the beat.
 
 **Half pedal.** The damper does not have to be up or down. Held part-way it
 clears the treble while the bass keeps ringing, which is how most Romantic music
-is actually pedalled. This exercise opens as an ordinary score: the app follows
-the notes and reads the pedal only as down or up, so the depth is for your ear
-to judge. Some digital pianos send only 0 or 127 and nothing in between; the
-MIDI log in Settings → Diagnostics shows what yours sends, and that is worth
-knowing about your instrument.
+is actually pedalled. This exercise opens as an ordinary score, and the summary
+at the end says what share of your pedal went down part-way rather than to the
+floor or the top. Some digital pianos send only 0 or 127 and nothing in
+between; the app says that is what yours does instead of marking you down for
+it, and that is worth knowing about your instrument.
 
 **An étude to put it in.** Czerny Op. 299 No. 5, No. 8 and No. 10, the faster
 ones: No. 5 has scales in both hands and right-hand double notes, No. 8 broken
@@ -47,10 +47,11 @@ chords across the keyboard, and No. 10 a running broken-chord left hand under
 right-hand octaves and thirds — double-note figures the trill and repeated-note
 exercises on the previous technique rung prepare.
 
-**Tools for this rung.** None of its own, but two against three is two
-pulses, and the score screen's *Duet* will hold one of them: open the exercise,
-choose the hand playing the three, let the app play the two, and the disagreement is something you hear rather than something you
+**Tools for this rung.** Two against three is two
+pulses, and *Play it as a duet* holds one of them for you: it opens the
+two-against-three exercise, you take the hand playing the three, the app plays the two, and the disagreement is something you hear rather than something you
 are also producing. Then swap hands, because that is the other exercise.
+*Climb the ladder* is the other button, and it loops the octave study.
 
 **How you'll know you've got it.** The same inner fingering in thirds twice
 running without deciding it again. An octave in D flat that takes the fourth

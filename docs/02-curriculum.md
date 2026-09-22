@@ -92,7 +92,13 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    `hymns.6` (the hymn as an arrangement) are curated rungs of five, five and four songs
    above it. Eight of their fourteen song options are also on that list — three, three and
    two — which is the list doing its job rather than duplication; `pending-review.md`
-   Entry 32.) (Revised 2026-09-15: for a day the build had placed every song in
+   Entry 32. Revised 2026-09-22: the same was done for latin, for two of the four stages
+   the genre plan describes — `latin.6` (the tango accompaniment written out, with the
+   montuno carried by the exercises because none of the three songs writes one) and
+   `latin.7` (the concert showpieces, and the hand that hides their difficulty) — so the
+   track now runs 3, 5, 6, 7. `latin.4`, the habanera and tresillo rung, and `latin.8`,
+   the modern tango, were **not built**: neither has a single song option in the catalog.
+   `pending-review.md` Entry 36.) (Revised 2026-09-15: for a day the build had placed every song in
    the library on some rung, which put thirty to seventy pieces on the classical rungs; see
    `handoff-2026-09-09.md` §5aj–§5ak. The per-rung tables below name the plan's intended
    pieces; `docs/generated/ladder.md` is what the build offers today.)
@@ -134,8 +140,10 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
 **Tracks.** Fifteen, defined in `content/curriculum/00-tracks.json`, each starting at the
 stage its first rung sits on: `core` (Stage 0), `practice` (Stage 1), `holiday` (Stage 2),
 `classical`, `chords-pop`, `blues-boogie`, `theory-ear`, `improv-compose`, `hymns-gospel`
-and `rock-metal` (Stage 3), `jam` and `technique` (Stage 4), `jazz`, `ragtime` and `latin`
-(Stage 5). `blues-boogie` moved from Stage 4 to Stage 3 on 2026-09-16: the twelve-bar
+`rock-metal` and `latin` (Stage 3), `jam` and `technique` (Stage 4), `jazz` and `ragtime`
+(Stage 5). `latin` is listed here at the stage its first rung sits on, which is where this
+sentence says it belongs; the track file still says 5 and is a follow-up on
+`pending-review.md` Entry 36. `blues-boogie` moved from Stage 4 to Stage 3 on 2026-09-16: the twelve-bar
 tunes as they were published — a melody with chord symbols over it — are Stage 3 reading,
 and the form and the boogie bass stay where they were on Stage 4. Six start active on a fresh install — `core`, `classical`, `chords-pop`,
 `theory-ear`, `technique` and `practice`; the other nine are switched on by the learner from
@@ -550,11 +558,17 @@ Each is a real rung with three options from existing material, not a reading
 list: `optionsExempt` would have been the easy way to ship five essays, and the
 point of the module is that the method gets applied to something.
 
-### D8. Mini-modules (optional; `holiday` and `hymns-gospel` open at Stage 2, `rock-metal` at Stage 3, `jam` at Stage 4, `latin` at Stage 5)
+### D8. Mini-modules (optional; `holiday` and `hymns-gospel` open at Stage 2, `rock-metal` and `latin` at Stage 3, `jam` at Stage 4)
 
 *(Corrected 2026-09-22: this line said `hymns-gospel` opened at Stage 3. `hymns-gospel.2.1`
 has been in `stage-2.json` since `pending-review.md` Entry 20 built `hymns.2`, so the line
 had been wrong since that rung existed. The track now runs Stages 2 to 6; Entry 32.)*
+
+*(Corrected 2026-09-22: and it said `latin` opened at Stage 5. `latin.3.1` has been in
+`stage-3.json` since Entry 12 built it, so that half was wrong for as long as well.
+`content/curriculum/00-tracks.json` still carries `startsAtStage: 5` for this track and was
+outside the file list of the run that found it — a follow-up on Entry 36. The track now runs
+Stages 3, 5, 6 and 7.)*
 
 - **Hymns & gospel** `[AUTH]`: Amazing Grace, Be Thou My Vision, It Is Well, Great Is Thy
   Faithfulness (1923), Holy Holy Holy, Come Thou Fount, What a Friend, Swing Low, Wade in the

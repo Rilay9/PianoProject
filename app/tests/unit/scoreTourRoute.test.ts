@@ -29,6 +29,7 @@ import { parseHash, type Route, type Router } from '../../src/router';
 
 const SONG_ID = 'song.folk.hot-cross-buns';
 const TOUR_ID = 'drill.tour.app-basics';
+const SIGHT_READ_ID = 'drill.reading.sight-read-1';
 
 /**
  * Two full 4/4 bars of quarter notes.
@@ -173,6 +174,22 @@ Element.prototype.scrollIntoView = function scrollIntoView(): void {
   /* no layout in jsdom */
 };
 
+/**
+ * A sight-reading drill item, which the Score screen generates notation for
+ * rather than fetching (`05` §8).
+ */
+function sightReadItem(): CatalogItem {
+  return {
+    id: SIGHT_READ_ID,
+    type: 'drill',
+    title: 'Sight-read',
+    level: 1,
+    tracks: ['core'],
+    concepts: [],
+    drill: { kind: 'sight-reading', params: { level: 1, hands: 'right', bars: 2 } },
+  } as unknown as CatalogItem;
+}
+
 function songItem(): CatalogItem {
   return {
     id: SONG_ID,
@@ -209,7 +226,7 @@ async function open(hash: string): Promise<{ section: HTMLElement; router: FakeR
   document.body.replaceChildren(section);
   await vi.waitFor(() => {
     expect(section.dataset.running).toBeDefined();
-    expect(document.querySelector('#score-title')?.textContent).toBe('Hot Cross Buns');
+    expect(document.querySelector('#score-title')?.textContent).not.toBe('');
   });
   return { section, router };
 }
@@ -494,5 +511,44 @@ describe('the controls that are routes keep the tour', () => {
       blind: false,
       performance: true,
     });
+  });
+});
+
+/**
+ * Entry 29 found this in passing and left it: `ScoreScreen` sets Tempo for a
+ * sight-read with the comment quoting `05` §8, and the line that reads the
+ * learner's default mode runs *after* it and overwrites it. `defaultModeWithInput`
+ * ships as `'wait'`, so Today's daily sight-read opened in Wait mode — which
+ * `05` §8 calls decoding rather than reading — for anyone who had never touched
+ * the setting.
+ */
+describe('a sight-read opens in the mode docs/05 §8 says', () => {
+  beforeEach(() => {
+    findItemSpy.mockResolvedValue(sightReadItem());
+  });
+
+  it('opens in Tempo for a learner who has not changed the setting', async () => {
+    expect(DEFAULT_SETTINGS.defaultModeWithInput).toBe('wait');
+    const { section } = await open(`#/score/${SIGHT_READ_ID}`);
+    expect(section.dataset.mode).toBe('tempo');
+    expect(document.querySelector<HTMLSelectElement>('#score-mode')?.value).toBe('tempo');
+  });
+
+  it('opens in Tempo even where the learner has chosen Wait as their default', async () => {
+    updateSettings({ defaultModeWithInput: 'wait', defaultModeWithoutInput: 'wait' });
+    const { section } = await open(`#/score/${SIGHT_READ_ID}`);
+    expect(section.dataset.mode).toBe('tempo');
+  });
+
+  it('still lets an explicit ?mode= win, the way the tour needs it to', async () => {
+    const { section } = await open(`#/score/${SIGHT_READ_ID}?mode=wait`);
+    expect(section.dataset.mode).toBe('wait');
+  });
+
+  it('leaves an ordinary piece on the default the learner chose', async () => {
+    findItemSpy.mockResolvedValue(songItem());
+    updateSettings({ defaultModeWithInput: 'wait', defaultModeWithoutInput: 'wait' });
+    const { section } = await open(`#/score/${SONG_ID}`);
+    expect(section.dataset.mode).toBe('wait');
   });
 });

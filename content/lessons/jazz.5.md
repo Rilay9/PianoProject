@@ -57,8 +57,10 @@ over a walking bass, both fixed, in whatever key you pick: comp shells against
 it. It opens on *Play the tune*, so there is a right hand above your shells
 rather than silence. Swing the app judges only where the score writes the word,
 and none of this rung's pieces does — so here every eighth is timed where it is
-printed and the placing is still for your ear. The accent it does not judge
-anywhere: nothing measures how hard you play.
+printed and the placing is still for your ear. The accent it reads where the
+score prints one and compares against how hard you played everything else —
+but none of this rung's pieces prints one, so here too the leaning is yours to
+hear.
 
 **How you'll know you've got it.** ii–V–I in four keys with shell voicings, and
 one standard comped through twice while you sing the melody.

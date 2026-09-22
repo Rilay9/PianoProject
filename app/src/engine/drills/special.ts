@@ -5,6 +5,7 @@
 // records. Each keeps the same next/feed/result shape as the others so the
 // P8 UI has one contract to build against.
 
+import { halfPedalScore } from '../Scoring';
 import { makeRng } from '../sightReading';
 import { systemClock, type Clock, type EngineInput } from '../types';
 import type { Drill, DrillAnswer, DrillPrompt, DrillResult } from './types';
@@ -339,16 +340,13 @@ export class PedalDrill implements Drill {
    */
   private halfPedalResult(range: [number, number]): DrillResult {
     const [low, high] = range;
-    const inRange = this.pedalValues.filter((v) => v >= low && v <= high).length;
-    const total = this.pedalValues.length;
-    const partial = this.pedalValues.filter((v) => v > 0 && v < 127).length;
-    // A pedal that only ever reports 0 or 127 is a *switch*, and many digital
-    // actions are. Scoring that as "you failed to half-pedal" would blame the
-    // player for the instrument, so it is reported as its own state and the
-    // screen can say the exercise cannot be judged on this piano rather than
-    // showing a permanent zero.
-    const binaryPedal = total > 0 && partial === 0;
-    const accuracy = total > 0 && !binaryPedal ? inRange / total : 0;
+    // The arithmetic is `Scoring.halfPedalScore`'s, asked rather than repeated
+    // (T16 item 6): the same exercise is judged here on the drill screen and
+    // there on the Score screen, and two copies of the rule would drift.
+    const { total, inRange, partial, share: accuracy, binaryPedal } = halfPedalScore(
+      this.pedalValues,
+      range,
+    );
     return {
       kind: this.kind,
       total: this.chords.length,

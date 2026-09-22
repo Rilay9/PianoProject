@@ -1,0 +1,60 @@
+{
+  "_comment": [
+    "The `high` rows of tools/content/score_checks.py that the build is allowed to carry.",
+    "Read by score_checks.py --gate, which build.py runs after the merge: a high row with no",
+    "entry here fails the build naming it. Medium and low rows are reported and never fail one.",
+    "",
+    "Every entry below is a row somebody opened. The reason says what was in the file, not that",
+    "it was inconvenient; a row whose reason is only 'known' does not belong here. Removing a",
+    "reason is how you ask the build to look again.",
+    "",
+    "Nothing here has been heard. Every reason is a reading of the page.",
+    "",
+    "Written 2026-09-22 (T15, docs/pending-review.md Entry 34) from build/score-checks.applied.md,",
+    "which carries the verdict for every row, allowed or fixed."
+  ],
+  "allowed": {
+    "song.blues.singin-the-blues|bar-duration|overfull": "Bar 31 really is five beats in 4/4: a plain quarter rest with no time-modification sits inside a started eighth-triplet group whose other five members spell a chromatic run. Left unfixed on purpose — Entry 23 and tools/content/tests/test_score_checks.py use this bar as the check's red control. On no rung.",
+
+    "song.classical.beethoven-moonlight-iii|bar-duration|overfull": "Bar 188 holds 40 note elements of which 32 carry <cue/>, a cue-size written-out cadenza; the non-cue content is exactly one bar per voice. The reader counts cue notes as sounding time. Three files in the corpus have cue notes.",
+    "song.classical.beethoven-symphony-5-i-piano|bar-duration|overfull": "Bar 269 is five times the bar in every sounding voice at once — the movement's cadenza engraved as one long bar, not a voice written wrong.",
+    "song.classical.chopin-ballade-1|bar-duration|overfull": "Bar 246 holds 3840 against a 1920 metre in every voice including the whole-measure rests: the coda's 29-note unmeasured run written as one double-length bar. Bars 247, 249 and 253 carry the other faults and were not opened one by one.",
+    "song.classical.chopin-etude-op10-12.nifc|bar-duration|overfull": "Bar 80: voices 1/1 and 2/3 hold exactly one bar while voice 1/2 holds four bars' worth — the closing cascade and final chords written into one inner voice. A real conversion fault with no obvious fix; on no rung.",
+    "song.classical.chopin-etude-op25-11.nifc|bar-duration|overfull": "Bar 95 of 96: both voices reach 181440 together — the closing chromatic run engraved as one long bar.",
+    "song.classical.chopin-mazurka-op50-1.nifc|bar-duration|overfull": "Bar 88: two voices hold one 3/4 bar and the inner bass voice holds fifteen bars' worth, sixteen bars from the end. A real .nifc conversion fault; the MusicXML is generated at build time from a Humdrum source, so there is no committed file to edit.",
+    "song.classical.chopin-mazurka-op59-3.nifc|bar-duration|overfull": "Bar 32: one voice holds seven eighths where a 3/4 bar takes six, and the extra one is a hidden rest. Generated at build time from the NIFC Humdrum source, so the fix would mean changing an upstream edition file.",
+    "song.classical.chopin-mazurka-op7-4.nifc|bar-duration|overfull": "Bar 36, the last: eight bars of melody written into one voice. Same .nifc spill as Op. 50 No. 1; no committed MusicXML to edit.",
+    "song.classical.chopin-nocturne-20.alt|bar-duration|overfull": "Bar 59: a dotted half then 35 notes written 14 each — an unmeasured cadenza run whose durations do not divide the beat, landing 10 divisions over 480. Both voices agree; the check's slack for this file is 7.",
+    "song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx|bar-duration|overfull": "Bars 8 and 9: three of four voices reach 2.5 beats in a 2/4 bar with no metre change marked. Real, no obvious single fix, on no rung.",
+    "song.classical.chopin-nocturne-op9-1|bar-duration|overfull": "Bar 85 of 86: a rest written seven quarters long and a voice summing to seven, in a 6/4 bar, while a third voice holds the correct six. Nothing says which beat is spurious.",
+    "song.classical.chopin-polonaise-fantaisie.nifc|bar-duration|overfull": "Bars 2, 7, 8, 205, 206, 214 and 215 are each long in all three voices together — the opening arpeggiated flourishes and their returns, engraved as long bars in a file whose 288 bars otherwise match the work.",
+    "song.classical.chopin-polonaise-op44.nifc|bar-duration|overfull": "Bars 314 and 315 are double length in every voice, two divisions of rounding apart.",
+    "song.classical.chopin-polonaise-op71-1.nifc|bar-duration|overfull": "Bars 75 and 76: one inner voice runs an eighth past the barline while three others end exactly on it. The overrunning eighth reads as a pickup written inside the previous bar, which is not a safe automatic edit.",
+    "song.classical.chopin-rondo-op1.nifc|bar-duration|overfull": "Bar 352 of 357: one inner voice's 16th-note figure runs half a beat past a 2/4 bar while the other two end on it.",
+    "song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx|bar-duration|overfull": "Mis-barred from bar 44 to the end: bar 44 holds twelve bars' worth in one voice and bars 45 onward hold exactly two bars each in all three, 25 overfull bars in a 76-bar file. A replacement candidate, not a local fix. On no rung.",
+    "song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx|bar-duration|overfull": "Bars 12 to 17 each carry one voice that overruns by a written gap ahead of it, the overrun growing to four bars and back. On no rung.",
+    "song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx|bar-duration|overfull": "Bars 86 and 87: a rest written for the whole 6/4 bar, without measure=\"yes\" so the check cannot excuse it, followed by a half note. Shortening the rest would sum, but nothing in the file says the half belongs last.",
+    "song.classical.el-choclo-piano.pdmx|bar-duration|overfull": "44 wrong bar/voice sums over 49 bars — pervasive, not local. A replacement candidate; on no rung.",
+    "song.classical.kohler-sonatina-op-300-no-1.pdmx|bar-duration|overfull": "66 wrong sums over 113 bars, the overruns landing on whole multiples of a bar: printed bars merged into single measure elements. A replacement candidate; on no rung.",
+    "song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx|bar-duration|overfull": "49 wrong sums over 156 bars, only 22 of them a removable hidden rest, so the file cannot be made right. Dropped from classical.4.shelf; it stays in the Library.",
+    "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx|bar-duration|overfull": "Bar 70 is six bars long in both voices together, a cadenza engraved long; bars 71 to 75 have one voice at double the bar, which is real and has no obvious fix. On no rung.",
+    "song.classical.liszt-la-campanella|bar-duration|overfull": "Every one of the 15 flagged bars is uniformly short or long in all three voices — the file's barring differs from the 6/8 it states, and no voice disagrees with another.",
+    "song.classical.liszt-liebestraum-3|bar-duration|overfull": "Bars 25, 26, 60, 61 and 62 are long in both voices together: the piece's two written-out cadenzas.",
+    "song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx|bar-duration|overfull": "Bars 23 and 24 of this single-voice lead sheet hold 6.5 and 6 beats in 4/4. Real; with one voice there is nothing to check it against and no element is plainly the spurious one. On no rung.",
+    "song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx|bar-duration|overfull": "Bars 182 and 183 each run half a beat long in one voice of three. Only one of the two overruns is a removable hidden rest, so fixing it would not clear the file. On no rung.",
+    "song.classical.william-holy-holy-holy.pdmx|bar-duration|overfull": "Bar 2 is a beat long and bar 11 half a beat short, and the parallel bars 10 and 3 show what they should be — but the repairs would mean deleting a sounding note and inventing a duration. Dropped from the stage-3 hymns rung and from the repertoire sentence in content/lessons/hymns.md; it stays in the Library.",
+    "song.folk.traditional-music-home-on-the-range.pdmx|bar-duration|overfull": "Bar 29 holds exactly two 3/4 bars in its single voice: two printed bars merged into one measure element. Splitting and renumbering is not the obvious kind of fix. On no rung.",
+    "song.jazz.fats-waller-ain-t-misbehavin.pdmx|bar-duration|overfull": "Bar 24 overruns by exactly 189 divisions in both voices — one 256th note, an acciaccatura entered as a real note. The check's slack for this file is 157.",
+    "song.pop.camille-le-festin-piano-arr-kno.pdmx|bar-duration|overfull": "Bars 73 and 74 of 159: the top voice overruns by a fraction of a beat beside zero-duration ornament notes, while the bass holds the bar exactly.",
+    "song.pop.kana-boon-silhouette-kana-boon-naruto-shippuden-opening-op-16.pdmx|bar-duration|overfull": "Bars 28 and 61 hold the identical five-beat rhythm in both hands, in a file that states 4/4 and never restates a metre: two unmarked five-beat bars, not a voice written wrong.",
+    "song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx|bar-duration|overfull": "Bar 9 holds a half note and five eighths, 4.5 beats in 4/4, with no rest anywhere in the bar to remove and nothing to say which eighth is the extra. On no rung.",
+
+    "song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx|grace-density|density": "72 of 134 notes are grace notes, one before nearly every melody note — the bagpipe writing docs/lesson-audit/README.md records. The archive's only grace-free copy of the piece converts to two staves at level 5.19 against this rung's 2.49, so replacing it would put a harder, differently shaped piece on hymns.2. content/lessons/hymns.2.md already tells the learner what the score is and to read what is written. Not heard.",
+
+    "song.folk.the-flute-tune-soulpride-remix.pdmx|repeat-structure|backward-repeat-in-later-ending": "Bar 8 is ending 1 and repeats correctly; bar 10 is ending 2 and repeats too, in a ten-bar file whose only forward repeat is bar 1 — which is how a loop is written. Kept as the repeat-structure red control for tools/content/tests/test_score_checks.py now that I Got Rhythm is fixed.",
+
+    "song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx|truncation|copies": "20 bars, the last one full and closed with a light-heavy barline, and the longest stretch shared with either 80-bar copy is 3 bars — a different, complete 20-bar setting rather than a truncation. The check's own docstring names this case.",
+    "song.folk.streets-of-laredo.pdmx|truncation|copies": "17 bars against a 34-bar archive copy, 16 of them one unbroken stretch of it: half the tune. Retitled 'Streets of Laredo (first half, 17 bars)' and said so in content/lessons/2.4.md. Not replaced, because the quarry's commit step needs a review made by ear and commit.py rewrites content/sources/pdmx.json whole.",
+    "song.pop.minuet-in-g-minor-bach-piano.pdmx|truncation|copies": "16 bars against the 32-bar song.classical.petzold-minuet-in-g-minor-bwv-anh-115.pdmx, 12 of whose first 16 bars match it bar for bar. Retitled '(first 16 bars)' and said so in content/lessons/classical.3.md; not swapped for the full setting, which levels at 5.92 against this rung's 4.42."
+  }
+}

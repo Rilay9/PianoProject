@@ -37,6 +37,23 @@ import {
  */
 export const OSMD_HALFTONE_TO_MIDI = 12;
 
+/**
+ * The two members of OSMD's `ArticulationEnum` that mean "play this harder":
+ * `accent` (0) from MusicXML's `<accent>` and `strongaccent` (1) from
+ * `<strong-accent>`, which is the marcato.
+ *
+ * The numbers rather than the enum because `ArticulationEnum` is a runtime
+ * export of `opensheetmusicdisplay` and this module is deliberately typed
+ * against a structural slice of OSMD (`OsmdLikeSheet` below) so that tests can
+ * hand it a plain object. They are checked against the real enum in
+ * `accents.test.ts` by driving a real fixture rather than a hand-built entry.
+ *
+ * Staccato, tenuto and the rest are deliberately not here: they are about how
+ * long a note is held, which `articulationScore` already measures, and reading
+ * them as accents would judge a velocity against a length.
+ */
+export const ACCENT_ARTICULATIONS = new Set([0, 1]);
+
 /** OSMD's own fallback when a sheet carries no tempo at all. */
 export const DEFAULT_BPM = 100;
 
@@ -74,6 +91,11 @@ export interface OsmdVoiceEntry {
   IsGrace?: boolean;
   ParentVoice?: { VoiceId: number };
   Notes: OsmdNote[];
+  /**
+   * OSMD hangs articulations off the voice entry, not off the note, so an
+   * accented chord is one mark and not one per note.
+   */
+  Articulations?: { articulationEnum: number }[];
 }
 
 export interface OsmdNote {
@@ -293,6 +315,9 @@ export function extractScoreModelFromSheet(
     for (const entry of it.CurrentVisibleVoiceEntries()) {
       const voice = entry.ParentVoice?.VoiceId ?? 1;
       const isGrace = entry.IsGrace === true;
+      const accented = (entry.Articulations ?? []).some((a) =>
+        ACCENT_ARTICULATIONS.has(a.articulationEnum),
+      );
       for (const note of entry.Notes) {
         if (note.isRest()) continue;
         if (isTieContinuation(note)) continue;
@@ -318,6 +343,7 @@ export function extractScoreModelFromSheet(
           ...(isGrace ? { graceNote: true } : {}),
           ...(staff !== home ? { crossStaff: true } : {}),
           ...(tieLength > 1 ? { tieLength } : {}),
+          ...(accented ? { accent: true } : {}),
         });
         handsPresent[hand] = true;
       }

@@ -410,12 +410,29 @@ play this*.
   would be dead space above the thing the page is for (`00-invariants` §1, §0 R4).
 - **The prose stays.** A button opens a mode; it cannot say *why* that mode suits this
   rung, and that sentence is the teaching.
-- **A rung may name `lab` twice**, added 2026-09-21: once with a preset and once without.
-  A preset fixes what makes it that style, which is the design (`pending-review` Entry 5) and
-  is also why eight rungs' lessons told the learner to change a control their own lab button
-  had disabled. The second button carries no preset, so nothing is locked, and a `label`
-  tells the two apart. The first button of a kind keeps the id every test and stylesheet
-  already names; the second gets a suffix.
+- **A lab entry says which preset, which controls it frees, and which way round it opens.**
+  `preset`, then `unlock` and `mode`, both added 2026-09-22.
+  - A preset fixes what makes it that style, which is the design (`pending-review` Entry 5)
+    and is also why eight rungs' lessons told the learner to change a control their own lab
+    button had disabled. From 2026-09-21 to 2026-09-22 the answer was **a second `lab` entry
+    with no preset**, labelled *Lab — your own chords*; six rungs carried it and each of their
+    lessons had to name two buttons that open one screen. `unlock` replaces it: the rung names
+    the pickers its preset locks and it hands back, and `validate.py` refuses a name that
+    preset does not lock, because "this frees the tempo" about a tempo nothing fixed is a
+    sentence with no referent.
+  - `mode` preselects one of §3c's three ways round — *Bed only*, *Hold the chords*, *Play the
+    tune*. The preset carries a default and a preset is shared between rungs, so `jam.5`, `3.2`
+    and `chords-pop.9` each wanted the opposite of what their preset opens on and had no way to
+    say it (`pending-review` Entry 30 item 5 named all three and left them waiting).
+  - Naming `lab` twice is still legal and nothing does it today. The first button of a kind
+    keeps the id every test and stylesheet already names; a second gets a suffix.
+- **A `duet` or a `blind` may name an exercise, not only a song** (2026-09-22). The rule that
+  matters is unchanged — the `item` must be one of *this rung's* options — but "only a song is
+  notation" was never true: `technique.7`'s sentence is about its two-against-three exercise
+  and its only songs are three Czerny études, so the narrow rule turned "play the exercise as a
+  duet" into a button that opened a study. `validate.py` checks the option's `file` off the
+  catalog rather than reading the `drill.` prefix off its id, and the lesson page asks
+  `targetFor` the same question, so an option that opens a drill screen still draws no button.
 - **Only modes with an address.** `lab` (with or without a preset), `duet`, `blind`, `simon`,
   `play` and, since 2026-09-22, `ladder`. **Rhythm-only is still deliberately absent**: it is
   a remembered setting the Library writes before navigating, so it cannot be reached by a
@@ -1205,7 +1222,16 @@ Notation area:
   not measured; a run with the ladder on carries a `Ladder` line saying where it ended. The
   ±10 % buttons are one rung of that same ladder, which is where its notch came from.
   A run of a **technique exercise** carries one more line — *Legato*, *Staccato*, *Top note*,
-  *Crescendo* — saying what the exercise is actually about (`05` §9a). It is in words rather
+  *Crescendo*, and since 2026-09-22 *Half pedal* — saying what the exercise is actually about
+  (`05` §9a). *Half pedal* is the share of the run's CC64 messages that sat inside the
+  exercise's own `ccRange`; a pedal that only ever sends 0 and 127 is reported as **a switch**
+  rather than as a nought, because scoring that as a failure would blame the player for the
+  instrument.
+  A run of **any** piece whose score prints an `<accent>` or a `<strong-accent>` carries an
+  *Accents* line: how many of the marked notes were played harder than the rest of that same
+  run. Against the learner's own playing and not a MIDI velocity, because a light player and a
+  heavy one accent by the same gesture and land on different numbers. A piece that prints none
+  gains no line, which is what keeps this off a sheet §0 R2 already measures. It is in words rather
   than as a percentage, because a bare number under *Legato* reads as a second accuracy and
   the whole point of these is that they are not one: a staccato phrase of right notes held
   too long is a 100 % run. The line says *"this rung requires it"* only where the rung's

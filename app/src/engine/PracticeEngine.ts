@@ -222,6 +222,16 @@ export class PracticeEngine {
 
   private readonly pressed = new Set<number>();
   private sustainDown = false;
+  /**
+   * Every CC64 value this run has seen, in order (T16 item 6).
+   *
+   * `sustainDown` above is the switch and it is what the renderer and the
+   * strip read; this is the depth, and until it existed the half-pedal
+   * exercise - which opens here as notation - had nothing to be judged
+   * against. Kept as a list rather than folded into a share, because what
+   * counts as a half pedal is the exercise's own `ccRange`.
+   */
+  private readonly pedalValues: number[] = [];
 
   private progress: StepProgress = freshProgress();
   /** Wait mode: notes that belong to the *next* step, arriving early. */
@@ -556,7 +566,10 @@ export class PracticeEngine {
   /** Feeds one input event. Safe to call before `start()`; it is ignored. */
   feed(input: EngineInput): void {
     if (input.kind === 'cc') {
-      if (input.cc === CC_SUSTAIN) this.sustainDown = input.value >= 64;
+      if (input.cc === CC_SUSTAIN) {
+        this.pedalValues.push(input.value);
+        this.sustainDown = input.value >= 64;
+      }
       return;
     }
     if (input.kind === 'noteOff') {
@@ -1256,6 +1269,7 @@ export class PracticeEngine {
       rolledChordSteps: this.rolledChordSteps,
       accuracyEstimated: this.session.options.accuracyEstimated,
       lenientChordSteps: this.lenientChordSteps,
+      pedal: this.pedalValues,
       notes: this.recorded,
     });
     return this.rhythmOnly ? { ...score, rhythmOnly: true } : score;

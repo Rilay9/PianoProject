@@ -420,7 +420,22 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    */
   function toolButton(tool: LessonTool, rung: Lesson, sameKindBefore = 0): HTMLElement | null {
     const scorePiece = (): string | null => {
-      if (tool.item) return rung.songOptions.includes(tool.item) ? tool.item : null;
+      if (tool.item) {
+        // A song **or** an exercise, since 2026-09-22. `technique.7` is the
+        // rung that forced it: its sentence is about the two-against-three
+        // exercise and its only songs are three Czerny etudes, so the old
+        // song-only rule turned "play the exercise as a duet" into a button
+        // that opened a study (Entry 24 item 7 left the paragraph unbuilt for
+        // exactly this). What has not moved is the rule that matters - the
+        // item must be one of *this* rung's options - and the option must
+        // still open as notation, which is `targetFor`'s answer and not the
+        // id's.
+        const offered =
+          rung.songOptions.includes(tool.item) || rung.exerciseOptions.includes(tool.item);
+        if (!offered) return null;
+        const named = items.get(tool.item);
+        return named !== undefined && targetFor(named) === 'score' ? tool.item : null;
+      }
       return (
         rung.songOptions.find((id) => {
           const item = items.get(id);
@@ -453,7 +468,14 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
 
     switch (tool.kind) {
       case 'lab':
-        return make('Accompaniment lab', () => { router.navigateLab(tool.preset); });
+        return make('Accompaniment lab', () => {
+          // One button that says what it frees and which way round it opens,
+          // in place of the two the same rung carried before (Entry 24 item 5).
+          router.navigateLab(tool.preset, {
+            ...(tool.unlock ? { unlock: tool.unlock } : {}),
+            ...(tool.mode ? { mode: tool.mode } : {}),
+          });
+        });
       case 'play':
         return make('Free play', () => { router.navigatePlay(); });
       case 'simon': {

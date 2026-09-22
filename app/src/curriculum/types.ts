@@ -7,6 +7,12 @@
  * mistake is a compile error and not an `undefined` two screens later.
  */
 
+// The only import in this file, and it is erased: `import type` compiles to
+// nothing, so `curriculum/types` still has no runtime dependency on the engine.
+// Declaring the two unions again here was the alternative and it is the
+// "one fact, two places" shape this repository keeps paying for.
+import type { LabBed, LabLock } from '../engine/sightReading';
+
 export type ItemType = 'song' | 'exercise' | 'drill';
 export type Hands = 'both' | 'right' | 'left';
 /** Where an item's `level` came from — replan §1.4. */
@@ -214,6 +220,25 @@ export interface LessonTool {
   item?: string;
   /** Overrides the default label where the rung wants to say something shorter. */
   label?: string;
+  /**
+   * For `kind: 'lab'` with a preset - which of that preset's locked pickers
+   * this rung hands back.
+   *
+   * Added 2026-09-22 in place of the shape Entry 24 item 5 gave six rungs: a
+   * *second* `lab` entry with no preset, so the page drew two buttons onto one
+   * screen and each of the six lessons had to name both. `validate.py` refuses
+   * a name the rung's own preset does not lock.
+   */
+  unlock?: readonly LabLock[];
+  /**
+   * For `kind: 'lab'` - which of the three ways round the lab opens on
+   * (`04` 3c).
+   *
+   * A preset carries a default and a preset is shared, so the three rungs
+   * Entry 30 named - `jam.5`, `3.2` and `chords-pop.9` - had no way to ask for
+   * the other one.
+   */
+  mode?: LabBed;
 }
 
 export interface Lesson {

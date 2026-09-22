@@ -29,7 +29,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 2 | `2.1` | 6 | 5 | 2.1–2.6 | Simple Gifts (2.1), Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
 | 2 | `2.2` | 6 | 8 | 1.1–2.9 | Merrily We Roll Along (1.1), Michael, Row the Boat Ashore (1.9), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Alouette (2.3), … and 2 more |
 | 2 | `2.3` | 4 | 7 | 2.3–4.3 | Happy Birthday to You (2.3), Was wollen wir trinken (2.7), Dark Eyes (2.8), Skip to My Lou (2.9), Jingle Bells (chorus, in G major with block chords) (3.2), Auld Lang Syne (3.3), … and 1 more |
-| 2 | `2.4` | 4 | 6 | 2.2–5.1 | Streets of Laredo (2.2), Greensleeves (simple) (2.4), Careless Love (2.6), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
+| 2 | `2.4` | 4 | 6 | 2.2–5.1 | Streets of Laredo (first half, 17 bars) (2.2), Greensleeves (simple) (2.4), Careless Love (2.6), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
 | 2 | `2.5` *(song-optional)* | 8 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
 | 3 | `3.1` | 7 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.8), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
@@ -77,7 +77,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 2 | `hymns.2` | 3 | 4 | 1.4–3.2 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Joyful, Joyful, We Adore Thee (2.5), Swing Low, Sweet Chariot (2.9) |
-| 3 | `hymns` | 5 | 15 | 3.2–7.3 | Oh When the Saints Go Marching In (in F major) (3.2), What a Friend We Have in Jesus (3.2), Greensleeves (with chords) (3.3), Come Thou Fount of Every Blessing (3.5), Simple Gifts (2-Part Round) (3.9), Just a Closer Walk with Thee (4.0), … and 9 more |
+| 3 | `hymns` | 5 | 14 | 3.2–7.3 | Oh When the Saints Go Marching In (in F major) (3.2), What a Friend We Have in Jesus (3.2), Greensleeves (with chords) (3.3), Come Thou Fount of Every Blessing (3.5), Simple Gifts (2-Part Round) (3.9), Just a Closer Walk with Thee (4.0), … and 8 more |
 | 4 | `hymns.4` | 3 | 5 | 3.2–5.7 | Amazing Grace (four parts) (4.6), Rock of Ages (4.9), Abide with Me (5.3), Joyful joyful we adore thee (5.4), O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler (5.7) |
 | 5 | `hymns.5` | 3 | 5 | 3.2–5.4 | What a Friend We Have in Jesus (3.2), Down By The Riverside (3.4), This Little Light of Mine (3.5), Just a Closer Walk with Thee (4.0), As the Deer (5.0) |
 | 6 | `hymns.6` | 3 | 4 | 5.4–7.0 | Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg (5.4), 10,000 Reasons (6.2), Amazing Grace (in G major) (6.8), Down by the Riverside (7.0) |
@@ -116,10 +116,10 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `classical.3` | 3 | 6 | 2.5–5.2 | Thème du 1er mouvement de la sonate K.331 (2.5), Écossaise in G major, WoO 23 (2.9), Minuet in G minor, BWV Anh. 115 (4.4), Minuet in G major, BWV Anh. 114 (5.1), Minuet in D minor, BWV Anh. 132 (5.1), Minuet in F major, BWV Anh. 113 (5.2) |
-| 4 | `classical.4` | 3 | 6 | 4.3–5.8 | Study, Op. 82 (4.5), Album for the Young, Op. 68 No. 4 "Chorale" (4.6), Sonatina in G major (4.8), Minuet in C major, K. 1f (5.1), March in D major, BWV Anh. 122 (5.5), Minuet in G major, K. 1e (5.8) |
-| 4 | `classical.4.shelf` | 3 | 50 | 3.5–8.5 | Für Elise (easy) (4.1), Gnossienne No. 1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Hungarian Sonata (5.0), Canon in D (easy) (5.1), … and 44 more |
-| 5 | `classical.5` | 4 | 6 | 3.6–5.7 | Sonatina in G major, Anh. 5 No. 1 (5.3), Sonatina in C major, Op. 36 No. 1 (first movement, short edition) (5.3), Sonatina in C major, Op. 36 No. 1 (second and third movements) (5.3), Arabesque, Op. 100 No. 2 (5.5), Old French Song, Op. 39 No. 16 (5.6), Album for the Young, Op. 68 No. 16 "First Loss" (5.7) |
+| 3 | `classical.3` | 3 | 6 | 2.5–5.2 | Thème du 1er mouvement de la sonate K.331 (2.5), Écossaise in F major (after WoO 23) (2.9), Minuet in G minor, BWV Anh. 115 (first 16 bars) (4.4), Minuet in G major, BWV Anh. 114 (5.1), Minuet in D minor, BWV Anh. 132 (5.1), Minuet in F major, BWV Anh. 113 (5.2) |
+| 4 | `classical.4` | 3 | 5 | 4.3–5.8 | Study, Op. 82 (4.5), Album for the Young, Op. 68 No. 4 "Chorale" (4.6), Sonatina in G major (4.8), March in D major, BWV Anh. 122 (5.5), Minuets in G major and C major, K. 1e and K. 1f (5.8) |
+| 4 | `classical.4.shelf` | 3 | 49 | 3.5–8.5 | Für Elise (easy) (4.1), Gnossienne No. 1 (4.6), Mozart: Minuet in F Major (K2) (easy) (4.7), Clair de Lune (easy) (4.7), Hungarian Sonata (5.0), Canon in D (easy) (5.1), … and 43 more |
+| 5 | `classical.5` | 4 | 6 | 3.6–5.7 | Sonatina in G major, Anh. 5 No. 1 (5.3), Sonatina in C major, Op. 36 No. 1 (first movement, short edition) (5.3), Sonatina in C major, Op. 36 No. 1 (third movement) (5.3), Arabesque, Op. 100 No. 2 (5.5), Old French Song, Op. 39 No. 16 (5.6), Album for the Young, Op. 68 No. 16 "First Loss" (5.7) |
 | 6 | `classical.6` | 9 | 6 | 3.2–6.4 | Prelude No. 7 in A major, Op. 28 (5.4), Prelude No. 1 in C major, BWV 846 (6.1), Prélude in E minor, Op. 28 No. 4 (6.1), Gymnopédie No. 1 (6.2), Waltz in A minor, B. 150 (6.4), Für Elise, WoO 59 (6.4) |
 | 7 | `classical.7` | 8 | 6 | 4.2–7.2 | Invention No. 1 in C major, BWV 772 (5.5), Invention No. 4 in D minor, BWV 775 (6.0), Mazurka in B-flat major, Op. 7 No. 1 (7.0), Piano Sonata No. 16 in C, K. 545, I. Allegro (7.1), Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto (7.1), Piano Sonata No. 8 “Pathétique”, II. Adagio cantabile (7.2) |
 | 8 | `classical.8` | 8 | 6 | 4.3–8.4 | Waltz in C-sharp minor, Op. 64 No. 2 (7.8), Piano Sonata No. 11, K. 331, III. Rondo alla Turca (8.1), Nocturne in B-flat minor, Op. 9 No. 1 (8.1), Arabesque No. 1, L. 66 (8.1), Clair de Lune (Suite bergamasque, L. 75 No. 3) (8.3), Piano Sonata No. 14 “Moonlight”, III. Presto agitato (8.4) |
@@ -202,12 +202,14 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Latin (`latin`)
 
-2 rung(s), stages 3–5.
+4 rung(s), stages 3–7.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `latin.3` | 5 | 3 | 1.9–3.6 | Cielito Lindo (1.9), Só Danço Samba (3.0), Guantanamera (3.2) |
 | 5 | `latin` | 12 | 6 | 1.9–6.4 | Cielito Lindo (1.9), Insensatez (How Insensitive) (3.0), Só Danço Samba (3.0), Guantanamera (3.2), Tico-Tico no Fubá (3.7), La Cumparsita (part A) (5.1) |
+| 6 | `latin.6` | 3 | 3 | 5.0–7.5 | Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), Por Una Cabeza - Carlos Gardel (6.8), The Crave (7.5) |
+| 7 | `latin.7` | 3 | 3 | 6.3–9.0 | El Choclo (tango) (7.6), Asturias (8.4), Malagueña (1928) (9.0) |
 
 ## Ragtime (`ragtime`)
 
@@ -222,7 +224,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-229 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
+228 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
@@ -264,7 +266,6 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.classical.oh-canada.pdmx` | Oh Canada | 4.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.ondrus-silent-night.pdmx` | Silent Night (Ondruš setting) | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.palmer-days-in-the-sun.pdmx` | Days In The Sun | 7.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| `song.classical.passacaglia-handel-halvorsen.pdmx` | Passacaglia (Handel/Halvorsen) | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.pieczonka-tarantella-in-a-minor.pdmx` | Tarantella in A minor | 7.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.classical.por-toda-minha-vida.pdmx` | Por Toda Minha Vida | 3.9 | The composition is in-copyright; the owner's own build carries it (`00` D23). |
 | `song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx` | O Mio Babbino Caro for solo piano | 6.7 | The composition is unknown; the owner's own build carries it (`00` D23). |
@@ -306,5 +307,6 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.6 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.scarborough-fair-piano-solo.pdmx` | Scarborough Fair (piano solo) | 6.8 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.simple-gifts.pdmx` | Simple Gifts | 2.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| … | and 149 more | | |
+| `song.folk.so-danco-samba.pdmx` | Só Danço Samba | 3.0 | The composition is unknown; the owner's own build carries it (`00` D23). |
+| … | and 148 more | | |
 

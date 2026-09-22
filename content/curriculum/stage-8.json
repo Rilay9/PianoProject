@@ -429,14 +429,13 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "primary-chords"
+                  "preset": "primary-chords",
+                  "unlock": [
+                    "progression"
+                  ]
                 },
                 {
                   "kind": "blind"
-                },
-                {
-                  "kind": "lab",
-                  "label": "Lab — your own chords"
                 }
               ],
               "levelBand": [
@@ -565,11 +564,10 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "jazz-comping"
-                },
-                {
-                  "kind": "lab",
-                  "label": "Lab — your own chords"
+                  "preset": "jazz-comping",
+                  "unlock": [
+                    "progression"
+                  ]
                 }
               ],
               "levelBand": [

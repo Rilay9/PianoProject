@@ -266,7 +266,7 @@ test.describe('the dev route itself', () => {
     await page.locator('#open-dev-score').click();
     await expect(page.locator('.card h1')).toHaveText('Score renderer (dev)');
     expect(new URL(page.url()).hash).toBe('#/dev/score');
-    await expect(page.locator('#dev-fixture option')).toHaveCount(41);
+    await expect(page.locator('#dev-fixture option')).toHaveCount(42);
   });
 
   test('arrow keys step the cursor and 1-8 set bars per window', async ({ page }) => {

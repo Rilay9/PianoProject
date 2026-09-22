@@ -50,10 +50,10 @@ sophisticated. A plain triad in the right place is stronger; save the colour for
 where the harmony is standing still.
 
 **Tools for this rung.** *Accompaniment lab* opens on its *Ballad — broken chords*
-preset: I–vi–IV–V with a broken left hand, both fixed, in whatever key you
-pick, and *Read it* writes that accompaniment out. For `ii7 V7 I`, tap
-*Lab — your own chords* instead and type the numerals in; the left
-hand is yours to choose there. Read it once, then close it and play the same thing
+preset: a broken left hand, in whatever key you
+pick, and *Read it* writes that accompaniment out. The chords are yours on this
+rung — the picker's *Custom…* is open, so `ii7 V7 I` can be typed straight in and
+run against the same left hand. Read it once, then close it and play the same thing
 off the symbols.
 
 **How you'll know you've got it.** A lead sheet played with seventh voicings and

@@ -36,6 +36,7 @@ import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   LAB_PRESETS,
+  labBedFor,
   labPreset,
   labProgression,
   type LabBed,
@@ -45,7 +46,7 @@ import { masteryCriteriaFor } from '../../src/curriculum/selectors';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
 import { nextRecommended } from '../../src/curriculum/session';
 import { hasChordSymbols } from '../../src/ui/openItem';
-import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../src/curriculum/types';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 
@@ -113,19 +114,34 @@ function firstPrompt(id: string): { label: string; expected: number[] } {
   return { label: prompt.label, expected: prompt.expected };
 }
 
-/** A rung's lab tools: the preset each button opens, `null` for the free one. */
-function labTools(id: string): (string | null)[] {
-  return (written(id).tools ?? [])
-    .filter((tool) => tool.kind === 'lab')
-    .map((tool) => tool.preset ?? null);
+/** A rung's lab entries, whole. */
+function labEntries(id: string): LessonTool[] {
+  return (written(id).tools ?? []).filter((tool) => tool.kind === 'lab');
 }
 
-/** Which way round a rung's own lab button opens on, or `undefined`. */
+/** A rung's lab tools: the preset each button opens, `null` for a free one. */
+function labTools(id: string): (string | null)[] {
+  return labEntries(id).map((tool) => tool.preset ?? null);
+}
+
+/** Which pickers this rung's lab button hands back to the learner. */
+function freedBy(id: string): string[] {
+  const entry = labEntries(id)[0];
+  return entry ? [...(entry.unlock ?? [])] : [];
+}
+
+/**
+ * Which way round a rung's own lab button opens on, or `undefined`.
+ *
+ * The tool's own `mode` first and the preset's default second, which is the
+ * order `labBedFor` applies (T16 item 5): a preset is shared between rungs and
+ * the rung is the more specific answer.
+ */
 function bedOf(id: string): LabBed | undefined {
-  for (const preset of labTools(id)) {
-    if (preset === null) continue;
-    const bed = labPreset(preset)?.bed;
-    if (bed) return bed;
+  for (const tool of labEntries(id)) {
+    const preset = tool.preset ? (labPreset(tool.preset) ?? null) : null;
+    const bed = labBedFor(preset, tool.mode);
+    if (bed !== 'off' || tool.mode === 'off') return bed;
   }
   return undefined;
 }
@@ -267,11 +283,8 @@ const CLAIMS: [string, string, () => boolean][] = [
   // --- lab presets and the rungs (item 5) ---------------------------------
   [
     '3.3',
-    'one lab button opens the minor vamp, the other fixes nothing',
-    () => {
-      const tools = labTools('3.3');
-      return tools.includes('minor-vamp') && tools.includes(null);
-    },
+    'the lab opens the minor vamp with its chords left to the learner',
+    () => labTools('3.3').includes('minor-vamp') && freedBy('3.3').includes('progression'),
   ],
   [
     'improv.4',
@@ -285,38 +298,40 @@ const CLAIMS: [string, string, () => boolean][] = [
   ],
   [
     'chords-pop.5',
-    '*Lab — your own chords* takes a typed `ii7 V7 I`',
-    () => labTools('chords-pop.5').includes(null),
+    'the chord picker is open on this rung, so `ii7 V7 I` can be typed in',
+    () =>
+      labTools('chords-pop.5').includes('ballad') &&
+      freedBy('chords-pop.5').includes('progression'),
   ],
   [
     'improv.6',
-    'the preset button fixes the progression and the other one does not',
+    'the minor vamp opens here with its chords handed back',
     () => {
-      const tools = labTools('improv.6');
-      const preset = labPreset(tools.find((id): id is string => id !== null) ?? '');
-      return preset?.locks.includes('progression') === true && tools.includes(null);
+      const preset = labPreset(labTools('improv.6')[0] ?? '');
+      return (
+        preset?.locks.includes('progression') === true &&
+        freedBy('improv.6').includes('progression')
+      );
     },
   ],
   [
     'chords-pop.8',
-    'one button loops I–IV–V–I and the other lets the song’s changes be typed',
+    'it opens on I–IV–V–I and leaves both the key and the chords to the learner',
     () => {
-      const tools = labTools('chords-pop.8');
+      const preset = labPreset(labTools('chords-pop.8')[0] ?? '');
       return (
-        labPreset(tools.find((id): id is string => id !== null) ?? '')?.progressionId ===
-          'i-iv-v-i' && tools.includes(null)
+        preset?.progressionId === 'i-iv-v-i' &&
+        !preset.locks.includes('key') &&
+        freedBy('chords-pop.8').includes('progression')
       );
     },
   ],
   [
     'improv.8',
-    'the preset button is a fixed ii–V–I and the other takes typed numerals',
+    'it opens a ii–V–I with the chords handed back, so an approach chord can be typed in',
     () => {
-      const tools = labTools('improv.8');
-      return (
-        labPreset(tools.find((id): id is string => id !== null) ?? '')?.progressionId ===
-          'ii-v-i' && tools.includes(null)
-      );
+      const preset = labPreset(labTools('improv.8')[0] ?? '');
+      return preset?.progressionId === 'ii-v-i' && freedBy('improv.8').includes('progression');
     },
   ],
   // --- both ways round in the lab (T18) ----------------------------------
@@ -363,15 +378,35 @@ const CLAIMS: [string, string, () => boolean][] = [
   ],
   [
     'chords-pop.9',
-    'the ballad’s chords and left hand are fixed, so the chart goes in the other one',
+    'the ballad hands back its chords and its left hand, and opens playing the tune',
     () => {
-      const tools = labTools('chords-pop.9');
-      const ballad = labPreset('ballad');
+      const freed = freedBy('chords-pop.9');
       return (
-        tools.includes('ballad') &&
-        tools.includes(null) &&
-        ballad?.locks.includes('progression') === true &&
-        ballad.locks.includes('leftHand')
+        labTools('chords-pop.9').includes('ballad') &&
+        freed.includes('progression') &&
+        freed.includes('leftHand') &&
+        bedOf('chords-pop.9') === 'tune'
+      );
+    },
+  ],
+  [
+    'jam.5',
+    'the twelve-bar bed opens playing the tune, so there is a line to comp under',
+    () => bedOf('jam.5') === 'tune',
+  ],
+  [
+    '3.2',
+    'the app takes the right hand, so the smooth voicing has to be found in time',
+    () => bedOf('3.2') === 'tune',
+  ],
+  [
+    'technique.7',
+    'Play it as a duet opens the two-against-three exercise, not a Czerny etude',
+    () => {
+      const tool = (written('technique.7').tools ?? []).find((t) => t.kind === 'duet');
+      return (
+        tool?.item === 'exercise.independence.c.2v3' &&
+        written('technique.7').exerciseOptions.includes('exercise.independence.c.2v3')
       );
     },
   ],
@@ -545,6 +580,57 @@ const CLAIMS: [string, string, () => boolean][] = [
       ),
   ],
 
+  [
+    'latin.6',
+    'the Ladder is a control the learner turns on, not a button this rung carries',
+    () => !(written('latin.6').tools ?? []).some((tool) => tool.kind === 'ladder'),
+  ],
+  [
+    'latin.6',
+    '*Loop* takes the bars you mark, and double-tapping the sheet marks them',
+    () => source('ui/screens/ScoreScreen.ts').includes('Double-tap the sheet to mark them'),
+  ],
+  [
+    'latin.6',
+    '*Ladder* raises the tempo after a clean pass and drops it after a pass with a mistake',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'Each clean pass of the loop speeds up a notch; a pass with a mistake in it slows down one.',
+      ),
+  ],
+  [
+    'latin.6',
+    'La Cumparsita part A is on the rung below, and part B is the one offered here',
+    () =>
+      rung('latin').songOptions.includes(
+        'song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx',
+      ) &&
+      rung('latin.6').songOptions.includes(
+        'song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx',
+      ),
+  ],
+  [
+    'latin.7',
+    '*Perform* is one pass, start to finish, with no restarts and no loop',
+    () =>
+      source('ui/screens/ScoreScreen.ts').includes(
+        'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.',
+      ),
+  ],
+  [
+    'latin.7',
+    '*Hands* chooses which hand the app waits for',
+    () => source('ui/screens/ScoreScreen.ts').includes('Which hand the app waits for'),
+  ],
+  [
+    'latin.7',
+    'the rotation and octave studies are left-hand, the four-to-a-note one right-hand',
+    () =>
+      item('exercise.rotation.g.left').hands === 'left' &&
+      item('exercise.octave-scale.d.1oct.left').hands === 'left' &&
+      item('exercise.repeated-notes.g.4x.right').hands === 'right',
+  ],
+
   // --- the chord chart (item 8) -------------------------------------------
   [
     'jam',
@@ -634,5 +720,31 @@ describe('the presets a lesson may point at', () => {
       }
     }
     expect(wrong, `rungs with two identical lab buttons: ${wrong.join(', ')}`).toEqual([]);
+  });
+
+  it('never frees a picker the rung own preset does not lock', () => {
+    // The same rule `validate.py`'s `tool_errors` applies, asked here against
+    // the real `LAB_PRESETS` rather than against the Python's copy of the
+    // locks - so a preset whose locks move in the TypeScript and not in the
+    // Python is caught by whichever of the two runs first.
+    const wrong: string[] = [];
+    for (const stage of authored.stages) {
+      for (const unit of stage.units) {
+        for (const lesson of unit.lessons) {
+          for (const tool of lesson.tools ?? []) {
+            if (tool.kind !== 'lab' || !tool.unlock) continue;
+            const locks: readonly string[] = tool.preset
+              ? (labPreset(tool.preset)?.locks ?? [])
+              : [];
+            for (const name of tool.unlock) {
+              if (!locks.includes(name)) wrong.push(`${lesson.id}: ${name}`);
+            }
+          }
+        }
+      }
+    }
+    expect(wrong, `unlocks naming a picker the preset leaves free: ${wrong.join(', ')}`).toEqual(
+      [],
+    );
   });
 });

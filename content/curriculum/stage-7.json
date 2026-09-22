@@ -231,6 +231,10 @@
               "tools": [
                 {
                   "kind": "ladder"
+                },
+                {
+                  "kind": "duet",
+                  "item": "exercise.independence.c.2v3"
                 }
               ],
               "levelBand": [
@@ -740,6 +744,68 @@
                 "avoid": [
                   "pieces whose dynamics change every bar",
                   "anything needing a hand span over a tenth"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "latin.7.1",
+          "title": "Latin: the showpiece, and the hand nobody practises",
+          "track": "latin",
+          "lessons": [
+            {
+              "id": "latin.7",
+              "title": "The showpiece, and the hand nobody practises",
+              "concepts": [
+                "left-hand",
+                "ostinato",
+                "octaves",
+                "repeated-notes",
+                "performance-mode"
+              ],
+              "textFile": "lessons/latin.7.md",
+              "exerciseOptions": [
+                "exercise.repeated-notes.g.4x.right",
+                "exercise.rotation.g.left",
+                "exercise.octave-scale.d.1oct.left"
+              ],
+              "songOptions": [
+                "song.classical.el-choclo-piano.pdmx",
+                "song.classical.albeniz-asturias.pdmx",
+                "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx"
+              ],
+              "mastery": {
+                "exercisesRequired": 1,
+                "songsRequired": 1,
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "prerequisites": [
+                "latin.6"
+              ],
+              "estimatedDays": 45,
+              "requires": {
+                "staves": 2
+              },
+              "levelBand": [
+                6.3,
+                9
+              ],
+              "finder": {
+                "skill": "holding a concert piece together when one hand repeats for pages",
+                "levelWords": "advanced, Grade 7 to 8, Spanish and Latin American concert piano",
+                "constraints": [
+                  "a concert solo, not an accompaniment pattern",
+                  "two staves",
+                  "one hand holding a figure for many bars",
+                  "Spanish or Latin American concert repertoire"
+                ],
+                "avoid": [
+                  "lead sheets",
+                  "short study pieces",
+                  "the tune doubled in both hands"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
               }

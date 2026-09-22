@@ -281,6 +281,17 @@ export interface PreparedStep {
   isMeasureStart: boolean;
   /** True when the hand filter left nothing to play here. */
   isEmpty: boolean;
+  /**
+   * The pitches this step's score prints an accent on, transposed like
+   * `expected` (T16 item 7).
+   *
+   * Here rather than looked up from the model at judging time, for the reason
+   * `expected` is here: the hand filter and the transposition have already
+   * been applied, and a scorer that re-derived them would be a second copy of
+   * that arithmetic. Optional so a `PreparedStep` built by hand in a test
+   * before this existed still compiles, and an absent one reads as none.
+   */
+  accents?: readonly number[];
 }
 
 export interface PreparedSession {
@@ -400,5 +411,23 @@ export interface SessionScore {
    * blocks advancement — it is feedback ("that chord came out rolled").
    */
   rolledChordSteps: number;
+  /**
+   * Every CC64 value the run saw, in the order it arrived (T16 item 6).
+   *
+   * The *value*, not the switch. `PracticeEngine` reduced the damper to
+   * `value >= 64` and kept nothing else, so the half-pedal exercise - which
+   * opens on the Score screen as ordinary notation and asks for the damper
+   * part-way - had nothing to be judged against, and `technique.7` had to say
+   * the depth was for the ear (Entry 24 item 2 named it and left it).
+   *
+   * A list rather than a summary because what counts as a half pedal is the
+   * exercise's own `ccRange`, and a run judged by one range may later be
+   * re-read by another. Empty on every run with no pedal, which is a different
+   * answer from a pedal that never left the floor.
+   *
+   * Optional for the reason `rhythmOnly` is: a score stored before this field
+   * existed must read the same as one stored after it.
+   */
+  pedal?: readonly number[];
   notes: RecordedNote[];
 }

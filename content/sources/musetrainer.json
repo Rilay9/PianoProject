@@ -783,23 +783,6 @@
     "arpeggios"
    ]
   },
-  "Passacaglia2.mxl": {
-   "id": "song.classical.handel-halvorsen-passacaglia.alt",
-   "title": "Passacaglia (alternative edition)",
-   "composer": "George Frideric Handel, arr. Johan Halvorsen",
-   "publishedYear": 1894,
-   "level": 7.2,
-   "abrsmGradeApprox": 6,
-   "tracks": [
-    "classical"
-   ],
-   "concepts": [
-    "variation-form",
-    "minor-key"
-   ],
-   "variantOf": "song.classical.handel-halvorsen-passacaglia",
-   "variantLabel": "alternative edition"
-  },
   "Piano_Sonata_No._11_K._331_3rd_Movement_Rondo_alla_Turca.mxl": {
    "id": "song.classical.mozart-rondo-alla-turca",
    "title": "Piano Sonata No. 11, K. 331, III. Rondo alla Turca",

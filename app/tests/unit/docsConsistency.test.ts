@@ -14,7 +14,7 @@
  * because those move with the work and a number measured today is red
  * tomorrow (`docs/00-invariants.md` §2).
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SUB_IDS, type SubId } from '../../src/router';
@@ -60,12 +60,30 @@ describe('the documents and the code agree', () => {
     }
   });
 
-  it('every *.py that docs/03 names exists under tools/content', () => {
-    const existing = new Set(pythonFiles(TOOLS).map((file) => basename(file)));
-    const named = new Set(DOC_03.match(/\b[a-z_0-9]+\.py\b/g) ?? []);
+  it('every *.py that docs/03 names exists where docs/03 says it is', () => {
+    // Widened 2026-09-22: the check assumed every script named in `03` lives
+    // under `tools/content`, and the source table now names one that
+    // deliberately does not - `tools/midi-cleanup/midi_to_musicxml.py`, the
+    // personal MIDI converter `build.py` neither runs nor knows about. A name
+    // written with its directory is looked up there; a bare name is still
+    // looked for under `tools/content`, which is what keeps the check honest
+    // about the pipeline's own scripts.
+    const bare = new Set(pythonFiles(TOOLS).map((file) => basename(file)));
+    const withPath = new Set(DOC_03.match(/\btools\/[a-z_0-9-]+\/[a-z_0-9]+\.py\b/g) ?? []);
+    for (const relative of withPath) {
+      expect(
+        existsSync(join(ROOT, relative)),
+        `docs/03 names ${relative}, which is not on disk`,
+      ).toBe(true);
+    }
+    const named = new Set(
+      (DOC_03.match(/\b[a-z_0-9]+\.py\b/g) ?? []).filter(
+        (name) => ![...withPath].some((relative) => relative.endsWith(`/${name}`)),
+      ),
+    );
     expect(named.size).toBeGreaterThan(0);
     for (const name of named) {
-      expect(existing.has(name), `docs/03 names ${name}, which is not under tools/content`).toBe(true);
+      expect(bare.has(name), `docs/03 names ${name}, which is not under tools/content`).toBe(true);
     }
   });
 

@@ -139,6 +139,26 @@ def step_import_pdmx(out_dir: Path, personal: bool, strict_license: bool) -> Ste
                 warnings=[] if code == 0 else [output])
 
 
+def step_score_checks(out_dir: Path) -> Step:
+    """
+    The seven score checks, as a gate on their `high` rows (T15, 2026-09-22).
+
+    `--no-analysis` because the music21 key pass is the minutes in that tool and
+    produces only medium and low rows, which never fail a build. The allow-file
+    is `content/score-checks.allow.json`: a reason per row, and a high row with
+    no entry stops the build naming it.
+    """
+    code, output = python("score_checks.py", "--gate", "--no-analysis", "--quiet")
+    lines = [line for line in output.splitlines() if line.strip()]
+    detail = next((line for line in lines if line.startswith("score-checks gate:")), summary_line(output))
+    return Step(
+        "score checks",
+        ok=code == 0,
+        detail=detail,
+        warnings=[] if code == 0 else ["\n".join(lines[-40:])],
+    )
+
+
 def step_generate(out_dir: Path, quick: bool) -> Step:
     args = [
         "--out", str(out_dir / "scores" / "generated"),
@@ -184,6 +204,7 @@ def merge_catalog(out_dir: Path) -> Step:
     sections = attach_sections(entries)
     tracked = attach_rung_tracks(entries)
     read = attach_notation(entries, out_dir)
+    keyed = settle_key_signatures(entries)
     write_json(out_dir / "catalog.json", entries)
     detail = f"{len(entries)} items"
     if sections:
@@ -192,7 +213,118 @@ def merge_catalog(out_dir: Path) -> Step:
         detail += f", {tracked} given a track by their rung"
     if read:
         detail += f", {read} read from the score"
+    if keyed:
+        detail += f", {keyed} keySig corrected"
     return Step("merge catalog", ok=True, detail=detail)
+
+
+#: Circle-of-fifths names, index 0 = C major / A minor. The same four tables
+#: and the same spelling as `keySignatureName` in `app/src/score/
+#: extractScoreModel.ts`, so a row this function writes and a row the render
+#: check writes read the same on the Library's detail sheet.
+_SHARP_KEYS = ["C", "G", "D", "A", "E", "B", "F#", "C#"]
+_FLAT_KEYS = ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"]
+_SHARP_MINORS = ["A", "E", "B", "F#", "C#", "G#", "D#", "A#"]
+_FLAT_MINORS = ["A", "D", "G", "C", "F", "Bb", "Eb", "Ab"]
+
+
+def _key_words(fifths: int, minor: bool) -> str:
+    table = (_SHARP_MINORS if fifths >= 0 else _FLAT_MINORS) if minor else (
+        _SHARP_KEYS if fifths >= 0 else _FLAT_KEYS
+    )
+    return f"{table[min(abs(fifths), 7)]} {'minor' if minor else 'major'}"
+
+
+def _signature_words(fifths: int) -> str:
+    """The signature with no mode claimed: `1 flat`, `3 sharps`."""
+    if fifths == 0:
+        return "no sharps or flats"
+    count = abs(fifths)
+    return f"{count} {'sharp' if fifths > 0 else 'flat'}{'' if count == 1 else 's'}"
+
+
+def settle_key_signatures(entries: list[dict]) -> int:
+    """
+    `keySig` from what the file says, not from a default (2026-09-22).
+
+    **The fault.** A key signature stands for two keys and most files never
+    write `<mode>`. Both writers of this field guess *major* when the tag is
+    missing: `keySignatureName` in `app/src/score/extractScoreModel.ts` is
+    handed OSMD's `Mode`, whose 0 means major and whose "absent" is also 0, and
+    `import_musetrainer.py` passes `mode or "major"` outright. So the Library's
+    detail sheet printed **Key: F major** over the D minor Toccata and Fugue
+    BWV 565, *Für Elise* read C major, the Moonlight read E major, and the
+    coordinator confirmed the same on six more rows on 2026-09-22.
+
+    **The rule**, which is `keyOf` in `app/tests/unit/lessonClaimsAboutMusic.
+    test.ts` and `key_name` in `tools/content/notation.py` written once more:
+    a stated mode is believed; with no stated mode the last bass note decides
+    between the signature's major and its relative minor; and when it is
+    neither, no mode is claimed at all and the signature alone is printed.
+
+    **`<mode>major</mode>` is not a statement.** `Nocturne_in_C_sharp_Minor.mxl`
+    under `content/scores/imported/musetrainer/scores` contains no `<mode>` tag
+    at all, and the built file the catalog reads contains `<mode>major</mode>`:
+    the conversion writes it. So a built file saying *major* carries the same
+    information as one saying nothing, and is treated the same way here. A file
+    saying *minor* is believed, because nothing in the pipeline writes that by
+    default. This is what settles Op. 9 No. 1 (B flat minor), the C sharp minor
+    Nocturne, the Op. 64 No. 2 waltz and the Pachelbel chaconne, all four of
+    which the file calls major and the title, the signature and the final bass
+    call minor.
+
+    **One guard, and it is not in the rule.** A `keySig` that already names a
+    *minor* key was put there by an importer reading catalogue data — the NIFC
+    files carry a RISM key record, and `import_kern.mode_for` prefers it — and
+    that is better evidence than a final bass. Chopin's Scherzo No. 2 is in B
+    flat minor and ends in D flat major; the Op. 35 scherzo is in E flat minor
+    and ends in G flat. The last bass note is right about both endings and
+    wrong about both works, so those rows are left alone.
+
+    Returns the number of rows changed. `LibraryScreen.ts:628` is the only
+    reader of this field in the app (it prints `Key: …`); `render_check.py`
+    fills it only where it is still `None`, so it cannot undo this.
+    """
+    changed = 0
+    for entry in entries:
+        # Songs only. A generated exercise's `keySig` is written by
+        # `generate_exercises.engraved_key` from the key it was asked to
+        # engrave, which is a fact about the maker's input rather than a guess
+        # — and the last bass note is the wrong witness for a scale, which
+        # ends on its own last degree: `exercise.articulation.c.legato.right`
+        # is C major and ends on A.
+        if entry.get("type") != "song":
+            continue
+        keys = (entry.get("notation") or {}).get("keys") or []
+        if not keys:
+            continue
+        fifths = int(keys[0].get("fifths") or 0)
+        if abs(fifths) > 7:
+            continue
+        mode = keys[0].get("mode")
+        current = entry.get("keySig")
+        if mode == "minor":
+            settled = _key_words(fifths, True)
+        else:
+            if current and current.strip().lower() != _key_words(fifths, False).lower():
+                # Catalogue data, not a guess: see the guard above.
+                continue
+            major_pc = (7 * fifths) % 12
+            final_bass = (entry.get("notation") or {}).get("finalBass")
+            if final_bass == (major_pc + 9) % 12:
+                settled = _key_words(fifths, True)
+            elif final_bass == major_pc:
+                settled = _key_words(fifths, False)
+            else:
+                settled = _signature_words(fifths)
+        # Two spellings of the same answer live in the catalog — `import_kern`
+        # writes `a minor` for the chord-symbol convention, the app writes
+        # `A minor` — and re-casing three hundred generated exercises is not
+        # this function's business.
+        if settled.lower() != (current or "").strip().lower():
+            entry["keySig"] = settled
+            changed += 1
+    return changed
 
 
 def attach_notation(entries: list[dict], out_dir: Path) -> int:
@@ -652,6 +784,7 @@ def run_build(args: argparse.Namespace, started: float) -> None:
     steps.append(step_generate(args.out, args.quick))
     steps.append(step_author(args.out, args.no_cache))
     steps.append(merge_catalog(args.out))
+    steps.append(step_score_checks(args.out))
     steps.append(copy_curriculum(args.out))
     steps.append(copy_lessons(args.out))
     steps.append(copy_tips(args.out))

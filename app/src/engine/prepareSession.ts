@@ -23,8 +23,9 @@ function expectedFor(
   hands: 'R' | 'L' | 'both',
   transposeSemis: number,
   includeGraceNotes: boolean,
-): { expected: number[]; noteIdsByMidi: Map<number, string[]> } {
+): { expected: number[]; noteIdsByMidi: Map<number, string[]>; accents: number[] } {
   const noteIdsByMidi = new Map<number, string[]>();
+  const accented = new Set<number>();
   for (const note of step.notes) {
     if (!includeGraceNotes && note.graceNote) continue;
     if (hands !== 'both' && note.hand !== hands) continue;
@@ -32,10 +33,11 @@ function expectedFor(
     const ids = noteIdsByMidi.get(midi);
     if (ids) ids.push(note.id);
     else noteIdsByMidi.set(midi, [note.id]);
+    if (note.accent === true) accented.add(midi);
   }
   // Ascending so a chord's expected set reads like the score.
   const expected = [...noteIdsByMidi.keys()].sort((a, b) => a - b);
-  return { expected, noteIdsByMidi };
+  return { expected, noteIdsByMidi, accents: [...accented].sort((a, b) => a - b) };
 }
 
 /**
@@ -139,11 +141,17 @@ export function prepareSession(model: ScoreModel, options: EngineOptions): Prepa
   const swing = options.swing ?? ENGINE_DEFAULTS.swing;
 
   const steps: PreparedStep[] = model.steps.map((step) => {
-    const { expected, noteIdsByMidi } = expectedFor(step, hands, transposeSemis, includeGraceNotes);
+    const { expected, noteIdsByMidi, accents } = expectedFor(
+      step,
+      hands,
+      transposeSemis,
+      includeGraceNotes,
+    );
     return {
       index: step.index,
       expected,
       noteIdsByMidi,
+      ...(accents.length > 0 ? { accents } : {}),
       // The timetable is the only thing swing changes. Everything downstream
       // — the cursor, the window, the deltas, the histogram, *Rhythm only* —
       // reads this number and needed no second code path.

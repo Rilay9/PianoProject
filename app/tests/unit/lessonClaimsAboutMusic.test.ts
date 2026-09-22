@@ -292,6 +292,40 @@ const CLAIMS: [string, string, string, (n: Notation) => boolean][] = [
     (n) => keyOf(n).startsWith('G')],
   ['hymns.6', 'the turnaround study is four chords in two bars in F', 'exercise.turnaround.f.i-vi-ii-v',
     (n) => keyOf(n).startsWith('F') && n.bars === 2 && n.chords.length === 4],
+  ['latin.6', 'Por una Cabeza is sixty-six bars on two staves', 'song.folk.por-una-cabeza-carlos-gardel.pdmx',
+    (n) => n.bars === 66 && n.staves === 2],
+  ['latin.6', 'The Crave is in D minor', 'song.jazz.the-crave',
+    (n) => keyOf(n).startsWith('Dm')],
+  ['latin.6', '…and fifty-three bars long', 'song.jazz.the-crave',
+    (n) => n.bars === 53],
+  ['latin.6', 'La Cumparsita part B is sixteen bars in two flats', 'song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx',
+    (n) => n.bars === 16 && n.keys[0]?.fifths === -2],
+  ['latin.6', 'the tumbao study is eight bars in G minor', 'exercise.tumbao.g',
+    (n) => keyOf(n).startsWith('Gm') && n.bars === 8],
+  ['latin.6', 'the three-note montuno study is four bars in D minor', 'exercise.montuno.d.3note.son-3-2',
+    (n) => keyOf(n).startsWith('Dm') && n.bars === 4],
+  ['latin.6', '…over a D minor and a G minor chord', 'exercise.montuno.d.3note.son-3-2',
+    (n) => n.chords.includes('Dminor') && n.chords.includes('Gminor')],
+  ['latin.6', 'the groove study is eight bars with both hands written', 'exercise.latin-groove.d.son-3-2',
+    (n) => n.bars === 8 && n.staves === 2],
+  ['latin.7', 'El Choclo is forty-nine bars in two-four', 'song.classical.el-choclo-piano.pdmx',
+    (n) => n.bars === 49 && n.times.includes('2/4')],
+  ['latin.7', '…written in two sharps', 'song.classical.el-choclo-piano.pdmx',
+    (n) => n.keys[0]?.fifths === 2],
+  ['latin.7', 'Asturias is a hundred and ninety-nine bars in three-four', 'song.classical.albeniz-asturias.pdmx',
+    (n) => n.bars === 199 && n.times.includes('3/4')],
+  ['latin.7', '…in G minor', 'song.classical.albeniz-asturias.pdmx',
+    (n) => keyOf(n).startsWith('Gm')],
+  ['latin.7', 'Malagueña is a hundred and forty-one bars in three-four', 'song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx',
+    (n) => n.bars === 141 && n.times.includes('3/4')],
+  ['latin.7', '…in C sharp minor', 'song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx',
+    (n) => keyOf(n).startsWith('C#m')],
+  ['latin.7', 'the four-to-a-note study is two bars in G', 'exercise.repeated-notes.g.4x.right',
+    (n) => keyOf(n).startsWith('G') && n.bars === 2],
+  ['latin.7', 'the rotation study is in G', 'exercise.rotation.g.left',
+    (n) => keyOf(n).startsWith('G')],
+  ['latin.7', 'the octave scale is in D', 'exercise.octave-scale.d.1oct.left',
+    (n) => keyOf(n).startsWith('D')],
 ];
 
 /** The three hymn rungs' song options, named once for the comparisons below. */
@@ -308,6 +342,16 @@ const HYMNS_5 = [
   'song.folk.this-little-light-of-mine.pdmx',
   'song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx',
   'song.pop.martin-j-nystrom-as-the-deer-piano.pdmx',
+];
+const LATIN_6 = [
+  'song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx',
+  'song.folk.por-una-cabeza-carlos-gardel.pdmx',
+  'song.jazz.the-crave',
+];
+const LATIN_7 = [
+  'song.classical.el-choclo-piano.pdmx',
+  'song.classical.albeniz-asturias.pdmx',
+  'song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx',
 ];
 const HYMNS_6 = [
   'song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx',
@@ -418,6 +462,27 @@ const COMPARISONS: [string, string, () => boolean][] = [
     const here = byId.get('song.folk.down-by-the-riverside.pdmx.2')?.notation?.staves;
     const below = byId.get('song.folk.down-by-the-riverside.pdmx')?.notation?.staves;
     return here === 2 && below === 1;
+  }],
+  ['latin.6', 'all three are written on two staves', () =>
+    LATIN_6.every((id) => byId.get(id)?.notation?.staves === 2)],
+  ['latin.6', 'La Cumparsita part B is the shortest of the three', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const partB = bars('song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx');
+    return partB > 0 && LATIN_6.filter((id) => !id.endsWith('parte-b.pdmx')).every((id) => bars(id) > partB);
+  }],
+  ['latin.6', 'part B prints no chord symbols where part A on the rung below prints some', () => {
+    const count = (id: string): number => byId.get(id)?.notation?.chordCount ?? -1;
+    return (
+      count('song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx') === 0 &&
+      count('song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx') > 0
+    );
+  }],
+  ['latin.7', 'not one of the three prints a chord symbol', () =>
+    LATIN_7.every((id) => byId.get(id)?.notation?.chordCount === 0)],
+  ['latin.7', 'Asturias is the longest of the three', () => {
+    const bars = (id: string): number => byId.get(id)?.notation?.bars ?? 0;
+    const asturias = bars('song.classical.albeniz-asturias.pdmx');
+    return asturias > 0 && LATIN_7.filter((id) => !id.includes('asturias')).every((id) => bars(id) < asturias);
   }],
   ['holiday.3', 'Hark! has the most chord changes of the four', () => {
     const four = [

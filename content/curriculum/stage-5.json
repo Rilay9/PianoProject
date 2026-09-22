@@ -130,11 +130,10 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "ballad"
-                },
-                {
-                  "kind": "lab",
-                  "label": "Lab — your own chords"
+                  "preset": "ballad",
+                  "unlock": [
+                    "progression"
+                  ]
                 }
               ],
               "levelBand": [
@@ -857,7 +856,8 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "blues-shuffle"
+                  "preset": "blues-shuffle",
+                  "mode": "tune"
                 }
               ],
               "levelBand": [

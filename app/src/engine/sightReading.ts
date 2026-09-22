@@ -853,7 +853,52 @@ export interface LabPreset {
    */
   bed?: LabBed;
   /** Which of the settings above the learner may not change here. */
-  locks: readonly ('key' | 'progression' | 'leftHand' | 'rightHand' | 'bars')[];
+  locks: readonly LabLock[];
+}
+
+/** The pickers a preset may fix, and therefore the ones a rung may hand back. */
+export type LabLock = 'key' | 'progression' | 'leftHand' | 'rightHand' | 'bars';
+
+/** Every name `unlock` may carry, for the router to check a hash against. */
+export const LAB_LOCKS: readonly LabLock[] = [
+  'key',
+  'progression',
+  'leftHand',
+  'rightHand',
+  'bars',
+];
+
+/** Every way round the lab opens on, for the same reason. */
+export const LAB_BEDS: readonly LabBed[] = ['off', 'hold', 'tune'];
+
+/**
+ * What this visit locks: the preset's own list, less whatever the rung freed.
+ *
+ * A function rather than two lines inside `LabScreen`, because the rule is the
+ * whole of T16 item 5 and a screen is an expensive place to test it. A rung
+ * that frees a control its preset never locked is refused by `validate.py`
+ * before it reaches here, so this only has to subtract.
+ */
+export function labLocksFor(
+  preset: LabPreset | null,
+  unlock: readonly string[] | undefined,
+): Set<LabLock> {
+  if (!preset) return new Set();
+  const freed = new Set(unlock ?? []);
+  return new Set(preset.locks.filter((lock) => !freed.has(lock)));
+}
+
+/**
+ * Which way round this visit opens on: the rung's answer, then the preset's,
+ * then the bed silent.
+ *
+ * The rung wins because a preset is shared — `blues-shuffle` serves ten rungs
+ * and opens holding the chords, and `jam.5`'s lesson says *"comp through eight
+ * choruses of it"*, which is the other way round (Entry 30 named it and left
+ * it waiting for this field).
+ */
+export function labBedFor(preset: LabPreset | null, mode: LabBed | undefined): LabBed {
+  return mode ?? preset?.bed ?? 'off';
 }
 
 export const LAB_PRESETS: readonly LabPreset[] = [

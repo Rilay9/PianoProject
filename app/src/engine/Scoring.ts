@@ -96,6 +96,8 @@ export interface ScoreInput {
   /** docs/05 §11.4: microphone accuracy is an estimate and is labelled so. */
   accuracyEstimated: boolean;
   lenientChordSteps: number;
+  /** Every CC64 value the run saw. Absent reads as none, for old callers. */
+  pedal?: readonly number[];
 }
 
 export function buildScore(input: ScoreInput): SessionScore {
@@ -136,6 +138,7 @@ export function buildScore(input: ScoreInput): SessionScore {
     rolledChordSteps: input.rolledChordSteps,
     accuracyEstimated: input.accuracyEstimated,
     lenientChordSteps: input.lenientChordSteps,
+    pedal: [...(input.pedal ?? [])],
     notes: [...input.notes],
   };
 }
@@ -534,7 +537,157 @@ export function techniqueMeasureFor(
     };
   }
 
+  if (drill.kind === 'half-pedal') {
+    const range = ccRangeParam(params) ?? DEFAULT_HALF_PEDAL_RANGE;
+    const result = halfPedalScore(score.pedal ?? [], range);
+    if (result.total === 0) {
+      return {
+        kind: drill.kind,
+        label: 'Half pedal',
+        // Not a nought: "the pedal was never part-way" and "no pedal was
+        // connected" are different answers, and only one is about playing.
+        text: 'not measured — no pedal message arrived',
+        met: false,
+        judged: 0,
+      };
+    }
+    if (result.binaryPedal) {
+      return {
+        kind: drill.kind,
+        label: 'Half pedal',
+        text: 'not measured — this pedal is a switch, sending only 0 and 127',
+        met: false,
+        judged: result.total,
+      };
+    }
+    return {
+      kind: drill.kind,
+      label: 'Half pedal',
+      text: `${String(Math.round(result.share * 100))}% of ${String(
+        result.total,
+      )} pedal messages were between ${String(range[0])} and ${String(range[1])}`,
+      met: result.share >= minShare,
+      judged: result.total,
+    };
+  }
+
   return null;
+}
+
+/**
+ * How much louder an accented note has to be than the run's own unaccented
+ * notes before it counts as accented.
+ *
+ * A ratio against the learner's own playing, not a MIDI velocity: a light
+ * player and a heavy one accent by the same gesture and land on different
+ * numbers, and a fixed threshold would judge the touch rather than the
+ * reading.
+ */
+export const ACCENT_MIN_RATIO = 1.15;
+
+export interface AccentResult {
+  /** Accented notes the run actually played. */
+  judged: number;
+  correct: number;
+  /** 0..1, and 0 when nothing could be judged. */
+  accuracy: number;
+  /** The mean velocity of the run's unaccented notes, which is the reference. */
+  baseline: number;
+}
+
+/**
+ * Did the learner lean on the notes the score accents (T16 item 7)?
+ *
+ * `<accent>` reached `ScoreNote` on 2026-09-22 and this is what it is for. The
+ * reference is the run's **own** unaccented notes, so the question is "was
+ * this note louder than the way you played the rest", which is the question an
+ * accent asks. A piece that prints no accent, or a run with no unaccented
+ * note to compare against, is judged nothing rather than judged zero.
+ */
+export function accentScore(
+  played: readonly RecordedNote[],
+  steps: readonly PreparedStep[],
+): AccentResult {
+  // By step *and* pitch, not by pitch alone. A piece accents its first E and
+  // not its fourth, and matching on the pitch would have judged both - which
+  // is what the first version of this did, and the fixture caught it.
+  const byIndex = new Map(steps.map((step) => [step.index, step]));
+  const isAccented = (note: RecordedNote): boolean => {
+    if (note.stepIndex === null || note.stepIndex === undefined) return false;
+    return byIndex.get(note.stepIndex)?.accents?.includes(note.midi) === true;
+  };
+  const plain = played.filter((note) => !isAccented(note));
+  const marked = played.filter((note) => isAccented(note));
+  if (marked.length === 0 || plain.length === 0) {
+    return { judged: 0, correct: 0, accuracy: 0, baseline: 0 };
+  }
+  const baseline = plain.reduce((sum, note) => sum + note.velocity, 0) / plain.length;
+  const correct = marked.filter((note) => note.velocity >= baseline * ACCENT_MIN_RATIO).length;
+  return { judged: marked.length, correct, accuracy: correct / marked.length, baseline };
+}
+
+/** What `exercise.pedal.half-pedal.*` asks for when it states nothing. */
+export const DEFAULT_HALF_PEDAL_RANGE: [number, number] = [32, 96];
+
+export interface HalfPedalResult {
+  total: number;
+  inRange: number;
+  /**
+   * How often the pedal was anything but fully up or fully down, which is the
+   * habit the exercise exists to build. A count rather than a flag: "twice in
+   * a four-bar phrase" and "throughout" are different playing.
+   */
+  partial: number;
+  /** 0..1, and 0 for a switch — see `binaryPedal`. */
+  share: number;
+  /**
+   * True when every message was 0 or 127.
+   *
+   * Many digital actions send only those two, and scoring that as "you failed
+   * to half-pedal" would blame the player for the instrument. So it is its own
+   * state and whoever prints it says the exercise cannot be judged on this
+   * piano, rather than showing a permanent nought.
+   */
+  binaryPedal: boolean;
+}
+
+/**
+ * How much of a run was spent with the damper part-way (`04` §5b, T16 item 6).
+ *
+ * One function, two callers: `PedalDrill.halfPedalResult` on the drill screen
+ * and `techniqueMeasureFor` on the Score screen. The exercise opens on the
+ * Score screen and the drill measures the same thing, so a second copy of this
+ * arithmetic would be the two-lists-of-one-fact shape this repository keeps
+ * paying for.
+ *
+ * The denominator is every CC64 message rather than every chord: this is the
+ * value held, not the timing of a change.
+ */
+export function halfPedalScore(
+  values: readonly number[],
+  range: [number, number],
+): HalfPedalResult {
+  const [low, high] = range;
+  const total = values.length;
+  const inRange = values.filter((v) => v >= low && v <= high).length;
+  const partial = values.filter((v) => v > 0 && v < 127).length;
+  const binaryPedal = total > 0 && partial === 0;
+  return {
+    total,
+    inRange,
+    partial,
+    share: total > 0 && !binaryPedal ? inRange / total : 0,
+    binaryPedal,
+  };
+}
+
+function ccRangeParam(params: Record<string, unknown> | undefined): [number, number] | null {
+  const asked: unknown = params?.ccRange;
+  if (!Array.isArray(asked) || asked.length !== 2) return null;
+  const low: unknown = asked[0];
+  const high: unknown = asked[1];
+  if (typeof low !== 'number' || typeof high !== 'number') return null;
+  return [low, high];
 }
 
 /**
