@@ -38,15 +38,15 @@ actually tracking.
 Identifying these by ear is the single most useful listening skill on this
 track, because it tells you where you are in a piece without counting bars.
 
-**Melodic dictation.** The app plays four notes; you play them back. Their
-names are printed on the card as well, so look away from it until you have
-answered. Method: get the *first note* and the *shape* (up/down/same) before
+**Melodic dictation.** The app plays eight notes; you play them back. Their
+names stay off the card until you have answered, so there is nothing to read.
+Method: get the *first note* and the *shape* (up/down/same) before
 worrying about exact pitches. Then fill in the intervals.
 
 **Common mistake.** Trying to transcribe note by note from the start. Contour
 first, then detail — the same order in which you would sketch a face.
 
-**Tools for this rung.** Melodic dictation asks you to hold four notes before
+**Tools for this rung.** Melodic dictation asks you to hold eight notes before
 you can play any of them, and the chain game is that memory on its own, one
 note longer each round. The version drawn from every key is an option here
 now: no scale to fall back on, and the note has to come back in the octave
@@ -55,5 +55,5 @@ when it plays the chain again over the lit keys and asks you for the same chain
 rather than ending the game.
 
 **How you'll know you've got it.** Cadences identified at 80 % by ear, triad
-inversions played from their slash-chord names, and a four-note phrase played
+inversions played from their slash-chord names, and an eight-note phrase played
 back correctly after two hearings.

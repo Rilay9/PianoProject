@@ -23,9 +23,9 @@ I–IV–V loop is still on this rung and is the easier of the two; the four-cho
 one changes chord every bar, where that one changes three times in eight bars,
 which is the whole difference.
 
-**Answering the phrase.** The app's *Answer the phrase* drill plays four notes
-and marks you right only if you play the same four back, so it trains the ear
-rather than the answer. The answer you practise over the loop: a two-bar call
+**Answering the phrase.** The app's *Answer the phrase* drill plays two bars
+drawn from the pentatonic and marks you right only if you play the same notes
+back, so it trains the ear rather than the answer. The answer you practise over the loop: a two-bar call
 of your own, then a two-bar answer. Rules that make an answer sound like an answer rather than a new
 sentence:
 

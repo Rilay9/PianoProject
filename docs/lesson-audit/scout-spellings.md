@@ -79,3 +79,24 @@ None found.
   against). None of these assert a checkable key-vs-spelling fact, so none are
   listed as suspects or unchecked-pending-work; they are simply outside what
   the method can verify.
+
+---
+
+## Confirmed 2026-09-22 — the one suspect is fixed at the source, and it is now under test
+
+The pass found **no suspect in the lessons**, and the one it flagged in passing — the
+`editionNotes` on `song.classical.ode-to-joy.g` claiming bar 12 "touches" an F♯ the tune
+does not play — was fixed at the source by the coordinator on 2026-09-22. Re-read here:
+
+- The `editionNotes` now read "Only one black key appears, the F sharp in the key
+  signature; **the tune itself never sounds it**, and bar 12 drops from A straight to the
+  low D."
+- The row's `concepts` are `G-major`, `key-signature`, `dotted-quarter`, `4/4` — the
+  untrue `F-sharp` tag is gone.
+- The score agrees, read from the `.mxl` rather than the dump: the distinct pitches of
+  the whole piece are **A, B, C, D, G**. There is no F of any kind in any bar, in either
+  hand, so there is no F♯ to sound.
+
+Under test from this pass: a row in `lessonClaimsAboutMusic.test.ts` asserting that
+*Ode to Joy in G* sounds no F, which is what `3.1.md:36-37` tells the learner to notice
+and what the edition note used to contradict.

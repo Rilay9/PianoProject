@@ -256,3 +256,47 @@ counts are repetitions of those same two causes across transposed keys/forms).
 Not included in the count: the five low-confidence "easy" items and the
 five C-rooted arpeggio7 items, which are listed above with their caveats
 rather than folded into the headline number.
+
+---
+
+## Confirmed 2026-09-22 — all 48 suspects were real, and all 48 are already repaired
+
+Every suspect above was opened against the source before anything was touched, as
+Part A2 asks. **None turned out to be false, and none needed fixing here**: the two
+causes had already been corrected at the source by the time this pass ran.
+
+**The 40 exercise titles (36 `exercise.boogie.*`, 4 `exercise.stride.*`).** Confirmed
+as a real contradiction — a title naming one hand over a row catalogued `hands: "both"`
+whose generator writes a right-hand chord every bar. **Already fixed:** all 36 boogie
+rows now read `Boogie — <pattern> in <key>, both hands` and all four stride rows
+`Stride in <key>, both hands`; a search of the 36 boogie titles for "left hand" returns
+**0**, and every one of the 40 still carries `hands: "both"`, so title and field now
+agree. Under test: the row named in the entry asserts that no `exercise.boogie.*` or
+`exercise.stride.*` title names a single hand while its row says both.
+
+**The 8 song titles.** Confirmed and already fixed by T15 (Entry 34), by two different
+mechanisms.
+
+- `song.classical.chopin-mazurka-op59-3.nifc` — was titled *Mazurka in C minor*; now
+  reads **"Mazurka in F-sharp minor, Op. 59 No. 3"** with `keySig: "f# minor"`, which
+  matches its own `notation.keys` (3 and 6 sharps). The retitle is in Entry 34's list.
+- The seven relative-major `keySig` rows — all seven now print their own minor key:
+  Toccata and Fugue `D minor`, WTC1 Prelude 2 `C minor`, Hungarian Dance 5 `G minor`,
+  Ballade 1 `G minor`, Prélude Op. 28 No. 4 and its `.alt` `E minor`, Waltz in A minor
+  `A minor`. Entry 34's `settle_key_signatures()` is the cause: with no `<mode>` in the
+  file it tests `finalBass` against the signature's major tonic and its relative minor
+  and takes the one that matches.
+
+**The two low-confidence groups, re-checked and now closed one way each.**
+
+- The five C-rooted `exercise.arpeggio7.*` rows that printed `Key: C major` for a
+  dominant or diminished arpeggio: **fixed**. All 60 `arpeggio7` rows were re-read and
+  **not one carries a `keySig` at all** now, so the Library's detail sheet has no key
+  fact to print for them, which is the right answer for a chord that is not in a key.
+- The five "easy"/"simplified" titles at level 6.0–7.0: **unchanged, and left**. The
+  levels were re-read (6.01, 6.1, 6.28, 6.45, 7.0) and they are what they were. The
+  scout was right to flag this with low confidence and right not to count it: "easy" in
+  an arrangement's title is relative to the original piece, not to this app's ladder, and
+  nothing here establishes which the titles mean.
+
+Checked by re-reading the built catalog and the generator, not by re-running the scan.

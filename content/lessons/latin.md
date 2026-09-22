@@ -40,8 +40,8 @@ to play and read, but it cannot clap one behind you while you play something els
 sing (and *Cielito Lindo* as a tune — it is in three, so not under a clave); *Tico-Tico* (1917) for a choro at speed; two bossa
 novas — *Insensatez* and *Só Danço Samba* — where the syncopation goes quiet
 and the chords do the work; and the first part of *La Cumparsita* (1916), the
-tango. Its second part is under Classical in the Library, and *El Choclo* —
-another tango — is under Latin there, with *Carioquinha* for a choro and Lecuona's *Malagueña*.
+tango. Its second part and *El Choclo* — another tango — are under Latin in the
+Library, with *Carioquinha* for a choro and Lecuona's *Malagueña*.
 *La Cucaracha* is not in the library yet.
 
 **Common mistake.** Counting the two clave bars as two separate bars. It is one

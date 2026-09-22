@@ -46,7 +46,7 @@ chord about an octave apart. In a full rag you will meet:
 
 - **octaves** for the bass note instead of a single key;
 - **walk-ups** — a scale or chromatic run in the bass between chords;
-- **leaps of a tenth or more** — in *The Entertainer* mostly in the trio — where the
+- **leaps of a tenth or more** — in *The Entertainer* clustered in the trio — where the
   bass note drops and the chord has to land in the same half-beat.
 
 The technique is the same one Stage 5 named and it does not change: **the arm

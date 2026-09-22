@@ -33,8 +33,8 @@ shells and watch what happens — the seventh of Dm7 (C) falls a half step to th
 third of G7 (B), and the seventh of G7 (F) falls a half step to the third of
 Cmaj7 (E). Those two falling half steps are **guide-tone resolution**, and they
 are why the progression sounds inevitable. Learn ii–V–I in C, F, B flat and G,
-with the shells barely moving. The ii–V–I drill here runs those four keys but
-asks for plain triads, so the shells are yours to add.
+with the shells barely moving. The ii–V–I drill here runs those four keys and
+asks for the shell itself: root, third and seventh, with no fifth in it.
 
 **Comping.** Accompanying: chords played in rhythm, in the gaps, not on every
 beat. Start with a chord on beat 1 and the "and" of 2, and leave the rest alone.

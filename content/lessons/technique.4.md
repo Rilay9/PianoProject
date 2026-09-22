@@ -52,7 +52,7 @@ silent.
 No. 1, No. 2 and No. 35 — are on this rung as pieces: one page each, one
 figure each, the same finger work as the exercises above: No. 1 runs a scale in the right
 hand over left-hand chords, No. 2 gives the scale to the left hand under
-right-hand chords, and No. 35 is repeated and broken triads in 6/8.
+right-hand chords, and No. 35 is repeated triads in 6/8.
 Play one after the exercises; it is where the drill turns into music.
 
 **Tools for this rung.** The Lemoine study is one figure for a page, which

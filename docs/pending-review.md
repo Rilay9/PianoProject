@@ -5936,3 +5936,620 @@ That is the trade the owner should see, and the picture is the evidence that the
   Both were rewritten to drive off the keys the strip lights — which is also what a learner
   has — and then run five times and three times respectively without a failure. A test that
   needs a hook to know what the screen is asking for was the wrong test.
+
+---
+
+### Entry 39 — T12: the 144 corrections of batches 1–3 second-read and put under test, and 87 open findings given a first reader (2026-09-22)
+
+Scoped by the coordinator to **Part A and Part A2 for `batch-1.md`, `batch-2.md` and
+`batch-3.md`**, and **Part B for every open finding in all five batch files**. Batches 4 and
+5 have no second read and no rows from this run; that is the largest thing not reached and
+it is named again at the end.
+
+**Nothing here has been heard.** Every verdict is a reading of the built score, the rung, the
+constant or the screen's own words.
+
+#### Part A — the second read
+
+144 ticked findings, every one given a `Second read (2026-09-22):` line with the evidence
+re-run, and every one given a `Row:` line or a reason.
+
+| batch | ticked | HOLDS | OVERREACH | WRONG |
+|---|---:|---:|---:|---:|
+| 1 | 57 | 51 | 3 | 3 |
+| 2 | 34 | 34 | 0 | 0 |
+| 3 | 53 | 46 | 2 | 5 |
+| **total** | **144** | **131** | **5** | **8** |
+
+The sample of 72 (`second-read.md`) found 4 overreaches in 72 and predicted about a dozen
+more over the 164 unread. Over these 144 the rate is **thirteen in a hundred and forty-four**,
+which is close to it — but the shape is not what the prediction assumed, and that is the
+finding of this pass.
+
+**Eight of the thirteen are not the fixer's fault. They are a build that changed the app and
+left the sentence behind.** T10 (Entry 24) built six drill settings, the dictation card and
+the per-rung pass thresholds on 2026-09-21, and its own file list does not name
+`content/lessons/2.1.md`, `2.5.md` or `theory.4.md` — yet `batch-1` and `batch-3` carry
+`Built (2026-09-21):` lines under those findings saying "the sentence now names a drill with
+a left hand in it", "the sentence now names a drill that shifts", and "the sentence no longer
+has to tell the learner to look away from the card". **None of those three edits was made.**
+Two more sentences were missed inside files T10 *did* edit (`improv.4`'s note count,
+`jazz.5`'s "asks for plain triads"), and one threshold sentence (`1.4`) was made wrong by the
+build rather than left behind by it. Each is corrected here, one lesson line at a time:
+
+1. **`2.1.md:35-38`** — was "the left hand is not in it"; `leftHand: "hold"` is read
+   (`fromCatalog.ts:673-686`) and the card says "Hold the low C down with the left hand". Now
+   says so, with the code's own caveat that only the ear judges whether it stayed down.
+2. **`2.5.md:32-33`** — was "plays the plain five-finger walk, with no shift in it"; `shifts:
+   true` is read (`:661-672`). Now "in the home position and then again from the fifth".
+3. **`theory.4.md:41-42, :49, :58`** — was "four notes" three times and "their names are
+   printed on the card"; `bars: 2 × NOTES_PER_BAR` is eight and `labelIsAnswer` withholds the
+   names. Now eight, and "their names stay off the card until you have answered".
+4. **`improv.4.md:25-27`** — was "plays four notes… the same four back"; eight pentatonic
+   notes. Now "two bars drawn from the pentatonic".
+5. **`jazz.5.md:36-37`** — was "asks for plain triads, so the shells are yours to add";
+   `voicing: "shell"` is read. Now "asks for the shell itself: root, third and seventh".
+6. **`1.4.md:54`** — was "80 % or more of the piece's own"; rung 1.4's `minTempoPct` is
+   **0.85** and since T10 the rung's own pair is what judges a run. Now 85 %. Every rung with
+   a lesson file was swept for a percentage its own `mastery` does not state and this was the
+   only disagreement in the corpus.
+
+The other five are ordinary overreach, three of them the sample's own and two new:
+
+7. **`0.3.md:57-58`** — the sample's item 1. "A card you missed pauses for two seconds"
+   is true of **14 of the 20** drill kinds, enumerated here from `REVEALABLE_KINDS` (8) and
+   `STAFF_POLICY`'s `after-answer` (10, four shared). Now "on most drills".
+8. **`technique.4.md:55`** — the sample's item 2. Lemoine No. 35 strikes every triad as a
+   block; "broken" is nowhere in it. Now "repeated triads in 6/8". **The sample's reason was
+   slightly wrong and is corrected on the finding:** it said nothing in the piece is played
+   one note at a time, and bars 8 and 13–16 do carry lone right-hand notes — a two-note
+   figure with a moving upper line, not a triad spread out. The verdict stands; the reason is
+   narrower.
+9. **`2.1.md:46-48`** — new. *Simple Gifts* was "in eighths and dotted quarters"; `<dot/>`
+   is on **five** of its thirty-one quarters. Now "in eighths and quarters, a few of the
+   quarters dotted".
+10. **`2.2.md:36-37`** — new, **and found by a row on its first run rather than by the
+    reading that wrote the row**. I second-read "*Sakura*, whose eighth pairs sit on the
+    second beat" as HOLDS of all five pairs. The test said otherwise: bar 14 is
+    `B4/eig A4/eig F4/qua E4/hal`, the pair on beat *one*. Four of five. Now "mostly sit on
+    the second beat", the finding is re-filed OVERREACH, and the row asserts exactly one
+    exception so a fifth pair moving would break it. This is the single best argument in this
+    entry for the rows existing at all.
+11. **`classical.4.shelf.md:19, :26, :32-33`** — three corrections from one cause. T15
+    (Entry 34) took the Kreisler *Liebesleid* off the shelf (`score-checks.allow.json:39`
+    records why) and repointed the E minor prélude from `.alt` to `.nifc`, and the lesson went
+    on saying "50 pieces", naming Kreisler among the shelf's composers, and claiming the shelf
+    keeps the alternative edition of that prélude. Now 49, Kreisler dropped from the list, and
+    the alternative-edition sentence narrowed to the nocturne.
+
+**Ten lesson files were touched** — 0.3, 1.4, 2.1, 2.2, 2.5, classical.4.shelf, improv.4,
+jazz.5, technique.4, theory.4 — with `readingTime` recounted on each and unchanged on all ten.
+`classical.4.shelf` and `theory.4` each took more than one correction, which is why the list
+of corrections above is longer than the list of files.
+
+#### The rows
+
+**136 rows added**, in one appended `describe` block per file, so a later run for batches 4
+and 5 can append its own without touching either.
+
+| file | rows | what they read |
+|---|---:|---|
+| `lessonClaimsAboutMusic.test.ts` | 57 | the built `.mxl`, unzipped through `score/mxl.ts`, plus `notation` and the built curriculum |
+| `lessonClaimsAboutApp.test.ts` | 79 | the authored rungs, the catalog's `drill` blocks, the real drills driven, the lab presets, and the constants in `feedback.ts`, `PracticeEngine.ts`, `Scoring.ts`, `settingsStore.ts` and `simon.ts` |
+
+**The music block reads the MusicXML, which the table above it does not.** `notation` answers
+key, metre, staves, bars and printed chord symbols; most of these sentences are about what a
+*hand* plays. The helpers do what `dump_score.py` does plus the two things it cannot: a
+`<chord/>` member is told apart from the note that carries the beat, and `<dot/>` is read, so
+a dotted quarter is not filed as a quarter. Both of those distinctions are load-bearing — the
+*Sakura* correction above needed the first and the *Simple Gifts* one needed the second.
+
+**A row may assert a constant.** The brief says so and `00-invariants` §2 is about numbers
+measured on this machine. So the ladder row reads `LADDER_NOTCH_PCT` from `PracticeEngine`
+rather than repeating ten, the pause row reads `MISS_PAUSE_MS` from `feedback.ts`, and the
+mastery row reads `DEFAULT_MASTERY`.
+
+**Ten findings have a reason instead of a row**, each written on the finding:
+
+* **seven are covered by another row** — 0.4's item order (one assertion names both items),
+  1.4's Duet (one constant, one row, shared with 0.3), 2.4's second Greensleeves sentence,
+  2.5's sight-reading (the same catalog row as 2.2), theory.4's second eight-note sentence,
+  improv.4's second loop sentence, and rock.4's Duet (the same `case 'duet'` as 2.1).
+* **1.1's "slowest of the four"** — the clause was deleted rather than corrected, so there is
+  no sentence left to read. A row would pin a deletion.
+* **practice.2's ":26"** — as it stands it is the learner's own practice rule and asserts
+  nothing about the app; the app claim it used to carry is the Ladder row.
+* **rock.4's "named three textures"** — the claim is about the wording of *another lesson*.
+  That is prose against prose, and neither `lessonShape` nor `lessonClaims` reads one
+  lesson's sentences into another. Starting that here would be a new kind of test on a
+  Tuesday afternoon; the evidence line is the check.
+
+#### Part A2 — the scouts
+
+`scout-spellings.md` had **one** suspect and it is closed: the coordinator fixed
+`ode-to-joy-g`'s edition note and dropped its untrue `F-sharp` concept tag, and the score
+agrees — the whole piece uses A, B, C, D and G and no F of any kind. **Under test now**, as a
+music row.
+
+`scout-surfaces.md` had **48**, and this is the good news: every one was real and **every one
+had already been repaired at the source** before this run reached it.
+
+* The 40 exercise titles (36 boogie, 4 stride) that named one hand over a row catalogued
+  `hands: "both"` now read "…, both hands"; a search of the 36 boogie titles for "left hand"
+  returns 0 and all 40 still carry `hands: "both"`. **Under test**, as one app row.
+* The 8 song titles are T15's: the Op. 59 No. 3 mazurka is retitled in F-sharp minor with a
+  matching `keySig`, and the seven relative-major `keySig` rows now print their own minor
+  keys, which is `settle_key_signatures()` working.
+* The two low-confidence groups: the five C-rooted `arpeggio7` rows no longer carry a
+  `keySig` at all (right — a dominant-seventh arpeggio is not in a key), and the five
+  "easy"-at-level-6-or-7 titles are unchanged and left, because "easy" in an arrangement's
+  title is relative to the original and nothing here says which the titles mean.
+
+Both scout files carry a dated confirmation section saying this.
+
+#### Part B — reader one on 87 open findings
+
+The brief says 86; the batch files hold **87** unticked boxes, because `chords-pop.5:44` was
+found wrong in the fix pass, left unticked and re-filed JUDGEMENT. It gets a line like the
+rest.
+
+| batch | RIGHT | WRONG | UNSURE | REWRITE | KEEP | total |
+|---|---:|---:|---:|---:|---:|---:|
+| 1 | 4 | 4 | 0 | 9 | 0 | 17 |
+| 2 | 0 | 4 | 0 | 4 | 1 | 9 |
+| 3 | 1 | 9 | 1 | 11 | 2 | 24 |
+| 4 | 2 | 1 | 4 | 7 | 0 | 14 |
+| 5 | 2 | 5 | 3 | 13 | 0 | 23 |
+| **total** | **9** | **23** | **8** | **44** | **3** | **87** |
+
+**No lesson was edited in Part B**, as the brief requires. Each WRONG carries what is true and
+the smallest change that would make it so; each UNSURE says what would settle it; each
+REWRITE quotes the replacement sentence.
+
+**Fourteen of the twenty-three WRONGs are decided by something in the repository**, not by
+this reader's taste, and several were filed UNVERIFIED because the auditor did not reach for
+the instrument rather than because there was none:
+
+* `2.4:56` — "it is marked early the moment it arrives": `NoteState` is
+  `'correct' | 'wrong' | 'current' | 'uncertain'` (`WindowRenderer.ts:58`). **There is no
+  early state.** Earliness is one line on the summary afterwards. Two searches, the second
+  (`is-early|--early|earlyClass`) exiting 1.
+* `blues.4:48` — the drill titled *Twelve-bar left-hand patterns* has no `form` and no
+  `progression`, so `twelveBarLoop(key, false)` gives it a **four-bar I–IV–V–I in C**, and
+  `leftHandOnly` and `shuffle` are read by nothing.
+* `jazz.8:29` — the five-root ninth drill the sentence points at is on jazz.7 and
+  chords-pop.7; this rung's is `drill.jazz.extended-chords-13`, four roots, elevenths and
+  thirteenths. Should be re-filed UNOFFERED.
+* `rock.4:44` — applying `keyOf`'s own `finalBass` test to the `mode: null` rows (which the
+  finding left unread) gives **seven** minor two-staff songs at or below level 4.6, not six:
+  the four Greensleeves, the two easy *Für Elise*, and the Gurlitt Op. 82 study.
+* `blues.3:34` — neither *Wabash* nor *Tishomingo* names a verse or a chorus; both are
+  sectioned with `<rehearsal>` marks A, B and C, and Wabash's only directions are "solos at
+  B" and "Back to B".
+* `1.2:19` — "each is twice the one below it" over a list printed quarter, half, whole: each
+  is *half* the one below. One word.
+* `1.4:29` — the anacrusis convention stated as a rule, two lines before naming *When the
+  Saints*, whose 3-beat pickup is followed by a **full** final bar.
+* `4.3:34` — the arpeggio fingering is 1-2-3, 1-2-3, 5 and 5-3-2, 5-3-2, 1 on the rung's own
+  exercises; "1-2-3-5 with the thumb passing under" contradicts itself as well as the score.
+* `chords-pop.4:39` — *Scarborough Fair* is E Dorian with no vi and no ii; *Shenandoah* is
+  plain G major and **is** the one where vi and ii do the work. The sentence has them the
+  wrong way round.
+* `theory.7:27` — "what the chord tones already spell" for mixolydian, dorian and locrian.
+  The chord tones fix four of seven degrees; the rest are a choice. **The code comment makes
+  the same wrong claim** (`engine/drills/theory.ts:214-221`), which is `00` §1a in both
+  directions at once.
+* `ragtime.8:17` — the ragtime figure is in 53 of *Pine Apple*'s 89 bars and **32 of
+  Gladiolus's 86**, so the two are not "nearly every beat" together.
+* `chords-pop.8:36` — "the fastest of them" depends on the measure: *If I Had a Chicken* has
+  the most notes a second over both hands (7.74 against 7.38) and *Silhouette* the faster
+  tempo (182 against 125) and the busiest single staff.
+* `classical.7:50` — all five `<accent>` marks in the rung's mazurka are on **beat 2**, so
+  the beat is right; four of the five are in the **right** hand, so "a left hand that leans"
+  is not.
+* `ragtime.8:40` — *The Cascades* is not late Joplin; it belongs with *The Entertainer*.
+
+**Three findings were verified rather than left open**, which is the other half of the job:
+`blues.6:55`'s ladder claim (a note outside `toleranceMs` is a *wrong* note, so the lap is
+not clean and the ladder goes **down** — traced through `feedTempo` → `findSlot` →
+`climbLadder`); `classical.8:47`'s "fastest thing on the rung" (Moonlight III at 6.02 / 6.60
+notes a second against 4.45 / 3.77 for the next piece); and `hymns.2:31`'s finding about
+`dump_score.py` itself — the tool prints bar 1 of *Joyful, Joyful* as five and a half beats
+in 4/4, and `grep "grace\|tuplet\|tie"` over it returns **nothing**.
+
+**The eight UNSUREs are all sources, not judgements**: three publication years and a subtitle
+on `ragtime.6`, *La Cumparsita*'s 1916, the Chopin rubato attribution, Jimmy Yancey's left
+hand, the Joplin "never right to play ragtime fast" notice, whether the `classical.4`
+five are Grade 1 (every one `levelSource: estimated`, none with an `abrsmGradeApprox`),
+*Magnetic Rag*'s key count, and whether `exercise.stride.*`'s bass–chord–tenth–chord is
+stride as usually defined. Each says what would settle it. **A guess would have been applied;
+that is why they are unsure.**
+
+#### Verification
+
+From `app/`: `npx vitest run tests/unit/lessonClaims.test.ts
+tests/unit/lessonClaimsAboutApp.test.ts tests/unit/lessonClaimsAboutMusic.test.ts
+tests/unit/lessonShape.test.ts` — **4 files, 250 tests, all passing**, against 112 before this
+run (136 rows plus a guard test in each of the two new blocks). `lessonShape` passing is what proves the ten recounted `readingTime` values and
+that no edited lesson crossed the three-minute cap.
+
+Nothing else was run. No content build, no Playwright, no port 4173, no JSON re-serialised,
+nothing committed.
+
+#### Unverified, and what was not reached
+
+* **Batches 4 and 5 have had no second read.** 43 + 49 = **92 ticked findings** still rest on
+  the fixer's own reading plus the 29 of them the 2026-09-21 sample covered, and they have no
+  rows. On this run's rate — thirteen wrong or overstated in 144 — that is **six to eight more
+  waiting**, and the two overreach items `second-read.md` itself found in batch 5
+  (`ragtime.7`'s *Maple Leaf* strain, `technique.7`'s "the exception") are **still
+  uncorrected**, because Part A was scoped away from them. They are the first thing the next
+  run should do.
+* **`lessonClaims.test.ts` reads the built lessons under `app/public/content/lessons`, and
+  they are stale.** Ten source lessons were edited and no content build was run, so the
+  Library-pointer rule was checked against the pre-edit text. `lessonShape.test.ts` reads
+  `content/lessons` and did see the edits. Nothing in this run's own two blocks reads lesson
+  prose at all, so the new rows are unaffected either way — but the build has to run before
+  `lessonClaims` means anything about these ten files.
+* **Nothing has been heard.** Every verdict is of what is written. The claims this most
+  affects are named on their findings: *Joyful, Joyful*'s 72 grace notes, the blues form in
+  *St. Louis Blues*, the swing in anything, and every REWRITE that removed a claim about how
+  something sounds.
+* **`notation` is a summary and the built `.mxl` is the app's copy.** The music rows read the
+  `.mxl`, which is the score the app engraves — not the archive original, and not what a
+  performer would call the piece.
+* **Three claims in the new rows are narrower than the sentence they stand under**, and say so
+  on the finding: `0.1`'s fingering row proves one bundled piece prints none rather than the
+  corpus figure of 767 in 1,975; `2.1`'s duet row covers the button and not the four songs'
+  left-hand note values; and `rock.overview`'s level row is the catalog's `level` used as a
+  stand-in for difficulty, which is the fixer's stated proxy and not a reading of the music.
+* **Part A2's fixes were all already made.** This run confirmed 48 suspects and repaired none,
+  because T15 and the coordinator had got there first. If the coordinator expected edits from
+  Part A2, the answer is that there were none left to make.
+* **`concepts.json` still displays "Tempo mode" and "Wait mode"** (`:3656`, `:4184`), which is
+  on-screen text T10 item 10 did not reach because it searched `content/lessons/` only. Found
+  while second-reading `0.3`; outside this task's files.
+
+#### The self-audit, and what it caught
+
+Run against `docs/prompts/working-rules.md` and the CLAUDE.md checklist before writing this.
+
+* **§2.1, absences.** Every absence here names two searches, and the rule caught a real one:
+  the `rock.4` second read first said a search of `rock.overview.md` for `power|ostinato`
+  returns only a video label. It does not — `:45` reads "and the power chord (Stage 4)". The
+  verdict was unaffected and the evidence line was wrong, and it is corrected on the finding
+  with the correction visible. A second absence was caught the same way in `classical.3`'s
+  Reader 1 line: I wrote that the corpus has no mordent sign, from two exercise files. Opening
+  all 1,974 scores gives **64 files with one**, 380 stroked against 151 plain — which turns
+  that JUDGEMENT's evidence the other way and is now what the line says.
+* **§2.2, plurals.** This is what the pass is made of. Every "all four", "every one of the
+  five", "the four clave exercises" was enumerated per item rather than sampled, and it
+  changed four verdicts: *Sakura*'s five pairs (four, not five), Lemoine No. 35's sixteen bars
+  (the sample's reason), *Simple Gifts*' thirty-one quarters (five dotted), and blues.4's
+  twelve items (exactly two swung, and the Built line said seven items where the rung has
+  nine).
+* **§1 and §2.3, proxies, named in the sentence.** `dump_score.py` for the MusicXML — so the
+  rows read the `.mxl` instead; `notation` for the file, used only for key, metre, staves,
+  bars and printed symbols; catalog `level` for difficulty on `rock.overview` and
+  `ragtime.6`; notes-per-second at the first printed tempo for "fastest", which four of six
+  pieces undercut by changing tempo.
+* **§2.6, a count is not the work.** The verdict table is above the corrections, not instead
+  of them, and every WRONG is restated in this entry rather than left to the batch files.
+* **§2.10, green is not done.** The unverified list is longer than the verification section,
+  which is the honest ratio here.
+* **§2.17, prose about code.** Two of this run's findings are exactly that fault in the
+  repository's own hand: six `Built (2026-09-21):` lines describe lesson edits that were never
+  made, and `theory.ts:214-221`'s comment states the scale claim `theory.7` states and both
+  are wrong.
+* **§2.15, who else reads the field.** **The checklist caught this one after the report was
+  written.** I had named two consumers of `content/lessons/*.md` — `lessonShape.test.ts`
+  (source) and `lessonClaims.test.ts` (built, and stale) — without searching for the rest.
+  Grepped properly, there are two more: `app/tests/unit/lessonVideos.test.ts` reads the same
+  source directory for the `videos:` front matter, and `tools/content/build.py:582-589` copies
+  the directory into `app/public/content`; an e2e spec (`offline.spec.ts:89`) fetches the
+  *built* `2.1.md` over HTTP, which is one of the ten files edited here. `git diff -U0` over
+  `content/lessons` shows **no front-matter line changed in any of the ten**, so
+  `lessonVideos` cannot be affected; it was not run, because the brief allows only the four
+  lesson test files. The e2e fetch is a further reason the content build has to run.
+* **The `concepts.json` note was asserted before its consumer was read, and now is not.** I
+  reported the stale `"display": "Tempo mode"` / `"Wait mode"` as on-screen text. Checked
+  afterwards: `SkillsScreen.ts:230` and `:236` use `meta?.display` as a concept card's title
+  and as the finder sheet's heading, so it is on screen — but that was luck rather than
+  method, and the line said so before the grep existed.
+* **The restatement, in none of the brief's words:** *check whether each sentence somebody
+  already repaired is still true today, make the ones that are not true true, leave a machine
+  reading each one, and say for every sentence nobody repaired whether it can stand.* The plan
+  was checked against that and it caught the scope: "second read" could have meant re-reading
+  the fix line, and what it has to mean is re-running the evidence — which is how the six
+  unmade T10 edits surfaced, since every one of them has a fix line and a Built line that read
+  perfectly well.
+### Entry 40 — T12 finished: the 92 corrections of batches 4 and 5 second-read and put under test (2026-09-22)
+
+Scoped by the coordinator to **Part A and Part A2 for `batch-4.md` and `batch-5.md` only**.
+Part B was done for all five batches by Entry 39 and was not redone. This is the thing
+Entry 39 named as the largest it had not reached: "43 + 49 = **92 ticked findings** still
+rest on the fixer's own reading … and they have no rows."
+
+**Nothing here has been heard.** Every verdict is a reading of the built score, the rung,
+the constant or the screen's own words.
+
+#### Part A — the second read
+
+92 ticked findings, every one given a `Second read (2026-09-22):` line with its evidence
+re-run, and every one given a `Row:` line or a reason.
+
+| batch | ticked | HOLDS | OVERREACH | WRONG |
+|---|---:|---:|---:|---:|
+| 4 | 43 | 41 | 1 | 1 |
+| 5 | 49 | 46 | 2 | 1 |
+| **total** | **92** | **87** | **3** | **2** |
+
+Five in ninety-two, against Entry 39's thirteen in a hundred and forty-four and the
+2026-09-21 sample's four in seventy-two. **Two of the five were already known**: they are
+`second-read.md`'s own OVERREACH items 3 and 4, which Entry 39 was scoped away from and
+named as "the first thing the next run should do". They are corrected here. So the rate on
+sentences nobody had looked at before is **three in ninety-two**, which is lower than either
+earlier pass — and the reason is in the next section rather than in the fixers' care.
+
+**The five corrections, one lesson line at a time:**
+
+1. **`ragtime.7.md:16-17`** — `second-read.md` item 3, uncorrected until now. "back up to a
+   chord, **twice a bar in the second strain**." *Maple Leaf*'s second strain is bars 17–32
+   and all sixteen were read off the MusicXML: the hand goes bass→chord twice in bars 18,
+   20, 22, 24, 26 and 28, once in five more, and not at all in 17, 29, 30 and 32. Six of
+   sixteen. Now "**as often as** twice a bar in the second strain", which is the largest
+   true rate.
+2. **`technique.7.md:12-13`** — `second-read.md` item 4, uncorrected until now. "the two
+   broken dominant sevenths are **the** exception, one note at a time in each hand." All
+   thirteen `exerciseOptions` were opened and every note counted for `<chord/>` membership:
+   **four** exercises are one note at a time in each hand — the two `broken7` **and**
+   `independence.c.2v3` and `.c.3v2`. Now "the two broken dominant sevenths **and the
+   two-against-three pair** are the exceptions". **The sample's own third counter-example
+   does not survive**: it named `exercise.pedal.half-pedal.a`, whose left hand is a
+   whole-note *chord*, so it is not one note at a time in each hand and belongs with the six
+   that stack notes.
+3. **`ragtime.7.md:42`** — WRONG, and made wrong by a deduplication. "**Three** editions of
+   Maple Leaf … the scholarly Humdrum edition and a MuseScore transcription." The catalog
+   holds **two** rows titled *Maple Leaf Rag* (searched by title and again by id);
+   `song.ragtime.joplin-maple-leaf-rag.pdmx` was dropped as an exact duplicate, which
+   `pending-review.md:4117` records. Now "**Two** editions", and the MuseScore clause is
+   gone.
+4. **`latin.md:43`** — WRONG, and the fix pass's own correction is what made it so. The
+   audit found *La Cumparsita* part B tagged `['classical']` and the fixer rewrote the
+   sentence to say the second part is "under Classical in the Library". The row now carries
+   `tracks: ["latin"]` in `content/sources/pdmx.json` and `['classical', 'latin']` in the
+   built catalog, so it **is** under Latin and the original sentence was the true one. Now
+   back to "Its second part and *El Choclo* … are under Latin in the Library".
+5. **`ragtime.6.md:49`** — OVERREACH. "leaps of a tenth or more — in *The Entertainer*
+   **mostly in the trio**." Eleven such leaps in nine bars; the trio is bars 55–71 and holds
+   four of the nine bars and six of the eleven leaps. Densest by four times and not most of
+   the bars. Now "**clustered** in the trio", which is true on either count.
+
+`readingTime` recounted on all four edited lessons — latin 496 words, ragtime.6 1,027,
+ragtime.7 536, technique.7 577 — and **unchanged on all four**.
+
+#### Eleven sentences had been rebuilt under the fix pass, and every one is now true
+
+This is the finding of the pass, and it is the opposite of Entry 39's. Entry 39 found six
+`Built (2026-09-21):` lines describing lesson edits **that were never made**. Here the
+reverse: eleven findings carry a verdict of *HOLDS of the sentence as it stands now, which a
+later build changed under the fix*, and in ten of them the owner's decision the fix line
+left open has since been taken:
+
+* **The three technique scorers were wired.** `technique.5:30` — `shapingScore` now has a
+  caller (`Scoring.ts:519`, inside `techniqueMeasureFor`) and reads the exercise's own
+  `minVelocityRange`; `technique.6:33` — `voicingScore` likewise, against
+  `exercise.voicing.a`'s own `topNoteRatio` of 1.4; `technique.7:37` and `:38` — the
+  half-pedal branch reads the exercise's own `ccRange` of `[32, 96]` and names a binary
+  pedal as a switch instead of marking the run down. All four lessons now say the app
+  measures what the rung is for, and all four are right.
+* **`validate.py`'s tool rule was widened** (its docstring dates it 2026-09-22 and names
+  `technique.7` as what it was wrong about), so `technique.7:47`'s Duet button now opens
+  `exercise.independence.c.2v3` rather than a Czerny étude. The `Built (2026-09-21)` line on
+  that finding says "**not built**"; it has been.
+* **Six rungs' lab buttons grew an `unlock`,** and the lessons stopped sending the learner
+  to the Library: `improv.6`, `improv.8`, `chords-pop.8` and `chords-pop.9` free
+  `progression` (and `chords-pop.9` also `leftHand`, with `mode: "tune"`), while `jazz.7`
+  and `theory.7` gained a preset-less lab entry that locks nothing. On `chords-pop.8`,
+  `chords-pop.9` and `improv.8` this is the **third** shape of the sentence: audit → fix →
+  a two-button build (Entry 24) → one button that names what it frees.
+
+**None of this was under test, which is why it is worth writing down.** Every one of these
+eleven sentences was true on 2026-09-19 in one form, false in between, and true again now in
+a different form, and nothing read any of them at any point.
+
+#### The rows
+
+**86 rows added**, in one appended `describe` block per file, so that neither of Entry 39's
+blocks had to be touched and a later run can append its own the same way.
+
+| file | rows | what they read |
+|---|---:|---|
+| `lessonClaimsAboutMusic.test.ts` | 43 | the built `.mxl` through `score/mxl.ts`, plus `notation` and the built curriculum |
+| `lessonClaimsAboutApp.test.ts` | 43 | the authored rungs, the catalog's `drill` blocks, the lab presets and their `unlock`, and the constants and scorers in `Scoring.ts`, `PracticeEngine.ts`, `sightReading.ts`, `theory.ts`, `backingLoop.ts`, `answerSheet.ts` and `ScoreSession.ts` |
+
+**The three findings the brief singled out as resting on `dump_score.py` for a rhythm claim
+were read at the MusicXML, and the tool's blind spots are exactly where the interest was.**
+`song.ragtime.joplin-pine-apple-rag` carries **280 ties** and the whole claim is about a
+three-sixteenth group *running across the bar line*, which is a tie; the row asserts the tie
+at the end of bars 23, 25, 27, 31 and 33. `song.jazz.vince-guaraldi-linus-and-lucy…` carries
+**424 ties and 27 tuplets**, and its ostinato is a rhythm; the row matches the bar's written
+rhythm across all 111 bars and finds it in 64 of them, in five stretches — the fix line found
+four and missed 101–106. `song.blues.rhythm-and-boogie` carries **no tie and no tuplet at
+all**, which is itself the answer to the "forty bars of shuffle" question Entry 39 filed, and
+the row asserts the absence so that a later edition with triplets in it cannot arrive
+unnoticed. The three boogie exercises (`blues.6`) were read the same way: four `<measure>`s,
+one `<harmony>` each, and zero ties, tuplets, grace notes and dots, so the dump was hiding
+nothing there.
+
+**A row may assert a constant**, per the brief and `00-invariants` §2, which is about numbers
+measured on this machine. So the ladder rows read `LADDER_NOTCH_PCT` and
+`LADDER_CEILING_PCT` from `PracticeEngine` rather than repeating ten and a hundred, the
+voicing row reads `topNoteRatio` off the exercise's own row rather than
+`VOICING_MIN_RATIO` (they are both 1.4, and the lesson's claim is about the exercise), and
+the half-pedal row reads `ccRange` off the exercise.
+
+**Six findings have a reason instead of a row**, each written on the finding:
+
+* **Three are prose about another lesson's prose** — `ragtime.7:19` ("the same as it was at
+  Stage 5"), `rock.7:9` ("the last of the four things the overview named") and, in Entry 39,
+  `rock.4`'s "named three textures". Neither `lessonShape` nor `lessonClaims` reads one
+  lesson's sentences into another, and starting that for three findings would be a new kind
+  of test. The evidence lines are the check.
+* **Three are covered by another finding's row** — `classical.7:66` (the same nocturne
+  assertion as `:36`), `ragtime.8:56` (the same `rhythmAvailable` condition as `blues.7:44`)
+  and `blues.8`'s second `:45` finding (the same preset, locks and rotation as its sibling).
+  `technique.8:35` is a fourth of this shape: its ladder half is `classical.8:58`'s row and
+  its "no tools of its own" half is asserted in the `:37` row beside the scales.
+
+#### Part A2 — the scouts
+
+**Nothing to do, and confirmed rather than taken on the files' word.** `scout-spellings.md`
+had one suspect and `scout-surfaces.md` forty-eight; Entry 39 found every one already
+repaired at the source and put two rows on them. Re-checked independently here for the two
+surfaces batches 4 and 5 touch: all **40** `exercise.boogie.*` and `exercise.stride.*` rows
+still read "…, both hands" in their titles, **none** of the forty names a single hand, and
+every one still carries the top-level field `hands: "both"`. No new suspect was found in
+either batch's lessons, and no scout line was edited.
+
+#### Verification
+
+From `app/`: `npx vitest run tests/unit/lessonClaims.test.ts
+tests/unit/lessonClaimsAboutApp.test.ts tests/unit/lessonClaimsAboutMusic.test.ts
+tests/unit/lessonShape.test.ts` — **4 files, 338 tests, all passing**, against 250 before
+this run (86 rows plus a guard test in each of the two new blocks). `lessonShape` passing is
+what proves the four recounted `readingTime` values and that no edited lesson crossed the
+three-minute cap.
+
+**One thing was run that the brief did not list: `npx tsc -b --noEmit`.** The brief says to
+run only the four test files; a typecheck is neither a content build nor Playwright nor port
+4173, and `00-invariants` §3 says to typecheck with `tsc -b`. It **caught a real error** —
+`CatalogItem`'s `notation` type carries no `staves`, so one row would have failed to compile
+while vitest, which transpiles without checking, ran it green. The row now reads the
+exercise's own `rightPerBeat`/`leftPerBeat` instead, which is a better assertion anyway. The
+typecheck is clean. It is named here rather than left unsaid because it is a departure from
+the brief.
+
+No content build, no Playwright, no port 4173, no JSON re-serialised, nothing committed.
+
+#### What the rows caught that the reading did not
+
+**One, and it is the same argument Entry 39 made with *Sakura*.** `ragtime.7`'s *Elite
+Syncopations* row was written to assert **eight** bars stacking a right-hand chord on the
+fourth and the seventh sixteenth, from a scan I had run by hand. The row failed at ten. My
+scan advanced its cursor through the left hand's durations as well as the right's and had no
+`<backup>` handling, so it mis-placed bars 34 and 35; the row uses the same cursor
+`t12Notes` does. The finding, the verdict line and the `it` all say ten now.
+
+Three other rows failed on first run and all three were my arithmetic, not the finding's:
+the Prelude in C has exactly 400 right-hand sixteenths and I had written "> 400"; the
+shaping exercises' 31 eighths are 30 notes and an eighth *rest*; and *Maple Leaf*'s bar 24
+puts its bass octave on C3+C4 while the rest of the strain is an octave lower, so a `< 48`
+cut called it a chord and lost a bar off the count of six.
+
+#### Unverified, and what was not reached
+
+* **Nothing has been heard.** Every verdict is of what is written. The claims this most
+  affects here: whether *Rhythm and Boogie*'s straight eighths are meant as a shuffle (its
+  `swungMark` is false and there is no tie or tuplet in the file), whether *Elite
+  Syncopations*' three-sixteenth groups are heard as the secondary rag, whether the
+  `exercise.stride.*` pattern is stride as a player would define it, and every tempo word.
+* **`dump_score.py` was the instrument for the claims that are not about rhythm**, and it is
+  a proxy for the MusicXML: it prints grace notes as ordinary notes and marks neither ties
+  nor tuplets. Where a finding turned on one of those the file was read directly and the
+  verdict says so.
+* **Two verdicts rest on the catalog's `level` as a stand-in for difficulty**, which is not a
+  reading of the music: `blues.6:46` (Pinetop above everything else on its rung) and
+  `rock.6:31` (three exercises below the pieces, the half-pedal one above). Both say so on
+  the finding.
+* **`classical.9:39`'s durations are estimated**: three of the rung's six rows carry no
+  `tempoBpm` at all and no repeat is unrolled anywhere, so the row asserts only that the
+  étude is the shortest and the fastest-marked, not the ranking of the other five.
+* **Six lessons name fewer tools than their rung has**, and no finding covers any of them
+  because none of them says anything false. Enumerated per lesson, each paragraph read
+  against its own rung's `tools` rather than taken from the batch file's note:
+  `blues.8` (`blind`, `lab`) describes the lab and not *Play it blind*; `chords-pop.8`
+  (`lab`, `blind`) the same; `jazz.9` (`lab`, `blind`) describes *Blind* and not the
+  `jazz-comping` lab; `theory.7` (`simon`, `lab`) describes the lab and not Simon;
+  **`ragtime.8` is the only one that describes none of its rung's tools** — its one tool is
+  `blind` and its paragraph is about the score screen's *Rhythm only* instead; and
+  **`theory.8` has no "Tools for this rung" paragraph at all**, so its `simon` tool is
+  unmentioned rather than mis-described. These are omissions, and the batch files' own
+  closing note already names the class.
+* **One sentence in `technique.7`'s tools paragraph is looser than the code and is left**:
+  it calls what *Climb the ladder* opens "the octave study", and the button has no `item`, so
+  `LessonScreen.ts:535-539` gives it the rung's first score-opening exercise —
+  `exercise.broken-octaves.a.1oct.left`, not `exercise.octave-scale.a.1oct.both`. Both are
+  octave studies, so this is recorded rather than filed as a fault.
+* **One word in `chords-pop.7`'s tools paragraph is looser than the code and is left**: the
+  lesson says the lab "counts how many of your notes were in the key" and `reportPass`
+  (`LabScreen.ts:512-527`) says "X of Y in the <name> **scale**". Same measurement, less
+  precise word.
+* **`jazz.7`'s "with the bass line audible under both" was not traced**, as the audit's own
+  last line says: it depends on the left-hand picker.
+* **`blues.7`'s *Trading fours* sentence was not given a verdict.** It is outside the quoted
+  text of the `:44` finding, and its claim about counting notes in the blues scale was not
+  followed through `judgeLabPass`.
+* **`README.md` in `docs/lesson-audit/` is now stale in one line** and this run does not own
+  it: it lists "the *I Got Rhythm* score has its backward repeat after the second ending" as
+  a score fault, and the file has since been repaired — the backward repeat is on the right
+  barline of bar 9, inside the first ending, which is well formed. The `jazz.7:54` row
+  asserts the repaired shape.
+* **`lessonClaims.test.ts` reads the built lessons under `app/public/content/lessons`.** Four
+  more source lessons were edited here and no content build was run, so that file's
+  Library-pointer rule was checked against pre-edit text for latin, ragtime.6, ragtime.7 and
+  technique.7. `lessonShape.test.ts` reads `content/lessons` and did see them. Neither new
+  block reads lesson prose at all. Entry 39 left the same debt for its ten files; **the build
+  has to run before `lessonClaims` means anything about any of the fourteen.**
+* **Part B was not re-examined.** Entry 39's Reader 1 lines on batches 4 and 5 stand as it
+  left them, including its eight UNSUREs; this run read them for context and changed none.
+
+#### The self-audit, and what it caught
+
+Run against `docs/prompts/working-rules.md` and the CLAUDE.md checklist before writing this.
+
+* **§2.1, absences — it caught one, in the worst possible place.** The `classical.7:56`
+  verdict was first written as a contradiction: I collected the distinct `<words>` of
+  Chopin's Op. 9 No. 1, printed the first five alphabetically, saw **Adagio** and no
+  Larghetto, and had a WRONG half-written against a lesson that says "*Larghetto*, not
+  *Adagio*". Re-run per measure instead of as a set, the file says `Larghetto` at bar 1 and
+  `Adagio` at bars 24–26. A set is not a search. Every other absence here names two searches:
+  *Euphonic Sounds* (`kern.json`'s `absentFromSource`, then the whole catalog's ids and
+  titles, 0 rows), the Maple Leaf editions (by title, then by id, 2 rows both times), the six
+  rags' road maps (`dacapo|dalsegno|<segno|<coda|<fine|D.C.|D.S.` per file, 0), and Grieg's
+  tempo (`<sound tempo>` count, then `accel|stretto|più mosso|rit.` over the raw file, 0).
+* **§2.2, plurals — this is what the pass is made of, and it changed three verdicts.**
+  "Nearly everything on this rung" (thirteen exercises, four exceptions not two);
+  "twice a bar in the second strain" (sixteen bars, six); "mostly in the trio" (nine bars,
+  four). It also turned several HOLDS from partial to whole: the six rung rags each searched
+  rather than four, all six `chords-pop.6` songs' loops rather than three, all twelve
+  `technique.8` scales rather than one, all three `rock.7` shaping exercises rather than one,
+  all 65 bars of *andata* rather than twenty, and *Linus and Lucy*'s fifth ostinato stretch.
+* **§1 and §2.3, proxies, named in the sentence.** `dump_score.py` for the MusicXML — so the
+  rows read the `.mxl`; `notation` for the file, used only for key, metre, staves, bars and
+  printed symbols; catalog `level` for difficulty on `blues.6` and `rock.6`; bars and a first
+  printed tempo for duration on `classical.9`; a bar's pitch-class set for "a chord" in the
+  loop rows, which cannot tell a voicing from its inversion and does not need to.
+* **§2.6, a count is not the work.** The verdict table is above the five corrections, not
+  instead of them, and each correction is restated here rather than left in the batch file.
+* **§2.10, green is not done.** The unverified list is longer than the verification section.
+* **§2.16, the reason not the outcome — it caught two.** `technique.5:34`'s sentence is still
+  right and the fix's *reason* for it ("no velocity rule applies") stopped being true the day
+  `shapingScore` was wired; the sentence survives because `shapingScore` passes a flat line
+  that jumps, which its own docstring admits. And `ragtime.6:49`'s fix line contains the
+  evidence that its own sentence overreaches — "trio 55–71 holds four" of nine.
+* **§2.17, prose about code.** Eleven findings are that fault in the repository's own hand,
+  in the kinder direction: the lesson describes what the app did before a build changed it.
+* **§2.15, who else reads the field.** The four lesson files edited here have the same four
+  consumers Entry 39 enumerated — `lessonShape.test.ts` (source), `lessonClaims.test.ts`
+  (built, and now stale for fourteen files), `lessonVideos.test.ts` (source, front matter
+  only) and `build.py:582-589`. `git diff -U0` over `content/lessons` shows **no front-matter
+  line changed** in any of the four, so `lessonVideos` cannot be affected; it was not run,
+  because the brief allows only the four lesson test files.
+* **The restatement, in none of the brief's words:** *for every sentence somebody repaired on
+  the last two batches, decide whether it is still true today, make the ones that are not
+  true true, and leave a machine reading each one.* Checked against that, the plan caught its
+  own scope twice: a sentence "as it stands now" is not the sentence the fix line quotes —
+  eleven of them had been rebuilt — and a finding whose clause was **deleted** has no
+  sentence to read, so it gets a row for what is left or a reason, not a row that pins a
+  deletion.

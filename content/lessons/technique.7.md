@@ -10,7 +10,8 @@ readingTime: 3
 ---
 
 Nearly everything on this rung is one hand doing two things at once; the two
-broken dominant sevenths are the exception, one note at a time in each hand.
+broken dominant sevenths and the two-against-three pair are the exceptions, one
+note at a time in each hand.
 
 **Scales in thirds and sixths.** Both notes come out of the scale, so the
 interval keeps changing between major and minor — that is what makes it a scale

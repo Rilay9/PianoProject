@@ -16,20 +16,20 @@ the piano *for*, collected in one place so you can see what you are working
 towards and take one down when you are ready — most of them sit above this
 stage, and that is the point of a shelf.
 
-**What is on the shelf.** 50 pieces, one edition each, from a Stage 4 *Für
+**What is on the shelf.** 49 pieces, one edition each, from a Stage 4 *Für
 Elise* and *Clair de Lune* in their easy settings up to Chopin's C-sharp
 minor nocturne and waltz and the Schubert–Liszt *Ständchen* at Stage 8:
 Satie's *Gymnopédie* and *Gnossienne*, Pachelbel's *Canon*, Bach's *Air on
 the G String*, the Handel–Halvorsen *Passacaglia*, four Chopin *Préludes*,
 Grieg's *Morning Mood*, the *Romanza*, Tchaikovsky's *Swan Lake*, Vivaldi's
 *Spring* — and, on the personal build only, Elgar's *Salut d'amour* and
-*Nimrod*, Puccini's *O mio babbino caro*, pieces by Mascagni, Kreisler, Holst,
+*Nimrod*, Puccini's *O mio babbino caro*, pieces by Mascagni, Holst,
 Mahler and Rachmaninoff, the film and game pieces the owner asked for by name
 — Einaudi, Zimmer, Sakamoto, Uematsu, Djawadi, Hurwitz, Glass, de Senneville,
 Clayderman — and seven other film, game and modern pieces. The Library's
 Classical filter holds what came off this shelf: the *Toccata and Fugue*, the
 *Bumblebee*, the *Rondo alla Turca*, the *Moonlight* finale and other
-editions of shelf pieces — for the nocturne and the E minor prélude the shelf keeps the
+editions of shelf pieces — for the C-sharp minor nocturne the shelf keeps the
 alternative edition and the Library the first.
 
 **What is bundled and what is not.** Everything public domain is bundled. The
