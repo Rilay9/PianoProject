@@ -403,3 +403,160 @@ export function shapingScore(
     passed: range >= minRange && monotonic >= minMonotonic,
   };
 }
+
+// --- what a technique exercise asks to be measured (P12a, wired 2026-09-21) --
+
+/**
+ * The extra number a technique exercise is about, or nothing.
+ *
+ * The three scorers above were written, tested and **never called**: the audit
+ * found each name appearing in `app/src` only at its own definition, and four
+ * lessons had to be rewritten to say the app did not measure what the rung was
+ * for. A staccato study judged on which notes you played and not on how long
+ * you held them is judging the one thing the exercise is not about.
+ *
+ * **How an item asks.** By its own `drill` block, which the generator wrote
+ * when it wrote the notes: `exercise.articulation.c.staccato.right` carries
+ * `{ kind: 'articulation', params: { articulation: 'staccato',
+ * heldFractionMax: 0.5 } }`, and the shaping and voicing exercises carry their
+ * own targets the same way. Not from the rung's `mastery.custom` — those four
+ * rungs carry no `custom` at all — and not from the item's title or its
+ * concepts, which `00` §1a says are asserted where this is measured. The
+ * exercise's own numbers are used where it states them, so an exercise that
+ * wants a different target gets one by saying so rather than by a code change.
+ *
+ * **It is not accuracy.** A staccato phrase with every right note and no
+ * shortness is 100 % accurate, which is the whole reason these exist; the
+ * measure is reported beside the accuracy and folded into neither. Whether it
+ * can *stop* a pass is the rung's business, and no rung asks yet — see
+ * `demandsTechniqueMeasure`.
+ */
+export interface TechniqueMeasure {
+  /** The exercise's `drill.kind`: `articulation`, `voicing` or `shaping`. */
+  kind: string;
+  /** What the summary sheet calls it. */
+  label: string;
+  /** The sentence under that label. */
+  text: string;
+  /** Whether the run met the target the exercise states. */
+  met: boolean;
+  /** How many things were judged — nought means the run could not say. */
+  judged: number;
+}
+
+function numberParam(params: Record<string, unknown> | undefined, name: string): number | null {
+  const value = params?.[name];
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+export function techniqueMeasureFor(
+  drill: { kind: string; params?: Record<string, unknown> } | null | undefined,
+  score: SessionScore,
+  steps: readonly PreparedStep[],
+  /** The share of judged things that has to be right — the rung's own pass. */
+  minShare = DEFAULT_MASTERY.passAccuracy,
+): TechniqueMeasure | null {
+  if (!drill) return null;
+  const params = drill.params;
+
+  if (drill.kind === 'articulation') {
+    const asked = params?.articulation;
+    const target: Articulation = asked === 'staccato' ? 'staccato' : 'legato';
+    const result = articulationScore(score.notes, steps, target);
+    if (result.judged === 0) {
+      return {
+        kind: drill.kind,
+        label: target === 'staccato' ? 'Staccato' : 'Legato',
+        // Said plainly rather than as a nought: the microphone does not send
+        // note-off, so "no note was short enough" and "nothing could be
+        // measured" are different answers and only one of them is true.
+        text: 'not measured — the input did not say when the keys came up',
+        met: false,
+        judged: 0,
+      };
+    }
+    const share = result.accuracy;
+    return {
+      kind: drill.kind,
+      label: target === 'staccato' ? 'Staccato' : 'Legato',
+      text: `${String(Math.round(share * 100))}% of ${String(result.judged)} notes held the right length (mean ${String(
+        Math.round(result.meanHeldFraction * 100),
+      )}% of the written value)`,
+      met: share >= minShare,
+      judged: result.judged,
+    };
+  }
+
+  if (drill.kind === 'voicing') {
+    const ratio = numberParam(params, 'topNoteRatio') ?? VOICING_MIN_RATIO;
+    const result = voicingScore(score.notes, ratio);
+    if (result.judged === 0) {
+      return {
+        kind: drill.kind,
+        label: 'Top note',
+        text: 'not measured — no chord was struck with more than one note',
+        met: false,
+        judged: 0,
+      };
+    }
+    return {
+      kind: drill.kind,
+      label: 'Top note',
+      text: `${String(Math.round(result.accuracy * 100))}% of ${String(result.judged)} chords sang the top note at least ${String(
+        ratio,
+      )} times the rest (mean ${result.meanRatio.toFixed(2)}×)`,
+      met: result.accuracy >= minShare,
+      judged: result.judged,
+    };
+  }
+
+  if (drill.kind === 'shaping') {
+    const shape: Shape = params?.shape === 'diminuendo' ? 'diminuendo' : 'crescendo';
+    const minRange = numberParam(params, 'minVelocityRange') ?? SHAPING_MIN_RANGE;
+    const result = shapingScore(score.notes, shape, minRange);
+    if (score.notes.length < 2) {
+      return {
+        kind: drill.kind,
+        label: shape === 'diminuendo' ? 'Diminuendo' : 'Crescendo',
+        text: 'not measured — too few notes were heard to have a slope',
+        met: false,
+        judged: score.notes.length,
+      };
+    }
+    return {
+      kind: drill.kind,
+      label: shape === 'diminuendo' ? 'Diminuendo' : 'Crescendo',
+      text: `travelled ${String(Math.round(result.range))} of the ${String(minRange)} asked for, ${String(
+        Math.round(result.monotonic * 100),
+      )}% of it in the right direction`,
+      met: result.passed,
+      judged: score.notes.length,
+    };
+  }
+
+  return null;
+}
+
+/**
+ * Does this rung make its technique measure a condition of passing?
+ *
+ * Deliberately syntactic, and deliberately the same shape as
+ * `demandsMeasuredAccuracy`: a rung says so by naming the measure with a
+ * comparison in `mastery.custom` — `voicing-top-note>=0.9` — rather than by
+ * being on a list of rung ids that would go stale the first time a rung moved.
+ *
+ * **No rung says so today.** `technique.4`, `.5`, `.6` and `.7` carry no
+ * `custom` at all, so the measure is reported and the pass is unaffected,
+ * which is what the lessons on those rungs now say. The hook is here so that
+ * making one of them binding is a content change and not a code change.
+ */
+export function demandsTechniqueMeasure(custom: string | undefined, kind: string): boolean {
+  if (custom === undefined) return false;
+  // Built by hand rather than as one template literal: written that way the
+  // escapes went in as `\b` and `\d`, which a template literal reads as a
+  // backspace character and the letter `d`. It compiled, it type-checked, and
+  // the rule matched nothing at all — the sort of fault only a test finds.
+  const word = '[a-zA-Z]';
+  const pattern = ['(?<!', word, ')', kind, '(?!', word, ')[a-z-]*\\s*[<>]=?\\s*[0-9]'].join('');
+  return new RegExp(pattern).test(custom);
+}

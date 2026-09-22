@@ -48,7 +48,12 @@ below the next root — arriving on the root of the next chord on beat one. This
 **Tools for this rung.** Four bars of nothing are the hard ones. The
 accompaniment lab's *Jam it* takes the twelve bars in F, plays the changes
 with a bass and a drum under them and lights the bar you are in, so the
-silence has somewhere to happen and you cannot lose count of it.
+silence has somewhere to happen and you cannot lose count of it. Set
+*Trading fours* to two bars each and it takes the conversation above in turns:
+the app plays two bars over the bed, leaves you the next two, and afterwards
+says whether you came in inside your own bars and how many of your notes were
+in the blues scale. Nothing is recorded and nothing can be passed or failed —
+it is telling you, not marking you.
 
 **How you'll know you've got it.** Three choruses in F with a different
 right-hand idea each time, a turnaround at the end of each, and at least four

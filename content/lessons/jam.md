@@ -44,11 +44,12 @@ two of you, that left hand *is* the rhythm section.
 **Trading fours.** Four bars of solo each, alternating, through a chorus. Listen
 to what the other person just played and answer it.
 
-**The form tracker.** The accompaniment lab's *Jam it* shows which of the
-twelve bars you are in and how many times round you have been, which is the
-thing beginners lose first. The rung's *Play the form with the chart* drill is
-a twelve-bar loop in E with no chart on it, so there you count the form
-yourself.
+**The form tracker.** The chord-chart view shows where you are in the form and
+which chorus you are on — tap *Chart* beside a song on this page, or find it
+under ⋯ while the piece is open. The rung's *Play the form with the chart*
+drill has the same thing built in: twelve bars in E, each with its numeral, and
+the one that is sounding marked. So does the accompaniment lab's *Jam it*.
+Knowing where you are is the thing beginners lose first.
 
 **Common mistake.** Playing through the guitarist's solo at full volume. Your
 job during someone else's solo is to be quieter than you think necessary.

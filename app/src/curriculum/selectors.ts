@@ -4,10 +4,93 @@
  *
  * Kept free of DOM and storage so it is testable in Node. P7 builds the screens on top.
  */
+import type { MasteryCriteria } from '../engine/Scoring';
 import type { CatalogItem, Curriculum, Lesson, PassRecord } from './types';
 
 export interface CatalogIndex {
   byId: Map<string, CatalogItem>;
+}
+
+/**
+ * The rung an item is practised on, or undefined when it is not on one.
+ *
+ * The first rung that lists it, which is what the Score screen's side panel
+ * has always used to pick the prose to show beside a piece: an item is
+ * usually an option of one rung, and where it is an option of several the
+ * first is the one the ladder reaches first. Lifted out of that screen so the
+ * *judging* can ask the same question, because a run judged against one
+ * rung's numbers while the prose beside it comes from another would be two
+ * answers to one question.
+ *
+ * Library pieces, imports and paper have no rung and get `undefined`, which
+ * is the honest answer rather than a nearest guess: nothing in the curriculum
+ * said anything about them.
+ */
+export function lessonForItem(curriculum: Curriculum, itemId: string): Lesson | undefined {
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) {
+      for (const lesson of unit.lessons) {
+        if (lesson.songOptions.includes(itemId) || lesson.exerciseOptions.includes(itemId)) {
+          return lesson;
+        }
+      }
+    }
+  }
+  return undefined;
+}
+
+/**
+ * `minTempoPct` as a percentage, whichever way the rung wrote it.
+ *
+ * The curriculum writes `0.85` and the scorer writes `85`: the field is named
+ * for a percentage and every rung in `content/curriculum/` holds a fraction
+ * (measured 2026-09-21 — the ninety-eight rungs' values are 0, 0.7, 0.75,
+ * 0.8, 0.85 and 0.9, nothing above 1). Multiplying blind would be right today
+ * and silently wrong the first time somebody wrote `85` meaning it; so a
+ * value at or below 1 is read as the fraction it plainly is, and anything
+ * above 1 is taken as already being the percentage it is named for.
+ */
+function asPercent(value: number): number {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return value <= 1 ? value * 100 : value;
+}
+
+/**
+ * What this rung demands of a run (`02` Part G, built 2026-09-21).
+ *
+ * Every rung has carried `mastery.minAccuracy` and `mastery.minTempoPct`
+ * since the curriculum was written and nothing read either: every run in the
+ * app passed at one pair of numbers from Settings, while five rungs asked for
+ * 95 %, one for 97 %, and thirty-three asked for a tempo other than 80 %.
+ * Lessons on those rungs quote the rung's number, so the lesson and the app
+ * disagreed about the one thing a learner would check.
+ *
+ * The rule, in one sentence: **a run judged for a rung uses that rung's
+ * numbers; a run with no rung uses the defaults.** The defaults are the
+ * learner's own pair from Settings, so that pair still governs every run the
+ * curriculum says nothing about — a Library piece, an import, a piece on
+ * paper — and a rung that states `0` (Stage 0's checklist, the tour, the
+ * improvisation rungs that are judged by a recording and not by notes) is
+ * saying "I have no number of my own", so it takes the default too rather
+ * than passing everything at nought.
+ *
+ * `master` is deliberately *not* per-rung. Part G defines mastery once, for
+ * the whole plan — 97 % at full tempo, twice on different days — and no rung
+ * carries a second pair of numbers for it. Inventing one from the pass
+ * numbers would be making up a rule nobody wrote.
+ */
+export function masteryCriteriaFor(
+  lesson: Lesson | undefined,
+  defaults: MasteryCriteria,
+): MasteryCriteria {
+  if (!lesson) return defaults;
+  const accuracy = lesson.mastery.minAccuracy;
+  const tempoPct = asPercent(lesson.mastery.minTempoPct);
+  return {
+    ...defaults,
+    passAccuracy: Number.isFinite(accuracy) && accuracy > 0 ? accuracy : defaults.passAccuracy,
+    passTempoPct: tempoPct > 0 ? tempoPct : defaults.passTempoPct,
+  };
 }
 
 export function indexCatalog(items: CatalogItem[]): CatalogIndex {

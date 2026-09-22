@@ -274,15 +274,86 @@ export function earProgressionDrill(options: DrillOptionsBase & { clock?: Clock 
  * is the `rhythm` drill's job, and combining them would make a wrong note look
  * like a timing problem.
  */
-export function callResponseDrill(options: NoteRangeOptions = {}): Drill {
+/**
+ * The scales a phrase may be drawn from, as semitones above the key.
+ *
+ * `improv.4`'s drill says `scale: "pentatonic"` and got the chromatic run of
+ * keys between C4 and G4, so a phrase to answer could contain any note at all
+ * — which is the opposite of what a pentatonic call-and-response is for: the
+ * whole point is that every note in the pool sounds like it belongs.
+ *
+ * Named for what the catalog writes. `pentatonic` unqualified is the major
+ * one, because that is what the word means on its own in every lesson here.
+ */
+const PHRASE_SCALES: Record<string, readonly number[]> = {
+  pentatonic: [0, 2, 4, 7, 9],
+  'major-pentatonic': [0, 2, 4, 7, 9],
+  'minor-pentatonic': [0, 3, 5, 7, 10],
+  blues: [0, 3, 5, 6, 7, 10],
+  major: [0, 2, 4, 5, 7, 9, 11],
+  minor: [0, 2, 3, 5, 7, 8, 10],
+};
+
+export function phraseScale(name: string | undefined): readonly number[] | null {
+  if (name === undefined) return null;
+  return PHRASE_SCALES[name.trim().toLowerCase()] ?? null;
+}
+
+/** The notes of `scale` from `key`, inside an inclusive MIDI range. */
+function scalePool(low: number, high: number, key: number, scale: readonly number[]): number[] {
+  const out: number[] = [];
+  for (let midi = low; midi <= high; midi += 1) {
+    if (scale.includes(((midi - key) % 12 + 12) % 12)) out.push(midi);
+  }
+  return out;
+}
+
+export interface CallResponseOptions extends NoteRangeOptions {
+  /**
+   * How many bars the phrase is, at four notes to the bar.
+   *
+   * `theory.4` and `improv.4` both say `bars: 2` and both got four notes,
+   * which their lessons had to be rewritten to describe as "a four-note
+   * phrase". Four to the bar because the phrase is played as an even stream
+   * of quarters and nothing here carries a rhythm; a bar is therefore a unit
+   * of length, which is the only thing `bars` can honestly mean in a drill
+   * with no metre.
+   */
+  bars?: number;
+  /** The pool the phrase is drawn from — `PHRASE_SCALES` above. */
+  scale?: string;
+  /** Pitch class the scale is built from; C when the catalog does not say. */
+  key?: number;
+}
+
+/** Four notes to a bar: the phrase is an even stream, so a bar is a length. */
+export const NOTES_PER_BAR = 4;
+
+export function callResponseDrill(options: CallResponseOptions = {}): Drill {
   const { count, anyOctave } = resolveBase(options);
   const rng = makeRng(options.seed ?? 8);
-  const pool = range(options.low ?? 60, options.high ?? 67);
+  const low = options.low ?? 60;
+  const scale = phraseScale(options.scale);
+  // A fifth is enough when every key in it is in the pool and too thin when
+  // only five of twelve are: a pentatonic between C4 and G4 is four notes,
+  // and a phrase drawn from four notes repeats itself. So a named scale gets
+  // an octave to move in unless the catalog says otherwise.
+  const high = options.high ?? (scale === null ? 67 : low + 12);
+  // A scale narrows the pool; without one the drill draws from every key in
+  // the range, which is what a dictation drill wants and what it always did.
+  const scaled = scale === null ? [] : scalePool(low, high, options.key ?? 0, scale);
+  // A scale with no note inside the range would leave nothing to pick from,
+  // and a drill with an empty pool throws rather than saying so.
+  const pool = scaled.length > 0 ? scaled : range(low, high);
+  const notes = Math.max(1, Math.round((options.bars ?? 1) * NOTES_PER_BAR));
   const prompts: DrillPrompt[] = Array.from({ length: count }, (_, index) => {
-    const phrase = Array.from({ length: 4 }, () => pick(rng, pool));
+    const phrase = Array.from({ length: notes }, () => pick(rng, pool));
     return {
       index,
       label: phrase.map(noteLabel).join(' '),
+      // The label *is* the answer here, so the card keeps it back until the
+      // phrase has been played (`04` §5c).
+      labelIsAnswer: true,
       expected: phrase,
       ordered: true,
       playback: phrase.map((midi, i) => ({ midi: [midi], atMs: i * 500 })),

@@ -332,6 +332,54 @@ export function romanToChord(roman: string, keyPitchClass: number, octaveRoot = 
 }
 
 /**
+ * The shell of the diatonic seventh chord on a numeral: root, third, seventh.
+ *
+ * `jazz.5` teaches the three-note shell and its drill asked for plain triads
+ * — `drill.jazz.ii-v-i-shells` carries `voicing: "shell"` and nothing read it
+ * (built 2026-09-21). A shell is the chord with its fifth taken out, which is
+ * the note a bass player is covering and the one a left hand can spare.
+ *
+ * Built from the key rather than from the triad, because the seventh cannot
+ * be derived from a triad: `I` and `V` are both major triads and their
+ * sevenths are a semitone apart. The third and the seventh are simply the
+ * scale degrees a third and a seventh above the chord's root, inside the
+ * major scale of the key — which is what "diatonic seventh" means, and it
+ * spells `ii` as a minor seventh, `V` as a dominant and `I` as a major
+ * seventh without a table of exceptions.
+ *
+ * Numerals outside the plain seven degrees (`V7/V`, `♭VII`) are not
+ * diatonic, so they get no shell here and the caller keeps the chord it had.
+ */
+export function shellChord(
+  roman: string,
+  keyPitchClass: number,
+  octaveRoot = 60,
+): ParsedChord | null {
+  const match = /^([ivIV]+)/.exec(roman.trim());
+  if (!match) return null;
+  const degree = ROMAN_VALUES[(match[1] as string).toLowerCase()];
+  if (degree === undefined) return null;
+  // Degrees 1, 3 and 7 of the chord, counted up the key's own scale.
+  const steps = [0, 2, 6].map((step) => {
+    const index = (degree - 1 + step) % 7;
+    const octaves = Math.floor((degree - 1 + step) / 7);
+    return (MAJOR_DEGREES[index] ?? 0) + octaves * 12;
+  });
+  const rootStep = steps[0] ?? 0;
+  const rootClass = (keyPitchClass + rootStep) % 12;
+  const root = octaveRoot + ((rootClass - (octaveRoot % 12) + 12) % 12);
+  // Raised above the root rather than folded under it: a shell is heard as a
+  // third and a seventh *over* its root, and an inversion is the learner's to
+  // choose (the drill accepts any octave).
+  const pitches = steps.map((step) => {
+    let pitch = root + (step - rootStep);
+    while (pitch < root) pitch += 12;
+    return pitch;
+  });
+  return { label: roman.trim(), root, pitches };
+}
+
+/**
  * `"V/V"`, `"V7/vi"`, `"vii°/V"` — a chord borrowed from another key's ladder.
  *
  * A secondary dominant is the dominant *of* a chord that is not the tonic, so

@@ -554,6 +554,9 @@ export function TodayScreen(router: Router): HTMLElement {
         seed,
         requireTwoSongs: getSettings().requireTwoSongs,
         strictPrerequisites: getSettings().strictPrerequisites,
+        // "Placement recorded. Today will build from here" — which it now
+        // does (`02` Stage 0.4, built 2026-09-21).
+        ...(plan.placement === undefined ? {} : { startAt: plan.placement.unitId }),
       });
       slots = built.slots;
       breakAfter = built.template.breakAfterSlot;

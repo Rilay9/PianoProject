@@ -119,6 +119,8 @@ Found while auditing; not lesson sentences. Reported by the auditors unless mark
 - The *G minor Minuet* file holds only its first 16 bars.
 - *Só Danço Samba* opens with seven bars of repeated B4, and bar 10 seems to hold six beats
   in 4/4.
+  **Bar 10 is not wrong** (2026-09-21, `score_checks.py`): two quarter-note triplets, four
+  beats exactly; `dump_score.py` does not mark tuplets. The seven repeated B4s stand as read.
 - The Mozart K. 1e item contains all of K. 1f as its Trio, so two options overlap.
 - The Clementi "second and third movements" item holds only the third.
 - The classical shelf: 27 of its 50 pieces are personal-build only, including pieces the

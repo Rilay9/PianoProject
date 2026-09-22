@@ -6,7 +6,7 @@ videos:
   - label: "The Easiest Way to Transpose a Song to ANY key on piano!"
     url: "https://www.youtube.com/watch?v=Ri9N5mH7YUE"
     teacher: "Piano With Jonny"
-readingTime: 2
+readingTime: 3
 ---
 
 The most useful thing a chord-player can do, and the thing that separates
@@ -42,8 +42,9 @@ and the rung is complete on its exercises there.
 the white keys and falls apart in the flat ones.
 
 **Tools for this rung.** The accompaniment lab is numerals first and a key
-second, which is this whole lesson in the shape of a screen. Here it loops
-I–IV–V–I and leaves the key to you: play along, move the key down a tone
+second, which is this whole lesson in the shape of a screen. *Accompaniment lab*
+loops I–IV–V–I and leaves the key to you; *Lab — your own chords* fixes
+nothing, so build the song's changes once as numerals, move the key down a tone
 and start the loop again. If what you play by ear agrees with the chart it is
 naming, you transposed rather than translated.
 

@@ -814,7 +814,16 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
 
 
 def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm: int = 60) -> tuple[stream.Score, dict]:
-    """C-D-E-F-G-F-E-D-C style pattern in quarters, then the five notes as a block chord."""
+    """
+    C-D-E-F-G-F-E-D-C style pattern in quarters, and then nothing.
+
+    This said "and then the five notes as a block chord" for as long as it
+    existed and no item in the family has ever contained a chord: what follows
+    the nine quarters is `note.Rest(quarterLength=3.0)`, which is what fills the
+    third bar in all forty-eight of them. The code is what a unit-1.1 exercise
+    should be — one finger per key, one note at a time — so the sentence went
+    rather than the music (`00-invariants` §4).
+    """
     # replan §3.1: hands separately is unit 1.1, hands together is 2.1.
     one_of("hands", hands, HANDS)
     level = 1.1 if hands != "both" else 2.1
@@ -953,10 +962,17 @@ def make_chromatic(
     """
     The chromatic scale, with the standard 1-3 fingering.
 
-    Both hands use the same shape ascending: thumb on every white key that has
-    no black key above it, third finger on the black keys. It is written out
-    rather than generated from a scale object so the fingering can be attached
-    to the right notes.
+    The shape is `chromatic_finger`'s and its rule is there: 3 on every black
+    key, 1 on every white, and 2 on one white of each adjacent white pair —
+    F and C in the right hand, E and B in the left. **The two hands therefore
+    do not have the same shape**, which is the whole subject of that function's
+    docstring and the twelve items it fixed. This one said "both hands use the
+    same shape ascending: thumb on every white key that has no black key above
+    it", which is the rule that was wrong and is the opposite of the one that
+    ships (the thumb is on every white key *except* those two).
+
+    It is written out rather than generated from a scale object so the fingering
+    can be attached to the right notes.
     """
     one_of("hands", hands, HANDS)
     level = scale_level(start, "chromatic", hands, octaves, "similar", 0.5)
@@ -1020,9 +1036,14 @@ def make_seventh_arpeggio(
     to the point, is not long enough to practise anything: the stretch across
     the keyboard is the whole exercise.
 
-    Fingered 1-2-3-5 in the right hand and 5-3-2-1 in the left, which is the
-    standard shape for a four-note arpeggio and the reason these are taught
-    after the triads: the hand has to stretch a seventh rather than a fifth.
+    Fingered 1-2-3-4 in the right hand and 5-4-3-2 in the left — one finger to
+    each note of the shape, which is `SEVENTH_ARPEGGIO_FINGERING_RH` and `_LH`
+    above and what the page prints. It read "1-2-3-5" and "5-3-2-1" here, a
+    fingering neither table has ever held; the tables are what is engraved, so
+    the sentence was wrong and not the music.
+
+    These are taught after the triads because the hand has to stretch a seventh
+    rather than a fifth.
     """
     one_of("hands", hands, HANDS)
     level = arpeggio_level(root, quality, hands, octaves)
@@ -4890,9 +4911,17 @@ OSTINATO_SHAPES: dict[str, tuple[list[int], list[int], float, str]] = {
 
 
 #: The riff cells, as scale degrees of a five-finger position and the fingering
-#: that plays them without moving the hand. Each is two bars of quarters and a
-#: half — a hook, not a scale — and each repeats, because repeating is what makes
-#: a figure a riff rather than a phrase.
+#: that plays them without moving the hand. **Each is exactly two bars** — a
+#: hook, not a scale — and each repeats, because repeating is what makes a
+#: figure a riff rather than a phrase.
+#:
+#: The two bars are load-bearing and were not there. Both cells added up to
+#: seven quarters, so the second statement began on beat four, the third on
+#: beat three and the fourth on beat two: a figure that walks around the barline
+#: on a core-1.3 exercise whose subject is quarter notes in a hand that does not
+#: move, and an eight-bar riff that came out nine with the last bar padded. The
+#: closing note is a dotted half rather than a half, which is the one change
+#: that makes the cell land where the comment always said it did.
 #:
 #: Both positions are **all white keys**: C-D-E-F-G is core 1.1's own position,
 #: and A-B-C-D-E is the same five fingers a third lower and is naturally minor,
@@ -4902,15 +4931,15 @@ OSTINATO_SHAPES: dict[str, tuple[list[int], list[int], float, str]] = {
 #: the same degrees are read against a major position in C and a minor one in A:
 #: a cell called "minor" would be a lie in half the keys it is generated in.
 RIFF_CELLS: dict[str, tuple[list[int], list[float], list[int], str]] = {
-    "falling":  ([0, 0, 2, 3, 2, 0], [1, 1, 1, 1, 1, 2], [1, 1, 3, 4, 3, 1],
+    "falling":  ([0, 0, 2, 3, 2, 0], [1, 1, 1, 1, 1, 3], [1, 1, 3, 4, 3, 1],
                  "the hook falls back to where it started"),
-    "rocking":  ([0, 4, 0, 4, 3, 2, 0], [1, 1, 1, 0.5, 0.5, 1, 2], [1, 5, 1, 5, 4, 3, 1],
+    "rocking":  ([0, 4, 0, 4, 3, 2, 0], [1, 1, 1, 0.5, 0.5, 1, 3], [1, 5, 1, 5, 4, 3, 1],
                  "two notes rocking, then a walk home"),
 }
 
 
 def make_riff(
-    tonic: str = "A", cell: str = "minor-hook", bars: int = 8, bpm: int = 76,
+    tonic: str = "A", cell: str = "falling", bars: int = 8, bpm: int = 76,
 ) -> tuple[stream.Score, dict]:
     """
     A figure in a five-finger position, repeated until it is a riff.
@@ -4928,6 +4957,11 @@ def make_riff(
 
     The right hand plays alone. A left hand under this would make it core 2.1's
     exercise, which already exists as `make_ostinato`.
+
+    The default `cell` read "minor-hook" until 2026-09-21 — a name `RIFF_CELLS`
+    stopped carrying when the cells were renamed for what their shape does, so
+    `make_riff("A")` raised through `one_of` rather than building anything. The
+    plan always names a cell, which is why nothing caught it.
     """
     one_of("cell", cell, tuple(RIFF_CELLS))
     degrees, rhythm, fingers, blurb = RIFF_CELLS[cell]
@@ -5112,8 +5146,12 @@ def make_swing_pair(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict
     is the standard way of getting this wrong, and it teaches a rhythm nobody
     plays — a swung pair is nearer two-thirds and one-third than three-quarters
     and one-quarter, and a good player varies it. So the notes are identical and
-    a `Swing` direction over bar five is the whole difference. If the two halves
-    ever stop being identical, this exercise is teaching the wrong thing.
+    a `Swing` direction over the second half is the whole difference. If the two
+    halves ever stop being identical, this exercise is teaching the wrong thing.
+
+    **Nine bars, not eight**: a silent bar sits between the halves so the
+    learner stops before changing the feel, and the swung half therefore begins
+    at bar six. This said "bar five", which is the empty one.
     """
     level = 2.2
     title = f"Straight, then swung — the same four bars in {note_name(tonic)}"
@@ -5174,6 +5212,17 @@ def make_modal_vamp(tonic: str = "A", bars: int = 8, bpm: int = 80) -> tuple[str
     The left hand takes root and fifth rather than the full triad: an open
     fifth under a minor chord is the rock voicing, it keeps the bass out of the
     right hand's way, and it is the shape `make_power_chord` drills.
+
+    **It plays it on the bass staff**, which in A it did not. Rooted at `tonic3`
+    in every key, the A minor item put A3 and E4 on the page — a whole open
+    fifth engraved *above* the bass staff on ledger lines, with its fingering
+    printed under the staff a clear inch from the notes it belongs to, on the
+    one exercise in this file whose subject is a hand that does not move.
+    `make_ostinato` writes the same pedal fifth in the same key from A2 and
+    `make_power_chord` from A2; this was the family that disagreed. Only A
+    moves: one octave down is right for A and too low for E and D, so the
+    octave is now read off the figure rather than fixed (see below), which is
+    the difference between a fix and a fix that breaks two other pictures.
     """
     # i, bVII, bVI, bVII — as the intervals they are actually played at, which is
     # **downward**. Spelling them up (+10, +8) is arithmetically the same chord
@@ -5186,7 +5235,15 @@ def make_modal_vamp(tonic: str = "A", bars: int = 8, bpm: int = 80) -> tuple[str
     level = 3.0
     title = f"Minor vamp in {note_name(tonic)} — i, flat seven, flat six"
     sc, rh, lh = grand_staff(title, bpm, ks=minor_key(tonic))
-    root = pitch.Pitch(tonic + "3")
+    # The octave is chosen from the *figure*, not from the tonic: the vamp
+    # reaches a major third below its root for the flat six, and what has to sit
+    # on the bass staff is the whole of it. So take the lower octave unless that
+    # drops the flat six under E2, which is where a held open fifth stops being
+    # a bass and starts being a rumble. A takes `tonic2` (A2-E3, and F2 for the
+    # flat six); E and D keep `tonic3`, where they already were.
+    root = pitch.Pitch(tonic + "2")
+    if root.transpose(-4).midi < pitch.Pitch("E2").midi:
+        root = root.transpose(12)
     top = pitch.Pitch(tonic + "4")
 
     for bar in range(bars):

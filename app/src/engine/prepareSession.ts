@@ -5,6 +5,7 @@
 // millisecond timetable at this session's tempo. The engine's hot paths then
 // do array lookups instead of re-deriving music theory on every note.
 
+import { SWING_OFFBEAT } from '../audio/backingLoop';
 import { timeSignatureAt, type ScoreModel, type ScoreStep } from '../score/types';
 import {
   ENGINE_DEFAULTS,
@@ -91,10 +92,40 @@ export function loopFromPrintedBars(
 }
 
 /**
+ * Where a beat lands once the score says swing (built 2026-09-21).
+ *
+ * A swing or shuffle direction means the pair of eighths in a beat is played
+ * as the first and third of a triplet: the first takes two thirds of the beat
+ * and the second one third. So the *off*-beat eighth — the one written at
+ * `x.5` — belongs at `x + 2/3`, and everything else stays where it is. The
+ * ratio is `SWING_OFFBEAT`, which `audio/backingLoop.ts` already swings the
+ * app's own backing loops by and states the reason for; taking it from there
+ * rather than writing `2/3` again is what keeps the app's playing and the
+ * app's judging in agreement.
+ *
+ * Only a plain off-beat eighth moves. A triplet already sits at `x + 1/3` and
+ * `x + 2/3` and is written that way on purpose, and a sixteenth inside a
+ * swung beat has no agreed placement at all — a swing marking is a convention
+ * about eighths, so pretending it says anything about the rest would be
+ * inventing a rule and judging somebody against it.
+ */
+export function swungOnset(onset: number): number {
+  const beat = Math.floor(onset);
+  const within = onset - beat;
+  // A floating-point onset from a tie or a tuplet will not be exactly 0.5, and
+  // must not be dragged onto the swung position by a loose comparison: the
+  // tick grid is 960 to the quarter, so anything inside half a tick is the
+  // written off-beat and anything else is some other note.
+  const halfTick = 1 / 1920;
+  return Math.abs(within - 0.5) <= halfTick ? beat + SWING_OFFBEAT : onset;
+}
+
+/**
  * Builds the per-step table for a run.
  *
  * The millisecond timetable comes from `model.beatToMs`, so a tempo change
- * written into the score is honoured; `tempoPct` scales the whole thing.
+ * written into the score is honoured; `tempoPct` scales the whole thing, and
+ * `swing` moves the off-beat eighths before either of those applies.
  */
 export function prepareSession(model: ScoreModel, options: EngineOptions): PreparedSession {
   const hands = options.hands ?? ENGINE_DEFAULTS.hands;
@@ -105,6 +136,7 @@ export function prepareSession(model: ScoreModel, options: EngineOptions): Prepa
     Math.max(MIN_TEMPO_PCT, options.tempoPct ?? ENGINE_DEFAULTS.tempoPct),
   );
   const tempoScale = tempoPct / 100;
+  const swing = options.swing ?? ENGINE_DEFAULTS.swing;
 
   const steps: PreparedStep[] = model.steps.map((step) => {
     const { expected, noteIdsByMidi } = expectedFor(step, hands, transposeSemis, includeGraceNotes);
@@ -112,7 +144,10 @@ export function prepareSession(model: ScoreModel, options: EngineOptions): Prepa
       index: step.index,
       expected,
       noteIdsByMidi,
-      tMs: model.beatToMs(step.onset, tempoScale),
+      // The timetable is the only thing swing changes. Everything downstream
+      // — the cursor, the window, the deltas, the histogram, *Rhythm only* —
+      // reads this number and needed no second code path.
+      tMs: model.beatToMs(swing ? swungOnset(step.onset) : step.onset, tempoScale),
       durMs: 0,
       measureIndex: step.measureIndex,
       sourceMeasureIndex: step.sourceMeasureIndex,
@@ -165,6 +200,7 @@ export function prepareSession(model: ScoreModel, options: EngineOptions): Prepa
       tempoPct,
       transposeSemis,
       includeGraceNotes,
+      swing,
       strict: options.strict ?? ENGINE_DEFAULTS.strict,
       lookahead: options.lookahead ?? ENGINE_DEFAULTS.lookahead,
       chordWindowMs: options.chordWindowMs ?? ENGINE_DEFAULTS.chordWindowMs,

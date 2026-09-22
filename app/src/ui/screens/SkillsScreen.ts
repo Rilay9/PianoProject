@@ -341,8 +341,12 @@ export function SkillsScreen(router: Router): HTMLElement {
         passed: row.status === 'passed' || row.status === 'mastered',
         mastered: row.status === 'mastered',
       }));
-      const here = nextRecommended(curriculum, records, activeTracksFor(await getPlan(), curriculum), {
+      const plan = await getPlan();
+      const here = nextRecommended(curriculum, records, activeTracksFor(plan, curriculum), {
         requireTwoSongs: getSettings().requireTwoSongs,
+        // The same starting point Plan and Today use, so the three screens
+        // cannot disagree about where the learner is (built 2026-09-21).
+        ...(plan.placement === undefined ? {} : { startAt: plan.placement.unitId }),
       })?.stageNumber;
       if (here !== undefined) {
         openingStages = here > 0 ? [here - 1, here] : [here];

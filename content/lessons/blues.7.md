@@ -45,7 +45,11 @@ motion, and a motion learned fast is learned wrong.
 **Tools for this rung.** Stride is a rhythm and a leap at the same time, and
 the score screen's *Rhythm only* setting, in Keep tempo, takes them apart: tap bass, chord, tenth, chord wherever your
 hands happen to be, and the leap stops being part of the question. Get the
-shuffle right there, then put the leaps back.
+shuffle right there, then put the leaps back. For the right hand, the
+accompaniment lab's *Trading fours* is where a chorus of your own starts: over
+the twelve-bar bed the app takes two bars and leaves you the next two, then
+says whether you came in inside your own and how many of your notes were in the
+blues scale. Nothing is recorded and nothing can be passed or failed.
 
 **How you'll know you've got it.** Twelve bars of stride with a turnaround, and
 your eyes on the right hand throughout.

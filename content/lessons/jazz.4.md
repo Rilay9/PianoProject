@@ -40,6 +40,11 @@ the pattern.
 **Tools for this rung.** The accompaniment lab's *Jazz — two five one* preset
 walks a bass line under a two-five-one. Set its key to F and comp the Charleston
 over it: the bass keeps the time, so your chords only have to find the gaps.
+Then turn *Trading fours* on for the other half of this rung: the app plays two
+bars over that bass and leaves you the next two, round and round, and afterwards
+says whether you came in inside your own bars and how many of your notes were in
+the key. Nothing is recorded and nothing can be passed or failed — swapping
+phrases with something that keeps time is the practice.
 
 **Common mistake.** Rushing the "and". The short note of the swing is late, not
 early — it lands just before the next beat. Stabbing it early turns swing into a

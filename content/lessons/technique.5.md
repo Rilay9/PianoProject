@@ -27,9 +27,11 @@ the slow one in; the way through is the opposite, keeping the slow hand
 absolutely steady and letting the fast one fill the gaps.
 
 **Shaping.** A crescendo is not two dynamics, it is a journey between them.
-The exercise here opens as an ordinary score, judged on the notes and their
-timing; the app does not measure the velocity, so the slope is yours to judge.
-Play it as one gesture rather than as eight decisions.
+The app measures the slope: the sheet says how far your line travelled against
+the distance this exercise asks for, and how much of it went the right way.
+That sits beside the accuracy, not inside it, so the right notes at one volume
+is a full-marks run with no crescendo in it. Play it as one gesture rather than
+as eight decisions.
 
 One honest limit, since the app will tell you it passed: a line that stays quiet
 and then jumps at the end passes just the same. Your ear knows the difference

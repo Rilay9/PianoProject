@@ -47,6 +47,7 @@ Claims checked: 15. Findings: 3.
   - Is: this rung's lab button opens the `minor-vamp` preset, which locks key (A minor) and progression (i–♭VII–♭VI–♭VII = Am G F G); locked controls are disabled. The numerals field works only after tapping *Free* in the preset row. The claim is true of the free lab, not of the rung's tool.
   - Evidence: stage-3.json `3.3.tools = [{lab, preset: minor-vamp}, {play}]`; `LAB_PRESETS` `minor-vamp.locks = ['key','progression','leftHand']`; `LabScreen.ts:585-603` (`applyLocks` disables), `:683-697` (Free chip).
   - Fixed: the paragraph now says the lab button opens the minor vamp (Am, G, F, G) with key and chords fixed, and that typed numerals need *Free* then *Custom…* — `minor-vamp.locks = ['key','progression','leftHand']`; `applyLocks` disables the progression select (`LabScreen.ts:585-603`); the numerals row shows only when that select is `Custom…` (`LabScreen.ts:466-476`). Pointing the rung at an unlocked preset instead is the owner's call.
+  - Built (2026-09-21): 3.3 now carries a second lab tool with no preset, labelled *Lab — your own chords*, so nothing is locked there. The paragraph keeps the minor vamp and the typed numerals go to the new button: "*Lab — your own chords* opens the same screen with nothing fixed, so the chord picker’s *Custom…* is yours".
 
 Not checked in this lesson: nothing.
 

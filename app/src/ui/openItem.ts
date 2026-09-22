@@ -53,3 +53,29 @@ export function openItem(router: Router, item: CatalogItem): boolean {
 export function isPlayable(item: CatalogItem): boolean {
   return targetFor(item) !== 'none';
 }
+
+/**
+ * Is there a chord chart in this piece? (`04` §3b, built 2026-09-21.)
+ *
+ * The chart screen has existed since P18 and **nothing navigated to it**:
+ * `#/chart/<itemId>` parsed, `router.navigateChart` compiled, and the only
+ * way in was typing the URL. So the fifth screen in the app was reachable by
+ * nobody, and two rungs' lessons described it.
+ *
+ * Measured from the file (`notation.chordCount`), not guessed from the genre
+ * or the rung: a chart of a piece with no chord symbols is four empty bars
+ * with a count-off over them, and the door that offered it would be the dead
+ * control `00` §1 forbids. A row with no `notation` at all — an import, a
+ * piece the build could not parse — is not offered one either, because
+ * "unknown" is not "yes".
+ *
+ * `imported` is the one exception and it is deliberate: the chart screen
+ * reads the chords out of the imported bytes itself, which the build never
+ * saw, so there the door is offered and the screen says if there is nothing
+ * behind it.
+ */
+export function hasChordSymbols(item: CatalogItem): boolean {
+  if (targetFor(item) !== 'score') return false;
+  if (item.imported === true) return true;
+  return (item.notation?.chordCount ?? 0) > 0;
+}

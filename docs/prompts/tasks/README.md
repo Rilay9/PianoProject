@@ -1,6 +1,6 @@
 # Tasks
 
-Eight self-contained briefs. Each names the files it touches, the constraints that will
+Thirteen self-contained briefs (T9–T13 added 2026-09-21, after the owner said he is not the gate and that promised features are to be built). Each names the files it touches, the constraints that will
 bite, and what "done" means. **Every one of them opens by requiring
 `docs/prompts/working-rules.md`**, which is the set of rules written after breaking them.
 
@@ -16,7 +16,33 @@ Dispatch one at a time. They are ordered by dependency, not by size.
 | **T7** | Review the concepts added, and decide four silent genres | nothing | a read, then a content decision | **a musical ear** |
 | **T6** | Make the tempo ladder addressable | nothing | a route, two enums, one screen | none |
 | ~~T8~~ | ~~Start the run on the first key, not the countdown~~ | — | — | **built 2026-09-18**, Entry 18 |
-| **T5** | The quarry for the seventeen rungs that need music | nothing | `build/` only, nothing committed | **ticking one review page** |
+| ~~T5~~ | ~~The quarry for the seventeen rungs that need music~~ | — | — | superseded by T11 on 2026-09-21: the owner is not the gate |
+| **T9** | Checks that catch wrong score files, run over every file | nothing | `tools/content/score_checks.py`, a report | none |
+| **T10** | Build what the lessons promised, and give the lessons their promises back | nothing | `app/`, the named lessons, `docs/04`, `docs/05` | none |
+| **T11** | The quarry for latin and hymns, reviewed by a reader instead of the owner | nothing | `build/pdmx-*`, `content/sources/pdmx.json` | none |
+| **T12** | Every lesson claim under test, and the 86 open findings decided by two readers | T10, and the sample second read | two claim-test files, the batch files | none |
+| **T13** | Every generated exercise family checked as music, by invariant and by picture | nothing | `generate_exercises.py`, its tests | none |
+
+## The order from 2026-09-21: build everything first, then check everything
+
+**The plan by goal, with the measured state under each, is `docs/prompts/plan-2026-09-21.md`.**
+It adds T17 (every mode driven in the browser) and T18 (the lab both ways, documented).
+
+The owner (2026-09-21): *"there's no point in checking for correctness until it's all added.
+But we still want everything to be correctly added."* And he does not yet trust the tools
+and modes added on 2026-09-18/19. So two phases, each task still proving its own work red
+then green as it goes:
+
+**Build.** T2 (trading fours) → T11 (quarry latin and hymns) → T6 (tempo ladder route) →
+T14 (the rungs the genre plans still lack: holiday 5–7, hymns 4–6, latin 4 and 6–8, jazz 3,
+ragtime 4 and 9, jam 7, from T11's keeps) → T15 (apply the 247 score-check rows: duplicates,
+titles, truncations) → T16 (the MIDI converter made honest on a one-track two-hand
+recording, and T10's three leftovers: half-pedal depth through the engine, accents extracted
+from the score, the duet rule widened for technique.7).
+
+**Check.** T13 (generator invariants and pictures) → T12 (every lesson claim under test, the
+86 open findings, the full second read) → T17 (every tool and mode driven in the browser,
+one spec each, the way the tour is reviewed) → score checks wired into the build as a gate.
 
 ## Why this order
 

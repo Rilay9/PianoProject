@@ -131,6 +131,10 @@
                 {
                   "kind": "lab",
                   "preset": "ballad"
+                },
+                {
+                  "kind": "lab",
+                  "label": "Lab — your own chords"
                 }
               ],
               "levelBand": [

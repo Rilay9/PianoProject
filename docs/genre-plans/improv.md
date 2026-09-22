@@ -46,7 +46,7 @@ implemented. They are listed with what already exists that would make them cheap
 
 ### Modes for this rung
 
-- **Trading fours** — `NOT BUILT`. Answering a two-bar call is the rung's stated exercise and there is no mode for it. The `call-response` drill kind exists.
+- **Trading fours** — `BUILT` (2026-09-21, a *Jam it* setting on the lab; Entry 28). Answering a two-bar call is the rung's stated exercise and there is no mode for it. The `call-response` drill kind exists.
 - **Lab · Pop — the four-chord song** — `BUILT`. A pentatonic over a loop, with the loop played for you.
 
 ---

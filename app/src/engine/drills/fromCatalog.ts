@@ -55,6 +55,7 @@ import {
   parseModeName,
   parseTimeSignature,
   romanToChord,
+  shellChord,
   type ParsedChord,
 } from './theory';
 import { noteLabel, type Drill, type DrillKind, type DrillPrompt } from './types';
@@ -200,7 +201,7 @@ export function drillFromCatalog(item: CatalogItem, options: BuildOptions = {}):
     case 'dynamics':
       return buildDynamics(p);
     case 'call-response':
-      return callResponseDrill({ ...base, count: Math.min(count, 6) });
+      return buildCallResponse(p, base, count);
     case 'backing-track':
       return buildBackingTrack(p);
     case 'mode':
@@ -269,6 +270,28 @@ function buildFindKey(p: Params, base: Required<BuildOptions>): Drill {
   return new PromptDrill({ kind: 'find-key', prompts, anyOctave: true, clock: base.clock });
 }
 
+/**
+ * Melodic dictation and *Answer the phrase* (`theory.4`, `improv.4`).
+ *
+ * Both rows carry `bars` and one carries `scale`, and until 2026-09-21
+ * neither was read: every card was four notes drawn from the chromatic run
+ * between C4 and G4, so `improv.4`'s pentatonic phrase could contain any note
+ * there is and `theory.4`'s two bars were half a bar.
+ *
+ * `mode: "dictation"` is left alone deliberately — it names what the row *is*
+ * and there is nothing else for a call-and-response drill to be, so reading
+ * it would only give it a chance to mean something else.
+ */
+function buildCallResponse(p: Params, base: Required<BuildOptions>, count: number): Drill {
+  const key = noteNameToPitchClass(typeof p.key === 'string' ? p.key : 'C') ?? 0;
+  return callResponseDrill({
+    ...base,
+    count: Math.min(count, 6),
+    ...(typeof p.bars === 'number' ? { bars: p.bars } : {}),
+    ...(typeof p.scale === 'string' ? { scale: p.scale, key } : {}),
+  });
+}
+
 /** Chord symbols, or roman numerals in a set of keys, or the defaults. */
 function chordsFromParams(p: Params, rng: () => number): ParsedChord[] {
   const symbols = strings(p.chords)
@@ -280,11 +303,17 @@ function chordsFromParams(p: Params, rng: () => number): ParsedChord[] {
     .map(noteNameToPitchClass)
     .filter((pitchClass): pitchClass is number => pitchClass !== null);
   const degrees = strings(p.degrees).length > 0 ? strings(p.degrees) : romanSequence(p.progression);
+  // `voicing: "shell"` on `drill.jazz.ii-v-i-shells` asked for shells and got
+  // plain triads until 2026-09-21; `jazz.5` teaches the three-note shell, so
+  // a drill on that rung that accepts a triad is teaching the opposite.
+  const shells = typeof p.voicing === 'string' && p.voicing.trim().toLowerCase() === 'shell';
   if (keys.length > 0 && degrees.length > 0) {
     const out: ParsedChord[] = [];
     for (const key of keys) {
       for (const degree of degrees) {
-        const chord = romanToChord(degree, key);
+        // A numeral the shell rule cannot read keeps the chord it had, rather
+        // than being dropped from a progression the row named.
+        const chord = (shells ? shellChord(degree, key) : null) ?? romanToChord(degree, key);
         if (chord) {
           const keyName = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'][key] ?? 'C';
           out.push({ ...chord, label: `${chord.label} in ${keyName}` });
@@ -586,22 +615,37 @@ function buildBackingTrack(p: Params): Drill {
     .filter((chord): chord is ParsedChord => chord !== null);
   const twelveBar = p.form === '12-bar';
   const key = strings(p.keys)[0] ?? 'C';
-  const loop = symbols.length > 0 ? symbols.map((chord) => chord.pitches) : twelveBarLoop(key, twelveBar);
+  const form =
+    symbols.length > 0
+      ? { loop: symbols.map((chord) => chord.pitches), labels: symbols.map((chord) => chord.label) }
+      : twelveBarLoop(key, twelveBar);
   const bpm = num(p.bpm, 84);
-  return new BackingTrackDrill({ loop, barMs: (60_000 / bpm) * 4 });
+  return new BackingTrackDrill({
+    loop: form.loop,
+    labels: form.labels,
+    barMs: (60_000 / bpm) * 4,
+    // `chartView` on the row, read since 2026-09-21: the rung whose drill is
+    // called *Play the form with the chart* now has one.
+    chart: p.chartView === true,
+  });
 }
 
-/** The twelve-bar blues in a key, or a plain I–IV–V–I when it is not asked for. */
-function twelveBarLoop(key: string, twelveBar: boolean): number[][] {
+/**
+ * The twelve-bar blues in a key, or a plain I–IV–V–I when it is not asked for.
+ *
+ * The numerals come back with the pitches because the chart prints them. They
+ * are the numerals rather than the letter names on purpose: the rung is about
+ * the *form*, and `I7 I7 I7 I7 | IV7 IV7 I7 I7 | V7 IV7 I7 V7` is the same
+ * shape in every key, which is the thing being learnt.
+ */
+function twelveBarLoop(key: string, twelveBar: boolean): { loop: number[][]; labels: string[] } {
   const tonic = noteNameToPitchClass(key) ?? 0;
-  const chord = (degree: string): number[] =>
+  const pitches = (degree: string): number[] =>
     romanToChord(degree, tonic, 48)?.pitches ?? [48, 52, 55];
-  if (!twelveBar) return [chord('I'), chord('IV'), chord('V'), chord('I')];
-  return [
-    chord('I7'), chord('I7'), chord('I7'), chord('I7'),
-    chord('IV7'), chord('IV7'), chord('I7'), chord('I7'),
-    chord('V7'), chord('IV7'), chord('I7'), chord('V7'),
-  ];
+  const degrees = twelveBar
+    ? ['I7', 'I7', 'I7', 'I7', 'IV7', 'IV7', 'I7', 'I7', 'V7', 'IV7', 'I7', 'V7']
+    : ['I', 'IV', 'V', 'I'];
+  return { loop: degrees.map(pitches), labels: degrees };
 }
 
 /**
@@ -612,7 +656,37 @@ function buildTechniquePattern(_item: CatalogItem, p: Params, base: Required<Bui
   const tonic = 60 + (noteNameToPitchClass(typeof p.key === 'string' ? p.key : 'C') ?? 0);
   const hands = typeof p.hands === 'string' ? p.hands : 'right';
   const root = hands === 'left' ? tonic - 12 : tonic;
-  const walk = [0, 2, 4, 5, 7, 5, 4, 2, 0].map((offset) => root + offset);
+  const shape = [0, 2, 4, 5, 7, 5, 4, 2, 0];
+  /**
+   * `shifts: true` — the hand moves, which is the whole exercise
+   * (`drill.technique.position-shifts`, `2.5`; built 2026-09-21).
+   *
+   * It carried the flag and played the plain five-finger walk, so the
+   * position-shift drill and the hands-together drill were the same drill and
+   * the lesson had to say so. The written exercise it stands beside moves to
+   * G4–C5 in its third bar, so the drill does the same thing: the walk in the
+   * home position, then the walk again from the fifth. Nothing between them,
+   * because the gap *is* the shift — the hand has to leave the keys and land.
+   */
+  const shifts = p.shifts === true;
+  /**
+   * `leftHand: "hold"` — the left hand holds the tonic under the walk
+   * (`drill.technique.ht-holds`, `2.1`; built 2026-09-21).
+   *
+   * The rung is the first one with both hands doing different things, and its
+   * drill played a right-hand walk with no left hand in it at all. The held
+   * note goes first and stays down: the drill judges which keys arrive and in
+   * what order, so "played and held" and "played" are the same event to it —
+   * what the *card* asks for is stated in the sentence below, and the ear is
+   * the judge of whether it was still down at the end. That is exactly as far
+   * as this drill can honestly go, and it is further than nothing.
+   */
+  const holds = typeof p.leftHand === 'string' && p.leftHand.trim().toLowerCase() === 'hold';
+  const walk = [
+    ...(holds ? [root - 12] : []),
+    ...shape.map((offset) => root + offset),
+    ...(shifts ? shape.map((offset) => root + 7 + offset) : []),
+  ];
   // The card shows the shape, not the item's name. It used to read
   // `Left-hand accompaniment patterns — 1` at forty pixels a letter, which is
   // the title of the thing he just tapped and says nothing about what to play.
@@ -624,11 +698,17 @@ function buildTechniquePattern(_item: CatalogItem, p: Params, base: Required<Bui
     ordered: true,
     playback: walk.map((midi, i) => ({ midi: [midi], atMs: i * 400 })),
   }));
+  const hand = hands === 'left' ? 'left' : 'right';
+  const sentence = holds
+    ? `Hold the low ${keyName} down with the left hand, then play the pattern back with the ${hand} hand over it`
+    : shifts
+      ? `Listen, then play the pattern back with the ${hand} hand — in ${keyName}, then move the hand up to the fifth and play it there`
+      : `Listen, then play the pattern back with the ${hand} hand`;
   return new PromptDrill({
     kind: 'call-response',
     // `call-response` on its own says "Play it back", which is true of a phrase
     // and unhelpful for a hand position.
-    promptText: `Listen, then play the pattern back with the ${hands === 'left' ? 'left' : 'right'} hand`,
+    promptText: sentence,
     prompts,
     anyOctave: false,
     clock: base.clock,

@@ -85,6 +85,30 @@ export interface CatalogItem {
   } | null;
   drill?: { kind: string; params?: Record<string, unknown> } | null;
   /**
+   * What the score file actually says, measured from the MusicXML at build
+   * time (`build.py`'s `attach_notation`) rather than asserted anywhere.
+   *
+   * Only the parts the app reads are typed, per this file's own rule. Until
+   * 2026-09-21 that was none of it: `grep -rn "notation" app/src` returned
+   * nothing, so the one measured description of every piece was written by
+   * the build, used by four Python tools (`validate.py`'s
+   * `notation_requirements`, `rung_audit.py`, `candidates.py`,
+   * `archive_notation.py`) and read by no screen.
+   *
+   * `chordCount` is what opens the chord-chart door: a chart of a piece with
+   * no chord symbols in it is four empty bars, which is the dead control
+   * `00` §1 forbids — the chart screen already refuses that case, and the
+   * door should not have offered it.
+   */
+  notation?: {
+    /** How many chord symbols are printed. Zero means there is no chart. */
+    chordCount?: number;
+    /** The distinct symbols, capped at 24 by the build. */
+    chords?: string[];
+    /** True when the score carries a `swing` or `shuffle` direction. */
+    swungMark?: boolean;
+  } | null;
+  /**
    * Set on the items synthesised from the `imports` store (docs/04 §4). The
    * Library and the Score screen both need to know that this one's bytes come
    * from IndexedDB rather than from a URL under `content/`.

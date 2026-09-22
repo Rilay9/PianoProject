@@ -131,6 +131,27 @@ export interface EngineOptions {
    */
   rhythmOnly?: boolean;
   /**
+   * The score says swing, so the timetable does (built 2026-09-21).
+   *
+   * Four lessons — `ragtime.5`, `blues.4`, `jazz.5` and `4.5` — said the app
+   * judged the shuffle, and it judged every eighth against the straight time
+   * it was written at. A swung player was *late* on every off-beat by a sixth
+   * of a beat, which at anything under about 100 bpm is outside the timing
+   * window, so playing the piece correctly scored worse than playing it
+   * wrong.
+   *
+   * Moving the *expected* time is the whole fix: `prepareSession` puts an
+   * off-beat eighth where a swing marking says it belongs, and Wait, Tempo,
+   * *Rhythm only*, the deltas and the histogram then all judge against it
+   * with no second code path. The ratio is `SWING_OFFBEAT` in
+   * `audio/backingLoop.ts`, which the app already swings its own backing
+   * loops by; one fact, one place.
+   *
+   * Set by the host from the piece's measured `notation.swungMark`, not
+   * guessed from a genre or a title (`00` §1a).
+   */
+  swing?: boolean;
+  /**
    * Start the clock on the learner's first note, not on the timer (T8).
    *
    * Tempo mode only. The count-in still plays, but its end does not fix when
@@ -227,6 +248,7 @@ export const ENGINE_DEFAULTS = {
   toleranceMs: 150,
   countInBars: 1,
   rhythmOnly: false,
+  swing: false,
   latchStart: false,
   inputLatencyMs: 0,
   minConfidence: 0.5,
@@ -283,6 +305,7 @@ export interface PreparedSession {
       | 'micChordFraction'
       | 'micChordGraceMs'
       | 'accuracyEstimated'
+      | 'swing'
     >
   > & { loop?: LoopRange; beatsPerBar: number };
   steps: PreparedStep[];

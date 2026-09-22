@@ -23,9 +23,9 @@ move it up a few beats at a time, dropping back the moment evenness goes. A
 scale practised fast and uneven is a scale learnt uneven: the hand does not know
 you meant to fix it later.
 
-**Use Wait mode first.** It will not move on until the notes are right, which is
-the only reliable way to discover that the F sharp you have been playing for a
-year is actually an F. Then Tempo mode at eighty per cent, then at full.
+**Use *Wait for me* first.** It will not move on until the notes are right, which
+is the only reliable way to discover that the F sharp you have been playing for
+a year is actually an F. Then *Keep tempo* at eighty per cent, then at full.
 
 **What endurance means here.** Four octaves up and down is roughly twice the
 work of two, and the first thing to fail is not accuracy but the wrist. If it

@@ -327,6 +327,21 @@ promise — the app is not marking you — and the name is the owner's word for 
 - Track chips at the top (Classical, Chords & Pop, Blues…) with toggle "active"; ordering by
   drag.
 - Placement test entry (Stage 0.4).
+- **The placement starts the plan** (built 2026-09-21). Both the placement drill's *Start
+  here* and a lesson page's *Start here* write `placement.unitId` into the plan row, and
+  both said *"Placement recorded. Today will build from here."* Nothing read the field —
+  every reader of the plan row used `trackOrder` through `activeTracksFor` — so the plan
+  carried on recommending `0.1`. Now `nextRecommended` takes a `startAt` and Plan, Today and
+  Skills all pass it, so the three screens cannot disagree about where the learner is.
+
+  Rungs **behind** the placement are held back, not discarded: the learner said where to
+  start, not what they have done. If everything from the placement onwards is complete the
+  first incomplete rung behind it is recommended after all — an empty plan would be a worse
+  answer than an early rung, which is the same reasoning the strict-prerequisite fallback
+  already uses. `startAt` matches a unit id **or** a rung id, because the drill names a unit
+  (`failUnit`) and the lesson page names the rung the reader is on, and both are right about
+  their own screen. A `startAt` the curriculum does not have is ignored rather than holding
+  every rung back.
 
 ### 3a. Skills review
 
@@ -354,6 +369,24 @@ count-off, optional backing loop, and swing toggle — used for jamming practice
 not the point. Any item with `<harmony>` data can open in this view; the input chip still
 works (mic/MIDI can highlight the chord you actually play vs the chart, amber if different).
 
+**Two doors, added 2026-09-21.** Until then there were none: `#/chart/<itemId>` parsed and
+`router.navigateChart` compiled, and nothing in the app called either — the screen was
+reachable only by typing its URL, while `jam`'s lesson described it. So:
+
+- a **Chart** action on a lesson page's option row, beside ▶ and *Know it*; and
+- a **Chord chart** row in the Score screen's `⋯` sheet, beside *Section* and *Rhythm only*.
+
+Both are drawn only where the piece is known to carry chord symbols
+(`openItem.ts`'s `hasChordSymbols`, reading the build's measured `notation.chordCount`) — a
+chart of a piece with none is four empty bars under a count-off, which is the dead control
+§0 R4 forbids, and the screen itself already refuses that case. A row the build never
+measured is not offered one either: unknown is not yes. An **import** is, because the chart
+screen reads the chords out of the imported bytes itself and the build never saw them.
+
+The door is on the *piece*, not in the rung's `tools`: `jam` and `jazz.5` are rungs of
+chord-symbol songs, and a tool entry would have to name one of them and be silent about the
+rest.
+
 ### 3d. Ways to play this — a rung's tools, as controls (added 2026-09-18)
 
 Sixty lessons gained a **Tools for this rung** paragraph in `b4fb15b` and a paragraph
@@ -377,8 +410,14 @@ play this*.
   would be dead space above the thing the page is for (`00-invariants` §1, §0 R4).
 - **The prose stays.** A button opens a mode; it cannot say *why* that mode suits this
   rung, and that sentence is the teaching.
-- **Only modes with an address.** `lab` (with a preset), `duet`, `blind`, `simon` and
-  `play`. **Rhythm-only and the tempo ladder are deliberately absent**: rhythm-only is a
+- **A rung may name `lab` twice**, added 2026-09-21: once with a preset and once without.
+  A preset fixes what makes it that style, which is the design (`pending-review` Entry 5) and
+  is also why eight rungs' lessons told the learner to change a control their own lab button
+  had disabled. The second button carries no preset, so nothing is locked, and a `label`
+  tells the two apart. The first button of a kind keeps the id every test and stylesheet
+  already names; the second gets a suffix.
+- **Only modes with an address.** `lab` (with or without a preset), `duet`, `blind`, `simon`
+  and `play`. **Rhythm-only and the tempo ladder are deliberately absent**: rhythm-only is a
   remembered setting the Library writes before navigating, and the ladder is run state
   scoped to a loop (`05` §6). Neither can be reached by a route, so a button for either
   would be a control that opens the wrong thing. Both keep their paragraph.
@@ -449,6 +488,45 @@ recorded**: playing along is the whole point and the app is only keeping time an
 you are. Changing a setting under a running loop *stops* it and says so, rather than leaving a
 chart on the screen whose bars are not the bars it is playing. Stop leaves the chart standing —
 it is a chord chart, and reading one is what somebody stopped the loop to do.
+
+**Trading fours (added 2026-09-21).** A row of chips under the two buttons — *Off · 2 bars
+each · 4 bars each* — that changes what *Jam it* does: the app plays a phrase over the bed for
+its bars, then leaves the learner theirs, round and round. Four rungs' plans ask for it
+(`blues.5`, `blues.7`, `jazz.4`, `improv.4`) and it is the teaching device for blues and for
+jazz. The five decisions behind it, because each could have gone another way:
+
+- **It is a setting on *Jam it*, not a drill and not a screen.** It is the same loop, the same
+  bed, the same chart and the same keys; only the turn-taking is new, and a second transport
+  button would have been a second name for one thing (`00` §1). The alternative — a new
+  `DrillKind` — needs a row in the **closed** enum in `content/catalog.schema.json`, a row in
+  `STAFF_POLICY`, and a catalog item to hang it on, and the same reasoning as `handoff` §5ar:
+  reuse the thing that exists rather than widen a closed set for one mode. A new `tools` kind
+  was not available either — `curriculum.schema.json` closes that enum and sets
+  `additionalProperties: false` — so a rung reaches this through the **`lab` tool it already
+  has**, which is why `blues.7` gained one. There is deliberately **no route parameter**: a
+  `#/lab?trade=` nothing can link to would be a door only a typed URL opens, which is the fault
+  §3b's chart had until 2026-09-21.
+- **The app leads, always**, which makes this T8's case 2 and means there is **no first-note
+  latch anywhere in this mode**. Every entry after the first comes off four bars the app has
+  just played in audible time, and coming in on time there *is* the skill; latching the clock
+  to the learner's first note would quietly remove it.
+- **The call is generated from the loop's own chords**, not lifted out of a piece: the lab has
+  a key, a progression and a tempo and no piece at all. A chord tone on each downbeat, a scale
+  note within a fourth everywhere else, and the **last beat of the call is a rest** — a call
+  with no breath at the end gives the learner nowhere to come in from. A call taken out of the
+  tune on the rung is a different exercise and belongs on §3b's chart screen, where the piece
+  is; it is not built.
+- **Two things are measured and nothing is marked.** Whether the learner came in inside their
+  own bars (a pick-up of up to half a beat still counts), and how many of their notes were in
+  the scale the rung teaches — the twelve-bar form counts against the blues scale, every other
+  progression against the key's own. Both are said on a quiet line at the hand-over back, and
+  **nothing is written to the practice history and nothing here can be passed or failed**, so
+  §3c's promise above still holds: this screen does not record and does not grade. Matching the
+  call note for note is deliberately *not* judged — the answer to a phrase is your own phrase,
+  and a mode that scored imitation would teach the opposite of the thing.
+- **The strip answers as well as lights.** A trade the learner cannot play is not a trade, and
+  on a machine with no MIDI attached the on-screen keys are the only instrument there is. Notes
+  go through the shared input source, the shape `#/play` already uses.
 
 **Presets — a way in, before the pickers (added 2026-09-18).** The owner: *"as opposed to
 just messing around in the lab, you're like, all right, we're doing jazz here — this is
@@ -1017,6 +1095,14 @@ Notation area:
   A rhythm run is headed **Rhythm run** and carries a `Judged` line saying what was and was
   not measured; a run with the ladder on carries a `Ladder` line saying where it ended. The
   ±10 % buttons are one rung of that same ladder, which is where its notch came from.
+  A run of a **technique exercise** carries one more line — *Legato*, *Staccato*, *Top note*,
+  *Crescendo* — saying what the exercise is actually about (`05` §9a). It is in words rather
+  than as a percentage, because a bare number under *Legato* reads as a second accuracy and
+  the whole point of these is that they are not one: a staccato phrase of right notes held
+  too long is a 100 % run. The line says *"this rung requires it"* only where the rung's
+  `mastery.custom` says so, and no rung does yet.
+  **Pass and master** are judged against **the rung's** `minAccuracy` and `minTempoPct` where
+  the piece is on one, and against the Settings pair (§7) where it is not (`05` §9a).
 
 **The screen's own stylesheet** is `src/ui/screens/ScoreScreen.css`, imported by
 `ScoreScreen.ts`. `src/style.css` stays the app's shared sheet with one owner; what belongs
@@ -1151,6 +1237,18 @@ accuracy.**
   thing that quietly never happens.
 
 ## 5c. Drill screen (P8)
+
+**Trading fours is not a drill kind, and the reason belongs here (2026-09-21).** It reads like
+one — a prompt the app plays, an answer the learner gives — and it is built as a mode of the
+accompaniment lab instead (§3c). Three things decided it. A `DrillKind` is a row in a **closed**
+enum in `content/catalog.schema.json` plus a `STAFF_POLICY` row plus a catalog item to hang it
+on, which is a wide change for one mode; `handoff` §5ar took the same choice the same way and
+reused what existed. A drill is a *prompt loop* with a mark at the end, and this one must not
+mark: the answer to a phrase is your own phrase, and `call-response`'s judging — the phrase
+back, note for note, in order — is precisely the thing trading fours must never reward. And the
+loop it needs is the bed, the bar count and the chart the lab already keeps against a
+progression. `call-response` stays what it is: melodic dictation and a five-finger walk.
+
 **Tips and coaching (P17, replan §6).**
 
 - A collapsible **Tips** block sits under the prompt, from
@@ -1297,7 +1395,21 @@ learner looks at.
   else. *ear drills*: a headphone glyph and **nothing that names the answer**, with "Play
   again". *rhythm*: a one-line staff of tap heads, filling in as they are caught. *pedal*: a
   lamp that follows CC64 and a line saying how many ms after the chord the lift came. *dynamics*:
-  two velocity meters and the ratio against the 1.6× target. *backing-track*: the bar count.
+  two velocity meters and the ratio against the 1.6× target. *backing-track*: the bar count,
+  or — where the row asks for `chartView` — the **form chart**: the same grid of bars the lab's
+  *Jam it* draws, each with its numeral, the sounding one marked, over a *Bar n of N · pass n*
+  line. Same classes, same words, because it is the same fact about the same form.
+
+  **Melodic dictation is an ear card** (added 2026-09-21). `call-response` is the one kind
+  that is *sometimes* one: the dictation drills' prompt label is the note names of the phrase
+  they are about to play, and the five-finger and accompaniment patterns' label is a hand
+  position that gives nothing away. So the prompt says which it is — `labelIsAnswer` — and
+  a card whose label is the answer draws the headphone glyph until the attempt is judged,
+  then the names come back with the staff (`STAFF_POLICY`: `after-answer`). `▶ Play again`
+  is the replay and costs nothing: hearing the phrase again is the question being repeated,
+  not the answer being given away, and `call-response` is not a revealable kind, so *Show me*
+  and *Hear it* are not offered. Before this the drill printed `C4 E4 G4 E4` across the card
+  before a key was pressed, which is a reading drill wearing an ear drill's name.
   *simon*: the same headphone glyph, with how *many* notes on the counter and in the hint and
   never which ones — unless the help ladder's top rung is chosen, where the glyph gives way to
   the name of the note that is sounding while the key it is on lights (§5c-2).

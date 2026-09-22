@@ -57,9 +57,13 @@ playing.
 a walking bass locked in the left hand — not the boogie bass, but the same
 form to try a right-hand riff over. *Play it as a duet* opens one of the
 rung's songs with the app on the left hand while you play the right. The
-shuffle itself the app does not check: *Rhythm only* judges each strike
-against the written straight eighths within a fixed window and has no idea of
-swing, so the feel is for your ear and the recording.
+shuffle the app does check, on the pieces whose score says so: the word
+"shuffle" at the top moves the expected time of every off-beat eighth to where
+the triplet puts it, and every mode — *Rhythm only* included — times your
+strikes against that instead of against the written straight eighths. Two of
+this rung's items carry the word; on the rest a straight run is what is
+expected. Past the placing, the weight and the lilt are for your ear and the
+recording.
 
 **How you'll know you've got it.** Twelve bars in C, boogie bass, shuffled, at a
 steady tempo, twice round without losing your place in the form.

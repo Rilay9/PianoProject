@@ -19,6 +19,32 @@ Given session options `{ hands: 'R'|'L'|'both', loop?: {fromStep, toStep}, tempo
 4. **Repeated pitches in one step** (unison across staves): expected set is a *multiset* only
    if the two notes are in different hands; otherwise deduplicate (one key can only go down once).
 5. **Timing:** `tStep[k] = model.beatToMs(step.onset, tempoPct/100)`; `durStep[k] = tStep[k+1]-tStep[k]`.
+6. **Swing** (`EngineOptions.swing`, built 2026-09-21): where the score carries a *swing* or
+   *shuffle* direction, an eighth written on the off-beat is expected where a shuffle puts
+   it, not where it is printed. `onset` is replaced by `swungOnset(onset)` before step 5:
+   a plain off-beat (`x.5`) moves to `x + SWING_OFFBEAT`, and nothing else moves.
+
+   `SWING_OFFBEAT` is 2/3, and it lives in `audio/backingLoop.ts`, which is what the app
+   already swings its own backing loops by — the convention a swing marking states is that
+   the pair of eighths is played as the first and third of a triplet. Taking the number
+   from there rather than writing it twice is what keeps the app's playing and the app's
+   judging in agreement.
+
+   **Only a written off-beat eighth.** A triplet already sits at `x + 1/3` and `x + 2/3`
+   and is notated deliberately; a sixteenth inside a swung beat has no agreed placement at
+   all. A swing marking is a convention about eighths, so reading it as a statement about
+   anything else would be inventing a rule and then judging somebody against it.
+
+   Because this changes only `tStep`, every mode gets it for free: Wait, Tempo, *Rhythm
+   only*, `deltaMs`, the histogram and the hot spots all read that one number and needed
+   no second code path. **Why it matters:** before this, a correctly swung player was late
+   on every off-beat by a sixth of a beat, which at anything under about 100 bpm is outside
+   `toleranceMs` — so playing a shuffle correctly scored worse than playing it straight,
+   while four lessons said the app judged the shuffle.
+
+   The host sets the flag from the piece's measured `notation.swungMark` (`build.py`'s
+   `attach_notation`), never from a genre, a title or a rung (`00` §1a). Fifteen of the
+   2,054 catalog rows carry it, measured 2026-09-21.
 
 ## 2. Wait mode (default with MIDI) — "the score waits for you"
 
@@ -412,6 +438,54 @@ the three rows above.
 Robustness against cheap cables: expect occasional dropped Note-Offs ⇒ `pressed` entries older
 than 10 s are purged; expect duplicate Note-Ons ⇒ idempotent `satisfied` set; expect the device
 to appear with a generic name ⇒ never key settings on the device name alone.
+
+## 9a. Scoring a run against the rung it belongs to (built 2026-09-21)
+
+**The pass thresholds are the rung's, not the app's.** `evaluateOutcome` takes a
+`MasteryCriteria`; `curriculum/selectors.ts`'s `masteryCriteriaFor(lesson, defaults)` builds
+one. The rule in a sentence: *a run judged for a rung uses that rung's numbers; a run with
+no rung uses the defaults.*
+
+- The rung is found by `lessonForItem(curriculum, itemId)` — the first rung listing the item
+  among its options, which is the same lookup the Score screen has always used to choose the
+  prose beside a piece.
+- `mastery.minAccuracy` is already a fraction. `mastery.minTempoPct` is written as a fraction
+  in every one of the ninety-eight rungs (measured 2026-09-21: 0, 0.7, 0.75, 0.8, 0.85, 0.9)
+  while the scorer speaks percentages, so a value at or below 1 is read as a fraction and
+  anything above 1 as a percentage already.
+- A rung stating `0` — Stage 0's checklist, the tour, the improvisation rungs judged by a
+  recording — is saying "I have no number of my own" and takes the default, rather than
+  passing everything at nought.
+- **`master` is not per-rung.** `02` Part G defines it once for the whole plan (97 % at full
+  tempo, twice on different days) and no rung carries a second pair of numbers for it.
+- The defaults are the learner's own pair from Settings (`04` §7), which therefore still
+  governs every run the curriculum says nothing about: a Library piece, an import, paper.
+- The run is stored with the rung that judged it (`SessionRow.lessonId`). Older rows keep the
+  `passed`/`bestAccuracy`/`bestTempoPct` they were written with; **changing a rung's numbers
+  does not re-judge history**, and the numbers needed to re-judge it are in the row.
+
+**The technique measures.** `articulationScore`, `voicingScore` and `shapingScore` (P12a) are
+computed for a run of an exercise whose own `drill` block asks for one —
+`{ kind: 'articulation', params: { articulation, heldFractionMin/Max } }`,
+`{ kind: 'voicing', params: { topNoteRatio } }`, `{ kind: 'shaping', params: { shape,
+minVelocityRange } }` — and shown on the summary sheet (`04` §5).
+
+They are **not** accuracy and are not folded into it: a staccato phrase with every right note
+and no shortness is a 100 % run and is the thing the exercise exists to catch. Whether missing
+one can stop a pass is the rung's business: `demandsTechniqueMeasure` reads
+`mastery.custom` for a rule naming the measure with a comparison, the same syntactic test
+`demandsMeasuredAccuracy` uses. **No rung states one today**, so the measure is reported and
+the pass is decided exactly as it was.
+
+A measure that could not be taken says so rather than reporting nought — the microphone never
+sends note-off, and "no note was short enough" is a different answer from "nothing could be
+measured".
+
+**Not built:** the half-pedal value scorer (`special.ts`'s `halfPedalResult`, and the
+`ccRange` param on `exercise.pedal.half-pedal.a`). `PracticeEngine.feed` reduces CC64 to
+`sustainDown = value >= 64` and keeps no value, so measuring depth on the Score screen needs
+the raw CC values carried through the engine into `SessionScore`. `technique.7`'s lesson says
+the depth is for the ear, which remains true.
 
 ## 10. Test plan for the engine (Vitest)
 

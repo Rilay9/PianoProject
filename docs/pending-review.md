@@ -76,6 +76,20 @@ different stages and different lessons and different rungs."*
    any content there, that's still like figuring out what notes are"*. The target is the
    **earliest honest** point for each element, not the earliest stage.
 
+5. **The owner is not the gate** (owner, 2026-09-21): *"I don't want to have to do anything
+   manually. Figure out ways to make sure things are correct."* So the review page's
+   `keep` mark, the THEORY/JUDGEMENT/HISTORY findings, and anything else that was routed
+   to "needs a musician" is decided by a second reader working from the notation and the
+   code, with the evidence written down, and by checks the build runs. Nothing is heard;
+   that stays unverified and is said so. `review.py`'s rule that only an ear decides is
+   amended by this.
+
+6. **Build the features the lessons promised** (owner, 2026-09-21): *"If you can have
+   the features built correctly build them."* The lesson-fix pass had rewritten those
+   lessons to describe the app as it was; where a feature is built, the lesson goes back
+   to teaching it, with the fact corrections kept. Where it cannot be built honestly, the
+   record says why and the lesson stays as it is.
+
 ---
 
 ### Entry 1 — The early-stage genre survey (2026-09-17) · read-only
@@ -1960,3 +1974,478 @@ not by me. The owner has said not to worry about the limit; the test still enfor
 `content/lessons/blues.3.md`; `tools/content/generate_exercises.py`, `validate.py`; tests
 `test_harmony_families.py`, `test_validate_tools.py` (new), `simonDrill.test.ts`,
 `lesson-tools.spec.ts`, `drills-review.spec.ts`; `docs/02`, `docs/04`, `docs/generated/ladder.md`.
+
+### Entry 23 — T9: seven checks that catch a wrong score file, run over every file (2026-09-21)
+
+Written by the coordinator from the tool's own output: the builder was stopped at its last
+step (this entry) to save budget, after the tool, its tests and the report were on disk.
+
+**Built.** `tools/content/score_checks.py` — key-consistency, grace-density, truncation,
+bar-duration, containment, title-structure, repeat-structure — over the 1,975 catalog items
+that have a score file; `tools/content/tests/test_score_checks.py`, **57 tests, run and
+green** with `python -m unittest`. Output `build/score-checks.md` and `.json`: **247 flags**,
+every row with a proposed fix. Not wired into `validate.py` or `build.py`; standalone.
+
+| check | flags | high | of which the report itself calls false positives |
+|---|---:|---:|---|
+| containment | 85 | 7 | the 63 low rows are generated families sharing bars by design |
+| bar-duration | 65 | 42 | not judged by the coordinator |
+| key-consistency | 54 | 8 | not judged |
+| repeat-structure | 27 | 7 | not judged |
+| truncation | 10 | 3 | not judged |
+| grace-density | 5 | 1 | not judged |
+| title-structure | 1 | 0 | — |
+
+**The seven known faults.** Six are flagged: the *Écossaise*; *Joyful, Joyful* (three rows);
+the *G minor Minuet* (truncation, high); K. 1f inside K. 1e (containment); the Clementi item
+(title-structure, low); *I Got Rhythm* (one row). **The seventh was not a fault.** *Só Danço
+Samba*'s bar 10 holds two quarter-note triplets — six printed quarters at 2/3 each, four
+beats exactly. The audit read it through `dump_score.py`, which does not mark tuplets, as its
+own limits section warned. The bar-duration check asserts that bar clean and is proved red
+on a real overfull bar elsewhere (`song.blues.singin-the-blues`, bar 31).
+
+**Seven high containment rows are the same piece under two ids** (a Bach prelude, a
+Beethoven sonatina, a Chopin mazurka, the Passacaglia twice, *Swan Lake*, *Maple Leaf Rag*),
+each offered as two options wherever both sit on a rung.
+
+**Not done.** The rows have not been applied; a fixer works from the list, one item per
+call. The false-positive rate per check, which the brief asked for, is stated only for
+containment. Nothing has been heard.
+
+---
+
+### Entry 24 — T10: the features the lessons promised, built (2026-09-21)
+
+The lesson audit found two hundred sentences describing a feature the app half-had — code
+that existed and nothing called, a catalog setting nothing read. The fix pass rewrote them
+to describe the app as it is. The owner's decision (standing context 6) was the other way
+round: **build the features and let the lessons teach them again**; where one cannot be
+built honestly, say why and leave the lesson.
+
+Ten items. **Six built outright (1, 3, 4, 8, 9, 10) and four in part (2 without half-pedal, 5 without blues.8, 6 without accents, 7 without technique.7)** — the entry's first draft said "eight built, one in part, one not", which its own items below do not add up to; corrected by the coordinator 2026-09-21. Every one has a test proved
+red before it was made green, and the line that was removed to see it red is named.
+
+---
+
+**1. Per-rung pass thresholds — built.** Every rung has carried `mastery.minAccuracy` and
+`mastery.minTempoPct` since the curriculum was written and nothing read either: five rungs
+ask for 95 %, one for 97 %, thirty-three ask for a tempo other than 80 %, and every run in
+the app passed at the one pair in Settings. `masteryCriteriaFor(lesson, defaults)` in
+`curriculum/selectors.ts`; the Score screen and the Drill screen both use it. *A run judged
+for a rung uses that rung's numbers; a run with no rung uses the defaults.*
+
+- **The units were the trap.** The curriculum writes `minTempoPct` as a fraction in all
+  ninety-eight rungs (measured: 0, 0.7, 0.75, 0.8, 0.85, 0.9) and the scorer speaks
+  percentages, so a value at or below 1 is read as a fraction and anything above 1 as a
+  percentage already. Multiplying blind would be right today and silently wrong the first
+  time somebody wrote `85` meaning it.
+- A rung stating `0` takes the default rather than passing everything at nought.
+- `master` stays global: `02` Part G defines it once and no rung carries a second pair.
+- **Consumers, grepped before changing anything.** `minAccuracy`/`minTempoPct` had no
+  reader in `app/src` at all (only `types.ts` declaring them); `mastery.custom` is read by
+  `demandsMeasuredAccuracy`, `mastery.songsRequired` by `lessonComplete`,
+  `idsToCompleteLesson` and `thinLessons`. None of those changed. In `tools/`,
+  `add_technique_units.py` writes the fields and `test_validate.py` fixtures carry them.
+- **Old records.** `ProgressRow` keeps `bestAccuracy`, `bestTempoPct`, `status` and
+  `passedOn`; `SessionRow` keeps accuracy and tempo per run. So a threshold change does
+  **not** re-judge history — an item passed under the old rule stays passed — and the
+  numbers needed to re-judge it are on the rows. Runs now also record `lessonId`, a field
+  `SessionRow` has carried since it was written and nothing filled.
+- Test: `rungMastery.test.ts`. Red by replacing `masteryCriteriaFor`'s returned object
+  with a bare `return defaults` — 5 of 10 failed.
+
+**2. Dynamics, voicing and articulation scoring — built; half-pedal not.**
+`articulationScore`, `voicingScore` and `shapingScore` each appeared in `app/src` only at
+its own definition. `techniqueMeasureFor` in `Scoring.ts` now computes one for a run, and
+the summary sheet carries a line for it.
+
+- **How an item asks: its own `drill` block**, which the generator wrote when it wrote the
+  notes — `{ kind: 'articulation', params: { articulation, heldFractionMin/Max } }`,
+  `{ kind: 'voicing', params: { topNoteRatio } }`, `{ kind: 'shaping', params: { shape,
+  minVelocityRange } }`. Not from `mastery.custom`: the four technique rungs carry none at
+  all, and the brief's other option — a catalog field — would have meant editing generated
+  rows this task does not own. The exercise's own numbers are used where it states them, so
+  changing a target is a content change.
+- **Not accuracy, and not folded into it.** A staccato phrase with every right note and no
+  shortness is a 100 % run, which is the whole reason these exist. Whether one can *stop* a
+  pass is the rung's business: `demandsTechniqueMeasure` reads `mastery.custom` for a rule
+  naming the measure with a comparison, the same syntactic shape `demandsMeasuredAccuracy`
+  uses. **No rung states one today**, so nothing about passing changed.
+- A measure that could not be taken says so rather than reporting nought: the microphone
+  never sends note-off, and "no note was short enough" is a different answer from "nothing
+  could be measured".
+- **Half-pedal: not built.** `PracticeEngine.feed` reduces CC64 to `sustainDown = value >=
+  64` and keeps no value, so `special.ts`'s `halfPedalResult` and the `ccRange` param have
+  nothing to read on the Score screen. Building it means carrying raw CC values through the
+  engine into `SessionScore` — a change to the input hot path that none of the rest of this
+  item needed. `technique.7` already says the depth is for the ear, and that stands.
+- **A docstring corrected, not the code.** `shapingScore`'s comment says a line that jumps
+  in the middle "is failing in its own way"; the implementation counts a level step as
+  moving the right way, so a jump passes. `articulationVoicingShaping.test.ts` already
+  records that as "the rule's known weakness" with the reason. Left as it is and said again
+  in the new test, so wiring the scorer in did not quietly claim more than it measures.
+- Test: `techniqueMeasures.test.ts`. Red by inverting `techniqueMeasureFor`'s first guard
+  to `if (drill) return null` — 12 of 16 failed.
+
+**3. Drill settings nobody read — built, all six.**
+
+| setting | row | what it now does |
+|---|---|---|
+| `leftHand: "hold"` | `drill.technique.ht-holds` (2.1) | the tonic an octave below heads the pattern and the card says to hold it |
+| `shifts: true` | `drill.technique.position-shifts` (2.5) | the walk in the home position, then again from the fifth |
+| `bars: 2` | `drill.ear.melodic-dictation` (theory.4) | eight notes, four to a bar, not four |
+| `bars`, `scale: "pentatonic"` | `drill.improv.call-response` (improv.4) | two bars drawn from the pentatonic, not the chromatic run C4–G4 |
+| `voicing: "shell"` | `drill.jazz.ii-v-i-shells` (jazz.5) | root, third and seventh — no fifth |
+| `chartView: true` | `drill.jam.form-tracker` (jam) | the twelve-bar chart, the sounding bar marked, *Bar n of N · pass n* |
+
+- `shellChord` builds the shell from the **key**, not from the triad: `I` and `V` are both
+  major triads and their sevenths are a semitone apart, so a triad cannot say which.
+- A named scale gets an octave to move in rather than the drill's default fifth — a
+  pentatonic between C4 and G4 is four notes, and a phrase drawn from four notes repeats
+  itself.
+- `mode: "dictation"` is deliberately still not read: it names what the row *is*, and
+  giving it a meaning would only give it a chance to mean something else.
+- Test: `drillParamsRead.test.ts`, asserted against the real catalog rows rather than
+  fixtures. Red by stubbing all six reads out at once — 7 of 13 failed.
+
+**4. Melodic dictation printed its answer — built.** `callResponseDrill` labels each prompt
+with the note names of the phrase it is about to play, and the card printed that label
+before a key was pressed: an ear drill that cannot be got wrong, against `04` §5c.
+`DrillPrompt.labelIsAnswer` marks it, and such a card draws the headphone glyph until the
+attempt is judged; the names come back with the staff, which `STAFF_POLICY` already drew
+`after-answer`. A flag rather than the kind, because `call-response` is also what a
+five-finger pattern is built as and `C · 1 of 4` gives nothing away.
+
+The *Hear it again* the brief asks for **already existed**: `▶ Play again` is drawn for any
+prompt with playback and costs nothing, because hearing the phrase again is the question
+being repeated. `call-response` is not a revealable kind, so *Show me* and *Hear it* — the
+two that forfeit the mark — are not offered. `howText` now says so.
+
+- Test: `dictationCard.test.ts`, driving the real screen. Red by disabling the guard in
+  `drawStage`'s default case: the card printed `D4 E♭4 G4 E4`.
+
+**5. Lab presets that lock what the lesson teaches — built for seven of eight.**
+
+The preset design (Entry 5) is right and is not what was wrong: a preset fixes what makes it
+that style. What was wrong is that eight rungs' lessons told the learner to change a control
+their own lab button had disabled. **A rung may now name `lab` twice** — once with a preset,
+once without — and a lab tool with no preset opens the lab with nothing locked, which the
+route and the screen already supported.
+
+- 3.3, chords-pop.5, improv.6, chords-pop.8, improv.8, chords-pop.9 gain a second lab
+  button labelled *Lab — your own chords*.
+- improv.4 is **repointed** instead, from `pop-four-chord` to `ballad`: the lesson wanted
+  I–vi–IV–V, which is `ballad`'s progression, and `ballad` plays no right hand, which is
+  what improvising over a loop wants.
+- **blues.8: not restored, and not for want of a button.** Its original sentence asked for
+  `I7 IV7 V7` to be typed in, and the audit showed typed numerals fill the bars one per bar
+  in rotation — so that chart is not the twelve-bar form whatever preset it goes into.
+  Restoring it would restore a wrong teaching. The preset's own `blues` progression already
+  builds the form, which is what the lesson says now.
+- **Why not a new preset, and why not an `unlock` field.** A new preset id would break
+  `labPresets.test.ts`, which joins `LAB_PRESETS` to `LAB_PRESET_IDS` in `validate.py`; an
+  `unlock` key inside a `tools` entry would fail `curriculum.schema.json`, which sets
+  `additionalProperties: false` there. Both those files are outside this task's ownership.
+  The two-button shape needs neither and is the brief's own second option.
+- Two lab buttons would have collided on `id="lesson-tool-lab"`. The **first** of a kind
+  keeps the id every existing test and stylesheet names; later ones get a suffix.
+- Tests: `lessonClaimsAboutApp.test.ts` rows, plus a rule that a rung with two lab buttons
+  opens two different things.
+
+**6. Swing and accent judging — swing built, accent not.**
+
+`EngineOptions.swing` moves the expected time of a written off-beat eighth from `x.5` to
+`x + SWING_OFFBEAT` in `prepareSession`. **The ratio is 2/3 and its source is
+`audio/backingLoop.ts`**, which is what the app already swings its own backing loops by —
+the convention a swing marking states is that the pair of eighths is played as the first and
+third of a triplet. Taking the constant from there rather than writing it again keeps the
+app's playing and the app's judging in agreement.
+
+- **One number, no second code path.** Only `tStep` changes, so Wait, Tempo, *Rhythm only*,
+  `deltaMs`, the histogram and the hot spots all get it.
+- **Only a written off-beat eighth moves.** A triplet is already notated at `x + 1/3` and
+  `x + 2/3`; a sixteenth inside a swung beat has no agreed placement at all. A swing marking
+  is a convention about eighths.
+- The flag is set from the piece's measured `notation.swungMark`, never from a genre, a
+  title or a rung (`00` §1a). **Fifteen of the 2,054 catalog rows carry it.**
+- **Which is why the lessons differ.** blues.4 has two such items (*St. Louis Blues* and the
+  shuffle-eighths exercise) and its sentence now says the app checks the shuffle "on the
+  pieces whose score says so". **jazz.5 has none**, so its sentence says the app judges swing
+  only where the score writes the word and this rung's pieces do not. ragtime.5 has none,
+  correctly — ragtime is straight — and its sentence stands unchanged. 4.5 made no false
+  claim about the app and was not touched.
+- **Accent: not built.** `<accent>` is not extracted from the MusicXML, so `ScoreNote`
+  carries nothing to judge a velocity against. It needs a field on `ScoreNote` out of
+  `extractScoreModel.ts`, which is the file the golden score JSON is compared against. The
+  lessons keep saying the accent is not judged.
+- Test: `swingJudging.test.ts`, with synthetic performances through the real engine: a swung
+  run of a swung score is judged right and a straight run of the same notes is not, and the
+  reverse for a score with no marking. Red by dropping `swungOnset` from the `tMs` line.
+
+**7. Tool paragraphs for tools the rung has not — two of three.** jazz.7 and theory.7 each
+gain a `{"kind": "lab"}` tool with no preset, and their paragraphs are restored.
+**technique.7: not built.** Its sentence is about the 2-against-3 exercise, and
+`exercise.independence.c.2v3` is one of the rung's *exercise* options; `validate.py`'s
+`tool_errors` refuses a `duet` tool whose `item` is not among the rung's `songOptions` (only
+`simon` may name an exercise), and `LessonScreen`'s `scorePiece` agrees. A plain duet button
+there would open a Czerny étude, which is the fault the finding names. Widening the rule
+means editing `tools/content/validate.py`, which this task does not own.
+
+**8. The chord-chart screen had no door — built.** `#/chart/<itemId>` parsed and
+`router.navigateChart` compiled, and nothing called either: a whole screen reachable only by
+typing a URL. Two doors now — a *Chart* action on a lesson page's option row, and a *Chord
+chart* row in the Score screen's `⋯` sheet — both drawn only where the file is known to
+carry chord symbols.
+
+- The gate reads the build's measured `notation.chordCount`. **`notation` had no reader in
+  `app/src` at all** before this (its readers were `validate.py`'s `notation_requirements`,
+  `rung_audit.py`, `candidates.py` and `archive_notation.py`), so the app's one measured
+  description of every piece was written and never used. Only the three fields the app reads
+  are typed.
+- A row the build never measured is not offered a chart: unknown is not yes. An **import**
+  is, because the chart screen reads the chords out of the imported bytes itself.
+- The door is on the *piece* rather than in a rung's `tools`: `jam` and `jazz.5` are rungs of
+  chord-symbol songs, and a tool entry would have to name one and be silent about the rest.
+- Test: `chartDoor.test.ts`, driving the real lesson screen. Red by disabling the gate: the
+  row drew `▶` and `Know it` and no *Chart*.
+- **Unverified:** the Score screen's door has no unit test — mounting that screen needs the
+  engraver. It is `doors.spec.ts`'s to prove.
+
+**9. "Today will build from here" — built, and now true.** Both *Start here* buttons wrote
+`placement.unitId` and nothing read it; every reader of the plan row used `trackOrder`
+through `activeTracksFor`. `nextRecommended` takes a `startAt`, and Plan, Today and Skills
+all pass it, so the three screens cannot disagree about where the learner is.
+
+- Rungs **behind** the placement are held back, not discarded: the learner said where to
+  start, not what they have done. If everything from the placement onwards is complete, the
+  first incomplete rung behind it is recommended after all — an empty plan would be a worse
+  answer than an early rung, and it is the reasoning the strict-prerequisite fallback
+  already uses.
+- `startAt` matches a unit id **or** a rung id: the placement drill names a unit
+  (`failUnit`) and the lesson page names the rung the reader is on, and each is right about
+  its own screen. A `startAt` the curriculum does not have is ignored rather than holding
+  every rung back — that is the `blues.4` fault from Entry 14 wearing a new coat.
+- Test: `placementStartsThePlan.test.ts`. Red by disabling the hold-back — 3 of 8 failed.
+
+**10. Stale names — built.** `grep -rn "Tempo mode|Wait mode|Listen mode|Free mode"` over
+`content/lessons/` returned exactly three lines, in two files: `1.2.md:53` and
+`technique.8.md:26,28`. They now read *Keep tempo* and *Wait for me*, which is what `04`
+§5 and `ScoreScreen.ts`'s `MODES` call them. `2.2`'s 6/8 sentence said the eighth was the
+counting unit and then told the reader to count "1 and 2 and"; it now says to count
+"1 2 3 4 5 6" there, because an "and" splits a beat in two and a 6/8 beat holds three.
+
+---
+
+**What a reviewer should push on.**
+
+- **The second lab button is a judgement, not a fact.** A rung now has two controls that open
+  the same screen. The alternative was a preset variant per rung, which the two files this
+  task does not own would have refused. If the owner would rather have `unlock` on a tool
+  entry, that is a schema change and a `validate.py` change, and this shape comes out again.
+- **`masteryCriteriaFor` makes the Settings pair matter less.** It still governs every run
+  with no rung, and it is the default a rung falls back to — but a learner who lowers it to
+  70 % will not see rung runs get easier. That is the brief's own rule stated plainly; if the
+  setting should instead *shift* every rung's bar by the same amount, that is one line here.
+- **Nothing has been heard.** No claim in this entry is about how anything sounds.
+
+**Verification.** From `app/`: `npx tsc -b` clean; `npm run lint` clean; `npx vitest run`
+**171 files, 2,339 tests, all passing**. The baseline was measured rather than recalled — the
+eight new test files were moved aside and the suite re-run: **163 files, 2,239 tests**, which
+agrees with the figure the audit's own fix pass recorded. (A first draft of this entry said
+2,254, which was a reading taken after two of the new files already existed.) Playwright
+was **not** run — the quarry was rendering on port 4173.
+
+**Playwright specs the coordinator should run, and what each should show:**
+
+| spec | what to look for |
+|---|---|
+| `lesson-tools.spec.ts` | rungs with two lab buttons draw both, `data-preset` on the preset one and none on the free one; the ids do not collide |
+| `doors.spec.ts` | the Score screen's `⋯` sheet offers *Chord chart* on a piece with chord symbols and not on one without |
+| `plan.spec.ts` | R1 still holds with a third tool on a rung — the first option row inside the first screenful |
+| `drills.spec.ts`, `drills-review.spec.ts` | the dictation card shows the glyph and not the note names; the form tracker draws twelve cells |
+| `score.spec.ts` | the summary sheet is unchanged for an ordinary piece and carries one extra line for a technique exercise |
+
+**The content build has not been run**, and two things wait on it: the `tools` entries in
+`content/curriculum/stage-*.json` do not reach the app until `build.py` copies them into
+`app/public/content/curriculum.json`, and the same for the nineteen edited lessons.
+`lessonClaimsAboutApp.test.ts` reads the **authored** stage files for exactly that reason and
+says so; `lessonClaims.test.ts` and `curriculumIntegrity.test.ts` read the built copy and
+will be stale until the build runs.
+
+**Unverified.** Every screen listed in the Playwright table. The Score screen's chart door.
+Whether the summary sheet's extra line fits `04` §0 R2 on a 342 px phone — it is one more
+`dt`/`dd` in a list that already has six. Whether a swung run *feels* right, which needs a
+piano. The six restored lab paragraphs describe buttons nobody has tapped.
+
+**Files.** `app/src/curriculum/selectors.ts`, `session.ts`, `types.ts`;
+`app/src/engine/Scoring.ts`, `prepareSession.ts`, `types.ts`;
+`app/src/engine/drills/factories.ts`, `fromCatalog.ts`, `special.ts`, `theory.ts`,
+`types.ts`; `app/src/ui/openItem.ts`; `app/src/ui/screens/DrillScreen.ts`,
+`LessonScreen.ts`, `PlanScreen.ts`, `ScoreScreen.ts`, `SkillsScreen.ts`, `TodayScreen.ts`;
+tests `rungMastery.test.ts`, `techniqueMeasures.test.ts`, `drillParamsRead.test.ts`,
+`dictationCard.test.ts`, `chartDoor.test.ts`, `placementStartsThePlan.test.ts`,
+`swingJudging.test.ts`, `lessonClaimsAboutApp.test.ts` (all new);
+`content/curriculum/stage-3.json`, `-4`, `-5`, `-6`, `-7`, `-8`, `-9` (`tools` only,
+spliced); `content/lessons/` 0.4, 1.2, 2.2, 3.3, blues.4, chords-pop.5, chords-pop.8,
+chords-pop.9, improv.4, improv.6, improv.8, jam, jazz.5, jazz.7, technique.4, technique.5,
+technique.6, technique.8, theory.7; `docs/04-ui-spec.md`, `docs/05-score-follow-engine.md`,
+`docs/lesson-audit/batch-1..5.md` (`Built:` lines only), this entry.
+
+---
+
+### Entry 28 — T2: trading fours, as a mode of the lab rather than a drill (2026-09-21)
+
+The brief's own claim about the two halves is **a proxy, and it half held.** Both files were
+opened before anything was planned.
+
+- `audio/backingLoop.ts` holds up: `barSchedule` and `DrumKit` already keep a bed against a bar
+  count. `grep -rn "backingLoop|barSchedule|DrumKit" app/src` returns two consumers —
+  `ChordChartScreen.ts` and `LabScreen.ts` — which is the brief's *"the chord chart and the
+  lab's Jam it"*, checked one at a time rather than taken together.
+- **`call-response` does not.** It is a `PromptDrill`: it judges the phrase back, note for
+  note, in order (`factories.ts` sets `ordered: true` and `labelIsAnswer: true`). That is the
+  *opposite* of trading fours, where the answer is the learner's own phrase and a run that
+  copied the call would be the one thing the mode must never reward. What the brief read as
+  "both halves exist" was two file names; one of them is the wrong half. `backing-track` — the
+  kind that judges nothing and keeps a bar clock — is the nearer relative, and in the end the
+  mode is not a drill at all.
+
+**Where it went, and what a reviewer should push on first.** It is a **setting on the
+accompaniment lab's *Jam it*** (`04` §3c), not a `DrillKind` and not a screen: a chip row
+*Off · 2 bars each · 4 bars each* under the two buttons. `04` §5c now carries the argument for
+why a thing that reads like a drill is not one.
+
+**The four design questions, answered.**
+
+1. **Whose two bars?** *Generated, from the loop's own chords.* The lab has a key, a
+   progression and a tempo and no piece at all, so a call out of the tune is not a thing it
+   could make. A chord tone on each downbeat, a scale note within a fourth everywhere else, and
+   the **last beat of the call is a rest** — a call with no breath at the end gives the learner
+   nowhere to come in from. The piece-derived version the brief prefers for the jam track is
+   **not built**, and see the note on `jam.7` below.
+2. **What is judged?** *Two things are measured; nothing is marked.* The brief's
+   nothing-judged default was overruled by the coordinator on the owner's behalf, on the
+   grounds that a device meant to teach that says nothing back is a metronome. So: **whether
+   the learner came in inside their own bars** — a pick-up of up to half a beat still counts,
+   and the grace is half a beat *at the tempo being played* rather than a duration written into
+   the engine — and **how many of their notes were in the scale the rung teaches**: the
+   twelve-bar form counts against the blues scale, every other progression against the key's
+   own. Both are said on a quiet line at the hand-over back. **Nothing is written to the
+   practice history and nothing here can be passed or failed**, so §3c's *"nothing is judged or
+   recorded"* is amended in the spec rather than quietly broken: it now says this screen does
+   not record and does not grade, and that this mode holds a mirror up in the moment.
+   *"Six of eight in the blues scale"* is a measurement a learner can act on; a percentage over
+   an improvisation would be a number pretending to be one.
+3. **Where does it live?** *Nowhere new.* A `DrillKind` needs a row in the **closed** enum in
+   `content/catalog.schema.json`, a `STAFF_POLICY` row and a catalog item to hang it on;
+   `handoff` §5ar faced the same shape of choice and reused what existed rather than widening a
+   closed set for one family. Neither `content/catalog.schema.json` nor
+   `content/catalog.static.json` is this task's to edit, so a new drill kind and a new drill row
+   were both unavailable — **that constraint agreed with the reasoning rather than driving it**,
+   and it is stated here so a reviewer can disagree with the reasoning on its own.
+4. **How is it reached?** *Through the `lab` tool the rung already has.*
+   `curriculum.schema.json` closes the `tools` `kind` enum (`lab · duet · blind · simon · play`)
+   and sets `additionalProperties: false`, so a `trade` kind or a `trade` field on a `lab` entry
+   would both fail it, and that file is not this task's either. **`blues.7` gained a `lab` tool**
+   (`blues-shuffle`); `blues.5`, `jazz.4` and `improv.4` each already had one — read one at a
+   time in `stage-5.json`, `stage-4.json` and `stage-4.json` — so nothing was added to those
+   three. There is deliberately **no `#/lab?trade=` route parameter**: nothing could link to it,
+   and a door only a typed URL opens is the fault Entry 24 item 8 had just finished fixing.
+
+**T8, and why this is the exception.** The app leads, always — every plan entry describes it
+that way — so this is T8's **case 2** and there is **no first-note latch anywhere in the mode**.
+The learner's window opens where the bar opens, converted from the beat's own audio time
+through `captureAudioClockAnchor`, because `Metronome.onTick` fires *ahead* of the sound and a
+window started at `performance.now()` would open early by the look-ahead.
+
+**`jam.7` does not exist.** The brief names five rungs.
+`grep -rn '"id": "jam' content/curriculum/stage-*.json` returns `jam.4.1`, `jam`, `jam.5.1`,
+`jam.5`, `jam.6.1`, `jam.6` and nothing at stage 7; a second search shaped differently —
+`grep -n '"track": "jam"' content/curriculum/stage-7.json` — returns nothing. The genre plan's
+*"Stage 7 — Trading fours"* is a plan for a rung not yet written. The coordinator confirmed this
+mid-task and the work was done for the four rungs that exist.
+
+**The tests, and the lines that made them red.**
+
+- `app/tests/unit/tradingFours.test.ts` — 16 assertions over the three pure pieces, with the
+  learner's half driven by a **synthetic performance**: a list of onsets in milliseconds on the
+  same timeline the screen feeds it. Red twice, each time by reverting one thing: dropping the
+  window from `judgeTrade` (`inside`'s filter and `cameIn`'s bounds) — **3 of 16 failed**; and
+  replacing `tradeAt`'s `side: trade % 2 === 0 ? 'app' : 'learner'` with a bare `'app'` —
+  **3 of 16 failed**.
+- `app/tests/e2e/trading-fours.spec.ts` — four tests, and the only ones that need a browser: the
+  chips are off until asked for and are exclusive; *Jam it* hands the bars over and Stop stops
+  it; a setting changed under a trade stops it; and **a key tapped on the strip inside the
+  learner's own bars reaches the judging** and comes back as *In on your own bars · n of m in
+  the major scale*. Red by removing `if (trading) onTradeBar(beat.bar - 1, beat.timeSec)` from
+  `LabScreen`'s `onBeat` — **2 of 4 failed**, the two that need the hand-over.
+- **One test of mine was wrong and was rewritten rather than left red**: it expected
+  `tradeAt(5, 2)` to be the learner's, when trades are counted one per side and the app's second
+  trade is number 2. The code was right.
+
+**The lessons.** One sentence each in the *Tools for this rung* paragraph — `blues.5`,
+`blues.7`, `jazz.4`, `improv.4` — naming *Trading fours*, what it takes, what it says back, and
+that nothing is recorded or passed. `jazz.4` had said nothing about the mode at all (Entry 21).
+`readingTime` was **recounted from the text** rather than assumed: 515, 485, 501 and 571 words,
+all still 3 minutes at the 200 wpm `lessonShape.test.ts` enforces, and all still inside its
+three-minute cap. The `improv.4` sentence says *"in the key"* and not *"in the pentatonic"* on
+purpose: that rung's preset is `ballad`, a diatonic progression, so the notes are counted
+against the key's major scale, and a passing note outside the pentatonic is fine music.
+
+**Consumers, grepped — and the first version of this paragraph was wrong, which is the point
+of writing it.** `LabScreen`'s strip was a display-only guide and is now `interactive`, routing
+to `screenKeyboardSource` the way `FreePlayScreen` does. The first draft said *"the only other
+reader of that source is `ChordChartScreen`"*, which was a grep of **two files** reported as a
+grep of the repository — §1 in its usual costume. `grep -rn "screenKeyboardSource" app/src`
+returns **seven screens**: `ChordChartScreen`, `DrillScreen`, `FreePlayScreen`, `LabScreen`,
+`MidiScreen`, `ScoreScreen` and `SetupScreen`. What makes the change safe is not that there is
+one reader but that **every one of them subscribes through `onNote` while it is mounted and
+unsubscribes on dispose**, and only one screen is mounted at a time, so a note tapped on the
+lab's strip reaches the lab and nothing else. Counted rather than asserted: five of the seven —
+`DrillScreen`, `FreePlayScreen`, `MidiScreen`, `ScoreScreen`, `SetupScreen` — already both fed
+this source from an on-screen strip and listened to it, which is the shape `LabScreen` now
+joins; `ChordChartScreen` listens without feeding. `phraseScale` in `engine/drills/factories.ts` gained a second caller
+(`tradeScale`) and was not changed. `SWING_OFFBEAT` and `barSchedule` were read and not touched.
+
+**What is unverified.**
+
+- **Nothing has been heard.** No claim here is about how the call sounds, whether the phrase
+  rules make a phrase worth answering, or whether the bed and the call sit together. That needs
+  a piano and it is the first thing to check.
+- **`lab.spec.ts` was not run** — this task's Playwright allowance was its own new spec. The new
+  chip row sits between the two buttons and the status line, so **`04` §0 R1 on a 342 px phone
+  is the thing to look at**: the pickers still have to begin inside the first screenful.
+  `landscape.spec.ts` for the same reason sideways.
+- **The content build has not been run**, so `blues.7`'s new `lab` tool and the four edited
+  lessons do not reach the app until `build.py` copies them into `app/public/content/`.
+  `lessonClaims.test.ts` and `curriculumIntegrity.test.ts` read the built copy and passed
+  against the **old** one, which says nothing about these edits; `lessonShape.test.ts` reads the
+  authored files and does cover the reading times.
+- **The genre plans still say `NOT BUILT`** against trading fours on all four rungs
+  (`docs/genre-plans/blues.md` twice, `improv.md`, `jazz.md`, and `jam.md` for the rung that
+  does not exist). `docs/genre-plans/` was not this task's to edit; five lines want changing.
+- **`jam` gets nothing.** That track's rungs are 4, 5 and 6; the mode its plan wanted is the one
+  taken out of the tune, which is the chart screen's and is not built.
+
+**Verification.** From `app/`: `npx tsc -b` clean; `npm run lint` clean; `npx vitest run`
+**172 files, 2,355 tests, all passing**. The baseline was measured rather than recalled — the
+suite was run before any file was written: **171 files, 2,339 tests**, which agrees with Entry
+24. `npx playwright test tests/e2e/trading-fours.spec.ts --workers=4`: **4 passed**, run alone
+on port 4173. A first run of that spec failed on all four tests against a **stale preview
+server** that Playwright reused rather than rebuilt (`reuseExistingServer`); `npm run build:app`
+and a re-run is what made it real, and that is worth knowing for the next person who runs a
+spec against a screen they have just changed.
+
+**Playwright specs the coordinator should run, and what each should show:**
+
+| spec | what to look for |
+|---|---|
+| `lab.spec.ts` | the existing jam is unchanged with the chips off, and *Read it* still opens the Score screen |
+| `landscape.spec.ts`, and the lab at 342 px | R1 — the pickers still begin inside the first screenful with a chip row added above them |
+| `lesson-tools.spec.ts` | `blues.7` draws a lab button beside its duet and blind ones (needs the content build first) |
+
+**Files.** `app/src/engine/tradingFours.ts` (new); `app/src/ui/screens/LabScreen.ts`,
+`LabScreen.css`; `app/tests/unit/tradingFours.test.ts`, `app/tests/e2e/trading-fours.spec.ts`
+(both new); `content/curriculum/stage-7.json` (`blues.7` `tools` only, spliced);
+`content/lessons/blues.5.md`, `blues.7.md`, `jazz.4.md`, `improv.4.md`; `docs/04-ui-spec.md`
+§3c and §5c; this entry.

@@ -121,6 +121,11 @@ export interface BuildInput {
   requireTwoSongs?: boolean;
   /** docs/04 §7: opt-in gating, off by default (`00` D17). */
   strictPrerequisites?: boolean;
+  /**
+   * The placement test's answer, so the day starts where the learner said
+   * they were (`02` Stage 0.4; `planStore`'s `placement.unitId`).
+   */
+  startAt?: string;
 }
 
 export interface LessonPosition {
@@ -129,23 +134,57 @@ export interface LessonPosition {
   stageNumber: number;
 }
 
-/** Walks stages in order and returns the first lesson that is not complete. */
+/**
+ * Walks stages in order and returns the first lesson that is not complete.
+ *
+ * `startAt` is the placement test's answer (`02` Stage 0.4, built 2026-09-21).
+ * It was written into the plan by `recordPlacement` and read by **nothing**:
+ * the drill and the lesson page both said *"Placement recorded. Today will
+ * build from here"* and then the plan carried on recommending `0.1`, which is
+ * the one sentence in the app a learner can check in a single tap.
+ *
+ * Rungs behind the placement are not marked passed — the learner said where
+ * to start, not what they have done — so they are **held back rather than
+ * discarded**: if everything from the placement onwards is complete, the first
+ * incomplete rung behind it is recommended after all. An empty plan would be a
+ * worse answer than an early rung, and it is the same reasoning `firstLocked`
+ * below already uses for a rung behind a prerequisite.
+ *
+ * Matched against the unit id *or* the lesson id, because the two writers
+ * disagree and both are right about their own screen: the placement drill
+ * names a unit (`failUnit`, `passUnit`), and the lesson page's *Start here*
+ * names the rung the reader is looking at.
+ */
 export function nextRecommended(
   curriculum: Curriculum,
   records: PassRecord[],
   activeTracks: string[] = [],
-  options: { requireTwoSongs?: boolean; strictPrerequisites?: boolean } = {},
+  options: {
+    requireTwoSongs?: boolean;
+    strictPrerequisites?: boolean;
+    /** The placed unit or rung: nothing before it is recommended first. */
+    startAt?: string;
+  } = {},
 ): LessonPosition | undefined {
   const tracks = new Set(activeTracks);
   let firstLocked: LessonPosition | undefined;
+  const startAt = options.startAt === undefined || options.startAt === '' ? null : options.startAt;
+  let reachedStart = startAt === null;
+  let firstBehind: LessonPosition | undefined;
   for (const stage of curriculum.stages) {
     for (const unit of stage.units) {
       // A track the learner has switched off is skipped, but the core track
       // is never optional — it is the spine the stages are built on.
       if (tracks.size > 0 && unit.track !== 'core' && !tracks.has(unit.track)) continue;
+      if (unit.id === startAt) reachedStart = true;
       for (const lesson of unit.lessons) {
+        if (lesson.id === startAt) reachedStart = true;
         if (lessonComplete(lesson, records, options)) continue;
         const position = { lesson, unit, stageNumber: stage.number };
+        if (!reachedStart) {
+          firstBehind ??= position;
+          continue;
+        }
         if (options.strictPrerequisites) {
           // With gating on, "recommended" means the first rung he can start.
           // A locked one is remembered rather than discarded: if *everything*
@@ -167,7 +206,8 @@ export function nextRecommended(
       }
     }
   }
-  return firstLocked;
+  // Nothing from the placement onwards, so the rungs behind it come back.
+  return firstLocked ?? firstBehind;
 }
 
 /**
@@ -346,6 +386,7 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
   const position = nextRecommended(input.curriculum, input.records, input.activeTracks, {
     ...(input.requireTwoSongs === undefined ? {} : { requireTwoSongs: input.requireTwoSongs }),
     ...(input.strictPrerequisites ? { strictPrerequisites: true } : {}),
+    ...(input.startAt === undefined ? {} : { startAt: input.startAt }),
   });
   const used = new Set<string>();
   const seed = input.seed ?? 0;

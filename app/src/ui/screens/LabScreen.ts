@@ -25,9 +25,20 @@
  * and a guide; what is played over it is the learner's business.
  */
 import type { Router } from '../../router';
-import { audioEngine } from '../../app/services';
+import { audioEngine, getPiano, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { DrumKit, barSchedule } from '../../audio/backingLoop';
+import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
+import type { Piano } from '../../audio/Piano';
+import {
+  callPhrase,
+  judgeTrade,
+  tradeAt,
+  tradeScale,
+  tradeScaleName,
+  type CallNote,
+  type TradeSide,
+} from '../../engine/tradingFours';
 import {
   LAB_KEYS,
   LAB_PROGRESSIONS,
@@ -44,6 +55,7 @@ import {
   type LabRightHand,
 } from '../../engine/sightReading';
 import { addImport, deleteImport, importSummaries, updateImport } from '../../data/importStore';
+import type { InputNoteEvent } from '../../midi/types';
 import { getMidiSettings } from '../../data/midiSettings';
 import { getSettings } from '../../data/settingsStore';
 import { KeyboardStrip } from '../KeyboardStrip';
@@ -309,6 +321,32 @@ export function LabScreen(router: Router): HTMLElement {
   let running = false;
   let disposed = false;
 
+  // --- trading fours (docs/04 §3c) ------------------------------------------
+
+  /**
+   * How many bars each side takes.
+   *
+   * The device is called *trading fours* and the four rung plans that ask for
+   * it all describe two — *the app plays two bars over the drum bed, you answer
+   * two* — so two is where it opens and four is one chip away. How long a trade
+   * is belongs to the rung; the name belongs to the device.
+   */
+  const TRADE_BAR_CHOICES = [2, 4] as const;
+  let trading = false;
+  let tradeBars: number = TRADE_BAR_CHOICES[0];
+  /** Which trade is sounding, so the bars inside one do not restart it. */
+  let tradeIndex = -1;
+  let tradeSide: TradeSide | null = null;
+  /** The first beat of the learner's own bars, on the input timeline. */
+  let answerStartMs = 0;
+  let answerNotes: { midi: number; tMs: number }[] = [];
+  /** Both clocks read together, so a beat's audio time converts to input time. */
+  let clockAnchor: AudioClockAnchor | null = null;
+  let piano: Piano | null = null;
+  const tradeLine = el('p.lab-trade', { id: 'lab-trade', hidden: true });
+  const tradeVerdict = el('p.lab-trade__verdict', { id: 'lab-trade-verdict' });
+  jamForm.after(tradeLine, tradeVerdict);
+
   function drawJamGrid(): void {
     jamGrid.replaceChildren();
     jamChords.forEach((chord, index) => {
@@ -358,6 +396,126 @@ export function LabScreen(router: Router): HTMLElement {
     }
   }
 
+  /** The pitch classes this rung's notes are counted against. */
+  function currentTradeScale(): number[] {
+    const key = labKey(keyId);
+    return tradeScale({ progressionId: progressionId, tonic: key.tonic, mode: key.mode });
+  }
+
+  /** What that scale is called, for the sentence under the chart. */
+  function currentTradeScaleName(): string {
+    return tradeScaleName(progressionId, labKey(keyId).mode);
+  }
+
+  /**
+   * Plays the app's phrase on the audio clock, not on a timer.
+   *
+   * `beatTimeSec` is the bar's own first beat as the metronome scheduled it, so
+   * the call sits on the bed rather than a look-ahead window ahead of it. The
+   * samples are asked for when the jam starts; a call with no piano behind it
+   * is silent and says so once rather than every four bars.
+   */
+  function playCall(phrase: readonly CallNote[], beatTimeSec: number): void {
+    if (!piano || phrase.length === 0) return;
+    const secondsPerBeat = 60 / bpm;
+    for (const note of phrase) {
+      piano.start({
+        midi: note.midi,
+        velocity: 88,
+        timeSec: beatTimeSec + note.atBeat * secondsPerBeat,
+        // Just short of the beat, so one note ends before the next begins and
+        // the phrase is a line rather than a chord.
+        durationSec: secondsPerBeat * 0.9,
+      });
+    }
+  }
+
+  /**
+   * The app's bars: a phrase built from the loop's own chords.
+   *
+   * Seeded from the bar it starts on, so the same jam gives the same calls
+   * twice and two trades in a row are not the same phrase.
+   */
+  function startCall(absoluteBar: number, beatTimeSec: number): void {
+    // Collecting starts here rather than at the learner's downbeat, so a
+    // learner still playing through the app's call is seen to have been.
+    answerNotes = [];
+    const chords = Array.from(
+      { length: tradeBars },
+      (_, offset) => jamChords[(bar + offset) % jamChords.length]?.pitchClasses ?? [],
+    );
+    playCall(
+      callPhrase({
+        chords,
+        scale: currentTradeScale(),
+        beatsPerBar: 4,
+        seed: ((absoluteBar + 1) * 2654435761) >>> 0,
+      }),
+      beatTimeSec,
+    );
+    tradeLine.textContent = `Listen — ${String(tradeBars)} bars`;
+    tradeLine.dataset.side = 'app';
+  }
+
+  /** The learner's bars: the window opens where the bar opens. */
+  function startAnswer(beatTimeSec: number): void {
+    answerStartMs = clockAnchor
+      ? audioTimeToPerformanceMs(clockAnchor, beatTimeSec)
+      : performance.now();
+    tradeLine.textContent = `Your turn — ${String(tradeBars)} bars`;
+    tradeLine.dataset.side = 'learner';
+  }
+
+  /**
+   * What the learner's bars were worth, said before the next call covers them.
+   *
+   * Two facts and no mark (`05` §7 — a drill is not a score, and this is not
+   * even a drill): whether they came in inside their own bars, and how many of
+   * their notes were in the scale the rung teaches. Nothing is written to the
+   * practice history, and nothing here can be passed or failed.
+   */
+  function reportTrade(): void {
+    const beatMs = 60_000 / bpm;
+    const judged = judgeTrade({
+      notes: answerNotes,
+      windowStartMs: answerStartMs,
+      windowEndMs: answerStartMs + tradeBars * 4 * beatMs,
+      scale: currentTradeScale(),
+      // A pick-up is measured in beats, so the grace is half a beat at the
+      // tempo being played rather than a duration written into the engine.
+      graceMs: beatMs / 2,
+    });
+    const entry =
+      judged.entryOffsetMs === null
+        ? 'You did not come in'
+        : judged.cameIn
+          ? 'In on your own bars'
+          : 'Not inside your own bars';
+    const notes =
+      judged.notesInWindow === 0
+        ? ''
+        : ` · ${String(judged.notesInScale)} of ${String(judged.notesInWindow)} in the ${currentTradeScaleName()} scale`;
+    tradeVerdict.textContent = `${entry}${notes}`;
+    tradeVerdict.dataset.cameIn = String(judged.cameIn);
+  }
+
+  /**
+   * Hands the bar to whoever it belongs to.
+   *
+   * Only the first bar of a trade does anything, so a four-bar trade is one
+   * call and not four. The trade that just ended is reported *before* the next
+   * call starts, because the call is what covers it up.
+   */
+  function onTradeBar(absoluteBar: number, beatTimeSec: number): void {
+    const at = tradeAt(absoluteBar, tradeBars);
+    if (at.trade === tradeIndex) return;
+    if (tradeSide === 'learner') reportTrade();
+    tradeIndex = at.trade;
+    tradeSide = at.side;
+    if (at.side === 'app') startCall(absoluteBar, beatTimeSec);
+    else startAnswer(beatTimeSec);
+  }
+
   function onBeat(beat: MetronomeBeat): void {
     if (disposed || beat.isCountIn) return;
     const next = barAt(beat.bar, jamChords.length);
@@ -369,6 +527,10 @@ export function LabScreen(router: Router): HTMLElement {
     showChordOnKeys();
     const chord = jamChords[bar];
     if (chord) scheduleBacking(chord);
+    // T8, case 2: the app leads, so there is no first-note latch anywhere in
+    // this mode. The learner's window opens where the bar opens, because
+    // coming in on time is the thing being practised.
+    if (trading) onTradeBar(beat.bar - 1, beat.timeSec);
   }
 
   async function startJam(): Promise<void> {
@@ -390,17 +552,55 @@ export function LabScreen(router: Router): HTMLElement {
     bar = 0;
     chorus = 1;
     barStarted = false;
+    tradeIndex = -1;
+    tradeSide = null;
+    answerNotes = [];
+    tradeVerdict.textContent = '';
+    tradeVerdict.dataset.cameIn = '';
+    tradeLine.hidden = !trading;
+    tradeLine.textContent = '';
     jam.hidden = false;
     drawJamGrid();
     drawJamForm();
     if (!strip) {
-      strip = new KeyboardStrip({ showOctaveLabels: true });
+      // The keys answer as well as light. A trade the learner cannot play is
+      // not a trade, and on a machine with no MIDI attached these are the only
+      // instrument there is; the note goes through the shared source, so the
+      // glass and a real piano arrive by one path (the shape `FreePlayScreen`
+      // already uses).
+      strip = new KeyboardStrip({
+        showOctaveLabels: true,
+        interactive: true,
+        onNoteOn: (midi, velocity) => {
+          screenKeyboardSource.noteOn(midi, velocity);
+          // The samples are asked for on the first tap when a trade has not
+          // already loaded them. That first note is silent, which is the trade
+          // `FreePlayScreen` makes too — a missed note beats a throw inside an
+          // input handler.
+          if (piano) piano.start({ midi, velocity, durationSec: 1.2 });
+          else void getPiano().then((ready) => { piano = ready; }).catch(() => undefined);
+        },
+        onNoteOff: (midi) => screenKeyboardSource.noteOff(midi),
+      });
       stripHost.append(strip.el);
     }
     showChordOnKeys();
 
     const context = await audioEngine.ensureStarted();
     if (disposed) return;
+    // Both clocks read together, before the first click: a beat's audio time
+    // is what the learner's window is measured from, and `onTick` fires ahead
+    // of the sound rather than on it.
+    clockAnchor = captureAudioClockAnchor(context);
+    if (trading) {
+      // The app takes the first trade, so the samples have to be there before
+      // the metronome starts or the opening call is silent.
+      piano = await getPiano().catch(() => null);
+      if (disposed) return;
+      if (!piano) {
+        status.textContent = 'The piano samples are not loaded, so the app’s bars will be silent.';
+      }
+    }
     metronome ??= new Metronome(context, {
       ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
     });
@@ -417,7 +617,10 @@ export function LabScreen(router: Router): HTMLElement {
     metronome.start();
     running = true;
     section.dataset.jam = 'running';
-    status.textContent = 'Nothing is being judged or recorded — play over it.';
+    section.dataset.trading = String(trading);
+    status.textContent = trading
+      ? `The app takes ${String(tradeBars)} bars, then you take ${String(tradeBars)}. Nothing is recorded and nothing can be passed or failed.`
+      : 'Nothing is being judged or recorded — play over it.';
   }
 
   function stopJam(): void {
@@ -426,8 +629,14 @@ export function LabScreen(router: Router): HTMLElement {
     // would keep playing into whatever screen came next.
     kit?.dispose();
     kit = null;
+    // The call is scheduled a whole trade ahead on the same clock, for the same
+    // reason: stopped means stopped.
+    piano?.stop();
     running = false;
     section.dataset.jam = 'stopped';
+    section.dataset.trading = 'false';
+    tradeLine.hidden = true;
+    tradeLine.dataset.side = '';
     strip?.clear();
   }
 
@@ -435,6 +644,21 @@ export function LabScreen(router: Router): HTMLElement {
     button('Stop', stopJam, { id: 'lab-jam-stop' }),
     el('span.muted', { text: 'Nothing here is scored.' }),
   );
+
+  /**
+   * Every note the learner plays from the start of the app's call onwards.
+   *
+   * Only while a trade is running: the lab does not record, and a screen that
+   * kept notes the rest of the time would be doing exactly that. The list is
+   * emptied at the start of each call and read once at the end of the answer,
+   * so nothing here outlives the two trades it describes.
+   */
+  function collectNote(event: InputNoteEvent): void {
+    if (!trading || !running || event.kind !== 'noteOn') return;
+    answerNotes.push({ midi: event.midi, tMs: event.tMs });
+  }
+  const stopMidi = webMidiSource.onNote(collectNote);
+  const stopKeys = screenKeyboardSource.onNote(collectNote);
 
   // --- the pickers --------------------------------------------------------
 
@@ -662,6 +886,38 @@ export function LabScreen(router: Router): HTMLElement {
     ),
   );
 
+  /**
+   * Trading fours, as a setting on *Jam it* rather than a button of its own.
+   *
+   * It is the same loop, the same bed and the same chart — the only difference
+   * is that the app takes every other few bars and says what yours were worth.
+   * A second transport button would have been a second name for one thing
+   * (`00` §1), and the rung reaches it through the lab tool it already has.
+   */
+  const tradeRow = el('div.filter-row', { id: 'lab-trade-row' });
+  function drawTradeChips(): void {
+    tradeRow.replaceChildren();
+    const options = [
+      { value: 0, label: 'Off' },
+      ...TRADE_BAR_CHOICES.map((count) => ({ value: count, label: `${String(count)} bars each` })),
+    ];
+    for (const option of options) {
+      tradeRow.append(
+        chip(option.label, {
+          id: `lab-trade-${String(option.value)}`,
+          pressed: option.value === 0 ? !trading : trading && tradeBars === option.value,
+          onClick: () => {
+            trading = option.value !== 0;
+            if (option.value !== 0) tradeBars = option.value;
+            drawTradeChips();
+            redraw();
+          },
+        }),
+      );
+    }
+  }
+  drawTradeChips();
+
   // The summary says what the two buttons will act on, the buttons are what
   // the screen is for, the chart is what a jam draws, and the pickers — long,
   // read once, changed rarely — are under all three (`04` §0 R1, R3).
@@ -713,7 +969,7 @@ export function LabScreen(router: Router): HTMLElement {
       ),
     );
   }
-  body.append(summary, actions, status, jam, settings);
+  body.append(summary, actions, chipGroup('Trading fours', tradeRow), status, jam, settings);
   applyLocks();
   drawSummary();
   section.dataset.jam = 'idle';
@@ -721,6 +977,8 @@ export function LabScreen(router: Router): HTMLElement {
   onScreenDispose(section, () => {
     disposed = true;
     if (running) stopJam();
+    stopMidi();
+    stopKeys();
     metronome?.dispose();
     strip?.destroy();
   });

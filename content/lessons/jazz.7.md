@@ -57,8 +57,8 @@ writes the first two A sections once, with a repeat and two endings.
 **Common mistake.** Reaching for rootless voicings before the shells are
 automatic. The shells are what you fall back on when the tempo goes up.
 
-**Tools for this rung.** The accompaniment lab — opened from the Library, not
-from this rung — takes typed numerals with flats and sevenths, so `ii7 V7 I` and `ii7 ♭II7 I` can be built as two loops and played one
+**Tools for this rung.** *Accompaniment lab* opens it with nothing fixed, and
+its typed numerals take flats and sevenths, so `ii7 V7 I` and `ii7 ♭II7 I` can be built as two loops and played one
 after the other until the second stops sounding like a mistake. That is this
 rung's comparison, with the bass line audible under both.
 

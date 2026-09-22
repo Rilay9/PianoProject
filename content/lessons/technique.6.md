@@ -30,11 +30,12 @@ fingers saves working it out over a sonatina later.
 
 **Voicing** is the skill this whole track exists to reach — a chord under one
 hand where the top note is the melody and the rest is accompaniment, and the
-melody has to be louder. The app does not measure it: the exercise opens as an
-ordinary score, judged on the notes and their timing. Aim for the top note's
-velocity at least 1.4 times the rest — a rule of thumb, not musical law, and
-here only your ear checks it. Play the chord and listen for whether you hear a
-tune or a block.
+melody has to be louder. The app measures it: the summary sheet says how many of
+your chords sang the top note at least 1.4 times the rest, and what your average
+was. That number is the exercise's own — a rule of thumb, not musical law. It is
+reported beside the accuracy and not folded into it, so a flat chord with every
+right note is still a full-marks run. Play the chord and listen for whether you
+hear a tune or a block.
 
 **Holding a melody note while the harmony changes underneath** is the pedalling
 problem this rung adds. The pedal has to lift and fall without breaking the held

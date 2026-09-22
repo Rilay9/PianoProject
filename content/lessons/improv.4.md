@@ -48,11 +48,17 @@ notes into a line.
 **Common mistake.** Playing the pentatonic scale up and down. A scale played in
 order is a scale, not a melody; break the order.
 
-**Tools for this rung.** The lab opens on I–V–vi–IV — the same four chords
-in another order, and fixed there; the loop drill above is the I–vi–IV–V one.
+**Tools for this rung.** The lab opens on I–vi–IV–V, the loop drill's own four
+chords, with the left hand spread out under them and no right hand at all —
+that part is yours.
 Start it — one chord a bar is far more changes than the last rung's loop, and
 the grid moving under you is what makes that obvious. Change the key when the pentatonic starts
-playing itself: the numerals do not move and your hand has to.
+playing itself: the numerals do not move and your hand has to. *Trading fours*
+is the two-bar call and answer above with the call played for you: the app takes
+two bars over the loop, you take the next two, and afterwards it says whether
+you came in inside your own bars and how many of your notes were in the key.
+Nothing is recorded and nothing can be passed or failed — an answer that copied
+the call would be the one thing it must never reward.
 
 **How you'll know you've got it.** Four two-bar answers to four different calls,
 each matching the call's rhythm and ending settled, and one chorus built entirely

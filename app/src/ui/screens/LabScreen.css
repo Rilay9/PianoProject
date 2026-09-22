@@ -144,3 +144,39 @@
 .lab-settings .chip:disabled {
   cursor: default;
 }
+
+/* --- trading fours (`04` §3c) -------------------------------------------- */
+
+/* Whose bars these are, directly under the bar counter and above the chart,
+   because during a trade it is the one thing being read: which of the two of
+   you is playing right now. Loud enough to catch out of the corner of an eye
+   while the hands are busy, which is the only way it will ever be read. */
+.lab-trade {
+  margin: 4px 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.lab-trade[hidden] {
+  display: none;
+}
+
+/* The app's bars and the learner's are told apart by weight, not by colour
+   alone (`04` §9): the learner's turn is the one that needs an answer. */
+.lab-trade[data-side='app'] {
+  color: var(--text-muted);
+}
+
+.lab-trade[data-side='learner'] {
+  color: var(--text);
+}
+
+/* What the last answer was worth. Quiet on purpose — it is a measurement taken
+   while the loop keeps going, not a result at the end of a run, and a line that
+   shouted would pull the eye off the bar that is sounding. */
+.lab-trade__verdict {
+  margin: 2px 0 0;
+  min-height: 1.2em;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}

@@ -328,6 +328,9 @@
                 },
                 {
                   "kind": "duet"
+                },
+                {
+                  "kind": "lab"
                 }
               ]
             }
@@ -374,6 +377,10 @@
               ],
               "estimatedDays": 120,
               "tools": [
+                {
+                  "kind": "lab",
+                  "preset": "blues-shuffle"
+                },
                 {
                   "kind": "duet"
                 },
@@ -519,6 +526,9 @@
               "tools": [
                 {
                   "kind": "simon"
+                },
+                {
+                  "kind": "lab"
                 }
               ],
               "levelBand": [

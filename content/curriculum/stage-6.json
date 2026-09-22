@@ -613,6 +613,10 @@
                 {
                   "kind": "lab",
                   "preset": "minor-vamp"
+                },
+                {
+                  "kind": "lab",
+                  "label": "Lab — your own chords"
                 }
               ]
             }

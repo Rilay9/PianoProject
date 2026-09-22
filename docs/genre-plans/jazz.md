@@ -54,7 +54,7 @@ implemented. They are listed with what already exists that would make them cheap
 ### Modes for this rung
 
 - **Lab · Jazz — two five one** — `BUILT`. Comp over the changes with a walking bass under you, ungraded, for as long as you like.
-- **Trading fours** — `NOT BUILT`. Two bars from the app, two from you, round and round over the bed.
+- **Trading fours** — `BUILT` (2026-09-21, a *Jam it* setting on the lab; Entry 28). Two bars from the app, two from you, round and round over the bed.
 
 ---
 

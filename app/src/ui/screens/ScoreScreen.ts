@@ -20,7 +20,8 @@ import { barsPerWindowFor, isTablet } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
-import type { CatalogItem } from '../../curriculum/types';
+import type { CatalogItem, Lesson } from '../../curriculum/types';
+import { lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
 import { getMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -30,7 +31,11 @@ import {
   type KeysView,
   type PlaybackHands,
 } from '../../data/settingsStore';
-import { evaluateOutcome } from '../../engine/Scoring';
+import {
+  demandsTechniqueMeasure,
+  evaluateOutcome,
+  techniqueMeasureFor,
+} from '../../engine/Scoring';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { recordRun } from '../../data/progressStore';
 import type { Mode, SessionScore } from '../../engine/types';
@@ -53,6 +58,7 @@ import { waitingForLine } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
 import { openSheet } from '../widgets';
+import { hasChordSymbols } from '../openItem';
 
 /**
  * What the four modes are called on the screen (P21c B2).
@@ -219,6 +225,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     else router.navigateDrill(tourId);
   }
   let item: CatalogItem | undefined;
+  /**
+   * The rung this piece is practised on, once the curriculum has loaded.
+   *
+   * Only the pass thresholds use it (`02` Part G, built 2026-09-21), and only
+   * at the end of a run, which is why a failed or slow curriculum load is
+   * silent: the run is still judged, against the learner's own settings, and
+   * a screen that refused to open because it could not name a rung would be
+   * trading the piece for the paperwork.
+   */
+  let rung: Lesson | undefined;
   let model: ScoreModel | null = null;
   let renderer: WindowRenderer | null = null;
   let session: ScoreSession | null = null;
@@ -1077,6 +1093,28 @@ export function ScoreScreen(router: Router): HTMLElement {
   const sectionRow = menuRow('Section', 'Jump to a named part of the piece.', sectionSelect);
   sectionRow.hidden = true;
 
+  /**
+   * The way into the chord chart (`04` §3b, built 2026-09-21).
+   *
+   * The chart screen had a route and no door: nothing in the app called
+   * `router.navigateChart`, so a screen with a form tracker, a count-off and a
+   * comping loop could be reached only by typing its URL. This is the door
+   * from the piece itself — the place somebody looking at *Fly Me to the
+   * Moon* would look for it — and the lesson page has the other one.
+   *
+   * Hidden until the piece is known to carry chord symbols, because a chart of
+   * a piece with none is a screen of empty bars.
+   */
+  const chartButton = button('Open the chart', () => {
+    router.navigateChart(itemId);
+  }, 'score-chart');
+  const chartRow = menuRow(
+    'Chord chart',
+    'The same piece as a lead sheet: one big chord symbol a bar, a form tracker and a count-off. For playing from the chords rather than reading the notes.',
+    chartButton,
+  );
+  chartRow.hidden = true;
+
   menuStash.append(
     // A performance is one pass through. Offering a restart during one would
     // be offering to make it not a performance (replan §8).
@@ -1086,6 +1124,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // judged. The Loop and the Ladder are the next pair, in that order.
     rhythmRow,
     sectionRow,
+    chartRow,
     menuRow('Loop', 'Repeat a few bars over and over until they are yours. Double-tap the sheet to mark them.', loopButton),
     ladderRow,
     menuRow('Metronome', 'The click, on or off.', metronomeButton),
@@ -1422,6 +1461,11 @@ export function ScoreScreen(router: Router): HTMLElement {
       ),
       metronomeVolume: midi.metronomeVolume,
       ...(rhythmRunFor(runMode) ? { rhythmOnly: true } : {}),
+      // The score's own swing marking, measured from the file by the build
+      // and read here since 2026-09-21. Not from the genre, not from the
+      // title: `00` §1a. With it on, an off-beat eighth is judged where a
+      // shuffle puts it rather than where it is written.
+      ...(item?.notation?.swungMark === true ? { swing: true } : {}),
       playbackHands: runMode === 'listen' ? 'both' : settings.playbackHands,
       // No input, no first note: a run following nothing must keep time by
       // the clock, which is the whole point of Tempo without a piano.
@@ -1771,25 +1815,20 @@ export function ScoreScreen(router: Router): HTMLElement {
    * one the ladder reaches first. Failure is silent and leaves the panel out:
    * a score screen must open with or without its prose.
    */
+  async function findRung(id: string): Promise<void> {
+    try {
+      rung = lessonForItem(await loadCurriculum(), id);
+    } catch {
+      // Judged against the learner's settings instead; see `rung`'s comment.
+    }
+  }
+
   async function fillSidePanel(target: CatalogItem): Promise<void> {
     const body = document.getElementById('score-side-body');
     if (!body) return;
     try {
       const curriculum = await loadCurriculum();
-      let found: { id: string; title: string; textFile: string } | null = null;
-      for (const stage of curriculum.stages) {
-        for (const unit of stage.units) {
-          for (const lesson of unit.lessons) {
-            if (found) break;
-            if (
-              lesson.songOptions.includes(target.id) ||
-              lesson.exerciseOptions.includes(target.id)
-            ) {
-              found = { id: lesson.id, title: lesson.title, textFile: lesson.textFile };
-            }
-          }
-        }
-      }
+      const found = lessonForItem(curriculum, target.id);
       if (!found) return;
       const summary = document.getElementById('score-side-summary');
       // The rung's title alone. This is the heading over its text beside the
@@ -1953,13 +1992,55 @@ export function ScoreScreen(router: Router): HTMLElement {
      * out of the history, because the practice is real and the minutes count.
      */
     const rhythmRun = score.rhythmOnly === true;
-    const measured = evaluateOutcome(score, {
+    // The rung's own pass, where this piece is on one (`02` Part G, built
+    // 2026-09-21). `masteryCriteriaFor` falls back to exactly this pair for a
+    // piece on no rung and for a rung that states no number of its own, so
+    // the Settings pair still decides every run the curriculum is silent
+    // about.
+    const criteria = masteryCriteriaFor(rung, {
       passAccuracy: settings.passAccuracyPct / 100,
       passTempoPct: settings.passTempoPct,
       masterAccuracy: 0.97,
       masterTempoPct: 100,
     });
-    const outcome = rhythmRun ? { ...measured, passed: false, masterEligible: false } : measured;
+    const measured = evaluateOutcome(score, criteria);
+    /**
+     * The number this exercise is actually about (P12a, wired 2026-09-21).
+     *
+     * `articulationScore`, `voicingScore` and `shapingScore` were written and
+     * had no caller, so a staccato study was judged on which notes were
+     * played and not on how long they were held — the one thing it exists to
+     * teach. Read off the item's own `drill` block, which is where the
+     * generator wrote the target when it wrote the notes.
+     *
+     * A rhythm run measures none of them: it judges timing and not pitch, so
+     * there is no chord to balance and no line to shape.
+     */
+    const technique = rhythmRun
+      ? null
+      : techniqueMeasureFor(
+          item?.drill,
+          score,
+          session?.prepared?.steps ?? [],
+          // The same share the notes are judged by, so "enough of them" means
+          // one thing on this sheet rather than two.
+          criteria.passAccuracy,
+        );
+    /**
+     * Whether missing it can stop the pass.
+     *
+     * Only where the rung says so in `mastery.custom`, and none of the four
+     * technique rungs does. So the measure is shown and the pass is decided
+     * the way it always was — which is what those lessons now say, rather
+     * than the app quietly raising the bar under them.
+     */
+    const techniqueBinds =
+      technique !== null && demandsTechniqueMeasure(rung?.mastery.custom, technique.kind);
+    const outcome = rhythmRun
+      ? { ...measured, passed: false, masterEligible: false }
+      : techniqueBinds && !technique.met
+        ? { ...measured, passed: false, masterEligible: false }
+        : measured;
 
     // Recorded before the sheet is drawn, and not awaited: the numbers are
     // already final, and a slow write should not delay the learner seeing
@@ -1977,6 +2058,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (item && !sightReadRepeat && mode !== 'listen' && mode !== 'free') {
       void recordRun({
         itemId: item.id,
+        // Which rung judged it. `SessionRow` has carried the field since the
+        // store was written and nothing filled it from here, so a stored run
+        // could not say which pair of numbers it had been held to.
+        ...(rung === undefined ? {} : { lessonId: rung.id }),
         // The generated phrase's seed, so the store can tell Today's read
         // (the run carrying the day's seed, `04` §2) from any other run.
         ...(router.route.seed === undefined ? {} : { seed: router.route.seed }),
@@ -2044,6 +2129,16 @@ export function ScoreScreen(router: Router): HTMLElement {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
     }
     addStat(lines, 'Missed', String(score.missedTotal));
+    // Beside the accuracy it is deliberately not part of, and said in words
+    // rather than as a bare number: "82%" under "Legato" would be read as a
+    // second accuracy, which is exactly the confusion these exist to avoid.
+    if (technique) {
+      addStat(
+        lines,
+        technique.label,
+        techniqueBinds ? `${technique.text} — this rung requires it` : technique.text,
+      );
+    }
     // The bars that went worst, by printed number, so the learner knows where
     // to look before choosing `Loop the weak bars` (`08` §6.2).
     const weakest = [...score.hotSpots]
@@ -2491,6 +2586,12 @@ export function ScoreScreen(router: Router): HTMLElement {
         return;
       }
       title.textContent = item.title;
+      // Unconditional, unlike the side panel below, which is a tablet's
+      // second column: the rung decides what this run has to reach, and that
+      // cannot depend on how wide the screen is.
+      void findRung(item.id);
+      // Shown only where the file has chord symbols in it (`openItem.ts`).
+      chartRow.hidden = !hasChordSymbols(item);
       if (tablet) void fillSidePanel(item);
       sections = item.teaching?.sections ?? [];
       if (sections.length > 0) {

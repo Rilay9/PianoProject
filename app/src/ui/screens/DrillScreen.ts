@@ -20,7 +20,8 @@
 import './DrillScreen.css';
 import type { Router } from '../../router';
 import { findItem, loadCurriculum } from '../../curriculum/load';
-import type { CatalogItem } from '../../curriculum/types';
+import type { CatalogItem, Lesson } from '../../curriculum/types';
+import { lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
 import {
   ChordDictationDrill,
   BackingTrackDrill,
@@ -37,6 +38,7 @@ import {
   MISS_PAUSE_MS,
   promptsToGoOver,
   showsAnswerAfter,
+  formPosition,
   staffPolicy,
   SIMON_HELP_LEVELS,
   SIMON_STEP_MS,
@@ -171,6 +173,16 @@ const MANUAL_ADVANCE = new Set<string>([
 /** How often the chord-boundary rule is given a chance to close a chord. */
 const DICTATION_TICK_MS = 60;
 
+/**
+ * How often the form chart re-reads where in the loop the music is.
+ *
+ * Fast enough that the highlight lands on the beat rather than after it — a
+ * bar at 84 bpm in 4/4 is nearly three seconds, so this is well inside a
+ * twentieth of one — and slow enough that it costs nothing: all it does is
+ * write a data attribute on twelve cells.
+ */
+const FORM_TICK_MS = 100;
+
 /** docs/02 Part G: a drill passes at the same accuracy a piece does. */
 export function drillOutcome(
   result: DrillResult,
@@ -251,6 +263,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   section.append(stripHost);
 
   let item: CatalogItem | undefined;
+  /**
+   * The rung this drill is an exercise of, once the curriculum has loaded.
+   *
+   * Read only when a set is judged (`02` Part G, built 2026-09-21): 2.5 asks
+   * for 95 % and 4.4 for 97 %, and until now every drill on every rung passed
+   * at the one number in Settings. A failed load leaves it undefined and the
+   * set is judged against that number, which is what happened before.
+   */
+  let rung: Lesson | undefined;
   let tips: Tips | null = null;
   let drill: Drill | null = null;
   let current: DrillPrompt | null = null;
@@ -272,6 +293,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let lastPedalReport = '';
   /** Drives the chord-boundary rule's silence half; see `ChordDictationDrill`. */
   let dictationTimer: ReturnType<typeof setInterval> | null = null;
+  /** The form tracker's clock: when this chorus started, and the tick that moves it. */
+  let formStartedAtMs = 0;
+  let formTimer: ReturnType<typeof setInterval> | null = null;
   /** The click the rhythm drill counts in and plays along with. */
   let metronome: Metronome | null = null;
   let stopMetronomeTicks: (() => void) | null = null;
@@ -453,6 +477,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function clearPlayback(): void {
     for (const timer of playbackTimers) clearTimeout(timer);
     playbackTimers = [];
+    stopFormTicker();
     // The play-along staff is part of the chain sounding, not part of the card
     // (`04` §5c-2), so it goes wherever the sound goes. Declared below.
     disposeChainStaff();
@@ -510,6 +535,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function playPrompt(target: DrillPrompt | null): void {
     clearPlayback();
     if (!target?.playback?.length) return;
+    // The chart follows the sound, so its clock starts where the sound does
+    // and restarts on every `▶ Play again`.
+    if (drill instanceof BackingTrackDrill && drill.chart) startFormTicker(drill);
     // `05` §11.4: the microphone hears the phone's own speaker, so an ear drill
     // that played its prompt out loud would be listening to itself and marking
     // the learner right for saying nothing.
@@ -807,6 +835,51 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       target.tick(performance.now());
       if (target.chordsHeard.length !== before) draw();
     }, DICTATION_TICK_MS);
+  }
+
+  function stopFormTicker(): void {
+    if (formTimer !== null) clearInterval(formTimer);
+    formTimer = null;
+  }
+
+  /**
+   * Moves the chart's highlight along with the loop.
+   *
+   * Written straight onto the cells rather than through `draw()`, for the
+   * reason `flashNoteName` is: a full redraw per bar would rebuild the grid,
+   * the controls and the strip twelve times a chorus to move one border.
+   *
+   * The position is computed from elapsed time by `formPosition`, which is in
+   * the engine and tested there — the screen only paints it.
+   */
+  function startFormTicker(target: BackingTrackDrill): void {
+    stopFormTicker();
+    formStartedAtMs = performance.now();
+    const paint = (): void => {
+      const { bar, pass } = formPosition(
+        performance.now() - formStartedAtMs,
+        target.barMs,
+        target.bars,
+      );
+      const readout = document.getElementById('drill-form');
+      if (readout) {
+        readout.textContent = `Bar ${String(bar + 1)} of ${String(target.bars)} · pass ${String(pass + 1)}`;
+      }
+      const grid = document.getElementById('drill-form-grid');
+      for (const cell of grid?.children ?? []) {
+        if (cell instanceof HTMLElement) {
+          cell.dataset.current = String(Number(cell.dataset.bar) === bar + 1);
+        }
+      }
+    };
+    paint();
+    formTimer = setInterval(() => {
+      if (disposed || finished) {
+        stopFormTicker();
+        return;
+      }
+      paint();
+    }, FORM_TICK_MS);
   }
 
   // --- the count-in click ----------------------------------------------------
@@ -1252,14 +1325,46 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // back beside the name rather than being lost.
         attachChainHost();
         break;
-      case 'backing-track':
+      case 'backing-track': {
+        // The chart, where the row asked for one (`chartView`, built
+        // 2026-09-21). The same grid the lab's *Jam it* draws, cell for cell
+        // and class for class, because it is the same fact about the same
+        // form and two pictures of it would be two things to keep in step.
+        const bars = current.playback ?? [];
+        // Held in a local for the reason the card above is: `drill` is a
+        // mutable binding and the compiler drops its narrowing inside a
+        // closure.
+        const loop = drill;
+        if (loop instanceof BackingTrackDrill && loop.chart) {
+          const grid = el('div.chart-grid', { id: 'drill-form-grid' });
+          bars.forEach((_, index) => {
+            grid.append(
+              el('div.chart-cell', {
+                'data-bar': index + 1,
+                'data-current': index === 0,
+                text: loop.labels[index] ?? String(index + 1),
+              }),
+            );
+          });
+          stage.append(
+            el('p.drill-readout', {
+              id: 'drill-form',
+              // "pass", not "chorus", for the reason the lab gives: a chorus
+              // is a tune's form and this is a progression going round.
+              text: `Bar 1 of ${String(bars.length)} · pass 1`,
+            }),
+            grid,
+          );
+          break;
+        }
         stage.append(
           el('div.ear-card', {
             id: 'drill-loop-card',
-            text: `${String((current.playback ?? []).length)} bars`,
+            text: `${String(bars.length)} bars`,
           }),
         );
         break;
+      }
       case 'transposition': {
         // The prompt is four bars of music, so it has to be engraved rather
         // than described. Engraved once per card and *re-appended* on every
@@ -1286,6 +1391,26 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         break;
       }
       default: {
+        // A card whose label *is* the answer names nothing until the attempt
+        // has been judged (`04` §5c, built 2026-09-21): the melodic-dictation
+        // drill printed `C4 E4 G4 E4` across the card before a key was
+        // pressed. The same glyph the three `ear-*` kinds use, for the same
+        // reason, and the same replay — `▶ Play again` — is already on the
+        // row below, because hearing the phrase again is the question being
+        // repeated and not the answer being given away.
+        //
+        // After the answer the staff goes up (`STAFF_POLICY` has
+        // `call-response` as `after-answer`) and the names come back with it,
+        // which is where a dictation drill is supposed to show its working.
+        // Held in a local because the check below runs inside a closure, and
+        // `current` is a mutable binding the compiler will not keep narrowed
+        // across one.
+        const card = current;
+        const judged = drill.result().answers.some((answer) => answer.promptIndex === card.index);
+        if (card.labelIsAnswer === true && !judged) {
+          stage.append(el('div.ear-card', { id: 'drill-ear-card', text: EAR_GLYPH }));
+          break;
+        }
         // The card is built for a chord symbol — 'C', 'G7', 'Fmaj7' — at a size
         // you could read across a room. A backing-track drill puts its whole
         // title in the same place, and 'Left-hand accompaniment patterns — 1'
@@ -1701,6 +1826,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         return 'Play the note shown, in any octave.';
       case 'find-key':
         return 'Press that key on the piano, or on the keys below.';
+      // `call-response` is here for melodic dictation, which is an ear card
+      // like the five below it. The five-finger and accompaniment patterns are
+      // built as `call-response` too and the sentence is true of them as well
+      // — they are played to the learner and they carry the same replay — so
+      // this is one line for both rather than a flag.
+      case 'call-response':
       case 'ear-interval':
       case 'ear-chord':
       case 'ear-progression':
@@ -2020,7 +2151,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     }
     const result = drill.result();
     const settings = getSettings();
-    const outcome = drillOutcome(result, settings.passAccuracyPct);
+    // The rung's own accuracy, where this drill is an exercise of one
+    // (`02` Part G, built 2026-09-21). `drillOutcome` still takes a
+    // percentage, so the fraction the curriculum carries is turned into one
+    // in `masteryCriteriaFor` and handed back as a percentage here.
+    const criteria = masteryCriteriaFor(rung, {
+      passAccuracy: settings.passAccuracyPct / 100,
+      passTempoPct: settings.passTempoPct,
+      masterAccuracy: 0.97,
+      masterTempoPct: 100,
+    });
+    const outcome = drillOutcome(result, criteria.passAccuracy * 100);
     const durationMs = Date.now() - startedAtMs;
     lastResult = { result, outcome, durationMs };
     // What the learner improvised, if this was a kind that keeps it.
@@ -2158,6 +2299,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     const { result, outcome, durationMs } = lastResult;
     void recordRun({
       itemId: item.id,
+      // Which rung judged it — see the Score screen's note on the same field.
+      ...(rung === undefined ? {} : { lessonId: rung.id }),
       mode: `drill:${result.kind}`,
       tempoPct: 100,
       accuracy: result.accuracy,
@@ -2969,6 +3112,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       return;
     }
     (header.querySelector('h1') as HTMLElement).textContent = item.title;
+    // Before the first card, so a set that runs its course fast is still
+    // judged by the rung that set it. Not awaited: nothing on the screen
+    // depends on it until `finish()`.
+    void loadCurriculum()
+      .then((curriculum) => {
+        rung = lessonForItem(curriculum, itemId);
+      })
+      .catch(() => {
+        // Judged against the learner's settings instead; see `rung` above.
+      });
 
     if (isSightReading(item)) {
       // Generated notation, not a prompt loop: it belongs on the Score screen

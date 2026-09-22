@@ -445,6 +445,30 @@ export interface BackingTrackOptions {
   /** Chord loop the accompaniment plays; the UI turns this into audio. */
   loop?: number[][];
   barMs?: number;
+  /**
+   * What each bar's chord is called, for the chart (`chartView`, built
+   * 2026-09-21).
+   *
+   * `drill.jam.form-tracker` is *Play the form with the chart* and carried
+   * `chartView: true` with nothing reading it, so the one drill in the app
+   * whose name is the chart had no chart on it: a card saying "12 bars" and
+   * the learner counting the form in their head, which is the thing the rung
+   * exists to stop them having to do.
+   */
+  labels?: readonly string[];
+  /** Whether the screen draws the chart. Off unless the row asks for it. */
+  chart?: boolean;
+}
+
+/** Which bar of the form is sounding, and which time round. Pure, so it is testable. */
+export function formPosition(
+  elapsedMs: number,
+  barMs: number,
+  bars: number,
+): { bar: number; pass: number } {
+  if (barMs <= 0 || bars <= 0) return { bar: 0, pass: 0 };
+  const whole = Math.max(0, Math.floor(elapsedMs / barMs));
+  return { bar: whole % bars, pass: Math.floor(whole / bars) };
 }
 
 /**
@@ -454,7 +478,11 @@ export interface BackingTrackOptions {
 export class BackingTrackDrill implements Drill {
   readonly kind = 'backing-track' as const;
   private readonly loop: number[][];
-  private readonly barMs: number;
+  readonly barMs: number;
+  /** The chord name of each bar, where the row gave them. */
+  readonly labels: readonly string[];
+  /** `chartView` on the catalog row: draw the form rather than count it. */
+  readonly chart: boolean;
   private started = false;
   private readonly played: { midi: number; velocity: number; tMs: number }[] = [];
 
@@ -466,6 +494,13 @@ export class BackingTrackDrill implements Drill {
       [48, 52, 55],
     ];
     this.barMs = options.barMs ?? 2000;
+    this.labels = options.labels ?? [];
+    this.chart = options.chart === true;
+  }
+
+  /** How many bars go round. */
+  get bars(): number {
+    return this.loop.length;
   }
 
   get current(): DrillPrompt | null {

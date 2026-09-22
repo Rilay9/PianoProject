@@ -433,6 +433,10 @@
                 },
                 {
                   "kind": "blind"
+                },
+                {
+                  "kind": "lab",
+                  "label": "Lab — your own chords"
                 }
               ],
               "levelBand": [
@@ -562,6 +566,10 @@
                 {
                   "kind": "lab",
                   "preset": "jazz-comping"
+                },
+                {
+                  "kind": "lab",
+                  "label": "Lab — your own chords"
                 }
               ],
               "levelBand": [

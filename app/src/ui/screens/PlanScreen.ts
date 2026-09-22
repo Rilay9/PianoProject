@@ -184,6 +184,14 @@ export function PlanScreen(router: Router): HTMLElement {
   /** Set by a drag so the click it produced does not also toggle the track. */
   let suppressClickFor: string | null = null;
   let activeTracks: string[] = [];
+  /**
+   * The unit the placement test put the learner on, or `''`.
+   *
+   * Read by `nextRecommended` so *Next up* starts there. Before 2026-09-21
+   * this row was written by two screens and read by none, and both of those
+   * screens told the learner their plan would follow it.
+   */
+  let placedAt = '';
 
   const linkRow = el('div.plan-links', { id: 'plan-links' });
   header.append(trackRow);
@@ -266,6 +274,9 @@ export function PlanScreen(router: Router): HTMLElement {
     const recommended = nextRecommended(curriculum, records, activeTracks, {
       requireTwoSongs: getSettings().requireTwoSongs,
       strictPrerequisites: getSettings().strictPrerequisites,
+      // The placement's starting point, so *Next up* agrees with what the
+      // placement test told the learner it had recorded (built 2026-09-21).
+      ...(placedAt === '' ? {} : { startAt: placedAt }),
     });
     drawNext(recommended);
     list.replaceChildren();
@@ -735,9 +746,11 @@ export function PlanScreen(router: Router): HTMLElement {
       mastered: row.status === 'mastered',
     }));
     activeTracks = activeTracksFor(plan, loaded);
+    placedAt = plan.placement?.unitId ?? '';
     // Expand the stage being worked on, so the screen opens where the learner is.
     const recommended = nextRecommended(loaded, records, activeTracks, {
       requireTwoSongs: getSettings().requireTwoSongs,
+      ...(placedAt === '' ? {} : { startAt: placedAt }),
     });
     if (recommended) expanded.add(recommended.stageNumber);
     drawTracks();

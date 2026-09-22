@@ -149,6 +149,24 @@ export interface DrillPrompt {
   playback?: { midi: number[]; /** Milliseconds after the prompt. */ atMs: number }[];
   /** Pitches that count as a correct answer. */
   expected: number[];
+  /**
+   * `label` names the notes, so the card must not print it until the attempt
+   * has been judged (`04` §5c, built 2026-09-21).
+   *
+   * The melodic-dictation drill built its label out of the note names of the
+   * phrase it was about to play — `C4 E4 G4 E4` in letters across the card,
+   * before a key had been pressed — which turns an ear drill into a reading
+   * drill and makes the prompt impossible to get wrong. The three `ear-*`
+   * kinds draw a glyph instead for exactly this reason; the flag is how a
+   * kind that is *sometimes* an ear card says which of its prompts is one,
+   * because `call-response` is also what a five-finger pattern is built as
+   * and `C · 1 of 4` gives nothing away.
+   *
+   * The label is still the prompt's name everywhere it is read after the
+   * answer — the staff's title, the going-over — so nothing is lost by
+   * withholding it from the card.
+   */
+  labelIsAnswer?: boolean;
   /** True when the answer is a sequence rather than a set. */
   ordered?: boolean;
   /** Staff hint for note-flash: which clef the note was drawn on. */

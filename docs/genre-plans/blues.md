@@ -79,7 +79,7 @@ implemented. They are listed with what already exists that would make them cheap
 
 ### Modes for this rung
 
-- **Trading fours** — `NOT BUILT`. The app plays two bars over the drum bed, you answer two. *The* teaching device for blues, and both halves exist — the `call-response` drill kind and `backingLoop`.
+- **Trading fours** — `BUILT` (2026-09-21, a *Jam it* setting on the lab; Entry 28). The app plays two bars over the drum bed, you answer two. *The* teaching device for blues, and both halves exist — the `call-response` drill kind and `backingLoop`.
 - **Blind on the turnaround** — `BUILT`. You do not know the twelve-bar form if you are reading it. Blind over bars nine to twelve is the test.
 
 ---
@@ -122,7 +122,7 @@ implemented. They are listed with what already exists that would make them cheap
 
 ### Modes for this rung
 
-- **Trading fours** — `NOT BUILT`. A chorus is a conversation. Same build as the Stage 5 rung wants.
+- **Trading fours** — `BUILT` (2026-09-21, a *Jam it* setting on the lab; Entry 28). A chorus is a conversation. Same build as the Stage 5 rung wants.
 - **Lab · Blues** — `BUILT`. Somewhere to improvise a whole chorus with the form kept for you.
 
 ---

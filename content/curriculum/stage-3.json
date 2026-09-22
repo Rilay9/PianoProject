@@ -208,6 +208,10 @@
                 },
                 {
                   "kind": "play"
+                },
+                {
+                  "kind": "lab",
+                  "label": "Lab — your own chords"
                 }
               ],
               "levelBand": [

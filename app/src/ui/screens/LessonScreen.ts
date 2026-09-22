@@ -23,7 +23,7 @@ import { recordPlacement } from '../../data/planStore';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { badge, button, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
-import { isPlayable, openItem } from '../openItem';
+import { hasChordSymbols, isPlayable, openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 import { openFinderSheet } from '../finderSheet';
 import { confirmMessage, lockState, type LockState } from '../../curriculum/prerequisites';
@@ -154,6 +154,24 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
             // Secondary, not primary (R3): a rung with nine exercises had
             // nine blue buttons and therefore no answer to "what now?".
             button('▶', () => open(item), { ariaLabel: `Open ${item.title}` }),
+            // The other door into the chord chart (`04` §3b, built
+            // 2026-09-21; the Score screen's ⋯ sheet has the first). `jam`
+            // and `jazz.5` are the two rungs whose lessons describe the
+            // chart, and both are rungs of chord-symbol songs — so the door
+            // goes on the row rather than in the rung's `tools`, where it
+            // would have to name one of the rung's songs and would be silent
+            // about the rest of them.
+            //
+            // Drawn only where the file has chord symbols in it, so it never
+            // appears over a piece that has none.
+            ...(hasChordSymbols(item)
+              ? [
+                  button('Chart', () => { router.navigateChart(item.id); }, {
+                    variant: 'quiet',
+                    ariaLabel: `Open the chord chart for ${item.title}`,
+                  }),
+                ]
+              : []),
             button('Know it', () => void markKnown(item.id), { variant: 'quiet' }),
           ],
       onClick: importNeeded ? undefined : () => open(item),
@@ -400,7 +418,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    * satisfies it. Where the rung has no playable song at all the button is not
    * drawn — a duet with nothing to duet against is a dead control.
    */
-  function toolButton(tool: LessonTool, rung: Lesson): HTMLElement | null {
+  function toolButton(tool: LessonTool, rung: Lesson, sameKindBefore = 0): HTMLElement | null {
     const scorePiece = (): string | null => {
       if (tool.item) return rung.songOptions.includes(tool.item) ? tool.item : null;
       return (
@@ -413,7 +431,16 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     const make = (label: string, onClick: () => void): HTMLElement => {
       const node = button(tool.label ?? label, onClick, {
         variant: 'quiet',
-        id: `lesson-tool-${tool.kind}`,
+        // A rung may name a kind twice — eight rungs now carry both a lab
+        // preset and the lab with nothing fixed, because the preset locks the
+        // very control the lesson teaches (built 2026-09-21). Two elements
+        // with one id is a document that cannot be queried, so the second and
+        // later get a suffix and the first keeps the id every existing test
+        // and stylesheet already names.
+        id:
+          sameKindBefore === 0
+            ? `lesson-tool-${tool.kind}`
+            : `lesson-tool-${tool.kind}-${String(sameKindBefore + 1)}`,
       });
       // What this button says it will open, on the button. The e2e compares it
       // against where the tap actually lands, so the assertion is "the control
@@ -462,8 +489,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   function draw(): void {
     if (!lesson) return;
     const rung = lesson;
+    const seenKinds = new Map<string, number>();
     const tools = (rung.tools ?? [])
-      .map((tool) => toolButton(tool, rung))
+      .map((tool) => {
+        const before = seenKinds.get(tool.kind) ?? 0;
+        seenKinds.set(tool.kind, before + 1);
+        return toolButton(tool, rung, before);
+      })
       .filter((node): node is HTMLElement => node !== null);
     toolRow.replaceChildren(...tools);
     toolsBlock.hidden = tools.length === 0;
