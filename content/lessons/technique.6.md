@@ -46,6 +46,13 @@ note. Slowly, and listen to the note rather than watching the foot.
 independence exercise are for: a page of sixteenths that stays even only if
 the hand does.
 
+**Tools for this rung.** *Climb the ladder* opens the four-octave A flat
+arpeggio hands together — the first of this rung's written-out exercises —
+loops the whole of it and turns the Ladder on in Keep tempo. A clean pass
+raises the tempo a notch and a pass with a mistake drops one, which is the
+rotation tested at the only thing that tests it: speed. For the arpeggios
+further down the list, set the loop yourself and switch the same row on.
+
 **How you'll know you've got it.** A seventh chord you recognise rather than
 spell. An Alberti figure at speed with a hand that is not tired afterwards — if
 it is, you played it with the fingers. And a voiced chord where you hear a tune

@@ -52,7 +52,9 @@ exercises on the previous technique rung prepare.
 pulses, and *Play it as a duet* holds one of them for you: it opens the
 two-against-three exercise, you take the hand playing the three, the app plays the two, and the disagreement is something you hear rather than something you
 are also producing. Then swap hands, because that is the other exercise.
-*Climb the ladder* is the other button, and it loops the octave study.
+*Climb the ladder* is the other button: it takes the broken-octave study in A,
+left hand, loops the whole of it and raises the tempo a notch for each clean
+pass.
 
 **How you'll know you've got it.** The same inner fingering in thirds twice
 running without deciding it again. An octave in D flat that takes the fourth

@@ -44,11 +44,15 @@ there.
 **Common mistake.** Learning the loop in five keys as five separate things.
 
 **Tools for this rung.** Knowing the loop in twelve keys means playing it in
-twelve keys, and the lab's key setting is the cheapest way to get there. The
-lab preset on this rung, *Ballad — broken chords*, fixes its progression at
-I–vi–IV–V rather than this rung's loop, but its key is free: same
-progression, a different tonic each day, nothing to rewrite. A key is
-one choice on that screen, which is exactly the claim this rung is making.
+twelve keys, and the lab's key setting is the cheapest way to get there.
+*Accompaniment lab* opens *Ballad — broken chords*, which fixes its progression
+at I–vi–IV–V rather than this rung's loop, but leaves the key free: same
+progression, a different tonic each day, nothing to rewrite. It opens on *Hold
+the chords*, so the loop runs underneath and the tune over it is yours, and at
+the end of a time round it says how many of your notes were in the scale. A key
+is one choice on that screen, which is exactly the claim this rung is making.
+*Free play* names any three or more notes you hold down and says which is in
+the bass, so a voicing found in a new key can be checked without a chart.
 
 **How you'll know you've got it.** Someone names a key and you play the loop in
 it, with inversions, without working it out.

@@ -745,7 +745,8 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "pop-four-chord"
+                  "preset": "pop-four-chord",
+                  "mode": "tune"
                 },
                 {
                   "kind": "play"
@@ -1134,7 +1135,8 @@
               "tools": [
                 {
                   "kind": "lab",
-                  "preset": "blues-shuffle"
+                  "preset": "blues-shuffle",
+                  "mode": "off"
                 }
               ],
               "levelBand": [

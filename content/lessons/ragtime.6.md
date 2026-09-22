@@ -94,8 +94,11 @@ is automatic — every time.
 
 **Tools for this rung.** With a loop set, the *Ladder* does the taking-up
 for you — a clean pass goes up a notch, a pass with a missed leap comes down
-one — so the speed you can actually hold is found rather than guessed. Loop one strain, not the
-rag.
+one — so the speed you can actually hold is found rather than guessed. Loop one
+strain, not the rag. The rung's one button is *Play it as a duet*: it opens
+*School of Ragtime* with the right hand yours and the app holding the left, so
+the syncopation can be placed against a bass that is not also your problem.
+Swap hands and the left one gets rehearsed against a right it cannot drag.
 
 **How you'll know you've got it.** One complete rag, all its strains, hands
 together, at the tempo printed on the music, with the left hand steady enough

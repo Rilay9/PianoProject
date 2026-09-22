@@ -19,15 +19,14 @@ have to think about in a scale is a shape you cannot think about in a piece.
 **Scales.** The work is the thumb. Everything else is fingers stepping; the
 thumb passing under is the only moment where the hand changes shape, and it is
 the only moment worth watching. Play slowly enough that it never jerks. The
-fingering printed on the scale, arpeggio, chromatic and inversion exercises is
-the standard one — it is not a suggestion,
+fingering printed on these exercises is the standard one — not a suggestion,
 and inventing your own here will cost you later in a key you have not met yet.
 
 **Contrary motion** is easier than it sounds and worth doing early: both thumbs
-move at the same time, so the hands mirror each other and you can feel the
-passage rather than track two different ones. The two-octave C major here is
-the one to start on; it is written with the left hand starting on the C above
-the right hand's, so in the first bar the hands pass through each other.
+move at the same time, so the hands mirror each other rather than tracking two
+different passages. The two-octave C major here is the one to start on: the
+left hand begins on the C above the right hand's, so in the first bar they pass
+through each other.
 
 **Arpeggios and inversions** are the same shape reached three ways. The C major
 arpeggio hands together is the arpeggio; play the inversions until you stop
@@ -39,26 +38,26 @@ chord symbol later instead of spelling it out.
 again in D. Playing either alone is easy; playing them one after the other and
 hearing the difference is the point. The app measures how long you hold each key
 here: the sheet says what share of your notes were the right length, and what
-the average one took of its written value. That sits beside the accuracy rather
-than inside it, so a staccato phrase of right notes held too long is a
-full-marks run with a line under it saying they were twice as long as they
-should have been. A note it never saw released is not counted; a microphone
-cannot tell.
+the average one took of its written value. That sits beside the accuracy rather than inside it, so a
+staccato phrase of right notes held too long is a full-marks run with a line
+under it saying so. A note it never saw released is not counted.
 
 Two exercises pass this rung. Take the scales at a tempo where the thumb is
 silent.
 
 **An étude to put it in.** Three of Lemoine's *Études enfantines*, Op. 37 —
 No. 1, No. 2 and No. 35 — are on this rung as pieces: one page each, one
-figure each, the same finger work as the exercises above: No. 1 runs a scale in the right
-hand over left-hand chords, No. 2 gives the scale to the left hand under
-right-hand chords, and No. 35 is repeated triads in 6/8.
-Play one after the exercises; it is where the drill turns into music.
+figure each, the same finger work as the exercises above: No. 1 runs a scale in the right hand over
+left-hand chords, No. 2 gives it to the left hand under right-hand chords, and
+No. 35 is repeated triads in 6/8. Play one after the exercises; it is where the
+drill turns into music.
 
-**Tools for this rung.** The Lemoine study is one figure for a page, which
-is what the *Ladder* is for: loop a line and let it decide when you have
-earned the next notch. Take the scales the same way, and the thumb will stop
-the climb long before your fingers do.
+**Tools for this rung.** The Lemoine study is one figure for a page, which is
+what *Climb the ladder* is for. It opens the first of the rung's exercises that
+is written out — the legato phrase in C — loops the whole of it and turns the
+Ladder on, so a clean pass earns the next notch and a faulty one gives it back.
+Take the scales the same way from their own rows, and the thumb will stop the
+climb long before your fingers do.
 
 **How you'll know you've got it.** A scale hands together at a tempo where you
 cannot hear the thumb arrive — not quieter, *inaudible* as an event. And the

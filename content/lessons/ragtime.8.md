@@ -57,7 +57,10 @@ not in moving the hands faster.
 nothing else. Play a strain with the score screen's *Rhythm only* setting on,
 in Keep tempo, and the dense syncopation comes
 back as four or five placings you can count, after which finding every bar
-they occur in is reading rather than hearing.
+they occur in is reading rather than hearing. That setting is in the ⋯ menu, not a
+button. The one button here is *Play it blind*, which opens *Pine Apple Rag*,
+first of the six, with the notation hidden and the run still marked: a figure
+you can only play with the page in front of you is one you have not named yet.
 
 **How you'll know you've got it.** One late rag played at a tempo where every
 syncopation lands as a surprise, and where you could name the four figures it is

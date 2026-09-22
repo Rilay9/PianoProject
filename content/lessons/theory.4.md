@@ -48,8 +48,9 @@ first, then detail — the same order in which you would sketch a face.
 
 **Tools for this rung.** Melodic dictation asks you to hold eight notes before
 you can play any of them, and the chain game is that memory on its own, one
-note longer each round. The version drawn from every key is an option here
-now: no scale to fall back on, and the note has to come back in the octave
+note longer each round. *Simon* is the button for it, and from this rung on it opens the version drawn
+from every key — *Simon — every key around middle C*, which this rung lists as
+an exercise of its own: no scale to fall back on, and the note has to come back in the octave
 it was played in. That one plays by ear and lights nothing — until you miss,
 when it plays the chain again over the lit keys and asks you for the same chain
 rather than ending the game.

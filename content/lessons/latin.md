@@ -50,7 +50,12 @@ two-bar unit; lose that and the pattern flips.
 **Tools for this rung.** The app cannot clap a clave behind you, but it can
 tell you whether your tumbao is where you think it is: *Rhythm only* scores
 the placing of every strike and nothing else, so the "and" of two and beat
-four are either right or marked. Left hand alone, that way, first.
+four are either right or marked. Left hand alone, that way, first. Then *Play
+it as a duet*, which opens the tumbao-and-montuno exercise with the montuno
+yours and the app playing the tumbao underneath — neither part is on the beat,
+so hearing the other one arrive is most of the work. Swap to the left hand and
+it holds the montuno while you take the bass. The rung's songs are mostly
+printed on one staff, which is why the button names the exercise instead.
 
 **How you'll know you've got it.** Tumbao in the left hand and a two-note
 montuno in the right, together, for sixteen bars, with the clave audible in your

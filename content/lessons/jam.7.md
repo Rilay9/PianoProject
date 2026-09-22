@@ -43,7 +43,7 @@ and seventy-five chord changes — and it prints a tag ending. Each row here has
 *Chart* beside it, which opens the changes with the bar count kept and no notes
 in the way.
 
-**Tools for this rung.** The lab's *Blues — twelve bars* preset gives you the
+**Tools for this rung.** *Accompaniment lab* opens *Blues — twelve bars*, the
 bed to practise this against on your own. Press *Jam it*, then set *Trading
 fours* to 2 bars each: the app takes the first two bars and hands you the next
 two, round and round. Afterwards it says whether you came in inside your own

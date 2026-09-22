@@ -48,7 +48,7 @@ notes into a line.
 **Common mistake.** Playing the pentatonic scale up and down. A scale played in
 order is a scale, not a melody; break the order.
 
-**Tools for this rung.** The lab opens on I–vi–IV–V, the loop drill's own four
+**Tools for this rung.** *Accompaniment lab* opens on I–vi–IV–V, the loop drill's own four
 chords, with the left hand spread out under them and no right hand at all —
 that part is yours. It opens on *Hold the chords*, so the loop holds them and the
 line is yours.

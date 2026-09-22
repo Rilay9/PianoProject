@@ -47,6 +47,13 @@ four-bar phrases with the articulation written in; Schumann's
 and a Gurlitt study that slurs the right hand and leaves the left unmarked, so
 the contrast is yours to supply. More Grade 1 pieces under Classical in the Library.
 
+**Tools for this rung.** *Play it as a duet* opens the *Sonatina in G*, the
+first of those five, with the right hand yours and the app playing the left —
+and it sets the app to play the hand you are not on, so the button cannot open
+on silence. That is how to hear the two touches apart before you have to
+produce both at once: play the right hand over a left somebody else is keeping,
+then swap and supply the other half yourself.
+
 **Common mistake.** Playing staccato loudly. Short and soft is much harder than
 short and loud, and much more useful.
 

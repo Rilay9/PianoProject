@@ -36,11 +36,12 @@ four, so play it for the tune rather than clapping under it. *Só Danço Samba* 
 the first bossa on this track and a gentler rhythm than its name suggests — the
 syncopation goes quiet and the chords do the work.
 
-**Tools for this rung.** *Play it as a duet* opens *Cielito Lindo*, which is
-written on one staff, so there is no second hand for the app to take. For the
-two-part clave, open the version over a pulse from its own row and choose the
-right hand: *Duet* in the ⋯ menu plays the pulse while you hold the clave, which
-is the easiest way in without doing both at once on day one.
+**Tools for this rung.** *Play it as a duet* opens the son clave written over a
+quarter-note pulse — the one exercise here with two staves — with the clave
+yours and the app keeping the pulse underneath. That is the easiest way in
+without doing both at once on day one. The rung's three songs are printed on
+one staff each, so there is no second hand in them for the app to take; for
+those, play the tune and clap the clave.
 
 **Common mistake.** Speeding up on the three-side. It has more strokes so it
 feels busier, and busier feels faster. A metronome on beats two and four catches

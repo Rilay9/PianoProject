@@ -38,9 +38,9 @@ its drills alone, and the plan will not hold you here waiting for a piece.
 **Common mistake.** Naming chords by ear from their top note. The bass is what
 tells you the chord.
 
-**Tools for this rung.** Two things here. The chain game drawn from all
-twelve keys is an option on this rung, and it is the plainest test of what
-dictation runs on — a bass note you heard four chords ago is no use unless
+**Tools for this rung.** Two things here. *Simon* opens the chain game drawn
+from all twelve keys — *Simon — every key around middle C*, which this rung
+lists as an exercise — and it is the plainest test of what dictation runs on — a bass note you heard four chords ago is no use unless
 you kept it. It plays by ear and shows you nothing; a wrong note brings the
 chain back over the lit keys and asks you for the same chain again, and by this
 rung you should be taking even that away on the card. And on the modes drill, *Show me* engraves the answer in the

@@ -84,6 +84,6 @@ implemented. They are listed with what already exists that would make them cheap
 
 ### Modes for this rung
 
-- **Trading fours** — `NOT BUILT`. The single highest-value unbuilt mode for this track — it is what playing with somebody actually is — and mostly wiring.
+- **Trading fours** — `BUILT` (2026-09-21, a *Jam it* setting on the lab; Entry 28). The rung this line was written for did not exist then and does now (Entry 37): `jam.7` carries the lab and its lesson sets the chips. What is still not built is the version whose call is taken out of the tune.
 - **Chord chart** — `BUILT`. A set list you both know, with the form on screen.
 

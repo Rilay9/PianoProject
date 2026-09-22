@@ -30,6 +30,13 @@ read at sight. Twenty minutes total.
 
 **Repertoire for this rung.** Whatever you took down. Write it out.
 
+**Tools for this rung.** One button, *Simon*, opening the chain game drawn from
+all twelve keys — *Simon — every key around middle C*. It is not one of the
+five exercises listed here, and it is the plainest version of what taking down
+eight bars runs on: holding a line you have heard once and nothing else. The
+longest chain you kept is the score. The sight-reading above has no button of
+its own; it is one of the rung's exercises and opens from its own row.
+
 **Common mistake.** Taking down the melody and stopping. The harmony is where the
 piece is.
 

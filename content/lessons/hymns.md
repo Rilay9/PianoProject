@@ -55,7 +55,11 @@ Balance: soprano loudest, bass next, inner voices quiet.
 Open *Amazing Grace* in four parts from its own row — the *Play it as a duet*
 button opens *When the Saints*, which has no inner voices. Switch *Duet* on with the left hand chosen and soprano and alto arrive over
 the tenor and bass you are playing; swap, and the inner voices turn out to
-be the ones you had been guessing at.
+be the ones you had been guessing at. *Accompaniment lab* opens *Primary chords
+— one four five* on *Hold the chords*: the app plays I, IV, V and I round and
+round in whatever key you set, which is somewhere to try a bass walk-up into
+each change without a page. At the end of a time round it says how many of your
+notes were in the scale, and keeps none of it.
 
 **How you'll know you've got it.** A hymn played with the tune clearly on top,
 plus one verse with a bass walk-up into each new chord.

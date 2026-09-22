@@ -51,11 +51,12 @@ time and the weight the melody gives it.
 
 **Tools for this rung.** Two, and a score-screen row. *Simon* plays the C
 blues scale as a memory game — one note, then two, then three, for you to play
-back — by sound, with the keys lit only after a miss, so F sharp is in your ear
-before you read it. The shuffle is timing rather than notes, so *Rhythm only*,
+back — by sound, keys lit only after a miss, so F sharp is in your ear before
+you read it. The shuffle is timing rather than notes, so *Rhythm only*,
 in the ⋯ menu, judges it with no melody in the way: tap the long-short pair on
-any key. And the lab button opens *Blues — twelve bars*, which holds the changes underneath you: pick blue notes over
-the top until you can hear which ones bite.
+any key. And *Accompaniment lab* opens *Blues — twelve bars* on
+*Hold the chords*, which holds the changes underneath you: pick blue notes over
+the top until you hear which ones bite.
 
 **How you'll know you've got it.** One of these tunes, melody in the right hand
 and chords in the left, with the flat third landing where you meant it to land

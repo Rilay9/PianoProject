@@ -6,7 +6,7 @@ videos:
   - label: "The Easiest Way to Transpose a Song to ANY key on piano!"
     url: "https://www.youtube.com/watch?v=Ri9N5mH7YUE"
     teacher: "Piano With Jonny"
-readingTime: 2
+readingTime: 3
 ---
 
 The most useful thing a chord-player can do, and the thing that separates
@@ -46,7 +46,11 @@ second, which is this whole lesson in the shape of a screen. *Accompaniment lab*
 opens on I–IV–V–I and leaves both the key and the chords to you here, so build
 the song's changes once as numerals, move the key down a tone
 and start the loop again. If what you play by ear agrees with the chart it is
-naming, you transposed rather than translated.
+naming, you transposed rather than translated. It opens on *Hold the chords*,
+so the loop plays what you typed while you try the tune over it. *Play it
+blind* is the other button: it opens *Isabella's Lullaby*, first of the rung's
+six, with the notation hidden — a transposition you can only do with the page
+in front of you is a reading trick rather than a key you know.
 
 **How you'll know you've got it.** Someone says "a bit lower" and you do it in
 the next bar.

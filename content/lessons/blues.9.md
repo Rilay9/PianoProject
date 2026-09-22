@@ -41,13 +41,18 @@ repeats a chorus.
 **Common mistake.** Waiting until you are good enough. The first hundred choruses
 are how you get good enough.
 
-**Tools for this rung.** *Jam it* in the accompaniment lab is a rhythm
-section that judges nothing and keeps nothing: set the twelve bars and a
+**Tools for this rung.** *Accompaniment lab* opens *Blues — twelve bars*, and
+*Jam it* there is a rhythm section that judges nothing and keeps nothing: set the twelve bars and a
 tempo, and play chorus after chorus over it. It records none of them either,
 which is the same instruction as the one above about deleting the take. It opens
 on *Hold the chords*, so the harmony is under you rather than in your head, and
 at the end of each time round a quiet line counts how many of your notes were in
-the blues scale. A count, not a mark, and nothing is kept.
+the blues scale. A count, not a mark, and nothing is kept. Set *Trading fours* to four bars
+each when a chorus starts repeating itself: the app takes four over the same
+bed and leaves you the next four, which is a chorus you cannot fill with the
+lick you always use. *Play it blind* is the other button — it opens
+*Stumbling*, first of the rung's three, with the notation hidden and the run
+still followed and marked.
 
 **How you'll know you've got it.** You can play three choruses that are different
 from each other and none of them run out of ideas in bar five.

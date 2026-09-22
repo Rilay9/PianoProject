@@ -49,6 +49,10 @@ plays by ear with nothing lit; miss a note and it plays the chain again over
 the lit keys and asks you for that same chain, so the chain never grows until
 you have played it right.
 
+**Tools for this rung.** *Simon* is that game's button, and it opens *Simon —
+every key around middle C*, the one this rung lists. The longest chain you kept
+is the score; nothing else about the run is marked.
+
 **Common mistake.** Learning modes as scale fingerings. They are harmonic
 colours; play a Dorian vamp (Dm to G) for two minutes and you will learn more
 than from any diagram.

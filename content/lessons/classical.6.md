@@ -59,7 +59,10 @@ playing through.
 your ear already, so once the notes are secure, run one with *Blind* on.
 With nothing to read, the only questions left are which hand is louder and
 whether the pedal change was late — and both are questions your eyes had
-been answering for you.
+been answering for you. There is no button for it here: *Blind* is in the ⋯
+menu on the piece's own row. The one button this rung has is *Play it as a
+duet*, which opens the Bach prelude with the right hand yours and the app
+playing the left — balance heard before you have to make it.
 
 **How you'll know you've got it.** One of these pieces played so that someone
 listening could hum the tune back — which they can only do if you voiced it.

@@ -53,10 +53,14 @@ bar 7 it is two-note chords over the root in a dotted rhythm.
 **Common mistake.** Speeding up when the left hand gets comfortable. A boogie
 that accelerates is a boogie nobody can play over.
 
-**Tools for this rung.** Loop twelve bars and switch the *Ladder* on: it
-will not let the tempo rise on a pass with a mistake in it. That is the
-honest version of the stamina test, because a boogie that speeds up never
-gets past the first notch of it.
+**Tools for this rung.** Loop twelve bars and switch the *Ladder* on: it will
+not let the tempo rise on a pass with a mistake in it, which is the honest
+version of the stamina test. *Play it as a duet* opens the easy *Boogie* with
+the right hand yours and the app keeping the left, so the bass stays at one
+speed while you find out which hand was drifting; swap, and the bass is yours
+against a right hand that will not wait for it. *Accompaniment lab* opens
+*Blues — twelve bars* on *Hold the chords*, in whatever key you set, when what
+you want is the form under you and nothing marked.
 
 **How you'll know you've got it.** Twelve bars of Pinetop's bass in two keys,
 even, at a tempo you could hold for three choruses.

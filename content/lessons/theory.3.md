@@ -50,6 +50,11 @@ the chain plays, so the only thing you have to hold is the order; take that help
 chips on the card once you no longer need it. Sing the chain before you touch a
 key — a chain you can sing is a chain you can find.
 
+**Tools for this rung.** *Simon* is the button for the chain game above: it
+opens *Simon — the white keys around middle C*, the one this rung lists, with
+the keys lit while the chain plays. The longest chain you kept is the score,
+and nothing else about the run is marked.
+
 **Common mistake.** Learning interval names without ever singing them. Theory
 that never reaches your ear stays a filing system.
 

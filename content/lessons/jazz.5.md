@@ -52,8 +52,8 @@ is not among them; if you find one, import it.
 and seventh above it: a shell is a bass-up shape, and with the root on top it
 stops saying the chord.
 
-**Tools for this rung.** The lab's *Jazz — two five one* preset plays ii–V7–I
-over a walking bass, both fixed, in whatever key you pick: comp shells against
+**Tools for this rung.** *Accompaniment lab* opens *Jazz — two five one*, which
+plays ii–V7–I over a walking bass, both fixed, in whatever key you pick: comp shells against
 it. It opens on *Play the tune*, so there is a right hand above your shells
 rather than silence. Swing the app judges only where the score writes the word,
 and none of this rung's pieces does — so here every eighth is timed where it is

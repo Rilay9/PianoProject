@@ -45,6 +45,12 @@ the page.
 - *Joy to the World* is the loud one: two sharps, in two, seventy-three bars,
   with octaves in both hands and runs between them.
 
+**Tools for this rung.** *Play it blind* takes the first of the rung's four,
+which is *Carol of the Bells* and not the one the list above says to memorise
+first; for *Silent Night*, open its own row and take *Blind* from the ⋯ menu.
+Either way the app still follows you and still marks the run, so the number you
+get without the page can be compared with the one you got with it.
+
 **Common mistake.** Practising the ending and starting the piece at the volume
 habit leaves you at. If the last page is where it arrives, the first page has to
 leave somewhere to arrive from.

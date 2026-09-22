@@ -6,7 +6,7 @@ videos:
   - label: "Compose Your Own Piano Music: A TOTAL Beginner's Guide"
     url: "https://www.youtube.com/watch?v=JPtBDJgY22M"
     teacher: "MangoldProject"
-readingTime: 1
+readingTime: 2
 ---
 
 One piece, finished. Two or three minutes. Written down well enough that
@@ -27,6 +27,13 @@ somebody else's tune. That is what the ear drill has been training.
 takes. Not a new idea every day.
 
 **Repertoire for this rung.** Your piece.
+
+**Tools for this rung.** One button, *Free play*: no piece, no marking, no
+record kept. It names a chord from three or more notes held down together, so
+when you are taking a phrase down from yourself and the harmony under it will
+not come, hold the notes and let the screen name what you played. Nothing else
+here has a button, and that is the right shape for a rung whose repertoire is a
+piece that does not exist yet.
 
 **Common mistake.** Starting again. The second piece is not better than the first
 one finished.

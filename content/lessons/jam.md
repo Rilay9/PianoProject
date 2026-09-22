@@ -54,11 +54,12 @@ Knowing where you are is the thing beginners lose first.
 **Common mistake.** Playing through the guitarist's solo at full volume. Your
 job during someone else's solo is to be quieter than you think necessary.
 
-**Tools for this rung.** The guitarist is not always in the room. The
-accompaniment lab's *Jam it* will hold twelve bars in E or in A over a bass
-line and a kick that do not stop, which is where to get the comping quiet
-enough and the gaps wide enough before there is somebody else to leave them
-for.
+**Tools for this rung.** The guitarist is not always in the room.
+*Accompaniment lab* opens *Blues — twelve bars* on *Bed only*: a bass line and
+a kick that do not stop, and no chords, because the chords are the thing you
+came to play. It starts in C and the key is yours, so set it to E or to A. That is where to get the comping quiet enough and the
+gaps wide enough before there is somebody else to leave them for. Nothing on
+that screen is marked or kept.
 
 **How you'll know you've got it.** Twelve-bar blues in E and A, two choruses
 each, trading fours, without either of you losing the form.

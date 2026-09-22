@@ -36,7 +36,7 @@ implemented. They are listed with what already exists that would make them cheap
 
 - **Rhythm only** — `BUILT`. The shuffle is a feel before it is notes. Tap the long-short pair on any key with no melody in the way.
 - **Lab · Blues — twelve bars** — `BUILT`. Bass and drums hold the form while you hunt blue notes over the top. Nothing is judged, so nothing has to be accurate.
-- **Simon seeded from the blues scale** — `NOT BUILT`. Simon is C major or chromatic today. Seeded from a blues scale it teaches that scale by ear before it is ever read — `02` Part A item 7, which no genre rung currently honours. A parameter on an existing drill.
+- **Simon seeded from the blues scale** — `BUILT` (2026-09-19, Entry 22; `drill.ear.simon-blues-c`, which this rung's `simon` tool names). The scale by ear before it is ever read — `02` Part A item 7. It was a parameter on the existing drill, as this line predicted.
 
 ---
 

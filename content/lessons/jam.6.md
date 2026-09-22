@@ -35,10 +35,13 @@ have on the night.
 chord only from three or more notes held down together, so a line played one
 note at a time names nothing — hold a bar's notes down at once and watch it name
 the chord you are implying. It is a quick way to find out
-whether your line is outlining the harmony or just moving. The lab's *Blues — twelve
-bars* preset writes a walking bass under the form itself: set it to E, A or D, the keys
-here, press *Read it* and listen to one chorus of its line in the score, then
-play your own. *Jam it* plays a plainer bass, root and fifth.
+whether your line is outlining the harmony or just moving. *Accompaniment lab* opens *Blues — twelve bars*, which writes a walking bass
+under the form itself: set it to E, A or D, the keys here, press *Read it* and
+listen to one chorus of its line in the score, then play your own. *Jam it*
+plays a plainer bass — root and fifth — and, because this button opens on *Hold
+the chords*, the bar's chord on the backbeat with it. At the end of each time
+round it says how many of your notes were in the blues scale, and keeps none of
+it.
 
 **Common mistake.** Walking too high. The line belongs below the guitar, and a
 bass part that wanders up into the middle of the keyboard turns into a second

@@ -6,7 +6,7 @@ videos:
   - label: "Secondary Dominants: The Complete Guide"
     url: "https://www.youtube.com/watch?v=32G6cIiZ3sI"
     teacher: "Piano With Jonny"
-readingTime: 2
+readingTime: 3
 ---
 
 Every key has seven chords. Music uses more than seven, and this is how the
@@ -43,7 +43,10 @@ reads `V/V` as a numeral, so
 a tonicisation can be built as a loop and listened to rather than worked
 out: put `I V/V V I` in C and the D major in the second bar is the whole
 lesson in one bar. Then take it round three keys, changing nothing but the
-key.
+key. *Simon* is the other button here, and from Stage 4 up it opens the chain
+game drawn from all twelve keys — *Simon — every key around middle C*. That one
+is not among this rung's five exercises: it is plain ear memory, which is what
+hearing a numeral rather than working it out is built on.
 
 **How you'll know you've got it.** You hear a chord that is not in the key and
 know which chord it is pointing at.

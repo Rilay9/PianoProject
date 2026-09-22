@@ -6553,3 +6553,358 @@ Run against `docs/prompts/working-rules.md` and the CLAUDE.md checklist before w
   eleven of them had been rebuilt — and a finding whose clause was **deleted** has no
   sentence to read, so it gets a row for what is left or a reason, not a row that pins a
   deletion.
+
+---
+
+### Entry 41 — T19: every lesson read against its rung's tools, and the two buttons that opened something else (2026-09-22)
+
+**Nothing here has been heard or seen in a browser.** No claim below is about how a lesson
+reads on a phone, whether a duet on the Clementi is a practice worth having, or whether the
+lab's bed under a trade sounds like anything. Every claim is about files, fields and what
+the code does with them. The one thing that was *driven* is the test suite.
+
+**The brief said 106 lessons; there are 109.** `content/lessons/*.md` holds 109 files,
+`build.py` reports `lessons 109 file(s)`, and every one is named by a rung's `textFile` —
+the three the brief did not count are the holiday rungs Entry 31 added and `jam.7` from
+Entry 37. All 109 have a row in the table at the end.
+
+#### What was measured, before and after
+
+Read mechanically from the committed tree and from the working tree, not recalled: a rung's
+`tools` against the *Tools for this rung* paragraph of its own lesson, with the button label
+`LessonScreen.toolButton` actually draws (*Accompaniment lab · Free play · Simon · Play it as
+a duet · Play it blind · Climb the ladder*), whitespace flattened so a label split across two
+lines still counts.
+
+| | at HEAD | now |
+|---|---|---|
+| rungs carrying at least one tool | 80 of 109 | 80 of 109 |
+| tools carried but not named in the lesson | **70** | **0** |
+| rungs with tools and no *Tools for this rung* paragraph at all | **16** | **0** |
+
+Entry 40 named six lessons and one missing paragraph. The six are in the 70 and the one is in
+the 16; the rest were not enumerated anywhere, which is why this was worth doing as a sweep
+rather than as a fix-list.
+
+#### The four faults that were not omissions
+
+Entry 40's six were all *silence*. These are sentences that were **wrong**, and each was found
+by asking what the button does rather than by reading the prose.
+
+1. **`jam.5` and `chords-pop.9` each promised a way round the lab refuses.** `LabScreen`'s
+   `bedRefusal` turns *Play the tune* down when the right hand is `none`, and `drawBedChips`
+   then stands the chip back to *Bed only*. `blues-shuffle` and `ballad` both write
+   `rightHand: 'none'` — and `ballad` locks that picker — so the `mode: "tune"` Entry 35 item 5
+   gave those two rungs was dropped at every open, while both lessons said in so many words
+   that the button opened playing the tune. **The rows that were supposed to catch this
+   passed**, because they asked `bedOf()` — the authored field — and never asked the rule the
+   screen applies. Both rungs now carry `mode: "off"`, which is what they were getting; for a
+   rung whose learner is the one comping, it is also what they wanted, and both lessons now say
+   *Bed only* and why the other way round is greyed out. A new sweep row asks the general
+   question: no lab tool may open on `tune` with a preset that has no right hand, and none on
+   `hold` with a preset that has no left hand.
+2. **Four duets opened a piece the sentence was not about, on two grounds.** A `duet` with no `item` takes the
+   rung's first playable song. `technique.5`'s paragraph is about the two-against-one exercise
+   and the button opened a Duvernoy étude; `classical.7`'s is about the inventions and the
+   button opened K. 545; `latin.3`'s and `latin`'s songs are printed on one staff each — three
+   of three and five of six, read off `notation.staves` — so the app had no second hand to play
+   and the button opened a silent duet, which is the fault T17 fixed on the *other* half of the
+   same control. All four now name an `item`, and the two latin ones name an exercise, which
+   `validate.py` has allowed since Entry 35 item 8.
+3. **`jam` opened holding the chords its lesson says are yours to play.** Its sentence — "a bass
+   line and a kick that do not stop" — described *Bed only* and the button opened *Hold the
+   chords*, because that is `blues-shuffle`'s default. `mode: "off"`, and the lesson now also
+   says it starts in C rather than in E or A, which was the second thing that paragraph had
+   wrong.
+4. **`jam.6` described a bed that has had a chord voice since Entry 30.** "*Jam it* plays a
+   plainer bass, root and fifth" was true before *Hold the chords* existed; the sentence now
+   names the comp on the backbeat as well, which is what `walking` does (`backingLoop.ts`'s
+   `case 'walking':`).
+
+#### The nine tool entries, one line each, spliced
+
+Spliced as text, never re-serialised. `git diff` over the six touched stage files is **16
+insertions, 9 deletions, every changed line inside a `tools` array** — read line by line
+afterwards.
+
+| rung | file | change | why |
+|---|---|---|---|
+| `2.3` | stage-2 | `mode: "tune"` | the rung is marked on "the chords landing clean on the beat", and `primary-chords` opened *holding* them — playing the learner's own part for them. Its right hand is `melody`, so the tune is there to hand over |
+| `latin.3` | stage-3 | `item: exercise.clave.son-3-2.pulse` | all three songs are one staff; this is the one option with two, and the generator puts the clave on staff 1 and the pulse on staff 2, which is the way round the lesson asks for |
+| `chords-pop.4` | stage-4 | `mode: "tune"` | the exercise is *which inversion to take*, so the chords are the learner's and the app takes the melody. Entry 30 left `pop-four-chord` with no default because its one rung "asks for neither way round"; the rung can now answer for itself |
+| `jam` | stage-4 | `mode: "off"` | fault 3 above |
+| `latin` | stage-5 | `item: exercise.latin-groove.c.son-3-2` | five of six songs are one staff; this is the rung's own target — tumbao under montuno — and the duet takes the hand you are not on |
+| `technique.5` | stage-5 | `item: exercise.independence.c.2v1` | fault 2 above. The generator gives the right hand two notes a beat and the left one, so the button hands the learner the moving hand |
+| `jam.5` | stage-5 | `mode: "tune"` → `"off"` | fault 1 above |
+| `classical.7` | stage-7 | `item: song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx` | fault 2 above |
+| `chords-pop.9` | stage-9 | `mode: "tune"` → `"off"` | fault 1 above |
+
+#### The new modes, where they fit — and the ten places they do not
+
+**Trading fours** went to three more rungs as a sentence (it is a chip on the lab, not a field):
+`improv.5` (twelve-bar bed, the rung is a blues line), `improv.6` (the four-chord minor vamp,
+and the rung's own instruction — answer with the third and the seventh — survives the form) and
+`blues.9` (four bars each, because that rung's complaint is a chorus that repeats itself).
+Skipped, with the reason:
+
+- `blues.3` and `blues.4` are at the 600-word ceiling `lessonShape.test.ts` enforces, and
+  trimming a lesson to fit a sentence about a chip is the wrong trade (Entry 30's rule, kept).
+- `blues.6` is the boogie stamina rung: its subject is the left hand under a steady tempo, and
+  handing four bars over is a different exercise.
+- `blues.8` is numerals and transposition — its lab sentence is about *Read it*, not about
+  playing over the bed.
+- Every `jazz-comping` rung (`jazz.5`, `.6`, `.8`, `.9`, `improv.8`): that preset's progression
+  is a two-five-one, which is neither a twelve-bar nor a four-chord loop, and those rungs are
+  about comping rather than taking a chorus.
+
+**The tempo ladder was added nowhere, and one rung qualified.** `technique.8` is twelve
+four-octave scales, every one of them notation, and its own paragraph already says "None of its
+own, but moving it up is what the *Ladder* does" — it is exactly Entry 29's case. It did not get
+one because the permitted set is closed in two places this task does not own: `04` §3d says the
+seven rungs "are the whole permitted set", and `ladderTool.test.ts` asserts the ladder is on
+those seven "and no others". Adding an eighth turns that test red. **Follow-up, one line each in
+two files.** `technique.5` also passes the mechanical rule — every exercise option opens as
+notation — and is a *skip on its merits*: its first notation option is the sight-reading
+generator, so the button would open a fresh sight-read rather than a scale, and `04` §3d's
+"fails closed" is about exactly that. `4.7`'s three options are all notation and it is not a
+scale or Hanon rung; a twelve-bar shuffle is a loop by nature but it is repertoire-shaped, and
+§3d says a rung wanting the ladder over repertoire must name bars, which is a different feature.
+
+**Two lessons name a button label for a kind their rung does not carry, and both are left**,
+because each says in the same sentence where the thing actually is: `1.5` lists the Simon drill
+among its own exercises and opens it from that row, and `3.6` now says outright that the
+accompaniment lab is *not* this rung's button and lives on the Library's line of doors. The
+sweep row carries both as a named allow-list of two, so a third cannot appear quietly.
+
+**Where prose was trimmed to make room.** **Ten** lessons were at or within a few words of the
+three-minute cap and needed the space — measured off the diff rather than recalled, as the line
+of every removal that falls outside the lesson's own committed *Tools for this rung* paragraph:
+`2.3`, `chords-pop.4`, `classical.5`, `classical.7`, `classical.8`, `jazz.7`, `rock.6`,
+`rock.overview`, `technique.4`, `technique.5`. (The first draft of this sentence said twelve and
+named `blues.3` and `ragtime.8` as well; in both of those the only tightening was *inside* the
+tools paragraph, which is this task's own text.) Nothing was deleted outright — each cut is a tightened clause — but this is the
+part of the change a reader should disagree with first, because it touched sentences the tools
+work had no business in. `readingTime` was recomputed from the text for every lesson by
+`lessonShape.test.ts`'s own rule; eight moved (`3.5`, `4.2`, `chords-pop.8`, `improv.6`,
+`improv.9`, `jazz.8`, `jazz.9`, `theory.7`), and `classical.6` and `ragtime.6` are the two names
+on that test's known-long list and are still the only two over three minutes.
+
+#### The tests
+
+`lessonClaimsAboutApp.test.ts` gains one appended `describe` and **63 rows**. Four of them are
+sweeps over all 109 lessons — every tool named, no button named that is not drawn, no `tune`
+without a right hand, no `hold` without a left hand — and the rest are one sentence each: what
+`Climb the ladder` opens on all seven ladder rungs, what a duet or a blind opens on twenty-one
+more, which Simon each theory rung gets and whether the rung lists it, and which way round nine
+labs come up.
+
+**Proved red, by reverting the thing and re-running:**
+
+- `*Climb the ladder*` → `*The Ladder*` in `4.1.md`: the "names every one of them" sweep fails,
+  **1 of 275**.
+- `jam.5`'s `mode` back to `"tune"`: the right-hand sweep **and** that rung's own row fail,
+  **2 of 275**. That is the pair that would have caught the fault at the time.
+
+**Three existing rows were rewritten rather than left green**, and they are the reason the fault
+survived: two in `CLAIMS` and one in `T12B_APP` asserted `bedOf(...) === 'tune'` for `jam.5` and
+`chords-pop.9`. They now assert `'off'` *and* the preset's `rightHand === 'none'`, so the row
+states the rule instead of the field.
+
+#### Who else reads `tools`
+
+Grepped rather than recalled. `grep -rn "[.]tools[b]" app/src --include=*.ts`, spelled with a
+word boundary, returns **two lines, both in `LessonScreen.ts`**, which is the button row
+itself. On the Python side, `grep -rn '"tools"' tools/ --include=*.py` returns
+`validate.py`'s `tool_errors`, `rung_audit.py` line 174 — whose INFO list is "rungs off the
+core track naming no mode", and no rung gained or lost a *kind* here, so that list does not
+move — and `test_validate_tools.py`, which builds its own fixtures.
+
+**Fifteen unit files match the word `tools`, and only six of them read the field.** The first
+version of this paragraph counted the other nine as readers and ran eight files off that
+list; read line by line, nine are matching the *directory* `tools/content/` in a comment or a
+path — `difficulty`, `docsConsistency`, `everyOptionOpens`, `folderManifestFirst`,
+`lessonShape`, `needs`, `noGenreSelection`, `scoreModelKnownIssues`, `todayCardRanking`. The
+six that read a rung's `tools`, and what each does with it:
+
+| file | what it asks | run |
+|---|---|---|
+| `ladderTool.test.ts` | the ladder is on its seven rungs and no others | yes, green |
+| `labPresets.test.ts` | a lab entry's preset is one `validate.py` knows | yes, green |
+| `labToolFields.test.ts` | `unlock` and `mode`, on tool objects it mounts itself — untouched by the nine edits | yes, green |
+| `lessonClaimsAboutApp.test.ts` | the authored entries, where this pass's rows live | yes, green |
+| `lessonClaimsAboutMusic.test.ts` | **`technique.8` has no tools of its own** — a third place pinning the one rung the ladder would have gone to | yes, green; it is inside the brief’s own `lessonClaims*` glob |
+| `simonDrill.test.ts` | the blues rungs' `simon` names the blues-scale drill | yes, green |
+
+`curriculumIntegrity`, `everyOptionOpens`, `needs` and `docsConsistency` were run beside them
+— **8 files, 85 tests, all passing** — but three of those four are on that list only because
+they name the `tools/` directory.
+
+#### Verification
+
+- `python tools/content/build.py --offline` — **content validation OK, 2,053 catalog items,
+  109 lesson files, 10 stages**. `validate.py`'s `tool_errors` is the check on every tool entry
+  and it passed with the nine edits in place, which is what says the two new `item`s are options
+  of their own rungs and the three `mode`s are ways round the lab has.
+- From `app/`: `npx vitest run tests/unit/lessonClaims*.test.ts tests/unit/lessonShape.test.ts`
+  — **4 files, 402 tests, all passing**.
+- `npx tsc -b --noEmit` — clean. (Run because this task edited a TypeScript file; two errors it
+  found in the new block were fixed before the suite was believed.)
+- **No Playwright**, as the brief required.
+
+#### What is unverified
+
+- **Nothing has been heard and nothing has been seen.** Not one of these paragraphs was read on
+  a lesson page, and no button was pressed. Every "what it opens" claim is the resolution rule
+  in `LessonScreen.toolButton` applied to the catalog by a test, which is a proxy for the screen
+  and is named as one.
+- **`lesson-tools.spec.ts`, `lab.spec.ts` and `lab-both-ways.spec.ts` were not run.** The nine
+  tool entries change what four buttons open and which chip three labs come up on; the e2e that
+  asserts a destination is the thing that would prove it in a browser.
+- **The full `npx vitest run` was not taken**, only the four files the brief named. Other suites
+  read `tools` (`ladderTool.test.ts`, `curriculumIntegrity.test.ts`) and, though no tool *kind*
+  moved in this pass, that is an argument and not a measurement.
+- **The prose is my judgement.** Sixty-six lessons were edited; every sentence about what a
+  button opens is joined to a test, and nothing joins the *teaching* — whether a duet is the
+  right suggestion on `classical.5`, whether trading fours belongs on `improv.6`, whether the
+  twelve trims lost anything. That is the owner's read.
+- **Three claims about music were removed rather than checked**: a first draft said the
+  Attwood *Sonatina in G* has a detached left hand, that the easy *Boogie*'s left hand strides,
+  and that Cielito Lindo is one staff — the first two were written out because no score was
+  opened, and the third was measured off `notation.staves` instead.
+- **`docs/genre-plans/` three lines were flipped from `NOT BUILT`** — `jam.md` (trading fours,
+  whose rung now exists), `blues.md` and `improv.md` (Simon seeded from the blues scale, built
+  in Entry 22). `grep -rn "NOT BUILT" docs/genre-plans/` returned nineteen lines before this
+  pass and sixteen after, twelve of them the boilerplate sentence at the top of each file; a
+  second search shaped differently,
+  `grep -rni "trading fours" docs/genre-plans/`, is what found the `jam.md` line under a heading
+  rather than in a mode list. The four mode lines left were read and are still not built: Simon
+  from a two-five-one (`jazz.md`), from a walk-up (`hymns.md`), from the clave (`latin.md`), and
+  straight-against-swung (`jazz.md`). Nothing else in those files was read, so whatever else they
+  say about the lab is unchecked against this.
+
+#### Follow-ups
+
+1. `technique.8` and the ladder: one line in `04` §3d's permitted set and one in
+   `ladderTool.test.ts`'s `LADDER_RUNGS`.
+2. `1.5` has the Simon drill as an exercise and no `simon` tool, so its rung draws no button for
+   the thing its lesson describes. One tool entry, if the owner wants it.
+3. `04` §3d's list of what a lab entry carries should mention that `mode: "tune"` is refused on a
+   preset whose right hand is `none`; the section documents the refusal on the screen and not on
+   the tool.
+
+#### Every lesson, and what its paragraph named
+
+`tools carried` is the rung's own `tools`; `named before` is measured against the committed
+lesson, `named after` against the working tree. A dash is a rung that carries no tools.
+
+| rung | tools carried | named before | named after | tool entry changed, and why |
+|---|---|---|---|---|
+| `0.1` | — | — | — | — |
+| `0.2` | — | — | — | — |
+| `0.3` | — | — | — | — |
+| `0.4` | — | — | — | — |
+| `1.1` | — | — | — | — |
+| `1.2` | — | — | — | — |
+| `1.3` | — | — | — | — |
+| `1.4` | — | — | — | — |
+| `1.5` | — | — | — | — |
+| `practice.1` | — | — | — | — |
+| `practice.2` | — | — | — | — |
+| `practice.3` | — | — | — | — |
+| `practice.4` | — | — | — | — |
+| `practice.5` | — | — | — | — |
+| `2.1` | duet | duet | duet | — |
+| `2.2` | — | — | — | — |
+| `2.3` | play, lab | none | play, lab | `mode: "tune"` — the rung is marked on chords landing on the beat, and the preset opened holding them, which plays the learner's own part for them |
+| `2.4` | — | — | — | — |
+| `2.5` | — | — | — | — |
+| `holiday` | lab, play | lab, play | lab, play | — |
+| `hymns.2` | play | play | play | — |
+| `3.1` | — | — | — | — |
+| `3.2` | lab, play | lab | lab, play | — |
+| `3.3` | lab, play | lab | lab, play | — |
+| `3.4` | — | — | — | — |
+| `3.5` | duet | none (no paragraph) | duet | — |
+| `3.6` | duet | none | duet | — |
+| `classical.3` | — | — | — | — |
+| `chords-pop.3` | lab, play | lab | lab, play | — |
+| `blues.3` | lab, simon | simon | lab, simon | — |
+| `theory.3` | simon | none (no paragraph) | simon | — |
+| `improv.3` | — | — | — | — |
+| `hymns` | duet, lab | duet | duet, lab | — |
+| `rock.overview` | lab, duet | lab | lab, duet | — |
+| `latin.3` | duet | duet | duet | `item` on the duet — all three of its songs are one staff, so the button had no second hand to play; it now names the clave written over a pulse, the one option here with two |
+| `holiday.3` | play | play | play | — |
+| `jazz.3` | — | — | — | — |
+| `4.1` | ladder | none | ladder | — |
+| `4.2` | ladder | none (no paragraph) | ladder | — |
+| `4.3` | ladder | none | ladder | — |
+| `4.4` | ladder | none | ladder | — |
+| `4.5` | — | — | — | — |
+| `4.6` | blind | blind | blind | — |
+| `4.7` | blind | none (no paragraph) | blind | — |
+| `classical.4` | duet | none (no paragraph) | duet | — |
+| `classical.4.shelf` | — | — | — | — |
+| `chords-pop.4` | lab, play | lab | lab, play | `mode: "tune"` — the exercise is which inversion to take, so the learner plays the chords and the app takes the melody; the preset carried no default because this is its only rung |
+| `blues.4` | lab, duet | lab, duet | lab, duet | — |
+| `jazz.4` | lab | lab | lab | — |
+| `holiday.4` | lab, play | lab, play | lab, play | — |
+| `theory.4` | simon | none | simon | — |
+| `improv.4` | lab | none | lab | — |
+| `jam` | lab | lab | lab | `mode: "off"` — the lesson says "a bass line and a kick", and the preset opened holding the chords the learner came to comp |
+| `technique.4` | ladder | none | ladder | — |
+| `rock.4` | lab, duet | lab, duet | lab, duet | — |
+| `hymns.4` | duet | duet | duet | — |
+| `classical.5` | duet | none | duet | — |
+| `chords-pop.5` | lab | lab | lab | — |
+| `blues.5` | lab, blind | lab | lab, blind | — |
+| `jazz.5` | lab | none | lab | — |
+| `holiday.5` | — | — | — | — |
+| `ragtime.5` | duet | duet | duet | — |
+| `theory.5` | simon | none (no paragraph) | simon | — |
+| `improv.5` | lab, simon | none (no paragraph) | lab, simon | — |
+| `latin` | duet | none | duet | `item` on the duet — five of its six songs are one staff; it now names the tumbao-and-montuno exercise, which is the rung's own target |
+| `technique.5` | duet | none (no paragraph) | duet | `item` on the duet — the sentence is about the two-against-one exercise and the button opened a Duvernoy étude |
+| `rock.5` | play, lab | play | play, lab | — |
+| `jam.5` | lab | none | lab | `mode: "tune"` → `"off"` — the twelve-bar preset writes no right hand, so the screen refused *Play the tune* and stood the chip back to *Bed only*; the lesson promised the way round the button never opened |
+| `hymns.5` | play | play | play | — |
+| `classical.6` | duet | none | duet | — |
+| `ragtime.6` | duet | none | duet | — |
+| `technique.6` | ladder | none (no paragraph) | ladder | — |
+| `jazz.6` | lab, duet | lab | lab, duet | — |
+| `holiday.6` | blind | none (no paragraph) | blind | — |
+| `blues.6` | duet, lab | none | duet, lab | — |
+| `chords-pop.6` | lab, play | none | lab, play | — |
+| `theory.6` | simon | none | simon | — |
+| `improv.6` | lab | lab | lab | — |
+| `rock.6` | duet, lab | duet | duet, lab | — |
+| `jam.6` | lab, play | play | lab, play | — |
+| `hymns.6` | lab | lab | lab | — |
+| `latin.6` | — | — | — | — |
+| `classical.7` | duet, blind | none | duet, blind | `item` on the duet — the sentence is about the inventions and the button opened K. 545 |
+| `ragtime.7` | duet, blind | none | duet, blind | — |
+| `technique.7` | ladder, duet | ladder, duet | ladder, duet | — |
+| `jazz.7` | play, duet, lab | lab | play, duet, lab | — |
+| `holiday.7` | — | — | — | — |
+| `blues.7` | lab, duet, blind | lab | lab, duet, blind | — |
+| `chords-pop.7` | play, lab | play, lab | play, lab | — |
+| `theory.7` | simon, lab | lab | simon, lab | — |
+| `improv.7` | play | none (no paragraph) | play | — |
+| `rock.7` | blind | blind | blind | — |
+| `latin.7` | — | — | — | — |
+| `jam.7` | lab | none | lab | — |
+| `classical.8` | blind, duet | none | blind, duet | — |
+| `ragtime.8` | blind | none | blind | — |
+| `technique.8` | — | — | — | — |
+| `jazz.8` | play, lab | none (no paragraph) | play, lab | — |
+| `blues.8` | blind, lab | none | blind, lab | — |
+| `chords-pop.8` | lab, blind | lab | lab, blind | — |
+| `theory.8` | simon | none (no paragraph) | simon | — |
+| `improv.8` | lab | lab | lab | — |
+| `classical.9` | blind | none (no paragraph) | blind | — |
+| `jazz.9` | lab, blind | none | lab, blind | — |
+| `blues.9` | lab, blind | lab | lab, blind | — |
+| `chords-pop.9` | blind, lab | lab | blind, lab | `mode: "tune"` → `"off"` — the ballad writes no right hand and locks the picker, so *Play the tune* is refused here; *Bed only* is what the button did and what "three different left hands" wants |
+| `theory.9` | simon | none (no paragraph) | simon | — |
+| `improv.9` | play | none (no paragraph) | play | — |
+| `ragtime.9` | blind | blind | blind | — |

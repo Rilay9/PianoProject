@@ -43,11 +43,13 @@ piano settings, are under *Holiday* in the Library. Playing for people who are
 singing is the next holiday rung, at Stage 3; making a carol sound finished is
 the one after, at Stage 4.
 
-**Tools for this rung.** The accompaniment lab's *Primary chords* preset plays
-one–four–five with a tune on top, and leaves the key free: set it to C and hear
-the three chords you are learning, then to G for *Good King Wenceslas*. *Free
-play* is for finding the chord under a tune by ear — play the first note of a
-bar and try C, F and G under it until one fits.
+**Tools for this rung.** *Accompaniment lab* opens the *Primary chords — one
+four five* preset, and it opens on *Hold the chords*: the app plays those three
+underneath and the tune over them is yours. The key is free, so set it to C for
+the three you are learning and to G for *Good King Wenceslas*. At the end of
+each time round it says how many of your notes were in the scale, and keeps
+none of it. *Free play* is for finding the chord under a tune by ear — play the
+first note of a bar and try C, F and G under it until one fits.
 
 **Common mistake.** Playing carols too fast. They are sung, and singers need
 time to breathe at the ends of phrases. Follow the words in your head.

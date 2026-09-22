@@ -48,11 +48,11 @@ moment; a whole song of them is a drone.
 **Tools for this rung.** The lesson asks you to hear what you are *not*
 doing. In the ninth-chord drill *Hear it* sounds the chord it has asked for —
 a ninth, minor ninth or major ninth — and *Show me* prints it if it is the
-spelling you are after; C, Cadd9 and C9 in a row are for *Free play*. The
-accompaniment lab here loops I–vi–IV–V in broken chords, fixed, in any key
-you set: something to try the colours over. It opens on *Hold the chords*, which
-puts the harmony under your hands instead of in them, and afterwards counts how
-many of your notes were in the key. Nothing is recorded.
+spelling you are after; C, Cadd9 and C9 in a row are for *Free play*. *Accompaniment lab* opens *Ballad — broken chords*, which loops I–vi–IV–V in
+broken chords, fixed, in any key you set: something to try the colours over. It
+opens on *Hold the chords*, which puts the harmony under your hands instead of
+in them, and at the end of a time round it says how many of your notes were in
+that key's own scale. Nothing is recorded.
 
 **How you'll know you've got it.** You can take a plain chord chart and make it
 sound like a record, without changing a single chord symbol.

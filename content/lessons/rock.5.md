@@ -34,9 +34,11 @@ and it is worth sitting with rather than finishing.
 
 **Tools for this rung.** *Free play* names whatever chord you are holding, which
 turns this rung into something you can explore rather than read. Hold a C, add a
-D instead of the E, and watch the screen tell you what you just built. The
-minor-vamp preset in the lab is also worth a visit with these voicings in your
-hands instead of plain triads.
+D instead of the E, and watch the screen tell you what you just built. *Accompaniment lab* opens *Rock — the minor vamp* on *Hold the chords*: held
+roots and chord tones in A minor, a key this preset fixes, running underneath
+while you put these voicings on top of it instead of plain triads. At the end
+of a time round it says how many of your notes were in the scale, and keeps
+none of it.
 
 **Common mistake.** Resolving them. A sus4 that falls to the third every time is
 a decoration on a major chord, not a sound in its own right. Play one and leave

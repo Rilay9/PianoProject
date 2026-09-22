@@ -211,7 +211,8 @@
                 },
                 {
                   "kind": "lab",
-                  "preset": "primary-chords"
+                  "preset": "primary-chords",
+                  "mode": "tune"
                 }
               ],
               "levelBand": [

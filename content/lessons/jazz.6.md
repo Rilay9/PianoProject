@@ -44,11 +44,15 @@ comping; four to the bar is the one pattern without them, and it only works
 short, light and chosen.
 
 **Tools for this rung.** A comping pattern needs something to be in the gaps
-of. Set the tune's key in the accompaniment lab, start *Jam it*, and play
-one pattern against a bass and drums that will not adjust to you — which is
+of. *Accompaniment lab* opens *Jazz — two five one*; set the tune's key, start
+*Jam it*, and play one pattern against a bass and drums that will not adjust to you — which is
 the condition the pattern has to work under anyway. It opens on *Play the tune*,
 which is where the gaps come from: the app takes the right hand and leaves the
-chords to you. Nothing there is recorded or marked.
+chords to you. Nothing there is recorded or marked. *Play it as a duet* is the
+other button: it opens *Bye Bye Blackbird* with the right hand yours and the
+app playing the left, which is the same question from the other side — switch
+to the left hand from the *Hands* row and you are comping under a tune again,
+this time one that is written down.
 
 **How you'll know you've got it.** A twelve-bar blues comped in one pattern with
 a walking line underneath, at a tempo where neither hand has to think.

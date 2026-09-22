@@ -53,11 +53,13 @@ are under Ragtime in the Library.
 recordings. Those rolls were cut fast and often sped up in transfer; the printed
 marking is *Tempo di marcia*, which is a march, not a race.
 
-**Tools for this rung.** Left hand alone is the instruction, and *Duet* lets
-you follow it without losing the piece: choose the left hand, and the right
-one is played over you, so the leaps are practised at the tempo and in the
-company they will have to work in. *Solace* first, which has the fewest of
-them.
+**Tools for this rung.** Left hand alone is the instruction, and *Play it as a
+duet* lets you follow it without losing the piece: it opens *Maple Leaf Rag*
+with the right hand yours, so switch to the left from the *Hands* row and the
+right one is played over you — the leaps practised at the tempo and in the
+company they will have to work in. *Solace* has the fewest of them; open that
+one from its own row and use the ⋯ menu. *Play it blind* takes *Maple Leaf Rag*
+too, with the notation hidden and the run still followed and still marked.
 
 **How you'll know you've got it.** One rag with the left hand steady enough
 that you could turn the right hand off and still hear the piece.

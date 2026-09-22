@@ -33,6 +33,14 @@ first.
 **Repertoire for this rung.** Your own. Record the constraint improvisations and
 keep one a week.
 
+**Tools for this rung.** One button, *Free play*: no piece, no marking and
+nothing kept, which is the only screen in the app that matches what this rung
+asks you to do. It names a chord from three or more notes held down together,
+so a quartal shape you like can be held and named — and when it names nothing,
+that is the answer too, because a stack of fourths is not a chord with a name.
+There is no other tool here on purpose: the two-minute improvisation under a
+constraint is not something the app can mark.
+
 **Common mistake.** Adding colour before there is anything to colour. A good
 melody in triads beats a weak one in thirteenths.
 

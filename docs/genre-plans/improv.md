@@ -64,7 +64,7 @@ implemented. They are listed with what already exists that would make them cheap
 ### Modes for this rung
 
 - **Lab · Blues — twelve bars** — `BUILT`. Twelve bars, bass and drums, nothing judged.
-- **Simon seeded from the blues scale** — `NOT BUILT`. The scale by ear before it is improvised on.
+- **Simon seeded from the blues scale** — `BUILT` (2026-09-19, Entry 22). The scale by ear before it is improvised on; `improv.5`'s `simon` tool names it, and its lesson says so since T19.
 
 ---
 

@@ -43,6 +43,14 @@ campanella* if you want a piece that is purely about the hands. The other
 ballades, the scherzo, the rest of the études and the sonata movements are
 under Classical in the Library.
 
+**Tools for this rung.** One button, *Play it blind*, and it opens the first
+Ballade — first of the six above — with the notation hidden while the app goes
+on following and marking the run. At this level the page is mostly a comfort,
+and the four bars either side of a section change are exactly where that
+comfort is doing the work; take the list you made above through blind, one
+entry at a time. Anything else — a loop, the *Ladder*, *Perform* — lives on
+the score screen itself, in the rows under the music, and not on this page.
+
 **Common mistake.** Playing it through from the top, every day, at whatever
 tempo it happens to come out. That is performing, not practising, and it is how
 a piece stops improving.

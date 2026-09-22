@@ -42,10 +42,13 @@ which is the exact thing this rung is asking you to be able to do.
 **Common mistake.** Transposing by moving your hands the same distance. That is
 how the flat keys stay unlearned; read the numerals and find the notes.
 
-**Tools for this rung.** The lab opens on its twelve-bar blues, the form fixed
-and every chord already a seventh; set the key to E flat and *Read it* prints
-the whole form in the new key. That is the numerals turned back into notes, which is the direction
-this rung is short of.
+**Tools for this rung.** *Accompaniment lab* opens *Blues — twelve bars*, the
+form fixed and every chord already a seventh; set the key to E flat and *Read
+it* prints the whole form in the new key. That is the numerals turned back into
+notes, which is the direction this rung is short of. *Play it blind* opens
+*Pinetop's Boogie Woogie*, first of the rung's three, with the notation hidden
+and the run still followed and marked — which is where "from memory" below gets
+tested rather than claimed.
 
 **How you'll know you've got it.** Twelve bars in a flat key, with ninths, from
 memory.

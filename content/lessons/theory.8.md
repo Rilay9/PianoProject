@@ -33,6 +33,13 @@ than a set of chords.
 **Repertoire for this rung.** Not required. If you want one, the bridge of almost
 any standard modulates.
 
+**Tools for this rung.** One button, *Simon*, and it opens the chain game drawn
+from all twelve keys — *Simon — every key around middle C*. That is not one of
+this rung's five exercises and it is not about modulation; it is the memory the
+dictation drill runs on, since a key change you cannot hold four chords of is a
+key change you cannot name. The longest chain you kept is the score, and
+nothing else about the run is marked.
+
 **Common mistake.** Calling every chromatic chord a modulation. If the music is
 back home in two bars, nothing modulated.
 

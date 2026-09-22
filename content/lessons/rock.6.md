@@ -17,10 +17,10 @@ sit under a vocal for two minutes without getting boring, and why it collapses
 the moment the left hand starts following the chords politely.
 
 **The arpeggio has to be even, and that is the hard part.** A broken chord
-played expressively is an accompaniment with opinions. The exercises are
-in A minor: the figure as a bare ostinato over a held A, then a broken-chord left
-hand under a scale, and the thing being practised in both is that nothing inside the bar gets
-louder or later than anything else.
+played expressively is an accompaniment with opinions. The exercises are in
+A minor: the figure as a bare ostinato over a held A, then a broken-chord left
+hand under a scale, and both are practising the same thing — nothing inside the
+bar gets louder or later than anything else.
 
 **The pedal is a colour here, not a joiner.** Everywhere else in this app the
 sustain pedal is changed *after* the new chord sounds so the harmony stays
@@ -42,14 +42,13 @@ of each chord. *Moonlight*, first movement, is the archetype the other two are
 preparing you for: triplet arpeggios, all the way through, over a bass that
 moves about once a bar.
 
-**Tools for this rung.** *Play it as a duet* is worth more here than almost
-anywhere: the app plays one hand while you play the other, then swap. In
-*Gnossienne* it keeps the left hand going under your tune, then the tune
-while you hold the figure. It takes a hand, not a voice:
+**Tools for this rung.** *Play it as a duet* is worth more here than almost anywhere: the app plays one hand while you play the other, then swap. In
+*Gnossienne* it keeps the left hand under your tune, then the tune while you
+hold the figure. It takes a hand, not a voice:
 *Moonlight*'s melody and arpeggio share the right hand, so it cannot hold the
-arpeggio alone. The lab's *Rock — the
-minor vamp* preset gives the figure a floor: the A-minor loop with held roots, so
-the arpeggio has chords to sit on while you keep it even.
+arpeggio alone. *Accompaniment lab* opens *Rock — the minor vamp*, which gives
+the figure a floor: the A-minor loop with held roots underneath, so the
+arpeggio has chords to sit on while you keep it even.
 
 **Common mistake.** Pedalling to the bar line. The pedal follows the harmony,
 and in this texture the harmony often changes in the middle of a bar or not at

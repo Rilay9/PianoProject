@@ -376,23 +376,32 @@ const CLAIMS: [string, string, () => boolean][] = [
     'the app takes the right hand and leaves the chords to the learner',
     () => bedOf('jazz.6') === 'tune',
   ],
+  // Both rows below said *Play the tune* until T19, and the screen never did
+  // it: `LabScreen.bedRefusal` turns that way round down when the preset's
+  // right hand is `none`, and `drawBedChips` then stands the chip back to *Bed
+  // only*. The ballad and the twelve-bar blues both write no right hand, so
+  // the field said one thing and the button opened another — and the old rows
+  // passed, because they asked the authored file rather than the rule the
+  // screen applies. Both rungs now say `off`, which is what they were getting
+  // and, for a rung whose learner is the one comping, what they wanted.
   [
     'chords-pop.9',
-    'the ballad hands back its chords and its left hand, and opens playing the tune',
+    'the ballad hands back its chords and its left hand, and opens with the bed alone because it writes no right hand to hand over',
     () => {
       const freed = freedBy('chords-pop.9');
       return (
         labTools('chords-pop.9').includes('ballad') &&
         freed.includes('progression') &&
         freed.includes('leftHand') &&
-        bedOf('chords-pop.9') === 'tune'
+        labPreset('ballad')?.rightHand === 'none' &&
+        bedOf('chords-pop.9') === 'off'
       );
     },
   ],
   [
     'jam.5',
-    'the twelve-bar bed opens playing the tune, so there is a line to comp under',
-    () => bedOf('jam.5') === 'tune',
+    'the twelve-bar bed opens on bass and drums alone, because that preset has no right hand to hand over and the chords are the learner\'s',
+    () => bedOf('jam.5') === 'off' && labPreset('blues-shuffle')?.rightHand === 'none',
   ],
   [
     '3.2',
@@ -2734,7 +2743,7 @@ const T12B_APP: [string, string, () => boolean][] = [
   ],
   [
     'chords-pop.9',
-    'the rung frees the ballad\'s progression and left hand and opens it playing the tune, so a chart can be typed and three left hands tried',
+    'the rung frees the ballad\'s progression and left hand and opens it on the bed alone, so a chart can be typed and three left hands tried over it',
     () => {
       const preset = labPreset('ballad');
       const locked = labLocksFor(preset, freedBy('chords-pop.9'));
@@ -2743,7 +2752,10 @@ const T12B_APP: [string, string, () => boolean][] = [
         !locked.has('progression') &&
         !locked.has('leftHand') &&
         locked.has('rightHand') &&
-        bedOf('chords-pop.9') === 'tune' &&
+        // T19: `tune` here was refused by the screen, because the ballad's
+        // right hand is `none` and locked. `off` is what the button did and
+        // what the lesson now says.
+        bedOf('chords-pop.9') === 'off' &&
         preset?.bed === 'hold'
       );
     },
@@ -2802,3 +2814,654 @@ import { simonForStage } from '../../src/engine/drills/simon';
 import { fifthsFor } from '../../src/engine/drills/answerSheet';
 import { barSchedule } from '../../src/audio/backingLoop';
 import { appPitches } from '../../src/score/ScoreSession';
+
+// --- T19: every lesson names the modes its rung has -------------------------
+//
+// Entry 40 found six lessons whose *Tools for this rung* paragraph named fewer
+// tools than the rung carried, one of them none and one with no paragraph at
+// all. The owner's test is two-sided: a lesson may never say a rung offers
+// something it does not, and it should say what it does. The first four rows
+// below are that test made mechanical over all 109 lessons, so the next rung
+// that gains a tool and loses its sentence fails here rather than in a reading.
+//
+// The rest are the individual sentences this pass wrote: what each button
+// opens, and which way round the lab comes up. They are hard-coded on the
+// lesson's side on purpose — the sentence is the constant, and the app's
+// answer is what has to agree with it.
+
+const T19_LESSONS = resolve('..', 'content', 'lessons');
+
+/** The label `LessonScreen.toolButton` draws for each kind. */
+const T19_LABELS: Record<string, string> = {
+  lab: 'Accompaniment lab',
+  play: 'Free play',
+  simon: 'Simon',
+  duet: 'Play it as a duet',
+  blind: 'Play it blind',
+  ladder: 'Climb the ladder',
+};
+
+/** Every authored rung, in file order. */
+function t19Rungs(): Lesson[] {
+  const out: Lesson[] = [];
+  for (const stage of authored.stages) {
+    for (const unit of stage.units) for (const lesson of unit.lessons) out.push(lesson);
+  }
+  return out;
+}
+
+/** A lesson's whole body, whitespace flattened so a wrapped label still matches. */
+function t19Text(lesson: Lesson): string {
+  const name = lesson.textFile.split('/').pop() ?? `${lesson.id}.md`;
+  return readFileSync(join(T19_LESSONS, name), 'utf8').replace(/\s+/g, ' ');
+}
+
+/** The *Tools for this rung* paragraph onwards, or '' where there is none. */
+function t19Para(lesson: Lesson): string {
+  const text = t19Text(lesson);
+  const at = text.indexOf('**Tools for this rung');
+  return at < 0 ? '' : text.slice(at);
+}
+
+/** What a `duet` or `blind` with no `item` opens: the rung's first playable song. */
+function t19FirstSong(id: string): string | null {
+  return (
+    rung(id).songOptions.find((option) => {
+      const row = byId.get(option);
+      return row !== undefined && row.type === 'song' && targetFor(row) !== 'none';
+    }) ?? null
+  );
+}
+
+/** What `ladder` opens: the rung's first exercise that is notation. */
+function t19Ladder(id: string): string | null {
+  return (
+    rung(id).exerciseOptions.find((option) => {
+      const row = byId.get(option);
+      return row !== undefined && targetFor(row) === 'score';
+    }) ?? null
+  );
+}
+
+/** The `item` a rung's tool of this kind names, if it names one. */
+function t19Item(id: string, kind: string): string | undefined {
+  return (written(id).tools ?? []).find((tool) => tool.kind === kind)?.item;
+}
+
+/** How many staves the catalog measured in a row's file. */
+function t19Staves(id: string): number | undefined {
+  return (item(id).notation as { staves?: number } | undefined)?.staves;
+}
+
+/** The kinds a rung carries, in order. */
+function t19Kinds(id: string): string[] {
+  return (written(id).tools ?? []).map((tool) => tool.kind);
+}
+
+const T19_APP: [string, string, () => boolean][] = [
+  // --- the two-sided rule, over every lesson -------------------------------
+  [
+    'every rung',
+    'a rung that carries tools has a Tools for this rung paragraph that names every one of them, by the label the page draws',
+    () => {
+      const silent: string[] = [];
+      for (const lesson of t19Rungs()) {
+        const kinds = (lesson.tools ?? []).map((tool) => tool.kind);
+        if (kinds.length === 0) continue;
+        const para = t19Para(lesson).toLowerCase();
+        if (para === '') silent.push(`${lesson.id}: no paragraph`);
+        for (const kind of kinds) {
+          const label = (T19_LABELS[kind] ?? kind).toLowerCase();
+          if (!para.includes(label)) silent.push(`${lesson.id}: ${kind}`);
+        }
+      }
+      return silent.length === 0;
+    },
+  ],
+  [
+    'every rung',
+    'no lesson names a button its own rung does not draw',
+    () => {
+      // Two lessons name a label for a kind their rung lacks, and both say in
+      // the same sentence where that thing actually is: `1.5` lists the Simon
+      // drill among its own exercises and opens it from that row, and `3.6`
+      // says outright that the accompaniment lab is not this rung's button and
+      // lives on the Library's line of doors.
+      const allowed = new Set(['1.5:simon', '3.6:lab']);
+      const wrong: string[] = [];
+      for (const lesson of t19Rungs()) {
+        const kinds = new Set<string>((lesson.tools ?? []).map((tool) => tool.kind));
+        const text = t19Text(lesson).toLowerCase();
+        for (const [kind, label] of Object.entries(T19_LABELS)) {
+          if (kinds.has(kind)) continue;
+          if (text.includes(label.toLowerCase()) && !allowed.has(`${lesson.id}:${kind}`)) {
+            wrong.push(`${lesson.id}:${kind}`);
+          }
+        }
+      }
+      return wrong.length === 0;
+    },
+  ],
+  [
+    'every rung',
+    'a lab tool that opens on Play the tune names a preset that has a right hand to hand over',
+    () => {
+      // The fault this pass found: `LabScreen.bedRefusal` turns *Play the tune*
+      // down when the right hand is `none`, and `drawBedChips` stands the chip
+      // back to *Bed only* — so `jam.5` and `chords-pop.9` each carried a
+      // `mode` the screen never honoured while their lessons promised it.
+      const wrong: string[] = [];
+      for (const lesson of t19Rungs()) {
+        for (const tool of lesson.tools ?? []) {
+          if (tool.kind !== 'lab') continue;
+          const preset = tool.preset ? labPreset(tool.preset) : null;
+          if (labBedFor(preset, tool.mode) === 'tune' && preset?.rightHand === 'none') {
+            wrong.push(`${lesson.id}: ${String(tool.preset)}`);
+          }
+        }
+      }
+      return wrong.length === 0;
+    },
+  ],
+  [
+    'every rung',
+    'a lab tool that opens on Hold the chords names a preset with a left-hand pattern to comp in',
+    () => {
+      const wrong: string[] = [];
+      for (const lesson of t19Rungs()) {
+        for (const tool of lesson.tools ?? []) {
+          if (tool.kind !== 'lab') continue;
+          const preset = tool.preset ? labPreset(tool.preset) : null;
+          if (labBedFor(preset, tool.mode) === 'hold' && preset?.leftHand === 'none') {
+            wrong.push(`${lesson.id}: ${String(tool.preset)}`);
+          }
+        }
+      }
+      return wrong.length === 0;
+    },
+  ],
+
+  // --- what Climb the ladder opens, per rung -------------------------------
+  [
+    '4.1',
+    'the ladder opens the two-octave C major scale hands together',
+    () => t19Ladder('4.1') === 'exercise.scale.c-major.2oct.similar.both.2',
+  ],
+  [
+    '4.2',
+    'the ladder opens the two-octave F major scale hands together — the one whose thumb waits for the fourth finger',
+    () => t19Ladder('4.2') === 'exercise.scale.f-major.2oct.similar.both.2',
+  ],
+  [
+    '4.3',
+    'the flash cards are a prompt loop with no notation, so the ladder skips them and takes the written-out inversions',
+    () =>
+      rung('4.3').exerciseOptions[0] === 'drill.chord.inversions' &&
+      targetFor(item('drill.chord.inversions')) === 'drill' &&
+      t19Ladder('4.3') === 'exercise.inversions.c-major.both',
+  ],
+  [
+    '4.4',
+    'the ladder opens Hanon No. 1 hands together, and a pass of it is about sixty beats',
+    () => {
+      const id = t19Ladder('4.4');
+      const bars = (item(id ?? '').notation as { bars?: number } | undefined)?.bars;
+      return id === 'exercise.hanon.01.both' && bars === 30;
+    },
+  ],
+  [
+    'technique.4',
+    'the ladder opens the legato phrase in C, which is the first of this rung’s written-out exercises',
+    () => t19Ladder('technique.4') === 'exercise.articulation.c.legato.right',
+  ],
+  [
+    'technique.6',
+    'the ladder opens the four-octave A flat arpeggio hands together',
+    () => t19Ladder('technique.6') === 'exercise.arpeggio.a-flat-major.4oct.both',
+  ],
+  [
+    'technique.7',
+    'the ladder opens the broken-octave study in A, left hand — not the octave scale the paragraph used to name',
+    () =>
+      t19Ladder('technique.7') === 'exercise.broken-octaves.a.1oct.left' &&
+      rung('technique.7').exerciseOptions.includes('exercise.octave-scale.a.1oct.both'),
+  ],
+
+  // --- what a duet or a blind opens, per rung ------------------------------
+  [
+    '2.1',
+    'the duet opens a hands-together tune',
+    () => t19FirstSong('2.1') === 'song.classical.ode-to-joy.ht',
+  ],
+  [
+    '3.5',
+    'the duet opens the easy Canon in D',
+    () => t19FirstSong('3.5') === 'song.classical.pachelbel-canon-d.easy',
+  ],
+  [
+    '3.6',
+    'the duet opens Greensleeves with its waltz bass',
+    () => t19FirstSong('3.6') === 'song.folk.greensleeves.waltz',
+  ],
+  [
+    'hymns',
+    'the duet opens When the Saints, which is why the lesson sends you to Amazing Grace from its own row',
+    () =>
+      t19FirstSong('hymns') === 'song.folk.when-the-saints.f' &&
+      rung('hymns').songOptions.includes('song.folk.amazing-grace-satb.pdmx'),
+  ],
+  [
+    'rock.overview',
+    'the duet opens the easy Canon in D',
+    () => t19FirstSong('rock.overview') === 'song.classical.pachelbel-canon-d.easy',
+  ],
+  [
+    '4.7',
+    'the blind button opens the easy Für Elise, first of the rung’s three',
+    () =>
+      t19FirstSong('4.7') === 'song.classical.beethoven-fur-elise.easy' &&
+      rung('4.7').songOptions.length === 3,
+  ],
+  [
+    'classical.4',
+    'the duet opens the Sonatina in G, first of the rung’s five',
+    () =>
+      t19FirstSong('classical.4') === 'song.pop.sonatina-in-g.pdmx' &&
+      rung('classical.4').songOptions.length === 5,
+  ],
+  [
+    'classical.5',
+    'the duet opens the Clementi first movement',
+    () =>
+      t19FirstSong('classical.5') ===
+      'song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx',
+  ],
+  [
+    'classical.6',
+    'the duet opens the Bach prelude, and the rung draws no blind button — which is why the lesson sends Blind to the ⋯ menu',
+    () =>
+      t19FirstSong('classical.6') === 'song.classical.bach-wtc1-prelude-1' &&
+      t19Kinds('classical.6').join(',') === 'duet',
+  ],
+  [
+    'classical.7',
+    'the duet names Invention No. 1, which is one of the rung’s own songs and opens as notation',
+    () => {
+      const named = t19Item('classical.7', 'duet');
+      return (
+        named === 'song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx' &&
+        rung('classical.7').songOptions.includes(named) &&
+        targetFor(item(named)) === 'score' &&
+        t19FirstSong('classical.7') === 'song.classical.mozart-k545-i'
+      );
+    },
+  ],
+  [
+    'classical.8',
+    'both buttons take the Rondo alla turca, first of the six',
+    () => t19FirstSong('classical.8') === 'song.classical.mozart-rondo-alla-turca',
+  ],
+  [
+    'classical.9',
+    'the one button is blind, and it opens the first Ballade',
+    () =>
+      t19Kinds('classical.9').join(',') === 'blind' &&
+      t19FirstSong('classical.9') === 'song.classical.chopin-ballade-1',
+  ],
+  [
+    'ragtime.6',
+    'the one button is a duet, and it opens School of Ragtime',
+    () =>
+      t19Kinds('ragtime.6').join(',') === 'duet' &&
+      t19FirstSong('ragtime.6') === 'song.ragtime.joplin-school-of-ragtime',
+  ],
+  [
+    'ragtime.7',
+    'both buttons take Maple Leaf Rag, and Solace is on the rung but not what they open',
+    () =>
+      t19FirstSong('ragtime.7') === 'song.ragtime.joplin-maple-leaf-rag' &&
+      rung('ragtime.7').songOptions.some((id) => /solace/.test(id)),
+  ],
+  [
+    'ragtime.8',
+    'the one button is blind, and it opens Pine Apple Rag — first of the rung’s six',
+    () =>
+      t19Kinds('ragtime.8').join(',') === 'blind' &&
+      t19FirstSong('ragtime.8') === 'song.ragtime.joplin-pine-apple-rag' &&
+      rung('ragtime.8').songOptions.length === 6,
+  ],
+  [
+    'blues.5',
+    'the blind button opens Blues My Naughty Sweetie Gives to Me, first of the rung’s six',
+    () =>
+      t19FirstSong('blues.5') ===
+        'song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx' &&
+      rung('blues.5').songOptions.length === 6,
+  ],
+  [
+    'blues.6',
+    'the duet opens the easy Boogie',
+    () => t19FirstSong('blues.6') === 'song.pop.boogie-easy-for-beginners.pdmx',
+  ],
+  [
+    'blues.7',
+    'the duet and the blind button both take the easy Boogie, first of the rung’s three',
+    () =>
+      t19FirstSong('blues.7') === 'song.pop.boogie-easy-for-beginners.pdmx' &&
+      rung('blues.7').songOptions.length === 3,
+  ],
+  [
+    'blues.8',
+    'the blind button opens Pinetop’s Boogie Woogie, first of the rung’s three',
+    () =>
+      t19FirstSong('blues.8') === 'song.folk.boogie-woogie.pdmx' &&
+      rung('blues.8').songOptions.length === 3,
+  ],
+  [
+    'blues.9',
+    'the blind button opens Stumbling, first of the rung’s three',
+    () =>
+      t19FirstSong('blues.9') === 'song.jazz.stumbling' &&
+      rung('blues.9').songOptions.length === 3,
+  ],
+  [
+    'chords-pop.8',
+    'the blind button opens Isabella’s Lullaby, first of the rung’s six',
+    () =>
+      (t19FirstSong('chords-pop.8') ?? '').includes('isabella-s-lullaby') &&
+      rung('chords-pop.8').songOptions.length === 6,
+  ],
+  [
+    'chords-pop.9',
+    'the blind button opens Le Festin, first of the rung’s six',
+    () =>
+      (t19FirstSong('chords-pop.9') ?? '').includes('le-festin') &&
+      rung('chords-pop.9').songOptions.length === 6,
+  ],
+  [
+    'holiday.6',
+    'the blind button takes Carol of the Bells and not Silent Night, which the list above names first',
+    () =>
+      t19FirstSong('holiday.6') === 'song.holiday.carol-of-the-bells' &&
+      rung('holiday.6').songOptions.some((id) => /silent-night/.test(id)) &&
+      rung('holiday.6').songOptions.length === 4,
+  ],
+  [
+    'jazz.6',
+    'the duet opens Bye Bye Blackbird',
+    () => t19FirstSong('jazz.6') === 'song.pop.ray-henderson-bye-bye-blackbird.pdmx',
+  ],
+  [
+    'jazz.7',
+    'the duet opens the jazz setting of Jingle Bells',
+    () =>
+      t19FirstSong('jazz.7') === 'song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx',
+  ],
+  [
+    'jazz.9',
+    'the blind button opens Take Five, first of the rung’s six',
+    () =>
+      t19FirstSong('jazz.9') === 'song.jazz.the-dave-brubeck-quartet-take-five.pdmx' &&
+      rung('jazz.9').songOptions.length === 6,
+  ],
+
+  // --- three duets that now name an exercise, because the songs cannot ------
+  [
+    'latin.3',
+    'the duet names the son clave over a quarter-note pulse — the one option here with two staves — because all three of the rung’s songs are printed on one',
+    () => {
+      const named = t19Item('latin.3', 'duet');
+      const songs = rung('latin.3').songOptions;
+      return (
+        named === 'exercise.clave.son-3-2.pulse' &&
+        rung('latin.3').exerciseOptions.includes(named) &&
+        t19Staves(named) === 2 &&
+        songs.length === 3 &&
+        songs.every((id) => t19Staves(id) === 1)
+      );
+    },
+  ],
+  [
+    'latin',
+    'the duet names the tumbao-and-montuno exercise, because five of the rung’s six songs are printed on one staff',
+    () => {
+      const named = t19Item('latin', 'duet');
+      const songs = rung('latin').songOptions;
+      return (
+        named === 'exercise.latin-groove.c.son-3-2' &&
+        rung('latin').exerciseOptions.includes(named) &&
+        t19Staves(named) === 2 &&
+        songs.filter((id) => t19Staves(id) === 1).length === 5
+      );
+    },
+  ],
+  [
+    'technique.5',
+    'the duet names the two-against-one exercise, where the right hand is the moving one and the left is the steady one',
+    () => {
+      const named = t19Item('technique.5', 'duet');
+      const settings = params(named ?? '');
+      return (
+        named === 'exercise.independence.c.2v1' &&
+        rung('technique.5').exerciseOptions.includes(named) &&
+        settings.rightPerBeat === 2 &&
+        settings.leftPerBeat === 1
+      );
+    },
+  ],
+
+  // --- which way round the lab opens ---------------------------------------
+  [
+    '2.3',
+    'the lab opens playing the tune, so the three chords under it are the learner’s — which is what this rung is marked on',
+    () =>
+      bedOf('2.3') === 'tune' &&
+      labPreset('primary-chords')?.rightHand === 'melody' &&
+      labTools('2.3').join(',') === 'primary-chords',
+  ],
+  [
+    'chords-pop.4',
+    'the four-chord preset carries no way round of its own, and this rung — its only one — opens it playing the tune',
+    () =>
+      labPreset('pop-four-chord')?.bed === undefined &&
+      labPreset('pop-four-chord')?.rightHand === 'melody' &&
+      bedOf('chords-pop.4') === 'tune',
+  ],
+  [
+    'jam',
+    'the lab opens on the bed alone — bass and drums, no chords — because comping is what this rung is for',
+    () => bedOf('jam') === 'off' && labTools('jam').join(',') === 'blues-shuffle',
+  ],
+  [
+    'holiday',
+    'the lab opens holding the chords, so the tune over them is the learner’s',
+    () => bedOf('holiday') === 'hold' && labPreset('primary-chords')?.bed === 'hold',
+  ],
+  [
+    'improv.6',
+    'the minor vamp opens holding the chords with its progression handed back, so a typed two-five-one runs underneath',
+    () =>
+      bedOf('improv.6') === 'hold' &&
+      freedBy('improv.6').includes('progression') &&
+      labTools('improv.6').join(',') === 'minor-vamp',
+  ],
+  [
+    'jam.6',
+    'the twelve-bar preset walks a bass and, holding the chords, comps on the backbeat rather than laying a second walking line over the first',
+    () => {
+      const preset = labPreset('blues-shuffle');
+      return (
+        bedOf('jam.6') === 'hold' &&
+        preset?.leftHand === 'walking' &&
+        source('audio/backingLoop.ts').includes("case 'walking':")
+      );
+    },
+  ],
+
+  // --- Simon: what the button opens, and whether the rung lists it ----------
+  [
+    'theory.3',
+    'Simon opens the white-key chain around middle C, which this rung lists as an exercise',
+    () =>
+      simonForStage(3) === 'drill.ear.simon-c-major' &&
+      rung('theory.3').exerciseOptions.includes('drill.ear.simon-c-major'),
+  ],
+  [
+    'theory.4',
+    'from Stage 4 up Simon opens the every-key chain, and this rung lists it',
+    () =>
+      simonForStage(4) === 'drill.ear.simon-chromatic' &&
+      rung('theory.4').exerciseOptions.includes('drill.ear.simon-chromatic'),
+  ],
+  [
+    'theory.5',
+    'Simon opens the every-key chain, and this rung lists it',
+    () =>
+      simonForStage(5) === 'drill.ear.simon-chromatic' &&
+      rung('theory.5').exerciseOptions.includes('drill.ear.simon-chromatic'),
+  ],
+  [
+    'theory.6',
+    'Simon opens the every-key chain, and this rung lists it',
+    () =>
+      simonForStage(6) === 'drill.ear.simon-chromatic' &&
+      rung('theory.6').exerciseOptions.includes('drill.ear.simon-chromatic'),
+  ],
+  [
+    'theory.7',
+    'Simon opens the every-key chain, which this rung does not list among its five exercises — the lesson says so rather than implying it is one',
+    () =>
+      simonForStage(7) === 'drill.ear.simon-chromatic' &&
+      !rung('theory.7').exerciseOptions.includes('drill.ear.simon-chromatic') &&
+      rung('theory.7').exerciseOptions.length === 5,
+  ],
+  [
+    'theory.8',
+    'the one button is Simon, opening the every-key chain, which is not one of this rung’s five exercises',
+    () =>
+      t19Kinds('theory.8').join(',') === 'simon' &&
+      simonForStage(8) === 'drill.ear.simon-chromatic' &&
+      !rung('theory.8').exerciseOptions.includes('drill.ear.simon-chromatic') &&
+      rung('theory.8').exerciseOptions.length === 5,
+  ],
+  [
+    'theory.9',
+    'the one button is Simon, and the sight-reading the lesson names is an exercise of the rung rather than a button',
+    () =>
+      t19Kinds('theory.9').join(',') === 'simon' &&
+      simonForStage(9) === 'drill.ear.simon-chromatic' &&
+      rung('theory.9').exerciseOptions.some((id) => id.startsWith('drill.reading.sight-reading')),
+  ],
+  [
+    'improv.5',
+    'Simon here names the blues-scale chain, which is one of the rung’s own exercises, and it lights the keys only after a miss',
+    () => {
+      const named = t19Item('improv.5', 'simon');
+      return (
+        named === 'drill.ear.simon-blues-c' &&
+        rung('improv.5').exerciseOptions.includes(named) &&
+        params(named).help === 'keys-after-miss'
+      );
+    },
+  ],
+  [
+    'blues.3',
+    'Simon here names the same blues-scale chain, and the lab opens the twelve bars holding the changes',
+    () =>
+      t19Item('blues.3', 'simon') === 'drill.ear.simon-blues-c' &&
+      bedOf('blues.3') === 'hold' &&
+      labTools('blues.3').join(',') === 'blues-shuffle',
+  ],
+
+  // --- Free play, which six lessons now describe the same way ---------------
+  [
+    '3.2',
+    'Free play names three or more notes held together and says which one is in the bass',
+    () => {
+      const first = nameHeldChord([60, 64, 67]);
+      const inverted = nameHeldChord([64, 67, 72]);
+      return (
+        t19Kinds('3.2').includes('play') &&
+        nameHeldChord([60, 64]) === null &&
+        (first?.label ?? '') === 'C major' &&
+        (inverted?.label ?? '').includes(' / ')
+      );
+    },
+  ],
+  [
+    '3.3',
+    'Free play is on this rung, and an E7 without its raised third is a different chord to it',
+    () => {
+      const withSharp = nameHeldChord([52, 56, 59, 62]);
+      const without = nameHeldChord([52, 55, 59, 62]);
+      return (
+        t19Kinds('3.3').includes('play') &&
+        withSharp !== null &&
+        without !== null &&
+        withSharp.label !== without.label
+      );
+    },
+  ],
+  [
+    'improv.7',
+    'the one button is Free play, and a stack of fourths is not a chord the namer has a word for',
+    () =>
+      t19Kinds('improv.7').join(',') === 'play' &&
+      nameHeldChord([62, 67, 72, 77]) === null,
+  ],
+  [
+    'improv.9',
+    'the one button is Free play, and the rung offers no song for any other to open',
+    () =>
+      t19Kinds('improv.9').join(',') === 'play' && rung('improv.9').songOptions.length === 0,
+  ],
+  [
+    'jazz.8',
+    'the lab opens playing the tune and Free play is the other button, so a voicing with the root taken out can be held and named',
+    () =>
+      t19Kinds('jazz.8').includes('play') &&
+      bedOf('jazz.8') === 'tune' &&
+      labPreset('jazz-comping')?.rightHand === 'chord-tones',
+  ],
+
+  // --- trading fours, where three more lessons now send the learner ---------
+  [
+    'improv.5',
+    'trading fours is a setting on Jam it and turns the way round off, so the bed does not hold the chords through the learner’s bars',
+    () => {
+      const screen = source('ui/screens/LabScreen.ts');
+      return (
+        screen.includes("if (trading) bed = 'off';") &&
+        screen.includes("if (bed !== 'off') trading = false;") &&
+        labTools('improv.5').join(',') === 'blues-shuffle'
+      );
+    },
+  ],
+  [
+    'improv.6',
+    'the trade counts the learner’s notes against the key’s own scale here, because the twelve-bar form is the only one counted against the blues scale',
+    () =>
+      labPreset('minor-vamp')?.progressionId === 'i-v-vi-iv' &&
+      labPreset('blues-shuffle')?.progressionId === 'blues' &&
+      source('engine/tradingFours.ts').includes('blues'),
+  ],
+  [
+    'blues.9',
+    'the trade chips offer four bars each as well as two',
+    () => source('ui/screens/LabScreen.ts').includes('TRADE_BAR_CHOICES = [2, 4]'),
+  ],
+];
+
+describe('T19: every lesson names the modes its rung has', () => {
+  it('carries a row for each of the sentences this pass wrote', () => {
+    expect(T19_APP.length).toBeGreaterThan(40);
+  });
+
+  for (const [lesson, says, holds] of T19_APP) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});
+
+import { targetFor } from '../../src/ui/openItem';

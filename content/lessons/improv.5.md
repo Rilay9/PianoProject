@@ -43,6 +43,17 @@ felt inspired and what actually sounded good are two different sets, and only
 hearing it from the outside tells you which is which. Listen once, then play
 another chorus — there is nothing to save and nothing to tidy up afterwards.
 
+**Tools for this rung.** *Simon* opens *Simon — the C blues scale*, the one
+this rung lists: a chain one note longer each round, played by sound, with the
+keys lit only after a miss, so the scale is in your ear before it is under your
+eyes. *Accompaniment lab* opens *Blues — twelve bars* on *Hold the chords*, so
+the changes run underneath in whatever key you set and the right hand is
+entirely yours; at the end of each time round it says how many of your notes
+were in the blues scale. Set *Trading fours* to two bars each and it takes the
+form in turns instead: the app plays two bars over the bed, you take the next
+two, and afterwards it says whether you came in inside your own bars. Nothing
+there is recorded and nothing can be passed or failed.
+
 **Common mistake.** Playing the blues scale fast to hide uncertainty. Play four
 notes in a bar and mean all four.
 

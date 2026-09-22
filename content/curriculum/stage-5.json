@@ -637,7 +637,8 @@
               "estimatedDays": 45,
               "tools": [
                 {
-                  "kind": "duet"
+                  "kind": "duet",
+                  "item": "exercise.latin-groove.c.son-3-2"
                 }
               ],
               "levelBand": [
@@ -721,7 +722,8 @@
               },
               "tools": [
                 {
-                  "kind": "duet"
+                  "kind": "duet",
+                  "item": "exercise.independence.c.2v1"
                 }
               ],
               "levelBand": [
@@ -857,7 +859,7 @@
                 {
                   "kind": "lab",
                   "preset": "blues-shuffle",
-                  "mode": "tune"
+                  "mode": "off"
                 }
               ],
               "levelBand": [

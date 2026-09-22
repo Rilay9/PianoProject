@@ -44,9 +44,11 @@ and each asking for a different device first.
 
 Get one carol sounding finished rather than four sounding started.
 
-**Tools for this rung.** The accompaniment lab's *Ballad — broken chords* preset
-plays four chords broken in the left hand with no tune, and leaves the key free:
-set it to F or C and hear how much room a broken chord leaves above it. *Free
+**Tools for this rung.** *Accompaniment lab* opens the *Ballad — broken chords*
+preset on *Hold the chords*: four chords spread out underneath and no tune at
+all, which is the part you are adding. The key is free, so set it to F or C and
+hear how much room a broken chord leaves above it; at the end of a time round
+it says how many of your notes were in the scale, and keeps none of it. *Free
 play* is for trying a device on a carol you know without anything marking the
 notes you changed.
 

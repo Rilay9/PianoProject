@@ -55,7 +55,8 @@
               "estimatedDays": 150,
               "tools": [
                 {
-                  "kind": "duet"
+                  "kind": "duet",
+                  "item": "song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx"
                 },
                 {
                   "kind": "blind"

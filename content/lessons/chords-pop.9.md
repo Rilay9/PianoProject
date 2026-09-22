@@ -42,13 +42,15 @@ the scores, and the rung is complete on its exercises there.
 something comes out.
 
 **Tools for this rung.** Four decisions are quicker to make against
-something that will not wait. This rung's *Accompaniment lab* opens a ballad with
-the chords and the left hand handed back to you, and it opens *playing the tune*,
-so the arrangement under it is the only thing you are making: put the chart in,
-start it, and try three different left hands over the same
-sixteen bars; nothing is judged and
-nothing is kept, so the only thing left to compare is which one you would
-rather hear.
+something that will not wait. *Accompaniment lab* opens *Ballad — broken chords* with
+the chords and the left hand handed back to you, and on *Bed only*: bass and
+drums and no harmony at all, so the arrangement over them is the only thing on
+the screen that is yours. (That preset writes no right hand, so *Play the tune*
+has nothing to hand you and stays greyed out here.) Put the chart in, start it,
+and try three different left hands over the same sixteen bars; nothing is
+judged and nothing is kept, so the only thing left to compare is which one you
+would rather hear. *Play it blind* is the other button: *Le Festin*, first of
+the rung's six, with the notation hidden and the run still marked.
 
 **How you'll know you've got it.** Two arrangements of the same song that sound
 like different pieces of music.

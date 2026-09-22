@@ -994,7 +994,8 @@
               "estimatedDays": 12,
               "tools": [
                 {
-                  "kind": "duet"
+                  "kind": "duet",
+                  "item": "exercise.clave.son-3-2.pulse"
                 }
               ],
               "levelBand": [

@@ -6,7 +6,7 @@ videos:
   - label: "Jazz Chord Extensions Explained: How to Find 9ths, 11ths, 13ths, b9s & #11s"
     url: "https://www.youtube.com/watch?v=8VWktDGNqmM"
     teacher: "Jazz Tutorial | Julian Bradley"
-readingTime: 2
+readingTime: 3
 ---
 
 **Extensions are not extra notes, they are the notes you were leaving out.**
@@ -35,6 +35,16 @@ whose bridge modulates, as most 1920s bridges do, and it is all bridge; *I Got
 Rhythm* has the bridge that walks a circle of dominants, which is where the
 thirteenths go; and Tom Brier's *Uncle Ben's Cakewalk* is a modern rag to put
 the extensions into once you can voice them.
+
+**Tools for this rung.** *Accompaniment lab* opens *Jazz — two five one* with
+the walking bass and the progression fixed, and it opens on *Play the tune*:
+the app takes the right hand and the chords under it are yours, which is the
+only way to find out whether a thirteenth still works when something else is
+using the top of the bar. At the end of a time round it says how many of your
+notes were chord tones of the bar, and keeps none of it. *Free play* names a
+chord from three or more notes held down together, so a voicing with the fifth
+and the root taken out can be held down and checked — and where it names
+nothing, you have dropped enough notes that the chord is only implied.
 
 **Common mistake.** Playing every extension every time. An extension is a choice
 about colour; playing all of them is the same as playing none of them.

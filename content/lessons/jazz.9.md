@@ -6,7 +6,7 @@ videos:
   - label: "Intro to STRIDE PIANO (solo jazz piano)"
     url: "https://www.youtube.com/watch?v=aXuytElotSQ"
     teacher: "Piano Fluency"
-readingTime: 2
+readingTime: 3
 ---
 
 Everything on this track has been a piece of a tune. This rung is the tune.
@@ -42,10 +42,14 @@ tune takes a fifth of the time the first one did, and only if the first one is
 finished.
 
 **Tools for this rung.** Being inside the form rather than reading it has a
-switch. *Blind* takes the lead sheet away while the app still follows and
-marks the run, so the form has to come from you; comp a chorus that way
-before you try walking one, and you will find out quickly which of the four
-ways you actually know.
+switch. *Play it blind* takes the lead sheet away — it opens *Take Five*, first
+of the six — while the app still follows and marks the run, so the form has to
+come from you; comp a chorus that way before you try walking one, and you will
+find out quickly which of the four ways you actually know. *Accompaniment lab*
+is the other button: *Jazz — two five one* on *Play the tune*, the app holding
+the melody and the walking bass while every chord under them is yours, with a
+count of how many of your notes were chord tones of the bar at the end of each
+time round and nothing kept.
 
 **How you'll know you've got it.** You can start the tune in a key you have not
 practised it in, and get through the form.

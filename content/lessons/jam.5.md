@@ -27,11 +27,13 @@ accompaniment feel like it is pulling the tune along; played badly it is just
 early. The difference is whether you still know where beat one is, which is what
 the form tracker is for.
 
-**Tools for this rung.** The lab's *Blues — twelve bars* preset gives you a bass
-and drums that keep the form without keeping time *for* you, and nothing on that
-screen is judged. It opens on *Play the tune*, so there is a line to be in the
-gaps of rather than a bed to fill. Comp through eight choruses of it. That is a
-more useful twenty minutes than any amount of reading.
+**Tools for this rung.** *Accompaniment lab* opens *Blues — twelve bars* on
+*Bed only*: a bass and drums that keep the form without keeping time *for* you,
+and no chords at all, because the chords are what you came to comp. That preset
+writes no right hand, so *Play the tune* has nothing to hand you and is greyed
+out until you set *Right hand* to *Melody* yourself. Comp through eight
+choruses of it. Nothing on that screen is judged or kept, and that is a more
+useful twenty minutes than any amount of reading.
 
 **Common mistake.** Comping the same figure for a whole chorus. It is safe and
 it is dull, and it stops being accompaniment and becomes wallpaper. Change

@@ -6,7 +6,7 @@ videos:
   - label: "Guide Tones: Start Here to Play Jazz Piano Chords"
     url: "https://www.youtube.com/watch?v=XJ42wPHMuK0"
     teacher: "Piano With Jonny"
-readingTime: 2
+readingTime: 3
 ---
 
 Improvising over a blues is improvising over one chord that moves. Improvising
@@ -38,7 +38,14 @@ in the next one.
 its chords left to you, so put `ii7 V7 I` in and run it. The
 notes of each bar's chord come up lit on the keys, and on ii7 and V7 the third
 and the seventh are two of them, so what this lesson asks you to find is pointed at while the
-changes go past. Play only those two a chord for the first few times round.
+changes go past. Play only those two a chord for the first few times round. It opens on *Hold
+the chords*, so the changes are played underneath and the line above them is
+entirely yours, and at the end of each time round a quiet line says how many of
+your notes were in the key. Set *Trading fours* to two bars each and the same
+loop takes turns instead: the app plays two bars, leaves you the next two, and
+afterwards says whether you came in inside your own bars as well. Nothing is
+recorded and nothing can be passed or failed, so answer the call with the third
+and the seventh and nothing else for as long as that stays interesting.
 
 **How you'll know you've got it.** You can play through a ii–V–I and land on a
 chord tone at the start of each bar without planning it.
