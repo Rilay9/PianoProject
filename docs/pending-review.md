@@ -14021,3 +14021,155 @@ shape of fault as the bug this file was written for.
 `app/tests/unit/autoFit.test.ts`, `app/tests/e2e/scoreControls.ts` (`pressAnywhere`, added),
 `docs/04-ui-spec.md` section 5f, `docs/08-test-map.md`
 (two rows), this entry. Nothing committed.
+
+### Entry 59 — the arranger's hands, thrown away by a rule the brief asked for (2026-09-23)
+
+The owner's two downloaded arrangements are two note tracks each, both named `Piano `. The
+Python converter keeps them: `split = hands == "split" or (hands == "auto" and len(raw) == 1)`
+(`midi_to_musicxml.py`, `convert`), so only a one-track recording is split by voice-leading
+and the log reads *parts: Piano , Piano  (2 as recorded)*. The port merged **every** note track
+and let the split decide — item 1 of the T29 brief, restated in Entry 57 §2 as a deliberate
+difference. **The brief was wrong**: an arrangement written with a track per hand has already
+been given hands by a person, and that assignment is the authoritative one. The port was
+overwriting it.
+
+**Measured, not argued.** Converting the owner's two files both ways and comparing the written
+MusicXML note for note: **157 of 2,504 notes in one and 154 of 2,295 in the other change staff**
+between the two rules. That is what the merge cost, on the two files he actually has.
+
+#### 1. The rule now
+
+| note tracks | what happens | the Python |
+|---|---|---|
+| one | split by voice-leading | the same |
+| two | **kept as recorded** — first track the upper staff, second the lower | the same |
+| three or more | merged into one line, then split | **differs**: it writes a part per track |
+
+**File order, not register**, and that was read rather than assumed: the Python's clef falls
+back to `TrebleClef() if index == 0 else BassClef()`, `grand_staff = len(parts) == 2` names the
+first part `Piano` and leaves the second unnamed, and nothing in `convert` or `rebuild_part`
+looks at a pitch to choose a staff. Running the reference dumper on `crossed-hands.mid` — whose
+second track climbs *above* its first — confirms it: the Python puts the first track on part 0
+regardless.
+
+The three-or-more row is the port's one remaining difference and it is forced: music21 writes an
+ensemble, this writer writes a piano, and `<staves>2</staves>` is what the app reads a hand off.
+Three tracks are a melody and two accompaniment voices, or four are two per hand; the file is no
+longer saying *this hand*, so there is nothing authoritative to keep. `hands: 'keep'` on such a
+file is still refused with a sentence, and the sentence now says the command-line tool writes a
+part per track.
+
+#### 2. The sheet's sentence, which was a lie for the commonest file
+
+`handsSentence` said *"The 2 tracks with notes in them (…) were merged into one line first"* over
+every two-track import. It now branches on what actually happened: **kept as recorded** names the
+two staves and says *"Which hand plays what is the arrangement's own answer, not one the app
+made"*; **split** keeps the middle-C sentence and the crossing warning, and only mentions a merge
+when there were more than two tracks to merge. The report field is renamed with it —
+`merged`/`mergedNames` became `noteTracks`/`noteTrackNames`, because "how many tracks held notes"
+and "how many were merged" are now different numbers and one name for both is how the next reader
+gets it wrong.
+
+#### 3. Seen red, twice, against the port as it was
+
+`const split = hands !== 'keep'; const mergeFirst = split && withNotes.length > 1;` restored in
+`convert.ts` — the old behaviour exactly — and both new checks run against it:
+
+- `midiHands.test.ts`: **2 failed, 7 passed**. *expected 'split into two' to be '2 as recorded'*,
+  and the sheet's sentence missing *kept as recorded*.
+- `midiParity.test.ts`: **3 failed, 64 passed, 5 skipped**. Both two-track fixtures on the hands
+  answer, and `crossed-hands` also on *writes the same notes, in the same hands, for the same
+  durations* — `[0, '1', 62, …]` where the Python has `[0, '0', 60, …]`.
+
+Restored, both are green. The seven that pass either way are the one-track and three-track cases
+and the forced `hands: 'split'`, which the change does not touch — said here because "the file
+went red" would otherwise be a claim about nine tests when it is a claim about two.
+
+**Why a new fixture was needed.** `two-hands.mid` cannot tell the two rules apart: its upper
+track is above its lower everywhere, so keeping the tracks and splitting the notes give the same
+two hands, and every assertion about it passes under either rule. `crossed-hands.mid`
+(`make-crossed-hands-midi.py` beside it, hand-written bytes, nothing copyrighted) has the left
+hand cross over in bars 3-4, so the highest note in the file belongs to the **lower** staff —
+an answer register alone cannot produce. Under the split it moves to the upper staff, and that
+is asserted too, so the fixture is proved to discriminate inside the suite rather than in a
+sentence here.
+
+#### 4. The owner's two files, port against Python
+
+Both converted by the command line **here** — `python tools/midi-cleanup/midi_to_musicxml.py
+<file>.mid -o <out>.musicxml --force`, exit 0 each — and by the port, and the two MusicXML files
+read back by the **same** music21 reader so what is compared is two files. The first draft of
+this entry took the Python column from the log supplied beside the files, which is the log read
+as the run (working-rules §1); the command was then run, its printed line reproduces the
+supplied one word for word, and its MusicXML is note-for-note identical to the supplied one
+(2,504 and 2,295 rows, both files).
+
+| | `dear-god` | `seize-the-day` |
+|---|---|---|
+| parts | `Piano , Piano ` both | `Piano , Piano ` both |
+| hands | `2 as recorded` both | `2 as recorded` both |
+| notes per staff | 1497 / 1007 both | 1137 / 1158 both |
+| every (staff, onset, pitch, length) row | **identical** | **identical** |
+| key | D minor, estimated, both | F major, estimated, both |
+| MIDI key signature read | 1 flat both | 1 flat both |
+| metre | 4/4 both | 4/4 both |
+| grid | 1/4 both | 1/3 and 1/4 both |
+| largest onset moved | 0.083 both | 0.100 both |
+| respelled | 0 both | 5 both |
+| self-check | all 2504 present, every bar adds up, both | all 2295 present, every bar adds up, both |
+
+The files are copyrighted arrangements; they are not in the repository and nothing derived from
+them is either.
+
+#### 5. What is not verified
+
+- **Nothing was heard.** Not the owner's two scores, not the fixture. Whether the arranger's
+  hands are *good* hands is a question none of this answers; what is proved is that the app now
+  hands back what the file said, and that the command line and the browser say the same thing.
+- **The two arrangements were not looked at as engraving.** No picture was opened; the
+  comparison is a note table.
+- The three-or-more-tracks rule is pinned by a hand-built fixture only. **No real file with
+  three note tracks was converted**, and the Python's own answer on such a file (three parts) is
+  not something the app can produce, so that row of the table is not under parity.
+- `hands: 'split'` on three or more note tracks: the port merges (onset-sorted) where the Python
+  flattens in track order. They are argued equivalent because `splitHands` sorts by onset
+  internally and `separateRepeats` sorts a copy — **that is reasoning, not a measurement**, and
+  no fixture covers it. Nothing in the app passes `hands: 'split'`.
+- Entry 57's open items stand: a pickup bar, a metre change, a tempo change or a key change
+  part-way through is covered by nothing here.
+
+#### 6. Files
+
+Changed: `app/src/import/midi/convert.ts` (the rule, the header's item 1, the report fields, the
+refusal sentence), `app/src/import/midi/readMidi.ts` (`mergeNoteTracks`' docblock — who asks for
+it now), `app/src/data/importStore.ts` (`handsSentence`),
+`app/tests/unit/midiImport.test.ts`, `app/tests/unit/midiParse.test.ts` (one comment),
+`app/tests/unit/midiParity.test.ts` (the hands assertion, the committed-fixture path, `merge`
+gone), `app/tests/e2e/midi-import.spec.ts`,
+`tools/midi-cleanup/tests/parity_reference.py` (the app's fixtures with `hands="auto"`, and
+`handsReport`), `docs/03-content-pipeline.md`, `docs/04-ui-spec.md` §4,
+`docs/08-test-map.md` (five passages edited and one row added, `6	5` on `git diff --numstat`),
+this entry.
+New: `app/tests/unit/midiHands.test.ts`, `app/tests/fixtures/imports/crossed-hands.mid` and
+`make-crossed-hands-midi.py`. Nothing committed.
+
+**Run:** `npx vitest run` 203 files, 5,122 passed, 5 skipped, exit 0. `npx tsc -b --noEmit`
+exit 0. `npm run lint` exit 0. `npm run build:app` exit 0. `midi-import.spec.ts` 3 passed and
+`converted-import.spec.ts` 3 passed, one suite at a time on 4173, exit 0 each. The Python
+harness, 25 tests, OK, exit 0.
+
+**The `CLAUDE.md` checklist, against this entry.** *Absence:* none stated — the greps are named
+(`mergeNoteTracks|trackWithTheNotes|MergedTracks` over `app/src` and `app/tests`, then a second
+shaped as `mergedNames|report.merged|.merged|merged:` over `app/src`, `app/tests` and
+`docs`; the readers found were `handsSentence`, `midiImport.test.ts` and `midiParse.test.ts`,
+and `WindowRenderer`'s unrelated private field). *Plural:* §3's "both went red" is enumerated
+per file with its counts, and the seven tests that pass either way are named. *Proxy:* the
+per-file comparison in §4 is two written MusicXML files read by one reader, not two reports;
+but the **157 and 154 notes** in the lead are a count off a file and say nothing about whether
+either hand is musical. *Green is not done:* §5. *The reason, not the outcome:* the fixture is
+asserted to give different answers under the two rules, because "the test passes" was true of
+`two-hands.mid` under the rule that was wrong. *Re-opened the artefact:* Entry 57 §2 and §4,
+which is where the wrong difference was written down, and the Python's own `convert`. *Who else
+reads it:* §6 and the greps above. *Reading the letter:* the goal restated without the brief's
+words — a downloaded arrangement should open with the hands its arranger wrote, and the two
+converters should never disagree about which hand.

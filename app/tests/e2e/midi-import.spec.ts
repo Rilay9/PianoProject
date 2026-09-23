@@ -7,7 +7,8 @@
  * was "ideally I could select a file from the app".
  *
  * **What the fixture is.** `tests/fixtures/imports/two-hands.mid`, four bars of
- * C major written byte by byte by the script beside it, with a track per hand.
+ * C major written byte by byte by the script beside it, with a track per hand
+ * — which the converter keeps as recorded, since a person assigned them.
  * The three Disklavier performances the converter was developed against are in
  * `build/`, which is gitignored and whose `SOURCE.md` says they are not to be
  * redistributed, so they cannot be the fixture here — the port's agreement with
@@ -86,8 +87,10 @@ test.describe('a MIDI file imported from the app', () => {
     await expect(check).toContainText('notes the reader found are in the score');
     await expect(check).toContainText('every bar adds up');
     const hands = page.locator('#assign-conversion-hands');
-    await expect(hands).toContainText('merged into one line first');
-    await expect(hands).toContainText('rather than at a fixed middle C');
+    // Two note tracks are an arrangement that already has hands, so the sheet
+    // says the app kept them rather than claiming a decision it did not make.
+    await expect(hands).toContainText('kept as recorded');
+    await expect(hands).toContainText('the arrangement’s own answer');
     // And what was a guess, said as a guess.
     await expect(page.locator('#assign-conversion-guesses')).toContainText('guesses');
 

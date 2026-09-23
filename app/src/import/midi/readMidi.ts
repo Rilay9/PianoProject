@@ -285,21 +285,22 @@ export interface MergedTracks {
 }
 
 /**
- * Several note tracks as one, which is what a downloaded file usually needs.
+ * Several note tracks as one, for the file that has more than a piano's two.
  *
- * **The rule.** The converter's own answer to a file with more than one note
- * track is to keep each as a part (`hands="auto"` splits only a single track).
- * That is right for the three Disklavier captures, which are one track of
- * two-hand playing; it is wrong for a file downloaded from the web, which
- * commonly carries a track per hand, or per voice, or a melody track and an
- * accompaniment track — and keeping those as parts writes four staves where a
- * piano has two, and leaves the app reading a hand off a staff that is a voice.
+ * **Who asks for this, and who does not.** `convertMidi` asks only when a file
+ * has **three or more** tracks with notes in them. One note track is a
+ * recording of two hands and is split by voice-leading; **two note tracks are
+ * an arrangement that has already been given hands by a person, and those are
+ * kept as recorded** — merging them would throw that assignment away and can
+ * hand a learner the wrong hand for a note. Three or more is a melody and two
+ * accompaniment voices, or two tracks per hand: the file is no longer saying
+ * "this hand", and music21 can write a part per track where this writer writes
+ * a piano's two staves, so they are merged and then split.
  *
- * So: **every track with notes in it is merged into one list, and the hand
- * split decides the hands.** The tracks keep their order — the events are
- * concatenated in file order and then ordered by onset with a stable sort, so
- * two notes struck at the same instant stay in the order the file wrote them,
- * which is the order `split_hands` groups them in.
+ * The tracks keep their order — the events are concatenated in file order and
+ * then ordered by onset with a stable sort, so two notes struck at the same
+ * instant stay in the order the file wrote them, which is the order
+ * `split_hands` groups them in.
  *
  * Nothing is dropped and nothing is moved in time; the merge is a
  * concatenation, and `separate_repeats` in the quantiser is what handles the

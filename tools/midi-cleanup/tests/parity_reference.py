@@ -14,6 +14,13 @@ naming this script when it is absent. That is the same convention
 reason: the recordings are not redistributable, and a reference derived from
 them says as much about them as they do.
 
+Three groups of fixtures: the three Disklavier recordings (`hands="split"`),
+two renderings of a committed exercise (`hands="keep"`), and the app's own
+committed MIDI fixtures (`hands="auto"`, which is what the app passes). The
+last group is what covers the **hands rule** — one note track is split, two
+are kept as recorded, and `crossed-hands.mid` is written so those two answers
+differ.
+
 Nothing here changes a rule. It reads the converter and reports; the rules live
 in `midi_to_musicxml.py` and the harness that checks them is
 `test_converter.py`.
@@ -51,6 +58,16 @@ OUT = REPO / "build" / "midi-parity"
 #: different halves of the quantiser.
 RENDERED = FIXTURES / "exercise.five-finger.c-major.both.mxl"
 RENDERED_CASES = ((0.0, "rendered-clean"), (35.0, "rendered-jitter35"))
+
+#: The app's own committed fixtures, converted with `hands="auto"` — which is
+#: what the app itself passes and what nothing else here covers. `two-hands.mid`
+#: and `crossed-hands.mid` both have **two note tracks**, so `convert` keeps
+#: them as recorded; `crossed-hands.mid` is built so that keeping them and
+#: splitting them by voice-leading give different hands, which is what makes
+#: the port's test of that rule able to fail. Neither is copyrighted: the
+#: scripts beside them write the bytes.
+APP_FIXTURES_DIR = REPO / "app" / "tests" / "fixtures" / "imports"
+APP_FIXTURES = ("crossed-hands.mid", "two-hands.mid")
 
 
 def f(value: Fraction | float) -> str:
@@ -147,6 +164,11 @@ def reference(midi_path: Path, out_path: Path, hands: str, respell: bool) -> dic
         "handSplit": hand_split,
         "parts": [{"name": name, "events": events_json(events)} for name, events in parts],
         "estimatedKey": f"{estimated.tonic.name} {estimated.mode}",
+        # What `convert` decided about the hands, in its own words: "split into
+        # two", or "N as recorded". The port has to agree about *this* and not
+        # only about where the notes ended up, because the sheet says it to the
+        # learner.
+        "handsReport": result["hands"],
         "key": result["key"],
         "notesIn": result["notes_in"],
         "lost": result["lost"],
@@ -184,6 +206,19 @@ def main() -> int:
             written.append(f"{label}.json")
     else:
         missing.append(str(RENDERED))
+
+    for name in APP_FIXTURES:
+        path = APP_FIXTURES_DIR / name
+        if not path.exists():
+            missing.append(str(path))
+            continue
+        # `hands="auto"`, which is what the app itself passes and the only
+        # option under which the one-track / two-track / many-track rule is
+        # the thing being compared.
+        data = reference(path, OUT / Path(name).stem, hands="auto", respell=True)
+        data["fixtureFrom"] = "app/tests/fixtures/imports"
+        (OUT / f"{Path(name).stem}.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
+        written.append(f"{Path(name).stem}.json")
 
     print(f"wrote {len(written)} reference file(s) to {OUT}: {', '.join(written)}")
     for path in missing:

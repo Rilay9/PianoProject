@@ -2,21 +2,43 @@
  * One MIDI file to one MusicXML score, in the browser.
  *
  * The port of `convert` in `tools/midi-cleanup/midi_to_musicxml.py`, with the
- * same stages in the same order: read the file, merge the note tracks, choose a
- * grid per bar, split the hands, cut the line into chords that are rhythms,
- * write it, and then **read back what was written and check it**. The checks
- * are the tool's own: every note the quantiser placed must still be there at
- * the beat it placed it, and every bar but the first and last must add up to
- * its time signature.
+ * same stages in the same order: read the file, choose a grid per bar, decide
+ * the hands, cut the line into chords that are rhythms, write it, and then
+ * **read back what was written and check it**. The checks are the tool's own:
+ * every note the quantiser placed must still be there at the beat it placed
+ * it, and every bar but the first and last must add up to its time signature.
  *
  * Three things here are this file's rather than the Python's, and each is
  * written down where it differs:
  *
- * 1. **The note tracks are merged** before anything else (`mergeNoteTracks`),
- *    because a downloaded file carries a track per hand or per voice and the
- *    app's answer to "which hand" is the voice-leading split, not the track
- *    numbering. The tool keeps the tracks as parts; the app's caller asks for
- *    the merge, and the parity harness asks for the tool's behaviour.
+ * 1. **Which hand a note is in comes from the file when the file says, and
+ *    from the voice-leading split only when it does not** — which is the
+ *    Python's rule, matched here rather than differed from. The Python is one
+ *    line, `split = hands == "split" or (hands == "auto" and len(raw) == 1)`,
+ *    and it means:
+ *
+ *    - **one note track** — a recording of two hands on one channel — is split
+ *      by `splitHands`;
+ *    - **exactly two note tracks** are kept **as recorded**: the first track in
+ *      file order becomes the upper staff and the second the lower. That is the
+ *      Python's order too, and it is file order and not register — its clef
+ *      falls back to `TrebleClef() if index == 0 else BassClef()`, and nothing
+ *      in `convert` or `rebuild_part` looks at a pitch to decide a staff. An
+ *      arrangement downloaded with a track per hand has already been given
+ *      hands by a person, and that assignment is the authoritative one; the
+ *      split would overwrite it and can hand a learner the wrong hand for a
+ *      note. **This file used to merge every track and split; the T29 brief
+ *      asked for that and it was wrong.**
+ *    - **three or more note tracks** are merged into one line (`mergeNoteTracks`)
+ *      and then split. **This is the one place the port differs**: the Python
+ *      writes a part per track, which music21 can do and this writer cannot —
+ *      a piano has two staves. Three tracks are a melody and two accompaniment
+ *      voices, or four are two per hand; either way the file is not saying
+ *      "this hand" and there is nothing authoritative to keep. The sheet says
+ *      so in words (`handsSentence`).
+ *
+ *    `hands: 'split'` and `hands: 'keep'` force either answer, exactly as the
+ *    Python's flag does; the app's own path never passes them.
  * 2. **`makeNotation`'s job is done here**: bars are made from the notes, gaps
  *    are filled with rests, and the rests are cut into rhythms by the same rule
  *    as the notes. music21 does this in the tool; the app has the writer in
@@ -32,8 +54,8 @@
  * what the app reads a hand off (`converted-import.spec.ts` caught the
  * two-instrument version). More than two parts — only reachable with
  * `hands: 'keep'` on a file with three or more note tracks, which the app's own
- * path never asks for because it merges — is refused rather than written
- * wrongly.
+ * path never asks for because `auto` merges those — is refused rather than
+ * written wrongly.
  */
 import { DIVISIONS, noteShape, writeMusicXml, type WriterMeasure, type WriterNote } from '../../engine/musicXmlWriter';
 import {
@@ -81,10 +103,12 @@ export interface ConvertOptions {
   divisors?: number[];
   /** Spell every note from the key rather than from the MIDI number. */
   respell?: boolean;
-  /** `auto` splits when one track has the notes, which is what a merge guarantees. */
+  /**
+   * `auto` is the Python's rule: one note track is split by voice-leading, two
+   * are kept as recorded, three or more are merged and then split. `split` and
+   * `keep` force either answer, as the tool's `--hands` does.
+   */
   hands?: 'auto' | 'split' | 'keep';
-  /** Merge every track that has notes into one before anything else. */
-  merge?: boolean;
   /** `null` lets the onsets decide. */
   swing?: boolean | null;
   key?: EstimatedKey | null;
@@ -111,9 +135,14 @@ export interface ConversionReport {
   gridByBar: string[];
   swing: SwingReport;
   moved: number;
-  /** How many tracks held notes, and what they were called. */
-  merged: number;
-  mergedNames: string[];
+  /**
+   * How many tracks held notes, and what they were called, in file order.
+   *
+   * Not "how many were merged": whether they were merged is `hands`, and the
+   * two answers differ — two note tracks are *kept* and three are merged.
+   */
+  noteTracks: number;
+  noteTrackNames: string[];
   /** True when nothing was lost, nothing was added and every bar adds up. */
   passed: boolean;
 }
@@ -322,7 +351,6 @@ export function readBackMusicXml(xml: string, barLength: Frac): ReadBack {
 export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Conversion {
   const divisors = options.divisors ?? DEFAULT_DIVISORS;
   const hands = options.hands ?? 'auto';
-  const merge = options.merge ?? true;
   const respell = options.respell ?? true;
 
   const source: MidiFileContents = readMidi(bytes);
@@ -337,19 +365,27 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   const barLength = barLengthOf(timeSignature);
   const beat = beatLengthOf(timeSignature);
 
-  const merged = mergeNoteTracks(source);
-  const raw: { name: string; events: NoteEvent[] }[] =
-    merge && merged.merged > 1
-      ? [{ name: merged.name, events: merged.events }]
-      : withNotes.map((track) => ({
-          name: track.name ?? `Part ${String(track.index + 1)}`,
-          events: track.events,
-        }));
+  const noteTrackNames = withNotes.map((track) => track.name ?? `Part ${String(track.index + 1)}`);
+
+  // The Python's one line, `split = hands == "split" or (hands == "auto" and
+  // len(raw) == 1)`, and the one place this file adds to it: three or more note
+  // tracks are merged, because music21 writes a part per track and this writer
+  // writes a piano. Two are kept — the header explains why that is the whole
+  // point of this rule.
+  const split = hands === 'split' || (hands === 'auto' && withNotes.length !== 2);
+  const mergeFirst = split && withNotes.length > 2;
+  const merged = mergeFirst ? mergeNoteTracks(source) : null;
+
+  const raw: { name: string; events: NoteEvent[] }[] = merged
+    ? [{ name: merged.name, events: merged.events }]
+    : withNotes.map((track, index) => ({
+        name: noteTrackNames[index] ?? `Part ${String(track.index + 1)}`,
+        events: track.events,
+      }));
 
   const flat = raw.flatMap((part) => part.events);
   const quantised = quantise(flat, { barLength, beat, divisors, swing: options.swing ?? null });
 
-  const split = hands === 'split' || (hands === 'auto' && raw.length === 1);
   const handMedian: { left?: number; right?: number } = {};
   let handBoundaries = 0;
   let parts: { name: string; events: NoteEvent[] }[];
@@ -379,7 +415,8 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
   if (parts.length > 2) {
     throw new ConvertError(
       `this file has ${String(parts.length)} parts and the app writes a piano’s two staves — ` +
-        'convert it with the hands merged, or with the command-line tool.',
+        'let the hands be decided for you, or convert it with the command-line tool, ' +
+        'which writes a part per track.',
     );
   }
 
@@ -498,8 +535,8 @@ export function convertMidi(bytes: Uint8Array, options: ConvertOptions): Convers
     gridByBar: quantised.gridByBar.map(fracToString),
     swing: quantised.swing,
     moved: toNumber(quantised.moved),
-    merged: merged.merged,
-    mergedNames: merged.names,
+    noteTracks: withNotes.length,
+    noteTrackNames,
     passed:
       lost.length === 0 && added.length === 0 && read.badBars.length === 0 && unwritable.length === 0,
   };

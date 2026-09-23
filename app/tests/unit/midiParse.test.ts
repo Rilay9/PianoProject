@@ -199,7 +199,13 @@ describe('the MIDI reader', () => {
 });
 
 describe('merging the note tracks', () => {
-  /** A track per hand, which is what a downloaded file usually carries. */
+  /**
+   * Two tracks, which is the smallest file the merge can be asked about. The
+   * *converter* only asks for it at three or more — two note tracks are an
+   * arrangement whose hands a person assigned, and `midiHands.test.ts` is
+   * where that rule lives. This is the merge itself: nothing dropped, nothing
+   * moved in time, file order kept.
+   */
   const twoHands = buildMidi([
     [{ delta: 0, bytes: timeSignature(4, 2) }],
     [

@@ -964,9 +964,10 @@ out.
 - **A MIDI file is converted on the device** (2026-09-23; the owner: *"ideally I could select a
   file from the app"*). Nothing here runs on a server, so the whole of
   `tools/midi-cleanup/midi_to_musicxml.py` is ported to `app/src/import/midi/` and runs in the
-  browser: the tracks with notes in them are merged into one line, the onsets are quantised on
-  one grid per bar, the hands are split by voice-leading, and MusicXML is written with the
-  app's own writer. **What is stored is the MusicXML**, so the row is a score like any other —
+  browser: the onsets are quantised on one grid per bar, the hands are decided by the tool's
+  own rule — **an arrangement's own two tracks are kept as recorded, and only a file that does
+  not say which hand is split by voice-leading** — and MusicXML is written with the app's own
+  writer. **What is stored is the MusicXML**, so the row is a score like any other —
   levelled by `score/difficulty.ts`, judgeable in every follow mode, in the backup. A file with
   no notes in it, one that is not MIDI, or one the converter refuses gets a sentence saying
   what was wrong and what to do about it (§9), and nothing is stored.
@@ -989,9 +990,12 @@ out.
     the grid, which hand played what — so the sheet opens by itself and says so *before* he
     agrees to any of it, in three lines: the self-check's own answer ("all N notes the reader
     found are in the score, and every bar adds up", or what it found instead, in red), what
-    happened to the hands (how many tracks were merged, that the split was by the shape of the
-    lines rather than at a fixed middle C, and that a crossing is where it is most often
-    wrong), and which of the decisions were guesses (the metre, the key and the grid — the
+    happened to the hands — and that sentence has to be the true one of the two: either the
+    file's own two tracks were **kept as recorded**, in which case the app decided nothing
+    about the hands and says so, or the notes were **split** by the shape of the lines rather
+    than at a fixed middle C (with how many tracks were merged first, when there were more
+    than two) and a crossing is where that is most often wrong — and which of the decisions
+    were guesses (the metre, the key and the grid — the
     notes and their timing are not). The note lives in memory for the visit, not on the row:
     it is a fact about this moment, not about the score.
   - Assigning is optional: "No rung — just put it in my library" is the first choice, and is

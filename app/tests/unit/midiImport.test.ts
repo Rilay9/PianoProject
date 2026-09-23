@@ -8,9 +8,10 @@
  *
  * The fixture is `tests/fixtures/imports/two-hands.mid`, four bars of C major
  * written byte by byte by the script beside it, with **a track per hand** —
- * which is what a file downloaded from the web carries and what the app's own
- * path has to merge before it can split the hands by ear rather than by track
- * number.
+ * which is what a file downloaded from the web carries, and which the
+ * converter therefore keeps as recorded rather than deciding the hands for
+ * itself. The rule itself, and the fixture that can tell it from the
+ * voice-leading split, are `midiHands.test.ts`.
  */
 import { beforeEach, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -96,26 +97,25 @@ describe('importing a MIDI file', () => {
     expect(note?.report.brokenBars).toEqual([]);
   });
 
-  it('merges the two tracks and then splits the hands by ear', async () => {
+  it('keeps the two tracks the file was written with as the two hands', async () => {
     const row = await addImport(fakeFile('two-hands.mid', TWO_HANDS));
     const report = conversionFor(row.id)?.report;
-    expect(report?.merged).toBe(2);
-    expect(report?.mergedNames).toEqual(['Right hand', 'Left hand']);
-    // Merged, and then split again by the voice-leading rule rather than by
-    // the track numbering — so a file whose tracks are a melody and an
-    // accompaniment still comes out as two hands.
-    expect(report?.hands).toBe('split into two');
+    expect(report?.noteTracks).toBe(2);
+    expect(report?.noteTrackNames).toEqual(['Right hand', 'Left hand']);
+    // Two note tracks are an arrangement someone gave hands to, so the app
+    // keeps them: first track the upper staff, second the lower. That this
+    // fixture's tracks happen to be what the split would also produce is why
+    // `midiHands.test.ts` uses a crossed one to tell the two rules apart.
+    expect(report?.hands).toBe('2 as recorded');
     expect(report?.parts).toEqual(['Right hand', 'Left hand']);
-    const median = report?.handMedian;
-    expect(median?.left).toBeLessThan(median?.right ?? 0);
   });
 
-  it('says both things the sheet shows, in sentences', async () => {
+  it('says on the sheet that the hands came from the file, not from the app', async () => {
     const row = await addImport(fakeFile('two-hands.mid', TWO_HANDS));
     const note = conversionFor(row.id);
-    expect(note?.hands).toContain('merged into one line first');
-    expect(note?.hands).toContain('rather than at a fixed middle C');
-    expect(note?.hands).toContain('crossing of the hands');
+    expect(note?.hands).toContain('kept as recorded');
+    expect(note?.hands).toContain('the arrangement’s own answer');
+    expect(note?.hands).not.toContain('merged into one line first');
   });
 
   it('reads the metre and the tempo out of the file', async () => {

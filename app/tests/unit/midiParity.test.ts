@@ -9,10 +9,14 @@
  * **What the reference is.** `tools/midi-cleanup/tests/parity_reference.py`
  * writes one JSON file per fixture into `build/midi-parity/`: the three
  * Disklavier performances in `build/midi-real/` converted with `hands=split`,
- * and the committed exercise `exercise.five-finger.c-major.both.mxl` rendered
+ * the committed exercise `exercise.five-finger.c-major.both.mxl` rendered
  * to MIDI twice — clean, and with every onset and release nudged — and
  * converted with `hands=keep`, which are the two cases `test_converter.py`
- * itself runs. `build/` is gitignored (the recordings are not redistributable,
+ * itself runs, and the app's own committed fixtures `crossed-hands.mid` and
+ * `two-hands.mid` converted with `hands=auto`, which is what the app passes
+ * and what puts the **hands rule** itself under comparison: one note track is
+ * split, two are kept as recorded, and `crossed-hands.mid` is written so
+ * those two answers differ. `build/` is gitignored (the recordings are not redistributable,
  * and `build/midi-real/SOURCE.md` says so), so these tests **skip with a
  * message naming the script** rather than passing when it has not been run.
  *
@@ -57,6 +61,7 @@ interface Reference {
   handSplit: { right: EventJson[]; left: EventJson[]; boundary: [string, string][] } | null;
   parts: { name: string; events: EventJson[] }[];
   estimatedKey: string;
+  handsReport: string;
   key: string;
   notesIn: number;
   lost: string[];
@@ -64,6 +69,8 @@ interface Reference {
   brokenBars: string[];
   sounding: [number, string, number, string][];
   renderedFrom?: string;
+  /** Repository-relative directory of a committed fixture's `source`. */
+  fixtureFrom?: string;
 }
 
 type EventJson = [string, string, number, number | null];
@@ -73,9 +80,11 @@ let why = '';
 if (existsSync(PARITY)) {
   for (const file of readdirSync(PARITY).filter((name) => name.endsWith('.json'))) {
     const reference = JSON.parse(readFileSync(path.join(PARITY, file), 'utf8')) as Reference;
-    const source = reference.renderedFrom
-      ? path.join(PARITY, reference.source)
-      : path.join(REAL, reference.source);
+    const source = reference.fixtureFrom
+      ? path.join(REPO, reference.fixtureFrom, reference.source)
+      : reference.renderedFrom
+        ? path.join(PARITY, reference.source)
+        : path.join(REAL, reference.source);
     if (!existsSync(source)) continue;
     references.push({
       name: file.replace(/\.json$/, ''),
@@ -148,16 +157,24 @@ describe.skipIf(references.length === 0)('the port agrees with the Python conver
         expect(fracToString(report.moved)).toBe(reference.moved);
       });
 
-      // The whole conversion, with the options the Python harness used: the
-      // merge is the app's own path and is off here, because parity is with
-      // the tool as the tool runs.
+      // The whole conversion, with the options the Python harness used.
+      // Nothing is passed that the tool does not have: since the hands rule
+      // was corrected there is no option here the Python lacks, so `auto`
+      // means the same thing on both sides.
       const conversion = convertMidi(midi, {
         title: name,
         divisors: [4, 3],
         hands: reference.hands,
-        merge: false,
         respell: reference.respell,
         swing: null,
+      });
+
+      it('decides the hands the same way, and says the same thing about them', () => {
+        // The sentence the sheet shows: "split into two", or "N as recorded".
+        // Two files here have two note tracks, and a port that merged them
+        // would say "split into two" where the tool says "2 as recorded".
+        expect(conversion.report.hands).toBe(reference.handsReport);
+        expect(conversion.report.parts).toEqual(reference.parts.map((part) => part.name));
       });
 
       it('estimates the same key and writes the same one', () => {
