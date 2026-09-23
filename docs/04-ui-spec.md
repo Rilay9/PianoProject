@@ -1272,8 +1272,16 @@ facts rather than one.
 
 **What a control does to a run already going** (added 2026-09-22, T23). Every control that
 changes *what is judged* restarts the run — the mode, the hands, the loop, the section,
-*Rhythm only*, *Duet* — because a run cannot carry half of each, and a restart is honest
-about that. Two do not, and they used to:
+*Rhythm only*, *Duet*, **Input**, and the two that re-engrave the sheet and so recreate every
+element a judgement is keyed to, *Bars in window* and *Layout* — because a run cannot carry
+half of each, and a restart is honest about that. **Input** joined the list on 2026-09-23
+(T31) against this rule's own words: `accuracyEstimated`, `micChordLeniency`,
+`micChordFraction`, `wrongNoteConfidence` and `latchStart` are every one of them set from it
+where the run starts, so a run switched to the microphone half way was recorded as exactly
+measured, and a Keep tempo run **holding for its first note** when Input was set to *None*
+held for ever — nothing left could play one. The microphone's own failure path had restarted
+the run for exactly that reason since T8; the control that does it on purpose did not.
+Two do not, and they used to:
 
 - **The tempo slider re-times the run when the finger comes off, not on every step of the
   drag.** `input` fires once per step, and each one used to start the run again: a drag from
@@ -1287,10 +1295,43 @@ about that. Two do not, and they used to:
   does, so it agrees with the timetable the notes are being judged on. Nothing starts while
   the run is paused or still holding for its first note (`05` §3b).
 
-**Coming back from a lock or a call**, the sentence names a control that is on the screen:
+**A paused run says so** (added 2026-09-23, T31). On the **state line**, which is where what
+the run is doing is written (§5f): *Paused — ▶ to carry on, or Start again in ⋯ to go back to
+the beginning.* Until this, the line went on holding the mode's own standing sentence — *Play
+the first note. Nothing moves until you do.* in *Wait for me*, *The count-in clicks, then play
+along* in *Keep tempo* — while the engine dropped every note played into the pause. The screen
+was asking for the one thing it was ignoring, which is `00` §1's dead control wearing words
+instead of pixels. **Coming back from a lock or a call** the same line carries the away time:
 *Paused — you were away N s. ▶ to carry on, or Start again in ⋯ to go back to the beginning.*
-It used to name `⏮`, a glyph no control in the app wears. During a performance the second
-half is dropped, because a performance has no *Start again* row (§5e).
+That sentence used to sit on `#score-status` beside a state line contradicting it, and
+sideways there is one slot for the two, so only one of them was ever drawn. It used to name
+`⏮`, a glyph no control in the app wears. During a performance the second half is dropped,
+because a performance has no *Start again* row (§5e).
+
+**And a demonstration says it is one.** `Hear it` deliberately leaves the mode selector alone,
+so the state line read the *selected* mode's standing sentence while the app played the piece
+— *Play the first note. Nothing moves until you do.* over a run in which nothing the learner
+plays is looked at at all. It now says *Playing it to you — nothing is judged. Hear it again
+to stop.* The one-bar preview is left to the status line, which already names its bar.
+
+**A one-bar preview gives the screen back what it borrowed, whatever ends it** (T31). The
+preview sets a loop of its own bar and ends when that loop comes round — which was the *only*
+thing that ended it. Clear the loop under it and the run goes to the end of the piece instead;
+press *Hear it* and the session is stopped outright, which is not a finish the screen hears
+back at all. Either way the screen stayed in a preview for the rest of the visit: every later
+run a Listen run under a selector saying otherwise, the learner's own loop replaced by the
+single bar, and further previews refused. Anything that starts a run now ends a preview first,
+and the old loop is given back only where the preview's own bar is still the loop, so ending
+one cannot undo a loop the learner changed while the bar was playing.
+
+**A hand the refusal named starts the run.** A run asked for with a hand the piece has nothing
+for is refused with *Nothing for the left hand in this piece — choose R or Both* — and
+pressing either did nothing, because the hand buttons only restart a run that is going and the
+refusal had just stopped the only one there was. The screen had told the learner which button
+to press and the button was dead (`00` §1). The sentence is cleared with it, because it names
+a hand nobody has chosen any more; so is *Loop start: bar 3. Double-tap the last bar.* once
+the second bar has been tapped, which used to stay on the header through a cleared loop, a
+mode change and a pause.
 
 **Free play says when the piece has ended.** It judges nothing and opens no summary, so the
 run simply stopped turning the page and nothing said why — an improviser could not tell the
@@ -2109,6 +2150,15 @@ answers four questions, and `app/src/ui/help.ts` is where the answers are writte
 table, keyed by mode, drill kind and tool, with the lines below in it. `help.test.ts` fails
 when a line here and a line there stop being the same line, the way `labHelp.test.ts` does
 for §3c's ten.
+
+**The state line is the run's, and the mode's only when there is no run to speak for it**
+(added 2026-09-23, T31). The strip's standing line is a fallback for *nothing is happening*,
+not for *something is happening that the fallback contradicts*: a paused run, a `Hear it`
+demonstration and a run holding for its first note each have something to say and say it, and
+the mode's sentence is what is left when none of them applies. The whole order —
+paused, holding, demonstrating, the note names, the ready line, the standing line — is
+`drawWaitingFor` in `ScoreScreen.ts`, and the machine it serves is written out in
+`docs/decisions/2026-09-23-score-state-machine.md`.
 
 **Where each answer goes.** Questions 1 and 2 are the **help strip**: two lines at the top
 of the screen, inside the first screenful on a 342 px phone (§0 R1), the first naming the

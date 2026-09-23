@@ -324,6 +324,19 @@ export class PracticeEngine {
   }
 
 
+  /**
+    * Paused, without building a score to find out.
+    *
+    * `state` is a snapshot and calls `buildScore()` every time it is read,
+    * which walks the steps, the deltas and both per-measure maps. The Score
+    * screen asks "is this run paused" from `render()`, and `render()` runs on
+    * every painted frame, so the question has to be cheaper than the answer it
+    * used to come with (T31).
+    */
+  get isPaused(): boolean {
+    return this.paused;
+  }
+
   get state(): EngineState {
     return {
       step: this.step,

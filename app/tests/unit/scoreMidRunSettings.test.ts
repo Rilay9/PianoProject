@@ -104,7 +104,18 @@ vi.mock('../../src/score/ScoreSession', () => ({
   ScoreSession: class {
     /** Unlike the shared stub's, this one runs — see the file comment. */
     running = false;
-    state: { paused: boolean; step: number } | null = null;
+    // `mode` because the screen asks the **run** what mode it is in rather
+    // than the selector (T31): `Hear it` and the one-bar preview are Listen
+    // runs under a selector that says otherwise, and the page-hidden pause and
+    // the beat dot both have to follow the run.
+    state: { paused: boolean; step: number; mode: string } | null = null;
+    /** The two cheap getters the screen asks once per painted frame (T31). */
+    get paused(): boolean {
+      return this.state?.paused === true;
+    }
+    get mode(): string | null {
+      return this.state?.mode ?? null;
+    }
     prepared = null;
     expectedNow: number[] = [];
     learnerHasNotes = true;
@@ -125,7 +136,7 @@ vi.mock('../../src/score/ScoreSession', () => ({
     start(run: unknown): void {
       this.starts(run);
       this.running = true;
-      this.state = { paused: false, step: 0 };
+      this.state = { paused: false, step: 0, mode: (run as { mode: string }).mode };
     }
     setMetronome(on: boolean): void {
       this.metronomes(on);
@@ -309,7 +320,12 @@ describe('coming back to a run the phone interrupted', () => {
     click('score-play');
     hide(true);
     hide(false);
-    const said = document.querySelector('#score-status')?.textContent ?? '';
+    // On the state line, not `#score-status` (T31): being paused is a thing
+    // the run is doing, and `04` 5f puts what the run is doing in one place —
+    // the status line used to carry this beside a state line still holding
+    // *The count-in clicks, then play along*, and sideways there is one slot
+    // for the two of them.
+    const said = document.querySelector('#score-waiting')?.textContent ?? '';
     expect(said).toContain('Paused');
     expect(said).toContain('Start again');
     expect(said).not.toContain('⏮');

@@ -330,6 +330,11 @@ export class ScoreSession {
     return nextPlayableStep(prepared.steps, prepared.firstStep, prepared.lastStep) !== null;
   }
 
+  /** Paused, without `state`'s `buildScore()` — asked once per painted frame. */
+  get paused(): boolean {
+    return this.engine?.isPaused === true;
+  }
+
   get mode(): Mode | null {
     return this.engine?.mode ?? null;
   }

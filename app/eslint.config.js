@@ -75,7 +75,7 @@ export default tseslint.config(
   {
     // Small standalone Node scripts (not part of either tsconfig project):
     // plain JS linting with Node globals, no type-aware rules needed.
-    files: ['eslint.config.js', 'scripts/**/*.mjs'],
+    files: ['eslint.config.js', 'scripts/**/*.mjs', 'tests/tour/*.mjs'],
     languageOptions: { sourceType: 'module', globals: nodeGlobals },
   },
   {

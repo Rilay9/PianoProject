@@ -234,6 +234,11 @@ first onset's window, or any later one, sets the pattern's start; taps before th
 has found the downbeat are strays. The click stops after the count-in's downbeat and comes
 back in phase after the first tap.
 
+**The whole machine, state by state and event by event**, is written down in
+`docs/decisions/2026-09-23-score-state-machine.md` (T31): twenty states, fourteen columns,
+which cells were measured by driving the screen and which were read out of the code, the six
+faults it found, and the five choices it left for the owner.
+
 ## 4. Listen mode
 
 Tempo mode with all input ignored and both hands played back; the learner watches/listens. Loop
@@ -256,7 +261,16 @@ stops advancing without saying so. Two things follow (`00` D26, decided 2026-09-
   music.
 
 **Ships as of P21.** The interval is `TICK_INTERVAL_MS` (25 ms) in `score/ScoreSession.ts`; the
-pause lives in `ScoreScreen`, where the status line and the buttons already are. Resume is the
+pause lives in `ScoreScreen`, where the status line and the buttons already are. **It asks the
+run's mode, not the mode selector's** (T31): `Hear it` and the long-press bar preview are
+Listen runs under a selector that still says *Wait for me*, and asking the selector let exactly
+those two — the two clock-driven runs a learner is most likely to start and then put the phone
+down during — carry on into a locked phone, which is the one thing this pause exists to
+prevent. Measured by driving a `Hear it` run and hiding the page: it was not paused.
+The sentence on return is on the **state line** (`04` §5f) rather than on `#score-status`,
+because being paused is a thing the run is doing and there is one line for that; it used to be
+on the status line beside a state line still reading *The count-in clicks, then play along*,
+and sideways only one of the two is drawn. Resume is the
 bar's `▶` and restart its `⏮` rather than two new buttons for something that happens once a
 session. Wait and Free are left alone — they have no timetable to lose, so the run is exactly
 where he left it. Found while checking the minutes: `elapsedMs` returned 0 the instant a run

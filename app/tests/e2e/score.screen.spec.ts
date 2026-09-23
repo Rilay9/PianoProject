@@ -721,8 +721,12 @@ test.describe('a run interrupted by something else on the phone', () => {
 
     await page.waitForTimeout(1_200);
     await hide(page, false);
-    await expect(page.locator('#score-status')).toContainText('you were away');
-    await expect(page.locator('#score-status')).toContainText('to carry on');
+    // On the state line, not `#score-status` (T31): being paused is a thing
+    // the run is doing, and `04` 5f puts what the run is doing in one place.
+    // It used to be said on `#score-status` while the state line beside it
+    // went on holding the mode's standing sentence.
+    await expect(page.locator('#score-waiting')).toContainText('you were away');
+    await expect(page.locator('#score-waiting')).toContainText('to carry on');
 
     // And ▶ picks the run up rather than starting a new one.
     await page.locator('#score-play').click();
@@ -738,6 +742,7 @@ test.describe('a run interrupted by something else on the phone', () => {
     await hide(page, true);
     await hide(page, false);
     await expect(page.locator('#score-play')).toHaveText('⏸');
+    await expect(page.locator('#score-waiting')).not.toContainText('you were away');
     await expect(page.locator('#score-status')).not.toContainText('you were away');
   });
 });

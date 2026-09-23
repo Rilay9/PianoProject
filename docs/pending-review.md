@@ -14173,3 +14173,265 @@ which is where the wrong difference was written down, and the Python's own `conv
 reads it:* §6 and the greps above. *Reading the letter:* the goal restated without the brief's
 words — a downloaded arrangement should open with the hands its arranger wrote, and the two
 converters should never disagree about which hand.
+
+### Entry 60 — T30: the score window photographed on every option, and the three rules the owner has to choose between (2026-09-23)
+
+**A decision was asked for, not a fix, and nothing was built.** The draft is
+`docs/decisions/2026-09-23-score-window-strategy.md`; the pictures and their measurements are
+`build/tour/T30/index.html` (gitignored), with the fault list as `build/tour/T30/faults.md`
+and one JSON record per cell under `build/tour/T30/cells/`. `app/src` is byte-identical to
+`HEAD` after the three probe builds were taken back out (`git diff --stat` empty).
+
+**639 cells** — 495 against the build in the tree, 144 against the probes — five shapes
+(phone upright 342x740 and 390x844, phone sideways 740x342, tablet upright 768x1024, tablet
+sideways 1024x768), six pieces chosen off the catalog's measured `notation` fields, *Bars in
+window* 1 to 8, both layouts, Size at its default and a step either way, five run modes, and
+two moments a cell. Five not-shot lines, all the same reason: the Drill screen has no *Bars
+in window*, *Layout* or *Size* control, so the option grid has nothing to vary there.
+
+**The owner's four complaints, reproduced with counts** over the 483 cells the groups apply
+to (Blind's 12 are excluded — the stage is dark there by design, `04` §5e):
+
+| group | cells |
+| --- | --- |
+| the chosen count is not the drawn count | 266 |
+| nothing changes when the option changes | 89 groups of two or more counts with a byte-identical picture |
+| cannot see the next music | 82 |
+| too small | 59 |
+
+**One rule produces most of it.** `barsPerSlot(n) = max(1, floor(n/2))` (`app/src/score/slots.ts:28`)
+against a slot count of 1 to 4 chosen from the room (`WindowRenderer.ts:1393`): what is on the
+glass is slots x floor(n/2), which equals *n* by coincidence. So 1, 2 and 3 are one setting;
+6 and 8 are one setting on a short piece; and in `Scroll` the stepper does nothing at all —
+`ensureScrollRender` (`WindowRenderer.ts:1842`) draws `0..Infinity` and never reads
+`barsPerWindow`, measured as the same zoom, CSS scale and stave height at 1, 4 and 8 in all
+30 of the scroll groups. `08` §4.1 and `handoff-2026-09-09` §4b already call this arithmetic
+the owner's open question; this is the grid behind that decision.
+
+**Three worst cells, each named with its measurement.** Tablet sideways, Twinkle, 2 bars
+asked, **1 bar drawn**, ink 49 % of the stage's width. Tablet upright, Nocturne op. 9 no. 2,
+6 bars asked, **13 bars drawn** in four systems. The owner's own 342x740 phone, Nocturne
+op. 48 no. 1, 8 bars asked, **4 bars drawn** at a **40.8 px** stave before the run and
+**39.1 px** during it, under the 40 px `MIN_STAFF_PX` the fit is meant to hold.
+
+**The three rules, each built into the renderer long enough to photograph** (36 cells a rule,
+two shapes x three pieces x counts 2, 3, 4 x two moments), then removed: (A) the count is a
+floor and the next system is always previewed; (B) the count is exact and the size follows;
+(C) the count is automatic from the piece's density and the stage, with the stepper as an
+override. Measured, against 11/36 exact today: **A 25/36, B 36/36, C 19/36**; median stave
+today 124.4 px, A 78.3, **B 105.2**, C 76.4; cells inked under `score.fill`'s own 55 % width
+floor today 13/36, A 4, **B 3**, C 1; mid-run cells with nothing ahead today 6/18, A 3, B 3,
+**C 2**. **B is recommended**, with the amendment that the preview has to become a promise of
+its own rather than a by-product of whether the count happens to be even, and with the
+warning B's own sentence promises actually built — on the owner's phone a dense piece at 4
+bars is already at the floor.
+
+**Three corrections found on the way, none of them fixed here.**
+
+1. `08` §4.1 names a constant `ONE_SYSTEM_GAIN` for the branch that drops to one system.
+   Two searches, both reported: `grep -rn "ONE_SYSTEM_GAIN" app/src/` returns nothing, and
+   `grep -rn "GAIN|oneSystem|one system" app/src/score/*.ts` returns only prose in comments.
+   The live rule is `SLOT_WIDTH_FLOOR` (`WindowRenderer.ts:297`, used at `:1443`). The spec
+   is stale and should be corrected in the commit that moves the code (`00-invariants` §4).
+2. *Size* was reduced out of the full crossing on the reading that `setZoom` never
+   re-engraves and never reaches `chooseSlotCount` (`WindowRenderer.ts:1561`), so it could
+   not move a bar count. **The check said otherwise**: in 4 of the 40 Size cells the drawn
+   count differs from the same cell at the default — most sharply tablet sideways at 4 bars,
+   one step up, **4 bars against 2**. `fitSlots` feeds `held` and `chooseSlotCount` reads
+   `held` on the next pass. Not traced further.
+3. Phone upright 342x740, Twinkle, 4 bars, mid-run: *Wait for me* draws 2 bars in one slot at
+   a 132.3 px stave and **Perform draws 6 bars in three slots** at 81.6 px, same piece, same
+   shape, same setting. The arrangement is taken at the first fit and frozen, and the freeze
+   waits for the piece's measurement, so a mode that starts at a different moment lands on a
+   different side of the race `score.arrange-race.spec.ts` exists for. **A plausible cause,
+   named, not measured.**
+
+**A mistake of mine, caught by a picture and worth the record.** The tape measure counted a
+bar as on the glass when a note element's box lay inside the stage's box. In Blind mode the
+screen draws its buffers and hides them, so every Blind cell reported six bars of music on a
+stage that the photograph shows completely black. The number was a proxy for the picture and
+the picture was right (`working-rules` §1). `checkVisibility` replaced the rect test, the
+mode grid was re-shot, and — because the fix changes the measure for every cell — one whole
+control grid was re-shot with it: **60 of 60 cells came back with identical numbers**, which
+is what makes the rest of the gallery still good rather than assumed to be.
+
+**Unverified.** In *Keep tempo* the cursor stayed on the first bar in all 12 of its cells and
+in rhythm-only it reached bar 2 in 3 of 12, through 18 fed steps each, so those cells show
+the window at the *start* of a run and not mid-run; why the clock did not advance was not
+investigated. The three probe builds were shot at counts 2, 3 and 4 only — **1, 6 and 8 were
+not shot under any of them**, and 1 is where B's read-ahead is weakest. Nothing has been seen
+on the owner's device. A bar of rests has no note element and is not counted as drawn; no
+piece in the gallery opens with one, but that was not checked bar by bar. And the header of
+`song.classical.chopin-nocturne-op9-2` reads `bar 0 / 37` where Twinkle's reads `bar 1 / 12`
+and the catalog gives the piece 38 bars — noticed, not chased.
+
+---
+
+### Entry 61 — T31: the score screen's state machine written down, and the six things it was doing without saying so (2026-09-23)
+
+The owner: *"re-examine the state machines for playing, listening and other stuff from stop,
+start and option changes. It's very confusing what happens and I don't think it's been fully
+explored."*
+
+**Restated without those words:** at every moment this screen can be in, for every control and
+every signal that can arrive, say where it lands and what it tells the learner — and find the
+moments where it lands somewhere nobody could have predicted, or says nothing, or says
+something that is not true.
+
+The table, the diagram of what it should be and the choices it could not make are
+`docs/decisions/2026-09-23-score-state-machine.md`. This entry is what it cost and what is
+still open.
+
+**How it was produced, and what is a proxy in it.** Twenty states by thirty-five events, drawn
+as twenty rows by fourteen columns (eleven controls that restart a run are one column, five
+that never touch it are another, and six events that only make sense in one or two rows are
+written into those rows) — **280 cells, of which 35 were measured** by a new probe, `app/tests/e2e/score.states.spec.ts`,
+which puts the screen in a named state, fires one event and records `#score-waiting`,
+`#score-status`, the transport button's label, the Loop control's label and the engine's own
+fields through `window.__pianopath.scoreRun()`. The other 245 are a reading of the code with
+the deciding line named. Every cell in the document carries **M** or **C** for which it is.
+The 245 are exactly the kind of proxy that let all six faults below sit here in the first
+place, and the document says so rather than presenting the grid as measured.
+
+**Nothing was heard.** No claim about the metronome, the count-in, the played-back hand or
+T8's "the app's note sounds on your key" was checked by listening; the probe reads the DOM and
+the engine's state object, which is a proxy for what a learner sees and no proxy at all for
+what they hear. One piece (`song.folk.mary-had-a-little-lamb`), one size (390x844), one input
+(a mocked MIDI piano). The **microphone** column of every row is C only.
+
+#### The seven faults, each seen red before it was written
+
+1. **A paused run said nothing, and dropped every note into the silence.** `readyLine()`
+   returns `''` while `session.running` is true — and it is true while paused — so the help
+   strip fell back to the **mode's standing line**: *Play the first note. Nothing moves until
+   you do.* in *Wait for me*, *The count-in clicks, then play along* in *Keep tempo*.
+   `PracticeEngine.feed` meanwhile returns at `this.paused`. The screen was asking for the one
+   thing it was ignoring, which is `00` §1's dead control wearing words instead of pixels.
+   Red: *a paused run showed the mode's standing line: "Play the first note. Nothing moves
+   until you do."*, and the same in Keep tempo. New `pausedLine()`.
+2. **A `Hear it` run said the same kind of thing.** `Hear it` deliberately leaves the mode
+   selector alone (`04` §5), so the state line read the *selected* mode's standing sentence
+   while the app played the piece. New `hearingLine()`.
+3. **A one-bar preview could strand the screen in Listen for the rest of the visit.**
+   `hearingBar` was cleared only by `endBarPreview`, which ran only on a **lap**. Clear the
+   loop under a preview and the run goes to the end of the piece instead, `onFinished`
+   returned early, and `hearingBar` stayed set: every later run a Listen run under a selector
+   saying *Wait for me*, the learner's own loop permanently replaced by the single bar, and
+   further previews refused by `hearBar`'s own guard. `Hear it` was worse — it stops the
+   session outright, and a stop is not a finish the screen hears back at all. Red: *the
+   selector says wait and the run is listen*.
+4. **Input changed nothing about a run already going.** `04` §5's own rule is that every
+   control that changes what is judged restarts the run, and `accuracyEstimated`,
+   `micChordLeniency`, `micChordFraction`, `wrongNoteConfidence` and `latchStart` are every
+   one of them set from `input` where the run starts. So a run switched to the microphone half
+   way was recorded as exactly measured, and — the sharp end — a *Keep tempo* run **holding
+   for its first note** with Input set to *None* held for ever, because nothing left could
+   play one. The microphone's own failure path has restarted the run for exactly that reason
+   since T8. Red: *the run is still holding for a note nothing can play*.
+5. **The page-hidden pause and the beat dot asked the selector, not the run.** `05` §4 is
+   about a clock that stops getting frames, and `Hear it` and the one-bar preview are
+   clock-driven Listen runs whatever the selector says — so asking the selector let exactly
+   those two carry on into a locked phone. Red: *a hidden clock-driven run is paused —
+   Expected: true, Received: false*.
+6. **Leaving during a demonstration was written down as a run left half way.** The offer in
+   the header is written on the way out by `rememberUnfinished`, which skipped Listen by
+   asking the mode selector — and `Hear it` leaves that alone. So walking out of a
+   demonstration produced *You stopped at bar 7 of 12 last time*, an offer to carry on with a
+   run nobody had played a note of. Red: *nothing was played, so there is nothing to carry on
+   from*.
+
+   **One thread runs through four of the seven** — this one, the pause, the beat dot and the
+   state line. The screen asked the **mode selector** what was going on where it needed to
+   know what the **run** was doing, and `Hear it` exists precisely to make those two disagree
+   (`04` §5: it does not move the selector). Four places, written at four different times,
+   each asking the wrong one.
+7. **Two sentences outlived what they were about.** *Nothing for the left hand in this piece —
+   choose R or Both* named two buttons that did nothing: the hand buttons only restart a run
+   that is going, and the refusal had just stopped the only one there was. And *Loop start:
+   bar 1. Double-tap the last bar.* was still on the header after the loop had been set, and
+   stayed there through a cleared loop, a mode change and a pause — measured across nine later
+   probe cells. Red, with the fix reverted **one token per site** rather than by putting the
+   old source back, because deleting the `handRefused` read stops the project compiling
+   (TS6133), the same shape Entry 58 recorded: *the hand the refusal named starts a run —
+   Expected: true, Received: false* and *the instruction has been carried out — Expected
+   substring: not "Double-tap the last bar"*.
+
+#### Who else read the field that moved (`00` §2.15)
+
+The away sentence moved from `#score-status` to the state line. Two consumers, both found by
+running rather than by grepping, and both updated: `app/tests/e2e/score.screen.spec.ts`'s
+*Tempo pauses when the page is hidden* and `app/tests/unit/scoreMidRunSettings.test.ts`'s
+*names a control that is on the screen*. A third consumer was found by the second one failing
+for a different reason: that file's **`ScoreSession` stub has a `state` object**, and the
+screen now asks it for `mode`, so the stub was taught the field. A stub is a consumer.
+
+#### What the spec said, and what changed in it
+
+`04` §5 gains Input, *Bars in window* and *Layout* in the list of controls that restart a run
+— the first is this entry's fix and the other two were already true and unlisted; the paused
+sentence, the demonstration sentence, the preview's restore and the two stale sentences. `04`
+§5f gains the rule the strip was breaking: the standing line is a fallback for *nothing is
+happening*, not for *something is happening that it contradicts*. `05` §4 gains the run's-mode
+rule and a pointer to the decision document.
+
+#### Open, for the owner. None of these was built
+
+1. **`Hear it` from a run throws the run away** — six lossy cells, nothing said, nothing put
+   back. Leave it / say so / pause the run and resume it afterwards.
+2. **An option changed while paused restarts the run and starts playing again** (measured:
+   pause at bar 12, change hands, and it is going from bar 1).
+3. **The Metronome row reads On in the four states the engine refuses the click**
+   (`05` §3b) — not running, paused, holding, and Free play. Whether Free play should have a
+   click of its own is the interesting half.
+4. **Blind and Perform are routes**, so pressing them mid-run loses the run. Half-closed by
+   the resume offer, which now catches it.
+5. **The summary sheet stays up over settings that have changed** under it.
+
+#### Unverified
+
+Beyond the *nothing was heard* above: **R10 Perform, R11 Blind, R14 ladder step and R18
+summary were not driven** — routes rebuild the screen, the ladder needs several laps and the
+summary needs a run played to the end — so those four rows are C throughout. The sideways twin
+was reasoned from `syncBarLeft`, not measured; no cell was recorded at 880x412.
+`visibilitychange` is faked by redefining `document.visibilityState`, which is the signal the
+screen listens for and not a phone locking, and it does not stop animation frames, which is
+the thing `05` §4 exists for.
+
+#### The hang this work caused, found by the suite and not by the table
+
+`score.fuzz` seeds 2 and 3 timed out at the spec's own 240 s budget — at **one** worker as
+well as at two, so not the machine — while seeds 1, 4 and 5 passed. Bisected against `HEAD`
+(stashed, rebuilt: seed 2 passes in **24 s** there) with a per-group toggle, and the culprit
+was one line of this work: `attachInput()` moved **above** `startRun`'s *nothing to play*
+refusal, on the reasonable ground that a refused start should still listen to the source just
+chosen.
+
+`WebMidiSource` dispatches a note with `for (const l of this.noteListeners) l(e)` over a live
+`Set` (`app/src/midi/WebMidiSource.ts:605`). `attachInput` deletes the listener and adds it
+back, and it is reached **from inside that dispatch** — `feedNote` → `startFromKey` →
+`startRun`. A `Set` iterator visits a value deleted and re-added during iteration a second
+time, so the same note-on re-enters `feedNote`. It terminates today only because a started run
+turns `session.running` true and the second visit feeds the note instead of starting another;
+on a path where no run ever starts it never terminates. Seed 2 went back to 22 s with the line
+put back and the Input row attaching the source itself.
+
+**Left as a latent hazard, deliberately, and it is a family rather than a line.** Two searches,
+both reported: `grep -rn "for (const [a-z]* of this\..*Listeners)" app/src` returns **fifteen**
+live-`Set` dispatches in five files — `WebMidiSource` 5, `MicSource` 4, `ReplaySource` 3,
+`ScreenKeyboardSource` 2, `Metronome` 1 — and a differently shaped second search,
+`grep -rn "Listeners.forEach|listeners.forEach|of this.handlers" app/src`, adds
+`PracticeEngine.emit`. Sixteen. **Two of them are on the path that hung**: `WebMidiSource:605`
+and `ScreenKeyboardSource:85`, which are exactly the two inputs `startFromKey` accepts. Those
+files are outside this task's, and the change is one line each — iterate a copy. Until then,
+**anything that re-subscribes a source from inside that source's own dispatch is a hang**, and
+the only reason the app does not hang today is a `session.running` flag flipping in between.
+That is an accident, not a design, and it deserves its own small task.
+
+Two things for the record beyond the bug. **The 280-cell table could not have found this** —
+it is not a state fault, no invariant of the random walk noticed it, and there is no column
+for *how long this takes*; it was found because a green suite went red, which is the argument
+for running the whole chain rather than the new spec. And **the first reading of it was
+wrong**: the slowdown was blamed on `ScoreSession.state` calling `buildScore()` once per
+painted frame, cheap getters were written for it, and seed 2 still timed out. Those getters
+are kept because they are right (`PracticeEngine.isPaused`, `ScoreSession.paused`), but they
+fixed nothing, and the guess cost a build and a run before the bisect was done.
