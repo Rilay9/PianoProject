@@ -2950,8 +2950,10 @@ const T19_APP: [string, string, () => boolean][] = [
       // the same sentence where that thing actually is: `1.5` lists the Simon
       // drill among its own exercises and opens it from that row, and `3.6`
       // says outright that the accompaniment lab is not this rung's button and
-      // lives on the Library's line of doors.
-      const allowed = new Set(['1.5:simon', '3.6:lab']);
+      // lives on the Library's line of doors. `0.3` is the third: its tour of
+      // the app names the lab and says in the same sentence that it is under
+      // Library (Entry 55 found it as the one lesson still calling it *Lab*).
+      const allowed = new Set(['1.5:simon', '3.6:lab', '0.3:lab']);
       const wrong: string[] = [];
       for (const lesson of t19Rungs()) {
         const kinds = new Set<string>((lesson.tools ?? []).map((tool) => tool.kind));

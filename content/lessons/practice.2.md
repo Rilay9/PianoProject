@@ -35,10 +35,10 @@ satisfying, and treating the wreckage as the learning. It is not; it is the
 wreckage.
 
 **Tools for this rung.** The score screen will run the ladder for you. Set a
-loop, switch the *Ladder* on in the ⋯ menu, and a clean pass takes the tempo
+loop, switch the *Ladder* on in the ⋯ controls, and a clean pass takes the tempo
 up a notch while a pass with a mistake takes it down. That is the rule above
 made quicker: it moves after every pass rather than every three, its notch is
-ten points of the written tempo, and it stops climbing at full tempo unless you
+a tenth of the written tempo, and it stops climbing at full tempo unless you
 had already set it higher. The counting is done for you and the tempo figure is
 underlined so you can watch it move.
 

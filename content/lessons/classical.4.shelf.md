@@ -24,7 +24,7 @@ the G String*, the Handel–Halvorsen *Passacaglia*, four Chopin *Préludes*,
 Grieg's *Morning Mood*, the *Romanza*, Tchaikovsky's *Swan Lake*, Vivaldi's
 *Spring* — and, on the personal build only, Elgar's *Salut d'amour* and
 *Nimrod*, Puccini's *O mio babbino caro*, pieces by Mascagni, Holst,
-Mahler and Rachmaninoff, the film and game pieces the owner asked for by name
+Mahler and Rachmaninoff, the film and game pieces you asked for by name
 — Einaudi, Zimmer, Sakamoto, Uematsu, Djawadi, Hurwitz, Glass, de Senneville,
 Clayderman — and seven other film, game and modern pieces. The Library's
 Classical filter holds what came off this shelf: the *Toccata and Fugue*, the
@@ -46,7 +46,7 @@ the MusicXML or transcribe it and import it; it will sit on the same shelf.
 2. **Voicing.** Playing one note of a chord louder than the others, usually the
    top. Practise the chord with the melody note *only* sounding, then add the
    others quietly underneath.
-3. **Pedalling.** Stage 3.5's legato pedalling, applied constantly and changed
+3. **Pedalling.** Stage 3's legato pedalling, applied constantly and changed
    with the harmony. In this repertoire a late pedal change is the difference
    between beautiful and muddy.
 

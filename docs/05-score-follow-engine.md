@@ -88,7 +88,15 @@ Judging input (only if any input source is active):
 - When the clock passes `tStep[j] + toleranceMs` and a slot in `expected[j]` is unsatisfied →
   `missed`.
 - Accuracy = hits / expected slots; timing stats = mean/σ of deltaMs, % early, % late.
-  **Pass** needs accuracy ≥ 90 % (setting) at tempoPct ≥ 80 % (setting).
+  **Pass** needs accuracy ≥ 90 % (setting) at tempoPct ≥ 80 % (setting) — or at the rung's
+  own pair where the item is on a rung (`02` Part G, `selectors.masteryCriteriaFor`).
+- `correctSteps` counts the steps every pitch of which arrived inside its window, which is
+  the step-shaped reading of the same run. It is counted at the note that finishes a step
+  (`feedTempo`), not when the window closes: a slot is deleted the moment its last pitch
+  lands, so a count at the closer could never fire and every Tempo run reported nought
+  until T24 (found by playing all 1,982 catalog scores perfectly and reading the number).
+  It is not the accuracy — Tempo's unit is the note — and nothing passes on it; it is the
+  field `SessionScore` has always documented and never filled.
 
 Without any input source, Tempo mode simply plays/moves and asks for the self-report at the end.
 

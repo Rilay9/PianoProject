@@ -40,7 +40,7 @@ the extensions into once you can voice them.
 the walking bass and the progression fixed, and it opens on *Play the tune*:
 the app takes the right hand and the chords under it are yours, which is the
 only way to find out whether a thirteenth still works when something else is
-using the top of the bar. At the end of a time round it says how many of your
+using the top of the bar. At the end of each time round it says how many of your
 notes were chord tones of the bar, and keeps none of it. *Free play* names a
 chord from three or more notes held down together, so a voicing with the fifth
 and the root taken out can be held down and checked — and where it names

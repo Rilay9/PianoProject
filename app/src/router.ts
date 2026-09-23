@@ -708,6 +708,40 @@ export class Router {
   }
 
   private setRoute(route: Route): void {
+    /**
+     * Two routes that write the same hash are the same screen.
+     *
+     * Every `navigate*` below sets `location.hash` and then applies the route
+     * itself, so the browser's `hashchange` arrives a task later with the
+     * *same* URL re-parsed. The field comparison underneath is meant to make
+     * that echo a no-op, and for a tab route it does — but a **pushed** route
+     * writes no tab into the hash, so `parseHash` has to guess one, and the
+     * two guesses do not agree: `navigateScore` keeps the tab the learner was
+     * on, while `parseHash('#/score/…')` answers `DEFAULT_TAB`. From Today
+     * those are the same word and the echo is swallowed; from **Plan or
+     * Library they are not**, so opening a piece from a rung's option row, or
+     * from the Library, emitted the route twice and built the Score screen
+     * **twice**.
+     *
+     * Nothing about that is cosmetic. The second build replaces the first in
+     * the DOM, but `mountLazyScreen` calls the screen factory before it checks
+     * whether its holder is still connected — so the first screen's `load()`
+     * runs to the end, creates a `ScoreSession`, and subscribes it to the
+     * shared MIDI source. Both screens are then listening: the one on the
+     * glass is the one the learner presses ▶ on, and the invisible one starts
+     * a run of its own on the first note it hears, at the tempo the piece
+     * opened at. Both finish, both call `recordRun`, and because the second
+     * write starts from the same unread row it overwrites the first — so a
+     * flawless run recorded at 100 % of tempo was stored as `started`, at the
+     * default tempo, with a wrong note in it, and the rung never went green.
+     * `first-day.spec.ts` is the run that found it.
+     *
+     * The hash is the app's own serialisation of "which screen, with what",
+     * and it deliberately leaves the tab out of a pushed route because the tab
+     * is only which nav item is lit. Comparing on it is therefore the question
+     * this guard has always been trying to ask.
+     */
+    if (routeToHash(route) === routeToHash(this.current)) return;
     if (
       route.tab === this.current.tab &&
       route.sub === this.current.sub &&

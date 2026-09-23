@@ -239,7 +239,7 @@
                 }
               ],
               "levelBand": [
-                7.1,
+                6.29,
                 7.4
               ],
               "finder": {
@@ -863,7 +863,7 @@
                 "chordSymbols": true
               },
               "levelBand": [
-                3.98,
+                3.09,
                 6.4
               ],
               "finder": {

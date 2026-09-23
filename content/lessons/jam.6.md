@@ -14,7 +14,7 @@ guitarist is strumming, the thing missing is the bottom, and the left hand is
 the only place it can come from.
 
 **A walking bass is one note per beat that gets from this chord to the next.**
-Four crotchets a bar, no gaps, no rests. Start on the root, end on a note next
+Four quarter notes a bar, no gaps, no rests. Start on the root, end on a note next
 to the following root, and fill the middle with whatever is in the chord or in
 the scale. The line should sound like it is going somewhere even when you are
 not looking at it, and the test is that someone hearing only the left hand could

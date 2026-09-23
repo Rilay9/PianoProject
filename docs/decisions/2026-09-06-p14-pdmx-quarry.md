@@ -148,6 +148,14 @@ which is the monotone constraint doing exactly what it exists for. The largest w
 | +0.45 | notes per bar |
 | +0.38 | key-signature accidentals |
 
+**2026-09-22: these are not the weights any more.** The model was refitted after two
+measurement faults were corrected, and `content/sources/level-model.json` holds the current
+ones. The table above is left as written because it is what was decided on 2026-09-06 and a
+decision record that edits itself is no record; read it as history. What changed most:
+ledger-line ratio, the largest weight here, now earns nothing — its fitted weight comes out
+backwards and the monotone check drops it. `pending-review` Entry 53 §3 and §4 set out the
+refit; `docs/03-content-pipeline.md` describes the model as it stands.
+
 Which is roughly what a teacher would say if you asked them why a piece is hard.
 
 The furthest miss is *Bella Ciao*: judged 4.2, estimated 6.46. It is a folk tune the model

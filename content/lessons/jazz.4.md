@@ -35,9 +35,9 @@ it says so, and nothing else. C7 is a C chord; B♭m6 is B flat minor. The
 sevenths are what the next rung's shell voicings are for.
 
 **Repertoire for this rung.** Three options, all lead sheets from 1920 — a tune
-with chord symbols printed over it. *Avalon* is the shortest and is in two;
-*Whispering* is in E flat. *Avalon* is in F, the key the
-comping exercises are in, and *Margie* has the same one flat. Play the tune with
+with chord symbols printed over it. *Avalon* is the shortest, in two and in F,
+the key the comping exercises are in; *Whispering* is in E flat, and *Margie*
+has the same one flat as *Avalon*. Play the tune with
 the right hand and comp one pattern with the left from the symbols, then change
 the pattern.
 

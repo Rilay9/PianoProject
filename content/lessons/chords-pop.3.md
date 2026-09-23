@@ -48,7 +48,7 @@ this whole lesson backwards, and it is the fastest way to prove you have
 understood it.
 
 **Common mistake.** Playing every chord in root position and leaping around.
-Stage 3.2's voice leading applies here immediately — use inversions to keep the
+Stage 3's voice leading applies here immediately — use inversions to keep the
 left hand still.
 
 **Tools for this rung.** The accompaniment lab is a chord chart that keeps time,

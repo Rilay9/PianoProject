@@ -58,7 +58,7 @@ the tenor and bass you are playing; swap, and the inner voices turn out to
 be the ones you had been guessing at. *Accompaniment lab* opens *Primary chords
 — one four five* on *Hold the chords*: the app plays I, IV, V and I round and
 round in whatever key you set, which is somewhere to try a bass walk-up into
-each change without a page. At the end of a time round it says how many of your
+each change without a page. At the end of each time round it says how many of your
 notes were in the scale, and keeps none of it.
 
 **How you'll know you've got it.** A hymn played with the tune clearly on top,

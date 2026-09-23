@@ -1487,3 +1487,52 @@ class TestBuildItemOverrides(unittest.TestCase):
         )
         self.assertEqual(item["genre"], ["classical"])
         self.assertEqual(item["tracks"], ["classical"])
+
+
+class TestBuildItemLevelSource(unittest.TestCase):
+    """`levelSource` is the row's to say, not the importer's (2026-09-23).
+
+    `build_item` hardcoded `estimated`, so a level a person had judged could be
+    spliced onto a pdmx row and never reach the app: the source said `judged`
+    and the built catalog said `estimated`. `pending-review` Entry 51's second
+    follow-up and Entry 53's second. `import_kern` never had the problem — it
+    derives the field from whether the level came from an opus band.
+
+    Every one of the 542 rows in `content/sources/pdmx.json` says `estimated`
+    today, so this changes no shipped row; it is what makes the field writable.
+    """
+
+    def entry(self, **extra: object) -> dict:
+        base = {"id": "song.pop.x.pdmx", "title": "X", "level": 3.0, "file": "x.mxl", "bucket": "pop-film-game"}
+        base.update(extra)
+        return base
+
+    def test_a_silent_row_is_estimated(self) -> None:
+        import import_pdmx
+
+        item = import_pdmx.build_item(self.entry(), bundled=True, checksum="0")
+        self.assertEqual(item["levelSource"], "estimated")
+
+    def test_a_row_saying_estimated_is_estimated(self) -> None:
+        import import_pdmx
+
+        item = import_pdmx.build_item(
+            self.entry(levelSource="estimated"), bundled=True, checksum="0"
+        )
+        self.assertEqual(item["levelSource"], "estimated")
+
+    def test_a_row_saying_judged_reaches_the_catalog(self) -> None:
+        import import_pdmx
+
+        item = import_pdmx.build_item(
+            self.entry(levelSource="judged"), bundled=True, checksum="0"
+        )
+        self.assertEqual(item["levelSource"], "judged")
+
+    def test_a_typo_fails_the_build_rather_than_becoming_an_estimate(self) -> None:
+        import import_pdmx
+
+        with self.assertRaises(ValueError):
+            import_pdmx.build_item(
+                self.entry(levelSource="probably"), bundled=True, checksum="0"
+            )

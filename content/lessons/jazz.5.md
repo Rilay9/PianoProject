@@ -9,7 +9,7 @@ videos:
 readingTime: 3
 ---
 
-Jazz needs the chord vocabulary from chords-and-pop Stage 5 first. Given that,
+Jazz needs the chord vocabulary from the Chords & pop track at Stage 5 first. Given that,
 three things get you playing.
 
 **Swing eighths.** Same long-short division as the blues shuffle, usually a
@@ -57,9 +57,9 @@ plays ii–V7–I over a walking bass, both fixed, in whatever key you pick: com
 it. It opens on *Play the tune*, so there is a right hand above your shells
 rather than silence. Swing the app judges only where the score writes the word,
 and none of this rung's pieces does — so here every eighth is timed where it is
-printed and the placing is still for your ear. The accent it reads where the
-score prints one and compares against how hard you played everything else —
-but none of this rung's pieces prints one, so here too the leaning is yours to
+printed and the placing is still for your ear. The accent it reads only where
+the score prints one, comparing it with how hard you played everything else —
+and none of this rung's pieces prints one, so here too the leaning is yours to
 hear.
 
 **How you'll know you've got it.** ii–V–I in four keys with shell voicings, and

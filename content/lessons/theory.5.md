@@ -58,5 +58,5 @@ colours; play a Dorian vamp (Dm to G) for two minutes and you will learn more
 than from any diagram.
 
 **How you'll know you've got it.** Four seventh qualities identified by ear at
-80 %, two progressions recognised in unfamiliar music, and one tune transposed
+80 % accuracy, two progressions recognised in unfamiliar music, and one tune transposed
 into three keys on the spot.

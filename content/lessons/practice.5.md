@@ -19,7 +19,7 @@ which.
 
 **One: you are practising the wrong thing.** You play the piece from the top,
 it breaks in the same bar, you go back to the top. The fix is the first lesson
-in this module: find the chunk, loop the chunk, and stop playing the parts
+in this track: find the chunk, loop the chunk, and stop playing the parts
 that already work.
 
 **Two: you have automated it wrong.** Something learned at speed, or learned

@@ -435,6 +435,17 @@ criteria. Schema at `content/curriculum.schema.json`.
 ## 6. Performance budget (phone)
 
 - First render of a 2-bar window: < 150 ms on S25 (OSMD 2.x manages ~10× that for a full page).
+- **Any other screen's first row, measured against that same figure** (added 2026-09-22, T26).
+  Two screens have grown by an order of magnitude since these budgets were written — the
+  Library filters and searches a catalog of two thousand rows on every keystroke, and the
+  biggest rung now lists fifty-odd options — and neither had a budget. Neither gets a number
+  of its own: **a screen of text rows must not cost more than engraving two bars of music**,
+  which is the most expensive first paint here that has a figure. `perf.spec.ts` holds both
+  to it under the same ×4 throttle, and prints what it measured rather than asserting it. The
+  shapes it exists to catch are a filter that re-reads the catalog and a page that renders
+  every option before the first one is on the screen; measured 2026-09-22, the Library's
+  slowest genre filter and its worst keystroke were each about a twelfth of the gate, and the
+  52-option rung reached its first option about 60 ms behind the one-option rung.
 - Window swap (pre-rendered): < 16 ms (one frame).
 - MIDI-in to note-coloured: < 30 ms.
 - Audio playback jitter: < 5 ms (scheduled on the AudioContext clock, never `setTimeout`).

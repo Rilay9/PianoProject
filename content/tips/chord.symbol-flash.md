@@ -21,7 +21,7 @@ that habit is built here or not at all.
 
 ## Common mistake
 
-Reading the letter and then working out the quality as a second step. `Am7` is
+Reading the letter and then working out the quality as a second step. *Am7* is
 one symbol, not three decisions.
 
 ## How you'll know you've got it

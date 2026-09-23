@@ -121,6 +121,87 @@ def _log_scale(name: str, value: float) -> float:
     return math.log1p(max(0.0, value))
 
 
+def sounding(elements) -> list:  # noqa: ANN001 - a music21 iterator or list
+    """
+    The notes a player plays, with the printed chord symbols left out.
+
+    music21's `harmony.ChordSymbol` is a subclass of `chord.Chord`, so every
+    printed `C`, `F` or `G7` over a lead sheet arrives from
+    `stream.recurse().notes` as a three- or four-note chord sounding at that
+    offset. Nobody plays it: it is a name for a harmony the player voices
+    themselves, and on a lead sheet it was being measured as the piece. Of the
+    799 songs in the catalog with a file, 798 parse and **129 of those carry
+    printed symbols**; `pending-review` Entry 51 counted 73 single-staff lead
+    sheets among the 240 estimated items on rungs.
+
+    Measured before this filter existed, on a 16-bar single-staff melody in C
+    with 15 chord symbols (`song.classical.ah-vous-dirais-je-maman.pdmx`): four
+    simultaneous notes in the right hand, a ten-semitone hand and a
+    twenty-one-semitone leap, none of which is in the music, and — under the
+    model as it then stood — a level 0.76 of a stage too high.
+    `harmony.Harmony` rather than `ChordSymbol` is the
+    filter because `roman.RomanNumeral` is the same kind of thing — an
+    analytical label that sounds nothing — and inherits from it.
+
+    There is no `chordSymbols` feature: the nineteen in `FEATURE_NAMES` are
+    what the fitted model weighs, and a twentieth would have to be fitted, ported
+    to `app/src/score/difficulty.ts` and justified against the anchors before it
+    could mean anything. What a lead sheet asks of a player who invents a left
+    hand from the symbols is not measured here at all, and that is written down
+    rather than approximated.
+    """
+    from music21 import harmony as m21harmony
+
+    return [e for e in elements if not isinstance(e, m21harmony.Harmony)]
+
+
+def voice_lines(part) -> list[list]:  # noqa: ANN001 - music21 Part/PartStaff
+    """
+    The staff's notes split into voices, each in time order.
+
+    Two voices sharing a staff are not one hand's worth of music, and walking
+    `part.recurse().notes` runs them together: music21 yields measure by
+    measure and, inside a measure, voice 1 entirely before voice 2, so the
+    melodic line jumps from the end of one voice to the start of the other once
+    per bar. On *Black Bottom Stomp*, whose lower staff carries two voices in 77
+    of its 101 bars, every one of those bar joints was a leap that nobody plays.
+
+    Split by **staff**, not by the hand `extractScoreModel` infers. The app's
+    own port in `app/src/score/difficulty.ts` says the same in its comment —
+    "split by *staff*, not by hand" — and the two implementations have to agree
+    to within 0.2 of a stage, so adopting the model's `hand` here alone would
+    break the one guarantee that keeps them from drifting. A voice printed on
+    the other staff is therefore still measured with the staff it is printed
+    on; that is a known difference between the printed page and the playing,
+    and it is the app's `voiceHomeStaves` that knows better.
+
+    A measure with no `<voice>` markings is one voice, which is the common
+    case: the id is shared across measures because MusicXML numbers voices per
+    part, so voice 1 of bar 3 is the same line as voice 1 of bar 4. A note
+    sitting directly in a measure that *also* has voices joins that unnamed
+    line rather than being dropped — the old walk saw every note on the staff
+    and this one has to as well, or the split would lose music instead of
+    separating it.
+    """
+    measures = list(part.recurse().getElementsByClass("Measure"))
+    if not measures:
+        return [sounding(part.recurse().notes)]
+    lines: dict[str, list[tuple[float, object]]] = {}
+    for measure in measures:
+        base = float(measure.offset)
+        for voice in measure.voices:
+            key = str(voice.id)
+            start = base + float(voice.offset)
+            for element in sounding(voice.notes):
+                lines.setdefault(key, []).append((start + float(element.offset), element))
+        for element in sounding(measure.notes):
+            lines.setdefault("", []).append((base + float(element.offset), element))
+    return [
+        [element for _, element in sorted(entries, key=lambda pair: pair[0])]
+        for _, entries in sorted(lines.items())
+    ]
+
+
 def features(score) -> dict[str, float]:  # noqa: ANN001 - music21 Score
     """
     Every measurable fact `estimate` is allowed to use.
@@ -148,30 +229,33 @@ def features(score) -> dict[str, float]:  # noqa: ANN001 - music21 Score
         pitches: list[int] = []
         simultaneous = 0
         span = 0
-        melodic: list[int] = []
-        for element in part.recurse().notes:
-            midis = sorted(int(p.midi) for p in element.pitches)
-            if not midis:
-                continue
-            pitches.extend(midis)
-            if isinstance(element, m21chord.Chord):
-                simultaneous = max(simultaneous, len(midis))
-                span = max(span, midis[-1] - midis[0])
-            elif isinstance(element, m21note.Note):
-                simultaneous = max(simultaneous, 1)
-            melodic.append(midis[0])
-        leaps = [abs(b - a) for a, b in zip(melodic, melodic[1:])]
+        leap = 0
+        for line in voice_lines(part):
+            melodic: list[int] = []
+            for element in line:
+                midis = sorted(int(p.midi) for p in element.pitches)
+                if not midis:
+                    continue
+                pitches.extend(midis)
+                if isinstance(element, m21chord.Chord):
+                    simultaneous = max(simultaneous, len(midis))
+                    span = max(span, midis[-1] - midis[0])
+                elif isinstance(element, m21note.Note):
+                    simultaneous = max(simultaneous, 1)
+                melodic.append(midis[0])
+            for first, second in zip(melodic, melodic[1:]):
+                leap = max(leap, abs(second - first))
         return {
             "simultaneous": float(simultaneous),
             "span": float(span),
-            "leap": float(max(leaps) if leaps else 0),
+            "leap": float(leap),
             "range": float(max(pitches) - min(pitches)) if pitches else 0.0,
         }
 
     right_stats = hand_stats(right)
     left_stats = hand_stats(left)
 
-    all_notes = list(score.recurse().notes)
+    all_notes = sounding(score.recurse().notes)
     all_pitches = [int(p.midi) for element in all_notes for p in element.pitches]
     note_count = len(all_pitches)
 
@@ -201,13 +285,22 @@ def features(score) -> dict[str, float]:  # noqa: ANN001 - music21 Score
         # A crossing is the left hand printed above the right at the same
         # offset. Counted per offset rather than per note, because a crossed
         # passage is one difficulty however many notes it contains.
+        #
+        # The lowest note is taken across *every* voice sounding at that
+        # offset. Assigning it per element let the last voice traversed
+        # overwrite the first, so on a two-voice staff the right hand's floor
+        # was whichever voice music21 happened to walk last, and a left-hand
+        # note above it counted as a crossing when it was under the other voice
+        # all along.
         right_by_offset: dict[float, int] = {}
-        for element in right.recurse().notes:
+        for element in sounding(right.recurse().notes):
             offset = float(element.getOffsetInHierarchy(score))
             midis = [int(p.midi) for p in element.pitches]
             if midis:
-                right_by_offset[offset] = min(midis)
-        for element in left.recurse().notes:
+                lowest = min(midis)
+                if offset not in right_by_offset or lowest < right_by_offset[offset]:
+                    right_by_offset[offset] = lowest
+        for element in sounding(left.recurse().notes):
             offset = float(element.getOffsetInHierarchy(score))
             midis = [int(p.midi) for p in element.pitches]
             top = max(midis) if midis else None

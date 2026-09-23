@@ -9,10 +9,10 @@ and finding out from a number, not a feeling, whether it did.
 
 ## How to practise it
 
-Read the card. The lamp follows your foot, and under it the app says how many
-milliseconds after the chord the lift came: a small positive number is a clean
-change, a negative one is a hole, and anything past the overlap window is the
-old chord bleeding into the new.
+Watch the lamp and the line under it. The lamp follows your foot; the line says
+how many milliseconds after the chord your foot came up, and whether that was
+clean. Lift too early and you leave a hole; lift late and the old chord bleeds
+into the new.
 
 Start with the pedal already down before the first chord, so the first change
 is a real change and not a first press.
@@ -32,5 +32,5 @@ extra lifts as early ones.
 
 ## How you'll know you've got it
 
-Every change in the set reads as a small positive number, and you could have
-said which two were the worst before the sheet told you.
+Every change in the set comes up clean, and you could have said which two were
+the worst before the app told you.

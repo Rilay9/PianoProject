@@ -13,6 +13,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { edgeFixtures, generatedFixtures, loadFixture, type Fixture } from './helpers/fixtures';
 import { extractScoreModel, keySignatureName } from '../../src/score/extractScoreModel';
 import type { ScoreModel } from '../../src/score/types';
@@ -141,6 +142,110 @@ describe('printed notes', () => {
     // what Python read.
     expect(features(model).bars).toBe(model.sourceMeasureCount);
   });
+});
+
+/**
+ * A two-bar lead sheet: three printed chord symbols over five melody notes.
+ *
+ * Written into the test rather than added to `tests/fixtures/scores/edge/`
+ * because OSMD cannot load a `<harmony>` under jsdom at all — laying a chord
+ * symbol out goes through `VexFlowTextMeasurer`, which sets `.font` on the 2D
+ * context jsdom does not implement — so a lead sheet in that directory would
+ * take `scoreModel`, `engineScoring` and `scoreSmoke` down with it. The stub
+ * below is the smallest thing that lets the parse finish, and it is put back
+ * afterwards so no other test inherits it.
+ */
+const LEAD_SHEET = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="3.1">
+  <work><work-title>Lead sheet with chord symbols</work-title></work>
+  <part-list><score-part id="P1"><part-name>Melody</part-name></score-part></part-list>
+  <part id="P1">
+    <measure number="1">
+      <attributes><divisions>4</divisions><key><fifths>0</fifths></key>
+        <time><beats>4</beats><beat-type>4</beat-type></time><staves>1</staves>
+        <clef number="1"><sign>G</sign><line>2</line></clef></attributes>
+      <harmony><root><root-step>C</root-step></root><kind>major</kind></harmony>
+      <note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><voice>1</voice><type>quarter</type><staff>1</staff></note>
+      <note><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration><voice>1</voice><type>quarter</type><staff>1</staff></note>
+      <harmony><root><root-step>G</root-step></root><kind>dominant</kind></harmony>
+      <note><pitch><step>E</step><octave>4</octave></pitch><duration>4</duration><voice>1</voice><type>quarter</type><staff>1</staff></note>
+      <note><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration><voice>1</voice><type>quarter</type><staff>1</staff></note>
+    </measure>
+    <measure number="2">
+      <harmony><root><root-step>F</root-step></root><kind>major</kind></harmony>
+      <note><pitch><step>C</step><octave>4</octave></pitch><duration>16</duration><voice>1</voice><type>whole</type><staff>1</staff></note>
+    </measure>
+  </part>
+</score-partwise>`;
+
+describe('a printed chord symbol is not a sounding note', () => {
+  it('gives a lead sheet the melody it has, not the chords it names', async () => {
+    const canvas = HTMLCanvasElement.prototype as unknown as { getContext: unknown };
+    const original = canvas.getContext;
+    canvas.getContext = () => ({
+      font: '',
+      measureText: () => ({ width: 10 }),
+      fillText: () => undefined,
+      save: () => undefined,
+      restore: () => undefined,
+    });
+    let model: ScoreModel;
+    try {
+      const container = document.createElement('div');
+      document.body.appendChild(container);
+      const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
+      await osmd.load(LEAD_SHEET);
+      model = extractScoreModel(osmd, { id: 'lead-sheet' });
+    } finally {
+      canvas.getContext = original;
+    }
+
+    // Five melody notes, three chord symbols. `sounding()` on the Python side
+    // drops the symbols from every walk it makes; here they never arrive,
+    // because OSMD parses `<harmony>` into a chord symbol container on the
+    // source measure and `extractScoreModel` walks voice entries. This test is
+    // the guard on that: it has never been red, and it will be the moment the
+    // extractor starts letting a symbol through into `steps[].notes`.
+    expect(printedNotes(model).map((n) => n.midi)).toEqual([60, 62, 64, 62, 60]);
+
+    const values = features(model);
+    // Nothing the symbols could have contributed: no simultaneity, no hand
+    // span, no crossing, and a note density of the melody alone.
+    expect(values.maxSimultaneousRight).toBe(0);
+    expect(values.maxSimultaneousLeft).toBe(0);
+    expect(values.maxSpanRight).toBe(0);
+    expect(values.maxSpanLeft).toBe(0);
+    expect(values.handCrossings).toBe(0);
+    expect(values.notesPerBar).toBe(5 / 2);
+    // A C major triad printed over the C would be a seven-semitone leap to the
+    // G7 above the third beat; the melody's widest step is a tone.
+    expect(values.maxLeapRight).toBe(2);
+  });
+});
+
+describe('two voices on one staff are two lines', () => {
+  // `voice_lines` in `tools/content/difficulty.py`, ported. Held against the
+  // numbers Python wrote into the fixture rather than against numbers this test
+  // invents, which is the only version of it that can catch the two drifting.
+  //
+  // Red before the port: measuring every note on the staff by onset read the
+  // two voices of `two-voices` as chords — `maxSpanRight` 7 and `maxSpanLeft` 4
+  // against Python's 0 and 0 — and ran `cross-staff`'s two upper-staff voices
+  // into one melodic line, `maxLeapRight` 8 against Python's 1, which is the
+  // fixture the agreement test failed on.
+  for (const name of ['two-voices', 'cross-staff']) {
+    it(`measures ${name} the way difficulty.py does`, async () => {
+      const fixture = edgeFixtures().find((f) => f.name === name);
+      if (!fixture) throw new Error(`no edge fixture named "${name}"`);
+      const expected = EXPECTED.scores.find((s) => s.name === name);
+      if (!expected) throw new Error(`no levelling fixture for "${name}"`);
+      const values = features(await modelFor(fixture));
+      for (const key of ['maxSpanRight', 'maxSpanLeft', 'maxLeapRight', 'maxLeapLeft', 'rangeRight', 'rangeLeft', 'voicesPerStaff']) {
+        expect(values[key], `${name}.${key}`).toBe(expected.features[key]);
+      }
+    });
+  }
 });
 
 describe('agreement with tools/content/difficulty.py', () => {

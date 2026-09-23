@@ -73,6 +73,65 @@ describe('Tempo mode — judging', () => {
     expect(score.timing.meanMs).toBeCloseTo(0, 6);
   });
 
+  /**
+   * `SessionScore.correctSteps` says "Wait: completed cleanly. Tempo: every
+   * expected pitch hit in time" (`engine/types.ts`), and in Tempo it was
+   * always nought — on this run and on all 1,982 catalog scores (T24).
+   *
+   * The intent was in the code and in the wrong place: `closeSlotAsMissed`
+   * carried `if (pitches.size === 0) this.correctSteps += 1`, which cannot
+   * fire, because `feedTempo` deletes a slot the moment its last pitch
+   * arrives, so nothing empty ever reaches the closer. A step is completed
+   * where it is completed, which is at the note that finishes it.
+   */
+  it('counts a step completed in time, which is what `correctSteps` says it counts', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    for (const [i, midi] of [60, 62, 64, 65].entries()) {
+      h.clock.set(i * BEAT_MS);
+      h.engine.tick();
+      h.play(midi);
+    }
+    h.advance(1.5 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.correctSteps).toBe(score.totalSteps);
+  });
+
+  it('counts only the steps that were completed, not the ones that were missed', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    // The third note is never played, so its window closes with a pitch still
+    // in it and that step is not one of the ones that came out right.
+    for (const [i, midi] of [60, 62, 64, 65].entries()) {
+      h.clock.set(i * BEAT_MS);
+      h.engine.tick();
+      if (midi !== 64) h.play(midi);
+    }
+    h.advance(1.5 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.totalSteps).toBe(4);
+    expect(score.correctSteps).toBe(3);
+    expect(score.missedTotal).toBe(1);
+  });
+
+  it('a chord counts once, and only when every pitch of it arrived', () => {
+    const chords = makeModel([
+      { onset: 0, notes: [note({ midi: 60 }), note({ midi: 64 }), note({ midi: 67 })] },
+      { onset: 1, notes: [note({ midi: 62 }), note({ midi: 65 })] },
+    ]);
+    const h = harness(chords, noCountIn);
+    h.engine.start();
+    h.engine.tick();
+    for (const midi of [60, 64, 67]) h.play(midi);
+    h.clock.set(BEAT_MS);
+    h.engine.tick();
+    h.play(62); // and not 65
+    h.advance(2 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.totalSteps).toBe(2);
+    expect(score.correctSteps).toBe(1);
+  });
+
   it('every note 100 ms late: all hits, mean +100', () => {
     const h = harness(melody, noCountIn);
     h.engine.start();

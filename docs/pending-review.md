@@ -10211,3 +10211,2929 @@ rewriting them would destroy the evidence that they had rotted.
   after it — the playback in `echoChain`, the round loop, and both wrong notes. No screen
   file was touched. The whole file passes, `npx tsc -b` and `npm run lint` are clean, and
   `simonTurnCue.test.ts` with `drills.test.ts` pass unchanged.
+
+---
+
+### Entry 50 — T24: a perfect performance through every catalog item, and the expected answer through every drill (2026-09-22)
+
+**Restated without the brief's words:** press, at the exact moment the app says to press it,
+every key the app's own reading of every score asks for, and give every quiz the answer it is
+waiting for — then say what broke, and say plainly what a run like that cannot tell anybody.
+
+**Nothing here was heard**, in Entry 38's sense. Not one assertion below is about sound, and a
+perfect synthetic performance is a test of the *engine*: it plays the model's own notes at the
+model's own times, so a file whose notes are all wrong in the same way is performed flawlessly
+and this reports nothing. That is why `helpers/perfectRun.ts` `modelFaults` asks the questions
+a run cannot, and it is where both content findings below came from.
+
+#### What was built
+
+| file | what it runs |
+|---|---|
+| `app/tests/unit/helpers/perfectRun.ts` | `perfectTempoRun`, `perfectWaitRun`, `faultIn`, `modelFaults`. No number measured on this machine: a note goes in at the step's own `tMs`, the run ends at the model's own last step plus its own duration, the pass is `evaluateOutcome` against the rung's own `mastery` |
+| `app/tests/unit/helpers/scoreCatalog.ts` | the catalog and curriculum as the app reads them; `modelForItem` is `osmd.load` then `extractScoreModel`, the two calls the goldens and the Score screen both make; `shard`; `installTextMeasurer` |
+| `app/tests/unit/helpers/perfectSweep.ts` | one shard's body, and `KNOWN_KEYS_A_PIANO_DOES_NOT_HAVE` |
+| `app/tests/unit/perfectPerformance.test.ts` and `perfectPerformance.1..7.test.ts` | one test per catalog row with a score file, Keep tempo **and** Wait for me in the same test; shard 0 also holds the inventory that keeps the eight shards covering the catalog exactly once |
+| `app/tests/unit/perfectDrills.test.ts` | every `drill.*` row answered exactly as its own prompt asked |
+
+Eight files rather than one because a runner worker is per file. The slice is round-robin over
+the id-sorted list, not by leading id: the slow files are the imported and public-domain songs
+and those sit together under `song.`, so an alphabetical split would be one long pole and seven
+idle shards.
+
+#### The numbers, measured 2026-09-22
+
+- `catalog.json` holds **2,061 rows**. **1,982 carry a `file`** and every one of those files is
+  on disk (`existsSync` over all 1,982, none missing). By folder: `generated` 1,176, `pdmx` 542,
+  `imported` 226, `authored` 38. By type: 1,183 exercises and 799 songs.
+- **All 1,982 ran, all 1,982 passed**, in Keep tempo and in Wait for me, each with its own named
+  test: the run finishes, accuracy is 1, `tempoPct` is 100, `correctSteps` equals `totalSteps`,
+  the cursor reaches the run's last step, no wrong note, nothing missed, no lap taken unasked,
+  and the outcome is a pass under the rung's own `minAccuracy` and `minTempoPct` where the item
+  is on a rung and under the defaults where it is not. Sixteen of them carry
+  `notation.swungMark` and were judged swung, from that field and never from a genre or a title.
+- The **79 rows with no file** are not in the sweep and are named rather than passed over: 71 are
+  the `drill.*` rows below, and eight are songs with nothing to open —
+  `song.classical.chopin-etude-op25-7.nifc`, and the seven rock rows `song.rock.a7x-dear-god`,
+  `a7x-fiction`, `a7x-seize-the-day`, `a7x-so-far-away`, `lp-final-masquerade`,
+  `lp-shadow-of-the-day`, `lp-waiting-for-the-end`. Nothing to perform, so nothing is claimed
+  about them.
+- **71 `drill.*` rows, 71 run.** Twelve are the kinds `DrillScreen` draws itself and build no
+  prompt loop by design — nine `sight-reading`, one `checklist`
+  (`drill.setup.posture-checklist`), one `placement` (`drill.placement.stage-0`), one
+  `walkthrough` (`drill.tour.app-basics`) — and their pass line is that `drillFromCatalog` still
+  refuses to invent one. The other **59 all built and all were answered perfectly**: every card
+  judged right, every card the drill built answered, accuracy 1. The kinds that cannot be asked
+  "was every prompt right" are named separately rather than folded in — the five `backing-track`
+  rows judge nothing (`05` §7) and are checked on having given their card and recorded what was
+  played, and `drill.dynamics.p-f` is checked on the ratio its own card asks for, with
+  `flatVelocity` at 0.
+- **Wall time.** The sweep is 1,992 tests in **47–53 s** across the eight shards. The whole unit
+  suite went from **183 files / 2,881 tests / 12.9 s** to **192 / 4,948 / 60.8 s** on this
+  machine. That is the cost of the coverage and it is stated rather than hidden; the parsing is
+  the whole of it (OSMD on 1,982 scores) and the engine runs are a rounding error beside it.
+
+#### The one engine fault, and the lines
+
+**`SessionScore.correctSteps` was nought on every Tempo run the app has ever recorded.**
+`engine/types.ts` has said since it was written that the field means *"Wait: completed cleanly.
+Tempo: every expected pitch hit in time"*, and in Tempo it could not be anything but nought: the
+only increment on that path was `PracticeEngine.closeSlotAsMissed`'s
+`if (pitches.size === 0) this.correctSteps += 1`, and `feedTempo` deletes a slot the moment its
+last pitch arrives, so nothing empty ever reached the closer. The intent was in the code and in
+a place it could never fire.
+
+This is the pair `00` §4 and working-rules §2.17 are about — code and its own comment
+disagreeing — and §2.17 says the code is usually right. It is not right here, and the dead
+branch is why: a count nobody can reach is an attempt, not a design.
+
+**Fixed** in `PracticeEngine.feedTempo`, on both its branches (the ordinary one where the step's
+last pitch lands, and the `rhythmOnly` one where a single strike settles the step), and the
+unreachable branch in `closeSlotAsMissed` replaced by the sentence saying why there is no count
+there. **Red first**, three tests in `engineTempo.test.ts` under *Tempo mode — judging*, each
+`expected +0 to be N` before the change:
+
+- *counts a step completed in time, which is what `correctSteps` says it counts* — `expected +0 to be 4`
+- *counts only the steps that were completed, not the ones that were missed* — `expected +0 to be 3`
+- *a chord counts once, and only when every pitch of it arrived* — `expected +0 to be 1`
+
+And then at scale: `correctSteps === totalSteps` now holds on all 1,982 scores in both modes,
+which is the check that would have caught it on day one.
+
+**Who else reads the field** (§2.15). Three searches, because the first was one grep and an
+absence off one grep is what §2.1 exists to stop: `grep -rn correctSteps app/src app/tests
+--include=*.ts`; then the same identifier over the **whole repository** across `*.ts`, `*.py`,
+`*.json` and `*.md`; then `grep -rn SessionScore app/src/data app/src/curriculum`, which is the
+question shaped the other way round — not "who names the field" but "who handles the record it
+sits in". Every hit, one line each:
+
+| where | what it does with it |
+|---|---|
+| `engine/Scoring.ts` `buildScore` | divides it by `totalSteps` for **Wait's** accuracy; Tempo's accuracy is `hits / expectedNotes` and does not touch it |
+| `ui/screens/ScoreScreen.ts:2252` | `heard = score.hits > 0 \|\| score.correctSteps > 0 \|\| score.wrongNotesTotal > 0`. `hits` already carried every Tempo run, so the screen behaves exactly as before; that clause is simply no longer the only thing holding it up |
+| `tests/e2e/fixtures/devScore.ts:94` | declares it on the dev hook's score type. A type, not a reader |
+| `docs/lesson-audit/batch-1.md:75` | cites Wait's accuracy as `correctSteps / totalSteps`. Still true |
+
+The third search returned **nothing at all**: neither `app/src/data` nor `app/src/curriculum`
+names `SessionScore`. That absence is worth no more than the command, so here is the positive
+form instead — `progressStore.ts`'s own input type (`PracticeResult`, lines 20–43) lists
+`mode`, `tempoPct`, `accuracy`, `accuracyEstimated`, `wrongNotes`, `missed`, `durationMs`,
+`passed`, `masterEligible` and the self-report fields, and **has no `correctSteps` at all**, so
+nothing written to the progress store or to a backup could have depended on it.
+
+**Six places assert it, and I ran four of them.** Each was opened and its mode read, rather
+than taken from the file's name:
+
+- `engineWait.test.ts:159` (`{ mode: 'wait' }`, line 152) and `:313` (`{ mode: 'wait' }`, line 307) — **run, green**
+- `engineMic.test.ts:110` (`{ mode: 'wait', ...MIC_ENGINE_OPTIONS }`) — **run, green**
+- `engineScoring.test.ts:198` (`harness(model, { mode: 'wait' })`) — **run, green**
+- `e2e/engine.spec.ts:20` (`dev.startRun('wait')`) — **not run**: Playwright is outside this
+  task, so this is a reading of the file and not a result
+- `e2e/mic.spec.ts:112` (*"a recorded scale drives a Wait-mode run to finished"*,
+  `startRun('wait', ...)`) — **not run**, same reason
+
+All six are Wait runs, which is why the change cannot move any of them; **that four are green
+is measured and that the two browser ones would be is an argument.** Five more files
+(`engineScoring.test.ts:22`, `rungMastery.test.ts:62`, `scoreTourRoute.test.ts:258`,
+`techniqueMeasures.test.ts:56`, `scoreMidRunSettings.test.ts:325`) put a number in the field in
+a hand-built `SessionScore` literal; they never read what the engine wrote, and all five are
+green.
+
+`docs/05` §3 now states what the field counts and where, and `engine/types.ts` says the same
+beside the field.
+
+#### The content fault, recorded and not fixed
+
+**Two imported scores ask for keys a piano does not have.** Read out of the MusicXML itself, not
+inferred from the model:
+
+- `song.beautiful.mariage-damour.alt2` writes **D8 (MIDI 110)** three times; one of the three
+  carries `<tie type="stop"/>` and the extractor merges it, so the model has **two** steps that
+  want it — bars 45 and 81, steps 608 and 1090.
+- `song.classical.bach-toccata-fugue-bwv565` writes **G-sharp 0 (MIDI 20)** once — bar 29, step 598.
+
+This is not new. `docs/handoff-2026-09-09.md` item 12 records both by name and says
+*"`validate.py` prints the note and passes"*, and the files still have them. What is new is that
+it is now mechanical (§2.8) and that the consequence is named: `ui/stripRange.ts` clamps the
+on-screen keyboard to `LOWEST_KEY`..`HIGHEST_KEY`, so in **Wait for me** the run stops on that
+step for anybody without a key that does not exist — and the synthetic performance could not see
+it, because a synthetic performer can press anything.
+
+**Content was not edited** — another agent owns `content/` this session, so nothing was added to
+`content/score-checks.allow.json`. The two rows are in `KNOWN_KEYS_A_PIANO_DOES_NOT_HAVE` in
+`helpers/perfectSweep.ts` with the reason and the handoff citation, matched **exactly**, so the
+test fails both when a file gets worse and when one gets fixed — the second being the one worth
+having, because it is what stops the row outliving its reason. **Follow-up for whoever owns the
+content:** either move those notes into the instrument or record them in
+`score-checks.allow.json` with a reason, and delete the row from the test.
+
+#### Two checks of mine that were wrong
+
+The first run of `modelFaults` asked whether any step had no notes in it and failed **1,280 of
+the 1,982 items**. Every one of them was right and the question was wrong: the extractor skips
+rests note by note (`extractScoreModel`, `if (note.isRest()) continue`) and keeps the step
+because the cursor stops there, which is exactly what `05` §1.1 calls a silent placeholder in
+Tempo and a skip in Wait. 1,280 is a count of pieces with a rest in them. The check is gone and
+the reason is written where it was.
+
+In the drills, an assertion that `drill.current` is null once a drill runs out failed on fifteen
+rows, because `PromptDrill` walks past its end while `RhythmDrill`, `BackingTrackDrill` and
+`SimonDrill` leave the last card standing for the screen to keep on the glass. The completion
+question is `result().answered === result().total` and is now asked that way.
+
+Both were rewritten rather than left red, and both are worth recording because in each case the
+first instinct was that 1,280 files and fifteen drills had a fault in them.
+
+#### What had to be added to run this at all
+
+`osmd.load` throws `Cannot set properties of null (setting 'font')` under jsdom on any score
+carrying a chord symbol, because VexFlow measures that text through a canvas 2D context jsdom
+does not implement — which is what `helpers/fixtures.ts` means when it says OSMD cannot render
+there, and why nothing has needed this before: the hand-written fixtures have no chord symbols.
+`installTextMeasurer` supplies the measurer a browser would have. Nothing it returns is read by
+anything the sweep uses: the model comes from `osmd.Sheet`, which the reader builds from the
+MusicXML before the graphic layer exists.
+
+#### What is unverified
+
+- **Everything about the music.** Nothing was heard. That the ear drills play the interval they
+  name, that the chord drills name the chord they play, that any of the 1,982 files is the piece
+  its title claims — none of that is touched here.
+- **The extraction against the file.** The sweep plays the model, so a tie stepped as two notes,
+  a repeat that never returned, or a pickup counted as a full bar would be performed perfectly
+  and reported as a pass. `modelFaults` catches only what is visibly impossible — a pitch off the
+  keyboard, a step behind the one before it, a tempo of nought, a model with no steps or no time
+  signature. Comparing 1,982 models against their MusicXML is a different piece of work and was
+  not done.
+- **The screen.** Everything here is Node. Whether the cursor, the strip and the summary do the
+  right thing with these runs is `corpus.spec.ts` and `sequence.spec.ts`, which cover thirteen
+  pieces in a browser; no Playwright was run for T24.
+- **Both hands only.** Every run is `hands: 'both'` at `tempoPct: 100` with the default count-in,
+  no loop, no latch, no transpose, no microphone. The hand filter, the loop, the ladder and the
+  latch have their own tests and were not swept.
+- **One shape of performance.** Every note exactly on time at one velocity, released before the
+  next. Late, early, rolled and wrong playing is `engineTempo`/`engineWait`'s ground and was not
+  swept either.
+- **The catalog moved under the run.** Another agent was splicing `content/` during this session;
+  every number above is from `app/public/content/catalog.json` as it stood on 2026-09-22, and
+  `docs/05` still says fifteen rows carry `swungMark` where sixteen of the rows with a file do
+  today.
+
+#### Checked against `docs/prompts/working-rules.md` before reporting
+
+1. **Absences.** "No item failed" is the result of a named command over a named list, and the
+   two content faults were found by a second question shaped differently (`modelFaults`) after
+   the first (the run) returned nothing — §2.1 made mechanical. One absence **was** stated bare
+   in the first draft of this entry and is fixed under *who else reads the field*: see item 7.
+2. **Plurals.** Every plural above is enumerated or given its count and its command: the 1,982
+   items are one test each, the 71 drills are 12 + 59 with both lists named, the consumers of
+   `correctSteps` are named one by one, and the drill kinds that cannot be asked the common
+   question are listed rather than folded into the same sentence.
+3. **The proxy.** Named in the second paragraph and again under *unverified*: a perfect synthetic
+   performance stands for "the engine can follow the file", and it is reported as that and not as
+   "the file is good".
+4. **Green is not done.** The unverified list is longer than the pass list, on purpose.
+5. **The reason, not the outcome.** The engine fix is right because the count sat where it could
+   not fire, not because a number came out nicer; the dead branch is the evidence and it is
+   quoted.
+6. **The artefact re-opened.** The two out-of-range files were read out of the `.mxl` rather than
+   taken from the model, and `docs/handoff-2026-09-09.md` was re-read rather than recalled — it
+   turned out to have recorded both of them already.
+7. **Other readers of the field.** Three searches, each hit given its own line, and the one
+   that returned nothing replaced by the positive form (`progressStore.ts`'s input type has no
+   such field). **This is the item the checklist caught after the first draft was written**:
+   that draft rested the absence on a single grep and said five assertions were "all still
+   green" when two of them are Playwright specs this task was told not to run. Both are
+   corrected above, and the correction is left visible rather than tidied away, because the
+   rule that fired is §4's — it fired when the checklist asked, not on its own.
+8. **The letter.** The restatement is the first line of this entry.
+
+`npx tsc -b --noEmit` clean, `npm run lint` clean, `npx vitest run` 192 files / 4,948 tests
+green. Nothing committed. No Playwright, no content build, no port 4173.
+
+---
+
+### Entry 51 — T25: every estimated level on a rung measured against the songs a person graded at that stage (2026-09-22)
+
+Appended after Entry 50, which T24 wrote while this ran: the file was re-read at the moment
+of writing rather than written back from a copy held earlier, which is Entry 25's convention,
+and Entry 50 is intact. `docs/prompts/tasks/T25-levels-on-rungs.md`, whose question is: a
+piece a learner cannot play, offered on a rung that says they can, is a failure they cannot
+tell from their own failure — so which of the quarried levels on rungs are wrong in that
+direction?
+
+**Restated without the brief's words** (`working-rules` §2.13): find the pieces inside a
+lesson whose difficulty number understates the music, so that somebody working at that point
+in the course is handed something they cannot get through while being told they can; correct
+the number, or say why it cannot be corrected.
+
+**The one-line answers.** **240** items on rungs carry `levelSource: estimated`; 239 are
+songs with a file and one is a generated drill with no file. Against the 164 songs a person
+graded, **83** are above their stage's judged repertoire on at least one of the nineteen
+features `difficulty.py` measures, **154** are inside every one, **2** are below, and one
+cannot be measured this way at all. **Nothing was re-levelled, and the reason is not that
+the numbers were checked and found right** — it is that for 221 of the 239 the committed
+number *is* the model's own output, so the comparison the brief asks for is close to
+circular. The two places where it is not circular disagree with each other and are recorded
+separately below: the chord-symbol recompute says the committed level is **too high** for 24
+items, by up to 1.39; the fifteen group-banded Joplin rows say it is **too low** for twelve of
+them, by up to 0.65 once the ragtime correction is applied. Neither clears the bar set out
+below. The finding that came out of the measurement instead is a fault in
+the instrument: **`difficulty.features()` counts printed chord symbols as sounding chords**,
+which inflates 78 of the 240 by as much as 1.39 stages. The harm the brief is about is real
+and it is in the *rungs*, not the levels: a handful of rungs reach four and five levels above
+their stage, and `rung_audit.py` already prints every one of them.
+
+---
+
+#### The count, per track and stage
+
+Read out of `content/curriculum/stage-*.json`: 109 rungs carry **1,023 option slots** naming
+**719 distinct catalog items**, of which **479** are `judged` (326 exercises, 83 songs,
+70 drills) and **240** are `estimated` (239 songs with a file, and
+`drill.ear.simon-blues-c`, which the app generates at runtime and which therefore has no
+score to measure).
+
+An item may sit on rungs in more than one stage, so these count item-placements and sum to
+more than 240:
+
+| stage | estimated items on a rung of this stage | anchors at this stage (see below) |
+|--:|--:|--:|
+| 0 | 0 | 1 |
+| 1 | 3 | 15 |
+| 2 | 19 | 17 |
+| 3 | 44 | 14 |
+| 4 | 64 | 32 |
+| 5 | 40 | 17 |
+| 6 | 32 | 34 |
+| 7 | 32 | 46 |
+| 8 | 17 | 37 |
+| 9 | 22 | 8 |
+
+221 of the 240 come from `content/sources/pdmx.json`, 15 from `kern.json` (all Joplin, all
+with a group-banded level), 3 are `.nifc` Chopin, and one is the drill.
+
+#### The anchors: what each stage's graded songs actually ask
+
+The anchor set is the **164 songs in the built catalog with `levelSource: judged` and a
+file** — the number the brief quotes, re-counted here. 163 parse;
+`song.classical.mozart-k545-i.alt` raises `MusicXMLImportException` ("incorrect accidental
+9.0 for pitch F3" at bar 18), which is the same row Entry 48 found and it is still there.
+Each is grouped **both** by the stage of a rung it sits on (83 of the 164 are on a rung) and
+by `floor(level)`, and the two sets are unioned, because grouping only by rung leaves stage 5
+with six songs and stage 9 with three.
+
+Every number below is computed **with chord symbols removed** (see the next section), on both
+sides of the comparison. Ranges are min–max across the union.
+
+| stage | judged songs | their levels | notes/sec | span R | span L | sim L | leap R | shortest | key acc | cross | voices | bars | black | ledger | rhythms | orn |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 0 | 1 | 1.1-1.1 | 1.27-1.27 | 0-0 | 0-0 | 0-0 | 4-4 | 0.50-0.50 | 0-0 | 0-0 | 0-0 | 4-4 | 0-0 | 0-0 | 3-3 | 0-0 |
+| 1 | 15 | 1.1-2.2 | 0.76-1.53 | 0-0 | 0-0 | 0-1 | 2-7 | 0.50-1 | 0-0 | 0-0 | 0-0 | 4-12 | 0-0 | 0-0 | 2-3 | 0-0 |
+| 2 | 17 | 1.1-5.1 | 0.76-4.36 | 0-7 | 0-10 | 0-3 | 2-12 | 0.33-1 | 0-1 | 0-0 | 0-0 | 8-33 | 0-0.10 | 0-0.03 | 3-6 | 0-0 |
+| 3 | 14 | 2.3-5.1 | 1.79-4.36 | 0-9 | 0-10 | 1-3 | 5-16 | 0.25-1 | 0-2 | 0-0 | 0-2 | 8-49 | 0-0.25 | 0-0.10 | 3-6 | 0-5 |
+| 4 | 32 | 2.2-8.2 | 0.81-12.16 | 0-21 | 0-16 | 1-4 | 5-32 | 0.03-1 | 0-4 | 0-16 | 0-3 | 8-194 | 0-0.64 | 0-0.36 | 3-15 | 0-12 |
+| 5 | 17 | 3.6-7.1 | 0.81-11.66 | 0-12 | 0-12 | 1-4 | 5-24 | 0.08-0.50 | 0-3 | 0-9 | 0-2 | 8-92 | 0-0.44 | 0-0.36 | 4-11 | 0-13 |
+| 6 | 34 | 5.4-7.1 | 1.02-19.42 | 0-14 | 0-17 | 1-5 | 8-26 | 0.06-1 | 0-5 | 0-9 | 0-4 | 13-106 | 0.05-0.76 | 0.01-0.36 | 3-10 | 0-24 |
+| 7 | 46 | 6.3-8.4 | 3.19-33.03 | 0-17 | 0-16 | 1-5 | 9-48 | 0.04-0.50 | 0-6 | 0-370 | 0-4 | 11-325 | 0.05-0.73 | 0.01-0.36 | 4-16 | 0-51 |
+| 8 | 37 | 7.4-8.8 | 2.16-34.26 | 0-31 | 0-31 | 1-8 | 10-37 | 0.03-0.50 | 0-6 | 0-31 | 0-4 | 19-504 | 0.04-0.73 | 0.05-0.37 | 2-18 | 0-35 |
+| 9 | 8 | 8.4-9.4 | 7.33-40.77 | 7-17 | 0-24 | 1-4 | 19-38 | 0.06-0.33 | 2-6 | 0-4 | 0-4 | 46-262 | 0.32-0.91 | 0.13-0.50 | 5-21 | 0-38 |
+
+Columns are `notesPerSecond`, `maxSpanRight`, `maxSpanLeft`, `maxSimultaneousLeft`,
+`maxLeapRight`, `shortestValue`, `keyAccidentals`, `handCrossings`, `voicesPerStaff`, `bars`,
+`blackKeyRatio`, `ledgerRatio`, `distinctRhythms`, `ornaments`. The five not shown
+(`notesPerBar`, `maxSimultaneousRight`, `maxLeapLeft`, `rangeRight`, `rangeLeft`) are in the
+per-item lines below wherever an item exceeds one of them.
+
+**Three things this table cannot be read past.**
+
+1. **From stage 6 up, every anchor is classical.** Stage 6: 34 anchors, all on the
+   `classical` track; stage 7: 46; stage 8: 37; stage 9: **eight**, which are Chopin's
+   Ballade 1, his Études op.10/5, op.10/9, op.10/12 and op.25/2, his Prelude op.28/16, the
+   finale of his second sonata, and Liszt's *La campanella*. So "harder
+   than anything judged at stage 9" there means "harder than those eight on this feature",
+   and stride, ragtime and jazz idioms pass it by construction — a stride left hand strikes
+   five notes, and none of the eight does.
+2. **Stage 0 has one anchor and stage 9 has eight.** A maximum over one song is not a range.
+   Stage 0 carries no estimated item, so nothing rests on it; stage 9 carries 22, and their
+   verdicts should be read as "against those eight pieces" and not as "against stage 9".
+3. **73 of the 240 are single-staff lead sheets** against 13 of the 164 anchors. What the
+   learner plays from a lead sheet — a left hand invented from the chord symbols — is not in
+   the file, so for those items the feature set measures the melody and calls it the piece.
+
+---
+
+#### The fault the measurement found, which is in the instrument
+
+**`difficulty.features()` counts printed chord symbols as sounding chords.** It walks
+`score.recurse().notes`, and music21's `harmony.ChordSymbol` is a subclass of `chord.Chord`,
+so every printed `C`, `F`, `G7` above a lead sheet arrives as a three- or four-note chord at
+that offset. It raises `notesPerBar`, `notesPerSecond`, `maxSimultaneousRight/Left`,
+`maxSpan*`, `maxLeap*` and `range*`.
+
+Measured, not argued. `song.classical.ah-vous-dirais-je-maman.pdmx` is a 16-bar single-staff
+melody in C with 15 chord symbols: music21 reports **28 notes and 15 ChordSymbols**, the row's
+own `notation.staves` is 1 and its `hands` is `right`, and the shipped features say
+`maxSimultaneousRight` 4, `maxSpanRight` 10, `maxLeapRight` 21 and `rangeRight` 26 — a melody
+line with four-note chords, a ten-semitone hand and a twenty-one-semitone leap, none of which
+is in the music. Its committed level is **1.93**; with the symbols removed the same model
+says **1.17**.
+
+Every item was therefore parsed twice: once as shipped, and once with every `ChordSymbol`
+removed from the score before `features()` ran. Zero of the 402 parseable scores had a symbol
+survive removal. The largest moves:
+
+| item | shipped | notes only | symbols |
+|---|--:|--:|--:|
+| `song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx` | 3.97 | **2.58** | 34 |
+| `song.folk.john-denver-annie-s-song.pdmx` | 6.38 | **5.21** | 108 |
+| `song.pop.misc-christmas-good-king-wenceslas.pdmx` | 2.45 | **1.54** | 30 |
+| `song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx` | 3.29 | **2.45** | 45 |
+| `song.blues.st-james-infirmary` | 3.53 | **2.71** | 41 |
+
+**78 of the 240 estimated items on rungs carry chord symbols**, and catalog-wide **109 of the
+635 estimated songs with a file** do. **20 of the 164 judged songs do too**, so the fitted
+model in `content/sources/level-model.json` was calibrated on a set that contains the same
+fault — which is why this entry does not simply subtract the difference and call the result
+the true level.
+
+**It was not fixed here.** `tools/content/difficulty.py` is not in this task's file list, the
+cure changes every stored level in `pdmx.json`, and the model would have to be refitted
+against a calibration set whose own twenty lead sheets move. It is written up as a follow-up
+below with the exact line that is wrong.
+
+The same double reading turned up two smaller measurement artefacts, both named where they
+change a verdict:
+
+- **Two voices sharing one staff** make `maxSpan*`, `maxSimultaneous*` and `handCrossings`
+  describe the engraving rather than a hand. `song.blues.black-bottom-stomp` reports
+  `maxSpanLeft` 43 and `handCrossings` 72; opened, its widest "chord" in the lower staff is
+  `[39, 75, 79, 82]` at bar 101 — a bass D♯2 printed with a treble chord, which is not a
+  hand shape. `song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx` reports
+  `maxSimultaneousRight` 7; opened, that simultaneity is `[67, 71, 75, 79, 83, 87, 91]` at
+  bar 50 — a seven-note augmented figure spread over two octaves, an arpeggiated flourish
+  notated as a chord.
+- **Octave placement inflates `ledgerRatio`**, which carries the model's largest weight
+  (1.057). `song.blues.weary-blues` on `jam.7` is above its stage on that feature alone,
+  0.8389 against 0.3621. Opened: its 180 melody notes run from **D5 (74) to G6 (91)** and
+  **151 of them sit above G5**, so the tune is engraved an octave or more above where a
+  piano melody normally sits. That is a property of the edition, not of the playing.
+
+---
+
+#### The verdict rule, and why nothing was re-levelled
+
+**inside** — the item is below every judged maximum at its stage on all nineteen features
+(for `shortestValue`, whose monotone sign is negative, "below the maximum" means a longer
+shortest note). **above(n)** — it exceeds n of them. **below** — it exceeds none and falls
+under the stage's judged *minimum* on ten or more of the nineteen. The brief acts only on
+above(n≥2).
+
+For each of the 34 above(n≥2) items the comparison was made four ways and read one item at a
+time: the model on the notes actually played; that model corrected by the **track residual**
+measured on the judged songs of the same track; the median level of the six nearest judged
+songs in log-scaled feature space; and the lowest stage whose judged songs already cover
+every feature of the piece. The track residuals, on the chord-symbol-free features:
+
+| track | judged songs | median residual (model − person) |
+|---|--:|--:|
+| all | 163 | +0.06 |
+| classical | 142 | +0.12 |
+| core | 44 | +0.00 |
+| ragtime | 12 | +0.33 |
+| chords-pop | 11 | −0.03 |
+| holiday | 7 | +0.02 |
+| rock-metal | 6 | +0.62 |
+
+(Entry 48 recorded +0.55 mean and +0.41 median for the same twelve rags on the shipped
+features. Recomputed here on the shipped features the mean is the same +0.55 and the median
+comes out +0.49 — twelve is an even count, so the median depends on which of the two middle
+values is taken. On the notes actually played it falls to +0.33 median, +0.49 mean. Its
+direction — the model reads a rag harder
+than the person did — is confirmed, and it is the correction applied to the fifteen Joplin
+rows below. **No latin correction exists**: a filter over the 163 parsed anchors for a
+`tracks` entry of `latin` returns zero, and a second filter shaped differently — `genre`
+containing the word — returns zero as well, so the track does not appear in the residual
+table above at all. That is the same hole Entry 48 recorded and it is still open.)
+
+**The bar for moving a number** is the model's own accepted error: `fit_level_model` commits
+weights only at Spearman ≥ 0.8 and **leave-one-out median absolute error ≤ 0.7 stages**
+(`replan` §2.4, in `FitReport.meets_bar`). A comparison that differs from the committed level
+by less than that cannot tell the two numbers apart, and writing the difference down as a new
+level would be inventing precision the instrument does not have.
+
+**No item cleared the bar upward.** Every one of the 34 is recorded below with its
+comparison. The largest upward gaps were `song.classical.abide-with-me-william-henry-monk.pdmx`
+5.28 against a six-neighbour median of 6.05 (+0.77 on the weakest of the four comparisons,
++0.00 on the model) and `song.folk.i-give-you-my-heart.pdmx` 7.29 against 7.85 (+0.56). The
+gaps that did clear the bar all ran **downward**, and all but one belong to the chord-symbol
+fault:
+`just-a-closer-walk` −1.39, `annie's-song` −1.17, `good-king-wenceslas` −0.91,
+`hark-the-herald` −0.84, `st-james-infirmary` −0.82, plus twenty more between −0.64 and
+−0.79. Twenty-five items in all fall 0.64 or further below their committed level once the
+symbols are gone, and **24 of the 25 carry chord symbols**; the one that does not is
+`song.classical.chopin-etude-op10-4.nifc`, committed at 9.4 against a model of 8.61, whose
+level came with the `.nifc` import and not from the model. A level that is too high is the
+harmless direction — the learner skips a piece they
+could have played — and the cure is the instrument, not 78 hand edits.
+
+**The one comparison in this task that is not circular, and what it says.** 221 of the 239
+measurable items carry exactly the model's own output as their level, so comparing them to
+the model proves nothing. The 18 that do not are the 15 banded Joplin rows from `kern.json`
+(`import_kern` sets `levelSource: estimated` precisely because the level came from an opus
+band rather than from a judgement about the piece) and three `.nifc` Chopin. On the rags the
+model reads **higher** than the band for twelve of the fifteen:
+
+| rag | banded level | model on the notes | after the ragtime residual | gap |
+|---|--:|--:|--:|--:|
+| `joplin-augustan-club-waltz` | 6.8 | 7.78 | 7.45 | +0.65 |
+| `joplin-sunflower-slow-drag` | 7.0 | 7.91 | 7.58 | +0.58 |
+| `joplin-sugar-cane` | 7.2 | 8.01 | 7.68 | +0.48 |
+| `joplin-gladiolus-rag` | 7.6 | 8.36 | 8.03 | +0.43 |
+| `joplin-school-of-ragtime` | 6.4 | 6.79 | 6.46 | +0.06 |
+
+Four of them are the largest honest upward pressure anywhere in this measurement, and all
+four stay under the 0.7 bar once the correction measured on the twelve judged rags is
+applied. None of the four is `above(n≥2)` either, so the brief's act clause does not reach
+them. **They are the rows to look at first if anybody re-levels by hand**, and they are named
+here for that reason rather than moved.
+
+**What `levelSource: judged` would have meant, and why no row carries it now.** The brief
+says to write the new level with `levelSource: judged`. No new level was written, so the
+question is moot for this run — but it would not have reached the app in any case, and the
+reason is worth recording: **`import_pdmx.build_item` hardcodes `level_source="estimated"`**
+with the comment "Always estimated: difficulty.py computed it, not a person", and never reads
+the `levelSource` the pdmx row already carries. `level` on the row *does* flow through
+(`level=float(entry.get("level", 4.0))`). So a `judged` spliced onto a pdmx row today would
+sit in the source saying one thing while the built catalog said another. `import_kern` is
+different: it derives `level_source = "estimated" if banded else "judged"`, so giving a kern
+row its own `level` makes it judged with no code change.
+
+---
+
+#### The rungs, which is where the harm actually is
+
+The items that are furthest above their stage are not mislevelled; their levels are right and
+they are sitting on a rung two to four stages below them. The level is printed to the learner,
+and so is the band, so nothing lies — but the rung offers them.
+
+- **`hymns` (stage 3, band 3.2–7.3, 14 songs).** Six of the 34 above-on-more-than-one items
+  are here. `song.folk.i-give-you-my-heart.pdmx` at 7.29 is above the stage's judged
+  repertoire on **12 of 19** features, including five-note right-hand chords against a stage
+  maximum of three, a 24-semitone right-hand span against 9, a 25-semitone leap against 16,
+  four accidentals against two, and sixteenth-note triplets (`shortestValue` 0.1667) where
+  the stage's fastest judged note is a plain sixteenth; its six nearest judged neighbours are Chopin nocturnes at 7.4–8.4.
+  `song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx` at 6.81 is above on **10**.
+  **Three of the six also sit on a higher hymns rung and one does not**, which changes what
+  should happen to each: `10000-reasons` is on `hymns.6` (stage 6) and inside on all nineteen
+  there; `as-the-deer` is on `hymns.5` (stage 5) and inside on all nineteen there;
+  `amazing-grace-in-g-major` is on `hymns.6` and still above on two features even at stage 6;
+  and **`i-give-you-my-heart` sits on `hymns` and on no other rung in the repository**, so
+  taking it off stage 3 takes it off the ladder altogether and into the Library, which is a
+  decision for the owner rather than a cleanup. (`abide-with-me` and `rock-of-ages` are on
+  `hymns.4` and inside there, and neither is far enough above to be worth moving.) Taking an
+  item out of a rung's `songOptions` is not in this task's file list in any case; `hymns` holds
+  14 songs, so it would clear `00` D21's floor of three whether three or four came off.
+- **`classical.4.shelf` (stage 4, band 3.5–8.6, 49 songs).** Fourteen above-items sit here and
+  **every one of them is by design**: the lesson text says "The list that follows them is not
+  a ladder; it is a shelf… most of them sit above this stage, and that is the point of a
+  shelf." Checked in `content/lessons/classical.4.shelf.md` rather than assumed, because a
+  right verdict with a wrong reason is still a fault (`working-rules` §2.16).
+- **`blues.3` (stage 3), `jazz.3`, `holiday.3`, `2.3`, `2.4`.** The early-stage exceedances are
+  almost all **key signatures**: `tishomingo-blues` and `st-louis-blues` in four flats against
+  a stage-3 judged maximum of two, `auld-lang-syne` in three against a stage-2 maximum of one,
+  `skip-to-my-lou`, `careless-love-blues` and `jolly-old-saint-nicholas` in two. Each is a slow
+  single-line lead sheet under two notes a second, so the demand is reading, not playing.
+- **`latin.7` (stage 7, band 6.3–9.0)** holds exactly three songs — *El Choclo* 7.57,
+  *Asturias* 8.36 and *Malagueña* 9.0 — so it is at D21's floor and nothing can come off it.
+  Entry 48 reached the same rung from the other direction.
+
+**`rung_audit.py` already prints all of this as band width**: `classical.4.shelf` 5.1 levels,
+`classical.9` 5.1, `jazz.7` 4.7, `ragtime.8` 4.6, `latin` 4.5, `hymns` 4.1, `classical.8` 4.1,
+`blues.6` and `rock.6` 4.0 — 30 MED findings in all. What this measurement adds is *which*
+item and *which* demand: a band of 4.1 levels does not say that a stage-3 learner is being
+offered five-note chords and thirty-second notes.
+
+---
+
+#### Every estimated item on a rung, with its verdict
+
+One line per item; where an item sits on rungs in more than one stage, one clause per
+placement. Format: `id | committed level (model on the notes played; /shipped … and csN
+where chord symbols changed it) | rung stage band verdict(n) [the features exceeded, value >
+the stage's judged maximum]`.
+
+**How these were read, stated plainly so nobody mistakes the method.** The 34
+above-on-more-than-one items were each opened in their own tool call with their full evidence
+block — features, the stage's maxima with the judged song holding each, the six nearest judged
+songs, the implied stage, the rung's other options and their levels — and judged one at a
+time; two of them (`sakamoto-shining-boy` and `spiteri-travelling`, both on the shelf) were
+printed in one call together and that is the exception. The 49 above-on-one, the 154 inside,
+the 2 below and the 1 unmeasurable were read as the lines below, in groups, each line carrying
+its own evidence. No item's verdict rests on another item's.
+
+**Above on more than one feature — 34. Nothing re-levelled; the comparison for each is the
+model-on-notes-played column beside its committed level, and none differs by more than the
+model's own 0.7 leave-one-out error except downward.**
+
+```
+song.beautiful.merry-christmas-mr-lawrence | 7.99 (model 7.69/shipped 7.99 cs128) | classical.4.shelf st4 3.5-8.6 abo(2) [blackKeyRatio 0.7185>0.6353, keyAccidentals 5>4]
+song.blues.black-bottom-stomp | 8.62 (model 8.62) | blues.8 st8 6.2-8.7 abo(5) [maxSpanRight 40>31, maxSpanLeft 43>31, maxLeapRight 43>37, handCrossings 72>31, distinctRhythms 20>18] ; blues.9 st9 6.2-8.8 abo(7) [maxSimultaneousRight 7>5, maxSimultaneousLeft 6>4, maxSpanRight 40>17, maxSpanLeft 43>24, maxLeapRight 43>38, shortestValue 0.0312>0.0625, handCrossings 72>4]
+song.blues.handful-of-keys | 8.73 (model 8.73) | blues.9 st9 6.2-8.8 abo(3) [maxSimultaneousLeft 5>4, maxLeapRight 41>38, rangeRight 76>61]
+song.blues.tishomingo-blues | 4.18 (model 3.68/shipped 4.18 cs48) | blues.3 st3 2.4-4.5 abo(3) [maxSpanRight 14>9, blackKeyRatio 0.665>0.2466, keyAccidentals 4>2]
+song.blues.wabash-blues | 4.09 (model 3.39/shipped 4.09 cs80) | blues.3 st3 2.4-4.5 abo(2) [bars 57>49, blackKeyRatio 0.5187>0.2466]
+song.classical.1818-franz-xaver-gruber-silent-night.pdmx | 2.32 (model 1.9/shipped 2.32 cs11) | holiday st2 1.2-3.2 abo(2) [rangeRight 17>15, shortestValue 0.25>0.3333]
+song.classical.abide-with-me-william-henry-monk.pdmx | 5.28 (model 5.28) | hymns st3 3.2-7.3 abo(4) [notesPerBar 10.1875>9.0204, notesPerSecond 5.0938>4.3556, blackKeyRatio 0.5828>0.2466, keyAccidentals 3>2] ; hymns.4 st4 3.2-5.69 ins(0)
+song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx | 7.52 (model 7.52) | classical.4.shelf st4 3.5-8.6 abo(5) [maxLeapRight 39>32, rangeRight 53>45, rangeLeft 60>55, keyAccidentals 5>4, ornaments 16>12]
+song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx | 2.49 (model 2.49) | hymns.2 st2 1.4-3.2 abo(2) [notesPerBar 8.375>7.4706, ledgerRatio 0.1045>0.0345]
+song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx | 5.91 (model 5.37/shipped 5.91 cs48) | holiday.5 st5 3.4-5.91 abo(2) [blackKeyRatio 0.5419>0.4443, keyAccidentals 4>3]
+song.classical.chopin-polonaise-op53.nifc | 9.4 (model 9.0) | classical.9 st9 4.3-9.4 abo(3) [notesPerBar 32.9724>29.2533, handCrossings 10>4, ornaments 42>38]
+song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx | 8.4 (model 8.4) | rock.7 st7 5.2-8.4 abo(3) [rangeRight 72>58, rangeLeft 72>52, ledgerRatio 0.5475>0.3621]
+song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx | 9.0 (model 9.0) | latin.7 st7 6.3-9 abo(5) [rangeRight 68>58, rangeLeft 56>52, shortestValue 0.0063>0.0417, ledgerRatio 0.4235>0.3621, distinctRhythms 18>16]
+song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx | 6.74 (model 6.74) | classical.4.shelf st4 3.5-8.6 abo(3) [rangeRight 53>45, shortestValue 0.0063>0.0292, ornaments 15>12]
+song.classical.rock-of-ages-cleft-for-me.pdmx | 4.93 (model 4.93) | hymns st3 3.2-7.3 abo(2) [notesPerBar 12.9231>9.0204, blackKeyRatio 0.4286>0.2466] ; hymns.4 st4 3.2-5.69 ins(0)
+song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx | 8.54 (model 8.54) | classical.4.shelf st4 3.5-8.6 abo(5) [bars 339>194, maxSpanLeft 17>16, rangeRight 50>45, rangeLeft 60>55, ornaments 67>12]
+song.classical.sakamoto-andata.pdmx | 6.8 (model 6.08/shipped 6.8 cs94) | classical.4.shelf st4 3.5-8.6 abo(2) [blackKeyRatio 0.6899>0.6353, keyAccidentals 5>4] ; rock.5 st5 5.3-6.8 abo(3) [maxSpanLeft 13>12, blackKeyRatio 0.6899>0.4443, keyAccidentals 5>3]
+song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx | 7.23 (model 7.23) | classical.4.shelf st4 3.5-8.6 abo(3) [maxLeapRight 36>32, rangeRight 46>45, ornaments 13>12]
+song.classical.spiteri-travelling.pdmx | 7.81 (model 7.81) | classical.4.shelf st4 3.5-8.6 abo(3) [rangeRight 46>45, blackKeyRatio 0.8289>0.6353, keyAccidentals 6>4]
+song.folk.10000-reasons-matt-redman.pdmx | 6.17 (model 6.17) | hymns st3 3.2-7.3 abo(6) [bars 62>49, notesPerBar 15.4839>9.0204, notesPerSecond 4.8387>4.3556, maxSpanRight 12>9, maxSpanLeft 12>10, ledgerRatio 0.125>0.0995] ; hymns.6 st6 5.36-6.96 ins(0)
+song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx | 6.81 (model 6.81) | hymns st3 3.2-7.3 abo(10) [bars 87>49, notesPerBar 10.8391>9.0204, notesPerSecond 6.0217>4.3556, maxSimultaneousRight 5>3, maxSpanRight 15>9, maxSpanLeft 14>10, rangeRight 44>28, rangeLeft 38>36, shortestValue 0.125>0.25, ornaments 37>5] ; hymns.6 st6 5.36-6.96 abo(2) [maxSpanRight 15>14, ornaments 37>24]
+song.folk.auld-lang-syne.pdmx | 3.34 (model 2.67/shipped 3.34 cs23) | 2.3 st2 2.3-4.3 abo(2) [blackKeyRatio 0.4068>0.1034, keyAccidentals 3>1]
+song.folk.danny-boy-c-major.pdmx | 2.41 (model 2.41) | 2.2 st2 1.1-2.85 abo(2) [rangeRight 19>15, ledgerRatio 0.2556>0.0345]
+song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx | 3.39 (model 2.91/shipped 3.39 cs33) | 2.4 st2 2.1-5.1 abo(2) [rangeRight 19>15, blackKeyRatio 0.2014>0.1034]
+song.folk.i-give-you-my-heart.pdmx | 7.29 (model 7.29) | hymns st3 3.2-7.3 abo(12) [bars 130>49, notesPerBar 10.7538>9.0204, maxSimultaneousRight 5>3, maxSpanRight 24>9, maxSpanLeft 15>10, maxLeapRight 25>16, blackKeyRatio 0.5558>0.2466, keyAccidentals 4>2, shortestValue 0.1667>0.25, ornaments 11>5, ledgerRatio 0.1938>0.0995, distinctRhythms 9>6]
+song.folk.skip-to-my-lou.pdmx | 2.91 (model 2.45/shipped 2.91 cs5) | 2.3 st2 2.3-4.3 abo(4) [notesPerSecond 4.625>4.3578, blackKeyRatio 0.4595>0.1034, keyAccidentals 2>1, ledgerRatio 0.0541>0.0345]
+song.folk.the-water-is-wide.pdmx | 1.9 (model 1.9) | 1.5 st1 1.1-2.2 abo(3) [blackKeyRatio 0.027>0, keyAccidentals 1>0, distinctRhythms 5>3]
+song.jazz.fats-waller-ain-t-misbehavin.pdmx | 6.89 (model 6.89) | jazz.9 st9 5.1-8.4 abo(3) [shortestValue 0.0104>0.0625, handCrossings 6>4, distinctRhythms 22>21]
+song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx | 7.15 (model 7.15) | jazz.7 st7 2.7-7.4 abo(6) [maxSimultaneousRight 7>5, maxSpanRight 24>17, maxSpanLeft 17>16, maxLeapLeft 49>48, rangeRight 71>58, rangeLeft 84>52]
+song.pop.camille-le-festin-piano-arr-kno.pdmx | 7.6 (model 7.6) | chords-pop.9 st9 5.3-8.4 abo(2) [maxSimultaneousLeft 6>4, ornaments 46>38]
+song.pop.careless-love-blues.pdmx | 2.63 (model 2.11/shipped 2.63 cs10) | 2.4 st2 2.1-5.1 abo(3) [rangeRight 16>15, blackKeyRatio 0.1765>0.1034, keyAccidentals 2>1] ; blues.3 st3 2.4-4.5 ins(0) ; blues.4 st4 2.4-5.2 ins(0)
+song.pop.martin-j-nystrom-as-the-deer-piano.pdmx | 4.97 (model 4.41/shipped 4.97 cs58) | hymns st3 3.2-7.3 abo(3) [notesPerBar 13.5625>9.0204, notesPerSecond 5.425>4.3556, maxSpanRight 12>9] ; hymns.5 st5 3.23-5.4 ins(0)
+song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx | 2.44 (model 2.44) | holiday st2 1.2-3.2 abo(2) [blackKeyRatio 0.2708>0.1034, keyAccidentals 2>1]
+song.ragtime.joplin-school-of-ragtime | 6.4 (model 6.79) | ragtime.6 st6 3.3-7.1 abo(2) [notesPerBar 28.0303>23.3077, notesPerSecond 23.3586>19.4231]
+```
+
+**Above on exactly one feature — 49. The brief acts above one feature only, so these are
+recorded and unchanged.** Several are margins of under one per cent —
+`song.pop.minuet-in-g-minor-bach-piano.pdmx` exceeds stage 3's `blackKeyRatio` maximum by
+0.0008 — which is what a maximum over fourteen songs is worth as a threshold.
+
+```
+song.blues.ole-miss | 3.84 (model 3.4/shipped 3.84 cs55) | jazz.3 st3 2.2-4.5 abo(1) [bars 64>49]
+song.blues.weary-blues | 4.04 (model 3.89/shipped 4.04 cs34) | jam.7 st7 3.98-6.4 abo(1) [ledgerRatio 0.8389>0.3621]
+song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx | 3.4 (model 2.95/shipped 3.4 cs32) | holiday.3 st3 2.87-3.49 abo(1) [bars 50>49]
+song.classical.ah-vous-dirais-je-maman.pdmx | 1.93 (model 1.17/shipped 1.93 cs15) | 1.2 st1 1.1-2 abo(1) [bars 16>12]
+song.classical.albeniz-asturias.pdmx | 8.36 (model 8.36) | latin.7 st7 6.3-9 abo(1) [rangeLeft 62>52]
+song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx | 2.94 (model 2.94) | classical.3 st3 2.4-5.3 abo(1) [ledgerRatio 0.13>0.0995]
+song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx | 7.92 (model 7.92) | classical.4.shelf st4 3.5-8.6 abo(1) [notesPerSecond 13.7347>12.1558]
+song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx | 5.48 (model 5.48) | classical.5 st5 3.6-5.7 abo(1) [maxLeapRight 29>24]
+song.classical.chopin-fantaisie-impromptu.nifc | 9.0 (model 8.88) | classical.9 st9 4.3-9.4 abo(1) [maxSimultaneousLeft 5>4]
+song.classical.czerny-the-school-of-velocity-op-299-no-1.pdmx | 6.06 (model 5.95/shipped 6.06 cs28) | technique.6 st6 6-6.4 abo(1) [ledgerRatio 0.4362>0.3621]
+song.classical.czerny-the-school-of-velocity-op-299-no-3.pdmx | 6.03 (model 6.03) | technique.6 st6 6-6.4 abo(1) [maxLeapRight 32>26]
+song.classical.djawadi-light-of-the-seven.pdmx | 7.31 (model 7.31) | classical.4.shelf st4 3.5-8.6 abo(1) [ornaments 31>12]
+song.classical.el-choclo-piano.pdmx | 7.57 (model 7.57) | latin.7 st7 6.3-9 abo(1) [rangeLeft 56>52]
+song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx | 7.95 (model 7.95) | classical.4.shelf st4 3.5-8.6 abo(1) [maxSpanLeft 19>16]
+song.classical.glass-dead-things.pdmx | 7.81 (model 7.81) | classical.4.shelf st4 3.5-8.6 abo(1) [ornaments 13>12]
+song.classical.handel-passacaglia-handel-halvorsen-piano-solo.pdmx | 6.41 (model 6.41) | classical.4.shelf st4 3.5-8.6 abo(1) [rangeRight 51>45]
+song.classical.jesus-loves-me.pdmx | 4.57 (model 4.57) | hymns st3 3.2-7.3 abo(1) [notesPerBar 10.7778>9.0204]
+song.classical.lemoine-etude-op-37-no-1.pdmx | 4.96 (model 4.96) | technique.4 st4 4.1-5.1 abo(1) [notesPerSecond 16.0312>12.1558]
+song.classical.lemoine-etude-op-37-no-2.pdmx | 4.75 (model 4.75) | technique.4 st4 4.1-5.1 abo(1) [notesPerSecond 15.9375>12.1558]
+song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx | 7.04 (model 7.04) | classical.4.shelf st4 3.5-8.6 abo(1) [ornaments 14>12]
+song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx | 3.21 (model 2.63/shipped 3.21 cs19) | holiday.3 st3 2.87-3.49 abo(1) [blackKeyRatio 0.3051>0.2466]
+song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx | 5.65 (model 5.65) | classical.5 st5 3.6-5.7 abo(1) [voicesPerStaff 3>2]
+song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx | 4.63 (model 4.63) | classical.4 st4 4.3-5.8 abo(1) [ornaments 18>12]
+song.classical.simple-gifts-2-part-round.pdmx | 3.85 (model 3.85) | hymns st3 3.2-7.3 abo(1) [notesPerBar 10>9.0204]
+song.classical.st-louis-blues.pdmx | 3.5 (model 2.98/shipped 3.5 cs23) | blues.3 st3 2.4-4.5 abo(1) [keyAccidentals 4>2] ; blues.4 st4 2.4-5.2 ins(0)
+song.classical.zimmer-time-hans-zimmer-inception.pdmx | 6.45 (model 6.45) | classical.4.shelf st4 3.5-8.6 abo(1) [rangeRight 52>45]
+song.folk.be-thou-my-vision.pdmx | 2.25 (model 2.25) | hymns.2 st2 1.4-3.2 abo(1) [rangeRight 17>15]
+song.folk.boogie-woogie.pdmx | 7.47 (model 7.47) | blues.6 st6 3.5-7.5 abo(1) [notesPerBar 25.1753>23.3077] ; blues.8 st8 6.2-8.7 ins(0)
+song.folk.dark-eyes.pdmx | 2.78 (model 2.32/shipped 2.78 cs8) | 2.3 st2 2.3-4.3 abo(1) [blackKeyRatio 0.25>0.1034]
+song.folk.oh-my-darling-clementine.pdmx | 4.32 (model 4.32) | 3.2 st3 2.3-4.4 abo(1) [notesPerSecond 4.7373>4.3556]
+song.folk.so-danco-samba.pdmx | 3.03 (model 2.5/shipped 3.03 cs25) | latin.3 st3 1.9-3.6 abo(1) [distinctRhythms 7>6] ; latin st5 1.9-6.4 ins(0)
+song.folk.this-little-light-of-mine.pdmx | 3.48 (model 2.96/shipped 3.48 cs24) | hymns.5 st5 3.23-5.4 abo(1) [blackKeyRatio 0.5505>0.4443]
+song.folk.your-song-elton-john-easy-piano.pdmx | 5.52 (model 5.52) | chords-pop.5 st5 4.5-5.6 abo(1) [maxSpanLeft 15>12]
+song.jazz.stumbling | 7.94 (model 7.94) | blues.9 st9 6.2-8.8 abo(1) [maxLeapRight 40>38]
+song.jazz.the-crave | 7.46 (model 7.46) | latin.6 st6 5-7.46 abo(1) [distinctRhythms 13>10]
+song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx | 7.37 (model 7.37) | chords-pop.9 st9 5.3-8.4 abo(1) [bars 273>262]
+song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx | 3.52 (model 3.52) | blues.6 st6 3.5-7.5 abo(1) [ledgerRatio 0.417>0.3621]
+song.pop.minuet-in-g-minor-bach-piano.pdmx | 4.42 (model 4.42) | classical.3 st3 2.4-5.3 abo(1) [blackKeyRatio 0.2474>0.2466]
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx | 3.49 (model 2.7/shipped 3.49 cs47) | holiday.3 st3 2.87-3.49 abo(1) [blackKeyRatio 0.3333>0.2466]
+song.pop.misc-christmas-traditional-music-first-noel.pdmx | 3.26 (model 2.7/shipped 3.26 cs24) | holiday.3 st3 2.87-3.49 abo(1) [blackKeyRatio 0.3056>0.2466]
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx | 3.5 (model 2.78/shipped 3.5 cs29) | hymns st3 3.2-7.3 abo(1) [blackKeyRatio 0.2698>0.2466]
+song.pop.misc-tunes-tico-tico-no-fub-a.pdmx | 3.71 (model 3.71) | latin st5 1.9-6.4 abo(1) [ledgerRatio 0.4015>0.3559]
+song.pop.ray-henderson-bye-bye-blackbird.pdmx | 3.3 (model 2.79/shipped 3.3 cs57) | jazz.3 st3 2.2-4.5 abo(1) [bars 63>49] ; jazz.6 st6 3.2-6.4 ins(0)
+song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx | 7.39 (model 7.39) | chords-pop.9 st9 5.3-8.4 abo(1) [handCrossings 7>4]
+song.pop.the-memphis-blues.pdmx | 3.99 (model 3.53/shipped 3.99 cs35) | blues.5 st5 3.4-5.2 abo(1) [blackKeyRatio 0.5102>0.4443]
+song.pop.wowaka-vocaloid-rolling-girl-aa1-4aaa3aa1-4a.pdmx | 7.67 (model 7.67) | chords-pop.9 st9 5.3-8.4 abo(1) [maxSimultaneousRight 7>5]
+song.ragtime.joplin-augustan-club-waltz | 6.8 (model 7.78) | ragtime.5 st5 3.2-7.1 abo(1) [bars 148>92]
+song.ragtime.joplin-combination-march | 6.8 (model 7.36) | ragtime.5 st5 3.2-7.1 abo(1) [blackKeyRatio 0.4755>0.4443]
+song.ragtime.joplin-rose-bud-march | 7.0 (model 6.86) | ragtime.5 st5 3.2-7.1 abo(1) [bars 94>92]
+```
+
+**Inside every one of the nineteen at its stage — 154.**
+
+```
+song.blues.boogie-en-sol | 5.55 (model 5.55) | blues.7 st7 4.9-7.3 ins(0)
+song.blues.hesitating-blues | 3.64 (model 3.09/shipped 3.64 cs50) | blues.4 st4 2.4-5.2 ins(0)
+song.blues.jazz-me-blues | 4.0 (model 3.51/shipped 4.0 cs41) | jam.7 st7 3.98-6.4 ins(0)
+song.blues.rhythm-and-boogie | 5.03 (model 5.03) | blues.7 st7 4.9-7.3 ins(0)
+song.blues.riverside-blues | 4.26 (model 3.69/shipped 4.26 cs55) | jam.7 st7 3.98-6.4 ins(0)
+song.blues.st-james-infirmary | 3.53 (model 2.71/shipped 3.53 cs41) | blues.3 st3 2.4-4.5 ins(0)
+song.blues.storyville-blues | 4.68 (model 3.97/shipped 4.68 cs75) | jam.7 st7 3.98-6.4 ins(0)
+song.classical.12-bar-blues.pdmx | 2.43 (model 2.43) | blues.4 st4 2.4-5.2 ins(0)
+song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx | 2.81 (model 2.17/shipped 2.81 cs25) | holiday st2 1.2-3.2 ins(0)
+song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx | 3.97 (model 3.37/shipped 3.97 cs48) | blues.5 st5 3.4-5.2 ins(0)
+song.classical.alexander-s-ragtime-band.pdmx | 3.36 (model 2.82/shipped 3.36 cs55) | jazz.3 st3 2.2-4.5 ins(0) ; chords-pop.4 st4 2.9-4.4 ins(0)
+song.classical.anonymous-romance-anonimo-romanza.pdmx | 5.53 (model 5.53) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.away-in-a-manger.pdmx | 4.94 (model 4.94) | holiday.4 st4 3.6-4.94 ins(0)
+song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx | 5.52 (model 5.52) | classical.7 st7 4.2-7.2 ins(0)
+song.classical.bach-invention-no-4-in-d-minor-bwv-775.pdmx | 5.95 (model 5.95) | classical.7 st7 4.2-7.2 ins(0)
+song.classical.bach-march-in-d-major.pdmx | 5.55 (model 5.55) | classical.4 st4 4.3-5.8 ins(0)
+song.classical.bach-menuet-bwv-anh-113.pdmx | 5.23 (model 5.23) | classical.3 st3 2.4-5.3 ins(0)
+song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx | 5.1 (model 5.1) | classical.3 st3 2.4-5.3 ins(0)
+song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx | 5.69 (model 5.69) | hymns.4 st4 3.2-5.69 ins(0)
+song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx | 5.58 (model 5.58) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx | 5.36 (model 5.36) | hymns.4 st4 3.2-5.69 ins(0)
+song.classical.beethoven-sonatina-in-g-major-ahn-5.pdmx | 5.29 (model 5.29) | classical.5 st5 3.6-5.7 ins(0)
+song.classical.bennet-rosemary-s-waltz.pdmx | 6.44 (model 6.44) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.chopin-etude-op10-4.nifc | 9.4 (model 8.61) | classical.9 st9 4.3-9.4 ins(0)
+song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx | 5.33 (model 5.33) | classical.5 st5 3.6-5.7 ins(0)
+song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx | 5.34 (model 5.34) | classical.5 st5 3.6-5.7 ins(0)
+song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx | 5.71 (model 5.71) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx | 7.28 (model 6.53/shipped 7.28 cs248) | technique.7 st7 7.1-7.4 ins(0)
+song.classical.czerny-the-school-of-velocity-op-299-no-4.pdmx | 6.37 (model 6.09/shipped 6.37 cs80) | technique.6 st6 6-6.4 ins(0)
+song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx | 7.37 (model 7.15/shipped 7.37 cs150) | technique.7 st7 7.1-7.4 ins(0)
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx | 7.28 (model 7.0/shipped 7.28 cs212) | technique.7 st7 7.1-7.4 ins(0)
+song.classical.debussy-clair-de-lune-easy.pdmx | 4.7 (model 4.7) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.duvernoy-etude-op-176-no-4.pdmx | 4.98 (model 4.98) | technique.5 st5 4.7-5.4 ins(0)
+song.classical.duvernoy-etude-op-176-no-5.pdmx | 4.84 (model 4.84) | technique.5 st5 4.7-5.4 ins(0)
+song.classical.duvernoy-etude-op-176-no-6.pdmx | 4.79 (model 4.79) | technique.5 st5 4.7-5.4 ins(0)
+song.classical.einaudi-questa-notte.pdmx | 7.56 (model 7.56) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx | 7.45 (model 7.45) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.foster-oh-susanna-simple-lead-sheet.pdmx | 3.15 (model 2.51/shipped 3.15 cs27) | chords-pop.3 st3 2.3-3.3 ins(0)
+song.classical.grieg-morgenstimmung.pdmx | 5.5 (model 5.5) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx | 4.48 (model 4.48) | classical.4 st4 4.3-5.8 ins(0)
+song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx | 5.24 (model 5.24) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx | 5.36 (model 5.36) | hymns.6 st6 5.36-6.96 ins(0)
+song.classical.hurwitz-the-armstrongs-first-man.pdmx | 5.47 (model 5.47) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.i-got-rythm.pdmx | 5.5 (model 5.5) | jazz.7 st7 2.7-7.4 ins(0) ; jazz.8 st8 5.5-8.2 ins(0)
+song.classical.joplin-search-light-rag.pdmx | 7.98 (model 7.98) | ragtime.9 st9 5.6-8.4 ins(0)
+song.classical.lemoine-etude-op-37-no-35.pdmx | 4.81 (model 4.81) | technique.4 st4 4.1-5.1 ins(0)
+song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx | 6.93 (model 6.93) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx | 3.29 (model 2.45/shipped 3.29 cs45) | holiday.3 st3 2.87-3.49 ins(0)
+song.classical.mozart-mozart-minuet-in-f-major-k2-easy.pdmx | 4.66 (model 4.66) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx | 2.45 (model 2.45) | classical.3 st3 2.4-5.3 ins(0)
+song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx | 5.8 (model 5.8) | classical.4 st4 4.3-5.8 ins(0)
+song.classical.ondrus-silent-night.pdmx | 6.76 (model 6.76) | holiday.6 st6 6.1-7.3 ins(0)
+song.classical.palmer-days-in-the-sun.pdmx | 7.06 (model 7.06) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx | 6.96 (model 6.96) | classical.4.shelf st4 3.5-8.6 ins(0) ; rock.7 st7 5.2-8.4 ins(0)
+song.classical.royal-garden-blues.pdmx | 4.2 (model 3.66/shipped 4.2 cs52) | blues.5 st5 3.4-5.2 ins(0) ; jazz.6 st6 3.2-6.4 ins(0)
+song.classical.satie-erik-satie-gnossienne-n1.pdmx | 4.6 (model 4.6) | classical.4.shelf st4 3.5-8.6 ins(0) ; rock.6 st6 3.4-7.4 ins(0)
+song.classical.scott-frog-legs-rag.pdmx | 7.88 (model 7.88) | ragtime.8 st8 3.3-7.9 ins(0)
+song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx | 5.13 (model 4.8/shipped 5.13 cs16) | latin st5 1.9-6.4 ins(0)
+song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx | 5.0 (model 5.0) | latin.6 st6 5-7.46 ins(0)
+song.classical.uematsu-at-zanarkand-ffx-hd-remaster.pdmx | 5.92 (model 5.92) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.vivaldi-spring-vivaldi.pdmx | 6.42 (model 6.42) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.classical.zimmer-maestro-the-holiday.pdmx | 5.17 (model 5.17) | classical.4.shelf st4 3.5-8.6 ins(0)
+song.folk.alouette.pdmx | 2.34 (model 2.34) | 2.2 st2 1.1-2.85 ins(0)
+song.folk.amazing-grace-satb.pdmx | 4.64 (model 4.64) | hymns st3 3.2-7.3 ins(0) ; hymns.4 st4 3.2-5.69 ins(0)
+song.folk.anonymous-swing-low-sweet-chariot.pdmx | 2.85 (model 2.3/shipped 2.85 cs20) | 2.2 st2 1.1-2.85 ins(0) ; hymns.2 st2 1.4-3.2 ins(0) ; jazz.3 st3 2.2-4.5 ins(0)
+song.folk.auld-lang-syne-anonymous-traditional.pdmx | 5.11 (model 5.11) | 4.6 st4 3.4-5.2 ins(0) ; holiday.5 st5 3.4-5.91 ins(0)
+song.folk.before-you-go-lewis-capaldi.pdmx | 4.7 (model 4.7) | chords-pop.5 st5 4.5-5.6 ins(0)
+song.folk.deck-the-halls.pdmx | 4.24 (model 4.24) | holiday.4 st4 3.6-4.94 ins(0)
+song.folk.down-by-the-riverside.pdmx | 3.36 (model 2.81/shipped 3.36 cs32) | hymns.5 st5 3.23-5.4 ins(0)
+song.folk.down-by-the-riverside.pdmx.2 | 6.96 (model 6.96) | hymns.6 st6 5.36-6.96 ins(0)
+song.folk.exercise-cielito-lindo.pdmx | 1.9 (model 1.9) | latin.3 st3 1.9-3.6 ins(0) ; latin st5 1.9-6.4 ins(0)
+song.folk.hallelujah-easy.pdmx | 3.8 (model 3.8) | chords-pop.4 st4 2.9-4.4 ins(0)
+song.folk.insensatez-how-insensitive-jobim.pdmx | 2.98 (model 2.38/shipped 2.98 cs28) | latin st5 1.9-6.4 ins(0)
+song.folk.john-denver-annie-s-song.pdmx | 6.38 (model 5.21/shipped 6.38 cs108) | rock.5 st5 5.3-6.8 ins(0) ; chords-pop.6 st6 5.4-6.4 ins(0)
+song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx | 3.97 (model 2.58/shipped 3.97 cs34) | hymns st3 3.2-7.3 ins(0) ; hymns.5 st5 3.23-5.4 ins(0)
+song.folk.korobeiniki.pdmx | 2.1 (model 2.1) | 3.1 st3 1.1-3.2 ins(0)
+song.folk.kum-ba-yah.pdmx | 1.0 (model 1.0) | 1.1 st1 1-2.1 ins(0)
+song.folk.loch-lomond.pdmx | 2.24 (model 2.24) | 3.1 st3 1.1-3.2 ins(0)
+song.folk.o-holy-night-piano-solo.pdmx | 6.85 (model 6.85) | holiday.6 st6 6.1-7.3 ins(0)
+song.folk.old-french-song.pdmx | 5.61 (model 4.87/shipped 5.61 cs42) | classical.5 st5 3.6-5.7 ins(0)
+song.folk.por-una-cabeza-carlos-gardel.pdmx | 6.83 (model 6.83) | latin.6 st6 5-7.46 ins(0)
+song.folk.sakura.pdmx | 2.23 (model 1.86/shipped 2.23 cs9) | 2.2 st2 1.1-2.85 ins(0)
+song.folk.scarborough-fair-piano-solo.pdmx | 6.77 (model 6.77) | chords-pop.7 st7 5.3-7.7 ins(0)
+song.folk.scarborough-fair.pdmx | 2.79 (model 2.26/shipped 2.79 cs13) | 3.1 st3 1.1-3.2 ins(0) ; rock.overview st3 2.5-5.1 ins(0)
+song.folk.simple-gifts.pdmx | 2.08 (model 2.08) | 2.1 st2 2-2.6 ins(0)
+song.folk.streets-of-laredo.pdmx | 2.19 (model 2.19) | 2.4 st2 2.1-5.1 ins(0)
+song.folk.traditional-music-shenandoah.pdmx | 2.9 (model 2.12/shipped 2.9 cs21) | chords-pop.4 st4 2.9-4.4 ins(0)
+song.folk.traditional-music-when-johnny-comes-marching-home.pdmx | 2.42 (model 2.06/shipped 2.42 cs8) | 4.5 st4 2.2-4.5 ins(0)
+song.folk.uti-var-hage-swedish-traditional-song.pdmx | 5.04 (model 5.04) | 4.6 st4 3.4-5.2 ins(0)
+song.folk.wake-me-up-avicii.pdmx | 7.62 (model 7.62) | chords-pop.7 st7 5.3-7.7 ins(0)
+song.folk.was-wollen-wir-trinken.pdmx | 2.66 (model 2.05/shipped 2.66 cs17) | 2.3 st2 2.3-4.3 ins(0)
+song.folk.we-wish-you-a-merry-christmas.pdmx | 3.82 (model 3.82) | holiday.4 st4 3.6-4.94 ins(0)
+song.folk.what-a-friend-we-have-in-jesus.pdmx | 3.23 (model 2.53/shipped 3.23 cs32) | hymns st3 3.2-7.3 ins(0) ; hymns.5 st5 3.23-5.4 ins(0)
+song.jazz.bart-howard-fly-me-to-the-moon.pdmx | 5.19 (model 4.8/shipped 5.19 cs20) | jazz.7 st7 2.7-7.4 ins(0)
+song.jazz.chevy-chase | 7.72 (model 7.72) | blues.8 st8 6.2-8.7 ins(0)
+song.jazz.django-reinhardt-limehouse-blues.pdmx | 3.25 (model 2.6/shipped 3.25 cs52) | jazz.5 st5 3.25-5.2 ins(0) ; jazz.6 st6 3.2-6.4 ins(0)
+song.jazz.django-reinhardt-tiger-rag.pdmx | 4.4 (model 3.93/shipped 4.4 cs54) | jazz.6 st6 3.2-6.4 ins(0) ; jazz.7 st7 2.7-7.4 ins(0)
+song.jazz.george-shearing-lullaby-of-birdland.pdmx | 6.91 (model 6.22/shipped 6.91 cs110) | jazz.9 st9 5.1-8.4 ins(0)
+song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx | 6.02 (model 6.02) | jazz.8 st8 5.5-8.2 ins(0) ; jazz.9 st9 5.1-8.4 ins(0)
+song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx | 7.59 (model 7.59) | jazz.8 st8 5.5-8.2 ins(0)
+song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx | 8.28 (model 8.21/shipped 8.28 cs52) | jazz.9 st9 5.1-8.4 ins(0)
+song.jazz.vince-guaraldi-skating.pdmx | 7.32 (model 6.85/shipped 7.32 cs268) | jazz.7 st7 2.7-7.4 ins(0) ; holiday.7 st7 6.3-7.32 ins(0)
+song.pop.12th-street-rag.pdmx | 4.13 (model 3.75/shipped 4.13 cs28) | ragtime.5 st5 3.2-7.1 ins(0)
+song.pop.abba-dancing-queen.pdmx | 5.67 (model 5.67) | chords-pop.6 st6 5.4-6.4 ins(0)
+song.pop.after-you-ve-gone.pdmx | 3.98 (model 3.26/shipped 3.98 cs48) | jazz.5 st5 3.25-5.2 ins(0) ; jam.7 st7 3.98-6.4 ins(0)
+song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx | 6.69 (model 6.16/shipped 6.69 cs148) | chords-pop.7 st7 5.3-7.7 ins(0)
+song.pop.avalon.pdmx | 2.74 (model 2.08/shipped 2.74 cs22) | jazz.4 st4 2.74-4.5 ins(0) ; jazz.7 st7 2.7-7.4 ins(0)
+song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx | 4.14 (model 4.14) | chords-pop.4 st4 2.9-4.4 ins(0)
+song.pop.benny-goodman-louis-prima-rose-room.pdmx | 4.06 (model 3.55/shipped 4.06 cs37) | jazz.6 st6 3.2-6.4 ins(0)
+song.pop.bill-bailey.pdmx | 3.42 (model 2.93/shipped 3.42 cs34) | jazz.5 st5 3.25-5.2 ins(0)
+song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx | 6.2 (model 6.2) | chords-pop.7 st7 5.3-7.7 ins(0)
+song.pop.boogie-easy-for-beginners.pdmx | 4.95 (model 4.95) | blues.6 st6 3.5-7.5 ins(0) ; blues.7 st7 4.9-7.3 ins(0)
+song.pop.coldplay-clocks-coldplay.pdmx | 5.46 (model 5.46) | chords-pop.6 st6 5.4-6.4 ins(0)
+song.pop.coldplay-fix-you-coldplay.pdmx | 6.48 (model 6.48) | chords-pop.7 st7 5.3-7.7 ins(0)
+song.pop.darktown-strutter-s-ball.pdmx | 3.81 (model 3.2/shipped 3.81 cs47) | jazz.6 st6 3.2-6.4 ins(0)
+song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx | 7.53 (model 7.53) | chords-pop.9 st9 5.3-8.4 ins(0)
+song.pop.guantanamera.pdmx | 3.2 (model 2.59/shipped 3.2 cs29) | latin.3 st3 1.9-3.6 ins(0) ; latin st5 1.9-6.4 ins(0)
+song.pop.harry-styles-falling-by-harry-styles.pdmx | 7.15 (model 7.15) | chords-pop.9 st9 5.3-8.4 ins(0)
+song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx | 6.82 (model 6.82) | chords-pop.8 st8 5.4-8.3 ins(0)
+song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx | 5.6 (model 5.6) | chords-pop.6 st6 5.4-6.4 ins(0)
+song.pop.kana-boon-silhouette-kana-boon-naruto-shippuden-opening-op-16.pdmx | 6.73 (model 6.73) | chords-pop.8 st8 5.4-8.3 ins(0)
+song.pop.kevin-macleod-if-i-had-a-chicken.pdmx | 7.84 (model 7.84) | chords-pop.8 st8 5.4-8.3 ins(0)
+song.pop.kodaline-all-i-want-kodaline.pdmx | 6.94 (model 6.94) | chords-pop.8 st8 5.4-8.3 ins(0)
+song.pop.margie.pdmx | 3.51 (model 2.79/shipped 3.51 cs50) | jazz.4 st4 2.74-4.5 ins(0)
+song.pop.michael-row-the-boat-ashore.pdmx | 1.88 (model 1.3/shipped 1.88 cs9) | 2.2 st2 1.1-2.85 ins(0)
+song.pop.misc-christmas-good-king-wenceslas.pdmx | 2.45 (model 1.54/shipped 2.45 cs30) | holiday st2 1.2-3.2 ins(0)
+song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx | 7.3 (model 7.3) | holiday.6 st6 6.1-7.3 ins(0)
+song.pop.misc-christmas-mary-did-you-know.pdmx | 5.81 (model 5.81) | holiday.5 st5 3.4-5.91 ins(0)
+song.pop.misc-christmas-o-christmas-tree.pdmx | 3.38 (model 2.81/shipped 3.38 cs38) | holiday.3 st3 2.87-3.49 ins(0)
+song.pop.misc-christmas-silent-night.pdmx | 3.86 (model 3.86) | holiday.4 st4 3.6-4.94 ins(0)
+song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx | 2.87 (model 2.35/shipped 2.87 cs17) | holiday.3 st3 2.87-3.49 ins(0)
+song.pop.misc-soundtrack-how-to-train-your-dragon-flying-theme.pdmx | 5.45 (model 5.45) | chords-pop.6 st6 5.4-6.4 ins(0)
+song.pop.misc-soundtrack-lavender-s-blue.pdmx | 4.59 (model 4.59) | chords-pop.5 st5 4.5-5.6 ins(0)
+song.pop.misc-tunes-yankee-doodle.pdmx | 3.96 (model 3.96) | 3.2 st3 2.3-4.4 ins(0)
+song.pop.scarborough-fair.pdmx | 4.39 (model 3.61/shipped 4.39 cs36) | chords-pop.4 st4 2.9-4.4 ins(0)
+song.pop.sonatina-in-g.pdmx | 4.8 (model 4.8) | classical.4 st4 4.3-5.8 ins(0)
+song.pop.sophie-tucker-some-of-these-days.pdmx | 3.79 (model 3.35/shipped 3.79 cs29) | jazz.5 st5 3.25-5.2 ins(0)
+song.pop.takihiro-obata-isabella-s-lullaby-the-promised-neverland-emotional-anime-on-piano-vol-2.pdmx | 7.1 (model 7.1) | chords-pop.8 st8 5.4-8.3 ins(0)
+song.pop.the-weeknd-the-weekend-blinding-lights-easy-piano.pdmx | 6.28 (model 5.81/shipped 6.28 cs128) | chords-pop.7 st7 5.3-7.7 ins(0)
+song.pop.toby-fox-fallen-down-reprise-undertale-easy.pdmx | 6.01 (model 6.01) | chords-pop.6 st6 5.4-6.4 ins(0)
+song.pop.toby-fox-undertale-undertale-piano.pdmx | 7.8 (model 7.8) | chords-pop.8 st8 5.4-8.3 ins(0)
+song.pop.tom-dooley.pdmx | 3.08 (model 3.08) | chords-pop.3 st3 2.3-3.3 ins(0)
+song.pop.whispering.pdmx | 3.34 (model 2.7/shipped 3.34 cs37) | jazz.4 st4 2.74-4.5 ins(0)
+song.ragtime.joplin-breeze-from-alabama | 7.2 (model 7.37) | ragtime.9 st9 5.6-8.4 ins(0)
+song.ragtime.joplin-cascades | 7.6 (model 7.42) | ragtime.8 st8 3.3-7.9 ins(0)
+song.ragtime.joplin-chrysanthemum | 7.4 (model 7.58) | ragtime.9 st9 5.6-8.4 ins(0)
+song.ragtime.joplin-gladiolus-rag | 7.6 (model 8.36) | ragtime.8 st8 3.3-7.9 ins(0)
+song.ragtime.joplin-heliotrope-bouquet | 7.4 (model 7.61) | ragtime.7 st7 3.2-7.4 ins(0)
+song.ragtime.joplin-magnetic-rag | 7.6 (model 7.92) | ragtime.8 st8 3.3-7.9 ins(0)
+song.ragtime.joplin-new-rag | 7.6 (model 7.38) | ragtime.8 st8 3.3-7.9 ins(0)
+song.ragtime.joplin-original-rags | 7.2 (model 7.33) | ragtime.9 st9 5.6-8.4 ins(0)
+song.ragtime.joplin-sugar-cane | 7.2 (model 8.01) | ragtime.7 st7 3.2-7.4 ins(0)
+song.ragtime.joplin-sunflower-slow-drag | 7.0 (model 7.91) | ragtime.6 st6 3.3-7.1 ins(0)
+song.ragtime.joplin-swipesy-cakewalk | 6.8 (model 7.2) | ragtime.6 st6 3.3-7.1 ins(0)
+```
+
+**Below — 2.** Both are on `jazz.9` (stage 9, band 5.1–8.4), whose eight anchors are the all-
+classical set named above, and both are harmless: an easier piece on a hard rung costs the
+learner nothing but a choice.
+
+```
+song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx | 5.19 (model 5.19) | jazz.9 st9 5.1-8.4 bel(0)
+song.jazz.the-dave-brubeck-quartet-take-five.pdmx | 6.62 (model 6.24/shipped 6.62 cs49) | jazz.9 st9 5.1-8.4 bel(0)
+```
+
+**Unmeasurable — 1.**
+
+```
+drill.ear.simon-blues-c | 3.5 | no file, generated at runtime — features() cannot measure it | blues.3 st3; improv.5 st5
+```
+
+`drill.ear.simon-blues-c` is a Simon-style ear drill on the C blues scale over one octave,
+twelve rounds, generated by the app at run time. It has no score, so `difficulty.features()`
+has nothing to read and its 3.5 is the generator's number. It is the only estimated item on a
+rung this method cannot reach, and it is named rather than counted as inside.
+
+---
+
+#### What was changed
+
+**Nothing.** No `content/sources/*.json` row, no `levelBand`, no `docs/generated/ladder.md`.
+The only file this entry adds to the repository is itself. The reasoning is above, per item;
+the short form is that the brief's act clause asks for the level "the comparison says", and
+for all 34 items the comparison says the number already on the row, to inside the instrument's
+own error.
+
+**No rung fell under D21's floor of three**, because no item was taken off a rung. The two
+rungs that would have been at risk had anything moved are named above: `latin.7` holds exactly
+three songs, and `rock.5` holds two songs and is `songOptional` with four exercises.
+
+#### Follow-ups, in the order they are worth doing
+
+1. **`tools/content/difficulty.py`: exclude `harmony.ChordSymbol` from `features()`.** The
+   line is `for element in part.recurse().notes` in `hand_stats`, and
+   `all_notes = list(score.recurse().notes)` beside it. Both need the chord symbols filtered
+   out. Then refit (`fit_level_model.py`) — the calibration set's own 20 lead sheets move too
+   — and re-stamp the `features`, `level` and `levelDrivers` blocks on the pdmx rows. 109 of
+   the 635 estimated songs with a file are affected, by up to 1.39 stages, always downward.
+   This is the single change that would make the levels in this entry worth trusting.
+2. **`tools/content/import_pdmx.py`: read the row's own `levelSource`.** Today
+   `build_item` hardcodes `"estimated"` and the row's field is dead. Until it is read, no
+   hand judgement about a quarried piece can reach the app, which is the mechanism half of
+   `working-rules` §2.8.
+3. **Take the stage-3 offering off `hymns` for the three items that already sit on a higher
+   hymns rung**: `amazing-grace-in-g-major-for-piano-breezepiano` (6.81, on `hymns.6`),
+   `10000-reasons` (6.17, on `hymns.6`) and, more mildly, `as-the-deer` (4.97, on `hymns.5`).
+   The rung keeps eleven songs. **`i-give-you-my-heart` (7.29) is the separate decision**: it
+   is the furthest above its stage of anything measured here — 12 of 19 features — and `hymns`
+   is the only rung it is on, so it has nowhere to go but the Library.
+4. **`song.blues.weary-blues`** is engraved an octave or more high (151 of 180 notes above G5)
+   and its level is inflated by `ledgerRatio` because of it. Either re-engrave the edition or
+   accept that the number is about the paper.
+5. **The judged set has no latin song and nothing outside classical above stage 5.** Until it
+   does, "above the stage" at stages 6–9 cannot distinguish an idiom from a difficulty, and
+   this entry's verdicts there should be read with that in the sentence.
+
+#### What is unverified
+
+- **Nothing was heard.** Not one of the 402 scores measured here was played, by anybody.
+  Every number here
+  is a feature measured off a file, and a measured feature is a proxy for difficulty: nineteen
+  of them fitted to 163 graded songs, with an accepted error of seven tenths of a stage, which
+  is most of the distance between two rungs.
+- The lead-sheet items — 73 of the 240 — are measured on a melody the learner does not play
+  alone. What they actually do at the piano is invent a left hand from the chord symbols, and
+  no feature in `difficulty.py` looks at a chord symbol at all except by the accident this
+  entry is about.
+- `song.classical.mozart-k545-i.alt` was not measured; it does not parse.
+- The residual for `rock-metal` (+0.62) rests on six songs and the one for `holiday` (+0.02)
+  on seven. Neither is a calibration; both are quoted with their n for that reason.
+- The "above" verdicts at stages 6 to 9 are against an all-classical anchor set, as set out
+  above. The verdicts at stages 1 to 3 are against 14 to 17 songs, which is a thin maximum.
+- `rung_audit.py`'s 30 MED findings are judgements about rungs and were read, not acted on;
+  this task owned levels, not rung membership.
+
+#### Checked against `docs/prompts/working-rules.md` before reporting
+
+1. **Absences.** None stated bare. "No judged latin song" is Entry 48's count re-run over the
+   163 parsed anchors and is quoted as a count, not as an absence. "`import_pdmx` never reads
+   `levelSource`" is two searches: `grep -n "levelSource" tools/content/*.py` (one hit in that
+   file, at the hardcoded line) and reading `build_item` end to end. "No chord symbol survived
+   removal" is a count printed by the second pass over all 402 parseable scores, not an
+   assumption.
+2. **Plurals.** The 240 are enumerated one line each below; the 34 acted-on items are
+   enumerated with their comparisons; the 15 Joplin rows are five in a table and ten in the
+   lines; the three measurement artefacts each name the item and the bar the number came from.
+   Where a claim is about a group it carries its count and the command that produced it.
+   **This rule caught two false plurals in the first draft of this entry, both in the shape
+   §2.2 predicts.** (a) "the two places where it is not circular **both** say the committed
+   level is too high" — two things joined in one clause, and only one of them says that: the
+   Joplin rows say the opposite, that twelve banded levels are too *low*. Rewritten above to
+   report the two directions separately. (b) "**Both** already sit on a rung where they fit",
+   written of `i-give-you-my-heart` and `amazing-grace-in-g-major` — checked per item against
+   `verdicts.json` rather than recalled, and `i-give-you-my-heart` sits on `hymns` and on
+   nothing else, which turns the follow-up for it from a cleanup into a decision. Both
+   sentences read as true until the items were enumerated, which is the whole argument for the
+   rule.
+3. **The proxy.** Named twice: in the opening sentence and in *unverified*. The specific proxy
+   failure this run found — chord symbols standing in for notes — is the entry's main finding,
+   and the second one is `handCrossings` standing in for a crossed hand when it is standing in
+   for an engraving.
+4. **Green is not done.** Nothing here is green; the verification chain at the end of this
+   entry says only that the tree still builds, which is what it said before this task started.
+5. **The reason, not the outcome.** The outcome — no re-level — would be identical if the
+   comparison had never been run, so the reason is the entry: the committed levels *are* model
+   output for 221 of 239, which is why "the model agrees" is not evidence, and the two
+   non-circular comparisons are reported separately with their numbers.
+6. **The artefact re-opened.** Entry 48's item 5 was re-read in the file before its method was
+   reused, rather than recalled; `content/lessons/classical.4.shelf.md` was opened before the
+   shelf was used as a reason; `rung_audit.py` was run rather than assumed to be silent, and it
+   was not — it already prints the band widths this entry found.
+7. **Other readers of the field.** `level` and `levelSource` are read by
+   `app/src/curriculum/selectors.ts` (estimated sorts after judged), `app/src/data/db.ts`,
+   `app/src/data/levelOverrides.ts` (an override makes an item count as judged at run time),
+   `app/src/ui/screens/LessonScreen.ts` and `LibraryScreen.ts` (which print `≈ 7.1` for an
+   estimate and `L7.1` for a judgement), `app/src/ui/assignSheet.ts`, and on the build side by
+   `validate.py` (`level_band_errors`, `CORE_SONG_REACH`, `estimated_by_stage`),
+   `ladder_report.py`, `rung_audit.py`, `candidates.py` and `fit_level_model.py`, whose
+   calibration set *is* the judged songs — so marking an estimate as judged would feed it back
+   into the model that produced it. That last consumer is the reason no row was marked judged.
+   `app/` was read only; T24 owns it.
+8. **The letter.** The restatement is the third paragraph of this entry, and it is what turned
+   the task from "re-level 34 rows" into "the levels are model output, so measure the
+   instrument".
+
+Nothing committed. `app/` untouched.
+
+---
+
+### Entry 53 — T27: the difficulty instrument corrected, every estimate re-run, the comparison re-done (2026-09-22)
+
+Numbered 53 because that is the number the brief gives it. **Entry 52 is not in the file**:
+re-read at the moment of writing, the last entry is 51 and the file ends at line 11,161, so
+this is appended straight after Entry 51 and T26's Entry 52, when it lands, will sit after it.
+The file was re-read rather than written back from a copy held earlier, which is Entry 25's
+convention and matters here because T26 is working in the same tree.
+
+The brief is `docs/prompts/tasks/T27-difficulty-instrument.md`, which is Entry 51's first
+follow-up carried out: Entry 51 found that `difficulty.features()` was measuring
+things nobody plays, and stopped there because `difficulty.py` was not in that task's file
+list.
+
+**Restated without the brief's words** (`working-rules` §2.13): the tool that decides how hard
+a piece is had been reading printed labels and engraving decisions as if they were notes under
+a hand. Repair the reading, fit the formula again on the songs a person graded, put the
+corrected numbers back on every row the tool wrote, and then ask again which pieces on the
+ladder are harder than the graded examples at their point in the course — and keep everything
+that reads those numbers true.
+
+**The one-line answers.** The three measurement artefacts: two were faults and are fixed with
+tests proved red without them; the third — `ledgerRatio` — was a question, and the anchors
+answer it *leave it alone*, because on today's calibration set the feature's weight comes out
+backwards and the monotone check drops it from the model entirely, with the old features as
+well as the new. The fit on the same 163 anchors goes from **Spearman 0.858, leave-one-out
+median absolute error 0.440** to **0.878 and 0.400**. **224 of the 542 quarried rows** move by
+0.3 of a level or more (190 down, 34 up) and were spliced; **227** had their `features` block
+re-stamped, and **35 of those were handing the catalog a `hand-crossing` or `wide-span` concept
+that came from a printed chord symbol**. The re-run comparison produces **exactly the same 34
+above(n≥2) items as Entry 51** — not one item crossed the boundary — and three items swapped
+between above(1) and inside, all three on a leap feature. **No item was re-levelled by the
+comparison**, and for the first time the reason is measured rather than circular for the two
+rows where it could be: `chopin-polonaise-op53` and `joplin-school-of-ragtime` both sit inside
+the model's own 0.400 leave-one-out error once the track residual is applied. **No rung lost an
+option, so no rung moved towards `00` D21's floor of three.**
+
+**The cost that was not in the brief's file list, stated first because it is the part somebody
+has to agree with:** re-levelling 33 options made 33 printed `levelBand` statements false, and
+`validate.py` failed the build over them (replan §1.7 — a rung may *hold* a piece above its
+stage, but it may not *state* a band its own options fall outside, because the lesson page
+prints that band). **18 bands in `content/curriculum/stage-2..7.json` were therefore moved**,
+and the curriculum is not in this task's file list. Only the endpoint that was broken moved,
+and only as far as the option that broke it; none of the 18 bands was exactly [min, max] of its
+options before, so the slack in them is authored and was left alone. Nothing was added to or
+taken off any rung. The 18 are listed below.
+
+---
+
+#### 1. Chord symbols are not sounding notes — fixed
+
+`difficulty.py` grew `sounding(elements)`, which drops `harmony.Harmony` from every walk
+`features()` makes: `hand_stats`, the score-wide `all_notes`, and both sides of the crossing
+count. `Harmony` rather than `ChordSymbol` because `roman.RomanNumeral` is the same kind of
+thing — an analytical label that sounds nothing — and inherits from it.
+
+**129 of the 798 songs with a file that parse carry printed symbols** — the population is
+the 164 judged and the 635 estimated, and the one row that does not parse is a judged one. On
+`song.classical.ah-vous-dirais-je-maman.pdmx` — sixteen bars of single-line melody in C — the
+numbers go from `maxSimultaneousRight` 4, `maxSpanRight` 10, `maxLeapRight` 21, `rangeRight` 26
+to 1, 0, 7, 9, and `notesPerBar` from 4.75 to 1.75.
+
+**No `chordSymbols` feature was added.** The brief allows one only if the model already has
+one and it does not: `FEATURE_NAMES` is nineteen, a twentieth would have to be fitted, ported
+to `app/src/score/difficulty.ts` and justified against the anchors before it meant anything,
+and what a player invents over a printed symbol is not in the file at all. That gap is Entry
+51's and it is still open — 73 of the 240 estimated items on rungs are single-staff lead
+sheets whose left hand is not written down.
+
+#### 2. Two voices on one staff are not one hand — fixed, and Entry 51's example is not what it says
+
+`difficulty.py` grew `voice_lines(part)`, which splits a staff into its voices in time order.
+**Split by staff, not by the hand `extractScoreModel` infers**, and the reason is not
+convenience: `app/src/score/difficulty.ts` — the port the fixture test holds to within 0.2 of a
+stage — says in its own comment "Split by *staff*, not by hand … the model's `hand`
+deliberately differs from the staff". Adopting the model's hand on the Python side alone would
+break the one guarantee that keeps the two from drifting. The app's `voiceHomeStaves` histogram
+is the thing that knows better, and it stays where it is.
+
+What the split actually changes, measured rather than assumed:
+
+- **Leaps.** `part.recurse().notes` yields measure by measure and, inside a measure, voice 1
+  entirely before voice 2, so the melodic line stepped from the end of one voice into the start
+  of the other once per bar. **418 of the 798 parsed scores have a measure carrying more than one
+  voice**, and `maxLeapRight` moves on **191 of the 542 quarried rows** — the single largest
+  feature change in this task.
+- **The crossing floor.** `right_by_offset[offset] = min(midis)` assigned per element, so on a
+  two-voice staff the right hand's lowest note at an offset was whichever voice music21 walked
+  last. It is now the minimum across every voice sounding there.
+- **Span and simultaneity: nothing.** They were already per voice, because a music21 `Chord`
+  object belongs to one voice and the code took the maximum over chord objects. The code now
+  says so explicitly, and the test that asserts it passes before and after — which is stated
+  here because a test that was never red proves nothing about the change.
+
+**Entry 51's attribution of `song.blues.black-bottom-stomp`'s 43-semitone left-hand span to
+two voices is wrong, and this is the correction.** Read out of the edition's own MusicXML
+rather than out of music21's object model, the last beat of bar 101 is a single `<chord>` in
+voice 5 of staff 2: E♭2 marked together with E♭5, G5 and B♭5 — both hands engraved on the
+lower staff. There is no second voice in it. Per-voice measurement leaves `maxSpanLeft` at 43,
+and `TestBlackBottomStompBar101` in `tools/content/tests/test_difficulty.py` exists to say so
+to the next reader. The piece is still above its stage on five features at `blues.8` and seven
+at `blues.9`; the number is about the engraving and no change in this task narrows it.
+
+
+#### 3. Ledger ratio and octave placement — decided, and the decision is *leave it*
+
+The question was whether `ledgerRatio` should be counted against the piece's own median
+register instead of against a fixed window either side of middle C, because Entry 51 found
+`song.blues.weary-blues` engraved an octave high (151 of its 180 melody notes above G5) and
+sitting above its stage on that feature alone.
+
+Three fits over the **same 163 anchors**, the same fitter, differing only in the features:
+
+| features | Spearman | leave-one-out median abs. error | `ledgerRatio` weight |
+|---|--:|--:|---|
+| as measured before this task | 0.8580 | 0.4400 | dropped, wrong sign |
+| corrected | 0.8783 | 0.4000 | dropped, wrong sign |
+| corrected, `ledgerRatio` against the piece's own median | 0.8783 | 0.4000 | dropped, wrong sign |
+
+**The two corrected fits are identical to four places because the feature is dropped either
+way**, and it is dropped with the old features too — so this is not something this task's
+correction did. On today's calibration set the feature the model once leaned on hardest
+(P14's **+1.06**, the largest weight in the committed model, fitted on **173** judged songs)
+produces a weight with the wrong sign and the monotone constraint removes it. Changing how it
+is measured would therefore change no estimate the model makes.
+
+Two more numbers, so the decision does not rest only on the fit: over the 163 anchors the
+absolute and median-relative readings differ by a **median of 0.0169** (mean 0.0358, max
+0.2321), and the anchors they disagree about most are the ones with an unusual tessitura —
+`greensleeves.waltz` 0.0268 against 0.2589 (median pitch D3), `liszt-la-campanella` 0.5023
+against 0.2769 (median pitch F#5). `weary-blues` goes from **0.8389 to 0.0000**, which is the
+median-relative reading saying "this piece never leaves its own register" about an edition
+printed an octave high — and printing an octave high really does put more ledger lines under
+the reader's eye, which is a demand on the reading even when it is not one on the playing.
+**Not changed.**
+
+#### 4. The refit, and every estimate re-run
+
+`fit_level_model.py --write` on the corrected features: **163 judged songs** (164 with a file;
+`song.classical.mozart-k545-i.alt` still raises `MusicXMLImportException` at bar 18, the same
+row Entry 48 and Entry 51 both name), **Spearman 0.878**, **leave-one-out median absolute
+error 0.400 stages**, against the bar of 0.8 and 0.7. Twelve weights survive, largest first:
+`blackKeyRatio` +0.896, `rangeRight` +0.575, `notesPerSecond` +0.441, `maxLeapRight` +0.427,
+`bars` +0.423, `rangeLeft` +0.418, `voicesPerStaff` +0.394, `notesPerBar` +0.335,
+`keyAccidentals` +0.133, `shortestValue` −0.126, `maxSpanLeft` +0.018, `ornaments` +0.017.
+Seven are dropped for a backwards weight: `maxSimultaneousRight`, `maxSimultaneousLeft`,
+`maxSpanRight`, `maxLeapLeft`, `handCrossings`, `ledgerRatio`, `distinctRhythms`.
+
+Where the model is still furthest from the person, in both directions, because a median hides
+it: `mariage-damour.alt2` judged 5.2 against 7.81 and `hungarian-sonata` judged 5 against 6.83
+— the model reads those arrangements as harder than the person did; and `chopin-etude-op10-9`
+judged 9 against 7.33, `chopin-prelude-op28-14` judged 8.2 against 6.53 — it reads virtuoso
+Chopin as easier. **That second direction is the reason the banded Chopin rows below were not
+lowered on the model's say-so.**
+
+**What was spliced, and on two different rules.** `content/sources/pdmx.json` holds the 542
+rows whose `level` *is* the instrument's output (`levelFrom: model`). Spliced as text, never
+re-serialised; the diff is 2,631 lines added and 2,631 removed over 339 rows, and a
+parsed-JSON comparison of every row before against after proves that only `features`, `level`,
+`levelFrom` and `levelDrivers` moved.
+
+- **`features` — 227 rows.** A measurement, re-stamped wherever it changed, because
+  `import_pdmx.concepts_for` reads `keyAccidentals`, `handCrossings` and `maxSpan*` off it and
+  hands the catalog `hand-crossing` and `wide-span`. **35 rows were carrying one of those off a
+  printed chord symbol** and now are not: 21 lose `hand-crossing`, 16 lose `wide-span`, none
+  gains a flag, and **every one of the 35 carries chord symbols** — checked per row rather than
+  inferred, because "they were all chord symbols" is the shape of claim that is usually wrong.
+  Six of the 35 are Czerny's *School of Velocity* (nos. 1, 4, 5, 7, 9 and 10), which lose
+  `hand-crossing`; `take-five` loses both `hand-crossing` and `wide-span`; `annie's-song` and
+  `so-danco-samba` lose `wide-span`. That is a claim about the music made from something
+  nobody plays, and it was in the built catalog.
+  Fourteen of the nineteen features moved on at least one row; `bars`, `shortestValue`,
+  `voicesPerStaff` and `keyAccidentals` moved on none, and `maxLeapRight` on 191.
+- **`level`, `levelDrivers`, `levelFrom: model-2026-09-22` — 224 rows**, being every row whose
+  level moves by 0.3 or more: **190 down, 34 up**. The largest: `muskrat-ramble` −2.46,
+  `annie-s-song` −1.89, `baby-won-t-you-please-come-home` −1.19, `i-remember-you` −1.07,
+  `old-french-song` −1.05; the largest upward is `exercise-cielito-lindo` +0.93, which carries
+  **no** chord symbols and moved because the model itself moved. Below 0.3 nothing was written:
+  the instrument's own leave-one-out error is 0.400 of a stage, so churning the remaining 318
+  rows would be writing down a precision it does not have. `levelFrom` is a provenance label with
+  **no reader**, and the two searches behind that are worth stating because the first was not
+  enough. A `.gitignore`-respecting grep found three mentions — the writer at
+  `pdmx/commit.py:201`, this task's brief, and one line of this file. A second, differently
+  shaped search — case-insensitive, `level_from` as well, and *not* respecting `.gitignore` —
+  found more: every row of `build/pdmx/picks-table.json` carries it too, which the first could
+  not see. Those are writes as well. A grep over `tools/` returns only `commit.py:201`, and a
+  grep over `app/src` for `levelFrom` returns nothing, so the date stamp breaks nothing; on the
+  next quarry run `commit.py` will write plain `model` again.
+
+**What was not spliced, and why.** The other 93 estimated songs with a file — **38 Joplin rows
+from `kern.json` and 55 `.nifc` Chopin** — carry a level that came from an opus band, not from
+the model (`import_kern` sets `levelSource: estimated` precisely to admit that). Writing model
+output onto them is a re-levelling decision, not the correction of an instrument, and the
+model reads Chopin's études low — **enumerated rather than asserted, because the first draft
+of this sentence rested on two of them**. The catalog holds 18 `.nifc` études; 17 were measured
+in this pass (`chopin-etude-op25-7.nifc` was not) and on **17 of 17** the model sits below the
+committed level, from −0.38 to −2.41:
+
+```
+-2.41 op25-4   -1.88 op10-2   -1.78 op10-1   -1.67 op10-9   -1.48 op10-10  -1.46 op10-11
+-1.42 op25-8   -1.31 op25-2   -0.94 op25-6   -0.92 op25-1   -0.90 op10-12  -0.90 op25-11
+-0.84 op10-4   -0.56 op25-12  -0.42 op10-5   -0.38 op25-9
+```
+
+**Eleven of the 17 are banded rows; the other six carry `levelSource: judged`** — so on those
+six the model is not disagreeing with an opus band, it is disagreeing with a person, by −1.67
+on op10-9, −1.31 on op25-2, −0.92 on op25-1, −0.90 on op10-12, −0.42 on op10-5 and −0.38 on
+op25-9. That is the stronger evidence, and it is why the 11 were left alone: the instrument is
+measurably wrong in this register against the only standard there is. **They are named here rather than
+moved**, and they are still the rows to look at first if anybody re-levels by hand. The
+largest disagreements in the other direction are `joplin-crush-collision-march` 6.8 against
+7.72 and `joplin-augustan-club-waltz` 6.8 against 7.79.
+
+**The consequence in the curriculum, which was not in the file list.** 33 of the re-levelled
+options fell outside the band their rung prints, on 18 rungs, and `validate.py` failed the
+build over every one (replan §1.7). The 18, old band then new:
+
+```
+2.3            st2  2.3-4.3    -> 2.02-4.3
+chords-pop.3   st3  2.3-3.3    -> 2.27-3.3
+hymns          st3  3.2-7.3    -> 2.6-7.3
+rock.overview  st3  2.5-5.1    -> 2.3-5.1
+holiday.3      st3  2.87-3.49  -> 2.44-3.49
+chords-pop.4   st4  2.9-4.4    -> 2.45-4.4
+jazz.4         st4  2.74-4.5   -> 2.67-4.5
+classical.5    st5  3.6-5.7    -> 3.6-5.91
+chords-pop.5   st5  4.5-5.6    -> 4.18-5.6
+blues.5        st5  3.4-5.2    -> 3.37-5.2
+jazz.5         st5  3.25-5.2   -> 2.97-5.2
+technique.5    st5  4.7-5.4    -> 4.39-5.4
+rock.5         st5  5.3-6.8    -> 4.49-6.8
+hymns.5        st5  3.23-5.4   -> 2.6-5.4
+jazz.6         st6  3.2-6.4    -> 2.92-6.4
+chords-pop.6   st6  5.4-6.4    -> 4.49-6.4
+technique.7    st7  7.1-7.4    -> 6.29-7.4
+jam.7          st7  3.98-6.4   -> 3.09-6.4
+```
+
+Seventeen moved a floor and one a ceiling (`classical.5`, for Burgmüller's *Arabesque* at
+5.91). Only the broken endpoint moved and only as far as the option that broke it: **none of
+the 18 bands was exactly [min, max] of its options before**, so the slack in them is authored
+and is not this task's to remove. Two side effects, both stated because widening a band is not
+free: `hymns` was already one of the widest rungs and is now wider, 4.1 levels to **4.7**, and
+`jam.7` crosses `rung_audit`'s three-level threshold for the first time, which is the whole of
+the difference between Entry 51's 30 MED findings and this run's 31.
+
+#### 5. Entry 51's comparison, re-run
+
+Same rule, same anchor construction, same 240 estimated items on rungs (239 songs with a file
+and `drill.ear.simon-blues-c`, which the app generates at run time and which no feature can
+reach). Both sides of the comparison are measured with the corrected features: the anchors
+moved too, which is why the counts barely do.
+
+| | Entry 51 | this run |
+|---|--:|--:|
+| above on more than one feature | 34 | **34** |
+| above on exactly one | 49 | 48 |
+| inside every one of the nineteen | 154 | 155 |
+| below | 2 | 2 |
+| unmeasurable | 1 | 1 |
+
+**The above(n≥2) membership is identical — all 34 of Entry 51's items are still above on more
+than one feature, and no item joined them.** The lists were compared as sets, one read out of
+`docs/pending-review.md`'s own lines and one out of this run's `verdicts27.json`, rather than
+from a memory of either (`working-rules` §2.14). Three items moved across the above(1) line,
+and all three moved on a leap, which is the voice fix:
+
+```
+song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx  above(1) -> inside   was maxLeapRight 29>24 at classical.5
+song.jazz.stumbling                                              above(1) -> inside   was maxLeapRight 40>38 at blues.9
+song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx         inside -> above(1)   now maxLeapLeft 36>34 at holiday.6
+```
+
+**Nothing was re-levelled by the comparison, and for the first time the reason is measured
+rather than circular.** For 32 of the 34 the comparison *is* the committed number: either the
+row was spliced above (so the model's output is what is on it) or its gap to the model is
+under the 0.3 threshold that was not spliced. The two rows where that is not so are the two
+whose level never came from the model, and the comparison was made four ways for each:
+
+```
+song.classical.chopin-polonaise-op53.nifc   committed 9.4   model 9.0 (clamped at MAX_LEVEL)
+    classical track residual -0.05 over 142 judged songs -> 9.05, a gap of -0.35
+    under the model's own 0.400 leave-one-out error, and the model's four worst misses on the
+    calibration set are all Chopin read too easy, by up to 1.67. Not moved.
+song.ragtime.joplin-school-of-ragtime       committed 6.4   model 6.81
+    ragtime residual +0.23 over 12 judged rags -> 6.58, a gap of +0.18. Not moved.
+```
+
+The track residuals, recomputed on the corrected features and the refit model, are much
+smaller than Entry 51's — which is the clearest single piece of evidence that the instrument
+got better rather than merely different:
+
+| track | judged songs | median residual now | Entry 51 |
+|---|--:|--:|--:|
+| all | 163 | −0.02 | +0.06 |
+| classical | 142 | −0.05 | +0.12 |
+| core | 44 | +0.14 | +0.00 |
+| ragtime | 12 | +0.23 | +0.33 |
+| chords-pop | 11 | +0.03 | −0.03 |
+| holiday | 7 | +0.24 | +0.02 |
+| rock-metal | 6 | +0.42 | +0.62 |
+
+`holiday` (7 songs) and `rock-metal` (6) are quoted with their n because neither is a
+calibration. **No latin residual exists**, and this was re-measured here rather than quoted
+from Entry 51 — the first draft of this entry quoted it, and the residual table's silence about
+`latin` is not a filter returning zero, it is a table that only prints tracks with five or more
+anchors. Three differently shaped filters over the 163 parsed anchors: `tracks` contains
+`latin` → **0**; `genre` contains the word → **0**; the word anywhere in the id or the title →
+**0**. And from the other side: **61 catalog items sit on the `latin` track**, of which judged
+songs with a file → **0**. The same hole Entry 48 and Entry 51 record, still open.
+
+**No rung fell under `00` D21's floor of three**, and the reason is not that the floor was
+checked after the fact: **no item was taken off any rung in this task**, so no rung's option
+count changed at all. `validate.py` re-ran the floor over all 109 rungs (43 song-optional,
+4 exempt) and passed.
+
+**The full above(n≥2) list**, format `id | committed level (model on the corrected features;
+csN where the score carries printed chord symbols) | rung stage band verdict(n) [feature value
+> the stage's judged maximum]`, one clause per placement:
+
+```
+song.beautiful.merry-christmas-mr-lawrence | 7.64 (model 7.64 cs128) | classical.4.shelf st4 3.5-8.6 abo(2) [blackKeyRatio 0.7185>0.6353, keyAccidentals 5>4]
+song.blues.black-bottom-stomp | 8.62 (model 8.59) | blues.8 st8 6.2-8.7 abo(5) [maxSpanRight 40>31, maxSpanLeft 43>31, maxLeapRight 45>37, handCrossings 76>31, distinctRhythms 20>18] ; blues.9 st9 6.2-8.8 abo(7) [maxSimultaneousRight 7>5, maxSimultaneousLeft 6>4, maxSpanRight 40>17, maxSpanLeft 43>24, maxLeapRight 45>42, shortestValue 0.0312>0.0625, handCrossings 76>4]
+song.blues.handful-of-keys | 8.73 (model 8.86) | blues.9 st9 6.2-8.8 abo(2) [maxSimultaneousLeft 5>4, rangeRight 76>61]
+song.blues.tishomingo-blues | 3.76 (model 3.76 cs48) | blues.3 st3 2.4-4.5 abo(3) [maxSpanRight 14>9, blackKeyRatio 0.665>0.2466, keyAccidentals 4>2]
+song.blues.wabash-blues | 3.48 (model 3.48 cs80) | blues.3 st3 2.4-4.5 abo(2) [bars 57>49, blackKeyRatio 0.5187>0.2466]
+song.classical.1818-franz-xaver-gruber-silent-night.pdmx | 2.32 (model 2.2 cs11) | holiday st2 1.2-3.2 abo(2) [rangeRight 17>15, shortestValue 0.25>0.3333]
+song.classical.abide-with-me-william-henry-monk.pdmx | 5.28 (model 5.22) | hymns st3 2.6-7.3 abo(4) [notesPerBar 10.1875>9.0204, notesPerSecond 5.0938>4.3556, blackKeyRatio 0.5828>0.2466, keyAccidentals 3>2] ; hymns.4 st4 3.2-5.69 ins(0)
+song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx | 7.52 (model 7.53) | classical.4.shelf st4 3.5-8.6 abo(5) [maxLeapRight 39>32, rangeRight 53>45, rangeLeft 60>55, keyAccidentals 5>4, ornaments 16>12]
+song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx | 2.49 (model 2.76) | hymns.2 st2 1.4-3.2 abo(2) [notesPerBar 8.375>7.4706, ledgerRatio 0.1045>0.0345]
+song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx | 5.1 (model 5.1 cs48) | holiday.5 st5 3.4-5.91 abo(2) [blackKeyRatio 0.5419>0.4443, keyAccidentals 4>3]
+song.classical.chopin-polonaise-op53.nifc | 9.4 (model 9) | classical.9 st9 4.3-9.4 abo(3) [notesPerBar 32.9724>29.2533, handCrossings 10>4, ornaments 42>38]
+song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx | 8.4 (model 8.24) | rock.7 st7 5.2-8.4 abo(3) [rangeRight 72>58, rangeLeft 72>52, ledgerRatio 0.5475>0.3621]
+song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx | 9 (model 9) | latin.7 st7 6.3-9 abo(5) [rangeRight 68>58, rangeLeft 56>52, shortestValue 0.0063>0.0417, ledgerRatio 0.4235>0.3621, distinctRhythms 18>16]
+song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx | 6.74 (model 6.97) | classical.4.shelf st4 3.5-8.6 abo(4) [maxLeapRight 36>32, rangeRight 53>45, shortestValue 0.0063>0.0292, ornaments 15>12]
+song.classical.rock-of-ages-cleft-for-me.pdmx | 4.93 (model 5.04) | hymns st3 2.6-7.3 abo(2) [notesPerBar 12.9231>9.0204, blackKeyRatio 0.4286>0.2466] ; hymns.4 st4 3.2-5.69 ins(0)
+song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx | 8.54 (model 8.41) | classical.4.shelf st4 3.5-8.6 abo(6) [bars 339>194, maxSpanLeft 17>16, maxLeapRight 35>32, rangeRight 50>45, rangeLeft 60>55, ornaments 67>12]
+song.classical.sakamoto-andata.pdmx | 6.36 (model 6.36 cs94) | classical.4.shelf st4 3.5-8.6 abo(2) [blackKeyRatio 0.6899>0.6353, keyAccidentals 5>4] ; rock.5 st5 4.49-6.8 abo(3) [maxSpanLeft 13>12, blackKeyRatio 0.6899>0.4443, keyAccidentals 5>3]
+song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx | 7.23 (model 7.2) | classical.4.shelf st4 3.5-8.6 abo(2) [rangeRight 46>45, ornaments 13>12]
+song.classical.spiteri-travelling.pdmx | 7.81 (model 7.64) | classical.4.shelf st4 3.5-8.6 abo(3) [rangeRight 46>45, blackKeyRatio 0.8289>0.6353, keyAccidentals 6>4]
+song.folk.10000-reasons-matt-redman.pdmx | 5.69 (model 5.69) | hymns st3 2.6-7.3 abo(6) [bars 62>49, notesPerBar 15.4839>9.0204, notesPerSecond 4.8387>4.3556, maxSpanRight 12>9, maxSpanLeft 12>10, ledgerRatio 0.125>0.0995] ; hymns.6 st6 5.36-6.96 ins(0)
+song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx | 6.49 (model 6.49) | hymns st3 2.6-7.3 abo(10) [bars 87>49, notesPerBar 10.8391>9.0204, notesPerSecond 6.0217>4.3556, maxSimultaneousRight 5>3, maxSpanRight 15>9, maxSpanLeft 14>10, rangeRight 44>28, rangeLeft 38>36, shortestValue 0.125>0.25, ornaments 37>5] ; hymns.6 st6 5.36-6.96 abo(2) [maxSpanRight 15>14, ornaments 37>24]
+song.folk.auld-lang-syne.pdmx | 2.84 (model 2.84 cs23) | 2.3 st2 2.02-4.3 abo(2) [blackKeyRatio 0.4068>0.1034, keyAccidentals 3>1]
+song.folk.danny-boy-c-major.pdmx | 2.41 (model 2.56) | 2.2 st2 1.1-2.85 abo(2) [rangeRight 19>15, ledgerRatio 0.2556>0.0345]
+song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx | 3.39 (model 3.15 cs33) | 2.4 st2 2.1-5.1 abo(2) [rangeRight 19>15, blackKeyRatio 0.2014>0.1034]
+song.folk.i-give-you-my-heart.pdmx | 6.73 (model 6.73) | hymns st3 2.6-7.3 abo(12) [bars 130>49, notesPerBar 10.7538>9.0204, maxSimultaneousRight 5>3, maxSpanRight 24>9, maxSpanLeft 15>10, maxLeapRight 25>16, blackKeyRatio 0.5558>0.2466, keyAccidentals 4>2, shortestValue 0.1667>0.25, ornaments 11>5, ledgerRatio 0.1938>0.0995, distinctRhythms 9>6]
+song.folk.skip-to-my-lou.pdmx | 2.5 (model 2.5 cs5) | 2.3 st2 2.02-4.3 abo(4) [notesPerSecond 4.625>4.3578, blackKeyRatio 0.4595>0.1034, keyAccidentals 2>1, ledgerRatio 0.0541>0.0345]
+song.folk.the-water-is-wide.pdmx | 1.9 (model 1.92) | 1.5 st1 1.1-2.2 abo(3) [blackKeyRatio 0.027>0, keyAccidentals 1>0, distinctRhythms 5>3]
+song.jazz.fats-waller-ain-t-misbehavin.pdmx | 6.89 (model 6.88) | jazz.9 st9 5.1-8.4 abo(3) [shortestValue 0.0104>0.0625, handCrossings 6>4, distinctRhythms 22>21]
+song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx | 7.15 (model 7.32) | jazz.7 st7 2.7-7.4 abo(6) [maxSimultaneousRight 7>5, maxSpanRight 24>17, maxSpanLeft 17>16, maxLeapLeft 49>48, rangeRight 71>58, rangeLeft 84>52]
+song.pop.camille-le-festin-piano-arr-kno.pdmx | 7.29 (model 7.29) | chords-pop.9 st9 5.3-8.4 abo(2) [maxSimultaneousLeft 6>4, ornaments 46>38]
+song.pop.careless-love-blues.pdmx | 2.63 (model 2.48 cs10) | 2.4 st2 2.1-5.1 abo(3) [rangeRight 16>15, blackKeyRatio 0.1765>0.1034, keyAccidentals 2>1] ; blues.3 st3 2.4-4.5 ins(0) ; blues.4 st4 2.4-5.2 ins(0)
+song.pop.martin-j-nystrom-as-the-deer-piano.pdmx | 4.54 (model 4.54 cs58) | hymns st3 2.6-7.3 abo(3) [notesPerBar 13.5625>9.0204, notesPerSecond 5.425>4.3556, maxSpanRight 12>9] ; hymns.5 st5 2.6-5.4 ins(0)
+song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx | 2.44 (model 2.45) | holiday st2 1.2-3.2 abo(2) [blackKeyRatio 0.2708>0.1034, keyAccidentals 2>1]
+song.ragtime.joplin-school-of-ragtime | 6.4 (model 6.81) | ragtime.6 st6 3.3-7.1 abo(2) [notesPerBar 28.0303>23.3077, notesPerSecond 23.3586>19.4231]
+```
+
+**Above on exactly one feature — 48. The brief acts above one feature only, so these are
+recorded and unchanged.**
+
+```
+song.blues.ole-miss | 3.41 (model 3.41 cs55) | jazz.3 st3 2.2-4.5 abo(1) [bars 64>49]
+song.blues.weary-blues | 3.09 (model 3.09 cs34) | jam.7 st7 3.09-6.4 abo(1) [ledgerRatio 0.8389>0.3621]
+song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx | 2.88 (model 2.88 cs32) | holiday.3 st3 2.44-3.49 abo(1) [bars 50>49]
+song.classical.ah-vous-dirais-je-maman.pdmx | 1.93 (model 1.73 cs15) | 1.2 st1 1.1-2 abo(1) [bars 16>12]
+song.classical.albeniz-asturias.pdmx | 8.36 (model 8.29) | latin.7 st7 6.3-9 abo(1) [rangeLeft 62>52]
+song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx | 2.94 (model 3.13) | classical.3 st3 2.4-5.3 abo(1) [ledgerRatio 0.13>0.0995]
+song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx | 7.39 (model 7.39) | classical.4.shelf st4 3.5-8.6 abo(1) [notesPerSecond 13.7347>12.1558]
+song.classical.chopin-fantaisie-impromptu.nifc | 9 (model 8.86) | classical.9 st9 4.3-9.4 abo(1) [maxSimultaneousLeft 5>4]
+song.classical.czerny-the-school-of-velocity-op-299-no-1.pdmx | 6.06 (model 6.01 cs28) | technique.6 st6 6-6.4 abo(1) [ledgerRatio 0.4362>0.3621]
+song.classical.czerny-the-school-of-velocity-op-299-no-3.pdmx | 6.03 (model 6.25) | technique.6 st6 6-6.4 abo(1) [maxLeapRight 32>28]
+song.classical.djawadi-light-of-the-seven.pdmx | 6.78 (model 6.78) | classical.4.shelf st4 3.5-8.6 abo(1) [ornaments 31>12]
+song.classical.el-choclo-piano.pdmx | 7.57 (model 7.52) | latin.7 st7 6.3-9 abo(1) [rangeLeft 56>52]
+song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx | 7.95 (model 7.82) | classical.4.shelf st4 3.5-8.6 abo(1) [maxSpanLeft 19>16]
+song.classical.glass-dead-things.pdmx | 7.81 (model 7.73) | classical.4.shelf st4 3.5-8.6 abo(1) [ornaments 13>12]
+song.classical.handel-passacaglia-handel-halvorsen-piano-solo.pdmx | 6.41 (model 6.56) | classical.4.shelf st4 3.5-8.6 abo(1) [rangeRight 51>45]
+song.classical.jesus-loves-me.pdmx | 4.27 (model 4.27) | hymns st3 2.6-7.3 abo(1) [notesPerBar 10.7778>9.0204]
+song.classical.lemoine-etude-op-37-no-1.pdmx | 4.96 (model 4.99) | technique.4 st4 4.1-5.1 abo(1) [notesPerSecond 16.0312>12.1558]
+song.classical.lemoine-etude-op-37-no-2.pdmx | 4.75 (model 4.65) | technique.4 st4 4.1-5.1 abo(1) [notesPerSecond 15.9375>12.1558]
+song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx | 7.04 (model 6.81) | classical.4.shelf st4 3.5-8.6 abo(1) [ornaments 14>12]
+song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx | 2.9 (model 2.9 cs19) | holiday.3 st3 2.44-3.49 abo(1) [blackKeyRatio 0.3051>0.2466]
+song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx | 5.65 (model 5.93) | classical.5 st5 3.6-5.91 abo(1) [voicesPerStaff 3>2]
+song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx | 4.96 (model 4.96) | classical.4 st4 4.3-5.8 abo(1) [ornaments 18>12]
+song.classical.simple-gifts-2-part-round.pdmx | 3.85 (model 3.82) | hymns st3 2.6-7.3 abo(1) [notesPerBar 10>9.0204]
+song.classical.st-louis-blues.pdmx | 3.03 (model 3.03 cs23) | blues.3 st3 2.4-4.5 abo(1) [keyAccidentals 4>2] ; blues.4 st4 2.4-5.2 ins(0)
+song.classical.zimmer-time-hans-zimmer-inception.pdmx | 6.45 (model 6.61) | classical.4.shelf st4 3.5-8.6 abo(1) [rangeRight 52>45]
+song.folk.be-thou-my-vision.pdmx | 2.25 (model 2.45) | hymns.2 st2 1.4-3.2 abo(1) [rangeRight 17>15]
+song.folk.boogie-woogie.pdmx | 7.04 (model 7.04) | blues.6 st6 3.5-7.5 abo(1) [notesPerBar 25.1753>23.3077] ; blues.8 st8 6.2-8.7 ins(0)
+song.folk.dark-eyes.pdmx | 2.3 (model 2.3 cs8) | 2.3 st2 2.02-4.3 abo(1) [blackKeyRatio 0.25>0.1034]
+song.folk.oh-my-darling-clementine.pdmx | 4.32 (model 4.17) | 3.2 st3 2.3-4.4 abo(1) [notesPerSecond 4.7373>4.3556]
+song.folk.so-danco-samba.pdmx | 2.58 (model 2.58 cs25) | latin.3 st3 1.9-3.6 abo(1) [distinctRhythms 7>6] ; latin st5 1.9-6.4 ins(0)
+song.folk.this-little-light-of-mine.pdmx | 2.73 (model 2.73 cs24) | hymns.5 st5 2.6-5.4 abo(1) [blackKeyRatio 0.5505>0.4443]
+song.folk.your-song-elton-john-easy-piano.pdmx | 5.07 (model 5.07) | chords-pop.5 st5 4.18-5.6 abo(1) [maxSpanLeft 15>12]
+song.jazz.the-crave | 7.46 (model 7.28) | latin.6 st6 5-7.46 abo(1) [distinctRhythms 13>10]
+song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx | 6.88 (model 6.88) | chords-pop.9 st9 5.3-8.4 abo(1) [bars 273>262]
+song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx | 3.97 (model 3.97) | blues.6 st6 3.5-7.5 abo(1) [ledgerRatio 0.417>0.3621]
+song.pop.minuet-in-g-minor-bach-piano.pdmx | 4.42 (model 4.47) | classical.3 st3 2.4-5.3 abo(1) [blackKeyRatio 0.2474>0.2466]
+song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx | 7.3 (model 7.14) | holiday.6 st6 6.1-7.3 abo(1) [maxLeapLeft 36>34]
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx | 2.86 (model 2.86 cs47) | holiday.3 st3 2.44-3.49 abo(1) [blackKeyRatio 0.3333>0.2466]
+song.pop.misc-christmas-traditional-music-first-noel.pdmx | 2.54 (model 2.54 cs24) | holiday.3 st3 2.44-3.49 abo(1) [blackKeyRatio 0.3056>0.2466]
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx | 2.7 (model 2.7 cs29) | hymns st3 2.6-7.3 abo(1) [blackKeyRatio 0.2698>0.2466]
+song.pop.misc-tunes-tico-tico-no-fub-a.pdmx | 3.71 (model 3.81) | latin st5 1.9-6.4 abo(1) [ledgerRatio 0.4015>0.3559]
+song.pop.ray-henderson-bye-bye-blackbird.pdmx | 2.92 (model 2.92 cs57) | jazz.3 st3 2.2-4.5 abo(1) [bars 63>49] ; jazz.6 st6 2.92-6.4 ins(0)
+song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx | 6.88 (model 6.88) | chords-pop.9 st9 5.3-8.4 abo(1) [handCrossings 7>4]
+song.pop.the-memphis-blues.pdmx | 3.99 (model 3.78 cs35) | blues.5 st5 3.37-5.2 abo(1) [blackKeyRatio 0.5102>0.4443]
+song.pop.wowaka-vocaloid-rolling-girl-aa1-4aaa3aa1-4a.pdmx | 7.14 (model 7.14) | chords-pop.9 st9 5.3-8.4 abo(1) [maxSimultaneousRight 7>5]
+song.ragtime.joplin-augustan-club-waltz | 6.8 (model 7.5) | ragtime.5 st5 3.2-7.1 abo(1) [bars 148>92]
+song.ragtime.joplin-combination-march | 6.8 (model 7.17) | ragtime.5 st5 3.2-7.1 abo(1) [blackKeyRatio 0.4755>0.4443]
+song.ragtime.joplin-rose-bud-march | 7 (model 6.52) | ragtime.5 st5 3.2-7.1 abo(1) [bars 94>92]
+```
+
+**Inside every one of the nineteen at its stage — 155**, and **below — 2**
+(`song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx` 5.19 and
+`song.jazz.the-dave-brubeck-quartet-take-five.pdmx` 6.03, both on `jazz.9`, both harmless: an
+easier piece on a hard rung costs the learner a choice and nothing else). These 157 are
+Entry 51's same 156 plus `burgmuller-arabesque-op-100-no-2` and `song.jazz.stumbling` and minus
+`joy-to-the-world-piano-solo`, computed as a set difference against the entry's own lines
+rather than asserted. Their per-item lines are not reprinted here; Entry 51 has them and only
+the three named above changed group.
+
+**Unmeasurable — 1.** `drill.ear.simon-blues-c` (3.5, on `blues.3` and `improv.5`) is generated
+by the app at run time and has no score, so `features()` has nothing to read. Named rather than
+counted as inside, exactly as Entry 51 named it.
+
+#### 6. The rung bands, recorded for the owner and not changed
+
+`rung_audit.py` flags a band wider than 3.0 levels because the lesson page prints it. **22
+rungs** are over that now; **ten reach four levels or more.** What follows is what the audit
+does not print — which options make the width, and whether one of them is carrying it. A band
+is marked *one option* when dropping the single highest leaves the rest inside 3.0 levels.
+
+| rung | stage | band | width | options | songs | gap from the top option to the next | |
+|---|--:|---|--:|--:|--:|--:|---|
+| `classical.4.shelf` | 4 | 3.5–8.6 | 5.1 | 52 | 49 | 0.34 | a shelf by design; the lesson text says so |
+| `classical.9` | 9 | 4.3–9.4 | 5.1 | 12 | 6 | 0.00 | spread, not one visitor |
+| `hymns` | 3 | 2.6–7.3 | 4.7 | 19 | 14 | 0.24 | widened by this task, see §4 |
+| `jazz.7` | 7 | 2.7–7.4 | 4.7 | 13 | 6 | 0.10 | spread |
+| `ragtime.8` | 8 | 3.3–7.9 | 4.6 | 12 | 6 | 0.00 | spread |
+| `latin` | 5 | 1.9–6.4 | 4.5 | 18 | 6 | 0.00 | spread |
+| `ragtime.7` | 7 | 3.2–7.4 | 4.2 | 12 | 6 | 0.10 | spread |
+| `classical.8` | 8 | 4.3–8.4 | 4.1 | 14 | 6 | 0.10 | spread |
+| `blues.6` | 6 | 3.5–7.5 | 4.0 | 8 | 3 | 0.64 | **one option** — without `song.folk.boogie-woogie.pdmx` (7.04) the rest span 2.43 |
+| `rock.6` | 6 | 3.4–7.4 | 4.0 | 7 | 3 | 0.30 | spread |
+| `ragtime.5` | 5 | 3.2–7.1 | 3.9 | 10 | 6 | 0.10 | spread |
+| `ragtime.6` | 6 | 3.3–7.1 | 3.8 | 12 | 6 | 0.10 | spread |
+| `3.4` | 3 | 1.5–5.1 | 3.6 | 7 | 3 | 0.00 | spread, and every option judged: two interval-reading exercises at 1.5, two reading drills at 3.4, *Für Elise* (beginner) 4.1 and the Petzold minuet twice at 5.1 |
+| `jazz.6` | 6 | 2.92–6.4 | 3.48 | 13 | 6 | 0.00 | spread; floor moved by this task |
+| `jam.7` | 7 | 3.09–6.4 | 3.31 | 10 | 5 | 0.00 | spread; floor moved by this task, and this is the new MED |
+| `practice.1` | 1 | 1.1–4.4 | 3.3 | 5 | 2 | 2.30 | **one option** — without `exercise.hanon.01.both` (4.4) the rest span 1.0 |
+| `practice.2` | 1 | 1.1–4.4 | 3.3 | 4 | 1 | 0.30 | **one option** — without `exercise.hanon.01.both` (4.4) the rest span 3.0 |
+| `jazz.9` | 9 | 5.1–8.4 | 3.3 | 11 | 6 | 0.62 | **one option** — without `drill.ear.tune-long` (8.4) the rest span 2.59 |
+| `classical.6` | 6 | 3.2–6.4 | 3.2 | 15 | 6 | 0.00 | spread |
+| `rock.7` | 7 | 5.2–8.4 | 3.2 | 7 | 3 | 0.00 | spread |
+| `chords-pop.9` | 9 | 5.3–8.4 | 3.1 | 12 | 6 | 1.11 | **one option** — without `drill.ear.tune-long` (8.4) the rest span 1.99 |
+| `improv.9` | 9 | 5.3–8.4 | 3.1 | 6 | 0 | 0.90 | **one option** — without `drill.ear.tune-long` (8.4) the rest span 2.20 |
+
+Six of the 22 are wide because of a single option, and **four of those six are the same
+option**: `drill.ear.tune-long` at 8.4 on three stage-9 rungs, and `exercise.hanon.01.both` at
+4.4 on the two stage-1 practice rungs. That is one drill and one exercise setting the printed
+ceiling of five rungs between them — a different problem from `hymns` or `classical.4.shelf`,
+where the width is real repertoire. **Nothing was changed here; this is the list the brief
+asked be recorded.**
+
+Every option of all 22, with its level, so the table above rests on something a reader can
+check rather than on the word *spread*:
+
+```
+classical.4.shelf st4 band 3.5-8.6 (width 5.1), 52 option(s):
+    3.5 drill.pedal.changes | 3.5 exercise.pedal.c |
+    4.1 song.classical.beethoven-fur-elise.easy | 4.3 drill.chord.inversions |
+    4.6 song.classical.satie-erik-satie-gnossienne-n1.pdmx |
+    4.66 song.classical.mozart-mozart-minuet-in-f-major-k2-easy.pdmx |
+    5 song.beautiful.hungarian-sonata | 5.04 song.classical.debussy-clair-de-lune-easy.pdmx |
+    5.1 song.classical.pachelbel-canon-d.easy | 5.1 song.holiday.carol-of-the-bells.easy |
+    5.17 song.classical.zimmer-maestro-the-holiday.pdmx | 5.2 song.beautiful.mariage-damour |
+    5.24 song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx |
+    5.4 song.classical.chopin-prelude-op28-7.nifc |
+    5.47 song.classical.hurwitz-the-armstrongs-first-man.pdmx |
+    5.5 song.beautiful.g-minor-bach | 5.5 song.classical.grieg-morgenstimmung.pdmx |
+    5.53 song.classical.anonymous-romance-anonimo-romanza.pdmx |
+    5.58 song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx |
+    5.62 song.classical.vivaldi-spring-vivaldi.pdmx |
+    5.71 song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx |
+    5.92 song.classical.uematsu-at-zanarkand-ffx-hd-remaster.pdmx |
+    6 song.classical.chopin-prelude-op28-20.nifc | 6 song.classical.chopin-prelude-op28-6.nifc |
+    6.1 song.classical.bach-air-on-g-string | 6.1 song.classical.chopin-nocturne-op9-2.easy |
+    6.1 song.classical.tchaikovsky-swan-lake | 6.2 song.classical.chopin-prelude-op28-4.nifc |
+    6.2 song.classical.satie-gymnopedie-1 | 6.36 song.classical.sakamoto-andata.pdmx |
+    6.41 song.classical.handel-passacaglia-handel-halvorsen-piano-solo.pdmx |
+    6.45 song.classical.zimmer-time-hans-zimmer-inception.pdmx |
+    6.74 song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx |
+    6.78 song.classical.bennet-rosemary-s-waltz.pdmx |
+    6.78 song.classical.djawadi-light-of-the-seven.pdmx |
+    6.93 song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx |
+    6.96 song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx |
+    7 song.classical.einaudi-questa-notte.pdmx |
+    7.04 song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx |
+    7.06 song.classical.palmer-days-in-the-sun.pdmx |
+    7.23 song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx |
+    7.39 song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx |
+    7.45 song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx |
+    7.52 song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx |
+    7.64 song.beautiful.merry-christmas-mr-lawrence |
+    7.81 song.classical.glass-dead-things.pdmx | 7.81 song.classical.spiteri-travelling.pdmx |
+    7.95 song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx |
+    8.1 song.classical.chopin-nocturne-20.alt | 8.1 song.classical.chopin-waltz-op64-2 |
+    8.2 song.classical.schubert-liszt-standchen |
+    8.54 song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx
+classical.9 st9 band 4.3-9.4 (width 5.1), 12 option(s):
+    4.3 exercise.inversions.b-flat-minor.both | 4.4 exercise.chromatic.g.1oct.both |
+    5.1 exercise.arpeggio.b-flat-minor.2oct.both |
+    5.1 exercise.scale.g-flat-major.2oct.contrary.both.2 | 5.3 exercise.hanon.20.both |
+    6.1 exercise.arpeggio7.g-sharp-diminished7.2oct.both |
+    8.4 song.classical.chopin-sonata-2-3.nifc |
+    9 song.classical.chopin-fantaisie-impromptu.nifc | 9.1 song.classical.chopin-ballade-1 |
+    9.2 song.classical.liszt-la-campanella | 9.4 song.classical.chopin-etude-op10-4.nifc |
+    9.4 song.classical.chopin-polonaise-op53.nifc
+hymns st3 band 2.6-7.3 (width 4.7), 19 option(s):
+    2.6 song.folk.what-a-friend-we-have-in-jesus.pdmx |
+    2.7 song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx |
+    3.09 song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx |
+    3.2 drill.chord.primary-c-g-f | 3.2 exercise.cadence.c.voice-led |
+    3.2 song.folk.when-the-saints.f | 3.3 song.folk.greensleeves.chords |
+    3.6 drill.pattern.lh-accompaniment | 3.85 song.classical.simple-gifts-2-part-round.pdmx |
+    4.27 song.classical.jesus-loves-me.pdmx |
+    4.54 song.pop.martin-j-nystrom-as-the-deer-piano.pdmx |
+    4.64 song.folk.amazing-grace-satb.pdmx |
+    4.93 song.classical.rock-of-ages-cleft-for-me.pdmx |
+    5.28 song.classical.abide-with-me-william-henry-monk.pdmx |
+    5.4 exercise.loop4.c.inversions | 5.4 exercise.slash-bass.c |
+    5.69 song.folk.10000-reasons-matt-redman.pdmx |
+    6.49 song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx |
+    6.73 song.folk.i-give-you-my-heart.pdmx
+jazz.7 st7 band 2.7-7.4 (width 4.7), 13 option(s):
+    2.74 song.pop.avalon.pdmx | 4.02 song.jazz.django-reinhardt-tiger-rag.pdmx |
+    5.19 song.jazz.bart-howard-fly-me-to-the-moon.pdmx | 5.5 song.classical.i-got-rythm.pdmx |
+    6.75 song.jazz.vince-guaraldi-skating.pdmx | 7.1 exercise.voicing7.c.rootless-a |
+    7.1 exercise.voicing7.f.rootless-b |
+    7.15 song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx | 7.2 drill.jazz.chord-scale |
+    7.2 exercise.open-voicing.c.quartal | 7.3 drill.jazz.extended-chords |
+    7.3 exercise.stride.c | 7.4 exercise.tritone-sub.c
+ragtime.8 st8 band 3.3-7.9 (width 4.6), 12 option(s):
+    3.3 exercise.rhythm.sixteenths.4bar | 3.6 drill.pattern.lh-accompaniment |
+    4.4 exercise.chromatic.c.1oct.both | 5.3 exercise.hanon.20.both |
+    5.4 exercise.syncopation.tied-across-bar |
+    6.1 exercise.arpeggio7.b-flat-dominant7.2oct.both | 7.4 song.ragtime.joplin-pine-apple-rag |
+    7.42 song.classical.scott-frog-legs-rag.pdmx | 7.6 song.ragtime.joplin-cascades |
+    7.6 song.ragtime.joplin-gladiolus-rag | 7.6 song.ragtime.joplin-magnetic-rag |
+    7.6 song.ragtime.joplin-new-rag
+latin st5 band 1.9-6.4 (width 4.5), 18 option(s):
+    2.32 song.folk.insensatez-how-insensitive-jobim.pdmx | 2.43 song.pop.guantanamera.pdmx |
+    2.58 song.folk.so-danco-samba.pdmx | 2.8 exercise.clave.son-2-3 |
+    2.8 exercise.clave.son-3-2 | 2.83 song.folk.exercise-cielito-lindo.pdmx |
+    3.2 exercise.rhythm.syncopated.4bar | 3.6 drill.pattern.lh-accompaniment |
+    3.71 song.pop.misc-tunes-tico-tico-no-fub-a.pdmx |
+    4.5 exercise.rhythm.shuffle-eighths.4bar |
+    5.13 song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx |
+    5.2 exercise.tumbao.c | 5.4 exercise.syncopation.tied-across-bar |
+    5.6 exercise.montuno.c.2note.son-3-2 | 6.2 exercise.montuno.c.3note.son-3-2 |
+    6.3 exercise.comping.c.off-beats | 6.4 exercise.latin-groove.c.son-3-2 |
+    6.4 exercise.walking-bass.c.ii-v-i
+ragtime.7 st7 band 3.2-7.4 (width 4.2), 12 option(s):
+    3.2 exercise.rhythm.syncopated.4bar | 3.6 drill.pattern.lh-accompaniment |
+    5.1 exercise.arpeggio.a-flat-major.2oct.both |
+    5.1 exercise.scale.d-flat-major.2oct.similar.both.2 | 5.3 exercise.hanon.15.both |
+    5.4 exercise.syncopation.tied-across-bar | 6.8 song.ragtime.joplin-solace |
+    7.2 song.ragtime.joplin-elite-syncopations | 7.2 song.ragtime.joplin-maple-leaf-rag |
+    7.2 song.ragtime.joplin-sugar-cane | 7.3 song.ragtime.joplin-bethena |
+    7.4 song.ragtime.joplin-heliotrope-bouquet
+classical.8 st8 band 4.3-8.4 (width 4.1), 14 option(s):
+    4.3 exercise.inversions.f-sharp-minor.both | 4.4 exercise.chromatic.e.1oct.both |
+    5.1 exercise.arpeggio.f-sharp-minor.2oct.both |
+    5.1 exercise.scale.d-flat-major.2oct.contrary.both.2 |
+    5.2 exercise.scale.b-flat-harmonic-minor.1oct.similar.both.2 | 5.3 exercise.hanon.17.both |
+    5.3 exercise.hanon.19.both | 6.1 exercise.arpeggio7.c-sharp-diminished7.2oct.both |
+    7.8 song.classical.chopin-waltz-op64-2.nifc | 8.1 song.classical.chopin-nocturne-op9-1 |
+    8.1 song.classical.debussy-arabesque-1 | 8.1 song.classical.mozart-rondo-alla-turca |
+    8.3 song.classical.debussy-clair-de-lune | 8.4 song.classical.beethoven-moonlight-iii
+blues.6 st6 band 3.5-7.5 (width 4), 8 option(s):
+    3.97 song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx |
+    4.95 song.pop.boogie-easy-for-beginners.pdmx | 5.4 exercise.boogie.c.root-fifth |
+    6.2 exercise.boogie.c.pinetop | 6.2 exercise.boogie.f.walking-eighths |
+    6.2 exercise.walking-bass.c.blues | 6.4 exercise.turnaround.c.i-vi-ii-v |
+    7.04 song.folk.boogie-woogie.pdmx
+rock.6 st6 band 3.4-7.4 (width 4), 7 option(s):
+    3.4 exercise.ostinato.a.arpeggio | 3.5 exercise.pedal.a |
+    3.6 exercise.accompaniment.broken.a-minor.both |
+    4.6 song.classical.satie-erik-satie-gnossienne-n1.pdmx |
+    6 song.classical.chopin-prelude-op28-20.nifc | 7.1 song.classical.beethoven-moonlight-i |
+    7.4 exercise.pedal.half-pedal.a
+ragtime.5 st5 band 3.2-7.1 (width 3.9), 10 option(s):
+    3.2 exercise.rhythm.syncopated.4bar | 3.3 exercise.rhythm.sixteenths.4bar |
+    3.6 drill.pattern.lh-accompaniment | 3.6 song.folk.greensleeves.waltz |
+    4.13 song.pop.12th-street-rag.pdmx | 5.4 exercise.syncopation.tied-across-bar |
+    6.8 song.ragtime.joplin-augustan-club-waltz | 6.8 song.ragtime.joplin-combination-march |
+    7 song.ragtime.joplin-rose-bud-march | 7.1 song.ragtime.joplin-entertainer
+ragtime.6 st6 band 3.3-7.1 (width 3.8), 12 option(s):
+    3.3 exercise.rhythm.sixteenths.4bar | 3.6 drill.pattern.lh-accompaniment |
+    4.2 exercise.scale.e-flat-major.2oct.similar.both.2 |
+    5.1 exercise.scale.a-flat-major.2oct.similar.both.2 | 5.3 exercise.hanon.11.both |
+    5.4 exercise.syncopation.tied-across-bar | 6.4 song.ragtime.joplin-school-of-ragtime |
+    6.8 song.ragtime.joplin-swipesy-cakewalk | 7 song.ragtime.joplin-easy-winners |
+    7 song.ragtime.joplin-peacherine-rag | 7 song.ragtime.joplin-sunflower-slow-drag |
+    7.1 song.ragtime.joplin-entertainer
+3.4 st3 band 1.5-5.1 (width 3.6), 7 option(s):
+    1.5 exercise.interval-reading.c-position.left.05 |
+    1.5 exercise.interval-reading.c-position.right.05 | 3.4 drill.reading.note-flash-extended |
+    3.4 drill.reading.sight-reading-2 | 4.1 song.classical.beethoven-fur-elise.beginner |
+    5.1 song.classical.petzold-minuet-g-bwv-anh114 |
+    5.1 song.classical.petzold-minuet-g-bwv-anh114.alt
+jazz.6 st6 band 2.92-6.4 (width 3.48), 13 option(s):
+    2.92 song.pop.ray-henderson-bye-bye-blackbird.pdmx |
+    3.2 song.pop.darktown-strutter-s-ball.pdmx |
+    3.25 song.jazz.django-reinhardt-limehouse-blues.pdmx |
+    3.58 song.pop.benny-goodman-louis-prima-rose-room.pdmx |
+    4.02 song.jazz.django-reinhardt-tiger-rag.pdmx |
+    4.2 song.classical.royal-garden-blues.pdmx | 6.1 exercise.voicing7.c.shell |
+    6.2 exercise.walking-bass.c.blues | 6.3 exercise.comping.c.charleston |
+    6.3 exercise.comping.f.off-beats | 6.3 exercise.ii-v-i.c.rootless |
+    6.4 drill.theory.harmonic-dictation | 6.4 exercise.walking-bass.f.ii-v-i
+jam.7 st7 band 3.09-6.4 (width 3.31), 10 option(s):
+    3.09 song.blues.weary-blues | 3.16 song.pop.after-you-ve-gone.pdmx |
+    3.62 song.blues.jazz-me-blues | 3.76 song.blues.riverside-blues |
+    4.01 song.blues.storyville-blues | 4.1 drill.jam.form-tracker |
+    5.2 exercise.blues-scale.b-flat.1oct.both | 5.2 exercise.blues-scale.e-flat.1oct.both |
+    6.4 exercise.turnaround.b-flat.i-vi-ii-v | 6.4 exercise.turnaround.e-flat.i-vi-ii-v
+practice.1 st1 band 1.1-4.4 (width 3.3), 5 option(s):
+    1.1 song.classical.ode-to-joy.rh | 1.1 song.folk.hot-cross-buns |
+    1.2 drill.rhythm.mixed-values | 2.1 exercise.five-finger.c-major.both |
+    4.4 exercise.hanon.01.both
+practice.2 st1 band 1.1-4.4 (width 3.3), 4 option(s):
+    1.1 drill.technique.five-finger-rh | 1.1 song.classical.ode-to-joy.rh |
+    4.1 exercise.scale.c-major.1oct.similar.both.2 | 4.4 exercise.hanon.01.both
+jazz.9 st9 band 5.1-8.4 (width 3.3), 11 option(s):
+    5.19 song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx |
+    6.02 song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx |
+    6.03 song.jazz.the-dave-brubeck-quartet-take-five.pdmx |
+    6.06 song.jazz.george-shearing-lullaby-of-birdland.pdmx |
+    6.3 exercise.comping.e-flat.anticipated | 6.4 exercise.walking-bass.b-flat.ii-v-i |
+    6.89 song.jazz.fats-waller-ain-t-misbehavin.pdmx | 7.3 exercise.stride.e-flat |
+    7.5 drill.theory.roman-numerals-secondary |
+    7.78 song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx |
+    8.4 drill.ear.tune-long
+classical.6 st6 band 3.2-6.4 (width 3.2), 15 option(s):
+    3.2 exercise.cadence.e-flat.voice-led | 3.5 drill.pedal.changes |
+    3.5 exercise.pedal.b-flat | 4.2 exercise.scale.e-flat-major.2oct.similar.both.2 |
+    5.1 exercise.arpeggio.e-flat-major.2oct.both |
+    5.1 exercise.scale.a-flat-major.2oct.similar.both.2 | 5.3 exercise.hanon.12.both |
+    5.3 exercise.hanon.14.both | 5.3 exercise.hanon.16.both |
+    5.4 song.classical.chopin-prelude-op28-7.nifc | 6.1 song.classical.bach-wtc1-prelude-1 |
+    6.1 song.classical.chopin-prelude-op28-4 | 6.2 song.classical.satie-gymnopedie-1 |
+    6.4 song.classical.beethoven-fur-elise | 6.4 song.classical.chopin-waltz-a-minor
+rock.7 st7 band 5.2-8.4 (width 3.2), 7 option(s):
+    5.2 exercise.shaping.a.crescendo | 5.2 exercise.shaping.a.diminuendo |
+    5.2 exercise.shaping.c.crescendo |
+    6.96 song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx |
+    7.2 exercise.octave-scale.a.1oct.both | 8.4 song.classical.beethoven-moonlight-iii |
+    8.4 song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx
+chords-pop.9 st9 band 5.3-8.4 (width 3.1), 12 option(s):
+    5.3 exercise.open-voicing.e-flat.add9 | 5.4 exercise.slash-bass.e-flat |
+    6.1 exercise.voicing7.f.shell | 6.2 exercise.voicing.a |
+    6.3 exercise.comping.c.anticipated |
+    6.65 song.pop.harry-styles-falling-by-harry-styles.pdmx |
+    6.88 song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx |
+    6.88 song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx |
+    7.05 song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx |
+    7.14 song.pop.wowaka-vocaloid-rolling-girl-aa1-4aaa3aa1-4a.pdmx |
+    7.29 song.pop.camille-le-festin-piano-arr-kno.pdmx | 8.4 drill.ear.tune-long
+improv.9 st9 band 5.3-8.4 (width 3.1), 6 option(s):
+    5.3 exercise.open-voicing.c.sus2 | 5.4 exercise.slash-bass.e-flat | 6.2 exercise.voicing.a |
+    7.2 exercise.open-voicing.f.quartal | 7.5 drill.theory.roman-numerals-secondary |
+    8.4 drill.ear.tune-long
+```
+
+#### What was run, and what it said
+
+| | |
+|---|---|
+| `python -m unittest discover -s tools/content/tests -t tools/content` | **915 tests**, OK on the run before the last edit to `difficulty.py`; re-run after it, **914 pass and one fails** — `test_tips.TestShippedTips`, on the same `tips/pedal.md` word count below, which is another agent's in-flight edit. The 10 in `test_difficulty.py` pass in both runs. |
+| `tools/content/tests/test_difficulty.py` with the three readings reverted | **6 of the 10 red**, then the file restored and its sha256 compared — `00-invariants` §2 |
+| every one of the 798 parseable scores re-read with the committed `difficulty.py` | **0 features differ from the pass the splice was computed from**, so the numbers now in `pdmx.json` are what the committed code produces; and 0 scores have a note sitting directly in a measure that also carries voices, the case `voice_lines` guards against |
+| `build.py --offline` | every step before `validate` ok (fetch, the three importers, generate, author, merge, score checks, curriculum, lessons, tips), 226.6 s, 2,061 catalog items; **validate inside it failed on one error that is not this task's** — see below |
+| `validate.py`, run on its own after the band fix and the ladder rewrite | **content validation OK**, 109 lessons (43 song-optional, 4 exempt), 636 items with an estimated level |
+| `rung_audit.py` | 31 MED, 1 LOW, 14 INFO — one more MED than Entry 51, and it is `jam.7`'s band, named in §4 |
+| `ladder_report.py` then `--check` | rewritten (78 lines changed) and up to date |
+| `npx vitest run tests/unit/lessonClaims.test.ts lessonClaimsAboutApp lessonClaimsAboutMusic lessonShape` | **4 files, 422 tests, green** — run twice, before and after the other agent's lesson edits landed, with the same result |
+
+Three builds were run and none of them is a clean line, so all three are here rather than the
+best one. The first failed validation with **34 errors** — 33 band violations and one stale
+ladder — and that failure is reported because its repair is the part that went outside the
+file list. The second failed with **one**: the stale ladder, which `ladder_report.py` then
+rewrote; `validate.py` run on its own immediately afterwards was **OK**, and that is the run
+this task's content is measured by. The third and last build, started after the entry was
+drafted, failed with **one error that is not this task's**:
+
+```
+tips/pedal.md: 257 words, over the 250 limit
+```
+
+It is also the one failing test in the Python suite's second run. `content/tips/pedal.md` was
+last written at 23:54, two minutes after the clean `validate.py`
+above and while that build was running, along with `content/tips/chord.symbol-flash.md` and
+twelve `content/lessons/*.md` — T26's work, in flight in the same tree. **Not touched, not
+fixed, and not this task's to fix**; it is named here so that nobody reads the red build as a
+consequence of the levelling. A `validate.py` re-run afterwards reports that single error and
+nothing else: no band violation, no stale ladder.
+
+#### What is unverified
+
+- **Nothing was heard.** Not one of the 798 scores measured here was played by anybody. Every
+  number is a feature measured off a file, and a measured feature is a proxy for difficulty:
+  nineteen of them, twelve with a weight, fitted to 163 graded songs with a leave-one-out
+  median error of four tenths of a stage.
+- **The app's half of the model has not been corrected and this task could not touch it.**
+  `app/src/score/difficulty.ts` still counts what OSMD gives it without either of these two
+  filters, and `app/tests/fixtures/levelling.json` still holds the pre-correction numbers
+  because `export_levelling_fixture.py` writes into `app/`. `app/tests/unit/difficulty.test.ts`
+  holds the two ports to 0.2 of a stage and **was not run**; it is very likely red, or will be
+  once the fixture is regenerated. T26 owns `app/`. This is the first follow-up below and it
+  is the one that matters.
+- **The 73 single-staff lead sheets are still measured on a melody nobody plays alone.** What
+  the learner does at the piano is invent a left hand from the chord symbols. Before this task
+  those symbols were measured as a *sounding chord*, which was wrong in a way that inflated
+  them; now they are measured as nothing, which is wrong in a way that deflates them. The
+  second is the better error and it is still an error.
+- `song.classical.mozart-k545-i.alt` was not measured; it does not parse, as in Entry 48 and
+  Entry 51.
+- **168 of the 798 parsed scores have a voice id that appears on both staves.** That is either a voice
+  that crosses staves — the case `extractScoreModel`'s `voiceHomeStaves` histogram exists for —
+  or an edition that restarts voice numbering per staff. **This run did not distinguish the
+  two**, and `difficulty.py` measures both by the staff the notes are printed on.
+- The above verdicts at stages 6 to 9 are still against an all-classical anchor set, and stage
+  9's are against eight Chopin and Liszt pieces. Entry 51 sets this out and nothing here
+  changes it.
+- `rung_audit.py`'s 31 findings are judgements about rungs. They were read and listed; only the
+  18 band endpoints in §4 were acted on, and those because `validate.py` failed.
+- The 224 spliced levels were not looked at one piece at a time. They are the output of one
+  formula over one corrected measurement, checked in aggregate (the residual table, the fit)
+  and at the extremes (the twenty largest moves, read individually), not per row.
+
+#### Follow-ups, in the order they are worth doing
+
+1. **Port both filters to `app/src/score/difficulty.ts` and regenerate
+   `app/tests/fixtures/levelling.json`** with `export_levelling_fixture.py`. Until that
+   happens the two implementations of one formula disagree, which is the exact thing
+   `difficulty.test.ts` exists to prevent. Both paths are under `app/`.
+2. **`tools/content/import_pdmx.py` still hardcodes `level_source="estimated"`** and never
+   reads the row's own `levelSource`. Entry 51's second follow-up, untouched: until it is
+   read, no hand judgement about a quarried piece can reach the app.
+3. **`docs/decisions/2026-09-06-p14-pdmx-quarry.md` prints the old weights table**, with
+   ledger-line ratio at +1.06 as the largest weight. It is now neither the largest nor present.
+   The decision record is a record of a decision, so it may be right to leave it and date the
+   table instead — but it is currently the only prose in the repository that describes the
+   model's weights and it is wrong.
+4. **The 93 banded rows** (38 Joplin from `kern.json`, 55 `.nifc` Chopin) are the only
+   estimated levels left that no model produced. `import_kern` derives
+   `level_source = "estimated" if banded else "judged"`, so giving one its own `level` makes it
+   judged with no code change. The model disagrees with the band by more than a stage on 14 of
+   them and reads every Chopin étude low.
+5. **`hymns` (stage 3, now 2.6–7.3, 14 songs)** is the rung Entry 51's third follow-up is
+   about, and it got wider here rather than narrower. Six of the 34 above(n≥2) items are on it,
+   three of them also sit on a higher `hymns` rung, and `i-give-you-my-heart` (now 6.73, above
+   on 12 of 19 features at stage 3) sits on `hymns` and on no other rung in the repository.
+6. **The judged set still has no latin song and nothing outside classical above stage 5.**
+   Entry 48 and Entry 51 both record it.
+
+#### The `CLAUDE.md` checklist, run against this entry
+
+1. **Absences.** None stated bare now, but **the first draft stated two badly and the rule
+   caught both.** "No judged latin song" was Entry 51's absence repeated as though this run had
+   measured it, when all this run had was a residual table that does not print tracks with
+   fewer than five anchors — silence, not zero; it is now three filters and a count from the
+   other side, above. "No reader of `levelFrom`" rested on one grep that respects `.gitignore`
+   and therefore could not see `build/pdmx/picks-table.json`; a second search shaped differently
+   found that file, the conclusion survived, and the sentence that described the evidence did
+   not. Both are written out where they occur. "No latin residual" is a count over the 163 parsed
+   anchors by `tracks` and a second, differently shaped filter over `genre`, both quoted as
+   counts. "No chord symbol feature exists in the model" is `FEATURE_NAMES` read out, and a
+   test asserts it. "`bars`, `shortestValue`, `voicesPerStaff` and `keyAccidentals` moved on no
+   row" is a count over the 542-row plan, not an impression.
+2. **Plurals.** The 34 above(n≥2) and the 48 above(1) are enumerated one line each with their
+   own evidence. The 18 band changes are enumerated. The 22 wide rungs are enumerated with
+   every option's level. The claim that the 157 inside-and-below items are Entry 51's minus and
+   plus three is a **set difference computed between two files**, and the three are named.
+   **This rule caught two false plurals in this entry.** (a) "span and simultaneity are now
+   measured per voice" was written as though it were a fix, and measuring says it changes no
+   number on any row, because a music21 `Chord` already belongs to one voice; it is now written
+   as the code stating a rule it already followed, and the test that covers it is marked as one
+   that was never red. (b) "the model reads virtuoso Chopin low" rested on **two** études and
+   was written of the repertoire; enumerated afterwards it is 17 of 17, and the enumeration
+   turned up the thing the sentence had hidden — six of the 17 are `judged`, so the model is
+   disagreeing with a person and not only with an opus band. A third fault in the same family
+   was a **count**, not a plural: "eight Czerny studies lose `hand-crossing`" is six, and the
+   35 flag changes are now given as 21 and 16 by flag.
+3. **The proxy.** Named in the first paragraph and again in *unverified*: a measured feature is
+   a proxy for difficulty, and this entry is about two places where the proxy was measuring
+   something that is not even in the music. The new proxy in this entry is the **aggregate**:
+   224 levels were changed and 20 of them were looked at individually.
+4. **Green is not done.** The verification table is above and so is the list of what it does
+   not cover — in particular `difficulty.test.ts`, which is the one test that would fail on
+   this change and which could not be run.
+5. **The reason, not the outcome.** Two places where the outcome would look the same either
+   way: the above(n≥2) list is unchanged, and it is unchanged because the anchors moved with
+   the items rather than because nothing moved; and nothing was re-levelled by the comparison,
+   for a reason that is now measured (a −0.35 and a +0.18 against a 0.400 error) instead of
+   circular.
+6. **The artefact re-opened.** Entry 51's own lines were parsed out of `pending-review.md` to
+   build the comparison, not recalled. `app/src/score/difficulty.ts` and
+   `app/src/score/extractScoreModel.ts` were opened before the hand-assignment decision was
+   made, not assumed. The *Black Bottom Stomp* MusicXML was unzipped and read before Entry 51's
+   sentence about it was contradicted.
+7. **Other readers of the field.** `features` on a quarried row: `import_pdmx.concepts_for`
+   (the three thresholds, 35 rows affected) and `pdmx/quarry.py` (re-estimates from stored
+   features on a reuse). `level`: `validate.py` (`level_band_errors` — which failed,
+   `CORE_SONG_REACH`, `estimated_by_stage`), `ladder_report.py`, `rung_audit.py`,
+   `candidates.py`, `fit_level_model.py`, and on the app side `curriculum/selectors.ts`,
+   `data/db.ts`, `data/levelOverrides.ts`, `ui/screens/LessonScreen.ts`, `LibraryScreen.ts` and
+   `ui/assignSheet.ts`, which print the number to the learner. `levelBand` is the consumer that
+   turned this task into an 18-file change and it was found by running the build, not by
+   reading. `levelFrom`: no reader.
+8. **The letter.** The restatement is the third paragraph. It is what turned "splice the new
+   levels" into "and keep everything that reads them true", which is where the curriculum bands
+   came from.
+
+Nothing committed. `app/` never written by this task; `app/public/content` is the content
+build's output and was rewritten by it, which the brief says to expect.
+
+---
+
+### Entry 52 — T26: the first day walked as one chain, old progress booted by new code, and the two screens the catalog grew (2026-09-22)
+
+**Restated without the brief's words:** before he opens this for real, prove that somebody
+starting from nothing can get all the way to a recorded pass without a screen contradicting
+another; that a year of practice written by an older build still reads as what it was; and
+that the two lists which have grown tenfold still put something on the glass quickly.
+
+**Nothing here was heard.** Every assertion below is about a row in the database, a string on
+a screen or a span of milliseconds. The run in item 1 is note-on bytes through a fake cable.
+
+#### 1. A first day, as one chain, across a reload — and the fault it found
+
+`app/tests/e2e/first-day.spec.ts`, new. Empty storage → the setup tour walked to *Finish* and
+recorded as finished → Plan's *Placement test* → the drill's own rung → every item passed →
+the unit the drill's own data names → *Start here* → *Placement recorded* → Plan's *Next up*
+→ that rung's lesson → the shortest playable thing the rung offers → a Wait run fed through
+the MIDI mock → the summary → the badge on the rung → **reload** → Plan, Today, Skills and
+the Library each asked separately whether they agree. Portrait at 342 × 740 and then the same
+sideways at 740 × 342.
+
+Every destination is checked against **what the control itself declared**, the way
+`lesson-tools.spec.ts` does: the placement's `data-unit` against the catalog row's own
+`passUnit`, Plan's `data-lesson-next` against the lesson section's `data-lesson`, the option
+row's `data-item` against the score route. The notes are asked for rather than carried —
+`window.__pianopath.scoreRun().expected` is what the app is waiting for at that instant — so
+the spec plays whichever piece the rung turns out to offer and cannot go stale when the
+content moves. The one thing it does choose is *which* option: the fewest printed bars among
+the rung's playable ones, so the chain is about the pass and not about endurance.
+
+**What it found.** A flawless Wait run at 100 % of tempo, with the summary sheet in front of
+the learner saying *Mastered*, was stored as `status: "started"`, `bestTempoPct: 0`,
+`passedOn: []`. The rung never went green.
+
+**The cause, traced rather than guessed.** `Router.setRoute`'s dedupe compared `tab`. A
+*pushed* route — score, chart, drill, lab — writes no tab into its hash, so
+`parseHash('#/score/…')` has to guess one and answers `DEFAULT_TAB`, while `navigateScore`
+keeps the tab the learner was on. Every `navigate*` sets `location.hash` **and** applies the
+route itself, so the browser's `hashchange` echoes the same URL a task later; the dedupe is
+what should swallow that echo. From **Today** the two guesses are the same word and it does.
+From **Plan or Library they are not**, so the route was emitted twice and the Score screen was
+built **twice**.
+
+That is not cosmetic, because `mountLazyScreen` (`app/src/ui/AppShell.ts:104`) calls the
+screen factory *inside* the dynamic import's `.then` and only then checks whether its holder
+is still connected. The orphan screen's `load()` therefore runs to the end, builds a
+`ScoreSession` and subscribes it to the shared MIDI source. Two screens then listen: the one
+on the glass is the one ▶ belongs to, and the invisible one starts a run of its own on the
+first note it hears, at the tempo the piece opened at. Both finish, both call `recordRun`,
+and because the second write starts from the same unread progress row it overwrites the
+first — with a run recorded at the default 70 % of tempo and, because it began a note late,
+with a wrong note in it.
+
+**Measured, three ways of opening the same piece** (a probe spec, since deleted):
+
+| how the piece was opened | sessions recorded | progress row |
+|---|---|---|
+| `#/lesson/1.1`, then the option row tapped | **2** — tempoPct 100, and tempoPct 70 with one wrong note | `started` |
+| the same, `location.hash` set by hand | 1 — tempoPct 100 | `passed` |
+| `page.goto('#/score/…')` | 1 — tempoPct 100 | `passed` |
+
+and with temporary logging inside `ScoreScreen`: `new ScoreSession, count now 1` then `2`;
+`startRun tempoPct 100` then `startRun tempoPct 70`; `showSummary 100` then `showSummary 70`.
+
+**The fix** is one guard at the top of `setRoute`:
+
+```ts
+if (routeToHash(route) === routeToHash(this.current)) return;
+```
+
+The hash is the app's own serialisation of *which screen, with what*, and it leaves the tab
+out of a pushed route deliberately, because the tab is only which nav item is lit. Comparing
+on it is the question the field-by-field guard underneath was always trying to ask; that
+guard is left in place, since it is the one that explains itself.
+
+**Red first.** With the guard disabled and the app rebuilt, both orientations fail:
+
+```
+the pass is on the sheet and not on the rung
+locator('.list-row[data-item="exercise.inversions.c-major.both"] .badge[data-kind="passed"],
+         .list-row[data-item="exercise.inversions.c-major.both"] .badge[data-kind="mastered"]')
+  resolved to 0 elements
+```
+
+— and one of the two also times out on the click after it, because the orphan run leaves the
+chain hanging. Restored, rebuilt, both green.
+
+**Who else reads the route.** `grep -rn setRoute src/ tests/ --include=*.ts` returns twelve
+call sites and **no caller outside `router.ts`**: the `hashchange` listener at line 548 and
+the eleven `navigate*` methods (567, 579, 586, 625, 635, 642, 649, 669, 676, 694, 701); the
+three other hits are prose — two comments in `router.ts` and one in `drills.spec.ts`, which
+names this exact echo (*"the listener sees the score hash twice, `setRoute` finds nothing
+changed"*) and was right about Today, where it is tested. Its output goes to
+`Router.subscribe`, whose subscribers are `AppShell`'s screen mount and the tab highlight. So
+the regression question is "does any navigation stop working", and it was asked rather than
+argued: `tests/unit/router.test.ts` **49/49**, and fourteen browser specs — `app-shell`,
+`update.tab-nav`, `doors`, `lesson-tools`, `modes-placement`, `plan` (60 tests) and
+`library`, `lesson-flow`, `modes-duet`, `modes-chart-from-a-lesson`, `modes-ladder`,
+`modes-simon`, `score.run`, `carry-overs` (51 tests, 2 skipped). All green.
+
+**Not fixed, and it should be.** `mountLazyScreen` builds the screen before checking whether
+its holder is still connected, and `ScoreScreen`'s load creates its session *after* the
+factory returns — so a disposer registered at factory time sees `session === null` and
+disposes nothing. Any future double-emit, from any cause, would leak a live session onto the
+shared input again. The honest fixes are to load the module and then build the screen (a
+signature change at every `mountLazyScreen` call site) or a `disposed` flag inside
+`ScoreScreen`'s load, checked before the session is made. Neither was done: the router guard
+removes the only path that reaches it today, and both are bigger than this brief's remit.
+
+#### 2. Progress from before this week, booted by this week's code
+
+`app/tests/unit/legacyStorage.test.ts`, new, a sibling of `dbUpgrades.test.ts` rather than an
+extension of it, because it asks a different question. `dbUpgrades` walks every *version* the
+database has shipped, which is what `oldVersion` guards. The failure it cannot see is the one
+where the schema did not move at all: **a row of the right shape, written by an older build,
+missing a field this build has since started writing.** No upgrade block fires for that.
+
+Two things measured about `2e08a0a` rather than assumed: `git diff 2e08a0a -- app/src/data/db.ts`
+is **empty**, and so is the same diff for `progressStore.ts`. The stores, the key paths, the
+indexes and `DB_VERSION` (6) are identical to today's, so the snapshot is written through the
+app's own `openDatabase()` and the difference is entirely in what was *put* into it. What that
+build did not write is what the rows leave out: `SessionRow.lessonId` (nothing filled it until
+2026-09-21, Entry 24 item 1), `PlanRow.placement` (no writer until the same day),
+`ImportRow.bytes`/`lessonIds`/`concepts`/`origin`, and a folder listing still held inline in
+`folderLibraries.scores`.
+
+Fifteen tests, and what each is for:
+
+- **Settings live only in the database**, as on a phone whose localStorage was cleared:
+  `hydratePersisted()` restores `pianopath.settings` and `pianopath.setup`, the stored zoom
+  and count-in survive, and the tour is not offered again to somebody who finished it.
+- **Every stored pass is still a pass**, field by field — status, best accuracy, best tempo,
+  attempts, pass dates, minutes — and a measured pass is not given a `selfPassed` it never
+  had, which would badge the owner's own run as his own word for it.
+- **A pass is not re-judged under a rung that now asks for more.** The rung is *derived* from
+  the build — the first one whose `mastery.minAccuracy` exceeds the legacy run's 0.93 and
+  which one exercise and one song can complete — and `lessonComplete` still says it is done.
+  That is Entry 24 item 1's claim (*"a threshold change does not re-judge history"*) run
+  rather than restated.
+- **No stored row carries a step count.** Entry 50 fixed `correctSteps`, which was nought on
+  every Tempo run the app ever recorded; the reason that is safe is that nothing persisted it.
+  Asserted positively, on the keys of the rows themselves, on sessions and on progress, rather
+  than by citing the type. The Tempo row's accuracy, tempo and wrong-note count come back
+  exactly as written, and its `lessonId` is `undefined` rather than invented.
+- **The stored weekly goal**, deliberately not `DEFAULT_WEEKLY_GOAL_MINUTES`, because a default
+  read back where a value was written is invisible unless the two differ.
+- **A plan with no `placement`** keeps its track order and recommends from it, rather than
+  matching `startAt` against an empty string and holding every rung back.
+- **An import written before `bytes` existed** reports its real size, encoded from the file by
+  `importSummaries`, and keeps `levelSource: 'judged'` from P15's migration.
+- **A folder listing in the old inline shape** is counted correctly before anything splits it,
+  keeps `listedFrom: 'walk'`, and is adopted into `folderScores` plus an index on first read.
+- **The level override and the shelf piece** survive, and the shelf piece keeps the
+  `book.<book>/<piece>` id that progress and sessions are keyed by.
+- **The skill rows** come back in the state they were written in, and a row with no
+  `lastReviewedAt` is not read as thirty days stale. The concepts are taken from the rung, not
+  invented: a concept id no lesson names gets no row on the Skills screen at all, so a snapshot
+  using one would have proved nothing. The whole file pins `Date` (only `Date`) to a fixed day,
+  because otherwise the snapshot would quietly start failing a month from now for reasons that
+  have nothing to do with the code.
+- **Five screens mounted for real** over those rows, against the **built** curriculum and
+  catalog — a `fetch` stub serves `public/content`, so `allItems()`, the import overlay, the
+  shelf overlay and the level overrides all run as they do in the app. Plan draws its stage
+  list and its *Next up* card, and the rung the legacy pass completed carries the *passed*
+  badge with its stage expanded by a real click, not skipped when the row is not there. Today
+  says what it is working on and prints the stored goal. Progress shows the stored goal in its
+  own control. Skills pages to each stored concept and reads back its state. The Library finds
+  the mastered piece through its own search box and lists the old import.
+
+**A gap named and not closed:** `dbUpgrades.test.ts` loops `from` over 1..5 while
+`DB_VERSION` is **6**, and the `folderLibraries` row it writes carries `scores: []`, so the
+version-6 split is never exercised with any data in it. The new file covers the inline-listing
+adoption, which is the part that would lose rows; extending `dbUpgrades` itself to 6 is still
+open.
+
+#### 3. The two screens the catalog grew
+
+`perf.spec.ts`, two tests appended. Neither screen had a budget, and rather than invent a
+number measured on this laptop both are held to a **relationship**: a screen of text rows must
+not cost more than engraving two bars of music, which is the most expensive first paint `01`
+§6 has a figure for (150 ms on the S25). The gate is that figure times the same ×4 throttle
+the tests above it use, which is the same arithmetic the 2-bar render test does. `01` §6 now
+states this.
+
+What is measured is **time to the first row on screen** — in the document *and* laid out,
+because a row that has not been positioned is not on a screen — taken inside the page, the way
+the input-to-colour figure is, so it is the span the app spends and not a round trip through
+the harness. A change that draws no rows returns nothing and the test says so rather than
+reporting a fast measurement of nothing.
+
+- **The Library, every one of its sixteen genre filters**, not a sample: the options are read
+  off the control and checked against the catalog's own `tracks`. Then the search box, on four
+  queries, the one-letter one being the worst case because it matches most of the catalog. One
+  assertion at the end names whichever was slowest, so a failure says which control is the
+  problem. Measured 2026-09-22: the slowest genre was `blues-boogie` at 51.2 ms and the worst
+  keystroke `"e"` at 43.3 ms, each about a twelfth of the gate.
+- **A lesson page with the most options against one with the fewest**, both read from the
+  build (`classical.4.shelf`, 52 options, against `0.4`, 1) and both measured warm and from
+  another screen, so what is timed is the page and not the content fetch. Measured: 22.3 ms and
+  82.3 ms with all 52 rows drawn — a 60 ms difference, inside the gate, which is what says the
+  page is not rendering every option before showing any.
+
+**Neither was over, so nothing was fixed here**, and the reason the Library is cheap was read
+before it was timed rather than after: `draw()` filters a cached array, and `allItems()` runs
+only on load and on an imports change. The brief's two suspects — a filter that re-reads the
+catalog, a page that renders everything before the first row — are both absent.
+
+#### What was run
+
+`npx tsc -b --noEmit` clean. `npm run lint` clean. `npx vitest run`: 193 files, 4,963 tests,
+**4,945 pass and 18 fail**. Playwright, one spec at a time on port 4173 after
+`npm run build:app`: `first-day.spec.ts` 2/2, `perf.spec.ts` 6/6, and the fourteen-file
+regression net above, 111 tests.
+
+**The eighteen failures are not this task's.** All are in `difficulty.test.ts`, which compares
+the app's estimator — reading `content/sources/level-model.json` — against the frozen fixture
+`app/tests/fixtures/levelling.json`, untouched since 2026-09-06. T25 has modified
+`content/sources/level-model.json` in this same working tree (new bias, new weights,
+`maxLeapLeft` and `ledgerRatio` dropped, `maxLeapRight` and `ornaments` added) and
+`tools/content/difficulty.py` with it. Nothing changed here is imported by that file, and
+`content/` and `tools/` belong to that task, so they were left alone. **Whoever owns the
+re-fit has to regenerate `levelling.json` or the eighteen stay red** — the file's own
+docstring names the regenerator, `tools/content/export_levelling_fixture.py`.
+
+That "nothing I changed is imported by that file" was a claim, so it was checked rather than
+asserted: `difficulty.test.ts` imports `helpers/fixtures`, `src/score/extractScoreModel`,
+`src/score/types` and the difficulty port, and
+`grep -rln "router\|AppShell" src/score/ tests/unit/helpers/` returns **nothing**.
+
+#### What is unverified
+
+- **Everything about sound.** The Wait run is bytes through a mock; the summary says the notes
+  were right, not that the piece is the piece.
+- **The tour's pictures.** `first-day.spec.ts` walks the eight steps and asserts each one's
+  identity and its progress line; it does not look at them. `setup.spec.ts` photographs them
+  and still does.
+- **One piece, one rung.** The chain opens the shortest playable option on whichever rung the
+  placement leads to — today `exercise.inversions.c-major.both` on a rung offering twenty
+  options, nineteen of them with a file. That the same chain holds for a long piece, for a
+  two-hand piece with a repeat, or for a rung whose options are all imports, is not tested.
+- **The placement's pass branch only.** Every item is answered *pass*; the seven fail branches
+  each name a different unit and none of them is walked here. `modes-placement.spec.ts` walks
+  the screen, not the branches.
+- **The double-mount beyond the Score screen.** The same route echo built the *chart*, the
+  *drill* and the *lab* twice as well, by the same arithmetic, and the guard fixes all of them
+  — but only the Score screen's consequence was measured, because only it keeps a session on
+  the shared input. What the other three were doing twice was not looked at.
+- **The orphan-screen hazard** described under item 1 is open, and no test covers it.
+- **The perf figures are a throttled laptop**, as the file's own header says. The number that
+  settles either budget comes from the phone.
+- **`legacyStorage` is jsdom.** Five screens draw; whether they *look* right over those rows is
+  the gallery's question and was not asked.
+
+#### The `CLAUDE.md` checklist, run against this entry
+
+1. **Absences.** The one absence that matters is "no stored row carries a step count", and it
+   is stated as the keys of the rows that were read, not as a property of the schema. The two
+   `git diff 2e08a0a` results are named as commands with their output. Where a search returned
+   nothing — no rung in the build asks more than the legacy pass — the test throws with that
+   sentence instead of quietly proving nothing.
+2. **Plurals.** "Every genre filter" is sixteen, each printed with its own number. "Fourteen
+   specs" is enumerated. "Five screens" is enumerated. "All 18 failures" is one file, named,
+   with the cause diffed. The three ways of opening a piece are a table with three rows.
+3. **The proxy.** Named twice: the ×4 throttle stands for a phone and is reported as that; and
+   a synthetic MIDI run stands for playing, which is why *nothing was heard* is the second
+   line of this entry.
+4. **Green is not done.** The unverified list is longer than the results, and it includes a
+   hazard I chose not to fix.
+5. **The reason, not the outcome.** The router guard is right because the hash is the app's own
+   identity for a screen and the tab is not in it — not because a test went green. The
+   evidence is the three-row table, where the only difference between the passing and failing
+   rows is which tab the learner was on.
+6. **The artefact re-opened.** Entry 24 item 1 and Entry 50 were read in full before item 2 was
+   written, and item 2's third test is Entry 24's own sentence made mechanical. `2e08a0a`'s
+   `progressStore.ts` was checked out and diffed rather than recalled.
+7. **Other readers of the field.** `setRoute`'s consumers are enumerated under item 1, and the
+   answer was tested rather than argued.
+8. **The letter.** The restatement is the second paragraph of this entry.
+
+#### What the checklist caught after this entry was first written
+
+Two things, and both are the same shape — a claim reported as a check.
+
+1. **The Skills assertion was vacuous.** It read the whole of `#skills-status` and asked
+   whether the line *contained* the stage number. That line is
+   `76 of 266 concepts · stages 3 and 4`, so the counts can answer by accident: `2` is in
+   `266`, and the assertion would have passed over a screen that had opened on stages 8 and
+   9. It now parses the tail after `stage`/`stages` into numbers and asks whether the stage
+   Plan and Today named is among them, and it prints what it parsed
+   (`Plan and Today say stage 4; Skills opened on 3, 4`). **Proved non-vacuous**: with the
+   expectation shifted to `stage + 5` both orientations fail with *"Skills opened somewhere
+   other than stage 4"*; restored, both green.
+2. **"Who else reads the route" was read, not searched**, and **"nothing I changed is
+   imported by `difficulty.test.ts`"** was inferred from that file's import line rather than
+   grepped. Both are now commands with their output, above, and the grep turned up something
+   worth having: `tests/unit/router.test.ts`, 49 tests dedicated to this exact comparison,
+   which the first draft of this entry never mentioned running.
+
+#### A rule broken, and the correction
+
+To prove the red line I ran `git stash push -- app/src/router.ts`. `00-invariants` §5 says
+agents do not stash, because several share this tree and another task was mid-edit in it. I
+popped it in the next command and confirmed `app/src/router.ts` was still modified and the
+stash list empty, then proved the red line the way it should have been done in the first
+place: by editing the guard to a no-op in the editor, rebuilding, running, and putting it
+back. Nothing was lost. The correction is the method, written down here because the rule
+existed and I read it and still reached for git.
+
+#### Files
+
+`app/src/router.ts` (one guard, with its red test); `app/tests/e2e/first-day.spec.ts` (new);
+`app/tests/unit/legacyStorage.test.ts` (new); `app/tests/e2e/perf.spec.ts` (two tests);
+`docs/01-architecture.md` §6 (the relationship above); `docs/08-test-map.md` (three lines);
+this entry. Nothing committed. `content/` and `tools/` untouched.
+
+### Entry 55 — T28: the tips' and the lessons' wording, read one at a time (2026-09-23)
+
+This covers two sections of the T28 brief and no others: *And every string the learner
+reads* as it applies to `content/tips/*.md`, and *The lessons' wording too* for all 109
+lessons. The strip, the first-sight cards, the Guide page, the start experience and the
+Library's import delay belong to other agents; nothing under `app/` was touched.
+
+**Nothing here was heard or seen in a browser.** Every judgement below is a file read
+against another file read. Whether any of these sentences *teaches* is the question none
+of it answers.
+
+#### What was read, and the verdict per file
+
+**The corpus is the instrument, not a sample.** All 27 files in `content/tips/` and all
+109 in `content/lessons/` were opened one at a time and judged paragraph by paragraph
+against the brief's four tests: does a first-week learner know every word; does it say
+what to do or what happened rather than what the code did; does it use the one name
+`04` §5 gives the thing; is it a sentence a teacher would say aloud.
+
+| | left | tightened | rewritten |
+|---|---|---|---|
+| tips (27) | 25 | **2** | 0 |
+| lessons (109) | 53 | **56** | 0 |
+
+**Nothing was rewritten**, and that is the finding rather than an omission. The corpus is
+already in one voice — short sentences, second person, a **Common mistake** and a **How
+you'll know you've got it** at the end of nearly every file. What fails the four tests is
+almost never the writing; it is a *name*. Most of the fifty-six changes below are a lesson
+calling a control, a screen or a track something the app does not call it — the ten
+changed only for a bare percentage, the eight only for "a time round" and the one only for
+a rung id are the exceptions, and they are named as such in the table. That is why every
+change is a clause or a word and none is a paragraph.
+
+`git diff --numstat` over the 58 changed files is **113 insertions and 113 deletions** —
+every line that went out came back, so nothing was cut and nothing was added wholesale.
+
+**Facts are unchanged.** Every sentence that states something about the music or the app
+was kept as it stands, including two that look wrong (recorded as suspects below). Where
+a rewrite touched a sentence carrying a fact — `jazz.4`'s repertoire line — every fact in
+it was carried across and named in the table.
+
+#### The eleven faults, each found by a sweep rather than by reading
+
+Each was noticed in one lesson, then swept for across all 109 so the fix is the corpus's
+and not one file's.
+
+1. **"the ⋯ menu" — a third name for a thing the screen calls *Controls*.** The sheet
+   behind `⋯` is drawn with the heading `Controls` (`ScoreScreen.ts:817`) and the button's
+   own label is `More controls` (`:820–821`). Two searches over `app/src` for a *drawn*
+   string "Menu" — `'Menu'`/`"Menu"`/`>Menu<`, then a case-insensitive `menu` over
+   `ScoreScreen.ts` with the internal `score-menu` / `menuRow` / `menuStash` spellings
+   filtered out — returned nothing: `menu` exists in that file only as class and variable
+   names. **Thirteen occurrences of "the ⋯ menu" across eleven lessons**, plus four more
+   places naming the same sheet a fourth and fifth way — `4.6` twice as "the score menu",
+   `jam.md` as "under ⋯", `classical.9` as "the rows under the music" (which is where the
+   keyboard strip is, not the rows). All seventeen now say *the ⋯ controls*.
+2. **"the *Hands* row" — a control that does not exist.** The rows in the `⋯` sheet are
+   Start again, Input, Rhythm only, Section, Chart, Loop, Ladder, Metronome, Bars in
+   window, Size, Layout, Keys, Sound, Duet, Blind and Perform (`menuStash`, `:1184–1206`),
+   and the Tempo sheet holds Speed and Beats per minute (`:895–896`). The hands are `R`
+   `L` `Both` **on the control bar** (`:130–132`) — which is what `0.3` itself teaches
+   ("**R and L** on the control bar choose the hand you play"). **Eight lessons** named a
+   row that is not drawn — `3.6`, `classical.7`, `holiday.7`, `hymns.4`, `jazz.6`,
+   `latin.7`, `ragtime.7`, `technique.5` — and all eight now name the control that is.
+   This is `00` §1's "a control that looks pressable and is not" in prose: a learner who
+   goes looking for *Hands* in the sheet will not find it.
+3. **A bare percentage.** **Eighteen** of them, in **seventeen** lessons, said "at 90 %"
+   with no word on it (`1.1` had two). Each now says "at 90 % **accuracy**". Every
+   percentage in the corpus was then listed and read line by line: the remainder all carry
+   their word (`90 % clean changes`, `95 % accuracy`, `80 % of the written tempo`).
+4. **A tempo expressed as anything but the summary's "of written".** The run summary
+   prints `Tempo — N% of written` (`ScoreScreen.ts:2258`) and the Speed row's hint says "A
+   share of the written tempo". Six lessons disagreed with it in three different
+   spellings — `1.1`, `1.3`, `1.4` and `2.1` as "of the piece's own", `0.3` as "the
+   piece's target", `4.6` as "90 % tempo" — and `0.3`'s closing line said a bare "60 %".
+   All now say "of written" or "of the written tempo".
+5. **"Tempo %" and "*Tempo*" for the slider.** `0.3` headed a paragraph "**Tempo %**
+   slows the click" and `jazz.3` said "*Tempo* slows the tune down". The row is **Speed**
+   and it re-times the whole run, not only the click (`04` §5: "The tempo slider re-times
+   the run when the finger comes off"). Both now say *Speed*. A grep for `\*Tempo\*|Tempo %`
+   over the corpus now returns nothing.
+6. **body "unit" where the app says "rung".** The app draws *This rung has N options*
+   (`LessonScreen.ts:241`), *More for this rung* (`:120`) and *Which rung*
+   (`assignSheet.ts:85`); it never prints the word "unit" at a learner. Seven occurrences
+   in five lessons, all changed. (The front-matter `unit:` key is not shown and is left.)
+7. **"this module" names the wrong family.** `PlanScreen.ts:94` draws the group heading
+   "Mini-modules — one rung each", so on the Plan screen a *module* is a one-rung track.
+   `practice` has five rungs and `jam` has four, so both are ladders. Two occurrences,
+   both changed to "this track".
+8. **"at the end of a time round".** Eight lessons said it, five said "each time round".
+   The majority form is also the one that can be read aloud; the eight now agree.
+9. **"Stage 3.2" — a rung id in front of a learner** (`00` §1). Two occurrences,
+   `chords-pop.3` and `classical.4.shelf`, both "Stage 3" now, which is what the rest of
+   the corpus does. A second, differently shaped search for `track.N` ids in prose
+   returned only front-matter `unit:` lines.
+10. **"the sheet" and "the summary sheet" for the run summary.** `04` §5 uses *sheet* for
+    the music ("double-tap the sheet to mark them" is the Loop row's own hint, and two
+    lessons use it correctly that way). Three technique lessons used it for the score at
+    the end of a run; all three now say *the summary*, which is what `classical.8` already
+    said.
+11. **Two words from outside the corpus's vocabulary.** `jam.6` had "Four **crotchets** a
+    bar" — the only British note name in 109 lessons and 27 tips, two greps — where every
+    other file says "quarter note"; `rock.4` had "whatever its **difficulty number** says"
+    where the row prints `L4.2` and `rock.5` says "harder than the level suggests".
+
+#### The table, grouped by lesson
+
+Only changed files appear below. **The 53 left are named in full afterwards**, because
+"53 left" is a claim about 53 files and a bare count is not evidence (`working-rules`
+§2.2). `L` is the line in the file as it stood before the change.
+
+| lesson | line | before | after | why |
+|---|---|---|---|---|
+| **0.3** *(tightened)* | 21 | `*Metronome* in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| | 23 | `tempo % is how fast you ran relative to the piece's target` | `tempo is how fast you ran as a share of the written tempo` | faults 4 and 5; the summary's own words |
+| | 25 | `at 80 % of target tempo` | `at 80 % of the written tempo` | fault 4 |
+| | 29 | `turn *Duet* off in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| | 32 | `**Tempo %** slows the click.` | `**Speed** slows the whole run.` | fault 5. It re-times the run; the click goes with it |
+| | 52 | `A few things the Score screen can do that you will want further up the ladder.` | `Things the Score screen can do that you will want later on.` | *ladder* meant the curriculum here and the *Ladder* control two sentences later; and the words paid for the lines above |
+| | 53 | `*Rhythm only* (in the ⋯ menu)` | `(in the ⋯ controls)` | fault 1 |
+| | 66 | `in Keep tempo at 60 %,` | `at 60 % of written,` | fault 3, in the summary's exact wording (the lesson is at the 600-word ceiling) |
+| **0.4** *(tightened)* | 23, 25, 40 | `that unit` ×2, `a starting unit` | `that rung` ×2, `a starting rung` | fault 6 |
+| **1.1** *(tightened)* | 14 | `Every tune in this unit` | `on this rung` | fault 6; the same file says "this rung" at line 40 |
+| | 45–46 | `at 95 %, then in Keep tempo at 90 % with the tempo at 80 % or more of the piece's own` | `at 95 % accuracy, then … at 90 % accuracy with the tempo at 80 % or more of the written` | faults 3 and 4 |
+| **1.2** *(tightened)* | 53 | `at 90 % in *Keep tempo*` | `at 90 % accuracy in *Keep tempo*` | fault 3 |
+| **1.3** *(tightened)* | 45–46 | `at 90 % with the tempo at 80 % or more of the piece's own` | `at 90 % accuracy … of the written` | faults 3 and 4 |
+| **1.4** *(tightened)* | 19 | `In this unit the hands never play together` | `On this rung` | fault 6 |
+| | 49 | `leave *Duet* on in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| | 53–54 | `at 90 % with the tempo at 85 % or more of the piece's own` | `at 90 % accuracy … of the written` | faults 3 and 4 |
+| **1.5** *(tightened)* | 60 | `at 90 % or better` | `at 90 % accuracy or better` | fault 3 |
+| **2.1** *(tightened)* | 24 | `In this unit that only happens on beat one` | `On this rung` | fault 6 |
+| | 59–60 | `at 90 % in Keep tempo, at 80 % or more of the piece's own tempo` | `at 90 % accuracy … of the written tempo` | faults 3 and 4 |
+| **2.2** *(tightened)* | 51 | `*Rhythm only*, in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| | 57 | `at 90 %,` | `at 90 % accuracy,` | fault 3 |
+| **2.3** *(tightened)* | 18 | `The three chords of this unit:` | `of this rung:` | fault 6 |
+| | 67 | `at 95 % (two sets of ten)` | `at 95 % accuracy (two sets of ten)` | fault 3 |
+| **2.5** *(tightened)* | 49 | `at 60 bpm, 95 %,` | `at 60 bpm, 95 % accuracy,` | fault 3 |
+| **3.4** *(tightened)* | 51 | `at 85 %,` | `at 85 % accuracy,` | fault 3 |
+| **3.6** *(tightened)* | 52 | `switch to the left hand from the *Hands* row` | `with **L** on the control bar` | fault 2 |
+| **4.1** *(tightened)* | 54 | `at 95 % — with no bump` | `at 95 % accuracy — with no bump` | fault 3 |
+| **4.2** *(tightened)* | 57 | `at 80 bpm at 95 %.` | `at 95 % accuracy.` | fault 3 |
+| **4.3** *(tightened)* | 59 | `at 95 %, each within` | `at 95 % accuracy, each within` | fault 3 |
+| **4.4** *(tightened)* | 57 | `plan on fewer rungs of it than a scale gives you` | `fewer notches of it` | *rung* is the curriculum word and this lesson says "this rung" twice; the ladder's step is a *notch* everywhere else |
+| | 60 | `97 %, with the fourth-finger notes` | `97 % accuracy, with …` | fault 3 |
+| **4.6** *(tightened)* | 18 | `**Blind** in the score menu` | `in the ⋯ controls` | fault 1 |
+| | 43 | `**Perform** in the score menu` | `in the ⋯ controls` | fault 1 |
+| | 62–63 | `at 90 % accuracy at 90 % tempo` | `at 90 % accuracy at 90 % of the written tempo` | fault 4 |
+| **4.7** *(tightened)* | 54 | `open the same way from the ⋯ menu` | `from the ⋯ controls` | fault 1 |
+| **blues.3** *(tightened)* | 59 | `*Rhythm only*, in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| **chords-pop.3** *(tightened)* | 51 | `Stage 3.2's voice leading` | `Stage 3's voice leading` | fault 9; `4.3` already says "Stage 3's voice leading" for the same thing |
+| **chords-pop.4** *(tightened)* | 55 | `At the end of a time round` | `of each time round` | fault 8 |
+| **chords-pop.6** *(tightened)* | 52 | `the end of a time round` | `of each time round` | fault 8 |
+| **chords-pop.7** *(tightened)* | 54 | `at the end of a time round` | `of each time round` | fault 8 |
+| **classical.3** *(tightened)* | 59 | `*Duet* in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| **classical.4.shelf** *(tightened)* | 27 | `the film and game pieces the owner asked for by name` | `the film and game pieces you asked for by name` | the only "the owner" in 109 lessons; a lesson speaks to the reader, and the reader is the person it meant |
+| | 49 | `Stage 3.5's legato pedalling` | `Stage 3's legato pedalling` | fault 9 |
+| **classical.6** *(tightened)* | 62–63 | `*Blind* is in the ⋯ menu on the piece's own row` | `in the ⋯ controls on the piece's own row` | fault 1 |
+| **classical.7** *(tightened)* | 60 | `Swap with the *Hands* row:` | `Swap hands:` | fault 2. At 600 words this lesson had no room to name the control, and "swap hands" is what a teacher says |
+| **classical.9** *(tightened)* | 52 | `lives on the score screen itself, in the rows under the music` | `in the ⋯ controls` | the rows are behind `⋯`, not under the notation; a learner looking under the music finds the keyboard strip |
+| **holiday.4** *(tightened)* | 54 | `at the end of a time round` | `of each time round` | fault 8 |
+| **holiday.6** *(tightened)* | 54 | `take *Blind* from the ⋯ menu` | `from the ⋯ controls` | fault 1 |
+| **holiday.7** *(tightened)* | 21 | `Use *Hands* on the score screen, which chooses which hand the app waits for` | `Use **L** on the control bar, which chooses …` | fault 2 |
+| **hymns.4** *(tightened)* | 51 | `Then use *Hands* to swap` | `Then use **L** on the control bar to swap` | fault 2 |
+| **hymns.md** *(tightened)* | 61 | `At the end of a time round` | `of each time round` | fault 8 |
+| **improv.8** *(tightened)* | 45 | `At the end of a time round` | `of each time round` | fault 8 |
+| **jam.6** *(tightened)* | 17 | `Four crotchets a bar` | `Four quarter notes a bar` | fault 11 |
+| **jam.md** *(tightened)* | 12 | `This module is about the moment` | `This track is about` | fault 7 |
+| | 49 | `or find it under ⋯ while the piece is open` | `in the ⋯ controls` | fault 1 |
+| **jazz.3** *(tightened)* | 54 | `*Tempo* slows the tune down` | `*Speed* slows the tune down` | fault 5 |
+| **jazz.4** *(tightened)* | 38–41 | `*Avalon* is the shortest and is in two; *Whispering* is in E flat. *Avalon* is in F, the key the comping exercises are in, and *Margie* has the same one flat.` | `*Avalon* is the shortest, in two and in F, the key the comping exercises are in; *Whispering* is in E flat, and *Margie* has the same one flat as *Avalon*.` | *Avalon* was introduced twice, two sentences apart, with a different fact each time — which reads as an error. **Every fact carried across**: Avalon shortest, in two, in F; Whispering in E flat; Margie one flat |
+| **jazz.5** *(tightened)* | 12 | `the chord vocabulary from chords-and-pop Stage 5` | `from the Chords & pop track at Stage 5` | a track spelled as a slug-in-words; `00-tracks.json` titles it *Chords & pop* |
+| | 60–63 | `The accent it reads where the score prints one and compares against how hard you played everything else — but none of this rung's pieces prints one` | `The accent it reads only where the score prints one, comparing it with how hard you played everything else — and none of this rung's pieces prints one` | not a sentence anybody could say aloud; the claim is unchanged |
+| **jazz.6** *(tightened)* | 58 | `switch to the left hand from the *Hands* row` | `with **L** on the control bar` | fault 2 |
+| **jazz.8** *(tightened)* | 43 | `At the end of a time round` | `of each time round` | fault 8 |
+| **latin.7** *(tightened)* | 50 | `*Hands* chooses which hand the app waits for` | `**R** and **L** on the control bar choose which hand the app waits for` | fault 2 |
+| | 60 | `with the performance setting on` | `with *Perform* on` | the row's drawn label; `04` §5 gives one name |
+| **practice.2** *(tightened)* | 38 | `switch the *Ladder* on in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| | 41 | `its notch is ten points of the written tempo` | `a tenth of the written tempo` | `classical.8` and `technique.8` both say "a tenth of the written" for the same notch |
+| **practice.5** *(tightened)* | 22 | `the first lesson in this module` | `in this track` | fault 7 |
+| **ragtime.7** *(tightened)* | 58 | `switch to the left from the *Hands* row` | `with **L** on the control bar` | fault 2 |
+| | 61 | `open that one from its own row and use the ⋯ menu` | `use the ⋯ controls` | fault 1 |
+| **ragtime.8** *(tightened)* | 19 | `the secondary rag — groups three sixteenths long running across the bar line —` | `sixteenths grouped in threes across the bar line` | ungrammatical; `ragtime.7` says the same thing cleanly, and at the same word count (this lesson is at 600) |
+| | 62 | `That setting is in the ⋯ menu` | `in the ⋯ controls` | fault 1 |
+| **rock.4** *(tightened)* | 53 | `whatever its difficulty number says` | `whatever its level says` | fault 11; the row prints a level and `rock.5` already calls it one |
+| **rock.5** *(tightened)* | 43–44 | `At the end of a time round` | `of each time round` | fault 8 |
+| **rock.6** *(tightened)* | 35–36 | `**The band is wide on purpose.** The exercises, bar the half-pedal one, start well below the pieces` | `**The exercises sit well below the pieces on purpose**, bar the half-pedal one` | "the band" is the level band — the repository's own word, in a heading, in front of a learner who has met neither. Same fact, said as the learner meets it, and four words cheaper on a lesson at 600 |
+| **technique.4** *(tightened)* | 40 | `the sheet says what share of your notes` | `the summary says` | fault 10 |
+| **technique.5** *(tightened)* | 30 | `the sheet says how far your line travelled` | `the summary says` | fault 10 |
+| | 66 | `Swap with the *Hands* row and it is the other exercise.` | `Swap hands and it is the other exercise.` | fault 2 |
+| **technique.6** *(tightened)* | 33 | `the summary sheet says how many of your chords` | `the summary says` | fault 10 |
+| **theory.3** *(tightened)* | 62 | `identified by ear at 80 % in the interval drill` | `at 80 % accuracy` | fault 3 |
+| **theory.4** *(tightened)* | 58 | `Cadences identified at 80 % by ear` | `at 80 % accuracy by ear` | fault 3 |
+| **theory.5** *(tightened)* | 60–61 | `identified by ear at 80 %,` | `at 80 % accuracy,` | fault 3 |
+
+#### The 53 lessons left, named
+
+Each was opened on its own and read paragraph by paragraph; none of them has a sentence
+that fails one of the four tests. They are listed because the brief asks for a verdict per
+lesson, and because a count is not one.
+
+`0.1`, `0.2`, `2.4`, `3.1`, `3.2`, `3.3`, `3.5`, `4.5`, `blues.4`, `blues.5`, `blues.6`,
+`blues.7`, `blues.8`, `blues.9`, `chords-pop.5`, `chords-pop.8`, `chords-pop.9`,
+`classical.4`, `classical.5`, `classical.8`, `holiday.3`, `holiday.5`, `holiday`,
+`hymns.2`, `hymns.5`, `hymns.6`, `improv.3`, `improv.4`, `improv.5`, `improv.6`,
+`improv.7`, `improv.9`, `jam.5`, `jam.7`, `jazz.7`, `jazz.9`, `latin.3`, `latin.6`,
+`latin`, `practice.1`, `practice.3`, `practice.4`, `ragtime.5`, `ragtime.6`, `ragtime.9`,
+`rock.7`, `rock.overview`, `technique.7`, `technique.8`, `theory.6`, `theory.7`,
+`theory.8`, `theory.9`.
+
+53 + the 56 in the table = 109, which is `ls content/lessons/*.md | wc -l`.
+
+Four of them are left *after* a specific sentence was weighed and kept, and the reason is
+recorded so a later reader does not re-open the same question: `jazz.7`'s "in A, then in
+B" (the heading two lines above binds the letters, and disambiguating costs two words on a
+lesson at 598); `rock.overview`'s "*Moonlight* I" (the rock Stage 6 lesson spells it out
+in full, but `rock.overview` is at exactly 600 words, so the longer form does not fit —
+and that lesson is in the changed table above, not in the list of 53); `ragtime.6`, which
+Entry 45 already judged too long and left because
+cutting it is a content decision; and `technique.8`'s "twelve at 120", which is terse but
+is the notch stated against the tempo the same paragraph names.
+
+#### The tips
+
+| tip | before | after | why |
+|---|---|---|---|
+| **pedal.md** *(tightened)* | `Read the card. The lamp follows your foot, and under it the app says how many milliseconds after the chord the lift came: a small positive number is a clean change, a negative one is a hole, and anything past the overlap window is the old chord bleeding into the new.` | `Watch the lamp and the line under it. The lamp follows your foot; the line says how many milliseconds after the chord your foot came up, and whether that was clean. Lift too early and you leave a hole; lift late and the old chord bleeds into the new.` | "the overlap window" names nothing the learner ever sees; the card prints `Lifted N ms after the chord — clean` / `not clean` (`DrillScreen.ts:2198–2204`) and draws a lamp and one line (`04` §5c). "Read the card" points at the whole card when only one line is meant. Two words shorter than what it replaced — see the cap below |
+| | `before the sheet told you` | `before the app told you` | *sheet* is the music on the Score screen; the same tip already says "the app" twice |
+| **chord.symbol-flash.md** *(tightened)* | `` `Am7` is one symbol `` | `*Am7* is one symbol` | the only backtick in any of the 27 tips. A chord symbol is not code, and every other tip writes chord names plain or italic |
+
+**A cap this task did not know about, and the correction.** `validate.py:670` holds
+`MAX_TIP_WORDS = 250`, counted over a tip's body after the front matter, and
+`tools/content/tests/test_tips.py` exercises it. The first draft of `pedal.md`'s middle
+paragraph took that file from 248 words to **257**, and another agent's
+`build.py --offline` is where it surfaced — not here, because the six vitest files this
+task ran do not know about the cap. The paragraph was cut again and the file is now
+**245**; `python tools/content/validate.py` reports OK and
+`python -m unittest tools.content.tests.test_tips` is 21 of 21. The longest tip body in
+the corpus is `ear-interval.md` at 247, untouched. **This is the one thing here that was
+caught by somebody else's run rather than by mine**, and the reason is worth keeping: a
+green vitest suite was taken as the whole gate when the content pipeline holds a rule of
+its own over the same files.
+
+The other **25 tips are left**. They were read in full, one at a time, and each passes all
+four tests: a *What it's for* / *How to practise it* / *Common mistake* / *How you'll know
+you've got it* shape, second person, no control named that the app does not draw. Two
+things that looked like faults and are not, recorded because the reason survives into the
+record (`working-rules` §2.16): `dynamics.md`'s "1.6 times the **velocity**" is kept —
+the word is on the card (`velocityMeter`, and the refusal line `04` §5c prints) and `2.4`,
+the rung that drill belongs to, teaches it in so many words; and `jam.5`/`jam.md`'s "form
+tracker" is kept — it is drawn, in the Chart row's own hint (`ScoreScreen.ts:1179`).
+
+#### Not done, with the reason
+
+**`0.3` still says "The *Lab* under Library".** The one name is **Accompaniment lab**:
+`04` §3c settles it in as many words — "the screen it opens is called the accompaniment
+lab and a shorter label here would be a second name for one thing" — and the **41** other
+lessons that mention it use the full name (`grep -rli "accompaniment lab"`). `0.3` is the
+single outlier. The rename was made and **turned the T19 sweep red, 1 of 431**:
+`lessonClaimsAboutApp.test.ts`'s "no lesson names a button its own rung does not draw"
+refuses the string `Accompaniment lab` in a lesson whose rung carries no `lab` tool, and
+rung `0.3` carries none. The sweep's allow-list at `:2954` holds exactly two entries,
+`1.5:simon` and `3.6:lab`, and its own comment says both are allowed because "each says in
+the same sentence where that thing actually is" — which is precisely what `0.3`'s sentence
+does ("under Library"). **The fix is one entry, `0.3:lab`, in that list.** It is in
+`app/tests/`, which this task does not own (two other agents are in `app/` this session),
+so the change was **reverted to the shipped wording** rather than left red.
+
+**Two lessons whose wording was considered and deliberately left:**
+
+- `jazz.7`: "Learn one key in A, then in B" of the two rootless voicings reads as a key
+  on first sight. The heading two lines above is "**Rootless A and B**", so the letters
+  are bound, and disambiguating costs two words on a lesson already at 598.
+- `rock.overview`: "as in Beethoven's *Moonlight* I" — `rock.6` spells the same thing as
+  "*Moonlight*, first movement". That lesson is at exactly 600 words and the longer form
+  costs one, so it stays.
+
+#### Two suspects — facts left exactly as they are
+
+Recorded per the instruction to write a suspect down rather than touch it. Both are counts
+that the claim rows pass, so if they are wrong the fault is in the prose and not in the
+data:
+
+- **`holiday.md` says "Six options." and then lists five bullets.** The count row
+  (`lessonShape.test.ts`, "matches the rung, wherever a lesson states the number") is
+  green, so the rung does carry six; the prose names five.
+- **`classical.5.md` says "Six options." and names five pieces** — two sonatinas and
+  three Romantic miniatures. Same shape, same green row.
+
+#### What was run
+
+From `app/`, after every ten lessons and again at the end:
+
+```
+npx vitest run tests/unit/lessonClaims.test.ts tests/unit/lessonClaimsAboutApp.test.ts \
+  tests/unit/lessonClaimsAboutMusic.test.ts tests/unit/lessonShape.test.ts \
+  tests/unit/lessonVideos.test.ts tests/unit/tips.test.ts
+```
+
+**6 files, 433 tests, all passing** — the same 433 as the baseline taken before the first
+edit, so no row was lost and none was added. `readingTime` is recomputed by
+`lessonShape.test.ts` from the text of every lesson on every run, and nothing is over the
+three-minute cap but `ragtime.6` and `classical.6`, which were already on `KNOWN_LONG`.
+The *Tools for this rung* paragraphs still name exactly their rung's tools: that is the
+`:2938` sweep, and no tool label was removed from one.
+
+On the Python side, `python tools/content/validate.py` reports **content validation OK**
+(2,061 catalog items, with the two standing NOTEs about the personal build and the two
+out-of-range imported scores), and `python -m unittest tools.content.tests.test_tips` is
+**21 of 21** — the run that catches the tip word cap, which the vitest files do not.
+
+The **whole unit suite** (`npx vitest run tests/unit`) is **4,945 of 4,963 passing**. The
+18 failures are all in `tests/unit/difficulty.test.ts`, which reads
+`content/sources/level-model.json` and the estimates `tools/content/difficulty.py`
+produces. Both of those files are modified in this shared working tree by T27's task, and
+neither that test nor anything it imports reads `content/lessons` or `content/tips`. **Not
+this task's, and not claimed as fixed.**
+
+**How the lessons reached the tests.** `lessonClaims*.test.ts` read the *built* copy under
+`app/public/content/lessons`, so the source files were copied over before each run. That
+copy is a stand-in for `build.py`'s `copy_lessons`, which is a `shutil.copytree`; naming
+the proxy, the two directories were byte-identical at the start of this run (`diff -rq`,
+rc 0), so the copy reproduces that step exactly and nothing else in a content build reads
+these files. No content build was run — `build.py --offline` is red at HEAD for the reason
+Entry 45 opens with, which has nothing to do with lessons.
+
+#### What is unverified
+
+- **Nothing was read on a screen.** Not one of these sentences was seen rendered, at
+  342 px or at any width. Whether *the ⋯ controls* is the phrase a learner in front of the
+  Score screen actually resolves is untested; the claim made here is only that it is the
+  name the code draws.
+- **Nothing was heard**, and no piece of music was opened. Every fact about the music in
+  these lessons is exactly as it was.
+- **Whether any of this teaches better** is not measured and no check in this repository
+  decides it. What is measured is that fifty of the fifty-six lessons touched now name
+  controls the way the screen names them.
+- **The two suspects above are unresolved.** Neither was counted against the rung by hand.
+- **The five lessons the other T28 agents may touch.** If the strip or the Guide renames
+  a control, these lessons will need the same sweep again; the sweeps are one grep each
+  and are written out in fault 1 to 11 above so they can be re-run.
+
+#### Files
+
+`content/tips/pedal.md`, `content/tips/chord.symbol-flash.md`; the 56 lessons named in the
+table; this entry. **Nothing under `app/`, `tools/` or the rest of `content/` was touched,
+and nothing was committed.**
+
+#### The `CLAUDE.md` checklist, run against this entry
+
+1. **Did I state an absence?** Three are stated here and each names its search: no drawn
+   "Menu" string (two differently shaped greps over `app/src`, both quoted); no row called
+   *Hands* (the `menuStash` list read out in full rather than grepped for); no other
+   British note name (a grep over lessons and a second over tips). The `*Tempo*` grep is
+   stated as a grep that now returns nothing, not as "nothing says Tempo".
+2. **Did I write a plural?** The per-file table is the enumeration — every changed line in
+   all 56 lessons and both tips is a row, not a summary. The two plural claims that are
+   *not* enumerated are marked as such: "the other 25 tips are left" (each was read, and
+   the shape they share is stated) and "53 lessons left".
+3. **What proxy did I use?** Two, both named in the sentence that uses them: the copy into
+   `app/public/content/lessons` stands in for `build.py`'s `copy_lessons` (with the
+   byte-identical check that closes the gap), and `app/src` read as text stands in for
+   what the screen draws — which is exactly the gap the first unverified line admits.
+4. **Green is not done.** 433 passing says the facts survived; it says nothing about the
+   wording being better, and the unverified section leads with that.
+5. **Did I check the reason?** Two items are recorded as *right-looking and left alone*
+   with the reason given (`dynamics.md`'s "velocity", the "form tracker"), and two more as
+   *considered and left* (`jazz.7`, `rock.overview`), because a silent skip and a judged
+   skip look the same in a diff.
+6. **Did I re-open the artefact?** The sweeps were re-run at the end rather than recalled:
+   `⋯ menu`, `*Hands*`, `of a time round`, `piece's own` and every percentage in a closing
+   line were each grepped again after the last edit, and the percentage list was printed
+   in full and read line by line.
+7. **Who else reads what I changed?** **This was first written from memory and was wrong,
+   and the correction is the useful part.** The grep run afterwards —
+   `grep -rn "textFile\|fetchMarkdown" app/src --include=*.ts` — returns a **third**
+   reader that had been left out: `ScoreScreen.ts:1980`, `fillSidePanel`, fetches the
+   rung's `textFile` and renders **the whole lesson body into the side panel beside the
+   score**. So every sentence changed here is read in two places, and the second is a
+   narrower column than the lesson page. Nothing changed here breaks it — it renders the
+   same markdown through the same `renderMarkdown` — but **none of these sentences was
+   looked at in that panel**, which is a second thing on the unverified list. Entry 45
+   item 2 had already recorded that `ScoreScreen.ts` takes the body; recalling that record
+   instead of re-opening it is `working-rules` §2.14, exactly. The full list is therefore:
+   `LessonScreen.ts:754` (the lesson page), `ScoreScreen.ts:1980` (the side panel), the
+   five lesson tests, and `build.py`'s `copy_lessons`. A second search shaped differently,
+   `grep -rn "lessons/" app/src --include=*.ts`, returns one line, a comment in
+   `DrillScreen.ts:2789` citing `lessons/0.4.md` for the placement test's branching — a
+   citation, not a read. Tips are
+   read by `curriculum/tips.ts` and by `tests/e2e/tips.spec.ts`, which pins four headings
+   plus two phrases — "bass F on the fourth line" and "Counting up from middle C" — and
+   neither tip changed here carries either. Nothing else greps them (`grep -rn "content/tips"`
+   over `app/src` returns four lines, all in `tips.ts`).
+8. **Am I reading the letter?** Restated without the brief's words: *make every sentence
+   in the teaching material call each part of the program what the program itself calls
+   it, and cut anything a beginner would not follow.* Checked against that, the work is
+   mostly the first half — which is the honest report, and the reason nothing was
+   "rewritten": the prose did not need it, the names did.
+
+---
+
+### Entry 56 — T27b: the app's half of the difficulty model corrected, and two pieces taken off a rung they were too hard for (2026-09-23)
+
+Appended after Entry 55, which was the last entry in the file when this was written; the
+file was re-read at the moment of writing rather than recalled, which is Entry 25's
+convention and matters because other agents have uncommitted work in this tree. The brief
+is `docs/prompts/tasks/T27b-port-and-rungs.md`, which is Entry 53's first three follow-ups
+and its `unverified` note about voice ids, carried out.
+
+**Restated without the brief's words** (`working-rules` §2.13): the same formula lives in
+two files, one for the pipeline and one for the phone, and only the pipeline's copy had
+been repaired — so make the phone's copy read a score the same way, then ask which pieces
+the ladder is offering that are harder than anything a person graded at that point in the
+course, and take those off.
+
+**The one-line answers.** Both filters are in `app/src/score/difficulty.ts`, and they do
+not land the same way: the chord-symbol rule holds there **by construction** and the voice
+split is a real repair. The agreement suite goes from **18 failed / 31 passed** to **53
+passed**, and the three tests that prove the repair were seen red with the fixture and the
+tests in place and only the `handStats` body put back. `import_pdmx` reads the row's own
+`levelSource`. The per-stage judged maxima were recomputed and reproduce Entry 51's table
+exactly; **one rung of the 90 that carry song options has an option more than 0.7 of a
+level above its stage's graded repertoire**, and both of that rung's two offenders came
+off. Entry 53's **168** scores with a voice id on both staves were reproduced to the
+number, and split three ways — most of them are an edition restarting its numbering, not a
+crossing.
+
+---
+
+#### 1. The two filters in the port
+
+`app/tests/unit/difficulty.test.ts` before this task: **18 failed, 31 passed of 49**, and
+the 18 are two different faults stacked. Fourteen are generated exercises and two are edge
+cases whose Python numbers in `app/tests/fixtures/levelling.json` predate the 2026-09-22
+refit — Entry 53 says the fixture was left stale because `export_levelling_fixture.py`
+writes into `app/` and T26 owned it. `cross-staff` (0.98 of a stage out) and `two-voices`
+(0.56) are the voice split. After: **53 passed of 53** — 49 of the old ones plus three new,
+and the total moves because the regenerated fixture carries 42 scores where it carried 41
+(`accents` is new to the edge directory; another agent added it and it was not read here
+beyond its name).
+
+**The chord-symbol filter is a rule stated and guarded, not a subtraction, and that was
+measured rather than assumed.** Two searches, shaped differently: `grep -n -i
+"harmony|chordsymbol"` over `app/src/score/extractScoreModel.ts` returns nothing, and a
+probe that loaded a two-bar single-staff lead sheet carrying three chord symbols over five
+melody notes through OSMD and `extractScoreModel` returned **five** `ScoreNote`s,
+`maxSpanRight` 0, `maxSimultaneousRight` 0, `handCrossings` 0 and `notesPerBar` 2.5. OSMD
+parses `<harmony>` into a chord symbol container hung off the source measure and never into
+a voice entry, so nothing the port walks can see one. The rule is written at the head of
+`features()` in the same shape as `sounding()`'s docstring, and the test named *a printed
+chord symbol is not a sounding note* is the guard on it. **That test has never been red and
+is written down as such**; it will go red the day the extractor starts putting a symbol into
+`steps[].notes`.
+
+A third thing the probe found, which is why the lead sheet is written into the test rather
+than added to `app/tests/fixtures/scores/edge/`: **OSMD cannot load a `<harmony>` under
+jsdom at all.** Laying a chord symbol out goes through
+`VexFlowGraphicalSymbolFactory.createChordSymbols` to `VexFlowTextMeasurer`, which sets
+`.font` on the 2D context jsdom does not implement, and throws. A lead sheet in that
+directory would take `scoreModel`, `engineScoring` and `scoreSmoke` down with it, and it
+would need a golden model besides. The test stubs `getContext` for the length of one parse
+and puts it back in a `finally`.
+
+**The voice filter is a real change.** `handStats` grouped every note on a staff by its
+onset, which ran the staff's voices together twice over: two voices sounding at the same
+moment read as a chord, and the melodic line stepped out of one voice and into the other.
+It now builds one line per voice and takes span and leap as the maximum over lines. `range`
+stays across the whole staff, because Python accumulates its pitches outside the per-voice
+loop. The split is by **staff**, not by the hand `extractScoreModel` infers, which is what
+`voice_lines` says on the other side and what keeps the two from drifting.
+
+Measured on the two fixtures that carry two voices on a staff, against the numbers
+`difficulty.py` wrote into the fixture:
+
+| | `maxSpanRight` | `maxSpanLeft` | `maxLeapRight` | `maxLeapLeft` |
+|---|--:|--:|--:|--:|
+| `two-voices`, before | 7 | 4 | 2 | 5 |
+| `two-voices`, after, and Python | 0 | 0 | 2 | 5 |
+| `cross-staff`, before | 7 | 0 | 8 | 7 |
+| `cross-staff`, after, and Python | 0 | 0 | 1 | 7 |
+
+**Red proved, per `00` §2.** With the regenerated fixture and both new tests in place and
+only the body of `handStats` put back to the onset grouping: **3 failed, 50 passed** —
+`two-voices.maxSpanRight` 7 against 0, `cross-staff.maxSpanRight` 7 against 0, and the
+agreement test on `cross-staff` 0.64 of a stage out against a tolerance of 0.2. So the
+suite passes because a filter was ported and not because a tolerance moved; `TOLERANCE` is
+still 0.2 and was not touched.
+
+**`two-voices` is not on that list, and the reason is worth writing down**, because the
+outcome would look the same either way (`working-rules` §2.16). Its level agreed to within
+0.03 before the change: `maxSpanRight` carries no weight in the fitted model at all and
+`maxSpanLeft` carries +0.018, so the two chords the old code invented were nearly free. The
+fixture-feature test is what catches it; the agreement test could not.
+
+**Three claims in the port's own header docblock were false and are corrected**
+(`working-rules` §2.17). (a) "`ornaments` and `handCrossings` both carry a weight of exactly
+zero" — `handCrossings` does, `ornaments` has carried **+0.0175** since the refit, so an
+ornamented piece reads low here by `0.0175 * log1p(ornaments)`, under a tenth of a stage on
+the most ornamented anchor in the calibration set. (b) "Four of the 41 fixtures still
+measure a feature differently" — re-measured across all 42 by comparing every feature the
+port computes against the fixture's Python value, it is **two fixtures and six cells**:
+`chords-ties` on `notesPerBar` and `notesPerSecond` (music21 counts a tied continuation, the
+ScoreModel merges the chain), and `pickup-grace` on `shortestValue`, `distinctRhythms`,
+`maxSpanRight` and `maxLeapRight` (music21 gives a grace note no duration, OSMD gives it one
+at the same onset as the note it decorates, so the two read as a chord). The two that left
+the list are named in the comment rather than quietly dropped: voices in one staff is this
+task's fix, and `fingering-rests`' inferred key no longer disagrees. (c) The **crossing
+floor has no counterpart** in the port, because `handCrossings` there is the constant zero.
+That is recorded beside the code rather than ported; porting it would mean adding a feature
+the model does not weigh.
+
+`app/tests/fixtures/levelling.json` regenerated: 41 to 42 scores, **38 levels moved** — most
+of them the refit rather than this task — and **three feature cells moved**, all of them the
+Python voice split: `cross-staff.maxLeapRight` 7 to 1, `two-voices.maxLeapRight` 9 to 2,
+`two-voices.maxLeapLeft` 9 to 5.
+
+#### 2. `import_pdmx` reads the row's own `levelSource`
+
+`build_item` hardcoded `level_source="estimated"` with the comment "Always estimated:
+difficulty.py computed it, not a person". True of every row the quarry writes, and the
+reason it was wrong is that it made the field **unwritable**: a level a person had judged
+could be spliced onto a pdmx row and the built catalog would still call it an estimate. It
+is now `entry.get("levelSource") or "estimated"`. An unknown value is not swallowed —
+`catalog_item` raises on anything that is not `judged` or `estimated`, which is stated in
+the comment and covered by a test.
+
+`TestBuildItemLevelSource` in `tools/content/tests/test_pdmx.py`, four cases. **Red
+proved**: with only that one line put back, two of the four fail — the row saying `judged`
+comes out `estimated`, and the typo case raises nothing. **All 542 rows in
+`content/sources/pdmx.json` say `estimated` today**, counted, so no shipped row changes;
+this is what makes the field writable, not a re-levelling.
+
+**Every reader of `levelSource`, from `grep -rn "levelSource\|level_source"` over `tools/`
+and `grep -rn "levelSource"` over `app/src`, and what each does with it.** Writers first,
+because the field has more writers than readers:
+
+| where | what it does |
+|---|---|
+| `tools/content/common.py:252-274` | `catalog_item` — the only thing that writes the key into a catalog row. No default, and it raises unless the value is `judged` or `estimated`. |
+| `tools/content/author.py:127` | writes `judged` for every authored item. |
+| `tools/content/generate_exercises.py:649` | writes `judged` for every generated exercise. |
+| `tools/content/import_musetrainer.py:216,282` | writes `judged`, at both call sites. |
+| `tools/content/import_kern.py:644-693` | derives it: `estimated` when the level came from an opus band, `judged` otherwise. |
+| `tools/content/import_pdmx.py:136` | the row's own, or `estimated` — this task. |
+| `tools/content/pdmx/commit.py:200-201` | writes `"levelSource": "estimated"` into the *source table*, with `levelFrom` beside it. This is the row `import_pdmx` now reads, so it is where a hand judgement has to be spliced. |
+| `tools/content/fit_level_model.py:46` | **reads**: the calibration set is songs with `levelSource == "judged"`. Marking a pdmx row judged puts it into the fit and into the anchor set of §3. |
+| `tools/content/validate.py:151` | **reads**: `estimated_by_stage`, the per-stage count the build prints every run. |
+| `tools/content/candidates.py:123` | **reads**: prints `~` before an estimated item in the candidate listing. |
+| `tools/content/dump_score.py:68` | **reads**: prints `level N (source)`. |
+| `tools/content/pdmx/quarry.py:103,438,498` and `pdmx/review.py:77` | a **different field** of the same name: `level_source` there is the estimator's own `model`/`fallback`, not the catalog's. Named here so the next grep does not conflate the two. |
+| `app/src/curriculum/types.ts:49`, `data/db.ts:137,367` | the type, twice — catalog item and stored row. |
+| `app/src/curriculum/selectors.ts:259-265` | **reads**: `levelConfidence` is 1 for judged and 0 for estimated, and an item with no field at all counts as judged. Used at `selectors.ts:310` and `session.ts:469` to sort options, so a row turning judged moves up the list. |
+| `app/src/data/db.ts:598-599` | a migration: a stored import that has a level and no source is stamped `judged`. |
+| `app/src/data/levelOverrides.ts:77` | **writes** `judged` when the owner overrides a level. |
+| `app/src/data/importStore.ts:342`, `data/booksStore.ts:156`, `ui/screens/LabScreen.ts:320`, `ui/screens/ShelfScreen.ts:252` | **write** `estimated` as the default for something the app levelled itself. |
+| `app/src/ui/assignSheet.ts:161,168` | **writes** `judged` when the owner changed the number on the assign sheet, `estimated` when he took the app's. |
+| `app/src/ui/widgets.ts:357` | **reads**: `levelLabel` prints `≈ 7.1` for an estimate and `L7.1` for a judgement. Called from `LessonScreen.ts:178`, `LibraryScreen.ts:619,673,891`, `SkillsScreen.ts:256`, `TodayScreen.ts:254,340,419`, `ShelfScreen.ts:485`. |
+| `app/src/ui/screens/LibraryScreen.ts:644` | **reads**: an estimated level gets the sentence "Level estimated from the opus or its features — move it if it feels wrong." |
+| `app/src/ui/screens/ProgressScreen.ts:555` | **reads**: carries it onto the progress row. |
+
+#### 3. Two pieces off `hymns`, and the band narrowed
+
+**The maxima, recomputed rather than quoted.** The anchor set is Entry 51's: the **164**
+judged songs in the built catalog with a file, each counted at the stage of every rung it
+sits on and at `floor(level)`, unioned. Recomputed a second way over all **172** judged
+songs including the eight with no file, the maxima are identical to the cent:
+
+| stage | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| judged songs | 1 | 15 | 17 | 14 | 32 | 17 | 34 | 47 | 37 | 8 |
+| **maximum level** | 1.10 | 2.20 | 5.10 | 5.10 | 8.20 | 7.10 | 7.10 | 8.40 | 8.80 | 9.40 |
+
+Which is Entry 51's table reproduced; stage 7 holds one more song than it did and its
+maximum is the same. The stage-0 and stage-9 caveats Entry 51 wrote still stand — a maximum
+over one song is not a range, and from stage 6 up every anchor is classical.
+
+**Every rung checked.** 109 rungs; **90 carry `songOptions`**, and the script walked all 90,
+taking each option's level from the built catalog and each rung's stage from its stage file,
+and skipping anything that is not `type: song` so that no exercise or drill was touched.
+**One rung produced a hit.**
+
+| rung | stage | stage max | option | level | over by | outcome |
+|---|--:|--:|---|--:|--:|---|
+| `hymns` | 3 | 5.10 | `song.folk.i-give-you-my-heart.pdmx` | 6.73 | +1.63 | removed |
+| `hymns` | 3 | 5.10 | `song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx` | 6.49 | +1.39 | removed |
+
+**Nothing was kept for the floor's sake.** `hymns` carried 14 song options and carries 12,
+which is clear of `00` D21's floor of three, so the exception clause was never reached and
+there is no kept-with-a-reason list. Both pieces stay in the Library and in
+`content/sources/pdmx.json`; `i-give-you-my-heart` sits on no other rung, so it has left the
+ladder, which is what Entry 51's third follow-up said the decision was about and what this
+brief decided. `amazing-grace-in-g-major` also sits on `hymns.6`, where its 6.49 is inside
+stage 6's maximum of 7.10, and it stays there.
+
+**Eight options are above their stage's maximum and inside the 0.7 bar, so they stay** —
+enumerated, because "the rest are fine" would be a plural asserted of a set nobody looked
+at:
+
+| rung | stage | max | option | level | over by |
+|---|--:|--:|---|--:|--:|
+| `latin.7` | 7 | 8.40 | `lecuona-malaguena-by-ernesto-lecuona` | 9.00 | +0.60 |
+| `hymns` | 3 | 5.10 | `10000-reasons-matt-redman` | 5.69 | +0.59 |
+| `latin.6` | 6 | 7.10 | `song.jazz.the-crave` | 7.46 | +0.36 |
+| `classical.4.shelf` | 4 | 8.20 | `s-awecki-super-mario-land-2-ending-theme` | 8.54 | +0.34 |
+| `holiday.6` | 6 | 7.10 | `misc-christmas-joy-to-the-world-piano-solo` | 7.30 | +0.20 |
+| `hymns` | 3 | 5.10 | `abide-with-me-william-henry-monk` | 5.28 | +0.18 |
+| `classical.3` | 3 | 5.10 | `bach-menuet-bwv-anh-113` | 5.23 | +0.13 |
+| `holiday.6` | 6 | 7.10 | `ondrus-silent-night` | 7.12 | +0.02 |
+
+**The band.** `hymns`' `levelBand` was **[2.6, 7.3]** and is now **[2.6, 5.7]**. The slack
+was read off the tree as it stood before T27 rather than guessed: at `git HEAD`, where
+T27's splice is not committed, the band was `[3.2, 7.3]` and the rung's options spanned
+**3.2** (`when-the-saints.f`, judged) to **7.29** (`i-give-you-my-heart`) — so the authored
+slack was **0.00** below and **0.01** above. After the removals the options span 2.6 to
+5.69, and 2.60 and 5.70 are those spans plus that slack. The floor does not move, because
+`what-a-friend-we-have-in-jesus` still sits at 2.6 and it is the option T27's widening was
+for. The file was spliced as text — two option lines deleted, two numbers changed — and
+re-parsed before and after: **no other lesson in `stage-3.json` differs**.
+
+**No lesson names either piece**, and that is three searches rather than an absence:
+`grep -rn "i-give-you-my-heart\|amazing-grace-in-g-major" content/lessons/` returns nothing;
+a second grep shaped differently, for `breezepiano|Lee Ji-eun|(IU)` over `content/**.md`,
+returns nothing; and `hymns.md`'s **Repertoire** paragraph was read rather than grepped — it
+names ten pieces, *Amazing Grace* **in four parts** (which is `amazing-grace-satb`, a
+different row that stays) among them, and neither of the two. `hymns.md` states no option
+count, so `lessonShape.test.ts`'s counting test is not engaged by the change.
+
+**The other readers of what changed** (`working-rules` §2.15). `levelBand` is read by
+`validate.py:446,1201` — which fails a build whose options fall outside the band, the check
+that turned T27 into an 18-file change — and by `rung_audit.py:129`, `candidates.py:169`
+and `app/src/ui/screens/ShelfScreen.ts:139`. `songOptions` is read by the curriculum loader,
+by `ladder_report.py` and by `lessonShape.test.ts`. `docs/generated/ladder.md` was
+regenerated and `validate.py` passes on it.
+
+**The cost, stated because a removal is not free.** `rung_audit.py` goes from 31 MED
+findings to **32**, and the arithmetic is this task's. `hymns`' band finding narrows from
+4.7 levels to 3.1 — still over the three-level threshold — and a new finding appears, "13 of
+17 options are shared with another rung". The rule fires at
+`borrowed >= int(len(options) * 0.8)`: before, 14 of 19 options were shared against a
+threshold of 15; now 13 of 17 are shared against a threshold of 13. **`i-give-you-my-heart`
+was the rung's only song that sat on no other rung**, so taking it off is exactly what
+tipped it. That is a judgement for somebody to disagree with rather than an error, and it is
+left as the audit prints it.
+
+#### 4. The 168 scores with a voice id on both staves
+
+Entry 53 recorded 168 and said the run did not distinguish a crossing voice from an edition
+that restarts its numbering. Three scripts, in the agent's scratch folder rather than the
+repository because none of them is part of a build.
+
+**Entry 53's number, reproduced.** Parsing all **799** songs with a file through music21 as
+`difficulty.py` does — `score.parts` are the staves, `measure.voices` are the voice objects —
+**one fails** (`song.classical.mozart-k545-i.alt`, the same row Entry 48, 51 and 53 all
+name) and **168 scores carry a voice id that appears in more than one part, 233 voice ids in
+all**.
+
+**What each of them is**, read off the MusicXML `<voice>` and `<staff>` elements rather than
+off the object model, because the question is what the edition wrote. The test is not
+whether the two staves' notes share a bar — an SATB hymn has voice 1 on both staves in every
+bar of the piece and that is two lines, not one — but whether they ever sound at the **same
+instant**. One line cannot be in two places at once.
+
+| | voice ids | scores holding at least one |
+|---|--:|--:|
+| **separate run** — the two staves' bars do not meet at all | 137 | 128 |
+| **crossing** — the two staves' notes interlock in time and never sound together: one line stepping across | 61 | 39 |
+| **concurrent** — they sound together for a tenth or more of the lower staff's notes: restarted numbering, two lines under one id | 28 | 19 |
+| not visible to this census | 7 | 4 |
+
+Of the 168 scores, **114 have nothing but separate runs**. Of the 94 voice ids whose two
+staves share a bar at all, the share of the lower staff's notes that sound against the upper
+staff's is **0.0000 on 58 of them and 1.0000 on 10**, with the rest spread between; the five
+values immediately below the threshold are 0.0183, 0.0216, 0.0223, 0.0238 and 0.0500 and the
+three immediately above are 0.1429, 0.1818 and 0.1818, so the tenth falls in a gap of about
+nine hundredths rather than through a crowd. It is still a threshold somebody picked after
+looking at the numbers. The crossing list is where one would expect it: Bach's G minor
+fugues and the WTC preludes, both *Moonlight* movements, Chopin's first Ballade, his fourth
+and his op.10/6, three Debussy, three Schumann, and *Clair de lune* in both editions.
+
+**The seven this census does not see, named rather than rounded off.** It records a voice
+from its sounding notes, so a voice present in a staff-measure only as rests is invisible to
+it; verified on `song.classical.nazareth-carioca-1913.pdmx`, whose voice 2 sounds only on
+staff 2 and appears on staff 1 as rests. `song.classical.liszt-liebestraum-3` voice 3 is the
+one exception to that explanation: it does sound on both staves, and music21 builds a Voice
+object in a staff-measure this census reads as single-voiced. Matched score by score, the
+census's music21-visible subset is **166 of music21's 168 and adds none**.
+
+**Is the per-staff measurement right for the crossing kind? It was left alone, and here is
+what that costs.** For each of the **63** crossing voices in the whole census — 61 of which
+are the ones music21 can see, and so the ones the 168 are counted from — the line was rebuilt
+whole across both staves and its largest step compared with the largest step `difficulty.py`
+can see, which is the larger of the two per-staff lines. On **23 of the 63 the whole line has
+the larger step**;
+the extremes are `lecuona-malaguena` voice 6 at **65** semitones against 34 per staff,
+`beethoven-symphony-no-7-second-movement` voice 2 at 47 against 32, `mariage-damour.alt2`
+voice 5 at 55 against 43, and `chopin-ballade-1` voice 1 at 44 against 36.
+
+**Not changed, for three reasons.** Sixty-five semitones is five and a half octaves and no
+hand travels it, so counting it as a leap would invent a demand rather than find one.
+MusicXML records the **staff a note is printed on and never the hand that plays it**, so no
+test over these files can show the split wrong — which is the answer to the brief's "change
+it only if a test shows a case where it is wrong", and the test was looked for rather than
+assumed absent. And both implementations split by staff and are held to 0.2 of a stage, so
+moving one alone breaks the guarantee §1 of this entry exists to restore. For the other two
+kinds the per-staff split is not a choice but correct: a `separate-run` and a `concurrent`
+id are two different lines, and measuring them apart is the whole of what `voice_lines` was
+added for.
+
+#### 5. The decision record, dated
+
+`docs/decisions/2026-09-06-p14-pdmx-quarry.md` prints the weights as they were fitted on
+2026-09-06, with ledger-line ratio at +1.06 as the largest. The table is **left as written**
+— a decision record that edits itself is not a record — and a dated paragraph under it says
+the weights were refitted on 2026-09-22, that `content/sources/level-model.json` holds the
+current ones, that ledger-line ratio now earns nothing, and where to read the refit.
+`docs/03-content-pipeline.md` is the prose that describes the model as it stands, and it was
+extended here with the port, the `levelSource` change and the voice-id census.
+
+#### 6. Verification
+
+| what | result |
+|---|---|
+| `python build.py --offline` | the first run **FAILED** on one error, `docs/generated/ladder.md` stale — the expected consequence of changing a rung. `ladder_report.py` then `validate.py`: **OK**, 2,061 catalog items, no band violation. Entry 53's one red error, `tips/pedal.md` over the word limit, is gone; that was T26's file and not this task's. |
+| `rung_audit.py` | 32 MED, 1 LOW, 14 INFO. The 32nd is this task's and is set out in §3. |
+| `python -m unittest discover tools/content/tests` | **919 tests, OK** |
+| `npx tsc -b --noEmit` | clean |
+| `npm run lint` | clean |
+| `npx vitest run` | **193 files, 4,967 tests, all passed** |
+| Playwright | not run; the brief says not to. |
+
+#### What is unverified
+
+- **Nothing was heard.** Not one of the 799 scores read here was played by anybody. Every
+  number in this entry is a feature measured off a file, and a measured feature is a proxy
+  for difficulty. The two pieces taken off `hymns` were removed on the strength of a model
+  fitted to 163 graded songs with a leave-one-out median error of four tenths of a stage,
+  and nobody sat down and played either of them.
+- **The removal rule is a rule about levels, not about music.** It asks whether the model's
+  number for a piece is more than 0.7 above the highest number a person gave anything at
+  that stage. Entry 51's per-feature comparison — which said `i-give-you-my-heart` is above
+  stage 3 on 12 of 19 features — is the stronger evidence and it is *not* what this task
+  ran. The two agree here, and that agreement was not tested anywhere else.
+- **`amazing-grace-in-g-major` was judged only against the maximum.** It sits on `hymns.6`
+  as well, and Entry 51 recorded it as still above on two features even at stage 6. That is
+  untouched here: it is inside stage 6's maximum of 7.10, which is the only question this
+  task's rule asks.
+- **The lead-sheet guard has never been red.** It cannot be made red without breaking the
+  extractor first, because OSMD does not hand the port a chord symbol at all. It is a guard,
+  not a proof that anything was repaired.
+- **The `accents` fixture was not looked at.** It arrived in the edge directory from another
+  agent's work and is in the regenerated `levelling.json` because the exporter walks the
+  directory. Its agreement test passes; nothing else about it was checked.
+- **The 38 moved levels in the fixture were not read one at a time.** They are the refit's
+  output, checked in aggregate against the three feature cells that moved.
+- **The crossing/concurrent threshold is a tenth**, chosen after looking at the distribution
+  rather than derived from anything. 94 voice ids are classified by it; the nearest value
+  below it is 0.05 and the nearest above is 0.1429, so no id sits on the line, but five ids
+  fall between 0.018 and 0.05 and would change kind under a threshold of a fiftieth.
+- The judged anchor set still has no latin song and nothing outside classical above stage 5.
+  Entry 48, Entry 51 and Entry 53 all record it and nothing here changes it.
+- `song.classical.mozart-k545-i.alt` still does not parse.
+
+#### Follow-ups
+
+1. **`hymns` is still the rung to look at.** Its band is 3.1 levels after this and
+   `rung_audit` still flags it, and it now shares 13 of its 17 options with other rungs. A
+   stage-3 rung built mostly out of other rungs' material is a different problem from the
+   one this task fixed.
+2. **`i-give-you-my-heart` is off the ladder and in the Library only.** If it should be on a
+   rung, the rung is a stage-6 or stage-7 hymns rung rather than stage 3 — but no hymns rung
+   above `hymns.6` exists, and `hymns.6` was not examined for it here.
+3. **The 73 single-staff lead sheets are still measured on a melody nobody plays alone**,
+   which is Entry 53's third `unverified` item and is now also true of the port, in exactly
+   the same direction: a chord symbol contributes nothing on either side.
+4. **`maxSimultaneousRight` and `maxSimultaneousLeft` are the constant zero in the port.**
+   They carry no weight today. `ornaments` also reads zero there and it carries +0.0175, so
+   the port is already a hair below Python on an ornamented piece; the agreement test's 0.2
+   covers it and is what would notice if a refit changed that.
+5. **The 93 banded rows** — 38 Joplin from `kern.json`, 55 `.nifc` Chopin — are still the
+   only estimated levels no model produced. Entry 53's fourth follow-up, untouched; what
+   changed here is that a pdmx row can now be made `judged` the same way a kern row can.
+
+#### The `CLAUDE.md` checklist, run against this entry
+
+1. **Absences.** Three are stated here and each is a search with its result. "No reader of
+   `levelSource` was missed" is two greps, one per tree, and the table enumerates twenty
+   sites rather than summarising them. "No lesson names either piece" is a grep for the ids,
+   a second grep shaped differently for the edition and the composer, and then the paragraph
+   read by eye — **and the third is what mattered**, because `hymns.md` does say *Amazing
+   Grace* and it is a different row. "No test can show the per-staff split wrong" is not
+   stated bare: what is stated is that MusicXML carries `<staff>` and no hand marking, which
+   is a fact about the format.
+2. **Plurals.** The 90 rungs are one mechanical walk whose output is printed in full — one
+   hit and eight near-misses, both enumerated. The 20 `levelSource` sites are enumerated one
+   row each. The 233 voice ids are counted by kind and the seven exceptions are named.
+   **A count in §4 was wrong in the first draft and the checklist caught it on the second
+   pass:** "for each of the 61 crossing voices the line was rebuilt whole" named the
+   music21-visible subset while the script had measured all 63, so a number was asserted of
+   a set that was not the one measured. In the same paragraph the share distribution was
+   given as "62 at 0.00, twelve at 1.00, two in between" — that was a histogram rounded to
+   one decimal read back as though the buckets were the values; it is 58, 10, and eighteen
+   spread between, and the five values that decide the threshold are now printed.
+   **This rule caught one false plural in this entry:** "both filters are ported" was
+   written as though they were the same kind of work, and they are not — one is a repair
+   with three red tests behind it and the other is a rule the port already satisfied, which
+   is now said in the first paragraph. It also caught "four fixtures differ", which was
+   inherited from the port's own docblock and is two.
+3. **The proxy.** Named in *unverified*: a measured feature is a proxy for difficulty, and
+   the removal rule is a proxy for the per-feature comparison Entry 51 ran. The new proxy in
+   this entry is **the level** — two pieces came off a rung on the strength of one number
+   each.
+4. **Green is not done.** §6 is the verification table and *What is unverified* is as long.
+   The one test that would have caught the fault this task fixed — `difficulty.test.ts` — is
+   the one Entry 53 could not run, which is why it was 18 red when this task opened it.
+5. **The reason, not the outcome.** Two places. `two-voices`' level agreed before and after
+   because the features it got wrong carry almost no weight, so the agreement test was never
+   going to catch it and the feature test is what does. And `rung_audit` gaining a finding
+   is written down with its arithmetic rather than left as a number, because the cause — the
+   removed piece was the rung's only unshared song — is the interesting part.
+6. **The artefact re-opened.** Entry 51's anchors table and Entry 53's §4 band list were
+   read out of `pending-review.md` before the maxima were recomputed, and the recomputation
+   was then compared against them rather than trusted.
+   `git show HEAD:content/curriculum/stage-3.json` and `HEAD:content/sources/pdmx.json` were
+   read to get the pre-T27 band and the pre-T27 option levels; the slack in the new band is
+   measured off those files and not inferred from the entry's prose.
+7. **Other readers of the field.** §2's table for `levelSource`, §3's paragraph for
+   `levelBand` and `songOptions`. `levelConfidence` is the one that would have been missed
+   by reading the greps alone: it turns the field into a sort order on two screens.
+8. **The letter.** The restatement is the third paragraph. It is what turned "port the two
+   filters" into also correcting three false sentences in the port's own header, since a
+   comment that contradicts the code is the next reader's bug.
+
+Nothing committed. `content/scores/`, `app/public/content/` and `build/` were rewritten by
+the content build, which the brief says to expect.

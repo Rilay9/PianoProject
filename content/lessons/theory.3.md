@@ -59,6 +59,6 @@ and nothing else about the run is marked.
 that never reaches your ear stays a filing system.
 
 **How you'll know you've got it.** Every interval within the octave identified
-by ear at 80 % in the interval drill, a key signature of up to three sharps or
+by ear at 80 % accuracy in the interval drill, a key signature of up to three sharps or
 flats named from the two rules above without pausing, and a chain of eight notes
 played back in Simon.

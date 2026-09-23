@@ -51,7 +51,7 @@ the page.
 
 **Tools for this rung.** *Play it blind* takes the first of the rung's four,
 which is *Carol of the Bells* and not the one the list above says to memorise
-first; for *Silent Night*, open its own row and take *Blind* from the ⋯ menu.
+first; for *Silent Night*, open its own row and take *Blind* from the ⋯ controls.
 Either way the app still follows you and still marks the run, so the number you
 get without the page can be compared with the one you got with it.
 

@@ -55,7 +55,7 @@ which is where the gaps come from: the app takes the right hand and leaves the
 chords to you. Nothing there is recorded or marked. *Play it as a duet* is the
 other button: it opens *Bye Bye Blackbird* with the right hand yours and the
 app playing the left, which is the same question from the other side — switch
-to the left hand from the *Hands* row and you are comping under a tune again,
+to the left hand with **L** on the control bar and you are comping under a tune again,
 this time one that is written down.
 
 **How you'll know you've got it.** A twelve-bar blues comped in one pattern with

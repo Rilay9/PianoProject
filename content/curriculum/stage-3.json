@@ -588,7 +588,7 @@
                 }
               ],
               "levelBand": [
-                2.3,
+                2.27,
                 3.3
               ],
               "finder": {
@@ -846,9 +846,7 @@
                 "song.classical.jesus-loves-me.pdmx",
                 "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx",
                 "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
-                "song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx",
                 "song.folk.10000-reasons-matt-redman.pdmx",
-                "song.folk.i-give-you-my-heart.pdmx",
                 "song.classical.simple-gifts-2-part-round.pdmx"
               ],
               "mastery": {
@@ -874,8 +872,8 @@
                 }
               ],
               "levelBand": [
-                3.2,
-                7.3
+                2.6,
+                5.7
               ],
               "finder": {
                 "skill": "playing four-part harmony with a walking bass between chords",
@@ -937,7 +935,7 @@
                 }
               ],
               "levelBand": [
-                2.5,
+                2.3,
                 5.1
               ],
               "finder": {
@@ -1065,7 +1063,7 @@
                 "chordSymbols": true
               },
               "levelBand": [
-                2.87,
+                2.44,
                 3.49
               ],
               "finder": {

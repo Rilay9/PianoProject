@@ -371,7 +371,14 @@ export interface SessionScore {
   tempoPct: number;
   /** Steps with something to play, after the hand filter. */
   totalSteps: number;
-  /** Wait: completed cleanly. Tempo: every expected pitch hit in time. */
+  /**
+   * Wait: completed cleanly. Tempo: every expected pitch hit in time.
+   *
+   * Counted where a step is finished — `maybeAdvanceWait` in Wait, `feedTempo`
+   * in Tempo. It said this from the day it was written and Tempo left it at
+   * nought for as long, because the count sat in `closeSlotAsMissed` behind a
+   * condition a deleted slot can never meet (T24).
+   */
   correctSteps: number;
   /** Expected pitches across all steps — the denominator in Tempo mode. */
   expectedNotes: number;

@@ -16,7 +16,7 @@ is about the right.
 
 **Denser syncopation.** *Pine Apple Rag* and *Gladiolus Rag* put the ragtime
 figure on nearly every beat instead of once a bar, and the secondary rag —
-groups three sixteenths long running across the bar line — fills a whole strain
+sixteenths grouped in threes across the bar line — fills a whole strain
 of *Pine Apple* rather than turning up in passing. The practice that works is unglamorous: **name the figure, play it
 alone until it is automatic, then find every place it occurs.** Most late rags
 are four or five figures in different clothes.
@@ -59,7 +59,7 @@ not in moving the hands faster.
 nothing else. Play a strain with the score screen's *Rhythm only* setting on,
 in Keep tempo, and the dense syncopation comes
 back as four or five placings you can count, after which finding every bar
-they occur in is reading rather than hearing. That setting is in the ⋯ menu, not a
+they occur in is reading rather than hearing. That setting is in the ⋯ controls, not a
 button. The one button here is *Play it blind*, which opens *Pine Apple Rag*,
 first of the six, with the notation hidden and the run still marked: a figure
 you can only play with the page in front of you is one you have not named yet.

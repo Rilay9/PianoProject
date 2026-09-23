@@ -32,8 +32,8 @@ clean. This texture wants the opposite some of the time: the blur is the sound.
 The half-pedal exercise is where that becomes controllable rather than accidental
 — the damper half down thins the ring instead of stopping it.
 
-**The band is wide on purpose.** The exercises, bar the half-pedal one, start well
-below the pieces, because the figure is simple to describe and the pieces are where it has to hold
+**The exercises sit well below the pieces on purpose**, bar the half-pedal one,
+because the figure is simple to describe and the pieces are where it has to hold
 up for pages. Play the exercises at the tempo the pieces need, not at the tempo
 the exercises allow.
 

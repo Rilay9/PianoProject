@@ -18,7 +18,7 @@ Christmas television special.
 hand gets the tune everybody knows, and it is usually the easy part. The left
 hand is carrying what a string section and a bass were doing between them — a
 low note, then a chord, then the same chord again, in time, every bar, for
-eighty bars. Use *Hands* on the score screen, which chooses which hand the app
+eighty bars. Use **L** on the control bar, which chooses which hand the app
 waits for, and practise the left alone until it is boring.
 
 **The three exercises are that left hand taken apart.** The rotation study is

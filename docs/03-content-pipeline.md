@@ -112,7 +112,12 @@ caught by the merge rather than by whichever wrote last:
    first editions) via music21. CC BY-NC editions are bundled only with `--allow-nc`.
 4. **import [PDMX]** (`import_pdmx.py`) — the reviewed slice of the PDMX quarry from
    `content/sources/pdmx.json`, checksummed against what was reviewed. `--personal` bundles the
-   ones whose composition is not public domain; a strict build placeholders them.
+   ones whose composition is not public domain; a strict build placeholders them. A row's
+   own `levelSource` reaches the catalog (2026-09-23); it used to be the constant `estimated`
+   on the grounds that `difficulty.py` computed the level, which was true of every row the
+   quarry writes and made the field unwritable — a level a person had judged could be spliced
+   onto a pdmx row and the built catalog would still call it an estimate. `estimated` when the
+   row is silent, and anything that is neither word fails the build in `catalog_item`.
 5. **generate [GEN]** (`generate_exercises.py`) — scales, arpeggios, Hanon-style cells, harmony
    families, rhythm rows, levelled from one table (`02` Part E amendment); how many there are
    is in `docs/generated/ladder.md`.
@@ -163,10 +168,59 @@ in the directory is a mystery:
 - `licensing.py` — the §1 rules as code: `license_verdict` for the edition, `composition_verdict`
   for the composition; called by the importers and `validate.py`.
 - `difficulty.py` — `features(score)` and `estimate(...)`: the one levelling model, ported to
-  `app/src/score/difficulty.ts` for imports on the phone.
+  `app/src/score/difficulty.ts` for imports on the phone. **What counts as a note** is two
+  filters, both added 2026-09-22 after `pending-review` Entry 51 found the instrument
+  measuring things nobody plays, and both with a test in `tools/content/tests/test_difficulty.py`
+  proved red without them:
+  - `sounding()` drops `harmony.Harmony` — music21's `ChordSymbol` subclasses `chord.Chord`,
+    so a lead sheet's printed `C` or `G7` arrived from `recurse().notes` as a sounding chord.
+    129 of the 798 songs with a file that parse carry symbols; one sixteen-bar melody was
+    reading four simultaneous right-hand notes and a twenty-one-semitone leap. There is no
+    `chordSymbols` feature: what a player invents over a symbol is not measured here at all.
+  - `voice_lines()` splits a staff into its voices, so a melodic leap is measured *within* a
+    voice. `recurse().notes` yields voice 1 of a bar entirely before voice 2, which made every
+    bar joint of a two-voice staff a leap; 418 of the 798 have a measure carrying more than
+    one voice, and the correction moves `maxLeapRight` on 191 of the 542 quarried rows. The
+    split is by **staff**, matching the comment in `app/src/score/difficulty.ts`, not by the
+    hand `extractScoreModel` infers — the two ports have to agree within 0.2 of a stage.
+  A stored `features` block is read by `import_pdmx.concepts_for`, which hands the catalog
+  `hand-crossing` and `wide-span`; 35 quarried rows were carrying one of those off a chord
+  symbol.
+
+  **Both filters reached the port on 2026-09-23** and `app/tests/fixtures/levelling.json` was
+  regenerated with them, which is what the agreement test had been failing over. They do not
+  land the same way on the two sides, and the difference is written into the port rather than
+  smoothed over: the chord-symbol rule holds there **by construction**, because OSMD parses
+  `<harmony>` into a chord symbol container on the source measure and never into a voice
+  entry, so a symbol cannot reach `printedNotes` at all — measured on a lead sheet carrying
+  three symbols over five melody notes, which yields five notes, no hand span and no
+  simultaneity. The voice split is a real change to `handStats`, which had been grouping every
+  note on a staff by its onset: two voices sounding together read as a chord, and the melodic
+  line stepped out of one voice into the other. The crossing floor has no counterpart on that
+  side, because the port reports `handCrossings` as the constant zero.
+
+  **A voice id on both staves is three different things, counted 2026-09-23** over the 799
+  songs with a file (`pending-review` Entry 56). music21 sees 168 such scores and 233 voice
+  ids, which is Entry 53's number reproduced. Read off the MusicXML rather than the object
+  model, 137 of the 233 are a **separate run** — the edition restarting its `<voice>`
+  numbering on the lower staff — 28 are two lines **sounding together** under one id, which
+  an SATB hymn does in every bar, and 61 are a real **crossing**: one line stepping between
+  the staves, never sounding against itself. Per-staff measurement is right for the first two
+  and it is a choice for the third, where it hides the step at the crossing point — up to 65
+  semitones. It was left alone: MusicXML records the staff a note is printed on and never the
+  hand that plays it, so nothing in these files can tell a hand's leap from a change of staff,
+  and moving one of the two ports alone would break the 0.2 agreement.
 - `fit_level_model.py` — fits `content/sources/level-model.json` on the songs a person levelled.
+  Refitted 2026-09-22 on the corrected features: 163 judged songs, Spearman 0.878,
+  leave-one-out median absolute error 0.400 stages, against 0.858 and 0.440 for the same 163
+  and the same fitter on the features as they were measured before. Twelve weights survive the
+  monotone-sign check and `ledgerRatio` is no longer one of them — on today's calibration set
+  its weight comes out backwards, with the old features as well as the new, so the feature the
+  model once leaned on hardest (P14's +1.06, fitted on 173 songs) now earns nothing.
 - `export_levelling_fixture.py` — writes what `difficulty.py` makes of the score fixtures, so
-  `app/tests/unit/difficulty.test.ts` can hold the two implementations to one formula.
+  `app/tests/unit/difficulty.test.ts` can hold the two implementations to one formula. Re-run
+  it whenever `difficulty.py` or `level-model.json` changes: after the 2026-09-22 refit and
+  before the 2026-09-23 port, 18 of its 49 comparisons were failing.
 - `finder.py` — turns a lesson's `finder` block into the search line and chat prompt (`04` §3).
 - `ladder_report.py` — writes `docs/generated/ladder.md`; `validate.py` fails a build whose
   committed copy is stale.

@@ -49,7 +49,7 @@ twelve keys, and the lab's key setting is the cheapest way to get there.
 at I–vi–IV–V rather than this rung's loop, but leaves the key free: same
 progression, a different tonic each day, nothing to rewrite. It opens on *Hold
 the chords*, so the loop runs underneath and the tune over it is yours, and at
-the end of a time round it says how many of your notes were in the scale. A key
+the end of each time round it says how many of your notes were in the scale. A key
 is one choice on that screen, which is exactly the claim this rung is making.
 *Free play* names any three or more notes you hold down and says which is in
 the bass, so a voicing found in a new key can be checked without a chart.

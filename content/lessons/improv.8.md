@@ -42,7 +42,7 @@ picker. It opens on *Play the tune*, with the app taking the right
 hand, so what you type is heard under a melody rather than on its own — which
 is the test, since an approach chord that only works in isolation is not one.
 Build your three versions there one at a time; the one that survives is the one
-the melody still fits. At the end of a time round it says how many of your
+the melody still fits. At the end of each time round it says how many of your
 notes were chord tones of the bar, and keeps none of it.
 
 **How you'll know you've got it.** Three versions of eight bars that each sound

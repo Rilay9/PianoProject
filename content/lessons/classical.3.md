@@ -56,7 +56,7 @@ it through is testing, not practising.
 **Common mistake.** Treating the left hand as filler. If you cannot hum it, you
 have not learned it.
 
-**Tools for this rung.** Two things help here. *Duet* in the ⋯ menu plays
+**Tools for this rung.** Two things help here. *Duet* in the ⋯ controls plays
 the hand you are not: choose the right hand and the left line arrives as a
 tune rather than as something you are producing, which is the point this
 lesson keeps making. And a few minutes of unseen music from the card

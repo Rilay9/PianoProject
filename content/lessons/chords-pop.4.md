@@ -52,7 +52,7 @@ that it transposes; play it in five keys.
 **Tools for this rung.** *Accompaniment lab* opens *Pop — the four-chord song*
 — this loop, in whichever key you set — on *Play the tune*: the app takes the
 melody, the four chords under it are yours, and the inversion gets chosen in
-time rather than at leisure. At the end of a time round it says how many of
+time rather than at leisure. At the end of each time round it says how many of
 your notes were chord tones of the bar, and keeps none of it. Its grid lights
 those tones on the keyboard strip while you are still choosing inversions
 rather than remembering them. *Free play* names any three or more notes you

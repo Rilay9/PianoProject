@@ -57,8 +57,8 @@ connecting and the piece stops being a line.
 
 **Tools for this rung.** *Play it as a duet* opens Invention No. 1 with the
 right hand yours and the app playing the other line at a level it never varies,
-so you hear whether yours answers it or covers it. Swap with the *Hands* row:
-the way round you find harder is the voice you have not learned. *Play it
+so you hear whether yours answers it or covers it. Swap hands: the way round
+you find harder is the voice you have not learned. *Play it
 blind* takes the first of the six instead, K. 545, and hides the notation while
 still following and marking the run — a test of whether you know both
 voices or only the one your eyes were on.

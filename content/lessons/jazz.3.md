@@ -51,7 +51,7 @@ the Library.
 wants are two of the score screen's own controls rather than a mode of its own.
 *Rhythm only*, in Keep tempo, judges your timing and not your notes — one tap
 per written note or chord, on any key at all — which is precisely what swing is.
-*Tempo* slows the tune down until the long and the short are plainly different
+*Speed* slows the tune down until the long and the short are plainly different
 lengths. Set the second, then the first.
 
 **Common mistake.** Swinging the quarter notes as well. Only the eighths move.

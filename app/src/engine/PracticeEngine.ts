@@ -945,6 +945,9 @@ export class PracticeEngine {
       const deltaMs = at - (target?.tMs ?? at);
       this.hits += slot?.size ?? 0;
       this.openSlots.delete(match);
+      // One strike settles the whole step, so the step came out right — the
+      // same thing `correctSteps` counts on an ordinary Tempo run below.
+      this.correctSteps += 1;
       this.deltas.push(deltaMs);
       this.record(midi, velocity, rawTMs, match, true, deltaMs);
       this.emit({
@@ -959,7 +962,17 @@ export class PracticeEngine {
       return;
     }
     slot?.delete(midi);
-    if (slot && slot.size === 0) this.openSlots.delete(match);
+    if (slot && slot.size === 0) {
+      this.openSlots.delete(match);
+      // Every pitch this step expected arrived inside its window, which is
+      // what `SessionScore.correctSteps` says it counts. It is counted *here*
+      // because here is where a step is completed: the count used to sit in
+      // `closeSlotAsMissed` behind `pitches.size === 0`, and a slot that
+      // empties is deleted on this line, so nothing empty ever reached the
+      // closer and every Tempo run reported nought (T24; `engineTempo.test.ts`
+      // "counts a step completed in time").
+      this.correctSteps += 1;
+    }
     const deltaMs = at - (target?.tMs ?? at);
     this.hits += 1;
     this.deltas.push(deltaMs);
@@ -1129,7 +1142,10 @@ export class PracticeEngine {
         tMs: this.clock.now(),
       });
     }
-    if (pitches.size === 0) this.correctSteps += 1;
+    // No `correctSteps` here. A slot only reaches the closer with something
+    // still in it — `feedTempo` deletes it the moment its last pitch arrives —
+    // so the count that used to live on this line could not fire, and a step
+    // that came out right is counted where it comes out right (T24).
   }
 
   /** Emits one tempoTick per beat, count-in included (docs/05 §3). */

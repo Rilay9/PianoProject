@@ -132,8 +132,20 @@ def build_item(entry: dict, *, bundled: bool, checksum: str | None) -> dict:
         item_type="song",
         title=entry["title"],
         level=float(entry.get("level", 4.0)),
-        # Always estimated: difficulty.py computed it, not a person (replan §1.4).
-        level_source="estimated",
+        # The row's own `levelSource` when it carries one, `estimated` when it
+        # does not. It used to be the constant `estimated`, on the grounds that
+        # difficulty.py computed the level and not a person (replan §1.4) —
+        # true of every row the quarry writes, and the reason it was wrong is
+        # that it made the field unwritable: a hand judgement spliced onto a
+        # pdmx row sat in the source saying one thing while the built catalog
+        # said another, and no amount of editing the source could reach the
+        # app. `level` on the row already flows through the same way.
+        #
+        # An unknown value is not swallowed: `catalog_item` raises on anything
+        # that is not `judged` or `estimated` (replan §1.4 again, and it is the
+        # one field with no default there), so a typo fails the build instead
+        # of quietly becoming an estimate.
+        level_source=entry.get("levelSource") or "estimated",
         hands=entry.get("hands", "both"),
         # A row may say its own genre and tracks (`genre`, `tracks` in the source
         # table); the bucket is the fallback, not the verdict - the archive filed

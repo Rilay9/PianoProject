@@ -27,7 +27,7 @@ the slow one in; the way through is the opposite: keep the slow hand
 absolutely steady and let the fast one fill the gaps.
 
 **Shaping.** A crescendo is not two dynamics, it is a journey between them.
-The app measures the slope: the sheet says how far your line travelled against
+The app measures the slope: the summary says how far your line travelled against
 the distance this exercise asks for, and how much of it went the right way.
 That sits beside the accuracy, not inside it: the right notes at one volume is
 a full-marks run with no crescendo in it. Play it as one gesture rather than
@@ -63,7 +63,7 @@ above with a melody on it.
 **Tools for this rung.** *Play it as a duet* opens the two-against-one
 exercise — not one of the études — with the moving hand yours and the app
 holding the steady one, which is the way into it the paragraph above asks for.
-Swap with the *Hands* row and it is the other exercise.
+Swap hands and it is the other exercise.
 
 **How you'll know you've got it.** The 2:1 exercise gone boring. A tie across
 the bar line where the pulse does not hesitate on either side of it. And a

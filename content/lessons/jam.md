@@ -9,7 +9,7 @@ videos:
 readingTime: 3
 ---
 
-Everything so far has been you and the app. This module is about the moment
+Everything so far has been you and the app. This track is about the moment
 someone else is in the room — specifically a guitarist, which decides the keys.
 
 **Guitar keys.** Guitars are built around open strings in E, A, D and G, so
@@ -46,7 +46,7 @@ to what the other person just played and answer it.
 
 **The form tracker.** The chord-chart view shows where you are in the form and
 which chorus you are on — tap *Chart* beside a song on this page, or find it
-under ⋯ while the piece is open. The rung's *Play the form with the chart*
+in the ⋯ controls while the piece is open. The rung's *Play the form with the chart*
 drill has the same thing built in: twelve bars in E, each with its numeral, and
 the one that is sounding marked. So does the accompaniment lab's *Jam it*.
 Knowing where you are is the thing beginners lose first.

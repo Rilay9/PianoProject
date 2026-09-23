@@ -55,6 +55,6 @@ it was played in. That one plays by ear and lights nothing — until you miss,
 when it plays the chain again over the lit keys and asks you for the same chain
 rather than ending the game.
 
-**How you'll know you've got it.** Cadences identified at 80 % by ear, triad
+**How you'll know you've got it.** Cadences identified at 80 % accuracy by ear, triad
 inversions played from their slash-chord names, and an eight-note phrase played
 back correctly after two hearings.

@@ -48,8 +48,8 @@ five — the last thing to take on.
 **Tools for this rung.** *Play it as a duet* opens *Amazing Grace* in four
 parts with the right-hand staff yours, soprano and alto; the *Duet* row on the
 score screen plays the hand you are not on, so tenor and bass arrive
-underneath. Then use *Hands* to swap, because the left-hand pair is the half
-that never gets rehearsed.
+underneath. Then use **L** on the control bar to swap, because the left-hand
+pair is the half that never gets rehearsed.
 
 **Common mistake.** Playing all four at the same weight, which produces a wash
 with no tune in it. Soprano loudest, bass next, the middle two quiet enough

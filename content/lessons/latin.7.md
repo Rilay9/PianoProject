@@ -47,8 +47,8 @@ one of them prints a chord symbol. Everything is written; nothing here is left
 to you to voice.
 
 **Tools for this rung.** No button on this page; the two you want are on the
-score. *Hands* chooses which hand the app waits for, so a left-hand-only pass
-is one tap. *Perform* is one pass, start to finish, with no restarts and no
+score. **R** and **L** on the control bar choose which hand the app waits for,
+so a left-hand-only pass is one tap. *Perform* is one pass, start to finish, with no restarts and no
 loop, and it is kept as a performance rather than as practice — which is what
 these three are for. Do the hand work first and the performance last.
 
@@ -56,6 +56,6 @@ these three are for. Do the hand work first and the performance last.
 the hand that gives out is the one repeating, and in Asturias that hand is not
 the one with the tune.
 
-**How you'll know you've got it.** One of them played through once, with the
-performance setting on, at a tempo you can hold to the end — and the hand you
+**How you'll know you've got it.** One of them played through once, with
+*Perform* on, at a tempo you can hold to the end — and the hand you
 did not practise is as even in the last line as it was in the first.

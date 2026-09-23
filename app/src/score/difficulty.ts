@@ -12,30 +12,45 @@
  * are copied into `public/content/` by the build, and are fetched at runtime —
  * so refitting the model does not mean editing TypeScript.
  *
- * Two features Python measures are deliberately absent: `ornaments` (the model
- * has no ornament data — OSMD gives us notes, not expressions) and
- * `handCrossings`. Both carry a weight of exactly zero in the fitted model, so
- * their absence changes no estimate; if a future fit gives them a weight, the
- * agreement test is what will notice.
+ * Four features Python measures are reported here as zero, because OSMD gives
+ * us notes rather than expressions and the ScoreModel has no note-against-note
+ * register comparison: `ornaments`, `handCrossings`, `maxSimultaneousRight` and
+ * `maxSimultaneousLeft`. Three of the four carry no weight at all in the
+ * committed fit and cost nothing. `ornaments` is no longer one of them — the
+ * 2026-09-22 refit gives it +0.0175, so an ornament-heavy piece reads low here
+ * by `0.0175 * log1p(ornaments)`, which is under a tenth of a stage on the most
+ * ornamented anchor in the calibration set. If a future fit gives any of the
+ * four a real weight, the agreement test is what will notice.
  *
- * Four of the 41 fixtures still measure a *feature* differently, and the
- * reasons are real rather than bugs. They are listed because a future reader
- * will otherwise rediscover them:
+ * **The crossing floor has no counterpart on this side.** `difficulty.py` takes
+ * the right hand's lowest note at an offset across every voice sounding there,
+ * so that a two-voice staff cannot hand the crossing count whichever voice
+ * music21 happened to walk last. Here `handCrossings` is the constant zero, so
+ * there is no floor to get right; the rule is recorded rather than ported, and
+ * porting it would mean adding a feature the model does not weigh.
+ *
+ * Two of the 42 fixtures still measure a *feature* differently — six cells in
+ * all, enumerated because a future reader will otherwise rediscover them:
  *
  *   - **Ties.** music21 counts a tied continuation as a note; the ScoreModel
- *     merges tie chains into the first note. `chords-ties` therefore reads 4
- *     notes per bar here and 5 there.
- *   - **Grace notes.** music21 gives them zero duration and they drop out of
- *     `shortestValue`; OSMD gives them a real one, so `pickup-grace` sees a
- *     shorter shortest note.
- *   - **Voices in one staff.** Where two voices share a staff, what music21
- *     calls the left part and what the model calls staff 2 are not the same
- *     notes, so `two-voices` disagrees on the left hand's span and leap.
- *   - **An inferred key.** OSMD reports no key signature for `fingering-rests`
- *     where music21 infers three.
+ *     merges tie chains into the first note. `chords-ties` reads `notesPerBar`
+ *     4 here against 5 there, and `notesPerSecond` 1.5 against 1.875.
+ *   - **Grace notes.** music21 gives them zero duration, so they drop out of
+ *     `shortestValue` and out of the chord they are printed against; OSMD gives
+ *     them a real duration at the same onset as the note they decorate. On
+ *     `pickup-grace` that is `shortestValue` 0.5 here against 1,
+ *     `distinctRhythms` 2 against 1, `maxSpanRight` 13 against 0 — the grace
+ *     note and its principal read as a chord — and `maxLeapRight` 15 against 13.
  *
- * None of them moves the *level* by more than 0.2, which is the number that
- * matters and the number the test holds.
+ * The two that used to be on this list are gone, and they are named because a
+ * list that only ever grows stops being read: **voices in one staff** is the
+ * fix below in `handStats` and `two-voices` and `cross-staff` now agree on span,
+ * leap and range to the note; **an inferred key** is `fingering-rests`, which
+ * no longer disagrees on `keyAccidentals`. Both were re-measured across all 42
+ * fixtures rather than taken from this comment.
+ *
+ * Neither remaining difference moves the *level* by more than 0.2, which is the
+ * number that matters and the number the test holds.
  */
 import type { ScoreModel, ScoreNote } from './types';
 import { printedNoteKey } from './types';
@@ -130,32 +145,62 @@ interface HandStats {
   range: number;
 }
 
+/**
+ * Span, leap and range for one staff, its voices measured as separate lines.
+ *
+ * **Two voices sharing a staff are two lines, not one hand's worth of music.**
+ * Grouping every note on the staff by its onset ran them together twice over.
+ * A note in voice 1 and a note in voice 2 sounding at the same moment read as a
+ * chord — on the `two-voices` fixture that is a seven-semitone hand on the upper
+ * staff and a four-semitone one on the lower, and neither is a chord anybody
+ * plays — and the melodic line stepped out of one voice and into the other,
+ * which is a leap nobody plays either.
+ *
+ * This is `voice_lines` in `tools/content/difficulty.py`, ported. Both sides
+ * split by **staff**, not by the hand `extractScoreModel` infers: Python reads
+ * music21 parts and has only the staff to go on, the two implementations have to
+ * agree to within 0.2 of a stage, and following `hand` here alone would break
+ * that. A voice printed on the other staff is measured with the staff it is
+ * printed on, which is a known difference between the page and the playing.
+ *
+ * `range` is deliberately *not* per voice: Python accumulates its pitches
+ * outside the per-voice loop, because the lowest and highest note a hand has to
+ * reach is a fact about the hand and not about one of its lines.
+ */
 function handStats(notes: ScoreNote[]): HandStats {
   if (notes.length === 0) return { span: 0, leap: 0, range: 0 };
-  const byOnset = new Map<number, number[]>();
+  const byVoice = new Map<number, Map<number, number[]>>();
   for (const note of notes) {
-    const list = byOnset.get(note.sourceOnset);
-    if (list) list.push(note.midi);
-    else byOnset.set(note.sourceOnset, [note.midi]);
-  }
-  const onsets = [...byOnset.keys()].sort((a, b) => a - b);
-  let span = 0;
-  const melodic: number[] = [];
-  for (const onset of onsets) {
-    const midis = (byOnset.get(onset) ?? []).slice().sort((a, b) => a - b);
-    // A chord's span, matching Python: only a chord has one, a single note
-    // contributes nothing.
-    const top = midis[midis.length - 1];
-    const bottom = midis[0];
-    if (top !== undefined && bottom !== undefined && midis.length > 1) {
-      span = Math.max(span, top - bottom);
+    let onsets = byVoice.get(note.voice);
+    if (!onsets) {
+      onsets = new Map<number, number[]>();
+      byVoice.set(note.voice, onsets);
     }
-    // Python takes the lowest note of each chord as the melodic line.
-    if (bottom !== undefined) melodic.push(bottom);
+    const list = onsets.get(note.sourceOnset);
+    if (list) list.push(note.midi);
+    else onsets.set(note.sourceOnset, [note.midi]);
   }
+  let span = 0;
   let leap = 0;
-  for (let i = 1; i < melodic.length; i += 1) {
-    leap = Math.max(leap, Math.abs((melodic[i] as number) - (melodic[i - 1] as number)));
+  for (const byOnset of byVoice.values()) {
+    const onsets = [...byOnset.keys()].sort((a, b) => a - b);
+    const melodic: number[] = [];
+    for (const onset of onsets) {
+      const midis = (byOnset.get(onset) ?? []).slice().sort((a, b) => a - b);
+      // A chord's span, matching Python: only a chord has one, a single note
+      // contributes nothing. A music21 Chord belongs to one voice, which is
+      // what this grouping now says too.
+      const top = midis[midis.length - 1];
+      const bottom = midis[0];
+      if (top !== undefined && bottom !== undefined && midis.length > 1) {
+        span = Math.max(span, top - bottom);
+      }
+      // Python takes the lowest note of each chord as the melodic line.
+      if (bottom !== undefined) melodic.push(bottom);
+    }
+    for (let i = 1; i < melodic.length; i += 1) {
+      leap = Math.max(leap, Math.abs((melodic[i] as number) - (melodic[i - 1] as number)));
+    }
   }
   const pitches = notes.map((n) => n.midi);
   const highest = pitches.reduce((a, b) => Math.max(a, b), pitches[0] ?? 0);
@@ -192,6 +237,24 @@ export function printedNotes(model: ScoreModel): ScoreNote[] {
  * holding a file nobody has looked at.
  */
 export function features(model: ScoreModel): Features {
+  // **A printed chord symbol is not a sounding note.** This is `sounding()` in
+  // `tools/content/difficulty.py`, ported: nobody plays the `C`, `F` or `G7`
+  // printed over a lead sheet, it is a name for a harmony the player voices
+  // themselves, and music21 was handing it to Python from
+  // `recurse().notes` as a three- or four-note chord — four simultaneous notes,
+  // a ten-semitone hand and a twenty-one-semitone leap on a sixteen-bar
+  // single-line melody.
+  //
+  // On this side the rule holds by construction rather than by subtraction, and
+  // that was measured rather than assumed: OSMD parses `<harmony>` into a chord
+  // symbol container hung off the source measure, never into a voice entry, so
+  // `extractScoreModel`'s walk over `CurrentVisibleVoiceEntries()` cannot see
+  // one. A two-bar single-staff lead sheet carrying three chord symbols over
+  // five melody notes yields five `ScoreNote`s, `maxSpanRight` 0,
+  // `maxSimultaneousRight` 0 and `notesPerBar` 2.5. `printedNotes` is therefore
+  // the whole of the filter, and the test named for this rule in
+  // `difficulty.test.ts` is what will notice if a future change to the
+  // extractor starts letting symbols through into `steps[].notes`.
   const notes = printedNotes(model);
   const bars = Math.max(1, model.sourceMeasureCount || 1);
   const noteCount = notes.length;

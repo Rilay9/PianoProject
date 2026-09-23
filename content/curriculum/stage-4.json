@@ -723,7 +723,7 @@
               ],
               "estimatedDays": 45,
               "levelBand": [
-                2.9,
+                2.45,
                 4.4
               ],
               "finder": {
@@ -878,7 +878,7 @@
                 "chordSymbols": true
               },
               "levelBand": [
-                2.74,
+                2.67,
                 4.5
               ],
               "finder": {

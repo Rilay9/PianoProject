@@ -37,7 +37,7 @@ chord symbol later instead of spelling it out.
 — the same four bars written twice, once legato and once staccato, in C and
 again in D. Playing either alone is easy; playing them one after the other and
 hearing the difference is the point. The app measures how long you hold each key
-here: the sheet says what share of your notes were the right length, and what
+here: the summary says what share of your notes were the right length, and what
 the average one took of its written value. That sits beside the accuracy rather than inside it, so a
 staccato phrase of right notes held too long is a full-marks run with a line
 under it saying so. A note it never saw released is not counted.
