@@ -71,6 +71,8 @@ import { onScreenDispose } from '../screenLifecycle';
 import { button, chip, el, field, numberControl, selectControl } from '../widgets';
 import { barAt } from './ChordChartScreen';
 import { screenFrame, statusLine } from './screenFrame';
+import { TOOL_HELP } from '../help';
+import { createHelpStrip } from '../helpStrip';
 import './LabScreen.css';
 
 /** The tag every lab build carries, so Library can tell them from real imports. */
@@ -1274,6 +1276,16 @@ export function LabScreen(router: Router): HTMLElement {
       }),
     );
   }
+
+  /**
+   * What the lab is and what to do first (`04` §5f).
+   *
+   * `LAB_HELP` already answered "what does this control do" for all ten
+   * pickers (Entry 30). The two questions left were the ones a learner asks
+   * before touching any of them — what this screen is for, and where it sits
+   * — and they are here and behind the `?`.
+   */
+  body.append(createHelpStrip({ id: 'lab', entry: TOOL_HELP.lab, hideWhat: true }).el);
 
   body.append(chipGroup('Start from', presetRow, labHelp('presets')));
 

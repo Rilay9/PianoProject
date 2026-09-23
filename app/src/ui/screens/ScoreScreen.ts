@@ -58,6 +58,9 @@ import { KeyRibbon } from '../KeyRibbon';
 import { waitingForLine } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
+import { MODE_HELP, type ScoreMode } from '../help';
+import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/unfinishedRun';
+import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
 import { hasChordSymbols } from '../openItem';
 
@@ -317,6 +320,8 @@ export function ScoreScreen(router: Router): HTMLElement {
    * summary: Free, Listen and `Hear it` end without one (T8 review, M3).
    */
   let endedSinceLastStart = false;
+  /** True once the screen is being torn down; see `showSummary`. */
+  let leaving = false;
   /** The pending long-press, if a finger is down on the stage. */
   let pressHold: number | null = null;
   /** Where that finger went down, so a wobble can be told from a drag. */
@@ -559,7 +564,139 @@ export function ScoreScreen(router: Router): HTMLElement {
   micFill.className = 'mic-meter__fill';
   micMeter.appendChild(micFill);
 
-  head.append(back, title, where, status, waitingLine, micMeter);
+  /**
+   * Back, the piece, the app's messages and the mic meter — one row that never
+   * wraps — with the help strip and the offer to carry on under it.
+   *
+   * The row is its own element because the header stopped being one row on
+   * 2026-09-23. Letting `.score-head` itself wrap was the obvious way to give
+   * the strip a line of its own and it was wrong: a long status message mid-run
+   * then pushed the mic meter onto a second line, the header grew, the stage
+   * lost the height, and the sheet re-fitted — which is the one thing a run is
+   * not allowed to do (`08` P21e A2, and `score.fuzz.spec.ts` seed 4 caught it:
+   * *the size changed mid-run: scale 0.84 → 0.73*).
+   */
+  const headRow = document.createElement('div');
+  headRow.className = 'score-head__row';
+  headRow.append(back, title, where, status, micMeter);
+  head.append(headRow);
+
+  /**
+   * What this is and what to do now, over the notation (`04` §5f).
+   *
+   * The mode selector on the bar says *Keep tempo*; nothing said what a Keep
+   * tempo run does to you, what else this screen holds, or where the piece
+   * came from (owner, 2026-09-22). One line naming the mode and saying what it
+   * is, the state line under it, and a `?` holding the controls and the
+   * neighbours.
+   *
+   * **One state line, not two.** The strip does not grow a line of its own: it
+   * takes `#score-waiting`, which `drawWaitingFor` already writes from the
+   * engine's signals and which the bar mirrors sideways by id. So the sentence
+   * the learner reads mid-run is the same element it has always been, in the
+   * same place, written by the same function — the strip only gives it a
+   * standing default for the moments when the run has nothing to say.
+   */
+  const helpStrip: HelpStrip = createHelpStrip({
+    id: 'score',
+    entry: MODE_HELP.wait,
+    nowElement: waitingLine,
+    // `04` §0 R1: one line of explanation in the header at most, and this
+    // header is over the notation. The mode's name here; its sentence in the
+    // card the first time and behind the `?` after that.
+    compact: true,
+    reopen: {
+      label: 'Show the card I saw the first time',
+      onOpen: () => openFirstSight({ key: `mode:${modeKey()}`, entry: MODE_HELP[modeKey()], id: 'score' }),
+    },
+  });
+  head.append(helpStrip.el);
+
+  /**
+   * "You stopped at bar 12 last time" — and the two things to do about it.
+   *
+   * Reopening a piece left half way used to start again at bar 1 with nothing
+   * saying so (owner, 2026-09-22). Drawn only when there is something to say,
+   * in the header, which folds away the moment a run starts — so it is an
+   * offer at the top of a visit and never furniture during one (`04` §0 R4).
+   */
+  const resumeRow = document.createElement('div');
+  resumeRow.className = 'score-resume';
+  resumeRow.id = 'score-resume';
+  resumeRow.hidden = true;
+  head.append(resumeRow);
+
+  /** A span of plain words inside the offer. */
+  function said(className: string, text: string, id?: string): HTMLElement {
+    const node = document.createElement('span');
+    node.className = className;
+    if (id) node.id = id;
+    node.textContent = text;
+    return node;
+  }
+
+  function drawResume(): void {
+    resumeRow.replaceChildren();
+    const left = itemId === undefined ? undefined : unfinishedFor(itemId);
+    // Nothing to offer once a run is going, and nothing to offer on a mode
+    // that does not have a cursor of the learner's own.
+    if (!left || !model || session?.running === true || mode === 'listen') {
+      resumeRow.hidden = true;
+      return;
+    }
+    const lastBar = printedBar(model.sourceMeasureCount - 1);
+    const from = Math.min(left.bar, lastBar);
+    const carryOn = button(
+      `Carry on from bar ${String(from)}`,
+      () => {
+        // A loop from there to the end: the engine starts a run at the loop's
+        // first bar, which is the only way this screen can begin anywhere but
+        // bar 1. It comes round again at the end rather than stopping, which
+        // is what the line beside it says out loud.
+        loopBars = { from, to: lastBar };
+        loopSection = null;
+        if (itemId !== undefined) forgetUnfinished(itemId);
+        resumeRow.hidden = true;
+        startRun();
+        render();
+      },
+      'score-resume-go',
+    );
+    const startOver = button(
+      'Start from the beginning',
+      () => {
+        if (itemId !== undefined) forgetUnfinished(itemId);
+        resumeRow.hidden = true;
+      },
+      'score-resume-restart',
+    );
+    resumeRow.append(
+      said(
+        'score-resume__said',
+        `You stopped at bar ${String(from)} of ${String(lastBar)} last time.`,
+        'score-resume-said',
+      ),
+      carryOn,
+      startOver,
+      said('score-resume__note', 'Carrying on plays from there to the end, then round again.'),
+    );
+    resumeRow.hidden = false;
+  }
+
+  /**
+   * Which of the seven the screen is in — the selector's four, plus the three
+   * that sit alongside one rather than replacing it.
+   *
+   * Read in the order they override each other: a performance is a
+   * performance whatever the selector says, a blind run is blind, and
+   * *Rhythm only* only means anything under the clock.
+   */
+  function modeKey(): ScoreMode {
+    if (performanceRun) return 'perform';
+    if (blind) return 'blind';
+    if (rhythmOnly && mode === 'tempo') return 'rhythm';
+    return mode;
+  }
   // On the stage, not in the header: the header is not drawn sideways and
   // the bar hides itself during a run, and the dot is the one thing that must
   // be visible while the clock runs (`08` §5.3).
@@ -595,9 +732,13 @@ export function ScoreScreen(router: Router): HTMLElement {
   const syncBarLeft = (): void => {
     titleSide.textContent = title.textContent;
     whereSide.textContent = where.textContent;
-    // The waiting line is the more useful of the two when it has something.
-    statusSide.textContent = waitingLine.hidden ? status.textContent : waitingLine.textContent;
-    corner.textContent = [where.textContent, waitingLine.hidden ? '' : waitingLine.textContent]
+    // The waiting line is the more useful of the two when the *run* wrote it.
+    // Since the help strip gave it a standing default (`04` §5f) "it has
+    // something in it" stopped being the same question as "the run said
+    // something", so the strip is asked which it is holding.
+    const saidByTheRun = !helpStrip.isDefaultNow();
+    statusSide.textContent = saidByTheRun ? waitingLine.textContent : status.textContent;
+    corner.textContent = [where.textContent, saidByTheRun ? waitingLine.textContent : '']
       .filter((text) => text !== null && text !== '')
       .join(' · ');
   };
@@ -666,6 +807,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     'Practice mode',
     (value) => {
       mode = value as Mode;
+      // A mode chosen by hand is a mode met for the first time as much as one
+      // arrived at by default.
+      maybeFirstSight({ key: `mode:${modeKey()}`, entry: MODE_HELP[modeKey()], id: 'score' });
       if (session?.running) startRun();
       render();
     },
@@ -2116,6 +2260,11 @@ export function ScoreScreen(router: Router): HTMLElement {
   // --- summary sheet (docs/04 §5) -----------------------------------------
 
   function showSummary(score: SessionScore): void {
+    // The run ended and the learner is being shown the result, so there is
+    // nothing hanging to come back to — unless this summary is the one
+    // `dispose` causes on the way out, which is the run being *left* and is
+    // the case the offer exists for.
+    if (itemId !== undefined && !leaving) forgetUnfinished(itemId);
     // A demonstration that has finished is over, whatever else happens next.
     hearing = false;
     clearBeat();
@@ -2292,9 +2441,12 @@ export function ScoreScreen(router: Router): HTMLElement {
       addStat(
         lines,
         'Accents',
-        `${String(Math.round(accents.accuracy * 100))}% of ${String(
+        // "leaned on, against the rest of your playing" was read three times
+        // before it parsed: the number is the share of the notes written with
+        // an accent that were actually played louder than their neighbours.
+        `${String(Math.round(accents.accuracy * 100))}% of the ${String(
           accents.judged,
-        )} leaned on, against the rest of your playing`,
+        )} accented notes were played louder than the notes around them`,
       );
     }
     // The bars that went worst, by printed number, so the learner knows where
@@ -2306,7 +2458,13 @@ export function ScoreScreen(router: Router): HTMLElement {
       .map((spot) => printedBar(model?.steps.find((s) => s.measureIndex === spot.measureIndex)?.sourceMeasureIndex ?? spot.measureIndex));
     if (weakest.length > 0) addStat(lines, 'Weakest bars', [...new Set(weakest)].sort((a, b) => a - b).join(', '));
     if (score.timing && heard) {
-      addStat(lines, 'Timing', `${Math.round(score.timing.meanMs)} ms mean, ${Math.round(score.timing.earlyPct)}% early`);
+      // "mean" is a statistician's word on a summary a learner reads after
+      // playing (owner, 2026-09-22: the wording is "weird and unhelpful").
+      addStat(
+        lines,
+        'Timing',
+        `${Math.round(score.timing.meanMs)} ms off the beat on average, ${Math.round(score.timing.earlyPct)}% of them early`,
+      );
     }
     sheet.appendChild(lines);
 
@@ -2427,8 +2585,11 @@ export function ScoreScreen(router: Router): HTMLElement {
         ? waitingForLine(session.expectedNow)
         : '';
     const wanted = session?.armed === true ? firstNoteLine() : named || readyLine();
-    waitingLine.textContent = wanted;
-    waitingLine.hidden = wanted === '';
+    // Through the strip, which falls back to the mode's own standing line when
+    // the run has nothing to say — so this line is never blank and the learner
+    // is never left with a screen that says only the piece's name.
+    helpStrip.setNow(wanted);
+    waitingLine.hidden = false;
   }
 
   /**
@@ -2690,6 +2851,15 @@ export function ScoreScreen(router: Router): HTMLElement {
     // The size a run starts at is the size it keeps (P21e A2).
     renderer?.setRunning(session?.running === true);
     section.dataset.mode = mode;
+    helpStrip.setEntry(MODE_HELP[modeKey()]);
+    drawResume();
+    // The first note the piece is asking for, marked before anything is
+    // judged (`04` §5f). Only while nothing is running: once a run is going
+    // the engine is the only thing that says what is wanted.
+    if (session && !session.running && !hearing) {
+      const loop = loopBars && !performanceRun ? session.loopForPrintedBars(loopBars.from, loopBars.to) : undefined;
+      session.previewFirst({ mode, hands, ...(loop ? { loop } : {}) });
+    }
     section.dataset.keysGuide = settings.keysGuide;
     // Which mode the *run* is in, when it is not the one the select shows.
     section.dataset.hearing = String(hearing);
@@ -2961,6 +3131,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       // in whatever the learner's default happens to be is a step teaching the
       // wrong thing, and the select is still theirs to change afterwards.
       if (routeMode) mode = routeMode;
+      // The first time this learner opens a piece in this mode, a card saying
+      // what the mode does before the first note is judged (`04` §5f). After
+      // the three lines above, so it is the mode actually about to run.
+      maybeFirstSight({ key: `mode:${modeKey()}`, entry: MODE_HELP[modeKey()], id: 'score' });
       // Set here rather than at the top of the screen because the label the
       // Loop control draws goes through `shownBar`, which needs the parsed
       // model. Nothing reads `loopBars` before a run starts, so this is the
@@ -3101,6 +3275,25 @@ export function ScoreScreen(router: Router): HTMLElement {
   document.addEventListener('keydown', onKeyDown);
 
   onScreenDispose(section, () => {
+    // Stopping a session is itself a finish and comes back through
+    // `onFinished`, so tearing the screen down draws a summary — which would
+    // otherwise forget the very run this is about to remember.
+    leaving = true;
+    // Where the run was left, if it was left. Read off the same step the bar
+    // readout reads, so the number the offer prints next time is the number
+    // the screen was showing when the learner walked away.
+    if (session?.running === true && model && itemId !== undefined && mode !== 'listen') {
+      const step = session.state?.step ?? 0;
+      const bar = model.steps[step]?.sourceMeasureIndex;
+      if (bar !== undefined) {
+        rememberUnfinished({
+          itemId,
+          bar: printedBar(bar),
+          ofBars: printedBar(model.sourceMeasureCount - 1),
+          at: new Date().toISOString(),
+        });
+      }
+    }
     window.removeEventListener('resize', onResize);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     document.removeEventListener('keydown', onKeyDown);

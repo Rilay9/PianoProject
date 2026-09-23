@@ -22,6 +22,10 @@ test.beforeEach(async ({ page }) => {
     // starts from a phone that has never run it.
     indexedDB.deleteDatabase('pianopath');
     localStorage.clear();
+    // Every explain-it-once card counts as seen, for the same reason the
+    // tour counts as skipped: this spec is not about meeting them
+    // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+    localStorage.setItem('pianopath.firstSight', '["*"]');
   });
 });
 

@@ -1569,9 +1569,18 @@ const T12_APP: [string, string, () => boolean][] = [
   ],
   [
     'hymns',
-    'the Library’s track filter prints the raw track id, so a lesson cannot quote its label',
+    // Rewritten 2026-09-23. This row used to pin the *fault*: the filter drew
+    // `el('option', { value: track, text: track })`, so it offered
+    // `hymns-gospel` where the Plan screen's Tracks sheet offered *Hymns &
+    // gospel* — two names for one thing and an internal id on a screen
+    // (`00-invariants` §1; Entry 45 item 5). The filter reads the curriculum's
+    // own title now, so the claim is the other way up. The lesson never quoted
+    // a label and still does not; it names songs, and the second half of this
+    // row is what it depends on.
+    'the Library’s track filter prints the track’s title, and the hymn settings the lesson names are on that track',
     () =>
-      source('ui/screens/LibraryScreen.ts').includes("el('option', { value: track, text: track })") &&
+      source('ui/screens/LibraryScreen.ts').includes('trackTitles.get(track) ?? track') &&
+      !source('ui/screens/LibraryScreen.ts').includes("el('option', { value: track, text: track })") &&
       ['song.folk.be-thou-my-vision.pdmx', 'song.folk.anonymous-swing-low-sweet-chariot.pdmx'].every(
         (id) => item(id).tracks.includes('hymns-gospel'),
       ),

@@ -168,6 +168,15 @@ vi.mock('../../src/score/ScoreSession', () => ({
       return { fromStep: first.index, toStep: last.index };
     }
     setStrip(): void {}
+    /**
+     * The real one prepares the first step for the mode and hand now chosen
+     * and paints it on the keys, so the piece says what it is waiting for
+     * before a run exists (`04` §5f). Nothing in this file reads the keys, so
+     * the stub only has to *be there*: the screen calls it on every render,
+     * and a missing method took the whole screen to "Could not open this
+     * score".
+     */
+    previewFirst(): void {}
     setPiano(): void {}
     start(): void {}
     stop(): void {}

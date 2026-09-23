@@ -194,9 +194,12 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
   const timings = addSection(card, 'Render timings');
   addParagraph(
     timings,
-    'Filled in from P2 onwards: every notation render is measured through ' +
-      'util/renderTiming so the phone’s real numbers can be checked against the ' +
-      '150 ms / 16 ms budgets.',
+    // Said in words rather than in the names of the build phase and the module
+    // that does it: this screen is read by the owner, and `util/renderTiming`
+    // and `P2` are the code talking about itself (`00-invariants` §1).
+    'How long this phone takes to draw the notation. The first draw of a piece ' +
+      'and each redraw after it are timed, so a screen that feels slow can be ' +
+      'checked rather than guessed at.',
     'muted',
   );
   const timingBody = document.createElement('div');
@@ -689,8 +692,8 @@ export function DiagnosticsScreen(router: Router): HTMLElement {
       `Curriculum v${String(curriculum.version)}: ${String(curriculum.stages.length)} stages, ` +
         `${String(units)} units, ${String(lessons)} lessons, ${String(curriculum.tracks.length)} tracks`,
       thin.length === 0
-        ? 'Every lesson meets the three-alternative rule (docs/00 D21).'
-        : `Thin lessons (below three options): ${thin.map((l) => l.id).join(', ')}`,
+        ? 'Every lesson offers at least three things to play.'
+        : `Lessons with fewer than three things to play: ${thin.map((l) => l.id).join(', ')}`,
     ];
     contentBody.replaceChildren();
     for (const text of contentSummary) line(contentBody, text);

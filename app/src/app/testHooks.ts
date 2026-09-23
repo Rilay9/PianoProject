@@ -40,6 +40,17 @@ export interface TestHooks {
    * import that follows is the ordinary one and not an imitation of it.
    */
   lendFolderFiles: (id: string, files: Map<string, File>) => void;
+  /**
+   * How many times each screen has been built since the page loaded.
+   *
+   * A screen built twice for one navigation leaves no mark: the shell empties
+   * `main` and appends the second one, so the DOM shows one of it either way.
+   * That is exactly how the double mount Entry 52 found went unseen until a
+   * *session* it had left on the shared MIDI input recorded a second run over
+   * the learner's own. The counter is the cheapest thing that can be asserted
+   * from a page, and it is read by `mounted-once.spec.ts`.
+   */
+  screenMounts: Readonly<Record<string, number>>;
   /** What the score screen's fit is holding; set while a score is open. */
   scoreFit?: () => unknown;
   /** Where the running score is and what it is waiting for; null when no run is on. */
@@ -78,5 +89,20 @@ export function installTestHooks(target: Window = window): void {
       resetProgressForTest();
     },
     lendFolderFiles: connectForTest,
+    screenMounts: {},
   };
+}
+
+/**
+ * Counts one build of a screen, by its `data-screen` name.
+ *
+ * Called by the shell for every screen it builds, lazy or not. It writes only
+ * into the test-hook object, so a build with the hooks not installed does
+ * nothing at all.
+ */
+export function countScreenMount(name: string, target: Window = window): void {
+  const hooks = target.__pianopath;
+  if (!hooks) return;
+  const counts = hooks.screenMounts as Record<string, number>;
+  counts[name] = (counts[name] ?? 0) + 1;
 }

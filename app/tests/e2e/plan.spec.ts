@@ -14,6 +14,10 @@ test.beforeEach(async ({ page }) => {
       sessionStorage.setItem('e2e-fresh', '1');
       indexedDB.deleteDatabase('pianopath');
       localStorage.clear();
+      // Every explain-it-once card counts as seen, for the same reason the
+      // tour counts as skipped: this spec is not about meeting them
+      // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+      localStorage.setItem('pianopath.firstSight', '["*"]');
     }
   });
 });
@@ -125,7 +129,9 @@ test.describe('Skills review', () => {
   test('lists every concept with a state and a way to drill it', async ({ page }) => {
     await page.goto('/#/plan/skills');
     await expect(page.locator('.screen h1')).toHaveText('Review a skill');
-    await expect(page.locator('#skills-status')).toContainText('concepts');
+    // "skills", not "concepts": the screen is called Review a skill and
+    // `concepts` was the curriculum's field name leaking onto it (2026-09-23).
+    await expect(page.locator('#skills-status')).toContainText('skills');
     const first = page.locator('#skills-list .list-row').first();
     await expect(first).toBeVisible();
     await expect(first).toHaveAttribute('data-state', /unseen|learning|known|rusty/);

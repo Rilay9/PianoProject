@@ -10,12 +10,16 @@
  */
 import { expect, test } from '@playwright/test';
 
-/** The eleven sections, in the order a person needs them. */
+/** The sections, in the order a person needs them. */
 const TITLES = [
   'What it does',
   'Connecting the piano',
   'The score screen',
   'Lessons, drills and skills',
+  // Added 2026-09-23 (`04` §5f): the short answer to "what else is there?",
+  // built from `ui/help.ts` rather than written out, so the guide and the
+  // screens cannot describe the same mode two ways.
+  'Every mode, drill and tool, in one list',
   'Finding pieces to add',
   'Adding your own scores',
   'A whole folder of scores',

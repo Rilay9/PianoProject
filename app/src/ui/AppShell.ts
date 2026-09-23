@@ -3,6 +3,7 @@ import { tabIcons } from './icons';
 import { button, el } from './widgets';
 import { recordError } from '../util/errorLog';
 import { disposeScreen } from './screenLifecycle';
+import { countScreenMount } from '../app/testHooks';
 import { TodayScreen } from './screens/TodayScreen';
 import { PlanScreen } from './screens/PlanScreen';
 import { LibraryScreen } from './screens/LibraryScreen';
@@ -100,11 +101,27 @@ function screenFor(route: Route): ScreenFactory {
  * dependency in the app; a static import would put it in the entry bundle for
  * every learner who never opens it. The placeholder keeps the shell responsive
  * while the chunk arrives.
+ *
+ * **`load` resolves to the factory, not to the screen** (Entry 52 item 1,
+ * fixed 2026-09-23). It used to resolve to a built screen — every call site
+ * read `import(...).then(({ Screen }) => Screen(router))` — so the screen was
+ * *constructed inside the import's own `.then`* and only afterwards was the
+ * holder checked for still being on the page. A route left while the chunk was
+ * in flight therefore built a whole screen that nothing would ever show: it
+ * subscribed to the shared MIDI source, opened the microphone if its settings
+ * said to, started rendering, and was never disposed, because `onScreenDispose`
+ * only ever runs for a screen the shell mounted. One tap on Back during a slow
+ * chunk fetch was enough. Resolving to the factory moves the construction after
+ * the check, where it costs nothing.
+ *
+ * Exported for `lazyScreenOrphan.test.ts`, which is the only thing outside this
+ * file that uses it: the fault is invisible from the outside — an orphan screen
+ * leaves no mark on the DOM — so the test has to hold the factory itself.
  */
-function mountLazyScreen(
+export function mountLazyScreen(
   main: HTMLElement,
   setCurrent: (el: HTMLElement) => void,
-  load: () => Promise<HTMLElement>,
+  load: () => Promise<() => HTMLElement>,
 ): HTMLElement {
   const holder = document.createElement('section');
   holder.className = 'screen';
@@ -127,9 +144,12 @@ function mountLazyScreen(
    */
   const attempt = (retriesLeft = 1): void => {
     void load().then(
-      (real) => {
-        // The route may have changed while the chunk was in flight.
+      (build) => {
+        // The route may have changed while the chunk was in flight — and this
+        // is checked **before** the screen is built, not after. See above.
         if (!holder.isConnected) return;
+        const real = build();
+        countScreenMount(real.dataset.screen ?? 'unknown');
         main.replaceChildren(real);
         setCurrent(real);
       },
@@ -228,7 +248,7 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
     };
     if (route.dev) {
       currentScreen = mountLazyScreen(main, setCurrent, () =>
-        import('./screens/DevScoreScreen').then(({ DevScoreScreen }) => DevScoreScreen(router)),
+        import('./screens/DevScoreScreen').then(({ DevScoreScreen }) => () => DevScoreScreen(router)),
       );
     } else if (route.score) {
       // OpenSheetMusicDisplay is about a megabyte, and it was sitting in the
@@ -238,21 +258,26 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
       // "on demand" costs nothing offline.
       // ScoreScreen reads the open piece from `router.route.score` itself.
       currentScreen = mountLazyScreen(main, setCurrent, () =>
-        import('./screens/ScoreScreen').then(({ ScoreScreen }) => ScoreScreen(router)),
+        import('./screens/ScoreScreen').then(({ ScoreScreen }) => () => ScoreScreen(router)),
       );
     } else if (route.pdf) {
       const pdfId = route.pdf;
       const page = route.pdfPage;
       currentScreen = mountLazyScreen(main, setCurrent, () =>
-        import('./screens/PdfScreen').then(({ PdfScreen }) => PdfScreen(router, pdfId, page)),
+        import('./screens/PdfScreen').then(({ PdfScreen }) => () => PdfScreen(router, pdfId, page)),
       );
     } else if (route.sub === 'setup') {
       currentScreen = mountLazyScreen(main, setCurrent, () =>
-        import('./screens/SetupScreen').then(({ SetupScreen }) => SetupScreen(router)),
+        import('./screens/SetupScreen').then(({ SetupScreen }) => () => SetupScreen(router)),
       );
     } else {
       currentScreen = screenFor(route)(router);
     }
+    // One build per navigation, counted where every build passes. A screen
+    // built twice leaves no mark on the DOM — the second one simply replaces
+    // the first — which is how Entry 52's double mount went unseen until an
+    // orphan session recorded a run of its own.
+    countScreenMount(currentScreen.dataset.screen ?? 'unknown');
     main.appendChild(currentScreen);
   });
 }

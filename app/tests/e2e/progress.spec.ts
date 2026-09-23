@@ -14,6 +14,10 @@ test.beforeEach(async ({ page }) => {
       sessionStorage.setItem('e2e-fresh', '1');
       indexedDB.deleteDatabase('pianopath');
       localStorage.clear();
+      // Every explain-it-once card counts as seen, for the same reason the
+      // tour counts as skipped: this spec is not about meeting them
+      // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+      localStorage.setItem('pianopath.firstSight', '["*"]');
     }
   });
 });
@@ -164,7 +168,11 @@ test.describe('Diagnostics', () => {
     await expect(page.locator('#diag-offline')).toContainText('Precached', { timeout: 30_000 });
     await expect(page.locator('#diag-content')).toContainText('Catalog:');
     await expect(page.locator('#diag-content')).toContainText('Curriculum v');
-    await expect(page.locator('#diag-content')).toContainText('three-alternative rule');
+    // The wording changed on 2026-09-23: the line used to read "Every lesson
+    // meets the three-alternative rule (docs/00 D21)", which is a document
+    // reference read out to the person on the screen. The fact it reports is
+    // the same one.
+    await expect(page.locator('#diag-content')).toContainText('at least three things to play');
     await expect(page.locator('#diag-errors')).toContainText('No uncaught errors');
   });
 
@@ -196,6 +204,10 @@ test.describe('the settings mirror (docs/01 §4.5)', () => {
     // and what a restored backup looks like on a fresh install.
     await page.evaluate(() => {
       localStorage.clear();
+      // Every explain-it-once card counts as seen, for the same reason the
+      // tour counts as skipped: this spec is not about meeting them
+      // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+      localStorage.setItem('pianopath.firstSight', '["*"]');
     });
     await page.reload();
 

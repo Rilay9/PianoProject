@@ -51,6 +51,8 @@ import { KeyboardStrip } from '../KeyboardStrip';
 import { onScreenDispose } from '../screenLifecycle';
 import { button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
+import { TOOL_HELP } from '../help';
+import { createHelpStrip } from '../helpStrip';
 
 /** How much of the chord has to be heard before the bar counts as matched. */
 const MATCH_THRESHOLD = 0.6;
@@ -123,7 +125,15 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
    * belongs (R6); `deadEnd` still lifts it above the controls when there is no
    * chart for it to sit under.
    */
-  body.append(form, controls, stripHost, grid, status);
+  /**
+   * What a chord chart is, and what to do with it (`04` §5f).
+   *
+   * Above the transport, because it is the caption over the whole screen; the
+   * status line under the chart keeps saying what the *run* is doing, which is
+   * a different question and belongs beside the thing it is about (R6).
+   */
+  const helpStrip = createHelpStrip({ id: 'chart', entry: TOOL_HELP.chart, hideWhat: true });
+  body.append(helpStrip.el, form, controls, stripHost, grid, status);
 
   let bars: (ChordSymbol | null)[] = [];
   let bar = 0;
@@ -453,6 +463,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     status.textContent = sentence;
     form.hidden = true;
     grid.hidden = true;
+    // `04` §0 R4: the sentence and the one control it suggests, and nothing
+    // else. A `?` offering to explain a chord chart, over a screen where there
+    // is no chord chart, is furniture for a thing that is not there. Removed
+    // rather than hidden, because `empty-states.spec.ts` counts the screen's
+    // buttons and a hidden one is still one.
+    helpStrip.el.remove();
     bars = [];
     drawGrid();
     body.insertBefore(status, controls);

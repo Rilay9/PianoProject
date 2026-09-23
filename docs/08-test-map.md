@@ -170,6 +170,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `generate-audio-fixtures.spec.ts` — one-off renderer for the mic detector's fixtures (`GENERATE_AUDIO_FIXTURES=1`).
 - `guide-shots.spec.ts` — photographs the app for the guide into `public/guide/` (`GUIDE_SHOTS=1`).
 - `guide.spec.ts` — the guide: every section in order, every picture shipped, every button landing.
+- `help-strip.spec.ts` — the two lines every practising screen carries (`04` §5f): the mode or drill named and what to do now, inside the first screenful at 342 px; the `?` sheet's controls and neighbours; the first-sight card shown once and re-opened from the strip; the Guide's one page of every mode, kind and tool. The only spec that clears `pianopath.firstSight`.
 - `keyboard-strip.spec.ts` — an update touches only the keys that changed and never rebuilds the DOM.
 - `keys-guide.spec.ts` — the keys' three settings, each on its own: the guide ahead, finger numbers, the flash.
 - `lab-both-ways.spec.ts` — the lab's two chip rows in a browser (`04` §3c): the three ways round are exclusive with trading fours, a way round with nothing to play is `disabled` as a DOM property and says why, and every control carries its line.
@@ -204,11 +205,13 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `modes-simon.spec.ts` — a rung's own Simon from `blues.3`: the chain, the keys answering, and the turn cue that names no note of it.
 - `modes-technique-measure.spec.ts` — the staccato study played to a summary that reports how short the notes were; and the voicing measure refusing rather than printing a nought where every note arrived at one velocity.
 - `modes-trading-fours.spec.ts` — the whole path from `blues.7`'s button: the turn cue on the screen without scrolling, Stop taking the turn line with it, Back leaving the mode off.
+- `mounted-once.spec.ts` — one navigation builds one screen, for the chord chart, a drill and the lab, each from two doors (Entry 52 measured the double mount on the Score screen only). Reads the shell's own build counter, because a screen built twice leaves no mark on the DOM.
 - `offline.report.spec.ts` — what Diagnostics says about the offline story: the worker line, precached *n* of *m*.
 - `offline.spec.ts` — the app works with the network off; Workbox's silent size skip is the fault it catches.
 - `pdf-paper.spec.ts` — dark paper under the dark theme, and the one-off "turn the phone" sentence.
 - `pdf.spec.ts` — the PDF viewer: one system at a time, adjust cuts surviving a reload, `?page=`.
 - `perf.spec.ts` — the `01` §6 budgets under ×4 CPU throttling: regressions, not the phone's number. Plus the two screens the catalog grew (T26): the Library answering each of its genre filters and the search box, and the rung with the most options against the rung with the fewest, both held to `01` §6's first-render budget rather than to a number measured here.
+- `placement-branches.spec.ts` — every branch of the placement test, driven: each item failed in turn records the unit its own catalog row names, and passing everything records the pass unit. The cases come from the built catalog, not from a list here.
 - `plan.hierarchy.spec.ts` — Plan at 342 × 740: rows within R2, the one filled box, no unit heading repeated.
 - `plan.spec.ts` — Plan, the lesson page and Skills review: every lesson openable, a self-pass badged apart.
 - `progress.hierarchy.spec.ts` — Progress and Today's card at 342 × 740: row heights, the week's figure first.
@@ -241,6 +244,8 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `setup-layout.spec.ts` — the setup tour judged by geometry: nothing overlapping, at the owner's sizes.
 - `setup.spec.ts` — the setup tour from an empty origin: every step, skip and finish remembered, Settings after.
 - `shelf.spec.ts` — the shelf, paper practice and blind mode: no accuracy on paper, the score hidden while scored.
+- `side-panel-prose.spec.ts` — the lesson text beside the score: not drawn at all on a phone, and on a tablet no line of it overflows or is clipped in the 320 px column, swept over one lesson per track.
+- `start-and-return.spec.ts` — how a lesson opens (where you are, one *Start*, and what it will open), what a mode says before the first note is judged, the first expected key marked before a run, and the offer to carry on a run left half way (`04` §3e, §5).
 - `sweeps.spec.ts` — every lesson, every drill kind, one item of every type and source, walked.
 - `tips.spec.ts` — the right tips file for a drill's parameters, open the first time and collapsed after; the practice module's rungs.
 - `today.spec.ts` — Today: the session from the templates, Swap on every row with the "not a song" filter.
@@ -316,6 +321,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `halfPedalDepth.test.ts` — every CC64 value carried through the engine and judged: the share is taken over the messages sent with the pedal *down*, the list is a run total gated and cleared like `recorded`, and a pedal that only sends 0 and 127 is reported as a switch.
 - `harmonyDrills.test.ts` — the seven P12b harmony and ear drills, the chord-boundary rule most of all; a revealed prompt judged but not counted.
 - `heldChord.test.ts` — naming a chord from the keys that are down: the bass decides between two names for one set of notes, an inversion keeps its root.
+- `help.test.ts` — every mode, drill kind and tool has all four answers in `ui/help.ts`, in sentences, never in the code's own names for the modes, and the same lines `04` §5f prints; and every number a drill puts in `detail` is named in words rather than printed as its field name.
 - `importOverlay.test.ts` — an imported piece becomes an option of the rung.
 - `importStore.test.ts` — importing the owner's scores: the happy path and the parser's one sentence.
 - `importSummaries.test.ts` — the catalog overlay stops reading every score's bytes on every screen.
@@ -329,6 +335,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `labVerdictOnStop.test.ts` — the lab's verdict lines do not outlive the jam they describe; the trade's line goes with them.
 - `ladderTool.test.ts` — the tempo ladder has an address: `?ladder=1` parses, the seven rungs allowed to carry the tool and **no others**, and what the button opens on each.
 - `latency.test.ts` — pairing taps with clicks and signing the delta.
+- `lazyScreenOrphan.test.ts` — a screen whose route was left while its chunk was in flight is never built (Entry 52 item 1): the check moved in front of the factory, and the retry answers the same question.
 - `legacyStorage.test.ts` — progress from before this week, read by this week's code: a snapshot in the shape the app wrote at `2e08a0a`, booted through `hydratePersisted()` and the stores. `dbUpgrades.test.ts` asks about *versions*; this asks about a row of the right shape missing a field the app has since started writing (`lessonId`, `placement`, `bytes`, an inline folder listing). Every stored pass stays a pass — including under a rung whose `minAccuracy` is now higher than the run measured (Entry 24 item 1) — no stored row carries a step count (Entry 50), and Plan, Today, Progress, Skills and the Library each draw over the old rows.
 - `lessonClaims.test.ts` — a lesson may not promise music its rung does not offer (the `blues.3` fault, made mechanical). Reads the **built** lessons, so it is stale until the content build runs.
 - `lessonClaimsAboutApp.test.ts` — a lesson may not say a thing about the *app* that the app does not do: the authored rungs, the catalog's `drill` blocks, the lab presets and the engine's own constants, plus four sweeps over all 109 lessons.

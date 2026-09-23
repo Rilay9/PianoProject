@@ -90,6 +90,10 @@ async function fresh(page: Page): Promise<void> {
       sessionStorage.setItem('setup-fresh', '1');
       indexedDB.deleteDatabase('pianopath');
       localStorage.clear();
+      // Every explain-it-once card counts as seen, for the same reason the
+      // tour counts as skipped: this spec is not about meeting them
+      // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+      localStorage.setItem('pianopath.firstSight', '["*"]');
     }
   });
 }

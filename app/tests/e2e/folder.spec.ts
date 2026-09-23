@@ -25,6 +25,10 @@ test.beforeEach(async ({ page }) => {
       // A cleared origin is a first launch, and a first launch is the setup
       // tour (docs/04 §7d); this spec is about what comes after it.
       localStorage.setItem('pianopath.setup', JSON.stringify({ status: 'skipped', version: 1 }));
+      // Every explain-it-once card counts as seen, for the same reason the
+      // tour counts as skipped: this spec is not about meeting them
+      // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+      localStorage.setItem('pianopath.firstSight', '["*"]');
     }
   });
 });

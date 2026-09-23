@@ -518,7 +518,7 @@ export function techniqueMeasureFor(
     return {
       kind: drill.kind,
       label: target === 'staccato' ? 'Staccato' : 'Legato',
-      text: `${String(Math.round(share * 100))}% of ${String(result.judged)} notes held the right length (mean ${String(
+      text: `${String(Math.round(share * 100))}% of ${String(result.judged)} notes held the right length (on average ${String(
         Math.round(result.meanHeldFraction * 100),
       )}% of the written value)`,
       met: share >= minShare,
@@ -548,7 +548,7 @@ export function techniqueMeasureFor(
       label: 'Top note',
       text: `${String(Math.round(result.accuracy * 100))}% of ${String(result.judged)} chords sang the top note at least ${String(
         ratio,
-      )} times the rest (mean ${result.meanRatio.toFixed(2)}×)`,
+      )} times the rest (on average ${result.meanRatio.toFixed(2)}×)`,
       met: result.accuracy >= minShare,
       judged: result.judged,
     };

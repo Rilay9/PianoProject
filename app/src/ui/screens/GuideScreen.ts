@@ -28,6 +28,7 @@
 // is missing fails the guide's own test rather than the reader.
 
 import { createSubScreen } from './subScreen';
+import { DRILL_HELP, MODE_HELP, TOOL_HELP, type HelpEntry } from '../help';
 import { button, el } from '../widgets';
 import type { Router, SubId, TabId } from '../../router';
 
@@ -76,6 +77,19 @@ interface Section {
   body: Body[];
   figures?: Figure[];
   opens?: Opens[];
+}
+
+/**
+ * The help table as guide items, so "what is available" has one page and no
+ * second copy of the words (`04` §5f).
+ *
+ * Read off `help.ts` rather than written out here. The guide used to describe
+ * the four modes in prose and say nothing at all about the twenty drill kinds,
+ * and any list typed out here would have been the thirty-fourth place a mode's
+ * sentence lives.
+ */
+function itemsFor(entries: readonly HelpEntry[]): Item[] {
+  return entries.map((entry) => ({ term: entry.title, text: `${entry.what} ${entry.counts}` }));
 }
 
 const SECTIONS: Section[] = [
@@ -182,6 +196,23 @@ const SECTIONS: Section[] = [
     opens: [
       { label: 'Open the plan', tab: 'plan' },
       { label: 'Skills review', tab: 'plan', sub: 'skills' },
+    ],
+  },
+  {
+    id: 'everything',
+    title: 'Every mode, drill and tool, in one list',
+    body: [
+      'The short answer to "what else is there?". Every way the app can have you play, on one page: the modes a piece opens in, the kinds of drill the plan hands out, and the tools that are not attached to any piece. Each line is the same sentence the screen itself shows at the top — the app and this page are reading from one table, so they cannot drift.',
+      'The four modes a piece can open in, and the three that sit alongside one rather than replacing it.',
+      { items: itemsFor(Object.values(MODE_HELP)) },
+      'The drill kinds. Which of them you meet is decided by the rung you are on; every one of them can also be opened from Skills review.',
+      { items: itemsFor(Object.values(DRILL_HELP)) },
+      'And the tools with a screen of their own, which belong to no piece.',
+      { items: itemsFor(Object.values(TOOL_HELP)) },
+    ],
+    opens: [
+      { label: 'Skills review', tab: 'plan', sub: 'skills' },
+      { label: 'Open the Library', tab: 'library' },
     ],
   },
   {

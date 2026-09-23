@@ -16,6 +16,10 @@ test.beforeEach(async ({ page }) => {
       // The "seen this kind" flags live here, and a stale one would make the
       // "open the first time" test pass for the wrong reason.
       localStorage.clear();
+      // Every explain-it-once card counts as seen, for the same reason the
+      // tour counts as skipped: this spec is not about meeting them
+      // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+      localStorage.setItem('pianopath.firstSight', '["*"]');
     }
   });
 });

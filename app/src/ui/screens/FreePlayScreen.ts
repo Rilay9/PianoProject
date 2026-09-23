@@ -29,6 +29,8 @@ import { onScreenDispose } from '../screenLifecycle';
 import { button, el } from '../widgets';
 import type { Piano } from '../../audio/Piano';
 import { screenFrame } from './screenFrame';
+import { TOOL_HELP } from '../help';
+import { createHelpStrip } from '../helpStrip';
 import './FreePlayScreen.css';
 
 /**
@@ -45,12 +47,18 @@ export function FreePlayScreen(router: Router): HTMLElement {
   header.prepend(
     button('← Today', () => router.navigate('today'), { variant: 'quiet', id: 'play-back' }),
   );
-  header.append(
-    el('p.muted', {
-      id: 'play-purpose',
-      text: 'Play anything. It names what you are holding and nothing else — nothing here is scored or recorded.',
-    }),
-  );
+  /**
+   * What this screen is, and the `?` for the rest of it (`04` §5f).
+   *
+   * It replaces the bare purpose line that used to sit here. The sentence is
+   * the same idea in the same place; what is new is that it now comes from the
+   * one table every screen's explanation comes from, and that the two
+   * questions that had no answer anywhere on this screen — what the controls
+   * do, and what else there is — are one tap away instead of nowhere.
+   */
+  const helpStrip = createHelpStrip({ id: 'play', entry: TOOL_HELP.play, hideWhat: true });
+  helpStrip.el.id = 'play-purpose';
+  header.append(helpStrip.el);
 
   const chordLine = el('div.play-chord', { id: 'play-chord' });
   const noteLine = el('div.play-notes', { id: 'play-notes' });

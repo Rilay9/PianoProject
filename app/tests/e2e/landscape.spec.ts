@@ -72,7 +72,11 @@ for (const one of PUSHED) {
       const h1 = screen.querySelector('h1');
       const size = h1 ? Number.parseFloat(getComputedStyle(h1).fontSize) : 0;
       const first = screen.querySelector(
-        '.list-row, .block, .filters, .filter-row, .drill-stage, .plan-links, .lesson-actions',
+        // `.lesson-start` joined the list on 2026-09-23: the lesson page's one
+        // filled box is the first *content* on it, and the rule this test
+        // measures is "the chrome above the content", not "the chrome above
+        // the second thing".
+        '.list-row, .block, .filters, .filter-row, .drill-stage, .plan-links, .lesson-actions, .lesson-start',
       );
       const box = first?.getBoundingClientRect();
       return {

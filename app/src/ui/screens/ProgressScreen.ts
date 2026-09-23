@@ -108,9 +108,14 @@ export function heatLevel(minutes: number): 0 | 1 | 2 | 3 | 4 {
  */
 export function modeLabel(mode: string): string {
   if (mode.startsWith('drill:')) return 'Drill';
+  // The names `04` §5 gives these, which is what the Score screen's own mode
+  // selector says. They used to read *Wait mode* and *Tempo mode* — the code's
+  // words for the two engines — so a learner's own history called the mode
+  // something no screen he had ever chosen it on called it (Entry 45 item 4 is
+  // the same fault on the Skills screen).
   const known: Record<string, string> = {
-    wait: 'Wait mode',
-    tempo: 'Tempo mode',
+    wait: 'Wait for me',
+    tempo: 'Keep tempo',
     listen: 'Listening',
     free: 'Free play',
     read: 'Reading',

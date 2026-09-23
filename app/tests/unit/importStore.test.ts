@@ -12,7 +12,9 @@ import {
   addImport,
   allImports,
   deleteImport,
+  forgetAddedSinceLoadForTest,
   importIdFor,
+  importsAddedSinceLoad,
   importToCatalogItem,
   kindForFilename,
   titleFromMusicXml,
@@ -43,6 +45,7 @@ function pdfBytes(): Uint8Array {
 
 beforeEach(() => {
   useFakeIndexedDb();
+  forgetAddedSinceLoadForTest();
 });
 
 describe('kindForFilename', () => {
@@ -156,6 +159,33 @@ describe('the imported library', () => {
     await updateImport(row.id, { cuts: { 0: [100, 240, 380] } });
     const [stored] = await allImports();
     expect(stored?.cuts).toEqual({ 0: [100, 240, 380] });
+  });
+});
+
+/**
+ * What the Library reads to answer "where is the score I just added?".
+ *
+ * The owner added one from the score folder and could not find it in a list of
+ * two thousand ordered by level. The Library orders itself newest-first while
+ * this set has anything in it; these are the two facts it relies on.
+ */
+describe('what was imported during this visit', () => {
+  it('remembers an import, whichever door it came in by', async () => {
+    const row = await addImport(fakeFile('a.musicxml', MUSICXML));
+    expect([...importsAddedSinceLoad()]).toEqual([row.id]);
+  });
+
+  it('forgets one that is deleted again before the Library is opened', async () => {
+    const row = await addImport(fakeFile('a.musicxml', MUSICXML));
+    await deleteImport(row.id);
+    expect([...importsAddedSinceLoad()]).toEqual([]);
+  });
+
+  it('is empty on a freshly loaded page, whatever is already stored', async () => {
+    await addImport(fakeFile('a.musicxml', MUSICXML));
+    forgetAddedSinceLoadForTest();
+    expect([...importsAddedSinceLoad()]).toEqual([]);
+    expect((await allImports()).length).toBe(1);
   });
 });
 

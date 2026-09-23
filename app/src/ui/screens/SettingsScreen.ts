@@ -176,30 +176,30 @@ export function SettingsScreen(router: Router): HTMLElement {
     setupRow,
     guideRow,
     field(
-      'Default mode, with MIDI or mic',
+      'Default mode, piano or mic',
       selectControl(
         'set-mode-input',
         [
-          { value: 'wait', label: 'Wait' },
-          { value: 'tempo', label: 'Tempo' },
+          { value: 'wait', label: 'Wait for me' },
+          { value: 'tempo', label: 'Keep tempo' },
         ],
         s.defaultModeWithInput,
         (value) => set({ defaultModeWithInput: value as 'wait' | 'tempo' }),
       ),
     ),
     field(
-      'Default mode, no input',
+      'Default mode, no piano or mic',
       selectControl(
         'set-mode-noinput',
         [
-          { value: 'tempo', label: 'Tempo' },
-          { value: 'wait', label: 'Wait (screen keys)' },
+          { value: 'tempo', label: 'Keep tempo' },
+          { value: 'wait', label: 'Wait for me' },
         ],
         s.defaultModeWithoutInput,
         (value) => set({ defaultModeWithoutInput: value as 'wait' | 'tempo' }),
       ),
     ),
-    field('Bars per window', numberControl('set-bars', s.barsPerWindow, (v) => set({ barsPerWindow: v }), { min: 1, max: 8 })),
+    field('Bars in window', numberControl('set-bars', s.barsPerWindow, (v) => set({ barsPerWindow: v }), { min: 1, max: 8 })),
     field(
       'Layout',
       selectControl(
@@ -212,7 +212,7 @@ export function SettingsScreen(router: Router): HTMLElement {
         (value) => set({ layout: value as PracticeSettings['layout'] }),
       ),
     ),
-    field('Default tempo % for new items', numberControl('set-tempo', s.defaultTempoPct, (v) => set({ defaultTempoPct: v }), { min: 30, max: 130, step: 5 })),
+    field('Default tempo % for a new piece', numberControl('set-tempo', s.defaultTempoPct, (v) => set({ defaultTempoPct: v }), { min: 30, max: 130, step: 5 })),
     field('Count-in bars', numberControl('set-countin', s.countInBars, (v) => set({ countInBars: v }), { min: 0, max: 4 })),
     field(
       'Metronome sound',
@@ -228,12 +228,12 @@ export function SettingsScreen(router: Router): HTMLElement {
       ),
       'High is the click the mic detector notches out. Use it when the mic is listening.',
     ),
-    field('Strict Wait mode', toggleControl('set-waitstrict', s.waitStrict, (v) => set({ waitStrict: v })), 'Off (the default) means a wrong note does not reset the chord.'),
-    field('Tempo-mode tolerance (ms)', numberControl('set-tolerance', s.toleranceMs, (v) => set({ toleranceMs: v }), { min: 30, max: 500, step: 10 })),
-    field('Pass accuracy %', numberControl('set-pass-accuracy', s.passAccuracyPct, (v) => set({ passAccuracyPct: v }), { min: 50, max: 100 })),
-    field('Pass tempo %', numberControl('set-pass-tempo', s.passTempoPct, (v) => set({ passTempoPct: v }), { min: 30, max: 130, step: 5 })),
+    field('Be strict in Wait for me', toggleControl('set-waitstrict', s.waitStrict, (v) => set({ waitStrict: v })), 'Off (the default) means a wrong note does not reset the chord.'),
+    field('Keep tempo tolerance (ms)', numberControl('set-tolerance', s.toleranceMs, (v) => set({ toleranceMs: v }), { min: 30, max: 500, step: 10 })),
+    field('A pass needs accuracy %', numberControl('set-pass-accuracy', s.passAccuracyPct, (v) => set({ passAccuracyPct: v }), { min: 50, max: 100 })),
+    field('… at tempo %', numberControl('set-pass-tempo', s.passTempoPct, (v) => set({ passTempoPct: v }), { min: 30, max: 130, step: 5 })),
     field(
-      'Require 2 songs per lesson',
+      'Require two songs per lesson',
       toggleControl('set-two-songs', s.requireTwoSongs, (v) => set({ requireTwoSongs: v })),
       'The stricter completion rule. It never applies to a unit whose skill no song tests.',
     ),
@@ -362,7 +362,7 @@ export function SettingsScreen(router: Router): HTMLElement {
   const input = group('Input');
   input.append(
     field(
-      'Follow input priority',
+      'Which input the app follows',
       selectControl(
         'set-input-priority',
         [
@@ -375,10 +375,10 @@ export function SettingsScreen(router: Router): HTMLElement {
         (value) => set({ inputPriority: value.split(',') as PracticeSettings['inputPriority'] }),
       ),
     ),
-    field('Chord leniency % (mic)', numberControl('set-mic-leniency', s.micChordLeniencyPct, (v) => set({ micChordLeniencyPct: v }), { min: 30, max: 100, step: 5 })),
-    field('Strict mic scoring', toggleControl('set-mic-strict', s.strictMicScoring, (v) => set({ strictMicScoring: v }))),
+    field('How much of a chord the mic must hear %', numberControl('set-mic-leniency', s.micChordLeniencyPct, (v) => set({ micChordLeniencyPct: v }), { min: 30, max: 100, step: 5 }), 'A note hidden under the others is the usual reason a chord is not heard whole. Below this share, the chord is not accepted.'),
+    field('Be strict about what the mic hears', toggleControl('set-mic-strict', s.strictMicScoring, (v) => set({ strictMicScoring: v })), 'Off, a note the mic is unsure of is shown amber and never counted against you.'),
     field('Mute expected notes while the mic is on', toggleControl('set-mic-mute', s.muteExpectedWhileMic, (v) => set({ muteExpectedWhileMic: v }))),
-    field('Transpose MIDI input (semitones)', numberControl('set-transpose', midi.transposeSemitones, (v) => {
+    field('Move what the piano sends, in semitones', numberControl('set-transpose', midi.transposeSemitones, (v) => {
       updateMidiSettings({ transposeSemitones: Math.round(v) });
       say('Saved.');
     }, { min: -24, max: 24 })),

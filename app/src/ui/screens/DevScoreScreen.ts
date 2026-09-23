@@ -203,7 +203,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
 
   const barsInput = document.createElement('select');
   barsInput.id = 'dev-bars';
-  barsInput.setAttribute('aria-label', 'Bars per window');
+  barsInput.setAttribute('aria-label', 'Bars in window');
   for (let n = 1; n <= 8; n += 1) {
     const option = document.createElement('option');
     option.value = String(n);

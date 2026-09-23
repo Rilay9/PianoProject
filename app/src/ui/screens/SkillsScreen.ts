@@ -115,7 +115,22 @@ export function SkillsScreen(router: Router): HTMLElement {
   const filters = el('div.filter-row', { id: 'skills-filters' });
   const list = el('div.list', { id: 'skills-list' });
   const status = el('p.status', { id: 'skills-status', role: 'status' });
-  card.append(filters, status, list);
+  /**
+   * The way to "what is every drill, and what is it for?" (`04` §5f).
+   *
+   * This screen lists the skills and the drills that train them; what it never
+   * said is what any of those drills *is* before you open one. The guide's own
+   * list answers that, from the same table the drill screen reads.
+   */
+  const toGuide = el(
+    'div.plan-links',
+    { id: 'skills-guide-link' },
+    button('What every drill is', () => router.navigate('settings', 'guide'), {
+      id: 'skills-open-guide',
+      variant: 'quiet',
+    }),
+  );
+  card.append(filters, toGuide, status, list);
 
   let entries: ConceptEntry[] = [];
 
@@ -155,16 +170,21 @@ export function SkillsScreen(router: Router): HTMLElement {
     );
     const page = shown.slice(0, shownCount);
     // The count says what it is showing, and what it is not.
+    // *Skills*, not *concepts*. The screen is called **Review a skill**, every
+    // button on it offers to drill a skill, and its count line said
+    // "42 of 118 concepts" — `concepts[]` is the curriculum's field name for
+    // the same thing and the learner has never been shown it (`04` §3a, and
+    // Entry 45's two-names list is this shape).
     status.textContent =
       stateFilter === 'rusty'
         ? `${String(shown.length)} rusty of ${String(entries.length)}`
         : opening !== null
-          ? `${String(shown.length)} of ${String(entries.length)} concepts · stage${
+          ? `${String(shown.length)} of ${String(entries.length)} skills · stage${
               opening.length === 1 ? '' : 's'
             } ${opening.join(' and ')}`
-          : `${String(shown.length)} of ${String(entries.length)} concepts`;
+          : `${String(shown.length)} of ${String(entries.length)} skills`;
     list.replaceChildren(...page.map((entry) => conceptBlock(entry)));
-    if (shown.length === 0) list.append(el('p.muted', { text: 'No concepts match those filters.' }));
+    if (shown.length === 0) list.append(el('p.muted', { text: 'No skills match those filters.' }));
     // Two jobs, one link. While the screen is showing what it opened on, it
     // offers the whole curriculum; after that it pages through it fifty at a
     // time, the way the Library does. Resetting the page on every press — which

@@ -64,6 +64,13 @@ export default defineConfig({
     // origin is a first launch and a first launch is the tour (docs/04 §7d).
     // `setup.spec.ts` starts from nothing on purpose. A spec that clears
     // localStorage itself puts the flag back (see `today.spec.ts`).
+    //
+    // The same file also carries `pianopath.firstSight` as `["*"]`, for the
+    // same reason: from 2026-09-23 the first time a learner opens a drill kind
+    // or a Score mode a card explains it (`04` §5f), and a spec about the
+    // chord chart must not open behind a card about the chord chart.
+    // `help-strip.spec.ts` clears it on purpose, which is the one place the
+    // cards are driven.
     storageState: 'tests/e2e/fixtures/storageState.json',
   },
   webServer: {

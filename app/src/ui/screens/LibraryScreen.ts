@@ -37,6 +37,7 @@ import {
   addImport,
   deleteImport,
   getImport,
+  importsAddedSinceLoad,
   onImportsChange,
   takeSharedFiles,
   updateImport,
@@ -262,6 +263,14 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   const { section, header, body } = screenFrame('library', 'Library');
   const filters: Filters = { ...DEFAULT_FILTERS };
   let items: CatalogItem[] = [];
+  /**
+   * Track id → the name the curriculum gives it.
+   *
+   * Filled once the curriculum lands. Empty until then, and every reader falls
+   * back to the id, so a row drawn before it arrives is the old behaviour
+   * rather than a blank.
+   */
+  let trackTitles = new Map<string, string>();
   let progress = new Map<string, ProgressRow>();
   let shown = PAGE_SIZE;
   /** What `draw` last put on the screen, which is what the rail moves through. */
@@ -284,7 +293,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   // should not be re-invented for the other.
   const listWithRail = el('div.list-with-rail');
   listWithRail.append(list);
-  const count = el('p.muted', { id: 'library-count' });
+  // Says the library is on its way rather than showing an empty box while the
+  // catalog is read (`04` §0 R4: no furniture, and no silence either). `draw`
+  // overwrites it with the real count the moment there is one.
+  const count = el('p.muted', { id: 'library-count', text: 'Loading your library…' });
 
   // --- import ------------------------------------------------------------
   const picker = el('input', {
@@ -619,8 +631,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       ['Level', levelLabel(item.level, item.levelSource)],
       ['Hands', handsLabel(item.hands)],
       ['Type', item.type],
-      ['Tracks', item.tracks.join(', ') || '—'],
-      ['Concepts', item.concepts.join(', ') || '—'],
+      ['Tracks', item.tracks.map((track) => trackTitles.get(track) ?? track).join(', ') || '—'],
+      // The assign sheet and the lesson page both call this *What it trains*;
+      // *Concepts* is the catalog's field name (`04` §3a).
+      ['What it trains', item.concepts.join(', ') || '—'],
       ['Source', item.source?.name ?? '—'],
       ['Licence', item.source?.license ?? '—'],
     ];
@@ -644,7 +658,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     if (item.levelSource === 'estimated') {
       sheet.body.append(
         el('p.muted', {
-          text: 'Level estimated from the opus or its features — move it if it feels wrong.',
+          // "the opus or its features" was the code describing its own inputs
+          // — an opus number is not a word a first-week learner has met, and
+          // "features" is what the estimator calls the things it counted.
+          text: 'The app guessed this level from the music itself — change it if it feels wrong.',
         }),
       );
     }
@@ -734,7 +751,9 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     if (overridden) {
       row.append(
         button(
-          "Use the catalog's",
+          // "the catalog" is the code's name for the bundled library; on the
+          // screen the thing this restores is simply the app's own number.
+          "Use the app's level",
           () => {
             void clearLevelOverride(item.id).then(() => {
               sheet.close();
@@ -1064,15 +1083,75 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     draw();
   }
 
+  /**
+   * Puts whatever was imported during this visit where it can be seen.
+   *
+   * The owner added a score from the score folder, came to the Library and did
+   * not find it, and concluded it needed a rung first. It was there: ordered
+   * by level, which is the right default for browsing two thousand pieces and
+   * the wrong one for finding the piece you added a moment ago, it sat
+   * several hundred rows and many presses of *Show more* down. So the list
+   * opens newest-first while there is anything from this visit in it, and says
+   * which score that is — the same move the Library's own import button has
+   * always made, made for the score folder, the share target and the lesson
+   * page's *Import for this rung* as well, because they all end here.
+   *
+   * Only while the sort is still the one the screen chose for him: an order he
+   * picked himself is an answer to a question, and throwing it away would be a
+   * second thing this did without saying so.
+   */
+  function surfaceJustAdded(): void {
+    const fresh = items.filter((item) => importsAddedSinceLoad().has(item.id));
+    if (fresh.length === 0 || filters.sort !== DEFAULT_FILTERS.sort) return;
+    filters.sort = 'recent';
+    const sortSelect = document.getElementById('library-sort');
+    if (sortSelect instanceof HTMLSelectElement) sortSelect.value = 'recent';
+    shown = PAGE_SIZE;
+    from = 0;
+    const newest = sortItems(fresh, 'recent')[0];
+    status.textContent =
+      fresh.length === 1 && newest
+        ? `“${newest.title}” is in your library. Newest first, so it is at the top.`
+        : `${String(fresh.length)} scores you added are in your library. Newest first, so they are at the top.`;
+    status.classList.remove('status--error');
+  }
+
+  /** True until the list has been drawn once, which is when the wait ends. */
+  let stillLoading = true;
+
   async function refresh(): Promise<void> {
-    const [loaded, rows] = await Promise.all([allItems(), allProgress()]);
+    // The track names come with the rows, so the filter is never drawn with
+    // ids in it — but a curriculum that will not read costs the list its
+    // names, not its rows, which is why this one failure is swallowed where
+    // the other two are not.
+    const [loaded, rows, curriculum] = await Promise.all([
+      allItems(),
+      allProgress(),
+      loadCurriculum().catch(() => null),
+    ]);
+    if (curriculum) {
+      trackTitles = new Map(curriculum.tracks.map((track) => [track.id, track.title]));
+    }
     items = loaded;
     progress = new Map(rows.map((row) => [row.itemId, row]));
+    if (stillLoading) {
+      stillLoading = false;
+      surfaceJustAdded();
+    }
 
     const tracks = [...new Set(items.flatMap((item) => item.tracks))].sort();
     const selected = trackSelect.value || 'all';
     trackSelect.replaceChildren(el('option', { value: 'all', text: 'All tracks' }));
-    for (const track of tracks) trackSelect.append(el('option', { value: track, text: track }));
+    // The track's *title*, not its id. This filter offered `blues-boogie`,
+    // `chords-pop`, `hymns-gospel`, `improv-compose`, `rock-metal`,
+    // `theory-ear` and `film-game` while the Plan screen's Tracks sheet
+    // offered *Blues & boogie*, *Chords & pop* and the rest from the same
+    // curriculum — two names for one thing, and one of them an internal id on
+    // the screen (`00-invariants` §1; Entry 45 item 5). The value stays the id,
+    // because that is what `matches` filters on.
+    for (const track of tracks) {
+      trackSelect.append(el('option', { value: track, text: trackTitles.get(track) ?? track }));
+    }
     trackSelect.value = tracks.includes(selected) ? selected : 'all';
     draw();
   }

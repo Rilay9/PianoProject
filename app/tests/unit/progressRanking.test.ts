@@ -269,8 +269,8 @@ describe('how a run was played', () => {
   });
 
   it('names every mode the app records, and never with a colon in it', () => {
-    expect(modeLabel('wait')).toBe('Wait mode');
-    expect(modeLabel('tempo')).toBe('Tempo mode');
+    expect(modeLabel('wait')).toBe('Wait for me');
+    expect(modeLabel('tempo')).toBe('Keep tempo');
     expect(modeLabel('paper')).toBe('From the book');
     expect(modeLabel('listen')).toBe('Listening');
     expect(modeLabel('free')).toBe('Free play');

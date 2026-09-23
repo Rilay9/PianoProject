@@ -34,6 +34,10 @@ test.describe('guide pictures', () => {
         indexedDB.deleteDatabase('pianopath');
         localStorage.clear();
         localStorage.setItem('pianopath.setup', JSON.stringify({ status: 'done', version: 1 }));
+        // Every explain-it-once card counts as seen, for the same reason the
+        // tour counts as skipped: this spec is not about meeting them
+        // (`04` §5f, `help-strip.spec.ts` is the one that drives them).
+        localStorage.setItem('pianopath.firstSight', '["*"]');
       }
     });
     const midi = await installMidiMock(page, { permission: 'granted' });

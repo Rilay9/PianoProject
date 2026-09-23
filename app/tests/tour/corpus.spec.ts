@@ -311,6 +311,9 @@ for (const piece of PIECES) {
             sessionStorage.setItem('corpus-fresh', '1');
             indexedDB.deleteDatabase('pianopath');
             localStorage.clear();
+            // Every explain-it-once card counts as seen (`04` §5f): this suite walks
+            // screens, and a card over one of them is a picture of the card.
+            localStorage.setItem('pianopath.firstSight', '["*"]');
           }
         });
         if (piece.layout !== undefined) {

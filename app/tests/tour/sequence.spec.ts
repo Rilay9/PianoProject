@@ -269,6 +269,9 @@ for (const { orientation, size } of SEQUENCE_FORM_FACTORS.filter((f) => FACTORS.
           sessionStorage.setItem('seq-fresh', '1');
           indexedDB.deleteDatabase('pianopath');
           localStorage.clear();
+          // Every explain-it-once card counts as seen (`04` §5f): this suite walks
+          // screens, and a card over one of them is a picture of the card.
+          localStorage.setItem('pianopath.firstSight', '["*"]');
         }
       });
       const midi = await installMidiMock(page, { permission: 'granted' });

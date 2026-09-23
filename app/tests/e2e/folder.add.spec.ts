@@ -50,7 +50,11 @@ async function seed(page: import('@playwright/test').Page): Promise<number[]> {
         file: `${String(i % 3).padStart(2, '0')}/piece-${String(i)}.mxl`,
         title: `Piece number ${String(i)}`,
         composer: `Composer ${String(i)}`,
-        level: 1 + i / 10,
+        // An ordinary middling score, which is what the archive is full of
+        // and what the reported fault needs: a level near the middle of the
+        // catalog puts the row hundreds of rows down a level-ordered library,
+        // where an easy one would have landed near the top by luck.
+        level: 5 + i / 10,
         bars: 16 + i,
         status: 'pd',
         style: 'classical',
@@ -196,5 +200,55 @@ test.describe('adding one score from the folder', () => {
     await expect(
       page.locator('#folder-list .list-row').getByRole('button', { name: 'Add' }),
     ).toHaveCount(11);
+  });
+
+  /**
+   * The fault the owner reported (2026-09-22): a score added from the folder
+   * "appeared in the Library only after a delay long enough that I thought it
+   * needed a rung".
+   *
+   * Two mechanisms, and this test can only see the second directly, so it
+   * pins the visible consequence of both: after the add, the Library is
+   * opened the way the owner opens it — a route change, no reload — and the
+   * imported row must be among the very first rows the list draws. No
+   * `Show more`, no `Only mine`, no search. Waiting for the list to have any
+   * row at all and then asserting *without retrying* is what makes this about
+   * the first paint rather than about eventual arrival.
+   */
+  test('the added row is in the library list on its first paint', async ({ page }) => {
+    const bytes = await seed(page);
+    await page.goto('/#/library/folder');
+    await expect(page.locator('#folder-count')).toContainText('12 match', { timeout: 60_000 });
+    await lend(page, bytes);
+    await page.locator('#folder-list .list-row').first().getByRole('button', { name: 'Add' }).click();
+    await expect(page.locator('[data-screen="folder"]')).toContainText(/added/i, {
+      timeout: 60_000,
+    });
+
+    // The route change the owner makes, not a reload: the folder screen is a
+    // sub-screen of the Library and he goes back to it.
+    await page.evaluate(() => {
+      window.location.hash = '#/library';
+    });
+    await expect(page.locator('[data-screen="library"]')).toHaveCount(1, { timeout: 60_000 });
+
+    // The first paint of the list, whatever is in it.
+    await page.waitForSelector('#library-list .list-row', { timeout: 60_000 });
+    // No retry: the imported row is there in that same paint, or this fails.
+    expect(
+      await page.locator('#library-list .list-row[data-item^="import."]').count(),
+      'the score just added was not among the first rows the library drew',
+    ).toBe(1);
+
+    // And the screen says which score that is, rather than leaving him to
+    // recognise a row among two thousand.
+    await expect(page.locator('#library-status')).toContainText('is in your library');
+
+    // And it got there without the learner narrowing anything.
+    await expect(page.locator('#library-mine')).toHaveAttribute('aria-pressed', 'false');
+    expect(
+      await page.locator('#library-search').inputValue(),
+      'the library filtered itself to find the row',
+    ).toBe('');
   });
 });

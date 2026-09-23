@@ -726,10 +726,10 @@ export function SetupScreen(router: Router): HTMLElement {
         field(
           'Name the note I am waiting for',
           toggleControl('setup-notenames', s.showNoteNames, (v) => set({ showNoteNames: v })),
-          'In Wait mode: “Waiting for F♯4” under the title. A crutch for when you are stuck.',
+          'In Wait for me: “Waiting for F♯4” under the title. A crutch for when you are stuck.',
         ),
         field('Size', numberControl('setup-zoom', s.zoom, (v) => set({ zoom: v }), { min: 0.5, max: 2.5, step: 0.1 }), '1 is as big as the screen allows; the notes never get smaller than the width needs.'),
-        field('Bars per window', numberControl('setup-bars', s.barsPerWindow, (v) => set({ barsPerWindow: v }), { min: 1, max: 8 }), 'Two is a magnifying glass; eight is a reading exercise.'),
+        field('Bars in window', numberControl('setup-bars', s.barsPerWindow, (v) => set({ barsPerWindow: v }), { min: 1, max: 8 }), 'Two is a magnifying glass; eight is a reading exercise.'),
         field(
           'Layout',
           selectControl(
@@ -798,7 +798,7 @@ export function SetupScreen(router: Router): HTMLElement {
         ),
         field('Count-in bars', numberControl('setup-countin', s.countInBars, (v) => set({ countInBars: v }), { min: 0, max: 4 }), 'Clicks before a Keep tempo run starts.'),
         field('Default tempo % for a new piece', numberControl('setup-tempo', s.defaultTempoPct, (v) => set({ defaultTempoPct: v }), { min: 30, max: 130, step: 5 }), 'Slow practice is the only kind that changes what your hands do.'),
-        field('Strict Wait mode', toggleControl('setup-waitstrict', s.waitStrict, (v) => set({ waitStrict: v })), 'Off: a wrong note does not reset the chord.'),
+        field('Be strict in Wait for me', toggleControl('setup-waitstrict', s.waitStrict, (v) => set({ waitStrict: v })), 'Off: a wrong note does not reset the chord.'),
         field('Keep tempo tolerance (ms)', numberControl('setup-tolerance', s.toleranceMs, (v) => set({ toleranceMs: v }), { min: 30, max: 500, step: 10 }), 'How far from the beat a note still counts.'),
         field('A pass needs accuracy %', numberControl('setup-pass-accuracy', s.passAccuracyPct, (v) => set({ passAccuracyPct: v }), { min: 50, max: 100 })),
         field('… at tempo %', numberControl('setup-pass-tempo', s.passTempoPct, (v) => set({ passTempoPct: v }), { min: 30, max: 130, step: 5 })),

@@ -110,11 +110,66 @@ test('and a piece being played uses the stage too', async ({ page }) => {
     );
     await page.locator('#score-play').click();
     // Past the 150 ms settle the freeze waits for, and past the re-engrave a
-    // run triggers.
-    await page.waitForTimeout(3_000);
+    // run triggers — waited for by **asking the renderer**, not by sleeping.
+    //
+    // It was `waitForTimeout(3_000)`, which is a guess about how long a busy
+    // machine takes. It held when this file ran alone and not inside the whole
+    // suite at four workers, where the same piece measured 55 % against a
+    // floor of 55 % — a test that reports "the music is too small" when what
+    // happened is that the runner was busy. The renderer already publishes its
+    // fit, so this waits for that number to stop moving (2026-09-23).
+    await page.waitForTimeout(300);
+    await page
+      .waitForFunction(
+        () => {
+          const hooks = window as unknown as { __pianopath?: { scoreFit?: () => { zoom?: number } | null } };
+          const now = hooks.__pianopath?.scoreFit?.();
+          const zoom = now?.zoom;
+          if (typeof zoom !== 'number') return false;
+          const seen = window as unknown as { __fillZoom?: number; __fillSame?: number };
+          if (seen.__fillZoom === zoom) seen.__fillSame = (seen.__fillSame ?? 0) + 1;
+          else {
+            seen.__fillZoom = zoom;
+            seen.__fillSame = 0;
+          }
+          return (seen.__fillSame ?? 0) >= 3;
+        },
+        undefined,
+        { timeout: 30_000, polling: 250 },
+      )
+      .catch(() => {
+        /* No fit hook on this build: fall back to the old fixed wait below. */
+      });
+    await page.waitForTimeout(500);
+    await page.evaluate(() => {
+      const seen = window as unknown as { __fillZoom?: number; __fillSame?: number };
+      delete seen.__fillZoom;
+      delete seen.__fillSame;
+    });
     const fill = await fillOfStage(page);
     if (fill === null) thin.push(`${piece}: nothing drawn`);
-    else if (fill < FLOOR) thin.push(`${piece}: ${String(Math.round(fill * 100))} % of the width, mid-run`);
+    else if (fill < FLOOR) {
+      // What the fit was holding when it came up short, so a failure inside a
+      // busy suite says *why* rather than only *that*. This test has failed at
+      // 55 % against a floor of 55 % inside the full suite while passing alone
+      // and at four workers with its own file, and a number with no state
+      // beside it cannot tell a slow machine from a small sheet.
+      const state = await page.evaluate(() => {
+        const hooks = window as unknown as {
+          __pianopath?: { scoreFit?: () => unknown; scoreRun?: () => unknown };
+        };
+        const head = document.querySelector('.score-head');
+        const stage = document.querySelector('#score-stage');
+        return JSON.stringify({
+          fit: hooks.__pianopath?.scoreFit?.() ?? null,
+          run: hooks.__pianopath?.scoreRun?.() ?? null,
+          headShown: head instanceof HTMLElement ? getComputedStyle(head).display !== 'none' : null,
+          headH: head?.getBoundingClientRect().height ?? null,
+          stageH: stage?.getBoundingClientRect().height ?? null,
+        });
+      });
+      thin.push(`${piece}: ${String(Math.round(fill * 100))} % of the width, mid-run — ${state}`);
+    }
   }
   expect(thin, `music drawn too small to read during a run: ${thin.join(' | ')}`).toEqual([]);
 });

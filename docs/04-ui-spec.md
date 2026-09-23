@@ -375,6 +375,36 @@ promise — the app is not marking you — and the name is the owner's word for 
   their own screen. A `startAt` the curriculum does not have is ignored rather than holding
   every rung back.
 
+### 3e. How a lesson opens (added 2026-09-23)
+
+The owner (2026-09-22): *"it should be intuitive"*. Opening a rung answered none of the three
+questions a learner has at that moment. The page began with the rung's title and went
+straight to the three things you do *after* playing it — *I already know this*, *Quick
+check*, *Mark done* — and then to a column of seven option rows of equal weight, each with
+its own `▶`. Nothing said where the rung sat, and a screen with seven equally likely next
+actions has no answer to "what now?".
+
+The first screenful now answers all three, in this order:
+
+- **Where am I** — `#lesson-where`, one muted line under the title: the track's name, the
+  stage, and the unit. The unit is dropped when it is the rung's own title said again (a unit
+  of one rung takes its name), because `00-invariants` §1 forbids saying the same thing
+  twice more than it wants the third fact.
+- **What do I do first** — `#lesson-start`, the screen's one filled box (§0 R3), labelled
+  **Start**. The option rows' own `▶` stay secondary, which is the decision that left the
+  page with no primary action at all: nine exercises meant nine blue buttons and therefore
+  none.
+- **And what will it do** — `#lesson-start-what`, beside the button: *Opens "X", the first
+  thing on this rung.* The rung's own order is the teaching order (`02` builds
+  `exerciseOptions` before `songOptions`, each in the order it means), so "the first playable
+  option" is the recommendation and not a judgement made in the screen. A rung whose options
+  are all waiting on an import draws no Start at all (§0 R4).
+
+R1 still holds with all three added: measured at 342 px, the first option row of `1.1` and of
+`2.1` — the rung with a *Ways to play this* block above its options — both end inside the
+first screenful. `start-and-return.spec.ts` asserts that, and that the three lines are
+inside it too.
+
 ### 3a. Skills review
 
 **§0:** opens on what needs attention (R1): the rusty concepts if there are any, otherwise the current stage and the one below, with *Show all* revealing the rest in pages. *Drill it* is the box; *Find more* is text (R3).
@@ -903,6 +933,21 @@ the row opens it exactly as it always did.
   marks the rows the exception is *for* (`data-tall`), which is the imports — where the
   archive titles and the *Edit · Assign · Details* strip both are.
 
+**What you just added is what the list opens on (2026-09-23).** Reported: a score added from
+the score folder *"appeared in the Library only after a delay long enough that I thought it
+needed a rung"*. It was in the list the whole time — ordered by level, which is the right
+default for browsing the catalog and the wrong one for finding the piece you added a moment
+ago, it sat several hundred rows and many presses of *Show 60 more* down. So: `importStore`
+keeps the ids imported since the page was loaded (not persisted — "what I just added" is a
+fact about this visit), and the Library, on the first draw of a visit, switches to
+**newest first** while any of them is in the list and names the newest in its status line —
+*"X" is in your library. Newest first, so it is at the top.* Only while the sort is still
+the default: an order the learner chose himself is an answer to a question and is left
+alone. This generalises what the Library's own **Import a score** button already did for
+itself to every door an import comes in by — the score folder, an Android share, *Import
+for this rung*. While the catalog is being read the count line says the library is loading,
+rather than leaving an empty box with no word in it (§0 R4).
+
 **The letter rail** (`ui/alphaRail.ts`, the same component the score folder uses) sits beside the
 list **only under the title sort** and only when there is more than one page: the default sort is
 by level, which is a teaching order, and a letter over that points wherever the letter happens to
@@ -1124,6 +1169,33 @@ and never will; what it holds is a register.
 ## 5. Score screen (the core)
 
 **§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional. **And hides nothing else (2026-09-12):** the visible count-in, the beat dot and the corner readout are children of that stage, and `visibility` inherits, so they went with it. Every one of them exists *because* the notation might not be there — the dot is the one thing that must be visible while the clock runs, the corner says which bar when the chrome has folded, and the count-in was built because the sound is usually turned down on a music stand. A blind run in Tempo mode counted itself in invisibly, on a screen with nothing else on it at all. The notation is the buffers; hiding those is all blind mode ever meant to do.
+
+**How a run starts, and what happens if you leave one (2026-09-23).** Three changes, all
+from the owner's *"it should be intuitive"*:
+
+- **The header carries the help strip** (§5f): the mode's name, and the state line
+  `#score-waiting`, which is the same element `drawWaitingFor` has always written from the
+  engine's signals. What is new is that it is never blank — where the run has nothing
+  specific to say it holds the mode's own standing line, so a piece that has just opened says
+  *The count-in clicks, then play along* instead of nothing. The bar's sideways mirror and
+  the stage's corner ask the strip whether the line is the run's or the standing one, so a
+  status message still wins sideways exactly as before.
+- **The first note is marked before anything is judged.** The keys guide marks what the run
+  is waiting for, and there was no run until play was pressed — so a piece sat open under a
+  blank keyboard. `ScoreSession.previewFirst` prepares the first step for the mode and hand
+  now chosen and paints it; the run takes over the moment it starts. Prepared rather than
+  guessed at: the hand filter drops steps, so the model's first step and the run's first step
+  are different things on a piece whose left hand comes in first.
+- **A run left half way is offered back.** `#score-resume` in the header: *You stopped at bar
+  12 of 48 last time*, with **Carry on from bar 12** and **Start from the beginning**.
+  Carrying on sets a loop from that bar to the last one, because a loop's first bar is the
+  only place this screen can begin a run other than bar 1 — so it plays from there to the end
+  and then comes round again, and the line beside the buttons says exactly that rather than
+  letting the learner find out. Where it was left is kept in `localStorage`
+  (`data/unfinishedRun.ts`), written when the screen is torn down with a run going and
+  dropped when a run reaches its summary; bar 1 is never remembered, because "carry on from
+  bar 1" is what opening the piece already does. The offer lives in the header, which folds
+  away when a run starts, so it is never furniture during practice (§0 R4).
 
 Layout: a **header row** across the top — `← Back`, the piece's name, then the app's own
 messages and the mic meter — the notation under it, a **thin control bar** along the bottom,
@@ -2005,6 +2077,324 @@ Back and never coming back at all all land on the same step. Reaching the end re
 clears that position and offers *Again*, so opening it a second time is opening it from the
 beginning.
 
+## 5f. What every screen says about itself
+
+**Added 2026-09-23.** The owner: *"there's not enough context or explanation given in the
+modes and exercises. There's gotta be a better way to tell the user what's going on, what
+they're supposed to do, what they can do, and what's available."* So every practising screen
+answers four questions, and `app/src/ui/help.ts` is where the answers are written — one
+table, keyed by mode, drill kind and tool, with the lines below in it. `help.test.ts` fails
+when a line here and a line there stop being the same line, the way `labHelp.test.ts` does
+for §3c's ten.
+
+**Where each answer goes.** Questions 1 and 2 are the **help strip**: two lines at the top
+of the screen, inside the first screenful on a 342 px phone (§0 R1), the first naming the
+thing and the second saying what to do *now*. The second line is written by whatever already
+knows the run — the engine's own signals on the Score screen, the current card on a drill —
+so there is no second clock. Questions 3 and 4 are behind the strip's **?**, in a sheet, with
+the first-sight card re-openable at its foot.
+
+**Two lines, or one, per screen, and the reason is R1.** The Score screen's header is over the
+notation, and §0 R1 allows *"one line in the header at most"*: measured at 342 px, the mode's
+sentence ran to three lines and 86 px of a 740 px screen. So the Score screen shows the
+mode's **name** and takes `#score-waiting` — the line `drawWaitingFor` already writes from
+the engine's signals, and which the bar mirrors sideways — as its state line, with the
+sentence in the card and behind the ?. A drill shows the sentence but not a state line,
+because `#drill-how` says what to do with *this card* under the prompt it belongs to (R6).
+The lab and the chord chart, which had neither, carry both lines. The strip folds away with
+the Score screen's header during a run (`data-chrome='folded'`), which is the decision §5
+already made about that header: while the run is going the state line continues in the
+stage's own corner.
+
+**First sight.** The first time a drill kind or a Score mode is opened, a three-line card
+says what you will hear or see, what to do, and what counts (the entry's
+`what`, `now` and `counts`). The keys whose card has been shown are
+remembered as one list in `localStorage` under `pianopath.firstSight`, where `"*"` means
+every card counts as seen — one entry rather than twenty-seven booleans, because a test
+fixture and a restored backup both have to be able to say "this learner has met all of
+these" in one place. So a card is in the way once and not twice; the strip's ? brings it
+back. A browser that refuses storage shows it every time, which is the safe way round.
+
+### The four modes, and the three that sit alongside them
+
+
+**Wait for me** (`wait`)
+
+- *What is this?* The page holds still until you play the right note, for as long as you like.
+- *What do I do now?* Play the first note. Nothing moves until you do.
+- *What can I do here?* **Hear it** — Plays the piece to you. Nothing is judged while it plays. **Hands** — Which hand the app waits for. The phone can play the other one. **⋯** — The settings you change once: the metronome, the input, how much music is on the screen, the keys underneath. **← Back** — Leaves the piece. A run you were part way through is offered again when you come back.
+- *What else is there?* The mode for the first time you meet a piece. When the notes are under your fingers, Keep tempo is the one that scores.
+- *What counts?* A run in this mode is practice: it is recorded, but a pass for the rung is measured in Keep tempo.
+
+**Keep tempo** (`tempo`)
+
+- *What is this?* A click and a moving cursor that carry on whether you keep up or not, and mark what you miss.
+- *What do I do now?* The count-in clicks, then play along.
+- *What can I do here?* **Tempo** — A share of the written speed. Slower is how a hard bar becomes an easy one. **▶** — Starts the run. With a piano connected your own first note starts it instead, and the clock waits for it. **Loop** — Repeats a few bars until they are yours. Double-tap two bars on the sheet to mark them. **Metronome** — The click, on or off. Turn it off to play against silence. **⋯** — Rhythm only, Ladder, Duet, Blind and Perform, and the settings you change once.
+- *What else is there?* This is the mode a pass is measured in. Wait for me is where a piece is learned first; Play it to me is where you hear what you are aiming at.
+- *What counts?* A pass needs both the accuracy and the share of the written tempo set in Settings, in one run.
+
+**Play it to me** (`listen`)
+
+- *What is this?* The app plays the piece while you watch and listen. Nothing you play is judged.
+- *What do I do now?* Press Hear it and follow the cursor.
+- *What can I do here?* **Hear it** — Starts and stops the playing. **Tempo** — Slows the playing down so you can see what the hands are doing. **Hands** — Plays one hand only, so you can play the other one over it.
+- *What else is there?* Use it before the first read, or when a bar will not come right. Long-pressing one bar on any mode plays that bar alone.
+- *What counts?* Nothing is counted here: you are listening, not playing.
+
+**Free play** (`free`)
+
+- *What is this?* The page turns on your own notes and nothing is judged, counted or recorded.
+- *What do I do now?* Play. The page follows you; nothing is marked.
+- *What can I do here?* **Hands** — Which hand the page follows. **⋯** — The metronome, the keys under the score, and how much music is on the screen.
+- *What else is there?* For improvising over a piece, or just playing it. Nothing from a free run reaches Progress; Keep tempo is what records a run.
+- *What counts?* Nothing is counted, recorded or marked.
+
+**Rhythm only** (`rhythm`)
+
+- *What is this?* A Keep tempo run judged on your timing alone: the notes are not looked at.
+- *What do I do now?* Tap the rhythm on any key at all.
+- *What can I do here?* **Metronome** — The click to tap against. One tap for each written note or chord; extra keys are wrong. **Tempo** — How fast the written rhythm goes past. **⋯** — Turns Rhythm only off again, and holds the rest of the settings.
+- *What else is there?* Its summary is headed Rhythm run and never counts as playing the piece. Turn it off and the same run judges the notes as well.
+- *What counts?* It is counted as a rhythm run, and never as playing the piece.
+
+**Blind** (`blind`)
+
+- *What is this?* The same run with the notation hidden, so you play from memory.
+- *What do I do now?* Play from memory. It is still being marked.
+- *What can I do here?* **⋯** — Shows the score again. Nothing else about the run changes.
+- *What else is there?* It is scored exactly as a sighted run, so a blind pass counts for the rung. It sits alongside Wait for me and Keep tempo rather than replacing either.
+- *What counts?* It counts exactly as the same run would with the notation showing.
+
+**Perform** (`perform`)
+
+- *What is this?* One pass from start to finish: no restarts, no loop, and it is kept on its own list.
+- *What do I do now?* One run through. There is no going back.
+- *What can I do here?* **⋯** — Stops performing and goes back to practising.
+- *What else is there?* Performances are listed on their own in Progress, apart from practice runs. Practise the piece in Keep tempo first.
+- *What counts?* It is kept as a performance, on its own list, however it went.
+
+### Every drill kind
+
+**Note flash** (`note-flash`)
+
+- *What is this?* A note on the staff, one at a time, for you to play on the piano.
+- *What do I do now?* Play the note that is on the staff, in any octave.
+- *What can I do here?* **Show me** — Lights the answer on the keys. This card then does not count as right. **Skip** — Leaves this card unanswered and brings the next one. **End drill** — Stops here. Nothing is recorded unless you keep it.
+- *What else is there?* Find the key is the same fact the other way round: a name to find on the keyboard. Both are on the Skills screen under reading.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown the answer costs that card.
+
+**Find the key** (`find-key`)
+
+- *What is this?* A note name, for you to find on the piano without counting up from a landmark.
+- *What do I do now?* Press that key, on the piano or on the keys below.
+- *What can I do here?* **Show me** — Lights the key. This card then does not count as right. **Skip** — Leaves this card and brings the next. **End drill** — Stops here.
+- *What else is there?* Note flash is the same fact read off the staff instead. Both sit on the reading skill in Skills review.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown the answer costs that card.
+
+**Chord drill** (`chord`)
+
+- *What is this?* A chord named in words — C major, A minor — for you to play.
+- *What do I do now?* Play all the notes of the chord together, in any octave.
+- *What can I do here?* **Show me** — Lights the notes on the keys and writes them on a small staff. The card then does not count as right. **Hear it** — Plays the chord. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* The inversion drill asks for the same chord with a different note at the bottom; Chords with more notes add a fourth. Every chord card shows you the chord on a staff once it is judged.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown or played the answer costs that card.
+
+**Inversion drill** (`inversion`)
+
+- *What is this?* The same chord with a different note at the bottom — first, second or root position.
+- *What do I do now?* Play the three notes together, with the one it names at the bottom.
+- *What can I do here?* **Show me** — Lights the shape on the keys. The card then does not count as right. **Hear it** — Plays it. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* The chord drill is the same chords in root position. Inversions are what let one hand move between chords without jumping.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown or played the answer costs that card.
+
+**Ear drill — intervals** (`ear-interval`)
+
+- *What is this?* Two notes played to you, for you to play back — the gap between them is what is being trained.
+- *What do I do now?* Listen, then play the two notes back.
+- *What can I do here?* **▶ Play again** — Plays it again, as often as you like. It costs nothing. **Hear it** — Plays the answer. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* The chord and progression ear drills are the same ear on more notes at once. Simon is the one with nothing to choose between.
+- *What counts?* Your score is the share of cards you get right. Playing it again costs nothing; being played the answer costs that card.
+
+**Ear drill — chords** (`ear-chord`)
+
+- *What is this?* A chord played to you, for you to play back.
+- *What do I do now?* Listen, then play the chord back.
+- *What can I do here?* **▶ Play again** — Plays it again, as often as you like. **Hear it** — Plays the answer. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* The chord appears on a staff as soon as it is judged, right or wrong, so you can see what you heard. The progression ear drill strings several together.
+- *What counts?* Your score is the share of cards you get right. Playing it again costs nothing; being played the answer costs that card.
+
+**Ear drill — progressions** (`ear-progression`)
+
+- *What is this?* A few chords in a row played to you, for you to play back in order.
+- *What do I do now?* Listen, then play the chords back in the order you heard them.
+- *What can I do here?* **▶ Play again** — Plays the whole progression again. **Hear it** — Plays the answer. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* It is written out on a staff once judged, one chord to the bar. Roman numerals is the same progression named rather than played.
+- *What counts?* Your score is the share of cards you get right. Playing it again costs nothing; being played the answer costs that card.
+
+**Rhythm drill** (`rhythm`)
+
+- *What is this?* A written rhythm, for you to tap against the click on any key at all.
+- *What do I do now?* Tap the rhythm on any key. Your first tap starts it.
+- *What can I do here?* **Done** — Ends this card when you have finished tapping it. **End drill** — Stops here.
+- *What else is there?* Rhythm only, on the Score screen, is the same idea over a real piece. Nothing here looks at which key you tap.
+- *What counts?* Your score is how close your taps were to the written rhythm. Which key you tap does not matter.
+
+**Pedal-change drill** (`pedal`)
+
+- *What is this?* Chords to play with the sustain pedal, changing it cleanly between them.
+- *What do I do now?* Play the first chord and put the pedal down. Changes are marked from the second chord on.
+- *What can I do here?* **Next** — Moves to the next change when you are ready. **End drill** — Stops here.
+- *What else is there?* It needs a pedal on a piano over its cable: the screen keys cannot send one. Half pedal is measured where the pedal sends more than off and on.
+- *What counts?* Your score is the share of changes that were clean. It needs a pedal on a piano over its cable.
+
+**Dynamics drill** (`dynamics`)
+
+- *What is this?* A phrase to play softly and then loudly, with the difference measured.
+- *What do I do now?* Play the phrase at the volume it asks for.
+- *What can I do here?* **Next** — Moves on when you have played it. **End drill** — Stops here.
+- *What else is there?* It needs a piano over its cable: every note from the screen keys arrives at the same volume, and the card says so rather than marking you down.
+- *What counts?* Your score is how far apart the loud and the soft were, against what the card asked for.
+
+**Play it back** (`call-response`)
+
+- *What is this?* A short phrase played to you, for you to play back by ear.
+- *What do I do now?* Listen, then play it back.
+- *What can I do here?* **▶ Play again** — Repeats it, as often as you like. **Show me** — Lights the notes on the keys. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* The five-finger and accompaniment patterns are built this way too. Simon is the same thing growing a note at a time.
+- *What counts?* Your score is the share of phrases you play back right. Asking to be shown the answer costs that card.
+
+**Backing track** (`backing-track`)
+
+- *What is this?* A bass-and-drums loop to play over. Nothing you play is marked right or wrong.
+- *What do I do now?* Play over the loop. Nothing here is judged.
+- *What can I do here?* **Done** — Ends the card when you have had enough. **End drill** — Stops here.
+- *What else is there?* The Accompaniment lab is the same idea with every setting in your hands — key, chords, both hands, tempo.
+- *What counts?* Nothing here is counted: it is a loop to play over.
+
+**Modes** (`mode`)
+
+- *What is this?* A mode named — D dorian, G mixolydian — for you to play up the keyboard.
+- *What do I do now?* Play its notes from the bottom up, one at a time, at any speed.
+- *What can I do here?* **Show me** — Lights the notes in order. The card then does not count as right. **Hear it** — Plays it up. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* Chord–scale asks for the same scales from a chord instead of by name. Both belong to the improvising tracks.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown or played the answer costs that card.
+
+**Chord–scale** (`chord-scale`)
+
+- *What is this?* A chord, for you to play the scale that goes over it.
+- *What do I do now?* Play the scale that fits the chord, from the bottom up.
+- *What can I do here?* **Show me** — Lights the scale. The card then does not count as right. **Hear it** — Plays it. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* Modes is the same scales asked for by name. This is the one you use while somebody else is playing the chord.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown or played the answer costs that card.
+
+**Chords with more notes** (`extended-chord`)
+
+- *What is this?* Chords of four notes — sevenths and ninths — named for you to play.
+- *What do I do now?* Play every note of the chord together, in any octave.
+- *What can I do here?* **Show me** — Lights all four notes. The card then does not count as right. **Hear it** — Plays the chord. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* The chord drill is the three-note version. The chord is written on a staff as soon as it is judged, which is the quickest way to learn how one looks.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown or played the answer costs that card.
+
+**Harmonic dictation** (`harmonic-dictation`)
+
+- *What is this?* A progression played to you, for you to play back as chords.
+- *What do I do now?* Listen, then play the progression back as chords.
+- *What can I do here?* **▶ Play again** — Plays the progression again. **Hear it** — Plays the answer. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* It is written out on a staff once judged, one chord to the bar with its numeral above. Roman numerals asks for the same thing from the page instead of the ear.
+- *What counts?* Your score is the share of cards you get right. Playing it again costs nothing; being played the answer costs that card.
+
+**Transposition** (`transposition`)
+
+- *What is this?* A phrase written in one key, for you to play in another.
+- *What do I do now?* Play the phrase in the key it names, reading from the notation.
+- *What can I do here?* **Show me** — Lights the notes in the new key. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* It is the reading drills and the chord drills used together, which is why it comes late in a track.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown the answer costs that card.
+
+**Roman numerals** (`roman-numeral`)
+
+- *What is this?* A chord written as a numeral — I, vi, V7 — for you to play in the key given.
+- *What do I do now?* Play the chord the numeral names, in the key at the top of the card.
+- *What can I do here?* **Show me** — Lights the chord. The card then does not count as right. **Hear it** — Plays it. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* Numerals are how the Accompaniment lab and the chord charts name chords, so this is the drill that makes both readable.
+- *What counts?* Your score is the share of cards you get right. Asking to be shown or played the answer costs that card.
+
+**Play back a tune** (`ear-tune`)
+
+- *What is this?* A short tune played to you, for you to find by ear.
+- *What do I do now?* Listen, then play the tune back.
+- *What can I do here?* **▶ Play again** — Plays it again, as often as you like. **Show me** — Lights the notes. The card then does not count as right. **End drill** — Stops here.
+- *What else is there?* Play it back is the same ear on a phrase with no tune to recognise. Simon is the one that grows until you lose it.
+- *What counts?* Your score is the share of cards you get right. Playing it again costs nothing; being shown the answer costs that card.
+
+**Simon** (`simon`)
+
+- *What is this?* One note, then that note and one more, then three — a chain that grows until you break it.
+- *What do I do now?* Listen to the chain, then play it back in the octave you heard it.
+- *What can I do here?* **Keys shown / After a miss / Ear only** — How much help the game gives. None of them changes the score. **End drill** — Stops here. The score is the longest chain you echoed.
+- *What else is there?* Every other ear drill hands you a small set to choose between. This one asks you to have held what you heard, which is what playing by ear is.
+- *What counts?* Your score is the longest chain you echoed. How much help you take does not change it.
+
+### The tools with a route of their own
+
+**Accompaniment lab** (`lab`)
+
+- *What is this?* A backing you write yourself: a key, some chords, a shape for each hand, and a tempo.
+- *What do I do now?* Pick a style to start from, then Read it or Jam it.
+- *What can I do here?* **Read it** — Writes the settings out as a score and opens it on the Score screen. **Jam it** — Plays them as a loop you can play over. Nothing is judged. **What the app plays** — How much of it the app takes: the bed only, the chords, the tune, or turns with you.
+- *What else is there?* It is in the Library, beside Import a score and Score folder. The Play over the loop drill is the same idea with the settings already chosen.
+- *What counts?* Nothing in the lab is counted or recorded.
+
+**Chord chart** (`chart`)
+
+- *What is this?* The same piece as a lead sheet: one big chord symbol a bar, a tracker that moves through the form, and a count-off.
+- *What do I do now?* Press Count off and play from the chords.
+- *What can I do here?* **Count off ▶** — Counts you in and starts the tracker. Pressing it again goes back to bar 1. **Bass + drums** — Plays a rhythm section under you, or leaves you the room.
+- *What else is there?* For playing from the chords rather than reading the notes. The same piece opens on the Score screen from its row in the Library.
+- *What counts?* Nothing here is counted: there is no right or wrong to mark.
+
+**Free play** (`play`)
+
+- *What is this?* An empty screen that names what you are holding. Nothing is scored, counted or recorded.
+- *What do I do now?* Play anything. It names the chord under your hands.
+- *What can I do here?* **The keys** — Work with no piano connected, so this is also how to try the app out.
+- *What else is there?* It is one of the doors on Today, beside the Metronome and the Accompaniment lab. Free play on a piece is the same idea with a page to turn.
+- *What counts?* Nothing is counted or recorded.
+
+**Metronome** (`metronome`)
+
+- *What is this?* A click, on its own, with the first beat of each bar accented.
+- *What do I do now?* Set a speed and start it, or tap a few beats to set the speed by hand.
+- *What can I do here?* **Tap tempo** — Takes the speed from four taps rather than a number. **Metronome sound** — Use High when the microphone is listening: it sits above every piano note, so the detector can filter it out.
+- *What else is there?* Every practising screen has a click of its own, so this is for playing away from the app — scales, or a piece on paper.
+- *What counts?* Nothing is counted: it is a click and nothing else.
+
+**Practise from the book** (`paper`)
+
+- *What is this?* A timer, a click and a count of what the app hears, for music it cannot see.
+- *What do I do now?* Open the book at the page, press play, and play. Nothing here says whether the notes were right.
+- *What can I do here?* **Play** — Starts the click and the counting. **Rough · OK · Clean** — Your own verdict at the end. It is the only judgement of the notes there is.
+- *What else is there?* It comes from a piece on your Shelf. If the same piece is in the app, link it as a twin and it can be played and scored properly.
+- *What counts?* Minutes, notes heard and steadiness are recorded; whether the notes were right is your own verdict at the end.
+
+**PDF viewer** (`pdf`)
+
+- *What is this?* A bought score shown one line at a time, full width, so it is readable on a phone.
+- *What do I do now?* Tap the right half of the page for the next line, the left half to go back.
+- *What can I do here?* **Timed** — Turns the lines on its own, learning the pace from your last two taps. **Adjust cuts** — Drag the lines if the viewer split a page in the wrong place. The correction is kept with the score.
+- *What else is there?* A PDF is pages and not notes, so nothing in it can be listened to or scored. To have the app follow it, turn it into MusicXML on a computer and import that.
+- *What counts?* Nothing here can be counted: a PDF is pages and not notes.
+
+### A drill's own measurements
+
+`DrillResult.detail` is a bag of numbers each kind fills with what it measured, and the
+summary sheet used to print the field names with the capitals turned into spaces — *boundary
+ms*, *soft velocity*, *flat velocity*, *count in beats*. That is the code's own word for the
+thing, shown to a learner, which `00-invariants` §1 rules out. `DRILL_DETAIL_LABEL` in
+`help.ts` says them in words instead, and `help.test.ts` reads the `detail:` blocks out of
+the drills themselves, so a measurement added and not named fails.
+
 ## 6. Progress
 
 **§0:** a hand screen (R2) — rows ≤ 96 px. The heat map is *Minutes a day, last 13 weeks* and carries a one-line key for its five levels (`0 · <10 · <25 · <45 · 45+ min`). **No filled box** (R3): nothing on this screen is done on most visits. The week's figure is the subject and is the first thing on the screen (R1).
@@ -2036,13 +2426,28 @@ beginning.
 **§0:** a hand screen (R2) — a row is a label and its control on one line, ≤ 56 px, with help text under the label only where the label cannot carry the meaning. At least eight settings on the first screenful. Content chips print track *titles*, never ids.
 
 **Practice** — session lengths (weekday default [30], weekend default [60]); weekly goal
-minutes [150]; default mode with MIDI or mic [Wait], without [Tempo]; bars per window [2];
-layout [Window]; default tempo % for new items [70]; count-in
-[1 bar]; metronome sound [wood]; wait-mode strictness [lenient: wrong notes don't block];
+minutes [150]; *Default mode, piano or mic* [Wait for me], *no piano or mic* [Keep tempo];
+*Bars in window* [2];
+layout [Window]; *Default tempo % for a new piece* [70]; count-in
+[1 bar]; metronome sound [wood]; *Be strict in Wait for me* [off: wrong notes don't block];
 rhythm only [off] (`rhythmOnly` — the `⋯` sheet's row in §5, remembered as a preference because
 a learner who works this way does so on every piece; Blind and Perform ignore it);
-tempo-mode timing tolerance ms [±150]; pass criteria (accuracy % [90], tempo % [80]); require 2 songs per
-lesson [off]; strict prerequisites [off]; daily goal minutes [30].
+*Keep tempo tolerance (ms)* [±150]; pass criteria (*A pass needs accuracy %* [90], *… at
+tempo %* [80]); *Require two songs per lesson* [off]; strict prerequisites [off]; daily goal
+minutes [30].
+
+**The labels are the ones the setup tour uses, 2026-09-23.** Settings and the tour set the
+same eight things and called six of them something else: *Default mode, with MIDI or mic*
+against *Default mode, piano or mic*; *Wait* and *Tempo* as option labels against *Wait for
+me* and *Keep tempo*; *Tempo-mode tolerance* against *Keep tempo tolerance*; *Pass accuracy
+%* against *A pass needs accuracy %*; *Follow input priority* against *Which input the app
+follows*; *Default tempo % for new items* — *items* being the code's word for a catalog row.
+Settings took the tour's words, which are the learner's. *Bars per window* went the other
+way and became *Bars in window*, which is what the `⋯` sheet calls the same stepper on the
+screen where it is actually used. And three input rows that had no sentence at all —
+*Chord leniency % (mic)*, *Strict mic scoring*, *Transpose MIDI input (semitones)* — say what
+they do, in words: *How much of a chord the mic must hear %*, *Be strict about what the mic
+hears*, *Move what the piano sends, in semitones*.
 
 **Display** — theme [system]; landscape lock on score screen [on]; zoom [1.0]; show
 fingering [on]; *Name the note I am waiting for* [off] (`showNoteNames`; it was written here as
@@ -2056,7 +2461,7 @@ miss red [on]; keep screen awake [on]; left-handed layout [off].
 [non-focused when hand focus set]; **playback destination: phone / piano over MIDI OUT /
 both** [phone; auto-suggest "piano" when a MIDI output exists and mic input is active].
 
-**Input** — follow input priority [MIDI → Mic → Timed]; **Microphone:** device (built-in /
+**Input** — *Which input the app follows* [MIDI → Mic → Timed]; **Microphone:** device (built-in /
 USB interface / headset), calibration (run / re-run, shows latency and noise floor), chord
 leniency [70 %], strict mic scoring [off], mute playback of expected notes while mic is active
 [on]; **MIDI** — input device (auto / list); transpose input semitones [0]; velocity curve

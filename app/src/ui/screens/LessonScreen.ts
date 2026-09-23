@@ -95,7 +95,41 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     { id: 'lesson-tools-block', hidden: true },
     el('h2', { text: 'Ways to play this' }),
     toolRow,
+    // What each of those buttons opens, for the learner who has not met it
+    // yet. The guide's list is built from the same table the screens read
+    // (`04` §5f), so this is a way in rather than a second explanation.
+    el(
+      'div.plan-links',
+      { id: 'lesson-guide-link' },
+      button('What each of these is', () => router.navigate('settings', 'guide'), {
+        id: 'lesson-open-guide',
+        variant: 'quiet',
+      }),
+    ),
   );
+  /**
+   * Where this rung sits, under its own title (`04` §3, 2026-09-23).
+   *
+   * Opening a lesson answered none of "where am I": the page began with the
+   * rung's title and went straight to three things you do *after* playing it
+   * and then seven options of equal weight (owner, 2026-09-22: *"it should be
+   * intuitive"*). The track, the stage and the unit this rung belongs to are
+   * three facts the curriculum already knows and the page never said.
+   */
+  const where = el('p.lesson-where.muted', { id: 'lesson-where' });
+  header.append(where);
+
+  /**
+   * One thing to press, and a line saying what it will open.
+   *
+   * The screen's only filled box (`04` §0 R3). The option rows' own `▶` are
+   * secondary on purpose — a rung with nine exercises had nine blue buttons
+   * and therefore no answer to "what now?" — and this is that answer: the
+   * first thing on the rung, opened exactly as tapping its row would.
+   */
+  const startWhat = el('p.lesson-start__what.muted', { id: 'lesson-start-what' });
+  const startBlock = el('div.lesson-start', { id: 'lesson-start-block', hidden: true });
+
   const findRow = el('div.row', { id: 'lesson-find' });
   // Where the paper hint lives on a rung with no books behind it (P19 A8).
   const paperHintLine = el('p.paper-hint.muted', { id: 'lesson-paper-hint', hidden: true });
@@ -108,6 +142,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   // everything that is read once and acted on rarely.
   body.append(
     status,
+    startBlock,
     actions,
     lockLine,
     toolsBlock,
@@ -590,9 +625,80 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     }
   }
 
+  /**
+   * The track, the stage and the unit this rung belongs to, in that order.
+   *
+   * Read off the curriculum each draw rather than stored: the lesson is the
+   * only thing this screen is given, and its place is a property of the tree
+   * it sits in. An empty string when the curriculum has not landed yet, which
+   * is the same state the title is in at that moment.
+   */
+  function placeLine(rung: Lesson): string {
+    if (!curriculum) return '';
+    for (const stage of curriculum.stages) {
+      for (const unit of stage.units) {
+        if (!unit.lessons.some((one) => one.id === rung.id)) continue;
+        const track = curriculum.tracks.find((entry) => entry.id === unit.track);
+        // The unit only when it is not the rung's own title said again: a unit
+        // of one rung takes its name, and `Core path · Stage 1 · Right hand C
+        // position` under a heading reading *Right hand C position* is the
+        // screen saying one thing twice (`00-invariants` §1).
+        // Everything here is read defensively. This line is furniture around
+        // the rung, not the rung, and a curriculum missing a unit title must
+        // cost the learner one line of address rather than the whole page:
+        // the screen's one `catch` turns any throw in `draw` into "That lesson
+        // could not be opened", which is a lie about a lesson that is fine.
+        const unitTitle = unit.title ?? '';
+        const sameName =
+          unitTitle.trim().toLowerCase() === (rung.title ?? '').trim().toLowerCase();
+        return [track?.title ?? unit.track, `Stage ${String(stage.number)}`, sameName ? '' : unitTitle]
+          .filter(Boolean)
+          .join(' · ');
+      }
+    }
+    return '';
+  }
+
+  /**
+   * What *Start* opens: the first thing on the rung that can be played.
+   *
+   * The rung's own order is the teaching order — `02` builds
+   * `exerciseOptions` before `songOptions` and each list in the order it means
+   * — so "the first one that is playable" is the recommendation, not a guess
+   * made here. An import placeholder is skipped because pressing Start on one
+   * would open a sheet about a missing file.
+   */
+  function startItem(rung: Lesson): CatalogItem | null {
+    for (const id of [...rung.exerciseOptions, ...rung.songOptions]) {
+      const item = items.get(id);
+      if (item && isPlayable(item)) return item;
+    }
+    return null;
+  }
+
+  function drawStart(rung: Lesson): void {
+    const target = startItem(rung);
+    startBlock.replaceChildren();
+    if (!target) {
+      // `04` §0 R4: no furniture. A rung whose options are all waiting on an
+      // import has nothing for this button to open, and the rows below say so
+      // one at a time.
+      startBlock.hidden = true;
+      return;
+    }
+    startWhat.textContent = `Opens “${target.title}”, the first thing on this rung.`;
+    startBlock.append(
+      button('Start', () => open(target), { id: 'lesson-start', variant: 'primary' }),
+      startWhat,
+    );
+    startBlock.hidden = false;
+  }
+
   function draw(): void {
     if (!lesson) return;
     const rung = lesson;
+    where.textContent = placeLine(rung);
+    drawStart(rung);
     const seenKinds = new Map<string, number>();
     const tools = (rung.tools ?? [])
       .map((tool) => {
@@ -725,6 +831,8 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         if (block instanceof HTMLElement) block.hidden = true;
       }
       lockLine.hidden = true;
+      startBlock.hidden = true;
+      where.textContent = '';
       // The sentence is the first thing in the body and `actions` the second,
       // so the reason still comes before the remedy.
       actions.replaceChildren(

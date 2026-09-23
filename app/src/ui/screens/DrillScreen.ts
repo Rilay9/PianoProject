@@ -59,7 +59,7 @@ import {
 import { Metronome } from '../../audio/Metronome';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
-import { noteLabel, worthRecording } from '../../engine/drills/types';
+import { noteLabel, worthRecording, type DrillKind } from '../../engine/drills/types';
 import type { EngineInput, Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
@@ -81,6 +81,8 @@ import type { OsmdView } from '../../score/OsmdView';
 import { KeyboardStrip } from '../KeyboardStrip';
 import { rhythmRow, staffCard } from '../StaffCard';
 import { onScreenDispose } from '../screenLifecycle';
+import { DRILL_HELP, drillDetailLabel } from '../help';
+import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { badge, button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 
@@ -295,6 +297,36 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   // count-in nobody can see is a count-in that has not happened. Between the
   // hint and the buttons it sits under the prompt it is about, in the same
   // column as the prompt when the screen is sideways.
+  /**
+   * What this drill *is*, above the card that asks the question.
+   *
+   * The card says what to play; nothing said what kind of thing this was, what
+   * else you could do here, or where it came from (owner, 2026-09-22). One
+   * line, plus a `?` holding the controls and the neighbours (`04` §5f).
+   *
+   * `showNow: false`: question 2 on this screen is `#drill-how`, which sits
+   * under the prompt it belongs to and is written per card — a second copy in
+   * the strip would be the app saying one thing twice.
+   */
+  let helpStrip: HelpStrip | null = null;
+
+  function mountHelp(kind: DrillKind): void {
+    if (helpStrip) return;
+    const entry = DRILL_HELP[kind];
+    helpStrip = createHelpStrip({
+      id: 'drill',
+      entry,
+      showNow: false,
+      reopen: {
+        label: 'Show the card I saw the first time',
+        onOpen: () => openFirstSight({ key: `drill:${kind}`, entry, id: 'drill' }),
+      },
+    });
+    body.prepend(helpStrip.el);
+    // The first time this kind is met, before it asks anything.
+    maybeFirstSight({ key: `drill:${kind}`, entry, id: 'drill' });
+  }
+
   body.append(counter, stage, prompt, hint, how, status, controls, tipsBlock, sheet);
   section.append(stripHost);
 
@@ -2471,10 +2503,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       ['Answered', `${String(result.correct)} of ${String(result.total || result.answered)}`],
     ];
     if (result.meanReactionMs > 0) {
-      rows.push(['Mean reaction', `${String(Math.round(result.meanReactionMs))} ms`]);
+      rows.push(['Average time to answer', `${String(Math.round(result.meanReactionMs))} ms`]);
     }
     for (const [key, value] of Object.entries(result.detail ?? {})) {
-      rows.push([key.replace(/([A-Z])/g, ' $1').toLowerCase(), String(Math.round(value * 100) / 100)]);
+      // In words, not the field's own name: this printed *boundary ms*, *soft
+      // velocity*, *flat velocity* and *count in beats* at a learner, which is
+      // the code's word for the thing (`00-invariants` §1).
+      rows.push([drillDetailLabel(key), String(Math.round(value * 100) / 100)]);
     }
     const list = el('dl.kv', { id: 'drill-stats' });
     for (const [term, value] of rows) {
@@ -3008,15 +3043,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   const WALKTHROUGH_STEPS: Record<string, Omit<WalkthroughStep, 'id'>> = {
     'wait-mode': {
-      title: 'Wait mode',
-      text: 'Wait mode waits for you. The app holds on a note until you play it — for as long as you like — and only then moves on, so a hard bar costs you time instead of costing you the run. It is the mode for learning something new.',
-      openLabel: 'Try Wait mode',
+      title: 'Wait for me',
+      text: 'Wait for me waits for you. The app holds on a note until you play it — for as long as you like — and only then moves on, so a hard bar costs you time instead of costing you the run. It is the mode for learning something new.',
+      openLabel: 'Try Wait for me',
       mode: 'wait',
     },
     'tempo-mode': {
-      title: 'Tempo mode',
-      text: 'Tempo mode keeps the clock. It moves at a steady speed whether or not you keep up, and marks what you miss — which is the only way to find out whether a piece is really up to speed. Start slow: the tempo control goes down to a third of what is written.',
-      openLabel: 'Try Tempo mode',
+      title: 'Keep tempo',
+      text: 'Keep tempo keeps the clock. It moves at a steady speed whether or not you keep up, and marks what you miss — which is the only way to find out whether a piece is really up to speed. Start slow: the tempo control goes down to a third of what is written.',
+      openLabel: 'Try Keep tempo',
       mode: 'tempo',
     },
     loops: {
@@ -3226,7 +3261,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       sheet.replaceChildren(
         el('div.row', {}, el('h2', { text: 'Tour finished' }), badge('passed', 'passed')),
         el('p', {
-          text: 'Wait mode, Tempo mode and loops are all on the ⋯ sheet and the control bar of every piece you open. Come back to this any time.',
+          text: 'Wait for me, Keep tempo and loops are all on the ⋯ sheet and the control bar of every piece you open. Come back to this any time.',
         }),
         el(
           'div.row',
@@ -3302,6 +3337,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       section.dataset.drill = 'unavailable';
       return;
     }
+
+    mountHelp(drill.kind);
 
     // The personal best, for a kind whose whole result is one number. Read
     // from the progress row this screen's own runs write — a Simon run's

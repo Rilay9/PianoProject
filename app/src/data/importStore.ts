@@ -35,6 +35,37 @@ const listeners = new Set<() => void>();
 /** The cached summaries, or `null` when they have to be read again. */
 let summaries: Promise<ImportSummary[]> | null = null;
 
+/**
+ * The ids imported since this page was loaded.
+ *
+ * The owner added a score from the score folder, opened the Library, and did
+ * not find it: it was there, at whatever position its level put it in a list
+ * of two thousand ordered by level, which on his phone was several hundred
+ * rows and eighteen presses of *Show 60 more* down. He read that as the score
+ * needing a rung before it would appear. The Library's own import path had
+ * always answered this for itself — importing a score is a thing you do in
+ * order to play it, so it switches to newest-first — and the answer was tied
+ * to that one button rather than to the fact. It is the fact now: anything
+ * added while the app has been open, wherever it was added from, is what the
+ * Library shows first the next time it is opened.
+ *
+ * Deliberately not persisted. "What I just added" is a thing about this
+ * visit; a set written to storage would still be reordering the library
+ * a week later, and the ordinary answer to "where is the score I added in
+ * March" is the search box.
+ */
+const addedSinceLoad = new Set<string>();
+
+/** What has been imported since the page was loaded, newest visit only. */
+export function importsAddedSinceLoad(): ReadonlySet<string> {
+  return addedSinceLoad;
+}
+
+/** Test hook: start again as a freshly loaded page would. */
+export function forgetAddedSinceLoadForTest(): void {
+  addedSinceLoad.clear();
+}
+
 export function onImportsChange(cb: () => void): () => void {
   listeners.add(cb);
   return () => listeners.delete(cb);
@@ -256,6 +287,7 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
   }
 
   await db.put('imports', row);
+  addedSinceLoad.add(row.id);
   notify();
   return row;
 }
@@ -318,6 +350,9 @@ export async function updateImport(
 export async function deleteImport(id: string): Promise<void> {
   const db = await openDatabase();
   await db?.delete('imports', id);
+  // A score added and then deleted in one visit must not go on steering the
+  // Library's order towards a row that is not there any more.
+  addedSinceLoad.delete(id);
   notify();
 }
 

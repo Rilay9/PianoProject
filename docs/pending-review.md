@@ -12304,6 +12304,468 @@ existed and I read it and still reached for git.
 `docs/01-architecture.md` §6 (the relationship above); `docs/08-test-map.md` (three lines);
 this entry. Nothing committed. `content/` and `tools/` untouched.
 
+### Entry 54 — T28: every screen says what it is, what to do now, and what else is there (2026-09-23)
+
+Placed before Entry 55 so the file reads ascending where it can; the brief gave this entry
+the number **54** and Entry 55 (the tips' and lessons' wording) was written first by another
+agent. That entry covers two sections of the same brief and this one covers the rest: the
+delayed Library row, the wording of every string under `app/src`, the explanation table, the
+strip, the first-sight cards, the Guide page, how a lesson and a mode start, coming back to a
+run left half way, and the four items the addendum folded in from the triage.
+
+**Restated without the brief's words:** a learner who opens any screen of this app should be
+able to tell, from the screen, what kind of thing it is, what to do at this moment, what the
+controls will do, and what else exists — and the words it uses should be words they have met.
+
+**Nothing here was heard.** Every judgement below is a string read out of a file, a box
+measured in a headless browser at 342 × 740, or a count taken off the built catalog. Whether
+any of these sentences *teaches* is a question none of it answers.
+
+---
+
+#### 1. The reported fault: a score added from the folder "appeared in the Library only after a delay"
+
+**It was not a delay.** Reproduced, and the mechanism is the sort order. The Library sorts by
+level by default — a teaching order, and the right one for browsing — and the built catalog
+holds **2,061 items, 803 of them below level 5**. A score added from the score folder takes
+the archive's estimate or the import default of 5, so it lands around row 800 of a list that
+draws 60 at a time. It was on the screen the whole time, eighteen presses of *Show 60 more*
+down. The owner read that as the piece needing a rung before it would appear, which is a
+reasonable thing to conclude from a library that does not show you what you just put in it.
+
+**The fix is the rule the Library already followed for its own button, made general.**
+`takeFiles` has always switched to *newest first* after an import, on the grounds that you
+import a score in order to play it — and that answer was tied to one button rather than to
+the fact. So `importStore` now keeps the ids imported since the page was loaded
+(`addedSinceLoad`, not persisted: "what I just added" is a fact about this visit, and a set
+written to storage would still be reordering the library a week later), and the Library, on
+the first draw of a visit, switches to newest-first while any of them is in the list and
+names the newest in its status line — *"X" is in your library. Newest first, so it is at the
+top.* Only while the sort is still the default: an order the learner chose himself is an
+answer to a question and is left alone. Every door now benefits — the score folder, an
+Android share, *Import for this rung* — because they all end at the same list.
+
+While the catalog is being read the count line says *Loading your library…* rather than
+leaving an empty box with no word in it (§0 R4), which is the "or the screen says it is
+arriving" half of the brief's sentence.
+
+**Red first.** `folder.add.spec.ts` gained *the added row is in the library list on its first
+paint*: add from the folder, change route to the Library, wait for the list to have any row
+at all, and then assert **without retrying** that the imported row is among them. With the
+fixture's levels as they were (`1 + i/10`, which is a lie about what an archive holds) it
+passed by luck — a level-1 score is near the top of a level sort. With the levels set to
+`5 + i/10`, an ordinary middling score, it failed: *the score just added was not among the
+first rows the library drew*, 0 of 1. Fixed, green, and the other two tests in that file
+still pass.
+
+Also `importStore.test.ts` — three new cases: an import is remembered whichever door it came
+in by, one deleted again before the Library opens is forgotten, and a freshly loaded page
+remembers nothing whatever is already stored.
+
+`docs/04` §4 carries the paragraph and the reason.
+
+---
+
+#### 2. Every string in `app/src` that a learner can read, extracted and judged
+
+`scratchpad/T28A/extract_strings.py` walks each of the **160 `.ts` files under `app/src`**
+(57,540 lines) character by character — a scanner and not a regex, because half of these
+files are more comment than code and the comments are full of quoted sentences — and pulls
+every string literal outside a comment, with its file, line and the key it sits under.
+Filtered to the ones a learner can read (a space, two runs of letters, not a selector, not a
+url, not a media query, not a class list): **1,509 strings**. That table is
+`scratchpad/T28A/strings.tsv`; the rewrites are below, grouped by screen.
+
+The four tests each was read against: does a first-week learner know every word in it; does
+it say what to do or what happened rather than what the code did; does it use the one name
+`04` §5 gives the thing; is it a sentence a teacher would say aloud.
+
+**Most of it passed.** The Setup tour, the score folder, the microphone screen, the finder
+sheet, the shelf and the free-play screen were read row by row and left alone — they have had
+several passes already and they read as somebody talking. What follows is what failed.
+
+##### Settings, against the setup tour — six settings with two names, and three rows with no sentence at all
+
+The setup tour and the Settings screen set the same eight things, and called six of them
+something else. The tour's words are the learner's, so Settings took them.
+
+| where | before | after | why |
+|---|---|---|---|
+| `SettingsScreen:179` | `Default mode, with MIDI or mic` | `Default mode, piano or mic` | the tour's words; *MIDI* is the cable's name, not the piano's |
+| `:182-183` | options `Wait` / `Tempo` | `Wait for me` / `Keep tempo` | a **third** pair of names for the two modes `04` §5 names once |
+| `:191` | `Default mode, no input` | `Default mode, no piano or mic` | "input" is the code's word for a cable |
+| `:196` | option `Wait (screen keys)` | `Wait for me` | the parenthesis explained the row it was in, not the mode |
+| `:202` | `Bars per window` | `Bars in window` | the `⋯` sheet calls the same stepper this on the screen where it is used |
+| `:215` | `Default tempo % for new items` | `Default tempo % for a new piece` | *item* is a catalog row; a learner has a piece |
+| `:231` | `Strict Wait mode` | `Be strict in Wait for me` | "Wait mode" is the engine's name (Entry 45 item 4's shape) |
+| `:232` | `Tempo-mode tolerance (ms)` | `Keep tempo tolerance (ms)` | same, and the tour already said it this way |
+| `:233-234` | `Pass accuracy %` / `Pass tempo %` | `A pass needs accuracy %` / `… at tempo %` | a label that is a noun phrase of three code words; the tour's version is a sentence |
+| `:236` | `Require 2 songs per lesson` | `Require two songs per lesson` | a numeral in a sentence |
+| `:365` | `Follow input priority` | `Which input the app follows` | *priority* is the field's name |
+| `:378` | `Chord leniency % (mic)`, no sentence | `How much of a chord the mic must hear %`, plus *A note hidden under the others is the usual reason a chord is not heard whole. Below this share, the chord is not accepted.* | "leniency" is not a first-week word, and the row said nothing about what the number does. The sentence was written against `PracticeEngine.maybeCompletePartialChord`, which is the only reader |
+| `:379` | `Strict mic scoring`, no sentence | `Be strict about what the mic hears`, plus *Off, a note the mic is unsure of is shown amber and never counted against you.* | the row had no hint at all |
+| `:381` | `Transpose MIDI input (semitones)` | `Move what the piano sends, in semitones` | "transpose the input" is what the code does to it |
+
+The setup tour took the two renames that were its own fault (`Bars per window`, `Strict Wait
+mode`) and the note-name hint's *In Wait mode:* became *In Wait for me:*. `DevScoreScreen`'s
+`aria-label` went with the stepper. `docs/04` §7 carries the list and the reason.
+
+##### The two names for the two modes, wherever a learner could see them
+
+| where | before | after | why |
+|---|---|---|---|
+| `ProgressScreen:112-113` | `Wait mode` / `Tempo mode` on every history row | `Wait for me` / `Keep tempo` | the learner's own practice history called the mode something no screen he chose it on calls it |
+| `DrillScreen:3046-3054` | the guided tour's two cards headed `Wait mode` and `Tempo mode`, with *Try Wait mode* under them | `Wait for me` / `Keep tempo`, *Try Wait for me* | the tour is where a learner **meets** the modes |
+| `DrillScreen:3264` | *Wait mode, Tempo mode and loops are all on the ⋯ sheet* | *Wait for me, Keep tempo and loops…* | the last thing the tour says |
+
+Entry 45 item 4 found this shape on the Skills screen and could not act on it, because those
+two names come from `content/curriculum/concepts.json`, which is not this task's file either.
+**It is still open there**, and it is now the only place in the app that says *Wait mode*.
+
+##### The Library
+
+| where | before | after | why |
+|---|---|---|---|
+| `LibraryScreen:1119` | the track filter drew `blues-boogie`, `chords-pop`, `hymns-gospel`, `improv-compose`, `rock-metal`, `theory-ear`, `film-game` | the curriculum's own titles (*Blues & boogie*, *Chords & pop*…) | Entry 45 item 5, open since. `00-invariants` §1: no internal identifiers on screen — and the Plan screen's Tracks sheet already offered the titles, so the app named one thing twice |
+| `:626` | the item sheet's `Tracks` row printed the same slugs | the same titles | one lookup, one map |
+| `:626` | the row was headed `Concepts` | `What it trains` | the assign sheet and the lesson page both call it that |
+| `:651` | *Level estimated from the opus or its features — move it if it feels wrong.* | *The app guessed this level from the music itself — change it if it feels wrong.* | an opus number is not a first-week word and *features* is what the estimator calls the things it counted |
+| `:741` | button `Use the catalog's` | `Use the app's level` | *the catalog* is the code's name for the bundled library |
+
+`lessonClaimsAboutApp.test.ts`'s `hymns` row **pinned the fault** — it asserted the screen
+drew `el('option', { value: track, text: track })`, so that a lesson could not quote a label.
+It is rewritten the other way up and asserts the fix, and the `hymns` lesson needed no change
+because it never quoted a label; it names songs, and the row still checks that those songs
+are on that track.
+
+##### The drill screen's result sheet — the worst of the lot
+
+The summary printed every extra measurement a drill kind recorded by splitting its **field
+name** on capitals: *boundary ms*, *chords heard*, *soft velocity*, *flat velocity*, *count
+in beats*, *half pedal low*, *target ratio*, *longest chain*. That is the code's own word for
+the thing, in front of a learner who has just played something. `DRILL_DETAIL_LABEL` in
+`ui/help.ts` says all **23** of them in words — *Time allowed per chord*, *How hard the soft
+notes were played*, *Every note the same volume*, *Softest pedal reading* — and
+`help.test.ts` reads the `detail:` blocks out of `harmony.ts`, `simon.ts` and `special.ts`
+themselves, so a measurement added and not named fails rather than printing its field name.
+That test **caught two on its first run** (`partialPedalMessages`, `binaryPedal`), which is
+the whole reason it reads the drills rather than a list.
+
+Also `Mean reaction` → `Average time to answer`.
+
+##### The score screen's summary, and the scorer's lines
+
+| where | before | after |
+|---|---|---|
+| `ScoreScreen:2309` | `123 ms mean, 40% early` | `123 ms off the beat on average, 40% of them early` |
+| `ScoreScreen:2295` | `62% of 18 leaned on, against the rest of your playing` | `62% of the 18 accented notes were played louder than the notes around them` |
+| `Scoring.ts:521` | `…held the right length (mean 84% of the written value)` | `(on average 84% of the written value)` |
+| `Scoring.ts:549` | `…sang the top note at least 1.4 times the rest (mean 1.62×)` | `(on average 1.62×)` |
+
+*at least 1.4 times the rest* is quoted by a lesson and pinned by two tests, so it stays.
+
+##### Skills review, and Diagnostics
+
+| where | before | after | why |
+|---|---|---|---|
+| `SkillsScreen:162,165` | `42 of 118 concepts` on a screen headed **Review a skill** | `42 of 118 skills` | `concepts[]` is the curriculum's field name |
+| `:167` | *No concepts match those filters.* | *No skills match those filters.* | same |
+| `DiagnosticsScreen:197` | *Filled in from P2 onwards: every notation render is measured through util/renderTiming so the phone's real numbers can be checked against the 150 ms / 16 ms budgets.* | *How long this phone takes to draw the notation. The first draw of a piece and each redraw after it are timed, so a screen that feels slow can be checked rather than guessed at.* | a build phase and a module path, read out to a person |
+| `:692` | *Every lesson meets the three-alternative rule (docs/00 D21).* | *Every lesson offers at least three things to play.* | the repository citing itself in front of somebody at a piano |
+| `:693` | *Thin lessons (below three options):* | *Lessons with fewer than three things to play:* | same |
+
+**Where a test pinned the old string, the test changed in the same step and is named here:**
+`progressRanking.test.ts` (the two mode labels), `plan.spec.ts` (*concepts* → *skills*),
+`progress.spec.ts` (the three-alternative sentence), `lessonClaimsAboutApp.test.ts` (the
+`hymns` row).
+
+---
+
+#### 3. One table of explanations, and what reads it
+
+`app/src/ui/help.ts`. **33 entries** — the 4 modes at the top of the Score screen plus the 3
+that sit alongside one (Rhythm only, Blind, Perform), all **20** `DrillKind`s, and the **6**
+tools with a route of their own (the lab, the chord chart, free play, the metronome, paper
+practice, the PDF viewer). Each carries five answers and its controls:
+
+| field | the question |
+|---|---|
+| `what` | what is this? |
+| `now` | what do I do now, before anything has happened? |
+| `counts` | and does this go on my record? |
+| `controls` | what can I do here — **85** controls in all, each with what it says back |
+| `elsewhere` | what else is there, and where does this sit? |
+
+Exhaustive **by type**: `Readonly<Record<DrillKind, HelpEntry>>` means a kind added without a
+row does not compile, which is the guard `STAFF_POLICY` already uses one file over. The
+pattern is `LAB_HELP`'s (Entry 30), which answered the same question for the lab's ten
+controls and is left where it is — the lab's strip points at it rather than copying it.
+
+`docs/04` **§5f** prints the whole table (317 lines) and `help.test.ts` is the join: it fails
+when a line on a screen and a line in the spec stop being the same line, the way
+`labHelp.test.ts` does for §3c. §5f is **generated** from `help.ts` by
+`scratchpad/T28A/gen_5e.py` and spliced in, so the two cannot drift while it is being edited
+either. It is §5f and not §5e because §5e is *Blind mode and performances*.
+
+**Red first:** blanking `DRILL_HELP.simon.what` fails with *drill:simon does not answer "what
+is this"*. Restored, green.
+
+**The drill kinds took the catalog's own names**, after a screenshot showed the drill screen's
+`h1` reading *Note flash — treble C4 to G4* over a strip reading *Name the note — …*: two
+names, one under the other, introduced by this work. So *Note flash*, *Find the key*, *Chord
+drill*, *Inversion drill*, *Ear drill — intervals/chords/progressions*, *Rhythm drill*,
+*Pedal-change drill*, *Dynamics drill*, *Play it back*, *Backing track*, *Modes*,
+*Chord–scale*, *Chords with more notes*, *Harmonic dictation*, *Transposition*, *Roman
+numerals*, *Play back a tune*, *Simon*.
+
+---
+
+#### 4. The strip, screen by screen — including the two that did not get two lines
+
+`app/src/ui/helpStrip.ts`. Two lines and a `?`: the subject, what to do now, and a sheet
+holding the controls and the neighbours. `04` §0 R1 decided the shape more than the brief
+did: *"Explanation is one line in the header at most"*, and on a 342 px phone a mode's
+sentence runs to three lines — **measured at 86 px of a 740 px screen** before it was cut
+down, which is exactly the paragraph-over-the-notation R1 exists to prevent.
+
+| screen | what it carries | why |
+|---|---|---|
+| **Score** | the mode's **name** and the state line, plus the `?` | R1. The sentence is in the first-sight card and behind the `?`. The state line is `#score-waiting` itself — the element `drawWaitingFor` has always written from the engine's signals and the bar mirrors sideways — so there is **one** state line and no second clock. It is never blank now: where the run has nothing to say it holds the mode's standing line. Measured after: strip 35 px, notation starts at y = 118 of 740 |
+| **Drill** | the kind and its sentence, plus the `?`; **no** second line | question 2 on that screen is `#drill-how`, under the prompt it belongs to (§0 R6), and it changes per card. A copy in the strip would be the app saying one thing twice |
+| **Accompaniment lab** | what to do now, plus the `?`; **no** name | the `h1` *is* the tool's name. It first carried both and pushed `#lab-plays-row` below the fold, which is the thing Entry 42 had fixed — caught by `lab.spec.ts`, and the reason `hideWhat` exists |
+| **Chord chart** | the same shape, for the same reason | |
+| **Free play** | the same shape; the strip **replaced** the old purpose paragraph and kept its id | the sentence was already there; what was missing was the other two questions |
+| **PDF viewer**, **Paper practice**, **Metronome** | **not done.** They have an entry in the table and a line in the Guide, and no strip | each is a screen whose whole body is its own instructions already, and neither is a mode or a kind, so the first-sight card does not apply. Recorded as not done rather than claimed |
+
+**First sight.** The first time a drill kind or a Score mode is opened, a three-line card:
+what you will see or hear, what to do, what counts. Remembered as one list in `localStorage`
+under `pianopath.firstSight`, where `"*"` means every card counts as seen — one entry rather
+than twenty-seven booleans, because a test fixture has to be able to say "this learner has
+met all of these" in one place. Re-openable from the strip's sheet, because *I have seen this
+once* and *I remember it* are not the same thing.
+
+That last decision has a cost worth writing down: **43 spec files had to say so**. The card
+is modal, and a spec that clears `localStorage` opens behind one. `storageState.json` carries
+the flag for the suite, `playwright.config.ts` says why beside the setup-tour flag, and the
+26 e2e specs that re-seed after clearing, plus 16 more that clear without re-seeding, plus
+the three tour-suite specs, each set it. Found by running the suite and reading the failure:
+*`<p class="first-sight__counts">…` from `<div class="sheet" id="score-first-sight">` subtree
+intercepts pointer events*.
+
+**The Guide** grew a section, *Every mode, drill and tool, in one list*, built **from the
+table** by `itemsFor()` rather than written out — 33 rows, each the same sentence the screen
+shows. *Skills review* and every lesson page carry a link into it (`#skills-open-guide`,
+`#lesson-open-guide`).
+
+---
+
+#### 5. How a lesson opens, how a mode starts, and coming back
+
+**Opening a lesson.** It began with the rung's title and went straight to the three things you
+do *after* playing it — *I already know this*, *Quick check*, *Mark done* — and then to seven
+option rows of equal weight, each with its own `▶`. Now, above them: `#lesson-where` (the
+track, the stage, and the unit — dropped when the unit is the rung's own title said again),
+and `#lesson-start`, the screen's one filled box, with `#lesson-start-what` beside it saying
+*Opens "X", the first thing on this rung.* The rung's own order is the teaching order, so
+"the first playable option" is the recommendation and not a judgement made in the screen; a
+rung whose options are all waiting on an import draws no Start at all. Measured at 342 px:
+the first option row of `1.1` ends at 404 of 740 and of `2.1` — the rung with a *Ways to play
+this* block above its options — at 531, so R1 still holds. `docs/04` §3e.
+
+**Starting a mode.** The strip's state line is never blank, so a piece that has just opened
+says what will happen instead of nothing. And **the first note is marked before anything is
+judged**: the keys guide marks what the run is waiting for, and there was no run until play
+was pressed, so a piece sat open under a blank keyboard. `ScoreSession.previewFirst` prepares
+the first step for the mode and hand now chosen and paints it — *prepared*, not guessed at,
+because the hand filter drops steps and the model's first step is not the run's first step on
+a piece whose left hand comes in first.
+
+That one has a fault of its own worth recording, because it was caught by the suite and not
+by reasoning: `previewFirst` was called from `render()`, which runs on every control change
+and every repaint, and preparing a session walks the whole score. The Petzold Minuet
+re-prepared on every render and the tablet's side panel took **33 s** to answer a click. It is
+keyed on mode, hand and loop now and computed once per combination.
+
+**Coming back.** `#score-resume` in the header: *You stopped at bar 12 of 48 last time*, with
+**Carry on from bar 12** and **Start from the beginning**. Carrying on sets a loop from that
+bar to the last one, because a loop's first bar is the only place this screen can begin a run
+other than bar 1 — so it plays from there to the end and then comes round again, and the line
+beside the buttons says exactly that rather than letting the learner find out.
+`data/unfinishedRun.ts` keeps it in `localStorage`, written when the screen is torn down with
+a run going and dropped when a run reaches its summary; bar 1 is never remembered.
+
+Tearing the screen down *is* a finish and comes back through `onFinished`, so the summary it
+draws would have forgotten the very run the disposer had just remembered — a `leaving` flag
+is what stops that, and the spec that caught it is the one below.
+
+`start-and-return.spec.ts`, **7 tests, seen red first**: the expected-key assertion and both
+coming-back tests failed before the fixes. A trap worth passing on: `page.addInitScript` runs
+before **every** navigation, so a spec that clears storage there wipes it again on the way
+back, and the offer can never appear; both new specs gate on `sessionStorage`.
+
+---
+
+#### 6. The four items the addendum folded in
+
+**The orphan screen** (Entry 52 item 1, which that entry left open and named). `mountLazyScreen`
+now takes `load: () => Promise<() => HTMLElement>` — the factory, not the built screen — and
+checks `holder.isConnected` **before** calling it. Four call sites changed to match. An orphan
+screen leaves no mark on the DOM, so `lazyScreenOrphan.test.ts` holds the factory itself: 3
+tests, **seen red** by moving the build back above the check (2 of the 3 failed with *a screen
+was built for a route nobody is on*).
+
+**Mounted once.** Entry 52 measured the double mount on the Score screen only and said so. A
+screen built twice leaves nothing behind — the shell empties `main` and appends the second —
+so the shell counts its builds into `window.__pianopath.screenMounts` and
+`mounted-once.spec.ts` reads the counter: the chord chart, a drill and the lab, each from two
+doors, one build each. The counts are per document, so every assertion is a difference across
+one door rather than a running total.
+
+**The placement's fail branches.** `placement-branches.spec.ts`, 10 tests, the cases read out
+of the built catalog rather than listed in the file. Each item failed in turn records the unit
+its own row names, and passing everything records the pass unit; the result must also name the
+unit's **title** and not its id. One correction to the brief's wording: there are **eight**
+items and **seven distinct** units — `3.4` is named by two of them.
+
+**Lesson prose in the side panel** (Entry 55's open item). The panel is `display: none` below
+900 px each way, so a spec at 342 px cannot assert anything about how the prose wraps there:
+there is no panel. `side-panel-prose.spec.ts` asks the phone the other half of the same
+question — that the prose never appears over the notation where the notation has least room —
+and asserts the wrapping on a tablet, over **one lesson per track** (14, taken from the built
+curriculum), with a guard so a sweep that measured nothing cannot pass. Nothing overflowed.
+
+---
+
+#### What was run
+
+- `npx tsc -b --noEmit` — clean.
+- `npm run lint` — clean.
+- `npx vitest run` — **195 files, 4,980 tests**, all passing. Three of those files are new or
+  newly extended here (`help.test.ts` 11, `lazyScreenOrphan.test.ts` 3, `importStore.test.ts`
+  +3).
+- Playwright, per spec as each was written, and then **the whole suite, four times**. The
+  last of those ended **731 passed, 7 skipped, 5 failed** — four of them the two groups named
+  below and one a flake that passes on its own (`finder.spec.ts`). The first full run found
+  **six** faults this work had caused — the six rows of the table below, showing as eleven
+  failing tests (five drill kinds sideways, two chart dead ends, two guide lists, one lesson
+  sideways, one fuzz seed); the tablet's 33 s click was found a run earlier and the
+  `score.fill` timing a run later. It also found four casualties of a rebuild started while
+  the run was going (the shelf's four; they pass on a clean run, and
+  the rebuild swapping the service worker under a live suite is a hazard already written
+  down). The regressions, each fixed and named because the reason matters more than the
+  outcome:
+
+| what broke | why | what was done |
+|---|---|---|
+| the drill's answer buttons sideways, on five kinds | the strip cost a thumb's height at 780 × 360 and pushed them past the fold — `drills.spec.ts` measures exactly that | the strip is not drawn on a drill sideways, the way §0 R5 takes the whole score header away |
+| the chord chart's dead end drew three buttons where R4 allows two | the `?` is a control, and a `?` offering to explain a chart over a screen with no chart is furniture | the strip is **removed** on that path, not hidden: a hidden button is still a button to a count |
+| a lesson sideways started its content 113 px down against a fifth of 360 | the new address line took a row of its own | sideways it shares the title's line, which is R5's own shape |
+| **the sheet re-fitted mid-run** — `score.fuzz.spec.ts` seed 4: *the size changed mid-run: scale 0.84 → 0.73* | the strip was given its own line by letting `.score-head` wrap, so a long status message mid-run wrapped the mic meter onto a second line, the header grew and the stage lost the height | the header is a column now, with a `.score-head__row` that cannot wrap and the strip under it |
+| the tablet's side panel took 33 s to answer a click | `previewFirst` was called from `render()` and prepared the whole score every time | keyed on mode, hand and loop, so it is prepared once per combination |
+| `guide.spec.ts`, `landscape.spec.ts` | a section and an element that are new and intended | the two lists updated, each with the reason beside it |
+
+**Two screenshot groups are left red and are not fixed here**, because both are local
+baselines that are **gitignored** (`app/tests/**/*-win32.png`) and neither has anything to do
+with the change:
+
+- `score.layout.spec.ts` × 3 — **regenerated.** The diff is confined to the keyboard strip and
+  shows exactly the new marked key (the notation pixels are identical), which is this work's
+  own doing and is what it is for.
+- `score.spec.ts` chords-ties × 3 — **left red**, and the three images are read rather than
+  counted: the local `-win32.png` baseline shows the piece in **two** systems; the run draws
+  **one**; the **committed** `-linux.png` — the one CI compares against — shows **one, with a
+  tempo mark the run does not draw**. So all three disagree, and the committed one agrees
+  with the run on the difference the local baseline is failing over and not on everything.
+  Nothing in this work touches the engraver, so none of the three differences can be caused
+  here; the local baseline has rotted, and regenerating it is how a real regression gets
+  blessed, so it is reported instead. (`git ls-files` over
+  `score.layout.spec.ts-snapshots/` returns nothing and a `find` for `score-landscape*`
+  returns only the three `-win32.png` files, so that spec has **no** committed reference at
+  all — which is why its diff was read before its baseline was regenerated.)
+
+**`score.fill.spec.ts`'s mid-run test is the one thing left red that is not a picture, and it
+is not understood.** It reports *satie-gnossienne-1: 55 % of the width, mid-run* against a
+floor of 55 %, **only inside the full suite**: it passes alone, with its own file at four
+workers, and beside four other score specs at four workers, and it passed in the first full
+run of this work. It waited `3_000 ms` for the re-engrave a run triggers — a guess about how
+busy the machine is — and now waits for the renderer's own published fit to stop moving,
+which is faster and is the thing the sleep meant; that did not change the outcome under the
+whole suite's load. The failure message now carries the state, and the state does not look
+like a small sheet: the fit is frozen at scale 0.52 with `zoom 0.97`, the header is folded
+(`headH: 0`, `stageH: 668` — the same numbers a passing solo run gives), and each drawn
+slot's own ink is 367–390 px wide in a 390 px stage. Something transient is being measured
+rather than the sheet being wrong, and that is a claim about a measurement, not a finding
+about the screen. **It is left red and named rather than loosened.**
+
+`finder.spec.ts` failed once in one of the four full runs and passes on its own and in every
+other run; recorded as a flake and not investigated further.
+
+#### What is unverified
+
+- **Nothing was heard.** No audio was played and no run was listened to.
+- **Nothing was read by a person.** Every sentence written here was judged against four tests
+  by the agent that wrote it. Whether the owner finds them clearer is the only measure that
+  counts and it has not been taken.
+- **The PDF viewer, paper practice and the metronome have no strip**, for the reason given
+  above. They have an entry and a Guide line, and that is all.
+- **`concepts.json` still says *Wait mode* and *Tempo mode*** on the Skills screen's cards —
+  Entry 45 item 4, not this task's file, and now the only place in the app that says either.
+- **The first-day chain does not meet the first-sight cards.** `first-day.spec.ts` seeds the
+  flag like every other spec, so the one walk that is genuinely a first day steps past the
+  cards a first day would now show. Whether the card belongs in that chain is a decision about
+  the chain, not about the card.
+- **The tour and state galleries were not re-photographed.** The strip, the lesson page's
+  Start and the resume offer all change what those pictures would show; the suites were made
+  to seed the first-sight flag so they *can* run, and they were not run.
+- **1,509 strings were extracted and the ones rewritten are listed.** The rest were read and
+  left; "read and left" is a judgement made once, by one reader.
+- **The extractor is a proxy for "every string a learner reads", and it cannot see two
+  kinds**: words that come out of the content — a piece's title, a lesson's markdown, a
+  concept's display name — and words assembled at runtime from data. The drill screen's
+  `h1` is one of the first kind, and it is what made the strip say two names for one drill
+  until a screenshot showed it.
+
+#### The `CLAUDE.md` checklist, run against this entry
+
+1. **Did I state an absence?** One is stated above — *the Skills screen is now the only place
+   in the app that says "Wait mode"*. Three searches, all reported: `grep -rn 'Wait
+   mode|Tempo mode' app/src` returns eleven hits, every one of them a code comment or a
+   docs reference except `ui/help.ts`'s own rule forbidding it; `grep -rn "'Wait mode'"
+   app/src` (the string, quoted) returns that same rule and nothing else; `grep -rln 'Wait
+   mode' content/` returns `content/curriculum/concepts.json`, which is where the Skills
+   screen's cards get their names and is not this task's file.
+2. **Did I write a plural?** *"Every practising screen"* is the brief's phrase and it is not
+   true of this work: the table above names the five screens that carry a strip and the
+   three that do not, with the reason. *"Every drill kind"* is exhaustive by the compiler
+   and cross-checked against `STAFF_POLICY` rather than a list. *"Every string"* is 1,509
+   extracted and read once; the ones rewritten are enumerated.
+3. **What proxy did I use?** Three, named where they are used: the extractor for "what a
+   learner reads" (see above); a bounding box for "is it legible", which measures room and
+   not reading; and `help.test.ts`'s spec comparison for "the documents agree with the
+   screens", which compares strings and not meaning.
+4. **Green is not done.** The unverified list is above and is longer than the list of what
+   passes.
+5. **Did I check the reason?** The regressions table gives the mechanism for each, not the
+   symptom — and one of them (the header wrap) was a *right-looking* fix with a wrong
+   consequence that only a fuzz seed found.
+6. **Did I re-open the artefact?** The wording table was written from the findings list, and
+   every row was re-read against its own file at the moment the edit was made — which is how
+   the *Chord leniency* sentence came to be written against `maybeCompletePartialChord`
+   rather than from the label.
+7. **Who else reads what I changed?** `ScoreSession.expectedNow` gained a fallback: its
+   readers are `paintStrip` (twice — the guide and the strip's scroll), `waitingForLine` on
+   the Score screen, and `window.__pianopath.scoreRun`, which guards on `running` and so
+   never sees the preview. `mountLazyScreen`'s signature changed at all **four** call sites
+   (dev score, Score, PDF, Setup) and has no other caller. `ProgressScreen.modeLabel` is read
+   by that screen's history rows and by `progressRanking.test.ts`. The storage fixture is
+   read by every spec in the suite, which is why 43 files had to be told about it.
+8. **Am I reading the letter?** The restatement is at the top of this entry and it is what
+   settled the two places the literal brief and the app disagreed: a strip "on every
+   practising screen" where three of them are their own instructions already, and a spec
+   "at 342 px" for a panel that does not exist at 342 px.
+
+---
+
 ### Entry 55 — T28: the tips' and the lessons' wording, read one at a time (2026-09-23)
 
 This covers two sections of the T28 brief and no others: *And every string the learner

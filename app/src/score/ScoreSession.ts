@@ -347,9 +347,53 @@ export class ScoreSession {
   }
 
   /** Expected pitches for the current step, for the keyboard strip. */
+  /**
+   * What a run *would* wait for first, while there is no run.
+   *
+   * Empty until `previewFirst` is called, and thrown away the moment an engine
+   * exists — this is only ever the answer before the first note.
+   */
+  private previewExpected: number[] = [];
+
+  /**
+   * What the last preview was computed for, so it is computed once.
+   *
+   * `previewFirst` is called from the screen's `render()`, which runs on every
+   * control change, every resize and every repaint — and preparing a session
+   * walks the whole score. Without this the Petzold Minuet re-prepared on
+   * every render and the tablet's side panel took 33 s to answer a click.
+   */
+  private previewKey = '';
+
+  /**
+   * Marks the first note the piece is asking for, before anything is judged.
+   *
+   * The owner (2026-09-22) on how a mode starts: the learner must be told what
+   * is happening from the moment the piece opens. The keys guide marks the
+   * note the run is waiting for — and the run has to have started for there to
+   * be one, so a piece sat open with a blank keyboard under it until the
+   * learner pressed play and found out. The first step is prepared here
+   * instead of guessed at: the hand filter drops steps, so "the model's first
+   * step" and "the first step this run will want" are not the same thing on a
+   * piece whose left hand comes in first.
+   */
+  previewFirst(run: { mode: Mode; hands: RunOptions['hands']; loop?: RunOptions['loop'] }): void {
+    if (this.engine) return;
+    const key = `${run.mode}|${String(run.hands)}|${run.loop ? `${String(run.loop.fromStep)}-${String(run.loop.toStep)}` : ''}`;
+    if (key === this.previewKey) return;
+    this.previewKey = key;
+    const prepared = prepareSession(this.options.model, {
+      mode: run.mode,
+      hands: run.hands,
+      ...(run.loop ? { loop: run.loop } : {}),
+    });
+    this.previewExpected = run.mode === 'free' ? [] : (prepared.steps[0]?.expected ?? []);
+    this.paintStrip();
+  }
+
   get expectedNow(): number[] {
     const engine = this.engine;
-    if (!engine) return [];
+    if (!engine) return this.previewExpected;
     // Free play marks nothing, the keys included (`08` §7.4).
     if (this.runOptions.mode === 'free') return [];
     return engine.prepared.steps[engine.state.step]?.expected ?? [];
@@ -428,6 +472,10 @@ export class ScoreSession {
       );
     const engine = new PracticeEngine(this.options.model, { ...engineOptions, mode: run.mode, latchStart });
     this.engine = engine;
+    // The run answers for itself from here, and the next idle render works
+    // the preview out again from whatever the run left behind.
+    this.previewExpected = [];
+    this.previewKey = '';
     engine.on((event) => {
       this.handle(event);
     });

@@ -2688,15 +2688,26 @@ input[type='checkbox'] {
 .score-head {
   flex: 0 0 auto;
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0.3rem 0.6rem;
+}
+
+/* The row that was the whole header: back, the piece, the messages, the meter.
+   `nowrap`, and deliberately — see the comment beside `headRow` in
+   `ScoreScreen.ts`. What goes under it is the help strip and the offer to carry
+   on a run left half way, each on a line of its own. */
+.score-head__row {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.3rem 0.6rem;
   min-height: 2.5rem;
+  flex-wrap: nowrap;
 }
 
 /* Back does not shrink and does not wrap. Given a title and a message to fit
    beside, flex shrank it until the arrow sat on a line above the word. */
-.score-head > .score-button {
+.score-head__row > .score-button {
   flex: 0 0 auto;
   white-space: nowrap;
 }
@@ -5710,5 +5721,184 @@ input[type='checkbox'] {
   [data-screen='drill'][data-kind='walkthrough'] #drill-status,
   [data-screen='drill'][data-kind='walkthrough'] #drill-controls {
     grid-column: 1;
+  }
+}
+
+/* The help strip: what this is, what to do now, and a ? for the rest.
+
+   `04` section 5f. Two spans on their own lines, the ? at the end of the row,
+   and a rule under the whole thing so it reads as the screen's own label
+   rather than as the first row of content. Small: it is the caption over the
+   subject, and the subject is what the screen is for (section 0 R1) -- a strip
+   in body size on a 342 px phone is a paragraph above the notation, which is
+   the thing R1 exists to stop. */
+.help-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 2px 0 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+.help-strip__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* The subject's own name is the one word on this strip that is not muted:
+   "Keep tempo" has to be findable at a glance from the music stand. */
+.help-strip__what {
+  color: var(--text);
+}
+
+/* What to do now, which changes with the run. */
+.help-strip__now:empty {
+  display: none;
+}
+
+.help-strip__more {
+  flex: none;
+  min-width: 32px;
+  min-height: 32px;
+  font-size: 1rem;
+  padding: 0 6px;
+}
+
+/* Sideways on a phone the header does not draw at all (section 0 R5), so the
+   strip goes with it; the state line is mirrored into the bar's left end,
+   which is where the Score screen already puts back, the title and the status
+   for exactly this reason. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .screen-header .help-strip {
+    display: none;
+  }
+
+  /* On a drill, sideways, the strip goes the way the score screen's header
+     does.
+
+     Height is the scarce thing at 780x360 and the answer buttons have to be
+     reachable without a scroll -- `drills.spec.ts` measures exactly that, and
+     the strip over the card pushed them off the bottom on five kinds. Even
+     collapsed to its ? it costs a thumb's height, which is the same 40-odd
+     pixels R5 takes the whole header away to save. So sideways the card's own
+     *how* line under the prompt is the explanation, and the strip comes back
+     when the phone is turned up. */
+  [data-screen='drill'] .help-strip {
+    display: none;
+  }
+}
+
+/* The first-sight card: three lines and one button, in that order. */
+.first-sight__what {
+  font-weight: 600;
+}
+
+.first-sight__counts {
+  color: var(--text-muted);
+}
+
+.help-sheet__now {
+  color: var(--text-muted);
+}
+
+/* The strip inside the Score screen's header row.
+
+   The header is one flex row -- back, the title, the status, the mic meter --
+   and the strip is a second line under all of them, so the row is allowed to
+   wrap and the strip is told to take the whole of the next one. No rule under
+   it here: the bar below already draws one, and two lines of division over the
+   notation is one too many.
+
+   It folds with the header during a run (`data-chrome='folded'`), which is the
+   decision `04` already made about this header and not a new one: while the
+   run is going the state line continues in the stage's own corner, which is
+   what the corner is for. */
+.score-head .help-strip {
+  border-bottom: none;
+  padding: 0;
+}
+
+/* Sideways a drill lays its body in two columns; the strip is about the whole
+   screen, so it spans them rather than sitting in the first one. */
+[data-screen='drill'] .help-strip {
+  grid-column: 1 / -1;
+}
+
+/* The lesson page's one filled action, and the line saying what it opens.
+
+   Above the options, because it is the answer to "what now?" that a column of
+   equally-weighted rows cannot give (`04` section 3, 2026-09-23). The line
+   under it is the whole reason the button is allowed to be one word. */
+.lesson-start {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.lesson-start__what {
+  margin: 0;
+  flex: 1 1 12rem;
+  min-width: 0;
+  font-size: 0.85rem;
+}
+
+/* Where the rung sits, under its title. One line, muted: the title is the
+   subject and this is the address. */
+.lesson-where {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+}
+
+/* "You stopped at bar 12 last time", and the two things to do about it.
+
+   In the score header, so it folds away with it the moment a run starts
+   (`04` section 5f): an offer at the top of a visit, never furniture during
+   one. Wraps to its own line under back/title, like the help strip. */
+.score-resume {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.score-resume__said {
+  color: var(--text);
+}
+
+.score-resume .score-button {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+}
+
+.score-resume__note {
+  flex: 1 0 100%;
+}
+
+/* Sideways, a lesson's address shares the title's line.
+
+   `04` section 0 R5: a pushed screen keeps its title on the back link's line,
+   and the chrome above the first content has to stay under a fifth of a 360 px
+   screen. The track and stage line is one more row upright, where there is
+   room for it; sideways it goes beside the title or not at all. */
+@media (orientation: landscape) and (max-height: 500px) {
+  [data-screen='lesson'] .screen-header {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  [data-screen='lesson'] .lesson-where {
+    margin: 0;
   }
 }
