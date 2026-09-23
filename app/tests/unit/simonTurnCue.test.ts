@@ -66,6 +66,10 @@ vi.mock('../../src/data/progressStore', () => ({
 }));
 
 const { DrillScreen } = await import('../../src/ui/screens/DrillScreen');
+// The strip's own source, so a tap here arrives by the path a tap on the keys
+// arrives by — `KeyboardStrip` calls exactly these two.
+const { screenKeyboardSource } = await import('../../src/app/services');
+const { disposeScreen } = await import('../../src/ui/screenLifecycle');
 
 // jsdom has no layout, so it has no `scrollIntoView`; the screen calls it.
 Element.prototype.scrollIntoView = function scrollIntoView(): void {
@@ -82,9 +86,13 @@ function newRouter(): Record<string, unknown> {
   };
 }
 
+/** The screen this case mounted, so `afterEach` can take its timers down. */
+let mounted: HTMLElement | null = null;
+
 async function mount(item: CatalogItem): Promise<HTMLElement> {
   findItemSpy.mockResolvedValue(item);
   const section = DrillScreen(newRouter() as unknown as Router, item.id);
+  mounted = section;
   document.body.replaceChildren(section);
   await vi.waitFor(() => {
     expect(section.dataset.drill).not.toBe('loading');
@@ -96,12 +104,21 @@ function statusText(): string {
   return document.querySelector('#drill-status')?.textContent ?? '';
 }
 
+function counterText(): string {
+  return document.querySelector('#drill-counter')?.textContent ?? '';
+}
+
 beforeEach(() => {
   localStorage.clear();
   findItemSpy.mockReset();
 });
 
 afterEach(() => {
+  // Explicitly, because nothing else does it: `disposeScreen` is what the app
+  // shell calls on a route change, and without it a card answered in one case
+  // advances on its timer in the middle of the next one.
+  disposeScreen(mounted);
+  mounted = null;
   document.body.replaceChildren();
 });
 
@@ -143,6 +160,55 @@ describe('the chain hands over in words, not only by going quiet', () => {
       expect(line, `${letter} is in the turn cue`).not.toContain(letter);
     }
   });
+
+  /**
+   * Playing along with the chain is not answering it (T23).
+   *
+   * On the `show-keys` rung the strip lights each note of the chain **as it
+   * sounds**, and a lit key on every other drill in this app means *play
+   * this* — so the reasonable thing to do with one ended the chain before the
+   * app had finished playing it. The answer opens where the cue does.
+   */
+  it('does not take a key pressed while the app is still playing as the answer', async () => {
+    // The only test here that gets a card *right*, so it is the only one whose
+    // drill goes on to the next chain — and drawing a chain's staff asks
+    // `window.matchMedia`, which jsdom does not have. Stubbed for this case
+    // alone, and taken away again, because the three rung cases below rely on
+    // its absence: that throw is what proved the turn cue must not be
+    // scheduled behind the help display.
+    const stub = vi.fn(() => ({ matches: false }) as unknown as MediaQueryList);
+    vi.stubGlobal('matchMedia', stub);
+    try {
+      await playAlongThenAnswer();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  async function playAlongThenAnswer(): Promise<void> {
+    const section = await mount(simonItem('show-keys'));
+    const expected = (section.dataset.expects ?? '').split(',').filter(Boolean).map(Number);
+    expect(expected.length, 'the card expects nothing, so this proves nothing').toBeGreaterThan(0);
+    const first = expected[0] as number;
+    // The cue has not arrived, so the app is still playing: this is the
+    // play-along, and the counter must not move.
+    expect(statusText(), 'the chain had already finished').not.toContain('Your turn');
+    screenKeyboardSource.noteOn(first, 90);
+    screenKeyboardSource.noteOff(first);
+    expect(section.dataset.feedback ?? '').toBe('');
+    expect(counterText()).toContain('0 right');
+
+    await vi.waitFor(
+      () => {
+        expect(statusText()).toContain('Your turn');
+      },
+      { timeout: 4_000, interval: 50 },
+    );
+    // …and the same key, now that it is the learner's go, answers.
+    screenKeyboardSource.noteOn(first, 90);
+    screenKeyboardSource.noteOff(first);
+    expect(counterText()).toContain('1 right');
+  }
 
   /**
    * All three rungs of the help ladder, named one at a time.

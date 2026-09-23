@@ -253,6 +253,26 @@ async function expectedNow(page: Page): Promise<number[]> {
     .map((value) => Number(value));
 }
 
+/**
+ * Waits for Simon to hand the turn over, which is when a key becomes an answer.
+ *
+ * A key played while the chain is still sounding is playing along, not
+ * answering (T23, `pending-review` Entry 49) — the screen refuses it, so a
+ * test that presses one before this is asserting a rule the app no longer
+ * has, and its key goes nowhere. The cue under the prompt is that hand-over
+ * made visible: the screen opens the answer window off the same number that
+ * writes the line, so waiting for the sentence is waiting for the window
+ * itself rather than guessing a second time at when it opens.
+ *
+ * **Every** key a Simon test sends goes after this — the chain played back
+ * right, and just as much the wrong note that ends a game or asks for the
+ * replay, which is the half that reads as an assertion about the app and was
+ * silently being swallowed instead.
+ */
+async function simonYourTurn(page: Page): Promise<void> {
+  await expect(page.locator('#drill-status')).toContainText('Your turn', { timeout: 20_000 });
+}
+
 /** The chord this card wants, and one that is certainly not it. */
 const WRONG_CHORD = [61, 63, 66];
 
@@ -430,6 +450,7 @@ test.describe('Simon', () => {
       }
       chains.push(chain);
       await watchTransitions(page);
+      await simonYourTurn(page);
       for (const note of chain) {
         await midi.noteOn(note, 90);
         await midi.noteOff(note);
@@ -441,8 +462,11 @@ test.describe('Simon', () => {
       ).toBe(true);
     }
 
-    // A wrong note, and the game is over there and then.
+    // A wrong note, and the game is over there and then — once the fourth
+    // chain has finished sounding and the turn is the learner's. Played into
+    // the chain it is not a wrong answer at all, it is nothing.
     const fourth = await expectedNow(page);
+    await simonYourTurn(page);
     await midi.noteOn((fourth[0] ?? 60) + 1, 90);
     const chainLine = page.locator('#drill-chain');
     await expect(chainLine).toBeVisible({ timeout: 15_000 });
@@ -473,6 +497,9 @@ test.describe('Simon', () => {
     // The staff goes with the lights, so it is part of "the chain has finished
     // playing" and not a fourth thing to wait for.
     await expect(page.locator('#drill-simon-staff')).toHaveCount(0, { timeout: 20_000 });
+    // And the turn is the learner's, which the ear-first rungs reach with no
+    // lights and no staff to have waited for.
+    await simonYourTurn(page);
     const chain = await expectedNow(page);
     for (const note of chain) {
       await midi.noteOn(note, 90);
@@ -729,6 +756,10 @@ test.describe('Simon', () => {
     await expect(page.locator('#drill-ear-card')).toHaveAttribute('data-showing', 'glyph', { timeout: 20_000 });
     const chain = await expectedNow(page);
 
+    // The miss has to be a miss: this rung lights nothing while it plays, so
+    // the cue is the only thing that says the chain has finished and the key
+    // below will be read as an answer.
+    await simonYourTurn(page);
     await watchTransitions(page);
     await watchSimonCard(page);
     const wrong = (chain[0] ?? 60) + 1;

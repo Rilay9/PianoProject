@@ -177,10 +177,33 @@ export const MIC_ANSWER_CONFIDENCE = 0.5;
  * series of chords whose end only the learner knows. Their `answered` count
  * grows on every input, so auto-settling would end the card on the first tap.
  */
+/**
+ * Kinds with no per-answer settle: the learner says when the card is done.
+ *
+ * `dynamics` and `pedal` were in `drawControls`' version of this list — the
+ * one that decides whether to draw a *Next* button, in the words "these have
+ * no per-answer settle, so the learner says when they are done" — and not in
+ * this one, which is the one `onNote` reads. So the button said the learner
+ * decides and the screen did not (T23, and `00` §4: two lists for one fact,
+ * and they disagreed).
+ *
+ * What that cost on the dynamics card: `DynamicsDrill.result().answered` is
+ * how many of the two halves have a note in them, so it went from 0 to 1 on
+ * the **first** note of a four-note phrase, `onNote` settled the card, and
+ * 450 ms later — `FEEDBACK_MS`, mid-phrase — it flipped to *forte*. Notes two,
+ * three and four of the *piano* phrase then landed in the forte bucket, and
+ * the ratio the card printed was arithmetic over the wrong halves.
+ *
+ * `pedal` could not settle this way — its `answered` only moves in `next()` —
+ * so nothing changes for it beyond a repaint per note. It is here because it
+ * belongs to the fact, not because it was broken; one list is the fix.
+ */
 const MANUAL_ADVANCE = new Set<string>([
   'rhythm',
   'backing-track',
   'harmonic-dictation',
+  'dynamics',
+  'pedal',
 ]);
 
 /** How often the chord-boundary rule is given a chance to close a chord. */
@@ -420,6 +443,23 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   let chainFor = '';
   let chainSeq = 0;
+  /**
+   * When Simon's answer opens: nothing before this is the learner's go (T23).
+   *
+   * A `performance.now()` reading, 0 when no chain is sounding.
+   *
+   * The chain is the app's half of an exchange, and until this the screen
+   * accepted keys all the way through it — `SimonDrill.feed` takes any
+   * `noteOn` while a card is current, and the only kinds refused mid-card are
+   * the manual-advance ones. On the `show-keys` rung the strip lights each
+   * note **as it sounds**, which on every other drill in this app means *play
+   * this*, so the reasonable thing to do with a lit key ended the chain before
+   * the app had finished playing it. The same moment the lights go out and the
+   * cue reads *Your turn* is the moment a key becomes an answer, which is why
+   * this is set from `chainEndsAtMs` — the one function both of those already
+   * use — rather than from a second piece of arithmetic that could drift.
+   */
+  let simonAnswerFromMs = 0;
   /** The whole chain, so the staff is shaped for it before it is full. */
   let chainNotes: number[] = [];
   /** How many notes the staff shows, and how many the lights have reached. */
@@ -451,6 +491,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // that has just been judged. Only the manual-advance kinds can be in this
     // state with the drill still accepting input.
     if (feedbackTimer !== null && MANUAL_ADVANCE.has(drill.kind)) return;
+    // Simon's chain is the app's half of the exchange: a key pressed while it
+    // is still playing is playing along, not answering (T23). `simonAnswerFromMs`
+    // is the same moment the lights go out and the cue reads *Your turn*.
+    if (drill.kind === 'simon' && performance.now() < simonAnswerFromMs) return;
     if ((event.confidence ?? 1) < MIC_ANSWER_CONFIDENCE) return;
     const before = drill.result().answered;
     drill.feed(toEngineInput(event));
@@ -490,6 +534,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function clearPlayback(): void {
     for (const timer of playbackTimers) clearTimeout(timer);
     playbackTimers = [];
+    // The chain that was sounding has stopped, so the window that belonged to
+    // it goes with it: a card skipped or replayed mid-chain must not leave the
+    // next one refusing keys (T23).
+    simonAnswerFromMs = 0;
     stopFormTicker();
     // The play-along staff is part of the chain sounding, not part of the card
     // (`04` §5c-2), so it goes wherever the sound goes. Declared below.
@@ -806,11 +854,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     const steps = simonChainSteps(target.playback ?? []);
     if (steps.length === 0) return;
     status.textContent = SIMON_LISTENING;
+    const endsIn = chainEndsAtMs(steps);
+    // The line and the answer open together, off one number (T23). While the
+    // app is playing, a key is the learner playing along with a chain the
+    // `show-keys` rung is lighting under their finger — not an answer.
+    simonAnswerFromMs = performance.now() + endsIn;
     playbackTimers.push(
       setTimeout(() => {
         if (disposed) return;
         status.textContent = SIMON_YOUR_TURN;
-      }, chainEndsAtMs(steps)),
+      }, endsIn),
     );
   }
 
@@ -1347,7 +1400,14 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       }
       case 'dynamics': {
         const detail = drill.result().detail ?? {};
-        stage.append(velocityMeter(detail.softVelocity ?? 0, detail.loudVelocity ?? 0, detail.targetRatio ?? 1.6));
+        stage.append(
+          velocityMeter(
+            detail.softVelocity ?? 0,
+            detail.loudVelocity ?? 0,
+            detail.targetRatio ?? 1.6,
+            (detail.flatVelocity ?? 0) === 1,
+          ),
+        );
         break;
       }
       case 'ear-interval':
@@ -1750,7 +1810,19 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       });
   }
 
-  function velocityMeter(soft: number, loud: number, target: number): HTMLElement {
+  /**
+   * The two dynamics and what the pair came to — or why it could not be taken.
+   *
+   * `flat` is the drill's own `flatVelocity`: every note of the run arrived at
+   * the same velocity, which is what the on-screen keys send
+   * (`KeyboardStrip`'s `TOUCH_VELOCITY`, because Android reports `pressure` as
+   * 0 or 1) and what the microphone sends (`MIC_VELOCITY`). The line used to
+   * read `1.00× — aim for 1.6×` over two bars of identical height, which a
+   * learner reads as *you played it flat*; what happened is that the
+   * instrument could not say (T23, on the shape Entry 42 built for the
+   * technique measures).
+   */
+  function velocityMeter(soft: number, loud: number, target: number, flat = false): HTMLElement {
     const bar = (label: string, velocity: number, id: string): HTMLElement =>
       el(
         'div.meter-row',
@@ -1766,6 +1838,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         el('span.meter-value', { text: velocity > 0 ? String(Math.round(velocity)) : '—' }),
       );
     const ratio = soft > 0 ? loud / soft : 0;
+    // `ratio > 0` is "both halves have been played": until the forte phrase
+    // arrives there is nothing to compare, and the card's own instruction is
+    // still the right line — a refusal printed over the soft half would be
+    // refusing a question nobody has finished asking.
+    const refuse = flat && ratio > 0;
     return el(
       'div.velocity-meter',
       { id: 'drill-velocity' },
@@ -1773,8 +1850,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       bar('forte', loud, 'meter-loud'),
       el('p.muted', {
         id: 'drill-ratio',
-        text:
-          ratio > 0
+        'data-measured': String(!refuse),
+        text: refuse
+          ? 'Not measured — every note arrived at the same velocity, which is what the on-screen keys send. This one needs a piano over its cable.'
+          : ratio > 0
             ? `${ratio.toFixed(2)}× — ${ratio >= target ? 'enough' : `aim for ${target.toFixed(1)}×`}`
             : `Play the phrase softly, then loudly. Aim for ${target.toFixed(1)}× louder.`,
       }),
@@ -2029,8 +2108,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         }),
       );
     }
-    if (MANUAL_ADVANCE.has(drill.kind) || drill.kind === 'dynamics' || drill.kind === 'pedal') {
-      // These have no per-answer settle, so the learner says when they are done.
+    if (MANUAL_ADVANCE.has(drill.kind)) {
+      // These have no per-answer settle, so the learner says when they are
+      // done — and `MANUAL_ADVANCE` is now the one list saying which they are,
+      // rather than this line naming two kinds that list had never heard of.
       controls.append(
         button(
           drill.kind === 'dynamics' || drill.kind === 'pedal' ? 'Next' : 'Done',

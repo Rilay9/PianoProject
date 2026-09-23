@@ -851,6 +851,24 @@ export function ScoreScreen(router: Router): HTMLElement {
   tempo.addEventListener('input', () => {
     tempoPct = Number(tempo.value);
     raiseLadderCeiling();
+    render();
+  });
+  /**
+   * The run is re-timed when the finger comes off, not on every step (T23).
+   *
+   * `input` fires once per step of a drag. Each one used to call `startRun()`,
+   * so a drag from 100 % to 60 % tore the engine down and built it again forty
+   * times, counted the run in forty times, and — because `startRun` calls
+   * `attachInput`, which disconnects before it reconnects — took the
+   * microphone down and brought it back up once per step, on the one input
+   * that needs a permission-checked `getUserMedia` to come back. `change`
+   * fires once, when the value has settled, which is when there is a new
+   * tempo to re-time to. The label still follows the finger, because that is
+   * `input`'s job and `render()` is all it costs.
+   */
+  tempo.addEventListener('change', () => {
+    tempoPct = Number(tempo.value);
+    raiseLadderCeiling();
     if (session?.running) startRun();
     render();
   });
@@ -929,7 +947,13 @@ export function ScoreScreen(router: Router): HTMLElement {
       metronomeOn = !metronomeOn;
       // The click has to be able to start *while the score is showing*, not
       // only at the top of a run: it is the thing you reach for mid-piece.
-      if (session?.running) startRun();
+      //
+      // This line used to be `if (session?.running) startRun()`, which is the
+      // run again from its first bar with every mark on the page cleared and
+      // another count-in — so the sentence above described the intention and
+      // the code did the opposite (T23). `setMetronome` picks the click up on
+      // the engine's own grid and leaves the run alone.
+      session?.setMetronome(metronomeOn);
       render();
     },
     'score-metronome',
@@ -2892,7 +2916,15 @@ export function ScoreScreen(router: Router): HTMLElement {
         }
         // Free play judges nothing, so there is nothing to summarise: the
         // page has been turned to the end, and that is all (`08` §7.4).
+        //
+        // Said, though, because nothing else on the screen says it (T23). The
+        // run is over, the cursor stops on the last step and keys no longer
+        // turn the page — and until this line there was no sentence, so an
+        // improviser whose page had stopped moving could not tell the end of
+        // the piece from a run that had lost them. Listen says exactly this
+        // when it reaches the end, three lines above.
         if (mode === 'free') {
+          status.textContent = 'End of the piece.';
           render();
           return;
         }
@@ -3034,7 +3066,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     awayFromMs = null;
     // The engine's elapsed time already subtracts the pause, so the run's
     // recorded minutes do not count the time he was away.
-    status.textContent = `Paused — you were away ${String(away)} s. ▶ to carry on, ⏮ to start again.`;
+    // Named, not drawn as a glyph nothing on this screen wears (T23). Two
+    // searches for `⏮` — over `src/ui` and over `style.css` — returned only
+    // this sentence, so it pointed at a control that does not exist; the one
+    // it means is the `Start again` row inside `⋯`, and a performance does
+    // not have that row at all (`Start again` is omitted while performing,
+    // because offering a restart during a performance is offering to make it
+    // not one).
+    status.textContent = performanceRun
+      ? `Paused — you were away ${String(away)} s. ▶ to carry on.`
+      : `Paused — you were away ${String(away)} s. ▶ to carry on, or Start again in ⋯ to go back to the beginning.`;
     showBar();
     render();
   };

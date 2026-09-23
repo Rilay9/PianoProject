@@ -367,6 +367,59 @@ describe('dynamics drill', () => {
     expect(drill.next()?.label).toContain('forte');
     expect(drill.next()).toBeNull();
   });
+
+  /**
+   * An instrument that sends one velocity has not failed the drill (T23).
+   *
+   * `KeyboardStrip` sends `TOUCH_VELOCITY` for every touch — Android reports
+   * `pressure` as 0 or 1, so there is nothing honest to derive one from — and
+   * `MicSource` sends `MIC_VELOCITY`. Played from either, this drill was
+   * arithmetic on one number repeated and reported `1.00×` and nought per
+   * cent, which reads as *you played it flat*. It is a fact about the run and
+   * not a guess about the device (`00` §1a): any source sending one number is
+   * caught, and the instrument is named as the likely cause rather than as
+   * the test.
+   */
+  it('says the run was flat when every note arrived at the same velocity', () => {
+    const result = run(90, 90);
+    expect(result.detail?.flatVelocity).toBe(1);
+    expect(result.correct).toBe(0);
+  });
+
+  it('and does not say it of a run that was played', () => {
+    // The two cases above, named one at a time so "flat" cannot borrow the
+    // credibility of "failed": one passes and one does not, and neither is
+    // flat.
+    expect(run(50, 90).detail?.flatVelocity).toBe(0);
+    expect(run(70, 90).detail?.flatVelocity).toBe(0);
+  });
+
+  it('nor of a run in which nothing was played at all', () => {
+    // Nothing arrived, so nothing arrived at the same velocity: the honest
+    // answer is the card's own "play the phrase", not a refusal.
+    const drill = new DynamicsDrill();
+    drill.next();
+    drill.next();
+    expect(drill.result().detail?.flatVelocity).toBe(0);
+  });
+
+  /**
+   * A run that is loud and level is still a run (the shape of the fixture
+   * Entry 42 had to correct in `techniqueMeasures.test.ts`): the guard must
+   * fire on "the instrument sends one number", not on "the playing was even".
+   */
+  it('and one note out of four is enough to have been measured', () => {
+    const drill = new DynamicsDrill();
+    drill.next();
+    for (const [i, midi] of [60, 62, 64, 65].entries()) {
+      drill.feed({ kind: 'noteOn', midi, velocity: i === 3 ? 89 : 90, tMs: 0 });
+    }
+    drill.next();
+    for (const midi of [60, 62, 64, 65]) {
+      drill.feed({ kind: 'noteOn', midi, velocity: 90, tMs: 0 });
+    }
+    expect(drill.result().detail?.flatVelocity).toBe(0);
+  });
 });
 
 describe('backing-track drill', () => {

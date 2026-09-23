@@ -61,8 +61,19 @@ const PLACEHOLDER = 'G Minor Bach';
  * `sheet` marks the one kind that is not a drill screen at all: a sight-reading
  * drill is four bars of notation, so `#/drill/…` hands it to the Score screen
  * (docs/05 §8). Photographing it as a drill would have photographed nothing.
+ *
+ * `proof` overrides the shared selector for a kind that draws no stage.
+ *
+ * The placement card is a sentence and two buttons: `runPlacement` empties
+ * `#drill-stage` and **hides** it on purpose, because `.drill-stage` is
+ * `flex: 1` upright and left in place it pushes the question past the middle
+ * of the screen with a void above it. So the shared proof —
+ * `…#drill-stage` — can never be visible there, and the scene reported a
+ * drill "stuck loading" that was in fact running and drawn (T23: driven on
+ * this tree, `data-drill="running"`, `data-kind="placement"`, the prompt
+ * reading *Name a note on the staff.* and visible).
  */
-const DRILLS: { kind: string; id: string; note: string; sheet?: true }[] = [
+const DRILLS: { kind: string; id: string; note: string; sheet?: true; proof?: string }[] = [
   { kind: 'note-flash', id: 'drill.reading.grand-staff-flash', note: 'A note on a staff, answered on the keys.' },
   { kind: 'sight-reading', id: 'drill.reading.sight-reading-1', note: 'Four bars drawn fresh each time — on the Score screen, not the drill one.', sheet: true },
   { kind: 'find-key', id: 'drill.reading.find-all-cs', note: 'Every C on the keyboard.' },
@@ -85,7 +96,12 @@ const DRILLS: { kind: string; id: string; note: string; sheet?: true }[] = [
   { kind: 'pedal', id: 'drill.pedal.changes', note: 'A lamp that follows the pedal.' },
   { kind: 'dynamics', id: 'drill.dynamics.p-f', note: 'Two phrases, metered and compared.' },
   { kind: 'backing-track', id: 'drill.blues.lh-patterns', note: 'A loop to play against; nothing is judged.' },
-  { kind: 'placement', id: 'drill.placement.stage-0', note: 'The questions asked on the very first day.' },
+  {
+    kind: 'placement',
+    id: 'drill.placement.stage-0',
+    note: 'The questions asked on the very first day.',
+    proof: '[data-screen="drill"]:not([data-drill="loading"]) #drill-placement-pass',
+  },
 ];
 
 async function settle(page: Page): Promise<void> {
@@ -297,7 +313,17 @@ for (const { orientation, size } of FORM_FACTORS) {
       }, '#piece-sheet');
       await scene('16-lesson-track', 'A rung on a track', 'Same page, different path — does it read as one?', async () => {
         await go(page, '/lesson/classical.3', 'lesson');
-      }, '[data-screen="lesson"] .block');
+        // `:not([hidden])`, because `prove` reads the **first** match and the
+        // first `.block` in the body is `#lesson-tools-block` — hidden on a
+        // rung that names no *Ways to play this*, which `classical.3` does
+        // not (T23). The page was drawing blocks the whole time; the scene was
+        // asking about the one that is meant to be gone (`04` §0 R4).
+        // Re-driven on this tree, reading every `.block` and its `hidden`:
+        // **seven** blocks, of which **five** are visible and two are hidden —
+        // `lesson-tools-block` (the first in the body, which is what `.first()`
+        // picked up) and `lesson-paper-block`. An earlier note here said six
+        // visible and enumerated them wrongly; the count is from the page.
+      }, '[data-screen="lesson"] .block:not([hidden])');
 
       // ---------------------------------------------------------------- score
       await scene('20-score', 'A song, ready to play', 'Does the sheet fill the height? Bar in the way? Strip the right size?', async () => {
@@ -469,11 +495,25 @@ for (const { orientation, size } of FORM_FACTORS) {
         await waitForSheet(page);
         await page.locator('#score-mode').selectOption('tempo');
         await page.locator('#score-play').click();
+        // **The run has to be started by a note now** (T8, `05` §3b; T23).
+        // This tour installs a MIDI mock with permission granted, so every
+        // score screen picks `midi` as its input and a Keep tempo run the
+        // learner leads *holds* at the end of the count-in for their first
+        // key. The scene pressed `▶` and waited three minutes for a summary
+        // that could not come, on every form factor, because nothing ever
+        // played. Waiting for the holding line first rather than playing
+        // straight away: a note before the first note's window is a stray and
+        // is ignored, so playing during the count-in would leave it holding
+        // still.
+        await expect(page.locator('#score-waiting')).toContainText('first note', {
+          timeout: 60_000,
+        });
+        await play(page, midi, [60]);
         await expect(page.locator('#score-summary')).toBeVisible({ timeout: 180_000 });
       }, '#score-summary');
 
       // --------------------------------------------------------------- drills
-      for (const { kind, id, note, sheet } of DRILLS) {
+      for (const { kind, id, note, sheet, proof } of DRILLS) {
         await scene(`40-drill-${kind}`, `Drill — ${kind}`, note, async () => {
           if (sheet) {
             await go(page, `/drill/${id}`, 'score');
@@ -487,7 +527,7 @@ for (const { orientation, size } of FORM_FACTORS) {
             { timeout: 60_000 },
           );
           await page.waitForTimeout(700);
-        }, sheet ? '#score-stage .is-front svg' : '[data-screen="drill"]:not([data-drill="loading"]) #drill-stage');
+        }, proof ?? (sheet ? '#score-stage .is-front svg' : '[data-screen="drill"]:not([data-drill="loading"]) #drill-stage'));
       }
       await scene('41-drill-result', 'A drill result sheet', 'Four sections of advice after a set.', async () => {
         await go(page, '/drill/drill.reading.grand-staff-flash', 'drill');

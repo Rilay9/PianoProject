@@ -123,8 +123,13 @@ export interface KeyboardStripOptions {
  * Touch velocity. Android reports `PointerEvent.pressure` as 0 or 1 for most
  * screens, so deriving a velocity from it would be noise; a fixed mezzo-forte
  * is honest and matches what the engine's lenient matching expects.
+ *
+ * Exported so that a test can play the glass at the velocity the glass sends
+ * rather than writing the number down a second time — the dynamics card is
+ * judged on velocity and has to be driven from this exact value to be driven
+ * honestly (T23).
  */
-const TOUCH_VELOCITY = 90;
+export const TOUCH_VELOCITY = 90;
 
 export class KeyboardStrip {
   readonly el: HTMLElement;

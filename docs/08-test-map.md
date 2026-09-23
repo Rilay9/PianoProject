@@ -288,7 +288,8 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `drillPrompts.test.ts` — every drill says what to do in words that are not its own name.
 - `drillTheory.test.ts` — the translation between how the catalog talks and how the engine counts.
 - `drillWalkthrough.test.ts` — the guided tour's drill half: routes, the position across a remount, Start over, Again, Back.
-- `drills.test.ts` — the twelve original drill kinds, logic only.
+- `drills.test.ts` — the twelve original drill kinds, logic only; plus `DynamicsDrill.detail.flatVelocity`, which is 1 when every note of a run arrived at one velocity (T23).
+- `dynamicsDrillCard.test.ts` — the dynamics card on the real drill screen in jsdom: it stays on the soft phrase until *Next* (the card used to settle on the **first** note of a four-note phrase and flip mid-phrase), and it says a pair of identical velocities was *not measured* instead of printing `1.00×` at a learner whose keys can only send one velocity — while still printing the ratio when the instrument had something to say.
 - `el.test.ts` — `el()`'s selector understands `input#folder-search` as well as `div.row.wide`.
 - `engineMic.test.ts` — the engine's microphone adaptations: an unsure report never advances or counts.
 - `engineRhythmOnly.test.ts` — rhythm first: the same strike accepted inside the window and refused outside it.
@@ -383,6 +384,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `router.test.ts` — every route shape parses, refuses rubbish, and round-trips; every real lesson id.
 - `rungFor.test.ts` — an estimated level turned into the rung it refers to.
 - `rungMastery.test.ts` — the pass thresholds are the rung's, not the app's (`02` Part G, `05` §9a); the units are half of it, since the curriculum writes `0.85` and the scorer writes `85`.
+- `scoreMidRunSettings.test.ts` — what a control does to a run that is already going (T23, `04` §5): the Metronome row starts the click on the engine's own grid instead of throwing the run away and counting in again, stops it the same way, and is still what the next run is started with; the tempo slider re-times the run once the finger comes off rather than on every step of a drag; the sentence after the phone locks names a control that is on the screen; and a Free play run says *End of the piece.*, because nothing else on the screen does.
 - `scoreModel.test.ts` — the golden models for every fixture.
 - `scoreModelKnownIssues.test.ts` — upstream OSMD defects asserted *broken* on purpose, so an upgrade says when a workaround can go.
 - `scoreSession.test.ts` — the session's state machine with a fake renderer and a hand-cranked frame.

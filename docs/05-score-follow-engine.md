@@ -202,6 +202,19 @@ stopped" from where that count was heading, not from its rewound clock. It used 
 metronome restarted on a fresh grid of its own — so after every pause the clicks and the
 judging were out of step.
 
+**Switching the click on mid-run** (`ScoreSession.setMetronome`, added 2026-09-22, T23) uses
+the same grid arithmetic a resume uses (`startMetronomeOnGrid`), so a click started in the
+middle of a piece agrees with the timetable the notes are being judged on rather than
+starting a grid of its own. It refuses the **four** states in which a click would be a pulse
+with no music under it, enumerated because the count was first written as three and the
+fourth is in the code with a comment of its own (T23, second reading): a run that is not
+running (`!state.running`), a paused one (`state.paused`), one still holding for the first
+note (`state.armed`) — that one for the reason above, that nothing pitched or metrical may
+sound while the microphone is what will end the hold — and **Free play** (`engine.mode ===
+'free'`), which has no timetable to click against and which `startRun` refuses the same way
+on the way in (`run.mode !== 'free'` on the `startMetronome` line). Until this the Metronome row
+restarted the whole run instead, which cost the learner the run to gain a click (`04` §5).
+
 **Deliberately unchanged:** Paper (it measures each onset against the nearest *audible*
 click, so there is no timeline for a late entry to shift), the chord chart (it judges the
 held chord against the bar at each moment, and the bar is marked by audible clicks and, with

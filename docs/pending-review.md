@@ -9759,3 +9759,455 @@ the classical track.**
    could check.* Checked against that, the shape of the answer is: no on all three rungs and
    the measurement says why; four tunes homed and six named with their reason; and eleven
    sentences that are now either true or gone.
+
+---
+
+### Entry 49 — T23: every mode and drill walked as a learner would, branch by branch (2026-09-22)
+
+**Nothing here was heard**, in Entry 38's sense: every verdict below is a reading of the
+code and, where a cell was driven, of what the screen said back. Not one assertion in the
+tests named here is about sound.
+
+The owner (2026-09-22): *"originally the abrupt start was impossible for the user. Double
+check usability of everything, thinking through what the user would do and the code logic
+branching."* T17 drove each mode's happy path; this is the other thing — the reasonable
+things a learner does **around** a run, each traced to the branch that answers it.
+
+**Restated without the brief's words:** find every moment where doing the obvious thing
+leaves somebody stuck, marked for something they did not do, or with no idea what just
+happened — and say which branch does it.
+
+#### How the grid was read
+
+Rows: the nine ways a run starts and judges on the Score screen, the five in the lab, the
+chord chart's count-off, and **all twenty `DrillKind`s** (`engine/drills/types.ts:18-41`:
+note-flash, find-key, chord, inversion, ear-interval, ear-chord, ear-progression, rhythm,
+pedal, dynamics, call-response, backing-track, mode, chord-scale, extended-chord,
+harmonic-dictation, transposition, roman-numeral, ear-tune, simon). Thirty-five rows, six
+columns, **210 cells**, every one with a verdict or a not-traced line.
+
+Twelve of the twenty drill kinds are one class — `PromptDrill` — reached by twelve
+`buildX` branches of `fromCatalog.ts:181-222`, so their six columns are one trace and the
+table says so per row rather than folding them into a plural. The eight with a class of
+their own are rhythm, pedal, dynamics and backing-track (`special.ts`),
+harmonic-dictation (`harmony.ts` `ChordDictationDrill`), simon (`simon.ts`), and — in the
+`STAFF_POLICY`/`MANUAL_ADVANCE` sense only — transposition and call-response, which are
+`PromptDrill`s whose *card* differs.
+
+---
+
+#### The Score screen
+
+| row | 1 starts late/early | 2 mistake | 3 stop/restart/lock/setting | 4 finish | 5 input | 6 read-ahead |
+|---|---|---|---|---|---|---|
+| **Wait for me** | fine — no clock, so neither (`PracticeEngine.tick` returns at `mode === 'wait'`); `awaitingFirstNote` means practice time starts at the first note, and `countInMs` is 0 in Wait (`prepareSession.ts:200`) so the key that starts the run *is* played in, as `readyLine()` promises | fine — wrong note red, `strict` clears the chord and costs a retry (`feedWait`), anticipation buffered (`earlyBuffer`); a missed note cannot happen, the cursor waits | fine — lock does nothing by design (`onVisibilityChange` returns unless tempo/listen); hands/mode/loop/section restart and say so by counting in again. **FAULT A**: the Metronome row restarted the run — **fixed** | fine — summary, pass on `correctSteps/totalSteps`; `Nothing to play in this piece` refuses a hand the piece does not use | fine — all three; mic gets `micChordLeniency` so a masked chord tone does not stop the run dead (`maybeCompletePartialChord`) | fine — strip lights `expectedNow` and `expectedNext`, cursor is on the step being waited for |
+| **Keep tempo** | fine — T8 case 3 holds with *Play your first note to start*; case 2 starts itself; a stray before the window is ignored, not marked (`PracticeEngine.latch`). **unclear U1**: with the microphone the latch takes any confident pitched onset, so a cough anchors the clock | fine — `findSlot` nearest-within-tolerance; missed at `tMs + toleranceMs`; extra is wrong; a repeat with no Note-Off is dropped for deterministic sources only | **FAULT A** (metronome) and **FAULT B** (the tempo slider restarted on every `input` of a drag, reconnecting the microphone each time) — **both fixed**. Lock pauses and counts back in. **FAULT C**: the sentence on return named `⏮` — **fixed** | fine — summary, `hits/expectedNotes`, rung thresholds via `masteryCriteriaFor` | fine — `pickInput` never chooses the mic (permission needs a gesture); `input === 'none'` turns the latch off and the summary asks for a self-report instead of a number nobody earned | fine — `showNextStep`, the strip's `next`, `bar n / N` |
+| **Play it to me** (Listen) | fine — the app leads by definition; `playbackHands: 'both'` is forced | n/a — `feed` returns at `mode === 'listen'` | fine — lock pauses; a restart is a restart | fine — *Played to the end.*, no summary, nothing recorded (`onFinished`) | fine — input is irrelevant and nothing pretends otherwise | fine |
+| **Free play** | fine — no clock, page turns on the written notes only (`feedFree`), a note near the expected one does not move it | fine — nothing is marked, by decision (`08` §7.4) | fine — lock does nothing; restart is a restart | **FAULT D** — the last step ended the run and **nothing on the screen said so**: the page simply stopped turning under an improviser. **Fixed**: *End of the piece.* | fine | fine |
+| **Perform** | fine — classified by whatever mode the select shows; it is a route flag (`router.route.performance`), which is T8's open question **answered by reading** | fine — as its mode | fine — *Start again* is deliberately absent; the loop is refused (`startRun`'s `!performanceRun`); the ladder and Rhythm only are refused | fine — recorded `performance: true`, listed separately | fine | fine |
+| **Blind** | fine — as its mode; `Blind — ⋯ shows the score` on the status line, because the stage is an empty rectangle | fine — same judging; marks land on notes nobody can see, which is the point | fine — the toggle is a route, so pressing it mid-run navigates and the run is lost with nothing said (**recorded R1**) | **unclear U2** — the run passes on notes and **is not tagged blind** in the history (`recordRun` has no such field; two searches, `grep -n blind` over `data/progressStore.ts` and over `data/db.ts`, return nothing), so `04` §5e's "blind at 90 % of your sighted run" cannot be asked of the data | fine | fine, and deliberately so — the strip still lights the next note. `04` §5e states this ("keyboard strip and cursor still live. That identity is the feature"), so it is spec, not a crib left in by accident |
+| **Duet** | fine — the app's hand may lead, which flips T8 to case 2 (`learnerLeads`) | fine | fine — the row restarts the run, which is right: what sounds under the learner has changed. *Playing the left hand for you* is said again (`forgetPlayingHand`) | fine | fine | fine |
+| **Rhythm only** | fine — any key latches | fine — `findRhythmSlot` forgives the note and never the moment; one tap per written chord, and the row's hint says so | fine — the row restarts the run and re-says the line (T17-2) | fine — headed *Rhythm run*, `passed: false` forced off the **score** rather than off the toggle | **unclear U3** — with the microphone any confident onset is a tap, so the room taps too, and nothing says so before the learner tries | fine |
+| **Tempo ladder** | fine — `startRun({ latch: false })` between passes, so it never stops to wait | fine — clean is measured against `ladderPassBase`, this pass and not the run | fine — clearing the loop takes the ladder with it (`clearLoop`), which is `05` §6's own fault written as code | fine — the verdict line per pass; *Ladder: ended at N %* on the sheet. **Recorded R2**: `hits`/`missedTotal` accumulate across laps and `accuracy` would exceed 1, but a lap never opens a summary, so it is latent | fine | fine — the tempo label is underlined while the ladder is on |
+
+---
+
+#### The accompaniment lab and the chord chart
+
+Nothing in the lab is judged or recorded, which removes columns 2 and 4 from three of the
+five rows rather than leaving them blank: the verdict there is *there is nothing to be
+judged unfairly by*, and the screen says so in its own words on every start
+(`startJam`: "Nothing is recorded and nothing can be passed or failed").
+
+| row | 1 start | 2 mistake | 3 stop/restart | 4 finish | 5 input | 6 read-ahead |
+|---|---|---|---|---|---|---|
+| **Read it** | fine — not a run: it writes an exercise and opens the Score screen (`readIt`), and the button goes dead for the write so two taps cannot make two rows | n/a | fine — a second press replaces the same settings' build rather than adding one | fine — the Score screen takes over from there | fine | fine |
+| **Jam it** (bed off) | fine — count-in from the learner's own setting, then the loop; the app leads, so no latch anywhere in this mode (`onBeat`'s comment, T8 case 2) | n/a — nothing judged | fine — any picker moving calls `stopJam` and says *Settings changed — press Jam it again to hear them* | n/a | fine — a strip is drawn; MIDI and the glass both feed `collectNote` | fine — the form grid marks the sounding bar |
+| **Hold the chords** | fine | n/a | fine | fine — `Time round n · x of y …` is reported at each pass boundary and cleared with the jam | fine | fine |
+| **Play the tune** | fine — the piano samples are awaited before the metronome starts, so the app's first bar is not silent | n/a | fine | fine | fine | fine |
+| **Trading fours** | fine — the app takes the first trade; the learner's window opens where the bar opens, because coming in on time is the thing being practised | fine — two facts and no mark (`judgeTrade`): in on your own bars or not, and how many notes were in the scale | fine — Stop clears the line and the verdicts | **unclear U4** — the **last** turn is never reported: `reportTrade` runs only when the side changes (`onTradeBar`), and `stopJam` clears `tradeVerdict` anyway, so a learner who stops at the end of their own four bars never sees how they went | fine | **unclear U5** — *Your turn* arrives **on** the downbeat of the turn, not before it; there is no bar of warning anywhere in `startAnswer` |
+| **Chord chart count-off** | fine — count-in from the setting, the tracker moves on audible clicks; deliberately unlatched (`05` §3b) | fine — amber only where keys are held and disagree; silence is idle, not a mistake (`markMatch`) | fine — `stop()` disposes the kit so queued drum hits do not play into the next screen; `Count off ▶` twice restarts from bar 1 and `Metronome.onTick` is a `Set` of one named function, so the handler cannot double | fine — there is no end and nothing is recorded, which the screen never claims otherwise | fine — **the keys are there now** (T22); Entry 38's FAULT 6 is closed | fine — the whole form is printed with the sounding bar marked |
+
+---
+
+#### Every `DrillKind`
+
+Columns 1 and 3 are one answer for nineteen of the twenty and it is a good one, so it is
+stated once rather than twenty times: **there is no clock to be late for.** `PromptDrill`
+measures reaction time from when the prompt was issued and a card that is never answered
+simply has no reaction sample (`PromptDrill.ts`'s own header); *Skip* records the card as
+wrong so skipping cannot improve a score; *End drill* finishes with what there is; leaving
+the screen records nothing. The one exception is **rhythm**, which has a count-in and a
+latch of its own. Where a row below says *as above* it means exactly that trace.
+
+| kind | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| note-flash | fine, as above | **unclear U6** — one expected note, so the *first* key settles it: a brushed key is the answer | fine, as above | fine | fine, all three | fine — one card at a time by design; no next-card read-ahead on any flash card |
+| find-key | fine | U6 | fine | fine | fine | fine, and *Show me* draws the staff at the usual price |
+| chord | fine | fine — the set is judged when as many distinct pitches as the chord has have arrived; a corrected note cannot be taken back (**U6** again) | fine | fine | fine | fine — the staff goes up after the answer, right or wrong |
+| inversion | fine | as chord | fine | fine | fine | fine |
+| extended-chord | fine | as chord | fine | fine | fine | fine |
+| roman-numeral | fine | as chord | fine | fine | fine | fine |
+| mode | fine | fine — a scale is unordered here, so a wrong degree lands as an extra | fine | fine | fine | fine — staff behind *Show me* |
+| chord-scale | fine | as mode | fine | fine | fine | fine |
+| ear-interval | fine | as chord | fine | fine | **fine, and it says so** — with the microphone on, the prompt is muted and the line says *Playback is muted while the microphone is listening — use headphones, or send playback to the piano* (`shouldMuteExpectedPlayback`) | fine — `▶ Play again` costs nothing |
+| ear-chord | fine | as chord | fine | fine | as ear-interval | fine |
+| ear-progression | fine | as chord | fine | fine | as ear-interval | fine |
+| ear-tune | fine | as chord | fine | fine | as ear-interval | fine |
+| call-response | fine | fine — `labelIsAnswer` decides whether the card is an ear card, so a dictation phrase is not printed over its own question | fine | fine | as ear-interval | fine |
+| transposition | fine | fine — ordered, so the sequence is judged when it is long enough | fine | fine | fine | fine — the card prints four bars |
+| simon | **FAULT E** — a key pressed **while the app was still playing the chain** was the first note of the answer, and on the `show-keys` rung the strip lights each note as it sounds, which is what *play this* looks like everywhere else. **Fixed** | fine — a wrong note ends the chain where it fell, or brings it back lit on the ear-first rung | fine | fine — scored by the longest chain, not by a share of cards | fine | fine, since T17-2: *Listen — the app is playing* then *Your turn — play it back*, naming no note |
+| rhythm | fine — one bar of count, then the **first tap** sets the start (T8); taps before the downbeat's window are strays, not extras; the click stops until the tap and comes back in phase | fine — nearest onset within `toleranceMs`, anything else is an extra tap and is counted separately from a miss | fine — *Done* is the learner's, and `clickResumedFor` keeps one resume per drill | fine — `extraTaps` and `meanOffsetMs` on the sheet | fine — any key, so all three; a microphone onset is a tap | fine — the tap row fills in as onsets are caught |
+| pedal | fine | fine — only the first lift after a chord counts, a bounce is not a second change; the first chord is pedalled *into* and is excluded from the denominator, and the readout says so | **FAULT F** — `dynamics` and `pedal` were in `drawControls`' "no per-answer settle" list and not in `MANUAL_ADVANCE`, the list `onNote` reads. Pedal could not settle that way (its `answered` only moves in `next()`), so this cost it nothing; one list is the fix. **Fixed** | fine | **unclear U7** — CC64 only. Nothing says a pedal is needed **before** the learner tries: the card reads *Chord 1 — change the pedal cleanly*, the lamp reads *Pedal up*, and the honest sentence (*No pedal lift was recorded for that change*) arrives only after a card has gone | fine — the lamp is the one input with no key to look at |
+| dynamics | fine | **FAULT F** — the *first* note of a four-note phrase settled the card and flipped it to *forte* 450 ms later, mid-phrase; notes two, three and four of the **piano** phrase then landed in the forte bucket and the printed ratio was arithmetic over the wrong halves. **Fixed** | fine, once F is fixed — *Next* is the learner's | **FAULT G** — from the glass or the microphone every velocity is one constant, so the card printed `1.00× — aim for 1.6×` and nought per cent, which reads as *you played it flat*. **Fixed**: *not measured — every note arrived at the same velocity …* | as G | fine — two meters and the target |
+| harmonic-dictation | fine | **unclear U8** — chords are closed by a silence of `boundaryMs` or by a note that starts the next chord, so a learner tapping a chord one finger at a time on glass can have one chord read as three. Not traced to a measured number; the rule is `ChordDictationDrill.feed` | fine — *Done* judges and shows the staff, and *Done* again moves on | fine | fine — pitch only | fine — the numerals are printed; the staff arrives with the answer |
+| backing-track | fine | n/a — judges nothing (`05` §7) | fine | fine — cannot pass or fail (`drillOutcome`'s first branch); *Listen back* replays what was played | fine | fine — the form chart, the same grid the lab draws |
+
+---
+
+#### The FAULT and unclear cells, verbatim
+
+**FAULT A — the Metronome row cost the learner the run.** `ScoreScreen`'s row carried the
+comment *"The click has to be able to start while the score is showing, not only at the top
+of a run: it is the thing you reach for mid-piece"* over the line `if (session?.running)
+startRun();` — which is the run again from its first bar, every mark on the page cleared,
+another count-in. The prose and the code said opposite things (`00` §4, and working-rules
+§2.17). **Fixed:** `ScoreSession.setMetronome(on)`, which starts the click on the engine's
+own grid through the `startMetronomeOnGrid` a resume already uses, and refuses the **four**
+states where a click would be a pulse with no music under it — not running, paused, still
+holding for the first note (T8: nothing metrical may sound while the microphone is what
+will end the hold), and Free play, which has no timetable to click against. *This entry
+first said three, which is working-rules §2.2 exactly: the count was written from the
+sentence rather than from the branch. Re-read on the continuation —
+`ScoreSession.setMetronome` has four `return`s, and `startRun`'s own metronome line carries
+the same `run.mode !== 'free'` guard (`ScoreSession.ts:441`). `docs/05` §3b corrected in
+the same step.*
+
+**FAULT B — the tempo slider restarted the run on every step of a drag.** `input` fires
+per step; each one called `startRun()`. A drag from 100 % to 60 % tore the engine down and
+rebuilt it forty times, counted in forty times, and — because `startRun` calls
+`attachInput`, which disconnects before it reconnects — took the **microphone** down and
+brought it back up once per step. **Fixed:** the restart moved to `change`; the readout
+still follows the finger on `input`.
+
+**FAULT C — the sentence after a lock named a control that does not exist.** *"Paused — you
+were away N s. ▶ to carry on, ⏮ to start again."* Two searches for `⏮` — over `app/src/ui`
+and over `style.css` — return that sentence and nothing else; the control it means is the
+*Start again* row inside `⋯`, which a performance does not have at all. **Fixed**, in both
+forms.
+
+**FAULT D — Free play ended in silence.** The last step finishes the run, the cursor stops
+and keys stop turning the page, and there was no sentence anywhere: an improviser could not
+tell the end of the piece from a run that had lost them. Listen says *Played to the end.*
+three lines above in the same handler. **Fixed:** *End of the piece.*
+
+**FAULT E — Simon took the play-along as the answer.** `SimonDrill.feed` accepts any
+`noteOn` while a card is current, and the only kinds `onNote` refused mid-card were the
+manual-advance ones. On the `show-keys` rung `showChainOnKeys` lights each note of the chain
+**as it sounds** — which is what *play this* means on every other card in this app — so the
+reasonable thing to do with a lit key ended the chain before the app had finished playing
+it. **Fixed:** the answer opens at `simonAnswerFromMs`, taken from `chainEndsAtMs`, the one
+function the clear-down and the *Your turn* cue already share.
+
+**FAULT F — two lists said which kinds wait for the learner, and they disagreed.**
+`drawControls` drew a *Next* button for `MANUAL_ADVANCE.has(kind) || kind === 'dynamics' ||
+kind === 'pedal'`; `onNote` settled everything not in `MANUAL_ADVANCE`. So the button said
+the learner decides and the screen did not. On the dynamics card `result().answered` counts
+how many of the two halves have a note in them, so it went 0 → 1 on the **first** note of a
+four-note phrase, `settled()` fired, and `FEEDBACK_MS` later the card flipped to *forte*
+mid-phrase. **Fixed:** one list.
+
+**FAULT G — the dynamics card told a learner they had played flat when the instrument
+could not say.** `KeyboardStrip` sends `TOUCH_VELOCITY` for every touch (Android reports
+`pressure` as 0 or 1) and `MicSource` sends `MIC_VELOCITY`, so from either the drill is
+arithmetic on one number repeated: `1.00× — aim for 1.6×`, nought per cent. **Fixed** in
+the shape Entry 42 built for the technique measures — a fact about the run and not a guess
+about the device: `DynamicsDrill.detail.flatVelocity` is 1 when **every** note of the run
+arrived at the same velocity, and the line then reads *Not measured — every note arrived at
+the same velocity, which is what the on-screen keys send. This one needs a piano over its
+cable.* Not said until both halves have been played, because until then the card's own
+instruction is still the right line; and it cannot make the drill pass, because there is no
+dynamic range on record either way.
+
+**U1 — the microphone can latch a Keep tempo run on a cough.** `PracticeEngine.feed` drops
+anything under `minConfidence` before the latch, so noise does not do it; a confident
+pitched onset does, and speech is pitched. The consequence is not a wrong note — it is the
+**clock**, anchored at the cough, with every note after it judged against that. Size: one
+condition in `latch()` gated on a higher confidence for estimated-accuracy sources, or on
+`onsetStrength`, plus the threshold — which is the owner's, not a code decision.
+
+**U2 — a blind run is not tagged.** `recordRun`'s object carries `performance` and
+`rhythmOnly` and no blind flag; two searches (`grep -n "blind"` over
+`app/src/data/progressStore.ts` and over `app/src/data/db.ts`) return nothing. `04` §5e's
+reason for blind being identical to a sighted run is so that *"blind at 90 % of your
+sighted run"* means something, and the data cannot answer that question. Size: one field on
+`SessionRow`, one line at the call site, one line in Progress — but whether Progress should
+separate them is a design call, so it is recorded rather than taken.
+
+**U3 — rhythm-only over the microphone counts the room.** `findRhythmSlot` matches the
+nearest open window whatever arrived, and the microphone's onsets are what arrives. Nothing
+on the screen says so before the learner tries. Size: one clause in the `⋯` row's hint, or
+a refusal of the pairing; the second is a decision.
+
+**U4 — the last trade of a jam is never reported.** `onTradeBar` calls `reportTrade()` only
+when the side changes, and `stopJam` clears `tradeVerdict` before anything could read it.
+So a learner who stops at the end of their own four bars — the natural moment to stop —
+never learns how that one went. Size: call `reportTrade()` from `stopJam` when
+`tradeSide === 'learner'` and leave the verdict standing, which is three lines and a
+rewording of `stopJam`'s own comment about verdicts belonging to a run.
+
+**U5 — *Your turn* arrives on the downbeat, with no warning.** `startAnswer` sets the line
+at the bar the learner's turn begins. Coming in on time is the skill, so a count-in would
+take the exercise away; a bar of *you are next* would not. Size: one branch in `onTradeBar`
+at the last bar of the app's call. Recorded rather than taken because it changes what the
+mode asks of the learner.
+
+**U6 — the first key is the answer on a one-note card.** `PromptDrill.feed` settles as soon
+as as many distinct pitches as the prompt expects have arrived, so on `note-flash` and
+`find-key` a brushed key is the answer and there is no taking it back. That is what a flash
+card is; it is recorded because it is the cell a learner would complain about, and because
+the same rule on a chord card means a corrected note cannot be withdrawn either.
+
+**U7 — the pedal drill needs a cable and says so only afterwards.** The card reads *Chord 1
+— change the pedal cleanly* and the lamp reads *Pedal up*; the honest sentence (*No pedal
+lift was recorded for that change*) is `lastPedalReport`, written after a card has gone.
+`onControl` is fed only from `webMidiSource.onMessage`, so the glass and the microphone can
+never answer it. Size: the same shape as FAULT G — one sentence when the run has seen no
+CC64 at all — about ten lines with its test.
+
+**U8 — a chord tapped slowly on glass can be read as several.**
+`ChordDictationDrill.feed` closes a chord on `boundaryMs` of silence or on a note that
+starts the next chord. On a touch screen a four-note chord is four separate taps.
+*Corrected on the continuation: this said "not traced to a measured number", and the number
+is in the source —* `CHORD_BOUNDARY_MS = 120` *(`engine/drills/harmony.ts:363`), so two
+fingers more than 120 ms apart are two chords. The escape hatch is already built and
+already says who it is for:* `boundaryMs` *on the options, commented "Overrides
+`CHORD_BOUNDARY_MS`; for tests and **for a slower learner**" — nothing on a rung sets it.
+What still needs the screen and a finger is how far apart four taps actually land, which is
+the measurement; the threshold they would be measured against is not.*
+
+**R1 — Blind and Perform are routes, so pressing either mid-run loses the run silently.**
+`blindToggle` and `performanceToggle` call `router.navigateScore(...)`, which rebuilds the
+screen; the run ends through `ScoreSession.stop`, which sets `stopping` and therefore never
+calls `onFinished` — no summary, no record, no sentence. It is the same hole as R3 below
+and the same decision.
+
+**R2 — looped totals accumulate, and only a guard keeps it invisible.** `completeLap`
+resets the cursor, the progress and the open slots but not `hits`, `missedTotal` or
+`wrongNotesTotal`; `buildScore` divides `hits` by an `expectedNotes` counted **once**, so
+after two clean laps `accuracy` would be clamped at 1. It never reaches a learner because a
+lap emits `finished` with `loop: true`, which the screen sends to `climbLadder` and not to
+`showSummary`, and `climbLadder` reads deltas against `ladderPassBase`. Latent, and worth
+writing down before somebody makes a lap open a sheet.
+
+**R3 — a run abandoned before the last bar records nothing at all.** There is no Stop
+control on the Score screen: `▶` toggles to `⏸` and the only ways out are *Start again*,
+*Hear it*, or leaving. Every one of them goes through `ScoreSession.stop`, whose `stopping`
+flag suppresses `onFinished`. So the practice that most needs recording — twenty minutes on
+four bars — adds no minutes and no attempt. Entry 18 put the looping half of this to the
+owner and nothing was changed; this is the same decision seen from the other end, and the
+size is small (report the stop, record it as an unfinished run) while *whether* an
+unfinished run should count is not a code decision.
+
+---
+
+#### The three tour scenes the coordinator added — traced, reproduced, fixed
+
+The log (`scratchpad/tour.log`) reports the same three on **all four** form factors, not on
+one: portrait (log :81), landscape (:152), tablet-portrait (:219) and tablet-landscape
+(:272). The count is from the log, which was re-read rather than recalled — the handoff had
+carried it as a tablet-landscape fault.
+
+**All three are the tour being wrong, and none is the app.** That is three separate
+findings and each was traced to its own branch before the verdict was written:
+
+| scene | what it waited for | the branch that answers it | verdict |
+|---|---|---|---|
+| `16-lesson-track` (spec :314) | `[data-screen="lesson"] .block` | `scene`'s `prove` is `page.locator(prove).first().isVisible()` (`tour.spec.ts:230`), and the first `.block` in the body is `LessonScreen.ts:93-98`'s `section.block#lesson-tools-block`, built `hidden: true` and shown only on a rung that names *Ways to play this* — which `classical.3` does not | **tour wrong** |
+| `35-score-summary` (spec :489) | `#score-summary`, 180 s, after `▶` | the tour installs `installMidiMock(page, { permission: 'granted' })` (`:199`), so `pickInput()` returns `'midi'` at `ScoreScreen.ts:3020`; a learner-led Keep tempo run then **holds** — `session.armed` is true, and `drawWaitingFor` prints `firstNoteLine()` (`:2429`, `:2442`). Nothing ever played, so no summary could come. The scene had not been brought forward to T8 | **tour wrong** |
+| `40-drill-placement` | `…#drill-stage` | `runPlacement` does `stage.replaceChildren(); stage.hidden = true;` (`DrillScreen.ts:2808-2809`) **on purpose** — a placement item is a sentence and two buttons, and `.drill-stage` is `flex: 1` upright, so left in place it pushes the question past the middle of the screen with a void above it (`04` §0 R4). The shared proof can never be visible there | **tour wrong** |
+
+**Reproduced with each scene's own steps**, on the built app on 4173. `tour.spec.ts` takes
+no scene filter — only `corpus.spec.ts` (`CORPUS=`) and `sequence.spec.ts` (`SEQ_SONG=`) do,
+and the whole tour is 27 minutes — so the three were re-enacted in a throwaway spec that
+asserted **both** halves, the selector the tour used and the one it uses now. All three
+went as traced, and the spec was deleted afterwards:
+
+- `16-lesson-track` — the first `.block` is `lesson-tools-block`, `hidden`, `isVisible()`
+  false. Reading every `.block` and its `hidden` on the page: **seven blocks, five visible,
+  two hidden** (`lesson-tools-block` and `lesson-paper-block`). *A first note in the tour
+  said six visible and enumerated them wrongly; corrected against the page.*
+- `40-drill-placement` — `data-drill="running"`, `data-kind="placement"`, the prompt reading
+  *Name a note on the staff.*, `#drill-stage` hidden and `#drill-placement-pass` visible. The
+  scene had been reporting a drill "stuck loading" that was in fact running and drawn.
+- `35-score-summary` — `#score-summary` stayed hidden for the twenty seconds it was watched
+  after `▶`; `#score-waiting` then read **Play your first note to start**; one note on the
+  mock (60) and the summary arrived.
+
+**The fixes, all in `tests/tour/tour.spec.ts`:** `.block:not([hidden])` for the first; a
+`proof?: string` field on the `DRILLS` table with `#drill-placement-pass` for the third,
+which leaves every other drill on the shared selector; and for the second, waiting on the
+holding line and then playing a note — waiting **first**, because a note before the first
+note's window is a stray and is ignored (`PracticeEngine.latch`), so playing during the
+count-in would leave it holding still.
+
+---
+
+#### The fixes, each with the line that was removed to see it red
+
+Every mutation was written to a **file** and run from it, not through a heredoc, and every
+file was restored and compared with `cmp` — reported byte-identical each time.
+
+1. **`ScoreScreen.ts` — `session?.setMetronome(metronomeOn);`** in the Metronome row, and
+   **`ScoreSession.setMetronome`** behind it. Put back as `if (session?.running)
+   startRun();`, two of the three cases in `scoreMidRunSettings.test.ts`'s *the click,
+   reached for mid-piece* go red: `AssertionError: expected "vi.fn()" to be called 1 times,
+   but got 2 times` and `…but got 3 times`. The third — *and is still what the next run is
+   started with* — stays green either way and is meant to: it pins the **setting** half,
+   which the old line also did.
+2. **`ScoreScreen.ts` — the tempo restart moved from `input` to `change`.** Put back on
+   `input`, *re-times the run once the finger comes off, not on every step of the drag*
+   goes red: `expected "vi.fn()" to be called 1 times, but got 5 times` — one for the run
+   and one per step of the four-step drag.
+3. **`ScoreScreen.ts` — the away sentence.** Put back as the `⏮` form, *names a control
+   that is on the screen* goes red: `Received: "Paused — you were away 1 s. ▶ to carry on,
+   ⏮ to start again."`
+4. **`ScoreScreen.ts` — `status.textContent = 'End of the piece.';`** in the Free branch of
+   `onFinished`. Removed, *says the piece has ended, because nothing else on the screen
+   does* goes red: `- End of the piece.`
+5. **`DrillScreen.ts` — `if (drill.kind === 'simon' && performance.now() <
+   simonAnswerFromMs) return;`** in `onNote`. Removed, *does not take a key pressed while
+   the app is still playing as the answer* goes red: `expected 'wrong' to be ''` — the card
+   had been judged before the app finished playing it.
+6. **`special.ts` — `DynamicsDrill.velocityIsFlat`.** Stubbed to `false`, *says the run was
+   flat when every note arrived at the same velocity* goes red: `expected undefined to be
+   1` (`+ 0`). And **`DrillScreen.ts` — `const refuse = flat && ratio > 0;`** stubbed to
+   `false`, *says a pair of identical velocities was not measured, rather than failing it*
+   goes red on its own.
+7. **`DrillScreen.ts` — `dynamics` and `pedal` added to `MANUAL_ADVANCE`.** This one was
+   **seen red before it was written**: `dynamicsDrillCard.test.ts`'s *stays on the soft
+   phrase until the learner says Next* was written against the tree as it stood and failed
+   with `expected 'wrong' to be ''` — which is how the fault was found, rather than the
+   other way round.
+
+Three cases are green either way, on purpose: the metronome's setting half (above), *and
+prints the ratio when the instrument had something to say* (the guard must not fire on a
+run that was played), and *nor of a run in which nothing was played at all*.
+
+**One constant was exported**, `KeyboardStrip.TOUCH_VELOCITY`, so that the dynamics test
+plays the glass at the velocity the glass sends instead of writing 90 down a second time
+(`00` §2: no number measured on this machine, and this one is the source's own).
+
+#### The spec, changed in the same steps
+
+- `04` §5 — a new paragraph on what a control does to a run already going (which controls
+  restart it and why, and the two that now do not), the away sentence, and Free play's end.
+- `04` §5c — the one `MANUAL_ADVANCE` list and what two lists cost the dynamics card; the
+  dynamics refusal beside the per-kind faces; Simon's answer not being open during the
+  chain.
+- `05` §3b — `setMetronome` on the resume's own grid, and its three refusals.
+
+#### What was run
+
+`npx tsc -b` clean · `npm run lint` clean · `npx vitest run` — **183 files, 2,881 tests,
+all passing** (Entry 42 recorded 179 / 2,816; the difference is this entry's and the
+entries between). Re-run on the continuation after the docs and the tour were changed:
+the same three, the same 183 / 2,881.
+
+**The browser specs, once the port was free** — `npm run build:app` first, then one spec at
+a time on 4173, `netstat` checked empty before the first:
+
+| spec | result |
+|---|---|
+| `score.spec.ts` | **39 passed, 3 failed** — see below |
+| `modes-simon.spec.ts` | 3 passed |
+| `modes-rhythm-only.spec.ts` | 4 passed |
+| `score.latch.spec.ts` | 8 passed |
+| `drills.spec.ts` | 27 passed |
+
+The three that fail are `screenshots › chords-ties · 1 / 2 / 4 bar(s) · portrait`, and
+**they are not these changes.** Two independent readings say so rather than one:
+
+1. **The path does not load any changed file.** The shots go through `openDevScore` →
+   `DevScoreScreen.ts`, whose imports are `WindowRenderer`, `PracticeEngine`, `OsmdView`
+   and the rest — not `ScoreScreen.ts`, `ScoreSession.ts`, `DrillScreen.ts`, `special.ts`
+   or `KeyboardStrip.ts`. A second search, for those five names anywhere in the file rather
+   than in its import block, returns one hit and it is a **comment** (`:572`, pointing at
+   `score/ScoreSession.ts` for where the same pause rule lives).
+2. **The baseline is a stale local file, and the change is named.** `-win32.png` is
+   gitignored (`.gitignore:41`, `app/tests/**/*-win32.png`); only the `-linux.png` ones are
+   tracked. The win32 baselines were written **2026-09-13**, and `git log --since` over
+   `app/src/score/` returns eight commits after that date, two of which are about exactly
+   this — *a wide-stage system fills the page only when its natural ink already spans three
+   quarters of it*, and *wide screens centre instead of stretch*.
+
+The diff was **opened, not inferred** (`08` and the standing rule about green suites): the
+baseline draws two systems — bar 1 and a bar numbered 2 — where the app now draws the one
+bar that `setBars(1)` asked for. The current picture is the more correct of the two. **The
+baselines were deliberately not regenerated**: they are outside this task's files, and
+rewriting them would destroy the evidence that they had rotted.
+
+#### What was not traced
+
+- **Nothing of the grid is left untraced.** The three tour scenes, which this entry first
+  recorded as three untraced cells, are traced, reproduced and fixed above.
+- **The rest of the browser suite.** Five specs were run, chosen for the branches these
+  fixes touch. The tour itself has not been re-shot — it is 27 minutes and takes the port,
+  and `tour.spec.ts` has no scene filter, so the three scenes were re-enacted instead of
+  re-run.
+
+#### What is unverified
+
+- **Nothing was heard.** The click that `setMetronome` starts is scheduled by
+  `startMetronomeOnGrid`'s audio-clock arithmetic, and no test in this repository listens to
+  whether it lands in phase with the judging grid. That is the largest hole in fix 1.
+- **Every new test is jsdom.** The Score-screen ones drive a stubbed `ScoreSession` and
+  prove *which calls the screen makes*; that the real session does the right thing with
+  `setMetronome` is read, not driven.
+- **One size, one orientation, and neither driven**: nothing here was opened at 342×740 or
+  at 740×342. The port is free now and it still was not done — the five specs run their own
+  viewports and the three scenes were re-enacted at the default one, so column 6's phone
+  and sideways verdicts remain readings.
+- **The three scenes were re-enacted, not re-shot.** Each was driven with its own steps and
+  the fix asserted both ways round, but the tour has not run since, so what the three
+  *pictures* look like is unknown — and a picture is the thing the tour exists to produce.
+- **The dynamics refusal was driven on the glass only.** The microphone sends a constant
+  too (`MIC_VELOCITY`) and the guard is the same branch, but no test feeds it.
+- **U1, U5 and U8 are readings, not measurements.** Whether a cough actually latches a run,
+  whether a bar of warning would help or hurt the trade, and how a four-finger chord on
+  glass reads to the dictation drill all need a person and a screen.
+- **The grid is one reading of each branch**, not a driven walk of 210 cells. Where a cell
+  says *fine* it means the branch answers the question sensibly, not that somebody stood in
+  front of it. On the continuation **all eighteen** cells carrying a FAULT, an unclear or a
+  recorded verdict were re-derived from their functions rather than from this entry's own
+  prose — A–G, U1–U8, R1–R3, enumerated because the first draft of the continuation's report
+  claimed "every" after reading about ten of them, which is working-rules §2.2 caught by the
+  checklist rather than by the writing. The re-reading changed two: the metronome's refusal
+  count (four, not three) and U8's threshold (it is in the source). The other sixteen stand
+  as written. **The cells that say *fine* were not re-read one by one**, and that is the
+  larger half of the grid — 210 cells against 18.
+
+#### Closed since this entry was first written
+
+- **`docs/08-test-map.md` now has both rows** — `dynamicsDrillCard.test.ts` and
+  `scoreMidRunSettings.test.ts`, in the alphabetical index, and `drills.test.ts`'s line
+  extended for `flatVelocity`. The index was then checked with the one-liner the document
+  itself publishes (`for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts
+  tools/*/tests/test_*.py | xargs -n1 basename); do grep -q -- "$f" docs/08-test-map.md ||
+  echo "$f"; done`), which printed nothing: no spec file in the tree is missing a line.
+  This closes the follow-up Entries 38, 42 and 43 each recorded and none closed.
+
+- **Fix 5's rule was right and two browser tests were still asking the old question.**
+  `drills-review.spec.ts` left the `Simon` describe with two failures after the answer
+  window moved to `chainEndsAtMs`, and both were the spec, not the screen: the two places
+  that press a **wrong** note — the fourth chain that ends the game, and the miss that asks
+  the ear-first rung for its replay — pressed it the moment `data-expects` named the chain,
+  which is while the chain is still sounding. Under fix 5 that key is playing along, so
+  `onNote` returns and nothing is judged; the DOM at the failure read *Your turn — play it
+  back.* twenty seconds later, a card still waiting for an answer that had already been
+  sent and dropped. The right notes had been given the wait and the wrong ones had not,
+  which is why the fix looked half-applied. **Changed in the spec only:** one helper,
+  `simonYourTurn`, holds the rule in one sentence and every key a Simon test sends now goes
+  after it — the playback in `echoChain`, the round loop, and both wrong notes. No screen
+  file was touched. The whole file passes, `npx tsc -b` and `npm run lint` are clean, and
+  `simonTurnCue.test.ts` with `drills.test.ts` pass unchanged.

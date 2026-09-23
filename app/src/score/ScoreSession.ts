@@ -527,6 +527,43 @@ export class ScoreSession {
     this.options.onChange?.();
   }
 
+  /**
+   * Turns the click on or off **without restarting the run** (T23).
+   *
+   * The `⋯` row's own comment on the Score screen says the click "has to be
+   * able to start *while the score is showing*, not only at the top of a run:
+   * it is the thing you reach for mid-piece" — and the screen implemented it
+   * by calling `startRun()`, which throws the run away, clears every mark on
+   * the page and counts it in again from the first bar of the run. Reaching
+   * for the click cost the learner the run, which is the opposite of what the
+   * comment promised (`00` §4: the code and the prose disagreed).
+   *
+   * Picked up on the engine's own grid, exactly as a resume is, so the click
+   * that arrives agrees with the timetable the notes are being judged on
+   * rather than starting a grid of its own.
+   *
+   * Three refusals, each a state in which a click would be a pulse with no
+   * music under it: a run that is not running, a paused one, and one still
+   * holding for the learner's first note (T8 — nothing sounds while armed, or
+   * the microphone hears the app and starts the run by itself).
+   */
+  setMetronome(on: boolean): void {
+    this.runOptions = { ...this.runOptions, metronome: on };
+    if (!on) {
+      this.metronome?.stop();
+      this.metronome?.dispose();
+      this.metronome = null;
+      return;
+    }
+    const engine = this.engine;
+    if (!engine) return;
+    const state = engine.state;
+    if (!state.running || state.paused || state.armed) return;
+    // Free has no timetable to click against; `start()` refuses it too.
+    if (engine.mode === 'free') return;
+    this.startMetronomeOnGrid(engine);
+  }
+
   /** The metronome picked up on the engine's grid, from the next beat. */
   private startMetronomeOnGrid(engine: PracticeEngine): void {
     const context = this.options.audioContext;

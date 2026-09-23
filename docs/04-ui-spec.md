@@ -1175,6 +1175,33 @@ what it interrupts is put back when it ends, and `▶` during one ends it and st
 you chose. The screen carries `data-hearing` so the run's mode and the selected mode stay two
 facts rather than one.
 
+**What a control does to a run already going** (added 2026-09-22, T23). Every control that
+changes *what is judged* restarts the run — the mode, the hands, the loop, the section,
+*Rhythm only*, *Duet* — because a run cannot carry half of each, and a restart is honest
+about that. Two do not, and they used to:
+
+- **The tempo slider re-times the run when the finger comes off, not on every step of the
+  drag.** `input` fires once per step, and each one used to start the run again: a drag from
+  100 % to 60 % tore the engine down and rebuilt it forty times, counted the run in forty
+  times, and — because starting a run re-attaches the input source — disconnected and
+  reconnected the **microphone** once per step. The readout still follows the finger.
+- **The Metronome row starts or stops the click without touching the run.** The row exists
+  precisely because the click is the thing you reach for mid-piece, and until this it called
+  the same restart: reaching for the click cost the learner the run, every mark on the page
+  and another count-in. The click now picks up on the engine's own grid, the way a resume
+  does, so it agrees with the timetable the notes are being judged on. Nothing starts while
+  the run is paused or still holding for its first note (`05` §3b).
+
+**Coming back from a lock or a call**, the sentence names a control that is on the screen:
+*Paused — you were away N s. ▶ to carry on, or Start again in ⋯ to go back to the beginning.*
+It used to name `⏮`, a glyph no control in the app wears. During a performance the second
+half is dropped, because a performance has no *Start again* row (§5e).
+
+**Free play says when the piece has ended.** It judges nothing and opens no summary, so the
+run simply stopped turning the page and nothing said why — an improviser could not tell the
+end of the piece from a run that had lost them. *End of the piece.*, on the status line,
+which is exactly what Listen already said in the same place.
+
 The modes are named for what they do to *you*, not for the mechanism. `Listen` in a row
 beside `R`, `L` and an input setting read as something done with your playing, which is how
 the owner came to ask for a way to hear a piece while looking straight at the control that
@@ -1730,7 +1757,17 @@ learner looks at.
   else. *ear drills*: a headphone glyph and **nothing that names the answer**, with "Play
   again". *rhythm*: a one-line staff of tap heads, filling in as they are caught. *pedal*: a
   lamp that follows CC64 and a line saying how many ms after the chord the lift came. *dynamics*:
-  two velocity meters and the ratio against the 1.6× target. *backing-track*: the bar count,
+  two velocity meters and the ratio against the 1.6× target — **or, where every note of the
+  run arrived at the same velocity, a refusal instead of the ratio** (added 2026-09-22,
+  T23): *not measured — every note arrived at the same velocity, which is what the
+  on-screen keys send. This one needs a piano over its cable.* The glass sends one fixed
+  velocity and so does the microphone (§5's *Input*), so played from either this card was
+  arithmetic on one number repeated and printed `1.00× — aim for 1.6×` and nought per cent,
+  which a learner reads as *you played it flat*. It is a fact about the run rather than a
+  guess about the device, the shape §5's technique measures already use, and it is not said
+  until both halves have been played — until then the card's own instruction is still the
+  right line. It cannot make the drill pass: there is no dynamic range on record either way.
+  *backing-track*: the bar count,
   or — where the row asks for `chartView` — the **form chart**: the same grid of bars the lab's
   *Jam it* draws, each with its numeral, the sounding one marked, over a *Bar n of N · pass n*
   line. Same classes, same words, because it is the same fact about the same form.
@@ -1750,8 +1787,22 @@ learner looks at.
   the name of the note that is sounding while the key it is on lights (§5c-2).
 - **It advances itself.** An answer settles the moment it is complete, feedback shows for a
   beat (longer on a miss that has an answer to show — see above), and the next card appears — no button between cards, which is the point of a flash
-  card. The kinds with no per-answer settle (rhythm, pedal, dynamics, backing-track) get an
-  explicit Next/Done.
+  card. The kinds with no per-answer settle (rhythm, pedal, dynamics, backing-track,
+  harmonic dictation) get an explicit Next/Done — **and the screen keeps one list of which
+  they are** (added 2026-09-22, T23). It kept two: the list that drew the button had
+  *dynamics* and *pedal* in it and the list that decided whether to settle did not, so the
+  button said the learner decides and the screen did not. On the dynamics card that meant
+  the **first** note of a four-note phrase settled it and flipped it to *forte* 450 ms
+  later, mid-phrase, and notes two, three and four of the *piano* phrase landed in the
+  forte bucket — the ratio it then printed was arithmetic over the wrong halves.
+
+  **Simon's chain is not open for answers while it is playing** (added 2026-09-22, T23). A
+  key pressed during the demonstration used to be the first note of the answer, and on the
+  `show-keys` rung the strip lights each note of the chain *as it sounds* — which is what
+  *play this* looks like on every other card in this app — so the reasonable thing to do
+  with a lit key ended the chain before the app had finished playing it. The answer opens
+  at exactly the moment the lights go out and the status line reads *Your turn* (§5c-2),
+  off the one piece of arithmetic all three use.
 - **Right and wrong differ by shape, not only colour** (§9): the card's outline goes solid on
   a right answer and dashed on a wrong one.
 - **Result sheet:** pass/master against the same accuracy setting a piece uses (§7), the

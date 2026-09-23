@@ -425,13 +425,37 @@ export class DynamicsDrill implements Drill {
     this.velocities[this.index]?.push(input.velocity);
   }
 
+  /**
+   * Whether every note of the run arrived at the same velocity (T23).
+   *
+   * A **fact about the run, not a guess about the device** — the shape Entry
+   * 42 settled on for the technique measures, so any source sending one number
+   * is caught and the instrument is named as the likely cause rather than as
+   * the test. Two of them send exactly one: `KeyboardStrip` sends
+   * `TOUCH_VELOCITY` for every touch, because Android reports `pressure` as 0
+   * or 1, and `MicSource` sends `MIC_VELOCITY`. Played from either, this drill
+   * is arithmetic on one number repeated, and it used to print the answer as
+   * `1.00× — aim for 1.6×` and nought per cent, which a learner reads as *you
+   * played it flat* when what happened is that the instrument could not say.
+   */
+  private get velocityIsFlat(): boolean {
+    const all = [...(this.velocities[0] ?? []), ...(this.velocities[1] ?? [])];
+    if (all.length === 0) return false;
+    return all.every((velocity) => velocity === all[0]);
+  }
+
   result(): DrillResult {
     const mean = (values: number[]) =>
       values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
     const soft = mean(this.velocities[0] ?? []);
     const loud = mean(this.velocities[1] ?? []);
     const ratio = soft > 0 ? loud / soft : 0;
-    const passed = ratio >= this.targetRatio;
+    const flat = this.velocityIsFlat;
+    // A run the instrument could not measure is not a run that failed. It
+    // cannot pass either — there is no dynamic range on record — so `correct`
+    // stays nought and `drillOutcome`'s answer is unchanged; what changes is
+    // that the screen has something true to print instead of a nought.
+    const passed = !flat && ratio >= this.targetRatio;
     return {
       kind: this.kind,
       total: 2,
@@ -440,7 +464,16 @@ export class DynamicsDrill implements Drill {
       accuracy: passed ? 1 : 0,
       meanReactionMs: 0,
       answers: [],
-      detail: { softVelocity: soft, loudVelocity: loud, ratio, targetRatio: this.targetRatio },
+      detail: {
+        softVelocity: soft,
+        loudVelocity: loud,
+        ratio,
+        targetRatio: this.targetRatio,
+        // 1 when every note arrived at the same velocity. Not a score: a fact
+        // about the instrument, in the shape `PedalDrill`'s `binaryPedal`
+        // already uses on the row below it.
+        flatVelocity: flat ? 1 : 0,
+      },
     };
   }
 }
