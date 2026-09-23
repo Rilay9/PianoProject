@@ -29,8 +29,8 @@ once noticed.
 The fix for tension is almost never "relax". It is: play more slowly, use arm
 weight rather than finger pressure, and let go of each key after it has sounded.
 
-**Pain — stop.** Not "finish this passage", and not at the end of the bar:
-stop. Any pain in the wrist, forearm, thumb or shoulder means the session is
+**Pain — stop.** Not "finish this passage", and not at the end of the bar.
+Stop. Any pain in the wrist, forearm, thumb or shoulder means the session is
 over and tomorrow's is shorter.
 
 Pain that persists for more than a couple of days, or any numbness or tingling,
