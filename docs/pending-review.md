@@ -13974,9 +13974,50 @@ the same code did not, and a `HEAD` run of that subset failed `tuplets-68-1bar-l
 instead while `4bar-portrait` passed — so that group flakes on both sources and this change is
 not what moves it.
 
+**A fourth round, and this one was the test's fault, not the app's.** CI run 35861337702
+failed `score.head-height.spec.ts`'s *a run restarted mid-piece keeps its engraving at 342 px*
+on both tries while the 390 px twin passed and all six passed here. Not the assertion:
+`locator.click` on `#score-hands-L` timed out with *element is not visible*.
+
+**The app is right.** The bar holds what it can and sends the rest behind `⋯` (`04` section 5),
+and the hands group is **first** in `OVERFLOW_ORDER` with its reason written beside it —
+*"chosen once for a piece, so it is the first thing to leave the bar when the screen is
+narrow"*. So the control was not hidden and not dead: it was in the `⋯` sheet, and `⋯` was on
+the bar, visible and live. Nothing to fix under `00` section 1. What differs between the two
+machines is that `barIsOverfull` is a **measurement** — and note what it really measures: the
+bar scrolls sideways rather than wrapping, so the `rows.size > 1` test rarely fires and the
+live one is *"has Play or `⋯` been squeezed under forty pixels"*, which is exactly what a wider
+set of glyphs does. Measured here on 2026-09-23 during a run: at 342 px **and** at 390 px
+`#score-hands-L` is on the bar, one row, 18 px wide inside the 92 px segmented group. Eighteen
+pixels is the margin CI does not have.
+
+**The test now asks the screen where the control is.** New `pressAnywhere` in
+`tests/e2e/scoreControls.ts`: reveal the bar, and if the control is not visible there, go
+through `⋯`. The restart test also stopped sleeping — it waits on `scoreFit().frozen` becoming
+non-null for "the run has taken its size", on the stage's own height changing for "the fold has
+happened", and on the fit being unchanged across a quarter-second of real animation frames
+(bounded at three seconds) for "it has stopped moving". A re-engraving is not hidden by that
+wait; it settles at the wrong value, which is what is asserted against.
+
+**Who else reads the file the helper was added to.** `tests/e2e/scoreControls.ts` is imported by
+27 spec files (`grep -rln "from './scoreControls'" app/tests/e2e/`). The change is **purely
+additive** — `git diff --stat` says 29 insertions and 0 deletions, and the diff has no removed
+lines at all, so `revealBar`, `pressControl`, `openScoreMenu`, `closeScoreMenu`,
+`withScoreMenu`, `inkBox`, `openTempoSheet`, `closeTempoSheet` and `setTempoPercent` are
+untouched. Five of the 27 were run after the change and passed — `score.fuzz` (5),
+`score.screen`, `score.latch`, `score.run` and `score.strip-span` (52 between them). The other
+22 rest on the diff being additive, which is an argument and not a run.
+
+**And the helper's other branch is tested, because this machine never takes it.** A seventh
+test forces the overflow — by widening the tempo label, not by narrowing the phone, since the
+bar scrolls — then checks `#score-hands-L` is hidden, `⋯` is visible, and `pressAnywhere`
+presses it through the sheet. A helper whose only exercised branch is the local one is the same
+shape of fault as the bug this file was written for.
+
 **Files.** New: `app/tests/e2e/score.head-height.spec.ts`. Changed: `app/src/score/autoFit.ts`
 (`refitEngraving`), `app/src/score/WindowRenderer.ts` (`fitToStage`, `refit`, `setRunning`,
 `fittedAtWidth`; then `setRunning`, `refit` and `fitToStage` again for the third fault),
 `app/src/style.css` (one rule under `.score-head`),
-`app/tests/unit/autoFit.test.ts`, `docs/04-ui-spec.md` section 5f, `docs/08-test-map.md`
+`app/tests/unit/autoFit.test.ts`, `app/tests/e2e/scoreControls.ts` (`pressAnywhere`, added),
+`docs/04-ui-spec.md` section 5f, `docs/08-test-map.md`
 (two rows), this entry. Nothing committed.

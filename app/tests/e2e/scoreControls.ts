@@ -119,3 +119,32 @@ export async function setTempoPercent(page: Page, percent: number): Promise<void
   await page.locator('#score-tempo').fill(String(percent));
   await closeTempoSheet(page);
 }
+
+/**
+ * Presses a control wherever the bar has decided to put it.
+ *
+ * The bar holds what it can and sends the rest behind `⋯` (`04` §5), and which
+ * controls those are is **measured, not fixed**: `barIsOverfull` asks whether
+ * the bar's children have wrapped to a second row, so the same width answers
+ * differently on two machines with different font metrics. Hands is first in
+ * `OVERFLOW_ORDER` — *"chosen once for a piece, so it is the first thing to
+ * leave the bar when the screen is narrow"* — and `Hear it` is second.
+ *
+ * `score.head-height.spec.ts` clicked `#score-hands-L` on the bar and CI
+ * answered *element is not visible* at 342 px on both tries while passing at
+ * 390 px and passing at 342 px here (run 35861337702). The control was not
+ * hidden and not dead: it was in the `⋯` sheet, which is where the spec says
+ * the bar's overflow goes, and `⋯` was on the bar and live. So the app is
+ * right and a test that assumes the bar is wrong — this asks the screen where
+ * the control is instead of assuming.
+ */
+export async function pressAnywhere(page: Page, selector: string): Promise<void> {
+  await revealBar(page);
+  if (await page.locator(selector).isVisible()) {
+    await pressControl(page, selector);
+    return;
+  }
+  await withScoreMenu(page, async () => {
+    await page.locator(selector).click();
+  });
+}

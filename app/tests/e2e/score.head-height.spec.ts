@@ -30,7 +30,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { installMidiMock, type MidiMock } from './fixtures/midiMock';
-import { pressControl, revealBar } from './scoreControls';
+import { pressAnywhere, pressControl, revealBar } from './scoreControls';
 
 const ITEM = 'song.folk.twinkle.ht';
 /** The widths `04` §0 measures a phone at. */
@@ -48,15 +48,74 @@ async function headHeight(page: Page): Promise<number> {
   return page.evaluate(() => document.querySelector('#score-head')?.getBoundingClientRect().height ?? -1);
 }
 
-/** The engraving zoom and the transform together: the size on the glass is their product. */
-async function fitState(page: Page): Promise<{ zoom: number; scale: number }> {
-  return page.evaluate(() => {
-    const el = document.querySelector<HTMLElement>('#score-stage .score-buffer.is-cursor');
-    const w = window as unknown as { __pianopath?: { scoreFit?: () => { zoom: number } } };
-    return {
-      zoom: w.__pianopath?.scoreFit?.()?.zoom ?? 0,
-      scale: el ? new DOMMatrixReadOnly(getComputedStyle(el).transform).a : 0,
+/**
+ * Waits until the run has actually taken the size it will keep.
+ *
+ * `WindowRenderer.freezeAfterSettle` lets the stage settle, and waits for the
+ * piece's measurement if that is still coming, so "has the freeze happened" is
+ * a question only the renderer can answer — a sleep long enough to cover it
+ * here is a sleep too short somewhere slower. `scoreFit().frozen` is the
+ * answer, and it is already exposed for the tour's sequence log.
+ */
+async function waitForFreeze(page: Page): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      const w = window as unknown as { __pianopath?: { scoreFit?: () => { frozen: unknown } } };
+      return (w.__pianopath?.scoreFit?.()?.frozen ?? null) !== null;
+    },
+    undefined,
+    { timeout: 30_000 },
+  );
+}
+
+/**
+ * The stage's height, for waiting on a change to it rather than sleeping over
+ * one. The fit is driven by a `ResizeObserver`, so the change is what starts
+ * the work this test is about.
+ */
+async function stageHeight(page: Page): Promise<number> {
+  return page.evaluate(() => document.querySelector('#score-stage')?.getBoundingClientRect().height ?? -1);
+}
+
+/**
+ * The fit once it has stopped moving — watched, not waited out.
+ *
+ * The re-fit runs on an animation frame and the freeze on a short timer after
+ * it, so reading once is reading a race. This watches the pair until it has
+ * been the same for a quarter of a second of real frames, which is longer than
+ * either, and gives up after three seconds with whatever it has rather than
+ * hanging. A run that is re-engraving would be caught by the wait, not hidden
+ * by it: the value it settles at is the wrong one, and that is what is checked.
+ */
+async function settledFit(page: Page): Promise<{ zoom: number; scale: number }> {
+  return page.evaluate(async () => {
+    const read = (): { zoom: number; scale: number } => {
+      const el = document.querySelector<HTMLElement>('#score-stage .score-buffer.is-cursor');
+      const w = window as unknown as { __pianopath?: { scoreFit?: () => { zoom: number } } };
+      return {
+        zoom: w.__pianopath?.scoreFit?.()?.zoom ?? 0,
+        scale: el ? new DOMMatrixReadOnly(getComputedStyle(el).transform).a : 0,
+      };
     };
+    const frame = async (): Promise<void> => {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => {
+        resolve();
+      }));
+    };
+    const started = performance.now();
+    let last = read();
+    let quietSince = performance.now();
+    while (performance.now() - started < 3_000) {
+      await frame();
+      const now = read();
+      if (now.zoom !== last.zoom || now.scale !== last.scale) {
+        last = now;
+        quietSince = performance.now();
+      } else if (performance.now() - quietSince >= 250) {
+        return now;
+      }
+    }
+    return last;
   });
 }
 
@@ -160,28 +219,42 @@ for (const width of WIDTHS) {
       content: ".screen--score[data-chrome='folded']:not([data-tablet='true']) .score-head { display: flex; }",
     });
     await pressControl(page, '#score-play');
-    await page.waitForTimeout(1_000);
+    await waitForFreeze(page);
 
     const style = await page.addStyleTag({ content: '#score-head { padding-bottom: 0px; }' });
+    /** Grows the header, and waits for the stage to have lost the height. */
     const pad = async (px: number): Promise<void> => {
+      const was = await stageHeight(page);
       await style.evaluate((el, p) => {
         el.textContent = `#score-head { padding-bottom: ${String(p)}px; }`;
       }, px);
-      await page.waitForTimeout(700);
+      await page.waitForFunction(
+        (before) => {
+          const now = document.querySelector('#score-stage')?.getBoundingClientRect().height ?? -1;
+          return Math.abs(now - before) > 1;
+        },
+        was,
+        { timeout: 15_000 },
+      );
     };
 
+    // Each of these stops the run and starts another — the `setRunning(false)`
+    // then `setRunning(true)` that a sitting is full of. Pressed wherever the
+    // bar has put them: hands is the first control to leave it when it is
+    // narrow and `Hear it` the second, so at 342 px they are behind `⋯` on a
+    // machine whose glyphs are a little wider (`pressAnywhere`).
     for (const restart of ['#score-hands-L', '#score-hear', '#score-hands-both'] as const) {
-      await pressControl(page, restart);
-      // Past the settle the freeze waits for. The size is taken here.
-      await page.waitForTimeout(1_000);
-      const before = await fitState(page);
+      await pressAnywhere(page, restart);
+      // Not a sleep: the renderer says when it has taken the run's size.
+      await waitForFreeze(page);
+      const before = await settledFit(page);
       expect(before.scale, `${restart} left no sheet drawn`).toBeGreaterThan(0);
 
       // The stage loses height and gains it back, the width untouched — what
       // the control bar does by itself three seconds into every run.
       for (const px of [96, 0]) {
         await pad(px);
-        const now = await fitState(page);
+        const now = await settledFit(page);
         expect(now.zoom, `the sheet was re-engraved after ${restart}, at ${String(px)} px of header`).toBeCloseTo(
           before.zoom,
           5,
@@ -223,3 +296,39 @@ for (const width of WIDTHS) {
     }
   });
 }
+
+/**
+ * The helper the two tests above press their restarts with, on the branch this
+ * machine never takes.
+ *
+ * `pressAnywhere` asks the screen where a control is and goes to the `⋯` sheet
+ * when the bar has sent it there. Measured here on 2026-09-23, at 342 px and at
+ * 390 px, `#score-hands-L` is **on the bar** — one row, 18 px wide inside the
+ * 92 px segmented group — so the sheet branch is the one CI takes and the one
+ * nothing here would exercise. A helper with a branch only the far machine runs
+ * is the same shape of fault as the bug this file was written for, so the branch
+ * is forced and pressed.
+ *
+ * Forced by widening the tempo label rather than by narrowing the phone: the bar
+ * **scrolls** sideways rather than wrapping (`04` §5), so `barIsOverfull` is not
+ * answering "did it wrap" in practice but "have Play and `⋯` been squeezed under
+ * forty pixels" — and squeezing them is what a wider set of glyphs does.
+ */
+test('the hands control is reachable during a run when the bar has sent it to the sheet', async ({ page }) => {
+  test.setTimeout(180_000);
+  await openScore(page, 342);
+  await page.addStyleTag({ content: '#score-tempo-label { min-width: 260px; }' });
+  // A resize is what re-runs `fitBarControls`; one pixel is enough to ask.
+  await page.setViewportSize({ width: 342, height: 843 });
+  await pressControl(page, '#score-play');
+  await waitForFreeze(page);
+  await revealBar(page);
+
+  const hands = page.locator('#score-hands-L');
+  await expect(hands, 'the overflow was not forced, so this proves nothing').toBeHidden();
+  await expect(page.locator('#score-more'), 'the way to it must be on the bar and live').toBeVisible();
+
+  await pressAnywhere(page, '#score-hands-L');
+  await expect(hands).toHaveClass(/is-selected/);
+});
+
