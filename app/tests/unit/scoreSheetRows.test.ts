@@ -97,6 +97,9 @@ vi.mock('../../src/score/ScoreSession', () => ({
     prepared = null;
     expectedNow: number[] = [];
     constructor(_options: { onFinished?: (score: SessionScore, looped: boolean) => void }) {}
+    // The screen marks the first expected key before a run (`04` §5f);
+    // the stub has to answer or the screen falls to its error state.
+    previewFirst(): void {}
     loopForPrintedBars(from: number, to: number): { fromStep: number; toStep: number } | undefined {
       const steps = modelRef.current?.steps ?? [];
       const first = steps.find((step) => step.sourceMeasureIndex === from - 1);

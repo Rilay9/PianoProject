@@ -114,6 +114,9 @@ vi.mock('../../src/score/ScoreSession', () => ({
       onFinishedRef.current = options.onFinished ?? null;
       sessionRef.current = this as unknown as Record<string, unknown>;
     }
+    // The screen marks the first expected key before a run (`04` §5f);
+    // the stub has to answer or the screen falls to its error state.
+    previewFirst(): void {}
     loopForPrintedBars(): undefined {
       return undefined;
     }
