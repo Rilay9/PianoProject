@@ -5807,6 +5807,36 @@ input[type='checkbox'] {
   color: var(--text-muted);
 }
 
+/* One line each, cut short, and the reason is the fit rather than the look.
+
+   The Score screen's header sits above the notation in the same column, so its
+   height is subtracted from the stage the sheet is engraved and fitted into.
+   Left to wrap, the state line changes that height *during a run*: the same
+   sentence is one line on one machine and two on another, and it grows a line
+   again the moment the run has something longer to say. Measured at 390 px on
+   2026-09-23, with the state line given a wider set of metrics: the header went
+   84.89 px to 102.56 px and the stage lost every one of them; at 342 px it went
+   to 120.23. CI read the far end of it — `score.fuzz.spec.ts` seed 4 upright,
+   twinkle, `the size changed mid-run: scale 0.773877 → 0.708097`, which is one
+   drawn size re-engraved at two zooms (0.773877 x 1.83 = 1.41619 = 0.708097 x 2.00).
+
+   Ellipsis rather than a fixed line count with the overflow hidden, and rather
+   than two lines allowed: a cut sentence says out loud that it is cut, and the
+   whole of it is one tap away — the strip's `?` sheet prints `textContent`,
+   which is the full string whatever the box shows. `04` section 5f's two lines
+   stay two lines; each is now exactly one line tall.
+
+   Scoped to this header on purpose. The lab and the chord chart carry the
+   mode's whole sentence on their strips and have the room for it to wrap;
+   nothing there is engraved against the space left over. */
+.score-head .help-strip__what,
+.score-head .help-strip__now {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* The strip inside the Score screen's header row.
 
    The header is one flex row -- back, the title, the status, the mic meter --

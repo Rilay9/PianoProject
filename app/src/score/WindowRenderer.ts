@@ -36,7 +36,7 @@
 
 import { OsmdView, type MeasureRange } from './OsmdView';
 import { trimMusicXml } from './trimMusicXml';
-import { MAX_FIT, MIN_FIT, fitZoom, worthRefitting } from './autoFit';
+import { MAX_FIT, MIN_FIT, fitZoom, refitEngraving, worthRefitting } from './autoFit';
 import { barsPerSlot, planSlots, sameRange as sameSlotRange, type SlotIndex } from './slots';
 import type { ScoreModel, ScoreNote, ScoreStep } from './types';
 import { recordRenderTiming } from '../util/renderTiming';
@@ -555,6 +555,13 @@ export class WindowRenderer {
   private fitHandle: number | null = null;
   /** The stage height the sheet was last fitted to; -1 means never. */
   private fittedAtHeight = -1;
+  /**
+   * And the width it was fitted at, because the two answers are different.
+   *
+   * A new width is a new page for the engraver and the search has to run; a
+   * new height alone is only room, and during a run it must not (`refitEngraving`).
+   */
+  private fittedAtWidth = -1;
   private currentStep = -1;
   /** The loop's bars, by source measure index; the rest are dimmed. */
   private loopRange: { from: number; to: number } | null = null;
@@ -1697,11 +1704,19 @@ export class WindowRenderer {
     };
   }
 
-  /** Re-fits the current window; call on resize or orientation change. */
+  /**
+   * Re-fits the current window; call on resize or orientation change.
+   *
+   * It used to blank the box the last search was run against, on the reading
+   * that a changed box makes the fit stale by definition. That is the same hole
+   * as the one in `setRunning`: a blank box means "nothing engraved yet", which
+   * `refitEngraving` has to let through whatever a run is holding, so a window
+   * dragged a little taller mid-run would re-engrave the sheet. It is also
+   * unnecessary — a turn is a change of *width*, and that is the case
+   * `refitEngraving` searches again for on its own.
+   */
   refit(): void {
     this.stageChanged();
-    // The box changed, so the fit is stale by definition.
-    this.fittedAtHeight = -1;
     this.fitToStage();
   }
 
@@ -2261,10 +2276,22 @@ export class WindowRenderer {
       // mismatch the comment beside `fitSlots` warns about.
       height: this.readAhead === 'slots' ? stage.height / this.slotCount : stage.height,
     };
-    // Once per stage size. Without this the fit is re-examined on every window
-    // swap — which converges, because the zoom is clamped, but converging is
-    // not the same as being free, and a swap is meant to cost a class toggle.
-    if (this.fittedAtHeight === Math.round(available.height)) return;
+    // Once per stage size — and never on a height alone while a run is holding
+    // its size. Without the first the fit is re-examined on every window swap,
+    // which converges, because the zoom is clamped, but converging is not the
+    // same as being free, and a swap is meant to cost a class toggle. Without
+    // the second the header growing a line re-engraves the whole sheet under
+    // the learner's hands: the freeze keeps the *drawn* size by converting its
+    // scale to the new zoom, so nothing on the glass moves and every slot's
+    // transform is a different number. `refitEngraving` has the measurement.
+    if (
+      !refitEngraving(
+        available,
+        this.fittedAtHeight < 0 ? null : { width: this.fittedAtWidth, height: this.fittedAtHeight },
+        this.frozen !== null,
+      )
+    )
+      return;
     // The engraved size, not the size on screen.
     //
     // `fit()` has already put a CSS `scale()` on the wrapper, and
@@ -2284,6 +2311,15 @@ export class WindowRenderer {
     // Size re-engraved smaller, the fill scaled that back up to the stage,
     // and the sheet came out very slightly larger than before the click.
     const target = fitZoom(this.zoomLevel, box, available);
+    // Examined, whatever the answer. Returning without recording it left
+    // `fittedAtHeight` at -1 for as long as no search happened to be worth
+    // running — and -1 means "nothing has been engraved yet", which is the one
+    // case `refitEngraving` has to let through whether or not a run is holding
+    // its size. So a stage the fit had already looked at and approved could
+    // disarm the guard later, mid-run. Recording it is also what the existing
+    // check above means by "once per stage size".
+    this.fittedAtHeight = Math.round(available.height);
+    this.fittedAtWidth = Math.round(available.width);
     if (!worthRefitting(this.zoomLevel, target)) return;
     if (this.fitHandle !== null) cancelAnimationFrame(this.fitHandle);
     this.fitHandle = requestAnimationFrame(() => {
@@ -2293,6 +2329,7 @@ export class WindowRenderer {
       try {
         this.searchForFit(available.height);
         this.fittedAtHeight = Math.round(available.height);
+        this.fittedAtWidth = Math.round(available.width);
       } finally {
         this.fitting = false;
       }
@@ -2512,6 +2549,20 @@ export class WindowRenderer {
     }
     if (!this.frozen) return;
     this.frozen = null;
+    // The scale only. **Not** the engraving, and not by blanking the box the
+    // last search was run against.
+    //
+    // Letting go of the engraving here was tried on 2026-09-23 and it is the
+    // hole the freeze is supposed to be: a run ends and restarts several times
+    // in a sitting — a mode change, a hand change, `Hear it` — and each of
+    // those is a `setRunning(false)` immediately followed by a
+    // `setRunning(true)`. Blanking the box left the *next* run with nothing for
+    // `refitEngraving` to compare against, so the first fold of the control bar
+    // under it searched again and moved the zoom. `score.fuzz` seed 4 read that
+    // as *scale 0.839161 → 0.767832* — one drawn size (1.53566) at zoom 1.83
+    // and at 2.00, the same arithmetic as the failure this rule was written
+    // for. `fitSlots` already gives the room back as a CSS scale, and the next
+    // real change of the stage searches with no run to hold it.
     this.fitSlots();
   }
 

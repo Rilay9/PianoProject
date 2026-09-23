@@ -94,16 +94,45 @@ test.describe('Library', () => {
   });
 
   test('a file it cannot read fails with one sentence, not a stack trace', async ({ page }) => {
+    // This used a `.mid` until 2026-09-23, when the app learned to convert one
+    // (T29): a MIDI file is a score it can read now, so the case that proves
+    // "one sentence, not a stack trace" needs an extension it still cannot.
     await page.goto('/#/library');
     await page.locator('#library-file').setInputFiles({
-      name: 'not-a-score.mid',
+      name: 'not-a-score.rtf',
+      mimeType: 'application/rtf',
+      buffer: Buffer.from('{\\rtf1 not a score}'),
+    });
+    const status = page.locator('#library-status');
+    await expect(status).toContainText('not-a-score.rtf is not a score the app can read');
+    await expect(status).not.toContainText('Error:');
+    await expect(status).not.toContainText('at ');
+  });
+
+  test('a broken MIDI file is told apart from a file that is not MIDI at all', async ({ page }) => {
+    // Both are one sentence; they are different sentences because they send
+    // you to different places — export it again, or copy it again.
+    await page.goto('/#/library');
+    const status = page.locator('#library-status');
+
+    await page.locator('#library-file').setInputFiles({
+      name: 'truncated.mid',
       mimeType: 'audio/midi',
       buffer: Buffer.from([0x4d, 0x54, 0x68, 0x64]),
     });
-    const status = page.locator('#library-status');
-    await expect(status).toContainText('not-a-score.mid is not a score the app can read');
+    await expect(status).toContainText('truncated.mid: this MIDI file stops inside its header');
+    await expect(status).toContainText('copy it again');
+
+    await page.locator('#library-file').setInputFiles({
+      name: 'prose.mid',
+      mimeType: 'audio/midi',
+      buffer: Buffer.from('this is a sentence, not a MIDI file'),
+    });
+    await expect(status).toContainText('prose.mid: this file does not start with a MIDI header');
+    // Not the sibling test's 'at ' check: "whatever made it" contains those
+    // three characters, and a heuristic for a stack trace that fires on
+    // ordinary English is worse than no heuristic.
     await expect(status).not.toContainText('Error:');
-    await expect(status).not.toContainText('at ');
   });
 
   test('an imported score can be renamed and deleted', async ({ page }) => {

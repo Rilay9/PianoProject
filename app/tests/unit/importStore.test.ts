@@ -49,15 +49,21 @@ beforeEach(() => {
 });
 
 describe('kindForFilename', () => {
-  it('recognises the three extensions the picker offers', () => {
+  it('recognises the extensions the picker offers', () => {
     expect(kindForFilename('a.mxl')).toBe('musicxml');
     expect(kindForFilename('a.MusicXML')).toBe('musicxml');
     expect(kindForFilename('a.xml')).toBe('musicxml');
     expect(kindForFilename('a.pdf')).toBe('pdf');
   });
 
+  it('calls a MIDI file MIDI, which is the door it comes through', () => {
+    // It is stored as `musicxml` — the app converts it on the way in (T29) —
+    // and this said `null` until it could. `midi` names the door, not the row.
+    expect(kindForFilename('a.mid')).toBe('midi');
+    expect(kindForFilename('a.MIDI')).toBe('midi');
+  });
+
   it('rejects anything else', () => {
-    expect(kindForFilename('a.mid')).toBeNull();
     expect(kindForFilename('a.png')).toBeNull();
     expect(kindForFilename('noextension')).toBeNull();
   });
@@ -117,8 +123,17 @@ describe('addImport', () => {
   });
 
   it('rejects an unknown extension with a sentence naming the file', async () => {
-    await expect(addImport(fakeFile('song.mid', 'x'))).rejects.toThrow(ImportError);
-    await expect(addImport(fakeFile('song.mid', 'x'))).rejects.toThrow(/song\.mid is not a score/);
+    await expect(addImport(fakeFile('song.png', 'x'))).rejects.toThrow(ImportError);
+    await expect(addImport(fakeFile('song.png', 'x'))).rejects.toThrow(/song\.png is not a score/);
+  });
+
+  it('rejects a .mid that is not MIDI, with the converter’s own sentence', async () => {
+    // Named .mid and not MIDI: the sentence has to say that rather than
+    // "not a score the app can read", which would send him to re-export a
+    // file whose extension was right all along.
+    await expect(addImport(fakeFile('song.mid', 'x'))).rejects.toThrow(
+      /song\.mid: this file does not start with a MIDI header/,
+    );
   });
 
   it('rejects a .pdf that is not a PDF', async () => {

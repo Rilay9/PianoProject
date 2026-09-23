@@ -10,7 +10,7 @@
  * 340 px wide.
  */
 import { describe, expect, it } from 'vitest';
-import { MAX_FIT, MIN_FIT, fitZoom, worthRefitting } from '../../src/score/autoFit';
+import { MAX_FIT, MIN_FIT, fitZoom, refitEngraving, worthRefitting } from '../../src/score/autoFit';
 
 describe('fitZoom', () => {
   it('asks for as much of the stage as the engraver will give — the owner’s numbers', () => {
@@ -64,5 +64,62 @@ describe('worthRefitting', () => {
   it('says no to nonsense instead of redrawing on it', () => {
     expect(worthRefitting(0, 3)).toBe(false);
     expect(worthRefitting(Number.NaN, 3)).toBe(false);
+  });
+});
+
+/**
+ * A run holds a *drawn* size, and the drawn size is the engraving zoom times
+ * the CSS scale. So the question "may the engraving be searched again" is not
+ * the same question as "did the stage change".
+ *
+ * Measured on this machine at 390x844, twinkle held upright with the header on
+ * screen through a Wait run: with the header at its own height the sheet was
+ * drawn at CSS scale 0.794618 on an engraving at zoom 1.98; with the header
+ * three lines taller it was 0.878963 at zoom 1.79. The product — the size on
+ * the glass — was 1.5733 both times, so the freeze had done its job and the
+ * sheet had still been re-engraved mid-run, which is what `score.fuzz` reads
+ * as a size change. Only the height had changed.
+ */
+describe('refitEngraving', () => {
+  const stage = { width: 390, height: 340 };
+
+  it('searches when nothing has been engraved yet', () => {
+    expect(refitEngraving(stage, null, false)).toBe(true);
+    expect(refitEngraving(stage, null, true)).toBe(true);
+  });
+
+  it('says no when the stage is the one it last fitted', () => {
+    expect(refitEngraving(stage, { ...stage }, false)).toBe(false);
+    expect(refitEngraving(stage, { ...stage }, true)).toBe(false);
+  });
+
+  it('searches again when the width changed — the phone was turned', () => {
+    // `08` §3.3: a turn releases the size a run is holding and it continues at
+    // the new one. The page the engraver lays out on is a different page.
+    const turned = { width: 844, height: 190 };
+    expect(refitEngraving(turned, stage, true)).toBe(true);
+    expect(refitEngraving(turned, stage, false)).toBe(true);
+  });
+
+  it('leaves the engraving alone when only the height changed during a run', () => {
+    // The header grew a line, or the control bar folded away. The run is
+    // holding its size; re-engraving cannot improve on a size that is not
+    // allowed to change, and it rewrites every slot's transform.
+    const shorter = { width: stage.width, height: stage.height - 34 };
+    const taller = { width: stage.width, height: stage.height + 66 };
+    expect(refitEngraving(shorter, stage, true)).toBe(false);
+    expect(refitEngraving(taller, stage, true)).toBe(false);
+  });
+
+  it('still grows into a height that changed off a run', () => {
+    const taller = { width: stage.width, height: stage.height + 66 };
+    expect(refitEngraving(taller, stage, false)).toBe(true);
+  });
+
+  it('refuses to act on a stage that has not been laid out', () => {
+    for (const bad of [0, -5, Number.NaN]) {
+      expect(refitEngraving({ width: bad, height: 340 }, null, false)).toBe(false);
+      expect(refitEngraving({ width: 390, height: bad }, null, false)).toBe(false);
+    }
   });
 });

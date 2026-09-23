@@ -71,3 +71,46 @@ export function worthRefitting(current: number, target: number): boolean {
   if (!(current > 0) || !(target > 0)) return false;
   return Math.abs(target - current) / current > 0.08;
 }
+
+/**
+ * Whether a stage that has changed size should have its engraving searched
+ * again — and the one case where it must not be.
+ *
+ * The size on the glass is the **engraving zoom times the CSS scale**, and
+ * `searchForFit` moves the first of those. A run holds a *drawn* size (`08`
+ * P21e A2), so when the zoom moves the frozen scale is converted to keep the
+ * product — the sheet is the same size and every slot's `transform` is a
+ * different number. That is not free and it is not invisible: the whole sheet
+ * is re-engraved under the learner's hands, and anything reading the transform
+ * reads a size change where there is none. `score.fuzz.spec.ts` read exactly
+ * that on CI (seed 4, `0.773877 → 0.708097`, which is `0.773877 × 1.83 ÷ 2.00`
+ * to six places — one drawn size, two zooms).
+ *
+ * So the two kinds of change are told apart by *what* changed:
+ *
+ * - **The width** — the phone was turned, or the window was dragged. The page
+ *   the engraver lays a system out on is a different page, so the engraving
+ *   has to be searched again whatever is going on. `08` §3.3 already says a
+ *   turn releases the size a run is holding.
+ * - **The height alone** — the control bar folded away, the keyboard strip was
+ *   switched off, the header grew a line because a sentence wrapped. The page
+ *   is the same page; only the room below it changed. During a run the answer
+ *   is no: the run is holding its size and re-engraving cannot improve on a
+ *   size that is not allowed to change. Off a run it is yes, because then the
+ *   sheet *should* grow into the room.
+ *
+ * `fitted` is what the last engraving search was run against — `null` when
+ * there has not been one — in the same units the caller measures in (a slot's
+ * share of the stage for the height, the stage's own width).
+ */
+export function refitEngraving(
+  available: { width: number; height: number },
+  fitted: { width: number; height: number } | null,
+  frozen: boolean,
+): boolean {
+  if (!(available.width > 0) || !(available.height > 0)) return false;
+  if (!fitted) return true;
+  if (Math.round(available.width) !== Math.round(fitted.width)) return true;
+  if (Math.round(available.height) === Math.round(fitted.height)) return false;
+  return !frozen;
+}

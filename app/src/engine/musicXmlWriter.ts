@@ -15,11 +15,11 @@
 export const DIVISIONS = 12;
 
 export type NoteType =
-  | 'whole'
-  | 'half'
-  | 'quarter'
-  | 'eighth'
-  | '16th';
+  // `breve` and `32nd` are here for the MIDI import (`src/import/midi/`): a
+  // bar longer than a whole note needs the first, and a 32nd inside a triplet
+  // — a twelfth of a quarter — is the shortest slice a bar of sixteenths
+  // beside a bar of triplets can produce. Nothing generated reaches either.
+  'breve' | 'whole' | 'half' | 'quarter' | 'eighth' | '16th' | '32nd';
 
 export interface WriterNote {
   /** MIDI pitch, or null for a rest. */
@@ -69,11 +69,16 @@ export interface WriterMeasure {
 
 export interface WriterOptions {
   title: string;
+  /** The name printed beside the brace. `Piano` unless a caller says otherwise. */
+  partName?: string;
+  /** The composer, printed as MusicXML's `<creator type="composer">`. */
+  composer?: string;
   /** Sharps positive, flats negative, as in MusicXML `<fifths>`. */
   fifths: number;
   beats: number;
   beatType: number;
-  bpm: number;
+  /** Null writes no tempo at all, for a source that states none. */
+  bpm: number | null;
   staves: 1 | 2;
   /** A one-staff part's clef; G unless a bass-register answer asks for F. */
   clef?: 'G' | 'F';
@@ -85,6 +90,17 @@ export interface WriterOptions {
    * (`BLUES_SCALE_FORMS`), which no single preference can write.
    */
   blackKeys?: Partial<Record<number, 'flat' | 'sharp'>>;
+  /**
+   * The name every pitch class takes, whatever the signature says — the whole
+   * spelling rather than a preference between two black-key names.
+   *
+   * The MIDI import needs this: `spell_in_key` spells each pitch class by its
+   * interval above the tonic, so B flat in C major stays B flat and the raised
+   * fourth of a blues line is F sharp in the same bar. `blackKeys` cannot say
+   * that a *white* key is written with an accidental (B sharp in C sharp
+   * major), and this can.
+   */
+  spelling?: Partial<Record<number, { step: string; alter: number }>>;
   measures: WriterMeasure[];
 }
 
@@ -126,11 +142,30 @@ function escapeXml(value: string): string {
     .replace(/"/g, '&quot;');
 }
 
+const LETTER_SEMITONES: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+/**
+ * One MIDI number as a named step, with the octave that makes it sound right.
+ *
+ * Octave numbers follow the letter — B sharp 3 sounds as C 4 — so the octave
+ * is derived from the letter and the alteration rather than from the MIDI
+ * number alone.
+ */
+export function spelledPitch(
+  midi: number,
+  spelling: { step: string; alter: number },
+): { step: string; alter: number; octave: number } {
+  const natural = LETTER_SEMITONES[spelling.step] ?? 0;
+  const octave = Math.round((midi - spelling.alter - natural) / 12) - 1;
+  return { step: spelling.step, alter: spelling.alter, octave };
+}
+
 function noteXml(
   note: WriterNote,
   preferFlats: boolean,
   indent: string,
   blackKeys?: Partial<Record<number, 'flat' | 'sharp'>>,
+  spelling?: Partial<Record<number, { step: string; alter: number }>>,
 ): string {
   const lines: string[] = [];
   lines.push(`${indent}<note>`);
@@ -139,7 +174,10 @@ function noteXml(
   if (note.midi === null) {
     lines.push(`${indent}  <rest/>`);
   } else {
-    const { step, alter, octave } = midiToPitch(note.midi, preferFlats, blackKeys);
+    const named = spelling?.[((note.midi % 12) + 12) % 12];
+    const { step, alter, octave } = named
+      ? spelledPitch(note.midi, named)
+      : midiToPitch(note.midi, preferFlats, blackKeys);
     lines.push(`${indent}  <pitch>`);
     lines.push(`${indent}    <step>${step}</step>`);
     if (alter !== 0) lines.push(`${indent}    <alter>${alter}</alter>`);
@@ -197,8 +235,15 @@ export function writeMusicXml(options: WriterOptions): string {
   );
   lines.push('<score-partwise version="3.1">');
   lines.push(`  <work><work-title>${escapeXml(options.title)}</work-title></work>`);
+  if (options.composer !== undefined && options.composer !== '') {
+    lines.push('  <identification>');
+    lines.push(`    <creator type="composer">${escapeXml(options.composer)}</creator>`);
+    lines.push('  </identification>');
+  }
   lines.push('  <part-list>');
-  lines.push('    <score-part id="P1"><part-name>Piano</part-name></score-part>');
+  lines.push(
+    `    <score-part id="P1"><part-name>${escapeXml(options.partName ?? 'Piano')}</part-name></score-part>`,
+  );
   lines.push('  </part-list>');
   lines.push('  <part id="P1">');
 
@@ -223,14 +268,16 @@ export function writeMusicXml(options: WriterOptions): string {
       lines.push('      </attributes>');
       // Wrapped in <direction>: a bare <sound tempo> sets OSMD's sheet default
       // but creates no tempo expression, so a tempo *change* would be lost.
-      lines.push('      <direction placement="above">');
-      lines.push('        <direction-type>');
-      lines.push(
-        `          <metronome><beat-unit>quarter</beat-unit><per-minute>${options.bpm}</per-minute></metronome>`,
-      );
-      lines.push('        </direction-type>');
-      lines.push(`        <sound tempo="${options.bpm}"/>`);
-      lines.push('      </direction>');
+      if (options.bpm !== null) {
+        lines.push('      <direction placement="above">');
+        lines.push('        <direction-type>');
+        lines.push(
+          `          <metronome><beat-unit>quarter</beat-unit><per-minute>${options.bpm}</per-minute></metronome>`,
+        );
+        lines.push('        </direction-type>');
+        lines.push(`        <sound tempo="${options.bpm}"/>`);
+        lines.push('      </direction>');
+      }
     }
 
     // The word above this bar, before its notes. `<staff>` goes after
@@ -263,7 +310,7 @@ export function writeMusicXml(options: WriterOptions): string {
         if (back > 0) lines.push(`      <backup><duration>${back}</duration></backup>`);
       }
       for (const note of byStaff.get(staff) ?? []) {
-        lines.push(noteXml(note, preferFlats, '      ', options.blackKeys));
+        lines.push(noteXml(note, preferFlats, '      ', options.blackKeys, options.spelling));
       }
     });
 
@@ -297,4 +344,41 @@ export function durationToType(duration: number): { type: NoteType; dotted: bool
   // as *something* rather than throwing in the middle of a practice session.
   const fallback = table.find((entry) => entry.divisions <= duration) ?? table[table.length - 1];
   return { type: fallback?.type ?? 'quarter', dotted: fallback?.dotted ?? false };
+}
+
+/**
+ * A length in divisions as the note-head, dot and tuplet that carry it.
+ *
+ * `durationToType` above answers for the lengths a generated exercise writes;
+ * this answers for any length the MIDI import's own rule
+ * (`src/import/midi/notatable.ts`) admits — base × (1 or 1½) × (1 or ⅔) — and
+ * returns the tuplet with it, because a triplet is not a duration but a
+ * duration *plus a claim about what it is in the time of*.
+ *
+ * Returns null when no note-head carries the length, which is the caller's
+ * signal that it has to be cut and tied rather than written.
+ */
+export function noteShape(
+  divisions: number,
+): { type: NoteType; dotted: boolean; tuplet?: { actual: number; normal: number } } | null {
+  const heads: [number, NoteType][] = [
+    [DIVISIONS * 8, 'breve'],
+    [DIVISIONS * 4, 'whole'],
+    [DIVISIONS * 2, 'half'],
+    [DIVISIONS, 'quarter'],
+    [DIVISIONS / 2, 'eighth'],
+    [DIVISIONS / 4, '16th'],
+    [DIVISIONS / 8, '32nd'],
+  ];
+  // Plain before dotted and untupleted before tupleted, which is the order a
+  // reader would name them in.
+  for (const tuplet of [null, { actual: 3, normal: 2 }]) {
+    const written = tuplet ? (divisions * tuplet.actual) / tuplet.normal : divisions;
+    for (const dotted of [false, true]) {
+      const base = dotted ? written / 1.5 : written;
+      const head = heads.find(([length]) => length === base);
+      if (head) return { type: head[1], dotted, ...(tuplet ? { tuplet } : {}) };
+    }
+  }
+  return null;
 }

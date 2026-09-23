@@ -69,7 +69,13 @@ describe('the documents and the code agree', () => {
     // looked for under `tools/content`, which is what keeps the check honest
     // about the pipeline's own scripts.
     const bare = new Set(pythonFiles(TOOLS).map((file) => basename(file)));
-    const withPath = new Set(DOC_03.match(/\btools\/[a-z_0-9-]+\/[a-z_0-9]+\.py\b/g) ?? []);
+    // Widened again 2026-09-23: the path form allowed exactly one directory
+    // under `tools/`, and `03` now names a harness two deep
+    // (`tools/midi-cleanup/tests/parity_reference.py`, which writes what the
+    // TypeScript port of the converter is compared against). A path is still a
+    // path wherever it points; the bare-name rule below is untouched, and that
+    // is what keeps the check honest about the pipeline's own scripts.
+    const withPath = new Set(DOC_03.match(/\btools(?:\/[a-z_0-9-]+)+\/[a-z_0-9]+\.py\b/g) ?? []);
     for (const relative of withPath) {
       expect(
         existsSync(join(ROOT, relative)),

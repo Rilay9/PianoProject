@@ -13599,3 +13599,384 @@ extended here with the port, the `levelSource` change and the voice-id census.
 
 Nothing committed. `content/scores/`, `app/public/content/` and `build/` were rewritten by
 the content build, which the brief says to expect.
+
+### Entry 57 — T29: a MIDI file imports from the app itself, by a port of the converter that agrees with it note for note (2026-09-23)
+
+The owner (2026-09-22): *"ideally I could select a file from the app."* The converter existed
+only as a Python command, and nothing here runs on a server, so the conversion had to happen
+in the browser.
+
+**Restated without the brief's words:** picking a recording on the phone should end with a
+readable score in the library, and the app's answer must be the same answer the command line
+gives — provably, not by eye.
+
+**Nothing here was heard.** Every claim below is a count taken off a file, an assertion in a
+test, or a string read out of the source. Whether any of these scores is worth playing is a
+question none of it answers, and **parity with the Python proves the port, not the music**.
+
+---
+
+#### 1. What was ported
+
+`app/src/import/midi/`, function for function against
+`tools/midi-cleanup/midi_to_musicxml.py`, with each rule stated where the Python states it:
+
+| file | what it carries |
+|---|---|
+| `fraction.ts` | exact rationals on `bigint` |
+| `readMidi.ts` | `read_midi`, `track_with_the_notes`, the bar and beat of a metre, **and the new merge** |
+| `quantise.ts` | `snap`, `detect_swing`, `deswing`, `separate_repeats`, `quantise` |
+| `notatable.ts` | `is_notatable`, `notatable_pieces` |
+| `handSplit.ts` | `percentile`, `split_hands` |
+| `key.ts` | `key_estimate`, `relative_by_ending`, `spell_in_key` |
+| `slice.ts` | `slice_into_chords` |
+| `convert.ts` | `convert`, `rebuild_part`, `expected_pitches`, `sounding_pitches`, `bars_that_do_not_add_up` |
+
+**`bigint` rather than `number`, and that is not caution.** The hand split's running centre is
+`centre × 3/5 + mean × 2/5` once per onset, so its denominator gains a factor of five a note:
+by the fortieth note it is past what a double counts exactly, and the Scarlatti recording is
+882 notes. Python's `Fraction` is arbitrary precision and the split's answers come out of
+comparing those values, so a port on doubles would agree for a bar and then quietly stop.
+
+**Two places where music21 is a judgement and not bookkeeping**, and both were read out of the
+library rather than remembered:
+
+- `stream.analyze('key')` dispatches to **Aarden–Essen**, not Krumhansl (`music21.analysis.
+  discrete.analysisClassFromMethodName`, whose own docstring says so). The weights, the
+  correlation per rotation and the enharmonic rule are ported; the only pitch class whose name
+  differs between a major and a minor tonic is 8 (A flat against G sharp).
+- `is_notatable` asks music21 for a `Duration` and refuses what is not a rhythm. There is no
+  music21 in a browser, so the port asks the same question as a construction — `base × (1 or
+  1½) × (1 or ⅔)` — and the two readings were compared over **1,208 lengths** (every multiple
+  of 1/24, 1/16, 1/12, 1/32, 1/3 and 1/64 of a quarter up to eight quarters): no
+  disagreements. `spell_in_key`, `Key.sharps` and `Key.relative` were compared the same way
+  over **30 keys × 12 pitch classes = 360 spellings**: no disagreements. Both comparisons are
+  development checks, not committed tests, because one side of each is music21.
+
+#### 2. The merge — the one rule the port has and the tool does not
+
+The tool's answer to a file with more than one note track is to keep each as a part
+(`hands="auto"` splits only a single track). That is right for the three Disklavier captures,
+which are one track of two-hand playing. It is wrong for a file downloaded from the web, which
+carries a track per hand, or per voice, or a melody and an accompaniment — four staves where a
+piano has two, and the app reading a *hand* off a staff that is a *voice*.
+
+So `mergeNoteTracks`: every track with notes in it is concatenated in file order and ordered by
+onset with a stable sort, so two notes struck at the same instant keep the order the file wrote
+them — which is the order `split_hands` groups them in. Nothing is dropped and nothing moves in
+time; the one case it creates (the same pitch struck at the same instant on two tracks) is
+already handled by `separate_repeats`. The app's path merges; the parity harness asks for the
+tool's behaviour, so the merge is tested on its own (`midiParse.test.ts`) and parity is not
+weakened by it.
+
+#### 3. Parity, per fixture
+
+`tools/midi-cleanup/tests/parity_reference.py` runs the Python and writes what each stage
+decided into `build/midi-parity/`; `app/tests/unit/midiParity.test.ts` reads it. `build/` is
+gitignored — the recordings are not redistributable and `build/midi-real/SOURCE.md` says so —
+so the test **skips with a message naming the script** rather than passing quietly, which is
+the convention `test_converter.py` already uses for the same files.
+
+Asserted per fixture: the same tracks note for note, the same metre, tempo and key signatures,
+the same grid for every bar, the same swing counts and verdict, the same quantised onset and
+release for every note, the same `moved`, the same hand split **including the boundary per
+onset**, the same estimated and written key, the same self-check, and the same notes in the
+same hands for the same durations — the last read back off each side's *written file* (music21
+parses the Python's, `readBackMusicXml` parses the port's), so what is compared is two files
+and not two sets of intentions.
+
+| fixture | notes | bars | grids chosen | hand boundaries | key | agreement |
+|---|---|---|---|---|---|---|
+| `bach-bwv885-prelude-2011.mid` | 129 | 24 | 1/3 and 1/4 | 11 | G minor | every assertion |
+| `grieg-op38-7-waltz-2014.mid` | 405 | 39 | 1/3 and 1/4 | 29 | E minor | every assertion |
+| `scarlatti-k525-2008.mid` | 882 | 34 | 1/3 and 1/4 | 42 | F major | every assertion |
+| `rendered-clean` (the committed exercise as MIDI) | 18 | 4 | 1/4 | — (`hands=keep`) | C major | every assertion |
+| `rendered-jitter35` (the same, every onset nudged) | 18 | 4 | 1/4 | — (`hands=keep`) | C major | every assertion |
+
+**No Python rule had to change.** The brief allowed for it ("where the port must differ, the
+Python changes too"); it did not arise. The only Python added is the reference dumper, which
+reads the converter and reports — it changes nothing.
+
+**Every new test file was seen red under its own mutation — and that sentence was false
+when this entry was first written.** The parity test had been mutated (`HAND_MEMORY` 2/5 →
+41/100 and `SWING_HALF_WINDOW` 1/16 → 1/15: five failures; the tie-merge switched off in the
+read-back: six; the two hands swapped: three, and exactly the three fixtures that are split),
+and so had `midiParse` (the reader's restrike rule and its sort: three failures). The other
+five files had only ever been seen green, and the report said "each". The checklist caught the
+plural (working-rules §2.2), and the fix was to go and do it rather than to soften the
+sentence: one mutation per file, restored after each
+(`scratchpad/T29/red.py`), of a single constant or line in the source it covers — a second
+dot allowed in `isNotatable`, `snap`'s halves going down, `conversions.set` dropped, the
+tuplet branch removed from `noteShape`, the hand split's `spanPenalty` set to zero.
+
+**Four of the five went red. The hand split did not**, and that is the more useful half of it.
+Its test *"does not ask a hand to span more than its reach"* passes with the penalty switched
+off entirely: on the chord it uses (48, 55, 60, 64, 67) the cut that minimises the distance
+already leaves both hands inside a tenth, so the test asserted a true property that the
+mechanism it names had nothing to do with — a right outcome with a wrong reason
+(working-rules §2.16), and invisible to any run that was only ever green. A second case was
+added where the distance alone would put 40 and 60 in one hand (twenty semitones, which no
+hand plays) because it leaves the upper block tighter, and only the penalty prevents it; the
+Python was run on the same chord and answers the same way. With it, the file goes red on that
+mutation like the rest.
+
+#### 4. Where the port differs, and why
+
+1. **The merge**, §2 above.
+2. **`makeNotation`'s job is done here** — bars made from the notes, gaps filled with rests,
+   the rests cut into rhythms by the same rule as the notes. music21 does it in the tool.
+3. **Nothing throws on a length no note-head carries.** music21 raises "Cannot convert
+   inexpressible durations to MusicXML" and the command exits 2; an import cannot crash the
+   app, so such a length is written with the nearest note-head, listed in `unwritable`, and the
+   conversion reports itself as failed. The learner is told; the app stays up. (No fixture
+   reaches it: `unwritable` is empty on all five.)
+4. **The two staves share one set of bars**, so a hand that stops early is padded with
+   whole-bar rests. music21 lets each part end where its own notes do. Same notes either way.
+5. **More than two parts is refused with a sentence** rather than written wrongly — reachable
+   only with `hands: 'keep'` on three or more note tracks, which the app's own path never asks
+   for because it merges.
+6. **A one-staff part takes the bass clef when every note is below middle C**, where the tool
+   asks music21's `bestClef`. The app only writes one staff in the `keep` path, which its own
+   import never takes.
+7. `respelledNotes` counts the notes the key spells differently from their plain name, where
+   the tool counts the ones whose spelling it changed from the MIDI reader's. A report line.
+
+#### 5. The door
+
+- `IMPORT_ACCEPT` is `.musicxml,.mxl,.xml,.mid,.midi,.pdf`. `kindForFilename` answers `midi`
+  for the two MIDI extensions — the *door*, not the row: what is stored is the MusicXML, so the
+  row is a score like any other and is levelled, engraved and judged as one.
+- **The assign sheet opens by itself for a converted file, wherever it was imported from**, and
+  this is a deliberate exception to "a plain Library import does not open it" (`04` §4). It is
+  the one import where the app decided things on his behalf, and the sheet says so *before* he
+  agrees: the self-check's own sentence (in red when it failed), what happened to the hands
+  (how many tracks were merged, that the split was by the shape of the lines rather than at a
+  fixed middle C, that a crossing is where it is most often wrong), and which decisions were
+  guesses (the metre, the key, the grid — the notes and their timing are not).
+- The note lives in a module-level map for the visit, not on the row: it is a fact about this
+  moment, not about the score, and putting it on `ImportRow` would mean a database version and
+  a field every other reader has to ignore.
+- **The failures say what to do.** Not MIDI: *"does not start with a MIDI header … export it
+  again from whatever made it."* No notes: *"it may hold only a tempo map, or only a drum
+  track. Export it again with the piano part in it."* SMPTE timing: *"export it again with a
+  beat-based clock."* Nothing is stored in any of those cases, and the Library's status line
+  carries a failed self-check as well.
+- The row is in the list at once: the path is `addImport`, so Entry 54's answer (newest first
+  while anything added this visit is in the list) applies unchanged.
+
+#### 6. The writer
+
+`app/src/engine/musicXmlWriter.ts` already wrote ties, tuplets, two staves and chords — checked
+by reading it, and `midiWriter.test.ts` now pins all four. What it grew: `noteShape`, which
+names the note-head, dot and tuplet for any length the rhythm rule admits; `breve` and `32nd`
+in `NoteType` (a 32nd inside a triplet is a twelfth of a quarter, the shortest slice a bar of
+sixteenths beside a bar of triplets can produce); a `spelling` map per pitch class, because
+`blackKeys` cannot say that a *white* key is written with an accidental; `spelledPitch`, which
+takes the octave from the letter so C flat 4 sounds as B 3; an optional part name and composer;
+and a nullable `bpm`, so a file that states no tempo gets no tempo. Nothing generated reaches
+the new types, and the existing callers are untouched.
+
+#### 7. Numbers, and what is not verified
+
+- Bundle: gzipped JS across `dist/assets/*.js` went from **743,282 to 751,548 bytes, +8,266**;
+  raw from 2,492,062 to about 2.51 MB; the service worker's precache from 22,541.08 to
+  22,561.50 KiB, with the entry count unchanged at 2,185. `docs/01` §6 budgets app JS at **1.5 MB gzipped** — this is half of it. The 20 MB in
+  `audio.spec.ts` is the **soundfont's** budget and is untouched: no dependency was added, and
+  the MIDI reader is a few hundred bytes of chunk walking.
+- Tests: `npx vitest run` — 202 files, 5,082 passed, 3 skipped (the skips are the two rendered
+  fixtures' hand-split case, which is `hands=keep`, and the reference-missing notice).
+  `midi-import.spec.ts` 3 passed, `converted-import.spec.ts` 3 passed (one Playwright suite at
+  a time, on 4173, after `npm run build:app`). `tsc -b` and `lint` clean. The Python harness:
+  25 tests, OK.
+- **Unverified, stated as prominently as the rest.** No score produced by the port has been
+  *heard*, and neither has any produced by the tool. The e2e spec engraves its fixture and
+  counts steps; it does not look at the picture. The hand split is wrong at a crossing — that
+  is pinned as a test, in both languages, not fixed. The key, the metre and the grid are
+  guesses on any real recording, and the sheet says so rather than the tests proving them. The
+  parity fixtures are five files; a MIDI file with a pickup bar, a metre change, a tempo change
+  or a key change part-way through is **not** covered by anything here, and the converter has
+  never claimed to follow one.
+- One finding, reported rather than fixed because `tools/midi-cleanup/` was fenced to rule
+  changes: the command in `test_converter.py`'s own docstring,
+  `python -m unittest discover -s tools/midi-cleanup/tests -t .`, fails here with *"Start
+  directory is not importable"* (the directory is not a package). `-t tools/midi-cleanup/tests`
+  works and is what `docs/08` already prints.
+
+#### 8. Files
+
+New: `app/src/import/midi/{fraction,readMidi,quantise,notatable,handSplit,key,slice,convert}.ts`;
+`app/tests/unit/{midiParse,midiRhythm,midiQuantise,midiHandSplit,midiParity,midiWriter,midiImport}.test.ts`;
+`app/tests/e2e/midi-import.spec.ts`; `app/tests/fixtures/imports/two-hands.mid` and
+`make-two-hands-midi.py`; `tools/midi-cleanup/tests/parity_reference.py`.
+Changed: `app/src/engine/musicXmlWriter.ts`, `app/src/data/importStore.ts`,
+`app/src/ui/assignSheet.ts`, `app/src/ui/screens/LibraryScreen.ts`,
+`app/tests/unit/importStore.test.ts` (it asserted that a `.mid` was rejected),
+`docs/03-content-pipeline.md` (the `[MIDI]` row), `docs/04-ui-spec.md` §4 (the picker and the
+sheet), `docs/08-test-map.md` (eight rows), this entry. Nothing committed.
+
+### Entry 58 — the header that changed height during a run, and the sheet that was re-engraved because of it (2026-09-23)
+
+CI run 35849872652 failed `tests/e2e/score.fuzz.spec.ts` seed 4 on both tries — twinkle
+upright at 390x844, *after "right": the size changed mid-run: scale 0.773877 -> 0.708097* —
+and the same suite was green on the machine the code was written on. Two faults, one of them
+not the one the failure names.
+
+**What was measured, not guessed.** A probe drove the real screen at 390x844: a Wait run
+started, frozen, the header held on screen, then the header made taller a step at a time.
+
+| header | stage | CSS transform scale | engraving zoom | scale x zoom |
+|---|---|---|---|---|
+| 84.89 px | 687.11 px | 0.794618 | 1.98 | 1.5733 |
+| 134.09 px | 637.91 px | 0.794618 | 1.98 | 1.5733 |
+| 152.09 px | 619.91 px | 0.878963 | 1.79 | 1.5733 |
+
+The size on the glass is the engraving zoom **times** the CSS scale, and it did not move: the
+freeze kept the drawn size exactly, as `08` P21e A2 says it must. What moved is the zoom, and
+the CSS scale is the inverse of it. CI's two numbers are the same arithmetic to six places:
+0.773877 x 1.83 = 1.41619 = 0.708097 x 2.00. So `score.fuzz` was reading a proxy — the
+transform — for the thing it cares about, and the proxy moved where the thing did not. The
+check is left as it is on purpose: a sheet re-engraved mid-run is a fault of its own, and this
+is the only test that notices.
+
+**Fault 1 — the header changes height during a run.** `.help-strip__now` is `#score-waiting`,
+and it wrapped freely. The standing line a Wait run shows is longer than the one shown before
+it starts, so at 342 px the header went 84.89 px to 102.56 px **at the moment play was
+pressed**, on this machine, with no font difference involved at all; with the line given wider
+metrics it did the same at 390 px and went to 120.23 px at 342 px. That is the whole of the
+Linux/Windows difference: the same sentence, one line there and two here. `.score-head__row`
+was already `nowrap` (Entry 54) and `.score-status` already ellipsised; the strip under the
+row was not. Fixed in `style.css`, scoped to `.score-head`: both strip lines `nowrap` with
+`text-overflow: ellipsis`. Ellipsis rather than a fixed line count with the overflow hidden,
+because a cut sentence says out loud that it is cut and the `?` sheet still prints the whole
+of it (it reads `textContent`, not the box). `04` section 5f's two lines stay two lines; each
+is now one line tall. Cost, measured: at 342 px the Wait standing line overruns by 10 px and
+loses two characters; at 390 px nothing is cut; off a run nothing is cut at either width, in
+any of the four modes.
+
+**Fault 2 — a height-only stage change re-engraved the sheet mid-run.** `fitToStage` guarded
+only on `fittedAtHeight`, so every change of the stage's height ran `searchForFit`, which is a
+real OSMD render of every slot. New `refitEngraving` in `autoFit.ts` says which changes may:
+a new **width** always (the phone was turned; `08` section 3.3 already releases the run's size
+for that), a new **height** alone only when no run is frozen. The control bar folding away,
+the keyboard strip being switched off and the header growing a line are all height alone.
+`setRunning(false)` now clears the fitted box and re-fits, so the room the fold gave back is
+spent the moment the run ends.
+
+**Tests, each seen red before the fix — and exactly what was reverted to get there.** New
+`tests/e2e/score.head-height.spec.ts`, four tests, at 342 px and 390 px. The two header lines
+below were taken with the `style.css` rule deleted outright. The two engraving lines were taken
+with **one token** changed — `this.frozen !== null` to `false` in the `refitEngraving` call —
+which reproduces the old behaviour for a height-only change but is not the old code; a full
+revert of `WindowRenderer.ts` does not compile, because `fittedAtWidth` and the import then go
+unread (TS6133). Say it that way rather than "the source reverted". The red lines:
+*starting a run must not
+change the header's height — Expected: 84.890625, Received: 102.5625* (342), *a message longer
+than the row must be cut, not wrapped — Expected: 84.890625, Received: 102.5625* (390), *the
+sheet was re-engraved when the header took 96 px more — Expected: 0.824073, Received:
+0.903026* (342) and *... 72 px more — Expected: 0.794618, Received: 0.878963* (390). Green
+after. And `refitEngraving` in `autoFit.test.ts`, red against the old rule with *leaves the
+engraving alone when only the height changed during a run: expected true to be false*. No
+assertion in either is a pixel measured on this machine (`00-invariants` section 2): every one
+compares two measurements taken on the same run.
+
+**Noted, not fixed.** `score.fill.spec.ts` *every corpus piece uses the stage, upright* was
+red on the same CI run and green on retry. The log says `expect(locator).toBeVisible()` on
+`section[data-screen="score"]` timed out at 60 s with **element(s) not found** — the screen
+was never mounted, rather than mounted and mis-sized — on one piece of a loop over the whole
+corpus, and the retry took 44.6 s against the sideways leg's 34.1 s. That reads as the app not
+getting as far as routing under load, not as a fit or a layout fault; nothing here touches it.
+
+Also noted, not fixed: three of `score.spec.ts`'s dev-route screenshots — `chords-ties`
+portrait at 1, 2 and 4 bars — fail here against their local `-win32.png` baselines, by
+10,953, 10,953 and 7,720 pixels. They fail by the same counts with all four of this entry's
+source files — `WindowRenderer.ts`, `autoFit.ts`, `style.css` and `autoFit.test.ts` — written
+back from `HEAD` and rebuilt, so they are not this work; those three baselines are dated
+2026-09-13 where the landscape ones beside them, which pass, are dated 2026-09-16. `-win32.png`
+is gitignored and writes itself, so it rots. They were left rather than regenerated, because a
+regenerated baseline hides the drift from whoever looks next.
+
+**A correction to the diagnosis this started from, which matters for the record.** The brief
+this was worked from expected a stage resize to *release* or *bypass* the frozen scale. It
+does neither: the freeze holds, and CI's two numbers are a run whose stage got **taller**
+(zoom 1.83 to 2.00), which on this machine is the chrome folding away three seconds in — the
+header-open fit at 390 px measures zoom 1.83 and CSS scale 0.773877, CI's first number to six
+places, and the folded fit measures 1.98 here against CI's 2.00. **With the caveat that matters:**
+that 0.773877 was read with no run on, because here the chrome folds before the freeze is taken
+and a run freezes at 1.98. A *running* freeze at zoom 1.83 was never measured on this machine;
+the number matches, the state it was read in does not. So the event is one every
+machine has; what differs is which side of a zoom step the search lands on, and that is
+font-metric sensitive. The header wrapping is a **second, independent** way to make the same
+stage change, and a fault on its own — it was measured here at 342 px with no font difference
+involved. Both are fixed; neither fix depends on which one CI hit.
+
+**Unverified.** Neither fix has been seen on Linux; the reproduction here is the same stage
+change arrived at by a different route (the header made taller directly, rather than a
+sentence wrapping), and whether CI's seed 4 now passes is not known until it runs. The
+header at 342 px and at 390 px was photographed during a Wait run and read: at 342 px the
+line shows *Play the first note. Nothing moves until you…* — the instruction whole, the
+reassurance cut — and at 390 px it is whole. **Follow-up:** `MODE_HELP.wait.now`
+is two characters too long for a 342 px phone; shortening it would put the sentence back whole,
+and it is a wording change in `help.ts` that `help.test.ts` and the docs pin, so it was left alone.
+
+**A third fault, found by the coordinator re-running the suite, and it was mine.** With the
+two fixes above in the tree, `score.fuzz` seed 4 still failed at two workers — *scale 0.839161
+to 0.767832*, which is the same arithmetic again (0.839161 x 1.83 = 1.53566 = 0.767832 x 2.00).
+Instrumenting the walk to print the renderer's own state after every action showed it at
+action #15 to #16: header 84.89 px open, then 0 folded; stage 687 px, then 772; width 390 both
+times; `frozen` set to 0.839161; and the zoom moved 1.83 to 2.00 anyway. **The header's own
+height took two values across all 23 logged actions, 84.89 px and zero** — so this was the
+fold, not a line wrapping. That is one measurement of the container, not five of its children:
+of the things it holds, only `#score-resume` was checked separately, by reading `drawResume`,
+which returns early with the row hidden while `session.running` is true. The status line, the
+strip's state line, the mic meter and `bar n / m` were **not** measured one at a time; the
+container's height not moving is the evidence that none of them grew a line, and it is indirect.
+
+The guard had been disarmed, by the one line of scope added above that nobody asked for.
+`setRunning(false)` had been made to blank `fittedAtHeight`/`fittedAtWidth` and re-fit, so the
+sheet would grow into the room when a run ended. A sitting is full of run ends: a mode change,
+a hand change and `Hear it` are each a `setRunning(false)` followed at once by a
+`setRunning(true)`. Blanking left the next run with **no box to compare against**, and a blank
+box means "nothing engraved yet", which `refitEngraving` must let through whatever a run is
+holding. Worse, the `fitToStage()` that followed the blanking ran against a stage that had not
+changed, so `worthRefitting` said no and it returned **without recording the box** — leaving it
+blank for the rest of the run.
+
+Three changes, and the first is a removal:
+
+- `setRunning(false)` no longer touches the engraving at all. `fitSlots` already gives the room
+  back as a CSS scale, and the next real change of the stage searches with no run to hold it.
+- `fitToStage` records the box it examined **before** the `worthRefitting` early return. "Once
+  per stage size" is what the check above it already meant; not recording made -1 mean two
+  different things.
+- `refit()` no longer blanks the box either, for the same reason and because a turn is a change
+  of *width*, which `refitEngraving` searches again for on its own.
+
+**The test for it, seen red.** A fifth and sixth test in `score.head-height.spec.ts`: a run
+restarted mid-piece three ways in turn — left hand, `Hear it`, both hands — and after each, the
+header made 96 px taller and put back. It asserts the **engraving zoom**, not only the
+transform, because the transform is the proxy the fuzz reads and the freeze converts it so a
+re-engraving is invisible in it. Red against the pre-fix renderer at both widths: *the sheet was
+re-engraved after #score-hands-L, at 96 px of header — Expected: 1.98, Received: 1.72*. **Only
+the first of the three restarts was seen red** — the test stops at the first failed expectation,
+so the `Hear it` branch and the second hand change were never reached pre-fix; all three pass
+after. Green after, and `score.fuzz --workers=2` passed twice in a row where it had failed twice
+in a row — which is the load that exposed it, not a proof that it cannot recur.
+
+A first attempt at this test used the control bar's own fold instead of a header made taller,
+and **passed against the pre-fix renderer**; it was rewritten rather than kept, because a test
+that does not go red proves nothing.
+
+`refit()` was changed too, and it has two callers: `ScoreScreen.ts`'s `onResize` and
+`DevScoreScreen.ts`'s. The dev route's screenshots were therefore re-run afterwards. On the
+full file they give the same three `chords-ties` portrait failures as clean `HEAD` does, on two
+runs of each. One run with these fixes also failed `tuplets-68-4bar-portrait`; a second run with
+the same code did not, and a `HEAD` run of that subset failed `tuplets-68-1bar-landscape`
+instead while `4bar-portrait` passed — so that group flakes on both sources and this change is
+not what moves it.
+
+**Files.** New: `app/tests/e2e/score.head-height.spec.ts`. Changed: `app/src/score/autoFit.ts`
+(`refitEngraving`), `app/src/score/WindowRenderer.ts` (`fitToStage`, `refit`, `setRunning`,
+`fittedAtWidth`; then `setRunning`, `refit` and `fitToStage` again for the third fault),
+`app/src/style.css` (one rule under `.score-head`),
+`app/tests/unit/autoFit.test.ts`, `docs/04-ui-spec.md` section 5f, `docs/08-test-map.md`
+(two rows), this entry. Nothing committed.

@@ -33,6 +33,7 @@ import { allItems } from '../../curriculum/load';
 import type { CatalogItem } from '../../curriculum/types';
 import {
   IMPORT_ACCEPT,
+  conversionFor,
   ImportError,
   addImport,
   deleteImport,
@@ -318,17 +319,24 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     // desktop drag-and-drop, and five sheets in a row would be worse than
     // none.
     let lastRow: ImportRow | undefined;
+    // A file that arrived as MIDI was converted on the way in, and what the
+    // converter decided is worth saying on the way past rather than only
+    // inside the sheet.
+    const converted: string[] = [];
     for (const file of Array.from(files)) {
       try {
         const row = await addImport(file);
         lastRow = row;
         added.push(row.title);
+        const note = conversionFor(row.id);
+        if (note && !note.passed) converted.push(`${row.title}: ${note.check}`);
       } catch (cause) {
         failed.push(cause instanceof ImportError ? cause.message : `${file.name} could not be read.`);
       }
     }
     status.textContent = [
       added.length ? `Imported ${String(added.length)}: ${added.join(', ')}.` : '',
+      ...converted,
       ...failed,
     ]
       .filter(Boolean)
@@ -352,7 +360,12 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     // asks. A plain Library import is not — he is filing something, and a
     // sheet over the list would be in the way of the list he came to see. It
     // is one tap away on the row's Assign button when he does want it.
-    if (lastRow && assign) await openAssignFor(lastRow);
+    // ...and for a file that came in as MIDI, whatever it was imported from.
+    // That is the one import where the app decided things on the learner's
+    // behalf - the metre, the key, the grid, which hand played what - and the
+    // sheet is where it says so, before the score is trusted (T29).
+    const wasConverted = lastRow !== undefined && conversionFor(lastRow.id) !== undefined;
+    if (lastRow && (assign || wasConverted)) await openAssignFor(lastRow);
   }
 
   /**

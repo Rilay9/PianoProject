@@ -957,10 +957,19 @@ out.
 
 - Search + filters: type, track, level range, hands, key, time signature, concept tag, status,
   source. Sorting by level/title/recent.
-- Imports section: **"Import a score"** — a file picker taking `.musicxml`, `.mxl` **and
-  `.pdf`**, plus share-target intents when installed and drag-and-drop on desktop. The list of
-  imported items shows the kind, and offers edit (title, level, tags) and delete. A bad file
-  fails with one sentence from the parser, not a stack trace (§9).
+- Imports section: **"Import a score"** — a file picker taking `.musicxml`, `.mxl`, **`.mid`,
+  `.midi`** and **`.pdf`**, plus share-target intents when installed and drag-and-drop on
+  desktop. The list of imported items shows the kind, and offers edit (title, level, tags) and
+  delete. A bad file fails with one sentence from the parser, not a stack trace (§9).
+- **A MIDI file is converted on the device** (2026-09-23; the owner: *"ideally I could select a
+  file from the app"*). Nothing here runs on a server, so the whole of
+  `tools/midi-cleanup/midi_to_musicxml.py` is ported to `app/src/import/midi/` and runs in the
+  browser: the tracks with notes in them are merged into one line, the onsets are quantised on
+  one grid per bar, the hands are split by voice-leading, and MusicXML is written with the
+  app's own writer. **What is stored is the MusicXML**, so the row is a score like any other —
+  levelled by `score/difficulty.ts`, judgeable in every follow mode, in the backup. A file with
+  no notes in it, one that is not MIDI, or one the converter refuses gets a sentence saying
+  what was wrong and what to do about it (§9), and nothing is stored.
 - **A PDF item is a second-class score on purpose**: it opens in the PDF viewer (§5b), not the
   Score screen, and its card says "pages, not notes" so it is obvious why Wait mode is not
   offered. Anything you want judged has to arrive as MusicXML.
@@ -975,6 +984,16 @@ out.
     not answering; a sheet over the list would be covering the list he came to look at. The
     row carries an **Assign** button beside **Edit**, so the sheet is one tap away when he
     does want it — and it is the way back to the sheet for anything already imported.
+  - **A file that arrived as MIDI is the exception, wherever it was imported from** (T29).
+    That is the one import where the app decided things on his behalf — the metre, the key,
+    the grid, which hand played what — so the sheet opens by itself and says so *before* he
+    agrees to any of it, in three lines: the self-check's own answer ("all N notes the reader
+    found are in the score, and every bar adds up", or what it found instead, in red), what
+    happened to the hands (how many tracks were merged, that the split was by the shape of the
+    lines rather than at a fixed middle C, and that a crossing is where it is most often
+    wrong), and which of the decisions were guesses (the metre, the key and the grid — the
+    notes and their timing are not). The note lives in memory for the visit, not on the row:
+    it is a fact about this moment, not about the score.
   - Assigning is optional: "No rung — just put it in my library" is the first choice, and is
     what an import used to be.
   - Typing over the estimate makes the level *judged* rather than *estimated*, so the app
@@ -2105,6 +2124,41 @@ The lab and the chord chart, which had neither, carry both lines. The strip fold
 the Score screen's header during a run (`data-chrome='folded'`), which is the decision §5
 already made about that header: while the run is going the state line continues in the
 stage's own corner.
+
+**The Score screen's two lines are two lines, and each of them is one line tall.** That
+header is above the notation in the same column, so its height is taken off the stage the
+sheet is engraved and fitted into — which makes a line that can wrap a size change waiting
+to happen. Left free, the state line is one line on one machine and two on another, and it
+grows a line again mid-run the moment the run has something longer to say. CI read the far
+end of that on 2026-09-23: `score.fuzz.spec.ts` seed 4, twinkle upright at 390 px, *the size
+changed mid-run: scale 0.773877 → 0.708097* on both tries, green on the machine the code was
+written on. The two numbers are **one size at two engraving zooms** (0.773877 × 1.83 =
+1.41619 = 0.708097 × 2.00): the freeze had kept the size on the glass exactly, and the sheet
+had still been re-engraved under the learner's hands. A run whose stage grows does that too —
+the chrome folds away three seconds in — so the header is not the only way to arrive there; it
+is the one that can arrive there twice in a run and differently on two machines. Measured on 2026-09-23 with the state
+line given wider metrics, the header grew by a line at 390 px and by two at 342 px, and the
+stage lost every one of them.
+
+So both lines of the strip are `nowrap` with `text-overflow: ellipsis` **inside
+`.score-head`** — ellipsis rather than a fixed count of hidden lines, because a cut sentence
+says out loud that it is cut and the whole of it is one tap away in the ? sheet, which prints
+the element's text and not its box. Scoped to this header: the lab and the chord chart carry
+the mode's whole sentence and have the room, and nothing there is engraved against the space
+left over. The cost, measured at 342 px: one standing line in Wait mode overruns by about ten
+pixels and loses its last two characters to the ellipsis; at 390 px nothing is cut.
+
+And the other half of the same rule, in the renderer: **a stage change that is only a change
+of height must not search the engraving again while a run is holding its size**
+(`refitEngraving` in `app/src/score/autoFit.ts`). Nothing else may blank the box that rule
+compares against, either — a blank box means *nothing has been engraved yet*, which the rule has
+to let through whatever a run is holding, so blanking it at a run's end quietly disarmed the
+whole thing for the next run, and a sitting is full of run ends (a mode change, a hand change,
+`Hear it`). A new *width* is a new page for the
+engraver and always may — `08` §3.3 already says a turn releases the size a run is holding
+and the run continues at the new one. A new height alone is only room, and the control bar
+folding away, the keyboard strip being switched off and the header growing a line are all
+that; off a run the sheet grows into it, during one it does not.
 
 **First sight.** The first time a drill kind or a Score mode is opened, a three-line card
 says what you will hear or see, what to do, and what counts (the entry's

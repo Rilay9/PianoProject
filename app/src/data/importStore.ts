@@ -19,11 +19,28 @@
 import { openDatabase, type ImportKind, type ImportRow } from './db';
 import type { CatalogItem } from '../curriculum/types';
 import { isMxl, toMusicXml } from '../score/mxl';
+import {
+  ConvertError,
+  convertMidi,
+  titleFromFilename,
+  type ConversionReport,
+} from '../import/midi/convert';
+import { MidiReadError } from '../import/midi/readMidi';
 
 /** docs/00 D19: this is a personal build, but a 100 MB PDF still helps nobody. */
 export const MAX_IMPORT_BYTES = 64 * 1024 * 1024;
 
-export const IMPORT_ACCEPT = '.musicxml,.mxl,.xml,.pdf';
+/**
+ * What the file picker offers.
+ *
+ * `.mid` and `.midi` are here because the owner asked to pick a MIDI file from
+ * the app (2026-09-22): nothing runs on a server, so the conversion the command
+ * line did (`tools/midi-cleanup/midi_to_musicxml.py`) happens on the device
+ * (`src/import/midi/`). What is stored is the MusicXML it writes, so everything
+ * downstream — levelling, the Score screen, every follow mode - treats it as
+ * the score it now is.
+ */
+export const IMPORT_ACCEPT = '.musicxml,.mxl,.xml,.mid,.midi,.pdf';
 
 /** Every imported id starts with this, so an id alone says where to look. */
 export const IMPORT_ID_PREFIX = 'import.';
@@ -104,13 +121,101 @@ export function importIdFor(title: string, taken: ReadonlySet<string>): string {
   return id;
 }
 
-export function kindForFilename(name: string): ImportKind | null {
+/**
+ * What a file is, by its name — which is not the same as what it is stored as.
+ *
+ * A `.mid` is converted on the way in and stored as `musicxml`, because that is
+ * what it becomes; `midi` names the *door* it came through, and only
+ * `addImport` needs to know.
+ */
+export type ImportFileKind = ImportKind | 'midi';
+
+export function kindForFilename(name: string): ImportFileKind | null {
   const lower = name.toLowerCase();
   if (lower.endsWith('.pdf')) return 'pdf';
+  if (lower.endsWith('.mid') || lower.endsWith('.midi')) return 'midi';
   if (lower.endsWith('.mxl') || lower.endsWith('.musicxml') || lower.endsWith('.xml')) {
     return 'musicxml';
   }
   return null;
+}
+
+/** What the converter decided about one imported MIDI file, and how to say it. */
+export interface ConversionNote {
+  report: ConversionReport;
+  /** The self-check's answer, in a sentence. */
+  check: string;
+  /** What happened to the hands, in a sentence. */
+  hands: string;
+  /** True when nothing was lost, nothing added and every bar adds up. */
+  passed: boolean;
+}
+
+/**
+ * The conversion notes for the imports made in this visit, by id.
+ *
+ * **In memory on purpose.** This is what the assign sheet shows *before the
+ * learner agrees to the import* — “here is what the app decided about your
+ * file, do you still want it” — which is a fact about this moment and not
+ * about the score. Writing it onto the row would mean a database version and a
+ * field every other reader of `ImportRow` would have to ignore, for something
+ * nothing reads tomorrow.
+ */
+const conversions = new Map<string, ConversionNote>();
+
+export const conversionFor = (id: string): ConversionNote | undefined => conversions.get(id);
+
+/** Test hook: forget this visit's conversion notes, as a reload would. */
+export function forgetConversionsForTest(): void {
+  conversions.clear();
+}
+
+/** The self-check's answer, in the words the tool itself prints. */
+export function checkSentence(report: ConversionReport): string {
+  if (report.passed) {
+    return (
+      `Checked: all ${String(report.notesIn)} notes the reader found are in the score, ` +
+      'and every bar adds up.'
+    );
+  }
+  const trouble: string[] = [];
+  if (report.lost.length > 0) trouble.push(`${String(report.lost.length)} note(s) lost`);
+  if (report.added.length > 0) trouble.push(`${String(report.added.length)} note(s) added`);
+  if (report.brokenBars.length > 0) {
+    trouble.push(`${String(report.brokenBars.length)} bar(s) that do not add up`);
+  }
+  if (report.unwritable.length > 0) {
+    trouble.push(`${String(report.unwritable.length)} length(s) no note can carry`);
+  }
+  return (
+    `The score was written, but the check found ${trouble.join(', ')}. ` +
+    'Read it before trusting it, or convert the file with a different grid on the command line.'
+  );
+}
+
+/** What happened to the hands, in a sentence. */
+export function handsSentence(report: ConversionReport): string {
+  const parts: string[] = [];
+  if (report.merged > 1) {
+    parts.push(
+      `The ${String(report.merged)} tracks with notes in them (${report.mergedNames.join(', ')}) ` +
+        'were merged into one line first.',
+    );
+  }
+  if (report.hands === 'split into two') {
+    const right = report.handMedian.right;
+    const left = report.handMedian.left;
+    parts.push(
+      'The hands were split by the shape of the lines rather than at a fixed middle C' +
+        (right !== undefined && left !== undefined
+          ? `, and the right hand’s middle note sits ${String(right - left)} semitones above the left’s.`
+          : '.'),
+    );
+    parts.push('A crossing of the hands is where this is most often wrong — check those bars.');
+  } else {
+    parts.push(`The file’s own parts were kept: ${report.parts.join(', ')}.`);
+  }
+  return parts.join(' ');
 }
 
 /** `%PDF-` — the magic every PDF starts with. */
@@ -220,7 +325,7 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
   const kind = kindForFilename(file.name);
   if (!kind) {
     throw new ImportError(
-      `${file.name} is not a score the app can read — import a .musicxml, .mxl or .pdf file.`,
+      `${file.name} is not a score the app can read — import a .musicxml, .mxl, .mid or .pdf file.`,
     );
   }
   if (file.size > MAX_IMPORT_BYTES) {
@@ -243,7 +348,37 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
   const taken = new Set((await db.getAllKeys('imports')).map(String));
 
   let row: ImportRow;
-  if (kind === 'pdf') {
+  let note: ConversionNote | null = null;
+  if (kind === 'midi') {
+    const title = titleFromFilename(file.name);
+    let conversion;
+    try {
+      conversion = convertMidi(bytes, { title });
+    } catch (cause) {
+      // The converter's own sentence, which says what was wrong and what to do.
+      // Never a silent failure and never a stack-trace fragment (`04` §4).
+      throw new ImportError(
+        cause instanceof MidiReadError || cause instanceof ConvertError
+          ? `${file.name}: ${cause.message}`
+          : `${file.name} could not be converted from MIDI.`,
+      );
+    }
+    note = {
+      report: conversion.report,
+      check: checkSentence(conversion.report),
+      hands: handsSentence(conversion.report),
+      passed: conversion.report.passed,
+    };
+    row = {
+      id: importIdFor(title, taken),
+      kind: 'musicxml',
+      title,
+      data: conversion.xml,
+      bytes: byteSizeOf(conversion.xml),
+      tags: [],
+      addedAt: now.toISOString(),
+    };
+  } else if (kind === 'pdf') {
     if (!isPdf(bytes)) {
       throw new ImportError(`${file.name} is named .pdf but does not contain a PDF.`);
     }
@@ -287,6 +422,7 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
   }
 
   await db.put('imports', row);
+  if (note) conversions.set(row.id, note);
   addedSinceLoad.add(row.id);
   notify();
   return row;

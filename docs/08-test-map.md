@@ -153,6 +153,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `content-render.spec.ts` — every catalog item through the app's loader (`03` §3 step 10); writes `build/render-manifest.json`, keyed by file hash and OSMD version.
 - `converted-import.spec.ts` — a file the MIDI converter wrote, through the Library's own import door and onto the Score screen; the fixture is this repository's own exercise rendered to MIDI and back, not a real recording.
 - `dark-ink.spec.ts` — notation readable in the dark wherever an `OsmdView` is on screen, the drill card included.
+- `midi-import.spec.ts` — a `.mid` picked in the app: it converts on the device, the assign sheet says what the converter decided before anything is agreed to, the row is in the Library at once and opens on the Score screen, and the dev harness walks the stored bytes with step count equal to cursor-step count. The fixture is two hand-written tracks, one per hand (`tests/fixtures/imports/two-hands.mid`).
 - `drills-harmony.spec.ts` — the seven P12b drill kinds, each answered with scripted input.
 - `drills-review.spec.ts` — a miss pauses, going over the missed ones, Simon and its three levels of help, the chain building up on a staff as it sounds, and which kinds draw a staff and when; observed with a `MutationObserver` and, for the lit chain, a sampler that reads the card, the keys and the staff together (`04` §5c, §5c-2). It also writes the drill-staff pictures to `build/staff/` — the judged dictation card and a reading card at three shapes in both schemes, taken to be looked at and asserted on only for what is present.
 - `doors.spec.ts` — the three doors (`04` §2, §2b, §4): Today's tools, the Library's *Open as…* sheet, free play; pictures under `build/doors/`.
@@ -223,6 +224,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `score.density.spec.ts` — how much room the music may take and where it sits: never stretched past natural spacing.
 - `score.fill.spec.ts` — the music uses the screen it is on: a width floor on the dense pieces.
 - `score.fuzz.spec.ts` — the seeded random walk over the whole Score screen, invariants after every action.
+- `score.head-height.spec.ts` — the Score screen's header is the same height all through a run (the first correct notes, a message longer than the row, a wider font); a stage whose *height* changes mid-run leaves the drawn sheet's transform alone; and a run restarted mid-piece (hand change, `Hear it`) keeps its **engraving zoom** through a header that grows, which the transform alone cannot show.
 - `score.hearbar.spec.ts` — long-press a bar to hear it: one bar, both hands, once, the run put back.
 - `score.ladder-route.spec.ts` — `?ladder=1` lands where it says (`04` §3d, `05` §6): one of the rung's own exercises, the whole of it looped, the Ladder row pressed — and the three refusals that leave both controls alone.
 - `score.latch.spec.ts` — the learner's first note starts the clock (T8): a Tempo run holds on its first note, the keys and Space start one, and a run with no input keeps time by the clock.
@@ -270,6 +272,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `drillStaffPolicy.test.ts` — when each drill kind draws a staff, and why each is in the bucket it is in (`04` §5c).
 - `articulationVoicingShaping.test.ts` — staccato, legato, voicing and the half pedal: the edges of each judgement.
 - `autoFit.test.ts` — fitting the sheet to the screen: zoom grows the staff's height and leaves the width alone.
+- `autoFit.test.ts` › `refitEngraving` — which stage change may re-search the engraving: a new width always (the phone was turned), a new height only off a run, because a run holds a *drawn* size and the zoom is half of it.
 - `backingLoop.test.ts` — one bar of the chord chart's backing loop: what plays, on which beat, at what pitch.
 - `backup.test.ts` — export and restore: a PDF's bytes through base64, a merge that keeps later progress, a newer file refused.
 - `backupStreaming.test.ts` — the backup never exists as one string.
@@ -324,6 +327,13 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `help.test.ts` — every mode, drill kind and tool has all four answers in `ui/help.ts`, in sentences, never in the code's own names for the modes, and the same lines `04` §5f prints; and every number a drill puts in `detail` is named in words rather than printed as its field name.
 - `importOverlay.test.ts` — an imported piece becomes an option of the rung.
 - `importStore.test.ts` — importing the owner's scores: the happy path and the parser's one sentence.
+- `midiParse.test.ts` — the MIDI reader on files built byte by byte: onsets in quarter notes, a release written as a note-on of velocity zero, a pitch struck again while it is down, a note still down at the end, running status, SysEx skipped by its length; and the note-track merge, which is the one rule the app has and the command-line converter does not.
+- `midiRhythm.test.ts` — what one note-head can carry, a length cut into pieces that are rhythms, and the line cut into chords with the ties that go with it.
+- `midiQuantise.test.ts` — one grid per bar (two bars, two answers), a note shorter than the grid, the swing gate either way, two strikes of one pitch pulled apart.
+- `midiHandSplit.test.ts` — the hand split, including the two places it is provably wrong: lines that swap hands at a crossing, and a simultaneous crossing cut by pitch alone.
+- `midiParity.test.ts` — the port against the converter it is a port of, stage by stage, on the three Disklavier recordings and two renderings of a committed exercise: the same tracks, grid, swing counts, quantised onsets, hand split and boundary, key, self-check, and the same notes in the same hands for the same durations, read back off each side's written file. Skips with a message naming `tools/midi-cleanup/tests/parity_reference.py` when `build/midi-parity/` is not there.
+- `midiWriter.test.ts` — what the MusicXML writer grew for the import: a note-head for any length the rhythm rule admits, a spelling per pitch class, two staves with a backup that counts no chord member twice, both halves of a tie, and no tempo at all when the source states none.
+- `midiImport.test.ts` — the door: the picker offers `.mid` and `.midi`, the row is stored as MusicXML on two staves, the conversion note says what was checked and what happened to the hands, and a file with no notes fails with a sentence saying what to do.
 - `importSummaries.test.ts` — the catalog overlay stops reading every score's bytes on every screen.
 - `inputPolicy.test.ts` — the microphone's effect on playback, metronome and scoring.
 - `inputSources.test.ts` — `ScreenKeyboardSource` and `ReplaySource`, and the replay script parser.
@@ -507,4 +517,5 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 
 Outside the content pipeline, because the converter is (`03` §3's source table says so).
 
+- `parity_reference.py` — not a test: it writes what each stage of the converter decided, per fixture, into `build/midi-parity/`, which is what `app/tests/unit/midiParity.test.ts` compares the TypeScript port against. Run it after any change to the converter's rules.
 - `test_converter.py` — the committed harness for `midi_to_musicxml.py`: the hand split and the three places it is provably wrong, one quantisation grid per bar, a length that is not a rhythm cut and tied, the swing gate, the two hands written as one braced grand staff, and — counted from the file's own bytes rather than from the reader under test — that no note is lost or invented. The cases that need the three real Disklavier recordings are `skipUnless`, because `build/` is gitignored; the skip message names the files.

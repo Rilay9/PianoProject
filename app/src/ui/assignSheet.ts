@@ -13,7 +13,7 @@
 import type { Curriculum, Lesson } from '../curriculum/types';
 import type { ImportRow } from '../data/db';
 import { loadCurriculum } from '../curriculum/load';
-import { updateImport } from '../data/importStore';
+import { conversionFor, updateImport, type ConversionNote } from '../data/importStore';
 import { estimateLevelFor } from '../score/estimateImport';
 import { button, el, openSheet } from './widgets';
 
@@ -27,6 +27,15 @@ export interface AssignResult {
 export interface AssignOptions {
   /** The rung to pre-select, from `#/library?for=<lessonId>`. */
   preselect?: string;
+  /**
+   * What the converter decided, for a file that arrived as MIDI.
+   *
+   * Shown **before** the learner agrees to the import, because a conversion is
+   * a pile of guesses — the grid, the key, which hand played what — and the
+   * moment to say so is while they are still looking at the file rather than
+   * three screens later when the score reads oddly.
+   */
+  conversion?: ConversionNote;
   /** The runtime estimate (§4.4), shown as `≈` and editable. */
   estimated?: number;
   onSaved?: (row: ImportRow) => void;
@@ -63,6 +72,35 @@ export function openAssignSheet(
       text: 'Assigning it to a rung makes it one of that rung’s song options — it counts towards finishing the rung, and it turns up when you ask for something else to play.',
     }),
   );
+
+  // --- what the conversion decided ---------------------------------------
+  // Looked up here rather than passed in, because every screen that can reach
+  // this sheet reaches *this function* — the Library calls it directly, the
+  // share path and the lesson page through `openAssignSheetFor` — and a note
+  // shown by one door and not the others is the fault this sheet exists to
+  // avoid.
+  const conversion = options.conversion ?? conversionFor(row.id);
+  if (conversion) {
+    const block = el('section.block', { id: 'assign-conversion' });
+    block.append(el('h3', { text: 'Converted from MIDI' }));
+    const check = el('p', {
+      id: 'assign-conversion-check',
+      text: conversion.check,
+      className: conversion.passed ? 'muted' : 'status--error',
+    });
+    block.append(check);
+    block.append(el('p.muted', { id: 'assign-conversion-hands', text: conversion.hands }));
+    block.append(
+      el('p.muted', {
+        id: 'assign-conversion-guesses',
+        text:
+          `Written in ${conversion.report.timeSignature}, key of ${conversion.report.key} ` +
+          `(${conversion.report.keyFrom}), on a grid of ${conversion.report.grid} chosen bar by bar. ` +
+          'Those three are guesses; the notes and their timing are not.',
+      }),
+    );
+    sheet.body.append(block);
+  }
 
   // --- the rung ----------------------------------------------------------
   const rungSelect = el('select', { id: 'assign-lesson' }) as HTMLSelectElement;
