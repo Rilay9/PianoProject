@@ -1246,6 +1246,32 @@ export function ScoreScreen(router: Router): HTMLElement {
   const barsUp = button('+', () => setBars(settings.barsPerWindow + 1), 'score-bars-up');
   barsUp.setAttribute('aria-label', 'One bar more in the window');
 
+  /**
+   * The stepper's own row, named so that it can say two things the stepper
+   * cannot (T32, `04` section 5).
+   *
+   * **When the count is not the count drawn**, the row says so in words —
+   * *4 asked, 2 shown: 4 would be too small here* — and the stepper stays
+   * live, because the owner's order of the goods puts readability and the
+   * look-ahead above the number and `00-invariants` section 1 forbids a
+   * control that looks pressable and does nothing. Silently drawing a
+   * different number is what T30 photographed 266 times.
+   *
+   * **In `Scroll` the row is gone**, not greyed: the whole sheet is drawn
+   * there and a window has no meaning, so it was a live control over nothing
+   * (`04` section 0 R4). The sentence that replaces it is on the Layout row.
+   */
+  const barsRow = menuRow(
+    'Bars in window',
+    'How much music is on the screen at once. Fewer bars means bigger notes. If the number you ask for would make the notes too small to read, the app shows fewer and says so.',
+    barsDown,
+    barsLabel,
+    barsUp,
+  );
+  barsRow.id = 'score-bars-row';
+  /** What the window is actually drawing, as the renderer last reported it. */
+  let barsShown = settings.barsPerWindow;
+
   // The same glyphs as the bars stepper above, which is the point: two
   // steppers side by side in one sheet were drawn with three different
   // characters — `−` (minus) and `+` for bars, `－` and `＋` (the fullwidth
@@ -1285,6 +1311,12 @@ export function ScoreScreen(router: Router): HTMLElement {
   const layoutWindow = button('Window', () => setLayout('window'), 'score-layout-window');
   const layoutScroll = button('Scroll', () => setLayout('scroll'), 'score-layout-scroll');
   layoutGroup.append(layoutWindow, layoutScroll);
+  const layoutRow = menuRow(
+    'Layout',
+    'A screenful at a time, or one long sheet you scroll through. Bars in window applies to the Window layout.',
+    layoutGroup,
+  );
+  layoutRow.id = 'score-layout-row';
 
   /**
    * Keys, ribbon or nothing (P21d A6).
@@ -1381,9 +1413,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     menuRow('Loop', 'Repeat a few bars over and over until they are yours. Double-tap the sheet to mark them.', loopButton),
     ladderRow,
     menuRow('Metronome', 'The click, on or off.', metronomeButton),
-    menuRow('Bars in window', 'How much music is on the screen at once. Fewer bars means bigger notes.', barsDown, barsLabel, barsUp),
+    barsRow,
     menuRow('Size', 'Bigger or smaller notes, around whatever already fits.', zoomOut, zoomLabel, zoomIn),
-    menuRow('Layout', 'A screenful at a time, or one long sheet you scroll through.', layoutGroup),
+    layoutRow,
     menuRow('Keys', 'The keyboard under the score: the full strip, a thin ribbon that names the note, or nothing.', keysGroup),
     menuRow('Sound', 'Whether the phone or the piano plays the hand you are not practising.', destinationButton),
     // Under Sound, which is where it comes out, and next to the hand buttons'
@@ -1443,6 +1475,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // of. `setLayout` has always guarded this; these two never did.
     if (wanted === settings.barsPerWindow) return;
     settings.barsPerWindow = wanted;
+    barsShown = wanted;
     updateSettings({ barsPerWindow: settings.barsPerWindow });
     renderer?.setBarsPerWindow(settings.barsPerWindow);
     // A re-engraving recreates every element the run's judgements are keyed
@@ -2917,6 +2950,26 @@ export function ScoreScreen(router: Router): HTMLElement {
     // whether the row still fits.
     fitBarControls();
     barsLabel.textContent = `${settings.barsPerWindow} bar${settings.barsPerWindow === 1 ? '' : 's'}`;
+    // Scroll draws the whole piece and scrolls it, so there is no window for
+    // the number to be about (`04` section 0 R4). The Layout row says where
+    // the setting applies, so the sentence is not simply lost with the row.
+    barsRow.hidden = settings.layout === 'scroll';
+    setRowLabel(
+      barsRow,
+      barsShown < settings.barsPerWindow
+        ? `Bars in window — ${String(settings.barsPerWindow)} asked, ${String(barsShown)} shown: ${
+            // The reason the count fell (T34): over 100 % Size it is the size
+            // asked for, not the screen being too small for the music.
+            settings.zoom > 1
+              ? `at ${String(Math.round(settings.zoom * 100))} % only ${String(barsShown)} of ${String(settings.barsPerWindow)} fit here`
+              : `${String(settings.barsPerWindow)} would be too small here`
+          }`
+        : 'Bars in window',
+    );
+    setRowLabel(
+      layoutRow,
+      settings.layout === 'scroll' ? 'Layout — Bars in window applies to the Window layout' : 'Layout',
+    );
     zoomLabel.textContent = `${String(Math.round(settings.zoom * 100))}%`;
     // The ends of both ranges, said rather than silently absorbed. Pressing a
     // stepper that has nowhere left to go used to look exactly like a control
@@ -3119,6 +3172,14 @@ export function ScoreScreen(router: Router): HTMLElement {
         model: loaded,
         musicXml,
         barsPerWindow: settings.barsPerWindow,
+        // The third of the three goods, reported back rather than assumed:
+        // when readability or the look-ahead take bars off the window, the
+        // row above says so in words (T32).
+        onWindow: (shown) => {
+          if (shown === barsShown) return;
+          barsShown = shown;
+          render();
+        },
         zoom: settings.zoom,
         layout: settings.layout,
         handsFocus: hands,

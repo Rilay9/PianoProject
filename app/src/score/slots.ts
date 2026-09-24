@@ -24,39 +24,91 @@ import type { ScoreStep } from './types';
 /** A slot's index, in the order they are drawn: 0 at the top. */
 export type SlotIndex = number;
 
-/** How many printed bars one slot holds, for a window of `barsPerWindow`. */
-export function barsPerSlot(barsPerWindow: number): number {
-  return Math.max(1, Math.floor(barsPerWindow / 2));
+/**
+ * How many printed bars one system holds, for a window of `barsPerWindow`
+ * laid over `systemsPerWindow` systems.
+ *
+ * It used to be `max(1, floor(barsPerWindow / 2))`, written when SLOTS meant
+ * exactly two systems. Packing to two-to-four systems broke it: what was on
+ * the glass was **slots x floor(n/2)**, which equals *n* only by coincidence,
+ * so 1, 2 and 3 were one setting and 266 of T30's 483 cells drew a number
+ * nobody had asked for (`docs/decisions/2026-09-23-score-window-strategy.md`
+ * section 2.1). The window is now the number asked and the systems are how it
+ * is laid out, so this is a division rather than a halving, rounded **up** —
+ * three bars over two systems is two and one, not one and one.
+ */
+export function barsPerSlot(barsPerWindow: number, systemsPerWindow = 1): number {
+  return Math.max(1, Math.ceil(Math.max(1, barsPerWindow) / Math.max(1, systemsPerWindow)));
 }
 
 /**
  * The block of printed bars a bar belongs to.
  *
- * Blocks tile the piece from bar 0, so a bar is always in exactly one, and the
- * slot showing it does not depend on how the learner arrived there — a seek, a
- * restart and a repeat all land on the same block for the same bar.
+ * **Windows tile the piece; systems tile the window.** A window is
+ * `barsPerWindow` bars and always exactly that, and inside it the bars are
+ * split over `systemsPerWindow` systems of `barsPerSlot` each, the last one
+ * clipped at the window's end. That clipping is the whole of why the count is
+ * exact: three bars over two systems is 2 + 1, and the two systems hold three
+ * bars rather than four.
+ *
+ * A bar is still in exactly one block, so the block showing it does not depend
+ * on how the learner arrived there — a seek, a restart and a repeat all land
+ * on the same block for the same bar.
  */
 export function rangeAt(
   sourceMeasureIndex: number,
   barsPerWindow: number,
   sourceMeasureCount: number,
   pickup = false,
+  systemsPerWindow = 1,
 ): MeasureRange {
-  const size = barsPerSlot(barsPerWindow);
   const last = Math.max(0, sourceMeasureCount - 1);
   const bar = Math.min(Math.max(0, sourceMeasureIndex), last);
-  // A pickup goes with the bars after it: the first block is the pickup and
-  // the `size` bars it leads into, and the blocks after tile from bar 1. It
-  // is the upbeat to bar 1, and a block on its own would be one note drawn
+  const per = Math.max(1, barsPerWindow);
+  // A pickup goes with the bars after it: the first window is the pickup and
+  // the `per` bars it leads into, and the windows after tile from bar 1. It
+  // is the upbeat to bar 1, and a window on its own would be one note drawn
   // the width of the screen — and the engraver cannot draw a range that
   // starts at bar 1 without the pickup in front (`OsmdView.setRange`).
-  const from = pickup
-    ? bar <= size
+  const windowFrom = pickup
+    ? bar <= per
       ? 0
-      : Math.floor((bar - 1) / size) * size + 1
-    : Math.floor(bar / size) * size;
-  const to = pickup && from === 0 ? size : from + size - 1;
-  return { fromMeasure: from, toMeasure: Math.min(to, last) };
+      : Math.floor((bar - 1) / per) * per + 1
+    : Math.floor(bar / per) * per;
+  const windowTo = Math.min(pickup && windowFrom === 0 ? per : windowFrom + per - 1, last);
+  if (pickup && windowFrom === 0) {
+    // The pickup rides with the first system of its window, whatever the
+    // window is split into. Splitting the window evenly would otherwise hand
+    // the engraver a block starting at bar 1 as soon as there is more than one
+    // system — a range it cannot draw, because the upbeat has to be in front
+    // of it (`OsmdView.setRange`).
+    const size = barsPerSlot(windowTo, systemsPerWindow);
+    const k = bar <= 1 ? 0 : Math.floor((bar - 1) / size);
+    const from = k === 0 ? 0 : 1 + k * size;
+    return { fromMeasure: from, toMeasure: Math.min(1 + (k + 1) * size - 1, windowTo) };
+  }
+  const size = barsPerSlot(windowTo - windowFrom + 1, systemsPerWindow);
+  const from = windowFrom + Math.floor((bar - windowFrom) / size) * size;
+  return { fromMeasure: from, toMeasure: Math.min(from + size - 1, windowTo) };
+}
+
+/**
+ * The whole window a bar belongs to — the same tiling as `rangeAt`, before it
+ * is split into rows. The rows after the window's last bar are the look-ahead
+ * (T34 rule 2), and are drawn greyed.
+ */
+export function windowAt(
+  sourceMeasureIndex: number,
+  barsPerWindow: number,
+  sourceMeasureCount: number,
+  pickup = false,
+): MeasureRange {
+  const last = Math.max(0, sourceMeasureCount - 1);
+  const bar = Math.min(Math.max(0, sourceMeasureIndex), last);
+  const per = Math.max(1, barsPerWindow);
+  const from = pickup ? (bar <= per ? 0 : Math.floor((bar - 1) / per) * per + 1) : Math.floor(bar / per) * per;
+  const to = Math.min(pickup && from === 0 ? per : from + per - 1, last);
+  return { fromMeasure: from, toMeasure: to };
 }
 
 export function inRange(range: MeasureRange | null, sourceMeasureIndex: number): boolean {
@@ -90,12 +142,13 @@ export function nextRangeAfter(
   barsPerWindow: number,
   sourceMeasureCount: number,
   pickup = false,
+  systemsPerWindow = 1,
 ): MeasureRange | null {
   for (let i = Math.max(0, fromStepIndex); i < steps.length; i += 1) {
     const step = steps[i];
     if (!step) continue;
     if (!inRange(range, step.sourceMeasureIndex)) {
-      return rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount, pickup);
+      return rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount, pickup, systemsPerWindow);
     }
   }
   return null;
@@ -114,6 +167,7 @@ export function blocksAhead(
   sourceMeasureCount: number,
   count: number,
   pickup = false,
+  systemsPerWindow = 1,
 ): MeasureRange[] {
   const out: MeasureRange[] = [];
   let current = range;
@@ -123,7 +177,7 @@ export function blocksAhead(
     while (at < steps.length && inRange(current, steps[at]?.sourceMeasureIndex ?? -1)) at += 1;
     const step = steps[at];
     if (!step) break;
-    current = rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount, pickup);
+    current = rangeAt(step.sourceMeasureIndex, barsPerWindow, sourceMeasureCount, pickup, systemsPerWindow);
     out.push(current);
   }
   return out;
@@ -145,11 +199,12 @@ export function blocksBehind(
   sourceMeasureCount: number,
   count: number,
   pickup = false,
+  systemsPerWindow = 1,
 ): MeasureRange[] {
   const out: MeasureRange[] = [];
   let current = range;
   while (out.length < count && current.fromMeasure > 0) {
-    const previous = rangeAt(current.fromMeasure - 1, barsPerWindow, sourceMeasureCount, pickup);
+    const previous = rangeAt(current.fromMeasure - 1, barsPerWindow, sourceMeasureCount, pickup, systemsPerWindow);
     // A block that does not actually move backwards would loop for ever.
     if (previous.fromMeasure >= current.fromMeasure) break;
     out.push(previous);
@@ -203,11 +258,12 @@ export function planSlots(
   sourceMeasureCount: number,
   slotCount = current.ranges.length,
   pickup = false,
+  systemsPerWindow = 1,
 ): SlotPlan {
   const count = Math.max(1, slotCount);
   const step = steps[stepIndex];
   const bar = step ? step.sourceMeasureIndex : 0;
-  const wanted = rangeAt(bar, barsPerWindow, sourceMeasureCount, pickup);
+  const wanted = rangeAt(bar, barsPerWindow, sourceMeasureCount, pickup, systemsPerWindow);
   const held: (MeasureRange | null)[] = Array.from({ length: count }, (_, i) => current.ranges[i] ?? null);
 
   let cursor = held.findIndex((range) => sameRange(range, wanted));
@@ -215,7 +271,16 @@ export function planSlots(
   if (cold) cursor = 0;
   const crossed = !cold && cursor !== current.cursor;
 
-  const ahead = blocksAhead(steps, stepIndex, wanted, barsPerWindow, sourceMeasureCount, count - 1, pickup);
+  const ahead = blocksAhead(
+    steps,
+    stepIndex,
+    wanted,
+    barsPerWindow,
+    sourceMeasureCount,
+    count - 1,
+    pickup,
+    systemsPerWindow,
+  );
 
   // A cold draw near the end has fewer blocks ahead than there are slots to
   // fill, and nothing already on the screen to keep. Fill downwards from the
@@ -224,7 +289,14 @@ export function planSlots(
   // screen with what led up to it above, rather than alone at the top with the
   // rest black (`08` invariant 8).
   if (cold && ahead.length < count - 1) {
-    const behind = blocksBehind(wanted, barsPerWindow, sourceMeasureCount, count - 1 - ahead.length, pickup);
+    const behind = blocksBehind(
+      wanted,
+      barsPerWindow,
+      sourceMeasureCount,
+      count - 1 - ahead.length,
+      pickup,
+      systemsPerWindow,
+    );
     const at = behind.length;
     const filled: (MeasureRange | null)[] = Array.from({ length: count }, () => null);
     behind.forEach((range, i) => (filled[at - 1 - i] = range));

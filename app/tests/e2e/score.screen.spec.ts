@@ -279,9 +279,23 @@ test.describe('score screen', () => {
       return (await inkBox(page)).width;
     };
 
+    // T34: Size multiplies the fit, and over 100 % the window drops bars to
+    // draw the rest bigger — so the ink can get *narrower* while every note
+    // grows. "Bigger" is the staff's height, not the ink's width.
+    const staffNow = (): Promise<number> =>
+      page.evaluate(() => {
+        let h = Number.POSITIVE_INFINITY;
+        for (const line of document.querySelectorAll('#score-stage .is-front .staffline')) {
+          const box = line.getBoundingClientRect();
+          if (box.height > 1) h = Math.min(h, box.height);
+        }
+        return h;
+      });
     const before = await settledInk();
+    const staffBefore = await staffNow();
     await page.locator('#score-zoom-in').click();
-    expect(await settledInk()).toBeGreaterThan(before);
+    await settledInk();
+    expect(await staffNow()).toBeGreaterThan(staffBefore);
     await page.locator('#score-zoom-out').click();
     expect(await settledInk()).toBeCloseTo(before, 0);
 

@@ -37,12 +37,20 @@ function r(from: number, to: number): MeasureRange {
   return { fromMeasure: from, toMeasure: to };
 }
 
-/** Walks a whole piece and records what each slot holds at every step. */
+/**
+ * Walks a whole piece and records what each slot holds at every step.
+ *
+ * `systems` is how many systems the window is laid over, which T32 made an
+ * input rather than an assumption: these walks are all written for a window
+ * split in two, which is what the arithmetic used to hard-code
+ * (`barsPerSlot(n) = floor(n / 2)`).
+ */
 function walk(
   all: ScoreStep[],
   barsPerWindow: number,
   count: number,
   slots = 2,
+  systems = 2,
 ): { cursor: SlotIndex; ranges: (MeasureRange | null)[]; fades: SlotIndex[] }[] {
   let state: { cursor: SlotIndex; ranges: (MeasureRange | null)[] } = {
     cursor: 0,
@@ -50,30 +58,52 @@ function walk(
   };
   const seen = [];
   for (let i = 0; i < all.length; i += 1) {
-    const plan = planSlots(all, i, state, barsPerWindow, count, slots);
+    const plan = planSlots(all, i, state, barsPerWindow, count, slots, false, systems);
     state = { cursor: plan.cursor, ranges: plan.ranges };
     seen.push({ cursor: plan.cursor, ranges: plan.ranges, fades: plan.fades });
   }
   return seen;
 }
 
-describe('how many bars a slot holds', () => {
-  it('is half the window, and never none', () => {
-    expect(barsPerSlot(2)).toBe(1);
-    expect(barsPerSlot(4)).toBe(2);
-    expect(barsPerSlot(8)).toBe(4);
-    // One bar per window has nothing to alternate; the screen falls back to
-    // the sideways slide, and this must not divide to zero on the way.
+describe('how many bars a system holds', () => {
+  // It used to be half the window, from when SLOTS meant exactly two systems,
+  // and that is the arithmetic T32 replaced: the window is the number asked
+  // and the systems are how it is laid out (`slots.barsPerSlot`).
+  it('is the window divided over its systems, rounded up, and never none', () => {
+    expect(barsPerSlot(2, 1)).toBe(2);
+    expect(barsPerSlot(2, 2)).toBe(1);
+    expect(barsPerSlot(4, 2)).toBe(2);
+    expect(barsPerSlot(8, 3)).toBe(3);
+    // Three over two is two and one, not one and one: the rounding is up so
+    // the window is covered, and `rangeAt` clips the last system at the
+    // window's end so the count stays exact.
+    expect(barsPerSlot(3, 2)).toBe(2);
+    // One bar over one system, and nothing divides to zero on the way.
     expect(barsPerSlot(1)).toBe(1);
+    expect(barsPerSlot(1, 4)).toBe(1);
   });
 });
 
 describe('which bars a slot holds', () => {
   it('tiles the piece from the first bar', () => {
-    expect(rangeAt(0, 2, 5)).toEqual(r(0, 0));
-    expect(rangeAt(3, 2, 5)).toEqual(r(3, 3));
-    expect(rangeAt(0, 4, 5)).toEqual(r(0, 1));
-    expect(rangeAt(3, 4, 5)).toEqual(r(2, 3));
+    // One system to a window: the block is the window.
+    expect(rangeAt(0, 2, 5)).toEqual(r(0, 1));
+    expect(rangeAt(3, 2, 5)).toEqual(r(2, 3));
+    expect(rangeAt(0, 4, 5)).toEqual(r(0, 3));
+    // Two systems to a window: the window is halved, and both halves are in
+    // the same window.
+    expect(rangeAt(0, 4, 8, false, 2)).toEqual(r(0, 1));
+    expect(rangeAt(3, 4, 8, false, 2)).toEqual(r(2, 3));
+    expect(rangeAt(4, 4, 8, false, 2)).toEqual(r(4, 5));
+  });
+
+  it('clips the last system at the window, so the count is exact', () => {
+    // Three bars over two systems is 2 + 1 — never 2 + 2, which would draw
+    // four bars for a window of three (the fault T30 counted 266 times).
+    expect(rangeAt(0, 3, 9, false, 2)).toEqual(r(0, 1));
+    expect(rangeAt(2, 3, 9, false, 2)).toEqual(r(2, 2));
+    expect(rangeAt(3, 3, 9, false, 2)).toEqual(r(3, 4));
+    expect(rangeAt(5, 3, 9, false, 2)).toEqual(r(5, 5));
   });
 
   it('stops at the last bar rather than running past it', () => {
@@ -85,20 +115,26 @@ describe('which bars a slot holds', () => {
   // that starts at bar 1 without it: the first block is the pickup and the
   // bars it leads into, and the blocks after tile from bar 1.
   it('puts a pickup with the first bars, and tiles from bar 1 after it', () => {
-    expect(rangeAt(0, 2, 9, true)).toEqual(r(0, 1));
-    expect(rangeAt(1, 2, 9, true)).toEqual(r(0, 1));
-    expect(rangeAt(2, 2, 9, true)).toEqual(r(2, 2));
-    expect(rangeAt(8, 2, 9, true)).toEqual(r(8, 8));
-    expect(rangeAt(0, 4, 9, true)).toEqual(r(0, 2));
-    expect(rangeAt(2, 4, 9, true)).toEqual(r(0, 2));
-    expect(rangeAt(3, 4, 9, true)).toEqual(r(3, 4));
-    expect(rangeAt(8, 4, 9, true)).toEqual(r(7, 8));
+    expect(rangeAt(0, 2, 9, true)).toEqual(r(0, 2));
+    expect(rangeAt(1, 2, 9, true)).toEqual(r(0, 2));
+    expect(rangeAt(3, 2, 9, true)).toEqual(r(3, 4));
+    expect(rangeAt(8, 2, 9, true)).toEqual(r(7, 8));
+    expect(rangeAt(0, 2, 9, true, 2)).toEqual(r(0, 1));
+    expect(rangeAt(2, 2, 9, true, 2)).toEqual(r(2, 2));
+    expect(rangeAt(0, 4, 9, true)).toEqual(r(0, 4));
+    expect(rangeAt(2, 4, 9, true)).toEqual(r(0, 4));
+    expect(rangeAt(5, 4, 9, true)).toEqual(r(5, 8));
   });
 
   it('never asks the engraver for a block that starts on bar 1', () => {
     for (const barsPerWindow of [2, 4, 6, 8]) {
-      for (let bar = 0; bar < 12; bar += 1) {
-        expect(rangeAt(bar, barsPerWindow, 12, true).fromMeasure, `bar ${String(bar)} at ${String(barsPerWindow)} bars`).not.toBe(1);
+      for (const systems of [1, 2, 3]) {
+        for (let bar = 0; bar < 12; bar += 1) {
+          expect(
+            rangeAt(bar, barsPerWindow, 12, true, systems).fromMeasure,
+            `bar ${String(bar)} at ${String(barsPerWindow)} bars over ${String(systems)} systems`,
+          ).not.toBe(1);
+        }
       }
     }
   });
@@ -109,7 +145,7 @@ describe('which bars a slot holds', () => {
     const all = steps(bars);
     let state: { cursor: SlotIndex; ranges: (MeasureRange | null)[] } = { cursor: 0, ranges: [null, null] };
     for (let i = 0; i < all.length; i += 1) {
-      const plan = planSlots(all, i, state, 2, 9, 2, true);
+      const plan = planSlots(all, i, state, 2, 9, 2, true, 2);
       state = { cursor: plan.cursor, ranges: plan.ranges };
       const bar = bars[i] ?? 0;
       const here = plan.ranges[plan.cursor];
@@ -122,7 +158,7 @@ describe('which bars a slot holds', () => {
   });
 });
 
-describe('a five-bar piece at two bars per window', () => {
+describe('a five-bar piece at two bars per window, one bar to a system', () => {
   const all = steps([0, 1, 2, 3, 4]);
 
   it('puts the cursor in one slot and the coming bar in the other', () => {
@@ -146,7 +182,7 @@ describe('a five-bar piece at two bars per window', () => {
     // nothing already on the screen to keep. It used to leave the final system
     // in slot 0 and the rest of the screen blank, which on a phone is most of
     // the screen black for the last bars of every song (`08` invariant 8).
-    const plan = planSlots(all, 4, { cursor: 0, ranges: [null, null, null] }, 2, 5, 3);
+    const plan = planSlots(all, 4, { cursor: 0, ranges: [null, null, null] }, 2, 5, 3, false, 2);
     expect(plan.ranges).toEqual([r(2, 2), r(3, 3), r(4, 4)]);
     // And the cursor is at the foot, where reading order puts the bar being
     // played when everything else on the screen came before it.
@@ -160,7 +196,7 @@ describe('a five-bar piece at two bars per window', () => {
     // The mirror case, and the one that must not change: at bar 0 there is
     // nothing behind, so the cursor stays in slot 0 and the coming bars fill
     // the slots under it.
-    const plan = planSlots(all, 0, { cursor: 0, ranges: [null, null, null] }, 2, 5, 3);
+    const plan = planSlots(all, 0, { cursor: 0, ranges: [null, null, null] }, 2, 5, 3, false, 2);
     expect(plan.cursor).toBe(0);
     expect(plan.ranges).toEqual([r(0, 0), r(1, 1), r(2, 2)]);
   });
@@ -169,7 +205,7 @@ describe('a five-bar piece at two bars per window', () => {
     // Two bars, three slots. There is nothing ahead and nothing behind to
     // find, so one slot has nothing it could honestly show.
     const two = steps([0, 1]);
-    const plan = planSlots(two, 1, { cursor: 0, ranges: [null, null, null] }, 2, 2, 3);
+    const plan = planSlots(two, 1, { cursor: 0, ranges: [null, null, null] }, 2, 2, 3, false, 2);
     expect(plan.ranges).toEqual([r(0, 0), r(1, 1), null]);
     expect(plan.cursor).toBe(1);
   });
@@ -181,16 +217,16 @@ describe('a five-bar piece at two bars per window', () => {
   });
 
   it('blocksBehind walks backwards and stops at the first bar', () => {
-    expect(blocksBehind(r(4, 4), 2, 5, 3)).toEqual([r(3, 3), r(2, 2), r(1, 1)]);
+    expect(blocksBehind(r(4, 4), 2, 5, 3, false, 2)).toEqual([r(3, 3), r(2, 2), r(1, 1)]);
     // Asked for more than there are.
-    expect(blocksBehind(r(1, 1), 2, 5, 3)).toEqual([r(0, 0)]);
+    expect(blocksBehind(r(1, 1), 2, 5, 3, false, 2)).toEqual([r(0, 0)]);
     // Already at the first: nothing behind, and no loop.
-    expect(blocksBehind(r(0, 0), 2, 5, 3)).toEqual([]);
+    expect(blocksBehind(r(0, 0), 2, 5, 3, false, 2)).toEqual([]);
   });
 
   it('with four slots, the eye goes down the screen and round: three bars ahead', () => {
     const eight = steps([0, 1, 2, 3, 4, 5, 6, 7]);
-    const seen = walk(eight, 2, 8, 4);
+    const seen = walk(eight, 2, 8, 4, 2);
     expect(seen.map((s) => s.cursor)).toEqual([0, 1, 2, 3, 0, 1, 2, 3]);
     expect(seen.map((s) => s.ranges)).toEqual([
       [r(0, 0), r(1, 1), r(2, 2), r(3, 3)],
@@ -229,16 +265,19 @@ describe('a one-bar piece', () => {
   });
 });
 
-describe('four bars per window', () => {
+describe('four bars per window over two systems', () => {
   it('gives each slot two bars', () => {
-    const seen = walk(steps([0, 1, 2, 3, 4, 5]), 4, 6);
+    const seen = walk(steps([0, 1, 2, 3, 4, 5, 6, 7]), 4, 8, 2, 2);
     expect(seen.map((s) => s.ranges)).toEqual([
       [r(0, 1), r(2, 3)],
       [r(0, 1), r(2, 3)],
       [r(4, 5), r(2, 3)],
       [r(4, 5), r(2, 3)],
-      [r(4, 5), r(2, 3)],
-      [r(4, 5), r(2, 3)],
+      [r(4, 5), r(6, 7)],
+      [r(4, 5), r(6, 7)],
+      // Nothing after bar 7: the slot keeps the bars just played.
+      [r(4, 5), r(6, 7)],
+      [r(4, 5), r(6, 7)],
     ]);
   });
 });
@@ -246,7 +285,7 @@ describe('four bars per window', () => {
 describe('a seek', () => {
   it('draws both slots and starts the reading order at the top', () => {
     const all = steps([0, 1, 2, 3, 4]);
-    const plan = planSlots(all, 3, { cursor: 1, ranges: [null, null] }, 2, 5);
+    const plan = planSlots(all, 3, { cursor: 1, ranges: [null, null] }, 2, 5, 2, false, 2);
     expect(plan.cursor).toBe(0);
     expect(plan.ranges).toEqual([r(3, 3), r(4, 4)]);
     // Nothing to be peripheral to, so nothing fades.
@@ -262,10 +301,10 @@ describe('what comes next, when the piece repeats', () => {
     const seen = walk(all, 2, 3);
 
     // On the first pass through bar 1, what follows is bar 0 again.
-    expect(nextRangeAfter(all, 1, r(1, 1), 2, 3)).toEqual(r(0, 0));
+    expect(nextRangeAfter(all, 1, r(1, 1), 2, 3, false, 2)).toEqual(r(0, 0));
     // On the second pass through bar 0, what follows is the second ending —
     // not bar 1, which has already been played and will not be again.
-    expect(nextRangeAfter(all, 2, r(0, 0), 2, 3)).toEqual(r(2, 2));
+    expect(nextRangeAfter(all, 2, r(0, 0), 2, 3, false, 2)).toEqual(r(2, 2));
 
     expect(seen[2]?.ranges).toEqual([r(0, 0), r(2, 2)]);
     // At the second ending nothing follows; the bar just played — bar 0 on

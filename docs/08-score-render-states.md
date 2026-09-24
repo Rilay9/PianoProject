@@ -328,28 +328,63 @@ system halves a staff already at its minimum.
 
 #### SLOTS — one to four systems, karaoke
 
-Slots stacked from the top, each holding `max(1, ⌊barsPerWindow / 2⌋)` bars. **That
-arithmetic is the open question, not a settled rule:** it was written when SLOTS meant exactly
-two systems, and packing to two-to-four broke it, so setting 3 draws the same screen as setting
-2 (one bar a slot, three slots) on Au Clair de la Lune. What the number should mean is the
-owner's to say — handoff §4b lists the three ways out. Exactly one holds
-the cursor and **is never re-drawn while it does**. **How many:** two, unless the width limits
-the size — upright, one bar with a clef is as wide as a phone — in which case the height that is
-left over holds more systems at that same size: `⌊(stage + gap) / (system + gap)⌋`, at most four,
-never more than the piece has blocks. Four on the owner's phone upright, where two used 42 % of
-the stage (the state gallery measured it) and left the rest black. Each slot is an engraver
-loaded with the piece, so a piece longer than the probe's cap keeps two. The count is chosen at
-the first fit and held for a run, like the scale.
+**The window is the number of bars asked for, and the systems are how it is laid out**
+(T32, 2026-09-23). The owner ordered the goods that day: *readability without distortion
+first, looking ahead second, the bar count third*, and the arrangement follows that order.
+
+- **Windows tile the piece in `barsPerWindow` bars.** Inside a window the bars are split
+  over `systemsPerWindow` systems of `barsPerSlot(shown, systems) = ⌈shown / systems⌉`
+  each, **the last one clipped at the window's end** — three bars over two systems is 2 + 1,
+  not 2 + 2. That clipping is the whole of why the count is exact (`slots.rangeAt`).
+- **How many systems, and how the window is spread over them, is `chooseWindowShape`**
+  (`WindowRenderer.ts`). It prices every (systems on the stage, systems in the window,
+  bars shown) at the scale `scaleFor` will actually apply and takes the **largest**.
+  **Sizing, as of T34 (2026-09-23):** every row is engraved at its bars' natural widths,
+  never justified to a page (`drawInto`, `data-stretch="natural"`); one scale for the whole
+  window, the largest at which its rows fit the stage's width (the widest row's own ink —
+  no longer the whole engraved page, which drew the Nocturne under the floor upright) and
+  height (each row's share against the piece's tallest system), **times the Size setting**
+  (the multiplier of §2: 100 % is that fit). Under 100 % the fit shrinks by the setting; over
+  it the window grows and the count yields until the bigger size fits, with the row's *N
+  asked, M shown: at 150 % only 2 of 4 fit here*. Splits whose scales tie go to fewer rows.
+  **Rows are placed in reading order** by their first bar (`packSlots`), whatever slot the
+  round-robin put them in: the window's rows top to bottom, then the look-ahead. **The look-ahead row costs the window nothing:** it is added below only
+  when one more row fits at the window's own scale, and drawn greyed (`is-ahead`). On the
+  same row is the sideways chunk's job; upright rows are not extended past the window.
+- **When no arrangement of the asked number clears the floor**, the window holds fewer bars
+  — `shownBars` — and the `⋯` sheet's row says so in words: *4 asked, 2 shown: 4 would be
+  too small here*. The stepper stays live (`00` §1). It never silently draws a different
+  number, which is what it did 266 times in T30's grid.
+- Exactly one slot holds the cursor and **is never re-drawn while it does**. Each slot is an
+  engraver loaded with the piece, so a piece longer than the probe's cap keeps two. The
+  shape is chosen at the first fit and held for a run, like the scale, and it may only
+  change a bounded number of times for one zoom, stage and asked count — two answers that
+  disagree are an engraving loop, and an engraving loop is a browser that stops.
+
+**What this replaced:** `max(1, ⌊barsPerWindow / 2⌋)` bars a slot against a slot count taken
+from the room, so the glass held *slots × ⌊n/2⌋* bars, which equalled *n* by coincidence. 1,
+2 and 3 were one setting. `docs/decisions/2026-09-23-score-window-strategy.md` has the grid
+that measured it and the fault table before and after.
 
 **And one, when two would make both unreadable.** On a dense piece upright the *height* is what
 binds and the two systems lose together: Chopin's Nocturne op. 27 no. 1 at 342 x 740 drew its
 staves across 60 % of the width and 42 % of the height, with the rest of the stage black — the
-"the score loads compressed" in the owner's photographs. One system of the same piece is drawn
-at 0.82 rather than 0.61, a third larger, at 82 % of the width. So the count may be **1**, and it
-is only taken when two systems would cost a quarter of the size or more (`ONE_SYSTEM_GAIN`); a
-four-bar tune is width-limited and never reaches that branch. The cost is that invariant 7 does
-not hold there — with one system the next bar is not on the screen — and that is the trade: a
-readable bar you can play beats an unreadable pair with a preview.
+"the score loads compressed" in the owner's photographs. So the count may be **1**, and the cost
+is that invariant 7 does not hold there — with one system the next bar is not on the screen —
+and that is the trade: a readable bar you can play beats an unreadable pair with a preview. It
+is the second pass of `chooseWindowShape`, taken only when no arrangement *with* a look-ahead
+system clears `MIN_STAFF_PX` at any number of bars.
+
+**Corrected 2026-09-23 (T32).** This paragraph used to name a constant `ONE_SYSTEM_GAIN` and
+say the branch was taken "when two systems would cost a quarter of the size or more". **There
+is no such constant.** Two searches, both reported: `grep -rn "ONE_SYSTEM_GAIN" app/src/`
+returns nothing, and `grep -rn "GAIN|oneSystem|one system" app/src/score/*.ts` returns only
+prose in comments. What the code actually had was `SLOT_WIDTH_FLOOR` — a slot count was only
+accepted if its system spanned six tenths of the stage — and T30 measured what that cost: **82
+cells with no next music on the screen**, because a naturally narrow system on a wide stage
+failed the floor and the count fell to one. `SLOT_WIDTH_FLOOR` is gone; readability is priced
+in the one unit it has, `MIN_STAFF_PX`, and a share of the width decides nothing
+(`04` §5, "fill the width with music, not with space").
 
 ```
 cursor in slot k                          slots k+1 … round to k−1 show the next blocks
@@ -763,6 +798,11 @@ Numbered for citation. Each is falsifiable; most are already testable.
 7. The bar of the next step is on the screen at every step but the last — **except where the
    arrangement is one system**, which upright is the answer to a piece too tall for two (§4.1).
    There the next bar arrives when the window turns, and the size is what was bought with it.
+   Since T34 the look-ahead row is lost only when one more row does not fit at the window's
+   own scale (priced at the piece's tallest system), or when every sheet is in use — a piece
+   past the probe's 48 bars gets two sheets, not four (`WindowRenderer.create`). The window's
+   size is never reduced to make room for it. Readability first, looking ahead second — the
+   owner's order, 2026-09-23.
 8. The end of a piece fills both slots wherever there are bars behind to fill them with.
 9. Exactly one cursor band, and at most one read-ahead line, exist in the document.
 10. No overlay outlives its anchor: after any refit, rotation or window change, every band is

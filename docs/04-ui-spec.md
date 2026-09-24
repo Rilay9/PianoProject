@@ -1494,6 +1494,40 @@ A note for whoever writes the test: **a check that drawn ink fills some share of
 stage width cannot tell these apart.** One stretched bar scores exactly as well as two
 natural ones, so `score.fill.spec`'s floor needs a companion that pins bar count or
 note spacing, or it will push the code the wrong way.
+That companion is `tests/e2e/score.window-rule.spec.ts` (T32; re-pointed by T34 at no
+stretch, as big as the stage and the Size ceiling allow, the next bar or no room for it, the
+count or the sentence, the floor, both steppers changing the picture, and the look-ahead
+row below the window's rows). The Size stepper **multiplies the fit**: 100 % is the largest
+uniform scale at which the window's rows fit the stage; above it the bars grow and the count
+yields with the sentence *at 150 % only 2 of 4 fit here*; below it they shrink.
+
+**What *Bars in window* means, and the order the three goods are in (owner, 2026-09-23).**
+*"We've got to find the balance between showing the music to be as big as possible without
+distorting it, showing upcoming music, and following user options"*, and then: *"readability
+without distortion and being able to look ahead are paramount."* So:
+
+1. **Never distort.** A bar is drawn at the width its music needs at the current size, a
+   system that is not full is never stretched to the stage's width, and the staff never
+   falls under `MIN_STAFF_PX`.
+2. **Always look ahead.** In every state before and during a run, the next bar after the
+   window's last is on the stage, drawn as the following system — unless keeping it would
+   break 1, which is the one-system case `08` §4.1 and invariant 7 already allow.
+3. **Then the count.** *Bars in window* is honoured exactly when 1 and 2 allow it. When they
+   do not, the window holds as many of the asked bars as fit at the readable size and **the
+   row says so in words** — *Bars in window — 4 asked, 2 shown: 4 would be too small here* —
+   with the stepper still live (`§0` R4, and `00-invariants` §1: a control that looks
+   pressable must do something). It never silently draws a different number.
+
+The layout that follows: the asked bars are laid over as many systems as the stage holds, at
+the largest size where every asked bar and the next bar are on the stage. The size is frozen
+for the run; a rotation re-fits under the same rule.
+
+**Two things this settles.** In **`Scroll`** the row is *gone*, not greyed — the whole piece
+is one sheet there and a window has no meaning (`§0` R4) — and the Layout row says where the
+setting applies: *Layout — Bars in window applies to the Window layout*. **Sideways**, the two
+extra bars either side that the sliding chunk engraves are read-ahead and context, not the
+window: the window is the asked bars, and the count is honoured up to as many as reach across
+the stage at the size the height gives, with a bar's room left for the next one.
 
 **Both steppers say where they are and where they stop (2026-09-12).** `Bars in window` always
 read `2 bars` between its buttons; `Size` said nothing at all, so it could be pressed a dozen

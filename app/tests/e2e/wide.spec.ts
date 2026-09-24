@@ -603,8 +603,12 @@ test.describe('a sparse bar is not stretched', () => {
         { timeout: 15_000 },
       )
       .toBe('natural');
-    // And the ink stops well short of the page. Not a pixel: a share.
-    await expect.poll(() => inkShare(page), { timeout: 15_000 }).toBeLessThan(0.8);
+    // T34 (owner, 2026-09-23): "By stretch I mean making the notes per bar
+    // too far apart from regular sheet music, not that it shouldn't get
+    // proportionally bigger if it has the space." The natural bar is now drawn
+    // at one uniform scale as large as the stage allows, so its ink may reach
+    // across a laptop; the `natural` flag above is the no-stretch check, and
+    // an ink share short of the page no longer is.
 
     await page.setViewportSize({ width: 342, height: 740 });
     await go(page, `/score/${SONG}`, 'score');

@@ -92,6 +92,7 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
       { name: 'Hear it', does: 'Plays the piece to you. Nothing is judged while it plays.' },
       { name: 'Hands', does: 'Which hand the app waits for. The phone can play the other one.' },
       { name: '⋯', does: 'The settings you change once: the metronome, the input, how much music is on the screen, the keys underneath.' },
+      { name: 'Bars in window', does: 'How many bars you want on the screen at once. You always get the next bar after them too, and the notes are never squeezed or stretched to make a number fit — so if the one you ask for would come out too small to read, the app shows fewer and tells you so.' },
       { name: '← Back', does: 'Leaves the piece. A run you were part way through is offered again when you come back.' },
     ],
     elsewhere: 'The mode for the first time you meet a piece. When the notes are under your fingers, Keep tempo is the one that scores.',
@@ -130,6 +131,7 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     controls: [
       { name: 'Hands', does: 'Which hand the page follows.' },
       { name: '⋯', does: 'The metronome, the keys under the score, and how much music is on the screen.' },
+      { name: 'Bars in window', does: 'How many bars you want on the screen at once, with the next bar after them always drawn as well. Ask for more than fits and the app shows as many as it can read out clearly, and says how many that is.' },
     ],
     elsewhere: 'For improvising over a piece, or just playing it. Nothing from a free run reaches Progress; Keep tempo is what records a run.',
   },

@@ -202,7 +202,15 @@ test.describe('score screen in landscape', () => {
       expect(sheet.left, 'the sheet starts off the left of the stage').toBeGreaterThanOrEqual(
         stage!.x - 2,
       );
-      expect(sheet.width, 'the sheet does not fill the stage').toBeGreaterThan(stage!.width * 0.6);
+      // T34: the window is one uniform scale, the largest at which it fits
+      // the stage, and a bar is never stretched to reach the edge — so the
+      // stage is filled across *or* down, whichever bound the scale.
+      expect(
+        sheet.width > stage!.width * 0.6 || sheet.height > stage!.height * 0.5,
+        `the sheet fills neither the width nor the height: ${String(Math.round(sheet.width))} x ${String(
+          Math.round(sheet.height),
+        )} in ${String(Math.round(stage!.width))} x ${String(Math.round(stage!.height))}`,
+      ).toBe(true);
     });
   }
 

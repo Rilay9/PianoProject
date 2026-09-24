@@ -223,6 +223,10 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `score.countin.spec.ts` — the count-in drawn large over the notation, and the beat dot during a run.
 - `score.density.spec.ts` — how much room the music may take and where it sits: never stretched past natural spacing.
 - `score.fill.spec.ts` — the music uses the screen it is on: a width floor on the dense pieces.
+- `score.window-rule.spec.ts` — the window rule, from the glass: no system stretched past
+  `MAX_BAR_WIDTH_IN_STAVES`, no staff under `MIN_STAFF_PX`, a bar past the window's last on
+  the stage, and the bars the `⋯` row promises all inked. Five shapes x three pieces x
+  *Bars in window* 1, 2, 4, 8. The companion `04` §5 asks for beside `score.fill`'s floor.
 - `score.fuzz.spec.ts` — the seeded random walk over the whole Score screen, invariants after every action.
 - `score.head-height.spec.ts` — the Score screen's header is the same height all through a run (the first correct notes, a message longer than the row, a wider font); a stage whose *height* changes mid-run leaves the drawn sheet's transform alone; a run restarted mid-piece (hand change, `Hear it`) keeps its **engraving zoom** through a header that grows, which the transform alone cannot show; and the hands control is reachable during a run when the bar has sent it behind `⋯`, which is the branch a wider set of glyphs takes and this machine does not.
 - `score.hearbar.spec.ts` — long-press a bar to hear it: one bar, both hands, once, the run put back.

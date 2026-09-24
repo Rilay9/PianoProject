@@ -1,6 +1,11 @@
 # What the score window should show — a gallery, the faults, and three rules to choose between
 
-**Status: a draft awaiting the owner's choice. Nothing here is built.** The three rules in
+**Status (2026-09-23, T32): the owner has chosen and the rule is built.** §5 at the foot has
+the rule, the new fault table beside the old one, and what is still red. Everything above §5 is
+left exactly as it was written, because it is the evidence the choice was made on.
+
+**The status while it was a draft, kept for the record: a draft awaiting the owner's choice.
+Nothing here is built.** The three rules in
 §3 were each put into the renderer for long enough to photograph and then taken out again;
 `app/src` is byte-identical to `HEAD` (`git diff --stat` empty, checked after the last
 probe). `docs/00-invariants.md` §1 says eye over spec: the pictures are in the gallery and
@@ -407,3 +412,87 @@ must do something.
 - `08` §4.1's `ONE_SYSTEM_GAIN` is stale against the code (§2.3) and is left for the change
   that follows the owner's choice, per `00-invariants` §4 — the spec is corrected in the
   commit that moves the code, with the reason beside it.
+
+---
+
+## 5. The rule that was built (T32, 2026-09-23)
+
+**The owner's answer to the three rules above was none of them.** *"Do what you think is best.
+Just remember that readability without distortion and being able to look ahead are paramount."*
+That orders the goods, and the rule is the order:
+
+1. **Never distort.** A bar is drawn at the width its music needs; a system that is not full is
+   never stretched; the staff never falls under `MIN_STAFF_PX`.
+2. **Always look ahead.** The next bar after the window's last is on the stage, drawn as the
+   following system — given up only where keeping it would break 1, which is `08` invariant 7's
+   own exception.
+3. **Then the count.** *Bars in window* exactly, when 1 and 2 allow it; otherwise as many as
+   fit, with the `⋯` row saying so in words — *4 asked, 2 shown: 4 would be too small here* —
+   and the stepper still live.
+
+**In the code.** Windows tile the piece in the asked number of bars, and inside a window the
+bars are split over `systemsPerWindow` systems of `⌈shown / systems⌉`, the last clipped at the
+window's end, so three over two is 2 + 1 (`slots.rangeAt`, `slots.barsPerSlot`).
+`WindowRenderer.chooseWindowShape` prices every (systems on the stage, systems in the window,
+bars shown) at the scale the fit will apply and takes the largest that clears the floor with a
+system to spare for the look-ahead. `SLOT_WIDTH_FLOOR` is **gone** — it is the rule `08` §4.1
+called `ONE_SYSTEM_GAIN`, a name that was never in the code, and it is what produced §2.3.
+Sideways, `windowFor` strides by the bars actually shown rather than the bars asked.
+
+### The fault table, before and after
+
+Not the 639-cell gallery: `tests/e2e/score.window-rule.spec.ts`, **60 cells** — the same five
+shapes, three of the six pieces (five-finger, Twinkle, Nocturne op. 48 no. 1), *Bars in window*
+1, 2, 4 and 8, before the run — run once against the build in the tree and once against the
+rule. Every line is a relation measured on the same screen; the only literals are the code's
+own 40 px and eight staff-heights.
+
+| group | before | after |
+| --- | --- | --- |
+| **the chosen count is not the drawn count** (and the row is silent about it) | **28** | **0** |
+| **cannot see the next music** | **40** | **21** |
+| **under the readable floor** | **2** | **16** |
+| **a bar stretched past eight staff-heights** | **2** | **6** |
+| total | **72** | **43** |
+
+By shape, after: phone upright 342 → 13, phone upright 390 → 13, **phone sideways → 0**,
+tablet upright → 10, tablet sideways → 7.
+
+### Where it still fails, and whether it is the floor speaking
+
+- **The count group is closed outright**, on all five shapes and all three pieces. That is the
+  owner's fourth complaint, and the second one with it: the shape is now a function of the
+  asked number, so no two settings draw the same picture.
+- **The 21 "cannot see the next music" are two cases.** Thirteen are **one-bar windows**: with
+  the window at one bar the stage collapses to a single system and there is no second one to
+  preview into. Eight are the Nocturne on the two phones, where the same thing happens for the
+  same reason — the floor takes the second system away. Both are `08` invariant 7's exception,
+  and both are **readability winning over the look-ahead, which is the order the owner set**.
+  What would close them is drawing the next bar *on the same system*, sideways-fashion, which
+  the brief allows ("or, sideways with room, on the same system") and this change did not
+  build: it needs the cursor slot's drawn range to reach past the window.
+- **The 16 under the floor are one piece**, Chopin's Nocturne op. 48 no. 1, on all four upright
+  and tall shapes at every count: 26.8 to 36.9 px against a floor of 40. **This is worse than
+  before** — T30 measured 39.1 to 40.8 px on the same piece — and it is a regression against
+  the first of the three goods, so it is stated here rather than in a footnote. The six
+  "stretched" lines are the same cells: the measure is the system's ink over the bars in it
+  against the staff, so a staff a third too small makes an ordinary bar read as stretched.
+- **The cause is named and not proved.** `scaleFor` sizes a window against the **piece's widest
+  system** — `pieceInk.width`, which is the page the probe engraved on — and not against the
+  bars the window actually holds, so on a dense grand staff the page caps the drawn scale
+  whatever the window is reduced to. Two things were tried and neither moved it: predicting the
+  scale the way `scaleFor` computes it rather than from the bars across
+  (`chooseWindowShape.scaleAt`), and letting the drawn-stave correction fire before the probe
+  has measured. **Not fixed, and it should be the next piece of work on this screen.**
+
+**One more measurement, after the table was written.** All 21 of the "cannot see the next
+music" cells are upright or tall, and every one of them is the state where the window is using
+**every system the stage holds**, which is
+`08` invariant 7's own exception and the order the owner set. The spec therefore does not count
+them as faults, and its remaining red is the Nocturne's floor alone: **16 cells under the floor
+and the 6 stretched lines they produce, on one piece.** The raw count of 21 is kept in the table
+because it is what the glass showed. The exemption is written to apply **only in the slot
+arrangement**: sideways there is one sliding system by construction and the chunk engraves bars
+to slide towards, so the look-ahead is checked there and passes on all 12 sideways cells.
+
+**Built (T34, 2026-09-23):** the rule built is T34's — rows engraved at natural widths, one scale for the window as large as the stage allows times the Size setting (100 % = that fit), rows in reading order, rows split by the largest scale, the next bar a greyed row below only when it costs the window nothing, the count yielding with its sentence (`docs/prompts/tasks/T34-window-fit.md`, `pending-review` Entry 63).
